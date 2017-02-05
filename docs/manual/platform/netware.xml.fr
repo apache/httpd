@@ -1,4 +1,4 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- English Revision : 1562488 -->
@@ -23,7 +23,7 @@
 -->
 
 <manualpage metafile="netware.xml.meta">
-  <parentdocument href="./">Notes sp&eacute;cifiques &agrave; un syst&egrave;me</parentdocument>
+  <parentdocument href="./">Notes spécifiques à un système</parentdocument>
 
   <title>Utilisation d'Apache avec Novell NetWare</title>
 
@@ -31,28 +31,28 @@
 
     <p>Ce document explique l'installation, la configuration et le
     lancement d'Apache 2.0 sous Novell NetWare 6.0 et les versions
-    ult&eacute;rieures. Si vous trouvez une bogue, ou voulez tout simplement
-    contribuer de quelque mani&egrave;re que ce soit, utilisez s'il vous plait
+    ultérieures. Si vous trouvez une bogue, ou voulez tout simplement
+    contribuer de quelque manière que ce soit, utilisez s'il vous plait
     notre <a href="http://httpd.apache.org/bug_report.html">page des
     rapports de bogues.</a></p>
 
     <p>La page des rapports de bogues et la liste de diffusion dev-httpd
-    ne doivent pas &ecirc;tre utilis&eacute;es pour poser des questions &agrave; propos de
+    ne doivent pas être utilisées pour poser des questions à propos de
     la configuration ou du lancement d'Apache. Avant de soumettre un
     rapport de bogue ou une question, consultez ce document, la <a
     href="http://wiki.apache.org/httpd/FAQ">FAQ</a> ou tout autre sujet de la
-    documentation en rapport avec votre probl&egrave;me. Si vous n'avez
-    toujours pas r&eacute;solu votre probl&egrave;me, postez votre question dans le
+    documentation en rapport avec votre problème. Si vous n'avez
+    toujours pas résolu votre problème, postez votre question dans le
     newsgroup <a
     href="news://developer-forums.novell.com/novell.devsup.webserver">
-    novell.devsup.webserver</a>, o&ugrave; de nombreux utilisateurs d'Apache
-    sont pr&ecirc;ts &agrave; r&eacute;pondre &agrave; toutes les nouvelles et obscures questions &agrave;
+    novell.devsup.webserver</a>, où de nombreux utilisateurs d'Apache
+    sont prêts à répondre à toutes les nouvelles et obscures questions à
     propos de l'utilisation d'Apache sous Netware.</p>
 
-    <p>Dans la majeure partie de ce document, vous &ecirc;tes sens&eacute; avoir
-    install&eacute; Apache &agrave; partir d'une distribution binaire. Si vous voulez
-    compiler Apache vous-m&ecirc;me (par exemple pour aider au d&eacute;veloppement,
-    ou pour rechercher des bogues), reportez-vous &agrave; la section traitant
+    <p>Dans la majeure partie de ce document, vous êtes sensé avoir
+    installé Apache à partir d'une distribution binaire. Si vous voulez
+    compiler Apache vous-même (par exemple pour aider au développement,
+    ou pour rechercher des bogues), reportez-vous à la section traitant
     de la <a href="#comp">Compilation d'Apache pour Netware</a>
     ci-dessous.</p>
 
@@ -60,37 +60,37 @@
 
   <section id="req">
 
-    <title>Pr&eacute;requis</title>
+    <title>Prérequis</title>
 
-    <p>Apache 2.0 n&eacute;cessite NetWare 6.0 service pack 3 et sup&eacute;rieurs
-    pour fonctionner. Si vous utilisez un service pack ant&eacute;rieur &agrave; SP3,
-    vous devez installer les derni&egrave;res <a
-    href="http://developer.novell.com/ndk/libc.htm">Biblioth&egrave;ques
+    <p>Apache 2.0 nécessite NetWare 6.0 service pack 3 et supérieurs
+    pour fonctionner. Si vous utilisez un service pack antérieur à SP3,
+    vous devez installer les dernières <a
+    href="http://developer.novell.com/ndk/libc.htm">Bibliothèques
     Netware pour C (LibC)</a>.</p>
 
     <p>Vous trouverez les service packs Netware <a
     href="http://support.novell.com/misc/patlst.htm#nw">ici</a>.</p>
 
     <p>Apache 2.0 pour NetWare peut aussi fonctionner dans un
-    environnement NetWare 5.1, &agrave; partir du moment o&ugrave; le dernier service
-    pack ou la derni&egrave;re version des <a
-    href="http://developer.novell.com/ndk/libc.htm">Biblioth&egrave;ques
-    Netware pour C (LibC)</a> ont &eacute;t&eacute; install&eacute;s. <strong>ATTENTION
-    :</strong> Apache 2.0 pour NetWare n'a pas &eacute;t&eacute; test&eacute; dans cet
-    environnement car il n'a pas &eacute;t&eacute; con&ccedil;u pour ce dernier.</p>
+    environnement NetWare 5.1, à partir du moment où le dernier service
+    pack ou la dernière version des <a
+    href="http://developer.novell.com/ndk/libc.htm">Bibliothèques
+    Netware pour C (LibC)</a> ont été installés. <strong>ATTENTION
+    :</strong> Apache 2.0 pour NetWare n'a pas été testé dans cet
+    environnement car il n'a pas été conçu pour ce dernier.</p>
 
   </section>
 
   <section id="down">
 
-    <title>T&eacute;l&eacute;chargement d'Apache pour NetWare</title>
+    <title>Téléchargement d'Apache pour NetWare</title>
 
-    <p>Les informations &agrave; propos de la derni&egrave;re version
-    d'Apache sont disponibles sur le site web d'Apache &agrave; <a
+    <p>Les informations à propos de la dernière version
+    d'Apache sont disponibles sur le site web d'Apache à <a
     href="http://www.apache.org/">http://www.apache.org/</a>. Vous y
-    trouverez la version courante, des versions alpha ou b&ecirc;ta-test plus
-    r&eacute;centes, ainsi que des sites miroirs et des sites FTP anonymes. Les
-    distributions binaires des derni&egrave;res versions d'Apache 2.0 pour
+    trouverez la version courante, des versions alpha ou bêta-test plus
+    récentes, ainsi que des sites miroirs et des sites FTP anonymes. Les
+    distributions binaires des dernières versions d'Apache 2.0 pour
     NetWare sont disponibles <a
     href="http://www.apache.org/dist/httpd/binaries/netware">ici</a>.</p>
 
@@ -101,23 +101,23 @@
     <title>Installation d'Apache pour NetWare</title>
 
     <p>Il n'existe pas actuellement de programme d'installation d'Apache
-    pour Netware. Si vous installez Apache 2.0 pour NetWare &agrave; partir des
+    pour Netware. Si vous installez Apache 2.0 pour NetWare à partir des
     sources, vous devrez copier les fichiers sur le serveur
     manuellement.</p>
 
-    <p>Suivez ces instructions pour installer Apache sous Netware &agrave;
+    <p>Suivez ces instructions pour installer Apache sous Netware à
     partir de la distribution binaire (en supposant que vous effectuez
     l'installation dans <code>sys:/apache2</code>) :</p>
 
     <ul>
-      <li>D&eacute;compressez le fichier binaire t&eacute;l&eacute;charg&eacute; &agrave; la racine du
+      <li>Décompressez le fichier binaire téléchargé à la racine du
       volume <code>SYS:</code> (vous pouvez cependant l'installer dans
       tout volume)</li>
 
-      <li>Editez le fichier <code>httpd.conf</code> et d&eacute;finissez les
+      <li>Editez le fichier <code>httpd.conf</code> et définissez les
       directives <directive module="core">ServerRoot</directive> et
       <directive module="core">ServerName</directive> avec les valeurs
-      correctes des chemins de fichiers qui correspondent &agrave; la
+      correctes des chemins de fichiers qui correspondent à la
       configuration de votre serveur.</li>
 
       <li>Ajoutez <code>SYS:/APACHE2</code> au chemin de recherche, par
@@ -127,78 +127,78 @@
     </ul>
 
     <p>Suivez ces instructions pour installer Apache pour Netware
-    manuellement &agrave; partir de votre propre r&eacute;pertoire de sources (en
+    manuellement à partir de votre propre répertoire de sources (en
     supposant que vous effectuez l'installation dans
     <code>sys:/apache2</code>) :</p>
 
     <ul>
-      <li>Cr&eacute;ez un r&eacute;pertoire que vous appellerez <code>Apache2</code>
+      <li>Créez un répertoire que vous appellerez <code>Apache2</code>
       dans un volume Netware.</li>
 
       <li>Copiez <code>APACHE2.NLM</code>, <code>APRLIB.NLM</code> dans
       <code>SYS:/APACHE2</code>.</li>
 
-      <li>Cr&eacute;ez un r&eacute;pertoire que vous appellerez <code>BIN</code> dans
+      <li>Créez un répertoire que vous appellerez <code>BIN</code> dans
       <code>SYS:/APACHE2</code>.</li>
 
       <li>Copiez <code>HTDIGEST.NLM</code>, <code>HTPASSWD.NLM</code>,
       <code>HTDBM.NLM</code>, <code>LOGRES.NLM</code>,
       <code>ROTLOGS.NLM</code> dans <code>SYS:/APACHE2/BIN</code>.</li>
 
-      <li>Cr&eacute;ez un r&eacute;pertoire que vous appellerez <code>CONF</code> dans
+      <li>Créez un répertoire que vous appellerez <code>CONF</code> dans
       <code>SYS:/APACHE2</code>.</li>
 
       <li>Copiez le fichier <code>HTTPD-STD.CONF</code> dans le
-      r&eacute;pertoire <code>SYS:/APACHE2/CONF</code> et renommez-le en
+      répertoire <code>SYS:/APACHE2/CONF</code> et renommez-le en
       <code>HTTPD.CONF</code>.</li>
 
       <li>Copiez les fichiers <code>MIME.TYPES</code>,
-      <code>CHARSET.CONV</code> et <code>MAGIC</code> dans le r&eacute;pertoire
+      <code>CHARSET.CONV</code> et <code>MAGIC</code> dans le répertoire
       <code>SYS:/APACHE2/CONF</code>.</li>
 
-      <li>Copiez tous les fichiers et sous-r&eacute;pertoires de
+      <li>Copiez tous les fichiers et sous-répertoires de
       <code>\HTTPD-2.0\DOCS\ICONS</code> dans
       <code>SYS:/APACHE2/ICONS</code>.</li>
 
-      <li>Copiez tous les fichiers et sous-r&eacute;pertoires de
+      <li>Copiez tous les fichiers et sous-répertoires de
       <code>\HTTPD-2.0\DOCS\MANUAL</code> dans
       <code>SYS:/APACHE2/MANUAL</code>.</li>
 
-      <li>Copiez tous les fichiers et sous-r&eacute;pertoires de
+      <li>Copiez tous les fichiers et sous-répertoires de
       <code>\HTTPD-2.0\DOCS\ERROR</code> dans
       <code>SYS:/APACHE2/ERROR</code>.</li>
 
-      <li>Copiez tous les fichiers et sous-r&eacute;pertoires de
+      <li>Copiez tous les fichiers et sous-répertoires de
       <code>\HTTPD-2.0\DOCS\DOCROOT</code> dans
       <code>SYS:/APACHE2/HTDOCS</code>.</li>
 
-      <li>Cr&eacute;ez le r&eacute;pertoire <code>SYS:/APACHE2/LOGS</code> sur le
+      <li>Créez le répertoire <code>SYS:/APACHE2/LOGS</code> sur le
       serveur.</li>
 
-      <li>Cr&eacute;ez le r&eacute;pertoire <code>SYS:/APACHE2/CGI-BIN</code> sur le
+      <li>Créez le répertoire <code>SYS:/APACHE2/CGI-BIN</code> sur le
       serveur.</li>
 
-      <li>Cr&eacute;ez le r&eacute;pertoire <code>SYS:/APACHE2/MODULES</code> et
-      copiez tous les modules nlm dans le r&eacute;pertoire
+      <li>Créez le répertoire <code>SYS:/APACHE2/MODULES</code> et
+      copiez tous les modules nlm dans le répertoire
       <code>modules</code>.</li>
 
       <li>Editez le fichier <code>HTTPD.CONF</code>, et recherchez
       toutes les marques <code>@@Value@@</code> afin de les remplacer
-      par les valeurs appropri&eacute;es.</li>
+      par les valeurs appropriées.</li>
 
       <li>Ajoutez <code>SYS:/APACHE2</code> au chemin de recherche, par
       une commande du style : <example>SEARCH ADD
       SYS:\APACHE2</example>.</li>
     </ul>
 
-    <p>Outre le volume par d&eacute;faut <code>SYS</code>, Apache peut &ecirc;tre
-    install&eacute; dans tout autre volume.</p>
+    <p>Outre le volume par défaut <code>SYS</code>, Apache peut être
+    installé dans tout autre volume.</p>
 
-    <p>Au cours du processus d'installation, l'ajout du mot-cl&eacute;
-    "install" &agrave; la ligne de commande du makefile va provoquer la
-    construction d'une distribution compl&egrave;te sous forme d'un paquetage
-    dans le sous-r&eacute;pertoire <code>DIST</code>. Vous pouvez simplement
-    installer Apache en copiant la distribution cr&eacute;&eacute;e pr&eacute;c&eacute;demment &agrave; la
+    <p>Au cours du processus d'installation, l'ajout du mot-clé
+    "install" à la ligne de commande du makefile va provoquer la
+    construction d'une distribution complète sous forme d'un paquetage
+    dans le sous-répertoire <code>DIST</code>. Vous pouvez simplement
+    installer Apache en copiant la distribution créée précédemment à la
     racine d'un volume Netware (voir <a href="#comp">Compilation
     d'Apache pour NetWare</a> ci-dessous).</p>
 
@@ -206,13 +206,13 @@
 
   <section id="run">
 
-    <title>Ex&eacute;cuter Apache pour NetWare</title>
+    <title>Exécuter Apache pour NetWare</title>
 
-    <p>Pour d&eacute;marrer Apache, tapez simplement <code>apache</code> dans
+    <p>Pour démarrer Apache, tapez simplement <code>apache</code> dans
     la console. Ceci aura pour effet de charger Apache dans l'espace
-    d'adressage du syst&egrave;me d'exploitation. Si vous pr&eacute;f&eacute;rez charger
-    Apache dans un espace d'adressage prot&eacute;g&eacute;, vous pouvez sp&eacute;cifier cet
-    espace d'adressage &agrave; l'aide de l'instruction de chargement suivante
+    d'adressage du système d'exploitation. Si vous préférez charger
+    Apache dans un espace d'adressage protégé, vous pouvez spécifier cet
+    espace d'adressage à l'aide de l'instruction de chargement suivante
     :</p>
 
     <example>
@@ -220,26 +220,26 @@
     </example>
 
     <p>Cette instruction va charger Apache dans un espace d'adressage
-    appel&eacute; apache2. Il est possible d'ex&eacute;cuter plusieurs instances
-    simultan&eacute;es d'Apache sous Netware, en chargeant chacune d'entre
-    elles dans son propre espace d'adressage prot&eacute;g&eacute;.</p>
+    appelé apache2. Il est possible d'exécuter plusieurs instances
+    simultanées d'Apache sous Netware, en chargeant chacune d'entre
+    elles dans son propre espace d'adressage protégé.</p>
 
-    <p>Une fois d&eacute;marr&eacute;, Apache &eacute;coute le port 80 (&agrave; moins que vous
-    n'ayez modifi&eacute; la directive <directive
+    <p>Une fois démarré, Apache écoute le port 80 (à moins que vous
+    n'ayez modifié la directive <directive
     module="mpm_common">Listen</directive> dans les fichiers de
     configuration). Pour vous connecter au serveur et afficher la page
-    par d&eacute;faut, lancez un navigateur et entrez le nom du serveur ou son
+    par défaut, lancez un navigateur et entrez le nom du serveur ou son
     adresse IP. Vous devriez voir une page de bienvenue, et un lien vers
     le manuel Apache. Si rien ne se produit, ou si vous obtenez un
     message d'erreur, consultez le fichier <code>error_log</code> dans
-    le r&eacute;pertoire <code>logs</code>.</p>
+    le répertoire <code>logs</code>.</p>
 
     <p>Lorsque votre installation de base fonctionne, vous devez la
-    configurer correctement en &eacute;ditant les fichiers du r&eacute;pertoire
+    configurer correctement en éditant les fichiers du répertoire
     <code>conf</code>.</p>
 
-    <p>Pour arr&ecirc;ter une instance d'Apache s'ex&eacute;cutant dans l'espace
-    d'adressage du syst&egrave;me d'exploitation, entrez simplement dans la
+    <p>Pour arrêter une instance d'Apache s'exécutant dans l'espace
+    d'adressage du système d'exploitation, entrez simplement dans la
     console :</p>
 
     <example>
@@ -252,8 +252,8 @@
       apache2 shutdown
     </example>
 
-    <p>Si Apache s'ex&eacute;cute dans un espace d'adressage prot&eacute;g&eacute;, sp&eacute;cifiez
-    cet espace d'adressage dans l'instruction d'arr&ecirc;t :</p>
+    <p>Si Apache s'exécute dans un espace d'adressage protégé, spécifiez
+    cet espace d'adressage dans l'instruction d'arrêt :</p>
 
     <example>
       unload address space = apache2 apache2
@@ -261,11 +261,11 @@
 
     <p>Lorsqu'on travaille avec Apache, il est important de savoir
     comment il trouve ses fichiers de configuration. Vous pouvez
-    sp&eacute;cifier un fichier de configuration sur la ligne de commande de
-    deux mani&egrave;res :</p>
+    spécifier un fichier de configuration sur la ligne de commande de
+    deux manières :</p>
 
     <ul>
-      <li><code>-f</code> sp&eacute;cifie un chemin vers un fichier de
+      <li><code>-f</code> spécifie un chemin vers un fichier de
       configuration particulier</li>
     </ul>
 
@@ -278,15 +278,15 @@
     </example>
 
     <p>Dans ces cas, la directive <directive
-    module="core">ServerRoot</directive> doit &ecirc;tre correctement d&eacute;finie
+    module="core">ServerRoot</directive> doit être correctement définie
     dans le fichier de configuration.</p>
 
-    <p>Si vous ne sp&eacute;cifiez pas de nom de fichier de configuration avec
-    l'option <code>-f</code>, Apache utilisera le nom de fichier cod&eacute; en
-    dur dans le serveur, en g&eacute;n&eacute;ral <code>conf/httpd.conf</code>.
+    <p>Si vous ne spécifiez pas de nom de fichier de configuration avec
+    l'option <code>-f</code>, Apache utilisera le nom de fichier codé en
+    dur dans le serveur, en général <code>conf/httpd.conf</code>.
     L'invocation d'Apache avec l'option <code>-V</code> indiquera ce nom
-    comme valeur de l'&eacute;tiquette <code>SERVER_CONFIG_FILE</code>. Apache
-    va ensuite d&eacute;terminer son <directive
+    comme valeur de l'étiquette <code>SERVER_CONFIG_FILE</code>. Apache
+    va ensuite déterminer son <directive
     module="core">ServerRoot</directive> en effectuant les tests
     suivants, dans cet ordre </p>
 
@@ -296,60 +296,60 @@
 
       <li>L'option de ligne de commande <code>-d</code>.</li>
 
-      <li>Le contenu du r&eacute;pertoire courant.</li>
+      <li>Le contenu du répertoire courant.</li>
 
-      <li>La racine du r&eacute;pertoire d'installation cod&eacute;e en dur dans le
+      <li>La racine du répertoire d'installation codée en dur dans le
       serveur.</li>
     </ul>
 
-    <p>La racine du r&eacute;pertoire d'installation cod&eacute;e en dur dans le
-      serveur est en g&eacute;n&eacute;ral <code>sys:/apache2</code>. L'invocation
+    <p>La racine du répertoire d'installation codée en dur dans le
+      serveur est en général <code>sys:/apache2</code>. L'invocation
       d'Apache avec l'option <code>-V</code> indiquera ce chemin comme
-      valeur de l'&eacute;tiquette <code>HTTPD_ROOT</code>.</p>
+      valeur de l'étiquette <code>HTTPD_ROOT</code>.</p>
 
     <p>Apache 2.0 pour Netware comporte un jeu d'options de ligne de
     commande permettant d'afficher ou de modifier certaines
-    caract&eacute;ristiques de l'instance du serveur web en cours d'ex&eacute;cution.
+    caractéristiques de l'instance du serveur web en cours d'exécution.
     Ces options ne sont disponibles que lorsqu'Apache est en cours
-    d'ex&eacute;cution. Chacune de ces options doit &ecirc;tre pr&eacute;c&eacute;d&eacute;e du mot-cl&eacute;
+    d'exécution. Chacune de ces options doit être précédée du mot-clé
     <code>APACHE2</code>.</p>
 
     <dl>
       <dt>RESTART</dt>
-      <dd>Demande &agrave; Apache d'arr&ecirc;ter tout worker thread en cours
-      d'ex&eacute;cution lorsqu'il devient inactif, de recharger le fichier de
-      configuration, et de red&eacute;marrer chaque worker thread en fonction
+      <dd>Demande à Apache d'arrêter tout worker thread en cours
+      d'exécution lorsqu'il devient inactif, de recharger le fichier de
+      configuration, et de redémarrer chaque worker thread en fonction
       de la nouvelle configuration.</dd>
 
       <dt>VERSION</dt>
-      <dd>Affiche des informations &agrave; propos de la version de l'instance
-      d'Apache en cours d'ex&eacute;cution.</dd>
+      <dd>Affiche des informations à propos de la version de l'instance
+      d'Apache en cours d'exécution.</dd>
 
       <dt>MODULES</dt>
-      <dd>Affiche la liste des modules charg&eacute;s (int&eacute;gr&eacute;s et
+      <dd>Affiche la liste des modules chargés (intégrés et
       externes). </dd>
 
       <dt>DIRECTIVES</dt>
       <dd>Affiche la liste des directives disponibles.</dd>
 
       <dt>SETTINGS</dt>
-      <dd>Active ou d&eacute;sactive l'affichage du statut des threads sur la
-      console. En cas d'activation, l'&eacute;tat de chaque thread en cours
-      d'ex&eacute;cution s'affiche sur l'&eacute;cran de la console Apache.</dd>
+      <dd>Active ou désactive l'affichage du statut des threads sur la
+      console. En cas d'activation, l'état de chaque thread en cours
+      d'exécution s'affiche sur l'écran de la console Apache.</dd>
 
       <dt>SHUTDOWN</dt>
-      <dd>Arr&ecirc;te l'instance du serveur web Apache en cours
-      d'ex&eacute;cution.</dd>
+      <dd>Arrête l'instance du serveur web Apache en cours
+      d'exécution.</dd>
 
       <dt>HELP</dt>
-      <dd>D&eacute;crit chacune des options disponibles au cours de l'ex&eacute;cution
+      <dd>Décrit chacune des options disponibles au cours de l'exécution
       d'Apache.</dd>
     </dl>
 
-    <p>Par d&eacute;faut, ces options sont pass&eacute;es &agrave; l'instance d'apache
-    s'ex&eacute;cutant dans l'espace d'adressage du syst&egrave;me d'exploitation.
-    Pour passer une option &agrave; une instance d'Apache sp&eacute;cifique
-    s'ex&eacute;cutant dans un espace d'adressage prot&eacute;g&eacute;, ajouter le param&egrave;tre
+    <p>Par défaut, ces options sont passées à l'instance d'apache
+    s'exécutant dans l'espace d'adressage du système d'exploitation.
+    Pour passer une option à une instance d'Apache spécifique
+    s'exécutant dans un espace d'adressage protégé, ajouter le paramètre
     -p suivi du nom de l'espace d'adressage. Pour plus d'informations,
     tapez "apache2 Help" sur la ligne de commande.</p>
 
@@ -359,62 +359,62 @@
 
     <title>Configuration d'Apache pour NetWare</title>
 
-    <p>Apache lit en g&eacute;n&eacute;ral ses fichiers de configuration dans le
-    r&eacute;pertoire <code>conf</code>. Ces fichiers sont les m&ecirc;mes que ceux
-    de la version Unix, mais quelques directives sont diff&eacute;rentes sous
+    <p>Apache lit en général ses fichiers de configuration dans le
+    répertoire <code>conf</code>. Ces fichiers sont les mêmes que ceux
+    de la version Unix, mais quelques directives sont différentes sous
     Netware. Voir la <a href="../mod/">Documentation Apache</a> pour
     l'ensemble des directives disponibles.</p>
 
-    <p>Les principales diff&eacute;rences propres &agrave; Apache pour NetWare sont
+    <p>Les principales différences propres à Apache pour NetWare sont
     : </p>
 
     <ul>
       <li>
         <p>Comme Apache pour Netware est une application multithread,
-	elle n'utilise pas de processus s&eacute;par&eacute; pour chaque requ&ecirc;te,
-	comme c'est le cas pour certaines impl&eacute;mentations sous Unix. Il
-	n'y a que des threads en cours d'ex&eacute;cution : un thread parent,
+	elle n'utilise pas de processus séparé pour chaque requête,
+	comme c'est le cas pour certaines implémentations sous Unix. Il
+	n'y a que des threads en cours d'exécution : un thread parent,
 	et plusieurs threads enfants ou worker qui traitent les
-	requ&ecirc;tes.</p>
+	requêtes.</p>
 
-        <p>En cons&eacute;quence, les directives de gestion des "processus"
-	sont diff&eacute;rentes :</p>
+        <p>En conséquence, les directives de gestion des "processus"
+	sont différentes :</p>
 
         <p><directive
 	module="mpm_common">MaxConnectionsPerChild</directive> - comme sous
-	Unix, cette directive contr&ocirc;le le nombre maximum de connexions
-	qu'un worker thread peut traiter avant de s'arr&ecirc;ter. Avec la
-	valeur par d&eacute;faut <code>MaxConnectionsPerChild 0</code>,
-	le thread va pouvoir traiter un nombre illimit&eacute; de requ&ecirc;tes.
-	Cette valeur est recommand&eacute;e sous Netware, &agrave; moins que vous
-	n'ayez des raisons particuli&egrave;res de la modifier.</p>
+	Unix, cette directive contrôle le nombre maximum de connexions
+	qu'un worker thread peut traiter avant de s'arrêter. Avec la
+	valeur par défaut <code>MaxConnectionsPerChild 0</code>,
+	le thread va pouvoir traiter un nombre illimité de requêtes.
+	Cette valeur est recommandée sous Netware, à moins que vous
+	n'ayez des raisons particulières de la modifier.</p>
 
         <p><directive module="mpm_common">StartThreads</directive> -
 	Cette directive indique au serveur le nombre de threads qu'il
-	doit lancer au d&eacute;marrage. Il est recommand&eacute; de conserver la
-	valeur par d&eacute;faut <code>StartThreads 50</code>.</p>
+	doit lancer au démarrage. Il est recommandé de conserver la
+	valeur par défaut <code>StartThreads 50</code>.</p>
 
         <p><directive module="mpm_common">MinSpareThreads</directive> -
 	Cette directive indique au serveur le nombre de worker threads
 	additionnels qu'il doit lancer si le nombre de threads inactifs
-	tombe en dessous de cette valeur. Il est recommand&eacute; de conserver la
-	valeur par d&eacute;faut <code>MinSpareThreads 10</code>.</p>
+	tombe en dessous de cette valeur. Il est recommandé de conserver la
+	valeur par défaut <code>MinSpareThreads 10</code>.</p>
 
         <p><directive module="mpm_common">MaxSpareThreads</directive> -
-	Cette directive indique au serveur qu'il doit commencer &agrave;
-	arr&ecirc;ter des worker threads si le nombre de threads inactifs
-	passe au dessus de cette valeur. Il est recommand&eacute; de conserver
-	la valeur par d&eacute;faut <code>MaxSpareThreads 100</code>.</p>
+	Cette directive indique au serveur qu'il doit commencer à
+	arrêter des worker threads si le nombre de threads inactifs
+	passe au dessus de cette valeur. Il est recommandé de conserver
+	la valeur par défaut <code>MaxSpareThreads 100</code>.</p>
 
         <p><directive module="mpm_netware">MaxThreads</directive> -
 	Cette directive impose un nombre maximum de worker threads. Il
-	est recommand&eacute; de conserver la valeur par d&eacute;faut
+	est recommandé de conserver la valeur par défaut
 	<code>ThreadsPerChild 250</code>.</p>
 
         <p><directive module="mpm_common">ThreadStackSize</directive> -
-	Cette directive indique au serveur la taille de la pile &agrave;
-	utiliser pour un worker thread individuel. Il est recommand&eacute; de
-	conserver la valeur par d&eacute;faut <code>ThreadStackSize
+	Cette directive indique au serveur la taille de la pile à
+	utiliser pour un worker thread individuel. Il est recommandé de
+	conserver la valeur par défaut <code>ThreadStackSize
 	65536</code>.</p>
       </li>
 
@@ -423,17 +423,17 @@
 	arguments ne doivent pas utiliser des noms de fichiers Unix,
 	mais des noms de fichiers Netware. Cependant, comme Apache
 	utilise des noms de style Unix en interne, on doit utiliser des
-	slashes et non des antislashes. Il est recommand&eacute; de pr&eacute;fixer
+	slashes et non des antislashes. Il est recommandé de préfixer
 	tous les chemins de fichiers racines par un nom de volume. Si ce
 	dernier est omis, Apache supposera que le volume est
-	<code>SYS:</code>, ce qui n'est pas forc&eacute;ment correct.</p>
+	<code>SYS:</code>, ce qui n'est pas forcément correct.</p>
       </li>
 
       <li>
-        <p>Apache pour Netware a la possibilit&eacute; de charger des modules
-	en cours d'ex&eacute;cution, sans avoir &agrave; recompiler le serveur. Si
-	Apache est compil&eacute; avec les options par d&eacute;faut, il va installer
-	de nombreux modules optionnels dans le r&eacute;pertoire
+        <p>Apache pour Netware a la possibilité de charger des modules
+	en cours d'exécution, sans avoir à recompiler le serveur. Si
+	Apache est compilé avec les options par défaut, il va installer
+	de nombreux modules optionnels dans le répertoire
 	<code>\Apache2\modules</code>. Pour les activer, ou en activer
 	d'autres, on doit utiliser la directive <directive
         module="mod_so">LoadModule</directive>. Par exemple, pour
@@ -443,36 +443,36 @@
           LoadModule status_module modules/status.nlm
         </example>
 
-        <p>Des informations &agrave; propos de la  <a
-        href="../mod/mod_so.html#creating">cr&eacute;ation de modules
+        <p>Des informations à propos de la  <a
+        href="../mod/mod_so.html#creating">création de modules
 	chargeables</a> sont aussi disponibles.</p>
       </li>
     </ul>
 
     <section id="use-add">
 
-      <title>Autres directives sp&eacute;cifiques &agrave; Netware :</title>
+      <title>Autres directives spécifiques à Netware :</title>
 
       <ul>
         <li><directive module="core">CGIMapExtension</directive> -
-        Cette directive associe une extension de fichier CGI &agrave; un
-	interpr&eacute;teur de script.</li>
+        Cette directive associe une extension de fichier CGI à un
+	interpréteur de script.</li>
       </ul>
       <ul>
         <li><directive module="mod_nw_ssl">SecureListen</directive> -
         Cette directive active le chiffrement SSL pour un port
-	sp&eacute;cifique.</li>
+	spécifique.</li>
       </ul>
       <ul>
         <li><directive module="mod_nw_ssl">NWSSLTrustedCerts</directive> -
         Cette directive permet d'ajouter des certificats de confiance
-	pouvant &ecirc;tre utilis&eacute;s pour cr&eacute;er des connexions s&eacute;curis&eacute;es vers
+	pouvant être utilisés pour créer des connexions sécurisées vers
 	des serveurs mandataires.</li>
       </ul>
       <ul>
         <li><directive module="mod_nw_ssl">NWSSLUpgradeable</directive> -
         Cette directive permet de faire passer en SSL une connexion
-	initialis&eacute;e sur les adresse IP et Port sp&eacute;cifi&eacute;s.</li>
+	initialisée sur les adresse IP et Port spécifiés.</li>
       </ul>
 
     </section>
@@ -483,54 +483,54 @@
 
     <title>Compilation d'Apache pour NetWare</title>
 
-    <p>La compilation d'Apache n&eacute;cessite MetroWerks CodeWarrior 6.x ou
-    sup&eacute;rieur. Une fois compil&eacute;, Apache peut &ecirc;tre install&eacute; &agrave; la racine
-    de tout volume Netware. Le r&eacute;pertoire d'installation par d&eacute;faut est
+    <p>La compilation d'Apache nécessite MetroWerks CodeWarrior 6.x ou
+    supérieur. Une fois compilé, Apache peut être installé à la racine
+    de tout volume Netware. Le répertoire d'installation par défaut est
     <code>sys:/Apache2</code>.</p>
 
-    <p>Avant de d&eacute;marrer Apache, vous devez remplir le r&eacute;pertoire
+    <p>Avant de démarrer Apache, vous devez remplir le répertoire
     <code>conf</code>. Copiez le fichier <code>HTTPD-STD.CONF</code>
-    depuis le r&eacute;pertoire <code>conf</code> de la distribution et
+    depuis le répertoire <code>conf</code> de la distribution et
     renommez-le en <code>HTTPD.CONF</code>. Editez le fichier
-    <code>HTTPD.CONF</code> en recherchant les rep&egrave;res
+    <code>HTTPD.CONF</code> en recherchant les repères
     <code>@@Value@@</code>, et remplacez ces derniers par la valeur
-    appropri&eacute;e. Copiez de m&ecirc;me les fichiers <code>conf/magic</code> et
+    appropriée. Copiez de même les fichiers <code>conf/magic</code> et
     <code>conf/mime.types</code>. Vous pouvez aussi construire une
-    distribution compl&egrave;te en ajoutant le mot-cl&eacute; <code>install</code>
+    distribution complète en ajoutant le mot-clé <code>install</code>
     lors de l'invocation des makefiles.</p>
 
     <section id="comp-req">
 
-      <title>Pr&eacute;requis :</title>
+      <title>Prérequis :</title>
 
-      <p>Les outils de d&eacute;veloppement suivants sont n&eacute;cessaires pour la
+      <p>Les outils de développement suivants sont nécessaires pour la
       compilation d'Apache pour Netware :</p>
 
       <ul>
-        <li>Metrowerks CodeWarrior 6.0 ou sup&eacute;rieur avec le <a
+        <li>Metrowerks CodeWarrior 6.0 ou supérieur avec le <a
 	href="http://developer.novell.com/ndk/cwpdk.htm">NetWare PDK
-	3.0</a> ou sup&eacute;rieur.</li>
+	3.0</a> ou supérieur.</li>
 
         <li>Les <a
-	href="http://developer.novell.com/ndk/libc.htm">Biblioth&egrave;ques
+	href="http://developer.novell.com/ndk/libc.htm">Bibliothèques
 	Netware pour C (LibC)</a></li>
 
         <li>Les <a
-	href="http://developer.novell.com/ndk/cldap.htm">Biblioth&egrave;ques
+	href="http://developer.novell.com/ndk/cldap.htm">Bibliothèques
 	LDAP pour C</a></li>
 
         <li>Le <a href="http://www.gzip.org/zlib/">Code source de la
-	biblioth&egrave;que de compression ZLIB</a></li>
+	bibliothèque de compression ZLIB</a></li>
 
-        <li>L'utilitaire AWK (awk, gawk ou similaire). AWK peut &ecirc;tre
-	t&eacute;l&eacute;charg&eacute; &agrave; <a
+        <li>L'utilitaire AWK (awk, gawk ou similaire). AWK peut être
+	téléchargé à <a
 	href="http://developer.novell.com/ndk/apache.htm"
 	>http://developer.novell.com/ndk/apache.htm</a>.
 	L'utilitaire doit se trouver dans votre chemin windows et avoir
 	pour nom <code>awk.exe</code>.</li>
 
         <li>Pour utiliser les makefiles, vous devez disposer de GNU make
-	version 3.78.1 (GMake) disponible &agrave; <a
+	version 3.78.1 (GMake) disponible à <a
 	href="http://developer.novell.com/ndk/apache.htm"
 	>http://developer.novell.com/ndk/apache.htm</a>.</li>
       </ul>
@@ -543,69 +543,69 @@
       :</title>
 
       <ul>
-        <li>D&eacute;finissez la variable d'environnement
-	<code>NOVELLLIBC</code> avec le chemin des biblioth&egrave;ques Netware
+        <li>Définissez la variable d'environnement
+	<code>NOVELLLIBC</code> avec le chemin des bibliothèques Netware
 	pour C SDK ; par exemple : <example>Set
 	NOVELLLIBC=c:\novell\ndk\libc</example></li>
 
-        <li>D&eacute;finissez la variable d'environnement
+        <li>Définissez la variable d'environnement
 	<code>METROWERKS</code> avec le chemin de votre compilateur
 	Metrowerks CodeWarrior ; par exemple : <example>Set
 	METROWERKS=C:\Program Files\Metrowerks\CodeWarrior</example>. Si
-	vous l'avez install&eacute; dans le r&eacute;pertoire par d&eacute;faut
+	vous l'avez installé dans le répertoire par défaut
 	<code>C:\Program Files\Metrowerks\CodeWarrior</code>, vous
-	n'avez pas besoin de d&eacute;finir cette variable.</li>
+	n'avez pas besoin de définir cette variable.</li>
 
-        <li>D&eacute;finissez la variable d'environnement <code>LDAPSDK</code>
-	avec le chemin des biblioth&egrave;ques LDAP pour C ; par exemple :
+        <li>Définissez la variable d'environnement <code>LDAPSDK</code>
+	avec le chemin des bibliothèques LDAP pour C ; par exemple :
 	<example>Set
 	LDAPSDK=c:\Novell\NDK\cldapsdk\NetWare\libc</example></li>
 
-        <li>D&eacute;finissez la variable d'environnement <code>ZLIBSDK</code>
-	avec le chemin du code source de la biblioth&egrave;que Zlib ; par
+        <li>Définissez la variable d'environnement <code>ZLIBSDK</code>
+	avec le chemin du code source de la bibliothèque Zlib ; par
 	exemple : <example>Set ZLIBSDK=D:\NOVELL\zlib</example></li>
 
-	<li>D&eacute;finissez la variable d'environnement <code>PCRESDK</code>
-	avec le chemin d'installation du code source de la biblioth&egrave;que
+	<li>Définissez la variable d'environnement <code>PCRESDK</code>
+	avec le chemin d'installation du code source de la bibliothèque
 	PCRE ; par exemple :
 	<example>Set PCRESDK=D:\NOVELL\pcre</example>
 	</li>
 
-        <li>D&eacute;finissez la variable d'environnement <code>AP_WORK</code>
+        <li>Définissez la variable d'environnement <code>AP_WORK</code>
 	avec le chemin du code source de <code>httpd</code>.
 	<example>Set AP_WORK=D:\httpd-2.0.x</example></li>
 
-        <li>D&eacute;finissez la variable d'environnement <code>APR_WORK</code>
-	avec le chemin du code source d'<code>apr</code> ; en g&eacute;n&eacute;ral
+        <li>Définissez la variable d'environnement <code>APR_WORK</code>
+	avec le chemin du code source d'<code>apr</code> ; en général
 	<code>\httpd\srclib\apr</code>, mais le projet APR peut se
-	trouver en dehors de la structure des r&eacute;pertoires de httpd.
+	trouver en dehors de la structure des répertoires de httpd.
 	<example>Set APR_WORK=D:\apr-1.x.x</example></li>
 
-        <li>D&eacute;finissez la variable d'environnement <code>APU_WORK</code>
+        <li>Définissez la variable d'environnement <code>APU_WORK</code>
 	avec le chemin du code source d'<code>apr-util</code> ; en
-	g&eacute;n&eacute;ral <code>\httpd\srclib\apr-util</code>, mais le projet
+	général <code>\httpd\srclib\apr-util</code>, mais le projet
 	APR-UTIL peut se trouver en dehors de la structure des
-	r&eacute;pertoires de httpd. <example>Set
+	répertoires de httpd. <example>Set
 	APU_WORK=D:\apr-util-1.x.x</example></li>
 
-        <li>V&eacute;rifiez que les chemins des utilitaires AWK et GNU make
-	(<code>gmake.exe</code>) ont bien &eacute;t&eacute; inclus dans la variable
-	d'environnement syst&egrave;me <code>PATH</code>.</li>
+        <li>Vérifiez que les chemins des utilitaires AWK et GNU make
+	(<code>gmake.exe</code>) ont bien été inclus dans la variable
+	d'environnement système <code>PATH</code>.</li>
 
-        <li>T&eacute;l&eacute;chargez le code source et d&eacute;compressez-le dans un
-	r&eacute;pertoire de votre choix sur votre station de travail.</li>
+        <li>Téléchargez le code source et décompressez-le dans un
+	répertoire de votre choix sur votre station de travail.</li>
 
-        <li>Positionnez-vous dans le r&eacute;pertoire <code>\httpd-2.0</code>
-	et compilez les utilitaires pr&eacute;compil&eacute;s &agrave; l'aide de la commande
+        <li>Positionnez-vous dans le répertoire <code>\httpd-2.0</code>
+	et compilez les utilitaires précompilés à l'aide de la commande
 	"<code>gmake -f nwgnumakefile prebuild</code>". Cette cible va
-	cr&eacute;er le r&eacute;pertoire <code>\httpd-2.0\nwprebuild</code>, et y
-	copier tous les utilitaires n&eacute;cessaires au franchissement des
-	&eacute;tapes suivantes de la compilation.</li>
+	créer le répertoire <code>\httpd-2.0\nwprebuild</code>, et y
+	copier tous les utilitaires nécessaires au franchissement des
+	étapes suivantes de la compilation.</li>
 
         <li>Copiez les fichiers
 	<code>\httpd-2.0\nwprebuild\GENCHARS.nlm</code> et
 	<code>\httpd-2.0\nwprebuild\DFTABLES.nlm</code> vers le volume
-	<code>SYS:</code> d'un serveur Netware et ex&eacute;cutez-les &agrave; l'aide
+	<code>SYS:</code> d'un serveur Netware et exécutez-les à l'aide
 	des commandes suivantes :
           <example>
             SYS:\genchars &gt; sys:\test_char.h<br />
@@ -614,14 +614,14 @@
         </li>
 
         <li>Copiez les fichiers <code>test_char.h</code> et
-	<code>chartables.c</code> vers le r&eacute;pertoire
-	<code>\httpd-2.0\os\netware</code> de la machine o&ugrave; s'effectue
+	<code>chartables.c</code> vers le répertoire
+	<code>\httpd-2.0\os\netware</code> de la machine où s'effectue
 	la compilation.</li>
 
-        <li>Positionnez-vous dans le r&eacute;pertoire <code>\httpd-2.0</code>
-	et compilez Apache &agrave; l'aide de la commande "<code>gmake -f
-	nwgnumakefile</code>". Vous pouvez cr&eacute;er un r&eacute;pertoire pour la
-	distribution en ajoutant le param&egrave;tre install &agrave; la commande ;
+        <li>Positionnez-vous dans le répertoire <code>\httpd-2.0</code>
+	et compilez Apache à l'aide de la commande "<code>gmake -f
+	nwgnumakefile</code>". Vous pouvez créer un répertoire pour la
+	distribution en ajoutant le paramètre install à la commande ;
 	par exemple :
         <example>gmake -f nwgnumakefile install</example>
         </li>
@@ -631,56 +631,56 @@
 
     <section id="comp-add">
 
-      <title>Options de make suppl&eacute;mentaires</title>
+      <title>Options de make supplémentaires</title>
 
       <ul>
         <li><code>gmake -f nwgnumakefile</code><p>Compile les versions
 	de distribution de tous les binaires et les copie dans un
-	r&eacute;pertoire <code>\release</code>.</p></li>
+	répertoire <code>\release</code>.</p></li>
 
         <li><code>gmake -f nwgnumakefile DEBUG=1</code><p>Compile les versions
-	de d&eacute;bogage de tous les binaires et les copie dans un
-	r&eacute;pertoire <code>\debug</code>.</p></li>
+	de débogage de tous les binaires et les copie dans un
+	répertoire <code>\debug</code>.</p></li>
 
-        <li><code>gmake -f nwgnumakefile install</code><p>Cr&eacute;e une
-	distribution compl&egrave;te d'Apache avec les binaires, la
-	documentation et les fichiers support dans un r&eacute;pertoire
+        <li><code>gmake -f nwgnumakefile install</code><p>Crée une
+	distribution complète d'Apache avec les binaires, la
+	documentation et les fichiers support dans un répertoire
 	<code>\dist\Apache2</code>.</p></li>
 
         <li><code>gmake -f nwgnumakefile prebuild</code><p>Compile tous
-	les utilitaires pr&eacute;compil&eacute;s et les copie dans le r&eacute;pertoire
+	les utilitaires précompilés et les copie dans le répertoire
 	<code>\nwprebuild</code>.</p></li>
 
-        <li><code>gmake -f nwgnumakefile installdev</code><p>M&ecirc;me effet
-	que l'option install, mais en plus, les r&eacute;pertoires
-	<code>\lib</code> et <code>\include</code> sont cr&eacute;&eacute;s dans le
-	r&eacute;pertoire de destination, et les en-t&ecirc;tes et fichiers d'import
-	y sont copi&eacute;s.</p></li>
+        <li><code>gmake -f nwgnumakefile installdev</code><p>Même effet
+	que l'option install, mais en plus, les répertoires
+	<code>\lib</code> et <code>\include</code> sont créés dans le
+	répertoire de destination, et les en-têtes et fichiers d'import
+	y sont copiés.</p></li>
 
         <li><code>gmake -f nwgnumakefile clean</code><p>Supprime tous
 	les fichiers objets et les binaires de la zone de compilation
 	<code>\release.o</code>, ou <code>\debug.o</code> si
-	<code>DEBUG</code> a &eacute;t&eacute; d&eacute;fini.</p></li>
+	<code>DEBUG</code> a été défini.</p></li>
 
-        <li><code>gmake -f nwgnumakefile clobber_all</code><p>M&ecirc;me effet
-	que clean, mais en plus, le r&eacute;pertoire de la distribution est
-	supprim&eacute; s'il existe.</p></li>
+        <li><code>gmake -f nwgnumakefile clobber_all</code><p>Même effet
+	que clean, mais en plus, le répertoire de la distribution est
+	supprimé s'il existe.</p></li>
       </ul>
 
     </section>
 
     <section id="comp-add-env">
 
-      <title>Variables d'environnement suppl&eacute;mentaires</title>
+      <title>Variables d'environnement supplémentaires</title>
 
       <ul>
-        <li>Pour compiler tous les modules exp&eacute;rimentaux, d&eacute;finissez la
+        <li>Pour compiler tous les modules expérimentaux, définissez la
 	variable d'environnement <code>EXPERIMENTAL</code> :
         <example>Set EXPERIMENTAL=1</example>
         </li>
 
         <li>Pour compiler Apache en utilisant les sockets de style BSD
-	standard, plut&ocirc;t que Winsock, d&eacute;finissez la variable
+	standard, plutôt que Winsock, définissez la variable
 	d'environnement <code>USE_STDSOCKETS</code> :
         <example>Set USE_STDSOCKETS=1</example>
         </li>
@@ -694,48 +694,48 @@
       <title>Compilation de mod_ssl pour la plate-forme Netware</title>
 
       <p>Pour fournir les services SSL, Apache pour Netware utilise par
-      d&eacute;faut le module int&eacute;gr&eacute; <module>mod_nw_ssl</module>. Ce module ne
-      fournit que les services SSL impl&eacute;ment&eacute;s par le syst&egrave;me
-      d'exploitation Netware lui-m&ecirc;me pour g&eacute;rer tous les chiffrements
-      pour un port donn&eacute;. Cependant, on peut aussi utiliser mod_ssl de
-      la m&ecirc;me mani&egrave;re que sur les autres plate-formes.</p>
+      défaut le module intégré <module>mod_nw_ssl</module>. Ce module ne
+      fournit que les services SSL implémentés par le système
+      d'exploitation Netware lui-même pour gérer tous les chiffrements
+      pour un port donné. Cependant, on peut aussi utiliser mod_ssl de
+      la même manière que sur les autres plate-formes.</p>
 
       <p>Afin de pouvoir compiler mod_ssl pour la plate-forme Netware,
-      les biblioth&egrave;ques OpenSSL doivent &ecirc;tre disponibles. Elles peuvent
-      &ecirc;tre install&eacute;es de la mani&egrave;re suivante :</p>
+      les bibliothèques OpenSSL doivent être disponibles. Elles peuvent
+      être installées de la manière suivante :</p>
 
       <ul>
-          <li>T&eacute;l&eacute;chargez la derni&egrave;re distribution du code source
+          <li>Téléchargez la dernière distribution du code source
 	  d'OpenSSL 0.9.8 depuis la page <a
 	  href="http://www.openssl.org/source/">OpenSSL Source</a> (les
-	  versions 0.9.7 doivent &ecirc;tre patch&eacute;es, et ne sont donc pas
-	  recommand&eacute;es).</li>
+	  versions 0.9.7 doivent être patchées, et ne sont donc pas
+	  recommandées).</li>
 
           <li>Editez le fichier <code>NetWare/set_env.bat</code>, et
-	  effectuez toutes modifications n&eacute;cessaires des chemins des
+	  effectuez toutes modifications nécessaires des chemins des
 	  outils et utilitaires en fonction de votre environnement de
-	  d&eacute;veloppement.</li>
+	  développement.</li>
 
-          <li>Ex&eacute;cutez les scripts suivants depuis la racine du
-	  r&eacute;pertoire des sources d'OpenSSL :
+          <li>Exécutez les scripts suivants depuis la racine du
+	  répertoire des sources d'OpenSSL :
           <example>
               Netware\set_env netware-libc<br />
               Netware\build netware-libc
           </example>
           Pour des raisons de performances, vous devez activer la
-	  compilation avec le code ASM. T&eacute;l&eacute;charger NASM depuis le <a
+	  compilation avec le code ASM. Télécharger NASM depuis le <a
 	  href="http://nasm.sourceforge.net/">site SF</a>. Configurez
 	  ensuite OpenSSL pour utiliser le code ASM :
           <example>
               Netware\build netware-libc nw-nasm enable-mdc2 enable-md5
           </example>
           Attention : n'utilisez pas l'Assembleur CodeWarrior - il
-	  produit un code de mauvaise qualit&eacute; !</li>
+	  produit un code de mauvaise qualité !</li>
 
-          <li>Avant de compiler Apache, d&eacute;finissez la variable
+          <li>Avant de compiler Apache, définissez la variable
 	  d'environnement <code>OSSLSDK</code> avec le chemin absolu de
-	  la racine du r&eacute;pertoire du code source d'openssl, et
-	  d&eacute;finissez WITH_MOD_SSL &agrave; 1.
+	  la racine du répertoire du code source d'openssl, et
+	  définissez WITH_MOD_SSL à 1.
           <example>
               Set OSSLSDK=d:\openssl-0.9.8x<br />
               Set WITH_MOD_SSL=1
