@@ -36,6 +36,17 @@
     web sites running on a single server, via <a href="name-based.html">name-based</a> or <a href="ip-based.html">IP-based</a> virtual hosts.
     </p>
 
+    <div class="note"><h3>Context note</h3><p>Virtual hosts must be specified in 
+    global scope.  Third-party distributions of the server may use an
+    alternate initial configuration file or multiple configuration files
+    that all accept directives with global scope.  These distributions may
+    also suggest a convention for specifying virtual hosts in their own individual
+    files included into the global configuration via the
+    <code class="directive"><a href="../mod/core.html#include">Include</a></code> directive. Further details
+    may be provided in a third-party README, such as 
+    /usr/share/doc/apache2/README.Debian.gz on Debian and Ubuntu based 
+    distributions.</p>
+    </div>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#purename">Running several name-based web
     sites on a single IP address.</a></li>
