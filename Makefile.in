@@ -332,6 +332,7 @@ check-conf:
 	                    -e 's#@@Port@@#$(PORT)#g' \
 	                    -e 's#@@SSLPort@@#$(SSLPORT)#g' \
 	                    -e 's#$(prefix)#$(top_builddir)/check#g' \
+	                    -e 's/^#ServerName /ServerName /' \
 	                    -e '/@@LoadModule@@/d' \
 	                    < $$i; \
 	            else \
@@ -340,6 +341,7 @@ check-conf:
 	                    -e 's#@@Port@@#$(PORT)#g' \
 	                    -e 's#@@SSLPort@@#$(SSLPORT)#g' \
 	                    -e 's#$(prefix)#$(top_builddir)/check#g' \
+	                    -e 's/^#ServerName /ServerName /' \
 	                    -e 'p' \
 	                    < $$i; \
 	                if echo " $(DSO_MODULES) "|$(EGREP) " cgi " > /dev/null ; then \
@@ -385,6 +387,7 @@ check-conf:
 	                    -e 's#@@Port@@#$(PORT)#g' \
 	                    -e 's#@@SSLPort@@#$(SSLPORT)#g' \
 	                    -e 's#$(prefix)#$(top_builddir)/check#g' \
+	                    -e 's/^#ServerName /ServerName /' \
 	                    < $$i; \
 	            fi \
 	        ) > $(top_builddir)/check/conf/$$i; \
