@@ -187,11 +187,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: jim, jorton,
      jailletc36: doc should also be back-ported (r1779091 + r1779699)
 
-  *) mod_auth_digest: Use anonymous shm by default, fall back on name-based
-     trunk patch: http://svn.apache.org/r1684636
-     2.4.x patch: trunk works (needs CHANGES, ref PR 54622)
-     +1: jorton, ylavic, jim
-
   *) mod_ssl: work around leaks on (graceful) restart.
      trunk patch: http://svn.apache.org/r1781187
                   http://svn.apache.org/r1781190
