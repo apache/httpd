@@ -163,7 +163,7 @@ RewriteRule "(.*)"           "${lowercase:$1}" [R,L]</pre>
       runtime, without recompiling the server. If Apache is compiled
       normally, it will install a number of optional modules in the
       <code>\Apache2.5\modules</code> directory. To activate these or
-      other modules, the new <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code>
+      other modules, the <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code>
       directive must be used. For example, to activate the status
       module, use the following (in addition to the status-activating
       directives in <code>access.conf</code>):</p>
