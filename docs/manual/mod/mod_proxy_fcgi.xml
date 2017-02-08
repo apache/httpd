@@ -220,7 +220,7 @@ what some generic FastCGI applications would read as their script input, but
 PHP-FPM would strip the prefix then remember it was talking to Apache.  In
 2.4.21 through 2.4.25, this prefix was automatically stripped by the server,
 breaking the ability of PHP-FPM to detect and interoperate with Apache in some
-scenarios.</p> 
+scenarios.</p>
 </usage>
 </directivesynopsis>
 
@@ -250,26 +250,26 @@ output they directly produce.</p>
   <li>PATH_TRANSLATED</li>
 </ul>
 
-<p>This directive allows the environment variables above, or any others of 
+<p>This directive allows the environment variables above, or any others of
 interest, to be overridden.  This directive is evaluated after the initial
 values for these variables are set, so they can be used as input into both
 the condition expressions and value expressions.</p>
 <p>Parameter syntax:</p>
 <dl>
-<dt>conditional-expression</dt> 
+<dt>conditional-expression</dt>
 <dd>Specifies an expression that controls whether the environmen variable that
-   follows will be modified.  For information on the expression syntax, see 
-   the examples that follow or the full specification at the 
+   follows will be modified.  For information on the expression syntax, see
+   the examples that follow or the full specification at the
    <a href="../expr.html">ap_expr</a> documentation.
    </dd>
-<dt>environment-variable-name</dt> 
+<dt>environment-variable-name</dt>
 <dd> Specifies the CGI environment variable to change,
    such as PATH_INFO.</dd>
 <dt>value-expression</dt>
 <dd>Specifies the replacement value for the preceding environment variable.  Backreferences, such as "$1",
 can be included from regular expression captures in <var>conditional-expression</var></dd>
 </dl>
-  
+
 <example>
 # A basic, unconditional override<br/>
 ProxyFCGISetEnvIf "true" PATH_INFO "/example"<br/>
