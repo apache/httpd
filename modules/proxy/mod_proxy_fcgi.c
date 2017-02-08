@@ -84,45 +84,45 @@ static int proxy_fcgi_canon(request_rec *r, char *url)
                   "set r->filename to %s", r->filename);
 
     rconf = ap_get_module_config(r->request_config, &proxy_fcgi_module);
-    if (rconf == NULL) { 
+    if (rconf == NULL) {
         rconf = apr_pcalloc(r->pool, sizeof(fcgi_req_config_t));
         ap_set_module_config(r->request_config, &proxy_fcgi_module, rconf);
     }
 
     if (NULL != (pathinfo_type = apr_table_get(r->subprocess_env, "proxy-fcgi-pathinfo"))) {
         /* It has to be on disk for this to work */
-        if (!strcasecmp(pathinfo_type, "full")) { 
+        if (!strcasecmp(pathinfo_type, "full")) {
             rconf->need_dirwalk = 1;
             ap_unescape_url_keep2f(path, 0);
         }
-        else if (!strcasecmp(pathinfo_type, "first-dot")) { 
+        else if (!strcasecmp(pathinfo_type, "first-dot")) {
             char *split = ap_strchr(path, '.');
-            if (split) { 
+            if (split) {
                 char *slash = ap_strchr(split, '/');
-                if (slash) { 
+                if (slash) {
                     r->path_info = apr_pstrdup(r->pool, slash);
                     ap_unescape_url_keep2f(r->path_info, 0);
                     *slash = '\0'; /* truncate path */
                 }
             }
         }
-        else if (!strcasecmp(pathinfo_type, "last-dot")) { 
+        else if (!strcasecmp(pathinfo_type, "last-dot")) {
             char *split = ap_strrchr(path, '.');
-            if (split) { 
+            if (split) {
                 char *slash = ap_strchr(split, '/');
-                if (slash) { 
+                if (slash) {
                     r->path_info = apr_pstrdup(r->pool, slash);
                     ap_unescape_url_keep2f(r->path_info, 0);
                     *slash = '\0'; /* truncate path */
                 }
             }
         }
-        else { 
+        else {
             /* before proxy-fcgi-pathinfo had multi-values. This requires the
              * the FCGI server to fixup PATH_INFO because it's the entire path
              */
             r->path_info = apr_pstrcat(r->pool, "/", path, NULL);
-            if (!strcasecmp(pathinfo_type, "unescape")) { 
+            if (!strcasecmp(pathinfo_type, "unescape")) {
                 ap_unescape_url_keep2f(r->path_info, 0);
             }
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01061)
@@ -255,8 +255,8 @@ static apr_status_t send_environment(proxy_conn_rec *conn, request_rec *r,
     int next_elem, starting_elem;
     fcgi_req_config_t *rconf = ap_get_module_config(r->request_config, &proxy_fcgi_module);
 
-    if (rconf) { 
-       if (rconf->need_dirwalk) { 
+    if (rconf) {
+       if (rconf->need_dirwalk) {
           ap_directory_walk(r);
        }
     }
@@ -272,9 +272,9 @@ static apr_status_t send_environment(proxy_conn_rec *conn, request_rec *r,
             newfname = apr_pstrdup(r->pool, r->filename+13);
         }
         /* Query string in environment only */
-        if (newfname && r->args && *r->args) { 
+        if (newfname && r->args && *r->args) {
             char *qs = strrchr(newfname, '?');
-            if (qs && !strcmp(qs+1, r->args)) { 
+            if (qs && !strcmp(qs+1, r->args)) {
                 *qs = '\0';
             }
         }
@@ -287,7 +287,7 @@ static apr_status_t send_environment(proxy_conn_rec *conn, request_rec *r,
 
     ap_add_common_vars(r);
     ap_add_cgi_vars(r);
- 
+
     /* XXX are there any FastCGI specific env vars we need to send? */
 
     /* XXX mod_cgi/mod_cgid use ap_create_environment here, which fills in
@@ -301,7 +301,7 @@ static apr_status_t send_environment(proxy_conn_rec *conn, request_rec *r,
 
     if (APLOGrtrace8(r)) {
         int i;
-        
+
         for (i = 0; i < envarr->nelts; ++i) {
             ap_log_rerror(APLOG_MARK, APLOG_TRACE8, 0, r, APLOGNO(01062)
                           "sending env var '%s' value '%s'",
@@ -861,7 +861,7 @@ static int fcgi_do_request(apr_pool_t *p, request_rec *r,
          * sending the response, don't return a HTTP_SERVICE_UNAVAILABLE, since
          * this is not a backend problem. */
         if (r->connection->aborted) {
-            ap_log_rerror(APLOG_MARK, APLOG_TRACE1, rv, r, 
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE1, rv, r,
                           "The client aborted the connection.");
             conn->close = 1;
             return OK;
@@ -943,12 +943,12 @@ static int proxy_fcgi_handler(request_rec *r, proxy_worker *worker,
     }
 
     /* This scheme handler does not reuse connections by default, to
-     * avoid tying up a fastcgi that isn't expecting to work on 
+     * avoid tying up a fastcgi that isn't expecting to work on
      * parallel requests.  But if the user went out of their way to
      * type the default value of disablereuse=off, we'll allow it.
-     */  
+     */
     backend->close = 1;
-    if (worker->s->disablereuse_set && !worker->s->disablereuse) { 
+    if (worker->s->disablereuse_set && !worker->s->disablereuse) {
         backend->close = 0;
     }
 
