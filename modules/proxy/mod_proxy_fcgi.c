@@ -389,7 +389,7 @@ static apr_status_t send_environment(proxy_conn_rec *conn, request_rec *r,
         }
         apr_table_setn(r->subprocess_env, "SCRIPT_NAME", pend);
         ap_log_rerror(APLOG_MARK, APLOG_TRACE4, 0, r,
-                      "fpm:virtual_script: Modified SCRIPT_NAME to: %s,
+                      "fpm:virtual_script: Modified SCRIPT_NAME to: %s",
                       pend);
     }
 
