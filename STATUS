@@ -160,7 +160,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_proxy_fcgi: Return HTTP 504 rather than 503 in case of proxy timeout.
      trunk patch: http://svn.apache.org/r1775858
      2.4 patch: trunk works (modulo CHANGES)
-     +1: elukey
+     +1: elukey, jim
 
   *) mod_remoteip: Add PROXY protocol support
      trunk patch: http://svn.apache.org/r1776575
@@ -190,26 +190,26 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_auth_digest: Use anonymous shm by default, fall back on name-based
      trunk patch: http://svn.apache.org/r1684636
      2.4.x patch: trunk works (needs CHANGES, ref PR 54622)
-     +1: jorton, ylavic
+     +1: jorton, ylavic, jim
 
   *) mod_ssl: work around leaks on (graceful) restart.
      trunk patch: http://svn.apache.org/r1781187
                   http://svn.apache.org/r1781190
                   http://svn.apache.org/r1781312
      2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-mod_ssl-restart_leaks-v2.patch
-     +1: ylavic
+     +1: ylavic, jim
 
   *) mod_proxy_hcheck: Ensure thread-safety when concurrent healthchecks are
      in use (ProxyHCTPsize > 0).  PR 60071.
      trunk patch: http://svn.apache.org/r1779573
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic
+     +1: ylavic, jim
 
   *) mod_proxy_hcheck: Don't validate timed out responses.
      trunk patch: http://svn.apache.org/r1779574
                   http://svn.apache.org/r1779623
      2.4.x patch: trunk works *after r1779573 above* (modulo CHANGES)
-     +1: ylavic
+     +1: ylavic, jim
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
