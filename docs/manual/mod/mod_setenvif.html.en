@@ -153,8 +153,8 @@ SetEnvIfNoCase User-Agent Robot is_a_robot</pre>
 </table>
     <p>The <code class="directive">SetEnvIf</code> directive defines
     environment variables based on attributes of the request. The
-    <em>attribute</em> specified in the first argument can be one of four
-    things:</p>
+    <em>attribute</em> specified in the first argument can be one of the
+    following things:</p>
 
 <ol>
 <li>An HTTP request header field (see <a href="http://www.rfc-editor.org/rfc/rfc2616.txt">RFC2616</a>
