@@ -177,7 +177,7 @@ static void fix_cgivars(request_rec *r, fcgi_dirconf_t *dconf)
         if (0 < (rc = ap_expr_exec_re(r, entry->cond, AP_MAX_REG_MATCH, regm, &src, &err)))  { 
             const char *val = ap_expr_str_exec_re(r, entry->subst, AP_MAX_REG_MATCH, regm, &src, &err);
             if (err) { 
-                ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO()
+                ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(03514)
                               "Error evaluating expression for replacment of %s: '%s'", 
                                entry->envname, err);
                 continue;
@@ -388,6 +388,9 @@ static apr_status_t send_environment(proxy_conn_rec *conn, request_rec *r,
             pend--;
         }
         apr_table_setn(r->subprocess_env, "SCRIPT_NAME", pend);
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE4, 0, r,
+                      "fpm:virtual_script: Modified SCRIPT_NAME to: %s,
+                      pend);
     }
 
     /* XXX are there any FastCGI specific env vars we need to send? */
