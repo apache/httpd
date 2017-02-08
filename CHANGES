@@ -2,6 +2,10 @@
 
 Changes with Apache 2.4.26
 
+  *) mod_auth_digest: Use an anonymous shared memory segment by default,
+     preventing startup failure after unclean shutdown.  PR 54622.
+     [Jan Kaluza]
+
   *) mod_filter: Fix AddOutputFilterByType with non-content-level filters.
      PR 58856. [Micha Lenk <micha lenk.info>]
  
