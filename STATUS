@@ -223,6 +223,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1782194
      2.4.x patch: http://home.apache.org/~jim/patches/mod_proxy_fcgi.patch
      +1: jim
+     covener: -0.9: new fixups in here seem risky, do we really want these?  
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
