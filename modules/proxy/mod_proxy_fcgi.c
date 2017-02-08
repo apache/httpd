@@ -22,8 +22,8 @@
 module AP_MODULE_DECLARE_DATA proxy_fcgi_module;
 
 typedef struct {
-    ap_expr_info_t *cond;   
-    ap_expr_info_t *subst;   
+    ap_expr_info_t *cond;
+    ap_expr_info_t *subst;
     const char *envname;
 } sei_entry;
 
@@ -109,45 +109,45 @@ static int proxy_fcgi_canon(request_rec *r, char *url)
                   "set r->filename to %s", r->filename);
 
     rconf = ap_get_module_config(r->request_config, &proxy_fcgi_module);
-    if (rconf == NULL) { 
+    if (rconf == NULL) {
         rconf = apr_pcalloc(r->pool, sizeof(fcgi_req_config_t));
         ap_set_module_config(r->request_config, &proxy_fcgi_module, rconf);
     }
 
     if (NULL != (pathinfo_type = apr_table_get(r->subprocess_env, "proxy-fcgi-pathinfo"))) {
         /* It has to be on disk for this to work */
-        if (!strcasecmp(pathinfo_type, "full")) { 
+        if (!strcasecmp(pathinfo_type, "full")) {
             rconf->need_dirwalk = 1;
             ap_unescape_url_keep2f(path, 0);
         }
-        else if (!strcasecmp(pathinfo_type, "first-dot")) { 
+        else if (!strcasecmp(pathinfo_type, "first-dot")) {
             char *split = ap_strchr(path, '.');
-            if (split) { 
+            if (split) {
                 char *slash = ap_strchr(split, '/');
-                if (slash) { 
+                if (slash) {
                     r->path_info = apr_pstrdup(r->pool, slash);
                     ap_unescape_url_keep2f(r->path_info, 0);
                     *slash = '\0'; /* truncate path */
                 }
             }
         }
-        else if (!strcasecmp(pathinfo_type, "last-dot")) { 
+        else if (!strcasecmp(pathinfo_type, "last-dot")) {
             char *split = ap_strrchr(path, '.');
-            if (split) { 
+            if (split) {
                 char *slash = ap_strchr(split, '/');
-                if (slash) { 
+                if (slash) {
                     r->path_info = apr_pstrdup(r->pool, slash);
                     ap_unescape_url_keep2f(r->path_info, 0);
                     *slash = '\0'; /* truncate path */
                 }
             }
         }
-        else { 
+        else {
             /* before proxy-fcgi-pathinfo had multi-values. This requires the
              * the FCGI server to fixup PATH_INFO because it's the entire path
              */
             r->path_info = apr_pstrcat(r->pool, "/", path, NULL);
-            if (!strcasecmp(pathinfo_type, "unescape")) { 
+            if (!strcasecmp(pathinfo_type, "unescape")) {
                 ap_unescape_url_keep2f(r->path_info, 0);
             }
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01061)
@@ -165,33 +165,33 @@ static int proxy_fcgi_canon(request_rec *r, char *url)
   ProxyFCGISetEnvIf "reqenv('PATH_TRANSLATED') =~ m#(/.*foo)(\d+)(.*)#" PATH_TRANSLATED "$1$3"
 */
 static void fix_cgivars(request_rec *r, fcgi_dirconf_t *dconf)
-{ 
+{
     sei_entry *entries;
-    const char *err, *src; 
+    const char *err, *src;
     int i = 0, rc = 0;
     ap_regmatch_t regm[AP_MAX_REG_MATCH];
 
     entries = (sei_entry *) dconf->env_fixups->elts;
-    for (i = 0; i < dconf->env_fixups->nelts; i++) { 
+    for (i = 0; i < dconf->env_fixups->nelts; i++) {
         sei_entry *entry = &entries[i];
-        if (0 < (rc = ap_expr_exec_re(r, entry->cond, AP_MAX_REG_MATCH, regm, &src, &err)))  { 
+        if (0 < (rc = ap_expr_exec_re(r, entry->cond, AP_MAX_REG_MATCH, regm, &src, &err)))  {
             const char *val = ap_expr_str_exec_re(r, entry->subst, AP_MAX_REG_MATCH, regm, &src, &err);
-            if (err) { 
+            if (err) {
                 ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(03514)
-                              "Error evaluating expression for replacment of %s: '%s'", 
+                              "Error evaluating expression for replacment of %s: '%s'",
                                entry->envname, err);
                 continue;
             }
-            if (APLOGrtrace4(r)) { 
+            if (APLOGrtrace4(r)) {
                 const char *oldval = apr_table_get(r->subprocess_env, entry->envname);
-                ap_log_rerror(APLOG_MARK, APLOG_TRACE4, 0, r, 
-                              "fix_cgivars: override %s from '%s' to '%s'", 
+                ap_log_rerror(APLOG_MARK, APLOG_TRACE4, 0, r,
+                              "fix_cgivars: override %s from '%s' to '%s'",
                               entry->envname, oldval, val);
-        
+
             }
             apr_table_setn(r->subprocess_env, entry->envname, val);
-        } 
-        else { 
+        }
+        else {
             ap_log_rerror(APLOG_MARK, APLOG_TRACE8, 0, r, "fix_cgivars: Condition returned %d", rc);
         }
     }
@@ -321,8 +321,8 @@ static apr_status_t send_environment(proxy_conn_rec *conn, request_rec *r,
     fcgi_req_config_t *rconf = ap_get_module_config(r->request_config, &proxy_fcgi_module);
     fcgi_dirconf_t *dconf = ap_get_module_config(r->per_dir_config, &proxy_fcgi_module);
 
-    if (rconf) { 
-       if (rconf->need_dirwalk) { 
+    if (rconf) {
+       if (rconf->need_dirwalk) {
           ap_directory_walk(r);
        }
     }
@@ -334,19 +334,19 @@ static apr_status_t send_environment(proxy_conn_rec *conn, request_rec *r,
         if (!strncmp(r->filename, "proxy:balancer://", 17)) {
             newfname = apr_pstrdup(r->pool, r->filename+17);
         }
- 
-        if (!FCGI_MAY_BE_FPM(dconf))  { 
+
+        if (!FCGI_MAY_BE_FPM(dconf))  {
             if (!strncmp(r->filename, "proxy:fcgi://", 13)) {
-                /* If we strip this under FPM, and any internal redirect occurs 
-                 * on PATH_INFO, FPM may use PATH_TRANSLATED instead of 
+                /* If we strip this under FPM, and any internal redirect occurs
+                 * on PATH_INFO, FPM may use PATH_TRANSLATED instead of
                  * SCRIPT_FILENAME (a la mod_fastcgi + Action).
                  */
                 newfname = apr_pstrdup(r->pool, r->filename+13);
             }
             /* Query string in environment only */
-            if (newfname && r->args && *r->args) { 
+            if (newfname && r->args && *r->args) {
                 char *qs = strrchr(newfname, '?');
-                if (qs && !strcmp(qs+1, r->args)) { 
+                if (qs && !strcmp(qs+1, r->args)) {
                     *qs = '\0';
                 }
             }
@@ -372,7 +372,7 @@ static apr_status_t send_environment(proxy_conn_rec *conn, request_rec *r,
     ap_add_common_vars(r);
     ap_add_cgi_vars(r);
     fix_cgivars(r, dconf);
- 
+
     if (fpm || apr_table_get(r->notes, "virtual_script")) {
         /*
          * Adjust SCRIPT_NAME, PATH_INFO and PATH_TRANSLATED for PHP-FPM
@@ -406,7 +406,7 @@ static apr_status_t send_environment(proxy_conn_rec *conn, request_rec *r,
 
     if (APLOGrtrace8(r)) {
         int i;
-        
+
         for (i = 0; i < envarr->nelts; ++i) {
             ap_log_rerror(APLOG_MARK, APLOG_TRACE8, 0, r, APLOGNO(01062)
                           "sending env var '%s' value '%s'",
@@ -966,7 +966,7 @@ static int fcgi_do_request(apr_pool_t *p, request_rec *r,
          * sending the response, don't return a HTTP_SERVICE_UNAVAILABLE, since
          * this is not a backend problem. */
         if (r->connection->aborted) {
-            ap_log_rerror(APLOG_MARK, APLOG_TRACE1, rv, r, 
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE1, rv, r,
                           "The client aborted the connection.");
             conn->close = 1;
             return OK;
@@ -1051,12 +1051,12 @@ static int proxy_fcgi_handler(request_rec *r, proxy_worker *worker,
     }
 
     /* This scheme handler does not reuse connections by default, to
-     * avoid tying up a fastcgi that isn't expecting to work on 
+     * avoid tying up a fastcgi that isn't expecting to work on
      * parallel requests.  But if the user went out of their way to
      * type the default value of disablereuse=off, we'll allow it.
-     */  
+     */
     backend->close = 1;
-    if (worker->s->disablereuse_set && !worker->s->disablereuse) { 
+    if (worker->s->disablereuse_set && !worker->s->disablereuse) {
         backend->close = 0;
     }
 
@@ -1100,8 +1100,8 @@ static void *fcgi_merge_dconf(apr_pool_t *p, void *basev, void *overridesv)
     base  = (fcgi_dirconf_t *)basev;
     over  = (fcgi_dirconf_t *)overridesv;
 
-    a->backend_type = (over->backend_type != BACKEND_DEFAULT_UNKNOWN) 
-                      ? over->backend_type 
+    a->backend_type = (over->backend_type != BACKEND_DEFAULT_UNKNOWN)
+                      ? over->backend_type
                       : base->backend_type;
     a->env_fixups = apr_array_append(p, base->env_fixups, over->env_fixups);
     return a;
@@ -1111,14 +1111,14 @@ static const char *cmd_servertype(cmd_parms *cmd, void *in_dconf,
                                    const char *val)
 {
     fcgi_dirconf_t *dconf = in_dconf;
-    
-    if (!strcasecmp(val, "GENERIC")) { 
+
+    if (!strcasecmp(val, "GENERIC")) {
        dconf->backend_type = BACKEND_GENERIC;
     }
-    else if (!strcasecmp(val, "FPM") || !strcasecmp(val, "PHP-FPM")) { 
+    else if (!strcasecmp(val, "FPM") || !strcasecmp(val, "PHP-FPM")) {
        dconf->backend_type = BACKEND_FPM;
     }
-    else { 
+    else {
         return "ProxyFCGIBackendType requires one of the following arguments: "
                "'GENERIC', 'FPM'";
     }
@@ -1128,7 +1128,7 @@ static const char *cmd_servertype(cmd_parms *cmd, void *in_dconf,
 
 
 static const char *cmd_setenv(cmd_parms *cmd, void *in_dconf,
-                              const char *arg1, const char *arg2, 
+                              const char *arg1, const char *arg2,
                               const char *arg3)
 {
     fcgi_dirconf_t *dconf = in_dconf;
@@ -1138,12 +1138,12 @@ static const char *cmd_setenv(cmd_parms *cmd, void *in_dconf,
 
     new = apr_array_push(dconf->env_fixups);
     new->cond = ap_expr_parse_cmd(cmd, arg1, 0, &err, NULL);
-    if (err) { 
+    if (err) {
         return apr_psprintf(cmd->pool, "Could not parse expression \"%s\": %s",
                             arg1, err);
     }
     new->subst = ap_expr_parse_cmd(cmd, arg3, AP_EXPR_FLAG_STRING_RESULT, &err, NULL);
-    if (err) { 
+    if (err) {
         return apr_psprintf(cmd->pool, "Could not parse expression \"%s\": %s",
                             arg3, err);
     }
