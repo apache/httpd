@@ -206,6 +206,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works *after r1779573 above* (modulo CHANGES)
      +1: ylavic, jim
 
+  *) mod_proxy: replace broken hunting for proxypass exceptions to location-based 
+                proxypass directives with "no-proxy" envvar. Fixes a regression in 2.4.25.
+     trunk patch: http://svn.apache.org/r1781324
+                  http://svn.apache.org/r1781328
+     2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-noproxy.diff
+     +1 covener
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entried should be added at the START of the list ]
