@@ -2100,6 +2100,15 @@ media type in the HTTP Content-Type header field</td></tr>
         # Missing CRLF<br />
         GET / HTTP/1.0\n\n
       </code></p></div>
+      <div class="warning"><h3>Command line tools and CRLF</h3>
+        <p>Some tools need to be forced to use CRLF, otherwise httpd will return
+        a HTTP 400 response like described in the above use case. For example,
+        the <strong>OpenSSL s_client needs the -crlf parameter to work
+        properly</strong>.</p>
+        <p>The <code class="directive"><a href="../mod/mod_dumpio.html#dumpioinput">DumpIOInput</a></code> directive
+        can help while reviewing the HTTP request to identify issues like the
+        absence of CRLF.</p>
+      </div>
     </dd>
     <dt>RegisteredMethods|LenientMethods</dt>
     <dd>
