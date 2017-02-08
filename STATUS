@@ -115,11 +115,6 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
-  *) PR 60576: 2.4.21 broke PHP-FPM with the patch to strip the bogus "proxy://"
-     prefix from SCRIPT_FILENAME. We need to revert to the previous behavior
-     ASAP to avoid any further hurdles with FCGI implementations while we figure
-     this out.
-
   *) PR 60071: Child httpd processes crash with Segmentation fault
      trunk patch: http://svn.apache.org/r1779573
                   http://svn.apache.org/r1779574
@@ -211,7 +206,24 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1781324
                   http://svn.apache.org/r1781328
      2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-noproxy.diff
-     +1 covener
+     +1 covener, jim
+
+  *) PR 60576: 2.4.21 broke PHP-FPM with the patch to strip the bogus "proxy://"
+     prefix from SCRIPT_FILENAME. We need to revert to the previous behavior
+     ASAP to avoid any further hurdles with FCGI implementations while we figure
+     this out.
+     trunk patch: http://svn.apache.org/r1780328
+                  http://svn.apache.org/r1780329
+                  http://svn.apache.org/r1781329
+                  http://svn.apache.org/r1782164
+                  http://svn.apache.org/r1782166
+                  http://svn.apache.org/r1782193
+                  http://svn.apache.org/r1778350
+                  http://svn.apache.org/r1781329
+                  http://svn.apache.org/r1782194
+     2.4.x patch: http://home.apache.org/~jim/patches/mod_proxy_fcgi.patch
+     +1: jim
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entried should be added at the START of the list ]
