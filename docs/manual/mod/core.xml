@@ -1323,6 +1323,15 @@ EnableSendfile On
         # Missing CRLF<br />
         GET / HTTP/1.0\n\n
       </example>
+      <note type="warning"><title>Command line tools and CRLF</title>
+        <p>Some tools need to be forced to use CRLF, otherwise httpd will return
+        a HTTP 400 response like described in the above use case. For example,
+        the <strong>OpenSSL s_client needs the -crlf parameter to work
+        properly</strong>.</p>
+        <p>The <directive module="mod_dumpio">DumpIOInput</directive> directive
+        can help while reviewing the HTTP request to identify issues like the
+        absence of CRLF.</p>
+      </note>
     </dd>
     <dt>RegisteredMethods|LenientMethods</dt>
     <dd>
