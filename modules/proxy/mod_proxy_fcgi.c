@@ -371,7 +371,6 @@ static apr_status_t send_environment(proxy_conn_rec *conn, request_rec *r,
 
     ap_add_common_vars(r);
     ap_add_cgi_vars(r);
-    fix_cgivars(r, dconf);
 
     if (fpm || apr_table_get(r->notes, "virtual_script")) {
         /*
@@ -394,6 +393,9 @@ static apr_status_t send_environment(proxy_conn_rec *conn, request_rec *r,
     }
 
     /* XXX are there any FastCGI specific env vars we need to send? */
+
+    /* Give admins final option to fine-tune env vars */
+    fix_cgivars(r, dconf);
 
     /* XXX mod_cgi/mod_cgid use ap_create_environment here, which fills in
      *     the TZ value specially.  We could use that, but it would mean
