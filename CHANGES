@@ -14,7 +14,12 @@ Changes with Apache 2.4.26
   *) mod_http2: regression fix on PR 59348, on graceful restart, ongoing 
      streams are finished normally before the final GOAWAY is sent. 
      [Stefan Eissing, <slavko gmail.com>]
-     
+
+  *) mod_proxy: Allow the per-request environment variable "no-proxy" to
+     be used as an alternative to ProxyPass /path !. This is primarily
+     to set exceptions for ProxyPass specified in <Location> context.
+     Use SetEnvIf, not SetEnv.
+
   *) mod_http2: fixes PR60599, sending proper response for conditional requests
      answered by mod_cache. [Jeff Wheelhouse, Stefan Eissing]
      
