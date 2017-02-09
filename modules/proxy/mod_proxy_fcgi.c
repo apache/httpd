@@ -178,7 +178,7 @@ static void fix_cgivars(request_rec *r, fcgi_dirconf_t *dconf)
             const char *val = ap_expr_str_exec_re(r, entry->subst, AP_MAX_REG_MATCH, regm, &src, &err);
             if (err) {
                 ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(03514)
-                              "Error evaluating expression for replacment of %s: '%s'",
+                              "Error evaluating expression for replacement of %s: '%s'",
                                entry->envname, err);
                 continue;
             }
