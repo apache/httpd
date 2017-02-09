@@ -1138,6 +1138,11 @@ static const char *cmd_setenv(cmd_parms *cmd, void *in_dconf,
     sei_entry *new;
     const char *envvar = arg2;
 
+    /* A missing expr-value should be treated as empty. */
+    if (!arg3) {
+        arg3 = "";
+    }
+
     new = apr_array_push(dconf->env_fixups);
     new->cond = ap_expr_parse_cmd(cmd, arg1, 0, &err, NULL);
     if (err) {
@@ -1163,7 +1168,7 @@ static void register_hooks(apr_pool_t *p)
 static const command_rec command_table[] = {
     AP_INIT_TAKE1("ProxyFCGIBackendType", cmd_servertype, NULL, OR_FILEINFO,
                   "Specify the type of FastCGI server: 'Generic', 'FPM'"),
-    AP_INIT_TAKE3("ProxyFCGISetEnvIf", cmd_setenv, NULL, OR_FILEINFO,
+    AP_INIT_TAKE23("ProxyFCGISetEnvIf", cmd_setenv, NULL, OR_FILEINFO,
                   "expr-condition env-name expr-value"),
     { NULL }
 };
