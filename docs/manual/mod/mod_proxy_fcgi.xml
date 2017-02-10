@@ -273,14 +273,16 @@ If omitted, the variable is set to an empty string.</dd>
 </dl>
 
 <example>
-# A basic, unconditional override<br/>
-ProxyFCGISetEnvIf "true" PATH_INFO "/example"<br/>
-<br/>
-# Use an environment variable in the value<br/>
-ProxyFCGISetEnvIf "true" PATH_INFO "%{reqenv:SCRIPT_NAME}"<br/>
-<br/>
-# Use captures in the conditions and backreferences in the replacement<br/>
-ProxyFCGISetEnvIf "reqenv('PATH_TRANSLATED') =~ m#(/.*prefix)(\d+)(.*)#" PATH_TRANSLATED "$1$3"<br/>
+   <highlight language="config">
+# A basic, unconditional override
+ProxyFCGISetEnvIf "true" PATH_INFO "/example"
+
+# Use an environment variable in the value
+ProxyFCGISetEnvIf "true" PATH_INFO "%{reqenv:SCRIPT_NAME}"
+
+# Use captures in the conditions and backreferences in the replacement
+ProxyFCGISetEnvIf "reqenv('PATH_TRANSLATED') =~ m|(/.*prefix)(\d+)(.*)|" PATH_TRANSLATED "$1$3"
+   </highlight>
 </example>
 
 </usage>
