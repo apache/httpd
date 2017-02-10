@@ -174,7 +174,11 @@ static void fix_cgivars(request_rec *r, fcgi_dirconf_t *dconf)
     entries = (sei_entry *) dconf->env_fixups->elts;
     for (i = 0; i < dconf->env_fixups->nelts; i++) {
         sei_entry *entry = &entries[i];
-        if (0 < (rc = ap_expr_exec_re(r, entry->cond, AP_MAX_REG_MATCH, regm, &src, &err)))  {
+
+        if (entry->envname[0] == '!') {
+            apr_table_unset(r->subprocess_env, entry->envname+1);
+        }
+        else if (0 < (rc = ap_expr_exec_re(r, entry->cond, AP_MAX_REG_MATCH, regm, &src, &err)))  {
             const char *val = ap_expr_str_exec_re(r, entry->subst, AP_MAX_REG_MATCH, regm, &src, &err);
             if (err) {
                 ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(03514)
@@ -189,12 +193,7 @@ static void fix_cgivars(request_rec *r, fcgi_dirconf_t *dconf)
                               entry->envname, oldval, val);
 
             }
-            if (entry->envname[0] == '!') { 
-                apr_table_unset(r->subprocess_env, entry->envname+1);
-            }
-            else { 
-                apr_table_setn(r->subprocess_env, entry->envname, val);
-            }
+            apr_table_setn(r->subprocess_env, entry->envname, val);
         }
         else {
             ap_log_rerror(APLOG_MARK, APLOG_TRACE8, 0, r, "fix_cgivars: Condition returned %d", rc);
@@ -1143,21 +1142,39 @@ static const char *cmd_setenv(cmd_parms *cmd, void *in_dconf,
     sei_entry *new;
     const char *envvar = arg2;
 
-    /* A missing expr-value should be treated as empty. */
-    if (!arg3) {
-        arg3 = "";
-    }
-
     new = apr_array_push(dconf->env_fixups);
     new->cond = ap_expr_parse_cmd(cmd, arg1, 0, &err, NULL);
     if (err) {
         return apr_psprintf(cmd->pool, "Could not parse expression \"%s\": %s",
                             arg1, err);
     }
-    new->subst = ap_expr_parse_cmd(cmd, arg3, AP_EXPR_FLAG_STRING_RESULT, &err, NULL);
-    if (err) {
-        return apr_psprintf(cmd->pool, "Could not parse expression \"%s\": %s",
-                            arg3, err);
+
+    if (envvar[0] == '!') {
+        /* Unset mode. */
+        if (arg3) {
+            return apr_psprintf(cmd->pool, "Third argument (\"%s\") is not "
+                                "allowed when using ProxyFCGISetEnvIf's unset "
+                                "mode (%s)", arg3, envvar);
+        }
+        else if (!envvar[1]) {
+            /* i.e. someone tried to give us a name of just "!" */
+            return "ProxyFCGISetEnvIf: \"!\" is not a valid variable name";
+        }
+
+        new->subst = NULL;
+    }
+    else {
+        /* Set mode. */
+        if (!arg3) {
+            /* A missing expr-value should be treated as empty. */
+            arg3 = "";
+        }
+
+        new->subst = ap_expr_parse_cmd(cmd, arg3, AP_EXPR_FLAG_STRING_RESULT, &err, NULL);
+        if (err) {
+            return apr_psprintf(cmd->pool, "Could not parse expression \"%s\": %s",
+                                arg3, err);
+        }
     }
 
     new->envname = envvar;
