@@ -189,7 +189,12 @@ static void fix_cgivars(request_rec *r, fcgi_dirconf_t *dconf)
                               entry->envname, oldval, val);
 
             }
-            apr_table_setn(r->subprocess_env, entry->envname, val);
+            if (entry->envname[0] == '!') { 
+                apr_table_unset(r->subprocess_env, entry->envname+1);
+            }
+            else { 
+                apr_table_setn(r->subprocess_env, entry->envname, val);
+            }
         }
         else {
             ap_log_rerror(APLOG_MARK, APLOG_TRACE8, 0, r, "fix_cgivars: Condition returned %d", rc);
