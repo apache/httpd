@@ -228,8 +228,8 @@ scenarios.</p>
 <name>ProxyFCGISetEnvIf</name>
 <description>Allow variables sent to FastCGI servers to be fixed up</description>
 <syntax>ProxyFCGISetEnvIf <var>conditional-expression</var>
-    <var>environment-variable-name</var>
-    <var>value-expression</var></syntax>
+    [!]<var>environment-variable-name</var>
+    [<var>value-expression</var>]</syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
 <context>.htaccess</context></contextlist>
@@ -264,10 +264,12 @@ the condition expressions and value expressions.</p>
    </dd>
 <dt>environment-variable-name</dt>
 <dd> Specifies the CGI environment variable to change,
-   such as PATH_INFO.</dd>
+   such as PATH_INFO. If preceded by an exclamation point, the variable 
+   will be unset.</dd>
 <dt>value-expression</dt>
 <dd>Specifies the replacement value for the preceding environment variable.  Backreferences, such as "$1",
-can be included from regular expression captures in <var>conditional-expression</var></dd>
+can be included from regular expression captures in <var>conditional-expression</var>.
+If omitted, the variable is set to an empty string.</dd>
 </dl>
 
 <example>
