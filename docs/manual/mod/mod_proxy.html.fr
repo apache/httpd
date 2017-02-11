@@ -30,8 +30,6 @@
 <a href="../fr/mod/mod_proxy.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_proxy.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Serveur mandataire/passerelle multi-protocole</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>proxy_module</td></tr>
@@ -477,6 +475,10 @@ ProxyPass "/examples" "http://backend.example.com/examples" timeout=10</pre>
   SetEnv proxy-nokeepalive 1
 &lt;/Location&gt;</pre>
 
+
+      <p>La définition de la variable d'environnement "no-proxy" permet de
+      désactiver <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> dans le traitement de la requête
+      courante. Cette variable doit être définie via la directive <code class="directive"><a href="../mod/mod_setenvif.html#setenvif">SetEnvIf</a></code> car la directive <code class="directive"><a href="../mod/mod_env.html#setenv">SetEnv</a></code> n'est pas évaluée assez tôt.</p>	
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -1202,9 +1204,14 @@ ProxyPass "/mirror/foo" "http://backend.example.com"</pre>
       <code class="directive"><a href="../mod/core.html#location">Location</a></code>, et c'est la section
       la plus spécifique qui l'emportera.</p>
 
-      <p>Pour les mêmes raisons, les exclusions doivent se situer
-      <em>avant</em> les directives <code class="directive">ProxyPass</code>
-      générales.</p>
+    <p>Pour les mêmes raisons, les exclusions doivent se situer <em>avant</em>
+      les directives <code class="directive">ProxyPass</code> générales. La variable
+      d'environnement "no-proxy" est une alternative aux exclusions et constitue
+      le seul moyen de configurer une exclusion pour une directive
+      <code class="directive">ProxyPass</code> dans le contexte d'une section <code class="directive"><a href="../mod/core.html#location">Location</a></code>. Cette variable doit être définie via
+      la directive <code class="directive"><a href="../mod/mod_setenvif.html#setenvif">SetEnvIf</a></code> car la
+      directive <code class="directive"><a href="../mod/mod_env.html#setenv">SetEnv</a></code> n'est pas évaluée
+      assez tôt.</p>  
 
     </div> 
 
