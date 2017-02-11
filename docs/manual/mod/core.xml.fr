@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1781043:1782180 (outdated) -->
+<!-- English Revision: 1782180 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1407,6 +1407,16 @@ Apache</compatibility>
         # Missing CRLF<br />
         GET / HTTP/1.0\n\n
       </example>
+      <note type="warning"><title>Utilitaires en ligne de commande et CRLF</title>
+        <p>Il peut s'avérer nécessaire de forcer certains utilitaires à utiliser
+	CRLF ; si ce n'est pas le cas, httpd reverra une réponse HTTP 400 comme
+	dans le cas précédent. Par exemple, le <strong>client OpenSSL s_client
+	doit utiliser le paramètre -crlf pour fonctionner correctement</strong>.</p>
+        <p>Pour détecter des problèmes tels que l'absence de CRLF, vous pouvez
+	utiliser la directive <directive
+	module="mod_dumpio">DumpIOInput</directive> qui permet de décortiquer
+	les requêtes HTTP.</p>
+      </note>
     </dd>
     <dt>RegisteredMethods|LenientMethods</dt>
     <dd>
