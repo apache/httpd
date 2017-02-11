@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1776624:1781701 (outdated) -->
+<!-- English Revision: 1781701 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -258,6 +258,7 @@ RemoteIPProxiesHeader X-Forwarded-By
 <syntax>RemoteIPProxyProtocol On|Optional|Off</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
+<compatibility>Disponible à partir de la version 2.4.26 du serveur HTTP Apache</compatibility>
 
 <usage>
     <p>La directive <directive>RemoteIPProxyProtocol</directive> permet

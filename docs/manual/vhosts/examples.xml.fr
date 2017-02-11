@@ -1,7 +1,7 @@
 <?xml version='1.0' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1746754:1781930 (outdated) -->
+<!-- English Revision: 1781930 -->
 <!-- French translation by Vincent Deffontaines, Alain B.  -->
 <!-- reviewed by Lucien Gentis -->
 
@@ -29,11 +29,25 @@
 <summary>
 
     <p>Le but de ce document est d'essayer de répondre aux questions 
-    les plus répandues sur la configuration des <a href="index.html">serveurs virtuels</a>. 
+    les plus fréquentes sur la configuration des <a href="index.html">serveurs virtuels</a>. 
     Les scénarios présentés ici se rencontrent quand plusieurs 
-    serveurs Webs doivent tourner sur une seule et même machine au 
+    serveurs web doivent tourner sur une seule et même machine au 
     moyen de serveurs virtuels <a href="name-based.html">par nom</a> 
     ou <a href="ip-based.html">par IP</a>.</p>
+
+    <note><title>Note à propos du contexte de configuration</title><p>Les serveurs virtuels
+    doivent être spécifiés au niveau de la configuration globale du serveur.
+    Certaines distributions tierces du serveur peuvent cependant utiliser un fichier de
+    configuration initial alternatif ou des fichiers de configuration multiples
+    qui acceptent tous des directives à portée globale. Elles peuvent aussi
+    proposer une convention de spécification des serveurs virtuels au sein de
+    ces fichiers multiples qui seront eux-mêmes inclus dans le fichier de
+    configuration global via la directive <directive
+    module="core">Include</directive>. Vous pourrez trouver plus de détails dans
+    le README de la distribution tierce, tel que
+    /usr/share/doc/apache2/README.Debian.gz pour les distributions basées sur
+    Debian et Ubuntu.</p>
+    </note>
 
 </summary>
 

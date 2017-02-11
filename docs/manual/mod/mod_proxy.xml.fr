@@ -454,7 +454,7 @@ ProxyPass "/examples" "http://backend.example.com/examples" timeout=10
         </highlight>
 
       <p>La définition de la variable d'environnement "no-proxy" permet de
-      désactiver le traitement par <module>mod_proxy</module> de la requête
+      désactiver <module>mod_proxy</module> dans le traitement de la requête
       courante. Cette variable doit être définie via la directive <directive
       module="mod_setenvif">SetEnvIf</directive> car la directive <directive
       module="mod_env">SetEnv</directive> n'est pas évaluée assez tôt.</p>
