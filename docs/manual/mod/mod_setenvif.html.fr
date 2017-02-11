@@ -32,8 +32,6 @@
 <a href="../ko/mod/mod_setenvif.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_setenvif.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Permet de définir des variables d'environnement en fonction
 de certaines caractéristiques de la requête</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
@@ -158,7 +156,7 @@ attributs de la requête</td></tr>
     <p>La directive <code class="directive">SetEnvIf</code> permet de définir
     des variables d'environnement en fonction des attributs de la
     requête. L'<em>attribut</em> spécifié comme premier argument peut
-    se présenter sous l'une des trois formes suivantes :</p>
+    se présenter sous l'une des formes suivantes :</p>
 
 <ol>
 <li>Un champ d'en-tête de requête HTTP (voir la <a href="http://www.rfc-editor.org/rfc/rfc2616.txt">RFC2616</a> pour

@@ -662,7 +662,7 @@ heartbeat</td></tr>
 <tr class="odd"><td><a href="core.html#hostnamelookups">HostnameLookups On|Off|Double</a></td><td> Off </td><td>svd</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Active la recherche DNS sur les adresses IP des
 clients</td></tr>
 <tr><td><a href="core.html#httpprotocoloptions">HttpProtocolOptions [Strict|Unsafe] [RegisteredMethods|LenientMethods]
- [Allow0.9|Require1.0]</a></td><td> Strict LenientMetho +</td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Modifie les contraintes sur les messages des requêtes HTTP</td></tr>
+ [Allow0.9|Require1.0]</a></td><td> Strict LenientMetho +</td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Modifie les contraintes sur le format des requêtes HTTP</td></tr>
 <tr class="odd"><td><a href="mod_ident.html#identitycheck" id="I" name="I">IdentityCheck On|Off</a></td><td> Off </td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active la journalisation de l'identité RFC 1413 de
 l'utilisateur distant</td></tr>
 <tr><td><a href="mod_ident.html#identitychecktimeout">IdentityCheckTimeout <var>secondes</var></a></td><td> 30 </td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Détermine le délai d'attente pour les requêtes
@@ -982,8 +982,8 @@ mandatés</td></tr>
 <tr class="odd"><td><a href="mod_proxy_express.html#proxyexpressenable">ProxyExpressEnable [on|off]</a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active la fonctionnalité du module.</td></tr>
 <tr><td><a href="mod_proxy_fcgi.html#proxyfcgibackendtype">ProxyFCGIBackendType FPM|GENERIC</a></td><td> FPM </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Spécifie le type de l'application FastCGI d'arrière-plan</td></tr>
 <tr class="odd"><td><a href="mod_proxy_fcgi.html#proxyfcgisetenvif">ProxyFCGISetEnvIf <var>conditional-expression</var>
-    <var>environment-variable-name</var>
-    <var>value-expression</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Permet d'adapter la valeur des variables envoyées aux serveurs
+    [!]<var>environment-variable-name</var>
+    [<var>value-expression</var>]</a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Permet d'adapter la valeur des variables envoyées aux serveurs
 FastCGI</td></tr>
 <tr><td><a href="mod_proxy_ftp.html#proxyftpdircharset">ProxyFtpDirCharset <var>jeu-caractères</var></a></td><td> ISO-8859-1 </td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Définit le jeu de caractères des listings FTP
 mandatés</td></tr>
