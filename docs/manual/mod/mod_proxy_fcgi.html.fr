@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_proxy_fcgi.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_proxy_fcgi.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Module fournissant le support de FastCGI à
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -241,8 +239,8 @@ certains scénarios.</p>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Permet d'adapter la valeur des variables envoyées aux serveurs
 FastCGI</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyFCGISetEnvIf <var>conditional-expression</var>
-    <var>environment-variable-name</var>
-    <var>value-expression</var></code></td></tr>
+    [!]<var>environment-variable-name</var>
+    [<var>value-expression</var>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_fcgi</td></tr>
@@ -277,25 +275,49 @@ détaillée dans le document <a href="../expr.html">ap_expr</a>.
    </dd>
 <dt>environment-variable-name</dt> 
 <dd>Spécifie le nom de la variable d'environnement à modifier, par exemple
-PATH_INFO.</dd>
+PATH_INFO. Si elle est précédée d'un point d'exclamation, la définition de la
+variable sera annulée.</dd>
 <dt>value-expression</dt>
 <dd>Spécifie la nouvelle valeur de la variable "environment-variable-name". On
 peut inclure des
 références arrières, comme "$1", issues de captures en provenance de
-l'expression rationnelle <var>conditional-expression</var></dd>
+l'expression rationnelle <var>conditional-expression</var>. Si cette valeur est
+omise, la variable est définie (ou sa valeur est écrasée) par une chaîne vide
+&#8212; voir cependant la note ci-après.</dd>
 </dl>
   
-<div class="example"><p><code>
-# Une modification basique, inconditionnelle<br />
-ProxyFCGISetEnvIf "true" PATH_INFO "/example"<br />
-<br />
-# Utilisation d'une variable d'environnement pour spécidier la nouvelle valeur<br />
-ProxyFCGISetEnvIf "true" PATH_INFO "%{reqenv:SCRIPT_NAME}"<br />
+<div class="example"><pre class="prettyprint lang-config"># Une modification basique, inconditionnelle
+ProxyFCGISetEnvIf "true" PATH_INFO "/example"
+
+# Utilisation d'une variable d'environnement pour spécifier la nouvelle valeur
+ProxyFCGISetEnvIf "true" PATH_INFO "%{reqenv:SCRIPT_NAME}"
 <br />
 # Utilisation de captures dans la condition et de références arrières dans la
-# nouvelle valeur<br />
-ProxyFCGISetEnvIf "reqenv('PATH_TRANSLATED') =~ m#(/.*prefix)(\d+)(.*)#" PATH_TRANSLATED "$1$3"<br />
-</code></p></div>
+# nouvelle valeur
+ProxyFCGISetEnvIf "reqenv('PATH_TRANSLATED') =~ m#(/.*prefix)(\d+)(.*)#" PATH_TRANSLATED "$1$3"</pre>
+</div>
+
+<div class="note"><h3>Note : Annulation définition ou valeur vide</h3>
+  La ligne suivante annule la définition de la variable <code>VARIABLE</code>,
+  ce qui l'empêche d'être envoyée au serveur FastCGI :
+
+    <pre class="prettyprint lang-config">ProxyFCGISetEnvIf true !VARIABLE</pre>
+
+
+  La ligne suivante, quant à elle, efface la <em>valeur</em> de la variable
+  <code>VARIABLE</code> en lui affectant la chaîne vide ; cette variable
+  <code>VARIABLE</code> sera alors tout de même envoyée au serveur FastCGI :
+
+    <pre class="prettyprint lang-config">ProxyFCGISetEnvIf true VARIABLE</pre>
+
+
+  La spécification CGI/1.1 <a href="https://tools.ietf.org/html/rfc3875#section-4.1">ne fait pas de
+  distinction</a> entre une variable contenant une chaîne vide et une variable qui
+  n'existe pas. De nombreuses implémentations CGI et FastCGI font cependant
+  cette distinction (ou permettent aux scripts de la faire). Le choix de celle
+  que vous allez utiliser dépend de votre implémentation et de la raison qui
+  vous pousse à modifier cette variable.
+</div>
 
 
 </div>
