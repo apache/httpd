@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1727647:1782252 (outdated) -->
+<!-- English Revision: 1782252 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -151,7 +151,7 @@ attributs de la requête</description>
     <p>La directive <directive>SetEnvIf</directive> permet de définir
     des variables d'environnement en fonction des attributs de la
     requête. L'<em>attribut</em> spécifié comme premier argument peut
-    se présenter sous l'une des trois formes suivantes :</p>
+    se présenter sous l'une des formes suivantes :</p>
 
 <ol>
 <li>Un champ d'en-tête de requête HTTP (voir la <a
