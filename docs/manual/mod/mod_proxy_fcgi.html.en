@@ -204,7 +204,7 @@ ProxyPassMatch "^/(.*\.php(/.*)?)$" "unix:/var/run/php5-fpm.sock|fcgi://localhos
 <p>This directive allows the type of backend FastCGI application to be
 specified. Some FastCGI servers, such as PHP-FPM,  use historical quirks of
 environment variables to identify the type of proxy server being used.  Set
-this direcive to "GENERIC" if your non PHP-FPM application has trouble
+this directive to "GENERIC" if your non PHP-FPM application has trouble
 interpreting environment variables such as SCRIPT_FILENAME or PATH_TRANSLATED
 as set by the server.</p>
 
@@ -223,8 +223,8 @@ scenarios.</p>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Allow variables sent to FastCGI servers to be fixed up</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyFCGISetEnvIf <var>conditional-expression</var>
-    <var>environment-variable-name</var>
-    <var>value-expression</var></code></td></tr>
+    [!]<var>environment-variable-name</var>
+    [<var>value-expression</var>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_fcgi</td></tr>
@@ -251,29 +251,53 @@ the condition expressions and value expressions.</p>
 <p>Parameter syntax:</p>
 <dl>
 <dt>conditional-expression</dt>
-<dd>Specifies an expression that controls whether the environmen variable that
+<dd>Specifies an expression that controls whether the environment variable that
    follows will be modified.  For information on the expression syntax, see
    the examples that follow or the full specification at the
    <a href="../expr.html">ap_expr</a> documentation.
    </dd>
 <dt>environment-variable-name</dt>
 <dd> Specifies the CGI environment variable to change,
-   such as PATH_INFO.</dd>
+   such as PATH_INFO. If preceded by an exclamation point, the variable 
+   will be unset.</dd>
 <dt>value-expression</dt>
-<dd>Specifies the replacement value for the preceding environment variable.  Backreferences, such as "$1",
-can be included from regular expression captures in <var>conditional-expression</var></dd>
+<dd>Specifies the replacement value for the preceding environment variable.
+   Backreferences, such as "$1", can be included from regular expression
+   captures in <var>conditional-expression</var>. If omitted, the variable is
+   set (or overridden) to an empty string &#8212; but see the Note below.</dd>
 </dl>
 
-<div class="example"><p><code>
-# A basic, unconditional override<br />
-ProxyFCGISetEnvIf "true" PATH_INFO "/example"<br />
-<br />
-# Use an environment variable in the value<br />
-ProxyFCGISetEnvIf "true" PATH_INFO "%{reqenv:SCRIPT_NAME}"<br />
-<br />
-# Use captures in the conditions and backreferences in the replacement<br />
-ProxyFCGISetEnvIf "reqenv('PATH_TRANSLATED') =~ m#(/.*prefix)(\d+)(.*)#" PATH_TRANSLATED "$1$3"<br />
-</code></p></div>
+<div class="example"><pre class="prettyprint lang-config"># A basic, unconditional override
+ProxyFCGISetEnvIf "true" PATH_INFO "/example"
+
+# Use an environment variable in the value
+ProxyFCGISetEnvIf "true" PATH_INFO "%{reqenv:SCRIPT_NAME}"
+
+# Use captures in the conditions and backreferences in the replacement
+ProxyFCGISetEnvIf "reqenv('PATH_TRANSLATED') =~ m|(/.*prefix)(\d+)(.*)|" PATH_TRANSLATED "$1$3"</pre>
+</div>
+
+<div class="note"><h3>Note: Unset vs. Empty</h3>
+  The following will unset <code>VARIABLE</code>, preventing it from being sent
+  to the FastCGI server:
+
+    <pre class="prettyprint lang-config">ProxyFCGISetEnvIf true !VARIABLE</pre>
+
+
+  Whereas the following will erase any existing <em>value</em> of
+  <code>VARIABLE</code> (by setting it to the empty string), but the empty
+  <code>VARIABLE</code> will still be sent to the server:
+
+    <pre class="prettyprint lang-config">ProxyFCGISetEnvIf true VARIABLE</pre>
+
+
+  The CGI/1.1 specification
+  <a href="https://tools.ietf.org/html/rfc3875#section-4.1">does not
+  distinguish</a> between a variable with an empty value and a variable that
+  does not exist. However, many CGI and FastCGI implementations distinguish (or
+  allow scripts to distinguish) between the two. The choice of which to use is
+  dependent upon your implementation and your reason for modifying the variable.
+</div>
 
 
 </div>
