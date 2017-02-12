@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.es.xsl"?>
-<!-- English Revision: 1673947:1780210 (outdated) -->
+<!-- English Revision: 1780210 -->
 <!-- Translation Update by: Luis Gil de Bernabé Pfeiffer -->
 <!-- Reviewed by: Sergio Ramos -->
 
@@ -269,9 +269,9 @@ Note: I have sorted alphabetically the file so it will be easy to use this page.
 
 		<dt><a name="hash" id="hash">Hash</a></dt>
 		<dd>Algoritmo matemático de un solo sentido e irreversible, que genera
-		un string de una determinada longitud de otro string de 
+		una cadena de una determinada longitud de otra cadena de 
 		cualquier tamaño. Diferentes entradas darán diferentes hashes 
-		(dependiendo de la función hah.) 
+		(dependiendo de la función hash.) 
 		</dd>
 
 
@@ -280,7 +280,7 @@ Note: I have sorted alphabetically the file so it will be easy to use this page.
 
 		<dt><a name="virtualhosting">Hosting Virtual</a></dt> <dd>Se trata de
 		servir diferentes sitios web con una sola entidad de Apache.  <em>El
-		hosting virtual de IPs</em> diferencia los sitios web basandose en sus
+		hosting virtual de IPs</em> diferencia los sitios web basándose en sus
 		direcciones IP, mientras que el <em>hosting virtual basado en
 		nombres</em> usa solo el nombre del host y de esta manera puede alojar
 		muchos sitios web con la misma dirección IP.<br /> Consulte: <a
