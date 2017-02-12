@@ -31,10 +31,6 @@
 <a href="./ko/glossary.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/glossary.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Esta traducción podría estar
-            obsoleta. Consulte la versión en inglés de la
-            documentación para comprobar si se han producido cambios
-            recientemente.</div>
 
 	<p>Éste glosario define las terminologías más comunes
 	relacionada con Apache en particular, y con los servidores web en
@@ -259,9 +255,9 @@
 
 		<dt><a name="hash" id="hash">Hash</a></dt>
 		<dd>Algoritmo matemático de un solo sentido e irreversible, que genera
-		un string de una determinada longitud de otro string de 
+		una cadena de una determinada longitud de otra cadena de 
 		cualquier tamaño. Diferentes entradas darán diferentes hashes 
-		(dependiendo de la función hah.) 
+		(dependiendo de la función hash.) 
 		</dd>
 
 
@@ -270,7 +266,7 @@
 
 		<dt><a name="virtualhosting">Hosting Virtual</a></dt> <dd>Se trata de
 		servir diferentes sitios web con una sola entidad de Apache.  <em>El
-		hosting virtual de IPs</em> diferencia los sitios web basandose en sus
+		hosting virtual de IPs</em> diferencia los sitios web basándose en sus
 		direcciones IP, mientras que el <em>hosting virtual basado en
 		nombres</em> usa solo el nombre del host y de esta manera puede alojar
 		muchos sitios web con la misma dirección IP.<br /> Consulte: <a href="vhosts/">Documentación sobre Hosting Virtual en

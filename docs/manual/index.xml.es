@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE indexpage SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.es.xsl"?>
-<!-- English Revision: 1767808:1780356 (outdated) -->
+<!-- English Revision: 1780356 -->
 <!-- Translated by: Luis Gil de Bernabé Pfeiffer  -->
 <!-- Reviewed by: Sergio Ramos -->
 
@@ -81,6 +81,7 @@ Documentación</title>
     <page href="howto/public_html.html">Directorios Web por Usuario
     (public_html)</page>
     <page href="howto/reverse_proxy.html">Guía de configuración de Proxy Inverso</page>
+     <page href="howto/http2.html">guía HTTP/2 </page>
 </category>
 
 <category id="platform"><title>Notas Sobre Plataformas Específicas</title>
