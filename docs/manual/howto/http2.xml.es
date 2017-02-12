@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.es.xsl"?>
-<!-- English Revision: 1765974:1779744 (outdated) -->
+<!-- English Revision: 1779744 -->
 <!-- Spanish translation : Daniel Ferradal -->
-<!-- Reviewed by Luis Gil de Bernabé Pfeiffer lgilbernabe[AT]apache.org -->
+<!-- Reviewed & updated by Luis Gil de Bernabé Pfeiffer lgilbernabe[AT]apache.org -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
