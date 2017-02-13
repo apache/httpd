@@ -191,9 +191,9 @@ static apr_bucket *h2_beam_bucket(h2_bucket_beam *beam,
 }
 
 
-apr_size_t h2_util_bl_print(char *buffer, apr_size_t bmax, 
-                            const char *tag, const char *sep, 
-                            h2_blist *bl)
+static apr_size_t h2_util_bl_print(char *buffer, apr_size_t bmax, 
+                                   const char *tag, const char *sep, 
+                                   h2_blist *bl)
 {
     apr_size_t off = 0;
     const char *sp = "";
@@ -203,13 +203,15 @@ apr_size_t h2_util_bl_print(char *buffer, apr_size_t bmax,
         memset(buffer, 0, bmax--);
         off += apr_snprintf(buffer+off, bmax-off, "%s(", tag);
         for (b = H2_BLIST_FIRST(bl); 
-             bmax && (b != H2_BLIST_SENTINEL(bl));
+             (bmax > off) && (b != H2_BLIST_SENTINEL(bl));
              b = APR_BUCKET_NEXT(b)) {
             
             off += h2_util_bucket_print(buffer+off, bmax-off, b, sp);
             sp = " ";
         }
-        off += apr_snprintf(buffer+off, bmax-off, ")%s", sep);
+        if (bmax > off) {
+            off += apr_snprintf(buffer+off, bmax-off, ")%s", sep);
+        }
     }
     else {
         off += apr_snprintf(buffer+off, bmax-off, "%s(null)%s", tag, sep);
@@ -426,8 +428,10 @@ static apr_status_t beam_close(h2_bucket_beam *beam)
     return APR_SUCCESS;
 }
 
-static void beam_set_send_pool(h2_bucket_beam *beam, apr_pool_t *pool);
-static void beam_set_recv_pool(h2_bucket_beam *beam, apr_pool_t *pool);
+int h2_beam_is_closed(h2_bucket_beam *beam)
+{
+    return beam->closed;
+}
 
 static int pool_register(h2_bucket_beam *beam, apr_pool_t *pool, 
                          apr_status_t (*cleanup)(void *))
@@ -455,20 +459,6 @@ static apr_status_t beam_recv_cleanup(void *data)
     beam->recv_buffer = NULL;
     beam->recv_pool = NULL;
     return APR_SUCCESS;
-}
-
-static void beam_set_recv_pool(h2_bucket_beam *beam, apr_pool_t *pool) 
-{
-    if (beam->recv_pool == pool || 
-        (beam->recv_pool && pool 
-         && apr_pool_is_ancestor(beam->recv_pool, pool))) {
-        /* when receiver same or sub-pool of existing, stick
-         * to the the pool we already have. */
-        return;
-    }
-    pool_kill(beam, beam->recv_pool, beam_recv_cleanup);
-    beam->recv_pool = pool;
-    pool_register(beam, beam->recv_pool, beam_recv_cleanup);
 }
 
 static apr_status_t beam_send_cleanup(void *data)
@@ -681,6 +671,21 @@ apr_status_t h2_beam_close(h2_bucket_beam *beam)
         leave_yellow(beam, &bl);
     }
     return beam->aborted? APR_ECONNABORTED : APR_SUCCESS;
+}
+
+apr_status_t h2_beam_leave(h2_bucket_beam *beam)
+{
+    h2_beam_lock bl;
+    
+    if (enter_yellow(beam, &bl) == APR_SUCCESS) {
+        if (beam->recv_buffer && !APR_BRIGADE_EMPTY(beam->recv_buffer)) {
+            apr_brigade_cleanup(beam->recv_buffer);
+        }
+        beam->aborted = 1;
+        beam_close(beam);
+        leave_yellow(beam, &bl);
+    }
+    return APR_SUCCESS;
 }
 
 apr_status_t h2_beam_wait_empty(h2_bucket_beam *beam, apr_read_type_e block)
@@ -919,7 +924,6 @@ transfer:
         }
 
         /* transfer enough buckets from our receiver brigade, if we have one */
-        beam_set_recv_pool(beam, bb->p);
         while (beam->recv_buffer
                && !APR_BRIGADE_EMPTY(beam->recv_buffer)
                && (readbytes <= 0 || remain >= 0)) {
@@ -1228,4 +1232,30 @@ int h2_beam_report_consumption(h2_bucket_beam *beam)
     }
     return 0;
 }
+
+void h2_beam_log(h2_bucket_beam *beam, conn_rec *c, int level, const char *msg)
+{
+    if (0 && beam && APLOG_C_IS_LEVEL(c,level)) {
+        char buffer[2048];
+        apr_size_t blen = sizeof(buffer)/sizeof(buffer[0]) - 1;
+        apr_size_t off = 0;
+        
+        buffer[0] = 0;
+        off += apr_snprintf(buffer+off, blen-off, "cl=%d, ", beam->closed);
+        off += h2_util_bl_print(buffer+off, blen-off, "to_send", ", ", &beam->send_list);
+        if (blen > off) {
+            off += h2_util_bb_print(buffer+off, blen-off, "recv_buffer", ", ", beam->recv_buffer);
+            if (blen > off) {
+                off += h2_util_bl_print(buffer+off, blen-off, "hold", ", ", &beam->hold_list);
+                if (blen > off) {
+                    off += h2_util_bl_print(buffer+off, blen-off, "purge", "", &beam->purge_list);
+                }
+            }
+        }
+        buffer[blen-1] = 0;
+        ap_log_cerror(APLOG_MARK, level, 0, c, "beam(%ld-%d,%s): %s %s", 
+                      c->id, beam->id, beam->tag, msg, buffer);
+    }
+}
+
 

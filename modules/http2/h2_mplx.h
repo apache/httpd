@@ -72,13 +72,13 @@ struct h2_mplx {
     unsigned int need_registration : 1;
 
     struct h2_ihash_t *streams;     /* all streams currently processing */
+    struct h2_ihash_t *sredo;       /* all streams that need to be re-started */
     struct h2_ihash_t *shold;       /* all streams done with task ongoing */
     struct h2_ihash_t *spurge;      /* all streams done, ready for destroy */
-
+    
     struct h2_iqueue *q;            /* all stream ids that need to be started */
     struct h2_iqueue *readyq;       /* all stream ids ready for output */
         
-    struct h2_ihash_t *tasks;       /* all tasks started and not destroyed */
     struct h2_ihash_t *redo_tasks;  /* all tasks that need to be redone */
     
     int max_streams;        /* max # of concurrent streams */
@@ -137,13 +137,7 @@ h2_mplx *h2_mplx_create(conn_rec *c, apr_pool_t *master,
  * @param m the mplx to be released and destroyed
  * @param wait condition var to wait on for ref counter == 0
  */ 
-apr_status_t h2_mplx_release_and_join(h2_mplx *m, struct apr_thread_cond_t *wait);
-
-/**
- * Aborts the multiplexer. It will answer all future invocation with
- * APR_ECONNABORTED, leading to early termination of ongoing streams.
- */
-void h2_mplx_abort(h2_mplx *mplx);
+void h2_mplx_release_and_join(h2_mplx *m, struct apr_thread_cond_t *wait);
 
 struct h2_task *h2_mplx_pop_task(h2_mplx *mplx, int *has_more);
 
@@ -165,14 +159,13 @@ int h2_mplx_is_busy(h2_mplx *m);
 struct h2_stream *h2_mplx_stream_get(h2_mplx *m, int id);
 
 /**
- * Notifies mplx that a stream has finished processing.
+ * Notifies mplx that a stream has been completely handled on the main
+ * connection and is ready for cleanup.
  * 
  * @param m the mplx itself
- * @param stream the id of the stream being done
- * @param rst_error if != 0, the stream was reset with the error given
- *
+ * @param stream the stream ready for cleanup
  */
-apr_status_t h2_mplx_stream_done(h2_mplx *m, struct h2_stream *stream);
+apr_status_t h2_mplx_stream_cleanup(h2_mplx *m, struct h2_stream *stream);
 
 /**
  * Waits on output data from any stream in this session to become available. 
