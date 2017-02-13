@@ -2,7 +2,8 @@
 Changes with Apache 2.5.0
 
   *) mod_proxy_fcgi: Add ProxyFCGISetEnvIf to fixup CGI environment
-     variables just before invoking the FastCGI. [Eric Covener]
+     variables just before invoking the FastCGI. [Eric Covener,
+     Jacob Champion]
 
   *) mod_proxy: Allow the per-request environment variable "no-proxy" to
      be used as an alternative to ProxyPass /path !. This is primarily
@@ -28,11 +29,11 @@ Changes with Apache 2.5.0
   *) mod_proxy_hcheck: Ensure thread-safety when concurrent healthchecks are
      in use (ProxyHCTPsize > 0).  PR 60071.  [Yann Ylavic, Jim Jagielski]
 
-  *) mod_proxy_fcgi: Return to 2.4.20-and-earlier behavior of leaving 
-     a "proxy:fcgi://" prefix in the SCRIPT_FILENAME environment variable by 
+  *) mod_proxy_fcgi: Return to 2.4.20-and-earlier behavior of leaving
+     a "proxy:fcgi://" prefix in the SCRIPT_FILENAME environment variable by
      default.  Add ProxyFCGIBackendType to allow the type of backend to be
      specified so these kinds of fixups can be restored without impacting
-     FPM. PR60576 [Eric Covener]
+     FPM. PR60576 [Eric Covener, Jim Jagielski]
 
   *) Don't set SO_REUSEPORT unless ListenCoresBucketsRatio is greater
      than zero.  [Eric Covener]
