@@ -64,24 +64,6 @@ static void H2_TASK_OUT_LOG(int lvl, h2_task *task, apr_bucket_brigade *bb,
     }
 }
 
-static void h2_beam_log(h2_bucket_beam *beam, int id, const char *msg, 
-                        conn_rec *c, int level)
-{
-    if (beam && APLOG_C_IS_LEVEL(c,level)) {
-        char buffer[2048];
-        apr_size_t off = 0;
-        
-        off += apr_snprintf(buffer+off, H2_ALEN(buffer)-off, "cl=%d, ", beam->closed);
-        off += h2_util_bl_print(buffer+off, H2_ALEN(buffer)-off, "red", ", ", &beam->send_list);
-        off += h2_util_bb_print(buffer+off, H2_ALEN(buffer)-off, "green", ", ", beam->recv_buffer);
-        off += h2_util_bl_print(buffer+off, H2_ALEN(buffer)-off, "hold", ", ", &beam->hold_list);
-        off += h2_util_bl_print(buffer+off, H2_ALEN(buffer)-off, "purge", "", &beam->purge_list);
-
-        ap_log_cerror(APLOG_MARK, level, 0, c, "beam(%ld-%d): %s %s", 
-                      c->id, id, msg, buffer);
-    }
-}
-
 /*******************************************************************************
  * task input handling
  ******************************************************************************/
@@ -115,11 +97,11 @@ static apr_status_t send_out(h2_task *task, apr_bucket_brigade* bb, int block)
 
     apr_brigade_length(bb, 0, &written);
     H2_TASK_OUT_LOG(APLOG_TRACE2, task, bb, "h2_task send_out");
-    h2_beam_log(task->output.beam, task->stream_id, "send_out(before)", task->c, APLOG_TRACE2);
+    h2_beam_log(task->output.beam, task->c, APLOG_TRACE2, "send_out(before)");
     /* engines send unblocking */
     status = h2_beam_send(task->output.beam, bb, 
                           block? APR_BLOCK_READ : APR_NONBLOCK_READ);
-    h2_beam_log(task->output.beam, task->stream_id, "send_out(after)", task->c, APLOG_TRACE2);
+    h2_beam_log(task->output.beam, task->c, APLOG_TRACE2, "send_out(after)");
     
     if (APR_STATUS_IS_EAGAIN(status)) {
         apr_brigade_length(bb, 0, &left);
@@ -423,7 +405,7 @@ void h2_task_redo(h2_task *task)
 void h2_task_rst(h2_task *task, int error)
 {
     task->rst_error = error;
-    h2_beam_abort(task->input.beam);
+    h2_beam_leave(task->input.beam);
     if (!task->worker_done) {
         h2_beam_abort(task->output.beam);
     }
@@ -642,7 +624,7 @@ static apr_status_t h2_task_process_request(h2_task *task, conn_rec *c)
         }
         
         /* After the call to ap_process_request, the
-         * request pool will have been deleted.  We set
+         * request pool may have been deleted.  We set
          * r=NULL here to ensure that any dereference
          * of r that might be added later in this function
          * will result in a segfault immediately instead

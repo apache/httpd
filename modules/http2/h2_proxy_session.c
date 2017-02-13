@@ -40,7 +40,7 @@ typedef struct h2_proxy_stream {
     const char *p_server_uri;
     int standalone;
 
-    h2_stream_state_t state;
+    h2_proxy_stream_state_t state;
     unsigned int suspended : 1;
     unsigned int waiting_on_100 : 1;
     unsigned int waiting_on_ping : 1;

@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_http2: http/2 streams now with state handling/transitions as defined
+     in RFC7540. Stream cleanup/connection shutdown reworked to become easier
+     to understand/maintain/debug. Added many asserts on state and cleanup 
+     transitions. [Stefan Eissing]
+     
   *) mod_proxy_fcgi: Add ProxyFCGISetEnvIf to fixup CGI environment
      variables just before invoking the FastCGI. [Eric Covener,
      Jacob Champion]
