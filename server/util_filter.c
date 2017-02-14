@@ -584,9 +584,9 @@ AP_DECLARE(apr_status_t) ap_pass_brigade(ap_filter_t *next,
                                          apr_bucket_brigade *bb)
 {
     if (next) {
-        apr_bucket *e;
+        apr_bucket *e = APR_BRIGADE_LAST(bb);
 
-        if ((e = APR_BRIGADE_LAST(bb)) && APR_BUCKET_IS_EOS(e) && next->r) {
+        if (e != APR_BRIGADE_SENTINEL(bb) && APR_BUCKET_IS_EOS(e) && next->r) {
             /* This is only safe because HTTP_HEADER filter is always in
              * the filter stack.   This ensures that there is ALWAYS a
              * request-based filter that we can attach this to.  If the
