@@ -5017,6 +5017,8 @@ static int default_handler(request_rec *r)
         APR_BRIGADE_INSERT_TAIL(bb, e);
 
         status = ap_pass_brigade(r->output_filters, bb);
+        apr_brigade_cleanup(bb);
+
         if (status == APR_SUCCESS
             || r->status != HTTP_OK
             || c->aborted) {
