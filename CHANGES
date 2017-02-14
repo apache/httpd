@@ -1,7 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
-  *) mod_http2: comforts ap_check_pipeline() on slave connections
+  *) mod_http2: not counting file buckets again stream max buffer limits. 
+     Effectively transfering static files in one step from slave to master 
+     connection. [Stefan Eissing]
+    
+  *) mod_http2: comforting ap_check_pipeline() on slave connections
      to facilitate reuse (see https://github.com/icing/mod_h2/issues/128).
      [Stefan Eissing, reported by Armin Abfalterer]
      

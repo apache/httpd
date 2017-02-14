@@ -200,7 +200,8 @@ apr_status_t h2_session_set_prio(h2_session *session,
                                  const struct h2_priority *prio);
 
 #define H2_SSSN_MSG(s, msg)     \
-    "h2_session(%ld,%s): "msg, s->id, h2_session_state_str(s->state)
+    "h2_session(%ld,%s,%d): "msg, s->id, h2_session_state_str(s->state), \
+                            s->open_streams
 
 #define H2_SSSN_LOG(aplogno, s, msg)    aplogno H2_SSSN_MSG(s, msg)
 

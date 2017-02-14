@@ -162,12 +162,11 @@ static void H2_STREAM_OUT_LOG(int lvl, h2_stream *s, const char *tag)
     if (APLOG_C_IS_LEVEL(s->session->c, lvl)) {
         conn_rec *c = s->session->c;
         char buffer[4 * 1024];
-        const char *line = "(null)";
         apr_size_t len, bmax = sizeof(buffer)/sizeof(buffer[0]);
         
         len = h2_util_bb_print(buffer, bmax, tag, "", s->out_buffer);
-        ap_log_cerror(APLOG_MARK, lvl, 0, c, "bb_dump(%s): %s", 
-                      c->log_id, len? buffer : line);
+        ap_log_cerror(APLOG_MARK, lvl, 0, c, 
+                      H2_STRM_MSG(s, "out-buffer(%s)"), len? buffer : "empty");
     }
 }
 
@@ -477,6 +476,7 @@ h2_stream *h2_stream_create(int id, apr_pool_t *pool, h2_session *session,
     stream->pool         = pool;
     stream->session      = session;
     stream->monitor      = monitor;
+    stream->max_mem      = session->max_stream_mem;
     
     h2_beam_create(&stream->input, pool, id, "input", H2_BEAM_OWNER_SEND, 0);
     h2_beam_send_from(stream->input, stream->pool);
@@ -675,20 +675,6 @@ apr_status_t h2_stream_add_header(h2_stream *stream,
     return status;
 }
 
-static apr_status_t fill_buffer(h2_stream *stream, apr_size_t amount)
-{
-    apr_status_t status;
-    
-    if (!stream->output) {
-        return APR_EOF;
-    }
-    status = h2_beam_receive(stream->output, stream->out_buffer, 
-                             APR_NONBLOCK_READ, amount);
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, stream->session->c,
-                  H2_STRM_MSG(stream, "beam_received"));
-    return status;
-}
-
 static apr_bucket *get_first_headers_bucket(apr_bucket_brigade *bb)
 {
     if (bb) {
@@ -723,31 +709,36 @@ apr_status_t h2_stream_out_prepare(h2_stream *stream, apr_off_t *plen,
     
     c = stream->session->c;
     prep_output(stream);
-
+    
+    /* determine how much we'd like to send. We cannot send more than
+     * is requested. But we can reduce the size in case the master
+     * connection operates in smaller chunks. (TSL warmup) */
     if (stream->session->io.write_size > 0) {
         max_chunk = stream->session->io.write_size - 9; /* header bits */ 
     }
     *plen = requested = (*plen > 0)? H2MIN(*plen, max_chunk) : max_chunk;
     
-    H2_STREAM_OUT_LOG(APLOG_TRACE2, stream, "h2_stream_out_prepare_pre");
     h2_util_bb_avail(stream->out_buffer, plen, peos);
-    if (!*peos && *plen < requested) {
-        /* try to get more data */
-        status = fill_buffer(stream, (requested - *plen) + H2_DATA_CHUNK_SIZE);
+    if (!*peos && *plen < requested && *plen < stream->max_mem) {
+        H2_STREAM_OUT_LOG(APLOG_TRACE2, stream, "pre");
+        status = h2_beam_receive(stream->output, stream->out_buffer, 
+                                 APR_NONBLOCK_READ, stream->max_mem - *plen);
         if (APR_STATUS_IS_EOF(status)) {
             apr_bucket *eos = apr_bucket_eos_create(c->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(stream->out_buffer, eos);
             status = APR_SUCCESS;
         }
         else if (status == APR_EAGAIN) {
-            /* did not receive more, it's ok */
             status = APR_SUCCESS;
         }
         *plen = requested;
         h2_util_bb_avail(stream->out_buffer, plen, peos);
+        H2_STREAM_OUT_LOG(APLOG_TRACE2, stream, "post");
     }
-    H2_STREAM_OUT_LOG(APLOG_TRACE2, stream, "h2_stream_out_prepare_post");
-    
+    else {
+        H2_STREAM_OUT_LOG(APLOG_TRACE2, stream, "ok");
+    }
+
     b = APR_BRIGADE_FIRST(stream->out_buffer);
     while (b != APR_BRIGADE_SENTINEL(stream->out_buffer)) {
         e = APR_BUCKET_NEXT(b);
@@ -761,7 +752,7 @@ apr_status_t h2_stream_out_prepare(h2_stream *stream, apr_off_t *plen,
         }
         b = e;
     }
-    
+
     b = get_first_headers_bucket(stream->out_buffer);
     if (b) {
         /* there are HEADERS to submit */

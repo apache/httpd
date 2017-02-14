@@ -216,6 +216,17 @@ static void leave_yellow(h2_bucket_beam *beam, h2_beam_lock *pbl)
     }
 }
 
+static apr_off_t bucket_mem_used(apr_bucket *b)
+{
+    if (APR_BUCKET_IS_FILE(b)) {
+        return 0;
+    }
+    else {
+        /* should all have determinate length */
+        return b->length;
+    }
+}
+
 static int report_consumption(h2_bucket_beam *beam)
 {
     int rv = 0;
@@ -545,6 +556,7 @@ apr_status_t h2_beam_create(h2_bucket_beam **pbeam, apr_pool_t *pool,
     H2_BLIST_INIT(&beam->hold_list);
     H2_BLIST_INIT(&beam->purge_list);
     H2_BPROXY_LIST_INIT(&beam->proxies);
+    beam->tx_mem_limits = 1;
     beam->max_buf_size = max_buf_size;
     apr_pool_pre_cleanup_register(pool, beam, beam_cleanup);
 
@@ -999,14 +1011,15 @@ transfer:
             for (brecv = APR_BRIGADE_FIRST(bb);
                  brecv != APR_BRIGADE_SENTINEL(bb);
                  brecv = APR_BUCKET_NEXT(brecv)) {
-                 remain -= brecv->length;
-                 if (remain < 0) {
-                     apr_bucket_split(brecv, brecv->length+remain);
-                     beam->recv_buffer = apr_brigade_split_ex(bb, 
-                                                        APR_BUCKET_NEXT(brecv), 
-                                                        beam->recv_buffer);
-                     break;
-                 }
+                remain -= (beam->tx_mem_limits? bucket_mem_used(brecv) 
+                           : brecv->length);
+                if (remain < 0) {
+                    apr_bucket_split(brecv, brecv->length+remain);
+                    beam->recv_buffer = apr_brigade_split_ex(bb, 
+                                                             APR_BUCKET_NEXT(brecv), 
+                                                             beam->recv_buffer);
+                    break;
+                }
             }
         }
 
@@ -1123,13 +1136,7 @@ apr_off_t h2_beam_get_mem_used(h2_bucket_beam *beam)
         for (b = H2_BLIST_FIRST(&beam->send_list); 
             b != H2_BLIST_SENTINEL(&beam->send_list);
             b = APR_BUCKET_NEXT(b)) {
-            if (APR_BUCKET_IS_FILE(b)) {
-                /* do not count */
-            }
-            else {
-                /* should all have determinate length */
-                l += b->length;
-            }
+            l += bucket_mem_used(b);
         }
         leave_yellow(beam, &bl);
     }
