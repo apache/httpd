@@ -112,9 +112,9 @@ apr_status_t h2_filter_core_input(ap_filter_t* f,
     apr_interval_time_t saved_timeout = UNSET;
     
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, f->c,
-                  "core_input(%ld): read, %s, mode=%d, readbytes=%ld", 
-                  (long)f->c->id, (block == APR_BLOCK_READ)? "BLOCK_READ" : "NONBLOCK_READ", 
-                  mode, (long)readbytes);
+                  "h2_session(%ld): read, %s, mode=%d, readbytes=%ld", 
+                  (long)f->c->id, (block == APR_BLOCK_READ)? 
+                  "BLOCK_READ" : "NONBLOCK_READ", mode, (long)readbytes);
     
     if (mode == AP_MODE_INIT || mode == AP_MODE_SPECULATIVE) {
         return ap_get_brigade(f->next, brigade, mode, block, readbytes);
@@ -161,11 +161,11 @@ apr_status_t h2_filter_core_input(ap_filter_t* f,
         case APR_EAGAIN:
         case APR_TIMEUP:
             ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, f->c,
-                          "core_input(%ld): read", (long)f->c->id);
+                          "h2_session(%ld): read", f->c->id);
             break;
         default:
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, f->c, APLOGNO(03046)
-                          "h2_conn_io: error reading");
+                          "h2_session(%ld): error reading", f->c->id);
             break;
     }
     return status;

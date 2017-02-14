@@ -45,6 +45,7 @@ struct h2_task;
 struct h2_req_engine;
 struct h2_request;
 struct h2_response_parser;
+struct h2_stream;
 struct h2_worker;
 
 typedef struct h2_task h2_task;
@@ -91,11 +92,7 @@ struct h2_task {
     struct h2_req_engine *assigned; /* engine that task has been assigned to */
 };
 
-h2_task *h2_task_create(conn_rec *c, int stream_id, 
-                        const struct h2_request *req, 
-                        struct h2_bucket_beam *input, 
-                        struct h2_bucket_beam *output, 
-                        struct h2_mplx *mplx);
+h2_task *h2_task_create(struct h2_stream *stream, conn_rec *slave);
 
 void h2_task_destroy(h2_task *task);
 

@@ -51,19 +51,6 @@ typedef struct {
         APR_RING_PREPEND(&(a)->list, &(b)->list, apr_bucket, link);	\
     } while (0)
 
-/**
- * Print the buckets in the list into the buffer (type and lengths).
- * @param buffer the buffer to print into
- * @param bmax max number of characters to place in buffer, incl. trailing 0
- * @param tag tag string for this bucket list
- * @param sep separator to use
- * @param bl the bucket list to print
- * @return number of characters printed
- */
-apr_size_t h2_util_bl_print(char *buffer, apr_size_t bmax, 
-                            const char *tag, const char *sep, 
-                            h2_blist *bl);
-
 /*******************************************************************************
  * h2_bucket_beam
  ******************************************************************************/
@@ -201,6 +188,7 @@ struct h2_bucket_beam {
     unsigned int aborted : 1;
     unsigned int closed : 1;
     unsigned int close_sent : 1;
+    unsigned int tx_mem_limits : 1; /* only memory size counts on transfers */
 
     void *m_ctx;
     h2_beam_mutex_enter *m_enter;
@@ -306,6 +294,16 @@ void h2_beam_abort(h2_bucket_beam *beam);
 apr_status_t h2_beam_close(h2_bucket_beam *beam);
 
 /**
+ * Receives leaves the beam, e.g. will no longer read. This will
+ * interrupt any sender blocked writing and fail future send. 
+ * 
+ * Call from the receiver side only.
+ */
+apr_status_t h2_beam_leave(h2_bucket_beam *beam);
+
+int h2_beam_is_closed(h2_bucket_beam *beam);
+
+/**
  * Return APR_SUCCESS when all buckets in transit have been handled. 
  * When called with APR_BLOCK_READ and a mutex set, will wait until the green
  * side has consumed all data. Otherwise APR_EAGAIN is returned.
@@ -400,5 +398,7 @@ typedef apr_bucket *h2_bucket_beamer(h2_bucket_beam *beam,
                                      const apr_bucket *src);
 
 void h2_register_bucket_beamer(h2_bucket_beamer *beamer);
+
+void h2_beam_log(h2_bucket_beam *beam, conn_rec *c, int level, const char *msg);
 
 #endif /* h2_bucket_beam_h */

@@ -95,7 +95,7 @@ static void bucket_destroy(void *data)
         }
         apr_bucket_free(h);
         if (stream) {
-            h2_stream_eos_destroy(stream);
+            h2_stream_dispatch(stream, H2_SEV_EOS_SENT);
         }
     }
 }

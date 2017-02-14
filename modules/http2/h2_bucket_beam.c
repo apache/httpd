@@ -191,34 +191,6 @@ static apr_bucket *h2_beam_bucket(h2_bucket_beam *beam,
 }
 
 
-apr_size_t h2_util_bl_print(char *buffer, apr_size_t bmax, 
-                            const char *tag, const char *sep, 
-                            h2_blist *bl)
-{
-    apr_size_t off = 0;
-    const char *sp = "";
-    apr_bucket *b;
-    
-    if (bl) {
-        memset(buffer, 0, bmax--);
-        off += apr_snprintf(buffer+off, bmax-off, "%s(", tag);
-        for (b = H2_BLIST_FIRST(bl); 
-             bmax && (b != H2_BLIST_SENTINEL(bl));
-             b = APR_BUCKET_NEXT(b)) {
-            
-            off += h2_util_bucket_print(buffer+off, bmax-off, b, sp);
-            sp = " ";
-        }
-        off += apr_snprintf(buffer+off, bmax-off, ")%s", sep);
-    }
-    else {
-        off += apr_snprintf(buffer+off, bmax-off, "%s(null)%s", tag, sep);
-    }
-    return off;
-}
-
-
-
 /*******************************************************************************
  * bucket beam that can transport buckets across threads
  ******************************************************************************/
@@ -241,6 +213,17 @@ static void leave_yellow(h2_bucket_beam *beam, h2_beam_lock *pbl)
 {
     if (pbl->leave) {
         pbl->leave(pbl->leave_ctx, pbl->mutex);
+    }
+}
+
+static apr_off_t bucket_mem_used(apr_bucket *b)
+{
+    if (APR_BUCKET_IS_FILE(b)) {
+        return 0;
+    }
+    else {
+        /* should all have determinate length */
+        return b->length;
     }
 }
 
@@ -426,8 +409,10 @@ static apr_status_t beam_close(h2_bucket_beam *beam)
     return APR_SUCCESS;
 }
 
-static void beam_set_send_pool(h2_bucket_beam *beam, apr_pool_t *pool);
-static void beam_set_recv_pool(h2_bucket_beam *beam, apr_pool_t *pool);
+int h2_beam_is_closed(h2_bucket_beam *beam)
+{
+    return beam->closed;
+}
 
 static int pool_register(h2_bucket_beam *beam, apr_pool_t *pool, 
                          apr_status_t (*cleanup)(void *))
@@ -455,20 +440,6 @@ static apr_status_t beam_recv_cleanup(void *data)
     beam->recv_buffer = NULL;
     beam->recv_pool = NULL;
     return APR_SUCCESS;
-}
-
-static void beam_set_recv_pool(h2_bucket_beam *beam, apr_pool_t *pool) 
-{
-    if (beam->recv_pool == pool || 
-        (beam->recv_pool && pool 
-         && apr_pool_is_ancestor(beam->recv_pool, pool))) {
-        /* when receiver same or sub-pool of existing, stick
-         * to the the pool we already have. */
-        return;
-    }
-    pool_kill(beam, beam->recv_pool, beam_recv_cleanup);
-    beam->recv_pool = pool;
-    pool_register(beam, beam->recv_pool, beam_recv_cleanup);
 }
 
 static apr_status_t beam_send_cleanup(void *data)
@@ -585,6 +556,7 @@ apr_status_t h2_beam_create(h2_bucket_beam **pbeam, apr_pool_t *pool,
     H2_BLIST_INIT(&beam->hold_list);
     H2_BLIST_INIT(&beam->purge_list);
     H2_BPROXY_LIST_INIT(&beam->proxies);
+    beam->tx_mem_limits = 1;
     beam->max_buf_size = max_buf_size;
     apr_pool_pre_cleanup_register(pool, beam, beam_cleanup);
 
@@ -681,6 +653,21 @@ apr_status_t h2_beam_close(h2_bucket_beam *beam)
         leave_yellow(beam, &bl);
     }
     return beam->aborted? APR_ECONNABORTED : APR_SUCCESS;
+}
+
+apr_status_t h2_beam_leave(h2_bucket_beam *beam)
+{
+    h2_beam_lock bl;
+    
+    if (enter_yellow(beam, &bl) == APR_SUCCESS) {
+        if (beam->recv_buffer && !APR_BRIGADE_EMPTY(beam->recv_buffer)) {
+            apr_brigade_cleanup(beam->recv_buffer);
+        }
+        beam->aborted = 1;
+        beam_close(beam);
+        leave_yellow(beam, &bl);
+    }
+    return APR_SUCCESS;
 }
 
 apr_status_t h2_beam_wait_empty(h2_bucket_beam *beam, apr_read_type_e block)
@@ -919,7 +906,6 @@ transfer:
         }
 
         /* transfer enough buckets from our receiver brigade, if we have one */
-        beam_set_recv_pool(beam, bb->p);
         while (beam->recv_buffer
                && !APR_BRIGADE_EMPTY(beam->recv_buffer)
                && (readbytes <= 0 || remain >= 0)) {
@@ -1025,14 +1011,15 @@ transfer:
             for (brecv = APR_BRIGADE_FIRST(bb);
                  brecv != APR_BRIGADE_SENTINEL(bb);
                  brecv = APR_BUCKET_NEXT(brecv)) {
-                 remain -= brecv->length;
-                 if (remain < 0) {
-                     apr_bucket_split(brecv, brecv->length+remain);
-                     beam->recv_buffer = apr_brigade_split_ex(bb, 
-                                                        APR_BUCKET_NEXT(brecv), 
-                                                        beam->recv_buffer);
-                     break;
-                 }
+                remain -= (beam->tx_mem_limits? bucket_mem_used(brecv) 
+                           : brecv->length);
+                if (remain < 0) {
+                    apr_bucket_split(brecv, brecv->length+remain);
+                    beam->recv_buffer = apr_brigade_split_ex(bb, 
+                                                             APR_BUCKET_NEXT(brecv), 
+                                                             beam->recv_buffer);
+                    break;
+                }
             }
         }
 
@@ -1149,13 +1136,7 @@ apr_off_t h2_beam_get_mem_used(h2_bucket_beam *beam)
         for (b = H2_BLIST_FIRST(&beam->send_list); 
             b != H2_BLIST_SENTINEL(&beam->send_list);
             b = APR_BUCKET_NEXT(b)) {
-            if (APR_BUCKET_IS_FILE(b)) {
-                /* do not count */
-            }
-            else {
-                /* should all have determinate length */
-                l += b->length;
-            }
+            l += bucket_mem_used(b);
         }
         leave_yellow(beam, &bl);
     }
@@ -1228,4 +1209,16 @@ int h2_beam_report_consumption(h2_bucket_beam *beam)
     }
     return 0;
 }
+
+void h2_beam_log(h2_bucket_beam *beam, conn_rec *c, int level, const char *msg)
+{
+    if (beam && APLOG_C_IS_LEVEL(c,level)) {
+        ap_log_cerror(APLOG_MARK, level, 0, c, 
+                      "beam(%ld-%d,%s,closed=%d,aborted=%d,empty=%d,buf=%ld): %s", 
+                      c->id, beam->id, beam->tag, beam->closed, beam->aborted, 
+                      h2_beam_empty(beam), (long)h2_beam_get_buffered(beam),
+                      msg);
+    }
+}
+
 

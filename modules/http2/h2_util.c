@@ -922,6 +922,9 @@ apr_size_t h2_util_bucket_print(char *buffer, apr_size_t bmax,
         off += apr_snprintf(buffer+off, bmax-off, "%s", sep);
     }
     
+    if (bmax <= off) {
+        return off;
+    }
     if (APR_BUCKET_IS_METADATA(b)) {
         if (APR_BUCKET_IS_EOS(b)) {
             off += apr_snprintf(buffer+off, bmax-off, "eos");
@@ -965,10 +968,12 @@ apr_size_t h2_util_bucket_print(char *buffer, apr_size_t bmax,
             btype = "pool";
         }
         
-        off += apr_snprintf(buffer+off, bmax-off, "%s[%ld]", 
-                            btype, 
-                            (long)(b->length == ((apr_size_t)-1)? 
-                                   -1 : b->length));
+        if (bmax > off) {
+            off += apr_snprintf(buffer+off, bmax-off, "%s[%ld]", 
+                                btype, 
+                                (long)(b->length == ((apr_size_t)-1)? 
+                                       -1 : b->length));
+        }
     }
     return off;
 }
@@ -981,20 +986,24 @@ apr_size_t h2_util_bb_print(char *buffer, apr_size_t bmax,
     const char *sp = "";
     apr_bucket *b;
     
-    if (bb) {
-        memset(buffer, 0, bmax--);
-        off += apr_snprintf(buffer+off, bmax-off, "%s(", tag);
-        for (b = APR_BRIGADE_FIRST(bb); 
-             bmax && (b != APR_BRIGADE_SENTINEL(bb));
-             b = APR_BUCKET_NEXT(b)) {
-            
-            off += h2_util_bucket_print(buffer+off, bmax-off, b, sp);
-            sp = " ";
+    if (bmax > 1) {
+        if (bb) {
+            memset(buffer, 0, bmax--);
+            off += apr_snprintf(buffer+off, bmax-off, "%s(", tag);
+            for (b = APR_BRIGADE_FIRST(bb); 
+                 (bmax > off) && (b != APR_BRIGADE_SENTINEL(bb));
+                 b = APR_BUCKET_NEXT(b)) {
+                
+                off += h2_util_bucket_print(buffer+off, bmax-off, b, sp);
+                sp = " ";
+            }
+            if (bmax > off) {
+                off += apr_snprintf(buffer+off, bmax-off, ")%s", sep);
+            }
         }
-        off += apr_snprintf(buffer+off, bmax-off, ")%s", sep);
-    }
-    else {
-        off += apr_snprintf(buffer+off, bmax-off, "%s(null)%s", tag, sep);
+        else {
+            off += apr_snprintf(buffer+off, bmax-off, "%s(null)%s", tag, sep);
+        }
     }
     return off;
 }
