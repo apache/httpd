@@ -2924,11 +2924,11 @@ selbst zu identifizieren</description>
     Hostname im <code>Host:</code>-Header der Anfrage auftauchen muss,
     damit sie diesem virtuellen Host zugeordnet wird.</p>
 
-    <p>Möglicherweise steht der Server hinter einem Gerät, dass SSL verarbeitet steht,
-    z.B. einem reverse proxy, load balancer oder einem SSL offloader. Wenn dies zutrifft, 
+    <p>Möglicherweise steht der Server hinter einem Gerät, dass SSL verarbeitet
+    z.B. einem Reve-Proxy, Load-Balancer oder einem SSL-Offloader. Wenn dies zutrifft, 
     spezifizieren Sie in der <directive>ServerName</directive> Anweisung
     das <code>https://</code> Protokoll und den Port, welcher vom Client zum
-    Verbinden genutzt wird um sicherzustellen, dass der Server die richtigen selbst referenzierenden URLs generiert.
+    Verbinden genutzt wird, um sicherzustellen, dass der Server die richtigen selbstreferenzierenden URLs generiert.
     </p>
 
     <p>Lesen Sie bitte die Beschreibung der Direktiven <directive
