@@ -480,38 +480,36 @@ static int h2_task_pre_conn(conn_rec* c, void *arg)
     return OK;
 }
 
-h2_task *h2_task_create(conn_rec *c, int stream_id, const h2_request *req, 
-                        h2_bucket_beam *input, h2_bucket_beam *output,  
-                        h2_mplx *mplx)
+h2_task *h2_task_create(h2_stream *stream, conn_rec *slave)
 {
     apr_pool_t *pool;
     h2_task *task;
     
-    ap_assert(mplx);
-    ap_assert(c);
-    ap_assert(req);
+    ap_assert(slave);
+    ap_assert(stream);
+    ap_assert(stream->request);
 
-    apr_pool_create(&pool, c->pool);
+    apr_pool_create(&pool, slave->pool);
     task = apr_pcalloc(pool, sizeof(h2_task));
     if (task == NULL) {
-        ap_log_cerror(APLOG_MARK, APLOG_ERR, APR_ENOMEM, c,
-                      APLOGNO(02941) "h2_task(%ld-%d): create stream task", 
-                      c->id, stream_id);
+        ap_log_cerror(APLOG_MARK, APLOG_ERR, APR_ENOMEM, slave,
+                      H2_STRM_LOG(APLOGNO(02941), stream, "create task"));
         return NULL;
     }
-    task->id          = apr_psprintf(pool, "%ld-%d", c->master->id, stream_id);
-    task->stream_id   = stream_id;
-    task->c           = c;
-    task->mplx        = mplx;
-    task->c->keepalives = mplx->c->keepalives;
+    task->id          = apr_psprintf(pool, "%ld-%d", 
+                                     stream->session->id, stream->id);
+    task->stream_id   = stream->id;
+    task->c           = slave;
+    task->mplx        = stream->session->mplx;
+    task->c->keepalives = slave->master->keepalives;
     task->pool        = pool;
-    task->request     = req;
-    task->input.beam  = input;
-    task->output.beam = output;
+    task->request     = stream->request;
+    task->input.beam  = stream->input;
+    task->output.beam = stream->output;
     
-    h2_beam_send_from(output, task->pool);
+    h2_beam_send_from(stream->output, task->pool);
     apr_thread_cond_create(&task->cond, pool);
-    h2_ctx_create_for(c, task);
+    h2_ctx_create_for(slave, task);
     
     return task;
 }

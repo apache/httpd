@@ -127,6 +127,7 @@ typedef struct h2_session {
     const char *last_status_msg;    /* the one already reported */
 } h2_session;
 
+const char *h2_session_state_str(h2_session_state state);
 
 /**
  * Create a new h2_session for the given connection.
@@ -197,5 +198,10 @@ struct h2_stream *h2_session_push(h2_session *session,
 apr_status_t h2_session_set_prio(h2_session *session, 
                                  struct h2_stream *stream, 
                                  const struct h2_priority *prio);
+
+#define H2_SSSN_MSG(s, msg)     \
+    "h2_session(%ld,%s): "msg, s->id, h2_session_state_str(s->state)
+
+#define H2_SSSN_LOG(aplogno, s, msg)    aplogno H2_SSSN_MSG(s, msg)
 
 #endif /* defined(__mod_h2__h2_session__) */

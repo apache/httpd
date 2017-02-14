@@ -148,12 +148,12 @@ static int can_beam_file(void *ctx, h2_bucket_beam *beam,  apr_file_t *file)
     if (m->tx_handles_reserved > 0) {
         --m->tx_handles_reserved;
         ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, m->c,
-                      "h2_mplx(%ld-%d): beaming file %s, tx_avail %d", 
+                      "h2_stream(%ld-%d,%s): beaming file, tx_avail %d", 
                       m->id, beam->id, beam->tag, m->tx_handles_reserved);
         return 1;
     }
     ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, m->c,
-                  "h2_mplx(%ld-%d): can_beam_file denied on %s", 
+                  "h2_stream(%ld-%d,%s): can_beam_file denied", 
                   m->id, beam->id, beam->tag);
     return 0;
 }
@@ -358,8 +358,7 @@ static int stream_destroy_iter(void *ctx, void *val)
     
     if (stream->input == NULL || stream->output == NULL) {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, m->c, 
-                      "h2_stream(%ld-%d,%s): already with beams==NULL",
-                      m->id, stream->id, h2_stream_state_str(stream));
+                      H2_STRM_MSG(stream, "already with beams==NULL"));
         return 0;
     }
     /* Process outstanding events before destruction */
@@ -421,11 +420,11 @@ static int report_stream_iter(void *ctx, void *val) {
     h2_stream *stream = val;
     h2_task *task = stream->task;
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c,
-                  H2_STREAM_MSG(stream, "started=%d, scheduled=%d, ready=%d"), 
+                  H2_STRM_MSG(stream, "started=%d, scheduled=%d, ready=%d"), 
                   !!stream->task, stream->scheduled, h2_stream_is_ready(stream));
     if (task) {
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, m->c, /* NO APLOGNO */
-                      H2_STREAM_MSG(stream, "->03198: %s %s %s"
+                      H2_STRM_MSG(stream, "->03198: %s %s %s"
                       "[started=%d/done=%d/frozen=%d]"), 
                       task->request->method, task->request->authority, 
                       task->request->path, task->worker_started, 
@@ -433,7 +432,7 @@ static int report_stream_iter(void *ctx, void *val) {
     }
     else {
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, m->c, /* NO APLOGNO */
-                      H2_STREAM_MSG(stream, "->03198: no task"));
+                      H2_STRM_MSG(stream, "->03198: no task"));
     }
     return 1;
 }
@@ -442,8 +441,7 @@ static int unexpected_stream_iter(void *ctx, void *val) {
     h2_mplx *m = ctx;
     h2_stream *stream = val;
     ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, m->c, /* NO APLOGNO */
-                  H2_STREAM_MSG(stream, 
-                  "unexpected, started=%d, scheduled=%d, ready=%d"), 
+                  H2_STRM_MSG(stream, "unexpected, started=%d, scheduled=%d, ready=%d"), 
                   !!stream->task, stream->scheduled, h2_stream_is_ready(stream));
     return 1;
 }
@@ -499,8 +497,7 @@ void h2_mplx_release_and_join(h2_mplx *m, apr_thread_cond_t *wait)
             /* This can happen if we have very long running requests
              * that do not time out on IO. */
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, m->c, APLOGNO(03198)
-                          "h2_mplx(%ld): release, waiting for %d seconds now for "
-                          "%d outstanding tasks", 
+                          "h2_mplx(%ld): waited %d sec for %d tasks", 
                           m->id, i*wait_secs, (int)h2_ihash_count(m->shold));
             h2_ihash_iter(m->shold, report_stream_iter, m);
         }
@@ -513,7 +510,7 @@ void h2_mplx_release_and_join(h2_mplx *m, apr_thread_cond_t *wait)
     
     /* 4. With all workers done, all streams should be in spurge */
     if (!h2_ihash_empty(m->shold)) {
-        ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, m->c, APLOGNO()
+        ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, m->c, APLOGNO(03516)
                       "h2_mplx(%ld): unexpected %d streams in hold", 
                       m->id, (int)h2_ihash_count(m->shold));
         h2_ihash_iter(m->shold, unexpected_stream_iter, m);
@@ -536,7 +533,7 @@ apr_status_t h2_mplx_stream_cleanup(h2_mplx *m, h2_stream *stream)
     
     if ((status = enter_mutex(m, &acquired)) == APR_SUCCESS) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c, 
-                      "h2_mplx(%ld-%d): cleanup stream.", m->id, stream->id);
+                      H2_STRM_MSG(stream, "cleanup"));
         stream_cleanup(m, stream);        
         leave_mutex(m, acquired);
     }
@@ -737,8 +734,7 @@ apr_status_t h2_mplx_process(h2_mplx *m, struct h2_stream *stream,
                 apr_atomic_set32(&m->event_pending, 1);
                 h2_iq_append(m->readyq, stream->id);
                 ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, m->c,
-                              "h2_mplx(%ld-%d): process, add to readyq", 
-                              m->c->id, stream->id);
+                              H2_STRM_MSG(stream, "process, add to readyq")); 
             }
             else {
                 if (!m->need_registration) {
@@ -749,8 +745,7 @@ apr_status_t h2_mplx_process(h2_mplx *m, struct h2_stream *stream,
                 }
                 h2_iq_add(m->q, stream->id, cmp, ctx);                
                 ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, m->c,
-                              "h2_mplx(%ld-%d): process, add to q", 
-                              m->c->id, stream->id);
+                              H2_STRM_MSG(stream, "process, add to q")); 
             }
         }
         leave_mutex(m, acquired);
@@ -786,8 +781,7 @@ static h2_task *next_stream_task(h2_mplx *m)
             slave->sbh = m->c->sbh;
             slave->aborted = 0;
             if (!stream->task) {
-                stream->task = h2_task_create(slave, stream->id, stream->request, 
-                                              stream->input, stream->output, m);
+                stream->task = h2_task_create(stream, slave);
                 
                 m->c->keepalives++;
                 apr_table_setn(slave->notes, H2_TASK_ID_NOTE, stream->task->id);
@@ -915,7 +909,7 @@ static void task_done(h2_mplx *m, h2_task *task, h2_req_engine *ngn)
     if (stream) {
         /* stream not cleaned up, stay around */
         ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c,
-                      H2_STREAM_MSG(stream, "task_done, stream open")); 
+                      H2_STRM_MSG(stream, "task_done, stream open")); 
         /* more data will not arrive, resume the stream */
         h2_beam_mutex_set(stream->input, NULL, NULL, NULL);
         h2_beam_mutex_set(stream->output, NULL, NULL, NULL);
@@ -924,7 +918,7 @@ static void task_done(h2_mplx *m, h2_task *task, h2_req_engine *ngn)
     }
     else if ((stream = h2_ihash_get(m->shold, task->stream_id)) != NULL) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c,
-                      H2_STREAM_MSG(stream, "task_done, in hold"));
+                      H2_STRM_MSG(stream, "task_done, in hold"));
         /* stream was just waiting for us. */
         h2_beam_mutex_set(stream->input, NULL, NULL, NULL);
         h2_beam_mutex_set(stream->output, NULL, NULL, NULL);
@@ -932,13 +926,12 @@ static void task_done(h2_mplx *m, h2_task *task, h2_req_engine *ngn)
         stream_joined(m, stream);
     }
     else if ((stream = h2_ihash_get(m->spurge, task->stream_id)) != NULL) {
-        ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, m->c, APLOGNO()
-                      "h2_mplx(%s): task_done, stream already in spurge", 
-                      task->id);
+        ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, m->c,   
+                      H2_STRM_LOG(APLOGNO(03517), stream, "already in spurge"));
         ap_assert("stream should not be in spurge" == NULL);
     }
     else {
-        ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, m->c, APLOGNO()
+        ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, m->c, APLOGNO(03518)
                       "h2_mplx(%s): task_done, stream not found", 
                       task->id);
         ap_assert("stream should still be available" == NULL);
