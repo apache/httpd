@@ -204,18 +204,21 @@ apr_status_t h2_conn_run(struct h2_ctx *ctx, conn_rec *c)
 {
     apr_status_t status;
     int mpm_state = 0;
+    h2_session *session = h2_ctx_session_get(ctx);
     
+    ap_assert(session);
     do {
         if (c->cs) {
             c->cs->sense = CONN_SENSE_DEFAULT;
             c->cs->state = CONN_STATE_HANDLER;
         }
     
-        status = h2_session_process(h2_ctx_session_get(ctx), async_mpm);
+        status = h2_session_process(session, async_mpm);
         
         if (APR_STATUS_IS_EOF(status)) {
-            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, c, APLOGNO(03045)
-                          "h2_session(%ld): process, closing conn", c->id);
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, c, 
+                          H2_SSSN_LOG(APLOGNO(03045), session, 
+                          "process, closing conn"));
             c->keepalive = AP_CONN_CLOSE;
         }
         else {
@@ -253,10 +256,11 @@ conn_rec *h2_slave_create(conn_rec *master, int slave_id, apr_pool_t *parent)
     apr_pool_t *pool;
     conn_rec *c;
     void *cfg;
+    module *mpm;
     
     ap_assert(master);
     ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, master,
-                  "h2_conn(%ld): create slave", master->id);
+                  "h2_stream(%ld-%d): create slave", master->id, slave_id);
     
     /* We create a pool with its own allocator to be used for
      * processing a request. This is the only way to have the processing
@@ -271,7 +275,8 @@ conn_rec *h2_slave_create(conn_rec *master, int slave_id, apr_pool_t *parent)
     c = (conn_rec *) apr_palloc(pool, sizeof(conn_rec));
     if (c == NULL) {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, APR_ENOMEM, master, 
-                      APLOGNO(02913) "h2_task: creating conn");
+                      APLOGNO(02913) "h2_session(%ld-%d): create slave",
+                      master->id, slave_id);
         return NULL;
     }
     
@@ -304,21 +309,20 @@ conn_rec *h2_slave_create(conn_rec *master, int slave_id, apr_pool_t *parent)
     /* TODO: not all mpm modules have learned about slave connections yet.
      * copy their config from master to slave.
      */
-    if (h2_conn_mpm_module()) {
-        cfg = ap_get_module_config(master->conn_config, h2_conn_mpm_module());
-        ap_set_module_config(c->conn_config, h2_conn_mpm_module(), cfg);
+    if ((mpm = h2_conn_mpm_module()) != NULL) {
+        cfg = ap_get_module_config(master->conn_config, mpm);
+        ap_set_module_config(c->conn_config, mpm, cfg);
     }
 
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c, 
-                  "h2_task: creating conn, master=%ld, sid=%ld, logid=%s", 
-                  master->id, c->id, c->log_id);
+                  "h2_stream(%ld-%d): created slave", master->id, slave_id);
     return c;
 }
 
 void h2_slave_destroy(conn_rec *slave)
 {
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, slave,
-                  "h2_slave_conn(%ld): destroy (task=%s)", slave->id,
+                  "h2_stream(%s): destroy slave", 
                   apr_table_get(slave->notes, H2_TASK_ID_NOTE));
     apr_pool_destroy(slave->pool);
 }

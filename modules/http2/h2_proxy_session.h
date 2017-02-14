@@ -24,6 +24,16 @@ struct h2_proxy_iqueue;
 struct h2_proxy_ihash_t;
 
 typedef enum {
+    H2_STREAM_ST_IDLE,
+    H2_STREAM_ST_OPEN,
+    H2_STREAM_ST_RESV_LOCAL,
+    H2_STREAM_ST_RESV_REMOTE,
+    H2_STREAM_ST_CLOSED_INPUT,
+    H2_STREAM_ST_CLOSED_OUTPUT,
+    H2_STREAM_ST_CLOSED,
+} h2_proxy_stream_state_t;
+
+typedef enum {
     H2_PROXYS_ST_INIT,             /* send initial SETTINGS, etc. */
     H2_PROXYS_ST_DONE,             /* finished, connection close */
     H2_PROXYS_ST_IDLE,             /* no streams to process */
