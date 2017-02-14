@@ -328,19 +328,20 @@ static void task_destroy(h2_mplx *m, h2_task *task)
     conn_rec *slave = NULL;
     int reuse_slave = 0;
     
-    h2_beam_log(task->output.beam, m->c, APLOG_DEBUG, 
-                  APLOGNO(03385) "h2_task_destroy");
-    
     slave = task->c;
     reuse_slave = ((m->spare_slaves->nelts < m->spare_slaves->nalloc)
                    && !task->rst_error);
     
     if (slave) {
         if (reuse_slave && slave->keepalive == AP_CONN_KEEPALIVE) {
+            h2_beam_log(task->output.beam, m->c, APLOG_DEBUG, 
+                        APLOGNO(03385) "h2_task_destroy, reuse slave");    
             h2_task_destroy(task);
             APR_ARRAY_PUSH(m->spare_slaves, conn_rec*) = slave;
         }
         else {
+            h2_beam_log(task->output.beam, m->c, APLOG_TRACE1, 
+                        "h2_task_destroy, destroy slave");    
             slave->sbh = NULL;
             h2_slave_destroy(slave);
         }
