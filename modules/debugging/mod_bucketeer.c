@@ -65,6 +65,7 @@ static apr_status_t bucketeer_out_filter(ap_filter_t *f,
     request_rec *r = f->r;
     bucketeer_ctx_t *ctx = f->ctx;
     bucketeer_filter_config_t *c;
+    apr_status_t rv;
 
     c = ap_get_module_config(r->server->module_config, &bucketeer_module);
 
@@ -81,12 +82,11 @@ static apr_status_t bucketeer_out_filter(ap_filter_t *f,
         apr_table_unset(f->r->headers_out, "Content-Length");
     }
 
-    for (e = APR_BRIGADE_FIRST(bb);
-         e != APR_BRIGADE_SENTINEL(bb);
-         e = APR_BUCKET_NEXT(e))
-    {
+    while (!APR_BRIGADE_EMPTY(bb)) {
         const char *data;
         apr_size_t len, i, lastpos;
+
+        e = APR_BRIGADE_FIRST(bb);
 
         if (APR_BUCKET_IS_EOS(e)) {
             APR_BUCKET_REMOVE(e);
@@ -96,7 +96,9 @@ static apr_status_t bucketeer_out_filter(ap_filter_t *f,
              * Time to pass it along down the chain.
              */
             ap_remove_output_filter(f);
-            return ap_pass_brigade(f->next, ctx->bb);
+            rv = ap_pass_brigade(f->next, ctx->bb);
+            apr_brigade_cleanup(ctx->bb);
+            return rv;
         }
 
         if (APR_BUCKET_IS_FLUSH(e)) {
@@ -104,14 +106,15 @@ static apr_status_t bucketeer_out_filter(ap_filter_t *f,
              * Ignore flush buckets for the moment..
              * we decide what to stream
              */
+            apr_bucket_delete(e);
             continue;
         }
 
         if (APR_BUCKET_IS_METADATA(e)) {
             /* metadata bucket */
-            apr_bucket *cpy;
-            apr_bucket_copy(e, &cpy);
-            APR_BRIGADE_INSERT_TAIL(ctx->bb, cpy);
+            APR_BUCKET_REMOVE(e);
+            apr_bucket_setaside(e, f->r->pool);
+            APR_BRIGADE_INSERT_TAIL(ctx->bb, e);
             continue;
         }
 
@@ -140,8 +143,6 @@ static apr_status_t bucketeer_out_filter(ap_filter_t *f,
                         APR_BRIGADE_INSERT_TAIL(ctx->bb, p);
                     }
                     if (data[i] == c->passdelimiter) {
-                        apr_status_t rv;
-
                         rv = ap_pass_brigade(f->next, ctx->bb);
                         if (rv) {
                             return rv;
@@ -163,6 +164,8 @@ static apr_status_t bucketeer_out_filter(ap_filter_t *f,
                 APR_BRIGADE_INSERT_TAIL(ctx->bb, p);
             }
         }
+
+        apr_bucket_delete(e);
     }
 
     return APR_SUCCESS;
