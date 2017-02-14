@@ -700,9 +700,8 @@ apr_array_header_t *h2_push_collect_update(h2_stream *stream,
                                             cache_digest, stream->pool);
         if (status != APR_SUCCESS) {
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, session->c,
-                          APLOGNO(03057)
-                          "h2_session(%ld): push diary set from Cache-Digest: %s", 
-                          session->id, cache_digest);
+                          H2_SSSN_LOG(APLOGNO(03057), session,
+                          "push diary set from Cache-Digest: %s"), cache_digest);
         }
     }
     pushes = h2_push_collect(stream->pool, req, stream->push_policy, res);

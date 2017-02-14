@@ -272,8 +272,9 @@ const char *h2_stream_state_str(h2_stream *stream);
 int h2_stream_is_ready(h2_stream *stream);
 
 
-#define H2_STREAM_MSG(s, msg)     \
+#define H2_STRM_MSG(s, msg)     \
     "h2_stream(%ld-%d,%s): "msg, s->session->id, s->id, h2_stream_state_str(s)
 
+#define H2_STRM_LOG(aplogno, s, msg)    aplogno H2_STRM_MSG(s, msg)
 
 #endif /* defined(__mod_h2__h2_stream__) */
