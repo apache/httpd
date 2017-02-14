@@ -38,6 +38,7 @@
  *      - TLS overhead (60-100) 
  * ~= 1300 bytes */
 #define WRITE_SIZE_INITIAL    1300
+
 /* Calculated like this: max TLS record size 16*1024
  *   - 40 (IP) - 20 (TCP) - 40 (TCP options) 
  *    - TLS overhead (60-100) 
@@ -116,7 +117,7 @@ static void h2_conn_io_bb_log(conn_rec *c, int stream_id, int level,
         line = *buffer? buffer : "(empty)";
     }
     /* Intentional no APLOGNO */
-    ap_log_cerror(APLOG_MARK, level, 0, c, "bb_dump(%s)-%s: %s", 
+    ap_log_cerror(APLOG_MARK, level, 0, c, "h2_session(%s)-%s: %s", 
                   c->log_id, tag, line);
 
 }
@@ -157,8 +158,6 @@ apr_status_t h2_conn_io_init(h2_conn_io *io, conn_rec *c,
     return APR_SUCCESS;
 }
 
-#define LOG_SCRATCH 0
-
 static void append_scratch(h2_conn_io *io) 
 {
     if (io->scratch && io->slen > 0) {
@@ -166,11 +165,6 @@ static void append_scratch(h2_conn_io *io)
                                                apr_bucket_free,
                                                io->c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(io->output, b);
-#if LOG_SCRATCH
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, io->c, APLOGNO(03386)
-                      "h2_conn_io(%ld): append_scratch(%ld)", 
-                      io->c->id, (long)io->slen);
-#endif
         io->scratch = NULL;
         io->slen = io->ssize = 0;
     }
@@ -218,11 +212,6 @@ static apr_status_t read_to_scratch(h2_conn_io *io, apr_bucket *b)
             return status;
         }
         status = apr_file_read(fd, io->scratch + io->slen, &len);
-#if LOG_SCRATCH
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, io->c, APLOGNO(03387)
-                      "h2_conn_io(%ld): FILE_to_scratch(%ld)", 
-                      io->c->id, (long)len); 
-#endif
         if (status != APR_SUCCESS && status != APR_EOF) {
             return status;
         }
@@ -231,11 +220,6 @@ static apr_status_t read_to_scratch(h2_conn_io *io, apr_bucket *b)
     else {
         status = apr_bucket_read(b, &data, &len, APR_BLOCK_READ);
         if (status == APR_SUCCESS) {
-#if LOG_SCRATCH
-            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, io->c, APLOGNO(03388)
-                          "h2_conn_io(%ld): read_to_scratch(%ld)", 
-                          io->c->id, (long)b->length); 
-#endif
             memcpy(io->scratch+io->slen, data, len);
             io->slen += len;
         }
@@ -251,17 +235,11 @@ static void check_write_size(h2_conn_io *io)
         /* long time not written, reset write size */
         io->write_size = WRITE_SIZE_INITIAL;
         io->bytes_written = 0;
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE4, 0, io->c,
-                      "h2_conn_io(%ld): timeout write size reset to %ld", 
-                      (long)io->c->id, (long)io->write_size);
     }
     else if (io->write_size < WRITE_SIZE_MAX 
              && io->bytes_written >= io->warmup_size) {
         /* connection is hot, use max size */
         io->write_size = WRITE_SIZE_MAX;
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE4, 0, io->c,
-                      "h2_conn_io(%ld): threshold reached, write size now %ld", 
-                      (long)io->c->id, (long)io->write_size);
     }
 }
 
@@ -283,11 +261,10 @@ static apr_status_t pass_output(h2_conn_io *io, int flush)
         return APR_SUCCESS;
     }
     
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE4, 0, c, "h2_conn_io: pass_output");
     ap_update_child_status(c->sbh, SERVER_BUSY_WRITE, NULL);
     apr_brigade_length(bb, 0, &bblen);
+    h2_conn_io_bb_log(c, 0, APLOG_TRACE2, "out", bb);
     
-    h2_conn_io_bb_log(c, 0, APLOG_TRACE2, "master conn pass", bb);
     status = ap_pass_brigade(c->output_filters, bb);
     if (status == APR_SUCCESS) {
         io->bytes_written += (apr_size_t)bblen;
@@ -342,21 +319,11 @@ apr_status_t h2_conn_io_write(h2_conn_io *io, const char *data, size_t length)
         while (length > 0) {
             remain = assure_scratch_space(io);
             if (remain >= length) {
-#if LOG_SCRATCH
-                ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, io->c, APLOGNO(03389)
-                              "h2_conn_io(%ld): write_to_scratch(%ld)", 
-                              io->c->id, (long)length); 
-#endif
                 memcpy(io->scratch + io->slen, data, length);
                 io->slen += length;
                 length = 0;
             }
             else {
-#if LOG_SCRATCH
-                ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, io->c, APLOGNO(03390)
-                              "h2_conn_io(%ld): write_to_scratch(%ld)", 
-                              io->c->id, (long)remain); 
-#endif
                 memcpy(io->scratch + io->slen, data, remain);
                 io->slen += remain;
                 data += remain;
@@ -397,11 +364,6 @@ apr_status_t h2_conn_io_pass(h2_conn_io *io, apr_bucket_brigade *bb)
                     /* complete write_size bucket, append unchanged */
                     APR_BUCKET_REMOVE(b);
                     APR_BRIGADE_INSERT_TAIL(io->output, b);
-#if LOG_SCRATCH
-                    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, io->c, APLOGNO(03391)
-                                  "h2_conn_io(%ld): pass bucket(%ld)", 
-                                  io->c->id, (long)b->length);
-#endif
                     continue;
                 }
             }

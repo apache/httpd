@@ -188,6 +188,7 @@ struct h2_bucket_beam {
     unsigned int aborted : 1;
     unsigned int closed : 1;
     unsigned int close_sent : 1;
+    unsigned int tx_mem_limits : 1; /* only memory size counts on transfers */
 
     void *m_ctx;
     h2_beam_mutex_enter *m_enter;

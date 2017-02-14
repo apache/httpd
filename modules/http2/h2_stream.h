@@ -70,6 +70,7 @@ struct h2_stream {
     
     struct h2_bucket_beam *input;
     struct h2_bucket_beam *output;
+    apr_size_t max_mem;         /* maximum amount of data buffered */
     apr_bucket_brigade *out_buffer;
 
     int rst_error;              /* stream error for RST_STREAM */
