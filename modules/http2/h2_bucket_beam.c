@@ -191,36 +191,6 @@ static apr_bucket *h2_beam_bucket(h2_bucket_beam *beam,
 }
 
 
-static apr_size_t h2_util_bl_print(char *buffer, apr_size_t bmax, 
-                                   const char *tag, const char *sep, 
-                                   h2_blist *bl)
-{
-    apr_size_t off = 0;
-    const char *sp = "";
-    apr_bucket *b;
-    
-    if (bl) {
-        memset(buffer, 0, bmax--);
-        off += apr_snprintf(buffer+off, bmax-off, "%s(", tag);
-        for (b = H2_BLIST_FIRST(bl); 
-             (bmax > off) && (b != H2_BLIST_SENTINEL(bl));
-             b = APR_BUCKET_NEXT(b)) {
-            
-            off += h2_util_bucket_print(buffer+off, bmax-off, b, sp);
-            sp = " ";
-        }
-        if (bmax > off) {
-            off += apr_snprintf(buffer+off, bmax-off, ")%s", sep);
-        }
-    }
-    else {
-        off += apr_snprintf(buffer+off, bmax-off, "%s(null)%s", tag, sep);
-    }
-    return off;
-}
-
-
-
 /*******************************************************************************
  * bucket beam that can transport buckets across threads
  ******************************************************************************/
@@ -1235,26 +1205,12 @@ int h2_beam_report_consumption(h2_bucket_beam *beam)
 
 void h2_beam_log(h2_bucket_beam *beam, conn_rec *c, int level, const char *msg)
 {
-    if (0 && beam && APLOG_C_IS_LEVEL(c,level)) {
-        char buffer[2048];
-        apr_size_t blen = sizeof(buffer)/sizeof(buffer[0]) - 1;
-        apr_size_t off = 0;
-        
-        buffer[0] = 0;
-        off += apr_snprintf(buffer+off, blen-off, "cl=%d, ", beam->closed);
-        off += h2_util_bl_print(buffer+off, blen-off, "to_send", ", ", &beam->send_list);
-        if (blen > off) {
-            off += h2_util_bb_print(buffer+off, blen-off, "recv_buffer", ", ", beam->recv_buffer);
-            if (blen > off) {
-                off += h2_util_bl_print(buffer+off, blen-off, "hold", ", ", &beam->hold_list);
-                if (blen > off) {
-                    off += h2_util_bl_print(buffer+off, blen-off, "purge", "", &beam->purge_list);
-                }
-            }
-        }
-        buffer[blen-1] = 0;
-        ap_log_cerror(APLOG_MARK, level, 0, c, "beam(%ld-%d,%s): %s %s", 
-                      c->id, beam->id, beam->tag, msg, buffer);
+    if (beam && APLOG_C_IS_LEVEL(c,level)) {
+        ap_log_cerror(APLOG_MARK, level, 0, c, 
+                      "beam(%ld-%d,%s,closed=%d,aborted=%d,empty=%d,buf=%ld): %s", 
+                      c->id, beam->id, beam->tag, beam->closed, beam->aborted, 
+                      h2_beam_empty(beam), (long)h2_beam_get_buffered(beam),
+                      msg);
     }
 }
 

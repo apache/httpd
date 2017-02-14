@@ -254,9 +254,6 @@ static apr_status_t h2_filter_slave_in(ap_filter_t* f,
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, f->c,
                       "h2_slave_in(%s): get more data from mplx, block=%d, "
                       "readbytes=%ld", task->id, block, (long)readbytes);
-        
-        /* Override the block mode we get called with depending on the input's
-         * setting. */
         if (task->input.beam) {
             status = h2_beam_receive(task->input.beam, task->input.bb, block, 
                                      H2MIN(readbytes, 32*1024));
@@ -289,10 +286,11 @@ static apr_status_t h2_filter_slave_in(ap_filter_t* f,
         }
     }
     
-    /* Inspect the buckets received, detect EOS and apply
-     * chunked encoding if necessary */
+    /* Nothing there, no more data to get. Return APR_EAGAIN on
+     * speculative reads, this is ap_check_pipeline()'s trick to
+     * see if the connection needs closing. */
     if (status == APR_EOF && APR_BRIGADE_EMPTY(task->input.bb)) {
-        return APR_EOF;
+        return (mode == AP_MODE_SPECULATIVE)? APR_EAGAIN : APR_EOF;
     }
 
     h2_util_bb_log(f->c, task->stream_id, APLOG_TRACE2, 
