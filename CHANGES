@@ -31,7 +31,7 @@ Changes with Apache 2.4.26
   *) mod_proxy: Allow the per-request environment variable "no-proxy" to
      be used as an alternative to ProxyPass /path !. This is primarily
      to set exceptions for ProxyPass specified in <Location> context.
-     Use SetEnvIf, not SetEnv.
+     Use SetEnvIf, not SetEnv. PR 60458.
 
   *) mod_http2: fixes PR60599, sending proper response for conditional requests
      answered by mod_cache. [Jeff Wheelhouse, Stefan Eissing]
