@@ -167,6 +167,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4 convenience patch (includes CHANGES):
                   http://people.apache.org/~druggeri/patches/RemoteIPProxyProtocol.2.4.x.patch
      +1: druggeri, jim
+     -1: wrowe (as noted on list, not limiting to inbound primary pre_conn
+                scope correctly; lots of redundant code happpening per-request
+                for a per-connection behavior. Investigating further.)
 
   *) mod_brotli: Backport of mod_brotli filter
      trunk patch: http://svn.apache.org/r1761714
@@ -176,6 +179,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1779077
      2.4.x patch: http://home.apache.org/~jim/patches/brotli-2.4.patch
      +1: jim, jorton,
+     -1: wrowe (Premature, waiting on github.com/google/brotli stable release)
      jailletc36: doc should also be back-ported (r1779091 + r1779699)
 
   *) mod_ssl: work around leaks on (graceful) restart.
