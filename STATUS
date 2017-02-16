@@ -146,12 +146,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      are already or about to be closed.
      trunk patch: http://svn.apache.org/r1774541
      2.4.x patch: trunk works
-     +1: ylavic, jim
+     +1: ylavic, jim, wrowe
 
   *) mod_proxy_fcgi: Return HTTP 504 rather than 503 in case of proxy timeout.
      trunk patch: http://svn.apache.org/r1775858
      2.4 patch: trunk works (modulo CHANGES)
-     +1: elukey, jim
+     +1: elukey, jim, wrowe
 
   *) mod_ssl: work around leaks on (graceful) restart.
      trunk patch: http://svn.apache.org/r1781187
