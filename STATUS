@@ -153,22 +153,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4 patch: trunk works (modulo CHANGES)
      +1: elukey, jim
 
-  *) mod_brotli: Backport of mod_brotli filter
-     trunk patch: http://svn.apache.org/r1761714
-                  http://svn.apache.org/r1762512
-                  http://svn.apache.org/r1762515
-                  http://svn.apache.org/r1771791
-                  http://svn.apache.org/r1779077
-     2.4.x patch: http://home.apache.org/~jim/patches/brotli-2.4.patch
-     +1: jim, jorton,
-     -1: wrowe (Premature, waiting on github.com/google/brotli stable release)
-         jim asks: How long do you propose we wait on this?? Not sure why
-                   this is handled differently than OpenSSL 0.9.7 and APR
-                   0.9 was... What is wrong with releasing this with
-                   the caveat that it is dependent on a "still-in-work"
-                   library??
-     jailletc36: doc should also be back-ported (r1779091 + r1779699)
-
   *) mod_ssl: work around leaks on (graceful) restart.
      trunk patch: http://svn.apache.org/r1781187
                   http://svn.apache.org/r1781190
@@ -206,6 +190,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entried should be added at the START of the list ]
+
+  *) mod_brotli: Backport of mod_brotli filter
+     trunk patch: http://svn.apache.org/r1761714
+                  http://svn.apache.org/r1762512
+                  http://svn.apache.org/r1762515
+                  http://svn.apache.org/r1771791
+                  http://svn.apache.org/r1779077
+     2.4.x patch: http://home.apache.org/~jim/patches/brotli-2.4.patch
+     +1: jim, jorton,
+     -1: wrowe (Premature, waiting on github.com/google/brotli stable release)
+     jailletc36: doc should also be back-ported (r1779091 + r1779699)
+     NOTE: Awaiting next release post 0.5.2
 
   *) mod_remoteip: Add PROXY protocol support
      trunk patch: http://svn.apache.org/r1776575
