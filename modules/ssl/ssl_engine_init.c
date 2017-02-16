@@ -1326,7 +1326,7 @@ static apr_status_t ssl_init_server_certs(server_rec *s,
      */
 #if (OPENSSL_VERSION_NUMBER < 0x10100000L)
     else {
-#elif defined(SSL_CTX_set_ecdh_auto)
+#if defined(SSL_CTX_set_ecdh_auto)
         SSL_CTX_set_ecdh_auto(mctx->ssl_ctx, 1);
 #else
         eckey = EC_KEY_new_by_curve_name(NID_X9_62_prime256v1);
