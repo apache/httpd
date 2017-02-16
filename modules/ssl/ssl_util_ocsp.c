@@ -357,7 +357,7 @@ static STACK_OF(X509) *modssl_read_ocsp_certificates(const char *file)
     unsigned long err;
     STACK_OF(X509) *other_certs = NULL;
 
-    if ((bio = BIO_new(BIO_s_file_internal())) == NULL)
+    if ((bio = BIO_new(BIO_s_file())) == NULL)
         return NULL;
     if (BIO_read_filename(bio, file) <= 0) {
         BIO_free(bio);
