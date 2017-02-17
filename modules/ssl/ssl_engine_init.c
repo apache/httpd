@@ -1322,7 +1322,7 @@ static apr_status_t ssl_init_server_certs(server_rec *s,
     /*
      * ...otherwise, enable auto curve selection (OpenSSL 1.0.2)
      * or configure NIST P-256 (required to enable ECDHE for earlier versions)
-     * ECDH is always enabled in 1.0.2 unless excluded from SSLCipherList
+     * ECDH is always enabled in 1.1.0 unless excluded from SSLCipherList
      */
 #if (OPENSSL_VERSION_NUMBER < 0x10100000L)
     else {
@@ -1334,6 +1334,7 @@ static apr_status_t ssl_init_server_certs(server_rec *s,
 #endif
     }
 #endif
+    /* OpenSSL assures us that _free() is NULL-safe */
     EC_KEY_free(eckey);
     EC_GROUP_free(ecparams);
 #endif
