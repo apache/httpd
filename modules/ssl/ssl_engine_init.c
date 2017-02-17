@@ -1334,10 +1334,8 @@ static apr_status_t ssl_init_server_certs(server_rec *s,
 #endif
     }
 #endif
-    if (eckey)
-        EC_KEY_free(eckey);
-    if (ecparams)
-        EC_GROUP_free(ecparams);
+    EC_KEY_free(eckey);
+    EC_GROUP_free(ecparams);
 #endif
 
     return APR_SUCCESS;
