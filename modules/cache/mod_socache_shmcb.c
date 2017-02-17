@@ -612,7 +612,7 @@ static void socache_shmcb_status(ap_socache_instance_t *ctx,
     cache_pct = (100 * cache_total) / (header->subcache_data_size *
                                        header->subcache_num);
     /* Generate Output */
-    if (!(flags & AP_STATUS_SHORT)) {
+    if (!(flags & AP_STATUS_SHORT) && !(flags & AP_STATUS_TEXT)) {
         ap_rprintf(r, "cache type: <b>SHMCB</b>, shared memory: <b>%" APR_SIZE_T_FMT "</b> "
                    "bytes, current entries: <b>%d</b><br>",
                    ctx->shm_size, total);

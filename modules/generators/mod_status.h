@@ -32,6 +32,7 @@
 #define AP_STATUS_SHORT    (0x1)  /* short, non-HTML report requested */
 #define AP_STATUS_NOTABLE  (0x2)  /* HTML report without tables */
 #define AP_STATUS_EXTENDED (0x4)  /* detailed report */
+#define AP_STATUS_TEXT     (0x8)  /* long, text-mode report requested */
 
 #if !defined(WIN32)
 #define STATUS_DECLARE(type)            type

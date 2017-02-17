@@ -158,6 +158,7 @@ static void show_time(request_rec *r, apr_uint32_t tsecs)
 #define STAT_OPT_REFRESH  0
 #define STAT_OPT_NOTABLE  1
 #define STAT_OPT_AUTO     2
+#define STAT_OPT_SHORT    3
 
 struct stat_opt {
     int id;
@@ -170,6 +171,7 @@ static const struct stat_opt status_options[] = /* see #defines above */
     {STAT_OPT_REFRESH, "refresh", "Refresh"},
     {STAT_OPT_NOTABLE, "notable", NULL},
     {STAT_OPT_AUTO, "auto", NULL},
+    {STAT_OPT_SHORT, "short", NULL},
     {STAT_OPT_END, NULL, NULL}
 };
 
@@ -194,6 +196,7 @@ static int status_handler(request_rec *r)
     apr_off_t bcount, kbcount;
     long req_time;
     int short_report;
+    int text_mode;
     int no_table_report;
     worker_score *ws_record;
     process_score *ps_record;
@@ -233,6 +236,7 @@ static int status_handler(request_rec *r)
     bcount = 0;
     kbcount = 0;
     short_report = 0;
+    text_mode = 0;
     no_table_report = 0;
 
     pid_buffer = apr_palloc(r->pool, server_limit * sizeof(pid_t));
@@ -284,6 +288,9 @@ static int status_handler(request_rec *r)
                     break;
                 case STAT_OPT_AUTO:
                     ap_set_content_type(r, "text/plain; charset=ISO-8859-1");
+                    text_mode = 1;
+                    break;
+                case STAT_OPT_SHORT:
                     short_report = 1;
                     break;
                 }
@@ -396,7 +403,7 @@ static int status_handler(request_rec *r)
                                ap_scoreboard_image->global->restart_time);
     ap_get_loadavg(&t);
 
-    if (!short_report) {
+    if (!text_mode) {
         ap_rputs(DOCTYPE_HTML_3_2
                  "<html><head>\n"
                  "<title>Apache Status</title>\n"
@@ -487,14 +494,25 @@ static int status_handler(request_rec *r)
                            KBYTE * (float) kbcount / (float) count);
         }
         else { /* !short_report */
-            ap_rprintf(r, "<dt>Total accesses: %lu - Total Traffic: ", count);
-            format_kbyte_out(r, kbcount);
-            ap_rputs("</dt>\n", r);
+	    if(!text_mode) {
+		ap_rprintf(r, "<dt>Total accesses: %lu - Total Traffic: ", count);
+		format_kbyte_out(r, kbcount);
+		ap_rputs("</dt>\n", r);
+	    } else {
+		ap_rprintf(r, "Total accesses: %lu - Total Traffic: ", count);
+		format_kbyte_out(r, kbcount);
+		ap_rputs("\n", r);
+	    }
 
 #ifdef HAVE_TIMES
             /* Allow for OS/2 not having CPU stats */
-            ap_rprintf(r, "<dt>CPU Usage: u%g s%g cu%g cs%g",
+            if(!text_mode) {
+		ap_rprintf(r, "<dt>CPU Usage: u%g s%g cu%g cs%g",
                        tu / tick, ts / tick, tcu / tick, tcs / tick);
+	    } else {
+		ap_rprintf(r, "CPU Usage: u%g s%g cu%g cs%g",
+                       tu / tick, ts / tick, tcu / tick, tcs / tick);
+	    }
 
             if (ts || tu || tcu || tcs)
                 ap_rprintf(r, " - %.3g%% CPU load</dt>\n",
@@ -502,8 +520,13 @@ static int status_handler(request_rec *r)
 #endif
 
             if (up_time > 0) {
-                ap_rprintf(r, "<dt>%.3g requests/sec - ",
-                           (float) count / (float) up_time);
+		if(!text_mode) {
+		    ap_rprintf(r, "<dt>%.3g requests/sec - ",
+			       (float) count / (float) up_time);
+		} else {
+		    ap_rprintf(r, "%.3g requests/sec - ",
+			       (float) count / (float) up_time);
+		}
 
                 format_byte_out(r, (unsigned long)(KBYTE * (float) kbcount
                                                    / (float) up_time));
@@ -516,17 +539,19 @@ static int status_handler(request_rec *r)
                 ap_rputs("/request", r);
             }
 
-            ap_rputs("</dt>\n", r);
+            ap_rputs(!text_mode ? "</dt>" : "" "\n", r);
         } /* short_report */
     } /* ap_extended_status */
 
     if (!short_report)
-        ap_rprintf(r, "<dt>%d requests currently being processed, "
-                      "%d idle workers</dt>\n", busy, ready);
+        ap_rprintf(r, "%s"
+		   "%d requests currently being processed, "
+		   "%d idle workers"
+		   "%s", !text_mode ? "<dt>" : "", busy, ready, !text_mode ? "</dt>\n" : "\n");
     else
         ap_rprintf(r, "BusyWorkers: %d\nIdleWorkers: %d\n", busy, ready);
 
-    if (!short_report)
+    if (!short_report && !text_mode)
         ap_rputs("</dl>", r);
 
     if (is_async) {
@@ -537,17 +562,26 @@ static int status_handler(request_rec *r)
          * threads are counted. XXX: How to make this clear in the html?
          */
         int busy_workers = 0, idle_workers = 0;
-        if (!short_report)
-            ap_rputs("\n\n<table rules=\"all\" cellpadding=\"1%\">\n"
-                     "<tr><th rowspan=\"2\">Slot</th>"
-                         "<th rowspan=\"2\">PID</th>"
-                         "<th rowspan=\"2\">Stopping</th>"
-                         "<th colspan=\"2\">Connections</th>\n"
-                         "<th colspan=\"2\">Threads</th>"
-                         "<th colspan=\"3\">Async connections</th></tr>\n"
-                     "<tr><th>total</th><th>accepting</th>"
-                         "<th>busy</th><th>idle</th>"
-                         "<th>writing</th><th>keep-alive</th><th>closing</th></tr>\n", r);
+        if (!short_report) {
+		if (!text_mode) {
+			ap_rputs("\n\n<table rules=\"all\" cellpadding=\"1%\">\n"
+				 "<tr><th rowspan=\"2\">Slot</th>"
+				 "<th rowspan=\"2\">PID</th>"
+				 "<th rowspan=\"2\">Stopping</th>"
+				 "<th colspan=\"2\">Connections</th>\n"
+				 "<th colspan=\"2\">Threads</th>"
+				 "<th colspan=\"3\">Async connections</th></tr>\n"
+				 "<tr><th>total</th><th>accepting</th>"
+				 "<th>busy</th><th>idle</th>"
+				 "<th>writing</th><th>keep-alive</th><th>closing</th></tr>\n", r);
+		} else {
+			ap_rputs("\n=======\n"
+				 "PID\tConnections\tThreads\tAsync connections\n"
+				 "total\taccepting\tbusy\tidle\twriting\tkeep-alive\tclosing\n", r);
+
+		}
+	}
+
         for (i = 0; i < server_limit; ++i) {
             ps_record = ap_get_scoreboard_process(i);
             if (ps_record->pid) {
@@ -631,25 +665,45 @@ static int status_handler(request_rec *r)
     if (short_report)
         ap_rputs("\n", r);
     else {
-        ap_rputs("</pre>\n"
-                 "<p>Scoreboard Key:<br />\n"
-                 "\"<b><code>_</code></b>\" Waiting for Connection, \n"
-                 "\"<b><code>S</code></b>\" Starting up, \n"
-                 "\"<b><code>R</code></b>\" Reading Request,<br />\n"
-                 "\"<b><code>W</code></b>\" Sending Reply, \n"
-                 "\"<b><code>K</code></b>\" Keepalive (read), \n"
-                 "\"<b><code>D</code></b>\" DNS Lookup,<br />\n"
-                 "\"<b><code>C</code></b>\" Closing connection, \n"
-                 "\"<b><code>L</code></b>\" Logging, \n"
-                 "\"<b><code>G</code></b>\" Gracefully finishing,<br /> \n"
-                 "\"<b><code>I</code></b>\" Idle cleanup of worker, \n"
-                 "\"<b><code>.</code></b>\" Open slot with no current process<br />\n"
-                 "</p>\n", r);
+	if(!text_mode) {
+	    ap_rputs("</pre>\n"
+		     "<p>Scoreboard Key:<br />\n"
+		     "\"<b><code>_</code></b>\" Waiting for Connection, \n"
+		     "\"<b><code>S</code></b>\" Starting up, \n"
+		     "\"<b><code>R</code></b>\" Reading Request,<br />\n"
+		     "\"<b><code>W</code></b>\" Sending Reply, \n"
+		     "\"<b><code>K</code></b>\" Keepalive (read), \n"
+		     "\"<b><code>D</code></b>\" DNS Lookup,<br />\n"
+		     "\"<b><code>C</code></b>\" Closing connection, \n"
+		     "\"<b><code>L</code></b>\" Logging, \n"
+		     "\"<b><code>G</code></b>\" Gracefully finishing,<br /> \n"
+		     "\"<b><code>I</code></b>\" Idle cleanup of worker, \n"
+		     "\"<b><code>.</code></b>\" Open slot with no current process<br />\n"
+		     "</p>\n", r);
+	} else {
+	    ap_rputs("\n\nScoreboard Key:\n"
+		     "\"_\" Waiting for Connection, \n"
+		     "\"S\" Starting up, \n"
+		     "\"R\" Reading Request,\n"
+		     "\"W\" Sending Reply, \n"
+		     "\"K\" Keepalive (read), \n"
+		     "\"D\" DNS Lookup,\n"
+		     "\"C\" Closing connection, \n"
+		     "\"L\" Logging, \n"
+		     "\"G\" Gracefully finishing, \n"
+		     "\"I\" Idle cleanup of worker, \n"
+		     "\".\" Open slot with no current process\n"
+		     "\n", r);
+	}
         if (!ap_extended_status) {
             int j;
             int k = 0;
-            ap_rputs("PID Key: <br />\n"
-                     "<pre>\n", r);
+	    if(!text_mode) {
+		ap_rputs("PID Key: <br />\n"
+			 "<pre>\n", r);
+	    } else {
+		ap_rputs("PID Key: \n", r);
+	    }
             for (i = 0; i < server_limit; ++i) {
                 for (j = 0; j < thread_limit; ++j) {
                     int indx = (i * thread_limit) + j;
@@ -668,25 +722,38 @@ static int status_handler(request_rec *r)
                 }
             }
 
-            ap_rputs("\n"
-                     "</pre>\n", r);
+            if (!text_mode) {
+		ap_rputs("\n"
+			 "</pre>\n", r);
+	    } else {
+		ap_rputs("\n\n", r);
+	    }
         }
     }
 
     if (ap_extended_status && !short_report) {
-        if (no_table_report)
-            ap_rputs("<hr /><h2>Server Details</h2>\n\n", r);
-        else
-            ap_rputs("\n\n<table border=\"0\"><tr>"
-                     "<th>Srv</th><th>PID</th><th>Acc</th>"
-                     "<th>M</th>"
+	if (!text_mode) {
+	    if (no_table_report)
+		ap_rputs("<hr /><h2>Server Details</h2>\n\n", r);
+	    else
+		ap_rputs("\n\n<table border=\"0\"><tr>"
+			 "<th>Srv</th><th>PID</th><th>Acc</th>"
+			 "<th>M</th>"
 #ifdef HAVE_TIMES
-                     "<th>CPU\n</th>"
+			 "<th>CPU\n</th>"
 #endif
-                     "<th>SS</th><th>Req</th>"
-                     "<th>Conn</th><th>Child</th><th>Slot</th>"
-                     "<th>Client</th><th>Protocol</th><th>VHost</th>"
-                     "<th>Request</th></tr>\n\n", r);
+			 "<th>SS</th><th>Req</th>"
+			 "<th>Conn</th><th>Child</th><th>Slot</th>"
+			 "<th>Client</th><th>Protocol</th><th>VHost</th>"
+			 "<th>Request</th></tr>\n\n", r);
+	}
+	else {
+		ap_rputs("Srv\tPID\tAcc\tM\t"
+#ifdef HAVE_TIMES
+			 "CPU\t"
+#endif
+			 "SS\tReq\tConn\tChild\tSlot\tClient\tVHost\tRequest\n\n", r);
+	}
 
         for (i = 0; i < server_limit; ++i) {
             for (j = 0; j < thread_limit; ++j) {
@@ -813,58 +880,69 @@ static int status_handler(request_rec *r)
                 else { /* !no_table_report */
                     if (ws_record->status == SERVER_DEAD)
                         ap_rprintf(r,
-                                   "<tr><td><b>%d-%d</b></td><td>-</td><td>%d/%lu/%lu",
+                                   !text_mode ? "<tr><td><b>%d-%d</b></td><td>-</td><td>%d/%lu/%lu" : "%d-%d\n-\n%d/%lu/%lu",
                                    i, (int)worker_generation,
                                    (int)conn_lres, my_lres, lres);
-                    else
+                    else if (!text_mode)
                         ap_rprintf(r,
-                                   "<tr><td><b>%d-%d</b></td><td>%"
+				   "<tr><td><b>%d-%d</b></td><td>%"
                                    APR_PID_T_FMT
                                    "</td><td>%d/%lu/%lu",
                                    i, (int)worker_generation,
                                    worker_pid,
                                    (int)conn_lres,
                                    my_lres, lres);
+		    else
+                        ap_rprintf(r,
+				   "%d-%d\t"
+                                   APR_PID_T_FMT
+                                   "\t%d/%lu/%lu",
+                                   i, (int)worker_generation,
+                                   worker_pid,
+                                   (int)conn_lres,
+                                   my_lres, lres);
+
 
                     switch (ws_record->status) {
                     case SERVER_READY:
-                        ap_rputs("</td><td>_", r);
+                        if(!text_mode) ap_rputs(!text_mode ? "</td><td>_" : "_", r); else ap_rputs("_", r);
                         break;
                     case SERVER_STARTING:
-                        ap_rputs("</td><td><b>S</b>", r);
+                        if(!text_mode) ap_rputs(!text_mode ? "</td><td><b>S</b>" : "S", r); else ap_rputs("S", r);
                         break;
                     case SERVER_BUSY_READ:
-                        ap_rputs("</td><td><b>R</b>", r);
+                        if(!text_mode) ap_rputs(!text_mode ? "</td><td><b>R</b>" : "R", r); else ap_rputs("R", r);
                         break;
                     case SERVER_BUSY_WRITE:
-                        ap_rputs("</td><td><b>W</b>", r);
+                        if(!text_mode) ap_rputs(!text_mode ? "</td><td><b>W</b>" : "W", r); else ap_rputs("W", r);
                         break;
                     case SERVER_BUSY_KEEPALIVE:
-                        ap_rputs("</td><td><b>K</b>", r);
+                        if(!text_mode) ap_rputs(!text_mode ? "</td><td><b>K</b>" : "K", r); else ap_rputs("K", r);
                         break;
                     case SERVER_BUSY_LOG:
-                        ap_rputs("</td><td><b>L</b>", r);
+                        if(!text_mode) ap_rputs(!text_mode ? "</td><td><b>L</b>" : "L", r); else ap_rputs("L", r);
                         break;
                     case SERVER_BUSY_DNS:
-                        ap_rputs("</td><td><b>D</b>", r);
+                        if(!text_mode) ap_rputs(!text_mode ? "</td><td><b>D</b>" : "D", r); else ap_rputs("D", r);
                         break;
                     case SERVER_CLOSING:
-                        ap_rputs("</td><td><b>C</b>", r);
+                        if(!text_mode) ap_rputs(!text_mode ? "</td><td><b>C</b>" : "C", r); else ap_rputs("C", r);
                         break;
                     case SERVER_DEAD:
-                        ap_rputs("</td><td>.", r);
+                        if(!text_mode) ap_rputs(!text_mode ? "</td><td>." : ".", r); else ap_rputs(".", r);
                         break;
                     case SERVER_GRACEFUL:
-                        ap_rputs("</td><td>G", r);
+                        if(!text_mode) ap_rputs(!text_mode ? "</td><td>G" : "G", r); else ap_rputs("G", r);
                         break;
                     case SERVER_IDLE_KILL:
-                        ap_rputs("</td><td>I", r);
+                        if(!text_mode) ap_rputs(!text_mode ? "</td><td>I" : "I", r); else ap_rputs("I", r);
                         break;
                     default:
-                        ap_rputs("</td><td>?", r);
+                        if(!text_mode) ap_rputs(!text_mode ? "</td><td>?" : "?", r); else ap_rputs("?", r);
                         break;
                     }
 
+		    if (!text_mode) {
                     ap_rprintf(r,
                                "\n</td>"
 #ifdef HAVE_TIMES
@@ -896,11 +974,43 @@ static int status_handler(request_rec *r)
                                ap_escape_html(r->pool,
                                               ap_escape_logitem(r->pool,
                                                       ws_record->request)));
+		    } else {
+			ap_rprintf(r,
+				   "\t"
+#ifdef HAVE_TIMES
+				   "%.2f\t"
+#endif
+				   "%ld\t%ld",
+#ifdef HAVE_TIMES
+				   (ws_record->times.tms_utime +
+				    ws_record->times.tms_stime +
+				    ws_record->times.tms_cutime +
+				    ws_record->times.tms_cstime) / tick,
+#endif
+				   (long)apr_time_sec(nowtime -
+						      ws_record->last_used),
+				   (long)req_time);
+
+			ap_rprintf(r, "\t%-1.1f\t%-2.2f\t%-2.2f\t",
+				   (float)conn_bytes / KBYTE, (float) my_bytes / MBYTE,
+				   (float)bytes / MBYTE);
+
+			ap_rprintf(r, "%s\t%s\t%s\n",
+				   ap_escape_html(r->pool,
+						  ws_record->client),
+				   ap_escape_html(r->pool,
+						  ws_record->vhost),
+				   ap_escape_html(r->pool,
+						  ap_escape_logitem(r->pool,
+								    ws_record->request)));
+		    }
                 } /* no_table_report */
             } /* for (j...) */
         } /* for (i...) */
 
-        if (!no_table_report) {
+	ap_rputs("\n\n", r);
+
+        if (!no_table_report && !text_mode) {
             ap_rputs("</table>\n \
 <hr /> \
 <table>\n \
@@ -935,12 +1045,13 @@ static int status_handler(request_rec *r)
         int flags =
             (short_report ? AP_STATUS_SHORT : 0) |
             (no_table_report ? AP_STATUS_NOTABLE : 0) |
-            (ap_extended_status ? AP_STATUS_EXTENDED : 0);
+            (ap_extended_status ? AP_STATUS_EXTENDED : 0) |
+            (text_mode ? AP_STATUS_TEXT : 0);
 
         ap_run_status_hook(r, flags);
     }
 
-    if (!short_report) {
+    if (!short_report && !text_mode) {
         ap_rputs(ap_psignature("<hr />\n",r), r);
         ap_rputs("</body></html>\n", r);
     }

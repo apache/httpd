@@ -201,7 +201,11 @@ static int ssl_ext_status_hook(request_rec *r, int flags)
     if (mc == NULL || mc->sesscache == NULL)
         return OK;
 
-    if (!(flags & AP_STATUS_SHORT)) {
+    if ((flags & AP_STATUS_TEXT)) {
+	    ap_rputs("=======\n", r);
+	    ap_rputs("SSL/TLS Session Cache Status:\n", r);
+    }
+    else if (!(flags & AP_STATUS_SHORT)) {
         ap_rputs("<hr>\n", r);
         ap_rputs("<table cellspacing=0 cellpadding=0>\n", r);
         ap_rputs("<tr><td bgcolor=\"#000000\">\n", r);
@@ -223,7 +227,7 @@ static int ssl_ext_status_hook(request_rec *r, int flags)
         ssl_mutex_off(r->server);
     }
 
-    if (!(flags & AP_STATUS_SHORT)) {
+    if (!(flags & AP_STATUS_SHORT) || !(flags & AP_STATUS_TEXT)) {
         ap_rputs("</td></tr>\n", r);
         ap_rputs("</table>\n", r);
     }
