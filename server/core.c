@@ -546,15 +546,19 @@ static void *merge_core_server_configs(apr_pool_t *p, void *basev, void *virtv)
                            ? virt->merge_trailers
                            : base->merge_trailers;
 
-    if (virt->http09_enable != AP_HTTP09_UNSET)
-        conf->http09_enable = virt->http09_enable;
+    if (conf->http09_enable == AP_HTTP09_UNSET)
+        conf->http09_enable = base->http09_enable;
 
-    if (virt->http_conformance != AP_HTTP_CONFORMANCE_UNSET)
-        conf->http_conformance = virt->http_conformance;
+    if (conf->http_conformance == AP_HTTP_CONFORMANCE_UNSET)
+        conf->http_conformance = base->http_conformance;
 
-    if (virt->http_methods != AP_HTTP_METHODS_UNSET)
-        conf->http_methods = virt->http_methods;
+    if (conf->http_methods == AP_HTTP_METHODS_UNSET)
+        conf->http_methods = base->http_methods;
 
+    /* N.B. If you backport things here from 2.4, note that the
+     * merging logic needs to be inverted, since conf is initially a
+     * copy of vertv not basev. */
+    
     return conf;
 }
 
