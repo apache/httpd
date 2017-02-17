@@ -880,6 +880,9 @@ static int fcgi_do_request(apr_pool_t *p, request_rec *r,
         if (bad_request) {
             return ap_map_http_request_error(rv, HTTP_BAD_REQUEST);
         }
+        if (APR_STATUS_IS_TIMEUP(rv)) {
+            return HTTP_GATEWAY_TIME_OUT;
+        }
         return HTTP_SERVICE_UNAVAILABLE;
     }
 
