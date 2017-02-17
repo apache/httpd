@@ -145,10 +145,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_proxy_fcgi: Return HTTP 504 rather than 503 in case of proxy timeout.
-     trunk patch: http://svn.apache.org/r1775858
-     2.4 patch: trunk works (modulo CHANGES)
-     +1: elukey, jim, wrowe
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:

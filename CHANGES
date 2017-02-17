@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.26
 
+  *) mod_proxy_fcgi: Return HTTP 504 rather than 503 in case of proxy timeout.
+     [Luca Toscano]
+
   *) mod_http2: not counting file buckets again stream max buffer limits. 
      Effectively transfering static files in one step from slave to master 
      connection. [Stefan Eissing]
