@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy_http2: support for ProxyPreserverHost directive. [Stefan Eissing]
+  
   *) mod_proxy_fcgi: Add ProxyFCGISetEnvIf to fixup CGI environment
      variables just before invoking the FastCGI. [Eric Covener,
      Jacob Champion]
