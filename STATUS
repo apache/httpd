@@ -176,6 +176,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works *after r1779573 above* (modulo CHANGES)
      +1: ylavic, jim
 
+  *) mod_ssl: backport fix for PR 46037
+     trunk patch: http://svn.apache.org/r1781575
+                  http://svn.apache.org/r1781577
+                  http://svn.apache.org/r1781580
+                  http://svn.apache.org/r1781687
+                  http://svn.apache.org/r1783305
+     2.4.x patch: http://people.apache.org/~jfclere/patches/patch.46037.txt
+     +1: jfclere
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entried should be added at the START of the list ]
