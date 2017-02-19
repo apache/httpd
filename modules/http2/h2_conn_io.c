@@ -117,8 +117,8 @@ static void h2_conn_io_bb_log(conn_rec *c, int stream_id, int level,
         line = *buffer? buffer : "(empty)";
     }
     /* Intentional no APLOGNO */
-    ap_log_cerror(APLOG_MARK, level, 0, c, "h2_session(%s)-%s: %s", 
-                  c->log_id, tag, line);
+    ap_log_cerror(APLOG_MARK, level, 0, c, "h2_session(%ld)-%s: %s", 
+                  c->id, tag, line);
 
 }
 
