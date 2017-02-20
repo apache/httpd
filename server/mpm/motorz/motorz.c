@@ -1680,12 +1680,12 @@ static int motorz_check_config(apr_pool_t *p, apr_pool_t *plog,
 
     if (thread_limit > MAX_THREAD_LIMIT) {
         if (startup) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(00305)
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(10015)
                          "WARNING: ThreadLimit of %d exceeds compile-time "
                          "limit of %d threads, decreasing to %d.",
                          thread_limit, MAX_THREAD_LIMIT, MAX_THREAD_LIMIT);
         } else {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(00306)
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(10016)
                          "ThreadLimit of %d exceeds compile-time limit "
                          "of %d, decreasing to match",
                          thread_limit, MAX_THREAD_LIMIT);
@@ -1694,11 +1694,11 @@ static int motorz_check_config(apr_pool_t *p, apr_pool_t *plog,
     }
     else if (thread_limit < 1) {
         if (startup) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(00307)
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(10017)
                          "WARNING: ThreadLimit of %d not allowed, "
                          "increasing to 1.", thread_limit);
         } else {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(00308)
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(10018)
                          "ThreadLimit of %d not allowed, increasing to 1",
                          thread_limit);
         }
