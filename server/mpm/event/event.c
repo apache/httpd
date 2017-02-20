@@ -2135,7 +2135,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                                                  ptrans);
                     if (rc != APR_SUCCESS) {
                         ap_log_error(APLOG_MARK, APLOG_CRIT, rc,
-                                     ap_server_conf, APLOGNO(10003)
+                                     ap_server_conf, APLOGNO()
                                      "Failed to create transaction pool mutex");
                         ap_push_pool(worker_queue_info, ptrans);
                         signal_threads(ST_GRACEFUL);

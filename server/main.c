@@ -735,8 +735,6 @@ int main(int argc, const char * const argv[])
         apr_pool_clear(pconf);
         ap_clear_auth_internal();
 
-        apr_sleep(apr_time_from_sec(10));
-
         ap_main_state = AP_SQ_MS_CREATE_CONFIG;
         ap_config_generation++;
         for (mod = ap_prelinked_modules; *mod != NULL; mod++) {
