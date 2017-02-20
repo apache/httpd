@@ -45,6 +45,10 @@ AP_DECLARE_DATA extern ap_filter_rec_t *ap_chunk_filter_handle;
 AP_DECLARE_DATA extern ap_filter_rec_t *ap_http_outerror_filter_handle;
 AP_DECLARE_DATA extern ap_filter_rec_t *ap_byterange_filter_handle;
 
+typedef struct {
+    apr_bucket_brigade *tmp_bb;
+} http_conn_config;
+
 /*
  * These (input) filters are internal to the mod_core operation.
  */

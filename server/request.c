@@ -2040,8 +2040,10 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_sub_req_output_filter(ap_filter_t *f,
 AP_CORE_DECLARE_NONSTD(apr_status_t) ap_request_core_filter(ap_filter_t *f,
                                                             apr_bucket_brigade *bb)
 {
+    extern module http_module;
     apr_bucket *flush_upto = NULL;
     apr_status_t status = APR_SUCCESS;
+    http_conn_config *conn_cfg = ap_get_module_config(f->c->conn_config, &http_module);
     apr_bucket_brigade *tmp_bb = f->ctx;
 
     /*
@@ -2056,12 +2058,13 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_request_core_filter(ap_filter_t *f,
     if (!tmp_bb) {
         tmp_bb = f->ctx = apr_brigade_create(f->r->pool, f->c->bucket_alloc);
     }
+    APR_BRIGADE_CONCAT(tmp_bb, bb);
 
     /* Reinstate any buffered content */
-    ap_filter_reinstate_brigade(f, bb, &flush_upto);
+    ap_filter_reinstate_brigade(f, tmp_bb, &flush_upto);
 
-    while (!APR_BRIGADE_EMPTY(bb)) {
-        apr_bucket *bucket = APR_BRIGADE_FIRST(bb);
+    while (!APR_BRIGADE_EMPTY(tmp_bb)) {
+        apr_bucket *bucket = APR_BRIGADE_FIRST(tmp_bb);
 
         /* if the core has set aside data, back off and try later */
         if (!flush_upto) {
@@ -2091,16 +2094,16 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_request_core_filter(ap_filter_t *f,
 
         /* pass each bucket down the chain */
         APR_BUCKET_REMOVE(bucket);
-        APR_BRIGADE_INSERT_TAIL(tmp_bb, bucket);
+        APR_BRIGADE_INSERT_TAIL(bb, bucket);
+        status = ap_pass_brigade(f->next, bb);
+        apr_brigade_cleanup(bb);
 
-        status = ap_pass_brigade(f->next, tmp_bb);
         if (!APR_STATUS_IS_EOF(status) && (status != APR_SUCCESS)) {
             return status;
         }
-
     }
 
-    ap_filter_setaside_brigade(f, bb);
+    ap_filter_setaside_brigade(f, tmp_bb);
     return status;
 }
 
