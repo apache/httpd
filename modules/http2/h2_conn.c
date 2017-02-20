@@ -280,7 +280,7 @@ conn_rec *h2_slave_create(conn_rec *master, int slave_id, apr_pool_t *parent)
     status = apr_thread_mutex_create(&mutex, APR_THREAD_MUTEX_DEFAULT, pool);
     if (status != APR_SUCCESS) {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, status, master, 
-                      APLOGNO() "h2_session(%ld-%d): create slave mutex",
+                      APLOGNO(10004) "h2_session(%ld-%d): create slave mutex",
                       master->id, slave_id);
         apr_pool_destroy(pool);
         return NULL;

@@ -3783,6 +3783,7 @@ static apr_status_t send_parsed_content(ap_filter_t *f, apr_bucket_brigade *bb)
     /* if something's left over, pass it along */
     if (!APR_BRIGADE_EMPTY(pass_bb)) {
         rv = ap_pass_brigade(f->next, pass_bb);
+        apr_brigade_cleanup(pass_bb);
     }
     else {
         rv = APR_SUCCESS;
