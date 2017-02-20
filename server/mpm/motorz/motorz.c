@@ -187,10 +187,18 @@ static apr_status_t motorz_io_accept(motorz_core_t *mz, motorz_sb_t *sb)
     apr_pool_t *ptrans;
     apr_socket_t *socket;
     ap_listen_rec *lr = (ap_listen_rec *) sb->baton;
+    apr_allocator_t *allocator;
+    apr_thread_mutex_t *mutex;
 
-    apr_pool_create(&ptrans, NULL);
+    apr_allocator_create(&allocator);
+    apr_allocator_max_free_set(allocator, ap_max_mem_free);
+    apr_pool_create_ex(&ptrans, pconf, NULL, allocator);
+    apr_allocator_owner_set(allocator, ptrans);
+    apr_pool_tag(ptrans, "transaction");
 
-    apr_pool_tag(ptrans, "accept");
+    apr_thread_mutex_create(&mutex, APR_THREAD_MUTEX_DEFAULT, ptrans);
+    apr_allocator_mutex_set(allocator, mutex);
+
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(03318)
                          "motorz_io_accept(): entered");
 
@@ -862,8 +870,6 @@ static void child_main(motorz_core_t *mz, int child_num_arg, int child_bucket)
     apr_thread_t *thd = NULL;
     apr_os_thread_t osthd;
 #endif
-    apr_pool_t *ptrans;
-    apr_allocator_t *allocator;
     apr_status_t status;
     int i;
     ap_listen_rec *lr;
@@ -883,19 +889,13 @@ static void child_main(motorz_core_t *mz, int child_num_arg, int child_bucket)
     /* Get a sub context for global allocations in this child, so that
      * we can have cleanups occur when the child exits.
      */
-    apr_allocator_create(&allocator);
-    apr_allocator_max_free_set(allocator, ap_max_mem_free);
-    apr_pool_create_ex(&pchild, pconf, NULL, allocator);
-    apr_allocator_owner_set(allocator, pchild);
+    apr_pool_create(&pchild, pconf);
     apr_pool_tag(pchild, "pchild");
 
 #if APR_HAS_THREADS
     osthd = apr_os_thread_current();
     apr_os_thread_put(&thd, &osthd, pchild);
 #endif
-
-    apr_pool_create(&ptrans, pchild);
-    apr_pool_tag(ptrans, "transaction");
 
     /* close unused listeners and pods */
     for (i = 0; i < num_buckets; i++) {
@@ -994,8 +994,6 @@ static void child_main(motorz_core_t *mz, int child_num_arg, int child_bucket)
          * (Re)initialize this child to a pre-connection state.
          */
 
-        apr_pool_clear(ptrans);
-
         if ((ap_max_requests_per_child > 0
              && requests_this_child++ >= ap_max_requests_per_child)) {
             clean_child_exit(0);
@@ -1057,7 +1055,7 @@ static void child_main(motorz_core_t *mz, int child_num_arg, int child_bucket)
             die_now = 1;
         }
     }
-    apr_pool_clear(ptrans); /* kludge to avoid crash in APR reslist cleanup code */
+
     clean_child_exit(0);
 }
 
