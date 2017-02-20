@@ -365,11 +365,11 @@ static apr_status_t send_environment(proxy_conn_rec *conn, request_rec *r,
     }
 
 #if 0
-    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(09999)
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                   "r->filename: %s", (r->filename ? r->filename : "nil"));
-    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(09999)
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                   "r->uri: %s", (r->uri ? r->uri : "nil"));
-    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(09999)
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                   "r->path_info: %s", (r->path_info ? r->path_info : "nil"));
 #endif
 
