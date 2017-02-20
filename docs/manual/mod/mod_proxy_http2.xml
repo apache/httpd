@@ -82,16 +82,24 @@
     <example><title>HTTP/2 (TLS)</title>
     <highlight language="config">
 ProxyPass "/app" "h2://app.example.com"
-ProxyPassReverse "/app" "h2://app.example.com"
+ProxyPassReverse "/app" "https://app.example.com"
     </highlight>
     </example>
 
     <example><title>HTTP/2 (cleartext)</title>
     <highlight language="config">
 ProxyPass "/app" "h2c://app.example.com"
-ProxyPassReverse "/app" "h2c://app.example.com"
+ProxyPassReverse "/app" "http://app.example.com"
     </highlight>
     </example>
+
+    <note>
+      <p>The schemes to configure above in
+      <directive>ProxyPassReverse</directive> for reverse proxying
+      <code>h2</code> (or <code>h2c</code>) protocols are the usual
+      <code>https</code> (resp. <code>http</code>) as expected/used by
+      the user agent.</p>
+    </note>
     </section> <!-- /examples -->
 
 <section id="notes"><title>Request notes</title>
