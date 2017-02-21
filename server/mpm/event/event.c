@@ -1941,7 +1941,6 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                 }
                 if (!listeners_disabled) {
                     void *csd = NULL;
-                    apr_thread_mutex_t *mutex;
                     ap_listen_rec *lr = (ap_listen_rec *) pt->baton;
                     apr_pool_t *ptrans;         /* Pool for per-transaction stuff */
                     ap_pop_pool(&ptrans, worker_queue_info);
@@ -1964,30 +1963,6 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                         apr_allocator_owner_set(allocator, ptrans);
                     }
                     apr_pool_tag(ptrans, "transaction");
-
-                    /* We need a mutex in the allocator to synchronize ptrans'
-                     * children creations/destructions, but this mutex ought to
-                     * live in ptrans itself to avoid leaks, hence it's cleared
-                     * in ap_push_pool(). We could recycle some pconf's mutexes
-                     * like we do for ptrans subpools, but that'd need another
-                     * synchronization mechanism, whereas creating a pthread
-                     * mutex (unix here!) is really as simple/fast as a static
-                     * PTHREAD_MUTEX_INIT assignment, so let's not bother and
-                     * create the mutex for each ptrans (recycled or not).
-                     */
-                    rc = apr_thread_mutex_create(&mutex,
-                                                 APR_THREAD_MUTEX_DEFAULT,
-                                                 ptrans);
-                    if (rc != APR_SUCCESS) {
-                        ap_log_error(APLOG_MARK, APLOG_CRIT, rc,
-                                     ap_server_conf, APLOGNO(10003)
-                                     "Failed to create transaction pool mutex");
-                        ap_push_pool(worker_queue_info, ptrans);
-                        signal_threads(ST_GRACEFUL);
-                        return NULL;
-                    }
-                    apr_allocator_mutex_set(apr_pool_allocator_get(ptrans),
-                                            mutex);
 
                     get_worker(&have_idle_worker, 1, &workers_were_busy);
                     rc = lr->accept_func(&csd, lr, ptrans);
