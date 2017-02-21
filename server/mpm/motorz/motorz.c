@@ -186,16 +186,12 @@ static apr_status_t motorz_io_accept(motorz_core_t *mz, motorz_sb_t *sb)
     apr_socket_t *socket;
     ap_listen_rec *lr = (ap_listen_rec *) sb->baton;
     apr_allocator_t *allocator;
-    apr_thread_mutex_t *mutex;
 
     apr_allocator_create(&allocator);
     apr_allocator_max_free_set(allocator, ap_max_mem_free);
     apr_pool_create_ex(&ptrans, pconf, NULL, allocator);
     apr_allocator_owner_set(allocator, ptrans);
     apr_pool_tag(ptrans, "transaction");
-
-    apr_thread_mutex_create(&mutex, APR_THREAD_MUTEX_DEFAULT, ptrans);
-    apr_allocator_mutex_set(allocator, mutex);
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(03318)
                          "motorz_io_accept(): entered");
