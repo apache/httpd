@@ -185,6 +185,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~jfclere/patches/patch.46037.txt
      +1: jfclere
 
+  *) mod_cache: Fix a regression in 2.4.25 for the forward proxy case by
+     computing and using the same entity key according to when the cache
+     checks, loads and saves the request.  PR 60577.
+     trunk patch: http://svn.apache.org/r1783842
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: ylavic
+
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entried should be added at the START of the list ]
 
