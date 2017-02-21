@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_cache: Fix a regression in 2.4.25 for the forward proxy case by
+     computing and using the same entity key according to when the cache
+     checks, loads and saves the request.
+     PR 60577.  [Yann Ylavic]
+  
   *) mod_proxy_http2: support for ProxyPreserverHost directive. [Stefan Eissing]
   
   *) mod_proxy_fcgi: Add ProxyFCGISetEnvIf to fixup CGI environment
