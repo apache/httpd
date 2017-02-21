@@ -23,7 +23,6 @@ static motorz_core_t *g_motorz_core;
 static int threads_per_child = 16;
 static int ap_num_kids = DEFAULT_START_DAEMON;
 static int thread_limit = MAX_THREAD_LIMIT/10;
-static int mpm_state = AP_MPMQ_STARTING;
 
 /* one_process --- debugging mode variable; can be set from the command line
  * with the -X flag.  If set, this gets you the child_main loop running
@@ -43,7 +42,6 @@ static apr_pool_t *pchild;              /* Pool for httpd child stuff */
 static pid_t ap_my_pid; /* it seems silly to call getpid all the time */
 static pid_t parent_pid;
 static int my_child_num;
-static int num_buckets; /* Number of listeners buckets */
 static motorz_child_bucket *all_buckets, /* All listeners buckets */
                             *my_bucket;   /* Current child bucket */
 
@@ -579,13 +577,15 @@ static void motorz_note_child_started(motorz_core_t *mz, int slot, pid_t pid)
     ap_scoreboard_image->parent[slot].pid = pid;
     ap_run_child_status(ap_server_conf,
                         ap_scoreboard_image->parent[slot].pid,
-                        mz->my_generation, slot, MPM_CHILD_STARTED);
+                        mz->mpm->my_generation, slot, MPM_CHILD_STARTED);
 }
 
 /* a clean exit from a child with proper cleanup */
 static void clean_child_exit(int code)
 {
-    mpm_state = AP_MPMQ_STOPPING;
+    motorz_core_t *mz = motorz_core_get();
+
+    mz->mpm->mpm_state = AP_MPMQ_STOPPING;
 
     apr_signal(SIGHUP, SIG_IGN);
     apr_signal(SIGTERM, SIG_IGN);
@@ -610,7 +610,7 @@ static apr_status_t accept_mutex_on(void)
     if (rv != APR_SUCCESS) {
         const char *msg = "couldn't grab the accept mutex";
 
-        if (mz->my_generation !=
+        if (mz->mpm->my_generation !=
             ap_scoreboard_image->global->running_generation) {
             ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, ap_server_conf, APLOGNO(02855) "%s", msg);
             clean_child_exit(0);
@@ -630,7 +630,7 @@ static apr_status_t accept_mutex_off(void)
     if (rv != APR_SUCCESS) {
         const char *msg = "couldn't release the accept mutex";
 
-        if (mz->my_generation !=
+        if (mz->mpm->my_generation !=
             ap_scoreboard_image->global->running_generation) {
             ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, ap_server_conf, APLOGNO(02857) "%s", msg);
             /* don't exit here... we have a connection to
@@ -703,10 +703,10 @@ static int motorz_query(int query_code, int *result, apr_status_t *rv)
         *result = ap_num_kids;
         break;
     case AP_MPMQ_MPM_STATE:
-        *result = mpm_state;
+        *result = mz->mpm->mpm_state;
         break;
     case AP_MPMQ_GENERATION:
-        *result = mz->my_generation;
+        *result = mz->mpm->my_generation;
         break;
     default:
         *rv = APR_ENOTIMPL;
@@ -729,130 +729,18 @@ static void just_die(int sig)
     clean_child_exit(0);
 }
 
-/* volatile because they're updated from a signal handler */
-static int volatile shutdown_pending;
-static int volatile restart_pending;
+/* volatile because it's updated from a signal handler */
 static int volatile die_now = 0;
 
 static void stop_listening(int sig)
 {
-    mpm_state = AP_MPMQ_STOPPING;
+    motorz_core_t *mz = motorz_core_get();
+
+    mz->mpm->mpm_state = AP_MPMQ_STOPPING;
     ap_close_listeners_ex(my_bucket->listeners);
 
     /* For a graceful stop, we want the child to exit when done */
     die_now = 1;
-}
-
-static void sig_term(int sig)
-{
-    motorz_core_t *mz = motorz_core_get();
-    if (shutdown_pending == 1) {
-        /* Um, is this _probably_ not an error, if the user has
-         * tried to do a shutdown twice quickly, so we won't
-         * worry about reporting it.
-         */
-        return;
-    }
-    mpm_state = AP_MPMQ_STOPPING;
-    shutdown_pending = 1;
-    mz->is_graceful = (sig == AP_SIG_GRACEFUL_STOP);
-}
-
-/* restart() is the signal handler for SIGHUP and AP_SIG_GRACEFUL
- * in the parent process, unless running in ONE_PROCESS mode
- */
-static void restart(int sig)
-{
-    motorz_core_t *mz = motorz_core_get();
-    if (restart_pending == 1) {
-        /* Probably not an error - don't bother reporting it */
-        return;
-    }
-    mpm_state = AP_MPMQ_STOPPING;
-    restart_pending = 1;
-    mz->is_graceful = (sig == AP_SIG_GRACEFUL);
-}
-
-static void set_signals(void)
-{
-#ifndef NO_USE_SIGACTION
-    struct sigaction sa;
-#endif
-
-    if (!one_process) {
-        ap_fatal_signal_setup(ap_server_conf, pconf);
-    }
-
-#ifndef NO_USE_SIGACTION
-    sigemptyset(&sa.sa_mask);
-    sa.sa_flags = 0;
-
-    sa.sa_handler = sig_term;
-    if (sigaction(SIGTERM, &sa, NULL) < 0)
-        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, APLOGNO(02859) "sigaction(SIGTERM)");
-#ifdef AP_SIG_GRACEFUL_STOP
-    if (sigaction(AP_SIG_GRACEFUL_STOP, &sa, NULL) < 0)
-        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, APLOGNO(02860)
-                     "sigaction(" AP_SIG_GRACEFUL_STOP_STRING ")");
-#endif
-#ifdef SIGINT
-    if (sigaction(SIGINT, &sa, NULL) < 0)
-        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, APLOGNO(02861) "sigaction(SIGINT)");
-#endif
-#ifdef SIGXCPU
-    sa.sa_handler = SIG_DFL;
-    if (sigaction(SIGXCPU, &sa, NULL) < 0)
-        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, APLOGNO(02862) "sigaction(SIGXCPU)");
-#endif
-#ifdef SIGXFSZ
-    /* For systems following the LFS standard, ignoring SIGXFSZ allows
-     * a write() beyond the 2GB limit to fail gracefully with E2BIG
-     * rather than terminate the process. */
-    sa.sa_handler = SIG_IGN;
-    if (sigaction(SIGXFSZ, &sa, NULL) < 0)
-        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, APLOGNO(02863) "sigaction(SIGXFSZ)");
-#endif
-#ifdef SIGPIPE
-    sa.sa_handler = SIG_IGN;
-    if (sigaction(SIGPIPE, &sa, NULL) < 0)
-        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, APLOGNO(02864) "sigaction(SIGPIPE)");
-#endif
-
-    /* we want to ignore HUPs and AP_SIG_GRACEFUL while we're busy
-     * processing one
-     */
-    sigaddset(&sa.sa_mask, SIGHUP);
-    sigaddset(&sa.sa_mask, AP_SIG_GRACEFUL);
-    sa.sa_handler = restart;
-    if (sigaction(SIGHUP, &sa, NULL) < 0)
-        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, APLOGNO(02865) "sigaction(SIGHUP)");
-    if (sigaction(AP_SIG_GRACEFUL, &sa, NULL) < 0)
-        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, APLOGNO(02866) "sigaction(" AP_SIG_GRACEFUL_STRING ")");
-#else
-    if (!one_process) {
-#ifdef SIGXCPU
-        apr_signal(SIGXCPU, SIG_DFL);
-#endif /* SIGXCPU */
-#ifdef SIGXFSZ
-        apr_signal(SIGXFSZ, SIG_IGN);
-#endif /* SIGXFSZ */
-    }
-
-    apr_signal(SIGTERM, sig_term);
-#ifdef SIGHUP
-    apr_signal(SIGHUP, restart);
-#endif /* SIGHUP */
-#ifdef AP_SIG_GRACEFUL
-    apr_signal(AP_SIG_GRACEFUL, restart);
-#endif /* AP_SIG_GRACEFUL */
-#ifdef AP_SIG_GRACEFUL_STOP
-    apr_signal(AP_SIG_GRACEFUL_STOP, sig_term);
-#endif /* AP_SIG_GRACEFUL */
-#ifdef SIGPIPE
-    apr_signal(SIGPIPE, SIG_IGN);
-#endif /* SIGPIPE */
-
-#endif
 }
 
 /*****************************************************************
@@ -876,9 +764,8 @@ static void child_main(motorz_core_t *mz, int child_num_arg, int child_bucket)
     ap_sb_handle_t *sbh;
     const char *lockfile;
 
-    mpm_state = AP_MPMQ_STARTING; /* for benefit of any hooks that run as this
-                                   * child initializes
-                                   */
+    /* for benefit of any hooks that run as this child initializes */
+    mz->mpm->mpm_state = AP_MPMQ_STARTING;
 
     my_child_num = child_num_arg;
     ap_my_pid = getpid();
@@ -898,7 +785,7 @@ static void child_main(motorz_core_t *mz, int child_num_arg, int child_bucket)
 #endif
 
     /* close unused listeners and pods */
-    for (i = 0; i < num_buckets; i++) {
+    for (i = 0; i < mz->mpm->num_buckets; i++) {
         if (i != child_bucket) {
             ap_close_listeners_ex(all_buckets[i].listeners);
             ap_mpm_pod_close(all_buckets[i].pod);
@@ -984,12 +871,15 @@ static void child_main(motorz_core_t *mz, int child_num_arg, int child_bucket)
         lr->accept_func = ap_unixd_accept;
     }
 
-    mpm_state = AP_MPMQ_RUNNING;
+    mz->mpm->mpm_state = AP_MPMQ_RUNNING;
 
     /* die_now is set when AP_SIG_GRACEFUL is received in the child;
-     * shutdown_pending is set when SIGTERM is received when running
-     * in single process mode.  */
-    while (!die_now && !shutdown_pending) {
+     * {shutdown,restart}_pending are set when a signal is received while
+     * running in single process mode.
+     */
+    while (!die_now
+           && !mz->mpm->shutdown_pending
+           && !mz->mpm->restart_pending) {
         /*
          * (Re)initialize this child to a pre-connection state.
          */
@@ -1047,7 +937,7 @@ static void child_main(motorz_core_t *mz, int child_num_arg, int child_bucket)
         if (ap_mpm_pod_check(my_bucket->pod) == APR_SUCCESS) { /* selected as idle? */
             die_now = 1;
         }
-        else if (mz->my_generation !=
+        else if (mz->mpm->my_generation !=
                  ap_scoreboard_image->global->running_generation) { /* restart? */
             /* yeah, this could be non-graceful restart, in which case the
              * parent will kill us soon enough, but why bother checking?
@@ -1070,13 +960,6 @@ static int make_child(motorz_core_t *mz, server_rec *s, int slot, int bucket)
     if (one_process) {
         my_bucket = &all_buckets[0];
 
-        apr_signal(SIGHUP, sig_term);
-        /* Don't catch AP_SIG_GRACEFUL in ONE_PROCESS mode :) */
-        apr_signal(SIGINT, sig_term);
-#ifdef SIGQUIT
-        apr_signal(SIGQUIT, SIG_DFL);
-#endif
-        apr_signal(SIGTERM, sig_term);
         motorz_note_child_started(mz, slot, getpid());
         child_main(mz, slot, 0);
         /* NOTREACHED */
@@ -1154,7 +1037,7 @@ static void startup_children(motorz_core_t *mz, int number_to_start)
         if (ap_scoreboard_image->servers[i][0].status != SERVER_DEAD) {
             continue;
         }
-        if (make_child(mz, ap_server_conf, i, i % num_buckets) < 0) {
+        if (make_child(mz, ap_server_conf, i, i % mz->mpm->num_buckets) < 0) {
             break;
         }
         --number_to_start;
@@ -1192,12 +1075,12 @@ static void perform_idle_server_maintenance(motorz_core_t *mz, apr_pool_t *p)
          * shut down gracefully, in case it happened to pick up a request
          * while we were counting
          */
-        bucket_kill_child_record = (bucket_kill_child_record + 1) % num_buckets;
+        bucket_kill_child_record = (bucket_kill_child_record + 1) % mz->mpm->num_buckets;
         ap_mpm_pod_signal(all_buckets[bucket_kill_child_record].pod);
     }
     else if (active < ap_num_kids) {
         bucket_make_child_record++;
-        bucket_make_child_record %= num_buckets;
+        bucket_make_child_record %= mz->mpm->num_buckets;
         make_child(mz, ap_server_conf, free_slots[0],
                    bucket_make_child_record);
     }
@@ -1216,19 +1099,21 @@ static int motorz_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
     ap_log_pid(pconf, ap_pid_fname);
 
-    if (!mz->is_graceful) {
+    if (!mz->mpm->was_graceful) {
         if (ap_run_pre_mpm(s->process->pool, SB_SHARED) != OK) {
-            mpm_state = AP_MPMQ_STOPPING;
+            mz->mpm->mpm_state = AP_MPMQ_STOPPING;
             return !OK;
         }
         /* fix the generation number in the global score; we just got a new,
          * cleared scoreboard
          */
-        ap_scoreboard_image->global->running_generation = mz->my_generation;
+        ap_scoreboard_image->global->running_generation = mz->mpm->my_generation;
     }
 
-    restart_pending = shutdown_pending = 0;
-    set_signals();
+    if (!one_process) {
+        ap_fatal_signal_setup(ap_server_conf, pconf);
+    }
+    ap_unixd_mpm_set_signals(pconf, one_process);
 
     if (one_process) {
         AP_MONCONTROL(1);
@@ -1241,8 +1126,8 @@ static int motorz_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     /* Don't thrash since num_buckets depends on the
      * system and the number of online CPU cores...
      */
-    if (ap_num_kids < num_buckets)
-        ap_num_kids = num_buckets;
+    if (ap_num_kids < mz->mpm->num_buckets)
+        ap_num_kids = mz->mpm->num_buckets;
 
     /* If we're doing a graceful_restart then we're going to see a lot
      * of children exiting immediately when we get into the main loop
@@ -1253,7 +1138,7 @@ static int motorz_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
      * supposed to start up without the 1 second penalty between each fork.
      */
     remaining_children_to_start = ap_num_kids;
-    if (!mz->is_graceful) {
+    if (!mz->mpm->was_graceful) {
         startup_children(mz, remaining_children_to_start);
         remaining_children_to_start = 0;
     }
@@ -1272,9 +1157,9 @@ static int motorz_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
                     : "none",
                 apr_proc_mutex_defname());
 
-    mpm_state = AP_MPMQ_RUNNING;
+    mz->mpm->mpm_state = AP_MPMQ_RUNNING;
 
-    while (!restart_pending && !shutdown_pending) {
+    while (!mz->mpm->restart_pending && !mz->mpm->shutdown_pending) {
         int child_slot;
         apr_exit_why_e exitwhy;
         int status, processed_status;
@@ -1298,8 +1183,8 @@ static int motorz_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
                  */
                 if (child_slot < 0
                     || ap_get_scoreboard_process(child_slot)->generation
-                       == mz->my_generation) {
-                    mpm_state = AP_MPMQ_STOPPING;
+                       == mz->mpm->my_generation) {
+                    mz->mpm->mpm_state = AP_MPMQ_STOPPING;
                     return !OK;
                 }
                 else {
@@ -1330,7 +1215,7 @@ static int motorz_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
                 /* handled */
 #endif
             }
-            else if (mz->is_graceful) {
+            else if (mz->mpm->was_graceful) {
                 /* Great, we've probably just lost a slot in the
                  * scoreboard.  Somehow we don't know about this
                  * child.
@@ -1363,9 +1248,9 @@ static int motorz_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         perform_idle_server_maintenance(mz, pconf);
     }
 
-    mpm_state = AP_MPMQ_STOPPING;
+    mz->mpm->mpm_state = AP_MPMQ_STOPPING;
 
-    if (shutdown_pending && !mz->is_graceful) {
+    if (mz->mpm->shutdown_pending && mz->mpm->is_ungraceful) {
         /* Time to shut down:
          * Kill child processes, tell them to call child_exit, etc...
          */
@@ -1381,7 +1266,9 @@ static int motorz_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
                     "caught SIGTERM, shutting down");
 
         return DONE;
-    } else if (shutdown_pending) {
+    }
+
+    if (mz->mpm->shutdown_pending) {
         /* Time to perform a graceful shut down:
          * Reap the inactive children, and ask the active ones
          * to close their listeners, then wait until they are
@@ -1394,7 +1281,7 @@ static int motorz_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         ap_close_listeners();
 
         /* kill off the idle ones */
-        for (i = 0; i < num_buckets; i++) {
+        for (i = 0; i < mz->mpm->num_buckets; i++) {
             ap_mpm_pod_killpg(all_buckets[i].pod, mz->max_daemons_limit);
         }
 
@@ -1422,7 +1309,7 @@ static int motorz_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         }
 
         /* Don't really exit until each child has finished */
-        shutdown_pending = 0;
+        mz->mpm->shutdown_pending = 0;
         do {
             /* Pause for a second */
             sleep(1);
@@ -1438,7 +1325,7 @@ static int motorz_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
                     break;
                 }
             }
-        } while (!shutdown_pending && active_children &&
+        } while (!mz->mpm->shutdown_pending && active_children &&
                  (!ap_graceful_shutdown_timeout || apr_time_now() < cutoff));
 
         /* We might be here because we received SIGTERM, either
@@ -1451,8 +1338,6 @@ static int motorz_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     }
 
     /* we've been told to restart */
-    apr_signal(SIGHUP, SIG_IGN);
-    apr_signal(AP_SIG_GRACEFUL, SIG_IGN);
     if (one_process) {
         /* not worth thinking about */
         return DONE;
@@ -1462,15 +1347,15 @@ static int motorz_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     /* XXX: we really need to make sure this new generation number isn't in
      * use by any of the children.
      */
-    ++mz->my_generation;
-    ap_scoreboard_image->global->running_generation = mz->my_generation;
+    ++mz->mpm->my_generation;
+    ap_scoreboard_image->global->running_generation = mz->mpm->my_generation;
 
-    if (mz->is_graceful) {
+    if (!mz->mpm->is_ungraceful) {
         ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf, APLOGNO(02882)
                     "Graceful restart requested, doing restart");
 
         /* kill off the idle ones */
-        for (i = 0; i < num_buckets; i++) {
+        for (i = 0; i < mz->mpm->num_buckets; i++) {
             ap_mpm_pod_killpg(all_buckets[i].pod, mz->max_daemons_limit);
         }
 
@@ -1523,7 +1408,7 @@ static int motorz_open_logs(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, 
     pconf = p;
 
     /* the reverse of pre_config, we want this only the first time around */
-    if (mz->module_loads == 1) {
+    if (mz->mpm->module_loads == 1) {
         startup = 1;
         level_flags |= APLOG_STARTUP;
     }
@@ -1536,22 +1421,22 @@ static int motorz_open_logs(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, 
     }
 
     if (one_process) {
-        num_buckets = 1;
+        mz->mpm->num_buckets = 1;
     }
-    else if (!mz->is_graceful) { /* Preserve the number of buckets
-                                          on graceful restarts. */
-        num_buckets = 0;
+    else if (!mz->mpm->was_graceful) {
+        /* Preserve the number of buckets on graceful restarts. */
+        mz->mpm->num_buckets = 0;
     }
     if ((rv = ap_duplicate_listeners(pconf, ap_server_conf,
-                                     &listen_buckets, &num_buckets))) {
+                                     &listen_buckets, &mz->mpm->num_buckets))) {
         ap_log_error(APLOG_MARK, APLOG_CRIT | level_flags, rv,
                      (startup ? NULL : s), APLOGNO(03276)
                      "could not duplicate listeners");
         return !OK;
     }
-    all_buckets = apr_pcalloc(pconf, num_buckets *
+    all_buckets = apr_pcalloc(pconf, mz->mpm->num_buckets *
                                      sizeof(motorz_child_bucket));
-    for (i = 0; i < num_buckets; i++) {
+    for (i = 0; i < mz->mpm->num_buckets; i++) {
         if ((rv = ap_mpm_pod_open(pconf, &all_buckets[i].pod))) {
             ap_log_error(APLOG_MARK, APLOG_CRIT | level_flags, rv,
                          (startup ? NULL : s), APLOGNO(03277)
@@ -1581,8 +1466,6 @@ static int motorz_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
     const char *userdata_key = "mpm_motorz_module";
     motorz_core_t *mz;
 
-    mpm_state = AP_MPMQ_STARTING;
-
     debug = ap_exists_config_define("DEBUG");
 
     if (debug) {
@@ -1598,16 +1481,23 @@ static int motorz_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
 
     ap_mutex_register(p, AP_ACCEPT_MUTEX_TYPE, NULL, APR_LOCK_DEFAULT, 0);
 
-    /* sigh, want this only the second time around */
     mz = g_motorz_core = ap_retained_data_get(userdata_key);
     if (!g_motorz_core) {
         mz = g_motorz_core = ap_retained_data_create(userdata_key, sizeof(*g_motorz_core));
+        mz->mpm = ap_unixd_mpm_get_retained_data();
         mz->max_daemons_limit = -1;
         mz->timeout_ring = motorz_timer_ring;
         mz->pollset = motorz_pollset;
     }
-    ++mz->module_loads;
-    if (mz->module_loads == 2) {
+    mz->mpm->mpm_state = AP_MPMQ_STARTING;
+    if (mz->mpm->baton != mz) {
+        mz->mpm->was_graceful = 0;
+        mz->mpm->baton = mz;
+    }
+    ++mz->mpm->module_loads;
+
+    /* sigh, want this only the second time around */
+    if (mz->mpm->module_loads == 2) {
         if (!one_process && !foreground) {
             /* before we detach, setup crash handlers to log to errorlog */
             ap_fatal_signal_setup(ap_server_conf, pconf);
@@ -1645,7 +1535,7 @@ static int motorz_check_config(apr_pool_t *p, apr_pool_t *plog,
     motorz_core_t *mz = motorz_core_get();
 
     /* the reverse of pre_config, we want this only the first time around */
-    if (mz->module_loads == 1) {
+    if (mz->mpm->module_loads == 1) {
         startup = 1;
     }
 

@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) MPMs unix: Place signals handlers and helpers out of DSOs to avoid
+     a possible crash if a signal is caught during (graceful) restart.
+     PR 60487.  [Yann Ylavic]
+
   *) mod_cache: Fix a regression in 2.4.25 for the forward proxy case by
      computing and using the same entity key according to when the cache
      checks, loads and saves the request.
