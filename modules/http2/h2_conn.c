@@ -255,7 +255,6 @@ apr_status_t h2_conn_pre_close(struct h2_ctx *ctx, conn_rec *c)
 conn_rec *h2_slave_create(conn_rec *master, int slave_id, apr_pool_t *parent)
 {
     apr_allocator_t *allocator;
-    apr_thread_mutex_t *mutex;
     apr_status_t status;
     apr_pool_t *pool;
     conn_rec *c;
@@ -274,18 +273,15 @@ conn_rec *h2_slave_create(conn_rec *master, int slave_id, apr_pool_t *parent)
      */
     apr_allocator_create(&allocator);
     apr_allocator_max_free_set(allocator, ap_max_mem_free);
-    apr_pool_create_ex(&pool, parent, NULL, allocator);
-    apr_pool_tag(pool, "h2_slave_conn");
-    apr_allocator_owner_set(allocator, pool);
-    status = apr_thread_mutex_create(&mutex, APR_THREAD_MUTEX_DEFAULT, pool);
+    status = apr_pool_create_ex(&pool, parent, NULL, allocator);
     if (status != APR_SUCCESS) {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, status, master, 
-                      APLOGNO(10004) "h2_session(%ld-%d): create slave mutex",
+                      APLOGNO(10004) "h2_session(%ld-%d): create slave pool",
                       master->id, slave_id);
-        apr_pool_destroy(pool);
         return NULL;
     }
-    apr_allocator_mutex_set(allocator, mutex);
+    apr_allocator_owner_set(allocator, pool);
+    apr_pool_tag(pool, "h2_slave_conn");
  
     c = (conn_rec *) apr_palloc(pool, sizeof(conn_rec));
     if (c == NULL) {

@@ -63,7 +63,6 @@ struct h2_mplx {
     long id;
     conn_rec *c;
     apr_pool_t *pool;
-    apr_bucket_alloc_t *bucket_alloc;
 
     APR_RING_ENTRY(h2_mplx) link;
 
