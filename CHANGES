@@ -10,8 +10,6 @@ Changes with Apache 2.5.0
      checks, loads and saves the request.
      PR 60577.  [Yann Ylavic]
   
-  *) mod_proxy_http2: support for ProxyPreserverHost directive. [Stefan Eissing]
-  
   *) mod_proxy_fcgi: Add ProxyFCGISetEnvIf to fixup CGI environment
      variables just before invoking the FastCGI. [Eric Covener,
      Jacob Champion]
@@ -21,9 +19,6 @@ Changes with Apache 2.5.0
      to set exceptions for ProxyPass specified in <Location> context.
      Use SetEnvIf, not SetEnv. [Eric Covener]
 
-  *) mod_http2: fix for crash when running out of memory.
-     [Robert Swiecki <robert@swiecki.net>, Stefan Eissing]
-     
   *) mod_ssl: work around leaks on (graceful) restart. [Yann Ylavic]
 
   *) When using mod_status with the Event MPM, report the number of requests
