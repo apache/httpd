@@ -235,6 +235,7 @@ h2_mplx *h2_mplx_create(conn_rec *c, apr_pool_t *parent,
 {
     apr_status_t status = APR_SUCCESS;
     apr_allocator_t *allocator;
+    apr_thread_mutex_t *mutex;
     h2_mplx *m;
     ap_assert(conf);
     
@@ -255,12 +256,20 @@ h2_mplx *h2_mplx_create(conn_rec *c, apr_pool_t *parent,
             return NULL;
         }
         apr_allocator_max_free_set(allocator, ap_max_mem_free);
-        status = apr_pool_create_ex(&m->pool, parent, NULL, allocator);
-        if (status != APR_SUCCESS) {
+        apr_pool_create_ex(&m->pool, parent, NULL, allocator);
+        if (!m->pool) {
+            apr_allocator_destroy(allocator);
             return NULL;
         }
         apr_pool_tag(m->pool, "h2_mplx");
         apr_allocator_owner_set(allocator, m->pool);
+        status = apr_thread_mutex_create(&mutex, APR_THREAD_MUTEX_DEFAULT,
+                                         m->pool);
+        if (status != APR_SUCCESS) {
+            apr_pool_destroy(m->pool);
+            return NULL;
+        }
+        apr_allocator_mutex_set(allocator, mutex);
 
         status = apr_thread_mutex_create(&m->lock, APR_THREAD_MUTEX_DEFAULT,
                                          m->pool);
