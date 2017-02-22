@@ -697,6 +697,7 @@ static apr_status_t open_stream(h2_proxy_session *session, const char *url,
     apr_uri_t puri;
     const char *authority, *scheme, *path;
     apr_status_t status;
+    proxy_dir_conf *dconf;
 
     stream = apr_pcalloc(r->pool, sizeof(*stream));
 
@@ -715,14 +716,22 @@ static apr_status_t open_stream(h2_proxy_session *session, const char *url,
     status = apr_uri_parse(stream->pool, url, &puri);
     if (status != APR_SUCCESS)
         return status;
-
+    
     scheme = (strcmp(puri.scheme, "h2")? "http" : "https");
-    authority = puri.hostname;
-    if (!ap_strchr_c(authority, ':') && puri.port
-        && apr_uri_port_of_scheme(scheme) != puri.port) {
-        /* port info missing and port is not default for scheme: append */
-        authority = apr_psprintf(stream->pool, "%s:%d", authority, puri.port);
+    
+    dconf = ap_get_module_config(r->per_dir_config, &proxy_module);
+    if (dconf->preserve_host) {
+        authority = r->hostname;
     }
+    else {
+        authority = puri.hostname;
+        if (!ap_strchr_c(authority, ':') && puri.port
+            && apr_uri_port_of_scheme(scheme) != puri.port) {
+            /* port info missing and port is not default for scheme: append */
+            authority = apr_psprintf(stream->pool, "%s:%d", authority, puri.port);
+        }
+    }
+    
     /* we need this for mapping relative uris in headers ("Link") back
      * to local uris */
     stream->real_server_uri = apr_psprintf(stream->pool, "%s://%s", scheme, authority); 

@@ -27,6 +27,8 @@
 #include <http_core.h>
 #include <http_log.h>
 
+#include <mpm_common.h>
+
 #include "mod_http2.h"
 
 #include "h2.h"
@@ -232,39 +234,56 @@ h2_mplx *h2_mplx_create(conn_rec *c, apr_pool_t *parent,
                         h2_workers *workers)
 {
     apr_status_t status = APR_SUCCESS;
-    apr_allocator_t *allocator = NULL;
+    apr_allocator_t *allocator;
+    apr_thread_mutex_t *mutex;
     h2_mplx *m;
     ap_assert(conf);
     
-    status = apr_allocator_create(&allocator);
-    if (status != APR_SUCCESS) {
-        return NULL;
-    }
-
     m = apr_pcalloc(parent, sizeof(h2_mplx));
     if (m) {
         m->id = c->id;
         APR_RING_ELEM_INIT(m, link);
         m->c = c;
+
+        /* We create a pool with its own allocator to be used for
+         * processing slave connections. This is the only way to have the
+         * processing independant of its parent pool in the sense that it
+         * can work in another thread. Also, the new allocator needs its own
+         * mutex to synchronize sub-pools.
+         */
+        status = apr_allocator_create(&allocator);
+        if (status != APR_SUCCESS) {
+            return NULL;
+        }
+        apr_allocator_max_free_set(allocator, ap_max_mem_free);
         apr_pool_create_ex(&m->pool, parent, NULL, allocator);
         if (!m->pool) {
+            apr_allocator_destroy(allocator);
             return NULL;
         }
         apr_pool_tag(m->pool, "h2_mplx");
         apr_allocator_owner_set(allocator, m->pool);
-        
+        status = apr_thread_mutex_create(&mutex, APR_THREAD_MUTEX_DEFAULT,
+                                         m->pool);
+        if (status != APR_SUCCESS) {
+            apr_pool_destroy(m->pool);
+            return NULL;
+        }
+        apr_allocator_mutex_set(allocator, mutex);
+
         status = apr_thread_mutex_create(&m->lock, APR_THREAD_MUTEX_DEFAULT,
                                          m->pool);
         if (status != APR_SUCCESS) {
+            apr_pool_destroy(m->pool);
             return NULL;
         }
         
         status = apr_thread_cond_create(&m->task_thawed, m->pool);
         if (status != APR_SUCCESS) {
+            apr_pool_destroy(m->pool);
             return NULL;
         }
     
-        m->bucket_alloc = apr_bucket_alloc_create(m->pool);
         m->max_streams = h2_config_geti(conf, H2_CONF_MAX_STREAMS);
         m->stream_max_mem = h2_config_geti(conf, H2_CONF_STREAM_MAX_MEM);
 
