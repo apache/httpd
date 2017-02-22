@@ -26,6 +26,8 @@
 #include <http_protocol.h>
 #include <http_request.h>
 
+#include <mpm_common.h>
+
 #include "h2_private.h"
 #include "h2.h"
 #include "h2_config.h"
@@ -253,6 +255,7 @@ apr_status_t h2_conn_pre_close(struct h2_ctx *ctx, conn_rec *c)
 conn_rec *h2_slave_create(conn_rec *master, int slave_id, apr_pool_t *parent)
 {
     apr_allocator_t *allocator;
+    apr_status_t status;
     apr_pool_t *pool;
     conn_rec *c;
     void *cfg;
@@ -265,18 +268,27 @@ conn_rec *h2_slave_create(conn_rec *master, int slave_id, apr_pool_t *parent)
     /* We create a pool with its own allocator to be used for
      * processing a request. This is the only way to have the processing
      * independant of its parent pool in the sense that it can work in
-     * another thread.
+     * another thread. Also, the new allocator needs its own mutex to
+     * synchronize sub-pools.
      */
     apr_allocator_create(&allocator);
-    apr_pool_create_ex(&pool, parent, NULL, allocator);
-    apr_pool_tag(pool, "h2_slave_conn");
+    apr_allocator_max_free_set(allocator, ap_max_mem_free);
+    status = apr_pool_create_ex(&pool, parent, NULL, allocator);
+    if (status != APR_SUCCESS) {
+        ap_log_cerror(APLOG_MARK, APLOG_ERR, status, master, 
+                      APLOGNO(10004) "h2_session(%ld-%d): create slave pool",
+                      master->id, slave_id);
+        return NULL;
+    }
     apr_allocator_owner_set(allocator, pool);
-
+    apr_pool_tag(pool, "h2_slave_conn");
+ 
     c = (conn_rec *) apr_palloc(pool, sizeof(conn_rec));
     if (c == NULL) {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, APR_ENOMEM, master, 
                       APLOGNO(02913) "h2_session(%ld-%d): create slave",
                       master->id, slave_id);
+        apr_pool_destroy(pool);
         return NULL;
     }
     
