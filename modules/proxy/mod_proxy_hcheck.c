@@ -960,7 +960,6 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
                         workers++;
                     }
                 }
-                /* s = s->next; */
             }
             break;
 
@@ -997,30 +996,33 @@ static int hc_post_config(apr_pool_t *p, apr_pool_t *plog,
                      "mod_watchdog is required");
         return !OK;
     }
-    ctx = (sctx_t *) ap_get_module_config(s->module_config,
-                                          &proxy_hcheck_module);
+    while (s) {
+        ctx = (sctx_t *) ap_get_module_config(s->module_config,
+                                              &proxy_hcheck_module);
 
-    rv = hc_watchdog_get_instance(&ctx->watchdog,
-                                  HCHECK_WATHCHDOG_NAME,
-                                  0, 1, p);
-    if (rv) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, APLOGNO(03263)
-                     "Failed to create watchdog instance (%s)",
-                     HCHECK_WATHCHDOG_NAME);
-        return !OK;
+        rv = hc_watchdog_get_instance(&ctx->watchdog,
+                                      HCHECK_WATHCHDOG_NAME,
+                                      0, 1, p);
+        if (rv) {
+            ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, APLOGNO(03263)
+                         "Failed to create watchdog instance (%s)",
+                         HCHECK_WATHCHDOG_NAME);
+            return !OK;
+        }
+        rv = hc_watchdog_register_callback(ctx->watchdog,
+                apr_time_from_sec(HCHECK_WATHCHDOG_INTERVAL),
+                ctx,
+                hc_watchdog_callback);
+        if (rv) {
+            ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, APLOGNO(03264)
+                         "Failed to register watchdog callback (%s)",
+                         HCHECK_WATHCHDOG_NAME);
+            return !OK;
+        }
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(03265)
+                     "watchdog callback registered (%s)", HCHECK_WATHCHDOG_NAME);
+        s = s->next;
     }
-    rv = hc_watchdog_register_callback(ctx->watchdog,
-            apr_time_from_sec(HCHECK_WATHCHDOG_INTERVAL),
-            ctx,
-            hc_watchdog_callback);
-    if (rv) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, APLOGNO(03264)
-                     "Failed to register watchdog callback (%s)",
-                     HCHECK_WATHCHDOG_NAME);
-        return !OK;
-    }
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(03265)
-                 "watchdog callback registered (%s)", HCHECK_WATHCHDOG_NAME);
     return OK;
 }
 
