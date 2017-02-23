@@ -192,6 +192,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic
 
+  *) mod_proxy_hcheck: Honor checks in Vhosts
+     trunk patch: http://svn.apache.org/r1784203
+                  http://svn.apache.org/r1784205
+     2.4.x patch: trunk works *after r1779573 above* (modulo CHANGES)
+     +1: jim
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entried should be added at the START of the list ]
