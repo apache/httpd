@@ -877,6 +877,7 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
     proxy_balancer *balancer;
     sctx_t *ctx = (sctx_t *)data;
     server_rec *s = ctx->s;
+    server_rec *save;
     proxy_server_conf *conf;
     switch (state) {
         case AP_WATCHDOG_STATE_STARTING:
@@ -908,14 +909,16 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
             break;
 
         case AP_WATCHDOG_STATE_RUNNING:
+            save = s;
             /* loop thru all workers */
             ap_log_error(APLOG_MARK, APLOG_TRACE2, 0, s,
                          "Run of %s watchdog.",
                          HCHECK_WATHCHDOG_NAME);
-            if (s) {
+            while (s) {
                 int i;
                 conf = (proxy_server_conf *) ap_get_module_config(s->module_config, &proxy_module);
                 balancer = (proxy_balancer *)conf->balancers->elts;
+                ctx->s = s;
                 for (i = 0; i < conf->balancers->nelts; i++, balancer++) {
                     int n;
                     proxy_worker **workers;
@@ -960,7 +963,9 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
                         workers++;
                     }
                 }
+                s = s->next;
             }
+            ctx->s = save;
             break;
 
         case AP_WATCHDOG_STATE_STOPPING:
@@ -996,33 +1001,30 @@ static int hc_post_config(apr_pool_t *p, apr_pool_t *plog,
                      "mod_watchdog is required");
         return !OK;
     }
-    while (s) {
-        ctx = (sctx_t *) ap_get_module_config(s->module_config,
-                                              &proxy_hcheck_module);
+    ctx = (sctx_t *) ap_get_module_config(s->module_config,
+                                          &proxy_hcheck_module);
 
-        rv = hc_watchdog_get_instance(&ctx->watchdog,
-                                      HCHECK_WATHCHDOG_NAME,
-                                      0, 1, p);
-        if (rv) {
-            ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, APLOGNO(03263)
-                         "Failed to create watchdog instance (%s)",
-                         HCHECK_WATHCHDOG_NAME);
-            return !OK;
-        }
-        rv = hc_watchdog_register_callback(ctx->watchdog,
-                apr_time_from_sec(HCHECK_WATHCHDOG_INTERVAL),
-                ctx,
-                hc_watchdog_callback);
-        if (rv) {
-            ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, APLOGNO(03264)
-                         "Failed to register watchdog callback (%s)",
-                         HCHECK_WATHCHDOG_NAME);
-            return !OK;
-        }
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(03265)
-                     "watchdog callback registered (%s)", HCHECK_WATHCHDOG_NAME);
-        s = s->next;
+    rv = hc_watchdog_get_instance(&ctx->watchdog,
+                                  HCHECK_WATHCHDOG_NAME,
+                                  0, 1, p);
+    if (rv) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, APLOGNO(03263)
+                     "Failed to create watchdog instance (%s)",
+                     HCHECK_WATHCHDOG_NAME);
+        return !OK;
     }
+    rv = hc_watchdog_register_callback(ctx->watchdog,
+            apr_time_from_sec(HCHECK_WATHCHDOG_INTERVAL),
+            ctx,
+            hc_watchdog_callback);
+    if (rv) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, APLOGNO(03264)
+                     "Failed to register watchdog callback (%s)",
+                     HCHECK_WATHCHDOG_NAME);
+        return !OK;
+    }
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(03265)
+                 "watchdog callback registered (%s)", HCHECK_WATHCHDOG_NAME);
     return OK;
 }
 
