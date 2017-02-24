@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_syslog: Support use of optional "tag" in syslog entries.
+     PR 60525. [Ben Rubson <ben.rubson gmail.com>, Jim Jagielski]
+
   *) MPMs unix: Place signals handlers and helpers out of DSOs to avoid
      a possible crash if a signal is caught during (graceful) restart.
      PR 60487.  [Yann Ylavic]
