@@ -1538,7 +1538,7 @@ ErrorDocument 404 /cgi-bin/bad_urls.pl
 <directivesynopsis>
 <name>ErrorLog</name>
 <description>Location where the server will log errors</description>
-<syntax> ErrorLog <var>file-path</var>|syslog[:<var>facility</var>]</syntax>
+<syntax> ErrorLog <var>file-path</var>|syslog[:[<var>facility</var>][:<var>tag</var>]]</syntax>
 <default>ErrorLog logs/error_log (Unix) ErrorLog logs/error.log (Windows and OS/2)</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
@@ -1571,10 +1571,15 @@ ErrorLog "|/usr/local/bin/httpd_errors"
     syntax where <var>facility</var> can be one of the names usually documented in
     syslog(1).  The facility is effectively global, and if it is changed
     in individual virtual hosts, the final facility specified affects the
-    entire server.</p>
+    entire server. Same rules apply for the syslog tag, which by default
+    uses the Apache binary name, <code>httpd</code> in most cases. You can
+    also override this by using the <code>syslog::<var>tag</var></code>
+    syntax.</p>
 
     <highlight language="config">
 ErrorLog syslog:user
+ErrorLog syslog:user:httpd.srv1
+ErrorLog syslog::httpd.srv2
     </highlight>
 
     <p>Additional modules can provide their own ErrorLog providers. The syntax

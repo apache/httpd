@@ -113,17 +113,37 @@ static void *syslog_error_log_init(apr_pool_t *p, server_rec *s)
         openlog(ap_server_argv0, LOG_NDELAY|LOG_CONS|LOG_PID, LOG_LOCAL7);
     }
     else {
+        /* s->error_fname could be [level]:[tag] (see #60525) */
+        const char *tag;
+        apr_size_t flen;
         const TRANS *fac;
 
-        for (fac = facilities; fac->t_name; fac++) {
-            if (!strcasecmp(fname, fac->t_name)) {
-                openlog(ap_server_argv0, LOG_NDELAY|LOG_CONS|LOG_PID,
-                        fac->t_val);
-                return success;
+        tag = strchr(fname, ':');
+        if (tag) {
+            flen = tag - fname;
+            tag++;
+            if (*tag == '\0') {
+                tag = ap_server_argv0;
             }
+        } else {
+            flen = strlen(fname);
+            tag = ap_server_argv0;
+        }
+        if (flen == 0) {
+            /* Was something like syslog::foobar */
+            openlog(tag, LOG_NDELAY|LOG_CONS|LOG_PID, LOG_LOCAL7);
+        } else {
+            for (fac = facilities; fac->t_name; fac++) {
+                if (!strncasecmp(fname, fac->t_name, flen)) {
+                    openlog(tag, LOG_NDELAY|LOG_CONS|LOG_PID,
+                            fac->t_val);
+                    return success;
+                }
+            }
+            /* Huh? Invalid level name? */
+            return NULL;
         }
     }
-
     return success;
 }
 
