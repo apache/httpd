@@ -56,7 +56,6 @@ typedef struct {
     apr_bucket_alloc_t *ba;
     apr_array_header_t *templates;
     apr_table_t *conditions;
-    ap_watchdog_t *watchdog;
     apr_hash_t *hcworkers;
     apr_thread_pool_t *hctp;
     int tpsize;
@@ -93,6 +92,7 @@ static void *hc_create_config(apr_pool_t *p, server_rec *s)
     return ctx;
 }
 
+static ap_watchdog_t *watchdog;
 /*
  * This serves double duty by not only validating (and creating)
  * the health-check template, but also ties into set_worker_param()
@@ -259,7 +259,6 @@ static const char *set_hc_condition(cmd_parms *cmd, void *dummy, const char *arg
     if (*expr) {
         return "error: extra parameter(s)";
     }
-
     return NULL;
 }
 
@@ -307,7 +306,6 @@ static const char *set_hc_template(cmd_parms *cmd, void *dummy, const char *arg)
         }
         /* No error means we have a valid template */
     }
-
     return NULL;
 }
 
@@ -877,7 +875,6 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
     proxy_balancer *balancer;
     sctx_t *ctx = (sctx_t *)data;
     server_rec *s = ctx->s;
-    server_rec *save;
     proxy_server_conf *conf;
     switch (state) {
         case AP_WATCHDOG_STATE_STARTING:
@@ -909,12 +906,11 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
             break;
 
         case AP_WATCHDOG_STATE_RUNNING:
-            save = s;
             /* loop thru all workers */
             ap_log_error(APLOG_MARK, APLOG_TRACE2, 0, s,
                          "Run of %s watchdog.",
                          HCHECK_WATHCHDOG_NAME);
-            while (s) {
+            if (s) {
                 int i;
                 conf = (proxy_server_conf *) ap_get_module_config(s->module_config, &proxy_module);
                 balancer = (proxy_balancer *)conf->balancers->elts;
@@ -963,9 +959,7 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
                         workers++;
                     }
                 }
-                s = s->next;
             }
-            ctx->s = save;
             break;
 
         case AP_WATCHDOG_STATE_STOPPING:
@@ -1001,10 +995,7 @@ static int hc_post_config(apr_pool_t *p, apr_pool_t *plog,
                      "mod_watchdog is required");
         return !OK;
     }
-    ctx = (sctx_t *) ap_get_module_config(s->module_config,
-                                          &proxy_hcheck_module);
-
-    rv = hc_watchdog_get_instance(&ctx->watchdog,
+    rv = hc_watchdog_get_instance(&watchdog,
                                   HCHECK_WATHCHDOG_NAME,
                                   0, 1, p);
     if (rv) {
@@ -1013,18 +1004,24 @@ static int hc_post_config(apr_pool_t *p, apr_pool_t *plog,
                      HCHECK_WATHCHDOG_NAME);
         return !OK;
     }
-    rv = hc_watchdog_register_callback(ctx->watchdog,
-            apr_time_from_sec(HCHECK_WATHCHDOG_INTERVAL),
-            ctx,
-            hc_watchdog_callback);
-    if (rv) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, APLOGNO(03264)
-                     "Failed to register watchdog callback (%s)",
-                     HCHECK_WATHCHDOG_NAME);
-        return !OK;
+    while (s) {
+        ctx = (sctx_t *) ap_get_module_config(s->module_config,
+                                              &proxy_hcheck_module);
+
+        rv = hc_watchdog_register_callback(watchdog,
+                apr_time_from_sec(HCHECK_WATHCHDOG_INTERVAL),
+                ctx,
+                hc_watchdog_callback);
+        if (rv) {
+            ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, APLOGNO(03264)
+                         "Failed to register watchdog callback (%s)",
+                         HCHECK_WATHCHDOG_NAME);
+            return !OK;
+        }
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(03265)
+                     "watchdog callback registered (%s)", HCHECK_WATHCHDOG_NAME);
+        s = s->next;
     }
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(03265)
-                 "watchdog callback registered (%s)", HCHECK_WATHCHDOG_NAME);
     return OK;
 }
 
