@@ -903,7 +903,7 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
 
         case AP_WATCHDOG_STATE_RUNNING:
             /* loop thru all workers */
-            ap_log_error(APLOG_MARK, APLOG_TRACE2, 0, s,
+            ap_log_error(APLOG_MARK, APLOG_TRACE5, 0, s,
                          "Run of %s watchdog.",
                          HCHECK_WATHCHDOG_NAME);
             if (s) {
@@ -925,7 +925,7 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
                            (now > worker->s->updated + worker->s->interval)) {
                             baton_t *baton;
                             apr_pool_t *ptemp;
-                            ap_log_error(APLOG_MARK, APLOG_TRACE2, 0, s,
+                            ap_log_error(APLOG_MARK, APLOG_TRACE3, 0, s,
                                          "Checking %s worker: %s  [%d] (%pp)", balancer->s->name,
                                          worker->s->name, worker->s->method, worker);
 
