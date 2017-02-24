@@ -195,6 +195,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_proxy_hcheck: Honor checks in Vhosts
      trunk patch: http://svn.apache.org/r1784203
                   http://svn.apache.org/r1784205
+                  http://svn.apache.org/r1784227
+                  http://svn.apache.org/r1784228
      2.4.x patch: trunk works *after r1779573 above* (modulo CHANGES)
      +1: jim
 
