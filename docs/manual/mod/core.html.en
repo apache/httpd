@@ -1463,7 +1463,7 @@ ErrorDocument 403 /errors/forbidden.py?referrer=%{escape:%{HTTP_REFERER}}</pre>
 <div class="directive-section"><h2><a name="ErrorLog" id="ErrorLog">ErrorLog</a> <a name="errorlog" id="errorlog">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Location where the server will log errors</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code> ErrorLog <var>file-path</var>|syslog[:<var>facility</var>]</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code> ErrorLog <var>file-path</var>|syslog[:[<var>facility</var>][:<var>tag</var>]]</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ErrorLog logs/error_log (Unix) ErrorLog logs/error.log (Windows and OS/2)</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
@@ -1494,9 +1494,14 @@ ErrorDocument 403 /errors/forbidden.py?referrer=%{escape:%{HTTP_REFERER}}</pre>
     syntax where <var>facility</var> can be one of the names usually documented in
     syslog(1).  The facility is effectively global, and if it is changed
     in individual virtual hosts, the final facility specified affects the
-    entire server.</p>
+    entire server. Same rules apply for the syslog tag, which by default
+    uses the Apache binary name, <code>httpd</code> in most cases. You can
+    also override this by using the <code>syslog::<var>tag</var></code>
+    syntax.</p>
 
-    <pre class="prettyprint lang-config">ErrorLog syslog:user</pre>
+    <pre class="prettyprint lang-config">ErrorLog syslog:user
+ErrorLog syslog:user:httpd.srv1
+ErrorLog syslog::httpd.srv2</pre>
 
 
     <p>Additional modules can provide their own ErrorLog providers. The syntax

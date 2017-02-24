@@ -24,6 +24,7 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>Apache et le Chiffrement SSL/TLS</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/ssl/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/ssl/" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
 <a href="../fr/ssl/" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/ssl/" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/ssl/" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
@@ -59,6 +60,7 @@ d'environnement fournies par ce module se trouve dans la
 </div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/ssl/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/ssl/" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
 <a href="../fr/ssl/" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/ssl/" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/ssl/" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |

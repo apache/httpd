@@ -24,6 +24,7 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP 服务器</a> &gt; <a href="http://httpd.apache.org/docs/">文档</a> &gt; <a href="../">版本 2.5</a></div><div id="page-content"><div id="preamble"><h1>Apache SSL/TLS 加密</h1>
 <div class="toplang">
 <p><span>可用语言: </span><a href="../en/ssl/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/ssl/" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
 <a href="../fr/ssl/" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/ssl/" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/ssl/" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
@@ -58,6 +59,7 @@ Ralf S. Engelschall 的 mod_ssl 项目。</p>
 </div></div>
 <div class="bottomlang">
 <p><span>可用语言: </span><a href="../en/ssl/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/ssl/" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
 <a href="../fr/ssl/" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/ssl/" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/ssl/" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |

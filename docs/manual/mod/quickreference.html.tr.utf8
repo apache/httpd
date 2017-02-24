@@ -790,14 +790,14 @@ response</td></tr>
 <tr class="odd"><td><a href="mod_proxy_express.html#proxyexpressenable">ProxyExpressEnable [on|off]</a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enable the module functionality.</td></tr>
 <tr><td><a href="mod_proxy_fcgi.html#proxyfcgibackendtype">ProxyFCGIBackendType FPM|GENERIC</a></td><td> FPM </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Specify the type of backend FastCGI application</td></tr>
 <tr class="odd"><td><a href="mod_proxy_fcgi.html#proxyfcgisetenvif">ProxyFCGISetEnvIf <var>conditional-expression</var>
-    <var>environment-variable-name</var>
-    <var>value-expression</var></a></td><td></td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Allow variables sent to FastCGI servers to be fixed up</td></tr>
+    [!]<var>environment-variable-name</var>
+    [<var>value-expression</var>]</a></td><td></td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Allow variables sent to FastCGI servers to be fixed up</td></tr>
 <tr><td><a href="mod_proxy_ftp.html#proxyftpdircharset">ProxyFtpDirCharset <var>character set</var></a></td><td> ISO-8859-1 </td><td>skd</td><td>E</td></tr><tr><td class="descr" colspan="4">Define the character set for proxied FTP listings</td></tr>
 <tr class="odd"><td><a href="mod_proxy_ftp.html#proxyftpescapewildcards">ProxyFtpEscapeWildcards [on|off]</a></td><td></td><td>skd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Whether wildcards in requested filenames are escaped when sent to the FTP server</td></tr>
 <tr><td><a href="mod_proxy_ftp.html#proxyftplistonwildcard">ProxyFtpListOnWildcard [on|off]</a></td><td></td><td>skd</td><td>E</td></tr><tr><td class="descr" colspan="4">Whether wildcards in requested filenames trigger a file listing</td></tr>
 <tr class="odd"><td><a href="mod_proxy_hcheck.html#proxyhcexpr">ProxyHCExpr name {ap_expr expression}</a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Creates a named condition expression to use to determine health of the backend based on its response.</td></tr>
 <tr><td><a href="mod_proxy_hcheck.html#proxyhctemplate">ProxyHCTemplate name parameter=setting &lt;...&gt;</a></td><td></td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Creates a named template for setting various health check parameters</td></tr>
-<tr class="odd"><td><a href="mod_proxy_hcheck.html#proxyhctpsize">ProxyHCTPsize &lt;size&gt;</a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the size of the threadpool used for the health check workers.</td></tr>
+<tr class="odd"><td><a href="mod_proxy_hcheck.html#proxyhctpsize">ProxyHCTPsize &lt;size&gt;</a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the total server-wide size of the threadpool used for the health check workers.</td></tr>
 <tr><td><a href="mod_proxy_html.html#proxyhtmlbufsize">ProxyHTMLBufSize <var>bytes</var></a></td><td></td><td>skd</td><td>T</td></tr><tr><td class="descr" colspan="4">Sets the buffer size increment for buffering inline scripts and
 stylesheets.</td></tr>
 <tr class="odd"><td><a href="mod_proxy_html.html#proxyhtmlcharsetout">ProxyHTMLCharsetOut <var>Charset | *</var></a></td><td></td><td>skd</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Specify a charset for mod_proxy_html output.</td></tr>
