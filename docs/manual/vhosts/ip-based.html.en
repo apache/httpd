@@ -163,7 +163,7 @@ Virtual Hosts</a> to help you decide.  </p>
     directives that control process creation and a few other
     directives. To find out if a directive can be used in the
     VirtualHost directive, check the <a href="../mod/directive-dict.html#Context">Context</a> using the
-    <a href="../mod/directives.html">directive index</a>.</p>
+    <a href="../mod/quickreference.html">directive index</a>.</p>
 
     <p><code class="directive"><a href="../mod/mod_suexec.html#suexecusergroup">SuexecUserGroup</a></code>
     may be used inside a
