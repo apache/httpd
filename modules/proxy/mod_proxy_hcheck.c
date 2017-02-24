@@ -57,8 +57,6 @@ typedef struct {
     apr_array_header_t *templates;
     apr_table_t *conditions;
     apr_hash_t *hcworkers;
-    apr_thread_pool_t *hctp;
-    int tpsize;
     server_rec *s;
 } sctx_t;
 
@@ -86,13 +84,15 @@ static void *hc_create_config(apr_pool_t *p, server_rec *s)
     ctx->templates = apr_array_make(p, 10, sizeof(hc_template_t));
     ctx->conditions = apr_table_make(p, 10);
     ctx->hcworkers = apr_hash_make(p);
-    ctx->tpsize = HC_THREADPOOL_SIZE;
     ctx->s = s;
 
     return ctx;
 }
 
 static ap_watchdog_t *watchdog;
+static apr_thread_pool_t *hctp = NULL;
+static int tpsize = HC_THREADPOOL_SIZE;
+
 /*
  * This serves double duty by not only validating (and creating)
  * the health-check template, but also ties into set_worker_param()
@@ -312,16 +312,12 @@ static const char *set_hc_template(cmd_parms *cmd, void *dummy, const char *arg)
 #if HC_USE_THREADS
 static const char *set_hc_tpsize (cmd_parms *cmd, void *dummy, const char *arg)
 {
-    sctx_t *ctx;
-
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_HTACCESS);
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err)
         return err;
-    ctx = (sctx_t *) ap_get_module_config(cmd->server->module_config,
-                                          &proxy_hcheck_module);
 
-    ctx->tpsize = atoi(arg);
-    if (ctx->tpsize < 0)
+    tpsize = atoi(arg);
+    if (tpsize < 0)
         return "Invalid ProxyHCTPsize parameter. Parameter must be "
                ">= 0";
     return NULL;
@@ -882,24 +878,24 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
                          "%s watchdog started.",
                          HCHECK_WATHCHDOG_NAME);
 #if HC_USE_THREADS
-            if (ctx->tpsize) {
-                rv =  apr_thread_pool_create(&ctx->hctp, ctx->tpsize,
-                                             ctx->tpsize, ctx->p);
+            if (tpsize && hctp == NULL) {
+                rv =  apr_thread_pool_create(&hctp, tpsize,
+                                             tpsize, ctx->p);
                 if (rv != APR_SUCCESS) {
                     ap_log_error(APLOG_MARK, APLOG_INFO, rv, s, APLOGNO(03312)
                                  "apr_thread_pool_create() with %d threads failed",
-                                 ctx->tpsize);
+                                 tpsize);
                     /* we can continue on without the threadpools */
-                    ctx->hctp = NULL;
+                    hctp = NULL;
                 } else {
                     ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, s, APLOGNO(03313)
                                  "apr_thread_pool_create() with %d threads succeeded",
-                                 ctx->tpsize);
+                                 tpsize);
                 }
             } else {
                 ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, s, APLOGNO(03314)
                              "Skipping apr_thread_pool_create()");
-                ctx->hctp = NULL;
+                hctp = NULL;
             }
 
 #endif
@@ -946,12 +942,12 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
                             baton->ptemp = ptemp;
                             baton->hc = hc_get_hcworker(ctx, worker, ptemp);
 
-                            if (!ctx->hctp) {
+                            if (!hctp) {
                                 hc_check(NULL, baton);
                             }
 #if HC_USE_THREADS
                             else {
-                                rv = apr_thread_pool_push(ctx->hctp, hc_check, (void *)baton,
+                                rv = apr_thread_pool_push(hctp, hc_check, (void *)baton,
                                                           APR_THREAD_TASK_PRIORITY_NORMAL, NULL);
                             }
 #endif
@@ -967,13 +963,15 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
                          "stopping %s watchdog.",
                          HCHECK_WATHCHDOG_NAME);
 #if HC_USE_THREADS
-            rv =  apr_thread_pool_destroy(ctx->hctp);
-            if (rv != APR_SUCCESS) {
-                ap_log_error(APLOG_MARK, APLOG_INFO, rv, s, APLOGNO(03315)
-                             "apr_thread_pool_destroy() failed");
+            if (hctp) {
+                rv =  apr_thread_pool_destroy(hctp);
+                if (rv != APR_SUCCESS) {
+                    ap_log_error(APLOG_MARK, APLOG_INFO, rv, s, APLOGNO(03315)
+                                 "apr_thread_pool_destroy() failed");
+                }
             }
 #endif
-            ctx->hctp = NULL;
+            hctp = NULL;
             break;
     }
     return rv;
@@ -1174,7 +1172,7 @@ static const command_rec command_table[] = {
     AP_INIT_RAW_ARGS("ProxyHCExpr", set_hc_condition, NULL, OR_FILEINFO,
                      "Define a health check condition ruleset expression"),
 #if HC_USE_THREADS
-    AP_INIT_TAKE1("ProxyHCTPsize", set_hc_tpsize, NULL, OR_FILEINFO,
+    AP_INIT_TAKE1("ProxyHCTPsize", set_hc_tpsize, NULL, RSRC_CONF,
                      "Set size of health check thread pool"),
 #endif
     { NULL }

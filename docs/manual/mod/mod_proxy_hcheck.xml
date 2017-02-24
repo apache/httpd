@@ -204,9 +204,9 @@ ProxyPass "/apps"     "http://backend.example.com/" hctemplate=tcp5
 
 <directivesynopsis>
 <name>ProxyHCTPsize</name>
-<description>Sets the size of the threadpool used for the health check workers.</description>
+<description>Sets the total server-wide size of the threadpool used for the health check workers.</description>
 <syntax>ProxyHCTPsize &lt;size&gt;</syntax>
-<contextlist><context>server config</context><context>virtual host</context>
+<contextlist><context>server config</context>
 </contextlist>
 
 <usage>
