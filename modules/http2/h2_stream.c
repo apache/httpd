@@ -361,7 +361,7 @@ apr_status_t h2_stream_send_frame(h2_stream *stream, int ftype, int flags)
                 /* start pushed stream */
                 ap_assert(stream->request == NULL);
                 ap_assert(stream->rtmp != NULL);
-                status = h2_request_end_headers(stream->rtmp, stream->pool, 0);
+                status = h2_request_end_headers(stream->rtmp, stream->pool, 1);
                 if (status != APR_SUCCESS) {
                     return status;
                 }
@@ -412,7 +412,7 @@ apr_status_t h2_stream_recv_frame(h2_stream *stream, int ftype, int flags)
                 /* request HEADER */
                 ap_assert(stream->request == NULL);
                 ap_assert(stream->rtmp != NULL);
-                status = h2_request_end_headers(stream->rtmp, stream->pool, 0);
+                status = h2_request_end_headers(stream->rtmp, stream->pool, eos);
                 if (status != APR_SUCCESS) {
                     return status;
                 }
