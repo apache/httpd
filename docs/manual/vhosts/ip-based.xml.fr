@@ -1,7 +1,7 @@
 <?xml version='1.0' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- English Revision: 1673658:1784325 (outdated) -->
+<!-- English Revision: 1784325 -->
 <!-- French translation by alain B, review by Vincent Deffontaines -->
 <!-- Updated by Lucien Gentis -->
 
@@ -157,7 +157,7 @@ résident pour des serveurs virtuels</title>
     quelques autres. Pour connaître celles utilisables dans une
     directive VirtualHost, vérifiez leur
     <a href="../mod/directive-dict.html#Context">Contexte</a> en utilisant
-    l'<a href="../mod/directives.html">Index des directives</a>.</p>
+    l'<a href="../mod/quickreference.html">directive index</a>.</p>
 
 <!--
     <p>Les directives <directive module="mpm_common">User</directive> et

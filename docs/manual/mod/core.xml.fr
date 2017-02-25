@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1782140:1784318 (outdated) -->
+<!-- English Revision: 1784318 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1673,7 +1673,7 @@ personnalisation des réponses</a></seealso>
 <directivesynopsis>
 <name>ErrorLog</name>
 <description>Définition du chemin du journal des erreurs</description>
-<syntax> ErrorLog <var>chemin fichier</var>|syslog[:<var>facility</var>]</syntax>
+<syntax> ErrorLog <var>file-path</var>|syslog[:[<var>facility</var>][:<var>tag</var>]]</syntax>
 <default>ErrorLog logs/error_log (Unix) ErrorLog logs/error.log (Windows and OS/2)</default>
 <contextlist><context>server config</context><context>virtual
 host</context>
@@ -1682,13 +1682,13 @@ host</context>
 <usage>
     <p>La directive <directive>ErrorLog</directive> permet de définir le
     nom du fichier dans lequel le serveur va journaliser toutes les
-    erreurs qu'il rencontre. Si le <var>chemin fichier</var> n'est pas
+    erreurs qu'il rencontre. Si le <var>file-path</var> n'est pas
     absolu, il est considéré comme relatif au chemin défini par la
     directive <directive module="core">ServerRoot</directive>.</p>
 
     <highlight language="config">ErrorLog "/var/log/httpd/error_log"</highlight>
 
-    <p>Si le <var>chemin fichier</var> commence par une barre verticale
+    <p>Si le <var>file-path</var> commence par une barre verticale
     "<code>(|)</code>", il est considéré comme une commande à lancer pour traiter la
     journalisation de l'erreur.</p>
 
@@ -1706,9 +1706,16 @@ host</context>
     être remplacé par un des noms habituellement documentés dans la page
     de man syslog(1). Le dispositif syslog <code>local7</code> est
     global, et si il est modifié dans un serveur virtuel, le dispositif
-    final spécifié affecte l'ensemble du serveur</p>
+    final spécifié affecte l'ensemble du serveur. La même règle s'applique au
+    tag syslog qui utilise par défaut le nom du binaire du serveur HTTP Apache
+    <code>httpd</code> dans la plupart des cas. Vous pouvez aussi modifier cette
+    valeur en utilisant la syntaxe <code>syslog::<var>tag</var></code>.</p>
 
-    <highlight language="config">ErrorLog syslog:user</highlight>
+    <highlight language="config">
+ ErrorLog syslog:user
+ ErrorLog syslog:user:httpd.srv1
+ErrorLog syslog::httpd.srv2   
+    </highlight>
 
     <p>Des modules additionnels peuvent implémenter leur propre
     fournisseur ErrorLog. La syntaxe est similaire à l'exemple
