@@ -571,7 +571,7 @@ fichiers aux clients</td></tr>
 d'erreur personnalisé</td></tr>
 <tr class="odd"><td><a href="core.html#errordocument">ErrorDocument <var>code erreur</var> <var>document</var></a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Document que le serveur renvoie au client en cas
 d'erreur</td></tr>
-<tr><td><a href="core.html#errorlog"> ErrorLog <var>chemin fichier</var>|syslog[:<var>facility</var>]</a></td><td> logs/error_log (Uni +</td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Définition du chemin du journal des erreurs</td></tr>
+<tr><td><a href="core.html#errorlog"> ErrorLog <var>file-path</var>|syslog[:[<var>facility</var>][:<var>tag</var>]]</a></td><td> logs/error_log (Uni +</td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Définition du chemin du journal des erreurs</td></tr>
 <tr class="odd"><td><a href="core.html#errorlogformat"> ErrorLogFormat [connection|request] <var>format</var></a></td><td></td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Spécification du format des entrées du journal des erreurs</td></tr>
 <tr><td><a href="mod_example_hooks.html#example">Example</a></td><td></td><td>svdh</td><td>X</td></tr><tr><td class="descr" colspan="4">Directive de démonstration pour illustrer l'API des modules
 Apache</td></tr>

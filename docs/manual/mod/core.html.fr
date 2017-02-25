@@ -33,8 +33,6 @@
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fonctionnalités de base du serveur HTTP Apache toujours
 disponibles</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Core</td></tr></table>
@@ -1551,7 +1549,7 @@ personnalisation des réponses</a></li>
 <div class="directive-section"><h2><a name="errorlog" id="errorlog">Directive</a> <a name="ErrorLog" id="ErrorLog">ErrorLog</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définition du chemin du journal des erreurs</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code> ErrorLog <var>chemin fichier</var>|syslog[:<var>facility</var>]</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code> ErrorLog <var>file-path</var>|syslog[:[<var>facility</var>][:<var>tag</var>]]</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ErrorLog logs/error_log (Unix) ErrorLog logs/error.log (Windows and OS/2)</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
@@ -1559,14 +1557,14 @@ personnalisation des réponses</a></li>
 </table>
     <p>La directive <code class="directive">ErrorLog</code> permet de définir le
     nom du fichier dans lequel le serveur va journaliser toutes les
-    erreurs qu'il rencontre. Si le <var>chemin fichier</var> n'est pas
+    erreurs qu'il rencontre. Si le <var>file-path</var> n'est pas
     absolu, il est considéré comme relatif au chemin défini par la
     directive <code class="directive"><a href="#serverroot">ServerRoot</a></code>.</p>
 
     <pre class="prettyprint lang-config">ErrorLog "/var/log/httpd/error_log"</pre>
 
 
-    <p>Si le <var>chemin fichier</var> commence par une barre verticale
+    <p>Si le <var>file-path</var> commence par une barre verticale
     "<code>(|)</code>", il est considéré comme une commande à lancer pour traiter la
     journalisation de l'erreur.</p>
 
@@ -1585,9 +1583,14 @@ personnalisation des réponses</a></li>
     être remplacé par un des noms habituellement documentés dans la page
     de man syslog(1). Le dispositif syslog <code>local7</code> est
     global, et si il est modifié dans un serveur virtuel, le dispositif
-    final spécifié affecte l'ensemble du serveur</p>
+    final spécifié affecte l'ensemble du serveur. La même règle s'applique au
+    tag syslog qui utilise par défaut le nom du binaire du serveur HTTP Apache
+    <code>httpd</code> dans la plupart des cas. Vous pouvez aussi modifier cette
+    valeur en utilisant la syntaxe <code>syslog::<var>tag</var></code>.</p>
 
-    <pre class="prettyprint lang-config">ErrorLog syslog:user</pre>
+    <pre class="prettyprint lang-config"> ErrorLog syslog:user
+ ErrorLog syslog:user:httpd.srv1
+ErrorLog syslog::httpd.srv2</pre>
 
 
     <p>Des modules additionnels peuvent implémenter leur propre
