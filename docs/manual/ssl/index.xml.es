@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.es.xsl"?>
-<!-- English Revision: 1328159 $ -->
+<!-- English Revision: 1328159 -->
 <!-- Translated by Luis Gil de Bernabé Pfeiffer -->
 <!-- Reviewed by Sergio Ramos -->
 <!--
@@ -27,7 +27,7 @@
   <title>Cifrado SSL/TLS en Apache</title>
 
 <summary>
-<p>El módulo <module>mod_ssl</module>de Apache HTTP Server
+<p>El módulo <module>mod_ssl</module> de Apache HTTP Server
 proporciona una interfaz para las librerías de <a
 href="https://www.openssl.org/">OpenSSL</a>, la cuál provee un cifrado robusto
 haciendo uso de los protocolos "Secure Sockets Layer" y 
