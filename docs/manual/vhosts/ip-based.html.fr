@@ -29,8 +29,6 @@
 <a href="../ko/vhosts/ip-based.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/vhosts/ip-based.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#requirements">Système requis</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#howto">Comment configurer Apache</a></li>
@@ -167,7 +165,7 @@ résident pour des serveurs virtuels</a></h2>
     quelques autres. Pour connaître celles utilisables dans une
     directive VirtualHost, vérifiez leur
     <a href="../mod/directive-dict.html#Context">Contexte</a> en utilisant
-    l'<a href="../mod/directives.html">Index des directives</a>.</p>
+    l'<a href="../mod/quickreference.html">directive index</a>.</p>
 
 
     <p><code class="directive"><a href="../mod/mod_suexec.html#suexecusergroup">SuexecUserGroup</a></code> peut être
