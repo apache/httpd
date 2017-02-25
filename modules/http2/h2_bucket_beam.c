@@ -230,15 +230,12 @@ static apr_off_t bucket_mem_used(apr_bucket *b)
 static int report_consumption(h2_bucket_beam *beam)
 {
     int rv = 0;
-    if (apr_atomic_read32(&beam->cons_ev_pending)) {
-        if (beam->cons_io_cb) { 
-            beam->cons_io_cb(beam->cons_ctx, beam, beam->received_bytes
-                             - beam->cons_bytes_reported);
-            rv = 1;
-        }
-        beam->cons_bytes_reported = beam->received_bytes;
-        apr_atomic_set32(&beam->cons_ev_pending, 0);
+    if (beam->cons_io_cb) { 
+        beam->cons_io_cb(beam->cons_ctx, beam, beam->received_bytes
+                         - beam->cons_bytes_reported);
+        rv = 1;
     }
+    beam->cons_bytes_reported = beam->received_bytes;
     return rv;
 }
 
@@ -1024,7 +1021,6 @@ transfer:
         }
 
         if (transferred_buckets > 0) {
-           apr_atomic_set32(&beam->cons_ev_pending, 1);
            if (beam->cons_ev_cb) { 
                beam->cons_ev_cb(beam->cons_ctx, beam);
             }
@@ -1199,15 +1195,13 @@ int h2_beam_no_files(void *ctx, h2_bucket_beam *beam, apr_file_t *file)
 
 int h2_beam_report_consumption(h2_bucket_beam *beam)
 {
-    if (apr_atomic_read32(&beam->cons_ev_pending)) {
-        h2_beam_lock bl;
-        if (enter_yellow(beam, &bl) == APR_SUCCESS) {
-            int rv = report_consumption(beam);
-            leave_yellow(beam, &bl);
-            return rv;
-        }
+    h2_beam_lock bl;
+    int rv = 0;
+    if (enter_yellow(beam, &bl) == APR_SUCCESS) {
+        rv = report_consumption(beam);
+        leave_yellow(beam, &bl);
     }
-    return 0;
+    return rv;
 }
 
 void h2_beam_log(h2_bucket_beam *beam, conn_rec *c, int level, const char *msg)

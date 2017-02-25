@@ -194,13 +194,11 @@ struct h2_bucket_beam {
     h2_beam_mutex_enter *m_enter;
     struct apr_thread_cond_t *m_cond;
     
-    apr_uint32_t cons_ev_pending;     /* != 0, consumer event pending */
     apr_off_t cons_bytes_reported;    /* amount of bytes reported as consumed */
     h2_beam_ev_callback *cons_ev_cb;
     h2_beam_io_callback *cons_io_cb;
     void *cons_ctx;
 
-    apr_uint32_t prod_ev_pending;     /* != 0, producer event pending */
     apr_off_t prod_bytes_reported;    /* amount of bytes reported as produced */
     h2_beam_io_callback *prod_io_cb;
     void *prod_ctx;
