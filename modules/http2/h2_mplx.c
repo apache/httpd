@@ -123,7 +123,8 @@ static apr_status_t beam_enter(void *ctx, h2_beam_lock *pbl)
 static void stream_output_consumed(void *ctx, 
                                    h2_bucket_beam *beam, apr_off_t length)
 {
-    h2_task *task = ctx;
+    h2_stream *stream = ctx;
+    h2_task *task = stream->task;
     if (length > 0 && task && task->assigned) {
         h2_req_engine_out_consumed(task->assigned, task->c, length); 
     }
@@ -613,7 +614,7 @@ static apr_status_t out_open(h2_mplx *m, int stream_id, h2_bucket_beam *beam)
                       "h2_mplx(%s): out open", stream->task->id);
     }
     
-    h2_beam_on_consumed(stream->output, NULL, stream_output_consumed, stream->task);
+    h2_beam_on_consumed(stream->output, NULL, stream_output_consumed, stream);
     h2_beam_on_produced(stream->output, output_produced, m);
     beamed_count = h2_beam_get_files_beamed(stream->output);
     if (m->tx_handles_reserved >= beamed_count) {

@@ -170,7 +170,10 @@ apr_status_t h2_request_end_headers(h2_request *req, apr_pool_t *pool, int eos)
 
     s = apr_table_get(req->headers, "Content-Length");
     if (!s) {
-        /* no content-length given */
+        /* HTTP/2 does not need a Content-Length for framing, but our
+         * internal request processing is used to HTTP/1.1, so we
+         * need to either add a Content-Length or a Transfer-Encoding
+         * if any content can be expected. */
         if (!eos) {
             /* We have not seen a content-length and have no eos,
              * simulate a chunked encoding for our HTTP/1.1 infrastructure,
