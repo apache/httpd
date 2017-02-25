@@ -27,6 +27,8 @@
 #include <http_log.h>
 #include <scoreboard.h>
 
+#include <mpm_common.h>
+
 #include "h2_private.h"
 #include "h2.h"
 #include "h2_bucket_eos.h"
@@ -711,16 +713,31 @@ static h2_session *h2_session_create_int(conn_rec *c,
 {
     nghttp2_session_callbacks *callbacks = NULL;
     nghttp2_option *options = NULL;
+    apr_allocator_t *allocator;
+    apr_thread_mutex_t *mutex;
     uint32_t n;
-
     apr_pool_t *pool = NULL;
-    apr_status_t status = apr_pool_create(&pool, c->pool);
     h2_session *session;
+    
+    apr_status_t status = apr_allocator_create(&allocator);
     if (status != APR_SUCCESS) {
         return NULL;
     }
+    apr_allocator_max_free_set(allocator, ap_max_mem_free);
+    apr_pool_create_ex(&pool, c->pool, NULL, allocator);
+    if (!pool) {
+        apr_allocator_destroy(allocator);
+        return NULL;
+    }
     apr_pool_tag(pool, "h2_session");
-
+    apr_allocator_owner_set(allocator, pool);
+    status = apr_thread_mutex_create(&mutex, APR_THREAD_MUTEX_DEFAULT, pool);
+    if (status != APR_SUCCESS) {
+        apr_pool_destroy(pool);
+        return NULL;
+    }
+    apr_allocator_mutex_set(allocator, mutex);
+    
     /* get h2_session a lifetime beyond its pool and everything
      * connected to it. */
     session = apr_pcalloc(pool, sizeof(h2_session));
