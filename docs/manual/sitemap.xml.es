@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE sitemap SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.es.xsl"?>
-<!-- English Revision: 1732099:1780356 (outdated) -->
+<!-- English Revision: 1780356 -->
 <!-- Spanish Translator: Luis Gil de Bernabé -->
 <!-- Reviewed by: Sergio Ramos -->
 
@@ -99,16 +99,16 @@ re-mapeo de URLs</page>
 </category>
 
 <category id="ssl">
-<title>Encriptado SSL/TLS con Apache</title>
+<title>Cifrado SSL/TLS con Apache</title>
 <page separate="yes" href="ssl/">Visión General</page>
-<page href="ssl/ssl_intro.html">Encriptado SSL/TLS: Introducción</page>
-<page href="ssl/ssl_compat.html">Encriptado SSL/TLS: Compatibilidad</page>
-<page href="ssl/ssl_howto.html">Encriptado SSL/TLS: How-To</page>
-<page href="ssl/ssl_faq.html">Encriptado SSL/TLS: Preguntas Frecuentes</page>
+<page href="ssl/ssl_intro.html">Cifrado SSL/TLS: Introducción</page>
+<page href="ssl/ssl_compat.html">Cifrado SSL/TLS: Compatibilidad</page>
+<page href="ssl/ssl_howto.html">Cifrado SSL/TLS: How-To</page>
+<page href="ssl/ssl_faq.html">Cifrado SSL/TLS: Preguntas Frecuentes</page>
 </category>
 
 <category id="howto">
-<title>Guías, Tutoriales, y How-To´s</title>
+<title>Guías, Tutoriales y How-To´s</title>
 <page separate="yes" href="howto/">Visión General</page>
 <page href="howto/auth.html">Autenticación y Autorización</page>
 <page href="howto/access.html">Control de Acceso</page>
@@ -118,6 +118,7 @@ del lado del Servidor (Server Side Includes)</page>
 <page href="howto/htaccess.html">Archivos .htaccess</page>
 <page href="howto/public_html.html">Directorios web para cada usuario</page>
 <page href="howto/reverse_proxy.html">Guía de montaje de proxy inverso</page>
+<page href="howto/http2.html">Guía HTTP/2</page>
 
 </category>
 
@@ -181,7 +182,7 @@ usados para describir las directivas de Apache</page>
 <title>Documentación para desarrolladores</title>
 <page separate="yes" href="developer/">Visión General</page>
 <page href="developer/API.html">Notas sobre la API de Apache</page>
-<page href="developer/new_api_2_4.html">API updates in Apache HTTPD 2.4</page>
+<page href="developer/new_api_2_4.html">Actualizaciones de la API en Apache HTTPD 2.4</page>
 <page href="developer/modguide.html">Desarrollo de módulos para Apache HTTPD 2.4</page>
 <page href="developer/documenting.html">Documentando Apache HTTPD</page>
 <page href="developer/hooks.html">Funciones Hook de Apache 2.x</page>
