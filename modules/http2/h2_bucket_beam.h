@@ -190,9 +190,10 @@ struct h2_bucket_beam {
     unsigned int close_sent : 1;
     unsigned int tx_mem_limits : 1; /* only memory size counts on transfers */
 
+    struct apr_thread_mutex_t *lock;
+    struct apr_thread_cond_t *cond;
     void *m_ctx;
     h2_beam_mutex_enter *m_enter;
-    struct apr_thread_cond_t *m_cond;
     
     apr_off_t cons_bytes_reported;    /* amount of bytes reported as consumed */
     h2_beam_ev_callback *cons_ev_cb;
@@ -315,8 +316,10 @@ apr_status_t h2_beam_wait_empty(h2_bucket_beam *beam, apr_read_type_e block);
 
 void h2_beam_mutex_set(h2_bucket_beam *beam, 
                        h2_beam_mutex_enter m_enter,
-                       struct apr_thread_cond_t *cond,
                        void *m_ctx);
+
+void h2_beam_mutex_enable(h2_bucket_beam *beam);
+void h2_beam_mutex_disable(h2_bucket_beam *beam);
 
 /** 
  * Set/get the timeout for blocking read/write operations. Only works

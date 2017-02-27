@@ -100,33 +100,19 @@ static void leave_mutex(h2_mplx *m, int acquired)
     }
 }
 
-static void beam_leave(void *ctx, apr_thread_mutex_t *lock)
-{
-    leave_mutex(ctx, 1);
-}
-
-static apr_status_t beam_enter(void *ctx, h2_beam_lock *pbl)
-{
-    h2_mplx *m = ctx;
-    int acquired;
-    apr_status_t status;
-    
-    status = enter_mutex(m, &acquired);
-    if (status == APR_SUCCESS) {
-        pbl->mutex = m->lock;
-        pbl->leave = acquired? beam_leave : NULL;
-        pbl->leave_ctx = m;
-    }
-    return status;
-}
-
 static void stream_output_consumed(void *ctx, 
                                    h2_bucket_beam *beam, apr_off_t length)
 {
     h2_stream *stream = ctx;
+    h2_mplx *m = stream->session->mplx;
     h2_task *task = stream->task;
+    int acquired;
+    
     if (length > 0 && task && task->assigned) {
-        h2_req_engine_out_consumed(task->assigned, task->c, length); 
+        if (enter_mutex(m, &acquired) == APR_SUCCESS) {
+            h2_req_engine_out_consumed(task->assigned, task->c, length); 
+            leave_mutex(m, acquired);
+        }
     }
 }
 
@@ -139,9 +125,16 @@ static void stream_input_ev(void *ctx, h2_bucket_beam *beam)
 static void stream_input_consumed(void *ctx, 
                                   h2_bucket_beam *beam, apr_off_t length)
 {
-    h2_mplx *m = ctx;
-    if (m->input_consumed && length) {
-        m->input_consumed(m->input_consumed_ctx, beam->id, length);
+    if (length > 0) { 
+        h2_mplx *m = ctx;
+        int acquired;
+    
+        if (enter_mutex(m, &acquired) == APR_SUCCESS) {
+            if (m->input_consumed) {
+                m->input_consumed(m->input_consumed_ctx, beam->id, length);
+            }
+            leave_mutex(m, acquired);
+        }
     }
 }
 
@@ -190,17 +183,21 @@ static void stream_joined(h2_mplx *m, h2_stream *stream)
     
     h2_ihash_remove(m->shold, stream->id);
     h2_ihash_add(m->spurge, stream);
-    m->tx_handles_reserved += h2_beam_get_files_beamed(stream->input);
+    if (stream->input) {
+        m->tx_handles_reserved += h2_beam_get_files_beamed(stream->input);
+    }
     m->tx_handles_reserved += h2_beam_get_files_beamed(stream->output);
 }
 
 static void stream_cleanup(h2_mplx *m, h2_stream *stream)
 {
     ap_assert(stream->state == H2_SS_CLEANUP);
-    
+
+    if (stream->input) {
+        h2_beam_on_consumed(stream->input, NULL, NULL, NULL);
+        h2_beam_abort(stream->input);
+    }
     h2_beam_on_produced(stream->output, NULL, NULL);
-    h2_beam_on_consumed(stream->input, NULL, NULL, NULL);
-    h2_beam_abort(stream->input);
     h2_beam_leave(stream->output);
     
     h2_stream_cleanup(stream);
@@ -376,18 +373,21 @@ static int stream_destroy_iter(void *ctx, void *val)
     h2_ihash_remove(m->spurge, stream->id);
     ap_assert(stream->state == H2_SS_CLEANUP);
     
-    if (stream->input == NULL || stream->output == NULL) {
+    if (stream->output == NULL) {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, m->c, 
                       H2_STRM_MSG(stream, "already with beams==NULL"));
         return 0;
     }
-    /* Process outstanding events before destruction */
-    input_consumed_signal(m, stream);
     
-    h2_beam_log(stream->input, m->c, APLOG_TRACE2, "stream_destroy");
+    if (stream->input) {
+        /* Process outstanding events before destruction */
+        input_consumed_signal(m, stream);    
+        h2_beam_log(stream->input, m->c, APLOG_TRACE2, "stream_destroy");
+        h2_beam_destroy(stream->input);
+        stream->input = NULL;
+    }
+    
     h2_beam_log(stream->output, m->c, APLOG_TRACE2, "stream_destroy");
-    h2_beam_destroy(stream->input);
-    stream->input = NULL;
     h2_beam_destroy(stream->output);
     stream->output = NULL;
     if (stream->task) {
@@ -628,7 +628,7 @@ static apr_status_t out_open(h2_mplx *m, int stream_id, h2_bucket_beam *beam)
     }
     
     /* time to protect the beam against multi-threaded use */
-    h2_beam_mutex_set(stream->output, beam_enter, stream->task->cond, m);
+    h2_beam_mutex_enable(stream->output);
     
     /* we might see some file buckets in the output, see
      * if we have enough handles reserved. */
@@ -812,11 +812,13 @@ static h2_task *next_stream_task(h2_mplx *m)
                     m->max_stream_started = sid;
                 }
                 
-                h2_beam_timeout_set(stream->input, m->stream_timeout);
-                h2_beam_on_consumed(stream->input, stream_input_ev, 
-                                    stream_input_consumed, m);
-                h2_beam_on_file_beam(stream->input, can_beam_file, m);
-                h2_beam_mutex_set(stream->input, beam_enter, stream->task->cond, m);
+                if (stream->input) {
+                    h2_beam_timeout_set(stream->input, m->stream_timeout);
+                    h2_beam_on_consumed(stream->input, stream_input_ev, 
+                                        stream_input_consumed, m);
+                    h2_beam_on_file_beam(stream->input, can_beam_file, m);
+                    h2_beam_mutex_enable(stream->input);
+                }
                 
                 h2_beam_buffer_size_set(stream->output, m->stream_max_mem);
                 h2_beam_timeout_set(stream->output, m->stream_timeout);
@@ -931,18 +933,22 @@ static void task_done(h2_mplx *m, h2_task *task, h2_req_engine *ngn)
         ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c,
                       H2_STRM_MSG(stream, "task_done, stream open")); 
         /* more data will not arrive, resume the stream */
-        h2_beam_mutex_set(stream->input, NULL, NULL, NULL);
-        h2_beam_mutex_set(stream->output, NULL, NULL, NULL);
-        h2_beam_leave(stream->input);
+        if (stream->input) {
+            h2_beam_mutex_disable(stream->input);
+            h2_beam_leave(stream->input);
+        }
+        h2_beam_mutex_disable(stream->output);
         have_out_data_for(m, stream);
     }
     else if ((stream = h2_ihash_get(m->shold, task->stream_id)) != NULL) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c,
                       H2_STRM_MSG(stream, "task_done, in hold"));
         /* stream was just waiting for us. */
-        h2_beam_mutex_set(stream->input, NULL, NULL, NULL);
-        h2_beam_mutex_set(stream->output, NULL, NULL, NULL);
-        h2_beam_leave(stream->input);
+        if (stream->input) {
+            h2_beam_mutex_disable(stream->input);
+            h2_beam_leave(stream->input);
+        }
+        h2_beam_mutex_disable(stream->output);
         stream_joined(m, stream);
     }
     else if ((stream = h2_ihash_get(m->spurge, task->stream_id)) != NULL) {
