@@ -77,6 +77,7 @@ struct h2_stream {
     unsigned int aborted   : 1; /* was aborted */
     unsigned int scheduled : 1; /* stream has been scheduled */
     unsigned int has_response : 1; /* response headers are known */
+    unsigned int input_eof : 1; /* no more request data coming */
     unsigned int push_policy;   /* which push policy to use for this request */
     
     struct h2_task *task;       /* assigned task to fullfill request */
@@ -109,6 +110,8 @@ h2_stream *h2_stream_create(int id, apr_pool_t *pool,
  * Destroy memory pool if still owned by the stream.
  */
 void h2_stream_destroy(h2_stream *stream);
+
+apr_status_t h2_stream_prep_processing(h2_stream *stream);
 
 /*
  * Set a new monitor for this stream, replacing any existing one. Can
