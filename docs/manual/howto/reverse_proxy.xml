@@ -211,7 +211,7 @@ ProxyPassReverse "/images/"  "balancer://myset/"
       with the <code>+H</code> status flag, which puts it in <em>hot standby</em> mode,
       and making the 2 <code>bkup#</code> servers part of the #1 load balancer set (the
       default set is 0); for failover, hot standbys (if they exist) are used 1st, when all regular
-      workers are unavailable; load balancer sets are always tried lowest number first.
+      workers are unavailable; load balancer sets with lowest number are always tried first.
     </p>
 
   </section>
