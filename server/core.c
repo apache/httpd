@@ -1394,15 +1394,18 @@ AP_DECLARE(const char *) ap_resolve_env(apr_pool_t *p, const char * word)
                 word = NULL;
                 if (server_config_defined_vars)
                     word = apr_table_get(server_config_defined_vars, name);
-                if (!word)
+                if (!word) {
                     word = getenv(name);
+                    if (word && (*word == '\0'))
+                        word = NULL;
+                }
                 if (word) {
                     current->string = word;
                     current->len = strlen(word);
                     outlen += current->len;
                 }
                 else {
-                    if (ap_strchr(name, ':') == 0)
+                    if (!getenv(name) && (ap_strchr(name, ':') == 0))
                         ap_log_error(APLOG_MARK, APLOG_WARNING, 0, NULL, APLOGNO(00111)
                                      "Config variable ${%s} is not defined",
                                      name);
