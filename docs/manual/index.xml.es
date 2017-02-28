@@ -65,7 +65,7 @@ Documentación</title>
     <page href="misc/perf-tuning.html">Optimización del Rendimiento</page>
     <page href="misc/security_tips.html">Consejos de seguridad</page>
     <page href="server-wide.html">Configuración básica del Servidor</page>
-    <page href="ssl/">Encryptado SSL/TLS</page>
+    <page href="ssl/">Cifrado SSL/TLS</page>
     <page href="suexec.html">Ejecución de Suexec para CGI</page>
     <page href="rewrite/">Reescritura de URL con mod_rewrite</page>
     <page href="vhosts/">Servidores Virtuales</page>

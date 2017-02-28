@@ -47,9 +47,9 @@
 
 <seealso><a href="programs/configure.html">Configuración del árbol de las fuentes de código</a></seealso>
 <seealso><a href="invoking.html">Arrancando Apache httpd</a></seealso>
-<seealso><a href="stopping.html">Paranda y Reinicio</a></seealso>
+<seealso><a href="stopping.html">Parada y Reinicio</a></seealso>
 
-<section id="overview"><title>Descripción genelar para los impacientes</title>
+<section id="overview"><title>Descripción general para los impacientes</title>
 
     <table>
       <columnspec><column width=".13"/><column width=".80"/></columnspec>

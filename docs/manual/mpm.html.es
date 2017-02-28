@@ -7,7 +7,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Módulos de MultiProcesamiento (MPMs) - Servidor HTTP Apache Versión 2.5</title>
+<title>M&#243;dulos de MultiProcesamiento (MPMs) - Servidor HTTP Apache Versi&#243;n 2.5</title>
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="./style/css/prettify.css" />
@@ -16,74 +16,74 @@
 
 <link href="./images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="./mod/">Módulos</a> | <a href="./mod/quickreference.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="./glossary.html">Glosario</a> | <a href="./sitemap.html">Mapa del sitio web</a></p>
-<p class="apache">Versión 2.5 del Servidor HTTP Apache</p>
+<p class="menu"><a href="./mod/">M&#243;dulos</a> | <a href="./mod/quickreference.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="./glossary.html">Glosario</a> | <a href="./sitemap.html">Mapa del sitio web</a></p>
+<p class="apache">Versi&#243;n 2.5 del Servidor HTTP Apache</p>
 <img alt="" src="./images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentación</a> &gt; <a href="./">Versión 2.5</a></div><div id="page-content"><div id="preamble"><h1>Módulos de MultiProcesamiento (MPMs)</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentaci&#243;n</a> &gt; <a href="./">Versi&#243;n 2.5</a></div><div id="page-content"><div id="preamble"><h1>M&#243;dulos de MultiProcesamiento (MPMs)</h1>
 <div class="toplang">
 <p><span>Idiomas disponibles: </span><a href="./de/mpm.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/mpm.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./es/mpm.html" title="Español">&nbsp;es&nbsp;</a> |
-<a href="./fr/mpm.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./es/mpm.html" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
+<a href="./fr/mpm.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/mpm.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/mpm.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/mpm.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="./tr/mpm.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a> |
 <a href="./zh-cn/mpm.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">Esta traducción podría estar
-            obsoleta. Consulte la versión en inglés de la
-            documentación para comprobar si se han producido cambios
+<div class="outofdate">Esta traducci&#243;n podr&#237;a estar
+            obsoleta. Consulte la versi&#243;n en ingl&#233;s de la
+            documentaci&#243;n para comprobar si se han producido cambios
             recientemente.</div>
 
-<p>Este documento describe que es un Módulo de Multiprocesamiento y
+<p>Este documento describe que es un M&#243;dulo de Multiprocesamiento y
 como los usa Apache.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#introduction">Introducción</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#choosing">Cómo Elegir un MPM</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#introduction">Introducci&#243;n</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#choosing">C&#243;mo Elegir un MPM</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#defaults">MPM por defecto</a></li>
-</ul><h3>Consulte también</h3><ul class="seealso"><li><a href="#comments_section">Comentarios</a></li></ul></div>
+</ul><h3>Consulte tambi&#233;n</h3><ul class="seealso"><li><a href="#comments_section">Comentarios</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="introduction" id="introduction">Introducción</a></h2>
+<h2><a name="introduction" id="introduction">Introducci&#243;n</a></h2>
 
-    <p>Apache está diseñado para ser un servidor web potente
-    y flexible que pueda funcionar en la más amplia variedad de
+    <p>Apache est&#225; dise&#241;ado para ser un servidor web potente
+    y flexible que pueda funcionar en la m&#225;s amplia variedad de
     plataformas y entornos. Las diferentes plataformas y los
     diferentes entornos, hacen que a menudo sean necesarias diferentes
-    características o funcionalidades, o que una misma
-    característica o funcionalidad sea implementada de diferente
+    caracter&#237;sticas o funcionalidades, o que una misma
+    caracter&#237;stica o funcionalidad sea implementada de diferente
     manera para obtener una mayor eficiencia. Apache se ha adaptado
-    siempre a una gran variedad de entornos a través de su
-    diseño modular. Este diseño permite a los
-    administradores de sitios web elegir que características van
-    a ser incluidas en el servidor seleccionando que módulos se
+    siempre a una gran variedad de entornos a trav&#233;s de su
+    dise&#241;o modular. Este dise&#241;o permite a los
+    administradores de sitios web elegir que caracter&#237;sticas van
+    a ser incluidas en el servidor seleccionando que m&#243;dulos se
     van a cargar, ya sea al compilar o al ejecutar el servidor.</p>
 
-    <p>Apache 2.0 extiende este diseño modular hasta las
-    funciones más básicas de un servidor web. El servidor
-    viene con una serie de Módulos de MultiProcesamiento que son
+    <p>Apache 2.0 extiende este dise&#241;o modular hasta las
+    funciones m&#225;s b&#225;sicas de un servidor web. El servidor
+    viene con una serie de M&#243;dulos de MultiProcesamiento que son
     responsables de conectar con los puertos de red de la
-    máquina, acceptar las peticiones, y generar los procesos hijo
+    m&#225;quina, acceptar las peticiones, y generar los procesos hijo
     que se encargan de servirlas.</p>
 
-    <p>La extensión del diseño modular a este nivel del
+    <p>La extensi&#243;n del dise&#241;o modular a este nivel del
     servidor ofrece dos beneficios importantes:</p>
 
     <ul>
-      <li>Apache puede soportar de una forma más fácil y
+      <li>Apache puede soportar de una forma m&#225;s f&#225;cil y
       eficiente una amplia variedad de sistemas operativos. En
-      concreto, la versión de Windows de Apache es mucho más
-      eficiente, porque el módulo <code class="module"><a href="./mod/mpm_winnt.html">mpm_winnt</a></code>
+      concreto, la versi&#243;n de Windows de Apache es mucho m&#225;s
+      eficiente, porque el m&#243;dulo <code class="module"><a href="./mod/mpm_winnt.html">mpm_winnt</a></code>
       puede usar funcionalidades nativas de red en lugar de usar la
       capa POSIX como hace Apache 1.3. Este beneficio se extiende
-      también a otros sistemas operativos que implementan sus
+      tambi&#233;n a otros sistemas operativos que implementan sus
       respectivos MPMs.</li>
 
       <li>El servidor puede personalizarse mejor para las necesidades
       de cada sitio web. Por ejemplo, los sitios web que necesitan
-      más que nada escalibildad pueden usar un MPM hebrado como
+      m&#225;s que nada escalibildad pueden usar un MPM hebrado como
       <code class="module"><a href="./mod/worker.html">worker</a></code>, mientras que los sitios web que
       requieran por encima de otras cosas estabilidad o compatibilidad
       con software antiguo pueden usar
@@ -92,21 +92,21 @@ como los usa Apache.</p>
     </ul>
 
     <p>A nivel de usuario, los MPMs son como cualquier otro
-    módulo de Apache. La diferencia más importante es que
+    m&#243;dulo de Apache. La diferencia m&#225;s importante es que
     solo un MPM puede estar cargado en el servidor en un determinado
-    momento. La lista de MPMs disponibles está en la <a href="mod/">sección índice de Módulos</a>.</p>
+    momento. La lista de MPMs disponibles est&#225; en la <a href="mod/">secci&#243;n &#237;ndice de M&#243;dulos</a>.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="choosing" id="choosing">Cómo Elegir un MPM</a></h2>
+<h2><a name="choosing" id="choosing">C&#243;mo Elegir un MPM</a></h2>
 
     <p>Los MPMs deben elegirse durante el proceso de
-    configuración, y deben ser compilados en el servidor. Los
+    configuraci&#243;n, y deben ser compilados en el servidor. Los
     compiladores son capaces de optimizar muchas funciones si se usan
-    hebras, pero solo si se sabe que se están usando hebras. Como
-    algunos MPM usan hebras en Unix y otros no, Apache tendrá un
+    hebras, pero solo si se sabe que se est&#225;n usando hebras. Como
+    algunos MPM usan hebras en Unix y otros no, Apache tendr&#225; un
     mejor rendimiento si el MPM es elegido en el momento de compilar y
-    está incorporado en el servidor.</p>
+    est&#225; incorporado en el servidor.</p>
 
     <p>Para elegir el MPM deseado, use el argumento --with-mpm=
     <em>NAME</em> con el script ./configure.  <em>NAME</em> es el
@@ -114,14 +114,14 @@ como los usa Apache.</p>
 
     <p>Una vez que el servidor ha sido compilado, es posible
     determinar que MPM ha sido elegido usando <code>./httpd
-    -l</code>. Este comando lista todos los módulos compilados en
+    -l</code>. Este comando lista todos los m&#243;dulos compilados en
     el servidor, incluido en MPM.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="defaults" id="defaults">MPM por defecto</a></h2>
 
 <p>En la siguiente tabla se muestran los MPMs por defecto para varios
-sistemas operativos.  Estos serán los MPM seleccionados si no se
+sistemas operativos.  Estos ser&#225;n los MPM seleccionados si no se
 especifica lo contrario al compilar.</p>
 
 <table>
@@ -136,11 +136,11 @@ especifica lo contrario al compilar.</p>
 <div class="bottomlang">
 <p><span>Idiomas disponibles: </span><a href="./de/mpm.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/mpm.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./es/mpm.html" title="Español">&nbsp;es&nbsp;</a> |
-<a href="./fr/mpm.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./es/mpm.html" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
+<a href="./fr/mpm.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/mpm.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/mpm.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/mpm.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="./tr/mpm.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a> |
 <a href="./zh-cn/mpm.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comentarios</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
@@ -160,8 +160,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mpm.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2017 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">Módulos</a> | <a href="./mod/quickreference.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="./glossary.html">Glosario</a> | <a href="./sitemap.html">Mapa del sitio web</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2017 The Apache Software Foundation.<br />Licencia bajo los t&#233;rminos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">M&#243;dulos</a> | <a href="./mod/quickreference.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="./glossary.html">Glosario</a> | <a href="./sitemap.html">Mapa del sitio web</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }
