@@ -217,7 +217,7 @@ DocumentRoot "/var/www/html"
 
 &lt;Location "/server-status"&gt;
     SetHandler server-status
-    Require 127.0.0.1
+    Require local
 &lt;/Location&gt;
 
 access.log - GET /server-status 403 127.0.0.1
