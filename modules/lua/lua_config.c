@@ -166,6 +166,7 @@ static int cmd_log_at(lua_State *L, int level)
     lua_getinfo(L, "Sl", &dbg);
 
     msg = luaL_checkstring(L, 2);
+    /* Intentional no APLOGNO */
     ap_log_error(dbg.source, dbg.currentline, APLOG_MODULE_INDEX, level, 0,
                  cmd->server, "%s", msg);
     return 0;

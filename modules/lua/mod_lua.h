@@ -43,6 +43,10 @@
 
 /* Allow for Lua 5.2 backwards compatibility */
 #define LUA_COMPAT_ALL
+/* Allow for Lua 5.3 backwards compatibility */
+#define LUA_COMPAT_5_2
+#define LUA_COMPAT_5_1
+#define LUA_COMPAT_MODULE
 
 #include "lua.h"
 #include "lauxlib.h"
@@ -52,6 +56,8 @@
 /* Load mode for lua_load() */
 #define lua_load(a,b,c,d) lua_load(a,b,c,d,NULL)
 #define lua_resume(a,b)   lua_resume(a, NULL, b)
+#else
+#define lua_rawlen(L,i)   lua_objlen(L, (i))
 #endif
 
 /* Create a set of AP_LUA_DECLARE(type), AP_LUA_DECLARE_NONSTD(type) and
@@ -135,9 +141,6 @@ typedef struct
 
 typedef struct
 {
-    apr_hash_t *vm_reslists;
-    apr_thread_rwlock_t *vm_reslists_lock;
-
     /* value of the LuaRoot directive */
     const char *root_path;
 } ap_lua_server_cfg;

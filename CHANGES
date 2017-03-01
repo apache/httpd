@@ -2,6 +2,8 @@
 
 Changes with Apache 2.4.26
 
+  *) mod_lua: Support for Lua 5.3
+
   *) mod_proxy_http2: support for ProxyPreserverHost directive. [Stefan Eissing]
   
   *) mod_http2: fix for crash when running out of memory.
