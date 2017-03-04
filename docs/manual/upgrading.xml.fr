@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1772763:1784912 (outdated) -->
+<!-- English Revision: 1784912 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -236,7 +236,7 @@ DocumentRoot "/var/www/html"
 
 &lt;Location "/server-status"&gt;
     SetHandler server-status
-    Require 127.0.0.1
+    Require local
 &lt;/Location&gt;
 
 access.log - GET /server-status 403 127.0.0.1
