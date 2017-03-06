@@ -245,7 +245,13 @@ static void sniff_encoding(request_rec* r, xml2ctx* ctx)
         cfg = ap_get_module_config(r->per_dir_config, &xml2enc_module);
         if (!ctx->encoding) {
             ctx->encoding = cfg->default_charset?cfg->default_charset:"ISO-8859-1";
+            ctx->xml2enc = xmlParseCharEncoding(ctx->encoding);
         }
+    }
+    /* Test again: this fallback is only appropriate if we couldn't
+     * just fall back to the configuration default.
+     */
+    if (!HAVE_ENCODING(ctx->xml2enc)) {
         /* Unsupported charset. Can we get (iconv) support through apr_xlate? */
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01434)
                       "Charset %s not supported by libxml2; trying apr_xlate",
