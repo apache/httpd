@@ -223,12 +223,14 @@ struct h2_bucket_beam {
  *                      the pool owner is using this beam for sending or receiving
  * @param buffer_size   maximum memory footprint of buckets buffered in beam, or
  *                      0 for no limitation
+ * @param timeout       timeout for blocking operations
  */
 apr_status_t h2_beam_create(h2_bucket_beam **pbeam,
                             apr_pool_t *pool, 
                             int id, const char *tag,
                             h2_beam_owner_t owner,  
-                            apr_size_t buffer_size);
+                            apr_size_t buffer_size,
+                            apr_interval_time_t timeout);
 
 /**
  * Destroys the beam immediately without cleanup.

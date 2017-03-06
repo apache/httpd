@@ -507,6 +507,7 @@ h2_task *h2_task_create(h2_stream *stream, conn_rec *slave)
     task->request     = stream->request;
     task->input.beam  = stream->input;
     task->output.beam = stream->output;
+    task->timeout     = stream->session->s->timeout;
     
     h2_beam_send_from(stream->output, task->pool);
     h2_ctx_create_for(slave, task);
@@ -601,6 +602,15 @@ static apr_status_t h2_task_process_request(h2_task *task, conn_rec *c)
                   "h2_task(%s): create request_rec", task->id);
     r = h2_request_create_rec(req, c);
     if (r && (r->status == HTTP_OK)) {
+        /* set timeouts for virtual host of request */
+        if (task->timeout != r->server->timeout) {
+            task->timeout = r->server->timeout;
+            h2_beam_timeout_set(task->output.beam, task->timeout);
+            if (task->input.beam) {
+                h2_beam_timeout_set(task->input.beam, task->timeout);
+            }
+        }
+        
         ap_update_child_status(c->sbh, SERVER_BUSY_WRITE, r);
         
         if (cs) {

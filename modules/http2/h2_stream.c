@@ -173,7 +173,8 @@ static void H2_STREAM_OUT_LOG(int lvl, h2_stream *s, const char *tag)
 static apr_status_t setup_input(h2_stream *stream) {
     if (stream->input == NULL && !stream->input_eof) {
         h2_beam_create(&stream->input, stream->pool, stream->id, 
-                       "input", H2_BEAM_OWNER_SEND, 0);
+                       "input", H2_BEAM_OWNER_SEND, 0, 
+                       stream->session->s->timeout);
         h2_beam_send_from(stream->input, stream->pool);
     }
     return APR_SUCCESS;
@@ -492,7 +493,8 @@ h2_stream *h2_stream_create(int id, apr_pool_t *pool, h2_session *session,
     stream->monitor      = monitor;
     stream->max_mem      = session->max_stream_mem;
     
-    h2_beam_create(&stream->output, pool, id, "output", H2_BEAM_OWNER_RECV, 0);
+    h2_beam_create(&stream->output, pool, id, "output", H2_BEAM_OWNER_RECV, 0,
+                   session->s->timeout);
     
     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, 
                   H2_STRM_LOG(APLOGNO(03082), stream, "created"));
