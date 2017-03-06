@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy_http2: fixed retry behaviour when frontend connection uses 
+     http/1.1. [Stefan Eissing]
+     
   *) mod_http2: separate mutex instances for each bucket beam, resulting in 
      less lock contention. input beams only created when necessary.
      [Stefan Eissing]
