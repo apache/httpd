@@ -31,6 +31,7 @@
 
 #include "h2_private.h"
 #include "h2.h"
+#include "h2_bucket_beam.h"
 #include "h2_bucket_eos.h"
 #include "h2_config.h"
 #include "h2_ctx.h"
@@ -73,10 +74,14 @@ static int h2_session_status_from_apr_status(apr_status_t rv)
 static void update_window(void *ctx, int stream_id, apr_off_t bytes_read)
 {
     h2_session *session = (h2_session*)ctx;
-    nghttp2_session_consume(session->ngh2, stream_id, bytes_read);
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c,
-                  "h2_stream(%ld-%d): consumed %ld bytes",
-                  session->id, stream_id, (long)bytes_read);
+    while (bytes_read > 0) {
+        int len = (bytes_read > INT_MAX)? INT_MAX : bytes_read;
+        nghttp2_session_consume(session->ngh2, stream_id, (int)bytes_read);
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c,
+                      "h2_stream(%ld-%d): consumed %d bytes",
+                      session->id, stream_id, len);
+        bytes_read -= len;
+    }
 }
 
 static apr_status_t h2_session_receive(void *ctx, 
@@ -776,7 +781,7 @@ static h2_session *h2_session_create_int(conn_rec *c,
         session->monitor->on_state_event = on_stream_state_event;
          
         session->mplx = h2_mplx_create(c, session->pool, session->config, 
-                                       session->s->timeout, workers);
+                                       workers);
         
         h2_mplx_set_consumed_cb(session->mplx, update_window, session);
         
@@ -1369,7 +1374,7 @@ static apr_status_t on_stream_resume(void *ctx, h2_stream *stream)
     ap_assert(stream);
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c, 
                   H2_STRM_MSG(stream, "on_resume"));
-        
+    
 send_headers:
     headers = NULL;
     status = h2_stream_out_prepare(stream, &len, &eos, &headers);

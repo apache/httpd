@@ -56,6 +56,7 @@ struct h2_task {
     apr_pool_t *pool;
     
     const struct h2_request *request;
+    apr_interval_time_t timeout;
     int rst_error;                   /* h2 related stream abort error */
     
     struct {
