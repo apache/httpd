@@ -12,20 +12,51 @@ AC_DEFUN([CHECK_LUA_PATH], [dnl
     AC_MSG_CHECKING([for lua.h in $1/$2])
     if test -f $1/$2/lua.h; then
         AC_MSG_RESULT([yes])
+
         save_CFLAGS=$CFLAGS
         save_LDFLAGS=$LDFLAGS
+        save_LIBS=$LIBS
+
         CFLAGS="$CFLAGS"
         LDFLAGS="-L$1/$3 $LDFLAGS $lib_m"
+
         AC_CHECK_LIB($4, luaL_newstate, [
-            LUA_LIBS="-L$1/$3 -l$4 $lib_m"
-            if test "x$ap_platform_runtime_link_flag" != "x"; then
-               APR_ADDTO(LUA_LIBS, [$ap_platform_runtime_link_flag$1/$3])
-            fi
-            LUA_CFLAGS="-I$1/$2"
+            dnl mod_lua relies on some compatibility APIs to function.
+            AC_MSG_CHECKING([for luaL_register in -l$4])
+            CFLAGS="$CFLAGS -I$1/$2"
+            LIBS="-l$4"
+            AC_LINK_IFELSE([
+                AC_LANG_PROGRAM([[
+                    #define LUA_COMPAT_ALL
+                    #define LUA_COMPAT_5_2
+                    #define LUA_COMPAT_5_1
+                    #define LUA_COMPAT_MODULE
+
+                    #include <lua.h>
+                    #include <lauxlib.h>
+                ]], [[
+                    /* This isn't a valid call, but we're testing linkability */
+                    luaL_register(NULL, NULL, NULL);
+                ]])
+            ], [
+                AC_MSG_RESULT([yes])
+                LUA_LIBS="-L$1/$3 -l$4 $lib_m"
+                if test "x$ap_platform_runtime_link_flag" != "x"; then
+                   APR_ADDTO(LUA_LIBS, [$ap_platform_runtime_link_flag$1/$3])
+                fi
+                LUA_CFLAGS="-I$1/$2"
+            ], [
+                AC_MSG_RESULT([no])
             ])
+        ])
+
         CFLAGS=$save_CFLAGS
         LDFLAGS=$save_LDFLAGS
-        break
+        LIBS=$save_LIBS
+
+        if test -n "${LUA_LIBS}"; then
+            break
+        fi
     else
         AC_MSG_RESULT([no])
     fi
