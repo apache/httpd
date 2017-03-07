@@ -1,6 +1,67 @@
 
 APACHE_MODPATH_INIT(lua)
 
+dnl CHECK_LUA_PATH(PREFIX, INCLUDE-PATH, LIB-PATH, LIB-NAME)
+dnl
+dnl Checks for a specific version of the Lua libraries. Use CHECK_LUA instead,
+dnl which will call this macro.
+dnl
+dnl Sets LUA_CFLAGS and LUA_LIBS, and breaks from its containing loop, if the
+dnl check succeeds.
+AC_DEFUN([CHECK_LUA_PATH], [dnl
+    AC_MSG_CHECKING([for lua.h in $1/$2])
+    if test -f $1/$2/lua.h; then
+        AC_MSG_RESULT([yes])
+
+        save_CFLAGS=$CFLAGS
+        save_LDFLAGS=$LDFLAGS
+        save_LIBS=$LIBS
+
+        CFLAGS="$CFLAGS"
+        LDFLAGS="-L$1/$3 $LDFLAGS $lib_m"
+
+        AC_CHECK_LIB($4, luaL_newstate, [
+            dnl mod_lua relies on some compatibility APIs to function.
+            AC_MSG_CHECKING([for luaL_register in -l$4])
+            CFLAGS="$CFLAGS -I$1/$2"
+            LIBS="-l$4"
+            AC_LINK_IFELSE([
+                AC_LANG_PROGRAM([[
+                    #define LUA_COMPAT_ALL
+                    #define LUA_COMPAT_5_2
+                    #define LUA_COMPAT_5_1
+                    #define LUA_COMPAT_MODULE
+
+                    #include <lua.h>
+                    #include <lauxlib.h>
+                ]], [[
+                    /* This isn't a valid call, but we're testing linkability */
+                    luaL_register(NULL, NULL, NULL);
+                ]])
+            ], [
+                AC_MSG_RESULT([yes])
+                LUA_LIBS="-L$1/$3 -l$4 $lib_m"
+                if test "x$ap_platform_runtime_link_flag" != "x"; then
+                   APR_ADDTO(LUA_LIBS, [$ap_platform_runtime_link_flag$1/$3])
+                fi
+                LUA_CFLAGS="-I$1/$2"
+            ], [
+                AC_MSG_RESULT([no])
+            ])
+        ])
+
+        CFLAGS=$save_CFLAGS
+        LDFLAGS=$save_LDFLAGS
+        LIBS=$save_LIBS
+
+        if test -n "${LUA_LIBS}"; then
+            break
+        fi
+    else
+        AC_MSG_RESULT([no])
+    fi
+])
+
 dnl Check for Lua 5.3/5.2/5.1 Libraries
 dnl CHECK_LUA(ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND])
 dnl Sets:
@@ -25,206 +86,19 @@ fi
 AC_CHECK_LIB(m, pow, lib_m="-lm")
 AC_CHECK_LIB(m, sqrt, lib_m="-lm")
 for x in $test_paths ; do
-    AC_MSG_CHECKING([for lua.h in ${x}/include/lua-5.3])
-    if test -f ${x}/include/lua-5.3/lua.h; then
-        AC_MSG_RESULT([yes])
-        save_CFLAGS=$CFLAGS
-        save_LDFLAGS=$LDFLAGS
-        CFLAGS="$CFLAGS"
-        LDFLAGS="-L$x/lib/lua-5.3 $LDFLAGS $lib_m"
-        AC_CHECK_LIB(lua-5.3, luaL_newstate, [
-            LUA_LIBS="-L$x/lib/lua-5.3 -llua-5.3 $lib_m"
-            if test "x$ap_platform_runtime_link_flag" != "x"; then
-               APR_ADDTO(LUA_LIBS, [$ap_platform_runtime_link_flag$x/lib/lua-5.3])
-            fi
-            LUA_CFLAGS="-I$x/include/lua-5.3"
-            ])
-        CFLAGS=$save_CFLAGS
-        LDFLAGS=$save_LDFLAGS
-        break
-    else
-        AC_MSG_RESULT([no])
-    fi
-    AC_MSG_CHECKING([for lua.h in ${x}/include/lua5.3])
-    if test -f ${x}/include/lua5.3/lua.h; then
-        AC_MSG_RESULT([yes])
-        save_CFLAGS=$CFLAGS
-        save_LDFLAGS=$LDFLAGS
-        CFLAGS="$CFLAGS"
-        LDFLAGS="-L$x/lib $LDFLAGS $lib_m"
-        AC_CHECK_LIB(lua5.3, luaL_newstate, [
-            LUA_LIBS="-L$x/lib -llua5.3 $lib_m"
-            if test "x$ap_platform_runtime_link_flag" != "x"; then
-               APR_ADDTO(LUA_LIBS, [$ap_platform_runtime_link_flag$x/lib])
-            fi
-            LUA_CFLAGS="-I$x/include/lua5.3"
-            ])
-        CFLAGS=$save_CFLAGS
-        LDFLAGS=$save_LDFLAGS
-        break
-    else
-        AC_MSG_RESULT([no])
-    fi
-    AC_MSG_CHECKING([for lua.h in ${x}/include/lua53])
-    if test -f ${x}/include/lua53/lua.h; then
-        AC_MSG_RESULT([yes])
-        save_CFLAGS=$CFLAGS
-        save_LDFLAGS=$LDFLAGS
-        CFLAGS="$CFLAGS"
-        LDFLAGS="-L$x/lib/lua53 $LDFLAGS $lib_m"
-        AC_CHECK_LIB(lua, luaL_newstate, [
-            LUA_LIBS="-L$x/lib/lua53 -llua $lib_m"
-            if test "x$ap_platform_runtime_link_flag" != "x"; then
-               APR_ADDTO(LUA_LIBS, [$ap_platform_runtime_link_flag$x/lib/lua53])
-            fi
-            LUA_CFLAGS="-I$x/include/lua53"
-            ])
-        CFLAGS=$save_CFLAGS
-        LDFLAGS=$save_LDFLAGS
-        break
-    else
-        AC_MSG_RESULT([no])
-    fi
-    AC_MSG_CHECKING([for lua.h in ${x}/include])
-    if test -f ${x}/include/lua.h; then
-        AC_MSG_RESULT([yes])
-        save_CFLAGS=$CFLAGS
-        save_LDFLAGS=$LDFLAGS
-        CFLAGS="$CFLAGS"
-        LDFLAGS="-L$x/lib $LDFLAGS $lib_m"
-        AC_CHECK_LIB(lua, luaL_newstate, [
-            LUA_LIBS="-L$x/lib -llua $lib_m"
-            if test "x$ap_platform_runtime_link_flag" != "x"; then
-               APR_ADDTO(LUA_LIBS, [$ap_platform_runtime_link_flag$x/lib])
-            fi
-            LUA_CFLAGS="-I$x/include"
-            ])
-        CFLAGS=$save_CFLAGS
-        LDFLAGS=$save_LDFLAGS
-        break
-    else
-        AC_MSG_RESULT([no])
-    fi
-    AC_MSG_CHECKING([for lua.h in ${x}/include/lua-5.2])
-    if test -f ${x}/include/lua-5.2/lua.h; then
-        AC_MSG_RESULT([yes])
-        save_CFLAGS=$CFLAGS
-        save_LDFLAGS=$LDFLAGS
-        CFLAGS="$CFLAGS"
-        LDFLAGS="-L$x/lib/lua-5.2 $LDFLAGS $lib_m"
-        AC_CHECK_LIB(lua-5.2, luaL_newstate, [
-            LUA_LIBS="-L$x/lib/lua-5.2 -llua-5.2 $lib_m"
-            if test "x$ap_platform_runtime_link_flag" != "x"; then
-               APR_ADDTO(LUA_LIBS, [$ap_platform_runtime_link_flag$x/lib/lua-5.2])
-            fi
-            LUA_CFLAGS="-I$x/include/lua-5.2"
-            ])
-        CFLAGS=$save_CFLAGS
-        LDFLAGS=$save_LDFLAGS
-        break
-    else
-        AC_MSG_RESULT([no])
-    fi
-    AC_MSG_CHECKING([for lua.h in ${x}/include/lua5.2])
-    if test -f ${x}/include/lua5.2/lua.h; then
-        AC_MSG_RESULT([yes])
-        save_CFLAGS=$CFLAGS
-        save_LDFLAGS=$LDFLAGS
-        CFLAGS="$CFLAGS"
-        LDFLAGS="-L$x/lib $LDFLAGS $lib_m"
-        AC_CHECK_LIB(lua5.2, luaL_newstate, [
-            LUA_LIBS="-L$x/lib -llua5.2 $lib_m"
-            if test "x$ap_platform_runtime_link_flag" != "x"; then
-               APR_ADDTO(LUA_LIBS, [$ap_platform_runtime_link_flag$x/lib])
-            fi
-            LUA_CFLAGS="-I$x/include/lua5.2"
-            ])
-        CFLAGS=$save_CFLAGS
-        LDFLAGS=$save_LDFLAGS
-        break
-    else
-        AC_MSG_RESULT([no])
-    fi
-    AC_MSG_CHECKING([for lua.h in ${x}/include/lua52])
-    if test -f ${x}/include/lua52/lua.h; then
-        AC_MSG_RESULT([yes])
-        save_CFLAGS=$CFLAGS
-        save_LDFLAGS=$LDFLAGS
-        CFLAGS="$CFLAGS"
-        LDFLAGS="-L$x/lib/lua52 $LDFLAGS $lib_m"
-        AC_CHECK_LIB(lua, luaL_newstate, [
-            LUA_LIBS="-L$x/lib/lua52 -llua $lib_m"
-            if test "x$ap_platform_runtime_link_flag" != "x"; then
-               APR_ADDTO(LUA_LIBS, [$ap_platform_runtime_link_flag$x/lib/lua52])
-            fi
-            LUA_CFLAGS="-I$x/include/lua52"
-            ])
-        CFLAGS=$save_CFLAGS
-        LDFLAGS=$save_LDFLAGS
-        break
-    else
-        AC_MSG_RESULT([no])
-    fi
-    AC_MSG_CHECKING([for lua.h in ${x}/include/lua-5.1])
-    if test -f ${x}/include/lua-5.1/lua.h; then
-        AC_MSG_RESULT([yes])
-        save_CFLAGS=$CFLAGS
-        save_LDFLAGS=$LDFLAGS
-        CFLAGS="$CFLAGS"
-        LDFLAGS="-L$x/lib/lua-5.1 $LDFLAGS $lib_m"
-        AC_CHECK_LIB(lua-5.1, luaL_newstate, [
-            LUA_LIBS="-L$x/lib/lua-5.1 -llua-5.1 $lib_m"
-            if test "x$ap_platform_runtime_link_flag" != "x"; then
-               APR_ADDTO(LUA_LIBS, [$ap_platform_runtime_link_flag$x/lib/lua-5.1])
-            fi
-            LUA_CFLAGS="-I$x/include/lua-5.1"
-            ])
-        CFLAGS=$save_CFLAGS
-        LDFLAGS=$save_LDFLAGS
-        break
-    else
-        AC_MSG_RESULT([no])
-    fi
-    AC_MSG_CHECKING([for lua.h in ${x}/include/lua5.1])
-    if test -f ${x}/include/lua5.1/lua.h; then
-        AC_MSG_RESULT([yes])
-        save_CFLAGS=$CFLAGS
-        save_LDFLAGS=$LDFLAGS
-        CFLAGS="$CFLAGS"
-        LDFLAGS="-L$x/lib $LDFLAGS $lib_m"
-        AC_CHECK_LIB(lua5.1, luaL_newstate, [
-            LUA_LIBS="-L$x/lib -llua5.1 $lib_m"
-            if test "x$ap_platform_runtime_link_flag" != "x"; then
-               APR_ADDTO(LUA_LIBS, [$ap_platform_runtime_link_flag$x/lib])
-            fi
-            LUA_CFLAGS="-I$x/include/lua5.1"
-            ])
-        CFLAGS=$save_CFLAGS
-        LDFLAGS=$save_LDFLAGS
-        break
-    else
-        AC_MSG_RESULT([no])
-    fi
-    AC_MSG_CHECKING([for lua.h in ${x}/include/lua51])
-    if test -f ${x}/include/lua51/lua.h; then
-        AC_MSG_RESULT([yes])
-        save_CFLAGS=$CFLAGS
-        save_LDFLAGS=$LDFLAGS
-        CFLAGS="$CFLAGS"
-        LDFLAGS="-L$x/lib/lua51 $LDFLAGS $lib_m"
-        AC_CHECK_LIB(lua, luaL_newstate, [
-            LUA_LIBS="-L$x/lib/lua51 -llua $lib_m"
-            if test "x$ap_platform_runtime_link_flag" != "x"; then
-               APR_ADDTO(LUA_LIBS, [$ap_platform_runtime_link_flag$x/lib/lua51])
-            fi
-            LUA_CFLAGS="-I$x/include/lua51"
-            ])
-        CFLAGS=$save_CFLAGS
-        LDFLAGS=$save_LDFLAGS
-        break
-    else
-        AC_MSG_RESULT([no])
-    fi
+    CHECK_LUA_PATH([${x}], [include/lua-5.3], [lib/lua-5.3], [lua-5.3])
+    CHECK_LUA_PATH([${x}], [include/lua5.3], [lib], [lua5.3])
+    CHECK_LUA_PATH([${x}], [include/lua53], [lib/lua53], [lua])
+
+    CHECK_LUA_PATH([${x}], [include], [lib], [lua])
+
+    CHECK_LUA_PATH([${x}], [include/lua-5.2], [lib/lua-5.2], [lua-5.2])
+    CHECK_LUA_PATH([${x}], [include/lua5.2], [lib], [lua5.2])
+    CHECK_LUA_PATH([${x}], [include/lua52], [lib/lua52], [lua])
+
+    CHECK_LUA_PATH([${x}], [include/lua-5.1], [lib/lua-5.1], [lua-5.1])
+    CHECK_LUA_PATH([${x}], [include/lua5.1], [lib], [lua5.1])
+    CHECK_LUA_PATH([${x}], [include/lua51], [lib/lua51], [lua])
 done
 
 AC_SUBST(LUA_LIBS)
