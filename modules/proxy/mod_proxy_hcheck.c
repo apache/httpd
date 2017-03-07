@@ -981,11 +981,13 @@ static int hc_post_config(apr_pool_t *p, apr_pool_t *plog,
                        apr_pool_t *ptemp, server_rec *s)
 {
     apr_status_t rv;
-    sctx_t *ctx;
 
     APR_OPTIONAL_FN_TYPE(ap_watchdog_get_instance) *hc_watchdog_get_instance;
     APR_OPTIONAL_FN_TYPE(ap_watchdog_register_callback) *hc_watchdog_register_callback;
 
+    if (ap_state_query(AP_SQ_MAIN_STATE) == AP_SQ_MS_CREATE_PRE_CONFIG) {
+        return OK;
+    }
     hc_watchdog_get_instance = APR_RETRIEVE_OPTIONAL_FN(ap_watchdog_get_instance);
     hc_watchdog_register_callback = APR_RETRIEVE_OPTIONAL_FN(ap_watchdog_register_callback);
     if (!hc_watchdog_get_instance || !hc_watchdog_register_callback) {
@@ -1003,9 +1005,16 @@ static int hc_post_config(apr_pool_t *p, apr_pool_t *plog,
         return !OK;
     }
     while (s) {
-        ctx = (sctx_t *) ap_get_module_config(s->module_config,
-                                              &proxy_hcheck_module);
+        sctx_t *ctx = ap_get_module_config(s->module_config,
+                                           &proxy_hcheck_module);
 
+        if (s != ctx->s) {
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(10019)
+                         "We somehow have a context/server mismatch (%pp:%pp)",
+                         s, ctx->s);
+            s = s->next;
+            continue;
+        }
         rv = hc_watchdog_register_callback(watchdog,
                 apr_time_from_sec(HCHECK_WATHCHDOG_INTERVAL),
                 ctx,
