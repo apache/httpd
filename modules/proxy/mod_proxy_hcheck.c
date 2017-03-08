@@ -78,19 +78,17 @@ typedef struct {
 
 static void *hc_create_config(apr_pool_t *p, server_rec *s)
 {
-    sctx_t *ctx = (sctx_t *) apr_palloc(p, sizeof(sctx_t));
+    sctx_t *ctx = apr_pcalloc(p, sizeof(sctx_t));
+    ctx->s = s;
     apr_pool_create(&ctx->p, p);
     ctx->ba = apr_bucket_alloc_create(p);
     ctx->templates = apr_array_make(p, 10, sizeof(hc_template_t));
     ctx->conditions = apr_table_make(p, 10);
     ctx->hcworkers = apr_hash_make(p);
-    ctx->s = s;
-
     return ctx;
 }
 
 static ap_watchdog_t *watchdog;
-static apr_thread_pool_t *hctp = NULL;
 static int tpsize = HC_THREADPOOL_SIZE;
 
 /*
@@ -872,6 +870,8 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
     sctx_t *ctx = (sctx_t *)data;
     server_rec *s = ctx->s;
     proxy_server_conf *conf;
+    static apr_thread_pool_t *hctp = NULL;
+
     switch (state) {
         case AP_WATCHDOG_STATE_STARTING:
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(03258)
@@ -978,9 +978,10 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
 }
 
 static int hc_post_config(apr_pool_t *p, apr_pool_t *plog,
-                       apr_pool_t *ptemp, server_rec *s)
+                       apr_pool_t *ptemp, server_rec *main_s)
 {
     apr_status_t rv;
+    server_rec *s = main_s;
 
     APR_OPTIONAL_FN_TYPE(ap_watchdog_get_instance) *hc_watchdog_get_instance;
     APR_OPTIONAL_FN_TYPE(ap_watchdog_register_callback) *hc_watchdog_register_callback;
@@ -1009,9 +1010,9 @@ static int hc_post_config(apr_pool_t *p, apr_pool_t *plog,
                                            &proxy_hcheck_module);
 
         if (s != ctx->s) {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(10019)
-                         "We somehow have a context/server mismatch (%pp:%pp)",
-                         s, ctx->s);
+            ap_log_error(APLOG_MARK, APLOG_TRACE4, 0, s, APLOGNO(10019)
+                         "Missing unique per-server context: %s (%pp:%pp) (no hchecks)",
+                         s->server_hostname, s, ctx->s);
             s = s->next;
             continue;
         }
@@ -1026,7 +1027,7 @@ static int hc_post_config(apr_pool_t *p, apr_pool_t *plog,
             return !OK;
         }
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(03265)
-                     "watchdog callback registered (%s)", HCHECK_WATHCHDOG_NAME);
+                     "watchdog callback registered (%s for %s)", HCHECK_WATHCHDOG_NAME, s->server_hostname);
         s = s->next;
     }
     return OK;
