@@ -398,7 +398,7 @@ ProxyPass "/examples" "http://backend.example.com/examples" timeout=10
 &lt;/Location&gt;
         </highlight>
 
-      <p> The "no-proxy" environment variable can be set to disable 
+      <p> In 2.4.26 and later, the "no-proxy" environment variable can be set to disable 
       <module>mod_proxy</module> processing the current request.
       This variable should be set with <directive module="mod_setenvif"
       >SetEnvIf</directive>, as <directive module="mod_env">SetEnv</directive>
@@ -965,7 +965,7 @@ ProxyPass "/mirror/foo" "http://backend.example.com"
       specific location will take precedence.</p>
 
       <p>For the same reasons, exclusions must come <em>before</em> the
-      general <directive>ProxyPass</directive> directives. The "no-proxy"
+      general <directive>ProxyPass</directive> directives. In 2.4.26 and later, the "no-proxy"
       environment variable is an alternative to exclusions, and is the only
       way to configure an exclusion of a <directive>ProxyPass</directive>
       directive in <directive module="core">Location</directive> context. 
