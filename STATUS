@@ -201,6 +201,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works *after r1779573 above* (modulo CHANGES)
      +1: jim
 
+  *) Support OpenSSL 1.1.0
+     Apply trunk -> 2.4.x merge branch with the command;
+       svn merge https://svn.apache.org/repos/asf/httpd/httpd/branches/2.4.x-openssl-1.1.0-compat
+     +1: wrowe
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entried should be added at the START of the list ]
