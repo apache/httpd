@@ -2768,18 +2768,24 @@ static module *find_module(server_rec *s, const char *name)
     return found;
 }
 
+/* Callback function type used by start_cond_section. */
+typedef int (*test_cond_section_fn)(cmd_parms *cmd, const char *arg);
 
-static const char *start_ifmod(cmd_parms *cmd, void *mconfig, const char *arg)
+/* Implementation of <IfXXXXX>-style conditional sections.  Callback
+ * to test condition must be in cmd->info, matching function type
+ * test_conditional_section. */
+static const char *start_cond_section(cmd_parms *cmd, void *mconfig, const char *arg)
 {
     const char *endp = ap_strrchr_c(arg, '>');
     int not = (arg[0] == '!');
-    module *found;
+    int found;
+    test_cond_section_fn testfn = (test_cond_section_fn)cmd->info;
 
     if (endp == NULL) {
         return unclosed_directive(cmd);
     }
 
-    arg = apr_pstrndup(cmd->temp_pool, arg, endp - arg);
+    arg = apr_pstrmemdup(cmd->temp_pool, arg, endp - arg);
 
     if (not) {
         arg++;
@@ -2789,7 +2795,7 @@ static const char *start_ifmod(cmd_parms *cmd, void *mconfig, const char *arg)
         return missing_container_arg(cmd);
     }
 
-    found = find_module(cmd->server, arg);
+    found = testfn(cmd, arg);
 
     if ((!not && found) || (not && !found)) {
         ap_directive_t *parent = NULL;
@@ -2797,14 +2803,20 @@ static const char *start_ifmod(cmd_parms *cmd, void *mconfig, const char *arg)
         const char *retval;
 
         retval = ap_build_cont_config(cmd->pool, cmd->temp_pool, cmd,
-                                      &current, &parent, "<IfModule");
+                                      &current, &parent, (char *)cmd->cmd->name);
         *(ap_directive_t **)mconfig = current;
         return retval;
     }
     else {
         *(ap_directive_t **)mconfig = NULL;
-        return ap_soak_end_container(cmd, "<IfModule");
+        return ap_soak_end_container(cmd, (char *)cmd->cmd->name);
     }
+}
+
+/* Callback to implement <IfModule> test for start_cond_section. */
+static int test_ifmod_section(cmd_parms *cmd, const char *arg)
+{
+    return find_module(cmd->server, arg) != NULL;
 }
 
 AP_DECLARE(int) ap_exists_config_define(const char *name)
@@ -2812,86 +2824,18 @@ AP_DECLARE(int) ap_exists_config_define(const char *name)
     return ap_array_str_contains(ap_server_config_defines, name);
 }
 
-static const char *start_ifdefine(cmd_parms *cmd, void *dummy, const char *arg)
+static int test_ifdefine_section(cmd_parms *cmd, const char *arg)
 {
-    const char *endp;
-    int defined;
-    int not = 0;
-
-    endp = ap_strrchr_c(arg, '>');
-    if (endp == NULL) {
-        return unclosed_directive(cmd);
-    }
-
-    arg = apr_pstrndup(cmd->temp_pool, arg, endp - arg);
-
-    if (arg[0] == '!') {
-        not = 1;
-        arg++;
-    }
-
-    if (!arg[0]) {
-        return missing_container_arg(cmd);
-    }
-
-    defined = ap_exists_config_define(arg);
-    if ((!not && defined) || (not && !defined)) {
-        ap_directive_t *parent = NULL;
-        ap_directive_t *current = NULL;
-        const char *retval;
-
-        retval = ap_build_cont_config(cmd->pool, cmd->temp_pool, cmd,
-                                      &current, &parent, "<IfDefine");
-        *(ap_directive_t **)dummy = current;
-        return retval;
-    }
-    else {
-        *(ap_directive_t **)dummy = NULL;
-        return ap_soak_end_container(cmd, "<IfDefine");
-    }
+    return ap_exists_config_define(arg);
 }
 
-static const char *start_iffile(cmd_parms *cmd, void *dummy, const char *arg)
+static int test_iffile_section(cmd_parms *cmd, const char *arg)
 {
-    apr_finfo_t sb;
-    const char *endp;
-    int file_exists = 0;
-    int not = 0;
     const char *relative;
-
-    endp = ap_strrchr_c(arg, '>');
-    if (endp == NULL) {
-        return unclosed_directive(cmd);
-    }
-
-    arg = apr_pstrndup(cmd->temp_pool, arg, endp - arg);
-
-    if (arg[0] == '!') {
-        not = 1;
-        arg++;
-    }
-
-    if (!arg[0]) {
-        return missing_container_arg(cmd);
-    }
+    apr_finfo_t sb;
 
     relative = ap_server_root_relative(cmd->temp_pool, arg);
-    file_exists = (apr_stat(&sb, relative, 0, cmd->pool) == APR_SUCCESS);
-
-    if ((!not && file_exists) || (not && !file_exists)) {
-        ap_directive_t *parent = NULL;
-        ap_directive_t *current = NULL;
-        const char *retval;
-
-        retval = ap_build_cont_config(cmd->pool, cmd->temp_pool, cmd,
-                                      &current, &parent, "<IfFile");
-        *(ap_directive_t **)dummy = current;
-        return retval;
-    }
-    else {
-        *(ap_directive_t **)dummy = NULL;
-        return ap_soak_end_container(cmd, "<IfFile");
-    }
+    return (apr_stat(&sb, relative, 0, cmd->pool) == APR_SUCCESS);
 }
 
 /* httpd.conf commands... beginning with the <VirtualHost> business */
@@ -4503,11 +4447,14 @@ AP_INIT_RAW_ARGS("<LimitExcept", ap_limit_section, (void*)1,
                  OR_LIMIT | OR_AUTHCFG,
   "Container for authentication directives to be applied when any HTTP "
   "method other than those specified is used to access the resource"),
-AP_INIT_TAKE1("<IfModule", start_ifmod, NULL, EXEC_ON_READ | OR_ALL,
+AP_INIT_TAKE1("<IfModule", start_cond_section, (void *)test_ifmod_section,
+              EXEC_ON_READ | OR_ALL,
   "Container for directives based on existence of specified modules"),
-AP_INIT_TAKE1("<IfDefine", start_ifdefine, NULL, EXEC_ON_READ | OR_ALL,
+AP_INIT_TAKE1("<IfDefine", start_cond_section, (void *)test_ifdefine_section,
+              EXEC_ON_READ | OR_ALL,
   "Container for directives based on existence of command line defines"),
-AP_INIT_TAKE1("<IfFile", start_iffile, NULL, EXEC_ON_READ | OR_ALL,
+AP_INIT_TAKE1("<IfFile", start_cond_section, (void *)test_iffile_section,
+              EXEC_ON_READ | OR_ALL,
   "Container for directives based on existence of files on disk"),
 AP_INIT_RAW_ARGS("<DirectoryMatch", dirsection, (void*)1, RSRC_CONF,
   "Container for directives affecting resources located in the "
