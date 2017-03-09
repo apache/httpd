@@ -2838,6 +2838,17 @@ static int test_iffile_section(cmd_parms *cmd, const char *arg)
     return (apr_stat(&sb, relative, 0, cmd->pool) == APR_SUCCESS);
 }
 
+static int test_ifdirective_section(cmd_parms *cmd, const char *arg)
+{
+    return ap_exists_directive(cmd->temp_pool, arg);
+}
+
+static int test_ifsection_section(cmd_parms *cmd, const char *arg)
+{
+    const char *name = apr_pstrcat(cmd->temp_pool, "<", arg, NULL);
+    return ap_exists_directive(cmd->temp_pool, name);
+}
+
 /* httpd.conf commands... beginning with the <VirtualHost> business */
 
 static const char *virtualhost_section(cmd_parms *cmd, void *dummy,
@@ -4456,6 +4467,12 @@ AP_INIT_TAKE1("<IfDefine", start_cond_section, (void *)test_ifdefine_section,
 AP_INIT_TAKE1("<IfFile", start_cond_section, (void *)test_iffile_section,
               EXEC_ON_READ | OR_ALL,
   "Container for directives based on existence of files on disk"),
+AP_INIT_TAKE1("<IfDirective", start_cond_section, (void *)test_ifdirective_section,
+              EXEC_ON_READ | OR_ALL,
+  "Container for directives based on existence of named directive"),
+AP_INIT_TAKE1("<IfSection", start_cond_section, (void *)test_ifsection_section,
+              EXEC_ON_READ | OR_ALL,
+  "Container for directives based on existence of named section"),
 AP_INIT_RAW_ARGS("<DirectoryMatch", dirsection, (void*)1, RSRC_CONF,
   "Container for directives affecting resources located in the "
   "specified directories"),

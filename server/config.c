@@ -2668,6 +2668,16 @@ AP_DECLARE(void) ap_show_modules(void)
         printf("  %s\n", ap_loaded_modules[n]->name);
 }
 
+AP_DECLARE(int) ap_exists_directive(apr_pool_t *p, const char *name)
+{
+    char *lname = apr_pstrdup(p, name);
+
+    ap_str_tolower(lname);
+    
+    return ap_config_hash &&
+        apr_hash_get(ap_config_hash, lname, APR_HASH_KEY_STRING) != NULL;
+}
+
 AP_DECLARE(void *) ap_retained_data_get(const char *key)
 {
     void *retained;

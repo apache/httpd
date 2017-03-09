@@ -788,12 +788,12 @@ DefaultType None
 </contextlist>
 
 <usage>
-    <p>In its one parameter form, <directive>Define</directive> is equivalent
-    to passing the <code>-D</code> argument to <program>httpd</program>. It
-    can be used to toggle the use of
-    <directive module="core" type="section">IfDefine</directive> sections
-    without needing to alter <code>-D</code> arguments in any startup
-    scripts.</p>
+    <p>In its one parameter form, <directive>Define</directive> is
+    equivalent to passing the <code>-D</code> argument to
+    <program>httpd</program>. It can be used to toggle the use of
+    <directive module="core" type="section">IfDefine</directive>
+    sections without needing to alter <code>-D</code> arguments in any
+    startup scripts.</p>
 
     <p>In addition to that, if the second parameter is given, a config variable
     is set to this value. The variable can be used in the configuration using
@@ -2387,6 +2387,108 @@ presence or absence of a specific module</description>
     placed in <directive type="section">IfModule</directive>
     sections.</note>
 </usage>
+</directivesynopsis>
+
+<directivesynopsis type="section">
+<name>IfDirective</name>
+<description>Encloses directives that are processed conditional on the
+presence or absence of a specific directive</description>
+<syntax>&lt;IfDirective [!]<var>directive-name</var>&gt; ...
+    &lt;/IfDirective&gt;</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>All</override>
+
+<usage>
+    <p>The <code>&lt;IfDirective <var>test</var>&gt;...&lt;/IfDirective&gt;</code>
+    section is used to mark directives that are conditional on the presence of
+    a specific directive. The directives within an <directive type="section"
+    >IfDirective</directive> section are only processed if the <var>test</var>
+    is true. If <var>test</var> is false, everything between the start and
+    end markers is ignored.</p>
+
+    <p>The <var>test</var> in the <directive type="section"
+    >IfDirective</directive> section can be one of two forms:</p>
+
+    <ul>
+      <li><var>directive-name</var></li>
+
+      <li>!<var>directive-name</var></li>
+    </ul>
+
+    <p>In the former case, the directives between the start and end
+    markers are only processed if a directive of the given name is
+    available at the time of processing.  The second format reverses the test,
+    and only processes the directives if the <var>directive-name</var> is
+    <strong>not</strong> defined.</p>
+
+    <note>This section should only be used if you need to have one
+    configuration file that works across multiple versions of
+    <program>httpd</program>, regardless of whether a particular
+    directive is available. In normal operation, directives need not
+    be placed in <directive type="section">IfDirective</directive>
+    sections.</note>
+</usage>
+<seealso><directive module="core" type="section">IfSection</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis type="section">
+<name>IfSection</name>
+<description>Encloses directives that are processed conditional on the
+presence or absence of a specific section directive</description>
+<syntax>&lt;IfSection [!]<var>section-name</var>&gt; ...
+    &lt;/IfSection&gt;</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>All</override>
+
+<usage>
+    <p>The <code>&lt;IfSection
+    <var>test</var>&gt;...&lt;/IfSection&gt;</code> section is used
+    to mark directives that are conditional on the presence of a
+    specific section directive.  A section directive is any directive
+    such as <directive type="section">virtualhost</directive> which
+    encloses other directives, and has a directive name with a leading
+    "&lt;".  The sec
+
+    The directives within an <directive type="section"
+    >IfSection</directive> section are only processed if the <var>test</var>
+    is true. If <var>test</var> is false, everything between the start and
+    end markers is ignored.</p>
+
+    <p>The <var>section-name</var> specified must not include the
+    leading "&lt;".  The <var>test</var> in the <directive
+    type="section">IfSection</directive> section can be one of two
+    forms:</p>
+
+    <ul>
+      <li><var>section-name</var></li>
+      <li>!<var>section-name</var></li>
+    </ul>
+
+    <p>In the former case, the directives between the start and
+    end markers are only processed if a section directive of the given
+    name is available at the time of processing.  The second format
+    reverses the test, and only processes the directives if the
+    <var>section-name</var> is <strong>not</strong> defined.</p>
+
+    <p>For example:</p>
+
+    <highlight language="config">
+&lt;IfSection VirtualHost&gt;
+   ...
+&lt;/IfSection&gt;
+    </highlight>
+    
+    <note>This section should only be used if you need to have one
+    configuration file that works across multiple versions of <program>httpd</program>,
+    regardless of whether a particular section directive is
+    available. In normal operation, directives need not be placed in
+    <directive type="section">IfSection</directive> sections.</note>
+</usage>
+<seealso><directive module="core" type="section">IfDirective</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
