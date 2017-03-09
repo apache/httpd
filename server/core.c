@@ -2802,13 +2802,13 @@ static const char *start_cond_section(cmd_parms *cmd, void *mconfig, const char 
         const char *retval;
 
         retval = ap_build_cont_config(cmd->pool, cmd->temp_pool, cmd,
-                                      &current, &parent, (char *)cmd->cmd->name);
+                                      &current, &parent, cmd->cmd->name);
         *(ap_directive_t **)mconfig = current;
         return retval;
     }
     else {
         *(ap_directive_t **)mconfig = NULL;
-        return ap_soak_end_container(cmd, (char *)cmd->cmd->name);
+        return ap_soak_end_container(cmd, cmd->cmd->name);
     }
 }
 
