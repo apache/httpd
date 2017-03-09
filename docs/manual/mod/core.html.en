@@ -75,8 +75,10 @@ available</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#httpprotocoloptions">HttpProtocolOptions</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#if">&lt;If&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ifdefine">&lt;IfDefine&gt;</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#ifdirective">&lt;IfDirective&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#iffile">&lt;IfFile&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ifmodule">&lt;IfModule&gt;</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#ifsection">&lt;IfSection&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#include">Include</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#includeoptional">IncludeOptional</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#keepalive">KeepAlive</a></li>
@@ -859,12 +861,12 @@ which no other media type configuration could be found.
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 </table>
-    <p>In its one parameter form, <code class="directive">Define</code> is equivalent
-    to passing the <code>-D</code> argument to <code class="program"><a href="../programs/httpd.html">httpd</a></code>. It
-    can be used to toggle the use of
-    <code class="directive"><a href="#ifdefine">&lt;IfDefine&gt;</a></code> sections
-    without needing to alter <code>-D</code> arguments in any startup
-    scripts.</p>
+    <p>In its one parameter form, <code class="directive">Define</code> is
+    equivalent to passing the <code>-D</code> argument to
+    <code class="program"><a href="../programs/httpd.html">httpd</a></code>. It can be used to toggle the use of
+    <code class="directive"><a href="#ifdefine">&lt;IfDefine&gt;</a></code>
+    sections without needing to alter <code>-D</code> arguments in any
+    startup scripts.</p>
 
     <p>In addition to that, if the second parameter is given, a config variable
     is set to this value. The variable can be used in the configuration using
@@ -2284,6 +2286,50 @@ if a test is true at startup</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="IfDirective" id="IfDirective">&lt;IfDirective&gt;</a> <a name="ifdirective" id="ifdirective">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Encloses directives that are processed conditional on the
+presence or absence of a specific directive</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>&lt;IfDirective [!]<var>directive-name</var>&gt; ...
+    &lt;/IfDirective&gt;</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+</table>
+    <p>The <code>&lt;IfDirective <var>test</var>&gt;...&lt;/IfDirective&gt;</code>
+    section is used to mark directives that are conditional on the presence of
+    a specific directive. The directives within an <code class="directive">&lt;IfDirective&gt;</code> section are only processed if the <var>test</var>
+    is true. If <var>test</var> is false, everything between the start and
+    end markers is ignored.</p>
+
+    <p>The <var>test</var> in the <code class="directive">&lt;IfDirective&gt;</code> section can be one of two forms:</p>
+
+    <ul>
+      <li><var>directive-name</var></li>
+
+      <li>!<var>directive-name</var></li>
+    </ul>
+
+    <p>In the former case, the directives between the start and end
+    markers are only processed if a directive of the given name is
+    available at the time of processing.  The second format reverses the test,
+    and only processes the directives if the <var>directive-name</var> is
+    <strong>not</strong> defined.</p>
+
+    <div class="note">This section should only be used if you need to have one
+    configuration file that works across multiple versions of
+    <code class="program"><a href="../programs/httpd.html">httpd</a></code>, regardless of whether a particular
+    directive is available. In normal operation, directives need not
+    be placed in <code class="directive">&lt;IfDirective&gt;</code>
+    sections.</div>
+
+<h3>See also</h3>
+<ul>
+<li><code class="directive"><a href="#ifsection">&lt;IfSection&gt;</a></code></li>
+</ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="IfFile" id="IfFile">&lt;IfFile&gt;</a> <a name="iffile" id="iffile">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Encloses directives that will be processed only
@@ -2369,6 +2415,63 @@ presence or absence of a specific module</td></tr>
     placed in <code class="directive">&lt;IfModule&gt;</code>
     sections.</div>
 
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="IfSection" id="IfSection">&lt;IfSection&gt;</a> <a name="ifsection" id="ifsection">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Encloses directives that are processed conditional on the
+presence or absence of a specific section directive</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>&lt;IfSection [!]<var>section-name</var>&gt; ...
+    &lt;/IfSection&gt;</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+</table>
+    <p>The <code>&lt;IfSection
+    <var>test</var>&gt;...&lt;/IfSection&gt;</code> section is used
+    to mark directives that are conditional on the presence of a
+    specific section directive.  A section directive is any directive
+    such as <code class="directive">&lt;virtualhost&gt;</code> which
+    encloses other directives, and has a directive name with a leading
+    "&lt;".  The sec
+
+    The directives within an <code class="directive">&lt;IfSection&gt;</code> section are only processed if the <var>test</var>
+    is true. If <var>test</var> is false, everything between the start and
+    end markers is ignored.</p>
+
+    <p>The <var>section-name</var> specified must not include the
+    leading "&lt;".  The <var>test</var> in the <code class="directive">&lt;IfSection&gt;</code> section can be one of two
+    forms:</p>
+
+    <ul>
+      <li><var>section-name</var></li>
+      <li>!<var>section-name</var></li>
+    </ul>
+
+    <p>In the former case, the directives between the start and
+    end markers are only processed if a section directive of the given
+    name is available at the time of processing.  The second format
+    reverses the test, and only processes the directives if the
+    <var>section-name</var> is <strong>not</strong> defined.</p>
+
+    <p>For example:</p>
+
+    <pre class="prettyprint lang-config">&lt;IfSection VirtualHost&gt;
+   ...
+&lt;/IfSection&gt;</pre>
+
+    
+    <div class="note">This section should only be used if you need to have one
+    configuration file that works across multiple versions of <code class="program"><a href="../programs/httpd.html">httpd</a></code>,
+    regardless of whether a particular section directive is
+    available. In normal operation, directives need not be placed in
+    <code class="directive">&lt;IfSection&gt;</code> sections.</div>
+
+<h3>See also</h3>
+<ul>
+<li><code class="directive"><a href="#ifdirective">&lt;IfDirective&gt;</a></code></li>
+</ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Include" id="Include">Include</a> <a name="include" id="include">Directive</a></h2>
