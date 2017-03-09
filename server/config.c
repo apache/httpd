@@ -1242,7 +1242,7 @@ AP_DECLARE(const char *) ap_build_cont_config(apr_pool_t *p,
                                               cmd_parms *parms,
                                               ap_directive_t **current,
                                               ap_directive_t **curr_parent,
-                                              char *orig_directive)
+                                              const char *orig_directive)
 {
     char *bracket;
     const char *retval;
@@ -1615,7 +1615,7 @@ AP_DECLARE(char *) ap_runtime_dir_relative(apr_pool_t *p, const char *file)
 }
 
 
-AP_DECLARE(const char *) ap_soak_end_container(cmd_parms *cmd, char *directive)
+AP_DECLARE(const char *) ap_soak_end_container(cmd_parms *cmd, const char *directive)
 {
     struct ap_varbuf vb;
     const char *args;

@@ -858,7 +858,7 @@ AP_DECLARE(const char *) ap_pcfg_strerror(apr_pool_t *p, ap_configfile_t *cfp,
  * @note If cmd->pool == cmd->temp_pool, ap_soak_end_container() will assume
  *       .htaccess context and use a lower maximum line length.
  */
-AP_DECLARE(const char *) ap_soak_end_container(cmd_parms *cmd, char *directive);
+AP_DECLARE(const char *) ap_soak_end_container(cmd_parms *cmd, const char *directive);
 
 /**
  * Read all data between the current &lt;foo&gt; and the matching &lt;/foo&gt; and build
@@ -878,7 +878,7 @@ AP_DECLARE(const char *) ap_build_cont_config(apr_pool_t *p,
                                               cmd_parms *parms,
                                               ap_directive_t **current,
                                               ap_directive_t **curr_parent,
-                                              char *orig_directive);
+                                              const char *orig_directive);
 
 /**
  * Build a config tree from a config file
