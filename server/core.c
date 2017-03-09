@@ -2773,12 +2773,11 @@ typedef int (*test_cond_section_fn)(cmd_parms *cmd, const char *arg);
 
 /* Implementation of <IfXXXXX>-style conditional sections.  Callback
  * to test condition must be in cmd->info, matching function type
- * test_conditional_section. */
+ * test_cond_section_fn. */
 static const char *start_cond_section(cmd_parms *cmd, void *mconfig, const char *arg)
 {
     const char *endp = ap_strrchr_c(arg, '>');
-    int not = (arg[0] == '!');
-    int found;
+    int result, not = (arg[0] == '!');
     test_cond_section_fn testfn = (test_cond_section_fn)cmd->info;
 
     if (endp == NULL) {
@@ -2795,9 +2794,9 @@ static const char *start_cond_section(cmd_parms *cmd, void *mconfig, const char 
         return missing_container_arg(cmd);
     }
 
-    found = testfn(cmd, arg);
+    result = testfn(cmd, arg);
 
-    if ((!not && found) || (not && !found)) {
+    if ((!not && result) || (not && !result)) {
         ap_directive_t *parent = NULL;
         ap_directive_t *current = NULL;
         const char *retval;
