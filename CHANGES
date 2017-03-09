@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) Add <IfDirective> and <IfSection> directives.  [Joe Orton]
+
   *) mod_http2: stream timeouts now change to vhost values once the request
      is parsed and processing starts. Initial values are taken from base
      server or SNI host as before. [Stefan Eissing]

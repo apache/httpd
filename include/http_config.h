@@ -992,6 +992,14 @@ AP_DECLARE(const char *) ap_setup_prelinked_modules(process_rec *process);
 AP_DECLARE(void) ap_show_directives(void);
 
 /**
+ * Returns non-zero if a configuration directive of the given name has
+ * been registered by a module at the time of calling.
+ * @param p Pool for temporary allocations
+ * @param name Directive name
+ */
+AP_DECLARE(int) ap_exists_directive(apr_pool_t *p, const char *name);
+
+/**
  * Show the preloaded module names.  Used for httpd -l.
  */
 AP_DECLARE(void) ap_show_modules(void);
