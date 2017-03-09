@@ -597,7 +597,17 @@ static int match_headers(request_rec *r)
                     apr_table_unset(r->subprocess_env, elts[j].key);
                 }
                 else {
-                    if (!b->pattern) {
+                    /*
+                     * Do regex replacement, if we did not use a pattern, so
+                     * either a regex or an expression and if we have a val
+                     * or at least we did not use an expression.
+                     * Background: We can have expressions that become true
+                     * if a regex pattern in the expression does NOT match.
+                     * In this case val is NULL and we should just set the
+                     * value for the environment variable like in the pattern
+                     * case.
+                     */
+                    if (!b->pattern && (val || !b->expr)) {
                         char *replaced = ap_pregsub(r->pool, elts[j].val, val,
                                                     AP_MAX_REG_MATCH, regm);
                         if (replaced) {
