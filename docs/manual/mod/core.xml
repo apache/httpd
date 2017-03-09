@@ -2420,8 +2420,8 @@ presence or absence of a specific directive</description>
     <p>In the former case, the directives between the start and end
     markers are only processed if a directive of the given name is
     available at the time of processing.  The second format reverses the test,
-    and only processes the directives if the <var>directive-name</var> is
-    <strong>not</strong> defined.</p>
+    and only processes the directives if <var>directive-name</var> is
+    <strong>not</strong> available.</p>
 
     <note>This section should only be used if you need to have one
     configuration file that works across multiple versions of
@@ -2449,30 +2449,31 @@ presence or absence of a specific section directive</description>
     <var>test</var>&gt;...&lt;/IfSection&gt;</code> section is used
     to mark directives that are conditional on the presence of a
     specific section directive.  A section directive is any directive
-    such as <directive type="section">virtualhost</directive> which
+    such as <directive type="section">VirtualHost</directive> which
     encloses other directives, and has a directive name with a leading
-    "&lt;".  The sec
+    "&lt;".</p>
 
-    The directives within an <directive type="section"
+    <p>The directives within an <directive type="section"
     >IfSection</directive> section are only processed if the <var>test</var>
     is true. If <var>test</var> is false, everything between the start and
     end markers is ignored.</p>
 
-    <p>The <var>section-name</var> specified must not include the
-    leading "&lt;".  The <var>test</var> in the <directive
-    type="section">IfSection</directive> section can be one of two
-    forms:</p>
+    <p>The <var>section-name</var> must be specified without either
+    the leading "&lt;" or closing "&gt;".  The <var>test</var> in the
+    <directive type="section">IfSection</directive> section can be one
+    of two forms:</p>
 
     <ul>
       <li><var>section-name</var></li>
       <li>!<var>section-name</var></li>
     </ul>
 
-    <p>In the former case, the directives between the start and
-    end markers are only processed if a section directive of the given
+    <p>In the former case, the directives between the start and end
+    markers are only processed if a section directive of the given
     name is available at the time of processing.  The second format
-    reverses the test, and only processes the directives if the
-    <var>section-name</var> is <strong>not</strong> defined.</p>
+    reverses the test, and only processes the directives if
+    <var>section-name</var> is <strong>not</strong> an available
+    section directive.</p>
 
     <p>For example:</p>
 
