@@ -521,7 +521,7 @@ AP_CORE_DECLARE(void) ap_parse_uri(request_rec *r, const char *uri)
      *
      * This is not in fact a URI, it's a path.  That matters in the
      * case of a leading double-slash.  We need to resolve the issue
-     * by normalising that out before treating it as a URI.
+     * by normalizing that out before treating it as a URI.
      */
     while ((uri[0] == '/') && (uri[1] == '/')) {
         ++uri ;
@@ -751,7 +751,7 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
     *((char *)r->protocol + len) = '\0';
 
 rrl_done:
-    /* For internal integrety and palloc efficiency, reconstruct the_request
+    /* For internal integrity and palloc efficiency, reconstruct the_request
      * in one palloc, using only single SP characters, per spec.
      */
     r->the_request = apr_pstrcat(r->pool, r->method, *uri ? " " : NULL, uri,
@@ -794,7 +794,7 @@ rrl_done:
     }
 
     /* Determine the method_number and parse the uri prior to invoking error
-     * handling, such that these fields are available for subsitution
+     * handling, such that these fields are available for substitution
      */
     r->method_number = ap_method_number_of(r->method);
     if (r->method_number == M_GET && r->method[0] == 'H')
@@ -1057,7 +1057,7 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
         else if (last_field != NULL) {
 
             /* Process the previous last_field header line with all obs-folded
-             * segments already concatinated (this is not operating on the
+             * segments already concatenated (this is not operating on the
              * most recently read input line).
              */
 
