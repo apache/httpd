@@ -652,6 +652,7 @@ int h2_h2_process_conn(conn_rec* c)
             status = h2_conn_setup(ctx, c, NULL);
             ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, c, "conn_setup");
             if (status != APR_SUCCESS) {
+                h2_ctx_clear(c);
                 return status;
             }
         }
@@ -674,7 +675,7 @@ static int h2_h2_pre_close_conn(conn_rec *c)
     ctx = h2_ctx_get(c, 0);
     if (ctx) {
         /* If the session has been closed correctly already, we will not
-         * fiond a h2_ctx here. The presence indicates that the session
+         * find a h2_ctx here. The presence indicates that the session
          * is still ongoing. */
         return h2_conn_pre_close(ctx, c);
     }

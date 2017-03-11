@@ -132,24 +132,28 @@ const char *h2_session_state_str(h2_session_state state);
 /**
  * Create a new h2_session for the given connection.
  * The session will apply the configured parameter.
+ * @param psession pointer receiving the created session on success or NULL
  * @param c       the connection to work on
  * @param cfg     the module config to apply
  * @param workers the worker pool to use
  * @return the created session
  */
-h2_session *h2_session_create(conn_rec *c, struct h2_ctx *ctx, 
-                              struct h2_workers *workers);
+apr_status_t h2_session_create(h2_session **psession,
+                               conn_rec *c, struct h2_ctx *ctx, 
+                               struct h2_workers *workers);
 
 /**
  * Create a new h2_session for the given request.
  * The session will apply the configured parameter.
+ * @param psession pointer receiving the created session on success or NULL
  * @param r       the request that was upgraded
  * @param cfg     the module config to apply
  * @param workers the worker pool to use
  * @return the created session
  */
-h2_session *h2_session_rcreate(request_rec *r, struct h2_ctx *ctx,
-                               struct h2_workers *workers);
+apr_status_t h2_session_rcreate(h2_session **psession,
+                                request_rec *r, struct h2_ctx *ctx,
+                                struct h2_workers *workers);
 
 /**
  * Process the given HTTP/2 session until it is ended or a fatal
