@@ -75,8 +75,10 @@ disponibles</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#httpprotocoloptions">HttpProtocolOptions</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#if">&lt;If&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ifdefine">&lt;IfDefine&gt;</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#ifdirective">&lt;IfDirective&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#iffile">&lt;IfFile&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ifmodule">&lt;IfModule&gt;</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#ifsection">&lt;IfSection&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#include">Include</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#includeoptional">IncludeOptional</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#keepalive">KeepAlive</a></li>
@@ -2443,6 +2445,52 @@ test retourne "vrai" au démarrage du serveur</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ifdirective" id="ifdirective">Directive</a> <a name="IfDirective" id="IfDirective">&lt;IfDirective&gt;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Regroupe des directives dont le traitement est conditionné par la
+présence ou l'absence d'une directive particulière</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>&lt;IfDirective [!]<var>directive-name</var>&gt; ...
+    &lt;/IfDirective&gt;</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+</table>
+    <p>La section <code>&lt;IfDirective
+    <var>test</var>&gt;...&lt;/IfDirective&gt;</code> permet de regrouper des
+    directives dont le traitement n'est effectué que si une directive
+    particulière est présente, autrement dit si l'expression <var>test</var> est
+    évaluée à true. Si l'expression <var>test</var> est évaluée à false, toutes
+    les lignes qui se trouvent entre les balises de début et de fin de la
+    section sont ignorées.</p>
+
+    <p>L'expression <var>test</var> de la section <code class="directive">&lt;IfDirective&gt;</code> peut prendre les deux formes
+    suivantes :</p>
+
+    <ul>
+      <li><var>directive-name</var></li>
+
+      <li>!<var>directive-name</var></li>
+    </ul>
+
+    <p>Dans le premier cas, les directives qui se situent entre les balises de
+    début et de fin de la section ne sont traitées que si une directive de nom
+    directive-name est disponible à cet instant. Dans le second cas, la condition est
+    inversée, et les directives ne sont traitées que si
+    <var>directive-name</var> n'est <strong>pas</strong> disponible.</p>
+
+    <div class="note">Cette section ne doit être utilisée que si vous devez partager le même
+    fichier de configuration entre plusieurs versions de
+    <code class="program"><a href="../programs/httpd.html">httpd</a></code>, sans tenir compte de la disponibilité de telle ou
+    telle directive. Dans une configuration standard, il est inutile de placer
+    les directives dans des sections <code class="directive">&lt;IfDirective&gt;</code>.</div>
+
+<h3>Voir aussi</h3>
+<ul>
+<li><code class="directive"><a href="#ifsection">&lt;IfSection&gt;</a></code></li>
+</ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="iffile" id="iffile">Directive</a> <a name="IfFile" id="IfFile">&lt;IfFile&gt;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Regroupe des directives qui ne seront traitées que si un fichier
@@ -2531,6 +2579,61 @@ module</var>&gt; ... &lt;/IfModule&gt;</code></td></tr>
     pas nécessaire de placer les directives à l'intérieur de sections
     <code class="directive">&lt;IfModule&gt;</code>.</div>
 
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ifsection" id="ifsection">Directive</a> <a name="IfSection" id="IfSection">&lt;IfSection&gt;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Regroupe des directives dont le traitement est conditionné par la
+présence ou l'absence d'une section particulière</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>&lt;IfSection [!]<var>section-name</var>&gt; ...
+    &lt;/IfSection&gt;</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+</table>
+    <p>La section <code>&lt;IfSection
+    <var>test</var>&gt;...&lt;/IfSection&gt;</code> permet de regrouper des
+    directives dont le traitement n'est effectué que si une section de
+    configuration particulière est présente. Une section, par exemple <code class="directive">&lt;VirtualHost&gt;</code>, permet de regrouper des directives
+    et possède un nom précédé du caractère "&lt;".</p>
+
+    <p>Les directives situées à l'intérieur d'une section <code class="directive">&lt;IfSection&gt;</code> ne sont traitées que si l'expression
+    <var>test</var> est évaluée à true. Si l'expression <var>test</var> est
+    évaluée à false, toutes les lignes situées entre les balises de début et de
+    fin de la section sont ignorées.</p>
+
+    <p><var>section-name</var> doit être spécifié sans les caractères de début
+    "&lt;" ou fin "&gt;". L'expression <var>test</var> de la section <code class="directive">&lt;IfSection&gt;</code> peut prendre deux formes :</p>
+
+    <ul>
+      <li><var>section-name</var></li>
+      <li>!<var>section-name</var></li>
+    </ul>
+
+    <p>Dans le premier cas, les directives qui se situent entre les balises de
+    début et de fin de la section ne sont traitées que si une section de nom
+    section-name est disponible à cet instant. Dans le second cas, la condition est
+    inversée, et les directives ne sont traitées que si
+    <var>section-name</var> n'est <strong>pas</strong> disponible.</p>
+
+    <p>Par exemple :</p>
+
+    <pre class="prettyprint lang-config">&lt;IfSection VirtualHost&gt;
+   ...
+&lt;/IfSection&gt;</pre>
+
+    
+    <div class="note">Cette section ne doit être utilisée que si vous devez partager le même
+    fichier de configuration entre plusieurs versions de
+    <code class="program"><a href="../programs/httpd.html">httpd</a></code>, sans tenir compte de la disponibilité de telle ou
+    telle section. Dans une configuration standard, il est inutile de placer
+    les directives dans des sections <code class="directive">&lt;IfSection&gt;</code>.</div>
+
+<h3>Voir aussi</h3>
+<ul>
+<li><code class="directive"><a href="#ifdirective">&lt;IfDirective&gt;</a></code></li>
+</ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="include" id="include">Directive</a> <a name="Include" id="Include">Include</a></h2>
