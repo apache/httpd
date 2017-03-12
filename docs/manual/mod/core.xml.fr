@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1784318:1786113 (outdated) -->
+<!-- English Revision: 1786113 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -2596,6 +2596,110 @@ host</context>
     pas nécessaire de placer les directives à l'intérieur de sections
     <directive type="section">IfModule</directive>.</note>
 </usage>
+</directivesynopsis>
+
+<directivesynopsis type="section">
+<name>IfDirective</name>
+<description>Regroupe des directives dont le traitement est conditionné par la
+présence ou l'absence d'une directive particulière</description>
+<syntax>&lt;IfDirective [!]<var>directive-name</var>&gt; ...
+    &lt;/IfDirective&gt;</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>All</override>
+
+<usage>
+    <p>La section <code>&lt;IfDirective
+    <var>test</var>&gt;...&lt;/IfDirective&gt;</code> permet de regrouper des
+    directives dont le traitement n'est effectué que si une directive
+    particulière est présente, autrement dit si l'expression <var>test</var> est
+    évaluée à true. Si l'expression <var>test</var> est évaluée à false, toutes
+    les lignes qui se trouvent entre les balises de début et de fin de la
+    section sont ignorées.</p>
+
+    <p>L'expression <var>test</var> de la section <directive
+    type="section">IfDirective</directive> peut prendre les deux formes
+    suivantes :</p>
+
+    <ul>
+      <li><var>directive-name</var></li>
+
+      <li>!<var>directive-name</var></li>
+    </ul>
+
+    <p>Dans le premier cas, les directives qui se situent entre les balises de
+    début et de fin de la section ne sont traitées que si une directive de nom
+    directive-name est disponible à cet instant. Dans le second cas, la condition est
+    inversée, et les directives ne sont traitées que si
+    <var>directive-name</var> n'est <strong>pas</strong> disponible.</p>
+
+    <note>Cette section ne doit être utilisée que si vous devez partager le même
+    fichier de configuration entre plusieurs versions de
+    <program>httpd</program>, sans tenir compte de la disponibilité de telle ou
+    telle directive. Dans une configuration standard, il est inutile de placer
+    les directives dans des sections <directive
+    type="section">IfDirective</directive>.</note>
+</usage>
+<seealso><directive module="core" type="section">IfSection</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis type="section">
+<name>IfSection</name>
+<description>Regroupe des directives dont le traitement est conditionné par la
+présence ou l'absence d'une section particulière</description>
+<syntax>&lt;IfSection [!]<var>section-name</var>&gt; ...
+    &lt;/IfSection&gt;</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>All</override>
+
+<usage>
+    <p>La section <code>&lt;IfSection
+    <var>test</var>&gt;...&lt;/IfSection&gt;</code> permet de regrouper des
+    directives dont le traitement n'est effectué que si une section de
+    configuration particulière est présente. Une section, par exemple <directive
+    type="section">VirtualHost</directive>, permet de regrouper des directives
+    et possède un nom précédé du caractère "&lt;".</p>
+
+    <p>Les directives situées à l'intérieur d'une section <directive
+    type="section">IfSection</directive> ne sont traitées que si l'expression
+    <var>test</var> est évaluée à true. Si l'expression <var>test</var> est
+    évaluée à false, toutes les lignes situées entre les balises de début et de
+    fin de la section sont ignorées.</p>
+
+    <p><var>section-name</var> doit être spécifié sans les caractères de début
+    "&lt;" ou fin "&gt;". L'expression <var>test</var> de la section <directive
+    type="section">IfSection</directive> peut prendre deux formes :</p>
+
+    <ul>
+      <li><var>section-name</var></li>
+      <li>!<var>section-name</var></li>
+    </ul>
+
+    <p>Dans le premier cas, les directives qui se situent entre les balises de
+    début et de fin de la section ne sont traitées que si une section de nom
+    section-name est disponible à cet instant. Dans le second cas, la condition est
+    inversée, et les directives ne sont traitées que si
+    <var>section-name</var> n'est <strong>pas</strong> disponible.</p>
+
+    <p>Par exemple :</p>
+
+    <highlight language="config">
+&lt;IfSection VirtualHost&gt;
+   ...
+&lt;/IfSection&gt;
+    </highlight>
+    
+    <note>Cette section ne doit être utilisée que si vous devez partager le même
+    fichier de configuration entre plusieurs versions de
+    <program>httpd</program>, sans tenir compte de la disponibilité de telle ou
+    telle section. Dans une configuration standard, il est inutile de placer
+    les directives dans des sections <directive
+    type="section">IfSection</directive>.</note>
+</usage>
+<seealso><directive module="core" type="section">IfDirective</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
