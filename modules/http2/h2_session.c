@@ -31,6 +31,7 @@
 
 #include "h2_private.h"
 #include "h2.h"
+#include "h2_bucket_beam.h"
 #include "h2_bucket_eos.h"
 #include "h2_config.h"
 #include "h2_ctx.h"
@@ -73,10 +74,14 @@ static int h2_session_status_from_apr_status(apr_status_t rv)
 static void update_window(void *ctx, int stream_id, apr_off_t bytes_read)
 {
     h2_session *session = (h2_session*)ctx;
-    nghttp2_session_consume(session->ngh2, stream_id, bytes_read);
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c,
-                  "h2_stream(%ld-%d): consumed %ld bytes",
-                  session->id, stream_id, (long)bytes_read);
+    while (bytes_read > 0) {
+        int len = (bytes_read > INT_MAX)? INT_MAX : bytes_read;
+        nghttp2_session_consume(session->ngh2, stream_id, (int)bytes_read);
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c,
+                      "h2_stream(%ld-%d): consumed %d bytes",
+                      session->id, stream_id, len);
+        bytes_read -= len;
+    }
 }
 
 static apr_status_t h2_session_receive(void *ctx, 
@@ -656,26 +661,29 @@ static apr_status_t h2_session_shutdown(h2_session *session, int error,
          * we have, but no longer accept new ones. Report the max stream
          * we have received and discard all new ones. */
     }
-    nghttp2_submit_goaway(session->ngh2, NGHTTP2_FLAG_NONE, 
-                          session->local.accepted_max, 
-                          error, (uint8_t*)msg, msg? strlen(msg):0);
+    
     session->local.accepting = 0;
     session->local.shutdown = 1;
-    status = nghttp2_session_send(session->ngh2);
-    if (status == APR_SUCCESS) {
-        status = h2_conn_io_flush(&session->io);
+    if (!session->c->aborted) {
+        nghttp2_submit_goaway(session->ngh2, NGHTTP2_FLAG_NONE, 
+                              session->local.accepted_max, 
+                              error, (uint8_t*)msg, msg? strlen(msg):0);
+        status = nghttp2_session_send(session->ngh2);
+        if (status == APR_SUCCESS) {
+            status = h2_conn_io_flush(&session->io);
+        }
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, 
+                      H2_SSSN_LOG(APLOGNO(03069), session, 
+                                  "sent GOAWAY, err=%d, msg=%s"), error, msg? msg : "");
     }
-    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, 
-                  H2_SSSN_LOG(APLOGNO(03069), session, 
-                  "sent GOAWAY, err=%d, msg=%s"), error, msg? msg : "");
     dispatch_event(session, H2_SESSION_EV_LOCAL_GOAWAY, error, msg);
     return status;
 }
 
-static apr_status_t session_pool_cleanup(void *data)
+static apr_status_t session_cleanup(h2_session *session, const char *trigger)
 {
-    h2_session *session = data;
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, session->c,
+    conn_rec *c = session->c;
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
                   H2_SSSN_MSG(session, "pool_cleanup"));
     
     if (session->state != H2_SESSION_ST_DONE
@@ -688,13 +696,13 @@ static apr_status_t session_pool_cleanup(void *data)
          * connection when sending the next request, this has the effect
          * that at least this one request will fail.
          */
-        ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, session->c,
+        ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, c,
                       H2_SSSN_LOG(APLOGNO(03199), session, 
                       "connection disappeared without proper "
                       "goodbye, clients will be confused, should not happen"));
     }
 
-    transit(session, "pool cleanup", H2_SESSION_ST_CLEANUP);
+    transit(session, trigger, H2_SESSION_ST_CLEANUP);
     h2_mplx_set_consumed_cb(session->mplx, NULL, NULL);
     h2_mplx_release_and_join(session->mplx, session->iowait);
     session->mplx = NULL;
@@ -702,14 +710,39 @@ static apr_status_t session_pool_cleanup(void *data)
     ap_assert(session->ngh2);
     nghttp2_session_del(session->ngh2);
     session->ngh2 = NULL;
-
+    h2_ctx_clear(c);
+    
+    
     return APR_SUCCESS;
 }
 
-static h2_session *h2_session_create_int(conn_rec *c,
-                                         request_rec *r,
-                                         h2_ctx *ctx, 
-                                         h2_workers *workers)
+static apr_status_t session_pool_cleanup(void *data)
+{
+    conn_rec *c = data;
+    h2_session *session;
+    h2_ctx *ctx = h2_ctx_get(c, 0);
+    
+    if (ctx && (session = h2_ctx_session_get(ctx))) {
+        /* if the session is still there, now is the last chance
+         * to perform cleanup. Normally, cleanup should have happened
+         * earlier in the connection pre_close. Main reason is that
+         * any ongoing requests on slave connections might still access
+         * data which has, at this time, already been freed. An example
+         * is mod_ssl that uses request hooks. */
+        ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, c,
+                      H2_SSSN_LOG(APLOGNO(10020), session, 
+                      "session cleanup triggered by pool cleanup. "
+                      "this should have happened earlier already."));
+        return session_cleanup(session, "pool cleanup");
+    }
+    return APR_SUCCESS;
+}
+
+static apr_status_t h2_session_create_int(h2_session **psession,
+                                          conn_rec *c,
+                                          request_rec *r,
+                                          h2_ctx *ctx, 
+                                          h2_workers *workers)
 {
     nghttp2_session_callbacks *callbacks = NULL;
     nghttp2_option *options = NULL;
@@ -718,136 +751,146 @@ static h2_session *h2_session_create_int(conn_rec *c,
     uint32_t n;
     apr_pool_t *pool = NULL;
     h2_session *session;
-    
-    apr_status_t status = apr_allocator_create(&allocator);
+    apr_status_t status;
+    int rv;
+
+    *psession = NULL;
+    status = apr_allocator_create(&allocator);
     if (status != APR_SUCCESS) {
-        return NULL;
+        return status;
     }
     apr_allocator_max_free_set(allocator, ap_max_mem_free);
     apr_pool_create_ex(&pool, c->pool, NULL, allocator);
     if (!pool) {
         apr_allocator_destroy(allocator);
-        return NULL;
+        return APR_ENOMEM;
     }
     apr_pool_tag(pool, "h2_session");
     apr_allocator_owner_set(allocator, pool);
     status = apr_thread_mutex_create(&mutex, APR_THREAD_MUTEX_DEFAULT, pool);
     if (status != APR_SUCCESS) {
         apr_pool_destroy(pool);
-        return NULL;
+        return APR_ENOMEM;
     }
     apr_allocator_mutex_set(allocator, mutex);
     
-    /* get h2_session a lifetime beyond its pool and everything
-     * connected to it. */
     session = apr_pcalloc(pool, sizeof(h2_session));
-    if (session) {
-        int rv;
-        session->id = c->id;
-        session->c = c;
-        session->r = r;
-        session->s = h2_ctx_server_get(ctx);
-        session->pool = pool;
-        session->config = h2_config_sget(session->s);
-        session->workers = workers;
-        
-        session->state = H2_SESSION_ST_INIT;
-        session->local.accepting = 1;
-        session->remote.accepting = 1;
-        
-        apr_pool_pre_cleanup_register(pool, session, session_pool_cleanup);
-        
-        session->max_stream_count = h2_config_geti(session->config, 
-                                                   H2_CONF_MAX_STREAMS);
-        session->max_stream_mem = h2_config_geti(session->config, 
-                                                 H2_CONF_STREAM_MAX_MEM);
-
-        status = apr_thread_cond_create(&session->iowait, session->pool);
-        if (status != APR_SUCCESS) {
-            return NULL;
-        }
-        
-        session->monitor = apr_pcalloc(pool, sizeof(h2_stream_monitor));
-        if (session->monitor == NULL) {
-            return NULL;
-        }
-        session->monitor->ctx = session;
-        session->monitor->on_state_enter = on_stream_state_enter;
-        session->monitor->on_state_event = on_stream_state_event;
-         
-        session->mplx = h2_mplx_create(c, session->pool, session->config, 
-                                       session->s->timeout, workers);
-        
-        h2_mplx_set_consumed_cb(session->mplx, update_window, session);
-        
-        /* Install the connection input filter that feeds the session */
-        session->cin = h2_filter_cin_create(session->pool, 
-                                            h2_session_receive, session);
-        ap_add_input_filter("H2_IN", session->cin, r, c);
-
-        h2_conn_io_init(&session->io, c, session->config);
-        session->bbtmp = apr_brigade_create(session->pool, c->bucket_alloc);
-        
-        status = init_callbacks(c, &callbacks);
-        if (status != APR_SUCCESS) {
-            ap_log_cerror(APLOG_MARK, APLOG_ERR, status, c, APLOGNO(02927) 
-                          "nghttp2: error in init_callbacks");
-            return NULL;
-        }
-        
-        rv = nghttp2_option_new(&options);
-        if (rv != 0) {
-            ap_log_cerror(APLOG_MARK, APLOG_ERR, APR_EGENERAL, c,
-                          APLOGNO(02928) "nghttp2_option_new: %s", 
-                          nghttp2_strerror(rv));
-            return NULL;
-        }
-        nghttp2_option_set_peer_max_concurrent_streams(
-            options, (uint32_t)session->max_stream_count);
-        /* We need to handle window updates ourself, otherwise we
-         * get flooded by nghttp2. */
-        nghttp2_option_set_no_auto_window_update(options, 1);
-        
-        rv = nghttp2_session_server_new2(&session->ngh2, callbacks,
-                                         session, options);
-        nghttp2_session_callbacks_del(callbacks);
-        nghttp2_option_del(options);
-        
-        if (rv != 0) {
-            ap_log_cerror(APLOG_MARK, APLOG_ERR, APR_EGENERAL, c,
-                          APLOGNO(02929) "nghttp2_session_server_new: %s",
-                          nghttp2_strerror(rv));
-            return NULL;
-        }
-        
-        n = h2_config_geti(session->config, H2_CONF_PUSH_DIARY_SIZE);
-        session->push_diary = h2_push_diary_create(session->pool, n);
-        
-        if (APLOGcdebug(c)) {
-            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, 
-                          H2_SSSN_LOG(APLOGNO(03200), session, 
-                          "created, max_streams=%d, stream_mem=%d, "
-                          "workers_limit=%d, workers_max=%d, "
-                          "push_diary(type=%d,N=%d)"),
-                          (int)session->max_stream_count, 
-                          (int)session->max_stream_mem,
-                          session->mplx->workers_limit, 
-                          session->mplx->workers_max, 
-                          session->push_diary->dtype, 
-                          (int)session->push_diary->N);
-        }
+    if (!session) {
+        return APR_ENOMEM;
     }
-    return session;
+    
+    *psession = session;
+    session->id = c->id;
+    session->c = c;
+    session->r = r;
+    session->s = h2_ctx_server_get(ctx);
+    session->pool = pool;
+    session->config = h2_config_sget(session->s);
+    session->workers = workers;
+    
+    session->state = H2_SESSION_ST_INIT;
+    session->local.accepting = 1;
+    session->remote.accepting = 1;
+    
+    session->max_stream_count = h2_config_geti(session->config, 
+                                               H2_CONF_MAX_STREAMS);
+    session->max_stream_mem = h2_config_geti(session->config, 
+                                             H2_CONF_STREAM_MAX_MEM);
+    
+    status = apr_thread_cond_create(&session->iowait, session->pool);
+    if (status != APR_SUCCESS) {
+        apr_pool_destroy(pool);
+        return status;
+    }
+    
+    session->monitor = apr_pcalloc(pool, sizeof(h2_stream_monitor));
+    if (session->monitor == NULL) {
+        apr_pool_destroy(pool);
+        return status;
+    }
+    session->monitor->ctx = session;
+    session->monitor->on_state_enter = on_stream_state_enter;
+    session->monitor->on_state_event = on_stream_state_event;
+    
+    session->mplx = h2_mplx_create(c, session->pool, session->config, 
+                                   workers);
+    
+    h2_mplx_set_consumed_cb(session->mplx, update_window, session);
+    
+    /* Install the connection input filter that feeds the session */
+    session->cin = h2_filter_cin_create(session->pool, 
+                                        h2_session_receive, session);
+    ap_add_input_filter("H2_IN", session->cin, r, c);
+    
+    h2_conn_io_init(&session->io, c, session->config);
+    session->bbtmp = apr_brigade_create(session->pool, c->bucket_alloc);
+    
+    status = init_callbacks(c, &callbacks);
+    if (status != APR_SUCCESS) {
+        ap_log_cerror(APLOG_MARK, APLOG_ERR, status, c, APLOGNO(02927) 
+                      "nghttp2: error in init_callbacks");
+        apr_pool_destroy(pool);
+        return status;
+    }
+    
+    rv = nghttp2_option_new(&options);
+    if (rv != 0) {
+        ap_log_cerror(APLOG_MARK, APLOG_ERR, APR_EGENERAL, c,
+                      APLOGNO(02928) "nghttp2_option_new: %s", 
+                      nghttp2_strerror(rv));
+        apr_pool_destroy(pool);
+        return status;
+    }
+    nghttp2_option_set_peer_max_concurrent_streams(
+                                                   options, (uint32_t)session->max_stream_count);
+    /* We need to handle window updates ourself, otherwise we
+     * get flooded by nghttp2. */
+    nghttp2_option_set_no_auto_window_update(options, 1);
+    
+    rv = nghttp2_session_server_new2(&session->ngh2, callbacks,
+                                     session, options);
+    nghttp2_session_callbacks_del(callbacks);
+    nghttp2_option_del(options);
+    
+    if (rv != 0) {
+        ap_log_cerror(APLOG_MARK, APLOG_ERR, APR_EGENERAL, c,
+                      APLOGNO(02929) "nghttp2_session_server_new: %s",
+                      nghttp2_strerror(rv));
+        apr_pool_destroy(pool);
+        return APR_ENOMEM;
+    }
+    
+    n = h2_config_geti(session->config, H2_CONF_PUSH_DIARY_SIZE);
+    session->push_diary = h2_push_diary_create(session->pool, n);
+    
+    if (APLOGcdebug(c)) {
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, 
+                      H2_SSSN_LOG(APLOGNO(03200), session, 
+                                  "created, max_streams=%d, stream_mem=%d, "
+                                  "workers_limit=%d, workers_max=%d, "
+                                  "push_diary(type=%d,N=%d)"),
+                      (int)session->max_stream_count, 
+                      (int)session->max_stream_mem,
+                      session->mplx->workers_limit, 
+                      session->mplx->workers_max, 
+                      session->push_diary->dtype, 
+                      (int)session->push_diary->N);
+    }
+    
+    apr_pool_pre_cleanup_register(pool, c, session_pool_cleanup);    
+    return APR_SUCCESS;
 }
 
-h2_session *h2_session_create(conn_rec *c, h2_ctx *ctx, h2_workers *workers)
+apr_status_t h2_session_create(h2_session **psession, 
+                               conn_rec *c, h2_ctx *ctx, h2_workers *workers)
 {
-    return h2_session_create_int(c, NULL, ctx, workers);
+    return h2_session_create_int(psession, c, NULL, ctx, workers);
 }
 
-h2_session *h2_session_rcreate(request_rec *r, h2_ctx *ctx, h2_workers *workers)
+apr_status_t h2_session_rcreate(h2_session **psession, 
+                                request_rec *r, h2_ctx *ctx, h2_workers *workers)
 {
-    return h2_session_create_int(r->connection, r, ctx, workers);
+    return h2_session_create_int(psession, r->connection, r, ctx, workers);
 }
 
 static apr_status_t h2_session_start(h2_session *session, int *rv)
@@ -1369,7 +1412,7 @@ static apr_status_t on_stream_resume(void *ctx, h2_stream *stream)
     ap_assert(stream);
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c, 
                   H2_STRM_MSG(stream, "on_resume"));
-        
+    
 send_headers:
     headers = NULL;
     status = h2_stream_out_prepare(stream, &len, &eos, &headers);
@@ -1738,12 +1781,7 @@ static void ev_stream_open(h2_session *session, h2_stream *stream)
     }
     
     ap_assert(!stream->scheduled);
-    if (stream->request) {
-        const h2_request *r = stream->request;
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, session->c,
-                      H2_STRM_MSG(stream, "schedule %s %s://%s%s chunked=%d"),
-                      r->method, r->scheme, r->authority, r->path, r->chunked);
-        stream->scheduled = 1;
+    if (h2_stream_prep_processing(stream) == APR_SUCCESS) {
         h2_mplx_process(session->mplx, stream, stream_pri_cmp, session);
     }
     else {
@@ -1919,7 +1957,6 @@ apr_status_t h2_session_process(h2_session *session, int async)
     }
                   
     while (session->state != H2_SESSION_ST_DONE) {
-        trace = APLOGctrace3(c);
         session->have_read = session->have_written = 0;
 
         if (session->local.accepting 
@@ -1957,8 +1994,6 @@ apr_status_t h2_session_process(h2_session *session, int async)
                 break;
                 
             case H2_SESSION_ST_IDLE:
-                /* make certain, we send everything before we idle */
-                h2_conn_io_flush(&session->io);
                 /* We trust our connection into the default timeout/keepalive
                  * handling of the core filters/mpm iff:
                  * - keep_sync_until is not set
@@ -1975,6 +2010,7 @@ apr_status_t h2_session_process(h2_session *session, int async)
                                       "nonblock read, %d streams open"), 
                                       session->open_streams);
                     }
+                    h2_conn_io_flush(&session->io);
                     status = h2_session_read(session, 0);
                     
                     if (status == APR_SUCCESS) {
@@ -2001,6 +2037,8 @@ apr_status_t h2_session_process(h2_session *session, int async)
                     }
                 }
                 else {
+                    /* make certain, we send everything before we idle */
+                    h2_conn_io_flush(&session->io);
                     if (trace) {
                         ap_log_cerror(APLOG_MARK, APLOG_TRACE3, status, c,
                                       H2_SSSN_MSG(session, 
@@ -2187,19 +2225,24 @@ out:
         dispatch_event(session, H2_SESSION_EV_CONN_ERROR, 0, NULL);
     }
 
-    status = APR_SUCCESS;
-    if (session->state == H2_SESSION_ST_DONE) {
-        status = APR_EOF;
-    }
-    
-    return status;
+    return (session->state == H2_SESSION_ST_DONE)? APR_EOF : APR_SUCCESS;
 }
 
 apr_status_t h2_session_pre_close(h2_session *session, int async)
 {
+    apr_status_t status;
+    
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, session->c, 
                   H2_SSSN_MSG(session, "pre_close"));
     dispatch_event(session, H2_SESSION_EV_PRE_CLOSE, 0, 
         (session->state == H2_SESSION_ST_IDLE)? "timeout" : NULL);
-    return APR_SUCCESS;
+    status = session_cleanup(session, "pre_close");
+    if (status == APR_SUCCESS) {
+        /* no one should hold a reference to this session any longer and
+         * the h2_ctx was removed from the connection.
+         * Take the pool (and thus all subpools etc. down now, instead of
+         * during cleanup of main connection pool. */
+        apr_pool_destroy(session->pool);
+    }
+    return status;
 }

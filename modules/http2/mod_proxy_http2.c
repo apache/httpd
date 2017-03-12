@@ -276,6 +276,9 @@ static void request_done(h2_proxy_session *session, request_rec *r,
     h2_proxy_ctx *ctx = session->user_data;
     const char *task_id = apr_table_get(r->connection->notes, H2_TASK_ID_NOTE);
 
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, r->connection, 
+                  "h2_proxy_session(%s): request done %s, touched=%d",
+                  ctx->engine_id, task_id, touched);
     if (status != APR_SUCCESS) {
         if (!touched) {
             /* untouched request, need rescheduling */
@@ -288,6 +291,12 @@ static void request_done(h2_proxy_session *session, request_rec *r,
                                   ctx->engine_id, task_id);
                     return;
                 }
+            }
+            else if (!ctx->next) {
+                ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, r->connection, 
+                              "h2_proxy_session(%s): retry untouched request",
+                              ctx->engine_id);
+                ctx->next = r;
             }
         }
         else {
@@ -620,7 +629,7 @@ run_session:
     }
 
 cleanup:
-    if (!reconnected && ctx->engine && next_request(ctx, 1) == APR_SUCCESS) {
+    if (!reconnected && next_request(ctx, 1) == APR_SUCCESS) {
         /* Still more to do, tear down old conn and start over */
         if (ctx->p_conn) {
             ctx->p_conn->close = 1;

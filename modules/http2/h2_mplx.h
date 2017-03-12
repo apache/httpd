@@ -96,7 +96,6 @@ struct h2_mplx {
     struct apr_thread_cond_t *join_wait;
     
     apr_size_t stream_max_mem;
-    apr_interval_time_t stream_timeout;
     
     apr_pool_t *spare_io_pool;
     apr_array_header_t *spare_slaves; /* spare slave connections */
@@ -125,7 +124,6 @@ apr_status_t h2_mplx_child_init(apr_pool_t *pool, server_rec *s);
  */
 h2_mplx *h2_mplx_create(conn_rec *c, apr_pool_t *master, 
                         const struct h2_config *conf, 
-                        apr_interval_time_t stream_timeout,
                         struct h2_workers *workers);
 
 /**

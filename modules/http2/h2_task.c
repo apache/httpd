@@ -17,7 +17,6 @@
 #include <stddef.h>
 
 #include <apr_atomic.h>
-#include <apr_thread_cond.h>
 #include <apr_strings.h>
 
 #include <httpd.h>
@@ -386,7 +385,7 @@ static apr_status_t h2_filter_parse_h1(ap_filter_t* f, apr_bucket_brigade* bb)
  ******************************************************************************/
  
 int h2_task_can_redo(h2_task *task) {
-    if (h2_beam_was_received(task->input.beam)) {
+    if (task->input.beam && h2_beam_was_received(task->input.beam)) {
         /* cannot repeat that. */
         return 0;
     }
@@ -403,7 +402,9 @@ void h2_task_redo(h2_task *task)
 void h2_task_rst(h2_task *task, int error)
 {
     task->rst_error = error;
-    h2_beam_leave(task->input.beam);
+    if (task->input.beam) {
+        h2_beam_leave(task->input.beam);
+    }
     if (!task->worker_done) {
         h2_beam_abort(task->output.beam);
     }
@@ -506,9 +507,9 @@ h2_task *h2_task_create(h2_stream *stream, conn_rec *slave)
     task->request     = stream->request;
     task->input.beam  = stream->input;
     task->output.beam = stream->output;
+    task->timeout     = stream->session->s->timeout;
     
     h2_beam_send_from(stream->output, task->pool);
-    apr_thread_cond_create(&task->cond, pool);
     h2_ctx_create_for(slave, task);
     
     return task;
@@ -601,6 +602,15 @@ static apr_status_t h2_task_process_request(h2_task *task, conn_rec *c)
                   "h2_task(%s): create request_rec", task->id);
     r = h2_request_create_rec(req, c);
     if (r && (r->status == HTTP_OK)) {
+        /* set timeouts for virtual host of request */
+        if (task->timeout != r->server->timeout) {
+            task->timeout = r->server->timeout;
+            h2_beam_timeout_set(task->output.beam, task->timeout);
+            if (task->input.beam) {
+                h2_beam_timeout_set(task->input.beam, task->timeout);
+            }
+        }
+        
         ap_update_child_status(c->sbh, SERVER_BUSY_WRITE, r);
         
         if (cs) {

@@ -37,7 +37,6 @@
  * of our own to disble those.
  */
 
-struct apr_thread_cond_t;
 struct h2_bucket_beam;
 struct h2_conn;
 struct h2_mplx;
@@ -57,6 +56,7 @@ struct h2_task {
     apr_pool_t *pool;
     
     const struct h2_request *request;
+    apr_interval_time_t timeout;
     int rst_error;                   /* h2 related stream abort error */
     
     struct {
@@ -76,7 +76,6 @@ struct h2_task {
     } output;
     
     struct h2_mplx *mplx;
-    struct apr_thread_cond_t *cond;
     
     unsigned int filters_set    : 1;
     unsigned int frozen         : 1;
