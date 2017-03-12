@@ -730,7 +730,7 @@ static apr_status_t session_pool_cleanup(void *data)
          * data which has, at this time, already been freed. An example
          * is mod_ssl that uses request hooks. */
         ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, c,
-                      H2_SSSN_LOG(APLOGNO(), session, 
+                      H2_SSSN_LOG(APLOGNO(10020) session, 
                       "session cleanup triggered by pool cleanup. "
                       "this should have happened earlier already."));
         return session_cleanup(session, "pool cleanup");
