@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1781328:1785907 (outdated) -->
+<!-- English Revision: 1785907 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -453,9 +453,10 @@ ProxyPass "/examples" "http://backend.example.com/examples" timeout=10
 &lt;/Location&gt;
         </highlight>
 
-      <p>La définition de la variable d'environnement "no-proxy" permet de
-      désactiver <module>mod_proxy</module> dans le traitement de la requête
-      courante. Cette variable doit être définie via la directive <directive
+      <p>A partir de la version 2.4.26 du serveur HTTP Apache, la définition de
+      la variable d'environnement "no-proxy" permet de désactiver
+      <module>mod_proxy</module> dans le traitement de la requête courante.
+      Cette variable doit être définie via la directive <directive
       module="mod_setenvif">SetEnvIf</directive> car la directive <directive
       module="mod_env">SetEnv</directive> n'est pas évaluée assez tôt.</p>
 
@@ -1110,7 +1111,8 @@ ProxyPass "/mirror/foo" "http://backend.example.com"
       la plus spécifique qui l'emportera.</p>
 
       <p>Pour les mêmes raisons, les exclusions doivent se situer <em>avant</em>
-      les directives <directive>ProxyPass</directive> générales. La variable
+      les directives <directive>ProxyPass</directive> générales. A partir de la
+      version 2.4.26 du serveur HTTP Apache, la variable
       d'environnement "no-proxy" est une alternative aux exclusions et constitue
       le seul moyen de configurer une exclusion pour une directive
       <directive>ProxyPass</directive> dans le contexte d'une section <directive
