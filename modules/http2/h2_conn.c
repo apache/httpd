@@ -183,6 +183,7 @@ static module *h2_conn_mpm_module(void)
 apr_status_t h2_conn_setup(h2_ctx *ctx, conn_rec *c, request_rec *r)
 {
     h2_session *session;
+    apr_status_t status;
     
     if (!workers) {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(02911) 
@@ -191,15 +192,16 @@ apr_status_t h2_conn_setup(h2_ctx *ctx, conn_rec *c, request_rec *r)
     }
     
     if (r) {
-        session = h2_session_rcreate(r, ctx, workers);
+        status = h2_session_rcreate(&session, r, ctx, workers);
     }
     else {
-        session = h2_session_create(c, ctx, workers);
+        status = h2_session_create(&session, c, ctx, workers);
     }
 
-    h2_ctx_session_set(ctx, session);
-    
-    return APR_SUCCESS;
+    if (status == APR_SUCCESS) {
+        h2_ctx_session_set(ctx, session);
+    }
+    return status;
 }
 
 apr_status_t h2_conn_run(struct h2_ctx *ctx, conn_rec *c)
@@ -235,7 +237,20 @@ apr_status_t h2_conn_run(struct h2_ctx *ctx, conn_rec *c)
              && mpm_state != AP_MPMQ_STOPPING);
     
     if (c->cs) {
-        c->cs->state = CONN_STATE_WRITE_COMPLETION;
+        switch (session->state) {
+            case H2_SESSION_ST_INIT:
+            case H2_SESSION_ST_CLEANUP:
+            case H2_SESSION_ST_DONE:
+            case H2_SESSION_ST_IDLE:
+                c->cs->state = CONN_STATE_WRITE_COMPLETION;
+                break;
+            case H2_SESSION_ST_BUSY:
+            case H2_SESSION_ST_WAIT:
+            default:
+                c->cs->state = CONN_STATE_HANDLER;
+                break;
+                
+        }
     }
     
     return DONE;
@@ -243,13 +258,12 @@ apr_status_t h2_conn_run(struct h2_ctx *ctx, conn_rec *c)
 
 apr_status_t h2_conn_pre_close(struct h2_ctx *ctx, conn_rec *c)
 {
-    apr_status_t status;
-    
-    status = h2_session_pre_close(h2_ctx_session_get(ctx), async_mpm);
-    if (status == APR_SUCCESS) {
-        return DONE; /* This is the same, right? */
+    h2_session *session = h2_ctx_session_get(ctx);
+    if (session) {
+        apr_status_t status = h2_session_pre_close(session, async_mpm);
+        return (status == APR_SUCCESS)? DONE : status;
     }
-    return status;
+    return DONE;
 }
 
 conn_rec *h2_slave_create(conn_rec *master, int slave_id, apr_pool_t *parent)
