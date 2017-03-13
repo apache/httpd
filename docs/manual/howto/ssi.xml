@@ -337,9 +337,7 @@ modified?</title>
 <section id="exec">
     <title>Executing commands</title>
 
-    <p>I expect that I'll have an article some time in the coming
-    months about using SSI with small CGI programs. For now, here's
-    something else that you can do with the <code>exec</code>
+    <p>Here's something else that you can do with the <code>exec</code>
     function. You can actually have SSI execute a command using the
     shell (<code>/bin/sh</code>, to be precise - or the DOS shell,
     if you're on Win32). The following, for example, will give you
