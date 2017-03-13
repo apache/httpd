@@ -431,26 +431,35 @@ are interpreted, it is important to understand how this works.</p>
 
     </ol>
 
-    <p>Apart from <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>, each group is processed in
-    the order that they appear in the configuration files.  <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> (group 1 above)
-    is processed in the order shortest directory component to longest.
-    So for example, <code>&lt;Directory "/var/web/dir"&gt;</code> will
-    be processed before <code>&lt;Directory
-    "/var/web/dir/subdir"&gt;</code>.  If multiple <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> sections apply
-    to the same directory they are processed in the configuration file
-    order. Configurations included via the <code class="directive"><a href="./mod/core.html#include">Include</a></code> directive will be treated as if
-    they were inside the including file at the location of the
-    <code class="directive"><a href="./mod/core.html#include">Include</a></code> directive.</p>
-
-    <p>Sections inside <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> sections
-    are applied <em>after</em> the corresponding sections outside
-    the virtual host definition. This allows virtual hosts to
-    override the main server configuration.</p>
-
-    <p>When the request is served by <code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code>, the
-    <code class="directive"><a href="./mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code>
-    container takes the place of the <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> container in the processing
-    order.</p>
+    <p>Some important remarks:</p>
+    <ul>
+        <li>Apart from <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>, within each group the sections are
+        processed in the order they appear in the configuration files.
+        For example, a request for <em>/foo</em> will match
+        <code>&lt;Location "/foo/bar"&gt;</code> and 
+        <code>&lt;Location "/foo"&gt;</code> (group 4 in this case):
+        both sections will be evaluated
+        but in the order they appear in the configuration files.</li>
+        <li><code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>
+        (group 1 above) is processed in the order shortest directory
+        component to longest. For example,
+        <code>&lt;Directory "/var/web/dir"&gt;</code> will be processed before
+        <code>&lt;Directory "/var/web/dir/subdir"&gt;</code>.</li>
+        <li>If multiple <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> sections apply
+        to the same directory they are processed in the configuration file
+        order.</li>
+        <li>Configurations included via the <code class="directive"><a href="./mod/core.html#include">Include</a></code> directive will be treated as if
+        they were inside the including file at the location of the
+        <code class="directive"><a href="./mod/core.html#include">Include</a></code> directive.</li>
+        <li>Sections inside <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> sections
+        are applied <em>after</em> the corresponding sections outside
+        the virtual host definition. This allows virtual hosts to
+        override the main server configuration.</li>
+        <li>When the request is served by <code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code>, the
+        <code class="directive"><a href="./mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code>
+        container takes the place of the <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> container in the processing
+        order.</li>
+    </ul>
 
     <div class="note"><h3>Technical Note</h3>
       There is actually a
