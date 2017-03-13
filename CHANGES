@@ -1,23 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
-  *) mod_http2: moving session cleanup to pre_close hook to avoid races with
-     modules already shut down and slave connections still operating.
-     [Stefan Eissing]
-
   *) Add <IfDirective> and <IfSection> directives.  [Joe Orton]
 
-  *) mod_http2: stream timeouts now change to vhost values once the request
-     is parsed and processing starts. Initial values are taken from base
-     server or SNI host as before. [Stefan Eissing]
-     
-  *) mod_proxy_http2: fixed retry behaviour when frontend connection uses 
-     http/1.1. [Stefan Eissing]
-     
-  *) mod_http2: separate mutex instances for each bucket beam, resulting in 
-     less lock contention. input beams only created when necessary.
-     [Stefan Eissing]
-     
   *) mod_syslog: Support use of optional "tag" in syslog entries.
      PR 60525. [Ben Rubson <ben.rubson gmail.com>, Jim Jagielski]
 
