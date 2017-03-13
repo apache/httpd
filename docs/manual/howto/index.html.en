@@ -140,6 +140,17 @@
       </dd>
     </dl>
 
+    <dl>
+      <dt>Rewriting URLs with mod_rewrite</dt>
+      <dd>
+        <p>Rewriting URLs with (and without)
+        <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> tends to be one of the most
+        frequently asked topics on our mailing lists and IRC channels.
+        We have devoted <a href="../rewrite/">and entire section of our
+        documentation</a> to howtos and recipes around this topic.</p>
+      </dd>
+    </dl>
+
   </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/howto/" title="English">&nbsp;en&nbsp;</a> |
