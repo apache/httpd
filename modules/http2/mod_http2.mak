@@ -51,7 +51,6 @@ CLEAN :
 !ENDIF 
 	-@erase "$(INTDIR)\h2_alt_svc.obj"
 	-@erase "$(INTDIR)\h2_bucket_beam.obj"
-	-@erase "$(INTDIR)\h2_bucket_eoc.obj"
 	-@erase "$(INTDIR)\h2_bucket_eos.obj"
 	-@erase "$(INTDIR)\h2_config.obj"
 	-@erase "$(INTDIR)\h2_conn.obj"
@@ -130,7 +129,6 @@ LINK32_FLAGS=kernel32.lib nghttp2.lib /nologo /subsystem:windows /dll /increment
 LINK32_OBJS= \
 	"$(INTDIR)\h2_alt_svc.obj" \
 	"$(INTDIR)\h2_bucket_beam.obj" \
-	"$(INTDIR)\h2_bucket_eoc.obj" \
 	"$(INTDIR)\h2_bucket_eos.obj" \
 	"$(INTDIR)\h2_config.obj" \
 	"$(INTDIR)\h2_conn.obj" \
@@ -201,7 +199,6 @@ CLEAN :
 !ENDIF 
 	-@erase "$(INTDIR)\h2_alt_svc.obj"
 	-@erase "$(INTDIR)\h2_bucket_beam.obj"
-	-@erase "$(INTDIR)\h2_bucket_eoc.obj"
 	-@erase "$(INTDIR)\h2_bucket_eos.obj"
 	-@erase "$(INTDIR)\h2_config.obj"
 	-@erase "$(INTDIR)\h2_conn.obj"
@@ -280,7 +277,6 @@ LINK32_FLAGS=kernel32.lib nghttp2d.lib /nologo /subsystem:windows /dll /incremen
 LINK32_OBJS= \
 	"$(INTDIR)\h2_alt_svc.obj" \
 	"$(INTDIR)\h2_bucket_beam.obj" \
-	"$(INTDIR)\h2_bucket_eoc.obj" \
 	"$(INTDIR)\h2_bucket_eos.obj" \
 	"$(INTDIR)\h2_config.obj" \
 	"$(INTDIR)\h2_conn.obj" \
@@ -425,11 +421,6 @@ SOURCE=./h2_alt_svc.c
 SOURCE=./h2_bucket_beam.c
 
 "$(INTDIR)/h2_bucket_beam.obj" : $(SOURCE) "$(INTDIR)"
-
-
-SOURCE=./h2_bucket_eoc.c
-
-"$(INTDIR)\h2_bucket_eoc.obj" : $(SOURCE) "$(INTDIR)"
 
 
 SOURCE=./h2_bucket_eos.c
