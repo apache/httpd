@@ -215,7 +215,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) Don't set SO_REUSEPORT by default.
      trunk patch: http://svn.apache.org/r1777923
      2.4.x patch: trunk applies fine
-     +1: jorton,
+     +1: jorton, covener
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entried should be added at the START of the list ]
