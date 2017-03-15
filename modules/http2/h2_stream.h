@@ -25,10 +25,12 @@
  * connection to the client. The h2_session writes to the h2_stream,
  * adding HEADERS and DATA and finally an EOS. When headers are done,
  * h2_stream is scheduled for handling, which is expected to produce
- * a h2_headers.
+ * a response h2_headers at least.
  * 
- * The h2_headers gives the HEADER frames to sent to the client, followed
- * by DATA frames read from the h2_stream until EOS is reached.
+ * The h2_headers may be followed by more h2_headers (interim responses) and
+ * by DATA frames read from the h2_stream until EOS is reached. Trailers
+ * are send when a last h2_headers is received. This always closes the stream
+ * output.
  */
 
 struct h2_mplx;
@@ -45,6 +47,9 @@ typedef void h2_stream_state_cb(void *ctx, h2_stream *stream);
 typedef void h2_stream_event_cb(void *ctx, h2_stream *stream, 
                                 h2_stream_event_t ev);
 
+/**
+ * Callback structure for events and stream state transisitions
+ */
 typedef struct h2_stream_monitor {
     void *ctx;
     h2_stream_state_cb *on_state_enter;   /* called when a state is entered */
@@ -99,6 +104,10 @@ struct h2_stream {
  * @param id      the stream identifier
  * @param pool    the memory pool to use for this stream
  * @param session the session this stream belongs to
+ * @param monitor an optional monitor to be called for events and 
+ *                state transisitions
+ * @param initiated_on the id of the stream this one was initiated on (PUSH)
+ *
  * @return the newly opened stream
  */
 h2_stream *h2_stream_create(int id, apr_pool_t *pool, 
@@ -111,6 +120,13 @@ h2_stream *h2_stream_create(int id, apr_pool_t *pool,
  */
 void h2_stream_destroy(h2_stream *stream);
 
+/**
+ * Prepare the stream so that processing may start.
+ * 
+ * This is the time to allocated resources not needed before.
+ * 
+ * @param stream the stream to prep 
+ */
 apr_status_t h2_stream_prep_processing(h2_stream *stream);
 
 /*
