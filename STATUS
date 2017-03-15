@@ -212,6 +212,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        (N.B. use OpenSSL >= 1.1.0e if running the test suite)
      +1: wrowe, jorton, 
 
+  *) Don't set SO_REUSEPORT by default.
+     trunk patch: http://svn.apache.org/r1777923
+     2.4.x patch: trunk applies fine
+     +1: jorton,
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entried should be added at the START of the list ]
