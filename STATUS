@@ -208,7 +208,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) Support OpenSSL 1.1.0
      Apply trunk -> 2.4.x merge branch with the command;
        svn merge https://svn.apache.org/repos/asf/httpd/httpd/branches/2.4.x-openssl-1.1.0-compat
-     +1: wrowe
+     2.4.x patch of ^ for review: http://people.apache.org/~jorton/httpd-2.4.x-openssl110.patch
+       (N.B. use OpenSSL >= 1.1.0e if running the test suite)
+     +1: wrowe, jorton, 
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
