@@ -247,9 +247,9 @@ PATCHES/ISSUES THAT ARE BEING WORKED
      2.4 convenience patch (includes CHANGES):
                   http://people.apache.org/~druggeri/patches/RemoteIPProxyProtocol.2.4.x.patch
      +1: druggeri, jim
-     -1: wrowe (as noted on list, not limiting to inbound primary pre_conn
-                scope correctly; lots of redundant code happpening per-request
-                for a per-connection behavior. Investigating further.)
+     -0.5: wrowe (Still reviewing support of unwise 'optional' schema vs. other
+                  possibile solves; questioning reading-but-ignoring PROXY
+                  protocol input, also seems unwise)
 
   *) mod_ssl: Return 502 instead of 500 when SSL peer check or 
      proxy_post_handshake hook fails. 
