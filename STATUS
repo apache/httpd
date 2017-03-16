@@ -215,7 +215,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) Don't set SO_REUSEPORT by default.
      trunk patch: http://svn.apache.org/r1777923
      2.4.x patch: trunk applies fine
-     +1: jorton, covener
+     +1: jorton, covener, wrowe
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entried should be added at the START of the list ]
@@ -226,10 +226,11 @@ PATCHES/ISSUES THAT ARE BEING WORKED
                   http://svn.apache.org/r1762515
                   http://svn.apache.org/r1771791
                   http://svn.apache.org/r1779077
+                  http://svn.apache.org/r1779091
+                  http://svn.apache.org/r1779699
      2.4.x patch: http://home.apache.org/~jim/patches/brotli-2.4.patch
      +1: jim, jorton,
-     -1: wrowe (Premature, waiting on github.com/google/brotli stable release)
-     jailletc36: doc should also be back-ported (r1779091 + r1779699)
+     -1: wrowe (Premature, waiting on github.com/google/brotli 0.6 release)
      NOTE: Awaiting next release post 0.5.2
 
   *) mod_remoteip: Add PROXY protocol support
