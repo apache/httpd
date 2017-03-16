@@ -67,10 +67,6 @@ h2_workers *h2_workers_create(server_rec *s, apr_pool_t *pool,
                               int min_size, int max_size, 
                               apr_size_t max_tx_handles);
 
-/* Destroy the worker pool and all its threads. 
- */
-void h2_workers_destroy(h2_workers *workers);
-
 /**
  * Registers a h2_mplx for task scheduling. If this h2_mplx runs
  * out of tasks, it will be automatically be unregistered. Should

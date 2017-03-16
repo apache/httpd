@@ -235,6 +235,28 @@ static apr_status_t h2_workers_start(h2_workers *workers)
     return status;
 }
 
+static apr_status_t workers_pool_cleanup(void *data)
+{
+    h2_workers *workers = data;
+    h2_worker *w;
+    
+    if (!workers->aborted) {
+        workers->aborted = 1;
+
+        /* before we go, cleanup any zombies and abort the rest */
+        cleanup_zombies(workers, 1);
+        w = H2_WORKER_LIST_FIRST(&workers->workers);
+        while (w != H2_WORKER_LIST_SENTINEL(&workers->workers)) {
+            h2_worker_abort(w);
+            w = H2_WORKER_NEXT(w);
+        }
+        apr_thread_mutex_lock(workers->lock);
+        apr_thread_cond_broadcast(workers->mplx_added);
+        apr_thread_mutex_unlock(workers->lock);
+    }
+    return APR_SUCCESS;
+}
+
 h2_workers *h2_workers_create(server_rec *s, apr_pool_t *server_pool,
                               int min_workers, int max_workers,
                               apr_size_t max_tx_handles)
@@ -283,50 +305,20 @@ h2_workers *h2_workers_create(server_rec *s, apr_pool_t *server_pool,
         if (status == APR_SUCCESS) {
             status = apr_thread_cond_create(&workers->mplx_added, workers->pool);
         }
-        
         if (status == APR_SUCCESS) {
             status = apr_thread_mutex_create(&workers->tx_lock,
                                              APR_THREAD_MUTEX_DEFAULT,
                                              workers->pool);
         }
-        
         if (status == APR_SUCCESS) {
             status = h2_workers_start(workers);
         }
-        
-        if (status != APR_SUCCESS) {
-            h2_workers_destroy(workers);
-            workers = NULL;
+        if (status == APR_SUCCESS) {
+            apr_pool_pre_cleanup_register(pool, workers, workers_pool_cleanup);    
+            return workers;
         }
     }
-    return workers;
-}
-
-void h2_workers_destroy(h2_workers *workers)
-{
-    /* before we go, cleanup any zombie workers that may have accumulated */
-    cleanup_zombies(workers, 1);
-    
-    if (workers->mplx_added) {
-        apr_thread_cond_destroy(workers->mplx_added);
-        workers->mplx_added = NULL;
-    }
-    if (workers->lock) {
-        apr_thread_mutex_destroy(workers->lock);
-        workers->lock = NULL;
-    }
-    while (!H2_MPLX_LIST_EMPTY(&workers->mplxs)) {
-        h2_mplx *m = H2_MPLX_LIST_FIRST(&workers->mplxs);
-        H2_MPLX_REMOVE(m);
-    }
-    while (!H2_WORKER_LIST_EMPTY(&workers->workers)) {
-        h2_worker *w = H2_WORKER_LIST_FIRST(&workers->workers);
-        H2_WORKER_REMOVE(w);
-    }
-    if (workers->pool) {
-        apr_pool_destroy(workers->pool);
-        /* workers is gone */
-    }
+    return NULL;
 }
 
 apr_status_t h2_workers_register(h2_workers *workers, struct h2_mplx *m)
