@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_http2: fixed PR60869 by making h2 workers exit explicitly waking up
+     all threads to exit in a defined way. [Stefan Eissing]
+     
   *) Add <IfDirective> and <IfSection> directives.  [Joe Orton]
 
   *) mod_syslog: Support use of optional "tag" in syslog entries.
