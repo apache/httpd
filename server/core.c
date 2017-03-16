@@ -4742,7 +4742,7 @@ AP_DECLARE_NONSTD(int) ap_core_translate(request_rec *r)
     }
     if (!r->uri || ((r->uri[0] != '/') && strcmp(r->uri, "*"))) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00126)
-                     "Invalid URI in request %s", r->the_request);
+                     "Invalid URI in request '%s' '%s'", r->uri, r->the_request);
         return HTTP_BAD_REQUEST;
     }
 
