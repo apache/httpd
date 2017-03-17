@@ -153,7 +153,7 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server)
 #endif
 
 #if defined(SO_REUSEPORT)
-    if (ap_have_so_reuseport) {
+    if (ap_have_so_reuseport && ap_listencbratio > 0) {
         int thesock;
         apr_os_sock_get(&thesock, s);
         if (setsockopt(thesock, SOL_SOCKET, SO_REUSEPORT,
