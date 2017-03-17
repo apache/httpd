@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.26
 
+  *) Don't set SO_REUSEPORT unless ListenCoresBucketsRatio is greater
+     than zero.  [Eric Covener]
+
   *) mod_http2: moving session cleanup to pre_close hook to avoid races with
      modules already shut down and slave connections still operating.
      [Stefan Eissing]
