@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_autoindex: Add IndexOptions UseOldDateFormat to allow the date
+     format from 2.2 in the Last Modified column. PR60846.
+     [Hank Ibell <hwibell gmail.com>]
+
   *) mod_http2: fixed PR60869 by making h2 workers exit explicitly waking up
      all threads to exit in a defined way. [Stefan Eissing]
      
