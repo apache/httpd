@@ -53,9 +53,6 @@ Changes with Apache 2.5.0
      specified so these kinds of fixups can be restored without impacting
      FPM. PR60576 [Eric Covener, Jim Jagielski]
 
-  *) Don't set SO_REUSEPORT unless ListenCoresBucketsRatio is greater
-     than zero.  [Eric Covener]
-
   *) core: EBCDIC fixes for interim responses with additional headers.
      [Eric Covener]
 
