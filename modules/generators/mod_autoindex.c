@@ -1856,7 +1856,10 @@ static void output_directories(struct ent **ar, int n,
                     ap_rvputs(r, time_str, "  ", NULL);
                 }
                 else {
-                    /*Length="1975-04-07 01:23  " (see 4 lines above) */
+                   /* Length="1975-04-07 01:23  "  (default in 2.4 and later) or
+                    * Length="07-Apr-1975 01:24  ". (2.2 and UseOldDateFormat) 
+                    * See 'datetime_format' above.
+                    */
                     ap_rputs("                   ", r);
                 }
             }
