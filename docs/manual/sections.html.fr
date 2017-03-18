@@ -367,13 +367,15 @@ toutes les requêtes sans tenir compte de l'URL spécifique.</p>
 
 <h3><a name="nesting" id="nesting">Imbrication des sections</a></h3>
 
-<p>Certains types de sections peuvent être imbriqués : d'une part, on
-peut utiliser les sections <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code> à l'intérieur des sections <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>, d'autre part, on
-peut utiliser les
-directives <code class="directive"><a href="./mod/core.html#if">&lt;If&gt;</a></code> à
-l'intérieur des sections <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code> et <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code>. Les valeurs des expressions
-rationnelles correspondant aux sections nommées se comportent de manière
-identique.</p>
+<p>Certains types de sections peuvent être imbriqués : d'une part, on peut
+utiliser les sections <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code>
+à l'intérieur des sections <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>, d'autre part, on peut utiliser les
+directives <code class="directive"><a href="./mod/core.html#if">&lt;If&gt;</a></code> à l'intérieur
+des sections <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>,
+<code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code> et <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code> (mais pas à l'intérieur d'une
+autre section <code class="directive"><a href="./mod/core.html#if">&lt;If&gt;</a></code>). Les
+valeurs des expressions rationnelles correspondant aux sections nommées se
+comportent de manière identique.</p>
 
 <p>Les sections imbriquées sont fusionnées après les sections
 non-imbriquées de même type.</p>
@@ -476,28 +478,36 @@ sont interprétées.</p>
       </li>
     </ol>
 
-    <p>Mises à part les sections <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>, chaque groupe est traité selon
-    l'ordre dans lequel il apparaît dans les fichiers de configuration.
-    Les sections <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> (groupe 1 ci-dessus)
+    <p>Quelques remarques importantes :</p>
+    <ul>
+    <li>Mises à part les sections <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>, dans chaque groupe, les sections sont
+    traitées selon
+    l'ordre dans lequel elles apparaissent dans les fichiers de configuration.
+    Par exemple, une requête pour <em>/foo</em> correspondra à
+    <code>&lt;Location "/foo/bar"&gt;</code> et <code>&lt;Location
+    "/foo"&gt;</code> (dans ce cas le groupe 4) : les deux sections seront
+    évaluées mais selon l'ordre dans lequel elles apparaissent dans le fichier
+    de configuration..</li>
+    <li>Les sections <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> (groupe 1 ci-dessus)
     sont traitées dans l'ordre du répertoire le plus court vers le plus long.
     Par exemple, <code>&lt;Directory "/var/web/dir"&gt;</code> sera
     traité avant <code>&lt;Directory
-    "/var/web/dir/subdir"&gt;</code>.  Si plusieurs sections <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> s'appliquent au même
+    "/var/web/dir/subdir"&gt;</code>.</li>
+    <li>Si plusieurs sections <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> s'appliquent au même
     répertoire, elles sont traitées selon l'ordre dans lequel elles
-    apparaissent dans le fichier de configuration.
-    Les sections de configuration incluses via la directive <code class="directive"><a href="./mod/core.html#include">Include</a></code> sont traitées comme si elles se
+    apparaissent dans le fichier de configuration.</li>
+    <li>Les sections de configuration incluses via la directive <code class="directive"><a href="./mod/core.html#include">Include</a></code> sont traitées comme si elles se
     trouvaient réellement dans le fichier qui les inclut à la position de la
     directive
-    <code class="directive"><a href="./mod/core.html#include">Include</a></code>.</p>
-
-    <p>Les sections situées à l'intérieur de sections <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
+    <code class="directive"><a href="./mod/core.html#include">Include</a></code>.</li>
+    <li>Les sections situées à l'intérieur de sections <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
     sont appliquées <em>après</em> les sections correspondantes situées en
     dehors de la définition de l'hôte virtuel, ce qui permet à l'hôte virtuel
-    de prévaloir sur la configuration du serveur principal.</p>
-
-    <p>Quand la requête est servie par le module <code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code>,
+    de prévaloir sur la configuration du serveur principal.</li>
+    <li>Quand la requête est servie par le module <code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code>,
     le conteneur <code class="directive"><a href="./mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code>
-    prend la place du conteneur <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> dans l'ordre de traitement.</p>
+    prend la place du conteneur <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> dans l'ordre de traitement.</li>
+    </ul>
     
 	<div class="note"><h3>Note technique</h3>
 	Une séquence <code>&lt;Location&gt;</code>/<code>&lt;LocationMatch&gt;</code>

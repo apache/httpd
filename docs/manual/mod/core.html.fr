@@ -2364,6 +2364,15 @@ requête</td></tr>
     <p>Cette section de configuration ne peut contenir que des
     directives qui supportent le <a href="directive-dict.html#Context">contexte de répertoire</a>.</p>
 
+    <div class="note"><h3>Ce n'est pas un langage de scripting</h3>
+    Le nom de cette directive peut sembler très familier aux programmeurs et
+    administrateurs, mais il ne doit pas être confondu avec son homonyme des langages de
+    scripting. A ce titre, l'implémentation actuelle n'envisage pas la
+    possibilité d'imbriquer une section <code class="directive">&lt;If&gt;</code>
+    dans une autre (la section <code class="directive">&lt;If&gt;</code> qui se
+    trouve à l'intérieure de l'autre serait ignorée).
+    </div>
+
     <div class="warning">
     Certaines variables comme <code>CONTENT_TYPE</code> ainsi que
     d'autres en-têtes de réponse ne seront pas disponibles dans ce bloc,
