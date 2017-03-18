@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1741842:1786682 (outdated) -->
+<!-- English Revision: 1786682 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -349,9 +349,7 @@ AddOutputFilter INCLUDES .shtml
 <section id="exec">
     <title>Exécution de commandes</title>
 
-    <p>J'ai pour projet, dans les prochains mois, d'écrire un article à
-    propos de l'utilisation des SSI avec des petits programmes CGI. Pour
-    l'instant, voici ce que vous pouvez faire avec la fonction
+    <p>Voici autre chose que vous pouvez faire avec la fonction
     <code>exec</code>. Vous pouvez vraiment faire exécuter une commande
     par SSI en utilisant le shell (<code>/bin/sh</code>, pour être plus
     précis - ou le shell DOS, si vous êtes sous Win32). Par exemple, ce

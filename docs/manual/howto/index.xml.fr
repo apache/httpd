@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- English Revision: 1736686:1786686 (outdated) -->
+<!-- English Revision: 1786686 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -148,6 +148,17 @@
 
         <p>Voir le <a href="reverse_proxy.html"></a>Guide de configuration des
 	mandataires inverses</p>
+      </dd>
+    </dl>
+
+    <dl>
+      <dt>Réécriture d'URLs avec mod_rewrite</dt>
+      <dd>
+        <p>La réécriture d'URLs avec (ou sans) <module>mod_rewrite</module> devient
+	l'une des questions les plus fréquentes posées dans nos listes de
+	diffusion et nos canaux IRC. C'est pourquoi nous avons dédié une <a
+	href="../rewrite/">section entière de notre documentation</a> à des
+	howtos et recettes sur ce sujet.</p>
       </dd>
     </dl>
 

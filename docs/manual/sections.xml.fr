@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1755977:1787510 (outdated) -->
+<!-- English Revision: 1787510 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -411,18 +411,17 @@ toutes les requêtes sans tenir compte de l'URL spécifique.</p>
 
 <section id="nesting"><title>Imbrication des sections</title>
 
-<p>Certains types de sections peuvent être imbriqués : d'une part, on
-peut utiliser les sections <directive type="section"
-module="core">Files</directive> à l'intérieur des sections <directive
-type="section" module="core">Directory</directive>, d'autre part, on
-peut utiliser les
-directives <directive type="section" module="core">If</directive> à
-l'intérieur des sections <directive type="section"
-module="core">Directory</directive>, <directive type="section"
-module="core">Location</directive> et <directive type="section"
-module="core">Files</directive>. Les valeurs des expressions
-rationnelles correspondant aux sections nommées se comportent de manière
-identique.</p>
+<p>Certains types de sections peuvent être imbriqués : d'une part, on peut
+utiliser les sections <directive type="section" module="core">Files</directive>
+à l'intérieur des sections <directive type="section"
+module="core">Directory</directive>, d'autre part, on peut utiliser les
+directives <directive type="section" module="core">If</directive> à l'intérieur
+des sections <directive type="section" module="core">Directory</directive>,
+<directive type="section" module="core">Location</directive> et <directive
+type="section" module="core">Files</directive> (mais pas à l'intérieur d'une
+autre section <directive type="section" module="core">If</directive>). Les
+valeurs des expressions rationnelles correspondant aux sections nommées se
+comportent de manière identique.</p>
 
 <p>Les sections imbriquées sont fusionnées après les sections
 non-imbriquées de même type.</p>
@@ -532,34 +531,42 @@ sont interprétées.</p>
       </li>
     </ol>
 
-    <p>Mises à part les sections <directive type="section"
-    module="core">Directory</directive>, chaque groupe est traité selon
-    l'ordre dans lequel il apparaît dans les fichiers de configuration.
-    Les sections <directive
+    <p>Quelques remarques importantes :</p>
+    <ul>
+    <li>Mises à part les sections <directive type="section"
+    module="core">Directory</directive>, dans chaque groupe, les sections sont
+    traitées selon
+    l'ordre dans lequel elles apparaissent dans les fichiers de configuration.
+    Par exemple, une requête pour <em>/foo</em> correspondra à
+    <code>&lt;Location "/foo/bar"&gt;</code> et <code>&lt;Location
+    "/foo"&gt;</code> (dans ce cas le groupe 4) : les deux sections seront
+    évaluées mais selon l'ordre dans lequel elles apparaissent dans le fichier
+    de configuration..</li>
+    <li>Les sections <directive
     type="section" module="core">Directory</directive> (groupe 1 ci-dessus)
     sont traitées dans l'ordre du répertoire le plus court vers le plus long.
     Par exemple, <code>&lt;Directory "/var/web/dir"&gt;</code> sera
     traité avant <code>&lt;Directory
-    "/var/web/dir/subdir"&gt;</code>.  Si plusieurs sections <directive
+    "/var/web/dir/subdir"&gt;</code>.</li>
+    <li>Si plusieurs sections <directive
     type="section" module="core">Directory</directive> s'appliquent au même
     répertoire, elles sont traitées selon l'ordre dans lequel elles
-    apparaissent dans le fichier de configuration.
-    Les sections de configuration incluses via la directive <directive
+    apparaissent dans le fichier de configuration.</li>
+    <li>Les sections de configuration incluses via la directive <directive
     module="core">Include</directive> sont traitées comme si elles se
     trouvaient réellement dans le fichier qui les inclut à la position de la
     directive
-    <directive module="core">Include</directive>.</p>
-
-    <p>Les sections situées à l'intérieur de sections <directive type="section"
+    <directive module="core">Include</directive>.</li>
+    <li>Les sections situées à l'intérieur de sections <directive type="section"
     module="core">VirtualHost</directive>
     sont appliquées <em>après</em> les sections correspondantes situées en
     dehors de la définition de l'hôte virtuel, ce qui permet à l'hôte virtuel
-    de prévaloir sur la configuration du serveur principal.</p>
-
-    <p>Quand la requête est servie par le module <module>mod_proxy</module>,
+    de prévaloir sur la configuration du serveur principal.</li>
+    <li>Quand la requête est servie par le module <module>mod_proxy</module>,
     le conteneur <directive module="mod_proxy" type="section">Proxy</directive>
     prend la place du conteneur <directive module="core"
-    type="section">Directory</directive> dans l'ordre de traitement.</p>
+    type="section">Directory</directive> dans l'ordre de traitement.</li>
+    </ul>
     
 	<note><title>Note technique</title>
 	Une séquence <code>&lt;Location&gt;</code>/<code>&lt;LocationMatch&gt;</code>
