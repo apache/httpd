@@ -144,6 +144,7 @@ typedef struct autoindex_config_struct {
 
     char *ctype;
     char *charset;
+    char *datetime_format;
 } autoindex_config_rec;
 
 static char c_by_encoding, c_by_type, c_by_path;
@@ -497,6 +498,9 @@ static const char *add_opts(cmd_parms *cmd, void *d, int argc, char *const argv[
         else if (!strncasecmp(w, "Charset=", 8)) {
             d_cfg->charset = apr_pstrdup(cmd->pool, &w[8]);
         }
+        else if (!strncasecmp(w, "UseOldDateFormat", 16)) {
+            d_cfg->datetime_format = "%d-%b-%Y %H:%M";
+        }
         else {
             return "Invalid directory indexing option";
         }
@@ -656,6 +660,7 @@ static void *merge_autoindex_configs(apr_pool_t *p, void *basev, void *addv)
 
     new->ctype = add->ctype ? add->ctype : base->ctype;
     new->charset = add->charset ? add->charset : base->charset;
+    new->datetime_format = add->datetime_format ? add->datetime_format : base->datetime_format;
 
     new->alt_list = apr_array_append(p, add->alt_list, base->alt_list);
     new->desc_list = apr_array_append(p, add->desc_list, base->desc_list);
@@ -1509,6 +1514,7 @@ static void output_directories(struct ent **ar, int n,
     apr_pool_t *scratch;
     int name_width;
     int desc_width;
+    char *datetime_format;
     char *name_scratch;
     char *pad_scratch;
     char *breakrow = "";
@@ -1517,6 +1523,7 @@ static void output_directories(struct ent **ar, int n,
 
     name_width = d->name_width;
     desc_width = d->desc_width;
+    datetime_format = d->datetime_format ? d->datetime_format : "%Y-%m-%d %H:%M";
 
     if ((autoindex_opts & (FANCY_INDEXING | TABLE_INDEXING))
                         == FANCY_INDEXING) {
@@ -1756,9 +1763,9 @@ static void output_directories(struct ent **ar, int n,
                     apr_time_exp_t ts;
                     apr_time_exp_lt(&ts, ar[x]->lm);
                     apr_strftime(time_str, &rv, sizeof(time_str),
-                                 "%Y-%m-%d %H:%M  ",
+                                 datetime_format,
                                  &ts);
-                    ap_rvputs(r, "</td><td", (d->style_sheet != NULL) ? " class=\"indexcollastmod\">" : " align=\"right\">",time_str, NULL);
+                    ap_rvputs(r, "</td><td", (d->style_sheet != NULL) ? " class=\"indexcollastmod\">" : " align=\"right\">", time_str, "  ", NULL);
                 }
                 else {
                     ap_rvputs(r, "</td><td", (d->style_sheet != NULL) ? " class=\"indexcollastmod\">&nbsp;" : ">&nbsp;", NULL);
@@ -1844,8 +1851,9 @@ static void output_directories(struct ent **ar, int n,
                     apr_time_exp_t ts;
                     apr_time_exp_lt(&ts, ar[x]->lm);
                     apr_strftime(time_str, &rv, sizeof(time_str),
-                                "%Y-%m-%d %H:%M  ", &ts);
-                    ap_rputs(time_str, r);
+                                datetime_format,
+                                &ts);
+                    ap_rvputs(r, time_str, "  ", NULL);
                 }
                 else {
                     /*Length="1975-04-07 01:23  " (see 4 lines above) */
