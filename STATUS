@@ -145,7 +145,12 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-
+  *) Support OpenSSL 1.1.0
+     Apply trunk -> 2.4.x merge branch with the command;
+       svn merge https://svn.apache.org/repos/asf/httpd/httpd/branches/2.4.x-openssl-1.1.0-compat
+     2.4.x patch of ^ for review: http://people.apache.org/~jorton/httpd-2.4.x-openssl110.patch
+       (N.B. use OpenSSL >= 1.1.0e if running the test suite)
+     +1: wrowe, jorton, covener
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -204,13 +209,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
            FULL hcheck patch: http://home.apache.org/~jim/patches/httpd2.4-hcheck.patch
            (includes all hcheck related patches, including showstopper)
      +1: jim
-
-  *) Support OpenSSL 1.1.0
-     Apply trunk -> 2.4.x merge branch with the command;
-       svn merge https://svn.apache.org/repos/asf/httpd/httpd/branches/2.4.x-openssl-1.1.0-compat
-     2.4.x patch of ^ for review: http://people.apache.org/~jorton/httpd-2.4.x-openssl110.patch
-       (N.B. use OpenSSL >= 1.1.0e if running the test suite)
-     +1: wrowe, jorton, 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entried should be added at the START of the list ]
