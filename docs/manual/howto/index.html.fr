@@ -149,6 +149,16 @@
       </dd>
     </dl>
 
+    <dl>
+      <dt>Réécriture d'URLs avec mod_rewrite</dt>
+      <dd>
+        <p>La réécriture d'URLs avec (ou sans) <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> devient
+	l'une des questions les plus fréquentes posées dans nos listes de
+	diffusion et nos canaux IRC. C'est pourquoi nous avons dédié une <a href="../rewrite/">section entière de notre documentation</a> à des
+	howtos et recettes sur ce sujet.</p>
+      </dd>
+    </dl>
+
   </div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/howto/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
