@@ -920,6 +920,13 @@ répertoire</td></tr>
 
       </dd>
 
+      <dt><a name="indexoptions.useolddateformat" id="indexoptions.useolddateformat">UseOldDateFormat</a>
+      (<em>Apache HTTP Server versions 2.4.26 et ultérieures</em>)</dt>
+
+      <dd>Le format de date utilisé dans le champ <code>Last Modified</code>
+      avait été modifié par inadvertance de <code>"%d-%b-%Y %H:%M"</code> en
+      <code>"%Y-%m-%d %H:%M"</code> dans la version 2.4.0. Cette option permet
+      de restaurer le format de date des versions 2.2 et antérieures.</dd>
 
       <dt><a name="indexoptions.versionsort" id="indexoptions.versionsort">VersionSort</a>
       (<em>Versions 2.0a3 et supérieures du serveur HTTP Apache</em>)</dt>
