@@ -30,8 +30,6 @@
 <a href="../ja/howto/ssi.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/ssi.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 <p>Les SSI permettent d'ajouter du contenu dynamique à des documents
 HTML préexistants.</p>
@@ -345,9 +343,7 @@ AddOutputFilter INCLUDES .shtml</pre>
 <h2><a name="exec" id="exec">Exécution de commandes</a></h2>
     
 
-    <p>J'ai pour projet, dans les prochains mois, d'écrire un article à
-    propos de l'utilisation des SSI avec des petits programmes CGI. Pour
-    l'instant, voici ce que vous pouvez faire avec la fonction
+    <p>Voici autre chose que vous pouvez faire avec la fonction
     <code>exec</code>. Vous pouvez vraiment faire exécuter une commande
     par SSI en utilisant le shell (<code>/bin/sh</code>, pour être plus
     précis - ou le shell DOS, si vous êtes sous Win32). Par exemple, ce
