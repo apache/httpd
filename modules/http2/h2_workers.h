@@ -41,9 +41,6 @@ struct h2_workers {
     int idle_workers;
     int max_idle_secs;
     
-    apr_size_t max_tx_handles;
-    apr_size_t spare_tx_handles;
-    
     unsigned int aborted : 1;
 
     apr_threadattr_t *thread_attr;
@@ -55,8 +52,6 @@ struct h2_workers {
     
     struct apr_thread_mutex_t *lock;
     struct apr_thread_cond_t *mplx_added;
-
-    struct apr_thread_mutex_t *tx_lock;
 };
 
 
@@ -64,8 +59,7 @@ struct h2_workers {
  * threads.
  */
 h2_workers *h2_workers_create(server_rec *s, apr_pool_t *pool,
-                              int min_size, int max_size, 
-                              apr_size_t max_tx_handles);
+                              int min_size, int max_size);
 
 /**
  * Registers a h2_mplx for task scheduling. If this h2_mplx runs
