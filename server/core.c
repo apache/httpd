@@ -5280,9 +5280,14 @@ static conn_rec *core_create_conn(apr_pool_t *ptrans, server_rec *s,
 
 static int core_pre_connection(conn_rec *c, void *csd)
 {
-    core_net_rec *net = apr_palloc(c->pool, sizeof(*net));
+    core_net_rec *net;
     apr_status_t rv;
 
+    if (c->master) {
+        return DONE;
+    }
+    
+    net = apr_palloc(c->pool, sizeof(*net));
     /* The Nagle algorithm says that we should delay sending partial
      * packets in hopes of getting more data.  We don't want to do
      * this; we are not telnet.  There are bad interactions between
