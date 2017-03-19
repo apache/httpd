@@ -39,7 +39,7 @@
 **  _________________________________________________________________
 */
 
-static char *ssl_var_lookup_ssl(apr_pool_t *p, SSLConnRec *sslconn, request_rec *r, char *var);
+static char *ssl_var_lookup_ssl(apr_pool_t *p, const SSLConnRec *sslconn, request_rec *r, char *var);
 static char *ssl_var_lookup_ssl_cert(apr_pool_t *p, request_rec *r, X509 *xs, char *var);
 static char *ssl_var_lookup_ssl_cert_dn(apr_pool_t *p, X509_NAME *xsname, char *var);
 static char *ssl_var_lookup_ssl_cert_san(apr_pool_t *p, X509 *xs, char *var);
@@ -49,15 +49,15 @@ static char *ssl_var_lookup_ssl_cert_serial(apr_pool_t *p, X509 *xs);
 static char *ssl_var_lookup_ssl_cert_chain(apr_pool_t *p, STACK_OF(X509) *sk, char *var);
 static char *ssl_var_lookup_ssl_cert_rfc4523_cea(apr_pool_t *p, SSL *ssl);
 static char *ssl_var_lookup_ssl_cert_PEM(apr_pool_t *p, X509 *xs);
-static char *ssl_var_lookup_ssl_cert_verify(apr_pool_t *p, SSLConnRec *sslconn);
-static char *ssl_var_lookup_ssl_cipher(apr_pool_t *p, SSLConnRec *sslconn, char *var);
+static char *ssl_var_lookup_ssl_cert_verify(apr_pool_t *p, const SSLConnRec *sslconn);
+static char *ssl_var_lookup_ssl_cipher(apr_pool_t *p, const SSLConnRec *sslconn, char *var);
 static void  ssl_var_lookup_ssl_cipher_bits(SSL *ssl, int *usekeysize, int *algkeysize);
 static char *ssl_var_lookup_ssl_version(apr_pool_t *p, char *var);
 static char *ssl_var_lookup_ssl_compress_meth(SSL *ssl);
 
-static SSLConnRec *ssl_get_effective_config(conn_rec *c)
+static const SSLConnRec *ssl_get_effective_config(conn_rec *c)
 {
-    SSLConnRec *sslconn = myConnConfig(c);
+    const SSLConnRec *sslconn = myConnConfig(c);
     if (!(sslconn && sslconn->ssl) && c->master) {
         /* use master connection if no SSL defined here */
         sslconn = myConnConfig(c->master);
@@ -67,7 +67,7 @@ static SSLConnRec *ssl_get_effective_config(conn_rec *c)
 
 static int ssl_is_https(conn_rec *c)
 {
-    SSLConnRec *sslconn = ssl_get_effective_config(c);
+    const SSLConnRec *sslconn = ssl_get_effective_config(c);
     return sslconn && sslconn->ssl;
 }
 
@@ -83,7 +83,7 @@ static int ssl_is_https(conn_rec *c)
 static apr_status_t ssl_get_tls_cb(apr_pool_t *p, conn_rec *c, const char *type,
                                    unsigned char **buf, apr_size_t *size)
 {
-    SSLConnRec *sslconn = ssl_get_effective_config(c);
+    const SSLConnRec *sslconn = ssl_get_effective_config(c);
     const char *prefix;
     apr_size_t preflen;
     const unsigned char *data;
@@ -158,7 +158,7 @@ static apr_array_header_t *expr_peer_ext_list_fn(ap_expr_eval_ctx_t *ctx,
 static const char *expr_var_fn(ap_expr_eval_ctx_t *ctx, const void *data)
 {
     char *var = (char *)data;
-    SSLConnRec *sslconn = ssl_get_effective_config(ctx->c);
+    const SSLConnRec *sslconn = ssl_get_effective_config(ctx->c);
 
     return sslconn ? ssl_var_lookup_ssl(ctx->p, sslconn, ctx->r, var) : NULL;
 }
@@ -344,7 +344,7 @@ char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, 
      * Connection stuff
      */
     if (result == NULL && c != NULL) {
-        SSLConnRec *sslconn = ssl_get_effective_config(c);
+        const SSLConnRec *sslconn = ssl_get_effective_config(c);
         if (strlen(var) > 4 && strcEQn(var, "SSL_", 4)
             && sslconn && sslconn->ssl)
             result = ssl_var_lookup_ssl(p, sslconn, r, var+4);
@@ -417,7 +417,7 @@ char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, 
     return (char *)result;
 }
 
-static char *ssl_var_lookup_ssl(apr_pool_t *p, SSLConnRec *sslconn, 
+static char *ssl_var_lookup_ssl(apr_pool_t *p, const SSLConnRec *sslconn, 
                                 request_rec *r, char *var)
 {
     char *result;
@@ -887,7 +887,8 @@ static char *ssl_var_lookup_ssl_cert_PEM(apr_pool_t *p, X509 *xs)
     return result;
 }
 
-static char *ssl_var_lookup_ssl_cert_verify(apr_pool_t *p, SSLConnRec *sslconn)
+static char *ssl_var_lookup_ssl_cert_verify(apr_pool_t *p, 
+                                            const SSLConnRec *sslconn)
 {
     char *result;
     long vrc;
@@ -922,7 +923,8 @@ static char *ssl_var_lookup_ssl_cert_verify(apr_pool_t *p, SSLConnRec *sslconn)
     return result;
 }
 
-static char *ssl_var_lookup_ssl_cipher(apr_pool_t *p, SSLConnRec *sslconn, char *var)
+static char *ssl_var_lookup_ssl_cipher(apr_pool_t *p, 
+                                       const SSLConnRec *sslconn, char *var)
 {
     char *result;
     BOOL resdup;
@@ -1134,7 +1136,7 @@ static int dump_extn_value(BIO *bio, ASN1_OCTET_STRING *str)
 apr_array_header_t *ssl_ext_list(apr_pool_t *p, conn_rec *c, int peer,
                                  const char *extension)
 {
-    SSLConnRec *sslconn = ssl_get_effective_config(c);
+    const SSLConnRec *sslconn = ssl_get_effective_config(c);
     SSL *ssl = NULL;
     apr_array_header_t *array = NULL;
     X509 *xs = NULL;
@@ -1278,7 +1280,7 @@ void ssl_var_log_config_register(apr_pool_t *p)
  */
 static const char *ssl_var_log_handler_c(request_rec *r, char *a)
 {
-    SSLConnRec *sslconn = ssl_get_effective_config(r->connection);
+    const SSLConnRec *sslconn = ssl_get_effective_config(r->connection);
     char *result;
 
     if (sslconn == NULL || sslconn->ssl == NULL)
