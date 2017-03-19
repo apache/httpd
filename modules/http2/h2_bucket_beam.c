@@ -484,16 +484,14 @@ static apr_status_t beam_send_cleanup(void *data)
 
 static void beam_set_send_pool(h2_bucket_beam *beam, apr_pool_t *pool) 
 {
-    if (beam->send_pool == pool || 
-        (beam->send_pool && pool 
-         && apr_pool_is_ancestor(beam->send_pool, pool))) {
-        /* when sender is same or sub-pool of existing, stick
-         * to the the pool we already have. */
-        return;
+    if (beam->send_pool != pool) {
+        if (beam->send_pool && beam->send_pool != beam->pool) {
+            pool_kill(beam, beam->send_pool, beam_send_cleanup);
+            beam_send_cleanup(beam);
+        }
+        beam->send_pool = pool;
+        pool_register(beam, beam->send_pool, beam_send_cleanup);
     }
-    pool_kill(beam, beam->send_pool, beam_send_cleanup);
-    beam->send_pool = pool;
-    pool_register(beam, beam->send_pool, beam_send_cleanup);
 }
 
 static apr_status_t beam_cleanup(void *data)
@@ -893,10 +891,8 @@ apr_status_t h2_beam_send(h2_bucket_beam *beam,
 
     /* Called from the sender thread to add buckets to the beam */
     if (enter_yellow(beam, &bl) == APR_SUCCESS) {
+        ap_assert(beam->send_pool);
         r_purge_sent(beam);
-        if (sender_bb && !beam->send_pool) {
-            beam_set_send_pool(beam, sender_bb->p);
-        }
         
         if (beam->aborted) {
             move_to_hold(beam, sender_bb);

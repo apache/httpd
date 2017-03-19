@@ -103,7 +103,7 @@ apr_status_t h2_conn_child_init(apr_pool_t *pool, server_rec *s)
 {
     const h2_config *config = h2_config_sget(s);
     apr_status_t status = APR_SUCCESS;
-    int minw, maxw, max_tx_handles, n;
+    int minw, maxw;
     int max_threads_per_child = 0;
     int idle_secs = 0;
 
@@ -129,28 +129,10 @@ apr_status_t h2_conn_child_init(apr_pool_t *pool, server_rec *s)
         maxw = minw;
     }
     
-    /* How many file handles is it safe to use for transfer
-     * to the master connection to be streamed out? 
-     * Is there a portable APR rlimit on NOFILES? Have not
-     * found it. And if, how many of those would we set aside?
-     * This leads all into a process wide handle allocation strategy
-     * which ultimately would limit the number of accepted connections
-     * with the assumption of implicitly reserving n handles for every 
-     * connection and requiring modules with excessive needs to allocate
-     * from a central pool.
-     */
-    n = h2_config_geti(config, H2_CONF_SESSION_FILES);
-    if (n < 0) {
-        max_tx_handles = maxw * 2;
-    }
-    else {
-        max_tx_handles = maxw * n;
-    }
-    
     ap_log_error(APLOG_MARK, APLOG_TRACE3, 0, s,
-                 "h2_workers: min=%d max=%d, mthrpchild=%d, tx_files=%d", 
-                 minw, maxw, max_threads_per_child, max_tx_handles);
-    workers = h2_workers_create(s, pool, minw, maxw, max_tx_handles);
+                 "h2_workers: min=%d max=%d, mthrpchild=%d", 
+                 minw, maxw, max_threads_per_child);
+    workers = h2_workers_create(s, pool, minw, maxw);
     
     idle_secs = h2_config_geti(config, H2_CONF_MAX_WORKER_IDLE_SECS);
     h2_workers_set_max_idle_secs(workers, idle_secs);
@@ -317,6 +299,8 @@ conn_rec *h2_slave_create(conn_rec *master, int slave_id, apr_pool_t *parent)
     c->bucket_alloc           = apr_bucket_alloc_create(pool);
     c->data_in_input_filters  = 0;
     c->data_in_output_filters = 0;
+    /* prevent mpm_event from making wrong assumptions about this connection,
+     * like e.g. using its socket for an async read check. */
     c->clogging_input_filters = 1;
     c->log                    = NULL;
     c->log_id                 = apr_psprintf(pool, "%ld-%d", 

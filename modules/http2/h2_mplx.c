@@ -140,41 +140,9 @@ static void stream_input_consumed(void *ctx,
     }
 }
 
-static int can_beam_file(void *ctx, h2_bucket_beam *beam,  apr_file_t *file)
+static int can_always_beam_file(void *ctx, h2_bucket_beam *beam,  apr_file_t *file)
 {
-    h2_mplx *m = ctx;
-    if (m->tx_handles_reserved > 0) {
-        --m->tx_handles_reserved;
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, m->c,
-                      "h2_stream(%ld-%d,%s): beaming file, tx_avail %d", 
-                      m->id, beam->id, beam->tag, m->tx_handles_reserved);
-        return 1;
-    }
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, m->c,
-                  "h2_stream(%ld-%d,%s): can_beam_file denied", 
-                  m->id, beam->id, beam->tag);
-    return 0;
-}
-
-static void check_tx_reservation(h2_mplx *m) 
-{
-    if (m->tx_handles_reserved <= 0) {
-        m->tx_handles_reserved += h2_workers_tx_reserve(m->workers, 
-            H2MIN(m->tx_chunk_size, h2_ihash_count(m->streams)));
-    }
-}
-
-static void check_tx_free(h2_mplx *m) 
-{
-    if (m->tx_handles_reserved > m->tx_chunk_size) {
-        apr_size_t count = m->tx_handles_reserved - m->tx_chunk_size;
-        m->tx_handles_reserved = m->tx_chunk_size;
-        h2_workers_tx_free(m->workers, count);
-    }
-    else if (m->tx_handles_reserved && h2_ihash_empty(m->streams)) {
-        h2_workers_tx_free(m->workers, m->tx_handles_reserved);
-        m->tx_handles_reserved = 0;
-    }
+    return 1;
 }
 
 static void stream_joined(h2_mplx *m, h2_stream *stream)
@@ -183,10 +151,6 @@ static void stream_joined(h2_mplx *m, h2_stream *stream)
     
     h2_ihash_remove(m->shold, stream->id);
     h2_ihash_add(m->spurge, stream);
-    if (stream->input) {
-        m->tx_handles_reserved += h2_beam_get_files_beamed(stream->input);
-    }
-    m->tx_handles_reserved += h2_beam_get_files_beamed(stream->output);
 }
 
 static void stream_cleanup(h2_mplx *m, h2_stream *stream)
@@ -297,9 +261,6 @@ h2_mplx *h2_mplx_create(conn_rec *c, apr_pool_t *parent,
         m->last_limit_change = m->last_idle_block = apr_time_now();
         m->limit_change_interval = apr_time_from_msec(200);
         
-        m->tx_handles_reserved = 0;
-        m->tx_chunk_size = 4;
-        
         m->spare_slaves = apr_array_make(m->pool, 10, sizeof(conn_rec*));
         
         m->ngn_shed = h2_ngn_shed_create(m->pool, m->c, m->max_streams, 
@@ -402,7 +363,6 @@ static void purge_streams(h2_mplx *m)
         while (!h2_ihash_iter(m->spurge, stream_destroy_iter, m)) {
             /* repeat until empty */
         }
-        check_tx_free(m);
     }
 }
 
@@ -533,10 +493,6 @@ void h2_mplx_release_and_join(h2_mplx *m, apr_thread_cond_t *wait)
                       m->id, (int)h2_ihash_count(m->shold));
         h2_ihash_iter(m->shold, unexpected_stream_iter, m);
     }
-    /*ap_assert(h2_ihash_empty(m->shold));*/
-    
-    /* 5. return any file resources allocated */
-    check_tx_free(m);
     
     leave_mutex(m, acquired);
 
@@ -593,7 +549,6 @@ static apr_status_t out_open(h2_mplx *m, int stream_id, h2_bucket_beam *beam)
 {
     apr_status_t status = APR_SUCCESS;
     h2_stream *stream = h2_ihash_get(m->streams, stream_id);
-    apr_size_t beamed_count;
     
     if (!stream || !stream->task) {
         return APR_ECONNABORTED;
@@ -609,15 +564,8 @@ static apr_status_t out_open(h2_mplx *m, int stream_id, h2_bucket_beam *beam)
     
     h2_beam_on_consumed(stream->output, NULL, stream_output_consumed, stream);
     h2_beam_on_produced(stream->output, output_produced, m);
-    beamed_count = h2_beam_get_files_beamed(stream->output);
-    if (m->tx_handles_reserved >= beamed_count) {
-        m->tx_handles_reserved -= beamed_count;
-    }
-    else {
-        m->tx_handles_reserved = 0;
-    }
     if (!stream->task->output.copy_files) {
-        h2_beam_on_file_beam(stream->output, can_beam_file, m);
+        h2_beam_on_file_beam(stream->output, can_always_beam_file, m);
     }
     
     /* time to protect the beam against multi-threaded use */
@@ -625,7 +573,6 @@ static apr_status_t out_open(h2_mplx *m, int stream_id, h2_bucket_beam *beam)
     
     /* we might see some file buckets in the output, see
      * if we have enough handles reserved. */
-    check_tx_reservation(m);
     check_data_for(m, stream->id);
     return status;
 }
@@ -778,7 +725,6 @@ static h2_task *next_stream_task(h2_mplx *m)
         stream = h2_ihash_get(m->streams, sid);
         if (stream) {
             conn_rec *slave, **pslave;
-            int new_conn = 0;
 
             pslave = (conn_rec **)apr_array_pop(m->spare_slaves);
             if (pslave) {
@@ -786,7 +732,6 @@ static h2_task *next_stream_task(h2_mplx *m)
             }
             else {
                 slave = h2_slave_create(m->c, stream->id, m->pool);
-                new_conn = 1;
             }
             
             slave->sbh = m->c->sbh;
@@ -796,9 +741,8 @@ static h2_task *next_stream_task(h2_mplx *m)
                 
                 m->c->keepalives++;
                 apr_table_setn(slave->notes, H2_TASK_ID_NOTE, stream->task->id);
-                if (new_conn) {
-                    h2_slave_run_pre_connection(slave, ap_get_conn_socket(slave));
-                }
+                h2_slave_run_pre_connection(slave, ap_get_conn_socket(slave));
+
                 if (sid > m->max_stream_started) {
                     m->max_stream_started = sid;
                 }
@@ -806,7 +750,7 @@ static h2_task *next_stream_task(h2_mplx *m)
                 if (stream->input) {
                     h2_beam_on_consumed(stream->input, stream_input_ev, 
                                         stream_input_consumed, m);
-                    h2_beam_on_file_beam(stream->input, can_beam_file, m);
+                    h2_beam_on_file_beam(stream->input, can_always_beam_file, m);
                     h2_beam_mutex_enable(stream->input);
                 }
                 

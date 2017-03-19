@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_http2: obsoleted option H2SessionExtraFiles, will be ignored and
+     just log a warning. [Stefan Eissing]
+     
   *) mod_autoindex: Add IndexOptions UseOldDateFormat to allow the date
      format from 2.2 in the Last Modified column. PR60846.
      [Hank Ibell <hwibell gmail.com>]
