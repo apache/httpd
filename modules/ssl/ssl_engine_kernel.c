@@ -80,7 +80,7 @@ static apr_status_t upgrade_connection(request_rec *r)
     SSL_set_accept_state(ssl);
     SSL_do_handshake(ssl);
 
-    if (SSL_get_state(ssl) != SSL_ST_OK) {
+    if (!SSL_is_init_finished(ssl)) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02030)
                       "TLS upgrade handshake failed");
         ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, r->server);
@@ -114,6 +114,7 @@ static int has_buffered_data(request_rec *r)
     return result;
 }
 
+#ifdef HAVE_TLSEXT
 static int ap_array_same_str_set(apr_array_header_t *s1, apr_array_header_t *s2)
 {
     int i;
@@ -215,6 +216,7 @@ static int ssl_server_compatible(server_rec *s1, server_rec *s2)
     
     return 1;
 }
+#endif
 
 /*
  *  Post Read Request Handler
@@ -432,7 +434,7 @@ int ssl_hook_Access(request_rec *r)
     X509 *cert;
     X509 *peercert;
     X509_STORE *cert_store = NULL;
-    X509_STORE_CTX cert_store_ctx;
+    X509_STORE_CTX *cert_store_ctx;
     STACK_OF(SSL_CIPHER) *cipher_list_old = NULL, *cipher_list = NULL;
     const SSL_CIPHER *cipher = NULL;
     int depth, verify_old, verify, n, is_slave = 0;
@@ -456,7 +458,7 @@ int ssl_hook_Access(request_rec *r)
          * forbidden in the latter case, let ap_die() handle
          * this recursive (same) error.
          */
-        if (SSL_get_state(ssl) != SSL_ST_OK) {
+        if (!SSL_is_init_finished(ssl)) {
             return HTTP_FORBIDDEN;
         }
         ctx = SSL_get_SSL_CTX(ssl);
@@ -622,7 +624,7 @@ int ssl_hook_Access(request_rec *r)
                      !renegotiate && (n < sk_SSL_CIPHER_num(cipher_list));
                      n++)
                 {
-                    SSL_CIPHER *value = sk_SSL_CIPHER_value(cipher_list, n);
+                    const SSL_CIPHER *value = sk_SSL_CIPHER_value(cipher_list, n);
 
                     if (sk_SSL_CIPHER_find(cipher_list_old, value) < 0) {
                         renegotiate = TRUE;
@@ -633,7 +635,7 @@ int ssl_hook_Access(request_rec *r)
                      !renegotiate && (n < sk_SSL_CIPHER_num(cipher_list_old));
                      n++)
                 {
-                    SSL_CIPHER *value = sk_SSL_CIPHER_value(cipher_list_old, n);
+                    const SSL_CIPHER *value = sk_SSL_CIPHER_value(cipher_list_old, n);
 
                     if (sk_SSL_CIPHER_find(cipher_list, value) < 0) {
                         renegotiate = TRUE;
@@ -914,25 +916,27 @@ int ssl_hook_Access(request_rec *r)
                 cert = sk_X509_value(cert_stack, 0);
             }
 
-            X509_STORE_CTX_init(&cert_store_ctx, cert_store, cert, cert_stack);
+            cert_store_ctx = X509_STORE_CTX_new();
+            X509_STORE_CTX_init(cert_store_ctx, cert_store, cert, cert_stack);
             depth = SSL_get_verify_depth(ssl);
 
             if (depth >= 0) {
-                X509_STORE_CTX_set_depth(&cert_store_ctx, depth);
+                X509_STORE_CTX_set_depth(cert_store_ctx, depth);
             }
 
-            X509_STORE_CTX_set_ex_data(&cert_store_ctx,
+            X509_STORE_CTX_set_ex_data(cert_store_ctx,
                                        SSL_get_ex_data_X509_STORE_CTX_idx(),
                                        (char *)ssl);
 
-            if (!X509_verify_cert(&cert_store_ctx)) {
+            if (!X509_verify_cert(cert_store_ctx)) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02224)
                               "Re-negotiation verification step failed");
                 ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, r->server);
             }
 
-            SSL_set_verify_result(ssl, cert_store_ctx.error);
-            X509_STORE_CTX_cleanup(&cert_store_ctx);
+            SSL_set_verify_result(ssl, X509_STORE_CTX_get_error(cert_store_ctx));
+            X509_STORE_CTX_cleanup(cert_store_ctx);
+            X509_STORE_CTX_free(cert_store_ctx);
 
             if (cert_stack != SSL_get_peer_cert_chain(ssl)) {
                 /* we created this ourselves, so free it */
@@ -940,6 +944,7 @@ int ssl_hook_Access(request_rec *r)
             }
         }
         else {
+            char peekbuf[1];
             const char *reneg_support;
             request_rec *id = r->main ? r->main : r;
 
@@ -983,7 +988,7 @@ int ssl_hook_Access(request_rec *r)
             SSL_renegotiate(ssl);
             SSL_do_handshake(ssl);
 
-            if (SSL_get_state(ssl) != SSL_ST_OK) {
+            if (!SSL_is_init_finished(ssl)) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02225)
                               "Re-negotiation request failed");
                 ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, r->server);
@@ -999,16 +1004,15 @@ int ssl_hook_Access(request_rec *r)
              * However, this causes failures in perl-framework currently,
              * perhaps pre-test if we have already negotiated?
              */
-#ifdef OPENSSL_NO_SSL_INTERN
-            SSL_set_state(ssl, SSL_ST_ACCEPT);
-#else
-            ssl->state = SSL_ST_ACCEPT;
-#endif
-            SSL_do_handshake(ssl);
+            /* Need to trigger renegotiation handshake by reading.
+             * Peeking 0 bytes actually works.
+             * See: http://marc.info/?t=145493359200002&r=1&w=2
+             */
+            SSL_peek(ssl, peekbuf, 0);
 
             sslconn->reneg_state = RENEG_REJECT;
 
-            if (SSL_get_state(ssl) != SSL_ST_OK) {
+            if (!SSL_is_init_finished(ssl)) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02261)
                               "Re-negotiation handshake failed");
                 ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, r->server);
@@ -1513,7 +1517,11 @@ DH *ssl_callback_TmpDH(SSL *ssl, int export, int keylen)
     SSL_set_current_cert(ssl, SSL_CERT_SET_SERVER);
 #endif
     pkey = SSL_get_privatekey(ssl);
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
     type = pkey ? EVP_PKEY_type(pkey->type) : EVP_PKEY_NONE;
+#else
+    type = pkey ? EVP_PKEY_base_id(pkey) : EVP_PKEY_NONE;
+#endif
 
     /*
      * OpenSSL will call us with either keylen == 512 or keylen == 1024
@@ -1725,11 +1733,19 @@ static void modssl_proxy_info_log(conn_rec *c,
  * so we need to increment here to prevent them from
  * being freed.
  */
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
 #define modssl_set_cert_info(info, cert, pkey) \
     *cert = info->x509; \
     CRYPTO_add(&(*cert)->references, +1, CRYPTO_LOCK_X509); \
     *pkey = info->x_pkey->dec_pkey; \
     CRYPTO_add(&(*pkey)->references, +1, CRYPTO_LOCK_X509_PKEY)
+#else
+#define modssl_set_cert_info(info, cert, pkey) \
+    *cert = info->x509; \
+    X509_up_ref(*cert); \
+    *pkey = info->x_pkey->dec_pkey; \
+    EVP_PKEY_up_ref(*pkey);
+#endif
 
 int ssl_callback_proxy_cert(SSL *ssl, X509 **x509, EVP_PKEY **pkey)
 {
@@ -1823,7 +1839,7 @@ int ssl_callback_proxy_cert(SSL *ssl, X509 **x509, EVP_PKEY **pkey)
 
 static void ssl_session_log(server_rec *s,
                             const char *request,
-                            unsigned char *id,
+                            IDCONST unsigned char *id,
                             unsigned int idlen,
                             const char *status,
                             const char *result,
@@ -1863,7 +1879,7 @@ int ssl_callback_NewSessionCacheEntry(SSL *ssl, SSL_SESSION *session)
     SSLSrvConfigRec *sc = mySrvConfig(s);
     long timeout        = sc->session_cache_timeout;
     BOOL rc;
-    unsigned char *id;
+    IDCONST unsigned char *id;
     unsigned int idlen;
 
     /*
@@ -1907,7 +1923,7 @@ int ssl_callback_NewSessionCacheEntry(SSL *ssl, SSL_SESSION *session)
  *  of our other Apache pre-forked server processes.
  */
 SSL_SESSION *ssl_callback_GetSessionCacheEntry(SSL *ssl,
-                                               unsigned char *id,
+                                               IDCONST unsigned char *id,
                                                int idlen, int *do_copy)
 {
     /* Get Apache context back through OpenSSL context */
@@ -1946,7 +1962,7 @@ void ssl_callback_DelSessionCacheEntry(SSL_CTX *ctx,
 {
     server_rec *s;
     SSLSrvConfigRec *sc;
-    unsigned char *id;
+    IDCONST unsigned char *id;
     unsigned int idlen;
 
     /*
@@ -2067,15 +2083,12 @@ void ssl_callback_Info(const SSL *ssl, int where, int rc)
     /* If the reneg state is to reject renegotiations, check the SSL
      * state machine and move to ABORT if a Client Hello is being
      * read. */
-    if ((where & SSL_CB_ACCEPT_LOOP) && scr->reneg_state == RENEG_REJECT) {
-        int state = SSL_get_state((SSL *)ssl);
-
-        if (state == SSL3_ST_SR_CLNT_HELLO_A
-            || state == SSL23_ST_SR_CLNT_HELLO_A) {
+    if (!scr->is_proxy &&
+        (where & SSL_CB_HANDSHAKE_START) &&
+        scr->reneg_state == RENEG_REJECT) {
             scr->reneg_state = RENEG_ABORT;
             ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(02042)
                           "rejecting client initiated renegotiation");
-        }
     }
     /* If the first handshake is complete, change state to reject any
      * subsequent client-initiated renegotiation. */
@@ -2279,7 +2292,7 @@ int ssl_callback_SessionTicket(SSL *ssl,
         }
 
         memcpy(keyname, ticket_key->key_name, 16);
-        RAND_pseudo_bytes(iv, EVP_MAX_IV_LENGTH);
+        RAND_bytes(iv, EVP_MAX_IV_LENGTH);
         EVP_EncryptInit_ex(cipher_ctx, EVP_aes_128_cbc(), NULL,
                            ticket_key->aes_key, iv);
         HMAC_Init_ex(hctx, ticket_key->hmac_secret, 16, tlsext_tick_md(), NULL);
@@ -2416,17 +2429,27 @@ int ssl_callback_SRPServerParams(SSL *ssl, int *ad, void *arg)
     SRP_user_pwd *u;
 
     if (username == NULL
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
         || (u = SRP_VBASE_get_by_user(mctx->srp_vbase, username)) == NULL) {
+#else
+        || (u = SRP_VBASE_get1_by_user(mctx->srp_vbase, username)) == NULL) {
+#endif
         *ad = SSL_AD_UNKNOWN_PSK_IDENTITY;
         return SSL3_AL_FATAL;
     }
 
     if (SSL_set_srp_server_param(ssl, u->N, u->g, u->s, u->v, u->info) < 0) {
+#if OPENSSL_VERSION_NUMBER >= 0x10100000L
+        SRP_user_pwd_free(u);
+#endif
         *ad = SSL_AD_INTERNAL_ERROR;
         return SSL3_AL_FATAL;
     }
 
     /* reset all other options */
+#if OPENSSL_VERSION_NUMBER >= 0x10100000L
+    SRP_user_pwd_free(u);
+#endif
     SSL_set_verify(ssl, SSL_VERIFY_NONE,  ssl_callback_SSLVerify);
     return SSL_ERROR_NONE;
 }

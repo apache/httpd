@@ -47,21 +47,50 @@ APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(ssl, SSL, int, init_server,
 #define KEYTYPES "RSA or DSA"
 #endif
 
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
+/* OpenSSL Pre-1.1.0 compatibility */
+/* Taken from OpenSSL 1.1.0 snapshot 20160410 */
+static int DH_set0_pqg(DH *dh, BIGNUM *p, BIGNUM *q, BIGNUM *g)
+{
+    /* q is optional */
+    if (p == NULL || g == NULL)
+        return 0;
+    BN_free(dh->p);
+    BN_free(dh->q);
+    BN_free(dh->g);
+    dh->p = p;
+    dh->q = q;
+    dh->g = g;
+
+    if (q != NULL) {
+        dh->length = BN_num_bits(q);
+    }
+
+    return 1;
+}
+#endif
+
 /*
- * Grab well-defined DH parameters from OpenSSL, see the get_rfc*
+ * Grab well-defined DH parameters from OpenSSL, see the BN_get_rfc*
  * functions in <openssl/bn.h> for all available primes.
  */
-static DH *make_dh_params(BIGNUM *(*prime)(BIGNUM *), const char *gen)
+static DH *make_dh_params(BIGNUM *(*prime)(BIGNUM *))
 {
     DH *dh = DH_new();
+    BIGNUM *p, *g;
 
     if (!dh) {
         return NULL;
     }
-    dh->p = prime(NULL);
-    BN_dec2bn(&dh->g, gen);
-    if (!dh->p || !dh->g) {
+    p = prime(NULL);
+    g = BN_new();
+    if (g != NULL) {
+        BN_set_word(g, 2);
+    }
+    if (!p || !g || !DH_set0_pqg(dh, p, NULL, g)) {
         DH_free(dh);
+        BN_free(p);
+        BN_free(g);
         return NULL;
     }
     return dh;
@@ -73,12 +102,12 @@ static struct dhparam {
     DH *dh;                           /* ...this, used for keys.... */
     const unsigned int min;           /* ...of length >= this. */
 } dhparams[] = {
-    { get_rfc3526_prime_8192, NULL, 6145 },
-    { get_rfc3526_prime_6144, NULL, 4097 },
-    { get_rfc3526_prime_4096, NULL, 3073 },
-    { get_rfc3526_prime_3072, NULL, 2049 },
-    { get_rfc3526_prime_2048, NULL, 1025 },
-    { get_rfc2409_prime_1024, NULL, 0 }
+    { BN_get_rfc3526_prime_8192, NULL, 6145 },
+    { BN_get_rfc3526_prime_6144, NULL, 4097 },
+    { BN_get_rfc3526_prime_4096, NULL, 3073 },
+    { BN_get_rfc3526_prime_3072, NULL, 2049 },
+    { BN_get_rfc3526_prime_2048, NULL, 1025 },
+    { BN_get_rfc2409_prime_1024, NULL, 0 }
 };
 
 static void init_dh_params(void)
@@ -86,7 +115,7 @@ static void init_dh_params(void)
     unsigned n;
 
     for (n = 0; n < sizeof(dhparams)/sizeof(dhparams[0]); n++)
-        dhparams[n].dh = make_dh_params(dhparams[n].prime, "2");
+        dhparams[n].dh = make_dh_params(dhparams[n].prime);
 }
 
 static void free_dh_params(void)
@@ -153,7 +182,7 @@ apr_status_t ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
                      "Init: this version of mod_ssl was compiled against "
                      "a newer library (%s, version currently loaded is %s)"
                      " - may result in undefined or erroneous behavior",
-                     MODSSL_LIBRARY_TEXT, SSLeay_version(SSLEAY_VERSION));
+                     MODSSL_LIBRARY_TEXT, MODSSL_LIBRARY_DYNTEXT);
     }
 
     /* We initialize mc->pid per-process in the child init,
@@ -228,9 +257,11 @@ apr_status_t ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
 #endif
     }
 
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
 #if APR_HAS_THREADS
     ssl_util_thread_setup(p);
 #endif
+#endif /* #if OPENSSL_VERSION_NUMBER < 0x10100000L */
 
     /*
      * SSL external crypto device ("engine") support
@@ -351,6 +382,9 @@ apr_status_t ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
     modssl_init_app_data2_idx(); /* for modssl_get_app_data2() at request time */
 
     init_dh_params();
+#if OPENSSL_VERSION_NUMBER >= 0x10100000L
+    init_bio_methods();
+#endif
 
     return OK;
 }
@@ -481,6 +515,9 @@ static apr_status_t ssl_init_ctx_protocol(server_rec *s,
     char *cp;
     int protocol = mctx->protocol;
     SSLSrvConfigRec *sc = mySrvConfig(s);
+#if OPENSSL_VERSION_NUMBER >= 0x10100000L
+    int prot;
+#endif
 
     /*
      *  Create the new per-server SSL context
@@ -506,6 +543,7 @@ static apr_status_t ssl_init_ctx_protocol(server_rec *s,
     ap_log_error(APLOG_MARK, APLOG_TRACE3, 0, s,
                  "Creating new SSL context (protocols: %s)", cp);
 
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
 #ifndef OPENSSL_NO_SSL3
     if (protocol == SSL_PROTOCOL_SSLV3) {
         method = mctx->pkp ?
@@ -536,12 +574,18 @@ static apr_status_t ssl_init_ctx_protocol(server_rec *s,
             SSLv23_client_method() : /* proxy */
             SSLv23_server_method();  /* server */
     }
+#else
+    method = mctx->pkp ?
+        TLS_client_method() : /* proxy */
+        TLS_server_method();  /* server */
+#endif
     ctx = SSL_CTX_new(method);
 
     mctx->ssl_ctx = ctx;
 
     SSL_CTX_set_options(ctx, SSL_OP_ALL);
 
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
     /* always disable SSLv2, as per RFC 6176 */
     SSL_CTX_set_options(ctx, SSL_OP_NO_SSLv2);
 
@@ -564,6 +608,43 @@ static apr_status_t ssl_init_ctx_protocol(server_rec *s,
         SSL_CTX_set_options(ctx, SSL_OP_NO_TLSv1_2);
     }
 #endif
+
+#else /* #if OPENSSL_VERSION_NUMBER < 0x10100000L */
+    /* We first determine the maximum protocol version we should provide */
+    if (protocol & SSL_PROTOCOL_TLSV1_2) {
+        prot = TLS1_2_VERSION;
+    } else if (protocol & SSL_PROTOCOL_TLSV1_1) {
+        prot = TLS1_1_VERSION;
+    } else if (protocol & SSL_PROTOCOL_TLSV1) {
+        prot = TLS1_VERSION;
+#ifndef OPENSSL_NO_SSL3
+    } else if (protocol & SSL_PROTOCOL_SSLV3) {
+        prot = SSL3_VERSION;
+#endif
+    } else {
+        SSL_CTX_free(ctx);
+        mctx->ssl_ctx = NULL;
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(03378)
+                "No SSL protocols available [hint: SSLProtocol]");
+        return ssl_die(s);
+    }
+    SSL_CTX_set_max_proto_version(ctx, prot);
+
+    /* Next we scan for the minimal protocol version we should provide,
+     * but we do not allow holes between max and min */
+    if (prot == TLS1_2_VERSION && protocol & SSL_PROTOCOL_TLSV1_1) {
+        prot = TLS1_1_VERSION;
+    }
+    if (prot == TLS1_1_VERSION && protocol & SSL_PROTOCOL_TLSV1) {
+        prot = TLS1_VERSION;
+    }
+#ifndef OPENSSL_NO_SSL3
+    if (prot == TLS1_VERSION && protocol & SSL_PROTOCOL_SSLV3) {
+        prot = SSL3_VERSION;
+    }
+#endif
+    SSL_CTX_set_min_proto_version(ctx, prot);
+#endif /* if OPENSSL_VERSION_NUMBER < 0x10100000L */
 
 #ifdef SSL_OP_CIPHER_SERVER_PREFERENCE
     if (sc->cipher_server_pref == TRUE) {
@@ -858,7 +939,7 @@ static int use_certificate_chain(
     unsigned long err;
     int n;
 
-    if ((bio = BIO_new(BIO_s_file_internal())) == NULL)
+    if ((bio = BIO_new(BIO_s_file())) == NULL)
         return -1;
     if (BIO_read_filename(bio, file) <= 0) {
         BIO_free(bio);
@@ -1200,7 +1281,7 @@ static apr_status_t ssl_init_server_certs(server_rec *s,
         SSL_CTX_set_tmp_dh(mctx->ssl_ctx, dhparams);
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(02540)
                      "Custom DH parameters (%d bits) for %s loaded from %s",
-                     BN_num_bits(dhparams->p), vhost_id, certfile);
+                     DH_bits(dhparams), vhost_id, certfile);
         DH_free(dhparams);
     }
 
@@ -1218,9 +1299,11 @@ static apr_status_t ssl_init_server_certs(server_rec *s,
                      OBJ_nid2sn(nid), vhost_id, certfile);
     }
     /*
-     * ...otherwise, enable auto curve selection (OpenSSL 1.0.2 and later)
+     * ...otherwise, enable auto curve selection (OpenSSL 1.0.2)
      * or configure NIST P-256 (required to enable ECDHE for earlier versions)
+     * ECDH is always enabled in 1.1.0 unless excluded from SSLCipherList
      */
+#if (OPENSSL_VERSION_NUMBER < 0x10100000L)
     else {
 #if defined(SSL_CTX_set_ecdh_auto)
         SSL_CTX_set_ecdh_auto(mctx->ssl_ctx, 1);
@@ -1229,6 +1312,8 @@ static apr_status_t ssl_init_server_certs(server_rec *s,
                              EC_KEY_new_by_curve_name(NID_X9_62_prime256v1));
 #endif
     }
+#endif
+    /* OpenSSL assures us that _free() is NULL-safe */
     EC_KEY_free(eckey);
     EC_GROUP_free(ecparams);
 #endif
@@ -1721,7 +1806,7 @@ apr_status_t ssl_init_CheckServers(server_rec *base_server, apr_pool_t *p)
                      "an OpenSSL version with support for TLS extensions "
                      "(RFC 6066 - Server Name Indication / SNI), "
                      "but the currently used library version (%s) is "
-                     "lacking this feature", SSLeay_version(SSLEAY_VERSION));
+                     "lacking this feature", MODSSL_LIBRARY_DYNTEXT);
     }
 #endif
 
@@ -1917,6 +2002,9 @@ apr_status_t ssl_init_ModuleKill(void *data)
         ssl_init_ctx_cleanup(sc->server);
     }
 
+#if OPENSSL_VERSION_NUMBER >= 0x10100000L
+    free_bio_methods();
+#endif
     free_dh_params();
 
     return APR_SUCCESS;

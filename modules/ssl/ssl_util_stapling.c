@@ -79,7 +79,7 @@ static X509 *stapling_get_issuer(modssl_ctx_t *mctx, X509 *x)
     X509 *issuer = NULL;
     int i;
     X509_STORE *st = SSL_CTX_get_cert_store(mctx->ssl_ctx);
-    X509_STORE_CTX inctx;
+    X509_STORE_CTX *inctx;
     STACK_OF(X509) *extra_certs = NULL;
 
 #ifdef OPENSSL_NO_SSL_INTERN
@@ -91,18 +91,23 @@ static X509 *stapling_get_issuer(modssl_ctx_t *mctx, X509 *x)
     for (i = 0; i < sk_X509_num(extra_certs); i++) {
         issuer = sk_X509_value(extra_certs, i);
         if (X509_check_issued(issuer, x) == X509_V_OK) {
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
             CRYPTO_add(&issuer->references, 1, CRYPTO_LOCK_X509);
+#else
+            X509_up_ref(issuer);
+#endif
             return issuer;
         }
     }
 
-    if (!X509_STORE_CTX_init(&inctx, st, NULL, NULL))
+    inctx = X509_STORE_CTX_new();
+    if (!X509_STORE_CTX_init(inctx, st, NULL, NULL))
         return 0;
-    if (X509_STORE_CTX_get1_issuer(&issuer, &inctx, x) <= 0)
+    if (X509_STORE_CTX_get1_issuer(&issuer, inctx, x) <= 0)
         issuer = NULL;
-    X509_STORE_CTX_cleanup(&inctx);
+    X509_STORE_CTX_cleanup(inctx);
+    X509_STORE_CTX_free(inctx);
     return issuer;
-
 }
 
 int ssl_stapling_init_cert(server_rec *s, apr_pool_t *p, apr_pool_t *ptemp,
@@ -398,7 +403,9 @@ static int stapling_check_response(server_rec *s, modssl_ctx_t *mctx,
 
             if (bio) {
                 int n;
-                if ((i2a_ASN1_INTEGER(bio, cinf->cid->serialNumber) != -1) &&
+                ASN1_INTEGER *pserial;
+                OCSP_id_get0_info(NULL, NULL, NULL, &pserial, cinf->cid);
+                if ((i2a_ASN1_INTEGER(bio, pserial) != -1) &&
                     ((n = BIO_read(bio, snum, sizeof snum - 1)) > 0))
                     snum[n] = '\0';
                 BIO_free(bio);

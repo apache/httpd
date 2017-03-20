@@ -110,7 +110,7 @@ void ssl_scache_kill(server_rec *s)
 
 }
 
-BOOL ssl_scache_store(server_rec *s, UCHAR *id, int idlen,
+BOOL ssl_scache_store(server_rec *s, IDCONST UCHAR *id, int idlen,
                       apr_time_t expiry, SSL_SESSION *sess,
                       apr_pool_t *p)
 {
@@ -144,7 +144,7 @@ BOOL ssl_scache_store(server_rec *s, UCHAR *id, int idlen,
     return rv == APR_SUCCESS ? TRUE : FALSE;
 }
 
-SSL_SESSION *ssl_scache_retrieve(server_rec *s, UCHAR *id, int idlen,
+SSL_SESSION *ssl_scache_retrieve(server_rec *s, IDCONST UCHAR *id, int idlen,
                                  apr_pool_t *p)
 {
     SSLModConfigRec *mc = myModConfig(s);
@@ -173,7 +173,7 @@ SSL_SESSION *ssl_scache_retrieve(server_rec *s, UCHAR *id, int idlen,
     return d2i_SSL_SESSION(NULL, &ptr, destlen);
 }
 
-void ssl_scache_remove(server_rec *s, UCHAR *id, int idlen,
+void ssl_scache_remove(server_rec *s, IDCONST UCHAR *id, int idlen,
                        apr_pool_t *p)
 {
     SSLModConfigRec *mc = myModConfig(s);
