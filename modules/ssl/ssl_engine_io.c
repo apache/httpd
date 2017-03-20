@@ -149,7 +149,7 @@ static int bio_filter_out_pass(bio_filter_out_ctx_t *outctx)
  * success, -1 on failure. */
 static int bio_filter_out_flush(BIO *bio)
 {
-    bio_filter_out_ctx_t *outctx = (bio_filter_out_ctx_t *)(bio->ptr);
+    bio_filter_out_ctx_t *outctx = (bio_filter_out_ctx_t *)BIO_get_data(bio);
     apr_bucket *e;
 
     AP_DEBUG_ASSERT(APR_BRIGADE_EMPTY(outctx->bb));
@@ -162,10 +162,16 @@ static int bio_filter_out_flush(BIO *bio)
 
 static int bio_filter_create(BIO *bio)
 {
-    bio->shutdown = 1;
-    bio->init = 1;
+    BIO_set_shutdown(bio, 1);
+    BIO_set_init(bio, 1);
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
+    /* No setter method for OpenSSL 1.1.0 available,
+     * but I can't find any functional use of the
+     * "num" field there either.
+     */
     bio->num = -1;
-    bio->ptr = NULL;
+#endif
+    BIO_set_data(bio, NULL);
 
     return 1;
 }
@@ -190,7 +196,7 @@ static int bio_filter_out_read(BIO *bio, char *out, int outl)
 
 static int bio_filter_out_write(BIO *bio, const char *in, int inl)
 {
-    bio_filter_out_ctx_t *outctx = (bio_filter_out_ctx_t *)(bio->ptr);
+    bio_filter_out_ctx_t *outctx = (bio_filter_out_ctx_t *)BIO_get_data(bio);
     apr_bucket *e;
     int need_flush;
 
@@ -241,7 +247,7 @@ static int bio_filter_out_write(BIO *bio, const char *in, int inl)
 static long bio_filter_out_ctrl(BIO *bio, int cmd, long num, void *ptr)
 {
     long ret = 1;
-    bio_filter_out_ctx_t *outctx = (bio_filter_out_ctx_t *)(bio->ptr);
+    bio_filter_out_ctx_t *outctx = (bio_filter_out_ctx_t *)BIO_get_data(bio);
 
     switch (cmd) {
     case BIO_CTRL_RESET:
@@ -257,10 +263,10 @@ static long bio_filter_out_ctrl(BIO *bio, int cmd, long num, void *ptr)
         ret = 0;
         break;
     case BIO_CTRL_GET_CLOSE:
-        ret = (long)bio->shutdown;
+        ret = (long)BIO_get_shutdown(bio);
         break;
       case BIO_CTRL_SET_CLOSE:
-        bio->shutdown = (int)num;
+        BIO_set_shutdown(bio, (int)num);
         break;
       case BIO_CTRL_FLUSH:
         ret = bio_filter_out_flush(bio);
@@ -293,19 +299,6 @@ static int bio_filter_out_puts(BIO *bio, const char *str)
     /* this is never called */
     return -1;
 }
-
-static BIO_METHOD bio_filter_out_method = {
-    BIO_TYPE_MEM,
-    "APR output filter",
-    bio_filter_out_write,
-    bio_filter_out_read,     /* read is never called */
-    bio_filter_out_puts,     /* puts is never called */
-    bio_filter_out_gets,     /* gets is never called */
-    bio_filter_out_ctrl,
-    bio_filter_create,
-    bio_filter_destroy,
-    NULL
-};
 
 typedef struct {
     int length;
@@ -456,7 +449,7 @@ static apr_status_t brigade_consume(apr_bucket_brigade *bb,
 static int bio_filter_in_read(BIO *bio, char *in, int inlen)
 {
     apr_size_t inl = inlen;
-    bio_filter_in_ctx_t *inctx = (bio_filter_in_ctx_t *)(bio->ptr);
+    bio_filter_in_ctx_t *inctx = (bio_filter_in_ctx_t *)BIO_get_data(bio);
     apr_read_type_e block = inctx->block;
 
     inctx->rc = APR_SUCCESS;
@@ -536,20 +529,86 @@ static int bio_filter_in_read(BIO *bio, char *in, int inlen)
     return -1;
 }
 
+static int bio_filter_in_write(BIO *bio, const char *in, int inl)
+{
+    return -1;
+}
 
-static BIO_METHOD bio_filter_in_method = {
+static int bio_filter_in_puts(BIO *bio, const char *str)
+{
+    return -1;
+}
+
+static int bio_filter_in_gets(BIO *bio, char *buf, int size)
+{
+    return -1;
+}
+
+static long bio_filter_in_ctrl(BIO *bio, int cmd, long num, void *ptr)
+{
+    return -1;
+}
+
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
+        
+static BIO_METHOD bio_filter_out_method = {
     BIO_TYPE_MEM,
-    "APR input filter",
-    NULL,                       /* write is never called */
-    bio_filter_in_read,
-    NULL,                       /* puts is never called */
-    NULL,                       /* gets is never called */
-    NULL,                       /* ctrl is never called */
+    "APR output filter",
+    bio_filter_out_write,
+    bio_filter_out_read,     /* read is never called */
+    bio_filter_out_puts,     /* puts is never called */
+    bio_filter_out_gets,     /* gets is never called */
+    bio_filter_out_ctrl,
     bio_filter_create,
     bio_filter_destroy,
     NULL
 };
 
+static BIO_METHOD bio_filter_in_method = {
+    BIO_TYPE_MEM,
+    "APR input filter",
+    bio_filter_in_write,        /* write is never called */
+    bio_filter_in_read,
+    bio_filter_in_puts,         /* puts is never called */
+    bio_filter_in_gets,         /* gets is never called */
+    bio_filter_in_ctrl,         /* ctrl is never called */
+    bio_filter_create,
+    bio_filter_destroy,
+    NULL
+};
+
+#else
+
+static BIO_METHOD *bio_filter_out_method = NULL;
+static BIO_METHOD *bio_filter_in_method = NULL;
+
+void init_bio_methods(void)
+{
+    bio_filter_out_method = BIO_meth_new(BIO_TYPE_MEM, "APR output filter");
+    BIO_meth_set_write(bio_filter_out_method, &bio_filter_out_write);
+    BIO_meth_set_read(bio_filter_out_method, &bio_filter_out_read); /* read is never called */
+    BIO_meth_set_puts(bio_filter_out_method, &bio_filter_out_puts); /* puts is never called */
+    BIO_meth_set_gets(bio_filter_out_method, &bio_filter_out_gets); /* gets is never called */
+    BIO_meth_set_ctrl(bio_filter_out_method, &bio_filter_out_ctrl);
+    BIO_meth_set_create(bio_filter_out_method, &bio_filter_create);
+    BIO_meth_set_destroy(bio_filter_out_method, &bio_filter_destroy);
+
+    bio_filter_in_method = BIO_meth_new(BIO_TYPE_MEM, "APR input filter");
+    BIO_meth_set_write(bio_filter_in_method, &bio_filter_in_write); /* write is never called */
+    BIO_meth_set_read(bio_filter_in_method, &bio_filter_in_read);
+    BIO_meth_set_puts(bio_filter_in_method, &bio_filter_in_puts);   /* puts is never called */
+    BIO_meth_set_gets(bio_filter_in_method, &bio_filter_in_gets);   /* gets is never called */
+    BIO_meth_set_ctrl(bio_filter_in_method, &bio_filter_in_ctrl);   /* ctrl is never called */
+    BIO_meth_set_create(bio_filter_in_method, &bio_filter_create);
+    BIO_meth_set_destroy(bio_filter_in_method, &bio_filter_destroy);
+}
+
+void free_bio_methods(void)
+{
+    BIO_meth_free(bio_filter_out_method);
+    BIO_meth_free(bio_filter_in_method);
+}
+#endif
 
 static apr_status_t ssl_io_input_read(bio_filter_in_ctx_t *inctx,
                                       char *buf,
@@ -789,7 +848,7 @@ static apr_status_t ssl_filter_write(ap_filter_t *f,
      */
     ERR_clear_error();
 
-    outctx = (bio_filter_out_ctx_t *)filter_ctx->pbioWrite->ptr;
+    outctx = (bio_filter_out_ctx_t *)BIO_get_data(filter_ctx->pbioWrite);
     res = SSL_write(filter_ctx->pssl, (unsigned char *)data, len);
 
     if (res < 0) {
@@ -1267,9 +1326,9 @@ static apr_status_t ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
 
     if ((n = SSL_accept(filter_ctx->pssl)) <= 0) {
         bio_filter_in_ctx_t *inctx = (bio_filter_in_ctx_t *)
-                                     (filter_ctx->pbioRead->ptr);
+                                     BIO_get_data(filter_ctx->pbioRead);
         bio_filter_out_ctx_t *outctx = (bio_filter_out_ctx_t *)
-                                       (filter_ctx->pbioWrite->ptr);
+                                       BIO_get_data(filter_ctx->pbioWrite);
         apr_status_t rc = inctx->rc ? inctx->rc : outctx->rc ;
         ssl_err = SSL_get_error(filter_ctx->pssl, n);
 
@@ -1682,8 +1741,8 @@ static apr_status_t ssl_io_filter_output(ap_filter_t *f,
         return ap_pass_brigade(f->next, bb);
     }
 
-    inctx = (bio_filter_in_ctx_t *)filter_ctx->pbioRead->ptr;
-    outctx = (bio_filter_out_ctx_t *)filter_ctx->pbioWrite->ptr;
+    inctx = (bio_filter_in_ctx_t *)BIO_get_data(filter_ctx->pbioRead);
+    outctx = (bio_filter_out_ctx_t *)BIO_get_data(filter_ctx->pbioWrite);
 
     /* When we are the writer, we must initialize the inctx
      * mode so that we block for any required ssl input, because
@@ -1964,8 +2023,12 @@ static void ssl_io_input_add_filter(ssl_filter_ctx_t *filter_ctx, conn_rec *c,
 
     filter_ctx->pInputFilter = ap_add_input_filter(ssl_io_filter, inctx, r, c);
 
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
     filter_ctx->pbioRead = BIO_new(&bio_filter_in_method);
-    filter_ctx->pbioRead->ptr = (void *)inctx;
+#else
+    filter_ctx->pbioRead = BIO_new(bio_filter_in_method);
+#endif
+    BIO_set_data(filter_ctx->pbioRead, (void *)inctx);
 
     inctx->ssl = ssl;
     inctx->bio_out = filter_ctx->pbioWrite;
@@ -1995,8 +2058,12 @@ void ssl_io_filter_init(conn_rec *c, request_rec *r, SSL *ssl)
     filter_ctx->pOutputFilter   = ap_add_output_filter(ssl_io_filter,
                                                        filter_ctx, r, c);
 
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
     filter_ctx->pbioWrite       = BIO_new(&bio_filter_out_method);
-    filter_ctx->pbioWrite->ptr  = (void *)bio_filter_out_ctx_new(filter_ctx, c);
+#else
+    filter_ctx->pbioWrite       = BIO_new(bio_filter_out_method);
+#endif
+    BIO_set_data(filter_ctx->pbioWrite, (void *)bio_filter_out_ctx_new(filter_ctx, c));
 
     /* write is non blocking for the benefit of async mpm */
     if (c->cs) {

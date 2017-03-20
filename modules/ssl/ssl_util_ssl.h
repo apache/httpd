@@ -41,7 +41,11 @@
 #define MODSSL_LIBRARY_VERSION OPENSSL_VERSION_NUMBER
 #define MODSSL_LIBRARY_NAME    "OpenSSL"
 #define MODSSL_LIBRARY_TEXT    OPENSSL_VERSION_TEXT
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
 #define MODSSL_LIBRARY_DYNTEXT SSLeay_version(SSLEAY_VERSION)
+#else
+#define MODSSL_LIBRARY_DYNTEXT OpenSSL_version(OPENSSL_VERSION)
+#endif
 
 /**
  *  Maximum length of a DER encoded session.
@@ -67,7 +71,7 @@ char       *modssl_X509_NAME_ENTRY_to_string(apr_pool_t *p, X509_NAME_ENTRY *xsn
 char       *modssl_X509_NAME_to_string(apr_pool_t *, X509_NAME *, int);
 BOOL        modssl_X509_getSAN(apr_pool_t *, X509 *, int, const char *, int, apr_array_header_t **);
 BOOL        modssl_X509_match_name(apr_pool_t *, X509 *, const char *, BOOL, server_rec *);
-char       *modssl_SSL_SESSION_id2sz(unsigned char *, int, char *, int);
+char       *modssl_SSL_SESSION_id2sz(IDCONST unsigned char *, int, char *, int);
 
 #endif /* __SSL_UTIL_SSL_H__ */
 /** @} */
