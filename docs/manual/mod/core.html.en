@@ -2161,6 +2161,14 @@ satisfied by a request at runtime</td></tr>
 
     <p>Only directives that support the <a href="directive-dict.html#Context">directory context</a> can be used within this configuration section.</p>
 
+    <div class="note"><h3>Not a scripting language</h3>
+    The name of this directive is very familiar to programmers and admins 
+    but it should not be confused with its counterpart in scripting languages.
+    For example, the current implementation does not contemplate the possibility
+    of having a <code class="directive">&lt;If&gt;</code> section inside another
+    one (the inner <code class="directive">&lt;If&gt;</code> will be ignored).
+    </div>
+
     <div class="warning">
     Certain variables, such as <code>CONTENT_TYPE</code> and other
     response headers, are set after &lt;If&gt; conditions have already

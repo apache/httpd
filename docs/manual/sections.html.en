@@ -337,7 +337,8 @@ hand, <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a><
 inside <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>.  On
 the other hand, <code class="directive"><a href="./mod/core.html#if">&lt;If&gt;</a></code> can
 be used inside <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>,
-<code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>, and <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code> sections. The regex
+<code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>, and <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code> sections (but not inside another
+<code class="directive"><a href="./mod/core.html#if">&lt;If&gt;</a></code>). The regex
 counterparts of the named section behave identically.</p>
 
 <p>Nested sections are merged after non-nested sections of the same type.</p>
