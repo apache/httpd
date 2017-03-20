@@ -381,7 +381,8 @@ inside <directive type="section" module="core">Directory</directive>.  On
 the other hand, <directive type="section" module="core">If</directive> can
 be used inside <directive type="section" module="core">Directory</directive>,
 <directive type="section" module="core">Location</directive>, and <directive
-type="section" module="core">Files</directive> sections. The regex
+type="section" module="core">Files</directive> sections (but not inside another
+<directive type="section" module="core">If</directive>). The regex
 counterparts of the named section behave identically.</p>
 
 <p>Nested sections are merged after non-nested sections of the same type.</p>
