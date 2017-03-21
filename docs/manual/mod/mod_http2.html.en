@@ -95,7 +95,6 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#h2pushpriority">H2PushPriority</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2pushresource">H2PushResource</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2serializeheaders">H2SerializeHeaders</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#h2sessionextrafiles">H2SessionExtraFiles</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2streammaxmemsize">H2StreamMaxMemSize</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2tlscooldownsecs">H2TLSCoolDownSecs</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2tlswarmupsize">H2TLSWarmUpSize</a></li>
@@ -166,17 +165,6 @@
             to send this to the client. If the client does not read fast enough,
             the connection will buffer this amount of data and then suspend the
             H2Worker.
-        </p>
-        <p>
-            If you serve a lot of static files, <code class="directive"><a href="#h2sessionextrafiles">H2SessionExtraFiles</a></code>
-            is of interest. This tells the server how many file handles per
-            HTTP/2 connection it is allowed to waste for better performance. Because
-            when a request produces a static file as the response, the file handle
-            gets passed around and is buffered and not the file contents. That allows
-            to serve many large files without wasting memory or copying data 
-            unnecessarily. However file handles are a limited resource for a process,
-            and if too many are used this way, requests may fail under load as
-            the amount of open handles has been exceeded.
         </p>
     
     
@@ -721,41 +709,6 @@ H2PushPriority text/css   interleaved      # weight 256 default</pre>
             </p>
             <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">H2SerializeHeaders on</pre>
 </div>
-        
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="H2SessionExtraFiles" id="H2SessionExtraFiles">H2SessionExtraFiles</a> <a name="h2sessionextrafiles" id="h2sessionextrafiles">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Number of Extra File Handles</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2SessionExtraFiles <em>n</em></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
-</table>
-            <p>
-                This directive sets maximum number of <em>extra</em> file handles
-                a HTTP/2 session is allowed to use. A file handle is counted as
-                <em>extra</em> when it is transferred from a h2 worker thread to
-                the main HTTP/2 connection handling. This commonly happens when
-                serving static files.
-            </p><p>
-                Depending on the processing model configured on the server, the
-                number of connections times number of active streams may exceed
-                the number of file handles for the process. On the other hand,
-                converting every file into memory bytes early results in too 
-                many buffer writes. This option helps to mitigate that.
-            </p><p>
-                The number of file handles used by a server process is then in
-                the order of:
-            </p>
-            <pre>(h2_connections * extra_files) + (h2_max_worker)</pre>
-            <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">H2SessionExtraFiles 10</pre>
-</div>
-            <p>
-                If nothing is configured, the module tries to make a conservative
-                guess how many files are safe to use. This depends largely on the 
-                MPM chosen.
-            </p>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
