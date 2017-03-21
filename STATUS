@@ -206,8 +206,42 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
            (includes all hcheck related patches, including showstopper)
      +1: jim
 
-PATCHES/ISSUES THAT ARE BEING WORKED
+  *) mod_autoindex: Add IndexOptions UseOldDateFormat to allow the date
+     format from 2.2 in the Last Modified column. PR60846.
+     trunk patch: http://svn.apache.org/r1787525
+                  http://svn.apache.org/r1787553
+     2.4.x patch: trunk works
+     +1 covener
+
+  *) mod_proxy: Allow the per-request environment variable "no-proxy" to
+     be used as an alternative to ProxyPass /path !. This is primarily
+     to set exceptions for ProxyPass specified in <Location> context.
+     trunk patch http://svn.apache.org/r1781328
+     2.4.x patch: trunk works
+     +1: covener 
+
+  *) core: %{DOCUMENT_URI} used in nested SSI expressions should point to the
+     URI originally requsted by the user, not the nested documents URI. This
+     restores the behavior of this variable to match the "legacy" SSI parser.
+     PR60624. 
+
+     trunk patch: http://svn.apache.org/r1780095
+     2.4.x patch: trunk works
+     +1: covener
+
+  *) core: EBCDIC fixes for interim responses with additional headers.
+     trunk patch: http://svn.apache.org/1777354
+     2.4.x patch: http://people.apache.org/~covener/patches/ebcdic-interim.diff
+     +1: covener
+
+  *) core: Add %{REMOTE_PORT} to the expression parser. PR59938
+     trunk patch: http://svn.apache.org/r1776459
+     2.4.x patch: trunk works
+     +1: covener
+
   [ New entried should be added at the START of the list ]
+
+PATCHES/ISSUES THAT ARE BEING WORKED
 
   *) mod_brotli: Backport of mod_brotli filter
      trunk patch: http://svn.apache.org/r1761714
