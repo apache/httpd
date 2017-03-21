@@ -856,6 +856,14 @@ indexing</td></tr>
 
       </dd>
 
+      <dt><a name="indexoptions.useolddateformat" id="indexoptions.useolddateformat">UseOldDateFormat</a>
+      (<em>Apache HTTP Server 2.4.26 and later</em>)</dt>
+
+      <dd>The date format used for the <code>Last Modified</code> field was 
+      inadvertently changed to <code>"%Y-%m-%d %H:%M"</code> from 
+      <code>"%d-%b-%Y %H:%M"</code> in 2.4.0. Setting this option 
+      restores the date format from 2.2 and earlier.</dd>
+
       <dt><a name="indexoptions.versionsort" id="indexoptions.versionsort">VersionSort</a>
       (<em>Apache HTTP Server 2.0a3 and later</em>)</dt>
 

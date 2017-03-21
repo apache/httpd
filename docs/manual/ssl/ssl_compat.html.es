@@ -7,7 +7,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Cifrado Robusto SSL/TLS: Compatibilidad  - Servidor HTTP Apache Versi&#243;n 2.5</title>
+<title>Cifrado Robusto SSL/TLS: Compatibilidad  - Servidor HTTP Apache Versión 2.5</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -16,60 +16,60 @@
 
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">M&#243;dulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p>
-<p class="apache">Versi&#243;n 2.5 del Servidor HTTP Apache</p>
+<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p>
+<p class="apache">Versión 2.5 del Servidor HTTP Apache</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentaci&#243;n</a> &gt; <a href="../">Versi&#243;n 2.5</a> &gt; <a href="./">SSL/TLS</a></div><div id="page-content"><div id="preamble"><h1>Cifrado Robusto SSL/TLS: Compatibilidad </h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentación</a> &gt; <a href="../">Versión 2.5</a> &gt; <a href="./">SSL/TLS</a></div><div id="page-content"><div id="preamble"><h1>Cifrado Robusto SSL/TLS: Compatibilidad </h1>
 <div class="toplang">
 <p><span>Idiomas disponibles: </span><a href="../en/ssl/ssl_compat.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/ssl/ssl_compat.html" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
-<a href="../fr/ssl/ssl_compat.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
+<a href="../es/ssl/ssl_compat.html" title="Español">&nbsp;es&nbsp;</a> |
+<a href="../fr/ssl/ssl_compat.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
 
 <p>
-En esta p&#225;gina se cubre la compatibilidad entre el m&#243;dulo <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>
+En esta página se cubre la compatibilidad entre el módulo <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>
 y otras soluciones SSL.
-<code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> no es la &#250;nica soluci&#243;n de SSL para Apache HTTPD Server;
-Para productos adicionales que est&#225;n (o estaban) disponibles como Ben Laurie's
+<code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> no es la única solución de SSL para Apache HTTPD Server;
+Para productos adicionales que están (o estaban) disponibles como Ben Laurie's
 en su web, que ahora no existe (http://www.apache-ssl.org/), donde fue la 
-derivaci&#243;n original en 1998 del m&#243;dulo.
+derivación original en 1998 del módulo.
 Tanto el sistema de <a href="https://www.redhat.com/archives/redhat-secure-server/"> Red Hat 
-Secure Web Server </a> se bas&#243; en mod_ssl as&#237; como la versi&#243;n comercial del
+Secure Web Server </a> se basó en mod_ssl así como la versión comercial del
 <a href="https://lists.freebsd.org/pipermail/freebsd-announce/1998-March/000403.html">
- m&#243;dulo SSL de Covalent's Raven</a>, y por &#250;ltimo, C2Net (ahora de Red Hat)
- basado en una rama de evaluaci&#243;n del proyecto llamado Sioux con un 
- "Stronghold 2.x" y basado en mod_ssl desde la versi&#243;n "Stronghold 3.x".
+ módulo SSL de Covalent's Raven</a>, y por último, C2Net (ahora de Red Hat)
+ basado en una rama de evaluación del proyecto llamado Sioux con un 
+ "Stronghold 2.x" y basado en mod_ssl desde la versión "Stronghold 3.x".
 
  
 
 </p>
 
 <p>
-mod_ssl proporciona un superconjunto de la funcionalidad de todas las dem&#225;s
-soluciones, por lo que ser&#225; simple la migraci&#243;n de m&#243;dulos antiguos al 
+mod_ssl proporciona un superconjunto de la funcionalidad de todas las demás
+soluciones, por lo que será simple la migración de módulos antiguos al 
 <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>.
-Las directivas de configuraci&#243;n y nombres de variables de entorno usadas 
-por m&#243;dulos antiguos de SSL var&#237;an mucho de mod_ssl;
-tablas de correspondencia con lo usado por mod_ssl, se detallan a continuaci&#243;n.
+Las directivas de configuración y nombres de variables de entorno usadas 
+por módulos antiguos de SSL varían mucho de mod_ssl;
+tablas de correspondencia con lo usado por mod_ssl, se detallan a continuación.
 </p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#configuration">Directivas de Configuraci&#243;n</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#configuration">Directivas de Configuración</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#variables">Variables de Entorno</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#customlog">Funciones Personalizadas de Log</a></li>
-</ul><h3>Consulte tambi&#233;n</h3><ul class="seealso"><li><a href="#comments_section">Comentarios</a></li></ul></div>
+</ul><h3>Consulte también</h3><ul class="seealso"><li><a href="#comments_section">Comentarios</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="configuration" id="configuration">Directivas de Configuraci&#243;n</a></h2>
-<p>La correspondencia entre las directivas de configuraci&#243;n usadas por
+<h2><a name="configuration" id="configuration">Directivas de Configuración</a></h2>
+<p>La correspondencia entre las directivas de configuración usadas por
 Apache-SSL 1.x y mod_ssl 2.0.x se dan en la <a href="#table1">Tabla
 1</a>. La correspondencia de Sioux 1.x y Stronghold 2.x es solo parcial 
 debido a funcionalidades especiales en estas interfaces que mod_ssl no proporciona.
 </p>
 
 
-<h3><a name="table1" id="table1">Table 1: Correspondencia de Directivas de Configuraci&#243;n</a></h3>
+<h3><a name="table1" id="table1">Table 1: Correspondencia de Directivas de Configuración</a></h3>
 
 <table><tr class="header"><th>Directivas Antiguas</th><th>Directivas mod_ssl </th><th>Comentarios</th></tr>
 <tr class="header"><th colspan="3">Compatibilidad de Apache-SSL 1.x &amp; mod_ssl 2.0.x:</th></tr>
@@ -125,10 +125,10 @@ debido a funcionalidades especiales en estas interfaces que mod_ssl no proporcio
 <div class="section">
 <h2><a name="variables" id="variables">Variables de Entorno</a></h2>
 
-<p>Correlaci&#243;n entre las variables de entorno usadas por soluciones antiguas de SSL y las usadas
+<p>Correlación entre las variables de entorno usadas por soluciones antiguas de SSL y las usadas
 por <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> que se muestran en la <a href="#table2">Table 2</a>.</p>
 
-<h3><a name="table2" id="table2">Tabla 2: Derivaci&#243;n de las Variables de Entorno</a></h3>
+<h3><a name="table2" id="table2">Tabla 2: Derivación de las Variables de Entorno</a></h3>
 
 <table><tr class="header"><th>Variable Antigua</th><th>Variable mod_ssl</th><th>Comentario</th></tr>
 <tr><td><code>SSL_PROTOCOL_VERSION</code></td><td><code>SSL_PROTOCOL</code></td><td>renombrada</td></tr>
@@ -202,21 +202,21 @@ por <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> que se
 <div class="section">
 <h2><a name="customlog" id="customlog">Funciones Personalizadas de Log</a></h2>
 <p>
-Cuando est&#225; habilitado el m&#243;dulo <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>, existen funciones adicionales
+Cuando está habilitado el módulo <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>, existen funciones adicionales
 para el <a href="../mod/mod_log_config.html#formats">Formato de Log Personalizado</a> 
-<code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code> como se documenta en el cap&#237;tulo referenciado. 
-Junto con  la funci&#243;n de formato de eXtensi&#243;n ``<code>%{</code><em>varname</em><code>}x</code>''
-la cual puede ser usada para extender cualquier variable proporcionada por cualquier m&#243;dulo,
-una funci&#243;n criptogr&#225;fica de formato adicional 
+<code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code> como se documenta en el capítulo referenciado. 
+Junto con  la función de formato de eXtensión ``<code>%{</code><em>varname</em><code>}x</code>''
+la cual puede ser usada para extender cualquier variable proporcionada por cualquier módulo,
+una función criptográfica de formato adicional 
 ``<code>%{</code><em>name</em><code>}c</code>'' cryptography format function
 exists for backward compatibility. The currently implemented function calls
 are listed in <a href="#table3">Table 3</a>.</p>
 
-<h3><a name="table3" id="table3">Table 3: Funciones criptogr&#225;ficas de Log Personalizado</a></h3>
+<h3><a name="table3" id="table3">Table 3: Funciones criptográficas de Log Personalizado</a></h3>
 
 <table>
 
-<tr><th>Llamada a la Funci&#243;n</th><th>Descripci&#243;n</th></tr>
+<tr><th>Llamada a la Función</th><th>Descripción</th></tr>
 
 <tr><td><code>%...{version}c</code></td>   <td>SSL protocol version</td></tr>
 <tr><td><code>%...{cipher}c</code></td>    <td>SSL cipher</td></tr>
@@ -229,8 +229,8 @@ are listed in <a href="#table3">Table 3</a>.</p>
 </div></div>
 <div class="bottomlang">
 <p><span>Idiomas disponibles: </span><a href="../en/ssl/ssl_compat.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/ssl/ssl_compat.html" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
-<a href="../fr/ssl/ssl_compat.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
+<a href="../es/ssl/ssl_compat.html" title="Español">&nbsp;es&nbsp;</a> |
+<a href="../fr/ssl/ssl_compat.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comentarios</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -249,8 +249,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/ssl/ssl_compat.htm
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2017 The Apache Software Foundation.<br />Licencia bajo los t&#233;rminos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">M&#243;dulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2017 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }
