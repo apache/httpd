@@ -184,6 +184,9 @@
       <dt><module>mod_http2</module> (available since 2.4.17)</dt>
       <dd>Support for the HTTP/2 transport layer.</dd>
 
+      <dt><module>mod_proxy_hcheck</module> (available since 2.4.21)</dt>
+      <dd>Support independent dynamic health checks for remote proxiy backend servers.</dd>
+
     </dl>
   </section>
 
