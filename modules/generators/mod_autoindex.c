@@ -156,9 +156,9 @@ static char c_by_encoding, c_by_type, c_by_path;
 static APR_INLINE int response_is_html(request_rec *r)
 {
     char *ctype = ap_field_noparam(r->pool, r->content_type);
-    ap_str_tolower(ctype);
-    return !strcmp(ctype, "text/html")
-        || !strcmp(ctype, "application/xhtml+xml");
+
+    return !ap_cstr_casecmp(ctype, "text/html")
+        || !ap_cstr_casecmp(ctype, "application/xhtml+xml");
 }
 
 /*
@@ -214,11 +214,8 @@ static void push_item(apr_array_header_t *arr, char *type, const char *to,
     if ((type == BY_PATH) && (!ap_is_matchexp(to))) {
         p->apply_to = apr_pstrcat(arr->pool, "*", to, NULL);
     }
-    else if (to) {
-        p->apply_to = apr_pstrdup(arr->pool, to);
-    }
     else {
-        p->apply_to = NULL;
+        p->apply_to = apr_pstrdup(arr->pool, to);
     }
 }
 
