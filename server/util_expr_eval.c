@@ -196,7 +196,7 @@ static const char *ap_expr_eval_re_backref(ap_expr_eval_ctx_t *ctx, unsigned int
 {
     int len;
 
-    if (!ctx->re_pmatch || !ctx->re_source || *ctx->re_source == '\0' ||
+    if (!ctx->re_pmatch || !ctx->re_source || !(*ctx->re_source) || **ctx->re_source == '\0' ||
         ctx->re_nmatch < n + 1)
         return "";
 

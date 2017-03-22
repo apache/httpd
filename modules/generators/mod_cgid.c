@@ -1194,9 +1194,7 @@ static int log_script(request_rec *r, cgid_server_conf * conf, int ret,
                 apr_file_puts(argsbuffer, f);
             apr_file_puts("\n", f);
         }
-    }
-
-    if (script_err) {
+        
         apr_file_close(script_err);
     }
 

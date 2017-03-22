@@ -457,11 +457,11 @@ apr_status_t h2_stream_recv_frame(h2_stream *stream, int ftype, int flags)
 apr_status_t h2_stream_recv_DATA(h2_stream *stream, uint8_t flags,
                                     const uint8_t *data, size_t len)
 {
+    ap_assert(stream);
     h2_session *session = stream->session;
     apr_status_t status = APR_SUCCESS;
     apr_bucket_brigade *tmp;
     
-    ap_assert(stream);
     if (len > 0) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, session->c,
                       H2_STRM_MSG(stream, "recv DATA, len=%d"), (int)len);

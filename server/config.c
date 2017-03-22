@@ -2026,7 +2026,7 @@ static const char *process_resource_config_fnmatch(server_rec *s,
             /* If matching internal to path, and we happen to match something
              * other than a directory, skip it
              */
-            if (rest && (rv == APR_SUCCESS) && (dirent.filetype != APR_DIR)) {
+            if (rest && (dirent.filetype != APR_DIR)) {
                 continue;
             }
             fnew = (fnames *) apr_array_push(candidates);
