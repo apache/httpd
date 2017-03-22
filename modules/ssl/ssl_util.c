@@ -161,6 +161,18 @@ char *ssl_util_readfilter(server_rec *s, apr_pool_t *p, const char *cmd,
     return buf;
 }
 
+/*
+ * Return a server's SSL_CTX - caller takes care about which ssl library in use
+ */
+SSL_CTX *sslctx_from_server(server_rec *s)
+{
+        SSLSrvConfigRec *sc = mySrvConfig(s);
+        if (sc && sc->server) {
+            return sc->server->ssl_ctx;
+        }
+        return NULL;
+}
+
 BOOL ssl_util_path_check(ssl_pathcheck_t pcm, const char *path, apr_pool_t *p)
 {
     apr_finfo_t finfo;

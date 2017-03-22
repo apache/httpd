@@ -930,6 +930,7 @@ apr_file_t  *ssl_util_ppopen(server_rec *, apr_pool_t *, const char *,
 void         ssl_util_ppclose(server_rec *, apr_pool_t *, apr_file_t *);
 char        *ssl_util_readfilter(server_rec *, apr_pool_t *, const char *,
                                  const char * const *);
+SSL_CTX     *sslctx_from_server(server_rec *s);
 BOOL         ssl_util_path_check(ssl_pathcheck_t, const char *, apr_pool_t *);
 #if APR_HAS_THREADS
 #if OPENSSL_VERSION_NUMBER < 0x10100000L
