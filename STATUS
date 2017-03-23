@@ -172,11 +172,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1781190
                   http://svn.apache.org/r1781312
      2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-mod_ssl-restart_leaks-v2.patch
-     +1: ylavic, jim
-     -1: wrowe - FIPS_mode_set(0) breaks FIPS policy and should be a noop, AIUI?
-         (FIPS_mod_set(1) is per-process, but if openssl has been unloaded,
-          unloaded, then it is obviously repeated on reload. Perhaps dodge the
-          second mode set with linked-in mod_ssl?)
+     +1: ylavic, jim, wrowe
 
   *) mod_proxy_hcheck: Don't validate timed out responses.
      trunk patch: http://svn.apache.org/r1779574
