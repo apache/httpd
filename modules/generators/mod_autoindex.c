@@ -495,7 +495,7 @@ static const char *add_opts(cmd_parms *cmd, void *d, int argc, char *const argv[
         else if (!strncasecmp(w, "Charset=", 8)) {
             d_cfg->charset = apr_pstrdup(cmd->pool, &w[8]);
         }
-        else if (!strncasecmp(w, "UseOldDateFormat", 16)) {
+        else if (!strcasecmp(w, "UseOldDateFormat")) {
             d_cfg->datetime_format = "%d-%b-%Y %H:%M";
         }
         else {
