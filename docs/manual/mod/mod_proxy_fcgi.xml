@@ -195,4 +195,118 @@ ProxyPass "/myapp/" "balancer://myappcluster/"
     </dl>
 </section>
 
+<directivesynopsis>
+<name>ProxyFCGIBackendType</name>
+<description>Specify the type of backend FastCGI application</description>
+<syntax>ProxyFCGIBackendType FPM|GENERIC</syntax>
+<default>ProxyFCGIBackendType FPM</default>
+<contextlist><context>server config</context>
+<context>virtual host</context><context>directory</context>
+<context>.htaccess</context></contextlist>
+<compatibility>Available in version 2.4.26 and later</compatibility>
+
+<usage>
+<p>This directive allows the type of backend FastCGI application to be
+specified. Some FastCGI servers, such as PHP-FPM,  use historical quirks of
+environment variables to identify the type of proxy server being used.  Set
+this directive to "GENERIC" if your non PHP-FPM application has trouble
+interpreting environment variables such as SCRIPT_FILENAME or PATH_TRANSLATED
+as set by the server.</p>
+
+<p>One example of values that change based on the setting of this directive is
+SCRIPT_FILENAME. When using <module>mod_proxy_fcgi</module> historically,
+SCRIPT_FILENAME was prefixed with the string "proxy:fcgi://". This variable is
+what some generic FastCGI applications would read as their script input, but
+PHP-FPM would strip the prefix then remember it was talking to Apache.  In
+2.4.21 through 2.4.25, this prefix was automatically stripped by the server,
+breaking the ability of PHP-FPM to detect and interoperate with Apache in some
+scenarios.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ProxyFCGISetEnvIf</name>
+<description>Allow variables sent to FastCGI servers to be fixed up</description>
+<syntax>ProxyFCGISetEnvIf <var>conditional-expression</var>
+    [!]<var>environment-variable-name</var>
+    [<var>value-expression</var>]</syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context><context>directory</context>
+<context>.htaccess</context></contextlist>
+<compatibility>Available in version 2.4.26 and later</compatibility>
+
+<usage>
+<p>Just before passing a request to the configured FastCGI server, the core of
+the web server sets a number of environment variables based on details of the
+current request. FastCGI programs often uses these environment variables
+as inputs that determine what underlying scripts they will process, or what
+output they directly produce.</p>
+<p>Examples of noteworthy environment variables are:</p>
+<ul>
+  <li>SCRIPT_NAME</li>
+  <li>SCRIPT_FILENAME</li>
+  <li>REQUEST_URI</li>
+  <li>PATH_INFO</li>
+  <li>PATH_TRANSLATED</li>
+</ul>
+
+<p>This directive allows the environment variables above, or any others of
+interest, to be overridden.  This directive is evaluated after the initial
+values for these variables are set, so they can be used as input into both
+the condition expressions and value expressions.</p>
+<p>Parameter syntax:</p>
+<dl>
+<dt>conditional-expression</dt>
+<dd>Specifies an expression that controls whether the environment variable that
+   follows will be modified.  For information on the expression syntax, see
+   the examples that follow or the full specification at the
+   <a href="../expr.html">ap_expr</a> documentation.
+   </dd>
+<dt>environment-variable-name</dt>
+<dd> Specifies the CGI environment variable to change,
+   such as PATH_INFO. If preceded by an exclamation point, the variable 
+   will be unset.</dd>
+<dt>value-expression</dt>
+<dd>Specifies the replacement value for the preceding environment variable.
+   Backreferences, such as "$1", can be included from regular expression
+   captures in <var>conditional-expression</var>. If omitted, the variable is
+   set (or overridden) to an empty string &mdash; but see the Note below.</dd>
+</dl>
+
+<example>
+   <highlight language="config">
+# A basic, unconditional override
+ProxyFCGISetEnvIf "true" PATH_INFO "/example"
+
+# Use an environment variable in the value
+ProxyFCGISetEnvIf "true" PATH_INFO "%{reqenv:SCRIPT_NAME}"
+
+# Use captures in the conditions and backreferences in the replacement
+ProxyFCGISetEnvIf "reqenv('PATH_TRANSLATED') =~ m|(/.*prefix)(\d+)(.*)|" PATH_TRANSLATED "$1$3"
+   </highlight>
+</example>
+
+<note><title>Note: Unset vs. Empty</title>
+  The following will unset <code>VARIABLE</code>, preventing it from being sent
+  to the FastCGI server:
+
+    <highlight language="config">ProxyFCGISetEnvIf true !VARIABLE</highlight>
+
+  Whereas the following will erase any existing <em>value</em> of
+  <code>VARIABLE</code> (by setting it to the empty string), but the empty
+  <code>VARIABLE</code> will still be sent to the server:
+
+    <highlight language="config">ProxyFCGISetEnvIf true VARIABLE</highlight>
+
+  The CGI/1.1 specification
+  <a href="https://tools.ietf.org/html/rfc3875#section-4.1">does not
+  distinguish</a> between a variable with an empty value and a variable that
+  does not exist. However, many CGI and FastCGI implementations distinguish (or
+  allow scripts to distinguish) between the two. The choice of which to use is
+  dependent upon your implementation and your reason for modifying the variable.
+</note>
+
+</usage>
+</directivesynopsis>
+
 </modulesynopsis>
