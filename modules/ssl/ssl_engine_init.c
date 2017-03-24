@@ -257,11 +257,9 @@ apr_status_t ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
 #endif
     }
 
-#if OPENSSL_VERSION_NUMBER < 0x10100000L
-#if APR_HAS_THREADS
+#if APR_HAS_THREADS && OPENSSL_VERSION_NUMBER < 0x10100000L
     ssl_util_thread_setup(p);
 #endif
-#endif /* #if OPENSSL_VERSION_NUMBER < 0x10100000L */
 
     /*
      * SSL external crypto device ("engine") support
@@ -1641,7 +1639,6 @@ static apr_status_t ssl_init_server_ctx(server_rec *s,
             ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
             return ssl_die(s);
     }
-    SSL_CONF_CTX_free(cctx);
 #endif
 
     if (SSL_CTX_check_private_key(sc->server->ssl_ctx) != 1) {

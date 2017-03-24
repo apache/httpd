@@ -922,8 +922,11 @@ void         ssl_util_ppclose(server_rec *, apr_pool_t *, apr_file_t *);
 char        *ssl_util_readfilter(server_rec *, apr_pool_t *, const char *,
                                  const char * const *);
 BOOL         ssl_util_path_check(ssl_pathcheck_t, const char *, apr_pool_t *);
+#if APR_HAS_THREADS
 #if OPENSSL_VERSION_NUMBER < 0x10100000L
 void         ssl_util_thread_setup(apr_pool_t *);
+#endif
+void         ssl_util_thread_id_setup(apr_pool_t *);
 #endif
 int          ssl_init_ssl_connection(conn_rec *c, request_rec *r);
 
