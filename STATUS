@@ -115,15 +115,21 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
+PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
+  [ start all new proposals below, under PATCHES PROPOSED. ]
+
+  *) mod_cache: Fix a regression in 2.4.25 for the forward proxy case by
+     computing and using the same entity key according to when the cache
+     checks, loads and saves the request.  PR 60577.
+     trunk patch: http://svn.apache.org/r1783842
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: ylavic, jim, covener
+
   *) mod_proxy_hcheck: Ensure thread-safety when concurrent healthchecks are
      in use (ProxyHCTPsize > 0).  PR 60071.
      trunk patch: http://svn.apache.org/r1779573
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, jim
-
-PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
-  [ start all new proposals below, under PATCHES PROPOSED. ]
-
+     +1: ylavic, jim, covener (desk-check only)
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -160,13 +166,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  with conventions?
      ylavic: +1 with http://svn.apache.org/r1788430, fixing the merge of
              SSLOCSPNoverify and capitalizing as suggested above.
-
-  *) mod_cache: Fix a regression in 2.4.25 for the forward proxy case by
-     computing and using the same entity key according to when the cache
-     checks, loads and saves the request.  PR 60577.
-     trunk patch: http://svn.apache.org/r1783842
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, jim
 
   *) mod_proxy_hcheck: Honor checks in Vhosts
      trunk patch: http://svn.apache.org/r1784203
