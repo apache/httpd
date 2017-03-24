@@ -147,7 +147,7 @@ static void modssl_ctx_init(modssl_ctx_t *mctx, apr_pool_t *p)
     mctx->proxy_uri              = NULL;
 
 /* Set OCSP Responder Certificate Verification variable */
-    mctx->ocsp_noverify       = FALSE;
+    mctx->ocsp_noverify       = UNSET;
 /* Set OCSP Responder File variables */
     mctx->ocsp_verify_flags   = 0;
     mctx->ocsp_certs_file     = NULL;
@@ -1721,7 +1721,7 @@ const char *ssl_cmd_SSLOCSPProxyURL(cmd_parms *cmd, void *dcfg,
 }
 
 /* Set OCSP responder certificate verification directive */
-const char *ssl_cmd_SSLOCSPNoverify(cmd_parms *cmd, void *dcfg, int flag)
+const char *ssl_cmd_SSLOCSPNoVerify(cmd_parms *cmd, void *dcfg, int flag)
 {
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
 
