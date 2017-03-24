@@ -118,13 +118,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_cache: Fix a regression in 2.4.25 for the forward proxy case by
-     computing and using the same entity key according to when the cache
-     checks, loads and saves the request.  PR 60577.
-     trunk patch: http://svn.apache.org/r1783842
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, jim, covener
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]

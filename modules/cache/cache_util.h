@@ -327,6 +327,12 @@ char *cache_strqtok(char *str, const char *sep, char **last);
  */
 apr_table_t *cache_merge_headers_out(request_rec *r);
 
+/**
+ * Return whether to use request's path/query from early stage (r->parsed_uri)
+ * or the current/rewritable ones (r->uri/r->args).
+ */
+int cache_use_early_url(request_rec *r);
+
 #ifdef __cplusplus
 }
 #endif
