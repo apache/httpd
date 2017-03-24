@@ -815,7 +815,7 @@ const char *ssl_cmd_SSLOCSPEnable(cmd_parms *cmd, void *dcfg, int flag);
 const char *ssl_cmd_SSLOCSPProxyURL(cmd_parms *cmd, void *dcfg, const char *arg);
 
 /* Declare OCSP Responder Certificate Verification Directive */
-const char *ssl_cmd_SSLOCSPNoverify(cmd_parms *cmd, void *dcfg, int flag);
+const char *ssl_cmd_SSLOCSPNoVerify(cmd_parms *cmd, void *dcfg, int flag);
 /* Declare OCSP Responder Certificate File Directive */
 const char *ssl_cmd_SSLOCSPResponderCertificateFile(cmd_parms *cmd, void *dcfg, const char *arg);
 

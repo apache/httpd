@@ -184,7 +184,7 @@ static int verify_ocsp_status(X509 *cert, X509_STORE_CTX *ctx, conn_rec *c,
 
     if (rc == V_OCSP_CERTSTATUS_GOOD) {
         /* Check if OCSP certificate verification required */
-        if (!sc->server->ocsp_noverify) {
+        if (sc->server->ocsp_noverify != TRUE) {
             /* Modify OCSP response verification to include OCSP Responder cert */
             if (OCSP_basic_verify(basicResponse, sc->server->ocsp_certs, X509_STORE_CTX_get0_store(ctx),
                                   sc->server->ocsp_verify_flags) != 1) {
