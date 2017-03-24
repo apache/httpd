@@ -25,6 +25,11 @@ Changes with Apache 2.5.0
      checks, loads and saves the request.
      PR 60577.  [Yann Ylavic]
   
+  *) mod_proxy: Allow the per-request environment variable "no-proxy" to
+     be used as an alternative to ProxyPass /path !. This is primarily
+     to set exceptions for ProxyPass specified in <Location> context.
+     Use SetEnvIf, not SetEnv. [Eric Covener]
+
   *) When using mod_status with the Event MPM, report the number of requests
      associated with an active connection in the "ACC" field. Previously
      zero was always reported with this MPM.  PR60647. [Eric Covener]
