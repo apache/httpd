@@ -125,12 +125,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic, jim, covener
 
-  *) mod_proxy_hcheck: Ensure thread-safety when concurrent healthchecks are
-     in use (ProxyHCTPsize > 0).  PR 60071.
-     trunk patch: http://svn.apache.org/r1779573
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, jim, covener (desk-check only)
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
