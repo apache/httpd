@@ -196,15 +196,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      be used as an alternative to ProxyPass /path !. This is primarily
      to set exceptions for ProxyPass specified in <Location> context.
      trunk patch: http://svn.apache.org/r1781328
+                  http://svn.apache.org/r1785907
      2.4.x patch: trunk works
      +1: covener, ylavic
-     jailletc36: compatibility note is missing
 
   *) core: Add %{REMOTE_PORT} to the expression parser. PR59938
      trunk patch: http://svn.apache.org/r1776459
+                  http://svn.apache.org/r1788508
      2.4.x patch: trunk works
      +1: covener, ylavic
-     jailletc36: compatibility note is missing
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
