@@ -191,7 +191,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1776459
                   http://svn.apache.org/r1788508
      2.4.x patch: trunk works
-     +1: covener, ylavic
+     +1: covener, ylavic, jchampion
+     jchampion: Trunk patches don't apply cleanly for me. The patch I used to
+                test is at https://home.apache.org/~jchampion/patches/2.4.x-expr-REMOTE_PORT.patch
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
