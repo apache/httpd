@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 
 Changes with Apache 2.4.26
+  
+  *) core: %{DOCUMENT_URI} used in nested SSI expressions should point to the
+     URI originally requsted by the user, not the nested documents URI. This
+     restores the behavior of this variable to match the "legacy" SSI parser.
+     PR60624. [Hank Ibell <hwibell gmail.com>]
 
   *) mod_proxy_fcgi: Add ProxyFCGISetEnvIf to fixup CGI environment
      variables just before invoking the FastCGI. [Eric Covener,

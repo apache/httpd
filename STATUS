@@ -124,13 +124,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) core: %{DOCUMENT_URI} used in nested SSI expressions should point to the
-     URI originally requsted by the user, not the nested documents URI. This
-     restores the behavior of this variable to match the "legacy" SSI parser.
-     PR60624. 
-     trunk patch: http://svn.apache.org/r1780095
-     2.4.x patch: trunk works
-     +1: covener, wrowe, ylavic
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
