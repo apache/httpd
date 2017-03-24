@@ -2016,12 +2016,27 @@ typedef struct hdr_ptr {
     ap_filter_t *f;
     apr_bucket_brigade *bb;
 } hdr_ptr;
+ 
+#if APR_CHARSET_EBCDIC
 static int send_header(void *data, const char *key, const char *val)
 {
-    ap_fputstrs(((hdr_ptr*)data)->f, ((hdr_ptr*)data)->bb,
-                key, ": ", val, CRLF, NULL);
+    char *header_line = NULL;
+    hdr_ptr *hdr = (hdr_ptr*)data;
+
+    header_line = apr_pstrcat(hdr->bb->p, key, ": ", val, CRLF, NULL);
+    ap_xlate_proto_to_ascii(header_line, strlen(header_line));
+    ap_fputs(hdr->f, hdr->bb, header_line);
     return 1;
 }
+#else
+static int send_header(void *data, const char *key, const char *val)
+{
+     ap_fputstrs(((hdr_ptr*)data)->f, ((hdr_ptr*)data)->bb,
+                 key, ": ", val, CRLF, NULL);
+     return 1;
+ }
+#endif
+
 AP_DECLARE(void) ap_send_interim_response(request_rec *r, int send_headers)
 {
     hdr_ptr x;
