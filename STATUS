@@ -150,6 +150,26 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_ssl: work around leaks on (graceful) restart.
+     trunk patch: http://svn.apache.org/r1781187
+                  http://svn.apache.org/r1781190
+                  http://svn.apache.org/r1781312
+     2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-mod_ssl-restart_leaks-v2.patch
+     +1: ylavic, jim, wrowe
+
+  *) core: %{DOCUMENT_URI} used in nested SSI expressions should point to the
+     URI originally requsted by the user, not the nested documents URI. This
+     restores the behavior of this variable to match the "legacy" SSI parser.
+     PR60624. 
+     trunk patch: http://svn.apache.org/r1780095
+     2.4.x patch: trunk works
+     +1: covener, wrowe, ylavic
+
+  *) core: EBCDIC fixes for interim responses with additional headers.
+     trunk patch: http://svn.apache.org/r1777354
+     2.4.x patch: http://people.apache.org/~covener/patches/ebcdic-interim.diff
+     +1: covener, wrowe, ylavic (by inspection)
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -167,13 +187,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-r1740928_and_co-v3.patch
      +1: ylavic
 
-  *) mod_ssl: work around leaks on (graceful) restart.
-     trunk patch: http://svn.apache.org/r1781187
-                  http://svn.apache.org/r1781190
-                  http://svn.apache.org/r1781312
-     2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-mod_ssl-restart_leaks-v2.patch
-     +1: ylavic, jim, wrowe
-
   *) mod_proxy_hcheck: Don't validate timed out responses.
      trunk patch: http://svn.apache.org/r1779574
                   http://svn.apache.org/r1779623
@@ -190,6 +203,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: jfclere, jim
      wrowe asks: Can we capitalize Verify in SSLOCSPNoverify to keep
                  with conventions?
+     ylavic: +1 with http://svn.apache.org/r1788430, fixing the merge of
+             SSLOCSPNoverify and capitalizing as suggested above.
 
   *) mod_cache: Fix a regression in 2.4.25 for the forward proxy case by
      computing and using the same entity key according to when the cache
@@ -210,6 +225,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
            FULL hcheck patch: http://home.apache.org/~jim/patches/httpd2.4-hcheck.patch
            (includes all hcheck related patches, including showstopper)
      +1: jim
+     ylavic: 'tpsize' needs to be reset (to HC_THREADPOOL_SIZE) in pre_config,
+             otherwise if mod_proxy_hcheck is builtin/static and for example
+             ProxyHCTPsize were commented out on restart, we wouldn't use the
+             default value (as expected).
 
   *) mod_autoindex: Add IndexOptions UseOldDateFormat to allow the date
      format from 2.2 in the Last Modified column. PR60846.
@@ -225,31 +244,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      to set exceptions for ProxyPass specified in <Location> context.
      trunk patch: http://svn.apache.org/r1781328
      2.4.x patch: trunk works
-     +1: covener 
+     +1: covener, ylavic
      jailletc36: compatibility note is missing
-
-  *) core: %{DOCUMENT_URI} used in nested SSI expressions should point to the
-     URI originally requsted by the user, not the nested documents URI. This
-     restores the behavior of this variable to match the "legacy" SSI parser.
-     PR60624. 
-     trunk patch: http://svn.apache.org/r1780095
-     2.4.x patch: trunk works
-     +1: covener, wrowe
-
-  *) core: EBCDIC fixes for interim responses with additional headers.
-     trunk patch: http://svn.apache.org/r1777354
-     2.4.x patch: http://people.apache.org/~covener/patches/ebcdic-interim.diff
-     +1: covener, wrowe
 
   *) core: Add %{REMOTE_PORT} to the expression parser. PR59938
      trunk patch: http://svn.apache.org/r1776459
      2.4.x patch: trunk works
-     +1: covener
+     +1: covener, ylavic
      jailletc36: compatibility note is missing
 
-  [ New entried should be added at the START of the list ]
 
 PATCHES/ISSUES THAT ARE BEING WORKED
+  [ New entried should be added at the START of the list ]
 
   *) mod_brotli: Backport of mod_brotli filter
      trunk patch: http://svn.apache.org/r1761714
