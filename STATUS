@@ -150,13 +150,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_ssl: work around leaks on (graceful) restart.
-     trunk patch: http://svn.apache.org/r1781187
-                  http://svn.apache.org/r1781190
-                  http://svn.apache.org/r1781312
-     2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-mod_ssl-restart_leaks-v2.patch
-     +1: ylavic, jim, wrowe
-
   *) core: %{DOCUMENT_URI} used in nested SSI expressions should point to the
      URI originally requsted by the user, not the nested documents URI. This
      restores the behavior of this variable to match the "legacy" SSI parser.
