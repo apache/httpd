@@ -17,12 +17,37 @@
 #include "mod_proxy.h"
 #include "util_fcgi.h"
 #include "util_script.h"
+#include "ap_expr.h"
 
 module AP_MODULE_DECLARE_DATA proxy_fcgi_module;
 
 typedef struct {
+    ap_expr_info_t *cond;
+    ap_expr_info_t *subst;
+    const char *envname;
+} sei_entry;
+
+typedef struct {
     int need_dirwalk;
 } fcgi_req_config_t;
+
+/* We will assume FPM, but still differentiate */
+typedef enum {
+    BACKEND_DEFAULT_UNKNOWN = 0,
+    BACKEND_FPM,
+    BACKEND_GENERIC,
+} fcgi_backend_t;
+
+
+#define FCGI_MAY_BE_FPM(dconf)                              \
+        (dconf &&                                           \
+        ((dconf->backend_type == BACKEND_DEFAULT_UNKNOWN) || \
+        (dconf->backend_type == BACKEND_FPM)))
+
+typedef struct {
+    fcgi_backend_t backend_type;
+    apr_array_header_t *env_fixups;
+} fcgi_dirconf_t;
 
 /*
  * Canonicalise http-like URLs.
@@ -39,7 +64,7 @@ static int proxy_fcgi_canon(request_rec *r, char *url)
     fcgi_req_config_t *rconf = NULL;
     const char *pathinfo_type = NULL;
 
-    if (strncasecmp(url, "fcgi:", 5) == 0) {
+    if (ap_cstr_casecmpn(url, "fcgi:", 5) == 0) {
         url += 5;
     }
     else {
@@ -131,6 +156,49 @@ static int proxy_fcgi_canon(request_rec *r, char *url)
     }
 
     return OK;
+}
+
+
+/*
+  ProxyFCGISetEnvIf "reqenv('PATH_INFO') =~ m#/foo(\d+)\.php$#" COVENV1 "$1"
+  ProxyFCGISetEnvIf "reqenv('PATH_INFO') =~ m#/foo(\d+)\.php$#" PATH_INFO "/foo.php"
+  ProxyFCGISetEnvIf "reqenv('PATH_TRANSLATED') =~ m#(/.*foo)(\d+)(.*)#" PATH_TRANSLATED "$1$3"
+*/
+static void fix_cgivars(request_rec *r, fcgi_dirconf_t *dconf)
+{
+    sei_entry *entries;
+    const char *err, *src;
+    int i = 0, rc = 0;
+    ap_regmatch_t regm[AP_MAX_REG_MATCH];
+
+    entries = (sei_entry *) dconf->env_fixups->elts;
+    for (i = 0; i < dconf->env_fixups->nelts; i++) {
+        sei_entry *entry = &entries[i];
+
+        if (entry->envname[0] == '!') {
+            apr_table_unset(r->subprocess_env, entry->envname+1);
+        }
+        else if (0 < (rc = ap_expr_exec_re(r, entry->cond, AP_MAX_REG_MATCH, regm, &src, &err)))  {
+            const char *val = ap_expr_str_exec_re(r, entry->subst, AP_MAX_REG_MATCH, regm, &src, &err);
+            if (err) {
+                ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(03514)
+                              "Error evaluating expression for replacement of %s: '%s'",
+                               entry->envname, err);
+                continue;
+            }
+            if (APLOGrtrace4(r)) {
+                const char *oldval = apr_table_get(r->subprocess_env, entry->envname);
+                ap_log_rerror(APLOG_MARK, APLOG_TRACE4, 0, r,
+                              "fix_cgivars: override %s from '%s' to '%s'",
+                              entry->envname, oldval, val);
+
+            }
+            apr_table_setn(r->subprocess_env, entry->envname, val);
+        }
+        else {
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE8, 0, r, "fix_cgivars: Condition returned %d", rc);
+        }
+    }
 }
 
 /* Wrapper for apr_socket_sendv that handles updating the worker stats. */
@@ -253,7 +321,9 @@ static apr_status_t send_environment(proxy_conn_rec *conn, request_rec *r,
     apr_status_t rv;
     apr_size_t avail_len, len, required_len;
     int next_elem, starting_elem;
+    int fpm = 0;
     fcgi_req_config_t *rconf = ap_get_module_config(r->request_config, &proxy_fcgi_module);
+    fcgi_dirconf_t *dconf = ap_get_module_config(r->per_dir_config, &proxy_fcgi_module);
 
     if (rconf) {
        if (rconf->need_dirwalk) {
@@ -268,15 +338,24 @@ static apr_status_t send_environment(proxy_conn_rec *conn, request_rec *r,
         if (!strncmp(r->filename, "proxy:balancer://", 17)) {
             newfname = apr_pstrdup(r->pool, r->filename+17);
         }
-        else if (!strncmp(r->filename, "proxy:fcgi://", 13)) {
-            newfname = apr_pstrdup(r->pool, r->filename+13);
-        }
-        /* Query string in environment only */
-        if (newfname && r->args && *r->args) {
-            char *qs = strrchr(newfname, '?');
-            if (qs && !strcmp(qs+1, r->args)) {
-                *qs = '\0';
+
+        if (!FCGI_MAY_BE_FPM(dconf))  {
+            if (!strncmp(r->filename, "proxy:fcgi://", 13)) {
+                /* If we strip this under FPM, and any internal redirect occurs
+                 * on PATH_INFO, FPM may use PATH_TRANSLATED instead of
+                 * SCRIPT_FILENAME (a la mod_fastcgi + Action).
+                 */
+                newfname = apr_pstrdup(r->pool, r->filename+13);
             }
+            /* Query string in environment only */
+            if (newfname && r->args && *r->args) {
+                char *qs = strrchr(newfname, '?');
+                if (qs && !strcmp(qs+1, r->args)) {
+                    *qs = '\0';
+                }
+            }
+        } else {
+            fpm = 1;
         }
 
         if (newfname) {
@@ -285,10 +364,42 @@ static apr_status_t send_environment(proxy_conn_rec *conn, request_rec *r,
         }
     }
 
+#if 0
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(09999)
+                  "r->filename: %s", (r->filename ? r->filename : "nil"));
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(09999)
+                  "r->uri: %s", (r->uri ? r->uri : "nil"));
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(09999)
+                  "r->path_info: %s", (r->path_info ? r->path_info : "nil"));
+#endif
+
     ap_add_common_vars(r);
     ap_add_cgi_vars(r);
 
+    if (fpm || apr_table_get(r->notes, "virtual_script")) {
+        /*
+         * Adjust SCRIPT_NAME, PATH_INFO and PATH_TRANSLATED for PHP-FPM
+         * TODO: Right now, PATH_INFO and PATH_TRANSLATED look OK...
+         */
+        const char *pend;
+        const char *script_name = apr_table_get(r->subprocess_env, "SCRIPT_NAME");
+        pend = script_name + strlen(script_name);
+        if (r->path_info && *r->path_info) {
+            pend = script_name + ap_find_path_info(script_name, r->path_info) - 1;
+        }
+        while (pend != script_name && *pend != '/') {
+            pend--;
+        }
+        apr_table_setn(r->subprocess_env, "SCRIPT_NAME", pend);
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE4, 0, r,
+                      "fpm:virtual_script: Modified SCRIPT_NAME to: %s",
+                      pend);
+    }
+
     /* XXX are there any FastCGI specific env vars we need to send? */
+
+    /* Give admins final option to fine-tune env vars */
+    fix_cgivars(r, dconf);
 
     /* XXX mod_cgi/mod_cgid use ap_create_environment here, which fills in
      *     the TZ value specially.  We could use that, but it would mean
@@ -915,7 +1026,7 @@ static int proxy_fcgi_handler(request_rec *r, proxy_worker *worker,
                   "url: %s proxyname: %s proxyport: %d",
                   url, proxyname, proxyport);
 
-    if (strncasecmp(url, "fcgi:", 5) != 0) {
+    if (ap_cstr_casecmpn(url, "fcgi:", 5) != 0) {
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01077) "declining URL %s", url);
         return DECLINED;
     }
@@ -976,18 +1087,120 @@ cleanup:
     return status;
 }
 
+static void *fcgi_create_dconf(apr_pool_t *p, char *path)
+{
+    fcgi_dirconf_t *a;
+
+    a = (fcgi_dirconf_t *)apr_pcalloc(p, sizeof(fcgi_dirconf_t));
+    a->backend_type = BACKEND_DEFAULT_UNKNOWN;
+    a->env_fixups = apr_array_make(p, 20, sizeof(sei_entry));
+
+    return a;
+}
+
+static void *fcgi_merge_dconf(apr_pool_t *p, void *basev, void *overridesv)
+{
+    fcgi_dirconf_t *a, *base, *over;
+
+    a     = (fcgi_dirconf_t *)apr_pcalloc(p, sizeof(fcgi_dirconf_t));
+    base  = (fcgi_dirconf_t *)basev;
+    over  = (fcgi_dirconf_t *)overridesv;
+
+    a->backend_type = (over->backend_type != BACKEND_DEFAULT_UNKNOWN)
+                      ? over->backend_type
+                      : base->backend_type;
+    a->env_fixups = apr_array_append(p, base->env_fixups, over->env_fixups);
+    return a;
+}
+
+static const char *cmd_servertype(cmd_parms *cmd, void *in_dconf,
+                                   const char *val)
+{
+    fcgi_dirconf_t *dconf = in_dconf;
+
+    if (!strcasecmp(val, "GENERIC")) {
+       dconf->backend_type = BACKEND_GENERIC;
+    }
+    else if (!strcasecmp(val, "FPM")) {
+       dconf->backend_type = BACKEND_FPM;
+    }
+    else {
+        return "ProxyFCGIBackendType requires one of the following arguments: "
+               "'GENERIC', 'FPM'";
+    }
+
+    return NULL;
+}
+
+
+static const char *cmd_setenv(cmd_parms *cmd, void *in_dconf,
+                              const char *arg1, const char *arg2,
+                              const char *arg3)
+{
+    fcgi_dirconf_t *dconf = in_dconf;
+    const char *err;
+    sei_entry *new;
+    const char *envvar = arg2;
+
+    new = apr_array_push(dconf->env_fixups);
+    new->cond = ap_expr_parse_cmd(cmd, arg1, 0, &err, NULL);
+    if (err) {
+        return apr_psprintf(cmd->pool, "Could not parse expression \"%s\": %s",
+                            arg1, err);
+    }
+
+    if (envvar[0] == '!') {
+        /* Unset mode. */
+        if (arg3) {
+            return apr_psprintf(cmd->pool, "Third argument (\"%s\") is not "
+                                "allowed when using ProxyFCGISetEnvIf's unset "
+                                "mode (%s)", arg3, envvar);
+        }
+        else if (!envvar[1]) {
+            /* i.e. someone tried to give us a name of just "!" */
+            return "ProxyFCGISetEnvIf: \"!\" is not a valid variable name";
+        }
+
+        new->subst = NULL;
+    }
+    else {
+        /* Set mode. */
+        if (!arg3) {
+            /* A missing expr-value should be treated as empty. */
+            arg3 = "";
+        }
+
+        new->subst = ap_expr_parse_cmd(cmd, arg3, AP_EXPR_FLAG_STRING_RESULT, &err, NULL);
+        if (err) {
+            return apr_psprintf(cmd->pool, "Could not parse expression \"%s\": %s",
+                                arg3, err);
+        }
+    }
+
+    new->envname = envvar;
+
+    return NULL;
+}
 static void register_hooks(apr_pool_t *p)
 {
     proxy_hook_scheme_handler(proxy_fcgi_handler, NULL, NULL, APR_HOOK_FIRST);
     proxy_hook_canon_handler(proxy_fcgi_canon, NULL, NULL, APR_HOOK_FIRST);
 }
 
+static const command_rec command_table[] = {
+    AP_INIT_TAKE1("ProxyFCGIBackendType", cmd_servertype, NULL, OR_FILEINFO,
+                  "Specify the type of FastCGI server: 'Generic', 'FPM'"),
+    AP_INIT_TAKE23("ProxyFCGISetEnvIf", cmd_setenv, NULL, OR_FILEINFO,
+                  "expr-condition env-name expr-value"),
+    { NULL }
+};
+
 AP_DECLARE_MODULE(proxy_fcgi) = {
     STANDARD20_MODULE_STUFF,
-    NULL,                       /* create per-directory config structure */
-    NULL,                       /* merge per-directory config structures */
+    fcgi_create_dconf,          /* create per-directory config structure */
+    fcgi_merge_dconf,           /* merge per-directory config structures */
     NULL,                       /* create per-server config structure */
     NULL,                       /* merge per-server config structures */
-    NULL,                       /* command apr_table_t */
+    command_table,              /* command apr_table_t */
     register_hooks              /* register hooks */
 };
