@@ -189,10 +189,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      format from 2.2 in the Last Modified column. PR60846.
      trunk patch: http://svn.apache.org/r1787525
                   http://svn.apache.org/r1787553
+                  http://svn.apache.org/r1788451
      2.4.x patch: trunk works
      +1 covener
-     wrowe notes: strncasecmp copy-paste error (should be strcasecmp), the
-                  strn flavor was only for 'flag=' prefixes
 
   *) mod_proxy: Allow the per-request environment variable "no-proxy" to
      be used as an alternative to ProxyPass /path !. This is primarily
