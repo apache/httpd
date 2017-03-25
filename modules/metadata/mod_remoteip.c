@@ -862,6 +862,11 @@ static int remoteip_hook_pre_connection(conn_rec *c, void *csd)
     remoteip_conn_config_t *conn_conf;
     int optional;
 
+    /* Do not attempt to manipulate slave connections */
+    if (c->master != NULL) {
+        return DECLINED;
+    }
+
     conf = ap_get_module_config(ap_server_conf->module_config,
                                 &remoteip_module);
 
@@ -1031,6 +1036,8 @@ static apr_status_t remoteip_input_filter(ap_filter_t *f,
     remoteip_parse_status_t psts = HDR_NEED_MORE;
     const char *ptr;
     apr_size_t len;
+    apr_size_t this_read = 0; /* Track bytes read in each brigade */
+    apr_size_t prev_read = 0;
 
     if (f->c->aborted) {
         return APR_ECONNABORTED;
@@ -1077,8 +1084,22 @@ static apr_status_t remoteip_input_filter(ap_filter_t *f,
             return block == APR_NONBLOCK_READ ? APR_SUCCESS : APR_EOF;
         }
 
+        if (ctx->peeking) {
+            ctx->rcvd = 0;
+            ctx->need = MIN_HDR_LEN;
+        }
+
         while (!ctx->done && !APR_BRIGADE_EMPTY(ctx->bb)) {
             b = APR_BRIGADE_FIRST(ctx->bb);
+
+            if (ctx->peeking && APR_BUCKET_IS_EOS(b)) {
+                /* Shortcut - we know no header was found yet and an
+                   EOS indicates we never will */
+                apr_brigade_destroy(ctx->bb);
+                ctx->bb = NULL;
+                ctx->done = 1;
+                return APR_SUCCESS;
+            }
 
             ret = apr_bucket_read(b, &ptr, &len, block);
             if (APR_STATUS_IS_EAGAIN(ret) && block == APR_NONBLOCK_READ) {
@@ -1090,6 +1111,10 @@ static apr_status_t remoteip_input_filter(ap_filter_t *f,
 
             memcpy(ctx->header + ctx->rcvd, ptr, len);
             ctx->rcvd += len;
+
+            if (ctx->peeking && block == APR_NONBLOCK_READ) {
+                this_read += len;
+            }
 
             apr_bucket_delete(b);
             psts = HDR_NEED_MORE;
@@ -1103,12 +1128,11 @@ static apr_status_t remoteip_input_filter(ap_filter_t *f,
                        we purge the bb and can decide to step aside or switch to
                        non-speculative read to consume the data */
                     if (ctx->peeking) {
-                        apr_brigade_destroy(ctx->bb);
-
                         if (ctx->version < 0) {
                             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, f->c, APLOGNO(03512)
                                           "RemoteIPProxyProtocol: PROXY header is missing from "
                                           "request. Stepping aside.");
+                            apr_brigade_destroy(ctx->bb);
                             ctx->bb = NULL;
                             ctx->done = 1;
                             return ap_get_brigade(f->next, bb_out, mode, block, readbytes);
@@ -1118,10 +1142,10 @@ static apr_status_t remoteip_input_filter(ap_filter_t *f,
                             ctx->rcvd = 0;
                             ctx->need = MIN_HDR_LEN;
                             ctx->version = 0;
-                            ctx->bb = apr_brigade_create(f->c->pool, f->c->bucket_alloc);
                             ctx->done = 0;
                             ctx->mode = AP_MODE_READBYTES;
                             ctx->peeking = 0;
+                            apr_brigade_cleanup(ctx->bb);
 
                             ap_get_brigade(f->next, ctx->bb, ctx->mode, block,
                                            ctx->need - ctx->rcvd);
@@ -1182,6 +1206,18 @@ static apr_status_t remoteip_input_filter(ap_filter_t *f,
 
                 case HDR_NEED_MORE:
                     break;
+            }
+        }
+
+        /* In SPECULATIVE mode, upstream will return all data on each brigade get - even data
+           we've seen.  For non blocking read, make sure we got new data or return early when
+           we haven't */
+        if (ctx->peeking && block == APR_NONBLOCK_READ) {
+            if (this_read == prev_read) {
+                return APR_SUCCESS;
+            }
+            else {
+                prev_read = this_read;
             }
         }
     }
