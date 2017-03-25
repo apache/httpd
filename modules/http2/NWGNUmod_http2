@@ -204,7 +204,6 @@ FILES_nlm_objs = \
 	$(OBJDIR)/h2_switch.o \
 	$(OBJDIR)/h2_task.o \
 	$(OBJDIR)/h2_util.o \
-	$(OBJDIR)/h2_worker.o \
 	$(OBJDIR)/h2_workers.o \
 	$(OBJDIR)/mod_http2.o \
 	$(EOLIST)

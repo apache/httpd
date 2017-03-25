@@ -38,7 +38,6 @@
 #include "h2_stream.h"
 #include "h2_h2.h"
 #include "h2_task.h"
-#include "h2_worker.h"
 #include "h2_workers.h"
 #include "h2_conn.h"
 #include "h2_version.h"
@@ -129,13 +128,11 @@ apr_status_t h2_conn_child_init(apr_pool_t *pool, server_rec *s)
         maxw = minw;
     }
     
-    ap_log_error(APLOG_MARK, APLOG_TRACE3, 0, s,
-                 "h2_workers: min=%d max=%d, mthrpchild=%d", 
-                 minw, maxw, max_threads_per_child);
-    workers = h2_workers_create(s, pool, minw, maxw);
-    
     idle_secs = h2_config_geti(config, H2_CONF_MAX_WORKER_IDLE_SECS);
-    h2_workers_set_max_idle_secs(workers, idle_secs);
+    ap_log_error(APLOG_MARK, APLOG_TRACE3, 0, s,
+                 "h2_workers: min=%d max=%d, mthrpchild=%d, idle_secs=%d", 
+                 minw, maxw, max_threads_per_child, idle_secs);
+    workers = h2_workers_create(s, pool, minw, maxw, idle_secs);
  
     ap_register_input_filter("H2_IN", h2_filter_core_input,
                              NULL, AP_FTYPE_CONNECTION);

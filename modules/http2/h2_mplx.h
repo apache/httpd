@@ -64,11 +64,9 @@ struct h2_mplx {
     conn_rec *c;
     apr_pool_t *pool;
 
-    APR_RING_ENTRY(h2_mplx) link;
-
     unsigned int event_pending;
-    unsigned int aborted : 1;
-    unsigned int need_registration : 1;
+    unsigned int aborted;
+    unsigned int is_registered;     /* is registered at h2_workers */
 
     struct h2_ihash_t *streams;     /* all streams currently processing */
     struct h2_ihash_t *sredo;       /* all streams that need to be re-started */

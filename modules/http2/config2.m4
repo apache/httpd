@@ -39,7 +39,6 @@ h2_stream.lo dnl
 h2_switch.lo dnl
 h2_task.lo dnl
 h2_util.lo dnl
-h2_worker.lo dnl
 h2_workers.lo dnl
 "
 
