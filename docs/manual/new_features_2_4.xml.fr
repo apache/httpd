@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1726940:1787943 (outdated) -->
+<!-- English Revision: 1787943 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -209,6 +209,10 @@ serveur HTTP Apache</title>
       <dt><module>mod_http2</module> (disponible à partir de la
       version 2.4.17)</dt>
       <dd>Support de la couche transport HTTP/2.</dd>
+
+      <dt><module>mod_proxy_hcheck</module> (disponible à partir de la version 2.4.21)</dt>
+      <dd>Support d'un bilan de santé dynamique indépendant pour les serveurs
+      d'arrière-plan mandatés distants.</dd>
 
     </dl>
   </section>
