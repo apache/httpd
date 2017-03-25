@@ -223,6 +223,7 @@ PATCHES/ISSUES THAT ARE BEING WORKED
                   http://svn.apache.org/r1781030 (fix strict GCC warning)
                   http://svn.apache.org/r1781031 (reference the filter by handle)
                   http://svn.apache.org/r1781701 (rework optional processing case)
+                  http://svn.apache.org/r1788674 (final edge cases/ignore slave conns)
      2.4 convenience patch (includes CHANGES):
                   http://people.apache.org/~druggeri/patches/RemoteIPProxyProtocol.2.4.x.patch
      +1: druggeri, jim
