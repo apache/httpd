@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_http2: h2 workers with improved scalability for better scheduling
+     performance. There are H2MaxWorkers threads created at start and the
+     number is kept constant. [Stefan Eissing]
+     
   *) mod_http2: obsoleted option H2SessionExtraFiles, will be ignored and
      just log a warning. [Stefan Eissing]
      

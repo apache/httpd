@@ -44,7 +44,6 @@
 #include "h2_stream.h"
 #include "h2_session.h"
 #include "h2_task.h"
-#include "h2_worker.h"
 #include "h2_workers.h"
 #include "h2_util.h"
 
@@ -203,7 +202,6 @@ h2_mplx *h2_mplx_create(conn_rec *c, apr_pool_t *parent,
     m = apr_pcalloc(parent, sizeof(h2_mplx));
     if (m) {
         m->id = c->id;
-        APR_RING_ELEM_INIT(m, link);
         m->c = c;
 
         /* We create a pool with its own allocator to be used for
@@ -445,14 +443,14 @@ void h2_mplx_release_and_join(h2_mplx *m, apr_thread_cond_t *wait)
     int acquired;
 
     /* How to shut down a h2 connection:
-     * 0. tell the workers that no more tasks will come from us */
+     * 0. abort and tell the workers that no more tasks will come from us */
+    m->aborted = 1;
     h2_workers_unregister(m->workers, m);
     
     enter_mutex(m, &acquired);
 
     /* How to shut down a h2 connection:
-     * 1. set aborted flag and cancel all streams still active */
-    m->aborted = 1;
+     * 1. cancel all streams still active */
     while (!h2_ihash_iter(m->streams, stream_cancel_iter, m)) {
         /* until empty */
     }
@@ -495,6 +493,9 @@ void h2_mplx_release_and_join(h2_mplx *m, apr_thread_cond_t *wait)
     }
     
     leave_mutex(m, acquired);
+
+    /* 5. unregister again, now that our workers are done */
+    h2_workers_unregister(m->workers, m);
 
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c,
                   "h2_mplx(%ld): released", m->id);
@@ -679,7 +680,6 @@ apr_status_t h2_mplx_process(h2_mplx *m, struct h2_stream *stream,
                              h2_stream_pri_cmp *cmp, void *ctx)
 {
     apr_status_t status;
-    int do_registration = 0;
     int acquired;
     
     if ((status = enter_mutex(m, &acquired)) == APR_SUCCESS) {
@@ -695,22 +695,17 @@ apr_status_t h2_mplx_process(h2_mplx *m, struct h2_stream *stream,
                               H2_STRM_MSG(stream, "process, add to readyq")); 
             }
             else {
-                if (!m->need_registration) {
-                    m->need_registration = h2_iq_empty(m->q);
-                }
-                if (m->workers_busy < m->workers_max) {
-                    do_registration = m->need_registration;
-                }
                 h2_iq_add(m->q, stream->id, cmp, ctx);                
+                if (!m->is_registered) {
+                    if (h2_workers_register(m->workers, m) == APR_SUCCESS) {
+                        m->is_registered = 1;
+                    }
+                }
                 ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, m->c,
-                              H2_STRM_MSG(stream, "process, add to q")); 
+                              H2_STRM_MSG(stream, "process, added to q")); 
             }
         }
         leave_mutex(m, acquired);
-    }
-    if (do_registration) {
-        m->need_registration = 0;
-        h2_workers_register(m->workers, m);
     }
     return status;
 }
@@ -771,17 +766,16 @@ h2_task *h2_mplx_pop_task(h2_mplx *m, int *has_more)
     apr_status_t status;
     int acquired;
     
+    *has_more = 0;
     if ((status = enter_mutex(m, &acquired)) == APR_SUCCESS) {
-        if (m->aborted) {
-            *has_more = 0;
-        }
-        else {
+        if (!m->aborted) {
             task = next_stream_task(m);
-            *has_more = !h2_iq_empty(m->q);
-        }
-        
-        if (has_more && !task) {
-            m->need_registration = 1;
+            if (task != NULL && !h2_iq_empty(m->q)) {
+                *has_more = 1;
+            }
+            else {
+                m->is_registered = 0; /* h2_workers will discard this mplx */
+            }
         }
         leave_mutex(m, acquired);
     }
@@ -845,7 +839,6 @@ static void task_done(h2_mplx *m, h2_task *task, h2_req_engine *ngn)
             m->workers_limit = H2MIN(m->workers_limit * 2, 
                                      m->workers_max);
             m->last_limit_change = task->done_at;
-            m->need_registration = 1;
             ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c,
                           "h2_mplx(%ld): increase worker limit to %d",
                           m->id, m->workers_limit);
@@ -910,6 +903,11 @@ void h2_mplx_task_done(h2_mplx *m, h2_task *task, h2_task **ptask)
         if (ptask) {
             /* caller wants another task */
             *ptask = next_stream_task(m);
+        }
+        if (!m->is_registered && !h2_iq_empty(m->q)) {
+            if (h2_workers_register(m->workers, m) == APR_SUCCESS) {
+                m->is_registered = 1;
+            }
         }
         leave_mutex(m, acquired);
     }

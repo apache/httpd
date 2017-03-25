@@ -45,7 +45,6 @@
 #include "h2_session.h"
 #include "h2_stream.h"
 #include "h2_task.h"
-#include "h2_worker.h"
 #include "h2_util.h"
 
 static void H2_TASK_OUT_LOG(int lvl, h2_task *task, apr_bucket_brigade *bb, 
