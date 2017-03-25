@@ -202,7 +202,7 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"</pr
 <tr class="odd"><td><code>REMOTE_ADDR</code></td>
         <td>L'adresse IP de l'hôte distant</td></tr>
 <tr><td><code>REMOTE_PORT</code></td>
-        <td>Le port de l'hôte distant</td></tr>
+        <td>Le port de l'hôte distant (à partir de la version 2.4.26)</td></tr>
 <tr class="odd"><td><code>REMOTE_HOST</code></td>
         <td>Le nom d'hôte de l'hôte distant</td></tr>
 <tr><td><code>REMOTE_USER</code></td>
