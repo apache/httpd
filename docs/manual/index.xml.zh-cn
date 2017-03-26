@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE indexpage SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.zh-cn.xsl"?>
-<!-- English Revision: 1050960:1780358 (outdated) -->
+<!-- English Revision: 1780358 $ -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -37,7 +37,6 @@
     <page href="install.html">编译与安装</page>
     <page href="invoking.html">启动</page>
     <page href="stopping.html">停止与重启</page>
-    <page href="mod/directives.html">配置指令</page>
     <page href="mod/quickreference.html">指令快速参考</page>
     <page href="mod/">模块</page>
     <page href="mpm.html">多处理模块(MPM)</page>
@@ -49,6 +48,7 @@
 </category>
 
 <category id="usersguide"><title>用户指南</title>
+    <page href="getting-started.html">入门指南</page>
     <page href="bind.html">绑定指定地址与端口</page>
     <page href="configuring.html">配置文件</page>
     <page href="sections.html">配置片段</page>
@@ -69,14 +69,18 @@
 
 <category id="howto"><title>指引/教程</title>
     <page href="howto/auth.html">认证，授权与访问控制</page>
+    <page href="howto/access.html">访问控制</page>
     <page href="howto/cgi.html">CGI 与动态内容</page>
     <page href="howto/htaccess.html">.htaccess 文件</page>
     <page href="howto/ssi.html">服务器端插入(SSI)</page>
     <page href="howto/public_html.html">用户私人网站目录(public_html)</page>
+    <page href="howto/reverse_proxy.html">反向代理设置指南</page>
+    <page href="howto/http2.html">HTTP/2 指南</page>
 </category>
 
 <category id="platform"><title>平台相关说明</title>
     <page href="platform/windows.html">Microsoft Windows</page>
+    <page href="platform/rpm.html">基于RPM安装包的系统 (Redhat / CentOS / Fedora)</page>
     <page href="platform/netware.html">Novell NetWare</page>
     <page href="platform/ebcdic.html">EBCDIC 系统</page>
 </category>
@@ -85,6 +89,7 @@
     <page href="http://wiki.apache.org/httpd/FAQ">常见问题</page>
     <page href="sitemap.html">网站导航</page>
     <page href="developer/">开发文档</page>
+    <page href="http://httpd.apache.org/docs-project/">帮助改进文档</page>
     <page href="misc/">其它说明</page>
     <page href="http://wiki.apache.org/httpd/">维基</page>
 </category>
