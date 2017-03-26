@@ -29,8 +29,6 @@ serveur HTTP Apache</h1>
 <a href="./fr/new_features_2_4.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="./tr/new_features_2_4.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
   <p>Ce document décrit les modifications majeures apportées par
   la version 2.4 du serveur HTTP Apache. Pour les nouvelles fonctionnalités
@@ -213,6 +211,10 @@ serveur HTTP Apache</h1>
 
       <dt><code class="module"><a href="./mod/mod_http2.html">mod_http2</a></code> (disponible à partir de la version 2.4.17)</dt>
       <dd>Support de la couche transport HTTP/2.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_proxy_hcheck.html">mod_proxy_hcheck</a></code> (disponible à partir de la version 2.4.21)</dt>
+      <dd>Support d'un bilan de santé dynamique indépendant pour les serveurs
+      d'arrière-plan mandatés distants.</dd>
 
     </dl>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>

@@ -904,6 +904,10 @@ mandatés</td></tr>
 <tr class="odd"><td><a href="mod_proxy_express.html#proxyexpressdbmfile">ProxyExpressDBMFile &lt;chemin&gt;</a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Chemin du fichier DBM.</td></tr>
 <tr><td><a href="mod_proxy_express.html#proxyexpressdbmtype">ProxyExpressDBMFile &lt;type&gt;</a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Type de fichier DBM.</td></tr>
 <tr class="odd"><td><a href="mod_proxy_express.html#proxyexpressenable">ProxyExpressEnable [on|off]</a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active la fonctionnalité du module.</td></tr>
+<tr><td><a href="mod_proxy_fcgi.html#proxyfcgibackendtype">ProxyFCGIBackendType FPM|GENERIC</a></td><td> FPM </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Specify the type of backend FastCGI application</td></tr>
+<tr class="odd"><td><a href="mod_proxy_fcgi.html#proxyfcgisetenvif">ProxyFCGISetEnvIf <var>conditional-expression</var>
+    [!]<var>environment-variable-name</var>
+    [<var>value-expression</var>]</a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Allow variables sent to FastCGI servers to be fixed up</td></tr>
 <tr><td><a href="mod_proxy_ftp.html#proxyftpdircharset">ProxyFtpDirCharset <var>jeu-caractères</var></a></td><td> ISO-8859-1 </td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Définit le jeu de caractères des listings FTP
 mandatés</td></tr>
 <tr class="odd"><td><a href="mod_proxy_ftp.html#proxyftpescapewildcards">ProxyFtpEscapeWildcards [on|off]</a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Les caractères génériques dans les noms de fichiers
