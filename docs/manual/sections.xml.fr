@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1786895:1787736 (outdated) -->
+<!-- English Revision: 1787736 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -420,7 +420,9 @@ directives <directive type="section" module="core">If</directive> à
 l'intérieur des sections <directive type="section"
 module="core">Directory</directive>, <directive type="section"
 module="core">Location</directive> et <directive type="section"
-module="core">Files</directive>. Les valeurs des expressions
+module="core">Files</directive> (mais pas à l'intérieur d'une autre section
+<directive type="section" module="core">If</directive>). Les valeurs des
+expressions
 rationnelles correspondant aux sections nommées se comportent de manière
 identique.</p>
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1782180:1787736 (outdated) -->
+<!-- English Revision: 1787736 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -2372,6 +2372,15 @@ host</context>
     <p>Cette section de configuration ne peut contenir que des
     directives qui supportent le <a
     href="directive-dict.html#Context">contexte de répertoire</a>.</p>
+
+    <note><title>Ce n'est pas un langage de scripting</title>
+    Le nom de cette directive peut sembler très familier aux programmeurs et
+    administrateurs, mais il ne doit pas être confondu avec son homonyme des langages de
+    scripting. A ce titre, l'implémentation actuelle n'envisage pas la
+    possibilité d'imbriquer une section <directive type="section">If</directive>
+    dans une autre (la section <directive type="section">If</directive> qui se
+    trouve à l'intérieure de l'autre serait ignorée).
+    </note>
 
     <note type="warning">
     Certain variables, such as <code>CONTENT_TYPE</code> and other
