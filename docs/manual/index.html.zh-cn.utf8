@@ -36,7 +36,6 @@
 <a href="./tr/" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="./zh-cn/" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">此翻译可能过期。要了解最近的更改，请阅读英文版。</div>
 <form method="get" action="http://www.google.com/search"><p><input name="as_q" value="" type="text" /> <input value="Google 搜索" type="submit" /><input value="10" name="num" type="hidden" /><input value="zh-cn" name="hl" type="hidden" /><input value="UTF-8" name="ie" type="hidden" /><input value="Google Search" name="btnG" type="hidden" /><input name="as_epq" value="版本 2.4" type="hidden" /><input name="as_oq" value="" type="hidden" /><input name="as_eq" value="&quot;List-Post&quot;" type="hidden" /><input value="" name="lr" type="hidden" /><input value="i" name="as_ft" type="hidden" /><input value="" name="as_filetype" type="hidden" /><input value="all" name="as_qdr" type="hidden" /><input value="any" name="as_occt" type="hidden" /><input value="i" name="as_dt" type="hidden" /><input value="httpd.apache.org" name="as_sitesearch" type="hidden" /><input value="off" name="safe" type="hidden" /></p></form>
 <table id="indextable"><tr><td class="col1"><div class="category"><h2><a name="release" id="release">发行说明</a></h2>
 <ul><li><a href="new_features_2_4.html">Apache 2.3/2.4 的新特性</a></li>
@@ -49,7 +48,6 @@
 <ul><li><a href="install.html">编译与安装</a></li>
 <li><a href="invoking.html">启动</a></li>
 <li><a href="stopping.html">停止与重启</a></li>
-<li><a href="mod/directives.html">配置指令</a></li>
 <li><a href="mod/quickreference.html">指令快速参考</a></li>
 <li><a href="mod/">模块</a></li>
 <li><a href="mpm.html">多处理模块(MPM)</a></li>
@@ -60,7 +58,8 @@
 <li><a href="glossary.html">术语</a></li>
 </ul>
 </div></td><td><div class="category"><h2><a name="usersguide" id="usersguide">用户指南</a></h2>
-<ul><li><a href="bind.html">绑定指定地址与端口</a></li>
+<ul><li><a href="getting-started.html">入门指南</a></li>
+<li><a href="bind.html">绑定指定地址与端口</a></li>
 <li><a href="configuring.html">配置文件</a></li>
 <li><a href="sections.html">配置片段</a></li>
 <li><a href="caching.html">缓存指南</a></li>
@@ -79,13 +78,17 @@
 </ul>
 </div></td><td class="col3"><div class="category"><h2><a name="howto" id="howto">指引/教程</a></h2>
 <ul><li><a href="howto/auth.html">认证，授权与访问控制</a></li>
+<li><a href="howto/access.html">访问控制</a></li>
 <li><a href="howto/cgi.html">CGI 与动态内容</a></li>
 <li><a href="howto/htaccess.html">.htaccess 文件</a></li>
 <li><a href="howto/ssi.html">服务器端插入(SSI)</a></li>
 <li><a href="howto/public_html.html">用户私人网站目录(public_html)</a></li>
+<li><a href="howto/reverse_proxy.html">反向代理设置指南</a></li>
+<li><a href="howto/http2.html">HTTP/2 指南</a></li>
 </ul>
 </div><div class="category"><h2><a name="platform" id="platform">平台相关说明</a></h2>
 <ul><li><a href="platform/windows.html">Microsoft Windows</a></li>
+<li><a href="platform/rpm.html">基于RPM安装包的系统 (Redhat / CentOS / Fedora)</a></li>
 <li><a href="platform/netware.html">Novell NetWare</a></li>
 <li><a href="platform/ebcdic.html">EBCDIC 系统</a></li>
 </ul>
@@ -93,6 +96,7 @@
 <ul><li><a href="http://wiki.apache.org/httpd/FAQ">常见问题</a></li>
 <li><a href="sitemap.html">网站导航</a></li>
 <li><a href="developer/">开发文档</a></li>
+<li><a href="http://httpd.apache.org/docs-project/">帮助改进文档</a></li>
 <li><a href="misc/">其它说明</a></li>
 <li><a href="http://wiki.apache.org/httpd/">维基</a></li>
 </ul>
