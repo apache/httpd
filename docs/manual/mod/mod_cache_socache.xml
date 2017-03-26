@@ -46,14 +46,14 @@ HTTP caching filter.</description>
 # Turn on caching
 CacheSocache shmcb
 CacheSocacheMaxSize 102400
-&lt;Location /foo&gt;
+&lt;Location "/foo"&gt;
     CacheEnable socache
 &lt;/Location&gt;
 
 # Fall back to the disk cache
 CacheSocache shmcb
 CacheSocacheMaxSize 102400
-&lt;Location /foo&gt;
+&lt;Location "/foo"&gt;
     CacheEnable socache
     CacheEnable disk
 &lt;/Location&gt;
@@ -62,7 +62,7 @@ CacheSocacheMaxSize 102400
     <note><title>Note:</title>
       <p><module>mod_cache_socache</module> requires the services of
       <module>mod_cache</module>, which must be loaded before
-      mod_cache_socache.</p>
+      <module>mod_cache_socache</module>.</p>
     </note>
 </summary>
 <seealso><module>mod_cache</module></seealso>
@@ -199,7 +199,7 @@ cache</description>
     cache, as opposed to data being served from the cache.</p>
 
     <highlight language="config">
-      CacheReadSize 102400
+      CacheSocacheReadSize 102400
     </highlight>
 </usage>
 </directivesynopsis>
