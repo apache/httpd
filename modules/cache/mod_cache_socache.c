@@ -1249,7 +1249,7 @@ static const char *set_cache_socache(cmd_parms *cmd, void *in_struct_ptr,
             name, AP_SOCACHE_PROVIDER_VERSION);
     if (provider->socache_provider == NULL) {
         err = apr_psprintf(cmd->pool,
-                "Unknown socache provider '%s'. Maybe you need "
+                    "Unknown socache provider '%s'. Maybe you need "
                     "to load the appropriate socache module "
                     "(mod_socache_%s?)", name, name);
     }
@@ -1417,7 +1417,7 @@ static int socache_precfg(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptmp)
             APR_LOCK_DEFAULT, 0);
     if (rv != APR_SUCCESS) {
         ap_log_perror(APLOG_MARK, APLOG_CRIT, rv, plog, APLOGNO(02390)
-        "failed to register %s mutex", cache_socache_id);
+                "failed to register %s mutex", cache_socache_id);
         return 500; /* An HTTP status would be a misnomer! */
     }
 
@@ -1451,7 +1451,7 @@ static int socache_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                     NULL, s, pconf, 0);
             if (rv != APR_SUCCESS) {
                 ap_log_perror(APLOG_MARK, APLOG_CRIT, rv, plog, APLOGNO(02391)
-                "failed to create %s mutex", cache_socache_id);
+                        "failed to create %s mutex", cache_socache_id);
                 return 500; /* An HTTP status would be a misnomer! */
             }
             apr_pool_cleanup_register(pconf, NULL, remove_lock,
@@ -1472,7 +1472,7 @@ static int socache_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                 &socache_hints, s, pconf);
         if (rv != APR_SUCCESS) {
             ap_log_perror(APLOG_MARK, APLOG_CRIT, rv, plog, APLOGNO(02393)
-            "failed to initialise %s cache", cache_socache_id);
+                    "failed to initialise %s cache", cache_socache_id);
             return 500; /* An HTTP status would be a misnomer! */
         }
         apr_pool_cleanup_register(pconf, (void *) s, destroy_cache,
