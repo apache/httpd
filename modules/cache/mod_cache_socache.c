@@ -270,7 +270,8 @@ static apr_status_t store_table(apr_table_t *table, unsigned char *buffer,
 }
 
 static const char* regen_key(apr_pool_t *p, apr_table_t *headers,
-        apr_array_header_t *varray, const char *oldkey)
+                             apr_array_header_t *varray, const char *oldkey,
+                             apr_size_t *newkeylen)
 {
     struct iovec *iov;
     int i, k;
@@ -322,7 +323,7 @@ static const char* regen_key(apr_pool_t *p, apr_table_t *headers,
     iov[k].iov_len = strlen(oldkey);
     k++;
 
-    return apr_pstrcatv(p, iov, k, NULL);
+    return apr_pstrcatv(p, iov, k, newkeylen);
 }
 
 static int array_alphasort(const void *fn1, const void *fn2)
@@ -526,7 +527,7 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
             return DECLINED;
         }
 
-        nkey = regen_key(r->pool, r->headers_in, varray, key);
+        nkey = regen_key(r->pool, r->headers_in, varray, key, &len);
 
         /* attempt to retrieve the cached entry */
         if (socache_mutex) {
@@ -542,7 +543,7 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
         buffer_len = sobj->buffer_len;
         rc = conf->provider->socache_provider->retrieve(
                 conf->provider->socache_instance, r->server,
-                (unsigned char *) nkey, strlen(nkey), sobj->buffer,
+                (unsigned char *) nkey, len, sobj->buffer,
                 &buffer_len, r->pool);
         if (socache_mutex) {
             apr_status_t status = apr_global_mutex_unlock(socache_mutex);
@@ -869,7 +870,7 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r,
             }
 
             obj->key = sobj->key = regen_key(r->pool, sobj->headers_in, varray,
-                    sobj->name);
+                                             sobj->name, NULL);
         }
     }
 
