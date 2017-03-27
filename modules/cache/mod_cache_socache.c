@@ -77,13 +77,13 @@ typedef struct cache_socache_object_t
     cache_socache_info_t socache_info; /* Header information. */
     apr_size_t body_offset; /* offset to the start of the body */
     apr_off_t body_length; /* length of the cached entity body */
-    unsigned int newbody :1; /* whether a new body is present */
     apr_time_t expire; /* when to expire the entry */
 
     const char *name; /* Requested URI without vary bits - suitable for mortals. */
     const char *key; /* On-disk prefix; URI with Vary bits (if present) */
     apr_off_t offset; /* Max size to set aside */
     apr_time_t timeout; /* Max time to set aside */
+    unsigned int newbody :1; /* whether a new body is present */
     unsigned int done :1; /* Is the attempt to cache complete? */
 } cache_socache_object_t;
 
