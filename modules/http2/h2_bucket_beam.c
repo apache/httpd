@@ -246,15 +246,17 @@ static int report_consumption(h2_bucket_beam *beam, h2_beam_lock *pbl)
     apr_off_t len = beam->received_bytes - beam->cons_bytes_reported;
     h2_beam_io_callback *cb = beam->cons_io_cb;
      
-    if (cb) {
-        void *ctx = beam->cons_ctx;
-        
-        if (pbl) leave_yellow(beam, pbl);
-        cb(ctx, beam, len);
-        if (pbl) enter_yellow(beam, pbl);
-        rv = 1;
+    if (len > 0) {
+        if (cb) {
+            void *ctx = beam->cons_ctx;
+            
+            if (pbl) leave_yellow(beam, pbl);
+            cb(ctx, beam, len);
+            if (pbl) enter_yellow(beam, pbl);
+            rv = 1;
+        }
+        beam->cons_bytes_reported += len;
     }
-    beam->cons_bytes_reported += len;
     return rv;
 }
 
@@ -1250,9 +1252,9 @@ void h2_beam_log(h2_bucket_beam *beam, conn_rec *c, int level, const char *msg)
     if (beam && APLOG_C_IS_LEVEL(c,level)) {
         ap_log_cerror(APLOG_MARK, level, 0, c, 
                       "beam(%ld-%d,%s,closed=%d,aborted=%d,empty=%d,buf=%ld): %s", 
-                      c->id, beam->id, beam->tag, beam->closed, beam->aborted, 
-                      h2_beam_empty(beam), (long)h2_beam_get_buffered(beam),
-                      msg);
+                      (c->master? c->master->id : c->id), beam->id, beam->tag, 
+                      beam->closed, beam->aborted, h2_beam_empty(beam), 
+                      (long)h2_beam_get_buffered(beam), msg);
     }
 }
 

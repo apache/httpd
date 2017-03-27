@@ -21,21 +21,16 @@ struct h2_headers;
 struct h2_stream;
 struct h2_session;
 
-typedef apr_status_t h2_filter_cin_cb(void *ctx, 
-                                      const char *data, apr_size_t len,
-                                      apr_size_t *readlen);
-
 typedef struct h2_filter_cin {
     apr_pool_t *pool;
-    apr_bucket_brigade *bb;
-    h2_filter_cin_cb *cb;
-    void *cb_ctx;
     apr_socket_t *socket;
     apr_interval_time_t timeout;
-    apr_time_t start_read;
+    apr_bucket_brigade *bb;
+    struct h2_session *session;
+    apr_bucket *cur;
 } h2_filter_cin;
 
-h2_filter_cin *h2_filter_cin_create(apr_pool_t *p, h2_filter_cin_cb *cb, void *ctx);
+h2_filter_cin *h2_filter_cin_create(struct h2_session *session);
 
 void h2_filter_cin_timeout_set(h2_filter_cin *cin, apr_interval_time_t timeout);
 

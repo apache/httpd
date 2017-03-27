@@ -991,17 +991,16 @@ apr_status_t h2_brigade_concat_length(apr_bucket_brigade *dest,
                                       apr_bucket_brigade *src,
                                       apr_off_t length)
 {
-    apr_bucket *b, *next;
+    apr_bucket *b;
     apr_off_t remain = length;
     apr_status_t status = APR_SUCCESS;
     
-    for (b = APR_BRIGADE_FIRST(src); 
-         b != APR_BRIGADE_SENTINEL(src);
-         b = next) {
-        next = APR_BUCKET_NEXT(b);
+    while (!APR_BRIGADE_EMPTY(src)) {
+        b = APR_BRIGADE_FIRST(src); 
         
         if (APR_BUCKET_IS_METADATA(b)) {
-            /* fall through */
+            APR_BUCKET_REMOVE(b);
+            APR_BRIGADE_INSERT_TAIL(dest, b);
         }
         else {
             if (remain == b->length) {
@@ -1024,10 +1023,10 @@ apr_status_t h2_brigade_concat_length(apr_bucket_brigade *dest,
                     apr_bucket_split(b, remain);
                 }
             }
+            APR_BUCKET_REMOVE(b);
+            APR_BRIGADE_INSERT_TAIL(dest, b);
+            remain -= b->length;
         }
-        APR_BUCKET_REMOVE(b);
-        APR_BRIGADE_INSERT_TAIL(dest, b);
-        remain -= b->length;
     }
     return status;
 }
@@ -1215,55 +1214,14 @@ apr_size_t h2_util_bucket_print(char *buffer, apr_size_t bmax,
     if (bmax <= off) {
         return off;
     }
-    if (APR_BUCKET_IS_METADATA(b)) {
-        if (APR_BUCKET_IS_EOS(b)) {
-            off += apr_snprintf(buffer+off, bmax-off, "eos");
-        }
-        else if (APR_BUCKET_IS_FLUSH(b)) {
-            off += apr_snprintf(buffer+off, bmax-off, "flush");
-        }
-        else if (AP_BUCKET_IS_EOR(b)) {
-            off += apr_snprintf(buffer+off, bmax-off, "eor");
-        }
-        else {
-            off += apr_snprintf(buffer+off, bmax-off, "%s", b->type->name);
-        }
+    else if (APR_BUCKET_IS_METADATA(b)) {
+        off += apr_snprintf(buffer+off, bmax-off, "%s", b->type->name);
     }
-    else {
-        const char *btype = b->type->name;
-        if (APR_BUCKET_IS_FILE(b)) {
-            btype = "file";
-        }
-        else if (APR_BUCKET_IS_PIPE(b)) {
-            btype = "pipe";
-        }
-        else if (APR_BUCKET_IS_SOCKET(b)) {
-            btype = "socket";
-        }
-        else if (APR_BUCKET_IS_HEAP(b)) {
-            btype = "heap";
-        }
-        else if (APR_BUCKET_IS_TRANSIENT(b)) {
-            btype = "transient";
-        }
-        else if (APR_BUCKET_IS_IMMORTAL(b)) {
-            btype = "immortal";
-        }
-#if APR_HAS_MMAP
-        else if (APR_BUCKET_IS_MMAP(b)) {
-            btype = "mmap";
-        }
-#endif
-        else if (APR_BUCKET_IS_POOL(b)) {
-            btype = "pool";
-        }
-        
-        if (bmax > off) {
-            off += apr_snprintf(buffer+off, bmax-off, "%s[%ld]", 
-                                btype, 
-                                (long)(b->length == ((apr_size_t)-1)? 
-                                       -1 : b->length));
-        }
+    else if (bmax > off) {
+        off += apr_snprintf(buffer+off, bmax-off, "%s[%ld]", 
+                            b->type->name, 
+                            (long)(b->length == ((apr_size_t)-1)? 
+                                   -1 : b->length));
     }
     return off;
 }

@@ -618,6 +618,18 @@ static apr_status_t out_close(h2_mplx *m, h2_task *task)
     return status;
 }
 
+static int report_input_consumption(void *ctx, void *val)
+{
+    h2_stream *stream = val;
+    
+    (void)ctx;
+    if (stream->input) {
+        h2_beam_report_consumption(stream->input);
+    }
+    return 1;
+}
+
+
 apr_status_t h2_mplx_out_trywait(h2_mplx *m, apr_interval_time_t timeout,
                                  apr_thread_cond_t *iowait)
 {
@@ -633,6 +645,7 @@ apr_status_t h2_mplx_out_trywait(h2_mplx *m, apr_interval_time_t timeout,
         }
         else {
             purge_streams(m);
+            h2_ihash_iter(m->streams, report_input_consumption, m);
             m->added_output = iowait;
             status = apr_thread_cond_timedwait(m->added_output, m->lock, timeout);
             if (APLOGctrace2(m->c)) {
