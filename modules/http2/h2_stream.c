@@ -157,9 +157,15 @@ static int on_frame_recv(h2_stream_state_t state, int frame_type)
     return on_frame(state, frame_type, trans_on_recv, H2_ALEN(trans_on_recv));
 }
 
-static int on_event(h2_stream_state_t state, h2_stream_event_t ev)
+static int on_event(h2_stream* stream, h2_stream_event_t ev)
 {
-    return on_map(state, trans_on_event[ev]);
+    if (stream->monitor && stream->monitor->on_event) {
+        stream->monitor->on_event(stream->monitor->ctx, stream, ev);
+    }
+    if (ev < H2_ALEN(trans_on_event)) {
+        return on_map(stream->state, trans_on_event[ev]);
+    }
+    return stream->state;
 }
 
 static void H2_STREAM_OUT_LOG(int lvl, h2_stream *s, const char *tag)
@@ -176,11 +182,16 @@ static void H2_STREAM_OUT_LOG(int lvl, h2_stream *s, const char *tag)
 }
 
 static apr_status_t setup_input(h2_stream *stream) {
-    if (stream->input == NULL && !stream->input_eof) {
-        h2_beam_create(&stream->input, stream->pool, stream->id, 
-                       "input", H2_BEAM_OWNER_SEND, 0, 
-                       stream->session->s->timeout);
-        h2_beam_send_from(stream->input, stream->pool);
+    if (stream->input == NULL) {
+        int empty = (stream->input_eof 
+                     && (!stream->in_buffer 
+                         || APR_BRIGADE_EMPTY(stream->in_buffer)));
+        if (!empty) {
+            h2_beam_create(&stream->input, stream->pool, stream->id, 
+                           "input", H2_BEAM_OWNER_SEND, 0, 
+                           stream->session->s->timeout);
+            h2_beam_send_from(stream->input, stream->pool);
+        }
     }
     return APR_SUCCESS;
 }
@@ -202,27 +213,27 @@ static apr_status_t close_input(h2_stream *stream)
     }
     
     if (stream->trailers && !apr_is_empty_table(stream->trailers)) {
-        apr_bucket_brigade *tmp;
         apr_bucket *b;
         h2_headers *r;
         
-        tmp = apr_brigade_create(stream->pool, c->bucket_alloc);
+        if (!stream->in_buffer) {
+            stream->in_buffer = apr_brigade_create(stream->pool, c->bucket_alloc);
+        }
         
         r = h2_headers_create(HTTP_OK, stream->trailers, NULL, stream->pool);
         stream->trailers = NULL;        
         b = h2_bucket_headers_create(c->bucket_alloc, r);
-        APR_BRIGADE_INSERT_TAIL(tmp, b);
+        APR_BRIGADE_INSERT_TAIL(stream->in_buffer, b);
         
         b = apr_bucket_eos_create(c->bucket_alloc);
-        APR_BRIGADE_INSERT_TAIL(tmp, b);
+        APR_BRIGADE_INSERT_TAIL(stream->in_buffer, b);
         
         ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, stream->session->c,
                       H2_STRM_MSG(stream, "added trailers"));
-        setup_input(stream);
-        status = h2_beam_send(stream->input, tmp, APR_BLOCK_READ);
-        apr_brigade_destroy(tmp);
+        h2_stream_dispatch(stream, H2_SEV_IN_DATA_PENDING);
     }
     if (stream->input) {
+        h2_stream_flush_input(stream);
         return h2_beam_close(stream->input);
     }
     return status;
@@ -329,7 +340,7 @@ void h2_stream_dispatch(h2_stream *stream, h2_stream_event_t ev)
     
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, stream->session->c,
                   H2_STRM_MSG(stream, "dispatch event %d"), ev);
-    new_state = on_event(stream->state, ev);
+    new_state = on_event(stream, ev);
     if (new_state < 0) {
         ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, stream->session->c, 
                       H2_STRM_LOG(APLOGNO(10002), stream, "invalid event %d"), ev);
@@ -340,7 +351,7 @@ void h2_stream_dispatch(h2_stream *stream, h2_stream_event_t ev)
     else if (new_state == stream->state) {
         /* nop */
         ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, stream->session->c,
-                      H2_STRM_MSG(stream, "ignored event %d"), ev);
+                      H2_STRM_MSG(stream, "non-state event %d"), ev);
         return;
     }
     else {
@@ -399,7 +410,7 @@ apr_status_t h2_stream_send_frame(h2_stream *stream, int ftype, int flags)
                   H2_STRM_MSG(stream, "send frame %d, eos=%d"), ftype, eos);
     status = transit(stream, new_state);
     if (status == APR_SUCCESS && eos) {
-        status = transit(stream, on_event(stream->state, H2_SEV_CLOSED_L));
+        status = transit(stream, on_event(stream, H2_SEV_CLOSED_L));
     }
     return status;
 }
@@ -449,7 +460,23 @@ apr_status_t h2_stream_recv_frame(h2_stream *stream, int ftype, int flags)
     }
     status = transit(stream, new_state);
     if (status == APR_SUCCESS && eos) {
-        status = transit(stream, on_event(stream->state, H2_SEV_CLOSED_R));
+        status = transit(stream, on_event(stream, H2_SEV_CLOSED_R));
+    }
+    return status;
+}
+
+apr_status_t h2_stream_flush_input(h2_stream *stream)
+{
+    apr_status_t status = APR_SUCCESS;
+    
+    if (stream->in_buffer && !APR_BRIGADE_EMPTY(stream->in_buffer)) {
+        setup_input(stream);
+        status = h2_beam_send(stream->input, stream->in_buffer, APR_BLOCK_READ);
+        stream->in_last_write = apr_time_now();
+    }
+    if (stream->input_eof 
+        && stream->input && !h2_beam_is_closed(stream->input)) {
+        status = h2_beam_close(stream->input);
     }
     return status;
 }
@@ -459,21 +486,27 @@ apr_status_t h2_stream_recv_DATA(h2_stream *stream, uint8_t flags,
 {
     h2_session *session = stream->session;
     apr_status_t status = APR_SUCCESS;
-    apr_bucket_brigade *tmp;
     
-    ap_assert(stream);
-    if (len > 0) {
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, session->c,
-                      H2_STRM_MSG(stream, "recv DATA, len=%d"), (int)len);
-        
-        tmp = apr_brigade_create(stream->pool, session->c->bucket_alloc);
-        apr_brigade_write(tmp, NULL, NULL, (const char *)data, len);
-        setup_input(stream);
-        status = h2_beam_send(stream->input, tmp, APR_BLOCK_READ);
-        apr_brigade_destroy(tmp);
-    }
     stream->in_data_frames++;
-    stream->in_data_octets += len;
+    if (len > 0) {
+        if (APLOGctrace3(session->c)) {
+            const char *load = apr_pstrndup(stream->pool, (const char *)data, len);
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, session->c,
+                          H2_STRM_MSG(stream, "recv DATA, len=%d: -->%s<--"), 
+                          (int)len, load);
+        }
+        else {
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, session->c,
+                          H2_STRM_MSG(stream, "recv DATA, len=%d"), (int)len);
+        }
+        stream->in_data_octets += len;
+        if (!stream->in_buffer) {
+            stream->in_buffer = apr_brigade_create(stream->pool, 
+                                                   session->c->bucket_alloc);
+        }
+        apr_brigade_write(stream->in_buffer, NULL, NULL, (const char *)data, len);
+        h2_stream_dispatch(stream, H2_SEV_IN_DATA_PENDING);
+    }
     return status;
 }
 
@@ -500,7 +533,11 @@ h2_stream *h2_stream_create(int id, apr_pool_t *pool, h2_session *session,
     
     h2_beam_create(&stream->output, pool, id, "output", H2_BEAM_OWNER_RECV, 0,
                    session->s->timeout);
-    
+                   
+    stream->in_window_size = 
+        nghttp2_session_get_stream_local_window_size(
+            stream->session->ngh2, stream->id);
+
     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, 
                   H2_STRM_LOG(APLOGNO(03082), stream, "created"));
     on_state_enter(stream);

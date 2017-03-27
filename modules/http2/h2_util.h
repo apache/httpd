@@ -430,8 +430,8 @@ do { \
     const char *line = "(null)"; \
     apr_size_t len, bmax = sizeof(buffer)/sizeof(buffer[0]); \
     len = h2_util_bb_print(buffer, bmax, (tag), "", (bb)); \
-    ap_log_cerror(APLOG_MARK, level, 0, (c), "bb_dump(%s): %s", \
-        (c)->log_id, (len? buffer : line)); \
+    ap_log_cerror(APLOG_MARK, level, 0, (c), "bb_dump(%ld): %s", \
+        ((c)->master? (c)->master->id : (c)->id), (len? buffer : line)); \
 } while(0)
 
 

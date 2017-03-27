@@ -57,6 +57,8 @@ typedef struct h2_stream_monitor {
                                              was detected */
     h2_stream_event_cb *on_state_event;   /* called right before the given event
                                              result in a new stream state */
+    h2_stream_event_cb *on_event;         /* called for events that do not 
+                                             trigger a state change */
 } h2_stream_monitor;
 
 struct h2_stream {
@@ -74,9 +76,13 @@ struct h2_stream {
     int request_headers_added;  /* number of request headers added */
     
     struct h2_bucket_beam *input;
+    apr_bucket_brigade *in_buffer;
+    int in_window_size;
+    apr_time_t in_last_write;
+    
     struct h2_bucket_beam *output;
-    apr_size_t max_mem;         /* maximum amount of data buffered */
     apr_bucket_brigade *out_buffer;
+    apr_size_t max_mem;         /* maximum amount of data buffered */
 
     int rst_error;              /* stream error for RST_STREAM */
     unsigned int aborted   : 1; /* was aborted */
@@ -205,6 +211,8 @@ apr_status_t h2_stream_recv_frame(h2_stream *stream, int frame_type, int flags);
 apr_status_t h2_stream_recv_DATA(h2_stream *stream, uint8_t flags,
                                  const uint8_t *data, size_t len);
 
+apr_status_t h2_stream_flush_input(h2_stream *stream);
+
 /**
  * Reset the stream. Stream write/reads will return errors afterwards.
  *
@@ -290,7 +298,6 @@ const char *h2_stream_state_str(h2_stream *stream);
  * @param stream the stream to check
  */
 int h2_stream_is_ready(h2_stream *stream);
-
 
 #define H2_STRM_MSG(s, msg)     \
     "h2_stream(%ld-%d,%s): "msg, s->session->id, s->id, h2_stream_state_str(s)

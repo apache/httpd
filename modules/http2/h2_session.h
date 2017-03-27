@@ -125,6 +125,10 @@ typedef struct h2_session {
     char status[64];                /* status message for scoreboard */
     int last_status_code;           /* the one already reported */
     const char *last_status_msg;    /* the one already reported */
+    
+    struct h2_iqueue *in_pending;   /* all streams with input pending */
+    struct h2_iqueue *in_process;   /* all streams ready for processing on slave */
+
 } h2_session;
 
 const char *h2_session_state_str(h2_session_state state);
@@ -154,6 +158,9 @@ apr_status_t h2_session_create(h2_session **psession,
 apr_status_t h2_session_rcreate(h2_session **psession,
                                 request_rec *r, struct h2_ctx *ctx,
                                 struct h2_workers *workers);
+
+void h2_session_event(h2_session *session, h2_session_event_t ev, 
+                             int err, const char *msg);
 
 /**
  * Process the given HTTP/2 session until it is ended or a fatal

@@ -216,14 +216,18 @@ static apr_status_t h2_filter_slave_in(ap_filter_t* f,
     apr_status_t status = APR_SUCCESS;
     apr_bucket *b, *next;
     apr_off_t bblen;
-    apr_size_t rmax;
+    const int trace1 = APLOGctrace1(f->c);
+    apr_size_t rmax = ((readbytes <= APR_SIZE_MAX)? 
+                       (apr_size_t)readbytes : APR_SIZE_MAX);
     
     task = h2_ctx_cget_task(f->c);
     ap_assert(task);
-    rmax = ((readbytes <= APR_SIZE_MAX)? (apr_size_t)readbytes : APR_SIZE_MAX);
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, f->c,
-                  "h2_slave_in(%s): read, mode=%d, block=%d, readbytes=%ld", 
-                  task->id, mode, block, (long)readbytes);
+
+    if (trace1) {
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, f->c,
+                      "h2_slave_in(%s): read, mode=%d, block=%d, readbytes=%ld", 
+                      task->id, mode, block, (long)readbytes);
+    }
     
     if (mode == AP_MODE_INIT) {
         return ap_get_brigade(f->c->input_filters, bb, mode, block, readbytes);
@@ -249,19 +253,23 @@ static apr_status_t h2_filter_slave_in(ap_filter_t* f,
     
     while (APR_BRIGADE_EMPTY(task->input.bb)) {
         /* Get more input data for our request. */
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, f->c,
-                      "h2_slave_in(%s): get more data from mplx, block=%d, "
-                      "readbytes=%ld", task->id, block, (long)readbytes);
+        if (trace1) {
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, f->c,
+                          "h2_slave_in(%s): get more data from mplx, block=%d, "
+                          "readbytes=%ld", task->id, block, (long)readbytes);
+        }
         if (task->input.beam) {
             status = h2_beam_receive(task->input.beam, task->input.bb, block, 
-                                     H2MIN(readbytes, 32*1024));
+                                     128*1024);
         }
         else {
             status = APR_EOF;
         }
         
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, f->c,
-                      "h2_slave_in(%s): read returned", task->id);
+        if (trace1) {
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, f->c,
+                          "h2_slave_in(%s): read returned", task->id);
+        }
         if (APR_STATUS_IS_EAGAIN(status) 
             && (mode == AP_MODE_GETLINE || block == APR_BLOCK_READ)) {
             /* chunked input handling does not seem to like it if we
@@ -275,9 +283,11 @@ static apr_status_t h2_filter_slave_in(ap_filter_t* f,
         else if (status != APR_SUCCESS) {
             return status;
         }
-        
-        h2_util_bb_log(f->c, task->stream_id, APLOG_TRACE2, 
-                       "input.beam recv raw", task->input.bb);
+
+        if (trace1) {
+            h2_util_bb_log(f->c, task->stream_id, APLOG_TRACE2, 
+                        "input.beam recv raw", task->input.bb);
+        }
         if (h2_task_logio_add_bytes_in) {
             apr_brigade_length(bb, 0, &bblen);
             h2_task_logio_add_bytes_in(f->c, bblen);
@@ -291,12 +301,16 @@ static apr_status_t h2_filter_slave_in(ap_filter_t* f,
         return (mode == AP_MODE_SPECULATIVE)? APR_EAGAIN : APR_EOF;
     }
 
-    h2_util_bb_log(f->c, task->stream_id, APLOG_TRACE2, 
-                   "task_input.bb", task->input.bb);
+    if (trace1) {
+        h2_util_bb_log(f->c, task->stream_id, APLOG_TRACE2, 
+                    "task_input.bb", task->input.bb);
+    }
            
     if (APR_BRIGADE_EMPTY(task->input.bb)) {
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, f->c,
-                      "h2_slave_in(%s): no data", task->id);
+        if (trace1) {
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, f->c,
+                          "h2_slave_in(%s): no data", task->id);
+        }
         return (block == APR_NONBLOCK_READ)? APR_EAGAIN : APR_EOF;
     }
     
@@ -321,9 +335,11 @@ static apr_status_t h2_filter_slave_in(ap_filter_t* f,
             apr_size_t len = sizeof(buffer)-1;
             apr_brigade_flatten(bb, buffer, &len);
             buffer[len] = 0;
-            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, f->c,
-                          "h2_slave_in(%s): getline: %s",
-                          task->id, buffer);
+            if (trace1) {
+                ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, f->c,
+                              "h2_slave_in(%s): getline: %s",
+                              task->id, buffer);
+            }
         }
     }
     else {
@@ -336,7 +352,7 @@ static apr_status_t h2_filter_slave_in(ap_filter_t* f,
         status = APR_ENOTIMPL;
     }
     
-    if (APLOGctrace1(f->c)) {
+    if (trace1) {
         apr_brigade_length(bb, 0, &bblen);
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, f->c,
                       "h2_slave_in(%s): %ld data bytes", task->id, (long)bblen);
