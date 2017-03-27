@@ -195,6 +195,20 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      jchampion: Trunk patches don't apply cleanly for me. The patch I used to
                 test is at https://home.apache.org/~jchampion/patches/2.4.x-expr-REMOTE_PORT.patch
 
+  *) Easy patches: synch 2.4.x and trunk
+     - cache: Use apr_pstrmemdup instead of apr_pstrndup when applicable
+     - cache: Remove a useless break + tiny style fix (missing space)
+     - vhost: save some request pool memory
+     - vhost: Fix some tiny style issues
+     - mod_dir: Save a few bytes in the request pool.
+     trunk patch: http://svn.apache.org/r1777556
+                  http://svn.apache.org/r1777557
+                  http://svn.apache.org/r1777593
+                  http://svn.apache.org/r1777594
+                  http://svn.apache.org/r1783056
+     2.4.x patch: trunk patches work
+     +1: jailletc36
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entried should be added at the START of the list ]
