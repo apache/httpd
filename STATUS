@@ -209,12 +209,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patches work
      +1: jailletc36
 
-  *) core: Fix leak of duplicated listeners (socket descriptors) on restart
-     when ListenCoresBucketsRatio is configured (positive).
-     trunk patch: http://svn.apache.org/r1789061
-     2.4.x patch: trunk works (module CHANGES)
-     +1: ylavic
-
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entried should be added at the START of the list ]
