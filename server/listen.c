@@ -516,6 +516,23 @@ static const char *alloc_listener(process_rec *process, char *addr,
 #define IS_IN6ADDR_ANY(addr) ((addr)->family == APR_INET6 \
                               && IN6_IS_ADDR_UNSPECIFIED(&(addr)->sa.sin6.sin6_addr))
 
+static apr_status_t ap_close_duplicated_listeners(void *nil)
+{
+    int i;
+
+    /* Start from index 1 since either ap_duplicate_listeners()
+     * was called and ap_listen_buckets[0] == ap_listeners, or
+     * it wasn't and ap_num_listen_buckets == 0.
+     */
+    for (i = 1; i < ap_num_listen_buckets; i++) {
+        ap_close_listeners_ex(ap_listen_buckets[i]);
+    }
+    ap_num_listen_buckets = 0;
+    ap_listen_buckets = NULL;
+
+    return APR_SUCCESS;
+}
+
 /**
  * Create, open, listen, and bind all sockets.
  * @param process The process record for the currently running server
@@ -867,22 +884,15 @@ AP_DECLARE(apr_status_t) ap_duplicate_listeners(apr_pool_t *p, server_rec *s,
 
     ap_listen_buckets = *buckets;
     ap_num_listen_buckets = *num_buckets;
+    apr_pool_cleanup_register(p, NULL, ap_close_duplicated_listeners,
+                              apr_pool_cleanup_null);
     return APR_SUCCESS;
 }
 
 AP_DECLARE_NONSTD(void) ap_close_listeners(void)
 {
-    int i;
-
     ap_close_listeners_ex(ap_listeners);
-
-    /* Start from index 1 since either ap_duplicate_listeners()
-     * was called and ap_listen_buckets[0] == ap_listeners, or
-     * it wasn't and ap_num_listen_buckets == 0.
-     */
-    for (i = 1; i < ap_num_listen_buckets; i++) {
-        ap_close_listeners_ex(ap_listen_buckets[i]);
-    }
+    ap_close_duplicated_listeners(NULL);
 }
 
 AP_DECLARE_NONSTD(void) ap_close_listeners_ex(ap_listen_rec *listeners)
@@ -915,8 +925,6 @@ AP_DECLARE(void) ap_listen_pre_config(void)
 {
     old_listeners = ap_listeners;
     ap_listeners = NULL;
-    ap_listen_buckets = NULL;
-    ap_num_listen_buckets = 0;
     ap_listenbacklog = DEFAULT_LISTENBACKLOG;
     ap_listencbratio = 0;
 
