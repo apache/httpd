@@ -277,14 +277,18 @@ static apr_status_t close_listeners_on_exec(void *v)
     return APR_SUCCESS;
 }
 
-static int find_listeners(ap_listen_rec **from, ap_listen_rec **to,
-                          const char *addr, apr_port_t port)
+static const char *alloc_listener(process_rec *process, char *addr,
+                                  apr_port_t port, const char* proto,
+                                  void *slave)
 {
-    int found = 0;
+    ap_listen_rec **walk, *last;
+    apr_status_t status;
+    apr_sockaddr_t *sa;
+    int found_listener = 0;
 
-    while (*from) {
-        apr_sockaddr_t *sa = (*from)->bind_addr;
-
+    /* see if we've got an old listener for this address:port */
+    for (walk = &old_listeners; *walk;) {
+        sa = (*walk)->bind_addr;
         /* Some listeners are not real so they will not have a bind_addr. */
         if (sa) {
             ap_listen_rec *new;
@@ -297,39 +301,19 @@ static int find_listeners(ap_listen_rec **from, ap_listen_rec **to,
             if (port == oldport &&
                 ((!addr && !sa->hostname) ||
                  ((addr && sa->hostname) && !strcmp(sa->hostname, addr)))) {
-                found = 1;
-                if (!to) {
-                    break;
-                }
-                new = *from;
-                *from = new->next;
-                new->next = *to;
-                *to = new;
+                new = *walk;
+                *walk = new->next;
+                new->next = ap_listeners;
+                ap_listeners = new;
+                found_listener = 1;
                 continue;
             }
         }
 
-        from = &(*from)->next;
+        walk = &(*walk)->next;
     }
 
-    return found;
-}
-
-static const char *alloc_listener(process_rec *process, const char *addr,
-                                  apr_port_t port, const char* proto,
-                                  void *slave)
-{
-    ap_listen_rec *last;
-    apr_status_t status;
-    apr_sockaddr_t *sa;
-
-    /* see if we've got a listener for this address:port, which is an error */
-    if (find_listeners(&ap_listeners, NULL, addr, port)) {
-        return "Cannot define multiple Listeners on the same IP:port";
-    }
-
-    /* see if we've got an old listener for this address:port */
-    if (find_listeners(&old_listeners, &ap_listeners, addr, port)) {
+    if (found_listener) {
         if (ap_listeners->slave != slave) {
             return "Cannot define a slave on the same IP:port as a Listener";
         }

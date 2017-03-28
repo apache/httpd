@@ -2,11 +2,6 @@
 
 Changes with Apache 2.4.26
 
-  *) core: Disallow multiple Listen on the same IP:port when listener buckets
-     are configured (ListenCoresBucketsRatio > 0), consistently with the single
-     bucket case (default), thus avoiding the leak of the corresponding socket
-     descriptors on graceful restart.  [Yann Ylavic]
-
   *) mod_cache: Fix a regression in 2.4.25 for the forward proxy case by
      computing and using the same entity key according to when the cache
      checks, loads and saves the request.
