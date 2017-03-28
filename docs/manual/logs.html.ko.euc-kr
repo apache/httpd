@@ -37,7 +37,7 @@
     유연한 로그 기능을 제공한다. 이 문서는 로그 기능을 설정하는
     방법과 로그에 들어갈 내용을 설명한다.</p>
   </div>
-<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#security">보안 경고</a></li>
+<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#security">보안 경고</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#errorlog">오류 로그 (Error Log)</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#accesslog">접근 로그 (Access Log)</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#rotation">로그 순환 (Log Rotation)</a></li>

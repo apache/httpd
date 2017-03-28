@@ -30,7 +30,7 @@
     <p>Le contrôle d'accès fait référence à tout concept de contrôle
     d'accès à une ressource quelconque. Il est distinct du processus d'<a href="auth.html">authentification et d'autorisation</a>.</p>
 </div>
-<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">Modules et directives concernés</a></li>
+<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">Modules et directives concernés</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#host">Contrôle d'accès en fonction de l'hôte du
 client</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#env">Contrôle d'accès en fonction de variables

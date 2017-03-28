@@ -35,7 +35,7 @@
     <p>이 문서는 요청의 URL을 가지고 아파치가 어떻게 서비스할 
     파일의 파일시스템상 위치를 찾는지 설명한다.</p>
   </div>
-<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#related">관련된 모듈과 지시어들</a></li>
+<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#related">관련된 모듈과 지시어들</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#documentroot">DocumentRoot</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#outside">DocumentRoot 밖에 있는 파일들</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#user">사용자 디렉토리</a></li>

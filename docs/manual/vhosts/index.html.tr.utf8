@@ -52,7 +52,7 @@
       ayrıntıları ile açıklayan belgeler listelenmiştir.</p>
 
 </div>
-<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#support">Sanal Konak Desteği</a></li>
+<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#support">Sanal Konak Desteği</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#directives">Yapılandırma Yönergeleri</a></li>
 </ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><code class="module"><a href="../mod/mod_vhost_alias.html">mod_vhost_alias</a></code></li><li><a href="name-based.html">İsme Dayalı Sanal Konaklar</a></li><li><a href="ip-based.html">IP Adresine Dayalı Sanal Konaklar</a>
 </li><li><a href="examples.html">Sanal Konak Örnekleri</a></li><li><a href="fd-limits.html">Dosya Tanıtıcı Sınırları</a></li><li><a href="mass.html">Kütlesel Sanal Konaklık</a></li><li><a href="details.html">Ayrıntılı olarak Konak Eşleme</a></li></ul></div>

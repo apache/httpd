@@ -30,7 +30,7 @@
     <p>Access control refers to any means of controlling access to any
     resource. This is separate from <a href="auth.html">authentication and authorization</a>.</p>
 </div>
-<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">Related Modules and Directives</a></li>
+<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">Related Modules and Directives</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#host">Access control by host</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#env">Access control by arbitrary variables</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rewrite">Access control with mod_rewrite</a></li>

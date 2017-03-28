@@ -36,7 +36,7 @@
 <tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_reqtimeout.c</td></tr>
 <tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache HTTPD 2.2.15 and later</td></tr></table>
 </div>
-<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><h3>Topics</h3>
+<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><h3>Topics</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#examples">Examples</a></li>
 </ul><h3 class="directives">Directives</h3>

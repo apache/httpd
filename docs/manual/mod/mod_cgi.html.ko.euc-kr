@@ -59,7 +59,7 @@
     <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code> 모듈을 사용해야 한다. 사용자
     입장에서 이 두 모듈은 기본적으로 동일하다.</p>
 </div>
-<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><h3>주제</h3>
+<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><h3>주제</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#env">CGI 환경변수</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cgi-debug">CGI 디버깅</a></li>

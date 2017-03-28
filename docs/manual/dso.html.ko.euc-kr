@@ -43,7 +43,7 @@
 
     <p>이 문서는 DSO 모듈 사용법과 배경 이론을 설명한다.</p>
   </div>
-<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#implementation">구현</a></li>
+<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#implementation">구현</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#usage">사용법 요약</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#background">배경지식</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#advantages">장단점</a></li>

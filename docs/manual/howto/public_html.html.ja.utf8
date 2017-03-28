@@ -55,7 +55,7 @@
     <p>あるいは、メインの設定ファイル中の <code>Directory</code> 
     ブロックの中に適切にディレクティブを記述しておきます。</p>
 </div>
-<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">ユーザ毎のウェブディレクトリ</a></li>
+<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">ユーザ毎のウェブディレクトリ</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#userdir">UserDir を使ってファイルのパスを設定する</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#redirect">外部 URL にリダイレクトする</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#enable">この機能を使用できるユーザを制限する</a></li>

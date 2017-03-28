@@ -689,6 +689,17 @@ div#page-header img {
     height: 70px;
 }
 
+div#quickview a.badge {
+    /* Temporary hack for the Support Apache badge */
+    background-color: transparent;
+}
+
+div#quickview a.badge img {
+    /* Temporary hack for the Support Apache badge */
+    width: 95px;
+    height: 95px;
+}
+
 div#page-header p.apache {
     background-color: #405871;
     color: #fff;

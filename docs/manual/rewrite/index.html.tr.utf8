@@ -72,7 +72,7 @@
 <li><a href="tech.html">Teknik ayrıntılar</a></li>
 </ul>
 </div>
-<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">mod_rewrite başvuru belgesi</a>
+<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">mod_rewrite başvuru belgesi</a>
 </li><li><a href="../urlmapping.html">URL’lerin Dosya Sistemine Eşlenmesi</a></li><li><a href="http://wiki.apache.org/httpd/Rewrite">mod_rewrite wiki</a>
 </li><li><a href="../glossary.html">Terimler</a></li></ul></div>
 </div>

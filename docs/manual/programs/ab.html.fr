@@ -38,7 +38,7 @@ Apache</h1>
     réquêtes que votre installation d'Apache est capable de servir par
     seconde.</p>
 </div>
-<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#synopsis">Syntaxe</a></li>
+<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#synopsis">Syntaxe</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#options">Options</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#output">Sortie</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#bugs">Bogues</a></li>

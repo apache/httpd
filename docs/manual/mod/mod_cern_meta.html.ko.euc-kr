@@ -47,7 +47,7 @@
 
     <p>더 자세한 정보는 <a href="http://www.w3.org/pub/WWW/Daemon/User/Config/General.html#MetaDir">CERN metafile semantics</a>를 참고하라.</p>
 </div>
-<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><h3 class="directives">지시어들</h3>
+<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><h3 class="directives">지시어들</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#metadir">MetaDir</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#metafiles">MetaFiles</a></li>

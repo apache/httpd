@@ -43,7 +43,7 @@
     더 친근한 문구를 사용하거나 다른 (같은 사이트나 외부 사이트의)
     URL로 리다이렉션을 할 수 있다.</p>
   </div>
-<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#behavior">행동</a></li>
+<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#behavior">행동</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#configuration">설정</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#custom">사용자정의 오류 응답과 리다이렉션</a></li>
 </ul><h3>참고</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>

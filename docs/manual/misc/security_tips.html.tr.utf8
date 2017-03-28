@@ -32,7 +32,7 @@
     <p>Bir HTTP Sunucusunu ayarlarken dikkat edilmesi gerekenler ve bazı
     ipuçları.  Öneriler kısmen Apache’ye özel kısmen de genel olacaktır.</p>
   </div>
-<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#uptodate">Güncel Tutma</a></li>
+<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#uptodate">Güncel Tutma</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#dos">Hizmet Reddi (DoS) Saldırıları</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#serverroot"><code>ServerRoot</code> Dizinlerinin İzinleri</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ssi">Sunucu Taraflı İçerik Yerleştirme</a></li>

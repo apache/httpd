@@ -48,7 +48,7 @@ solutions SSL plus anciennes diffèrent de ceux qu'utilise mod_ssl ;
 les tableaux de correspondance ci-dessous fournissent les équivalences
 de termes utilisés par mod_ssl.</p>
 </div>
-<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#configuration">Directives de configuration</a></li>
+<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#configuration">Directives de configuration</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#variables">Variables d'environnement</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#customlog">Fonctions de personnalisation des journaux</a></li>
 </ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>

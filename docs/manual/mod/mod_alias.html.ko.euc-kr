@@ -56,7 +56,7 @@
     <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>가 제공하는 기능을 이용하라.</p>
 
 </div>
-<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><h3>주제</h3>
+<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><h3>주제</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#order">처리 순서</a></li>
 </ul><h3 class="directives">지시어들</h3>

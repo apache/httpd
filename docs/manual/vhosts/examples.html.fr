@@ -39,7 +39,7 @@
     ou <a href="ip-based.html">par IP</a>.</p>
 
 </div>
-<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#purename">Fonctionnement de plusieurs serveurs 
+<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#purename">Fonctionnement de plusieurs serveurs 
   virtuels par nom sur une seule adresse IP.</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#twoips">Serveurs virtuels par nom sur plus 
     d'une seule adresse IP.</a></li>

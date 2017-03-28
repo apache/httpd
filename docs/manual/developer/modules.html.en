@@ -32,7 +32,7 @@
     2.0. It's by no means definitive and probably won't even be
     correct in some ways, but it's a start.</p>
 </div>
-<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#easy">The easier changes ...</a></li>
+<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#easy">The easier changes ...</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#messy">The messier changes...</a></li>
 </ul><h3>See also</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

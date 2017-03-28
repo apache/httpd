@@ -45,7 +45,7 @@
     프로그램</a>을 사용하여 CGI 스크립트를 특정 사용자와 그룹
     권한으로 실행한다.</p>
 </div>
-<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><h3 class="directives">지시어들</h3>
+<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><h3 class="directives">지시어들</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#suexecusergroup">SuexecUserGroup</a></li>
 </ul>

@@ -34,7 +34,7 @@
 de base qui sont utilisées pour configurer les opérations élémentaires du
 serveur.</p>
 </div>
-<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#identification">Identification du serveur</a></li>
+<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#identification">Identification du serveur</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#locations">Localisation des fichiers</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#resource">Limitation de l'utilisation des ressources</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#implementation">Choix d'implémentation</a></li>

@@ -30,7 +30,7 @@
 <p>Ce document passe en revue certains détails techniques à propos du
 module mod_rewrite et de la mise en correspondance des URLs</p>
 </div>
-<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#InternalAPI">Phases de l'API</a></li>
+<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#InternalAPI">Phases de l'API</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#InternalRuleset">Traitement du jeu de règles</a></li>
 </ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Documentation du module mod_rewrite</a></li><li><a href="intro.html">Introduction à mod_rewrite</a></li><li><a href="remapping.html">Redirection et remise en
 correspondance</a></li><li><a href="access.html">Contrôle d'accès</a></li><li><a href="vhosts.html">Serveurs virtuels</a></li><li><a href="proxy.html">Mise en cache</a></li><li><a href="rewritemap.html">Utilisation de RewriteMap</a></li><li><a href="advanced.html">Techniques avancées</a></li><li><a href="avoid.html">Quand ne pas utiliser mod_rewrite</a></li><li><a href="#comments_section">Commentaires</a></li></ul></div>

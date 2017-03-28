@@ -33,7 +33,7 @@
     <p>この文書は Apache の各 <a href="./">モジュール</a> を説明するために
     使われている用語を説明します。</p>
 </div>
-<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#Description">説明</a></li>
+<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#Description">説明</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#Status">ステータス</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#SourceFile">ソースファイル</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ModuleIdentifier">モジュール識別子</a></li>

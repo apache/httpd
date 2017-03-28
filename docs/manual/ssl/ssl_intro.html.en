@@ -37,7 +37,7 @@ important legal issues of patents and import and export restrictions.
 Rather, it is intended to provide a common background to <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> users by pulling together various concepts, definitions,
 and examples as a starting point for further exploration.</p>
 </div>
-<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#cryptographictech">Cryptographic Techniques</a></li>
+<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#cryptographictech">Cryptographic Techniques</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#certificates">Certificates</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ssl">Secure Sockets Layer (SSL)</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#references">References</a></li>
