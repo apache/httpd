@@ -1337,6 +1337,7 @@ static const char *request_var_names[] = {
     "CONTEXT_DOCUMENT_ROOT",    /* 26 */
     "REQUEST_STATUS",           /* 27 */
     "REMOTE_ADDR",              /* 28 */
+    "REMOTE_PORT",              /* 29 */
     NULL
 };
 
@@ -1426,6 +1427,8 @@ static const char *request_var_fn(ap_expr_eval_ctx_t *ctx, const void *data)
         return r->status ? apr_psprintf(ctx->p, "%d", r->status) : "";
     case 28:
         return r->useragent_ip;
+    case 29:
+        return apr_psprintf(ctx->p, "%u", ctx->c->client_addr->port);
     default:
         ap_assert(0);
         return NULL;
