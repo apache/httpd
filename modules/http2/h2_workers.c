@@ -128,6 +128,7 @@ static h2_fifo_op_t mplx_peek(void *head, void *ctx)
 static apr_status_t get_next(h2_slot *slot)
 {
     h2_workers *workers = slot->workers;
+    apr_status_t status;
     
     slot->task = NULL;
     while (!slot->aborted) {
