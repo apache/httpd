@@ -404,18 +404,14 @@ static const char *set_systemd_listener(process_rec *process, apr_port_t port,
 
 #endif /* HAVE_SYSTEMD */
 
-static const char *alloc_listener(process_rec *process, char *addr,
-                                  apr_port_t port, const char* proto,
-                                  void *slave)
+static int find_listeners(ap_listen_rec **from, ap_listen_rec **to,
+                          const char *addr, apr_port_t port)
 {
-    ap_listen_rec **walk, *last;
-    apr_status_t status;
-    apr_sockaddr_t *sa;
-    int found_listener = 0;
+    int found = 0;
 
-    /* see if we've got an old listener for this address:port */
-    for (walk = &old_listeners; *walk;) {
-        sa = (*walk)->bind_addr;
+    while (*from) {
+        apr_sockaddr_t *sa = (*from)->bind_addr;
+
         /* Some listeners are not real so they will not have a bind_addr. */
         if (sa) {
             ap_listen_rec *new;
@@ -428,19 +424,39 @@ static const char *alloc_listener(process_rec *process, char *addr,
             if (port == oldport &&
                 ((!addr && !sa->hostname) ||
                  ((addr && sa->hostname) && !strcmp(sa->hostname, addr)))) {
-                new = *walk;
-                *walk = new->next;
-                new->next = ap_listeners;
-                ap_listeners = new;
-                found_listener = 1;
+                found = 1;
+                if (!to) {
+                    break;
+                }
+                new = *from;
+                *from = new->next;
+                new->next = *to;
+                *to = new;
                 continue;
             }
         }
 
-        walk = &(*walk)->next;
+        from = &(*from)->next;
     }
 
-    if (found_listener) {
+    return found;
+}
+
+static const char *alloc_listener(process_rec *process, const char *addr,
+                                  apr_port_t port, const char* proto,
+                                  void *slave)
+{
+    ap_listen_rec *last;
+    apr_status_t status;
+    apr_sockaddr_t *sa;
+
+    /* see if we've got a listener for this address:port, which is an error */
+    if (find_listeners(&ap_listeners, NULL, addr, port)) {
+        return "Cannot define multiple Listeners on the same IP:port";
+    }
+
+    /* see if we've got an old listener for this address:port */
+    if (find_listeners(&old_listeners, &ap_listeners, addr, port)) {
         if (ap_listeners->slave != slave) {
             return "Cannot define a slave on the same IP:port as a Listener";
         }

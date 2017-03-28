@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core: Disallow multiple Listen on the same IP:port when listener buckets
+     are configured (ListenCoresBucketsRatio > 0), consistently with the single
+     bucket case (default), thus avoiding the leak of the corresponding socket
+     descriptors on graceful restart.  [Yann Ylavic]
+
   *) mod_http2: input buffering and dynamic flow windows for increased 
      throughput. [Stefan Eissing]
 
