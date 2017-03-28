@@ -38,7 +38,7 @@
     logging capabilities, and how to understand what the logs
     contain.</p>
   </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#overview">Overview</a></li>
+<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#overview">Overview</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#security">Security Warning</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#errorlog">Error Log</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#permodule">Per-module logging</a></li>

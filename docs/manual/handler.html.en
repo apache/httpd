@@ -34,7 +34,7 @@
 
     <p>This document describes the use of Apache's Handlers.</p>
   </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#definition">What is a Handler</a></li>
+<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#definition">What is a Handler</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#examples">Examples</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#programmer">Programmer's Note</a></li>
 </ul><h3>See also</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>

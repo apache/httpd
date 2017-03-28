@@ -38,7 +38,7 @@
         <p>Ce document décrit les changements majeurs apportés entre les 
         versions 1.3 et 2.0 du serveur HTTP Apache.</p>
     </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#core">Améliorations du Système de Base</a></li>
+<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#core">Améliorations du Système de Base</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#module">Amélioration des Modules</a></li>
 </ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="upgrading.html">Migrer à 2.0 depuis la version 1.3</a></li><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>

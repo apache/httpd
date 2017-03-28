@@ -51,7 +51,7 @@
     장으로 바로 가길 바란다.</p>
 
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#overview">성미 급한 사람을 위한 개요</a></li>
+<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#overview">성미 급한 사람을 위한 개요</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#requirements">요구사항</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#download">다운로드</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#extract">압축 풀기</a></li>

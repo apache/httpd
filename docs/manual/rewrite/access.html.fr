@@ -41,7 +41,7 @@ fonctionneront pas sur votre système si vous vous contentez de les
 copier/coller dans vos fichiers de configuration.</div>
 
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#blocked-inline-images">Blocage du référencement à chaud (Hotlinking) d'images</a></li>
+<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#blocked-inline-images">Blocage du référencement à chaud (Hotlinking) d'images</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#blocking-of-robots">Blocage des robots</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#host-deny">Rejet des clients contenus dans une liste noire</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#referer-deflector">Aiguillage basé sur l'en-tête Referer</a></li>

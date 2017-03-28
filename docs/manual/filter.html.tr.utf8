@@ -33,7 +33,7 @@
 
     <p>Bu belge, Apache’de süzgeç kullanımı hakkındadır.</p>
   </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#intro">Apache 2’de Süzme İşlemi</a></li>
+<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#intro">Apache 2’de Süzme İşlemi</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#smart">Akıllı Süzme</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#service">Süzgeçleri bir HTTP Hizmeti gibi göstermek </a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#using">Süzgeçlerin Kullanımı</a></li>

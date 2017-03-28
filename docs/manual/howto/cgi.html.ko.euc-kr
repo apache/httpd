@@ -31,7 +31,7 @@
 <div class="outofdate">이 문서는 최신판 번역이 아닙니다.
             최근에 변경된 내용은 영어 문서를 참고하세요.</div>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#intro">소개</a></li>
+<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#intro">소개</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#configuring">CGI를 허용하도록 아파치 설정하기</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#writing">CGI 프로그램 작성하기</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#troubleshoot">그러나 아직 동작하지 않아요!</a></li>

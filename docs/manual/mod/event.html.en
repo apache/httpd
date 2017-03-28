@@ -46,7 +46,7 @@ of consuming threads only for connections with active processing</td></tr>
       script's arguments when building the <code class="program"><a href="../programs/httpd.html">httpd</a></code>.</p>
 
 </div>
-<div id="quickview"><h3>Topics</h3>
+<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><h3>Topics</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#event-worker-relationship">Relationship with the Worker MPM</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#how-it-works">How it Works</a></li>

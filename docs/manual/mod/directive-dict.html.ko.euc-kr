@@ -35,7 +35,7 @@
     <p>이 문서는 아파치 <a href="directives.html">설정
     지시어</a>를 설명하는데 사용한 용어들을 설명한다.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#Description">설명 (Description)</a></li>
+<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#Description">설명 (Description)</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#Syntax">문법 (Syntax)</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#Default">기본값 (Default)</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#Context">사용장소 (Context)</a></li>

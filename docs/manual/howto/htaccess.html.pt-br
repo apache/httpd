@@ -35,7 +35,7 @@
 <p>Arquivos <code>.htaccess</code> oferecem um meio de fazer mudanças
  nas configurações por-diretório.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">Arquivos .htaccess </a></li>
+<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">Arquivos .htaccess </a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#what">O que eles são/Como usá-los</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#when">Quando (não) usar arquivos .htaccess</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#how">Como as diretrizes são aplicadas</a></li>

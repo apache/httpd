@@ -39,7 +39,7 @@
     하위디렉토리에 있는 페이지를 가져오게 된다.</p>
 
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">사용자별 웹디렉토리</a></li>
+<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">사용자별 웹디렉토리</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#userdir">UserDir로 파일경로 지정하기</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#enable">기능을 이용할 사용자 제한하기</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cgi">각 사용자별 cgi 디렉토리 지정하기</a></li>

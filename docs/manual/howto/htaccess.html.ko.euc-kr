@@ -35,7 +35,7 @@
 <p><code>.htaccess</code> 파일을 사용하여 디렉토리별로 설정을
 변경할 수 있다.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">.htaccess 파일</a></li>
+<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">.htaccess 파일</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#what">무엇이며/어떻게 사용하는가</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#when">언제 .htaccess 파일을 사용하나
     (혹은 사용하지 않나)</a></li>

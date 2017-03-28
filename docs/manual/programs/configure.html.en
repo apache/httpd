@@ -38,7 +38,7 @@
     distribution, is for compilation on Unix and Unix-like systems
     only. For other platforms, see the <a href="../platform/">platform</a> documentation.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#synopsis">Synopsis</a></li>
+<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#synopsis">Synopsis</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#options">Options</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#env">Environment variables</a></li>
 </ul><h3>See also</h3><ul class="seealso"><li><a href="../install.html">Compiling and Installing</a></li><li><a href="#comments_section">Comments</a></li></ul></div>

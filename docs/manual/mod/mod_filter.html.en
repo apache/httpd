@@ -48,7 +48,7 @@
     to <code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code>; no change to existing filter modules is
     required (although it may be possible to simplify them).</p>
 </div>
-<div id="quickview"><h3>Topics</h3>
+<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><h3>Topics</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#smart">Smart Filtering</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#terms">Filter Declarations, Providers and Chains</a></li>

@@ -56,7 +56,7 @@ cache du résultat à destination des autres modules LDAP</td></tr>
     ou le SDK LDAP Microsoft natif. Voir le site web <a href="http://apr.apache.org">APR</a> pour plus de détails.</p>
 
 </div>
-<div id="quickview"><h3>Sujets</h3>
+<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><h3>Sujets</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#exampleconfig">Exemple de configuration</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#pool">Conservation des connexions LDAP</a></li>

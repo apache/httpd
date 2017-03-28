@@ -36,7 +36,7 @@
 <p>Ce document décrit ce qu'est un Module Multi-Processus, ainsi
 que la manière dont ces modules sont utilisés par le serveur HTTP Apache.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#introduction">Introduction</a></li>
+<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#introduction">Introduction</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#defaults">MPM par défaut</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#static">Compiler un module MPM en tant que module
 statique</a></li>

@@ -40,7 +40,7 @@
     곧 나올 것이다.</p>
 
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#purename">IP 주소 한개에 여러 이름기반
+<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#purename">IP 주소 한개에 여러 이름기반
     웹사이트 운영하기.</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#twoips">여러 IP 주소에서 이름기반
     호스트.</a></li>

@@ -34,7 +34,7 @@
             最近更新された内容を見るには英語版をご覧下さい。
         </div>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#requirements">システム要件</a></li>
+<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#requirements">システム要件</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#howto">Apache の設定方法</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#multiple">複数デーモンの設定</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#single">複数のバーチャルホストの設定をした

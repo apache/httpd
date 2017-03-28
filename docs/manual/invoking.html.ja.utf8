@@ -41,7 +41,7 @@
     デーモンとして実行されます。この文書ではどのように
     <code class="program"><a href="./programs/httpd.html">httpd</a></code> を起動するかについて記述しています。</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#startup">Apache の起動方法</a></li>
+<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#startup">Apache の起動方法</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#errors">起動時のエラー</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#boot">ブート時の起動</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#info">追加情報</a></li>

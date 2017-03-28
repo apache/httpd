@@ -44,7 +44,7 @@ capacity over time, but does not select the server with the most ready capacity
 every time.  Servers that have 0 active clients are penalized, with the 
 assumption that they are not fully initialized.</p>
 </div>
-<div id="quickview"><h3 class="directives">Directives</h3>
+<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#heartbeatstorage">HeartbeatStorage</a></li>
 </ul>

@@ -32,7 +32,7 @@
     时，它们可能位于不同的阶段。请耐心等待，或者直接向
     <a href="http://httpd.apache.org/lists.html#http-dev">dev@httpd.apache.org</a> 邮件列表报告开发者页面的差异或错误。</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#topics">主题</a></li>
+<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#topics">主题</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#external">外部资源</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
