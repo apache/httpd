@@ -1,9 +1,6 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
-  *) core: Fix leak of duplicated listeners (socket descriptors) on restart
-     when ListenCoresBucketsRatio is configured (positive).  [Yann Ylavic]
-
   *) mod_http2: input buffering and dynamic flow windows for increased 
      throughput. [Stefan Eissing]
 
