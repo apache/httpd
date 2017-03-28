@@ -40,7 +40,7 @@
     유닉스류 시스템에서만 사용한다. 다른 플래폼을 사용한다면
     <a href="../platform/">플래폼</a> 문서를 참고하라.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#synopsis">개요</a></li>
+<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#synopsis">개요</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#options">옵션</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#env">환경변수</a></li>
 </ul><h3>참고</h3><ul class="seealso"><li><a href="../install.html">컴파일과 설치</a></li><li><a href="#comments_section">Comments</a></li></ul></div>

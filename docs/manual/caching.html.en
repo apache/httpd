@@ -33,7 +33,7 @@
     It describes how to use the Apache HTTP Server's caching features to accelerate web and
     proxy serving, while avoiding common problems and misconfigurations.</p>
   </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#introduction">Introduction</a></li>
+<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#introduction">Introduction</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#http-caching">Three-state RFC2616 HTTP caching</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#examples">Cache Setup Examples</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#socache-caching">General Two-state Key/Value Shared Object Caching</a></li>

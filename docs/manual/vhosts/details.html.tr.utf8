@@ -44,7 +44,7 @@
       gelebilirsiniz.</p>
 
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#configparsing">Yapılandırma Dosyası</a></li>
+<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#configparsing">Yapılandırma Dosyası</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#hostmatching">Sanal Konağın Belirlenmesi</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#tips">İpuçları</a></li>
 </ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><a href="ip-based.html">IP’ye Dayalı Sanal Konak Desteği</a></li><li><a href="name-based.html">İsme Dayalı Sanal Konak Desteği</a></li><li><a href="examples.html">Çok Kullanılan Sanal Konak Örnekleri</a></li><li><a href="mass.html">Devingen olarak Yapılandırılan Kitlesel Sanal Barındırma</a></li><li><a href="#comments_section">Yorum</a></li></ul></div>

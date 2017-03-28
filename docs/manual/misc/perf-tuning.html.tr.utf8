@@ -49,7 +49,7 @@
       yöneticinin işlevsellikten ödün verebilmesini olanaklı kılar.</p>
 
   </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#hardware">Donanım ve İşletim Sistemi ile İlgili Konular</a></li>
+<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#hardware">Donanım ve İşletim Sistemi ile İlgili Konular</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#runtime">Çalışma Anı Yapılandırması ile İlgili Konular</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#compiletime">Derleme Sırasında Yapılandırma ile İlgili Konular</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#trace">Ek: Bir çağrı izlemesinin ayrıntılı çözümlemesi</a></li>

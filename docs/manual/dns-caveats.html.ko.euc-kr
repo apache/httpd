@@ -39,7 +39,7 @@
     가로채는 것을 포함하여) 서비스도둑(theft of service) 공격에
     시달릴 수 있다.</p>
   </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#example">간단한 예제</a></li>
+<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#example">간단한 예제</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#denial">서비스거부 (Denial of Service)</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#main">"주서버" 주소</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#tips">이 문제를 피하기위한 팁</a></li>

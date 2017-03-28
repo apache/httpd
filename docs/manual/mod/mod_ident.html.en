@@ -41,7 +41,7 @@
     <p>This module queries an <a href="http://www.ietf.org/rfc/rfc1413.txt">RFC 1413</a> compatible daemon on a remote host to look up the owner of
     a connection.</p>
 </div>
-<div id="quickview"><h3 class="directives">Directives</h3>
+<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#identitycheck">IdentityCheck</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#identitychecktimeout">IdentityCheckTimeout</a></li>

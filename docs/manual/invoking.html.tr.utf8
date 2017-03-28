@@ -40,7 +40,7 @@
       artalan sürecidir. Bu belgede <code class="program"><a href="./programs/httpd.html">httpd</a></code>’nin nasıl
       çalıştırılacağı açıklanmaktadır.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#startup">Apache Nasıl Başlatılır?</a></li>
+<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#startup">Apache Nasıl Başlatılır?</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#errors">Başlatma Sırasındaki Hatalar</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#boot">Sistem Açılışında Başlatma</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#info">Ek Bilgiler</a></li>

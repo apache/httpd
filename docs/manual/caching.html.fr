@@ -36,7 +36,7 @@
     pour accélérer les services web et proxy, tout en évitant les problèmes
     courants et les erreurs de configuration.</p>
   </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#introduction">Introduction</a></li>
+<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#introduction">Introduction</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#http-caching">Mise en cache HTTP à trois états RFC2616</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#examples">Exemples de configuration du cache</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#socache-caching">Mise en cache générale d'objets partagés à deux états de forme

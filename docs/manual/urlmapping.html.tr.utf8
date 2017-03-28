@@ -34,7 +34,7 @@
       sistemindeki yerini bulmak için Apache HTTP Sunucusu tarafından nasıl
       kullanıldığı açıklanmaktadır.</p>
   </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#related">İlgili Modüller ve Yönergeler</a></li>
+<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#related">İlgili Modüller ve Yönergeler</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#documentroot"><code>DocumentRoot</code></a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#outside">Belge Kök Dizini Dışındaki Dosyalar</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#user">Kullanıcı Dizinleri</a></li>

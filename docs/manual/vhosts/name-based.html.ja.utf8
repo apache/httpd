@@ -38,7 +38,7 @@
     <p>この文書では名前ベースのバーチャルホストをどんなとき、
     どうやって使うかを説明します。</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#namevip">名前ベースと IP ベースのバーチャルホストの比較</a></li>
+<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#namevip">名前ベースと IP ベースのバーチャルホストの比較</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#using">名前ベースのバーチャルホストを利用する</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#compat">古いブラウザとの互換性</a></li>
 </ul><h3>参照</h3><ul class="seealso"><li><a href="ip-based.html">ネームベースのバーチャルホスト</a></li><li><a href="details.html">バーチャルホストのマッチングについての詳細</a></li><li><a href="mass.html">大量のバーチャルホストの動的な設定</a></li><li><a href="examples.html">バーチャルホストの一般的な設定例</a></li><li><a href="examples.html#serverpath">ServerPath 設定例</a></li><li><a href="#comments_section">コメント</a></li></ul></div>

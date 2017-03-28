@@ -45,7 +45,7 @@
     Anfragen zu bearbeiten. Dieses Dokument beschreibt, wie
     <code class="program"><a href="./programs/httpd.html">httpd</a></code> aufgerufen wird.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#startup">Wie der Apache startet</a></li>
+<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#startup">Wie der Apache startet</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#errors">Fehler während des Hochfahrens</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#boot">Beim Bootvorgang starten</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#info">Weitere Informationen</a></li>

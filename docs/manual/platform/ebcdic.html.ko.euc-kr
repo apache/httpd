@@ -36,7 +36,7 @@
     </div>
 
   </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#overview">아파치 EBCDIC 포팅 개요</a></li>
+<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#overview">아파치 EBCDIC 포팅 개요</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#design">설계 목표</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#technical">기술적 해결책</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#porting">포팅에 대해서</a></li>

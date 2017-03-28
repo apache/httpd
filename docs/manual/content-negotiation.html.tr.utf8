@@ -41,7 +41,7 @@
     <p>İçerik uzlaşımı öntanımlı olarak derlenen
       <code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code> modülü tarafından sağlanır.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#about">İçerik Uzlaşımı Hakkında</a></li>
+<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#about">İçerik Uzlaşımı Hakkında</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#negotiation">httpd’de İçerik Uzlaşımı</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#methods">Uzlaşım Yöntemleri</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#better">Üstünlük Değerleriyle Oynamak</a></li>

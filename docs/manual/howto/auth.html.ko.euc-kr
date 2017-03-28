@@ -38,7 +38,7 @@
     확인하는 절차이다. 권한부여(authorization)는 가고 싶은 곳으로
     가도록 혹은 원하는 정보를 얻도록 허용하는 과정이다.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">관련 모듈과 지시어</a></li>
+<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">관련 모듈과 지시어</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#introduction">소개</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#theprerequisites">기본 지식</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#gettingitworking">기본적인 설정하기</a></li>

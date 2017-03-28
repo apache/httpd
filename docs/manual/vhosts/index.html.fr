@@ -54,7 +54,7 @@
     virtuels par le serveur HTTP Apache.</p>
 
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#support">Support des serveurs virtuels</a></li>
+<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#support">Support des serveurs virtuels</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#directives">Directives de configuration</a></li>
 </ul><h3>Voir aussi</h3><ul class="seealso"><li><code class="module"><a href="../mod/mod_vhost_alias.html">mod_vhost_alias</a></code></li><li><a href="name-based.html">Serveurs virtuels par-nom</a></li><li><a href="ip-based.html">Serveurs virtuels par-IP</a></li><li><a href="examples.html">Exemples de serveurs virtuels</a></li><li><a href="fd-limits.html">Limites des descripteurs de fichiers</a></li><li><a href="mass.html">Hébergement virtuel en masse</a></li><li><a href="details.html">Détails sur les critères de choix du serveur</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

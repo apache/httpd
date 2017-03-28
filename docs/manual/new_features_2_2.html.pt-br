@@ -38,7 +38,7 @@
      de documentação <a href="new_features_2_0.html">novas funcionalidades
      do Apache 2.0</a>.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#core">Principais Melhorias</a></li>
+<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#core">Principais Melhorias</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#module">Melhorias nos Módulos</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#developer">Mudanças ao Desenvolvedor de Módulos</a></li>
 </ul><h3>Veja também</h3><ul class="seealso"><li><a href="#comments_section">Comentários</a></li></ul></div>

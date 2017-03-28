@@ -34,7 +34,7 @@ techniques avancées, il est fortement recommandé de lire le reste
 de la documentation SSL afin d'en comprendre le fonctionnement de
 manière plus approfondie.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#configexample">Exemple de configuration basique</a></li>
+<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#configexample">Exemple de configuration basique</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ciphersuites">Suites de chiffrement et mise en application de la sécurité
 de haut niveau</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ocspstapling">Agrafage OCSP</a></li>

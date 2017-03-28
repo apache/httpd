@@ -61,7 +61,7 @@
     であるファイルでも cgi-script ハンドラが有効になります。この特殊な MIME タイプを
     使う方法は非推奨です。</p> 
 </div>
-<div id="quickview"><h3>トピック</h3>
+<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><h3>トピック</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#env">CGI 環境変数</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cgi-debug">CGI のデバッグ</a></li>

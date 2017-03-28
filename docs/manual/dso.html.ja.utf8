@@ -47,7 +47,7 @@
     <p>この文書は DSO モジュールの使い方と、仕組みについて
     説明します。</p>
   </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#implementation">実装</a></li>
+<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#implementation">実装</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#usage">使用法の概要</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#background">背景</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#advantages">利点と欠点</a></li>

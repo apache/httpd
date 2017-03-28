@@ -55,6 +55,13 @@
 
             <xsl:if test="(not($is-chm) and count(section) > 1) or seealso">
                 <div id="quickview">
+
+<!-- Support Apache logo and link -->
+			<a href="https://www.apache.org/foundation/contributing.html" style="margin-right: 100px; margin-top: 2px;">
+				<img src="https://www.apache.org/images/SupportApache-small.png" style="width: 95px; height: 95px;" />
+			</a>
+<!-- /Support Apache -->
+
                     <xsl:if test="not($is-chm) and count(section) > 1">
                         <ul id="toc">
                         <xsl:apply-templates select="section" mode="index" />
@@ -81,6 +88,7 @@
                             </li>
                         </xsl:if>
                         </ul>
+
                     </xsl:if>
                 </div>&lf; <!-- /#quickview -->
             </xsl:if>

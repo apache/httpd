@@ -43,7 +43,7 @@
      Aplicación de Consola</a> para obtener información
      sobre como controlar Apache en esas plataformas.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#introduction">Introducción</a></li>
+<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#introduction">Introducción</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#term">Parar Apache</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#graceful">Reinicio Graceful</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#hup">Reiniciar Apache</a></li>

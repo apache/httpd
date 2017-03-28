@@ -41,7 +41,7 @@
      서비스로</a>, <a href="../platform/windows.html#wincons">Windows
      9x와 ME에서는 콜솔 프로그램으로</a> 실행해야 한다.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#synopsis">개요</a></li>
+<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#synopsis">개요</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#options">옵션</a></li>
 </ul><h3>참고</h3><ul class="seealso"><li><a href="../invoking.html">아파치 시작</a></li><li><a href="../stopping.html">아파치 중단</a></li><li><a href="../configuring.html">설정파일</a></li><li><a href="../platform/">플래폼별 문서</a></li><li><a href="apachectl.html">apachectl</a></li><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

@@ -44,7 +44,7 @@
     <p>이 모듈은 HTTP 요청 헤더와 응답 헤더를 조절하고 수정하는
     지시어들을 제공한다. 헤더를 합치거나 대체, 제거할 수 있다.</p>
 </div>
-<div id="quickview"><h3>주제</h3>
+<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><h3>주제</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#order">처리 순서</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#early">이른(early) 처리와 늦은(late) 처리</a></li>

@@ -38,7 +38,7 @@
 
     <p>Este documento describe el uso de los Handlers en Apache.</p>
   </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#definition">¿Qué es un Handler?</a></li>
+<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#definition">¿Qué es un Handler?</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#examples">Ejemplos</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#programmer">Nota para programadores</a></li>
 </ul><h3>Consulte también</h3><ul class="seealso"><li><a href="#comments_section">Comentarios</a></li></ul></div>

@@ -40,7 +40,7 @@ rassemblant différents concepts, définitions et exemples comme point de départ
 pour une exploration plus détaillée.</p>
 
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#cryptographictech">Techniques de chiffrement</a></li>
+<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#cryptographictech">Techniques de chiffrement</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#certificates">Certificats</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ssl">Couche Points d'Accès Sécurisés - Secure Sockets Layer (SSL)</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#references">Références</a></li>

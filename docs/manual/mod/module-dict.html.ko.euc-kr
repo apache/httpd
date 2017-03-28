@@ -33,7 +33,7 @@
    <p>이 문서는 아파치 <a href="./">모듈</a>을 설명하기위해
    사용한 용어를 설명한다.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#Description">설명</a></li>
+<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#Description">설명</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#Status">상태</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#SourceFile">소스파일</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ModuleIdentifier">모듈명</a></li>

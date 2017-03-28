@@ -45,7 +45,7 @@
     실행된다. 이 문서는 <code>httpd</code>를 시작하는 방법을
     설명한다.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#startup">어떻게 아파치가 시작하나</a></li>
+<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#startup">어떻게 아파치가 시작하나</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#errors">시작중 오류</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#boot">부팅할때 시작하기</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#info">추가 정보</a></li>

@@ -48,7 +48,7 @@
     <p>以下解释是在 Apache 中支持虚拟主机的所有详细信息的文档页面列表。</p>
 
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#support">虚拟主机支持</a></li>
+<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#support">虚拟主机支持</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#directives">配置指令</a></li>
 </ul><h3>参见</h3><ul class="seealso"><li><code class="module"><a href="../mod/mod_vhost_alias.html">mod_vhost_alias</a></code></li><li><a href="name-based.html">基于名称的虚拟主机</a></li><li><a href="ip-based.html">基于 IP 的虚拟主机</a></li><li><a href="examples.html">虚拟主机样例</a></li><li><a href="fd-limits.html">文件句柄限制</a></li><li><a href="mass.html">动态配置的大规模虚拟主机</a></li><li><a href="details.html">虚拟主机匹配的深入讨论</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

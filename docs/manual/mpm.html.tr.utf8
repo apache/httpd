@@ -36,7 +36,7 @@
   <p>Bu belgede Çok Süreçlilik Modülü denince ne anlaşıldığı ve bunların
     Apache HTTP Sunucusu tarafından nasıl kullanıldıkları açıklanmıştır.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#introduction">Giriş</a></li>
+<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#introduction">Giriş</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#defaults">Öntanımlı MPM’ler</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#static">Bir MPM'i bir duruk modül olarak derlemek</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#dynamic">Bir MPM'i bir DSO modülü olarak derlemek</a></li>

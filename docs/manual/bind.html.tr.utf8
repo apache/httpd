@@ -34,7 +34,7 @@
     <p>Apache HTTPD sunucusunun belli adresleri ve portları dinlemek üzere
     yapılandırılması.</p>
   </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#overview">Genel Bakış</a></li>
+<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#overview">Genel Bakış</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#ipv6">IPv6 Adreslerin Durumu</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#protocol">Protokolü Listen ile Belirtme</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#virtualhost">Sanal Konaklarla Nasıl Çalışır?</a></li>

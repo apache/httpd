@@ -62,7 +62,7 @@
 <li><a href="tech.html">技术细节</a></li>
 </ul>
 </div>
-<div id="quickview"><h3>参见</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">mod_rewrite 参考手册</a></li><li><a href="../urlmapping.html">从 URL 映射到文件系统</a></li><li><a href="http://wiki.apache.org/httpd/Rewrite">mod_rewrite
+<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><h3>参见</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">mod_rewrite 参考手册</a></li><li><a href="../urlmapping.html">从 URL 映射到文件系统</a></li><li><a href="http://wiki.apache.org/httpd/Rewrite">mod_rewrite
 wiki</a></li><li><a href="../glossary.html">术语</a></li></ul></div>
 </div>
 <div class="bottomlang">
