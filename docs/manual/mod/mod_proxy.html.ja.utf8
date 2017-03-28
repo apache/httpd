@@ -70,7 +70,7 @@
     提供されています。これらの機能を利用するためには、該当するモジュールを
     組み込んで設定しなければなりません。</p>
 </div>
-<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><h3>トピック</h3>
+<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><h3>トピック</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#forwardreverse">フォワードプロキシとリバースプロキシ</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#examples">基本の例</a></li>

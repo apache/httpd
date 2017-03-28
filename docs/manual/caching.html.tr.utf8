@@ -36,7 +36,7 @@
       yanlış yapılandırmalardan kaçınarak Apache HTTPD sunucusunun önbellekleme
       özelliklerinin nasıl kullanılacağı açıklanmıştır.</p>
   </div>
-<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#introduction">Giriş</a></li>
+<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#introduction">Giriş</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#http-caching">Üç durumlu RFC2616 HTTP önbelleklemesi</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#examples">Önbellek Ayarlama Örnekleri</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#socache-caching">Genel İki durumlu Anahtar/Değer Paylaşımlı Nesne Önbellekleme</a></li>

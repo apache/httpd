@@ -50,7 +50,7 @@ décommentant la ligne :</p>
     <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> du fichier de
     configuration principal.</p>
 </div>
-<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">Répertoires web utilisateurs</a></li>
+<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">Répertoires web utilisateurs</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#userdir">Définition du chemin des fichiers avec UserDir</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#redirect">Redirection vers des URLs externes</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#enable">Définition de la liste des utilisateurs autorisés à utiliser

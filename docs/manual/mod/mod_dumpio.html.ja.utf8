@@ -50,7 +50,7 @@
     このモジュールはとてつもないデータ量を出力しますので、
     問題をデバッグしているときにのみ使用するようにしてください。</p>
 </div>
-<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><h3>トピック</h3>
+<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><h3>トピック</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#enable">dumpio サポートを有効にする</a></li>
 </ul><h3 class="directives">ディレクティブ</h3>

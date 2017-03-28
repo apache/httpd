@@ -50,7 +50,7 @@
     詳しくないようなら、suEXEC の使用を検討しないように強く推奨します。
     </p>
   </div>
-<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#before">始める前に</a></li>
+<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#before">始める前に</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#model">suEXEC セキュリティモデル</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#install">suEXEC
     の設定とインストール</a></li>

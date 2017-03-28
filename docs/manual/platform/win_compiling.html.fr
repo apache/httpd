@@ -43,7 +43,7 @@
     fonctionnalités très limitées.</p>
 
   </div>
-<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#requirements">Prérequis</a></li>
+<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#requirements">Prérequis</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#unixsrcbuild">Compilation à partir des sources Unix</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#commandbuild">Compilation à partir de la ligne de commandes</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#workspacebuild">Compilation depuis l'espace de travail IDE de Developer

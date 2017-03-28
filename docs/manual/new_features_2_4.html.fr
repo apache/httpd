@@ -36,7 +36,7 @@ serveur HTTP Apache</h1>
   <a href="new_features_2_2.html">Nouvelles fonctionnalités
   de la version 2.2</a>.</p>
 </div>
-<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#core">Améliorations du noyau</a></li>
+<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#core">Améliorations du noyau</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#newmods">Nouveau modules</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#module">Améliorations des modules</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#programs">Améliorations des programmes</a></li>

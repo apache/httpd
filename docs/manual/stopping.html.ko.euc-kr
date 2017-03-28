@@ -39,7 +39,7 @@
     실행하기</a>에서, 윈도우즈 9x와 ME 사용자는 <a href="platform/windows.html#wincons">콜솔 프로그램으로
     아파치 실행하기</a>에서 플래폼별 아파치 조작법을 알 수 있다.</p>
 </div>
-<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#introduction">소개</a></li>
+<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#introduction">소개</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#term">당장 중단</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#graceful">점잖은 재시작</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#hup">당장 재시작</a></li>

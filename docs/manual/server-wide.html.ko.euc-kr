@@ -35,7 +35,7 @@
 <p>이 문서는 <code class="module"><a href="./mod/core.html">core</a></code> 서버가 서버의 기본 행동을
 설정하기위해 제공하는 지시어중 일부를 설명한다.</p>
 </div>
-<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#identification">서버 식별</a></li>
+<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#identification">서버 식별</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#locations">파일 위치</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#resource">자원사용 제한</a></li>
 </ul><h3>참고</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>

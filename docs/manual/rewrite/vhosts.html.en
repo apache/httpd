@@ -39,7 +39,7 @@ mod_rewrite. See also the "<a href="avoid.html#vhosts">how to avoid
 mod_rewrite</a> document.</div>
 
 </div>
-<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#per-hostname">Virtual Hosts For Arbitrary Hostnames</a></li>
+<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#per-hostname">Virtual Hosts For Arbitrary Hostnames</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#simple.rewrite">Dynamic
     Virtual Hosts Using <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code></a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#xtra-conf">Using a Separate Virtual Host Configuration File</a></li>

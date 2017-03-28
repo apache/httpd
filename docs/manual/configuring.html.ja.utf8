@@ -38,7 +38,7 @@
 <p>この文書では、Apache HTTP サーバを設定するのに使用するファイルについて
 記述しています。</p>
 </div>
-<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#main">メインの設定ファイル</a></li>
+<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#main">メインの設定ファイル</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#syntax">設定ファイルの構文</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#modules">モジュール</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#scope">ディレクティブの適用範囲</a></li>

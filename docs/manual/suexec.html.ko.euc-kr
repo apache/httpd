@@ -44,7 +44,7 @@
     프로그램과 이런 프로그램의 보안 문제에 생소하다면 suEXEC를
     사용하지않길 진심으로 바란다.</p>
   </div>
-<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#before">시작하기 전에</a></li>
+<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#before">시작하기 전에</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#model">suEXEC 보안모델</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#install">suEXEC 구성과 설치</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#enable">suEXEC 키고 끄기</a></li>

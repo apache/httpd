@@ -41,7 +41,7 @@
     <p>이 모듈은 HTTP Digest Authentication을 구현한다.
     그러나 많은 테스트를 거치지 않은 실험적인 모듈이다.</p>
 </div>
-<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><h3>주제</h3>
+<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><h3>주제</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#using">Digest Authentication 사용하기</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#msie">MS Internet Explorer 문제 해결하기</a></li>

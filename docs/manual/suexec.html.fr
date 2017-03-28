@@ -49,7 +49,7 @@
     nous vous recommandons vivement de ne pas tenter
     d'utiliser suEXEC.</p>
   </div>
-<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#before">Avant de commencer</a></li>
+<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#before">Avant de commencer</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#model">Modèle de sécurité de suEXEC</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#install">Configurer et installer suEXEC</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#enable">Activation et désactivation

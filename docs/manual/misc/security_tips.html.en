@@ -32,7 +32,7 @@
     <p>Some hints and tips on security issues in setting up a web server.
     Some of the suggestions will be general, others specific to Apache.</p>
   </div>
-<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#uptodate">Keep up to Date</a></li>
+<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#uptodate">Keep up to Date</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#dos">Denial of Service (DoS) attacks</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#serverroot">Permissions on ServerRoot Directories</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ssi">Server Side Includes</a></li>

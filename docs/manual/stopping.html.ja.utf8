@@ -39,7 +39,7 @@
     httpd を実行する</a>で、
     これらのプラットホームでの使用方法をご覧下さい。</p>
 </div>
-<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#introduction">イントロダクション</a></li>
+<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#introduction">イントロダクション</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#term">急な停止</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#graceful">緩やかな再起動</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#hup">急な再起動</a></li>

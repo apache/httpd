@@ -45,7 +45,7 @@
     하는 반면, 어떤 옵션은 속도를 위해 기능을 희생한다.</p>
 
   </div>
-<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#hardware">하드웨어와 운영체제에 대해서</a></li>
+<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#hardware">하드웨어와 운영체제에 대해서</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#runtime">실행시 설정에 대해서</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#compiletime">컴파일시 설정에 대해서</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#trace">부록: 시스템호출 기록을 자세히 분석하기</a></li>

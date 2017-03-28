@@ -56,7 +56,7 @@
     以降でのバーチャルホストのサポートについての詳細を説明します。</p>
 
 </div>
-<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#support">バーチャルホストのサポート</a></li>
+<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#support">バーチャルホストのサポート</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#directives">設定ディレクティブ</a></li>
 </ul><h3>参照</h3><ul class="seealso"><li><code class="module"><a href="../mod/mod_vhost_alias.html">mod_vhost_alias</a></code></li><li><a href="name-based.html">ネームベースのバーチャルホスト</a></li><li><a href="ip-based.html">IP ベースのバーチャルホスト</a></li><li><a href="examples.html">バーチャルホストの一般的な設定例</a></li><li><a href="fd-limits.html">ファイル記述子の限界</a></li><li><a href="mass.html">大量のバーチャルホストの設定</a></li><li><a href="details.html">バーチャルホストのマッチングについての詳細</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

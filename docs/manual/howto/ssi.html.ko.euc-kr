@@ -34,7 +34,7 @@
 <p>Server-side includes를 사용하여 HTML 문서에 동적인 내용을
 추가할 수 있다.</p>
 </div>
-<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">소개</a></li>
+<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">소개</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#what">SSI가 무엇인가?</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#configuring">SSI가 가능하도록 서버 설정하기</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#basic">기본 SSI 지시어</a></li>

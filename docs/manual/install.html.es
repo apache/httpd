@@ -56,7 +56,7 @@
     pase directamente a la sección de <a href="#upgrading">actualización</a>.</p>
 
 </div>
-<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#overview">Visión general del proceso para
+<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#overview">Visión general del proceso para
     impacientes</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#requirements">Requisitos</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#download">Descargar</a></li>

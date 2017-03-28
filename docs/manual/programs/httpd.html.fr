@@ -40,7 +40,7 @@
      Windows NT, 2000 et XP</a> et <a href="../platform/windows.html#wincons">comme application de
      console sous Windows 9x et ME</a>.</p>
 </div>
-<div id="quickview"><a style="margin-right: 100px; margin-top: 2px;" href="https://www.apache.org/foundation/contributing.html"><img style="width: 95px; height: 95px;" src="https://www.apache.org/images/SupportApache-small.png" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#synopsis">Syntaxe</a></li>
+<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#synopsis">Syntaxe</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#options">Options</a></li>
 </ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="../invoking.html">Démarrer Apache httpd</a></li><li><a href="../stopping.html">Arrêter Apache httpd</a></li><li><a href="../configuring.html">Fichiers de configuration</a></li><li><a href="../platform/">Documentations spécifiques aux
 plates-formes</a></li><li><code class="program"><a href="../programs/apachectl.html">apachectl</a></code></li><li><a href="#comments_section">Commentaires</a></li></ul></div>
