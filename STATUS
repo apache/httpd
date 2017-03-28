@@ -209,6 +209,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patches work
      +1: jailletc36
 
+  *) core: Disallow multiple Listen on the same IP:port when listener buckets
+     are configured (ListenCoresBucketsRatio > 0), consistently with the single
+     bucket case (default), thus avoiding the leak of the corresponding socket
+     descriptors on graceful restart.
+     trunk patch: http://svn.apache.org/r1789220
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: ylavic
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entried should be added at the START of the list ]
