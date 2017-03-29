@@ -31,7 +31,6 @@
 <a href="./ko/glossary.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/glossary.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p>Bu sözlük, genelinde HTML sayfa sunumuna, özelinde Apache HTTP Sunucusuna
       özgü ortak terminolojinin bir kısmını içerir. Her kavram ile ilgili daha
@@ -128,7 +127,7 @@
     <dt><a name="plaintext" id="plaintext">Düz Metin</a></dt>
     <dd>Şifrelenmemiş metin.</dd>
 
-    <dt><a name="regularexpresion" id="regularexpresion">Düzenli İfade</a>
+    <dt><a name="regularexpression" id="regularexpression">Düzenli İfade</a>
       <a name="regex" id="regex">(Regex)</a></dt>
     <dd>Metin içinde bir şablon tanımlama yolu. Örneğin, “A harfi ile
       başlayan bütün sözcükler” veya “10 rakamlı telefon numaraları” ya da

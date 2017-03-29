@@ -29,7 +29,6 @@
 <a href="./ko/sections.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/sections.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p><a href="configuring.html">Yapılandırma dosyaları</a>ndaki
        yönergeler sunucunun tamamına uygulanacağı gibi sadece belli dizinler,
@@ -349,8 +348,10 @@ ProxyPass "/" "balancer://mycluster/" stickysession=JSESSIONID|jsessionid nofail
     <p>Bazı bölüm türleri başka bölüm türlerinin içinde olabilir. Bir yandan,
       <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code> bölümü
       <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> bölümünün
-      içinde bulunabilirken diğer yandan bir <code class="directive"><a href="./mod/core.html#if">&lt;If&gt;</a></code> bölümü <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code> ve <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code> bölümlerinde bulunabilir.
-      Bu bölümlerin düzenli ifadeli türevleri de benzer tarzda davranır.</p>
+      içinde bulunabilirken diğer yandan bir <code class="directive"><a href="./mod/core.html#if">&lt;If&gt;</a></code> bölümü <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code> ve <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code> bölümlerinde bulunabilir fakat 
+      başka bir <code class="directive"><a href="./mod/core.html#if">&lt;If&gt;</a></code> bölümünün 
+      içinde bulunamaz. Bu bölümlerin düzenli ifadeli türevleri de benzer tarzda 
+      davranır.</p>
 
     <p>İç içe bölümler, aynı türdeki iç içe olmayan bölümlerin sonrasına
       yerleştirilir.</p>
@@ -442,24 +443,36 @@ ProxyPass "/" "balancer://mycluster/" stickysession=JSESSIONID|jsessionid nofail
       </li>
     </ol>
 
-    <p><code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>
-      bölümündekiler hariç, her grup, yapılandırma dosyasında bulundukları
-      sıraya göre işleme sokulurlar. Yukarıda 1. grup olan <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> bölümü en kısa dizin
-      elemanından en uzun dizin elemanına doğru işleme sokulur. Yani, örneğin,
-      <code>&lt;Directory "/var/web/dir"&gt;</code> bölümü <code>&lt;Directory
-      "/var/web/dir/subdir"&gt;</code> bölümünden önce işleme sokulacaktır. Eğer
-      aynı uzunlukta çok sayıda dizin varsa <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> bölümleri yapılandırma dosyasında
-      bulundukları sıraya göre işleme sokulurlar. <code class="directive"><a href="./mod/core.html#include">Include</a></code> yönergeleri ile yapılandırmaya dahil
-      edilen dosyaların içerikleri <code class="directive"><a href="./mod/core.html#include">Include</a></code>
-      yönergesinin bulunduğu yere konulduktan sonra işleme sokulurlar.</p>
+    <p>Bazı önemli durumlar:</p>
+    <ul>
+        <li><code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>
+        bölümündekiler hariç, her grup, yapılandırma dosyasında bulundukları
+        sıraya göre işleme sokulurlar. Örneğin, 4. grupta <em>/foo</em> için yapılan 
+        bir istek <code>&lt;Location "/foo/bar"&gt;</code> ve <code>&lt;Location 
+        "/foo"&gt;</code> bölümleriyle de eşleşir ve bunlar yapılandırma 
+        dosyalarında bulundukları sıraya göre değerlendirilir.</li>
+      
+        <li>Yukarıda 1. grup olan <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> bölümü en kısa dizin elemanından en uzun 
+        dizin elemanına doğru işleme sokulur. Yani, örneğin, <code>&lt;Directory 
+        "/var/web/dir"&gt;</code> bölümü <code>&lt;Directory    
+        "/var/web/dir/subdir"&gt;</code> bölümünden önce işleme sokulacaktır.</li>
+    
+        <li>Eğer aynı dizin için birden fazla <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> bölümü varsa bunlar yapılandırma 
+        dosyasında bulundukları sıraya göre işleme sokulurlar.</li>
+      
+        <li><code class="directive"><a href="./mod/core.html#include">Include</a></code> yönergeleri ile 
+        yapılandırmaya dahil edilen dosyaların içerikleri <code class="directive"><a href="./mod/core.html#include">Include</a></code> yönergesinin bulunduğu yere konulduktan 
+        sonra işleme sokulurlar.</li>
 
-    <p><code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
-      bölümlerinin içindeki bölümler, sanal konak tanımı dışındaki
-      karşılıklarından <em>sonra</em> uygulanırlar.</p>
+       <li><code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
+       bölümlerinin içindeki bölümler, sanal konak tanımı dışındaki
+       karşılıklarından <em>sonra</em> uygulanırlar. Bu yöntemle ana sunucu 
+       yapılandırmasındaki tanımlar geçersiz kılınabilir</li>
 
-    <p>İstek <code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code> tarafından sunulduğu takdirde,
-      <code class="directive"><a href="./mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code> taşıyıcısı
-      işlem sırasında <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> taşıyıcısının yerini alır.</p>
+       <li>İstek <code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code> tarafından sunulduğu takdirde,
+       <code class="directive"><a href="./mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code> taşıyıcısı
+       işlem sırasında <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> taşıyıcısının yerini alır.</li>
+    </ul>
 
     <div class="note"><h3>Bazı Teknik Bilgiler</h3>
       Aslında, isim dönüşüm aşamasından (<code>Aliases</code> ve
