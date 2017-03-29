@@ -976,7 +976,12 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
     }
     return rv;
 }
-
+static int hc_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
+                         apr_pool_t *ptemp)
+{
+    tpsize = HC_THREADPOOL_SIZE;
+    return OK;
+}
 static int hc_post_config(apr_pool_t *p, apr_pool_t *plog,
                        apr_pool_t *ptemp, server_rec *main_s)
 {
@@ -1196,6 +1201,7 @@ static void hc_register_hooks(apr_pool_t *p)
     APR_REGISTER_OPTIONAL_FN(hc_show_exprs);
     APR_REGISTER_OPTIONAL_FN(hc_select_exprs);
     APR_REGISTER_OPTIONAL_FN(hc_valid_expr);
+    ap_hook_pre_config(hc_pre_config, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_post_config(hc_post_config, aszPre, aszSucc, APR_HOOK_LAST);
     ap_hook_expr_lookup(hc_expr_lookup, NULL, NULL, APR_HOOK_MIDDLE);
 }
