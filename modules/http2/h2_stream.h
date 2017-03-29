@@ -165,6 +165,12 @@ void h2_stream_cleanup(h2_stream *stream);
 apr_pool_t *h2_stream_detach_pool(h2_stream *stream);
 
 /**
+ * Notify the stream that amount bytes have been consumed of its input
+ * since the last invocation of this method (delta amount).
+ */
+apr_status_t h2_stream_in_consumed(h2_stream *stream, apr_off_t amount);
+
+/**
  * Set complete stream headers from given h2_request.
  * 
  * @param stream stream to write request to
