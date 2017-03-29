@@ -118,6 +118,35 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_autoindex: Add IndexOptions UseOldDateFormat to allow the date
+     format from 2.2 in the Last Modified column. PR60846.
+     trunk patch: http://svn.apache.org/r1787525
+                  http://svn.apache.org/r1787553
+                  http://svn.apache.org/r1788451
+     2.4.x patch: trunk works
+     +1 covener, jim
+
+  *) mod_proxy: Allow the per-request environment variable "no-proxy" to
+     be used as an alternative to ProxyPass /path !. This is primarily
+     to set exceptions for ProxyPass specified in <Location> context.
+     trunk patch: http://svn.apache.org/r1781328
+                  http://svn.apache.org/r1785907
+     2.4.x patch: trunk works
+     +1: covener, ylavic, jim
+
+  *) Easy patches: synch 2.4.x and trunk
+     - cache: Use apr_pstrmemdup instead of apr_pstrndup when applicable
+     - cache: Remove a useless break + tiny style fix (missing space)
+     - vhost: save some request pool memory
+     - vhost: Fix some tiny style issues
+     - mod_dir: Save a few bytes in the request pool.
+     trunk patch: http://svn.apache.org/r1777556
+                  http://svn.apache.org/r1777557
+                  http://svn.apache.org/r1777593
+                  http://svn.apache.org/r1777594
+                  http://svn.apache.org/r1783056
+     2.4.x patch: trunk patches work
+     +1: jailletc36, ylavic, jim
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -173,36 +202,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              ProxyHCTPsize were commented out on restart, we wouldn't use the
              default value (as expected).
      jim: Committed in r1789387
-
-  *) mod_autoindex: Add IndexOptions UseOldDateFormat to allow the date
-     format from 2.2 in the Last Modified column. PR60846.
-     trunk patch: http://svn.apache.org/r1787525
-                  http://svn.apache.org/r1787553
-                  http://svn.apache.org/r1788451
-     2.4.x patch: trunk works
-     +1 covener, jim
-
-  *) mod_proxy: Allow the per-request environment variable "no-proxy" to
-     be used as an alternative to ProxyPass /path !. This is primarily
-     to set exceptions for ProxyPass specified in <Location> context.
-     trunk patch: http://svn.apache.org/r1781328
-                  http://svn.apache.org/r1785907
-     2.4.x patch: trunk works
-     +1: covener, ylavic, jim
-
-  *) Easy patches: synch 2.4.x and trunk
-     - cache: Use apr_pstrmemdup instead of apr_pstrndup when applicable
-     - cache: Remove a useless break + tiny style fix (missing space)
-     - vhost: save some request pool memory
-     - vhost: Fix some tiny style issues
-     - mod_dir: Save a few bytes in the request pool.
-     trunk patch: http://svn.apache.org/r1777556
-                  http://svn.apache.org/r1777557
-                  http://svn.apache.org/r1777593
-                  http://svn.apache.org/r1777594
-                  http://svn.apache.org/r1783056
-     2.4.x patch: trunk patches work
-     +1: jailletc36, ylavic, jim
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
