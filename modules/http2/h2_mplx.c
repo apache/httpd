@@ -57,35 +57,40 @@ typedef struct {
 
 /* NULL or the mutex hold by this thread, used for recursive calls
  */
+static const int nested_lock = 0;
+
 static apr_threadkey_t *thread_lock;
 
 apr_status_t h2_mplx_child_init(apr_pool_t *pool, server_rec *s)
 {
-    return apr_threadkey_private_create(&thread_lock, NULL, pool);
+    if (nested_lock) {
+        return apr_threadkey_private_create(&thread_lock, NULL, pool);
+    }
+    return APR_SUCCESS;
 }
 
 static apr_status_t enter_mutex(h2_mplx *m, int *pacquired)
 {
     apr_status_t status;
-    void *mutex = NULL;
     
-    /* Enter the mutex if this thread already holds the lock or
-     * if we can acquire it. Only on the later case do we unlock
-     * onleaving the mutex.
-     * This allow recursive entering of the mutex from the saem thread,
-     * which is what we need in certain situations involving callbacks
-     */
-    ap_assert(m);
-    apr_threadkey_private_get(&mutex, thread_lock);
-    if (mutex == m->lock) {
-        *pacquired = 0;
-        return APR_SUCCESS;
+    if (nested_lock) {
+        void *mutex = NULL;
+        /* Enter the mutex if this thread already holds the lock or
+         * if we can acquire it. Only on the later case do we unlock
+         * onleaving the mutex.
+         * This allow recursive entering of the mutex from the saem thread,
+         * which is what we need in certain situations involving callbacks
+         */
+        apr_threadkey_private_get(&mutex, thread_lock);
+        if (mutex == m->lock) {
+            *pacquired = 0;
+            ap_assert(NULL); /* nested, why? */
+            return APR_SUCCESS;
+        }
     }
-
-    ap_assert(m->lock);
     status = apr_thread_mutex_lock(m->lock);
     *pacquired = (status == APR_SUCCESS);
-    if (*pacquired) {
+    if (nested_lock && *pacquired) {
         apr_threadkey_private_set(m->lock, thread_lock);
     }
     return status;
@@ -94,7 +99,9 @@ static apr_status_t enter_mutex(h2_mplx *m, int *pacquired)
 static void leave_mutex(h2_mplx *m, int acquired)
 {
     if (acquired) {
-        apr_threadkey_private_set(NULL, thread_lock);
+        if (nested_lock) {
+            apr_threadkey_private_set(NULL, thread_lock);
+        }
         apr_thread_mutex_unlock(m->lock);
     }
 }
@@ -105,38 +112,23 @@ static void stream_output_consumed(void *ctx,
                                    h2_bucket_beam *beam, apr_off_t length)
 {
     h2_stream *stream = ctx;
-    h2_mplx *m = stream->session->mplx;
     h2_task *task = stream->task;
-    int acquired;
     
     if (length > 0 && task && task->assigned) {
-        if (enter_mutex(m, &acquired) == APR_SUCCESS) {
-            h2_req_engine_out_consumed(task->assigned, task->c, length); 
-            leave_mutex(m, acquired);
-        }
+        h2_req_engine_out_consumed(task->assigned, task->c, length); 
     }
 }
 
 static void stream_input_ev(void *ctx, h2_bucket_beam *beam)
 {
-    h2_mplx *m = ctx;
+    h2_stream *stream = ctx;
+    h2_mplx *m = stream->session->mplx;
     apr_atomic_set32(&m->event_pending, 1); 
 }
 
-static void stream_input_consumed(void *ctx, 
-                                  h2_bucket_beam *beam, apr_off_t length)
+static void stream_input_consumed(void *ctx, h2_bucket_beam *beam, apr_off_t length)
 {
-    if (length > 0) { 
-        h2_mplx *m = ctx;
-        int acquired;
-    
-        if (enter_mutex(m, &acquired) == APR_SUCCESS) {
-            if (m->input_consumed) {
-                m->input_consumed(m->input_consumed_ctx, beam->id, length);
-            }
-            leave_mutex(m, acquired);
-        }
-    }
+    h2_stream_in_consumed(ctx, length);
 }
 
 static int can_always_beam_file(void *ctx, h2_bucket_beam *beam,  apr_file_t *file)
@@ -289,6 +281,12 @@ static int input_consumed_signal(h2_mplx *m, h2_stream *stream)
     return 0;
 }
 
+static int report_consumption_iter(void *ctx, void *val)
+{
+    input_consumed_signal(ctx, val);
+    return 1;
+}
+
 static int output_consumed_signal(h2_mplx *m, h2_task *task)
 {
     if (task->output.beam) {
@@ -426,6 +424,10 @@ static int stream_cancel_iter(void *ctx, void *val) {
     h2_mplx *m = ctx;
     h2_stream *stream = val;
 
+    /* disabled input consumed reporting */
+    if (stream->input) {
+        h2_beam_on_consumed(stream->input, NULL, NULL, NULL);
+    }
     /* take over event monitoring */
     h2_stream_set_monitor(stream, NULL);
     /* Reset, should transit to CLOSED state */
@@ -527,12 +529,6 @@ h2_stream *h2_mplx_stream_get(h2_mplx *m, int id)
     return s;
 }
 
-void h2_mplx_set_consumed_cb(h2_mplx *m, h2_mplx_consumed_cb *cb, void *ctx)
-{
-    m->input_consumed = cb;
-    m->input_consumed_ctx = ctx;
-}
-
 static void output_produced(void *ctx, h2_bucket_beam *beam, apr_off_t bytes)
 {
     h2_mplx *m = ctx;
@@ -618,18 +614,6 @@ static apr_status_t out_close(h2_mplx *m, h2_task *task)
     return status;
 }
 
-static int report_input_consumption(void *ctx, void *val)
-{
-    h2_stream *stream = val;
-    
-    (void)ctx;
-    if (stream->input) {
-        h2_beam_report_consumption(stream->input);
-    }
-    return 1;
-}
-
-
 apr_status_t h2_mplx_out_trywait(h2_mplx *m, apr_interval_time_t timeout,
                                  apr_thread_cond_t *iowait)
 {
@@ -645,7 +629,7 @@ apr_status_t h2_mplx_out_trywait(h2_mplx *m, apr_interval_time_t timeout,
         }
         else {
             purge_streams(m);
-            h2_ihash_iter(m->streams, report_input_consumption, m);
+            h2_ihash_iter(m->streams, report_consumption_iter, m);
             m->added_output = iowait;
             status = apr_thread_cond_timedwait(m->added_output, m->lock, timeout);
             if (APLOGctrace2(m->c)) {
@@ -757,7 +741,7 @@ static h2_task *next_stream_task(h2_mplx *m)
                 
                 if (stream->input) {
                     h2_beam_on_consumed(stream->input, stream_input_ev, 
-                                        stream_input_consumed, m);
+                                        stream_input_consumed, stream);
                     h2_beam_on_file_beam(stream->input, can_always_beam_file, m);
                     h2_beam_mutex_enable(stream->input);
                 }
@@ -1207,12 +1191,6 @@ int h2_mplx_has_master_events(h2_mplx *m)
     return apr_atomic_read32(&m->event_pending) > 0;
 }
 
-static int report_consumption_iter(void *ctx, void *val)
-{
-    input_consumed_signal(ctx, val);
-    return 1;
-}
-
 apr_status_t h2_mplx_dispatch_master_events(h2_mplx *m, 
                                             stream_ev_callback *on_resume, 
                                             void *on_ctx)
@@ -1227,16 +1205,19 @@ apr_status_t h2_mplx_dispatch_master_events(h2_mplx *m,
         ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c, 
                       "h2_mplx(%ld): dispatch events", m->id);        
         apr_atomic_set32(&m->event_pending, 0);
+        purge_streams(m);
+        
         /* update input windows for streams */
         h2_ihash_iter(m->streams, report_consumption_iter, m);
-        purge_streams(m);
         
         if (!h2_iq_empty(m->readyq)) {
             n = h2_iq_mshift(m->readyq, ids, H2_ALEN(ids));
             for (i = 0; i < n; ++i) {
                 stream = h2_ihash_get(m->streams, ids[i]);
                 if (stream) {
+                    leave_mutex(m, acquired);
                     on_resume(on_ctx, stream);
+                    enter_mutex(m, &acquired);
                 }
             }
         }

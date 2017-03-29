@@ -53,12 +53,6 @@ struct h2_req_engine;
 
 typedef struct h2_mplx h2_mplx;
 
-/**
- * Callback invoked for every stream that had input data read since
- * the last invocation.
- */
-typedef void h2_mplx_consumed_cb(void *ctx, int stream_id, apr_off_t consumed);
-
 struct h2_mplx {
     long id;
     conn_rec *c;
@@ -100,9 +94,6 @@ struct h2_mplx {
     
     struct h2_workers *workers;
     
-    h2_mplx_consumed_cb *input_consumed;
-    void *input_consumed_ctx;
-
     struct h2_ngn_shed *ngn_shed;
 };
 
@@ -193,18 +184,6 @@ apr_status_t h2_mplx_process(h2_mplx *m, struct h2_stream *stream,
  * @param ctx context data for the compare function
  */
 apr_status_t h2_mplx_reprioritize(h2_mplx *m, h2_stream_pri_cmp *cmp, void *ctx);
-
-/**
- * Register a callback for the amount of input data consumed per stream. The
- * will only ever be invoked from the thread creating this h2_mplx, e.g. when
- * calls from that thread into this h2_mplx are made.
- *
- * @param m the multiplexer to register the callback at
- * @param cb the function to invoke
- * @param ctx user supplied argument to invocation.
- */
-void h2_mplx_set_consumed_cb(h2_mplx *m, h2_mplx_consumed_cb *cb, void *ctx);
-
 
 typedef apr_status_t stream_ev_callback(void *ctx, struct h2_stream *stream);
 

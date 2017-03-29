@@ -77,68 +77,6 @@ static h2_stream *get_stream(h2_session *session, int stream_id)
     return nghttp2_session_get_stream_user_data(session->ngh2, stream_id);
 }
 
-static void update_window(void *ctx, int stream_id, apr_off_t bytes_read)
-{
-    h2_session *session = ctx;
-    h2_stream *stream;
-    
-    if (bytes_read > 0) {
-        apr_off_t consumed = bytes_read;
-        
-        while (consumed > 0) {
-            int len = (bytes_read > INT_MAX)? INT_MAX : bytes_read;
-            nghttp2_session_consume(session->ngh2, stream_id, (int)bytes_read);
-            consumed -= len;
-        }
-
-        (void)stream;
-#ifdef H2_NG2_LOCAL_WIN_SIZE
-        if ((stream = get_stream(session, stream_id))) {
-            int cur_size = nghttp2_session_get_stream_local_window_size(
-                session->ngh2, stream->id);
-            int win = stream->in_window_size;
-            int thigh = win * 8/10;
-            int tlow = win * 2/10;
-            const int win_max = 2*1024*1024;
-            const int win_min = 32*1024;
-            
-            /* Work in progress, probably shoud add directives for these
-             * values once this stabilizes somewhat. The general idea is
-             * to adapt stream window sizes if the input window changes
-             * a) very quickly (< good RTT) from full to empty
-             * b) only a little bit (> bad RTT)
-             * where in a) it grows and in b) it shrinks again.
-             */
-            if (cur_size > thigh && bytes_read > thigh && win < win_max) {
-                /* almost empty again with one reported consumption, how
-                 * long did this take? */
-                long ms = apr_time_msec(apr_time_now() - stream->in_last_write);
-                if (ms < 40) {
-                    win = H2MIN(win_max, win + (64*1024));
-                }
-            }
-            else if (cur_size < tlow && bytes_read < tlow && win > win_min) {
-                /* staying full, for how long already? */
-                long ms = apr_time_msec(apr_time_now() - stream->in_last_write);
-                if (ms > 700) {
-                    win = H2MAX(win_min, win - (32*1024));
-                }
-            }
-            
-            if (win != stream->in_window_size) {
-                stream->in_window_size = win;
-                nghttp2_session_set_local_window_size(session->ngh2, 
-                        NGHTTP2_FLAG_NONE, stream_id, win);
-            } 
-            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c,
-                          "h2_stream(%ld-%d): consumed %ld bytes, window now %d/%d",
-                          session->id, stream_id, (long)bytes_read, 
-                          cur_size, stream->in_window_size);
-        }
-#endif
-    }
-}
-
 static void dispatch_event(h2_session *session, h2_session_event_t ev, 
                              int err, const char *msg);
 
@@ -755,7 +693,6 @@ static apr_status_t session_cleanup(h2_session *session, const char *trigger)
     }
 
     transit(session, trigger, H2_SESSION_ST_CLEANUP);
-    h2_mplx_set_consumed_cb(session->mplx, NULL, NULL);
     h2_mplx_release_and_join(session->mplx, session->iowait);
     session->mplx = NULL;
 
@@ -879,8 +816,6 @@ static apr_status_t h2_session_create_int(h2_session **psession,
     
     session->mplx = h2_mplx_create(c, session->pool, session->config, 
                                    workers);
-    
-    h2_mplx_set_consumed_cb(session->mplx, update_window, session);
     
     /* connection input filter that feeds the session */
     session->cin = h2_filter_cin_create(session);
