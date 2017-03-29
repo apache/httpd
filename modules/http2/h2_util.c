@@ -846,7 +846,7 @@ static apr_status_t fifo_peek(h2_fifo *fifo, h2_fifo_peek_fn *fn, void *ctx, int
 
 apr_status_t h2_fifo_peek(h2_fifo *fifo, h2_fifo_peek_fn *fn, void *ctx)
 {
-    return fifo_peek(fifo, fn, ctx, 0);
+    return fifo_peek(fifo, fn, ctx, 1);
 }
 
 apr_status_t h2_fifo_try_peek(h2_fifo *fifo, h2_fifo_peek_fn *fn, void *ctx)
