@@ -80,9 +80,9 @@ static h2_stream *get_stream(h2_session *session, int stream_id)
 static void update_window(void *ctx, int stream_id, apr_off_t bytes_read)
 {
     h2_session *session = ctx;
+    h2_stream *stream;
     
     if (bytes_read > 0) {
-        h2_stream *stream = get_stream(session, stream_id);
         apr_off_t consumed = bytes_read;
         
         while (consumed > 0) {
@@ -91,7 +91,9 @@ static void update_window(void *ctx, int stream_id, apr_off_t bytes_read)
             consumed -= len;
         }
 
-        if (stream) {
+        (void)stream;
+#ifdef H2_NG2_LOCAL_WIN_SIZE
+        if ((stream = get_stream(session, stream_id))) {
             int cur_size = nghttp2_session_get_stream_local_window_size(
                 session->ngh2, stream->id);
             int win = stream->in_window_size;
@@ -133,6 +135,7 @@ static void update_window(void *ctx, int stream_id, apr_off_t bytes_read)
                           session->id, stream_id, (long)bytes_read, 
                           cur_size, stream->in_window_size);
         }
+#endif
     }
 }
 

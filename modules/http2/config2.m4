@@ -155,6 +155,9 @@ dnl # nghttp2 >= 1.5.0: changing stream priorities
 dnl # nghttp2 >= 1.14.0: invalid header callback
       AC_CHECK_FUNCS([nghttp2_session_callbacks_set_on_invalid_header_callback], 
         [APR_ADDTO(MOD_CPPFLAGS, ["-DH2_NG2_INVALID_HEADER_CB"])], [])
+dnl # nghttp2 >= 1.15.0: get/set stream window sizes
+      AC_CHECK_FUNCS([nghttp2_session_get_stream_local_window_size], 
+        [APR_ADDTO(MOD_CPPFLAGS, ["-DH2_NG2_LOCAL_WIN_SIZE"])], [])
     else
       AC_MSG_WARN([nghttp2 version is too old])
     fi
