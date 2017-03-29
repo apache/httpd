@@ -118,14 +118,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_autoindex: Add IndexOptions UseOldDateFormat to allow the date
-     format from 2.2 in the Last Modified column. PR60846.
-     trunk patch: http://svn.apache.org/r1787525
-                  http://svn.apache.org/r1787553
-                  http://svn.apache.org/r1788451
-     2.4.x patch: trunk works
-     +1 covener, jim
-
   *) mod_proxy: Allow the per-request environment variable "no-proxy" to
      be used as an alternative to ProxyPass /path !. This is primarily
      to set exceptions for ProxyPass specified in <Location> context.
@@ -202,6 +194,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              ProxyHCTPsize were commented out on restart, we wouldn't use the
              default value (as expected).
      jim: Committed in r1789387
+
+  *) mod_autoindex: Add IndexOptions UseOldDateFormat to allow the date
+     format from 2.2 in the Last Modified column. PR60846.
+     trunk patch: http://svn.apache.org/r1787525
+                  http://svn.apache.org/r1787553
+                  http://svn.apache.org/r1788451
+     2.4.x patch: trunk works
+     +1 covener, jim
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
