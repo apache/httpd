@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1673563:1784326 (outdated) -->
+<!-- English Revision: 1784326 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -165,7 +165,7 @@ Listen 192.0.2.100:80
       module="core">VirtualHost</directive> bölümleri içinde kullanılabilir.
       Bir yönergenin <directive module="core">VirtualHost</directive>
       bölümlerinde kullanılıp kullanılmayacağını öğrenmek için <a
-      href="../mod/directives.html">yönerge dizinini</a> kullanarak yönergenin
+      href="../mod/quickreference.html">yönerge dizinini</a> kullanarak yönergenin
       <a href="../mod/directive-dict.html#Context">Bağlam</a>’ına bakınız.</p>
 
     <p><a href="../suexec.html">suEXEC sarmalayıcısı</a> kullanıldığı takdirde
