@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 1755978:1787736 (outdated) -->
+<!-- English Revision: 1787736 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -394,8 +394,10 @@ ProxyPass "/" "balancer://mycluster/" stickysession=JSESSIONID|jsessionid nofail
       module="core">If</directive> bölümü <directive type="section"
       module="core">Directory</directive>, <directive type="section"
       module="core">Location</directive> ve <directive
-      type="section" module="core">Files</directive> bölümlerinde bulunabilir.
-      Bu bölümlerin düzenli ifadeli türevleri de benzer tarzda davranır.</p>
+      type="section" module="core">Files</directive> bölümlerinde bulunabilir fakat 
+      başka bir <directive type="section" module="core">If</directive> bölümünün 
+      içinde bulunamaz. Bu bölümlerin düzenli ifadeli türevleri de benzer tarzda 
+      davranır.</p>
 
     <p>İç içe bölümler, aynı türdeki iç içe olmayan bölümlerin sonrasına
       yerleştirilir.</p>
@@ -493,28 +495,40 @@ ProxyPass "/" "balancer://mycluster/" stickysession=JSESSIONID|jsessionid nofail
       </li>
     </ol>
 
-    <p><directive type="section" module="core">Directory</directive>
-      bölümündekiler hariç, her grup, yapılandırma dosyasında bulundukları
-      sıraya göre işleme sokulurlar. Yukarıda 1. grup olan <directive
-      type="section" module="core">Directory</directive> bölümü en kısa dizin
-      elemanından en uzun dizin elemanına doğru işleme sokulur. Yani, örneğin,
-      <code>&lt;Directory "/var/web/dir"&gt;</code> bölümü <code>&lt;Directory
-      "/var/web/dir/subdir"&gt;</code> bölümünden önce işleme sokulacaktır. Eğer
-      aynı uzunlukta çok sayıda dizin varsa <directive type="section"
-      module="core">Directory</directive> bölümleri yapılandırma dosyasında
-      bulundukları sıraya göre işleme sokulurlar. <directive
-      module="core">Include</directive> yönergeleri ile yapılandırmaya dahil
-      edilen dosyaların içerikleri <directive module="core">Include</directive>
-      yönergesinin bulunduğu yere konulduktan sonra işleme sokulurlar.</p>
+    <p>Bazı önemli durumlar:</p>
+    <ul>
+        <li><directive type="section" module="core">Directory</directive>
+        bölümündekiler hariç, her grup, yapılandırma dosyasında bulundukları
+        sıraya göre işleme sokulurlar. Örneğin, 4. grupta <em>/foo</em> için yapılan 
+        bir istek <code>&lt;Location "/foo/bar"&gt;</code> ve <code>&lt;Location 
+        "/foo"&gt;</code> bölümleriyle de eşleşir ve bunlar yapılandırma 
+        dosyalarında bulundukları sıraya göre değerlendirilir.</li>
+      
+        <li>Yukarıda 1. grup olan <directive type="section" 
+        module="core">Directory</directive> bölümü en kısa dizin elemanından en uzun 
+        dizin elemanına doğru işleme sokulur. Yani, örneğin, <code>&lt;Directory 
+        "/var/web/dir"&gt;</code> bölümü <code>&lt;Directory    
+        "/var/web/dir/subdir"&gt;</code> bölümünden önce işleme sokulacaktır.</li>
+    
+        <li>Eğer aynı dizin için birden fazla <directive type="section"      
+        module="core">Directory</directive> bölümü varsa bunlar yapılandırma 
+        dosyasında bulundukları sıraya göre işleme sokulurlar.</li>
+      
+        <li><directive module="core">Include</directive> yönergeleri ile 
+        yapılandırmaya dahil edilen dosyaların içerikleri <directive 
+        module="core">Include</directive> yönergesinin bulunduğu yere konulduktan 
+        sonra işleme sokulurlar.</li>
 
-    <p><directive type="section" module="core">VirtualHost</directive>
-      bölümlerinin içindeki bölümler, sanal konak tanımı dışındaki
-      karşılıklarından <em>sonra</em> uygulanırlar.</p>
+       <li><directive type="section" module="core">VirtualHost</directive>
+       bölümlerinin içindeki bölümler, sanal konak tanımı dışındaki
+       karşılıklarından <em>sonra</em> uygulanırlar. Bu yöntemle ana sunucu 
+       yapılandırmasındaki tanımlar geçersiz kılınabilir</li>
 
-    <p>İstek <module>mod_proxy</module> tarafından sunulduğu takdirde,
-      <directive module="mod_proxy" type="section">Proxy</directive> taşıyıcısı
-      işlem sırasında <directive module="core" type="section"
-      >Directory</directive> taşıyıcısının yerini alır.</p>
+       <li>İstek <module>mod_proxy</module> tarafından sunulduğu takdirde,
+       <directive module="mod_proxy" type="section">Proxy</directive> taşıyıcısı
+       işlem sırasında <directive module="core" type="section"
+       >Directory</directive> taşıyıcısının yerini alır.</li>
+    </ul>
 
     <note><title>Bazı Teknik Bilgiler</title>
       Aslında, isim dönüşüm aşamasından (<code>Aliases</code> ve

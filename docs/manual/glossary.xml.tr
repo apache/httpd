@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 1556104:1780218 (outdated) -->
+<!-- English Revision: 1780218 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -128,7 +128,7 @@
     <dt><a name="plaintext" id="plaintext">Düz Metin</a></dt>
     <dd>Şifrelenmemiş metin.</dd>
 
-    <dt><a name="regularexpresion" id="regularexpresion">Düzenli İfade</a>
+    <dt><a name="regularexpression" id="regularexpression">Düzenli İfade</a>
       <a name="regex" id="regex">(Regex)</a></dt>
     <dd>Metin içinde bir şablon tanımlama yolu. Örneğin, “A harfi ile
       başlayan bütün sözcükler” veya “10 rakamlı telefon numaraları” ya da
