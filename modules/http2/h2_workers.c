@@ -134,6 +134,9 @@ static apr_status_t get_next(h2_slot *slot)
     while (!slot->aborted) {
         if (!slot->task) {
             status = h2_fifo_try_peek(workers->mplxs, mplx_peek, slot);
+            if (status == APR_EOF) {
+                return status;
+            }
         }
         
         if (slot->task) {
