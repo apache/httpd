@@ -118,14 +118,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_proxy: Allow the per-request environment variable "no-proxy" to
-     be used as an alternative to ProxyPass /path !. This is primarily
-     to set exceptions for ProxyPass specified in <Location> context.
-     trunk patch: http://svn.apache.org/r1781328
-                  http://svn.apache.org/r1785907
-     2.4.x patch: trunk works
-     +1: covener, ylavic, jim
-
   *) Easy patches: synch 2.4.x and trunk
      - cache: Use apr_pstrmemdup instead of apr_pstrndup when applicable
      - cache: Remove a useless break + tiny style fix (missing space)
