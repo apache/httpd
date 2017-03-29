@@ -180,7 +180,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1787553
                   http://svn.apache.org/r1788451
      2.4.x patch: trunk works
-     +1 covener
+     +1 covener, jim
 
   *) mod_proxy: Allow the per-request environment variable "no-proxy" to
      be used as an alternative to ProxyPass /path !. This is primarily
@@ -188,7 +188,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1781328
                   http://svn.apache.org/r1785907
      2.4.x patch: trunk works
-     +1: covener, ylavic
+     +1: covener, ylavic, jim
 
   *) Easy patches: synch 2.4.x and trunk
      - cache: Use apr_pstrmemdup instead of apr_pstrndup when applicable
@@ -202,7 +202,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1777594
                   http://svn.apache.org/r1783056
      2.4.x patch: trunk patches work
-     +1: jailletc36, ylavic
+     +1: jailletc36, ylavic, jim
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
