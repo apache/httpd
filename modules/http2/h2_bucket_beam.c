@@ -832,11 +832,10 @@ static apr_status_t append_bucket(h2_bucket_beam *beam,
         apr_bucket_file *bf = b->data;
         apr_file_t *fd = bf->fd;
         int can_beam = (bf->refcount.refcount == 1);
-        if (can_beam && beam->last_beamed != fd && beam->can_beam_fn) {
+        if (can_beam && beam->can_beam_fn) {
             can_beam = beam->can_beam_fn(beam->can_beam_ctx, beam, fd);
         }
         if (can_beam) {
-            beam->last_beamed = fd;
             status = apr_bucket_setaside(b, beam->send_pool);
         }
         /* else: enter ENOTIMPL case below */

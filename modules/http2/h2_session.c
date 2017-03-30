@@ -870,8 +870,8 @@ static apr_status_t h2_session_create_int(h2_session **psession,
                                   "push_diary(type=%d,N=%d)"),
                       (int)session->max_stream_count, 
                       (int)session->max_stream_mem,
-                      session->mplx->workers_limit, 
-                      session->mplx->workers_max, 
+                      session->mplx->limit_active, 
+                      session->mplx->max_active, 
                       session->push_diary->dtype, 
                       (int)session->push_diary->N);
     }

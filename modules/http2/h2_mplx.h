@@ -74,9 +74,9 @@ struct h2_mplx {
     
     int max_streams;        /* max # of concurrent streams */
     int max_stream_started; /* highest stream id that started processing */
-    int workers_busy;       /* # of workers processing on this mplx */
-    int workers_limit;      /* current # of workers limit, dynamic */
-    int workers_max;        /* max, hard limit # of workers in a process */
+    int tasks_active;       /* # of tasks being processed from this mplx */
+    int limit_active;       /* current limit on active tasks, dynamic */
+    int max_active;         /* max, hard limit # of active tasks in a process */
     apr_time_t last_idle_block;      /* last time, this mplx entered IDLE while
                                       * streams were ready */
     apr_time_t last_limit_change;    /* last time, worker limit changed */
