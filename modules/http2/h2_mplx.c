@@ -673,6 +673,20 @@ apr_status_t h2_mplx_reprioritize(h2_mplx *m, h2_stream_pri_cmp *cmp, void *ctx)
     return status;
 }
 
+static void register_if_needed(h2_mplx *m) 
+{
+    if (!m->is_registered && !h2_iq_empty(m->q)) {
+        apr_status_t status = h2_workers_register(m->workers, m); 
+        if (status == APR_SUCCESS) {
+            m->is_registered = 1;
+        }
+        else {
+            ap_log_cerror(APLOG_MARK, APLOG_ERR, status, m->c, APLOGNO()
+                          "h2_mplx(%ld): register at workers", m->id);
+        }
+    }
+}
+
 apr_status_t h2_mplx_process(h2_mplx *m, struct h2_stream *stream, 
                              h2_stream_pri_cmp *cmp, void *ctx)
 {
@@ -688,17 +702,13 @@ apr_status_t h2_mplx_process(h2_mplx *m, struct h2_stream *stream,
             if (h2_stream_is_ready(stream)) {
                 /* already have a response */
                 check_data_for(m, stream->id);
-                ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, m->c,
+                ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c,
                               H2_STRM_MSG(stream, "process, add to readyq")); 
             }
             else {
-                h2_iq_add(m->q, stream->id, cmp, ctx);                
-                if (!m->is_registered) {
-                    if (h2_workers_register(m->workers, m) == APR_SUCCESS) {
-                        m->is_registered = 1;
-                    }
-                }
-                ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, m->c,
+                h2_iq_add(m->q, stream->id, cmp, ctx);
+                register_if_needed(m);                
+                ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c,
                               H2_STRM_MSG(stream, "process, added to q")); 
             }
         }
@@ -901,11 +911,7 @@ void h2_mplx_task_done(h2_mplx *m, h2_task *task, h2_task **ptask)
             /* caller wants another task */
             *ptask = next_stream_task(m);
         }
-        if (!m->is_registered && !h2_iq_empty(m->q)) {
-            if (h2_workers_register(m->workers, m) == APR_SUCCESS) {
-                m->is_registered = 1;
-            }
-        }
+        register_if_needed(m);
         leave_mutex(m, acquired);
     }
 }
@@ -1042,6 +1048,7 @@ apr_status_t h2_mplx_idle(h2_mplx *m)
                 status = unschedule_slow_tasks(m);
             }
         }
+        register_if_needed(m);
         leave_mutex(m, acquired);
     }
     return status;
