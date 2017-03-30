@@ -44,7 +44,8 @@ struct h2_workers {
     int idle_workers;
     int max_idle_secs;
     
-    unsigned int aborted : 1;
+    int aborted;
+    int dynamic;
 
     apr_threadattr_t *thread_attr;
     int nslots;

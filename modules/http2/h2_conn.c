@@ -125,7 +125,11 @@ apr_status_t h2_conn_child_init(apr_pool_t *pool, server_rec *s)
         minw = max_threads_per_child;
     }
     if (maxw <= 0) {
-        maxw = minw;
+        /* As a default, this seems to work quite well under mpm_event. 
+         * For people enabling http2 under mpm_prefork, start 4 threads unless 
+         * configured otherwise. People get unhappy if their http2 requests are 
+         * blocking each other. */
+        maxw = H2MAX(3 * minw / 2, 4);
     }
     
     idle_secs = h2_config_geti(config, H2_CONF_MAX_WORKER_IDLE_SECS);
