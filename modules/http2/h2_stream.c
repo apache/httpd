@@ -241,7 +241,7 @@ static apr_status_t close_input(h2_stream *stream)
 
 static apr_status_t close_output(h2_stream *stream)
 {
-    if (h2_beam_is_closed(stream->output)) {
+    if (!stream->output || h2_beam_is_closed(stream->output)) {
         return APR_SUCCESS;
     }
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c,
@@ -531,9 +531,6 @@ h2_stream *h2_stream_create(int id, apr_pool_t *pool, h2_session *session,
     stream->monitor      = monitor;
     stream->max_mem      = session->max_stream_mem;
     
-    h2_beam_create(&stream->output, pool, id, "output", H2_BEAM_OWNER_RECV, 0,
-                   session->s->timeout);
-               
 #ifdef H2_NG2_LOCAL_WIN_SIZE
     stream->in_window_size = 
         nghttp2_session_get_stream_local_window_size(
@@ -607,7 +604,9 @@ void h2_stream_rst(h2_stream *stream, int error_code)
     if (stream->input) {
         h2_beam_abort(stream->input);
     }
-    h2_beam_leave(stream->output);
+    if (stream->output) {
+        h2_beam_leave(stream->output);
+    }
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c,
                   H2_STRM_MSG(stream, "reset, error=%d"), error_code);
     h2_stream_dispatch(stream, H2_SEV_CANCELLED);
@@ -777,6 +776,8 @@ apr_status_t h2_stream_out_prepare(h2_stream *stream, apr_off_t *plen,
         *presponse = NULL;
     }
     
+    ap_assert(stream);
+    
     if (stream->rst_error) {
         *plen = 0;
         *peos = 1;
@@ -785,7 +786,7 @@ apr_status_t h2_stream_out_prepare(h2_stream *stream, apr_off_t *plen,
     
     c = stream->session->c;
     prep_output(stream);
-    
+
     /* determine how much we'd like to send. We cannot send more than
      * is requested. But we can reduce the size in case the master
      * connection operates in smaller chunks. (TSL warmup) */
@@ -797,8 +798,15 @@ apr_status_t h2_stream_out_prepare(h2_stream *stream, apr_off_t *plen,
     h2_util_bb_avail(stream->out_buffer, plen, peos);
     if (!*peos && *plen < requested && *plen < stream->max_mem) {
         H2_STREAM_OUT_LOG(APLOG_TRACE2, stream, "pre");
-        status = h2_beam_receive(stream->output, stream->out_buffer, 
-                                 APR_NONBLOCK_READ, stream->max_mem - *plen);
+        if (stream->output) {
+            status = h2_beam_receive(stream->output, stream->out_buffer, 
+                                     APR_NONBLOCK_READ, 
+                                     stream->max_mem - *plen);
+        }
+        else {
+            status = APR_EOF;
+        }
+        
         if (APR_STATUS_IS_EOF(status)) {
             apr_bucket *eos = apr_bucket_eos_create(c->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(stream->out_buffer, eos);

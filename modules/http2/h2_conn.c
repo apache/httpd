@@ -308,6 +308,7 @@ conn_rec *h2_slave_create(conn_rec *master, int slave_id, apr_pool_t *parent)
                                              master->id, slave_id);
     /* Simulate that we had already a request on this connection. */
     c->keepalives             = 1;
+    c->aborted                = 0;
     /* We cannot install the master connection socket on the slaves, as
      * modules mess with timeouts/blocking of the socket, with
      * unwanted side effects to the master connection processing.
@@ -335,6 +336,7 @@ void h2_slave_destroy(conn_rec *slave)
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, slave,
                   "h2_stream(%s): destroy slave", 
                   apr_table_get(slave->notes, H2_TASK_ID_NOTE));
+    slave->sbh = NULL;
     apr_pool_destroy(slave->pool);
 }
 

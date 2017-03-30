@@ -183,7 +183,6 @@ struct h2_bucket_beam {
 
     apr_size_t buckets_sent;  /* # of beam buckets sent */
     apr_size_t files_beamed;  /* how many file handles have been set aside */
-    apr_file_t *last_beamed;  /* last file beamed */
     
     unsigned int aborted : 1;
     unsigned int closed : 1;
@@ -376,6 +375,16 @@ int h2_beam_report_consumption(h2_bucket_beam *beam);
 void h2_beam_on_produced(h2_bucket_beam *beam, 
                          h2_beam_io_callback *io_cb, void *ctx);
 
+/**
+ * Register a callback that may prevent a file from being beam as
+ * file handle, forcing the file content to be copied. Then no callback
+ * is set (NULL), file handles are transferred directly.
+ * @param beam the beam to set the callback on
+ * @param io_cb the callback or NULL, called on receiver with bytes produced
+ * @param ctx  the context to use in callback invocation
+ * 
+ * Call from the receiver side, callbacks invoked on either side.
+ */
 void h2_beam_on_file_beam(h2_bucket_beam *beam, 
                           h2_beam_can_beam_callback *cb, void *ctx);
 
