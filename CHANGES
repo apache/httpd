@@ -1,34 +1,15 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
-  *) mod_http2: better performance, eliminated need for nested locks and
-     thread privates. Moving request setups from the main connection to the
-     worker threads. Increase number of spare connections kept.
-     [Stefan Eissing]
-     
   *) core: Disallow multiple Listen on the same IP:port when listener buckets
      are configured (ListenCoresBucketsRatio > 0), consistently with the single
      bucket case (default), thus avoiding the leak of the corresponding socket
      descriptors on graceful restart.  [Yann Ylavic]
 
-  *) mod_http2: input buffering and dynamic flow windows for increased 
-     throughput. Requires nghttp2 >= v1.5.0 features. Announced at startup
-     in mod_http2 INFO log as feature 'DWINS'. [Stefan Eissing]
-
-  *) mod_http2: h2 workers with improved scalability for better scheduling
-     performance. There are H2MaxWorkers threads created at start and the
-     number is kept constant. [Stefan Eissing]
-     
-  *) mod_http2: obsoleted option H2SessionExtraFiles, will be ignored and
-     just log a warning. [Stefan Eissing]
-     
   *) mod_autoindex: Add IndexOptions UseOldDateFormat to allow the date
      format from 2.2 in the Last Modified column. PR60846.
      [Hank Ibell <hwibell gmail.com>]
 
-  *) mod_http2: fixed PR60869 by making h2 workers exit explicitly waking up
-     all threads to exit in a defined way. [Stefan Eissing]
-     
   *) Add <IfDirective> and <IfSection> directives.  [Joe Orton]
 
   *) mod_syslog: Support use of optional "tag" in syslog entries.
