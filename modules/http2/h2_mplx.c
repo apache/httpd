@@ -672,7 +672,7 @@ static void register_if_needed(h2_mplx *m)
             m->is_registered = 1;
         }
         else {
-            ap_log_cerror(APLOG_MARK, APLOG_ERR, status, m->c, APLOGNO()
+            ap_log_cerror(APLOG_MARK, APLOG_ERR, status, m->c, APLOGNO(10021)
                           "h2_mplx(%ld): register at workers", m->id);
         }
     }
