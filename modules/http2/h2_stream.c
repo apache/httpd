@@ -43,18 +43,6 @@
 #include "h2_util.h"
 
 
-#define S_XXX (-2)
-#define S_ERR (-1)
-#define S_NOP (0)
-#define S_IDL     (H2_SS_IDL + 1)
-#define S_RS_L    (H2_SS_RSVD_L + 1)
-#define S_RS_R    (H2_SS_RSVD_R + 1)
-#define S_OPEN    (H2_SS_OPEN + 1)
-#define S_CL_L    (H2_SS_CLOSED_L + 1)
-#define S_CL_R    (H2_SS_CLOSED_R + 1)
-#define S_CLS     (H2_SS_CLOSED + 1)
-#define S_CLN     (H2_SS_CLEANUP + 1)
-
 static const char *h2_ss_str(h2_stream_state_t state)
 {
     switch (state) {
@@ -84,37 +72,54 @@ const char *h2_stream_state_str(h2_stream *stream)
     return h2_ss_str(stream->state);
 }
 
+/* Abbreviations for stream transit tables */
+#define S_XXX     (-2)                      /* Programming Error */
+#define S_ERR     (-1)                      /* Protocol Error */
+#define S_NOP     (0)                       /* No Change */
+#define S_IDL     (H2_SS_IDL + 1)
+#define S_RS_L    (H2_SS_RSVD_L + 1)
+#define S_RS_R    (H2_SS_RSVD_R + 1)
+#define S_OPEN    (H2_SS_OPEN + 1)
+#define S_CL_L    (H2_SS_CLOSED_L + 1)
+#define S_CL_R    (H2_SS_CLOSED_R + 1)
+#define S_CLS     (H2_SS_CLOSED + 1)
+#define S_CLN     (H2_SS_CLEANUP + 1)
+
+/* state transisitions when certain frame types are sent */
 static int trans_on_send[][H2_SS_MAX] = {
-/*                    S_IDLE,S_RS_R, S_RS_L, S_OPEN, S_CL_R, S_CL_L, S_CLS,  S_CLN, */        
-/* DATA,         */ { S_ERR, S_ERR,  S_ERR,  S_NOP,  S_NOP,  S_ERR,  S_NOP,  S_NOP, },
-/* HEADERS,      */ { S_ERR, S_ERR,  S_CL_R, S_NOP,  S_NOP,  S_ERR,  S_NOP,  S_NOP, },
-/* PRIORITY,     */ { S_NOP, S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP, },   
-/* RST_STREAM,   */ { S_CLS, S_CLS,  S_CLS,  S_CLS,  S_CLS,  S_CLS,  S_NOP,  S_NOP, },
-/* SETTINGS,     */ { S_ERR, S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR, },
-/* PUSH_PROMISE, */ { S_RS_L,S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR, }, 
-/* PING,         */ { S_ERR, S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR, },
-/* GOAWAY,       */ { S_ERR, S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR, },
-/* WINDOW_UPDATE,*/ { S_NOP, S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP, },
-/* CONT          */ { S_NOP, S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP, },
+/*S_IDLE,S_RS_R, S_RS_L, S_OPEN, S_CL_R, S_CL_L, S_CLS,  S_CLN, */        
+{ S_ERR, S_ERR,  S_ERR,  S_NOP,  S_NOP,  S_ERR,  S_NOP,  S_NOP, },/* DATA */ 
+{ S_ERR, S_ERR,  S_CL_R, S_NOP,  S_NOP,  S_ERR,  S_NOP,  S_NOP, },/* HEADERS */ 
+{ S_NOP, S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP, },/* PRIORITY */    
+{ S_CLS, S_CLS,  S_CLS,  S_CLS,  S_CLS,  S_CLS,  S_NOP,  S_NOP, },/* RST_STREAM */ 
+{ S_ERR, S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR, },/* SETTINGS */ 
+{ S_RS_L,S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR, },/* PUSH_PROMISE */  
+{ S_ERR, S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR, },/* PING */ 
+{ S_ERR, S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR, },/* GOAWAY */ 
+{ S_NOP, S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP, },/* WINDOW_UPDATE */ 
+{ S_NOP, S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP, },/* CONT */ 
 };
+/* state transisitions when certain frame types are received */
 static int trans_on_recv[][H2_SS_MAX] = {
-/*                    S_IDLE,S_RS_R, S_RS_L, S_OPEN, S_CL_R, S_CL_L, S_CLS,  S_CLN, */        
-/* DATA,         */ { S_ERR, S_ERR,  S_ERR,  S_NOP,  S_ERR,  S_NOP,  S_NOP,  S_NOP, },
-/* HEADERS,      */ { S_OPEN,S_CL_L, S_ERR,  S_NOP,  S_ERR,  S_NOP,  S_NOP,  S_NOP, },
-/* PRIORITY,     */ { S_NOP, S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP, },   
-/* RST_STREAM,   */ { S_ERR, S_CLS,  S_CLS,  S_CLS,  S_CLS,  S_CLS,  S_NOP,  S_NOP, },
-/* SETTINGS,     */ { S_ERR, S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR, },
-/* PUSH_PROMISE, */ { S_RS_R,S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR, }, 
-/* PING,         */ { S_ERR, S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR, },
-/* GOAWAY,       */ { S_ERR, S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR, },
-/* WINDOW_UPDATE,*/ { S_NOP, S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP, },
-/* CONT          */ { S_NOP, S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP, },
+/*S_IDLE,S_RS_R, S_RS_L, S_OPEN, S_CL_R, S_CL_L, S_CLS,  S_CLN, */        
+{ S_ERR, S_ERR,  S_ERR,  S_NOP,  S_ERR,  S_NOP,  S_NOP,  S_NOP, },/* DATA */ 
+{ S_OPEN,S_CL_L, S_ERR,  S_NOP,  S_ERR,  S_NOP,  S_NOP,  S_NOP, },/* HEADERS */ 
+{ S_NOP, S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP, },/* PRIORITY */    
+{ S_ERR, S_CLS,  S_CLS,  S_CLS,  S_CLS,  S_CLS,  S_NOP,  S_NOP, },/* RST_STREAM */ 
+{ S_ERR, S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR, },/* SETTINGS */ 
+{ S_RS_R,S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR, },/* PUSH_PROMISE */  
+{ S_ERR, S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR, },/* PING */ 
+{ S_ERR, S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR, },/* GOAWAY */ 
+{ S_NOP, S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP, },/* WINDOW_UPDATE */ 
+{ S_NOP, S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP, },/* CONT */ 
 };
+/* state transisitions when certain events happen */
 static int trans_on_event[][H2_SS_MAX] = {
-/* H2_SEV_CLOSED_L*/{ S_XXX, S_ERR,  S_ERR,  S_CL_L, S_CLS,  S_XXX,  S_XXX,  S_XXX, },
-/* H2_SEV_CLOSED_R*/{ S_ERR, S_ERR,  S_ERR,  S_CL_R, S_ERR,  S_CLS,  S_NOP,  S_NOP, },
-/* H2_SEV_CANCELLED*/{S_CLS, S_CLS,  S_CLS,  S_CLS,  S_CLS,  S_CLS,  S_NOP,  S_NOP, },
-/* H2_SEV_EOS_SENT*/{ S_NOP, S_XXX,  S_XXX,  S_XXX,  S_XXX,  S_CLS,  S_CLN,  S_XXX, },
+/*S_IDLE,S_RS_R, S_RS_L, S_OPEN, S_CL_R, S_CL_L, S_CLS,  S_CLN, */        
+{ S_XXX, S_ERR,  S_ERR,  S_CL_L, S_CLS,  S_XXX,  S_XXX,  S_XXX, },/* EV_CLOSED_L*/
+{ S_ERR, S_ERR,  S_ERR,  S_CL_R, S_ERR,  S_CLS,  S_NOP,  S_NOP, },/* EV_CLOSED_R*/
+{ S_CLS, S_CLS,  S_CLS,  S_CLS,  S_CLS,  S_CLS,  S_NOP,  S_NOP, },/* EV_CANCELLED*/
+{ S_NOP, S_XXX,  S_XXX,  S_XXX,  S_XXX,  S_CLS,  S_CLN,  S_XXX, },/* EV_EOS_SENT*/
 };
 
 static int on_map(h2_stream_state_t state, int map[H2_SS_MAX])
@@ -137,7 +142,7 @@ static int on_frame(h2_stream_state_t state, int frame_type,
     ap_assert(frame_type >= 0);
     ap_assert(state >= 0);
     if (frame_type >= maxlen) {
-        return state; /* NOP */
+        return state; /* NOP, ignore unknown frame types */
     }
     return on_map(state, frame_map[frame_type]);
 }
@@ -152,9 +157,15 @@ static int on_frame_recv(h2_stream_state_t state, int frame_type)
     return on_frame(state, frame_type, trans_on_recv, H2_ALEN(trans_on_recv));
 }
 
-static int on_event(h2_stream_state_t state, h2_stream_event_t ev)
+static int on_event(h2_stream* stream, h2_stream_event_t ev)
 {
-    return on_map(state, trans_on_event[ev]);
+    if (stream->monitor && stream->monitor->on_event) {
+        stream->monitor->on_event(stream->monitor->ctx, stream, ev);
+    }
+    if (ev < H2_ALEN(trans_on_event)) {
+        return on_map(stream->state, trans_on_event[ev]);
+    }
+    return stream->state;
 }
 
 static void H2_STREAM_OUT_LOG(int lvl, h2_stream *s, const char *tag)
@@ -171,11 +182,16 @@ static void H2_STREAM_OUT_LOG(int lvl, h2_stream *s, const char *tag)
 }
 
 static apr_status_t setup_input(h2_stream *stream) {
-    if (stream->input == NULL && !stream->input_eof) {
-        h2_beam_create(&stream->input, stream->pool, stream->id, 
-                       "input", H2_BEAM_OWNER_SEND, 0, 
-                       stream->session->s->timeout);
-        h2_beam_send_from(stream->input, stream->pool);
+    if (stream->input == NULL) {
+        int empty = (stream->input_eof 
+                     && (!stream->in_buffer 
+                         || APR_BRIGADE_EMPTY(stream->in_buffer)));
+        if (!empty) {
+            h2_beam_create(&stream->input, stream->pool, stream->id, 
+                           "input", H2_BEAM_OWNER_SEND, 0, 
+                           stream->session->s->timeout);
+            h2_beam_send_from(stream->input, stream->pool);
+        }
     }
     return APR_SUCCESS;
 }
@@ -197,27 +213,27 @@ static apr_status_t close_input(h2_stream *stream)
     }
     
     if (stream->trailers && !apr_is_empty_table(stream->trailers)) {
-        apr_bucket_brigade *tmp;
         apr_bucket *b;
         h2_headers *r;
         
-        tmp = apr_brigade_create(stream->pool, c->bucket_alloc);
+        if (!stream->in_buffer) {
+            stream->in_buffer = apr_brigade_create(stream->pool, c->bucket_alloc);
+        }
         
         r = h2_headers_create(HTTP_OK, stream->trailers, NULL, stream->pool);
         stream->trailers = NULL;        
         b = h2_bucket_headers_create(c->bucket_alloc, r);
-        APR_BRIGADE_INSERT_TAIL(tmp, b);
+        APR_BRIGADE_INSERT_TAIL(stream->in_buffer, b);
         
         b = apr_bucket_eos_create(c->bucket_alloc);
-        APR_BRIGADE_INSERT_TAIL(tmp, b);
+        APR_BRIGADE_INSERT_TAIL(stream->in_buffer, b);
         
         ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, stream->session->c,
                       H2_STRM_MSG(stream, "added trailers"));
-        setup_input(stream);
-        status = h2_beam_send(stream->input, tmp, APR_BLOCK_READ);
-        apr_brigade_destroy(tmp);
+        h2_stream_dispatch(stream, H2_SEV_IN_DATA_PENDING);
     }
     if (stream->input) {
+        h2_stream_flush_input(stream);
         return h2_beam_close(stream->input);
     }
     return status;
@@ -225,7 +241,7 @@ static apr_status_t close_input(h2_stream *stream)
 
 static apr_status_t close_output(h2_stream *stream)
 {
-    if (h2_beam_is_closed(stream->output)) {
+    if (!stream->output || h2_beam_is_closed(stream->output)) {
         return APR_SUCCESS;
     }
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c,
@@ -324,7 +340,7 @@ void h2_stream_dispatch(h2_stream *stream, h2_stream_event_t ev)
     
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, stream->session->c,
                   H2_STRM_MSG(stream, "dispatch event %d"), ev);
-    new_state = on_event(stream->state, ev);
+    new_state = on_event(stream, ev);
     if (new_state < 0) {
         ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, stream->session->c, 
                       H2_STRM_LOG(APLOGNO(10002), stream, "invalid event %d"), ev);
@@ -335,7 +351,7 @@ void h2_stream_dispatch(h2_stream *stream, h2_stream_event_t ev)
     else if (new_state == stream->state) {
         /* nop */
         ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, stream->session->c,
-                      H2_STRM_MSG(stream, "ignored event %d"), ev);
+                      H2_STRM_MSG(stream, "non-state event %d"), ev);
         return;
     }
     else {
@@ -394,7 +410,7 @@ apr_status_t h2_stream_send_frame(h2_stream *stream, int ftype, int flags)
                   H2_STRM_MSG(stream, "send frame %d, eos=%d"), ftype, eos);
     status = transit(stream, new_state);
     if (status == APR_SUCCESS && eos) {
-        status = transit(stream, on_event(stream->state, H2_SEV_CLOSED_L));
+        status = transit(stream, on_event(stream, H2_SEV_CLOSED_L));
     }
     return status;
 }
@@ -444,7 +460,23 @@ apr_status_t h2_stream_recv_frame(h2_stream *stream, int ftype, int flags)
     }
     status = transit(stream, new_state);
     if (status == APR_SUCCESS && eos) {
-        status = transit(stream, on_event(stream->state, H2_SEV_CLOSED_R));
+        status = transit(stream, on_event(stream, H2_SEV_CLOSED_R));
+    }
+    return status;
+}
+
+apr_status_t h2_stream_flush_input(h2_stream *stream)
+{
+    apr_status_t status = APR_SUCCESS;
+    
+    if (stream->in_buffer && !APR_BRIGADE_EMPTY(stream->in_buffer)) {
+        setup_input(stream);
+        status = h2_beam_send(stream->input, stream->in_buffer, APR_BLOCK_READ);
+        stream->in_last_write = apr_time_now();
+    }
+    if (stream->input_eof 
+        && stream->input && !h2_beam_is_closed(stream->input)) {
+        status = h2_beam_close(stream->input);
     }
     return status;
 }
@@ -454,21 +486,27 @@ apr_status_t h2_stream_recv_DATA(h2_stream *stream, uint8_t flags,
 {
     h2_session *session = stream->session;
     apr_status_t status = APR_SUCCESS;
-    apr_bucket_brigade *tmp;
     
-    ap_assert(stream);
-    if (len > 0) {
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, session->c,
-                      H2_STRM_MSG(stream, "recv DATA, len=%d"), (int)len);
-        
-        tmp = apr_brigade_create(stream->pool, session->c->bucket_alloc);
-        apr_brigade_write(tmp, NULL, NULL, (const char *)data, len);
-        setup_input(stream);
-        status = h2_beam_send(stream->input, tmp, APR_BLOCK_READ);
-        apr_brigade_destroy(tmp);
-    }
     stream->in_data_frames++;
-    stream->in_data_octets += len;
+    if (len > 0) {
+        if (APLOGctrace3(session->c)) {
+            const char *load = apr_pstrndup(stream->pool, (const char *)data, len);
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, session->c,
+                          H2_STRM_MSG(stream, "recv DATA, len=%d: -->%s<--"), 
+                          (int)len, load);
+        }
+        else {
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, session->c,
+                          H2_STRM_MSG(stream, "recv DATA, len=%d"), (int)len);
+        }
+        stream->in_data_octets += len;
+        if (!stream->in_buffer) {
+            stream->in_buffer = apr_brigade_create(stream->pool, 
+                                                   session->c->bucket_alloc);
+        }
+        apr_brigade_write(stream->in_buffer, NULL, NULL, (const char *)data, len);
+        h2_stream_dispatch(stream, H2_SEV_IN_DATA_PENDING);
+    }
     return status;
 }
 
@@ -493,9 +531,12 @@ h2_stream *h2_stream_create(int id, apr_pool_t *pool, h2_session *session,
     stream->monitor      = monitor;
     stream->max_mem      = session->max_stream_mem;
     
-    h2_beam_create(&stream->output, pool, id, "output", H2_BEAM_OWNER_RECV, 0,
-                   session->s->timeout);
-    
+#ifdef H2_NG2_LOCAL_WIN_SIZE
+    stream->in_window_size = 
+        nghttp2_session_get_stream_local_window_size(
+            stream->session->ngh2, stream->id);
+#endif
+
     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, 
                   H2_STRM_LOG(APLOGNO(03082), stream, "created"));
     on_state_enter(stream);
@@ -563,7 +604,9 @@ void h2_stream_rst(h2_stream *stream, int error_code)
     if (stream->input) {
         h2_beam_abort(stream->input);
     }
-    h2_beam_leave(stream->output);
+    if (stream->output) {
+        h2_beam_leave(stream->output);
+    }
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c,
                   H2_STRM_MSG(stream, "reset, error=%d"), error_code);
     h2_stream_dispatch(stream, H2_SEV_CANCELLED);
@@ -733,6 +776,8 @@ apr_status_t h2_stream_out_prepare(h2_stream *stream, apr_off_t *plen,
         *presponse = NULL;
     }
     
+    ap_assert(stream);
+    
     if (stream->rst_error) {
         *plen = 0;
         *peos = 1;
@@ -741,7 +786,7 @@ apr_status_t h2_stream_out_prepare(h2_stream *stream, apr_off_t *plen,
     
     c = stream->session->c;
     prep_output(stream);
-    
+
     /* determine how much we'd like to send. We cannot send more than
      * is requested. But we can reduce the size in case the master
      * connection operates in smaller chunks. (TSL warmup) */
@@ -753,8 +798,15 @@ apr_status_t h2_stream_out_prepare(h2_stream *stream, apr_off_t *plen,
     h2_util_bb_avail(stream->out_buffer, plen, peos);
     if (!*peos && *plen < requested && *plen < stream->max_mem) {
         H2_STREAM_OUT_LOG(APLOG_TRACE2, stream, "pre");
-        status = h2_beam_receive(stream->output, stream->out_buffer, 
-                                 APR_NONBLOCK_READ, stream->max_mem - *plen);
+        if (stream->output) {
+            status = h2_beam_receive(stream->output, stream->out_buffer, 
+                                     APR_NONBLOCK_READ, 
+                                     stream->max_mem - *plen);
+        }
+        else {
+            status = APR_EOF;
+        }
+        
         if (APR_STATUS_IS_EOF(status)) {
             apr_bucket *eos = apr_bucket_eos_create(c->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(stream->out_buffer, eos);
@@ -925,4 +977,64 @@ int h2_stream_was_closed(const h2_stream *stream)
     }
 }
 
+apr_status_t h2_stream_in_consumed(h2_stream *stream, apr_off_t amount)
+{
+    h2_session *session = stream->session;
+    
+    if (amount > 0) {
+        apr_off_t consumed = amount;
+        
+        while (consumed > 0) {
+            int len = (consumed > INT_MAX)? INT_MAX : consumed;
+            nghttp2_session_consume(session->ngh2, stream->id, len);
+            consumed -= len;
+        }
+
+#ifdef H2_NG2_LOCAL_WIN_SIZE
+        if (1) {
+            int cur_size = nghttp2_session_get_stream_local_window_size(
+                session->ngh2, stream->id);
+            int win = stream->in_window_size;
+            int thigh = win * 8/10;
+            int tlow = win * 2/10;
+            const int win_max = 2*1024*1024;
+            const int win_min = 32*1024;
+            
+            /* Work in progress, probably should add directives for these
+             * values once this stabilizes somewhat. The general idea is
+             * to adapt stream window sizes if the input window changes
+             * a) very quickly (< good RTT) from full to empty
+             * b) only a little bit (> bad RTT)
+             * where in a) it grows and in b) it shrinks again.
+             */
+            if (cur_size > thigh && amount > thigh && win < win_max) {
+                /* almost empty again with one reported consumption, how
+                 * long did this take? */
+                long ms = apr_time_msec(apr_time_now() - stream->in_last_write);
+                if (ms < 40) {
+                    win = H2MIN(win_max, win + (64*1024));
+                }
+            }
+            else if (cur_size < tlow && amount < tlow && win > win_min) {
+                /* staying full, for how long already? */
+                long ms = apr_time_msec(apr_time_now() - stream->in_last_write);
+                if (ms > 700) {
+                    win = H2MAX(win_min, win - (32*1024));
+                }
+            }
+            
+            if (win != stream->in_window_size) {
+                stream->in_window_size = win;
+                nghttp2_session_set_local_window_size(session->ngh2, 
+                        NGHTTP2_FLAG_NONE, stream->id, win);
+            } 
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c,
+                          "h2_stream(%ld-%d): consumed %ld bytes, window now %d/%d",
+                          session->id, stream->id, (long)amount, 
+                          cur_size, stream->in_window_size);
+        }
+#endif
+    }
+    return APR_SUCCESS;   
+}
 

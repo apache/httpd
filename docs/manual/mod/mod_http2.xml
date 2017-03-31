@@ -138,17 +138,6 @@ Protocols h2 h2c http/1.1
             the connection will buffer this amount of data and then suspend the
             H2Worker.
         </p>
-        <p>
-            If you serve a lot of static files, <directive module="mod_http2">H2SessionExtraFiles</directive>
-            is of interest. This tells the server how many file handles per
-            HTTP/2 connection it is allowed to waste for better performance. Because
-            when a request produces a static file as the response, the file handle
-            gets passed around and is buffered and not the file contents. That allows
-            to serve many large files without wasting memory or copying data 
-            unnecessarily. However file handles are a limited resource for a process,
-            and if too many are used this way, requests may fail under load as
-            the amount of open handles has been exceeded.
-        </p>
     </section>
     
     <section id="misdirected"><title>Multiple Hosts and Misdirected Requests</title>
@@ -677,47 +666,6 @@ H2MaxWorkers 20
 H2MaxWorkerIdleSeconds 20
                 </highlight>
             </example>
-        </usage>
-    </directivesynopsis>
-    
-    <directivesynopsis>
-        <name>H2SessionExtraFiles</name>
-        <description>Number of Extra File Handles</description>
-        <syntax>H2SessionExtraFiles <em>n</em></syntax>
-        <contextlist>
-            <context>server config</context>
-            <context>virtual host</context>
-        </contextlist>
-        <usage>
-            <p>
-                This directive sets maximum number of <em>extra</em> file handles
-                a HTTP/2 session is allowed to use. A file handle is counted as
-                <em>extra</em> when it is transferred from a h2 worker thread to
-                the main HTTP/2 connection handling. This commonly happens when
-                serving static files.
-            </p><p>
-                Depending on the processing model configured on the server, the
-                number of connections times number of active streams may exceed
-                the number of file handles for the process. On the other hand,
-                converting every file into memory bytes early results in too 
-                many buffer writes. This option helps to mitigate that.
-            </p><p>
-                The number of file handles used by a server process is then in
-                the order of:
-            </p>
-            <pre>
-                (h2_connections * extra_files) + (h2_max_worker)
-            </pre>
-            <example><title>Example</title>
-                <highlight language="config">
-H2SessionExtraFiles 10
-                </highlight>
-            </example>
-            <p>
-                If nothing is configured, the module tries to make a conservative
-                guess how many files are safe to use. This depends largely on the 
-                MPM chosen.
-            </p>
         </usage>
     </directivesynopsis>
     

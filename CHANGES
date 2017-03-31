@@ -2,6 +2,25 @@
 
 Changes with Apache 2.4.26
 
+  *) mod_http2: better performance, eliminated need for nested locks and
+     thread privates. Moving request setups from the main connection to the
+     worker threads. Increase number of spare connections kept.
+     [Stefan Eissing]
+     
+  *) mod_http2: input buffering and dynamic flow windows for increased 
+     throughput. Requires nghttp2 >= v1.5.0 features. Announced at startup
+     in mod_http2 INFO log as feature 'DWINS'. [Stefan Eissing]
+
+  *) mod_http2: h2 workers with improved scalability for better scheduling
+     performance. There are H2MaxWorkers threads created at start and the
+     number is kept constant for now. [Stefan Eissing]
+     
+  *) mod_http2: obsoleted option H2SessionExtraFiles, will be ignored and
+     just log a warning. [Stefan Eissing]
+     
+  *) mod_http2: fixed PR60869 by making h2 workers exit explicitly waking up
+     all threads to exit in a defined way. [Stefan Eissing]
+     
   *) core: Add %{REMOTE_PORT} to the expression parser. PR59938
      [Hank Ibell <hwibell gmail.com>]
 
@@ -44,17 +63,6 @@ Changes with Apache 2.4.26
      modules already shut down and slave connections still operating.
      [Stefan Eissing]
 
-  *) mod_http2: stream timeouts now change to vhost values once the request
-     is parsed and processing starts. Initial values are taken from base
-     server or SNI host as before. [Stefan Eissing]
-     
-  *) mod_proxy_http2: fixed retry behaviour when frontend connection uses 
-     http/1.1. [Stefan Eissing]
-     
-  *) mod_http2: separate mutex instances for each bucket beam, resulting in 
-     less lock contention. input beams only created when necessary.
-     [Stefan Eissing]
-     
   *) mod_lua: Support for Lua 5.3
 
   *) mod_proxy_http2: support for ProxyPreserverHost directive. [Stefan Eissing]

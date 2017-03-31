@@ -73,6 +73,7 @@ struct h2_task {
         unsigned int copy_files : 1;
         struct h2_response_parser *rparser;
         apr_bucket_brigade *bb;
+        apr_size_t max_buffer;
     } output;
     
     struct h2_mplx *mplx;
@@ -91,7 +92,11 @@ struct h2_task {
     struct h2_req_engine *assigned; /* engine that task has been assigned to */
 };
 
-h2_task *h2_task_create(struct h2_stream *stream, conn_rec *slave);
+h2_task *h2_task_create(conn_rec *slave, int stream_id,
+                        const h2_request *req, struct h2_mplx *m, 
+                        struct h2_bucket_beam *input, 
+                        apr_interval_time_t timeout,
+                        apr_size_t output_max_mem);
 
 void h2_task_destroy(h2_task *task);
 
