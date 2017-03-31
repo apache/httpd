@@ -53,22 +53,14 @@ struct h2_req_engine;
 
 typedef struct h2_mplx h2_mplx;
 
-/**
- * Callback invoked for every stream that had input data read since
- * the last invocation.
- */
-typedef void h2_mplx_consumed_cb(void *ctx, int stream_id, apr_off_t consumed);
-
 struct h2_mplx {
     long id;
     conn_rec *c;
     apr_pool_t *pool;
 
-    APR_RING_ENTRY(h2_mplx) link;
-
     unsigned int event_pending;
-    unsigned int aborted : 1;
-    unsigned int need_registration : 1;
+    unsigned int aborted;
+    unsigned int is_registered;     /* is registered at h2_workers */
 
     struct h2_ihash_t *streams;     /* all streams currently processing */
     struct h2_ihash_t *sredo;       /* all streams that need to be re-started */
@@ -82,9 +74,9 @@ struct h2_mplx {
     
     int max_streams;        /* max # of concurrent streams */
     int max_stream_started; /* highest stream id that started processing */
-    int workers_busy;       /* # of workers processing on this mplx */
-    int workers_limit;      /* current # of workers limit, dynamic */
-    int workers_max;        /* max, hard limit # of workers in a process */
+    int tasks_active;       /* # of tasks being processed from this mplx */
+    int limit_active;       /* current limit on active tasks, dynamic */
+    int max_active;         /* max, hard limit # of active tasks in a process */
     apr_time_t last_idle_block;      /* last time, this mplx entered IDLE while
                                       * streams were ready */
     apr_time_t last_limit_change;    /* last time, worker limit changed */
@@ -101,12 +93,7 @@ struct h2_mplx {
     apr_array_header_t *spare_slaves; /* spare slave connections */
     
     struct h2_workers *workers;
-    int tx_handles_reserved;
-    int tx_chunk_size;
     
-    h2_mplx_consumed_cb *input_consumed;
-    void *input_consumed_ctx;
-
     struct h2_ngn_shed *ngn_shed;
 };
 
@@ -197,18 +184,6 @@ apr_status_t h2_mplx_process(h2_mplx *m, struct h2_stream *stream,
  * @param ctx context data for the compare function
  */
 apr_status_t h2_mplx_reprioritize(h2_mplx *m, h2_stream_pri_cmp *cmp, void *ctx);
-
-/**
- * Register a callback for the amount of input data consumed per stream. The
- * will only ever be invoked from the thread creating this h2_mplx, e.g. when
- * calls from that thread into this h2_mplx are made.
- *
- * @param m the multiplexer to register the callback at
- * @param cb the function to invoke
- * @param ctx user supplied argument to invocation.
- */
-void h2_mplx_set_consumed_cb(h2_mplx *m, h2_mplx_consumed_cb *cb, void *ctx);
-
 
 typedef apr_status_t stream_ev_callback(void *ctx, struct h2_stream *stream);
 

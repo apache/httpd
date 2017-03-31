@@ -33,7 +33,6 @@ typedef enum {
     H2_CONF_ALT_SVC_MAX_AGE,
     H2_CONF_SER_HEADERS,
     H2_CONF_DIRECT,
-    H2_CONF_SESSION_FILES,
     H2_CONF_MODERN_TLS_ONLY,
     H2_CONF_UPGRADE,
     H2_CONF_TLS_WARMUP_SIZE,
@@ -67,7 +66,6 @@ typedef struct h2_config {
     int serialize_headers;        /* Use serialized HTTP/1.1 headers for 
                                      processing, better compatibility */
     int h2_direct;                /* if mod_h2 is active directly */
-    int session_extra_files;      /* # of extra files a session may keep open */  
     int modern_tls_only;          /* Accept only modern TLS in HTTP/2 connections */  
     int h2_upgrade;               /* Allow HTTP/1 upgrade to h2/h2c */
     apr_int64_t tls_warmup_size;  /* Amount of TLS data to send before going full write size */

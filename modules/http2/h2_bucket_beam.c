@@ -246,15 +246,17 @@ static int report_consumption(h2_bucket_beam *beam, h2_beam_lock *pbl)
     apr_off_t len = beam->received_bytes - beam->cons_bytes_reported;
     h2_beam_io_callback *cb = beam->cons_io_cb;
      
-    if (cb) {
-        void *ctx = beam->cons_ctx;
-        
-        if (pbl) leave_yellow(beam, pbl);
-        cb(ctx, beam, len);
-        if (pbl) enter_yellow(beam, pbl);
-        rv = 1;
+    if (len > 0) {
+        if (cb) {
+            void *ctx = beam->cons_ctx;
+            
+            if (pbl) leave_yellow(beam, pbl);
+            cb(ctx, beam, len);
+            if (pbl) enter_yellow(beam, pbl);
+            rv = 1;
+        }
+        beam->cons_bytes_reported += len;
     }
-    beam->cons_bytes_reported += len;
     return rv;
 }
 
@@ -484,16 +486,14 @@ static apr_status_t beam_send_cleanup(void *data)
 
 static void beam_set_send_pool(h2_bucket_beam *beam, apr_pool_t *pool) 
 {
-    if (beam->send_pool == pool || 
-        (beam->send_pool && pool 
-         && apr_pool_is_ancestor(beam->send_pool, pool))) {
-        /* when sender is same or sub-pool of existing, stick
-         * to the the pool we already have. */
-        return;
+    if (beam->send_pool != pool) {
+        if (beam->send_pool && beam->send_pool != beam->pool) {
+            pool_kill(beam, beam->send_pool, beam_send_cleanup);
+            beam_send_cleanup(beam);
+        }
+        beam->send_pool = pool;
+        pool_register(beam, beam->send_pool, beam_send_cleanup);
     }
-    pool_kill(beam, beam->send_pool, beam_send_cleanup);
-    beam->send_pool = pool;
-    pool_register(beam, beam->send_pool, beam_send_cleanup);
 }
 
 static apr_status_t beam_cleanup(void *data)
@@ -832,11 +832,10 @@ static apr_status_t append_bucket(h2_bucket_beam *beam,
         apr_bucket_file *bf = b->data;
         apr_file_t *fd = bf->fd;
         int can_beam = (bf->refcount.refcount == 1);
-        if (can_beam && beam->last_beamed != fd && beam->can_beam_fn) {
+        if (can_beam && beam->can_beam_fn) {
             can_beam = beam->can_beam_fn(beam->can_beam_ctx, beam, fd);
         }
         if (can_beam) {
-            beam->last_beamed = fd;
             status = apr_bucket_setaside(b, beam->send_pool);
         }
         /* else: enter ENOTIMPL case below */
@@ -893,10 +892,8 @@ apr_status_t h2_beam_send(h2_bucket_beam *beam,
 
     /* Called from the sender thread to add buckets to the beam */
     if (enter_yellow(beam, &bl) == APR_SUCCESS) {
+        ap_assert(beam->send_pool);
         r_purge_sent(beam);
-        if (sender_bb && !beam->send_pool) {
-            beam_set_send_pool(beam, sender_bb->p);
-        }
         
         if (beam->aborted) {
             move_to_hold(beam, sender_bb);
@@ -1254,9 +1251,9 @@ void h2_beam_log(h2_bucket_beam *beam, conn_rec *c, int level, const char *msg)
     if (beam && APLOG_C_IS_LEVEL(c,level)) {
         ap_log_cerror(APLOG_MARK, level, 0, c, 
                       "beam(%ld-%d,%s,closed=%d,aborted=%d,empty=%d,buf=%ld): %s", 
-                      c->id, beam->id, beam->tag, beam->closed, beam->aborted, 
-                      h2_beam_empty(beam), (long)h2_beam_get_buffered(beam),
-                      msg);
+                      (c->master? c->master->id : c->id), beam->id, beam->tag, 
+                      beam->closed, beam->aborted, h2_beam_empty(beam), 
+                      (long)h2_beam_get_buffered(beam), msg);
     }
 }
 

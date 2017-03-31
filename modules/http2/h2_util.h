@@ -184,6 +184,57 @@ size_t h2_iq_mshift(h2_iqueue *q, int *pint, size_t max);
 int h2_iq_contains(h2_iqueue *q, int sid);
 
 /*******************************************************************************
+ * FIFO queue
+ ******************************************************************************/
+
+/**
+ * A thread-safe FIFO queue with some extra bells and whistles, if you
+ * do not need anything special, better use 'apr_queue'.
+ */
+typedef struct h2_fifo h2_fifo;
+
+apr_status_t h2_fifo_create(h2_fifo **pfifo, apr_pool_t *pool, int capacity);
+apr_status_t h2_fifo_term(h2_fifo *fifo);
+apr_status_t h2_fifo_interrupt(h2_fifo *fifo);
+
+int h2_fifo_count(h2_fifo *fifo);
+
+apr_status_t h2_fifo_push(h2_fifo *fifo, void *elem);
+apr_status_t h2_fifo_try_push(h2_fifo *fifo, void *elem);
+
+apr_status_t h2_fifo_pull(h2_fifo *fifo, void **pelem);
+apr_status_t h2_fifo_try_pull(h2_fifo *fifo, void **pelem);
+
+typedef enum {
+    H2_FIFO_OP_PULL,   /* pull the element from the queue, ie discard it */
+    H2_FIFO_OP_REPUSH, /* pull and immediatley re-push it */
+} h2_fifo_op_t;
+
+typedef h2_fifo_op_t h2_fifo_peek_fn(void *head, void *ctx);
+
+/**
+ * Call given function on the head of the queue, once it exists, and
+ * perform the returned operation on it. The queue will hold its lock during
+ * this time, so no other operations on the queue are possible.
+ * @param fifo the queue to peek at
+ * @param fn   the function to call on the head, once available
+ * @param ctx  context to pass in call to function
+ */
+apr_status_t h2_fifo_peek(h2_fifo *fifo, h2_fifo_peek_fn *fn, void *ctx);
+
+/**
+ * Non-blocking version of h2_fifo_peek.
+ */
+apr_status_t h2_fifo_try_peek(h2_fifo *fifo, h2_fifo_peek_fn *fn, void *ctx);
+
+/**
+ * Remove the elem from the queue, will remove multiple appearances.
+ * @param elem  the element to remove
+ * @return APR_SUCCESS iff > 0 elems were removed, APR_EAGAIN otherwise.
+ */
+apr_status_t h2_fifo_remove(h2_fifo *fifo, void *elem);
+
+/*******************************************************************************
  * common helpers
  ******************************************************************************/
 /* h2_log2(n) iff n is a power of 2 */
@@ -379,8 +430,8 @@ do { \
     const char *line = "(null)"; \
     apr_size_t len, bmax = sizeof(buffer)/sizeof(buffer[0]); \
     len = h2_util_bb_print(buffer, bmax, (tag), "", (bb)); \
-    ap_log_cerror(APLOG_MARK, level, 0, (c), "bb_dump(%s): %s", \
-        (c)->log_id, (len? buffer : line)); \
+    ap_log_cerror(APLOG_MARK, level, 0, (c), "bb_dump(%ld): %s", \
+        ((c)->master? (c)->master->id : (c)->id), (len? buffer : line)); \
 } while(0)
 
 

@@ -115,7 +115,8 @@ typedef enum {
     H2_SEV_CLOSED_L,
     H2_SEV_CLOSED_R,
     H2_SEV_CANCELLED,
-    H2_SEV_EOS_SENT
+    H2_SEV_EOS_SENT,
+    H2_SEV_IN_DATA_PENDING,
 } h2_stream_event_t;
 
 
