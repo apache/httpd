@@ -182,6 +182,26 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1 covener, jim
 
+  *) mod_remoteip: Add PROXY protocol support
+     trunk patch: http://svn.apache.org/r1776575
+                  http://svn.apache.org/r1776578 (doc fix)
+                  http://svn.apache.org/r1776627 (shortened name + doc fix)
+                  http://svn.apache.org/r1776674 (attribution moved to CHANGES)
+                  http://svn.apache.org/r1776740 (attribution updated in mod_remotip.c)
+                  http://svn.apache.org/r1778268 (fix compiler warning)
+                  http://svn.apache.org/r1780725 (set buckets aside)
+                  http://svn.apache.org/r1781030 (fix strict GCC warning)
+                  http://svn.apache.org/r1781031 (reference the filter by handle)
+                  http://svn.apache.org/r1781701 (rework optional processing case)
+                  http://svn.apache.org/r1788674 (final edge cases/ignore slave conns)
+                  http://svn.apache.org/r1789800 (remove optional processing)
+     2.4 convenience patch (includes CHANGES):
+                  http://people.apache.org/~druggeri/patches/RemoteIPProxyProtocol.2.4.x.patch
+     +1: druggeri
+     -0.5: wrowe (Still reviewing support of unwise 'optional' schema vs. other
+                  possibile solves; questioning reading-but-ignoring PROXY
+                  protocol input, also seems unwise)
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entried should be added at the START of the list ]
@@ -206,25 +226,6 @@ PATCHES/ISSUES THAT ARE BEING WORKED
      +1: jim, jorton,
      -1: wrowe (Premature, waiting on github.com/google/brotli 0.6 release)
      NOTE: Awaiting next release post 0.5.2
-
-  *) mod_remoteip: Add PROXY protocol support
-     trunk patch: http://svn.apache.org/r1776575
-                  http://svn.apache.org/r1776578 (doc fix)
-                  http://svn.apache.org/r1776627 (shortened name + doc fix)
-                  http://svn.apache.org/r1776674 (attribution moved to CHANGES)
-                  http://svn.apache.org/r1776740 (attribution updated in mod_remotip.c)
-                  http://svn.apache.org/r1778268 (fix compiler warning)
-                  http://svn.apache.org/r1780725 (set buckets aside)
-                  http://svn.apache.org/r1781030 (fix strict GCC warning)
-                  http://svn.apache.org/r1781031 (reference the filter by handle)
-                  http://svn.apache.org/r1781701 (rework optional processing case)
-                  http://svn.apache.org/r1788674 (final edge cases/ignore slave conns)
-     2.4 convenience patch (includes CHANGES):
-                  http://people.apache.org/~druggeri/patches/RemoteIPProxyProtocol.2.4.x.patch
-     +1: druggeri, jim
-     -0.5: wrowe (Still reviewing support of unwise 'optional' schema vs. other
-                  possibile solves; questioning reading-but-ignoring PROXY
-                  protocol input, also seems unwise)
 
   *) mod_ssl: Return 502 instead of 500 when SSL peer check or 
      proxy_post_handshake hook fails. 
