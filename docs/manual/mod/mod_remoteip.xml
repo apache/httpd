@@ -235,7 +235,8 @@ RemoteIPProxiesHeader X-Forwarded-By
     If enabled with the <code>On</code> flag, the upstream client <em>must</em>
     send the header every time it opens a connection or the connection will
     be aborted unless it is in the list of disabled hosts provided by <directive
-    module="mod_remoteip">RemoteIPProxyProtocolDisableHosts</directive> directive.
+    module="mod_remoteip">RemoteIPProxyProtocolDisableHosts</directive>
+    directive.</p>
 
     <p>While this directive may be specified in any virtual host, it is
     important to understand that because the PROXY protocol is connection
