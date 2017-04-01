@@ -211,7 +211,7 @@ Apache</td></tr>
     stockées dans le cache, et non lorsqu'elles sont servies depuis le
     cache.</p>
 
-    <pre class="prettyprint lang-config">CacheReadSize 102400</pre>
+    <pre class="prettyprint lang-config">CacheSocacheReadSize 102400</pre>
 
 
 </div>
