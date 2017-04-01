@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.es.xsl"?>
-<!-- English Revision: 151408:1673563 (outdated) -->
+<!-- English Revision: 1673563 -->
+<!-- Translated by Luis Gil de Bernabé Pfeiffer lgilbernabe[AT]apache.org -->
+<!-- Reviewed by Sergio Ramos-->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -29,7 +31,7 @@
   </summary>
 
   <section id="definition">
-    <title>¿Qu&#233; es un Handler?</title>
+    <title>¿Qué es un Handler?</title>
     <related>
       <modulelist>
         <module>mod_actions</module>
@@ -50,65 +52,68 @@
     </related>
 
 
-    <p>Un "handler" es una representaci&#243;n interna de Apache de
-    una acci&#243;n que se va a ejecutar cuando hay una llamada a un
+    <p>Un "handler" es una representación interna de Apache de
+    una acción que se va a ejecutar cuando hay una llamada a un
     fichero. Generalmente, los ficheros tienen handlers
-    impl&#237;citos, basados en el tipo de fichero de que se
+    implícitos, basados en el tipo de fichero de que se
     trata. Normalmente, todos los ficheros son simplemente servidos
     por el servidor, pero algunos tipos de ficheros se tratan de forma
     diferente.</p>
 
-    <p>Apache 1.1 a&#241;ade la posibilidad de usar handlers
-    explicitamente.  Bas&#225;ndose en la extension del fichero o en
-    la ubicaci&#243;n en la que este, se pueden especificar handlers
-    sin tener en cuenta el tipo de fichero de que se trate. Esto es
-    una ventaja por dos razones. Primero, es una soluci&#243;n
-    m&#225;s elegante. Segundo, porque a un fichero se le pueden
+    <p>Handlers pueden ser usados de manera explicita,
+     basándose en la extensión del fichero o en
+    la ubicación en la que esté, se pueden especificar handlers
+    sin tener en cuenta el tipo de fichero que se trate. Esto es
+    una ventaja por dos razones. Primero, es una solución
+    más elegante. Segundo, porque a un fichero se le pueden
     asignar tanto un tipo <strong>como</strong> un handler. (Consulte
-    tambi&#233;n la secci&#243;n <a
+    también la sección <a
     href="mod/mod_mime.html#multipleext">Ficheros y extensiones
-    m&#250;ltiples</a>.)</p>
+    múltiples</a>.)</p>
 
-    <p>Los Handlers pueden ser tanto ser compilados con el servidor
-    como incluidos en un m&#243;dulo, como a&#241;adidos con la
+    <p>Los Handlers pueden tanto ser compilados con el servidor
+    como incluidos en un módulo, o añadidos con la
     directiva <directive module="mod_actions">Action</directive>. Los
-    handlers compilados con el servidor de la distribuci&#243;n
-    est&#225;ndar de Apache son:</p>
+    handlers que vienen incluidos en el core con el servidor de la distribución
+    estándar de Apache son:</p>
 
     <ul>
-      <li><strong>default-handler</strong>: Env&#237;a el fichero
+      <li><strong>default-handler</strong>: Envía el fichero
       usando el <code>default_handler()</code>, que es el handler
       usado por defecto para tratar contenido
-      est&#225;tico. (core)</li>
+      estático. (core)</li>
 
-      <li><strong>send-as-is</strong>: Env&#237;a el fichero con
+      <li><strong>send-as-is</strong>: Envía el fichero con
       cabeceras HTTP tal y como es. (<module>mod_asis</module>)</li>
 
       <li><strong>cgi-script</strong>: Trata el fichero como un sript
       CGI. (<module>mod_cgi</module>)</li>
 
       <li><strong>imap-file</strong>: Trata el fichero como un mapa de
-      im&#225;genes. (<module>mod_imagemap</module>)</li>
+      imágenes. (<module>mod_imagemap</module>)</li>
 
-      <li><strong>server-info</strong>: Extrae la informaci&#243;n de
-      configuraci&#243;n del
+      <li><strong>server-info</strong>: Extrae la información de
+      configuración del
       servidor. (<module>mod_info</module>)</li>
 
-      <li><strong>server-status</strong>: Extrae el informe de estado
+      <li><strong>server-status</strong>: Extrae el informe del estado
       del servidor. (<module>mod_status</module>)</li>
 
       <li><strong>type-map</strong>: Trata el fichero como una
-      correspondencia de tipos para la negociaci&#243;n de contenidos.
-      (<module>mod_negotiation</module>)</li> </ul> </section>
+      correspondencia de tipos para la negociación de contenidos.
+      (<module>mod_negotiation</module>)</li> 
+    </ul> 
+  </section>
     
-    <section id="examples"> <title>Ejemplos</title>
+    <section id="examples"> 
+      <title>Ejemplos</title>
 
-    <section id="example1">
-      <title>Modificar contenido est&#225;tico usando un script
+      <section id="example1">
+      <title>Modificar contenido estático usando un script
       CGI</title>
 
       <p>Las siguientes directivas hacen que cuando haya una
-      petici&#243;n de ficheros con la extensi&#243;n
+      petición de ficheros con la extensión
       <code>html</code> se lance el script CGI
       <code>footer.pl</code>.</p>
 
@@ -120,24 +125,24 @@
       <p>En este caso, el script CGI es el responsable de enviar el
       documento originalmente solicitado (contenido en la variable de
       entorno <code>PATH_TRANSLATED</code>) y de hacer cualquier
-      modificaci&#243;n o a&#241;adido deseado.</p>
+      modificación o añadido deseado.</p>
 
     </section>
     <section id="example2">
-      <title>Archivos con cabaceras HTTP</title>
+      <title>Archivos con cabeceras HTTP</title>
 
       <p>Las siguientes directivas activan el handler
       <code>send-as-is</code>, que se usa para ficheros que contienen
       sus propias cabeceras HTTP. Todos los archivos en el directorio
-      <code>/web/htdocs/asis/</code> ser&#225;n procesados por el
+      <code>/web/htdocs/asis/</code> serán procesados por el
       handler <code>send-as-is</code>, sin tener en cuenta su
       extension.</p>
 
-      <example>
-        &lt;Directory /web/htdocs/asis&gt;<br/>
-        SetHandler send-as-is<br/>
-        &lt;/Directory&gt;
-      </example>
+      <highlight language="config">
+&lt;Directory "/web/htdocs/asis"&gt;
+    SetHandler send-as-is
+&lt;/Directory&gt;
+      </highlight>
 
     </section>
   </section>
@@ -145,22 +150,22 @@
     <title>Nota para programadores</title>
 
     <p>Para implementar las funcionalidades de los handlers, se ha
-    hecho un a&#241;adido a la <a href="developer/API.html">API de
-    Apache</a> que puede que quiera usar. Para ser m&#225;s
-    espec&#237;ficos, se ha a&#241;adido un nuevo registro a la
+    hecho un añadido a la <a href="developer/API.html">API de
+    Apache</a> que puede que quiera usar. Para ser más
+    específicos, se ha añadido un nuevo registro a la
     estructura <code>request_rec</code>:</p>
 
-    <example>
+    <highlight language="c">
       char *handler
-    </example>
+    </highlight>
 
-    <p>Si quiere que su m&#243;dulo llame a un handler , solo tiene
-    que a&#241;adir <code>r-&gt;handler</code> al nombre del handler
+    <p>Si quiere que su módulo llame a un handler , solo tiene
+    que añadir <code>r-&gt;handler</code> al nombre del handler
     en cualquier momento antes de la fase <code>invoke_handler</code>
-    de la petici&#243;n. Los handlers se implementan siempre como se
-    hac&#237;a antes, aunque usando el nombre del handler en vez de un
+    de la petición. Los handlers se implementan siempre como se
+    hacía antes, aunque usando el nombre del handler en vez de un
     tipo de contenido. Aunque no es de obligado cumplimiento, la
-    convenci&#243;n de nombres para los handlers es que se usen
+    convención de nombres para los handlers es que se usen
     palabras separadas por guiones, sin barras, de manera que no se
     invada el media type name-space.</p>
   </section>
