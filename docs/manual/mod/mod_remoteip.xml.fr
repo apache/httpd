@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1781701 -->
+<!-- English Revision: 1789800 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -255,7 +255,7 @@ RemoteIPProxiesHeader X-Forwarded-By
 <directivesynopsis>
 <name>RemoteIPProxyProtocol</name>
 <description>Active ou désactive la gestion du protocole PROXY</description>
-<syntax>RemoteIPProxyProtocol On|Optional|Off</syntax>
+<syntax>RemoteIPProxyProtocol On|Off</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 <compatibility>Disponible à partir de la version 2.4.26 du serveur HTTP Apache</compatibility>
@@ -265,9 +265,10 @@ RemoteIPProxiesHeader X-Forwarded-By
     d'activer ou de désactiver la prise en compte et la gestion de l'en-tête de
     connexion du protocole PROXY. Si elle est définie à <code>On</code>, la
     demande du client <em>doit</em> envoyer l'en-tête approprié pour chaque
-    nouvelle connexion, sinon cette dernière sera fermée. Si elle est définie à
-    <code>Optional</code>, la demande du client <em>peut</em> envoyer l'en-tête
-    approprié, mais ce n'est pas obligatoire.</p>
+    nouvelle connexion, sinon cette dernière sera fermée à moins qu'il ne fasse
+    partie de la liste, définie via la directive <directive
+    module="mod_remoteip">RemoteIPProxyProtocolDisableHosts</directive>, des
+    hôtes pour lesquels le protocole PROXY est désactivé.</p>
 
     <p>Bien que cette directive peut être définie au niveau de n'importe quel
     serveur virtuel, il est important de garder à l'esprit que, étant donné que
@@ -282,43 +283,50 @@ RemoteIPProxiesHeader X-Forwarded-By
     dernière directive l'emporte sur les autres et une notification sera
     enregistrée dans le journal pour indiquer les réglages qui ont été annulés.</p>
 
-    <note type="hint">Lorsque plusieurs serveurs virtuels avec le même couple
-    adresse IP/port sont configurés avec une combinaison de drapeaux
-    <code>On</code> et <code>Optional</code>, les connexions ne seront pas
-    fermées si l'en-tête approprié n'est pas envoyé. L'activation interviendra
-    alors après la lecture de la requête si bien que les serveurs virtuels
-    configurés avec le drapeau <code>On</code> renverront une erreur 400 Bad
-    Request. Les serveurs virtuels configurés avec le drapeau
-    <code>Optional</code> quant à eux continueront de fonctionner de manière
-    habituelle mais sans remplacer les informations IP du client.</note>
-    
     <highlight language="config">
 Listen 80
-&lt;VirtualHost *:80&gt;
-    ServerName www.example.com
-    RemoteIPProxyProtocol Optional
-
-    #Les requêtes pour ce serveur virtuel ne doivent pas obligatoirement
-    #contenir d'en-tête du protocole PROXY
-&lt;/VirtualHost&gt;
-
 &lt;VirtualHost *:80&gt;
     ServerName www.example.com
     RemoteIPProxyProtocol On
 
     #Les requêtes pour ce serveur virtuel doivent contenir un en-tête du
-    #protocole PROXY. Si ce n'est pas le cas, une erreur 400 sera renvoyée
+    #protocole PROXY. Si ce n'est pas le cas, la connexion sera fermée.
 &lt;/VirtualHost&gt;
 
 Listen 8080
 &lt;VirtualHost *:8080&gt;
     ServerName www.example.com
     RemoteIPProxyProtocol On
+    RemoteIPProxyProtocolDisableHosts 127.0.0.1 10.0.0.0/8
 
     #Les requêtes pour ce serveur virtuel doivent contenir un en-tête du
-    #protocole PROXY. Si ce n'est pas le cas, la connexion sera fermée
+    #protocole PROXY. Si ce n'est pas le cas, la connexion sera fermée à moins
+    que sa source ne soit localhost ou la gamme d'adresses RFC1918 10.x.x.x
 &lt;/VirtualHost&gt;
     </highlight>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>RemoteIPProxyProtocolDisableHosts</name>
+<description>Désactive la prise en compte de l'en-tête PROXY pour certains hôtes
+ou réseaux</description>
+<syntax>RemoteIPProxyProtocolDisableHosts host|range [host|range] [host|range]</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+<compatibility>RemoteIPProxyProtocolDisableHosts est disponible à partir de la
+version 2.4.26 du serveur HTTP Apache</compatibility>
+
+<usage>
+    <p>La directive <directive>RemoteIPProxyProtocol</directive> permet de
+    contrôler la prise en compte de l'en-tête de connexion du protocole PROXY.
+    Il est parfois souhaitable d'exiger pour certains clients la
+    présence de l'en-tête PROXY, mais aussi de permettre aux autres clients de
+    se connecter sans ce dernier. Cette directive permet à l'administrateur du
+    serveur d'autoriser cette possibilité à un hôte isolé ou à une gamme d'hôtes
+    au format CIDR. Elle est en général utilisée dans le cadre du monitoring du
+    trafic vers un serveur virtuel à destination du serveur situé derrière le
+    répartiteur de charge.</p>
 </usage>
 </directivesynopsis>
 
