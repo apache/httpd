@@ -1,8 +1,8 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE directiveindex SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.es.xsl"?>
 <!-- English Revision: 420990 -->
-
+<!-- Updated by Luis Gil de Bernabé Pfeiffer lgilbernabe[AT]apache.org -->
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
  contributor license agreements.  See the NOTICE file distributed with
@@ -21,20 +21,20 @@
 -->
 
 <directiveindex metafile="directives.xml.meta">
-  <title>&#205;ndice de Directivas</title>
+  <title>Índice de Directivas</title>
   <summary>
     <p>
-      Todas las directivas disponibles en la distribuci&#243;n
-      est&#225;ndar de Apache están en la lista que se muestra m&#225;s
+      Todas las directivas disponibles en la distribución
+      estándar de Apache están en la lista que se muestra más
       abajo. Cada una se describe usando un formato uniforme, y existe
       un <a href="directive-dict.html" rel="Glossary">glosario</a>
-      de los t&#233;rminos usados en las descripciones que puede 
+      de los términos usados en las descripciones que puede 
       consultar.
     </p>
 
     <p>
-      Tambi&#233;n existe una <a href="quickreference.html">Gu&#237;a R&#225;pida de
-      Referencia de Directivas</a> con informaci&#243;n de cada
+      También existe una <a href="quickreference.html">Guía Rápida de
+      Referencia de Directivas</a> con información de cada
       directiva de forma resumida.
     </p>
   </summary>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE indexpage SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.es.xsl"?>
-<!-- English Revision: 1732097:1780358 (outdated) -->
+<!-- English Revision: 1780358 -->
 <!-- Spanish Update by Luis Gil de Bernabé Pfeiffer lgilbernabe[AT]apache.org -->
 <!-- Review by Sergio Ramos -->
 <!--
@@ -81,6 +81,7 @@ ejecución</page>
     <page href="howto/public_html.html">Directorios web para cada
     usuario (public_html)</page>
     <page href="howto/reverse_proxy.html">Reverse proxy setup guide</page>
+    <page href="howto/http2.html">Guía de HTTP/2 </page>
 </category>
 
 <category id="platform"><title>Notas específicas sobre plataformas</title>
