@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision: 1762015:1789244 (outdated) -->
+<!-- English Revision: 1789244 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -234,6 +234,8 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 	HTTP/1.1</code>")</td></tr>
     <tr><td><code>REMOTE_ADDR</code></td>
         <td>L'adresse IP de l'hôte distant</td></tr>
+    <tr><td><code>REMOTE_PORT</code></td>
+        <td>Le port de l'hôte distant (versions 2.4.26 et supérieures)</td></tr>
     <tr><td><code>REMOTE_HOST</code></td>
         <td>Le nom d'hôte de l'hôte distant</td></tr>
     <tr><td><code>REMOTE_USER</code></td>
@@ -490,7 +492,7 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     <table border="1" style="zebra">
     <columnspec><column width=".2"/><column width=".8"/></columnspec>
 
-    <tr><th>Nom</th><th>Description</th><th>Restreint</th></tr>
+    <tr><th>Nom</th><th>Description</th><th>Notes particulières</th></tr>
     <tr><td><code>req</code>, <code>http</code></td>
         <td>Lit l'en-tête de requête HTTP ; les noms
 	d'en-tête correspondants peuvent être ajoutés
@@ -656,8 +658,7 @@ Header set foo-checksum "expr=%{md5:foo}"
 
 # L'exemple suivant retarde l'évaluation de la clause de condition par rapport à
 # &lt;If&gt;
-Header always set CustomHeader my-value "expr=%{REQUEST_URI} =~
-m#^/special_path\.php$#"
+Header always set CustomHeader my-value "expr=%{REQUEST_URI} =~ m#^/special_path\.php$#"
 
 	</highlight>
 </section>

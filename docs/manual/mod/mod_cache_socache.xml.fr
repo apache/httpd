@@ -1,7 +1,7 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1659895:1788722 (outdated) -->
+<!-- English Revision: 1788722 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -25,39 +25,39 @@
 <modulesynopsis metafile="mod_cache_socache.xml.meta">
 
 <name>mod_cache_socache</name>
-<description>Module de stockage &agrave; base de cache d'objets partag&eacute;s
+<description>Module de stockage à base de cache d'objets partagés
 (socache) pour le filtre de mise en cache HTTP.</description>
 <status>Extension</status>
 <sourcefile>mod_cache_socache.c</sourcefile>
 <identifier>cache_socache_module</identifier>
 
 <summary>
-    <p>Le module <module>mod_cache_socache</module> impl&eacute;mente un
-    gestionnaire de stockage &agrave; base de cache d'objets partag&eacute;s (socache)
+    <p>Le module <module>mod_cache_socache</module> implémente un
+    gestionnaire de stockage à base de cache d'objets partagés (socache)
     pour le module <module>mod_cache</module>.</p>
 
-    <p>Les en-t&ecirc;tes et corps des r&eacute;ponses mises en cache sont rassembl&eacute;s
-    et stock&eacute;s sous une m&ecirc;me cl&eacute; dans le cache d'objets partag&eacute;s. Il est
+    <p>Les en-têtes et corps des réponses mises en cache sont rassemblés
+    et stockés sous une même clé dans le cache d'objets partagés. Il est
     possible de choisir entre plusieurs <a
-    href="../socache.html">impl&eacute;mentations</a> de caches d'objets
-    partag&eacute;s.</p>
+    href="../socache.html">implémentations</a> de caches d'objets
+    partagés.</p>
 
-    <p>Des r&eacute;ponses avec diff&eacute;rents contenus n&eacute;goci&eacute;s peuvent &ecirc;tre
-    stock&eacute;es simultan&eacute;ment ; cependant, la mise en cache de contenus
-    partiels n'est pas encore support&eacute;e par ce module.</p>
+    <p>Des réponses avec différents contenus négociés peuvent être
+    stockées simultanément ; cependant, la mise en cache de contenus
+    partiels n'est pas encore supportée par ce module.</p>
 
     <highlight language="config">
 # Activation de la mise en cache
 CacheSocache shmcb
 CacheSocacheMaxSize 102400
-&lt;Location /foo&gt;
+&lt;Location "/foo"&gt;
     CacheEnable socache
 &lt;/Location&gt;
 
-# Possibilit&eacute; de se rabattre sur le cache disque
+# Possibilité de se rabattre sur le cache disque
 CacheSocache shmcb
 CacheSocacheMaxSize 102400
-&lt;Location /foo&gt;
+&lt;Location "/foo"&gt;
     CacheEnable socache
     CacheEnable disk
 &lt;/Location&gt;
@@ -66,7 +66,7 @@ CacheSocacheMaxSize 102400
     <note><title>Note :</title>
       <p>Le module <module>mod_cache_socache</module> requiert les
       services du module <module>mod_cache</module> qui doit donc avoir
-      &eacute;t&eacute; pr&eacute;alablement charg&eacute;.</p>
+      été préalablement chargé.</p>
     </note>
 </summary>
 <seealso><module>mod_cache</module></seealso>
@@ -75,20 +75,20 @@ CacheSocacheMaxSize 102400
 
 <directivesynopsis>
 <name>CacheSocache</name>
-<description>Impl&eacute;mentation du cache d'objets partag&eacute;s &agrave; utiliser</description>
+<description>Implémentation du cache d'objets partagés à utiliser</description>
 <syntax>CacheSocache <var>type[:args]</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<compatibility>Disponible &agrave; partir de la version 2.4.5 du serveur HTTP
+<compatibility>Disponible à partir de la version 2.4.5 du serveur HTTP
 Apache</compatibility>
 
 <usage>
     <p>La directive <directive>CacheSocache</directive>
-    d&eacute;finit l'impl&eacute;mentation du cache d'objets partag&eacute;s &agrave; utiliser,
+    définit l'implémentation du cache d'objets partagés à utiliser,
     suivie d'arguments optionnels. Il est
     possible de choisir entre plusieurs <a
-    href="../socache.html">impl&eacute;mentations</a> de caches d'objets
-    partag&eacute;s.</p>
+    href="../socache.html">implémentations</a> de caches d'objets
+    partagés.</p>
 
     <highlight language="config">
       CacheSocache shmcb
@@ -98,8 +98,8 @@ Apache</compatibility>
 
 <directivesynopsis>
 <name>CacheSocacheMaxTime</name>
-<description>La dur&eacute;e maximale de stockage d'un document dans le cache
-avant p&eacute;remption</description>
+<description>La durée maximale de stockage d'un document dans le cache
+avant péremption</description>
 <syntax>CacheSocacheMaxTime <var>secondes</var></syntax>
 <default>CacheSocacheMaxTime 86400</default>
 <contextlist><context>server config</context>
@@ -107,14 +107,14 @@ avant p&eacute;remption</description>
   <context>directory</context>
   <context>.htaccess</context>
 </contextlist>
-<compatibility>Disponible &agrave; partir de la version 2.4.5 du serveur HTTP
+<compatibility>Disponible à partir de la version 2.4.5 du serveur HTTP
 Apache</compatibility>
 
 <usage>
     <p>La directive <directive>CacheSocacheMaxTime</directive>
-    d&eacute;finit la dur&eacute;e de stockage maximale en secondes d'un document dans
-    le cache avant p&eacute;remption. Cette d&eacute;finition l'emporte sur la dur&eacute;e
-    de fra&icirc;cheur d&eacute;finie pour le document par le protocole HTTP.</p>
+    définit la durée de stockage maximale en secondes d'un document dans
+    le cache avant péremption. Cette définition l'emporte sur la durée
+    de fraîcheur définie pour le document par le protocole HTTP.</p>
 
     <highlight language="config">
       CacheSocacheMaxTime 86400
@@ -124,7 +124,7 @@ Apache</compatibility>
 
 <directivesynopsis>
 <name>CacheSocacheMinTime</name>
-<description>La dur&eacute;e minimale de stockage d'un document dans le cache</description>
+<description>La durée minimale de stockage d'un document dans le cache</description>
 <syntax>CacheSocacheMinTime <var>seconds</var></syntax>
 <default>CacheSocacheMinTime 600</default>
 <contextlist><context>server config</context>
@@ -132,16 +132,16 @@ Apache</compatibility>
   <context>directory</context>
   <context>.htaccess</context>
 </contextlist>
-<compatibility>Disponible &agrave; partir de la version 2.4.5 du serveur HTTP
+<compatibility>Disponible à partir de la version 2.4.5 du serveur HTTP
 Apache</compatibility>
 
 <usage>
     <p>La directive <directive>CacheSocacheMinTime</directive>
-    d&eacute;finit le nombre de secondes au del&agrave; de la dur&eacute;e de fra&icirc;cheur de la
-    r&eacute;ponse pendant lesquelles cette derni&egrave;re devra &ecirc;tre stock&eacute;e dans le
-    cache d'objets partag&eacute;s. En effet, si une r&eacute;ponse n'est stock&eacute;e que
-    pour une dur&eacute;e &eacute;gale &agrave; sa dur&eacute;e de fra&icirc;cheur, elle n'a pas besoin
-    d'&ecirc;tre rafra&icirc;chie.</p>
+    définit le nombre de secondes au delà de la durée de fraîcheur de la
+    réponse pendant lesquelles cette dernière devra être stockée dans le
+    cache d'objets partagés. En effet, si une réponse n'est stockée que
+    pour une durée égale à sa durée de fraîcheur, elle n'a pas besoin
+    d'être rafraîchie.</p>
 
     <highlight language="config">
       CacheSocacheMinTime 600
@@ -151,7 +151,7 @@ Apache</compatibility>
 
 <directivesynopsis>
 <name>CacheSocacheMaxSize</name>
-<description>La taille maximale d'une entr&eacute;e pouvant &ecirc;tre plac&eacute;e dans le
+<description>La taille maximale d'une entrée pouvant être placée dans le
 cache</description>
 <syntax>CacheSocacheMaxSize <var>octets</var></syntax>
 <default>CacheSocacheMaxSize 102400</default>
@@ -160,22 +160,22 @@ cache</description>
   <context>directory</context>
   <context>.htaccess</context>
 </contextlist>
-<compatibility>Disponible &agrave; partir de la version 2.4.5 du serveur HTTP
+<compatibility>Disponible à partir de la version 2.4.5 du serveur HTTP
 Apache</compatibility>
 
 <usage>
     <p>La directive <directive>CacheSocacheMaxSize</directive>
-    d&eacute;finit la taille maximale, en octets, de la somme des en-t&ecirc;tes et
-    du corps d'un document pouvant &ecirc;tre stock&eacute; dans le cache. Bien
-    entendu, plus la taille des en-t&ecirc;tes sera grande, plus la taille
-    maximale du corps du document s'en trouvera r&eacute;duite.</p>
+    définit la taille maximale, en octets, de la somme des en-têtes et
+    du corps d'un document pouvant être stocké dans le cache. Bien
+    entendu, plus la taille des en-têtes sera grande, plus la taille
+    maximale du corps du document s'en trouvera réduite.</p>
 
     <p>Le module <module>mod_cache_socache</module> ne tentera de mettre
-    en cache que des r&eacute;ponses qui poss&egrave;dent une taille de contenu
+    en cache que des réponses qui possèdent une taille de contenu
     explicite, ou dont la taille est suffisamment petite pour qu'elles
-    soient &eacute;crites en une seule passe. Ceci permet au module
-    <module>mod_cache_disk</module> de mettre en cache des r&eacute;ponses dont
-    la taille est trop importante pour pouvoir &ecirc;tre mises en cache par
+    soient écrites en une seule passe. Ceci permet au module
+    <module>mod_cache_disk</module> de mettre en cache des réponses dont
+    la taille est trop importante pour pouvoir être mises en cache par
     <module>mod_cache_socache</module>.</p>
 
     <highlight language="config">
@@ -186,7 +186,7 @@ Apache</compatibility>
 
 <directivesynopsis>
 <name>CacheSocacheReadSize</name>
-<description>La quantit&eacute; minimale de donn&eacute;es du document &agrave; lire et
+<description>La quantité minimale de données du document à lire et
 mettre en cache avant envoi au client</description>
 <syntax>CacheSocacheReadSize <var>octets</var></syntax>
 <default>CacheSocacheReadSize 0</default>
@@ -195,33 +195,33 @@ mettre en cache avant envoi au client</description>
     <context>directory</context>
     <context>.htaccess</context>
 </contextlist>
-<compatibility>Disponible &agrave; partir de la version 2.4.5 du serveur HTTP
+<compatibility>Disponible à partir de la version 2.4.5 du serveur HTTP
 Apache</compatibility>
 
 <usage>
     <p>La directive <directive>CacheSocacheReadSize</directive>
-    d&eacute;finit la quantit&eacute; minimale de donn&eacute;es, en octets, &agrave; lire depuis
-    l'arri&egrave;re-plan avant envoi au client. Avec la valeur par d&eacute;faut 0,
-    les donn&eacute;es sont transmises au client d&egrave;s leur arriv&eacute;e et quelle que
-    soit leur taille. Si la valeur d&eacute;finie est non nulle, le cache
-    disque va mettre en tampon au moins la quantit&eacute; de donn&eacute;es
-    correspondante avant envoi au client. Ceci peut am&eacute;liorer les
+    définit la quantité minimale de données, en octets, à lire depuis
+    l'arrière-plan avant envoi au client. Avec la valeur par défaut 0,
+    les données sont transmises au client dès leur arrivée et quelle que
+    soit leur taille. Si la valeur définie est non nulle, le cache
+    disque va mettre en tampon au moins la quantité de données
+    correspondante avant envoi au client. Ceci peut améliorer les
     performances en cas de mise en cache de contenu en provenance d'un
     mandataire inverse lent.</p>
 
-    <p>Cette directive n'a d'effet qu'au moment o&ugrave; les donn&eacute;es sont
-    stock&eacute;es dans le cache, et non lorsqu'elles sont servies depuis le
+    <p>Cette directive n'a d'effet qu'au moment où les données sont
+    stockées dans le cache, et non lorsqu'elles sont servies depuis le
     cache.</p>
 
     <highlight language="config">
-      CacheReadSize 102400
+      CacheSocacheReadSize 102400
     </highlight>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>CacheSocacheReadTime</name>
-<description>La dur&eacute;e minimale de lecture avant l'envoi des donn&eacute;es</description>
+<description>La durée minimale de lecture avant l'envoi des données</description>
 <syntax>CacheSocacheReadTime <var>millisecondes</var></syntax>
 <default>CacheSocacheReadTime 0</default>
 <contextlist><context>server config</context>
@@ -229,27 +229,27 @@ Apache</compatibility>
   <context>directory</context>
   <context>.htaccess</context>
 </contextlist>
-<compatibility>Disponible &agrave; partir de la version 2.4.5 du serveur HTTP
+<compatibility>Disponible à partir de la version 2.4.5 du serveur HTTP
 Apache</compatibility>
 
 <usage>
     <p>La directive <directive>CacheSocacheReadTime</directive>
-    d&eacute;finit le temps minimal qui doit s'&eacute;couler avant de tenter
-    l'envoi des donn&eacute;es au client. Cette dur&eacute;e sera mise &agrave; profit pour
-    lire et mettre en tampon les donn&eacute;es avant leur envoi au client.
-    Ceci peut am&eacute;liorer les performances en cas de mise en cache de
+    définit le temps minimal qui doit s'écouler avant de tenter
+    l'envoi des données au client. Cette durée sera mise à profit pour
+    lire et mettre en tampon les données avant leur envoi au client.
+    Ceci peut améliorer les performances en cas de mise en cache de
     contenu en provenance d'un mandataire inverse.</p>
 
-    <p>La valeur par d&eacute;faut 0 d&eacute;sactive cette directive.</p>
+    <p>La valeur par défaut 0 désactive cette directive.</p>
 
-    <p>Cette directive n'a d'effet qu'au moment o&ugrave; les donn&eacute;es sont
-    stock&eacute;es dans le cache, et non lorsqu'elles sont servies depuis le
-    cache. Il est recommand&eacute; d'utiliser cette directive en concomitance
+    <p>Cette directive n'a d'effet qu'au moment où les données sont
+    stockées dans le cache, et non lorsqu'elles sont servies depuis le
+    cache. Il est recommandé d'utiliser cette directive en concomitance
     avec la directive <directive
     module="mod_cache_socache">CacheSocacheReadSize</directive> afin de
-    s'assurer que le serveur ne mette pas les donn&eacute;es en tampon de
-    mani&egrave;re excessive dans le cas o&ugrave; les donn&eacute;es arriveraient plus vite
-    que pr&eacute;vu.</p>
+    s'assurer que le serveur ne mette pas les données en tampon de
+    manière excessive dans le cas où les données arriveraient plus vite
+    que prévu.</p>
 
     <highlight language="config">
       CacheSocacheReadTime 1000
