@@ -223,19 +223,19 @@ RemoteIPProxiesHeader X-Forwarded-By
 
 <directivesynopsis>
 <name>RemoteIPProxyProtocol</name>
-<description>Enable, optionally enable or disable the PROXY protocol handling</description>
-<syntax>RemoteIPProxyProtocol On|Optional|Off</syntax>
+<description>Enable or disable PROXY protocol handling</description>
+<syntax>RemoteIPProxyProtocol On|Off</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 <compatibility>RemoteIPProxyProtocol is only available in httpd 2.4.26 and newer</compatibility>
 
 <usage>
-    <p>The <directive>RemoteIPProxyProtocol</directive> enables or 
+    <p>The <directive>RemoteIPProxyProtocol</directive> directive enables or 
     disables the reading and handling of the PROXY protocol connection header.
     If enabled with the <code>On</code> flag, the upstream client <em>must</em>
     send the header every time it opens a connection or the connection will
-    be aborted. If enabled with the <code>Optional</code> flag, the upstream
-    client <em>may</em> send the header.</p>
+    be aborted unless it is in the list of disabled hosts provided by <directive
+    module="mod_remoteip">RemoteIPProxyProtocolDisableHosts</directive> directive.
 
     <p>While this directive may be specified in any virtual host, it is
     important to understand that because the PROXY protocol is connection
@@ -247,34 +247,9 @@ RemoteIPProxiesHeader X-Forwarded-By
     in the other, that won't work; in such a case the last one wins and a
     notice will be logged indicating which setting was being overridden.</p>
 
-    <note type="hint">When multiple virtual hosts on the same IP and port are
-    configured with a combination of <code>On</code> and <code>Optional</code>
-    flags, connections will not be aborted if the header is not sent.
-    Instead, enforcement will happen after the request is read so virtual
-    hosts configured with <code>On</code> will return a 400 Bad Request.
-    Virtual hosts configured with <code>Optional</code> will continue as
-    usual but without replacing the client IP information</note>
-    
     <highlight language="config">
 Listen 80
 &lt;VirtualHost *:80&gt;
-    ServerName www.example.com
-    RemoteIPProxyProtocol Optional
-
-    #Requests to this virtual host may optionally not have
-    # a PROXY protocol header provided
-&lt;/VirtualHost&gt;
-
-&lt;VirtualHost *:80&gt;
-    ServerName www.example.com
-    RemoteIPProxyProtocol On
-
-    #Requests to this virtual host must have a PROXY protocol
-    # header provided. If it is missing, a 400 will result
-&lt;/VirtualHost&gt;
-
-Listen 8080
-&lt;VirtualHost *:8080&gt;
     ServerName www.example.com
     RemoteIPProxyProtocol On
 
@@ -282,7 +257,39 @@ Listen 8080
     # header provided. If it is missing, the connection will
     # be aborted
 &lt;/VirtualHost&gt;
+
+Listen 8080
+&lt;VirtualHost *:8080&gt;
+    ServerName www.example.com
+    RemoteIPProxyProtocol On
+    RemoteIPProxyProtocolDisableHosts 127.0.0.1 10.0.0.0/8
+
+    #Requests to this virtual host must have a PROXY protocol
+    # header provided. If it is missing, the connection will
+    # be aborted except when coming from localhost or the
+    # 10.x.x.x RFC1918 range
+&lt;/VirtualHost&gt;
     </highlight>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>RemoteIPProxyProtocolDisableHosts</name>
+<description>Disable processing of PROXY header for certain hosts or networks</description>
+<syntax>RemoteIPProxyProtocolDisableHosts host|range [host|range] [host|range]</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+<compatibility>RemoteIPProxyProtocolDisableHosts is only available in httpd 2.4.26 and newer</compatibility>
+
+<usage>
+    <p>The <directive>RemoteIPProxyProtocol</directive> directive enables or
+    disables the reading and handling of the PROXY protocol connection header.
+    Sometimes it is desirable to require clients to provide the PROXY header, but
+    permit other clients to connect without it. This directive allows a server 
+    administrator to configure a single host or CIDR range of hosts that may do
+    so. This is generally useful for useful for monitoring and administrative
+    traffic to a virtual host direct to the server behind the upstream load 
+    balancer.</p>
 </usage>
 </directivesynopsis>
 
