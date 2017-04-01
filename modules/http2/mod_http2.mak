@@ -69,7 +69,6 @@ CLEAN :
 	-@erase "$(INTDIR)\h2_switch.obj"
 	-@erase "$(INTDIR)\h2_task.obj"
 	-@erase "$(INTDIR)\h2_util.obj"
-	-@erase "$(INTDIR)\h2_worker.obj"
 	-@erase "$(INTDIR)\h2_workers.obj"
 	-@erase "$(INTDIR)\mod_http2.obj"
 	-@erase "$(INTDIR)\mod_http2.res"
@@ -147,7 +146,6 @@ LINK32_OBJS= \
 	"$(INTDIR)\h2_switch.obj" \
 	"$(INTDIR)\h2_task.obj" \
 	"$(INTDIR)\h2_util.obj" \
-	"$(INTDIR)\h2_worker.obj" \
 	"$(INTDIR)\h2_workers.obj" \
 	"$(INTDIR)\mod_http2.obj" \
 	"$(INTDIR)\mod_http2.res" \
@@ -217,7 +215,6 @@ CLEAN :
 	-@erase "$(INTDIR)\h2_switch.obj"
 	-@erase "$(INTDIR)\h2_task.obj"
 	-@erase "$(INTDIR)\h2_util.obj"
-	-@erase "$(INTDIR)\h2_worker.obj"
 	-@erase "$(INTDIR)\h2_workers.obj"
 	-@erase "$(INTDIR)\mod_http2.obj"
 	-@erase "$(INTDIR)\mod_http2.res"
@@ -295,7 +292,6 @@ LINK32_OBJS= \
 	"$(INTDIR)\h2_switch.obj" \
 	"$(INTDIR)\h2_task.obj" \
 	"$(INTDIR)\h2_util.obj" \
-	"$(INTDIR)\h2_worker.obj" \
 	"$(INTDIR)\h2_workers.obj" \
 	"$(INTDIR)\mod_http2.obj" \
 	"$(INTDIR)\mod_http2.res" \
@@ -511,11 +507,6 @@ SOURCE=./h2_task.c
 SOURCE=./h2_util.c
 
 "$(INTDIR)\h2_util.obj" : $(SOURCE) "$(INTDIR)"
-
-
-SOURCE=./h2_worker.c
-
-"$(INTDIR)\h2_worker.obj" : $(SOURCE) "$(INTDIR)"
 
 
 SOURCE=./h2_workers.c

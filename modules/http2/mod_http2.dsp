@@ -181,10 +181,6 @@ SOURCE=./h2_util.c
 # End Source File
 # Begin Source File
 
-SOURCE=./h2_worker.c
-# End Source File
-# Begin Source File
-
 SOURCE=./h2_workers.c
 # End Source File
 # Begin Source File
