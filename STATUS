@@ -139,7 +139,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1779574
                   http://svn.apache.org/r1779623
      2.4.x patch: trunk works *after r1779573 above* (modulo CHANGES)
-     +1: ylavic, jim
+     +1: ylavic, jim, druggeri
 
   *) mod_ssl: backport fix for PR 46037
      trunk patch: http://svn.apache.org/r1781575
@@ -180,7 +180,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1787553
                   http://svn.apache.org/r1788451
      2.4.x patch: trunk works
-     +1 covener, jim
+     +1 covener, jim, druggeri
 
   *) mod_remoteip: Add PROXY protocol support
      trunk patch: http://svn.apache.org/r1776575
