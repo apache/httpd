@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_cache_socache.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_cache_socache.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Module de stockage à base de cache d'objets partagés
 (socache) pour le filtre de mise en cache HTTP.</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -54,14 +52,14 @@
     <pre class="prettyprint lang-config"># Activation de la mise en cache
 CacheSocache shmcb
 CacheSocacheMaxSize 102400
-&lt;Location /foo&gt;
+&lt;Location "/foo"&gt;
     CacheEnable socache
 &lt;/Location&gt;
 
 # Possibilité de se rabattre sur le cache disque
 CacheSocache shmcb
 CacheSocacheMaxSize 102400
-&lt;Location /foo&gt;
+&lt;Location "/foo"&gt;
     CacheEnable socache
     CacheEnable disk
 &lt;/Location&gt;</pre>
@@ -213,7 +211,7 @@ Apache</td></tr>
     stockées dans le cache, et non lorsqu'elles sont servies depuis le
     cache.</p>
 
-    <pre class="prettyprint lang-config">CacheReadSize 102400</pre>
+    <pre class="prettyprint lang-config">CacheSocacheReadSize 102400</pre>
 
 
 </div>
