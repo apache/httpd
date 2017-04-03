@@ -146,6 +146,13 @@ static void modssl_ctx_init(modssl_ctx_t *mctx, apr_pool_t *p)
     mctx->ocsp_use_request_nonce = UNSET;
     mctx->proxy_uri              = NULL;
 
+/* Set OCSP Responder Certificate Verification variable */
+    mctx->ocsp_noverify       = UNSET;
+/* Set OCSP Responder File variables */
+    mctx->ocsp_verify_flags   = 0;
+    mctx->ocsp_certs_file     = NULL;
+    mctx->ocsp_certs          = NULL;
+
 #ifdef HAVE_OCSP_STAPLING
     mctx->stapling_enabled           = UNSET;
     mctx->stapling_resptime_skew     = UNSET;
@@ -298,6 +305,12 @@ static void modssl_ctx_cfg_merge(apr_pool_t *p,
     cfgMergeInt(ocsp_responder_timeout);
     cfgMergeBool(ocsp_use_request_nonce);
     cfgMerge(proxy_uri, NULL);
+
+/* Set OCSP Responder Certificate Verification directive */
+    cfgMergeBool(ocsp_noverify);  
+/* Set OCSP Responder File directive for importing */
+    cfgMerge(ocsp_certs_file, NULL);
+
 #ifdef HAVE_OCSP_STAPLING
     cfgMergeBool(stapling_enabled);
     cfgMergeInt(stapling_resptime_skew);
@@ -1710,6 +1723,16 @@ const char *ssl_cmd_SSLOCSPProxyURL(cmd_parms *cmd, void *dcfg,
     return NULL;
 }
 
+/* Set OCSP responder certificate verification directive */
+const char *ssl_cmd_SSLOCSPNoVerify(cmd_parms *cmd, void *dcfg, int flag)
+{
+    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
+
+    sc->server->ocsp_noverify = flag ? TRUE : FALSE;
+
+    return NULL;
+}
+
 const char *ssl_cmd_SSLProxyCheckPeerExpire(cmd_parms *cmd, void *dcfg, int flag)
 {
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
@@ -1960,6 +1983,21 @@ const char *ssl_cmd_SSLSRPUnknownUserSeed(cmd_parms *cmd, void *dcfg,
 }
 
 #endif /* HAVE_SRP */
+
+/* OCSP Responder File Function to read in value */
+const char *ssl_cmd_SSLOCSPResponderCertificateFile(cmd_parms *cmd, void *dcfg, 
+					   const char *arg)
+{
+    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
+    const char *err;
+
+    if ((err = ssl_cmd_check_file(cmd, &arg))) {
+        return err;
+    }
+
+    sc->server->ocsp_certs_file = arg;
+    return NULL;
+}
 
 void ssl_hook_ConfigTest(apr_pool_t *pconf, server_rec *s)
 {

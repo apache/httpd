@@ -118,18 +118,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_ssl: backport fix for PR 46037
-     trunk patch: http://svn.apache.org/r1781575
-                  http://svn.apache.org/r1781577
-                  http://svn.apache.org/r1781580
-                  http://svn.apache.org/r1781687
-                  http://svn.apache.org/r1783305
-     2.4.x patch: http://people.apache.org/~jfclere/patches/patch.46037.txt
-     +1: jfclere, jim
-     wrowe asks: Can we capitalize Verify in SSLOCSPNoverify to keep
-                 with conventions?
-     ylavic: +1 with http://svn.apache.org/r1788430, fixing the merge of
-             SSLOCSPNoverify and capitalizing as suggested above.
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]

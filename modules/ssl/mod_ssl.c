@@ -254,6 +254,14 @@ static const command_rec ssl_config_cmds[] = {
     SSL_CMD_SRV(OCSPProxyURL, TAKE1,
                 "Proxy URL to use for OCSP requests")
 
+/* Define OCSP Responder Certificate Verification Directive */
+    SSL_CMD_SRV(OCSPNoVerify, FLAG,
+                "Do not verify OCSP Responder certificate ('on', 'off')")
+/* Define OCSP Responder File Configuration Directive */
+    SSL_CMD_SRV(OCSPResponderCertificateFile, TAKE1,
+               "Trusted OCSP responder certificates"
+               "(`/path/to/file' - PEM encoded certificates)")
+
 #ifdef HAVE_OCSP_STAPLING
     /*
      * OCSP Stapling options
