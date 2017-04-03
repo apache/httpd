@@ -118,14 +118,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_autoindex: Add IndexOptions UseOldDateFormat to allow the date
-     format from 2.2 in the Last Modified column. PR60846.
-     trunk patch: http://svn.apache.org/r1787525
-                  http://svn.apache.org/r1787553
-                  http://svn.apache.org/r1788451
-     2.4.x patch: trunk works
-     +1 covener, jim, druggeri
-
   *) mod_ssl: backport fix for PR 46037
      trunk patch: http://svn.apache.org/r1781575
                   http://svn.apache.org/r1781577
