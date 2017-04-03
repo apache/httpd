@@ -118,12 +118,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_proxy_hcheck: Don't validate timed out responses.
-     trunk patch: http://svn.apache.org/r1779574
-                  http://svn.apache.org/r1779623
-     2.4.x patch: trunk works *after r1779573 above* (modulo CHANGES)
-     +1: ylavic, jim, druggeri
-
   *) mod_autoindex: Add IndexOptions UseOldDateFormat to allow the date
      format from 2.2 in the Last Modified column. PR60846.
      trunk patch: http://svn.apache.org/r1787525
