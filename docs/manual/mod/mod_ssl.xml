@@ -2415,6 +2415,37 @@ Responder), this option should be turned <code>off</code>.</p>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>SSLOCSPNoverify</name>
+<description>skip the OCSP responder certificates verification</description>
+<syntax>SSLOCSPNoverify <em>On/Off</em></syntax>
+<default>SSLOCSPNoverify Off</default>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<compatibility>Available in httpd 2.5 and later, if using OpenSSL 0.9.7 or later</compatibility>
+<usage>
+<p>Skip the OCSP responder certificates verification, mostly useful when
+testing an OCSP server.</p>
+</usage>
+</directivesynopsis>
+
+
+<directivesynopsis>
+<name>SSLOCSPResponderCertificateFile</name>
+<description>Set of trusted PEM encoded OCSP responder certificates</description>
+<syntax>SSLOCSPResponderCertificateFile <em>file</em></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<compatibility>Available in httpd 2.5 and later, if using OpenSSL 0.9.7 or later</compatibility>
+<usage>
+<p>This supplies a list of trusted OCSP responder certificates to be used
+during OCSP responder certificate validation. The supplied certificates are
+implicitly trusted without any further validation. This is typically used
+where the OCSP responder certificate is self signed or omitted from the OCSP
+response.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>SSLOCSPProxyURL</name>
 <description>Proxy URL to use for OCSP requests</description>
 <syntax>SSLOCSPProxyURL <em>url</em></syntax>

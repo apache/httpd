@@ -682,6 +682,12 @@ typedef struct {
     BOOL ocsp_use_request_nonce;
     apr_uri_t *proxy_uri;
 
+    BOOL ocsp_noverify; /* true if skipping OCSP certification verification like openssl -noverify */
+    /* Declare variables for using OCSP Responder Certs for OCSP verification */
+    int ocsp_verify_flags; /* Flags to use when verifying OCSP response */
+    const char *ocsp_certs_file; /* OCSP other certificates filename */
+    STACK_OF(X509) *ocsp_certs; /* OCSP other certificates */
+
 #ifdef HAVE_SSL_CONF_CMD
     SSL_CONF_CTX *ssl_ctx_config; /* Configuration context */
     apr_array_header_t *ssl_ctx_param; /* parameters to pass to SSL_CTX */
@@ -808,6 +814,11 @@ const char *ssl_cmd_SSLOCSPResponderTimeout(cmd_parms *cmd, void *dcfg, const ch
 const char *ssl_cmd_SSLOCSPUseRequestNonce(cmd_parms *cmd, void *dcfg, int flag);
 const char *ssl_cmd_SSLOCSPEnable(cmd_parms *cmd, void *dcfg, int flag);
 const char *ssl_cmd_SSLOCSPProxyURL(cmd_parms *cmd, void *dcfg, const char *arg);
+
+/* Declare OCSP Responder Certificate Verification Directive */
+const char *ssl_cmd_SSLOCSPNoVerify(cmd_parms *cmd, void *dcfg, int flag);
+/* Declare OCSP Responder Certificate File Directive */
+const char *ssl_cmd_SSLOCSPResponderCertificateFile(cmd_parms *cmd, void *dcfg, const char *arg);
 
 #ifdef HAVE_SSL_CONF_CMD
 const char *ssl_cmd_SSLOpenSSLConfCmd(cmd_parms *cmd, void *dcfg, const char *arg1, const char *arg2);
@@ -1024,6 +1035,10 @@ OCSP_RESPONSE *modssl_dispatch_ocsp_request(const apr_uri_t *uri,
                                             apr_interval_time_t timeout,
                                             OCSP_REQUEST *request,
                                             conn_rec *c, apr_pool_t *p);
+
+/* Initialize OCSP trusted certificate list */
+void ssl_init_ocsp_certificates(server_rec *s, modssl_ctx_t *mctx);
+
 #endif
 
 /* Retrieve DH parameters for given key length.  Return value should
