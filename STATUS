@@ -115,27 +115,6 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
-PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
-  [ start all new proposals below, under PATCHES PROPOSED. ]
-
-
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
-  *) mod_proxy, mod_ssl: Handle SSLProxy* directives in <Proxy> sections,
-     allowing per backend TLS configuration.
-     trunk patch: http://svn.apache.org/r1740928
-                  http://svn.apache.org/r1740960
-                  http://svn.apache.org/r1740967
-                  http://svn.apache.org/r1740987
-                  http://svn.apache.org/r1740998
-                  http://svn.apache.org/r1742697
-                  http://svn.apache.org/r1756976
-                  http://svn.apache.org/r1781313
-     2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-r1740928_and_co-v3.patch
-     +1: ylavic
-
-
   *) mod_proxy_hcheck: Honor checks in Vhosts
      trunk patch: http://svn.apache.org/r1784203
                   http://svn.apache.org/r1784205
@@ -155,6 +134,26 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              ProxyHCTPsize were commented out on restart, we wouldn't use the
              default value (as expected).
      jim: Committed in r1789387
+
+PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
+  [ start all new proposals below, under PATCHES PROPOSED. ]
+
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
+
+  *) mod_proxy, mod_ssl: Handle SSLProxy* directives in <Proxy> sections,
+     allowing per backend TLS configuration.
+     trunk patch: http://svn.apache.org/r1740928
+                  http://svn.apache.org/r1740960
+                  http://svn.apache.org/r1740967
+                  http://svn.apache.org/r1740987
+                  http://svn.apache.org/r1740998
+                  http://svn.apache.org/r1742697
+                  http://svn.apache.org/r1756976
+                  http://svn.apache.org/r1781313
+     2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-r1740928_and_co-v3.patch
+     +1: ylavic
 
   *) mod_remoteip: Add PROXY protocol support
      trunk patch: http://svn.apache.org/r1776575
