@@ -344,17 +344,19 @@ static request_rec *create_request_rec(apr_pool_t *p, conn_rec *conn, const char
     r->connection->bucket_alloc = ba;
     r->server          = conn->base_server;
 
+    r->proxyreq        = PROXYREQ_RESPONSE;
+
     r->user            = NULL;
     r->ap_auth_type    = NULL;
 
     r->allowed_methods = ap_make_method_list(p, 2);
 
-    r->headers_in      = apr_table_make(r->pool, 25);
-    r->trailers_in     = apr_table_make(r->pool, 5);
+    r->headers_in      = apr_table_make(r->pool, 1);
+    r->trailers_in     = apr_table_make(r->pool, 1);
     r->subprocess_env  = apr_table_make(r->pool, 25);
     r->headers_out     = apr_table_make(r->pool, 12);
     r->err_headers_out = apr_table_make(r->pool, 5);
-    r->trailers_out    = apr_table_make(r->pool, 5);
+    r->trailers_out    = apr_table_make(r->pool, 1);
     r->notes           = apr_table_make(r->pool, 5);
 
     r->kept_body       = apr_brigade_create(r->pool, r->connection->bucket_alloc);
@@ -373,7 +375,6 @@ static request_rec *create_request_rec(apr_pool_t *p, conn_rec *conn, const char
     r->read_body       = REQUEST_NO_BODY;
 
     r->status          = HTTP_OK;  /* Until further notice */
-    r->header_only     = 1;
     r->the_request     = NULL;
 
     /* Begin by presuming any module can make its own path_info assumptions,
@@ -389,7 +390,11 @@ static request_rec *create_request_rec(apr_pool_t *p, conn_rec *conn, const char
     r->method = method;
     /* Provide quick information about the request method as soon as known */
     r->method_number = ap_method_number_of(r->method);
-    if (r->method_number == M_GET && r->method[0] == 'G') {
+    if (r->method_number == M_OPTIONS
+            || (r->method_number == M_GET && r->method[0] == 'H')) {
+        r->header_only = 1;
+    }
+    else {
         r->header_only = 0;
     }
 
@@ -690,7 +695,7 @@ static int hc_read_body(request_rec *r, apr_bucket_brigade *bb)
                             APR_BLOCK_READ, len);
 
         if (rv != APR_SUCCESS) {
-            if (APR_STATUS_IS_TIMEUP(rv) || APR_STATUS_IS_EOF(rv)) {
+            if (APR_STATUS_IS_EOF(rv)) {
                 rv = APR_SUCCESS;
                 break;
             }
@@ -764,10 +769,16 @@ static apr_status_t hc_check_http(baton_t *baton)
     if ((status = hc_read_headers(r)) != OK) {
         return backend_cleanup("HCOH", backend, ctx->s, status);
     }
-    if (hc->s->method == GET) {
-        if ((status = hc_read_body(r, bb)) != OK) {
+    if (!r->header_only) {
+        apr_table_t *saved_headers_in = r->headers_in;
+        r->headers_in = apr_table_copy(r->pool, r->headers_out);
+        ap_proxy_pre_http_request(backend->connection, r);
+        status = hc_read_body(r, bb);
+        r->headers_in = saved_headers_in;
+        if (status != OK) {
             return backend_cleanup("HCOH", backend, ctx->s, status);
         }
+        r->trailers_out = apr_table_copy(r->pool, r->trailers_in);
     }
 
     if (*worker->s->hcexpr &&
