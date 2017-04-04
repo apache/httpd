@@ -218,36 +218,23 @@ static apr_status_t proxy_engine_init(h2_req_engine *engine,
 {
     h2_proxy_ctx *ctx = ap_get_module_config(r->connection->conn_config, 
                                              &proxy_http2_module);
-    if (ctx) {
-        conn_rec *c = ctx->owner;
-        h2_proxy_ctx *nctx;
-        
-        /* we need another lifetime for this. If we do not host
-         * an engine, the context lives in r->pool. Since we expect
-         * to server more than r, we need to live longer */
-        nctx = apr_pcalloc(pool, sizeof(*nctx));
-        if (nctx == NULL) {
-            return APR_ENOMEM;
-        }
-        memcpy(nctx, ctx, sizeof(*nctx));
-        ctx = nctx;
-        ctx->pool = pool;
-        ctx->engine = engine;
-        ctx->engine_id = id;
-        ctx->engine_type = type;
-        ctx->engine_pool = pool;
-        ctx->req_buffer_size = req_buffer_size;
-        ctx->capacity = 100;
-
-        ap_set_module_config(c->conn_config, &proxy_http2_module, ctx);
-
-        *pconsumed = out_consumed;
-        *pctx = ctx;
-        return APR_SUCCESS;
+    if (!ctx) {
+        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(03368)
+                      "h2_proxy_session, engine init, no ctx found");
+        return APR_ENOTIMPL;
     }
-    ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(03368)
-                  "h2_proxy_session, engine init, no ctx found");
-    return APR_ENOTIMPL;
+    
+    ctx->pool = pool;
+    ctx->engine = engine;
+    ctx->engine_id = id;
+    ctx->engine_type = type;
+    ctx->engine_pool = pool;
+    ctx->req_buffer_size = req_buffer_size;
+    ctx->capacity = 100;
+    
+    *pconsumed = out_consumed;
+    *pctx = ctx;
+    return APR_SUCCESS;
 }
 
 static apr_status_t add_request(h2_proxy_session *session, request_rec *r)
@@ -420,7 +407,7 @@ static apr_status_t proxy_engine_run(h2_proxy_ctx *ctx) {
     return status;
 }
 
-static h2_proxy_ctx *push_request_somewhere(h2_proxy_ctx *ctx)
+static apr_status_t push_request_somewhere(h2_proxy_ctx *ctx, request_rec *r)
 {
     conn_rec *c = ctx->owner;
     const char *engine_type, *hostname;
@@ -430,21 +417,15 @@ static h2_proxy_ctx *push_request_somewhere(h2_proxy_ctx *ctx)
     engine_type = apr_psprintf(ctx->pool, "proxy_http2 %s%s", hostname, 
                                ctx->server_portstr);
     
-    if (c->master && req_engine_push && ctx->next && is_h2 && is_h2(c)) {
+    if (c->master && req_engine_push && r && is_h2 && is_h2(c)) {
         /* If we are have req_engine capabilities, push the handling of this
          * request (e.g. slave connection) to a proxy_http2 engine which 
          * uses the same backend. We may be called to create an engine 
          * ourself. */
-        if (req_engine_push(engine_type, ctx->next, proxy_engine_init)
-            == APR_SUCCESS) {
-            /* to renew the lifetime, we might have set a new ctx */
-            ctx = ap_get_module_config(c->conn_config, &proxy_http2_module);
+        if (req_engine_push(engine_type, r, proxy_engine_init) == APR_SUCCESS) {
             if (ctx->engine == NULL) {
-                /* Another engine instance has taken over processing of this
-                 * request. */
-                ctx->r_status = SUSPENDED;
-                ctx->next = NULL;
-                return ctx;
+                /* request has been assigned to an engine in another thread */
+                return SUSPENDED;
             }
         }
     }
@@ -465,7 +446,7 @@ static h2_proxy_ctx *push_request_somewhere(h2_proxy_ctx *ctx)
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c, 
                       "H2: hosting engine %s", ctx->engine_id);
     }
-    return ctx;
+    return APR_SUCCESS;
 }
 
 static int proxy_http2_handler(request_rec *r, 
@@ -507,6 +488,7 @@ static int proxy_http2_handler(request_rec *r,
         default:
             return DECLINED;
     }
+    
     ctx = apr_pcalloc(r->pool, sizeof(*ctx));
     ctx->owner      = r->connection;
     ctx->pool       = r->pool;
@@ -520,6 +502,7 @@ static int proxy_http2_handler(request_rec *r,
     ctx->r_status   = HTTP_SERVICE_UNAVAILABLE;
     ctx->next       = r;
     r = NULL;
+    
     ap_set_module_config(ctx->owner->conn_config, &proxy_http2_module, ctx);
 
     /* scheme says, this is for us. */
@@ -552,9 +535,10 @@ run_connect:
     /* If we are not already hosting an engine, try to push the request 
      * to an already existing engine or host a new engine here. */
     if (!ctx->engine) {
-        ctx = push_request_somewhere(ctx);
+        ctx->r_status = push_request_somewhere(ctx, ctx->next);
         if (ctx->r_status == SUSPENDED) {
-            /* request was pushed to another engine */
+            /* request was pushed to another thread, leave processing here */
+            ctx->next = NULL;
             goto cleanup;
         }
     }
@@ -567,7 +551,7 @@ run_connect:
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, ctx->owner, APLOGNO(03352)
                       "H2: failed to make connection to backend: %s",
                       ctx->p_conn->hostname);
-        goto cleanup;
+        goto reconnect;
     }
     
     /* Step Three: Create conn_rec for the socket we have open now. */
@@ -579,7 +563,7 @@ run_connect:
                           "setup new connection: is_ssl=%d %s %s %s", 
                           ctx->p_conn->is_ssl, ctx->p_conn->ssl_hostname, 
                           locurl, ctx->p_conn->hostname);
-            goto cleanup;
+            goto reconnect;
         }
         
         if (!ctx->p_conn->data) {
@@ -614,7 +598,7 @@ run_session:
         ctx->engine = NULL;
     }
 
-cleanup:
+reconnect:
     if (!reconnected && next_request(ctx, 1) == APR_SUCCESS) {
         /* Still more to do, tear down old conn and start over */
         if (ctx->p_conn) {
@@ -627,6 +611,7 @@ cleanup:
         goto run_connect;
     }
     
+cleanup:
     if (ctx->p_conn) {
         if (status != APR_SUCCESS) {
             /* close socket when errors happened or session shut down (EOF) */
