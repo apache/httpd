@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_http2/mod_proxy_http2: less read attempts on bucket beams that already
+     delivered EOS/headers. Fixed bug in re-attempting proxy request after 
+     connection error. [Stefan Eissing]
+  
   *) core: Disallow multiple Listen on the same IP:port when listener buckets
      are configured (ListenCoresBucketsRatio > 0), consistently with the single
      bucket case (default), thus avoiding the leak of the corresponding socket
