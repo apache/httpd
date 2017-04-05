@@ -107,7 +107,7 @@ static apr_status_t activate_slot(h2_workers *workers, h2_slot *slot)
         return APR_ENOMEM;
     }
     
-    ++workers->worker_count;
+    apr_atomic_inc32(&workers->worker_count);
     return APR_SUCCESS;
 }
 
@@ -142,7 +142,7 @@ static void cleanup_zombies(h2_workers *workers)
             apr_thread_join(&status, slot->thread);
             slot->thread = NULL;
         }
-        --workers->worker_count;
+        apr_atomic_dec32(&workers->worker_count);
         push_slot(&workers->free, slot);
     }
 }
@@ -199,14 +199,10 @@ static apr_status_t get_next(h2_slot *slot)
         
         cleanup_zombies(workers);
 
-        ++workers->idle_workers;
-
         apr_thread_mutex_lock(slot->lock);
         push_slot(&workers->idle, slot);
         apr_thread_cond_wait(slot->not_idle, slot->lock);
         apr_thread_mutex_unlock(slot->lock);
-
-        --workers->idle_workers;
     }
     return APR_EOF;
 }

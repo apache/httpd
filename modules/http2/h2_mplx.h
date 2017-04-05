@@ -68,7 +68,7 @@ struct h2_mplx {
     struct h2_ihash_t *spurge;      /* all streams done, ready for destroy */
     
     struct h2_iqueue *q;            /* all stream ids that need to be started */
-    struct h2_iqueue *readyq;       /* all stream ids ready for output */
+    struct h2_fifo *readyq;         /* all streams ready for output */
         
     struct h2_ihash_t *redo_tasks;  /* all tasks that need to be redone */
     
@@ -158,7 +158,7 @@ apr_status_t h2_mplx_stream_cleanup(h2_mplx *m, struct h2_stream *stream);
 apr_status_t h2_mplx_out_trywait(h2_mplx *m, apr_interval_time_t timeout,
                                  struct apr_thread_cond_t *iowait);
 
-apr_status_t h2_mplx_keep_active(h2_mplx *m, int stream_id);
+apr_status_t h2_mplx_keep_active(h2_mplx *m, struct h2_stream *stream);
 
 /*******************************************************************************
  * Stream processing.

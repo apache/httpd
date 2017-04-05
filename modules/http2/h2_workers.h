@@ -40,8 +40,6 @@ struct h2_workers {
     int next_worker_id;
     int min_workers;
     int max_workers;
-    int worker_count;
-    int idle_workers;
     int max_idle_secs;
     
     int aborted;
@@ -50,6 +48,8 @@ struct h2_workers {
     apr_threadattr_t *thread_attr;
     int nslots;
     struct h2_slot *slots;
+    
+    volatile apr_uint32_t worker_count;
     
     struct h2_slot *free;
     struct h2_slot *idle;
