@@ -1191,7 +1191,7 @@ static const command_rec remoteip_cmds[] =
                   "see the RemoteIPInternalProxy directive"),
     AP_INIT_FLAG("RemoteIPProxyProtocol", remoteip_enable_proxy_protocol, NULL,
                   RSRC_CONF, "Enable PROXY protocol handling (`on', `off')"),
-    AP_INIT_TAKE_ARGV("RemoteIPProxyProtocolDisableHosts",
+    AP_INIT_TAKE_ARGV("RemoteIPProxyProtocolExceptions",
                   remoteip_disable_networks, NULL, RSRC_CONF, "Disable PROXY "
                   "protocol handling for this list of networks in CIDR format"),
     { NULL }

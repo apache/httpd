@@ -235,8 +235,7 @@ RemoteIPProxiesHeader X-Forwarded-By
     If enabled with the <code>On</code> flag, the upstream client <em>must</em>
     send the header every time it opens a connection or the connection will
     be aborted unless it is in the list of disabled hosts provided by <directive
-    module="mod_remoteip">RemoteIPProxyProtocolDisableHosts</directive>
-    directive.</p>
+    module="mod_remoteip">RemoteIPProxyProtocolExceptions</directive> directive.
 
     <p>While this directive may be specified in any virtual host, it is
     important to understand that because the PROXY protocol is connection
@@ -263,7 +262,7 @@ Listen 8080
 &lt;VirtualHost *:8080&gt;
     ServerName www.example.com
     RemoteIPProxyProtocol On
-    RemoteIPProxyProtocolDisableHosts 127.0.0.1 10.0.0.0/8
+    RemoteIPProxyProtocolExceptions 127.0.0.1 10.0.0.0/8
 
     #Requests to this virtual host must have a PROXY protocol
     # header provided. If it is missing, the connection will
@@ -275,12 +274,12 @@ Listen 8080
 </directivesynopsis>
 
 <directivesynopsis>
-<name>RemoteIPProxyProtocolDisableHosts</name>
+<name>RemoteIPProxyProtocolExceptions</name>
 <description>Disable processing of PROXY header for certain hosts or networks</description>
-<syntax>RemoteIPProxyProtocolDisableHosts host|range [host|range] [host|range]</syntax>
+<syntax>RemoteIPProxyProtocolExceptions host|range [host|range] [host|range]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<compatibility>RemoteIPProxyProtocolDisableHosts is only available in httpd 2.4.26 and newer</compatibility>
+<compatibility>RemoteIPProxyProtocolExceptions is only available in httpd 2.4.26 and newer</compatibility>
 
 <usage>
     <p>The <directive>RemoteIPProxyProtocol</directive> directive enables or
@@ -288,9 +287,8 @@ Listen 8080
     Sometimes it is desirable to require clients to provide the PROXY header, but
     permit other clients to connect without it. This directive allows a server 
     administrator to configure a single host or CIDR range of hosts that may do
-    so. This is generally useful for useful for monitoring and administrative
-    traffic to a virtual host direct to the server behind the upstream load 
-    balancer.</p>
+    so. This is generally useful for monitoring and administrative traffic to a 
+    virtual host direct to the server behind the upstream load balancer.</p>
 </usage>
 </directivesynopsis>
 
