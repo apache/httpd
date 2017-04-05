@@ -65,14 +65,19 @@ apr_status_t h2_mplx_child_init(apr_pool_t *pool, server_rec *s)
         return rv;\
     } } while(0)
 
-#define H2_MPLX_ENTER_ALWAYS(m)    \
-    apr_thread_mutex_lock(m->lock)
-
 #define H2_MPLX_LEAVE(m)    \
     apr_thread_mutex_unlock(m->lock)
  
+#define H2_MPLX_ENTER_ALWAYS(m)    \
+    apr_thread_mutex_lock(m->lock)
 
-static void check_data_for(h2_mplx *m, int stream_id);
+#define H2_MPLX_ENTER_MAYBE(m, lock)    \
+    if (lock) apr_thread_mutex_lock(m->lock)
+
+#define H2_MPLX_LEAVE_MAYBE(m, lock)    \
+    if (lock) apr_thread_mutex_unlock(m->lock)
+
+static void check_data_for(h2_mplx *m, h2_stream *stream, int lock);
 
 static void stream_output_consumed(void *ctx, 
                                    h2_bucket_beam *beam, apr_off_t length)
@@ -121,6 +126,7 @@ static void stream_cleanup(h2_mplx *m, h2_stream *stream)
     h2_stream_cleanup(stream);
 
     h2_iq_remove(m->q, stream->id);
+    h2_fifo_remove(m->readyq, stream);
     h2_ihash_remove(m->streams, stream->id);
     h2_ihash_add(m->shold, stream);
     
@@ -206,7 +212,12 @@ h2_mplx *h2_mplx_create(conn_rec *c, apr_pool_t *parent,
         m->shold = h2_ihash_create(m->pool, offsetof(h2_stream,id));
         m->spurge = h2_ihash_create(m->pool, offsetof(h2_stream,id));
         m->q = h2_iq_create(m->pool, m->max_streams);
-        m->readyq = h2_iq_create(m->pool, m->max_streams);
+
+        status = h2_fifo_set_create(&m->readyq, m->pool, m->max_streams);
+        if (status != APR_SUCCESS) {
+            apr_pool_destroy(m->pool);
+            return NULL;
+        }
 
         m->workers = workers;
         m->max_active = workers->max_workers;
@@ -481,15 +492,10 @@ h2_stream *h2_mplx_stream_get(h2_mplx *m, int id)
 
 static void output_produced(void *ctx, h2_bucket_beam *beam, apr_off_t bytes)
 {
-    h2_mplx *m = ctx;
+    h2_stream *stream = ctx;
+    h2_mplx *m = stream->session->mplx;
     
-    H2_MPLX_ENTER_ALWAYS(m);
-
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c,
-                  "h2_mplx(%ld-%d): output_produced", m->c->id, beam->id);
-    check_data_for(m, beam->id);
-
-    H2_MPLX_LEAVE(m);
+    check_data_for(m, stream, 1);
 }
 
 static apr_status_t out_open(h2_mplx *m, int stream_id, h2_bucket_beam *beam)
@@ -513,7 +519,7 @@ static apr_status_t out_open(h2_mplx *m, int stream_id, h2_bucket_beam *beam)
     }
     
     h2_beam_on_consumed(stream->output, NULL, stream_output_consumed, stream);
-    h2_beam_on_produced(stream->output, output_produced, m);
+    h2_beam_on_produced(stream->output, output_produced, stream);
     if (stream->task->output.copy_files) {
         h2_beam_on_file_beam(stream->output, h2_beam_no_files, NULL);
     }
@@ -523,7 +529,7 @@ static apr_status_t out_open(h2_mplx *m, int stream_id, h2_bucket_beam *beam)
     
     /* we might see some file buckets in the output, see
      * if we have enough handles reserved. */
-    check_data_for(m, stream->id);
+    check_data_for(m, stream, 0);
     return status;
 }
 
@@ -563,7 +569,7 @@ static apr_status_t out_close(h2_mplx *m, h2_task *task)
     status = h2_beam_close(task->output.beam);
     h2_beam_log(task->output.beam, m->c, APLOG_TRACE2, "out_close");
     output_consumed_signal(m, task);
-    check_data_for(m, task->stream_id);
+    check_data_for(m, stream, 0);
     return status;
 }
 
@@ -577,7 +583,7 @@ apr_status_t h2_mplx_out_trywait(h2_mplx *m, apr_interval_time_t timeout,
     if (m->aborted) {
         status = APR_ECONNABORTED;
     }
-    else if (apr_atomic_read32(&m->event_pending) > 0) {
+    else if (h2_mplx_has_master_events(m)) {
         status = APR_SUCCESS;
     }
     else {
@@ -597,13 +603,15 @@ apr_status_t h2_mplx_out_trywait(h2_mplx *m, apr_interval_time_t timeout,
     return status;
 }
 
-static void check_data_for(h2_mplx *m, int stream_id)
+static void check_data_for(h2_mplx *m, h2_stream *stream, int lock)
 {
-    ap_assert(m);
-    h2_iq_append(m->readyq, stream_id);
-    apr_atomic_set32(&m->event_pending, 1);
-    if (m->added_output) {
-        apr_thread_cond_signal(m->added_output);
+    if (h2_fifo_push(m->readyq, stream) == APR_SUCCESS) {
+        apr_atomic_set32(&m->event_pending, 1);
+        H2_MPLX_ENTER_MAYBE(m, lock);
+        if (m->added_output) {
+            apr_thread_cond_signal(m->added_output);
+        }
+        H2_MPLX_LEAVE_MAYBE(m, lock);
     }
 }
 
@@ -656,7 +664,7 @@ apr_status_t h2_mplx_process(h2_mplx *m, struct h2_stream *stream,
         h2_ihash_add(m->streams, stream);
         if (h2_stream_is_ready(stream)) {
             /* already have a response */
-            check_data_for(m, stream->id);
+            check_data_for(m, stream, 0);
             ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c,
                           H2_STRM_MSG(stream, "process, add to readyq")); 
         }
@@ -828,7 +836,7 @@ static void task_done(h2_mplx *m, h2_task *task, h2_req_engine *ngn)
         if (stream->output) {
             h2_beam_mutex_disable(stream->output);
         }
-        check_data_for(m, stream->id);
+        check_data_for(m, stream, 0);
     }
     else if ((stream = h2_ihash_get(m->shold, task->stream_id)) != NULL) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c,
@@ -1161,48 +1169,33 @@ apr_status_t h2_mplx_dispatch_master_events(h2_mplx *m,
                                             stream_ev_callback *on_resume, 
                                             void *on_ctx)
 {
-    int ids[100];
     h2_stream *stream;
-    size_t i, n;
+    int n;
     
-    H2_MPLX_ENTER(m);
-
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c, 
                   "h2_mplx(%ld): dispatch events", m->id);        
     apr_atomic_set32(&m->event_pending, 0);
-    purge_streams(m);
-    
+
     /* update input windows for streams */
     h2_ihash_iter(m->streams, report_consumption_iter, m);
     
-    if (!h2_iq_empty(m->readyq)) {
-        n = h2_iq_mshift(m->readyq, ids, H2_ALEN(ids));
-        for (i = 0; i < n; ++i) {
-            stream = h2_ihash_get(m->streams, ids[i]);
-            if (stream) {
-                H2_MPLX_LEAVE(m);
-
-                on_resume(on_ctx, stream);
-
-                H2_MPLX_ENTER(m);
-            }
-        }
+    n = h2_fifo_count(m->readyq);
+    while (n > 0 
+           && (h2_fifo_try_pull(m->readyq, (void**)&stream) == APR_SUCCESS)) {
+        --n;
+        on_resume(on_ctx, stream);
     }
-    if (!h2_iq_empty(m->readyq)) {
-        apr_atomic_set32(&m->event_pending, 1);
-    } 
-
+    
+    H2_MPLX_ENTER(m);
+    purge_streams(m);
     H2_MPLX_LEAVE(m);
+    
     return APR_SUCCESS;
 }
 
-apr_status_t h2_mplx_keep_active(h2_mplx *m, int stream_id)
+apr_status_t h2_mplx_keep_active(h2_mplx *m, h2_stream *stream)
 {
-    H2_MPLX_ENTER(m);
-
-    check_data_for(m, stream_id);
-
-    H2_MPLX_LEAVE(m);
+    check_data_for(m, stream, 1);
     return APR_SUCCESS;
 }
 
@@ -1215,7 +1208,8 @@ int h2_mplx_awaits_data(h2_mplx *m)
     if (h2_ihash_empty(m->streams)) {
         waiting = 0;
     }
-    if (h2_iq_empty(m->readyq) && h2_iq_empty(m->q) && !m->tasks_active) {
+    if ((h2_fifo_count(m->readyq) == 0) 
+        && h2_iq_empty(m->q) && !m->tasks_active) {
         waiting = 0;
     }
 
