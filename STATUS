@@ -168,6 +168,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1781701 (rework optional processing case)
                   http://svn.apache.org/r1788674 (final edge cases/ignore slave conns)
                   http://svn.apache.org/r1789800 (remove optional processing)
+                  http://svn.apache.org/r1790169 (rename "exception" directive)
      2.4 convenience patch (includes CHANGES):
                   http://people.apache.org/~druggeri/patches/RemoteIPProxyProtocol.2.4.x.patch
      +1: druggeri, jim
