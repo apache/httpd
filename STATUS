@@ -175,7 +175,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      -0.5: wrowe (Still reviewing support of unwise 'optional' schema vs. other
                   possibile solves; questioning reading-but-ignoring PROXY
                   protocol input, also seems unwise)
-
+      jailletc36: needs r1790457 but can be merged afterwards. No functionnal change.
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entried should be added at the START of the list ]
