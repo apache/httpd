@@ -429,7 +429,7 @@ static const char *remoteip_disable_networks(cmd_parms *cmd, void *d,
                                 &remoteip_module);
 
     if (argc == 0)
-        return "RemoteIPProxyProtocolDisableNetworks requires an argument";
+        return apr_pstrcat(p, cmd->cmd->name, " requires an argument", NULL);
 
 
     for (i=0; i<argc; i++) {
@@ -443,7 +443,7 @@ static const char *remoteip_disable_networks(cmd_parms *cmd, void *d,
 
         rv = apr_ipsubnet_create(ip, addr, mask, p);
 
-        if(APR_STATUS_IS_EINVAL(rv)) {
+        if (APR_STATUS_IS_EINVAL(rv)) {
             /* looked nothing like an IP address */
             return apr_psprintf(p, "ip address '%s' appears to be invalid", addr);
         }
