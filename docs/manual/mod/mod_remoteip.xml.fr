@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1789811 -->
+<!-- English Revision: 1790169 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -297,7 +297,7 @@ Listen 8080
 &lt;VirtualHost *:8080&gt;
     ServerName www.example.com
     RemoteIPProxyProtocol On
-    RemoteIPProxyProtocolDisableHosts 127.0.0.1 10.0.0.0/8
+    RemoteIPProxyProtocolExceptions 127.0.0.1 10.0.0.0/8
 
     #Les requêtes pour ce serveur virtuel doivent contenir un en-tête du
     #protocole PROXY. Si ce n'est pas le cas, la connexion sera fermée à moins
@@ -308,13 +308,13 @@ Listen 8080
 </directivesynopsis>
 
 <directivesynopsis>
-<name>RemoteIPProxyProtocolDisableHosts</name>
+<name>RemoteIPProxyProtocolExceptions</name>
 <description>Désactive la prise en compte de l'en-tête PROXY pour certains hôtes
 ou réseaux</description>
-<syntax>RemoteIPProxyProtocolDisableHosts host|range [host|range] [host|range]</syntax>
+<syntax>RemoteIPProxyProtocolExceptions host|range [host|range] [host|range]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<compatibility>RemoteIPProxyProtocolDisableHosts est disponible à partir de la
+<compatibility>RemoteIPProxyProtocolExceptions est disponible à partir de la
 version 2.4.26 du serveur HTTP Apache</compatibility>
 
 <usage>
@@ -324,9 +324,12 @@ version 2.4.26 du serveur HTTP Apache</compatibility>
     présence de l'en-tête PROXY, mais aussi de permettre aux autres clients de
     se connecter sans ce dernier. Cette directive permet à l'administrateur du
     serveur d'autoriser cette possibilité à un hôte isolé ou à une gamme d'hôtes
-    au format CIDR. Elle est en général utilisée dans le cadre du monitoring du
+    au format CIDR. This is generally useful for monitoring and administrative
+    traffic to a virtual host direct to the server behind the upstream load
+    balancer.</p>
+    <!-- Traduction possible dernière phrase : Elle est en général utilisée dans le cadre du monitoring du
     trafic vers un serveur virtuel à destination du serveur situé derrière le
-    répartiteur de charge.</p>
+    répartiteur de charge. -->
 </usage>
 </directivesynopsis>
 
