@@ -29,6 +29,8 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_remoteip.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_remoteip.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Remplace l'adresse IP du client
 pour la requête par l'adresse IP présentée par un mandataire ou un
 répartiteur de charge via les en-têtes de la requête.
@@ -77,7 +79,7 @@ répartiteur de charge via les en-têtes de la requête.
 <li><img alt="" src="../images/down.gif" /> <a href="#remoteipinternalproxylist">RemoteIPInternalProxyList</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#remoteipproxiesheader">RemoteIPProxiesHeader</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#remoteipproxyprotocol">RemoteIPProxyProtocol</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#remoteipproxyprotocoldisablehosts">RemoteIPProxyProtocolDisableHosts</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#remoteipproxyprotocolexceptions">RemoteIPProxyProtocolExceptions</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#remoteiptrustedproxy">RemoteIPTrustedProxy</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#remoteiptrustedproxylist">RemoteIPTrustedProxyList</a></li>
 </ul>
@@ -296,7 +298,7 @@ Listen 8080
 &lt;VirtualHost *:8080&gt;
     ServerName www.example.com
     RemoteIPProxyProtocol On
-    RemoteIPProxyProtocolDisableHosts 127.0.0.1 10.0.0.0/8
+    RemoteIPProxyProtocolExceptions 127.0.0.1 10.0.0.0/8
 
     #Les requêtes pour ce serveur virtuel doivent contenir un en-tête du
     #protocole PROXY. Si ce n'est pas le cas, la connexion sera fermée à moins
@@ -306,15 +308,15 @@ Listen 8080
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="remoteipproxyprotocoldisablehosts" id="remoteipproxyprotocoldisablehosts">Directive</a> <a name="RemoteIPProxyProtocolDisableHosts" id="RemoteIPProxyProtocolDisableHosts">RemoteIPProxyProtocolDisableHosts</a></h2>
+<div class="directive-section"><h2><a name="remoteipproxyprotocolexceptions" id="remoteipproxyprotocolexceptions">Directive</a> <a name="RemoteIPProxyProtocolExceptions" id="RemoteIPProxyProtocolExceptions">RemoteIPProxyProtocolExceptions</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Désactive la prise en compte de l'en-tête PROXY pour certains hôtes
 ou réseaux</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RemoteIPProxyProtocolDisableHosts host|range [host|range] [host|range]</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RemoteIPProxyProtocolExceptions host|range [host|range] [host|range]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_remoteip</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>RemoteIPProxyProtocolDisableHosts est disponible à partir de la
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>RemoteIPProxyProtocolExceptions est disponible à partir de la
 version 2.4.26 du serveur HTTP Apache</td></tr>
 </table>
     <p>La directive <code class="directive">RemoteIPProxyProtocol</code> permet de
@@ -323,9 +325,10 @@ version 2.4.26 du serveur HTTP Apache</td></tr>
     présence de l'en-tête PROXY, mais aussi de permettre aux autres clients de
     se connecter sans ce dernier. Cette directive permet à l'administrateur du
     serveur d'autoriser cette possibilité à un hôte isolé ou à une gamme d'hôtes
-    au format CIDR. Elle est en général utilisée dans le cadre du monitoring du
-    trafic vers un serveur virtuel à destination du serveur situé derrière le
-    répartiteur de charge.</p>
+    au format CIDR. This is generally useful for monitoring and administrative
+    traffic to a virtual host direct to the server behind the upstream load
+    balancer.</p>
+    
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

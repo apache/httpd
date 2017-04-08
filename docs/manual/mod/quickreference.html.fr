@@ -1106,7 +1106,7 @@ confiance pour présenter la valeur RemoteIPHeader</td></tr>
 <tr><td><a href="mod_remoteip.html#remoteipproxiesheader">RemoteIPProxiesHeader <var>Nom_en-tête</var></a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Déclare le champ d'en-tête qui contiendra toutes les
 adresses IP intermédiaires</td></tr>
 <tr class="odd"><td><a href="mod_remoteip.html#remoteipproxyprotocol">RemoteIPProxyProtocol On|Off</a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Active ou désactive la gestion du protocole PROXY</td></tr>
-<tr><td><a href="mod_remoteip.html#remoteipproxyprotocoldisablehosts">RemoteIPProxyProtocolDisableHosts host|range [host|range] [host|range]</a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Désactive la prise en compte de l'en-tête PROXY pour certains hôtes
+<tr><td><a href="mod_remoteip.html#remoteipproxyprotocolexceptions">RemoteIPProxyProtocolExceptions host|range [host|range] [host|range]</a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Désactive la prise en compte de l'en-tête PROXY pour certains hôtes
 ou réseaux</td></tr>
 <tr class="odd"><td><a href="mod_remoteip.html#remoteiptrustedproxy">RemoteIPTrustedProxy
 <var>ip-mandataire</var>|<var>ip-mandataire/sous-réseau</var>|<var>nom-hôte</var> ...</a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Restreint les adresses IP clients dignes de
