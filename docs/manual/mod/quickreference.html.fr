@@ -1241,9 +1241,12 @@ non sécurisée</td></tr>
 OCSP</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslocspenable">SSLOCSPEnable on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active la validation OCSP de la chaîne de certificats du
 client</td></tr>
-<tr><td><a href="mod_ssl.html#sslocspoverrideresponder">SSLOCSPOverrideResponder on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Force l'utilisation de l'URI du répondeur par défaut pour
+<tr><td><a href="mod_ssl.html#sslocspnoverify">SSLOCSPNoverify <em>On/Off</em></a></td><td> Off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Evite la vérification des certificats des répondeurs OCSP</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslocspoverrideresponder">SSLOCSPOverrideResponder on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Force l'utilisation de l'URI du répondeur par défaut pour
 la validation OCSP</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslocspproxyurl">SSLOCSPProxyURL <em>url</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Adresse de mandataire à utiliser pour les requêtes OCSP</td></tr>
+<tr><td><a href="mod_ssl.html#sslocspproxyurl">SSLOCSPProxyURL <em>url</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Adresse de mandataire à utiliser pour les requêtes OCSP</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslocsprespondercertificatefile">SSLOCSPResponderCertificateFile <em>file</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Fournit un jeu de certificats de confiance du répondeur OCSP avec
+encodage PEM</td></tr>
 <tr><td><a href="mod_ssl.html#sslocsprespondertimeout">SSLOCSPResponderTimeout <em>secondes</em></a></td><td> 10 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Délai d'attente pour les requêtes OCSP</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslocspresponsemaxage">SSLOCSPResponseMaxAge <em>secondes</em></a></td><td> -1 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Age maximum autorisé pour les réponses OCSP</td></tr>
 <tr><td><a href="mod_ssl.html#sslocspresponsetimeskew">SSLOCSPResponseTimeSkew <em>secondes</em></a></td><td> 300 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Dérive temporelle maximale autorisée pour la validation des

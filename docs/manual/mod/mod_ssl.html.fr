@@ -75,8 +75,10 @@ disponibles avec Require</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslinsecurerenegotiation">SSLInsecureRenegotiation</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslocspdefaultresponder">SSLOCSPDefaultResponder</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslocspenable">SSLOCSPEnable</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#sslocspnoverify">SSLOCSPNoverify</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslocspoverrideresponder">SSLOCSPOverrideResponder</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslocspproxyurl">SSLOCSPProxyURL</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#sslocsprespondercertificatefile">SSLOCSPResponderCertificateFile</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslocsprespondertimeout">SSLOCSPResponderTimeout</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslocspresponsemaxage">SSLOCSPResponseMaxAge</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslocspresponsetimeskew">SSLOCSPResponseTimeSkew</a></li>
@@ -1240,6 +1242,22 @@ SSLOCSPOverrideResponder on</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="sslocspnoverify" id="sslocspnoverify">Directive</a> <a name="SSLOCSPNoverify" id="SSLOCSPNoverify">SSLOCSPNoverify</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Evite la vérification des certificats des répondeurs OCSP</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLOCSPNoverify <em>On/Off</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLOCSPNoverify Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.5 du serveur HTTP Apache,
+sous réserve d'utiliser une version 0.9.7 ou supérieure d'OpenSSL</td></tr>
+</table>
+<p>Cette directive permet d'éviter la vérification des certificats
+des répondeurs OCSP, ce qui peut s'avérer utile lorsqu'on teste un serveur OCSP.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="sslocspoverrideresponder" id="sslocspoverrideresponder">Directive</a> <a name="SSLOCSPOverrideResponder" id="SSLOCSPOverrideResponder">SSLOCSPOverrideResponder</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Force l'utilisation de l'URI du répondeur par défaut pour
@@ -1268,6 +1286,27 @@ non.</p>
 </table>
 <p>Cette directive permet de définir l'URL d'un mandataire HTTP qui devra être
 utilisé pour toutes les requêtes vers un répondeur OCSP.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="sslocsprespondercertificatefile" id="sslocsprespondercertificatefile">Directive</a> <a name="SSLOCSPResponderCertificateFile" id="SSLOCSPResponderCertificateFile">SSLOCSPResponderCertificateFile</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fournit un jeu de certificats de confiance du répondeur OCSP avec
+encodage PEM</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLOCSPResponderCertificateFile <em>file</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.5 du serveur HTTP Apache,
+sous réserve d'utiliser une version 0.9.7 ou supérieure d'OpenSSL</td></tr>
+</table>
+<p>Cette directive permet de définir un fichier contenant une liste de
+certificats de confiance du répondeur OCSP à utiliser au cours de la validation
+du certificat du répondeur OCSP. Les certificats fournis peuvent
+être considérés comme de confiance sans avoir à effectuer de vérifications
+supplémentaires. Ce processus de validation du certificat du répondeur OCSP
+intervient en général lorsque ce dernier est autosigné ou tout simplement absent
+de la réponse OCSP.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
