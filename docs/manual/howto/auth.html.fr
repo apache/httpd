@@ -24,6 +24,7 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Recettes / Tutoriels</a></div><div id="page-content"><div id="preamble"><h1>Authentification et autorisation</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/howto/auth.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/howto/auth.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
 <a href="../fr/howto/auth.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/howto/auth.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/auth.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
@@ -650,6 +651,7 @@ autorisation</a></h2>
 </div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/howto/auth.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/howto/auth.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
 <a href="../fr/howto/auth.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/howto/auth.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/auth.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
