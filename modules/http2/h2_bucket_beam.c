@@ -1035,7 +1035,11 @@ transfer:
                 ++transferred;
             }
             else {
+                /* let outside hook determine how bucket is beamed */
+                leave_yellow(beam, &bl);
                 brecv = h2_beam_bucket(beam, bb, bsender);
+                enter_yellow(beam, &bl);
+                
                 while (brecv && brecv != APR_BRIGADE_SENTINEL(bb)) {
                     ++transferred;
                     remain -= brecv->length;
