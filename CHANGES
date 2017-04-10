@@ -5,7 +5,8 @@ Changes with Apache 2.5.0
      [Stefan Eissing]
      
   *) mod_proxy_http2: Fixed bug in re-attempting proxy requests after 
-     connection error. [Stefan Eissing]
+     connection error. Reliability of reconnect handling improved. 
+     [Stefan Eissing]
   
   *) core: Disallow multiple Listen on the same IP:port when listener buckets
      are configured (ListenCoresBucketsRatio > 0), consistently with the single
