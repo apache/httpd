@@ -151,7 +151,7 @@ APACHE_MODULE(brotli, Brotli compression support, , , most, [
   if test -n "$ap_brotli_base"; then
     ap_save_cppflags=$CPPFLAGS
     APR_ADDTO(CPPFLAGS, [-I${ap_brotli_base}/include])
-    AC_MSG_CHECKING([for Brotli library >= 1.0.0 via prefix])
+    AC_MSG_CHECKING([for Brotli library >= 0.6.0 via prefix])
     AC_TRY_COMPILE(
       [#include <brotli/encode.h>],[
 const uint8_t *o = BrotliEncoderTakeOutput((BrotliEncoderState*)0, (size_t*)0);
@@ -165,8 +165,8 @@ if (o) return *o;],
     CPPFLAGS=$ap_save_cppflags
   else
     if test -n "$PKGCONFIG"; then
-      AC_MSG_CHECKING([for Brotli library >= 1.0.0 via pkg-config])
-      if $PKGCONFIG --exists "libbrotlienc >= 1.0.0"; then
+      AC_MSG_CHECKING([for Brotli library >= 0.6.0 via pkg-config])
+      if $PKGCONFIG --exists "libbrotlienc >= 0.6.0"; then
         AC_MSG_RESULT(yes)
         ap_brotli_found=yes
         ap_brotli_cflags=`$PKGCONFIG libbrotlienc --cflags`
