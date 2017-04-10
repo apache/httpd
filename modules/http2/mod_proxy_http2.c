@@ -635,7 +635,7 @@ cleanup:
 
     /* Any requests will still have need to fail */
     while (APR_SUCCESS == h2_proxy_fifo_try_pull(ctx->requests, (void**)&r)) {
-        request_done(ctx, r, HTTP_SERVICE_UNAVAILABLE, true);
+        request_done(ctx, r, HTTP_SERVICE_UNAVAILABLE, 1);
     }
     
     ap_set_module_config(ctx->owner->conn_config, &proxy_http2_module, NULL);
