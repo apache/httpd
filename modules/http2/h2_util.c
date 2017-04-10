@@ -438,12 +438,12 @@ int h2_iq_count(h2_iqueue *q)
 }
 
 
-void h2_iq_add(h2_iqueue *q, int sid, h2_iq_cmp *cmp, void *ctx)
+int h2_iq_add(h2_iqueue *q, int sid, h2_iq_cmp *cmp, void *ctx)
 {
     int i;
     
     if (h2_iq_contains(q, sid)) {
-        return;
+        return 0;
     }
     if (q->nelts >= q->nalloc) {
         iq_grow(q, q->nalloc * 2);
@@ -456,11 +456,12 @@ void h2_iq_add(h2_iqueue *q, int sid, h2_iq_cmp *cmp, void *ctx)
         /* bubble it to the front of the queue */
         iq_bubble_up(q, i, q->head, cmp, ctx);
     }
+    return 1;
 }
 
-void h2_iq_append(h2_iqueue *q, int sid)
+int h2_iq_append(h2_iqueue *q, int sid)
 {
-    h2_iq_add(q, sid, NULL, NULL);
+    return h2_iq_add(q, sid, NULL, NULL);
 }
 
 int h2_iq_remove(h2_iqueue *q, int sid)
@@ -612,6 +613,7 @@ int h2_iq_contains(h2_iqueue *q, int sid)
 struct h2_fifo {
     void **elems;
     int nelems;
+    int set;
     int head;
     int count;
     int aborted;
@@ -636,7 +638,20 @@ static apr_status_t fifo_destroy(void *data)
     return APR_SUCCESS;
 }
 
-apr_status_t h2_fifo_create(h2_fifo **pfifo, apr_pool_t *pool, int capacity)
+static int index_of(h2_fifo *fifo, void *elem)
+{
+    int i;
+    
+    for (i = 0; i < fifo->count; ++i) {
+        if (elem == fifo->elems[nth_index(fifo, i)]) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+static apr_status_t create_int(h2_fifo **pfifo, apr_pool_t *pool, 
+                               int capacity, int as_set)
 {
     apr_status_t rv;
     h2_fifo *fifo;
@@ -667,11 +682,22 @@ apr_status_t h2_fifo_create(h2_fifo **pfifo, apr_pool_t *pool, int capacity)
         return APR_ENOMEM;
     }
     fifo->nelems = capacity;
+    fifo->set = as_set;
     
     *pfifo = fifo;
     apr_pool_cleanup_register(pool, fifo, fifo_destroy, apr_pool_cleanup_null);
 
     return APR_SUCCESS;
+}
+
+apr_status_t h2_fifo_create(h2_fifo **pfifo, apr_pool_t *pool, int capacity)
+{
+    return create_int(pfifo, pool, capacity, 0);
+}
+
+apr_status_t h2_fifo_set_create(h2_fifo **pfifo, apr_pool_t *pool, int capacity)
+{
+    return create_int(pfifo, pool, capacity, 1);
 }
 
 apr_status_t h2_fifo_term(h2_fifo *fifo)
@@ -725,7 +751,12 @@ static apr_status_t fifo_push(h2_fifo *fifo, void *elem, int block)
     }
 
     if ((rv = apr_thread_mutex_lock(fifo->lock)) == APR_SUCCESS) {
-        if (fifo->count == fifo->nelems) {
+        if (fifo->set && index_of(fifo, elem) >= 0) {
+            /* set mode, elem already member */
+            apr_thread_mutex_unlock(fifo->lock);
+            return APR_EEXIST;
+        }
+        else if (fifo->count == fifo->nelems) {
             if (block) {
                 while (fifo->count == fifo->nelems) {
                     if (fifo->aborted) {
@@ -762,6 +793,22 @@ apr_status_t h2_fifo_try_push(h2_fifo *fifo, void *elem)
     return fifo_push(fifo, elem, 0);
 }
 
+static void *pull_head(h2_fifo *fifo)
+{
+    void *elem;
+    
+    ap_assert(fifo->count > 0);
+    elem = fifo->elems[fifo->head];
+    --fifo->count;
+    if (fifo->count > 0) {
+        fifo->head = nth_index(fifo, 1);
+        if (fifo->count+1 == fifo->nelems) {
+            apr_thread_cond_broadcast(fifo->not_full);
+        }
+    }
+    return elem;
+}
+
 static apr_status_t fifo_pull(h2_fifo *fifo, void **pelem, int block)
 {
     apr_status_t rv;
@@ -778,14 +825,8 @@ static apr_status_t fifo_pull(h2_fifo *fifo, void **pelem, int block)
         }
 
         ap_assert(fifo->count > 0);
-        *pelem = fifo->elems[fifo->head];
-        --fifo->count;
-        if (fifo->count > 0) {
-            fifo->head = nth_index(fifo, 1);
-            if (fifo->count+1 == fifo->nelems) {
-                apr_thread_cond_broadcast(fifo->not_full);
-            }
-        }
+        *pelem = pull_head(fifo);
+
         apr_thread_mutex_unlock(fifo->lock);
     }
     return rv;
@@ -817,29 +858,18 @@ static apr_status_t fifo_peek(h2_fifo *fifo, h2_fifo_peek_fn *fn, void *ctx, int
         }
 
         ap_assert(fifo->count > 0);
-        elem = fifo->elems[fifo->head];
+        elem = pull_head(fifo);
         
+        apr_thread_mutex_unlock(fifo->lock);
+
         switch (fn(elem, ctx)) {
             case H2_FIFO_OP_PULL:
-                --fifo->count;
-                if (fifo->count > 0) {
-                    fifo->head = nth_index(fifo, 1);
-                    if (fifo->count+1 == fifo->nelems) {
-                        apr_thread_cond_broadcast(fifo->not_full);
-                    }
-                }
                 break;
             case H2_FIFO_OP_REPUSH:
-                if (fifo->count > 1) {
-                    fifo->head = nth_index(fifo, 1);
-                    if (fifo->count < fifo->nelems) {
-                        fifo->elems[nth_index(fifo, fifo->count-1)] = elem;
-                    }
-                }
+                return h2_fifo_push(fifo, elem);
                 break;
         }
         
-        apr_thread_mutex_unlock(fifo->lock);
     }
     return rv;
 }

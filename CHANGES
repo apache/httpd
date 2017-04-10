@@ -2,6 +2,10 @@
 
 Changes with Apache 2.4.26
 
+  *) mod_proxy_http2: Fixed bug in re-attempting proxy requests after 
+     connection error. Reliability of reconnect handling improved. 
+     [Stefan Eissing]
+  
   *) mod_http2: better performance, eliminated need for nested locks and
      thread privates. Moving request setups from the main connection to the
      worker threads. Increase number of spare connections kept.
@@ -22,9 +26,6 @@ Changes with Apache 2.4.26
      format from 2.2 in the Last Modified column. PR60846.
      [Hank Ibell <hwibell gmail.com>]
 
-  *) mod_http2: fixed PR60869 by making h2 workers exit explicitly waking up
-     all threads to exit in a defined way. [Stefan Eissing]
-     
   *) core: Add %{REMOTE_PORT} to the expression parser. PR59938
      [Hank Ibell <hwibell gmail.com>]
 

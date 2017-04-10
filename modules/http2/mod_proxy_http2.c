@@ -26,6 +26,8 @@
 #include "h2_version.h"
 #include "h2_proxy_session.h"
 
+#define H2MIN(x,y) ((x) < (y) ? (x) : (y))
+
 static void register_hook(apr_pool_t *p);
 
 AP_DECLARE_MODULE(proxy_http2) = {
@@ -65,7 +67,7 @@ typedef struct h2_proxy_ctx {
     const char *engine_type;
     apr_pool_t *engine_pool;    
     apr_size_t req_buffer_size;
-    request_rec *next;
+    h2_proxy_fifo *requests;
     int capacity;
     
     unsigned standalone : 1;
@@ -218,36 +220,23 @@ static apr_status_t proxy_engine_init(h2_req_engine *engine,
 {
     h2_proxy_ctx *ctx = ap_get_module_config(r->connection->conn_config, 
                                              &proxy_http2_module);
-    if (ctx) {
-        conn_rec *c = ctx->owner;
-        h2_proxy_ctx *nctx;
-        
-        /* we need another lifetime for this. If we do not host
-         * an engine, the context lives in r->pool. Since we expect
-         * to server more than r, we need to live longer */
-        nctx = apr_pcalloc(pool, sizeof(*nctx));
-        if (nctx == NULL) {
-            return APR_ENOMEM;
-        }
-        memcpy(nctx, ctx, sizeof(*nctx));
-        ctx = nctx;
-        ctx->pool = pool;
-        ctx->engine = engine;
-        ctx->engine_id = id;
-        ctx->engine_type = type;
-        ctx->engine_pool = pool;
-        ctx->req_buffer_size = req_buffer_size;
-        ctx->capacity = 100;
-
-        ap_set_module_config(c->conn_config, &proxy_http2_module, ctx);
-
-        *pconsumed = out_consumed;
-        *pctx = ctx;
-        return APR_SUCCESS;
+    if (!ctx) {
+        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(03368)
+                      "h2_proxy_session, engine init, no ctx found");
+        return APR_ENOTIMPL;
     }
-    ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(03368)
-                  "h2_proxy_session, engine init, no ctx found");
-    return APR_ENOTIMPL;
+    
+    ctx->pool = pool;
+    ctx->engine = engine;
+    ctx->engine_id = id;
+    ctx->engine_type = type;
+    ctx->engine_pool = pool;
+    ctx->req_buffer_size = req_buffer_size;
+    ctx->capacity = H2MIN(100, h2_proxy_fifo_capacity(ctx->requests));
+    
+    *pconsumed = out_consumed;
+    *pctx = ctx;
+    return APR_SUCCESS;
 }
 
 static apr_status_t add_request(h2_proxy_session *session, request_rec *r)
@@ -270,10 +259,9 @@ static apr_status_t add_request(h2_proxy_session *session, request_rec *r)
     return status;
 }
 
-static void request_done(h2_proxy_session *session, request_rec *r,
+static void request_done(h2_proxy_ctx *ctx, request_rec *r,
                          apr_status_t status, int touched)
 {   
-    h2_proxy_ctx *ctx = session->user_data;
     const char *task_id = apr_table_get(r->connection->notes, H2_TASK_ID_NOTE);
 
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, r->connection, 
@@ -282,35 +270,26 @@ static void request_done(h2_proxy_session *session, request_rec *r,
     if (status != APR_SUCCESS) {
         if (!touched) {
             /* untouched request, need rescheduling */
-            if (req_engine_push && is_h2 && is_h2(ctx->owner)) {
-                if (req_engine_push(ctx->engine_type, r, NULL) == APR_SUCCESS) {
-                    /* push to engine */
-                    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, r->connection, 
-                                  APLOGNO(03369)
-                                  "h2_proxy_session(%s): rescheduled request %s",
-                                  ctx->engine_id, task_id);
-                    return;
-                }
-            }
-            else if (!ctx->next) {
-                ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, r->connection, 
-                              "h2_proxy_session(%s): retry untouched request",
-                              ctx->engine_id);
-                ctx->next = r;
-            }
+            status = h2_proxy_fifo_push(ctx->requests, r);
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, r->connection, 
+                          APLOGNO(03369)
+                          "h2_proxy_session(%s): rescheduled request %s",
+                          ctx->engine_id, task_id);
+            return;
         }
         else {
             const char *uri;
             uri = apr_uri_unparse(r->pool, &r->parsed_uri, 0);
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, r->connection, 
                           APLOGNO(03471) "h2_proxy_session(%s): request %s -> %s "
-                          "not complete, was touched",
+                          "not complete, cannot repeat", 
                           ctx->engine_id, task_id, uri);
         }
     }
     
     if (r == ctx->rbase) {
-        ctx->r_status = (status == APR_SUCCESS)? APR_SUCCESS : HTTP_SERVICE_UNAVAILABLE;
+        ctx->r_status = ((status == APR_SUCCESS)? APR_SUCCESS
+                         : HTTP_SERVICE_UNAVAILABLE);
     }
     
     if (req_engine_done && ctx->engine) {
@@ -322,21 +301,32 @@ static void request_done(h2_proxy_session *session, request_rec *r,
     }
 }    
 
+static void session_req_done(h2_proxy_session *session, request_rec *r,
+                             apr_status_t status, int touched)
+{
+    request_done(session->user_data, r, status, touched);
+}
+
 static apr_status_t next_request(h2_proxy_ctx *ctx, int before_leave)
 {
-    if (ctx->next) {
+    if (h2_proxy_fifo_count(ctx->requests) > 0) {
         return APR_SUCCESS;
     }
     else if (req_engine_pull && ctx->engine) {
         apr_status_t status;
+        request_rec *r = NULL;
+        
         status = req_engine_pull(ctx->engine, before_leave? 
                                  APR_BLOCK_READ: APR_NONBLOCK_READ, 
-                                 ctx->capacity, &ctx->next);
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE3, status, ctx->owner, 
-                      "h2_proxy_engine(%s): pulled request (%s) %s", 
-                      ctx->engine_id, 
-                      before_leave? "before leave" : "regular", 
-                      (ctx->next? ctx->next->the_request : "NULL"));
+                                 ctx->capacity, &r);
+        if (status == APR_SUCCESS && r) {
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE3, status, ctx->owner, 
+                          "h2_proxy_engine(%s): pulled request (%s) %s", 
+                          ctx->engine_id, 
+                          before_leave? "before leave" : "regular", 
+                          r->the_request);
+            h2_proxy_fifo_push(ctx->requests, r);
+        }
         return APR_STATUS_IS_EAGAIN(status)? APR_SUCCESS : status;
     }
     return APR_EOF;
@@ -345,6 +335,7 @@ static apr_status_t next_request(h2_proxy_ctx *ctx, int before_leave)
 static apr_status_t proxy_engine_run(h2_proxy_ctx *ctx) {
     apr_status_t status = OK;
     int h2_front;
+    request_rec *r;
     
     /* Step Four: Send the Request in a new HTTP/2 stream and
      * loop until we got the response or encounter errors.
@@ -355,7 +346,7 @@ static apr_status_t proxy_engine_run(h2_proxy_ctx *ctx) {
     ctx->session = h2_proxy_session_setup(ctx->engine_id, ctx->p_conn, ctx->conf,
                                           h2_front, 30, 
                                           h2_proxy_log2((int)ctx->req_buffer_size), 
-                                          request_done);
+                                          session_req_done);
     if (!ctx->session) {
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, ctx->owner, 
                       APLOGNO(03372) "session unavailable");
@@ -366,10 +357,9 @@ static apr_status_t proxy_engine_run(h2_proxy_ctx *ctx) {
                   "eng(%s): run session %s", ctx->engine_id, ctx->session->id);
     ctx->session->user_data = ctx;
     
-    while (1) {
-        if (ctx->next) {
-            add_request(ctx->session, ctx->next);
-            ctx->next = NULL;
+    while (!ctx->owner->aborted) {
+        if (APR_SUCCESS == h2_proxy_fifo_try_pull(ctx->requests, (void**)&r)) {
+            add_request(ctx->session, r);
         }
         
         status = h2_proxy_session_process(ctx->session);
@@ -379,7 +369,8 @@ static apr_status_t proxy_engine_run(h2_proxy_ctx *ctx) {
             /* ongoing processing, call again */
             if (ctx->session->remote_max_concurrent > 0
                 && ctx->session->remote_max_concurrent != ctx->capacity) {
-                ctx->capacity = (int)ctx->session->remote_max_concurrent;
+                ctx->capacity = H2MIN((int)ctx->session->remote_max_concurrent, 
+                                      h2_proxy_fifo_capacity(ctx->requests));
             }
             s2 = next_request(ctx, 0);
             if (s2 == APR_ECONNABORTED) {
@@ -395,7 +386,8 @@ static apr_status_t proxy_engine_run(h2_proxy_ctx *ctx) {
                 status = ctx->r_status = APR_SUCCESS;
                 break;
             }
-            if (!ctx->next && h2_proxy_ihash_empty(ctx->session->streams)) {
+            if ((h2_proxy_fifo_count(ctx->requests) == 0) 
+                && h2_proxy_ihash_empty(ctx->session->streams)) {
                 break;
             }
         }
@@ -409,7 +401,7 @@ static apr_status_t proxy_engine_run(h2_proxy_ctx *ctx) {
              * a) be reopened on the new session iff safe to do so
              * b) reported as done (failed) otherwise
              */
-            h2_proxy_session_cleanup(ctx->session, request_done);
+            h2_proxy_session_cleanup(ctx->session, session_req_done);
             break;
         }
     }
@@ -420,7 +412,7 @@ static apr_status_t proxy_engine_run(h2_proxy_ctx *ctx) {
     return status;
 }
 
-static h2_proxy_ctx *push_request_somewhere(h2_proxy_ctx *ctx)
+static apr_status_t push_request_somewhere(h2_proxy_ctx *ctx, request_rec *r)
 {
     conn_rec *c = ctx->owner;
     const char *engine_type, *hostname;
@@ -430,21 +422,15 @@ static h2_proxy_ctx *push_request_somewhere(h2_proxy_ctx *ctx)
     engine_type = apr_psprintf(ctx->pool, "proxy_http2 %s%s", hostname, 
                                ctx->server_portstr);
     
-    if (c->master && req_engine_push && ctx->next && is_h2 && is_h2(c)) {
+    if (c->master && req_engine_push && r && is_h2 && is_h2(c)) {
         /* If we are have req_engine capabilities, push the handling of this
          * request (e.g. slave connection) to a proxy_http2 engine which 
          * uses the same backend. We may be called to create an engine 
          * ourself. */
-        if (req_engine_push(engine_type, ctx->next, proxy_engine_init)
-            == APR_SUCCESS) {
-            /* to renew the lifetime, we might have set a new ctx */
-            ctx = ap_get_module_config(c->conn_config, &proxy_http2_module);
+        if (req_engine_push(engine_type, r, proxy_engine_init) == APR_SUCCESS) {
             if (ctx->engine == NULL) {
-                /* Another engine instance has taken over processing of this
-                 * request. */
-                ctx->r_status = SUSPENDED;
-                ctx->next = NULL;
-                return ctx;
+                /* request has been assigned to an engine in another thread */
+                return SUSPENDED;
             }
         }
     }
@@ -465,7 +451,8 @@ static h2_proxy_ctx *push_request_somewhere(h2_proxy_ctx *ctx)
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c, 
                       "H2: hosting engine %s", ctx->engine_id);
     }
-    return ctx;
+
+    return h2_proxy_fifo_push(ctx->requests, r);
 }
 
 static int proxy_http2_handler(request_rec *r, 
@@ -482,7 +469,7 @@ static int proxy_http2_handler(request_rec *r,
     apr_status_t status;
     h2_proxy_ctx *ctx;
     apr_uri_t uri;
-    int reconnected = 0;
+    int reconnects = 0;
     
     /* find the scheme */
     if ((url[0] != 'h' && url[0] != 'H') || url[1] != '2') {
@@ -507,6 +494,7 @@ static int proxy_http2_handler(request_rec *r,
         default:
             return DECLINED;
     }
+    
     ctx = apr_pcalloc(r->pool, sizeof(*ctx));
     ctx->owner      = r->connection;
     ctx->pool       = r->pool;
@@ -518,8 +506,9 @@ static int proxy_http2_handler(request_rec *r,
     ctx->conf       = conf;
     ctx->flushall   = apr_table_get(r->subprocess_env, "proxy-flushall")? 1 : 0;
     ctx->r_status   = HTTP_SERVICE_UNAVAILABLE;
-    ctx->next       = r;
-    r = NULL;
+    
+    h2_proxy_fifo_set_create(&ctx->requests, ctx->pool, 100);
+    
     ap_set_module_config(ctx->owner->conn_config, &proxy_http2_module, ctx);
 
     /* scheme says, this is for us. */
@@ -565,10 +554,11 @@ run_connect:
     
     /* If we are not already hosting an engine, try to push the request 
      * to an already existing engine or host a new engine here. */
-    if (!ctx->engine) {
-        ctx = push_request_somewhere(ctx);
+    if (r && !ctx->engine) {
+        ctx->r_status = push_request_somewhere(ctx, r);
+        r = NULL;
         if (ctx->r_status == SUSPENDED) {
-            /* request was pushed to another engine */
+            /* request was pushed to another thread, leave processing here */
             goto cleanup;
         }
     }
@@ -581,7 +571,7 @@ run_connect:
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, ctx->owner, APLOGNO(03352)
                       "H2: failed to make connection to backend: %s",
                       ctx->p_conn->hostname);
-        goto cleanup;
+        goto reconnect;
     }
     
     /* Step Three: Create conn_rec for the socket we have open now. */
@@ -593,7 +583,7 @@ run_connect:
                           "setup new connection: is_ssl=%d %s %s %s", 
                           ctx->p_conn->is_ssl, ctx->p_conn->ssl_hostname, 
                           locurl, ctx->p_conn->hostname);
-            goto cleanup;
+            goto reconnect;
         }
         
         if (!ctx->p_conn->data) {
@@ -628,8 +618,8 @@ run_session:
         ctx->engine = NULL;
     }
 
-cleanup:
-    if (!reconnected && next_request(ctx, 1) == APR_SUCCESS) {
+reconnect:
+    if (next_request(ctx, 1) == APR_SUCCESS) {
         /* Still more to do, tear down old conn and start over */
         if (ctx->p_conn) {
             ctx->p_conn->close = 1;
@@ -638,10 +628,16 @@ cleanup:
             ap_proxy_release_connection(ctx->proxy_func, ctx->p_conn, ctx->server);
             ctx->p_conn = NULL;
         }
-        reconnected = 1; /* we do this only once, then fail */
-        goto run_connect;
+        ++reconnects;
+        if (reconnects < 5 && !ctx->owner->aborted) {
+            goto run_connect;
+        } 
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, ctx->owner, APLOGNO(10023)
+                      "giving up after %d reconnects, %d requests todo",
+                      reconnects, h2_proxy_fifo_count(ctx->requests));
     }
     
+cleanup:
     if (ctx->p_conn) {
         if (status != APR_SUCCESS) {
             /* close socket when errors happened or session shut down (EOF) */
@@ -653,6 +649,11 @@ cleanup:
         ctx->p_conn = NULL;
     }
 
+    /* Any requests will still have need to fail */
+    while (APR_SUCCESS == h2_proxy_fifo_try_pull(ctx->requests, (void**)&r)) {
+        request_done(ctx, r, HTTP_SERVICE_UNAVAILABLE, 1);
+    }
+    
     ap_set_module_config(ctx->owner->conn_config, &proxy_http2_module, NULL);
     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, ctx->owner, 
                   APLOGNO(03377) "leaving handler");

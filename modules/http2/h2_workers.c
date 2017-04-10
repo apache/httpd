@@ -39,6 +39,7 @@ struct h2_slot {
     int sticks;
     h2_task *task;
     apr_thread_t *thread;
+    apr_thread_mutex_t *lock;
     apr_thread_cond_t *not_idle;
 };
 
@@ -78,6 +79,17 @@ static apr_status_t activate_slot(h2_workers *workers, h2_slot *slot)
     slot->workers = workers;
     slot->aborted = 0;
     slot->task = NULL;
+
+    if (!slot->lock) {
+        status = apr_thread_mutex_create(&slot->lock,
+                                         APR_THREAD_MUTEX_DEFAULT,
+                                         workers->pool);
+        if (status != APR_SUCCESS) {
+            push_slot(&workers->free, slot);
+            return status;
+        }
+    }
+
     if (!slot->not_idle) {
         status = apr_thread_cond_create(&slot->not_idle, workers->pool);
         if (status != APR_SUCCESS) {
@@ -95,7 +107,7 @@ static apr_status_t activate_slot(h2_workers *workers, h2_slot *slot)
         return APR_ENOMEM;
     }
     
-    ++workers->worker_count;
+    apr_atomic_inc32(&workers->worker_count);
     return APR_SUCCESS;
 }
 
@@ -112,9 +124,9 @@ static void wake_idle_worker(h2_workers *workers)
 {
     h2_slot *slot = pop_slot(&workers->idle);
     if (slot) {
-        apr_thread_mutex_lock(workers->lock);
+        apr_thread_mutex_lock(slot->lock);
         apr_thread_cond_signal(slot->not_idle);
-        apr_thread_mutex_unlock(workers->lock);
+        apr_thread_mutex_unlock(slot->lock);
     }
     else if (workers->dynamic) {
         add_worker(workers);
@@ -130,7 +142,7 @@ static void cleanup_zombies(h2_workers *workers)
             apr_thread_join(&status, slot->thread);
             slot->thread = NULL;
         }
-        --workers->worker_count;
+        apr_atomic_dec32(&workers->worker_count);
         push_slot(&workers->free, slot);
     }
 }
@@ -185,15 +197,12 @@ static apr_status_t get_next(h2_slot *slot)
             return APR_SUCCESS;
         }
         
-        apr_thread_mutex_lock(workers->lock);
         cleanup_zombies(workers);
 
-        ++workers->idle_workers;
+        apr_thread_mutex_lock(slot->lock);
         push_slot(&workers->idle, slot);
-        apr_thread_cond_wait(slot->not_idle, workers->lock);
-        --workers->idle_workers;
-
-        apr_thread_mutex_unlock(workers->lock);
+        apr_thread_cond_wait(slot->not_idle, slot->lock);
+        apr_thread_mutex_unlock(slot->lock);
     }
     return APR_EOF;
 }
@@ -239,24 +248,25 @@ static apr_status_t workers_pool_cleanup(void *data)
     h2_slot *slot;
     
     if (!workers->aborted) {
-        apr_thread_mutex_lock(workers->lock);
         workers->aborted = 1;
-        /* before we go, cleanup any zombies and abort the rest */
-        cleanup_zombies(workers);
+        /* abort all idle slots */
         for (;;) {
             slot = pop_slot(&workers->idle);
             if (slot) {
+                apr_thread_mutex_lock(slot->lock);
                 slot->aborted = 1;
                 apr_thread_cond_signal(slot->not_idle);
+                apr_thread_mutex_unlock(slot->lock);
             }
             else {
                 break;
             }
         }
-        apr_thread_mutex_unlock(workers->lock);
 
         h2_fifo_term(workers->mplxs);
         h2_fifo_interrupt(workers->mplxs);
+
+        cleanup_zombies(workers);
     }
     return APR_SUCCESS;
 }

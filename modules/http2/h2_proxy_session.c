@@ -242,7 +242,6 @@ static int add_header(void *table, const char *n, const char *v)
 
 static void process_proxy_header(h2_proxy_stream *stream, const char *n, const char *v)
 {
-    request_rec *r = stream->r;
     static const struct {
         const char *name;
         ap_proxy_header_reverse_map_fn func;
@@ -254,23 +253,26 @@ static void process_proxy_header(h2_proxy_stream *stream, const char *n, const c
         { "Set-Cookie", ap_proxy_cookie_reverse_map },
         { NULL, NULL }
     };
+    request_rec *r = stream->r;
     proxy_dir_conf *dconf;
     int i;
     
-    for (i = 0; transform_hdrs[i].name; ++i) {
-        if (!ap_cstr_casecmp(transform_hdrs[i].name, n)) {
+    dconf = ap_get_module_config(r->per_dir_config, &proxy_module);
+    if (!dconf->preserve_host) {
+        for (i = 0; transform_hdrs[i].name; ++i) {
+            if (!ap_cstr_casecmp(transform_hdrs[i].name, n)) {
+                apr_table_add(r->headers_out, n,
+                              (*transform_hdrs[i].func)(r, dconf, v));
+                return;
+            }
+        }
+        if (!ap_cstr_casecmp("Link", n)) {
             dconf = ap_get_module_config(r->per_dir_config, &proxy_module);
             apr_table_add(r->headers_out, n,
-                          (*transform_hdrs[i].func)(r, dconf, v));
+                          h2_proxy_link_reverse_map(r, dconf, 
+                                                    stream->real_server_uri, stream->p_server_uri, v));
             return;
-       }
-    }
-    if (!ap_cstr_casecmp("Link", n)) {
-        dconf = ap_get_module_config(r->per_dir_config, &proxy_module);
-        apr_table_add(r->headers_out, n,
-                      h2_proxy_link_reverse_map(r, dconf, 
-                      stream->real_server_uri, stream->p_server_uri, v));
-        return;
+        }
     }
     apr_table_add(r->headers_out, n, v);
 }
