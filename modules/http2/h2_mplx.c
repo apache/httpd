@@ -787,7 +787,7 @@ static void task_done(h2_mplx *m, h2_task *task, h2_req_engine *ngn)
     if (task->engine) {
         if (!m->aborted && !task->c->aborted 
             && !h2_req_engine_is_shutdown(task->engine)) {
-            ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, m->c,
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, m->c, APLOGNO(10022)
                           "h2_mplx(%ld): task(%s) has not-shutdown "
                           "engine(%s)", m->id, task->id, 
                           h2_req_engine_get_id(task->engine));
