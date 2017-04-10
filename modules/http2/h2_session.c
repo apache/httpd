@@ -792,13 +792,13 @@ static apr_status_t h2_session_create_int(h2_session **psession,
         return status;
     }
     
-    session->in_pending = h2_iq_create(session->pool, session->max_stream_count);
+    session->in_pending = h2_iq_create(session->pool, (int)session->max_stream_count);
     if (session->in_pending == NULL) {
         apr_pool_destroy(pool);
         return APR_ENOMEM;
     }
 
-    session->in_process = h2_iq_create(session->pool, session->max_stream_count);
+    session->in_process = h2_iq_create(session->pool, (int)session->max_stream_count);
     if (session->in_process == NULL) {
         apr_pool_destroy(pool);
         return APR_ENOMEM;

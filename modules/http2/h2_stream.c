@@ -1008,7 +1008,7 @@ apr_status_t h2_stream_in_consumed(h2_stream *stream, apr_off_t amount)
         apr_off_t consumed = amount;
         
         while (consumed > 0) {
-            int len = (consumed > INT_MAX)? INT_MAX : consumed;
+            int len = (consumed > INT_MAX)? INT_MAX : (int)consumed;
             nghttp2_session_consume(session->ngh2, stream->id, len);
             consumed -= len;
         }
