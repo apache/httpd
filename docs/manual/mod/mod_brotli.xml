@@ -96,35 +96,6 @@ SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-brotli
 
     </section>
 
-    <section id="input"><title>Input Decompression</title>
-      <p>The <module>mod_brotli</module> module also provides a filter for
-      decompressing a brotli compressed request body . In order to activate
-      this feature you have to insert the <code>BROTLI_COMPRESS</code> filter into
-      the input filter chain using <directive module="core"
-      >SetInputFilter</directive> or <directive module="mod_mime"
-      >AddInputFilter</directive>, for example:</p>
-
-      <highlight language="config">
-&lt;Location "/dav-area"&gt;
-    SetInputFilter BROTLI_COMPRESS
-&lt;/Location&gt;
-      </highlight>
-
-      <p>Now if a request contains a <code>Content-Encoding:
-      brotli</code> header, the body will be automatically decompressed.
-      Few browsers have the ability to brotli request bodies. However,
-      some special applications actually do support request
-      compression, for instance some <a
-      href="http://www.webdav.org">WebDAV</a> clients.</p>
-
-      <note type="warning"><title>Note on Content-Length</title>
-        <p>If you evaluate the request body yourself, <em>don't trust
-        the <code>Content-Length</code> header!</em>
-        The Content-Length header reflects the length of the
-        incoming data from the client and <em>not</em> the byte count of
-        the decompressed data stream.</p>
-      </note>
-    </section>
 </section>
 
 <section id="proxies"><title>Dealing with proxy servers</title>
