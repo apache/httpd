@@ -90,8 +90,8 @@ SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-brotli
       <note><title>Note</title>
         There is an environment variable <code>no-brotli</code>,
         set via <directive module="mod_env">SetEnv</directive>, which
-        will ignore the accept-encoding setting of your browser and will
-        send compressed output.
+        will disable brotli compression for a particular request, even if
+        it is supported by the client.
       </note>
 
     </section>
