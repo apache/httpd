@@ -573,7 +573,7 @@ static const command_rec cmds[] = {
     AP_INIT_TAKE1("BrotliAlterETag", set_etag_mode,
                   NULL, RSRC_CONF,
                   "Set how mod_brotli should modify ETag response headers: "
-                  "'AddSuffix' (default), 'NoChange' (2.2.x behavior), 'Remove'"),
+                  "'AddSuffix' (default), 'NoChange', 'Remove'"),
     {NULL}
 };
 
