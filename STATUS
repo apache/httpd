@@ -177,17 +177,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   protocol input, also seems unwise)
       jailletc36: needs r1790457 but can be merged afterwards. No functionnal change.
 
-PATCHES/ISSUES THAT ARE BEING WORKED
-  [ New entried should be added at the START of the list ]
-
-  *) core: Disallow multiple Listen on the same IP:port when listener buckets
-     are configured (ListenCoresBucketsRatio > 0), consistently with the single
-     bucket case (default), thus avoiding the leak of the corresponding socket
-     descriptors on graceful restart.
-     trunk patch: http://svn.apache.org/r1789220
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic
-
   *) mod_brotli: Backport of mod_brotli filter
      trunk patch: http://svn.apache.org/r1761714
                   http://svn.apache.org/r1762512
@@ -198,8 +187,17 @@ PATCHES/ISSUES THAT ARE BEING WORKED
                   http://svn.apache.org/r1779699
      2.4.x patch: http://home.apache.org/~jim/patches/brotli-2.4.patch
      +1: jim, jorton,
-     -1: wrowe (Premature, waiting on github.com/google/brotli 0.6 release)
-     NOTE: Awaiting next release post 0.5.2
+
+PATCHES/ISSUES THAT ARE BEING WORKED
+  [ New entried should be added at the START of the list ]
+
+  *) core: Disallow multiple Listen on the same IP:port when listener buckets
+     are configured (ListenCoresBucketsRatio > 0), consistently with the single
+     bucket case (default), thus avoiding the leak of the corresponding socket
+     descriptors on graceful restart.
+     trunk patch: http://svn.apache.org/r1789220
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: ylavic
 
   *) mod_ssl: Return 502 instead of 500 when SSL peer check or 
      proxy_post_handshake hook fails. 
