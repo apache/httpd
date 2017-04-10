@@ -169,13 +169,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1788674 (final edge cases/ignore slave conns)
                   http://svn.apache.org/r1789800 (remove optional processing)
                   http://svn.apache.org/r1790169 (rename "exception" directive)
+                  http://svn.apache.org/r1790457 (Update directive name in err message)
      2.4 convenience patch (includes CHANGES):
                   http://people.apache.org/~druggeri/patches/RemoteIPProxyProtocol.2.4.x.patch
      +1: druggeri, jim
      -0.5: wrowe (Still reviewing support of unwise 'optional' schema vs. other
                   possibile solves; questioning reading-but-ignoring PROXY
                   protocol input, also seems unwise)
-      jailletc36: needs r1790457 but can be merged afterwards. No functionnal change.
 
   *) mod_brotli: Backport of mod_brotli filter
      trunk patch: http://svn.apache.org/r1761714
