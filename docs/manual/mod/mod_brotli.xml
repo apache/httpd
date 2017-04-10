@@ -40,7 +40,7 @@ client</description>
 <section id="recommended"><title>Sample Configurations</title>
     <note type="warning"><title>Compression and TLS</title>
         <p>Some web applications are vulnerable to an information disclosure
-        attack when a TLS connection carries deflate compressed data. For more
+        attack when a TLS connection carries compressed data. For more
         information, review the details of the "BREACH" family of attacks.</p>
     </note>
     <p>This is a simple configuration that compresses common text-based content types.</p>
@@ -56,7 +56,7 @@ AddOutputFilterByType BROTLI_COMPRESS text/html text/plain text/xml text/css tex
 <section id="enable"><title>Enabling Compression</title>
     <note type="warning"><title>Compression and TLS</title>
         <p>Some web applications are vulnerable to an information disclosure
-        attack when a TLS connection carries deflate compressed data. For more
+        attack when a TLS connection carries compressed data. For more
         information, review the details of the "BREACH" family of attacks.</p>
     </note>
 
@@ -140,7 +140,7 @@ SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-brotli
     on, for example, the <code>User-Agent</code> header, you must
     manually configure an addition to the <code>Vary</code> header
     to alert proxies of the additional restrictions.  For example,
-    in a typical configuration where the addition of the <code>DEFLATE</code>
+    in a typical configuration where the addition of the <code>BROTLI_COMPRESS</code>
     filter depends on the <code>User-Agent</code>, you should add:</p>
 
     <highlight language="config">
