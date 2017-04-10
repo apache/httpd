@@ -239,9 +239,8 @@ CustomLog "logs/brotli_log" brotli
 
 <usage>
     <p>The <directive>BrotliCompressionQuality</directive> directive specifies
-    the compression quality performed (a value between 0 and 11). Higher
-    quality values result in better compression but also slower compression
-    as well.
+    the compression quality (a value between 0 and 11). Higher quality values
+    result in better, but also slower compression.
   </p>
 </usage>
 </directivesynopsis>
@@ -256,9 +255,8 @@ CustomLog "logs/brotli_log" brotli
 
 <usage>
     <p>The <directive>BrotliCompressionWindow</directive> directive specifies the
-    brotli sliding compression window size (a value between 10 and 24). Generally, the
-    higher the window size, the higher can the compression ratio be expected
-    but requires more memory.</p>
+    brotli sliding compression window size (a value between 10 and 24). Larger
+    window sizes can improve compression quality, but require more memory.</p>
 </usage>
 </directivesynopsis>
 
@@ -267,7 +265,7 @@ CustomLog "logs/brotli_log" brotli
 <name>BrotliCompressionMaxInputBlock</name>
 <description>Maximum input block size</description>
 <syntax>BrotliCompressionMaxInputBlock <var>value</var></syntax>
-<default>BrotliCompressionMaxInputBlock 0</default>
+<default>(automatic)</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
@@ -293,12 +291,14 @@ CustomLog "logs/brotli_log" brotli
     <dt>AddSuffix</dt>
     <dd><p>Append the compression method onto the end of the ETag, causing
         compressed and uncompressed representations to have unique ETags.
-        This has been the default since 2.4.0, but prevents serving
-        "HTTP Not Modified" (304) responses to conditional requests for
-        compressed content.</p></dd>
+        In another dynamic compression module, mod_deflate, this has been
+        the default since 2.4.0. This setting prevents serving "HTTP Not
+        Modified" (304) responses to conditional requests for compressed
+        content.</p></dd>
     <dt>NoChange</dt>
-    <dd><p>Don't change the ETag on a compressed response. This was the default
-        prior to 2.4.0, but does not satisfy the HTTP/1.1 property that all
+    <dd><p>Don't change the ETag on a compressed response. In another dynamic
+        compression module, mod_deflate, this has been the default prior to
+        2.4.0. This setting does not satisfy the HTTP/1.1 property that all
         representations of the same resource have unique ETags. </p></dd>
     <dt>Remove</dt>
     <dd><p>Remove the ETag header from compressed responses. This prevents
