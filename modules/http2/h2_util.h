@@ -119,17 +119,19 @@ int h2_iq_count(h2_iqueue *q);
  * @param q the queue to append the id to
  * @param sid the stream id to add
  * @param cmp the comparator for sorting
- * @param ctx user data for comparator 
+ * @param ctx user data for comparator
+ * @return != 0 iff id was not already there 
  */
-void h2_iq_add(h2_iqueue *q, int sid, h2_iq_cmp *cmp, void *ctx);
+int h2_iq_add(h2_iqueue *q, int sid, h2_iq_cmp *cmp, void *ctx);
 
 /**
  * Append the id to the queue if not already present. 
  *
  * @param q the queue to append the id to
  * @param sid the id to append
+ * @return != 0 iff id was not already there 
  */
-void h2_iq_append(h2_iqueue *q, int sid);
+int h2_iq_append(h2_iqueue *q, int sid);
 
 /**
  * Remove the stream id from the queue. Return != 0 iff task
@@ -193,12 +195,32 @@ int h2_iq_contains(h2_iqueue *q, int sid);
  */
 typedef struct h2_fifo h2_fifo;
 
+/**
+ * Create a FIFO queue that can hold up to capacity elements. Elements can
+ * appear several times.
+ */
 apr_status_t h2_fifo_create(h2_fifo **pfifo, apr_pool_t *pool, int capacity);
+
+/**
+ * Create a FIFO set that can hold up to capacity elements. Elements only
+ * appear once. Pushing an element already present does not change the
+ * queue and is successful.
+ */
+apr_status_t h2_fifo_set_create(h2_fifo **pfifo, apr_pool_t *pool, int capacity);
+
 apr_status_t h2_fifo_term(h2_fifo *fifo);
 apr_status_t h2_fifo_interrupt(h2_fifo *fifo);
 
 int h2_fifo_count(h2_fifo *fifo);
 
+/**
+ * Push en element into the queue. Blocks if there is no capacity left.
+ * 
+ * @param fifo the FIFO queue
+ * @param elem the element to push
+ * @return APR_SUCCESS on push, APR_EAGAIN on try_push on a full queue,
+ *         APR_EEXIST when in set mode and elem already there.
+ */
 apr_status_t h2_fifo_push(h2_fifo *fifo, void *elem);
 apr_status_t h2_fifo_try_push(h2_fifo *fifo, void *elem);
 

@@ -201,4 +201,55 @@ const char *h2_proxy_link_reverse_map(request_rec *r,
                                       const char *proxy_server_uri,
                                       const char *s);
 
+/*******************************************************************************
+ * FIFO queue
+ ******************************************************************************/
+
+/**
+ * A thread-safe FIFO queue with some extra bells and whistles, if you
+ * do not need anything special, better use 'apr_queue'.
+ */
+typedef struct h2_proxy_fifo h2_proxy_fifo;
+
+/**
+ * Create a FIFO queue that can hold up to capacity elements. Elements can
+ * appear several times.
+ */
+apr_status_t h2_proxy_fifo_create(h2_proxy_fifo **pfifo, apr_pool_t *pool, int capacity);
+
+/**
+ * Create a FIFO set that can hold up to capacity elements. Elements only
+ * appear once. Pushing an element already present does not change the
+ * queue and is successful.
+ */
+apr_status_t h2_proxy_fifo_set_create(h2_proxy_fifo **pfifo, apr_pool_t *pool, int capacity);
+
+apr_status_t h2_proxy_fifo_term(h2_proxy_fifo *fifo);
+apr_status_t h2_proxy_fifo_interrupt(h2_proxy_fifo *fifo);
+
+int h2_proxy_fifo_capacity(h2_proxy_fifo *fifo);
+int h2_proxy_fifo_count(h2_proxy_fifo *fifo);
+
+/**
+ * Push en element into the queue. Blocks if there is no capacity left.
+ * 
+ * @param fifo the FIFO queue
+ * @param elem the element to push
+ * @return APR_SUCCESS on push, APR_EAGAIN on try_push on a full queue,
+ *         APR_EEXIST when in set mode and elem already there.
+ */
+apr_status_t h2_proxy_fifo_push(h2_proxy_fifo *fifo, void *elem);
+apr_status_t h2_proxy_fifo_try_push(h2_proxy_fifo *fifo, void *elem);
+
+apr_status_t h2_proxy_fifo_pull(h2_proxy_fifo *fifo, void **pelem);
+apr_status_t h2_proxy_fifo_try_pull(h2_proxy_fifo *fifo, void **pelem);
+
+/**
+ * Remove the elem from the queue, will remove multiple appearances.
+ * @param elem  the element to remove
+ * @return APR_SUCCESS iff > 0 elems were removed, APR_EAGAIN otherwise.
+ */
+apr_status_t h2_proxy_fifo_remove(h2_proxy_fifo *fifo, void *elem);
+
+
 #endif /* defined(__mod_h2__h2_proxy_util__) */
