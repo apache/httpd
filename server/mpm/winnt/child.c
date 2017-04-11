@@ -817,8 +817,10 @@ static DWORD __stdcall worker_main(void *thread_num_val)
 
         if (!disconnected) {
             context->accept_socket = INVALID_SOCKET;
+            if (!c->aborted) { 
+                ap_lingering_close(c);
+            }
         }
-        ap_lingering_close(c);
     }
 
     ap_update_child_status_from_indexes(0, thread_num, SERVER_DEAD, NULL);
