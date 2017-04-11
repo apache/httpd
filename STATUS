@@ -189,7 +189,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1790852
                   http://svn.apache.org/r1790853
                   http://svn.apache.org/r1790860
-     +1: jim, jorton,
+     +1: jim, jorton, icing
      -1: wrowe (build schema of 0.6.0 is as worthless as 0.5.2, git master
                 is still entirely functional, apparently waiting for 1.0.0)
 
