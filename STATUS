@@ -173,9 +173,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4 convenience patch (includes CHANGES):
                   http://people.apache.org/~druggeri/patches/RemoteIPProxyProtocol.2.4.x.patch
      +1: druggeri, jim
-     -0.5: wrowe (Still reviewing support of unwise 'optional' schema vs. other
-                  possibile solves; questioning reading-but-ignoring PROXY
-                  protocol input, also seems unwise)
 
   *) mod_brotli: Backport of mod_brotli filter
      trunk patch: http://svn.apache.org/r1761714
