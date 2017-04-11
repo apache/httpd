@@ -25,6 +25,18 @@ NULL=
 NULL=nul
 !ENDIF 
 
+!IF "$(_HAVE_OSSL110)" == "1"
+SSLCRP=libcrypto
+SSLLIB=libssl
+SSLINC=/I ../srclib/openssl/include
+SSLBIN=/libpath:../srclib/openssl
+!ELSE 
+SSLCRP=libeay32
+SSLLIB=ssleay32
+SSLINC=/I ../srclib/openssl/inc32
+SSLBIN=/libpath:../srclib/openssl/out32dll
+!ENDIF 
+ 
 !IF  "$(CFG)" == "abs - Win32 Release"
 
 OUTDIR=.\Release
@@ -60,7 +72,7 @@ CLEAN :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
 CPP=cl.exe
-CPP_PROJ=/nologo /MD /W3 /Zi /O2 /Oy- /I "../srclib/apr/include" /I "../srclib/apr-util/include" /I "../include" /I "../srclib/openssl/inc32" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "APR_DECLARE_STATIC" /D "APU_DECLARE_STATIC" /D "HAVE_OPENSSL" /D "WIN32_LEAN_AND_MEAN" /D "NO_IDEA" /D "NO_RC5" /D "NO_MDC2" /D "OPENSSL_NO_IDEA" /D "OPENSSL_NO_RC5" /D "OPENSSL_NO_MDC2" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\abs_src" /FD /c 
+CPP_PROJ=/nologo /MD /W3 /Zi /O2 /Oy- /I "../srclib/apr/include" /I "../srclib/apr-util/include" /I "../include" $(SSLINC) /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "APR_DECLARE_STATIC" /D "APU_DECLARE_STATIC" /D "HAVE_OPENSSL" /D "WIN32_LEAN_AND_MEAN" /D "NO_IDEA" /D "NO_RC5" /D "NO_MDC2" /D "OPENSSL_NO_IDEA" /D "OPENSSL_NO_RC5" /D "OPENSSL_NO_MDC2" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\abs_src" /FD /c 
 
 .c{$(INTDIR)}.obj::
    $(CPP) @<<
@@ -99,7 +111,7 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\abs.bsc"
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=kernel32.lib advapi32.lib wsock32.lib ws2_32.lib rpcrt4.lib shell32.lib ssleay32.lib libeay32.lib /nologo /subsystem:console /incremental:no /pdb:"$(OUTDIR)\abs.pdb" /debug /out:"$(OUTDIR)\abs.exe" /libpath:"../srclib/openssl/out32dll" /opt:ref 
+LINK32_FLAGS=kernel32.lib advapi32.lib wsock32.lib ws2_32.lib rpcrt4.lib shell32.lib $(SSLCRP).lib $(SSLLIB).lib /nologo /subsystem:console /incremental:no /pdb:"$(OUTDIR)\abs.pdb" /debug /out:"$(OUTDIR)\abs.exe" $(SSLBIN) /opt:ref 
 LINK32_OBJS= \
 	"$(INTDIR)\abs.obj" \
 	"$(INTDIR)\ab.res" \
@@ -159,7 +171,7 @@ CLEAN :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
 CPP=cl.exe
-CPP_PROJ=/nologo /MDd /W3 /Zi /Od /I "../srclib/apr/include" /I "../srclib/apr-util/include" /I "../include" /I "../srclib/openssl/inc32" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "APR_DECLARE_STATIC" /D "APU_DECLARE_STATIC" /D "HAVE_OPENSSL" /D "WIN32_LEAN_AND_MEAN" /D "NO_IDEA" /D "NO_RC5" /D "NO_MDC2" /D "OPENSSL_NO_IDEA" /D "OPENSSL_NO_RC5" /D "OPENSSL_NO_MDC2" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\abs_src" /FD /EHsc /c 
+CPP_PROJ=/nologo /MDd /W3 /Zi /Od /I "../srclib/apr/include" /I "../srclib/apr-util/include" /I "../include" $(SSLINC) /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "APR_DECLARE_STATIC" /D "APU_DECLARE_STATIC" /D "HAVE_OPENSSL" /D "WIN32_LEAN_AND_MEAN" /D "NO_IDEA" /D "NO_RC5" /D "NO_MDC2" /D "OPENSSL_NO_IDEA" /D "OPENSSL_NO_RC5" /D "OPENSSL_NO_MDC2" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\abs_src" /FD /EHsc /c 
 
 .c{$(INTDIR)}.obj::
    $(CPP) @<<
@@ -198,7 +210,7 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\abs.bsc"
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=kernel32.lib advapi32.lib wsock32.lib ws2_32.lib rpcrt4.lib shell32.lib ssleay32.lib libeay32.lib /nologo /subsystem:console /incremental:no /pdb:"$(OUTDIR)\abs.pdb" /debug /out:"$(OUTDIR)\abs.exe" /libpath:"../srclib/openssl/out32dll" 
+LINK32_FLAGS=kernel32.lib advapi32.lib wsock32.lib ws2_32.lib rpcrt4.lib shell32.lib $(SSLCRP).lib $(SSLLIB).lib /nologo /subsystem:console /incremental:no /pdb:"$(OUTDIR)\abs.pdb" /debug /out:"$(OUTDIR)\abs.exe" $(SSLBIN) 
 LINK32_OBJS= \
 	"$(INTDIR)\abs.obj" \
 	"$(INTDIR)\ab.res" \
@@ -293,7 +305,7 @@ SOURCE=.\ab.c
 
 !IF  "$(CFG)" == "abs - Win32 Release"
 
-CPP_SWITCHES=/nologo /MD /W3 /Zi /O2 /Oy- /I "../srclib/apr/include" /I "../srclib/apr-util/include" /I "../include" /I "../srclib/openssl/inc32" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "APR_DECLARE_STATIC" /D "APU_DECLARE_STATIC" /D "HAVE_OPENSSL" /D "WIN32_LEAN_AND_MEAN" /D "NO_IDEA" /D "NO_RC5" /D "NO_MDC2" /D "OPENSSL_NO_IDEA" /D "OPENSSL_NO_RC5" /D "OPENSSL_NO_MDC2" /Fo"$(INTDIR)\abs.obj" /Fd"$(INTDIR)\abs_src" /FD /c 
+CPP_SWITCHES=/nologo /MD /W3 /Zi /O2 /Oy- /I "../srclib/apr/include" /I "../srclib/apr-util/include" /I "../include" $(SSLINC) /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "APR_DECLARE_STATIC" /D "APU_DECLARE_STATIC" /D "HAVE_OPENSSL" /D "WIN32_LEAN_AND_MEAN" /D "NO_IDEA" /D "NO_RC5" /D "NO_MDC2" /D "OPENSSL_NO_IDEA" /D "OPENSSL_NO_RC5" /D "OPENSSL_NO_MDC2" /Fo"$(INTDIR)\abs.obj" /Fd"$(INTDIR)\abs_src" /FD /c 
 
 "$(INTDIR)\abs.obj" : $(SOURCE) "$(INTDIR)"
 	$(CPP) @<<
@@ -303,7 +315,7 @@ CPP_SWITCHES=/nologo /MD /W3 /Zi /O2 /Oy- /I "../srclib/apr/include" /I "../srcl
 
 !ELSEIF  "$(CFG)" == "abs - Win32 Debug"
 
-CPP_SWITCHES=/nologo /MDd /W3 /Zi /Od /I "../srclib/apr/include" /I "../srclib/apr-util/include" /I "../include" /I "../srclib/openssl/inc32" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "APR_DECLARE_STATIC" /D "APU_DECLARE_STATIC" /D "HAVE_OPENSSL" /D "WIN32_LEAN_AND_MEAN" /D "NO_IDEA" /D "NO_RC5" /D "NO_MDC2" /D "OPENSSL_NO_IDEA" /D "OPENSSL_NO_RC5" /D "OPENSSL_NO_MDC2" /Fo"$(INTDIR)\abs.obj" /Fd"$(INTDIR)\abs_src" /FD /EHsc /c 
+CPP_SWITCHES=/nologo /MDd /W3 /Zi /Od /I "../srclib/apr/include" /I "../srclib/apr-util/include" /I "../include" $(SSLINC) /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "APR_DECLARE_STATIC" /D "APU_DECLARE_STATIC" /D "HAVE_OPENSSL" /D "WIN32_LEAN_AND_MEAN" /D "NO_IDEA" /D "NO_RC5" /D "NO_MDC2" /D "OPENSSL_NO_IDEA" /D "OPENSSL_NO_RC5" /D "OPENSSL_NO_MDC2" /Fo"$(INTDIR)\abs.obj" /Fd"$(INTDIR)\abs_src" /FD /EHsc /c 
 
 "$(INTDIR)\abs.obj" : $(SOURCE) "$(INTDIR)"
 	$(CPP) @<<
