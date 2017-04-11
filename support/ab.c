@@ -175,7 +175,11 @@ typedef STACK_OF(X509) X509_STACK_TYPE;
  * by the OpenSSL library build to another CRT used by the ab.exe build.
  * This became especially problematic with Visual Studio 2015.
  */
+#if (OPENSSL_VERSION_NUMBER >= 0x1010000fL)
+#include <../ms/applink.c>
+#else
 #include <openssl/applink.c>
+#endif
 #endif
 
 #endif

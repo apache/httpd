@@ -25,6 +25,19 @@ NULL=
 NULL=nul
 !ENDIF 
 
+!IF "$(_HAVE_OSSL110)" == "1"
+SSLCRP=libcrypto
+SSLLIB=libssl
+SSLINC=/I ../../srclib/openssl/include
+SSLBIN=../../srclib/openssl
+!ELSE 
+SSLCRP=libeay32
+SSLLIB=ssleay32
+SSLINC=/I ../../srclib/openssl/inc32
+SSLBIN=../../srclib/openssl/out32dll
+!ENDIF 
+
+
 !IF  "$(CFG)" == "mod_ssl - Win32 Release"
 
 OUTDIR=.\Release
@@ -77,7 +90,7 @@ CLEAN :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
 CPP=cl.exe
-CPP_PROJ=/nologo /MD /W3 /Zi /O2 /Oy- /I "../../include" /I "../generators" /I "../../srclib/apr/include" /I "../../srclib/apr-util/include" /I "../../srclib/openssl/inc32" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "WIN32_LEAN_AND_MEAN" /D "NO_IDEA" /D "NO_RC5" /D "NO_MDC2" /D "OPENSSL_NO_IDEA" /D "OPENSSL_NO_RC5" /D "OPENSSL_NO_MDC2" /D "HAVE_OPENSSL" /D "HAVE_SSL_SET_STATE" /D "HAVE_OPENSSL_ENGINE_H" /D "HAVE_ENGINE_INIT" /D "HAVE_ENGINE_LOAD_BUILTIN_ENGINES" /D "SSL_DECLARE_EXPORT" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\mod_ssl_src" /FD /c 
+CPP_PROJ=/nologo /MD /W3 /Zi /O2 /Oy- /I "../../include" /I "../generators" /I "../../srclib/apr/include" /I "../../srclib/apr-util/include" $(SSLINC) /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "WIN32_LEAN_AND_MEAN" /D "NO_IDEA" /D "NO_RC5" /D "NO_MDC2" /D "OPENSSL_NO_IDEA" /D "OPENSSL_NO_RC5" /D "OPENSSL_NO_MDC2" /D "HAVE_OPENSSL" /D "HAVE_SSL_SET_STATE" /D "HAVE_OPENSSL_ENGINE_H" /D "HAVE_ENGINE_INIT" /D "HAVE_ENGINE_LOAD_BUILTIN_ENGINES" /D "SSL_DECLARE_EXPORT" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\mod_ssl_src" /FD /c 
 
 .c{$(INTDIR)}.obj::
    $(CPP) @<<
@@ -118,7 +131,7 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\mod_ssl.bsc"
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=kernel32.lib user32.lib wsock32.lib ws2_32.lib advapi32.lib gdi32.lib libeay32.lib ssleay32.lib /nologo /subsystem:windows /dll /incremental:no /pdb:"$(OUTDIR)\mod_ssl.pdb" /debug /out:"$(OUTDIR)\mod_ssl.so" /implib:"$(OUTDIR)\mod_ssl.lib" /libpath:"../../srclib/openssl/out32dll" /libpath:"../../srclib/openssl/out32" /base:@..\..\os\win32\BaseAddr.ref,mod_ssl.so /opt:ref 
+LINK32_FLAGS=kernel32.lib user32.lib wsock32.lib ws2_32.lib advapi32.lib gdi32.lib $(SSLCRP).lib $(SSLLIB).lib /nologo /subsystem:windows /dll /incremental:no /pdb:"$(OUTDIR)\mod_ssl.pdb" /debug /out:"$(OUTDIR)\mod_ssl.so" /implib:"$(OUTDIR)\mod_ssl.lib" /libpath:"$(SSLBIN)" /libpath:"../../srclib/openssl/out32" /base:@..\..\os\win32\BaseAddr.ref,mod_ssl.so /opt:ref 
 LINK32_OBJS= \
 	"$(INTDIR)\mod_ssl.obj" \
 	"$(INTDIR)\ssl_engine_config.obj" \
@@ -211,7 +224,7 @@ CLEAN :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
 CPP=cl.exe
-CPP_PROJ=/nologo /MDd /W3 /Zi /Od /I "../../include" /I "../generators" /I "../../srclib/apr/include" /I "../../srclib/apr-util/include" /I "../../srclib/openssl/inc32" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "WIN32_LEAN_AND_MEAN" /D "NO_IDEA" /D "NO_RC5" /D "NO_MDC2" /D "OPENSSL_NO_IDEA" /D "OPENSSL_NO_RC5" /D "OPENSSL_NO_MDC2" /D "HAVE_OPENSSL" /D "HAVE_SSL_SET_STATE" /D "HAVE_OPENSSL_ENGINE_H" /D "HAVE_ENGINE_INIT" /D "HAVE_ENGINE_LOAD_BUILTIN_ENGINES" /D "SSL_DECLARE_EXPORT" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\mod_ssl_src" /FD /EHsc /c 
+CPP_PROJ=/nologo /MDd /W3 /Zi /Od /I "../../include" /I "../generators" /I "../../srclib/apr/include" /I "../../srclib/apr-util/include" $(SSLINC) /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "WIN32_LEAN_AND_MEAN" /D "NO_IDEA" /D "NO_RC5" /D "NO_MDC2" /D "OPENSSL_NO_IDEA" /D "OPENSSL_NO_RC5" /D "OPENSSL_NO_MDC2" /D "HAVE_OPENSSL" /D "HAVE_SSL_SET_STATE" /D "HAVE_OPENSSL_ENGINE_H" /D "HAVE_ENGINE_INIT" /D "HAVE_ENGINE_LOAD_BUILTIN_ENGINES" /D "SSL_DECLARE_EXPORT" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\mod_ssl_src" /FD /EHsc /c 
 
 .c{$(INTDIR)}.obj::
    $(CPP) @<<
@@ -252,7 +265,7 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\mod_ssl.bsc"
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=kernel32.lib user32.lib wsock32.lib ws2_32.lib advapi32.lib gdi32.lib libeay32.lib ssleay32.lib /nologo /subsystem:windows /dll /incremental:no /pdb:"$(OUTDIR)\mod_ssl.pdb" /debug /out:"$(OUTDIR)\mod_ssl.so" /implib:"$(OUTDIR)\mod_ssl.lib" /libpath:"../../srclib/openssl/out32dll.dbg" /libpath:"../../srclib/openssl/out32.dbg" /libpath:"../../srclib/openssl/out32dll" /libpath:"../../srclib/openssl/out32" /base:@..\..\os\win32\BaseAddr.ref,mod_ssl.so 
+LINK32_FLAGS=kernel32.lib user32.lib wsock32.lib ws2_32.lib advapi32.lib gdi32.lib $(SSLCRP).lib $(SSLLIB).lib /nologo /subsystem:windows /dll /incremental:no /pdb:"$(OUTDIR)\mod_ssl.pdb" /debug /out:"$(OUTDIR)\mod_ssl.so" /implib:"$(OUTDIR)\mod_ssl.lib" /libpath:"../../srclib/openssl/out32dll.dbg" /libpath:"../../srclib/openssl/out32.dbg" /libpath:"$(SSLBIN)" /libpath:"../../srclib/openssl/out32" /base:@..\..\os\win32\BaseAddr.ref,mod_ssl.so 
 LINK32_OBJS= \
 	"$(INTDIR)\mod_ssl.obj" \
 	"$(INTDIR)\ssl_engine_config.obj" \
