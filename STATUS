@@ -193,6 +193,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      -1: wrowe (build schema of 0.6.0 is as worthless as 0.5.2, git master
                 is still entirely functional, apparently waiting for 1.0.0)
 
+  *) mpm_winnt: always invoke ap_lingering_close() at connection end as in
+     all other mpm modules, giving everyone a chance to cleanup at prep
+     lingering close hook.
+     trunk patch: http://svn.apache.org/r1790973
+     2.4.x patch: trunk works 
+     +1: icing
+
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entried should be added at the START of the list ]
 
