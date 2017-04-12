@@ -28,7 +28,7 @@ NULL=nul
 !IF "$(_HAVE_OSSL110)" == "1"
 SSLCRP=libcrypto
 SSLLIB=libssl
-SSLINC=/I ../srclib/openssl/include
+SSLINC=/I ../srclib/openssl/include /I ../srclib/openssl/ms
 SSLBIN=/libpath:../srclib/openssl
 !ELSE 
 SSLCRP=libeay32
