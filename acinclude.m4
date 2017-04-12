@@ -630,6 +630,141 @@ AC_DEFUN([APACHE_CHECK_OPENSSL],[
     APR_ADDTO(MOD_LDFLAGS, [$ap_openssl_mod_ldflags])
     APR_ADDTO(MOD_CFLAGS, [$ap_openssl_mod_cflags])
   fi
+
+  dnl On most platforms, the default multithreading logic in OpenSSL 1.0.x uses
+  dnl a threadid that is based on the address of errno. We need to double-check
+  dnl that &errno is, in fact, different for each thread before using that
+  dnl default.
+  AC_CACHE_CHECK([if OpenSSL can use &errno as a THREADID],
+                 [ac_cv_openssl_use_errno_threadid], [
+    ac_cv_openssl_use_errno_threadid=no
+
+    save_CFLAGS=$CFLAGS
+    save_LIBS=$LIBS
+
+    CFLAGS=`$apr_config --cflags --cppflags --includes`
+    LIBS=`$apr_config --link-ld`
+
+    AC_RUN_IFELSE([
+      AC_LANG_PROGRAM([[
+          #include <stdlib.h>
+
+          #include "apr_pools.h"
+          #include "apr_thread_cond.h"
+          #include "apr_thread_proc.h"
+
+          #define NUM_THREADS 3
+
+          struct thread_data {
+              apr_thread_mutex_t *mutex;
+              apr_thread_cond_t  *cv;
+              int                *init_count;
+              void               *errno_addr;
+          };
+
+          /**
+           * Thread entry point. Waits for all the threads to be started, then
+           * records the address of errno into the thread_data.
+           */
+          void * APR_THREAD_FUNC tmain(apr_thread_t *thread, void *data)
+          {
+              struct thread_data *tdata = data;
+
+              /* The only point of this barrier is to make sure that all threads
+               * are started before we record &errno, hopefully preventing any
+               * false negatives in case a platform "recycles" threads. */
+              apr_thread_mutex_lock(tdata->mutex);
+              ++(*tdata->init_count);
+
+              if (*tdata->init_count == NUM_THREADS) {
+                  apr_thread_cond_broadcast(tdata->cv);
+              } else {
+                  while (*tdata->init_count != NUM_THREADS) {
+                      apr_thread_cond_wait(tdata->cv, tdata->mutex);
+                  }
+              }
+              apr_thread_mutex_unlock(tdata->mutex);
+
+              tdata->errno_addr = &errno;
+              return NULL;
+          }
+      ]], [[
+          int ret = 0;
+          apr_status_t status;
+          int i;
+
+          apr_pool_t         *pool;
+          apr_thread_mutex_t *mutex;
+          apr_thread_cond_t  *cv;
+          int                init_count = 0;
+
+          struct thread_data tdata[NUM_THREADS] = { 0 };
+          apr_thread_t *threads[NUM_THREADS] = { 0 };
+
+          if (apr_initialize() != APR_SUCCESS) {
+              exit(1);
+          }
+
+          /* Set up the shared APR primitives. */
+          if ((apr_pool_create(&pool, NULL) != APR_SUCCESS)
+              || (apr_thread_mutex_create(&mutex, 0, pool) != APR_SUCCESS)
+              || (apr_thread_cond_create(&cv, pool) != APR_SUCCESS)) {
+              ret = 2;
+              goto out;
+          }
+
+          /* Start every thread. */
+          for (i = 0; i < NUM_THREADS; ++i) {
+              tdata[i].mutex = mutex;
+              tdata[i].cv = cv;
+              tdata[i].init_count = &init_count;
+
+              status = apr_thread_create(&threads[i], NULL, tmain, &tdata[i],
+                                         pool);
+              if (status != APR_SUCCESS) {
+                  ret = 3;
+                  goto out;
+              }
+          }
+
+          /* Wait for them to finish (they'll record and exit after every one
+           * has been started). */
+          for (i = 0; i < NUM_THREADS; ++i) {
+              apr_thread_join(&status, threads[i]);
+              if (status != APR_SUCCESS) {
+                  ret = 4;
+                  goto out;
+              }
+          }
+
+          /* Check that no addresses were duplicated. */
+          if ((tdata[0].errno_addr == tdata[1].errno_addr)
+              || (tdata[1].errno_addr == tdata[2].errno_addr)
+              || (tdata[0].errno_addr == tdata[2].errno_addr)) {
+              ret = 5;
+          }
+
+      out:
+          apr_terminate();
+          exit(ret);
+      ]])
+    ], [
+      ac_cv_openssl_use_errno_threadid=yes
+    ], [
+      ac_cv_openssl_use_errno_threadid=no
+    ], [
+      dnl Assume the worst when cross-compiling; users can override via either
+      dnl cachevars or the config header if necessary.
+      ac_cv_openssl_use_errno_threadid=no
+    ])
+
+    CFLAGS=$save_CFLAGS
+    LIBS=$save_LIBS
+  ])
+  if test "x$ac_cv_openssl_use_errno_threadid" = "xyes"; then
+    AC_DEFINE(AP_OPENSSL_USE_ERRNO_THREADID, 1,
+              [Define if OpenSSL can use an errno-based threadid callback on this platform])
+  fi
 ])
 
 dnl
