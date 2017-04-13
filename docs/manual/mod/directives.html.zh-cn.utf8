@@ -556,6 +556,7 @@
 <li><a href="mod_remoteip.html#remoteipinternalproxylist">RemoteIPInternalProxyList</a></li>
 <li><a href="mod_remoteip.html#remoteipproxiesheader">RemoteIPProxiesHeader</a></li>
 <li><a href="mod_remoteip.html#remoteipproxyprotocol">RemoteIPProxyProtocol</a></li>
+<li><a href="mod_remoteip.html#remoteipproxyprotocolexceptions">RemoteIPProxyProtocolExceptions</a></li>
 <li><a href="mod_remoteip.html#remoteiptrustedproxy">RemoteIPTrustedProxy</a></li>
 <li><a href="mod_remoteip.html#remoteiptrustedproxylist">RemoteIPTrustedProxyList</a></li>
 <li><a href="mod_mime.html#removecharset">RemoveCharset</a></li>

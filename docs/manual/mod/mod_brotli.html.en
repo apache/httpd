@@ -32,13 +32,15 @@
 client</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>brotli_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_brotli.c</td></tr></table>
+<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_brotli.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.4.26 and later.</td></tr></table>
 <h3>Summary</h3>
 
     <p>The <code class="module"><a href="../mod/mod_brotli.html">mod_brotli</a></code> module provides
     the <code>BROTLI_COMPRESS</code> output filter that allows output from
     your server to be compressed using the brotli compression format before being sent to the client over
-    the network.</p>
+    the network. This module uses the Brotli library found at
+    <a href="https://github.com/google/brotli">https://github.com/google/brotli</a>.</p>
 </div>
 <div id="quickview"><h3>Topics</h3>
 <ul id="topics">
@@ -64,7 +66,7 @@ content</a></li>
 <h2><a name="recommended" id="recommended">Sample Configurations</a></h2>
     <div class="warning"><h3>Compression and TLS</h3>
         <p>Some web applications are vulnerable to an information disclosure
-        attack when a TLS connection carries deflate compressed data. For more
+        attack when a TLS connection carries compressed data. For more
         information, review the details of the "BREACH" family of attacks.</p>
     </div>
     <p>This is a simple configuration that compresses common text-based content types.</p>
@@ -77,7 +79,7 @@ content</a></li>
 <h2><a name="enable" id="enable">Enabling Compression</a></h2>
     <div class="warning"><h3>Compression and TLS</h3>
         <p>Some web applications are vulnerable to an information disclosure
-        attack when a TLS connection carries deflate compressed data. For more
+        attack when a TLS connection carries compressed data. For more
         information, review the details of the "BREACH" family of attacks.</p>
     </div>
 
@@ -108,37 +110,12 @@ SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-brotli</pre>
       <div class="note"><h3>Note</h3>
         There is an environment variable <code>no-brotli</code>,
         set via <code class="directive"><a href="../mod/mod_env.html#setenv">SetEnv</a></code>, which
-        will ignore the accept-encoding setting of your browser and will
-        send compressed output.
+        will disable brotli compression for a particular request, even if
+        it is supported by the client.
       </div>
 
     
 
-    <h3><a name="input" id="input">Input Decompression</a></h3>
-      <p>The <code class="module"><a href="../mod/mod_brotli.html">mod_brotli</a></code> module also provides a filter for
-      decompressing a brotli compressed request body . In order to activate
-      this feature you have to insert the <code>BROTLI_COMPRESS</code> filter into
-      the input filter chain using <code class="directive"><a href="../mod/core.html#setinputfilter">SetInputFilter</a></code> or <code class="directive"><a href="../mod/mod_mime.html#addinputfilter">AddInputFilter</a></code>, for example:</p>
-
-      <pre class="prettyprint lang-config">&lt;Location "/dav-area"&gt;
-    SetInputFilter BROTLI_COMPRESS
-&lt;/Location&gt;</pre>
-
-
-      <p>Now if a request contains a <code>Content-Encoding:
-      brotli</code> header, the body will be automatically decompressed.
-      Few browsers have the ability to brotli request bodies. However,
-      some special applications actually do support request
-      compression, for instance some <a href="http://www.webdav.org">WebDAV</a> clients.</p>
-
-      <div class="warning"><h3>Note on Content-Length</h3>
-        <p>If you evaluate the request body yourself, <em>don't trust
-        the <code>Content-Length</code> header!</em>
-        The Content-Length header reflects the length of the
-        incoming data from the client and <em>not</em> the byte count of
-        the decompressed data stream.</p>
-      </div>
-    
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="proxies" id="proxies">Dealing with proxy servers</a></h2>
@@ -154,7 +131,7 @@ SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-brotli</pre>
     on, for example, the <code>User-Agent</code> header, you must
     manually configure an addition to the <code>Vary</code> header
     to alert proxies of the additional restrictions.  For example,
-    in a typical configuration where the addition of the <code>DEFLATE</code>
+    in a typical configuration where the addition of the <code>BROTLI_COMPRESS</code>
     filter depends on the <code>User-Agent</code>, you should add:</p>
 
     <pre class="prettyprint lang-config">Header append Vary User-Agent</pre>
@@ -181,25 +158,25 @@ content</a></h2>
     <pre class="prettyprint lang-config">&lt;IfModule mod_headers.c&gt;
     # Serve brotli compressed CSS files if they exist
     # and the client accepts brotli.
-    RewriteCond "%{HTTP:Accept-encoding}" "brotli"
+    RewriteCond "%{HTTP:Accept-encoding}" "br"
     RewriteCond "%{REQUEST_FILENAME}\.br" "-s"
     RewriteRule "^(.*)\.css"              "$1\.css\.br" [QSA]
 
     # Serve brotli compressed JS files if they exist
     # and the client accepts brotli.
-    RewriteCond "%{HTTP:Accept-encoding}" "brotli"
+    RewriteCond "%{HTTP:Accept-encoding}" "br"
     RewriteCond "%{REQUEST_FILENAME}\.br" "-s"
     RewriteRule "^(.*)\.js"               "$1\.js\.br" [QSA]
 
 
-    # Serve correct content types, and prevent mod_brotli double brotli.
-    RewriteRule "\.css\.gz$" "-" [T=text/css,E=no-brotli:1]
-    RewriteRule "\.js\.gz$"  "-" [T=text/javascript,E=no-brotli:1]
+    # Serve correct content types, and prevent double compression.
+    RewriteRule "\.css\.br$" "-" [T=text/css,E=no-brotli:1]
+    RewriteRule "\.js\.br$"  "-" [T=text/javascript,E=no-brotli:1]
 
 
-    &lt;FilesMatch "(\.js\.gz|\.css\.gz)$"&gt;
+    &lt;FilesMatch "(\.js\.br|\.css\.br)$"&gt;
       # Serve correct encoding type.
-      Header append Content-Encoding brotli
+      Header append Content-Encoding br
 
       # Force proxies to cache brotli &amp;
       # non-brotli css/js files separately.
@@ -225,12 +202,14 @@ content</a></h2>
     <dt>AddSuffix</dt>
     <dd><p>Append the compression method onto the end of the ETag, causing
         compressed and uncompressed representations to have unique ETags.
-        This has been the default since 2.4.0, but prevents serving
-        "HTTP Not Modified" (304) responses to conditional requests for
-        compressed content.</p></dd>
+        In another dynamic compression module, mod_deflate, this has been
+        the default since 2.4.0. This setting prevents serving "HTTP Not
+        Modified" (304) responses to conditional requests for compressed
+        content.</p></dd>
     <dt>NoChange</dt>
-    <dd><p>Don't change the ETag on a compressed response. This was the default
-        prior to 2.4.0, but does not satisfy the HTTP/1.1 property that all
+    <dd><p>Don't change the ETag on a compressed response. In another dynamic
+        compression module, mod_deflate, this has been the default prior to
+        2.4.0. This setting does not satisfy the HTTP/1.1 property that all
         representations of the same resource have unique ETags. </p></dd>
     <dt>Remove</dt>
     <dd><p>Remove the ETag header from compressed responses. This prevents
@@ -244,7 +223,7 @@ content</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum input block size</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>BrotliCompressionMaxInputBlock <var>value</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>BrotliCompressionMaxInputBlock 0</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>(automatic)</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_brotli</td></tr>
@@ -265,9 +244,8 @@ content</a></h2>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_brotli</td></tr>
 </table>
     <p>The <code class="directive">BrotliCompressionQuality</code> directive specifies
-    the compression quality performed (a value between 0 and 11). Higher
-    quality values result in better compression but also slower compression
-    as well.
+    the compression quality (a value between 0 and 11). Higher quality values
+    result in better, but also slower compression.
   </p>
 
 </div>
@@ -282,9 +260,8 @@ content</a></h2>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_brotli</td></tr>
 </table>
     <p>The <code class="directive">BrotliCompressionWindow</code> directive specifies the
-    brotli sliding compression window size (a value between 10 and 24). Generally, the
-    higher the window size, the higher can the compression ratio be expected
-    but requires more memory.</p>
+    brotli sliding compression window size (a value between 10 and 24). Larger
+    window sizes can improve compression quality, but require more memory.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
