@@ -138,6 +138,22 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_brotli: Backport of mod_brotli filter
+     trunk patch: http://svn.apache.org/r1761714
+                  http://svn.apache.org/r1762512
+                  http://svn.apache.org/r1762515
+                  http://svn.apache.org/r1771791
+                  http://svn.apache.org/r1779077
+                  http://svn.apache.org/r1779091
+                  http://svn.apache.org/r1779699
+                  http://svn.apache.org/r1790852
+                  http://svn.apache.org/r1790853
+                  http://svn.apache.org/r1790860
+     2.4.x patch: http://home.apache.org/~jim/patches/brotli-2.4.patch
+                  http://svn.apache.org/r1790852
+                  http://svn.apache.org/r1790853
+                  http://svn.apache.org/r1790860
+     +1: jim, jorton, icing
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -173,23 +189,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4 convenience patch (includes CHANGES):
                   http://people.apache.org/~druggeri/patches/RemoteIPProxyProtocol.2.4.x.patch
      +1: druggeri, jim
-
-  *) mod_brotli: Backport of mod_brotli filter
-     trunk patch: http://svn.apache.org/r1761714
-                  http://svn.apache.org/r1762512
-                  http://svn.apache.org/r1762515
-                  http://svn.apache.org/r1771791
-                  http://svn.apache.org/r1779077
-                  http://svn.apache.org/r1779091
-                  http://svn.apache.org/r1779699
-                  http://svn.apache.org/r1790852
-                  http://svn.apache.org/r1790853
-                  http://svn.apache.org/r1790860
-     2.4.x patch: http://home.apache.org/~jim/patches/brotli-2.4.patch
-                  http://svn.apache.org/r1790852
-                  http://svn.apache.org/r1790853
-                  http://svn.apache.org/r1790860
-     +1: jim, jorton, icing
 
   *) mpm_winnt: always invoke ap_lingering_close() at connection end as in
      all other mpm modules, giving everyone a chance to cleanup at prep
