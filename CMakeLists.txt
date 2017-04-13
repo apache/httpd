@@ -58,6 +58,12 @@ ELSE()
   SET(default_nghttp2_libraries "${CMAKE_INSTALL_PREFIX}/lib/nghttp2.lib")
 ENDIF()
 
+IF(EXISTS "${CMAKE_INSTALL_PREFIX}/lib/brotli_enc.lib")
+  SET(default_brotli_libraries "${CMAKE_INSTALL_PREFIX}/lib/brotli_enc.lib" "${CMAKE_INSTALL_PREFIX}/lib/brotli_common.lib")
+ELSE()
+  SET(default_brotli_libraries)
+ENDIF()
+
 SET(APR_INCLUDE_DIR       "${CMAKE_INSTALL_PREFIX}/include" CACHE STRING "Directory with APR[-Util] include files")
 SET(APR_LIBRARIES         ${default_apr_libraries}       CACHE STRING "APR libraries to link with")
 SET(NGHTTP2_INCLUDE_DIR   "${CMAKE_INSTALL_PREFIX}/include" CACHE STRING "Directory with NGHTTP2 include files within nghttp2 subdirectory")
@@ -66,6 +72,8 @@ SET(PCRE_INCLUDE_DIR      "${CMAKE_INSTALL_PREFIX}/include" CACHE STRING "Direct
 SET(PCRE_LIBRARIES        ${default_pcre_libraries}      CACHE STRING "PCRE libraries to link with")
 SET(LIBXML2_ICONV_INCLUDE_DIR     ""                     CACHE STRING "Directory with iconv include files for libxml2")
 SET(LIBXML2_ICONV_LIBRARIES       ""                     CACHE STRING "iconv libraries to link with for libxml2")
+SET(BROTLI_INCLUDE_DIR    "${CMAKE_INSTALL_PREFIX}/include" CACHE STRING "Directory with include files for Brotli")
+SET(BROTLI_LIBRARIES      ${default_brotli_libraries}    CACHE STRING "Brotli libraries to link with")
 # end support library configuration
 
 # Misc. options
@@ -179,6 +187,18 @@ ELSE()
   SET(NGHTTP2_FOUND FALSE)
 ENDIF()
 
+# See if we have Brotli
+SET(BROTLI_FOUND TRUE)
+IF(EXISTS "${BROTLI_INCLUDE_DIR}/brotli/encode.h")
+  FOREACH(onelib ${BROTLI_LIBRARIES})
+    IF(NOT EXISTS ${onelib})
+      SET(BROTLI_FOUND FALSE)
+    ENDIF()
+  ENDFOREACH()
+ELSE()
+  SET(BROTLI_FOUND FALSE)
+ENDIF()
+
 MESSAGE(STATUS "")
 MESSAGE(STATUS "Summary of feature detection:")
 MESSAGE(STATUS "")
@@ -187,6 +207,7 @@ MESSAGE(STATUS "LUA51_FOUND .............. : ${LUA51_FOUND}")
 MESSAGE(STATUS "NGHTTP2_FOUND ............ : ${NGHTTP2_FOUND}")
 MESSAGE(STATUS "OPENSSL_FOUND ............ : ${OPENSSL_FOUND}")
 MESSAGE(STATUS "ZLIB_FOUND ............... : ${ZLIB_FOUND}")
+MESSAGE(STATUS "BROTLI_FOUND ............. : ${BROTLI_FOUND}")
 MESSAGE(STATUS "APR_HAS_LDAP ............. : ${APR_HAS_LDAP}")
 MESSAGE(STATUS "APR_HAS_XLATE ............ : ${APR_HAS_XLATE}")
 MESSAGE(STATUS "APU_HAVE_CRYPTO .......... : ${APU_HAVE_CRYPTO}")
@@ -258,6 +279,7 @@ SET(MODULE_LIST
   "modules/examples/mod_case_filter_in+O+Example uppercase conversion input filter"
   "modules/examples/mod_example_hooks+O+Example hook callback handler module"
   "modules/examples/mod_example_ipc+O+Example of shared memory and mutex usage"
+  "modules/filters/mod_brotli+i+Brotli compression support"
   "modules/filters/mod_buffer+I+Filter Buffering"
   "modules/filters/mod_charset_lite+i+character set translation"
   "modules/filters/mod_data+O+RFC2397 data encoder"
@@ -375,6 +397,11 @@ SET(mod_deflate_requires             ZLIB_FOUND)
 IF(ZLIB_FOUND)
   SET(mod_deflate_extra_includes       ${ZLIB_INCLUDE_DIR})
   SET(mod_deflate_extra_libs           ${ZLIB_LIBRARIES})
+ENDIF()
+SET(mod_brotli_requires              BROTLI_FOUND)
+IF(BROTLI_FOUND)
+  SET(mod_brotli_extra_includes        ${BROTLI_INCLUDE_DIR})
+  SET(mod_brotli_extra_libs            ${BROTLI_LIBRARIES})
 ENDIF()
 SET(mod_firehose_requires            SOMEONE_TO_MAKE_IT_COMPILE_ON_WINDOWS)
 SET(mod_heartbeat_extra_libs         mod_watchdog)
@@ -922,6 +949,8 @@ MESSAGE(STATUS "  PCRE include directory .......... : ${PCRE_INCLUDE_DIR}")
 MESSAGE(STATUS "  PCRE libraries .................. : ${PCRE_LIBRARIES}")
 MESSAGE(STATUS "  libxml2 iconv prereq include dir. : ${LIBXML2_ICONV_INCLUDE_DIR}")
 MESSAGE(STATUS "  libxml2 iconv prereq libraries .. : ${LIBXML2_ICONV_LIBRARIES}")
+MESSAGE(STATUS "  Brotli include directory......... : ${BROTLI_INCLUDE_DIR}")
+MESSAGE(STATUS "  Brotli libraries ................ : ${BROTLI_LIBRARIES}")
 MESSAGE(STATUS "  Extra include directories ....... : ${EXTRA_INCLUDES}")
 MESSAGE(STATUS "  Extra compile flags ............. : ${EXTRA_COMPILE_FLAGS}")
 MESSAGE(STATUS "  Extra libraries ................. : ${EXTRA_LIBS}")
