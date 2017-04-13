@@ -7,7 +7,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>&#205;ndice de M&#243;dulos - Servidor Apache HTTP Versi&#243;n 2.4</title>
+<title>Índice de Módulos - Servidor Apache HTTP Versión 2.4</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -16,50 +16,50 @@
 
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="module-index"><div id="page-header">
-<p class="menu"><a href="../mod/">M&#243;dulos</a> | <a href="../mod/directives.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p>
-<p class="apache">Versi&#243;n 2.4 del Servidor HTTP Apache</p>
+<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/directives.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p>
+<p class="apache">Versión 2.4 del Servidor HTTP Apache</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentaci&#243;n</a> &gt; <a href="../">Versi&#243;n 2.4</a></div><div id="page-content"><div id="preamble"><h1>&#205;ndice de M&#243;dulos</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentación</a> &gt; <a href="../">Versión 2.4</a></div><div id="page-content"><div id="preamble"><h1>Índice de Módulos</h1>
 <div class="toplang">
 <p><span>Idiomas disponibles: </span><a href="../de/mod/" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/mod/" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
-<a href="../fr/mod/" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../es/mod/" title="Español">&nbsp;es&nbsp;</a> |
+<a href="../fr/mod/" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a> |
+<a href="../tr/mod/" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/mod/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">Esta traducci&#243;n podr&#237;a estar
-            obsoleta. Consulte la versi&#243;n en ingl&#233;s de la
-            documentaci&#243;n para comprobar si se han producido cambios
+<div class="outofdate">Esta traducción podría estar
+            obsoleta. Consulte la versión en inglés de la
+            documentación para comprobar si se han producido cambios
             recientemente.</div>
 
     <p>
-      Abajo se muestra una lista con todos los m&#243;dulos que forman
-      parte de la distribuci&#243;n de Apache.  Consulte tambi&#233;n la lista
-      alfab&#233;tica completa de <a href="directives.html">las
+      Abajo se muestra una lista con todos los módulos que forman
+      parte de la distribución de Apache.  Consulte también la lista
+      alfabética completa de <a href="directives.html">las
       directivas de Apache</a>.
     </p>
   </div>
 <div id="quickview"><ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#core">Funcionalidad B&#225;sica y M&#243;dulos
-            de Multi-Procesamiento</a></li><li><img alt="" src="../images/down.gif" /> <a href="#other">Otros M&#243;dulos</a></li></ul><h3>Consulte tambi&#233;n</h3>
+<li><img alt="" src="../images/down.gif" /> <a href="#core">Funcionalidad Básica y Módulos
+            de Multi-Procesamiento</a></li><li><img alt="" src="../images/down.gif" /> <a href="#other">Otros Módulos</a></li></ul><h3>Consulte también</h3>
 <ul class="seealso">
-<li><a href="../mpm.html">M&#243;dulos de MultiProcesamiento
+<li><a href="../mpm.html">Módulos de MultiProcesamiento
   (MPMs)</a>
   </li>
-<li><a href="quickreference.html">Gu&#237;a R&#225;pida de Referencia de
+<li><a href="quickreference.html">Guía Rápida de Referencia de
   Directivas</a>
   </li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section"><h2><a id="core" name="core">Funcionalidad B&#225;sica y M&#243;dulos
+<div class="section"><h2><a id="core" name="core">Funcionalidad Básica y Módulos
             de Multi-Procesamiento</a></h2>
 <dl>
-<dt><a href="core.html">core</a></dt><dd>Funcionalides b&#225;sicas del Servidor HTTP Apache que siempre est&#225;n presentes.</dd>
+<dt><a href="core.html">core</a></dt><dd>Funcionalides básicas del Servidor HTTP Apache que siempre están presentes.</dd>
 <dt><a href="mpm_common.html">mpm_common</a></dt><dd class="separate">A collection of directives that are implemented by
 more than one multi-processing module (MPM)</dd>
 <dt><a href="event.html">event</a></dt><dd>A variant of the <code class="module"><a href="../mod/worker.html">worker</a></code> MPM with the goal
@@ -73,7 +73,7 @@ of consuming threads only for connections with active processing</dd>
     multi-threaded multi-process web server</dd>
 </dl></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section"><h2><a id="other" name="other">Otros M&#243;dulos</a></h2>
+<div class="section"><h2><a id="other" name="other">Otros Módulos</a></h2>
 <p class="letters"><a href="#A">&nbsp;A&nbsp;</a> | <a href="#B">&nbsp;B&nbsp;</a> | <a href="#C">&nbsp;C&nbsp;</a> | <a href="#D">&nbsp;D&nbsp;</a> | <a href="#E">&nbsp;E&nbsp;</a> | <a href="#F">&nbsp;F&nbsp;</a> | <a href="#H">&nbsp;H&nbsp;</a> | <a href="#I">&nbsp;I&nbsp;</a> | <a href="#L">&nbsp;L&nbsp;</a> | <a href="#M">&nbsp;M&nbsp;</a> | <a href="#N">&nbsp;N&nbsp;</a> | <a href="#P">&nbsp;P&nbsp;</a> | <a href="#R">&nbsp;R&nbsp;</a> | <a href="#S">&nbsp;S&nbsp;</a> | <a href="#U">&nbsp;U&nbsp;</a> | <a href="#V">&nbsp;V&nbsp;</a> | <a href="#W">&nbsp;W&nbsp;</a> | <a href="#X">&nbsp;X&nbsp;</a></p>
 <dl><dt><a href="mod_access_compat.html" id="A" name="A">mod_access_compat</a></dt><dd>Group authorizations based on host (name or IP
 address)</dd>
@@ -110,7 +110,9 @@ address)</dd>
 <dt><a href="mod_autoindex.html">mod_autoindex</a></dt><dd>Generates directory indexes,
     automatically, similar to the Unix <code>ls</code> command or the
     Win32 <code>dir</code> shell command</dd>
-<dt><a href="mod_buffer.html" id="B" name="B">mod_buffer</a></dt><dd>Support for request buffering</dd>
+<dt><a href="mod_brotli.html" id="B" name="B">mod_brotli</a></dt><dd>Compress content via Brotli before it is delivered to the
+client</dd>
+<dt><a href="mod_buffer.html">mod_buffer</a></dt><dd>Support for request buffering</dd>
 <dt><a href="mod_cache.html" id="C" name="C">mod_cache</a></dt><dd>RFC 2616 compliant HTTP caching filter.</dd>
 <dt><a href="mod_cache_disk.html">mod_cache_disk</a></dt><dd>Disk based storage module for the HTTP caching filter.</dd>
 <dt><a href="mod_cache_socache.html">mod_cache_socache</a></dt><dd>Shared object cache (socache) based storage module for the
@@ -257,15 +259,15 @@ filter modules</dd>
 <div class="bottomlang">
 <p><span>Idiomas disponibles: </span><a href="../de/mod/" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/mod/" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
-<a href="../fr/mod/" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../es/mod/" title="Español">&nbsp;es&nbsp;</a> |
+<a href="../fr/mod/" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a> |
+<a href="../tr/mod/" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/mod/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2017 The Apache Software Foundation.<br />Licencia bajo los t&#233;rminos de <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">M&#243;dulos</a> | <a href="../mod/directives.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2017 The Apache Software Foundation.<br />Licencia bajo los términos de <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/directives.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

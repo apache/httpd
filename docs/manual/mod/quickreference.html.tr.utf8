@@ -266,224 +266,228 @@ authentication succeeds but authorization fails
 <tr><td><a href="mod_proxy.html#balancerinherit">BalancerInherit On|Off</a></td><td> On </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Inherit ProxyPassed Balancers/Workers from the main server</td></tr>
 <tr class="odd"><td><a href="mod_proxy.html#balancermember">BalancerMember [<var>balancerurl</var>] <var>url</var> [<var>key=value [key=value ...]]</var></a></td><td></td><td>d</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Add a member to a load balancing group</td></tr>
 <tr><td><a href="mod_proxy.html#balancerpersist">BalancerPersist On|Off</a></td><td> Off </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Attempt to persist changes made by the Balancer Manager across restarts.</td></tr>
-<tr class="odd"><td><a href="mod_setenvif.html#browsermatch">BrowserMatch <em>düzifd [!]ort-değişkeni</em>[=<em>değer</em>]
-[[!]<em>ort-değişkeni</em>[=<em>değer</em>]] ...</a></td><td></td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Ortam değişkenlerini HTTP kullanıcı arayüzüne göre belirler.
+<tr class="odd"><td><a href="mod_brotli.html#brotlialteretag">BrotliAlterETag AddSuffix|NoChange|Remove</a></td><td> AddSuffix </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">How the outgoing ETag header should be modified during compression</td></tr>
+<tr><td><a href="mod_brotli.html#brotlicompressionmaxinputblock">BrotliCompressionMaxInputBlock <var>value</var></a></td><td></td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum input block size</td></tr>
+<tr class="odd"><td><a href="mod_brotli.html#brotlicompressionquality">BrotliCompressionQuality <var>value</var></a></td><td> 5 </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Compression quality</td></tr>
+<tr><td><a href="mod_brotli.html#brotlicompressionwindow">BrotliCompressionWindow <var>value</var></a></td><td> 18 </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Brotli sliding compression window size</td></tr>
+<tr class="odd"><td><a href="mod_brotli.html#brotlifilternote">BrotliFilterNote [<var>type</var>] <var>notename</var></a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Places the compression ratio in a note for logging</td></tr>
+<tr><td><a href="mod_setenvif.html#browsermatch">BrowserMatch <em>düzifd [!]ort-değişkeni</em>[=<em>değer</em>]
+[[!]<em>ort-değişkeni</em>[=<em>değer</em>]] ...</a></td><td></td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Ortam değişkenlerini HTTP kullanıcı arayüzüne göre belirler.
 </td></tr>
-<tr><td><a href="mod_setenvif.html#browsermatchnocase">BrowserMatchNoCase <em>düzifd [!]ort-değişkeni</em>[=<em>değer</em>]
-[[!]<em>ort-değişkeni</em>[=<em>değer</em>]] ...</a></td><td></td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Ortam değişkenlerini HTTP kullanıcı arayüzünün harf büyüklüğüne
+<tr class="odd"><td><a href="mod_setenvif.html#browsermatchnocase">BrowserMatchNoCase <em>düzifd [!]ort-değişkeni</em>[=<em>değer</em>]
+[[!]<em>ort-değişkeni</em>[=<em>değer</em>]] ...</a></td><td></td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Ortam değişkenlerini HTTP kullanıcı arayüzünün harf büyüklüğüne
 duyarsız eşleşmelerine bağlı olarak belirler.</td></tr>
-<tr class="odd"><td><a href="mod_log_config.html#bufferedlogs">BufferedLogs On|Off</a></td><td> Off </td><td>s</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Günlük girdilerini diske yazmadan önce bellekte tamponlar
+<tr><td><a href="mod_log_config.html#bufferedlogs">BufferedLogs On|Off</a></td><td> Off </td><td>s</td><td>T</td></tr><tr><td class="descr" colspan="4">Günlük girdilerini diske yazmadan önce bellekte tamponlar
 </td></tr>
-<tr><td><a href="mod_buffer.html#buffersize">BufferSize integer</a></td><td> 131072 </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum size in bytes to buffer by the buffer filter</td></tr>
-<tr class="odd"><td><a href="mod_cache.html#cachedefaultexpire" id="C" name="C">CacheDefaultExpire <var>seconds</var></a></td><td> 3600 (one hour) </td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The default duration to cache a document when no expiry date is specified.</td></tr>
-<tr><td><a href="mod_cache.html#cachedetailheader">CacheDetailHeader <var>on|off</var></a></td><td> off </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Add an X-Cache-Detail header to the response.</td></tr>
-<tr class="odd"><td><a href="mod_cache_disk.html#cachedirlength">CacheDirLength <var>length</var></a></td><td> 2 </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The number of characters in subdirectory names</td></tr>
-<tr><td><a href="mod_cache_disk.html#cachedirlevels">CacheDirLevels <var>levels</var></a></td><td> 2 </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">The number of levels of subdirectories in the
+<tr class="odd"><td><a href="mod_buffer.html#buffersize">BufferSize integer</a></td><td> 131072 </td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum size in bytes to buffer by the buffer filter</td></tr>
+<tr><td><a href="mod_cache.html#cachedefaultexpire" id="C" name="C">CacheDefaultExpire <var>seconds</var></a></td><td> 3600 (one hour) </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">The default duration to cache a document when no expiry date is specified.</td></tr>
+<tr class="odd"><td><a href="mod_cache.html#cachedetailheader">CacheDetailHeader <var>on|off</var></a></td><td> off </td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Add an X-Cache-Detail header to the response.</td></tr>
+<tr><td><a href="mod_cache_disk.html#cachedirlength">CacheDirLength <var>length</var></a></td><td> 2 </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">The number of characters in subdirectory names</td></tr>
+<tr class="odd"><td><a href="mod_cache_disk.html#cachedirlevels">CacheDirLevels <var>levels</var></a></td><td> 2 </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The number of levels of subdirectories in the
 cache.</td></tr>
-<tr class="odd"><td><a href="mod_cache.html#cachedisable">CacheDisable <var>url-string</var> | <var>on</var></a></td><td></td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Disable caching of specified URLs</td></tr>
-<tr><td><a href="mod_cache.html#cacheenable">CacheEnable <var>cache_type</var> [<var>url-string</var>]</a></td><td></td><td>skd</td><td>E</td></tr><tr><td class="descr" colspan="4">Enable caching of specified URLs using a specified storage
+<tr><td><a href="mod_cache.html#cachedisable">CacheDisable <var>url-string</var> | <var>on</var></a></td><td></td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Disable caching of specified URLs</td></tr>
+<tr class="odd"><td><a href="mod_cache.html#cacheenable">CacheEnable <var>cache_type</var> [<var>url-string</var>]</a></td><td></td><td>skd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enable caching of specified URLs using a specified storage
 manager</td></tr>
-<tr class="odd"><td><a href="mod_file_cache.html#cachefile">CacheFile <var>file-path</var> [<var>file-path</var>] ...</a></td><td></td><td>s</td><td>D</td></tr><tr class="odd"><td class="descr" colspan="4">Cache a list of file handles at startup time</td></tr>
-<tr><td><a href="mod_cache.html#cacheheader">CacheHeader <var>on|off</var></a></td><td> off </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Add an X-Cache header to the response.</td></tr>
-<tr class="odd"><td><a href="mod_cache.html#cacheignorecachecontrol">CacheIgnoreCacheControl On|Off</a></td><td> Off </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Ignore request to not serve cached content to client</td></tr>
-<tr><td><a href="mod_cache.html#cacheignoreheaders">CacheIgnoreHeaders <var>header-string</var> [<var>header-string</var>] ...</a></td><td> None </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Do not store the given HTTP header(s) in the cache.
+<tr><td><a href="mod_file_cache.html#cachefile">CacheFile <var>file-path</var> [<var>file-path</var>] ...</a></td><td></td><td>s</td><td>D</td></tr><tr><td class="descr" colspan="4">Cache a list of file handles at startup time</td></tr>
+<tr class="odd"><td><a href="mod_cache.html#cacheheader">CacheHeader <var>on|off</var></a></td><td> off </td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Add an X-Cache header to the response.</td></tr>
+<tr><td><a href="mod_cache.html#cacheignorecachecontrol">CacheIgnoreCacheControl On|Off</a></td><td> Off </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Ignore request to not serve cached content to client</td></tr>
+<tr class="odd"><td><a href="mod_cache.html#cacheignoreheaders">CacheIgnoreHeaders <var>header-string</var> [<var>header-string</var>] ...</a></td><td> None </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Do not store the given HTTP header(s) in the cache.
 </td></tr>
-<tr class="odd"><td><a href="mod_cache.html#cacheignorenolastmod">CacheIgnoreNoLastMod On|Off</a></td><td> Off </td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Ignore the fact that a response has no Last Modified
+<tr><td><a href="mod_cache.html#cacheignorenolastmod">CacheIgnoreNoLastMod On|Off</a></td><td> Off </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Ignore the fact that a response has no Last Modified
 header.</td></tr>
-<tr><td><a href="mod_cache.html#cacheignorequerystring">CacheIgnoreQueryString On|Off</a></td><td> Off </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Ignore query string when caching</td></tr>
-<tr class="odd"><td><a href="mod_cache.html#cacheignoreurlsessionidentifiers">CacheIgnoreURLSessionIdentifiers <var>identifier</var> [<var>identifier</var>] ...</a></td><td> None </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Ignore defined session identifiers encoded in the URL when caching
+<tr class="odd"><td><a href="mod_cache.html#cacheignorequerystring">CacheIgnoreQueryString On|Off</a></td><td> Off </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Ignore query string when caching</td></tr>
+<tr><td><a href="mod_cache.html#cacheignoreurlsessionidentifiers">CacheIgnoreURLSessionIdentifiers <var>identifier</var> [<var>identifier</var>] ...</a></td><td> None </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Ignore defined session identifiers encoded in the URL when caching
 </td></tr>
-<tr><td><a href="mod_cache.html#cachekeybaseurl">CacheKeyBaseURL <var>URL</var></a></td><td> http://example.com </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Override the base URL of reverse proxied cache keys.</td></tr>
-<tr class="odd"><td><a href="mod_cache.html#cachelastmodifiedfactor">CacheLastModifiedFactor <var>float</var></a></td><td> 0.1 </td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The factor used to compute an expiry date based on the
+<tr class="odd"><td><a href="mod_cache.html#cachekeybaseurl">CacheKeyBaseURL <var>URL</var></a></td><td> http://example.com </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Override the base URL of reverse proxied cache keys.</td></tr>
+<tr><td><a href="mod_cache.html#cachelastmodifiedfactor">CacheLastModifiedFactor <var>float</var></a></td><td> 0.1 </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">The factor used to compute an expiry date based on the
 LastModified date.</td></tr>
-<tr><td><a href="mod_cache.html#cachelock">CacheLock <var>on|off</var></a></td><td> off </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Enable the thundering herd lock.</td></tr>
-<tr class="odd"><td><a href="mod_cache.html#cachelockmaxage">CacheLockMaxAge <var>integer</var></a></td><td> 5 </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Set the maximum possible age of a cache lock.</td></tr>
-<tr><td><a href="mod_cache.html#cachelockpath">CacheLockPath <var>directory</var></a></td><td> /tmp/mod_cache-lock +</td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Set the lock path directory.</td></tr>
-<tr class="odd"><td><a href="mod_cache.html#cachemaxexpire">CacheMaxExpire <var>seconds</var></a></td><td> 86400 (one day) </td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The maximum time in seconds to cache a document</td></tr>
-<tr><td><a href="mod_cache_disk.html#cachemaxfilesize">CacheMaxFileSize <var>bytes</var></a></td><td> 1000000 </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">The maximum size (in bytes) of a document to be placed in the
+<tr class="odd"><td><a href="mod_cache.html#cachelock">CacheLock <var>on|off</var></a></td><td> off </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enable the thundering herd lock.</td></tr>
+<tr><td><a href="mod_cache.html#cachelockmaxage">CacheLockMaxAge <var>integer</var></a></td><td> 5 </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Set the maximum possible age of a cache lock.</td></tr>
+<tr class="odd"><td><a href="mod_cache.html#cachelockpath">CacheLockPath <var>directory</var></a></td><td> /tmp/mod_cache-lock +</td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Set the lock path directory.</td></tr>
+<tr><td><a href="mod_cache.html#cachemaxexpire">CacheMaxExpire <var>seconds</var></a></td><td> 86400 (one day) </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">The maximum time in seconds to cache a document</td></tr>
+<tr class="odd"><td><a href="mod_cache_disk.html#cachemaxfilesize">CacheMaxFileSize <var>bytes</var></a></td><td> 1000000 </td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The maximum size (in bytes) of a document to be placed in the
 cache</td></tr>
-<tr class="odd"><td><a href="mod_cache.html#cacheminexpire">CacheMinExpire <var>seconds</var></a></td><td> 0 </td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The minimum time in seconds to cache a document</td></tr>
-<tr><td><a href="mod_cache_disk.html#cacheminfilesize">CacheMinFileSize <var>bytes</var></a></td><td> 1 </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">The minimum size (in bytes) of a document to be placed in the
+<tr><td><a href="mod_cache.html#cacheminexpire">CacheMinExpire <var>seconds</var></a></td><td> 0 </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">The minimum time in seconds to cache a document</td></tr>
+<tr class="odd"><td><a href="mod_cache_disk.html#cacheminfilesize">CacheMinFileSize <var>bytes</var></a></td><td> 1 </td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The minimum size (in bytes) of a document to be placed in the
 cache</td></tr>
-<tr class="odd"><td><a href="mod_negotiation.html#cachenegotiateddocs">CacheNegotiatedDocs On|Off</a></td><td> Off </td><td>sk</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Allows content-negotiated documents to be
+<tr><td><a href="mod_negotiation.html#cachenegotiateddocs">CacheNegotiatedDocs On|Off</a></td><td> Off </td><td>sk</td><td>T</td></tr><tr><td class="descr" colspan="4">Allows content-negotiated documents to be
 cached by proxy servers</td></tr>
-<tr><td><a href="mod_cache.html#cachequickhandler">CacheQuickHandler <var>on|off</var></a></td><td> on </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Run the cache from the quick handler.</td></tr>
-<tr class="odd"><td><a href="mod_cache_disk.html#cachereadsize">CacheReadSize <var>bytes</var></a></td><td> 0 </td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The minimum size (in bytes) of the document to read and be cached
+<tr class="odd"><td><a href="mod_cache.html#cachequickhandler">CacheQuickHandler <var>on|off</var></a></td><td> on </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Run the cache from the quick handler.</td></tr>
+<tr><td><a href="mod_cache_disk.html#cachereadsize">CacheReadSize <var>bytes</var></a></td><td> 0 </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">The minimum size (in bytes) of the document to read and be cached
   before sending the data downstream</td></tr>
-<tr><td><a href="mod_cache_disk.html#cachereadtime">CacheReadTime <var>milliseconds</var></a></td><td> 0 </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">The minimum time (in milliseconds) that should elapse while reading
+<tr class="odd"><td><a href="mod_cache_disk.html#cachereadtime">CacheReadTime <var>milliseconds</var></a></td><td> 0 </td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The minimum time (in milliseconds) that should elapse while reading
   before data is sent downstream</td></tr>
-<tr class="odd"><td><a href="mod_cache_disk.html#cacheroot">CacheRoot <var>directory</var></a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The directory root under which cache files are
+<tr><td><a href="mod_cache_disk.html#cacheroot">CacheRoot <var>directory</var></a></td><td></td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">The directory root under which cache files are
 stored</td></tr>
-<tr><td><a href="mod_cache_socache.html#cachesocache">CacheSocache <var>type[:args]</var></a></td><td></td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">The shared object cache implementation to use</td></tr>
-<tr class="odd"><td><a href="mod_cache_socache.html#cachesocachemaxsize">CacheSocacheMaxSize <var>bytes</var></a></td><td> 102400 </td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The maximum size (in bytes) of an entry to be placed in the
+<tr class="odd"><td><a href="mod_cache_socache.html#cachesocache">CacheSocache <var>type[:args]</var></a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The shared object cache implementation to use</td></tr>
+<tr><td><a href="mod_cache_socache.html#cachesocachemaxsize">CacheSocacheMaxSize <var>bytes</var></a></td><td> 102400 </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">The maximum size (in bytes) of an entry to be placed in the
 cache</td></tr>
-<tr><td><a href="mod_cache_socache.html#cachesocachemaxtime">CacheSocacheMaxTime <var>seconds</var></a></td><td> 86400 </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">The maximum time (in seconds) for a document to be placed in the
+<tr class="odd"><td><a href="mod_cache_socache.html#cachesocachemaxtime">CacheSocacheMaxTime <var>seconds</var></a></td><td> 86400 </td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The maximum time (in seconds) for a document to be placed in the
 cache</td></tr>
-<tr class="odd"><td><a href="mod_cache_socache.html#cachesocachemintime">CacheSocacheMinTime <var>seconds</var></a></td><td> 600 </td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The minimum time (in seconds) for a document to be placed in the
+<tr><td><a href="mod_cache_socache.html#cachesocachemintime">CacheSocacheMinTime <var>seconds</var></a></td><td> 600 </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">The minimum time (in seconds) for a document to be placed in the
 cache</td></tr>
-<tr><td><a href="mod_cache_socache.html#cachesocachereadsize">CacheSocacheReadSize <var>bytes</var></a></td><td> 0 </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">The minimum size (in bytes) of the document to read and be cached
+<tr class="odd"><td><a href="mod_cache_socache.html#cachesocachereadsize">CacheSocacheReadSize <var>bytes</var></a></td><td> 0 </td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The minimum size (in bytes) of the document to read and be cached
   before sending the data downstream</td></tr>
-<tr class="odd"><td><a href="mod_cache_socache.html#cachesocachereadtime">CacheSocacheReadTime <var>milliseconds</var></a></td><td> 0 </td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The minimum time (in milliseconds) that should elapse while reading
+<tr><td><a href="mod_cache_socache.html#cachesocachereadtime">CacheSocacheReadTime <var>milliseconds</var></a></td><td> 0 </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">The minimum time (in milliseconds) that should elapse while reading
   before data is sent downstream</td></tr>
-<tr><td><a href="mod_cache.html#cachestaleonerror">CacheStaleOnError <var>on|off</var></a></td><td> on </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Serve stale content in place of 5xx responses.</td></tr>
-<tr class="odd"><td><a href="mod_cache.html#cachestoreexpired">CacheStoreExpired On|Off</a></td><td> Off </td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Attempt to cache responses that the server reports as expired</td></tr>
-<tr><td><a href="mod_cache.html#cachestorenostore">CacheStoreNoStore On|Off</a></td><td> Off </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Attempt to cache requests or responses that have been marked as no-store.</td></tr>
-<tr class="odd"><td><a href="mod_cache.html#cachestoreprivate">CacheStorePrivate On|Off</a></td><td> Off </td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Attempt to cache responses that the server has marked as private</td></tr>
-<tr><td><a href="mod_cgid.html#cgidscripttimeout">CGIDScriptTimeout <var>time</var>[s|ms]</a></td><td></td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">The length of time to wait for more output from the
+<tr class="odd"><td><a href="mod_cache.html#cachestaleonerror">CacheStaleOnError <var>on|off</var></a></td><td> on </td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Serve stale content in place of 5xx responses.</td></tr>
+<tr><td><a href="mod_cache.html#cachestoreexpired">CacheStoreExpired On|Off</a></td><td> Off </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Attempt to cache responses that the server reports as expired</td></tr>
+<tr class="odd"><td><a href="mod_cache.html#cachestorenostore">CacheStoreNoStore On|Off</a></td><td> Off </td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Attempt to cache requests or responses that have been marked as no-store.</td></tr>
+<tr><td><a href="mod_cache.html#cachestoreprivate">CacheStorePrivate On|Off</a></td><td> Off </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Attempt to cache responses that the server has marked as private</td></tr>
+<tr class="odd"><td><a href="mod_cgid.html#cgidscripttimeout">CGIDScriptTimeout <var>time</var>[s|ms]</a></td><td></td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">The length of time to wait for more output from the
 CGI program</td></tr>
-<tr class="odd"><td><a href="core.html#cgimapextension">CGIMapExtension <var>cgi-yolu</var> <var>.uzantı</var></a></td><td></td><td>dh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">CGI betik yorumlayıcısını saptama tekniğini belirler.
+<tr><td><a href="core.html#cgimapextension">CGIMapExtension <var>cgi-yolu</var> <var>.uzantı</var></a></td><td></td><td>dh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">CGI betik yorumlayıcısını saptama tekniğini belirler.
 </td></tr>
-<tr><td><a href="core.html#cgipassauth">CGIPassAuth On|Off</a></td><td> Off </td><td>dh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">HTTP yetkilendirme başlıklarının betiklere CGI değişkenleri
+<tr class="odd"><td><a href="core.html#cgipassauth">CGIPassAuth On|Off</a></td><td> Off </td><td>dh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">HTTP yetkilendirme başlıklarının betiklere CGI değişkenleri
 olarak aktarılmasını etkin kılar</td></tr>
-<tr class="odd"><td><a href="core.html#cgivar">CGIVar <var>değişken</var> <var>kural</var></a></td><td></td><td>dh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Bazı CGI değişkenlerinin nasıl atanacağını belirler</td></tr>
-<tr><td><a href="mod_charset_lite.html#charsetdefault">CharsetDefault <var>charset</var></a></td><td></td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Charset to translate into</td></tr>
-<tr class="odd"><td><a href="mod_charset_lite.html#charsetoptions">CharsetOptions <var>option</var> [<var>option</var>] ...</a></td><td> ImplicitAdd </td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configures charset translation behavior</td></tr>
-<tr><td><a href="mod_charset_lite.html#charsetsourceenc">CharsetSourceEnc <var>charset</var></a></td><td></td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Source charset of files</td></tr>
-<tr class="odd"><td><a href="mod_speling.html#checkcaseonly">CheckCaseOnly on|off</a></td><td> Off </td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Limits the action of the speling module to case corrections</td></tr>
-<tr><td><a href="mod_speling.html#checkspelling">CheckSpelling on|off</a></td><td> Off </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Enables the spelling
+<tr><td><a href="core.html#cgivar">CGIVar <var>değişken</var> <var>kural</var></a></td><td></td><td>dh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Bazı CGI değişkenlerinin nasıl atanacağını belirler</td></tr>
+<tr class="odd"><td><a href="mod_charset_lite.html#charsetdefault">CharsetDefault <var>charset</var></a></td><td></td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Charset to translate into</td></tr>
+<tr><td><a href="mod_charset_lite.html#charsetoptions">CharsetOptions <var>option</var> [<var>option</var>] ...</a></td><td> ImplicitAdd </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Configures charset translation behavior</td></tr>
+<tr class="odd"><td><a href="mod_charset_lite.html#charsetsourceenc">CharsetSourceEnc <var>charset</var></a></td><td></td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Source charset of files</td></tr>
+<tr><td><a href="mod_speling.html#checkcaseonly">CheckCaseOnly on|off</a></td><td> Off </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Limits the action of the speling module to case corrections</td></tr>
+<tr class="odd"><td><a href="mod_speling.html#checkspelling">CheckSpelling on|off</a></td><td> Off </td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enables the spelling
 module</td></tr>
-<tr class="odd"><td><a href="mod_unixd.html#chrootdir">ChrootDir <var>/dizin/yolu</var></a></td><td></td><td>s</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Sunucunun başlatıldıktan sonra chroot(8) yapacağı dizini
+<tr><td><a href="mod_unixd.html#chrootdir">ChrootDir <var>/dizin/yolu</var></a></td><td></td><td>s</td><td>T</td></tr><tr><td class="descr" colspan="4">Sunucunun başlatıldıktan sonra chroot(8) yapacağı dizini
   belirler.</td></tr>
-<tr><td><a href="core.html#contentdigest">ContentDigest On|Off</a></td><td> Off </td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4"><code>Content-MD5</code> HTTP yanıt başlıklarının üretimini
+<tr class="odd"><td><a href="core.html#contentdigest">ContentDigest On|Off</a></td><td> Off </td><td>skdh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4"><code>Content-MD5</code> HTTP yanıt başlıklarının üretimini
   etkin kılar.</td></tr>
-<tr class="odd"><td><a href="mod_usertrack.html#cookiedomain">CookieDomain <em>domain</em></a></td><td></td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The domain to which the tracking cookie applies</td></tr>
-<tr><td><a href="mod_usertrack.html#cookieexpires">CookieExpires <em>expiry-period</em></a></td><td></td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Expiry time for the tracking cookie</td></tr>
-<tr class="odd"><td><a href="mod_usertrack.html#cookiename">CookieName <em>token</em></a></td><td> Apache </td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Name of the tracking cookie</td></tr>
-<tr><td><a href="mod_usertrack.html#cookiestyle">CookieStyle
-    <em>Netscape|Cookie|Cookie2|RFC2109|RFC2965</em></a></td><td> Netscape </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Format of the cookie header field</td></tr>
-<tr class="odd"><td><a href="mod_usertrack.html#cookietracking">CookieTracking on|off</a></td><td> off </td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enables tracking cookie</td></tr>
-<tr><td><a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory <var>dizin</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4"><code>core</code> dosyasını dökümlemek üzere Apache HTTP
+<tr><td><a href="mod_usertrack.html#cookiedomain">CookieDomain <em>domain</em></a></td><td></td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">The domain to which the tracking cookie applies</td></tr>
+<tr class="odd"><td><a href="mod_usertrack.html#cookieexpires">CookieExpires <em>expiry-period</em></a></td><td></td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Expiry time for the tracking cookie</td></tr>
+<tr><td><a href="mod_usertrack.html#cookiename">CookieName <em>token</em></a></td><td> Apache </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Name of the tracking cookie</td></tr>
+<tr class="odd"><td><a href="mod_usertrack.html#cookiestyle">CookieStyle
+    <em>Netscape|Cookie|Cookie2|RFC2109|RFC2965</em></a></td><td> Netscape </td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Format of the cookie header field</td></tr>
+<tr><td><a href="mod_usertrack.html#cookietracking">CookieTracking on|off</a></td><td> off </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Enables tracking cookie</td></tr>
+<tr class="odd"><td><a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory <var>dizin</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4"><code>core</code> dosyasını dökümlemek üzere Apache HTTP
     Sunucusunun geçmeye çalışacağı dizin.</td></tr>
-<tr class="odd"><td><a href="mod_log_config.html#customlog">CustomLog  <var>dosya</var>|<var>borulu-süreç</var>
+<tr><td><a href="mod_log_config.html#customlog">CustomLog  <var>dosya</var>|<var>borulu-süreç</var>
 <var>biçem</var>|<var>takma-ad</var>
 [env=[!]<var>ortam-değişkeni</var>]|
-expr=<var>ifade</var>]</a></td><td></td><td>sk</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Günlük dosyasın ismini ve girdi biçemini belirler.</td></tr>
-<tr><td><a href="mod_dav.html#dav" id="D" name="D">Dav On|Off|<var>provider-name</var></a></td><td> Off </td><td>d</td><td>E</td></tr><tr><td class="descr" colspan="4">Enable WebDAV HTTP methods</td></tr>
-<tr class="odd"><td><a href="mod_dav.html#davdepthinfinity">DavDepthInfinity on|off</a></td><td> off </td><td>skd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Allow PROPFIND, Depth: Infinity requests</td></tr>
-<tr><td><a href="mod_dav_lock.html#davgenericlockdb">DavGenericLockDB <var>file-path</var></a></td><td></td><td>skd</td><td>E</td></tr><tr><td class="descr" colspan="4">Location of the DAV lock database</td></tr>
-<tr class="odd"><td><a href="mod_dav_fs.html#davlockdb">DavLockDB <var>file-path</var></a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Location of the DAV lock database</td></tr>
-<tr><td><a href="mod_dav.html#davmintimeout">DavMinTimeout <var>seconds</var></a></td><td> 0 </td><td>skd</td><td>E</td></tr><tr><td class="descr" colspan="4">Minimum amount of time the server holds a lock on
+expr=<var>ifade</var>]</a></td><td></td><td>sk</td><td>T</td></tr><tr><td class="descr" colspan="4">Günlük dosyasın ismini ve girdi biçemini belirler.</td></tr>
+<tr class="odd"><td><a href="mod_dav.html#dav" id="D" name="D">Dav On|Off|<var>provider-name</var></a></td><td> Off </td><td>d</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enable WebDAV HTTP methods</td></tr>
+<tr><td><a href="mod_dav.html#davdepthinfinity">DavDepthInfinity on|off</a></td><td> off </td><td>skd</td><td>E</td></tr><tr><td class="descr" colspan="4">Allow PROPFIND, Depth: Infinity requests</td></tr>
+<tr class="odd"><td><a href="mod_dav_lock.html#davgenericlockdb">DavGenericLockDB <var>file-path</var></a></td><td></td><td>skd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Location of the DAV lock database</td></tr>
+<tr><td><a href="mod_dav_fs.html#davlockdb">DavLockDB <var>file-path</var></a></td><td></td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Location of the DAV lock database</td></tr>
+<tr class="odd"><td><a href="mod_dav.html#davmintimeout">DavMinTimeout <var>seconds</var></a></td><td> 0 </td><td>skd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Minimum amount of time the server holds a lock on
 a DAV resource</td></tr>
-<tr class="odd"><td><a href="mod_dbd.html#dbdexptime">DBDExptime <var>time-in-seconds</var></a></td><td> 300 </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Keepalive time for idle connections</td></tr>
-<tr><td><a href="mod_dbd.html#dbdinitsql">DBDInitSQL <var>"SQL statement"</var></a></td><td></td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Execute an SQL statement after connecting to a database</td></tr>
-<tr class="odd"><td><a href="mod_dbd.html#dbdkeep">DBDKeep <var>number</var></a></td><td> 2 </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum sustained number of connections</td></tr>
-<tr><td><a href="mod_dbd.html#dbdmax">DBDMax <var>number</var></a></td><td> 10 </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum number of connections</td></tr>
-<tr class="odd"><td><a href="mod_dbd.html#dbdmin">DBDMin <var>number</var></a></td><td> 1 </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Minimum number of connections</td></tr>
-<tr><td><a href="mod_dbd.html#dbdparams">DBDParams
-<var>param1</var>=<var>value1</var>[,<var>param2</var>=<var>value2</var>]</a></td><td></td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Parameters for database connection</td></tr>
-<tr class="odd"><td><a href="mod_dbd.html#dbdpersist">DBDPersist On|Off</a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Whether to use persistent connections</td></tr>
-<tr><td><a href="mod_dbd.html#dbdpreparesql">DBDPrepareSQL <var>"SQL statement"</var> <var>label</var></a></td><td></td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Define an SQL prepared statement</td></tr>
-<tr class="odd"><td><a href="mod_dbd.html#dbdriver">DBDriver <var>name</var></a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Specify an SQL driver</td></tr>
-<tr><td><a href="mod_autoindex.html#defaulticon">DefaultIcon <var>URL-yolu</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Özel bir simge atanmamış dosyalar için gösterilecek simgeyi
+<tr><td><a href="mod_dbd.html#dbdexptime">DBDExptime <var>time-in-seconds</var></a></td><td> 300 </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Keepalive time for idle connections</td></tr>
+<tr class="odd"><td><a href="mod_dbd.html#dbdinitsql">DBDInitSQL <var>"SQL statement"</var></a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Execute an SQL statement after connecting to a database</td></tr>
+<tr><td><a href="mod_dbd.html#dbdkeep">DBDKeep <var>number</var></a></td><td> 2 </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum sustained number of connections</td></tr>
+<tr class="odd"><td><a href="mod_dbd.html#dbdmax">DBDMax <var>number</var></a></td><td> 10 </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum number of connections</td></tr>
+<tr><td><a href="mod_dbd.html#dbdmin">DBDMin <var>number</var></a></td><td> 1 </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Minimum number of connections</td></tr>
+<tr class="odd"><td><a href="mod_dbd.html#dbdparams">DBDParams
+<var>param1</var>=<var>value1</var>[,<var>param2</var>=<var>value2</var>]</a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Parameters for database connection</td></tr>
+<tr><td><a href="mod_dbd.html#dbdpersist">DBDPersist On|Off</a></td><td></td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Whether to use persistent connections</td></tr>
+<tr class="odd"><td><a href="mod_dbd.html#dbdpreparesql">DBDPrepareSQL <var>"SQL statement"</var> <var>label</var></a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Define an SQL prepared statement</td></tr>
+<tr><td><a href="mod_dbd.html#dbdriver">DBDriver <var>name</var></a></td><td></td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Specify an SQL driver</td></tr>
+<tr class="odd"><td><a href="mod_autoindex.html#defaulticon">DefaultIcon <var>URL-yolu</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Özel bir simge atanmamış dosyalar için gösterilecek simgeyi
 belirler.</td></tr>
-<tr class="odd"><td><a href="mod_mime.html#defaultlanguage">DefaultLanguage <var>language-tag</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Defines a default language-tag to be sent in the Content-Language
+<tr><td><a href="mod_mime.html#defaultlanguage">DefaultLanguage <var>language-tag</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Defines a default language-tag to be sent in the Content-Language
 header field for all resources in the current context that have not been
 assigned a language-tag by some other means.</td></tr>
-<tr><td><a href="core.html#defaultruntimedir">DefaultRuntimeDir <var>dizin-yolu</var></a></td><td> DEFAULT_REL_RUNTIME +</td><td>s</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Sunucunun çalışma anı dosyaları için temel dizin</td></tr>
-<tr class="odd"><td><a href="core.html#defaulttype">DefaultType <var>ortam-türü</var>|none</a></td><td> none </td><td>skdh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Değeri <code>none</code> olduğu takdirde, bu yönergenin bir
+<tr class="odd"><td><a href="core.html#defaultruntimedir">DefaultRuntimeDir <var>dizin-yolu</var></a></td><td> DEFAULT_REL_RUNTIME +</td><td>s</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Sunucunun çalışma anı dosyaları için temel dizin</td></tr>
+<tr><td><a href="core.html#defaulttype">DefaultType <var>ortam-türü</var>|none</a></td><td> none </td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Değeri <code>none</code> olduğu takdirde, bu yönergenin bir
 uyarı vermekten başka bir etkisi yoktur. Önceki sürümlerde, bu yönerge,
 sunucunun ortam türünü saptayamadığı durumda göndereceği öntanımlı ortam
 türünü belirlerdi.</td></tr>
-<tr><td><a href="core.html#define">Define <var>değişken-ismi</var> [<var>değişken-değeri</var>]</a></td><td></td><td>skd</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Bir değişken tanımlar</td></tr>
-<tr class="odd"><td><a href="mod_deflate.html#deflatebuffersize">DeflateBufferSize <var>value</var></a></td><td> 8096 </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Fragment size to be compressed at one time by zlib</td></tr>
-<tr><td><a href="mod_deflate.html#deflatecompressionlevel">DeflateCompressionLevel <var>value</var></a></td><td></td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">How much compression do we apply to the output</td></tr>
-<tr class="odd"><td><a href="mod_deflate.html#deflatefilternote">DeflateFilterNote [<var>type</var>] <var>notename</var></a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Places the compression ratio in a note for logging</td></tr>
-<tr><td><a href="mod_deflate.html#deflateinflatelimitrequestbody">DeflateInflateLimitRequestBody<var>value</var></a></td><td></td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum size of inflated request bodies</td></tr>
-<tr class="odd"><td><a href="mod_deflate.html#deflateinflateratioburst">DeflateInflateRatioBurst <var>value</var></a></td><td></td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum number of times the inflation ratio for request bodies 
+<tr class="odd"><td><a href="core.html#define">Define <var>değişken-ismi</var> [<var>değişken-değeri</var>]</a></td><td></td><td>skd</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Bir değişken tanımlar</td></tr>
+<tr><td><a href="mod_deflate.html#deflatebuffersize">DeflateBufferSize <var>value</var></a></td><td> 8096 </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Fragment size to be compressed at one time by zlib</td></tr>
+<tr class="odd"><td><a href="mod_deflate.html#deflatecompressionlevel">DeflateCompressionLevel <var>value</var></a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">How much compression do we apply to the output</td></tr>
+<tr><td><a href="mod_deflate.html#deflatefilternote">DeflateFilterNote [<var>type</var>] <var>notename</var></a></td><td></td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Places the compression ratio in a note for logging</td></tr>
+<tr class="odd"><td><a href="mod_deflate.html#deflateinflatelimitrequestbody">DeflateInflateLimitRequestBody<var>value</var></a></td><td></td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum size of inflated request bodies</td></tr>
+<tr><td><a href="mod_deflate.html#deflateinflateratioburst">DeflateInflateRatioBurst <var>value</var></a></td><td></td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum number of times the inflation ratio for request bodies 
              can be crossed</td></tr>
-<tr><td><a href="mod_deflate.html#deflateinflateratiolimit">DeflateInflateRatioLimit <var>value</var></a></td><td></td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum inflation ratio for request bodies</td></tr>
-<tr class="odd"><td><a href="mod_deflate.html#deflatememlevel">DeflateMemLevel <var>value</var></a></td><td> 9 </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">How much memory should be used by zlib for compression</td></tr>
-<tr><td><a href="mod_deflate.html#deflatewindowsize">DeflateWindowSize <var>value</var></a></td><td> 15 </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Zlib compression window size</td></tr>
-<tr class="odd"><td><a href="mod_access_compat.html#deny"> Deny from all|<var>host</var>|env=[!]<var>env-variable</var>
-[<var>host</var>|env=[!]<var>env-variable</var>] ...</a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Controls which hosts are denied access to the
+<tr class="odd"><td><a href="mod_deflate.html#deflateinflateratiolimit">DeflateInflateRatioLimit <var>value</var></a></td><td></td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum inflation ratio for request bodies</td></tr>
+<tr><td><a href="mod_deflate.html#deflatememlevel">DeflateMemLevel <var>value</var></a></td><td> 9 </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">How much memory should be used by zlib for compression</td></tr>
+<tr class="odd"><td><a href="mod_deflate.html#deflatewindowsize">DeflateWindowSize <var>value</var></a></td><td> 15 </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Zlib compression window size</td></tr>
+<tr><td><a href="mod_access_compat.html#deny"> Deny from all|<var>host</var>|env=[!]<var>env-variable</var>
+[<var>host</var>|env=[!]<var>env-variable</var>] ...</a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Controls which hosts are denied access to the
 server</td></tr>
-<tr><td><a href="core.html#directory">&lt;Directory <var>dizin-yolu</var>&gt;
-... &lt;/Directory&gt;</a></td><td></td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Sadece ismi belirtilen dosya sistemi dizininde ve bunun
+<tr class="odd"><td><a href="core.html#directory">&lt;Directory <var>dizin-yolu</var>&gt;
+... &lt;/Directory&gt;</a></td><td></td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Sadece ismi belirtilen dosya sistemi dizininde ve bunun
   altdizinlerinde ve bunların içeriğinde uygulanacak bir yönerge grubunu
   sarmalar.</td></tr>
-<tr class="odd"><td><a href="mod_dir.html#directorycheckhandler">DirectoryCheckHandler On|Off</a></td><td> Off </td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Başka bir eylemci yapılandırılmışsa bu modülün nasıl yanıt
+<tr><td><a href="mod_dir.html#directorycheckhandler">DirectoryCheckHandler On|Off</a></td><td> Off </td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Başka bir eylemci yapılandırılmışsa bu modülün nasıl yanıt
   vereceğini belirler</td></tr>
-<tr><td><a href="mod_dir.html#directoryindex">DirectoryIndex
-    disabled | <var>yerel-url</var> [<var>yerel-url</var>] ...</a></td><td> index.html </td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">İstemci bir dizin istediğinde dizin içeriğini listeler.
+<tr class="odd"><td><a href="mod_dir.html#directoryindex">DirectoryIndex
+    disabled | <var>yerel-url</var> [<var>yerel-url</var>] ...</a></td><td> index.html </td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">İstemci bir dizin istediğinde dizin içeriğini listeler.
 </td></tr>
-<tr class="odd"><td><a href="mod_dir.html#directoryindexredirect">DirectoryIndexRedirect on | off | permanent | temp | seeother |
+<tr><td><a href="mod_dir.html#directoryindexredirect">DirectoryIndexRedirect on | off | permanent | temp | seeother |
 <var>3xx-kodu</var>
-</a></td><td> off </td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Dizin içerik listeleri için harici bir yönlendirme yapılandırır.
+</a></td><td> off </td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Dizin içerik listeleri için harici bir yönlendirme yapılandırır.
 </td></tr>
-<tr><td><a href="core.html#directorymatch">&lt;DirectoryMatch <var>düzifd</var>&gt;
-... &lt;/DirectoryMatch&gt;</a></td><td></td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Bir düzenli ifade ile eşleşen dosya sistemi dizinlerinin içeriklerine uygulanacak bir yönerge grubunu sarmalar.</td></tr>
-<tr class="odd"><td><a href="mod_dir.html#directoryslash">DirectorySlash On|Off</a></td><td> On </td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Bölü çizgisi ile biten yönlendirmeleri açar/kapar.</td></tr>
-<tr><td><a href="core.html#documentroot">DocumentRoot <var>dizin-yolu</var></a></td><td> "/usr/local/apache/ +</td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">İstemciye görünür olan ana belge ağacının kök dizinini belirler.</td></tr>
-<tr class="odd"><td><a href="mod_privileges.html#dtraceprivileges">DTracePrivileges On|Off</a></td><td> Off </td><td>s</td><td>D</td></tr><tr class="odd"><td class="descr" colspan="4">Determines whether the privileges required by dtrace are enabled.</td></tr>
-<tr><td><a href="mod_dumpio.html#dumpioinput">DumpIOInput On|Off</a></td><td> Off </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Dump all input data to the error log</td></tr>
-<tr class="odd"><td><a href="mod_dumpio.html#dumpiooutput">DumpIOOutput On|Off</a></td><td> Off </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Dump all output data to the error log</td></tr>
-<tr><td><a href="core.html#else" id="E" name="E">&lt;Else&gt; ... &lt;/Else&gt;</a></td><td></td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Önceki bir <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code> veya <code class="directive"><a href="../mod/core.html#elseif">&lt;ElseIf&gt;</a></code> bölümünün koşulu, çalışma anında bir istek tarafından yerine getirilmediği takdirde uygulanacak yönergeleri içerir</td></tr>
-<tr class="odd"><td><a href="core.html#elseif">&lt;ElseIf <var>ifade</var>&gt; ... &lt;/ElseIf&gt;</a></td><td></td><td>skdh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">İçerdiği koşulun bir istek tarafınan sağlandığı ancak daha önceki bir <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code> veya
+<tr class="odd"><td><a href="core.html#directorymatch">&lt;DirectoryMatch <var>düzifd</var>&gt;
+... &lt;/DirectoryMatch&gt;</a></td><td></td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Bir düzenli ifade ile eşleşen dosya sistemi dizinlerinin içeriklerine uygulanacak bir yönerge grubunu sarmalar.</td></tr>
+<tr><td><a href="mod_dir.html#directoryslash">DirectorySlash On|Off</a></td><td> On </td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Bölü çizgisi ile biten yönlendirmeleri açar/kapar.</td></tr>
+<tr class="odd"><td><a href="core.html#documentroot">DocumentRoot <var>dizin-yolu</var></a></td><td> "/usr/local/apache/ +</td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">İstemciye görünür olan ana belge ağacının kök dizinini belirler.</td></tr>
+<tr><td><a href="mod_privileges.html#dtraceprivileges">DTracePrivileges On|Off</a></td><td> Off </td><td>s</td><td>D</td></tr><tr><td class="descr" colspan="4">Determines whether the privileges required by dtrace are enabled.</td></tr>
+<tr class="odd"><td><a href="mod_dumpio.html#dumpioinput">DumpIOInput On|Off</a></td><td> Off </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Dump all input data to the error log</td></tr>
+<tr><td><a href="mod_dumpio.html#dumpiooutput">DumpIOOutput On|Off</a></td><td> Off </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Dump all output data to the error log</td></tr>
+<tr class="odd"><td><a href="core.html#else" id="E" name="E">&lt;Else&gt; ... &lt;/Else&gt;</a></td><td></td><td>skdh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Önceki bir <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code> veya <code class="directive"><a href="../mod/core.html#elseif">&lt;ElseIf&gt;</a></code> bölümünün koşulu, çalışma anında bir istek tarafından yerine getirilmediği takdirde uygulanacak yönergeleri içerir</td></tr>
+<tr><td><a href="core.html#elseif">&lt;ElseIf <var>ifade</var>&gt; ... &lt;/ElseIf&gt;</a></td><td></td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">İçerdiği koşulun bir istek tarafınan sağlandığı ancak daha önceki bir <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code> veya
 <code class="directive">&lt;ElseIf&gt;</code> bölümlerininkilerin sağlanmadığı durumda kapsadığı yönergelerin uygulanmasını sağlar</td></tr>
-<tr><td><a href="mpm_common.html#enableexceptionhook">EnableExceptionHook On|Off</a></td><td> Off </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Bir çöküş sonrası olağandışılık eylemcilerini çalıştıracak
+<tr class="odd"><td><a href="mpm_common.html#enableexceptionhook">EnableExceptionHook On|Off</a></td><td> Off </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Bir çöküş sonrası olağandışılık eylemcilerini çalıştıracak
   kancayı etkin kılar.</td></tr>
-<tr class="odd"><td><a href="core.html#enablemmap">EnableMMAP On|Off</a></td><td> On </td><td>skdh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Teslimat sırasında okunacak dosyalar için bellek eşlemeyi etkin
+<tr><td><a href="core.html#enablemmap">EnableMMAP On|Off</a></td><td> On </td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Teslimat sırasında okunacak dosyalar için bellek eşlemeyi etkin
   kılar.</td></tr>
-<tr><td><a href="core.html#enablesendfile">EnableSendfile On|Off</a></td><td> Off </td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Dosyaların istemciye tesliminde çekirdeğin dosya gönderme
+<tr class="odd"><td><a href="core.html#enablesendfile">EnableSendfile On|Off</a></td><td> Off </td><td>skdh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Dosyaların istemciye tesliminde çekirdeğin dosya gönderme
   desteğinin kullanımını etkin kılar.</td></tr>
-<tr class="odd"><td><a href="core.html#error">Error <var>ileti</var></a></td><td></td><td>skdh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Özel bir hata iletisiyle yapılandırma çözümlemesini durdurur</td></tr>
-<tr><td><a href="core.html#errordocument">ErrorDocument <var>hata-kodu</var> <var>belge</var></a></td><td></td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Bir hata durumunda sunucunun istemciye ne döndüreceğini
+<tr><td><a href="core.html#error">Error <var>ileti</var></a></td><td></td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Özel bir hata iletisiyle yapılandırma çözümlemesini durdurur</td></tr>
+<tr class="odd"><td><a href="core.html#errordocument">ErrorDocument <var>hata-kodu</var> <var>belge</var></a></td><td></td><td>skdh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Bir hata durumunda sunucunun istemciye ne döndüreceğini
   belirler.</td></tr>
-<tr class="odd"><td><a href="core.html#errorlog"> ErrorLog <var>dosya-yolu</var>|syslog[:<var>oluşum</var>]</a></td><td> logs/error_log (Uni +</td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Sunucunun hata günlüğünü tutacağı yeri belirler.</td></tr>
-<tr><td><a href="core.html#errorlogformat"> ErrorLogFormat [connection|request] <var>biçem</var></a></td><td></td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Hata günlüğü girdileri için biçem belirtimi</td></tr>
-<tr class="odd"><td><a href="mod_example_hooks.html#example">Example</a></td><td></td><td>skdh</td><td>D</td></tr><tr class="odd"><td class="descr" colspan="4">Demonstration directive to illustrate the Apache module
+<tr><td><a href="core.html#errorlog"> ErrorLog <var>dosya-yolu</var>|syslog[:<var>oluşum</var>]</a></td><td> logs/error_log (Uni +</td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Sunucunun hata günlüğünü tutacağı yeri belirler.</td></tr>
+<tr class="odd"><td><a href="core.html#errorlogformat"> ErrorLogFormat [connection|request] <var>biçem</var></a></td><td></td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Hata günlüğü girdileri için biçem belirtimi</td></tr>
+<tr><td><a href="mod_example_hooks.html#example">Example</a></td><td></td><td>skdh</td><td>D</td></tr><tr><td class="descr" colspan="4">Demonstration directive to illustrate the Apache module
 API</td></tr>
-<tr><td><a href="mod_expires.html#expiresactive">ExpiresActive On|Off</a></td><td> Off </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Enables generation of <code>Expires</code>
+<tr class="odd"><td><a href="mod_expires.html#expiresactive">ExpiresActive On|Off</a></td><td> Off </td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enables generation of <code>Expires</code>
 headers</td></tr>
-<tr class="odd"><td><a href="mod_expires.html#expiresbytype">ExpiresByType <var>MIME-type</var>
-<var>&lt;code&gt;seconds</var></a></td><td></td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Value of the <code>Expires</code> header configured
+<tr><td><a href="mod_expires.html#expiresbytype">ExpiresByType <var>MIME-type</var>
+<var>&lt;code&gt;seconds</var></a></td><td></td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Value of the <code>Expires</code> header configured
 by MIME type</td></tr>
-<tr><td><a href="mod_expires.html#expiresdefault">ExpiresDefault <var>&lt;code&gt;seconds</var></a></td><td></td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Default algorithm for calculating expiration time</td></tr>
-<tr class="odd"><td><a href="core.html#extendedstatus">ExtendedStatus On|Off</a></td><td> Off[*] </td><td>s</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Her istekte ek durum bilgisinin izini sürer</td></tr>
-<tr><td><a href="mod_ext_filter.html#extfilterdefine">ExtFilterDefine <var>filtername</var> <var>parameters</var></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Define an external filter</td></tr>
-<tr class="odd"><td><a href="mod_ext_filter.html#extfilteroptions">ExtFilterOptions <var>option</var> [<var>option</var>] ...</a></td><td> NoLogStderr </td><td>d</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configure <code class="module"><a href="../mod/mod_ext_filter.html">mod_ext_filter</a></code> options</td></tr>
-<tr><td><a href="mod_dir.html#fallbackresource" id="F" name="F">FallbackResource disabled | <var>yerel-url</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Bir dosya ile eşleşmeyen istekler için öntanımlı URL tanımlar
+<tr class="odd"><td><a href="mod_expires.html#expiresdefault">ExpiresDefault <var>&lt;code&gt;seconds</var></a></td><td></td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Default algorithm for calculating expiration time</td></tr>
+<tr><td><a href="core.html#extendedstatus">ExtendedStatus On|Off</a></td><td> Off[*] </td><td>s</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Her istekte ek durum bilgisinin izini sürer</td></tr>
+<tr class="odd"><td><a href="mod_ext_filter.html#extfilterdefine">ExtFilterDefine <var>filtername</var> <var>parameters</var></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Define an external filter</td></tr>
+<tr><td><a href="mod_ext_filter.html#extfilteroptions">ExtFilterOptions <var>option</var> [<var>option</var>] ...</a></td><td> NoLogStderr </td><td>d</td><td>E</td></tr><tr><td class="descr" colspan="4">Configure <code class="module"><a href="../mod/mod_ext_filter.html">mod_ext_filter</a></code> options</td></tr>
+<tr class="odd"><td><a href="mod_dir.html#fallbackresource" id="F" name="F">FallbackResource disabled | <var>yerel-url</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Bir dosya ile eşleşmeyen istekler için öntanımlı URL tanımlar
 </td></tr>
-<tr class="odd"><td><a href="core.html#fileetag">FileETag <var>bileşen</var> ...</a></td><td> MTime Size </td><td>skdh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Duruk dosyalar için <code>ETag</code> HTTP yanıt başlığını oluşturmakta kullanılacak dosya özniteliklerini belirler.</td></tr>
-<tr><td><a href="core.html#files">&lt;Files <var>dosya-adı</var>&gt; ... &lt;/Files&gt;</a></td><td></td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Dosya isimleriyle eşleşme halinde uygulanacak yönergeleri
+<tr><td><a href="core.html#fileetag">FileETag <var>bileşen</var> ...</a></td><td> MTime Size </td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Duruk dosyalar için <code>ETag</code> HTTP yanıt başlığını oluşturmakta kullanılacak dosya özniteliklerini belirler.</td></tr>
+<tr class="odd"><td><a href="core.html#files">&lt;Files <var>dosya-adı</var>&gt; ... &lt;/Files&gt;</a></td><td></td><td>skdh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Dosya isimleriyle eşleşme halinde uygulanacak yönergeleri
   içerir.</td></tr>
-<tr class="odd"><td><a href="core.html#filesmatch">&lt;FilesMatch <var>düzifd</var>&gt; ... &lt;/FilesMatch&gt;</a></td><td></td><td>skdh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Düzenli ifadelerin dosya isimleriyle eşleşmesi halinde
+<tr><td><a href="core.html#filesmatch">&lt;FilesMatch <var>düzifd</var>&gt; ... &lt;/FilesMatch&gt;</a></td><td></td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Düzenli ifadelerin dosya isimleriyle eşleşmesi halinde
   uygulanacak yönergeleri içerir.</td></tr>
-<tr><td><a href="mod_filter.html#filterchain">FilterChain [+=-@!]<var>filter-name</var> <var>...</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Configure the filter chain</td></tr>
-<tr class="odd"><td><a href="mod_filter.html#filterdeclare">FilterDeclare <var>filter-name</var> <var>[type]</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Declare a smart filter</td></tr>
-<tr><td><a href="mod_filter.html#filterprotocol">FilterProtocol <var>filter-name</var> [<var>provider-name</var>]
-    <var>proto-flags</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Deal with correct HTTP protocol handling</td></tr>
-<tr class="odd"><td><a href="mod_filter.html#filterprovider">FilterProvider <var>filter-name</var> <var>provider-name</var>
- <var>expression</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Register a content filter</td></tr>
-<tr><td><a href="mod_filter.html#filtertrace">FilterTrace <var>filter-name</var> <var>level</var></a></td><td></td><td>skd</td><td>T</td></tr><tr><td class="descr" colspan="4">Get debug/diagnostic information from
+<tr class="odd"><td><a href="mod_filter.html#filterchain">FilterChain [+=-@!]<var>filter-name</var> <var>...</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Configure the filter chain</td></tr>
+<tr><td><a href="mod_filter.html#filterdeclare">FilterDeclare <var>filter-name</var> <var>[type]</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Declare a smart filter</td></tr>
+<tr class="odd"><td><a href="mod_filter.html#filterprotocol">FilterProtocol <var>filter-name</var> [<var>provider-name</var>]
+    <var>proto-flags</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Deal with correct HTTP protocol handling</td></tr>
+<tr><td><a href="mod_filter.html#filterprovider">FilterProvider <var>filter-name</var> <var>provider-name</var>
+ <var>expression</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Register a content filter</td></tr>
+<tr class="odd"><td><a href="mod_filter.html#filtertrace">FilterTrace <var>filter-name</var> <var>level</var></a></td><td></td><td>skd</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Get debug/diagnostic information from
     <code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code></td></tr>
-<tr class="odd"><td><a href="mod_negotiation.html#forcelanguagepriority">ForceLanguagePriority None|Prefer|Fallback [Prefer|Fallback]</a></td><td> Prefer </td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Action to take if a single acceptable document is not
+<tr><td><a href="mod_negotiation.html#forcelanguagepriority">ForceLanguagePriority None|Prefer|Fallback [Prefer|Fallback]</a></td><td> Prefer </td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Action to take if a single acceptable document is not
 found</td></tr>
-<tr><td><a href="core.html#forcetype">ForceType <var>ortam-türü</var>|None</a></td><td></td><td>dh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Bütün dosyaların belirtilen ortam türüyle sunulmasına
+<tr class="odd"><td><a href="core.html#forcetype">ForceType <var>ortam-türü</var>|None</a></td><td></td><td>dh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Bütün dosyaların belirtilen ortam türüyle sunulmasına
   sebep olur.</td></tr>
-<tr class="odd"><td><a href="mod_log_forensic.html#forensiclog">ForensicLog <var>dosya-adı</var>|<var>borulu-süreç</var></a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Adli günlük için dosya ismini belirler.</td></tr>
-<tr><td><a href="mod_log_config.html#globallog" id="G" name="G">GlobalLog  <var>dosya</var>|<var>boru</var>|<var>sağlayıcı</var>
+<tr><td><a href="mod_log_forensic.html#forensiclog">ForensicLog <var>dosya-adı</var>|<var>borulu-süreç</var></a></td><td></td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Adli günlük için dosya ismini belirler.</td></tr>
+<tr class="odd"><td><a href="mod_log_config.html#globallog" id="G" name="G">GlobalLog  <var>dosya</var>|<var>boru</var>|<var>sağlayıcı</var>
 <var>biçem</var>|<var>takma_ad</var>
 [env=[!]<var>ortam_değişkeni</var>|
-expr=<var>ifade</var>]</a></td><td></td><td>s</td><td>T</td></tr><tr><td class="descr" colspan="4">Günlük dosyasının ismini ve biçemini belirler</td></tr>
-<tr class="odd"><td><a href="core.html#gprofdir">GprofDir <var>/tmp/gprof/</var>|<var>/tmp/gprof/</var>%</a></td><td></td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">gmon.out ayrıntılı inceleme verisinin yazılacağı dizin</td></tr>
-<tr><td><a href="mpm_common.html#gracefulshutdowntimeout">GracefulShutdownTimeout <var>saniye</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Sunucunun nazikçe kapatılmasının ardından ana süreç çıkana kadar
+expr=<var>ifade</var>]</a></td><td></td><td>s</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Günlük dosyasının ismini ve biçemini belirler</td></tr>
+<tr><td><a href="core.html#gprofdir">GprofDir <var>/tmp/gprof/</var>|<var>/tmp/gprof/</var>%</a></td><td></td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">gmon.out ayrıntılı inceleme verisinin yazılacağı dizin</td></tr>
+<tr class="odd"><td><a href="mpm_common.html#gracefulshutdowntimeout">GracefulShutdownTimeout <var>saniye</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Sunucunun nazikçe kapatılmasının ardından ana süreç çıkana kadar
   geçecek süre için bir zaman aşımı belirler.</td></tr>
-<tr class="odd"><td><a href="mod_unixd.html#group">Group <var>unix-grubu</var></a></td><td> #-1 </td><td>s</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">İsteklere yanıt verecek sunucunun ait olacağı grubu belirler.</td></tr>
-<tr><td><a href="mod_http2.html#h2copyfiles" id="H" name="H">H2CopyFiles on|off</a></td><td> off </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Determine file handling in responses</td></tr>
-<tr class="odd"><td><a href="mod_http2.html#h2direct">H2Direct on|off</a></td><td> on for h2c, off for +</td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">H2 Direct Protocol Switch</td></tr>
-<tr><td><a href="mod_http2.html#h2earlyhints">H2EarlyHints on|off</a></td><td> off </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Determine sending of 103 status codes</td></tr>
-<tr class="odd"><td><a href="mod_http2.html#h2maxsessionstreams">H2MaxSessionStreams <em>n</em></a></td><td> 100 </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum number of active streams per HTTP/2 session.</td></tr>
-<tr><td><a href="mod_http2.html#h2maxworkeridleseconds">H2MaxWorkerIdleSeconds <em>n</em></a></td><td> 600 </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum number of seconds h2 workers remain idle until shut down.</td></tr>
-<tr class="odd"><td><a href="mod_http2.html#h2maxworkers">H2MaxWorkers <em>n</em></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum number of worker threads to use per child process.</td></tr>
-<tr><td><a href="mod_http2.html#h2minworkers">H2MinWorkers <em>n</em></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Minimal number of worker threads to use per child process.</td></tr>
-<tr class="odd"><td><a href="mod_http2.html#h2moderntlsonly">H2ModernTLSOnly on|off</a></td><td> on </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Require HTTP/2 connections to be "modern TLS" only</td></tr>
-<tr><td><a href="mod_http2.html#h2push">H2Push on|off</a></td><td> on </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">H2 Server Push Switch</td></tr>
-<tr class="odd"><td><a href="mod_http2.html#h2pushdiarysize">H2PushDiarySize <em>n</em></a></td><td> 256 </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">H2 Server Push Diary Size</td></tr>
-<tr><td><a href="mod_http2.html#h2pushpriority">H2PushPriority <em>mime-type</em> [after|before|interleaved] [weight]</a></td><td> * After 16 </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">H2 Server Push Priority</td></tr>
-<tr class="odd"><td><a href="mod_http2.html#h2pushresource">H2PushResource [add] path [critical]</a></td><td></td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Declares resources for early pushing to the client</td></tr>
-<tr><td><a href="mod_http2.html#h2serializeheaders">H2SerializeHeaders on|off</a></td><td> off </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Serialize Request/Response Processing Switch</td></tr>
-<tr class="odd"><td><a href="mod_http2.html#h2sessionextrafiles">H2SessionExtraFiles <em>n</em></a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Number of Extra File Handles</td></tr>
+<tr><td><a href="mod_unixd.html#group">Group <var>unix-grubu</var></a></td><td> #-1 </td><td>s</td><td>T</td></tr><tr><td class="descr" colspan="4">İsteklere yanıt verecek sunucunun ait olacağı grubu belirler.</td></tr>
+<tr class="odd"><td><a href="mod_http2.html#h2copyfiles" id="H" name="H">H2CopyFiles on|off</a></td><td> off </td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Determine file handling in responses</td></tr>
+<tr><td><a href="mod_http2.html#h2direct">H2Direct on|off</a></td><td> on for h2c, off for +</td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">H2 Direct Protocol Switch</td></tr>
+<tr class="odd"><td><a href="mod_http2.html#h2earlyhints">H2EarlyHints on|off</a></td><td> off </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Determine sending of 103 status codes</td></tr>
+<tr><td><a href="mod_http2.html#h2maxsessionstreams">H2MaxSessionStreams <em>n</em></a></td><td> 100 </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum number of active streams per HTTP/2 session.</td></tr>
+<tr class="odd"><td><a href="mod_http2.html#h2maxworkeridleseconds">H2MaxWorkerIdleSeconds <em>n</em></a></td><td> 600 </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum number of seconds h2 workers remain idle until shut down.</td></tr>
+<tr><td><a href="mod_http2.html#h2maxworkers">H2MaxWorkers <em>n</em></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum number of worker threads to use per child process.</td></tr>
+<tr class="odd"><td><a href="mod_http2.html#h2minworkers">H2MinWorkers <em>n</em></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Minimal number of worker threads to use per child process.</td></tr>
+<tr><td><a href="mod_http2.html#h2moderntlsonly">H2ModernTLSOnly on|off</a></td><td> on </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Require HTTP/2 connections to be "modern TLS" only</td></tr>
+<tr class="odd"><td><a href="mod_http2.html#h2push">H2Push on|off</a></td><td> on </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">H2 Server Push Switch</td></tr>
+<tr><td><a href="mod_http2.html#h2pushdiarysize">H2PushDiarySize <em>n</em></a></td><td> 256 </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">H2 Server Push Diary Size</td></tr>
+<tr class="odd"><td><a href="mod_http2.html#h2pushpriority">H2PushPriority <em>mime-type</em> [after|before|interleaved] [weight]</a></td><td> * After 16 </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">H2 Server Push Priority</td></tr>
+<tr><td><a href="mod_http2.html#h2pushresource">H2PushResource [add] path [critical]</a></td><td></td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Declares resources for early pushing to the client</td></tr>
+<tr class="odd"><td><a href="mod_http2.html#h2serializeheaders">H2SerializeHeaders on|off</a></td><td> off </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Serialize Request/Response Processing Switch</td></tr>
 <tr><td><a href="mod_http2.html#h2streammaxmemsize">H2StreamMaxMemSize <em>bytes</em></a></td><td> 65536 </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum amount of output data buffered per stream.</td></tr>
 <tr class="odd"><td><a href="mod_http2.html#h2tlscooldownsecs">H2TLSCoolDownSecs <em>seconds</em></a></td><td> 1 </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">-</td></tr>
 <tr><td><a href="mod_http2.html#h2tlswarmupsize">H2TLSWarmUpSize <em>amount</em></a></td><td> 1048576 </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">-</td></tr>
@@ -980,8 +984,10 @@ handshake</td></tr>
 <tr><td><a href="mod_ssl.html#sslinsecurerenegotiation">SSLInsecureRenegotiation on|off</a></td><td> off </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Option to enable support for insecure renegotiation</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslocspdefaultresponder">SSLOCSDefaultResponder <em>uri</em></a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Set the default responder URI for OCSP validation</td></tr>
 <tr><td><a href="mod_ssl.html#sslocspenable">SSLOCSPEnable on|off</a></td><td> off </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Enable OCSP validation of the client certificate chain</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslocspoverrideresponder">SSLOCSPOverrideResponder on|off</a></td><td> off </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Force use of the default responder URI for OCSP validation</td></tr>
-<tr><td><a href="mod_ssl.html#sslocspproxyurl">SSLOCSPProxyURL <em>url</em></a></td><td></td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Proxy URL to use for OCSP requests</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslocspnoverify">SSLOCSPNoverify <em>On/Off</em></a></td><td> Off </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">skip the OCSP responder certificates verification</td></tr>
+<tr><td><a href="mod_ssl.html#sslocspoverrideresponder">SSLOCSPOverrideResponder on|off</a></td><td> off </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Force use of the default responder URI for OCSP validation</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslocspproxyurl">SSLOCSPProxyURL <em>url</em></a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Proxy URL to use for OCSP requests</td></tr>
+<tr><td><a href="mod_ssl.html#sslocsprespondercertificatefile">SSLOCSPResponderCertificateFile <em>file</em></a></td><td></td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Set of trusted PEM encoded OCSP responder certificates</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslocsprespondertimeout">SSLOCSPResponderTimeout <em>seconds</em></a></td><td> 10 </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Timeout for OCSP queries</td></tr>
 <tr><td><a href="mod_ssl.html#sslocspresponsemaxage">SSLOCSPResponseMaxAge <em>seconds</em></a></td><td> -1 </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum allowable age for OCSP responses</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslocspresponsetimeskew">SSLOCSPResponseTimeSkew <em>seconds</em></a></td><td> 300 </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum allowable time skew for OCSP response validation</td></tr>

@@ -215,6 +215,7 @@ log_server_status</a></li>
 <li><a href="mod/mod_authz_owner.html">Apache Module mod_authz_owner</a></li>
 <li><a href="mod/mod_authz_user.html">Apache Module mod_authz_user</a></li>
 <li><a href="mod/mod_autoindex.html">Apache Module mod_autoindex</a></li>
+<li><a href="mod/mod_brotli.html">Apache Module mod_brotli</a></li>
 <li><a href="mod/mod_buffer.html">Apache Module mod_buffer</a></li>
 <li><a href="mod/mod_cache.html">Apache Module mod_cache</a></li>
 <li><a href="mod/mod_cache_disk.html">Apache Module mod_cache_disk</a></li>

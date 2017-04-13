@@ -27,6 +27,7 @@
   <modulefile>mod_authz_owner.xml.ko</modulefile>
   <modulefile>mod_authz_user.xml.ko</modulefile>
   <modulefile>mod_autoindex.xml.ko</modulefile>
+  <modulefile>mod_brotli.xml</modulefile>
   <modulefile>mod_buffer.xml</modulefile>
   <modulefile>mod_cache.xml.ko</modulefile>
   <modulefile>mod_cache_disk.xml.ko</modulefile>

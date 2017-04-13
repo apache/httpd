@@ -103,7 +103,9 @@ address)</dd>
 <dt><a href="mod_autoindex.html">mod_autoindex</a></dt><dd>Unix の <code>ls</code> コマンドや
     Win32 の <code>dir</code> シェルコマンドに似た
     ディレクトリインデックスを生成する</dd>
-<dt><a href="mod_buffer.html" id="B" name="B">mod_buffer</a></dt><dd>Support for request buffering</dd>
+<dt><a href="mod_brotli.html" id="B" name="B">mod_brotli</a></dt><dd>Compress content via Brotli before it is delivered to the
+client</dd>
+<dt><a href="mod_buffer.html">mod_buffer</a></dt><dd>Support for request buffering</dd>
 <dt><a href="mod_cache.html" id="C" name="C">mod_cache</a></dt><dd>URI をキーにしたコンテンツのキャッシュ</dd>
 <dt><a href="mod_cache_disk.html">mod_cache_disk</a></dt><dd>URI をキーにしたコンテンツキャッシュストレージ管理</dd>
 <dt><a href="mod_cache_socache.html">mod_cache_socache</a></dt><dd>Shared object cache (socache) based storage module for the

@@ -116,7 +116,9 @@ fichiers</dd>
 <dt><a href="mod_autoindex.html">mod_autoindex</a></dt><dd>Génère automatiquement des index de répertoires d'une
 manière similaire à la commande Unix <code>ls</code>, ou à la commande
 shell Win32 <code>dir</code></dd>
-<dt><a href="mod_buffer.html" id="B" name="B">mod_buffer</a></dt><dd>Support de la mise en tampon des requêtes</dd>
+<dt><a href="mod_brotli.html" id="B" name="B">mod_brotli</a></dt><dd>Compress content via Brotli before it is delivered to the
+client</dd>
+<dt><a href="mod_buffer.html">mod_buffer</a></dt><dd>Support de la mise en tampon des requêtes</dd>
 <dt><a href="mod_cache.html" id="C" name="C">mod_cache</a></dt><dd>Filtre de mise en cache HTTP conforme à la RFC 2616</dd>
 <dt><a href="mod_cache_disk.html">mod_cache_disk</a></dt><dd>Module de stockage sur disque pour le filtre de mise en
 cache HTTP.</dd>
