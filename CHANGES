@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.26
 
+  *) mod_brotli: Add a new module for dynamic Brotli (RFC 7932) compression.
+     [Evgeny Kotkov]
+
   *) mod_proxy_http2: Fixed bug in re-attempting proxy requests after 
      connection error. Reliability of reconnect handling improved. 
      [Stefan Eissing]
