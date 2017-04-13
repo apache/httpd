@@ -113,6 +113,11 @@ balancergrowth	mod/mod_proxy.html#balancergrowth
 balancerinherit	mod/mod_proxy.html#balancerinherit
 balancermember	mod/mod_proxy.html#balancermember
 balancerpersist	mod/mod_proxy.html#balancerpersist
+brotlialteretag	mod/mod_brotli.html#brotlialteretag
+brotlicompressionmaxinputblock	mod/mod_brotli.html#brotlicompressionmaxinputblock
+brotlicompressionquality	mod/mod_brotli.html#brotlicompressionquality
+brotlicompressionwindow	mod/mod_brotli.html#brotlicompressionwindow
+brotlifilternote	mod/mod_brotli.html#brotlifilternote
 browsermatch	mod/mod_setenvif.html#browsermatch
 browsermatchnocase	mod/mod_setenvif.html#browsermatchnocase
 bufferedlogs	mod/mod_log_config.html#bufferedlogs
@@ -255,7 +260,6 @@ h2pushdiarysize	mod/mod_http2.html#h2pushdiarysize
 h2pushpriority	mod/mod_http2.html#h2pushpriority
 h2pushresource	mod/mod_http2.html#h2pushresource
 h2serializeheaders	mod/mod_http2.html#h2serializeheaders
-h2sessionextrafiles	mod/mod_http2.html#h2sessionextrafiles
 h2streammaxmemsize	mod/mod_http2.html#h2streammaxmemsize
 h2tlscooldownsecs	mod/mod_http2.html#h2tlscooldownsecs
 h2tlswarmupsize	mod/mod_http2.html#h2tlswarmupsize
@@ -402,6 +406,8 @@ proxyerroroverride	mod/mod_proxy.html#proxyerroroverride
 proxyexpressdbmfile	mod/mod_proxy_express.html#proxyexpressdbmfile
 proxyexpressdbmtype	mod/mod_proxy_express.html#proxyexpressdbmtype
 proxyexpressenable	mod/mod_proxy_express.html#proxyexpressenable
+proxyfcgibackendtype	mod/mod_proxy_fcgi.html#proxyfcgibackendtype
+proxyfcgisetenvif	mod/mod_proxy_fcgi.html#proxyfcgisetenvif
 proxyftpdircharset	mod/mod_proxy_ftp.html#proxyftpdircharset
 proxyftpescapewildcards	mod/mod_proxy_ftp.html#proxyftpescapewildcards
 proxyftplistonwildcard	mod/mod_proxy_ftp.html#proxyftplistonwildcard
@@ -555,8 +561,10 @@ sslhonorcipherorder	mod/mod_ssl.html#sslhonorcipherorder
 sslinsecurerenegotiation	mod/mod_ssl.html#sslinsecurerenegotiation
 sslocspdefaultresponder	mod/mod_ssl.html#sslocspdefaultresponder
 sslocspenable	mod/mod_ssl.html#sslocspenable
+sslocspnoverify	mod/mod_ssl.html#sslocspnoverify
 sslocspoverrideresponder	mod/mod_ssl.html#sslocspoverrideresponder
 sslocspproxyurl	mod/mod_ssl.html#sslocspproxyurl
+sslocsprespondercertificatefile	mod/mod_ssl.html#sslocsprespondercertificatefile
 sslocsprespondertimeout	mod/mod_ssl.html#sslocsprespondertimeout
 sslocspresponsemaxage	mod/mod_ssl.html#sslocspresponsemaxage
 sslocspresponsetimeskew	mod/mod_ssl.html#sslocspresponsetimeskew

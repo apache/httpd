@@ -28,6 +28,8 @@
 <a href="../fr/platform/win_compiling.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ko/platform/win_compiling.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
 
 
     <p>Il y a de nombreux points importants à connaître avant de

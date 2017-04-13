@@ -255,213 +255,217 @@ authentication succeeds but authorization fails
 <tr><td><a href="mod_proxy.html#balancerinherit">BalancerInherit On|Off</a></td><td> On </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Inherit ProxyPassed Balancers/Workers from the main server</td></tr>
 <tr class="odd"><td><a href="mod_proxy.html#balancermember">BalancerMember [<var>balancerurl</var>] <var>url</var> [<var>key=value [key=value ...]]</var></a></td><td></td><td>d</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Add a member to a load balancing group</td></tr>
 <tr><td><a href="mod_proxy.html#balancerpersist">BalancerPersist On|Off</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Attempt to persist changes made by the Balancer Manager across restarts.</td></tr>
-<tr class="odd"><td><a href="mod_setenvif.html#browsermatch">BrowserMatch <em>regex [!]env-variable</em>[=<em>value</em>]
-[[!]<em>env-variable</em>[=<em>value</em>]] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">HTTP User-Agent에 따라 환경변수를 설정한다</td></tr>
-<tr><td><a href="mod_setenvif.html#browsermatchnocase">BrowserMatchNoCase  <em>regex [!]env-variable</em>[=<em>value</em>]
-    [[!]<em>env-variable</em>[=<em>value</em>]] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">대소문자를 구별하지않고 User-Agent에 따라 환경변수를
+<tr class="odd"><td><a href="mod_brotli.html#brotlialteretag">BrotliAlterETag AddSuffix|NoChange|Remove</a></td><td> AddSuffix </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">How the outgoing ETag header should be modified during compression</td></tr>
+<tr><td><a href="mod_brotli.html#brotlicompressionmaxinputblock">BrotliCompressionMaxInputBlock <var>value</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum input block size</td></tr>
+<tr class="odd"><td><a href="mod_brotli.html#brotlicompressionquality">BrotliCompressionQuality <var>value</var></a></td><td> 5 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Compression quality</td></tr>
+<tr><td><a href="mod_brotli.html#brotlicompressionwindow">BrotliCompressionWindow <var>value</var></a></td><td> 18 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Brotli sliding compression window size</td></tr>
+<tr class="odd"><td><a href="mod_brotli.html#brotlifilternote">BrotliFilterNote [<var>type</var>] <var>notename</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Places the compression ratio in a note for logging</td></tr>
+<tr><td><a href="mod_setenvif.html#browsermatch">BrowserMatch <em>regex [!]env-variable</em>[=<em>value</em>]
+[[!]<em>env-variable</em>[=<em>value</em>]] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">HTTP User-Agent에 따라 환경변수를 설정한다</td></tr>
+<tr class="odd"><td><a href="mod_setenvif.html#browsermatchnocase">BrowserMatchNoCase  <em>regex [!]env-variable</em>[=<em>value</em>]
+    [[!]<em>env-variable</em>[=<em>value</em>]] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">대소문자를 구별하지않고 User-Agent에 따라 환경변수를
 설정한다</td></tr>
-<tr class="odd"><td><a href="mod_log_config.html#bufferedlogs" /></td><td></td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Buffer log entries in memory before writing to disk</td></tr>
-<tr><td><a href="mod_buffer.html#buffersize">BufferSize integer</a></td><td> 131072 </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum size in bytes to buffer by the buffer filter</td></tr>
-<tr class="odd"><td><a href="mod_cache.html#cachedefaultexpire" id="C" name="C">CacheDefaultExpire <var>seconds</var></a></td><td> 3600 (one hour) </td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">만기시간을 지정하지않은 문서를 캐쉬할 기본 기간.</td></tr>
-<tr><td><a href="mod_cache.html#cachedetailheader" /></td><td></td><td>svdh</td><td>X</td></tr><tr><td class="descr" colspan="4">Add an X-Cache-Detail header to the response.</td></tr>
-<tr class="odd"><td><a href="mod_cache_disk.html#cachedirlength">CacheDirLength <var>length</var></a></td><td> 2 </td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">하위디렉토리명의 문자개수</td></tr>
-<tr><td><a href="mod_cache_disk.html#cachedirlevels">CacheDirLevels <var>levels</var></a></td><td> 3 </td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">캐쉬의 하위디렉토리 깊이.</td></tr>
-<tr class="odd"><td><a href="mod_cache.html#cachedisable">CacheDisable <var> url-string</var></a></td><td></td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">특정 URL을 캐쉬하지 않는다</td></tr>
-<tr><td><a href="mod_cache.html#cacheenable">CacheEnable <var>cache_type</var> <var>url-string</var></a></td><td></td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">지정한 저장관리자를 사용하여 지정한 URL을 캐쉬한다</td></tr>
-<tr class="odd"><td><a href="mod_file_cache.html#cachefile">CacheFile <var>file-path</var> [<var>file-path</var>] ...</a></td><td></td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">시작시 여러 파일 핸들을 캐쉬한다</td></tr>
-<tr><td><a href="mod_cache.html#cacheheader" /></td><td></td><td>svdh</td><td>X</td></tr><tr><td class="descr" colspan="4">Add an X-Cache header to the response.</td></tr>
-<tr class="odd"><td><a href="mod_cache.html#cacheignorecachecontrol">CacheIgnoreCacheControl On|Off</a></td><td> Off </td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">클라이언트가 캐쉬하지않는 내용을 요청함을 무시한다.</td></tr>
-<tr><td><a href="mod_cache.html#cacheignoreheaders">CacheIgnoreHeaders <var>header-string</var> [<var>header-string</var>] ...</a></td><td> None </td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">캐쉬에 지정한 HTTP 헤더(들)를 저장하지 않는다
+<tr><td><a href="mod_log_config.html#bufferedlogs" /></td><td></td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">Buffer log entries in memory before writing to disk</td></tr>
+<tr class="odd"><td><a href="mod_buffer.html#buffersize">BufferSize integer</a></td><td> 131072 </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum size in bytes to buffer by the buffer filter</td></tr>
+<tr><td><a href="mod_cache.html#cachedefaultexpire" id="C" name="C">CacheDefaultExpire <var>seconds</var></a></td><td> 3600 (one hour) </td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">만기시간을 지정하지않은 문서를 캐쉬할 기본 기간.</td></tr>
+<tr class="odd"><td><a href="mod_cache.html#cachedetailheader" /></td><td></td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Add an X-Cache-Detail header to the response.</td></tr>
+<tr><td><a href="mod_cache_disk.html#cachedirlength">CacheDirLength <var>length</var></a></td><td> 2 </td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">하위디렉토리명의 문자개수</td></tr>
+<tr class="odd"><td><a href="mod_cache_disk.html#cachedirlevels">CacheDirLevels <var>levels</var></a></td><td> 3 </td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">캐쉬의 하위디렉토리 깊이.</td></tr>
+<tr><td><a href="mod_cache.html#cachedisable">CacheDisable <var> url-string</var></a></td><td></td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">특정 URL을 캐쉬하지 않는다</td></tr>
+<tr class="odd"><td><a href="mod_cache.html#cacheenable">CacheEnable <var>cache_type</var> <var>url-string</var></a></td><td></td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">지정한 저장관리자를 사용하여 지정한 URL을 캐쉬한다</td></tr>
+<tr><td><a href="mod_file_cache.html#cachefile">CacheFile <var>file-path</var> [<var>file-path</var>] ...</a></td><td></td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">시작시 여러 파일 핸들을 캐쉬한다</td></tr>
+<tr class="odd"><td><a href="mod_cache.html#cacheheader" /></td><td></td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Add an X-Cache header to the response.</td></tr>
+<tr><td><a href="mod_cache.html#cacheignorecachecontrol">CacheIgnoreCacheControl On|Off</a></td><td> Off </td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">클라이언트가 캐쉬하지않는 내용을 요청함을 무시한다.</td></tr>
+<tr class="odd"><td><a href="mod_cache.html#cacheignoreheaders">CacheIgnoreHeaders <var>header-string</var> [<var>header-string</var>] ...</a></td><td> None </td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">캐쉬에 지정한 HTTP 헤더(들)를 저장하지 않는다
 </td></tr>
-<tr class="odd"><td><a href="mod_cache.html#cacheignorenolastmod">CacheIgnoreNoLastMod On|Off</a></td><td> Off </td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">응답에 Last Modified 헤더가 없다는 사실을 무시한다.</td></tr>
-<tr><td><a href="mod_cache.html#cacheignorequerystring" /></td><td></td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">Ignore query string when caching</td></tr>
-<tr class="odd"><td><a href="mod_cache.html#cacheignoreurlsessionidentifiers" /></td><td></td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Ignore defined session identifiers encoded in the URL when caching
+<tr><td><a href="mod_cache.html#cacheignorenolastmod">CacheIgnoreNoLastMod On|Off</a></td><td> Off </td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">응답에 Last Modified 헤더가 없다는 사실을 무시한다.</td></tr>
+<tr class="odd"><td><a href="mod_cache.html#cacheignorequerystring" /></td><td></td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Ignore query string when caching</td></tr>
+<tr><td><a href="mod_cache.html#cacheignoreurlsessionidentifiers" /></td><td></td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">Ignore defined session identifiers encoded in the URL when caching
 </td></tr>
-<tr><td><a href="mod_cache.html#cachekeybaseurl" /></td><td></td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">Override the base URL of reverse proxied cache keys.</td></tr>
-<tr class="odd"><td><a href="mod_cache.html#cachelastmodifiedfactor">CacheLastModifiedFactor <var>float</var></a></td><td> 0.1 </td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">LastModified 시간으로 만기시간을 계산하는데 사용하는
+<tr class="odd"><td><a href="mod_cache.html#cachekeybaseurl" /></td><td></td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Override the base URL of reverse proxied cache keys.</td></tr>
+<tr><td><a href="mod_cache.html#cachelastmodifiedfactor">CacheLastModifiedFactor <var>float</var></a></td><td> 0.1 </td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">LastModified 시간으로 만기시간을 계산하는데 사용하는
 계수.</td></tr>
-<tr><td><a href="mod_cache.html#cachelock" /></td><td></td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">Enable the thundering herd lock.</td></tr>
-<tr class="odd"><td><a href="mod_cache.html#cachelockmaxage" /></td><td></td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Set the maximum possible age of a cache lock.</td></tr>
-<tr><td><a href="mod_cache.html#cachelockpath" /></td><td></td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">Set the lock path directory.</td></tr>
-<tr class="odd"><td><a href="mod_cache.html#cachemaxexpire">CacheMaxExpire <var>seconds</var></a></td><td> 86400 (하루) </td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">문서를 캐쉬하는 초단위 최대시간</td></tr>
-<tr><td><a href="mod_cache_disk.html#cachemaxfilesize">CacheMaxFileSize <var>bytes</var></a></td><td> 1000000 </td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">캐쉬에 저장할 문서의 최대크기 (바이트 단위)</td></tr>
-<tr class="odd"><td><a href="mod_cache.html#cacheminexpire" /></td><td></td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">The minimum time in seconds to cache a document</td></tr>
-<tr><td><a href="mod_cache_disk.html#cacheminfilesize">CacheMinFileSize <var>bytes</var></a></td><td> 1 </td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">캐쉬에 저장할 문서의 최소크기 (바이트 단위)</td></tr>
-<tr class="odd"><td><a href="mod_negotiation.html#cachenegotiateddocs">CacheNegotiatedDocs On|Off</a></td><td> Off </td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Allows content-negotiated documents to be
+<tr class="odd"><td><a href="mod_cache.html#cachelock" /></td><td></td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Enable the thundering herd lock.</td></tr>
+<tr><td><a href="mod_cache.html#cachelockmaxage" /></td><td></td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">Set the maximum possible age of a cache lock.</td></tr>
+<tr class="odd"><td><a href="mod_cache.html#cachelockpath" /></td><td></td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Set the lock path directory.</td></tr>
+<tr><td><a href="mod_cache.html#cachemaxexpire">CacheMaxExpire <var>seconds</var></a></td><td> 86400 (하루) </td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">문서를 캐쉬하는 초단위 최대시간</td></tr>
+<tr class="odd"><td><a href="mod_cache_disk.html#cachemaxfilesize">CacheMaxFileSize <var>bytes</var></a></td><td> 1000000 </td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">캐쉬에 저장할 문서의 최대크기 (바이트 단위)</td></tr>
+<tr><td><a href="mod_cache.html#cacheminexpire" /></td><td></td><td>svdh</td><td>X</td></tr><tr><td class="descr" colspan="4">The minimum time in seconds to cache a document</td></tr>
+<tr class="odd"><td><a href="mod_cache_disk.html#cacheminfilesize">CacheMinFileSize <var>bytes</var></a></td><td> 1 </td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">캐쉬에 저장할 문서의 최소크기 (바이트 단위)</td></tr>
+<tr><td><a href="mod_negotiation.html#cachenegotiateddocs">CacheNegotiatedDocs On|Off</a></td><td> Off </td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Allows content-negotiated documents to be
 cached by proxy servers</td></tr>
-<tr><td><a href="mod_cache.html#cachequickhandler" /></td><td></td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">Run the cache from the quick handler.</td></tr>
-<tr class="odd"><td><a href="mod_cache_disk.html#cachereadsize" /></td><td></td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">The minimum size (in bytes) of the document to read and be cached before sending the data downstream</td></tr>
-<tr><td><a href="mod_cache_disk.html#cachereadtime" /></td><td></td><td>svdh</td><td>X</td></tr><tr><td class="descr" colspan="4">The minimum time (in milliseconds) that should elapse while reading
+<tr class="odd"><td><a href="mod_cache.html#cachequickhandler" /></td><td></td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Run the cache from the quick handler.</td></tr>
+<tr><td><a href="mod_cache_disk.html#cachereadsize" /></td><td></td><td>svdh</td><td>X</td></tr><tr><td class="descr" colspan="4">The minimum size (in bytes) of the document to read and be cached before sending the data downstream</td></tr>
+<tr class="odd"><td><a href="mod_cache_disk.html#cachereadtime" /></td><td></td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">The minimum time (in milliseconds) that should elapse while reading
   before data is sent downstream</td></tr>
-<tr class="odd"><td><a href="mod_cache_disk.html#cacheroot">CacheRoot <var>directory</var></a></td><td></td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">캐쉬 파일을 저장할 디렉토리 root</td></tr>
-<tr><td><a href="mod_cache_socache.html#cachesocache">CacheSocache <var>type[:args]</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">The shared object cache implementation to use</td></tr>
-<tr class="odd"><td><a href="mod_cache_socache.html#cachesocachemaxsize">CacheSocacheMaxSize <var>bytes</var></a></td><td> 102400 </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The maximum size (in bytes) of an entry to be placed in the
+<tr><td><a href="mod_cache_disk.html#cacheroot">CacheRoot <var>directory</var></a></td><td></td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">캐쉬 파일을 저장할 디렉토리 root</td></tr>
+<tr class="odd"><td><a href="mod_cache_socache.html#cachesocache">CacheSocache <var>type[:args]</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The shared object cache implementation to use</td></tr>
+<tr><td><a href="mod_cache_socache.html#cachesocachemaxsize">CacheSocacheMaxSize <var>bytes</var></a></td><td> 102400 </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">The maximum size (in bytes) of an entry to be placed in the
 cache</td></tr>
-<tr><td><a href="mod_cache_socache.html#cachesocachemaxtime">CacheSocacheMaxTime <var>seconds</var></a></td><td> 86400 </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">The maximum time (in seconds) for a document to be placed in the
+<tr class="odd"><td><a href="mod_cache_socache.html#cachesocachemaxtime">CacheSocacheMaxTime <var>seconds</var></a></td><td> 86400 </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The maximum time (in seconds) for a document to be placed in the
 cache</td></tr>
-<tr class="odd"><td><a href="mod_cache_socache.html#cachesocachemintime">CacheSocacheMinTime <var>seconds</var></a></td><td> 600 </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The minimum time (in seconds) for a document to be placed in the
+<tr><td><a href="mod_cache_socache.html#cachesocachemintime">CacheSocacheMinTime <var>seconds</var></a></td><td> 600 </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">The minimum time (in seconds) for a document to be placed in the
 cache</td></tr>
-<tr><td><a href="mod_cache_socache.html#cachesocachereadsize">CacheSocacheReadSize <var>bytes</var></a></td><td> 0 </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">The minimum size (in bytes) of the document to read and be cached
+<tr class="odd"><td><a href="mod_cache_socache.html#cachesocachereadsize">CacheSocacheReadSize <var>bytes</var></a></td><td> 0 </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The minimum size (in bytes) of the document to read and be cached
   before sending the data downstream</td></tr>
-<tr class="odd"><td><a href="mod_cache_socache.html#cachesocachereadtime">CacheSocacheReadTime <var>milliseconds</var></a></td><td> 0 </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The minimum time (in milliseconds) that should elapse while reading
+<tr><td><a href="mod_cache_socache.html#cachesocachereadtime">CacheSocacheReadTime <var>milliseconds</var></a></td><td> 0 </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">The minimum time (in milliseconds) that should elapse while reading
   before data is sent downstream</td></tr>
-<tr><td><a href="mod_cache.html#cachestaleonerror" /></td><td></td><td>svdh</td><td>X</td></tr><tr><td class="descr" colspan="4">Serve stale content in place of 5xx responses.</td></tr>
-<tr class="odd"><td><a href="mod_cache.html#cachestoreexpired" /></td><td></td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Attempt to cache responses that the server reports as expired</td></tr>
-<tr><td><a href="mod_cache.html#cachestorenostore" /></td><td></td><td>svdh</td><td>X</td></tr><tr><td class="descr" colspan="4">Attempt to cache requests or responses that have been marked as no-store.</td></tr>
-<tr class="odd"><td><a href="mod_cache.html#cachestoreprivate" /></td><td></td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Attempt to cache responses that the server has marked as private</td></tr>
-<tr><td><a href="mod_cgid.html#cgidscripttimeout">CGIDScriptTimeout <var>time</var>[s|ms]</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">The length of time to wait for more output from the
+<tr class="odd"><td><a href="mod_cache.html#cachestaleonerror" /></td><td></td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Serve stale content in place of 5xx responses.</td></tr>
+<tr><td><a href="mod_cache.html#cachestoreexpired" /></td><td></td><td>svdh</td><td>X</td></tr><tr><td class="descr" colspan="4">Attempt to cache responses that the server reports as expired</td></tr>
+<tr class="odd"><td><a href="mod_cache.html#cachestorenostore" /></td><td></td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Attempt to cache requests or responses that have been marked as no-store.</td></tr>
+<tr><td><a href="mod_cache.html#cachestoreprivate" /></td><td></td><td>svdh</td><td>X</td></tr><tr><td class="descr" colspan="4">Attempt to cache responses that the server has marked as private</td></tr>
+<tr class="odd"><td><a href="mod_cgid.html#cgidscripttimeout">CGIDScriptTimeout <var>time</var>[s|ms]</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">The length of time to wait for more output from the
 CGI program</td></tr>
-<tr class="odd"><td><a href="core.html#cgimapextension">CGIMapExtension <var>cgi-path</var> <var>.extension</var></a></td><td></td><td>dh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Technique for locating the interpreter for CGI
+<tr><td><a href="core.html#cgimapextension">CGIMapExtension <var>cgi-path</var> <var>.extension</var></a></td><td></td><td>dh</td><td>C</td></tr><tr><td class="descr" colspan="4">Technique for locating the interpreter for CGI
 scripts</td></tr>
-<tr><td><a href="core.html#cgipassauth">CGIPassAuth On|Off</a></td><td> Off </td><td>dh</td><td>C</td></tr><tr><td class="descr" colspan="4">Enables passing HTTP authorization headers to scripts as CGI
+<tr class="odd"><td><a href="core.html#cgipassauth">CGIPassAuth On|Off</a></td><td> Off </td><td>dh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Enables passing HTTP authorization headers to scripts as CGI
 variables</td></tr>
-<tr class="odd"><td><a href="core.html#cgivar">CGIVar <var>variable</var> <var>rule</var></a></td><td></td><td>dh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Controls how some CGI variables are set</td></tr>
-<tr><td><a href="mod_charset_lite.html#charsetdefault">CharsetDefault <var>charset</var></a></td><td></td><td>svdh</td><td>X</td></tr><tr><td class="descr" colspan="4">변환할 문자집합</td></tr>
-<tr class="odd"><td><a href="mod_charset_lite.html#charsetoptions">CharsetOptions <var>option</var> [<var>option</var>] ...</a></td><td> DebugLevel=0 NoImpl +</td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">문자집합 변환 기능을 설정</td></tr>
-<tr><td><a href="mod_charset_lite.html#charsetsourceenc">CharsetSourceEnc <var>charset</var></a></td><td></td><td>svdh</td><td>X</td></tr><tr><td class="descr" colspan="4">파일 원본의 문자집합</td></tr>
-<tr class="odd"><td><a href="mod_speling.html#checkcaseonly" /></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Limits the action of the speling module to case corrections</td></tr>
-<tr><td><a href="mod_speling.html#checkspelling">CheckSpelling on|off</a></td><td> Off </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">맞춤법 모듈을 사용한다</td></tr>
-<tr class="odd"><td><a href="mod_unixd.html#chrootdir">ChrootDir <var>/path/to/directory</var></a></td><td></td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Directory for apache to run chroot(8) after startup.</td></tr>
-<tr><td><a href="core.html#contentdigest">ContentDigest On|Off</a></td><td> Off </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Enables the generation of <code>Content-MD5</code> HTTP Response
+<tr><td><a href="core.html#cgivar">CGIVar <var>variable</var> <var>rule</var></a></td><td></td><td>dh</td><td>C</td></tr><tr><td class="descr" colspan="4">Controls how some CGI variables are set</td></tr>
+<tr class="odd"><td><a href="mod_charset_lite.html#charsetdefault">CharsetDefault <var>charset</var></a></td><td></td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">변환할 문자집합</td></tr>
+<tr><td><a href="mod_charset_lite.html#charsetoptions">CharsetOptions <var>option</var> [<var>option</var>] ...</a></td><td> DebugLevel=0 NoImpl +</td><td>svdh</td><td>X</td></tr><tr><td class="descr" colspan="4">문자집합 변환 기능을 설정</td></tr>
+<tr class="odd"><td><a href="mod_charset_lite.html#charsetsourceenc">CharsetSourceEnc <var>charset</var></a></td><td></td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">파일 원본의 문자집합</td></tr>
+<tr><td><a href="mod_speling.html#checkcaseonly" /></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Limits the action of the speling module to case corrections</td></tr>
+<tr class="odd"><td><a href="mod_speling.html#checkspelling">CheckSpelling on|off</a></td><td> Off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">맞춤법 모듈을 사용한다</td></tr>
+<tr><td><a href="mod_unixd.html#chrootdir">ChrootDir <var>/path/to/directory</var></a></td><td></td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">Directory for apache to run chroot(8) after startup.</td></tr>
+<tr class="odd"><td><a href="core.html#contentdigest">ContentDigest On|Off</a></td><td> Off </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Enables the generation of <code>Content-MD5</code> HTTP Response
 headers</td></tr>
-<tr class="odd"><td><a href="mod_usertrack.html#cookiedomain">CookieDomain <em>domain</em></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The domain to which the tracking cookie applies</td></tr>
-<tr><td><a href="mod_usertrack.html#cookieexpires">CookieExpires <em>expiry-period</em></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Expiry time for the tracking cookie</td></tr>
-<tr class="odd"><td><a href="mod_usertrack.html#cookiename">CookieName <em>token</em></a></td><td> Apache </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Name of the tracking cookie</td></tr>
-<tr><td><a href="mod_usertrack.html#cookiestyle">CookieStyle
-    <em>Netscape|Cookie|Cookie2|RFC2109|RFC2965</em></a></td><td> Netscape </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Format of the cookie header field</td></tr>
-<tr class="odd"><td><a href="mod_usertrack.html#cookietracking">CookieTracking on|off</a></td><td> off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enables tracking cookie</td></tr>
-<tr><td><a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory <var>directory</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Directory where Apache HTTP Server attempts to
+<tr><td><a href="mod_usertrack.html#cookiedomain">CookieDomain <em>domain</em></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">The domain to which the tracking cookie applies</td></tr>
+<tr class="odd"><td><a href="mod_usertrack.html#cookieexpires">CookieExpires <em>expiry-period</em></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Expiry time for the tracking cookie</td></tr>
+<tr><td><a href="mod_usertrack.html#cookiename">CookieName <em>token</em></a></td><td> Apache </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Name of the tracking cookie</td></tr>
+<tr class="odd"><td><a href="mod_usertrack.html#cookiestyle">CookieStyle
+    <em>Netscape|Cookie|Cookie2|RFC2109|RFC2965</em></a></td><td> Netscape </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Format of the cookie header field</td></tr>
+<tr><td><a href="mod_usertrack.html#cookietracking">CookieTracking on|off</a></td><td> off </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Enables tracking cookie</td></tr>
+<tr class="odd"><td><a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory <var>directory</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Directory where Apache HTTP Server attempts to
 switch before dumping core</td></tr>
-<tr class="odd"><td><a href="mod_log_config.html#customlog">CustomLog  <var>file</var>|<var>pipe</var>
+<tr><td><a href="mod_log_config.html#customlog">CustomLog  <var>file</var>|<var>pipe</var>
 <var>format</var>|<var>nickname</var>
-[env=[!]<var>environment-variable</var>]</a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">로그파일 이름과 형식을 지정한다</td></tr>
-<tr><td><a href="mod_dav.html#dav" id="D" name="D">Dav On|Off|<var>provider-name</var></a></td><td> Off </td><td>d</td><td>E</td></tr><tr><td class="descr" colspan="4">WebDAV HTTP 메써드를 시작한다</td></tr>
-<tr class="odd"><td><a href="mod_dav.html#davdepthinfinity">DavDepthInfinity on|off</a></td><td> off </td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">PROPFIND의 Depth: Infinity 요청을 허가한다</td></tr>
-<tr><td><a href="mod_dav_lock.html#davgenericlockdb">DavGenericLockDB <var>file-path</var></a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Location of the DAV lock database</td></tr>
-<tr class="odd"><td><a href="mod_dav_fs.html#davlockdb">DavLockDB <var>file-path</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">DAV 잠금 데이터베이스 위치</td></tr>
-<tr><td><a href="mod_dav.html#davmintimeout">DavMinTimeout <var>seconds</var></a></td><td> 0 </td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">서버가 DAV 자원에 대해 유지할 잠금의 최소시간</td></tr>
-<tr class="odd"><td><a href="mod_dbd.html#dbdexptime">DBDExptime <var>time-in-seconds</var></a></td><td> 300 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Keepalive time for idle connections</td></tr>
-<tr><td><a href="mod_dbd.html#dbdinitsql">DBDInitSQL <var>"SQL statement"</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Execute an SQL statement after connecting to a database</td></tr>
-<tr class="odd"><td><a href="mod_dbd.html#dbdkeep">DBDKeep <var>number</var></a></td><td> 2 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum sustained number of connections</td></tr>
-<tr><td><a href="mod_dbd.html#dbdmax">DBDMax <var>number</var></a></td><td> 10 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum number of connections</td></tr>
-<tr class="odd"><td><a href="mod_dbd.html#dbdmin">DBDMin <var>number</var></a></td><td> 1 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Minimum number of connections</td></tr>
-<tr><td><a href="mod_dbd.html#dbdparams">DBDParams
-<var>param1</var>=<var>value1</var>[,<var>param2</var>=<var>value2</var>]</a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Parameters for database connection</td></tr>
-<tr class="odd"><td><a href="mod_dbd.html#dbdpersist">DBDPersist On|Off</a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Whether to use persistent connections</td></tr>
-<tr><td><a href="mod_dbd.html#dbdpreparesql">DBDPrepareSQL <var>"SQL statement"</var> <var>label</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Define an SQL prepared statement</td></tr>
-<tr class="odd"><td><a href="mod_dbd.html#dbdriver">DBDriver <var>name</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Specify an SQL driver</td></tr>
-<tr><td><a href="mod_autoindex.html#defaulticon">DefaultIcon <var>url-path</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">특정 아이콘을 설정하지않은 파일에 사용할 아이콘</td></tr>
-<tr class="odd"><td><a href="mod_mime.html#defaultlanguage">DefaultLanguage <var>language-tag</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Defines a default language-tag to be sent in the Content-Language
+[env=[!]<var>environment-variable</var>]</a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">로그파일 이름과 형식을 지정한다</td></tr>
+<tr class="odd"><td><a href="mod_dav.html#dav" id="D" name="D">Dav On|Off|<var>provider-name</var></a></td><td> Off </td><td>d</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">WebDAV HTTP 메써드를 시작한다</td></tr>
+<tr><td><a href="mod_dav.html#davdepthinfinity">DavDepthInfinity on|off</a></td><td> off </td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">PROPFIND의 Depth: Infinity 요청을 허가한다</td></tr>
+<tr class="odd"><td><a href="mod_dav_lock.html#davgenericlockdb">DavGenericLockDB <var>file-path</var></a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Location of the DAV lock database</td></tr>
+<tr><td><a href="mod_dav_fs.html#davlockdb">DavLockDB <var>file-path</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">DAV 잠금 데이터베이스 위치</td></tr>
+<tr class="odd"><td><a href="mod_dav.html#davmintimeout">DavMinTimeout <var>seconds</var></a></td><td> 0 </td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">서버가 DAV 자원에 대해 유지할 잠금의 최소시간</td></tr>
+<tr><td><a href="mod_dbd.html#dbdexptime">DBDExptime <var>time-in-seconds</var></a></td><td> 300 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Keepalive time for idle connections</td></tr>
+<tr class="odd"><td><a href="mod_dbd.html#dbdinitsql">DBDInitSQL <var>"SQL statement"</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Execute an SQL statement after connecting to a database</td></tr>
+<tr><td><a href="mod_dbd.html#dbdkeep">DBDKeep <var>number</var></a></td><td> 2 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum sustained number of connections</td></tr>
+<tr class="odd"><td><a href="mod_dbd.html#dbdmax">DBDMax <var>number</var></a></td><td> 10 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum number of connections</td></tr>
+<tr><td><a href="mod_dbd.html#dbdmin">DBDMin <var>number</var></a></td><td> 1 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Minimum number of connections</td></tr>
+<tr class="odd"><td><a href="mod_dbd.html#dbdparams">DBDParams
+<var>param1</var>=<var>value1</var>[,<var>param2</var>=<var>value2</var>]</a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Parameters for database connection</td></tr>
+<tr><td><a href="mod_dbd.html#dbdpersist">DBDPersist On|Off</a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Whether to use persistent connections</td></tr>
+<tr class="odd"><td><a href="mod_dbd.html#dbdpreparesql">DBDPrepareSQL <var>"SQL statement"</var> <var>label</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Define an SQL prepared statement</td></tr>
+<tr><td><a href="mod_dbd.html#dbdriver">DBDriver <var>name</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Specify an SQL driver</td></tr>
+<tr class="odd"><td><a href="mod_autoindex.html#defaulticon">DefaultIcon <var>url-path</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">특정 아이콘을 설정하지않은 파일에 사용할 아이콘</td></tr>
+<tr><td><a href="mod_mime.html#defaultlanguage">DefaultLanguage <var>language-tag</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Defines a default language-tag to be sent in the Content-Language
 header field for all resources in the current context that have not been
 assigned a language-tag by some other means.</td></tr>
-<tr><td><a href="core.html#defaultruntimedir">DefaultRuntimeDir <var>directory-path</var></a></td><td> DEFAULT_REL_RUNTIME +</td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Base directory for the server run-time files</td></tr>
-<tr class="odd"><td><a href="core.html#defaulttype">DefaultType <var>media-type|none</var></a></td><td> none </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">This directive has no effect other than to emit warnings
+<tr class="odd"><td><a href="core.html#defaultruntimedir">DefaultRuntimeDir <var>directory-path</var></a></td><td> DEFAULT_REL_RUNTIME +</td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Base directory for the server run-time files</td></tr>
+<tr><td><a href="core.html#defaulttype">DefaultType <var>media-type|none</var></a></td><td> none </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">This directive has no effect other than to emit warnings
 if the value is not <code>none</code>. In prior versions, DefaultType
 would specify a default media type to assign to response content for
 which no other media type configuration could be found.
 </td></tr>
-<tr><td><a href="core.html#define">Define <var>parameter-name</var> [<var>parameter-value</var>]</a></td><td></td><td>svd</td><td>C</td></tr><tr><td class="descr" colspan="4">Define a variable</td></tr>
-<tr class="odd"><td><a href="mod_deflate.html#deflatebuffersize">DeflateBufferSize <var>value</var></a></td><td> 8096 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">zlib이 한번에 압축할 크기</td></tr>
-<tr><td><a href="mod_deflate.html#deflatecompressionlevel">DeflateCompressionLevel <var>value</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">출력을 어느정도 압축하는가</td></tr>
-<tr class="odd"><td><a href="mod_deflate.html#deflatefilternote">DeflateFilterNote [<var>type</var>] <var>notename</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">압축률을 로그에 기록한다</td></tr>
-<tr><td><a href="mod_deflate.html#deflateinflatelimitrequestbody">DeflateInflateLimitRequestBody<var>value</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum size of inflated request bodies</td></tr>
-<tr class="odd"><td><a href="mod_deflate.html#deflateinflateratioburst">DeflateInflateRatioBurst <var>value</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum number of times the inflation ratio for request bodies 
+<tr class="odd"><td><a href="core.html#define">Define <var>parameter-name</var> [<var>parameter-value</var>]</a></td><td></td><td>svd</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Define a variable</td></tr>
+<tr><td><a href="mod_deflate.html#deflatebuffersize">DeflateBufferSize <var>value</var></a></td><td> 8096 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">zlib이 한번에 압축할 크기</td></tr>
+<tr class="odd"><td><a href="mod_deflate.html#deflatecompressionlevel">DeflateCompressionLevel <var>value</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">출력을 어느정도 압축하는가</td></tr>
+<tr><td><a href="mod_deflate.html#deflatefilternote">DeflateFilterNote [<var>type</var>] <var>notename</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">압축률을 로그에 기록한다</td></tr>
+<tr class="odd"><td><a href="mod_deflate.html#deflateinflatelimitrequestbody">DeflateInflateLimitRequestBody<var>value</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum size of inflated request bodies</td></tr>
+<tr><td><a href="mod_deflate.html#deflateinflateratioburst">DeflateInflateRatioBurst <var>value</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum number of times the inflation ratio for request bodies 
              can be crossed</td></tr>
-<tr><td><a href="mod_deflate.html#deflateinflateratiolimit">DeflateInflateRatioLimit <var>value</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum inflation ratio for request bodies</td></tr>
-<tr class="odd"><td><a href="mod_deflate.html#deflatememlevel">DeflateMemLevel <var>value</var></a></td><td> 9 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">zlib이 압축할때 사용하는 메모리량</td></tr>
-<tr><td><a href="mod_deflate.html#deflatewindowsize">DeflateWindowSize <var>value</var></a></td><td> 15 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Zlib 압축 window size</td></tr>
-<tr class="odd"><td><a href="mod_access_compat.html#deny"> Deny from all|<var>host</var>|env=[!]<var>env-variable</var>
-[<var>host</var>|env=[!]<var>env-variable</var>] ...</a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Controls which hosts are denied access to the
+<tr class="odd"><td><a href="mod_deflate.html#deflateinflateratiolimit">DeflateInflateRatioLimit <var>value</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum inflation ratio for request bodies</td></tr>
+<tr><td><a href="mod_deflate.html#deflatememlevel">DeflateMemLevel <var>value</var></a></td><td> 9 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">zlib이 압축할때 사용하는 메모리량</td></tr>
+<tr class="odd"><td><a href="mod_deflate.html#deflatewindowsize">DeflateWindowSize <var>value</var></a></td><td> 15 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Zlib 압축 window size</td></tr>
+<tr><td><a href="mod_access_compat.html#deny"> Deny from all|<var>host</var>|env=[!]<var>env-variable</var>
+[<var>host</var>|env=[!]<var>env-variable</var>] ...</a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Controls which hosts are denied access to the
 server</td></tr>
-<tr><td><a href="core.html#directory">&lt;Directory <var>directory-path</var>&gt;
-... &lt;/Directory&gt;</a></td><td></td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Enclose a group of directives that apply only to the
+<tr class="odd"><td><a href="core.html#directory">&lt;Directory <var>directory-path</var>&gt;
+... &lt;/Directory&gt;</a></td><td></td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Enclose a group of directives that apply only to the
 named file-system directory, sub-directories, and their contents.</td></tr>
-<tr class="odd"><td><a href="mod_dir.html#directorycheckhandler">DirectoryCheckHandler On|Off</a></td><td> Off </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Toggle how this module responds when another handler is configured</td></tr>
-<tr><td><a href="mod_dir.html#directoryindex">DirectoryIndex
-    <var>local-url</var> [<var>local-url</var>] ...</a></td><td> index.html </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">클라이언트가 디렉토리를 요청할때 찾아볼 자원 목록</td></tr>
-<tr class="odd"><td><a href="mod_dir.html#directoryindexredirect">DirectoryIndexRedirect on | off | permanent | temp | seeother |
+<tr><td><a href="mod_dir.html#directorycheckhandler">DirectoryCheckHandler On|Off</a></td><td> Off </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Toggle how this module responds when another handler is configured</td></tr>
+<tr class="odd"><td><a href="mod_dir.html#directoryindex">DirectoryIndex
+    <var>local-url</var> [<var>local-url</var>] ...</a></td><td> index.html </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">클라이언트가 디렉토리를 요청할때 찾아볼 자원 목록</td></tr>
+<tr><td><a href="mod_dir.html#directoryindexredirect">DirectoryIndexRedirect on | off | permanent | temp | seeother |
 <var>3xx-code</var>
-</a></td><td> off </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Configures an external redirect for directory indexes.
+</a></td><td> off </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Configures an external redirect for directory indexes.
 </td></tr>
-<tr><td><a href="core.html#directorymatch">&lt;DirectoryMatch <var>regex</var>&gt;
-... &lt;/DirectoryMatch&gt;</a></td><td></td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Enclose directives that apply to
+<tr class="odd"><td><a href="core.html#directorymatch">&lt;DirectoryMatch <var>regex</var>&gt;
+... &lt;/DirectoryMatch&gt;</a></td><td></td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Enclose directives that apply to
 the contents of file-system directories matching a regular expression.</td></tr>
-<tr class="odd"><td><a href="mod_dir.html#directoryslash">DirectorySlash On|Off</a></td><td> On </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">마지막 슬래쉬 리다이렉션을 키고 끈다</td></tr>
-<tr><td><a href="core.html#documentroot">DocumentRoot <var>directory-path</var></a></td><td> "/usr/local/apache/ +</td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Directory that forms the main document tree visible
+<tr><td><a href="mod_dir.html#directoryslash">DirectorySlash On|Off</a></td><td> On </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">마지막 슬래쉬 리다이렉션을 키고 끈다</td></tr>
+<tr class="odd"><td><a href="core.html#documentroot">DocumentRoot <var>directory-path</var></a></td><td> "/usr/local/apache/ +</td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Directory that forms the main document tree visible
 from the web</td></tr>
-<tr class="odd"><td><a href="mod_privileges.html#dtraceprivileges">DTracePrivileges On|Off</a></td><td> Off </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Determines whether the privileges required by dtrace are enabled.</td></tr>
-<tr><td><a href="mod_dumpio.html#dumpioinput">DumpIOInput On|Off</a></td><td> Off </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Dump all input data to the error log</td></tr>
-<tr class="odd"><td><a href="mod_dumpio.html#dumpiooutput">DumpIOOutput On|Off</a></td><td> Off </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Dump all output data to the error log</td></tr>
-<tr><td><a href="core.html#else" id="E" name="E">&lt;Else&gt; ... &lt;/Else&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Contains directives that apply only if the condition of a
+<tr><td><a href="mod_privileges.html#dtraceprivileges">DTracePrivileges On|Off</a></td><td> Off </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Determines whether the privileges required by dtrace are enabled.</td></tr>
+<tr class="odd"><td><a href="mod_dumpio.html#dumpioinput">DumpIOInput On|Off</a></td><td> Off </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Dump all input data to the error log</td></tr>
+<tr><td><a href="mod_dumpio.html#dumpiooutput">DumpIOOutput On|Off</a></td><td> Off </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Dump all output data to the error log</td></tr>
+<tr class="odd"><td><a href="core.html#else" id="E" name="E">&lt;Else&gt; ... &lt;/Else&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Contains directives that apply only if the condition of a
 previous <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code> or
 <code class="directive"><a href="../mod/core.html#elseif">&lt;ElseIf&gt;</a></code> section is not
 satisfied by a request at runtime</td></tr>
-<tr class="odd"><td><a href="core.html#elseif">&lt;ElseIf <var>expression</var>&gt; ... &lt;/ElseIf&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Contains directives that apply only if a condition is satisfied
+<tr><td><a href="core.html#elseif">&lt;ElseIf <var>expression</var>&gt; ... &lt;/ElseIf&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Contains directives that apply only if a condition is satisfied
 by a request at runtime while the condition of a previous
 <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code> or
 <code class="directive">&lt;ElseIf&gt;</code> section is not
 satisfied</td></tr>
-<tr><td><a href="mpm_common.html#enableexceptionhook">EnableExceptionHook On|Off</a></td><td> Off </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Enables a hook that runs exception handlers
+<tr class="odd"><td><a href="mpm_common.html#enableexceptionhook">EnableExceptionHook On|Off</a></td><td> Off </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Enables a hook that runs exception handlers
 after a crash</td></tr>
-<tr class="odd"><td><a href="core.html#enablemmap">EnableMMAP On|Off</a></td><td> On </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Use memory-mapping to read files during delivery</td></tr>
-<tr><td><a href="core.html#enablesendfile">EnableSendfile On|Off</a></td><td> Off </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Use the kernel sendfile support to deliver files to the client</td></tr>
-<tr class="odd"><td><a href="core.html#error">Error <var>message</var></a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Abort configuration parsing with a custom error message</td></tr>
-<tr><td><a href="core.html#errordocument">ErrorDocument <var>error-code</var> <var>document</var></a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">What the server will return to the client
+<tr><td><a href="core.html#enablemmap">EnableMMAP On|Off</a></td><td> On </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Use memory-mapping to read files during delivery</td></tr>
+<tr class="odd"><td><a href="core.html#enablesendfile">EnableSendfile On|Off</a></td><td> Off </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Use the kernel sendfile support to deliver files to the client</td></tr>
+<tr><td><a href="core.html#error">Error <var>message</var></a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Abort configuration parsing with a custom error message</td></tr>
+<tr class="odd"><td><a href="core.html#errordocument">ErrorDocument <var>error-code</var> <var>document</var></a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">What the server will return to the client
 in case of an error</td></tr>
-<tr class="odd"><td><a href="core.html#errorlog"> ErrorLog <var>file-path</var>|syslog[:<var>facility</var>]</a></td><td> logs/error_log (Uni +</td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Location where the server will log errors</td></tr>
-<tr><td><a href="core.html#errorlogformat"> ErrorLogFormat [connection|request] <var>format</var></a></td><td></td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Format specification for error log entries</td></tr>
-<tr class="odd"><td><a href="mod_example_hooks.html#example">Example</a></td><td></td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">아파치 모듈 API를 설명하기위한 예제 지시어</td></tr>
-<tr><td><a href="mod_expires.html#expiresactive">ExpiresActive On|Off</a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4"><code>Expires</code> 헤더를 생성한다</td></tr>
-<tr class="odd"><td><a href="mod_expires.html#expiresbytype">ExpiresByType <var>MIME-type</var>
-<var>&lt;code&gt;seconds</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">MIME type으로 <code>Expires</code> 헤더값을 설정한다</td></tr>
-<tr><td><a href="mod_expires.html#expiresdefault">ExpiresDefault <var>&lt;code&gt;seconds</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">만기시간을 계산하는 기본 알고리즘</td></tr>
-<tr class="odd"><td><a href="core.html#extendedstatus">ExtendedStatus On|Off</a></td><td> Off[*] </td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Keep track of extended status information for each
+<tr><td><a href="core.html#errorlog"> ErrorLog <var>file-path</var>|syslog[:<var>facility</var>]</a></td><td> logs/error_log (Uni +</td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Location where the server will log errors</td></tr>
+<tr class="odd"><td><a href="core.html#errorlogformat"> ErrorLogFormat [connection|request] <var>format</var></a></td><td></td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Format specification for error log entries</td></tr>
+<tr><td><a href="mod_example_hooks.html#example">Example</a></td><td></td><td>svdh</td><td>X</td></tr><tr><td class="descr" colspan="4">아파치 모듈 API를 설명하기위한 예제 지시어</td></tr>
+<tr class="odd"><td><a href="mod_expires.html#expiresactive">ExpiresActive On|Off</a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4"><code>Expires</code> 헤더를 생성한다</td></tr>
+<tr><td><a href="mod_expires.html#expiresbytype">ExpiresByType <var>MIME-type</var>
+<var>&lt;code&gt;seconds</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">MIME type으로 <code>Expires</code> 헤더값을 설정한다</td></tr>
+<tr class="odd"><td><a href="mod_expires.html#expiresdefault">ExpiresDefault <var>&lt;code&gt;seconds</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">만기시간을 계산하는 기본 알고리즘</td></tr>
+<tr><td><a href="core.html#extendedstatus">ExtendedStatus On|Off</a></td><td> Off[*] </td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Keep track of extended status information for each
 request</td></tr>
-<tr><td><a href="mod_ext_filter.html#extfilterdefine">ExtFilterDefine <var>filtername</var> <var>parameters</var></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">외부 필터를 정의한다</td></tr>
-<tr class="odd"><td><a href="mod_ext_filter.html#extfilteroptions">ExtFilterOptions <var>option</var> [<var>option</var>] ...</a></td><td> DebugLevel=0 NoLogS +</td><td>d</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4"><code class="module"><a href="../mod/mod_ext_filter.html">mod_ext_filter</a></code> 옵션을 설정한다</td></tr>
-<tr><td><a href="mod_dir.html#fallbackresource" id="F" name="F" /></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Define a default URL for requests that don't map to a file</td></tr>
-<tr class="odd"><td><a href="core.html#fileetag">FileETag <var>component</var> ...</a></td><td> MTime Size </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">File attributes used to create the ETag
+<tr class="odd"><td><a href="mod_ext_filter.html#extfilterdefine">ExtFilterDefine <var>filtername</var> <var>parameters</var></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">외부 필터를 정의한다</td></tr>
+<tr><td><a href="mod_ext_filter.html#extfilteroptions">ExtFilterOptions <var>option</var> [<var>option</var>] ...</a></td><td> DebugLevel=0 NoLogS +</td><td>d</td><td>E</td></tr><tr><td class="descr" colspan="4"><code class="module"><a href="../mod/mod_ext_filter.html">mod_ext_filter</a></code> 옵션을 설정한다</td></tr>
+<tr class="odd"><td><a href="mod_dir.html#fallbackresource" id="F" name="F" /></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Define a default URL for requests that don't map to a file</td></tr>
+<tr><td><a href="core.html#fileetag">FileETag <var>component</var> ...</a></td><td> MTime Size </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">File attributes used to create the ETag
 HTTP response header for static files</td></tr>
-<tr><td><a href="core.html#files">&lt;Files <var>filename</var>&gt; ... &lt;/Files&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Contains directives that apply to matched
+<tr class="odd"><td><a href="core.html#files">&lt;Files <var>filename</var>&gt; ... &lt;/Files&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Contains directives that apply to matched
 filenames</td></tr>
-<tr class="odd"><td><a href="core.html#filesmatch">&lt;FilesMatch <var>regex</var>&gt; ... &lt;/FilesMatch&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Contains directives that apply to regular-expression matched
+<tr><td><a href="core.html#filesmatch">&lt;FilesMatch <var>regex</var>&gt; ... &lt;/FilesMatch&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Contains directives that apply to regular-expression matched
 filenames</td></tr>
-<tr><td><a href="mod_filter.html#filterchain">FilterChain [+=-@!]<var>filter-name</var> <var>...</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Configure the filter chain</td></tr>
-<tr class="odd"><td><a href="mod_filter.html#filterdeclare">FilterDeclare <var>filter-name</var> <var>[type]</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Declare a smart filter</td></tr>
-<tr><td><a href="mod_filter.html#filterprotocol">FilterProtocol <var>filter-name</var> [<var>provider-name</var>]
-    <var>proto-flags</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Deal with correct HTTP protocol handling</td></tr>
-<tr class="odd"><td><a href="mod_filter.html#filterprovider">FilterProvider <var>filter-name</var> <var>provider-name</var>
- <var>expression</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Register a content filter</td></tr>
-<tr><td><a href="mod_filter.html#filtertrace">FilterTrace <var>filter-name</var> <var>level</var></a></td><td></td><td>svd</td><td>B</td></tr><tr><td class="descr" colspan="4">Get debug/diagnostic information from
+<tr class="odd"><td><a href="mod_filter.html#filterchain">FilterChain [+=-@!]<var>filter-name</var> <var>...</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Configure the filter chain</td></tr>
+<tr><td><a href="mod_filter.html#filterdeclare">FilterDeclare <var>filter-name</var> <var>[type]</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Declare a smart filter</td></tr>
+<tr class="odd"><td><a href="mod_filter.html#filterprotocol">FilterProtocol <var>filter-name</var> [<var>provider-name</var>]
+    <var>proto-flags</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Deal with correct HTTP protocol handling</td></tr>
+<tr><td><a href="mod_filter.html#filterprovider">FilterProvider <var>filter-name</var> <var>provider-name</var>
+ <var>expression</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Register a content filter</td></tr>
+<tr class="odd"><td><a href="mod_filter.html#filtertrace">FilterTrace <var>filter-name</var> <var>level</var></a></td><td></td><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Get debug/diagnostic information from
     <code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code></td></tr>
-<tr class="odd"><td><a href="mod_negotiation.html#forcelanguagepriority">ForceLanguagePriority None|Prefer|Fallback [Prefer|Fallback]</a></td><td> Prefer </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Action to take if a single acceptable document is not
+<tr><td><a href="mod_negotiation.html#forcelanguagepriority">ForceLanguagePriority None|Prefer|Fallback [Prefer|Fallback]</a></td><td> Prefer </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Action to take if a single acceptable document is not
 found</td></tr>
-<tr><td><a href="core.html#forcetype">ForceType <var>media-type</var>|None</a></td><td></td><td>dh</td><td>C</td></tr><tr><td class="descr" colspan="4">Forces all matching files to be served with the specified
+<tr class="odd"><td><a href="core.html#forcetype">ForceType <var>media-type</var>|None</a></td><td></td><td>dh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Forces all matching files to be served with the specified
 media type in the HTTP Content-Type header field</td></tr>
-<tr class="odd"><td><a href="mod_log_forensic.html#forensiclog">ForensicLog <var>filename</var>|<var>pipe</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets filename of the forensic log</td></tr>
-<tr><td><a href="mod_log_config.html#globallog" id="G" name="G">GlobalLog<var>file</var>|<var>pipe</var>
+<tr><td><a href="mod_log_forensic.html#forensiclog">ForensicLog <var>filename</var>|<var>pipe</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets filename of the forensic log</td></tr>
+<tr class="odd"><td><a href="mod_log_config.html#globallog" id="G" name="G">GlobalLog<var>file</var>|<var>pipe</var>
 <var>format</var>|<var>nickname</var>
 [env=[!]<var>environment-variable</var>|
-expr=<var>expression</var>]</a></td><td></td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">Sets filename and format of log file</td></tr>
-<tr class="odd"><td><a href="core.html#gprofdir">GprofDir <var>/tmp/gprof/</var>|<var>/tmp/gprof/</var>%</a></td><td></td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Directory to write gmon.out profiling data to.  </td></tr>
-<tr><td><a href="mpm_common.html#gracefulshutdowntimeout">GracefulShutdownTimeout <var>seconds</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Specify a timeout after which a gracefully shutdown server
+expr=<var>expression</var>]</a></td><td></td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Sets filename and format of log file</td></tr>
+<tr><td><a href="core.html#gprofdir">GprofDir <var>/tmp/gprof/</var>|<var>/tmp/gprof/</var>%</a></td><td></td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Directory to write gmon.out profiling data to.  </td></tr>
+<tr class="odd"><td><a href="mpm_common.html#gracefulshutdowntimeout">GracefulShutdownTimeout <var>seconds</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Specify a timeout after which a gracefully shutdown server
 will exit.</td></tr>
-<tr class="odd"><td><a href="mod_unixd.html#group">Group <var>unix-group</var></a></td><td> #-1 </td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Group under which the server will answer
+<tr><td><a href="mod_unixd.html#group">Group <var>unix-group</var></a></td><td> #-1 </td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">Group under which the server will answer
 requests</td></tr>
-<tr><td><a href="mod_http2.html#h2copyfiles" id="H" name="H">H2CopyFiles on|off</a></td><td> off </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Determine file handling in responses</td></tr>
-<tr class="odd"><td><a href="mod_http2.html#h2direct">H2Direct on|off</a></td><td> on for h2c, off for +</td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">H2 Direct Protocol Switch</td></tr>
-<tr><td><a href="mod_http2.html#h2earlyhints">H2EarlyHints on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Determine sending of 103 status codes</td></tr>
-<tr class="odd"><td><a href="mod_http2.html#h2maxsessionstreams">H2MaxSessionStreams <em>n</em></a></td><td> 100 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum number of active streams per HTTP/2 session.</td></tr>
-<tr><td><a href="mod_http2.html#h2maxworkeridleseconds">H2MaxWorkerIdleSeconds <em>n</em></a></td><td> 600 </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum number of seconds h2 workers remain idle until shut down.</td></tr>
-<tr class="odd"><td><a href="mod_http2.html#h2maxworkers">H2MaxWorkers <em>n</em></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum number of worker threads to use per child process.</td></tr>
-<tr><td><a href="mod_http2.html#h2minworkers">H2MinWorkers <em>n</em></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Minimal number of worker threads to use per child process.</td></tr>
-<tr class="odd"><td><a href="mod_http2.html#h2moderntlsonly">H2ModernTLSOnly on|off</a></td><td> on </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Require HTTP/2 connections to be "modern TLS" only</td></tr>
-<tr><td><a href="mod_http2.html#h2push">H2Push on|off</a></td><td> on </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">H2 Server Push Switch</td></tr>
-<tr class="odd"><td><a href="mod_http2.html#h2pushdiarysize">H2PushDiarySize <em>n</em></a></td><td> 256 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">H2 Server Push Diary Size</td></tr>
-<tr><td><a href="mod_http2.html#h2pushpriority">H2PushPriority <em>mime-type</em> [after|before|interleaved] [weight]</a></td><td> * After 16 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">H2 Server Push Priority</td></tr>
-<tr class="odd"><td><a href="mod_http2.html#h2pushresource">H2PushResource [add] path [critical]</a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Declares resources for early pushing to the client</td></tr>
-<tr><td><a href="mod_http2.html#h2serializeheaders">H2SerializeHeaders on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Serialize Request/Response Processing Switch</td></tr>
-<tr class="odd"><td><a href="mod_http2.html#h2sessionextrafiles">H2SessionExtraFiles <em>n</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Number of Extra File Handles</td></tr>
+<tr class="odd"><td><a href="mod_http2.html#h2copyfiles" id="H" name="H">H2CopyFiles on|off</a></td><td> off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Determine file handling in responses</td></tr>
+<tr><td><a href="mod_http2.html#h2direct">H2Direct on|off</a></td><td> on for h2c, off for +</td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">H2 Direct Protocol Switch</td></tr>
+<tr class="odd"><td><a href="mod_http2.html#h2earlyhints">H2EarlyHints on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Determine sending of 103 status codes</td></tr>
+<tr><td><a href="mod_http2.html#h2maxsessionstreams">H2MaxSessionStreams <em>n</em></a></td><td> 100 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum number of active streams per HTTP/2 session.</td></tr>
+<tr class="odd"><td><a href="mod_http2.html#h2maxworkeridleseconds">H2MaxWorkerIdleSeconds <em>n</em></a></td><td> 600 </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum number of seconds h2 workers remain idle until shut down.</td></tr>
+<tr><td><a href="mod_http2.html#h2maxworkers">H2MaxWorkers <em>n</em></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum number of worker threads to use per child process.</td></tr>
+<tr class="odd"><td><a href="mod_http2.html#h2minworkers">H2MinWorkers <em>n</em></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Minimal number of worker threads to use per child process.</td></tr>
+<tr><td><a href="mod_http2.html#h2moderntlsonly">H2ModernTLSOnly on|off</a></td><td> on </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Require HTTP/2 connections to be "modern TLS" only</td></tr>
+<tr class="odd"><td><a href="mod_http2.html#h2push">H2Push on|off</a></td><td> on </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">H2 Server Push Switch</td></tr>
+<tr><td><a href="mod_http2.html#h2pushdiarysize">H2PushDiarySize <em>n</em></a></td><td> 256 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">H2 Server Push Diary Size</td></tr>
+<tr class="odd"><td><a href="mod_http2.html#h2pushpriority">H2PushPriority <em>mime-type</em> [after|before|interleaved] [weight]</a></td><td> * After 16 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">H2 Server Push Priority</td></tr>
+<tr><td><a href="mod_http2.html#h2pushresource">H2PushResource [add] path [critical]</a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Declares resources for early pushing to the client</td></tr>
+<tr class="odd"><td><a href="mod_http2.html#h2serializeheaders">H2SerializeHeaders on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Serialize Request/Response Processing Switch</td></tr>
 <tr><td><a href="mod_http2.html#h2streammaxmemsize">H2StreamMaxMemSize <em>bytes</em></a></td><td> 65536 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum amount of output data buffered per stream.</td></tr>
 <tr class="odd"><td><a href="mod_http2.html#h2tlscooldownsecs">H2TLSCoolDownSecs <em>seconds</em></a></td><td> 1 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">-</td></tr>
 <tr><td><a href="mod_http2.html#h2tlswarmupsize">H2TLSWarmUpSize <em>amount</em></a></td><td> 1048576 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">-</td></tr>
@@ -942,8 +946,10 @@ handshake</td></tr>
 <tr><td><a href="mod_ssl.html#sslinsecurerenegotiation">SSLInsecureRenegotiation on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Option to enable support for insecure renegotiation</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslocspdefaultresponder">SSLOCSDefaultResponder <em>uri</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Set the default responder URI for OCSP validation</td></tr>
 <tr><td><a href="mod_ssl.html#sslocspenable">SSLOCSPEnable on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Enable OCSP validation of the client certificate chain</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslocspoverrideresponder">SSLOCSPOverrideResponder on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Force use of the default responder URI for OCSP validation</td></tr>
-<tr><td><a href="mod_ssl.html#sslocspproxyurl">SSLOCSPProxyURL <em>url</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Proxy URL to use for OCSP requests</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslocspnoverify">SSLOCSPNoverify <em>On/Off</em></a></td><td> Off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">skip the OCSP responder certificates verification</td></tr>
+<tr><td><a href="mod_ssl.html#sslocspoverrideresponder">SSLOCSPOverrideResponder on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Force use of the default responder URI for OCSP validation</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslocspproxyurl">SSLOCSPProxyURL <em>url</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Proxy URL to use for OCSP requests</td></tr>
+<tr><td><a href="mod_ssl.html#sslocsprespondercertificatefile">SSLOCSPResponderCertificateFile <em>file</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Set of trusted PEM encoded OCSP responder certificates</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslocsprespondertimeout">SSLOCSPResponderTimeout <em>seconds</em></a></td><td> 10 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Timeout for OCSP queries</td></tr>
 <tr><td><a href="mod_ssl.html#sslocspresponsemaxage">SSLOCSPResponseMaxAge <em>seconds</em></a></td><td> -1 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum allowable age for OCSP responses</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslocspresponsetimeskew">SSLOCSPResponseTimeSkew <em>seconds</em></a></td><td> 300 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum allowable time skew for OCSP response validation</td></tr>

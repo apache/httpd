@@ -356,6 +356,15 @@
     description of the mod_apachemodule.so files to the shared .rc resource
     version-identifier build.</div>
 
+	<div class="note"><strong>Building with OpenSSL 1.1.0 and up</strong>
+    Due to difference in the build structure of OpenSSL begining with version
+    1.1.0 you will need to convert the dsp files affected with cvtdsp.pl from
+    APR 1.6 or greater.  The command:
+    <div class="example"><p><code>
+      perl srclib\apr\build\cvtdsp.pl -ossl11
+    </code></p></div>
+	</div>
+
     <p>Visual Studio 2002 (.NET) and later users should also use the Build
     menu, Configuration Manager dialog to uncheck both the <code>Debug</code>
     and <code>Release</code> Solution modules <code>abs</code>,

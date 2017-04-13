@@ -7,7 +7,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>&#205;ndice de Directivas - Servidor Apache HTTP Versi&#243;n 2.4</title>
+<title>Índice de Directivas - Servidor Apache HTTP Versión 2.4</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -16,35 +16,35 @@
 
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="directive-index"><div id="page-header">
-<p class="menu"><a href="../mod/">M&#243;dulos</a> | <a href="../mod/directives.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p>
-<p class="apache">Versi&#243;n 2.4 del Servidor HTTP Apache</p>
+<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/directives.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p>
+<p class="apache">Versión 2.4 del Servidor HTTP Apache</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentaci&#243;n</a> &gt; <a href="../">Versi&#243;n 2.4</a> &gt; <a href="./">M&#243;dulos</a></div><div id="preamble"><h1>&#205;ndice de Directivas</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentación</a> &gt; <a href="../">Versión 2.4</a> &gt; <a href="./">Módulos</a></div><div id="preamble"><h1>Índice de Directivas</h1>
 <div class="toplang">
 <p><span>Idiomas disponibles: </span><a href="../de/mod/directives.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/directives.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/mod/directives.html" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
-<a href="../fr/mod/directives.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../es/mod/directives.html" title="Español">&nbsp;es&nbsp;</a> |
+<a href="../fr/mod/directives.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/directives.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/directives.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/directives.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a> |
+<a href="../tr/mod/directives.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/mod/directives.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
 
     <p>
-      Todas las directivas disponibles en la distribuci&#243;n
-      est&#225;ndar de Apache est&#225;n en la lista que se muestra m&#225;s
+      Todas las directivas disponibles en la distribución
+      estándar de Apache están en la lista que se muestra más
       abajo. Cada una se describe usando un formato uniforme, y existe
       un <a href="directive-dict.html" rel="Glossary">glosario</a>
-      de los t&#233;rminos usados en las descripciones que puede 
+      de los términos usados en las descripciones que puede 
       consultar.
     </p>
 
     <p>
-      Tambi&#233;n existe una <a href="quickreference.html">Gu&#237;a R&#225;pida de
-      Referencia de Directivas</a> con informaci&#243;n de cada
+      También existe una <a href="quickreference.html">Guía Rápida de
+      Referencia de Directivas</a> con información de cada
       directiva de forma resumida.
     </p>
   
@@ -158,6 +158,11 @@
 <li><a href="mod_proxy.html#balancerinherit">BalancerInherit</a></li>
 <li><a href="mod_proxy.html#balancermember">BalancerMember</a></li>
 <li><a href="mod_proxy.html#balancerpersist">BalancerPersist</a></li>
+<li><a href="mod_brotli.html#brotlialteretag">BrotliAlterETag</a></li>
+<li><a href="mod_brotli.html#brotlicompressionmaxinputblock">BrotliCompressionMaxInputBlock</a></li>
+<li><a href="mod_brotli.html#brotlicompressionquality">BrotliCompressionQuality</a></li>
+<li><a href="mod_brotli.html#brotlicompressionwindow">BrotliCompressionWindow</a></li>
+<li><a href="mod_brotli.html#brotlifilternote">BrotliFilterNote</a></li>
 <li><a href="mod_setenvif.html#browsermatch">BrowserMatch</a></li>
 <li><a href="mod_setenvif.html#browsermatchnocase">BrowserMatchNoCase</a></li>
 <li><a href="mod_log_config.html#bufferedlogs">BufferedLogs</a></li>
@@ -601,8 +606,10 @@
 <li><a href="mod_ssl.html#sslinsecurerenegotiation">SSLInsecureRenegotiation</a></li>
 <li><a href="mod_ssl.html#sslocspdefaultresponder">SSLOCSPDefaultResponder</a></li>
 <li><a href="mod_ssl.html#sslocspenable">SSLOCSPEnable</a></li>
+<li><a href="mod_ssl.html#sslocspnoverify">SSLOCSPNoverify</a></li>
 <li><a href="mod_ssl.html#sslocspoverrideresponder">SSLOCSPOverrideResponder</a></li>
 <li><a href="mod_ssl.html#sslocspproxyurl">SSLOCSPProxyURL</a></li>
+<li><a href="mod_ssl.html#sslocsprespondercertificatefile">SSLOCSPResponderCertificateFile</a></li>
 <li><a href="mod_ssl.html#sslocsprespondertimeout">SSLOCSPResponderTimeout</a></li>
 <li><a href="mod_ssl.html#sslocspresponsemaxage">SSLOCSPResponseMaxAge</a></li>
 <li><a href="mod_ssl.html#sslocspresponsetimeskew">SSLOCSPResponseTimeSkew</a></li>
@@ -693,11 +700,11 @@
 <div class="bottomlang">
 <p><span>Idiomas disponibles: </span><a href="../de/mod/directives.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/directives.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/mod/directives.html" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
-<a href="../fr/mod/directives.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../es/mod/directives.html" title="Español">&nbsp;es&nbsp;</a> |
+<a href="../fr/mod/directives.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/directives.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/directives.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/directives.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a> |
+<a href="../tr/mod/directives.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/mod/directives.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comentarios</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
@@ -717,8 +724,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.4/mod/directives.html'
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2017 The Apache Software Foundation.<br />Licencia bajo los t&#233;rminos de <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">M&#243;dulos</a> | <a href="../mod/directives.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2017 The Apache Software Foundation.<br />Licencia bajo los términos de <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/directives.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

@@ -100,7 +100,9 @@ address)</dd>
 <dt><a href="mod_authz_user.html">mod_authz_user</a></dt><dd>User Authorization</dd>
 <dt><a href="mod_autoindex.html">mod_autoindex</a></dt><dd>Unix <code>ls</code> veya Win32 <code>dir</code> kabuk komutunun
 yaptığı gibi dizin içeriğini listeler.</dd>
-<dt><a href="mod_buffer.html" id="B" name="B">mod_buffer</a></dt><dd>Support for request buffering</dd>
+<dt><a href="mod_brotli.html" id="B" name="B">mod_brotli</a></dt><dd>Compress content via Brotli before it is delivered to the
+client</dd>
+<dt><a href="mod_buffer.html">mod_buffer</a></dt><dd>Support for request buffering</dd>
 <dt><a href="mod_cache.html" id="C" name="C">mod_cache</a></dt><dd>RFC 2616 compliant HTTP caching filter.</dd>
 <dt><a href="mod_cache_disk.html">mod_cache_disk</a></dt><dd>Disk based storage module for the HTTP caching filter.</dd>
 <dt><a href="mod_cache_socache.html">mod_cache_socache</a></dt><dd>Shared object cache (socache) based storage module for the

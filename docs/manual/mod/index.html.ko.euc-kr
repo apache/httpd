@@ -101,7 +101,9 @@ address)</dd>
 <dt><a href="mod_authz_user.html">mod_authz_user</a></dt><dd>사용자 권한부여</dd>
 <dt><a href="mod_autoindex.html">mod_autoindex</a></dt><dd>자동으로 유닉스의 <code>ls</code> 명령어나 Win32의
     <code>dir</code> 쉘명령어와 유사한 디렉토리 목록을 만든다</dd>
-<dt><a href="mod_buffer.html" id="B" name="B">mod_buffer</a></dt><dd>Support for request buffering</dd>
+<dt><a href="mod_brotli.html" id="B" name="B">mod_brotli</a></dt><dd>Compress content via Brotli before it is delivered to the
+client</dd>
+<dt><a href="mod_buffer.html">mod_buffer</a></dt><dd>Support for request buffering</dd>
 <dt><a href="mod_cache.html" id="C" name="C">mod_cache</a></dt><dd>URI를 키로 사용하여 내용을 캐쉬한다.</dd>
 <dt><a href="mod_cache_disk.html">mod_cache_disk</a></dt><dd>Content cache storage manager keyed to URIs</dd>
 <dt><a href="mod_cache_socache.html">mod_cache_socache</a></dt><dd>Shared object cache (socache) based storage module for the

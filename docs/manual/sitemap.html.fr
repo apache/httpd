@@ -231,6 +231,7 @@ pour décrire les directives Apache</a></li>
 <li><a href="mod/mod_authz_owner.html">Module Apache mod_authz_owner</a></li>
 <li><a href="mod/mod_authz_user.html">Module Apache mod_authz_user</a></li>
 <li><a href="mod/mod_autoindex.html">Module Apache mod_autoindex</a></li>
+<li><a href="mod/mod_brotli.html">Module Apache mod_brotli</a></li>
 <li><a href="mod/mod_buffer.html">Module Apache mod_buffer</a></li>
 <li><a href="mod/mod_cache.html">Module Apache mod_cache</a></li>
 <li><a href="mod/mod_cache_disk.html">Module Apache mod_cache_disk</a></li>
