@@ -28,12 +28,13 @@ client</description>
 <status>Extension</status>
 <sourcefile>mod_brotli.c</sourcefile>
 <identifier>brotli_module</identifier>
-
+<compatibility>Available in version 2.4.26 and later.</compatibility>
 <summary>
     <p>The <module>mod_brotli</module> module provides
     the <code>BROTLI_COMPRESS</code> output filter that allows output from
     your server to be compressed using the brotli compression format before being sent to the client over
-    the network.</p>
+    the network. This module uses the Brotli library found at
+    <a href="https://github.com/google/brotli">https://github.com/google/brotli</a>.</p>
 </summary>
 <seealso><a href="../filter.html">Filters</a></seealso>
 
