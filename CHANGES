@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_substitute: Fix spurious AH01328 (Line too long) errors on EBCDIC
+     systems.  [Eric Covener]
+
   *) mod_http2: client streams that lack the EOF flag get now forcefully
      closed with a RST_STREAM (NO_ERROR) when the request has been answered.
      [Stefan Eissing]     
