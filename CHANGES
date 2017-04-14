@@ -1,6 +1,12 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_http2: only when 'HttpProtocolOptions Unsafe' is configured, will
+     control characters in response headers or trailers be forwarded to the
+     client. Otherwise, in the default configuration, a request will eiher 
+     fail with status 500 or the stream will be reset by a RST_STREAM frame. 
+     [Stefan Eissing]
+     
   *) core: Disallow multiple Listen on the same IP:port when listener buckets
      are configured (ListenCoresBucketsRatio > 0), consistently with the single
      bucket case (default), thus avoiding the leak of the corresponding socket
