@@ -39,16 +39,15 @@
 typedef struct {
     apr_table_t *headers;
     apr_pool_t *pool;
+    apr_status_t status;
 } h1_ctx;
 
 static int set_h1_header(void *ctx, const char *key, const char *value)
 {
     h1_ctx *x = ctx;
-    size_t klen = strlen(key);
-    if (!h2_req_ignore_header(key, klen)) {
-        h2_headers_add_h1(x->headers, x->pool, key, klen, value, strlen(value));
-    }
-    return 1;
+    x->status = h2_req_add_header(x->headers, x->pool, key, strlen(key), 
+                                  value, strlen(value));
+    return (x->status == APR_SUCCESS)? 1 : 0;
 }
 
 apr_status_t h2_request_rcreate(h2_request **preq, apr_pool_t *pool, 
@@ -90,10 +89,11 @@ apr_status_t h2_request_rcreate(h2_request **preq, apr_pool_t *pool,
 
     x.pool = pool;
     x.headers = req->headers;
+    x.status = APR_SUCCESS;
     apr_table_do(set_h1_header, &x, r->headers_in, NULL);
     
     *preq = req;
-    return APR_SUCCESS;
+    return x.status;
 }
 
 apr_status_t h2_request_add_header(h2_request *req, apr_pool_t *pool, 
@@ -143,7 +143,7 @@ apr_status_t h2_request_add_header(h2_request *req, apr_pool_t *pool,
     }
     else {
         /* non-pseudo header, append to work bucket of stream */
-        status = h2_headers_add_h1(req->headers, pool, name, nlen, value, vlen);
+        status = h2_req_add_header(req->headers, pool, name, nlen, value, vlen);
     }
     
     return status;

@@ -341,19 +341,21 @@ const char *h2_util_base64url_encode(const char *data,
 
 int h2_util_ignore_header(const char *name);
 
+struct h2_headers;
+
 typedef struct h2_ngheader {
     nghttp2_nv *nv;
     apr_size_t nvlen;
 } h2_ngheader;
 
-h2_ngheader *h2_util_ngheader_make(apr_pool_t *p, apr_table_t *header);
-h2_ngheader *h2_util_ngheader_make_res(apr_pool_t *p, 
-                                       int http_status, 
-                                       apr_table_t *header);
-h2_ngheader *h2_util_ngheader_make_req(apr_pool_t *p, 
-                                       const struct h2_request *req);
+apr_status_t h2_res_create_ngtrailer(h2_ngheader **ph, apr_pool_t *p, 
+                                     struct h2_headers *headers); 
+apr_status_t h2_res_create_ngheader(h2_ngheader **ph, apr_pool_t *p, 
+                                    struct h2_headers *headers); 
+apr_status_t h2_req_create_ngheader(h2_ngheader **ph, apr_pool_t *p, 
+                                    const struct h2_request *req);
 
-apr_status_t h2_headers_add_h1(apr_table_t *headers, apr_pool_t *pool, 
+apr_status_t h2_req_add_header(apr_table_t *headers, apr_pool_t *pool, 
                                const char *name, size_t nlen,
                                const char *value, size_t vlen);
 
