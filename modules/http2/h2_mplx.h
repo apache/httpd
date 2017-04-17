@@ -57,6 +57,7 @@ struct h2_mplx {
     long id;
     conn_rec *c;
     apr_pool_t *pool;
+    server_rec *s;                  /* server for master conn */
 
     unsigned int event_pending;
     unsigned int aborted;

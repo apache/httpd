@@ -158,13 +158,18 @@ h2_mplx *h2_mplx_create(conn_rec *c, apr_pool_t *parent,
     apr_allocator_t *allocator;
     apr_thread_mutex_t *mutex;
     h2_mplx *m;
+    h2_ctx *ctx = h2_ctx_get(c, 0);
     ap_assert(conf);
     
     m = apr_pcalloc(parent, sizeof(h2_mplx));
     if (m) {
         m->id = c->id;
         m->c = c;
-
+        m->s = (ctx? h2_ctx_server_get(ctx) : NULL);
+        if (!m->s) {
+            m->s = c->base_server;
+        }
+        
         /* We create a pool with its own allocator to be used for
          * processing slave connections. This is the only way to have the
          * processing independant of its parent pool in the sense that it
@@ -286,8 +291,11 @@ static void task_destroy(h2_mplx *m, h2_task *task)
     int reuse_slave = 0;
     
     slave = task->c;
-    reuse_slave = ((m->spare_slaves->nelts < (m->limit_active * 3 / 2))
-                   && !task->rst_error);
+
+    if (m->s->keep_alive_max == 0 || slave->keepalives < m->s->keep_alive_max) {
+        reuse_slave = ((m->spare_slaves->nelts < (m->limit_active * 3 / 2))
+                       && !task->rst_error);
+    }
     
     if (slave) {
         if (reuse_slave && slave->keepalive == AP_CONN_KEEPALIVE) {
@@ -570,7 +578,10 @@ static apr_status_t out_close(h2_mplx *m, h2_task *task)
     if (!task) {
         return APR_ECONNABORTED;
     }
-
+    if (task->c) {
+        ++task->c->keepalives;
+    }
+    
     stream = h2_ihash_get(m->streams, task->stream_id);
     if (!stream) {
         return APR_ECONNABORTED;
@@ -713,8 +724,7 @@ static h2_task *next_stream_task(h2_mplx *m)
             }
             
             if (!stream->task) {
-            
-                m->c->keepalives++;
+
                 if (sid > m->max_stream_started) {
                     m->max_stream_started = sid;
                 }
