@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_http2: MaxKeepAliveRequests now limits the number of times a 
+     slave connection gets reused. [Stefan Eissing]
+
   *) mod_substitute: Fix spurious AH01328 (Line too long) errors on EBCDIC
      systems.  [Eric Covener]
 
