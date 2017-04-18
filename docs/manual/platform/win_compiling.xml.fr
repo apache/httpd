@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1637114:1791236 (outdated) -->
+<!-- English Revision: 1791236 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -417,6 +417,15 @@
     description des fichiers de mod_apachemodule.so à leurs compilations
     d'identificateur de version de ressource .rc partagée.</note>
 
+    
+	<note><strong>Compilation avec OpenSSL versions 1.1.0 et supérieures</strong>
+    Suite à une modification de la structure de compilation d'OpenSSL à partir
+    de la version 1.1.0, vous devez convertir les fichiers dsp concernés via la
+    commance cvtdsp.pl fournie par APR versions 1.6 et supérieures :
+    <example>
+      perl srclib\apr\build\cvtdsp.pl -ossl11
+    </example>
+	</note>
 
     <!-- Traduction à revoir -->
     <p>Les utilisateurs de Visual Studio 2002 (.NET) et versions
