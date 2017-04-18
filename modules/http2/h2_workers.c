@@ -143,6 +143,7 @@ static void cleanup_zombies(h2_workers *workers)
             slot->thread = NULL;
         }
         apr_atomic_dec32(&workers->worker_count);
+        slot->next = NULL;
         push_slot(&workers->free, slot);
     }
 }
