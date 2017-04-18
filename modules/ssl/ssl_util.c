@@ -389,6 +389,10 @@ static unsigned long ssl_util_thr_id_internal(void)
 
 static void ssl_util_thr_id(CRYPTO_THREADID *id)
 {
+    /* XXX Ideally we would be using the _set_pointer() callback on platforms
+     * that have a pointer-based thread "identity". But this entire API is
+     * fraught with problems (see PR60947) and has been removed completely in
+     * OpenSSL 1.1.0, so I'm not too invested in fixing it right now. */
     CRYPTO_THREADID_set_numeric(id, ssl_util_thr_id_internal());
 }
 
@@ -404,6 +408,7 @@ static unsigned long ssl_util_thr_id(void)
 static apr_status_t ssl_util_thr_id_cleanup(void *old)
 {
 #if OPENSSL_VERSION_NUMBER >= 0x10000000L
+    /* XXX This does nothing. The new-style THREADID callback is write-once. */
     CRYPTO_THREADID_set_callback(old);
 #else
     CRYPTO_set_id_callback(old);
