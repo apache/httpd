@@ -32,6 +32,12 @@
 #include "h2_headers.h"
 
 
+static int is_unsafe(server_rec *s) 
+{
+    core_server_config *conf = ap_get_core_module_config(s->module_config);
+    return (conf->http_conformance == AP_HTTP_CONFORMANCE_UNSAFE);
+}
+
 typedef struct {
     apr_bucket_refcount refcount;
     h2_headers *headers;
@@ -132,7 +138,17 @@ h2_headers *h2_headers_rcreate(request_rec *r, int status,
             headers->status = H2_ERR_HTTP_1_1_REQUIRED;
         }
     }
+    if (is_unsafe(r->server)) {
+        apr_table_setn(headers->notes, H2_HDR_CONFORMANCE, 
+                       H2_HDR_CONFORMANCE_UNSAFE);
+    }
     return headers;
+}
+
+h2_headers *h2_headers_copy(apr_pool_t *pool, h2_headers *h)
+{
+    return h2_headers_create(h->status, apr_table_copy(pool, h->headers), 
+                             apr_table_copy(pool, h->notes), pool);
 }
 
 h2_headers *h2_headers_die(apr_status_t type,
