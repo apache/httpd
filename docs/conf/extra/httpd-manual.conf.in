@@ -18,16 +18,22 @@ AliasMatch ^/manual(?:/(?:da|de|en|es|fr|ja|ko|pt-br|ru|tr|zh-cn))?(/.*)?$ "@exp
     <Files *.html>
         SetHandler type-map
     </Files>
-    # .tr is text/troff in mime.types!
-    <Files *.html.tr.utf8>
-        ForceType "text/html; charset=utf-8"
-    </Files>
 
+    # .tr is text/troff in mime.types!
+    RemoveType tr
+
+    # Traditionally, used .dk filename extension for da language
     AddLanguage da .da
 
     SetEnvIf Request_URI ^/manual/(da|de|en|es|fr|ja|ko|pt-br|ru|tr|zh-cn)/ prefer-language=$1
     RedirectMatch 301 ^/manual(?:/(da|de|en|es|fr|ja|ko|pt-br|ru|tr|zh-cn)){2,}(/.*)?$ /manual/$1$2
 
-    LanguagePriority en da de es fr ja ko pt-br ru tr
+    # Reflect the greatest effort in translation (most content available),
+    # inferring greater attention to detail (potentially false assumption,
+    # counting translations presently in-sync would be more helpful.)
+    # Use caution counting; safest pattern is '*.xml.XX*' and drop negligable
+    # translations of fewer than 10 manual pages; at the time of this list;
+    # .xml sources: 266 214 110 94 82 25 22    18
+    LanguagePriority en  fr  ko ja tr es de zh-cn
     ForceLanguagePriority Prefer Fallback
 </Directory>
