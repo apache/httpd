@@ -442,6 +442,16 @@ void ssl_util_thread_id_setup(apr_pool_t *p)
      * better not get loaded into a different address during a restart. See
      * PR60947. */
     CRYPTO_THREADID_set_callback(ssl_util_thr_id);
+
+    if (CRYPTO_THREADID_get_callback() != ssl_util_thr_id) {
+        /* XXX Unfortunately this doesn't seem to get logged unless you're
+         * running in one-process mode, due to PR60999. */
+        ap_log_perror(APLOG_MARK, APLOG_CRIT, 0, p, APLOGNO()
+            "OpenSSL's THREADID callback was already set to another address, "
+            "and the server is probably going to crash. See bug #60947 for "
+            "more details. You may need to recompile or upgrade either OpenSSL "
+            "or httpd.");
+    }
 #endif
 
     apr_pool_cleanup_register(p, NULL, ssl_util_thr_id_cleanup,
