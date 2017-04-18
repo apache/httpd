@@ -608,7 +608,8 @@ AC_DEFUN([APACHE_CHECK_OPENSSL],[
       liberrors=""
       AC_CHECK_HEADERS([openssl/engine.h])
       AC_CHECK_FUNCS([SSL_CTX_new], [], [liberrors="yes"])
-      AC_CHECK_FUNCS([ENGINE_init ENGINE_load_builtin_engines RAND_egd])
+      AC_CHECK_FUNCS([ENGINE_init ENGINE_load_builtin_engines RAND_egd \
+                      CRYPTO_set_id_callback])
       if test "x$liberrors" != "x"; then
         AC_MSG_WARN([OpenSSL libraries are unusable])
       fi
