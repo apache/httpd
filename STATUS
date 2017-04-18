@@ -180,7 +180,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1790973
      trunk patch: http://svn.apache.org/r1790978
      2.4.x patch: trunk works 
-     +1: icing
+     +1: icing, steffen
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
