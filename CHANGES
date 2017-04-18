@@ -1,22 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
-  *) mod_http2: MaxKeepAliveRequests now limits the number of times a 
-     slave connection gets reused. [Stefan Eissing]
-
   *) mod_substitute: Fix spurious AH01328 (Line too long) errors on EBCDIC
      systems.  [Eric Covener]
 
-  *) mod_http2: client streams that lack the EOF flag get now forcefully
-     closed with a RST_STREAM (NO_ERROR) when the request has been answered.
-     [Stefan Eissing]     
-
-  *) mod_http2: only when 'HttpProtocolOptions Unsafe' is configured, will
-     control characters in response headers or trailers be forwarded to the
-     client. Otherwise, in the default configuration, a request will eiher 
-     fail with status 500 or the stream will be reset by a RST_STREAM frame. 
-     [Stefan Eissing]
-     
   *) core: Disallow multiple Listen on the same IP:port when listener buckets
      are configured (ListenCoresBucketsRatio > 0), consistently with the single
      bucket case (default), thus avoiding the leak of the corresponding socket
