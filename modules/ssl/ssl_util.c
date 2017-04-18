@@ -363,9 +363,11 @@ static void ssl_dyn_destroy_function(struct CRYPTO_dynlock_value *l,
     apr_pool_destroy(l->pool);
 }
 
-#if OPENSSL_VERSION_NUMBER >= 0x10000000L
-
-static void ssl_util_thr_id(CRYPTO_THREADID *id)
+/**
+ * Used by both versions of ssl_util_thr_id(). Returns an unsigned long that
+ * should be unique to the currently executing thread.
+ */
+static unsigned long ssl_util_thr_id_internal(void)
 {
     /* OpenSSL needs this to return an unsigned long.  On OS/390, the pthread
      * id is a structure twice that big.  Use the TCB pointer instead as a
@@ -377,45 +379,38 @@ static void ssl_util_thr_id(CRYPTO_THREADID *id)
         unsigned long PSATOLD;
     } *psaptr = 0; /* PSA is at address 0 */
 
-    CRYPTO_THREADID_set_numeric(id, psaptr->PSATOLD);
-#else
-    CRYPTO_THREADID_set_numeric(id, (unsigned long) apr_os_thread_current());
-#endif
-}
-
-static apr_status_t ssl_util_thr_id_cleanup(void *old)
-{
-    CRYPTO_THREADID_set_callback(old);
-    return APR_SUCCESS;
-}
-
-#else
-
-static unsigned long ssl_util_thr_id(void)
-{
-    /* OpenSSL needs this to return an unsigned long.  On OS/390, the pthread
-     * id is a structure twice that big.  Use the TCB pointer instead as a
-     * unique unsigned long.
-     */
-#ifdef __MVS__
-    struct PSA {
-        char unmapped[540];
-        unsigned long PSATOLD;
-    } *psaptr = 0;
-
     return psaptr->PSATOLD;
 #else
     return (unsigned long) apr_os_thread_current();
 #endif
 }
 
-static apr_status_t ssl_util_thr_id_cleanup(void *old)
+#if OPENSSL_VERSION_NUMBER >= 0x10000000L
+
+static void ssl_util_thr_id(CRYPTO_THREADID *id)
 {
-    CRYPTO_set_id_callback(old);
-    return APR_SUCCESS;
+    CRYPTO_THREADID_set_numeric(id, ssl_util_thr_id_internal());
+}
+
+#else
+
+static unsigned long ssl_util_thr_id(void)
+{
+    return ssl_util_thr_id_internal();
 }
 
 #endif
+
+static apr_status_t ssl_util_thr_id_cleanup(void *old)
+{
+#if OPENSSL_VERSION_NUMBER >= 0x10000000L
+    CRYPTO_THREADID_set_callback(old);
+#else
+    CRYPTO_set_id_callback(old);
+#endif
+
+    return APR_SUCCESS;
+}
 
 static apr_status_t ssl_util_thread_cleanup(void *data)
 {
