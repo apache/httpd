@@ -28,8 +28,6 @@
 <a href="../fr/platform/win_compiling.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ko/platform/win_compiling.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
     <p>Il y a de nombreux points importants à connaître avant de
@@ -421,6 +419,15 @@ l'arborescence de développement</a></li>
     description des fichiers de mod_apachemodule.so à leurs compilations
     d'identificateur de version de ressource .rc partagée.</div>
 
+    
+	<div class="note"><strong>Compilation avec OpenSSL versions 1.1.0 et supérieures</strong>
+    Suite à une modification de la structure de compilation d'OpenSSL à partir
+    de la version 1.1.0, vous devez convertir les fichiers dsp concernés via la
+    commance cvtdsp.pl fournie par APR versions 1.6 et supérieures :
+    <div class="example"><p><code>
+      perl srclib\apr\build\cvtdsp.pl -ossl11
+    </code></p></div>
+	</div>
 
     
     <p>Les utilisateurs de Visual Studio 2002 (.NET) et versions
