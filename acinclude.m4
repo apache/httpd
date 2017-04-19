@@ -608,7 +608,8 @@ AC_DEFUN([APACHE_CHECK_OPENSSL],[
       liberrors=""
       AC_CHECK_HEADERS([openssl/engine.h])
       AC_CHECK_FUNCS([SSL_CTX_new], [], [liberrors="yes"])
-      AC_CHECK_FUNCS([ENGINE_init ENGINE_load_builtin_engines RAND_egd])
+      AC_CHECK_FUNCS([ENGINE_init ENGINE_load_builtin_engines RAND_egd \
+                      CRYPTO_set_id_callback])
       if test "x$liberrors" != "x"; then
         AC_MSG_WARN([OpenSSL libraries are unusable])
       fi
@@ -653,7 +654,7 @@ AC_DEFUN([APACHE_CHECK_OPENSSL],[
           #include "apr_thread_cond.h"
           #include "apr_thread_proc.h"
 
-          #define NUM_THREADS 3
+          #define NUM_THREADS 10
 
           struct thread_data {
               apr_thread_mutex_t *mutex;
@@ -692,6 +693,7 @@ AC_DEFUN([APACHE_CHECK_OPENSSL],[
           int ret = 0;
           apr_status_t status;
           int i;
+          int j;
 
           apr_pool_t         *pool;
           apr_thread_mutex_t *mutex;
@@ -738,10 +740,13 @@ AC_DEFUN([APACHE_CHECK_OPENSSL],[
           }
 
           /* Check that no addresses were duplicated. */
-          if ((tdata[0].errno_addr == tdata[1].errno_addr)
-              || (tdata[1].errno_addr == tdata[2].errno_addr)
-              || (tdata[0].errno_addr == tdata[2].errno_addr)) {
-              ret = 5;
+          for (i = 0; i < NUM_THREADS - 1; ++i) {
+              for (j = i + 1; j < NUM_THREADS; ++j) {
+                  if (tdata[i].errno_addr == tdata[j].errno_addr) {
+                      ret = 5;
+                      goto out;
+                  }
+              }
           }
 
       out:

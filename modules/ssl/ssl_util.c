@@ -252,6 +252,13 @@ void ssl_asn1_table_unset(apr_hash_t *table,
  * To ensure thread-safetyness in OpenSSL - work in progress
  */
 
+#if (OPENSSL_VERSION_NUMBER >= 0x10000000L) && \
+        (_WIN32 || __BEOS__ || AP_OPENSSL_USE_ERRNO_THREADID)
+/* Windows and BeOS can use the default THREADID callback shipped with OpenSSL
+ * 1.0.x, as can any platform with a thread-safe errno. */
+# define DEFAULT_THREADID_IS_SAFE 1
+#endif
+
 static apr_thread_mutex_t **lock_cs;
 static int                  lock_num_locks;
 
@@ -363,9 +370,22 @@ static void ssl_dyn_destroy_function(struct CRYPTO_dynlock_value *l,
     apr_pool_destroy(l->pool);
 }
 
-#if OPENSSL_VERSION_NUMBER >= 0x10000000L
+#if DEFAULT_THREADID_IS_SAFE
 
-static void ssl_util_thr_id(CRYPTO_THREADID *id)
+/* We don't need to set up a threadid callback on this platform. */
+void ssl_util_thread_id_setup(apr_pool_t *p)
+{
+    ap_log_perror(APLOG_MARK, APLOG_NOTICE, 0, p, APLOGNO(10027)
+                  "using builtin threadid callback for OpenSSL");
+}
+
+#else
+
+/**
+ * Used by both versions of ssl_util_thr_id(). Returns an unsigned long that
+ * should be unique to the currently executing thread.
+ */
+static unsigned long ssl_util_thr_id_internal(void)
 {
     /* OpenSSL needs this to return an unsigned long.  On OS/390, the pthread
      * id is a structure twice that big.  Use the TCB pointer instead as a
@@ -377,45 +397,78 @@ static void ssl_util_thr_id(CRYPTO_THREADID *id)
         unsigned long PSATOLD;
     } *psaptr = 0; /* PSA is at address 0 */
 
-    CRYPTO_THREADID_set_numeric(id, psaptr->PSATOLD);
-#else
-    CRYPTO_THREADID_set_numeric(id, (unsigned long) apr_os_thread_current());
-#endif
-}
-
-static apr_status_t ssl_util_thr_id_cleanup(void *old)
-{
-    CRYPTO_THREADID_set_callback(old);
-    return APR_SUCCESS;
-}
-
-#else
-
-static unsigned long ssl_util_thr_id(void)
-{
-    /* OpenSSL needs this to return an unsigned long.  On OS/390, the pthread
-     * id is a structure twice that big.  Use the TCB pointer instead as a
-     * unique unsigned long.
-     */
-#ifdef __MVS__
-    struct PSA {
-        char unmapped[540];
-        unsigned long PSATOLD;
-    } *psaptr = 0;
-
     return psaptr->PSATOLD;
 #else
     return (unsigned long) apr_os_thread_current();
 #endif
 }
 
+#if HAVE_CRYPTO_SET_ID_CALLBACK
+
+static unsigned long ssl_util_thr_id(void)
+{
+    return ssl_util_thr_id_internal();
+}
+
+#else
+
+static void ssl_util_thr_id(CRYPTO_THREADID *id)
+{
+    /* XXX Ideally we would be using the _set_pointer() callback on platforms
+     * that have a pointer-based thread "identity". But this entire API is
+     * fraught with problems (see PR60947) and has been removed completely in
+     * OpenSSL 1.1.0, so I'm not too invested in fixing it right now. */
+    CRYPTO_THREADID_set_numeric(id, ssl_util_thr_id_internal());
+}
+
+#endif /* HAVE_CRYPTO_SET_ID_CALLBACK */
+
 static apr_status_t ssl_util_thr_id_cleanup(void *old)
 {
+#if HAVE_CRYPTO_SET_ID_CALLBACK
     CRYPTO_set_id_callback(old);
+#else
+    /* XXX This does nothing. The new-style THREADID callback is write-once. */
+    CRYPTO_THREADID_set_callback(old);
+#endif
+
     return APR_SUCCESS;
 }
 
+void ssl_util_thread_id_setup(apr_pool_t *p)
+{
+#if HAVE_CRYPTO_SET_ID_CALLBACK
+    ap_log_perror(APLOG_MARK, APLOG_NOTICE, 0, p, APLOGNO(10028)
+                  "using deprecated CRYPTO_set_id_callback for OpenSSL");
+
+    /* This API is deprecated, but we prefer it to its replacement since it
+     * allows us to unset the callback when this module is being unloaded. */
+    CRYPTO_set_id_callback(ssl_util_thr_id);
+#else
+    ap_log_perror(APLOG_MARK, APLOG_NOTICE, 0, p, APLOGNO(10029)
+                  "using dangerous CRYPTO_THREADID_set_callback for OpenSSL");
+
+    /* This is a last resort. We can only set this once, which means that we'd
+     * better not get loaded into a different address during a restart. See
+     * PR60947. */
+    CRYPTO_THREADID_set_callback(ssl_util_thr_id);
+
+    if (CRYPTO_THREADID_get_callback() != ssl_util_thr_id) {
+        /* XXX Unfortunately this doesn't seem to get logged unless you're
+         * running in one-process mode, due to PR60999. */
+        ap_log_perror(APLOG_MARK, APLOG_CRIT, 0, p, APLOGNO(10030)
+            "OpenSSL's THREADID callback was already set to another address, "
+            "and the server is probably going to crash. See bug #60947 for "
+            "more details. You may need to recompile or upgrade either OpenSSL "
+            "or httpd.");
+    }
 #endif
+
+    apr_pool_cleanup_register(p, NULL, ssl_util_thr_id_cleanup,
+                                       apr_pool_cleanup_null);
+}
+
+#endif /* DEFAULT_THREADID_IS_SAFE */
 
 static apr_status_t ssl_util_thread_cleanup(void *data)
 {
@@ -457,15 +510,5 @@ void ssl_util_thread_setup(apr_pool_t *p)
                                        apr_pool_cleanup_null);
 }
 
-void ssl_util_thread_id_setup(apr_pool_t *p)
-{
-#if OPENSSL_VERSION_NUMBER >= 0x10000000L
-    CRYPTO_THREADID_set_callback(ssl_util_thr_id);
-#else
-    CRYPTO_set_id_callback(ssl_util_thr_id);
-#endif
-    apr_pool_cleanup_register(p, NULL, ssl_util_thr_id_cleanup,
-                                       apr_pool_cleanup_null);
-}
 #endif /* #if OPENSSL_VERSION_NUMBER < 0x10100000L */
 #endif /* #if APR_HAS_THREADS */
