@@ -373,7 +373,11 @@ static void ssl_dyn_destroy_function(struct CRYPTO_dynlock_value *l,
 #if DEFAULT_THREADID_IS_SAFE
 
 /* We don't need to set up a threadid callback on this platform. */
-void ssl_util_thread_id_setup(apr_pool_t *p) { }
+void ssl_util_thread_id_setup(apr_pool_t *p)
+{
+    ap_log_perror(APLOG_MARK, APLOG_NOTICE, 0, p, APLOGNO()
+                  "using builtin threadid callback for OpenSSL");
+}
 
 #else
 
@@ -434,10 +438,16 @@ static apr_status_t ssl_util_thr_id_cleanup(void *old)
 void ssl_util_thread_id_setup(apr_pool_t *p)
 {
 #if HAVE_CRYPTO_SET_ID_CALLBACK
+    ap_log_perror(APLOG_MARK, APLOG_NOTICE, 0, p, APLOGNO()
+                  "using deprecated CRYPTO_set_id_callback for OpenSSL");
+
     /* This API is deprecated, but we prefer it to its replacement since it
      * allows us to unset the callback when this module is being unloaded. */
     CRYPTO_set_id_callback(ssl_util_thr_id);
 #else
+    ap_log_perror(APLOG_MARK, APLOG_NOTICE, 0, p, APLOGNO()
+                  "using dangerous CRYPTO_THREADID_set_callback for OpenSSL");
+
     /* This is a last resort. We can only set this once, which means that we'd
      * better not get loaded into a different address during a restart. See
      * PR60947. */
