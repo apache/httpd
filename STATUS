@@ -182,6 +182,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works 
      +1: icing, steffen
 
+   * mod_journald: Add new module mod_journald to log error logs into journald.
+     trunk patch: http://svn.apache.org/r1610339
+                  http://svn.apache.org/r1621806
+     2.4.x patch: http://people.apache.org/~jkaluza/patches/httpd-2.4.x-mod_journald.patch
+     +1: jkaluza, jim
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entried should be added at the START of the list ]
@@ -359,19 +364,6 @@ PATCHES/ISSUES THAT ARE STALLED
                   connection will be broken after GracefulShutdownTimeout.
                   A better logic would be to check if there is any open
                   connection that is not in keep-alive state.
-
-   * mod_journald: Add new module mod_journald to log error logs into journald.
-                   This patch needs changes done in mod_systemd patch (already
-                   proposed for 2.4.x).
-     trunk patch: http://svn.apache.org/r1610339
-                  http://svn.apache.org/r1621806
-     2.4.x patch: http://people.apache.org/~jkaluza/patches/httpd-2.4.x-mod_journald.patch
-     +1: jkaluza, jim
-     rjung, minfrin: Not understanding "This patch needs changes done in
-                     mod_systemd patch", am I right in understanding this patch is
-                     already committed?
-     jkaluza: No, that patch is not committed yet. It is in STALLED section.
-              The link for that patch is: http://people.apache.org/~jkaluza/patches/mod_systemd/httpd-2.4.x-mod_systemd.patch
 
    * core: Add support for systemd socket activation.
      trunk patch: http://svn.apache.org/r1511033
