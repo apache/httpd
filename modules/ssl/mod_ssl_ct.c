@@ -2286,7 +2286,7 @@ static int server_extension_add_callback(SSL *ssl, unsigned ext_type,
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(03032)
                       "server_extension_callback_2: client isn't CT-aware");
         /* Skip this extension for ServerHello */
-        return -1;
+        return 0;
     }
 
     /* need to reply with SCT */
@@ -2309,7 +2309,7 @@ static int server_extension_add_callback(SSL *ssl, unsigned ext_type,
     }
     else {
         /* Skip this extension for ServerHello */
-        return -1;
+        return 0;
     }
 
     return 1;
