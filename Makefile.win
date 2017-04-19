@@ -131,6 +131,7 @@ UTILDIR=apr-util
 #	to 'fix up' the build, since conditional dependencies aren't supported.
 #
 
+!IF EXIST("srclib\openssl")
 
 _tryssl:
 !IF $(USEMAK) == 1
