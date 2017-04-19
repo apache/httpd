@@ -80,6 +80,15 @@ SSLLIB=ssleay32
 !ENDIF
 !ENDIF
 
+# APU 1.6 (and up?)
+!IF EXIST("srclib\apr-util\xml\xml.mak")
+EXPAT=xml
+EXPBCK = ..
+!ELSE
+EXPAT=xml\expat\lib
+EXPBCK = ..\..\..
+!ENDIF
+
 default: _buildr
 
 !IF ("$(CTARGET)" == "") && ($(USESLN) == 1)
@@ -392,9 +401,9 @@ _build:
 	cd ..
 !ENDIF
 	cd ..\..
-	cd srclib\apr-util\xml\expat\lib
+	cd srclib\apr-util\$(EXPAT)
 	 $(MAKE) $(MAKEOPT) -f xml.mak             CFG="xml - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	cd ..\..\..
+	cd $(EXPBCK)
 	 $(MAKE) $(MAKEOPT) -f aprutil.mak         CFG="aprutil - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f libaprutil.mak      CFG="libaprutil - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ldap
@@ -1160,8 +1169,8 @@ BEGIN {
 !IF EXIST("srclib\apr-util")
 	copy srclib\apr-util\Lib$(SHORT)\aprutil-1.lib	"$(INSTDIR)\lib" <.y
 	copy srclib\apr-util\Lib$(SHORT)\aprutil-1.pdb	"$(INSTDIR)\lib" <.y
-	copy srclib\apr-util\xml\expat\lib\Lib$(SHORT)\xml.lib "$(INSTDIR)\lib" <.y
-	copy srclib\apr-util\xml\expat\lib\Lib$(SHORT)\xml.pdb "$(INSTDIR)\lib" <.y
+	copy srclib\apr-util\$(EXPAT)\Lib$(SHORT)\xml.lib "$(INSTDIR)\lib" <.y
+	copy srclib\apr-util\$(EXPAT)\Lib$(SHORT)\xml.pdb "$(INSTDIR)\lib" <.y
 	copy srclib\apr-util\$(LONG)\libaprutil-1.lib 	"$(INSTDIR)\lib" <.y
 	copy srclib\apr-util\$(LONG)\libaprutil-1.exp 	"$(INSTDIR)\lib" <.y
 	copy srclib\apr-iconv\$(LONG)\libapriconv-1.lib	"$(INSTDIR)\lib" <.y
