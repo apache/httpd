@@ -187,6 +187,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1621806
      2.4.x patch: http://people.apache.org/~jkaluza/patches/httpd-2.4.x-mod_journald.patch
      +1: jkaluza, jim
+     jchampion: Looks like the headers require GCC extensions to compile, so
+                mod_journald can't be configured in maintainer mode (-std=c89).
+                Can anyone else reproduce, or is it just my distro?
+
+   * core: don't run configtest in -V mode when MPM DSOs are in use, and try to
+           print compile settings even if reading the configuration fails. Fixes
+           PR61009.
+     trunk patch: https://svn.apache.org/r1791975
+     2.4.x patch: trunk works
+     +1: jchampion
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entried should be added at the START of the list ]
