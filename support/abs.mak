@@ -48,11 +48,11 @@ OutDir=.\Release
 
 !IF "$(RECURSE)" == "0" 
 
-ALL : "$(OUTDIR)\abs.exe" "$(DS_POSTBUILD_DEP)"
+ALL : "..\srclib\openssl\include\openssl\applink.c" "$(OUTDIR)\abs.exe" "$(DS_POSTBUILD_DEP)"
 
 !ELSE 
 
-ALL : "aprutil - Win32 Release" "apr - Win32 Release" "$(OUTDIR)\abs.exe" "$(DS_POSTBUILD_DEP)"
+ALL : "aprutil - Win32 Release" "apr - Win32 Release" "..\srclib\openssl\include\openssl\applink.c" "$(OUTDIR)\abs.exe" "$(DS_POSTBUILD_DEP)"
 
 !ENDIF 
 
@@ -147,11 +147,11 @@ OutDir=.\Debug
 
 !IF "$(RECURSE)" == "0" 
 
-ALL : "$(OUTDIR)\abs.exe" "$(DS_POSTBUILD_DEP)"
+ALL : "..\srclib\openssl\include\openssl\applink.c" "$(OUTDIR)\abs.exe" "$(DS_POSTBUILD_DEP)"
 
 !ELSE 
 
-ALL : "aprutil - Win32 Debug" "apr - Win32 Debug" "$(OUTDIR)\abs.exe" "$(DS_POSTBUILD_DEP)"
+ALL : "aprutil - Win32 Debug" "apr - Win32 Debug" "..\srclib\openssl\include\openssl\applink.c" "$(OUTDIR)\abs.exe" "$(DS_POSTBUILD_DEP)"
 
 !ENDIF 
 
@@ -322,6 +322,32 @@ CPP_SWITCHES=/nologo /MDd /W3 /Zi /Od /I "../srclib/apr/include" /I "../srclib/a
   $(CPP_SWITCHES) $(SOURCE)
 <<
 
+
+!ENDIF 
+
+SOURCE=../include\ap_release.h
+
+!IF  "$(CFG)" == "abs - Win32 Release"
+
+InputPath=../include\ap_release.h
+
+"..\srclib\openssl\include\openssl\applink.c" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	<<tempfile.bat 
+	@echo off 
+	IF EXIST ..\srclib\openssl\ms\applink.c type ..\srclib\openssl\ms\applink.c > ..\srclib\openssl\include\openssl\applink.c
+<< 
+	
+
+!ELSEIF  "$(CFG)" == "abs - Win32 Debug"
+
+InputPath=../include\ap_release.h
+
+"..\srclib\openssl\include\openssl\applink.c" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	<<tempfile.bat 
+	@echo off 
+	IF EXIST ..\srclib\openssl\ms\applink.c type ..\srclib\openssl\ms\applink.c > ..\srclib\openssl\include\openssl\applink.c
+<< 
+	
 
 !ENDIF 
 
