@@ -51,6 +51,11 @@ ProxyPass "/wss2/" "wss://echo.websocket.org/"
     </highlight>
 
 <p>Load balancing for multiple backends can be achieved using <module>mod_proxy_balancer</module>.</p>
+
+<p>In fact the module can be used to upgrade to other protocols, you can set the <code>upgrade</code>
+parameter in the <directive type="ProxyPass" module="mod_proxy">ProxyPass</directive>
+directive to allow the module to accept other protocol.
+NONE means you bypass the check for the header but still upgrade to WebSocket.</p>
 </summary>
 
 <seealso><module>mod_proxy</module></seealso>
