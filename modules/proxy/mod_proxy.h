@@ -450,6 +450,7 @@ typedef struct {
     unsigned int     was_malloced:1;
     unsigned int     is_name_matchable:1;
     char      secret[PROXY_WORKER_MAX_SECRET_SIZE]; /* authentication secret (e.g. AJP13) */
+    char      upgrade[PROXY_WORKER_MAX_SCHEME_SIZE];/* upgrade protocol used by mod_proxy_wstunnel */
 } proxy_worker_shared;
 
 #define ALIGNED_PROXY_WORKER_SHARED_SIZE (APR_ALIGN_DEFAULT(sizeof(proxy_worker_shared)))
