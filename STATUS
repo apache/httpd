@@ -135,6 +135,11 @@ RELEASE SHOWSTOPPERS:
              default value (as expected).
      jim: Committed in r1789387
 
+   *) confirm ab + https w/ openssl 1.1.0 on unix is OK.
+      Gregg says it's broken on Windows.
+      Document it somewhere either way.
+
+
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
