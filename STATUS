@@ -138,6 +138,8 @@ RELEASE SHOWSTOPPERS:
    *) confirm ab + https w/ openssl 1.1.0 on unix is OK.
       Gregg says it's broken on Windows.
       Document it somewhere either way.
+      jchampion: hangs on my Ubuntu box too. Looks like a CRYPTO_malloc()
+                 infinite loop during library initialization?
 
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
