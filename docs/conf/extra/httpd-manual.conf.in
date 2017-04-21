@@ -31,7 +31,7 @@ AliasMatch ^/manual(?:/(?:da|de|en|es|fr|ja|ko|pt-br|ru|tr|zh-cn))?(/.*)?$ "@exp
     # Reflect the greatest effort in translation (most content available),
     # inferring greater attention to detail (potentially false assumption,
     # counting translations presently in-sync would be more helpful.)
-    # Use caution counting; safest pattern is '*.xml.XX*'. Recent .xml source
+    # Use caution counting; safest pattern is '*.xml.XX'. Recent .xml source
     # document count; 278 183 110 94 82 31 22    18     4  1  1
     LanguagePriority   en  fr  ko ja tr es de zh-cn pt-br da ru
     ForceLanguagePriority Prefer Fallback
