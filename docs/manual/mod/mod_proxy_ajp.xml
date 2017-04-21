@@ -477,6 +477,7 @@ attribute_value := (string)
       <tr><td>?req_attribute</td><td>0x0A</td><td>String</td><td>Name (the name of the
       attribute follows)</td></tr>
       <tr><td>?ssl_key_size</td><td>0x0B</td><td>Integer</td><td></td></tr>
+      <tr><td>?secret</td><td>0x0C</td><td>String</td><td>Sent if secret is configured</td></tr>
       <tr><td>are_done</td><td>0xFF</td><td>-</td><td>request_terminator</td></tr>
     </table>
     <p>The <code>context</code> and <code>servlet_path</code> are not
@@ -490,7 +491,8 @@ attribute_value := (string)
     username and the type of authentication used to establish their identity
     (e.g. Basic, Digest).</p>
     <p>The <code>query_string</code>, <code>ssl_cert</code>,
-    <code>ssl_cipher</code>, and <code>ssl_session</code> refer to the
+    <code>ssl_cipher</code>, <code>ssl_session</code> and
+    <code>ssl_key_size</code> refer to the
     corresponding pieces of HTTP and HTTPS.</p>
     <p>The <code>jvm_route</code>, is used to support sticky
     sessions -- associating a user's sesson with a particular Tomcat instance
@@ -500,6 +502,13 @@ attribute_value := (string)
     A pair of strings to represent the attribute name and value are sent
     immediately after each instance of that code.  Environment values are passed
     in via this method.</p>
+    <p>The <code>secret</code> is sent when the <code>secret=secret_keyword</code> parameter is
+    used in
+    <directive module="mod_proxy">ProxyPass</directive> or
+    <directive module="mod_proxy">BalancerMember</directive> directives.
+    The backend needs to support secret and the values must match.
+    <code>request.secret</code> or <code>requiredSecret</code> are documented in the AJP
+    configuration of the Apache Tomcat.</p>
     <p>Finally, after all the attributes have been sent, the attribute
     terminator, <code>0xFF</code>, is sent.  This signals both the end of the
     list of attributes and also then end of the Request Packet.</p>
