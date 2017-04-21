@@ -68,7 +68,6 @@ void h2_ihash_remove_val(h2_ihash_t *ih, void *val);
 void h2_ihash_clear(h2_ihash_t *ih);
 
 size_t h2_ihash_shift(h2_ihash_t *ih, void **buffer, size_t max);
-size_t h2_ihash_ishift(h2_ihash_t *ih, int *buffer, size_t max);
 
 /*******************************************************************************
  * iqueue - sorted list of int with user defined ordering

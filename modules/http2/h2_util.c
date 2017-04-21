@@ -372,39 +372,6 @@ size_t h2_ihash_shift(h2_ihash_t *ih, void **buffer, size_t max)
     return ctx.len;
 }
 
-typedef struct {
-    h2_ihash_t *ih;
-    int *buffer;
-    size_t max;
-    size_t len;
-} icollect_ctx;
-
-static int icollect_iter(void *x, void *val)
-{
-    icollect_ctx *ctx = x;
-    if (ctx->len < ctx->max) {
-        ctx->buffer[ctx->len++] = *((int*)((char *)val + ctx->ih->ioff));
-        return 1;
-    }
-    return 0;
-}
-
-size_t h2_ihash_ishift(h2_ihash_t *ih, int *buffer, size_t max)
-{
-    icollect_ctx ctx;
-    size_t i;
-    
-    ctx.ih = ih;
-    ctx.buffer = buffer;
-    ctx.max = max;
-    ctx.len = 0;
-    h2_ihash_iter(ih, icollect_iter, &ctx);
-    for (i = 0; i < ctx.len; ++i) {
-        h2_ihash_remove(ih, buffer[i]);
-    }
-    return ctx.len;
-}
-
 /*******************************************************************************
  * iqueue - sorted list of int
  ******************************************************************************/
