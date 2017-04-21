@@ -1050,7 +1050,8 @@ static ssize_t stream_data_cb(nghttp2_session *ng2s,
             break;
             
         case APR_ECONNRESET:
-            return 0;
+        case APR_ECONNABORTED:
+            return NGHTTP2_ERR_CALLBACK_FAILURE;
             
         case APR_EAGAIN:
             /* If there is no data available, our session will automatically
@@ -2083,7 +2084,11 @@ apr_status_t h2_session_process(h2_session *session, int async)
                      * That gives us the chance to check for MPMQ_STOPPING often. 
                      */
                     status = h2_mplx_idle(session->mplx);
-                    if (status != APR_SUCCESS) {
+                    if (status == APR_EAGAIN) {
+                        dispatch_event(session, H2_SESSION_EV_DATA_READ, 0, NULL);
+                        break;
+                    }
+                    else if (status != APR_SUCCESS) {
                         dispatch_event(session, H2_SESSION_EV_CONN_ERROR, 
                                        H2_ERR_ENHANCE_YOUR_CALM, "less is more");
                     }
