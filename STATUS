@@ -115,7 +115,7 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
-  *) mod_proxy_hcheck: Honor checks in Vhosts
+  *) mod_proxy_hcheck: Honor checks in Vhosts w/o hanging
      trunk patch: http://svn.apache.org/r1784203
                   http://svn.apache.org/r1784205
                   http://svn.apache.org/r1784227
