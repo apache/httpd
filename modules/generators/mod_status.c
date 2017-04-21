@@ -213,6 +213,13 @@ static int status_handler(request_rec *r)
         return DECLINED;
     }
 
+    /* A request that has passed through .htaccess has no business
+     * landing up here.
+     */
+    if (ap_request_tainted(r, AP_TAINT_HTACCESS)) {
+        return DECLINED;
+    }
+
 #ifdef HAVE_TIMES
     times_per_thread = getpid() != child_pid;
 #endif

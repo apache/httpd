@@ -2580,6 +2580,21 @@ AP_DECLARE(int) ap_request_has_body(request_rec *r)
     return has_body;
 }
 
+/**
+ * Check whether a request is tainted by exposure to something
+ * potentially untrusted.  
+ *
+ */
+AP_DECLARE(int) ap_request_tainted(request_rec *r, int flags)
+{
+    /** Potential future: a hook or callback here could serve modules
+     *  like mod_security and ironbee with more complex needs.
+     */
+    return r && ((r->taint&flags)
+                 || ap_request_tainted(r->main, flags)
+                 || ap_request_tainted(r->prev, flags));
+}
+
 AP_DECLARE_NONSTD(apr_status_t) ap_pool_cleanup_set_null(void *data_)
 {
     void **ptr = (void **)data_;

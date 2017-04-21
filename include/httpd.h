@@ -1074,6 +1074,11 @@ struct request_rec {
      *  TODO: 2 bit signed bitfield when this structure is compacted
      */
     int double_reverse;
+    /** Mark the request as potentially tainted.  This might become a
+     *  bitfield if we identify different taints to be flagged.
+     *  Always use ap_request_tainted() to check taint.
+     */
+    int taint;
 };
 
 /**
@@ -2152,6 +2157,17 @@ AP_DECLARE(apr_status_t) ap_timeout_parameter_parse(
  * @return truth value
  */
 AP_DECLARE(int) ap_request_has_body(request_rec *r);
+
+/** Request taint flags.  Only .htaccess defined. */
+#define AP_TAINT_HTACCESS 0x1
+/**
+ * Check whether a request is tainted by potentially-untrusted sources.
+ *
+ * @param r     the request
+ * @param flags Taint flags to check
+ * @return truth value
+ */
+AP_DECLARE(int) ap_request_tainted(request_rec *r, int flags);
 
 /**
  * Cleanup a string (mainly to be filesystem safe)
