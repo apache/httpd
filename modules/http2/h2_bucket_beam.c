@@ -496,6 +496,28 @@ static void beam_set_send_pool(h2_bucket_beam *beam, apr_pool_t *pool)
     }
 }
 
+static void recv_buffer_cleanup(h2_bucket_beam *beam, h2_beam_lock *bl)
+{
+    if (beam->recv_buffer && !APR_BRIGADE_EMPTY(beam->recv_buffer)) {
+        apr_bucket_brigade *bb = beam->recv_buffer;
+        apr_off_t bblen = 0;
+        
+        beam->recv_buffer = NULL;
+        apr_brigade_length(bb, 0, &bblen);
+        beam->received_bytes += bblen;
+        
+        /* need to do this unlocked since bucket destroy might 
+         * call this beam again. */
+        if (bl) leave_yellow(beam, bl);
+        apr_brigade_destroy(bb);
+        if (bl) enter_yellow(beam, bl);
+        
+        if (beam->cons_ev_cb) { 
+            beam->cons_ev_cb(beam->cons_ctx, beam);
+        }
+    }
+}
+
 static apr_status_t beam_cleanup(void *data)
 {
     h2_bucket_beam *beam = data;
@@ -526,10 +548,7 @@ static apr_status_t beam_cleanup(void *data)
             pool_kill(beam, beam->recv_pool, beam_recv_cleanup);
             beam->recv_pool = NULL;
         }
-        if (beam->recv_buffer) {
-            apr_brigade_destroy(beam->recv_buffer);
-            beam->recv_buffer = NULL;
-        }
+        recv_buffer_cleanup(beam, NULL);
     }
     else {
         beam->recv_buffer = NULL;
@@ -697,9 +716,7 @@ apr_status_t h2_beam_leave(h2_bucket_beam *beam)
     h2_beam_lock bl;
     
     if (enter_yellow(beam, &bl) == APR_SUCCESS) {
-        if (beam->recv_buffer && !APR_BRIGADE_EMPTY(beam->recv_buffer)) {
-            apr_brigade_cleanup(beam->recv_buffer);
-        }
+        recv_buffer_cleanup(beam, &bl);
         beam->aborted = 1;
         beam_close(beam);
         leave_yellow(beam, &bl);
@@ -932,9 +949,7 @@ apr_status_t h2_beam_receive(h2_bucket_beam *beam,
     if (enter_yellow(beam, &bl) == APR_SUCCESS) {
 transfer:
         if (beam->aborted) {
-            if (beam->recv_buffer && !APR_BRIGADE_EMPTY(beam->recv_buffer)) {
-                apr_brigade_cleanup(beam->recv_buffer);
-            }
+            recv_buffer_cleanup(beam, &bl);
             status = APR_ECONNABORTED;
             goto leave;
         }
