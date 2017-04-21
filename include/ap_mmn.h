@@ -551,6 +551,7 @@
  *                         Added ap_scan_vchar_obstext()
  * 20161018.2 (2.5.0-dev)  add ap_set_conn_count()
  * 20161018.3 (2.5.0-dev)  add ap_exists_directive()
+ * 20161018.4 (2.5.0-dev)  Add taint to request_rec and ap_request_tainted()
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -558,7 +559,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20161018
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 3                 /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 4                 /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

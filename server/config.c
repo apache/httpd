@@ -2196,6 +2196,8 @@ AP_CORE_DECLARE(int) ap_parse_htaccess(ap_conf_vector_t **result,
             const char *errmsg;
             ap_directive_t *temptree = NULL;
 
+            /* Mark the request as tainted by .htaccess */
+            r->taint |= AP_TAINT_HTACCESS;
             dc = ap_create_per_dir_config(r->pool);
 
             parms.config_file = f;

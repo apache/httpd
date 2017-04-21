@@ -932,6 +932,14 @@ static int proxy_fixup(request_rec *r)
     if (!r->proxyreq || !r->filename || strncmp(r->filename, "proxy:", 6) != 0)
         return DECLINED;
 
+    /* A request that has passed through .htaccess has no business
+     * serving contents from so far outside its directory.
+     * Since we're going to decline it, don't waste time here.
+     */
+    if (ap_request_tainted(r, AP_TAINT_HTACCESS)) {
+        return DECLINED;
+    }
+
     /* XXX: Shouldn't we try this before we run the proxy_walk? */
     url = &r->filename[6];
 
@@ -1022,6 +1030,13 @@ static int proxy_handler(request_rec *r)
 
     /* is this for us? */
     if (!r->filename) {
+        return DECLINED;
+    }
+
+    /* A request that has passed through .htaccess has no business
+     * serving contents from so far outside its directory.
+     */
+    if (ap_request_tainted(r, AP_TAINT_HTACCESS)) {
         return DECLINED;
     }
 
