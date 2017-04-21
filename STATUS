@@ -187,7 +187,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1790973
      trunk patch: http://svn.apache.org/r1790978
      2.4.x patch: trunk works 
-     +1: icing, steffen
+     +1: icing, steffen, jim (inspection)
 
    * mod_journald: Add new module mod_journald to log error logs into journald.
      trunk patch: http://svn.apache.org/r1610339
