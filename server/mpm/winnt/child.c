@@ -813,13 +813,11 @@ static DWORD __stdcall worker_main(void *thread_num_val)
 
         ap_process_connection(c, context->sock);
 
-        apr_socket_opt_get(context->sock, APR_SO_DISCONNECTED, &disconnected);
+        ap_lingering_close(c);
 
+        apr_socket_opt_get(context->sock, APR_SO_DISCONNECTED, &disconnected);
         if (!disconnected) {
             context->accept_socket = INVALID_SOCKET;
-            if (!c->aborted) { 
-                ap_lingering_close(c);
-            }
         }
     }
 

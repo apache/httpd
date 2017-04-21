@@ -145,14 +145,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mpm_winnt: always invoke ap_lingering_close() at connection end as in
-     all other mpm modules, giving everyone a chance to cleanup at prep
-     lingering close hook.
-     trunk patch: http://svn.apache.org/r1790973
-     trunk patch: http://svn.apache.org/r1790978
-     2.4.x patch: trunk works 
-     +1: icing, steffen, jim (inspection)
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
