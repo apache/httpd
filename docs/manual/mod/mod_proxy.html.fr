@@ -1502,6 +1502,17 @@ ProxyPass "/mirror/foo" "http://backend.example.com"</pre>
         <td><p>Le fournisseur utilisé par <code class="module"><a href="../mod/mod_proxy_fdpass.html">mod_proxy_fdpass</a></code>.
 	Se référer à la documentation de ce module pour plus de détails.</p>
     </td></tr>
+    <tr><td>secret</td>
+        <td>-</td>
+        <td><p>Le mot de passe utilisé par <code class="module"><a href="../mod/mod_proxy_ajp.html">mod_proxy_ajp</a></code>. Voir
+	la documentation de ce module pour plus de détails.</p>
+    </td></tr>
+    <tr><td>upgrade</td>
+        <td>WebSocket</td>
+        <td><p>Le protocol accepté par <code class="module"><a href="../mod/mod_proxy_wstunnel.html">mod_proxy_wstunnel</a></code> dans
+	l'en-tête Upgrade. Voir	la documentation de ce module pour plus de
+	détails.</p>
+    </td></tr>
 
     </table>
 
