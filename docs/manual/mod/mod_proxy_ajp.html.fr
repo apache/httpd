@@ -522,6 +522,8 @@ attribute_value := (string)</pre></div>
       <tr><td>?req_attribute</td><td>0x0A</td><td>String</td><td>Nom (le
       nom de l'attribut vient ensuite)</td></tr>
       <tr><td>?ssl_key_size</td><td>0x0B</td><td>Integer</td><td /></tr>
+      <tr><td>?secret</td><td>0x0C</td><td>String</td><td>Envoyé si un mot de
+      passe est défini</td></tr>
       <tr><td>are_done</td><td>0xFF</td><td>-</td><td>request_terminator</td></tr>
     </table>
     <p><code>context</code> et <code>servlet_path</code> ne sont pas
@@ -537,7 +539,8 @@ attribute_value := (string)</pre></div>
     nom de l'utilisateur distant ainsi que le type d'authentification
     utilisée pour établir son identité (à savoir Basic, Digest).</p>
     <p><code>query_string</code>, <code>ssl_cert</code>,
-    <code>ssl_cipher</code> et <code>ssl_session</code> contiennent les
+    <code>ssl_cipher</code>, <code>ssl_session</code> et
+    <code>ssl_key_size</code> contiennent les
     éléments HTTP et HTTPS correspondants.</p>
     <p><code>jvm_route</code> est utilisé dans le cadre des sessions
     persistantes, en associant une session utilisateur à une instance
@@ -549,6 +552,11 @@ attribute_value := (string)</pre></div>
     représentant le nom et la valeur de l'attribut est envoyée
     immédiatement après chaque instance de ce code. Les variables
     d'environnement sont transmises par cette méthode.</p>
+    <p>Le <code>mot de passe</code> est envoyé lorsque la directive <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> ou <code class="directive"><a href="../mod/mod_proxy.html#balancermember">BalancerMember</a></code> utilise le paramètre
+    <code>secret=secret_keyword</code>. Le serveur d'arrière-plan doit savoir
+    utiliser les mots de passe et les valeurs doivent correspondre.
+    <code>request.secret</code> ou <code>requiredSecret</code> sont documentés
+    dans la configuration AJP d'Apache Tomcat.</p>
     <p>Enfin, lorsque tous les attributs ont été transmis, le
     terminateur d'attributs, <code>0xFF</code>, est envoyé. Ce dernier
     indique à la fois la fin de la liste d'attributs et la fin du paquet
