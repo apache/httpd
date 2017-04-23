@@ -67,7 +67,7 @@ static int proxy_wstunnel_pump(ws_baton_t *baton, apr_time_t timeout, int try_po
                     return SUSPENDED;
                 }
                 else { 
-                    ap_log_rerror(APLOG_MARK, APLOG_TRACE1, rv, r, APLOGNO() "Closing idle tunnel");
+                    ap_log_rerror(APLOG_MARK, APLOG_TRACE1, rv, r, APLOGNO(10031) "Closing idle tunnel");
                     return HTTP_REQUEST_TIME_OUT;
                 }
             }
