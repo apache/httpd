@@ -350,7 +350,7 @@ query can be done in two ways which can be configured by
 </ul>
 <example><title>Example</title>
 <highlight language="config">
-SSLPassPhraseDialog exec:/usr/local/apache/sbin/pp-filter
+SSLPassPhraseDialog "exec:/usr/local/apache/sbin/pp-filter"
 </highlight>
 </example>
 </usage>
@@ -433,12 +433,12 @@ The following <em>source</em> variants are available:</p>
 <example><title>Example</title>
 <highlight language="config">
 SSLRandomSeed startup builtin
-SSLRandomSeed startup file:/dev/random
-SSLRandomSeed startup file:/dev/urandom 1024
-SSLRandomSeed startup exec:/usr/local/bin/truerand 16
+SSLRandomSeed startup "file:/dev/random"
+SSLRandomSeed startup "file:/dev/urandom" 1024
+SSLRandomSeed startup "exec:/usr/local/bin/truerand" 16
 SSLRandomSeed connect builtin
-SSLRandomSeed connect file:/dev/random
-SSLRandomSeed connect file:/dev/urandom 1024
+SSLRandomSeed connect "file:/dev/random"
+SSLRandomSeed connect "file:/dev/urandom" 1024
 </highlight>
 </example>
 </usage>
@@ -511,8 +511,8 @@ The following five storage <em>type</em>s are currently supported:</p>
 
 <example><title>Examples</title>
 <highlight language="config">
-SSLSessionCache dbm:/usr/local/apache/logs/ssl_gcache_data
-SSLSessionCache shmcb:/usr/local/apache/logs/ssl_gcache_data(512000)
+SSLSessionCache "dbm:/usr/local/apache/logs/ssl_gcache_data"
+SSLSessionCache "shmcb:/usr/local/apache/logs/ssl_gcache_data(512000)"
 </highlight>
 </example>
 
@@ -934,7 +934,7 @@ thus using a custom/suitable length.
 
 <example><title>Example</title>
 <highlight language="config">
-SSLCertificateFile /usr/local/apache2/conf/ssl.crt/server.crt
+SSLCertificateFile "/usr/local/apache2/conf/ssl.crt/server.crt"
 </highlight>
 </example>
 </usage>
@@ -969,7 +969,7 @@ key file.</p>
 
 <example><title>Example</title>
 <highlight language="config">
-SSLCertificateKeyFile /usr/local/apache2/conf/ssl.key/server.key
+SSLCertificateKeyFile "/usr/local/apache2/conf/ssl.key/server.key"
 </highlight>
 </example>
 </usage>
@@ -1017,7 +1017,7 @@ certificates use the <em>same</em> certificate chain. Else the browsers will be
 confused in this situation.</p>
 <example><title>Example</title>
 <highlight language="config">
-SSLCertificateChainFile /usr/local/apache2/conf/ssl.crt/ca.crt
+SSLCertificateChainFile "/usr/local/apache2/conf/ssl.crt/ca.crt"
 </highlight>
 </example>
 </usage>
@@ -1044,7 +1044,7 @@ there: you also have to create symbolic links named
 contains the appropriate symbolic links.</p>
 <example><title>Example</title>
 <highlight language="config">
-SSLCACertificatePath /usr/local/apache2/conf/ssl.crt/
+SSLCACertificatePath "/usr/local/apache2/conf/ssl.crt/"
 </highlight>
 </example>
 </usage>
@@ -1068,7 +1068,7 @@ preference. This can be used alternatively and/or additionally to
 <directive module="mod_ssl">SSLCACertificatePath</directive>.</p>
 <example><title>Example</title>
 <highlight language="config">
-SSLCACertificateFile /usr/local/apache2/conf/ssl.crt/ca-bundle-client.crt
+SSLCACertificateFile "/usr/local/apache2/conf/ssl.crt/ca-bundle-client.crt"
 </highlight>
 </example>
 </usage>
@@ -1115,7 +1115,7 @@ PEM-encoded CA certificates.</p>
 
 <example><title>Example</title>
 <highlight language="config">
-SSLCADNRequestFile /usr/local/apache2/conf/ca-names.crt
+SSLCADNRequestFile "/usr/local/apache2/conf/ca-names.crt"
 </highlight>
 </example>
 </usage>
@@ -1144,7 +1144,7 @@ Certificate files there: you also have to create symbolic links named
 this directory contains the appropriate symbolic links.</p>
 <example><title>Example</title>
 <highlight language="config">
-SSLCADNRequestPath /usr/local/apache2/conf/ca-names.crt/
+SSLCADNRequestPath "/usr/local/apache2/conf/ca-names.crt/"
 </highlight>
 </example>
 </usage>
@@ -1171,7 +1171,7 @@ Additionally you have to create symbolic links named
 contains the appropriate symbolic links.</p>
 <example><title>Example</title>
 <highlight language="config">
-SSLCARevocationPath /usr/local/apache2/conf/ssl.crl/
+SSLCARevocationPath "/usr/local/apache2/conf/ssl.crl/"
 </highlight>
 </example>
 </usage>
@@ -1196,7 +1196,7 @@ used alternatively and/or additionally to <directive
 module="mod_ssl">SSLCARevocationPath</directive>.</p>
 <example><title>Example</title>
 <highlight language="config">
-SSLCARevocationFile /usr/local/apache2/conf/ssl.crl/ca-bundle-client.crl
+SSLCARevocationFile "/usr/local/apache2/conf/ssl.crl/ca-bundle-client.crl"
 </highlight>
 </example>
 </usage>
@@ -1755,7 +1755,7 @@ directory contains the appropriate symbolic links.</p>
 </note>
 <example><title>Example</title>
 <highlight language="config">
-SSLProxyMachineCertificatePath /usr/local/apache2/conf/proxy.crt/
+SSLProxyMachineCertificatePath "/usr/local/apache2/conf/proxy.crt/"
 </highlight>
 </example>
 </usage>
@@ -1785,7 +1785,7 @@ or additionally to <code>SSLProxyMachineCertificatePath</code>.
 </note>
 <example><title>Example</title>
 <highlight language="config">
-SSLProxyMachineCertificateFile /usr/local/apache2/conf/ssl.crt/proxy.pem
+SSLProxyMachineCertificateFile "/usr/local/apache2/conf/ssl.crt/proxy.pem"
 </highlight>
 </example>
 </usage>
@@ -1818,7 +1818,7 @@ SSLProxyCACertificateFile</directive>.</p>
 </note>
 <example><title>Example</title>
 <highlight language="config">
-SSLProxyMachineCertificateChainFile /usr/local/apache2/conf/ssl.crt/proxyCA.pem
+SSLProxyMachineCertificateChainFile "/usr/local/apache2/conf/ssl.crt/proxyCA.pem"
 </highlight>
 </example>
 </usage>
@@ -2100,7 +2100,7 @@ there: you also have to create symbolic links named
 contains the appropriate symbolic links.</p>
 <example><title>Example</title>
 <highlight language="config">
-SSLProxyCACertificatePath /usr/local/apache2/conf/ssl.crt/
+SSLProxyCACertificatePath "/usr/local/apache2/conf/ssl.crt/"
 </highlight>
 </example>
 </usage>
@@ -2125,7 +2125,7 @@ preference. This can be used alternatively and/or additionally to
 <directive module="mod_ssl">SSLProxyCACertificatePath</directive>.</p>
 <example><title>Example</title>
 <highlight language="config">
-SSLProxyCACertificateFile /usr/local/apache2/conf/ssl.crt/ca-bundle-remote-server.crt
+SSLProxyCACertificateFile "/usr/local/apache2/conf/ssl.crt/ca-bundle-remote-server.crt"
 </highlight>
 </example>
 </usage>
@@ -2153,7 +2153,7 @@ Additionally you have to create symbolic links named
 contains the appropriate symbolic links.</p>
 <example><title>Example</title>
 <highlight language="config">
-SSLProxyCARevocationPath /usr/local/apache2/conf/ssl.crl/
+SSLProxyCARevocationPath "/usr/local/apache2/conf/ssl.crl/"
 </highlight>
 </example>
 </usage>
@@ -2179,7 +2179,7 @@ used alternatively and/or additionally to <directive
 module="mod_ssl">SSLProxyCARevocationPath</directive>.</p>
 <example><title>Example</title>
 <highlight language="config">
-SSLProxyCARevocationFile /usr/local/apache2/conf/ssl.crl/ca-bundle-remote-server.crl
+SSLProxyCARevocationFile "/usr/local/apache2/conf/ssl.crl/ca-bundle-remote-server.crl"
 </highlight>
 </example>
 </usage>
@@ -2326,7 +2326,7 @@ directives.</p>
 <highlight language="config">
 SSLVerifyClient on
 SSLOCSPEnable on
-SSLOCSPDefaultResponder http://responder.example.com:8888/responder
+SSLOCSPDefaultResponder "http://responder.example.com:8888/responder"
 SSLOCSPOverrideResponder on
 </highlight>
 </example>
@@ -2819,7 +2819,7 @@ may sometimes differ.</p>
 <highlight language="config">
 SSLOpenSSLConfCmd Options -SessionTicket,ServerPreference
 SSLOpenSSLConfCmd ECDHParameters brainpoolP256r1
-SSLOpenSSLConfCmd ServerInfoFile /usr/local/apache2/conf/server-info.pem
+SSLOpenSSLConfCmd ServerInfoFile "/usr/local/apache2/conf/server-info.pem"
 SSLOpenSSLConfCmd Protocol "-ALL, TLSv1.2"
 SSLOpenSSLConfCmd SignatureAlgorithms RSA+SHA384:ECDSA+SHA256
 </highlight>
