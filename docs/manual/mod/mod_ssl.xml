@@ -1209,7 +1209,7 @@ SSLCARevocationFile "/usr/local/apache2/conf/ssl.crl/ca-bundle-client.crl"
 <default>SSLCARevocationCheck none</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility>Optional <em>flag</em>s available in httpd 2.5-dev or
+<compatibility>Optional <em>flag</em>s available in httpd 2.4.21 or
 later</compatibility>
 
 <usage>
@@ -2431,7 +2431,7 @@ Responder), this option should be turned <code>off</code>.</p>
 <default>SSLOCSPNoverify Off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility>Available in httpd 2.5 and later, if using OpenSSL 0.9.7 or later</compatibility>
+<compatibility>Available in httpd 2.4.26 and later, if using OpenSSL 0.9.7 or later</compatibility>
 <usage>
 <p>Skip the OCSP responder certificates verification, mostly useful when
 testing an OCSP server.</p>
@@ -2445,7 +2445,7 @@ testing an OCSP server.</p>
 <syntax>SSLOCSPResponderCertificateFile <em>file</em></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility>Available in httpd 2.5 and later, if using OpenSSL 0.9.7 or later</compatibility>
+<compatibility>Available in httpd 2.4.26 and later, if using OpenSSL 0.9.7 or later</compatibility>
 <usage>
 <p>This supplies a list of trusted OCSP responder certificates to be used
 during OCSP responder certificate validation. The supplied certificates are
