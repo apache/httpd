@@ -125,15 +125,11 @@ RELEASE SHOWSTOPPERS:
                   http://svn.apache.org/r1786009
                   http://svn.apache.org/r1789387
      2.4.x patch: trunk works *after r1779573 above* (modulo CHANGES)
+              ie: http://home.apache.org/~ylavic/patches/httpd2.4-hcheck-after-r1779573.patch
            FULL hcheck patch: http://home.apache.org/~jim/patches/httpd2.4-hcheck.patch
                               http://svn.apache.org/r1789387
            (includes all hcheck related patches, including showstopper)
-     +1: jim
-     ylavic: 'tpsize' needs to be reset (to HC_THREADPOOL_SIZE) in pre_config,
-             otherwise if mod_proxy_hcheck is builtin/static and for example
-             ProxyHCTPsize were commented out on restart, we wouldn't use the
-             default value (as expected).
-     jim: Committed in r1789387
+     +1: jim, ylavic
 
    *) confirm ab + https w/ openssl 1.1.0 on unix is OK.
       Gregg says it's broken on Windows.
