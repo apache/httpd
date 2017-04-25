@@ -436,6 +436,7 @@ typedef struct {
     unsigned int     was_malloced:1;
     char      hcuri[PROXY_WORKER_MAX_ROUTE_SIZE];     /* health check uri */
     char      hcexpr[PROXY_WORKER_MAX_SCHEME_SIZE];   /* name of condition expr for health check */
+    char      hchost[PROXY_WORKER_MAX_HOSTNAME_SIZE];  /* remote backend address */
     int             passes;     /* number of successes for check to pass */
     int             pcount;     /* current count of passes */
     int             fails;      /* number of failures for check to fail */

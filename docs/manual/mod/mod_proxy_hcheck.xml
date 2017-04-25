@@ -82,6 +82,9 @@
     <tr><td>hcuri</td>
         <td>&nbsp;</td>
         <td>Additional URI to be appended to the worker URL for the health check.</td></tr>
+    <tr><td>hchost</td>
+        <td>&nbsp;</td>
+        <td>Override host header for the health check, instead of hust balancer hostname.</td></tr>
     <tr><td>hctemplate</td>
         <td>&nbsp;</td>
         <td>Name of template, created via <directive>ProxyHCTemplate</directive> to use for setting health check parameters for this worker</td></tr>

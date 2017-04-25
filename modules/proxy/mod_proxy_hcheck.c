@@ -42,6 +42,7 @@ typedef struct {
     apr_interval_time_t interval;
     char *hurl;
     char *hcexpr;
+    char *hchost;
 } hc_template_t;
 
 typedef struct {
@@ -123,6 +124,7 @@ static const char *set_worker_hc_param(apr_pool_t *p,
                     worker->s->fails = template->fails;
                     PROXY_STRNCPY(worker->s->hcuri, template->hurl);
                     PROXY_STRNCPY(worker->s->hcexpr, template->hcexpr);
+                    PROXY_STRNCPY(worker->s->hchost, template->hchost);
                 } else {
                     temp->method = template->method;
                     temp->interval = template->interval;
@@ -130,6 +132,7 @@ static const char *set_worker_hc_param(apr_pool_t *p,
                     temp->fails = template->fails;
                     temp->hurl = apr_pstrdup(p, template->hurl);
                     temp->hcexpr = apr_pstrdup(p, template->hcexpr);
+                    temp->hchost = apr_pstrdup(p, template->hchost);
                 }
                 return NULL;
             }
@@ -211,6 +214,16 @@ static const char *set_worker_hc_param(apr_pool_t *p,
             temp->hcexpr = apr_pstrdup(p, val);
         }
     }
+    else if (!strcasecmp(key, "hchost")) {
+        if (strlen(val) >= sizeof(worker->s->hchost))
+            return apr_psprintf(p, "Health check host length must be < %d characters",
+                    (int)sizeof(worker->s->hchost));
+        if (worker) {
+            PROXY_STRNCPY(worker->s->hchost, val);
+        } else {
+            temp->hchost = apr_pstrdup(p, val);
+        }
+    }
   else {
         return "unknown Worker hcheck parameter";
     }
@@ -287,6 +300,7 @@ static const char *set_hc_template(cmd_parms *cmd, void *dummy, const char *arg)
     template->interval = apr_time_from_sec(HCHECK_WATHCHDOG_DEFAULT_INTERVAL);
     template->hurl = NULL;
     template->hcexpr = NULL;
+    template->hchost = NULL;
     while (*arg) {
         word = ap_getword_conf(cmd->pool, &arg);
         val = strchr(word, '=');
@@ -418,7 +432,7 @@ static void create_hcheck_req(wctx_t *wctx, proxy_worker *hc,
                                "OPTIONS * HTTP/1.0\r\n"
                                "Host: %s:%d\r\n"
                                "\r\n",
-                               hc->s->hostname, (int)hc->s->port);
+                               (*hc->s->hchost ? hc->s->hchost : hc->s->hostname), (int)hc->s->port);
             break;
 
         case HEAD:
@@ -436,7 +450,7 @@ static void create_hcheck_req(wctx_t *wctx, proxy_worker *hc,
                                (wctx->path ? wctx->path : ""),
                                (wctx->path && *hc->s->hcuri ? "/" : "" ),
                                (*hc->s->hcuri ? hc->s->hcuri : ""),
-                               hc->s->hostname, (int)hc->s->port);
+                               (*hc->s->hchost ? hc->s->hchost : hc->s->hostname), (int)hc->s->port);
             break;
 
         default:
@@ -472,6 +486,7 @@ static proxy_worker *hc_get_hcworker(sctx_t *ctx, proxy_worker *worker,
         PROXY_STRNCPY(hc->s->scheme,   worker->s->scheme);
         PROXY_STRNCPY(hc->s->hcuri,    worker->s->hcuri);
         PROXY_STRNCPY(hc->s->hcexpr,   worker->s->hcexpr);
+        PROXY_STRNCPY(hc->s->hchost,   worker->s->hchost);
         hc->hash.def = hc->s->hash.def = ap_proxy_hashfunc(hc->s->name, PROXY_HASHFUNC_DEFAULT);
         hc->hash.fnv = hc->s->hash.fnv = ap_proxy_hashfunc(hc->s->name, PROXY_HASHFUNC_FNV);
         hc->s->port = port;
