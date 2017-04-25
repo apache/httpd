@@ -300,6 +300,27 @@ in *BSDs.</compatibility>
     <directive module="mpm_common">MaxSpareThreads</directive> lower bound values.
     The number of children processes needs to be a multiple of the number 
     of buckets to optimally accept connections.</p>
+
+    <note>
+    <title>Multiple <directive>Listen</directive>ers or Apache HTTP servers on
+    the same IP address and port</title>
+    <p>Setting the <code>SO_REUSEPORT</code> option on the listening socket(s)
+    consequently allows multiple processes (sharing the same <code>EUID</code>,
+    e.g. <code>root</code>) to bind to the the same IP address and port,
+    without the binding error raised by the system in the usual case.</p>
+    <p>This also means that multiple instances of Apache httpd configured on a
+    same <code>IP:port</code> and with a positive <directive>ListenCoresBucketsRatio</directive>
+    would start without an error too, and then run with incoming connections
+    evenly distributed accross both instances (this is NOT a recommendation or
+    a sensible usage in any case, but just a notice that it would prevent such
+    possible issues to be detected).</p>
+    <p>Within the same instance, Apache httpd will check and fail to start if
+    multiple <directive>Listen</directive> directives on the exact same IP (or
+    hostname) and port are configured, thus avoiding the creation of some
+    duplicated buckets which would be useless and kill performances.  However
+    it can't (and won't try harder to) catch all the possible overlapping cases
+    (like a hostname resolving to an IP used elsewhere).</p>
+    </note>
 </usage>
 </directivesynopsis>
 
