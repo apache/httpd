@@ -453,21 +453,6 @@ Package=<4>
 
 ###############################################################################
 
-Project: "apr_dbd_freetds"=".\srclib\apr\dbd\apr_dbd_freetds.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name libapr
-    End Project Dependency
-}}}
-
-###############################################################################
-
 Project: "apr_dbd_odbc"=".\srclib\apr\dbd\apr_dbd_odbc.dsp" - Package Owner=<4>
 
 Package=<5>
