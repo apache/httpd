@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.es.xsl"?>
-<!-- English Revision: 1736686:1786686 (outdated) -->
+<!-- English Revision: 1786686  -->
 <!-- Spanish translation : Daniel Ferradal -->
 <!-- Reviewed by : Luis Gil de Bernabé Pfeiffer lgilbernabe [AT] apache.org -->
 <!--
@@ -136,6 +136,17 @@
 
         <p>Ver: <a href="reverse_proxy.html">Guía de Proxy Inverso</a></p>
       </dd>
+    </dl>
+
+    <dl>
+     <dt>Reescritura de URLS utilizando mod_rewrite</dt>
+     <dd>
+       <p>Reescribir URLs (o no) con 
+       <module>mod_rewrite</module> suele ser algo que se pregunta mucho en nuestras lista 
+       de correo y canales IRC. Le hemos dedicado a este tema 
+       <a href="../rewrite/"> una sección entera en nuestra documentación</a>  de recetas y "how-tos".
+     </p>
+     </dd>
     </dl>
 
   </section>
