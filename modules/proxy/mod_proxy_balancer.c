@@ -1176,6 +1176,12 @@ static int balancer_handler(request_rec *r)
             else
                 *wsel->s->hcexpr = '\0';
         }
+        if ((val = apr_table_get(params, "w_hh"))) {
+            if (*val && strlen(val) < sizeof(wsel->s->hchost))
+                strcpy(wsel->s->hchost, val);
+            else
+                *wsel->s->hchost = '\0';
+        }
         /* If the health check method doesn't support an expr, then null it */
         if (wsel->s->method == NONE || wsel->s->method == TCP) {
             *wsel->s->hcexpr = '\0';
@@ -1616,6 +1622,7 @@ static int balancer_handler(request_rec *r)
                     ap_rprintf(r, "<td>%d (%d)</td>", worker->s->passes,worker->s->pcount);
                     ap_rprintf(r, "<td>%d (%d)</td>", worker->s->fails, worker->s->fcount);
                     ap_rprintf(r, "<td>%s</td>", worker->s->hcuri);
+                    ap_rprintf(r, "<td>%s</td>", worker->s->hchost);
                     ap_rprintf(r, "<td>%s", worker->s->hcexpr);
                 }
                 ap_rputs("</td></tr>\n", r);
@@ -1689,6 +1696,8 @@ static int balancer_handler(request_rec *r)
                            "value='%d'></td></tr>\n", wsel->s->fails);
                 ap_rprintf(r, "<tr><td>HC uri</td><td><input name='w_hu' id='w_hu' type='text'"
                         "value='%s'</td></tr>\n", ap_escape_html(r->pool, wsel->s->hcuri));
+                ap_rprintf(r, "<tr><td>HC uri</td><td><input name='w_hh' id='w_hh' type='text'"
+                        "value='%s'</td></tr>\n", ap_escape_html(r->pool, wsel->s->hchost));
                 ap_rputs("</table>\n</td></tr>\n", r);
             }
             ap_rputs("<tr><td colspan='2'><input type=submit value='Submit'></td></tr>\n", r);

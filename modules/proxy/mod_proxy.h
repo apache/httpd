@@ -396,6 +396,7 @@ typedef struct {
     char      uds_path[PROXY_WORKER_MAX_NAME_SIZE];   /* path to worker's unix domain socket if applicable */
     char      hcuri[PROXY_WORKER_MAX_ROUTE_SIZE];     /* health check uri */
     char      hcexpr[PROXY_WORKER_MAX_SCHEME_SIZE];   /* name of condition expr for health check */
+    char      hchost[PROXY_WORKER_MAX_HOSTNAME_SIZE];  /* remote backend address */
     int             lbset;      /* load balancer cluster set */
     int             retries;    /* number of retries on this worker */
     int             lbstatus;   /* Current lbstatus */
