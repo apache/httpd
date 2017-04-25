@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) Evaluate nested If/ElseIf/Else configuration blocks.
+     [Luca Toscano, Jacob Champion]
+
   *) Introduce request taint checking framework to prevent privilege
      hijacking through .htaccess. [Nick Kew]
 
