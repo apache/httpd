@@ -268,6 +268,33 @@ _trynghttp2:
 
 !ENDIF
 
+!IF EXIST("srclib\brotli")
+
+_trybrotli:
+!IF $(USEMAK) == 1
+	cd modules\filters
+	$(MAKE) $(MAKEOPT) -f mod_brotli.mak CFG="mod_brotli - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	cd ..\..
+!ELSEIF $(USESLN) == 1
+	devenv $(TLP).sln /useenv $(CTARGET) $(LONG) /project mod_brotli
+!ELSE
+	@msdev $(TLP).dsw /USEENV /MAKE \
+		"mod_brotli - Win32 $(LONG)" /NORECURSE $(CTARGET)
+!ENDIF
+
+!ELSE
+#     NOT EXIST("srclib\brotli")
+
+_trybrotli:
+	@echo -----
+	@echo mod_brotli will not build unless brotli is built in srclib\brotli.  
+	@echo Version 1.0.0 and later available from https://github.com/google/brotli/releases
+	@echo build with:
+	@echo cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF
+	@echo nmake
+
+!ENDIF
+
 _trydb:
 !IF $(USEMAK) == 1
 	cd srclib\$(UTILDIR)\dbd
@@ -504,6 +531,9 @@ _build:
 	cd ..\..
 !ENDIF
 	cd modules\filters
+!IF EXIST("srclib\brotli")
+	 $(MAKE) $(MAKEOPT) -f mod_brotli.mak      CFG="mod_brotli - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+!ENDIF
 	 $(MAKE) $(MAKEOPT) -f mod_buffer.mak      CFG="mod_buffer - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_charset_lite.mak CFG="mod_charset_lite - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_data.mak        CFG="mod_data - Win32 $(LONG)" RECURSE=0 $(CTARGET)
@@ -777,6 +807,9 @@ _copybin:
 	copy modules\examples\$(LONG)\mod_case_filter_in.$(src_so) "$(inst_so)" <.y
 	copy modules\examples\$(LONG)\mod_example_hooks.$(src_so)  "$(inst_so)" <.y
 	copy modules\examples\$(LONG)\mod_example_ipc.$(src_so)	   "$(inst_so)" <.y
+!ENDIF
+!IF EXIST("srclib\brotli")
+	copy modules\filters\$(LONG)\mod_brotli.$(src_so) 	"$(inst_so)" <.y
 !ENDIF
 	copy modules\filters\$(LONG)\mod_buffer.$(src_so) 	"$(inst_so)" <.y
 	copy modules\filters\$(LONG)\mod_charset_lite.$(src_so)	"$(inst_so)" <.y
@@ -1094,6 +1127,25 @@ at https://nghttp2.org/
 BEGIN {
     print "";
     print "For the mod_http2 component:";
+    print "";
+	    while ( getline > 0 ) {
+	print $$0;
+    }
+    exit 0;
+}
+<<
+!ENDIF
+!IF EXIST("srclib\brotli")
+	type << >> "$(INSTDIR)\NOTICE.txt"
+
+This binary distribution of mod_brotli.so includes Brotli C library written 
+by the Brotli Authors. For complete information, visit Brotli's web site 
+at https://github.com/google/brotli
+<<
+	-awk -f <<script.awk < "srclib\broyli\LICENSE" >> "$(INSTDIR)\LICENSE.txt"
+BEGIN {
+    print "";
+    print "For the mod_brotli component:";
     print "";
 	    while ( getline > 0 ) {
 	print $$0;
