@@ -137,6 +137,20 @@ RELEASE SHOWSTOPPERS:
       jchampion: hangs on my Ubuntu box too. Looks like a CRYPTO_malloc()
                  infinite loop during library initialization?
 
+   *) mod_brotli: Fix two build issues (failing Unix build when mod_brotli
+      is not being built and invalid library filenames in CMakeFiles).
+      trunk patch: https://svn.apache.org/r1761824
+                   https://svn.apache.org/r1771789
+                   https://svn.apache.org/r1771827
+                   https://svn.apache.org/r1779111
+      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/branches/2.4.x-r1761824-group
+      Note: These changesets were missing in the original mod_brotli backport
+      proposal merged in r1791231.  They fix the described problems and avoid
+      having unnecessarily different modules/filters/config.m4 file contents
+      in trunk and in the 2.4.x branch.  See the related discussion in
+      https://lists.apache.org/thread.html/a83741642c3d20f383efdf2c427829b2f37cb81e98c0a1756a2c19ce@%3Cdev.httpd.apache.org%3E
+      +1: kotkov
+
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
