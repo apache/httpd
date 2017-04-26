@@ -116,6 +116,7 @@ BEGIN {
           print "#LoadModule authz_owner_module modules/mod_authz_owner.so" > dstfl;
           print "LoadModule authz_user_module modules/mod_authz_user.so" > dstfl;
           print "LoadModule autoindex_module modules/mod_autoindex.so" > dstfl;
+          print "#LoadModule brotli_module modules/mod_brotli.so" > dstfl;
           print "#LoadModule buffer_module modules/mod_buffer.so" > dstfl;
           print "#LoadModule cache_module modules/mod_cache.so" > dstfl;
           print "#LoadModule cache_disk_module modules/mod_cache_disk.so" > dstfl;
