@@ -140,125 +140,55 @@ APACHE_MODULE(proxy_html, Fix HTML Links in a Reverse Proxy, , , , [
 ]
 )
 
-dnl
-dnl APACHE_CHECK_BROTLI
-dnl
-dnl Configure for Brotli, giving preference to
-dnl "--with-brotli=<path>" if it was specified.
-dnl
-AC_DEFUN([APACHE_CHECK_BROTLI],[
-  AC_CACHE_CHECK([for Brotli], [ac_cv_brotli], [
-    dnl initialise the variables we use
-    ac_cv_brotli=no
-    ac_brotli_found=""
-    ac_brotli_base=""
-    ac_brotli_libs=""
-    ac_brotli_mod_cflags=""
-    ac_brotli_mod_ldflags=""
-
-    dnl Determine the Brotli base directory, if any
-    AC_MSG_CHECKING([for user-provided Brotli base directory])
-    AC_ARG_WITH(brotli, APACHE_HELP_STRING(--with-brotli=PATH,Brotli installation directory), [
-      dnl If --with-brotli specifies a directory, we use that directory
-      if test "x$withval" != "xyes" -a "x$withval" != "x"; then
-        dnl This ensures $withval is actually a directory and that it is absolute
-        ac_brotli_base="`cd $withval ; pwd`"
-      fi
-    ])
-    if test "x$ac_brotli_base" = "x"; then
-      AC_MSG_RESULT(none)
-    else
-      AC_MSG_RESULT($ac_brotli_base)
+APACHE_MODULE(brotli, Brotli compression support, , , most, [
+  AC_ARG_WITH(brotli, APACHE_HELP_STRING(--with-brotli=PATH,Brotli installation directory),[
+    if test "$withval" != "yes" -a "x$withval" != "x"; then
+      ap_brotli_base="$withval"
+      ap_brotli_with=yes
     fi
-
-    dnl Run header and version checks
-    saved_CPPFLAGS="$CPPFLAGS"
-    saved_LIBS="$LIBS"
-    saved_LDFLAGS="$LDFLAGS"
-
-    dnl Before doing anything else, load in pkg-config variables
-    if test -n "$PKGCONFIG"; then
-      saved_PKG_CONFIG_PATH="$PKG_CONFIG_PATH"
-      if test "x$ac_brotli_base" != "x" -a \
-              -f "${ac_brotli_base}/lib/pkgconfig/libbrotlienc.pc"; then
-        dnl Ensure that the given path is used by pkg-config too, otherwise
-        dnl the system libbrotlienc.pc might be picked up instead.
-        PKG_CONFIG_PATH="${ac_brotli_base}/lib/pkgconfig${PKG_CONFIG_PATH+:}${PKG_CONFIG_PATH}"
-        export PKG_CONFIG_PATH
-      fi
-      ac_brotli_libs="`$PKGCONFIG --libs-only-l --silence-errors libbrotlienc`"
-      if test $? -eq 0; then
-        ac_brotli_found="yes"
-        pkglookup="`$PKGCONFIG --cflags-only-I libbrotlienc`"
-        APR_ADDTO(CPPFLAGS, [$pkglookup])
-        APR_ADDTO(MOD_CFLAGS, [$pkglookup])
-        pkglookup="`$PKGCONFIG --libs-only-L libbrotlienc`"
-        APR_ADDTO(LDFLAGS, [$pkglookup])
-        APR_ADDTO(MOD_LDFLAGS, [$pkglookup])
-        pkglookup="`$PKGCONFIG --libs-only-other libbrotlienc`"
-        APR_ADDTO(LDFLAGS, [$pkglookup])
-        APR_ADDTO(MOD_LDFLAGS, [$pkglookup])
-      fi
-      PKG_CONFIG_PATH="$saved_PKG_CONFIG_PATH"
-    fi
-
-    dnl fall back to the user-supplied directory if not found via pkg-config
-    if test "x$ac_brotli_base" != "x" -a "x$ac_brotli_found" = "x"; then
-      APR_ADDTO(CPPFLAGS, [-I$ac_brotli_base/include])
-      APR_ADDTO(MOD_CFLAGS, [-I$ac_brotli_base/include])
-      APR_ADDTO(LDFLAGS, [-L$ac_brotli_base/lib])
-      APR_ADDTO(MOD_LDFLAGS, [-L$ac_brotli_base/lib])
-      if test "x$ap_platform_runtime_link_flag" != "x"; then
-        APR_ADDTO(LDFLAGS, [$ap_platform_runtime_link_flag$ac_brotli_base/lib])
-        APR_ADDTO(MOD_LDFLAGS, [$ap_platform_runtime_link_flag$ac_brotli_base/lib])
-      fi
-    fi
-
-    ac_brotli_libs="${ac_brotli_libs:--lbrotlienc `$apr_config --libs`} "
-    APR_ADDTO(MOD_LDFLAGS, [$ac_brotli_libs])
-    APR_ADDTO(LIBS, [$ac_brotli_libs])
-
-    dnl Run library and function checks
-    liberrors=""
-    AC_CHECK_HEADERS([brotli/encode.h])
-    AC_MSG_CHECKING([for Brotli version >= 0.6.0])
-    AC_TRY_COMPILE([#include <brotli/encode.h>],[
+  ])
+  ap_brotli_found=no
+  if test -n "$ap_brotli_base"; then
+    ap_save_cppflags=$CPPFLAGS
+    APR_ADDTO(CPPFLAGS, [-I${ap_brotli_base}/include])
+    AC_MSG_CHECKING([for Brotli library >= 0.6.0 via prefix])
+    AC_TRY_COMPILE(
+      [#include <brotli/encode.h>],[
 const uint8_t *o = BrotliEncoderTakeOutput((BrotliEncoderState*)0, (size_t*)0);
 if (o) return *o;],
-      [AC_MSG_RESULT(OK)
-       ac_cv_brotli="yes"],
-      [AC_MSG_RESULT(FAILED)])
-
-    dnl restore
-    CPPFLAGS="$saved_CPPFLAGS"
-    LIBS="$saved_LIBS"
-    LDFLAGS="$saved_LDFLAGS"
-
-    dnl cache MOD_LDFLAGS, MOD_CFLAGS
-    ac_brotli_mod_cflags=$MOD_CFLAGS
-    ac_brotli_mod_ldflags=$MOD_LDFLAGS
-  ])
-  if test "x$ac_cv_brotli" = "xyes"; then
-    APR_ADDTO(MOD_LDFLAGS, [$ac_brotli_mod_ldflags])
-
-    dnl Ouch!  libbrotlienc.1.so doesn't link against libm.so (-lm),
-    dnl although it should.  Workaround that in our LDFLAGS:
-
-    APR_ADDTO(MOD_LDFLAGS, ["-lm"])
-    APR_ADDTO(MOD_CFLAGS, [$ac_brotli_mod_cflags])
-  fi
-])
-
-APACHE_MODULE(brotli, Brotli compression support, , , most, [
-  APACHE_CHECK_BROTLI
-  if test "$ac_cv_brotli" = "yes" ; then
-      if test "x$enable_brotli" = "xshared"; then
-         # The only symbol which needs to be exported is the module
-         # structure, so ask libtool to hide everything else:
-         APR_ADDTO(MOD_BROTLI_LDADD, [-export-symbols-regex brotli_module])
-      fi
+      [AC_MSG_RESULT(yes)
+       ap_brotli_found=yes
+       ap_brotli_cflags="-I${ap_brotli_base}/include"
+       ap_brotli_libs="-L${ap_brotli_base}/lib -lbrotlienc -lbrotlicommon"],
+      [AC_MSG_RESULT(no)]
+    )
+    CPPFLAGS=$ap_save_cppflags
   else
-      enable_brotli=no
+    if test -n "$PKGCONFIG"; then
+      AC_MSG_CHECKING([for Brotli library >= 0.6.0 via pkg-config])
+      if $PKGCONFIG --exists "libbrotlienc >= 0.6.0"; then
+        AC_MSG_RESULT(yes)
+        ap_brotli_found=yes
+        ap_brotli_cflags=`$PKGCONFIG libbrotlienc --cflags`
+        ap_brotli_libs=`$PKGCONFIG libbrotlienc --libs`
+      else
+        AC_MSG_RESULT(no)
+      fi
+    fi
+  fi
+  if test "$ap_brotli_found" = "yes"; then
+    APR_ADDTO(MOD_CFLAGS, [$ap_brotli_cflags])
+    APR_ADDTO(MOD_BROTLI_LDADD, [$ap_brotli_libs])
+    if test "$enable_brotli" = "shared"; then
+      dnl The only symbol which needs to be exported is the module
+      dnl structure, so ask libtool to hide everything else:
+      APR_ADDTO(MOD_BROTLI_LDADD, [-export-symbols-regex brotli_module])
+    fi
+  else
+    enable_brotli=no
+    if test "$ap_brotli_with" = "yes"; then
+      AC_MSG_ERROR([Brotli library was missing or unusable])
+    fi
   fi
 ])
 
