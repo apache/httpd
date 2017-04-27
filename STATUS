@@ -129,7 +129,7 @@ RELEASE SHOWSTOPPERS:
            FULL hcheck patch: http://home.apache.org/~jim/patches/httpd2.4-hcheck.patch
                               http://svn.apache.org/r1789387
            (includes all hcheck related patches, including showstopper)
-     +1: jim, ylavic
+     +1: jim, ylavic, icing
 
    *) confirm ab + https w/ openssl 1.1.0 on unix is OK.
       Gregg says it's broken on Windows.
