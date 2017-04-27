@@ -54,10 +54,7 @@ typedef struct {
     apr_bucket_alloc_t *ba;
     apr_array_header_t *templates;
     apr_table_t *conditions;
-    ap_watchdog_t *watchdog;
     apr_hash_t *hcworkers;
-    apr_thread_pool_t *hctp;
-    int tpsize;
     server_rec *s;
 } sctx_t;
 
@@ -79,17 +76,18 @@ typedef struct {
 
 static void *hc_create_config(apr_pool_t *p, server_rec *s)
 {
-    sctx_t *ctx = (sctx_t *) apr_palloc(p, sizeof(sctx_t));
+    sctx_t *ctx = apr_pcalloc(p, sizeof(sctx_t));
+    ctx->s = s;
     apr_pool_create(&ctx->p, p);
     ctx->ba = apr_bucket_alloc_create(p);
     ctx->templates = apr_array_make(p, 10, sizeof(hc_template_t));
     ctx->conditions = apr_table_make(p, 10);
     ctx->hcworkers = apr_hash_make(p);
-    ctx->tpsize = HC_THREADPOOL_SIZE;
-    ctx->s = s;
-
     return ctx;
 }
+
+static ap_watchdog_t *watchdog;
+static int tpsize = HC_THREADPOOL_SIZE;
 
 /*
  * This serves double duty by not only validating (and creating)
@@ -257,7 +255,6 @@ static const char *set_hc_condition(cmd_parms *cmd, void *dummy, const char *arg
     if (*expr) {
         return "error: extra parameter(s)";
     }
-
     return NULL;
 }
 
@@ -305,23 +302,18 @@ static const char *set_hc_template(cmd_parms *cmd, void *dummy, const char *arg)
         }
         /* No error means we have a valid template */
     }
-
     return NULL;
 }
 
 #if HC_USE_THREADS
 static const char *set_hc_tpsize (cmd_parms *cmd, void *dummy, const char *arg)
 {
-    sctx_t *ctx;
-
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_HTACCESS);
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err)
         return err;
-    ctx = (sctx_t *) ap_get_module_config(cmd->server->module_config,
-                                          &proxy_hcheck_module);
 
-    ctx->tpsize = atoi(arg);
-    if (ctx->tpsize < 0)
+    tpsize = atoi(arg);
+    if (tpsize < 0)
         return "Invalid ProxyHCTPsize parameter. Parameter must be "
                ">= 0";
     return NULL;
@@ -876,30 +868,32 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
     sctx_t *ctx = (sctx_t *)data;
     server_rec *s = ctx->s;
     proxy_server_conf *conf;
+    static apr_thread_pool_t *hctp = NULL;
+
     switch (state) {
         case AP_WATCHDOG_STATE_STARTING:
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(03258)
                          "%s watchdog started.",
                          HCHECK_WATHCHDOG_NAME);
 #if HC_USE_THREADS
-            if (ctx->tpsize) {
-                rv =  apr_thread_pool_create(&ctx->hctp, ctx->tpsize,
-                                             ctx->tpsize, ctx->p);
+            if (tpsize && hctp == NULL) {
+                rv =  apr_thread_pool_create(&hctp, tpsize,
+                                             tpsize, ctx->p);
                 if (rv != APR_SUCCESS) {
                     ap_log_error(APLOG_MARK, APLOG_INFO, rv, s, APLOGNO(03312)
                                  "apr_thread_pool_create() with %d threads failed",
-                                 ctx->tpsize);
+                                 tpsize);
                     /* we can continue on without the threadpools */
-                    ctx->hctp = NULL;
+                    hctp = NULL;
                 } else {
                     ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, s, APLOGNO(03313)
                                  "apr_thread_pool_create() with %d threads succeeded",
-                                 ctx->tpsize);
+                                 tpsize);
                 }
             } else {
                 ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, s, APLOGNO(03314)
                              "Skipping apr_thread_pool_create()");
-                ctx->hctp = NULL;
+                hctp = NULL;
             }
 
 #endif
@@ -907,13 +901,14 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
 
         case AP_WATCHDOG_STATE_RUNNING:
             /* loop thru all workers */
-            ap_log_error(APLOG_MARK, APLOG_TRACE2, 0, s,
+            ap_log_error(APLOG_MARK, APLOG_TRACE5, 0, s,
                          "Run of %s watchdog.",
                          HCHECK_WATHCHDOG_NAME);
             if (s) {
                 int i;
                 conf = (proxy_server_conf *) ap_get_module_config(s->module_config, &proxy_module);
                 balancer = (proxy_balancer *)conf->balancers->elts;
+                ctx->s = s;
                 for (i = 0; i < conf->balancers->nelts; i++, balancer++) {
                     int n;
                     proxy_worker **workers;
@@ -928,7 +923,7 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
                            (now > worker->s->updated + worker->s->interval)) {
                             baton_t *baton;
                             apr_pool_t *ptemp;
-                            ap_log_error(APLOG_MARK, APLOG_TRACE2, 0, s,
+                            ap_log_error(APLOG_MARK, APLOG_TRACE3, 0, s,
                                          "Checking %s worker: %s  [%d] (%pp)", balancer->s->name,
                                          worker->s->name, worker->s->method, worker);
 
@@ -945,12 +940,12 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
                             baton->ptemp = ptemp;
                             baton->hc = hc_get_hcworker(ctx, worker, ptemp);
 
-                            if (!ctx->hctp) {
+                            if (!hctp) {
                                 hc_check(NULL, baton);
                             }
 #if HC_USE_THREADS
                             else {
-                                rv = apr_thread_pool_push(ctx->hctp, hc_check, (void *)baton,
+                                rv = apr_thread_pool_push(hctp, hc_check, (void *)baton,
                                                           APR_THREAD_TASK_PRIORITY_NORMAL, NULL);
                             }
 #endif
@@ -958,7 +953,6 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
                         workers++;
                     }
                 }
-                /* s = s->next; */
             }
             break;
 
@@ -967,27 +961,37 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
                          "stopping %s watchdog.",
                          HCHECK_WATHCHDOG_NAME);
 #if HC_USE_THREADS
-            rv =  apr_thread_pool_destroy(ctx->hctp);
-            if (rv != APR_SUCCESS) {
-                ap_log_error(APLOG_MARK, APLOG_INFO, rv, s, APLOGNO(03315)
-                             "apr_thread_pool_destroy() failed");
+            if (hctp) {
+                rv =  apr_thread_pool_destroy(hctp);
+                if (rv != APR_SUCCESS) {
+                    ap_log_error(APLOG_MARK, APLOG_INFO, rv, s, APLOGNO(03315)
+                                 "apr_thread_pool_destroy() failed");
+                }
             }
 #endif
-            ctx->hctp = NULL;
+            hctp = NULL;
             break;
     }
     return rv;
 }
-
+static int hc_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
+                         apr_pool_t *ptemp)
+{
+    tpsize = HC_THREADPOOL_SIZE;
+    return OK;
+}
 static int hc_post_config(apr_pool_t *p, apr_pool_t *plog,
-                       apr_pool_t *ptemp, server_rec *s)
+                       apr_pool_t *ptemp, server_rec *main_s)
 {
     apr_status_t rv;
-    sctx_t *ctx;
+    server_rec *s = main_s;
 
     APR_OPTIONAL_FN_TYPE(ap_watchdog_get_instance) *hc_watchdog_get_instance;
     APR_OPTIONAL_FN_TYPE(ap_watchdog_register_callback) *hc_watchdog_register_callback;
 
+    if (ap_state_query(AP_SQ_MAIN_STATE) == AP_SQ_MS_CREATE_PRE_CONFIG) {
+        return OK;
+    }
     hc_watchdog_get_instance = APR_RETRIEVE_OPTIONAL_FN(ap_watchdog_get_instance);
     hc_watchdog_register_callback = APR_RETRIEVE_OPTIONAL_FN(ap_watchdog_register_callback);
     if (!hc_watchdog_get_instance || !hc_watchdog_register_callback) {
@@ -995,10 +999,7 @@ static int hc_post_config(apr_pool_t *p, apr_pool_t *plog,
                      "mod_watchdog is required");
         return !OK;
     }
-    ctx = (sctx_t *) ap_get_module_config(s->module_config,
-                                          &proxy_hcheck_module);
-
-    rv = hc_watchdog_get_instance(&ctx->watchdog,
+    rv = hc_watchdog_get_instance(&watchdog,
                                   HCHECK_WATHCHDOG_NAME,
                                   0, 1, p);
     if (rv) {
@@ -1007,18 +1008,31 @@ static int hc_post_config(apr_pool_t *p, apr_pool_t *plog,
                      HCHECK_WATHCHDOG_NAME);
         return !OK;
     }
-    rv = hc_watchdog_register_callback(ctx->watchdog,
-            apr_time_from_sec(HCHECK_WATHCHDOG_INTERVAL),
-            ctx,
-            hc_watchdog_callback);
-    if (rv) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, APLOGNO(03264)
-                     "Failed to register watchdog callback (%s)",
-                     HCHECK_WATHCHDOG_NAME);
-        return !OK;
+    while (s) {
+        sctx_t *ctx = ap_get_module_config(s->module_config,
+                                           &proxy_hcheck_module);
+
+        if (s != ctx->s) {
+            ap_log_error(APLOG_MARK, APLOG_TRACE4, 0, s, APLOGNO(10019)
+                         "Missing unique per-server context: %s (%pp:%pp) (no hchecks)",
+                         s->server_hostname, s, ctx->s);
+            s = s->next;
+            continue;
+        }
+        rv = hc_watchdog_register_callback(watchdog,
+                apr_time_from_sec(HCHECK_WATHCHDOG_INTERVAL),
+                ctx,
+                hc_watchdog_callback);
+        if (rv) {
+            ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, APLOGNO(03264)
+                         "Failed to register watchdog callback (%s)",
+                         HCHECK_WATHCHDOG_NAME);
+            return !OK;
+        }
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(03265)
+                     "watchdog callback registered (%s for %s)", HCHECK_WATHCHDOG_NAME, s->server_hostname);
+        s = s->next;
     }
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(03265)
-                 "watchdog callback registered (%s)", HCHECK_WATHCHDOG_NAME);
     return OK;
 }
 
@@ -1171,7 +1185,7 @@ static const command_rec command_table[] = {
     AP_INIT_RAW_ARGS("ProxyHCExpr", set_hc_condition, NULL, OR_FILEINFO,
                      "Define a health check condition ruleset expression"),
 #if HC_USE_THREADS
-    AP_INIT_TAKE1("ProxyHCTPsize", set_hc_tpsize, NULL, OR_FILEINFO,
+    AP_INIT_TAKE1("ProxyHCTPsize", set_hc_tpsize, NULL, RSRC_CONF,
                      "Set size of health check thread pool"),
 #endif
     { NULL }
@@ -1185,6 +1199,7 @@ static void hc_register_hooks(apr_pool_t *p)
     APR_REGISTER_OPTIONAL_FN(hc_show_exprs);
     APR_REGISTER_OPTIONAL_FN(hc_select_exprs);
     APR_REGISTER_OPTIONAL_FN(hc_valid_expr);
+    ap_hook_pre_config(hc_pre_config, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_post_config(hc_post_config, aszPre, aszSucc, APR_HOOK_LAST);
     ap_hook_expr_lookup(hc_expr_lookup, NULL, NULL, APR_HOOK_MIDDLE);
 }
