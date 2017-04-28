@@ -648,7 +648,7 @@ contenu spécifié</description>
 
     <p>Lorsqu'aucune directive comme <directive
     module="core">SetHandler</directive> ou
-    <directive>module="mod_mime">AddHandler</directive> ne s'applique à
+    <directive module="mod_mime">AddHandler</directive> ne s'applique à
     une requête, le nom de gestionnaire interne normalement défini
     par une de ces directives est en fait défini par le type de contenu
     spécifié par la présente directive.</p>
