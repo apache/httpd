@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1789970 -->
+<!-- English Revision: 1792337 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1406,7 +1406,7 @@ SSLCARevocationFile
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 <compatibility>Le drapeau optionnel <em>flag</em>s est disponible à partir de la
-version 2.5-dev du serveur HTTP Apache</compatibility>
+version 2.4.21 du serveur HTTP Apache</compatibility>
 
 <usage>
 <p>
@@ -2704,7 +2704,7 @@ module="mod_ssl">SSLOCSPEnable</directive> est à on.</p>
 <default>SSLOCSPNoverify Off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility>Disponible à partir de la version 2.5 du serveur HTTP Apache,
+<compatibility>Disponible à partir de la version 2.4.26 du serveur HTTP Apache,
 sous réserve d'utiliser une version 0.9.7 ou supérieure d'OpenSSL</compatibility>
 <usage>
 <p>Cette directive permet d'éviter la vérification des certificats
@@ -2720,7 +2720,7 @@ encodage PEM</description>
 <syntax>SSLOCSPResponderCertificateFile <em>file</em></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility>Disponible à partir de la version 2.5 du serveur HTTP Apache,
+<compatibility>Disponible à partir de la version 2.4.26 du serveur HTTP Apache,
 sous réserve d'utiliser une version 0.9.7 ou supérieure d'OpenSSL</compatibility>
 <usage>
 <p>Cette directive permet de définir un fichier contenant une liste de
