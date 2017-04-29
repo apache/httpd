@@ -639,7 +639,7 @@ contenu spécifié</td></tr>
     gestionnaire.</p>
 
     <p>Lorsqu'aucune directive comme <code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code> ou
-    <code class="directive">module="mod_mime"&gt;AddHandler</code> ne s'applique à
+    <code class="directive"><a href="#addhandler">AddHandler</a></code> ne s'applique à
     une requête, le nom de gestionnaire interne normalement défini
     par une de ces directives est en fait défini par le type de contenu
     spécifié par la présente directive.</p>
