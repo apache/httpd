@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1781580 -->
+<!-- English Revision: 1792336 -->
 <!-- French translation : Lucien GENTIS -->
 
 <!--
@@ -441,7 +441,7 @@ cette demande peut être formulée parmi les trois suivantes :</p>
 </ul>
 <example><title>Exemple</title>
 <highlight language="config">
-SSLPassPhraseDialog exec:/usr/local/apache/sbin/pp-filter
+SSLPassPhraseDialog "exec:/usr/local/apache/sbin/pp-filter"
 </highlight>
 </example>
 </usage>
@@ -537,12 +537,12 @@ Les différentes valeurs de <em>source</em> disponibles sont :</p>
 <example><title>Exemple</title>
 <highlight language="config">
 SSLRandomSeed startup builtin
-SSLRandomSeed startup file:/dev/random
-SSLRandomSeed startup file:/dev/urandom 1024
-SSLRandomSeed startup exec:/usr/local/bin/truerand 16
+SSLRandomSeed startup "file:/dev/random"
+SSLRandomSeed startup "file:/dev/urandom" 1024
+SSLRandomSeed startup "exec:/usr/local/bin/truerand" 16
 SSLRandomSeed connect builtin
-SSLRandomSeed connect file:/dev/random
-SSLRandomSeed connect file:/dev/urandom 1024
+SSLRandomSeed connect "file:/dev/random"
+SSLRandomSeed connect "file:/dev/urandom" 1024
 </highlight>
 </example>
 </usage>
@@ -623,8 +623,8 @@ supportés :</p>
 
 <example><title>Exemples</title>
 <highlight language="config">
-SSLSessionCache dbm:/usr/local/apache/logs/ssl_gcache_data
-SSLSessionCache shmcb:/usr/local/apache/logs/ssl_gcache_data(512000)
+SSLSessionCache "dbm:/usr/local/apache/logs/ssl_gcache_data"
+SSLSessionCache "shmcb:/usr/local/apache/logs/ssl_gcache_data(512000)"
 </highlight>
 </example>
 
@@ -1105,7 +1105,7 @@ et appropriée.
 
 <example><title>Exemple</title>
 <highlight language="config">
-SSLCertificateFile /usr/local/apache2/conf/ssl.crt/server.crt
+SSLCertificateFile "/usr/local/apache2/conf/ssl.crt/server.crt"
 </highlight>
 </example>
 </usage>
@@ -1142,7 +1142,7 @@ certificats en utilisant un fichier de clé séparé.</p>
 
 <example><title>Exemple</title>
 <highlight language="config">
-SSLCertificateKeyFile /usr/local/apache2/conf/ssl.key/server.key
+SSLCertificateKeyFile "/usr/local/apache2/conf/ssl.key/server.key"
 </highlight>
 </example>
 </usage>
@@ -1196,7 +1196,7 @@ contraire, la confusion risque de s'installer au niveau des
 navigateurs.</p>
 <example><title>Exemple</title>
 <highlight language="config">
-SSLCertificateChainFile /usr/local/apache2/conf/ssl.crt/ca.crt
+SSLCertificateChainFile "/usr/local/apache2/conf/ssl.crt/ca.crt"
 </highlight>
 </example>
 </usage>
@@ -1225,7 +1225,7 @@ suffit donc pas de placer les fichiers de certificats dans ce répertoire
 assurer que ce répertoire contient les liens symboliques appropriés.</p>
 <example><title>Exemple</title>
 <highlight language="config">
-SSLCACertificatePath /usr/local/apache2/conf/ssl.crt/
+SSLCACertificatePath "/usr/local/apache2/conf/ssl.crt/"
 </highlight>
 </example>
 </usage>
@@ -1251,7 +1251,7 @@ en complément de la directive <directive
 module="mod_ssl">SSLCACertificatePath</directive>.</p>
 <example><title>Exemple</title>
 <highlight language="config">
-SSLCACertificateFile /usr/local/apache2/conf/ssl.crt/ca-bundle-client.crt
+SSLCACertificateFile "/usr/local/apache2/conf/ssl.crt/ca-bundle-client.crt"
 </highlight>
 </example>
 </usage>
@@ -1299,7 +1299,7 @@ certificats de CA codés en PEM.</p>
 
 <example><title>Exemple</title>
 <highlight language="config">
-SSLCADNRequestFile /usr/local/apache2/conf/ca-names.crt
+SSLCADNRequestFile "/usr/local/apache2/conf/ca-names.crt"
 </highlight>
 </example>
 </usage>
@@ -1329,7 +1329,7 @@ suffit donc pas de placer les fichiers de certificats dans ce répertoire
 assurer que ce répertoire contient les liens symboliques appropriés.</p>
 <example><title>Exemple</title>
 <highlight language="config">
-SSLCADNRequestPath /usr/local/apache2/conf/ca-names.crt/
+SSLCADNRequestPath "/usr/local/apache2/conf/ca-names.crt/"
 </highlight>
 </example>
 </usage>
@@ -1359,7 +1359,7 @@ suffit donc pas de placer les fichiers de CRL dans ce répertoire
 assurer que ce répertoire contient les liens symboliques appropriés.</p>
 <example><title>Exemple</title>
 <highlight language="config">
-SSLCARevocationPath /usr/local/apache2/conf/ssl.crl/
+SSLCARevocationPath "/usr/local/apache2/conf/ssl.crl/"
 </highlight>
 </example>
 </usage>
@@ -1385,7 +1385,7 @@ place et/ou en complément de la directive <directive
 module="mod_ssl">SSLCARevocationPath</directive>.</p>
 <example><title>Exemple</title>
 <highlight language="config">
-SSLCARevocationFile /usr/local/apache2/conf/ssl.crl/ca-bundle-client.crl
+SSLCARevocationFile "/usr/local/apache2/conf/ssl.crl/ca-bundle-client.crl"
 </highlight>
 </example>
 </usage>
@@ -1399,7 +1399,7 @@ SSLCARevocationFile /usr/local/apache2/conf/ssl.crl/ca-bundle-client.crl
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 <compatibility>Le paramètre optionnel <em>flag</em>s est disponible à partir de
-la version 2.5 du serveur HTTP Apache</compatibility>
+la version 2.4.21 du serveur HTTP Apache</compatibility>
 
 <usage>
 <p>
@@ -2008,7 +2008,7 @@ assurer que ce répertoire contient les liens symboliques appropriés.</p>
 </note>
 <example><title>Exemple</title>
 <highlight language="config">
-SSLProxyMachineCertificatePath /usr/local/apache2/conf/proxy.crt/
+SSLProxyMachineCertificatePath "/usr/local/apache2/conf/proxy.crt/"
 </highlight>
 </example>
 </usage>
@@ -2041,7 +2041,7 @@ directive s'utilise à la place ou en complément de la directive
 </note>
 <example><title>Exemple</title>
 <highlight language="config">
-SSLProxyMachineCertificateFile /usr/local/apache2/conf/ssl.crt/proxy.pem
+SSLProxyMachineCertificateFile "/usr/local/apache2/conf/ssl.crt/proxy.pem"
 </highlight>
 </example>
 </usage>
@@ -2078,7 +2078,8 @@ module="mod_ssl">SSLProxyCACertificateFile</directive>.</p>
 </note>
 <example><title>Exemple</title>
 <highlight language="config">
-SSLProxyMachineCertificateChainFile /usr/local/apache2/conf/ssl.crt/proxyCA.pem
+SSLProxyMachineCertificateChainFile
+"/usr/local/apache2/conf/ssl.crt/proxyCA.pem"
 </highlight>
 </example>
 </usage>
@@ -2392,7 +2393,7 @@ suffit donc pas de placer les fichiers de certificats dans ce répertoire
 assurer que ce répertoire contient les liens symboliques appropriés.</p>
 <example><title>Exemple</title>
 <highlight language="config">
-SSLProxyCACertificatePath /usr/local/apache2/conf/ssl.crt/
+SSLProxyCACertificatePath "/usr/local/apache2/conf/ssl.crt/"
 </highlight>
 </example>
 </usage>
@@ -2420,7 +2421,7 @@ module="mod_ssl">SSLProxyCACertificatePath</directive>.</p>
 <example><title>Exemple</title>
 <highlight language="config">
 SSLProxyCACertificateFile
-/usr/local/apache2/conf/ssl.crt/ca-bundle-serveur.distant.crt
+"/usr/local/apache2/conf/ssl.crt/ca-bundle-serveur.distant.crt"
 </highlight>
 </example>
 </usage>
@@ -2451,7 +2452,7 @@ suffit donc pas de placer les fichiers de CRL dans ce répertoire
 assurer que ce répertoire contient les liens symboliques appropriés.</p>
 <example><title>Exemple</title>
 <highlight language="config">
-SSLProxyCARevocationPath /usr/local/apache2/conf/ssl.crl/
+SSLProxyCARevocationPath "/usr/local/apache2/conf/ssl.crl/"
 </highlight>
 </example>
 </usage>
@@ -2480,7 +2481,7 @@ module="mod_ssl">SSLProxyCARevocationPath</directive>.</p>
 <example><title>Exemple</title>
 <highlight language="config">
 SSLProxyCARevocationFile
-/usr/local/apache2/conf/ssl.crl/ca-bundle-serveur.distant.crl
+"/usr/local/apache2/conf/ssl.crl/ca-bundle-serveur.distant.crl"
 </highlight>
 </example>
 </usage>
@@ -2642,7 +2643,7 @@ module="mod_ssl">SSLOCSPOverrideResponder</directive>.</p>
 <highlight language="config">
 SSLVerifyClient on
 SSLOCSPEnable on
-SSLOCSPDefaultResponder http://responder.example.com:8888/responder
+SSLOCSPDefaultResponder "http://responder.example.com:8888/responder"
 SSLOCSPOverrideResponder on
 </highlight>
 </example>
@@ -2759,7 +2760,7 @@ doit être définie à <code>off</code>.</p>
 <default>SSLOCSPNoverify Off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility>Disponible à partir de la version 2.5 du serveur HTTP Apache,
+<compatibility>Disponible à partir de la version 2.4.26 du serveur HTTP Apache,
 sous réserve d'utiliser une version 0.9.7 ou supérieure d'OpenSSL</compatibility>
 <usage>
 <p>Cette directive permet d'éviter la vérification des certificats
@@ -2775,7 +2776,7 @@ encodage PEM</description>
 <syntax>SSLOCSPResponderCertificateFile <em>file</em></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility>Disponible à partir de la version 2.5 du serveur HTTP Apache,
+<compatibility>Disponible à partir de la version 2.4.26 du serveur HTTP Apache,
 sous réserve d'utiliser une version 0.9.7 ou supérieure d'OpenSSL</compatibility>
 <usage>
 <p>Cette directive permet de définir un fichier contenant une liste de
@@ -3185,7 +3186,7 @@ que la syntaxe et/ou les valeurs possibles peuvent différer.</p>
 <highlight language="config">
 SSLOpenSSLConfCmd Options -SessionTicket,ServerPreference
 SSLOpenSSLConfCmd ECDHParameters brainpoolP256r1
-SSLOpenSSLConfCmd ServerInfoFile /usr/local/apache2/conf/server-info.pem
+SSLOpenSSLConfCmd ServerInfoFile "/usr/local/apache2/conf/server-info.pem"
 SSLOpenSSLConfCmd Protocol "-ALL, TLSv1.2"
 SSLOpenSSLConfCmd SignatureAlgorithms RSA+SHA384:ECDSA+SHA256
 </highlight>
