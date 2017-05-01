@@ -204,10 +204,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      - mod_autoindex: Use 'ap_cstr_casecmp' to simplify code + remove dead code
      - mod_session_crypto: Add missing APLOGNO
      - mod_ssl: Constify the ssl_hook_Fixup_vars array itself
+     - winnt/service: each log message should use its own APLOGNO.
      trunk patch: http://svn.apache.org/r1788032
                   http://svn.apache.org/r1788033
                   http://svn.apache.org/r1783764
                   http://svn.apache.org/r1707512 
+                  http://svn.apache.org/r1783770
      2.4.x patch: trunk works
      +1: jailletc36
 
