@@ -195,10 +195,21 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      bucket case (default), thus avoiding the leak of the corresponding socket
      descriptors on graceful restart.
      trunk patch: http://svn.apache.org/r1789220
-     trunk patch: http://svn.apache.org/r1792675
+                  http://svn.apache.org/r1792675
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic
 
+  *) Easy patches: synch 2.4.x and trunk
+     - mod_autoindex: Save a few bytes in the conf pool.
+     - mod_autoindex: Use 'ap_cstr_casecmp' to simplify code + remove dead code
+     - mod_session_crypto: Add missing APLOGNO
+     - mod_ssl: Constify the ssl_hook_Fixup_vars array itself
+     trunk patch: http://svn.apache.org/r1788032
+                  http://svn.apache.org/r1788033
+                  http://svn.apache.org/r1783764
+                  http://svn.apache.org/r1707512 
+     2.4.x patch: trunk works
+     +1: jailletc36
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entried should be added at the START of the list ]
