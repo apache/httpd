@@ -492,8 +492,8 @@ static ssize_t stream_request_data(nghttp2_session *ngh2, int32_t stream_id,
     stream = nghttp2_session_get_stream_user_data(ngh2, stream_id);
     if (!stream) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(03361)
-                     "h2_proxy_stream(%s): data_read, stream %d not found", 
-                     stream->session->id, stream_id);
+                     "h2_proxy_stream(NULL): data_read, stream %d not found", 
+                     stream_id);
         return NGHTTP2_ERR_CALLBACK_FAILURE;
     }
     
