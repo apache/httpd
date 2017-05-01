@@ -28,7 +28,7 @@ address)</description>
 <status>Base</status>
 <sourcefile>mod_authz_host.c</sourcefile>
 <identifier>authz_host_module</identifier>
-<compatibility>Available in Apache 2.3 and later</compatibility>
+<compatibility>The <code>forward-dns</code> provider was addded in 2.4.19</compatibility>
 
 <summary>
     <p>The authorization providers implemented by <module>mod_authz_host</module> are
@@ -179,6 +179,7 @@ Require forward-dns bla.example.org
     <p>A client the IP of which is resolved from the name
     <code>bla.example.org</code> will be granted access.</p>
 
+    <p>The <code>forward-dns</code> provider was added in 2.4.19.</p>
 </section>
 
 <section id="reqlocal"><title>Require local</title>
