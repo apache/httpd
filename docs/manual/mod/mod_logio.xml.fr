@@ -101,4 +101,22 @@ d'Apache</a></seealso>
     </dl>
 </section>
 
+<directivesynopsis>
+<name>LogIOTrackTTFB</name>
+<description>Permet d'enregistrer le délai avant le premier octet (time
+to first byte - TTFB)</description>
+<syntax>LogIOTrackTTFB ON|OFF</syntax>
+<default>LogIOTrackTTFB OFF</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>none</override>
+
+<usage>
+    <p>Cette directive permet de définir si ce module mesure le délai
+    entre la lecture de la requête et l'écriture du premier octet des
+    en-têtes de la réponse. La valeur obtenue peut être enregistrée dans
+    le journal via le format <code>%^FB</code>.</p>
+</usage>
+</directivesynopsis>
+
 </modulesynopsis>
