@@ -213,6 +213,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1: jailletc36
 
+  *) mod_rewrite: When a substitution is a fully qualified URL, and the 
+     scheme/host/port matches the current virtual host, stop interpreting the 
+     path component as a local path just because the first component of the 
+     path exists in the filesystem.  Adds RewriteOption "LegacyPrefixDocRoot" 
+     to revert to previous behavior. PR60009.
+
+     trunk patch: http://svn.apache.org/r1776463
+     2.4.x patch:  svn merge -c 1776463 1776708 ^/httpd/httpd/trunk .
+     +1: covener
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entried should be added at the START of the list ]
 
