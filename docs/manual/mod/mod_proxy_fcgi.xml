@@ -142,7 +142,7 @@ ProxyPass "/myapp/" "balancer://myappcluster/"
 # The part that is matched to the SetHandler is the part that
 # follows the pipe. If you need to distinguish, "localhost; can
 # be anything unique.
-&lt;Proxy fcgi://localhost/ enablereuse=on max=10&gt;
+&lt;Proxy "fcgi://localhost/" enablereuse=on max=10&gt;
 &lt;/Proxy&gt;
 
 &lt;FilesMatch ...&gt;
@@ -203,7 +203,7 @@ ProxyPass "/myapp/" "balancer://myappcluster/"
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
 <context>.htaccess</context></contextlist>
-<compatibility>Available in version 2.5 and later</compatibility>
+<compatibility>Available in version 2.4.26 and later</compatibility>
 
 <usage>
 <p>This directive allows the type of backend FastCGI application to be
@@ -233,7 +233,7 @@ scenarios.</p>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
 <context>.htaccess</context></contextlist>
-<compatibility>Available in version 2.5 and later</compatibility>
+<compatibility>Available in version 2.4.26 and later</compatibility>
 
 <usage>
 <p>Just before passing a request to the configured FastCGI server, the core of
