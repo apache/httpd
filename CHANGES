@@ -1,9 +1,6 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
-  *) mod_proxy_http2: adding support for Reverse Proxy Request headers.
-     [Stefan Eissing]
-     
   *) Evaluate nested If/ElseIf/Else configuration blocks.
      [Luca Toscano, Jacob Champion]
 
