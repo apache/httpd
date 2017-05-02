@@ -125,13 +125,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * core: don't run configtest in -V mode when MPM DSOs are in use, and try to
-           print compile settings even if reading the configuration fails. Fixes
-           PR61009.
-     trunk patch: https://svn.apache.org/r1791975
-     2.4.x patch: trunk works
-     +1: jchampion, covener, jim
-
   *) Easy patches: synch 2.4.x and trunk
      - mod_autoindex: Save a few bytes in the conf pool.
      - mod_autoindex: Use 'ap_cstr_casecmp' to simplify code + remove dead code
