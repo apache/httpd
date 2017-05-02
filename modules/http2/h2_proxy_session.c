@@ -742,6 +742,32 @@ static apr_status_t open_stream(h2_proxy_session *session, const char *url,
     h2_proxy_req_make(stream->req, stream->pool, r->method, scheme,
                 authority, path, r->headers_in);
 
+    if (dconf->add_forwarded_headers) {
+        if (PROXYREQ_REVERSE == r->proxyreq) {
+            const char *buf;
+
+            /* Add X-Forwarded-For: so that the upstream has a chance to
+             * determine, where the original request came from.
+             */
+            apr_table_mergen(stream->req->headers, "X-Forwarded-For",
+                             r->useragent_ip);
+
+            /* Add X-Forwarded-Host: so that upstream knows what the
+             * original request hostname was.
+             */
+            if ((buf = apr_table_get(r->headers_in, "Host"))) {
+                apr_table_mergen(stream->req->headers, "X-Forwarded-Host", buf);
+            }
+
+            /* Add X-Forwarded-Server: so that upstream knows what the
+             * name of this proxy server is (if there are more than one)
+             * XXX: This duplicates Via: - do we strictly need it?
+             */
+            apr_table_mergen(stream->req->headers, "X-Forwarded-Server",
+                             r->server->server_hostname);
+        }
+    }
+    
     /* Tuck away all already existing cookies */
     stream->saves = apr_table_make(r->pool, 2);
     apr_table_do(add_header, stream->saves, r->headers_out, "Set-Cookie", NULL);
