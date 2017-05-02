@@ -121,6 +121,10 @@ RELEASE SHOWSTOPPERS:
       jchampion: hangs on my Ubuntu box too. Looks like a CRYPTO_malloc()
                  infinite loop during library initialization?
 
+
+PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
+  [ start all new proposals below, under PATCHES PROPOSED. ]
+
    *) mod_brotli: Fix two build issues (failing Unix build when mod_brotli
       is not being built and invalid library filenames in CMakeFiles).
       trunk patch: https://svn.apache.org/r1761824
@@ -135,9 +139,27 @@ RELEASE SHOWSTOPPERS:
       https://lists.apache.org/thread.html/a83741642c3d20f383efdf2c427829b2f37cb81e98c0a1756a2c19ce@%3Cdev.httpd.apache.org%3E
       +1: kotkov, covener, jim
 
+   * core: don't run configtest in -V mode when MPM DSOs are in use, and try to
+           print compile settings even if reading the configuration fails. Fixes
+           PR61009.
+     trunk patch: https://svn.apache.org/r1791975
+     2.4.x patch: trunk works
+     +1: jchampion, covener, jim
 
-PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
-  [ start all new proposals below, under PATCHES PROPOSED. ]
+  *) Easy patches: synch 2.4.x and trunk
+     - mod_autoindex: Save a few bytes in the conf pool.
+     - mod_autoindex: Use 'ap_cstr_casecmp' to simplify code + remove dead code
+     - mod_session_crypto: Add missing APLOGNO
+     - mod_ssl: Constify the ssl_hook_Fixup_vars array itself
+     - winnt/service: each log message should use its own APLOGNO.
+     trunk patch: http://svn.apache.org/r1788032
+                  http://svn.apache.org/r1788033
+                  http://svn.apache.org/r1783764
+                  http://svn.apache.org/r1707512 
+                  http://svn.apache.org/r1783770
+     2.4.x patch: trunk works
+     +1: jailletc36, covener, jim
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -183,13 +205,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                 mod_journald can't be configured in maintainer mode (-std=c89).
                 Can anyone else reproduce, or is it just my distro?
 
-   * core: don't run configtest in -V mode when MPM DSOs are in use, and try to
-           print compile settings even if reading the configuration fails. Fixes
-           PR61009.
-     trunk patch: https://svn.apache.org/r1791975
-     2.4.x patch: trunk works
-     +1: jchampion, covener, jim
-
   *) core: Disallow multiple Listen on the same IP:port when listener buckets
      are configured (ListenCoresBucketsRatio > 0), consistently with the single
      bucket case (default), thus avoiding the leak of the corresponding socket
@@ -198,20 +213,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1792675
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic
-
-  *) Easy patches: synch 2.4.x and trunk
-     - mod_autoindex: Save a few bytes in the conf pool.
-     - mod_autoindex: Use 'ap_cstr_casecmp' to simplify code + remove dead code
-     - mod_session_crypto: Add missing APLOGNO
-     - mod_ssl: Constify the ssl_hook_Fixup_vars array itself
-     - winnt/service: each log message should use its own APLOGNO.
-     trunk patch: http://svn.apache.org/r1788032
-                  http://svn.apache.org/r1788033
-                  http://svn.apache.org/r1783764
-                  http://svn.apache.org/r1707512 
-                  http://svn.apache.org/r1783770
-     2.4.x patch: trunk works
-     +1: jailletc36, covener, jim
 
   *) mod_rewrite: When a substitution is a fully qualified URL, and the 
      scheme/host/port matches the current virtual host, stop interpreting the 
