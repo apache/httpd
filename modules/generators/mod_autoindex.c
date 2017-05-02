@@ -156,9 +156,9 @@ static char c_by_encoding, c_by_type, c_by_path;
 static APR_INLINE int response_is_html(request_rec *r)
 {
     char *ctype = ap_field_noparam(r->pool, r->content_type);
-    ap_str_tolower(ctype);
-    return !strcmp(ctype, "text/html")
-        || !strcmp(ctype, "application/xhtml+xml");
+
+    return !ap_cstr_casecmp(ctype, "text/html")
+        || !ap_cstr_casecmp(ctype, "application/xhtml+xml");
 }
 
 /*
@@ -214,11 +214,8 @@ static void push_item(apr_array_header_t *arr, char *type, const char *to,
     if ((type == BY_PATH) && (!ap_is_matchexp(to))) {
         p->apply_to = apr_pstrcat(arr->pool, "*", to, NULL);
     }
-    else if (to) {
-        p->apply_to = apr_pstrdup(arr->pool, to);
-    }
     else {
-        p->apply_to = NULL;
+        p->apply_to = apr_pstrdup(arr->pool, to);
     }
 }
 
@@ -231,7 +228,7 @@ static const char *add_alt(cmd_parms *cmd, void *d, const char *alt,
         }
     }
     if (cmd->info == BY_ENCODING) {
-        char *tmp = apr_pstrdup(cmd->pool, to);
+        char *tmp = apr_pstrdup(cmd->temp_pool, to);
         ap_str_tolower(tmp);
         to = tmp;
     }
@@ -244,7 +241,7 @@ static const char *add_alt(cmd_parms *cmd, void *d, const char *alt,
 static const char *add_icon(cmd_parms *cmd, void *d, const char *icon,
                             const char *to)
 {
-    char *iconbak = apr_pstrdup(cmd->pool, icon);
+    char *iconbak = apr_pstrdup(cmd->temp_pool, icon);
 
     if (icon[0] == '(') {
         char *alt;
@@ -253,7 +250,7 @@ static const char *add_icon(cmd_parms *cmd, void *d, const char *icon,
         if (cl == NULL) {
             return "missing closing paren";
         }
-        alt = ap_getword_nc(cmd->pool, &iconbak, ',');
+        alt = ap_getword_nc(cmd->temp_pool, &iconbak, ',');
         *cl = '\0';                             /* Lose closing paren */
         add_alt(cmd, d, &alt[1], to);
     }
@@ -263,7 +260,7 @@ static const char *add_icon(cmd_parms *cmd, void *d, const char *icon,
         }
     }
     if (cmd->info == BY_ENCODING) {
-        char *tmp = apr_pstrdup(cmd->pool, to);
+        char *tmp = apr_pstrdup(cmd->temp_pool, to);
         ap_str_tolower(tmp);
         to = tmp;
     }
