@@ -1287,7 +1287,7 @@ int ssl_hook_Auth(request_rec *r)
  *   Fixup Handler
  */
 
-static const char *ssl_hook_Fixup_vars[] = {
+static const char *const ssl_hook_Fixup_vars[] = {
     "SSL_VERSION_INTERFACE",
     "SSL_VERSION_LIBRARY",
     "SSL_PROTOCOL",
