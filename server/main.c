@@ -629,10 +629,22 @@ int main(int argc, const char * const argv[])
     }
     ap_server_conf = ap_read_config(process, ptemp, confname, &ap_conftree);
     if (!ap_server_conf) {
+        if (showcompile) {
+            /* Well, we tried. Show as much as we can, but exit nonzero to
+             * indicate that something's not right. The cause should have
+             * already been logged. */
+            show_compile_settings();
+        }
         destroy_and_exit_process(process, 1);
     }
     apr_pool_cleanup_register(pconf, &ap_server_conf, ap_pool_cleanup_set_null,
                               apr_pool_cleanup_null);
+
+    if (showcompile) { /* deferred due to dynamically loaded MPM */
+        show_compile_settings();
+        destroy_and_exit_process(process, 0);
+    }
+
     /* sort hooks here to make sure pre_config hooks are sorted properly */
     apr_hook_sort_all();
 
@@ -661,10 +673,7 @@ int main(int argc, const char * const argv[])
         }
 
         if (ap_run_mode != AP_SQ_RM_NORMAL) {
-            if (showcompile) { /* deferred due to dynamically loaded MPM */
-                show_compile_settings();
-            }
-            else if (showdirectives) { /* deferred in case of DSOs */
+            if (showdirectives) { /* deferred in case of DSOs */
                 ap_show_directives();
                 destroy_and_exit_process(process, 0);
             }
