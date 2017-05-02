@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.26
 
+  *) mod_proxy_http2: adding support for Reverse Proxy Request headers.
+     [Stefan Eissing]
+     
   *) mod_http2: fixed possible deadlock that could occur when connections were 
      terminated early with ongoing streams. Fixed possible hanger with timeout
      on race when connection considers itself idle. [Stefan Eissing]  
