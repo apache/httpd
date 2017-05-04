@@ -75,3 +75,11 @@ usage?, seealso*)>
 <!ATTLIST quickreference metafile CDATA  #REQUIRED>
 
 <!ELEMENT legend (table, table)>
+
+<!-- Used in overrides.xml -->
+<!ELEMENT overrideindex (title | summary | overridesummary)+>
+<!ATTLIST overrideindex metafile CDATA #REQUIRED>
+
+<!ELEMENT overridesummary %Block;>
+<!ATTLIST overridesummary class    CDATA #IMPLIED
+                          fallback CDATA #IMPLIED>
