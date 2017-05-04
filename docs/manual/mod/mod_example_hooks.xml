@@ -125,6 +125,7 @@ API</description>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
 <context>.htaccess</context></contextlist>
+<override>Options</override>
 
 <usage>
     <p>The <directive>Example</directive> directive just sets a demonstration

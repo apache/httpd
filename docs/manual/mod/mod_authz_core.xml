@@ -611,6 +611,7 @@ authentication succeeds but authorization fails
 <default>AuthzSendForbiddenOnFailure Off</default>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
+<override>AuthConfig</override>
 <compatibility>Available in Apache HTTPD 2.3.11 and later</compatibility>
 
 <usage>

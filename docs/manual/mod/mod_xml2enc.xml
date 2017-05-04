@@ -125,6 +125,7 @@ can be <a href="#sniffing">automatically detected</a></description>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
 <context>.htaccess</context></contextlist>
+<override>All</override>
 <compatibility>Version 2.4.0 and later; available as a third-party
 module for earlier versions.</compatibility>
 
@@ -161,6 +162,7 @@ xml2EncDefault iso-8859-1
 <syntax>xml2StartParse <var>element [element ...]</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
+<override>All</override>
 
 <usage>
     <p>Specify that the markup parser should start at the first instance

@@ -196,6 +196,7 @@ UndefMacro DirGroup
 <context>virtual host</context>
 <context>directory</context>
 </contextlist>
+<override>All</override>
 
 <usage>
     <p>The <directive type="section">Macro</directive> directive controls the
@@ -229,6 +230,7 @@ UndefMacro DirGroup
 <context>virtual host</context>
 <context>directory</context>
 </contextlist>
+<override>All</override>
 
 <usage>
     <p>The <directive>Use</directive> directive controls the use of a macro.
@@ -265,6 +267,7 @@ Require ip 192.54.172.0/24 192.54.148.0/24
 <context>virtual host</context>
 <context>directory</context>
 </contextlist>
+<override>All</override>
 
 <usage>
     <p>The <directive>UndefMacro</directive> directive undefines a macro
@@ -288,6 +291,7 @@ UndefMacro RestrictedAccessPolicy
 <context>virtual host</context>
 <context>directory</context>
 </contextlist>
+<override>All</override>
 
 </directivesynopsis>
 
@@ -302,6 +306,7 @@ UndefMacro RestrictedAccessPolicy
 <context>virtual host</context>
 <context>directory</context>
 </contextlist>
+<override>All</override>
 
 </directivesynopsis>
 

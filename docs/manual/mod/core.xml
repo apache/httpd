@@ -1398,6 +1398,7 @@ EnableSendfile On
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
+<override>All</override>
 <compatibility>2.3.9 and later</compatibility>
 
 <usage>
@@ -2317,6 +2318,7 @@ if file exists at startup</description>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
+<override>All</override>
 
 <usage>
     <p>The <code>&lt;IfFile <var>filename</var>&gt;...&lt;/IfFile&gt;
@@ -5113,6 +5115,7 @@ for external processing, e.g. to a CGI script.</p>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
+<override>All</override>
 <compatibility>2.5 and later</compatibility>
 
 <usage>

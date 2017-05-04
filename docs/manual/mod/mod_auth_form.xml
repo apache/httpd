@@ -415,6 +415,7 @@ lower level modules</description>
 <default>httpd_username</default>
 <contextlist><context>directory</context>
 </contextlist>
+<override>AuthConfig</override>
 <compatibility>Available in Apache HTTP Server 2.3.0 and later</compatibility>
 
 <usage>
@@ -431,6 +432,7 @@ lower level modules</description>
 <default>httpd_password</default>
 <contextlist><context>directory</context>
 </contextlist>
+<override>AuthConfig</override>
 <compatibility>Available in Apache HTTP Server 2.3.0 and later</compatibility>
 
 <usage>
@@ -447,6 +449,7 @@ lower level modules</description>
 <default>httpd_location</default>
 <contextlist><context>directory</context>
 </contextlist>
+<override>AuthConfig</override>
 <compatibility>Available in Apache HTTP Server 2.3.0 and later</compatibility>
 
 <usage>
@@ -463,6 +466,7 @@ lower level modules</description>
 <default>httpd_method</default>
 <contextlist><context>directory</context>
 </contextlist>
+<override>AuthConfig</override>
 <compatibility>Available in Apache HTTP Server 2.3.0 and later</compatibility>
 
 <usage>
@@ -486,6 +490,7 @@ lower level modules</description>
 <default>httpd_mimetype</default>
 <contextlist><context>directory</context>
 </contextlist>
+<override>AuthConfig</override>
 <compatibility>Available in Apache HTTP Server 2.3.0 and later</compatibility>
 
 <usage>
@@ -509,6 +514,7 @@ lower level modules</description>
 <default>httpd_body</default>
 <contextlist><context>directory</context>
 </contextlist>
+<override>AuthConfig</override>
 <compatibility>Available in Apache HTTP Server 2.3.0 and later</compatibility>
 
 <usage>
@@ -558,6 +564,7 @@ lower level modules</description>
 <default>none</default>
 <contextlist><context>directory</context>
 </contextlist>
+<override>AuthConfig</override>
 <compatibility>Available in Apache HTTP Server 2.3.0 and later. The use of the expression
 parser has been added in 2.4.4.</compatibility>
 
@@ -582,6 +589,7 @@ parser has been added in 2.4.4.</compatibility>
 <default>none</default>
 <contextlist><context>directory</context>
 </contextlist>
+<override>AuthConfig</override>
 <compatibility>Available in Apache HTTP Server 2.3.0 and later. The use of the expression
 parser has been added in 2.4.4.</compatibility>
 
@@ -605,6 +613,7 @@ parser has been added in 2.4.4.</compatibility>
 <default>AuthFormFakeBasicAuth Off</default>
 <contextlist><context>directory</context>
 </contextlist>
+<override>AuthConfig</override>
 <compatibility>Available in Apache HTTP Server 2.3.0 and later</compatibility>
 
 <usage>
@@ -624,6 +633,7 @@ parser has been added in 2.4.4.</compatibility>
 <default>none</default>
 <contextlist><context>directory</context>
 </contextlist>
+<override>AuthConfig</override>
 <compatibility>Available in Apache HTTP Server 2.3.0 and later. The use of the expression
 parser has been added in 2.4.4.</compatibility>
 
@@ -662,6 +672,7 @@ parser has been added in 2.4.4.</compatibility>
 <default>AuthFormDisableNoStore Off</default>
 <contextlist><context>directory</context>
 </contextlist>
+<override>AuthConfig</override>
 <compatibility>Available in Apache HTTP Server 2.3.0 and later</compatibility>
 
 <usage>
@@ -682,6 +693,7 @@ parser has been added in 2.4.4.</compatibility>
 <default>none</default>
 <contextlist><context>directory</context>
 </contextlist>
+<override>AuthConfig</override>
 <compatibility>Available in Apache HTTP Server 2.3.0 and later</compatibility>
 
 <usage>

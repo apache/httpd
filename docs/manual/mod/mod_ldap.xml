@@ -623,6 +623,7 @@ connection client certificate. Not all LDAP toolkits support per
 connection client certificates.</description>
 <syntax>LDAPTrustedClientCert <var>type</var> <var>directory-path/filename/nickname</var> <var>[password]</var></syntax>
 <contextlist><context>directory</context><context>.htaccess</context></contextlist>
+<override>AuthConfig</override>
 
 <usage>
     <p>It specifies the directory path, file name or nickname of a

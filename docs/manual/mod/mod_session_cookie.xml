@@ -89,6 +89,7 @@ SessionCookieName session path=/
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
+<override>AuthConfig</override>
 
 <usage>
     <p>The <directive>SessionCookieName</directive> directive specifies the name and
@@ -121,6 +122,7 @@ SessionCookieName session path=/private;domain=example.com;httponly;secure;versi
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
+<override>AuthConfig</override>
 
 <usage>
     <p>The <directive>SessionCookieName2</directive> directive specifies the name and
@@ -153,6 +155,7 @@ SessionCookieName2 session path=/private;domain=example.com;httponly;secure;vers
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
+<override>AuthConfig</override>
 
 <usage>
     <p>The <directive>SessionCookieRemove</directive> flag controls whether the cookies

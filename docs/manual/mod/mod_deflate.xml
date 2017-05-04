@@ -392,6 +392,7 @@ CustomLog "logs/deflate_log" deflate
 <default>None, but LimitRequestBody applies after deflation</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
+<override>All</override>
 <compatibility>2.4.10 and later</compatibility>
 
 <usage>
@@ -409,6 +410,7 @@ CustomLog "logs/deflate_log" deflate
 <default>200</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
+<override>All</override>
 <compatibility>2.4.10 and later</compatibility>
 
 <usage>
@@ -429,6 +431,7 @@ CustomLog "logs/deflate_log" deflate
 <default>3</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
+<override>All</override>
 <compatibility>2.4.10 and later</compatibility>
 
 <usage>

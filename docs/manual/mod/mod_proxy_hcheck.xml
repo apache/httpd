@@ -139,6 +139,7 @@ not dynamically checked at all.</p>
 <syntax>ProxyHCExpr name {ap_expr expression}</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
+<override>FileInfo</override>
 
 <usage>
     <p>The <directive>ProxyHCExpr</directive> directive allows
@@ -185,6 +186,7 @@ ProxyPass "/apps"     "http://backend.example.com/" hcexpr=in_maint hcmethod=get
 <syntax>ProxyHCTemplate name parameter=setting &lt;...&gt;</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
+<override>FileInfo</override>
 
 <usage>
     <p>The <directive>ProxyHCTemplate</directive> directive allows

@@ -1030,6 +1030,7 @@ Client Auth</description>
 <syntax>SSLCACertificatePath <em>directory-path</em></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
+<override>AuthConfig</override>
 
 <usage>
 <p>
@@ -1057,6 +1058,7 @@ for Client Auth</description>
 <syntax>SSLCACertificateFile <em>file-path</em></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
+<override>AuthConfig</override>
 
 <usage>
 <p>

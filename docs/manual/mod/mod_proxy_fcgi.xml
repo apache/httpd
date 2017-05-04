@@ -203,6 +203,7 @@ ProxyPass "/myapp/" "balancer://myappcluster/"
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
 <context>.htaccess</context></contextlist>
+<override>FileInfo</override>
 <compatibility>Available in version 2.4.26 and later</compatibility>
 
 <usage>
@@ -233,6 +234,7 @@ scenarios.</p>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
 <context>.htaccess</context></contextlist>
+<override>FileInfo</override>
 <compatibility>Available in version 2.4.26 and later</compatibility>
 
 <usage>
