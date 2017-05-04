@@ -167,7 +167,7 @@ AddOutputFilter INCLUDES .shtml</pre>
       <p>This command doesn't output anything. Its only use is to
       add comments within a file. These comments are not printed.</p>
 
-      <p>This syntax is available in version 2.5 and later.</p>
+      <p>This syntax is available in version 2.4.21 and later.</p>
 
       <div class="example"><p><code>
       &lt;!--#comment Blah Blah Blah --&gt;

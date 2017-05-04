@@ -34,7 +34,7 @@ address)</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>authz_host_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_authz_host.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.3 and later</td></tr></table>
+<tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>The <code>forward-dns</code> provider was addded in 2.4.19</td></tr></table>
 <h3>Summary</h3>
 
     <p>The authorization providers implemented by <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code> are
@@ -186,6 +186,7 @@ Require host .net example.edu</pre>
     <p>A client the IP of which is resolved from the name
     <code>bla.example.org</code> will be granted access.</p>
 
+    <p>The <code>forward-dns</code> provider was added in 2.4.19.</p>
 
 
 <h3><a name="reqlocal" id="reqlocal">Require local</a></h3>

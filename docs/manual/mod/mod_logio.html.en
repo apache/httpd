@@ -112,6 +112,7 @@
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>none</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_logio</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Apache HTTP Server 2.4.13 and later</td></tr>
 </table>
     <p>This directive configures whether this module tracks the delay
     between the request being read and the first byte of the response

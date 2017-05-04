@@ -141,7 +141,7 @@ ProxyPassMatch "^/(.*\.php(/.*)?)$" "unix:/var/run/php5-fpm.sock|fcgi://localhos
 # The part that is matched to the SetHandler is the part that
 # follows the pipe. If you need to distinguish, "localhost; can
 # be anything unique.
-&lt;Proxy fcgi://localhost/ enablereuse=on max=10&gt;
+&lt;Proxy "fcgi://localhost/" enablereuse=on max=10&gt;
 &lt;/Proxy&gt;
 
 &lt;FilesMatch ...&gt;
@@ -199,7 +199,7 @@ ProxyPassMatch "^/(.*\.php(/.*)?)$" "unix:/var/run/php5-fpm.sock|fcgi://localhos
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_fcgi</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.5 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.4.26 and later</td></tr>
 </table>
 <p>This directive allows the type of backend FastCGI application to be
 specified. Some FastCGI servers, such as PHP-FPM,  use historical quirks of
@@ -228,7 +228,7 @@ scenarios.</p>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_fcgi</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.5 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.4.26 and later</td></tr>
 </table>
 <p>Just before passing a request to the configured FastCGI server, the core of
 the web server sets a number of environment variables based on details of the
