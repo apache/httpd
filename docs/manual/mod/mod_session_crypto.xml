@@ -158,6 +158,7 @@ SessionCryptoPassphrase secret
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
+<override>AuthConfig</override>
 <compatibility>Available in Apache 2.3.0 and later</compatibility>
 
 <usage>
@@ -232,6 +233,7 @@ SessionCryptoPassphrase "exec:/path/to/otherProgram argument1"
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
+<override>AuthConfig</override>
 <compatibility>Available in Apache 2.3.0 and later</compatibility>
 
 <usage>

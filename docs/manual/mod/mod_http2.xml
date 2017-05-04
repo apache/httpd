@@ -854,6 +854,7 @@ H2TLSCoolDownSecs 0
             <context>directory</context>
             <context>.htaccess</context>
         </contextlist>
+        <override>FileInfo</override>
         <compatibility>Available in version 2.4.24 and later.</compatibility>
         
         <usage>
@@ -889,6 +890,7 @@ H2TLSCoolDownSecs 0
             <context>directory</context>
             <context>.htaccess</context>
         </contextlist>
+        <override>FileInfo</override>
         <compatibility>Available in version 2.4.24 and later.</compatibility>
         
         <usage>

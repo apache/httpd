@@ -160,6 +160,7 @@ SessionDBDPerUser On
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
+<override>AuthConfig</override>
 
 <usage>
     <p>The <directive>SessionDBDCookieName</directive> directive specifies the name and
@@ -192,6 +193,7 @@ SessionDBDCookieName session path=/private;domain=example.com;httponly;secure;ve
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
+<override>AuthConfig</override>
 
 <usage>
     <p>The <directive>SessionDBDCookieName2</directive> directive specifies the name and
@@ -224,6 +226,7 @@ SessionDBDCookieName2 session path=/private;domain=example.com;httponly;secure;v
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
+<override>AuthConfig</override>
 
 <usage>
     <p>The <directive>SessionDBDCookieRemove</directive> flag controls whether the cookies
@@ -247,6 +250,7 @@ SessionDBDCookieName2 session path=/private;domain=example.com;httponly;secure;v
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
+<override>AuthConfig</override>
 
 <usage>
     <p>The <directive>SessionDBDPerUser</directive> flag enables a per user session keyed
@@ -266,6 +270,7 @@ SessionDBDCookieName2 session path=/private;domain=example.com;httponly;secure;v
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
+<override>AuthConfig</override>
 
 <usage>
     <p>The <directive>SessionDBDSelectLabel</directive> directive sets the default select
@@ -285,6 +290,7 @@ SessionDBDCookieName2 session path=/private;domain=example.com;httponly;secure;v
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
+<override>AuthConfig</override>
 
 <usage>
     <p>The <directive>SessionDBDInsertLabel</directive> directive sets the default insert
@@ -307,6 +313,7 @@ SessionDBDCookieName2 session path=/private;domain=example.com;httponly;secure;v
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
+<override>AuthConfig</override>
 
 <usage>
     <p>The <directive>SessionDBDUpdateLabel</directive> directive sets the default update
@@ -330,6 +337,7 @@ SessionDBDCookieName2 session path=/private;domain=example.com;httponly;secure;v
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
+<override>AuthConfig</override>
 
 <usage>
     <p>The <directive>SessionDBDDeleteLabel</directive> directive sets the default delete

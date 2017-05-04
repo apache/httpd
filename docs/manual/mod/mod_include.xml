@@ -956,6 +956,7 @@ SSITimeFormat "%R, %B %d, %Y"
 <syntax>SSIETag on|off</syntax>
 <default>SSIETag off</default>
 <contextlist><context>directory</context><context>.htaccess</context></contextlist>
+<override>Limit</override>
 
 <usage>
       <p>Under normal circumstances, a file filtered by <module>mod_include</module>
@@ -996,6 +997,7 @@ server.</description>
 <syntax>SSILastModified on|off</syntax>
 <default>SSILastModified off</default>
 <contextlist><context>directory</context><context>.htaccess</context></contextlist>
+<override>Limit</override>
 
 <usage>
       <p>Under normal circumstances, a file filtered by <module>mod_include</module>
@@ -1034,6 +1036,7 @@ server.</description>
 <syntax>SSILegacyExprParser on|off</syntax>
 <default>SSILegacyExprParser off</default>
 <contextlist><context>directory</context><context>.htaccess</context></contextlist>
+<override>Limit</override>
 <compatibility>Available in version 2.3.13 and later.</compatibility>
 
 <usage>

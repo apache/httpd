@@ -1844,6 +1844,7 @@ end
 <description>Provide a Lua function for content input filtering</description>
 <syntax>LuaInputFilter filter_name /path/to/lua/script.lua function_name</syntax>
 <contextlist><context>server config</context> </contextlist>
+<override>All</override>
 <compatibility>2.4.5 and later</compatibility>
 
 <usage>
@@ -1901,6 +1902,7 @@ filters</a>" for more information.
 <description>Provide a Lua function for content output filtering</description>
 <syntax>LuaOutputFilter filter_name /path/to/lua/script.lua function_name</syntax>
 <contextlist><context>server config</context> </contextlist>
+<override>All</override>
 <compatibility>2.4.5 and later</compatibility>
 
 <usage>
