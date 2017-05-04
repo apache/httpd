@@ -96,7 +96,6 @@
 <default>LogIOTrackTTFB OFF</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
-<override>none</override>
 <compatibility>Apache HTTP Server 2.4.13 and later</compatibility>
 
 <usage>
