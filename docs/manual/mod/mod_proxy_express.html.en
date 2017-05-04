@@ -97,6 +97,7 @@
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyExpressDBMFile &lt;pathname&gt;</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>None</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_express</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.3.13 and later</td></tr>
@@ -139,6 +140,7 @@
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyExpressDBMFile &lt;type&gt;</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>"default"</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_express</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.3.13 and later</td></tr>
@@ -165,6 +167,7 @@
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyExpressEnable [on|off]</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_express</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.3.13 and later</td></tr>

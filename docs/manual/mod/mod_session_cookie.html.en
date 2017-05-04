@@ -101,6 +101,7 @@ SessionCookieName session path=/</pre>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SessionCookieName <var>name</var> <var>attributes</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>none</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session_cookie</td></tr>
 </table>
@@ -127,6 +128,7 @@ SessionCookieName session path=/private;domain=example.com;httponly;secure;versi
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SessionCookieName2 <var>name</var> <var>attributes</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>none</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session_cookie</td></tr>
 </table>
@@ -153,6 +155,7 @@ SessionCookieName2 session path=/private;domain=example.com;httponly;secure;vers
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SessionCookieRemove On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SessionCookieRemove Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session_cookie</td></tr>
 </table>

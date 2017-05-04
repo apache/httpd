@@ -206,6 +206,7 @@ UndefMacro DirGroup</pre>
 &lt;Macro <var>name</var> [<var>par1</var> .. <var>parN</var>]&gt;
 ... &lt;/Macro&gt;</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_macro</td></tr>
 </table>
@@ -233,6 +234,7 @@ UndefMacro DirGroup</pre>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ignore warnings, and does not log, about bad nesting of Macros</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MacroIgnoreBadNesting</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_macro</td></tr>
 </table>
@@ -243,6 +245,7 @@ UndefMacro DirGroup</pre>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ignore warnings, and does not log, about empty Macro argument(s)</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MacroIgnoreEmptyArgs</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_macro</td></tr>
 </table>
@@ -253,6 +256,7 @@ UndefMacro DirGroup</pre>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Undefine a macro</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>UndefMacro <var>name</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_macro</td></tr>
 </table>
@@ -271,6 +275,7 @@ UndefMacro RestrictedAccessPolicy</pre>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Use <var>name</var> [<var>value1</var> ... <var>valueN</var>]
 </code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_macro</td></tr>
 </table>

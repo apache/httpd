@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE sitemap SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.es.xsl"?>
-<!-- English Revision: 1780356 -->
+<!-- English Revision: 1780356:1793922 (outdated) -->
 <!-- Spanish Translator: Luis Gil de Bernabé -->
 <!-- Reviewed by: Sergio Ramos -->
 
