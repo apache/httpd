@@ -25,8 +25,15 @@
   <summary>
     <p>
       This is an index of the directives that are allowed in .htaccess files for
-      each <directive module="core">AllowOverride</directive> setting. To
-      determine the set of directives that your server configuration allows
+      various <directive module="core">AllowOverride</directive> settings,
+      organized by class. Its intended purpose is to help server administrators
+      verify the privileges they're granting to .htaccess users. For an overview
+      of how .htaccess works, see the
+      <a href="../howto/htaccess.html">.htaccess tutorial</a>.
+    </p>
+
+    <p>
+      To determine the set of directives that your server configuration allows
       .htaccess users to use:
     </p>
 
