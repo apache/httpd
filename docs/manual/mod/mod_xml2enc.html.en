@@ -161,6 +161,7 @@ them to a supported encoding using <code class="directive">xml2EncAlias</code>.<
 can be <a href="#sniffing">automatically detected</a></td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>xml2EncDefault <var>name</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_xml2enc</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Version 2.4.0 and later; available as a third-party
@@ -180,6 +181,7 @@ module for earlier versions.</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Advise the parser to skip leading junk.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>xml2StartParse <var>element [element ...]</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_xml2enc</td></tr>
 </table>

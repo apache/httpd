@@ -174,6 +174,7 @@ SessionDBDPerUser On</pre>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SessionDBDCookieName <var>name</var> <var>attributes</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>none</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session_dbd</td></tr>
 </table>
@@ -200,6 +201,7 @@ SessionDBDCookieName session path=/private;domain=example.com;httponly;secure;ve
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SessionDBDCookieName2 <var>name</var> <var>attributes</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>none</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session_dbd</td></tr>
 </table>
@@ -226,6 +228,7 @@ SessionDBDCookieName2 session path=/private;domain=example.com;httponly;secure;v
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SessionDBDCookieRemove On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SessionDBDCookieRemove On</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session_dbd</td></tr>
 </table>
@@ -246,6 +249,7 @@ SessionDBDCookieName2 session path=/private;domain=example.com;httponly;secure;v
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SessionDBDDeleteLabel <var>label</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SessionDBDDeleteLabel deletesession</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session_dbd</td></tr>
 </table>
@@ -262,6 +266,7 @@ SessionDBDCookieName2 session path=/private;domain=example.com;httponly;secure;v
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SessionDBDInsertLabel <var>label</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SessionDBDInsertLabel insertsession</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session_dbd</td></tr>
 </table>
@@ -281,6 +286,7 @@ SessionDBDCookieName2 session path=/private;domain=example.com;httponly;secure;v
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SessionDBDPerUser On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SessionDBDPerUser Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session_dbd</td></tr>
 </table>
@@ -297,6 +303,7 @@ SessionDBDCookieName2 session path=/private;domain=example.com;httponly;secure;v
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SessionDBDSelectLabel <var>label</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SessionDBDSelectLabel selectsession</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session_dbd</td></tr>
 </table>
@@ -313,6 +320,7 @@ SessionDBDCookieName2 session path=/private;domain=example.com;httponly;secure;v
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SessionDBDUpdateLabel <var>label</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SessionDBDUpdateLabel updatesession</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session_dbd</td></tr>
 </table>

@@ -370,6 +370,7 @@ CustomLog "logs/deflate_log" deflate</pre>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DeflateInflateLimitRequestBody<var>value</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>None, but LimitRequestBody applies after deflation</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_deflate</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>2.4.10 and later</td></tr>
@@ -388,6 +389,7 @@ CustomLog "logs/deflate_log" deflate</pre>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DeflateInflateRatioBurst <var>value</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>3</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_deflate</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>2.4.10 and later</td></tr>
@@ -405,6 +407,7 @@ CustomLog "logs/deflate_log" deflate</pre>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DeflateInflateRatioLimit <var>value</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>200</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_deflate</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>2.4.10 and later</td></tr>
