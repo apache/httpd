@@ -611,6 +611,12 @@ div#directive-list ul {
     padding: 0;
 }
 
+/* override index */
+/* ============== */
+div#override-list td.module {
+    width: 20%;
+}
+
 /* indextable */
 /* ========== */
 table#indextable td ul {
