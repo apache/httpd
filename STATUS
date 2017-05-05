@@ -190,6 +190,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch:  svn merge -c 1776463 1776708 ^/httpd/httpd/trunk .
      +1: covener, jim
 
+  *) core: evaluate nested If/ElseIf/Else sections rather than silently ignore
+     them.
+     trunk patch: http://svn.apache.org/r1792589
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: elukey
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entried should be added at the START of the list ]
 
