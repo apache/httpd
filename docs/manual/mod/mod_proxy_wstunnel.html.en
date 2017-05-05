@@ -51,6 +51,11 @@ ProxyPass "/wss2/" "wss://echo.websocket.org/"</pre>
 
 
 <p>Load balancing for multiple backends can be achieved using <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code>.</p>
+
+<p>In fact the module can be used to upgrade to other protocols, you can set the <code>upgrade</code>
+parameter in the <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code>
+directive to allow the module to accept other protocol.
+NONE means you bypass the check for the header but still upgrade to WebSocket.</p>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
@@ -90,7 +95,9 @@ ProxyPass "/wss2/" "wss://echo.websocket.org/"</pre>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_wstunnel</td></tr>
 </table>
     <p>If <code class="directive">ProxyWebsocketAsync</code> is enabled, this directive
-    controls how long the server synchronously waits for more data.</p>
+    controls how long the server synchronously waits for more data. The timeout
+    is considered in seconds by default, but it is possible to increase
+    the time resolution to milliseconds adding the <em>ms</em> suffix.</p>
 
     <div class="note"><h3>Note</h3><p>Async support is experimental and subject
     to change. </p></div>
@@ -108,7 +115,9 @@ ProxyPass "/wss2/" "wss://echo.websocket.org/"</pre>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_wstunnel</td></tr>
 </table>
     <p>This directive imposes a maximum amount of time for the tunnel to be
-    left open while idle.</p>
+    left open while idle. The timeout is considered in seconds by default, but
+    it is possible to increase the time resolution to milliseconds
+    adding the <em>ms</em> suffix.</p>
 
 </div>
 </div>
