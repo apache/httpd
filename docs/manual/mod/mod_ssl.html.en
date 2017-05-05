@@ -471,7 +471,7 @@ this directory contains the appropriate symbolic links.</p>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Optional <em>flag</em>s available in httpd 2.5-dev or
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Optional <em>flag</em>s available in httpd 2.4.21 or
 later</td></tr>
 </table>
 <p>
@@ -1104,7 +1104,7 @@ SSLOCSPOverrideResponder on</pre>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.5 and later, if using OpenSSL 0.9.7 or later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.4.26 and later, if using OpenSSL 0.9.7 or later</td></tr>
 </table>
 <p>Skip the OCSP responder certificates verification, mostly useful when
 testing an OCSP server.</p>
@@ -1147,7 +1147,7 @@ all queries to OCSP responders.</p>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.5 and later, if using OpenSSL 0.9.7 or later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.4.26 and later, if using OpenSSL 0.9.7 or later</td></tr>
 </table>
 <p>This supplies a list of trusted OCSP responder certificates to be used
 during OCSP responder certificate validation. The supplied certificates are
