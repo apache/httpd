@@ -1,10 +1,6 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
-  *) mod_http2: fail requests without ERROR log in case we need to read interim
-     responses and see only garbage. This can happen if proxied servers send
-     data where none should be, e.g. a body for a HEAD request. [Stefan Eissing]
-     
   *) Evaluate nested If/ElseIf/Else configuration blocks.
      [Luca Toscano, Jacob Champion]
 
