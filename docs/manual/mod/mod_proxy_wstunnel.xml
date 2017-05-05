@@ -88,7 +88,9 @@ NONE means you bypass the check for the header but still upgrade to WebSocket.</
 
 <usage>
     <p>This directive imposes a maximum amount of time for the tunnel to be
-    left open while idle.</p>
+    left open while idle. The timeout is considered in seconds by default, but
+    it is possible to increase the time resolution to milliseconds
+    adding the <em>ms</em> suffix.</p>
 </usage>
 </directivesynopsis>
 
@@ -103,7 +105,9 @@ NONE means you bypass the check for the header but still upgrade to WebSocket.</
 
 <usage>
     <p>If <directive>ProxyWebsocketAsync</directive> is enabled, this directive
-    controls how long the server synchronously waits for more data.</p>
+    controls how long the server synchronously waits for more data. The timeout
+    is considered in seconds by default, but it is possible to increase
+    the time resolution to milliseconds adding the <em>ms</em> suffix.</p>
 
     <note><title>Note</title><p>Async support is experimental and subject
     to change. </p></note>
