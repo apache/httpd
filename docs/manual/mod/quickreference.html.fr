@@ -769,7 +769,8 @@ correspondant à une expression rationnelle</td></tr>
 <tr class="odd"><td><a href="mod_log_config.html#logformat">LogFormat <var>format</var>|<var>alias</var>
 [<var>alias</var>]</a></td><td> "%h %l %u %t \"%r\" +</td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Décrit un format utilisable dans un fichier
 journal</td></tr>
-<tr><td><a href="mod_logio.html#logiotrackttfb">LogIOTrackTTFB ON|OFF</a></td><td> OFF </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Enable tracking of time to first byte (TTFB)</td></tr>
+<tr><td><a href="mod_logio.html#logiotrackttfb">LogIOTrackTTFB ON|OFF</a></td><td> OFF </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Permet d'enregistrer le délai avant le premier octet (time
+to first byte - TTFB)</td></tr>
 <tr class="odd"><td><a href="core.html#loglevel">LogLevel [<var>module</var>:]<var>niveau</var>
     [<var>module</var>:<var>niveau</var>] ...
 </a></td><td> warn </td><td>svd</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Contrôle la verbosité du journal des erreurs</td></tr>

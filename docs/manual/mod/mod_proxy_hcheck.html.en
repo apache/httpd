@@ -208,9 +208,9 @@ ProxyPass "/apps"     "http://backend.example.com/" hctemplate=tcp5</pre>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ProxyHCTPsize" id="ProxyHCTPsize">ProxyHCTPsize</a> <a name="proxyhctpsize" id="proxyhctpsize">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets the size of the threadpool used for the health check workers.</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets the total server-wide size of the threadpool used for the health check workers.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyHCTPsize &lt;size&gt;</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_hcheck</td></tr>
 </table>

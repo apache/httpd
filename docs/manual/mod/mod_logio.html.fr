@@ -115,17 +115,21 @@ d'Apache</a></li>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="logiotrackttfb" id="logiotrackttfb">Directive</a> <a name="LogIOTrackTTFB" id="LogIOTrackTTFB">LogIOTrackTTFB</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable tracking of time to first byte (TTFB)</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Permet d'enregistrer le délai avant le premier octet (time
+to first byte - TTFB)</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LogIOTrackTTFB ON|OFF</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>LogIOTrackTTFB OFF</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>none</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_logio</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Apache HTTP Server 2.4.13 and later</td></tr>
-</table><p>La documentation de cette directive
-	n'a pas encore t traduite. Veuillez vous reporter  la version
-	en langue anglaise.</p></div>
+</table>
+    <p>Cette directive permet de définir si ce module mesure le délai
+    entre la lecture de la requête et l'écriture du premier octet des
+    en-têtes de la réponse. La valeur obtenue peut être enregistrée dans
+    le journal via le format <code>%^FB</code>.</p>
+
+</div>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_logio.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
