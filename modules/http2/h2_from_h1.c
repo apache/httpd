@@ -449,7 +449,14 @@ static apr_status_t parse_status(h2_task *task, char *line)
         
         return APR_SUCCESS;
     }
-    ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, task->c, APLOGNO(03467)
+    /* Seems like there is garbage on the connection. May be a leftover
+     * from a previous proxy request. 
+     * This should only happen if the H2_RESPONSE filter is not yet in 
+     * place (post_read_request has not been reached and the handler wants
+     * to write something. Probably just the interim response we are
+     * waiting for. But if there is other data hanging around before
+     * that, this needs to fail. */
+    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, task->c, APLOGNO(03467)
                   "h2_task(%s): unable to parse status line: %s", 
                   task->id, line);
     return APR_EINVAL;
