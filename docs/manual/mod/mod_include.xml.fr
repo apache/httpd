@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1741842:1793934 (outdated) -->
+<!-- English Revision: 1793934 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -149,7 +149,7 @@ AddOutputFilter INCLUDES .shtml
       l'ajout de commentaires dans un fichier et ces commentaires ne sont pas
       affichés.</p>
 
-      <p>Cette syntaxe est disponible à partir de la version 2.5 du serveur
+      <p>Cette syntaxe est disponible à partir de la version 2.4.21 du serveur
       HTTP Apache.</p>
 
       <example>
@@ -1039,6 +1039,7 @@ formatage</var> est identique à celle de la fonction
 <syntax>SSIETag on|off</syntax>
 <default>SSIETag off</default>
 <contextlist><context>directory</context><context>.htaccess</context></contextlist>
+<override>Limit</override>
 
 <usage>
       <p>Dans le cas général, un fichier filtré par
@@ -1084,6 +1085,7 @@ générés par le serveur.</description>
 <syntax>SSILastModified on|off</syntax>
 <default>SSILastModified off</default>
 <contextlist><context>directory</context><context>.htaccess</context></contextlist>
+<override>Limit</override>
 
 <usage>
       <p>Dans le cas général, un fichier filtré par
@@ -1127,6 +1129,7 @@ conditionnelles.</description>
 <syntax>SSILegacyExprParser on|off</syntax>
 <default>SSILegacyExprParser off</default>
 <contextlist><context>directory</context><context>.htaccess</context></contextlist>
+<override>Limit</override>
 <compatibility>Disponible à partir de la version 2.3.13.</compatibility>
 
 <usage>

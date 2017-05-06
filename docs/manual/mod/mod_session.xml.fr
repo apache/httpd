@@ -1,9 +1,8 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1709121:1793934 (outdated) -->
+<!-- English Revision: 1793934 -->
 <!-- French translation : Lucien GENTIS -->
-<!-- $LastChangedRevision: 2015101701 $ -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -536,6 +535,7 @@ ignorée</description>
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
+<override>AuthConfig</override>
 
 <usage>
     <p>La directive <directive>SessionExclude</directive> permet de
@@ -568,6 +568,7 @@ session peut changer sans que cette session soit mise à jour</description>
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
+<override>AuthConfig</override>
 
 <usage>
     <p>La directive <directive>SessionExpiryUpdateInterval</directive>

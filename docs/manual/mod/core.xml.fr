@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1787510:1793934 (outdated) -->
+<!-- English Revision: 1793934 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -343,8 +343,8 @@ host</context>
 <name>AllowOverride</name>
 <description>Types de directives autorisées dans les fichiers
 <code>.htaccess</code></description>
-<syntax>AllowOverride All|None|<var>type directive</var>
-[<var>type directive</var>] ...</syntax>
+<syntax>AllowOverride All|None|<var>directive-type</var>
+[<var>directive-type</var>] ...</syntax>
 <default>AllowOverride None à partir de la version 2.3.9, AllowOverride
 All pour les versions antérieures</default>
 <contextlist><context>directory</context></contextlist>
@@ -378,11 +378,13 @@ All pour les versions antérieures</default>
     href="directive-dict.html#Context">Contexte</a> .htaccess sera
     autorisée dans les fichiers <code>.htaccess</code>.</p>
 
-    <p>L'argument <var>type directive</var> peut contenir les
-    groupements de directives suivants :</p>
+    <p>L'argument <var>directive-type</var> peut contenir les
+    groupements de directives suivants (Voir l'<a
+    href="overrides.html">index de la class override</a> pour obtenir une liste mise à
+    jour des directives activées par chaque argument <var>directive-type</var>) :</p>
 
     <dl>
-      <dt>AuthConfig</dt>
+      <dt><a href="overrides.html#override-authconfig">AuthConfig</a></dt>
 
       <dd>
 
@@ -395,7 +397,7 @@ All pour les versions antérieures</default>
       module="mod_authn_file">AuthUserFile</directive>, <directive
       module="mod_authz_core">Require</directive>, <em>etc...</em>).</dd>
 
-      <dt>FileInfo</dt>
+      <dt><a href="overrides.html#override-fileinfo">FileInfo</a></dt>
 
       <dd>
       Permet l'utilisation des directives qui contrôlent les types de
@@ -433,7 +435,7 @@ All pour les versions antérieures</default>
       <module>mod_actions</module>.
       </dd>
 
-      <dt>Indexes</dt>
+      <dt><a href="overrides.html#override-indexes">Indexes</a></dt>
 
       <dd>
       Permet l'utilisation des directives qui contrôlent l'indexation
@@ -453,7 +455,7 @@ All pour les versions antérieures</default>
       module="mod_autoindex">ReadmeName</directive>,
       <em>etc...</em>).</dd>
 
-      <dt>Limit</dt>
+      <dt><a href="overrides.html#override-limit">Limit</a></dt>
 
       <dd>
       Permet l'utilisation des directives contrôlant l'accès au serveur
@@ -494,7 +496,7 @@ All pour les versions antérieures</default>
       </note>
       </dd>
 
-      <dt>Options[=<var>Option</var>,...]</dt>
+      <dt><a href="overrides.html#override-options">Options</a>[=<var>Option</var>,...]</dt>
 
       <dd>
       Permet l'utilisation des directives contrôlant les fonctionnalités
@@ -545,6 +547,7 @@ All pour les versions antérieures</default>
 <seealso><directive module="core">AllowOverrideList</directive></seealso>
 <seealso><a href="../configuring.html">Fichiers de configuration</a></seealso>
 <seealso><a href="../howto/htaccess.html">Fichiers .htaccess</a></seealso>
+<seealso><a href="overrides.html">Index de la class Override pour .htaccess</a></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -1514,6 +1517,7 @@ d'erreur personnalisé</description>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
+<override>All</override>
 <compatibility>à partir de la version 2.3.9</compatibility>
 
 <usage>
@@ -2520,6 +2524,7 @@ existe au démarrage</description>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
+<override>All</override>
 
 <usage>
     <p>La section <code>&lt;IfFile <var>filename</var>&gt;...&lt;/IfFile&gt;</code>
@@ -5532,6 +5537,7 @@ l'interprétation du fichier de configuration</description>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
+<override>All</override>
 <compatibility>Disponible à partir de la version 2.5 du serveur HTTP
 Apache.</compatibility>
 
