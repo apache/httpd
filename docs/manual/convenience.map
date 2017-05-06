@@ -286,7 +286,6 @@ h2pushdiarysize	mod/mod_http2.html#h2pushdiarysize
 h2pushpriority	mod/mod_http2.html#h2pushpriority
 h2pushresource	mod/mod_http2.html#h2pushresource
 h2serializeheaders	mod/mod_http2.html#h2serializeheaders
-h2sessionextrafiles	mod/mod_http2.html#h2sessionextrafiles
 h2streammaxmemsize	mod/mod_http2.html#h2streammaxmemsize
 h2tlscooldownsecs	mod/mod_http2.html#h2tlscooldownsecs
 h2tlswarmupsize	mod/mod_http2.html#h2tlswarmupsize
@@ -306,8 +305,10 @@ identitychecktimeout	mod/mod_ident.html#identitychecktimeout
 idleshutdown	mod/mod_systemd.html#idleshutdown
 if	mod/core.html#if
 ifdefine	mod/core.html#ifdefine
+ifdirective	mod/core.html#ifdirective
 iffile	mod/core.html#iffile
 ifmodule	mod/core.html#ifmodule
+ifsection	mod/core.html#ifsection
 ifversion	mod/mod_version.html#ifversion
 imapbase	mod/mod_imagemap.html#imapbase
 imapdefault	mod/mod_imagemap.html#imapdefault
@@ -459,6 +460,7 @@ proxyexpressdbmfile	mod/mod_proxy_express.html#proxyexpressdbmfile
 proxyexpressdbmtype	mod/mod_proxy_express.html#proxyexpressdbmtype
 proxyexpressenable	mod/mod_proxy_express.html#proxyexpressenable
 proxyfcgibackendtype	mod/mod_proxy_fcgi.html#proxyfcgibackendtype
+proxyfcgisetenvif	mod/mod_proxy_fcgi.html#proxyfcgisetenvif
 proxyftpdircharset	mod/mod_proxy_ftp.html#proxyftpdircharset
 proxyftpescapewildcards	mod/mod_proxy_ftp.html#proxyftpescapewildcards
 proxyftplistonwildcard	mod/mod_proxy_ftp.html#proxyftplistonwildcard
@@ -516,6 +518,7 @@ remoteipinternalproxy	mod/mod_remoteip.html#remoteipinternalproxy
 remoteipinternalproxylist	mod/mod_remoteip.html#remoteipinternalproxylist
 remoteipproxiesheader	mod/mod_remoteip.html#remoteipproxiesheader
 remoteipproxyprotocol	mod/mod_remoteip.html#remoteipproxyprotocol
+remoteipproxyprotocolexceptions	mod/mod_remoteip.html#remoteipproxyprotocolexceptions
 remoteiptrustedproxy	mod/mod_remoteip.html#remoteiptrustedproxy
 remoteiptrustedproxylist	mod/mod_remoteip.html#remoteiptrustedproxylist
 removecharset	mod/mod_mime.html#removecharset
@@ -617,8 +620,10 @@ sslhonorcipherorder	mod/mod_ssl.html#sslhonorcipherorder
 sslinsecurerenegotiation	mod/mod_ssl.html#sslinsecurerenegotiation
 sslocspdefaultresponder	mod/mod_ssl.html#sslocspdefaultresponder
 sslocspenable	mod/mod_ssl.html#sslocspenable
+sslocspnoverify	mod/mod_ssl.html#sslocspnoverify
 sslocspoverrideresponder	mod/mod_ssl.html#sslocspoverrideresponder
 sslocspproxyurl	mod/mod_ssl.html#sslocspproxyurl
+sslocsprespondercertificatefile	mod/mod_ssl.html#sslocsprespondercertificatefile
 sslocsprespondertimeout	mod/mod_ssl.html#sslocsprespondertimeout
 sslocspresponsemaxage	mod/mod_ssl.html#sslocspresponsemaxage
 sslocspresponsetimeskew	mod/mod_ssl.html#sslocspresponsetimeskew
