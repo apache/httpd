@@ -435,6 +435,7 @@ Require valid-user</pre>
 codés en PEM pour l'authentification des clients</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLCACertificateFile <em>chemin-fichier</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 </table>
@@ -457,6 +458,7 @@ en complément de la directive <code class="directive"><a href="#sslcacertificate
 l'authentification des clients</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLCACertificatePath <em>chemin-répertoire</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 </table>
@@ -1713,7 +1715,6 @@ casse) :</p>
 codés en PEM pour l'authentification des serveurs distants</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLProxyCACertificateFile <em>file-path</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, </td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>Not applicable</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 </table>
@@ -1737,7 +1738,6 @@ la place et/ou en complément de la directive <code class="directive"><a href="#s
 l'authentification des serveurs distants</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLProxyCACertificatePath <em>chemin-répertoire</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, </td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>Not applicable</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 </table>
@@ -1766,7 +1766,6 @@ pour l'authentification du serveur distant</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLProxyCARevocationCheck chain|leaf|none</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLProxyCARevocationCheck none</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, </td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>Not applicable</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 </table>
@@ -1804,7 +1803,6 @@ erreur <code>"CRL introuvable"</code>.
 PEM pour l'authentification des serveurs distants</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLProxyCARevocationFile <em>chemin-fichier</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, </td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>Not applicable</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 </table>
@@ -1829,7 +1827,6 @@ directive <code class="directive"><a href="#sslproxycarevocationpath">SSLProxyCA
 l'authentification des serveurs distants</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLProxyCARevocationPath <em>chemin-répertoire</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, </td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>Not applicable</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 </table>
@@ -1859,7 +1856,6 @@ du serveur distant
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLProxyCheckPeerCN on|off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLProxyCheckPeerCN on</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, </td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>Not applicable</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 </table>
@@ -1905,7 +1901,6 @@ certificat du serveur distant
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLProxyCheckPeerExpire on|off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLProxyCheckPeerExpire on</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, </td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>Not applicable</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 </table>
@@ -1927,7 +1922,6 @@ certificats serveur distant
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLProxyCheckPeerName on|off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLProxyCheckPeerName on</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, </td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>Not applicable</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.5 du serveur HTTP
@@ -1970,7 +1964,6 @@ lors de l'initialisation d'une connexion SSL de mandataire</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLProxyCipherSuite <em>algorithmes</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLProxyCipherSuite ALL:!ADH:RC4+RSA:+HIGH:+MEDIUM:+LOW:+EXP</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, </td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>Not applicable</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 </table>
@@ -1986,7 +1979,6 @@ SSL</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLProxyEngine on|off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLProxyEngine off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, </td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>Not applicable</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 </table>
@@ -2019,7 +2011,6 @@ serveur mandataire direct pour les requêtes SSL/TLS.</p>
 mandataire de choisir un certificat</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLProxyMachineCertificateChainFile <em>nom-fichier</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, </td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>Sans objet</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 </table>
@@ -2053,7 +2044,6 @@ fichier spécifié seront considérés comme étant de confiance, comme s'ils
 clients codés en PEM que le mandataire doit utiliser</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLProxyMachineCertificateFile <em>chemin-fichier</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, </td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>Sans objet</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 </table>
@@ -2082,7 +2072,6 @@ directive s'utilise à la place ou en complément de la directive
 le mandataire doit utiliser</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLProxyMachineCertificatePath <em>chemin-répertoire</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, </td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>Sans objet</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 </table>
@@ -2111,7 +2100,6 @@ mandataire</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLProxyProtocol [+|-]<em>protocole</em> ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLProxyProtocol all -SSLv3</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, </td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>Not applicable</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 </table>
@@ -2133,7 +2121,6 @@ distant</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLProxyVerify <em>niveau</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLProxyVerify none</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, </td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>Not applicable</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 </table>
@@ -2179,7 +2166,6 @@ lors de la vérification du certificat du serveur distant</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLProxyVerifyDepth <em>niveau</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLProxyVerifyDepth 1</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, </td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>Not applicable</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 </table>

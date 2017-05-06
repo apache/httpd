@@ -440,8 +440,8 @@ autorisés à transiter dans les URLs tels quels</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Types de directives autorisées dans les fichiers
 <code>.htaccess</code></td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AllowOverride All|None|<var>type directive</var>
-[<var>type directive</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AllowOverride All|None|<var>directive-type</var>
+[<var>directive-type</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AllowOverride None à partir de la version 2.3.9, AllowOverride
 All pour les versions antérieures</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
@@ -470,11 +470,12 @@ All pour les versions antérieures</code></td></tr>
     directive valable dans le <a href="directive-dict.html#Context">Contexte</a> .htaccess sera
     autorisée dans les fichiers <code>.htaccess</code>.</p>
 
-    <p>L'argument <var>type directive</var> peut contenir les
-    groupements de directives suivants :</p>
+    <p>L'argument <var>directive-type</var> peut contenir les
+    groupements de directives suivants (Voir l'<a href="overrides.html">index de la class override</a> pour obtenir une liste mise à
+    jour des directives activées par chaque argument <var>directive-type</var>) :</p>
 
     <dl>
-      <dt>AuthConfig</dt>
+      <dt><a href="overrides.html#override-authconfig">AuthConfig</a></dt>
 
       <dd>
 
@@ -484,7 +485,7 @@ All pour les versions antérieures</code></td></tr>
       <code class="directive"><a href="../mod/mod_authn_core.html#authname">AuthName</a></code>,
       <code class="directive"><a href="../mod/mod_authn_core.html#authtype">AuthType</a></code>, <code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code>, <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>, <em>etc...</em>).</dd>
 
-      <dt>FileInfo</dt>
+      <dt><a href="overrides.html#override-fileinfo">FileInfo</a></dt>
 
       <dd>
       Permet l'utilisation des directives qui contrôlent les types de
@@ -498,7 +499,7 @@ All pour les versions antérieures</code></td></tr>
       <code class="module"><a href="../mod/mod_actions.html">mod_actions</a></code>.
       </dd>
 
-      <dt>Indexes</dt>
+      <dt><a href="overrides.html#override-indexes">Indexes</a></dt>
 
       <dd>
       Permet l'utilisation des directives qui contrôlent l'indexation
@@ -509,7 +510,7 @@ All pour les versions antérieures</code></td></tr>
       <code class="directive"><a href="../mod/mod_autoindex.html#headername">HeaderName</a></code>, <code class="directive"><a href="../mod/mod_autoindex.html#indexignore">IndexIgnore</a></code>, <code class="directive"><a href="../mod/mod_autoindex.html#indexoptions">IndexOptions</a></code>, <code class="directive"><a href="../mod/mod_autoindex.html#readmename">ReadmeName</a></code>,
       <em>etc...</em>).</dd>
 
-      <dt>Limit</dt>
+      <dt><a href="overrides.html#override-limit">Limit</a></dt>
 
       <dd>
       Permet l'utilisation des directives contrôlant l'accès au serveur
@@ -547,7 +548,7 @@ All pour les versions antérieures</code></td></tr>
       </div>
       </dd>
 
-      <dt>Options[=<var>Option</var>,...]</dt>
+      <dt><a href="overrides.html#override-options">Options</a>[=<var>Option</var>,...]</dt>
 
       <dd>
       Permet l'utilisation des directives contrôlant les fonctionnalités
@@ -598,6 +599,7 @@ All pour les versions antérieures</code></td></tr>
 <li><code class="directive"><a href="#allowoverridelist">AllowOverrideList</a></code></li>
 <li><a href="../configuring.html">Fichiers de configuration</a></li>
 <li><a href="../howto/htaccess.html">Fichiers .htaccess</a></li>
+<li><a href="overrides.html">Index de la class Override pour .htaccess</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1398,6 +1400,7 @@ fichiers aux clients</td></tr>
 d'erreur personnalisé</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Error <var>message</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>à partir de la version 2.3.9</td></tr>
@@ -2507,6 +2510,7 @@ existe au démarrage</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>&lt;IfFile [!]<var>parameter-name</var>&gt; ...
     &lt;/IfFile&gt;</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 </table>
@@ -5482,6 +5486,7 @@ entre elles à la réception d'une requête</li>
 l'interprétation du fichier de configuration</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Warning <var>message</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.5 du serveur HTTP

@@ -30,6 +30,8 @@
 <a href="../fr/mod/mod_example_hooks.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ko/mod/mod_example_hooks.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Illustration de l'API des modules Apache</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>example_hooks_module</td></tr>
