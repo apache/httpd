@@ -288,8 +288,7 @@ Listen 8080
     Sometimes it is desirable to require clients to provide the PROXY header, but
     permit other clients to connect without it. This directive allows a server 
     administrator to configure a single host or CIDR range of hosts that may do
-    so. This is generally useful for monitoring and administrative traffic to a 
-    virtual host direct to the server behind the upstream load balancer.</p>
+    so.</p>
 </usage>
 </directivesynopsis>
 
