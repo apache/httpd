@@ -143,8 +143,8 @@ autorisés à transiter dans les URLs tels quels</td></tr>
 [none|<em>handler-name</em>]...</a></td><td> all </td><td>d</td><td>X</td></tr><tr><td class="descr" colspan="4">Restrict access to the listed handlers</td></tr>
 <tr class="odd"><td><a href="mod_allowmethods.html#allowmethods">AllowMethods reset|<em>HTTP-method</em>
 [<em>HTTP-method</em>]...</a></td><td> reset </td><td>d</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Restreint l'accès aux méthodes HTTP spécifiées</td></tr>
-<tr><td><a href="core.html#allowoverride">AllowOverride All|None|<var>type directive</var>
-[<var>type directive</var>] ...</a></td><td> None à partir de la +</td><td>d</td><td>C</td></tr><tr><td class="descr" colspan="4">Types de directives autorisées dans les fichiers
+<tr><td><a href="core.html#allowoverride">AllowOverride All|None|<var>directive-type</var>
+[<var>directive-type</var>] ...</a></td><td> None à partir de la +</td><td>d</td><td>C</td></tr><tr><td class="descr" colspan="4">Types de directives autorisées dans les fichiers
 <code>.htaccess</code></td></tr>
 <tr class="odd"><td><a href="core.html#allowoverridelist">AllowOverrideList None|<var>directive</var>
 [<var>directive-type</var>] ...</a></td><td> None </td><td>d</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Directives autorisées dans les fichiers <code>.htaccess</code></td></tr>
