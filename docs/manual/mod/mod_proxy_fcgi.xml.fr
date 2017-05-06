@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1782538:1793934 (outdated) -->
+<!-- English Revision: 1793934 -->
 <!-- French translation : Lucien GENTIS -->
 
 <!--
@@ -155,7 +155,7 @@ ProxyPass "/myapp/" "balancer://myappcluster/"
    # SetHandler est la partie qui suit le "pipe". Si vous devez faire
    # une distinction, "localhost" peut être changé en un nom de serveur
    # unique.
-   &lt;Proxy fcgi://localhost/ enablereuse=on max=10&gt;
+   &lt;Proxy "fcgi://localhost/" enablereuse=on max=10&gt;
    &lt;/Proxy&gt;
 
 &lt;FilesMatch ...&gt;
@@ -218,7 +218,8 @@ ProxyPass "/myapp/" "balancer://myappcluster/"
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
 <context>.htaccess</context></contextlist>
-<compatibility>Disponible à partir de la version 2.5 du serveur HTTP Apache</compatibility>
+<override>FileInfo</override>
+<compatibility>Disponible à partir de la version 2.4.26 du serveur HTTP Apache</compatibility>
 
 <usage>
 <p>Cette directive permet de spécifier le type de l'application FastCGI
@@ -251,7 +252,8 @@ FastCGI</description>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
 <context>.htaccess</context></contextlist>
-<compatibility>Disponible à partir de la version 2.5 du serveur HTTP Apache.</compatibility>
+<override>FileInfo</override>
+<compatibility>Disponible à partir de la version 2.4.26 du serveur HTTP Apache.</compatibility>
 
 <usage>
 <p>Juste avant la transmission d'une requête au serveur FastCGI configuré, le

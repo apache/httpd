@@ -1,9 +1,8 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1587097:1793934 (outdated) -->
+<!-- English Revision: 1793934 -->
 <!-- French translation : Lucien GENTIS -->
-<!-- $LastChangedRevision: 2014042601 $ -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -174,6 +173,7 @@ d'Apache</compatibility>
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
+<override>AuthConfig</override>
 <compatibility>Disponible depuis la version 2.3.0
 d'Apache</compatibility>
 
@@ -260,6 +260,7 @@ session</description>
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
+<override>AuthConfig</override>
 <compatibility>Disponible depuis la version 2.3.0 du serveur HTTP Apache</compatibility>    
 
 <usage>

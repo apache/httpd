@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1780210:1793934 (outdated) -->
+<!-- English Revision: 1793934 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -695,6 +695,7 @@ connexion.</description>
 <var>chemin/nom-fichier/alias</var> <var>[mot de passe]</var></syntax>
 <contextlist><context>server config</context><context>virtual
 host</context><context>directory</context><context>.htaccess</context></contextlist>
+<override>AuthConfig</override>
 
 <usage>
     <p>Cette directive permet de spécifier le chemin et le nom de

@@ -1,9 +1,8 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1488164:1793934 (outdated) -->
+<!-- English Revision: 1793934 -->
 <!-- French translation : Lucien GENTIS -->
-<!-- $LastChangedRevision: 2013060101 $ -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -182,6 +181,7 @@ l'identifiant de session</description>
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
+<override>AuthConfig</override>
 
 <usage>
     <p>La directive <directive>SessionDBDCookieName</directive> permet
@@ -219,6 +219,7 @@ l'identifiant de session</description>
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
+<override>AuthConfig</override>
 
 <usage>
     <p>La directive <directive>SessionDBDCookieName2</directive> permet
@@ -256,6 +257,7 @@ des en-têtes HTTP entrants</description>
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
+<override>AuthConfig</override>
 
 <usage>
     <p>La directive <directive>SessionDBDCookieRemove</directive> permet
@@ -282,6 +284,7 @@ des en-têtes HTTP entrants</description>
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
+<override>AuthConfig</override>
 
 <usage>
     <p>La directive <directive>SessionDBDPerUser</directive> permet
@@ -303,6 +306,7 @@ dans la base de données</description>
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
+<override>AuthConfig</override>
 
 <usage>
     <p>La directive <directive>SessionDBDSelectLabel</directive> permet
@@ -325,6 +329,7 @@ base de données</description>
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
+<override>AuthConfig</override>
 
 <usage>
     <p>La directive <directive>SessionDBDInsertLabel</directive> permet
@@ -351,6 +356,7 @@ préexistantes dans la base de données</description>
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
+<override>AuthConfig</override>
 
 <usage>
     <p>La directive <directive>SessionDBDUpdateLabel</directive> permet
@@ -379,6 +385,7 @@ base de données</description>
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
+<override>AuthConfig</override>
 
 <usage>
     <p>La directive  <directive>SessionDBDDeleteLabel</directive> permet
