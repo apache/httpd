@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1734412:1793288 (outdated) -->
+<!-- English Revision: 1793288 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -30,8 +30,8 @@ IP)</description>
 <status>Base</status>
 <sourcefile>mod_authz_host.c</sourcefile>
 <identifier>authz_host_module</identifier>
-<compatibility>Disponible depuis les versions 2.3 et supérieures
-d'Apache</compatibility>
+<compatibility>Le fournisseur <code>forward-dns</code> est disponible à partir
+de la version 2.4.19 du serveur HTTP Apache</compatibility>
 
 <summary>
     <p>Les fournisseurs d'autorisation implémentés par le module
@@ -188,6 +188,8 @@ Require forward-dns bla.example.org
     <p>Un client dont l'adresse IP correspond au nom d'hôte
     <code>bla.example.org</code> se verra autoriser l'accès.</p>
 
+    <p>Le fournisseur <code>forward-dns</code> est disponible à partir de la
+    version 2.4.19 du serveur HTTP Apache.</p>
 </section>
 
 <section id="reqlocal"><title>Require local</title>
