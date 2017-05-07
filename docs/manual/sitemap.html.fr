@@ -34,8 +34,6 @@
 <a href="./tr/sitemap.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="./zh-cn/sitemap.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 <p>Cette page contient la liste des éléments actuellement disponibles de
 la <a href="./">Documentation du serveur HTTP Apache Version
@@ -366,6 +364,7 @@ threads dans la version 2.x</a></li>
 <li><a href="mod/">Index des modules</a></li>
 <li><a href="mod/directives.html">Index des directives</a></li>
 <li><a href="mod/quickreference.html">Référence rapide des directives</a></li>
+<li><a href="mod/overrides.html">Index de la classe Override pour .htaccess</a></li>
 </ul>
 </div></div>
 <div class="bottomlang">
