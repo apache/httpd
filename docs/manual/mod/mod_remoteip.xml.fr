@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1790691:1794142 (outdated) -->
+<!-- English Revision: 1794142 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -324,12 +324,7 @@ version 2.4.26 du serveur HTTP Apache</compatibility>
     présence de l'en-tête PROXY, mais aussi de permettre aux autres clients de
     se connecter sans ce dernier. Cette directive permet à l'administrateur du
     serveur d'autoriser cette possibilité à un hôte isolé ou à une gamme d'hôtes
-    au format CIDR. This is generally useful for monitoring and administrative
-    traffic to a virtual host direct to the server behind the upstream load
-    balancer.</p>
-    <!-- Traduction possible dernière phrase : Elle est en général utilisée dans le cadre du monitoring du
-    trafic vers un serveur virtuel à destination du serveur situé derrière le
-    répartiteur de charge. -->
+    au format CIDR.</p>
 </usage>
 </directivesynopsis>
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE sitemap SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision: 1780356:1793932 (outdated) -->
+<!-- English Revision: 1793932 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -220,6 +220,7 @@ threads dans la version 2.x</page>
 <page href="mod/">Index des modules</page>
 <page href="mod/directives.html">Index des directives</page>
 <page href="mod/quickreference.html">Référence rapide des directives</page>
+<page href="mod/overrides.html">Index de la classe Override pour .htaccess</page>
 </category>
 
 </sitemap>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1726578:1793934 (outdated) -->
+<!-- English Revision: 1793934 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -428,6 +428,7 @@ de la compression</description>
 compression</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
+<override>All</override>
 <compatibility>Disponible à partir de la version 2.4.10 du serveur HTTP
 Apache</compatibility>
 
@@ -448,6 +449,7 @@ Apache</compatibility>
 <default>200</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
+<override>All</override>
 <compatibility>Disponible à partir de la version 2.4.10 du serveur HTTP
 Apache</compatibility>
 
@@ -470,6 +472,7 @@ corps de requête peut être dépassé</description>
 <default>3</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
+<override>All</override>
 <compatibility>Disponible à partir de la version 2.4.10 du serveur HTTP
 Apache</compatibility>
 
