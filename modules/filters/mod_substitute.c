@@ -452,7 +452,7 @@ static apr_status_t substitute_filter(ap_filter_t *f, apr_bucket_brigade *bb)
             else {
                 int num = 0;
                 while (bytes > 0) {
-                    nl = memchr(buff, APR_ASCII_LF, bytes);
+                    nl = memchr(buff, '\n', bytes);
                     if (nl) {
                         len = (apr_size_t) (nl - buff) + 1;
                         /* split *after* the newline */
