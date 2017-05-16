@@ -49,8 +49,8 @@ Listen @@SSLPort@@
 #   ensure these follow appropriate best practices for this deployment.
 #   httpd 2.2.30, 2.4.13 and later force-disable aNULL, eNULL and EXP ciphers,
 #   while OpenSSL disabled these by default in 0.9.8zf/1.0.0r/1.0.1m/1.0.2a.
-SSLCipherSuite HIGH:MEDIUM:!MD5:!RC4
-SSLProxyCipherSuite HIGH:MEDIUM:!MD5:!RC4
+SSLCipherSuite HIGH:MEDIUM:!MD5:!RC4:!3DES
+SSLProxyCipherSuite HIGH:MEDIUM:!MD5:!RC4:!3DES
 
 #  By the end of 2016, only TLSv1.2 ciphers should remain in use.
 #  Older ciphers should be disallowed as soon as possible, while the
