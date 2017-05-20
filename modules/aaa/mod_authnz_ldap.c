@@ -366,7 +366,8 @@ static apr_status_t authnz_ldap_cleanup_connection_close(void *param)
     return APR_SUCCESS;
 }
 
-static int set_request_vars(request_rec *r, enum auth_ldap_phase phase, const char **vals) {
+static int set_request_vars(request_rec *r, enum auth_ldap_phase phase, const char **vals)
+{
     char *prefix = NULL;
     int prefix_len;
     int remote_user_attribute_set = 0;
@@ -401,7 +402,8 @@ static int set_request_vars(request_rec *r, enum auth_ldap_phase phase, const ch
     return remote_user_attribute_set;
 }
 
-static const char *ldap_determine_binddn(request_rec *r, const char *user) {
+static const char *ldap_determine_binddn(request_rec *r, const char *user)
+{
     authn_ldap_config_t *sec =
         (authn_ldap_config_t *)ap_get_module_config(r->per_dir_config, &authnz_ldap_module);
     const char *result = user;
@@ -452,7 +454,7 @@ static util_ldap_connection_t *get_connection_for_authz(request_rec *r, enum aut
     if (req->password &&
          ((type == LDAP_SEARCH && sec->search_as_user)    ||
           (type == LDAP_COMPARE && sec->compare_as_user)  ||
-          (type == LDAP_COMPARE_AND_SEARCH && sec->compare_as_user && sec->search_as_user))){
+          (type == LDAP_COMPARE_AND_SEARCH && sec->compare_as_user && sec->search_as_user))) {
             binddn = req->dn;
             bindpw = req->password;
     }
@@ -469,7 +471,8 @@ static util_ldap_connection_t *get_connection_for_authz(request_rec *r, enum aut
 }
 
 
-static authn_ldap_request_t* build_request_config(request_rec *r) { 
+static authn_ldap_request_t* build_request_config(request_rec *r)
+{ 
     authn_ldap_request_t *req =
         (authn_ldap_request_t *)apr_pcalloc(r->pool, sizeof(authn_ldap_request_t));
     ap_set_module_config(r->request_config, &authnz_ldap_module, req);
@@ -1597,8 +1600,7 @@ static const char *mod_auth_ldap_set_deref(cmd_parms *cmd, void *config, const c
 
 static const char *mod_auth_ldap_add_subgroup_attribute(cmd_parms *cmd, void *config, const char *arg)
 {
-    int i = 0;
-
+    int i;
     authn_ldap_config_t *sec = config;
 
     for (i = 0; sec->sgAttributes[i]; i++) {
@@ -1965,7 +1967,8 @@ static void ImportULDAPOptFn(void)
 /** Cleanup LDAP connections before EOR. Note, if the authorization is unsuccessful,
  *  this will not run, but EOR is unlikely to be delayed as in a successful request.
  */
-static apr_status_t authnz_ldap_fixups(request_rec *r) { 
+static apr_status_t authnz_ldap_fixups(request_rec *r)
+{ 
     authn_ldap_request_t *req =
         (authn_ldap_request_t *)ap_get_module_config(r->request_config, &authnz_ldap_module);
     if (req && req->ldc_pool) { 
@@ -1973,6 +1976,7 @@ static apr_status_t authnz_ldap_fixups(request_rec *r) {
     }
     return OK;
 }
+
 static void register_hooks(apr_pool_t *p)
 {
     /* Register authn provider */
