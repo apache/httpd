@@ -1911,6 +1911,7 @@ static int authnz_ldap_post_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *
 static const authn_provider authn_ldap_provider =
 {
     &authn_ldap_check_password,
+    NULL,
 };
 
 static const authz_provider authz_ldapuser_provider =
