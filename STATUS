@@ -115,18 +115,6 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
-   *) confirm ab + https w/ openssl 1.1.0 on unix is OK.
-      Gregg says it's broken on Windows.
-      Document it somewhere either way.
-      jchampion: hangs on my Ubuntu box too. Looks like a CRYPTO_malloc()
-                 infinite loop during library initialization?
-      jj: Is this *really* a showstopper??
-      covener: I would be OK with a release note / announcement kind of thing
-               instead.
-
-      trunk patch: https://svn.apache.org/r1795830
-      2.4.x patch: trunk works
-      +1: jchampion, ylavic
 
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
@@ -138,6 +126,18 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES)
      +1: elukey, jim, yalvic
 
+   *) confirm ab + https w/ openssl 1.1.0 on unix is OK.
+      Gregg says it's broken on Windows.
+      Document it somewhere either way.
+      jchampion: hangs on my Ubuntu box too. Looks like a CRYPTO_malloc()
+                 infinite loop during library initialization?
+      jj: Is this *really* a showstopper??
+      covener: I would be OK with a release note / announcement kind of thing
+               instead.
+
+      trunk patch: https://svn.apache.org/r1795830
+      2.4.x patch: trunk works
+      +1: jchampion, ylavic, gsmith
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
