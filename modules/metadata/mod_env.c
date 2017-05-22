@@ -121,7 +121,6 @@ static const char *add_env_module_vars_set(cmd_parms *cmd, void *sconf_,
         ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server, APLOGNO(10032)
                      "Spurious usage of '=' in an environment variable name. "
                      "'%s %s %s' expected instead?", cmd->cmd->name, env, plast);
-    
     }
 
     /* name is mandatory, value is optional.  no value means
