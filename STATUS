@@ -120,6 +120,7 @@ RELEASE SHOWSTOPPERS:
       Document it somewhere either way.
       jchampion: hangs on my Ubuntu box too. Looks like a CRYPTO_malloc()
                  infinite loop during library initialization?
+      jj: Is this *really* a showstopper??
 
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
