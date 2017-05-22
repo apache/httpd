@@ -178,7 +178,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1789220
                   http://svn.apache.org/r1792675
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic
+     +1: ylavic, jim
 
   *) mod_rewrite: When a substitution is a fully qualified URL, and the 
      scheme/host/port matches the current virtual host, stop interpreting the 
@@ -194,7 +194,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      them.
      trunk patch: http://svn.apache.org/r1792589
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: elukey
+     +1: elukey, jim
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entried should be added at the START of the list ]
