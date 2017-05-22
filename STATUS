@@ -126,11 +126,17 @@ RELEASE SHOWSTOPPERS:
 
       trunk patch: https://svn.apache.org/r1795830
       2.4.x patch: trunk works
-      +1: jchampion
+      +1: jchampion, ylavic
 
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
+
+  *) core: evaluate nested If/ElseIf/Else sections rather than silently ignore
+     them.
+     trunk patch: http://svn.apache.org/r1792589
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: elukey, jim, yalvic
 
 
 
@@ -196,12 +202,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1776463
      2.4.x patch:  svn merge -c 1776463 1776708 ^/httpd/httpd/trunk .
      +1: covener, jim
-
-  *) core: evaluate nested If/ElseIf/Else sections rather than silently ignore
-     them.
-     trunk patch: http://svn.apache.org/r1792589
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: elukey, jim
 
   *) mod_rewrite: allow users to workaround the over-agressive backreference
                   escaping by selecting the characters to escape
