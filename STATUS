@@ -203,6 +203,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES)
      +1: elukey, jim
 
+  *) mod_rewrite: allow users to workaround the over-agressive backreference
+                  escaping by selecting the characters to escape
+     mod_rewrite: add BNP flag (backrefnoplus)
+     trunk patch: http://svn.apache.org/r1584417
+                  http://svn.apache.org/r1585157
+     2.4.x patch: http://home.apache.org/~jailletc36/BNP.diff
+           (mod_rewrite.xml from r1584417 has already been eroneously merged 
+           with r1728060 + tweak taken from r1701545 partly backported in r1703403.
+           I have also added an entry for r1584417)
+     +1: jailletc36, 
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entried should be added at the START of the list ]
 
