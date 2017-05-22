@@ -124,6 +124,10 @@ RELEASE SHOWSTOPPERS:
       covener: I would be OK with a release note / announcement kind of thing
                instead.
 
+      trunk patch: https://svn.apache.org/r1795830
+      2.4.x patch: trunk works
+      +1: jchampion
+
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
