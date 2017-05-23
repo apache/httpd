@@ -1777,10 +1777,9 @@ AP_DECLARE(int) ap_file_walk(request_rec *r)
     return OK;
 }
 
-AP_DECLARE(int) ap_if_walk(request_rec *r)
+static int ap_if_walk_sub(request_rec *r, core_dir_config* dconf)
 {
     ap_conf_vector_t *now_merged = NULL;
-    core_dir_config *dconf = ap_get_core_module_config(r->per_dir_config);
     ap_conf_vector_t **sec_ent = NULL;
     int num_sec = 0;
     walk_cache_t *cache;
@@ -1791,7 +1790,7 @@ AP_DECLARE(int) ap_if_walk(request_rec *r)
     int prev_result = -1;
     walk_walked_t *last_walk;
 
-    if (dconf->sec_if) {
+    if (dconf && dconf->sec_if) {
         sec_ent = (ap_conf_vector_t **)dconf->sec_if->elts;
         num_sec = dconf->sec_if->nelts;
     }
@@ -1906,7 +1905,23 @@ AP_DECLARE(int) ap_if_walk(request_rec *r)
     }
     cache->per_dir_result = r->per_dir_config;
 
+    if (now_merged) {
+        core_dir_config *dconf_merged = ap_get_core_module_config(now_merged);
+
+        /* Allow nested <If>s and their configs to get merged
+         * with the current one.
+         */
+        return ap_if_walk_sub(r, dconf_merged);
+    }
+
     return OK;
+}
+
+AP_DECLARE(int) ap_if_walk(request_rec *r)
+{
+    core_dir_config *dconf = ap_get_core_module_config(r->per_dir_config);
+    int status = ap_if_walk_sub(r, dconf);
+    return status;
 }
 
 /*****************************************************************

@@ -120,12 +120,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) core: evaluate nested If/ElseIf/Else sections rather than silently ignore
-     them.
-     trunk patch: http://svn.apache.org/r1792589
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: elukey, jim, yalvic
-
    *) confirm ab + https w/ openssl 1.1.0 on unix is OK.
       Gregg says it's broken on Windows.
       Document it somewhere either way.
