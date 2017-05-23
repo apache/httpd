@@ -203,15 +203,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch:  svn merge -c 1795635 ^/httpd/httpd/trunk . (modulo CHANGES)
      +1: jailletc36, 
 
-  *) mod_brotli: unused variable error could mistakenly note that brotli isn't
-                 available
-     trunk patch: http://svn.apache.org/r1779077
-     2.4.x patch:  svn merge -c 1779077 ^/httpd/httpd/trunk .
-     +1: 
-     jailletc36: not tested (hence no vote), but brotli has been merged in the
-                 coming 2.4.26 and the changelog looks straightforward.
-                 r1791231 says it has been backported, but it is not.
-
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entried should be added at the START of the list ]
 
