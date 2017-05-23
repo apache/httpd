@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.26
 
+  *) Evaluate nested If/ElseIf/Else configuration blocks.
+     [Luca Toscano, Jacob Champion]
+
   *) mod_substitute: Fix spurious AH01328 (Line too long) errors on EBCDIC
      systems.  [Eric Covener]
 
