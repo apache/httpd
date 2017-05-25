@@ -706,6 +706,22 @@ AC_ARG_WITH(valgrind,
     fi ]
 )
 
+dnl Enable the unit test executable if Check is installed.
+dnl TODO: at the moment, only pkg-config discovery is supported.
+AC_MSG_CHECKING([for Check to enable unit tests])
+if test "x$PKGCONFIG" != "x" && `$PKGCONFIG --atleast-version='0.9.12' check`; then
+  UNITTEST_CFLAGS=`$PKGCONFIG --cflags check`
+  UNITTEST_LIBS=`$PKGCONFIG --libs check`
+  other_targets="$other_targets test/httpdunit"
+
+  AC_MSG_RESULT([yes])
+else
+  AC_MSG_RESULT([no])
+fi
+APACHE_SUBST(UNITTEST_CFLAGS)
+APACHE_SUBST(UNITTEST_LIBS)
+
+
 prefix="$orig_prefix"
 APACHE_ENABLE_MODULES
 
