@@ -14,10 +14,21 @@
 use strict;
 use warnings;
 
+use Getopt::Long;
+
+my $print_declaration = 0;
+
+GetOptions("declaration" => \$print_declaration)
+    or die("unknown option");
+
 while (my $line = <>) {
     if ($line =~ /^HTTPD_BEGIN_TEST_CASE(?:\w+)?\((\w+)/) {
         my $name = "$1_test_case";
-        print "TCase *$name(void); ";
-        print "suite_add_tcase(suite, $name());\n";
+
+        if ($print_declaration) {
+            print "TCase *$name(void);\n";
+        } else {
+            print "suite_add_tcase(suite, $name());\n";
+        }
     }
 }

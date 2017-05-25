@@ -456,8 +456,11 @@ $(testcase_STUBS): %.tests: %.c
 
 test/httpdunit.cases: $(testcase_SOURCES) | unittest-objdir
 	for t in $^; do \
-	    $(top_srcdir)/build/httpdunit_gen_cases.pl < "$$t"; \
+	    $(top_srcdir)/build/httpdunit_gen_cases.pl --declaration < "$$t"; \
 	done > $@
+	for t in $^; do \
+	    $(top_srcdir)/build/httpdunit_gen_cases.pl < "$$t"; \
+	done >> $@
 
 test/httpdunit.lo: test/httpdunit.c test/httpdunit.cases | unittest-objdir
 
