@@ -125,17 +125,23 @@ configuration</td></tr>
             <dd>Only a simple list of enabled modules</dd>
         <dt><code>?server</code></dt>
             <dd>Only the basic server information</dd>
+        <dt><code>?providers</code></dt>
+            <dd>List the providers that are available on your server</dd>
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="startup" id="startup">Dumping the configuration on startup</a></h2>
     <p>If the config define <code>-DDUMP_CONFIG</code> is set,
     <code class="module"><a href="../mod/mod_info.html">mod_info</a></code> will dump the pre-parsed configuration to
-    <code>stdout</code> during server startup. Pre-parsed means that
-    directives like
+    <code>stdout</code> during server startup.</p>
+
+    <pre class="prettyprint lang-sh">httpd -DDUMP_CONFIG -k start</pre>
+
+    
+    <p>Pre-parsed means that directives like
     <code class="directive"><a href="../mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code> and
     <code class="directive"><a href="../mod/core.html#ifmodule">&lt;IfModule&gt;</a></code> are
-    evaluated and environment varialbles are replaced. However it does
+    evaluated and environment variables are replaced. However it does
     not represent the final state of the configuration. In particular,
     it does not represent the merging or overriding that may happen
     for repeated directives.</p>
