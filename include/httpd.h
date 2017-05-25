@@ -1998,6 +1998,28 @@ AP_DECLARE(const char *) ap_stripprefix(const char *bigstring,
 AP_DECLARE(char *) ap_pbase64decode(apr_pool_t *p, const char *bufcoded);
 
 /**
+ * Decode a base64 encoded string into memory allocated from a pool, while
+ * ensuring that the input string is in fact valid base64.
+ *
+ * Unlike ap_pbase64decode(), this function allows encoded NULLs in the input to
+ * be retained by the caller, by inspecting the len argument after the call
+ * instead of using strlen(). A NULL terminator is still appended to the buffer
+ * to faciliate string use (it is not included in len).
+ *
+ * @param p The pool to allocate from
+ * @param encoded The encoded string
+ * @param decoded On success, set to the decoded buffer, which is allocated from
+ *                p
+ * @param len On success, set to the length of the decoded buffer (not including
+ *            the terminating NULL byte)
+ * @return APR_SUCCESS if the decoding was successful
+ */
+AP_DECLARE(apr_status_t) ap_pbase64decode_strict(apr_pool_t *p,
+                                                 const char *encoded,
+                                                 char **decoded,
+                                                 apr_size_t *len);
+
+/**
  * Encode a string into memory allocated from a pool in base 64 format
  * @param p The pool to allocate from
  * @param string The plaintext string
