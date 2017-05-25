@@ -2388,6 +2388,76 @@ AP_DECLARE(char *) ap_pbase64decode(apr_pool_t *p, const char *bufcoded)
     return decoded;
 }
 
+/* a stringent version of ap_pbase64decode() */
+AP_DECLARE(apr_status_t) ap_pbase64decode_strict(apr_pool_t *p,
+                                                 const char *encoded,
+                                                 char **decoded,
+                                                 apr_size_t *len)
+{
+    apr_size_t end_index;
+    int last_group_len;
+    const char *end;
+
+    /* Sanity check.
+     * TODO: this would be a lot more efficient if we had access to the lookup
+     * table used by APR. If that gets pulled in at any point, make use of it.
+     */
+    end_index = strspn(encoded, "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                                "abcdefghijklmnopqrstuvwxyz"
+                                "0123456789+/");
+
+    last_group_len = end_index % 4;
+    end = encoded + end_index;
+
+    /* The only non-alphabet character allowed is the padding character '=' at
+     * the end of the string. There are two allowable padding cases for the last
+     * group of four: "xY==" or "xyZ=". We require the final (non-padding)
+     * character to have been zero-padded during encoding, which limits the
+     * character choices.
+     */
+    if (last_group_len == 1) {
+        /* This isn't ever valid. */
+        return APR_EINVAL;
+    }
+    else if (last_group_len == 2) {
+        /* ...xY== */
+        if (*end != '=' || end[1] != '=') {
+            return APR_EINVAL;
+        }
+        else if (!ap_strchr("AQgw", end[-1])) {
+            /* Correctly zero-padded input data will result in a final character
+             * that is one of the four above. */
+            return APR_EINVAL;
+        }
+
+        end += 2;
+    }
+    else if (last_group_len == 3) {
+        /* ...xyZ= */
+        if (*end != '=') {
+            return APR_EINVAL;
+        }
+        else if (!ap_strchr("AEIMQUYcgkosw048", end[-1])) {
+            /* Correctly zero-padded input data will result in a final character
+             * that is one of the sixteen above. */
+            return APR_EINVAL;
+        }
+
+        end++;
+    }
+
+    /* At this point, if the encoded buffer is correct, we should be at the end
+     * of the string. */
+    if (*end) {
+        return APR_EINVAL;
+    }
+
+    *decoded = apr_palloc(p, apr_base64_decode_len(encoded));
+    *len = apr_base64_decode(*decoded, encoded);
+
+    return APR_SUCCESS;
+}
+
 AP_DECLARE(char *) ap_pbase64encode(apr_pool_t *p, char *string)
 {
     char *encoded;
