@@ -33,6 +33,7 @@
  * using a similar generate-stub-and-include process.
  */
 
+#include "apr.h"   /* for pid_t on Windows, needed by Check */
 #include "check.h"
 
 /*
