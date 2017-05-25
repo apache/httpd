@@ -20,7 +20,8 @@ INSTALL_TARGETS = install-conf install-htdocs install-error install-icons \
 
 CLEAN_TARGETS      = check/apxs check/build/config_vars.mk \
 	check/conf/$(PROGRAM_NAME).conf check/conf/magic check/conf/mime.types \
-	check/conf/extra/* check/include/*
+	check/conf/extra/* check/include/* $(testcase_OBJECTS) $(testcase_STUBS) \
+	test/httpdunit.cases test/unit/*.o
 DISTCLEAN_TARGETS  = include/ap_config_auto.h include/ap_config_layout.h \
 	include/apache_probes.h \
 	modules.c config.cache config.log config.status build/config_vars.mk \
