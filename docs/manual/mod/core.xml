@@ -1067,6 +1067,7 @@ satisfied by a request at runtime</description>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>All</override>
+<compatibility>Nested conditions are evaluated in 2.4.26 and later</compatibility>
 
 <usage>
     <p>The <directive type="section">Else</directive> applies the enclosed
@@ -1113,6 +1114,7 @@ satisfied</description>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>All</override>
+<compatibility>Nested conditions are evaluated in 2.4.26 and later</compatibility>
 
 <usage>
     <p>The <directive type="section">ElseIf</directive> applies the enclosed
@@ -2187,6 +2189,7 @@ satisfied by a request at runtime</description>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>All</override>
+<compatibility>Nested conditions are evaluated in 2.4.26 and later</compatibility>
 
 <usage>
     <p>The <directive type="section">If</directive> directive
@@ -2217,14 +2220,6 @@ satisfied by a request at runtime</description>
 
     <p>Only directives that support the <a href="directive-dict.html#Context"
     >directory context</a> can be used within this configuration section.</p>
-
-    <note><title>Not a scripting language</title>
-    The name of this directive is very familiar to programmers and admins 
-    but it should not be confused with its counterpart in scripting languages.
-    For example, the current implementation does not contemplate the possibility
-    of having a <directive type="section">If</directive> section inside another
-    one (the inner <directive type="section">If</directive> will be ignored).
-    </note>
 
     <note type="warning">
     Certain variables, such as <code>CONTENT_TYPE</code> and other
