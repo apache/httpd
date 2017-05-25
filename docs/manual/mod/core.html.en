@@ -1132,6 +1132,7 @@ satisfied by a request at runtime</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Nested conditions are evaluated in 2.4.26 and later</td></tr>
 </table>
     <p>The <code class="directive">&lt;Else&gt;</code> applies the enclosed
     directives if and only if the most recent
@@ -1179,6 +1180,7 @@ satisfied</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Nested conditions are evaluated in 2.4.26 and later</td></tr>
 </table>
     <p>The <code class="directive">&lt;ElseIf&gt;</code> applies the enclosed
     directives if and only if both the given condition evaluates to true and
@@ -2182,6 +2184,7 @@ satisfied by a request at runtime</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Nested conditions are evaluated in 2.4.26 and later</td></tr>
 </table>
     <p>The <code class="directive">&lt;If&gt;</code> directive
     evaluates an expression at runtime, and applies the enclosed
@@ -2208,14 +2211,6 @@ satisfied by a request at runtime</td></tr>
     Apache HTTP Server</a>.</p>
 
     <p>Only directives that support the <a href="directive-dict.html#Context">directory context</a> can be used within this configuration section.</p>
-
-    <div class="note"><h3>Not a scripting language</h3>
-    The name of this directive is very familiar to programmers and admins 
-    but it should not be confused with its counterpart in scripting languages.
-    For example, the current implementation does not contemplate the possibility
-    of having a <code class="directive">&lt;If&gt;</code> section inside another
-    one (the inner <code class="directive">&lt;If&gt;</code> will be ignored).
-    </div>
 
     <div class="warning">
     Certain variables, such as <code>CONTENT_TYPE</code> and other
