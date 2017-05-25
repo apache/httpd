@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include "apr.h"   /* for pid_t on Windows, needed by Check */
 #include "check.h"
 
 #include "apr_general.h"
