@@ -194,14 +194,21 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
            (mod_rewrite.xml from r1584417 has already been eroneously merged 
            with r1728060 + tweak taken from r1701545 partly backported in r1703403.
            I have also added an entry for r1584417)
-     +1: jailletc36, 
+     +1: jailletc36, covener
 
   *) mod_env: When processing a 'SetEnv' directive, warn if the environment
      variable name includes a '='. It is likely a configuration error.
      PR 60249.
      trunk patch: http://svn.apache.org/r1795635
      2.4.x patch:  svn merge -c 1795635 ^/httpd/httpd/trunk . (modulo CHANGES)
-     +1: jailletc36, 
+     +1: jailletc36, covener
+
+  *) mod_ssl: Consistently pass the expected bio_filter_in_ctx_t
+     to ssl_io_filter_error(). [Yann Ylavic]
+     trunk patch: http://svn.apache.org/r1796343
+     2.4.x patch: svn merge -c 1796343 ^/httpd/httpd/trunk . (modulo CHANGES)
+     +1: covener,
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entried should be added at the START of the list ]
