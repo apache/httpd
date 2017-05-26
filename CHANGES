@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_ssl: Consistently pass the expected bio_filter_in_ctx_t
+     to ssl_io_filter_error(). [Yann Ylavic]
+
   *) mod_env: when processing a 'SetEnv' directive, warn if the environment
      variable name includes a '='. It is likely a configuration error.
      PR 60249 [Christophe Jaillet]

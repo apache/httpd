@@ -967,20 +967,21 @@ static apr_status_t ssl_filter_write(ap_filter_t *f,
  * establish an outgoing SSL connection. */
 #define MODSSL_ERROR_BAD_GATEWAY (APR_OS_START_USERERR + 1)
 
-static void ssl_io_filter_disable(SSLConnRec *sslconn, ap_filter_t *f)
+static void ssl_io_filter_disable(SSLConnRec *sslconn,
+                                  bio_filter_in_ctx_t *inctx)
 {
-    bio_filter_in_ctx_t *inctx = f->ctx;
     SSL_free(inctx->ssl);
     sslconn->ssl = NULL;
     inctx->ssl = NULL;
     inctx->filter_ctx->pssl = NULL;
 }
 
-static apr_status_t ssl_io_filter_error(ap_filter_t *f,
+static apr_status_t ssl_io_filter_error(bio_filter_in_ctx_t *inctx,
                                         apr_bucket_brigade *bb,
                                         apr_status_t status,
                                         int is_init)
 {
+    ap_filter_t *f = inctx->f;
     SSLConnRec *sslconn = myConnConfig(f->c);
     apr_bucket *bucket;
     int send_eos = 1;
@@ -993,7 +994,7 @@ static apr_status_t ssl_io_filter_error(ap_filter_t *f,
                          "trying to send HTML error page");
             ssl_log_ssl_error(SSLLOG_MARK, APLOG_INFO, sslconn->server);
 
-            ssl_io_filter_disable(sslconn, f);
+            ssl_io_filter_disable(sslconn, inctx);
             f->c->keepalive = AP_CONN_CLOSE;
             if (is_init) {
                 sslconn->non_ssl_request = NON_SSL_SEND_REQLINE;
@@ -1553,7 +1554,7 @@ static apr_status_t ssl_io_filter_input(ap_filter_t *f,
      * rather than have SSLEngine On configured.
      */
     if ((status = ssl_io_filter_handshake(inctx->filter_ctx)) != APR_SUCCESS) {
-        return ssl_io_filter_error(f, bb, status, is_init);
+        return ssl_io_filter_error(inctx, bb, status, is_init);
     }
 
     if (is_init) {
@@ -1607,7 +1608,7 @@ static apr_status_t ssl_io_filter_input(ap_filter_t *f,
 
     /* Handle custom errors. */
     if (status != APR_SUCCESS) {
-        return ssl_io_filter_error(f, bb, status, 0);
+        return ssl_io_filter_error(inctx, bb, status, 0);
     }
 
     /* Create a transient bucket out of the decrypted data. */
@@ -1796,7 +1797,7 @@ static apr_status_t ssl_io_filter_output(ap_filter_t *f,
     inctx->block = APR_BLOCK_READ;
 
     if ((status = ssl_io_filter_handshake(filter_ctx)) != APR_SUCCESS) {
-        return ssl_io_filter_error(f, bb, status, 0);
+        return ssl_io_filter_error(inctx, bb, status, 0);
     }
 
     while (!APR_BRIGADE_EMPTY(bb) && status == APR_SUCCESS) {
