@@ -215,6 +215,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-ap_get_basic_auth_pw.diff + CHANGES
      +1: covener,
 
+  *) core: Terminate token processing on NULL.
+     trunk patch: http://svn.apache.org/r1796350
+     2.4.x patch: svn merge -c 1796350 ^/httpd/httpd/trunk .
+     +1: covener,
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entried should be added at the START of the list ]
 
