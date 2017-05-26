@@ -933,6 +933,7 @@ satisfied by a request at runtime</td></tr>
 <tr><th><a href="directive-dict.html#Override">Prevalece sobre:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilidad:</a></th><td>Nested conditions are evaluated in 2.4.26 and later</td></tr>
 </table><p>La Documentación para esta directiva 
         	no ha sido traducida aún. Por favor use la versión en inglés 
         	mientras tanto.
@@ -961,6 +962,7 @@ satisfied</td></tr>
 <tr><th><a href="directive-dict.html#Override">Prevalece sobre:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilidad:</a></th><td>Nested conditions are evaluated in 2.4.26 and later</td></tr>
 </table><p>La Documentación para esta directiva 
         	no ha sido traducida aún. Por favor use la versión en inglés 
         	mientras tanto.

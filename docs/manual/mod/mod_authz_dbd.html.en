@@ -89,8 +89,8 @@
     <p>This directive specifies group membership that is required for the
     user to gain access.</p>
 
-    <pre class="prettyprint lang-config">      Require dbd-group team
-      AuthzDBDQuery "SELECT group FROM authz WHERE user = %s"</pre>
+    <pre class="prettyprint lang-config">Require dbd-group team
+AuthzDBDQuery "SELECT group FROM authz WHERE user = %s"</pre>
 
 
 
@@ -100,8 +100,8 @@
     <p>This directive specifies a query to be run indicating the user
     has logged in.</p>
 
-    <pre class="prettyprint lang-config">      Require dbd-login
-      AuthzDBDQuery "UPDATE authn SET login = 'true' WHERE user = %s"</pre>
+    <pre class="prettyprint lang-config">Require dbd-login
+AuthzDBDQuery "UPDATE authn SET login = 'true' WHERE user = %s"</pre>
 
 
 
@@ -111,8 +111,8 @@
     <p>This directive specifies a query to be run indicating the user
     has logged out.</p>
 
-    <pre class="prettyprint lang-config">      Require dbd-logout
-      AuthzDBDQuery "UPDATE authn SET login = 'false' WHERE user = %s"</pre>
+    <pre class="prettyprint lang-config">Require dbd-logout
+AuthzDBDQuery "UPDATE authn SET login = 'false' WHERE user = %s"</pre>
 
 
 

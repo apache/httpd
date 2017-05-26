@@ -879,6 +879,7 @@ satisfied by a request at runtime</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>Nested conditions are evaluated in 2.4.26 and later</td></tr>
 </table><p>このディレクティブの解説文書は
             まだ翻訳されていません。英語版をご覧ください。
             </p><h3>参照</h3>
@@ -906,6 +907,7 @@ satisfied</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>Nested conditions are evaluated in 2.4.26 and later</td></tr>
 </table><p>このディレクティブの解説文書は
             まだ翻訳されていません。英語版をご覧ください。
             </p><h3>参照</h3>
