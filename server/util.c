@@ -1680,10 +1680,8 @@ AP_DECLARE(int) ap_find_token(apr_pool_t *p, const char *line, const char *tok)
 
     s = (const unsigned char *)line;
     for (;;) {
-        /* find start of token, skip all stop characters, note NUL
-         * isn't a token stop, so we don't need to test for it
-         */
-        while (TEST_CHAR(*s, T_HTTP_TOKEN_STOP)) {
+        /* find start of token, skip all stop characters */
+        while (*s && TEST_CHAR(*s, T_HTTP_TOKEN_STOP)) {
             ++s;
         }
         if (!*s) {
