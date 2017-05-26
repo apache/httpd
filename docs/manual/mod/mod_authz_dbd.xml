@@ -69,8 +69,8 @@
     user to gain access.</p>
 
     <highlight language="config">
-      Require dbd-group team
-      AuthzDBDQuery "SELECT group FROM authz WHERE user = %s"
+Require dbd-group team
+AuthzDBDQuery "SELECT group FROM authz WHERE user = %s"
     </highlight>
 
 </section>
@@ -81,8 +81,8 @@
     has logged in.</p>
 
     <highlight language="config">
-      Require dbd-login
-      AuthzDBDQuery "UPDATE authn SET login = 'true' WHERE user = %s"
+Require dbd-login
+AuthzDBDQuery "UPDATE authn SET login = 'true' WHERE user = %s"
     </highlight>
 
 </section>
@@ -93,8 +93,8 @@
     has logged out.</p>
 
     <highlight language="config">
-      Require dbd-logout
-      AuthzDBDQuery "UPDATE authn SET login = 'false' WHERE user = %s"
+Require dbd-logout
+AuthzDBDQuery "UPDATE authn SET login = 'false' WHERE user = %s"
     </highlight>
 
 </section>
