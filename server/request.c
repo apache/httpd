@@ -124,6 +124,8 @@ static int decl_die(int status, const char *phase, request_rec *r)
 AP_DECLARE(int) ap_some_authn_required(request_rec *r)
 {
     int access_status;
+    char *olduser = r->user;
+    int rv = FALSE;
 
     switch (ap_satisfies(r)) {
     case SATISFY_ALL:
@@ -134,7 +136,7 @@ AP_DECLARE(int) ap_some_authn_required(request_rec *r)
 
         access_status = ap_run_access_checker_ex(r);
         if (access_status == DECLINED) {
-            return TRUE;
+            rv = TRUE;
         }
 
         break;
@@ -145,13 +147,14 @@ AP_DECLARE(int) ap_some_authn_required(request_rec *r)
 
         access_status = ap_run_access_checker_ex(r);
         if (access_status == DECLINED) {
-            return TRUE;
+            rv = TRUE;
         }
 
         break;
     }
 
-    return FALSE;
+    r->user = olduser;
+    return rv;
 }
 
 /* This is the master logic for processing requests.  Do NOT duplicate
@@ -263,6 +266,14 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
         r->ap_auth_type = r->main->ap_auth_type;
     }
     else {
+        /* A module using a confusing API (ap_get_basic_auth_pw) caused
+        ** r->user to be filled out prior to check_authn hook. We treat
+        ** it is inadvertent.
+        */
+        if (r->user && apr_table_get(r->notes, AP_GET_BASIC_AUTH_PW_NOTE)) { 
+            r->user = NULL;
+        }
+
         switch (ap_satisfies(r)) {
         case SATISFY_ALL:
         case SATISFY_NOSPEC:
