@@ -3,7 +3,7 @@
 
 <modulefilelist>
   <modulefile>core.xml.es</modulefile>
-  <modulefile>mod_access_compat.xml</modulefile>
+  <modulefile>mod_access_compat.xml.es</modulefile>
   <modulefile>mod_actions.xml</modulefile>
   <modulefile>mod_alias.xml</modulefile>
   <modulefile>mod_allowhandlers.xml</modulefile>
