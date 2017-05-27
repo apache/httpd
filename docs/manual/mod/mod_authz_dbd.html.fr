@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_authz_dbd.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_authz_dbd.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Autorisation en groupe et reconnaissance d'identité avec base
 SQL</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -94,8 +92,8 @@ d'Apache</td></tr></table>
     <p>Cette directive permet de spécifier à quel groupe un utilisateur
     doit appartenir pour obtenir l'autorisation d'accès.</p>
 
-    <pre class="prettyprint lang-config">      Require dbd-group team
-      AuthzDBDQuery "SELECT group FROM authz WHERE user = %s"</pre>
+    <pre class="prettyprint lang-config">Require dbd-group team
+AuthzDBDQuery "SELECT group FROM authz WHERE user = %s"</pre>
 
 
 
@@ -105,8 +103,8 @@ d'Apache</td></tr></table>
     <p>Cette directive permet de spécifier une requête à exécuter pour
     indiquer que l'utilisateur s'est authentifié.</p>
 
-    <pre class="prettyprint lang-config">      Require dbd-login
-      AuthzDBDQuery "UPDATE authn SET login = 'true' WHERE user = %s"</pre>
+    <pre class="prettyprint lang-config">Require dbd-login
+AuthzDBDQuery "UPDATE authn SET login = 'true' WHERE user = %s"</pre>
 
 
 
@@ -116,8 +114,8 @@ d'Apache</td></tr></table>
     <p>Cette directive permet de spécifier une requête à exécuter pour
     indiquer que l'utilisateur s'est déconnecté.</p>
 
-    <pre class="prettyprint lang-config">      Require dbd-logout
-      AuthzDBDQuery "UPDATE authn SET login = 'false' WHERE user = %s"</pre>
+    <pre class="prettyprint lang-config">Require dbd-logout
+AuthzDBDQuery "UPDATE authn SET login = 'false' WHERE user = %s"</pre>
 
 
 
