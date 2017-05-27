@@ -33,8 +33,6 @@
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fonctionnalités de base du serveur HTTP Apache toujours
 disponibles</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Core</td></tr></table>
@@ -1158,6 +1156,8 @@ requête à l'exécution</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Les conditions imbriquées sont supportées à partir de la version
+2.4.26 du serveur HTTP Apache</td></tr>
 </table>
     <p>La section <code class="directive">&lt;Else&gt;</code> applique
     les directives qu'elle contient si et seulement si les conditions
@@ -1202,6 +1202,8 @@ alors que la condition correspondant à la section <code class="directive"><a hre
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Les conditions imbriquées sont supportées à partir de la version
+2.4.26 du serveur HTTP Apache</td></tr>
 </table>
     <p>La section <code class="directive">&lt;ElseIf&gt;</code> applique
     les directives qu'elle contient si et seulement si d'une part la
@@ -2290,6 +2292,8 @@ requête</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Les conditions imbriquées sont supportées à partir de la version
+2.4.26 du serveur HTTP Apache</td></tr>
 </table>
     <p>La directive <code class="directive">&lt;If&gt;</code> évalue une
     expression à la volée, et applique les directives qu'elle contient
@@ -2318,15 +2322,6 @@ requête</td></tr>
 
     <p>Cette section de configuration ne peut contenir que des
     directives qui supportent le <a href="directive-dict.html#Context">contexte de répertoire</a>.</p>
-
-    <div class="note"><h3>Ce n'est pas un langage de scripting</h3>
-    Le nom de cette directive peut sembler très familier aux programmeurs et
-    administrateurs, mais il ne doit pas être confondu avec son homonyme des langages de
-    scripting. A ce titre, l'implémentation actuelle n'envisage pas la
-    possibilité d'imbriquer une section <code class="directive">&lt;If&gt;</code>
-    dans une autre (la section <code class="directive">&lt;If&gt;</code> qui se
-    trouve à l'intérieure de l'autre serait ignorée).
-    </div>
 
     <div class="warning">
     Certain variables, such as <code>CONTENT_TYPE</code> and other
