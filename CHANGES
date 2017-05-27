@@ -5,9 +5,6 @@ Changes with Apache 2.4.26
   *) core: EBCDIC fixes for interim responses with additional headers.
      [Eric Covener]
 
-  *) core: ap_parse_form_data() URL-decoding doesn't work on EBCDIC
-     platforms. PR61124. [Hank Ibell <hwibell gmail.com>]
-
   *) Evaluate nested If/ElseIf/Else configuration blocks.
      [Luca Toscano, Jacob Champion]
 
