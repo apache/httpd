@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1787736:1796151 (outdated) -->
+<!-- English Revision: 1796151 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1128,6 +1128,8 @@ requête à l'exécution</description>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>All</override>
+<compatibility>Les conditions imbriquées sont supportées à partir de la version
+2.4.26 du serveur HTTP Apache</compatibility>
 
 <usage>
     <p>La section <directive type="section">Else</directive> applique
@@ -1175,6 +1177,8 @@ type="section">ElseIf</directive> précédente ne l'était pas.</description>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>All</override>
+<compatibility>Les conditions imbriquées sont supportées à partir de la version
+2.4.26 du serveur HTTP Apache</compatibility>
 
 <usage>
     <p>La section <directive type="section">ElseIf</directive> applique
@@ -2343,6 +2347,8 @@ host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>All</override>
+<compatibility>Les conditions imbriquées sont supportées à partir de la version
+2.4.26 du serveur HTTP Apache</compatibility>
 
 <usage>
     <p>La directive <directive type="section">If</directive> évalue une
@@ -2372,15 +2378,6 @@ host</context>
     <p>Cette section de configuration ne peut contenir que des
     directives qui supportent le <a
     href="directive-dict.html#Context">contexte de répertoire</a>.</p>
-
-    <note><title>Ce n'est pas un langage de scripting</title>
-    Le nom de cette directive peut sembler très familier aux programmeurs et
-    administrateurs, mais il ne doit pas être confondu avec son homonyme des langages de
-    scripting. A ce titre, l'implémentation actuelle n'envisage pas la
-    possibilité d'imbriquer une section <directive type="section">If</directive>
-    dans une autre (la section <directive type="section">If</directive> qui se
-    trouve à l'intérieure de l'autre serait ignorée).
-    </note>
 
     <note type="warning">
     Certain variables, such as <code>CONTENT_TYPE</code> and other
