@@ -292,12 +292,12 @@ static void task_destroy(h2_mplx *m, h2_task *task)
     
     slave = task->c;
 
-    if (m->s->keep_alive_max == 0 || slave->keepalives < m->s->keep_alive_max) {
-        reuse_slave = ((m->spare_slaves->nelts < (m->limit_active * 3 / 2))
-                       && !task->rst_error);
-    }
-    
     if (slave) {
+        if (m->s->keep_alive_max == 0 || slave->keepalives < m->s->keep_alive_max) {
+            reuse_slave = ((m->spare_slaves->nelts < (m->limit_active * 3 / 2))
+                           && !task->rst_error);
+        }
+
         if (reuse_slave && slave->keepalive == AP_CONN_KEEPALIVE) {
             h2_beam_log(task->output.beam, m->c, APLOG_DEBUG, 
                         APLOGNO(03385) "h2_task_destroy, reuse slave");    
@@ -307,7 +307,6 @@ static void task_destroy(h2_mplx *m, h2_task *task)
         else {
             h2_beam_log(task->output.beam, m->c, APLOG_TRACE1, 
                         "h2_task_destroy, destroy slave");    
-            slave->sbh = NULL;
             h2_slave_destroy(slave);
         }
     }
