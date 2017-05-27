@@ -35,11 +35,6 @@ Changes with Apache 2.5.0
      a possible crash if a signal is caught during (graceful) restart.
      PR 60487.  [Yann Ylavic]
   
-  *) mod_proxy: Allow the per-request environment variable "no-proxy" to
-     be used as an alternative to ProxyPass /path !. This is primarily
-     to set exceptions for ProxyPass specified in <Location> context.
-     Use SetEnvIf, not SetEnv. [Eric Covener]
-
   *) When using mod_status with the Event MPM, report the number of requests
      associated with an active connection in the "ACC" field. Previously
      zero was always reported with this MPM.  PR60647. [Eric Covener]
@@ -51,9 +46,6 @@ Changes with Apache 2.5.0
      default.  Add ProxyFCGIBackendType to allow the type of backend to be
      specified so these kinds of fixups can be restored without impacting
      FPM. PR60576 [Eric Covener, Jim Jagielski]
-
-  *) core: EBCDIC fixes for interim responses with additional headers.
-     [Eric Covener]
 
   *) mod_remoteip: Add support for PROXY protocol (code donated by Cloudzilla).
      Add ability for PROXY protocol processing to be optional to donated code.
