@@ -2684,8 +2684,7 @@ AP_DECLARE(int) ap_parse_form_data(request_rec *r, ap_filter_t *f,
     ap_form_pair_t *pair = NULL;
     apr_array_header_t *pairs = apr_array_make(r->pool, 4, sizeof(ap_form_pair_t));
 
-    char hi = 0;
-    char low = 0;
+    char escaped_char[2];
 
     *ptr = pairs;
 
@@ -2752,30 +2751,13 @@ AP_DECLARE(int) ap_parse_form_data(request_rec *r, ap_filter_t *f,
                     continue;
                 }
                 if (FORM_PERCENTA == percent) {
-                    if (c >= 'a') {
-                        hi = c - 'a' + 10;
-                    }
-                    else if (c >= 'A') {
-                        hi = c - 'A' + 10;
-                    }
-                    else if (c >= '0') {
-                        hi = c - '0';
-                    }
-                    hi = hi << 4;
+                    escaped_char[0] = c;
                     percent = FORM_PERCENTB;
                     continue;
                 }
                 if (FORM_PERCENTB == percent) {
-                    if (c >= 'a') {
-                        low = c - 'a' + 10;
-                    }
-                    else if (c >= 'A') {
-                        low = c - 'A' + 10;
-                    }
-                    else if (c >= '0') {
-                        low = c - '0';
-                    }
-                    c = low | hi;
+                    escaped_char[1] = c;
+                    c = x2c(escaped_char);
                     percent = FORM_NORMAL;
                 }
                 switch (state) {
