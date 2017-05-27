@@ -92,8 +92,8 @@ d'Apache</td></tr></table>
     <p>Cette directive permet de spécifier à quel groupe un utilisateur
     doit appartenir pour obtenir l'autorisation d'accès.</p>
 
-    <pre class="prettyprint lang-config">      Require dbd-group team
-      AuthzDBDQuery "SELECT group FROM authz WHERE user = %s"</pre>
+    <pre class="prettyprint lang-config">Require dbd-group team
+AuthzDBDQuery "SELECT group FROM authz WHERE user = %s"</pre>
 
 
 
@@ -103,8 +103,8 @@ d'Apache</td></tr></table>
     <p>Cette directive permet de spécifier une requête à exécuter pour
     indiquer que l'utilisateur s'est authentifié.</p>
 
-    <pre class="prettyprint lang-config">      Require dbd-login
-      AuthzDBDQuery "UPDATE authn SET login = 'true' WHERE user = %s"</pre>
+    <pre class="prettyprint lang-config">Require dbd-login
+AuthzDBDQuery "UPDATE authn SET login = 'true' WHERE user = %s"</pre>
 
 
 
@@ -114,8 +114,8 @@ d'Apache</td></tr></table>
     <p>Cette directive permet de spécifier une requête à exécuter pour
     indiquer que l'utilisateur s'est déconnecté.</p>
 
-    <pre class="prettyprint lang-config">      Require dbd-logout
-      AuthzDBDQuery "UPDATE authn SET login = 'false' WHERE user = %s"</pre>
+    <pre class="prettyprint lang-config">Require dbd-logout
+AuthzDBDQuery "UPDATE authn SET login = 'false' WHERE user = %s"</pre>
 
 
 
