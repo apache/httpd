@@ -225,8 +225,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1796446 ^/httpd/httpd/trunk .
      +1: covener,
 
-  *) ab: move option processing for setting a custom
-     HTTP method outside of the HTTPS only handling.
+  *) ab: enable option processing for setting a custom
+     HTTP method also for non-SSL builds.
      trunk patch: http://svn.apache.org/1796493
      2.4.x patch: svn merge -c 1796493 ^/httpd/httpd/trunk .
      +1: rjung,
