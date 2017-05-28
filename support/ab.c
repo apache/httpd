@@ -2465,13 +2465,13 @@ int main(int argc, const char * const argv[])
             case 'B':
                 myhost = apr_pstrdup(cntxt, opt_arg);
                 break;
-#ifdef USE_SSL
-            case 'Z':
-                ssl_cipher = strdup(opt_arg);
-                break;
             case 'm':
                 method = CUSTOM_METHOD;
                 method_str[CUSTOM_METHOD] = strdup(opt_arg);
+                break;
+#ifdef USE_SSL
+            case 'Z':
+                ssl_cipher = strdup(opt_arg);
                 break;
             case 'f':
 #if OPENSSL_VERSION_NUMBER < 0x10100000L
