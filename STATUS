@@ -120,6 +120,11 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) ab: enable option processing for setting a custom
+     HTTP method also for non-SSL builds.
+     trunk patch: http://svn.apache.org/r1796493
+     2.4.x patch: svn merge -c 1796493 ^/httpd/httpd/trunk .
+     +1: rjung, covener, gsmith
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -224,12 +229,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1796446
      2.4.x patch: svn merge -c 1796446 ^/httpd/httpd/trunk .
      +1: covener, rjung
-
-  *) ab: enable option processing for setting a custom
-     HTTP method also for non-SSL builds.
-     trunk patch: http://svn.apache.org/r1796493
-     2.4.x patch: svn merge -c 1796493 ^/httpd/httpd/trunk .
-     +1: rjung, covener
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entried should be added at the START of the list ]
