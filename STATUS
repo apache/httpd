@@ -126,6 +126,43 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1796493 ^/httpd/httpd/trunk .
      +1: rjung, covener, gsmith
 
+  *) core: ap_parse_form_data() doesn't work on EBCDIC systems. PR61124.
+     trunk patch: http://svn.apache.org/r1796446
+     2.4.x patch: svn merge -c 1796446 ^/httpd/httpd/trunk .
+     +1: covener, rjung, ylavic
+
+  *) mod_rewrite: allow users to workaround the over-agressive backreference
+                  escaping by selecting the characters to escape
+     mod_rewrite: add BNP flag (backrefnoplus)
+     trunk patch: http://svn.apache.org/r1584417
+                  http://svn.apache.org/r1585157
+     2.4.x patch: http://home.apache.org/~jailletc36/BNP.diff
+           (mod_rewrite.xml from r1584417 has already been eroneously merged 
+           with r1728060 + tweak taken from r1701545 partly backported in r1703403.
+           I have also added an entry for r1584417)
+     +1: jailletc36, covener, ylavic
+
+  *) mod_rewrite: When a substitution is a fully qualified URL, and the 
+     scheme/host/port matches the current virtual host, stop interpreting the 
+     path component as a local path just because the first component of the 
+     path exists in the filesystem.  Adds RewriteOption "LegacyPrefixDocRoot" 
+     to revert to previous behavior. PR60009.
+     trunk patch: http://svn.apache.org/r1776463
+     2.4.x patch:  svn merge -c 1776463 1776708 ^/httpd/httpd/trunk .
+     +1: covener, jim, ylavic
+
+  *) mod_env: When processing a 'SetEnv' directive, warn if the environment
+     variable name includes a '='. It is likely a configuration error.
+     PR 60249.
+     trunk patch: http://svn.apache.org/r1795635
+     2.4.x patch:  svn merge -c 1795635 ^/httpd/httpd/trunk . (modulo CHANGES)
+     +1: jailletc36, covener, ylavic
+
+  *) core: Terminate token processing on NULL.
+     trunk patch: http://svn.apache.org/r1796350
+     2.4.x patch: svn merge -c 1796350 ^/httpd/httpd/trunk .
+     +1: covener, ylavic
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -180,55 +217,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic, jim
 
-  *) mod_rewrite: When a substitution is a fully qualified URL, and the 
-     scheme/host/port matches the current virtual host, stop interpreting the 
-     path component as a local path just because the first component of the 
-     path exists in the filesystem.  Adds RewriteOption "LegacyPrefixDocRoot" 
-     to revert to previous behavior. PR60009.
-
-     trunk patch: http://svn.apache.org/r1776463
-     2.4.x patch:  svn merge -c 1776463 1776708 ^/httpd/httpd/trunk .
-     +1: covener, jim
-
-  *) mod_rewrite: allow users to workaround the over-agressive backreference
-                  escaping by selecting the characters to escape
-     mod_rewrite: add BNP flag (backrefnoplus)
-     trunk patch: http://svn.apache.org/r1584417
-                  http://svn.apache.org/r1585157
-     2.4.x patch: http://home.apache.org/~jailletc36/BNP.diff
-           (mod_rewrite.xml from r1584417 has already been eroneously merged 
-           with r1728060 + tweak taken from r1701545 partly backported in r1703403.
-           I have also added an entry for r1584417)
-     +1: jailletc36, covener
-
-  *) mod_env: When processing a 'SetEnv' directive, warn if the environment
-     variable name includes a '='. It is likely a configuration error.
-     PR 60249.
-     trunk patch: http://svn.apache.org/r1795635
-     2.4.x patch:  svn merge -c 1795635 ^/httpd/httpd/trunk . (modulo CHANGES)
-     +1: jailletc36, covener
-
   *) mod_ssl: Consistently pass the expected bio_filter_in_ctx_t
      to ssl_io_filter_error(). [Yann Ylavic]
      trunk patch: http://svn.apache.org/r1796343
      2.4.x patch: svn merge -c 1796343 ^/httpd/httpd/trunk . (modulo CHANGES)
-     +1: covener,
+     +1: covener, ylavic
 
   *) core: Deprecate ap_get_basic_auth_pw() and add 
      ap_get_basic_auth_components(). 
      trunk patch: http://svn.apache.org/r1796348
      2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-ap_get_basic_auth_pw.diff + CHANGES
-     +1: covener,
+     +1: covener, ylavic
 
-  *) core: Terminate token processing on NULL.
-     trunk patch: http://svn.apache.org/r1796350
-     2.4.x patch: svn merge -c 1796350 ^/httpd/httpd/trunk .
-     +1: covener,
-
-  *) core: ap_parse_form_data() doesn't work on EBCDIC systems. PR61124.
-     trunk patch: http://svn.apache.org/r1796446
-     2.4.x patch: svn merge -c 1796446 ^/httpd/httpd/trunk .
-     +1: covener, rjung
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entried should be added at the START of the list ]
