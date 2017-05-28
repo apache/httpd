@@ -223,7 +223,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) core: ap_parse_form_data() doesn't work on EBCDIC systems. PR61124.
      trunk patch: http://svn.apache.org/r1796446
      2.4.x patch: svn merge -c 1796446 ^/httpd/httpd/trunk .
-     +1: covener,
+     +1: covener, rjung
 
   *) ab: enable option processing for setting a custom
      HTTP method also for non-SSL builds.
