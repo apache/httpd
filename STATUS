@@ -236,6 +236,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-mpm_event-wakeup-v7.1.patch
      +1: ylavic
 
+  *) MPMs unix: Place signals handlers and helpers out of DSOs to avoid a
+     possible crash if a signal is caught during (graceful) restart. PR 60487.
+     trunk patch: http://svn.apache.org/r1783849
+     2.4.x patch: svn merge -c 1783849 ^/httpd/httpd/trunk
+                  (trunk works, modulo CHANGES)
+     +1: ylavic
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entried should be added at the START of the list ]
