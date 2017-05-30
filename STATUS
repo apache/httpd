@@ -120,15 +120,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_rewrite: When a substitution is a fully qualified URL, and the 
-     scheme/host/port matches the current virtual host, stop interpreting the 
-     path component as a local path just because the first component of the 
-     path exists in the filesystem.  Adds RewriteOption "LegacyPrefixDocRoot" 
-     to revert to previous behavior. PR60009.
-     trunk patch: http://svn.apache.org/r1776463
-     2.4.x patch:  svn merge -c 1776463 1776708 ^/httpd/httpd/trunk .
-     +1: covener, jim, ylavic
-
   *) mod_env: When processing a 'SetEnv' directive, warn if the environment
      variable name includes a '='. It is likely a configuration error.
      PR 60249.
