@@ -108,6 +108,11 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
+  *) core: Terminate token processing on NULL.
+     trunk patch: https://svn.apache.org/r1796350
+     2.2.x patch: svn merge -c 1796350 ^/httpd/httpd/trunk .
+     +1: jchampion
+
 
 PATCHES/ISSUES THAT ARE STALLED:
 
