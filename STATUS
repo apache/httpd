@@ -120,17 +120,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_rewrite: allow users to workaround the over-agressive backreference
-                  escaping by selecting the characters to escape
-     mod_rewrite: add BNP flag (backrefnoplus)
-     trunk patch: http://svn.apache.org/r1584417
-                  http://svn.apache.org/r1585157
-     2.4.x patch: http://home.apache.org/~jailletc36/BNP.diff
-           (mod_rewrite.xml from r1584417 has already been eroneously merged 
-           with r1728060 + tweak taken from r1701545 partly backported in r1703403.
-           I have also added an entry for r1584417)
-     +1: jailletc36, covener, ylavic
-
   *) mod_rewrite: When a substitution is a fully qualified URL, and the 
      scheme/host/port matches the current virtual host, stop interpreting the 
      path component as a local path just because the first component of the 
