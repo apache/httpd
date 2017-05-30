@@ -201,7 +201,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1792092
                   http://svn.apache.org/r1796864
      2.4.x patch: svn merge -c  1792092,1796864 ^/httpd/httpd/trunk .
-     +1: covener
+     +1: covener, jim
 
 
 
