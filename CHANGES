@@ -14,6 +14,14 @@ Changes with Apache 2.4.26
   *) Evaluate nested If/ElseIf/Else configuration blocks.
      [Luca Toscano, Jacob Champion]
 
+  *) mod_rewrite: Add 'BNP' (backreferences-no-plus) flag to RewriteRule to 
+     allow spaces in backreferences to be encoded as %20 instead of '+'.
+     [Eric Covener]
+
+  *) mod_rewrite: Add the possibility to limit the escaping to specific
+     characters in backreferences by listing them in the B flag.
+     [Eric Covener]
+
   *) mod_substitute: Fix spurious AH01328 (Line too long) errors on EBCDIC
      systems.  [Eric Covener]
 
