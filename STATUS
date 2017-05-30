@@ -120,12 +120,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_ssl: Consistently pass the expected bio_filter_in_ctx_t
-     to ssl_io_filter_error(). [Yann Ylavic]
-     trunk patch: http://svn.apache.org/r1796343
-     2.4.x patch: svn merge -c 1796343 ^/httpd/httpd/trunk . (modulo CHANGES)
-     +1: covener, ylavic, jim
-
   *) core: Deprecate ap_get_basic_auth_pw() and add 
      ap_get_basic_auth_components(). 
      trunk patch: http://svn.apache.org/r1796348
