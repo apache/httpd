@@ -192,9 +192,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) MPMs unix: Place signals handlers and helpers out of DSOs to avoid a
      possible crash if a signal is caught during (graceful) restart. PR 60487.
      trunk patch: http://svn.apache.org/r1783849
-     2.4.x patch: svn merge -c 1783849 ^/httpd/httpd/trunk
+     2.4.x patch: svn merge -c 1783849 ^/httpd/httpd/trunk .
                   (trunk works, modulo CHANGES)
      +1: ylavic
+
+  *) proxy_wstunnel: Restore ability to process other Upgrade: protocols which was
+     blocked in r1674632/r1674661.
+     trunk patch: http://svn.apache.org/r1792092
+                  http://svn.apache.org/r1796864
+     2.4.x patch: svn merge -c  1792092,1796864 ^/httpd/httpd/trunk .
+     +1: covener
+
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
