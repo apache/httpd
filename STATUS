@@ -120,13 +120,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_env: When processing a 'SetEnv' directive, warn if the environment
-     variable name includes a '='. It is likely a configuration error.
-     PR 60249.
-     trunk patch: http://svn.apache.org/r1795635
-     2.4.x patch:  svn merge -c 1795635 ^/httpd/httpd/trunk . (modulo CHANGES)
-     +1: jailletc36, covener, ylavic
-
   *) mod_ssl: Consistently pass the expected bio_filter_in_ctx_t
      to ssl_io_filter_error(). [Yann Ylavic]
      trunk patch: http://svn.apache.org/r1796343
