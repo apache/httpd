@@ -209,18 +209,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      to ssl_io_filter_error(). [Yann Ylavic]
      trunk patch: http://svn.apache.org/r1796343
      2.4.x patch: svn merge -c 1796343 ^/httpd/httpd/trunk . (modulo CHANGES)
-     +1: covener, ylavic
+     +1: covener, ylavic, jim
 
   *) core: Deprecate ap_get_basic_auth_pw() and add 
      ap_get_basic_auth_components(). 
      trunk patch: http://svn.apache.org/r1796348
      2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-ap_get_basic_auth_pw.diff + CHANGES
-     +1: covener, ylavic
+     +1: covener, ylavic, jim
 
   *) core: Terminate token processing on NULL.
      trunk patch: http://svn.apache.org/r1796350
      2.4.x patch: svn merge -c 1796350 ^/httpd/httpd/trunk .
-     +1: covener, ylavic
+     +1: covener, ylavic, jim
 
   *) event: Avoid listener periodic wake ups by using the pollset wake-ability
      when available.  PR 57399.
