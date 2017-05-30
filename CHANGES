@@ -18,6 +18,10 @@ Changes with Apache 2.4.26
   *) core: EBCDIC fixes for interim responses with additional headers.
      [Eric Covener]
 
+  *) mod_env: when processing a 'SetEnv' directive, warn if the environment
+     variable name includes a '='. It is likely a configuration error.
+     PR 60249 [Christophe Jaillet]
+
   *) Evaluate nested If/ElseIf/Else configuration blocks.
      [Luca Toscano, Jacob Champion]
 
