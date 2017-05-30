@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.26
 
+  *) core: ap_parse_form_data() URL-decoding doesn't work on EBCDIC
+     platforms. PR61124. [Hank Ibell <hwibell gmail.com>]
+
   *) ab: enable option processing for setting a custom HTTP method also for
      non-SSL builds.  [Rainer Jung]
 
