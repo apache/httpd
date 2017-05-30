@@ -328,7 +328,7 @@ static int proxy_wstunnel_request(apr_pool_t *p, request_rec *r,
     }
 
     if (ap_cstr_casecmp(upgrade_method, "NONE") == 0) {
-       buf = apr_pstrdup(p, "Upgrade: WebSocket" CRLF "Connection: Upgrade" CRLF CRLF);
+        buf = apr_pstrdup(p, "Upgrade: WebSocket" CRLF "Connection: Upgrade" CRLF CRLF);
     } else {
         buf = apr_pstrcat(p, "Upgrade: ", upgrade_method, CRLF "Connection: Upgrade" CRLF CRLF, NULL);
     }
