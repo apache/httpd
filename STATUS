@@ -111,7 +111,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) core: Terminate token processing on NULL.
      trunk patch: https://svn.apache.org/r1796350
      2.2.x patch: svn merge -c 1796350 ^/httpd/httpd/trunk .
-     +1: jchampion
+     +1: jchampion, wrowe
 
 
 PATCHES/ISSUES THAT ARE STALLED:
