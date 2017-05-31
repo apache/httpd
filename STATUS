@@ -113,7 +113,14 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
-
+  *) mod_ssl: Consistently pass the expected bio_filter_in_ctx_t
+     to ssl_io_filter_error(). [Yann Ylavic]
+     trunk patch: https://svn.apache.org/r1796343
+     2.2.x patch: http://people.apache.org/~covener/patches/httpd-2.2.x-ssl_error_page_ctx.diff
+                  (function names and parameters changed a bit)
+     note: The HTTP-over-HTTPS error page doesn't seem to actually work in 2.2
+     +1 covener
+      
 PATCHES/ISSUES THAT ARE STALLED:
 
   *) mod_proxy_connect: The connect method doesn't work if the client is
