@@ -118,7 +118,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: https://svn.apache.org/r1796343
      2.2.x patch: http://people.apache.org/~covener/patches/httpd-2.2.x-ssl_error_page_ctx.diff
                   (function names and parameters changed a bit)
-     +1 covener
+     +1 covener, ylavic
       
 PATCHES/ISSUES THAT ARE STALLED:
 
