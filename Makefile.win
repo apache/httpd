@@ -1142,7 +1142,7 @@ This binary distribution of mod_brotli.so includes Brotli C library written
 by the Brotli Authors. For complete information, visit Brotli's web site 
 at https://github.com/google/brotli
 <<
-	-awk -f <<script.awk < "srclib\broyli\LICENSE" >> "$(INSTDIR)\LICENSE.txt"
+	-awk -f <<script.awk < "srclib\brotli\LICENSE" >> "$(INSTDIR)\LICENSE.txt"
 BEGIN {
     print "";
     print "For the mod_brotli component:";
