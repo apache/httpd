@@ -120,13 +120,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) MPMs unix: Place signals handlers and helpers out of DSOs to avoid a
-     possible crash if a signal is caught during (graceful) restart. PR 60487.
-     trunk patch: http://svn.apache.org/r1783849
-     2.4.x patch: svn merge -c 1783849 ^/httpd/httpd/trunk .
-                  (trunk works, modulo CHANGES)
-     +1: ylavic, wrowe, icing
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 

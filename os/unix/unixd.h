@@ -27,6 +27,7 @@
 
 #include "httpd.h"
 #include "http_config.h"
+#include "scoreboard.h"
 #include "ap_listen.h"
 #ifdef HAVE_SYS_TIME_H
 #include <sys/time.h>
@@ -108,6 +109,30 @@ AP_DECLARE(apr_status_t) ap_unixd_accept(void **accepted, ap_listen_rec *lr, apr
 #define ap_unixd_killpg(x, y)   (kill (-(x), (y)))
 #define ap_os_killpg(x, y)      (kill (-(x), (y)))
 #endif /* HAVE_KILLPG */
+
+typedef struct {
+    void            *baton;  /* MPM's */
+
+    /* volatile because they're updated from signals' handlers */
+    int volatile    mpm_state;
+    int volatile    shutdown_pending;
+    int volatile    restart_pending;
+    int volatile    is_ungraceful;
+
+    ap_generation_t my_generation;
+    int             module_loads;
+    int             was_graceful;
+
+    /*
+     * Current number of listeners buckets and maximum reached across
+     * restarts (to size retained data according to dynamic num_buckets,
+     * eg. idle_spawn_rate).
+     */
+    int num_buckets, max_buckets;
+} ap_unixd_mpm_retained_data;
+
+AP_DECLARE(ap_unixd_mpm_retained_data *) ap_unixd_mpm_get_retained_data(void);
+AP_DECLARE(void) ap_unixd_mpm_set_signals(apr_pool_t *pconf, int once_process);
 
 #ifdef __cplusplus
 }
