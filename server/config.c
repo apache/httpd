@@ -1778,7 +1778,7 @@ static const char *process_command_config(server_rec *s,
     ap_cfg_closefile(parms.config_file);
 
     if (errmsg) {
-        return apr_pstrcat(p, "Syntax error in -C/-c directive: ", errmsg,
+        return apr_pstrcat(p, "Error in -C/-c directive: ", errmsg,
                            NULL);
     }
 
@@ -1879,10 +1879,7 @@ AP_DECLARE(const char *) ap_process_resource_config(server_rec *s,
 
     if (error) {
         if (parms.err_directive)
-            /* note: this may not be a 'syntactic' error per se.
-             * should it rather be "Configuration error ..."?
-             */
-            return apr_psprintf(p, "Syntax error on line %d of %s: %s",
+            return apr_psprintf(p, "Error on line %d of %s: %s",
                                 parms.err_directive->line_num,
                                 parms.err_directive->filename, error);
         else
@@ -2137,7 +2134,7 @@ AP_DECLARE(int) ap_process_config_tree(server_rec *s,
     if (errmsg) {
         if (parms.err_directive)
             ap_log_perror(APLOG_MARK, APLOG_STARTUP, 0, p, APLOGNO(00526)
-                          "Syntax error on line %d of %s:",
+                          "Error on line %d of %s:",
                           parms.err_directive->line_num,
                           parms.err_directive->filename);
         ap_log_perror(APLOG_MARK, APLOG_STARTUP, 0, p, "%s", errmsg);
