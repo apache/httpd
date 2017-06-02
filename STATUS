@@ -120,6 +120,13 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) proxy_wstunnel: Restore ability to process other Upgrade: protocols which was
+     blocked in r1674632/r1674661.
+     trunk patch: http://svn.apache.org/r1792092
+                  http://svn.apache.org/r1796864
+     2.4.x patch: svn merge -c  1792092,1796864 ^/httpd/httpd/trunk .
+     +1: covener, jim, ylavic
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -187,18 +194,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-mpm_event-wakeup-v7.1.patch
      +1: ylavic, icing
 
-  *) proxy_wstunnel: Restore ability to process other Upgrade: protocols which was
-     blocked in r1674632/r1674661.
-     trunk patch: http://svn.apache.org/r1792092
-                  http://svn.apache.org/r1796864
-     2.4.x patch: svn merge -c  1792092,1796864 ^/httpd/httpd/trunk .
-     +1: covener, jim
-
   *) worker, prefork: save some cycles by not copying the listener's pollfds
                       for each pollset operation
      trunk patch: http://svn.apache.org/r1662437
      2.4.x patch: svn merge -c 1662437 ^/httpd/httpd/trunk .
-     +1: jailletc36
+     +1: jailletc36, ylavic
 
    *) prefork: This fixes race-condition in signals handling when httpd is
                runnning on foreground and user hits ctrl+c
@@ -209,6 +209,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                 the patch description looks straighforward.
                 If confirmed, it would worth, IMHO, a CHANGE entry and maybe a
                 2.2.x backport.
+	    ylavic: Not needed (in 2.4.x) since recent r1797368.
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
