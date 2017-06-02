@@ -204,12 +204,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                runnning on foreground and user hits ctrl+c
      trunk patch: http://svn.apache.org/r1618555
      2.4.x patch: svn merge -c 1618555 ^/httpd/httpd/trunk .
-     +1: 
+     +1: ylavic 
      jailetc36: untested because I'm unsure on how to reproduce the race, but
                 the patch description looks straighforward.
                 If confirmed, it would worth, IMHO, a CHANGE entry and maybe a
                 2.2.x backport.
-	    ylavic: Not needed (in 2.4.x) since recent r1797368.
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
