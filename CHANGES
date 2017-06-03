@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_mime: Fix error checking for quoted pairs.  [Yann Ylavic]
+
   *) core: Deprecate ap_get_basic_auth_pw() and add 
      ap_get_basic_auth_components(). 
      [Emmanuel Dreyfus <manu netbsd.org>, Jacob Champion, Eric Covener]
