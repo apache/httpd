@@ -125,7 +125,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x patch: http://people.apache.org/~covener/patches/httpd-2.2.x-ap_get_basic_auth_pw.diff
                   (remove some_authn_required change, change to strcasecmp, mmn)
      +1: covener
-      
+
+   *) mod_mime: Fix scanning of quoted-pairs.
+      trunk patch: http://svn.apache.org/r1797550
+      2.4.x patch: svn merge -c 1797550 ^/httpd/httpd/trunk .
+      +1: covener
+
 PATCHES/ISSUES THAT ARE STALLED:
 
   *) mod_proxy_connect: The connect method doesn't work if the client is
