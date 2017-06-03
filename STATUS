@@ -124,12 +124,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: https://svn.apache.org/r1796348
      2.2.x patch: http://people.apache.org/~covener/patches/httpd-2.2.x-ap_get_basic_auth_pw.diff
                   (remove some_authn_required change, change to strcasecmp, mmn)
-     +1: covener
+     +1: covener, ylavic
 
    *) mod_mime: Fix scanning of quoted-pairs.
       trunk patch: http://svn.apache.org/r1797550
       2.4.x patch: svn merge -c 1797550 ^/httpd/httpd/trunk .
-      +1: covener
+      +1: covener, ylavic
 
 PATCHES/ISSUES THAT ARE STALLED:
 
