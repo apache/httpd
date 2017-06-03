@@ -213,7 +213,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    *) mod_mime: Fix scanning of quoted-pairs.
       trunk patch: http://svn.apache.org/r1797550
       2.4.x patch: svn merge -c 1797550 ^/httpd/httpd/trunk .
-      +1: covener
+      +1: covener, ylavic
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entried should be added at the START of the list ]
