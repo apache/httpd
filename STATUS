@@ -221,6 +221,24 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: svn merge -c 1735906 ^/httpd/httpd/trunk .
       +1: jailletc36
 
+   *) Easy proposals:
+      - mod_authnz_ldap: Log a warning when the LDAP authn provider is configured
+                         but an AuthLDAPURL isn't
+      - mod_auth_digest: Follow up to r1772919: update APLOGNO()
+      - mod_cache_socache: Save a few cycles
+      - mod_cache_socache: Improve indentation
+      - mod_cache_socache: Group bit field values in order to save some memory
+      - mod_authnz_ldap: Add an explicit NULL to initialise a field in an authn_provider
+                         structure
+      trunk patch: http://svn.apache.org/r1551611
+                   http://svn.apache.org/r1783765
+                   http://svn.apache.org/r1788996
+                   http://svn.apache.org/r1788998
+                   http://svn.apache.org/r1789000
+                   http://svn.apache.org/r1795651
+      2.4.x patch: svn merge -c 1551611, 1783765, 1788996, 1788998, 1789000, 1795651 ^/httpd/httpd/trunk .
+      +1: jailletc36
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entried should be added at the START of the list ]
