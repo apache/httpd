@@ -1,15 +1,6 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
-  *) mod_mime: Fix error checking for quoted pairs.  [Yann Ylavic]
-
-  *) core: Deprecate ap_get_basic_auth_pw() and add 
-     ap_get_basic_auth_components(). 
-     [Emmanuel Dreyfus <manu netbsd.org>, Jacob Champion, Eric Covener]
-
-  *) mod_ssl: Consistently pass the expected bio_filter_in_ctx_t
-     to ssl_io_filter_error(). [Yann Ylavic]
-
   *) mod_env: when processing a 'SetEnv' directive, warn if the environment
      variable name includes a '='. It is likely a configuration error.
      PR 60249 [Christophe Jaillet]
@@ -19,9 +10,6 @@ Changes with Apache 2.5.0
 
   *) Introduce request taint checking framework to prevent privilege
      hijacking through .htaccess. [Nick Kew]
-
-  *) mod_proxy_wstunnel: Add "upgrade" parameter to allow upgrade to other
-     protocols.  [Jean-Frederic Clere]
 
   *) core: Disallow multiple Listen on the same IP:port when listener buckets
      are configured (ListenCoresBucketsRatio > 0), consistently with the single
@@ -43,24 +31,11 @@ Changes with Apache 2.5.0
 
   *) mod_proxy_hcheck: Don't validate timed out responses.  [Yann Ylavic]
 
-  *) mod_proxy_fcgi: Return to 2.4.20-and-earlier behavior of leaving
-     a "proxy:fcgi://" prefix in the SCRIPT_FILENAME environment variable by
-     default.  Add ProxyFCGIBackendType to allow the type of backend to be
-     specified so these kinds of fixups can be restored without impacting
-     FPM. PR60576 [Eric Covener, Jim Jagielski]
-
   *) mod_remoteip: Add support for PROXY protocol (code donated by Cloudzilla).
      Add ability for PROXY protocol processing to be optional to donated code.
      See also: http://www.haproxy.org/download/1.5/doc/proxy-protocol.txt
      [Cloudzilla/roadrunner2@GitHub, Jim Jagielski, Daniel Ruggeri]
 
-  *) mod_rewrite: When a substitution is a fully qualified URL, and the 
-     scheme/host/port matches the current virtual host, stop interpreting the 
-     path component as a local path just because the first component of the 
-     path exists in the filesystem.  Adds RewriteOption "LegacyPrefixDocRoot" 
-     to revert to previous behavior. PR60009.
-     [Hank Ibell <hwibell gmail.com>]
- 
   *) mod_remoteip: When overriding the useragent address from X-Forwarded-For,
      zero out what had been initialized as the connection-level port.  PR59931.
      [Hank Ibell <hwibell gmail.com>]
