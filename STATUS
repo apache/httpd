@@ -127,6 +127,17 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c  1792092,1796864 ^/httpd/httpd/trunk .
      +1: covener, jim, ylavic
 
+  *) worker, prefork: save some cycles by not copying the listener's pollfds
+                      for each pollset operation
+     trunk patch: http://svn.apache.org/r1662437
+     2.4.x patch: svn merge -c 1662437 ^/httpd/httpd/trunk .
+     +1: jailletc36, ylavic, jim
+
+   *) mod_mime: Fix scanning of quoted-pairs.
+      trunk patch: http://svn.apache.org/r1797550
+      2.4.x patch: svn merge -c 1797550 ^/httpd/httpd/trunk .
+      +1: covener, ylavic, jim
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -194,12 +205,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-mpm_event-wakeup-v7.1.patch
      +1: ylavic, icing
 
-  *) worker, prefork: save some cycles by not copying the listener's pollfds
-                      for each pollset operation
-     trunk patch: http://svn.apache.org/r1662437
-     2.4.x patch: svn merge -c 1662437 ^/httpd/httpd/trunk .
-     +1: jailletc36, ylavic, jim
-
    *) prefork: This fixes race-condition in signals handling when httpd is
                runnning on foreground and user hits ctrl+c
      trunk patch: http://svn.apache.org/r1618555
@@ -209,11 +214,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                 the patch description looks straighforward.
                 If confirmed, it would worth, IMHO, a CHANGE entry and maybe a
                 2.2.x backport.
-
-   *) mod_mime: Fix scanning of quoted-pairs.
-      trunk patch: http://svn.apache.org/r1797550
-      2.4.x patch: svn merge -c 1797550 ^/httpd/httpd/trunk .
-      +1: covener, ylavic, jim
 
    *) core: Save 160 bytes in the request pool and some cycles if no <If>
             directive is used.
