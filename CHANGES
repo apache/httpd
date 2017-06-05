@@ -1,10 +1,6 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
-  *) mod_env: when processing a 'SetEnv' directive, warn if the environment
-     variable name includes a '='. It is likely a configuration error.
-     PR 60249 [Christophe Jaillet]
-
   *) Evaluate nested If/ElseIf/Else configuration blocks.
      [Luca Toscano, Jacob Champion]
 
@@ -21,10 +17,6 @@ Changes with Apache 2.5.0
   *) mod_syslog: Support use of optional "tag" in syslog entries.
      PR 60525. [Ben Rubson <ben.rubson gmail.com>, Jim Jagielski]
 
-  *) MPMs unix: Place signals handlers and helpers out of DSOs to avoid
-     a possible crash if a signal is caught during (graceful) restart.
-     PR 60487.  [Yann Ylavic]
-  
   *) When using mod_status with the Event MPM, report the number of requests
      associated with an active connection in the "ACC" field. Previously
      zero was always reported with this MPM.  PR60647. [Eric Covener]
