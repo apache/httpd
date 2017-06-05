@@ -315,6 +315,12 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"</pr
 <tr class="odd"><td><code>&gt;=</code></td>
         <td />
         <td>String greater than or equal</td></tr>
+<tr><td><code>=~</code></td>
+        <td />
+        <td>String matches the regular expression</td></tr>
+<tr class="odd"><td><code>!~</code></td>
+        <td />
+        <td>String does not match the regular expression</td></tr>
 <tr><td><code>-eq</code></td>
         <td><code>eq</code></td>
         <td>Integer equality</td></tr>

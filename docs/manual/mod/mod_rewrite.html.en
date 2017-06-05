@@ -1013,6 +1013,24 @@ RewriteRule  "^/$"                 "/homepage.std.html"     [L]</pre>
          supply this extended context info.  Available in 2.4.16 and later.</p>
       </dd>
 
+
+      <dt><code>LegacyPrefixDocRoot</code></dt>
+      <dd>
+
+      <p>Prior to 2.4.25, if a substitution was an absolute URL that matched
+         the current virtual host, the URL might first be reduced to a URL-path
+         and then later reduced to a local path. Since the URL can be reduced 
+         to a local path, the path should be prefixed with the document root. 
+         This prevents a file such as /tmp/myfile from being accessed when a 
+         request is made to http://host/file/myfile with the following 
+         <code class="directive"><a href="#rewriterule">RewriteRule</a></code>.</p>
+      <pre class="prettyprint lang-config">RewriteRule /file/(.*) http://localhost/tmp/$1</pre>
+
+      <p>This option allows the old behavior to be used where the document
+         root is not prefixed to a local path that was reduced from a 
+         URL.  Available in 2.4.25 and later.</p>
+      </dd>
+
       </dl>
 
 </div>
