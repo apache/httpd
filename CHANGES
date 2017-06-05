@@ -2,6 +2,8 @@
 
 Changes with Apache 2.4.26
 
+  *) mod_mime: Fix error checking for quoted pairs.  [Yann Ylavic]
+
   *) mod_proxy_wstunnel: Add "upgrade" parameter to allow upgrade to other
      protocols.  [Jean-Frederic Clere]
 
