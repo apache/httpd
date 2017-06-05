@@ -116,6 +116,7 @@ static int proxy_wstunnel_request(apr_pool_t *p, request_rec *r,
     apr_bucket_brigade *bb = apr_brigade_create(p, c->bucket_alloc);
     apr_socket_t *client_socket = ap_get_conn_socket(c);
     int done = 0, replied = 0;
+    const char *upgrade_method = *worker->s->upgrade ? worker->s->upgrade : "WebSocket";
 
     header_brigade = apr_brigade_create(p, backconn->bucket_alloc);
 
@@ -128,7 +129,11 @@ static int proxy_wstunnel_request(apr_pool_t *p, request_rec *r,
         return rv;
     }
 
-    buf = apr_pstrdup(p, "Upgrade: WebSocket" CRLF "Connection: Upgrade" CRLF CRLF);
+    if (ap_cstr_casecmp(upgrade_method, "NONE") == 0) {
+        buf = apr_pstrdup(p, "Upgrade: WebSocket" CRLF "Connection: Upgrade" CRLF CRLF);
+    } else {
+        buf = apr_pstrcat(p, "Upgrade: ", upgrade_method, CRLF "Connection: Upgrade" CRLF CRLF, NULL);
+    }
     ap_xlate_proto_to_ascii(buf, strlen(buf));
     e = apr_bucket_pool_create(buf, strlen(buf), p, c->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(header_brigade, e);
@@ -274,13 +279,13 @@ static int proxy_wstunnel_handler(request_rec *r, proxy_worker *worker,
     int status;
     char server_portstr[32];
     proxy_conn_rec *backend = NULL;
-    const char *upgrade;
     char *scheme;
     int retry;
     conn_rec *c = r->connection;
     apr_pool_t *p = r->pool;
     apr_uri_t *uri;
     int is_ssl = 0;
+    const char *upgrade_method = *worker->s->upgrade ? worker->s->upgrade : "WebSocket";
 
     if (strncasecmp(url, "wss:", 4) == 0) {
         scheme = "WSS";
@@ -294,11 +299,15 @@ static int proxy_wstunnel_handler(request_rec *r, proxy_worker *worker,
         return DECLINED;
     }
 
-    upgrade = apr_table_get(r->headers_in, "Upgrade");
-    if (!upgrade || strcasecmp(upgrade, "WebSocket") != 0) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02900)
-                      "declining URL %s  (not WebSocket)", url);
-        return DECLINED;
+    if (ap_cstr_casecmp(upgrade_method, "NONE") != 0) {
+        const char *upgrade;
+        upgrade = apr_table_get(r->headers_in, "Upgrade");
+        if (!upgrade || ap_cstr_casecmp(upgrade, upgrade_method) != 0) {
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02900)
+                          "declining URL %s  (not %s, Upgrade: header is %s)", 
+                          url, upgrade_method, upgrade ? upgrade : "missing");
+            return DECLINED;
+        }
     }
 
     uri = apr_palloc(p, sizeof(*uri));

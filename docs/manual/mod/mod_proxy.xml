@@ -1189,6 +1189,16 @@ ProxyPass "/mirror/foo" "http://backend.example.com"
         <td><p>Name of the provider used by <module>mod_proxy_fdpass</module>.
         See the documentation of this module for more details.</p>
     </td></tr>
+    <tr><td>secret</td>
+        <td>-</td>
+        <td><p>Value of secret used by <module>mod_proxy_ajp</module>.
+        See the documentation of this module for more details.</p>
+    </td></tr>
+    <tr><td>upgrade</td>
+        <td>WebSocket</td>
+        <td><p>Protocol accepted in the Upgrade header by <module>mod_proxy_wstunnel</module>.
+        See the documentation of this module for more details.</p>
+    </td></tr>
 
     </table>
 

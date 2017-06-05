@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.26
 
+  *) mod_proxy_wstunnel: Add "upgrade" parameter to allow upgrade to other
+     protocols.  [Jean-Frederic Clere]
+
   *) MPMs unix: Place signals handlers and helpers out of DSOs to avoid
      a possible crash if a signal is caught during (graceful) restart.
      PR 60487.  [Yann Ylavic]
