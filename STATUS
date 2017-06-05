@@ -120,12 +120,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) worker, prefork: save some cycles by not copying the listener's pollfds
-                      for each pollset operation
-     trunk patch: http://svn.apache.org/r1662437
-     2.4.x patch: svn merge -c 1662437 ^/httpd/httpd/trunk .
-     +1: jailletc36, ylavic, jim
-
    *) mod_mime: Fix scanning of quoted-pairs.
       trunk patch: http://svn.apache.org/r1797550
       2.4.x patch: svn merge -c 1797550 ^/httpd/httpd/trunk .
