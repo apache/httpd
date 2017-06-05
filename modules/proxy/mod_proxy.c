@@ -308,6 +308,12 @@ static const char *set_worker_param(apr_pool_t *p,
                     (int)sizeof(worker->s->flusher));
         PROXY_STRNCPY(worker->s->flusher, val);
     }
+    else if (!strcasecmp(key, "upgrade")) {
+        if (PROXY_STRNCPY(worker->s->upgrade, val) != APR_SUCCESS) {
+            return apr_psprintf(p, "upgrade protocol length must be < %d characters",
+                                (int)sizeof(worker->s->upgrade));
+        }
+    }
     else {
         if (set_worker_hc_param_f) {
             return set_worker_hc_param_f(p, s, worker, key, val, NULL);

@@ -442,6 +442,7 @@ typedef struct {
     int             fcount;     /* current count of failures */
     hcmethod_t      method;     /* method to use for health check */
     apr_interval_time_t interval;
+    char      upgrade[PROXY_WORKER_MAX_SCHEME_SIZE];/* upgrade protocol used by mod_proxy_wstunnel */
 } proxy_worker_shared;
 
 #define ALIGNED_PROXY_WORKER_SHARED_SIZE (APR_ALIGN_DEFAULT(sizeof(proxy_worker_shared)))
