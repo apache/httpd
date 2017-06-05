@@ -33,6 +33,7 @@ providing detailed explanations and examples.</p>
 </div>
 <div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#introduction">Introduction</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#flag_b">B (escape backreferences)</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flag_bnp">BNP|backrefnoplus (don't escape space to +)</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#flag_c">C|chain</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#flag_co">CO|cookie</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#flag_dpi">DPI|discardpath</a></li>
@@ -83,8 +84,11 @@ of how you might use them.</p>
 <div class="section">
 <h2><a name="flag_b" id="flag_b">B (escape backreferences)</a></h2>
 <p>The [B] flag instructs <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> to escape non-alphanumeric
-characters before applying the transformation.
-</p>
+characters before applying the transformation.</p>
+<p>In 2.4.26 and later, you can limit the escaping to specific characters
+in backreferences by listing them: <code>[B=#?;]</code>. Note: The space
+character can be used in the list of characters to escape, but it cannot be
+the last character in the list.</p>
 
 <p><code>mod_rewrite</code> has to unescape URLs before mapping them,
 so backreferences are unescaped at the time they are applied.
@@ -113,6 +117,17 @@ returns a 404 if it sees one.</p>
 
 <p>This escaping is particularly necessary in a proxy situation,
 when the backend may break if presented with an unescaped URL.</p>
+
+<p>An alternative to this flag is using a <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code> to capture against %{THE_REQUEST} which will capture
+strings in the encoded form.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flag_bnp" id="flag_bnp">BNP|backrefnoplus (don't escape space to +)</a></h2>
+<p>The [BNP] flag instructs <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> to escape the space character
+in a backreference to %20 rather than '+'. Useful when the backreference
+will be used in the path component rather than the query string.</p>
+
+<p>This flag is available in version 2.4.26 and later.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
