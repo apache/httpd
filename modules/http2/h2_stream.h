@@ -89,6 +89,7 @@ struct h2_stream {
     unsigned int scheduled : 1; /* stream has been scheduled */
     unsigned int has_response : 1; /* response headers are known */
     unsigned int input_eof : 1; /* no more request data coming */
+    unsigned int out_checked : 1; /* output eof was double checked */
     unsigned int push_policy;   /* which push policy to use for this request */
     
     struct h2_task *task;       /* assigned task to fullfill request */
