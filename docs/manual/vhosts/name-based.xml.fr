@@ -89,7 +89,7 @@ virtuel basé sur le nom approprié</title>
     cette même paire adresse IP/port, Apache va ensuite comparer les
     valeurs des directives <directive module="core"
     >ServerName</directive> et <directive
-    >module="core">ServerAlias</directive> avec le nom de serveur
+    module="core">ServerAlias</directive> avec le nom de serveur
     présent dans la requête.</p>
 
     <p>Si vous ne définissez pas de directive <directive
