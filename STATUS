@@ -221,11 +221,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: svn merge -c 1551611,1783765,1788996,1788998,1789000,1795651 ^/httpd/httpd/trunk .
       +1: jailletc36, jim
 
-   *) mod_http2: busy loop fix
-      trunk patch: r1797745
-      2.4.x patch: svn merge -c 1797745 ^/httpd/httpd/trunk .
-      +1: icing
-
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entried should be added at the START of the list ]
