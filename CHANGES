@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_http2: Fix for possible CPU busy loop introduced in v1.10.3 where a stream may keep
+     the session in continuous check for state changes that never happen. 
+     [Stefan Eissing]
+
   *) Evaluate nested If/ElseIf/Else configuration blocks.
      [Luca Toscano, Jacob Champion]
 
