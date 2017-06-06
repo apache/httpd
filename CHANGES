@@ -5,9 +5,6 @@ Changes with Apache 2.5.0
      the session in continuous check for state changes that never happen. 
      [Stefan Eissing]
 
-  *) Evaluate nested If/ElseIf/Else configuration blocks.
-     [Luca Toscano, Jacob Champion]
-
   *) Introduce request taint checking framework to prevent privilege
      hijacking through .htaccess. [Nick Kew]
 
@@ -42,9 +39,6 @@ Changes with Apache 2.5.0
   *) mod_proxy_protocol: Add server-side, front-end support for PROXY PROTOCOL
      (http://blog.haproxy.com/haproxy/proxy-protocol/).  [roadrunner2]
      
-  *) mod_proxy_fcgi: Return HTTP 504 rather than 503 in case of proxy timeout.
-     [Luca Toscano]
-
   *) http: Allow unknown response status' lines returned in the form of
      "HTTP/x.x xxx Status xxx".  [Yann Ylavic]
 
