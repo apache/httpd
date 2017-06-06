@@ -1058,19 +1058,23 @@ apr_status_t h2_mplx_idle(h2_mplx *m)
                           "h2_mplx(%ld): idle, no tasks ongoing, %d streams",
                           m->id, (int)h2_ihash_count(m->streams));
             h2_ihash_shift(m->streams, (void**)&stream, 1);
-            if (stream && stream->output) {
-                /* FIXME: this looks like a race between the session thinking
-                 * it is idle and the EOF on a stream not being sent.
-                 * Signal to caller to leave IDLE state.
-                 */
-                ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c,
-                              H2_STRM_MSG(stream, "output closed=%d, mplx idle"
-                              ", out has %ld bytes buffered"),
-                              h2_beam_is_closed(stream->output),
-                              (long)h2_beam_get_buffered(stream->output));
+            if (stream) {
                 h2_ihash_add(m->streams, stream);
-                check_data_for(m, stream, 0);
-                status = APR_EAGAIN;
+                if (stream->output && !stream->out_checked) {
+                    /* FIXME: this looks like a race between the session thinking
+                     * it is idle and the EOF on a stream not being sent.
+                     * Signal to caller to leave IDLE state.
+                     */
+                    ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c,
+                                  H2_STRM_MSG(stream, "output closed=%d, mplx idle"
+                                              ", out has %ld bytes buffered"),
+                                  h2_beam_is_closed(stream->output),
+                                  (long)h2_beam_get_buffered(stream->output));
+                    h2_ihash_add(m->streams, stream);
+                    check_data_for(m, stream, 0);
+                    stream->out_checked = 1;
+                    status = APR_EAGAIN;
+                }
             }
         }
     }
