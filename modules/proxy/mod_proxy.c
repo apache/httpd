@@ -1025,13 +1025,6 @@ static int proxy_handler(request_rec *r)
         return DECLINED;
     }
 
-    /* A request that has passed through .htaccess has no business
-     * serving contents from so far outside its directory.
-     */
-    if (ap_request_tainted(r, AP_TAINT_HTACCESS)) {
-        return DECLINED;
-    }
-
     if (!r->proxyreq) {
         /* We may have forced the proxy handler via config or .htaccess */
         if (r->handler &&
