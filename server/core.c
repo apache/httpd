@@ -2779,6 +2779,7 @@ static const char *start_cond_section(cmd_parms *cmd, void *mconfig, const char 
     const char *endp = ap_strrchr_c(arg, '>');
     int result, not = (arg[0] == '!');
     test_cond_section_fn testfn = (test_cond_section_fn)cmd->info;
+    const char *arg1;
 
     if (endp == NULL) {
         return unclosed_directive(cmd);
@@ -2790,11 +2791,13 @@ static const char *start_cond_section(cmd_parms *cmd, void *mconfig, const char 
         arg++;
     }
 
-    if (!arg[0]) {
+    arg1 = ap_getword_conf(cmd->temp_pool, &arg);
+
+    if (!arg1[0]) {
         return missing_container_arg(cmd);
     }
 
-    result = testfn(cmd, arg);
+    result = testfn(cmd, arg1);
 
     if ((!not && result) || (not && !result)) {
         ap_directive_t *parent = NULL;
@@ -4457,19 +4460,19 @@ AP_INIT_RAW_ARGS("<LimitExcept", ap_limit_section, (void*)1,
                  OR_LIMIT | OR_AUTHCFG,
   "Container for authentication directives to be applied when any HTTP "
   "method other than those specified is used to access the resource"),
-AP_INIT_TAKE1("<IfModule", start_cond_section, (void *)test_ifmod_section,
+AP_INIT_RAW_ARGS("<IfModule", start_cond_section, (void *)test_ifmod_section,
               EXEC_ON_READ | OR_ALL,
   "Container for directives based on existence of specified modules"),
-AP_INIT_TAKE1("<IfDefine", start_cond_section, (void *)test_ifdefine_section,
+AP_INIT_RAW_ARGS("<IfDefine", start_cond_section, (void *)test_ifdefine_section,
               EXEC_ON_READ | OR_ALL,
   "Container for directives based on existence of command line defines"),
-AP_INIT_TAKE1("<IfFile", start_cond_section, (void *)test_iffile_section,
+AP_INIT_RAW_ARGS("<IfFile", start_cond_section, (void *)test_iffile_section,
               EXEC_ON_READ | OR_ALL,
   "Container for directives based on existence of files on disk"),
-AP_INIT_TAKE1("<IfDirective", start_cond_section, (void *)test_ifdirective_section,
+AP_INIT_RAW_ARGS("<IfDirective", start_cond_section, (void *)test_ifdirective_section,
               EXEC_ON_READ | OR_ALL,
   "Container for directives based on existence of named directive"),
-AP_INIT_TAKE1("<IfSection", start_cond_section, (void *)test_ifsection_section,
+AP_INIT_RAW_ARGS("<IfSection", start_cond_section, (void *)test_ifsection_section,
               EXEC_ON_READ | OR_ALL,
   "Container for directives based on existence of named section"),
 AP_INIT_RAW_ARGS("<DirectoryMatch", dirsection, (void*)1, RSRC_CONF,
