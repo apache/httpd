@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) Allow the argument to <IfFile>, <IfDefine>, <IfSection>, <IfDirective>, 
+     and <IfModule> to be quoted.  This is primarily for the benefit of
+     <IfFile>. [Eric Covener]
+
   *) Introduce request taint checking framework to prevent privilege
      hijacking through .htaccess. [Nick Kew]
 
