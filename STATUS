@@ -222,7 +222,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
-  [ New entried should be added at the START of the list ]
+  [ New entries should be added at the START of the list ]
 
   *) mod_ssl: Return 502 instead of 500 when SSL peer check or 
      proxy_post_handshake hook fails. 
