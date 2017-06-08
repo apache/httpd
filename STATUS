@@ -107,7 +107,8 @@ CURRENT RELEASE NOTES:
     then merge into branches/2.4.x, as applicable.
 
   * Current exceptions for RTC for this branch:
-    . http/2 - mod_http2
+    . http/2 - mod_http2 (until 2.4.26 is released)
+    . mod_proxy_http2
     . mod_lua
     . documentation
     . non-Unix build
