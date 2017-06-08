@@ -904,8 +904,11 @@ static apr_status_t cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
 
             r->headers_out = cache->stale_handle->resp_hdrs;
 
-            ap_set_content_type(r, apr_table_get(
-                    cache->stale_handle->resp_hdrs, "Content-Type"));
+	    const char *ct = apr_table_get(
+                    cache->stale_handle->resp_hdrs, "Content-Type");
+            if (ct) {
+                ap_set_content_type(r, ct);
+            }
 
             /* add a revalidation warning */
             warn_head = apr_table_get(r->err_headers_out, "Warning");
@@ -988,8 +991,11 @@ static apr_status_t cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
          * Content-Type based on the r->filename. This would lead to original
          * Content-Type to be lost (overwriten by whatever mod_mime generates).
          * We preserves the original Content-Type here. */
-        ap_set_content_type(r, apr_table_get(
-                cache->stale_handle->resp_hdrs, "Content-Type"));
+        const char *ct = apr_table_get(
+                 cache->stale_handle->resp_hdrs, "Content-Type");
+	if (ct) {
+	    ap_set_content_type(r, ct);
+	}
     }
 
     /* Parse the cache control header */
