@@ -193,7 +193,7 @@
       présenté dans le lien ci-dessus), est un jeu de codes sur trois
       lettres (639-2).</dd>
 
-      <dt><a href="http://www.iso.ch/iso/en/prods-services/iso3166ma/02iso-3166-code-lists/index.html">
+      <dt><a href="http://www.iso.org/iso/country_codes">
       ISO 3166-1</a></dt>
 
       <dd>Ce document présente les noms de pays (les noms raccourcis

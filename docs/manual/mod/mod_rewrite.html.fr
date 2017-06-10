@@ -1086,6 +1086,24 @@ pour le moteur de réécriture</td></tr>
       version 2.4.16 du serveur HTTP Apache.</p>
       </dd>
 
+      <dt><code>LegacyPrefixDocRoot</code></dt>
+      <dd>
+
+      <p>Avant la version 2.4.26, si une substitution était une URL absolue qui
+      correspondait au serveur virtuel courant, l'URL pouvait être tout d'abord
+      réduite à sa partie chemin, puis enfin en chemin local. Comme l'URL peut
+      être réduite en chemin local, le chemin doit être préfixé par la
+      valeur de la directive DocumentRoot, ce qui permet d'interdire l'accès à
+      un fichier tel que /tmp/myfile suite à une requête pour
+      http://host/file/myfile avec la <code class="directive"><a href="#rewriterule">RewriteRule</a></code> suivante :</p>
+      <pre class="prettyprint lang-config">RewriteRule /file/(.*) http://localhost/tmp/$1</pre>
+
+      <p>Cette option permet de restaurer l'ancien comportement lorsqu'un chemin
+      local obtenu à partir de la réduction d'une URL n'est pas préfixé par la
+      valeur de la directive DocumentRoot. Disponible à partir de la version
+      2.4.26 du serveur HTTP Apache.</p>
+      </dd>
+
       </dl>
 
 </div>

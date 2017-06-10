@@ -325,6 +325,12 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"</pr
 <tr class="odd"><td><code>&gt;=</code></td>
         <td />
         <td>Chaîne supérieure ou égale à</td></tr>
+<tr><td><code>=~</code></td>
+        <td />
+        <td>La chaîne correspond à l'expression rationnelle</td></tr>
+<tr class="odd"><td><code>!~</code></td>
+        <td />
+        <td>La chaîne ne correspond pas à l'expression rationnelle</td></tr>
 <tr><td><code>-eq</code></td>
         <td><code>eq</code></td>
         <td>Egalité d'entiers</td></tr>
