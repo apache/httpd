@@ -288,7 +288,7 @@ LogLevel alert rewrite:trace3
       </highlight>
       <p>This option allows the old behavior to be used where the document
          root is not prefixed to a local path that was reduced from a 
-         URL.  Available in 2.4.25 and later.</p>
+         URL.  Available in 2.4.26 and later.</p>
       </dd>
 
       </dl>
