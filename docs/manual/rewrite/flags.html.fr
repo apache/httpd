@@ -33,6 +33,8 @@ des explications détaillées et des exemples.</p>
 </div>
 <div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#introduction">Introduction</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#flag_b">B (échappement dans les références arrières)</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flag_bnp">BNP|backrefnoplus (ne pas échapper
+l'espace en +)</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#flag_c">C|chain</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#flag_co">CO|cookie</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#flag_dpi">DPI|discardpath</a></li>
@@ -86,7 +88,13 @@ d'utilisation.</p>
 <div class="section">
 <h2><a name="flag_b" id="flag_b">B (échappement dans les références arrières)</a></h2>
 <p>Avec le drapeau [B], la directive <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> échappe les caractères
-non-alphanumériques avant d'appliquer la transformation.</p>
+non-alphanumériques avant d'appliquer la transformation. A partir
+de la version 2.4.26, vous pouvez limiter l'échappement dans les
+références arrières à une liste de caractères que vous pouvez spécifiez comme
+dans cet exemple : <code>[B=#?;]</code>. Notez que l'espace peut faire
+partie de la liste des caractères à échapper, mais qu'il ne doit pas
+être le dernier caractère de cette liste.
+</p>
 
 <p><code>mod_rewrite</code> doit supprimer les séquences d'échappement
 des URLs avant leur
@@ -124,6 +132,23 @@ rencontre un.</p>
 <p>Ce processus d'échappement est en particulier nécessaire dans le
 contexte d'un mandataire, où l'accès au serveur d'arrière-plan échouera
 si on présente à ce dernier une URL non échappée.</p>
+
+<p>Une alternative à ce drapeau consiste à utiliser une directive
+<code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code> pour capturer
+%{THE_REQUEST}, les chaînes capturées se présentant
+alors sous la forme codée.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flag_bnp" id="flag_bnp">BNP|backrefnoplus (ne pas échapper
+l'espace en +)</a></h2>
+<p>Si le drapeau [BNP] est spécifié, la directive <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> échappera le caractère
+espace en %20 au lieu de '+' dans les références arrières. Ceci s'avère
+utile lorsque la référence arrière est utilisée dans la partie chemin,
+et non dans les paramètres de la requête.</p>
+
+<p>Ce drapeau est disponible à partir de la version 2.4.26 du serveur HTTP
+Apache.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
