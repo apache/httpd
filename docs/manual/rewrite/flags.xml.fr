@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1762653:1796850 (outdated) -->
+<!-- English Revision: 1796850 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -73,7 +73,13 @@ d'utilisation.</p>
 <section id="flag_b"><title>B (échappement dans les références arrières)</title>
 <p>Avec le drapeau [B], la directive <directive
 module="mod_rewrite">RewriteRule</directive> échappe les caractères
-non-alphanumériques avant d'appliquer la transformation.</p>
+non-alphanumériques avant d'appliquer la transformation. A partir
+de la version 2.4.26, vous pouvez limiter l'échappement dans les
+références arrières à une liste de caractères que vous pouvez spécifiez comme
+dans cet exemple : <code>[B=#?;]</code>. Notez que l'espace peut faire
+partie de la liste des caractères à échapper, mais qu'il ne doit pas
+être le dernier caractère de cette liste.
+</p>
 
 <p><code>mod_rewrite</code> doit supprimer les séquences d'échappement
 des URLs avant leur
@@ -111,6 +117,24 @@ rencontre un.</p>
 <p>Ce processus d'échappement est en particulier nécessaire dans le
 contexte d'un mandataire, où l'accès au serveur d'arrière-plan échouera
 si on présente à ce dernier une URL non échappée.</p>
+
+<p>Une alternative à ce drapeau consiste à utiliser une directive
+<directive module="mod_rewrite">RewriteCond</directive> pour capturer
+%{THE_REQUEST}, les chaînes capturées se présentant
+alors sous la forme codée.</p>
+
+</section>
+
+<section id="flag_bnp"><title>BNP|backrefnoplus (ne pas échapper
+l'espace en +)</title>
+<p>Si le drapeau [BNP] est spécifié, la directive <directive
+module="mod_rewrite">RewriteRule</directive> échappera le caractère
+espace en %20 au lieu de '+' dans les références arrières. Ceci s'avère
+utile lorsque la référence arrière est utilisée dans la partie chemin,
+et non dans les paramètres de la requête.</p>
+
+<p>Ce drapeau est disponible à partir de la version 2.4.26 du serveur HTTP
+Apache.</p>
 
 </section>
 

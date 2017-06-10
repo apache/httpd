@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1785909:1797650 (outdated) -->
+<!-- English Revision: 1797650 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1355,6 +1355,17 @@ ProxyPass "/mirror/foo" "http://backend.example.com"
         <td>flush</td>
         <td><p>Nom du fournisseur utilisé par <module>mod_proxy_fdpass</module>.
 	Voir la documentation de ce module pour plus de détails.</p>
+    </td></tr>
+    <tr><td>secret</td>
+        <td>-</td>
+        <td><p>Le mot de passe utilisé par <module>mod_proxy_ajp</module>. Voir
+	la documentation de ce module pour plus de détails.</p>
+    </td></tr>
+    <tr><td>upgrade</td>
+        <td>WebSocket</td>
+        <td><p>Le protocol accepté par <module>mod_proxy_wstunnel</module> dans
+	l'en-tête Upgrade. Voir	la documentation de ce module pour plus de
+	détails.</p>
     </td></tr>
 
     </table>
