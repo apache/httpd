@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision: 1789244:1796727 (outdated) -->
+<!-- English Revision: 1796727 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -370,6 +370,12 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     <tr><td><code>&gt;=</code></td>
         <td></td>
         <td>Chaîne supérieure ou égale à</td></tr>
+    <tr><td><code>=~</code></td>
+        <td></td>
+        <td>La chaîne correspond à l'expression rationnelle</td></tr>
+    <tr><td><code>!~</code></td>
+        <td></td>
+        <td>La chaîne ne correspond pas à l'expression rationnelle</td></tr>	
     <tr><td><code>-eq</code></td>
         <td><code>eq</code></td>
         <td>Egalité d'entiers</td></tr>
