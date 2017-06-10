@@ -276,7 +276,7 @@ LogLevel alert rewrite:trace3
       <dt><code>LegacyPrefixDocRoot</code></dt>
       <dd>
 
-      <p>Prior to 2.4.25, if a substitution was an absolute URL that matched
+      <p>Prior to 2.4.26, if a substitution was an absolute URL that matched
          the current virtual host, the URL might first be reduced to a URL-path
          and then later reduced to a local path. Since the URL can be reduced 
          to a local path, the path should be prefixed with the document root. 
