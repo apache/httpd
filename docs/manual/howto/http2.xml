@@ -27,8 +27,8 @@
 
   <summary>
     <p>This is the howto guide for the HTTP/2 implementation in Apache httpd. This
-    feature is <em>experimental</em> and you may expect interfaces and directives to
-    change between releases.
+    feature is <em>production-ready</em> and you may expect interfaces and directives to
+    remain consistent releases.
     </p>
   </summary>
   <seealso><a href="../mod/mod_http2.html">mod_http2</a></seealso>
