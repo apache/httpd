@@ -512,6 +512,7 @@ static BOOL stapling_renew_response(server_rec *s, modssl_ctx_t *mctx, SSL *ssl,
         if (mctx->stapling_fake_trylater) {
             *prsp = OCSP_response_create(OCSP_RESPONSE_STATUS_TRYLATER, NULL);
             *pok = FALSE;
+            goto done;
         }
         else {
             goto done;
