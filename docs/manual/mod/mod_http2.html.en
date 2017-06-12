@@ -41,13 +41,6 @@
         <p>This module relies on <a href="http://nghttp2.org/">libnghttp2</a>
         to provide the core http/2 engine.</p>
         
-        <div class="warning"><h3>Warning</h3>
-            <p>This module is experimental. Its behaviors, directives, and 
-                defaults are subject to more change from release to 
-                release relative to other standard modules. Users are encouraged to 
-                consult the "CHANGES" file for potential updates.</p>
-        </div>
-        
         <p>You must enable HTTP/2 via <code class="directive"><a href="../mod/core.html#protocols">Protocols</a></code>
         in order to use the functionality described in this document. The
         HTTP/2 protocol <a href="https://http2.github.io/faq/#does-http2-require-encryption">does not require</a> the use of encryption so two schemes are available:
