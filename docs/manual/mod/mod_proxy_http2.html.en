@@ -61,13 +61,6 @@
     to provide the core http/2 engine.</p>
 
     <div class="warning"><h3>Warning</h3>
-        <p>This module is experimental. Its behaviors, directives, and 
-        defaults are subject to more change from release to 
-        release relative to other standard modules. Users are encouraged to 
-        consult the "CHANGES" file for potential updates.</p>
-    </div>
-
-    <div class="warning"><h3>Warning</h3>
       <p>Do not enable proxying until you have <a href="mod_proxy.html#access">secured your server</a>. Open proxy
       servers are dangerous both to your network and to the Internet at
       large.</p>
