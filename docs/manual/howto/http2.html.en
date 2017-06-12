@@ -29,8 +29,8 @@
 </div>
 
     <p>This is the howto guide for the HTTP/2 implementation in Apache httpd. This
-    feature is <em>experimental</em> and you may expect interfaces and directives to
-    change between releases.
+    feature is <em>production-ready</em> and you may expect interfaces and directives to
+    remain consistent releases.
     </p>
   </div>
 <div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#protocol">The HTTP/2 protocol</a></li>
