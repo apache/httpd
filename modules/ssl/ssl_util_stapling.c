@@ -805,11 +805,11 @@ static int stapling_cb(SSL *ssl, void *arg)
                                          conn->pool);
             stapling_refresh_mutex_off(s);
 
-            if (rv == TRUE) {
+            if ((rv == TRUE) && (ok == TRUE) && rsp) {
                 ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(03040)
                              "stapling_cb: success renewing response");
             }
-            else {
+            else if (rv == FALSE) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(01955)
                              "stapling_cb: fatal error renewing response");
                 return SSL_TLSEXT_ERR_ALERT_FATAL;
