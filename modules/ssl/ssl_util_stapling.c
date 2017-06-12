@@ -511,6 +511,7 @@ static BOOL stapling_renew_response(server_rec *s, modssl_ctx_t *mctx, SSL *ssl,
                      "stapling_renew_response: responder error");
         if (mctx->stapling_fake_trylater) {
             *prsp = OCSP_response_create(OCSP_RESPONSE_STATUS_TRYLATER, NULL);
+            *pok = FALSE;
         }
         else {
             goto done;
