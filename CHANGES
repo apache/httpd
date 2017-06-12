@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.26
 
+  *) HTTP/2 support no longer tagged as "experimental" but is instead considered
+     fully production ready.
+
   *) mod_http2: Fix for possible CPU busy loop introduced in v1.10.3 where a stream may keep
      the session in continuous check for state changes that never happen. 
      [Stefan Eissing]
