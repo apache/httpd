@@ -19,6 +19,6 @@
 
 <!ENTITY httpd.major "2">
 <!ENTITY httpd.minor "4">
-<!ENTITY httpd.patch "26">
+<!ENTITY httpd.patch "27">
 
 <!ENTITY httpd.docs "2.4">
