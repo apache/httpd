@@ -2683,8 +2683,7 @@ AP_DECLARE(int) ap_parse_form_data(request_rec *r, ap_filter_t *f,
     ap_form_type_t state = FORM_NAME, percent = FORM_NORMAL;
     ap_form_pair_t *pair = NULL;
     apr_array_header_t *pairs = apr_array_make(r->pool, 4, sizeof(ap_form_pair_t));
-
-    char escaped_char[2];
+    char escaped_char[2] = { 0 };
 
     *ptr = pairs;
 
