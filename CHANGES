@@ -125,11 +125,6 @@ Changes with Apache 2.4.26
      variables just before invoking the FastCGI. [Eric Covener,
      Jacob Champion]
 
-  *) mod_proxy: Allow the per-request environment variable "no-proxy" to
-     be used as an alternative to ProxyPass /path !. This is primarily
-     to set exceptions for ProxyPass specified in <Location> context.
-    Use SetEnvIf, not SetEnv. [Eric Covener]
-
   *) mod_proxy_fcgi: Return to 2.4.20-and-earlier behavior of leaving
      a "proxy:fcgi://" prefix in the SCRIPT_FILENAME environment variable by
      default.  Add ProxyFCGIBackendType to allow the type of backend to be
