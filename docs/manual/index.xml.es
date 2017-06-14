@@ -46,6 +46,7 @@ Documentación</title>
     <page href="filter.html">Filtros</page>
     <page href="handler.html">Handlers</page>
     <page href="expr.html">Analizador de Expresiones</page>
+    <page href="mod/overrides.html">Sobreescritura de la clase índice .htaccess</page>
     <page href="programs/">Programas de Soporte y Servidor</page>
     <page href="glossary.html">Glosario</page>
 </category>
