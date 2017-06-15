@@ -109,27 +109,28 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.2.x patch: svn merge -c 1796350 ^/httpd/httpd/trunk .
      +1: jchampion, wrowe, ylavic
 
-
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
   *) mod_ssl: Consistently pass the expected bio_filter_in_ctx_t
      to ssl_io_filter_error(). [Yann Ylavic]
      trunk patch: https://svn.apache.org/r1796343
      2.2.x patch: http://people.apache.org/~covener/patches/httpd-2.2.x-ssl_error_page_ctx.diff
                   (function names and parameters changed a bit)
-     +1 covener, ylavic
+     +1 covener, ylavic, wrowe
 
   *) core: ap_get_basic_auth_pw deprecation
      trunk patch: https://svn.apache.org/r1796348
      2.2.x patch: http://people.apache.org/~covener/patches/httpd-2.2.x-ap_get_basic_auth_pw.diff
                   (remove some_authn_required change, change to strcasecmp, mmn)
-     +1: covener, ylavic
+     +1: covener, ylavic, wrowe
 
    *) mod_mime: Fix scanning of quoted-pairs.
       trunk patch: http://svn.apache.org/r1797550
       2.4.x patch: svn merge -c 1797550 ^/httpd/httpd/trunk .
-      +1: covener, ylavic
+      +1: covener, ylavic, wrowe
+
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
+
 
 PATCHES/ISSUES THAT ARE STALLED:
 
