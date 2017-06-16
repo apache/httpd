@@ -203,6 +203,7 @@ static const char* really_last_key = "rewrite_really_last";
 #define OPTION_IGNORE_INHERIT       (1<<8)
 #define OPTION_IGNORE_CONTEXT_INFO  (1<<9)
 #define OPTION_LEGACY_PREFIX_DOCROOT (1<<10)
+#define OPTION_LONGOPT              (1<<11)
 
 #ifndef RAND_MAX
 #define RAND_MAX 32767
@@ -397,6 +398,7 @@ typedef struct {
     char        *perdir;
     backrefinfo briRR;
     backrefinfo briRC;
+    apr_pool_t *temp_pool;
 } rewrite_ctx;
 
 /*
@@ -2286,14 +2288,13 @@ static APR_INLINE char *find_char_in_curlies(char *s, int c)
  * are interpreted by a later expansion, producing results that
  * were not intended by the administrator.
  */
-static char *do_expand(char *input, rewrite_ctx *ctx, rewriterule_entry *entry)
+static char *do_expand(char *input, rewrite_ctx *ctx, rewriterule_entry *entry, apr_pool_t *pool)
 {
     result_list *result, *current;
     result_list sresult[SMALL_EXPANSION];
     unsigned spc = 0;
     apr_size_t span, inputlen, outlen;
     char *p, *c;
-    apr_pool_t *pool = ctx->r->pool;
 
     span = strcspn(input, "\\$%");
     inputlen = strlen(input);
@@ -2398,10 +2399,10 @@ static char *do_expand(char *input, rewrite_ctx *ctx, rewriterule_entry *entry)
                     }
 
                     /* reuse of key variable as result */
-                    key = lookup_map(ctx->r, map, do_expand(key, ctx, entry));
+                    key = lookup_map(ctx->r, map, do_expand(key, ctx, entry, pool));
 
                     if (!key && dflt && *dflt) {
-                        key = do_expand(dflt, ctx, entry);
+                        key = do_expand(dflt, ctx, entry, pool);
                     }
 
                     if (key) {
@@ -2499,7 +2500,7 @@ static void do_expand_env(data_item *env, rewrite_ctx *ctx)
     char *name, *val;
 
     while (env) {
-        name = do_expand(env->data, ctx, NULL);
+        name = do_expand(env->data, ctx, NULL, ctx->r->pool);
         if (*name == '!') {
             name++;
             apr_table_unset(ctx->r->subprocess_env, name);
@@ -2626,7 +2627,7 @@ static void add_cookie(request_rec *r, char *s)
 static void do_expand_cookie(data_item *cookie, rewrite_ctx *ctx)
 {
     while (cookie) {
-        add_cookie(ctx->r, do_expand(cookie->data, ctx, NULL));
+        add_cookie(ctx->r, do_expand(cookie->data, ctx, NULL, ctx->r->pool));
         cookie = cookie->next;
     }
 
@@ -3036,6 +3037,9 @@ static const char *cmd_rewriteoptions(cmd_parms *cmd,
         }
         else if (!strcasecmp(w, "legacyprefixdocroot")) {
             options |= OPTION_LEGACY_PREFIX_DOCROOT;
+        }
+        else if (!strcasecmp(w, "LongURLOptimization")) {
+            options |= OPTION_LONGOPT;
         }
         else {
             return apr_pstrcat(cmd->pool, "RewriteOptions: unknown option '",
@@ -3867,7 +3871,7 @@ static APR_INLINE int compare_lexicography(char *a, char *b)
 /*
  * Apply a single rewriteCond
  */
-static int apply_rewrite_cond(rewritecond_entry *p, rewrite_ctx *ctx)
+static int apply_rewrite_cond(rewritecond_entry *p, rewrite_ctx *ctx, apr_pool_t *pool)
 {
     char *input = NULL;
     apr_finfo_t sb;
@@ -3877,7 +3881,7 @@ static int apply_rewrite_cond(rewritecond_entry *p, rewrite_ctx *ctx)
     int basis;
 
     if (p->ptype != CONDPAT_AP_EXPR)
-        input = do_expand(p->input, ctx, NULL);
+        input = do_expand(p->input, ctx, NULL, pool);
 
     switch (p->ptype) {
     case CONDPAT_FILE_EXISTS:
@@ -4041,7 +4045,7 @@ static APR_INLINE void force_type_handler(rewriterule_entry *p,
     char *expanded;
 
     if (p->forced_mimetype) {
-        expanded = do_expand(p->forced_mimetype, ctx, p);
+        expanded = do_expand(p->forced_mimetype, ctx, p, ctx->r->pool);
 
         if (*expanded) {
             ap_str_tolower(expanded);
@@ -4055,7 +4059,7 @@ static APR_INLINE void force_type_handler(rewriterule_entry *p,
     }
 
     if (p->forced_handler) {
-        expanded = do_expand(p->forced_handler, ctx, p);
+        expanded = do_expand(p->forced_handler, ctx, p, ctx->r->pool);
 
         if (*expanded) {
             ap_str_tolower(expanded);
@@ -4152,7 +4156,7 @@ static int apply_rewrite_rule(rewriterule_entry *p, rewrite_ctx *ctx)
     for (i = 0; i < rewriteconds->nelts; ++i) {
         rewritecond_entry *c = &conds[i];
 
-        rc = apply_rewrite_cond(c, ctx);
+        rc = apply_rewrite_cond(c, ctx,  ctx->temp_pool ? ctx->temp_pool : r->pool);
         /*
          * Reset vary_this if the novary flag is set for this condition.
          */
@@ -4174,6 +4178,9 @@ static int apply_rewrite_rule(rewriterule_entry *p, rewrite_ctx *ctx)
             }
         }
         else if (!rc) {
+            if (ctx->temp_pool) { 
+                apr_pool_clear(ctx->temp_pool);
+            }
             return 0;
         }
 
@@ -4191,7 +4198,7 @@ static int apply_rewrite_rule(rewriterule_entry *p, rewrite_ctx *ctx)
 
     /* expand the result */
     if (!(p->flags & RULEFLAG_NOSUB)) {
-        newuri = do_expand(p->output, ctx, p);
+        newuri = do_expand(p->output, ctx, p, ctx->r->pool);
         rewritelog((r, 2, ctx->perdir, "rewrite '%s' -> '%s'", ctx->uri,
                     newuri));
     }
@@ -4329,10 +4336,19 @@ static int apply_rewrite_list(request_rec *r, apr_array_header_t *rewriterules,
     int s;
     rewrite_ctx *ctx;
     int round = 1;
+    rewrite_server_conf *sconf = ap_get_module_config(
+                                 r->server->module_config, &rewrite_module);
 
     ctx = apr_palloc(r->pool, sizeof(*ctx));
     ctx->perdir = perdir;
     ctx->r = r;
+
+    if (sconf->options & OPTION_LONGOPT) { 
+        apr_pool_create(&(ctx->temp_pool), r->pool);
+    }
+    else { 
+        ctx->temp_pool = NULL;
+    }
 
     /*
      *  Iterate over all existing rules
