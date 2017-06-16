@@ -291,6 +291,13 @@ LogLevel alert rewrite:trace3
          URL.  Available in 2.4.26 and later.</p>
       </dd>
 
+      <dt><code>LongURLOptimization</code></dt>
+      <dd>
+      <p>This option reduces memory usage of long, unoptimized rule sets 
+         that repeatedly expand long values in RewriteCond and RewriteRule
+         variables. Available in 2.5 and later.</p>
+      </dd>
+
       </dl>
 </usage>
 

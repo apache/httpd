@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_rewrite: Add 'RewriteOptions LongURLOptimization' to free memory
+     from each set of unmatched rewrite conditions.
+     [Eric Covener]
+
   *) Allow the argument to <IfFile>, <IfDefine>, <IfSection>, <IfDirective>, 
      and <IfModule> to be quoted.  This is primarily for the benefit of
      <IfFile>. [Eric Covener]
