@@ -1,6 +1,13 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.33
 
+  *) SECURITY: CVE-2017-7668 (cve.mitre.org)
+     The HTTP strict parsing changes added in 2.2.32 and 2.4.24 introduced a
+     bug in token list parsing, which allows ap_find_token() to search past
+     the end of its input string. By maliciously crafting a sequence of
+     request headers, an attacker may be able to cause a segmentation fault,
+     or to force ap_find_token() to return an incorrect value.
+
   *) Fix HttpProtocolOptions to inherit from global to VirtualHost scope.
      [Joe Orton]
 
