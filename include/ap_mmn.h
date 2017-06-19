@@ -167,6 +167,8 @@
  *                      and ap_scan_vchar_obstext()
  *                      Replaced fold boolean with with multiple bit flags
  *                      to ap_[r]getline()
+ * 20051115.43 (2.2.33)  Add ap_get_basic_auth_components() and deprecate
+ *                       ap_get_basic_auth_pw()
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503232UL /* "AP22" */
@@ -174,7 +176,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20051115
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 42                    /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 43                    /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
