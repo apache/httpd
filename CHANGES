@@ -5,6 +5,30 @@ Changes with Apache 2.4.27
 
 Changes with Apache 2.4.26
 
+  *) SECURITY: CVE-2017-7679 (cve.mitre.org)
+     mod_mime can read one byte past the end of a buffer when sending a
+     malicious Content-Type response header.
+
+  *) SECURITY: CVE-2017-7668 (cve.mitre.org)
+     The HTTP strict parsing changes added in 2.2.32 and 2.4.24 introduced a
+     bug in token list parsing, which allows ap_find_token() to search past
+     the end of its input string. By maliciously crafting a sequence of
+     request headers, an attacker may be able to cause a segmentation fault,
+     or to force ap_find_token() to return an incorrect value.
+
+  *) SECURITY: CVE-2017-7659 (cve.mitre.org)
+     A maliciously constructed HTTP/2 request could cause mod_http2 to
+     dereference a NULL pointer and crash the server process.
+
+  *) SECURITY: CVE-2017-3169 (cve.mitre.org)
+     mod_ssl may dereference a NULL pointer when third-party modules call
+     ap_hook_process_connection() during an HTTP request to an HTTPS port.
+
+  *) SECURITY: CVE-2017-3167 (cve.mitre.org)
+     Use of the ap_get_basic_auth_pw() by third-party modules outside of the
+     authentication phase may lead to authentication requirements being
+     bypassed.
+
   *) HTTP/2 support no longer tagged as "experimental" but is instead considered
      fully production ready.
 
