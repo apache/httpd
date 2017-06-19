@@ -104,13 +104,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_ssl: Consistently pass the expected bio_filter_in_ctx_t
-     to ssl_io_filter_error(). [Yann Ylavic]
-     trunk patch: https://svn.apache.org/r1796343
-     2.2.x patch: http://people.apache.org/~covener/patches/httpd-2.2.x-ssl_error_page_ctx.diff
-                  (function names and parameters changed a bit)
-     +1 covener, ylavic, wrowe
-
   *) core: ap_get_basic_auth_pw deprecation
      trunk patch: https://svn.apache.org/r1796348
      2.2.x patch: http://people.apache.org/~covener/patches/httpd-2.2.x-ap_get_basic_auth_pw.diff
