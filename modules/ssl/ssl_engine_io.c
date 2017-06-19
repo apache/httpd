@@ -865,19 +865,20 @@ static apr_status_t ssl_filter_write(ap_filter_t *f,
                                sizeof(HTTP_ON_HTTPS_PORT) - 1, \
                                alloc)
 
-static void ssl_io_filter_disable(SSLConnRec *sslconn, ap_filter_t *f)
+static void ssl_io_filter_disable(SSLConnRec *sslconn,
+                                  bio_filter_in_ctx_t *inctx)
 {
-    bio_filter_in_ctx_t *inctx = f->ctx;
     SSL_free(inctx->ssl);
     sslconn->ssl = NULL;
     inctx->ssl = NULL;
     inctx->filter_ctx->pssl = NULL;
 }
 
-static apr_status_t ssl_io_filter_error(ap_filter_t *f,
+static apr_status_t ssl_io_filter_error(bio_filter_in_ctx_t *inctx,
                                         apr_bucket_brigade *bb,
                                         apr_status_t status)
 {
+    ap_filter_t *f = inctx->f;
     SSLConnRec *sslconn = myConnConfig(f->c);
     apr_bucket *bucket;
     int send_eos = 1;
@@ -891,7 +892,7 @@ static apr_status_t ssl_io_filter_error(ap_filter_t *f,
             ssl_log_ssl_error(APLOG_MARK, APLOG_INFO, sslconn->server);
 
             sslconn->non_ssl_request = NON_SSL_SEND_HDR_SEP;
-            ssl_io_filter_disable(sslconn, f);
+            ssl_io_filter_disable(sslconn, inctx);
 
             /* fake the request line */
             bucket = HTTP_ON_HTTPS_PORT_BUCKET(f->c->bucket_alloc);
@@ -1407,7 +1408,7 @@ static apr_status_t ssl_io_filter_input(ap_filter_t *f,
      * rather than have SSLEngine On configured.
      */
     if ((status = ssl_io_filter_connect(inctx->filter_ctx)) != APR_SUCCESS) {
-        return ssl_io_filter_error(f, bb, status);
+        return ssl_io_filter_error(inctx, bb, status);
     }
 
     if (is_init) {
@@ -1443,7 +1444,7 @@ static apr_status_t ssl_io_filter_input(ap_filter_t *f,
 
     /* Handle custom errors. */
     if (status != APR_SUCCESS) {
-        return ssl_io_filter_error(f, bb, status);
+        return ssl_io_filter_error(inctx, bb, status);
     }
 
     /* Create a transient bucket out of the decrypted data. */
@@ -1486,7 +1487,7 @@ static apr_status_t ssl_io_filter_output(ap_filter_t *f,
     inctx->block = APR_BLOCK_READ;
 
     if ((status = ssl_io_filter_connect(filter_ctx)) != APR_SUCCESS) {
-        return ssl_io_filter_error(f, bb, status);
+        return ssl_io_filter_error(inctx, bb, status);
     }
 
     while (!APR_BRIGADE_EMPTY(bb)) {

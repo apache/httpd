@@ -8,6 +8,11 @@ Changes with Apache 2.2.33
      request headers, an attacker may be able to cause a segmentation fault,
      or to force ap_find_token() to return an incorrect value.
 
+  *) SECURITY: CVE-2017-3169 (cve.mitre.org)
+     mod_ssl may dereference a NULL pointer when third-party modules call
+     ap_hook_process_connection() during an HTTP request to an HTTPS port.
+     [Yann Ylavic]
+
   *) Fix HttpProtocolOptions to inherit from global to VirtualHost scope.
      [Joe Orton]
 
