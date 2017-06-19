@@ -4336,14 +4336,15 @@ static int apply_rewrite_list(request_rec *r, apr_array_header_t *rewriterules,
     int s;
     rewrite_ctx *ctx;
     int round = 1;
-    rewrite_server_conf *sconf = ap_get_module_config(
-                                 r->server->module_config, &rewrite_module);
+    rewrite_perdir_conf *dconf = (rewrite_perdir_conf *)
+                                 ap_get_module_config(r->per_dir_config,
+                                                      &rewrite_module);
 
     ctx = apr_palloc(r->pool, sizeof(*ctx));
     ctx->perdir = perdir;
     ctx->r = r;
 
-    if (sconf->options & OPTION_LONGOPT) { 
+    if (dconf->options & OPTION_LONGOPT) { 
         apr_pool_create(&(ctx->temp_pool), r->pool);
     }
     else { 
