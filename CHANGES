@@ -7,6 +7,7 @@ Changes with Apache 2.2.33
      the end of its input string. By maliciously crafting a sequence of
      request headers, an attacker may be able to cause a segmentation fault,
      or to force ap_find_token() to return an incorrect value.
+     [Jacob Champion]
 
   *) SECURITY: CVE-2017-3169 (cve.mitre.org)
      mod_ssl may dereference a NULL pointer when third-party modules call
