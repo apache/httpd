@@ -18,6 +18,10 @@ Changes with Apache 2.2.33
      authentication phase may lead to authentication requirements being
      bypassed.
      [Emmanuel Dreyfus <manu netbsd.org>, Jacob Champion, Eric Covener]
+
+  *) SECURITY: CVE-2017-7679 (cve.mitre.org)
+     mod_mime can read one byte past the end of a buffer when sending a
+     malicious Content-Type response header.  [Yann Ylavic]
   
   *) Fix HttpProtocolOptions to inherit from global to VirtualHost scope.
      [Joe Orton]
