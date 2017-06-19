@@ -7,7 +7,7 @@ Changes with Apache 2.4.26
 
   *) SECURITY: CVE-2017-7679 (cve.mitre.org)
      mod_mime can read one byte past the end of a buffer when sending a
-     malicious Content-Type response header.
+     malicious Content-Type response header.  [Yann Ylavic]
 
   *) SECURITY: CVE-2017-7668 (cve.mitre.org)
      The HTTP strict parsing changes added in 2.2.32 and 2.4.24 introduced a
@@ -15,6 +15,7 @@ Changes with Apache 2.4.26
      the end of its input string. By maliciously crafting a sequence of
      request headers, an attacker may be able to cause a segmentation fault,
      or to force ap_find_token() to return an incorrect value.
+     [Jacob Champion]
 
   *) SECURITY: CVE-2017-7659 (cve.mitre.org)
      A maliciously constructed HTTP/2 request could cause mod_http2 to
@@ -23,11 +24,13 @@ Changes with Apache 2.4.26
   *) SECURITY: CVE-2017-3169 (cve.mitre.org)
      mod_ssl may dereference a NULL pointer when third-party modules call
      ap_hook_process_connection() during an HTTP request to an HTTPS port.
+     [Yann Ylavic]
 
   *) SECURITY: CVE-2017-3167 (cve.mitre.org)
      Use of the ap_get_basic_auth_pw() by third-party modules outside of the
      authentication phase may lead to authentication requirements being
      bypassed.
+     [Emmanuel Dreyfus <manu netbsd.org>, Jacob Champion, Eric Covener]
 
   *) HTTP/2 support no longer tagged as "experimental" but is instead considered
      fully production ready.
@@ -36,18 +39,12 @@ Changes with Apache 2.4.26
      the session in continuous check for state changes that never happen. 
      [Stefan Eissing]
 
-  *) mod_mime: Fix error checking for quoted pairs.  [Yann Ylavic]
-
   *) mod_proxy_wstunnel: Add "upgrade" parameter to allow upgrade to other
      protocols.  [Jean-Frederic Clere]
 
   *) MPMs unix: Place signals handlers and helpers out of DSOs to avoid
      a possible crash if a signal is caught during (graceful) restart.
      PR 60487.  [Yann Ylavic]
-
-  *) core: Deprecate ap_get_basic_auth_pw() and add
-     ap_get_basic_auth_components().
-     [Emmanuel Dreyfus <manu netbsd.org>, Jacob Champion, Eric Covener]
 
   *) mod_rewrite: When a substitution is a fully qualified URL, and the 
      scheme/host/port matches the current virtual host, stop interpreting the 
@@ -64,9 +61,6 @@ Changes with Apache 2.4.26
 
   *) core: EBCDIC fixes for interim responses with additional headers.
      [Eric Covener]
-
-  *) mod_ssl: Consistently pass the expected bio_filter_in_ctx_t
-     to ssl_io_filter_error(). [Yann Ylavic]
 
   *) mod_env: when processing a 'SetEnv' directive, warn if the environment
      variable name includes a '='. It is likely a configuration error.
