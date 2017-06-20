@@ -577,8 +577,15 @@ AP_DECLARE_HOOK(int, note_auth_failure, (request_rec *r, const char *auth_type))
 
 /**
  * Get the password from the request headers. This function has multiple side
- * effects due to its prior use in the old authentication framework.
- * ap_get_basic_auth_components() should be preferred.
+ * effects due to its prior use in the old authentication framework, including
+ * setting r->user (which is supposed to indicate that the user in question has
+ * been authenticated for the current request).
+ *
+ * Modules which call ap_get_basic_auth_pw() during the authentication phase
+ * MUST either immediately authenticate the user after the call, or else stop
+ * the request immediately with an error response, to avoid incorrectly
+ * authenticating the current request. (See CVE-2017-3167.) The replacement
+ * ap_get_basic_auth_components() API should be preferred.
  *
  * @deprecated @see ap_get_basic_auth_components
  * @param r The current request
