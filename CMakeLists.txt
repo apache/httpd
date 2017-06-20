@@ -64,6 +64,12 @@ ELSE()
   SET(default_brotli_libraries)
 ENDIF()
 
+IF(EXISTS "${CMAKE_INSTALL_PREFIX}/lib/check.lib")
+  SET(default_check_libraries "${CMAKE_INSTALL_PREFIX}/lib/check.lib" "${CMAKE_INSTALL_PREFIX}/lib/compat.lib")
+ELSE()
+  SET(default_check_libraries)
+ENDIF()
+
 SET(APR_INCLUDE_DIR       "${CMAKE_INSTALL_PREFIX}/include" CACHE STRING "Directory with APR[-Util] include files")
 SET(APR_LIBRARIES         ${default_apr_libraries}       CACHE STRING "APR libraries to link with")
 SET(NGHTTP2_INCLUDE_DIR   "${CMAKE_INSTALL_PREFIX}/include" CACHE STRING "Directory with NGHTTP2 include files within nghttp2 subdirectory")
@@ -74,6 +80,8 @@ SET(LIBXML2_ICONV_INCLUDE_DIR     ""                     CACHE STRING "Directory
 SET(LIBXML2_ICONV_LIBRARIES       ""                     CACHE STRING "iconv libraries to link with for libxml2")
 SET(BROTLI_INCLUDE_DIR    "${CMAKE_INSTALL_PREFIX}/include" CACHE STRING "Directory with include files for Brotli")
 SET(BROTLI_LIBRARIES      ${default_brotli_libraries}    CACHE STRING "Brotli libraries to link with")
+SET(CHECK_INCLUDE_DIR     "${CMAKE_INSTALL_PREFIX}/include" CACHE STRING "Directory with include files for Check")
+SET(CHECK_LIBRARIES       "${default_check_libraries}"   CACHE STRING "Check libraries to link with")
 # end support library configuration
 
 # Misc. options
@@ -211,6 +219,18 @@ ELSE()
   SET(BROTLI_FOUND FALSE)
 ENDIF()
 
+# See if we have Check
+SET(CHECK_FOUND TRUE)
+IF (EXISTS "${CHECK_INCLUDE_DIR}/check.h")
+  FOREACH(onelib ${CHECK_LIBRARIES})
+    IF(NOT EXISTS "${onelib}")
+      SET(CHECK_FOUND FALSE)
+    ENDIF()
+  ENDFOREACH()
+ELSE()
+  SET(CHECK_FOUND FALSE)
+ENDIF()
+
 MESSAGE(STATUS "")
 MESSAGE(STATUS "Summary of feature detection:")
 MESSAGE(STATUS "")
@@ -220,6 +240,7 @@ MESSAGE(STATUS "NGHTTP2_FOUND ............ : ${NGHTTP2_FOUND}")
 MESSAGE(STATUS "OPENSSL_FOUND ............ : ${OPENSSL_FOUND}")
 MESSAGE(STATUS "ZLIB_FOUND ............... : ${ZLIB_FOUND}")
 MESSAGE(STATUS "BROTLI_FOUND ............. : ${BROTLI_FOUND}")
+MESSAGE(STATUS "CHECK_FOUND .............. : ${CHECK_FOUND}")
 MESSAGE(STATUS "APR_HAS_LDAP ............. : ${APR_HAS_LDAP}")
 MESSAGE(STATUS "APR_HAS_XLATE ............ : ${APR_HAS_XLATE}")
 MESSAGE(STATUS "APU_HAVE_CRYPTO .......... : ${APU_HAVE_CRYPTO}")
@@ -884,6 +905,50 @@ IF(OPENSSL_FOUND)
 ENDIF()
 GET_PROPERTY(tmp_includes TARGET ab PROPERTY INCLUDE_DIRECTORIES)
 
+# Unit Test Suite
+IF(CHECK_FOUND)
+  # Get all of the test cases.
+  # XXX Per CMake documentation, if a test case is added or removed we must
+  # re-run CMake due to our use of GLOB. TBD if this tradeoff to have
+  # "plug-and-play" test cases is really worth it.
+  FILE(GLOB httpdunit_cases "${CMAKE_SOURCE_DIR}/test/unit/*.c")
+
+  ADD_EXECUTABLE(httpdunit
+                   test/httpdunit.c
+                   ${httpdunit_cases})
+  SET_TARGET_PROPERTIES(httpdunit PROPERTIES
+                        INCLUDE_DIRECTORIES "${HTTPD_INCLUDE_DIRECTORIES} ${CHECK_INCLUDE_DIR}"
+                        # FIXME why does Check need HAVE_STDINT_H on Windows?
+                        COMPILE_FLAGS "-DHAVE_STDINT_H")
+  TARGET_LINK_LIBRARIES(httpdunit libhttpd ${APR_LIBRARIES} ${CHECK_LIBRARIES})
+
+  # Rules for generating the .tests stubs.
+  FILE(GENERATE OUTPUT "${CMAKE_BINARY_DIR}/httpdunit_gen_stubs.bat"
+                CONTENT "perl \"${CMAKE_SOURCE_DIR}/build/httpdunit_gen_stubs.pl\" < %1 > %2")
+  FILE(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/test/unit")
+
+  FOREACH(case ${httpdunit_cases})
+    STRING(REGEX REPLACE "^${CMAKE_SOURCE_DIR}" "${CMAKE_BINARY_DIR}"
+                 stub "${case}")
+    STRING(REGEX REPLACE "\\.c$" ".tests"
+                 stub "${stub}")
+
+    ADD_CUSTOM_COMMAND(TARGET httpdunit
+                       PRE_BUILD
+                       COMMAND "${CMAKE_BINARY_DIR}/httpdunit_gen_stubs.bat" "\"${case}\"" "\"${stub}\""
+                       BYPRODUCTS "${stub}")
+  ENDFOREACH()
+
+  # Rule for generating the .cases file.
+  FILE(GENERATE OUTPUT "${CMAKE_BINARY_DIR}/httpdunit_gen_cases.bat"
+                CONTENT "type \"${CMAKE_SOURCE_DIR}\"\\test\\unit\\*.c 2>NUL | perl \"${CMAKE_SOURCE_DIR}/build/httpdunit_gen_cases.pl\" --declaration > \"${CMAKE_BINARY_DIR}/test/httpdunit.cases\"
+                         type \"${CMAKE_SOURCE_DIR}\"\\test\\unit\\*.c 2>NUL | perl \"${CMAKE_SOURCE_DIR}/build/httpdunit_gen_cases.pl\" >> \"${CMAKE_BINARY_DIR}/test/httpdunit.cases\"")
+  ADD_CUSTOM_COMMAND(TARGET httpdunit
+                     PRE_BUILD
+                     COMMAND "${CMAKE_BINARY_DIR}/httpdunit_gen_cases.bat"
+                     BYPRODUCTS "${CMAKE_BINARY_DIR}/test/httpdunit.cases")
+ENDIF()
+
 # getting duplicate manifest error with ApacheMonitor
 # ADD_EXECUTABLE(ApacheMonitor support/win32/ApacheMonitor.c support/win32/ApacheMonitor.rc)
 # SET(install_targets ${install_targets} ApacheMonitor)
@@ -991,6 +1056,8 @@ MESSAGE(STATUS "  libxml2 iconv prereq include dir. : ${LIBXML2_ICONV_INCLUDE_DI
 MESSAGE(STATUS "  libxml2 iconv prereq libraries .. : ${LIBXML2_ICONV_LIBRARIES}")
 MESSAGE(STATUS "  Brotli include directory......... : ${BROTLI_INCLUDE_DIR}")
 MESSAGE(STATUS "  Brotli libraries ................ : ${BROTLI_LIBRARIES}")
+MESSAGE(STATUS "  Check include directory.......... : ${CHECK_INCLUDE_DIR}")
+MESSAGE(STATUS "  Check libraries ................. : ${CHECK_LIBRARIES}")
 MESSAGE(STATUS "  Extra include directories ....... : ${EXTRA_INCLUDES}")
 MESSAGE(STATUS "  Extra compile flags ............. : ${EXTRA_COMPILE_FLAGS}")
 MESSAGE(STATUS "  Extra libraries ................. : ${EXTRA_LIBS}")
