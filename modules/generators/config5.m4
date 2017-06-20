@@ -9,7 +9,7 @@ APACHE_MODULE(autoindex, directory listing, , , yes)
 APACHE_MODULE(asis, as-is filetypes, , , )
 APACHE_MODULE(info, server information, , , most)
 APACHE_MODULE(suexec, set uid and gid for spawned processes, , , no, [
-              other_targets=suexec ] )
+              other_targets="$other_targets suexec" ] )
 
 # Is mod_cgid needed?
 case $host in

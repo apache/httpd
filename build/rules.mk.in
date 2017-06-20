@@ -44,8 +44,8 @@ CXX_COMPILE  = $(BASE_CXX) $(PICFLAGS)
 SH_COMPILE     = $(LIBTOOL) --mode=compile $(BASE_CC) $(SHLTCFLAGS) -c $< && touch $@
 SH_CXX_COMPILE = $(LIBTOOL) --mode=compile $(BASE_CXX) $(SHLTCFLAGS) -c $< && touch $@
 
-LT_COMPILE     = $(LIBTOOL) --mode=compile $(COMPILE) $(LTCFLAGS) -c $< && touch $@
-LT_CXX_COMPILE = $(LIBTOOL) --mode=compile $(CXX_COMPILE) $(LTCFLAGS) -c $< && touch $@
+LT_COMPILE     = $(LIBTOOL) --mode=compile $(COMPILE) $(LTCFLAGS) -c $< -o $@
+LT_CXX_COMPILE = $(LIBTOOL) --mode=compile $(CXX_COMPILE) $(LTCFLAGS) -c $< -o $@
 
 # Link-related commands
 
