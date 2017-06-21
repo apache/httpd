@@ -22,6 +22,7 @@
 #include "apr_version.h"
 #include "ap_hooks.h"
 #include "apr_date.h"
+#include "mod_watchdog.h"
 
 static const char *balancer_mutex_type = "proxy-balancer-shm";
 ap_slotmem_provider_t *storage = NULL;
@@ -1140,10 +1141,12 @@ static int balancer_handler(request_rec *r)
              }
         }
         if ((val = apr_table_get(params, "w_hi"))) {
-            int ival = atoi(val);
-            if (ival >= HCHECK_WATHCHDOG_INTERVAL) {
-                wsel->s->interval = apr_time_from_sec(ival);
-             }
+            apr_interval_time_t hci;
+            if (ap_timeout_parameter_parse(val, &hci, "s") == APR_SUCCESS) {
+                if (hci >= AP_WD_TM_SLICE) {
+                    wsel->s->interval = hci;
+                }
+            }
         }
         if ((val = apr_table_get(params, "w_hp"))) {
             int ival = atoi(val);
