@@ -2152,7 +2152,7 @@ AP_DECLARE(char *) ap_append_pid(apr_pool_t *p, const char *string,
 /**
  * Parse a given timeout parameter string into an apr_interval_time_t value.
  * The unit of the time interval is given as postfix string to the numeric
- * string. Currently the following units are understood:
+ * string. Currently the following units are understood (case insensitive):
  *
  * ms    : milliseconds
  * s     : seconds
