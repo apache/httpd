@@ -2559,7 +2559,7 @@ AP_DECLARE(char *) ap_append_pid(apr_pool_t *p, const char *string,
 /**
  * Parse a given timeout parameter string into an apr_interval_time_t value.
  * The unit of the time interval is given as postfix string to the numeric
- * string. Currently the following units are understood:
+ * string. Currently the following units are understood (case insensitive):
  *
  * ms    : milliseconds
  * s     : seconds
@@ -2597,20 +2597,25 @@ AP_DECLARE(apr_status_t) ap_timeout_parameter_parse(
     switch (*time_str) {
         /* Time is in seconds */
     case 's':
+    case 'S':
         *timeout = (apr_interval_time_t) apr_time_from_sec(tout);
         break;
     case 'h':
+    case 'H':
         /* Time is in hours */
         *timeout = (apr_interval_time_t) apr_time_from_sec(tout * 3600);
         break;
     case 'm':
+    case 'M':
         switch (*(++time_str)) {
         /* Time is in milliseconds */
         case 's':
+        case 'S':
             *timeout = (apr_interval_time_t) tout * 1000;
             break;
         /* Time is in minutes */
         case 'i':
+        case 'I':
             *timeout = (apr_interval_time_t) apr_time_from_sec(tout * 60);
             break;
         default:
