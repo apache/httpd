@@ -5,11 +5,6 @@ The current version of this file can be found at:
 
   * http://svn.apache.org/repos/asf/httpd/httpd/branches/2.4.x/STATUS
 
-Documentation status is maintained separately and can be found at:
-
-  * docs/STATUS in this source tree, or
-  * http://svn.apache.org/repos/asf/httpd/httpd/branches/2.4.x/docs/STATUS
-
 The current development branch of this software can be found at:
 
   * http://svn.apache.org/repos/asf/httpd/httpd/trunk
@@ -21,10 +16,11 @@ Consult the following STATUS files for information on related projects:
   * http://svn.apache.org/repos/asf/apr/apr-util/branches/1.4.x/STATUS
   * http://svn.apache.org/repos/asf/apr/apr/branches/1.5.x/STATUS
   * http://svn.apache.org/repos/asf/apr/apr-util/branches/1.5.x/STATUS
+  * http://svn.apache.org/repos/asf/apr/apr/branches/1.6.x/STATUS
+  * http://svn.apache.org/repos/asf/apr/apr-util/branches/1.6.x/STATUS
 
 Patches considered for backport are noted in their branches' STATUS:
 
-  * http://svn.apache.org/repos/asf/httpd/httpd/branches/2.0.x/STATUS
   * http://svn.apache.org/repos/asf/httpd/httpd/branches/2.2.x/STATUS
   * http://svn.apache.org/repos/asf/httpd/httpd/branches/2.4.x/STATUS
 
@@ -35,7 +31,7 @@ Release history:
           while x.{even}.z versions are Stable/GA releases.]
 
     2.4.27  : In development.
-    2.4.26  : Tagged on June 13, 2017.
+    2.4.26  : Tagged on June 13, 2017. Released on June 19, 2017.
     2.4.25  : Tagged on December 16, 2016. Released on December 21, 2016.
     2.4.24  : Tagged on December 16, 2016, not released.
     2.4.23  : Tagged on June 30, 2016. Released on July 05, 2016.
