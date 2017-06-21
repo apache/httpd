@@ -66,7 +66,6 @@ struct wd_server_conf_t
 
 static wd_server_conf_t *wd_server_conf = NULL;
 static apr_interval_time_t wd_interval = AP_WD_TM_INTERVAL;
-static int wd_interval_set = 0;
 static int mpm_is_forked = AP_MPMQ_NOT_SUPPORTED;
 static const char *wd_proc_mutex_type = "watchdog-callback";
 
@@ -602,13 +601,10 @@ static const char *wd_cmd_watchdog_int(cmd_parms *cmd, void *dummy,
 
     if (errs != NULL)
         return errs;
-    if (wd_interval_set)
-       return "Duplicate WatchdogInterval directives are not allowed";
     if ((i = atoi(arg)) < 1)
         return "Invalid WatchdogInterval value";
 
     wd_interval = apr_time_from_sec(i);
-    wd_interval_set = 1;
     return NULL;
 }
 
