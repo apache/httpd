@@ -116,13 +116,15 @@ static const char *set_worker_param(apr_pool_t *p,
          * The default value is 60 seconds, meaning that if
          * in error state, it will be retried after that timeout.
          */
-        ival = atoi(val);
-        if (ival < 0)
-            return "Retry must be a positive value";
-        worker->s->retry = apr_time_from_sec(ival);
+        if (ap_timeout_parameter_parse(val, &timeout, "s") != APR_SUCCESS)
+            return "Retry value has wrong format";
+        if (timeout < 1000)
+            return "Retry must be at least one millisecond";
+        worker->s->retry = timeout;
         worker->s->retry_set = 1;
     }
     else if (!strcasecmp(key, "ttl")) {
+        /* XXX Second granularity is OK */
         /* Time in seconds that will destroy all the connections
          * that exceed the smax
          */
@@ -173,10 +175,11 @@ static const char *set_worker_param(apr_pool_t *p,
         /* Connection timeout in seconds.
          * Defaults to server timeout.
          */
-        ival = atoi(val);
-        if (ival < 1)
-            return "Timeout must be at least one second";
-        worker->s->timeout = apr_time_from_sec(ival);
+        if (ap_timeout_parameter_parse(val, &timeout, "s") != APR_SUCCESS)
+            return "Timeout value has wrong format";
+        if (timeout < 1000)
+            return "Timeout must be at least one millisecond";
+        worker->s->timeout = timeout;
         worker->s->timeout_set = 1;
     }
     else if (!strcasecmp(key, "iobuffersize")) {
@@ -269,14 +272,15 @@ static const char *set_worker_param(apr_pool_t *p,
             return "flushpackets must be on|off|auto";
     }
     else if (!strcasecmp(key, "flushwait")) {
-        ival = atoi(val);
-        if (ival > 1000 || ival < 0) {
-            return "flushwait must be <= 1000, or 0 for system default of 10 millseconds.";
+        if (ap_timeout_parameter_parse(val, &timeout, "ms") != APR_SUCCESS)
+            return "flushwait has wrong format";
+        if (timeout > 1000000 || timeout < 0) {
+            return "flushwait must be <= 1s, or 0 for system default of 10 millseconds.";
         }
-        if (ival == 0)
+        if (timeout == 0)
             worker->s->flush_wait = PROXY_FLUSH_WAIT;
         else
-            worker->s->flush_wait = ival * 1000;    /* change to microseconds */
+            worker->s->flush_wait = timeout;
     }
     else if (!strcasecmp(key, "ping")) {
         /* Ping/Pong timeout in given unit (default is second).
@@ -341,6 +345,7 @@ static const char *set_balancer_param(proxy_server_conf *conf,
 {
 
     int ival;
+    apr_interval_time_t timeout;
     if (!strcasecmp(key, "stickysession")) {
         char *path;
         /* Balancer sticky session name.
@@ -391,10 +396,11 @@ static const char *set_balancer_param(proxy_server_conf *conf,
          * wait for a free worker.
          * Default is not to wait.
          */
-        ival = atoi(val);
-        if (ival < 1)
-            return "timeout must be at least one second";
-        balancer->s->timeout = apr_time_from_sec(ival);
+        if (ap_timeout_parameter_parse(val, &timeout, "s") != APR_SUCCESS)
+            return "Timeout value has wrong format";
+        if (timeout < 10000)
+            return "Timeout must be at least ten milliseconds";
+        balancer->s->timeout = timeout;
     }
     else if (!strcasecmp(key, "maxattempts")) {
         /* Maximum number of failover attempts before
