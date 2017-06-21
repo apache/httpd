@@ -155,14 +155,18 @@ static const char *set_worker_hc_param(apr_pool_t *p,
         return "Unknown method";
     }
     else if (!strcasecmp(key, "hcinterval")) {
-        ival = atoi(val);
-        if (ival < HCHECK_WATHCHDOG_INTERVAL)
-            return apr_psprintf(p, "Interval must be a positive value greater than %d seconds",
-                                HCHECK_WATHCHDOG_INTERVAL);
+        apr_interval_time_t hci;
+        apr_status_t rv;
+        rv = ap_timeout_parameter_parse(val, &hci, "s");
+        if (rv != APR_SUCCESS)
+            return "Unparse-able hcinterval setting";
+        if (hci < AP_WD_TM_SLICE)
+            return apr_psprintf(p, "Interval must be a positive value greater than %"
+                                APR_TIME_T_FMT "ms", apr_time_as_msec(AP_WD_TM_SLICE));
         if (worker) {
-            worker->s->interval = apr_time_from_sec(ival);
+            worker->s->interval = hci;
         } else {
-            temp->interval = apr_time_from_sec(ival);
+            temp->interval = hci;
         }
     }
     else if (!strcasecmp(key, "hcpasses")) {
@@ -1022,7 +1026,7 @@ static int hc_post_config(apr_pool_t *p, apr_pool_t *plog,
             continue;
         }
         rv = hc_watchdog_register_callback(watchdog,
-                apr_time_from_sec(HCHECK_WATHCHDOG_INTERVAL),
+                apr_time_from_sec(AP_WD_TM_SLICE),
                 ctx,
                 hc_watchdog_callback);
         if (rv) {
