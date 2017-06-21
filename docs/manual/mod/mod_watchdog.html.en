@@ -62,7 +62,7 @@ core or, if a dynamic module, be loaded before the calling module.
 <div class="directive-section"><h2><a name="WatchdogInterval" id="WatchdogInterval">WatchdogInterval</a> <a name="watchdoginterval" id="watchdoginterval">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Watchdog interval in seconds</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>WatchdogInterval <var>number-of-seconds</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>WatchdogInterval <var>time-interval</var>[s]</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>WatchdogInterval 1</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
