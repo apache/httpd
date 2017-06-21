@@ -311,7 +311,7 @@ a different URL</td></tr>
     <p>The new <em>URL</em> may be either an absolute URL beginning
     with a scheme and hostname, or a URL-path beginning with a slash.
     In this latter case the scheme and hostname of the current server
-    will be added if if you have 
+    will be added if you have 
     <code class="directive"><a href="../mod/core.html#usecanonicalname">UseCanonicalName</a></code> set to on, 
     otherwise the hostname will be replaced with the requested Host 
     header.</p>
