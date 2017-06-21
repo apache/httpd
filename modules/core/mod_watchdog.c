@@ -449,6 +449,9 @@ static int wd_post_config_hook(apr_pool_t *pconf, apr_pool_t *plog,
         apr_pool_create(&wd_server_conf->pool, ppconf);
         apr_pool_userdata_set(wd_server_conf, pk, apr_pool_cleanup_null, ppconf);
     }
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(010033)
+                 "Watchdog: Running with WatchdogInterval %"
+                 APR_TIME_T_FMT "ms", apr_time_as_msec(wd_interval));
     wd_server_conf->s = s;
     if ((wl = ap_list_provider_names(pconf, AP_WATCHDOG_PGROUP,
                                             AP_WATCHDOG_PVERSION))) {
@@ -596,15 +599,20 @@ static void wd_child_init_hook(apr_pool_t *p, server_rec *s)
 static const char *wd_cmd_watchdog_int(cmd_parms *cmd, void *dummy,
                                        const char *arg)
 {
-    int i;
+    apr_status_t rv;
     const char *errs = ap_check_cmd_context(cmd, GLOBAL_ONLY);
 
     if (errs != NULL)
         return errs;
-    if ((i = atoi(arg)) < 1)
-        return "Invalid WatchdogInterval value";
+    rv = ap_timeout_parameter_parse(arg, &wd_interval, "s");
 
-    wd_interval = apr_time_from_sec(i);
+    if (rv != APR_SUCCESS)
+        return "Unparse-able WatchdogInterval setting";
+    if (wd_interval < AP_WD_TM_SLICE) {
+        return apr_psprintf(cmd->pool, "Invalid WatchdogInterval: minimal value %"
+                APR_TIME_T_FMT "ms", apr_time_as_msec(AP_WD_TM_SLICE));
+    }
+
     return NULL;
 }
 
