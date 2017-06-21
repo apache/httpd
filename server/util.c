@@ -1526,7 +1526,7 @@ AP_DECLARE(const char *) ap_parse_token_list_strict(apr_pool_t *p,
     while (!string_end) {
         const unsigned char c = (unsigned char)*cur;
 
-        if (c && !TEST_CHAR(c, T_HTTP_TOKEN_STOP)) {
+        if (!TEST_CHAR(c, T_HTTP_TOKEN_STOP)) {
             /* Non-separator character; we are finished with leading
              * whitespace. We must never have encountered any trailing
              * whitespace before the delimiter (comma) */
@@ -1600,7 +1600,7 @@ AP_DECLARE(const char *) ap_parse_token_list_strict(apr_pool_t *p,
  */
 AP_DECLARE(const char *) ap_scan_http_field_content(const char *ptr)
 {
-    for ( ; *ptr && !TEST_CHAR(*ptr, T_HTTP_CTRLS); ++ptr) ;
+    for ( ; !TEST_CHAR(*ptr, T_HTTP_CTRLS); ++ptr) ;
 
     return ptr;
 }
@@ -1610,7 +1610,7 @@ AP_DECLARE(const char *) ap_scan_http_field_content(const char *ptr)
  */
 AP_DECLARE(const char *) ap_scan_http_token(const char *ptr)
 {
-    for ( ; *ptr && !TEST_CHAR(*ptr, T_HTTP_TOKEN_STOP); ++ptr) ;
+    for ( ; !TEST_CHAR(*ptr, T_HTTP_TOKEN_STOP); ++ptr) ;
 
     return ptr;
 }
@@ -1620,7 +1620,7 @@ AP_DECLARE(const char *) ap_scan_http_token(const char *ptr)
  */
 AP_DECLARE(const char *) ap_scan_vchar_obstext(const char *ptr)
 {
-    for ( ; *ptr && TEST_CHAR(*ptr, T_VCHAR_OBSTEXT); ++ptr) ;
+    for ( ; TEST_CHAR(*ptr, T_VCHAR_OBSTEXT); ++ptr) ;
 
     return ptr;
 }
