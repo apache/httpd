@@ -1093,7 +1093,7 @@ ProxyPass "/example" "http://backend.example.com" max=20 ttl=120 retry=300
     <tr><td>flushwait</td>
         <td>10</td>
         <td>The time to wait for additional input, in milliseconds, before
-        flushing the output brigade if 'flushpackets' is 'auto'.
+        flushing the output brigade if 'flushpackets' is 'auto'. Uses time-interval directive syntax.
     </td></tr>
     <tr><td>iobuffersize</td>
         <td>8192</td>
@@ -1112,7 +1112,7 @@ ProxyPass "/example" "http://backend.example.com" max=20 ttl=120 retry=300
     <p>The frequency of initial and subsequent TCP keepalive probes
     depends on global OS settings, and may be as high as 2 hours. To be useful,
     the frequency configured in the OS must be smaller than the threshold used
-    by the firewall.</p>
+    by the firewall. Uses time-interval directive syntax.</p>
     </td></tr>
     <tr><td>lbset</td>
         <td>0</td>
@@ -1139,7 +1139,7 @@ ProxyPass "/example" "http://backend.example.com" max=20 ttl=120 retry=300
         which could be an issue, but it will lower the
         traffic in case some of the cluster nodes are down or busy.
         By adding a postfix of ms, the delay can be also set in
-        milliseconds.
+        milliseconds. Uses time-interval directive syntax.
     </td></tr>
     <tr><td>receivebuffersize</td>
         <td>0</td>
@@ -1163,7 +1163,7 @@ ProxyPass "/example" "http://backend.example.com" max=20 ttl=120 retry=300
     Apache httpd will not forward any requests to that server until the timeout
     expires. This enables to shut down the backend server for maintenance
     and bring it back online later. A value of 0 means always retry workers
-    in an error state with no timeout.
+    in an error state with no timeout. Uses time-interval directive syntax.
     </td></tr>
     <tr><td>route</td>
         <td>-</td>
@@ -1195,13 +1195,14 @@ ProxyPass "/example" "http://backend.example.com" max=20 ttl=120 retry=300
         <td><directive module="mod_proxy">ProxyTimeout</directive></td>
         <td>Connection timeout in seconds.
         The number of seconds Apache httpd waits for data sent by / to the backend.
+        Uses time-interval directive syntax.
     </td></tr>
     <tr><td>ttl</td>
         <td>-</td>
         <td>Time to live for inactive connections and associated connection
         pool entries, in seconds.  Once reaching this limit, a
         connection will not be used again; it will be closed at some
-        later time.
+        later time. Uses time-interval directive syntax.
     </td></tr>
     <tr><td>flusher</td>
         <td>flush</td>
@@ -1279,7 +1280,7 @@ ProxyPass "/example" "http://backend.example.com" max=20 ttl=120 retry=300
     <tr><td>timeout</td>
         <td>0</td>
         <td>Balancer timeout in seconds. If set, this will be the maximum time
-        to wait for a free worker. The default is to not wait.
+        to wait for a free worker. The default is to not wait. Uses time-interval directive syntax.
     </td></tr>
     <tr><td>failonstatus</td>
         <td>-</td>

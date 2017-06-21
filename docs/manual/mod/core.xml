@@ -2635,7 +2635,7 @@ the server configuration files</description>
 <name>KeepAliveTimeout</name>
 <description>Amount of time the server will wait for subsequent
 requests on a persistent connection</description>
-<syntax>KeepAliveTimeout <var>num</var>[ms]</syntax>
+<syntax>KeepAliveTimeout <var>time-interval</var>[s]</syntax>
 <default>KeepAliveTimeout 5</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
@@ -4770,7 +4770,7 @@ server</description>
 <name>TimeOut</name>
 <description>Amount of time the server will wait for
 certain events before failing a request</description>
-<syntax>TimeOut <var>seconds</var></syntax>
+<syntax>TimeOut <var>time-interval</var>[s]</syntax>
 <default>TimeOut 60</default>
 <contextlist><context>server config</context><context>virtual host</context></contextlist>
 

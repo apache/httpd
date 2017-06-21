@@ -78,7 +78,7 @@
         <td>Number of failed health check tests before worker is disabled</td></tr>
     <tr><td>hcinterval</td>
         <td>30</td>
-        <td>Period of health checks in seconds (e.g. performed every 30 seconds)</td></tr>
+        <td>Period of health checks in seconds (e.g. performed every 30 seconds). Uses time-interval directive syntax. </td></tr>
     <tr><td>hcuri</td>
         <td>&nbsp;</td>
         <td>Additional URI to be appended to the worker URL for the health check.</td></tr>

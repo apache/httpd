@@ -48,7 +48,7 @@ core or, if a dynamic module, be loaded before the calling module.
 <directivesynopsis>
 <name>WatchdogInterval</name>
 <description>Watchdog interval in seconds</description>
-<syntax>WatchdogInterval <var>number-of-seconds</var></syntax>
+<syntax>WatchdogInterval <var>time-interval</var>[s]</syntax>
 <default>WatchdogInterval 1</default>
 <contextlist><context>server config</context></contextlist>
 
