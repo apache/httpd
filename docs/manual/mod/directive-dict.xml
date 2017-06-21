@@ -123,7 +123,20 @@
       environment variable. See the <a
       href="../env.html">environment variable documentation</a> for
       more details.</dd>
-    </dl>
+
+      <dt><em>time-interval</em></dt>
+
+      <dd>A time-internal format especially suited to specifying
+      timeout paramters. Supports the following format specifiers:
+        <ul>
+          <li><em>s</em>: Seconds</li>
+          <li><em>h</em>: Hours</li>
+          <li><em>ms</em>: Milli-seconds</li>
+          <li><em>mi[n]</em>: Minutes</li>
+        </ul>
+        For example: <code>Timeout 575ms</code>
+      </dd>
+   </dl>
 </section>
 
 <section id="Default"><title>Default</title>
