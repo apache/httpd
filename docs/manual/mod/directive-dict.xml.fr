@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1544626:1799454 (outdated) -->
+<!-- English Revision: 1544626:1799456 (outdated) -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 

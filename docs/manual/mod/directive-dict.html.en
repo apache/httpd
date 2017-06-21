@@ -139,8 +139,8 @@
 
       <dt><em>time-interval</em></dt>
 
-      <dd>A time-internal format especially suited to specifying
-      timeout paramters. Supports the following format specifiers:
+      <dd>A time-interval format especially suited to specifying
+      timeout parameters. Supports the following format specifiers:
         <ul>
           <li><em>s</em>: Seconds</li>
           <li><em>h</em>: Hours</li>

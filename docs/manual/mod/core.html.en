@@ -2617,7 +2617,7 @@ the server configuration files</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Amount of time the server will wait for subsequent
 requests on a persistent connection</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>KeepAliveTimeout <var>num</var>[ms]</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>KeepAliveTimeout <var>time-interval</var>[s]</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>KeepAliveTimeout 5</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
@@ -4783,7 +4783,7 @@ server</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Amount of time the server will wait for
 certain events before failing a request</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>TimeOut <var>seconds</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>TimeOut <var>time-interval</var>[s]</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>TimeOut 60</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
