@@ -91,7 +91,7 @@ virtuel basé sur le nom approprié</a></h2>
     (la plus exacte) correspondance avec la paire adresse IP/port
     utilisée dans la requête. Si plusieurs serveurs virtuels possèdent
     cette même paire adresse IP/port, Apache va ensuite comparer les
-    valeurs des directives <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> et <code class="directive">module="core"&gt;ServerAlias</code> avec le nom de serveur
+    valeurs des directives <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> et <code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code> avec le nom de serveur
     présent dans la requête.</p>
 
     <p>Si vous ne définissez pas de directive <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> pour un serveur virtuel à base
