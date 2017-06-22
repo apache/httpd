@@ -117,10 +117,9 @@ responses from the server</td></tr>
 [<var>extension</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Maps the given filename extensions onto the specified content
 type</td></tr>
 <tr class="odd"><td><a href="mod_alias.html#alias">Alias [<var>URL-path</var>]
-<var>file-path</var>|<var>directory-path</var></a></td><td></td><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Maps URLs to filesystem locations</td></tr>
+<var>file-path</var>|<var>directory-path</var></a></td><td></td><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Mapea URLs a rutas del sistema de ficheros</td></tr>
 <tr><td><a href="mod_alias.html#aliasmatch">AliasMatch <var>regex</var>
-<var>file-path</var>|<var>directory-path</var></a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Maps URLs to filesystem locations using regular
-expressions</td></tr>
+<var>file-path</var>|<var>directory-path</var></a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Mapea URLs a ubicaciones del sistema de ficheros usando expresiones regulares</td></tr>
 <tr class="odd"><td><a href="mod_access_compat.html#allow"> Allow from all|<var>host</var>|env=[!]<var>env-variable</var>
 [<var>host</var>|env=[!]<var>env-variable</var>] ...</a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Controla qué hosts pueden acceder a un área del servidor</td></tr>
 <tr><td><a href="mod_proxy_connect.html#allowconnect">AllowCONNECT <var>port</var>[-<var>port</var>]
@@ -871,15 +870,12 @@ header for proxied requests</td></tr>
 of the index listing</td></tr>
 <tr><td><a href="mpm_common.html#receivebuffersize">ReceiveBufferSize <var>bytes</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">TCP receive buffer size</td></tr>
 <tr class="odd"><td><a href="mod_alias.html#redirect">Redirect [<var>status</var>] [<var>URL-path</var>]
-<var>URL</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Sends an external redirect asking the client to fetch
-a different URL</td></tr>
+<var>URL</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Envía una redirección externa indicando al cliente que solicite una URL distinta</td></tr>
 <tr><td><a href="mod_alias.html#redirectmatch">RedirectMatch [<var>status</var>] <var>regex</var>
-<var>URL</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Sends an external redirect based on a regular expression match
-of the current URL</td></tr>
-<tr class="odd"><td><a href="mod_alias.html#redirectpermanent">RedirectPermanent <var>URL-path</var> <var>URL</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Sends an external permanent redirect asking the client to fetch
-a different URL</td></tr>
-<tr><td><a href="mod_alias.html#redirecttemp">RedirectTemp <var>URL-path</var> <var>URL</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Sends an external temporary redirect asking the client to fetch
-a different URL</td></tr>
+<var>URL</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Envía una redirección externa basada en una coincidencia de expresión regular con la URL actual
+</td></tr>
+<tr class="odd"><td><a href="mod_alias.html#redirectpermanent">RedirectPermanent <var>URL-path</var> <var>URL</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Envía una redirección externa permanente indicando al cliente que solicite una URL diferente</td></tr>
+<tr><td><a href="mod_alias.html#redirecttemp">RedirectTemp <var>URL-path</var> <var>URL</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Envía una redirección externa temporal indicando al cliente que solicite una URL diferente</td></tr>
 <tr class="odd"><td><a href="mod_reflector.html#reflectorheader">ReflectorHeader <var>inputheader</var> <var>[outputheader]</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Reflect an input header to the output headers</td></tr>
 <tr><td><a href="core.html#registerhttpmethod">RegisterHttpMethod <var>method</var> [<var>method</var> [...]]</a></td><td></td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Register non-standard HTTP methods</td></tr>
 <tr class="odd"><td><a href="mod_remoteip.html#remoteipheader">RemoteIPHeader <var>header-field</var></a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Declare the header field which should be parsed for useragent IP addresses</td></tr>
@@ -952,11 +948,10 @@ processes launched by Apache httpd children</td></tr>
 the child processes</td></tr>
 <tr class="odd"><td><a href="mod_actions.html#script">Script <var>method</var> <var>cgi-script</var></a></td><td></td><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Activa un script CGI para peticiones con un método concreto.</td></tr>
 <tr><td><a href="mod_alias.html#scriptalias">ScriptAlias [<var>URL-path</var>]
-<var>file-path</var>|<var>directory-path</var></a></td><td></td><td>svd</td><td>B</td></tr><tr><td class="descr" colspan="4">Maps a URL to a filesystem location and designates the
-target as a CGI script</td></tr>
+<var>file-path</var>|<var>directory-path</var></a></td><td></td><td>svd</td><td>B</td></tr><tr><td class="descr" colspan="4">Mapea una URL a una ubicación del sistema de ficheros y designa el destino como un script CGI</td></tr>
 <tr class="odd"><td><a href="mod_alias.html#scriptaliasmatch">ScriptAliasMatch <var>regex</var>
-<var>file-path</var>|<var>directory-path</var></a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Maps a URL to a filesystem location using a regular expression
-and designates the target as a CGI script</td></tr>
+<var>file-path</var>|<var>directory-path</var></a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Mapea una URL a una ubicación del sistema de ficheros usando 
+una expresión regular y designa el destino como un script CGI</td></tr>
 <tr><td><a href="core.html#scriptinterpretersource">ScriptInterpreterSource Registry|Registry-Strict|Script</a></td><td> Script </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Technique for locating the interpreter for CGI
 scripts</td></tr>
 <tr class="odd"><td><a href="mod_cgi.html#scriptlog">ScriptLog <var>file-path</var></a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Location of the CGI script error logfile</td></tr>
