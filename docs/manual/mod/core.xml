@@ -818,9 +818,11 @@ DocumentRoot "/var/www/${servername}/htdocs"
     <p>Variable names may not contain colon ":" characters, to avoid clashes
     with <directive module="mod_rewrite">RewriteMap</directive>'s syntax.</p>
 
-    <p>While this directive is supported in virtual host context,
-       the changes it makes are visible to any later configuration
-       directives, beyond any enclosing virtual host.</p>
+    <note><title>Virtual Host scope and pitfalls</title>
+      <p>While this directive is supported in virtual host context,
+         the changes it makes are visible to any later configuration
+         directives, beyond any enclosing virtual host.</p>
+    </note>
 </usage>
 </directivesynopsis>
 
