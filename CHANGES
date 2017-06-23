@@ -1,4 +1,8 @@
                                                          -*- coding: utf-8 -*-
+Changes with Apache 2.2.34
+
+
+
 Changes with Apache 2.2.33
 
   *) SECURITY: CVE-2017-7668 (cve.mitre.org)
