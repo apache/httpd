@@ -1225,8 +1225,8 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
                  * a 403 and instead send a 404 like other OSs would. PR55887
                  */
                 preg = ap_pregcomp(r->pool,
-					               "/(aux|con|com[1-9]|lpt[1-9]|nul|prn)"
-					               "($|/|.)", AP_REG_EXTENDED | AP_REG_ICASE);
+               "/(aux|con|com[1-9]|lpt[1-9]|nul|prn)"
+               "($|/|.)", AP_REG_EXTENDED | AP_REG_ICASE);
                 if (ap_regexec(preg, r->uri, 0, NULL, 0) == 0)
                     return r->status = HTTP_NOT_FOUND;
 #endif
