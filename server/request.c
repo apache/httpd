@@ -1211,10 +1211,25 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
                 break;
             }
             else if (thisinfo.filetype != APR_DIR) {
+#ifdef _WIN32
+                ap_regex_t *preg;
+#endif
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00038)
                               "Forbidden: %s doesn't point to "
                               "a file or directory",
                               r->filename);
+#ifdef _WIN32
+                /* Windows has a number of reserved words that cannot be used
+                 * as a file or directory name so thisinfo.filetype will
+                 * always be != APR_DIR. Don't allow us be fingerprinted with
+                 * a 403 and instead send a 404 like other OSs would. PR55887
+                 */
+                preg = ap_pregcomp(r->pool,
+					               "/(aux|con|com[1-9]|lpt[1-9]|nul|prn)"
+					               "($|/|.)", AP_REG_EXTENDED | AP_REG_ICASE);
+                if (ap_regexec(preg, r->uri, 0, NULL, 0) == 0)
+                    return r->status = HTTP_NOT_FOUND;
+#endif
                 return r->status = HTTP_FORBIDDEN;
             }
 
