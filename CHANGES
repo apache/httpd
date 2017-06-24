@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core: Send a 404 response like other OSs do instead of 403 on Windows
+     when a path segment or file requested uses a reserved word so Windows
+     cannot be fingerprinted. PR55887 [Gregg Smith]
+
   *) mod_rewrite: Add 'RewriteOptions LongURLOptimization' to free memory
      from each set of unmatched rewrite conditions.
      [Eric Covener]
