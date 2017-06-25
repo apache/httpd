@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1756706:1799478 (outdated) -->
+<!-- English Revision: 1799478 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -332,7 +332,10 @@ d'effectuer une autre requête avec une URL différente</description>
     peut être une URL absolue commençant par un protocole et un nom
     d'hôte, mais on peut aussi utiliser un chemin URL commençant par un
     slash, auquel cas le protocole et le nom d'hôte du serveur local
-    seront ajoutés.</p>
+    seront ajoutés, si vous avez défini <directive
+    module="core">UseCanonicalName</directive> à on. Si <directive
+    module="core">UseCanonicalName</directive> n'a pas été défini à on, le nom
+    d'hôte sera remplacé par la valeur de l'en-tête requested Host.</p>
 
     <p>Ensuite, toute requête commençant par <em>URL-path</em> va
     renvoyer une redirection au client vers l'<em>URL</em> cible. Tout

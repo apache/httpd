@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1780210:1798938 (outdated) -->
+<!-- English Revision: 1798938 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -327,6 +327,14 @@ pour le moteur de réécriture</description>
       local obtenu à partir de la réduction d'une URL n'est pas préfixé par la
       valeur de la directive DocumentRoot. Disponible à partir de la version
       2.4.26 du serveur HTTP Apache.</p>
+      </dd>
+
+      <dt><code>LongURLOptimization</code></dt>
+      <dd>
+      <p>Cette option permet de réduire la consommation de mémoire des jeux de
+      règles longs et non optimisés qui enregistrent de manière répétitive de
+      longues valeurs dans des variables au sein des directives RewriteCond et
+      RewriteRule. Disponible à partir de la version 2.5 du serveur HTTP Apache.</p>
       </dd>
 
       </dl>

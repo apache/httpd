@@ -1,7 +1,7 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1544626:1799456 (outdated) -->
+<!-- English Revision: 1799456 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -24,69 +24,69 @@
 
 <manualpage metafile="directive-dict.xml.meta">
 
-  <title>Termes utilis&eacute;s pour la description des directives</title>
+  <title>Termes utilisés pour la description des directives</title>
 
 <summary>
-    <p>Ce document d&eacute;crit les termes utilis&eacute;s pour d&eacute;crire chaque <a
+    <p>Ce document décrit les termes utilisés pour décrire chaque <a
     href="directives.html">directive de configuration</a> d'Apache.</p>
 </summary>
 <seealso><a href="../configuring.html">Fichiers de configuration</a></seealso>
 
 <section id="Description"><title>Description</title>
 
-<p>Une br&egrave;ve description des fonctions de cette directive.</p>
+<p>Une brève description des fonctions de cette directive.</p>
 </section>
 
 <section id="Syntax"><title>Syntaxe</title>
 
     <p>Ce terme introduit le format sous lequel la directive doit
-    appara&icirc;tre dans le fichier de configuration. Cette syntaxe est tr&egrave;s
-    sp&eacute;cifique &agrave; la directive et est d&eacute;crite en d&eacute;tail dans la
-    d&eacute;finition de cette derni&egrave;re. En g&eacute;n&eacute;ral, le nom de la directive est
-    suivi d'un ou plusieurs arguments s&eacute;par&eacute;s par des espaces. Si un
-    argument contient un espace, il doit &ecirc;tre entour&eacute; de guillemets. Les
-    arguments optionnels sont entour&eacute;s de crochets. Lorsqu'un argument
+    apparaître dans le fichier de configuration. Cette syntaxe est très
+    spécifique à la directive et est décrite en détail dans la
+    définition de cette dernière. En général, le nom de la directive est
+    suivi d'un ou plusieurs arguments séparés par des espaces. Si un
+    argument contient un espace, il doit être entouré de guillemets. Les
+    arguments optionnels sont entourés de crochets. Lorsqu'un argument
     accepte une valeur parmi une liste de valeurs possibles, cette liste
-    est sp&eacute;cifi&eacute;e en s&eacute;parant les valeurs par une barre verticale "|".
-    Les textes litt&eacute;raux sont pr&eacute;sent&eacute;s dans la fonte par d&eacute;faut, alors
+    est spécifiée en séparant les valeurs par une barre verticale "|".
+    Les textes littéraux sont présentés dans la fonte par défaut, alors
     que les types d'argument pour lesquels une substitution est
-    n&eacute;cessaire sont en <em>gras</em>. La syntaxe des directives
+    nécessaire sont en <em>gras</em>. La syntaxe des directives
     acceptant un nombre variable d'arguments se termine par "...", ce
-    qui indique que le dernier argument peut &ecirc;tre r&eacute;p&eacute;t&eacute;.</p>
+    qui indique que le dernier argument peut être répété.</p>
 
     <p>Les directives utilisent un grand nombre de types d'arguments
-    diff&eacute;rents. Les plus courants sont d&eacute;finis ci-dessous.</p>
+    différents. Les plus courants sont définis ci-dessous.</p>
 
     <dl>
       <dt><em>URL</em></dt>
 
       <dd>Un Localisateur de Ressource Uniforme (Uniform Resource
-      Locator) complet comportant un protocole, un nom d'h&ocirc;te et un nom
+      Locator) complet comportant un protocole, un nom d'hôte et un nom
       de chemin optionnel comme dans
       <code>http://www.example.com/chemin/vers/fichier.html</code></dd>
 
       <dt><em>chemin-URL</em></dt>
 
       <dd>La partie de l'<em>url</em> qui suit le protocole et le nom
-      d'h&ocirc;te comme dans <code>/chemin/vers/fichier.html</code>. Le
-      <em>chemin-URL</em> repr&eacute;sente la ressource vue depuis le web, et est
-      diff&eacute;rente de la repr&eacute;sentation de cette m&ecirc;me ressource vue depuis le
-      syst&egrave;me de fichiers.</dd>
+      d'hôte comme dans <code>/chemin/vers/fichier.html</code>. Le
+      <em>chemin-URL</em> représente la ressource vue depuis le web, et est
+      différente de la représentation de cette même ressource vue depuis le
+      système de fichiers.</dd>
 
       <dt><em>chemin-fichier</em></dt>
 
-      <dd>Le chemin d'un fichier dans le syst&egrave;me de fichiers local
-      commen&ccedil;ant par le r&eacute;pertoire racine comme dans
+      <dd>Le chemin d'un fichier dans le système de fichiers local
+      commençant par le répertoire racine comme dans
       <code>/usr/local/apache/htdocs/chemin/vers/fichier.html</code>.
       Sauf mention contraire, un <em>chemin-fichier</em> qui ne commence
-      pas par un slash sera consid&eacute;r&eacute; comme relatif au r&eacute;pertoire d&eacute;fini
+      pas par un slash sera considéré comme relatif au répertoire défini
       par la directive <a
       href="core.html#serverroot">ServerRoot</a>.</dd>
 
-      <dt><em>chemin-r&eacute;pertoire</em></dt>
+      <dt><em>chemin-répertoire</em></dt>
 
-      <dd>Le chemin d'un r&eacute;pertoire dans le syst&egrave;me de fichiers local
-      commen&ccedil;ant par le r&eacute;pertoire racine comme dans
+      <dd>Le chemin d'un répertoire dans le système de fichiers local
+      commençant par le répertoire racine comme dans
       <code>/usr/local/apache/htdocs/chemin/vers/</code>.</dd>
 
       <dt><em>nom-fichier</em></dt>
@@ -97,111 +97,124 @@
       <dt><em>regex</em></dt>
 
       <dd>Une <glossary ref="regex">expression rationnelle</glossary>
-      compatible Perl. La d&eacute;finition de la directive sp&eacute;cifiera &agrave; quoi
-      <em>regex</em> sera compar&eacute;e.</dd>
+      compatible Perl. La définition de la directive spécifiera à quoi
+      <em>regex</em> sera comparée.</dd>
 
       <dt><em>extension</em></dt>
 
-      <dd>En g&eacute;n&eacute;ral, c'est la partie du <em>nom de fichier</em> qui
-      suit le dernier point. Cependant, Apache reconna&icirc;t plusieurs
+      <dd>En général, c'est la partie du <em>nom de fichier</em> qui
+      suit le dernier point. Cependant, Apache reconnaît plusieurs
       extensions de noms de fichiers ; ainsi, si un <em>nom de
       fichier</em>
       contient plusieurs points, chacune des parties du nom de fichier
-      s&eacute;par&eacute;es par des points et situ&eacute;es apr&egrave;s le premier point est une
+      séparées par des points et situées après le premier point est une
       <em>extension</em>. Par exemple, le <em>nom de fichier</em>
       <code>fichier.html.en</code> comporte deux extensions :
       <code>.html</code> et <code>.en</code>. Pour les directives
-      Apache, vous pouvez sp&eacute;cifier les <em>extension</em>s avec ou sans
+      Apache, vous pouvez spécifier les <em>extension</em>s avec ou sans
       le point initial. Enfin, les <em>extension</em>s ne sont pas
-      sensibles &agrave; la casse.</dd>
+      sensibles à la casse.</dd>
 
       <dt><em>MIME-type</em></dt>
 
-      <dd>Une m&eacute;thode de description du format d'un fichier consistant
-      en un type de format majeur et un type de format mineur s&eacute;par&eacute;s
+      <dd>Une méthode de description du format d'un fichier consistant
+      en un type de format majeur et un type de format mineur séparés
       par un slash comme dans <code>text/html</code>.</dd>
 
       <dt><em>env-variable</em></dt>
 
       <dd>Le nom d'une <a href="../env.html">variable
-      d'environnement</a> d&eacute;finie au cours du processus de configuration
-      d'Apache. Notez qu'elle peut &ecirc;tre diff&eacute;rente d'une variable
-      d'environnement du syst&egrave;me d'exploitation. Voir la <a
+      d'environnement</a> définie au cours du processus de configuration
+      d'Apache. Notez qu'elle peut être différente d'une variable
+      d'environnement du système d'exploitation. Voir la <a
       href="../env.html">documentation sur les variables d'environnement</a>
-      pour plus de d&eacute;tails.</dd>
+      pour plus de détails.</dd>
+
+      <dt><em>time-interval</em></dt>
+
+      <dd>Un format d'intervalle de temps spécifique à divers paramètres de
+      timeout. Les formats supportés sont les suivants :
+        <ul>
+          <li><em>s</em>: Secondes</li>
+          <li><em>h</em>: Heures</li>
+          <li><em>ms</em>: Millisecondes</li>
+          <li><em>mi[n]</em>: Minutes</li>
+        </ul>
+        Par exemple : <code>Timeout 575ms</code>
+      </dd>      
     </dl>
 </section>
 
-<section id="Default"><title>D&eacute;faut</title>
+<section id="Default"><title>Défaut</title>
 
-    <p>Si la directive poss&egrave;de une valeur par d&eacute;faut (en d'autres
+    <p>Si la directive possède une valeur par défaut (en d'autres
     termes, si le serveur Web Apache se comporte comme si vous l'aviez
-    d&eacute;finie &agrave; une valeur particuli&egrave;re, alors que vous l'avez omise dans
-    votre configuration), elle est sp&eacute;cifi&eacute;e ici. Si la directive ne
-    poss&egrave;de pas de valeur par d&eacute;faut, cette section doit sp&eacute;cifier
-    "<em>Aucune</em>". Notez que la valeur par d&eacute;faut dont il est
-    question n'est pas n&eacute;cessairement la m&ecirc;me que la valeur attribu&eacute;e &agrave;
-    la directive dans le fichier httpd.conf par d&eacute;faut distribu&eacute; avec le
+    définie à une valeur particulière, alors que vous l'avez omise dans
+    votre configuration), elle est spécifiée ici. Si la directive ne
+    possède pas de valeur par défaut, cette section doit spécifier
+    "<em>Aucune</em>". Notez que la valeur par défaut dont il est
+    question n'est pas nécessairement la même que la valeur attribuée à
+    la directive dans le fichier httpd.conf par défaut distribué avec le
     serveur.</p>
 </section>
 
 <section id="Context"><title>Contexte</title>
 
     <p>Indique les parties des fichiers de configuration du serveur
-    o&ugrave; cette directive est valide. Il s'agit d'une liste d'une ou
-    plusieurs des valeurs suivantes s&eacute;par&eacute;es par des virgules :</p>
+    où cette directive est valide. Il s'agit d'une liste d'une ou
+    plusieurs des valeurs suivantes séparées par des virgules :</p>
 
     <dl>
       <dt>configuration du serveur</dt>
 
-      <dd>Signifie que la directive peut &ecirc;tre utilis&eacute;e dans les fichiers
+      <dd>Signifie que la directive peut être utilisée dans les fichiers
       de configuration du serveur (par exemple <code>httpd.conf</code>),
-      mais <strong>pas</strong> &agrave; l'int&eacute;rieur d'un conteneur <directive
+      mais <strong>pas</strong> à l'intérieur d'un conteneur <directive
       module="core" type="section">VirtualHost</directive> ou <directive
-      module="core" type="section">Directory</directive>. De m&ecirc;me, elle
+      module="core" type="section">Directory</directive>. De même, elle
       n'est pas valide dans les fichiers <code>.htaccess</code>.</dd>
 
       <dt>serveur virtuel</dt>
 
-      <dd>Signifie que la directive peut appara&icirc;tre &agrave; l'int&eacute;rieur d'un
+      <dd>Signifie que la directive peut apparaître à l'intérieur d'un
       conteneur <directive module="core"
       type="section">VirtualHost</directive> dans les fichiers de
       configuration du serveur.</dd>
 
-      <dt>r&eacute;pertoire</dt>
+      <dt>répertoire</dt>
 
-      <dd>Une directive sp&eacute;cifi&eacute;e comme valide dans ce contexte peut
-      &ecirc;tre utilis&eacute;e &agrave; l'int&eacute;rieur de conteneurs <directive module="core"
+      <dd>Une directive spécifiée comme valide dans ce contexte peut
+      être utilisée à l'intérieur de conteneurs <directive module="core"
       type="section">Directory</directive>, <directive type="section"
       module="core">Location</directive>, <directive module="core"
       type="section">Files</directive>, <directive module="core"
       type="section">If</directive>, et <directive
       module="mod_proxy" type="section">Proxy</directive> dans les
       fichiers de configuration du serveur, en tenant compte des
-      restrictions pr&eacute;cis&eacute;es dans la documentation sur les <a
+      restrictions précisées dans la documentation sur les <a
       href="../sections.html">Sections de configuration</a>.</dd>
 
       <dt>.htaccess</dt>
 
       <dd>Si une directive est valide dans ce contexte, cela signifie
-      qu'elle peut appara&icirc;tre &agrave; l'int&eacute;rieur de fichiers de configuration
-      de <em>niveau</em> r&eacute;pertoire <code>.htaccess</code>. Elle sera ou
-      ne sera pas trait&eacute;e, selon la d&eacute;finition de l'option <a
+      qu'elle peut apparaître à l'intérieur de fichiers de configuration
+      de <em>niveau</em> répertoire <code>.htaccess</code>. Elle sera ou
+      ne sera pas traitée, selon la définition de l'option <a
       href="#Override">overrides</a> pour le contexte courant.</dd>
     </dl>
 
-    <p>La directive n'est autoris&eacute;e <em>que</em> dans le contexte
-    d&eacute;sign&eacute; ; si vous essayez de l'utiliser ailleurs, vous g&eacute;n&eacute;rerez une
-    erreur de configuration qui va soit emp&ecirc;cher le serveur de traiter
-    les requ&ecirc;tes correctement dans ce contexte, soit tout simplement
-    emp&ecirc;cher le serveur de fonctionner -- en d'autres termes, le serveur
-    refusera de d&eacute;marrer.</p>
+    <p>La directive n'est autorisée <em>que</em> dans le contexte
+    désigné ; si vous essayez de l'utiliser ailleurs, vous générerez une
+    erreur de configuration qui va soit empêcher le serveur de traiter
+    les requêtes correctement dans ce contexte, soit tout simplement
+    empêcher le serveur de fonctionner -- en d'autres termes, le serveur
+    refusera de démarrer.</p>
 
-    <p>Les lieux de d&eacute;finition valides pour une directive r&eacute;sultent en
+    <p>Les lieux de définition valides pour une directive résultent en
     fait d'un
-    OU logique de tous les contextes sp&eacute;cifi&eacute;s. En d'autres termes, une
-    directive sp&eacute;cifi&eacute;e comme valide dans "<code>configuration du
-    serveur, .htaccess</code>" peut &ecirc;tre utilis&eacute;e dans le fichier
+    OU logique de tous les contextes spécifiés. En d'autres termes, une
+    directive spécifiée comme valide dans "<code>configuration du
+    serveur, .htaccess</code>" peut être utilisée dans le fichier
     <code>httpd.conf</code> et dans les fichiers <code>.htaccess</code>,
     mais pas dans un conteneur <directive module="core"
     type="section">Directory</directive> ou <directive module="core"
@@ -210,29 +223,29 @@
 
 <section id="Override"><title>Surcharge .htaccess</title>
 
-    <p>Ce terme indique quelle autorisation de surcharge doit &ecirc;tre
-    active pour que la directive puisse &ecirc;tre trait&eacute;e lorsqu'elle
-    appara&icirc;t dans un fichier <code>.htaccess</code>. Si le <a
+    <p>Ce terme indique quelle autorisation de surcharge doit être
+    active pour que la directive puisse être traitée lorsqu'elle
+    apparaît dans un fichier <code>.htaccess</code>. Si le <a
     href="#Context" >context</a> de la directive ne lui permet pas
-    d'appara&icirc;tre dans un fichier <code>.htaccess</code>, aucun contexte
-    ne sera sp&eacute;cifi&eacute;.</p>
+    d'apparaître dans un fichier <code>.htaccess</code>, aucun contexte
+    ne sera spécifié.</p>
 
-    <p>Les autorisations de surcharge sont activ&eacute;es via la directive
-    <directive module="core">AllowOverride</directive>, et poss&egrave;dent une
-    port&eacute;e particuli&egrave;re, comme un r&eacute;pertoire et tous ses
-    sous-r&eacute;pertoires, sauf si une autre directive <directive
-    module="core">AllowOverride</directive> appara&icirc;t &agrave; un niveau
-    inf&eacute;rieur. La documentation pour cette directive sp&eacute;cifie aussi les
+    <p>Les autorisations de surcharge sont activées via la directive
+    <directive module="core">AllowOverride</directive>, et possèdent une
+    portée particulière, comme un répertoire et tous ses
+    sous-répertoires, sauf si une autre directive <directive
+    module="core">AllowOverride</directive> apparaît à un niveau
+    inférieur. La documentation pour cette directive spécifie aussi les
     noms d'autorisations de surcharge disponibles.</p>
 </section>
 
 <section id="Status"><title>Statut</title>
 
-    <p>Cet attribut indique le degr&eacute; de rapprochement de la directive du
-    coeur d'Apache ; en d'autres termes, vous pouvez &ecirc;tre amen&eacute; &agrave;
-    recompiler le serveur avec un jeu de modules suppl&eacute;mentaires pour
-    pouvoir utiliser la directive, et ainsi acc&eacute;der &agrave; ses
-    fonctionnalit&eacute;s. Les valeurs possible pour cet attribut sont :</p>
+    <p>Cet attribut indique le degré de rapprochement de la directive du
+    coeur d'Apache ; en d'autres termes, vous pouvez être amené à
+    recompiler le serveur avec un jeu de modules supplémentaires pour
+    pouvoir utiliser la directive, et ainsi accéder à ses
+    fonctionnalités. Les valeurs possible pour cet attribut sont :</p>
 
     <dl>
       <dt>Core</dt>
@@ -246,34 +259,34 @@
       <dd>Une directive dont le statut est "MPM" est fournie par un <a
       href="../mpm.html">module Multi-Processus</a>. Ce type de
       directive sera disponible si et seulement si vous utilisez un des
-      MPMs sp&eacute;cifi&eacute;s dans la ligne <a href="#Module">Module</a> de la
-      d&eacute;finition de la directive.</dd>
+      MPMs spécifiés dans la ligne <a href="#Module">Module</a> de la
+      définition de la directive.</dd>
 
       <dt>Base</dt>
 
       <dd>Une directive dont le statut est "Base" est fournie par un des
-      modules Apache standards qui sont compil&eacute;s dans le serveur par
-      d&eacute;faut, et sont de ce fait toujours disponibles, sauf si vous avez
+      modules Apache standards qui sont compilés dans le serveur par
+      défaut, et sont de ce fait toujours disponibles, sauf si vous avez
       fait en sorte de les supprimer de votre configuration.</dd>
 
       <dt>Extension</dt>
 
       <dd>Une directive dont le statut est "Extension" est fournie par
       un des modules inclus dans le kit du serveur Apache, mais qui ne
-      sont pas compil&eacute;s dans le serveur par d&eacute;faut. Pour activer la
-      directive et acc&eacute;der &agrave; ses fonctionnalit&eacute;s, vous devez modifier
+      sont pas compilés dans le serveur par défaut. Pour activer la
+      directive et accéder à ses fonctionnalités, vous devez modifier
       les fichiers de configuration de la compilation du serveur, et
       recompiler Apache.</dd>
 
-      <dt>Exp&eacute;rimental</dt>
+      <dt>Expérimental</dt>
 
       <dd>Le statut "Experimental" indique que la directive fait partie
-      du kit Apache, mais que vous l'utilisez &agrave; vos risques et p&eacute;rils.
-      La directive est document&eacute;e &agrave; titre d'exhaustivit&eacute;, et n'est pas
-      obligatoirement support&eacute;e. Le module qui fournit la directive peut
-      &ecirc;tre compil&eacute; par d&eacute;faut dans le serveur ou non ; consultez le haut
-      de la page qui d&eacute;crit la directive et son module pour v&eacute;rifier sa
-      disponibilit&eacute;.</dd>
+      du kit Apache, mais que vous l'utilisez à vos risques et périls.
+      La directive est documentée à titre d'exhaustivité, et n'est pas
+      obligatoirement supportée. Le module qui fournit la directive peut
+      être compilé par défaut dans le serveur ou non ; consultez le haut
+      de la page qui décrit la directive et son module pour vérifier sa
+      disponibilité.</dd>
     </dl>
 </section>
 
@@ -283,11 +296,11 @@
     fournissent la directive.</p>
 </section>
 
-<section id="Compatibility"><title>Compatibilit&eacute;</title>
+<section id="Compatibility"><title>Compatibilité</title>
 
     <p>Si la directive ne faisait pas partie de la distribution
-    originale d'Apache version 2, la version dans laquelle elle a &eacute;t&eacute;
-    introduite est indiqu&eacute;e ici. Cette section indique aussi si la
+    originale d'Apache version 2, la version dans laquelle elle a été
+    introduite est indiquée ici. Cette section indique aussi si la
     directive n'est disponible que sur certaines plates-formes.</p>
 </section>
 

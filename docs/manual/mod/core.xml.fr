@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1796135:1799680 (outdated) -->
+<!-- English Revision: 1799680 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -887,9 +887,11 @@ DESACTIVÉS à partir de la version 2.3.0.</compatibility>
     d'éviter les conflits avec la syntaxe de la directive <directive
     module="mod_rewrite">RewriteMap</directive>.</p>
 
+    <note><title>Portée de la directive et pièges à éviter</title>
     <p>Si cette directive est définie au sein d'un bloc VirtualHost, les
     changements qu'elle induit sont visibles de toute directive
     ultérieure, au delà de tout bloc VirtualHost.</p>
+    </note>
 </usage>
 </directivesynopsis>
 
@@ -2859,7 +2861,7 @@ host</context>
 <name>KeepAliveTimeout</name>
 <description>Durée pendant laquelle le serveur va attendre une requête
 avant de fermer une connexion persistante</description>
-<syntax>KeepAliveTimeout <var>nombre</var>[ms]</syntax>
+<syntax>KeepAliveTimeout <var>time-interval</var>[s]</syntax>
 <default>KeepAliveTimeout 5</default>
 <contextlist><context>server config</context><context>virtual
 host</context>
@@ -5159,7 +5161,7 @@ host</context>
 <name>TimeOut</name>
 <description>Temps pendant lequel le serveur va attendre certains
 évènements avant de considérer qu'une requête a échoué</description>
-<syntax>TimeOut <var>secondes</var></syntax>
+<syntax>TimeOut <var>time-interval</var>[s]</syntax>
 <default>TimeOut 60</default>
 <contextlist><context>server config</context><context>virtual
 host</context></contextlist>
