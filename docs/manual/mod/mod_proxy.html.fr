@@ -30,8 +30,6 @@
 <a href="../fr/mod/mod_proxy.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_proxy.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Serveur mandataire/passerelle multi-protocole</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>proxy_module</td></tr>
@@ -281,11 +279,12 @@ ProxyVia On
 </div>
       
 
-      <p>Cette directive va créer un worker associé à l'URL du serveur
-      original <code>http://backend.example.com</code>, qui utilisera les
-      valeurs de timeout données. Lorsqu'ils sont utilisés dans le cadre
-      d'un mandataire direct, les workers sont en général définis via la
-      directive <code class="directive"><a href="#proxyset">ProxySet</a></code>,</p>
+      <p>Cette directive va créer un worker associé à l'URL du serveur original
+      <code>http://backend.example.com</code>, qui utilisera les valeurs de
+      timeout données. Toutes les spécifications de timeouts utilisent la
+      syntaxe <a href="directive-dict.html#Syntax">time-interval</a>. Lorsqu'ils
+      sont utilisés dans le cadre d'un mandataire direct, les workers sont en
+      général définis via la directive <code class="directive"><a href="#proxyset">ProxySet</a></code> :</p>
 
       <div class="example"><pre class="prettyprint lang-config">ProxySet http://backend.example.com connectiontimeout=5 timeout=30</pre>
 </div>
@@ -1331,7 +1330,7 @@ ProxyPass "/mirror/foo" "http://backend.example.com"</pre>
         La durée en secondes pendant laquelle Apache httpd va attendre pour
 	l'établissement d'une connexion vers le serveur d'arrière-plan.
 	Le délai peut être spécifié en millisecondes en ajoutant le
-	suffixe ms.
+	suffixe ms. Utilise la syntaxe <a href="directive-dict.html#Syntax">time-interval</a>.
     </td></tr>
     <tr><td>disablereuse</td>
         <td>Off</td>
@@ -1367,7 +1366,7 @@ ProxyPass "/mirror/foo" "http://backend.example.com"</pre>
         <td>10</td>
         <td>Le délai d'attente pour une entrée additionnelle, en
 	millisecondes, avant le vidage du tampon en sortie dans le cas
-	où 'flushpackets' est à 'auto'.
+	où 'flushpackets' est à 'auto'. Utilise la syntaxe <a href="directive-dict.html#Syntax">time-interval</a>.
     </td></tr>
     <tr><td>iobuffersize</td>
         <td>8192</td>
@@ -1390,7 +1389,8 @@ ProxyPass "/mirror/foo" "http://backend.example.com"</pre>
     <p>La fréquence de vérification des connexions TCP persistantes
     initiale et subséquentes dépend de la configuration globale de l'OS,
     et peut atteindre 2 heures. Pour être utile, la fréquence configurée
-    dans l'OS doit être inférieure au seuil utilisé par le pare-feu.</p>
+    dans l'OS doit être inférieure au seuil utilisé par le pare-feu. Utilise la
+    syntaxe <a href="directive-dict.html#Syntax">time-interval</a>.</p>
 
     </td></tr>
     <tr><td>lbset</td>
@@ -1424,7 +1424,7 @@ ProxyPass "/mirror/foo" "http://backend.example.com"</pre>
 	cas où les noeuds de cluster sont arrêtés ou
 	surchargés. Le délai peut
 	aussi être défini en millisecondes en ajoutant le suffixe
-	ms.
+	ms. Utilise la syntaxe <a href="directive-dict.html#Syntax">time-interval</a>.
     </td></tr>
     <tr><td>receivebuffersize</td>
         <td>0</td>
@@ -1452,7 +1452,7 @@ ProxyPass "/mirror/foo" "http://backend.example.com"</pre>
 	spécifié. Ceci permet d'arrêter le serveur d'arrière-plan pour
 	maintenance, et de le remettre en ligne plus tard. Une valeur de
 	0 implique de toujours essayer les serveurs cibles dans un état d'erreur
-	sans délai.
+	sans délai. Utilise la syntaxe <a href="directive-dict.html#Syntax">time-interval</a>.
     </td></tr>
     <tr><td>route</td>
         <td>-</td>
@@ -1490,14 +1490,14 @@ ProxyPass "/mirror/foo" "http://backend.example.com"</pre>
         <td><code class="directive"><a href="#proxytimeout">ProxyTimeout</a></code></td>
         <td>Délai d'attente de la connexion en secondes. Le nombre de
 	secondes pendant lesquelles Apache httpd attend l'envoi de
-	données vers le serveur d'arrière-plan.
+	données vers le serveur d'arrière-plan. Utilise la syntaxe <a href="directive-dict.html#Syntax">time-interval</a>.
     </td></tr>
     <tr><td>ttl</td>
         <td>-</td>
         <td>Durée de vie des connexions inactives et des entrées du pool
 	de connexions associées en secondes. Une fois cette
 	limite atteinte, une connexion ne sera pas réutilisée ; elle
-	sera fermée après un délai variable.
+	sera fermée après un délai variable. Utilise la syntaxe <a href="directive-dict.html#Syntax">time-interval</a>.
     </td></tr>
     <tr><td>flusher</td>
         <td>flush</td>
@@ -1593,7 +1593,7 @@ ProxyPass "/mirror/foo" "http://backend.example.com"</pre>
         <td>Délai du répartiteur en secondes. Si ce paramètre est
 	défini, sa valeur correspond à la durée maximale d'attente pour
 	un serveur cible libre. Le comportement par défaut est de ne pas
-	attendre.
+	attendre. Utilise la syntaxe <a href="directive-dict.html#Syntax">time-interval</a>.
     </td></tr>
     <tr><td>failonstatus</td>
         <td>-</td>
@@ -2227,7 +2227,7 @@ mod_status</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Délai d'attente réseau pour les requêtes
 mandatées</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyTimeout <var>secondes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyTimeout <var>time-interval</var>[s]</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>Valeur de la directive <code class="directive"><a href="../mod/core.html#timeout">Timeout</a></code></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>

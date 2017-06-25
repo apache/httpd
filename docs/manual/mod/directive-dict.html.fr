@@ -30,8 +30,6 @@
 <a href="../ko/mod/directive-dict.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/directive-dict.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>Ce document décrit les termes utilisés pour décrire chaque <a href="directives.html">directive de configuration</a> d'Apache.</p>
 </div>
@@ -141,6 +139,19 @@
       d'Apache. Notez qu'elle peut être différente d'une variable
       d'environnement du système d'exploitation. Voir la <a href="../env.html">documentation sur les variables d'environnement</a>
       pour plus de détails.</dd>
+
+      <dt><em>time-interval</em></dt>
+
+      <dd>Un format d'intervalle de temps spécifique à divers paramètres de
+      timeout. Les formats supportés sont les suivants :
+        <ul>
+          <li><em>s</em>: Secondes</li>
+          <li><em>h</em>: Heures</li>
+          <li><em>ms</em>: Millisecondes</li>
+          <li><em>mi[n]</em>: Minutes</li>
+        </ul>
+        Par exemple : <code>Timeout 575ms</code>
+      </dd>      
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
