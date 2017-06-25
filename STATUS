@@ -218,6 +218,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: svn merge -c 1551611,1783765,1788996,1788998,1789000,1795651 ^/httpd/httpd/trunk .
       +1: jailletc36, jim
 
+   *) core: Avoid duplicate HEAD in Allow header. PR 61207.
+      trunk patch: http://svn.apache.org/r1799784
+                   http://svn.apache.org/r1799786 (CHANGES entry)
+      2.4.x patch: svn merge -c 1799784,1799786 ^/httpd/httpd/trunk .
+      +1: jailletc36
+      
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
