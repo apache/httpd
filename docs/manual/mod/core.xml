@@ -787,12 +787,11 @@ DocumentRoot "/var/www/${servername}/htdocs"
     <p>Variable names may not contain colon ":" characters, to avoid clashes
     with <directive module="mod_rewrite">RewriteMap</directive>'s syntax.</p>
 
-    <p>While this directive is supported in virtual host and directory context,
-       the changes it makes are visible to any later configuration
-       directives, beyond any enclosing configuration section (matching or not).
-       Support for the other configuration sections was erroneously permitted by the initial
-       implementation of this directive and is only preserved (with unintuitive 
-       results) to maintain backward compatibility.</p>
+    <note><title>Virtual Host scope and pitfalls</title>
+      <p>While this directive is supported in virtual host context,
+         the changes it makes are visible to any later configuration
+         directives, beyond any enclosing virtual host.</p>
+    </note>
 </usage>
 <seealso><directive module="core">UnDefine</directive></seealso>
 <seealso><directive module="core">IfDefine</directive></seealso>
