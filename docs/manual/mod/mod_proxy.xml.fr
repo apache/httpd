@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1792092:1799463 (outdated) -->
+<!-- English Revision: 1799463 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -237,11 +237,13 @@ ProxyVia On
       </example>
       
 
-      <p>Cette directive va créer un worker associé à l'URL du serveur
-      original <code>http://backend.example.com</code>, qui utilisera les
-      valeurs de timeout données. Lorsqu'ils sont utilisés dans le cadre
-      d'un mandataire direct, les workers sont en général définis via la
-      directive <directive module="mod_proxy">ProxySet</directive>,</p>
+      <p>Cette directive va créer un worker associé à l'URL du serveur original
+      <code>http://backend.example.com</code>, qui utilisera les valeurs de
+      timeout données. Toutes les spécifications de timeouts utilisent la
+      syntaxe <a href="directive-dict.html#Syntax">time-interval</a>. Lorsqu'ils
+      sont utilisés dans le cadre d'un mandataire direct, les workers sont en
+      général définis via la directive <directive
+      module="mod_proxy">ProxySet</directive> :</p>
 
       <example>
       <highlight language="config">
@@ -1202,7 +1204,8 @@ ProxyPass "/mirror/foo" "http://backend.example.com"
         La durée en secondes pendant laquelle Apache httpd va attendre pour
 	l'établissement d'une connexion vers le serveur d'arrière-plan.
 	Le délai peut être spécifié en millisecondes en ajoutant le
-	suffixe ms.
+	suffixe ms. Utilise la syntaxe <a
+	href="directive-dict.html#Syntax">time-interval</a>.
     </td></tr>
     <tr><td>disablereuse</td>
         <td>Off</td>
@@ -1238,7 +1241,8 @@ ProxyPass "/mirror/foo" "http://backend.example.com"
         <td>10</td>
         <td>Le délai d'attente pour une entrée additionnelle, en
 	millisecondes, avant le vidage du tampon en sortie dans le cas
-	où 'flushpackets' est à 'auto'.
+	où 'flushpackets' est à 'auto'. Utilise la syntaxe <a
+	href="directive-dict.html#Syntax">time-interval</a>.
     </td></tr>
     <tr><td>iobuffersize</td>
         <td>8192</td>
@@ -1261,7 +1265,8 @@ ProxyPass "/mirror/foo" "http://backend.example.com"
     <p>La fréquence de vérification des connexions TCP persistantes
     initiale et subséquentes dépend de la configuration globale de l'OS,
     et peut atteindre 2 heures. Pour être utile, la fréquence configurée
-    dans l'OS doit être inférieure au seuil utilisé par le pare-feu.</p>
+    dans l'OS doit être inférieure au seuil utilisé par le pare-feu. Utilise la
+    syntaxe <a href="directive-dict.html#Syntax">time-interval</a>.</p>
 
     </td></tr>
     <tr><td>lbset</td>
@@ -1295,7 +1300,8 @@ ProxyPass "/mirror/foo" "http://backend.example.com"
 	cas où les noeuds de cluster sont arrêtés ou
 	surchargés. Le délai peut
 	aussi être défini en millisecondes en ajoutant le suffixe
-	ms.
+	ms. Utilise la syntaxe <a
+	href="directive-dict.html#Syntax">time-interval</a>.
     </td></tr>
     <tr><td>receivebuffersize</td>
         <td>0</td>
@@ -1323,7 +1329,8 @@ ProxyPass "/mirror/foo" "http://backend.example.com"
 	spécifié. Ceci permet d'arrêter le serveur d'arrière-plan pour
 	maintenance, et de le remettre en ligne plus tard. Une valeur de
 	0 implique de toujours essayer les serveurs cibles dans un état d'erreur
-	sans délai.
+	sans délai. Utilise la syntaxe <a
+	href="directive-dict.html#Syntax">time-interval</a>.
     </td></tr>
     <tr><td>route</td>
         <td>-</td>
@@ -1361,14 +1368,16 @@ ProxyPass "/mirror/foo" "http://backend.example.com"
         <td><directive module="mod_proxy">ProxyTimeout</directive></td>
         <td>Délai d'attente de la connexion en secondes. Le nombre de
 	secondes pendant lesquelles Apache httpd attend l'envoi de
-	données vers le serveur d'arrière-plan.
+	données vers le serveur d'arrière-plan. Utilise la syntaxe <a
+	href="directive-dict.html#Syntax">time-interval</a>.
     </td></tr>
     <tr><td>ttl</td>
         <td>-</td>
         <td>Durée de vie des connexions inactives et des entrées du pool
 	de connexions associées en secondes. Une fois cette
 	limite atteinte, une connexion ne sera pas réutilisée ; elle
-	sera fermée après un délai variable.
+	sera fermée après un délai variable. Utilise la syntaxe <a
+	href="directive-dict.html#Syntax">time-interval</a>.
     </td></tr>
     <tr><td>flusher</td>
         <td>flush</td>
@@ -1464,7 +1473,8 @@ ProxyPass "/mirror/foo" "http://backend.example.com"
         <td>Délai du répartiteur en secondes. Si ce paramètre est
 	défini, sa valeur correspond à la durée maximale d'attente pour
 	un serveur cible libre. Le comportement par défaut est de ne pas
-	attendre.
+	attendre. Utilise la syntaxe <a
+	href="directive-dict.html#Syntax">time-interval</a>.
     </td></tr>
     <tr><td>failonstatus</td>
         <td>-</td>
@@ -2131,7 +2141,7 @@ NoProxy         .example.com 192.168.112.0/21
 <name>ProxyTimeout</name>
 <description>Délai d'attente réseau pour les requêtes
 mandatées</description>
-<syntax>ProxyTimeout <var>secondes</var></syntax>
+<syntax>ProxyTimeout <var>time-interval</var>[s]</syntax>
 <default>Valeur de la directive <directive
 module="core">Timeout</directive></default>
 <contextlist><context>server config</context><context>virtual host</context>
