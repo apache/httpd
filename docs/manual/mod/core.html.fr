@@ -891,12 +891,11 @@ DocumentRoot "/var/www/${servername}/htdocs"</pre>
     <p>Le caractère ":" est interdit dans les noms de variables afin
     d'éviter les conflits avec la syntaxe de la directive <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>.</p>
 
+    <div class="note"><h3>Portée de la directive et pièges à éviter</h3>
     <p>Si cette directive est définie au sein d'un bloc VirtualHost, les
     changements qu'elle induit sont visibles de toute directive
-    ultérieure, au delà de tout bloc VirtualHost. Le support des autres sections
-    de configuration a été permis par erreur par l'implémentation initiale de
-    cette directive, et n'est conservé (avec des effets imprévisibles) que dans un
-    but de compatibilité ascendante.</p>
+    ultérieure, au delà de tout bloc VirtualHost.</p>
+    </div>
 
 <h3>Voir aussi</h3>
 <ul>

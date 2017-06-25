@@ -27,13 +27,11 @@
 <a href="../es/howto/http2.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
 <a href="../fr/howto/http2.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>Ce document est le guide de l'utilisateur de l'implémentation de HTTP/2
-    dans Apache httpd. Cette fonctionnalité en est au stade
-    <em>expérimental</em>, et des modifications sont à prévoir dans
-    les interfaces et les directives avec les changements de versions.
+    dans Apache httpd. Cette fonctionnalité en est au stade de
+    <em>production</em>, et les interfaces et directives devraient
+    maintenant se stabiliser.
     </p>
   </div>
 <div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#protocol">Le protocole HTTP/2</a></li>
