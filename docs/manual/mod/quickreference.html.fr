@@ -731,7 +731,7 @@ supportées de la part des extensions ISAPI</td></tr>
 <tr class="odd"><td><a href="mod_isapi.html#isapireadaheadbuffer">ISAPIReadAheadBuffer <var>taille</var></a></td><td> 49152 </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Taille du tampon de lecture anticipée envoyé aux extensions
 ISAPI</td></tr>
 <tr><td><a href="core.html#keepalive" id="K" name="K">KeepAlive On|Off</a></td><td> On </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Active les connexions HTTP persistantes</td></tr>
-<tr class="odd"><td><a href="core.html#keepalivetimeout">KeepAliveTimeout <var>nombre</var>[ms]</a></td><td> 5 </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Durée pendant laquelle le serveur va attendre une requête
+<tr class="odd"><td><a href="core.html#keepalivetimeout">KeepAliveTimeout <var>time-interval</var>[s]</a></td><td> 5 </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Durée pendant laquelle le serveur va attendre une requête
 avant de fermer une connexion persistante</td></tr>
 <tr><td><a href="mod_request.html#keptbodysize">KeptBodySize <var>taille maximale en octets</var></a></td><td> 0 </td><td>d</td><td>B</td></tr><tr><td class="descr" colspan="4">Conserve le corps de la requête à concurrence de la taille
 maximale spécifiée, pour une utilisation éventuelle par des filtres
@@ -1069,7 +1069,7 @@ charge</td></tr>
 sortantes</td></tr>
 <tr><td><a href="mod_proxy.html#proxystatus">ProxyStatus Off|On|Full</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Affiche l'état du répartiteur de charge du mandataire dans
 mod_status</td></tr>
-<tr class="odd"><td><a href="mod_proxy.html#proxytimeout">ProxyTimeout <var>secondes</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Délai d'attente réseau pour les requêtes
+<tr class="odd"><td><a href="mod_proxy.html#proxytimeout">ProxyTimeout <var>time-interval</var>[s]</a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Délai d'attente réseau pour les requêtes
 mandatées</td></tr>
 <tr><td><a href="mod_proxy.html#proxyvia">ProxyVia On|Off|Full|Block</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Information fournie dans l'en-tête de réponse HTTP
 <code>Via</code> pour les requêtes mandatées</td></tr>
@@ -1445,7 +1445,7 @@ processus enfant</td></tr>
 enfant</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#threadstacksize">ThreadStackSize <var>taille</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">La taille en octets de la pile qu'utilisent les threads qui
 traitent les connexions clients</td></tr>
-<tr><td><a href="core.html#timeout">TimeOut <var>secondes</var></a></td><td> 60 </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Temps pendant lequel le serveur va attendre certains
+<tr><td><a href="core.html#timeout">TimeOut <var>time-interval</var>[s]</a></td><td> 60 </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Temps pendant lequel le serveur va attendre certains
 évènements avant de considérer qu'une requête a échoué</td></tr>
 <tr class="odd"><td><a href="core.html#traceenable">TraceEnable <var>[on|off|extended]</var></a></td><td> on </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Détermine le comportement des requêtes
 <code>TRACE</code></td></tr>
