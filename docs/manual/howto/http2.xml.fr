@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1780813:1798467 (outdated) -->
+<!-- English Revision: 1798467 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -29,9 +29,9 @@
 
   <summary>
     <p>Ce document est le guide de l'utilisateur de l'implémentation de HTTP/2
-    dans Apache httpd. Cette fonctionnalité en est au stade
-    <em>expérimental</em>, et des modifications sont à prévoir dans
-    les interfaces et les directives avec les changements de versions.
+    dans Apache httpd. Cette fonctionnalité en est au stade de
+    <em>production</em>, et les interfaces et directives devraient
+    maintenant se stabiliser.
     </p>
   </summary>
   <seealso><a href="../mod/mod_http2.html">mod_http2</a></seealso>

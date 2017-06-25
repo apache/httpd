@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1796151:1799789 (outdated) -->
+<!-- English Revision: 1799789 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -851,12 +851,11 @@ DocumentRoot "/var/www/${servername}/htdocs"
     d'éviter les conflits avec la syntaxe de la directive <directive
     module="mod_rewrite">RewriteMap</directive>.</p>
 
+    <note><title>Portée de la directive et pièges à éviter</title>
     <p>Si cette directive est définie au sein d'un bloc VirtualHost, les
     changements qu'elle induit sont visibles de toute directive
-    ultérieure, au delà de tout bloc VirtualHost. Le support des autres sections
-    de configuration a été permis par erreur par l'implémentation initiale de
-    cette directive, et n'est conservé (avec des effets imprévisibles) que dans un
-    but de compatibilité ascendante.</p>
+    ultérieure, au delà de tout bloc VirtualHost.</p>
+    </note>
 </usage>
 <seealso><directive module="core">UnDefine</directive></seealso>
 <seealso><directive module="core">IfDefine</directive></seealso>
