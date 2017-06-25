@@ -30,8 +30,6 @@ Changes with Apache 2.5.0
      associated with an active connection in the "ACC" field. Previously
      zero was always reported with this MPM.  PR60647. [Eric Covener]
 
-  *) mod_proxy_hcheck: Don't validate timed out responses.  [Yann Ylavic]
-
   *) mod_remoteip: Add support for PROXY protocol (code donated by Cloudzilla).
      Add ability for PROXY protocol processing to be optional to donated code.
      See also: http://www.haproxy.org/download/1.5/doc/proxy-protocol.txt
