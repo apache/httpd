@@ -75,7 +75,7 @@ of consuming threads only for connections with active processing</dd>
 <dt><a href="mod_actions.html">mod_actions</a></dt><dd>Ejecuta scripts CGI basándose en el tipo de medio o método de la petición.</dd>
 <dt><a href="mod_alias.html">mod_alias</a></dt><dd>Facilita el mapeo a diferentes partes del sistema de ficheros del host en el árbol de documentos y la redirección de URLs
 </dd>
-<dt><a href="mod_allowhandlers.html">mod_allowhandlers</a></dt><dd>Easily restrict what HTTP handlers can be used on the server</dd>
+<dt><a href="mod_allowhandlers.html">mod_allowhandlers</a></dt><dd>Restringir fácilmente qué handlers HTTP pueden ser usados en el servidor</dd>
 <dt><a href="mod_allowmethods.html">mod_allowmethods</a></dt><dd>Easily restrict what HTTP methods can be used on the server</dd>
 <dt><a href="mod_asis.html">mod_asis</a></dt><dd>Sends files that contain their own
 HTTP headers</dd>
