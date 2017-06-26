@@ -5,10 +5,6 @@ Changes with Apache 2.5.0
      This is a regression in 2.4.24 (unreleased), 2.4.25 and 2.4.26.
      PR 61207. [Christophe Jaillet]
 
-  *) core: Send a 404 response like other OSs do instead of 403 on Windows
-     when a path segment or file requested uses a reserved word so Windows
-     cannot be fingerprinted. PR55887 [Gregg Smith]
-
   *) mod_rewrite: Add 'RewriteOptions LongURLOptimization' to free memory
      from each set of unmatched rewrite conditions.
      [Eric Covener]
