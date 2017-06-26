@@ -70,7 +70,7 @@ of how you might use them.</p>
 <p>The [B] flag instructs <directive
 module="mod_rewrite">RewriteRule</directive> to escape non-alphanumeric
 characters before applying the transformation.</p>
-<p>In 2.4.10 and later, you can limit the escaping to specific characters
+<p>In 2.4.26 and later, you can limit the escaping to specific characters
 in backreferences by listing them: <code>[B=#?;]</code>. Note: The space
 character can be used in the list of characters to escape, but it cannot be
 the last character in the list.</p>
@@ -116,6 +116,9 @@ strings in the encoded form.</p>
 module="mod_rewrite">RewriteRule</directive> to escape the space character
 in a backreference to %20 rather than '+'. Useful when the backreference
 will be used in the path component rather than the query string.</p>
+
+<p>This flag is available in version 2.4.26 and later.</p>
+
 </section>
 
 <section id="flag_c"><title>C|chain</title>
