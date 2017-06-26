@@ -1,7 +1,11 @@
                                                          -*- coding: utf-8 -*-
 
+
 Changes with Apache 2.4.27
 
+  *) core: Avoid duplicate HEAD in Allow header.
+     This is a regression in 2.4.24 (unreleased), 2.4.25 and 2.4.26.
+     PR 61207. [Christophe Jaillet]
 
 Changes with Apache 2.4.26
 

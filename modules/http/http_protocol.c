@@ -1037,11 +1037,7 @@ static char *make_allow(request_rec *r)
 
         apr_hash_this(hi, &key, NULL, &val);
         if ((mask & (AP_METHOD_BIT << *(int *)val)) != 0) {
-            *(const char **)apr_array_push(allow) = key;
-
-            /* the M_GET method actually refers to two methods */
-            if (*(int *)val == M_GET)
-                *(const char **)apr_array_push(allow) = "HEAD";
+            APR_ARRAY_PUSH(allow, const char *) = key;
         }
     }
 
