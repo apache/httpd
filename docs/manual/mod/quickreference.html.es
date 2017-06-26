@@ -128,7 +128,7 @@ proxy</td></tr>
 <tr class="odd"><td><a href="core.html#allowencodedslashes">AllowEncodedSlashes On|Off</a></td><td> Off </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Determina si Determines whether encoded path separators in URLs are allowed to
 be passed through</td></tr>
 <tr><td><a href="mod_allowhandlers.html#allowhandlers">AllowHandlers [not] none|<em>handler-name</em>
-[none|<em>handler-name</em>]...</a></td><td> all </td><td>d</td><td>X</td></tr><tr><td class="descr" colspan="4">Restrict access to the listed handlers</td></tr>
+[none|<em>handler-name</em>]...</a></td><td> all </td><td>d</td><td>X</td></tr><tr><td class="descr" colspan="4">Restringe acceso a los handlers listados</td></tr>
 <tr class="odd"><td><a href="mod_allowmethods.html#allowmethods">AllowMethods reset|<em>HTTP-method</em>
 [<em>HTTP-method</em>]...</a></td><td> reset </td><td>d</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Restrict access to the listed HTTP methods</td></tr>
 <tr><td><a href="core.html#allowoverride">AllowOverride All|None|<var>directive-type</var>

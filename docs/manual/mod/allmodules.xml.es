@@ -6,7 +6,7 @@
   <modulefile>mod_access_compat.xml.es</modulefile>
   <modulefile>mod_actions.xml.es</modulefile>
   <modulefile>mod_alias.xml.es</modulefile>
-  <modulefile>mod_allowhandlers.xml</modulefile>
+  <modulefile>mod_allowhandlers.xml.es</modulefile>
   <modulefile>mod_allowmethods.xml</modulefile>
   <modulefile>mod_asis.xml</modulefile>
   <modulefile>mod_auth_basic.xml</modulefile>
@@ -135,7 +135,6 @@
   <modulefile>event.xml</modulefile>
   <modulefile>mpm_netware.xml</modulefile>
   <modulefile>mpmt_os2.xml</modulefile>
-  <modulefile>overrides.xml</modulefile>
   <modulefile>prefork.xml</modulefile>
   <modulefile>mpm_winnt.xml</modulefile>
   <modulefile>worker.xml</modulefile>
