@@ -104,17 +104,17 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
+
    *) Restore single-char field names inadvertantly disallowed in 2.4.25.
       Backports: r1800173
       PR: 61220
       Submitted by: ylavic
       trunk patch: http://svn.apache.org/r1800173 (plus CHANGES)
       2.2.x patch: https://home.apache.org/~jchampion/patches/2.2.x-allow-single-char-headers.patch
-      +1: wrowe, rpluem, jchampion
-
-
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
+      +1: wrowe, jchampion
 
 
 PATCHES/ISSUES THAT ARE STALLED:
