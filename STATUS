@@ -116,6 +116,15 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   *) Restore single-char field names inadvertantly disallowed in 2.4.25.
+      Message ID: <CAKQ1sVPrHx911sBDp3-BDsqS=qsQ4Eap0zjSz42j_vuZV2si_g@mail.gmail.com>
+      Backports: r1800173
+      PR: 61220
+      Submitted by: ylavic
+      trunk patch: http://svn.apache.org/r1800173 (mod CHANGES)
+      2.4 patch: trunk works
+      +1: wrowe, rpluem, ylavic
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -218,13 +227,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: svn merge -c 1551611,1783765,1788996,1788998,1789000,1795651 ^/httpd/httpd/trunk .
       +1: jailletc36, jim
 
-   *) Restore single-char field names inadvertantly disallowed in 2.2.32.
-      Backports: r1800173
-      PR: 61220
-      Submitted by: ylavic
-      trunk patch: http://svn.apache.org/r1800173 (mod APLOGNO plus CHANGES)
-      2.2 patch: Message ID: <CAKQ1sVPrHx911sBDp3-BDsqS=qsQ4Eap0zjSz42j_vuZV2si_g@mail.gmail.com>
-      +1: wrowe, rpluem
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
