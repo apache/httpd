@@ -109,9 +109,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
    *) Restore single-char field names inadvertantly disallowed in 2.4.25.
-      Backports: r1800111
+      Backports: r1800173
       PR: 61220
-      trunk patch: http://svn.apache.org/r1800111 (plus CHANGES)
+      Submitted by: ylavic
+      trunk patch: http://svn.apache.org/r1800173 (plus CHANGES)
       +1: wrowe, rpluem
 
 
