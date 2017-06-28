@@ -1111,7 +1111,7 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
                     return;
                 }
 
-                if (tmp_field == last_field) {
+                if (tmp_field == last_field && !*last_field) {
                     r->status = HTTP_BAD_REQUEST;
                     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03453)
                                   "Request header field name was empty");
