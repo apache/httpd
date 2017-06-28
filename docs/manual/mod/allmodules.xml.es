@@ -7,7 +7,7 @@
   <modulefile>mod_actions.xml.es</modulefile>
   <modulefile>mod_alias.xml.es</modulefile>
   <modulefile>mod_allowhandlers.xml.es</modulefile>
-  <modulefile>mod_allowmethods.xml</modulefile>
+  <modulefile>mod_allowmethods.xml.es</modulefile>
   <modulefile>mod_asis.xml</modulefile>
   <modulefile>mod_auth_basic.xml</modulefile>
   <modulefile>mod_auth_digest.xml</modulefile>
