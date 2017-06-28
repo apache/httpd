@@ -222,7 +222,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Backports: r1800111
       PR: 61220
       trunk patch: http://svn.apache.org/r1800111 (plus CHANGES)
-      +1: wrowe
+      +1: wrowe, rpluem
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
