@@ -1088,8 +1088,12 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
                     return;
                 }
 
-                /* last character of field-name */
-                tmp_field = value - (value > last_field ? 1 : 0);
+                if (value == last_field) {
+                    r->status = HTTP_BAD_REQUEST;
+                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03453)
+                                  "Request header field name was empty");
+                    return;
+                }
 
                 *value++ = '\0'; /* NUL-terminate at colon */
 
@@ -1110,13 +1114,6 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
                     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03451)
                                   "Request header field value presented"
                                   " bad whitespace");
-                    return;
-                }
-
-                if (tmp_field == last_field) {
-                    r->status = HTTP_BAD_REQUEST;
-                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03453)
-                                  "Request header field name was empty");
                     return;
                 }
             }
