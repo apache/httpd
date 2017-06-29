@@ -490,6 +490,9 @@ static authn_status authn_ldap_check_password(request_rec *r, const char *user,
      * Basic sanity checks before any LDAP operations even happen.
      */
     if (!sec->have_ldap_url) {
+        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(02558) 
+                      "no AuthLDAPURL");
+
         return AUTH_GENERAL_ERROR;
     }
 
@@ -1865,6 +1868,7 @@ static int authnz_ldap_post_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *
 static const authn_provider authn_ldap_provider =
 {
     &authn_ldap_check_password,
+    NULL,
 };
 
 static const authz_provider authz_ldapuser_provider =

@@ -77,13 +77,13 @@ typedef struct cache_socache_object_t
     cache_socache_info_t socache_info; /* Header information. */
     apr_size_t body_offset; /* offset to the start of the body */
     apr_off_t body_length; /* length of the cached entity body */
-    unsigned int newbody :1; /* whether a new body is present */
     apr_time_t expire; /* when to expire the entry */
 
     const char *name; /* Requested URI without vary bits - suitable for mortals. */
     const char *key; /* On-disk prefix; URI with Vary bits (if present) */
     apr_off_t offset; /* Max size to set aside */
     apr_time_t timeout; /* Max time to set aside */
+    unsigned int newbody :1; /* whether a new body is present */
     unsigned int done :1; /* Is the attempt to cache complete? */
 } cache_socache_object_t;
 
@@ -270,7 +270,8 @@ static apr_status_t store_table(apr_table_t *table, unsigned char *buffer,
 }
 
 static const char* regen_key(apr_pool_t *p, apr_table_t *headers,
-        apr_array_header_t *varray, const char *oldkey)
+                             apr_array_header_t *varray, const char *oldkey,
+                             apr_size_t *newkeylen)
 {
     struct iovec *iov;
     int i, k;
@@ -322,7 +323,7 @@ static const char* regen_key(apr_pool_t *p, apr_table_t *headers,
     iov[k].iov_len = strlen(oldkey);
     k++;
 
-    return apr_pstrcatv(p, iov, k, NULL);
+    return apr_pstrcatv(p, iov, k, newkeylen);
 }
 
 static int array_alphasort(const void *fn1, const void *fn2)
@@ -526,7 +527,7 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
             return DECLINED;
         }
 
-        nkey = regen_key(r->pool, r->headers_in, varray, key);
+        nkey = regen_key(r->pool, r->headers_in, varray, key, &len);
 
         /* attempt to retrieve the cached entry */
         if (socache_mutex) {
@@ -542,7 +543,7 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
         buffer_len = sobj->buffer_len;
         rc = conf->provider->socache_provider->retrieve(
                 conf->provider->socache_instance, r->server,
-                (unsigned char *) nkey, strlen(nkey), sobj->buffer,
+                (unsigned char *) nkey, len, sobj->buffer,
                 &buffer_len, r->pool);
         if (socache_mutex) {
             apr_status_t status = apr_global_mutex_unlock(socache_mutex);
@@ -869,7 +870,7 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r,
             }
 
             obj->key = sobj->key = regen_key(r->pool, sobj->headers_in, varray,
-                    sobj->name);
+                                             sobj->name, NULL);
         }
     }
 
@@ -1248,7 +1249,7 @@ static const char *set_cache_socache(cmd_parms *cmd, void *in_struct_ptr,
             name, AP_SOCACHE_PROVIDER_VERSION);
     if (provider->socache_provider == NULL) {
         err = apr_psprintf(cmd->pool,
-                "Unknown socache provider '%s'. Maybe you need "
+                    "Unknown socache provider '%s'. Maybe you need "
                     "to load the appropriate socache module "
                     "(mod_socache_%s?)", name, name);
     }
@@ -1416,7 +1417,7 @@ static int socache_precfg(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptmp)
             APR_LOCK_DEFAULT, 0);
     if (rv != APR_SUCCESS) {
         ap_log_perror(APLOG_MARK, APLOG_CRIT, rv, plog, APLOGNO(02390)
-        "failed to register %s mutex", cache_socache_id);
+                "failed to register %s mutex", cache_socache_id);
         return 500; /* An HTTP status would be a misnomer! */
     }
 
@@ -1450,7 +1451,7 @@ static int socache_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                     NULL, s, pconf, 0);
             if (rv != APR_SUCCESS) {
                 ap_log_perror(APLOG_MARK, APLOG_CRIT, rv, plog, APLOGNO(02391)
-                "failed to create %s mutex", cache_socache_id);
+                        "failed to create %s mutex", cache_socache_id);
                 return 500; /* An HTTP status would be a misnomer! */
             }
             apr_pool_cleanup_register(pconf, NULL, remove_lock,
@@ -1471,7 +1472,7 @@ static int socache_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                 &socache_hints, s, pconf);
         if (rv != APR_SUCCESS) {
             ap_log_perror(APLOG_MARK, APLOG_CRIT, rv, plog, APLOGNO(02393)
-            "failed to initialise %s cache", cache_socache_id);
+                    "failed to initialise %s cache", cache_socache_id);
             return 500; /* An HTTP status would be a misnomer! */
         }
         apr_pool_cleanup_register(pconf, (void *) s, destroy_cache,
