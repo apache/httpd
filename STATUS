@@ -116,12 +116,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   *) core: Save 160 bytes in the request pool and some cycles if no <If>
-            directive is used.
-      trunk patch: http://svn.apache.org/r1735906
-      2.4.x patch: svn merge -c 1735906 ^/httpd/httpd/trunk .
-      +1: jailletc36, jim, ylavic
-
    *) Easy proposals:
       - mod_authnz_ldap: Log a warning when the LDAP authn provider is configured
                          but an AuthLDAPURL isn't
