@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy_fcgi: Revert to 2.4.20 FCGI behavior for the default
+     ProxyFCGIBackendType, fixing a regression with PHP-FPM. PR 61202.
+     [Jacob Champion]
+
   *) core: Avoid duplicate HEAD in Allow header.
      This is a regression in 2.4.24 (unreleased), 2.4.25 and 2.4.26.
      PR 61207. [Christophe Jaillet]
