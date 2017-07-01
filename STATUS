@@ -117,7 +117,7 @@ RELEASE SHOWSTOPPERS:
      trunk patch: https://svn.apache.org/r1800306
                   https://svn.apache.org/r1800393
      2.4.x patch: trunk works, modulo APLOGNO and CHANGES
-     +1: jchampion
+     +1: jchampion, jim
 
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
