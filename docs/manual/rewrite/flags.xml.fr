@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1762651 -->
+<!-- English Revision: 1799968 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -74,7 +74,7 @@ d'utilisation.</p>
 <p>Avec le drapeau [B], la directive <directive
 module="mod_rewrite">RewriteRule</directive> échappe les caractères
 non-alphanumériques avant d'appliquer la transformation. A partir
-de la version 2.4.10, vous pouvez limiter l'échappement dans les
+de la version 2.4.26, vous pouvez limiter l'échappement dans les
 références arrières à une liste de caractères que vous pouvez spécifiez comme
 dans cet exemple : <code>[B=#?;]</code>. Notez que l'espace peut faire
 partie de la liste des caractères à échapper, mais qu'il ne doit pas
@@ -132,6 +132,10 @@ module="mod_rewrite">RewriteRule</directive> échappera le caractère
 espace en %20 au lieu de '+' dans les références arrières. Ceci s'avère
 utile lorsque la référence arrière est utilisée dans la partie chemin,
 et non dans les paramètres de la requête.</p>
+
+<p>Ce drapeau est disponible à partir de la version 2.4.26 du serveur HTTP
+Apache.</p>
+
 </section>
 
 <section id="flag_c"><title>C|chain</title>
