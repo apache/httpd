@@ -194,6 +194,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                 If confirmed, it would worth, IMHO, a CHANGE entry and maybe a
                 2.2.x backport.
 
+   *) mod_http2: disable and give warning when prefork is configured. h2 will no longer
+                 participate in protocol negotiation, server will continue to work.
+     trunk patch: http://svn.apache.org/r1800689
+     2.4.x patch:  svn merge -c 1800689 ^/httpd/httpd/trunk .
+     +1: icing
+     
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
