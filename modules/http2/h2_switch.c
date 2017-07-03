@@ -55,6 +55,10 @@ static int h2_protocol_propose(conn_rec *c, request_rec *r,
     const char **protos = is_tls? h2_tls_protos : h2_clear_protos;
     
     (void)s;
+    if (!h2_mpm_supported()) {
+        return DECLINED;
+    }
+    
     if (strcmp(AP_PROTOCOL_HTTP1, ap_get_protocol(c))) {
         /* We do not know how to switch from anything else but http/1.1.
          */
@@ -127,6 +131,10 @@ static int h2_protocol_switch(conn_rec *c, request_rec *r, server_rec *s,
     const char **p = protos;
     
     (void)s;
+    if (!h2_mpm_supported()) {
+        return DECLINED;
+    }
+
     while (*p) {
         if (!strcmp(*p, protocol)) {
             found = 1;

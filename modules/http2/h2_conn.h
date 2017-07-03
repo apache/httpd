@@ -64,7 +64,8 @@ typedef enum {
 
 /* Returns the type of MPM module detected */
 h2_mpm_type_t h2_conn_mpm_type(void);
-
+const char *h2_conn_mpm_name(void);
+int h2_mpm_supported(void);
 
 conn_rec *h2_slave_create(conn_rec *master, int slave_id, apr_pool_t *parent);
 void h2_slave_destroy(conn_rec *slave);
