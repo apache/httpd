@@ -4,14 +4,6 @@ Changes with Apache 2.5.0
   *) htpasswd / htdigest: Do not apply the strict permissions of the temporary
      passwd file to a possibly existing passwd file. PR 61240. [Ruediger Pluem]
 
-  *) mod_proxy_fcgi: Revert to 2.4.20 FCGI behavior for the default
-     ProxyFCGIBackendType, fixing a regression with PHP-FPM. PR 61202.
-     [Jacob Champion]
-
-  *) core: Avoid duplicate HEAD in Allow header.
-     This is a regression in 2.4.24 (unreleased), 2.4.25 and 2.4.26.
-     PR 61207. [Christophe Jaillet]
-
   *) mod_rewrite: Add 'RewriteOptions LongURLOptimization' to free memory
      from each set of unmatched rewrite conditions.
      [Eric Covener]
