@@ -115,12 +115,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) PR61202: remove FPM-specific logic from mod_proxy_fcgi. Returns us to
-     2.4.20 FCGI behavior by default.
-     trunk patch: https://svn.apache.org/r1800306
-                  https://svn.apache.org/r1800393
-     2.4.x patch: trunk works, modulo APLOGNO and CHANGES
-     +1: jchampion, jim, covener
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
