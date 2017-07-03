@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_http2: disable and give warning when mpm_prefork is encountered. The server will
+     continue to work, but HTTP/2 will no longer be negotiated. [Stefan Eissing]
+  
   *) htpasswd / htdigest: Do not apply the strict permissions of the temporary
      passwd file to a possibly existing passwd file. PR 61240. [Ruediger Pluem]
 

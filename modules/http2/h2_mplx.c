@@ -480,9 +480,6 @@ void h2_mplx_release_and_join(h2_mplx *m, apr_thread_cond_t *wait)
     
     H2_MPLX_LEAVE(m);
 
-    /* 5. unregister again, now that our workers are done */
-    h2_workers_unregister(m->workers, m);
-
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c,
                   "h2_mplx(%ld): released", m->id);
 }
@@ -661,7 +658,7 @@ apr_status_t h2_mplx_reprioritize(h2_mplx *m, h2_stream_pri_cmp *cmp, void *ctx)
 
 static void register_if_needed(h2_mplx *m) 
 {
-    if (!m->is_registered && !h2_iq_empty(m->q)) {
+    if (!m->aborted && !m->is_registered && !h2_iq_empty(m->q)) {
         apr_status_t status = h2_workers_register(m->workers, m); 
         if (status == APR_SUCCESS) {
             m->is_registered = 1;
@@ -754,25 +751,27 @@ static h2_task *next_stream_task(h2_mplx *m)
     return NULL;
 }
 
-h2_task *h2_mplx_pop_task(h2_mplx *m, int *has_more)
+apr_status_t h2_mplx_pop_task(h2_mplx *m, h2_task **ptask)
 {
-    h2_task *task = NULL;
+    apr_status_t rv = APR_EOF;
     
-    H2_MPLX_ENTER_ALWAYS(m);
-
-    *has_more = 0;
-    if (!m->aborted) {
-        task = next_stream_task(m);
-        if (task != NULL && !h2_iq_empty(m->q)) {
-            *has_more = 1;
-        }
-        else {
-            m->is_registered = 0; /* h2_workers will discard this mplx */
-        }
+    *ptask = NULL;
+    if (APR_SUCCESS != (rv = apr_thread_mutex_lock(m->lock))) {
+        return rv;
     }
-
+    
+    if (m->aborted) {
+        rv = APR_EOF;
+    }
+    else {
+        *ptask = next_stream_task(m);
+        rv = (*ptask != NULL && !h2_iq_empty(m->q))? APR_EAGAIN : APR_SUCCESS;
+    }
+    if (APR_EAGAIN != rv) {
+        m->is_registered = 0; /* h2_workers will discard this mplx */
+    }
     H2_MPLX_LEAVE(m);
-    return task;
+    return rv;
 }
 
 static void task_done(h2_mplx *m, h2_task *task, h2_req_engine *ngn)
