@@ -49,12 +49,10 @@
 /* Load mode for lua_load() */
 #define lua_load(a,b,c,d)  lua_load(a,b,c,d,NULL)
 #define lua_resume(a,b)    lua_resume(a, NULL, b)
-#define luaL_loadfile(a,b) luaL_loadfilex(a,b,NULL)
-#define luaL_loadbuffer(a,b,c,d) luaL_loadbufferx(a,b,c,d,NULL)
-#define luaL_setfuncs(a,b) luaL_setfuncs(a,b,0)
+#define luaL_setfuncs_compat(a,b) luaL_setfuncs(a,b,0)
 #else
 #define lua_rawlen(L,i)    lua_objlen(L, (i))
-#define luaL_setfuncs(a,b) luaL_register(a,NULL,b)
+#define luaL_setfuncs_compat(a,b) luaL_register(a,NULL,b)
 #endif
 #if LUA_VERSION_NUM > 502
 #define lua_dump(a,b,c,d) lua_dump(a,b,c,d,0)
