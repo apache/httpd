@@ -198,13 +198,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  participate in protocol negotiation, server will continue to work.
      trunk patch: http://svn.apache.org/r1800689
      2.4.x patch:  svn merge -c 1800689 ^/httpd/httpd/trunk .
-     +1: icing, ylavic
+     +1: icing, ylavic, jim
 
    *)  htpasswd / htdigest: Do not apply the strict permissions of the temporary
        passwd file to a possibly existing passwd file. PR 61240.
      trunk patch: http://svn.apache.org/r1800594
      2.4.x patch:  svn merge -c 1800594 ^/httpd/httpd/trunk .
-     +1: rpluem, ylavic
+     +1: rpluem, ylavic, jim
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
