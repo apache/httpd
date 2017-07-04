@@ -199,7 +199,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1800689
      2.4.x patch:  svn merge -c 1800689 ^/httpd/httpd/trunk .
      +1: icing
-     
+
+   *)  htpasswd / htdigest: Do not apply the strict permissions of the temporary
+       passwd file to a possibly existing passwd file. PR 61240.
+     trunk patch: http://svn.apache.org/r1800594
+     2.4.x patch:  svn merge -c 1800594 ^/httpd/httpd/trunk .
+     +1: rpluem
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
