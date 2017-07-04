@@ -498,7 +498,7 @@ int main(int argc, const char * const argv[])
 
     /* The temporary file has all the data, just copy it to the new location.
      */
-    if (apr_file_copy(dirname, pwfilename, APR_FILE_SOURCE_PERMS, pool) !=
+    if (apr_file_copy(dirname, pwfilename, APR_OS_DEFAULT, pool) !=
         APR_SUCCESS) {
         apr_file_printf(errfile, "%s: unable to update file %s" NL,
                         argv[0], pwfilename);
