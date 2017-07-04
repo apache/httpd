@@ -82,7 +82,11 @@ static const luaL_Reg lua_table_methods[] = {
 int ap_lua_init(lua_State *L, apr_pool_t *p)
 {
     luaL_newmetatable(L, "Apr.Table");
+#if LUA_VERSION_NUM < 502
     luaL_register(L, "apr_table", lua_table_methods);
+#else
+    luaL_newlib(L, lua_table_methods);
+#endif
     lua_pushstring(L, "__index");
     lua_pushstring(L, "get");
     lua_gettable(L, 2);
