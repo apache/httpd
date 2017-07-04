@@ -1080,13 +1080,9 @@ static const char *register_named_block_function_hook(const char *name,
         else {
             luaL_Buffer b;
             luaL_buffinit(lvm, &b);
-#if LUA_VERSION_NUM >= 503
-            lua_dump(lvm, ldump_writer, &b, 0);
-#else
             lua_dump(lvm, ldump_writer, &b);
-#endif
             luaL_pushresult(&b);
-            spec->bytecode_len = lua_strlen(lvm, -1);
+            spec->bytecode_len = lua_rawlen(lvm, -1);
             spec->bytecode = apr_pstrmemdup(cmd->pool, lua_tostring(lvm, -1),
                                             spec->bytecode_len);
             lua_close(lvm);
