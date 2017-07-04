@@ -2955,27 +2955,27 @@ void ap_lua_load_request_lmodule(lua_State *L, apr_pool_t *p)
     lua_pushlightuserdata(L, dispatch);
     lua_setfield(L, LUA_REGISTRYINDEX, "Apache2.Request.dispatch");
 
-    luaL_newmetatable(L, "Apache2.Request");    /* [metatable] */
+    luaL_newmetatable(L, "Apache2.Request");     /* [metatable] */
     lua_pushvalue(L, -1);
 
     lua_setfield(L, -2, "__index");
-    luaL_setfuncs(L, request_methods);          /* [metatable] */
+    luaL_setfuncs_compat(L, request_methods);    /* [metatable] */
 
     lua_pop(L, 2);
 
-    luaL_newmetatable(L, "Apache2.Connection"); /* [metatable] */
+    luaL_newmetatable(L, "Apache2.Connection");  /* [metatable] */
     lua_pushvalue(L, -1);
 
     lua_setfield(L, -2, "__index");
-    luaL_setfuncs(L, connection_methods);       /* [metatable] */
+    luaL_setfuncs_compat(L, connection_methods); /* [metatable] */
 
     lua_pop(L, 2);
 
-    luaL_newmetatable(L, "Apache2.Server");     /* [metatable] */
+    luaL_newmetatable(L, "Apache2.Server");      /* [metatable] */
     lua_pushvalue(L, -1);
 
     lua_setfield(L, -2, "__index");
-    luaL_setfuncs(L, server_methods);           /* [metatable] */
+    luaL_setfuncs_compat(L, server_methods);     /* [metatable] */
 
     lua_pop(L, 2);
 
