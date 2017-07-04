@@ -23,6 +23,9 @@
 ** TODO: document or remove block sections
 ** TODO: test per-dir behavior of block sections
 ** TODO: Suppress internal details (fs path to scripts, etc) in error responses
+** TODO: Check whether we can tighten the mode flag in lua_load(),
+         luaL_loadfile() an dluaL_loadbuffer() from NULL (="bt")
+         to e.g. "t".
     
 * License
   Apache License, Version 2.0,

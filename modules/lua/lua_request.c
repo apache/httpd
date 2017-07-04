@@ -345,7 +345,7 @@ static int req_parsebody(lua_State *L)
     char *multipart;
     const char *contentType;
     request_rec *r = ap_lua_check_request_rec(L, 1);
-    max_post_size = (apr_size_t) luaL_optint(L, 2, MAX_STRING_LEN);
+    max_post_size = (apr_size_t) luaL_optinteger(L, 2, MAX_STRING_LEN);
     multipart = apr_pcalloc(r->pool, 256);
     contentType = apr_table_get(r->headers_in, "Content-Type");
     lua_newtable(L);
@@ -418,7 +418,7 @@ static int lua_ap_requestbody(lua_State *L)
     
     r = ap_lua_check_request_rec(L, 1);
     filename = luaL_optstring(L, 2, 0);
-    maxSize = luaL_optint(L, 3, 0);
+    maxSize = (apr_off_t)luaL_optinteger(L, 3, 0);
 
     if (r) {
         apr_off_t size;
@@ -1708,7 +1708,7 @@ static int lua_ap_make_etag(lua_State *L)
     luaL_checktype(L, 1, LUA_TUSERDATA);
     r = ap_lua_check_request_rec(L, 1);
     luaL_checktype(L, 2, LUA_TBOOLEAN);
-    force_weak = luaL_optint(L, 2, 0);
+    force_weak = (int)luaL_optinteger(L, 2, 0);
     returnValue = ap_make_etag(r, force_weak);
     lua_pushstring(L, returnValue);
     return 1;
@@ -2040,7 +2040,7 @@ static int lua_set_cookie(lua_State *L)
         /* expiry */
         lua_pushstring(L, "expires");
         lua_gettable(L, -2);
-        expires = luaL_optint(L, -1, 0);
+        expires = (int)luaL_optinteger(L, -1, 0);
         lua_pop(L, 1);
         
         /* secure */
@@ -2955,27 +2955,27 @@ void ap_lua_load_request_lmodule(lua_State *L, apr_pool_t *p)
     lua_pushlightuserdata(L, dispatch);
     lua_setfield(L, LUA_REGISTRYINDEX, "Apache2.Request.dispatch");
 
-    luaL_newmetatable(L, "Apache2.Request");    /* [metatable] */
+    luaL_newmetatable(L, "Apache2.Request");     /* [metatable] */
     lua_pushvalue(L, -1);
 
     lua_setfield(L, -2, "__index");
-    luaL_register(L, NULL, request_methods);    /* [metatable] */
+    luaL_setfuncs_compat(L, request_methods);    /* [metatable] */
 
     lua_pop(L, 2);
 
-    luaL_newmetatable(L, "Apache2.Connection"); /* [metatable] */
+    luaL_newmetatable(L, "Apache2.Connection");  /* [metatable] */
     lua_pushvalue(L, -1);
 
     lua_setfield(L, -2, "__index");
-    luaL_register(L, NULL, connection_methods); /* [metatable] */
+    luaL_setfuncs_compat(L, connection_methods); /* [metatable] */
 
     lua_pop(L, 2);
 
-    luaL_newmetatable(L, "Apache2.Server");     /* [metatable] */
+    luaL_newmetatable(L, "Apache2.Server");      /* [metatable] */
     lua_pushvalue(L, -1);
 
     lua_setfield(L, -2, "__index");
-    luaL_register(L, NULL, server_methods);     /* [metatable] */
+    luaL_setfuncs_compat(L, server_methods);     /* [metatable] */
 
     lua_pop(L, 2);
 
