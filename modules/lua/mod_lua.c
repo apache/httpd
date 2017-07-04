@@ -1086,7 +1086,7 @@ static const char *register_named_block_function_hook(const char *name,
             lua_dump(lvm, ldump_writer, &b);
 #endif
             luaL_pushresult(&b);
-            spec->bytecode_len = lua_strlen(lvm, -1);
+            spec->bytecode_len = lua_rawlen(lvm, -1);
             spec->bytecode = apr_pstrmemdup(cmd->pool, lua_tostring(lvm, -1),
                                             spec->bytecode_len);
             lua_close(lvm);
