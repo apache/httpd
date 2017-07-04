@@ -2959,7 +2959,7 @@ void ap_lua_load_request_lmodule(lua_State *L, apr_pool_t *p)
     lua_pushvalue(L, -1);
 
     lua_setfield(L, -2, "__index");
-    luaL_register(L, NULL, request_methods);    /* [metatable] */
+    luaL_setfuncs(L, request_methods);          /* [metatable] */
 
     lua_pop(L, 2);
 
@@ -2967,7 +2967,7 @@ void ap_lua_load_request_lmodule(lua_State *L, apr_pool_t *p)
     lua_pushvalue(L, -1);
 
     lua_setfield(L, -2, "__index");
-    luaL_register(L, NULL, connection_methods); /* [metatable] */
+    luaL_setfuncs(L, connection_methods);       /* [metatable] */
 
     lua_pop(L, 2);
 
@@ -2975,7 +2975,7 @@ void ap_lua_load_request_lmodule(lua_State *L, apr_pool_t *p)
     lua_pushvalue(L, -1);
 
     lua_setfield(L, -2, "__index");
-    luaL_register(L, NULL, server_methods);     /* [metatable] */
+    luaL_setfuncs(L, server_methods);           /* [metatable] */
 
     lua_pop(L, 2);
 
