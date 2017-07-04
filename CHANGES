@@ -1,9 +1,6 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
-  *) mod_lua: Improve compatibility with Lua 5.1, 5.2 and 5.3.
-     PR58188, PR60831, PR61245. [Rainer Jung]
-  
   *) mod_http2: disable and give warning when mpm_prefork is encountered. The server will
      continue to work, but HTTP/2 will no longer be negotiated. [Stefan Eissing]
   
