@@ -193,6 +193,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                 If confirmed, it would worth, IMHO, a CHANGE entry and maybe a
                 2.2.x backport.
 
+   *) httpd.spec: Add mod_proxy_hcheck.
+      trunk patch: http://svn.apache.org/r1800788
+      2.4.x patch: svn merge -c 1800788 ^/httpd/httpd/trunk .
+      +1: ylavic
+
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
