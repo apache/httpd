@@ -444,7 +444,13 @@ apr_status_t h2_stream_recv_frame(h2_stream *stream, int ftype, int flags)
             else {
                 /* request HEADER */
                 ap_assert(stream->request == NULL);
-                ap_assert(stream->rtmp != NULL);
+                if (stream->rtmp == NULL) {
+                    /* This can only happen, if the stream has received no header
+                     * name/value pairs at all. The lastest nghttp2 version have become
+                     * pretty good at detecting this early. In any case, we have
+                     * to abort the connection here, since this is clearly a protocol error */
+                    return APR_EINVAL;
+                }
                 status = h2_request_end_headers(stream->rtmp, stream->pool, eos);
                 if (status != APR_SUCCESS) {
                     return status;
@@ -739,9 +745,13 @@ apr_status_t h2_stream_add_header(h2_stream *stream,
         status = h2_request_add_header(stream->rtmp, stream->pool,
                                        name, nlen, value, vlen);
     }
-    else  {
+    else if (H2_SS_OPEN == stream->state) {
         status = add_trailer(stream, name, nlen, value, vlen);
     }
+    else {
+        status = APR_EINVAL;
+    }
+    
     if (status != APR_SUCCESS) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, session->c,
                       H2_STRM_MSG(stream, "header %s not accepted"), name);

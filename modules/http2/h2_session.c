@@ -326,6 +326,7 @@ static int on_frame_recv_cb(nghttp2_session *ng2s,
 {
     h2_session *session = (h2_session *)userp;
     h2_stream *stream;
+    apr_status_t rv = APR_SUCCESS;
     
     if (APLOGcdebug(session->c)) {
         char buffer[256];
@@ -346,7 +347,7 @@ static int on_frame_recv_cb(nghttp2_session *ng2s,
              * trailers */
             stream = h2_session_stream_get(session, frame->hd.stream_id);
             if (stream) {
-                h2_stream_recv_frame(stream, NGHTTP2_HEADERS, frame->hd.flags);
+                rv = h2_stream_recv_frame(stream, NGHTTP2_HEADERS, frame->hd.flags);
             }
             break;
         case NGHTTP2_DATA:
@@ -356,7 +357,7 @@ static int on_frame_recv_cb(nghttp2_session *ng2s,
                               H2_STRM_LOG(APLOGNO(02923), stream, 
                               "DATA, len=%ld, flags=%d"), 
                               (long)frame->hd.length, frame->hd.flags);
-                h2_stream_recv_frame(stream, NGHTTP2_DATA, frame->hd.flags);
+                rv = h2_stream_recv_frame(stream, NGHTTP2_DATA, frame->hd.flags);
             }
             break;
         case NGHTTP2_PRIORITY:
@@ -411,7 +412,7 @@ static int on_frame_recv_cb(nghttp2_session *ng2s,
             }
             break;
     }
-    return 0;
+    return (APR_SUCCESS == rv)? 0 : NGHTTP2_ERR_PROTO;
 }
 
 static int h2_session_continue_data(h2_session *session) {

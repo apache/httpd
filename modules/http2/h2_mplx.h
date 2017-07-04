@@ -124,7 +124,7 @@ h2_mplx *h2_mplx_create(conn_rec *c, apr_pool_t *master,
  */ 
 void h2_mplx_release_and_join(h2_mplx *m, struct apr_thread_cond_t *wait);
 
-struct h2_task *h2_mplx_pop_task(h2_mplx *mplx, int *has_more);
+apr_status_t h2_mplx_pop_task(h2_mplx *m, struct h2_task **ptask);
 
 void h2_mplx_task_done(h2_mplx *m, struct h2_task *task, struct h2_task **ptask);
 
