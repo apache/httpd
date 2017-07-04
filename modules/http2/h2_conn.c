@@ -47,6 +47,7 @@ static struct h2_workers *workers;
 static h2_mpm_type_t mpm_type = H2_MPM_UNKNOWN;
 static module *mpm_module;
 static int async_mpm;
+static int mpm_supported = 1;
 static apr_socket_t *dummy_socket;
 
 static void check_modules(int force) 
@@ -76,11 +77,18 @@ static void check_modules(int force)
             else if (!strcmp("prefork.c", m->name)) {
                 mpm_type = H2_MPM_PREFORK;
                 mpm_module = m;
+                /* While http2 can work really well on prefork, it collides
+                 * today's use case for prefork: runnning single-thread app engines
+                 * like php. If we restrict h2_workers to 1 per process, php will
+                 * work fine, but browser will be limited to 1 active request at a
+                 * time. */
+                mpm_supported = 0;
                 break;
             }
             else if (!strcmp("simple_api.c", m->name)) {
                 mpm_type = H2_MPM_SIMPLE;
                 mpm_module = m;
+                mpm_supported = 0;
                 break;
             }
             else if (!strcmp("mpm_winnt.c", m->name)) {
@@ -107,7 +115,6 @@ apr_status_t h2_conn_child_init(apr_pool_t *pool, server_rec *s)
     int idle_secs = 0;
 
     check_modules(1);
-    
     ap_mpm_query(AP_MPMQ_MAX_THREADS, &max_threads_per_child);
     
     status = ap_mpm_query(AP_MPMQ_IS_ASYNC, &async_mpm);
@@ -155,6 +162,18 @@ h2_mpm_type_t h2_conn_mpm_type(void)
 {
     check_modules(0);
     return mpm_type;
+}
+
+const char *h2_conn_mpm_name(void)
+{
+    check_modules(0);
+    return mpm_module? mpm_module->name : "unknown";
+}
+
+int h2_mpm_supported(void)
+{
+    check_modules(0);
+    return mpm_supported;
 }
 
 static module *h2_conn_mpm_module(void)

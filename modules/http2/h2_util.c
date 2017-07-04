@@ -695,16 +695,47 @@ int h2_fifo_count(h2_fifo *fifo)
 
 static apr_status_t check_not_empty(h2_fifo *fifo, int block)
 {
-    if (fifo->count == 0) {
+    while (fifo->count == 0) {
         if (!block) {
             return APR_EAGAIN;
         }
-        while (fifo->count == 0) {
-            if (fifo->aborted) {
-                return APR_EOF;
-            }
-            apr_thread_cond_wait(fifo->not_empty, fifo->lock);
+        if (fifo->aborted) {
+            return APR_EOF;
         }
+        apr_thread_cond_wait(fifo->not_empty, fifo->lock);
+    }
+    return APR_SUCCESS;
+}
+
+static apr_status_t fifo_push_int(h2_fifo *fifo, void *elem, int block)
+{
+    if (fifo->aborted) {
+        return APR_EOF;
+    }
+
+    if (fifo->set && index_of(fifo, elem) >= 0) {
+        /* set mode, elem already member */
+        return APR_EEXIST;
+    }
+    else if (fifo->count == fifo->nelems) {
+        if (block) {
+            while (fifo->count == fifo->nelems) {
+                if (fifo->aborted) {
+                    return APR_EOF;
+                }
+                apr_thread_cond_wait(fifo->not_full, fifo->lock);
+            }
+        }
+        else {
+            return APR_EAGAIN;
+        }
+    }
+    
+    ap_assert(fifo->count < fifo->nelems);
+    fifo->elems[nth_index(fifo, fifo->count)] = elem;
+    ++fifo->count;
+    if (fifo->count == 1) {
+        apr_thread_cond_broadcast(fifo->not_empty);
     }
     return APR_SUCCESS;
 }
@@ -718,33 +749,7 @@ static apr_status_t fifo_push(h2_fifo *fifo, void *elem, int block)
     }
 
     if ((rv = apr_thread_mutex_lock(fifo->lock)) == APR_SUCCESS) {
-        if (fifo->set && index_of(fifo, elem) >= 0) {
-            /* set mode, elem already member */
-            apr_thread_mutex_unlock(fifo->lock);
-            return APR_EEXIST;
-        }
-        else if (fifo->count == fifo->nelems) {
-            if (block) {
-                while (fifo->count == fifo->nelems) {
-                    if (fifo->aborted) {
-                        apr_thread_mutex_unlock(fifo->lock);
-                        return APR_EOF;
-                    }
-                    apr_thread_cond_wait(fifo->not_full, fifo->lock);
-                }
-            }
-            else {
-                apr_thread_mutex_unlock(fifo->lock);
-                return APR_EAGAIN;
-            }
-        }
-        
-        ap_assert(fifo->count < fifo->nelems);
-        fifo->elems[nth_index(fifo, fifo->count)] = elem;
-        ++fifo->count;
-        if (fifo->count == 1) {
-            apr_thread_cond_broadcast(fifo->not_empty);
-        }
+        rv = fifo_push_int(fifo, elem, block);
         apr_thread_mutex_unlock(fifo->lock);
     }
     return rv;
@@ -760,12 +765,15 @@ apr_status_t h2_fifo_try_push(h2_fifo *fifo, void *elem)
     return fifo_push(fifo, elem, 0);
 }
 
-static void *pull_head(h2_fifo *fifo)
+static apr_status_t pull_head(h2_fifo *fifo, void **pelem, int block)
 {
-    void *elem;
+    apr_status_t rv;
     
-    ap_assert(fifo->count > 0);
-    elem = fifo->elems[fifo->head];
+    if ((rv = check_not_empty(fifo, block)) != APR_SUCCESS) {
+        *pelem = NULL;
+        return rv;
+    }
+    *pelem = fifo->elems[fifo->head];
     --fifo->count;
     if (fifo->count > 0) {
         fifo->head = nth_index(fifo, 1);
@@ -773,7 +781,7 @@ static void *pull_head(h2_fifo *fifo)
             apr_thread_cond_broadcast(fifo->not_full);
         }
     }
-    return elem;
+    return APR_SUCCESS;
 }
 
 static apr_status_t fifo_pull(h2_fifo *fifo, void **pelem, int block)
@@ -785,15 +793,7 @@ static apr_status_t fifo_pull(h2_fifo *fifo, void **pelem, int block)
     }
     
     if ((rv = apr_thread_mutex_lock(fifo->lock)) == APR_SUCCESS) {
-        if ((rv = check_not_empty(fifo, block)) != APR_SUCCESS) {
-            apr_thread_mutex_unlock(fifo->lock);
-            *pelem = NULL;
-            return rv;
-        }
-
-        ap_assert(fifo->count > 0);
-        *pelem = pull_head(fifo);
-
+        rv = pull_head(fifo, pelem, block);
         apr_thread_mutex_unlock(fifo->lock);
     }
     return rv;
@@ -818,25 +818,17 @@ static apr_status_t fifo_peek(h2_fifo *fifo, h2_fifo_peek_fn *fn, void *ctx, int
         return APR_EOF;
     }
     
-    if ((rv = apr_thread_mutex_lock(fifo->lock)) == APR_SUCCESS) {
-        if ((rv = check_not_empty(fifo, block)) != APR_SUCCESS) {
-            apr_thread_mutex_unlock(fifo->lock);
-            return rv;
+    if (APR_SUCCESS == (rv = apr_thread_mutex_lock(fifo->lock))) {
+        if (APR_SUCCESS == (rv = pull_head(fifo, &elem, block))) {
+            switch (fn(elem, ctx)) {
+                case H2_FIFO_OP_PULL:
+                    break;
+                case H2_FIFO_OP_REPUSH:
+                    rv = fifo_push_int(fifo, elem, block);
+                    break;
+            }
         }
-
-        ap_assert(fifo->count > 0);
-        elem = pull_head(fifo);
-        
         apr_thread_mutex_unlock(fifo->lock);
-
-        switch (fn(elem, ctx)) {
-            case H2_FIFO_OP_PULL:
-                break;
-            case H2_FIFO_OP_REPUSH:
-                return h2_fifo_push(fifo, elem);
-                break;
-        }
-        
     }
     return rv;
 }

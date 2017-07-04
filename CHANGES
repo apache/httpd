@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.27
 
+  *) mod_http2: disable and give warning when mpm_prefork is encountered. The server will
+     continue to work, but HTTP/2 will no longer be negotiated. [Stefan Eissing]
+  
   *) Allow single-char field names inadvertantly disallowed in 2.4.25.
      PR 61220. [Yann Ylavic]
 
