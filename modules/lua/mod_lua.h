@@ -55,7 +55,7 @@
 #define luaL_setfuncs_compat(a,b) luaL_register(a,NULL,b)
 #endif
 #if LUA_VERSION_NUM > 502
-#define lua_dump(a,b,c,d) lua_dump(a,b,c,d,0)
+#define lua_dump(a,b,c) lua_dump(a,b,c,0)
 #endif
 
 /* Create a set of AP_LUA_DECLARE(type), AP_LUA_DECLARE_NONSTD(type) and
