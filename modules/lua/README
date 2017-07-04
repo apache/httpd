@@ -1,7 +1,6 @@
 -*- mode:org -*-
 * Requirements:
-** lua 5.1, 5.2 ( http://www.lua.org/ ) or LuaJIT 2.x ( http://www.luajit.org/ )
-** Does NOT work with Lua 5.3 yet
+** lua 5.1, 5.2, 5.3 ( http://www.lua.org/ ) or LuaJIT 2.x ( http://www.luajit.org/ )
 ** Apache HTTPD 2.4 ( http://httpd.apache.org/ ) or higher
 
 * Documentation
@@ -24,6 +23,9 @@
 ** TODO: document or remove block sections
 ** TODO: test per-dir behavior of block sections
 ** TODO: Suppress internal details (fs path to scripts, etc) in error responses
+** TODO: Check whether we can tighten the mode flag in lua_load(),
+         luaL_loadfile() an dluaL_loadbuffer() from NULL (="bt")
+         to e.g. "t".
     
 * License
   Apache License, Version 2.0,

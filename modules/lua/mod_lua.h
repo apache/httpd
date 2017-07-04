@@ -41,23 +41,23 @@
 #include "apr_hooks.h"
 #include "apr_reslist.h"
 
-/* Allow for Lua 5.2 backwards compatibility */
-#define LUA_COMPAT_ALL
-/* Allow for Lua 5.3 backwards compatibility */
-#define LUA_COMPAT_5_2
-#define LUA_COMPAT_5_1
-#define LUA_COMPAT_MODULE
-
 #include "lua.h"
 #include "lauxlib.h"
 #include "lualib.h"
 
 #if LUA_VERSION_NUM > 501
 /* Load mode for lua_load() */
-#define lua_load(a,b,c,d) lua_load(a,b,c,d,NULL)
-#define lua_resume(a,b)   lua_resume(a, NULL, b)
+#define lua_load(a,b,c,d)  lua_load(a,b,c,d,NULL)
+#define lua_resume(a,b)    lua_resume(a, NULL, b)
+#define luaL_loadfile(a,b) luaL_loadfilex(a,b,NULL)
+#define luaL_loadbuffer(a,b,c,d) luaL_loadbufferx(a,b,c,d,NULL)
+#define luaL_setfuncs(a,b) luaL_setfuncs(a,b,0)
 #else
-#define lua_rawlen(L,i)   lua_objlen(L, (i))
+#define lua_rawlen(L,i)    lua_objlen(L, (i))
+#define luaL_setfuncs(a,b) luaL_register(a,NULL,b)
+#endif
+#if LUA_VERSION_NUM > 502
+#define lua_dump(a,b,c,d) lua_dump(a,b,c,d,0)
 #endif
 
 /* Create a set of AP_LUA_DECLARE(type), AP_LUA_DECLARE_NONSTD(type) and
