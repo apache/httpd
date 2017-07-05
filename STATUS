@@ -120,6 +120,12 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       trunk patch: http://svn.apache.org/r1800919
       +1: wrowe, jim, jchampion
 
+   *) Fix negotiation type parsing to be strict about "*", "*/*" and "type/*"
+      comparisons.
+      Submitted by: wrowe, Robert Święcki <robert swiecki.net>
+      trunk patch: http://svn.apache.org/r1800917
+      +1: wrowe, jim, jchampion
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -197,12 +203,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                 the patch description looks straighforward.
                 If confirmed, it would worth, IMHO, a CHANGE entry and maybe a
                 2.2.x backport.
-
-   *) Fix negotiation type parsing to be strict about "*", "*/*" and "type/*"
-      comparisons.
-      Submitted by: wrowe, Robert Święcki <robert swiecki.net>
-      trunk patch: http://svn.apache.org/r1800917
-      +1: wrowe, jim
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
