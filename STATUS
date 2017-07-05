@@ -194,6 +194,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                 If confirmed, it would worth, IMHO, a CHANGE entry and maybe a
                 2.2.x backport.
 
+   *) Fix negotiation type parsing to be strict about "*", "*/*" and "type/*"
+      comparisons.
+      Submitted by: wrowe, Robert Święcki <robert swiecki.net>
+      trunk patch: http://svn.apache.org/r1800917
+      +1: wrowe
+
+   *) Correct string scope to prevent duplicated values for subsequent tokens.
+      Submitted by: wrowe
+      trunk patch: http://svn.apache.org/r1800919
+      +1: wrowe
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
