@@ -1332,14 +1332,19 @@ static int mime_match(accept_rec *accept_r, var_rec *avail)
     const char *avail_type = avail->mime_type;
     int len = strlen(accept_type);
 
-    if (accept_type[0] == '*') {        /* Anything matches star/star */
+    if ((len == 1 && accept_type[0] == '*')
+            || (len == 3 && !strncmp(accept_type, "*/*", 3))) {
+        /* Anything matches star or star/star */
         if (avail->mime_stars < 1) {
             avail->mime_stars = 1;
         }
         return 1;
     }
-    else if ((accept_type[len - 1] == '*') &&
-             !strncmp(accept_type, avail_type, len - 2)) {
+    else if (len > 2 && accept_type[len - 2] == '/'
+                     && accept_type[len - 1] == '*'
+                     && !strncmp(accept_type, avail_type, len - 2)
+                     && avail_type[len - 2] == '/') {
+        /* Any subtype matches for type/star */
         if (avail->mime_stars < 2) {
             avail->mime_stars = 2;
         }
