@@ -185,7 +185,7 @@ size_t h2_iq_mshift(h2_iqueue *q, int *pint, size_t max);
 int h2_iq_contains(h2_iqueue *q, int sid);
 
 /*******************************************************************************
- * FIFO queue
+ * FIFO queue (void* elements)
  ******************************************************************************/
 
 /**
@@ -254,6 +254,72 @@ apr_status_t h2_fifo_try_peek(h2_fifo *fifo, h2_fifo_peek_fn *fn, void *ctx);
  * @return APR_SUCCESS iff > 0 elems were removed, APR_EAGAIN otherwise.
  */
 apr_status_t h2_fifo_remove(h2_fifo *fifo, void *elem);
+
+/*******************************************************************************
+ * iFIFO queue (int elements)
+ ******************************************************************************/
+
+/**
+ * A thread-safe FIFO queue with some extra bells and whistles, if you
+ * do not need anything special, better use 'apr_queue'.
+ */
+typedef struct h2_ififo h2_ififo;
+
+/**
+ * Create a FIFO queue that can hold up to capacity int. ints can
+ * appear several times.
+ */
+apr_status_t h2_ififo_create(h2_ififo **pfifo, apr_pool_t *pool, int capacity);
+
+/**
+ * Create a FIFO set that can hold up to capacity integers. Ints only
+ * appear once. Pushing an int already present does not change the
+ * queue and is successful.
+ */
+apr_status_t h2_ififo_set_create(h2_ififo **pfifo, apr_pool_t *pool, int capacity);
+
+apr_status_t h2_ififo_term(h2_ififo *fifo);
+apr_status_t h2_ififo_interrupt(h2_ififo *fifo);
+
+int h2_ififo_count(h2_ififo *fifo);
+
+/**
+ * Push an int into the queue. Blocks if there is no capacity left.
+ * 
+ * @param fifo the FIFO queue
+ * @param id  the int to push
+ * @return APR_SUCCESS on push, APR_EAGAIN on try_push on a full queue,
+ *         APR_EEXIST when in set mode and elem already there.
+ */
+apr_status_t h2_ififo_push(h2_ififo *fifo, int id);
+apr_status_t h2_ififo_try_push(h2_ififo *fifo, int id);
+
+apr_status_t h2_ififo_pull(h2_ififo *fifo, int *pi);
+apr_status_t h2_ififo_try_pull(h2_ififo *fifo, int *pi);
+
+typedef h2_fifo_op_t h2_ififo_peek_fn(int head, void *ctx);
+
+/**
+ * Call given function on the head of the queue, once it exists, and
+ * perform the returned operation on it. The queue will hold its lock during
+ * this time, so no other operations on the queue are possible.
+ * @param fifo the queue to peek at
+ * @param fn   the function to call on the head, once available
+ * @param ctx  context to pass in call to function
+ */
+apr_status_t h2_ififo_peek(h2_ififo *fifo, h2_ififo_peek_fn *fn, void *ctx);
+
+/**
+ * Non-blocking version of h2_fifo_peek.
+ */
+apr_status_t h2_ififo_try_peek(h2_ififo *fifo, h2_ififo_peek_fn *fn, void *ctx);
+
+/**
+ * Remove the integer from the queue, will remove multiple appearances.
+ * @param id  the integer to remove
+ * @return APR_SUCCESS iff > 0 ints were removed, APR_EAGAIN otherwise.
+ */
+apr_status_t h2_ififo_remove(h2_ififo *fifo, int id);
 
 /*******************************************************************************
  * common helpers
