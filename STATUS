@@ -104,12 +104,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   *) Fix negotiation type parsing to be strict about "*", "*/*" and "type/*"
-      comparisons.
-      Submitted by: wrowe, Robert Święcki <robert swiecki.net>
-      trunk patch: http://svn.apache.org/r1800917
-      +1: wrowe, jchampion (inspection), ylavic
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
