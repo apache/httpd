@@ -125,9 +125,9 @@ static void stream_cleanup(h2_mplx *m, h2_stream *stream)
     
     h2_stream_cleanup(stream);
 
-    h2_iq_remove(m->q, stream->id);
-    h2_fifo_remove(m->readyq, stream);
     h2_ihash_remove(m->streams, stream->id);
+    h2_iq_remove(m->q, stream->id);
+    h2_ififo_remove(m->readyq, stream->id);
     h2_ihash_add(m->shold, stream);
     
     if (!stream->task || stream->task->worker_done) {
@@ -218,7 +218,7 @@ h2_mplx *h2_mplx_create(conn_rec *c, apr_pool_t *parent,
         m->spurge = h2_ihash_create(m->pool, offsetof(h2_stream,id));
         m->q = h2_iq_create(m->pool, m->max_streams);
 
-        status = h2_fifo_set_create(&m->readyq, m->pool, m->max_streams);
+        status = h2_ififo_set_create(&m->readyq, m->pool, m->max_streams);
         if (status != APR_SUCCESS) {
             apr_pool_destroy(m->pool);
             return NULL;
@@ -627,7 +627,7 @@ apr_status_t h2_mplx_out_trywait(h2_mplx *m, apr_interval_time_t timeout,
 
 static void check_data_for(h2_mplx *m, h2_stream *stream, int lock)
 {
-    if (h2_fifo_push(m->readyq, stream) == APR_SUCCESS) {
+    if (h2_ififo_push(m->readyq, stream->id) == APR_SUCCESS) {
         apr_atomic_set32(&m->event_pending, 1);
         H2_MPLX_ENTER_MAYBE(m, lock);
         if (m->added_output) {
@@ -1233,7 +1233,7 @@ apr_status_t h2_mplx_dispatch_master_events(h2_mplx *m,
                                             void *on_ctx)
 {
     h2_stream *stream;
-    int n;
+    int n, id;
     
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c, 
                   "h2_mplx(%ld): dispatch events", m->id);        
@@ -1243,11 +1243,14 @@ apr_status_t h2_mplx_dispatch_master_events(h2_mplx *m,
     h2_ihash_iter(m->streams, report_consumption_iter, m);    
     purge_streams(m, 1);
     
-    n = h2_fifo_count(m->readyq);
+    n = h2_ififo_count(m->readyq);
     while (n > 0 
-           && (h2_fifo_try_pull(m->readyq, (void**)&stream) == APR_SUCCESS)) {
+           && (h2_ififo_try_pull(m->readyq, &id) == APR_SUCCESS)) {
         --n;
-        on_resume(on_ctx, stream);
+        stream = h2_ihash_get(m->streams, id);
+        if (stream) {
+            on_resume(on_ctx, stream);
+        }
     }
     
     return APR_SUCCESS;
@@ -1268,7 +1271,7 @@ int h2_mplx_awaits_data(h2_mplx *m)
     if (h2_ihash_empty(m->streams)) {
         waiting = 0;
     }
-    else if (!m->tasks_active && !h2_fifo_count(m->readyq)
+    else if (!m->tasks_active && !h2_ififo_count(m->readyq)
              && h2_iq_empty(m->q)) {
         waiting = 0;
     }
