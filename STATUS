@@ -104,20 +104,20 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
    *) Fix negotiation type parsing to be strict about "*", "*/*" and "type/*"
       comparisons.
       Submitted by: wrowe, Robert Święcki <robert swiecki.net>
       trunk patch: http://svn.apache.org/r1800917
-      +1: wrowe, jchampion (inspection)
+      +1: wrowe, jchampion (inspection), ylavic
 
    *) Correct string scope to prevent duplicated values for subsequent tokens.
       Submitted by: wrowe
       trunk patch: http://svn.apache.org/r1800919
-      +1: wrowe, jchampion
+      +1: wrowe, jchampion, ylavic
+
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
 
 
 PATCHES/ISSUES THAT ARE STALLED:
