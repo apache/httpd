@@ -1,5 +1,8 @@
                                                          -*- coding: utf-8 -*-
 
+Changes with Apache 2.4.28
+
+
 Changes with Apache 2.4.27
 
   *) COMPATIBILITY: mod_lua: Remove the undocumented exported 'apr_table'
