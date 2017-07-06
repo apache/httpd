@@ -1,5 +1,5 @@
                                                          -*- coding: utf-8 -*-
-Changes with Apache 2.2.34
+Changes with Apache 2.2.34 (final)
 
   *) Allow single-char field names inadvertantly disallowed in 2.2.32.
      PR 61220. [Yann Ylavic]
