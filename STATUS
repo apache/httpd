@@ -110,11 +110,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       trunk patch: http://svn.apache.org/r1800917
       +1: wrowe, jchampion (inspection), ylavic
 
-   *) Correct string scope to prevent duplicated values for subsequent tokens.
-      Submitted by: wrowe
-      trunk patch: http://svn.apache.org/r1800919
-      +1: wrowe, jchampion, ylavic
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
