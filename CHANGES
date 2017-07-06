@@ -2,12 +2,14 @@
 
 Changes with Apache 2.4.27
 
+  *) COMPATIBILITY: mod_lua: Remove the undocumented exported 'apr_table'
+     global variable when using Lua 5.2 or later. This was exported as a
+     side effect from luaL_register, which is no longer supported as of
+     Lua 5.2 which deprecates pollution of the global namespace.
+     [Rainer Jung]
+
   *) mod_lua: Improve compatibility with Lua 5.1, 5.2 and 5.3.
      PR58188, PR60831, PR61245. [Rainer Jung]
-
-  *) COMPATIBILITY: mod_lua: Remove the exported 'apr_table' global variable
-     when using Lua 5.2 or later. This was exported as a side effect from
-     luaL_register, which is no longer used as of Lua 5.2. [Rainer Jung]
   
   *) mod_http2: disable and give warning when mpm_prefork is encountered. The server will
      continue to work, but HTTP/2 will no longer be negotiated. [Stefan Eissing]
