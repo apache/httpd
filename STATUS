@@ -115,6 +115,11 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   *) mod_http2: Provide better ready queue implementation and up version to 1.10.7. 
+     trunk patch: http://svn.apache.org/r1800978
+     2.4.x: svn merge -c 1800978 ^/httpd/httpd/trunk .
+     +1: icing, jim, ylavic
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -192,11 +197,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                 the patch description looks straighforward.
                 If confirmed, it would worth, IMHO, a CHANGE entry and maybe a
                 2.2.x backport.
-
-   *) mod_http2: Provide better ready queue implementation and up version to 1.10.7. 
-     trunk patch: http://svn.apache.org/r1800978
-     2.4.x: svn merge -c 1800978 ^/httpd/httpd/trunk .
-     +1: icing, jim
      
 
 PATCHES/ISSUES THAT ARE BEING WORKED
