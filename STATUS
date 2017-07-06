@@ -115,11 +115,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   *) Correct string scope to prevent duplicated values for subsequent tokens.
-      Submitted by: wrowe
-      trunk patch: http://svn.apache.org/r1800919
-      +1: wrowe, jim, jchampion
-
    *) Fix negotiation type parsing to be strict about "*", "*/*" and "type/*"
       comparisons.
       Submitted by: wrowe, Robert Święcki <robert swiecki.net>

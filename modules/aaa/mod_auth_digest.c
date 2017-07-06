@@ -965,13 +965,13 @@ static int get_digest_rec(request_rec *r, digest_header_rec *resp)
 
         /* find value */
 
+        vv = 0;
         if (auth_line[0] == '=') {
             auth_line++;
             while (apr_isspace(auth_line[0])) {
                 auth_line++;
             }
 
-            vv = 0;
             if (auth_line[0] == '\"') {         /* quoted string */
                 auth_line++;
                 while (auth_line[0] != '\"' && auth_line[0] != '\0') {
@@ -990,8 +990,8 @@ static int get_digest_rec(request_rec *r, digest_header_rec *resp)
                     value[vv++] = *auth_line++;
                 }
             }
-            value[vv] = '\0';
         }
+        value[vv] = '\0';
 
         while (auth_line[0] != ',' && auth_line[0] != '\0') {
             auth_line++;
