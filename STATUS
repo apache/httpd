@@ -196,7 +196,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    *) mod_http2: Provide better ready queue implementation and up version to 1.10.7. 
      trunk patch: http://svn.apache.org/r1800978
      2.4.x: svn merge -c 1800978 ^/httpd/httpd/trunk .
-     +1: icing
+     +1: icing, jim
      
 
 PATCHES/ISSUES THAT ARE BEING WORKED
