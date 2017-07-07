@@ -1268,6 +1268,7 @@ void child_main(apr_pool_t *pconf, DWORD parent_pid)
     apr_thread_mutex_destroy(child_lock);
     apr_thread_mutex_destroy(qlock);
     CloseHandle(qwait_event);
+    CloseHandle(ThreadDispatchIOCP);
 
     apr_pool_destroy(pchild);
     CloseHandle(exit_event);
