@@ -279,6 +279,57 @@ static winnt_conn_ctx_t *mpm_get_completion_context(int *timeout)
     return context;
 }
 
+typedef enum {
+    ACCEPT_FILTER_NONE = 0,
+    ACCEPT_FILTER_CONNECT = 1
+} accept_filter_e;
+
+static const char * accept_filter_to_string(accept_filter_e accf)
+{
+    switch (accf) {
+    case ACCEPT_FILTER_NONE:
+        return "none";
+    case ACCEPT_FILTER_CONNECT:
+        return "connect";
+    default:
+        return "";
+    }
+}
+
+static accept_filter_e get_accept_filter(const char *protocol)
+{
+    core_server_config *core_sconf;
+    const char *name;
+
+    core_sconf = ap_get_core_module_config(ap_server_conf->module_config);
+    name = apr_table_get(core_sconf->accf_map, protocol);
+    if (!name) {
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ap_server_conf,
+                     APLOGNO(02531) "winnt_accept: Listen protocol '%s' has "
+                     "no known accept filter. Using 'none' instead",
+                     protocol);
+        return ACCEPT_FILTER_NONE;
+    }
+    else if (strcmp(name, "data") == 0) {
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, ap_server_conf,
+                     APLOGNO(03458) "winnt_accept: 'data' accept filter is no "
+                     "longer supported. Using 'connect' instead");
+        return ACCEPT_FILTER_CONNECT;
+    }
+    else if (strcmp(name, "connect") == 0) {
+        return ACCEPT_FILTER_CONNECT;
+    }
+    else if (strcmp(name, "none") == 0) {
+        return ACCEPT_FILTER_NONE;
+    }
+    else {
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ap_server_conf, APLOGNO(00331)
+                     "winnt_accept: unrecognized AcceptFilter '%s', "
+                     "only 'data', 'connect' or 'none' are valid. "
+                     "Using 'none' instead", name);
+        return ACCEPT_FILTER_NONE;
+    }
+}
 
 /* Windows NT/2000 specific code...
  * Accept processing for on Windows NT uses a producer/consumer queue
@@ -307,10 +358,8 @@ static unsigned int __stdcall winnt_accept(void *lr_)
     LPFN_GETACCEPTEXSOCKADDRS lpfnGetAcceptExSockaddrs = NULL;
     GUID GuidAcceptEx = WSAID_ACCEPTEX;
     GUID GuidGetAcceptExSockaddrs = WSAID_GETACCEPTEXSOCKADDRS;
-    core_server_config *core_sconf;
-    const char *accf_name;
     int rv;
-    int accf;
+    accept_filter_e accf;
     int err_count = 0;
     HANDLE events[3];
 #if APR_HAVE_IPV6
@@ -318,37 +367,6 @@ static unsigned int __stdcall winnt_accept(void *lr_)
     int namelen = sizeof(ss_listen);
 #endif
     u_long zero = 0;
-
-    core_sconf = ap_get_core_module_config(ap_server_conf->module_config);
-    accf_name = apr_table_get(core_sconf->accf_map, lr->protocol);
-
-    if (!accf_name) {
-        accf = 0;
-        accf_name = "none";
-        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ap_server_conf,
-                     APLOGNO(02531) "winnt_accept: Listen protocol '%s' has "
-                     "no known accept filter. Using 'none' instead",
-                     lr->protocol);
-    }
-    else if (strcmp(accf_name, "data") == 0) {
-        accf = 1;
-        accf_name = "connect";
-        ap_log_error(APLOG_MARK, APLOG_INFO, 0, ap_server_conf,
-                     APLOGNO(03458) "winnt_accept: 'data' accept filter is no "
-                     "longer supported. Using 'connect' instead");
-    }
-    else if (strcmp(accf_name, "connect") == 0)
-        accf = 1;
-    else if (strcmp(accf_name, "none") == 0)
-        accf = 0;
-    else {
-        accf = 0;
-        accf_name = "none";
-        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ap_server_conf, APLOGNO(00331)
-                     "winnt_accept: unrecognized AcceptFilter '%s', "
-                     "only 'data', 'connect' or 'none' are valid. "
-                     "Using 'none' instead", accf_name);
-    }
 
     apr_os_sock_get(&nlsd, lr->sd);
 
@@ -362,7 +380,8 @@ static unsigned int __stdcall winnt_accept(void *lr_)
    }
 #endif
 
-    if (accf > 0) /* 'connect' */
+    accf = get_accept_filter(lr->protocol);
+    if (accf == ACCEPT_FILTER_CONNECT)
     {
         if (WSAIoctl(nlsd, SIO_GET_EXTENSION_FUNCTION_POINTER,
                      &GuidAcceptEx, sizeof GuidAcceptEx, 
@@ -386,7 +405,7 @@ static unsigned int __stdcall winnt_accept(void *lr_)
         events[1] = exit_event;
         events[2] = max_requests_per_child_event;
     }
-    else /* accf == 0, 'none' */
+    else /* accf == ACCEPT_FILTER_NONE */
     {
 reinit: /* target of connect upon too many AcceptEx failures */
 
@@ -410,7 +429,7 @@ reinit: /* target of connect upon too many AcceptEx failures */
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(00334)
                  "Child: Accept thread listening on %pI using AcceptFilter %s",
-                 lr->bind_addr, accf_name);
+                 lr->bind_addr, accept_filter_to_string(accf));
 
     while (!shutdown_in_progress) {
         if (!context) {
@@ -433,7 +452,7 @@ reinit: /* target of connect upon too many AcceptEx failures */
             }
         }
 
-        if (accf > 0) /* 'connect' */
+        if (accf == ACCEPT_FILTER_CONNECT)
         {
             char *buf;
 
@@ -582,7 +601,7 @@ reinit: /* target of connect upon too many AcceptEx failures */
                                      &context->sa_server, &context->sa_server_len,
                                      &context->sa_client, &context->sa_client_len);
         }
-        else /* (accf = 0)  e.g. 'none' */
+        else /* accf == ACCEPT_FILTER_NONE */
         {
             /* There is no socket reuse without AcceptEx() */
             if (context->accept_socket != INVALID_SOCKET)
@@ -697,7 +716,7 @@ reinit: /* target of connect upon too many AcceptEx failures */
                                    &context->overlapped);
         context = NULL;
     }
-    if (!accf)
+    if (accf == ACCEPT_FILTER_NONE)
         CloseHandle(events[2]);
 
     if (!shutdown_in_progress) {
