@@ -438,14 +438,7 @@ reinit: /* target of connect upon too many AcceptEx failures */
             context = mpm_get_completion_context(&timeout);
             if (!context) {
                 if (!timeout) {
-                    /* Hopefully a temporary condition in the provider? */
-                    ++err_count;
-                    if (err_count > MAX_ACCEPTEX_ERR_COUNT) {
-                        ap_log_error(APLOG_MARK, APLOG_CRIT, 0, ap_server_conf, APLOGNO(00335)
-                                     "winnt_accept: Too many failures grabbing a "
-                                     "connection ctx.  Aborting.");
-                        break;
-                    }
+                    break;
                 }
                 Sleep(100);
                 continue;
