@@ -749,7 +749,7 @@ static winnt_conn_ctx_t *winnt_get_connection(winnt_conn_ctx_t *context)
         if (!rc) {
             rc = apr_get_os_error();
             ap_log_error(APLOG_MARK, APLOG_DEBUG, rc, ap_server_conf, APLOGNO(00349)
-                         "Child: GetQueuedComplationStatus returned %d",
+                         "Child: GetQueuedCompletionStatus returned %d",
                          rc);
             continue;
         }
