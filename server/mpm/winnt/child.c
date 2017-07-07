@@ -159,12 +159,12 @@ static void mpm_recycle_completion_context(winnt_conn_ctx_t *context)
     }
 }
 
-static winnt_conn_ctx_t *mpm_get_completion_context(int *timeout)
+static apr_status_t mpm_get_completion_context(winnt_conn_ctx_t **context_p)
 {
-    apr_status_t rv;
+    apr_status_t status;
     winnt_conn_ctx_t *context = NULL;
 
-    *timeout = 0;
+    *context_p = NULL;
     while (1) {
         /* Grab a context off the queue */
         apr_thread_mutex_lock(qlock);
@@ -185,6 +185,7 @@ static winnt_conn_ctx_t *mpm_get_completion_context(int *timeout)
              * at once.
              */
             if (num_completion_contexts >= max_num_completion_contexts) {
+                DWORD rv;
                 /* All workers are busy, need to wait for one */
                 static int reported = 0;
                 if (!reported) {
@@ -209,16 +210,17 @@ static winnt_conn_ctx_t *mpm_get_completion_context(int *timeout)
                         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(00327)
                                      "mpm_get_completion_context: Failed to get a "
                                      "free context within 1 second");
-                        *timeout = 1;
+                        return APR_TIMEUP;
                     }
                     else {
                         /* should be the unexpected, generic WAIT_FAILED */
-                        ap_log_error(APLOG_MARK, APLOG_WARNING, apr_get_os_error(),
+                        status = APR_FROM_OS_ERROR(rv);
+                        ap_log_error(APLOG_MARK, APLOG_WARNING, status,
                                      ap_server_conf, APLOGNO(00328)
                                      "mpm_get_completion_context: "
                                      "WaitForSingleObject failed to get free context");
+                        return status;
                     }
-                    return NULL;
                 }
             } else {
                 /* Allocate another context.
@@ -237,28 +239,29 @@ static winnt_conn_ctx_t *mpm_get_completion_context(int *timeout)
                                                          FALSE, NULL);
                 if (context->overlapped.hEvent == NULL) {
                     /* Hopefully this is a temporary condition ... */
-                    ap_log_error(APLOG_MARK, APLOG_WARNING, apr_get_os_error(),
+                    status = apr_get_os_error();
+                    ap_log_error(APLOG_MARK, APLOG_WARNING, status,
                                  ap_server_conf, APLOGNO(00329)
                                  "mpm_get_completion_context: "
                                  "CreateEvent failed.");
 
                     apr_thread_mutex_unlock(child_lock);
-                    return NULL;
+                    return status;
                 }
 
                 /* Create the transaction pool */
                 apr_allocator_create(&allocator);
                 apr_allocator_max_free_set(allocator, ap_max_mem_free);
-                rv = apr_pool_create_ex(&context->ptrans, pchild, NULL,
-                                        allocator);
-                if (rv != APR_SUCCESS) {
-                    ap_log_error(APLOG_MARK, APLOG_WARNING, rv, ap_server_conf, APLOGNO(00330)
+                status = apr_pool_create_ex(&context->ptrans, pchild, NULL,
+                                            allocator);
+                if (status != APR_SUCCESS) {
+                    ap_log_error(APLOG_MARK, APLOG_WARNING, status, ap_server_conf, APLOGNO(00330)
                                  "mpm_get_completion_context: Failed "
                                  "to create the transaction pool.");
                     CloseHandle(context->overlapped.hEvent);
 
                     apr_thread_mutex_unlock(child_lock);
-                    return NULL;
+                    return status;
                 }
                 apr_allocator_owner_set(allocator, context->ptrans);
                 apr_pool_tag(context->ptrans, "transaction");
@@ -276,7 +279,8 @@ static winnt_conn_ctx_t *mpm_get_completion_context(int *timeout)
         }
     }
 
-    return context;
+    *context_p = context;
+    return APR_SUCCESS;
 }
 
 typedef enum {
@@ -358,7 +362,7 @@ static unsigned int __stdcall winnt_accept(void *lr_)
     LPFN_GETACCEPTEXSOCKADDRS lpfnGetAcceptExSockaddrs = NULL;
     GUID GuidAcceptEx = WSAID_ACCEPTEX;
     GUID GuidGetAcceptExSockaddrs = WSAID_GETACCEPTEXSOCKADDRS;
-    int rv;
+    apr_status_t rv;
     accept_filter_e accf;
     int err_count = 0;
     HANDLE events[3];
@@ -433,15 +437,13 @@ reinit: /* target of connect upon too many AcceptEx failures */
 
     while (!shutdown_in_progress) {
         if (!context) {
-            int timeout;
-
-            context = mpm_get_completion_context(&timeout);
-            if (!context) {
-                if (!timeout) {
-                    break;
-                }
+            rv = mpm_get_completion_context(&context);
+            if (APR_STATUS_IS_TIMEUP(rv)) {
                 Sleep(100);
                 continue;
+            }
+            else if (rv) {
+                break;
             }
         }
 
