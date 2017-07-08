@@ -25,7 +25,7 @@ Changes with Apache 2.4.27
   *) mod_http2: Simplify ready queue, less memory and better performance. Update
      mod_http2 version to 1.10.7. [Stefan Eissing]
   
-  *) Allow single-char field names inadvertantly disallowed in 2.4.25.
+  *) Allow single-char field names inadvertently disallowed in 2.4.25.
      PR 61220. [Yann Ylavic]
 
   *) htpasswd / htdigest: Do not apply the strict permissions of the temporary
