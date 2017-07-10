@@ -193,6 +193,25 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                 the patch description looks straighforward.
                 If confirmed, it would worth, IMHO, a CHANGE entry and maybe a
                 2.2.x backport.
+
+  *) buildconf: add an apr-config mode, which allows builds to proceed without
+                APR source code as long as a valid APR installation exists.
+                Involves checking in the latest versions of APR's m4 files and
+                the PrintPath helper.
+     trunk patch: https://svn.apache.org/r1780441
+                  https://svn.apache.org/r1780470
+                  https://svn.apache.org/r1795928
+     2.4.x patch: svn merge -r 1780253:HEAD ^/httpd/httpd/branches/trunk-buildconf-noapr
+     +1: jchampion
+
+  *) docs: add an auto-generated Overrides class index.
+           (I know this is technically CTR, but the new machinery is a little
+           more complex than just a simple docs change. Make sure to svn-up your
+           docs-build directory.)
+     trunk patch: https://svn.apache.org/r1793922
+                  https://svn.apache.org/r1793923
+     2.4.x patch: svn merge -r1793921:HEAD ^/httpd/httpd/branches/trunk-override-index
+     +1: jchampion
      
 
 PATCHES/ISSUES THAT ARE BEING WORKED
