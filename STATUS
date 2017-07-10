@@ -149,7 +149,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1790169 (rename "exception" directive)
                   http://svn.apache.org/r1790457 (Update directive name in err message)
      2.4 convenience patch (includes CHANGES):
-                  http://people.apache.org/~druggeri/patches/RemoteIPProxyProtocol.2.4.x.patch
+                  http://home.apache.org/~jim/patches/RemoteIPProxyProtocol.2.4.x.patch
      +1: druggeri, jim
 
    * mod_journald: Add new module mod_journald to log error logs into journald.
