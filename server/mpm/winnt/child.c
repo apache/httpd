@@ -520,7 +520,7 @@ reinit: /* target of connect upon too many AcceptEx failures */
                                      "winnt_mpm: falling back to "
                                      "'AcceptFilter none'.");
                         err_count = 0;
-                        accf = 0;
+                        accf = ACCEPT_FILTER_NONE;
                     }
                     continue;
                 }
@@ -537,7 +537,7 @@ reinit: /* target of connect upon too many AcceptEx failures */
                                      "winnt_mpm: falling back to "
                                      "'AcceptFilter none'.");
                         err_count = 0;
-                        accf = 0;
+                        accf = ACCEPT_FILTER_NONE;
                         goto reinit;
                     }
                     continue;
