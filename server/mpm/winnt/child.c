@@ -1260,21 +1260,30 @@ void child_main(apr_pool_t *pconf, DWORD parent_pid)
         }
     }
 
-    /* Kill remaining threads off the hard way */
     if (threads_created) {
         ap_log_error(APLOG_MARK, APLOG_NOTICE, APR_SUCCESS, ap_server_conf, APLOGNO(00363)
-                     "Child: Terminating %d threads that failed to exit.",
+                     "Child: Waiting for %d threads timed out, terminating process.",
                      threads_created);
-    }
-    for (i = 0; i < threads_created; i++) {
-        int *idx;
-        TerminateThread(child_handles[i], 1);
-        CloseHandle(child_handles[i]);
-        /* Reset the scoreboard entry for the thread we just whacked */
-        idx = apr_hash_get(ht, &child_handles[i], sizeof(HANDLE));
-        if (idx) {
-            ap_update_child_status_from_indexes(0, *idx, SERVER_DEAD, NULL);
+        for (i = 0; i < threads_created; i++) {
+            /* Reset the scoreboard entries for the threads. */
+            int *idx = apr_hash_get(ht, &child_handles[i], sizeof(HANDLE));
+            if (idx) {
+                ap_update_child_status_from_indexes(0, *idx, SERVER_DEAD, NULL);
+            }
         }
+        /* We can't wait for any longer, but still have some threads remaining.
+         *
+         * The only thing we can do is terminate the process and let the OS
+         * perform the required cleanup. Terminate with exit code 0, as we do
+         * not want the parent process to restart the child. Note that we use
+         * TerminateProcess() instead of ExitProcess(), as the latter function
+         * causes all DLLs to be unloaded, and it can potentially deadlock if
+         * a DLL unload handler tries to acquire the same lock that is being
+         * held by one of the remaining worker threads.
+         *
+         * See https://msdn.microsoft.com/en-us/library/windows/desktop/ms682658
+         */
+        TerminateProcess(GetCurrentProcess(), 0);
     }
     ap_log_error(APLOG_MARK, APLOG_NOTICE, APR_SUCCESS, ap_server_conf, APLOGNO(00364)
                  "Child: All worker threads have exited.");
