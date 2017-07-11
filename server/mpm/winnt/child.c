@@ -1173,19 +1173,19 @@ void child_main(apr_pool_t *pconf, DWORD parent_pid)
                      "Child: Failure releasing the start mutex");
     }
 
-    /* Shutdown the worker threads
-     * Post worker threads blocked on the ThreadDispatch IOCompletion port
+    /* Shutdown the worker threads by posting a number of IOCP_SHUTDOWN
+     * completion packets equal to the amount of created threads
      */
-    while (g_blocked_threads > 0) {
+    if (g_blocked_threads > 0) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, ap_server_conf, APLOGNO(00361)
                      "Child: %d threads blocked on the completion port",
                      g_blocked_threads);
-        for (i=g_blocked_threads; i > 0; i--) {
-            PostQueuedCompletionStatus(ThreadDispatchIOCP, 0,
-                                       IOCP_SHUTDOWN, NULL);
-        }
-        Sleep(1000);
     }
+
+    for (i = 0; i < threads_created; i++) {
+        PostQueuedCompletionStatus(ThreadDispatchIOCP, 0, IOCP_SHUTDOWN, NULL);
+    }
+
     /* Empty the accept queue of completion contexts */
     apr_thread_mutex_lock(qlock);
     while (qhead) {
