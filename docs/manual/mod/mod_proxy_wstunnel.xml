@@ -55,7 +55,9 @@ ProxyPass "/wss2/" "wss://echo.websocket.org/"
 <p>In fact the module can be used to upgrade to other protocols, you can set the <code>upgrade</code>
 parameter in the <directive type="ProxyPass" module="mod_proxy">ProxyPass</directive>
 directive to allow the module to accept other protocol.
-NONE means you bypass the check for the header but still upgrade to WebSocket.</p>
+NONE means you bypass the check for the header but still upgrade to WebSocket.
+ANY means that <code>Upgrade</code> will read in the request headers and use
+in the response <code>Upgrade</code></p>
 </summary>
 
 <seealso><module>mod_proxy</module></seealso>
