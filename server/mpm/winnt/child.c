@@ -106,9 +106,7 @@ typedef struct winnt_conn_ctx_t_s {
 
 typedef enum {
     IOCP_CONNECTION_ACCEPTED = 1,
-    IOCP_WAIT_FOR_RECEIVE = 2,
-    IOCP_WAIT_FOR_TRANSMITFILE = 3,
-    IOCP_SHUTDOWN = 4
+    IOCP_SHUTDOWN = 2
 } io_state_e;
 
 static apr_pool_t *pchild;
