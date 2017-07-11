@@ -231,7 +231,8 @@ static int ReportStatusToSCMgr(int currentState, int waitHint,
             ctx->ssStatus.dwWaitHint = 0;
             ctx->ssStatus.dwCheckPoint = 0;
             ctx->ssStatus.dwControlsAccepted = SERVICE_ACCEPT_STOP
-                                             | SERVICE_ACCEPT_SHUTDOWN;
+                                             | SERVICE_ACCEPT_SHUTDOWN
+                                             | SERVICE_ACCEPT_PRESHUTDOWN;
         }
         else if (currentState == SERVICE_STOPPED) {
             ctx->ssStatus.dwWaitHint = 0;
@@ -345,7 +346,8 @@ static DWORD WINAPI service_nt_ctrl(DWORD dwCtrlCode, DWORD dwEventType,
 
     /* SHUTDOWN is offered before STOP, accept the first opportunity */
     if ((dwCtrlCode == SERVICE_CONTROL_STOP)
-         || (dwCtrlCode == SERVICE_CONTROL_SHUTDOWN))
+         || (dwCtrlCode == SERVICE_CONTROL_SHUTDOWN)
+         || (dwCtrlCode == SERVICE_CONTROL_PRESHUTDOWN))
     {
         ap_signal_parent(SIGNAL_PARENT_SHUTDOWN);
         ReportStatusToSCMgr(SERVICE_STOP_PENDING, 30000, ctx);
