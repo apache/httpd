@@ -212,6 +212,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   https://svn.apache.org/r1793923
      2.4.x patch: svn merge -r1793921:HEAD ^/httpd/httpd/branches/trunk-override-index
      +1: jchampion
+
+  *) mod_proxy_wstunnel fix PR 61142
+     2.4.x patch: svn merge -c 1801594 ^/httpd/httpd/trunk .
+     +1: jfclere
      
 
 PATCHES/ISSUES THAT ARE BEING WORKED
