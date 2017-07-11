@@ -119,7 +119,6 @@ static HANDLE max_requests_per_child_event;
 static apr_thread_mutex_t  *child_lock;
 static apr_thread_mutex_t  *qlock;
 static winnt_conn_ctx_t *qhead = NULL;
-static winnt_conn_ctx_t *qtail = NULL;
 static apr_uint32_t num_completion_contexts = 0;
 static apr_uint32_t max_num_completion_contexts = 0;
 static HANDLE ThreadDispatchIOCP = NULL;
@@ -147,13 +146,11 @@ static void mpm_recycle_completion_context(winnt_conn_ctx_t *context)
         ResetEvent(context->overlapped.hEvent);
 
         apr_thread_mutex_lock(qlock);
-        if (qtail) {
-            qtail->next = context;
-        } else {
-            qhead = context;
+        if (!qhead) {
             SetEvent(qwait_event);
         }
-        qtail = context;
+        context->next = qhead;
+        qhead = context;
         apr_thread_mutex_unlock(qlock);
     }
 }
@@ -170,8 +167,6 @@ static apr_status_t mpm_get_completion_context(winnt_conn_ctx_t **context_p)
         if (qhead) {
             context = qhead;
             qhead = qhead->next;
-            if (!qhead)
-                qtail = NULL;
         } else {
             ResetEvent(qwait_event);
         }
