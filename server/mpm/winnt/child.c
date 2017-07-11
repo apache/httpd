@@ -439,7 +439,6 @@ reinit: /* target of connect upon too many AcceptEx failures */
         if (!context) {
             rv = mpm_get_completion_context(&context);
             if (APR_STATUS_IS_TIMEUP(rv)) {
-                Sleep(100);
                 continue;
             }
             else if (rv) {
