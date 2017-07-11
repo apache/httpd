@@ -114,7 +114,6 @@ typedef enum {
 static apr_pool_t *pchild;
 static int shutdown_in_progress = 0;
 static int workers_may_exit = 0;
-static unsigned int g_blocked_threads = 0;
 static HANDLE max_requests_per_child_event;
 
 static apr_thread_mutex_t  *child_lock;
@@ -737,10 +736,8 @@ static winnt_conn_ctx_t *winnt_get_connection(winnt_conn_ctx_t *context)
 
     mpm_recycle_completion_context(context);
 
-    apr_atomic_inc32(&g_blocked_threads);
     while (1) {
         if (workers_may_exit) {
-            apr_atomic_dec32(&g_blocked_threads);
             return NULL;
         }
         rc = GetQueuedCompletionStatus(ThreadDispatchIOCP, &BytesRead,
@@ -758,15 +755,12 @@ static winnt_conn_ctx_t *winnt_get_connection(winnt_conn_ctx_t *context)
             context = CONTAINING_RECORD(pol, winnt_conn_ctx_t, overlapped);
             break;
         case IOCP_SHUTDOWN:
-            apr_atomic_dec32(&g_blocked_threads);
             return NULL;
         default:
-            apr_atomic_dec32(&g_blocked_threads);
             return NULL;
         }
         break;
     }
-    apr_atomic_dec32(&g_blocked_threads);
 
     return context;
 }
@@ -1162,12 +1156,6 @@ void child_main(apr_pool_t *pconf, DWORD parent_pid)
     /* Shutdown the worker threads by posting a number of IOCP_SHUTDOWN
      * completion packets equal to the amount of created threads
      */
-    if (g_blocked_threads > 0) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, ap_server_conf, APLOGNO(00361)
-                     "Child: %d threads blocked on the completion port",
-                     g_blocked_threads);
-    }
-
     for (i = 0; i < threads_created; i++) {
         PostQueuedCompletionStatus(ThreadDispatchIOCP, 0, IOCP_SHUTDOWN, NULL);
     }
