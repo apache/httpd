@@ -939,7 +939,6 @@ void child_main(apr_pool_t *pconf, DWORD parent_pid)
     /*
      * Create the worker thread dispatch IOCompletionPort
      */
-    /* Create the worker thread dispatch IOCP */
     ThreadDispatchIOCP = CreateIoCompletionPort(INVALID_HANDLE_VALUE,
                                                 NULL, 0, 0);
     apr_thread_mutex_create(&qlock, APR_THREAD_MUTEX_DEFAULT, pchild);
