@@ -328,7 +328,7 @@ check-conf:
 	        if [ -f $$i ] ; then \
 	        ( \
 	            n_lm=`awk 'BEGIN {n=0} /@@LoadModule@@/ {n+=1} END {print n}' < $$i`; \
-	            if test $$n_lm -eq 0 -o "x$(MPM_MODULE)$(DSO_MODULES)" = "x"; then \
+	            if test $$n_lm -eq 0 -o "x$(MPM_MODULES)$(DSO_MODULES)" = "x"; then \
 	                sed -e 's#@@ServerRoot@@#$(top_builddir)/check#g' \
 	                    -e 's#@@Port@@#$(PORT)#g' \
 	                    -e 's#@@SSLPort@@#$(SSLPORT)#g' \
