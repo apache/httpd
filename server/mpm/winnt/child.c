@@ -62,12 +62,6 @@ typedef VOID (WINAPI *LPFN_GETACCEPTEXSOCKADDRS)(PVOID, DWORD, DWORD, DWORD,
 
 #endif /* __MINGW32__ */
 
-#ifdef CONTAINING_RECORD
-#undef CONTAINING_RECORD
-#endif
-#define CONTAINING_RECORD(address, type, field) ((type *)( \
-                                                  (char *)(address) - \
-                                                  (char *)(&((type *)0)->field)))
 #if APR_HAVE_IPV6
 #define PADDED_ADDR_SIZE (sizeof(SOCKADDR_IN6)+16)
 #else
