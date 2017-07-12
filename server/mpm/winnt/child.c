@@ -135,7 +135,7 @@ typedef enum {
 } io_state_e;
 
 static apr_pool_t *pchild;
-static int shutdown_in_progress = 0;
+static HANDLE listener_shutdown_event;
 static int workers_may_exit = 0;
 static HANDLE max_requests_per_child_event;
 
@@ -203,6 +203,7 @@ static apr_status_t mpm_get_completion_context(winnt_conn_ctx_t **context_p)
              */
             if (num_completion_contexts >= max_num_completion_contexts) {
                 DWORD rv;
+                HANDLE events[2];
                 /* All workers are busy, need to wait for one */
                 static int reported = 0;
                 if (!reported) {
@@ -218,26 +219,31 @@ static apr_status_t mpm_get_completion_context(winnt_conn_ctx_t **context_p)
                  * succeeds, get the context off the queue. It must be
                  * available, since there's only one consumer.
                  */
-                rv = WaitForSingleObject(qwait_event, 1000);
-                if (rv == WAIT_OBJECT_0)
+                events[0] = qwait_event;
+                events[1] = listener_shutdown_event;
+                rv = WaitForMultipleObjects(2, events, FALSE, 1000);
+                if (rv == WAIT_OBJECT_0) {
                     continue;
+                }
+                else if (rv == WAIT_OBJECT_0 + 1) {
+                    /* Got the exit event */
+                    return APR_SUCCESS;
+                }
+                else if (rv == WAIT_TIMEOUT) {
+                    /* Workers are busy, write a diagnostic message and retry */
+                    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(00327)
+                                 "mpm_get_completion_context: Failed to get a "
+                                 "free context within 1 second");
+                    continue;
+                }
                 else {
-                    if (rv == WAIT_TIMEOUT) {
-                        /* somewhat-normal condition where threads are busy */
-                        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(00327)
-                                     "mpm_get_completion_context: Failed to get a "
-                                     "free context within 1 second");
-                        return APR_TIMEUP;
-                    }
-                    else {
-                        /* should be the unexpected, generic WAIT_FAILED */
-                        status = APR_FROM_OS_ERROR(rv);
-                        ap_log_error(APLOG_MARK, APLOG_WARNING, status,
-                                     ap_server_conf, APLOGNO(00328)
-                                     "mpm_get_completion_context: "
-                                     "WaitForSingleObject failed to get free context");
-                        return status;
-                    }
+                    /* should be the unexpected, generic WAIT_FAILED */
+                    status = APR_FROM_OS_ERROR(rv);
+                    ap_log_error(APLOG_MARK, APLOG_WARNING, status,
+                                 ap_server_conf, APLOGNO(00328)
+                                 "mpm_get_completion_context: "
+                                 "WaitForSingleObject failed to get free context");
+                    return status;
                 }
             } else {
                 /* Allocate another context.
@@ -423,7 +429,7 @@ static unsigned int __stdcall winnt_accept(void *lr_)
             return 1;
         }
         /* first, high priority event is an already accepted connection */
-        events[1] = exit_event;
+        events[1] = listener_shutdown_event;
         events[2] = max_requests_per_child_event;
     }
     else /* accf == ACCEPT_FILTER_NONE */
@@ -431,7 +437,7 @@ static unsigned int __stdcall winnt_accept(void *lr_)
 reinit: /* target of connect upon too many AcceptEx failures */
 
         /* last, low priority event is a not yet accepted connection */
-        events[0] = exit_event;
+        events[0] = listener_shutdown_event;
         events[1] = max_requests_per_child_event;
         events[2] = CreateEvent(NULL, FALSE, FALSE, NULL);
 
@@ -452,13 +458,16 @@ reinit: /* target of connect upon too many AcceptEx failures */
                  "Child: Accept thread listening on %pI using AcceptFilter %s",
                  lr->bind_addr, accept_filter_to_string(accf));
 
-    while (!shutdown_in_progress) {
+    while (1) {
         if (!context) {
             rv = mpm_get_completion_context(&context);
-            if (APR_STATUS_IS_TIMEUP(rv)) {
-                continue;
+            if (rv) {
+                /* We have an irrecoverable error, tell the child to die */
+                SetEvent(exit_event);
+                break;
             }
-            else if (rv) {
+            else if (rv == APR_SUCCESS && !context) {
+                /* Normal exit */
                 break;
             }
         }
@@ -579,7 +588,7 @@ reinit: /* target of connect upon too many AcceptEx failures */
                     }
                 }
                 else {
-                    /* exit_event triggered or event handle was closed */
+                    /* listener_shutdown_event triggered or event handle was closed */
                     closesocket(context->accept_socket);
                     context->accept_socket = INVALID_SOCKET;
                     break;
@@ -632,7 +641,7 @@ reinit: /* target of connect upon too many AcceptEx failures */
 
             if (rv != WAIT_OBJECT_0 + 2) {
                 /* not FD_ACCEPT;
-                 * exit_event triggered or event handle was closed
+                 * listener_shutdown_event triggered or event handle was closed
                  */
                 break;
             }
@@ -672,10 +681,15 @@ reinit: /* target of connect upon too many AcceptEx failures */
                         ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf, APLOGNO(00345)
                                      "Child: Encountered too many accept() "
                                      "resource faults, aborting.");
+                        /* We have an irrecoverable error, tell the child to die */
+                        SetEvent(exit_event);
                         break;
                     }
                     continue;
                 }
+
+                /* We have an irrecoverable error, tell the child to die */
+                SetEvent(exit_event);
                 break;
             }
             /* Per MSDN, cancel the inherited association of this socket
@@ -729,11 +743,6 @@ reinit: /* target of connect upon too many AcceptEx failures */
     }
     if (accf == ACCEPT_FILTER_NONE)
         CloseHandle(events[2]);
-
-    if (!shutdown_in_progress) {
-        /* Yow, hit an irrecoverable error! Tell the child to die. */
-        SetEvent(exit_event);
-    }
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, ap_server_conf, APLOGNO(00348)
                  "Child: Accept thread exiting.");
@@ -915,6 +924,13 @@ void child_main(apr_pool_t *pconf, DWORD parent_pid)
 
     ap_run_child_init(pchild, ap_server_conf);
     ht = apr_hash_make(pchild);
+
+    listener_shutdown_event = CreateEvent(NULL, TRUE, FALSE, NULL);
+    if (!listener_shutdown_event) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf, APLOGNO(10035)
+                     "Child: Failed to create a listener_shutdown event.");
+        exit(APEXIT_CHILDINIT);
+    }
 
     /* Initialize the child_events */
     max_requests_per_child_event = CreateEvent(NULL, TRUE, FALSE, NULL);
@@ -1150,7 +1166,7 @@ void child_main(apr_pool_t *pconf, DWORD parent_pid)
      * but allow the worker threads to continue consuming from
      * the queue of accepted connections.
      */
-    shutdown_in_progress = 1;
+    SetEvent(listener_shutdown_event);
 
     Sleep(1000);
 
