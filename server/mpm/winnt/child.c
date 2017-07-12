@@ -62,13 +62,6 @@ typedef VOID (WINAPI *LPFN_GETACCEPTEXSOCKADDRS)(PVOID, DWORD, DWORD, DWORD,
 
 #endif /* __MINGW32__ */
 
-/*
- * The Windows MPM uses a queue of completion contexts that it passes
- * between the accept threads and the worker threads. Declare the
- * functions to access the queue and the structures passed on the
- * queue in the header file to enable modules to access them
- * if necessary. The queue resides in the MPM.
- */
 #ifdef CONTAINING_RECORD
 #undef CONTAINING_RECORD
 #endif
