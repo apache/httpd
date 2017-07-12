@@ -83,8 +83,33 @@ typedef VOID (WINAPI *LPFN_GETACCEPTEXSOCKADDRS)(PVOID, DWORD, DWORD, DWORD,
 
 APLOG_USE_MODULE(mpm_winnt);
 
-/* Queue for managing the passing of winnt_conn_ctx_t between
- * the accept and worker threads.
+/*
+ * Queue for managing the passing of winnt_conn_ctx_t between the accept
+ * and worker threads. Note that the actual order of how the contexts
+ * are processed is a LIFO stack, not a FIFO queue, as LIFO order may
+ * significantly reduce the memory usage.
+ *
+ * Every completion context in the queue has an associated allocator, and
+ * every allocator has its ap_max_mem_free memory limit which is not given
+ * back to the OS. Once the queue grows, it cannot shrink back, and every
+ * allocator in each of the queued completion contexts keeps up to its
+ * max_free amount of memory. The queue can only grow when a server has
+ * to serve multiple concurrent connections at once.
+ *
+ * Consider a server that doesn't see many concurrent connections most
+ * of the time, but has occasional spikes when it has to deal with
+ * concurrency. During such spikes, the size of the queue grows. The
+ * difference between LIFO and FIFO shows up after such spikes, when the
+ * server is back to light load.
+ *
+ * With FIFO order, every completion context in the queue will be used in
+ * a round-robin manner, thus using *every* available allocator one by one
+ * and claiming up to (N * ap_max_mem_free memory) from the OS.  With LIFO
+ * order, only the completion contexts that are close to the top of the
+ * stack will be used and reused for subsequent connections.  Hence, only
+ * a small part of the allocators will be used, and this can prevent all
+ * other allocators from unnecessarily acquiring memory from the OS (and
+ * keeping it).
  */
 typedef struct winnt_conn_ctx_t_s {
     struct winnt_conn_ctx_t_s *next;
