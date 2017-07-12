@@ -84,25 +84,25 @@ typedef VOID (WINAPI *LPFN_GETACCEPTEXSOCKADDRS)(PVOID, DWORD, DWORD, DWORD,
 APLOG_USE_MODULE(mpm_winnt);
 
 /*
- * Queue for managing the passing of winnt_conn_ctx_t between the accept
- * and worker threads. Note that the actual order of how the contexts
- * are processed is a LIFO stack, not a FIFO queue, as LIFO order may
- * significantly reduce the memory usage.
+ * Pool for managing the passing of winnt_conn_ctx_t between the accept
+ * and worker threads (see ctxpool_head below). Note that the actual order
+ * of how the contexts are processed is a LIFO stack, not a FIFO queue,
+ * as LIFO order may significantly reduce the memory usage.
  *
- * Every completion context in the queue has an associated allocator, and
+ * Every completion context in the pool has an associated allocator, and
  * every allocator has its ap_max_mem_free memory limit which is not given
- * back to the OS. Once the queue grows, it cannot shrink back, and every
- * allocator in each of the queued completion contexts keeps up to its
- * max_free amount of memory. The queue can only grow when a server has
+ * back to the OS. Once the pool grows, it cannot shrink back, and every
+ * allocator in each of the pooled completion contexts keeps up to its
+ * max_free amount of memory. The pool can only grow when a server has
  * to serve multiple concurrent connections at once.
  *
  * Consider a server that doesn't see many concurrent connections most
  * of the time, but has occasional spikes when it has to deal with
- * concurrency. During such spikes, the size of the queue grows. The
+ * concurrency. During such spikes, the size of the pool grows. The
  * difference between LIFO and FIFO shows up after such spikes, when the
  * server is back to light load.
  *
- * With FIFO order, every completion context in the queue will be used in
+ * With FIFO order, every completion context in the pool will be used in
  * a round-robin manner, thus using *every* available allocator one by one
  * and claiming up to (N * ap_max_mem_free memory) from the OS.  With LIFO
  * order, only the completion contexts that are close to the top of the
@@ -140,18 +140,18 @@ static int workers_may_exit = 0;
 static HANDLE max_requests_per_child_event;
 
 static apr_thread_mutex_t  *child_lock;
-static apr_thread_mutex_t  *qlock;
-static winnt_conn_ctx_t *qhead = NULL;
+static apr_thread_mutex_t  *ctxpool_lock;
+static winnt_conn_ctx_t *ctxpool_head = NULL;
 static apr_uint32_t num_completion_contexts = 0;
 static apr_uint32_t max_num_completion_contexts = 0;
 static HANDLE ThreadDispatchIOCP = NULL;
-static HANDLE qwait_event = NULL;
+static HANDLE ctxpool_wait_event = NULL;
 
 static void mpm_recycle_completion_context(winnt_conn_ctx_t *context)
 {
     /* Recycle the completion context.
      * - clear the ptrans pool
-     * - put the context on the queue to be consumed by the accept thread
+     * - put the context on the ctxpool to be consumed by the accept thread
      * Note:
      * context->accept_socket may be in a disconnected but reusable
      * state so -don't- close it.
@@ -168,13 +168,13 @@ static void mpm_recycle_completion_context(winnt_conn_ctx_t *context)
         context->overlapped.hEvent = saved_event;
         ResetEvent(context->overlapped.hEvent);
 
-        apr_thread_mutex_lock(qlock);
-        if (!qhead) {
-            SetEvent(qwait_event);
+        apr_thread_mutex_lock(ctxpool_lock);
+        if (!ctxpool_head) {
+            SetEvent(ctxpool_wait_event);
         }
-        context->next = qhead;
-        qhead = context;
-        apr_thread_mutex_unlock(qlock);
+        context->next = ctxpool_head;
+        ctxpool_head = context;
+        apr_thread_mutex_unlock(ctxpool_lock);
     }
 }
 
@@ -185,21 +185,20 @@ static apr_status_t mpm_get_completion_context(winnt_conn_ctx_t **context_p)
 
     *context_p = NULL;
     while (1) {
-        /* Grab a context off the queue */
-        apr_thread_mutex_lock(qlock);
-        if (qhead) {
-            context = qhead;
-            qhead = qhead->next;
+        /* Do we have an available context in the pool? */
+        apr_thread_mutex_lock(ctxpool_lock);
+        if (ctxpool_head) {
+            context = ctxpool_head;
+            ctxpool_head = ctxpool_head->next;
         } else {
-            ResetEvent(qwait_event);
+            ResetEvent(ctxpool_wait_event);
         }
-        apr_thread_mutex_unlock(qlock);
+        apr_thread_mutex_unlock(ctxpool_lock);
 
         if (!context) {
-            /* We failed to grab a context off the queue, consider allocating
-             * a new one out of the child pool. There may be up to
-             * (ap_threads_per_child + num_listeners) contexts in the system
-             * at once.
+            /* We failed to grab a context from the pool, consider allocating
+             * a new one. There may be up to (ap_threads_per_child + num_listeners)
+             * contexts in the system at once.
              */
             if (num_completion_contexts >= max_num_completion_contexts) {
                 DWORD rv;
@@ -216,10 +215,10 @@ static apr_status_t mpm_get_completion_context(winnt_conn_ctx_t **context_p)
 
                 /* Wait for a worker to free a context. Once per second, give
                  * the caller a chance to check for shutdown. If the wait
-                 * succeeds, get the context off the queue. It must be
+                 * succeeds, get the context off the context pool. It must be
                  * available, since there's only one consumer.
                  */
-                events[0] = qwait_event;
+                events[0] = ctxpool_wait_event;
                 events[1] = listener_shutdown_event;
                 rv = WaitForMultipleObjects(2, events, FALSE, 1000);
                 if (rv == WAIT_OBJECT_0) {
@@ -297,7 +296,7 @@ static apr_status_t mpm_get_completion_context(winnt_conn_ctx_t **context_p)
                 break;
             }
         } else {
-            /* Got a context from the queue */
+            /* Got a context from the context pool */
             break;
         }
     }
@@ -980,12 +979,12 @@ void child_main(apr_pool_t *pconf, DWORD parent_pid)
      */
     ThreadDispatchIOCP = CreateIoCompletionPort(INVALID_HANDLE_VALUE,
                                                 NULL, 0, 0);
-    apr_thread_mutex_create(&qlock, APR_THREAD_MUTEX_DEFAULT, pchild);
-    qwait_event = CreateEvent(NULL, TRUE, FALSE, NULL);
-    if (!qwait_event) {
+    apr_thread_mutex_create(&ctxpool_lock, APR_THREAD_MUTEX_DEFAULT, pchild);
+    ctxpool_wait_event = CreateEvent(NULL, TRUE, FALSE, NULL);
+    if (!ctxpool_wait_event) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(),
                      ap_server_conf, APLOGNO(00353)
-                     "Child: Failed to create a qwait event.");
+                     "Child: Failed to create a ctxpool_wait event.");
         exit(APEXIT_CHILDINIT);
     }
 
@@ -1163,8 +1162,8 @@ void child_main(apr_pool_t *pconf, DWORD parent_pid)
     }
 
     /* Shutdown listener threads and pending AcceptEx sockets
-     * but allow the worker threads to continue consuming from
-     * the queue of accepted connections.
+     * but allow the worker threads to continue consuming the
+     * already accepted connections.
      */
     SetEvent(listener_shutdown_event);
 
@@ -1193,14 +1192,14 @@ void child_main(apr_pool_t *pconf, DWORD parent_pid)
         PostQueuedCompletionStatus(ThreadDispatchIOCP, 0, IOCP_SHUTDOWN, NULL);
     }
 
-    /* Empty the accept queue of completion contexts */
-    apr_thread_mutex_lock(qlock);
-    while (qhead) {
-        CloseHandle(qhead->overlapped.hEvent);
-        closesocket(qhead->accept_socket);
-        qhead = qhead->next;
+    /* Empty the pool of completion contexts */
+    apr_thread_mutex_lock(ctxpool_lock);
+    while (ctxpool_head) {
+        CloseHandle(ctxpool_head->overlapped.hEvent);
+        closesocket(ctxpool_head->accept_socket);
+        ctxpool_head = ctxpool_head->next;
     }
-    apr_thread_mutex_unlock(qlock);
+    apr_thread_mutex_unlock(ctxpool_lock);
 
     /* Give busy threads a chance to service their connections
      * (no more than the global server timeout period which
@@ -1267,8 +1266,8 @@ void child_main(apr_pool_t *pconf, DWORD parent_pid)
                  "Child: All worker threads have exited.");
 
     apr_thread_mutex_destroy(child_lock);
-    apr_thread_mutex_destroy(qlock);
-    CloseHandle(qwait_event);
+    apr_thread_mutex_destroy(ctxpool_lock);
+    CloseHandle(ctxpool_wait_event);
     CloseHandle(ThreadDispatchIOCP);
 
     apr_pool_destroy(pchild);
