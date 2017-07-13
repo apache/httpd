@@ -77,8 +77,8 @@ of consuming threads only for connections with active processing</dd>
 </dd>
 <dt><a href="mod_allowhandlers.html">mod_allowhandlers</a></dt><dd>Restringir fácilmente qué handlers HTTP pueden ser usados en el servidor</dd>
 <dt><a href="mod_allowmethods.html">mod_allowmethods</a></dt><dd>Restringe fácilmente qué métodos HTTP pueden ser usados en el servidor</dd>
-<dt><a href="mod_asis.html">mod_asis</a></dt><dd>Sends files that contain their own
-HTTP headers</dd>
+<dt><a href="mod_asis.html">mod_asis</a></dt><dd>Envía ficheros que contienen sus propias 
+  cabeceras HTTP</dd>
 <dt><a href="mod_auth_basic.html">mod_auth_basic</a></dt><dd>Basic HTTP authentication</dd>
 <dt><a href="mod_auth_digest.html">mod_auth_digest</a></dt><dd>User authentication using MD5
     Digest Authentication</dd>
