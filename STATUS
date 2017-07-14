@@ -226,7 +226,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   https://svn.apache.org/r1801665
      2.4.x patch: svn merge -c1729235 -c1730079 -c1801665 ^/httpd/httpd/trunk
      +1: jchampion
-     
+
+  *) mod_proxy_wstunnel: Fix detection of unresponded request which could have
+     led to spurious HTTP 502 error messages sent on upgrade connections.
+     PR 61283
+     trunk patch: http://svn.apache.org/r1754164
+                  http://svn.apache.org/r1801994
+                  http://svn.apache.org/r1801995
+     2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-mod_proxy_wstunnel-PR61283.patch
+     +1: ylavic
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
