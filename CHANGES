@@ -3,7 +3,7 @@ Changes with Apache 2.5.0
 
   *) mod_proxy_wstunnel: Fix detection of unresponded request which could have
      led to spurious HTTP 502 error messages sent on upgrade connections.
-     [Yann Ylavic]
+     PR 61283.  [Yann Ylavic]
 
   *) mod_http2: Simplify ready queue, less memory and better performance. Update
      mod_http2 version to 1.10.7. [Stefan Eissing]
