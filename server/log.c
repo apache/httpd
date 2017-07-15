@@ -397,39 +397,42 @@ static int open_error_log(server_rec *s, int is_main, apr_pool_t *p)
 
 #ifdef HAVE_SYSLOG
     else if (!strncasecmp(s->error_fname, "syslog", 6)) {
-        const char *tag;
-        tag = ap_server_argv0;
         if ((fname = strchr(s->error_fname, ':'))) {
+            /* s->error_fname could be [level]:[tag] (see #60525) */
+            const char *tag;
+            apr_size_t flen;
             const TRANS *fac;
 
             fname++;
-            /* s->error_fname could be [level]:[tag] (see #60525) */
-            tag = strchr(s->error_fname, ':');
-            tag++;
-            int level_len = 0;
-            while (level_len < strlen(fname)) {
-                if (fname[level_len] == ':') {
-                    level_len++;
-                    break;
+            tag = strchr(fname, ':');
+            if (tag) {
+                flen = tag - fname;
+                tag++;
+                if (*tag == '\0') {
+                    tag = ap_server_argv0;
                 }
-                level_len++;
-            }
-            tag += level_len;
-            if (*tag == '\0') {
+            } else {
+                flen = strlen(fname);
                 tag = ap_server_argv0;
             }
-            level_len--;
-
-            for (fac = facilities; fac->t_name; fac++) {
-                if ((level_len > 0)
-                    && !strncasecmp(fname, fac->t_name, level_len)) {
-                    openlog(tag, LOG_NDELAY|LOG_CONS|LOG_PID, fac->t_val);
-                    s->error_log = NULL;
-                    return OK;
+            if (flen == 0) {
+                /* Was something like syslog::foobar */
+                openlog(tag, LOG_NDELAY|LOG_CONS|LOG_PID, LOG_LOCAL7);
+            } else {
+                for (fac = facilities; fac->t_name; fac++) {
+                    if (!strncasecmp(fname, fac->t_name, flen)) {
+                        openlog(tag, LOG_NDELAY|LOG_CONS|LOG_PID,
+                                fac->t_val);
+                        s->error_log = NULL;
+                        return OK;
+                    }
                 }
             }
         }
-        openlog(tag, LOG_NDELAY|LOG_CONS|LOG_PID, LOG_LOCAL7);
+        else {
+            openlog(ap_server_argv0, LOG_NDELAY|LOG_CONS|LOG_PID, LOG_LOCAL7);
+        }
+
         s->error_log = NULL;
     }
 #endif
