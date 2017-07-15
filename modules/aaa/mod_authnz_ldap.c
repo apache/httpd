@@ -59,6 +59,7 @@ typedef struct {
     deref_options deref;            /* how to handle alias dereferening */
     char *binddn;                   /* DN to bind to server (can be NULL) */
     char *bindpw;                   /* Password to bind to server (can be NULL) */
+    char *alternateAuthAttr;   /* ldap_compare() this attribute's value instead of ldap_bind())*/
     int bind_authoritative;         /* If true, will return errors when bind fails */
 
     int user_is_dn;                 /* If true, r->user is replaced by DN during authn */
@@ -475,6 +476,7 @@ static authn_status authn_ldap_check_password(request_rec *r, const char *user,
     int remote_user_attribute_set = 0;
     const char *dn = NULL;
     const char *utfpassword;
+    const char *alternateAuthAttr = sec->alternateAuthAttr;
 
     authn_ldap_request_t *req =
         (authn_ldap_request_t *)apr_pcalloc(r->pool, sizeof(authn_ldap_request_t));
@@ -545,7 +547,7 @@ static authn_status authn_ldap_check_password(request_rec *r, const char *user,
     /* do the user search */
     result = util_ldap_cache_checkuserid(r, ldc, sec->url, sec->basedn, sec->scope,
                                          sec->attributes, filtbuf, utfpassword,
-                                         &dn, &(req->vals));
+                                         &dn, alternateAuthAttr, &(req->vals));
     util_ldap_connection_close(ldc);
 
     /* handle bind failure */
@@ -1704,6 +1706,10 @@ static const command_rec authnz_ldap_cmds[] =
 
     AP_INIT_TAKE1("AuthLDAPBindPassword", set_bind_password, NULL, OR_AUTHCFG,
                   "Password to use to bind to LDAP server. If not provided, will do an anonymous bind."),
+
+    AP_INIT_TAKE1("AuthLDAPAlternateAuthAttr", ap_set_string_slot,
+                  (void *)APR_OFFSETOF(authn_ldap_config_t, alternateAuthAttr), OR_AUTHCFG,
+                  "ldap_compare() this attribute's value instead of ldap_bind()."),
 
     AP_INIT_FLAG("AuthLDAPBindAuthoritative", ap_set_flag_slot,
                   (void *)APR_OFFSETOF(authn_ldap_config_t, bind_authoritative), OR_AUTHCFG,

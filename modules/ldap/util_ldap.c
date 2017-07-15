@@ -1647,6 +1647,7 @@ static int uldap_cache_checkuserid(request_rec *r, util_ldap_connection_t *ldc,
                                    const char *url, const char *basedn,
                                    int scope, char **attrs, const char *filter,
                                    const char *bindpw, const char **binddn,
+                                   const char *alternateAuthAttr,
                                    const char ***retvals)
 {
     const char **vals = NULL;
@@ -1791,56 +1792,88 @@ start_over:
     *binddn = apr_pstrdup(r->pool, dn);
     ldap_memfree(dn);
 
-    /*
-     * A bind to the server with an empty password always succeeds, so
-     * we check to ensure that the password is not empty. This implies
-     * that users who actually do have empty passwords will never be
-     * able to authenticate with this module. I don't see this as a big
-     * problem.
-     */
-    if (!bindpw || strlen(bindpw) <= 0) {
-        ldap_msgfree(res);
-        ldc->reason = "Empty password not allowed";
-        return LDAP_INVALID_CREDENTIALS;
-    }
+    if (alternateAuthAttr != NULL) {
+        result = ldap_compare_s(ldc->ldap,
+                                (char *)*binddn,
+                                alternateAuthAttr,
+                                (char *)bindpw);
+        if (AP_LDAP_IS_SERVER_DOWN(result) ||
+            (result == LDAP_TIMEOUT && failures == 0)) {
+            if (AP_LDAP_IS_SERVER_DOWN(result))
+                ldc->reason = "ldap_compare_s() to check user credentials "
+                              "failed with server down";
+            else
+                ldc->reason = "ldap_compare_s() to check user credentials "
+                              "timed out";
+            ldap_msgfree(res);
+            uldap_connection_unbind(ldc);
+            failures++;
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE5, 0, r, "%s (attempt %d)", ldc->reason, failures);
+            goto start_over;
+        }
 
-    /*
-     * Attempt to bind with the retrieved dn and the password. If the bind
-     * fails, it means that the password is wrong (the dn obviously
-     * exists, since we just retrieved it)
-     */
-    result = uldap_simple_bind(ldc, (char *)*binddn, (char *)bindpw,
-                               st->opTimeout);
-    if (AP_LDAP_IS_SERVER_DOWN(result) ||
-        (result == LDAP_TIMEOUT && failures == 0)) {
-        if (AP_LDAP_IS_SERVER_DOWN(result))
-            ldc->reason = "ldap_simple_bind() to check user credentials "
-                          "failed with server down";
-        else
-            ldc->reason = "ldap_simple_bind() to check user credentials "
-                          "timed out";
-        ldap_msgfree(res);
-        uldap_connection_unbind(ldc);
-        failures++;
-        ap_log_rerror(APLOG_MARK, APLOG_TRACE5, 0, r, "%s (attempt %d)", ldc->reason, failures);
-        goto start_over;
-    }
-
-    /* failure? if so - return */
-    if (result != LDAP_SUCCESS) {
-        ldc->reason = "ldap_simple_bind() to check user credentials failed";
-        ldap_msgfree(res);
-        uldap_connection_unbind(ldc);
-        return result;
-    }
-    else {
+        /* failure? if so - return */
+        if (result != LDAP_COMPARE_TRUE) {
+            ldc->reason = "ldap_compare_s() to check user credentials failed";
+            ldap_msgfree(res);
+            uldap_connection_unbind(ldc);
+            return LDAP_INVALID_CREDENTIALS;
+        }
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE5, 0, r,
+                  "ldap_compare_s(%pp, %s, %s, %s) = %s",
+                  ldc->ldap, binddn, alternateAuthAttr, bindpw, ldap_err2string(result));
+    } else {
         /*
-         * We have just bound the connection to a different user and password
-         * combination, which might be reused unintentionally next time this
-         * connection is used from the connection pool.
+         * A bind to the server with an empty password always succeeds, so
+         * we check to ensure that the password is not empty. This implies
+         * that users who actually do have empty passwords will never be
+         * able to authenticate with this module. I don't see this as a big
+         * problem.
          */
-        ldc->must_rebind = 1;
-        ap_log_rerror(APLOG_MARK, APLOG_TRACE5, 0, r, "LDC %pp used for authn, must be rebound", ldc);
+        if (!bindpw || strlen(bindpw) <= 0) {
+            ldap_msgfree(res);
+            ldc->reason = "Empty password not allowed";
+            return LDAP_INVALID_CREDENTIALS;
+        }
+
+        /*
+         * Attempt to bind with the retrieved dn and the password. If the bind
+         * fails, it means that the password is wrong (the dn obviously
+         * exists, since we just retrieved it)
+         */
+        result = uldap_simple_bind(ldc, (char *)*binddn, (char *)bindpw,
+                                   st->opTimeout);
+        if (AP_LDAP_IS_SERVER_DOWN(result) ||
+            (result == LDAP_TIMEOUT && failures == 0)) {
+            if (AP_LDAP_IS_SERVER_DOWN(result))
+                ldc->reason = "ldap_simple_bind() to check user credentials "
+                              "failed with server down";
+            else
+                ldc->reason = "ldap_simple_bind() to check user credentials "
+                              "timed out";
+            ldap_msgfree(res);
+            uldap_connection_unbind(ldc);
+            failures++;
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE5, 0, r, "%s (attempt %d)", ldc->reason, failures);
+            goto start_over;
+        }
+
+        /* failure? if so - return */
+        if (result != LDAP_SUCCESS) {
+            ldc->reason = "ldap_simple_bind() to check user credentials failed";
+            ldap_msgfree(res);
+            uldap_connection_unbind(ldc);
+            return result;
+        }
+        else {
+            /*
+             * We have just bound the connection to a different user and password
+             * combination, which might be reused unintentionally next time this
+             * connection is used from the connection pool.
+             */
+            ldc->must_rebind = 1;
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE5, 0, r, "LDC %pp used for authn, must be rebound", ldc);
+        }
     }
 
     /*
