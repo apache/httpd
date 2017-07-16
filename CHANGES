@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy_fcgi: Add the support for mod_proxy's flushpackets and flushwait
+     parameters. [Luca Toscano, Ruediger Pluem, Yann Ylavic]
+
   *) mod_proxy_wstunnel: Fix detection of unresponded request which could have
      led to spurious HTTP 502 error messages sent on upgrade connections.
      PR 61283.  [Yann Ylavic]
