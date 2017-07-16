@@ -147,14 +147,12 @@ error log</td></tr>
 formatted email address</td></tr>
 <tr class="odd"><td><a href="core.html#asyncfilter">AsyncFilter request|connection|network</a></td><td> request </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Set the minimum filter type eligible for asynchronous handling</td></tr>
 <tr><td><a href="event.html#asyncrequestworkerfactor">AsyncRequestWorkerFactor <var>factor</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Limit concurrent connections per process</td></tr>
-<tr class="odd"><td><a href="mod_auth_basic.html#authbasicauthoritative">AuthBasicAuthoritative On|Off</a></td><td> On </td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Sets whether authorization and authentication are passed to
-lower level modules</td></tr>
-<tr><td><a href="mod_auth_basic.html#authbasicfake">AuthBasicFake off|username [password]</a></td><td></td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Fake basic authentication using the given expressions for
-username and password</td></tr>
+<tr class="odd"><td><a href="mod_auth_basic.html#authbasicauthoritative">AuthBasicAuthoritative On|Off</a></td><td> On </td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Configura si se pasan autorización o autenticación a los módulos de más bajo nivel</td></tr>
+<tr><td><a href="mod_auth_basic.html#authbasicfake">AuthBasicFake off|username [password]</a></td><td></td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Autenticación básica falsa usando las expresiones facilitadas para usario y contraseña</td></tr>
 <tr class="odd"><td><a href="mod_auth_basic.html#authbasicprovider">AuthBasicProvider <var>provider-name</var>
-[<var>provider-name</var>] ...</a></td><td> file </td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the authentication provider(s) for this location</td></tr>
-<tr><td><a href="mod_auth_basic.html#authbasicusedigestalgorithm">AuthBasicUseDigestAlgorithm MD5|Off</a></td><td> Off </td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Check passwords against the authentication providers as if
-Digest Authentication was in force instead of Basic Authentication.
+[<var>provider-name</var>] ...</a></td><td> file </td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Configura el/los proveedor/es de autenticación para esta 
+ubicación</td></tr>
+<tr><td><a href="mod_auth_basic.html#authbasicusedigestalgorithm">AuthBasicUseDigestAlgorithm MD5|Off</a></td><td> Off </td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Comprueba contraseñas en proveedores de autenticación como si la Autenticación Digest estuviera en uso en lugar de la Autenticación Básica.
 </td></tr>
 <tr class="odd"><td><a href="mod_authn_dbd.html#authdbduserpwquery">AuthDBDUserPWQuery <var>query</var></a></td><td></td><td>d</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">SQL query to look up a password for a user</td></tr>
 <tr><td><a href="mod_authn_dbd.html#authdbduserrealmquery">AuthDBDUserRealmQuery <var>query</var></a></td><td></td><td>d</td><td>E</td></tr><tr><td class="descr" colspan="4">SQL query to look up a password hash for a user and realm.

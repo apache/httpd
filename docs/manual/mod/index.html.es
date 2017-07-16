@@ -79,7 +79,7 @@ of consuming threads only for connections with active processing</dd>
 <dt><a href="mod_allowmethods.html">mod_allowmethods</a></dt><dd>Restringe fácilmente qué métodos HTTP pueden ser usados en el servidor</dd>
 <dt><a href="mod_asis.html">mod_asis</a></dt><dd>Envía ficheros que contienen sus propias 
   cabeceras HTTP</dd>
-<dt><a href="mod_auth_basic.html">mod_auth_basic</a></dt><dd>Basic HTTP authentication</dd>
+<dt><a href="mod_auth_basic.html">mod_auth_basic</a></dt><dd>Autenticación HTTP Básica</dd>
 <dt><a href="mod_auth_digest.html">mod_auth_digest</a></dt><dd>User authentication using MD5
     Digest Authentication</dd>
 <dt><a href="mod_auth_form.html">mod_auth_form</a></dt><dd>Form authentication</dd>
