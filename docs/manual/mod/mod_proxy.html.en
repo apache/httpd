@@ -1217,7 +1217,7 @@ ProxyPass "/mirror/foo"   "http://backend.example.com"</pre>
         only when needed; 'on' means after each chunk is sent; and
         'auto' means poll/wait for a period of time and flush if
         no input has been received for 'flushwait' milliseconds.
-        Currently, this is in effect only for AJP.
+        Currently, this is in effect only for mod_proxy_ajp and mod_proxy_fcgi.
     </td></tr>
     <tr><td>flushwait</td>
         <td>10</td>
