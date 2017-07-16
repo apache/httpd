@@ -26,10 +26,6 @@
 <p><span>Idiomas disponibles: </span><a href="../en/howto/reverse_proxy.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../es/howto/reverse_proxy.html" title="Español">&nbsp;es&nbsp;</a></p>
 </div>
-<div class="outofdate">Esta traducción podría estar
-            obsoleta. Consulte la versión en inglés de la
-            documentación para comprobar si se han producido cambios
-            recientemente.</div>
 
     <p>Además de ser un servidor web "básico", y proveer contenido estático y 
       dinámico a los usuarios finales, Apache HTTPD (al igual que la mayoría de  
@@ -210,8 +206,7 @@ ProxyPassReverse "/images/"  "balancer://myset/"</pre>
       La "magia" de ésta configuración de tolerancia a fallos es configurar 
       <code>http://hstandby.example.com:8080</code> con la marca de estado 
       <code>+H</code>, que lo pone en modo <em>hot standby</em> (en reserva), 
-      y hacen que los dos servidores <code>bkup#</code> sean parte del set nº 1 del
-      balanceo de carga (el valor por defecto es 0); para tolerancia a fallos, los "hot standby" (si existen) se usan primero cuando todos los workers estándar activos no están disponibles; los set de balanceo con números inferiores se usan siempre primero.
+      y hacen que los 2 servidores <code>bkup#</code> sean parte del set nº 1 del balanceo de carga (el valor por defecto es 0); para tolerancia a fallos, los "hot standby" (si existen) se usan primero cuando todos los workers estándar no están disponibles; los set de balanceo con el número inferior se intentan usar siempre primero.
     </p>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
