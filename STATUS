@@ -236,6 +236,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-mod_proxy_wstunnel-PR61283.patch
      +1: ylavic, jchampion
 
+  *) mod_proxy_fcgi: Add the support for mod_proxy's flushpackets and flushwait params
+     trunk patch: http://svn.apache.org/r1802040
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: elukey
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
