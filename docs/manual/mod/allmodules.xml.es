@@ -9,7 +9,7 @@
   <modulefile>mod_allowhandlers.xml.es</modulefile>
   <modulefile>mod_allowmethods.xml.es</modulefile>
   <modulefile>mod_asis.xml.es</modulefile>
-  <modulefile>mod_auth_basic.xml</modulefile>
+  <modulefile>mod_auth_basic.xml.es</modulefile>
   <modulefile>mod_auth_digest.xml</modulefile>
   <modulefile>mod_auth_form.xml</modulefile>
   <modulefile>mod_authn_anon.xml</modulefile>
