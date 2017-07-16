@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.es.xsl"?>
-<!-- English Revision: 1754775:1784674 (outdated) -->
+<!-- English Revision: 1784674 -->
 <!-- Spanish translation : Daniel Ferradal -->
 <!-- Reviewed by Luis Gil de Bernabé Pfeiffer -->
 
@@ -214,8 +214,7 @@ ProxyPassReverse "/images/"  "balancer://myset/"
       La "magia" de ésta configuración de tolerancia a fallos es configurar 
       <code>http://hstandby.example.com:8080</code> con la marca de estado 
       <code>+H</code>, que lo pone en modo <em>hot standby</em> (en reserva), 
-      y hacen que los dos servidores <code>bkup#</code> sean parte del set nº 1 del
-      balanceo de carga (el valor por defecto es 0); para tolerancia a fallos, los "hot standby" (si existen) se usan primero cuando todos los workers estándar activos no están disponibles; los set de balanceo con números inferiores se usan siempre primero.
+      y hacen que los 2 servidores <code>bkup#</code> sean parte del set nº 1 del balanceo de carga (el valor por defecto es 0); para tolerancia a fallos, los "hot standby" (si existen) se usan primero cuando todos los workers estándar no están disponibles; los set de balanceo con el número inferior se intentan usar siempre primero.
     </p>
 
   </section>
