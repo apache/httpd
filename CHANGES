@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.28
 
+  *) event: Avoid listener periodic wake ups by using the pollset wake-ability
+     when available.  PR 57399.  [Yann Ylavic, Luca Toscano]
+
   *) mod_proxy_wstunnel: Fix detection of unresponded request which could have
      led to spurious HTTP 502 error messages sent on upgrade connections.
      PR 61283.  [Yann Ylavic]
