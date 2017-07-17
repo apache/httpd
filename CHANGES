@@ -5,6 +5,16 @@ Changes with Apache 2.4.28
 
 Changes with Apache 2.4.27
 
+  *) SECURITY: CVE-2017-9789 (cve.mitre.org)
+     mod_http2: Read after free. When under stress, closing many connections,
+     the HTTP/2 handling code would sometimes access memory after it has been
+     freed, resulting in potentially erratic behaviour. 
+
+  *) SECURITY: CVE-2017-9788 (cve.mitre.org)
+     mod_auth_digest: Uninitialized memory reflection.  The value placeholder
+     in [Proxy-]Authorization headers type 'Digest' was not initialized or
+     reset before or between successive key=value assignments.
+
   *) COMPATIBILITY: mod_lua: Remove the undocumented exported 'apr_table'
      global variable when using Lua 5.2 or later. This was exported as a
      side effect from luaL_register, which is no longer supported as of
