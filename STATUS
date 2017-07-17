@@ -182,7 +182,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1774538
                   http://svn.apache.org/r1779354
      2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-mpm_event-wakeup-v7.1.patch
-     +1: ylavic, icing
+     +1: ylavic, icing, jim
 
    *) prefork: This fixes race-condition in signals handling when httpd is
                runnning on foreground and user hits ctrl+c
@@ -215,7 +215,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
   *) mod_proxy_wstunnel fix PR 61142
      2.4.x patch: svn merge -c 1801594 ^/httpd/httpd/trunk .
-     +1: jfclere
+     +1: jfclere, jim
 
   *) Makefile: Use different variables to track normal modules and MPMs during
                build. Only the enabled MPM is uncommented in the configuration
@@ -234,7 +234,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1801994
                   http://svn.apache.org/r1801995
      2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-mod_proxy_wstunnel-PR61283.patch
-     +1: ylavic, jchampion
+     +1: ylavic, jchampion, jim
 
   *) mod_proxy_fcgi: Add the support for mod_proxy's flushpackets and flushwait params
      trunk patch: http://svn.apache.org/r1802040
