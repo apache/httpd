@@ -116,6 +116,29 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) event: Avoid listener periodic wake ups by using the pollset wake-ability
+     when available.  PR 57399.
+     trunk patch: http://svn.apache.org/r1762580
+                  http://svn.apache.org/r1762701
+                  http://svn.apache.org/r1762702
+                  http://svn.apache.org/r1762718
+                  http://svn.apache.org/r1762723
+                  http://svn.apache.org/r1762742
+                  http://svn.apache.org/r1762743
+                  http://svn.apache.org/r1774538
+                  http://svn.apache.org/r1779354
+     2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-mpm_event-wakeup-v7.1.patch
+     +1: ylavic, icing, jim
+
+  *) mod_proxy_wstunnel: Fix detection of unresponded request which could have
+     led to spurious HTTP 502 error messages sent on upgrade connections.
+     PR 61283
+     trunk patch: http://svn.apache.org/r1754164
+                  http://svn.apache.org/r1801994
+                  http://svn.apache.org/r1801995
+     2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-mod_proxy_wstunnel-PR61283.patch
+     +1: ylavic, jchampion, jim
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -170,20 +193,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic, jim
 
-  *) event: Avoid listener periodic wake ups by using the pollset wake-ability
-     when available.  PR 57399.
-     trunk patch: http://svn.apache.org/r1762580
-                  http://svn.apache.org/r1762701
-                  http://svn.apache.org/r1762702
-                  http://svn.apache.org/r1762718
-                  http://svn.apache.org/r1762723
-                  http://svn.apache.org/r1762742
-                  http://svn.apache.org/r1762743
-                  http://svn.apache.org/r1774538
-                  http://svn.apache.org/r1779354
-     2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-mpm_event-wakeup-v7.1.patch
-     +1: ylavic, icing, jim
-
    *) prefork: This fixes race-condition in signals handling when httpd is
                runnning on foreground and user hits ctrl+c
      trunk patch: http://svn.apache.org/r1618555
@@ -226,15 +235,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   https://svn.apache.org/r1801665
      2.4.x patch: svn merge -c1729235 -c1730079 -c1801665 ^/httpd/httpd/trunk
      +1: jchampion
-
-  *) mod_proxy_wstunnel: Fix detection of unresponded request which could have
-     led to spurious HTTP 502 error messages sent on upgrade connections.
-     PR 61283
-     trunk patch: http://svn.apache.org/r1754164
-                  http://svn.apache.org/r1801994
-                  http://svn.apache.org/r1801995
-     2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-mod_proxy_wstunnel-PR61283.patch
-     +1: ylavic, jchampion, jim
 
   *) mod_proxy_fcgi: Add the support for mod_proxy's flushpackets and flushwait params
      trunk patch: http://svn.apache.org/r1802040
