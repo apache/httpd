@@ -1,6 +1,12 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.34 (final)
 
+  *) SECURITY: CVE-2017-9788 (cve.mitre.org)
+     mod_auth_digest: Uninitialized memory reflection.  The value placeholder
+     in [Proxy-]Authorization headers type 'Digest' was not initialized or
+     reset before or between successive key=value assignments.
+     [William Rowe]
+
   *) Allow single-char field names inadvertantly disallowed in 2.2.32.
      PR 61220. [Yann Ylavic]
 
