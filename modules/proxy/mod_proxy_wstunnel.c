@@ -204,7 +204,7 @@ static int proxy_wstunnel_request(apr_pool_t *p, request_rec *r,
                                                                   c,
                                                                   header_brigade,
                                                                   bb, "sock",
-                                                                  NULL,
+                                                                  &replied,
                                                                   AP_IOBUFSIZE,
                                                                   0)
                                                                  != APR_SUCCESS;
@@ -230,7 +230,7 @@ static int proxy_wstunnel_request(apr_pool_t *p, request_rec *r,
                                                                   backconn, bb,
                                                                   header_brigade,
                                                                   "client",
-                                                                  &replied,
+                                                                  NULL,
                                                                   AP_IOBUFSIZE,
                                                                   0)
                                                                  != APR_SUCCESS;

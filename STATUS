@@ -130,16 +130,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-mpm_event-wakeup-v7.1.patch
      +1: ylavic, icing, jim
 
-  *) mod_proxy_wstunnel: Fix detection of unresponded request which could have
-     led to spurious HTTP 502 error messages sent on upgrade connections.
-     PR 61283
-     trunk patch: http://svn.apache.org/r1754164
-                  http://svn.apache.org/r1801994
-                  http://svn.apache.org/r1801995
-     2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-mod_proxy_wstunnel-PR61283.patch
-     +1: ylavic, jchampion, jim
-
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
