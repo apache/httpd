@@ -27,6 +27,8 @@
 <a href="../es/howto/access.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
 <a href="../fr/howto/access.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
 
     <p>Le contrôle d'accès fait référence à tout concept de contrôle
     d'accès à une ressource quelconque. Il est distinct du processus d'<a href="auth.html">authentification et d'autorisation</a>.</p>
