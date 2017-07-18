@@ -168,7 +168,7 @@ Require expr %{HTTP_USER_AGENT} != 'BadBot'
     on arbitrary criteria.</p>
 
     <p>For example, if you wish to block access to a resource between 8pm
-    and 6am, you can do this using <module>mod_rewrite</module>.</p>
+    and 7am, you can do this using <module>mod_rewrite</module>.</p>
 
     <highlight language="config">
 RewriteEngine On
