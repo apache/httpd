@@ -103,8 +103,7 @@
     path for the PHP-FPM daemon to run. In this case, PHP-FPM is listening on
     a unix domain socket (UDS).  Requires 2.4.9 or later. With this syntax,
     the hostname and optional port following fcgi:// are ignored.</p>
-    <div class="example"><h3>PHP-FPM with UDS</h3><pre class="prettyprint lang-config"># UDS does not currently support connection reuse
-ProxyPassMatch "^/(.*\.php(/.*)?)$" "unix:/var/run/php5-fpm.sock|fcgi://localhost/var/www/"</pre>
+    <div class="example"><h3>PHP-FPM with UDS</h3><pre class="prettyprint lang-config">ProxyPassMatch "^/(.*\.php(/.*)?)$" "unix:/var/run/php5-fpm.sock|fcgi://localhost/var/www/"</pre>
 </div>
 
     <p>The balanced gateway needs <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code> and
