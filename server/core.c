@@ -1481,8 +1481,7 @@ static const char *set_define(cmd_parms *cmd, void *dummy,
         init_config_defines(cmd->pool);
     }
     if (!ap_exists_config_define(name)) {
-        const char **newv = (const char **)apr_array_push(ap_server_config_defines);
-        *newv = name;
+        *(const char **)apr_array_push(ap_server_config_defines) = name;
     }
     if (value) {
         if (!server_config_defined_vars) {
@@ -1498,7 +1497,7 @@ static const char *unset_define(cmd_parms *cmd, void *dummy,
                                 const char *name)
 {
     int i;
-    char **defines;
+    const char **defines;
     if (cmd->parent && ap_cstr_casecmp(cmd->parent->directive, "<VirtualHost")) {
         return apr_pstrcat(cmd->pool, cmd->cmd->name, " is not valid in ",
                                       cmd->parent->directive, " context", NULL);
@@ -1512,10 +1511,10 @@ static const char *unset_define(cmd_parms *cmd, void *dummy,
         init_config_defines(cmd->pool);
     }
 
-    defines = (char **)ap_server_config_defines->elts;
+    defines = (const char **)ap_server_config_defines->elts;
     for (i = 0; i < ap_server_config_defines->nelts; i++) {
         if (strcmp(defines[i], name) == 0) {
-            defines[i] = *(char **)apr_array_pop(ap_server_config_defines);
+            defines[i] = *(const char **)apr_array_pop(ap_server_config_defines);
             break;
         }
     }
