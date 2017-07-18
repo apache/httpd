@@ -499,9 +499,12 @@ int main(int argc, const char * const argv[])
 
     apr_pool_create(&pcommands, ap_pglobal);
     apr_pool_tag(pcommands, "pcommands");
-    ap_server_pre_read_config  = apr_array_make(pcommands, 1, sizeof(char *));
-    ap_server_post_read_config = apr_array_make(pcommands, 1, sizeof(char *));
-    ap_server_config_defines   = apr_array_make(pcommands, 1, sizeof(char *));
+    ap_server_pre_read_config  = apr_array_make(pcommands, 1,
+                                                sizeof(const char *));
+    ap_server_post_read_config = apr_array_make(pcommands, 1,
+                                                sizeof(const char *));
+    ap_server_config_defines   = apr_array_make(pcommands, 1,
+                                                sizeof(const char *));
 
     error = ap_setup_prelinked_modules(process);
     if (error) {
@@ -519,16 +522,16 @@ int main(int argc, const char * const argv[])
 
     while ((rv = apr_getopt(opt, AP_SERVER_BASEARGS, &c, &opt_arg))
             == APR_SUCCESS) {
-        char **new;
+        const char **new;
 
         switch (c) {
         case 'c':
-            new = (char **)apr_array_push(ap_server_post_read_config);
+            new = (const char **)apr_array_push(ap_server_post_read_config);
             *new = apr_pstrdup(pcommands, opt_arg);
             break;
 
         case 'C':
-            new = (char **)apr_array_push(ap_server_pre_read_config);
+            new = (const char **)apr_array_push(ap_server_pre_read_config);
             *new = apr_pstrdup(pcommands, opt_arg);
             break;
 
@@ -537,7 +540,7 @@ int main(int argc, const char * const argv[])
             break;
 
         case 'D':
-            new = (char **)apr_array_push(ap_server_config_defines);
+            new = (const char **)apr_array_push(ap_server_config_defines);
             *new = apr_pstrdup(pcommands, opt_arg);
             /* Setting -D DUMP_VHOSTS should work like setting -S */
             if (strcmp(opt_arg, "DUMP_VHOSTS") == 0)
@@ -563,7 +566,7 @@ int main(int argc, const char * const argv[])
             break;
 
         case 'X':
-            new = (char **)apr_array_push(ap_server_config_defines);
+            new = (const char **)apr_array_push(ap_server_config_defines);
             *new = "DEBUG";
             break;
 
@@ -596,15 +599,15 @@ int main(int argc, const char * const argv[])
 
         case 'S':
             ap_run_mode = AP_SQ_RM_CONFIG_DUMP;
-            new = (char **)apr_array_push(ap_server_config_defines);
+            new = (const char **)apr_array_push(ap_server_config_defines);
             *new = "DUMP_VHOSTS";
-            new = (char **)apr_array_push(ap_server_config_defines);
+            new = (const char **)apr_array_push(ap_server_config_defines);
             *new = "DUMP_RUN_CFG";
             break;
 
         case 'M':
             ap_run_mode = AP_SQ_RM_CONFIG_DUMP;
-            new = (char **)apr_array_push(ap_server_config_defines);
+            new = (const char **)apr_array_push(ap_server_config_defines);
             *new = "DUMP_MODULES";
             break;
 
