@@ -39,11 +39,20 @@ static int shutdown_counter = 0;
 static unsigned long bytes_served;
 static pid_t mainpid;
 
+static int systemd_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
+                              apr_pool_t *ptemp)
+{
+    sd_notify(0,
+              "RELOADING=1\n"
+              "STATUS=Reading configuration...\n");
+    ap_extended_status = 1;
+    return OK;
+}
+
 static int systemd_pre_mpm(apr_pool_t *p, ap_scoreboard_e sb_type)
 {
     int rv;
 
-    ap_extended_status = 1;
     mainpid = getpid();
 
     rv = sd_notifyf(0, "READY=1\n"
@@ -64,6 +73,11 @@ static int systemd_monitor(apr_pool_t *p, server_rec *s)
     char bps[5];
     int rv;
 
+    if (!ap_extended_status) {
+        /* Nothing useful to report with ExtendedStatus disabled. */
+        return DECLINED;
+    }
+    
     ap_get_sload(&sload);
     /* up_time in seconds */
     up_time = (apr_uint32_t) apr_time_sec(apr_time_now() -
@@ -109,6 +123,8 @@ static int systemd_monitor(apr_pool_t *p, server_rec *s)
 
 static void systemd_register_hooks(apr_pool_t *p)
 {
+    /* Enable ap_extended_status. */
+    ap_hook_pre_config(systemd_pre_config, NULL, NULL, APR_HOOK_LAST);
     /* We know the PID in this hook ... */
     ap_hook_pre_mpm(systemd_pre_mpm, NULL, NULL, APR_HOOK_LAST);
     /* Used to update httpd's status line using sd_notifyf */
