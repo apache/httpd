@@ -98,7 +98,6 @@ ProxyPassMatch "^/myapp/.*\.php(/.*)?$" "fcgi://localhost:9000/var/www/" enabler
     the hostname and optional port following fcgi:// are ignored.</p>
     <example><title>PHP-FPM with UDS</title>
     <highlight language="config">
-# UDS does not currently support connection reuse
 ProxyPassMatch "^/(.*\.php(/.*)?)$" "unix:/var/run/php5-fpm.sock|fcgi://localhost/var/www/"
     </highlight>
     </example>
