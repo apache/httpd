@@ -27,6 +27,10 @@
 <a href="../es/howto/access.html" title="Español">&nbsp;es&nbsp;</a> |
 <a href="../fr/howto/access.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
+<div class="outofdate">Esta traducción podría estar
+            obsoleta. Consulte la versión en inglés de la
+            documentación para comprobar si se han producido cambios
+            recientemente.</div>
 
     <p>El control de acceso, hace referencia a todos los medios que proporcionan
     	una forma de controlar el acceso a cualquier recurso. Esta parte está

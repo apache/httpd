@@ -164,7 +164,7 @@ Require not host gov</pre>
     on arbitrary criteria.</p>
 
     <p>For example, if you wish to block access to a resource between 8pm
-    and 6am, you can do this using <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
+    and 7am, you can do this using <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
 
     <pre class="prettyprint lang-config">RewriteEngine On
 RewriteCond "%{TIME_HOUR}" "&gt;=20" [OR]
