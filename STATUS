@@ -226,6 +226,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-globals_constantness_and_bytes_saving.patch
      +1: ylavic
 
+  *) core: Support use of optional "tag" in syslog entries. PR 60525.
+     trunk patch: http://svn.apache.org/r1784318
+     2.4.x patch: http://home.apache.org/~jim/patches/syslog-tag.patch
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
