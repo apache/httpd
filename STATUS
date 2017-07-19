@@ -213,11 +213,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c1729235 -c1730079 -c1801665 ^/httpd/httpd/trunk
      +1: jchampion
 
-  *) mod_proxy_fcgi: Add the support for mod_proxy's flushpackets and flushwait params
-     trunk patch: http://svn.apache.org/r1802040
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: elukey
-
   *) core: ap_server_config_defines and ap_server_{pre,post}_read_config
            constantness and bytes saving, no functional change.
      trunk patch: http://svn.apache.org/r1713043
