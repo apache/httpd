@@ -126,7 +126,7 @@ static char* derive_codepage_from_lang (apr_pool_t *p, char *language)
 
     charset = (char*) apr_hash_get(charset_conversions, language, APR_HASH_KEY_STRING);
 
-    if (!charset) {
+    if (!charset && strlen(language) > 2 && language[2] == '-') {
         language[2] = '\0';
         charset = (char*) apr_hash_get(charset_conversions, language, APR_HASH_KEY_STRING);
     }
