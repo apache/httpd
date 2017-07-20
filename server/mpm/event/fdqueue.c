@@ -27,18 +27,18 @@ struct recycled_pool
 
 struct fd_queue_info_t
 {
-    apr_uint32_t idlers;     /**
-                              * >= zero_pt: number of idle worker threads
-                              * < zero_pt:  number of threads blocked waiting
-                              *             for an idle worker
-                              */
+    apr_uint32_t volatile idlers; /**
+                                   * >= zero_pt: number of idle worker threads
+                                   * <  zero_pt: number of threads blocked,
+                                   *             waiting for an idle worker
+                                   */
     apr_thread_mutex_t *idlers_mutex;
     apr_thread_cond_t *wait_for_idler;
     int terminated;
     int max_idlers;
     int max_recycled_pools;
     apr_uint32_t recycled_pools_count;
-    struct recycled_pool *recycled_pools;
+    struct recycled_pool *volatile recycled_pools;
 };
 
 static apr_status_t queue_info_cleanup(void *data_)
@@ -123,17 +123,17 @@ apr_status_t ap_queue_info_set_idle(fd_queue_info_t * queue_info,
 
 apr_status_t ap_queue_info_try_get_idler(fd_queue_info_t * queue_info)
 {
-    /* Don't block if there isn't any idle worker.
-     * apr_atomic_add32(x, -1) does the same as dec32(x), except
-     * that it returns the previous value (unlike dec32's bool).
-     *
-     * XXX: why don't we consume the last idler?
-     */
-    if (apr_atomic_add32(&(queue_info->idlers), -1) <= zero_pt + 1) {
-        apr_atomic_inc32(&(queue_info->idlers));    /* back out dec */
-        return APR_EAGAIN;
+    /* Don't block if there isn't any idle worker. */
+    for (;;) {
+        apr_uint32_t idlers = queue_info->idlers;
+        if (idlers <= zero_pt) {
+            return APR_EAGAIN;
+        }
+        if (apr_atomic_cas32(&queue_info->idlers, idlers - 1,
+                             idlers) == idlers) {
+            return APR_SUCCESS;
+        }
     }
-    return APR_SUCCESS;
 }
 
 apr_status_t ap_queue_info_wait_for_idler(fd_queue_info_t * queue_info,
