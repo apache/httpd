@@ -554,6 +554,7 @@
  * 20161018.4 (2.5.0-dev)  Add taint to request_rec and ap_request_tainted()
  * 20161018.5 (2.5.0-dev)  Add ap_get_basic_auth_components() and deprecate
  *                         ap_get_basic_auth_pw()
+ * 20161018.6 (2.5.0-dev)  Add ap_update_sb_handle()
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -561,7 +562,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20161018
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 5                 /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 6                 /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

@@ -230,6 +230,8 @@ struct event_conn_state_t {
     request_rec *r;
     /** server config this struct refers to */
     event_srv_cfg *sc;
+    /** scoreboard handle for the conn_rec */
+    ap_sb_handle_t *sbh;
     /** is the current conn_rec suspended?  (disassociated with
      * a particular MPM thread; for suspend_/resume_connection
      * hooks)
@@ -720,14 +722,14 @@ static apr_status_t decrement_connection_count(void *cs_)
 static void notify_suspend(event_conn_state_t *cs)
 {
     ap_run_suspend_connection(cs->c, cs->r);
-    cs->suspended = 1;
     cs->c->sbh = NULL;
+    cs->suspended = 1;
 }
 
-static void notify_resume(event_conn_state_t *cs, ap_sb_handle_t *sbh)
+static void notify_resume(event_conn_state_t *cs, int cleanup)
 {
-    cs->c->sbh = sbh;
     cs->suspended = 0;
+    cs->c->sbh = cleanup ? NULL : cs->sbh;
     ap_run_resume_connection(cs->c, cs->r);
 }
 
@@ -865,7 +867,7 @@ static apr_status_t ptrans_pre_cleanup(void *dummy)
     event_conn_state_t *cs = dummy;
 
     if (cs->suspended) {
-        notify_resume(cs, NULL);
+        notify_resume(cs, 1);
     }
     return APR_SUCCESS;
 }
@@ -931,17 +933,14 @@ static void process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * soc
     conn_rec *c;
     long conn_id = ID_FROM_CHILD_THREAD(my_child_num, my_thread_num);
     int rc;
-    ap_sb_handle_t *sbh;
-
-    /* XXX: This will cause unbounded mem usage for long lasting connections */
-    ap_create_sb_handle(&sbh, p, my_child_num, my_thread_num);
 
     if (cs == NULL) {           /* This is a new connection */
         listener_poll_type *pt = apr_pcalloc(p, sizeof(*pt));
         cs = apr_pcalloc(p, sizeof(event_conn_state_t));
         cs->bucket_alloc = apr_bucket_alloc_create(p);
+        ap_create_sb_handle(&cs->sbh, p, my_child_num, my_thread_num);
         c = ap_run_create_connection(p, ap_server_conf, sock,
-                                     conn_id, sbh, cs->bucket_alloc);
+                                     conn_id, cs->sbh, cs->bucket_alloc);
         if (!c) {
             ap_push_pool(worker_queue_info, p);
             return;
@@ -993,7 +992,8 @@ static void process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * soc
     }
     else {
         c = cs->c;
-        notify_resume(cs, sbh);
+        ap_update_sb_handle(cs->sbh, my_child_num, my_thread_num);
+        notify_resume(cs, 0);
         c->current_thread = thd;
         /* Subsequent request on a conn, and thread number is part of ID */
         c->id = conn_id;
@@ -1032,7 +1032,7 @@ read_request:
     if (cs->pub.state == CONN_STATE_WRITE_COMPLETION) {
         int not_complete_yet;
 
-        ap_update_child_status(sbh, SERVER_BUSY_WRITE, NULL);
+        ap_update_child_status(cs->sbh, SERVER_BUSY_WRITE, NULL);
 
         not_complete_yet = ap_run_output_pending(c);
 
@@ -1083,7 +1083,7 @@ read_request:
         start_lingering_close_blocking(cs);
     }
     else if (cs->pub.state == CONN_STATE_CHECK_REQUEST_LINE_READABLE) {
-        ap_update_child_status(sbh, SERVER_BUSY_KEEPALIVE, NULL);
+        ap_update_child_status(cs->sbh, SERVER_BUSY_KEEPALIVE, NULL);
 
         /* It greatly simplifies the logic to use a single timeout value per q
          * because the new element can just be added to the end of the list and

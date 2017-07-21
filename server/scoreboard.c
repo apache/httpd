@@ -422,12 +422,18 @@ AP_DECLARE(int) ap_find_child_by_pid(apr_proc_t *pid)
     return -1;
 }
 
+AP_DECLARE(void) ap_update_sb_handle(ap_sb_handle_t *sbh,
+                                     int child_num, int thread_num)
+{
+    sbh->child_num = child_num;
+    sbh->thread_num = thread_num;
+}
+
 AP_DECLARE(void) ap_create_sb_handle(ap_sb_handle_t **new_sbh, apr_pool_t *p,
                                      int child_num, int thread_num)
 {
     *new_sbh = (ap_sb_handle_t *)apr_palloc(p, sizeof(ap_sb_handle_t));
-    (*new_sbh)->child_num = child_num;
-    (*new_sbh)->thread_num = thread_num;
+    ap_update_sb_handle(*new_sbh, child_num, thread_num);
 }
 
 static void copy_request(char *rbuf, apr_size_t rbuflen, request_rec *r)
