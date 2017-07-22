@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- English Revision: 1734357:1802328 (outdated) -->
+<!-- English Revision: 1802328 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -185,7 +185,7 @@ d'accès</title>
     l'accès à une ressource en fonction d'un critère arbitraire.</p>
 
     <p>Par exemple, pour bloquer l'accès à une ressources entre 20h et
-    6h du matin, vous pouvez utiliser <module>mod_rewrite</module> :</p>
+    7h du matin, vous pouvez utiliser <module>mod_rewrite</module> :</p>
 
     <highlight language="config">
 RewriteEngine On
