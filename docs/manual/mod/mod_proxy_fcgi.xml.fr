@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1793934:1802336 (outdated) -->
+<!-- English Revision: 1802336 -->
 <!-- French translation : Lucien GENTIS -->
 
 <!--
@@ -106,7 +106,6 @@ ProxyPassMatch "^/myapp/.*\.php(/.*)?$" "fcgi://localhost:9000/var/www/" enabler
     ajoutés après fcgi://, ils seront ignorés.</p>
     <example><title>PHP-FPM with UDS</title>
     <highlight language="config">
-# A ce jour, UDS ne supporte pas la réutilisation des connexions
 ProxyPassMatch "^/(.*\.php(/.*)?)$" "unix:/var/run/php5-fpm.sock|fcgi://localhost/var/www/"
     </highlight>
     </example>

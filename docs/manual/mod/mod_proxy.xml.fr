@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1799463:1802040 (outdated) -->
+<!-- English Revision: 1802040 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1235,7 +1235,8 @@ ProxyPass "/mirror/foo" "http://backend.example.com"
 	'on' que le tampon sera vidé après chaque envoi d'un
 	tronçon de données, et 'auto' que le tampon sera vidé après un
 	délai de 'flushwait' millisecondes si aucune entrée n'est reçue.
-	Actuellement, cette clé n'est supportée que par AJP.
+	Actuellement, cette clé n'est supportée que par mod_proxy_ajp et
+	mod_proxy_fcgi.
     </td></tr>
     <tr><td>flushwait</td>
         <td>10</td>
