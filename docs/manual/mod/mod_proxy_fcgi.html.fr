@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_proxy_fcgi.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_proxy_fcgi.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Module fournissant le support de FastCGI à
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -110,8 +108,7 @@
     unix (UDS). Cette fonctionnalité est disponible à partir de la
     version 2.4.9. Avec cette syntaxe, si un nom d'hôte et un port sont
     ajoutés après fcgi://, ils seront ignorés.</p>
-    <div class="example"><h3>PHP-FPM with UDS</h3><pre class="prettyprint lang-config">      # A ce jour, UDS ne supporte pas la réutilisation des connexions
-      ProxyPassMatch "^/(.*\.php(/.*)?)$" "unix:/var/run/php5-fpm.sock|fcgi://localhost/var/www/"</pre>
+    <div class="example"><h3>PHP-FPM with UDS</h3><pre class="prettyprint lang-config">ProxyPassMatch "^/(.*\.php(/.*)?)$" "unix:/var/run/php5-fpm.sock|fcgi://localhost/var/www/"</pre>
 </div>
 
     <p>La passerelle à répartition de charge nécessite le chargement du
