@@ -27,8 +27,6 @@
 <a href="../es/howto/access.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
 <a href="../fr/howto/access.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>Le contrôle d'accès fait référence à tout concept de contrôle
     d'accès à une ressource quelconque. Il est distinct du processus d'<a href="auth.html">authentification et d'autorisation</a>.</p>
@@ -177,7 +175,7 @@ d'accès</a></h2>
     l'accès à une ressource en fonction d'un critère arbitraire.</p>
 
     <p>Par exemple, pour bloquer l'accès à une ressources entre 20h et
-    6h du matin, vous pouvez utiliser <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> :</p>
+    7h du matin, vous pouvez utiliser <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> :</p>
 
     <pre class="prettyprint lang-config">RewriteEngine On
 RewriteCond "%{TIME_HOUR}" "&gt;=20" [OR]
