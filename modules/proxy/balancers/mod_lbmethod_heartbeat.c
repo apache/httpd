@@ -358,7 +358,8 @@ static const proxy_balancer_method heartbeat =
     &find_best_hb,
     NULL,
     &reset,
-    &age
+    &age,
+    NULL
 };
 
 static int lb_hb_init(apr_pool_t *p, apr_pool_t *plog,
