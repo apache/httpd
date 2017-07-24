@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) event: Avoid possible blocking in the listener thread when shutting down
+     connections. PR 60956.  [Yann Ylavic]
+
   *) mod_proxy_fcgi: Add the support for mod_proxy's flushpackets and flushwait
      parameters. [Luca Toscano, Ruediger Pluem, Yann Ylavic]
 
