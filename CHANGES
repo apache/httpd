@@ -10,7 +10,7 @@ Changes with Apache 2.2.34 (final)
   *) Allow single-char field names inadvertantly disallowed in 2.2.32.
      PR 61220. [Yann Ylavic]
 
-Changes with Apache 2.2.33
+Changes with Apache 2.2.33 (not released)
 
   *) SECURITY: CVE-2017-7668 (cve.mitre.org)
      The HTTP strict parsing changes added in 2.2.32 and 2.4.24 introduced a
