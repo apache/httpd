@@ -115,7 +115,8 @@ static const proxy_balancer_method roundrobin =
     &find_best_roundrobin,
     NULL,
     &reset,
-    &age
+    &age,
+    NULL
 };
 
 static void ap_proxy_rr_register_hook(apr_pool_t *p)

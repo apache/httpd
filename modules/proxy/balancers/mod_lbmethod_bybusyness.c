@@ -141,7 +141,8 @@ static const proxy_balancer_method bybusyness =
     &find_best_bybusyness,
     NULL,
     &reset,
-    &age
+    &age,
+    NULL
 };
 
 static void register_hook(apr_pool_t *p)

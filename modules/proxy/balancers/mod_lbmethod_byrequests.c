@@ -177,7 +177,8 @@ static const proxy_balancer_method byrequests =
     &find_best_byrequests,
     NULL,
     &reset,
-    &age
+    &age,
+    NULL
 };
 
 static void register_hook(apr_pool_t *p)
