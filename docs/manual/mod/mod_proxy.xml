@@ -201,7 +201,7 @@ ProxyVia On
 
       <p>The two default workers have a fixed configuration
       and will be used if no other worker matches the request.
-      They do not use HTTP Keep-Alive or connection pooling.
+      They do not use HTTP Keep-Alive or connection reuse.
       The TCP connections to the origin server will instead be
       opened and closed for each request.</p>
 
@@ -307,8 +307,8 @@ ProxyPass "/examples" "http://backend.example.com/examples" timeout=10
       <note><title>DNS resolution for origin domains</title>
       <p>DNS resolution happens when the socket to
         the origin domain is created for the first time.
-        When connection pooling is used, each backend domain is resolved 
-        only once per child process, and reused for all further connections 
+        When connection reuse is enabled, each backend domain is resolved 
+        only once per child process, and cached for all further connections 
         until the child is recycled. This information should to be considered 
         while planning DNS maintenance tasks involving backend domains. 
         Please also check <directive module="mod_proxy">ProxyPass</directive>
@@ -881,7 +881,11 @@ expressions</description>
     a local virtual path; <var>url</var> is a partial URL for the
     remote server and cannot include a query string.</p>
 
-    <note><strong>Note: </strong>This directive is not supported within
+    <note>It is strongly suggested to review the concept of a
+    <a href="#workers">Worker</a> before proceeding any further
+    with this section.</note>
+
+    <note>This directive is not supported within
     <directive type="section" module="core">Directory</directive> and
     <directive type="section" module="core">Files</directive> containers.</note>
 
@@ -1002,19 +1006,21 @@ ProxyPass "/mirror/foo"   "http://backend.example.com"
     using  <code>key=value</code> parameters, described in the tables
     below.</p>
 
+    <note type="warning"><title>Maximum connections to the backend</title>
     <p>By default, mod_proxy will allow and retain the maximum number of
     connections that could be used simultaneously by that web server child
     process.  Use the <code>max</code> parameter to reduce the number from
-    the default.  Use the <code>ttl</code> parameter to set an optional
+    the default. The pool of connections is maintained per web server child
+    process, and <code>max</code> and other settings are not coordinated
+    among all child processes, except when only one child process is allowed
+    by configuration or MPM design.</p>
+    </note>
+
+    <p>Use the <code>ttl</code> parameter to set an optional
     time to live; connections which have been unused for at least
     <code>ttl</code> seconds will be closed.  <code>ttl</code> can be used
     to avoid using a connection which is subject to closing because of the
     backend server's keep-alive timeout.</p>
-
-    <p>The pool of connections is maintained per web server child
-    process, and <code>max</code> and other settings are not coordinated
-    among all child processes, except when only one child process is allowed
-    by configuration or MPM design.</p>
 
     <example><title>Example</title>
         <highlight language="config">
@@ -1022,7 +1028,7 @@ ProxyPass "/example" "http://backend.example.com" max=20 ttl=120 retry=300
         </highlight>
     </example>
 
-    <table border="2"><tr><th>BalancerMember parameters</th></tr></table>
+    <table border="2"><tr><th>Worker|BalancerMember parameters</th></tr></table>
     <table>
     <tr><th>Parameter</th>
         <th>Default</th>
@@ -1073,7 +1079,7 @@ ProxyPass "/example" "http://backend.example.com" max=20 ttl=120 retry=300
     httpd and
     the backend server (regardless of protocol) tends to silently
     drop connections or when backends themselves may be under round-
-    robin DNS. To disable connection pooling reuse,
+    robin DNS. To disable connection reuse,
     set this property value to <code>On</code>.
     </td></tr>
     <tr><td>enablereuse</td>

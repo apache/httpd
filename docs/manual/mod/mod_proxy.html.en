@@ -244,7 +244,7 @@ ProxyVia On
 
       <p>The two default workers have a fixed configuration
       and will be used if no other worker matches the request.
-      They do not use HTTP Keep-Alive or connection pooling.
+      They do not use HTTP Keep-Alive or connection reuse.
       The TCP connections to the origin server will instead be
       opened and closed for each request.</p>
 
@@ -345,8 +345,8 @@ ProxyPass "/examples" "http://backend.example.com/examples" timeout=10</pre>
       <div class="note"><h3>DNS resolution for origin domains</h3>
       <p>DNS resolution happens when the socket to
         the origin domain is created for the first time.
-        When connection pooling is used, each backend domain is resolved 
-        only once per child process, and reused for all further connections 
+        When connection reuse is enabled, each backend domain is resolved 
+        only once per child process, and cached for all further connections 
         until the child is recycled. This information should to be considered 
         while planning DNS maintenance tasks involving backend domains. 
         Please also check <code class="directive"><a href="#proxypass">ProxyPass</a></code>
@@ -1020,7 +1020,11 @@ through</td></tr>
     a local virtual path; <var>url</var> is a partial URL for the
     remote server and cannot include a query string.</p>
 
-    <div class="note"><strong>Note: </strong>This directive is not supported within
+    <div class="note">It is strongly suggested to review the concept of a
+    <a href="#workers">Worker</a> before proceeding any further
+    with this section.</div>
+
+    <div class="note">This directive is not supported within
     <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> and
     <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code> containers.</div>
 
@@ -1133,24 +1137,26 @@ ProxyPass "/mirror/foo"   "http://backend.example.com"</pre>
     using  <code>key=value</code> parameters, described in the tables
     below.</p>
 
+    <div class="warning"><h3>Maximum connections to the backend</h3>
     <p>By default, mod_proxy will allow and retain the maximum number of
     connections that could be used simultaneously by that web server child
     process.  Use the <code>max</code> parameter to reduce the number from
-    the default.  Use the <code>ttl</code> parameter to set an optional
+    the default. The pool of connections is maintained per web server child
+    process, and <code>max</code> and other settings are not coordinated
+    among all child processes, except when only one child process is allowed
+    by configuration or MPM design.</p>
+    </div>
+
+    <p>Use the <code>ttl</code> parameter to set an optional
     time to live; connections which have been unused for at least
     <code>ttl</code> seconds will be closed.  <code>ttl</code> can be used
     to avoid using a connection which is subject to closing because of the
     backend server's keep-alive timeout.</p>
 
-    <p>The pool of connections is maintained per web server child
-    process, and <code>max</code> and other settings are not coordinated
-    among all child processes, except when only one child process is allowed
-    by configuration or MPM design.</p>
-
     <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">ProxyPass "/example" "http://backend.example.com" max=20 ttl=120 retry=300</pre>
 </div>
 
-    <table class="bordered"><tr><th>BalancerMember parameters</th></tr></table>
+    <table class="bordered"><tr><th>Worker|BalancerMember parameters</th></tr></table>
     <table>
     <tr><th>Parameter</th>
         <th>Default</th>
@@ -1201,7 +1207,7 @@ ProxyPass "/mirror/foo"   "http://backend.example.com"</pre>
     httpd and
     the backend server (regardless of protocol) tends to silently
     drop connections or when backends themselves may be under round-
-    robin DNS. To disable connection pooling reuse,
+    robin DNS. To disable connection reuse,
     set this property value to <code>On</code>.
     </td></tr>
     <tr><td>enablereuse</td>
