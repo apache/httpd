@@ -85,7 +85,7 @@ ProxyPass "/myapp/" "fcgi://localhost:4000/" enablereuse=on
     <p> The following example passes the request URI as a filesystem
     path for the PHP-FPM daemon to run. The request URL is implicitly added
     to the 2nd parameter. The hostname and port following fcgi:// are where
-    PHP-FPM is listening.  Connection pooling is enabled.</p>
+    PHP-FPM is listening.  Connection pooling/reuse is enabled.</p>
     <example><title>PHP-FPM</title>
     <highlight language="config">
 ProxyPassMatch "^/myapp/.*\.php(/.*)?$" "fcgi://localhost:9000/var/www/" enablereuse=on
