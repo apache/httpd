@@ -1207,7 +1207,10 @@ ProxyPass "/mirror/foo"   "http://backend.example.com"</pre>
     httpd and
     the backend server (regardless of protocol) tends to silently
     drop connections or when backends themselves may be under round-
-    robin DNS. To disable connection reuse,
+    robin DNS.
+    When connection reuse is enabled each backend domain is resolved
+    (with a DNS query) only once per child process and cached for all further
+    connections until the child is recycled. To disable connection reuse,
     set this property value to <code>On</code>.
     </td></tr>
     <tr><td>enablereuse</td>
