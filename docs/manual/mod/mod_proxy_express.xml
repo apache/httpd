@@ -77,6 +77,10 @@
 
 </summary>
 <seealso><module>mod_proxy</module></seealso>
+<seealso><directive module="mod_proxy">BalancerMember</directive></seealso>
+<seealso><directive module="mod_proxy">BalancerGrowth</directive></seealso>
+<seealso><directive module="mod_proxy">BalancerPersist</directive></seealso>
+<seealso><directive module="mod_proxy">BalancerInherit</directive></seealso>
 
 <directivesynopsis>
 <name>ProxyExpressEnable</name>
