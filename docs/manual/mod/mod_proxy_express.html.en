@@ -88,6 +88,10 @@
 <h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_proxy_express">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_proxy_express">Report a bug</a></li></ul><h3>See also</h3>
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></li>
+<li><code class="directive"><a href="../mod/mod_proxy.html#balancermember">BalancerMember</a></code></li>
+<li><code class="directive"><a href="../mod/mod_proxy.html#balancergrowth">BalancerGrowth</a></code></li>
+<li><code class="directive"><a href="../mod/mod_proxy.html#balancerpersist">BalancerPersist</a></code></li>
+<li><code class="directive"><a href="../mod/mod_proxy.html#balancerinherit">BalancerInherit</a></code></li>
 <li><a href="#comments_section">Comments</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
