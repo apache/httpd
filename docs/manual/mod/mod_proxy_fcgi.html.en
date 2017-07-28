@@ -95,7 +95,7 @@
     <p> The following example passes the request URI as a filesystem
     path for the PHP-FPM daemon to run. The request URL is implicitly added
     to the 2nd parameter. The hostname and port following fcgi:// are where
-    PHP-FPM is listening.  Connection pooling is enabled.</p>
+    PHP-FPM is listening.  Connection pooling/reuse is enabled.</p>
     <div class="example"><h3>PHP-FPM</h3><pre class="prettyprint lang-config">ProxyPassMatch "^/myapp/.*\.php(/.*)?$" "fcgi://localhost:9000/var/www/" enablereuse=on</pre>
 </div>
 
