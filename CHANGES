@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_ssl, ab: Fix compatibility with LibreSSL.  PR 61184.
+     [Bernard Spil <brnrd freebsd.org>, Yann Ylavic]
+
   *) event: Avoid possible blocking in the listener thread when shutting down
      connections. PR 60956.  [Yann Ylavic]
 
