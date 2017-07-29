@@ -348,7 +348,9 @@ static apr_status_t ssl_cleanup_pre_config(void *data)
     ENGINE_cleanup();
 #endif
 #if OPENSSL_VERSION_NUMBER >= 0x1000200fL
+#ifndef OPENSSL_NO_COMP
     SSL_COMP_free_compression_methods();
+#endif
 #endif
 
     /* Usually needed per thread, but this parent process is single-threaded */
