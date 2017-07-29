@@ -114,7 +114,7 @@ static apr_status_t ssl_get_tls_cb(apr_pool_t *p, conn_rec *c, const char *type,
     else if (x != NULL) {
         const EVP_MD *md;
 
-#if OPENSSL_VERSION_NUMBER < 0x10100000L
+#if MODSSL_USE_OPENSSL_PRE_1_1_API
         md = EVP_get_digestbynid(OBJ_obj2nid(x->sig_alg->algorithm));
 #else
         md = EVP_get_digestbynid(X509_get_signature_nid(x));
@@ -603,7 +603,7 @@ static char *ssl_var_lookup_ssl_cert(apr_pool_t *p, request_rec *r, X509 *xs,
         resdup = FALSE;
     }
     else if (strcEQ(var, "A_SIG")) {
-#if OPENSSL_VERSION_NUMBER < 0x10100000L
+#if MODSSL_USE_OPENSSL_PRE_1_1_API
         nid = OBJ_obj2nid((ASN1_OBJECT *)(xs->cert_info->signature->algorithm));
 #else
         const ASN1_OBJECT *paobj;
