@@ -367,7 +367,7 @@ static apr_status_t wait_not_empty(h2_bucket_beam *beam, apr_read_type_e block,
 }
 
 static apr_status_t wait_not_full(h2_bucket_beam *beam, apr_read_type_e block, 
-                                  apr_size_t *pspace_left, apr_thread_mutex_t *lock)
+                                  apr_size_t *pspace_left, h2_beam_lock *bl)
 {
     apr_status_t rv = APR_SUCCESS;
     apr_size_t left;
@@ -376,14 +376,16 @@ static apr_status_t wait_not_full(h2_bucket_beam *beam, apr_read_type_e block,
         if (beam->aborted) {
             rv = APR_ECONNABORTED;
         }
-        else if (block != APR_BLOCK_READ) {
+        else if (block != APR_BLOCK_READ || !bl->mutex) {
             rv = APR_EAGAIN;
         }
-        else if (beam->timeout > 0) {
-            rv = apr_thread_cond_timedwait(beam->change, lock, beam->timeout);
-        }
         else {
-            rv = apr_thread_cond_wait(beam->change, lock);
+            if (beam->timeout > 0) {
+                rv = apr_thread_cond_timedwait(beam->change, bl->mutex, beam->timeout);
+            }
+            else {
+                rv = apr_thread_cond_wait(beam->change, bl->mutex);
+            }
         }
     }
     *pspace_left = left;
@@ -944,7 +946,8 @@ apr_status_t h2_beam_send(h2_bucket_beam *beam,
             space_left = calc_space_left(beam);
             while (!APR_BRIGADE_EMPTY(sender_bb) && APR_SUCCESS == rv) {
                 if (space_left <= 0) {
-                    rv = wait_not_full(beam, block, &space_left, bl.mutex);
+                    report_prod_io(beam, force_report, &bl);
+                    rv = wait_not_full(beam, block, &space_left, &bl);
                     if (APR_SUCCESS != rv) {
                         break;
                     }
