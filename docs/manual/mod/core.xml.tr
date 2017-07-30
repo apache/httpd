@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1787736:1799789 (outdated) -->
+<!-- English Revision: 1799789 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -800,13 +800,11 @@ DocumentRoot "/var/www/${servername}/htdocs"
     <p><directive module="mod_rewrite">RewriteMap</directive> sözdizimi ile
       karışmalardan kaçınmak için değişken isimleri ikinokta ":" karakterleri
       içeremez.</p>
-    
-    <p>Bu yönerge sanal konakta ve dizin içeriğinde desteklenirken yapılan 
+    <note><title>Sanal konak bağlamı ve tuzaklar</title>
+      <p>Bu yönerge sanal konakta ve dizin içeriğinde desteklendiğinden yapılan 
       değişiklikler (eşleşsin eşleşmesin) yönergeyi sarmalayan yapılandırma 
-      bölümünün ötesinde, sonraki yapılandırma yönergelerine de görünür olur. Diğer 
-      yapılandırma bölümleri için sağlanan bu desteğe bu yönergenin ilk 
-      gerçekleniminde hatalı olarak izin verilmişti. Geriye uyumluluk amacıyla 
-      (önceden sezilmeyen sonuçlarıyla) bu durum muhafaza edilmiştir.</p>
+      bölümünden başka, sonraki yapılandırma yönergelerine de görünür olur.</p>
+    </note>
 </usage>
 <seealso><directive module="core">UnDefine</directive></seealso>
 <seealso><directive module="core">IfDefine</directive></seealso>
@@ -1049,6 +1047,7 @@ DocumentRoot "/usr/web"
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>All</override>
+<compatibility>İç içe geçmiş koşullar 2.4.26 ve sonrasında değerlendirilmeye alınır</compatibility>
 
 <usage>
     <p><directive type="section">Else</directive> sadece ve sadece aynı etki
@@ -1091,6 +1090,7 @@ DocumentRoot "/usr/web"
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>All</override>
+<compatibility>İç içe geçmiş koşullar 2.4.26 ve sonrasında değerlendirilmeye alınır</compatibility>
 
 <usage>
     <p><directive type="section">ElseIf</directive> kapsadığı yönergeleri
@@ -2161,6 +2161,7 @@ takdirde uygulanacak yönergeleri barındırır.</description>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>All</override>
+<compatibility>İç içe geçmiş koşullar 2.4.26 ve sonrasında değerlendirilmeye alınır</compatibility>
 
 <usage>
     <p><directive type="section">If</directive> yönergesi bir ifadeyi çalışma
@@ -2198,12 +2199,6 @@ takdirde uygulanacak yönergeleri barındırır.</description>
     yönerge için kullanılabilir olmayacaktır.
     </note>
 
-    <note><title>Betik dillerindeki gibi değil</title>
-    Bu yönergenin ismi yöneticiler ve yazılımcılara çok tanıdıktır fakat betik 
-    dillerinde rastladığınız benzeri ile karıştırılmamalıdır. Örneğin, mevcut 
-    gerçeklenimde iç içe <directive type="section">If</directive> yönergeleri 
-    desteklenmemektedir.
-    </note>
 </usage>
 
 <seealso><a href="../expr.html">Apache HTTP Sunucusundaki

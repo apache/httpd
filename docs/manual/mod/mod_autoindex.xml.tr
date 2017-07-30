@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1741864:1789963 (outdated) -->
+<!-- English Revision: 1789963 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -878,6 +878,18 @@ IndexOptions Charset=UTF-8
 IndexOptions Type=text/plain
       </highlight>
       </dd>
+      
+      <dt><a name="indexoptions.useolddateformat"
+               id="indexoptions.useolddateformat"
+      >UseOldDateFormat</a>
+      (<em>Apache HTTP Sunucusu 2.4.26 ve sonrasında</em>)</dt>
+
+      <dd><code>Last Modified</code> alanı tarafından kullanılan tarih biçemi 
+        <code>"%Y-%m-%d %H:%M"</code> dikkatsizlik sonucu 2.4.0 sürümünde 
+        <code>"%d-%b-%Y %H:%M"</code> olarak değişmiştir. Bu seçenekle tarih 
+        biçemini 2.2 ve öncesindeki biçemiyle kullanabilirsiniz.</dd>
+
+      
       <dt><a name="indexoptions.versionsort"
                id="indexoptions.versionsort"><code>VersionSort</code></a>
       </dt>
