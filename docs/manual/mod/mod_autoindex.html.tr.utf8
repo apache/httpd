@@ -32,7 +32,6 @@
 <a href="../ko/mod/mod_autoindex.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_autoindex.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Unix <code>ls</code> veya Win32 <code>dir</code> kabuk komutunun
 yaptığı gibi dizin içeriğini listeler.</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
@@ -831,6 +830,16 @@ belirler.</td></tr>
       <pre class="prettyprint lang-config">IndexOptions Type=text/plain</pre>
 
       </dd>
+      
+      <dt><a name="indexoptions.useolddateformat" id="indexoptions.useolddateformat">UseOldDateFormat</a>
+      (<em>Apache HTTP Sunucusu 2.4.26 ve sonrasında</em>)</dt>
+
+      <dd><code>Last Modified</code> alanı tarafından kullanılan tarih biçemi 
+        <code>"%Y-%m-%d %H:%M"</code> dikkatsizlik sonucu 2.4.0 sürümünde 
+        <code>"%d-%b-%Y %H:%M"</code> olarak değişmiştir. Bu seçenekle tarih 
+        biçemini 2.2 ve öncesindeki biçemiyle kullanabilirsiniz.</dd>
+
+      
       <dt><a name="indexoptions.versionsort" id="indexoptions.versionsort"><code>VersionSort</code></a>
       </dt>
 
