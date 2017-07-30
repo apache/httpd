@@ -774,20 +774,20 @@ static apr_bucket *get_first_headers_bucket(apr_bucket_brigade *bb)
     return NULL;
 }
 
-static apr_status_t add_data(h2_stream *stream, apr_off_t requested,
-                             apr_off_t *plen, int *peos, int *complete, 
-                             h2_headers **pheaders)
+static apr_status_t add_buffered_data(h2_stream *stream, apr_off_t requested,
+                                      apr_off_t *plen, int *peos, int *is_all, 
+                                      h2_headers **pheaders)
 {
     apr_bucket *b, *e;
     
     *peos = 0;
     *plen = 0;
-    *complete = 0;
+    *is_all = 0;
     if (pheaders) {
         *pheaders = NULL;
     }
 
-    H2_STREAM_OUT_LOG(APLOG_TRACE2, stream, "add_data");
+    H2_STREAM_OUT_LOG(APLOG_TRACE2, stream, "add_buffered_data");
     b = APR_BRIGADE_FIRST(stream->out_buffer);
     while (b != APR_BRIGADE_SENTINEL(stream->out_buffer)) {
         e = APR_BUCKET_NEXT(b);
@@ -833,7 +833,7 @@ static apr_status_t add_data(h2_stream *stream, apr_off_t requested,
         }
         b = e;
     }
-    *complete = 1;
+    *is_all = 1;
     return APR_SUCCESS;
 }
 
@@ -865,7 +865,7 @@ apr_status_t h2_stream_out_prepare(h2_stream *stream, apr_off_t *plen,
     requested = (*plen > 0)? H2MIN(*plen, max_chunk) : max_chunk;
     
     /* count the buffered data until eos or a headers bucket */
-    status = add_data(stream, requested, plen, peos, &complete, pheaders);
+    status = add_buffered_data(stream, requested, plen, peos, &complete, pheaders);
     
     if (status == APR_EAGAIN) {
         /* TODO: ugly, someone needs to retrieve the response first */
@@ -882,28 +882,38 @@ apr_status_t h2_stream_out_prepare(h2_stream *stream, apr_off_t *plen,
         return APR_SUCCESS;
     }
     
+    /* If there we do not have enough buffered data to satisfy the requested
+     * length *and* we counted the _complete_ buffer (and did not stop in the middle
+     * because of meta data there), lets see if we can read more from the
+     * output beam */
     missing = H2MIN(requested, stream->max_mem) - *plen;
     if (complete && !*peos && missing > 0) {
+        apr_status_t rv = APR_EOF;
+        
         if (stream->output) {
             H2_STREAM_OUT_LOG(APLOG_TRACE2, stream, "pre");
-            status = h2_beam_receive(stream->output, stream->out_buffer, 
-                                     APR_NONBLOCK_READ, 
-                                     stream->max_mem - *plen);
+            rv = h2_beam_receive(stream->output, stream->out_buffer, 
+                                 APR_NONBLOCK_READ, stream->max_mem - *plen);
             H2_STREAM_OUT_LOG(APLOG_TRACE2, stream, "post");
         }
-        else {
-            status = APR_EOF;
-        }
         
-        if (APR_STATUS_IS_EOF(status)) {
+        if (rv == APR_SUCCESS) {
+            /* count the buffer again, now that we have read output */
+            status = add_buffered_data(stream, requested, plen, peos, &complete, pheaders);
+        }
+        else if (APR_STATUS_IS_EOF(rv)) {
             apr_bucket *eos = apr_bucket_eos_create(c->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(stream->out_buffer, eos);
             *peos = 1;
-            status = APR_SUCCESS;
         }
-        else if (status == APR_SUCCESS) {
-            /* do it again, now that we have gotten more */
-            status = add_data(stream, requested, plen, peos, &complete, pheaders);
+        else if (APR_STATUS_IS_EAGAIN(rv)) {
+            /* we set this is the status of this call only if there
+             * is no buffered data, see check below */
+        }
+        else {
+            /* real error reading. Give this back directly, even though
+             * we may have something buffered. */
+            status = rv;
         }
     }
     

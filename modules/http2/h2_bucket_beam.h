@@ -190,7 +190,7 @@ struct h2_bucket_beam {
     unsigned int tx_mem_limits : 1; /* only memory size counts on transfers */
 
     struct apr_thread_mutex_t *lock;
-    struct apr_thread_cond_t *cond;
+    struct apr_thread_cond_t *change;
     void *m_ctx;
     h2_beam_mutex_enter *m_enter;
     
