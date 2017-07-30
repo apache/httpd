@@ -33,7 +33,6 @@
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Apache HTTP Sunucusunda daima mevcut olan çekirdek
  özellikler</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr></table>
@@ -877,13 +876,11 @@ DocumentRoot "/var/www/${servername}/htdocs"</pre>
     <p><code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> sözdizimi ile
       karışmalardan kaçınmak için değişken isimleri ikinokta ":" karakterleri
       içeremez.</p>
-    
-    <p>Bu yönerge sanal konakta ve dizin içeriğinde desteklenirken yapılan 
+    <div class="note"><h3>Sanal konak bağlamı ve tuzaklar</h3>
+      <p>Bu yönerge sanal konakta ve dizin içeriğinde desteklendiğinden yapılan 
       değişiklikler (eşleşsin eşleşmesin) yönergeyi sarmalayan yapılandırma 
-      bölümünün ötesinde, sonraki yapılandırma yönergelerine de görünür olur. Diğer 
-      yapılandırma bölümleri için sağlanan bu desteğe bu yönergenin ilk 
-      gerçekleniminde hatalı olarak izin verilmişti. Geriye uyumluluk amacıyla 
-      (önceden sezilmeyen sonuçlarıyla) bu durum muhafaza edilmiştir.</p>
+      bölümünden başka, sonraki yapılandırma yönergelerine de görünür olur.</p>
+    </div>
 
 <h3>Ayrıca bakınız:</h3>
 <ul>
@@ -1120,6 +1117,7 @@ DocumentRoot "/var/www/${servername}/htdocs"</pre>
 <tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>İç içe geçmiş koşullar 2.4.26 ve sonrasında değerlendirilmeye alınır</td></tr>
 </table>
     <p><code class="directive">&lt;Else&gt;</code> sadece ve sadece aynı etki
       alanındaki en son <code class="directive">&lt;If&gt;</code> veya
@@ -1162,6 +1160,7 @@ DocumentRoot "/var/www/${servername}/htdocs"</pre>
 <tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>İç içe geçmiş koşullar 2.4.26 ve sonrasında değerlendirilmeye alınır</td></tr>
 </table>
     <p><code class="directive">&lt;ElseIf&gt;</code> kapsadığı yönergeleri
       sadece ve sadece belirtilen koşulun doğrulandığı ancak aynı etki
@@ -2165,6 +2164,7 @@ takdirde uygulanacak yönergeleri barındırır.</td></tr>
 <tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>İç içe geçmiş koşullar 2.4.26 ve sonrasında değerlendirilmeye alınır</td></tr>
 </table>
     <p><code class="directive">&lt;If&gt;</code> yönergesi bir ifadeyi çalışma
       anında değerlendirir ve ifadenin sonucu doğru olduğu takdirde içerdiği
@@ -2199,12 +2199,6 @@ takdirde uygulanacak yönergeleri barındırır.</td></tr>
     yönerge için kullanılabilir olmayacaktır.
     </div>
 
-    <div class="note"><h3>Betik dillerindeki gibi değil</h3>
-    Bu yönergenin ismi yöneticiler ve yazılımcılara çok tanıdıktır fakat betik 
-    dillerinde rastladığınız benzeri ile karıştırılmamalıdır. Örneğin, mevcut 
-    gerçeklenimde iç içe <code class="directive">&lt;If&gt;</code> yönergeleri 
-    desteklenmemektedir.
-    </div>
 
 <h3>Ayrıca bakınız:</h3>
 <ul>
