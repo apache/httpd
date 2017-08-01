@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1797650:1803258 (outdated) -->
+<!-- English Revision: 1803258 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -219,8 +219,7 @@ ProxyVia On
 
       <p>Les deux workers par défaut possèdent une configuration figée
       et seront utilisés si aucun autre worker ne correspond à la
-      requête. Ils n'utilisent ni les jeux de connexions (connection
-      pooling), ni les
+      requête. Ils ne réutilisent pas les connexions et n'utilisent pas les
       connexions HTTP persistantes (Keep-Alive). En effet, les
       connexions TCP vers le serveur original sont fermées et ouvertes
       pour chaque requête.</p>
@@ -346,16 +345,15 @@ ProxyPass "/examples" "http://backend.example.com/examples" timeout=10
 
       <note><title>Résolution DNS pour les domaines originaux</title>
       <p>La résolution DNS s'effectue lorsque le socket vers le
-      domaine original est créé pour la première fois. Lorsque le pooling de
-      connexions est utilisé, chaque domaine d'arrière-plan n'est résolu qu'une
-      seule fois pour chaque processus enfant, et cette résolution est réutilisée
-      pour toutes les connexions ultérieures jusqu'à ce que le processus enfant
+      domaine original est créé pour la première fois. Lorsque la réutilisation
+      des connexions est activée, chaque domaine d'arrière-plan n'est résolu qu'une
+      seule fois pour chaque processus enfant, et cette résolution est mise en
+      cache pour toutes les connexions ultérieures jusqu'à ce que le processus enfant
       soit recyclé. Ce comportement doit être pris en considération lorsqu'on
       planifie des tâches de maintenance du DNS impactant les domaines
       d'arrière-plan. Veuillez aussi vous reporter aux paramètres de la
       directive <directive module="mod_proxy">ProxyPass</directive> pour plus de
-      détails à propos de la réutilisation des connexions.
-        </p>
+      détails à propos de la réutilisation des connexions.</p>
       </note>
 
     </section> <!-- /workers -->
@@ -988,7 +986,10 @@ sont supportés à partir de la version 2.4.7 du serveur HTTP Apache</compatibil
     chemin virtuel local ; <var>url</var> est une URL partielle pour le
     serveur distant et ne doit pas contenir de chaîne d'arguments.</p>
 
-    <note><strong>Note : </strong>Cette directive n'est pas supportée au sein
+    <note>Il est fortement recommandé de revoir le concept de <a
+    href="#workers">Worker</a> avant d'aller plus loin.</note>
+
+    <note>Cette directive n'est pas supportée au sein
     des sections <directive type="section" module="core">Directory</directive>
     et <directive type="section" module="core">Files</directive>.</note>
 
@@ -1120,10 +1121,18 @@ ProxyPass "/mirror/foo" "http://backend.example.com"
     <code>clé=valeur</code> dont la description fait l'objet des
     tableaux ci-dessous.</p>
 
-    <p>Par défaut, mod_proxy permet et met en réserve le nombre maximum
-    de connexions pouvant être utilisées simultanément par le processus
-    enfant concerné du serveur web. Le paramètre <code>max</code> permet
-    de réduire cette valeur par défaut. Le paramètre <code>ttl</code>,
+    <note type="warning"><title>Nombre maximum de connexions vers
+    l'arrière-plan</title>
+     <p>Par défaut, mod_proxy permet et met en réserve le
+    nombre maximum de connexions pouvant être utilisées simultanément par le
+    processus enfant concerné du serveur web. Le paramètre <code>max</code>
+    permet de réduire cette valeur par défaut. Le jeu de connexions est maintenu
+    au niveau de chaque processus enfant du serveur web, <code>max</code> et les
+    autres réglages n'étant pas coordonnés entre ces différents processus, sauf
+    bien entendu lorsqu'un seul processus enfant n'est autorisé par la
+    configuration ou le MPM utilisé.</p> </note>
+    
+    <p>Le paramètre <code>ttl</code>,
     quant à lui, permet de définir une durée de vie optionnelle ; les
     connexions qui n'ont pas été utilisées pendant au moins
     <code>ttl</code> secondes seront fermées. <code>ttl</code> permet
@@ -1131,20 +1140,13 @@ ProxyPass "/mirror/foo" "http://backend.example.com"
     fermée suite à une fin de vie de connexion persistante sur le
     serveur d'arrière-plan.</p>
 
-    <p>Le groupement de connexions est maintenu au niveau de chaque
-    processus enfant du serveur web, et <code>max</code>, ainsi que les
-    autres paramètres, ne font
-    l'objet d'aucune coordination entre les différents processus
-    enfants, sauf si un seul processus enfant est autorisé par la
-    configuration ou la conception du module multi-processus (MPM).</p>
-
     <example><title>Exemple</title>
     <highlight language="config">
         ProxyPass "/example" "http://backend.example.com" max=20 ttl=120 retry=300
 	</highlight>
     </example>
 
-    <table border="2"><tr><th>Paramètres de BalancerMember</th></tr></table>
+    <table border="2"><tr><th>Paramètres de worker (directive BalancerMember)</th></tr></table>
     <table>
     <tr><th>Paramètre</th>
         <th>Défaut</th>
@@ -1200,7 +1202,11 @@ ProxyPass "/mirror/foo" "http://backend.example.com"
 	serveur d'arrière-plan (quelque soit le protocole) interrompt
 	des connexions de manière silencieuse, ou lorsque le serveur
 	d'arrière-plan lui-même est accessible par rotation de DNS
-	(round-robin DNS). Pour désactiver la réutilisation du jeu de
+	(round-robin DNS). Lorsque la réutilisation des connexions est activée,
+	chaque domaine d'arrière-plan n'est résolu (via une requête DNS) qu'une
+	seule fois par chaque processus enfant et mis en cache pour toutes les
+	connexions ultérieures jusqu'au recyclage du processus concerné.	
+	Pour désactiver la réutilisation du jeu de
 	connexions, définissez cette clé à <code>On</code>.
     </td></tr>
     <tr><td>enablereuse</td>

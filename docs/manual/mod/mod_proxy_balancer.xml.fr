@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1731594:1803315 (outdated) -->
+<!-- English Revision: 1803315 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -67,6 +67,10 @@ la répartition de charge</description>
     </note>
 </summary>
 <seealso><module>mod_proxy</module></seealso>
+<seealso><directive module="mod_proxy">BalancerMember</directive></seealso>
+<seealso><directive module="mod_proxy">BalancerGrowth</directive></seealso>
+<seealso><directive module="mod_proxy">BalancerPersist</directive></seealso>
+<seealso><directive module="mod_proxy">BalancerInherit</directive></seealso>
 
 <section id="scheduler">
     <title>L'algorithme de planification de la répartition de
