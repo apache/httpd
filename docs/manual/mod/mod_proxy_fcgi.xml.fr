@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1802336:1803171 (outdated) -->
+<!-- English Revision: 1803171 -->
 <!-- French translation : Lucien GENTIS -->
 
 <!--
@@ -91,7 +91,7 @@ ProxyPass "/mon_appli/" "fcgi://localhost:4000/"
     que chemin du système de fichiers pour l'exécution du démon PHP-FPM.
     L'URL de la requête est implicitement ajoutée au second paramètre.
     PHP-FPM est à l'écoute de l'hôte et du port qui
-    suivent fcgi://. La conservation des connexions est activée.</p>
+    suivent fcgi://. La conservation/réutilisation des connexions est activée.</p>
     <example><title>PHP-FPM</title>
     <highlight language="config">
 ProxyPassMatch "^/myapp/.*\.php(/.*)?$" "fcgi://localhost:9000/var/www/" enablereuse=on
