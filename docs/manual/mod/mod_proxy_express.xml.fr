@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1774024:1803315 (outdated) -->
+<!-- English Revision: 1803315 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -82,6 +82,10 @@ dynamique inverse de masse</description>
 
 </summary>
 <seealso><module>mod_proxy</module></seealso>
+<seealso><directive module="mod_proxy">BalancerMember</directive></seealso>
+<seealso><directive module="mod_proxy">BalancerGrowth</directive></seealso>
+<seealso><directive module="mod_proxy">BalancerPersist</directive></seealso>
+<seealso><directive module="mod_proxy">BalancerInherit</directive></seealso>
 
 <directivesynopsis>
 <name>ProxyExpressEnable</name>

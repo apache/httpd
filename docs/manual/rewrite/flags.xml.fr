@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1796850:1803258 (outdated) -->
+<!-- English Revision: 1803258 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -580,7 +580,7 @@ local.</p>
       persistantes, ce qui signifie que vous obtiendrez des performances meilleurs si vous utilisez
       <directive module="mod_proxy">ProxyPass</directive> ou <directive module="mod_proxy">ProxyPassMatch</directive>.</p>
       <p>Ceci est du au fait que ce drapeau induit l'utilisation du worker par défaut, qui
-      ne gère pas la mise en commun des connexions.</p>
+      ne gère pas la mise en commun et la réutilisation des connexions.</p>
       <p>Partout où cela est possible, préférez l'utilisation de ces directives.</p>
 </note>
 
