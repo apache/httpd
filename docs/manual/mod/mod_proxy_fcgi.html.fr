@@ -98,7 +98,7 @@
     que chemin du système de fichiers pour l'exécution du démon PHP-FPM.
     L'URL de la requête est implicitement ajoutée au second paramètre.
     PHP-FPM est à l'écoute de l'hôte et du port qui
-    suivent fcgi://. La conservation des connexions est activée.</p>
+    suivent fcgi://. La conservation/réutilisation des connexions est activée.</p>
     <div class="example"><h3>PHP-FPM</h3><pre class="prettyprint lang-config">ProxyPassMatch "^/myapp/.*\.php(/.*)?$" "fcgi://localhost:9000/var/www/" enablereuse=on</pre>
 </div>
 
