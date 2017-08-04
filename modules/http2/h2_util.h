@@ -337,15 +337,6 @@ unsigned char h2_log2(int n);
  */
 apr_size_t h2_util_table_bytes(apr_table_t *t, apr_size_t pair_extra);
 
-/**
- * Return != 0 iff the string s contains the token, as specified in
- * HTTP header syntax, rfc7230.
- */
-int h2_util_contains_token(apr_pool_t *pool, const char *s, const char *token);
-
-const char *h2_util_first_token_match(apr_pool_t *pool, const char *s, 
-                                      const char *tokens[], apr_size_t len);
-
 /** Match a header value against a string constance, case insensitive */
 #define H2_HD_MATCH_LIT(l, name, nlen)  \
     ((nlen == sizeof(l) - 1) && !apr_strnatcasecmp(l, name))
