@@ -210,7 +210,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: https://svn.apache.org/r1729235
                   https://svn.apache.org/r1730079
                   https://svn.apache.org/r1801665
-     2.4.x patch: svn merge -c1729235 -c1730079 -c1801665 ^/httpd/httpd/trunk
+     2.4.x patch: svn merge -c1729235 -c1730079 -c1801665 ^/httpd/httpd/trunk .
      +1: jchampion
 
   *) core: ap_server_config_defines and ap_server_{pre,post}_read_config
@@ -235,6 +235,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1803398
      2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-libressl.patch
      +1: ylavic
+
+  *) mod_proxy: Name the scheme in the error message when the 
+     mod_proxy_foo submodule is missing.
+     trunk patch: http://svn.apache.org/r1745039 
+     2.4.x patch svn merge -c 1745039 ^/httpd/httpd/trunk .
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
