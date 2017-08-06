@@ -243,7 +243,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
   *) mod_http2: fix for stalling when more than 32KB are written to a suspended stream
      2.4.x patch: svn merge -c 1803420,1803454,1804090 ^/httpd/httpd/trunk .
-     +1: icing
+     +1: icing +1: steffenal
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
