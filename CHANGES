@@ -1,5 +1,4 @@
                                                          -*- coding: utf-8 -*-
-
 Changes with Apache 2.4.28
 
   *) event: Avoid listener periodic wake ups by using the pollset wake-ability
