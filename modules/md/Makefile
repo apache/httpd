@@ -1,3 +1,8 @@
+top_srcdir   = /Users/sei/projects/httpd/trunk-md
+top_builddir = /Users/sei/projects/httpd/trunk-md
+srcdir       = /Users/sei/projects/httpd/trunk-md/modules/md
+builddir     = /Users/sei/projects/httpd/trunk-md/modules/md
+VPATH        = /Users/sei/projects/httpd/trunk-md/modules/md
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.

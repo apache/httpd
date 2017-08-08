@@ -246,24 +246,8 @@ dnl #  list of module object files
 md_objs="dnl
 mod_md.lo dnl
 md_config.lo dnl
-md_core.lo dnl
-md_crypt.lo dnl
-md_curl.lo dnl
-md_http.lo dnl
-md_json.lo dnl
-md_jws.lo dnl
-md_log.lo dnl
 md_os.lo dnl
-md_reg.lo dnl
-md_store.lo dnl
-md_store_fs.lo dnl
-md_util.lo dnl
-md_acme.lo dnl
-md_acme_acct.lo dnl
-md_acme_authz.lo dnl
-md_acme_drive.lo dnl
 "
-
 
 dnl # hook module into the Autoconf mechanism (--enable-md)
 APACHE_MODULE(md, [Managed Domain handling], $md_objs, , most, [
@@ -284,6 +268,8 @@ APACHE_MODULE(md, [Managed Domain handling], $md_objs, , most, [
         AC_MSG_WARN([libcurl not found])
         enable_md=no
     fi
+    
+    APR_ADDTO(MOD_MD_LDADD, [ "libmd.la" ])
 ])
 
 # Ensure that other modules can pick up mod_md.h
