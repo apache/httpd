@@ -30,6 +30,7 @@
 #include "mod_ssl.h"
 #include "mod_ssl_openssl.h"
 #include "mpm_common.h"
+#include "mod_md.h"
 
 static apr_status_t ssl_init_ca_cert_path(server_rec *, apr_pool_t *, const char *,
                                           STACK_OF(X509_NAME) *, STACK_OF(X509_INFO) *);
@@ -168,20 +169,8 @@ static void ssl_add_version_components(apr_pool_t *p,
 }
 
 /**************************************************************************************************/
-/* Managed Domains Interface (temporary here) */
+/* Managed Domains Interface */
 
-APR_DECLARE_OPTIONAL_FN(int, 
-                        md_is_managed, (struct server_rec *));
-
-APR_DECLARE_OPTIONAL_FN(apr_status_t, 
-                        md_get_credentials, (struct server_rec *, apr_pool_t *,
-                                             const char **pkeyfile, 
-                                             const char **pcertfile, 
-                                             const char **pchainfile));
-APR_DECLARE_OPTIONAL_FN(int, 
-                        md_is_challenge, (struct conn_rec *, const char *,
-                                          X509 **, EVP_PKEY **));
-                                          
 static APR_OPTIONAL_FN_TYPE(md_is_managed) *md_is_managed;
 static APR_OPTIONAL_FN_TYPE(md_get_credentials) *md_get_credentials;
 static APR_OPTIONAL_FN_TYPE(md_is_challenge) *md_is_challenge;
