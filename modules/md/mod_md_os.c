@@ -32,7 +32,7 @@
 #endif
 
 #include "md_util.h"
-#include "md_os.h"
+#include "mod_md_os.h"
 
 apr_status_t md_try_chown(const char *fname, int uid, int gid, apr_pool_t *p)
 {

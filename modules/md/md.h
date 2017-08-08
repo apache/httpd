@@ -114,6 +114,7 @@ struct md_t {
 #define MD_KEY_RESOURCE         "resource"
 #define MD_KEY_STATE            "state"
 #define MD_KEY_STATUS           "status"
+#define MD_KEY_STORE            "store"
 #define MD_KEY_TOKEN            "token"
 #define MD_KEY_TYPE             "type"
 #define MD_KEY_URL              "url"
