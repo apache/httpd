@@ -44,8 +44,22 @@ LTLIBRARY_SOURCES = \
 
 LTLIBRARY_DEPENDENCIES = md.h
 
-local-shared-build: $(LTLIBRARY_NAME) $(SHARED_TARGETS)
 
+a2md_OBJECTS = \
+	md_cmd_main.c \
+	md_cmd_acme.c \
+	md_cmd_reg.c \
+	md_cmd_store.c
+
+a2md: $(a2md_OBJECTS) $(LTLIBRARY_NAME)
+	$(LINK) $(a2md_LTFLAGS) $(a2md_OBJECTS) -lmd $(A2MD_LDADD) $(AP_LIBS)
+
+# top be installed in bin dir
+bin_PROGRAMS = a2md
+
+TARGETS = $(bin_PROGRAMS)
+
+local-shared-build: $(LTLIBRARY_NAME) $(SHARED_TARGETS) a2md
 
 include $(top_srcdir)/build/library.mk
 include $(top_srcdir)/build/special.mk
