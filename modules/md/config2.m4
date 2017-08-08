@@ -245,8 +245,8 @@ APACHE_MODPATH_INIT(md)
 dnl #  list of module object files
 md_objs="dnl
 mod_md.lo dnl
-md_config.lo dnl
-md_os.lo dnl
+mod_md_config.lo dnl
+mod_md_os.lo dnl
 "
 
 dnl # hook module into the Autoconf mechanism (--enable-md)

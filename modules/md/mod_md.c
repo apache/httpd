@@ -26,8 +26,6 @@
 #include <ap_listen.h>
 
 #include "md.h"
-#include "mod_md.h"
-#include "md_config.h"
 #include "md_curl.h"
 #include "md_crypt.h"
 #include "md_http.h"
@@ -40,7 +38,9 @@
 #include "md_acme.h"
 #include "md_acme_authz.h"
 
-#include "md_os.h"
+#include "mod_md.h"
+#include "mod_md_config.h"
+#include "mod_md_os.h"
 #include "mod_watchdog.h"
 
 static void md_hooks(apr_pool_t *pool);

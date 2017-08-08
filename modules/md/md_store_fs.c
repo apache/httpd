@@ -37,6 +37,8 @@
 /**************************************************************************************************/
 /* file system based implementation of md_store_t */
 
+#define MD_STORE_VERSION        1.0
+
 typedef struct {
     apr_fileperms_t dir;
     apr_fileperms_t file;
@@ -99,6 +101,7 @@ static apr_status_t init_store_file(md_store_fs_t *s_fs, const char *fname,
     int i;
     
     md_json_sets(MOD_MD_VERSION, json, MD_KEY_VERSION, NULL);
+    md_json_setn(MD_STORE_VERSION, json, MD_KEY_STORE, MD_KEY_VERSION, NULL);
 
     /*if (APR_SUCCESS != (rv = md_rand_bytes(key, sizeof(key), p))) {
         return rv;
@@ -128,18 +131,21 @@ static apr_status_t read_store_file(md_store_fs_t *s_fs, const char *fname,
     md_json_t *json;
     const char *s, *key64;
     apr_status_t rv;
+    double store_version;
     
     if (APR_SUCCESS == (rv = md_json_readf(&json, p, fname))) {
-        s = md_json_gets(json, MD_KEY_VERSION, NULL);
-        if (!s) {
-            md_log_perror(MD_LOG_MARK, MD_LOG_ERR, 0, p, "missing key: %s", MD_KEY_VERSION);
-            return APR_EINVAL;
+        store_version = md_json_getn(json, MD_KEY_STORE, MD_KEY_VERSION, NULL);
+        if (store_version <= 0.0) {
+            /* ok, an old one, compatible to 1.0 */
+            store_version = 1.0;
         }
-        if (strcmp(MOD_MD_VERSION, s) < 0) {
+        if (store_version > MD_STORE_VERSION) {
             md_log_perror(MD_LOG_MARK, MD_LOG_ERR, 0, p, "version too new: %s", s);
             return APR_EINVAL;
         }
-        /* TODO: need to migrate store? */
+        else if (store_version > MD_STORE_VERSION) {
+            /* migrate future store version changes */
+        } 
         
         key64 = md_json_dups(p, json, MD_KEY_KEY, NULL);
         if (!key64) {
@@ -668,7 +674,26 @@ static apr_status_t pfs_move(void *baton, apr_pool_t *p, apr_pool_t *ptemp, va_l
         rv = md_util_path_merge(&arch_dir, ptemp, dir, name, NULL);
         if (APR_SUCCESS != rv) goto out;
         
-        while (1) {
+#ifdef WIN32
+        /* WIN32 and handling of files/dirs. What can one say? */
+        
+        while (n < 1000) {
+            narch_dir = apr_psprintf(ptemp, "%s.%d", arch_dir, n);
+            rv = md_util_is_dir(narch_dir, ptemp);
+            if (APR_STATUS_IS_ENOENT(rv)) {
+                md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, ptemp, "using archive dir: %s", 
+                              narch_dir);
+                break;
+            }
+            else {
+                ++n;
+                narch_dir = NULL;
+            }
+        }
+
+#else   /* ifdef WIN32 */
+
+        while (n < 1000) {
             narch_dir = apr_psprintf(ptemp, "%s.%d", arch_dir, n);
             rv = apr_dir_make(narch_dir, MD_FPROT_D_UONLY, ptemp);
             if (APR_SUCCESS == rv) {
@@ -678,13 +703,25 @@ static apr_status_t pfs_move(void *baton, apr_pool_t *p, apr_pool_t *ptemp, va_l
             }
             else if (APR_EEXIST == rv) {
                 ++n;
+                narch_dir = NULL;
             }
             else {
                 md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, ptemp, "creating archive dir: %s", 
                               narch_dir);
                 goto out;
             }
-        } 
+        }
+         
+#endif   /* ifdef WIN32 (else part) */
+        
+        if (!narch_dir) {
+            md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, ptemp, "ran out of numbers less than 1000 "
+                          "while looking for an available one in %s to archive the data "
+                          "from %s. Either something is generally wrong or you need to "
+                          "clean up some of those directories.", arch_dir, from_dir);
+            rv = APR_EGENERAL;
+            goto out;
+        }
         
         if (APR_SUCCESS != (rv = apr_file_rename(to_dir, narch_dir, ptemp))) {
                 md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, ptemp, "rename from %s to %s", 

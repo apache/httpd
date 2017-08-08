@@ -25,11 +25,10 @@
 #include <http_vhost.h>
 
 #include "md.h"
-#include "md_config.h"
 #include "md_util.h"
+#include "mod_md_private.h"
+#include "mod_md_config.h"
 
-extern module AP_MODULE_DECLARE_DATA md_module;
-APLOG_USE_MODULE(md);
 
 #define DEF_VAL     (-1)
 
