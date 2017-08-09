@@ -30,6 +30,7 @@
 #include "mod_ssl.h"
 #include "mod_ssl_openssl.h"
 #include "mpm_common.h"
+#include "mod_md.h"
 
 static apr_status_t ssl_init_ca_cert_path(server_rec *, apr_pool_t *, const char *,
                                           STACK_OF(X509_NAME) *, STACK_OF(X509_INFO) *);
@@ -167,6 +168,24 @@ static void ssl_add_version_components(apr_pool_t *p,
                  modver, AP_SERVER_BASEVERSION, incver);
 }
 
+/**************************************************************************************************/
+/* Managed Domains Interface */
+
+static APR_OPTIONAL_FN_TYPE(md_is_managed) *md_is_managed;
+static APR_OPTIONAL_FN_TYPE(md_get_credentials) *md_get_credentials;
+static APR_OPTIONAL_FN_TYPE(md_is_challenge) *md_is_challenge;
+
+int ssl_is_challenge(conn_rec *c, const char *servername, 
+                     X509 **pcert, EVP_PKEY **pkey)
+{
+    if (md_is_challenge) {
+        return md_is_challenge(c, servername, pcert, pkey);
+    }
+    *pcert = NULL;
+    *pkey = NULL;
+    return 0;
+}
+
 /*
  *  Per-module initialization
  */
@@ -206,6 +225,16 @@ apr_status_t ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
      */
     ssl_config_global_create(base_server); /* just to avoid problems */
     ssl_config_global_fix(mc);
+
+    /* Initialize our interface to mod_md, if it is loaded 
+     */
+    md_is_managed = APR_RETRIEVE_OPTIONAL_FN(md_is_managed);
+    md_get_credentials = APR_RETRIEVE_OPTIONAL_FN(md_get_credentials);
+    md_is_challenge = APR_RETRIEVE_OPTIONAL_FN(md_is_challenge);
+    if (!md_is_managed || !md_get_credentials) {
+        md_is_managed = NULL;
+        md_get_credentials = NULL;
+    }
 
     /*
      *  try to fix the configuration and open the dedicated SSL
@@ -1662,6 +1691,42 @@ static apr_status_t ssl_init_server_ctx(server_rec *s,
         return APR_EGENERAL;
     }
 
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO()
+                 "Init: (%s) mod_md support is %s.", ssl_util_vhostid(p, s),
+                 md_is_managed? "available" : "unavailable");
+    if (md_is_managed && md_is_managed(s)) {
+        modssl_pk_server_t *const pks = sc->server->pks;
+        if (pks->cert_files->nelts > 0 || pks->key_files->nelts > 0) {
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO()
+                         "Init: (%s) You configured certificate/key files on this host, but "
+                         "is is covered by a Managed Domain. You need to remove these directives "
+                         "for the Managed Domain to take over.", ssl_util_vhostid(p, s));
+        }
+        else {
+            const char *key_file, *cert_file, *chain_file;
+            
+            rv = md_get_credentials(s, p, &key_file, &cert_file, &chain_file);
+            if (rv == APR_SUCCESS) {
+                APR_ARRAY_PUSH(pks->key_files, const char *) = key_file;
+                APR_ARRAY_PUSH(pks->cert_files, const char *) = cert_file;
+                if (chain_file) {
+                    sc->server->cert_chain = chain_file;
+                }
+            }
+            else if (APR_STATUS_IS_EAGAIN(rv)) {
+                /* Managed Domain not ready yet. This is not a reason to fail the config */
+                ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO()
+                             "Init: (%s) disabling this host for now as certificate/key data "
+                             "for the Managed Domain is incomplete.", ssl_util_vhostid(p, s));
+                pks->service_unavailable = 1;
+                return APR_SUCCESS;
+            }
+            else {
+                return rv;
+            }
+        }
+    }
+    
     if ((rv = ssl_init_ctx(s, p, ptemp, sc->server)) != APR_SUCCESS) {
         return rv;
     }
