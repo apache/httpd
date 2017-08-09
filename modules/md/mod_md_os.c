@@ -40,7 +40,7 @@ apr_status_t md_try_chown(const char *fname, int uid, int gid, apr_pool_t *p)
     if (-1 == chown(fname, (uid_t)uid, (gid_t)gid)) {
         apr_status_t rv = APR_FROM_OS_ERROR(errno);
         if (!APR_STATUS_IS_ENOENT(rv)) {
-            ap_log_perror(APLOG_MARK, APLOG_ERR, rv, p, APLOGNO()
+            ap_log_perror(APLOG_MARK, APLOG_ERR, rv, p, APLOGNO(10082)
                          "Can't change owner of %s", fname);
         }
         return rv;

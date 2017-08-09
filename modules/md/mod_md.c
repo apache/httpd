@@ -97,7 +97,7 @@ static apr_status_t md_calc_md_list(md_ctx *ctx, apr_pool_t *p, apr_pool_t *plog
         }
     }
     
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, base_server, APLOGNO()
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, base_server, APLOGNO(10037)
                  "server seems%s reachable via http: (port 80->%d) "
                  "and%s reachable via https: (port 443->%d) ",
                  ctx->can_http? "" : " not", effective_80,
@@ -118,7 +118,7 @@ static apr_status_t md_calc_md_list(md_ctx *ctx, apr_pool_t *p, apr_pool_t *plog
                 }
                 
                 if ((domain = md_common_name(nmd, md)) != NULL) {
-                    ap_log_error(APLOG_MARK, APLOG_ERR, 0, base_server, APLOGNO()
+                    ap_log_error(APLOG_MARK, APLOG_ERR, 0, base_server, APLOGNO(10038)
                                  "two Managed Domains have an overlap in domain '%s'"
                                  ", first definition in %s(line %d), second in %s(line %d)",
                                  domain, md->defn_name, md->defn_line_number,
@@ -157,7 +157,7 @@ static apr_status_t md_calc_md_list(md_ctx *ctx, apr_pool_t *p, apr_pool_t *plog
                 }
                 APR_ARRAY_PUSH(mds, md_t *) = nmd;
                 
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, base_server, APLOGNO()
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, base_server, APLOGNO(10039)
                              "Added MD[%s, CA=%s, Proto=%s, Agreement=%s, Drive=%d, renew=%ld]",
                              nmd->name, nmd->ca_url, nmd->ca_proto, nmd->ca_agreement,
                              nmd->drive_mode, (long)nmd->renew_window);
@@ -179,7 +179,7 @@ static apr_status_t check_coverage(md_t *md, const char *domain, server_rec *s, 
         return APR_SUCCESS;
     }
     else {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO()
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(10040)
                      "Virtual Host %s:%d matches Managed Domain '%s', but the "
                      "name/alias %s itself is not managed. A requested MD certificate "
                      "will not match ServerName.",
@@ -219,7 +219,7 @@ static apr_status_t md_check_vhost_mapping(md_ctx *ctx, apr_pool_t *p, apr_pool_
                      * We keep local information here. */
                     config = (md_config_t *)md_config_get_unique(s, p);
                 
-                    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, base_server, APLOGNO()
+                    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, base_server, APLOGNO(10041)
                                  "Server %s:%d matches md %s (config %s)", 
                                  s->server_hostname, s->port, md->name, config->name);
                     
@@ -228,21 +228,21 @@ static apr_status_t md_check_vhost_mapping(md_ctx *ctx, apr_pool_t *p, apr_pool_
                     }
                     else if (config->md) {
                          
-                        ap_log_error(APLOG_MARK, APLOG_ERR, 0, base_server, APLOGNO()
+                        ap_log_error(APLOG_MARK, APLOG_ERR, 0, base_server, APLOGNO(10042)
                                      "conflict: MD %s matches server %s, but MD %s also matches.",
                                      md->name, s->server_hostname, config->md->name);
                         rv = APR_EINVAL;
                         goto next_server;
                     }
                     
-                    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, base_server, APLOGNO()
+                    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, base_server, APLOGNO(10043)
                                  "Managed Domain %s applies to vhost %s:%d", md->name,
                                  s->server_hostname, s->port);
                     if (s->server_admin && strcmp(DEFAULT_ADMIN, s->server_admin)) {
                         apr_array_clear(md->contacts);
                         APR_ARRAY_PUSH(md->contacts, const char *) = 
                             md_util_schemify(p, s->server_admin, "mailto");
-                        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, base_server, APLOGNO()
+                        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, base_server, APLOGNO(10044)
                                      "Managed Domain %s assigned server admin %s", md->name,
                                      s->server_admin);
                     }
@@ -270,7 +270,7 @@ next_server:
         
         if (config == NULL && md->drive_mode != MD_DRIVE_ALWAYS) {
             /* Not an error, but looks suspicious */
-            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, base_server, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, base_server, APLOGNO(10045)
                          "No VirtualHost matches Managed Domain %s", md->name);
             APR_ARRAY_PUSH(ctx->unused_names, const char*)  = md->name;
         }
@@ -338,24 +338,24 @@ static apr_status_t setup_store(md_store_t **pstore, apr_pool_t *p, server_rec *
     base_dir = ap_server_root_relative(p, base_dir);
     
     if (APR_SUCCESS != (rv = md_store_fs_init(&store, p, base_dir))) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO()"setup store for %s", base_dir);
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10046)"setup store for %s", base_dir);
         goto out;
     }
 
     if (post_config) {
         md_store_fs_set_event_cb(store, store_file_ev, s);
         if (APR_SUCCESS != (rv = check_group_dir(store, MD_SG_CHALLENGES, p, s))) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO() 
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10047) 
                          "setup challenges directory");
             goto out;
         }
         if (APR_SUCCESS != (rv = check_group_dir(store, MD_SG_STAGING, p, s))) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO() 
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10048) 
                          "setup staging directory");
             goto out;
         }
         if (APR_SUCCESS != (rv = check_group_dir(store, MD_SG_ACCOUNTS, p, s))) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO() 
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10049) 
                          "setup accounts directory");
             goto out;
         }
@@ -468,17 +468,17 @@ static apr_status_t drive_md(md_watchdog *wd, md_t *md, apr_pool_t *ptemp)
     
     if (APR_SUCCESS == (rv = md_reg_assess(wd->reg, md, &errored, &renew, wd->p))) {
         if (errored) {
-            ap_log_error( APLOG_MARK, APLOG_DEBUG, 0, wd->s, APLOGNO() 
+            ap_log_error( APLOG_MARK, APLOG_DEBUG, 0, wd->s, APLOGNO(10050) 
                          "md(%s): in error state", md->name);
         }
         else if (md->state == MD_S_COMPLETE && !md->expires) {
             /* This is our indicator that we did already renew this managed domain
              * successfully and only wait on the next restart for it to activate */
-            ap_log_error( APLOG_MARK, APLOG_INFO, 0, wd->s, APLOGNO() 
+            ap_log_error( APLOG_MARK, APLOG_INFO, 0, wd->s, APLOGNO(10051) 
                          "md(%s): has been renewed, will activate on next restart", md->name);
         }
         else if (renew) {
-            ap_log_error( APLOG_MARK, APLOG_DEBUG, 0, wd->s, APLOGNO() 
+            ap_log_error( APLOG_MARK, APLOG_DEBUG, 0, wd->s, APLOGNO(10052) 
                          "md(%s): state=%d, driving", md->name, md->state);
                          
             rv = md_reg_stage(wd->reg, md, NULL, 0, ptemp);
@@ -491,7 +491,7 @@ static apr_status_t drive_md(md_watchdog *wd, md_t *md, apr_pool_t *ptemp)
         }
         else {
             apr_rfc822_date(ts, md->expires);
-            ap_log_error( APLOG_MARK, APLOG_DEBUG, 0, wd->s, APLOGNO() 
+            ap_log_error( APLOG_MARK, APLOG_DEBUG, 0, wd->s, APLOGNO(10053) 
                          "md(%s): is complete, cert expires %s", md->name, ts);
             renew_time = md->expires - md->renew_window;
             if (renew_time < wd->next_change) {
@@ -512,7 +512,7 @@ static apr_status_t run_watchdog(int state, void *baton, apr_pool_t *ptemp)
     
     switch (state) {
         case AP_WATCHDOG_STATE_STARTING:
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, wd->s, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, wd->s, APLOGNO(10054)
                          "md watchdog start, auto drive %d mds", wd->mds->nelts);
             break;
         case AP_WATCHDOG_STATE_RUNNING:
@@ -526,7 +526,7 @@ static apr_status_t run_watchdog(int state, void *baton, apr_pool_t *ptemp)
             wd->error_count = 0;
             wd->next_change = 0;
             
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, wd->s, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, wd->s, APLOGNO(10055)
                          "md watchdog run, auto drive %d mds", wd->mds->nelts);
                          
             /* Check if all Managed Domains are ok or if we have to do something */
@@ -535,7 +535,7 @@ static apr_status_t run_watchdog(int state, void *baton, apr_pool_t *ptemp)
                 if (APR_SUCCESS != (rv = drive_md(wd, md, ptemp))) {
                     wd->all_valid = 0;
                     ++wd->error_count;
-                    ap_log_error( APLOG_MARK, APLOG_ERR, rv, wd->s, APLOGNO() 
+                    ap_log_error( APLOG_MARK, APLOG_ERR, rv, wd->s, APLOGNO(10056) 
                                  "processing %s", md->name);
                 }
             }
@@ -551,7 +551,7 @@ static apr_status_t run_watchdog(int state, void *baton, apr_pool_t *ptemp)
                 if (interval > apr_time_from_sec(60*60)) {
                     interval = apr_time_from_sec(60*60);
                 }
-                ap_log_error( APLOG_MARK, APLOG_INFO, 0, wd->s, APLOGNO() 
+                ap_log_error( APLOG_MARK, APLOG_INFO, 0, wd->s, APLOGNO(10057) 
                              "encountered errors for the %d. time, next run in %d seconds",
                              wd->error_runs, (int)apr_time_sec(interval));
             }
@@ -578,7 +578,7 @@ static apr_status_t run_watchdog(int state, void *baton, apr_pool_t *ptemp)
             wd_set_interval(wd->watchdog, interval, wd, run_watchdog);
             break;
         case AP_WATCHDOG_STATE_STOPPING:
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, wd->s, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, wd->s, APLOGNO(10058)
                          "md watchdog stopping");
             break;
     }
@@ -588,14 +588,14 @@ static apr_status_t run_watchdog(int state, void *baton, apr_pool_t *ptemp)
             rv = md_server_graceful(ptemp, wd->s);
             if (APR_ENOTIMPL == rv) {
                 /* self-graceful restart not supported in this setup */
-                ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, wd->s, APLOGNO()
+                ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, wd->s, APLOGNO(10059)
                              "%d Managed Domain%s been setup and changes will be "
                              "activated on next (graceful) server restart.",
                              wd->processed_count, (wd->processed_count > 1)? "s have" : " has");
             }
         }
         else {
-            ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, wd->s, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, wd->s, APLOGNO(10060)
                          "%d Managed Domain%s been setup, while %d%s "
                          "still being worked on. You may activate the changes made "
                          "by triggering a (graceful) restart at any time.",
@@ -623,7 +623,7 @@ static apr_status_t start_watchdog(apr_array_header_t *names, apr_pool_t *p,
     wd_set_interval = APR_RETRIEVE_OPTIONAL_FN(ap_watchdog_set_callback_interval);
     
     if (!wd_get_instance || !wd_register_callback || !wd_set_interval) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, 0, s, APLOGNO() "mod_watchdog is required");
+        ap_log_error(APLOG_MARK, APLOG_CRIT, 0, s, APLOGNO(10061) "mod_watchdog is required");
         return !OK;
     }
     
@@ -632,7 +632,7 @@ static apr_status_t start_watchdog(apr_array_header_t *names, apr_pool_t *p,
     apr_allocator_max_free_set(allocator, ap_max_mem_free);
     rv = apr_pool_create_ex(&wdp, p, NULL, allocator);
     if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO() "md_watchdog: create pool");
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10062) "md_watchdog: create pool");
         return rv;
     }
     apr_allocator_owner_set(allocator, wdp);
@@ -650,11 +650,11 @@ static apr_status_t start_watchdog(apr_array_header_t *names, apr_pool_t *p,
         if (md) {
             md_reg_assess(wd->reg, md, &errored, &renew, wd->p);
             if (errored) {
-                ap_log_error( APLOG_MARK, APLOG_WARNING, 0, wd->s, APLOGNO() 
+                ap_log_error( APLOG_MARK, APLOG_WARNING, 0, wd->s, APLOGNO(10063) 
                              "md(%s): seems errored. Will not process this any further.", name);
             }
             else {
-                ap_log_error( APLOG_MARK, APLOG_DEBUG, 0, wd->s, APLOGNO() 
+                ap_log_error( APLOG_MARK, APLOG_DEBUG, 0, wd->s, APLOGNO(10064) 
                              "md(%s): state=%d, driving", name, md->state);
                 APR_ARRAY_PUSH(wd->mds, md_t*) = md;
             }
@@ -662,7 +662,7 @@ static apr_status_t start_watchdog(apr_array_header_t *names, apr_pool_t *p,
     }
 
     if (!wd->mds->nelts) {
-        ap_log_error( APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO()
+        ap_log_error( APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(10065)
                      "no managed domain in state to drive, no watchdog needed, "
                      "will check again on next server restart");
         apr_pool_destroy(wd->p);
@@ -670,12 +670,12 @@ static apr_status_t start_watchdog(apr_array_header_t *names, apr_pool_t *p,
     }
     
     if (APR_SUCCESS != (rv = wd_get_instance(&wd->watchdog, MD_WATCHDOG_NAME, 0, 1, wd->p))) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, APLOGNO() 
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, APLOGNO(10066) 
                      "create md watchdog(%s)", MD_WATCHDOG_NAME);
         return rv;
     }
     rv = wd_register_callback(wd->watchdog, 0, wd, run_watchdog);
-    ap_log_error(APLOG_MARK, rv? APLOG_CRIT : APLOG_DEBUG, rv, s, APLOGNO() 
+    ap_log_error(APLOG_MARK, rv? APLOG_CRIT : APLOG_DEBUG, rv, s, APLOGNO(10067) 
                  "register md watchdog(%s)", MD_WATCHDOG_NAME);
     return rv;
 }
@@ -690,11 +690,11 @@ static void load_stage_sets(apr_array_header_t *names, apr_pool_t *p,
     for (i = 0; i < names->nelts; ++i) {
         name = APR_ARRAY_IDX(names, i, const char*);
         if (APR_SUCCESS == (rv = md_reg_load(reg, name, p))) {
-            ap_log_error( APLOG_MARK, APLOG_INFO, rv, s, APLOGNO() 
+            ap_log_error( APLOG_MARK, APLOG_INFO, rv, s, APLOGNO(10068) 
                          "%s: staged set activated", name);
         }
         else if (!APR_STATUS_IS_ENOENT(rv)) {
-            ap_log_error( APLOG_MARK, APLOG_ERR, rv, s, APLOGNO()
+            ap_log_error( APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10069)
                          "%s: error loading staged set", name);
         }
     }
@@ -715,13 +715,13 @@ static apr_status_t md_post_config(apr_pool_t *p, apr_pool_t *plog,
     
     apr_pool_userdata_get(&data, mod_md_init_key, s->process->pool);
     if (data == NULL) {
-        ap_log_error( APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO()
+        ap_log_error( APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(10070)
                      "initializing post config dry run");
         apr_pool_userdata_set((const void *)1, mod_md_init_key,
                               apr_pool_cleanup_null, s->process->pool);
     }
     else {
-        ap_log_error( APLOG_MARK, APLOG_INFO, 0, s, APLOGNO()
+        ap_log_error( APLOG_MARK, APLOG_INFO, 0, s, APLOGNO(10071)
                      "mod_md (v%s), initializing...", MOD_MD_VERSION);
     }
 
@@ -746,13 +746,13 @@ static apr_status_t md_post_config(apr_pool_t *p, apr_pool_t *plog,
     
     /* 3. Synchronize the defintions we now have with the store via a registry (reg). */
     if (APR_SUCCESS != (rv = setup_reg(&reg, p, s, 1))) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO()
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10072)
                      "setup md registry");
         goto out;
     }
     if (APR_SUCCESS != (rv = md_reg_sync(reg, p, ptemp, ctx.mds, 
                                          ctx.can_http, ctx.can_https))) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO()
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10073)
                      "synching %d mds to registry", ctx.mds->nelts);
         goto out;
     }
@@ -785,7 +785,7 @@ static apr_status_t md_post_config(apr_pool_t *p, apr_pool_t *plog,
     }
     
     if (drive_names->nelts > 0) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, s, APLOGNO()
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, s, APLOGNO(10074)
                      "%d out of %d mds are configured for auto-drive", 
                      drive_names->nelts, ctx.mds->nelts);
     
@@ -794,7 +794,7 @@ static apr_status_t md_post_config(apr_pool_t *p, apr_pool_t *plog,
         rv = start_watchdog(drive_names, p, reg, s);
     }
     else {
-        ap_log_error( APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO()
+        ap_log_error( APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(10075)
                      "no mds to auto drive, no watchdog needed");
     }
 out:     
@@ -809,7 +809,7 @@ static int md_is_managed(server_rec *s)
     md_config_t *conf = (md_config_t *)md_config_get(s);
 
     if (conf && conf->md) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO() 
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(10076) 
                      "%s: manages server %s", conf->md->name, s->server_hostname);
         return 1;
     }
@@ -838,7 +838,7 @@ static apr_status_t md_get_credentials(server_rec *s, apr_pool_t *p,
             if (md->state != MD_S_COMPLETE) {
                 return APR_EAGAIN;
             }
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO() 
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(10077) 
                          "%s: loading credentials for server %s", md->name, s->server_hostname);
             return md_reg_get_cred_files(reg, md, p, pkeyfile, pcertfile, pchainfile);
         }
@@ -872,15 +872,15 @@ static int md_is_challenge(conn_rec *c, const char *servername,
             rv = md_store_load(store, MD_SG_CHALLENGES, servername, 
                                MD_FN_TLSSNI01_PKEY, MD_SV_PKEY, (void**)&mdpkey, c->pool);
             if (APR_SUCCESS == rv && (*pkey = md_pkey_get_EVP_PKEY(mdpkey))) {
-                ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, c, APLOGNO()
+                ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, c, APLOGNO(10078)
                               "%s: is a tls-sni-01 challenge host", servername);
                 return 1;
             }
-            ap_log_cerror(APLOG_MARK, APLOG_WARNING, rv, c, APLOGNO()
+            ap_log_cerror(APLOG_MARK, APLOG_WARNING, rv, c, APLOGNO(10079)
                           "%s: challenge data not complete, key unavailable", servername);
         }
         else {
-            ap_log_cerror(APLOG_MARK, APLOG_INFO, rv, c, APLOGNO()
+            ap_log_cerror(APLOG_MARK, APLOG_INFO, rv, c, APLOGNO(10080)
                           "%s: unknown TLS SNI challenge host", servername);
         }
     }
@@ -934,7 +934,7 @@ static int md_http_challenge_pr(request_rec *r)
                     return HTTP_NOT_FOUND;
                 }
                 else if (APR_ENOENT != rv) {
-                    ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO()
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(10081)
                                   "loading challenge %s from store %s", name, base_dir);
                     return HTTP_INTERNAL_SERVER_ERROR;
                 }
