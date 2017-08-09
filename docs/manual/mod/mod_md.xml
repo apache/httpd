@@ -123,6 +123,33 @@ ManagedDomain example.org www.example.org
 &lt;/VirtualHost&gt;
                 </highlight>
             </example>
+            <p>
+                There are two special names that you may use in this directive: 'manual'
+                and 'auto'. This determines if a Managed Domain shall have exactly the 
+                name list as is configured ('manual') or offer more convenince. With 'auto'
+                all names of a virtual host are added to a MD.
+            </p>
+            <example><title>Example</title>
+                <highlight language="config">
+ManagedDomain example.org
+
+&lt;VirtualHost *:443&gt;
+    ServerName example.org
+    ServerAlias www.example.org
+    DocumentRoot htdocs/root
+
+    SSLEngine on
+&lt;/VirtualHost&gt;
+                </highlight>
+            </example>
+            <p>
+                In this example, the domain 'www.example.org' is automatically added to
+                the MD 'example.org'. And when you add more ServerAlias names to this
+                virtual host, they will be added as well.
+            </p><p>
+                If this is too much automagic for you, define 'manual' mode. 
+                <module>mod_md</module> will then complain if the names do not match.
+            </p>
         </usage>
     </directivesynopsis>
 
