@@ -56,6 +56,10 @@ typedef apr_status_t md_store_get_fname_cb(const char **pfname,
                                            const char *name, const char *aspect, 
                                            apr_pool_t *p);
 
+typedef int md_store_is_newer_cb(md_store_t *store, 
+                                 md_store_group_t group1, md_store_group_t group2,  
+                                 const char *name, const char *aspect, apr_pool_t *p);
+
 struct md_store_t {
     md_store_destroy_cb *destroy;
 
@@ -66,6 +70,7 @@ struct md_store_t {
     md_store_iter_cb *iterate;
     md_store_purge_cb *purge;
     md_store_get_fname_cb *get_fname;
+    md_store_is_newer_cb *is_newer;
 };
 
 void md_store_destroy(md_store_t *store);
@@ -106,6 +111,9 @@ apr_status_t md_store_get_fname(const char **pfname,
                                 const char *name, const char *aspect, 
                                 apr_pool_t *p);
 
+int md_store_is_newer(md_store_t *store, md_store_group_t group1, md_store_group_t group2,  
+                      const char *name, const char *aspect, apr_pool_t *p);
+
 /**************************************************************************************************/
 /* Storage handling utils */
 
@@ -115,6 +123,9 @@ apr_status_t md_save(struct md_store_t *store, apr_pool_t *p, md_store_group_t g
                      md_t *md, int create);
 apr_status_t md_remove(md_store_t *store, apr_pool_t *p, md_store_group_t group, 
                      const char *name, int force);
+
+int md_is_newer(md_store_t *store, md_store_group_t group1, md_store_group_t group2,  
+                const char *name, apr_pool_t *p);
 
 typedef int md_store_md_inspect(void *baton, md_store_t *store, md_t *md, apr_pool_t *ptemp);
 

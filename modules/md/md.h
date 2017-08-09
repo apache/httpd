@@ -69,6 +69,7 @@ struct md_t {
     apr_interval_time_t renew_window;/* time before expiration that starts renewal */
     
     struct apr_array_header_t *domains; /* all DNS names this MD includes */
+    int transitive;                 /* != 0 iff VirtualHost names/aliases are auto-added */
     md_drive_mode_t drive_mode;     /* mode of obtaining credentials */
     int must_staple;                /* certificates should set the OCSP Must Staple extension */
     
@@ -116,6 +117,7 @@ struct md_t {
 #define MD_KEY_STATUS           "status"
 #define MD_KEY_STORE            "store"
 #define MD_KEY_TOKEN            "token"
+#define MD_KEY_TRANSITIVE       "transitive"
 #define MD_KEY_TYPE             "type"
 #define MD_KEY_URL              "url"
 #define MD_KEY_URI              "uri"
@@ -140,7 +142,7 @@ struct md_t {
 /**
  * Determine if the Managed Domain contains a specific domain name.
  */
-int md_contains(const md_t *md, const char *domain);
+int md_contains(const md_t *md, const char *domain, int case_sensitive);
 
 /**
  * Determine if the names of the two managed domains overlap.
@@ -150,7 +152,7 @@ int md_domains_overlap(const md_t *md1, const md_t *md2);
 /**
  * Determine if the domain names are equal.
  */
-int md_equal_domains(const md_t *md1, const md_t *md2);
+int md_equal_domains(const md_t *md1, const md_t *md2, int case_sensitive);
 
 /**
  * Determine if the domains in md1 contain all domains of md2.
@@ -184,8 +186,8 @@ md_t *md_get_by_domain(struct apr_array_header_t *mds, const char *domain);
 md_t *md_get_by_dns_overlap(struct apr_array_header_t *mds, const md_t *md);
 
 /**
- * Find the managed domain in the list that has the most overlaps in domains to the
- * given md.
+ * Find the managed domain in the list that, for the given md, 
+ * has the same name, or the most number of overlaps in domains
  */
 md_t *md_find_closest_match(apr_array_header_t *mds, const md_t *md);
 

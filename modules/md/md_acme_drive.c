@@ -186,7 +186,7 @@ static apr_status_t ad_setup_authz(md_proto_driver_t *d)
     /* Remove anything we no longer need */
     for (i = 0; i < ad->authz_set->authzs->nelts; ++i) {
         authz = APR_ARRAY_IDX(ad->authz_set->authzs, i, md_acme_authz_t*);
-        if (!md_contains(md, authz->domain)) {
+        if (!md_contains(md, authz->domain, 0)) {
             md_acme_authz_set_remove(ad->authz_set, authz->domain);
             changed = 1;
         }
@@ -589,7 +589,7 @@ static apr_status_t ad_chain_install(md_proto_driver_t *d)
 static apr_status_t acme_driver_init(md_proto_driver_t *d)
 {
     md_acme_driver_t *ad;
-    apr_status_t rv;
+    apr_status_t rv = APR_SUCCESS;
 
     ad = apr_pcalloc(d->p, sizeof(*ad));
     
@@ -627,43 +627,6 @@ static apr_status_t acme_driver_init(md_proto_driver_t *d)
     
     md_log_perror(MD_LOG_MARK, MD_LOG_TRACE1, 0, d->p, "%s: init driver", d->md->name);
     
-    rv = md_load(d->store, MD_SG_STAGING, d->md->name, &ad->md, d->p);
-    md_log_perror(MD_LOG_MARK, MD_LOG_TRACE1, rv, d->p, "%s: checked stage md", d->md->name);
-    if (d->reset || APR_STATUS_IS_ENOENT(rv)) {
-        /* reset the staging area for this domain */
-        rv = md_store_purge(d->store, d->p, MD_SG_STAGING, d->md->name);
-        if (APR_SUCCESS != rv && !APR_STATUS_IS_ENOENT(rv)) {
-            return rv;
-        }
-        rv = APR_SUCCESS;
-    }
-    
-    if (ad->md) {
-        /* staging in progress.
-         * There are certain md properties that are updated in staging, others are only
-         * updated in the domains store. Are these still the same? If not, we better
-         * start anew.
-         */
-        if (strcmp(d->md->ca_url, ad->md->ca_url)
-            || strcmp(d->md->ca_proto, ad->md->ca_proto)) {
-            /* reject staging info in this case */
-            ad->md = NULL;
-            return APR_SUCCESS;
-        }
-        
-        if (d->md->ca_agreement 
-            && (!ad->md->ca_agreement || strcmp(d->md->ca_agreement, ad->md->ca_agreement))) {
-            ad->md->ca_agreement = d->md->ca_agreement;
-        }
-        
-        /* look for new ACME account information collected there */
-        rv = md_reg_creds_get(&ad->ncreds, d->reg, MD_SG_STAGING, d->md, d->p);
-        md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, d->p, "%s: checked creds", d->md->name);
-        if (APR_STATUS_IS_ENOENT(rv)) {
-            rv = APR_SUCCESS;
-        }
-    }
-    
     return rv;
 }
 
@@ -673,6 +636,7 @@ static apr_status_t acme_driver_init(md_proto_driver_t *d)
 static apr_status_t acme_stage(md_proto_driver_t *d)
 {
     md_acme_driver_t *ad = d->baton;
+    int reset_staging = d->reset;
     apr_status_t rv = APR_SUCCESS;
     int renew = 1;
 
@@ -683,6 +647,42 @@ static apr_status_t acme_stage(md_proto_driver_t *d)
                       apr_array_pstrcat(d->p, ad->ca_challenges, ' '));
     }
 
+    if (!reset_staging) {
+        rv = md_load(d->store, MD_SG_STAGING, d->md->name, &ad->md, d->p);
+        if (APR_SUCCESS == rv) {
+            /* So, we have a copy in staging, but is it a recent or an old one? */
+            if (!md_is_newer(d->store, MD_SG_STAGING, MD_SG_DOMAINS, d->md->name, d->p)) {
+                reset_staging = 1;
+            }
+        }
+        else if (APR_STATUS_IS_ENOENT(rv)) {
+            reset_staging = 1;
+            rv = APR_SUCCESS;
+        }
+        md_log_perror(MD_LOG_MARK, MD_LOG_TRACE1, rv, d->p, 
+                      "%s: checked staging area, will%s reset",
+                      d->md->name, reset_staging? "" : " not");
+    }
+    
+    if (reset_staging) {
+        /* reset the staging area for this domain */
+        rv = md_store_purge(d->store, d->p, MD_SG_STAGING, d->md->name);
+        if (APR_SUCCESS != rv && !APR_STATUS_IS_ENOENT(rv)) {
+            return rv;
+        }
+        rv = APR_SUCCESS;
+        ad->md = NULL;
+    }
+    
+    if (ad->md) {
+        /* staging in progress. look for new ACME account information collected there */
+        rv = md_reg_creds_get(&ad->ncreds, d->reg, MD_SG_STAGING, d->md, d->p);
+        md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, d->p, "%s: checked creds", d->md->name);
+        if (APR_STATUS_IS_ENOENT(rv)) {
+            rv = APR_SUCCESS;
+        }
+    }
+    
     /* Find out where we're at with this managed domain */
     if (ad->ncreds && ad->ncreds->pkey && ad->ncreds->cert && ad->ncreds->chain) {
         /* There is a full set staged, to be loaded */

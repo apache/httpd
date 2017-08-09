@@ -43,7 +43,8 @@ static md_config_t defconf = {
     NULL, 
     NULL,
     MD_DRIVE_AUTO,
-    apr_time_from_sec(14 * MD_SECS_PER_DAY), 
+    apr_time_from_sec(14 * MD_SECS_PER_DAY),
+    1,  
     NULL, 
     "md",
     NULL
@@ -62,6 +63,7 @@ void *md_config_create_svr(apr_pool_t *pool, server_rec *s)
     conf->drive_mode = DEF_VAL;
     conf->mds = apr_array_make(pool, 5, sizeof(const md_t *));
     conf->renew_window = DEF_VAL;
+    conf->transitive = DEF_VAL;
     
     return conf;
 }
@@ -95,6 +97,7 @@ static void *md_config_merge(apr_pool_t *pool, void *basev, void *addv)
     n->renew_window = (add->renew_window != DEF_VAL)? add->renew_window : base->renew_window;
     n->ca_challenges = (add->ca_challenges? apr_array_copy(pool, add->ca_challenges) 
                     : (base->ca_challenges? apr_array_copy(pool, base->ca_challenges) : NULL));
+    n->transitive = (add->transitive != DEF_VAL)? add->transitive : base->transitive;
     return n;
 }
 
@@ -190,21 +193,41 @@ static const char *md_config_sec_start(cmd_parms *cmd, void *mconfig, const char
     return err;
 }
 
+static const char *set_transitive(int *ptransitive, const char *value)
+{
+    if (!apr_strnatcasecmp("auto", value)) {
+        *ptransitive = 1;
+        return NULL;
+    }
+    else if (!apr_strnatcasecmp("manual", value)) {
+        *ptransitive = 0;
+        return NULL;
+    }
+    return "unknown value, use \"auto|manual\"";
+}
+
 static const char *md_config_sec_add_members(cmd_parms *cmd, void *dc, 
                                              int argc, char *const argv[])
 {
+    md_config_t *config = (md_config_t *)md_config_get(cmd->server);
     md_config_dir_t *dconfig = dc;
     apr_array_header_t *domains;
     const char *err;
     int i;
     
     if (NULL != (err = md_section_check(cmd))) {
+        if (argc == 1) {
+            /* only allowed value outside a section */
+            return set_transitive(&config->transitive, argv[0]);
+        }
         return err;
     }
     
     domains = dconfig->md->domains;
     for (i = 0; i < argc; ++i) {
-        add_domain_name(domains, argv[i], cmd->pool);
+        if (NULL != set_transitive(&dconfig->md->transitive, argv[i])) {
+            add_domain_name(domains, argv[i], cmd->pool);
+        }
     }
     return NULL;
 }
@@ -216,7 +239,7 @@ static const char *md_config_set_names(cmd_parms *cmd, void *arg,
     apr_array_header_t *domains = apr_array_make(cmd->pool, 5, sizeof(const char *));
     const char *err;
     md_t *md;
-    int i;
+    int i, transitive = -1;
 
     err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE);
     if (err) {
@@ -224,11 +247,17 @@ static const char *md_config_set_names(cmd_parms *cmd, void *arg,
     }
 
     for (i = 0; i < argc; ++i) {
-        add_domain_name(domains, argv[i], cmd->pool);
+        if (NULL != set_transitive(&transitive, argv[i])) {
+            add_domain_name(domains, argv[i], cmd->pool);
+        }
     }
     err = md_create(&md, cmd->pool, domains);
     if (err) {
         return err;
+    }
+
+    if (transitive >= 0) {
+        md->transitive = transitive;
     }
     
     if (cmd->config_file) {
@@ -486,8 +515,12 @@ static const char *md_config_set_cha_tyes(cmd_parms *cmd, void *dc,
 const command_rec md_cmds[] = {
     AP_INIT_RAW_ARGS("<ManagedDomain", md_config_sec_start, NULL, RSRC_CONF, 
                       "Container for a manged domain with common settings and certificate."),
-    AP_INIT_TAKE_ARGV("MDMember", md_config_sec_add_members, NULL, OR_ALL, 
-                      "Define domain name(s) part of the Managed Domain"),
+    AP_INIT_TAKE_ARGV("MDMember", md_config_sec_add_members, NULL, RSRC_CONF, 
+                      "Define domain name(s) part of the Managed Domain. Use 'auto' or "
+                      "'manual' to enable/disable auto adding names from virtual hosts."),
+    AP_INIT_TAKE_ARGV("MDMembers", md_config_sec_add_members, NULL, RSRC_CONF, 
+                      "Define domain name(s) part of the Managed Domain. Use 'auto' or "
+                      "'manual' to enable/disable auto adding names from virtual hosts."),
     AP_INIT_TAKE_ARGV("ManagedDomain", md_config_set_names, NULL, RSRC_CONF, 
                       "A group of server names with one certificate"),
     AP_INIT_TAKE1("MDCertificateAuthority", md_config_set_ca, NULL, RSRC_CONF, 
@@ -566,6 +599,8 @@ int md_config_geti(const md_config_t *config, md_config_var_t var)
             return (config->local_80 != DEF_VAL)? config->local_80 : 80;
         case MD_CONFIG_LOCAL_443:
             return (config->local_443 != DEF_VAL)? config->local_443 : 443;
+        case MD_CONFIG_TRANSITIVE:
+            return (config->transitive != DEF_VAL)? config->transitive : defconf.transitive;
         default:
             return 0;
     }

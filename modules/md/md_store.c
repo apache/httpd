@@ -138,6 +138,12 @@ apr_status_t md_store_get_fname(const char **pfname,
     return APR_ENOTIMPL;
 }
 
+int md_store_is_newer(md_store_t *store, md_store_group_t group1, md_store_group_t group2,  
+                      const char *name, const char *aspect, apr_pool_t *p)
+{
+    return store->is_newer(store, group1, group2, name, aspect, p);
+}
+
 /**************************************************************************************************/
 /* convenience */
 
@@ -210,6 +216,13 @@ apr_status_t md_remove(md_store_t *store, apr_pool_t *p,
     ctx.group = group;
     return md_util_pool_vdo(p_remove, &ctx, p, name, force, NULL);
 }
+
+int md_is_newer(md_store_t *store, md_store_group_t group1, md_store_group_t group2,  
+                      const char *name, apr_pool_t *p)
+{
+    return md_store_is_newer(store, group1, group2, name, MD_FN_MD, p);
+}
+
 
 typedef struct {
     apr_pool_t *p;

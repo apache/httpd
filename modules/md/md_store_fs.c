@@ -90,6 +90,8 @@ static apr_status_t fs_get_fname(const char **pfname,
                                  md_store_t *store, md_store_group_t group, 
                                  const char *name, const char *aspect, 
                                  apr_pool_t *p);
+static int fs_is_newer(md_store_t *store, md_store_group_t group1, md_store_group_t group2,  
+                       const char *name, const char *aspect, apr_pool_t *p);
 
 static apr_status_t init_store_file(md_store_fs_t *s_fs, const char *fname, 
                                     apr_pool_t *p, apr_pool_t *ptemp)
@@ -129,7 +131,7 @@ static apr_status_t read_store_file(md_store_fs_t *s_fs, const char *fname,
                                     apr_pool_t *p, apr_pool_t *ptemp)
 {
     md_json_t *json;
-    const char *s, *key64;
+    const char *key64;
     apr_status_t rv;
     double store_version;
     
@@ -140,7 +142,7 @@ static apr_status_t read_store_file(md_store_fs_t *s_fs, const char *fname,
             store_version = 1.0;
         }
         if (store_version > MD_STORE_VERSION) {
-            md_log_perror(MD_LOG_MARK, MD_LOG_ERR, 0, p, "version too new: %s", s);
+            md_log_perror(MD_LOG_MARK, MD_LOG_ERR, 0, p, "version too new: %s", store_version);
             return APR_EINVAL;
         }
         else if (store_version > MD_STORE_VERSION) {
@@ -204,6 +206,7 @@ apr_status_t md_store_fs_init(md_store_t **pstore, apr_pool_t *p, const char *pa
     s_fs->s.purge = fs_purge;
     s_fs->s.iterate = fs_iterate;
     s_fs->s.get_fname = fs_get_fname;
+    s_fs->s.is_newer = fs_is_newer;
     
     /* by default, everything is only readable by the current user */ 
     s_fs->def_perms.dir = MD_FPROT_D_UONLY;
@@ -425,8 +428,48 @@ static apr_status_t mk_group_dir(const char **pdir, md_store_fs_t *s_fs,
     md_log_perror(MD_LOG_MARK, MD_LOG_TRACE3, 0, p, "mk_group_dir %d %s", group, name);
     return rv;
 }
+
+static apr_status_t pfs_is_newer(void *baton, apr_pool_t *p, apr_pool_t *ptemp, va_list ap)
+{
+    md_store_fs_t *s_fs = baton;
+    const char *fname1, *fname2, *name, *aspect;
+    md_store_group_t group1, group2;
+    apr_finfo_t inf1, inf2;
+    int *pnewer;
+    apr_status_t rv;
+    
+    group1 = va_arg(ap, int);
+    group2 = va_arg(ap, int);
+    name = va_arg(ap, const char*);
+    aspect = va_arg(ap, const char*);
+    pnewer = va_arg(ap, int*);
+    
+    *pnewer = 0;
+    if (   APR_SUCCESS == (rv = fs_get_fname(&fname1, &s_fs->s, group1, name, aspect, ptemp))
+        && APR_SUCCESS == (rv = fs_get_fname(&fname2, &s_fs->s, group2, name, aspect, ptemp))
+        && APR_SUCCESS == (rv = apr_stat(&inf1, fname1, APR_FINFO_MTIME, ptemp))
+        && APR_SUCCESS == (rv = apr_stat(&inf2, fname2, APR_FINFO_MTIME, ptemp))) {
+        *pnewer = inf1.mtime > inf2.mtime;
+    }
+
+    return rv;
+}
+
  
- 
+static int fs_is_newer(md_store_t *store, md_store_group_t group1, md_store_group_t group2,  
+                       const char *name, const char *aspect, apr_pool_t *p)
+{
+    md_store_fs_t *s_fs = FS_STORE(store);
+    int newer = 0;
+    apr_status_t rv;
+    
+    rv = md_util_pool_vdo(pfs_is_newer, s_fs, p, group1, group2, name, aspect, &newer, NULL);
+    if (APR_SUCCESS == rv) {
+        return newer;
+    }
+    return 0;
+}
+
 static apr_status_t pfs_save(void *baton, apr_pool_t *p, apr_pool_t *ptemp, va_list ap)
 {
     md_store_fs_t *s_fs = baton;
