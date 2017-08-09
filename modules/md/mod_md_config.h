@@ -27,6 +27,7 @@ typedef enum {
     MD_CONFIG_LOCAL_80,
     MD_CONFIG_LOCAL_443,
     MD_CONFIG_RENEW_WINDOW,
+    MD_CONFIG_TRANSITIVE,
 } md_config_var_t;
 
 typedef struct {
@@ -44,6 +45,7 @@ typedef struct {
     
     int drive_mode;
     apr_interval_time_t renew_window;  /* time for renewal before expiry */
+    int transitive;
     
     const md_t *md;
     const char *base_dir;

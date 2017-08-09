@@ -29,9 +29,9 @@
 #include "md_util.h"
 
 
-int md_contains(const md_t *md, const char *domain)
+int md_contains(const md_t *md, const char *domain, int case_sensitive)
 {
-   return md_array_str_index(md->domains, domain, 0, 0) >= 0;
+   return md_array_str_index(md->domains, domain, 0, case_sensitive) >= 0;
 }
 
 const char *md_common_name(const md_t *md1, const md_t *md2)
@@ -45,7 +45,7 @@ const char *md_common_name(const md_t *md1, const md_t *md2)
     
     for (i = 0; i < md1->domains->nelts; ++i) {
         const char *name1 = APR_ARRAY_IDX(md1->domains, i, const char*);
-        if (md_contains(md2, name1)) {
+        if (md_contains(md2, name1, 0)) {
             return name1;
         }
     }
@@ -70,7 +70,7 @@ apr_size_t md_common_name_count(const md_t *md1, const md_t *md2)
     hits = 0;
     for (i = 0; i < md1->domains->nelts; ++i) {
         const char *name1 = APR_ARRAY_IDX(md1->domains, i, const char*);
-        if (md_contains(md2, name1)) {
+        if (md_contains(md2, name1, 0)) {
             ++hits;
         }
     }
@@ -84,19 +84,20 @@ md_t *md_create_empty(apr_pool_t *p)
         md->domains = apr_array_make(p, 5, sizeof(const char *));
         md->contacts = apr_array_make(p, 5, sizeof(const char *));
         md->drive_mode = MD_DRIVE_DEFAULT;
+        md->transitive = -1;
         md->defn_name = "unknown";
         md->defn_line_number = 0;
     }
     return md;
 }
 
-int md_equal_domains(const md_t *md1, const md_t *md2)
+int md_equal_domains(const md_t *md1, const md_t *md2, int case_sensitive)
 {
     int i;
     if (md1->domains->nelts == md2->domains->nelts) {
         for (i = 0; i < md1->domains->nelts; ++i) {
             const char *name1 = APR_ARRAY_IDX(md1->domains, i, const char*);
-            if (!md_contains(md2, name1)) {
+            if (!md_contains(md2, name1, case_sensitive)) {
                 return 0;
             }
         }
@@ -111,7 +112,7 @@ int md_contains_domains(const md_t *md1, const md_t *md2)
     if (md1->domains->nelts >= md2->domains->nelts) {
         for (i = 0; i < md2->domains->nelts; ++i) {
             const char *name2 = APR_ARRAY_IDX(md2->domains, i, const char*);
-            if (!md_contains(md1, name2)) {
+            if (!md_contains(md1, name2, 0)) {
                 return 0;
             }
         }
@@ -169,7 +170,7 @@ md_t *md_get_by_domain(struct apr_array_header_t *mds, const char *domain)
     int i;
     for (i = 0; i < mds->nelts; ++i) {
         md_t *md = APR_ARRAY_IDX(mds, i, md_t *);
-        if (md_contains(md, domain)) {
+        if (md_contains(md, domain, 0)) {
             return md;
         }
     }
@@ -264,6 +265,7 @@ md_json_t *md_to_json(const md_t *md, apr_pool_t *p)
         md_json_sets(md->name, json, MD_KEY_NAME, NULL);
         md_json_setsa(domains, json, MD_KEY_DOMAINS, NULL);
         md_json_setsa(md->contacts, json, MD_KEY_CONTACTS, NULL);
+        md_json_setl(md->transitive, json, MD_KEY_TRANSITIVE, NULL);
         md_json_sets(md->ca_account, json, MD_KEY_CA, MD_KEY_ACCOUNT, NULL);
         md_json_sets(md->ca_proto, json, MD_KEY_CA, MD_KEY_PROTO, NULL);
         md_json_sets(md->ca_url, json, MD_KEY_CA, MD_KEY_URL, NULL);
@@ -305,6 +307,7 @@ md_t *md_from_json(md_json_t *json, apr_pool_t *p)
         md->state = (int)md_json_getl(json, MD_KEY_STATE, NULL);
         md->drive_mode = (int)md_json_getl(json, MD_KEY_DRIVE_MODE, NULL);
         md->domains = md_array_str_compact(p, md->domains, 0);
+        md->transitive = (int)md_json_getl(json, MD_KEY_TRANSITIVE, NULL);
         s = md_json_dups(p, json, MD_KEY_CERT, MD_KEY_EXPIRES, NULL);
         if (s && *s) {
             md->expires = apr_date_parse_rfc(s);

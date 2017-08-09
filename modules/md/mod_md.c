@@ -149,6 +149,9 @@ static apr_status_t md_calc_md_list(md_ctx *ctx, apr_pool_t *p, apr_pool_t *plog
                 if (nmd->renew_window <= 0) {
                     nmd->renew_window = md_config_get_interval(config, MD_CONFIG_RENEW_WINDOW);
                 }
+                if (nmd->transitive < 0) {
+                    nmd->transitive = md_config_geti(config, MD_CONFIG_TRANSITIVE);
+                }
                 if (!nmd->ca_challenges && config->ca_challenges) {
                     nmd->ca_challenges = apr_array_copy(p, config->ca_challenges);
                 }
@@ -161,8 +164,28 @@ static apr_status_t md_calc_md_list(md_ctx *ctx, apr_pool_t *p, apr_pool_t *plog
             }
         }
     }
+    
     ctx->mds = (APR_SUCCESS == rv)? mds : NULL;
     return rv;
+}
+
+static apr_status_t check_coverage(md_t *md, const char *domain, server_rec *s, apr_pool_t *p)
+{
+    if (md_contains(md, domain, 0)) {
+        return APR_SUCCESS;
+    }
+    else if (md->transitive) {
+        APR_ARRAY_PUSH(md->domains, const char*) = apr_pstrdup(p, domain);
+        return APR_SUCCESS;
+    }
+    else {
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO()
+                     "Virtual Host %s:%d matches Managed Domain '%s', but the "
+                     "name/alias %s itself is not managed. A requested MD certificate "
+                     "will not match ServerName.",
+                     s->server_hostname, s->port, md->name, domain);
+        return APR_EINVAL;
+    }
 }
 
 static apr_status_t md_check_vhost_mapping(md_ctx *ctx, apr_pool_t *p, apr_pool_t *plog,
@@ -171,7 +194,7 @@ static apr_status_t md_check_vhost_mapping(md_ctx *ctx, apr_pool_t *p, apr_pool_
     server_rec *s;
     request_rec r;
     md_config_t *config;
-    apr_status_t rv = APR_SUCCESS;
+    apr_status_t rv = APR_SUCCESS, rv2;
     md_t *md;
     int i, j, k;
     const char *domain, *name;
@@ -227,29 +250,16 @@ static apr_status_t md_check_vhost_mapping(md_ctx *ctx, apr_pool_t *p, apr_pool_
 
                     /* This server matches a managed domain. If it contains names or
                      * alias that are not in this md, a generated certificate will not match. */
-                    if (!md_contains(md, s->server_hostname)) {
-                        ap_log_error(APLOG_MARK, APLOG_ERR, 0, base_server, APLOGNO()
-                                     "Virtual Host %s:%d matches Managed Domain '%s', but the name"
-                                     " itself is not managed. A requested MD certificate will "
-                                     "not match ServerName.",
-                                     s->server_hostname, s->port, md->name);
-                        rv = APR_EINVAL;
-                        goto next_server;
-                    }
-                    else {
+                    if (APR_SUCCESS == (rv2 = check_coverage(md, s->server_hostname, s, p))) {
                         for (k = 0; k < s->names->nelts; ++k) {
                             name = APR_ARRAY_IDX(s->names, k, const char*);
-                            if (!md_contains(md, name)) {
-                                ap_log_error(APLOG_MARK, APLOG_ERR, 0, base_server, APLOGNO()
-                                             "Virtual Host %s:%d matches Managed Domain '%s', but "
-                                             "the ServerAlias %s is not covered by the MD. "
-                                             "A requested MD certificate will not match this " 
-                                             "alias.", s->server_hostname, s->port, md->name,
-                                             name);
-                                rv = APR_EINVAL;
-                                goto next_server;
+                            if (APR_SUCCESS != (rv2 = check_coverage(md, name, s, p))) {
+                                break;
                             }
                         }
+                    }
+                    if (APR_SUCCESS != rv2) {
+                        rv = rv2;
                     }
                     goto next_server;
                 }
@@ -470,7 +480,9 @@ static apr_status_t drive_md(md_watchdog *wd, md_t *md, apr_pool_t *ptemp)
         else if (renew) {
             ap_log_error( APLOG_MARK, APLOG_DEBUG, 0, wd->s, APLOGNO() 
                          "md(%s): state=%d, driving", md->name, md->state);
+                         
             rv = md_reg_stage(wd->reg, md, NULL, 0, ptemp);
+            
             if (APR_SUCCESS == rv) {
                 md->state = MD_S_COMPLETE;
                 md->expires = 0;

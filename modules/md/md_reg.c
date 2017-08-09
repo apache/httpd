@@ -357,7 +357,7 @@ static int find_domain(void *baton, md_reg_t *reg, md_t *md)
 {
     find_domain_ctx *ctx = baton;
     
-    if (md_contains(md, ctx->domain)) {
+    if (md_contains(md, ctx->domain, 0)) {
         ctx->md = md;
         return 0;
     }
@@ -685,7 +685,7 @@ apr_status_t md_reg_sync(md_reg_t *reg, apr_pool_t *p, apr_pool_t *ptemp,
     md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, p, 
                   "sync: found %d mds in store", ctx.store_mds->nelts);
     if (APR_SUCCESS == rv) {
-        int i, added, fields;
+        int i, fields;
         md_t *md, *config_md, *smd, *omd;
         const char *common;
         
@@ -696,11 +696,18 @@ apr_status_t md_reg_sync(md_reg_t *reg, apr_pool_t *p, apr_pool_t *ptemp,
             smd = md_find_closest_match(ctx.store_mds, md);
             if (smd) {
                 fields = 0;
-                /* add any newly configured domains to the store md */
-                added = md_array_str_add_missing(smd->domains, md->domains, 0);
-                if (added) {
+                
+                /* Once stored, we keep the name */
+                if (strcmp(md->name, smd->name)) {
+                    md->name = apr_pstrdup(p, smd->name);
+                }
+                
+                /* Make the stored domain list *exactly* the same, even if
+                 * someone only changed upper/lowercase, we'd like to persist that. */
+                if (!md_equal_domains(md, smd, 1)) {
                     md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, p, 
-                                 "%s: %d domains added", smd->name, added);
+                                 "%s: %d domains changed", smd->name);
+                    smd->domains = md_array_str_clone(ptemp, md->domains);
                     fields |= MD_UPD_DOMAINS;
                 }
                 
@@ -712,7 +719,7 @@ apr_status_t md_reg_sync(md_reg_t *reg, apr_pool_t *p, apr_pool_t *ptemp,
                     
                     /* Is this md still configured or has it been abandoned in the config? */
                     config_md = md_get_by_name(ctx.conf_mds, omd->name);
-                    if (config_md && md_contains(config_md, common)) {
+                    if (config_md && md_contains(config_md, common, 0)) {
                         /* domain used in two configured mds, not allowed */
                         rv = APR_EINVAL;
                         md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, p, 
