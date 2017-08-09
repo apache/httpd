@@ -1,0 +1,382 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision: 1793934 $ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+ 
+ http://www.apache.org/licenses/LICENSE-2.0
+ 
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ -->
+
+<modulesynopsis metafile="mod_md.xml.meta">
+    
+    <name>mod_md</name>
+    <description>Managing domains across virtual hosts, certificate provisioning 
+        via the ACME protocol
+    </description>
+    <status>Extension</status>
+    <sourcefile>mod_md.c</sourcefile>
+    <identifier>md_module</identifier>
+    <compatibility>Available in version 2.5.0 and later</compatibility>
+    
+    <summary>
+        <p>
+        This module manages common properties of domains for one or more virtual hosts. 
+        Specifically it can use the ACME protocol (<a href="https://datatracker.ietf.org/doc/draft-ietf-acme-acme/">RFC Draft</a>) 
+        to automate certificate provisioning. These will be configured for managed domains and
+        their virtual hosts automatically. This includes renewal of certificates before they
+        expire.</p>
+        
+        <note type="warning"><title>Warning</title>
+            <p>This module is experimental. Its behaviors, directives, and 
+                defaults are subject to more change from release to 
+                release relative to other standard modules. Users are encouraged to 
+                consult the "CHANGES" file for potential updates.</p>
+        </note>
+
+        <p>Simple configuration example:</p>
+        
+        <note><title>TLS in a VirtualHost context</title>
+        <highlight language="config">
+ManagedDomain example.org
+
+&lt;VirtualHost *:443&gt;
+    ServerName example.org
+    DocumentRoot htdocs/a
+
+    SSLEngine on
+    # no certificates specification needed!
+&lt;/VirtualHost&gt;
+        </highlight>
+        <p>
+            This setup will, on server start, contact <a href="https://letsencrypt.org/">Let's Encrypt</a> 
+            to request a certificate for the domain. If Let's Encrypt can verify the ownership
+            of the domain, the module will retrieve the certificate and its chain, store it
+            in the local file system and provide it, on next restart, to mod_ssl.
+        </p><p>
+            This happens while the server is already running. All other hosts will continue
+            to work as before. While a certificate is not available, requests for the managed
+            domain will be answered with a '503 Service Unavailable'. 
+        </p>
+        </note>
+
+    </summary>
+    
+
+    <directivesynopsis>
+        <name>ManagedDomain</name>
+        <description>Define list of domain names that belong to one group</description>
+        <syntax>ManagedDomain dns-name [ other-dns-name... ]</syntax>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        
+        <usage>
+            <p>
+                All the names in the list are managed as one Managed Domain (MD). 
+                mod_md will request one certificate that is valid for all these names. This
+                directive uses the global settings (see other MD directives below). If you
+                need specific settings for one MD, use
+                the <directive module="mod_md" type="section">&lt;ManagedDomain</directive>.
+            </p><p>
+                There are 2 additional settings that are necessary for a Managed Domain: ServerAdmin
+                and MDCertificateAgreement. The mail address of 
+                <directive module="mod_core">ServerAdmin</directive> is used to register
+                at the CA (Let's Encrypt by default). The CA may use it to notify you about
+                changes in its service or status of your certificates.
+            </p><p>
+                The second setting, <directive module="mod_md">MDCertificateAgreement</directive>, 
+                is the URL of the Terms of Service of the CA. When you configure the URL, 
+                you confirm that you have read and agree to the terms described in the linked 
+                document. Before you do that, the CA will  not hand out certificates to you.
+            </p>
+            <example><title>Example</title>
+                <highlight language="config">
+ServerAdmin mailto:admin@example.org
+MDCertificateAgreement https://letsencrypt.org/documents/LE-SA-v1.1.1-August-1-2016.pdf
+ManagedDomain example.org www.example.org
+
+&lt;VirtualHost *:443&gt;
+    ServerName example.org
+    DocumentRoot htdocs/root
+
+    SSLEngine on
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost *:443&gt;
+    ServerName www.example.org
+    DocumentRoot htdocs/www
+
+    SSLEngine on
+&lt;/VirtualHost&gt;
+                </highlight>
+            </example>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis type="section">
+        <name>&lt;ManagedDomain</name>
+        <description>Define a group of domains with common properties</description>
+        <syntax>&lt;ManagedDomain dns-name&gt;...&lt;/ManagedDomain&gt;</syntax>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        
+        <usage>
+            <p>
+                This directive allows you to define a Managed Domain (MD) with specific
+                settings, different from the global MD* ones. For example, you can have
+                such an MD use another CA then Let's Encrypt, have its unique renewal duration
+                etc.
+            </p>
+            <example><title>Example</title>
+                <highlight language="config">
+&lt;ManagedDomain sandbox.example.org&gt;
+    MDDriveMode manual
+    MDCertificateAuthority   https://someotherca.com/ACME
+    MDCertificateAgreement   https://someotherca.com/terms/v_1.02.pdf
+&lt;/ManagedDomain example.org&gt;
+                </highlight>
+            </example>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>MDCertificateAgreement</name>
+        <description>The URL of the Terms-of-Service document, that the CA server requires you to accept.</description>
+        <syntax>MDCertificateAgreement url-of-terms-of-service</syntax>
+        <contextlist>
+            <context>server config</context>
+            <context>managed domain</context>
+        </contextlist>
+        <usage>
+            <p>When you use <module>mod_md</module> to obtain a certificate, you become a customer of the CA (e.g. Let's Encrypt). That means you need to read and agree to their Terms of Service, 
+            so that you understand what they offer and what they might exclude or require from you. 
+            <module>mod_md</module> cannot, by itself, agree to such a thing. 
+            </p>
+            <p>In case of Let's Encrypt, their current <a href="https://letsencrypt.org/documents/LE-SA-v1.1.1-August-1-2016.pdf">Terms of Service are here</a>. 
+            Those terms might (and probably will) change over time. So, the certificate renewal might require you to update this agreement URL.</p>
+            <example><title>Example</title>
+                <highlight language="config">
+MDCertificateAgreement https://letsencrypt.org/documents/LE-SA-v1.1.1-August-1-2016.pdf
+ManagedDomain example.org www.example.org mail.example.org
+                </highlight>
+            </example>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>MDCertificateAuthority</name>
+        <description>The URL of the ACME CA service</description>
+        <syntax>MDCertificateAuthority url</syntax>
+        <default>MDCertificateAuthority https://acme-v01.api.letsencrypt.org/directory</default>
+        <contextlist>
+            <context>server config</context>
+            <context>managed domain</context>
+        </contextlist>
+        <usage>
+            <p>
+                The URL where the CA offers its service.
+            </p><p>
+                Let's Encrypt offers, right now, two such URLs. One for the real certificates and
+                one for testing (their staging area, athttps://acme-staging.api.letsencrypt.org/directory).
+                In order to have <module>mod_md</module> use this testing service, configure your
+                server like this: 
+            </p>
+            <example><title>LE Staging Setup</title>
+                <highlight language="config">
+                    MDCertificateAuthority https://acme-staging.api.letsencrypt.org/directory
+                    MDCertificateAgreement https://letsencrypt.org/documents/LE-SA-v1.1.1-August-1-2016.pdf
+                </highlight>
+            </example>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>MDCertificateProtocol</name>
+        <description>The protocol to use with the CA</description>
+        <syntax>MDCertificateProtocol protocol</syntax>
+        <default>MDCertificateProtocol ACME</default>
+        <contextlist>
+            <context>server config</context>
+            <context>managed domain</context>
+        </contextlist>
+        <usage>
+            <p>Specifies the protocol to use. Currently, only <code>ACME</code> is supported.</p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>MDDriveMode</name>
+        <description>Controls when <module>mod_md</module> will try to obtain/renew certificates.</description>
+        <syntax>MDDriveMode  always|auto|manual</syntax>
+        <default>MDDriveMode  auto</default>
+        <contextlist>
+            <context>server config</context>
+            <context>managed domain</context>
+        </contextlist>
+        <usage>
+            <p>In 'auto' mode, <module>mod_md</module> will <em>drive</em> a Managed Domain's
+            properties (e.g. certicate management) whenever necessary. When a MD is not used
+            in any virtual host, the module will do nothing. When a certificate is missing, it
+            will try to get one. When a certificate expires soon (see 
+            <directive module="mod_md" type="section">MDRenewWindow</directive>), it will
+            renew it.
+            </p><p>
+            In 'manual' mode, it is your duty to  do all this. The module will provide existing
+            ceriticate to mod_ssl, if available. But it will not contact the CA for signup/renewal.
+            This can be useful in clustered setups where you want just one node to perform
+            the driving.
+            </p><p>
+            The third mode 'always' is like 'auto' only that <module>mod_md</module> will not
+            check if the MD is actually used somewhere. 
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>MDMember</name>
+        <description>Additional hostname for the managed domain</description>
+        <syntax>MDMember hostname</syntax>
+        <contextlist>
+            <context>server config</context>
+            <context>managed domain</context>
+        </contextlist>
+        <usage>
+            <p>
+            Instead of listing all dns names on the same line, you may use
+            <directive module="mod_md" type="section">MDMember</directive> to add such names
+            to a managed domain.
+            </p>
+            <example><title>Example</title>
+                <highlight language="config">
+&lt;ManagedDomain example.org&gt;
+    MDMember www.example.org
+    MDMember mail.example.org
+&lt;/ManagedDomain example.org&gt;
+                </highlight>
+            </example>
+            <p>
+                If you use it in the global context, outside a specific MD, you can only
+                specify one value, 'auto' or 'manual' as the default for all other MDs. See
+                <directive module="mod_md" type="section">ManagedDomain</directive> for a
+                description of these special values.
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>MDPortMap</name>
+        <description></description>
+        <syntax>MDPortMap map1 [ map2 ]</syntax>
+        <default>MDPortMap 80:80 443:443</default>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        <usage>
+            <p>
+                The ACME protocol provides two method to verify domain ownership: one that uses
+                port 80 and one for port 443. If your server is not reachable by at least one
+                of the two, ACME will not work for you.
+            </p><p>
+                <module>mod_md</module> will look at your server configuration and try to figure
+                out which of those are available. Then it can select the proper ACME challenge
+                to create a certificate for your site.
+            </p><p>
+                However if you have some fancy port forwarding in place, your server may be
+                reachable from the Internet on port 443, but the local port that httpd uses is
+                another one. Your server might only listen on ports 5001 and 5002, but be reached
+                on ports 443 and 80. How should <module>mod_md</module> figure that one out?
+            </p><p>
+                With MDPortMap you can tell it which 'Internet port' corresponds to which local
+                port.
+            </p>
+            <example><title>Example</title>
+                <highlight language="config">
+MDPortMap 80:- 443:5002
+                </highlight>
+            </example>
+            <p>
+                This example says that the server is not reachable on port 80 from the outside, but
+                local port 5002 is the one responding to https: requests.
+            </p>
+        </usage>
+    </directivesynopsis>
+    
+    <directivesynopsis>
+        <name>MDRenewWindow</name>
+        <description></description>
+        <syntax>MDRenewWindow duration</syntax>
+        <default>MDRenewWindow 14d</default>
+        <contextlist>
+            <context>server config</context>
+            <context>managed domain</context>
+        </contextlist>
+        <usage>
+            <p>
+                Tells mod_md when to renew a certificate. The default means 14 days before a
+                certificate actually expires. If you configure this too short, a CA might
+                not be reachable in time and your server will show an invalid certificate. If
+                you do it too long, the CA might think you are a bother and block your requests.
+                Let's Encrypt has a certificate expiration of 90 days. So, if you configure the
+                renew window to 89 days, <module>mod_md</module> will renew the certificate
+                every day and Let's Encrypt will block you.
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>MDStoreDir</name>
+        <description></description>
+        <syntax>MDStoreDir path</syntax>
+        <default>MDStoreDir md</default>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        <usage>
+            <p>
+                Defines where on the local file system the Managed Domain data is stored. This is
+                an absolute path or interpreted relative to the server root. The default will create
+                a directory 'md' in your server root.
+            </p><p>
+                If you move this and have already data, be sure to move/copy the data first to
+                the new location, reconfigure and then restart the server. If you reconfigure
+                and restart first, the server will try to get new certificates that it thinks
+                are missing.
+            </p>
+        </usage>
+    </directivesynopsis>
+    
+    <directivesynopsis>
+        <name>MDCAChallenges</name>
+        <description></description>
+        <syntax>MDCAChallenges name [ name ... ]</syntax>
+        <default>MDCAChallenges tls-sni-01 http-01</default>
+        <contextlist>
+            <context>server config</context>
+            <context>managed domain</context>
+        </contextlist>
+        <usage>
+            <p>
+                This tells <module>mod_md</module> which challenge types it shall use in
+                which order when proving domain ownership. The names are protocol specific. The
+                current ACME protocol version that Let's Encrypt speaks defines two challenge
+                types that are supported by <module>mod_md</module>. By default, it will try
+                the one on port 443 when available.
+            </p>
+        </usage>
+    </directivesynopsis>
+    
+</modulesynopsis>
