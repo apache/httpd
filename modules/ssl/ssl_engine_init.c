@@ -1691,13 +1691,13 @@ static apr_status_t ssl_init_server_ctx(server_rec *s,
         return APR_EGENERAL;
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO()
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(10083)
                  "Init: (%s) mod_md support is %s.", ssl_util_vhostid(p, s),
                  md_is_managed? "available" : "unavailable");
     if (md_is_managed && md_is_managed(s)) {
         modssl_pk_server_t *const pks = sc->server->pks;
         if (pks->cert_files->nelts > 0 || pks->key_files->nelts > 0) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(10084)
                          "Init: (%s) You configured certificate/key files on this host, but "
                          "is is covered by a Managed Domain. You need to remove these directives "
                          "for the Managed Domain to take over.", ssl_util_vhostid(p, s));
@@ -1715,7 +1715,7 @@ static apr_status_t ssl_init_server_ctx(server_rec *s,
             }
             else if (APR_STATUS_IS_EAGAIN(rv)) {
                 /* Managed Domain not ready yet. This is not a reason to fail the config */
-                ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO()
+                ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(10085)
                              "Init: (%s) disabling this host for now as certificate/key data "
                              "for the Managed Domain is incomplete.", ssl_util_vhostid(p, s));
                 pks->service_unavailable = 1;

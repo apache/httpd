@@ -2158,14 +2158,14 @@ static apr_status_t init_vhost(conn_rec *c, SSL *ssl)
             
                 sslcon->service_unavailable = 1;
                 if ((SSL_use_certificate(ssl, cert) < 1)) {
-                    ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, c, APLOGNO()
+                    ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, c, APLOGNO(10086)
                                   "Failed to configure challenge certificate %s",
                                   servername);
                     return APR_EGENERAL;
                 }
                 
                 if (!SSL_use_PrivateKey(ssl, key)) {
-                    ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, c, APLOGNO()
+                    ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, c, APLOGNO(10087)
                                   "error '%s' using Challenge key: %s",
                                   ERR_error_string(ERR_peek_last_error(), NULL), 
                                   servername);
@@ -2173,7 +2173,7 @@ static apr_status_t init_vhost(conn_rec *c, SSL *ssl)
                 }
                 
                 if (SSL_check_private_key(ssl) < 1) {
-                    ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, c, APLOGNO()
+                    ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, c, APLOGNO(10088)
                                   "Challenbge certificate and private key %s "
                                   "do not match", servername);
                     return APR_EGENERAL;
