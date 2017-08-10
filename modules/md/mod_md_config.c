@@ -121,17 +121,20 @@ void *md_config_merge_dir(apr_pool_t *pool, void *basev, void *addv)
     return n;
 }
 
-static int inside_section(cmd_parms *cmd) {
-    return (cmd->directive->parent 
-            && !ap_cstr_casecmp(cmd->directive->parent->directive, "<ManagedDomain"));
+static int inside_section(cmd_parms *cmd, const char *section) {
+    ap_directive_t *d;
+    for (d = cmd->directive->parent; d; d = d->parent) {
+       if (!ap_cstr_casecmp(d->directive, section)) {
+           return 1;
+       }
+    }
+    return 0; 
 }
 
-static const char *md_section_check(cmd_parms *cmd) {
-    if (!inside_section(cmd)) {
-        return apr_pstrcat(cmd->pool, cmd->cmd->name, 
-                           " is only valid inside a <ManagedDomain context, not ", 
-                           cmd->directive->parent? cmd->directive->parent->directive : "root", 
-                           NULL);
+static const char *md_section_check(cmd_parms *cmd, const char *section) {
+    if (!inside_section(cmd, section)) {
+        return apr_pstrcat(cmd->pool, cmd->cmd->name, " is only valid inside a '", 
+                           section, "' context, not here", NULL);
     }
     return NULL;
 }
@@ -215,7 +218,7 @@ static const char *md_config_sec_add_members(cmd_parms *cmd, void *dc,
     const char *err;
     int i;
     
-    if (NULL != (err = md_section_check(cmd))) {
+    if (NULL != (err = md_section_check(cmd, "<ManagedDomain"))) {
         if (argc == 1) {
             /* only allowed value outside a section */
             return set_transitive(&config->transitive, argv[0]);
@@ -275,7 +278,7 @@ static const char *md_config_set_ca(cmd_parms *cmd, void *dc, const char *value)
     md_config_t *config = (md_config_t *)md_config_get(cmd->server);
     const char *err;
 
-    if (inside_section(cmd)) {
+    if (inside_section(cmd, "<ManagedDomain")) {
         md_config_dir_t *dconf = dc;
         dconf->md->ca_url = value;
     }
@@ -293,7 +296,7 @@ static const char *md_config_set_ca_proto(cmd_parms *cmd, void *dc, const char *
     md_config_t *config = (md_config_t *)md_config_get(cmd->server);
     const char *err;
 
-    if (inside_section(cmd)) {
+    if (inside_section(cmd, "<ManagedDomain")) {
         md_config_dir_t *dconf = dc;
         dconf->md->ca_proto = value;
     }
@@ -311,7 +314,7 @@ static const char *md_config_set_agreement(cmd_parms *cmd, void *dc, const char 
     md_config_t *config = (md_config_t *)md_config_get(cmd->server);
     const char *err;
 
-    if (inside_section(cmd)) {
+    if (inside_section(cmd, "<ManagedDomain")) {
         md_config_dir_t *dconf = dc;
         dconf->md->ca_agreement = value;
     }
@@ -343,7 +346,7 @@ static const char *md_config_set_drive_mode(cmd_parms *cmd, void *dc, const char
         return apr_pstrcat(cmd->pool, "unknown MDDriveMode ", value, NULL);
     }
     
-    if (inside_section(cmd)) {
+    if (inside_section(cmd, "<ManagedDomain")) {
         md_config_dir_t *dconf = dc;
         dconf->md->drive_mode = drive_mode;
     }
@@ -399,7 +402,7 @@ static const char *md_config_set_renew_window(cmd_parms *cmd, void *dc, const ch
         return "MDRenewWindow has wrong format";
     }
         
-    if (inside_section(cmd)) {
+    if (inside_section(cmd, "<ManagedDomain")) {
         md_config_dir_t *dconf = dc;
         dconf->md->renew_window = timeout;
     }
@@ -487,7 +490,7 @@ static const char *md_config_set_cha_tyes(cmd_parms *cmd, void *dc,
     const char *err;
     int i;
 
-    if (inside_section(cmd)) {
+    if (inside_section(cmd, "<ManagedDomain")) {
         md_config_dir_t *dconf = dc;
         pcha = &dconf->md->ca_challenges;
     }
