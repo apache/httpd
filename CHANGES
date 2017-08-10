@@ -6,7 +6,7 @@ Changes with Apache 2.5.0
      the test area of Let's Encrypt right now, so certificates root will not be valid.
      Will be switched to the real service endpoint rather soon. If you need it now,
      configure 'MDCertificateAuthority https://acme-v01.api.letsencrypt.org/directory'.
-     Module standard xml documentation coming soonish. [Stefan Eissing] 
+     [Stefan Eissing] 
      
   *) mod_ssl, ab: Fix compatibility with LibreSSL.  PR 61184.
      [Bernard Spil <brnrd freebsd.org>, Yann Ylavic]
