@@ -24,6 +24,7 @@ struct md_json_t;
 struct md_cert_t;
 struct md_pkey_t;
 struct md_store_t;
+struct md_srv_conf_t;
 
 #define MD_TLSSNI01_DNS_SUFFIX     ".acme.invalid"
 
@@ -64,24 +65,25 @@ typedef enum {
 typedef struct md_t md_t;
 struct md_t {
     const char *name;               /* unique name of this MD */
-    md_state_t state;               /* state of this MD */
-    apr_time_t expires;             /* When the credentials for this domain expire. 0 if unknown */
-    apr_interval_time_t renew_window;/* time before expiration that starts renewal */
-    
     struct apr_array_header_t *domains; /* all DNS names this MD includes */
+    struct apr_array_header_t *contacts;   /* list of contact uris, e.g. mailto:xxx */
+
     int transitive;                 /* != 0 iff VirtualHost names/aliases are auto-added */
-    md_drive_mode_t drive_mode;     /* mode of obtaining credentials */
+    int drive_mode;                 /* mode of obtaining credentials */
     int must_staple;                /* certificates should set the OCSP Must Staple extension */
+    apr_interval_time_t renew_window;/* time before expiration that starts renewal */
     
     const char *ca_url;             /* url of CA certificate service */
     const char *ca_proto;           /* protocol used vs CA (e.g. ACME) */
     const char *ca_account;         /* account used at CA */
     const char *ca_agreement;       /* accepted agreement uri between CA and user */ 
     struct apr_array_header_t *ca_challenges; /* challenge types configured for this MD */
-    struct apr_array_header_t *contacts;   /* list of contact uris, e.g. mailto:xxx */
 
+    md_state_t state;               /* state of this MD */
+    apr_time_t expires;             /* When the credentials for this domain expire. 0 if unknown */
     const char *cert_url;           /* url where cert has been created, remember during drive */ 
-
+    
+    const struct md_srv_conf_t *sc; /* server config where it was defined or NULL */
     const char *defn_name;          /* config file this MD was defined */
     unsigned defn_line_number;      /* line number of definition */
 };
@@ -199,7 +201,7 @@ md_t *md_create_empty(apr_pool_t *p);
 /**
  * Create a managed domain, given a list of domain names.
  */
-const char *md_create(md_t **pmd, apr_pool_t *p, struct apr_array_header_t *domains);
+md_t *md_create(apr_pool_t *p, struct apr_array_header_t *domains);
 
 /**
  * Deep copy an md record into another pool.

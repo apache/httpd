@@ -44,93 +44,142 @@
 
 #define DEF_VAL     (-1)
 
-static md_config_t defconf = {
-    "default",
+/* Default settings for the global conf */
+static md_mod_conf_t defmc = {
+    NULL,
+    "md",
     NULL,
     80,
     443,
-    NULL,
-    MD_ACME_DEF_URL,
-    "ACME",
-    NULL, 
-    NULL,
-    MD_DRIVE_AUTO,
-    apr_time_from_sec(14 * MD_SECS_PER_DAY),
-    1,  
-    NULL, 
-    "md",
+    0,
+    0,
     NULL
 };
 
+/* Default server specific setting */
+static md_srv_conf_t defconf = {
+    "default",
+    NULL,
+    &defmc,
+
+    1,
+    MD_DRIVE_AUTO,
+    0,
+    apr_time_from_sec(14 * MD_SECS_PER_DAY),
+
+    MD_ACME_DEF_URL,
+    "ACME",
+    NULL,
+    NULL,
+    NULL,
+};
+
+static md_mod_conf_t *mod_md_config;
+
+static apr_status_t cleanup_mod_config(void *dummy)
+{
+    (void)dummy;
+    mod_md_config = NULL;
+    return APR_SUCCESS;
+}
+
+static md_mod_conf_t *md_mod_conf_get(apr_pool_t *pool, int create)
+{
+    if (mod_md_config) {
+        return mod_md_config; /* reused for lifetime of the pool */
+    }
+
+    if (create) {
+        mod_md_config = apr_pcalloc(pool, sizeof(*mod_md_config));
+        memcpy(mod_md_config, &defmc, sizeof(*mod_md_config));
+        mod_md_config->mds = apr_array_make(pool, 5, sizeof(const md_t *));
+        mod_md_config->unused_names = apr_array_make(pool, 5, sizeof(const md_t *));
+        
+        apr_pool_cleanup_register(pool, NULL, cleanup_mod_config, apr_pool_cleanup_null);
+    }
+    
+    return mod_md_config;
+}
+
 #define CONF_S_NAME(s)  (s && s->server_hostname? s->server_hostname : "default")
+
+static void srv_conf_props_clear(md_srv_conf_t *sc)
+{
+    sc->transitive = DEF_VAL;
+    sc->drive_mode = DEF_VAL;
+    sc->must_staple = DEF_VAL;
+    sc->renew_window = DEF_VAL;
+    sc->ca_url = NULL;
+    sc->ca_proto = NULL;
+    sc->ca_agreement = NULL;
+    sc->ca_challenges = NULL;
+}
+
+static void srv_conf_props_copy(md_srv_conf_t *to, const md_srv_conf_t *from)
+{
+    to->transitive = from->transitive;
+    to->drive_mode = from->drive_mode;
+    to->must_staple = from->must_staple;
+    to->renew_window = from->renew_window;
+    to->ca_url = from->ca_url;
+    to->ca_proto = from->ca_proto;
+    to->ca_agreement = from->ca_agreement;
+    to->ca_challenges = from->ca_challenges;
+}
+
+static void srv_conf_props_apply(md_t *md, const md_srv_conf_t *from, apr_pool_t *p)
+{
+    if (from->transitive != DEF_VAL) md->transitive = from->transitive;
+    if (from->drive_mode != DEF_VAL) md->drive_mode = from->drive_mode;
+    if (from->must_staple != DEF_VAL) md->must_staple = from->must_staple;
+    if (from->renew_window != DEF_VAL) md->renew_window = from->renew_window;
+
+    if (from->ca_url) md->ca_url = from->ca_url;
+    if (from->ca_proto) md->ca_proto = from->ca_proto;
+    if (from->ca_agreement) md->ca_agreement = from->ca_agreement;
+    if (from->ca_challenges) md->ca_challenges = apr_array_copy(p, from->ca_challenges);
+}
 
 void *md_config_create_svr(apr_pool_t *pool, server_rec *s)
 {
-    md_config_t *conf = (md_config_t *)apr_pcalloc(pool, sizeof(md_config_t));
+    md_srv_conf_t *conf = (md_srv_conf_t *)apr_pcalloc(pool, sizeof(md_srv_conf_t));
 
     conf->name = apr_pstrcat(pool, "srv[", CONF_S_NAME(s), "]", NULL);
     conf->s = s;
-    conf->local_80 = DEF_VAL;
-    conf->local_443 = DEF_VAL;
-    conf->drive_mode = DEF_VAL;
-    conf->mds = apr_array_make(pool, 5, sizeof(const md_t *));
-    conf->renew_window = DEF_VAL;
-    conf->transitive = DEF_VAL;
+    conf->mc = md_mod_conf_get(pool, 1);
+    conf->md = apr_pcalloc(pool, sizeof(*conf->md));
+
+    srv_conf_props_clear(conf);
     
     return conf;
 }
 
 static void *md_config_merge(apr_pool_t *pool, void *basev, void *addv)
 {
-    md_config_t *base = (md_config_t *)basev;
-    md_config_t *add = (md_config_t *)addv;
-    md_config_t *n = (md_config_t *)apr_pcalloc(pool, sizeof(md_config_t));
+    md_srv_conf_t *base = (md_srv_conf_t *)basev;
+    md_srv_conf_t *add = (md_srv_conf_t *)addv;
+    md_srv_conf_t *nsc;
     char *name = apr_pstrcat(pool, "[", CONF_S_NAME(add->s), ", ", CONF_S_NAME(base->s), "]", NULL);
-    md_t *md;
-    int i;
     
-    n->name = name;
-    n->local_80 = (add->local_80 != DEF_VAL)? add->local_80 : base->local_80;
-    n->local_443 = (add->local_443 != DEF_VAL)? add->local_443 : base->local_443;
+    nsc = (md_srv_conf_t *)apr_pcalloc(pool, sizeof(md_srv_conf_t));
+    nsc->name = name;
 
-    /* I think we should not merge md definitions. They should reside where
-     * they were defined */
-    n->mds = apr_array_make(pool, add->mds->nelts, sizeof(const md_t *));
-    for (i = 0; i < add->mds->nelts; ++i) {
-        md = APR_ARRAY_IDX(add->mds, i, md_t*);
-        APR_ARRAY_PUSH(n->mds, md_t *) = md_clone(pool, md);
-    }
-    n->ca_url = add->ca_url? add->ca_url : base->ca_url;
-    n->ca_proto = add->ca_proto? add->ca_proto : base->ca_proto;
-    n->ca_agreement = add->ca_agreement? add->ca_agreement : base->ca_agreement;
-    n->drive_mode = (add->drive_mode != DEF_VAL)? add->drive_mode : base->drive_mode;
-    n->md = NULL;
-    n->base_dir = add->base_dir? add->base_dir : base->base_dir;
-    n->renew_window = (add->renew_window != DEF_VAL)? add->renew_window : base->renew_window;
-    n->ca_challenges = (add->ca_challenges? apr_array_copy(pool, add->ca_challenges) 
+    nsc->transitive = (add->transitive != DEF_VAL)? add->transitive : base->transitive;
+    nsc->drive_mode = (add->drive_mode != DEF_VAL)? add->drive_mode : base->drive_mode;
+    nsc->md = NULL;
+    nsc->renew_window = (add->renew_window != DEF_VAL)? add->renew_window : base->renew_window;
+
+    nsc->ca_url = add->ca_url? add->ca_url : base->ca_url;
+    nsc->ca_proto = add->ca_proto? add->ca_proto : base->ca_proto;
+    nsc->ca_agreement = add->ca_agreement? add->ca_agreement : base->ca_agreement;
+    nsc->ca_challenges = (add->ca_challenges? apr_array_copy(pool, add->ca_challenges) 
                     : (base->ca_challenges? apr_array_copy(pool, base->ca_challenges) : NULL));
-    n->transitive = (add->transitive != DEF_VAL)? add->transitive : base->transitive;
-    return n;
+    return nsc;
 }
 
 void *md_config_merge_svr(apr_pool_t *pool, void *basev, void *addv)
 {
     return md_config_merge(pool, basev, addv);
-}
-
-void *md_config_create_dir(apr_pool_t *pool, char *dummy)
-{
-    md_config_dir_t *conf = apr_pcalloc(pool, sizeof(*conf));
-    return conf;
-}
-
-void *md_config_merge_dir(apr_pool_t *pool, void *basev, void *addv)
-{
-    md_config_dir_t *base = basev;
-    md_config_dir_t *add = addv;
-    md_config_dir_t *n = apr_pcalloc(pool, sizeof(*n));
-    n->md = add->md? add->md : base->md;
-    return n;
 }
 
 static int inside_section(cmd_parms *cmd, const char *section) {
@@ -158,56 +207,6 @@ static void add_domain_name(apr_array_header_t *domains, const char *name, apr_p
     }
 }
 
-static const char *md_config_sec_start(cmd_parms *cmd, void *mconfig, const char *arg)
-{
-    md_config_t *sconf = ap_get_module_config(cmd->server->module_config, &md_module);
-    const char *endp = ap_strrchr_c(arg, '>');
-    ap_conf_vector_t *new_dir_conf = ap_create_per_dir_config(cmd->pool);
-    int old_overrides = cmd->override;
-    char *old_path = cmd->path;
-    const char *err, *name;
-    md_config_dir_t *dconf;
-    md_t *md;
-
-    if (NULL != (err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE))) {
-        return err;
-    }
-        
-    if (endp == NULL) {
-        return apr_pstrcat(cmd->pool, cmd->cmd->name, "> directive missing closing '>'", NULL);
-    }
-
-    arg = apr_pstrndup(cmd->pool, arg, endp-arg);
-    if (!arg || !*arg) {
-        return "<ManagedDomain > block must specify a unique domain name";
-    }
-
-    cmd->path = ap_getword_white(cmd->pool, &arg);
-    name = cmd->path;
-    
-    md = md_create_empty(cmd->pool);
-    md->name = name;
-    APR_ARRAY_PUSH(md->domains, const char*) = name;
-    md->drive_mode = DEF_VAL;
-    
-    while (*arg != '\0') {
-        name = ap_getword_white(cmd->pool, &arg);
-        APR_ARRAY_PUSH(md->domains, const char*) = name;
-    }
-
-    dconf = ap_set_config_vectors(cmd->server, new_dir_conf, cmd->path, &md_module, cmd->pool);
-    dconf->md = md;
-    
-    if (NULL == (err = ap_walk_config(cmd->directive->first_child, cmd, new_dir_conf))) {
-        APR_ARRAY_PUSH(sconf->mds, const md_t *) = md;
-    }
-    
-    cmd->path = old_path;
-    cmd->override = old_overrides;
-
-    return err;
-}
-
 static const char *set_transitive(int *ptransitive, const char *value)
 {
     if (!apr_strnatcasecmp("auto", value)) {
@@ -221,27 +220,85 @@ static const char *set_transitive(int *ptransitive, const char *value)
     return "unknown value, use \"auto|manual\"";
 }
 
+static const char *md_config_sec_start(cmd_parms *cmd, void *mconfig, const char *arg)
+{
+    md_srv_conf_t *sc;
+    md_srv_conf_t save;
+    const char *endp;
+    const char *err, *name;
+    apr_array_header_t *domains;
+    md_t *md;
+    int transitive = -1;
+
+    if ((err = ap_check_cmd_context(cmd, GLOBAL_ONLY))) {
+        return err;
+    }
+        
+    sc = md_config_get(cmd->server);
+    endp = ap_strrchr_c(arg, '>');
+    if (endp == NULL) {
+        return  MD_CMD_MD_SECTION "> directive missing closing '>'";
+    }
+
+    arg = apr_pstrndup(cmd->pool, arg, endp-arg);
+    if (!arg || !*arg) {
+        return MD_CMD_MD_SECTION " > section must specify a unique domain name";
+    }
+
+    name = ap_getword_white(cmd->pool, &arg);
+    domains = apr_array_make(cmd->pool, 5, sizeof(const char *));
+    while (*arg != '\0') {
+        name = ap_getword_white(cmd->pool, &arg);
+        if (NULL != set_transitive(&transitive, name)) {
+            add_domain_name(domains, name, cmd->pool);
+        }
+    }
+
+    if (domains->nelts == 0) {
+        return "needs at least one domain name";
+    }
+    
+    md = md_create(cmd->pool, domains);
+    if (transitive >= 0) {
+        md->transitive = transitive;
+    }
+    
+    /* Save the current settings in this srv_conf and apply+restore at the
+     * end of this section */
+    memcpy(&save, sc, sizeof(save));
+    srv_conf_props_clear(sc);
+    sc->md = md;
+    
+    if (NULL == (err = ap_walk_config(cmd->directive->first_child, cmd, cmd->context))) {
+        srv_conf_props_apply(md, sc, cmd->pool);
+        APR_ARRAY_PUSH(sc->mc->mds, const md_t *) = md;
+    }
+    
+    sc->md = NULL;
+    srv_conf_props_copy(sc, &save);
+    
+    return err;
+}
+
 static const char *md_config_sec_add_members(cmd_parms *cmd, void *dc, 
                                              int argc, char *const argv[])
 {
-    md_config_t *config = (md_config_t *)md_config_get(cmd->server);
-    md_config_dir_t *dconfig = dc;
-    apr_array_header_t *domains;
+    md_srv_conf_t *sc = md_config_get(cmd->server);
     const char *err;
     int i;
     
     if (NULL != (err = md_section_check(cmd, MD_CMD_MD_SECTION))) {
         if (argc == 1) {
-            /* only allowed value outside a section */
-            return set_transitive(&config->transitive, argv[0]);
+            /* only these values are allowed outside a section */
+            return set_transitive(&sc->transitive, argv[0]);
         }
         return err;
     }
     
-    domains = dconfig->md->domains;
+    assert(sc->md);
     for (i = 0; i < argc; ++i) {
-        if (NULL != set_transitive(&dconfig->md->transitive, argv[i])) {
-            add_domain_name(domains, argv[i], cmd->pool);
+        if (NULL != set_transitive(&sc->transitive, argv[i])) {
+            add_domain_name(sc->md->domains, argv[i], cmd->pool);
         }
     }
     return NULL;
@@ -250,7 +307,7 @@ static const char *md_config_sec_add_members(cmd_parms *cmd, void *dc,
 static const char *md_config_set_names(cmd_parms *cmd, void *arg, 
                                        int argc, char *const argv[])
 {
-    md_config_t *config = (md_config_t *)md_config_get(cmd->server);
+    md_srv_conf_t *sc = md_config_get(cmd->server);
     apr_array_header_t *domains = apr_array_make(cmd->pool, 5, sizeof(const char *));
     const char *err;
     md_t *md;
@@ -266,10 +323,11 @@ static const char *md_config_set_names(cmd_parms *cmd, void *arg,
             add_domain_name(domains, argv[i], cmd->pool);
         }
     }
-    err = md_create(&md, cmd->pool, domains);
-    if (err) {
-        return err;
+    
+    if (domains->nelts == 0) {
+        return "needs at least one domain name";
     }
+    md = md_create(cmd->pool, domains);
 
     if (transitive >= 0) {
         md->transitive = transitive;
@@ -280,68 +338,53 @@ static const char *md_config_set_names(cmd_parms *cmd, void *arg,
         md->defn_line_number = cmd->config_file->line_number;
     }
 
-    APR_ARRAY_PUSH(config->mds, md_t *) = md;
+    APR_ARRAY_PUSH(sc->mc->mds, md_t *) = md;
 
     return NULL;
 }
 
 static const char *md_config_set_ca(cmd_parms *cmd, void *dc, const char *value)
 {
-    md_config_t *config = (md_config_t *)md_config_get(cmd->server);
+    md_srv_conf_t *sc = md_config_get(cmd->server);
     const char *err;
 
-    if (inside_section(cmd, MD_CMD_MD_SECTION)) {
-        md_config_dir_t *dconf = dc;
-        dconf->md->ca_url = value;
+    if (!inside_section(cmd, MD_CMD_MD_SECTION)
+        && (err = ap_check_cmd_context(cmd, GLOBAL_ONLY))) {
+        return err;
     }
-    else {
-        if ((err = ap_check_cmd_context(cmd, GLOBAL_ONLY))) {
-            return err;
-        }
-        config->ca_url = value;
-    }
+    sc->ca_url = value;
     return NULL;
 }
 
 static const char *md_config_set_ca_proto(cmd_parms *cmd, void *dc, const char *value)
 {
-    md_config_t *config = (md_config_t *)md_config_get(cmd->server);
+    md_srv_conf_t *config = md_config_get(cmd->server);
     const char *err;
 
-    if (inside_section(cmd, MD_CMD_MD_SECTION)) {
-        md_config_dir_t *dconf = dc;
-        dconf->md->ca_proto = value;
+    if (!inside_section(cmd, MD_CMD_MD_SECTION)
+        && (err = ap_check_cmd_context(cmd, GLOBAL_ONLY))) {
+        return err;
     }
-    else {
-        if ((err = ap_check_cmd_context(cmd, GLOBAL_ONLY))) {
-            return err;
-        }
-        config->ca_proto = value;
-    }
+    config->ca_proto = value;
     return NULL;
 }
 
 static const char *md_config_set_agreement(cmd_parms *cmd, void *dc, const char *value)
 {
-    md_config_t *config = (md_config_t *)md_config_get(cmd->server);
+    md_srv_conf_t *config = md_config_get(cmd->server);
     const char *err;
 
-    if (inside_section(cmd, MD_CMD_MD_SECTION)) {
-        md_config_dir_t *dconf = dc;
-        dconf->md->ca_agreement = value;
+    if (!inside_section(cmd, MD_CMD_MD_SECTION)
+        && (err = ap_check_cmd_context(cmd, GLOBAL_ONLY))) {
+        return err;
     }
-    else {
-        if ((err = ap_check_cmd_context(cmd, GLOBAL_ONLY))) {
-            return err;
-        }
-        config->ca_agreement = value;
-    }
+    config->ca_agreement = value;
     return NULL;
 }
 
 static const char *md_config_set_drive_mode(cmd_parms *cmd, void *dc, const char *value)
 {
-    md_config_t *config = (md_config_t *)md_config_get(cmd->server);
+    md_srv_conf_t *config = md_config_get(cmd->server);
     const char *err;
     md_drive_mode_t drive_mode;
 
@@ -358,16 +401,11 @@ static const char *md_config_set_drive_mode(cmd_parms *cmd, void *dc, const char
         return apr_pstrcat(cmd->pool, "unknown MDDriveMode ", value, NULL);
     }
     
-    if (inside_section(cmd, MD_CMD_MD_SECTION)) {
-        md_config_dir_t *dconf = dc;
-        dconf->md->drive_mode = drive_mode;
+    if (!inside_section(cmd, MD_CMD_MD_SECTION)
+        && (err = ap_check_cmd_context(cmd, GLOBAL_ONLY))) {
+        return err;
     }
-    else {
-        if ((err = ap_check_cmd_context(cmd, GLOBAL_ONLY))) {
-            return err;
-        }
-        config->drive_mode = drive_mode;
-    }
+    config->drive_mode = drive_mode;
     return NULL;
 }
 
@@ -405,7 +443,7 @@ static apr_status_t duration_parse(const char *value, apr_interval_time_t *ptime
 
 static const char *md_config_set_renew_window(cmd_parms *cmd, void *dc, const char *value)
 {
-    md_config_t *config = (md_config_t *)md_config_get(cmd->server);
+    md_srv_conf_t *config = md_config_get(cmd->server);
     const char *err;
     apr_interval_time_t timeout;
 
@@ -414,33 +452,28 @@ static const char *md_config_set_renew_window(cmd_parms *cmd, void *dc, const ch
         return "MDRenewWindow has wrong format";
     }
         
-    if (inside_section(cmd, MD_CMD_MD_SECTION)) {
-        md_config_dir_t *dconf = dc;
-        dconf->md->renew_window = timeout;
+    if (!inside_section(cmd, MD_CMD_MD_SECTION)
+        && (err = ap_check_cmd_context(cmd, GLOBAL_ONLY))) {
+        return err;
     }
-    else {
-        if ((err = ap_check_cmd_context(cmd, GLOBAL_ONLY))) {
-            return err;
-        }
-        config->renew_window = timeout;
-    }
+    config->renew_window = timeout;
     return NULL;
 }
 
 static const char *md_config_set_store_dir(cmd_parms *cmd, void *arg, const char *value)
 {
-    md_config_t *config = (md_config_t *)md_config_get(cmd->server);
+    md_srv_conf_t *sc = md_config_get(cmd->server);
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
 
     if (err) {
         return err;
     }
-    config->base_dir = value;
+    sc->mc->base_dir = value;
     (void)arg;
     return NULL;
 }
 
-static const char *set_port_map(md_config_t *config, const char *value)
+static const char *set_port_map(md_mod_conf_t *mc, const char *value)
 {
     int net_port, local_port;
     char *endp;
@@ -467,10 +500,10 @@ static const char *set_port_map(md_config_t *config, const char *value)
     }
     switch (net_port) {
         case 80:
-            config->local_80 = local_port;
+            mc->local_80 = local_port;
             break;
         case 443:
-            config->local_443 = local_port;
+            mc->local_443 = local_port;
             break;
         default:
             return "mapped port number must be 80 or 443";
@@ -481,15 +514,15 @@ static const char *set_port_map(md_config_t *config, const char *value)
 static const char *md_config_set_port_map(cmd_parms *cmd, void *arg, 
                                           const char *v1, const char *v2)
 {
-    md_config_t *config = (md_config_t *)md_config_get(cmd->server);
+    md_srv_conf_t *sc = md_config_get(cmd->server);
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
 
     (void)arg;
     if (!err) {
-        err = set_port_map(config, v1);
+        err = set_port_map(sc->mc, v1);
     }
     if (!err && v2) {
-        err = set_port_map(config, v2);
+        err = set_port_map(sc->mc, v2);
     }
     return err;
 }
@@ -497,21 +530,16 @@ static const char *md_config_set_port_map(cmd_parms *cmd, void *arg,
 static const char *md_config_set_cha_tyes(cmd_parms *cmd, void *dc, 
                                           int argc, char *const argv[])
 {
-    md_config_t *config = (md_config_t *)md_config_get(cmd->server);
+    md_srv_conf_t *config = md_config_get(cmd->server);
     apr_array_header_t **pcha, *ca_challenges;
     const char *err;
     int i;
 
-    if (inside_section(cmd, MD_CMD_MD_SECTION)) {
-        md_config_dir_t *dconf = dc;
-        pcha = &dconf->md->ca_challenges;
+    if (!inside_section(cmd, MD_CMD_MD_SECTION)
+        && (err = ap_check_cmd_context(cmd, GLOBAL_ONLY))) {
+        return err;
     }
-    else {
-        if (NULL != (err = ap_check_cmd_context(cmd, GLOBAL_ONLY))) {
-            return err;
-        }
-        pcha = &config->ca_challenges; 
-    }
+    pcha = &config->ca_challenges; 
     
     ca_challenges = *pcha;
     if (!ca_challenges) {
@@ -559,71 +587,72 @@ const command_rec md_cmds[] = {
 };
 
 
-static const md_config_t *config_get_int(server_rec *s, apr_pool_t *p)
+static md_srv_conf_t *config_get_int(server_rec *s, apr_pool_t *p)
 {
-    md_config_t *cfg = (md_config_t *)ap_get_module_config(s->module_config, &md_module);
-    ap_assert(cfg);
-    if (cfg->s != s && p) {
-        cfg = md_config_merge(p, &defconf, cfg);
-        cfg->name = apr_pstrcat(p, CONF_S_NAME(s), cfg->name, NULL);
-        ap_set_module_config(s->module_config, &md_module, cfg);
+    md_srv_conf_t *sc = (md_srv_conf_t *)ap_get_module_config(s->module_config, &md_module);
+    ap_assert(sc);
+    if (sc->s != s && p) {
+        sc = md_config_merge(p, &defconf, sc);
+        sc->name = apr_pstrcat(p, CONF_S_NAME(s), sc->name, NULL);
+        sc->mc = md_mod_conf_get(p, 1);
+        ap_set_module_config(s->module_config, &md_module, sc);
     }
-    return cfg;
+    return sc;
 }
 
-const md_config_t *md_config_get(server_rec *s)
+md_srv_conf_t *md_config_get(server_rec *s)
 {
     return config_get_int(s, NULL);
 }
 
-const md_config_t *md_config_get_unique(server_rec *s, apr_pool_t *p)
+md_srv_conf_t *md_config_get_unique(server_rec *s, apr_pool_t *p)
 {
     assert(p);
     return config_get_int(s, p);
 }
 
-const md_config_t *md_config_cget(conn_rec *c)
+md_srv_conf_t *md_config_cget(conn_rec *c)
 {
     return md_config_get(c->base_server);
 }
 
-const char *md_config_gets(const md_config_t *config, md_config_var_t var)
+const char *md_config_gets(const md_srv_conf_t *sc, md_config_var_t var)
 {
     switch (var) {
         case MD_CONFIG_CA_URL:
-            return config->ca_url? config->ca_url : defconf.ca_url;
+            return sc->ca_url? sc->ca_url : defconf.ca_url;
         case MD_CONFIG_CA_PROTO:
-            return config->ca_proto? config->ca_proto : defconf.ca_proto;
+            return sc->ca_proto? sc->ca_proto : defconf.ca_proto;
         case MD_CONFIG_BASE_DIR:
-            return config->base_dir? config->base_dir : defconf.base_dir;
+            return sc->mc->base_dir;
         case MD_CONFIG_CA_AGREEMENT:
-            return config->ca_agreement? config->ca_agreement : defconf.ca_agreement;
+            return sc->ca_agreement? sc->ca_agreement : defconf.ca_agreement;
         default:
             return NULL;
     }
 }
 
-int md_config_geti(const md_config_t *config, md_config_var_t var)
+int md_config_geti(const md_srv_conf_t *sc, md_config_var_t var)
 {
     switch (var) {
         case MD_CONFIG_DRIVE_MODE:
-            return (config->drive_mode != DEF_VAL)? config->drive_mode : defconf.drive_mode;
+            return (sc->drive_mode != DEF_VAL)? sc->drive_mode : defconf.drive_mode;
         case MD_CONFIG_LOCAL_80:
-            return (config->local_80 != DEF_VAL)? config->local_80 : 80;
+            return sc->mc->local_80;
         case MD_CONFIG_LOCAL_443:
-            return (config->local_443 != DEF_VAL)? config->local_443 : 443;
+            return sc->mc->local_443;
         case MD_CONFIG_TRANSITIVE:
-            return (config->transitive != DEF_VAL)? config->transitive : defconf.transitive;
+            return (sc->transitive != DEF_VAL)? sc->transitive : defconf.transitive;
         default:
             return 0;
     }
 }
 
-apr_interval_time_t md_config_get_interval(const md_config_t *config, md_config_var_t var)
+apr_interval_time_t md_config_get_interval(const md_srv_conf_t *sc, md_config_var_t var)
 {
     switch (var) {
         case MD_CONFIG_RENEW_WINDOW:
-            return (config->renew_window != DEF_VAL)? config->renew_window : defconf.renew_window;
+            return (sc->renew_window != DEF_VAL)? sc->renew_window : defconf.renew_window;
         default:
             return 0;
     }

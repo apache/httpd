@@ -39,11 +39,10 @@
 static apr_status_t cmd_add(md_cmd_ctx *ctx, const md_cmd_t *cmd) 
 {
     md_t *md, *nmd;
-    const char *err;
     apr_status_t rv;
 
-    err = md_create(&md, ctx->p, md_cmd_gather_args(ctx, 0));
-    if (err) {
+    md = md_create(ctx->p, md_cmd_gather_args(ctx, 0));
+    if (md->domains->nelts == 0) {
         return APR_EINVAL;
     }
 

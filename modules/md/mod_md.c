@@ -47,126 +47,46 @@ static void md_hooks(apr_pool_t *pool);
 
 AP_DECLARE_MODULE(md) = {
     STANDARD20_MODULE_STUFF,
-    md_config_create_dir, /* func to create per dir config */
-    md_config_merge_dir,  /* func to merge per dir config */
+    NULL,                 /* func to create per dir config */
+    NULL,                 /* func to merge per dir config */
     md_config_create_svr, /* func to create per server config */
     md_config_merge_svr,  /* func to merge per server config */
     md_cmds,              /* command handlers */
     md_hooks
 };
 
-typedef struct {
-    apr_array_header_t *mds;
-    apr_array_header_t *unused_names;
-    int can_http;
-    int can_https;
-} md_ctx;
- 
-static apr_status_t md_calc_md_list(md_ctx *ctx, apr_pool_t *p, apr_pool_t *plog,
-                                    apr_pool_t *ptemp, server_rec *base_server)
+static void md_merge_srv(md_t *md, md_srv_conf_t *base_sc, apr_pool_t *p)
 {
-    server_rec *s;
-    apr_array_header_t *mds;
-    int i, j;
-    md_t *md, *nmd;
-    const char *domain;
-    apr_status_t rv = APR_SUCCESS;
-    md_config_t *config;
-    apr_port_t effective_80, effective_443;
-    ap_listen_rec *lr;
-    apr_sockaddr_t *sa;
-
-    ctx->can_http = 0;
-    ctx->can_https = 0;
-    mds = apr_array_make(p, 5, sizeof(const md_t*));
-
-    config = (md_config_t *)md_config_get(base_server);
-    effective_80 = md_config_geti(config, MD_CONFIG_LOCAL_80);
-    effective_443 = md_config_geti(config, MD_CONFIG_LOCAL_443);
-    
-    for (lr = ap_listeners; lr; lr = lr->next) {
-        for (sa = lr->bind_addr; sa; sa = sa->next) {
-            if  (sa->port == effective_80 
-                 && (!lr->protocol || !strncmp("http", lr->protocol, 4))) {
-                ctx->can_http = 1;
-            }
-            else if (sa->port == effective_443
-                     && (!lr->protocol || !strncmp("http", lr->protocol, 4))) {
-                ctx->can_https = 1;
-            }
-        }
+    if (!md->sc) {
+        md->sc = base_sc;
     }
-    
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, base_server, APLOGNO(10037)
-                 "server seems%s reachable via http: (port 80->%d) "
-                 "and%s reachable via https: (port 443->%d) ",
-                 ctx->can_http? "" : " not", effective_80,
-                 ctx->can_https? "" : " not", effective_443);
-    
-    for (s = base_server; s; s = s->next) {
-        config = (md_config_t *)md_config_get(s);
 
-        for (i = 0; i < config->mds->nelts; ++i) {
-            nmd = APR_ARRAY_IDX(config->mds, i, md_t*);
-
-            for (j = 0; j < mds->nelts; ++j) {
-                md = APR_ARRAY_IDX(mds, j, md_t*);
-
-                if (nmd == md) {
-                    nmd = NULL;
-                    break; /* merged between different configs */
-                }
-                
-                if ((domain = md_common_name(nmd, md)) != NULL) {
-                    ap_log_error(APLOG_MARK, APLOG_ERR, 0, base_server, APLOGNO(10038)
-                                 "two Managed Domains have an overlap in domain '%s'"
-                                 ", first definition in %s(line %d), second in %s(line %d)",
-                                 domain, md->defn_name, md->defn_line_number,
-                                 nmd->defn_name, nmd->defn_line_number);
-                    return APR_EINVAL;
-                }
-            }
-            
-            if (nmd) {
-                /* new managed domain not seen before */
-                if (!nmd->ca_url) {
-                    nmd->ca_url = md_config_gets(config, MD_CONFIG_CA_URL);
-                }
-                if (!nmd->ca_proto) {
-                    nmd->ca_proto = md_config_gets(config, MD_CONFIG_CA_PROTO);
-                }
-                if (!nmd->ca_agreement) {
-                    nmd->ca_agreement = md_config_gets(config, MD_CONFIG_CA_AGREEMENT);
-                }
-                if (s->server_admin && strcmp(DEFAULT_ADMIN, s->server_admin)) {
-                    apr_array_clear(nmd->contacts);
-                    APR_ARRAY_PUSH(nmd->contacts, const char *) = 
-                        md_util_schemify(p, s->server_admin, "mailto");
-                }
-                if (nmd->drive_mode == MD_DRIVE_DEFAULT) {
-                    nmd->drive_mode = md_config_geti(config, MD_CONFIG_DRIVE_MODE);
-                }
-                if (nmd->renew_window <= 0) {
-                    nmd->renew_window = md_config_get_interval(config, MD_CONFIG_RENEW_WINDOW);
-                }
-                if (nmd->transitive < 0) {
-                    nmd->transitive = md_config_geti(config, MD_CONFIG_TRANSITIVE);
-                }
-                if (!nmd->ca_challenges && config->ca_challenges) {
-                    nmd->ca_challenges = apr_array_copy(p, config->ca_challenges);
-                }
-                APR_ARRAY_PUSH(mds, md_t *) = nmd;
-                
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, base_server, APLOGNO(10039)
-                             "Added MD[%s, CA=%s, Proto=%s, Agreement=%s, Drive=%d, renew=%ld]",
-                             nmd->name, nmd->ca_url, nmd->ca_proto, nmd->ca_agreement,
-                             nmd->drive_mode, (long)nmd->renew_window);
-            }
-        }
+    if (!md->ca_url) {
+        md->ca_url = md_config_gets(md->sc, MD_CONFIG_CA_URL);
     }
-    
-    ctx->mds = (APR_SUCCESS == rv)? mds : NULL;
-    return rv;
+    if (!md->ca_proto) {
+        md->ca_proto = md_config_gets(md->sc, MD_CONFIG_CA_PROTO);
+    }
+    if (!md->ca_agreement) {
+        md->ca_agreement = md_config_gets(md->sc, MD_CONFIG_CA_AGREEMENT);
+    }
+    if (md->sc->s->server_admin && strcmp(DEFAULT_ADMIN, md->sc->s->server_admin)) {
+        apr_array_clear(md->contacts);
+        APR_ARRAY_PUSH(md->contacts, const char *) = 
+        md_util_schemify(p, md->sc->s->server_admin, "mailto");
+    }
+    if (md->drive_mode == MD_DRIVE_DEFAULT) {
+        md->drive_mode = md_config_geti(md->sc, MD_CONFIG_DRIVE_MODE);
+    }
+    if (md->renew_window <= 0) {
+        md->renew_window = md_config_get_interval(md->sc, MD_CONFIG_RENEW_WINDOW);
+    }
+    if (md->transitive < 0) {
+        md->transitive = md_config_geti(md->sc, MD_CONFIG_TRANSITIVE);
+    }
+    if (!md->ca_challenges && md->sc->ca_challenges) {
+        md->ca_challenges = apr_array_copy(p, md->sc->ca_challenges);
+    }        
 }
 
 static apr_status_t check_coverage(md_t *md, const char *domain, server_rec *s, apr_pool_t *p)
@@ -188,93 +108,171 @@ static apr_status_t check_coverage(md_t *md, const char *domain, server_rec *s, 
     }
 }
 
-static apr_status_t md_check_vhost_mapping(md_ctx *ctx, apr_pool_t *p, apr_pool_t *plog,
-                                           apr_pool_t *ptemp, server_rec *base_server)
+static apr_status_t apply_to_servers(md_t *md, server_rec *base_server, 
+                                     apr_pool_t *p, apr_pool_t *ptemp)
 {
     server_rec *s;
     request_rec r;
-    md_config_t *config;
+    md_srv_conf_t *sc;
+    md_mod_conf_t *mc;
     apr_status_t rv = APR_SUCCESS, rv2;
-    md_t *md;
-    int i, j, k;
+    int i, j;
     const char *domain, *name;
+    
+    sc = md_config_get(base_server);
+    mc = sc->mc;
     
     /* Find the (at most one) managed domain for each vhost/base server and
      * remember it at our config for it. 
      * The config is not accepted, if a vhost matches 2 or more managed domains.
      */
-    ctx->unused_names = apr_array_make(p, 5, sizeof(const char*));
     memset(&r, 0, sizeof(r));
-    for (i = 0; i < ctx->mds->nelts; ++i) {
-        md = APR_ARRAY_IDX(ctx->mds, i, md_t*);
-        config = NULL;
-        /* This MD may apply to 0, 1 or more sever_recs */
-        for (s = base_server; s; s = s->next) {
-            r.server = s;
-            for (j = 0; j < md->domains->nelts; ++j) {
-                domain = APR_ARRAY_IDX(md->domains, j, const char*);
+    sc = NULL;
+        
+    /* This MD may apply to 0, 1 or more sever_recs */
+    for (s = base_server; s; s = s->next) {
+        r.server = s;
+        
+        for (i = 0; i < md->domains->nelts; ++i) {
+            domain = APR_ARRAY_IDX(md->domains, i, const char*);
+            
+            if (ap_matches_request_vhost(&r, domain, s->port)) {
+                /* Create a unique md_srv_conf_t record for this server. 
+                 * We keep local information here. */
+                sc = md_config_get_unique(s, p);
                 
-                if (ap_matches_request_vhost(&r, domain, s->port)) {
-                    /* Create a unique md_config_t record for this server. 
-                     * We keep local information here. */
-                    config = (md_config_t *)md_config_get_unique(s, p);
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, base_server, APLOGNO(10041)
+                             "Server %s:%d matches md %s (config %s)", 
+                             s->server_hostname, s->port, md->name, sc->name);
                 
-                    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, base_server, APLOGNO(10041)
-                                 "Server %s:%d matches md %s (config %s)", 
-                                 s->server_hostname, s->port, md->name, config->name);
-                    
-                    if (config->md == md) {
-                        /* already matched via another domain name */
-                    }
-                    else if (config->md) {
-                         
-                        ap_log_error(APLOG_MARK, APLOG_ERR, 0, base_server, APLOGNO(10042)
-                                     "conflict: MD %s matches server %s, but MD %s also matches.",
-                                     md->name, s->server_hostname, config->md->name);
-                        rv = APR_EINVAL;
-                        goto next_server;
-                    }
-                    
-                    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, base_server, APLOGNO(10043)
-                                 "Managed Domain %s applies to vhost %s:%d", md->name,
-                                 s->server_hostname, s->port);
-                    if (s->server_admin && strcmp(DEFAULT_ADMIN, s->server_admin)) {
-                        apr_array_clear(md->contacts);
-                        APR_ARRAY_PUSH(md->contacts, const char *) = 
-                            md_util_schemify(p, s->server_admin, "mailto");
-                        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, base_server, APLOGNO(10044)
-                                     "Managed Domain %s assigned server admin %s", md->name,
-                                     s->server_admin);
-                    }
-                    config->md = md;
-
-                    /* This server matches a managed domain. If it contains names or
-                     * alias that are not in this md, a generated certificate will not match. */
-                    if (APR_SUCCESS == (rv2 = check_coverage(md, s->server_hostname, s, p))) {
-                        for (k = 0; k < s->names->nelts; ++k) {
-                            name = APR_ARRAY_IDX(s->names, k, const char*);
-                            if (APR_SUCCESS != (rv2 = check_coverage(md, name, s, p))) {
-                                break;
-                            }
-                        }
-                    }
-                    if (APR_SUCCESS != rv2) {
-                        rv = rv2;
-                    }
+                if (sc->md == md) {
+                    /* already matched via another domain name */
                     goto next_server;
                 }
+                else if (sc->md) {
+                    ap_log_error(APLOG_MARK, APLOG_ERR, 0, base_server, APLOGNO(10042)
+                                 "conflict: MD %s matches server %s, but MD %s also matches.",
+                                 md->name, s->server_hostname, sc->md->name);
+                    rv = APR_EINVAL;
+                    goto next_server;
+                }
+                
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, base_server, APLOGNO(10043)
+                             "Managed Domain %s applies to vhost %s:%d", md->name,
+                             s->server_hostname, s->port);
+                
+                /* If there is a non-default ServerAdmin defined for this vhost, take
+                 * that one as contact info */
+                if (s->server_admin && strcmp(DEFAULT_ADMIN, s->server_admin)) {
+                    apr_array_clear(md->contacts);
+                    APR_ARRAY_PUSH(md->contacts, const char *) = 
+                    md_util_schemify(p, s->server_admin, "mailto");
+                    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, base_server, APLOGNO(10044)
+                                 "Managed Domain %s assigned server admin %s", md->name,
+                                 s->server_admin);
+                }
+                /* remember */
+                sc->md = md;
+                
+                /* This server matches a managed domain. If it contains names or
+                 * alias that are not in this md, a generated certificate will not match. */
+                if (APR_SUCCESS == (rv2 = check_coverage(md, s->server_hostname, s, p))) {
+                    for (j = 0; j < s->names->nelts; ++j) {
+                        name = APR_ARRAY_IDX(s->names, j, const char*);
+                        if (APR_SUCCESS != (rv2 = check_coverage(md, name, s, p))) {
+                            break;
+                        }
+                    }
+                }
+                
+                if (APR_SUCCESS != rv2) {
+                    rv = rv2;
+                }
+                goto next_server;
             }
-next_server:
-            continue;
         }
-        
-        if (config == NULL && md->drive_mode != MD_DRIVE_ALWAYS) {
-            /* Not an error, but looks suspicious */
-            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, base_server, APLOGNO(10045)
-                         "No VirtualHost matches Managed Domain %s", md->name);
-            APR_ARRAY_PUSH(ctx->unused_names, const char*)  = md->name;
+    next_server:
+        continue;
+    }
+    
+    if (sc == NULL && md->drive_mode != MD_DRIVE_ALWAYS) {
+        /* Not an error, but looks suspicious */
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, base_server, APLOGNO(10045)
+                     "No VirtualHost matches Managed Domain %s", md->name);
+        APR_ARRAY_PUSH(mc->unused_names, const char*)  = md->name;
+    }
+    return rv;
+}
+
+static apr_status_t md_calc_md_list(apr_pool_t *p, apr_pool_t *plog,
+                                    apr_pool_t *ptemp, server_rec *base_server)
+{
+    md_srv_conf_t *sc;
+    md_mod_conf_t *mc;
+    md_t *md, *omd;
+    const char *domain;
+    apr_status_t rv = APR_SUCCESS;
+    ap_listen_rec *lr;
+    apr_sockaddr_t *sa;
+    int i, j;
+
+    sc = md_config_get(base_server);
+    mc = sc->mc;
+    
+    mc->can_http = 0;
+    mc->can_https = 0;
+
+    for (lr = ap_listeners; lr; lr = lr->next) {
+        for (sa = lr->bind_addr; sa; sa = sa->next) {
+            if  (sa->port == mc->local_80 
+                 && (!lr->protocol || !strncmp("http", lr->protocol, 4))) {
+                mc->can_http = 1;
+            }
+            else if (sa->port == mc->local_443
+                     && (!lr->protocol || !strncmp("http", lr->protocol, 4))) {
+                mc->can_https = 1;
+            }
         }
     }
+    
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, base_server, APLOGNO(10037)
+                 "server seems%s reachable via http: (port 80->%d) "
+                 "and%s reachable via https: (port 443->%d) ",
+                 mc->can_http? "" : " not", mc->local_80,
+                 mc->can_https? "" : " not", mc->local_443);
+    
+    /* Complete the properties of the MDs, now that we have the complete, merged
+     * server configurations. 
+     */
+    for (i = 0; i < mc->mds->nelts; ++i) {
+        md = APR_ARRAY_IDX(mc->mds, i, md_t*);
+        md_merge_srv(md, sc, p);
+
+        /* Check that we have no overlap with the MDs already completed */
+        for (j = 0; j < i; ++j) {
+            omd = APR_ARRAY_IDX(mc->mds, j, md_t*);
+            if ((domain = md_common_name(md, omd)) != NULL) {
+                ap_log_error(APLOG_MARK, APLOG_ERR, 0, base_server, APLOGNO(10038)
+                             "two Managed Domains have an overlap in domain '%s'"
+                             ", first definition in %s(line %d), second in %s(line %d)",
+                             domain, md->defn_name, md->defn_line_number,
+                             omd->defn_name, omd->defn_line_number);
+                return APR_EINVAL;
+            }
+        }
+
+        /* Apply to the vhost(s) that this MD matches - if any. Perform some
+         * last finishing touches on the MD. */
+        if (APR_SUCCESS != (rv = apply_to_servers(md, base_server, p, ptemp))) {
+            return rv;
+        }
+
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, base_server, APLOGNO(10039)
+                     "COmpleted MD[%s, CA=%s, Proto=%s, Agreement=%s, Drive=%d, renew=%ld]",
+                     md->name, md->ca_url, md->ca_proto, md->ca_agreement,
+                     md->drive_mode, (long)md->renew_window);
+    }
+    
     return rv;
 }
 
@@ -325,17 +323,14 @@ static apr_status_t check_group_dir(md_store_t *store, md_store_group_t group,
     return rv;
 }
 
-static apr_status_t setup_store(md_store_t **pstore, apr_pool_t *p, server_rec *s,
+static apr_status_t setup_store(md_mod_conf_t *mc, apr_pool_t *p, server_rec *s,
                                 int post_config)
 {
     const char *base_dir;
-    md_config_t *config;
     md_store_t *store;
     apr_status_t rv;
     
-    config = (md_config_t *)md_config_get(s);
-    base_dir = md_config_gets(config, MD_CONFIG_BASE_DIR);
-    base_dir = ap_server_root_relative(p, base_dir);
+    base_dir = ap_server_root_relative(p, mc->base_dir);
     
     if (APR_SUCCESS != (rv = md_store_fs_init(&store, p, base_dir))) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10046)"setup store for %s", base_dir);
@@ -359,28 +354,24 @@ static apr_status_t setup_store(md_store_t **pstore, apr_pool_t *p, server_rec *
                          "setup accounts directory");
             goto out;
         }
-        
     }
     
-    config->store = store;
-    for (s = s->next; s; s = s->next) {
-        config = (md_config_t *)md_config_get(s);
-        config->store = store;
-    }
+    mc->store = store;
 out:
-    *pstore = (APR_SUCCESS == rv)? store : NULL;
     return rv;
 }
 
 static apr_status_t setup_reg(md_reg_t **preg, apr_pool_t *p, server_rec *s, int post_config)
 {
-    md_config_t *config;
+    md_srv_conf_t *sc;
+    md_mod_conf_t *mc;
     apr_status_t rv;
     
-    config = (md_config_t *)md_config_get(s);
-    if (config->store 
-        || APR_SUCCESS == (rv = setup_store(&config->store, p, s, post_config))) {
-        return md_reg_init(preg, p, config->store);
+    sc = md_config_get(s);
+    mc = sc->mc;
+    
+    if (mc->store || APR_SUCCESS == (rv = setup_store(mc, p, s, post_config))) {
+        return md_reg_init(preg, p, mc->store);
     }
     return rv;
 }
@@ -706,7 +697,8 @@ static apr_status_t md_post_config(apr_pool_t *p, apr_pool_t *plog,
 {
     const char *mod_md_init_key = "mod_md_init_counter";
     void *data = NULL;
-    md_ctx ctx;
+    md_srv_conf_t *sc;
+    md_mod_conf_t *mc;
     apr_array_header_t *drive_names;
     md_reg_t *reg;
     apr_status_t rv = APR_SUCCESS;
@@ -726,38 +718,33 @@ static apr_status_t md_post_config(apr_pool_t *p, apr_pool_t *plog,
     }
 
     init_setups(p, s);
-    memset(&ctx, 0, sizeof(ctx));
     
     md_log_set(log_is_level, log_print, NULL);
 
+    sc = md_config_get(s);
+    mc = sc->mc;
+    
     /* 1. Check uniqueness of MDs, calculate global, configured MD list.
      * If successful, we have a list of MD definitions that do not overlap. */
     /* We also need to find out if we can be reached on 80/443 from the outside (e.g. the CA) */
-    if (APR_SUCCESS != (rv = md_calc_md_list(&ctx, p, plog, ptemp, s))) {
+    if (APR_SUCCESS != (rv = md_calc_md_list(p, plog, ptemp, s))) {
         goto out;
     }
     
-    /* 2. Check mappings of MDs to VirtulHosts defined.
-     * If successful, we have assigned MDs to server_recs in a unique way. Each server_rec
-     * config will carry 0 or 1 MD record. */
-    if (APR_SUCCESS != (rv = md_check_vhost_mapping(&ctx, p, plog, ptemp, s))) {
-        goto out;
-    }    
-    
-    /* 3. Synchronize the defintions we now have with the store via a registry (reg). */
+    /* 2. Synchronize the defintions we now have with the store via a registry (reg). */
     if (APR_SUCCESS != (rv = setup_reg(&reg, p, s, 1))) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10072)
                      "setup md registry");
         goto out;
     }
-    if (APR_SUCCESS != (rv = md_reg_sync(reg, p, ptemp, ctx.mds, 
-                                         ctx.can_http, ctx.can_https))) {
+    if (APR_SUCCESS != (rv = md_reg_sync(reg, p, ptemp, mc->mds, 
+                                         mc->can_http, mc->can_https))) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10073)
-                     "synching %d mds to registry", ctx.mds->nelts);
+                     "synching %d mds to registry", mc->mds->nelts);
         goto out;
     }
     
-    /* Determine the managed domains that are in auto drive_mode. For those,
+    /* 3. Determine the managed domains that are in auto drive_mode. For those,
      * determine in which state they are:
      *  - UNKNOWN:            should not happen, report, dont drive
      *  - ERROR:              something we do not know how to fix, report, dont drive
@@ -766,12 +753,12 @@ static apr_status_t md_post_config(apr_pool_t *p, apr_pool_t *plog,
      *
      * Start the watchdog if we have anything, now or in the future.
      */
-    drive_names = apr_array_make(ptemp, ctx.mds->nelts+1, sizeof(const char *));
-    for (i = 0; i < ctx.mds->nelts; ++i) {
-        md = APR_ARRAY_IDX(ctx.mds, i, const md_t *);
+    drive_names = apr_array_make(ptemp, mc->mds->nelts+1, sizeof(const char *));
+    for (i = 0; i < mc->mds->nelts; ++i) {
+        md = APR_ARRAY_IDX(mc->mds, i, const md_t *);
         switch (md->drive_mode) {
             case MD_DRIVE_AUTO:
-                if (md_array_str_index(ctx.unused_names, md->name, 0, 0) >= 0) {
+                if (md_array_str_index(mc->unused_names, md->name, 0, 0) >= 0) {
                     break;
                 }
                 /* fall through */
@@ -784,10 +771,11 @@ static apr_status_t md_post_config(apr_pool_t *p, apr_pool_t *plog,
         }
     }
     
+    /* 4. I there are MDs to drive, start a watchdog to check on them regularly */
     if (drive_names->nelts > 0) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, s, APLOGNO(10074)
                      "%d out of %d mds are configured for auto-drive", 
-                     drive_names->nelts, ctx.mds->nelts);
+                     drive_names->nelts, mc->mds->nelts);
     
         load_stage_sets(drive_names, p, reg, s);
         md_http_use_implementation(md_curl_get_impl(p));
@@ -806,7 +794,7 @@ out:
 
 static int md_is_managed(server_rec *s)
 {
-    md_config_t *conf = (md_config_t *)md_config_get(s);
+    md_srv_conf_t *conf = md_config_get(s);
 
     if (conf && conf->md) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(10076) 
@@ -823,18 +811,21 @@ static apr_status_t md_get_credentials(server_rec *s, apr_pool_t *p,
                                        const char **pchainfile)
 {
     apr_status_t rv = APR_ENOENT;    
-    md_config_t *conf;
+    md_srv_conf_t *sc;
     md_reg_t *reg;
     const md_t *md;
     
     *pkeyfile = NULL;
     *pcertfile = NULL;
     *pchainfile = NULL;
-    conf = (md_config_t *)md_config_get(s);
     
-    if (conf && conf->md && conf->store) {
-        if (APR_SUCCESS == (rv = md_reg_init(&reg, p, conf->store))) {
-            md = md_reg_get(reg, conf->md->name, p);
+    sc = md_config_get(s);
+    
+    if (sc && sc->md) {
+        assert(sc->mc);
+        assert(sc->mc->store);
+        if (APR_SUCCESS == (rv = md_reg_init(&reg, p, sc->mc->store))) {
+            md = md_reg_get(reg, sc->md->name, p);
             if (md->state != MD_S_COMPLETE) {
                 return APR_EAGAIN;
             }
@@ -850,7 +841,7 @@ static apr_status_t md_get_credentials(server_rec *s, apr_pool_t *p,
 static int md_is_challenge(conn_rec *c, const char *servername,
                            X509 **pcert, EVP_PKEY **pkey)
 {
-    md_config_t *conf;
+    md_srv_conf_t *sc;
     apr_size_t slen, sufflen = sizeof(MD_TLSSNI01_DNS_SUFFIX) - 1;
     apr_status_t rv;
 
@@ -860,9 +851,9 @@ static int md_is_challenge(conn_rec *c, const char *servername,
         return 0;
     }
     
-    conf = (md_config_t *)md_config_get(c->base_server);
-    if (conf && conf->store) {
-        md_store_t *store = conf->store;
+    sc = md_config_get(c->base_server);
+    if (sc && sc->mc->store) {
+        md_store_t *store = sc->mc->store;
         md_cert_t *mdcert;
         md_pkey_t *mdpkey;
         
@@ -897,23 +888,21 @@ static int md_is_challenge(conn_rec *c, const char *servername,
 static int md_http_challenge_pr(request_rec *r)
 {
     apr_bucket_brigade *bb;
-    const md_config_t *conf;
-    const char *base_dir, *name, *data;
+    const md_srv_conf_t *sc;
+    const char *name, *data;
     apr_status_t rv;
             
     if (!strncmp(ACME_CHALLENGE_PREFIX, r->parsed_uri.path, sizeof(ACME_CHALLENGE_PREFIX)-1)) {
         if (r->method_number == M_GET) {
             md_store_t *store;
         
-            conf = ap_get_module_config(r->server->module_config, &md_module);
-            store = conf->store;
+            sc = ap_get_module_config(r->server->module_config, &md_module);
+            store = sc? sc->mc->store : NULL;
             
-            base_dir = md_config_gets(conf, MD_CONFIG_BASE_DIR);
             name = r->parsed_uri.path + sizeof(ACME_CHALLENGE_PREFIX)-1;
 
             r->status = HTTP_NOT_FOUND;
             if (!ap_strchr_c(name, '/') && store) {
-                base_dir = ap_server_root_relative(r->pool, base_dir);
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, 
                               "Challenge for %s (%s)", r->hostname, r->uri);
 
@@ -935,7 +924,7 @@ static int md_http_challenge_pr(request_rec *r)
                 }
                 else if (APR_ENOENT != rv) {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(10081)
-                                  "loading challenge %s from store %s", name, base_dir);
+                                  "loading challenge %s from store", name);
                     return HTTP_INTERNAL_SERVER_ERROR;
                 }
             }
