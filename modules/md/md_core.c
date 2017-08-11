@@ -189,24 +189,15 @@ md_t *md_get_by_dns_overlap(struct apr_array_header_t *mds, const md_t *md)
     return NULL;
 }
 
-const char *md_create(md_t **pmd, apr_pool_t *p, apr_array_header_t *domains)
+md_t *md_create(apr_pool_t *p, apr_array_header_t *domains)
 {
     md_t *md;
     
-    if (domains->nelts <= 0) {
-        return "needs at least one domain name";
-    }
-    
     md = md_create_empty(p);
-    if (!md) {
-        return "not enough memory";
-    }
-
     md->domains = md_array_str_compact(p, domains, 0);
     md->name = APR_ARRAY_IDX(md->domains, 0, const char *);
     
-    *pmd = md;
-    return NULL;   
+    return md;
 }
 
 /**************************************************************************************************/
