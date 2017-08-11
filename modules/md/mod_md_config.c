@@ -29,6 +29,18 @@
 #include "mod_md_private.h"
 #include "mod_md_config.h"
 
+#define MD_CMD_MD             "ManagedDomain"
+#define MD_CMD_MD_SECTION     "<ManagedDomain"
+#define MD_CMD_CA             "MDCertificateAuthority"
+#define MD_CMD_CAAGREEMENT    "MDCertificateAgreement"
+#define MD_CMD_CACHALLENGES   "MDCAChallenges"
+#define MD_CMD_CAPROTO        "MDCertificateProtocol"
+#define MD_CMD_DRIVEMODE      "MDDriveMode"
+#define MD_CMD_MEMBER         "MDMember"
+#define MD_CMD_MEMBERS        "MDMembers"
+#define MD_CMD_PORTMAP        "MDPortMap"
+#define MD_CMD_RENEWWINDOW    "MDRenewWindow"
+#define MD_CMD_STOREDIR       "MDStoreDir"
 
 #define DEF_VAL     (-1)
 
@@ -218,7 +230,7 @@ static const char *md_config_sec_add_members(cmd_parms *cmd, void *dc,
     const char *err;
     int i;
     
-    if (NULL != (err = md_section_check(cmd, "<ManagedDomain"))) {
+    if (NULL != (err = md_section_check(cmd, MD_CMD_MD_SECTION))) {
         if (argc == 1) {
             /* only allowed value outside a section */
             return set_transitive(&config->transitive, argv[0]);
@@ -278,7 +290,7 @@ static const char *md_config_set_ca(cmd_parms *cmd, void *dc, const char *value)
     md_config_t *config = (md_config_t *)md_config_get(cmd->server);
     const char *err;
 
-    if (inside_section(cmd, "<ManagedDomain")) {
+    if (inside_section(cmd, MD_CMD_MD_SECTION)) {
         md_config_dir_t *dconf = dc;
         dconf->md->ca_url = value;
     }
@@ -296,7 +308,7 @@ static const char *md_config_set_ca_proto(cmd_parms *cmd, void *dc, const char *
     md_config_t *config = (md_config_t *)md_config_get(cmd->server);
     const char *err;
 
-    if (inside_section(cmd, "<ManagedDomain")) {
+    if (inside_section(cmd, MD_CMD_MD_SECTION)) {
         md_config_dir_t *dconf = dc;
         dconf->md->ca_proto = value;
     }
@@ -314,7 +326,7 @@ static const char *md_config_set_agreement(cmd_parms *cmd, void *dc, const char 
     md_config_t *config = (md_config_t *)md_config_get(cmd->server);
     const char *err;
 
-    if (inside_section(cmd, "<ManagedDomain")) {
+    if (inside_section(cmd, MD_CMD_MD_SECTION)) {
         md_config_dir_t *dconf = dc;
         dconf->md->ca_agreement = value;
     }
@@ -346,7 +358,7 @@ static const char *md_config_set_drive_mode(cmd_parms *cmd, void *dc, const char
         return apr_pstrcat(cmd->pool, "unknown MDDriveMode ", value, NULL);
     }
     
-    if (inside_section(cmd, "<ManagedDomain")) {
+    if (inside_section(cmd, MD_CMD_MD_SECTION)) {
         md_config_dir_t *dconf = dc;
         dconf->md->drive_mode = drive_mode;
     }
@@ -402,7 +414,7 @@ static const char *md_config_set_renew_window(cmd_parms *cmd, void *dc, const ch
         return "MDRenewWindow has wrong format";
     }
         
-    if (inside_section(cmd, "<ManagedDomain")) {
+    if (inside_section(cmd, MD_CMD_MD_SECTION)) {
         md_config_dir_t *dconf = dc;
         dconf->md->renew_window = timeout;
     }
@@ -490,7 +502,7 @@ static const char *md_config_set_cha_tyes(cmd_parms *cmd, void *dc,
     const char *err;
     int i;
 
-    if (inside_section(cmd, "<ManagedDomain")) {
+    if (inside_section(cmd, MD_CMD_MD_SECTION)) {
         md_config_dir_t *dconf = dc;
         pcha = &dconf->md->ca_challenges;
     }
@@ -513,39 +525,37 @@ static const char *md_config_set_cha_tyes(cmd_parms *cmd, void *dc,
 }
 
 
-#define AP_END_CMD     AP_INIT_TAKE1(NULL, NULL, NULL, RSRC_CONF, NULL)
-
 const command_rec md_cmds[] = {
-    AP_INIT_RAW_ARGS("<ManagedDomain", md_config_sec_start, NULL, RSRC_CONF, 
-                      "Container for a manged domain with common settings and certificate."),
-    AP_INIT_TAKE_ARGV("MDMember", md_config_sec_add_members, NULL, RSRC_CONF, 
-                      "Define domain name(s) part of the Managed Domain. Use 'auto' or "
-                      "'manual' to enable/disable auto adding names from virtual hosts."),
-    AP_INIT_TAKE_ARGV("MDMembers", md_config_sec_add_members, NULL, RSRC_CONF, 
-                      "Define domain name(s) part of the Managed Domain. Use 'auto' or "
-                      "'manual' to enable/disable auto adding names from virtual hosts."),
-    AP_INIT_TAKE_ARGV("ManagedDomain", md_config_set_names, NULL, RSRC_CONF, 
-                      "A group of server names with one certificate"),
-    AP_INIT_TAKE1("MDCertificateAuthority", md_config_set_ca, NULL, RSRC_CONF, 
+    AP_INIT_TAKE1(     MD_CMD_CA, md_config_set_ca, NULL, RSRC_CONF, 
                   "URL of CA issueing the certificates"),
-    AP_INIT_TAKE1("MDStoreDir", md_config_set_store_dir, NULL, RSRC_CONF, 
-                  "the directory for file system storage of managed domain data."),
-    AP_INIT_TAKE1("MDCertificateProtocol", md_config_set_ca_proto, NULL, RSRC_CONF, 
-                  "Protocol used to obtain/renew certificates"),
-    AP_INIT_TAKE1("MDCertificateAgreement", md_config_set_agreement, NULL, RSRC_CONF, 
+    AP_INIT_TAKE1(     MD_CMD_CAAGREEMENT, md_config_set_agreement, NULL, RSRC_CONF, 
                   "URL of CA Terms-of-Service agreement you accept"),
-    AP_INIT_TAKE1("MDDriveMode", md_config_set_drive_mode, NULL, RSRC_CONF, 
+    AP_INIT_TAKE_ARGV( MD_CMD_CACHALLENGES, md_config_set_cha_tyes, NULL, RSRC_CONF, 
+                      "A list of challenge types to be used."),
+    AP_INIT_TAKE1(     MD_CMD_CAPROTO, md_config_set_ca_proto, NULL, RSRC_CONF, 
+                  "Protocol used to obtain/renew certificates"),
+    AP_INIT_TAKE1(     MD_CMD_DRIVEMODE, md_config_set_drive_mode, NULL, RSRC_CONF, 
                   "method of obtaining certificates for the managed domain"),
-    AP_INIT_TAKE1("MDRenewWindow", md_config_set_renew_window, NULL, RSRC_CONF, 
-                  "Time length for renewal before certificate expires (defaults to days)"),
-    AP_INIT_TAKE12("MDPortMap", md_config_set_port_map, NULL, RSRC_CONF, 
+    AP_INIT_TAKE_ARGV( MD_CMD_MD, md_config_set_names, NULL, RSRC_CONF, 
+                      "A group of server names with one certificate"),
+    AP_INIT_RAW_ARGS(  MD_CMD_MD_SECTION, md_config_sec_start, NULL, RSRC_CONF, 
+                     "Container for a manged domain with common settings and certificate."),
+    AP_INIT_TAKE_ARGV( MD_CMD_MEMBER, md_config_sec_add_members, NULL, RSRC_CONF, 
+                      "Define domain name(s) part of the Managed Domain. Use 'auto' or "
+                      "'manual' to enable/disable auto adding names from virtual hosts."),
+    AP_INIT_TAKE_ARGV( MD_CMD_MEMBERS, md_config_sec_add_members, NULL, RSRC_CONF, 
+                      "Define domain name(s) part of the Managed Domain. Use 'auto' or "
+                      "'manual' to enable/disable auto adding names from virtual hosts."),
+    AP_INIT_TAKE12(    MD_CMD_PORTMAP, md_config_set_port_map, NULL, RSRC_CONF, 
                   "Declare the mapped ports 80 and 443 on the local server. E.g. 80:8000 "
                   "to indicate that the server port 8000 is reachable as port 80 from the "
                   "internet. Use 80:- to indicate that port 80 is not reachable from "
                   "the outside."),
-    AP_INIT_TAKE_ARGV("MDCAChallenges", md_config_set_cha_tyes, NULL, RSRC_CONF, 
-                      "A list of challenge types to be used."),
-    AP_END_CMD
+    AP_INIT_TAKE1(     MD_CMD_STOREDIR, md_config_set_store_dir, NULL, RSRC_CONF, 
+                  "the directory for file system storage of managed domain data."),
+    AP_INIT_TAKE1(     MD_CMD_RENEWWINDOW, md_config_set_renew_window, NULL, RSRC_CONF, 
+                  "Time length for renewal before certificate expires (defaults to days)"),
+    AP_INIT_TAKE1(NULL, NULL, NULL, RSRC_CONF, NULL)
 };
 
 
