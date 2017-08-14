@@ -34,10 +34,12 @@
     <summary>
         <p>
         This module manages common properties of domains for one or more virtual hosts. 
-        Specifically it can use the ACME protocol (<a href="https://datatracker.ietf.org/doc/draft-ietf-acme-acme/">RFC Draft</a>) 
+        Specifically it can use the ACME protocol
+        (<a href="https://datatracker.ietf.org/doc/draft-ietf-acme-acme/">RFC Draft</a>) 
         to automate certificate provisioning. These will be configured for managed domains and
         their virtual hosts automatically. This includes renewal of certificates before they
-        expire.</p>
+        expire. The most famous Certificate Autority currently implementing the ACME protocol
+        is <a href="https://letsencrypt.org/">Let's Encrypt</a>.</p>
         
         <note type="warning"><title>Warning</title>
             <p>This module is experimental. Its behaviors, directives, and 
@@ -61,10 +63,12 @@ ManagedDomain example.org
 &lt;/VirtualHost&gt;
         </highlight>
         <p>
-            This setup will, on server start, contact <a href="https://letsencrypt.org/">Let's Encrypt</a> 
+            This setup will, on server start, contact
+            <a href="https://letsencrypt.org/">Let's Encrypt</a>
             to request a certificate for the domain. If Let's Encrypt can verify the ownership
             of the domain, the module will retrieve the certificate and its chain, store it
-            in the local file system and provide it, on next restart, to mod_ssl.
+            in the local file system (see <directive module="mod_md">MDStoreDir</directive>)
+            and provide it, on next restart, to mod_ssl.
         </p><p>
             This happens while the server is already running. All other hosts will continue
             to work as before. While a certificate is not available, requests for the managed
@@ -73,12 +77,11 @@ ManagedDomain example.org
         </note>
 
     </summary>
-    
 
     <directivesynopsis>
         <name>ManagedDomain</name>
         <description>Define list of domain names that belong to one group</description>
-        <syntax>ManagedDomain dns-name [ other-dns-name... ]</syntax>
+        <syntax>ManagedDomain <var>dns-name</var> [ <var>other-dns-name</var>... ]</syntax>
         <contextlist>
             <context>server config</context>
         </contextlist>
@@ -86,15 +89,17 @@ ManagedDomain example.org
         <usage>
             <p>
                 All the names in the list are managed as one Managed Domain (MD). 
-                mod_md will request one certificate that is valid for all these names. This
+                mod_md will request one single certificate that is valid for all these names. This
                 directive uses the global settings (see other MD directives below). If you
                 need specific settings for one MD, use
-                the <directive module="mod_md" type="section">&lt;ManagedDomain</directive>.
+                the <directive module="mod_md" type="section">ManagedDomain</directive>.
             </p><p>
-                There are 2 additional settings that are necessary for a Managed Domain: ServerAdmin
-                and MDCertificateAgreement. The mail address of 
-                <directive module="mod_core">ServerAdmin</directive> is used to register
-                at the CA (Let's Encrypt by default). The CA may use it to notify you about
+                There are 2 additional settings that are necessary for a Managed Domain:
+                <directive module="core">ServerAdmin</directive>
+                and <directive module="mod_md">MDCertificateAgreement</directive>.
+                The mail address of <directive module="core">ServerAdmin</directive>
+                is used to register at the CA (Let's Encrypt by default).
+                The CA may use it to notify you about
                 changes in its service or status of your certificates.
             </p><p>
                 The second setting, <directive module="mod_md">MDCertificateAgreement</directive>, 
@@ -154,9 +159,9 @@ ManagedDomain example.org
     </directivesynopsis>
 
     <directivesynopsis type="section">
-        <name>&lt;ManagedDomain</name>
-        <description>Define a group of domains with common properties</description>
-        <syntax>&lt;ManagedDomain dns-name&gt;...&lt;/ManagedDomain&gt;</syntax>
+        <name>ManagedDomain</name>
+        <description>Container for directives applied to the same managed domains</description>
+        <syntax>&lt;ManagedDomain <var>dns-name</var> [ <var>other-dns-name</var>... ]&gt;...&lt;/ManagedDomain&gt;</syntax>
         <contextlist>
             <context>server config</context>
         </contextlist>
@@ -174,7 +179,7 @@ ManagedDomain example.org
     MDDriveMode manual
     MDCertificateAuthority   https://someotherca.com/ACME
     MDCertificateAgreement   https://someotherca.com/terms/v_1.02.pdf
-&lt;/ManagedDomain example.org&gt;
+&lt;/ManagedDomain&gt;
                 </highlight>
             </example>
         </usage>
@@ -224,8 +229,8 @@ ManagedDomain example.org www.example.org mail.example.org
             </p>
             <example><title>LE Staging Setup</title>
                 <highlight language="config">
-                    MDCertificateAuthority https://acme-staging.api.letsencrypt.org/directory
-                    MDCertificateAgreement https://letsencrypt.org/documents/LE-SA-v1.1.1-August-1-2016.pdf
+MDCertificateAuthority https://acme-staging.api.letsencrypt.org/directory
+MDCertificateAgreement https://letsencrypt.org/documents/LE-SA-v1.1.1-August-1-2016.pdf
                 </highlight>
             </example>
         </usage>
