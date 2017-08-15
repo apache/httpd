@@ -235,6 +235,7 @@ typedef struct {
     unsigned int error_override_set:1;
     unsigned int alias_set:1;
     unsigned int add_forwarded_headers:1;
+    unsigned int add_forwarded_headers_set:1;
 
     /** Named back references */
     apr_array_header_t *refs;
