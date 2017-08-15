@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy: Fix ProxyAddHeaders merging.  [Joe Orton]
+
   *) mod_md: new module for managing domains across VirtualHosts with ACME protocol 
      implementation for automated certificate signup and renewal. Default CA is
      the test area of Let's Encrypt right now, so certificates root will not be valid.

@@ -1568,6 +1568,7 @@ static void *create_proxy_dir_config(apr_pool_t *p, char *dummy)
     new->error_override = 0;
     new->error_override_set = 0;
     new->add_forwarded_headers = 1;
+    new->add_forwarded_headers_set = 0;
 
     return (void *) new;
 }
@@ -1599,7 +1600,12 @@ static void *merge_proxy_dir_config(apr_pool_t *p, void *basev, void *addv)
     new->error_override_set = add->error_override_set || base->error_override_set;
     new->alias = (add->alias_set == 0) ? base->alias : add->alias;
     new->alias_set = add->alias_set || base->alias_set;
-    new->add_forwarded_headers = add->add_forwarded_headers;
+    new->add_forwarded_headers =
+        (add->add_forwarded_headers_set == 0) ? base->add_forwarded_headers
+        : add->add_forwarded_headers;
+    new->add_forwarded_headers_set = add->add_forwarded_headers_set
+        || base->add_forwarded_headers_set;
+    
     return new;
 }
 
@@ -2102,6 +2108,7 @@ static const char *
 {
    proxy_dir_conf *conf = dconf;
    conf->add_forwarded_headers = flag;
+   conf->add_forwarded_headers_set = 1;
    return NULL;
 }
 static const char *
