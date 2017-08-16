@@ -2174,7 +2174,7 @@ static apr_status_t init_vhost(conn_rec *c, SSL *ssl)
                 
                 if (SSL_check_private_key(ssl) < 1) {
                     ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, c, APLOGNO(10088)
-                                  "Challenbge certificate and private key %s "
+                                  "Challenge certificate and private key %s "
                                   "do not match", servername);
                     return APR_EGENERAL;
                 }
