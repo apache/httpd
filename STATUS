@@ -249,7 +249,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_proxy: fix ProxyAddHeaders merging.
      trunk patch: http://svn.apache.org/viewvc?rev=1805099&view=rev
      2.4.x patch: trunk patch works
-     +1: jorton, 
+     +1: jorton, rpluem
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
