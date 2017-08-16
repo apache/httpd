@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy: loadfactor parameter can now be a decimal number (eg: 1.25).
+     [Jim Jagielski]
+
   *) mod_ssl: add SSLPolicy (define/use) and SSLProxyPolicy directives plus documentation. Add
      core definitions for policies 'modern', 'intermediate' and 'old', as defined by Mozilla
      in <https://wiki.mozilla.org/Security/Server_Side_TLS>. [Stefan Eissing]
