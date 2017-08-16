@@ -520,6 +520,12 @@ void ssl_config_proxy_merge(apr_pool_t *p,
 
 #define SSL_MOD_POLICIES_KEY "ssl_module_policies"
 
+#ifndef OPENSSL_NO_SSL3
+#define STUPID_PROTOCOL_CONSTANTS_SSLV3      SSL_PROTOCOL_SSLV3
+#else
+#define STUPID_PROTOCOL_CONSTANTS_SSLV3      0
+#endif
+
 /**
  * Define a core set of policies that are always there:
  * - 'modern' from https://wiki.mozilla.org/Security/Server_Side_TLS
@@ -529,7 +535,7 @@ void ssl_config_proxy_merge(apr_pool_t *p,
 #ifdef HAVE_TLSV1_X
     /* Only with OpenSSL > v1.0.2 do we have a chance to implement modern */
 #define SSL_POLICY_LEGACY_PROTOCOLS  \
-    (SSL_PROTOCOL_SSLV3|SSL_PROTOCOL_TLSV1|SSL_PROTOCOL_TLSV1_1)
+    (STUPID_PROTOCOL_CONSTANTS_SSLV3|SSL_PROTOCOL_TLSV1|SSL_PROTOCOL_TLSV1_1)
 
 #define SSL_POLICY_MODERN_PROTOCOLS  \
     (SSL_PROTOCOL_ALL & ~SSL_POLICY_LEGACY_PROTOCOLS)
@@ -542,7 +548,8 @@ void ssl_config_proxy_merge(apr_pool_t *p,
 #endif
     
 #define SSL_POLICY_INTERMEDIATE_PROTOCOLS \
-    (SSL_PROTOCOL_ALL & ~SSL_PROTOCOL_SSLV3)
+    (SSL_PROTOCOL_ALL & ~STUPID_PROTOCOL_CONSTANTS_SSLV3)
+    
 #define SSL_POLICY_INTERMEDIATE_CIPHERS \
     "ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:" \
     "ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:" \
