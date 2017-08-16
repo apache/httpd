@@ -108,7 +108,7 @@ static const char *set_worker_param(apr_pool_t *p,
          */
         double fval = atof(val);
         ival = fval * 100.0;
-        if (ival < 1 || ival > 100)
+        if (ival < 100 || ival > 10000)
             return "LoadFactor must be a number between 1..100";
         worker->s->lbfactor = ival;
     }
