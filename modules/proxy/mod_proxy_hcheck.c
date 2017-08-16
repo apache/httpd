@@ -1026,7 +1026,7 @@ static int hc_post_config(apr_pool_t *p, apr_pool_t *plog,
             continue;
         }
         rv = hc_watchdog_register_callback(watchdog,
-                apr_time_from_sec(AP_WD_TM_SLICE),
+                AP_WD_TM_SLICE,
                 ctx,
                 hc_watchdog_callback);
         if (rv) {

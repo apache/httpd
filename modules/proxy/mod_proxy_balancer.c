@@ -1096,7 +1096,7 @@ static int balancer_handler(request_rec *r)
             int ival;
             double fval = atof(val);
             ival = fval * 100.0;
-            if (ival >= 1 && ival <= 100) {
+            if (ival >= 100 && ival <= 10000) {
                 wsel->s->lbfactor = ival;
                 if (bsel)
                     recalc_factors(bsel);
@@ -1617,7 +1617,7 @@ static int balancer_handler(request_rec *r)
                 ap_rputs(apr_strfsize(worker->s->read, fbuf), r);
                 if (set_worker_hc_param_f) {
                     ap_rprintf(r, "</td><td>%s</td>", ap_proxy_show_hcmethod(worker->s->method));
-                    ap_rprintf(r, "<td>%dms</td>", (int)apr_time_msec(worker->s->interval));
+                    ap_rprintf(r, "<td>%" APR_TIME_T_FMT "ms</td>", apr_time_as_msec(worker->s->interval));
                     ap_rprintf(r, "<td>%d (%d)</td>", worker->s->passes,worker->s->pcount);
                     ap_rprintf(r, "<td>%d (%d)</td>", worker->s->fails, worker->s->fcount);
                     ap_rprintf(r, "<td>%s</td>", worker->s->hcuri);
@@ -1687,7 +1687,7 @@ static int balancer_handler(request_rec *r)
                 hc_select_exprs_f(r, wsel->s->hcexpr);
                 ap_rputs("</select>\n</td></tr>\n", r);
                 ap_rprintf(r, "<tr><td>Interval (ms)</td><td><input name='w_hi' id='w_hi' type='text'"
-                           "value='%d'></td></tr>\n", (int)apr_time_msec(wsel->s->interval));
+                           "value='%" APR_TIME_T_FMT "'></td></tr>\n", apr_time_as_msec(wsel->s->interval));
                 ap_rprintf(r, "<tr><td>Passes trigger</td><td><input name='w_hp' id='w_hp' type='text'"
                            "value='%d'></td></tr>\n", wsel->s->passes);
                 ap_rprintf(r, "<tr><td>Fails trigger)</td><td><input name='w_hf' id='w_hf' type='text'"
