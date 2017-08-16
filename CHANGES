@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.28
 
+  *) core: Disallow multiple Listen on the same IP:port when listener buckets
+     are configured (ListenCoresBucketsRatio > 0), consistently with the single
+     bucket case (default), thus avoiding the leak of the corresponding socket
+     descriptors on graceful restart.  [Yann Ylavic]
+
   *) event: Avoid listener periodic wake ups by using the pollset wake-ability
      when available.  PR 57399.  [Yann Ylavic, Luca Toscano]
 

@@ -116,15 +116,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) core: Disallow multiple Listen on the same IP:port when listener buckets
-     are configured (ListenCoresBucketsRatio > 0), consistently with the single
-     bucket case (default), thus avoiding the leak of the corresponding socket
-     descriptors on graceful restart.
-     trunk patch: http://svn.apache.org/r1789220
-                  http://svn.apache.org/r1792675
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, jim, jorton, 
-
    *) prefork: This fixes race-condition in signals handling when httpd is
                runnning on foreground and user hits ctrl+c
      trunk patch: http://svn.apache.org/r1618555
