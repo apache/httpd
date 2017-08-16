@@ -247,7 +247,11 @@ md_objs="dnl
 mod_md.lo dnl
 mod_md_config.lo dnl
 mod_md_os.lo dnl
+libmd.la dnl
 "
+
+# Ensure that other modules can pick up mod_md.h
+APR_ADDTO(INCLUDES, [-I\$(top_srcdir)/$modpath_current])
 
 dnl # hook module into the Autoconf mechanism (--enable-md)
 APACHE_MODULE(md, [Managed Domain handling], $md_objs, , most, [
@@ -272,11 +276,6 @@ APACHE_MODULE(md, [Managed Domain handling], $md_objs, , most, [
     APR_ADDTO(MOD_MD_LDADD, [ "libmd.la" ])
     APR_ADDTO(A2MD_LDADD, [ "libmd.la" ])
 ])
-
-# Ensure that other modules can pick up mod_md.h
-APR_ADDTO(INCLUDES, [-I\$(top_srcdir)/$modpath_current])
-
-
 
 dnl #  end of module specific part
 APACHE_MODPATH_FINISH
