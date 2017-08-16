@@ -194,8 +194,8 @@
                                     /modulesynopsis/directivesynopsis">
                             <xsl:sort select="name" />
                                 <xsl:variable name="lowername"
-                                    select="translate(name, $uppercase,
-                                                      $lowercase)" />
+                                    select="concat(translate(name, $uppercase,
+                                                   $lowercase),@type)" />
 
                                 <xsl:choose>
                                 <xsl:when test="not(@location)">
@@ -353,9 +353,12 @@
     <xsl:call-template name="toplink" />&lf;
 
     <div class="directive-section">
+        <!-- Concatenate the Directive name with its type to allow
+             a directive to be referenced multiple times
+             with different types -->
         <xsl:variable name="lowername"
-            select="translate(name, $uppercase, $lowercase)" />
-
+            select="concat(translate(name, $uppercase, $lowercase),@type)" />
+        <xsl:variable name="directivename" select="concat(name,@type)" />
         <!-- Directive heading gets both mixed case and lowercase      -->
         <!-- anchors, and includes lt/gt only for "section" directives -->
         <h2>
@@ -377,7 +380,7 @@
                 </xsl:otherwise>
                 </xsl:choose>
 
-                <a id="{name}" name="{name}">
+                <a id="{$directivename}" name="{$directivename}">
                     <xsl:if test="@type='section'">&lt;</xsl:if>
                     <xsl:value-of select="name" />
                     <xsl:if test="@type='section'">&gt;</xsl:if>
@@ -385,7 +388,7 @@
             </xsl:when>
 
             <xsl:otherwise>
-                <a id="{name}" name="{name}">
+                <a id="{$directivename}" name="{$directivename}">
                     <xsl:if test="@type='section'">&lt;</xsl:if>
                     <xsl:value-of select="name" />
                     <xsl:if test="@type='section'">&gt;</xsl:if>
