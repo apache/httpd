@@ -312,6 +312,15 @@ static const command_rec ssl_config_cmds[] = {
     AP_INIT_RAW_ARGS("SSLLogLevel", ap_set_deprecated, NULL, OR_ALL,
       "SSLLogLevel directive is no longer supported - use LogLevel."),
 
+    AP_INIT_TAKE1("<SSLPolicy", ssl_cmd_SSLPolicyDefine, NULL, RSRC_CONF, 
+                "Define a set of SSL* configurations under a new name. Such a policy may "
+                "be used in any location where the SSL* directives are viable. The policy "
+                "may contain both SSL* and SSLProxy* specific settings. Which one is applied "
+                "depends on the use."),
+    AP_INIT_TAKE1("SSLPolicy", ssl_cmd_SSLPolicyApply, NULL, RSRC_CONF, 
+                "Use the SSL* (not the SSLProxy*) settings from the policy with the given name."),
+    AP_INIT_TAKE1("SSLProxyPolicy", ssl_cmd_SSLProxyPolicyApply, NULL, RSRC_CONF|PROXY_CONF, 
+                "Use the SSLProxy* settings from the policy with the given name."),
     AP_END_CMD
 };
 

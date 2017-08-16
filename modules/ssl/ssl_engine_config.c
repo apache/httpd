@@ -26,6 +26,9 @@
                                       /* ``Damned if you do,
                                            damned if you don't.''
                                                -- Unknown        */
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "ssl_private.h"
 #include "util_mutex.h"
 #include "ap_provider.h"
@@ -226,6 +229,8 @@ static SSLSrvConfigRec *ssl_config_server_new(apr_pool_t *p)
     sc->compression            = UNSET;
 #endif
     sc->session_tickets        = UNSET;
+    sc->policies               = NULL;
+    sc->error_policy           = NULL;
 
     modssl_ctx_init_server(sc, p);
 
@@ -339,12 +344,19 @@ static void modssl_ctx_cfg_merge_server(apr_pool_t *p,
 #endif
 }
 
+static void ssl_policy_apply(SSLSrvConfigRec *sc, apr_pool_t *p);
+static void ssl_dir_policy_apply(SSLDirConfigRec *dc, apr_pool_t *p);
+
 void *ssl_config_server_merge(apr_pool_t *p, void *basev, void *addv)
 {
     SSLSrvConfigRec *base = (SSLSrvConfigRec *)basev;
     SSLSrvConfigRec *add  = (SSLSrvConfigRec *)addv;
     SSLSrvConfigRec *mrg  = ssl_config_server_new(p);
 
+    /* This is a NOP, unless a policy has not been applied yet */
+    ssl_policy_apply(base, p);
+    ssl_policy_apply(add, p);
+    
     cfgMerge(mc, NULL);
     cfgMerge(enabled, SSL_ENABLED_UNSET);
     cfgMergeInt(session_cache_timeout);
@@ -361,6 +373,9 @@ void *ssl_config_server_merge(apr_pool_t *p, void *basev, void *addv)
 #endif
     cfgMergeBool(session_tickets);
 
+    mrg->policies = NULL;
+    cfgMergeString(error_policy);
+                         
     modssl_ctx_cfg_merge_server(p, base->server, add->server, mrg->server);
 
     return mrg;
@@ -410,6 +425,9 @@ void *ssl_config_perdir_create(apr_pool_t *p, char *dir)
     modssl_ctx_init_proxy(dc, p);
     dc->proxy_post_config = FALSE;
 
+    dc->policies = NULL;
+    dc->error_policy = NULL;
+    
     return dc;
 }
 
@@ -435,6 +453,9 @@ void *ssl_config_perdir_merge(apr_pool_t *p, void *basev, void *addv)
     SSLDirConfigRec *add  = (SSLDirConfigRec *)addv;
     SSLDirConfigRec *mrg  = (SSLDirConfigRec *)apr_palloc(p, sizeof(*mrg));
 
+    ssl_dir_policy_apply(base, p);
+    ssl_dir_policy_apply(add, p);
+    
     cfgMerge(bSSLRequired, FALSE);
     cfgMergeArray(aRequirement);
 
@@ -474,6 +495,9 @@ void *ssl_config_perdir_merge(apr_pool_t *p, void *basev, void *addv)
         mrg->proxy = add->proxy;
     }
 
+    mrg->policies = NULL;
+    cfgMergeString(error_policy);
+
     return mrg;
 }
 
@@ -486,6 +510,314 @@ void ssl_config_proxy_merge(apr_pool_t *p,
         conf->proxy_enabled = base->proxy_enabled;
     }
     modssl_ctx_cfg_merge_proxy(p, base->proxy, conf->proxy, conf->proxy);
+}
+
+/*  _________________________________________________________________
+**
+**  Policy handling
+**  _________________________________________________________________
+*/
+
+#define SSL_MOD_POLICIES_KEY "ssl_module_policies"
+
+/**
+ * Define a core set of policies that are always there:
+ * - 'modern' from https://wiki.mozilla.org/Security/Server_Side_TLS
+ * - 'intermediate' from https://wiki.mozilla.org/Security/Server_Side_TLS
+ * - 'old' from https://wiki.mozilla.org/Security/Server_Side_TLS
+ */
+#ifdef HAVE_TLSV1_X
+    /* Only with OpenSSL > v1.0.2 do we have a chance to implement modern */
+#define SSL_POLICY_LEGACY_PROTOCOLS  \
+    (SSL_PROTOCOL_SSLV3|SSL_PROTOCOL_TLSV1|SSL_PROTOCOL_TLSV1_1)
+
+#define SSL_POLICY_MODERN_PROTOCOLS  \
+    (SSL_PROTOCOL_ALL & ~SSL_POLICY_LEGACY_PROTOCOLS)
+#define SSL_POLICY_MODERN_CIPHERS  \
+    "ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:" \
+    "ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:" \
+    "ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:" \
+    "ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:" \
+    "ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256"
+#endif
+    
+#define SSL_POLICY_INTERMEDIATE_PROTOCOLS \
+    (SSL_PROTOCOL_ALL & ~SSL_PROTOCOL_SSLV3)
+#define SSL_POLICY_INTERMEDIATE_CIPHERS \
+    "ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:" \
+    "ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:" \
+    "ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:" \
+    "DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:" \
+    "ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA:" \
+    "ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES256-SHA384:" \
+    "ECDHE-ECDSA-AES256-SHA:ECDHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA256:" \
+    "DHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES256-SHA:" \
+    "ECDHE-ECDSA-DES-CBC3-SHA:ECDHE-RSA-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:" \
+    "AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:" \
+    "AES128-SHA:AES256-SHA:DES-CBC3-SHA:!DSS"
+
+#define SSL_POLICY_OLD_PROTOCOLS            (SSL_PROTOCOL_ALL)
+#define SSL_POLICY_OLD_CIPHERS \
+    "ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:" \
+    "ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:" \
+    "ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:" \
+    "DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:" \
+    "ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:" \
+    "ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:" \
+    "ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:" \
+    "DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:" \
+    "DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:ECDHE-RSA-DES-CBC3-SHA:" \
+    "ECDHE-ECDSA-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:AES128-GCM-SHA256:" \
+    "AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:AES:" \
+    "DES-CBC3-SHA:HIGH:SEED:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!RSAPSK:" \
+    "!aDH:!aECDH:!EDH-DSS-DES-CBC3-SHA:!KRB5-DES-CBC3-SHA:!SRP"
+
+#define SSL_POLICY_PROXY_VERIFY_MODE    SSL_CVERIFY_REQUIRE
+#define SSL_POLICY_PROXY_VERIFY_DEPTH   -1
+
+static void add_policy(apr_hash_t *policies, apr_pool_t *p, const char *name,
+                       int protocols, const char *ciphers, 
+                       int honor_order, int compression, int session_tickets,
+                       ssl_verify_t proxy_verify_mode, int proxy_verify_depth)
+{
+    SSLPolicyRec *policy;
+    
+    policy = apr_pcalloc(p, sizeof(*policy));
+    policy->name = name;
+    policy->sc = ssl_config_server_new(p);
+    policy->dc = ssl_config_perdir_create(p, "/");
+    
+    if (protocols || ciphers) {
+        policy->sc->server->protocol_set      = 1;
+        policy->sc->server->protocol          = protocols;
+        policy->dc->proxy->protocol_set       = 1;
+        policy->dc->proxy->protocol           = protocols;
+    }
+    
+    if (ciphers) {
+        policy->sc->server->auth.cipher_suite = ciphers;
+        policy->dc->proxy->auth.cipher_suite = ciphers;
+    }
+
+    policy->sc->compression               = compression ? TRUE : FALSE;
+    policy->sc->session_tickets           = session_tickets ? TRUE : FALSE;
+    
+    policy->dc->proxy->auth.verify_mode  = proxy_verify_mode;
+    if (proxy_verify_depth >= 0) {
+        policy->dc->proxy->auth.verify_depth = proxy_verify_depth;
+    }
+    
+    apr_hash_set(policies, policy->name, APR_HASH_KEY_STRING, policy);
+}
+
+static apr_hash_t *get_policies(apr_pool_t *p, int create)
+{
+    apr_hash_t *policies;
+    void *vp;
+    
+    apr_pool_userdata_get(&vp, SSL_MOD_POLICIES_KEY, p);
+    if (vp) {
+        return vp; /* reused for lifetime of the pool */
+    }
+    if (create) {
+        policies = apr_hash_make(p);
+        
+        /* We could also invoke the commands here and let them parse strings. */
+#ifdef HAVE_TLSV1_X
+        add_policy(policies, p, "modern", 
+                   SSL_POLICY_MODERN_PROTOCOLS, SSL_POLICY_MODERN_CIPHERS, 
+                   1, 0, 0, 
+                   SSL_POLICY_PROXY_VERIFY_MODE, SSL_POLICY_PROXY_VERIFY_DEPTH);
+#endif        
+        add_policy(policies, p, "intermediate", 
+                   SSL_POLICY_INTERMEDIATE_PROTOCOLS, SSL_POLICY_INTERMEDIATE_CIPHERS, 
+                   1, 0, 0, 
+                   SSL_POLICY_PROXY_VERIFY_MODE, SSL_POLICY_PROXY_VERIFY_DEPTH);
+                   
+        add_policy(policies, p, "old", 
+                   SSL_POLICY_OLD_PROTOCOLS, SSL_POLICY_OLD_CIPHERS, 
+                   1, 0, 0, 
+                   SSL_CVERIFY_NONE, -1);
+        
+        apr_pool_userdata_set(policies, SSL_MOD_POLICIES_KEY,
+                              apr_pool_cleanup_null, p);
+        return policies;
+    }
+    return NULL;
+}
+
+static int policy_collect_names(void *baton, const void *key, apr_ssize_t klen, const void *val)
+{
+    apr_array_header_t *names = baton;
+    APR_ARRAY_PUSH(names, const char *) = (const char*)key;
+    return 1;
+}
+
+static int qstrcmp(const void *v1, const void *v2)
+{
+    return strcmp(*(const char**)v1, *(const char**)v2);
+}
+
+static apr_array_header_t *get_policy_names(apr_pool_t *p, int create)
+{
+    apr_array_header_t *names = apr_array_make(p, 10, sizeof(const char*));
+    apr_hash_t *policies = get_policies(p, create);
+    
+    if (policies) {
+        apr_hash_do(policy_collect_names, names, policies);
+        qsort(names->elts, names->nelts, sizeof(const char*), qstrcmp);
+    }
+    return names;
+}
+
+SSLPolicyRec *ssl_policy_lookup(apr_pool_t *pool, const char *name)
+{
+    apr_hash_t *policies = get_policies(pool, 0);
+    if (policies) {
+        return apr_hash_get(policies, name, APR_HASH_KEY_STRING);
+    }
+    else if ((pool = apr_pool_parent_get(pool))) {
+        return ssl_policy_lookup(pool, name);
+    }
+    return NULL;
+}
+
+static void ssl_policy_set(apr_pool_t *pool, SSLPolicyRec *policy)
+{
+    apr_hash_t *policies = get_policies(pool, 1);
+    return apr_hash_set(policies, policy->name, APR_HASH_KEY_STRING, policy);
+}
+
+const char *ssl_cmd_SSLPolicyDefine(cmd_parms *cmd, void *mconfig, const char *arg)
+{
+    server_rec *s = cmd->server;
+    SSLSrvConfigRec *sc = mySrvConfig(s);
+    SSLDirConfigRec *dc = ap_get_module_config(s->lookup_defaults, &ssl_module);
+    SSLPolicyRec *policy;
+    const char *endp = ap_strrchr_c(arg, '>');
+    const char *err, *name;
+
+    if ((err = ap_check_cmd_context(cmd, GLOBAL_ONLY))) {
+        return err;
+    }
+        
+    if (endp == NULL) {
+        return apr_pstrcat(cmd->pool, cmd->cmd->name, "> directive missing closing '>'", NULL);
+    }
+
+    arg = apr_pstrndup(cmd->pool, arg, endp-arg);
+    if (!arg || !*arg) {
+        return "<SSLPolicy > block must specify a name";
+    }
+
+    name = ap_getword_white(cmd->pool, &arg);
+    if (*arg != '\0') {
+        return apr_pstrcat(cmd->pool, cmd->cmd->name, "> takes only 1 argument", NULL);
+    }
+    
+    policy = apr_pcalloc(cmd->pool, sizeof(*policy));
+    policy->name = name;
+    policy->sc = ssl_config_server_new(cmd->pool);
+    policy->dc = ssl_config_perdir_create(cmd->pool, "/");/* TODO */
+
+    ap_set_module_config(s->module_config,  &ssl_module, policy->sc);
+    ap_set_module_config(s->lookup_defaults,  &ssl_module, policy->dc);
+    
+    err = ap_walk_config(cmd->directive->first_child, cmd, cmd->context);
+    if (!err) {
+        /* If this new policy uses other policies, we need to merge it
+         * before adding, otherwise a policy cannot re-use an existing one */
+        ssl_policy_apply(policy->sc, cmd->pool);
+        ssl_dir_policy_apply(policy->dc, cmd->pool);
+        /* time to persist */
+        ssl_policy_set(cmd->pool, policy);
+    }
+    
+    ap_set_module_config(s->module_config,  &ssl_module, sc);
+    ap_set_module_config(s->lookup_defaults,  &ssl_module, dc);
+
+    return err;
+}
+
+const char *ssl_cmd_SSLPolicyApply(cmd_parms *cmd, void *mconfig, const char *arg)
+{
+    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
+    
+    if (!sc->policies) {
+        sc->policies = apr_array_make(cmd->pool, 5, sizeof(const char*));
+    }
+    APR_ARRAY_PUSH(sc->policies, const char *) = arg;
+
+    /* Also apply the proxy parts of the policy */
+    return ssl_cmd_SSLProxyPolicyApply(cmd, mconfig, arg);
+}
+
+const char *ssl_cmd_SSLProxyPolicyApply(cmd_parms *cmd, void *mconfig, const char *arg)
+{
+    SSLDirConfigRec *dc = ap_get_module_config(cmd->server->lookup_defaults, &ssl_module);
+    
+    if (!dc->policies) {
+        dc->policies = apr_array_make(cmd->pool, 5, sizeof(const char*));
+    }
+    APR_ARRAY_PUSH(dc->policies, const char *) = arg;
+
+    return NULL;
+}
+
+void ssl_policy_apply(SSLSrvConfigRec *sc, apr_pool_t *p)
+{
+    SSLSrvConfigRec *mrg;
+    SSLPolicyRec *policy;
+    apr_array_header_t *policies;
+    const char *name;
+    int i;
+
+    policies = sc->policies;
+    if (policies && policies->nelts > 0 && !sc->error_policy) {
+        sc->policies = NULL;
+        for (i = policies->nelts - 1; i >= 0; --i) {
+            name = APR_ARRAY_IDX(policies, i, const char *);
+            policy = ssl_policy_lookup(p, name);
+            if (policy) {
+                mrg = ssl_config_server_merge(p, policy->sc, sc);
+                /* apply in place */
+                memcpy(sc, mrg, sizeof(*sc));
+            }
+            else {
+                sc->error_policy = name;
+                break;
+                /* report error policies in post_config */
+            }
+        }
+    }
+}
+
+void ssl_dir_policy_apply(SSLDirConfigRec *dc, apr_pool_t *p)
+{
+    SSLDirConfigRec *mrg;
+    SSLPolicyRec *policy;
+    apr_array_header_t *policies;
+    const char *name;
+    int i;
+    
+    policies = dc->policies;
+    if (policies && policies->nelts > 0 &&!dc->error_policy) {
+        dc->policies = NULL;
+        for (i = policies->nelts - 1; i >= 0; --i) {
+            name = APR_ARRAY_IDX(policies, i, const char *);
+            policy = ssl_policy_lookup(p, name);
+            if (policy) {
+                mrg = ssl_config_perdir_merge(p, policy->dc, dc);
+                /* apply in place */
+                memcpy(dc, mrg, sizeof(*dc));
+            }
+            else {
+                dc->error_policy = name;
+                break;
+                /* report error policies in post_config */
+            }
+        }
+    }
 }
 
 /*
@@ -588,6 +920,7 @@ const char *ssl_cmd_SSLRandomSeed(cmd_parms *cmd,
     ssl_randseed_t *seed;
     int arg2len = strlen(arg2);
 
+    /* replace: check_no_policy_and(flags) */
     if ((err = ap_check_cmd_context(cmd, GLOBAL_ONLY))) {
         return err;
     }
@@ -1996,6 +2329,13 @@ const char *ssl_cmd_SSLOCSPResponderCertificateFile(cmd_parms *cmd, void *dcfg,
     return NULL;
 }
 
+static void ssl_srv_dump(SSLSrvConfigRec *sc, apr_pool_t *p, 
+                            apr_file_t *out, const char *indent, const char **psep);
+static void ssl_dir_dump(SSLDirConfigRec *dc, apr_pool_t *p, 
+                         apr_file_t *out, const char *indent, const char **psep);
+static void ssl_policy_dump(SSLPolicyRec *policy, apr_pool_t *p, 
+                            apr_file_t *out, const char *indent);
+
 void ssl_hook_ConfigTest(apr_pool_t *pconf, server_rec *s)
 {
     apr_file_t *out = NULL;
@@ -2056,4 +2396,412 @@ void ssl_hook_ConfigTest(apr_pool_t *pconf, server_rec *s)
         return;
     }
 
+    if (ap_exists_config_define("DUMP_SSL_POLICIES")) {
+        apr_array_header_t *names = get_policy_names(pconf, 1);
+        SSLPolicyRec *policy;
+        const char *name, *sep = "";
+        int i;
+        
+        apr_file_open_stdout(&out, pconf);
+        apr_file_printf(out, "SSLPolicies: {");
+        for (i = 0; i < names->nelts; ++i) {
+            name = APR_ARRAY_IDX(names, i, const char*);
+            policy = ssl_policy_lookup(pconf, name);
+            if (policy) {
+                apr_file_printf(out, "%s\n  \"%s\": {", sep, name);
+                sep = ", ";
+                ssl_policy_dump(policy, pconf, out, "    ");
+                apr_file_printf(out, "\n  }");
+            }
+        }
+        apr_file_printf(out, "\n}\n");
+        return;
+    }
 }
+
+/*  _________________________________________________________________
+**
+**  Dump Config Data
+**  _________________________________________________________________
+*/
+
+static const char *json_quote(const char *s, apr_pool_t *p)
+{
+    const char *src, *dq = s;
+    int n = 0;
+    
+    while ((dq = ap_strchr_c(dq, '\"'))) {
+        ++n;
+        ++dq;
+    }
+    if (n > 0) {
+        char *dst, c;
+        src = s;
+        s = dst = apr_pcalloc(p, strlen(s) + n + 1);
+        while ((c = *src++)) {
+            if (c == '\"') {
+                *dst++ = '\\';
+            }
+            *dst++ = c;
+        }
+    }
+    return s;
+}
+
+static void val_str_dump(apr_file_t *out, const char *key, const char *val, 
+                         apr_pool_t *p, const char *indent, const char **psep)
+{
+    if (val) {
+        /* TODO: JSON quite string val */
+        apr_file_printf(out, "%s\n%s\"%s\": \"%s\"", *psep, indent, key, json_quote(val, p));
+        *psep = ", ";
+    }
+}
+
+static void val_str_array_dump(apr_file_t *out, const char *key, apr_array_header_t *val, 
+                               apr_pool_t *p, const char *indent, const char **psep)
+{
+    if (val && val->nelts > 0) {
+        const char *s; 
+        int i;
+        
+        for (i = 0; i < val->nelts; ++i) {
+            s = APR_ARRAY_IDX(val, i, const char*);
+            val_str_dump(out, key, s, p, indent, psep);
+        }
+    }
+}
+
+static void val_long_dump(apr_file_t *out, const char *key, long val, 
+                          apr_pool_t *p, const char *indent, const char **psep)
+{
+    if (val != UNSET) {
+        apr_file_printf(out, "%s\n%s\"%s\": %ld", *psep, indent, key, val);
+        *psep = ", ";
+    }
+}
+
+static void val_itime_dump(apr_file_t *out, const char *key, apr_interval_time_t val, 
+                           apr_pool_t *p, const char *indent, const char **psep)
+{
+    if (val != UNSET) {
+        apr_file_printf(out, "%s\n%s\"%s\": %f", *psep, indent, key, 
+                        ((double)val/APR_USEC_PER_SEC));
+        *psep = ", ";
+    }
+}
+
+static void val_onoff_dump(apr_file_t *out, const char *key, BOOL val, 
+                           apr_pool_t *p, const char *indent, const char **psep)
+{
+    if (val != UNSET) {
+        val_str_dump(out, key, val? "on" : "off", p, indent, psep);
+    }
+}
+
+static void val_uri_dump(apr_file_t *out, const char *key, apr_uri_t *val, 
+                         apr_pool_t *p, const char *indent, const char **psep)
+{
+    if (val) {
+        val_str_dump(out, key, apr_uri_unparse(p, val, 0), p, indent, psep);
+    }
+}
+
+static void val_verify_dump(apr_file_t *out, const char *key, ssl_verify_t mode, 
+                            apr_pool_t *p, const char *indent, const char **psep)
+{
+    switch (mode) {
+        case SSL_CVERIFY_NONE:
+            val_str_dump(out, key, "none", p, indent, psep);
+            return;
+        case SSL_CVERIFY_OPTIONAL:
+            val_str_dump(out, key, "optional", p, indent, psep);
+            return;
+        case SSL_CVERIFY_REQUIRE:
+            val_str_dump(out, key, "require", p, indent, psep);
+            return;
+        case SSL_CVERIFY_OPTIONAL_NO_CA:
+            val_str_dump(out, key, "optional_no_ca", p, indent, psep);
+            return;
+        default:
+            return;
+    }
+}
+
+static void val_enabled_dump(apr_file_t *out, const char *key, ssl_enabled_t val, 
+                             apr_pool_t *p, const char *indent, const char **psep)
+{
+    switch (val) {
+        case SSL_ENABLED_FALSE:
+            val_str_dump(out, key, "off", p, indent, psep);
+            return;
+        case SSL_ENABLED_TRUE:
+            val_str_dump(out, key, "on", p, indent, psep);
+            return;
+        case SSL_ENABLED_OPTIONAL:
+            val_str_dump(out, key, "optional", p, indent, psep);
+            return;
+        default:                   
+            return;
+    }
+}
+
+static void val_pphrase_dump(apr_file_t *out, const char *key, 
+                             ssl_pphrase_t pphrase_type, const char *path, 
+                             apr_pool_t *p, const char *indent, const char **psep)
+{
+    switch (pphrase_type) {
+        case SSL_PPTYPE_BUILTIN: 
+            val_str_dump(out, key, "builtin", p, indent, psep);
+            return;
+        case SSL_PPTYPE_FILTER: 
+            val_str_dump(out, key, apr_pstrcat(p, "|", path, NULL), p, indent, psep);
+            return;
+        case SSL_PPTYPE_PIPE: 
+            val_str_dump(out, key, apr_pstrcat(p, "exec:", path, NULL), p, indent, psep);
+            return;
+        default:
+            return;
+    }
+}
+
+static void val_crl_check_dump(apr_file_t *out, const char *key, int mask, 
+                               apr_pool_t *p, const char *indent, const char **psep)
+{
+    if (mask != UNSET) {
+        if (mask == SSL_CRLCHECK_NONE) {
+            val_str_dump(out, key, "none", p, indent, psep);
+        }
+        else if (mask == SSL_CRLCHECK_LEAF) {
+            val_str_dump(out, key, "leaf", p, indent, psep);
+        }
+        else if (mask == SSL_CRLCHECK_CHAIN) {
+            val_str_dump(out, key, "chain", p, indent, psep);
+        }
+        else if (mask == (SSL_CRLCHECK_CHAIN|SSL_CRLCHECK_NO_CRL_FOR_CERT_OK)) {
+            val_str_dump(out, key, "chain no_crl_for_cert_ok", p, indent, psep);
+        }
+        else {
+            val_str_dump(out, key, "???", p, indent, psep);
+        }
+    }
+}
+
+static void val_option_dump(apr_file_t *out, const char *key, const char *optname,
+                            int val, int set_mask, int add_mask, int del_mask, 
+                            apr_pool_t *p, const char *indent, const char **psep)
+{
+    const char *op = ((val & set_mask)? "" : 
+                      ((val & add_mask)? "+" :
+                       (val & del_mask)? "-" : NULL));
+    if (op) {
+        apr_file_printf(out, "%s\n%s\"%s\": \"%s%s\"", *psep, indent, key, op, 
+                        json_quote(optname, p));
+        *psep = ", ";
+    }
+}
+
+static const char *protocol_str(ssl_proto_t proto, apr_pool_t *p)
+{
+    if (SSL_PROTOCOL_NONE == proto) {
+        return "none";
+    }
+    else if (SSL_PROTOCOL_ALL == proto) {
+        return "all";
+    }
+    else {
+        /* icing: I think it is nuts that we define our own IETF protocol constants
+         * only whent the linked *SSL lib supports them. */
+        apr_array_header_t *names = apr_array_make(p, 5, sizeof(const char*));
+        if ((1<<4) & proto) {
+            APR_ARRAY_PUSH(names, const char*) = "+TLSv1.2";
+        }
+        if ((1<<3) & proto) {
+            APR_ARRAY_PUSH(names, const char*) = "+TLSv1.1";
+        }
+        if ((1<<2) & proto) {
+            APR_ARRAY_PUSH(names, const char*) = "+TLSv1.0";
+        }
+        if ((1<<1) & proto) {
+            APR_ARRAY_PUSH(names, const char*) = "+SSLv3";
+        }
+        return apr_array_pstrcat(p, names, ' ');
+    }
+}
+
+#define DMP_STRING(k,v) \
+    val_str_dump(out, k, v, p, indent, psep)
+#define DMP_LONG(k,v) \
+    val_long_dump(out, k, v, p, indent, psep)
+#define DMP_ITIME(k,v) \
+    val_itime_dump(out, k, v, p, indent, psep)
+#define DMP_STRARR(k,v) \
+    val_str_array_dump(out, k, v, p, indent, psep)
+#define DMP_VERIFY(k,v) \
+    val_verify_dump(out, k, v, p, indent, psep)
+#define DMP_ON_OFF(k,v) \
+    val_onoff_dump(out, k, v, p, indent, psep)
+#define DMP_URI(k,v) \
+    val_uri_dump(out, k, v, p, indent, psep)
+#define DMP_CRLCHK(k,v) \
+    val_crl_check_dump(out, k, v, p, indent, psep)
+#define DMP_PHRASE(k,v, v2) \
+    val_pphrase_dump(out, k, v, v2, p, indent, psep)
+#define DMP_ENABLD(k,v) \
+    val_enabled_dump(out, k, v, p, indent, psep)
+#define DMP_OPTION(n,v) \
+    val_option_dump(out, "SSLOption", n, v, \
+                    dc->nOptions, dc->nOptionsAdd, dc->nOptionsDel, p, indent, psep);
+
+static void modssl_auth_ctx_dump(modssl_auth_ctx_t *auth, apr_pool_t *p, int proxy,
+                                 apr_file_t *out, const char *indent, const char **psep)
+{
+    DMP_STRING(proxy? "SSLProxyCipherSuite" : "SSLCipherSuite", auth->cipher_suite);
+    DMP_VERIFY(proxy? "SSLProxyVerify" : "SSLVerifyClient", auth->verify_mode);
+    DMP_LONG(  proxy? "SSLProxyVerify" : "SSLVerifyDepth", auth->verify_depth);
+    DMP_STRING(proxy? "SSLProxyCACertificateFile" : "SSLCACertificateFile", auth->ca_cert_file);
+    DMP_STRING(proxy? "SSLProxyCACertificatePath" : "SSLCACertificatePath", auth->ca_cert_path);
+}
+
+static void modssl_ctx_dump(modssl_ctx_t *ctx, apr_pool_t *p, int proxy,
+                            apr_file_t *out, const char *indent, const char **psep)
+{
+    int i;
+    
+    if (ctx->protocol_set) {
+        DMP_STRING(proxy? "SSLProxyProtocol" : "SSLProtocol", protocol_str(ctx->protocol, p));
+    }
+
+    modssl_auth_ctx_dump(&ctx->auth, p, proxy, out, indent, psep);
+    
+    DMP_STRING(proxy? "SSLProxyCARevocationFile" : "SSLCARevocationFile", ctx->crl_file);
+    DMP_STRING(proxy? "SSLProxyCARevocationPath" : "SSLCARevocationPath", ctx->crl_path);
+    DMP_CRLCHK(proxy? "SSLProxyCARevocationCheck" : "SSLCARevocationCheck", ctx->crl_check_mask);
+    if (!proxy) {
+        DMP_PHRASE("SSLPassPhraseDialog", ctx->pphrase_dialog_type, ctx->pphrase_dialog_path);
+        if (ctx->pks) {
+            DMP_STRING("SSLCADNRequestFile", ctx->pks->ca_name_file);
+            DMP_STRING("SSLCADNRequestPath", ctx->pks->ca_name_path);
+            DMP_STRARR("SSLCertificateFile", ctx->pks->cert_files);
+            DMP_STRARR("SSLCertificateKeyFile", ctx->pks->key_files);
+        }
+#ifdef HAVE_OCSP_STAPLING
+        DMP_ON_OFF("SSLUseStapling", ctx->stapling_enabled);
+        DMP_LONG(  "SSLStaplingResponseTimeSkew", ctx->stapling_resptime_skew);
+        DMP_LONG(  "SSLStaplingResponseMaxAge", ctx->stapling_resp_maxage);
+        DMP_LONG(  "SSLStaplingStandardCacheTimeout", ctx->stapling_cache_timeout);
+        DMP_ON_OFF("SSLStaplingReturnResponderErrors", ctx->stapling_return_errors);
+        DMP_ON_OFF("SSLStaplingFakeTryLater", ctx->stapling_fake_trylater);
+        DMP_LONG(  "SSLStaplingErrorCacheTimeout", ctx->stapling_errcache_timeout);
+        DMP_ITIME( "SSLStaplingResponderTimeout", ctx->stapling_responder_timeout);
+        DMP_STRING("SSLStaplingForceURL", ctx->stapling_force_url);
+#endif /* if HAVE_OCSP_STAPLING */ 
+        
+#ifdef HAVE_SRP
+        DMP_STRING("SSLSRPUnknownUserSeed", ctx->srp_unknown_user_seed);
+        DMP_STRING("SSLSRPVerifierFile", ctx->srp_vfile);
+#endif
+        DMP_ON_OFF("SSLOCSPEnable", ctx->ocsp_enabled);
+        DMP_ON_OFF("SSLOCSPOverrideResponder", ctx->ocsp_force_default);
+        DMP_STRING("SSLOCSPDefaultResponder", ctx->ocsp_responder);
+        DMP_LONG(  "SSLOCSPResponseTimeSkew", ctx->ocsp_resptime_skew);
+        DMP_LONG(  "SSLOCSPResponseMaxAge", ctx->ocsp_resp_maxage);
+        DMP_ITIME( "SSLOCSPResponderTimeout", ctx->ocsp_responder_timeout);
+        DMP_ON_OFF("SSLOCSPUseRequestNonce", ctx->ocsp_use_request_nonce);
+        DMP_URI(   "SSLOCSPProxyURL", ctx->proxy_uri);
+        DMP_ON_OFF("SSLOCSPNoVerify", ctx->ocsp_noverify);
+        DMP_STRING("SSLOCSPResponderCertificateFile", ctx->ocsp_certs_file);
+        
+#ifdef HAVE_SSL_CONF_CMD
+        if (ctx->ssl_ctx_param && ctx->ssl_ctx_param->nelts > 0) {
+            ssl_ctx_param_t *param = (ssl_ctx_param_t *)ctx->ssl_ctx_param->elts;
+            for (i = 0; i < ctx->ssl_ctx_param->nelts; ++i, ++param) {
+                apr_file_printf(out, "%s\n%s\"%s\": \"%s %s\"", *psep, indent, 
+                                "SSLOpenSSLConfCmd", json_quote(param->name, p), 
+                                json_quote(param->value, p));
+                *psep = ", ";
+            }
+        } 
+#endif
+
+#ifdef HAVE_TLS_SESSION_TICKETS
+        if (ctx->ticket_key) {
+            DMP_STRING("SSLSessionTicketKeyFile", ctx->ticket_key->file_path);
+        }
+#endif
+    }
+    else { /* proxy */
+        if (ctx->pkp) {
+            DMP_STRING("SSLProxyMachineCertificateFile", ctx->pkp->cert_file);
+            DMP_STRING("SSLProxyMachineCertificatePath", ctx->pkp->cert_path);
+            DMP_STRING("SSLProxyMachineCertificateChainFile", ctx->pkp->ca_cert_file);
+        }
+        DMP_ON_OFF("SSLProxyCheckPeerCN", ctx->ssl_check_peer_cn);
+        DMP_ON_OFF("SSLProxyCheckPeerName", ctx->ssl_check_peer_cn);
+        DMP_ON_OFF("SSLProxyCheckPeerExpire", ctx->ssl_check_peer_expire);
+    }
+}
+
+static void ssl_srv_dump(SSLSrvConfigRec *sc, apr_pool_t *p, 
+                            apr_file_t *out, const char *indent, const char **psep)
+{
+    DMP_ENABLD("SSLEngine", sc->enabled);
+    DMP_ON_OFF("SSLHonorCipherOrder", sc->cipher_server_pref);
+
+#ifndef OPENSSL_NO_COMP
+    DMP_ON_OFF("SSLCompression", sc->compression);
+#endif
+
+    modssl_ctx_dump(sc->server, p, 0, out, indent, psep);
+
+    DMP_LONG(  "SSLSessionCacheTimeout", sc->session_cache_timeout);
+    DMP_ON_OFF("SSLInsecureRenegotiation", sc->insecure_reneg);
+    DMP_ON_OFF("SSLStrictSNIVHostCheck", sc->strict_sni_vhost_check);
+#ifdef HAVE_FIPS
+    DMP_ON_OFF("SSLFIPS", sc->fips);
+#endif
+    DMP_ON_OFF("SSLSessionTickets", sc->session_tickets);
+    DMP_STRARR("SSLPolicy", sc->policies);
+}
+
+static void ssl_dir_dump(SSLDirConfigRec *dc, apr_pool_t *p, 
+                         apr_file_t *out, const char *indent, const char **psep)
+{
+    int i;
+    
+    DMP_ON_OFF("SSLProxyEngine", dc->proxy_enabled);
+
+    modssl_ctx_dump(dc->proxy, p, 1, out, indent, psep);
+
+    if (dc->bSSLRequired == TRUE) {
+        DMP_ON_OFF("SSLRequireSSL", dc->bSSLRequired);
+    }
+    if (dc->aRequirement && dc->aRequirement->nelts > 0) {
+        ssl_require_t *r = (ssl_require_t *)dc->aRequirement->elts;
+        for (i = 0; i < dc->aRequirement->nelts; ++i, ++r) {
+            DMP_STRING("SSLRequire", r->cpExpr);
+        }
+    }
+    DMP_OPTION("StdEnvVars", SSL_OPT_STDENVVARS);
+    DMP_OPTION("ExportCertData", SSL_OPT_EXPORTCERTDATA);
+    DMP_OPTION("FakeBasicAuth", SSL_OPT_FAKEBASICAUTH);
+    DMP_OPTION("StrictRequire", SSL_OPT_STRICTREQUIRE);
+    DMP_OPTION("OptRenegotiate", SSL_OPT_OPTRENEGOTIATE);
+    DMP_OPTION("LegacyDNStringFormat", SSL_OPT_LEGACYDNFORMAT);
+    DMP_STRARR("SSLProxyPolicy", dc->policies);
+}
+
+static void ssl_policy_dump(SSLPolicyRec *policy, apr_pool_t *p, 
+                            apr_file_t *out, const char *indent)
+{
+    const char *sep = "";
+    if (policy->sc) {
+        ssl_srv_dump(policy->sc, p, out, indent, &sep);
+    }
+    if (policy->dc) {
+        ssl_dir_dump(policy->dc, p, out, indent, &sep);
+    }
+}
+
+
+
