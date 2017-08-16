@@ -116,14 +116,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) core: ap_server_config_defines and ap_server_{pre,post}_read_config
-           constantness and bytes saving, no functional change.
-     trunk patch: http://svn.apache.org/r1713043
-                  http://svn.apache.org/r1802305
-                  http://svn.apache.org/r1802309
-     2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-globals_constantness_and_bytes_saving.patch
-     +1: ylavic, jorton, jim
-
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
