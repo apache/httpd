@@ -99,7 +99,7 @@
     <h3><a name="inital-location-walk" id="inital-location-walk">Initial URI Location Walk</a></h3>
       <p>Every request is subject to an
       <code>ap_location_walk()</code> call. This ensures that
-      <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> sections
+      <code class="directive"><a href="../mod/core.html#locationsection">&lt;Location&gt;</a></code> sections
       are consistently enforced for all requests. If the request is an internal
       redirect or a sub-request, it may borrow some or all of the processing
       from the previous or parent request's ap_location_walk, so this step
@@ -122,11 +122,11 @@
       <p>After the file or correct URI was determined, the
       appropriate per-dir configurations are merged together. For
       example, <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> compares and merges the appropriate
-      <code class="directive"><a href="../mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code> sections.
+      <code class="directive"><a href="../mod/mod_proxy.html#proxysection">&lt;Proxy&gt;</a></code> sections.
       If the URI is nothing more than a local (non-proxy) <code>TRACE</code>
       request, the core handles the request and returns <code>DONE</code>.
       If no module answers this hook with <code>OK</code> or <code>DONE</code>,
-      the core will run the request filename against the <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> and <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code> sections. If the request
+      the core will run the request filename against the <code class="directive"><a href="../mod/core.html#directorysection">&lt;Directory&gt;</a></code> and <code class="directive"><a href="../mod/core.html#filessection">&lt;Files&gt;</a></code> sections. If the request
       'filename' isn't an absolute, legal filename, a note is set for
       later termination.</p>
     
@@ -135,7 +135,7 @@
       <p>Every request is hardened by a second
       <code>ap_location_walk()</code> call. This reassures that a
       translated request is still subjected to the configured
-      <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> sections.
+      <code class="directive"><a href="../mod/core.html#locationsection">&lt;Location&gt;</a></code> sections.
       The request again borrows some or all of the processing from its previous
       <code>location_walk</code> above, so this step is almost always very
       efficient unless the translated URI mapped to a substantially different

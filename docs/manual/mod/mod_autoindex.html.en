@@ -548,7 +548,7 @@ a directory</td></tr>
 
     <div class="note"><h3>Regular Expressions</h3>
       <p>This directive does not currently work in configuration sections
-      that have regular expression arguments, such as  <code class="directive"><a href="../mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code>
+      that have regular expression arguments, such as  <code class="directive"><a href="../mod/core.html#directorymatchsection">&lt;DirectoryMatch&gt;</a></code>
       </p>
     </div>
 

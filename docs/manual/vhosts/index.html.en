@@ -80,7 +80,7 @@ hosts</a></li><li><a href="ip-based.html">IP-based virtual hosts</a></li><li><a 
 <h2><a name="directives" id="directives">Configuration directives</a></h2>
 
     <ul>
-      <li><code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code></li>
+      <li><code class="directive"><a href="../mod/core.html#virtualhostsection">&lt;VirtualHost&gt;</a></code></li>
       <li><code class="directive"><a href="../mod/core.html#servername">ServerName</a></code></li>
       <li><code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code></li>
       <li><code class="directive"><a href="../mod/core.html#serverpath">ServerPath</a></code></li>

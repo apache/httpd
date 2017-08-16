@@ -136,9 +136,9 @@ arguments that set its value.</p>
 <p>The question of "<em>Where should I put that
 directive?</em>" is generally answered by considering where you want a
 directive to be effective. If it is a global setting, it should appear
-in the configuration file, outside of any <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>, <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>, or other section. If it is to
+in the configuration file, outside of any <code class="directive"><a href="./mod/core.html#directorysection">&lt;Directory&gt;</a></code>, <code class="directive"><a href="./mod/core.html#locationsection">&lt;Location&gt;</a></code>, <code class="directive"><a href="./mod/core.html#virtualhostsection">&lt;VirtualHost&gt;</a></code>, or other section. If it is to
 apply only to a particular directory, then it should go inside a
-<code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> section referring to
+<code class="directive"><a href="./mod/core.html#directorysection">&lt;Directory&gt;</a></code> section referring to
 that directory, and so on. See the <a href="sections.html">Configuration
 Sections</a> document for further discussion of these sections.</p>
 

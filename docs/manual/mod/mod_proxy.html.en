@@ -106,14 +106,14 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#balancermember">BalancerMember</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#balancerpersist">BalancerPersist</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#noproxy">NoProxy</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#proxy">&lt;Proxy&gt;</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#proxysection">&lt;Proxy&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxyaddheaders">ProxyAddHeaders</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxybadheader">ProxyBadHeader</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxyblock">ProxyBlock</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxydomain">ProxyDomain</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxyerroroverride">ProxyErrorOverride</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxyiobuffersize">ProxyIOBufferSize</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#proxymatch">&lt;ProxyMatch&gt;</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#proxymatchsection">&lt;ProxyMatch&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxymaxforwards">ProxyMaxForwards</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxypass">ProxyPass</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxypassinherit">ProxyPassInherit</a></li>
@@ -357,7 +357,7 @@ ProxyPass "/examples" "http://backend.example.com/examples" timeout=10</pre>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="access" id="access">Controlling Access to Your Proxy</a></h2>
-      <p>You can control who can access your proxy via the <code class="directive"><a href="#proxy">&lt;Proxy&gt;</a></code> control block as in
+      <p>You can control who can access your proxy via the <code class="directive"><a href="#proxysection">&lt;Proxy&gt;</a></code> control block as in
       the following example:</p>
 
       <pre class="prettyprint lang-config">&lt;Proxy *&gt;
@@ -550,8 +550,8 @@ ProxyPass "/examples" "http://backend.example.com/examples" timeout=10</pre>
             directive and can take any of the key value pair parameters available to
             <code class="directive"><a href="#proxypass">ProxyPass</a></code> directives.</p>
         <p>One additional parameter is available only to <code class="directive">BalancerMember</code> directives:
-            <var>loadfactor</var>. This is the member load factor - a number between 1
-            (default) and 100, which defines the weighted load to be applied to the
+            <var>loadfactor</var>. This is the member load factor - a floating pount number between 1.0
+            (default) and 100.0, which defines the weighted load to be applied to the
             member in question.</p>
         <p>The <var>balancerurl</var> is only needed when not within a
             <code>&lt;Proxy <var>balancer://</var>...&gt;</code>
@@ -706,7 +706,7 @@ NoProxy         .example.com 192.168.112.0/21</pre>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Proxy" id="Proxy">&lt;Proxy&gt;</a> <a name="proxy" id="proxy">Directive</a></h2>
+<div class="directive-section"><h2><a name="Proxysection" id="Proxysection">&lt;Proxy&gt;</a> <a name="proxysection" id="proxysection">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Container for directives applied to proxied resources</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>&lt;Proxy <var>wildcard-url</var>&gt; ...&lt;/Proxy&gt;</code></td></tr>
@@ -754,7 +754,7 @@ NoProxy         .example.com 192.168.112.0/21</pre>
       &lt;Proxy http://example.com/foo&gt; matches all of
       http://example.com/foo, http://example.com/foo/bar, and
       http://example.com/foobar.  The matching of the final URL differs
-      from the behavior of the <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> section, which for purposes of this note
+      from the behavior of the <code class="directive"><a href="../mod/core.html#locationsection">&lt;Location&gt;</a></code> section, which for purposes of this note
       treats the final path component as if it ended in a slash.</p>
       <p>For more control over the matching, see <code class="directive">&lt;ProxyMatch&gt;</code>.</p>
     </div>
@@ -762,7 +762,7 @@ NoProxy         .example.com 192.168.112.0/21</pre>
 
 <h3>See also</h3>
 <ul>
-<li><code class="directive"><a href="#proxymatch">&lt;ProxyMatch&gt;</a></code></li>
+<li><code class="directive"><a href="#proxymatchsection">&lt;ProxyMatch&gt;</a></code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -943,7 +943,7 @@ ProxyDomain       ".example.com"</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyMatch" id="ProxyMatch">&lt;ProxyMatch&gt;</a> <a name="proxymatch" id="proxymatch">Directive</a></h2>
+<div class="directive-section"><h2><a name="ProxyMatchsection" id="ProxyMatchsection">&lt;ProxyMatch&gt;</a> <a name="proxymatchsection" id="proxymatchsection">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Container for directives applied to regular-expression-matched
 proxied resources</td></tr>
@@ -953,7 +953,7 @@ proxied resources</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
 </table>
     <p>The <code class="directive">&lt;ProxyMatch&gt;</code> directive is
-    identical to the <code class="directive"><a href="#proxy">&lt;Proxy&gt;</a></code> directive, except that it matches URLs
+    identical to the <code class="directive"><a href="#proxysection">&lt;Proxy&gt;</a></code> directive, except that it matches URLs
     using <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular expressions</a>.</p>
 
     <p>From 2.4.8 onwards, named groups and backreferences are captured and
@@ -970,7 +970,7 @@ proxied resources</td></tr>
 
 <h3>See also</h3>
 <ul>
-<li><code class="directive"><a href="#proxy">&lt;Proxy&gt;</a></code></li>
+<li><code class="directive"><a href="#proxysection">&lt;Proxy&gt;</a></code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1025,8 +1025,8 @@ through</td></tr>
     with this section.</div>
 
     <div class="note">This directive is not supported within
-    <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> and
-    <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code> containers.</div>
+    <code class="directive"><a href="../mod/core.html#directorysection">&lt;Directory&gt;</a></code> and
+    <code class="directive"><a href="../mod/core.html#filessection">&lt;Files&gt;</a></code> containers.</div>
 
     <div class="warning">The <code class="directive"><a href="#proxyrequests">ProxyRequests</a></code> directive should
     usually be set <strong>off</strong> when using
@@ -1046,9 +1046,9 @@ through</td></tr>
     the <code>[P,NE]</code> option to prevent the <code>'|'</code> character
     from being escaped.</div>
 
-    <p>When used inside a <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> section, the first argument is omitted and the local
-    directory is obtained from the <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>. The same will occur inside a
-    <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code> section;
+    <p>When used inside a <code class="directive"><a href="../mod/core.html#locationsection">&lt;Location&gt;</a></code> section, the first argument is omitted and the local
+    directory is obtained from the <code class="directive"><a href="../mod/core.html#locationsection">&lt;Location&gt;</a></code>. The same will occur inside a
+    <code class="directive"><a href="../mod/core.html#locationmatchsection">&lt;LocationMatch&gt;</a></code> section;
     however, ProxyPass does not interpret the regexp as such, so it is necessary
     to use <code class="directive">ProxyPassMatch</code> in this situation instead.</p>
 
@@ -1481,7 +1481,7 @@ ProxyPass "/"             "balancer://mycluster/" stickysession=JSESSIONID|jsess
     <pre class="prettyprint lang-config">ProxyPass "/" "balancer://hotcluster/"
 &lt;Proxy balancer://hotcluster&gt;
     BalancerMember ajp://1.2.3.4:8009 loadfactor=1
-    BalancerMember ajp://1.2.3.5:8009 loadfactor=2
+    BalancerMember ajp://1.2.3.5:8009 loadfactor=2.5
     # The server below is on hot standby
     BalancerMember ajp://1.2.3.6:8009 status=+H
     ProxySet lbmethod=bytraffic
@@ -1618,8 +1618,8 @@ ProxyPassReverse  "/mirror/foo/" "https://backend.example.com/"</pre>
     <p>The <code>!</code> directive is useful in situations where you don't want
     to reverse-proxy a subdirectory.</p>
 
-    <p>When used inside a <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code> section, the first argument is omitted and the
-    regexp is obtained from the <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>.</p>
+    <p>When used inside a <code class="directive"><a href="../mod/core.html#locationmatchsection">&lt;LocationMatch&gt;</a></code> section, the first argument is omitted and the
+    regexp is obtained from the <code class="directive"><a href="../mod/core.html#locationmatchsection">&lt;LocationMatch&gt;</a></code>.</p>
 
     <p>If you require a more flexible reverse-proxy configuration, see the
     <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> directive with the
@@ -1703,13 +1703,13 @@ ProxyPassReverseCookiePath  "/"  "/mirror/foo/"</pre>
     Note that interpolation is not supported within the scheme portion of a
     URL.</p>
 
-    <p>When used inside a <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> section, the first argument is omitted and the local
-    directory is obtained from the <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>. The same occurs inside a <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code> section, but will probably not work as
+    <p>When used inside a <code class="directive"><a href="../mod/core.html#locationsection">&lt;Location&gt;</a></code> section, the first argument is omitted and the local
+    directory is obtained from the <code class="directive"><a href="../mod/core.html#locationsection">&lt;Location&gt;</a></code>. The same occurs inside a <code class="directive"><a href="../mod/core.html#locationmatchsection">&lt;LocationMatch&gt;</a></code> section, but will probably not work as
     intended, as ProxyPassReverse will interpret the regexp literally as a
     path; if needed in this situation, specify the ProxyPassReverse outside
-    the section or in a separate <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> section.</p>
+    the section or in a separate <code class="directive"><a href="../mod/core.html#locationsection">&lt;Location&gt;</a></code> section.</p>
 
-    <p>This directive is not supported in <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> or <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code> sections.</p>
+    <p>This directive is not supported in <code class="directive"><a href="../mod/core.html#directorysection">&lt;Directory&gt;</a></code> or <code class="directive"><a href="../mod/core.html#filessection">&lt;Files&gt;</a></code> sections.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

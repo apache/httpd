@@ -175,22 +175,22 @@
       <dd>This means that the directive may be used in the server
       configuration files (<em>e.g.</em>, <code>httpd.conf</code>), but
       <strong>not</strong> within any
-      <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
-      or <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>
+      <code class="directive"><a href="../mod/core.html#virtualhostsection">&lt;VirtualHost&gt;</a></code>
+      or <code class="directive"><a href="../mod/core.html#directorysection">&lt;Directory&gt;</a></code>
       containers. It is not allowed in <code>.htaccess</code> files
       at all.</dd>
 
       <dt>virtual host</dt>
 
       <dd>This context means that the directive may appear inside
-      <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
+      <code class="directive"><a href="../mod/core.html#virtualhostsection">&lt;VirtualHost&gt;</a></code>
       containers in the server
       configuration files.</dd>
 
       <dt>directory</dt>
 
       <dd>A directive marked as being valid in this context may be
-      used inside <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>, <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code>, <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code>, and <code class="directive"><a href="../mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code> containers
+      used inside <code class="directive"><a href="../mod/core.html#directorysection">&lt;Directory&gt;</a></code>, <code class="directive"><a href="../mod/core.html#locationsection">&lt;Location&gt;</a></code>, <code class="directive"><a href="../mod/core.html#filessection">&lt;Files&gt;</a></code>, <code class="directive"><a href="../mod/core.html#ifsection">&lt;If&gt;</a></code>, and <code class="directive"><a href="../mod/mod_proxy.html#proxysection">&lt;Proxy&gt;</a></code> containers
       in the server configuration files, subject to the restrictions
       outlined in <a href="../sections.html">Configuration
       Sections</a>.</dd>
@@ -215,8 +215,8 @@
     words, a directive that is marked as being valid in
     "<code>server config, .htaccess</code>" can be used in the
     <code>httpd.conf</code> file and in <code>.htaccess</code>
-    files, but not within any <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> or
-    <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
+    files, but not within any <code class="directive"><a href="../mod/core.html#directorysection">&lt;Directory&gt;</a></code> or
+    <code class="directive"><a href="../mod/core.html#virtualhostsection">&lt;VirtualHost&gt;</a></code>
     containers.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">

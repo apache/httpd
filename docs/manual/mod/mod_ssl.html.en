@@ -84,6 +84,8 @@ to provide the cryptography engine.</p>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslopensslconfcmd">SSLOpenSSLConfCmd</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ssloptions">SSLOptions</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslpassphrasedialog">SSLPassPhraseDialog</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#sslpolicysection">&lt;SSLPolicy&gt;</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#sslpolicyuse">SSLPolicyUse</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslprotocol">SSLProtocol</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslproxycacertificatefile">SSLProxyCACertificateFile</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslproxycacertificatepath">SSLProxyCACertificatePath</a></li>
@@ -98,6 +100,7 @@ to provide the cryptography engine.</p>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslproxymachinecertificatechainfile">SSLProxyMachineCertificateChainFile</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslproxymachinecertificatefile">SSLProxyMachineCertificateFile</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslproxymachinecertificatepath">SSLProxyMachineCertificatePath</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#sslproxypolicy">SSLProxyPolicy</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslproxyprotocol">SSLProxyProtocol</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslproxyverify">SSLProxyVerify</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslproxyverifydepth">SSLProxyVerifyDepth</a></li>
@@ -955,7 +958,7 @@ SSLCryptoDevice ubsec</pre>
 </table>
 <p>
 This directive toggles the usage of the SSL/TLS Protocol Engine. This
-is should be used inside a <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> section to enable SSL/TLS for a
+is should be used inside a <code class="directive"><a href="../mod/core.html#virtualhostsection">&lt;VirtualHost&gt;</a></code> section to enable SSL/TLS for a
 that virtual host. By default the SSL/TLS Protocol Engine is
 disabled for both the main server and all configured virtual hosts.</p>
 <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">&lt;VirtualHost _default_:443&gt;
@@ -1446,6 +1449,152 @@ query can be done in two ways which can be configured by
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SSLPolicysection" id="SSLPolicysection">&lt;SSLPolicy&gt;</a> <a name="sslpolicysection" id="sslpolicysection">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Define a named set of SSL configurations</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>&lt;SSLPolicy <em>name</em>&gt;</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.4.28 and later</td></tr>
+</table>
+<p>This directive defines a set of SSL* configurations under
+and gives it a name. This name can be used in the directives
+<code class="directive">SSLPolicyUse</code> and <code class="directive">SSLProxyPolicy</code>
+to apply this configuration set in the current context.</p>
+
+<div class="example"><h3>Examples</h3><pre class="prettyprint lang-config">&lt;SSLPolicy safe-stapling&gt;
+   SSLUseStapling on
+   SSLStaplingResponderTimeout 2
+   SSLStaplingReturnResponderErrors off
+   SSLStaplingFakeTryLater off
+   SSLStaplingStandardCacheTimeout 86400
+&lt;/SSLPolicy&gt;
+
+   ...
+   &lt;VirtualHost...&gt;
+      SSLPolicy safe-stapling
+      ...</pre>
+</div>
+
+<p>On the one hand, this can make server configurations easier to 
+<em>read</em> and <em>maintain</em>. On the other hand, it is 
+intended to make SSL easier and safer to <em>use</em>. For the 
+latter, Apache httpd ships with a set of pre-defined policies
+that reflect good open source practise. The policy "modern",
+for example, carries the settings to make your server work
+compatible and securely with current browsers.</p>
+
+<p>The list of predefined policies in your Apache can be obtained
+by running the following command. This list shows you the 
+detailed configurations each policy is made of:</p>
+
+<div class="example"><h3>Examples</h3><pre class="prettyprint lang-sh">&gt; httpd -t -D DUMP_SSL_POLICIES</pre>
+</div>
+
+<p>The directive can only be used in the server config (global context), so 
+there cannot be two policies with the same name. However, policies can
+be redefined:</p>
+
+<div class="example"><h3>Examples</h3><pre class="prettyprint lang-config">&lt;SSLPolicy proxy-trust&gt;
+   SSLProxyVerify require
+&lt;/SSLPolicy&gt;
+   ...
+&lt;SSLPolicy proxy-trust&gt;
+   SSLProxyVerify none
+&lt;/SSLPolicy&gt;</pre>
+</div>
+
+<p>Policy definitions are <em>added</em> in the order they appear, but are
+<em>applied</em> when the whole configuration is read. This means that any
+use of 'proxy-trust' will mean 'SSLProxyVerify none'. The first definition
+has no effect at all. You can replace policy definitions that have been
+pre-installed without the need to disable them.</p>
+
+<p>Additional to replacing policies, redefinitions may just alter
+an aspect of a policy:</p>
+
+<div class="example"><h3>Examples</h3><pre class="prettyprint lang-config">&lt;SSLPolicy proxy-trust&gt;
+   SSLProxyVerify require
+&lt;/SSLPolicy&gt;
+   ...
+&lt;SSLPolicy proxy-trust&gt;
+   SSLPolicy proxy-trust
+   SSLProxyVerifyDepth 10
+&lt;/SSLPolicy&gt;</pre>
+</div>
+
+<p>This re-uses all settings from the previous 'proxy-trust' and adds
+one directive on top of it. All others still apply. This is very handy
+when pre-defined policies (from Apache itself or a distributor)
+that <em>almost</em> fit ones needs. Previously, such definitions were
+(copied and) edited. This made updating them difficult. Now they can
+be setup like this:</p>
+
+<div class="example"><h3>Examples</h3><pre class="prettyprint lang-config">Include ssl-policies.conf
+
+&lt;SSLPolicy modern&gt;
+   SSLPolicy modern
+   SSLProxyVerify none
+&lt;/SSLPolicy&gt;</pre>
+</div>
+
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SSLPolicyUse" id="SSLPolicyUse">SSLPolicyUse</a> <a name="sslpolicyuse" id="sslpolicyuse">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Apply a SSLPolicy by name</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLPolicy <em>name</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.4.28 and later</td></tr>
+</table>
+<p>This directive applies the set of SSL* directives defined
+under 'name' (see <code class="directive">&lt;SSLPolicy&gt;</code>) as the <em>base</em>
+settings in the current context. That means that any other SSL* directives
+you make in the same context remain effective. So, the effective
+<code class="directive">SSLProtocol</code> value in the following settings are:</p>
+
+<div class="example"><h3>Examples</h3><pre class="prettyprint lang-config">   &lt;VirtualHost...&gt; # effective: 'all'
+      SSLPolicy modern
+      SSLProtocol all
+   &lt;/VirtualHost&gt;
+
+   &lt;VirtualHost...&gt; # effective: 'all'
+      SSLProtocol all
+      SSLPolicy modern
+   &lt;/VirtualHost&gt;
+
+   SSLPolicy modern
+   &lt;VirtualHost...&gt; # effective: 'all'
+      SSLProtocol all
+   &lt;/VirtualHost&gt;
+   
+   SSLProtocol all
+   &lt;VirtualHost...&gt; # effective: '+TLSv1.2'
+     SSLPolicy modern
+   &lt;/VirtualHost&gt;</pre>
+</div>
+
+<p>There can be more than one policy applied in a context. The
+later ones overshadowing the earlier ones:</p>
+
+<div class="example"><h3>Examples</h3><pre class="prettyprint lang-config">   &lt;VirtualHost...&gt; # effective: 'intermediate &gt; modern'
+      SSLPolicy modern
+      SSLPolicy intermediate
+   &lt;/VirtualHost&gt;
+
+   &lt;VirtualHost...&gt; # effective: 'modern &gt; intermediate'
+      SSLPolicy intermediate
+      SSLPolicy modern
+   &lt;/VirtualHost&gt;</pre>
+</div>
+
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SSLProtocol" id="SSLProtocol">SSLProtocol</a> <a name="sslprotocol" id="sslprotocol">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure usable SSL/TLS protocol versions</td></tr>
@@ -1754,13 +1903,13 @@ for additional information.</p>
 </table>
 <p>
 This directive toggles the usage of the SSL/TLS Protocol Engine for proxy. This
-is usually used inside a <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> section to enable SSL/TLS for proxy
+is usually used inside a <code class="directive"><a href="../mod/core.html#virtualhostsection">&lt;VirtualHost&gt;</a></code> section to enable SSL/TLS for proxy
 usage in a particular virtual host. By default the SSL/TLS Protocol Engine is
 disabled for proxy both for the main server and all configured virtual hosts.</p>
 
 <p>Note that the <code class="directive">SSLProxyEngine</code> directive should not, in
 general, be included in a virtual host that will be acting as a
-forward proxy (using <code class="directive"><a href="../mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code>
+forward proxy (using <code class="directive"><a href="../mod/mod_proxy.html#proxysection">&lt;Proxy&gt;</a></code>
 or <code class="directive"><a href="../mod/mod_proxy.html#proxyrequests">ProxyRequests</a></code> directives).
 <code class="directive">SSLProxyEngine</code> is not required to enable a forward proxy
 server to proxy SSL/TLS requests.</p>
@@ -1848,6 +1997,28 @@ directory contains the appropriate symbolic links.</p>
 </div>
 <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLProxyMachineCertificatePath "/usr/local/apache2/conf/proxy.crt/"</pre>
 </div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SSLProxyPolicy" id="SSLProxyPolicy">SSLProxyPolicy</a> <a name="sslproxypolicy" id="sslproxypolicy">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Apply the SSLProxy* parts alone of a SSLPolicy</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLProxyPolicy <em>name</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.4.28 and later</td></tr>
+</table>
+<p>This directive is similar to <code class="directive">SSLPolicyUse</code>, but 
+applies only the SSLProxy* directives defined in the policy. This helps
+when you need different policies for front and backends:</p>
+
+<div class="example"><h3>Examples</h3><pre class="prettyprint lang-config">SSLPolicy modern
+SSLProxyPolicy intermediate</pre>
+</div>
+
+<p>In this example, the 'modern' policy is first applied for front- and backend. The backend
+parts are then overwritten by the 'intermediate' policy settings.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

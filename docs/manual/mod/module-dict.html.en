@@ -94,7 +94,7 @@
 
     <p>This quite simply lists the name of the source file which
     contains the code for the module. This is also the name used by
-    the <code class="directive"><a href="../mod/core.html#ifmodule">&lt;IfModule&gt;</a></code>
+    the <code class="directive"><a href="../mod/core.html#ifmodulesection">&lt;IfModule&gt;</a></code>
     directive.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">

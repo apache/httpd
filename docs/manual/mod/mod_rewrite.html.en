@@ -902,7 +902,7 @@ RewriteRule  "^/$"                 "/homepage.std.html"     [L]</pre>
       server are inherited. In per-directory context this means
       that conditions and rules of the parent directory's
       <code>.htaccess</code> configuration or
-      <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>
+      <code class="directive"><a href="../mod/core.html#directorysection">&lt;Directory&gt;</a></code>
       sections are inherited. The inherited rules are virtually copied
       to the section where this directive is being used. If used in
       combination with local rules, the inherited rules are copied behind
@@ -1104,7 +1104,7 @@ RewriteRule  "^/$"                 "/homepage.std.html"     [L]</pre>
 
 <div class="note"><h3>Per-directory Rewrites</h3>
 <ul>
-<li>The rewrite engine may be used in <a href="../howto/htaccess.html">.htaccess</a> files and in <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> sections, with some additional
+<li>The rewrite engine may be used in <a href="../howto/htaccess.html">.htaccess</a> files and in <code class="directive"><a href="../mod/core.html#directorysection">&lt;Directory&gt;</a></code> sections, with some additional
 complexity.</li>
 
 <li>To enable the rewrite engine in this context, you need to set
@@ -1126,7 +1126,7 @@ a <code class="directive"><a href="#rewritecond">RewriteCond</a></code>.</li>
 <em>never</em> has a leading slash.  Therefore, a <em>Pattern</em> with <code>^/</code> never
 matches in per-directory context.</li>
 
-<li>Although rewrite rules are syntactically permitted in <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> and <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code> sections
+<li>Although rewrite rules are syntactically permitted in <code class="directive"><a href="../mod/core.html#locationsection">&lt;Location&gt;</a></code> and <code class="directive"><a href="../mod/core.html#filessection">&lt;Files&gt;</a></code> sections
 (including their regular expression counterparts), this
 should never be necessary and is unsupported. A likely feature
 to break in these contexts is relative substitutions.</li>

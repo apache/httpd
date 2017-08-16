@@ -54,11 +54,11 @@ available</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#defaultruntimedir">DefaultRuntimeDir</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#defaulttype">DefaultType</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#define">Define</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#directory">&lt;Directory&gt;</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#directorymatch">&lt;DirectoryMatch&gt;</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#directorysection">&lt;Directory&gt;</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#directorymatchsection">&lt;DirectoryMatch&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#documentroot">DocumentRoot</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#else">&lt;Else&gt;</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#elseif">&lt;ElseIf&gt;</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#elsesection">&lt;Else&gt;</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#elseifsection">&lt;ElseIf&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#enablemmap">EnableMMAP</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#enablesendfile">EnableSendfile</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#error">Error</a></li>
@@ -67,32 +67,32 @@ available</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#errorlogformat">ErrorLogFormat</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#extendedstatus">ExtendedStatus</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#fileetag">FileETag</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#files">&lt;Files&gt;</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#filesmatch">&lt;FilesMatch&gt;</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#filessection">&lt;Files&gt;</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#filesmatchsection">&lt;FilesMatch&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#forcetype">ForceType</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#gprofdir">GprofDir</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#hostnamelookups">HostnameLookups</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#httpprotocoloptions">HttpProtocolOptions</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#if">&lt;If&gt;</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#ifdefine">&lt;IfDefine&gt;</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#ifdirective">&lt;IfDirective&gt;</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#iffile">&lt;IfFile&gt;</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#ifmodule">&lt;IfModule&gt;</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#ifsection">&lt;IfSection&gt;</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#ifsection">&lt;If&gt;</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#ifdefinesection">&lt;IfDefine&gt;</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#ifdirectivesection">&lt;IfDirective&gt;</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#iffilesection">&lt;IfFile&gt;</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#ifmodulesection">&lt;IfModule&gt;</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#ifsectionsection">&lt;IfSection&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#include">Include</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#includeoptional">IncludeOptional</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#keepalive">KeepAlive</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#keepalivetimeout">KeepAliveTimeout</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#limit">&lt;Limit&gt;</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#limitexcept">&lt;LimitExcept&gt;</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#limitsection">&lt;Limit&gt;</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#limitexceptsection">&lt;LimitExcept&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#limitinternalrecursion">LimitInternalRecursion</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#limitrequestbody">LimitRequestBody</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#limitrequestfields">LimitRequestFields</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#limitrequestfieldsize">LimitRequestFieldSize</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#limitrequestline">LimitRequestLine</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#limitxmlrequestbody">LimitXMLRequestBody</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#location">&lt;Location&gt;</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#locationmatch">&lt;LocationMatch&gt;</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#locationsection">&lt;Location&gt;</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#locationmatchsection">&lt;LocationMatch&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#loglevel">LogLevel</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#logleveloverride">LogLevelOverride</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#maxkeepaliverequests">MaxKeepAliveRequests</a></li>
@@ -128,7 +128,7 @@ available</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#undefine">UnDefine</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#usecanonicalname">UseCanonicalName</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#usecanonicalphysicalport">UseCanonicalPhysicalPort</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#virtualhost">&lt;VirtualHost&gt;</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#virtualhostsection">&lt;VirtualHost&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#warning">Warning</a></li>
 </ul>
 <h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=core">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=core">Report a bug</a></li></ul><h3>See also</h3>
@@ -436,9 +436,9 @@ NoDecode option available in 2.3.12 and later.</td></tr>
 
     <div class="note"><h3>Only available in &lt;Directory&gt; sections</h3>
     <code class="directive">AllowOverride</code> is valid only in
-    <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code>
-    sections specified without regular expressions, not in <code class="directive"><a href="#location">&lt;Location&gt;</a></code>, <code class="directive"><a href="#directorymatch">&lt;DirectoryMatch&gt;</a></code> or
-    <code class="directive"><a href="#files">&lt;Files&gt;</a></code> sections.
+    <code class="directive"><a href="#directorysection">&lt;Directory&gt;</a></code>
+    sections specified without regular expressions, not in <code class="directive"><a href="#locationsection">&lt;Location&gt;</a></code>, <code class="directive"><a href="#directorymatchsection">&lt;DirectoryMatch&gt;</a></code> or
+    <code class="directive"><a href="#filessection">&lt;Files&gt;</a></code> sections.
     </div>
 
     <p>When this directive is set to <code>None</code> and <code class="directive"><a href="#allowoverridelist">AllowOverrideList</a></code> is set to
@@ -595,9 +595,9 @@ NoDecode option available in 2.3.12 and later.</td></tr>
 
     <div class="note"><h3>Only available in &lt;Directory&gt; sections</h3>
     <code class="directive">AllowOverrideList</code> is valid only in
-    <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code>
-    sections specified without regular expressions, not in <code class="directive"><a href="#location">&lt;Location&gt;</a></code>, <code class="directive"><a href="#directorymatch">&lt;DirectoryMatch&gt;</a></code> or
-    <code class="directive"><a href="#files">&lt;Files&gt;</a></code> sections.
+    <code class="directive"><a href="#directorysection">&lt;Directory&gt;</a></code>
+    sections specified without regular expressions, not in <code class="directive"><a href="#locationsection">&lt;Location&gt;</a></code>, <code class="directive"><a href="#directorymatchsection">&lt;DirectoryMatch&gt;</a></code> or
+    <code class="directive"><a href="#filessection">&lt;Files&gt;</a></code> sections.
     </div>
 
     <p>When this directive is set to <code>None</code> and <code class="directive"><a href="#allowoverride">AllowOverride</a></code> is set to <code>None</code>,
@@ -867,7 +867,7 @@ which no other media type configuration could be found.
     <p>In its one parameter form, <code class="directive">Define</code> is
     equivalent to passing the <code>-D</code> argument to
     <code class="program"><a href="../programs/httpd.html">httpd</a></code>. It can be used to toggle the use of
-    <code class="directive"><a href="#ifdefine">&lt;IfDefine&gt;</a></code>
+    <code class="directive"><a href="#ifdefinesection">&lt;IfDefine&gt;</a></code>
     sections without needing to alter <code>-D</code> arguments in any
     startup scripts.</p>
 
@@ -898,7 +898,7 @@ DocumentRoot "/var/www/${servername}/htdocs"</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Directory" id="Directory">&lt;Directory&gt;</a> <a name="directory" id="directory">Directive</a></h2>
+<div class="directive-section"><h2><a name="Directorysection" id="Directorysection">&lt;Directory&gt;</a> <a name="directorysection" id="directorysection">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enclose a group of directives that apply only to the
 named file-system directory, sub-directories, and their contents.</td></tr>
@@ -1017,7 +1017,7 @@ named file-system directory, sub-directories, and their contents.</td></tr>
 
     <p>The directory sections occur in the <code>httpd.conf</code> file.
     <code class="directive">&lt;Directory&gt;</code> directives
-    cannot nest, and cannot appear in a <code class="directive"><a href="#limit">&lt;Limit&gt;</a></code> or <code class="directive"><a href="#limitexcept">&lt;LimitExcept&gt;</a></code> section.</p>
+    cannot nest, and cannot appear in a <code class="directive"><a href="#limitsection">&lt;Limit&gt;</a></code> or <code class="directive"><a href="#limitexceptsection">&lt;LimitExcept&gt;</a></code> section.</p>
 
 <h3>See also</h3>
 <ul>
@@ -1028,7 +1028,7 @@ named file-system directory, sub-directories, and their contents.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DirectoryMatch" id="DirectoryMatch">&lt;DirectoryMatch&gt;</a> <a name="directorymatch" id="directorymatch">Directive</a></h2>
+<div class="directive-section"><h2><a name="DirectoryMatchsection" id="DirectoryMatchsection">&lt;DirectoryMatch&gt;</a> <a name="directorymatchsection" id="directorymatchsection">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enclose directives that apply to
 the contents of file-system directories matching a regular expression.</td></tr>
@@ -1041,7 +1041,7 @@ the contents of file-system directories matching a regular expression.</td></tr>
     <p><code class="directive">&lt;DirectoryMatch&gt;</code> and
     <code>&lt;/DirectoryMatch&gt;</code> are used to enclose a group
     of directives which will apply only to the named directory (and the files within),
-    the same as <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code>.
+    the same as <code class="directive"><a href="#directorysection">&lt;Directory&gt;</a></code>.
     However, it takes as an argument a
     <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular expression</a>.  For example:</p>
 
@@ -1055,7 +1055,7 @@ the contents of file-system directories matching a regular expression.</td></tr>
 
    <div class="note"><h3>Compatibility</h3>
       Prior to 2.3.9, this directive implicitly applied to sub-directories
-      (like <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code>) and
+      (like <code class="directive"><a href="#directorysection">&lt;Directory&gt;</a></code>) and
       could not match the end of line symbol ($).  In 2.3.9 and later,
       only directories that match the expression are affected by the enclosed
       directives.
@@ -1081,7 +1081,7 @@ the contents of file-system directories matching a regular expression.</td></tr>
 
 <h3>See also</h3>
 <ul>
-<li><code class="directive"><a href="#directory">&lt;Directory&gt;</a></code> for
+<li><code class="directive"><a href="#directorysection">&lt;Directory&gt;</a></code> for
 a description of how regular expressions are mixed in with normal
 <code class="directive">&lt;Directory&gt;</code>s</li>
 <li><a href="../sections.html">How &lt;Directory&gt;, &lt;Location&gt; and
@@ -1123,11 +1123,11 @@ Locations</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Else" id="Else">&lt;Else&gt;</a> <a name="else" id="else">Directive</a></h2>
+<div class="directive-section"><h2><a name="Elsesection" id="Elsesection">&lt;Else&gt;</a> <a name="elsesection" id="elsesection">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Contains directives that apply only if the condition of a
-previous <code class="directive"><a href="#if">&lt;If&gt;</a></code> or
-<code class="directive"><a href="#elseif">&lt;ElseIf&gt;</a></code> section is not
+previous <code class="directive"><a href="#ifsection">&lt;If&gt;</a></code> or
+<code class="directive"><a href="#elseifsection">&lt;ElseIf&gt;</a></code> section is not
 satisfied by a request at runtime</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>&lt;Else&gt; ... &lt;/Else&gt;</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
@@ -1159,8 +1159,8 @@ satisfied by a request at runtime</td></tr>
 
 <h3>See also</h3>
 <ul>
-<li><code class="directive"><a href="#if">&lt;If&gt;</a></code></li>
-<li><code class="directive"><a href="#elseif">&lt;ElseIf&gt;</a></code></li>
+<li><code class="directive"><a href="#ifsection">&lt;If&gt;</a></code></li>
+<li><code class="directive"><a href="#elseifsection">&lt;ElseIf&gt;</a></code></li>
 <li><a href="../sections.html">How &lt;Directory&gt;, &lt;Location&gt;,
     &lt;Files&gt; sections work</a> for an explanation of how these
     different sections are combined when a request is received.
@@ -1170,11 +1170,11 @@ satisfied by a request at runtime</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ElseIf" id="ElseIf">&lt;ElseIf&gt;</a> <a name="elseif" id="elseif">Directive</a></h2>
+<div class="directive-section"><h2><a name="ElseIfsection" id="ElseIfsection">&lt;ElseIf&gt;</a> <a name="elseifsection" id="elseifsection">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Contains directives that apply only if a condition is satisfied
 by a request at runtime while the condition of a previous
-<code class="directive"><a href="#if">&lt;If&gt;</a></code> or
+<code class="directive"><a href="#ifsection">&lt;If&gt;</a></code> or
 <code class="directive">&lt;ElseIf&gt;</code> section is not
 satisfied</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>&lt;ElseIf <var>expression</var>&gt; ... &lt;/ElseIf&gt;</code></td></tr>
@@ -1210,8 +1210,8 @@ satisfied</td></tr>
 <ul>
 <li><a href="../expr.html">Expressions in Apache HTTP Server</a>,
 for a complete reference and more examples.</li>
-<li><code class="directive"><a href="#if">&lt;If&gt;</a></code></li>
-<li><code class="directive"><a href="#else">&lt;Else&gt;</a></code></li>
+<li><code class="directive"><a href="#ifsection">&lt;If&gt;</a></code></li>
+<li><code class="directive"><a href="#elsesection">&lt;Else&gt;</a></code></li>
 <li><a href="../sections.html">How &lt;Directory&gt;, &lt;Location&gt;,
     &lt;Files&gt; sections work</a> for an explanation of how these
     different sections are combined when a request is received.
@@ -1813,7 +1813,7 @@ earlier.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Files" id="Files">&lt;Files&gt;</a> <a name="files" id="files">Directive</a></h2>
+<div class="directive-section"><h2><a name="Filessection" id="Filessection">&lt;Files&gt;</a> <a name="filessection" id="filessection">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Contains directives that apply to matched
 filenames</td></tr>
@@ -1825,17 +1825,17 @@ filenames</td></tr>
 </table>
     <p>The <code class="directive">&lt;Files&gt;</code> directive
     limits the scope of the enclosed directives by filename. It is comparable
-    to the <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code>
-    and <code class="directive"><a href="#location">&lt;Location&gt;</a></code>
+    to the <code class="directive"><a href="#directorysection">&lt;Directory&gt;</a></code>
+    and <code class="directive"><a href="#locationsection">&lt;Location&gt;</a></code>
     directives. It should be matched with a <code>&lt;/Files&gt;</code>
     directive. The directives given within this section will be applied to
     any object with a basename (last component of filename) matching the
     specified filename. <code class="directive">&lt;Files&gt;</code>
     sections are processed in the order they appear in the
-    configuration file, after the <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code> sections and
-    <code>.htaccess</code> files are read, but before <code class="directive"><a href="#location">&lt;Location&gt;</a></code> sections. Note
+    configuration file, after the <code class="directive"><a href="#directorysection">&lt;Directory&gt;</a></code> sections and
+    <code>.htaccess</code> files are read, but before <code class="directive"><a href="#locationsection">&lt;Location&gt;</a></code> sections. Note
     that <code class="directive">&lt;Files&gt;</code> can be nested
-    inside <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code> sections to restrict the
+    inside <code class="directive"><a href="#directorysection">&lt;Directory&gt;</a></code> sections to restrict the
     portion of the filesystem they apply to.</p>
 
     <p>The <var>filename</var> argument should include a filename, or
@@ -1858,10 +1858,10 @@ filenames</td></tr>
 &lt;/Files&gt;</pre>
 
 
-    <p>would match most common Internet graphics formats. <code class="directive"><a href="#filesmatch">&lt;FilesMatch&gt;</a></code> is preferred,
+    <p>would match most common Internet graphics formats. <code class="directive"><a href="#filesmatchsection">&lt;FilesMatch&gt;</a></code> is preferred,
     however.</p>
 
-    <p>Note that unlike <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code> and <code class="directive"><a href="#location">&lt;Location&gt;</a></code> sections, <code class="directive">&lt;Files&gt;</code> sections can be used inside
+    <p>Note that unlike <code class="directive"><a href="#directorysection">&lt;Directory&gt;</a></code> and <code class="directive"><a href="#locationsection">&lt;Location&gt;</a></code> sections, <code class="directive">&lt;Files&gt;</code> sections can be used inside
     <code>.htaccess</code> files. This allows users to control access to
     their own files, at a file-by-file level.</p>
 
@@ -1874,7 +1874,7 @@ filenames</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="FilesMatch" id="FilesMatch">&lt;FilesMatch&gt;</a> <a name="filesmatch" id="filesmatch">Directive</a></h2>
+<div class="directive-section"><h2><a name="FilesMatchsection" id="FilesMatchsection">&lt;FilesMatch&gt;</a> <a name="filesmatchsection" id="filesmatchsection">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Contains directives that apply to regular-expression matched
 filenames</td></tr>
@@ -1886,7 +1886,7 @@ filenames</td></tr>
 </table>
     <p>The <code class="directive">&lt;FilesMatch&gt;</code> directive
     limits the scope of the enclosed directives by filename, just as the
-    <code class="directive"><a href="#files">&lt;Files&gt;</a></code> directive
+    <code class="directive"><a href="#filessection">&lt;Files&gt;</a></code> directive
     does. However, it accepts a <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular
     expression</a>. For example:</p>
 
@@ -1932,9 +1932,9 @@ media type in the HTTP Content-Type header field</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 </table>
     <p>When placed into an <code>.htaccess</code> file or a
-    <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code>, or
-    <code class="directive"><a href="#location">&lt;Location&gt;</a></code> or
-    <code class="directive"><a href="#files">&lt;Files&gt;</a></code>
+    <code class="directive"><a href="#directorysection">&lt;Directory&gt;</a></code>, or
+    <code class="directive"><a href="#locationsection">&lt;Location&gt;</a></code> or
+    <code class="directive"><a href="#filessection">&lt;Files&gt;</a></code>
     section, this directive forces all matching files to be served
     with the content type identification given by
     <var>media-type</var>. For example, if you had a directory full of
@@ -2177,7 +2177,7 @@ media type in the HTTP Content-Type header field</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="If" id="If">&lt;If&gt;</a> <a name="if" id="if">Directive</a></h2>
+<div class="directive-section"><h2><a name="Ifsection" id="Ifsection">&lt;If&gt;</a> <a name="ifsection" id="ifsection">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Contains directives that apply only if a condition is
 satisfied by a request at runtime</td></tr>
@@ -2226,8 +2226,8 @@ satisfied by a request at runtime</td></tr>
 <ul>
 <li><a href="../expr.html">Expressions in Apache HTTP Server</a>,
 for a complete reference and more examples.</li>
-<li><code class="directive"><a href="#elseif">&lt;ElseIf&gt;</a></code></li>
-<li><code class="directive"><a href="#else">&lt;Else&gt;</a></code></li>
+<li><code class="directive"><a href="#elseifsection">&lt;ElseIf&gt;</a></code></li>
+<li><code class="directive"><a href="#elsesection">&lt;Else&gt;</a></code></li>
 <li><a href="../sections.html">How &lt;Directory&gt;, &lt;Location&gt;,
     &lt;Files&gt; sections work</a> for an explanation of how these
     different sections are combined when a request is received.
@@ -2237,7 +2237,7 @@ for a complete reference and more examples.</li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="IfDefine" id="IfDefine">&lt;IfDefine&gt;</a> <a name="ifdefine" id="ifdefine">Directive</a></h2>
+<div class="directive-section"><h2><a name="IfDefinesection" id="IfDefinesection">&lt;IfDefine&gt;</a> <a name="ifdefinesection" id="ifdefinesection">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Encloses directives that will be processed only
 if a test is true at startup</td></tr>
@@ -2295,7 +2295,7 @@ if a test is true at startup</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="IfDirective" id="IfDirective">&lt;IfDirective&gt;</a> <a name="ifdirective" id="ifdirective">Directive</a></h2>
+<div class="directive-section"><h2><a name="IfDirectivesection" id="IfDirectivesection">&lt;IfDirective&gt;</a> <a name="ifdirectivesection" id="ifdirectivesection">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Encloses directives that are processed conditional on the
 presence or absence of a specific directive</td></tr>
@@ -2335,11 +2335,11 @@ presence or absence of a specific directive</td></tr>
 
 <h3>See also</h3>
 <ul>
-<li><code class="directive"><a href="#ifsection">&lt;IfSection&gt;</a></code></li>
+<li><code class="directive"><a href="#ifsectionsection">&lt;IfSection&gt;</a></code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="IfFile" id="IfFile">&lt;IfFile&gt;</a> <a name="iffile" id="iffile">Directive</a></h2>
+<div class="directive-section"><h2><a name="IfFilesection" id="IfFilesection">&lt;IfFile&gt;</a> <a name="iffilesection" id="iffilesection">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Encloses directives that will be processed only
 if file exists at startup</td></tr>
@@ -2376,7 +2376,7 @@ if file exists at startup</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="IfModule" id="IfModule">&lt;IfModule&gt;</a> <a name="ifmodule" id="ifmodule">Directive</a></h2>
+<div class="directive-section"><h2><a name="IfModulesection" id="IfModulesection">&lt;IfModule&gt;</a> <a name="ifmodulesection" id="ifmodulesection">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Encloses directives that are processed conditional on the
 presence or absence of a specific module</td></tr>
@@ -2427,7 +2427,7 @@ presence or absence of a specific module</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="IfSection" id="IfSection">&lt;IfSection&gt;</a> <a name="ifsection" id="ifsection">Directive</a></h2>
+<div class="directive-section"><h2><a name="IfSectionsection" id="IfSectionsection">&lt;IfSection&gt;</a> <a name="ifsectionsection" id="ifsectionsection">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Encloses directives that are processed conditional on the
 presence or absence of a specific section directive</td></tr>
@@ -2482,7 +2482,7 @@ presence or absence of a specific section directive</td></tr>
 
 <h3>See also</h3>
 <ul>
-<li><code class="directive"><a href="#ifdirective">&lt;IfDirective&gt;</a></code></li>
+<li><code class="directive"><a href="#ifdirectivesection">&lt;IfDirective&gt;</a></code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -2642,7 +2642,7 @@ requests on a persistent connection</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Limit" id="Limit">&lt;Limit&gt;</a> <a name="limit" id="limit">Directive</a></h2>
+<div class="directive-section"><h2><a name="Limitsection" id="Limitsection">&lt;Limit&gt;</a> <a name="limitsection" id="limitsection">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Restrict enclosed access controls to only certain HTTP
 methods</td></tr>
@@ -2682,15 +2682,15 @@ methods</td></tr>
     restrict <code>HEAD</code> requests. The <code>TRACE</code> method
     cannot be limited (see <code class="directive"><a href="#traceenable">TraceEnable</a></code>).</p>
 
-    <div class="warning">A <code class="directive"><a href="#limitexcept">&lt;LimitExcept&gt;</a></code> section should always be
+    <div class="warning">A <code class="directive"><a href="#limitexceptsection">&lt;LimitExcept&gt;</a></code> section should always be
     used in preference to a <code class="directive">&lt;Limit&gt;</code>
-    section when restricting access, since a <code class="directive"><a href="#limitexcept">&lt;LimitExcept&gt;</a></code> section provides protection
+    section when restricting access, since a <code class="directive"><a href="#limitexceptsection">&lt;LimitExcept&gt;</a></code> section provides protection
     against arbitrary methods.</div>
 
     <p>The <code class="directive">&lt;Limit&gt;</code> and
-    <code class="directive"><a href="#limitexcept">&lt;LimitExcept&gt;</a></code>
+    <code class="directive"><a href="#limitexceptsection">&lt;LimitExcept&gt;</a></code>
     directives may be nested.  In this case, each successive level of
-    <code class="directive">&lt;Limit&gt;</code> or <code class="directive"><a href="#limitexcept">&lt;LimitExcept&gt;</a></code> directives must
+    <code class="directive">&lt;Limit&gt;</code> or <code class="directive"><a href="#limitexceptsection">&lt;LimitExcept&gt;</a></code> directives must
     further restrict the set of methods to which access controls apply.</p>
 
     <div class="warning">When using
@@ -2716,7 +2716,7 @@ methods</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LimitExcept" id="LimitExcept">&lt;LimitExcept&gt;</a> <a name="limitexcept" id="limitexcept">Directive</a></h2>
+<div class="directive-section"><h2><a name="LimitExceptsection" id="LimitExceptsection">&lt;LimitExcept&gt;</a> <a name="limitexceptsection" id="limitexceptsection">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Restrict access controls to all HTTP methods
 except the named ones</td></tr>
@@ -2731,9 +2731,9 @@ except the named ones</td></tr>
     <code>&lt;/LimitExcept&gt;</code> are used to enclose
     a group of access control directives which will then apply to any
     HTTP access method <strong>not</strong> listed in the arguments;
-    i.e., it is the opposite of a <code class="directive"><a href="#limit">&lt;Limit&gt;</a></code> section and can be used to control
+    i.e., it is the opposite of a <code class="directive"><a href="#limitsection">&lt;Limit&gt;</a></code> section and can be used to control
     both standard and nonstandard/unrecognized methods. See the
-    documentation for <code class="directive"><a href="#limit">&lt;Limit&gt;</a></code> for more details.</p>
+    documentation for <code class="directive"><a href="#limitsection">&lt;Limit&gt;</a></code> for more details.</p>
 
     <p>For example:</p>
 
@@ -2980,7 +2980,7 @@ from the client</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Location" id="Location">&lt;Location&gt;</a> <a name="location" id="location">Directive</a></h2>
+<div class="directive-section"><h2><a name="Locationsection" id="Locationsection">&lt;Location&gt;</a> <a name="locationsection" id="locationsection">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Applies the enclosed directives only to matching
 URLs</td></tr>
@@ -2992,11 +2992,11 @@ URLs</td></tr>
 </table>
     <p>The <code class="directive">&lt;Location&gt;</code> directive
     limits the scope of the enclosed directives by URL. It is similar to the
-    <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code>
+    <code class="directive"><a href="#directorysection">&lt;Directory&gt;</a></code>
     directive, and starts a subsection which is terminated with a
     <code>&lt;/Location&gt;</code> directive. <code class="directive">&lt;Location&gt;</code> sections are processed in the
-    order they appear in the configuration file, after the <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code> sections and
-    <code>.htaccess</code> files are read, and after the <code class="directive"><a href="#files">&lt;Files&gt;</a></code> sections.</p>
+    order they appear in the configuration file, after the <code class="directive"><a href="#directorysection">&lt;Directory&gt;</a></code> sections and
+    <code>.htaccess</code> files are read, and after the <code class="directive"><a href="#filessection">&lt;Files&gt;</a></code> sections.</p>
 
     <p><code class="directive">&lt;Location&gt;</code> sections operate
     completely outside the filesystem.  This has several consequences.
@@ -3041,7 +3041,7 @@ URLs</td></tr>
 
     <p>Use <code class="directive">&lt;Location&gt;</code> to apply
     directives to content that lives outside the filesystem.  For
-    content that lives in the filesystem, use <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code> and <code class="directive"><a href="#files">&lt;Files&gt;</a></code>.  An exception is
+    content that lives in the filesystem, use <code class="directive"><a href="#directorysection">&lt;Directory&gt;</a></code> and <code class="directive"><a href="#filessection">&lt;Files&gt;</a></code>.  An exception is
     <code>&lt;Location "/"&gt;</code>, which is an easy way to
     apply a configuration to the entire server.</p>
     </div>
@@ -3067,7 +3067,7 @@ URLs</td></tr>
 
 
     <p>would match URLs that contained the substring <code>/extra/data</code>
-    or <code>/special/data</code>. The directive <code class="directive"><a href="#locationmatch">&lt;LocationMatch&gt;</a></code> behaves
+    or <code>/special/data</code>. The directive <code class="directive"><a href="#locationmatchsection">&lt;LocationMatch&gt;</a></code> behaves
     identical to the regex version of <code class="directive">&lt;Location&gt;</code>, and is preferred, for the
     simple reason that <code>~</code> is hard to distinguish from
     <code>-</code> in many fonts.</p>
@@ -3090,7 +3090,7 @@ URLs</td></tr>
       where multiple adjacent slashes are frequently collapsed to a single
       slash (<em>i.e.</em>, <code>/home///foo</code> is the same as
       <code>/home/foo</code>). In URL-space this is not necessarily true.
-      The <code class="directive"><a href="#locationmatch">&lt;LocationMatch&gt;</a></code>
+      The <code class="directive"><a href="#locationmatchsection">&lt;LocationMatch&gt;</a></code>
       directive and the regex version of <code class="directive">&lt;Location&gt;</code> require you to explicitly specify multiple
       slashes if that is your intention.</p>
 
@@ -3112,7 +3112,7 @@ URLs</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LocationMatch" id="LocationMatch">&lt;LocationMatch&gt;</a> <a name="locationmatch" id="locationmatch">Directive</a></h2>
+<div class="directive-section"><h2><a name="LocationMatchsection" id="LocationMatchsection">&lt;LocationMatch&gt;</a> <a name="locationmatchsection" id="locationmatchsection">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Applies the enclosed directives only to regular-expression
 matching URLs</td></tr>
@@ -3124,7 +3124,7 @@ matching URLs</td></tr>
 </table>
     <p>The <code class="directive">&lt;LocationMatch&gt;</code> directive
     limits the scope of the enclosed directives by URL, in an identical manner
-    to <code class="directive"><a href="#location">&lt;Location&gt;</a></code>. However,
+    to <code class="directive"><a href="#locationsection">&lt;Location&gt;</a></code>. However,
     it takes a <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular expression</a>
     as an argument instead of a simple string. For example:</p>
 
@@ -3397,7 +3397,7 @@ LogLevel info ssl_module:warn</pre>
     processing.  Therefore, <code class="directive">LogLevelOverride</code> allows to
     change the log level for things like the SSL handshake which happen before
     a <code class="directive"><a href="#loglevel">LogLevel</a></code> directive in an
-    <code class="directive"><a href="#if">&lt;If&gt;</a></code> container would
+    <code class="directive"><a href="#ifsection">&lt;If&gt;</a></code> container would
     be evaluated.</p>
 
     <p><code class="directive">LogLevelOverride</code> accepts either a single
@@ -3858,10 +3858,10 @@ directory</td></tr>
       the default setting.
       <div class="note">
       <p>Even though the server follows the symlink it does <em>not</em>
-      change the pathname used to match against <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code> sections.</p>
+      change the pathname used to match against <code class="directive"><a href="#directorysection">&lt;Directory&gt;</a></code> sections.</p>
 
       <p>The <code>FollowSymLinks</code> and
-      <code>SymLinksIfOwnerMatch</code> <code class="directive"><a href="#options">Options</a></code> work only in <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code> sections or
+      <code>SymLinksIfOwnerMatch</code> <code class="directive"><a href="#options">Options</a></code> work only in <code class="directive"><a href="#directorysection">&lt;Directory&gt;</a></code> sections or
       <code>.htaccess</code> files.</p>
 
       <p>Omitting this option should not be considered a security restriction,
@@ -3901,7 +3901,7 @@ directory</td></tr>
       "MultiViews" are allowed using
       <code class="module"><a href="../mod/mod_negotiation.html">mod_negotiation</a></code>.
       <div class="note"><h3>Note</h3> <p>This option gets ignored if set
-      anywhere other than <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code>, as <code class="module"><a href="../mod/mod_negotiation.html">mod_negotiation</a></code>
+      anywhere other than <code class="directive"><a href="#directorysection">&lt;Directory&gt;</a></code>, as <code class="module"><a href="../mod/mod_negotiation.html">mod_negotiation</a></code>
       needs real resources to compare against and evaluate from.</p></div>
       </dd>
 
@@ -3913,7 +3913,7 @@ directory</td></tr>
 
       <div class="note"><h3>Note</h3>
       <p>The <code>FollowSymLinks</code> and
-      <code>SymLinksIfOwnerMatch</code> <code class="directive"><a href="#options">Options</a></code> work only in <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code> sections or
+      <code>SymLinksIfOwnerMatch</code> <code class="directive"><a href="#options">Options</a></code> work only in <code class="directive"><a href="#directorysection">&lt;Directory&gt;</a></code> sections or
       <code>.htaccess</code> files.</p>
 
       <p>This option should not be considered a security restriction,
@@ -4388,11 +4388,11 @@ to name-virtual hosts</td></tr>
 &lt;/VirtualHost&gt;</pre>
 
 
-    <p>Name-based virtual hosts for the best-matching set of  <code class="directive"><a href="#virtualhost">&lt;virtualhost&gt;</a></code>s are processed
+    <p>Name-based virtual hosts for the best-matching set of  <code class="directive"><a href="#virtualhostsection">&lt;virtualhost&gt;</a></code>s are processed
     in the order they appear in the configuration.  The first matching <code class="directive"><a href="#servername">ServerName</a></code> or <code class="directive"><a href="#serveralias">ServerAlias</a></code> is used, with no different precedence for wildcards
     (nor for ServerName vs. ServerAlias).  </p>
 
-    <p>The complete list of names in the <code class="directive"><a href="#virtualhost">&lt;VirtualHost&gt;</a></code>
+    <p>The complete list of names in the <code class="directive"><a href="#virtualhostsection">&lt;VirtualHost&gt;</a></code>
     directive are treated just like a (non wildcard)
     <code class="directive">ServerAlias</code>.</p>
 
@@ -4453,7 +4453,7 @@ itself</td></tr>
 
     <p>If you are using <a href="../vhosts/name-based.html">name-based virtual hosts</a>,
     the <code class="directive">ServerName</code> inside a
-    <code class="directive"><a href="#virtualhost">&lt;VirtualHost&gt;</a></code>
+    <code class="directive"><a href="#virtualhostsection">&lt;VirtualHost&gt;</a></code>
     section specifies what hostname must appear in the request's
     <code>Host:</code> header to match this virtual host.</p>
 
@@ -4666,8 +4666,8 @@ handler</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>2.5 and later</td></tr>
 </table>
     <p>When placed into an <code>.htaccess</code> file or a
-    <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code> or
-    <code class="directive"><a href="#location">&lt;Location&gt;</a></code>
+    <code class="directive"><a href="#directorysection">&lt;Directory&gt;</a></code> or
+    <code class="directive"><a href="#locationsection">&lt;Location&gt;</a></code>
     section, this directive forces all matching files to be parsed
     through the <a href="../handler.html">handler</a> given by
     <var>handler-name</var>. For example, if you had a directory you
@@ -4868,7 +4868,7 @@ certain events before failing a request</td></tr>
 </table>
     <p>Undoes the effect of a <code class="directive"><a href="#define">Define</a></code> or
     of passing a <code>-D</code> argument to <code class="program"><a href="../programs/httpd.html">httpd</a></code>.</p>
-    <p>This directive can be used to toggle the use of <code class="directive"><a href="#ifdefine">&lt;IfDefine&gt;</a></code> sections without needing to alter
+    <p>This directive can be used to toggle the use of <code class="directive"><a href="#ifdefinesection">&lt;IfDefine&gt;</a></code> sections without needing to alter
     <code>-D</code> arguments in any startup scripts.</p>
     <p>While this directive is supported in virtual host context,
        the changes it makes are visible to any later configuration
@@ -5000,7 +5000,7 @@ port</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="VirtualHost" id="VirtualHost">&lt;VirtualHost&gt;</a> <a name="virtualhost" id="virtualhost">Directive</a></h2>
+<div class="directive-section"><h2><a name="VirtualHostsection" id="VirtualHostsection">&lt;VirtualHost&gt;</a> <a name="virtualhostsection" id="virtualhostsection">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Contains directives that apply only to a specific
 hostname or IP address</td></tr>

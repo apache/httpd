@@ -1555,7 +1555,7 @@ function silly_mapper(r)
 end</pre>
 
 
-   <div class="note"><h3>Context</h3><p>This directive is not valid in <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code>, or htaccess
+   <div class="note"><h3>Context</h3><p>This directive is not valid in <code class="directive"><a href="../mod/core.html#directorysection">&lt;Directory&gt;</a></code>, <code class="directive"><a href="../mod/core.html#filessection">&lt;Files&gt;</a></code>, or htaccess
    context.</p></div>
 
    <div class="note"><h3>Ordering</h3><p>The optional arguments "early" or "late"
@@ -1809,10 +1809,10 @@ LuaPackagePath /scripts/lib/?/init.lua</pre>
     This phase is run immediately after the request has been mapped to a virtal host,
     and can be used to either do some request processing before the other phases kick
     in, or to serve a request without the need to translate, map to storage et cetera.
-    As this phase is run before anything else, directives such as <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> or <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> are void in this phase, just as
+    As this phase is run before anything else, directives such as <code class="directive"><a href="../mod/core.html#locationsection">&lt;Location&gt;</a></code> or <code class="directive"><a href="../mod/core.html#directorysection">&lt;Directory&gt;</a></code> are void in this phase, just as
     URIs have not been properly parsed yet.
     </p>
-   <div class="note"><h3>Context</h3><p>This directive is not valid in <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code>, or htaccess
+   <div class="note"><h3>Context</h3><p>This directive is not valid in <code class="directive"><a href="../mod/core.html#directorysection">&lt;Directory&gt;</a></code>, <code class="directive"><a href="../mod/core.html#filessection">&lt;Files&gt;</a></code>, or htaccess
    context.</p></div>
 
 </div>

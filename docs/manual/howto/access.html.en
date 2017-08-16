@@ -128,7 +128,7 @@ Require not host gov</pre>
 <div class="section">
 <h2><a name="env" id="env">Access control by arbitrary variables</a></h2>
 
-    <p>Using the <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code>,
+    <p>Using the <code class="directive"><a href="../mod/core.html#ifsection">&lt;If&gt;</a></code>,
     you can allow or deny access based on arbitrary environment
     variables or request header values. For example, to deny access
     based on user-agent (the browser type) you might do the
@@ -178,7 +178,7 @@ RewriteRule "^/fridge"     "-"       [F]</pre>
     to check. You can also redirect, or otherwise rewrite these requests, if
     that approach is preferred.</p>
 
-    <p>The <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code> directive,
+    <p>The <code class="directive"><a href="../mod/core.html#ifsection">&lt;If&gt;</a></code> directive,
     added in 2.4, replaces many things that <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> has
     traditionally been used to do, and you should probably look there first
     before resorting to mod_rewrite.</p>

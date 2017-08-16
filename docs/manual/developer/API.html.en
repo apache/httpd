@@ -309,7 +309,7 @@
       point to per-module configuration structures. Specifically, these hold
       pointers to the data structures which the module has built to describe
       the way it has been configured to operate in a given directory (via
-      <code>.htaccess</code> files or <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> sections), for private data it has built in the
+      <code>.htaccess</code> files or <code class="directive"><a href="../mod/core.html#directorysection">&lt;Directory&gt;</a></code> sections), for private data it has built in the
       course of servicing the request (so modules' handlers for one phase can
       pass `notes' to their handlers for other phases). There is another such
       configuration vector in the <code>server_rec</code> data structure pointed
@@ -911,7 +911,7 @@ void *request_config;   /* Notes on *this* request */</pre><p><code>
     filesystem, following the translated pathname, to read any
     <code>.htaccess</code> files which might be present. The information which
     is read in then has to be <em>merged</em> with the applicable information
-    from the server's own config files (either from the <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> sections in
+    from the server's own config files (either from the <code class="directive"><a href="../mod/core.html#directorysection">&lt;Directory&gt;</a></code> sections in
     <code>access.conf</code>, or from defaults in <code>srm.conf</code>, which
     actually behaves for most purposes almost exactly like <code>&lt;Directory
     /&gt;</code>).</p>
@@ -937,7 +937,7 @@ void *request_config;   /* Notes on *this* request */</pre><p><code>
     table *encoding_types;    /* Added with AddEncoding... */
 } mime_dir_config;</pre></div>
 
-      <p>When the server is reading a configuration file, or <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> section, which includes
+      <p>When the server is reading a configuration file, or <code class="directive"><a href="../mod/core.html#directorysection">&lt;Directory&gt;</a></code> section, which includes
       one of the MIME module's commands, it needs to create a
       <code>mime_dir_config</code> structure, so those commands have something
       to act on. It does this by invoking the function it finds in the module's
