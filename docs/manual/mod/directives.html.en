@@ -686,7 +686,7 @@
 <li><a href="mod_ssl.html#ssloptions">SSLOptions</a></li>
 <li><a href="mod_ssl.html#sslpassphrasedialog">SSLPassPhraseDialog</a></li>
 <li><a href="mod_ssl.html#sslpolicy">&lt;SSLPolicy&gt;</a></li>
-<li><a href="mod_ssl.html#sslpolicyuse">SSLPolicyUse</a></li>
+<li><a href="mod_ssl.html#sslpolicy">SSLPolicy</a></li>
 <li><a href="mod_ssl.html#sslprotocol">SSLProtocol</a></li>
 <li><a href="mod_ssl.html#sslproxycacertificatefile">SSLProxyCACertificateFile</a></li>
 <li><a href="mod_ssl.html#sslproxycacertificatepath">SSLProxyCACertificatePath</a></li>
