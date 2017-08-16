@@ -1741,7 +1741,7 @@ PROXY_DECLARE(char *) ap_proxy_define_worker(apr_pool_t *p,
     wshared->flush_packets = flush_off;
     wshared->flush_wait = PROXY_FLUSH_WAIT;
     wshared->is_address_reusable = 1;
-    wshared->lbfactor = 1;
+    wshared->lbfactor = 100;
     wshared->passes = 1;
     wshared->fails = 1;
     wshared->interval = apr_time_from_sec(HCHECK_WATHCHDOG_DEFAULT_INTERVAL);

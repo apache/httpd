@@ -1,8 +1,8 @@
-top_srcdir   = /Users/sei/projects/httpd/trunk
-top_builddir = /Users/sei/projects/httpd/trunk
-srcdir       = /Users/sei/projects/httpd/trunk/modules/md
-builddir     = /Users/sei/projects/httpd/trunk/modules/md
-VPATH        = /Users/sei/projects/httpd/trunk/modules/md
+top_srcdir   = /Users/jim/src/asf/code/dev/httpd-git-trunk
+top_builddir = /Users/jim/src/asf/code/dev/httpd-git-trunk
+srcdir       = /Users/jim/src/asf/code/dev/httpd-git-trunk/modules/md
+builddir     = /Users/jim/src/asf/code/dev/httpd-git-trunk/modules/md
+VPATH        = /Users/jim/src/asf/code/dev/httpd-git-trunk/modules/md
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
