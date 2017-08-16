@@ -220,6 +220,9 @@ static void clean_child_exit(int code)
 {
     retained->mpm->mpm_state = AP_MPMQ_STOPPING;
 
+    apr_signal(SIGHUP, SIG_IGN);
+    apr_signal(SIGTERM, SIG_IGN);
+
     if (pchild) {
         apr_pool_destroy(pchild);
     }
@@ -699,6 +702,13 @@ static int make_child(server_rec *s, int slot, int bucket)
          */
         apr_signal(SIGHUP, just_die);
         apr_signal(SIGTERM, just_die);
+        /* Ignore SIGINT in child. This fixes race-condition in signals
+         * handling when httpd is runnning on foreground and user hits ctrl+c.
+         * In this case, SIGINT is sent to all children followed by SIGTERM
+         * from the main process, which interrupts the SIGINT handler and
+         * leads to inconsistency.
+         */
+        apr_signal(SIGINT, SIG_IGN);
         /* The child process just closes listeners on AP_SIG_GRACEFUL.
          * The pod is used for signalling the graceful restart.
          */
