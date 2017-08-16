@@ -42,6 +42,34 @@ Listen @@SSLPort@@
 ##  the main server and all SSL-enabled virtual hosts.
 ##
 
+#   SSL Policy:
+#   Choose from a pre-defined setting of SSL* configurations, based on 
+#   the Mozilla recommendations from:
+#      https://wiki.mozilla.org/Security/Server_Side_TLS 
+#   These policies will be updated over time in new releases to keep
+#   settings compatible and secure with "modern" browser, or if you
+#   need to support legacy installtions, "intermediate" might be your
+#   choice.
+#   If you run the following command on your installation, the exact
+#   contents of the defined SSL policies will be listed:
+#
+#     > httpd -t -D DUMP_SSL_POLICIES
+#
+#   Worth noting, a SSLPolicy defines the ground rules. What ever is
+#   configured beside it, is added "on top". If a configuration has
+#   a SSLPolicy *and* a SSLCipherSuite, any cipher suite in the policy
+#   will be overwritten in this context.
+#
+#   If your OpenSSL library does not support TLSv1.2 (OpenSSL 1.0.2
+#   and later), "modern" will not be available.
+#   If you enable one of the policies below, we recommend that you
+#   refrain from configuring any of the following, unless you are
+#   certain that you want to override: 
+#      SSLCipherSuite, SSLProxyCipherSuite, SSLHonorCipherOrder,
+#      SSLProtocol, SSLProxyProtocol
+#SSLPolicy intermediate
+#SSLPolicy modern
+
 #   SSL Cipher Suite:
 #   List the ciphers that the client is permitted to negotiate,
 #   and that httpd will negotiate as the client of a proxied server.

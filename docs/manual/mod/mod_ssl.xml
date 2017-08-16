@@ -2813,4 +2813,193 @@ SSLOpenSSLConfCmd SignatureAlgorithms RSA+SHA384:ECDSA+SHA256
 </usage>
 </directivesynopsis>
 
+<directivesynopsis>
+<name>SSLPolicySection</name>
+<description></description>
+<syntax>&lt;SSLPolicy <em>name</em>&gt;</syntax>
+<contextlist><context>server config</context></contextlist>
+<compatibility>Available in httpd 2.4.28 and later</compatibility>
+
+<usage>
+<p>This directive defines a set of SSL* configurations under
+and gives it a name. This name can be used in the directives
+<directive>SSLPolicy</directive> and <directive>SSLProxyPolicy</directive>
+to apply this configuration set in the current context.</p>
+
+<example><title>Examples</title>
+<highlight language="config">
+&lt;SSLPolicy safe-stapling&gt;
+   SSLUseStapling on
+   SSLStaplingResponderTimeout 2
+   SSLStaplingReturnResponderErrors off
+   SSLStaplingFakeTryLater off
+   SSLStaplingStandardCacheTimeout 86400
+&lt;/SSLPolicy&gt;
+
+   ...
+   &lt;VirtualHost...&gt;
+      SSLPolicy safe-stapling
+      ...
+</highlight>
+</example>
+
+<p>On the one hand, this can make server configurations easier to 
+<em>read</em> and <em>maintain</em>. On the other hand, it is 
+intended to make SSL easier and safer to <em>use</em>. For the 
+latter, Apache httpd ships with a set of pre-defined policies
+that reflect good open source practise. The policy "modern",
+for example, carries the settings to make your server work
+compatible and securely with current browsers.</p>
+
+<p>The list of predefined policies in your Apache can be obtained
+by running the following command. This list shows you the 
+detailed configurations each policy is made of:</p>
+
+<example><title>Examples</title>
+<highlight language="sh">
+> httpd -t -D DUMP_SSL_POLICIES
+</highlight>
+</example>
+
+<p>The directive can only be used in the server config (global context), so 
+there cannot be two policies with the same name. However, policies can
+be redefined:</p>
+
+<example><title>Examples</title>
+<highlight language="config">
+&lt;SSLPolicy proxy-trust&gt;
+   SSLProxyVerify require
+&lt;/SSLPolicy&gt;
+   ...
+&lt;SSLPolicy proxy-trust&gt;
+   SSLProxyVerify none
+&lt;/SSLPolicy&gt;
+</highlight>
+</example>
+
+<p>Policy definitions are <em>added</em> in the order they appear, but are
+<em>applied</em> when the whole configuration is read. This means that any
+use of 'proxy-trust' will mean 'SSLProxyVerify none'. The first definition
+has no effect at all. You can replace policy definitions that have been
+pre-installed without the need to disable them.</p>
+
+<p>Additional to replacing policies, redefinitions may just alter
+an aspect of a policy:</p>
+
+<example><title>Examples</title>
+<highlight language="config">
+&lt;SSLPolicy proxy-trust&gt;
+   SSLProxyVerify require
+&lt;/SSLPolicy&gt;
+   ...
+&lt;SSLPolicy proxy-trust&gt;
+   SSLPolicy proxy-trust
+   SSLProxyVerifyDepth 10
+&lt;/SSLPolicy&gt;
+</highlight>
+</example>
+
+<p>This re-uses all settings from the previous 'proxy-trust' and adds
+one directive on top of it. All others still apply. This is very handy
+when pre-defined policies (from Apache itself or a distributor)
+that <em>almost</em> fit ones needs. Previously, such definitions were
+(copied and) edited. This made updating them difficult. Now they can
+be setup like this:</p>
+
+<example><title>Examples</title>
+<highlight language="config">
+Include ssl-policies.conf
+
+&lt;SSLPolicy modern&gt;
+   SSLPolicy modern
+   SSLProxyVerify none
+&lt;/SSLPolicy&gt;
+</highlight>
+</example>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLPolicy</name>
+<description></description>
+<syntax>SSLPolicy <em>name</em></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<compatibility>Available in httpd 2.4.28 and later</compatibility>
+
+<usage>
+<p>This directive applies the set of SSL* directives defined
+under 'name' (see <directive>SSLPolicySection</directive>) as the <em>base</em>
+settings in the current context. That means that any other SSL* directives
+you make in the same context remain effective. So, the effective
+<directive>SSLProtocol</directive> value in the following settings are:</p>
+
+<example><title>Examples</title>
+<highlight language="config">
+   &lt;VirtualHost...&gt; # effective: 'all'
+      SSLPolicy modern
+      SSLProtocol all
+   &lt;/VirtualHost&gt;
+
+   &lt;VirtualHost...&gt; # effective: 'all'
+      SSLProtocol all
+      SSLPolicy modern
+   &lt;/VirtualHost&gt;
+
+   SSLPolicy modern
+   &lt;VirtualHost...&gt; # effective: 'all'
+      SSLProtocol all
+   &lt;/VirtualHost&gt;
+   
+   SSLProtocol all
+   &lt;VirtualHost...&gt; # effective: '+TLSv1.2'
+     SSLPolicy modern
+   &lt;/VirtualHost&gt;
+</highlight>
+</example>
+
+<p>There can be more than one policy applied in a context. The
+later ones overshadowing the earlier ones:</p>
+
+<example><title>Examples</title>
+<highlight language="config">
+   &lt;VirtualHost...&gt; # effective: 'intermediate &gt; modern'
+      SSLPolicy modern
+      SSLPolicy intermediate
+   &lt;/VirtualHost&gt;
+
+   &lt;VirtualHost...&gt; # effective: 'modern &gt; intermediate'
+      SSLPolicy intermediate
+      SSLPolicy modern
+   &lt;/VirtualHost&gt;
+</highlight>
+</example>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLProxyPolicy</name>
+<description></description>
+<syntax>SSLProxyPolicy <em>name</em></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<compatibility>Available in httpd 2.4.28 and later</compatibility>
+
+<usage>
+<p>This directive is similar to <directive>SSLPolicy</directive>, but 
+applies only the SSLProxy* directives defined in the policy. This helps
+when you need different policies for front and backends:</p>
+
+<example><title>Examples</title>
+<highlight language="config">
+SSLPolicy modern
+SSLProxyPolicy intermediate
+</highlight>
+</example>
+
+</usage>
+</directivesynopsis>
+
 </modulesynopsis>

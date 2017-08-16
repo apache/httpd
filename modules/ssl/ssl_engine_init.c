@@ -280,6 +280,13 @@ apr_status_t ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
             sc->fips = FALSE;
         }
 #endif
+
+        if (sc->error_policy) {
+            rv = ssl_policy_lookup(p, sc->error_policy)? APR_EGENERAL : APR_ENOENT;
+            ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO() 
+                         "Applying SSLPolicy '%s'", sc->error_policy);
+            return rv;
+        }
     }
 
 #if APR_HAS_THREADS && MODSSL_USE_OPENSSL_PRE_1_1_API
