@@ -78,7 +78,7 @@ ManagedDomain example.org
     </summary>
     
     <directivesynopsis>
-        <name>ManagedDomainSimple</name>
+        <name>ManagedDomain</name>
         <description>Define list of domain names that belong to one group</description>
         <syntax>ManagedDomain <var>dns-name</var> [ <var>other-dns-name</var>... ]</syntax>
         <contextlist>
