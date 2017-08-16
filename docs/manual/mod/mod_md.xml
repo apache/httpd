@@ -30,7 +30,6 @@
     <sourcefile>mod_md.c</sourcefile>
     <identifier>md_module</identifier>
     <compatibility>Available in version 2.5.0 and later</compatibility>
-    
     <summary>
         <p>
         This module manages common properties of domains for one or more virtual hosts. 
@@ -77,9 +76,9 @@ ManagedDomain example.org
         </note>
 
     </summary>
-
+    
     <directivesynopsis>
-        <name>ManagedDomain</name>
+        <name>ManagedDomainSimple</name>
         <description>Define list of domain names that belong to one group</description>
         <syntax>ManagedDomain <var>dns-name</var> [ <var>other-dns-name</var>... ]</syntax>
         <contextlist>
@@ -191,7 +190,6 @@ ManagedDomain example.org
         <syntax>MDCertificateAgreement url-of-terms-of-service</syntax>
         <contextlist>
             <context>server config</context>
-            <context>managed domain</context>
         </contextlist>
         <usage>
             <p>When you use <module>mod_md</module> to obtain a certificate, you become a customer of the CA (e.g. Let's Encrypt). That means you need to read and agree to their Terms of Service, 
@@ -216,7 +214,6 @@ ManagedDomain example.org www.example.org mail.example.org
         <default>MDCertificateAuthority https://acme-v01.api.letsencrypt.org/directory</default>
         <contextlist>
             <context>server config</context>
-            <context>managed domain</context>
         </contextlist>
         <usage>
             <p>
@@ -243,7 +240,6 @@ MDCertificateAgreement https://letsencrypt.org/documents/LE-SA-v1.1.1-August-1-2
         <default>MDCertificateProtocol ACME</default>
         <contextlist>
             <context>server config</context>
-            <context>managed domain</context>
         </contextlist>
         <usage>
             <p>Specifies the protocol to use. Currently, only <code>ACME</code> is supported.</p>
@@ -257,14 +253,13 @@ MDCertificateAgreement https://letsencrypt.org/documents/LE-SA-v1.1.1-August-1-2
         <default>MDDriveMode  auto</default>
         <contextlist>
             <context>server config</context>
-            <context>managed domain</context>
         </contextlist>
         <usage>
             <p>In 'auto' mode, <module>mod_md</module> will <em>drive</em> a Managed Domain's
             properties (e.g. certicate management) whenever necessary. When a MD is not used
             in any virtual host, the module will do nothing. When a certificate is missing, it
             will try to get one. When a certificate expires soon (see 
-            <directive module="mod_md" type="section">MDRenewWindow</directive>), it will
+            <directive module="mod_md">MDRenewWindow</directive>), it will
             renew it.
             </p><p>
             In 'manual' mode, it is your duty to  do all this. The module will provide existing
@@ -284,12 +279,11 @@ MDCertificateAgreement https://letsencrypt.org/documents/LE-SA-v1.1.1-August-1-2
         <syntax>MDMember hostname</syntax>
         <contextlist>
             <context>server config</context>
-            <context>managed domain</context>
         </contextlist>
         <usage>
             <p>
             Instead of listing all dns names on the same line, you may use
-            <directive module="mod_md" type="section">MDMember</directive> to add such names
+            <directive module="mod_md">MDMember</directive> to add such names
             to a managed domain.
             </p>
             <example><title>Example</title>
@@ -346,7 +340,7 @@ MDPortMap 80:- 443:5002
             </p>
         </usage>
     </directivesynopsis>
-    
+
     <directivesynopsis>
         <name>MDRenewWindow</name>
         <description></description>
@@ -354,7 +348,6 @@ MDPortMap 80:- 443:5002
         <default>MDRenewWindow 14d</default>
         <contextlist>
             <context>server config</context>
-            <context>managed domain</context>
         </contextlist>
         <usage>
             <p>
@@ -390,7 +383,7 @@ MDPortMap 80:- 443:5002
             </p>
         </usage>
     </directivesynopsis>
-    
+
     <directivesynopsis>
         <name>MDCAChallenges</name>
         <description></description>
@@ -398,7 +391,6 @@ MDPortMap 80:- 443:5002
         <default>MDCAChallenges tls-sni-01 http-01</default>
         <contextlist>
             <context>server config</context>
-            <context>managed domain</context>
         </contextlist>
         <usage>
             <p>
@@ -410,5 +402,5 @@ MDPortMap 80:- 443:5002
             </p>
         </usage>
     </directivesynopsis>
-    
+
 </modulesynopsis>
