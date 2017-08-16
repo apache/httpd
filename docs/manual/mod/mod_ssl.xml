@@ -2813,9 +2813,9 @@ SSLOpenSSLConfCmd SignatureAlgorithms RSA+SHA384:ECDSA+SHA256
 </usage>
 </directivesynopsis>
 
-<directivesynopsis>
-<name>SSLPolicySection</name>
-<description></description>
+<directivesynopsis type="section">
+<name>SSLPolicy</name>
+<description>Define a named set of SSL configurations</description>
 <syntax>&lt;SSLPolicy <em>name</em>&gt;</syntax>
 <contextlist><context>server config</context></contextlist>
 <compatibility>Available in httpd 2.4.28 and later</compatibility>
@@ -2823,7 +2823,7 @@ SSLOpenSSLConfCmd SignatureAlgorithms RSA+SHA384:ECDSA+SHA256
 <usage>
 <p>This directive defines a set of SSL* configurations under
 and gives it a name. This name can be used in the directives
-<directive>SSLPolicy</directive> and <directive>SSLProxyPolicy</directive>
+<directive>SSLPolicyUse</directive> and <directive>SSLProxyPolicy</directive>
 to apply this configuration set in the current context.</p>
 
 <example><title>Examples</title>
@@ -2921,8 +2921,8 @@ Include ssl-policies.conf
 </directivesynopsis>
 
 <directivesynopsis>
-<name>SSLPolicy</name>
-<description></description>
+<name>SSLPolicyUse</name>
+<description>Apply a SSLPolicy by name</description>
 <syntax>SSLPolicy <em>name</em></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
@@ -2930,7 +2930,7 @@ Include ssl-policies.conf
 
 <usage>
 <p>This directive applies the set of SSL* directives defined
-under 'name' (see <directive>SSLPolicySection</directive>) as the <em>base</em>
+under 'name' (see <directive type="section">SSLPolicy</directive>) as the <em>base</em>
 settings in the current context. That means that any other SSL* directives
 you make in the same context remain effective. So, the effective
 <directive>SSLProtocol</directive> value in the following settings are:</p>
@@ -2981,14 +2981,14 @@ later ones overshadowing the earlier ones:</p>
 
 <directivesynopsis>
 <name>SSLProxyPolicy</name>
-<description></description>
+<description>Apply the SSLProxy* parts alone of a SSLPolicy</description>
 <syntax>SSLProxyPolicy <em>name</em></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 <compatibility>Available in httpd 2.4.28 and later</compatibility>
 
 <usage>
-<p>This directive is similar to <directive>SSLPolicy</directive>, but 
+<p>This directive is similar to <directive>SSLPolicyUse</directive>, but 
 applies only the SSLProxy* directives defined in the policy. This helps
 when you need different policies for front and backends:</p>
 
@@ -2999,6 +2999,8 @@ SSLProxyPolicy intermediate
 </highlight>
 </example>
 
+<p>In this example, the 'modern' policy is first applied for front- and backend. The backend
+parts are then overwritten by the 'intermediate' policy settings.</p>
 </usage>
 </directivesynopsis>
 
