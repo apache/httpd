@@ -887,12 +887,12 @@ if (typeof(prettyPrint) !== 'undefined') {
         <xsl:variable name="lowerdirective">
             <xsl:choose>
             <xsl:when test="@name">
-                <xsl:value-of select="normalize-space(translate(@name,
-                                        $uppercase, $lowercase))" />
+                <xsl:value-of select="normalize-space(concat(translate(@name,
+                                        $uppercase, $lowercase),@type))" />
             </xsl:when>
             <xsl:otherwise>
-                <xsl:value-of select="normalize-space(translate(.,
-                                        $uppercase, $lowercase))" />
+                <xsl:value-of select="normalize-space(concat(translate(.,
+                                        $uppercase, $lowercase),@type))" />
             </xsl:otherwise>
             </xsl:choose>
         </xsl:variable>
