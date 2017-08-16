@@ -2823,10 +2823,10 @@ SSLOpenSSLConfCmd SignatureAlgorithms RSA+SHA384:ECDSA+SHA256
 <usage>
 <p>This directive defines a set of SSL* configurations under
 and gives it a name. This name can be used in the directives
-<directive>SSLPolicyUse</directive> and <directive>SSLProxyPolicy</directive>
+<directive>SSLPolicy</directive> and <directive>SSLProxyPolicy</directive>
 to apply this configuration set in the current context.</p>
 
-<example><title>Examples</title>
+<example><title>Define and Use of a Policy</title>
 <highlight language="config">
 &lt;SSLPolicy safe-stapling&gt;
    SSLUseStapling on
@@ -2855,7 +2855,7 @@ compatible and securely with current browsers.</p>
 by running the following command. This list shows you the 
 detailed configurations each policy is made of:</p>
 
-<example><title>Examples</title>
+<example><title>List all Defined Policies</title>
 <highlight language="sh">
 > httpd -t -D DUMP_SSL_POLICIES
 </highlight>
@@ -2865,7 +2865,7 @@ detailed configurations each policy is made of:</p>
 there cannot be two policies with the same name. However, policies can
 be redefined:</p>
 
-<example><title>Examples</title>
+<example><title>Policy Overwrite</title>
 <highlight language="config">
 &lt;SSLPolicy proxy-trust&gt;
    SSLProxyVerify require
@@ -2878,15 +2878,15 @@ be redefined:</p>
 </example>
 
 <p>Policy definitions are <em>added</em> in the order they appear, but are
-<em>applied</em> when the whole configuration is read. This means that any
+<em>applied</em> when the whole configuration has been read. This means that any
 use of 'proxy-trust' will mean 'SSLProxyVerify none'. The first definition
-has no effect at all. You can replace policy definitions that have been
-pre-installed without the need to disable them.</p>
+has no effect at all. That allows pre-installed policies to be replaced
+without the need to disable them.</p>
 
 <p>Additional to replacing policies, redefinitions may just alter
 an aspect of a policy:</p>
 
-<example><title>Examples</title>
+<example><title>Policy Redefine</title>
 <highlight language="config">
 &lt;SSLPolicy proxy-trust&gt;
    SSLProxyVerify require
@@ -2902,11 +2902,11 @@ an aspect of a policy:</p>
 <p>This re-uses all settings from the previous 'proxy-trust' and adds
 one directive on top of it. All others still apply. This is very handy
 when pre-defined policies (from Apache itself or a distributor)
-that <em>almost</em> fit ones needs. Previously, such definitions were
+that <em>almost</em> what you need. Previously, such definitions were
 (copied and) edited. This made updating them difficult. Now they can
 be setup like this:</p>
 
-<example><title>Examples</title>
+<example><title>Tweak a Pre-Defined Policy</title>
 <highlight language="config">
 Include ssl-policies.conf
 
@@ -2921,7 +2921,7 @@ Include ssl-policies.conf
 </directivesynopsis>
 
 <directivesynopsis>
-<name>SSLPolicyUse</name>
+<name>SSLPolicy</name>
 <description>Apply a SSLPolicy by name</description>
 <syntax>SSLPolicy <em>name</em></syntax>
 <contextlist><context>server config</context>
@@ -2935,7 +2935,7 @@ settings in the current context. That means that any other SSL* directives
 you make in the same context remain effective. So, the effective
 <directive>SSLProtocol</directive> value in the following settings are:</p>
 
-<example><title>Examples</title>
+<example><title>Policy Precedence</title>
 <highlight language="config">
    &lt;VirtualHost...&gt; # effective: 'all'
       SSLPolicy modern
@@ -2962,7 +2962,7 @@ you make in the same context remain effective. So, the effective
 <p>There can be more than one policy applied in a context. The
 later ones overshadowing the earlier ones:</p>
 
-<example><title>Examples</title>
+<example><title>Policy Ordering</title>
 <highlight language="config">
    &lt;VirtualHost...&gt; # effective: 'intermediate &gt; modern'
       SSLPolicy modern
@@ -2988,11 +2988,11 @@ later ones overshadowing the earlier ones:</p>
 <compatibility>Available in httpd 2.4.28 and later</compatibility>
 
 <usage>
-<p>This directive is similar to <directive>SSLPolicyUse</directive>, but 
+<p>This directive is similar to <directive>SSLPolicy</directive>, but 
 applies only the SSLProxy* directives defined in the policy. This helps
 when you need different policies for front and backends:</p>
 
-<example><title>Examples</title>
+<example><title>Another Policies for Proxy Only</title>
 <highlight language="config">
 SSLPolicy modern
 SSLProxyPolicy intermediate
