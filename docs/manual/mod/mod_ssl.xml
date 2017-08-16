@@ -2857,7 +2857,7 @@ detailed configurations each policy is made of:</p>
 
 <example><title>List all Defined Policies</title>
 <highlight language="sh">
-> httpd -t -D DUMP_SSL_POLICIES
+httpd -t -D DUMP_SSL_POLICIES
 </highlight>
 </example>
 
@@ -2931,31 +2931,49 @@ Include ssl-policies.conf
 <usage>
 <p>This directive applies the set of SSL* directives defined
 under 'name' (see <directive type="section">SSLPolicy</directive>) as the <em>base</em>
-settings in the current context. That means that any other SSL* directives
-you make in the same context remain effective. So, the effective
-<directive>SSLProtocol</directive> value in the following settings are:</p>
+settings in the current context. Apache comes with the following pre-defined polcies from 
+Mozilla, the makers of the Firefox browser 
+(<a href="https://wiki.mozilla.org/Security/Server_Side_TLS#Recommended_configurations">see here
+for a detailed description by them.</a>):
+</p>
+<ul>
+    <li><code>modern</code>: recommended when your server is accessible on the open Internet. Works with all modern browsers, but old devices might be unable to connect.</li>
+    <li><code>intermediate</code>: the fallback if you need to support old (but not very old) clients.</li>
+    <li><code>old</code>: when you need to give Windows XP/Internet Explorer 6 access. The last resort.</li>
+</ul>
+
+<p>You can check the detailed description of all defined policies via the command line:</p>
+<example><title>List all Defined Policies</title>
+<highlight language="sh">
+httpd -t -D DUMP_SSL_POLICIES
+</highlight>
+</example>
+
+<p>A SSLPolicy defines the baseline for the context it is used in. That means that any 
+other SSL* directives in the same context override it. As an example of this, see the effective
+<directive>SSLProtocol</directive> value in the following settings:</p>
 
 <example><title>Policy Precedence</title>
 <highlight language="config">
-   &lt;VirtualHost...&gt; # effective: 'all'
-      SSLPolicy modern
-      SSLProtocol all
-   &lt;/VirtualHost&gt;
-
-   &lt;VirtualHost...&gt; # effective: 'all'
-      SSLProtocol all
-      SSLPolicy modern
-   &lt;/VirtualHost&gt;
-
+&lt;VirtualHost...&gt; # effective: 'all'
    SSLPolicy modern
-   &lt;VirtualHost...&gt; # effective: 'all'
-      SSLProtocol all
-   &lt;/VirtualHost&gt;
-   
    SSLProtocol all
-   &lt;VirtualHost...&gt; # effective: '+TLSv1.2'
-     SSLPolicy modern
-   &lt;/VirtualHost&gt;
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost...&gt; # effective: 'all'
+   SSLProtocol all
+   SSLPolicy modern
+&lt;/VirtualHost&gt;
+
+SSLPolicy modern
+&lt;VirtualHost...&gt; # effective: 'all'
+   SSLProtocol all
+&lt;/VirtualHost&gt;
+   
+SSLProtocol all
+&lt;VirtualHost...&gt; # effective: '+TLSv1.2'
+  SSLPolicy modern
+&lt;/VirtualHost&gt;
 </highlight>
 </example>
 
@@ -2964,15 +2982,15 @@ later ones overshadowing the earlier ones:</p>
 
 <example><title>Policy Ordering</title>
 <highlight language="config">
-   &lt;VirtualHost...&gt; # effective: 'intermediate &gt; modern'
-      SSLPolicy modern
-      SSLPolicy intermediate
-   &lt;/VirtualHost&gt;
+&lt;VirtualHost...&gt; # effective protocol: 'all -SSLv3'
+   SSLPolicy modern
+   SSLPolicy intermediate
+&lt;/VirtualHost&gt;
 
-   &lt;VirtualHost...&gt; # effective: 'modern &gt; intermediate'
-      SSLPolicy intermediate
-      SSLPolicy modern
-   &lt;/VirtualHost&gt;
+&lt;VirtualHost...&gt; # effective protocol: '+TLSv1.2'
+   SSLPolicy intermediate
+   SSLPolicy modern
+&lt;/VirtualHost&gt;
 </highlight>
 </example>
 
