@@ -325,7 +325,7 @@
             <xsl:sort select="name" />
                 <xsl:choose>
                 <xsl:when test="$this[name=current()/name]">
-                    <xsl:apply-templates select="$this[name=current()/name]" />
+                    <xsl:apply-templates select="." />
                 </xsl:when>
                 <xsl:otherwise>
                     <xsl:apply-templates select=".">
