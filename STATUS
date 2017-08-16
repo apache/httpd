@@ -174,7 +174,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                runnning on foreground and user hits ctrl+c
      trunk patch: http://svn.apache.org/r1618555
      2.4.x patch: svn merge -c 1618555 ^/httpd/httpd/trunk .
-     +1: ylavic, jorton, 
+     +1: ylavic, jorton, jim
      jailetc36: untested because I'm unsure on how to reproduce the race, but
                 the patch description looks straighforward.
                 If confirmed, it would worth, IMHO, a CHANGE entry and maybe a
@@ -220,7 +220,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1802305
                   http://svn.apache.org/r1802309
      2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-globals_constantness_and_bytes_saving.patch
-     +1: ylavic, jorton
+     +1: ylavic, jorton, jim
 
   *) core: Support use of optional "tag" in syslog entries. PR 60525.
      trunk patch: http://svn.apache.org/r1784318
