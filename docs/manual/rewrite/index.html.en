@@ -46,8 +46,8 @@
 
       <p>Rewrite rules can operate on the full URLs, including the path-info
       and query string portions, and may be used in per-server context
-      (<code>httpd.conf</code>), per-virtualhost context (<code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> blocks), or
-      per-directory context (<code>.htaccess</code> files and <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> blocks). The
+      (<code>httpd.conf</code>), per-virtualhost context (<code class="directive"><a href="../mod/core.html#virtualhostsection">&lt;VirtualHost&gt;</a></code> blocks), or
+      per-directory context (<code>.htaccess</code> files and <code class="directive"><a href="../mod/core.html#directorysection">&lt;Directory&gt;</a></code> blocks). The
       rewritten result can lead to further rules, internal
       sub-processing, external request redirection, or proxy
       passthrough, depending on what <a href="flags.html">flags</a> you

@@ -59,7 +59,7 @@
         <pre class="prettyprint lang-config">Protocols h2 http/1.1</pre>
 
         <p>Allows HTTP/2 negotiation (h2) via TLS ALPN in a secure
-        <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>.
+        <code class="directive"><a href="../mod/core.html#virtualhostsection">&lt;VirtualHost&gt;</a></code>.
         HTTP/2 preamble checking (Direct mode, see <code class="directive"><a href="#h2direct">H2Direct</a></code>) is disabled by default for <code>h2</code>.</p>
         </div>
 
@@ -67,7 +67,7 @@
         <pre class="prettyprint lang-config">Protocols h2 h2c http/1.1</pre>
 
         <p>Allows HTTP/2 negotiation (h2) via TLS ALPN for secure
-        <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>. Allows
+        <code class="directive"><a href="../mod/core.html#virtualhostsection">&lt;VirtualHost&gt;</a></code>. Allows
         HTTP/2 cleartext negotiation (h2c) upgrading from an initial HTTP/1.1
         connection or via HTTP/2 preamble checking (Direct mode, see
         <code class="directive"><a href="#h2direct">H2Direct</a></code>).</p>
@@ -264,7 +264,7 @@
             <p>
                 This directive toggles the usage of the HTTP/2 Direct Mode. This
                 should be used inside a 
-                <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> 
+                <code class="directive"><a href="../mod/core.html#virtualhostsection">&lt;VirtualHost&gt;</a></code> 
                 section to enable direct HTTP/2 communication for that virtual host. 
             </p>
             <p>
@@ -412,7 +412,7 @@
             <p>
                 This directive toggles the security checks on HTTP/2 connections
                 in TLS mode (https:). This can be used server wide or for specific
-                <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>s. 
+                <code class="directive"><a href="../mod/core.html#virtualhostsection">&lt;VirtualHost&gt;</a></code>s. 
             </p>
             <p>
                 The security checks require that the TSL protocol is at least
@@ -515,7 +515,7 @@
             <p>
                 This directive toggles the maximum number of HTTP/2 server pushes 
                 that are remembered per HTTP/2 connection. This can be used inside the
-                <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> 
+                <code class="directive"><a href="../mod/core.html#virtualhostsection">&lt;VirtualHost&gt;</a></code> 
                 section to influence the number for all connections to that virtual host. 
             </p>
             <p>
@@ -750,7 +750,7 @@ H2PushPriority text/css   interleaved      # weight 256 default</pre>
                 connection before the TLS write size falls back to small (~1300 bytes)
                 length.
                 This can be used server wide or for specific
-                <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>s. 
+                <code class="directive"><a href="../mod/core.html#virtualhostsection">&lt;VirtualHost&gt;</a></code>s. 
             </p>
             <p>
                 See <code class="directive"><a href="#h2tlswarmupsize">H2TLSWarmUpSize</a></code> for a
@@ -789,7 +789,7 @@ H2PushPriority text/css   interleaved      # weight 256 default</pre>
                 TLS records (~1300 bytes) until doing maximum sized writes (16k)
                 on https: HTTP/2 connections.
                 This can be used server wide or for specific
-                <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>s. 
+                <code class="directive"><a href="../mod/core.html#virtualhostsection">&lt;VirtualHost&gt;</a></code>s. 
             </p>
             <p>
                 Measurements by <a href="https://www.igvita.com">google performance
@@ -836,7 +836,7 @@ H2PushPriority text/css   interleaved      # weight 256 default</pre>
                 This directive toggles the usage of the HTTP/1.1 Upgrade method 
                 for switching to HTTP/2. This
                 should be used inside a 
-                <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> 
+                <code class="directive"><a href="../mod/core.html#virtualhostsection">&lt;VirtualHost&gt;</a></code> 
                 section to enable Upgrades to HTTP/2 for that virtual host. 
             </p>
             <p>

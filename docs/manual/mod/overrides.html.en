@@ -98,13 +98,13 @@
 <tr><td colspan="2" class="descr">Maximum inflation ratio for request bodies</td></tr>
 <tr class="odd"><td><a href="core.html#else">&lt;Else&gt;</a></td><td class="module"><a href="core.html">core</a></td></tr>
 <tr class="odd"><td colspan="2" class="descr">Contains directives that apply only if the condition of a
-previous <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code> or
-<code class="directive"><a href="../mod/core.html#elseif">&lt;ElseIf&gt;</a></code> section is not
+previous <code class="directive"><a href="../mod/core.html#ifsection">&lt;If&gt;</a></code> or
+<code class="directive"><a href="../mod/core.html#elseifsection">&lt;ElseIf&gt;</a></code> section is not
 satisfied by a request at runtime</td></tr>
 <tr><td><a href="core.html#elseif">&lt;ElseIf&gt;</a></td><td class="module"><a href="core.html">core</a></td></tr>
 <tr><td colspan="2" class="descr">Contains directives that apply only if a condition is satisfied
 by a request at runtime while the condition of a previous
-<code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code> or
+<code class="directive"><a href="../mod/core.html#ifsection">&lt;If&gt;</a></code> or
 <code class="directive">&lt;ElseIf&gt;</code> section is not
 satisfied</td></tr>
 <tr class="odd"><td><a href="core.html#error">Error</a></td><td class="module"><a href="core.html">core</a></td></tr>

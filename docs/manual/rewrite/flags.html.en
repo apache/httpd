@@ -381,13 +381,13 @@ immediately without considering further rules.</p>
 
 <p>If you are using <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> in either
 <code>.htaccess</code> files or in
-<code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> sections,
+<code class="directive"><a href="../mod/core.html#directorysection">&lt;Directory&gt;</a></code> sections,
 it is important to have some understanding of how the rules are
 processed.  The simplified form of this is that once the rules have been
 processed, the rewritten request is handed back to the URL parsing
 engine to do what it may with it. It is possible that as the rewritten
 request is handled, the <code>.htaccess</code> file or
-<code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> section
+<code class="directive"><a href="../mod/core.html#directorysection">&lt;Directory&gt;</a></code> section
 may be encountered again, and thus the ruleset may be run again from the
 start. Most commonly this will happen if one of the rules causes a
 redirect - either internal or external - causing the request process to
@@ -579,7 +579,7 @@ the next phase of processing.</p>
 
 <p>Note that the <code>PT</code> flag is implied in per-directory
 contexts such as
-<code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> sections
+<code class="directive"><a href="../mod/core.html#directorysection">&lt;Directory&gt;</a></code> sections
 or in <code>.htaccess</code> files. The only way to circumvent that
 is to rewrite to <code>-</code>.</p>
 
@@ -747,7 +747,7 @@ RewriteRule "IMG"  "-" [T=image/jpg]</pre>
 
 
 <p>Please note that this is a trivial example, and could be better done
-using <code class="directive"><a href="../mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code>
+using <code class="directive"><a href="../mod/core.html#filesmatchsection">&lt;FilesMatch&gt;</a></code>
 instead. Always consider the alternate
 solutions to a problem before resorting to rewrite, which will
 invariably be a less efficient solution than the alternatives.</p>

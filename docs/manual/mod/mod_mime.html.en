@@ -66,7 +66,7 @@
     <p>While <code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code> associates metadata
     with filename extensions, the <code class="module"><a href="../mod/core.html">core</a></code> server
     provides directives that are used to associate all the files in a
-    given container (<em>e.g.</em>, <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>, <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>, or <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code>) with particular
+    given container (<em>e.g.</em>, <code class="directive"><a href="../mod/core.html#locationsection">&lt;Location&gt;</a></code>, <code class="directive"><a href="../mod/core.html#directorysection">&lt;Directory&gt;</a></code>, or <code class="directive"><a href="../mod/core.html#filessection">&lt;Files&gt;</a></code>) with particular
     metadata. These directives include <code class="directive"><a href="../mod/core.html#forcetype">ForceType</a></code>, <code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code>, <code class="directive"><a href="../mod/core.html#setinputfilter">SetInputFilter</a></code>, and <code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code>.  The core directives
     override any filename extension mappings defined in
     <code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code>.</p>
@@ -639,7 +639,7 @@ assigned a language-tag by some other means.</td></tr>
 </table>
     <p>The <code class="directive">DefaultLanguage</code> directive tells Apache
     that all resources in the directive's scope (<em>e.g.</em>, all resources
-    covered by the current <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> container) that don't have an explicit language
+    covered by the current <code class="directive"><a href="../mod/core.html#directorysection">&lt;Directory&gt;</a></code> container) that don't have an explicit language
     extension (such as <code>.fr</code> or <code>.de</code> as configured
     by <code class="directive"><a href="#addlanguage">AddLanguage</a></code>) should be
     assigned a Content-Language of <var>language-tag</var>. This allows
@@ -748,7 +748,7 @@ a matching file with MultiViews</td></tr>
 
 
     <p><code class="directive">MultiviewsMatch</code> is not allowed in a
-    <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> or <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code> section.</p>
+    <code class="directive"><a href="../mod/core.html#locationsection">&lt;Location&gt;</a></code> or <code class="directive"><a href="../mod/core.html#locationmatchsection">&lt;LocationMatch&gt;</a></code> section.</p>
 
 
 <h3>See also</h3>

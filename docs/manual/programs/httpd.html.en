@@ -100,7 +100,7 @@ files.</dd>
 <dt><code>-D <var>parameter</var></code></dt>
 
 <dd>Sets a configuration <var>parameter </var>which can be used with
-<code class="directive"><a href="../mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code> sections
+<code class="directive"><a href="../mod/core.html#ifdefinesection">&lt;IfDefine&gt;</a></code> sections
 in the configuration files to conditionally skip or process commands
 at server startup and restart. Also can be used to set certain
 less-common startup parameters including <code>-DNO_DETACH</code>

@@ -108,7 +108,7 @@ in the map:</p>
 <div class="note"><h3>Per-directory and .htaccess context</h3>
 <p>
 The <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> directive may not be
-used in <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> sections or
+used in <code class="directive"><a href="../mod/core.html#directorysection">&lt;Directory&gt;</a></code> sections or
 <code>.htaccess</code> files. You must
 declare the map in server or virtualhost context. You may use the map,
 once created, in your <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> and
@@ -441,7 +441,7 @@ this process, or if the script itself is very slow.</li>
 
     <p>While you cannot <strong>declare</strong> a map in
     per-directory context (<code>.htaccess</code> files or
-    <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> blocks) it is
+    <code class="directive"><a href="../mod/core.html#directorysection">&lt;Directory&gt;</a></code> blocks) it is
     possible to <strong>use</strong> this map in per-directory context.</p>
 
   </div></div>

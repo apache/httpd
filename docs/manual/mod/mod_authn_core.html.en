@@ -47,7 +47,7 @@
 </ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#authname">AuthName</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#authnprovideralias">&lt;AuthnProviderAlias&gt;</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authnprovideraliassection">&lt;AuthnProviderAlias&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authtype">AuthType</a></li>
 </ul>
 <h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_authn_core">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_authn_core">Report a bug</a></li></ul><h3>See also</h3>
@@ -168,7 +168,7 @@ authentication</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthnProviderAlias" id="AuthnProviderAlias">&lt;AuthnProviderAlias&gt;</a> <a name="authnprovideralias" id="authnprovideralias">Directive</a></h2>
+<div class="directive-section"><h2><a name="AuthnProviderAliassection" id="AuthnProviderAliassection">&lt;AuthnProviderAlias&gt;</a> <a name="authnprovideraliassection" id="authnprovideraliassection">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enclose a group of directives that represent an
 extension of a base authentication provider and referenced by

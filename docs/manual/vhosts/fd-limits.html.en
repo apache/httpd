@@ -63,7 +63,7 @@
 
     <ul>
       <li>Reduce the number of log files; don't specify log files
-      in the <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
+      in the <code class="directive"><a href="../mod/core.html#virtualhostsection">&lt;VirtualHost&gt;</a></code>
       sections, but only log to the main log files. (See <a href="#splitlogs">Splitting up your log files</a>, below, for more
       information on doing this.)</li>
 

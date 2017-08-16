@@ -42,7 +42,7 @@
 
     <p>in the default config file <code>conf/httpd.conf</code>, and adapting the <code>httpd-userdir.conf</code>
     file as necessary, or by including the appropriate directives in a
-    <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> block
+    <code class="directive"><a href="../mod/core.html#directorysection">&lt;Directory&gt;</a></code> block
     within the main config file.</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">Per-user web directories</a></li>
@@ -153,7 +153,7 @@ UserDir enabled rbowen krietz</pre>
   
 
    <p>In order to give each user their own cgi-bin directory, you can use
-    a <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>
+    a <code class="directive"><a href="../mod/core.html#directorysection">&lt;Directory&gt;</a></code>
     directive to make a particular subdirectory of a user's home directory
     cgi-enabled.</p>
 
