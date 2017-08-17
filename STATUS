@@ -203,7 +203,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) proxy: Ensure updatelbstatus() is NULL if not-implemented
      trunk patch: http://svn.apache.org/r1802845
      2.4.x patch: trunk patch works
-     +1: 
+     +1: jim
 
   *) ssl, ab: Compatibility with LibreSSL. PR 61184 and PR 61206.
      trunk patch: http://svn.apache.org/r1803392
@@ -216,7 +216,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      mod_proxy_foo submodule is missing.
      trunk patch: http://svn.apache.org/r1745039 
      2.4.x patch svn merge -c 1745039 ^/httpd/httpd/trunk .
-     +1: 
+     +1: jim
 
   *) mod_http2: fix for stalling when more than 32KB are written to a suspended stream
      2.4.x patch: svn merge -c 1803420,1803454,1804090 ^/httpd/httpd/trunk .
@@ -225,7 +225,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_proxy: fix ProxyAddHeaders merging.
      trunk patch: http://svn.apache.org/viewvc?rev=1805099&view=rev
      2.4.x patch: trunk patch works
-     +1: jorton, rpluem
+     +1: jorton, rpluem, jim
 
   *) mod_watchdog/mod_proxy_hcheck: Now accept ms interval settings
      trunk patch: http://svn.apache.org/r1799435
