@@ -80,7 +80,8 @@ struct md_t {
     struct apr_array_header_t *ca_challenges; /* challenge types configured for this MD */
 
     md_state_t state;               /* state of this MD */
-    apr_time_t expires;             /* When the credentials for this domain expire. 0 if unknown */
+    apr_time_t valid_from;          /* When the credentials start to be valid. 0 if unknown */
+    apr_time_t expires;             /* When the credentials expire. 0 if unknown */
     const char *cert_url;           /* url where cert has been created, remember during drive */ 
     
     const struct md_srv_conf_t *sc; /* server config where it was defined or NULL */
@@ -123,6 +124,7 @@ struct md_t {
 #define MD_KEY_TYPE             "type"
 #define MD_KEY_URL              "url"
 #define MD_KEY_URI              "uri"
+#define MD_KEY_VALID_FROM       "validFrom"
 #define MD_KEY_VALUE            "value"
 #define MD_KEY_VERSION          "version"
 
@@ -137,9 +139,6 @@ struct md_t {
  */
 #define MD_VAL_UPDATE(n,o,s)    ((n)->s != (o)->s)
 #define MD_SVAL_UPDATE(n,o,s)   ((n)->s && (!(o)->s || strcmp((n)->s, (o)->s)))
-
-#define MD_SECS_PER_HOUR      (60*60)
-#define MD_SECS_PER_DAY       (24*MD_SECS_PER_HOUR)
 
 /**
  * Determine if the Managed Domain contains a specific domain name.
@@ -212,6 +211,11 @@ md_t *md_clone(apr_pool_t *p, const md_t *src);
  * Shallow copy an md record into another pool.
  */
 md_t *md_copy(apr_pool_t *p, const md_t *src);
+
+/**
+ * Create a merged md with the settings of add overlaying the ones from base.
+ */
+md_t *md_merge(apr_pool_t *p, const md_t *add, const md_t *base);
 
 /** 
  * Convert the managed domain into a JSON representation and vice versa. 

@@ -135,6 +135,7 @@ struct md_proto_driver_t {
     const md_t *md;
     void *baton;
     int reset;
+    apr_time_t stage_valid_from;
 };
 
 typedef apr_status_t md_proto_init_cb(md_proto_driver_t *driver);
@@ -154,7 +155,8 @@ struct md_proto_t {
  * without interfering with any existing credentials.
  */
 apr_status_t md_reg_stage(md_reg_t *reg, const md_t *md, 
-                          const char *challenge, int reset, apr_pool_t *p);
+                          const char *challenge, int reset, 
+                          apr_time_t *pvalid_from, apr_pool_t *p);
 
 /**
  * Load a staged set of new credentials for the managed domain. This will archive
@@ -163,20 +165,5 @@ apr_status_t md_reg_stage(md_reg_t *reg, const md_t *md,
  * as they are.
  */
 apr_status_t md_reg_load(md_reg_t *reg, const char *name, apr_pool_t *p);
-
-/**
- * Drive the given managed domain toward completeness.
- * This is a convenience method that combines staging and, on success, loading
- * of a new managed domain credentials set.
- *
- * @param reg   the md registry
- * @param md    the managed domain to drive
- * @param challenge the challenge type to use or NULL for auto selection
- * @param reset remove any staging information that has been collected
- * @param force force driving even though it looks unnecessary (e.g. not epxired)
- * @param p     pool to use
- */
-apr_status_t md_reg_drive(md_reg_t *reg, md_t *md, 
-                          const char *challenge, int reset, int force, apr_pool_t *p);
 
 #endif /* mod_md_md_reg_h */

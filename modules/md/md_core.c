@@ -245,6 +245,26 @@ md_t *md_clone(apr_pool_t *p, const md_t *src)
     return md;   
 }
 
+md_t *md_merge(apr_pool_t *p, const md_t *add, const md_t *base)
+{
+    md_t *n = apr_pcalloc(p, sizeof(*n));
+
+    n->ca_url = add->ca_url? add->ca_url : base->ca_url;
+    n->ca_proto = add->ca_proto? add->ca_proto : base->ca_proto;
+    n->ca_agreement = add->ca_agreement? add->ca_agreement : base->ca_agreement;
+    n->drive_mode = (add->drive_mode != MD_DRIVE_DEFAULT)? add->drive_mode : base->drive_mode;
+    n->renew_window = (add->renew_window <= 0)? add->renew_window : base->renew_window;
+    n->transitive = (add->transitive < 0)? add->transitive : base->transitive;
+    if (add->ca_challenges) {
+        n->ca_challenges = apr_array_copy(p, add->ca_challenges);
+    }
+    else if (base->ca_challenges) {
+        n->ca_challenges = apr_array_copy(p, base->ca_challenges);
+    }
+    return n;
+}
+
+
 /**************************************************************************************************/
 /* format conversion */
 
@@ -270,6 +290,11 @@ md_json_t *md_to_json(const md_t *md, apr_pool_t *p)
             char *ts = apr_pcalloc(p, APR_RFC822_DATE_LEN);
             apr_rfc822_date(ts, md->expires);
             md_json_sets(ts, json, MD_KEY_CERT, MD_KEY_EXPIRES, NULL);
+        }
+        if (md->valid_from > 0) {
+            char *ts = apr_pcalloc(p, APR_RFC822_DATE_LEN);
+            apr_rfc822_date(ts, md->valid_from);
+            md_json_sets(ts, json, MD_KEY_CERT, MD_KEY_VALID_FROM, NULL);
         }
         md_json_setl(apr_time_sec(md->renew_window), json, MD_KEY_RENEW_WINDOW, NULL);
         if (md->ca_challenges && md->ca_challenges->nelts > 0) {
@@ -302,6 +327,10 @@ md_t *md_from_json(md_json_t *json, apr_pool_t *p)
         s = md_json_dups(p, json, MD_KEY_CERT, MD_KEY_EXPIRES, NULL);
         if (s && *s) {
             md->expires = apr_date_parse_rfc(s);
+        }
+        s = md_json_dups(p, json, MD_KEY_CERT, MD_KEY_VALID_FROM, NULL);
+        if (s && *s) {
+            md->valid_from = apr_date_parse_rfc(s);
         }
         md->renew_window = apr_time_from_sec(md_json_getl(json, MD_KEY_RENEW_WINDOW, NULL));
         if (md_json_has_key(json, MD_KEY_CA, MD_KEY_CHALLENGES, NULL)) {

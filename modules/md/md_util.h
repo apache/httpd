@@ -130,4 +130,12 @@ apr_status_t md_util_try(md_util_try_fn *fn, void *baton, int ignore_errs,
                          apr_interval_time_t timeout, apr_interval_time_t start_delay, 
                          apr_interval_time_t max_delay, int backoff);
 
+/**************************************************************************************************/
+/* date/time related */
+
+#define MD_SECS_PER_HOUR      (60*60)
+#define MD_SECS_PER_DAY       (24*MD_SECS_PER_HOUR)
+
+const char *md_print_duration(apr_pool_t *p, apr_interval_time_t duration);
+
 #endif /* md_util_h */

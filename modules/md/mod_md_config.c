@@ -72,6 +72,7 @@ static md_srv_conf_t defconf = {
     NULL,
     NULL,
     NULL,
+    NULL,
 };
 
 static md_mod_conf_t *mod_md_config;
@@ -147,7 +148,6 @@ void *md_config_create_svr(apr_pool_t *pool, server_rec *s)
     conf->name = apr_pstrcat(pool, "srv[", CONF_S_NAME(s), "]", NULL);
     conf->s = s;
     conf->mc = md_mod_conf_get(pool, 1);
-    conf->md = apr_pcalloc(pool, sizeof(*conf->md));
 
     srv_conf_props_clear(conf);
     
@@ -166,7 +166,6 @@ static void *md_config_merge(apr_pool_t *pool, void *basev, void *addv)
 
     nsc->transitive = (add->transitive != DEF_VAL)? add->transitive : base->transitive;
     nsc->drive_mode = (add->drive_mode != DEF_VAL)? add->drive_mode : base->drive_mode;
-    nsc->md = NULL;
     nsc->renew_window = (add->renew_window != DEF_VAL)? add->renew_window : base->renew_window;
 
     nsc->ca_url = add->ca_url? add->ca_url : base->ca_url;
@@ -174,6 +173,9 @@ static void *md_config_merge(apr_pool_t *pool, void *basev, void *addv)
     nsc->ca_agreement = add->ca_agreement? add->ca_agreement : base->ca_agreement;
     nsc->ca_challenges = (add->ca_challenges? apr_array_copy(pool, add->ca_challenges) 
                     : (base->ca_challenges? apr_array_copy(pool, base->ca_challenges) : NULL));
+    nsc->current = NULL;
+    nsc->assigned = NULL;
+    
     return nsc;
 }
 
@@ -247,6 +249,7 @@ static const char *md_config_sec_start(cmd_parms *cmd, void *mconfig, const char
 
     name = ap_getword_white(cmd->pool, &arg);
     domains = apr_array_make(cmd->pool, 5, sizeof(const char *));
+    add_domain_name(domains, name, cmd->pool);
     while (*arg != '\0') {
         name = ap_getword_white(cmd->pool, &arg);
         if (NULL != set_transitive(&transitive, name)) {
@@ -267,14 +270,14 @@ static const char *md_config_sec_start(cmd_parms *cmd, void *mconfig, const char
      * end of this section */
     memcpy(&save, sc, sizeof(save));
     srv_conf_props_clear(sc);
-    sc->md = md;
+    sc->current = md;
     
     if (NULL == (err = ap_walk_config(cmd->directive->first_child, cmd, cmd->context))) {
         srv_conf_props_apply(md, sc, cmd->pool);
         APR_ARRAY_PUSH(sc->mc->mds, const md_t *) = md;
     }
     
-    sc->md = NULL;
+    sc->current = NULL;
     srv_conf_props_copy(sc, &save);
     
     return err;
@@ -295,10 +298,10 @@ static const char *md_config_sec_add_members(cmd_parms *cmd, void *dc,
         return err;
     }
     
-    assert(sc->md);
+    assert(sc->current);
     for (i = 0; i < argc; ++i) {
         if (NULL != set_transitive(&sc->transitive, argv[i])) {
-            add_domain_name(sc->md->domains, argv[i], cmd->pool);
+            add_domain_name(sc->current->domains, argv[i], cmd->pool);
         }
     }
     return NULL;

@@ -88,6 +88,7 @@ int md_cert_has_expired(const md_cert_t *cert);
 int md_cert_covers_domain(md_cert_t *cert, const char *domain_name);
 int md_cert_covers_md(md_cert_t *cert, const struct md_t *md);
 apr_time_t md_cert_get_not_after(md_cert_t *cert);
+apr_time_t md_cert_get_not_before(md_cert_t *cert);
 
 apr_status_t md_cert_get_issuers_uri(const char **puri, md_cert_t *cert, apr_pool_t *p);
 apr_status_t md_cert_get_alt_names(apr_array_header_t **pnames, md_cert_t *cert, apr_pool_t *p);

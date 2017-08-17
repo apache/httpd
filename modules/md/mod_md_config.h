@@ -58,7 +58,8 @@ typedef struct md_srv_conf_t {
     const char *ca_agreement;          /* accepted agreement uri between CA and user */ 
     struct apr_array_header_t *ca_challenges; /* challenge types configured */
 
-    md_t *md;                          /* post_config: MD that applies to this server or NULL */
+    md_t *current;                     /* md currently defined in <ManagedDomain xxx> section */
+    md_t *assigned;                    /* post_config: MD that applies to this server or NULL */
 } md_srv_conf_t;
 
 void *md_config_create_svr(apr_pool_t *pool, server_rec *s);
