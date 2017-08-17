@@ -2931,7 +2931,7 @@ Include ssl-policies.conf
 <usage>
 <p>This directive applies the set of SSL* directives defined
 under 'name' (see <directive type="section">SSLPolicy</directive>) as the <em>base</em>
-settings in the current context. Apache comes with the following pre-defined polcies from 
+settings in the current context. Apache comes with the following pre-defined policies from 
 Mozilla, the makers of the Firefox browser 
 (<a href="https://wiki.mozilla.org/Security/Server_Side_TLS#Recommended_configurations">see here
 for a detailed description by them.</a>):
