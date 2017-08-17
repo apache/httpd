@@ -156,7 +156,7 @@ static apr_status_t state_init(md_reg_t *reg, apr_pool_t *p, md_t *md)
     md_state_t state = MD_S_UNKNOWN;
     const md_creds_t *creds;
     const md_cert_t *cert;
-    apr_time_t expires = 0;
+    apr_time_t expires = 0, valid_from = 0;
     apr_status_t rv;
     int i;
 
@@ -176,6 +176,7 @@ static apr_status_t state_init(md_reg_t *reg, apr_pool_t *p, md_t *md)
                           md->name);
         }
         else {
+            valid_from = md_cert_get_not_before(creds->cert);
             expires = md_cert_get_not_after(creds->cert);
             if (md_cert_has_expired(creds->cert)) {
                 state = MD_S_EXPIRED;
@@ -221,6 +222,7 @@ out:
         md_log_perror(MD_LOG_MARK, MD_LOG_WARNING, rv, p, "md{%s}: error", md->name);
     }
     md->state = state;
+    md->valid_from = valid_from;
     md->expires = expires;
     return rv;
 }
@@ -774,12 +776,15 @@ apr_status_t md_reg_sync(md_reg_t *reg, apr_pool_t *p, apr_pool_t *ptemp,
                 }
                 if (md->ca_challenges) {
                     md->ca_challenges = md_array_str_compact(p, md->ca_challenges, 0);
-                    if (smd->ca_challenges 
-                        && !md_array_str_eq(md->ca_challenges, smd->ca_challenges, 0)) {
-                        smd->ca_challenges = (md->ca_challenges?
-                                              apr_array_copy(ptemp, md->ca_challenges) : NULL);
+                    if (!smd->ca_challenges 
+                        || !md_array_str_eq(md->ca_challenges, smd->ca_challenges, 0)) {
+                        smd->ca_challenges = apr_array_copy(ptemp, md->ca_challenges);
                         fields |= MD_UPD_CA_CHALLENGES;
                     }
+                }
+                else if (smd->ca_challenges) {
+                    smd->ca_challenges = NULL;
+                    fields |= MD_UPD_CA_CHALLENGES;
                 }
                 
                 if (fields) {
@@ -839,12 +844,14 @@ static apr_status_t run_stage(void *baton, apr_pool_t *p, apr_pool_t *ptemp, va_
     int reset;
     md_proto_driver_t *driver;
     const char *challenge;
+    apr_time_t *pvalid_from;
     apr_status_t rv;
     
     proto = va_arg(ap, const md_proto_t *);
     md = va_arg(ap, const md_t *);
     challenge = va_arg(ap, const char *);
     reset = va_arg(ap, int); 
+    pvalid_from = va_arg(ap, apr_time_t*);
     
     driver = apr_pcalloc(ptemp, sizeof(*driver));
     rv = init_proto_driver(driver, proto, reg, md, challenge, reset, ptemp);
@@ -853,13 +860,17 @@ static apr_status_t run_stage(void *baton, apr_pool_t *p, apr_pool_t *ptemp, va_
         
         md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, 0, ptemp, "%s: run staging", md->name);
         rv = proto->stage(driver);
+
+        if (APR_SUCCESS == rv && pvalid_from) {
+            *pvalid_from = driver->stage_valid_from;
+        }
     }
     md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, ptemp, "%s: staging done", md->name);
     return rv;
 }
 
 apr_status_t md_reg_stage(md_reg_t *reg, const md_t *md, const char *challenge, 
-                          int reset, apr_pool_t *p)
+                          int reset, apr_time_t *pvalid_from, apr_pool_t *p)
 {
     const md_proto_t *proto;
     
@@ -877,7 +888,7 @@ apr_status_t md_reg_stage(md_reg_t *reg, const md_t *md, const char *challenge,
         return APR_EINVAL;
     }
     
-    return md_util_pool_vdo(run_stage, reg, p, proto, md, challenge, reset, NULL);
+    return md_util_pool_vdo(run_stage, reg, p, proto, md, challenge, reset, pvalid_from, NULL);
 }
 
 static apr_status_t run_load(void *baton, apr_pool_t *p, apr_pool_t *ptemp, va_list ap)
@@ -950,21 +961,3 @@ apr_status_t md_reg_load(md_reg_t *reg, const char *name, apr_pool_t *p)
     return md_util_pool_vdo(run_load, reg, p, name, NULL);
 }
 
-apr_status_t md_reg_drive(md_reg_t *reg, md_t *md, const char *challenge,
-                          int reset, int force, apr_pool_t *p)
-{
-    apr_status_t rv;
-    int errored, renew;
-    
-    if (APR_SUCCESS == (rv = md_reg_assess(reg, md, &errored, &renew, p))) {
-        if (errored) {
-            rv = APR_EGENERAL;
-        }
-        else if (renew || force) {
-            if (APR_SUCCESS == (rv = md_reg_stage(reg, md, challenge, reset, p))) {
-                rv = md_reg_load(reg, md->name, p);
-            }
-        }
-    }
-    return rv;
-}

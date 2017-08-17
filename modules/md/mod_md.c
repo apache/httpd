@@ -128,7 +128,7 @@ static apr_status_t apply_to_servers(md_t *md, server_rec *base_server,
      */
     memset(&r, 0, sizeof(r));
     sc = NULL;
-        
+    
     /* This MD may apply to 0, 1 or more sever_recs */
     for (s = base_server; s; s = s->next) {
         r.server = s;
@@ -145,14 +145,14 @@ static apr_status_t apply_to_servers(md_t *md, server_rec *base_server,
                              "Server %s:%d matches md %s (config %s)", 
                              s->server_hostname, s->port, md->name, sc->name);
                 
-                if (sc->md == md) {
+                if (sc->assigned == md) {
                     /* already matched via another domain name */
                     goto next_server;
                 }
-                else if (sc->md) {
+                else if (sc->assigned) {
                     ap_log_error(APLOG_MARK, APLOG_ERR, 0, base_server, APLOGNO(10042)
                                  "conflict: MD %s matches server %s, but MD %s also matches.",
-                                 md->name, s->server_hostname, sc->md->name);
+                                 md->name, s->server_hostname, sc->assigned->name);
                     rv = APR_EINVAL;
                     goto next_server;
                 }
@@ -172,11 +172,12 @@ static apr_status_t apply_to_servers(md_t *md, server_rec *base_server,
                                  s->server_admin);
                 }
                 /* remember */
-                sc->md = md;
+                sc->assigned = md;
                 
                 /* This server matches a managed domain. If it contains names or
                  * alias that are not in this md, a generated certificate will not match. */
-                if (APR_SUCCESS == (rv2 = check_coverage(md, s->server_hostname, s, p))) {
+                if (APR_SUCCESS == (rv2 = check_coverage(md, s->server_hostname, s, p))
+                    && s->names) {
                     for (j = 0; j < s->names->nelts; ++j) {
                         name = APR_ARRAY_IDX(s->names, j, const char*);
                         if (APR_SUCCESS != (rv2 = check_coverage(md, name, s, p))) {
@@ -268,7 +269,7 @@ static apr_status_t md_calc_md_list(apr_pool_t *p, apr_pool_t *plog,
         }
 
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, base_server, APLOGNO(10039)
-                     "COmpleted MD[%s, CA=%s, Proto=%s, Agreement=%s, Drive=%d, renew=%ld]",
+                     "Completed MD[%s, CA=%s, Proto=%s, Agreement=%s, Drive=%d, renew=%ld]",
                      md->name, md->ca_url, md->ca_proto, md->ca_agreement,
                      md->drive_mode, (long)md->renew_window);
     }
@@ -440,11 +441,13 @@ typedef struct {
     server_rec *s;
     ap_watchdog_t *watchdog;
     int all_valid;
+    apr_time_t valid_not_before;
     int error_count;
     int processed_count;
 
     int error_runs;
     apr_time_t next_change;
+    apr_time_t next_valid;
     
     apr_array_header_t *mds;
     md_reg_t *reg;
@@ -453,31 +456,38 @@ typedef struct {
 static apr_status_t drive_md(md_watchdog *wd, md_t *md, apr_pool_t *ptemp)
 {
     apr_status_t rv = APR_SUCCESS;
-    apr_time_t renew_time;
+    apr_time_t renew_time, now, valid_from;
     int errored, renew;
     char ts[APR_RFC822_DATE_LEN];
     
-    if (APR_SUCCESS == (rv = md_reg_assess(wd->reg, md, &errored, &renew, wd->p))) {
+    if (md->state == MD_S_COMPLETE && !md->expires) {
+        /* This is our indicator that we did already renewed this managed domain
+         * successfully and only wait on the next restart for it to activate */
+        now = apr_time_now();
+        ap_log_error( APLOG_MARK, APLOG_INFO, 0, wd->s, APLOGNO(10051) 
+                     "md(%s): has been renewed, should be activated in %s", 
+                     md->name, (md->valid_from <= now)? "about now" : 
+                     md_print_duration(ptemp, md->valid_from - now));
+    }
+    else if (APR_SUCCESS == (rv = md_reg_assess(wd->reg, md, &errored, &renew, wd->p))) {
         if (errored) {
             ap_log_error( APLOG_MARK, APLOG_DEBUG, 0, wd->s, APLOGNO(10050) 
                          "md(%s): in error state", md->name);
-        }
-        else if (md->state == MD_S_COMPLETE && !md->expires) {
-            /* This is our indicator that we did already renew this managed domain
-             * successfully and only wait on the next restart for it to activate */
-            ap_log_error( APLOG_MARK, APLOG_INFO, 0, wd->s, APLOGNO(10051) 
-                         "md(%s): has been renewed, will activate on next restart", md->name);
         }
         else if (renew) {
             ap_log_error( APLOG_MARK, APLOG_DEBUG, 0, wd->s, APLOGNO(10052) 
                          "md(%s): state=%d, driving", md->name, md->state);
                          
-            rv = md_reg_stage(wd->reg, md, NULL, 0, ptemp);
+            rv = md_reg_stage(wd->reg, md, NULL, 0, &valid_from, ptemp);
             
             if (APR_SUCCESS == rv) {
                 md->state = MD_S_COMPLETE;
                 md->expires = 0;
+                md->valid_from = valid_from;
                 ++wd->processed_count;
+                if (!wd->next_valid || wd->next_valid > valid_from) {
+                    wd->next_valid = valid_from;
+                }
             }
         }
         else {
@@ -498,7 +508,7 @@ static apr_status_t run_watchdog(int state, void *baton, apr_pool_t *ptemp)
     md_watchdog *wd = baton;
     apr_status_t rv = APR_SUCCESS;
     md_t *md;
-    apr_interval_time_t interval;
+    apr_interval_time_t interval, now;
     int i;
     
     switch (state) {
@@ -513,9 +523,11 @@ static apr_status_t run_watchdog(int state, void *baton, apr_pool_t *ptemp)
             interval = apr_time_from_sec(MD_SECS_PER_DAY / 2);
 
             wd->all_valid = 1;
+            wd->valid_not_before = 0;
             wd->processed_count = 0;
             wd->error_count = 0;
             wd->next_change = 0;
+            wd->next_valid = 0;
             
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, wd->s, APLOGNO(10055)
                          "md watchdog run, auto drive %d mds", wd->mds->nelts);
@@ -523,6 +535,7 @@ static apr_status_t run_watchdog(int state, void *baton, apr_pool_t *ptemp)
             /* Check if all Managed Domains are ok or if we have to do something */
             for (i = 0; i < wd->mds->nelts; ++i) {
                 md = APR_ARRAY_IDX(wd->mds, i, md_t *);
+                
                 if (APR_SUCCESS != (rv = drive_md(wd, md, ptemp))) {
                     wd->all_valid = 0;
                     ++wd->error_count;
@@ -534,7 +547,18 @@ static apr_status_t run_watchdog(int state, void *baton, apr_pool_t *ptemp)
             /* Determine when we want to run next */
             wd->error_runs = wd->error_count? (wd->error_runs + 1) : 0;
             if (wd->all_valid) {
-                ap_log_error( APLOG_MARK, APLOG_TRACE1, 0, wd->s, "all managed domains are valid");
+                now = apr_time_now();
+                if (wd->next_valid > now && (wd->next_valid - now < interval)) {
+                    interval = wd->next_valid - now;
+                    ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, wd->s, 
+                                 "Delaying activation of %d Managed Domain%s by %s", 
+                                 wd->processed_count, (wd->processed_count > 1)? "s have" : " has",
+                                 md_print_duration(ptemp, interval));
+                }
+                else {
+                    ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, wd->s, 
+                                 "all managed domains are valid");
+                }
             }
             else {
                 /* back off duration, depending on the errors we encounter in a row */
@@ -542,7 +566,7 @@ static apr_status_t run_watchdog(int state, void *baton, apr_pool_t *ptemp)
                 if (interval > apr_time_from_sec(60*60)) {
                     interval = apr_time_from_sec(60*60);
                 }
-                ap_log_error( APLOG_MARK, APLOG_INFO, 0, wd->s, APLOGNO(10057) 
+                ap_log_error(APLOG_MARK, APLOG_INFO, 0, wd->s, APLOGNO(10057) 
                              "encountered errors for the %d. time, next run in %d seconds",
                              wd->error_runs, (int)apr_time_sec(interval));
             }
@@ -561,10 +585,8 @@ static apr_status_t run_watchdog(int state, void *baton, apr_pool_t *ptemp)
              * runs. When you wake up a hibernated machine, the watchdog will not run right away 
              */
             if (APLOGdebug(wd->s)) {
-                int secs = (int)(apr_time_sec(interval) % MD_SECS_PER_DAY);
-                ap_log_error( APLOG_MARK, APLOG_DEBUG, 0, wd->s, "next run in %2d:%02d:%02d hours", 
-                             (int)secs/MD_SECS_PER_HOUR, (int)(secs%(MD_SECS_PER_HOUR))/60,
-                             (int)(secs%60));
+                ap_log_error( APLOG_MARK, APLOG_DEBUG, 0, wd->s, "next run in %s",
+                             md_print_duration(ptemp, interval));
             }
             wd_set_interval(wd->watchdog, interval, wd, run_watchdog);
             break;
@@ -575,14 +597,21 @@ static apr_status_t run_watchdog(int state, void *baton, apr_pool_t *ptemp)
     }
 
     if (wd->processed_count) {
+        now = apr_time_now();
+        
         if (wd->all_valid) {
-            rv = md_server_graceful(ptemp, wd->s);
-            if (APR_ENOTIMPL == rv) {
-                /* self-graceful restart not supported in this setup */
-                ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, wd->s, APLOGNO(10059)
-                             "%d Managed Domain%s been setup and changes will be "
-                             "activated on next (graceful) server restart.",
-                             wd->processed_count, (wd->processed_count > 1)? "s have" : " has");
+            if (wd->next_valid <= now) {
+                rv = md_server_graceful(ptemp, wd->s);
+                if (APR_ENOTIMPL == rv) {
+                    /* self-graceful restart not supported in this setup */
+                    ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, wd->s, APLOGNO(10059)
+                                 "%d Managed Domain%s been setup and changes will be "
+                                 "activated on next (graceful) server restart.",
+                                 wd->processed_count, (wd->processed_count > 1)? "s have" : " has");
+                }
+            }
+            else {
+                /* activation is delayed */
             }
         }
         else {
@@ -796,9 +825,9 @@ static int md_is_managed(server_rec *s)
 {
     md_srv_conf_t *conf = md_config_get(s);
 
-    if (conf && conf->md) {
+    if (conf && conf->assigned) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(10076) 
-                     "%s: manages server %s", conf->md->name, s->server_hostname);
+                     "%s: manages server %s", conf->assigned->name, s->server_hostname);
         return 1;
     }
     ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, s,  
@@ -821,11 +850,11 @@ static apr_status_t md_get_credentials(server_rec *s, apr_pool_t *p,
     
     sc = md_config_get(s);
     
-    if (sc && sc->md) {
+    if (sc && sc->assigned) {
         assert(sc->mc);
         assert(sc->mc->store);
         if (APR_SUCCESS == (rv = md_reg_init(&reg, p, sc->mc->store))) {
-            md = md_reg_get(reg, sc->md->name, p);
+            md = md_reg_get(reg, sc->assigned->name, p);
             if (md->state != MD_S_COMPLETE) {
                 return APR_EAGAIN;
             }

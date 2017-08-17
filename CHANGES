@@ -1,6 +1,18 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_md: v0.7.0:
+     - LIVE: the real Let's Encrypt CA is now live by default! If you need to experiment, configure
+           MDCertificateAuthority https://acme-staging.api.letsencrypt.org/directory   
+     - When existing, complete certificates are renewed, the activation of the new ones is
+       delayed by 24 hours (or until the existing ones expire, whatever is earler) to accomodate
+       for clients with weird clocks, refs #1. 
+     - Fixed store sync when MDCAChallenges was removed again from an MD. 
+     - Fixed crash when MD matched the base server, fixes #23
+     - Fixed watchgod resetting staging when server processes disappeared (e.g. reached
+       max requests or other limits).
+    [Stefan Eissing]
+  
   *) mod_proxy: loadfactor parameter can now be a decimal number (eg: 1.25).
      [Jim Jagielski]
 

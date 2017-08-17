@@ -746,6 +746,17 @@ apr_status_t md_util_try(md_util_try_fn *fn, void *baton, int ignore_errs,
     return rv;
 }
 
+/* date/time encoding *****************************************************************************/
+
+const char *md_print_duration(apr_pool_t *p, apr_interval_time_t duration)
+{
+    int secs = (int)(apr_time_sec(duration) % MD_SECS_PER_DAY);
+    return apr_psprintf(p, "%2d:%02d:%02d hours", 
+                        (int)secs/MD_SECS_PER_HOUR, (int)(secs%(MD_SECS_PER_HOUR))/60,
+                        (int)(secs%60));
+}
+
+
 /* base64 url encoding ****************************************************************************/
 
 static const int BASE64URL_UINT6[] = {

@@ -651,7 +651,7 @@ static apr_status_t acme_stage(md_proto_driver_t *d)
         rv = md_load(d->store, MD_SG_STAGING, d->md->name, &ad->md, d->p);
         if (APR_SUCCESS == rv) {
             /* So, we have a copy in staging, but is it a recent or an old one? */
-            if (!md_is_newer(d->store, MD_SG_STAGING, MD_SG_DOMAINS, d->md->name, d->p)) {
+            if (md_is_newer(d->store, MD_SG_DOMAINS, MD_SG_STAGING, d->md->name, d->p)) {
                 reset_staging = 1;
             }
         }
@@ -784,6 +784,26 @@ static apr_status_t acme_stage(md_proto_driver_t *d)
             md_log_perror(MD_LOG_MARK, MD_LOG_INFO, 0, d->p, 
                           "%s: retrieving certificate chain", d->md->name);
             rv = ad_chain_install(d);
+        }
+
+        if (APR_SUCCESS == rv && ad->cert) {
+            apr_time_t now = apr_time_now();
+            apr_interval_time_t max_delay, delay_activation; 
+            
+            /* determine when this cert should be activated */
+            d->stage_valid_from = md_cert_get_not_before(ad->cert);
+            if (d->md->state == MD_S_COMPLETE && d->md->expires > now) {            
+                /**
+                 * The MD is complete and un-expired. This is a renewal run. 
+                 * Give activation 24 hours leeway (if we have that time) to
+                 * accomodate for clients with somewhat weird clocks.
+                 */
+                delay_activation = apr_time_from_sec(MD_SECS_PER_DAY);
+                if (delay_activation > (max_delay = d->md->expires - now)) {
+                    delay_activation = max_delay;
+                }
+                d->stage_valid_from += delay_activation;
+            }
         }
     }
 out:    
