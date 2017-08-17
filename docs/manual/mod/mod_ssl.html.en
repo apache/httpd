@@ -1489,7 +1489,7 @@ compatible and securely with current browsers.</p>
 by running the following command. This list shows you the 
 detailed configurations each policy is made of:</p>
 
-<div class="example"><h3>List all Defined Policies</h3><pre class="prettyprint lang-sh">&gt; httpd -t -D DUMP_SSL_POLICIES</pre>
+<div class="example"><h3>List all Defined Policies</h3><pre class="prettyprint lang-sh">httpd -t -D DUMP_SSL_POLICIES</pre>
 </div>
 
 <p>The directive can only be used in the server config (global context), so 
@@ -1553,43 +1553,58 @@ be setup like this:</p>
 </table>
 <p>This directive applies the set of SSL* directives defined
 under 'name' (see <code class="directive">&lt;SSLPolicy&gt;</code>) as the <em>base</em>
-settings in the current context. That means that any other SSL* directives
-you make in the same context remain effective. So, the effective
-<code class="directive">SSLProtocol</code> value in the following settings are:</p>
+settings in the current context. Apache comes with the following pre-defined policies from 
+Mozilla, the makers of the Firefox browser 
+(<a href="https://wiki.mozilla.org/Security/Server_Side_TLS#Recommended_configurations">see here
+for a detailed description by them.</a>):
+</p>
+<ul>
+    <li><code>modern</code>: recommended when your server is accessible on the open Internet. Works with all modern browsers, but old devices might be unable to connect.</li>
+    <li><code>intermediate</code>: the fallback if you need to support old (but not very old) clients.</li>
+    <li><code>old</code>: when you need to give Windows XP/Internet Explorer 6 access. The last resort.</li>
+</ul>
 
-<div class="example"><h3>Policy Precedence</h3><pre class="prettyprint lang-config">   &lt;VirtualHost...&gt; # effective: 'all'
-      SSLPolicy modern
-      SSLProtocol all
-   &lt;/VirtualHost&gt;
+<p>You can check the detailed description of all defined policies via the command line:</p>
+<div class="example"><h3>List all Defined Policies</h3><pre class="prettyprint lang-sh">httpd -t -D DUMP_SSL_POLICIES</pre>
+</div>
 
-   &lt;VirtualHost...&gt; # effective: 'all'
-      SSLProtocol all
-      SSLPolicy modern
-   &lt;/VirtualHost&gt;
+<p>A SSLPolicy defines the baseline for the context it is used in. That means that any 
+other SSL* directives in the same context override it. As an example of this, see the effective
+<code class="directive">SSLProtocol</code> value in the following settings:</p>
 
+<div class="example"><h3>Policy Precedence</h3><pre class="prettyprint lang-config">&lt;VirtualHost...&gt; # effective: 'all'
    SSLPolicy modern
-   &lt;VirtualHost...&gt; # effective: 'all'
-      SSLProtocol all
-   &lt;/VirtualHost&gt;
-   
    SSLProtocol all
-   &lt;VirtualHost...&gt; # effective: '+TLSv1.2'
-     SSLPolicy modern
-   &lt;/VirtualHost&gt;</pre>
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost...&gt; # effective: 'all'
+   SSLProtocol all
+   SSLPolicy modern
+&lt;/VirtualHost&gt;
+
+SSLPolicy modern
+&lt;VirtualHost...&gt; # effective: 'all'
+   SSLProtocol all
+&lt;/VirtualHost&gt;
+   
+SSLProtocol all
+&lt;VirtualHost...&gt; # effective: '+TLSv1.2'
+  SSLPolicy modern
+&lt;/VirtualHost&gt;</pre>
 </div>
 
 <p>There can be more than one policy applied in a context. The
 later ones overshadowing the earlier ones:</p>
 
-<div class="example"><h3>Policy Ordering</h3><pre class="prettyprint lang-config">   &lt;VirtualHost...&gt; # effective: 'intermediate &gt; modern'
-      SSLPolicy modern
-      SSLPolicy intermediate
-   &lt;/VirtualHost&gt;
+<div class="example"><h3>Policy Ordering</h3><pre class="prettyprint lang-config">&lt;VirtualHost...&gt; # effective protocol: 'all -SSLv3'
+   SSLPolicy modern
+   SSLPolicy intermediate
+&lt;/VirtualHost&gt;
 
-   &lt;VirtualHost...&gt; # effective: 'modern &gt; intermediate'
-      SSLPolicy intermediate
-      SSLPolicy modern
-   &lt;/VirtualHost&gt;</pre>
+&lt;VirtualHost...&gt; # effective protocol: '+TLSv1.2'
+   SSLPolicy intermediate
+   SSLPolicy modern
+&lt;/VirtualHost&gt;</pre>
 </div>
 
 
