@@ -195,7 +195,7 @@
                             <xsl:sort select="name" />
                                 <xsl:variable name="lowername"
                                     select="concat(translate(name, $uppercase,
-                                                   $lowercase),@type)" />
+                                                   $lowercase),@idtype)" />
 
                                 <xsl:choose>
                                 <xsl:when test="not(@location)">
@@ -357,8 +357,8 @@
              a directive to be referenced multiple times
              with different types -->
         <xsl:variable name="lowername"
-            select="concat(translate(name, $uppercase, $lowercase),@type)" />
-        <xsl:variable name="directivename" select="concat(name,@type)" />
+            select="concat(translate(name, $uppercase, $lowercase),@idtype)" />
+        <xsl:variable name="directivename" select="concat(name,@idtype)" />
         <!-- Directive heading gets both mixed case and lowercase      -->
         <!-- anchors, and includes lt/gt only for "section" directives -->
         <h2>
