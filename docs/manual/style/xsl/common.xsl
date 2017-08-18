@@ -888,11 +888,11 @@ if (typeof(prettyPrint) !== 'undefined') {
             <xsl:choose>
             <xsl:when test="@name">
                 <xsl:value-of select="normalize-space(concat(translate(@name,
-                                        $uppercase, $lowercase),@type))" />
+                                        $uppercase, $lowercase),@idtype))" />
             </xsl:when>
             <xsl:otherwise>
                 <xsl:value-of select="normalize-space(concat(translate(.,
-                                        $uppercase, $lowercase),@type))" />
+                                        $uppercase, $lowercase),@idtype))" />
             </xsl:otherwise>
             </xsl:choose>
         </xsl:variable>
