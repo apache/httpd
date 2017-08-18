@@ -193,7 +193,7 @@
       <dd>The proxy module has been completely rewritten to take
       advantage of the new filter infrastructure and to implement a
       more reliable, HTTP/1.1 compliant proxy. In addition, new
-      <code class="directive"><a href="./mod/mod_proxy.html#proxysection">&lt;Proxy&gt;</a></code>
+      <code class="directive"><a href="./mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code>
       configuration sections provide more readable (and internally
       faster) control of proxied sites; overloaded <code>&lt;Directory
       "proxy:..."&gt;</code> configuration are not supported. The module

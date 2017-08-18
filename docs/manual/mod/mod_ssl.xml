@@ -2813,7 +2813,7 @@ SSLOpenSSLConfCmd SignatureAlgorithms RSA+SHA384:ECDSA+SHA256
 </usage>
 </directivesynopsis>
 
-<directivesynopsis type="section">
+<directivesynopsis type="section" idtype="section">
 <name>SSLPolicy</name>
 <description>Define a named set of SSL configurations</description>
 <syntax>&lt;SSLPolicy <em>name</em>&gt;</syntax>

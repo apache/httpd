@@ -274,7 +274,7 @@ for additional examples.
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_setenvif</td></tr>
 </table>
     <p>The <code class="directive">SetEnvIfExpr</code> directive defines
-    environment variables based on an <code class="directive"><a href="../mod/core.html#ifsection">&lt;If&gt;</a></code>
+    environment variables based on an <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code>
     <code>ap_expr</code>. These expressions will be evaluated at runtime,
     and applied <em>env-variable</em> in the same fashion as <code class="directive">SetEnvIf</code>.</p>
 
@@ -294,7 +294,7 @@ for additional examples.
 <ul>
 <li><a href="../expr.html">Expressions in Apache HTTP Server</a>,
 for a complete reference and more examples.</li>
-<li><code class="directive"><a href="../mod/core.html#ifsection">&lt;If&gt;</a></code> can be used to achieve similar
+<li><code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code> can be used to achieve similar
 results.</li>
 <li><code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code></li>
 </ul>

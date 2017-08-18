@@ -57,8 +57,8 @@
     <p>When the <code class="directive"><a href="#alias">Alias</a></code>,
     <code class="directive"><a href="#scriptalias">ScriptAlias</a></code> and
     <code class="directive"><a href="#redirect">Redirect</a></code> directives are used
-    within a <code class="directive"><a href="../mod/core.html#locationsection">&lt;Location&gt;</a></code>
-    or <code class="directive"><a href="../mod/core.html#locationmatchsection">&lt;LocationMatch&gt;</a></code>
+    within a <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>
+    or <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>
     section, <a href="../expr.html">expression syntax</a> can be used
     to manipulate the destination path or URL.
     </p>
@@ -95,7 +95,7 @@
     <p>Aliases and Redirects occurring in different contexts are processed
     like other directives according to standard <a href="../sections.html#mergin">merging rules</a>.  But when multiple
     Aliases or Redirects occur in the same context (for example, in the
-    same <code class="directive"><a href="../mod/core.html#virtualhostsection">&lt;VirtualHost&gt;</a></code>
+    same <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
     section) they are processed in a particular order.</p>
 
     <p>First, all Redirects are processed before Aliases are processed,
@@ -121,8 +121,8 @@ Alias "/foo" "/gaq"</pre>
     <p>When the <code class="directive"><a href="#alias">Alias</a></code>,
     <code class="directive"><a href="#scriptalias">ScriptAlias</a></code> and
     <code class="directive"><a href="#redirect">Redirect</a></code> directives are used
-    within a <code class="directive"><a href="../mod/core.html#locationsection">&lt;Location&gt;</a></code>
-    or <code class="directive"><a href="../mod/core.html#locationmatchsection">&lt;LocationMatch&gt;</a></code>
+    within a <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>
+    or <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>
     section, these directives will take precedence over any globally
     defined <code class="directive"><a href="#alias">Alias</a></code>,
     <code class="directive"><a href="#scriptalias">ScriptAlias</a></code> and
@@ -169,11 +169,11 @@ Alias "/foo" "/gaq"</pre>
     <var>URL-path</var> then you must also omit it from the
     <var>file-path</var>.</p>
 
-    <p>Note that you may need to specify additional <code class="directive"><a href="../mod/core.html#directorysection">&lt;Directory&gt;</a></code> sections which
+    <p>Note that you may need to specify additional <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> sections which
     cover the <em>destination</em> of aliases.  Aliasing occurs before
-    <code class="directive"><a href="../mod/core.html#directorysection">&lt;Directory&gt;</a></code> sections
+    <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> sections
     are checked, so only the destination of aliases are affected.
-    (Note however <code class="directive"><a href="../mod/core.html#locationsection">&lt;Location&gt;</a></code>
+    (Note however <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>
     sections are run through once before aliases are performed, so
     they will apply.)</p>
 
@@ -191,8 +191,8 @@ Alias "/foo" "/gaq"</pre>
     matches any number of slashes in the requested URL-path.</p>
 
     <p>If the <code class="directive">Alias</code> directive is used within a
-    <code class="directive"><a href="../mod/core.html#locationsection">&lt;Location&gt;</a></code>
-    or <code class="directive"><a href="../mod/core.html#locationmatchsection">&lt;LocationMatch&gt;</a></code>
+    <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>
+    or <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>
     section the URL-path is omitted, and the file-path is interpreted
     using <a href="../expr.html">expression syntax</a>.<br />
     This syntax is available in Apache 2.4.19 and later.</p>
@@ -393,8 +393,8 @@ Redirect 303 "/three" "http://example.com/other"</pre>
 
 
     <p>If the <code class="directive">Redirect</code> directive is used within a
-    <code class="directive"><a href="../mod/core.html#locationsection">&lt;Location&gt;</a></code>
-    or <code class="directive"><a href="../mod/core.html#locationmatchsection">&lt;LocationMatch&gt;</a></code>
+    <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>
+    or <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>
     section with the <var>URL-path</var> omitted, then the <var>URL</var> parameter
     will be interpreted using <a href="../expr.html">expression syntax</a>.<br />
     This syntax is available in Apache 2.4.19 and later.</p>
@@ -530,7 +530,7 @@ target as a CGI script</td></tr>
     URL and designating CGI scripts at the same time.  If you do
     choose to place your CGI scripts in a directory already
     accessible from the web, do not use
-    <code class="directive">ScriptAlias</code>.  Instead, use <code class="directive"><a href="../mod/core.html#directorysection">&lt;Directory&gt;</a></code>, <code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code>, and <code class="directive"><a href="../mod/core.html#options">Options</a></code> as in:
+    <code class="directive">ScriptAlias</code>.  Instead, use <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code>, and <code class="directive"><a href="../mod/core.html#options">Options</a></code> as in:
     <pre class="prettyprint lang-config">&lt;Directory "/usr/local/apache2/htdocs/cgi-bin"&gt;
     SetHandler cgi-script
     Options ExecCGI
@@ -543,8 +543,8 @@ target as a CGI script</td></tr>
     <code class="directive"><a href="../mod/core.html#directory">Directory</a></code> section.</div>
 
     <p>If the <code class="directive">ScriptAlias</code> directive is used within
-    a <code class="directive"><a href="../mod/core.html#locationsection">&lt;Location&gt;</a></code>
-    or <code class="directive"><a href="../mod/core.html#locationmatchsection">&lt;LocationMatch&gt;</a></code>
+    a <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>
+    or <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>
     section with the URL-path omitted, then the URL parameter will be
     interpreted using <a href="../expr.html">expression syntax</a>.<br />
     This syntax is available in Apache 2.4.19 and later.</p>

@@ -66,9 +66,9 @@
       level.</dd>
 
       <dt>Per-request configuration sections</dt>
-      <dd><code class="directive"><a href="./mod/core.html#ifsection">&lt;If&gt;</a></code>,
-          <code class="directive"><a href="./mod/core.html#elseifsection">&lt;ElseIf&gt;</a></code>,
-          and <code class="directive"><a href="./mod/core.html#elsesection">&lt;Else&gt;</a></code>
+      <dd><code class="directive"><a href="./mod/core.html#if">&lt;If&gt;</a></code>,
+          <code class="directive"><a href="./mod/core.html#elseif">&lt;ElseIf&gt;</a></code>,
+          and <code class="directive"><a href="./mod/core.html#else">&lt;Else&gt;</a></code>
           sections can be used to set the configuration based on per-request
           criteria.</dd>
 
@@ -79,7 +79,7 @@
           <code class="directive"><a href="./mod/mod_setenvif.html#setenvifexpr">SetEnvIfExpr</a></code>,
           <code class="directive"><a href="./mod/mod_rewrite.html#rewritecond">RewriteCond</a></code>,
           <code class="directive"><a href="./mod/mod_headers.html#header">Header</a></code>,
-          <code class="directive"><a href="./mod/core.html#ifsection">&lt;If&gt;</a></code>,
+          <code class="directive"><a href="./mod/core.html#if">&lt;If&gt;</a></code>,
           and others.
       </dd>
 
@@ -287,7 +287,7 @@
       <dd>Advanced authorization logic may now be specified using the
           <code class="directive"><a href="./mod/mod_authz_core.html#require">Require</a></code> directive
           and the related container directives, such as
-          <code class="directive"><a href="./mod/mod_authz_core.html#requireallsection">&lt;RequireAll&gt;</a></code>.</dd>
+          <code class="directive"><a href="./mod/mod_authz_core.html#requireall">&lt;RequireAll&gt;</a></code>.</dd>
 
       <dt><code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code></dt>
       <dd><code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code> adds the <code>[QSD]</code>
@@ -401,7 +401,7 @@
 
       <dd>Authorization modules now register as a provider, via
       ap_register_auth_provider(), to support advanced authorization logic,
-      such as <code class="directive"><a href="./mod/mod_authz_core.html#requireallsection">&lt;RequireAll&gt;</a></code>.</dd>
+      such as <code class="directive"><a href="./mod/mod_authz_core.html#requireall">&lt;RequireAll&gt;</a></code>.</dd>
 
       <dt>Small-Object Caching Interface</dt>
 

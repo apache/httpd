@@ -160,7 +160,7 @@ relative hyperlinks?</a></li>
 <p>
     This error can be caused by an incorrect configuration.
     Please make sure that your <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code> directives match your
-    <code class="directive"><a href="../mod/core.html#virtualhostsection">&lt;VirtualHost&gt;</a></code>
+    <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
     directives. If all else fails, please start afresh, using the default
     configuration provided by <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>.</p>
 

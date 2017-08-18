@@ -45,7 +45,7 @@ Connection: Upgrade</pre>
 </div>
 
 <p>Proxying requests to a websockets server like <code>echo.websocket.org</code> can be done using the
-<code class="directive"><a href="../mod/mod_proxy.html#proxypassProxyPass">ProxyPass</a></code> directive:</p>
+<code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> directive:</p>
     <pre class="prettyprint lang-config">ProxyPass "/ws2/"  "ws://echo.websocket.org/"
 ProxyPass "/wss2/" "wss://echo.websocket.org/"</pre>
 
@@ -53,7 +53,7 @@ ProxyPass "/wss2/" "wss://echo.websocket.org/"</pre>
 <p>Load balancing for multiple backends can be achieved using <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code>.</p>
 
 <p>In fact the module can be used to upgrade to other protocols, you can set the <code>upgrade</code>
-parameter in the <code class="directive"><a href="../mod/mod_proxy.html#proxypassProxyPass">ProxyPass</a></code>
+parameter in the <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code>
 directive to allow the module to accept other protocol.
 NONE means you bypass the check for the header but still upgrade to WebSocket.
 ANY means that <code>Upgrade</code> will read in the request headers and use

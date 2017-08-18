@@ -157,7 +157,7 @@ ManagedDomain example.org
         </usage>
     </directivesynopsis>
 
-    <directivesynopsis type="section">
+    <directivesynopsis type="section" idtype="section">
         <name>ManagedDomain</name>
         <description>Container for directives applied to the same managed domains</description>
         <syntax>&lt;ManagedDomain <var>dns-name</var> [ <var>other-dns-name</var>... ]&gt;...&lt;/ManagedDomain&gt;</syntax>

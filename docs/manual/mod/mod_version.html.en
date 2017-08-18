@@ -38,7 +38,7 @@
 
     <p>This module is designed for the use in test suites and large
     networks which have to deal with different httpd versions and
-    different configurations. It provides a new container -- <code class="directive"><a href="#ifversionsection">&lt;IfVersion&gt;</a></code>, which
+    different configurations. It provides a new container -- <code class="directive"><a href="#ifversion">&lt;IfVersion&gt;</a></code>, which
     allows a flexible version checking including numeric comparisons and
     regular expressions.</p>
 
@@ -55,14 +55,14 @@
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#ifversionsection">&lt;IfVersion&gt;</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#ifversion">&lt;IfVersion&gt;</a></li>
 </ul>
 <h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_version">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_version">Report a bug</a></li></ul><h3>See also</h3>
 <ul class="seealso">
 <li><a href="#comments_section">Comments</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="IfVersionsection" id="IfVersionsection">&lt;IfVersion&gt;</a> <a name="ifversionsection" id="ifversionsection">Directive</a></h2>
+<div class="directive-section"><h2><a name="IfVersion" id="IfVersion">&lt;IfVersion&gt;</a> <a name="ifversion" id="ifversion">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>contains version dependent configuration</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>&lt;IfVersion [[!]<var>operator</var>] <var>version</var>&gt; ...

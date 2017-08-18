@@ -319,11 +319,11 @@ rewriting for you. This is discussed in greater detail in the <a href="rewritema
 <h2><a name="htaccess" id="htaccess">.htaccess files</a></h2>
 
 <p>Rewriting is typically configured in the main server configuration
-setting (outside any <code class="directive"><a href="../mod/core.html#directorysection">&lt;Directory&gt;</a></code> section) or
-inside <code class="directive"><a href="../mod/core.html#virtualhostsection">&lt;VirtualHost&gt;</a></code>
+setting (outside any <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> section) or
+inside <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
 containers. This is the easiest way to do rewriting and is
 recommended. It is possible, however, to do rewriting
-inside <code class="directive"><a href="../mod/core.html#directorysection">&lt;Directory&gt;</a></code>
+inside <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>
 sections or <a href="../howto/htaccess.html"><code>.htaccess</code>
 files</a> at the expense of some additional complexity. This technique
 is called per-directory rewrites.</p>

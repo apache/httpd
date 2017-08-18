@@ -88,7 +88,7 @@
     and <code class="directive"><a href="../mod/mod_unixd.html#group">Group</a></code> under which
     Apache is running.</p>
 
-    <p>You may wish to add a <code class="directive"><a href="../mod/core.html#limitsection">&lt;Limit&gt;</a></code> clause inside the <code class="directive"><a href="../mod/core.html#locationsection">&lt;Location&gt;</a></code> directive to limit access to
+    <p>You may wish to add a <code class="directive"><a href="../mod/core.html#limit">&lt;Limit&gt;</a></code> clause inside the <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> directive to limit access to
     DAV-enabled locations. If you want to set the maximum amount of
     bytes that a DAV client can send at one request, you have to use
     the <code class="directive"><a href="../mod/core.html#limitxmlrequestbody">LimitXMLRequestBody</a></code>

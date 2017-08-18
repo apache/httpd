@@ -44,7 +44,7 @@
 <h2><a name="overview" id="overview">Overview</a></h2>
     
 
-    <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/core.html">core</a></code></li><li><code class="module"><a href="./mod/mpm_common.html">mpm_common</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#virtualhostsection">&lt;VirtualHost&gt;</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/core.html">core</a></code></li><li><code class="module"><a href="./mod/mpm_common.html">mpm_common</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code></li></ul></td></tr></table>
 
 
     <p>When httpd starts, it binds to some port and address on
@@ -169,18 +169,18 @@ Listen 192.0.2.1:80</pre>
     <p> The <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> directive does not implement
     Virtual Hosts - it only tells the
     main server what addresses and ports to listen on. If no
-    <code class="directive"><a href="./mod/core.html#virtualhostsection">&lt;VirtualHost&gt;</a></code>
+    <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
     directives are used, the server will behave
     in the same way for all accepted requests. However,
-    <code class="directive"><a href="./mod/core.html#virtualhostsection">&lt;VirtualHost&gt;</a></code>
+    <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
     can be used to specify a different behavior
     for one or more of the addresses or ports. To implement a
     VirtualHost, the server must first be told to listen to the
     address and port to be used. Then a
-    <code class="directive"><a href="./mod/core.html#virtualhostsection">&lt;VirtualHost&gt;</a></code> section
+    <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> section
     should be created for the specified address and port to set the
     behavior of this virtual host. Note that if the
-    <code class="directive"><a href="./mod/core.html#virtualhostsection">&lt;VirtualHost&gt;</a></code>
+    <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
     is set for an address and port that the
     server is not listening to, it cannot be accessed.</p>
   </div></div>

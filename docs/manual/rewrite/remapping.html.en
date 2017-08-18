@@ -288,7 +288,7 @@ hostname(s).</p>
 
 
 <p>You can alternatively accomplish this using the
-<code class="directive"><a href="../mod/core.html#ifsection">&lt;If&gt;</a></code>
+<code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code>
 directive: (<strong>2.4 and later</strong>)</p>
 
 <pre class="prettyprint lang-config">&lt;If "%{HTTP_HOST} != 'www.example.com'"&gt;
