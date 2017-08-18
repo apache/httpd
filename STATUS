@@ -179,7 +179,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: https://svn.apache.org/r1793922
                   https://svn.apache.org/r1793923
      2.4.x patch: svn merge -r1793921:HEAD ^/httpd/httpd/branches/trunk-override-index
-     +1: jchampion
+     +1: jchampion, jim
 
   *) mod_proxy_wstunnel fix PR 61142
      2.4.x patch: svn merge -c 1801594 ^/httpd/httpd/trunk .
