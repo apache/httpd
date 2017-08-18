@@ -78,9 +78,13 @@ highlight | blockquote">
                  outdated (true) #IMPLIED>
 
 <!ELEMENT directive (#PCDATA)>
-<!-- name attribute is preferred over contents when generating links -->
+<!-- name attribute is preferred over contents when generating links,
+     and idtype is used to disambiguate two directives sharing the
+     same name but with different type (for example section and non-section).
+-->
 <!ATTLIST directive  module CDATA  #IMPLIED
                      type   CDATA  #IMPLIED
+                     idtype CDATA  #IMPLIED
                      status CDATA  #IMPLIED
                      name   CDATA  #IMPLIED >
 

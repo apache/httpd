@@ -51,10 +51,10 @@ to change the scope of other configuration directives.</p>
 <directive type="section" module="mod_version">IfVersion</directive>
 <directive type="section" module="core">Location</directive>
 <directive type="section" module="core">LocationMatch</directive>
-<directive type="section" module="md">MangedDomain</directive>
+<directive type="section" idtype="section" module="md">MangedDomain</directive>
 <directive type="section" module="mod_proxy">Proxy</directive>
 <directive type="section" module="mod_proxy">ProxyMatch</directive>
-<directive type="section" module="ssl">SSLPolicy</directive>
+<directive type="section" idtype="section" module="mod_ssl">SSLPolicy</directive>
 <directive type="section" module="core">VirtualHost</directive>
 </directivelist>
 </related>
