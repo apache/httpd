@@ -198,7 +198,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) core: Support use of optional "tag" in syslog entries. PR 60525.
      trunk patch: http://svn.apache.org/r1784318
      2.4.x patch: http://home.apache.org/~jim/patches/syslog-tag.patch
-     +1: rpluem
+     +1: rpluem, jim
 
   *) proxy: Ensure updatelbstatus() is NULL if not-implemented
      trunk patch: http://svn.apache.org/r1802845
