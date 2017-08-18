@@ -147,7 +147,7 @@ server.</p>
 <h2><a name="vhosts" id="vhosts">Virtual Hosting</a></h2>
 <p>Although it is possible to handle <a href="vhosts.html">virtual hosts
 with mod_rewrite</a>, it is seldom the right way. Creating individual
-<code class="directive"><a href="../mod/core.html#virtualhostsection">&lt;VirtualHost&gt;</a></code> blocks is
+<code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> blocks is
 almost always the right way to go. In the
 event that you have an enormous number of virtual hosts, consider using
 <code class="module"><a href="../mod/mod_vhost_alias.html">mod_vhost_alias</a></code> to create these hosts automatically.</p>
@@ -201,12 +201,12 @@ accomplish.</p>
 <p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> is frequently used to take a particular
 action based on the presence or absence of a particular environment
 variable or request header. This can be done more efficiently using the
-<code class="directive"><a href="../mod/core.html#ifsection">&lt;If&gt;</a></code>.</p>
+<code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code>.</p>
 
 <p>Consider, for example, the common scenario where
 <code class="directive">RewriteRule</code> is used to enforce a canonical
 hostname, such as <code>www.example.com</code> instead of
-<code>example.com</code>. This can be done using the <code class="directive"><a href="../mod/core.html#ifsection">&lt;If&gt;</a></code> directive, as shown here:</p>
+<code>example.com</code>. This can be done using the <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code> directive, as shown here:</p>
 
 <pre class="prettyprint lang-config">&lt;If "req('Host') != 'www.example.com'"&gt;
     Redirect "/" "http://www.example.com/"
@@ -219,7 +219,7 @@ header, response header, or environment variable, replacing
 
 <p>See especially the <a href="../expr.html">expression evaluation
 documentation</a> for a overview of what types of expressions you can
-use in <code class="directive"><a href="../mod/core.html#ifsection">&lt;If&gt;</a></code> sections,
+use in <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code> sections,
 and in certain other directives.</p>
 
 </div></div>

@@ -43,9 +43,9 @@ have been deprecated by the new authz refactoring.  Please see
 <h3>Summary</h3>
 
     <p>The directives provided by <code class="module"><a href="../mod/mod_access_compat.html">mod_access_compat</a></code> are
-    used in <code class="directive"><a href="../mod/core.html#directorysection">&lt;Directory&gt;</a></code>,
-    <code class="directive"><a href="../mod/core.html#filessection">&lt;Files&gt;</a></code>, and
-    <code class="directive"><a href="../mod/core.html#locationsection">&lt;Location&gt;</a></code> sections
+    used in <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>,
+    <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code>, and
+    <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> sections
     as well as <code><a href="core.html#accessfilename">.htaccess</a>
     </code> files to control access to particular parts of the server.
     Access can be controlled based on the client hostname, IP address, or
@@ -78,7 +78,7 @@ have been deprecated by the new authz refactoring.  Please see
     <code>POST</code>, etc). This is the desired behavior in most
     cases. However, it is possible to restrict some methods, while
     leaving other methods unrestricted, by enclosing the directives
-    in a <code class="directive"><a href="../mod/core.html#limitsection">&lt;Limit&gt;</a></code> section.</p>
+    in a <code class="directive"><a href="../mod/core.html#limit">&lt;Limit&gt;</a></code> section.</p>
 
     <div class="note"> <h3>Merging of configuration sections</h3>
       <p>When any directive provided by this module is used in a new
@@ -381,9 +381,9 @@ Deny from foo.example.org</pre>
     directive processing only within each phase of the server's
     configuration processing. This implies, for example, that an
     <code class="directive"><a href="#allow">Allow</a></code> or <code class="directive"><a href="#deny">Deny</a></code> directive occurring in a
-    <code class="directive"><a href="../mod/core.html#locationsection">&lt;Location&gt;</a></code> section will
+    <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> section will
     always be evaluated after an <code class="directive"><a href="#allow">Allow</a></code> or <code class="directive"><a href="#deny">Deny</a></code> directive occurring in a
-    <code class="directive"><a href="../mod/core.html#directorysection">&lt;Directory&gt;</a></code> section or
+    <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> section or
     <code>.htaccess</code> file, regardless of the setting of the
     <code class="directive">Order</code> directive. For details on the merging
     of configuration sections, see the documentation on <a href="../sections.html">How Directory, Location and Files sections
@@ -451,7 +451,7 @@ Satisfy Any</pre>
     for the <code>/var/www/private/public</code> directory.</p>
 
     <p>Since version 2.0.51 <code class="directive">Satisfy</code> directives can
-    be restricted to particular methods by <code class="directive"><a href="../mod/core.html#limitsection">&lt;Limit&gt;</a></code> and <code class="directive"><a href="../mod/core.html#limitexceptsection">&lt;LimitExcept&gt;</a></code> sections.</p>
+    be restricted to particular methods by <code class="directive"><a href="../mod/core.html#limit">&lt;Limit&gt;</a></code> and <code class="directive"><a href="../mod/core.html#limitexcept">&lt;LimitExcept&gt;</a></code> sections.</p>
 
     <div class="note"> <h3>Merging of configuration sections</h3>
       <p>When any directive provided by this module is used in a new

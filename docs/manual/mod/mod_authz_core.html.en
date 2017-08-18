@@ -54,12 +54,12 @@
 </ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#authmerging">AuthMerging</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#authzprovideraliassection">&lt;AuthzProviderAlias&gt;</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authzprovideralias">&lt;AuthzProviderAlias&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authzsendforbiddenonfailure">AuthzSendForbiddenOnFailure</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#require">Require</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#requireallsection">&lt;RequireAll&gt;</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#requireanysection">&lt;RequireAny&gt;</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#requirenonesection">&lt;RequireNone&gt;</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#requireall">&lt;RequireAll&gt;</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#requireany">&lt;RequireAny&gt;</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#requirenone">&lt;RequireNone&gt;</a></li>
 </ul>
 <h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_authz_core">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_authz_core">Report a bug</a></li></ul><h3>See also</h3>
 <ul class="seealso">
@@ -69,10 +69,10 @@
 <h2><a name="logic" id="logic">Authorization Containers</a></h2>
 
     <p>The authorization container directives
-    <code class="directive"><a href="#requireallsection">&lt;RequireAll&gt;</a></code>,
-    <code class="directive"><a href="#requireanysection">&lt;RequireAny&gt;</a></code>
+    <code class="directive"><a href="#requireall">&lt;RequireAll&gt;</a></code>,
+    <code class="directive"><a href="#requireany">&lt;RequireAny&gt;</a></code>
     and
-    <code class="directive"><a href="#requirenonesection">&lt;RequireNone&gt;</a></code>
+    <code class="directive"><a href="#requirenone">&lt;RequireNone&gt;</a></code>
     may be combined with each other and with the
     <code class="directive"><a href="#require">Require</a></code>
     directive to express complex authorization logic.</p>
@@ -299,8 +299,8 @@ sections.</td></tr>
     predecessor (according to the overall order of configuration sections)
     which also contains authorization logic as if the two sections
     were jointly contained within a
-    <code class="directive"><a href="#requireallsection">&lt;RequireAll&gt;</a></code> or
-    <code class="directive"><a href="#requireanysection">&lt;RequireAny&gt;</a></code>
+    <code class="directive"><a href="#requireall">&lt;RequireAll&gt;</a></code> or
+    <code class="directive"><a href="#requireany">&lt;RequireAny&gt;</a></code>
     directive, respectively.</p>
 
     <div class="note">The setting of <code class="directive">AuthMerging</code> is not
@@ -310,7 +310,7 @@ sections.</td></tr>
     groups <code>alpha</code> or <code>beta</code> may access
     <code>/www/docs/ab</code>.  However, the default <code>Off</code>
     setting of <code class="directive">AuthMerging</code> applies to the
-    <code class="directive"><a href="../mod/core.html#directorysection">&lt;Directory&gt;</a></code>
+    <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>
     configuration section for <code>/www/docs/ab/gamma</code>, so
     that section's authorization directives override those of the
     preceding sections.  Thus only users belong to the group
@@ -336,7 +336,7 @@ sections.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthzProviderAliassection" id="AuthzProviderAliassection">&lt;AuthzProviderAlias&gt;</a> <a name="authzprovideraliassection" id="authzprovideraliassection">Directive</a></h2>
+<div class="directive-section"><h2><a name="AuthzProviderAlias" id="AuthzProviderAlias">&lt;AuthzProviderAlias&gt;</a> <a name="authzprovideralias" id="authzprovideralias">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enclose a group of directives that represent an
 extension of a base authorization provider and referenced by the specified
@@ -469,7 +469,7 @@ Require group admin</pre>
     desired.</strong> If you wish to apply access controls only to
     specific methods, while leaving other methods unprotected, then
     place the <code class="directive">Require</code> statement into a
-    <code class="directive"><a href="../mod/core.html#limitsection">&lt;Limit&gt;</a></code>
+    <code class="directive"><a href="../mod/core.html#limit">&lt;Limit&gt;</a></code>
     section.</p>
 
     <p>The result of the <code class="directive">Require</code> directive
@@ -496,9 +496,9 @@ Require group admin</pre>
     used in a single
     <a href="../sections.html#merging">configuration section</a>
     and are not contained in another authorization directive like
-    <code class="directive"><a href="#requireallsection">&lt;RequireAll&gt;</a></code>,
+    <code class="directive"><a href="#requireall">&lt;RequireAll&gt;</a></code>,
     they are implicitly contained within a
-    <code class="directive"><a href="#requireanysection">&lt;RequireAny&gt;</a></code>
+    <code class="directive"><a href="#requireany">&lt;RequireAny&gt;</a></code>
     directive.  Thus the first one to authorize a user authorizes the
     entire request, and subsequent <code class="directive">Require</code> directives
     are ignored.</p>
@@ -524,7 +524,7 @@ Require group admin</pre>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RequireAllsection" id="RequireAllsection">&lt;RequireAll&gt;</a> <a name="requireallsection" id="requireallsection">Directive</a></h2>
+<div class="directive-section"><h2><a name="RequireAll" id="RequireAll">&lt;RequireAll&gt;</a> <a name="requireall" id="requireall">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enclose a group of authorization directives of which none
 must fail and at least one must succeed for the enclosing directive to
@@ -557,7 +557,7 @@ succeed.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RequireAnysection" id="RequireAnysection">&lt;RequireAny&gt;</a> <a name="requireanysection" id="requireanysection">Directive</a></h2>
+<div class="directive-section"><h2><a name="RequireAny" id="RequireAny">&lt;RequireAny&gt;</a> <a name="requireany" id="requireany">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enclose a group of authorization directives of which one
 must succeed for the enclosing directive to succeed.</td></tr>
@@ -596,7 +596,7 @@ must succeed for the enclosing directive to succeed.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RequireNonesection" id="RequireNonesection">&lt;RequireNone&gt;</a> <a name="requirenonesection" id="requirenonesection">Directive</a></h2>
+<div class="directive-section"><h2><a name="RequireNone" id="RequireNone">&lt;RequireNone&gt;</a> <a name="requirenone" id="requirenone">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enclose a group of authorization directives of which none
 must succeed for the enclosing directive to not fail.</td></tr>

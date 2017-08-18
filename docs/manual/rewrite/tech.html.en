@@ -57,12 +57,12 @@ and URL matching.</p>
     virtual host has been determined, the rewriting engine starts
     processing any <code>mod_rewrite</code> directives appearing in the
     per-server configuration. (i.e., in the main server configuration file
-    and <code class="directive"><a href="../mod/core.html#virtualhostsection">&lt;Virtualhost&gt;</a></code>
+    and <code class="directive"><a href="../mod/core.html#virtualhost">&lt;Virtualhost&gt;</a></code>
     sections.) This happens in the URL-to-filename phase.</p>
 
     <p>A few steps later, once the final data directories have been found,
     the per-directory configuration directives (<code>.htaccess</code>
-    files and <code class="directive"><a href="../mod/core.html#directorysection">&lt;Directory&gt;</a></code> blocks) are applied. This
+    files and <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> blocks) are applied. This
     happens in the Fixup phase.</p>
 
     <p>In each of these cases, mod_rewrite rewrites the

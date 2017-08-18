@@ -114,7 +114,7 @@ Listen 80
     as the <cite>default</cite> or <cite>primary</cite> server. That means
     that if a request is received that does not match one of the specified
     <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> directives, it will be served by this first
-    <code class="directive"><a href="../mod/core.html#virtualhostsection">&lt;VirtualHost&gt;</a></code>.</p>
+    <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>.</p>
 
     <p>The above configuration is what you will want to use in almost
     all name-based virtual hosting situations. The only thing that this
@@ -193,7 +193,7 @@ DocumentRoot "/www/mainserver"
     (<code>192.168.1.1</code>).</p>
 
     <p>The server can be made to respond to internal and external requests
-    with the same content, with just one <code class="directive"><a href="../mod/core.html#virtualhostsection">&lt;VirtualHost&gt;</a></code> section.</p>
+    with the same content, with just one <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> section.</p>
 
     <pre class="prettyprint lang-config">&lt;VirtualHost 192.168.1.1 172.20.30.40&gt;
     DocumentRoot "/www/server1"
@@ -203,7 +203,7 @@ DocumentRoot "/www/mainserver"
 
 
     <p>Now requests from both networks will be served from the same
-    <code class="directive"><a href="../mod/core.html#virtualhostsection">&lt;VirtualHost&gt;</a></code>.</p>
+    <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>.</p>
 
     <div class="note">
           <h3>Note:</h3><p>On the internal

@@ -113,7 +113,7 @@
                 mod_md will request one single certificate that is valid for all these names. This
                 directive uses the global settings (see other MD directives below). If you
                 need specific settings for one MD, use
-                the <code class="directive"><a href="#manageddomainsection">&lt;ManagedDomain&gt;</a></code>.
+                the <code class="directive"><a href="#manageddomain">&lt;ManagedDomain&gt;</a></code>.
             </p><p>
                 There are 2 additional settings that are necessary for a Managed Domain:
                 <code class="directive"><a href="../mod/core.html#serveradmin">ServerAdmin</a></code>
@@ -319,7 +319,7 @@ MDCertificateAgreement https://letsencrypt.org/documents/LE-SA-v1.1.1-August-1-2
             <p>
                 If you use it in the global context, outside a specific MD, you can only
                 specify one value, 'auto' or 'manual' as the default for all other MDs. See
-                <code class="directive"><a href="#manageddomainsection">&lt;ManagedDomain&gt;</a></code> for a
+                <code class="directive"><a href="#manageddomain">&lt;ManagedDomain&gt;</a></code> for a
                 description of these special values.
             </p>
         

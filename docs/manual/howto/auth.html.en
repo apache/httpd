@@ -131,7 +131,7 @@ module from each group.</p>
 <h2><a name="theprerequisites" id="theprerequisites">The Prerequisites</a></h2>
     <p>The directives discussed in this article will need to go
     either in your main server configuration file (typically in a
-    <code class="directive"><a href="../mod/core.html#directorysection">&lt;Directory&gt;</a></code> section), or
+    <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> section), or
     in per-directory configuration files (<code>.htaccess</code> files).</p>
 
     <p>If you plan to use <code>.htaccess</code> files, you will
@@ -437,9 +437,9 @@ Require group GroupName</pre>
 
     <p>To take authorization a little further, authorization container
     directives such as
-    <code class="directive"><a href="../mod/mod_authz_core.html#requireallsection">&lt;RequireAll&gt;</a></code>
+    <code class="directive"><a href="../mod/mod_authz_core.html#requireall">&lt;RequireAll&gt;</a></code>
     and
-    <code class="directive"><a href="../mod/mod_authz_core.html#requireanysection">&lt;RequireAny&gt;</a></code>
+    <code class="directive"><a href="../mod/mod_authz_core.html#requireany">&lt;RequireAny&gt;</a></code>
     allow logic to be applied so that the order in which authorization
     is handled can be completely controlled through the configuration.
     See <a href="../mod/mod_authz_core.html#logic">Authorization
@@ -471,9 +471,9 @@ Require group GroupName</pre>
 
         <p>With the introduction of authorization container directives
         such as
-        <code class="directive"><a href="../mod/mod_authz_core.html#requireallsection">&lt;RequireAll&gt;</a></code>
+        <code class="directive"><a href="../mod/mod_authz_core.html#requireall">&lt;RequireAll&gt;</a></code>
         and
-        <code class="directive"><a href="../mod/mod_authz_core.html#requireanysection">&lt;RequireAny&gt;</a></code>,
+        <code class="directive"><a href="../mod/mod_authz_core.html#requireany">&lt;RequireAny&gt;</a></code>,
         the configuration also has control over when the
         authorization methods are called and what criteria determines when
         access is granted.  See
@@ -484,7 +484,7 @@ Require group GroupName</pre>
         <p>By default all
         <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>
         directives are handled as though contained within a
-        <code class="directive"><a href="../mod/mod_authz_core.html#requireanysection">&lt;RequireAny&gt;</a></code>
+        <code class="directive"><a href="../mod/mod_authz_core.html#requireany">&lt;RequireAny&gt;</a></code>
         container directive.  In other words, if
         any of the specified authorization methods succeed, then authorization
         is granted.</p>
@@ -555,8 +555,8 @@ Require group GroupName</pre>
 &lt;/RequireAll&gt;</pre>
 
 
-        <p>Using <code class="directive"><a href="../mod/mod_authz_core.html#requireallsection">&lt;RequireAll&gt;</a></code>
-        with multiple <code class="directive"><a href="../mod/mod_authz_core.html#requiresection">&lt;Require&gt;</a></code> directives, each negated with <code>not</code>,
+        <p>Using <code class="directive"><a href="../mod/mod_authz_core.html#requireall">&lt;RequireAll&gt;</a></code>
+        with multiple <code class="directive"><a href="../mod/mod_authz_core.html#require">&lt;Require&gt;</a></code> directives, each negated with <code>not</code>,
         will only allow access, if all of negated conditions are true. In other words,
         access will be blocked, if any of the negated conditions fails.</p>
 
@@ -601,7 +601,7 @@ Require group GroupName</pre>
     <p>You should also read the documentation for
     <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> and <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code>
     which contain some more information about how this all works.  The
-    directive <code class="directive"><a href="../mod/mod_authn_core.html#authnprovideraliassection">&lt;AuthnProviderAlias&gt;</a></code> can also help
+    directive <code class="directive"><a href="../mod/mod_authn_core.html#authnprovideralias">&lt;AuthnProviderAlias&gt;</a></code> can also help
     in simplifying certain authentication configurations.</p>
 
     <p>The various ciphers supported by Apache for authentication data are

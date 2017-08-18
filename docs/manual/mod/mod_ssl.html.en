@@ -958,7 +958,7 @@ SSLCryptoDevice ubsec</pre>
 </table>
 <p>
 This directive toggles the usage of the SSL/TLS Protocol Engine. This
-is should be used inside a <code class="directive"><a href="../mod/core.html#virtualhostsection">&lt;VirtualHost&gt;</a></code> section to enable SSL/TLS for a
+is should be used inside a <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> section to enable SSL/TLS for a
 that virtual host. By default the SSL/TLS Protocol Engine is
 disabled for both the main server and all configured virtual hosts.</p>
 <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">&lt;VirtualHost _default_:443&gt;
@@ -1918,13 +1918,13 @@ for additional information.</p>
 </table>
 <p>
 This directive toggles the usage of the SSL/TLS Protocol Engine for proxy. This
-is usually used inside a <code class="directive"><a href="../mod/core.html#virtualhostsection">&lt;VirtualHost&gt;</a></code> section to enable SSL/TLS for proxy
+is usually used inside a <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> section to enable SSL/TLS for proxy
 usage in a particular virtual host. By default the SSL/TLS Protocol Engine is
 disabled for proxy both for the main server and all configured virtual hosts.</p>
 
 <p>Note that the <code class="directive">SSLProxyEngine</code> directive should not, in
 general, be included in a virtual host that will be acting as a
-forward proxy (using <code class="directive"><a href="../mod/mod_proxy.html#proxysection">&lt;Proxy&gt;</a></code>
+forward proxy (using <code class="directive"><a href="../mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code>
 or <code class="directive"><a href="../mod/mod_proxy.html#proxyrequests">ProxyRequests</a></code> directives).
 <code class="directive">SSLProxyEngine</code> is not required to enable a forward proxy
 server to proxy SSL/TLS requests.</p>

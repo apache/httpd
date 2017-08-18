@@ -134,7 +134,7 @@ changes on a per-directory basis.</p>
     <p>However, in general, use of <code>.htaccess</code> files should be
     avoided when possible. Any configuration that you would consider
     putting in a <code>.htaccess</code> file, can just as effectively be
-    made in a <code class="directive"><a href="../mod/core.html#directorysection">&lt;Directory&gt;</a></code> section in your main server
+    made in a <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> section in your main server
     configuration file.</p>
 
     <p>There are two main reasons to avoid the use of
@@ -260,7 +260,7 @@ changes on a per-directory basis.</p>
     configuration files</a></h3>
 
     <p>As discussed in the documentation on <a href="../sections.html">Configuration Sections</a>,
-    <code>.htaccess</code> files can override the <code class="directive"><a href="../mod/core.html#directorysection">&lt;Directory&gt;</a></code> sections for
+    <code>.htaccess</code> files can override the <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> sections for
     the corresponding directory, but will be overridden by other types
     of configuration sections from the main configuration files. This
     fact can be used to enforce certain configurations, even in the
@@ -289,7 +289,7 @@ changes on a per-directory basis.</p>
     common misconception that you are required to use
     <code>.htaccess</code> files in order to implement password
     authentication. This is not the case. Putting authentication directives
-    in a <code class="directive"><a href="../mod/core.html#directorysection">&lt;Directory&gt;</a></code>
+    in a <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>
     section, in your main server configuration file, is the preferred way
     to implement this, and <code>.htaccess</code> files should be used only
     if you don't have access to the main server configuration file. See <a href="#when">above</a> for a discussion of when you should and should

@@ -89,7 +89,7 @@ AddOutputFilter INCLUDES .shtml</pre>
 
     <p>The following directive must be given for the directories
     containing the shtml files (typically in a
-    <code class="directive"><a href="../mod/core.html#directorysection">&lt;Directory&gt;</a></code> section,
+    <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> section,
     but this directive is also valid in <code>.htaccess</code> files if
     <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> <code>Options</code>
     is set):</p>

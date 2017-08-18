@@ -553,8 +553,8 @@ Group webgroup</pre>
     <code class="directive"><a href="./mod/core.html#virtualhost">VirtualHost</a></code> definitions.  By
     setting this directive to values different from the main server
     user ID, all requests for CGI resources will be executed as the
-    <em>User</em> and <em>Group</em> defined for that <code class="directive"><a href="./mod/core.html#virtualhostsection">&lt;VirtualHost&gt;</a></code>. If this
-    directive is not specified for a <code class="directive"><a href="./mod/core.html#virtualhostsection">&lt;VirtualHost&gt;</a></code> then the main server userid
+    <em>User</em> and <em>Group</em> defined for that <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>. If this
+    directive is not specified for a <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> then the main server userid
     is assumed.</p>
 
     <p><strong>User directories:</strong><br /> Requests that are

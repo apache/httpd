@@ -116,7 +116,7 @@ ProxyPassReverse "/images"  "http://www.example.com/"</pre>
       requests and for the reverse proxy to load balance and failover among
       them. This group is sometimes called a <em>cluster</em> but Apache httpd's
       term is a <em>balancer</em>. One defines a balancer by leveraging the
-      <code class="directive"><a href="../mod/mod_proxy.html#proxysection">&lt;Proxy&gt;</a></code> and
+      <code class="directive"><a href="../mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code> and
       <code class="directive"><a href="../mod/mod_proxy.html#balancermember">BalancerMember</a></code> directives as
       shown:
     </p>

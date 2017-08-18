@@ -58,7 +58,7 @@
 
     <p>There are virtual
     servers, called <em>vhosts</em>, which are defined by
-    <code class="directive"><a href="../mod/core.html#virtualhostsection">&lt;VirtualHost&gt;</a></code>
+    <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
     sections.</p>
 
     <p>Each <code>VirtualHost</code> directive includes one
