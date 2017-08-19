@@ -1007,10 +1007,10 @@ static int apprentice(server_rec *s, apr_pool_t *p)
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01519)
                         MODNAME ": apprentice: POINTER CLOBBERED! "
                         "m=\"%c%c%c%c\" line=%d",
-                        (((unsigned long) m) >> 24) & 255,
-                        (((unsigned long) m) >> 16) & 255,
-                        (((unsigned long) m) >> 8) & 255,
-                        ((unsigned long) m) & 255,
+                        (char)((((unsigned long) m) >> 24) & 255),
+                        (char)((((unsigned long) m) >> 16) & 255),
+                        (char)((((unsigned long) m) >> 8 ) & 255),
+                        (char)(( (unsigned long) m       ) & 255),
                         prevm ? prevm->lineno : -1);
             break;
         }
@@ -1558,10 +1558,10 @@ static int match(request_rec *r, unsigned char *s, apr_size_t nbytes)
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01530)
                         MODNAME ": match: POINTER CLOBBERED! "
                         "m=\"%c%c%c%c\"",
-                        (((unsigned long) m) >> 24) & 255,
-                        (((unsigned long) m) >> 16) & 255,
-                        (((unsigned long) m) >> 8) & 255,
-                        ((unsigned long) m) & 255);
+                        (char)((((unsigned long) m) >> 24) & 255),
+                        (char)((((unsigned long) m) >> 16) & 255),
+                        (char)((((unsigned long) m) >> 8 ) & 255),
+                        (char)(( (unsigned long) m       ) & 255));
             break;
         }
     }
@@ -2389,10 +2389,10 @@ static int magic_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, server
                     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01559)
                                 MODNAME ": magic_init 1: POINTER CLOBBERED! "
                                 "m=\"%c%c%c%c\" line=%d",
-                                (((unsigned long) m) >> 24) & 255,
-                                (((unsigned long) m) >> 16) & 255,
-                                (((unsigned long) m) >> 8) & 255,
-                                ((unsigned long) m) & 255,
+                                (char)((((unsigned long) m) >> 24) & 255),
+                                (char)((((unsigned long) m) >> 16) & 255),
+                                (char)((((unsigned long) m) >> 8 ) & 255),
+                                (char)(( (unsigned long) m       ) & 255),
                                 prevm ? prevm->lineno : -1);
                     break;
                 }
