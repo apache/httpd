@@ -984,7 +984,7 @@ static int apprentice(server_rec *s, apr_pool_t *p)
 
 #if MIME_MAGIC_DEBUG
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01516)
-                MODNAME ": apprentice conf=%x file=%s m=%s m->next=%s last=%s",
+                MODNAME ": apprentice conf=%pp file=%s m=%s m->next=%s last=%s",
                 conf,
                 conf->magicfile ? conf->magicfile : "NULL",
                 conf->magic ? "set" : "NULL",
@@ -1276,7 +1276,7 @@ static int parse(server_rec *serv, apr_pool_t *p, char *l, int lineno)
 
 #if MIME_MAGIC_DEBUG
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, serv, APLOGNO(01525)
-                MODNAME ": parse line=%d m=%x next=%x cont=%d desc=%s",
+                MODNAME ": parse line=%d m=%pp next=%pp cont=%d desc=%s",
                 lineno, m, m->next, m->cont_level, m->desc);
 #endif /* MIME_MAGIC_DEBUG */
 
@@ -1541,7 +1541,7 @@ static int match(request_rec *r, unsigned char *s, apr_size_t nbytes)
 
 #if MIME_MAGIC_DEBUG
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01529)
-                MODNAME ": match conf=%x file=%s m=%s m->next=%s last=%s",
+                MODNAME ": match conf=%pp file=%s m=%s m->next=%s last=%s",
                 conf,
                 conf->magicfile ? conf->magicfile : "NULL",
                 conf->magic ? "set" : "NULL",
@@ -1591,7 +1591,7 @@ static int match(request_rec *r, unsigned char *s, apr_size_t nbytes)
 #if MIME_MAGIC_DEBUG
                 rule_counter++;
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01532)
-                        MODNAME ": line=%d mc=%x mc->next=%x cont=%d desc=%s",
+                        MODNAME ": line=%d mc=%pp mc->next=%pp cont=%d desc=%s",
                             m_cont->lineno, m_cont,
                             m_cont->next, m_cont->cont_level,
                             m_cont->desc);
