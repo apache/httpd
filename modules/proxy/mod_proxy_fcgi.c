@@ -532,7 +532,7 @@ static apr_status_t dispatch(proxy_conn_rec *conn, proxy_dir_conf *conf,
     ap_fcgi_header header;
     unsigned char farray[AP_FCGI_HEADER_LEN];
     apr_pollfd_t pfd;
-    apr_pollfd_t *flushpoll;
+    apr_pollfd_t *flushpoll = NULL;
     apr_int32_t flushpoll_fd;
     int header_state = HDR_STATE_READING_HEADERS;
     char stack_iobuf[AP_IOBUFSIZE];
