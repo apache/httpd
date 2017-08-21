@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1787510:1805378 (outdated) -->
+<!-- English Revision: 1805378 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -54,8 +54,10 @@ configuration</title>
 <directive type="section" module="mod_version">IfVersion</directive>
 <directive type="section" module="core">Location</directive>
 <directive type="section" module="core">LocationMatch</directive>
+<directive type="section" idtype="section" module="mod_md">ManagedDomain</directive>
 <directive type="section" module="mod_proxy">Proxy</directive>
 <directive type="section" module="mod_proxy">ProxyMatch</directive>
+<directive type="section" idtype="section" module="mod_ssl">SSLPolicy</directive>
 <directive type="section" module="core">VirtualHost</directive>
 </directivelist>
 </related>
