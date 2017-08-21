@@ -74,33 +74,29 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="davgenericlockdb" id="davgenericlockdb">Directive</a> <a name="DavGenericLockDB" id="DavGenericLockDB">DavGenericLockDB</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Chemin de la base de données des verrous DAV</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DavGenericLockDB <var>chemin fichier</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Location of the DAV lock database</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DavGenericLockDB <var>file-path</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dav_lock</td></tr>
 </table>
-    <p>La directive <code class="directive">DavLockDB</code> spécifie
-    le chemin complet de la base de données des verrous, sans extension.
-    Si le chemin n'est pas absolu, il sera considéré comme relatif au
-    répertoire défini par la directive <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>. L'implémentation de
-    <code class="module"><a href="../mod/mod_dav_lock.html">mod_dav_lock</a></code> utilise une base de données SDBM pour
-    surveiller les verrous utilisateurs.</p>
+    <p>Use the <code class="directive">DavGenericLockDB</code> directive to specify
+    the full path to the lock database, excluding an extension. If
+    the path is not absolute, it will be interpreted relative to <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>. The implementation of
+    <code class="module"><a href="../mod/mod_dav_lock.html">mod_dav_lock</a></code> uses a SDBM database to track user
+    locks.</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">DavGenericLockDB var/DavLock</pre>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">DavGenericLockDB var/DavLock</pre>
 </div>
 
-    <p>Les utilisateur et groupe sous lesquels Apache s'exécute et qui
-    sont respectivement définis par les directives <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code> et <code class="directive"><a href="../mod/mod_unixd.html#group">Group</a></code> doivent pouvoir écrire dans le
-    répertoire qui contient le fichier de la base de données des
-    verrous. Pour des raisons de sécurité, il est recommandé de créer un
-    répertoire dédié à la base de données des verrous, plutôt que de
-    modifier les permissions d'un répertoire existant. Dans l'exemple
-    ci-dessus, Apache va créer des fichiers dans le répertoire
-    <code>var/</code>, lui-même sous-répertoire du répertoire défini par
-    la directive <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>, avec le nom de base
-    <code>DavLock</code> suivi d'une extension choisie par le
-    serveur.</p>
+    <p>The directory containing the lock database file must be
+    writable by the <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code>
+    and <code class="directive"><a href="../mod/mod_unixd.html#group">Group</a></code> under which
+    Apache is running.  For security reasons, you should create a
+    directory for this purpose rather than changing the permissions on
+    an existing directory.  In the above example, Apache will create
+    files in the <code>var/</code> directory under the <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code> with the base filename
+    <code>DavLock</code> and an extension added by the server.</p>
 
 
 </div>

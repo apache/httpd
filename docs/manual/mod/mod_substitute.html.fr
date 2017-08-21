@@ -53,146 +53,130 @@ corps de réponses</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="substitute" id="substitute">Directive</a> <a name="Substitute" id="Substitute">Substitute</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Modèle de substition dans le contenu de la
-réponse</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Substitute <var>s/modèle/substitution/[infq]</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Pattern to filter the response content</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Substitute <var>s/pattern/substitution/[infq]</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_substitute</td></tr>
 </table>
-    <p>La directive <code class="directive">Substitute</code> permet de
-    spécifier un modèle de recherche/remplacement à appliquer au corps
-    de la réponse.</p>
+    <p>The <code class="directive">Substitute</code> directive specifies a
+    search and replace pattern to apply to the response body.</p>
 
-    <p>La signification du modèle peut être modifiée via toute
-    combinaison de ces drapeaux :</p>
+    <p>The meaning of the pattern can be modified by using any
+    combination of these flags:</p>
 
     <dl>
         <dt><code>i</code></dt>
-        <dd>Effectue une comparaison sans tenir compte de la casse.</dd>
+        <dd>Perform a case-insensitive match.</dd>
         <dt><code>n</code></dt>
-        <dd>Par défaut, le modèle est traité en tant qu'expression
-	rationnelle. Le drapeau <code>n</code> force le traitement du
-	modèle en tant que chaîne fixe.</dd>
+        <dd>By default the pattern is treated as a regular expression.
+        Using the <code>n</code> flag forces the pattern to be treated
+        as a fixed string.</dd>
         <dt><code>f</code></dt>
-	
-        <dd>Avec le drapeau <code>f</code>, <code>mod_substitute</code> met à plat le
-	résultat d'une substitution (les conteneurs ou buckets ne sont
-	pas dissociés), ce qui permet à d'éventuelles substitutions
-	ultérieures de s'effectuer sur cette dernière. C'est le
-	comportement par défaut.</dd>
+        <dd>The <code>f</code> flag causes <code>mod_substitute</code> to flatten the
+        result of a substitution allowing for later substitutions to
+        take place on the boundary of this one. This is the default.</dd>
         <dt><code>q</code></dt>
-	
-        <dd>Avec le drapeau <code>q</code>, <code>mod_substitute</code> dissocie les
-	conteneurs (ou buckets) après chaque substitution. Ceci peut
-	améliorer la rapidité de la réponse et diminuer la quantité de
-	mémoire utilisée, mais ne doit être utilisé que s'il n'existe
-	aucune possibilité pour que le résultat d'une substitution ne
-	corresponde au modèle ou à l'expression rationnelle d'une
-	substitution ultérieure.</dd>
+        <dd>The <code>q</code> flag causes <code>mod_substitute</code> to not
+        flatten the buckets after each substitution. This can
+        result in much faster response and a decrease in memory
+        utilization, but should only be used if there is no possibility
+        that the result of one substitution will ever match a pattern
+        or regex of a subsequent one.</dd>
     </dl>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">&lt;Location "/"&gt;
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">&lt;Location "/"&gt;
     AddOutputFilterByType SUBSTITUTE text/html
     Substitute "s/foo/bar/ni"
 &lt;/Location&gt;</pre>
 </div>
 
-    <p>Si le modèle ou la chaîne de substitution contient un caractère
-    slash '/', il faut utiliser un autre délimiteur :</p>
+    <p>If either the pattern or the substitution contain a slash
+    character then an alternative delimiter should be used:</p>
 
-    <div class="example"><h3>Exemple d'utilisation d'un délimiteur
-    alternatif</h3><pre class="prettyprint lang-config">&lt;Location "/"&gt;
+    <div class="example"><h3>Example of using an alternate delimiter</h3><pre class="prettyprint lang-config">&lt;Location "/"&gt;
     AddOutputFilterByType SUBSTITUTE text/html
     Substitute "s|&lt;BR */?&gt;|&lt;br /&gt;|i"
 &lt;/Location&gt;</pre>
 </div>
 
-    <p>Lorsqu'on utilise des expressions rationnelles, on peut insérer
-    des références arrières dans les opérations de comparaison et de
-    substitution, comme illustré dans l'exemple suivant :</p>
-    <div class="example"><h3>Exemple d'utilisation de références arrières et de captures</h3><pre class="prettyprint lang-config">&lt;Location "/"&gt;
+    <p>Backreferences can be used in the comparison and in the substitution,
+    when regular expressions are used, as illustrated in the following example: </p>
+    <div class="example"><h3>Example of using backreferences and captures</h3><pre class="prettyprint lang-config">&lt;Location "/"&gt;
     AddOutputFilterByType SUBSTITUTE text/html
-    # "foo=k,bar=k" -&gt; "foo/bar=k" 
+    # "foo=k,bar=k" -&gt; "foo/bar=k"
     Substitute "s|foo=(\w+),bar=\1|foo/bar=$1"
 &lt;/Location&gt;</pre>
 </div>
 
-    <p>Un scénario courant d'utilisation de <code>mod_substitute</code>
-    est la situation où un serveur frontal mandate des requêtes pour un
-    serveur d'arrière-plan qui renvoie des documents HTML contenant des
-    URLs intégrées codées en dur qui font référence à ce serveur
-    d'arrière-plan. Ces URLs ne fonctionnent pas pour l'utilisateur
-    final car le serveur d'arrière-plan est hors d'atteinte.</p>
+    <p>A common use scenario for <code>mod_substitute</code> is the
+    situation in which a front-end server proxies requests to a back-end
+    server which returns HTML with hard-coded embedded URLs that refer
+    to the back-end server. These URLs don't work for the end-user,
+    since the back-end server is unreachable.</p>
 
-    <p>On peut, dans ce cas, utiliser <code>mod_substitute</code> pour
-    réécrire ces URLs afin qu'elles soit utilisables dans la partie
-    située derrière le mandataire :</p>
+    <p>In this case, <code>mod_substitute</code> can be used to rewrite
+    those URLs into something that will work from the front end:</p>
 
-    <div class="example"><h3>Réécriture des URLs intégrées à un contenu mandaté</h3><pre class="prettyprint lang-config">ProxyPass "/blog/" "http://internal.blog.example.com"
+    <div class="example"><h3>Rewriting URLs embedded in proxied content</h3><pre class="prettyprint lang-config">ProxyPass        "/blog/" "http://internal.blog.example.com"
 ProxyPassReverse "/blog/" "http://internal.blog.example.com/"
 
 Substitute "s|http://internal.blog.example.com/|http://www.example.com/blog/|i"</pre>
 </div>
 
-    <p>La directive <code class="directive"><a href="../mod/mod_proxy.html#proxypassreverse">ProxyPassReverse</a></code> modifie tout en-tête
-    <code>Location</code> (redirection) envoyé par le serveur
-    d'arrière-plan et, dans cet exemple, la directive
-    <code class="directive">Substitute</code> se charge à son tour de la modification de
-    la réponse HTML.</p>
+    <p><code class="directive"><a href="../mod/mod_proxy.html#proxypassreverse">ProxyPassReverse</a></code>
+    modifies any <code>Location</code> (redirect) headers that are sent
+    by the back-end server, and, in this example,
+    <code class="directive">Substitute</code> takes care of the rest of the problem by
+    fixing up the HTML response as well.</p>
 
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="substituteinheritbefore" id="substituteinheritbefore">Directive</a> <a name="SubstituteInheritBefore" id="SubstituteInheritBefore">SubstituteInheritBefore</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Modifie l'ordre de fusion des modèles hérités</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Change the merge order of inherited patterns</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SubstituteInheritBefore on|off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SubstituteInheritBefore on</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_substitute</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.17 du serveur HTTP
-Apache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Available in httpd 2.4.17 and later</td></tr>
 </table>
-    <p>Cette directive permet de définir si l'on applique les modèles
-<code class="directive"><a href="#substitute">Substitute</a></code> hérités en premier
-(valeur <code>on</code>), ou après ceux du
-contexte courant (valeur <code>off</code>). Sa valeur est maintenant
-définie par défaut à <code>on</code> ; il est cependant possible de
-restaurer le comportement des versions 2.4 et antérieures du serveur qui
-était équivalent à une définition à <code>off</code> de cette directive.
-La valeur de la directive <code class="directive">SubstituteInheritBefore</code> est
-elle-même héritée, et les contextes qui en héritent (ceux qui ne
-définissent pas explicitement leur propre directive
-<code class="directive">SubstituteInheritBefore</code>) appliqueront donc
-l'ordre de fusion défini le plus proche.</p>
+    <p>Whether to apply the inherited <code class="directive"><a href="#substitute">Substitute</a></code>
+    patterns first (<code>on</code>), or after the ones of the current
+    context (<code>off</code>).
+    The latter was the default in versions 2.4 and earlier, but changed
+    starting with 2.5, hence <code class="directive">SubstituteInheritBefore</code>
+    set to <code>off</code> allows to restore the legacy behaviour.
+    <code class="directive">SubstituteInheritBefore</code> is itself inherited,
+    hence contexts that inherit it (those that don't specify their own
+    <code class="directive">SubstituteInheritBefore</code> value) will apply the
+    closest defined merge order.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="substitutemaxlinelength" id="substitutemaxlinelength">Directive</a> <a name="SubstituteMaxLineLength" id="SubstituteMaxLineLength">SubstituteMaxLineLength</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit la longueur de ligne maximale</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SubstituteMaxLineLength <var>octets</var>(b|B|k|K|m|M|g|G)</code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Set the maximum line size</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SubstituteMaxLineLength <var>bytes</var>(b|B|k|K|m|M|g|G)</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SubstituteMaxLineLength 1m</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_substitute</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.11 du serveur HTTP
-Apache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Available in httpd 2.4.11 and later</td></tr>
 </table>
-    <p>La taille de la ligne traitée par <code class="module"><a href="../mod/mod_substitute.html">mod_substitute</a></code>
-    est limitée afin de restreindre l'utilisation des ressources
-    mémoire. La directive <code class="directive">SubstituteMaxLineLength</code>
-    permet de définir cette limite. La valeur de la limite peut être
-    spécifiée sous la forme d'un nombre d'octets, et peut être suffixée
-    par une des lettres <code>b</code>, <code>B</code>, <code>k</code>,
-    <code>K</code>, <code>m</code>, <code>M</code>, <code>g</code> ou
-    <code>G</code> pour fournir une valeur respectivement en octets,
-    kiloOctets, mégaOctets ou gigaOctets.</p>
+    <p>The maximum line size handled by <code class="module"><a href="../mod/mod_substitute.html">mod_substitute</a></code>
+    is limited to restrict memory use. The limit can be configured
+    using <code class="directive">SubstituteMaxLineLength</code>.
+    The value can be given as the number of bytes and can be suffixed
+    with a single letter <code>b</code>, <code>B</code>, <code>k</code>,
+    <code>K</code>, <code>m</code>, <code>M</code>, <code>g</code>,
+    <code>G</code> to provide the size in bytes, kilobytes, megabytes
+    or gigabytes respectively.</p>
 
     <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">&lt;Location "/"&gt;
     AddOutputFilterByType SUBSTITUTE text/html

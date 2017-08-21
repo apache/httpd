@@ -271,9 +271,9 @@ Alias "/secure" "/webpages/secure"
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="authmerging" id="authmerging">Directive</a> <a name="AuthMerging" id="AuthMerging">AuthMerging</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit la manière dont chaque logique d'autorisation des
-sections de configuration se combine avec celles des sections de
-configuration précédentes.</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Controls the manner in which each configuration section's
+authorization logic is combined with that of preceding configuration
+sections.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthMerging Off | And | Or</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AuthMerging Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
@@ -281,42 +281,40 @@ configuration précédentes.</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authz_core</td></tr>
 </table>
-    <p>Lorsque l'autorisation est activée, elle est normalement héritée
-    par chaque <a href="../sections.html#merging">section de
-    configuration</a> suivante, à moins qu'un jeu de directives
-    d'autorisations différent ne soit spécifié. Il s'agit du
-    comportement par défaut, qui correspond à la définition explicite
-    <code>AuthMerging Off</code>.</p>
+    <p>When authorization is enabled, it is normally inherited by each
+    subsequent <a href="../sections.html#merging">configuration section</a>,
+    unless a different set of authorization directives is specified.
+    This is the default action, which corresponds to an explicit setting
+    of <code>AuthMerging Off</code>.</p>
 
-    <p>Dans certaines situations cependant, il peut être souhaitable de
-    combiner la logique d'autorisation d'une section de configuration
-    avec celle de la section précédente lorsque les sections de
-    configuration se combinent entre elles. Dans ce cas, deux options
-    sont disponibles, <code>And</code> et <code>Or</code>.</p>
+    <p>However, there may be circumstances in which it is desirable
+    for a configuration section's authorization to be combined with
+    that of its predecessor while configuration sections are being
+    merged.  Two options are available for this case, <code>And</code>
+    and <code>Or</code>.</p>
 
-    <p>Lorsqu'une section de configuration contient <code>AuthMerging
-    And</code> ou <code>AuthMerging Or</code>, sa logique d'autorisation
-    se combine avec celle de la section de configuration qui la précède
-    (selon l'ordre général des sections de configuration), et qui
-    contient aussi une logique d'autorisation, comme si les deux
-    sections étaient concaténées, respectivement, dans une directive
-    <code class="directive"><a href="#requireall">&lt;RequireAll&gt;</a></code> ou <code class="directive"><a href="#requireany">&lt;RequireAny&gt;</a></code>.</p>
+    <p>When a configuration section contains <code>AuthMerging And</code>
+    or <code>AuthMerging Or</code>,
+    its authorization logic is combined with that of the nearest
+    predecessor (according to the overall order of configuration sections)
+    which also contains authorization logic as if the two sections
+    were jointly contained within a
+    <code class="directive"><a href="#requireall">&lt;RequireAll&gt;</a></code> or
+    <code class="directive"><a href="#requireany">&lt;RequireAny&gt;</a></code>
+    directive, respectively.</p>
 
-    <div class="note">La définition de la directive
-    <code class="directive">AuthMerging</code> ne concerne que la section de
-    configuration dans laquelle elle apparaît. Dans l'exemple suivant,
-    seuls les utilisateurs appartenant au groupe <code>alpha</code> sont
-    autorisés à accéder à <code>/www/docs</code>. Les utilisateurs
-    appartenant au groupe <code>alpha</code> ou au groupe
-    <code>beta</code> sont autorisés à accéder à
-    <code>/www/docs/ab</code>. Cependant, la définition implicite à
-    <code>Off</code> de la directive <code class="directive">AuthMerging</code>
-    s'applique à la section de configuration <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> concernant le répertoire
-    <code>/www/docs/ab/gamma</code>, ce qui implique que les directives
-    d'autorisation de cette section l'emportent sur celles des sections
-    précédentes. Par voie de conséquence, seuls les utilisateurs
-    appartenant au groupe <code>gamma</code> sont autorisés à accéder à
-    <code>/www/docs/ab/gamma</code>.</div>
+    <div class="note">The setting of <code class="directive">AuthMerging</code> is not
+    inherited outside of the configuration section in which it appears.
+    In the following example, only users belonging to group <code>alpha</code>
+    may access <code>/www/docs</code>.  Users belonging to either
+    groups <code>alpha</code> or <code>beta</code> may access
+    <code>/www/docs/ab</code>.  However, the default <code>Off</code>
+    setting of <code class="directive">AuthMerging</code> applies to the
+    <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>
+    configuration section for <code>/www/docs/ab/gamma</code>, so
+    that section's authorization directives override those of the
+    preceding sections.  Thus only users belong to the group
+    <code>gamma</code> may access <code>/www/docs/ab/gamma</code>.</div>
 
     <pre class="prettyprint lang-config">&lt;Directory "/www/docs"&gt;
     AuthType Basic
@@ -340,29 +338,28 @@ configuration précédentes.</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="authzprovideralias" id="authzprovideralias">Directive</a> <a name="AuthzProviderAlias" id="AuthzProviderAlias">&lt;AuthzProviderAlias&gt;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Regroupe des directives représentant une extension d'un
-fournisseur d'autorisation de base qui pourra être référencée à l'aide
-de l'alias spécifié</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>&lt;AuthzProviderAlias <var>fournisseur-de-base Alias
-Paramètres-Require</var>&gt;
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enclose a group of directives that represent an
+extension of a base authorization provider and referenced by the specified
+alias</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>&lt;AuthzProviderAlias <var>baseProvider Alias Require-Parameters</var>&gt;
 ... &lt;/AuthzProviderAlias&gt;
 </code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authz_core</td></tr>
 </table>
-    <p>Les balises <code class="directive">&lt;AuthzProviderAlias&gt;</code> et
-    <code>&lt;/AuthzProviderAlias&gt;</code> permettent de regrouper des
-    directives d'autorisation auxquelles on pourra faire référence à
-    l'aide de l'alias spécifié dans une directive <code class="directive"><a href="#require">Require</a></code>.</p>
+    <p><code class="directive">&lt;AuthzProviderAlias&gt;</code> and
+    <code>&lt;/AuthzProviderAlias&gt;</code> are used to enclose a group of
+    authorization directives that can be referenced by the alias name using the
+    directive <code class="directive"><a href="#require">Require</a></code>.</p>
 
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="authzsendforbiddenonfailure" id="authzsendforbiddenonfailure">Directive</a> <a name="AuthzSendForbiddenOnFailure" id="AuthzSendForbiddenOnFailure">AuthzSendForbiddenOnFailure</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Envoie '403 FORBIDDEN' au lieu de '401 UNAUTHORIZED' si
-l'authentification réussit et si l'autorisation a été refusée.
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Send '403 FORBIDDEN' instead of '401 UNAUTHORIZED' if
+authentication succeeds but authorization fails
 </td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthzSendForbiddenOnFailure On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AuthzSendForbiddenOnFailure Off</code></td></tr>
@@ -370,100 +367,94 @@ l'authentification réussit et si l'autorisation a été refusée.
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authz_core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.11 d'Apache HTTPD</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Available in Apache HTTPD 2.3.11 and later</td></tr>
 </table>
-    <p>Par défaut, si l'authentification réussit, alors que
-    l'autorisation est refusée, Apache HTTPD renvoie un code de réponse
-    HTTP '401 UNAUTHORIZED'. En général, les navigateurs proposent alors
-    une nouvelle fois à l'utilisateur la boîte de dialogue de saisie du
-    mot de passe, ce qui n'est pas toujours souhaitable. La directive
-    <code class="directive">AuthzSendForbiddenOnFailure</code> permet de changer
-    le code de réponse en '403 FORBIDDEN'.</p>
+    <p>If authentication succeeds but authorization fails, Apache HTTPD will
+    respond with an HTTP response code of '401 UNAUTHORIZED' by default. This
+    usually causes browsers to display the password dialogue to the user
+    again, which is not wanted in all situations.
+    <code class="directive">AuthzSendForbiddenOnFailure</code> allows to change the
+    response code to '403 FORBIDDEN'.</p>
 
-    <div class="warning"><h3>Avertissement de sécurité</h3>
-    <p>La modification de la réponse en cas de refus d'autorisation
-    diminue la sécurité du mot de passe, car elle indique à un éventuel
-    attaquant que le mot de passe qu'il a saisi était correct.</p>
+    <div class="warning"><h3>Security Warning</h3>
+    <p>Modifying the response in case of missing authorization weakens the
+    security of the password, because it reveals to a possible attacker, that
+    his guessed password was right.</p>
     </div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="require" id="require">Directive</a> <a name="Require" id="Require">Require</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Vérifie si un utilisateur authentifié a une
-autorisation d'accès accordée par un fournisseur
-d'autorisation.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Require [not] <var>nom-entité</var> [<var>nom-entité</var>]
-...</code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Tests whether an authenticated user is authorized by
+an authorization provider.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Require [not] <var>entity-name</var>
+    [<var>entity-name</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authz_core</td></tr>
 </table>
-    <p>Cette directive permet de vérifier si un utilisateur authentifié
-    a l'autorisation d'accès accordée pour un certain fournisseur
-    d'autorisation et en tenant compte de certaines restrictions.
-    <code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code> met à disposition les fournisseurs
-    d'autorisation génériques suivants :</p>
+    <p>This directive tests whether an authenticated user is authorized
+    according to a particular authorization provider and the specified
+    restrictions. <code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code> provides the following
+    generic authorization providers:</p>
 
     <dl>
       <dt><code>Require all granted</code></dt>
-      <dd>L'accès est autorisé sans restriction.</dd>
+      <dd>Access is allowed unconditionally.</dd>
 
       <dt><code>Require all denied</code></dt>
-      <dd>L'accès est systématiquement refusé.</dd>
+      <dd>Access is denied unconditionally.</dd>
 
       <dt><code>Require env <var>env-var</var> [<var>env-var</var>]
       ...</code></dt>
-      <dd>L'accès n'est autorisé que si l'une au moins des variables
-      d'environnement spécifiées est définie.</dd>
+      <dd>Access is allowed only if one of the given environment variables is
+          set.</dd>
 
       <dt><code>Require method <var>http-method</var> [<var>http-method</var>]
       ...</code></dt>
-      <dd>L'accès n'est autorisé que pour les méthodes HTTP spécifiées.</dd>
+      <dd>Access is allowed only for the given HTTP methods.</dd>
 
       <dt><code>Require expr <var>expression</var> </code></dt>
-      <dd>L'accès est autorisé si <var>expression</var> est évalué à
-      vrai.</dd>
+      <dd>Access is allowed if <var>expression</var> evaluates to true.</dd>
     </dl>
 
-    <p>Voici quelques exemples de syntaxes autorisées par
-    <code class="module"><a href="../mod/mod_authz_user.html">mod_authz_user</a></code>, <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code> et
-    <code class="module"><a href="../mod/mod_authz_groupfile.html">mod_authz_groupfile</a></code> :</p>
+    <p>Some of the allowed syntaxes provided by <code class="module"><a href="../mod/mod_authz_user.html">mod_authz_user</a></code>,
+       <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code>,
+       and <code class="module"><a href="../mod/mod_authz_groupfile.html">mod_authz_groupfile</a></code> are:</p>
 
     <dl>
-      <dt><code>Require user <var>identifiant utilisateur</var>
-      [<var>identifiant utilisateur</var>]
+      <dt><code>Require user <var>userid</var> [<var>userid</var>]
       ...</code></dt>
-      <dd>Seuls les utilisateurs spécifiés auront accès à la
-      ressource.</dd>
+      <dd>Only the named users can access the resource.</dd>
 
-      <dt><code>Require group <var>nom groupe</var> [<var>nom
-      groupe</var>]
+      <dt><code>Require group <var>group-name</var> [<var>group-name</var>]
       ...</code></dt>
-      <dd>Seuls les utilisateurs appartenant aux groupes spécifiés
-      auront accès à la ressource.</dd>
+      <dd>Only users in the named groups can access the resource.</dd>
 
       <dt><code>Require valid-user</code></dt>
-      <dd>Tous les utilisateurs valides auront accès à la
-      ressource.</dd>
+      <dd>All valid users can access the resource.</dd>
 
       <dt><code>Require ip 10 172.20 192.168.2</code></dt>
-      <dd>Les clients dont les adresses IP font partie des tranches
-      spécifiées auront accès à la ressource.</dd>
+      <dd>Clients in the specified IP address ranges can access the
+      resource.</dd>
     </dl>
 
-    <p>D'autres modules d'autorisation comme
-    <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code>, <code class="module"><a href="../mod/mod_authz_dbm.html">mod_authz_dbm</a></code>,
-    <code class="module"><a href="../mod/mod_authz_dbd.html">mod_authz_dbd</a></code>,
-    <code class="module"><a href="../mod/mod_authz_owner.html">mod_authz_owner</a></code> et <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>
-    implémentent des options de la directive Require.</p>
+    <p>Other authorization modules that implement require options
+    include <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code>,
+    <code class="module"><a href="../mod/mod_authz_dbm.html">mod_authz_dbm</a></code>, <code class="module"><a href="../mod/mod_authz_dbd.html">mod_authz_dbd</a></code>,
+    <code class="module"><a href="../mod/mod_authz_owner.html">mod_authz_owner</a></code> and <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>.</p>
 
-    <p>Pour qu'une configuration d'authentification et d'autorisation
-    fonctionne correctement, la directive <code class="directive">Require</code>
-    doit être accompagnée dans la plupart des cas de directives <code class="directive"><a href="../mod/mod_authn_core.html#authname">AuthName</a></code>, <code class="directive"><a href="../mod/mod_authn_core.html#authtype">AuthType</a></code> et <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code> ou <code class="directive"><a href="../mod/mod_auth_digest.html#authdigestprovider">AuthDigestProvider</a></code>, ainsi que
-    de directives telles que <code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code> et <code class="directive"><a href="../mod/mod_authz_groupfile.html#authgroupfile">AuthGroupFile</a></code> (pour la
-    définition des utilisateurs et des groupes). Exemple :</p>
+    <p>In most cases, for a complete authentication and authorization
+    configuration, <code class="directive">Require</code> must be accompanied by
+    <code class="directive"><a href="../mod/mod_authn_core.html#authname">AuthName</a></code>, <code class="directive"><a href="../mod/mod_authn_core.html#authtype">AuthType</a></code> and
+    <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code> or
+    <code class="directive"><a href="../mod/mod_auth_digest.html#authdigestprovider">AuthDigestProvider</a></code>
+    directives, and directives such as
+    <code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code>
+    and <code class="directive"><a href="../mod/mod_authz_groupfile.html#authgroupfile">AuthGroupFile</a></code> (to
+    define users and groups) in order to work correctly. Example:</p>
 
     <pre class="prettyprint lang-config">AuthType Basic
 AuthName "Restricted Resource"
@@ -473,24 +464,25 @@ AuthGroupFile "/web/groups"
 Require group admin</pre>
 
 
-    <p>Les contrôles d'accès appliqués de cette manière sont effectifs
-    pour <strong>toutes</strong> les méthodes. <strong>C'est d'ailleurs
-    ce que l'on souhaite en général.</strong> Si vous voulez n'appliquer
-    les contrôles d'accès qu'à certaines méthodes, tout en laissant les
-    autres méthodes sans protection, placez la directive
-    <code class="directive">Require</code> dans une section <code class="directive"><a href="../mod/core.html#limit">&lt;Limit&gt;</a></code>.</p>
+    <p>Access controls which are applied in this way are effective for
+    <strong>all</strong> methods. <strong>This is what is normally
+    desired.</strong> If you wish to apply access controls only to
+    specific methods, while leaving other methods unprotected, then
+    place the <code class="directive">Require</code> statement into a
+    <code class="directive"><a href="../mod/core.html#limit">&lt;Limit&gt;</a></code>
+    section.</p>
 
-    <p>Le résultat de la directive <code class="directive">Require</code> peut
-    être inversé en utilisant l'option <code>not</code>. Comme dans le
-    cas de l'autre directive d'autorisation inversée <code class="directive">&lt;RequireNone&gt;</code>, si la directive
-    <code class="directive">Require</code> est inversée, elle ne peut qu'échouer
-    ou produire un résultat neutre ; elle ne peut donc alors pas
-    en soi autoriser une requête.</p>
+    <p>The result of the <code class="directive">Require</code> directive
+    may be negated through the use of the
+    <code>not</code> option.  As with the other negated authorization
+    directive <code class="directive">&lt;RequireNone&gt;</code>,
+    when the <code class="directive">Require</code> directive is negated it can
+    only fail or return a neutral result, and therefore may never
+    independently authorize a request.</p>
 
-    <p>Dans l'exemple suivant, tous les utilisateurs appartenant aux
-    groupes <code>alpha</code> et <code>beta</code> ont l'autorisation
-    d'accès, à l'exception de ceux appartenant au groupe
-    <code>reject</code>.</p>
+    <p>In the following example, all users in the <code>alpha</code>
+    and <code>beta</code> groups are authorized, except for those who
+    are also in the <code>reject</code> group.</p>
 
     <pre class="prettyprint lang-config">&lt;Directory "/www/docs"&gt;
     &lt;RequireAll&gt;
@@ -500,32 +492,33 @@ Require group admin</pre>
 &lt;/Directory&gt;</pre>
 
 
-    <p>Lorsque plusieurs directives <code class="directive">Require</code> sont
-    placées dans une même <a href="../sections.html#merging">section de
-    configuration</a>, et ne se trouvent pas dans une autre directive
-    d'autorisation comme <code class="directive"><a href="#requireall">&lt;RequireAll&gt;</a></code>, elles sont implicitement
-    contenues dans une directive <code class="directive"><a href="#requireany">&lt;RequireAny&gt;</a></code>. Ainsi, la première directive
-    <code class="directive">Require</code> qui autorise l'accès à un utilisateur
-    autorise l'accès pour l'ensemble de la requête, et les directives
-    <code class="directive">Require</code> suivantes sont ignorées.</p>
+    <p>When multiple <code class="directive">Require</code> directives are
+    used in a single
+    <a href="../sections.html#merging">configuration section</a>
+    and are not contained in another authorization directive like
+    <code class="directive"><a href="#requireall">&lt;RequireAll&gt;</a></code>,
+    they are implicitly contained within a
+    <code class="directive"><a href="#requireany">&lt;RequireAny&gt;</a></code>
+    directive.  Thus the first one to authorize a user authorizes the
+    entire request, and subsequent <code class="directive">Require</code> directives
+    are ignored.</p>
 
-    <div class="warning"><h3>Avertissement à propos de la sécurité</h3>
-    <p>Prettez une attention particulière aux directives d'autorisation
-    définies
-    au sein des sections <code class="directive"><a href="../mod/core.html#location">Location</a></code>
-    qui se chevauchent avec des contenus servis depuis le système de
-    fichiers. Par défaut, les configurations définies dans ces <a href="../sections.html#merging">sections</a> l'emportent sur les
-    configurations d'autorisations définies au sein des sections
-    <code class="directive"><a href="../mod/core.html#directory">Directory</a></code> et <code class="directive"><a href="../mod/core.html#files">Files</a></code> sections.</p>
-    <p>La directive <code class="directive"><a href="#authmerging">AuthMerging</a></code> permet de contrôler
-    la manière selon laquelle les configurations d'autorisations sont
-    fusionnées au sein des sections précitées.</p>
+    <div class="warning"><h3>Security Warning</h3>
+    <p>Exercise caution when setting authorization directives in
+    <code class="directive"><a href="../mod/core.html#location">Location</a></code> sections
+    that overlap with content served out of the filesystem.
+    By default, these <a href="../sections.html#merging">configuration sections</a> overwrite authorization configuration
+    in <code class="directive"><a href="../mod/core.html#directory">Directory</a></code>,
+    and <code class="directive"><a href="../mod/core.html#files">Files</a></code> sections.</p>
+    <p>The <code class="directive"><a href="#authmerging">AuthMerging</a></code> directive
+    can be used to control how authorization configuration sections are
+    merged.</p>
     </div>
 
 <h3>Voir aussi</h3>
 <ul>
-<li><a href="../howto/access.html">Tutoriel du contrôle d'accès</a></li>
-<li><a href="#logic">Conteneurs d'autorisation</a></li>
+<li><a href="../howto/access.html">Access Control howto</a></li>
+<li><a href="#logic">Authorization Containers</a></li>
 <li><code class="module"><a href="../mod/mod_authn_core.html">mod_authn_core</a></code></li>
 <li><code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code></li>
 </ul>
@@ -533,115 +526,115 @@ Require group admin</pre>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="requireall" id="requireall">Directive</a> <a name="RequireAll" id="RequireAll">&lt;RequireAll&gt;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Regroupe plusieurs directives d'autorisation dont aucune ne
-doit échouer et dont au moins une doit retourner un résultat positif
-pour que la directive globale retourne elle-même un résultat
-positif.</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enclose a group of authorization directives of which none
+must fail and at least one must succeed for the enclosing directive to
+succeed.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>&lt;RequireAll&gt; ... &lt;/RequireAll&gt;</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authz_core</td></tr>
 </table>
-    <p>Les balises <code class="directive">&lt;RequireAll&gt;</code> et
-    <code>&lt;/RequireAll&gt;</code> permettent de regrouper des
-    directives d'autorisation dont aucune ne doit échouer, et dont au
-    moins une doit retourner un résultat positif pour que la directive
-    <code class="directive">&lt;RequireAll&gt;</code> retourne elle-même
-    un résultat positif.</p>
+    <p><code class="directive">&lt;RequireAll&gt;</code> and
+    <code>&lt;/RequireAll&gt;</code> are used to enclose a group of
+    authorization directives of which none must fail and at least one
+    must succeed in order for
+    the <code class="directive">&lt;RequireAll&gt;</code> directive to
+    succeed.</p>
 
-    <p>Si aucune des directives contenues dans la directive <code class="directive">&lt;RequireAll&gt;</code> n'échoue, et si au moins une
-    retourne un résultat positif, alors la directive <code class="directive">&lt;RequireAll&gt;</code> retourne elle-même un résultat
-    positif. Si aucune ne retourne un résultat positif, et si aucune
-    n'échoue, la directive globale retourne un résultat neutre. Dans
-    tous les autres cas, elle échoue.</p>
+    <p>If none of the directives contained within the
+    <code class="directive">&lt;RequireAll&gt;</code> directive fails,
+    and at least one succeeds, then the
+    <code class="directive">&lt;RequireAll&gt;</code> directive
+    succeeds.  If none succeed and none fail, then it returns a
+    neutral result.  In all other cases, it fails.</p>
 
 <h3>Voir aussi</h3>
 <ul>
-<li><a href="#logic">Conteneurs d'autorisation</a></li>
-<li><a href="../howto/auth.html">Authentification, autorisation et
-contrôle d'accès</a></li>
+<li><a href="#logic">Authorization Containers</a></li>
+<li><a href="../howto/auth.html">Authentication, Authorization,
+    and Access Control</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="requireany" id="requireany">Directive</a> <a name="RequireAny" id="RequireAny">&lt;RequireAny&gt;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Regroupe des directives d'autorisation dont au moins une
-doit retourner un résultat positif pour que la directive globale
-retourne elle-même un résultat positif.</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enclose a group of authorization directives of which one
+must succeed for the enclosing directive to succeed.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>&lt;RequireAny&gt; ... &lt;/RequireAny&gt;</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authz_core</td></tr>
 </table>
-    <p>Les balises <code class="directive">&lt;RequireAny&gt;</code> et
-    <code>&lt;/RequireAny&gt;</code> permettent de regrouper des
-    directives d'autorisation dont au moins une doit retourner un
-    résultat positif pour que la directive <code class="directive">&lt;RequireAny&gt;</code> retourne elle-même un résultat
-    positif.</p>
+    <p><code class="directive">&lt;RequireAny&gt;</code> and
+    <code>&lt;/RequireAny&gt;</code> are used to enclose a group of
+    authorization directives of which one must succeed in order for
+    the <code class="directive">&lt;RequireAny&gt;</code> directive to
+    succeed.</p>
 
-    <p>Si une ou plusieurs directives contenues dans la directive
-    <code class="directive">&lt;RequireAny&gt;</code> retournent un
-    résultat positif, alors la directive <code class="directive">&lt;RequireAny&gt;</code> retourne elle-même un résultat
-    positif. Si aucune ne retourne un résultat positif et aucune
-    n'échoue, la directive globale retourne un résultat neutre. Dans
-    tous les autres cas, elle échoue.</p>
+    <p>If one or more of the directives contained within the
+    <code class="directive">&lt;RequireAny&gt;</code> directive succeed,
+    then the <code class="directive">&lt;RequireAny&gt;</code> directive
+    succeeds.  If none succeed and none fail, then it returns a
+    neutral result.  In all other cases, it fails.</p>
 
-    <div class="note">Comme les directives d'autorisation inversées sont incapables
-    de retourner un résultat positif, elles ne peuvent pas impacter de
-    manière significative le résultat d'une directive <code class="directive">&lt;RequireAny&gt;</code> (elles pourraient tout au plus
-    faire échouer la directive dans le cas où elles échoueraient
-    elles-mêmes, et où
-    toutes les autres directives retourneraient un résultat neutre).
-    C'est pourquoi il n'est pas permis d'utiliser les directives
-    d'autorisation inversées dans une directive <code class="directive">&lt;RequireAny&gt;</code>.</div>
+    <div class="note">Because negated authorization directives are unable to
+    return a successful result, they can not significantly influence
+    the result of a <code class="directive">&lt;RequireAny&gt;</code>
+    directive.  (At most they could cause the directive to fail in
+    the case where they failed and all other directives returned a
+    neutral value.)  Therefore negated authorization directives
+    are not permitted within a <code class="directive">&lt;RequireAny&gt;</code>
+    directive.</div>
 
 <h3>Voir aussi</h3>
 <ul>
-<li><a href="#logic">Conteneurs d'autorisation</a></li>
-<li><a href="../howto/auth.html">Authentification, autorisation et
-contrôle d'accès</a></li>
+<li><a href="#logic">Authorization Containers</a></li>
+<li><a href="../howto/auth.html">Authentication, Authorization,
+    and Access Control</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="requirenone" id="requirenone">Directive</a> <a name="RequireNone" id="RequireNone">&lt;RequireNone&gt;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Regroupe des directives d'autorisation dont aucune ne doit
-retourner un résultat positif pour que la directive globale n'échoue
-pas.</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enclose a group of authorization directives of which none
+must succeed for the enclosing directive to not fail.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>&lt;RequireNone&gt; ... &lt;/RequireNone&gt;</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authz_core</td></tr>
 </table>
-    <p>Les balises <code class="directive">&lt;RequireNone&gt;</code> et
-    <code>&lt;/RequireNone&gt;</code> permettent de regrouper des
-    directives d'autorisation dont aucune ne doit retourner un résultat
-    positif pour que la directive <code class="directive">&lt;RequireNone&gt;</code> n'échoue pas.</p>
+    <p><code class="directive">&lt;RequireNone&gt;</code> and
+    <code>&lt;/RequireNone&gt;</code> are used to enclose a group of
+    authorization directives of which none must succeed
+    in order for the
+    <code class="directive">&lt;RequireNone&gt;</code> directive to
+    not fail.</p>
 
-    <p>Si une ou plusieurs directives contenues dans la directive
-    <code class="directive">&lt;RequireNone&gt;</code> retournent un
-    résultat positif, la directive <code class="directive">&lt;RequireNone&gt;</code> échouera. Dans tous les
-    autres cas, cette dernière retournera un résultat neutre. Ainsi,
-    comme pour la directive d'autorisation inversée <code>Require
-    not</code>, elle ne peut jamais en soi autoriser une requête
-    car elle ne pourra jamais retourner un résultat
-    positif. Par contre, on peut l'utiliser pour restreindre l'ensemble
-    des utilisateurs autorisés à accéder à une ressource.</p>
+    <p>If one or more of the directives contained within the
+    <code class="directive">&lt;RequireNone&gt;</code> directive succeed,
+    then the <code class="directive">&lt;RequireNone&gt;</code> directive
+    fails.  In all other cases, it returns a neutral result.  Thus as with
+    the other negated authorization directive <code>Require not</code>,
+    it can never independently
+    authorize a request because it can never return a successful result.
+    It can be used, however, to restrict the set of users who are
+    authorized to access a resource.</p>
 
-    <div class="note">Comme les directives d'autorisation inversées sont incapables
-    de retourner un résultat positif, elles ne peuvent pas impacter de
-    manière significative le résultat d'une directive <code class="directive">&lt;RequireNone&gt;</code>.
-    C'est pourquoi il n'est pas permis d'utiliser les directives
-    d'autorisation inversées dans une directive <code class="directive">&lt;RequireNone&gt;</code>.</div>
+    <div class="note">Because negated authorization directives are unable to
+    return a successful result, they can not significantly influence
+    the result of a <code class="directive">&lt;RequireNone&gt;</code>
+    directive.  Therefore negated authorization directives
+    are not permitted within a
+    <code class="directive">&lt;RequireNone&gt;</code> directive.</div>
 
 <h3>Voir aussi</h3>
 <ul>
-<li><a href="#logic">Conteneurs d'autorisation</a></li>
-<li><a href="../howto/auth.html">Authentification, autorisation et
-contrôle d'accès</a></li>
+<li><a href="#logic">Authorization Containers</a></li>
+<li><a href="../howto/auth.html">Authentication, Authorization,
+    and Access Control</a></li>
 </ul>
 </div>
 </div>

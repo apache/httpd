@@ -190,16 +190,16 @@ serveur</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="addmoduleinfo" id="addmoduleinfo">Directive</a> <a name="AddModuleInfo" id="AddModuleInfo">AddModuleInfo</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ajoute des données supplémentaires aux informations de
-module affichées par le gestionnaire server-info</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AddModuleInfo <var>nom-module</var> <var>chaîne</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Adds additional information to the module
+information displayed by the server-info handler</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AddModuleInfo <var>module-name</var> <var>string</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_info</td></tr>
 </table>
-    <p>Cette directive permet d'afficher le contenu de <var>chaîne</var>
-    en tant qu'<strong>Information supplémentaire</strong> interprétée
-    en HTML pour le module <var>nom-module</var>. Exemple :</p>
+    <p>This allows the content of <var>string</var> to be shown as
+    HTML interpreted, <strong>Additional Information</strong> for
+    the module <var>module-name</var>. Example:</p>
 
     <pre class="prettyprint lang-config">AddModuleInfo mod_deflate.c 'See &lt;a \
     href="http://httpd.apache.org/docs/trunk/mod/mod_deflate.html"&gt;\

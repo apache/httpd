@@ -1353,17 +1353,16 @@ le cas des requêtes dynamiques, utilisez <code>db:prepare</code> ou
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="luaauthzprovider" id="luaauthzprovider">Directive</a> <a name="LuaAuthzProvider" id="LuaAuthzProvider">LuaAuthzProvider</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Branche une fonction fournisseur d'autorisation dans <code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Plug an authorization provider function into <code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code>
 </td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaAuthzProvider provider_name /path/to/lua/script.lua function_name</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.4.3 du serveur HTTP Apache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>2.4.3 and later</td></tr>
 </table>
-<p>Lorsqu'une fonction lua a été enregistrée en tant que fournisseur
-d'autorisation, elle peut être appelée via la directive <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> :</p>
-
+<p>After a lua function has been registered as authorization provider, it can be used
+with the <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> directive:</p>
 
 <pre class="prettyprint lang-config">LuaRoot /usr/local/apache2/lua
 LuaAuthzProvider foo authz.lua authz_check_foo
@@ -1379,11 +1378,12 @@ end</pre>
 
 
 
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="luacodecache" id="luacodecache">Directive</a> <a name="LuaCodeCache" id="LuaCodeCache">LuaCodeCache</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure le cache de code compilé.</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure the compiled code cache.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaCodeCache stat|forever|never</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>LuaCodeCache stat</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
@@ -1391,20 +1391,18 @@ end</pre>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table><p>
-    Cette directive permet de définir le comportement du cache de code
-    en mémoire. La valeur par défaut est stat ; dans ce cas, le script
-    du niveau le plus haut (et pas les scripts inclus) est vérifié à
-    chaque fois que ce fichier est nécessaire, et est rechargé si la
-    date de modification est plus récente que celle du script déjà
-    chargé. Les autres valeurs permettent respectivement de garder le
-    fichier en cache perpétuellement (forever - jamais vérifié ni
-    remplacé), ou de ne jamais le mettre en cache (never).</p>
+    Specify the behavior of the in-memory code cache. The default
+    is stat, which stats the top level script (not any included
+    ones) each time that file is needed, and reloads it if the
+    modified time indicates it is newer than the one it has
+    already loaded. The other values cause it to keep the file
+    cached forever (don't stat and replace) or to never cache the
+    file.</p>
 
-    <p>En général, les valeurs stat et forever sont utilisées pour un
-    serveur en production, et les valeurs stat ou never pour un serveur
-    en développement.</p>
+    <p>In general stat or forever is good for production, and stat or never
+    for development.</p>
 
-    <div class="example"><h3>Exemples :</h3><pre class="prettyprint lang-config">LuaCodeCache stat
+    <div class="example"><h3>Examples:</h3><pre class="prettyprint lang-config">LuaCodeCache stat
 LuaCodeCache forever
 LuaCodeCache never</pre>
 </div>
@@ -1414,58 +1412,49 @@ LuaCodeCache never</pre>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="luahookaccesschecker" id="luahookaccesschecker">Directive</a> <a name="LuaHookAccessChecker" id="LuaHookAccessChecker">LuaHookAccessChecker</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fournit un point d'entrée pour la phase access_checker du
-traitement de la requête</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaHookAccessChecker  /chemin/vers/lua/script.lua  hook_function_name [early|late]</code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Provide a hook for the access_checker phase of request processing</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaHookAccessChecker  /path/to/lua/script.lua  hook_function_name [early|late]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le troisième argument optionnel est disponible depuis la
-version 2.3.15 du serveur HTTP Apache.</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>The optional third argument is supported in 2.3.15 and later</td></tr>
 </table>
-<p>Ajoute votre fonction d'accroche à la phase access_checker. Une
-fonction d'accroche access checker renvoie en général OK, DECLINED, ou
-HTTP_FORBIDDEN.</p>
-<div class="note"><h3>Ordonnancement</h3><p>Les arguments optionnels
-   "early" ou "late" permettent de contrôler le moment auquel ce script
-   s'exécute par rapport aux autres modules.</p></div>
+<p>Add your hook to the access_checker phase.  An access checker
+hook function usually returns OK, DECLINED, or HTTP_FORBIDDEN.</p>
+   <div class="note"><h3>Ordering</h3><p>The optional arguments "early" or "late"
+   control when this script runs relative to other modules.</p></div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="luahookauthchecker" id="luahookauthchecker">Directive</a> <a name="LuaHookAuthChecker" id="LuaHookAuthChecker">LuaHookAuthChecker</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fournit un point d'entrée pour la phase auth_checker du
-traitement de la requête</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaHookAuthChecker  /chemin/vers/lua/script.lua hook_function_name [early|late]</code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Provide a hook for the auth_checker phase of request processing</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaHookAuthChecker  /path/to/lua/script.lua hook_function_name [early|late]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le troisième argument optionnel est disponible depuis la
-version 2.3.15 du serveur HTTP Apache.</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>The optional third argument is supported in 2.3.15 and later</td></tr>
 </table>
-<p>Invoque une fonction lua au cours de la phase auth_checker du
-traitement de la requête. Cette directive peut s'utiliser pour
-implémenter une vérification arbitraire de l'authentification et de
-l'autorisation. Voici un exemple très simple :
+<p>Invoke a lua function in the auth_checker phase of processing
+a request.  This can be used to implement arbitrary authentication
+and authorization checking.  A very simple example:
 </p>
 <pre class="prettyprint lang-lua">require 'apache2'
 
--- fonction d'accroche authcheck fictive
--- Si la requête ne contient aucune donnée d'authentification, l'en-tête
--- de la réponse est défini et un code 401 est renvoyé afin de demander au
--- navigateur d'effectuer une authentification basique. Si la requête
--- comporte des données d'authentification, elles ne sont pas vraiment
--- consultées, mais on admet la prise en compte de l'utilisateur 'foo' et
--- on la valide. On vérifie ensuite si l'utilisateur est bien 'foo' et on
--- accepte la requête.
+-- fake authcheck hook
+-- If request has no auth info, set the response header and
+-- return a 401 to ask the browser for basic auth info.
+-- If request has auth info, don't actually look at it, just
+-- pretend we got userid 'foo' and validated it.
+-- Then check if the userid is 'foo' and accept the request.
 function authcheck_hook(r)
 
-   -- recherche des informations d'authentification
+   -- look for auth info
    auth = r.headers_in['Authorization']
    if auth ~= nil then
-     -- définition d'un utilisateur par défaut
+     -- fake the user
      r.user = 'foo'
    end
 
@@ -1483,16 +1472,14 @@ function authcheck_hook(r)
    return apache2.OK
 end</pre>
 
-<div class="note"><h3>Ordonnancement</h3><p>Les arguments optionnels
-   "early" ou "late" permettent de contrôler le moment auquel ce script
-   s'exécute par rapport aux autres modules.</p></div>
+   <div class="note"><h3>Ordering</h3><p>The optional arguments "early" or "late"
+   control when this script runs relative to other modules.</p></div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="luahookcheckuserid" id="luahookcheckuserid">Directive</a> <a name="LuaHookCheckUserID" id="LuaHookCheckUserID">LuaHookCheckUserID</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fournit un point d'entrée pour la phase check_user_id du
-traitement de la requête</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Provide a hook for the check_user_id phase of request processing</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaHookCheckUserID  /path/to/lua/script.lua hook_function_name</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>All</td></tr>
@@ -1503,37 +1490,35 @@ traitement de la requête</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="luahookfixups" id="luahookfixups">Directive</a> <a name="LuaHookFixups" id="LuaHookFixups">LuaHookFixups</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fournit un point d'entrée pour la phase de correction du
-traitement de la requête</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaHookFixups  /chemin/vers/lua/script.lua hook_function_name</code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Provide a hook for the fixups phase of a request
+processing</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaHookFixups  /path/to/lua/script.lua hook_function_name</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table>
 <p>
-    Idem LuaHookTranslateName, mais s'exécute durant la phase de
-    correction.
+    Just like LuaHookTranslateName, but executed at the fixups phase
 </p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="luahookinsertfilter" id="luahookinsertfilter">Directive</a> <a name="LuaHookInsertFilter" id="LuaHookInsertFilter">LuaHookInsertFilter</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fournit un point d'entrée pour la phase insert_filter du
-traitement de la requête</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaHookInsertFilter  /chemin/vers/lua/script.lua hook_function_name</code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Provide a hook for the insert_filter phase of request processing</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaHookInsertFilter  /path/to/lua/script.lua hook_function_name</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
-</table><p>Non encore implémenté</p>
+</table><p>Not Yet Implemented</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="luahooklog" id="luahooklog">Directive</a> <a name="LuaHookLog" id="LuaHookLog">LuaHookLog</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Permet une insertion dans la phase de journalisation du
-traitement d'une requête</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Provide a hook for the access log phase of a request
+processing</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaHookLog  /path/to/lua/script.lua log_function_name</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>All</td></tr>
@@ -1541,41 +1526,35 @@ traitement d'une requête</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table>
 <p>
-    Ce dispositif d'insertion simple permet d'exécuter une fonction
-    lorsque httpd entre dans la phase de journalisation du traitement
-    d'une requête. Vous pouvez ainsi ajouter des données à vos propres
-    entrées de journalisation, manipuler les entrées du journal standard
-    avant leur enregistrement ou empêcher l'enregistrement d'une entrée
-    dans le journal. Pour empêcher l'enregistrement normal des entrées
-    du journal, renvoyez simplement <code>apache2.DONE</code> dans votre
-    gestionnaire de journalisation, ou au contraire, renvoyez
-    <code>apache2.OK</code> pour que httpd effectue une journalisation
-    normale.
+    This simple logging hook allows you to run a function when httpd enters the
+    logging phase of a request. With it, you can append data to your own logs,
+    manipulate data before the regular log is written, or prevent a log entry
+    from being created. To prevent the usual logging from happening, simply return
+    <code>apache2.DONE</code> in your logging handler, otherwise return
+    <code>apache2.OK</code> to tell httpd to log as normal.
 </p>
-<p>Exemple :</p>
+<p>Example:</p>
 <pre class="prettyprint lang-config">LuaHookLog /path/to/script.lua logger</pre>
 
 <pre class="prettyprint lang-lua">-- /path/to/script.lua --
 function logger(r)
-    -- on joue à pile ou face :
-    -- Si on obtient 1, on écrit dans notre propre journal Lua et on dit
-    -- à httpd de ne pas enregistrer d'entrée dans le journal standard..
-    -- Si on obtient 2, on nettoie un peu les données avant que httpd ne
-    -- les enregistre dans le journal standard.
+    -- flip a coin:
+    -- If 1, then we write to our own Lua log and tell httpd not to log
+    -- in the main log.
+    -- If 2, then we just sanitize the output a bit and tell httpd to
+    -- log the sanitized bits.
 
     if math.random(1,2) == 1 then
-        -- On effectue notre propre journalisation et le journal
-	-- standard n'est pas alimenté
+        -- Log stuff ourselves and don't log in the regular log
         local f = io.open("/foo/secret.log", "a")
         if f then
-            f:write("Quelque chose de secret est arrivé à " .. r.uri .. "\n")
+            f:write("Something secret happened at " .. r.uri .. "\n")
             f:close()
         end
-        return apache2.DONE -- On dit à httpd de ne rien enregistrer
-			    --dans le journal standard
+        return apache2.DONE -- Tell httpd not to use the regular logging functions
     else
-        r.uri = r.uri:gsub("somesecretstuff", "") -- nettoie les données
-        return apache2.OK -- et httpd doit alors les enregistrer.
+        r.uri = r.uri:gsub("somesecretstuff", "") -- sanitize the URI
+        return apache2.OK -- tell httpd to log it.
     end
 end</pre>
 
@@ -1584,19 +1563,16 @@ end</pre>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="luahookmaptostorage" id="luahookmaptostorage">Directive</a> <a name="LuaHookMapToStorage" id="LuaHookMapToStorage">LuaHookMapToStorage</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fournit un point d'entrée pour la phase map_to_storage du
-traitement de la requête</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaHookMapToStorage  /chemin/vers/lua/script.lua hook_function_name</code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Provide a hook for the map_to_storage phase of request processing</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaHookMapToStorage  /path/to/lua/script.lua hook_function_name</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table>
-    <p>Identique à la directive
-    <code class="directive">LuaHookTranslateName</code>, mais s'exécute à la
-    phase map-to-storage du traitement de la requête. Les modules comme
-    mod_cache agissent pendant cette phase, ce qui permet de présenter
-    un exemple intéressant de ce que l'on peut faire ici :</p>
+    <p>Like <code class="directive">LuaHookTranslateName</code> but executed at the
+    map-to-storage phase of a request. Modules like mod_cache run at this phase,
+    which makes for an interesting example on what to do here:</p>
     <pre class="prettyprint lang-config">LuaHookMapToStorage /path/to/lua/script.lua check_cache</pre>
 
     <pre class="prettyprint lang-lua">require"apache2"
@@ -1614,19 +1590,19 @@ function read_file(filename)
 end
 
 function check_cache(r)
-    if r.filename:match("%.png$") then -- Ne concerne que les fichiers PNG
-        local file = cached_files[r.filename] -- Vérifie les entrées du cache
+    if r.filename:match("%.png$") then -- Only match PNG files
+        local file = cached_files[r.filename] -- Check cache entries
         if not file then
-            file = read_file(r.filename)  -- Lit le fichier vers le cache
+            file = read_file(r.filename)  -- Read file into cache
         end
-        if file then -- Si le fichier existe, on l'envoie
+        if file then -- If file exists, write it out
             r.status = 200
             r:write(file)
-            r:info(("%s a été envoyé au client depuis le cache"):format(r.filename))
-            return apache2.DONE -- cout-circuite le gestionnaire par défaut des fichiers PNG
+            r:info(("Sent %s to client from cache"):format(r.filename))
+            return apache2.DONE -- skip default handler for PNG files
         end
     end
-    return apache2.DECLINED -- Si nous n'avons rien eu à faire, nous laissons les autres s'en charger
+    return apache2.DECLINED -- If we had nothing to do, let others serve this.
 end</pre>
 
 
@@ -1635,31 +1611,28 @@ end</pre>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="luahooktranslatename" id="luahooktranslatename">Directive</a> <a name="LuaHookTranslateName" id="LuaHookTranslateName">LuaHookTranslateName</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fournit un point d'entrée à la phase du nom de
-traduction du traitement de la requête</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaHookTranslateName  /chemin/vers/lua/script.lua  nom_fonction_hook [early|late]</code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Provide a hook for the translate name phase of request processing</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaHookTranslateName  /path/to/lua/script.lua  hook_function_name [early|late]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le troisième argument optionnel est disponible depuis la
-version 2.3.15 du serveur HTTP Apache.</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>The optional third argument is supported in 2.3.15 and later</td></tr>
 </table><p>
-    Cette directive permet d'ajouter un point d'entrée (à
-    APR_HOOK_MIDDLE) à la phase du nom de traduction du traitement de la
-    requête. La fonction hook accepte un seul argument, le request_rec,
-    et doit renvoyer un code d'état qui est soit un code d'erreur HTTP,
-    ou une constante définie dans le module apache2 :  apache2.OK,
-    apache2.DECLINED, ou apache2.DONE.</p>
+    Add a hook (at APR_HOOK_MIDDLE) to the translate name phase of
+    request processing. The hook function receives a single
+    argument, the request_rec, and should return a status code,
+    which is either an HTTP error code, or the constants defined
+    in the apache2 module: apache2.OK, apache2.DECLINED, or
+    apache2.DONE. </p>
 
-    <p>Pour ceux qui ne sont pas familiers avec les points d'entrée
-    (hook), en gros, chaque hook sera invoqué jusqu'à ce que l'un
-    d'entre eux renvoie apache2.OK. Si un hook n'effectuer pas la
-    traduction, il doit juste renvoyer apache2.DECLINED. Si le
-    traitement de la requête doit être interrompu, la valeur renvoyée
-    doit être apache2.DONE.</p>
+    <p>For those new to hooks, basically each hook will be invoked
+    until one of them returns apache2.OK. If your hook doesn't
+    want to do the translation it should just return
+    apache2.DECLINED. If the request should stop processing, then
+    return apache2.DONE.</p>
 
-    <p>Exemple :</p>
+    <p>Example:</p>
 
 <pre class="prettyprint lang-config"># httpd.conf
 LuaHookTranslateName /scripts/conf/hooks.lua silly_mapper</pre>
@@ -1677,90 +1650,81 @@ function silly_mapper(r)
 end</pre>
 
 
-   <div class="note"><h3>Contexte</h3><p>Cette directive ne peut être
-   utilisée ni à l'intérieur d'une section <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> ou <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code>, ni dans un fichier htaccess.</p></div>
+   <div class="note"><h3>Context</h3><p>This directive is not valid in <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code>, or htaccess
+   context.</p></div>
 
-   <div class="note"><h3>Ordonnancement</h3><p>Les arguments optionnels
-   "early" ou "late" permettent de contrôler le moment auquel ce script
-   s'exécute par rapport aux autres modules.</p></div>
+   <div class="note"><h3>Ordering</h3><p>The optional arguments "early" or "late"
+   control when this script runs relative to other modules.</p></div>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="luahooktypechecker" id="luahooktypechecker">Directive</a> <a name="LuaHookTypeChecker" id="LuaHookTypeChecker">LuaHookTypeChecker</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fournit un point d'entrée pour la phase type_checker du
-traitement de la requête</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaHookTypeChecker  /chemin/vers/lua/script.lua hook_function_name</code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Provide a hook for the type_checker phase of request processing</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaHookTypeChecker  /path/to/lua/script.lua hook_function_name</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table><p>
-    Cette directive fournit un point d'entrée pour la phase
-    type_checker du traitement de la requête. Cette phase
-    correspond au moment où la requête se voit assigner un type et un
-    gestionnaire de contenu, et peut donc être utilisée pour modifier le
-    type et le gestionnaire en fonction de l'entrée :
+    This directive provides a hook for the type_checker phase of the request processing.
+    This phase is where requests are assigned a content type and a handler, and thus can
+    be used to modify the type and handler based on input:
     </p>
-    <pre class="prettyprint lang-config">LuaHookTypeChecker "/path/to/lua/script.lua" type_checker</pre>
+    <pre class="prettyprint lang-config">LuaHookTypeChecker /path/to/lua/script.lua type_checker</pre>
 
     <pre class="prettyprint lang-lua">    function type_checker(r)
-        if r.uri:match("%.to_gif$") then -- foo.png.to_gif convient
-            r.content_type = "image/gif" -- affectation du type image/gif
-            r.handler = "gifWizard"      -- force le traitement de la requête par le module gifWizard
-            r.filename = r.uri:gsub("%.to_gif$", "") -- corrige le nom du fichier demandé
+        if r.uri:match("%.to_gif$") then -- match foo.png.to_gif
+            r.content_type = "image/gif" -- assign it the image/gif type
+            r.handler = "gifWizard"      -- tell the gifWizard module to handle this
+            r.filename = r.uri:gsub("%.to_gif$", "") -- fix the filename requested
             return apache2.OK
         end
 
         return apache2.DECLINED
     end</pre>
 
-    
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="luainherit" id="luainherit">Directive</a> <a name="LuaInherit" id="LuaInherit">LuaInherit</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Contrôle la manière dont les sections de configuration
-parentes sont fusionnées dans les enfants</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Controls how parent configuration sections are merged into children</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaInherit none|parent-first|parent-last</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>LuaInherit parent-first</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Versions 2.4.0 et supérieures</td></tr>
-</table><p>Par défaut, si des directives LuaHook* se trouvent dans
-    des sections de configuration Directory ou Location qui se
-    chevauchent, les scripts
-    définis dans les sections les plus spécifiques s'exécutent
-    <em>après</em> ceux définis dans les sections plus génériques
-    (LuaInherit parent-first). Vous pouvez inverser cet ordre, ou faire
-    en sorte que le contexte parent ne s'applique pas du tout.</p>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>2.4.0 and later</td></tr>
+</table><p>By default, if LuaHook* directives are used in overlapping
+    Directory or Location configuration sections, the scripts defined in the
+    more specific section are run <em>after</em> those defined in the more
+    generic section (LuaInherit parent-first).  You can reverse this order, or
+    make the parent context not apply at all.</p>
 
-    <p>Jusqu'aux versions 2.3.x, le comportement par défaut consistait à
-    ignorer les directives LuaHook* situées dans les sections de
-    configuration parentes.</p>
+    <p> In previous 2.3.x releases, the default was effectively to ignore LuaHook*
+    directives from parent configuration sections.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="luainputfilter" id="luainputfilter">Directive</a> <a name="LuaInputFilter" id="LuaInputFilter">LuaInputFilter</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fournit une fonction Lua pour le filtrage en entrée</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Provide a Lua function for content input filtering</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaInputFilter filter_name /path/to/lua/script.lua function_name</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.4.5 du serveur HTTP
-Apache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>2.4.5 and later</td></tr>
 </table>
-<p>Cette directive permet d'ajouter un filtre en entrée sous la forme
-d'une fonction Lua. A l'instar des filtres en sorties, les filtres en
-entrée fonctionnent comme des sous-routines, intervenant dans un premier
-temps avant l'envoi du contenu des tampons, puis chaque fois qu'un
-paquet de données doit être transmis à la chaîne, et éventuellement
-produisant toute donnée à ajouter aux données en entrée. La variable
-globale <code>bucket</code> contient les paquets de données tels qu'ils
-sont transmis au script Lua :
+<p>Provides a means of adding a Lua function as an input filter.
+As with output filters, input filters work as coroutines,
+first yielding before buffers are sent, then yielding whenever
+a bucket needs to be passed down the chain, and finally (optionally)
+yielding anything that needs to be appended to the input data. The
+global variable <code>bucket</code> holds the buckets as they are passed
+onto the Lua script:
 </p>
 
 <pre class="prettyprint lang-config">LuaInputFilter myInputFilter /www/filter.lua input_filter
@@ -1769,91 +1733,84 @@ sont transmis au script Lua :
 &lt;/Files&gt;</pre>
 
 <pre class="prettyprint lang-lua">--[[
-    Exemple de filtre en entrée qui convertit toutes les données POST en
-    majuscules.
+    Example input filter that converts all POST data to uppercase.
 ]]--
 function input_filter(r)
-    print("luaInputFilter called") -- pour débogage
-    coroutine.yield() -- attend des paquets de données
-    while bucket do -- Pour chaque paquet, faire ...
-        local output = string.upper(bucket) -- Convertit toutes les données POST en majuscules
-        coroutine.yield(output) -- Envoie les données traitées à la chaîne de filtrage
+    print("luaInputFilter called") -- debug print
+    coroutine.yield() -- Yield and wait for buckets
+    while bucket do -- For each bucket, do...
+        local output = string.upper(bucket) -- Convert all POST data to uppercase
+        coroutine.yield(output) -- Send converted data down the chain
     end
-    -- plus aucune donnée à traiter.
-    coroutine.yield("&amp;filterSignature=1234") -- Ajoute une signature à la fin
+    -- No more buckets available.
+    coroutine.yield("&amp;filterSignature=1234") -- Append signature at the end
 end</pre>
 
 <p>
-Le filtre en entrée peut interdire ou sauter un filtre s'il est
-considéré comme indésirable :
+The input filter supports denying/skipping a filter if it is deemed unwanted:
 </p>
 <pre class="prettyprint lang-lua">function input_filter(r)
     if not good then
-        return -- Empêche tout simplement le filtrage et transmet le contenu original
+        return -- Simply deny filtering, passing on the original content instead
     end
-    coroutine.yield() -- attend des paquets de données
-    ...               -- insert les filtres ici
+    coroutine.yield() -- wait for buckets
+    ... -- insert filter stuff here
 end</pre>
 
 <p>
-Voir "<a href="#modifying_buckets">Modification de contenu avec les
-filtres Lua</a>" pour plus de détails.
+See "<a href="#modifying_buckets">Modifying contents with Lua
+filters</a>" for more information.
 </p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="luamaphandler" id="luamaphandler">Directive</a> <a name="LuaMapHandler" id="LuaMapHandler">LuaMapHandler</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Met en correspondance un chemin avec un gestionnaire lua</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaMapHandler modele-uri /chemin/vers/lua/script.lua
-[nom-fonction]</code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Map a path to a lua handler</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaMapHandler uri-pattern /path/to/lua/script.lua [function-name]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table>
-    <p>Cette directive permet de faire correspondre un modèle d'uri avec
-    une fonction de gestionnaire située dans un fichier spécifique. Elle
-    utilise les expressions rationnelles PCRE pour mettre en
-    correspondance l'uri, et supporte les groupes de correspondance
-    d'interpolation dans le chemin du fichier et le nom de la fonction.
-    Prenez garde aux problèmes de sécurité en écrivant vos expressions
-    rationnelles.</p>
-   <div class="example"><h3>Exemples :</h3><pre class="prettyprint lang-config">LuaMapHandler /(\w+)/(\w+) /scripts/$1.lua handle_$2</pre>
+    <p>This directive matches a uri pattern to invoke a specific
+    handler function in a specific file. It uses PCRE regular
+    expressions to match the uri, and supports interpolating
+    match groups into both the file path and the function name.
+    Be careful writing your regular expressions to avoid security
+    issues.</p>
+   <div class="example"><h3>Examples:</h3><pre class="prettyprint lang-config">LuaMapHandler /(\w+)/(\w+) /scripts/$1.lua handle_$2</pre>
 </div>
-        <p>Cette directive va faire correspondre des uri comme
-	/photos/show?id=9 au fichier /scripts/photos.lua, et invoquera la
-	fonction de gestionnaire handle_show au niveau de la vm lua
-	après chargement de ce fichier.</p>
+        <p>This would match uri's such as /photos/show?id=9
+        to the file /scripts/photos.lua and invoke the
+        handler function handle_show on the lua vm after
+        loading that file.</p>
 
 <pre class="prettyprint lang-config">LuaMapHandler /bingo /scripts/wombat.lua</pre>
 
-        <p>Cette directive invoquera la fonction "handle" qui est la
-	valeur par défaut si aucun nom de fonction spécifique n'est
-	spécifié.</p>
+        <p>This would invoke the "handle" function, which
+        is the default if no specific function name is
+        provided.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="luaoutputfilter" id="luaoutputfilter">Directive</a> <a name="LuaOutputFilter" id="LuaOutputFilter">LuaOutputFilter</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fournit une fonction Lua pour le filtrage de contenu en
-sortie</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Provide a Lua function for content output filtering</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaOutputFilter filter_name /path/to/lua/script.lua function_name</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.5 du serveur HTTP
-Apache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>2.4.5 and later</td></tr>
 </table>
-<p>&gt;Cette directive permet d'ajouter un filtre en sortie sous la forme
-d'une fonction Lua. A l'instar des filtres en sorties, les filtres en
-entrée fonctionnent comme des sous-routines, intervenant dans un premier
-temps avant l'envoi du contenu des tampons, puis chaque fois qu'un
-paquet de données doit être transmis à la chaîne, et éventuellement
-produisant toute donnée à ajouter aux données en sortie. La variable
-globale <code>bucket</code> contient les paquets de données tels qu'ils
-sont transmis au script Lua :
+<p>Provides a means of adding a Lua function as an output filter.
+As with input filters, output filters work as coroutines,
+first yielding before buffers are sent, then yielding whenever
+a bucket needs to be passed down the chain, and finally (optionally)
+yielding anything that needs to be appended to the input data. The
+global variable <code>bucket</code> holds the buckets as they are passed
+onto the Lua script:
 </p>
 
 <pre class="prettyprint lang-config">LuaOutputFilter myOutputFilter /www/filter.lua output_filter
@@ -1862,41 +1819,39 @@ sont transmis au script Lua :
 &lt;/Files&gt;</pre>
 
 <pre class="prettyprint lang-lua">--[[
-    Exemple de filtre en sortie qui échappe toutes les entités HTML en
-    sortie
+    Example output filter that escapes all HTML entities in the output
 ]]--
 function output_filter(r)
-    coroutine.yield("(Handled by myOutputFilter)&lt;br/&gt;\n") -- Ajoute des données au début de la sortie,
-                                                                -- puis attend des paquets de données à traiter
-    while bucket do -- Pour chaque paquet, faire ...
-        local output = r:escape_html(bucket) -- Echappe les données en sortie
-        coroutine.yield(output) -- Envoie les données traitées à la chaîne
+    coroutine.yield("(Handled by myOutputFilter)&lt;br/&gt;\n") -- Prepend some data to the output,
+                                                          -- yield and wait for buckets.
+    while bucket do -- For each bucket, do...
+        local output = r:escape_html(bucket) -- Escape all output
+        coroutine.yield(output) -- Send converted data down the chain
     end
-    -- plus aucune donnée à traiter.
+    -- No more buckets available.
 end</pre>
 
 <p>
-Comme les filres en entrée, le filtre en sortie peut interdire ou sauter un filtre s'il est
-considéré comme indésirable :
+As with the input filter, the output filter supports denying/skipping a filter
+if it is deemed unwanted:
 </p>
 <pre class="prettyprint lang-lua">function output_filter(r)
     if not r.content_type:match("text/html") then
-        return -- Empêche tout simplement le filtrage et transmet le contenu original
+        return -- Simply deny filtering, passing on the original content instead
     end
-    coroutine.yield() -- attend des paquets de données
-    ...               -- insert les filtres ici
+    coroutine.yield() -- wait for buckets
+    ... -- insert filter stuff here
 end</pre>
 
-<div class="note"><h3>Les filtres Lua avec <code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code></h3>
-<p>Lorsqu'on utilise un filtre Lua comme fournisseur sous-jacent via la
-directive <code class="directive"><a href="../mod/mod_filter.html#filterprovider">FilterProvider</a></code>, le
-filtrage ne fonctionnera que si <var>filter-name</var> est identique à
-<var>provider-name</var>.
+<div class="note"><h3>Lua filters with <code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code></h3>
+<p> When a Lua filter is used as the underlying provider via the
+<code class="directive"><a href="../mod/mod_filter.html#filterprovider">FilterProvider</a></code> directive, filtering
+will only work when the <var>filter-name</var> is identical to the <var>provider-name</var>.
 </p> </div>
 
 <p>
-Voir "<a href="#modifying_buckets">Modification de contenu avec les
-filtres Lua</a>" pour plus de détails.
+See "<a href="#modifying_buckets">Modifying contents with Lua filters</a>" for more
+information.
 </p>
 
 
@@ -1904,33 +1859,33 @@ filtres Lua</a>" pour plus de détails.
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="luapackagecpath" id="luapackagecpath">Directive</a> <a name="LuaPackageCPath" id="LuaPackageCPath">LuaPackageCPath</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ajoute un répertoire au package.cpath de lua</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaPackageCPath /chemin/vers/include/?.soa</code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Add a directory to lua's package.cpath</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaPackageCPath /path/to/include/?.soa</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table>
-    <p>Cette directive permet d'ajouter un chemin à la liste des chemins
-    de recherche des bibliothèques partagées de lua. Ceci modifie le
-    package.cpath dans les vms lua.</p>
+    <p>Add a path to lua's shared library search path. Follows the same
+    conventions as lua. This just munges the package.cpath in the
+    lua vms.</p>
 
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="luapackagepath" id="luapackagepath">Directive</a> <a name="LuaPackagePath" id="LuaPackagePath">LuaPackagePath</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ajoute un répertoire au package.path de lua</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaPackagePath /chemin/vers/include/?.lua</code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Add a directory to lua's package.path</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaPackagePath /path/to/include/?.lua</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
-</table><p>Cette directive permet d'ajouter un chemin à la liste des
-    chemins de recherche du module lua. Elle suit les mêmes conventions
-    que lua. Ceci modifie le package.path dans les vms lua.</p>
+</table><p>Add a path to lua's module search path. Follows the same
+    conventions as lua. This just munges the package.path in the
+    lua vms.</p>
 
-    <div class="example"><h3>Exemples :</h3><pre class="prettyprint lang-config">LuaPackagePath /scripts/lib/?.lua
+    <div class="example"><h3>Examples:</h3><pre class="prettyprint lang-config">LuaPackagePath /scripts/lib/?.lua
 LuaPackagePath /scripts/lib/?/init.lua</pre>
 </div>
 
@@ -1938,50 +1893,44 @@ LuaPackagePath /scripts/lib/?/init.lua</pre>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="luaquickhandler" id="luaquickhandler">Directive</a> <a name="LuaQuickHandler" id="LuaQuickHandler">LuaQuickHandler</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fournit un point d'entrée pour la gestion rapide du
-traitement de la requête</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Provide a hook for the quick handler of request processing</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaQuickHandler /path/to/script.lua hook_function_name</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table>
-    <p>Cette phase s'exécute juste après l'attribution de la requête à
-    un serveur virtuel, et permet d'effectuer certains traitements avant
-    le déroulement des autres phases, ou de servir une requête sans
-    avoir à la traduire, l'associer à un espace de stockage, etc...
-    Comme cette phase s'exécute avant toute autre, les directives telles
-    que <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> ou
-    <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> ne
-    sont pas encore prises en compte, car Les URI n'ont pas encore été
-    entièrement interprétés.
+    <p>
+    This phase is run immediately after the request has been mapped to a virtal host,
+    and can be used to either do some request processing before the other phases kick
+    in, or to serve a request without the need to translate, map to storage et cetera.
+    As this phase is run before anything else, directives such as <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> or <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> are void in this phase, just as
+    URIs have not been properly parsed yet.
     </p>
-   <div class="note"><h3>Contexte</h3><p>Cette directive ne peut être
-   utilisée ni à l'intérieur d'une section <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> ou <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code>, ni dans un fichier htaccess.</p></div>
+   <div class="note"><h3>Context</h3><p>This directive is not valid in <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code>, or htaccess
+   context.</p></div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="luaroot" id="luaroot">Directive</a> <a name="LuaRoot" id="LuaRoot">LuaRoot</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Spécifie le chemin de base pour la résolution des chemins
-relatifs dans les directives de mod_lua</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaRoot /chemin/vers/un/répertoire</code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specify the base path for resolving relative paths for mod_lua directives</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaRoot /path/to/a/directory</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table>
-    <p>Cette directive permet de spécifier le chemin de base qui sera
-    utilisé pour évaluer tous les chemins relatifs dans mod_lua. En
-    l'absence de cette directive, les chemins relatifs sont résolus par
-    rapport au répertoire de travail courant, ce qui ne sera pas
-    toujours approprié pour un serveur.</p>
+    <p>Specify the base path which will be used to evaluate all
+    relative paths within mod_lua. If not specified they
+    will be resolved relative to the current working directory,
+    which may not always work well for a server.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="luascope" id="luascope">Directive</a> <a name="LuaScope" id="LuaScope">LuaScope</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Une valeur parmi once, request, conn, thread -- la valeur par défaut est once</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>One of once, request, conn, thread -- default is once</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaScope once|request|conn|thread|server [min] [max]</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>LuaScope once</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
@@ -1989,44 +1938,40 @@ relatifs dans les directives de mod_lua</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table>
-    <p>Cette directive permet de spécifier la durée de vie de
-    l'interpréteur Lua qui sera utilisé dans ce "répertoire". La valeur
-    par défaut est "once".</p>
+    <p>Specify the life cycle scope of the Lua interpreter which will
+    be used by handlers in this "Directory." The default is "once"</p>
 
    <dl>
-    <dt>once:</dt> <dd>utilise l'interpréteur une fois.</dd>
+    <dt>once:</dt> <dd>use the interpreter once and throw it away.</dd>
 
-    <dt>request:</dt> <dd>utilise l'interpréteur pour traiter tout ce
-    qui est basé sur le même fichier dans la requête, et qui se trouve
-    aussi dans la portée de la requête.</dd>
+    <dt>request:</dt> <dd>use the interpreter to handle anything based on
+             the same file within this request, which is also
+             request scoped.</dd>
 
-    <dt>conn:</dt> <dd>idem request, mais attaché à connection_rec</dd>
+    <dt>conn:</dt> <dd>Same as request but attached to the connection_rec</dd>
 
-    <dt>thread:</dt> <dd>Utilise l'interpréteur pendant toute la durée
-    de vie du thread qui traite la requête (disponible seulement avec
-    les MPMs threadés).</dd>
+    <dt>thread:</dt> <dd>Use the interpreter for the lifetime of the thread
+            handling the request (only available with threaded MPMs).</dd>
 
-    <dt>server:</dt>  <dd>Le comportement est ici différent, car la
-    portée du serveur présente une durée de vie assez longue, et
-    plusieurs threads vont partager le même server_rec. Pour gérer tout
-    ceci, les états lua du serveur sont stockés dans une liste de ressources
-    apr. Les arguments <code>min</code> et <code>max</code> permettent
-    de spécifier les nombres minimaux et maximaux d'états lua à stocker
-    dans la liste.</dd>
+    <dt>server:</dt>  <dd>This one is different than others because the
+            server scope is quite long lived, and multiple threads
+            will have the same server_rec. To accommodate this,
+            server scoped Lua states are stored in an apr
+            resource list. The <code>min</code> and <code>max</code> arguments
+            specify the minimum and maximum number of Lua states to keep in the
+            pool.</dd>
    </dl>
-   <p>En général, les portées <code>thread</code> et <code>server</code>
-   sont 2 à 3 fois plus rapides que les autres, car elles n'ont pas besoin
-   de régénérer de nouveaux états Lua à chaque requête (comme c'est le
-   cas avec le MPM event, où même les connexions persistantes utilisent un
-   nouveau thread pour chaque requête). Si vous pensez que vos scripts
-   n'auront pas de problème s'il réutilisent un état, alors les portées
-   <code>thread</code> ou <code>server</code> doivent être utilisées car
-   elles présenteront de meilleures performances. Alors que la portée
-   <code>thread</code> fournira les réponses les plus rapides, la portée
-   <code>server</code> utilisera moins de mémoire car les états sont
-   rassemblés dans des jeux, permettant par exemple à 1000 threads de
-   partager 100 états Lua, ne nécessitant ainsi que 10% de la mémoire
-   requise par la portée <code>thread</code>.
+    <p>
+    Generally speaking, the <code>thread</code> and <code>server</code> scopes
+    execute roughly 2-3 times faster than the rest, because they don't have to
+    spawn new Lua states on every request (especially with the event MPM, as
+    even keepalive requests will use a new thread for each request). If you are
+    satisfied that your scripts will not have problems reusing a state, then
+    the <code>thread</code> or <code>server</code> scopes should be used for
+    maximum performance. While the <code>thread</code> scope will provide the
+    fastest responses, the <code>server</code> scope will use less memory, as
+    states are pooled, allowing f.x. 1000 threads to share only 100 Lua states,
+    thus using only 10% of the memory required by the <code>thread</code> scope.
     </p>
 
 </div>

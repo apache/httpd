@@ -250,9 +250,8 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="isapiappendlogtoerrors" id="isapiappendlogtoerrors">Directive</a> <a name="ISAPIAppendLogToErrors" id="ISAPIAppendLogToErrors">ISAPIAppendLogToErrors</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enregistrement des requêtes
-<code>HSE_APPEND_LOG_PARAMETER</code> de la part des extensions ISAPI
-dans le journal des erreurs</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Record <code>HSE_APPEND_LOG_PARAMETER</code> requests from
+ISAPI extensions to the error log</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ISAPIAppendLogToErrors on|off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ISAPIAppendLogToErrors off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
@@ -260,17 +259,15 @@ dans le journal des erreurs</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_isapi</td></tr>
 </table>
-    <p>Cette directive permet d'enregistrer les requêtes
-    <code>HSE_APPEND_LOG_PARAMETER</code> de la part des extensions
-    ISAPI dans le journal des erreurs.</p>
+    <p>Record <code>HSE_APPEND_LOG_PARAMETER</code> requests from ISAPI
+    extensions to the server error log.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="isapiappendlogtoquery" id="isapiappendlogtoquery">Directive</a> <a name="ISAPIAppendLogToQuery" id="ISAPIAppendLogToQuery">ISAPIAppendLogToQuery</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enregistre les requêtes
-<code>HSE_APPEND_LOG_PARAMETER</code> de la part des extensions ISAPI
-dans la partie arguments de la requête</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Record <code>HSE_APPEND_LOG_PARAMETER</code> requests from
+ISAPI extensions to the query field</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ISAPIAppendLogToQuery on|off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ISAPIAppendLogToQuery on</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
@@ -278,38 +275,33 @@ dans la partie arguments de la requête</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_isapi</td></tr>
 </table>
-    <p>Cette directive permet d'enregistrer les requêtes
-    <code>HSE_APPEND_LOG_PARAMETER</code> de la part des extensions
-    ISAPI dans la partie arguments de la requête (ajouté au composant
-    <code>%q</code> de la directive <code class="directive"><a href="../mod/mod_log_config.html#customlog">CustomLog</a></code>).</p>
+    <p>Record <code>HSE_APPEND_LOG_PARAMETER</code> requests from ISAPI
+    extensions to the query field (appended to the <code class="directive"><a href="../mod/mod_log_config.html#customlog">CustomLog</a></code> <code>%q</code>
+    component).</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="isapicachefile" id="isapicachefile">Directive</a> <a name="ISAPICacheFile" id="ISAPICacheFile">ISAPICacheFile</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fichiers .dll ISAPI devant être chargés au
-démarrage</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ISAPICacheFile <var>chemin-fichier</var>
-[<var>chemin-fichier</var>]
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>ISAPI .dll files to be loaded at startup</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ISAPICacheFile <var>file-path</var> [<var>file-path</var>]
 ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_isapi</td></tr>
 </table>
-    <p>Cette directive permet de spécifier une liste, séparés par des
-    espaces, de noms de fichiers devant être chargés au démarrage
-    du serveur Apache, et rester en mémoire jusqu'à l'arrêt du serveur.
-    Cette directive peut être répétée pour chaque fichier .dll ISAPI
-    souhaité. Le chemin complet du fichier doit être spécifié. Si le
-    chemin n'est pas absolu, il sera considéré comme relatif au
-    répertoire défini par la directive <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>.</p>
+    <p>Specifies a space-separated list of file names to be loaded
+    when the Apache server is launched, and remain loaded until the
+    server is shut down. This directive may be repeated for every
+    ISAPI .dll file desired. The full path name of each file should
+    be specified. If the path name is not absolute, it will be treated
+    relative to <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="isapifakeasync" id="isapifakeasync">Directive</a> <a name="ISAPIFakeAsync" id="ISAPIFakeAsync">ISAPIFakeAsync</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Emulation du support des entrées/sorties asynchrones pour
-les appels ISAPI</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fake asynchronous support for ISAPI callbacks</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ISAPIFakeAsync on|off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ISAPIFakeAsync off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
@@ -317,15 +309,15 @@ les appels ISAPI</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_isapi</td></tr>
 </table>
-    <p>Lorsquelle est définie à "on", cette directive permet d'émuler le
-    support des entrées/sorties asynchrones pour les appels ISAPI.</p>
+    <p>While set to on, asynchronous support for ISAPI callbacks is
+    simulated.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="isapilognotsupported" id="isapilognotsupported">Directive</a> <a name="ISAPILogNotSupported" id="ISAPILogNotSupported">ISAPILogNotSupported</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Journalisation des demandes de fonctionnalités non
-supportées de la part des extensions ISAPI</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Log unsupported feature requests from ISAPI
+extensions</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ISAPILogNotSupported on|off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ISAPILogNotSupported off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
@@ -333,32 +325,29 @@ supportées de la part des extensions ISAPI</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_isapi</td></tr>
 </table>
-    <p>Cette directive permet d'enregistrer dans le journal des erreurs
-    toutes les demandes de fonctionnalités non supportées de la part des
-    extensions ISAPI. Ceci peut aider les administrateurs à décortiquer
-    certains problèmes. Lorsqu'elle a été définie à "on" et si tous les
-    modules ISAPI fonctionnent, elle peut être redéfinie à "off".</p>
+    <p>Logs all requests for unsupported features from ISAPI
+    extensions in the server error log. This may help administrators
+    to track down problems. Once set to on and all desired ISAPI modules
+    are functioning, it should be set back to off.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="isapireadaheadbuffer" id="isapireadaheadbuffer">Directive</a> <a name="ISAPIReadAheadBuffer" id="ISAPIReadAheadBuffer">ISAPIReadAheadBuffer</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Taille du tampon de lecture anticipée envoyé aux extensions
-ISAPI</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ISAPIReadAheadBuffer <var>taille</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Size of the Read Ahead Buffer sent to ISAPI
+extensions</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ISAPIReadAheadBuffer <var>size</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ISAPIReadAheadBuffer 49152</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_isapi</td></tr>
 </table>
-    <p>Cette directive permet de définir la taille maximale du tampon de
-    lecture anticipée envoyé aux extensions ISAPI lorsqu'elles sont
-    initialement invoquées. Toute donnée restante doit être extraite en
-    faisant appel à <code>ReadClient</code> ; certaines extensions ISAPI
-    peuvent ne pas supporter la fonction <code>ReadClient</code>.
-    Pour plus de détails, veuillez vous adresser à l'auteur de
-    l'extension ISAPI.</p>
+    <p>Defines the maximum size of the Read Ahead Buffer sent to
+    ISAPI extensions when they are initially invoked. All remaining
+    data must be retrieved using the <code>ReadClient</code> callback; some
+    ISAPI extensions may not support the <code>ReadClient</code> function.
+    Refer questions to the ISAPI extension's author.</p>
 
 </div>
 </div>

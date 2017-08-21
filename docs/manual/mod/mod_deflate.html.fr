@@ -258,130 +258,113 @@ SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip</pre>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="deflatealteretag" id="deflatealteretag">Directive</a> <a name="DeflateAlterETag" id="DeflateAlterETag">DeflateAlterETag</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Comment l'en-tête sortant ETag doit être modifié au cours
-de la compression</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>How the outgoing ETag header should be modified during compression</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DeflateAlterETag AddSuffix|NoChange|Remove</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>DeflateAlterETag AddSuffix</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_deflate</td></tr>
 </table>
-    <p>La directive <code class="directive">DeflateAlterETag</code> permet de
-    spécifier comment l'en-tête ETag doit être modifié lorsqu'une
-    réponse est compressée.</p>
+    <p>The <code class="directive">DeflateAlterETag</code> directive specifies
+    how the ETag hader should be altered when a response is compressed.</p>
     <dl>
     <dt>AddSuffix</dt>
-    <dd><p>Ajoute la méthode de compression à la fin de l'en-tête, ce
-    qui a pour effet d'attribuer un en-tête ETag unique aux
-    représentations compressées et non compressées. C'est l'option par
-    défaut depuis la version 2.4.0, mais empêche de servir des
-    codes d'état "HTTP Not Modified" (304) en réponse aux requêtes pour un
-    contenu compressé.</p></dd>
+    <dd><p>Append the compression method onto the end of the ETag, causing
+        compressed and uncompressed representations to have unique ETags.
+        This has been the default since 2.4.0, but prevents serving
+        "HTTP Not Modified" (304) responses to conditional requests for
+        compressed content.</p></dd>
     <dt>NoChange</dt>
-    <dd><p>Ne modifie pas l'en-tête ETag dans une réponse compressée.
-    C'était l'option par
-    défaut avant la version 2.4.0, mais cela ne respectait pas la
-    préconisation HTTP/1.1 selon laquelle chaque représentation de la
-    même ressource doit posséder un en-tête ETag unique.</p></dd>
+    <dd><p>Don't change the ETag on a compressed response. This was the default
+        prior to 2.4.0, but does not satisfy the HTTP/1.1 property that all
+        representations of the same resource have unique ETags. </p></dd>
     <dt>Remove</dt>
-    <dd><p>Supprime l'en-tête ETag dans les réponses compressées, ce qui
-    a pour effet de rendre impossibles certaines requêtes
-    conditionnelles, mais permet d'éviter les inconvénients des options
-    précédentes.</p></dd>
+    <dd><p>Remove the ETag header from compressed responses. This prevents
+        some conditional requests from being possible, but avoids the
+        shortcomings of the preceding options.  </p></dd>
     </dl>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="deflatebuffersize" id="deflatebuffersize">Directive</a> <a name="DeflateBufferSize" id="DeflateBufferSize">DeflateBufferSize</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Taille du fragment que zlib devra comprimer en une seule
-fois</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DeflateBufferSize <var>valeur</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fragment size to be compressed at one time by zlib</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DeflateBufferSize <var>value</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>DeflateBufferSize 8096</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_deflate</td></tr>
 </table>
-    <p>La directive <code class="directive">DeflateBufferSize</code> permet de
-    spécifier la taille en octets du fragment que zlib devra comprimer
-    en une seule fois. Si la taille de la réponse compressée est supérieure à
-    celle spécifiée par cette directive, httpd passera à un mode d'encodage
-    fragmenté (l'en-tête HTTP <code>Transfer-Encoding</code> prend la valeur
-    <code>Chunked</code>), ceci ayant comme effet de bord de ne définir aucun
-    en-tête HTTP <code>Content-Length</code>. Il est important de connaître ce
-    comportement, particulièrement lorsque httpd travaille derrière des
-    mandataires inverses avec mise en cache, ou lorsque httpd est configuré pour
-    utiliser <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> et <code class="module"><a href="../mod/mod_cache_disk.html">mod_cache_disk</a></code> car
-    les réponses HTTP sans en-tête <code>Content-Length</code> peuvent ne pas
-    être mises en cache.</p>
+    <p>The <code class="directive">DeflateBufferSize</code> directive specifies
+    the size in bytes of the fragments that zlib should compress at one
+    time. If the compressed response size is bigger than the one specified
+    by this directive then httpd will switch to chunked encoding 
+    (HTTP header <code>Transfer-Encoding</code> set to <code>Chunked</code>), with the
+    side effect of not setting any <code>Content-Length</code> HTTP header. This is particularly 
+    important when httpd works behind reverse caching proxies or when httpd is configured with 
+    <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> and <code class="module"><a href="../mod/mod_cache_disk.html">mod_cache_disk</a></code> because
+    HTTP responses without any <code>Content-Length</code> header might not be cached.
+  </p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="deflatecompressionlevel" id="deflatecompressionlevel">Directive</a> <a name="DeflateCompressionLevel" id="DeflateCompressionLevel">DeflateCompressionLevel</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le niveau de compression que nous appliquons à la
-sortie</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DeflateCompressionLevel <var>valeur</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>La valeur par défaut de zlib</code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>How much compression do we apply to the output</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DeflateCompressionLevel <var>value</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>Zlib's default</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_deflate</td></tr>
 </table>
-    <p>La directive <code class="directive">DeflateCompressionLevel</code>
-    permet de spécifier le niveau de compression à utiliser ; plus
-    grande est la valeur, meilleure sera la compression, mais plus grand
-    sera aussi le temps CPU nécessaire pour effectuer le
-    traitement.</p>
-    <p>La valeur doit être comprise entre 1 (compression minimale) et 9
-    (compression maximale).</p>
+    <p>The <code class="directive">DeflateCompressionLevel</code> directive specifies
+        what level of compression should be used, the higher the value,
+        the better the compression, but the more CPU time is required to
+        achieve this.</p>
+    <p>The value must between 1 (less compression) and 9 (more compression).</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="deflatefilternote" id="deflatefilternote">Directive</a> <a name="DeflateFilterNote" id="DeflateFilterNote">DeflateFilterNote</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enregistre le taux de compression sous la forme d'une note
-à des fins de journalisation</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DeflateFilterNote [<var>type</var>] <var>nom de la note</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Places the compression ratio in a note for logging</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DeflateFilterNote [<var>type</var>] <var>notename</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_deflate</td></tr>
 </table>
-    <p>La directive <code class="directive">DeflateFilterNote</code> permet de
-    spécifier qu'une note à propos du taux de compression doit être
-    attachée à la requête. Le nom de la note est passé sous la forme
-    d'un argument de la directive. Vous pouvez utiliser cette note à des
-    fins statistiques en enregistrant sa valeur dans votre <a href="../logs.html#accesslog">journal des accès</a>.</p>
+    <p>The <code class="directive">DeflateFilterNote</code> directive
+    specifies that a note about compression ratios should be attached
+    to the request. The name of the note is the value specified for
+    the directive. You can use that note for statistical purposes by
+    adding the value to your <a href="../logs.html#accesslog">access log</a>.</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">      DeflateFilterNote ratio
-    
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">      DeflateFilterNote ratio
+
       LogFormat '"%r" %b (%{ratio}n) "%{User-agent}i"' deflate
       CustomLog "logs/deflate_log" deflate</pre>
 </div>
 
-    <p>Pour extraire des informations plus précises de vos journaux,
-    vous pouvez utiliser l'argument <var>type</var> pour spécifier le
-    type de données de la note enregistrée dans le journal.
-    <var>type</var> peut prendre une des valeurs suivantes :</p>
+    <p>If you want to extract more accurate values from your logs, you
+    can use the <var>type</var> argument to specify the type of data
+    left as a note for logging. <var>type</var> can be one of:</p>
 
     <dl>
       <dt><code>Input</code></dt>
-      <dd>Enregistre dans la note la taille en octets du flux en entrée
-      du filtre.</dd>
+      <dd>Store the byte count of the filter's input stream in the note.</dd>
 
       <dt><code>Output</code></dt>
-      <dd>Enregistre dans la note la taille en octets du flux en sortie
-      du filtre.</dd>
+      <dd>Store the byte count of the filter's output stream in the note.</dd>
 
       <dt><code>Ratio</code></dt>
-      <dd>Enregistre le taux de compression (<code>sortie/entrée *
-      100</code>) dans la note. Il s'agit de la valeur par défaut si
-      l'argument <var>type</var> est omis.</dd>
+      <dd>Store the compression ratio (<code>output/input * 100</code>)
+      in the note. This is the default, if the <var>type</var> argument
+      is omitted.</dd>
     </dl>
 
-    <p>Vous pouvez donc configurer votre journalisation de la manière
-    suivante :</p>
+    <p>Thus you may log it this way:</p>
 
-    <div class="example"><h3>Journalisation détaillée</h3><pre class="prettyprint lang-config">DeflateFilterNote Input instream
+    <div class="example"><h3>Accurate Logging</h3><pre class="prettyprint lang-config">DeflateFilterNote Input instream
 DeflateFilterNote Output outstream
 DeflateFilterNote Ratio ratio
 
@@ -397,96 +380,88 @@ CustomLog "logs/deflate_log" deflate</pre>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="deflateinflatelimitrequestbody" id="deflateinflatelimitrequestbody">Directive</a> <a name="DeflateInflateLimitRequestBody" id="DeflateInflateLimitRequestBody">DeflateInflateLimitRequestBody</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Taille maximale des corps de requête décompressés</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum size of inflated request bodies</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DeflateInflateLimitRequestBody<var>value</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>Aucune limite, mais LimitRequestBody s'applique après la
-compression</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>None, but LimitRequestBody applies after deflation</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_deflate</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.10 du serveur HTTP
-Apache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>2.4.10 and later</td></tr>
 </table>
-    <p>La directive
-    <code class="directive">DeflateInflateLimitRequestBody</code> permet de
-    spécifier la taille maximale d'un corps de requête décompressé. Si
-    elle n'est pas définie, c'est la valeur de la directive <code class="directive"><a href="../mod/core.html#limitrequestbody">LimitRequestBody</a></code> qui s'applique au corps
-    de requête décompressé.</p>
+    <p>The <code class="directive">DeflateInflateLimitRequestBody</code> directive
+        specifies the maximum size of an inflated request body. If it is unset,
+        <code class="directive"><a href="../mod/core.html#limitrequestbody">LimitRequestBody</a></code> is applied to the
+        inflated body.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="deflateinflateratioburst" id="deflateinflateratioburst">Directive</a> <a name="DeflateInflateRatioBurst" id="DeflateInflateRatioBurst">DeflateInflateRatioBurst</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nombre maximal de fois que le ratio de décompression d'un
-corps de requête peut être dépassé</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum number of times the inflation ratio for request bodies
+             can be crossed</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DeflateInflateRatioBurst <var>value</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>3</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_deflate</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.10 du serveur HTTP
-Apache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>2.4.10 and later</td></tr>
 </table>
-    <p>La directive <code class="directive">DeflateInflateRatioBurst</code>
-    permet de spécifier le nombre maximal de fois que la valeur de la
-    directive <code class="directive">DeflateInflateRatioLimit</code> peut être
-    dépassé avant l'arrêt du traitement de la requête.</p>
+    <p>The <code class="directive">DeflateInflateRatioBurst</code> directive
+       specifies the maximum number of times the
+       <code class="directive">DeflateInflateRatioLimit</code> can be crossed before
+       terminating the request.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="deflateinflateratiolimit" id="deflateinflateratiolimit">Directive</a> <a name="DeflateInflateRatioLimit" id="DeflateInflateRatioLimit">DeflateInflateRatioLimit</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ratio de décompression maximum pour les corps de requêtes</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum inflation ratio for request bodies</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DeflateInflateRatioLimit <var>value</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>200</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_deflate</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.10 du serveur HTTP
-Apache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>2.4.10 and later</td></tr>
 </table>
-    <p>La directive <code class="directive">DeflateInflateRatioLimit</code>
-    permet de définir le ratio maximum entre la taille d'un corps de
-    requête compressé et sa taille décompressée. Ce ratio est vérifié au
-    fur et à mesure de
-    l'arrivée du corps de requête, et s'il est dépassé plus de
-    <code class="directive">DeflateInflateRatioBurst</code> fois, le traitement
-    de la requête est interrompu.</p>
+    <p>The <code class="directive">DeflateInflateRatioLimit</code> directive
+        specifies the maximum ratio of deflated to inflated size of an
+        inflated request body. This ratio is checked as the body is
+        streamed in, and if crossed more than
+        <code class="directive">DeflateInflateRatioBurst</code> times, the request
+        will be terminated.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="deflatememlevel" id="deflatememlevel">Directive</a> <a name="DeflateMemLevel" id="DeflateMemLevel">DeflateMemLevel</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>La quantité de mémoire utilisable par zlib pour la
-compression</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DeflateMemLevel <var>valeur</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>How much memory should be used by zlib for compression</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DeflateMemLevel <var>value</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>DeflateMemLevel 9</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_deflate</td></tr>
 </table>
-    <p>La directive <code class="directive">DeflateMemLevel</code> permet de
-    spécifier la quantité de mémoire utilisable par zlib pour la
-    compression (une valeur comprise entre 1 et 9).</p>
+    <p>The <code class="directive">DeflateMemLevel</code> directive specifies
+    how much memory should be used by zlib for compression
+    (a value between 1 and 9).</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="deflatewindowsize" id="deflatewindowsize">Directive</a> <a name="DeflateWindowSize" id="DeflateWindowSize">DeflateWindowSize</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Taille de la fenêtre de compression zlib</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DeflateWindowSize <var>valeur</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Zlib compression window size</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DeflateWindowSize <var>value</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>DeflateWindowSize 15</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_deflate</td></tr>
 </table>
-    <p>La directive <code class="directive">DeflateWindowSize</code> permet de
-    spécifier la fenêtre de compression zlib (une valeur comprise entre
-    1 et 15). En général, plus grande sera la taille de la fenêtre, plus
-    grand sera le taux de compression auquel on pourra s'attendre.</p>
+    <p>The <code class="directive">DeflateWindowSize</code> directive specifies the
+    zlib compression window size (a value between 1 and 15). Generally, the
+    higher the window size, the higher can the compression ratio be expected.</p>
 
 </div>
 </div>

@@ -67,434 +67,386 @@ modules multi-processus (MPM)</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="coredumpdirectory" id="coredumpdirectory">Directive</a> <a name="CoreDumpDirectory" id="CoreDumpDirectory">CoreDumpDirectory</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le répertoire dans lequel le serveur HTTP Apache va tenter de se
-positionner avant d'effectuer un vidage mémoire</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CoreDumpDirectory <var>répertoire</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>Voir ci-dessous pour le répertoire par défaut</code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Directory where Apache HTTP Server attempts to
+switch before dumping core</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CoreDumpDirectory <var>directory</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>See usage for the default setting</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>MPM</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/event.html">event</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code></td></tr>
 </table>
-    <p>Cette directive permet de définir le répertoire dans lequel
-    Apache httpd va tenter de se positionner avant d'effectuer un vidage
-    mémoire sur disque.
-    Si votre système d'exploitation est configuré pour créer des
-    fichiers de vidage mémoire dans le répertoire de travail des
-    processus qui se sont crashés,
-    <code class="directive">CoreDumpDirectory</code> est nécessaire pour
-    définir un répertoire de travail autre que le répertoire par défaut
-    <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>, ce répertoire de
-    travail ne devant pas être accessible en écriture par l'utilisateur sous
-    lequel le serveur s'exécute.</p>
+    <p>This controls the directory to which Apache httpd attempts to
+    switch before dumping core. If your operating system is configured to
+    create core files in the working directory of the crashing process,
+    <code class="directive">CoreDumpDirectory</code> is necessary to change working
+    directory from the default <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>
+    directory, which should not be writable by the user the server runs as.</p>
 
-    <p>Si vous avez besoin d'un vidage mémoire pour le débogage, vous
-    pouvez utiliser cette directive pour le placer à un endroit
-    différent. Cette directive n'a aucun effet si votre système
-    d'exploitation n'est pas configuré pour créer des
-    fichiers de vidage mémoire dans le répertoire de travail des
-    processus qui se sont crashés.</p>
+    <p>If you want a core dump for debugging, you can use this directive to
+    place it in a different location. This directive has no effect if your
+    operating system is not configured to write core files to the working directory
+    of the crashing processes.</p>
 
-    <div class="note"><h3>Vidages mémoire sous Linux</h3>
-      <p>Si Apache httpd est démarré sous l'utilisateur root puis bascule vers
-      un autre utilisateur, le noyau Linux <em>désactive</em> les
-      vidages mémoire, même si le répertoire est accessible en écriture au
-      processus. Apache httpd (versions 2.0.46 et supérieures) réactive les
-      vidages mémoire sous Linux 2.4 et au delà, mais seulement si vous
-      définissez une directive <code class="directive">CoreDumpDirectory</code>.</p>
+    <div class="note"><h3>Core Dumps on Linux</h3>
+      <p>If Apache httpd starts as root and switches to another user, the
+      Linux kernel <em>disables</em> core dumps even if the directory is
+      writable for the process. Apache httpd (2.0.46 and later) reenables core dumps
+      on Linux 2.4 and beyond, but only if you explicitly configure a <code class="directive">CoreDumpDirectory</code>.</p>
     </div>
 
     <div class="note">
-    <h3>Vidages mémoire sous BSD</h3>
-    <p>Pour activer le vidage mémoire des exécutables suid sur les
-    systèmes de style BSD (comme FreeBSD), définissez
-    <code>kern.sugid_coredump</code> à 1.
+    <h3>Core Dumps on BSD</h3>
+    <p>To enable core-dumping of suid-executables on BSD-systems (such
+    as FreeBSD), set <code>kern.sugid_coredump</code> to 1.
     </p>
     </div>
 
-    <div class="note"><h3>Signaux spécifiques</h3>
-      <p><code class="directive">CoreDumpDirectory</code> n'est traité qu'à la
-      reception d'un certain nombre de signaux , SIGFPE, SIGILL, SIGABORT,
-      SIGSEGV, et SIGBUS.</p>
-      <p>
-      Sur certains systèmes d'exploitation, SIGQUIT provoque aussi un
-      vidage mémoire, mais n'est pas traité par les directives
-      <code class="directive">CoreDumpDirectory</code> ou
-      <code class="directive">EnableExceptionHook</code>, si bien que la
-      définition du répertoire d'enregistrement du vidage mémoire est
-      entièrement dévolue au système d'exploitation.</p>
+    <div class="note"><h3>Specific signals</h3>
+      <p><code class="directive">CoreDumpDirectory</code> processing only occurs for
+      a select set of fatal signals: SIGFPE, SIGILL, SIGABORT,
+      SIGSEGV, and SIGBUS.</p>
+      <p>On some operating systems, SIGQUIT also results in a core dump but
+      does not go through <code class="directive">CoreDumpDirectory</code> or
+      <code class="directive">EnableExceptionHook</code> processing, so the core
+      location is dictated entirely by the operating system.</p>
     </div>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="enableexceptionhook" id="enableexceptionhook">Directive</a> <a name="EnableExceptionHook" id="EnableExceptionHook">EnableExceptionHook</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active un hook ("point d'accrochage logiciel") qui exécute des
-gestionnaires d'exception après un crash</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enables a hook that runs exception handlers
+after a crash</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>EnableExceptionHook On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>EnableExceptionHook Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>MPM</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/event.html">event</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code></td></tr>
 </table>
-    <p>Pour des raisons de sécurité, cette directive n'est disponible
-    que si la compilation du serveur a été configurée avec l'option
-    <code>--enable-exception-hook</code>. Elle permet d'activer un hook
-    ("point d'accrochage logiciel")
-    qui autorise certains modules externes à effectuer un branchement et
-    accomplir telle ou telle action après le crash d'un processus
-    enfant.</p>
+    <p>For safety reasons this directive is only available if the server was
+    configured with the <code>--enable-exception-hook</code> option. It
+    enables a hook that allows external modules to plug in and do something
+    after a child crashed.</p>
 
-    <p>Deux modules, <code>mod_whatkilledus</code> et
-    <code>mod_backtrace</code> utilisent ce hook. Veuillez vous
-    référer à la <a href="https://emptyhammock.com/projects/httpd/diag/">page EnableExceptionHook</a> de Jeff Trawick pour plus
-    d'informations à leur sujet.</p>
+    <p>There are already two modules, <code>mod_whatkilledus</code> and
+    <code>mod_backtrace</code> that make use of this hook. Please have a
+    look at Jeff Trawick's <a href="https://emptyhammock.com/projects/httpd/diag/">EnableExceptionHook site</a> for more information about these.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="gracefulshutdowntimeout" id="gracefulshutdowntimeout">Directive</a> <a name="GracefulShutdownTimeout" id="GracefulShutdownTimeout">GracefulShutdownTimeout</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Spécifie le délai maximum après lequel le serveur va
-s'arrêter dans le cas d'un arrêt "en douceur"</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specify a timeout after which a gracefully shutdown server
+will exit.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>GracefulShutdownTimeout <var>seconds</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>GracefulShutdownTimeout 0</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>MPM</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/event.html">event</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code></td></tr>
 </table>
-    <p>La directive <code class="directive">GracefulShutdownTimeout</code>
-    permet de spécifier le temps, en secondes, pendant lequel le serveur
-    va continuer à fonctionner après avoir reçu un signal
-    "graceful-stop" ("Arrêt en douceur"), afin de terminer le traitement
-    des connexions en cours.</p>
+    <p>The <code class="directive">GracefulShutdownTimeout</code> specifies
+    how many seconds after receiving a "graceful-stop" signal, a
+    server should continue to run, handling the existing connections.</p>
 
-    <p>Définir cette valeur à zéro signifie au serveur d'attendre
-    jusqu'à ce que toutes les requêtes en cours aient été traitées.</p>
+    <p>Setting this value to zero means that the server will wait
+    indefinitely until all remaining requests have been fully served.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="listen" id="listen">Directive</a> <a name="Listen" id="Listen">Listen</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Les adresses IP et ports sur lesquels le serveur écoute</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Listen [<var>adresse IP</var>:]<var>numéro port</var>
-[<var>protocole</var>]</code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>IP addresses and ports that the server
+listens to</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Listen [<var>IP-address</var>:]<var>portnumber</var> [<var>protocol</var>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>MPM</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/event.html">event</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code></td></tr>
 </table>
-    <p>La directive <code class="directive">Listen</code> permet de signifier à
-    Apache httpd de ne se mettre à l'écoute que sur les adresses IP et ports spécifiés ; par
-    défaut, le serveur répond aux requêtes en provenance de toutes les
-    interfaces réseau. La directive <code class="directive">Listen</code> est
-    dorénavant requise, et si elle est absente du fichier de
-    configuration, le serveur refusera de démarrer. Ceci constitue un
-    changement par rapport aux versions précédentes d'Apache httpd.</p>
+    <p>The <code class="directive">Listen</code> directive instructs Apache httpd to
+    listen to only specific IP addresses or ports; by default it
+    responds to requests on all IP interfaces. <code class="directive">Listen</code>
+    is now a required directive. If it is not in the config file, the
+    server will fail to start. This is a change from previous versions
+    of Apache httpd.</p>
 
-    <p>La directive <code class="directive">Listen</code> signifie au serveur de
-    n'accepter les requêtes entrantes que vers le port ou le couple
-    adresse-port spécifié. Si seulement un port est spécifié, le serveur
-    se met à l'écoute sur ce port sur toutes les interfaces réseau. Si une adresse IP
-    et un port sont spécifiés, le serveur va se mettre à l'écoute sur ce port sur
-    l'interface réseau correspondant à l'adresse IP.</p>
+    <p>The <code class="directive">Listen</code> directive tells the server to
+    accept incoming requests on the specified port or address-and-port
+    combination. If only a port number is specified, the server listens to
+    the given port on all interfaces. If an IP address is given as well
+    as a port, the server will listen on the given port and
+    interface.</p>
 
-    <p>On peut utiliser autant de directives
-    <code class="directive">Listen</code> que nécessaire pour spécifier
-    plusieurs adresses et/ou ports à écouter. Le serveur répondra aux
-    requêtes vers tous les adresses et ports spécifiés.</p>
+    <p>Multiple <code class="directive">Listen</code> directives may be used to
+    specify a number of addresses and ports to listen to. The server will
+    respond to requests from any of the listed addresses and ports.</p>
 
-    <p>Par exemple, pour que le serveur accepte les connexions sur les
-    ports 80 et 8000, utilisez :</p>
+    <p>For example, to make the server accept connections on both
+    port 80 and port 8000, use:</p>
 
     <pre class="prettyprint lang-config">Listen 80
 Listen 8000</pre>
 
 
-    <p>Pour que le serveur accepte les connexions sur deux interfaces et
-    ports particuliers, spécifiez :</p>
+    <p>To make the server accept connections on two specified
+    interfaces and port numbers, use </p>
 
     <pre class="prettyprint lang-config">Listen 192.170.2.1:80
 Listen 192.170.2.5:8000</pre>
 
 
-    <p>Les adressee IPv6 doivent être entourées de crochets, comme dans
-    l'exemple suivant :</p>
+    <p>IPv6 addresses must be surrounded in square brackets, as in the
+    following example:</p>
 
     <pre class="prettyprint lang-config">Listen [2001:db8::a00:20ff:fea7:ccea]:80</pre>
 
 
-    <p>L'argument optionnel <var>protocole</var> n'est pas nécessaire
-    dans la plupart des configurations. S'il est absent,
-    <code>https</code> est la valeur par défaut pour le port 443 et
-    <code>http</code> l'est pour tous les autres ports. L'argument
-    protocole sert à déterminer quel module doit traiter une requête, et
-    à appliquer des optimisations spécifiques à certains protocoles à
-    l'aide de la directive <code class="directive"><a href="../mod/core.html#acceptfilter">AcceptFilter</a></code>.</p>
+    <p>The optional <var>protocol</var> argument is not required for most
+       configurations. If not specified, <code>https</code> is the default for
+       port 443 and <code>http</code> the default for all other ports.  The
+       protocol is used to determine which module should handle a request, and
+       to apply protocol specific optimizations with the
+       <code class="directive"><a href="../mod/core.html#acceptfilter">AcceptFilter</a></code> directive.</p>
 
-    <p>La spécification d'un protocole n'est nécessaire que si vous
-    utilisez des ports non standards. Par exemple, pour configurer un
-    site en <code>https</code> sur le port 8443 :</p>
+    <p>You only need to set the protocol if you are running on non-standard
+       ports.  For example, running an <code>https</code> site on port 8443:</p>
 
     <pre class="prettyprint lang-config">Listen 192.170.2.1:8443 https</pre>
 
 
-    <div class="note"><h3>Condition d'erreur</h3>
-      Plusieurs directives <code class="directive">Listen</code> pour les mêmes
-      adresse IP/port vont provoquer l'envoi d'un message d'erreur
-      <code>Address already in use</code>.
+    <div class="note"><h3>Error condition</h3>
+      Multiple <code class="directive">Listen</code> directives for the same ip
+      address and port will result in an <code>Address already in use</code>
+      error message.
     </div>
 
 
 <h3>Voir aussi</h3>
 <ul>
-<li><a href="../dns-caveats.html">Problèmes avec DNS</a></li>
-<li><a href="../bind.html">Définition des adresses et ports
-qu'utilise le serveur HTTP Apache</a></li>
-<li><a href="http://wiki.apache.org/httpd/CouldNotBindToAddress">Autre
-discussion à propos du message d'erreur <code>Address already in
-use</code>, citant d'autres causes possibles.</a></li>
+<li><a href="../dns-caveats.html">DNS Issues</a></li>
+<li><a href="../bind.html">Setting which addresses and ports Apache HTTP Server
+    uses</a></li>
+<li><a href="http://wiki.apache.org/httpd/CouldNotBindToAddress">Further
+discussion of the <code>Address already in use</code> error message,
+including other causes.</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="listenbacklog" id="listenbacklog">Directive</a> <a name="ListenBackLog" id="ListenBackLog">ListenBackLog</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Longueur maximale de la liste d'attente des
-connexions</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum length of the queue of pending connections</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ListenBacklog <var>backlog</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ListenBacklog 511</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>MPM</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/event.html">event</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code></td></tr>
 </table>
-    <p>La longueur maximale de la liste d'attente des connexions. En
-    général, aucune modification n'est nécessaire, ni même souhaitable ;
-    cependant, sur certains systèmes, il peut être nécessaire
-    d'en augmenter la valeur en cas d'attaque TCP SYN flood (envoi en
-    masse de requêtes SYN pour saturer le serveur). Voir le paramètre
-    backlog de l'appel système <code>listen(2)</code>.</p>
+    <p>The maximum length of the queue of pending connections.
+    Generally no tuning is needed or desired, however on some
+    systems it is desirable to increase this when under a TCP SYN
+    flood attack. See the backlog parameter to the
+    <code>listen(2)</code> system call.</p>
 
-    <p>En fait, l'argument backlog sera souvent limité à une valeur
-    inférieure en fonction du système d'exploitation. Notez aussi que de
-    nombreux systèmes d'exploitation ne tiennent pas vraiment compte de
-    la valeur spécifiée pour l'argument backlog, mais s'en inspirent
-    seulement (et choisissent en général une valeur supérieure).</p>
+    <p>This will often be limited to a smaller number by the
+    operating system. This varies from OS to OS. Also note that
+    many OSes do not use exactly what is specified as the backlog,
+    but use a number based on (but normally larger than) what is
+    set.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="listencoresbucketsratio" id="listencoresbucketsratio">Directive</a> <a name="ListenCoresBucketsRatio" id="ListenCoresBucketsRatio">ListenCoresBucketsRatio</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Rapport entre le nombre de coeurs de processeur activés et
-le nombre de segments d'écoute</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ratio between the number of CPU cores (online) and the number of
+listeners' buckets</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ListenCoresBucketsRatio <var>ratio</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ListenCoresBucketsRatio 0 (disabled)</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>MPM</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/event.html">event</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code></td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.13 du serveur HTTP
-Apache, avec un noyau supportant l'option de socket
-<code>SO_REUSEPORT</code>, et distribuant uniformément les nouvelles
-connexions aux sockets d'écoute des processus (ou threads) qui
-l'utilisent (par exemple Linux versions 3.9 et ultérieures, mais pas
-l'implémentation courante de <code>SO_REUSEPORT</code> par les
-plateformes de type BSD.</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Available in Apache HTTP Server 2.4.17, with a kernel supporting
+the socket option <code>SO_REUSEPORT</code> and distributing new connections
+evenly across listening processes' (or threads') sockets using it (eg. Linux
+3.9 and later, but not the current implementations of <code>SO_REUSEPORT</code>
+in *BSDs.</td></tr>
 </table>
-    <p>Vous pouvez utiliser la directive
-    <code class="directive">ListenCoresBucketsRatio</code> pour spécifier un
-    <var>ratio</var> entre le nombre de coeurs de CPU activés et le
-    nombre de segments d'écoute (listeners' buckets) souhaités ; le
-    serveur HTTP Apache va alors créer<code>num_cpu_cores / ratio</code>
-    segments d'écoute, chacun contenant son propre socket d'écoute
-    <code class="directive">Listen</code> sur le ou les mêmes ports ; chaque
-    processus enfant sera associé à un seul segment d'écoute (avec une
-    distribution de type round-robin des segments à la création des
-    processus enfants).</p>
+    <p>A <var>ratio</var> between the number of (online) CPU cores and the
+    number of listeners' buckets can be used to make Apache HTTP Server create
+    <code>num_cpu_cores / ratio</code> listening buckets, each containing its
+    own <code class="directive">Listen</code>-ing socket(s) on the same port(s), and
+    then make each child handle a single bucket (with round-robin distribution
+    of the buckets at children creation time).</p>
 
-    <div class="note"><h3>Définition du terme coeur de CPU activé ("online")</h3>
-    <p>Sous Linux et BSD, un coeur de CPU peut être activé ou désactivé si <a href="https://www.kernel.org/doc/Documentation/cpu-hotplug.txt">Hotplug</a>
-    a été configuré ; la directive
-    <code class="directive">ListenCoresBucketsRatio</code> doit donc tenir compte de ce
-    paramètre pour calculer le nombre de segments d'écoute à créer.</p>
+    <div class="note"><h3>Meaning of "online" CPU core</h3>
+    <p>On Linux (and also BSD) a CPU core can be turned on/off if 
+    <a href="https://www.kernel.org/doc/Documentation/cpu-hotplug.txt">Hotplug</a> 
+    is configured, therefore <code class="directive">ListenCoresBucketsRatio</code> needs to
+    take this parameter into account while calculating the number of buckets to create.</p>
     </div>
 
-    <p>La directive <code class="directive">ListenCoresBucketsRatio</code> peut
-    améliorer le support de la montée en charge lorsque l'arrivée de
-    nouvelles connexions est/devient un goulot d'étranglement. Le test
-    de cette fonctionnalité avec des machines possédant un nombre de
-    coeurs de CPU important a permit de constater une amélioration des
-    performances significative et des temps de réponse plus courts.</p>
+    <p><code class="directive">ListenCoresBucketsRatio</code> can improve the
+    scalability when accepting new connections is/becomes the bottleneck.
+    On systems with a large number of CPU cores, enabling this feature has
+    been tested to show significant performances improvement and shorter
+    responses time.</p>
 
-    <p>Pour que cette fonctionnalité soit activée, le nombre de coeurs
-    de CPU doit être égal au moins au double du <var>ratio</var>
-    spécifié. Si vous spécifiez la valeur recommandée pour
-    <var>ratio</var>, à savoir <code>8</code>, le nombre minimum de
-    coeurs de processeurs disponibles sera alors de <code>16</code>. La valeur
-    optimale de <var>ratio</var> permettant d'obtenir des performances maximales
-    doit être calculée pour chaque système cible, en testant plusieurs valeurs
-    et en observant les résultats.</p>
+    <p>There must be at least twice the number of CPU cores than the
+    configured <var>ratio</var> for this to be active. The recommended
+    <var>ratio</var> is <code>8</code>, hence at least <code>16</code>
+    cores should be available at runtime when this value is used.
+    The right <var>ratio</var> to obtain maximum performance needs to be calculated
+    for each target system, testing multiple values and observing the variations in your 
+    key performance metrics.</p>
 
-    <p>Cette directive influence le calcul des valeurs limites inférieures de
-    <code class="directive"><a href="#minsparethreads">MinSpareThreads</a></code> et <code class="directive"><a href="#maxsparethreads">MaxSpareThreads</a></code>. En effet, pour accepter les
-    connexions de manière optimale, le nombre de processus enfants doit être un
-    multiple du nombre de segments d'écoute.</p>
+    <p>This directive influences the calculation of the 
+    <code class="directive"><a href="#minsparethreads">MinSpareThreads</a></code> and 
+    <code class="directive"><a href="#maxsparethreads">MaxSpareThreads</a></code> lower bound values.
+    The number of children processes needs to be a multiple of the number 
+    of buckets to optimally accept connections.</p>
 
     <div class="note">
-    <h3>Cas où plusieurs <code class="directive">Listen</code>ers ou serveurs HTTP
-    Apache partagent la même adresse IP et port</h3>
-    <p>La définition de l'option <code>SO_REUSEPORT</code> pour les sockets
-    d'écoute permet à plusieurs processus (partageant le même <code>EUID</code>,
-    par exemple <code>root</code>) de se rattacher à la même adresse IP et port,
-    sans obtenir l'erreur de rattachement que le système génère habituellement
-    lorsque ce cas se produit.</p>
-    <p>Cela signifie aussi que plusieurs instances d'Apache httpd configurées
-    avec le même <code>IP:port</code> et avec une valeur
-    <code class="directive">ListenCoresBucketsRatio</code> positive pourraient démarrer
-    sans erreur, et fonctionner ensuite avec une répartition uniforme des
-    connexions entrantes sur ces différentes instances (ce n'est PAS une
-    recommandation et ne constitue pas un usage approprié à tous les cas, mais
-    juste un avertissement sur le fait qu'un véritable problème de rattachement
-    multiple à un <code>IP:port</code> pourrait alors être occulté).</p>
-    <p>Au sein d'une même instance, Apache httpd vérifie la présence de
-    directives <code class="directive">Listen</code> multiples avec la même adresse IP
-    (ou nom d'hôte) et le même port, et refuse de démarrer si c'est le cas, ce
-    qui permet d'éviter la création de segments d'écoute dupliqués qui seraient
-    du coup inutiles et affecteraient les performances. Cependant, il ne peut
-    pas (et n'essaiera pas de le faire) intercepter tous les cas possibles de
-    recouvrement (comme un nom d'hôte correspondant à une adresse IP utilisée
-    quelque part ailleurs).</p>
+    <h3>Multiple <code class="directive">Listen</code>ers or Apache HTTP servers on
+    the same IP address and port</h3>
+    <p>Setting the <code>SO_REUSEPORT</code> option on the listening socket(s)
+    consequently allows multiple processes (sharing the same <code>EUID</code>,
+    e.g. <code>root</code>) to bind to the the same IP address and port,
+    without the binding error raised by the system in the usual case.</p>
+    <p>This also means that multiple instances of Apache httpd configured on a
+    same <code>IP:port</code> and with a positive <code class="directive">ListenCoresBucketsRatio</code>
+    would start without an error too, and then run with incoming connections
+    evenly distributed accross both instances (this is NOT a recommendation or
+    a sensible usage in any case, but just a notice that it would prevent such
+    possible issues to be detected).</p>
+    <p>Within the same instance, Apache httpd will check and fail to start if
+    multiple <code class="directive">Listen</code> directives on the exact same IP (or
+    hostname) and port are configured, thus avoiding the creation of some
+    duplicated buckets which would be useless and kill performances.  However
+    it can't (and won't try harder to) catch all the possible overlapping cases
+    (like a hostname resolving to an IP used elsewhere).</p>
     </div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="maxconnectionsperchild" id="maxconnectionsperchild">Directive</a> <a name="MaxConnectionsPerChild" id="MaxConnectionsPerChild">MaxConnectionsPerChild</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Limite le nombre de connexions qu'un processus enfant va
-traiter au cours de son fonctionnement</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Limit on the number of connections that an individual child server
+will handle during its life</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MaxConnectionsPerChild <var>number</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MaxConnectionsPerChild 0</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>MPM</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/event.html">event</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code></td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.9 du serveur HTTP
-Apache. L'ancien nom <code>MaxRequestsPerChild</code> est encore
-supporté.</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Available Apache HTTP Server 2.3.9 and later. The old name
+<code>MaxRequestsPerChild</code> is still supported.</td></tr>
 </table>
-    <p>La directive <code class="directive">MaxConnectionsPerChild</code> permet de
-    définir le nombre maximum de connexions qu'un processus enfant va
-    pouvoir traiter au cours de son fonctionnement. Lorsqu'il a traité
-    <code class="directive">MaxConnectionsPerChild</code> connexions, le processus
-    enfant est arrêté. Si <code class="directive">MaxConnectionsPerChild</code> est
-    définie à <code>0</code>, il n'y a plus aucune limite sur le nombre
-    de connexions que le processus pourra traiter.</p>
+    <p>The <code class="directive">MaxConnectionsPerChild</code> directive sets
+    the limit on the number of connections that an individual child
+    server process will handle. After
+    <code class="directive">MaxConnectionsPerChild</code> connections, the child
+    process will die. If <code class="directive">MaxConnectionsPerChild</code> is
+    <code>0</code>, then the process will never expire.</p>
 
-    <p>Définir <code class="directive">MaxConnectionsPerChild</code> à une valeur
-    non nulle limite la quantité de mémoire qu'un processus peut
-    consommer à cause de fuites (accidentelles) de mémoire.</p>
-
+    <p>Setting <code class="directive">MaxConnectionsPerChild</code> to a
+    non-zero value limits the amount of memory that process can consume
+    by (accidental) memory leakage.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="maxmemfree" id="maxmemfree">Directive</a> <a name="MaxMemFree" id="MaxMemFree">MaxMemFree</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Quantité maximale de mémoire que l'allocateur principal est
-autorisé à conserver sans appeler <code>free()</code></td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MaxMemFree <var>KOctets</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum amount of memory that the main allocator is allowed
+to hold without calling <code>free()</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MaxMemFree <var>KBytes</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MaxMemFree 2048</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>MPM</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/event.html">event</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code></td></tr>
 </table>
-    <p>La directive <code class="directive">MaxMemFree</code> permet de définir
-    le nombre maximum de KOctets libres que tout allocateur est
-    autorisé à conserver sans appeler <code>free()</code>. Dans les MPMs
-    threadés, chaque thread possède son propre allocateur. Si elle est
-    définie à 0, la quantité de mémoire libre que peut conserver un
-    allocateur est illimitée.</p>
+    <p>The <code class="directive">MaxMemFree</code> directive sets the
+    maximum number of free Kbytes that every allocator is allowed
+    to hold without calling <code>free()</code>. In threaded MPMs, every
+    thread has its own allocator. When set
+    to zero, the threshold will be set to unlimited.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="maxrequestworkers" id="maxrequestworkers">Directive</a> <a name="MaxRequestWorkers" id="MaxRequestWorkers">MaxRequestWorkers</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nombre maximum de connexions pouvant être traitées
-simultanément</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MaxRequestWorkers <var>nombre</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>Voir ci-dessous pour plus de détails</code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum number of connections that will be processed
+simultaneously</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MaxRequestWorkers <var>number</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>See usage for details</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>MPM</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/event.html">event</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code></td></tr>
 </table>
-    <p>La directive <code class="directive">MaxRequestWorkers</code> permet de fixer le
-    nombre maximum de requêtes pouvant être traitées simultanément.
-    Si la limite <code class="directive">MaxRequestWorkers</code> est atteinte, toute
-    tentative de connexion sera normalement mise dans une file
-    d'attente, et ceci jusqu'à un certain nombre dépendant de la
-    directive <code class="directive"><a href="#listenbacklog">ListenBacklog</a></code>.
-    Lorsqu'un processus enfant se libèrera suite à la fin du traitement
-    d'une requête, la connexion en attente pourra être traitée à son
-    tour.</p>
+    <p>The <code class="directive">MaxRequestWorkers</code> directive sets the limit
+    on the number of simultaneous requests that will be served.  Any
+    connection attempts over the <code class="directive">MaxRequestWorkers</code>
+    limit will normally be queued, up to a number based on the
+    <code class="directive"><a href="#listenbacklog">ListenBacklog</a></code>
+    directive. Once a child process is freed at the end of a different
+    request, the connection will then be serviced.</p>
 
-    <p>Pour les serveurs non threadés (<em>c'est à dire</em> utilisant
-    <code class="module"><a href="../mod/prefork.html">prefork</a></code>), la directive
-    <code class="directive">MaxRequestWorkers</code> définit alors le nombre maximum de
-    processus enfants qui pourront être lancés simultanément pour
-    traiter les requêtes. La valeur par défaut est <code>256</code> ; si
-    vous l'augmentez, vous devez aussi augmenter la valeur de la
-    directive <code class="directive"><a href="#serverlimit">ServerLimit</a></code>.</p>
+    <p>For non-threaded servers (<em>i.e.</em>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>),
+    <code class="directive">MaxRequestWorkers</code> translates into the maximum
+    number of child processes that will be launched to serve requests.
+    The default value is <code>256</code>; to increase it, you must also raise
+    <code class="directive"><a href="#serverlimit">ServerLimit</a></code>.</p>
 
-    <p>Pour les serveur threadés et hybrides (utilisant <em>par
-    exemple</em> <code class="module"><a href="../mod/event.html">event</a></code> ou <code class="module"><a href="../mod/worker.html">worker</a></code>),
-    <code class="directive">MaxRequestWorkers</code> définit alors le nombre total de
-    threads qui seront disponibles pour servir les clients. Dans le
-    cas des MPMs hybrides, la valeur par défaut est <code>16</code>
-    (directive <code class="directive"><a href="#serverlimit">ServerLimit</a></code>) multiplié par la valeur
-    <code>25</code> (directive <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code>). Par conséquent, pour affecter à la
-    directive <code class="directive">MaxRequestWorkers</code> une valeur qui requiert
-    plus de 16 processus, vous devez aussi augmenter la valeur de la
-    directive <code class="directive"><a href="#serverlimit">ServerLimit</a></code>.</p>
+    <p>For threaded and hybrid servers (<em>e.g.</em> <code class="module"><a href="../mod/event.html">event</a></code>
+    or <code class="module"><a href="../mod/worker.html">worker</a></code>) <code class="directive">MaxRequestWorkers</code> restricts
+    the total number of threads that will be available to serve clients.
+    For hybrid MPMs the default value is <code>16</code> (<code class="directive"><a href="#serverlimit">ServerLimit</a></code>) multiplied by the value of
+    <code>25</code> (<code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code>). Therefore, to increase <code class="directive">MaxRequestWorkers</code> to a value that requires more than 16 processes,
+    you must also raise <code class="directive"><a href="#serverlimit">ServerLimit</a></code>.</p>
 
-    <p>Le nom de la directive <code class="directive">MaxRequestWorkers</code>
-    était <code class="directive">MaxClients</code> avant la version 2.3.13. Cet
-    ancien nom est encore supporté.</p>
+    <p><code class="directive">MaxRequestWorkers</code> was called
+    <code class="directive">MaxClients</code> before version 2.3.13. The old name is still
+    supported.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="maxsparethreads" id="maxsparethreads">Directive</a> <a name="MaxSpareThreads" id="MaxSpareThreads">MaxSpareThreads</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nombre maximum de threads inactifs</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MaxSpareThreads <var>nombre</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>Voir ci-dessous pour plus de détails</code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum number of idle threads</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MaxSpareThreads <var>number</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>See usage for details</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>MPM</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/event.html">event</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code></td></tr>
 </table>
-    <p>C'est le nombre maximum de threads inactifs. Les MPMs utilisent
-    cette directive de différentes manières.</p>
+    <p>Maximum number of idle threads. Different MPMs deal with this
+    directive differently.</p>
 
-    <p>Pour <code class="module"><a href="../mod/worker.html">worker</a></code> et <code class="module"><a href="../mod/event.html">event</a></code>, la définition par défaut est
-    <code>MaxSpareThreads 250</code>. Ce MPM gère les threads inactifs
-    au niveau du serveur. Si le serveur possède trop de threads
-    inactifs, des processus enfants seront arrêtés jusqu'à ce que le
-    nombre de threads inactifs repasse en dessous de cette limite. Des
-    processus/threads supplémentaires sont susceptibles d'être créés si
-    <code class="directive"><a href="#listencoresbucketsratio">ListenCoresBucketsRatio</a></code> est
-    activée.</p>
+    <p>For <code class="module"><a href="../mod/worker.html">worker</a></code> and <code class="module"><a href="../mod/event.html">event</a></code>, the default is
+    <code>MaxSpareThreads 250</code>. These MPMs deal with idle threads
+    on a server-wide basis. If there are too many idle threads in the
+    server then child processes are killed until the number of idle
+    threads is less than this number. Additional processes/threads
+    might be created if <code class="directive"><a href="#listencoresbucketsratio">ListenCoresBucketsRatio</a></code> 
+    is enabled.</p>
 
-    <p>Pour <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, la définition par défaut est
-    <code>MaxSpareThreads 100</code>. Comme ce MPM n'exécute qu'un seul
-    processus, le nombre de processus inactifs est surveillé au
-    niveau du serveur.</p>
+    <p>For <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code> the default is
+    <code>MaxSpareThreads 100</code>. Since this MPM runs a
+    single-process, the spare thread count is also server-wide.</p>
 
-    <p><code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code> fonctionne de manière similaire à
-    <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>. Pour <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>, la
-    valeur par défaut est <code>10</code>.</p>
+    <p><code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code> works
+    similar to <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>. For
+    <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code> the default value is <code>10</code>.</p>
 
-    <div class="note"><h3>Contraintes</h3>
-      <p>La gamme de valeurs pour <code class="directive">MaxSpareThreads</code>
-      est limitée. Apache httpd corrigera automatiquement cette valeur selon
-      les règles suivantes :</p>
+    <div class="note"><h3>Restrictions</h3>
+      <p>The range of the <code class="directive">MaxSpareThreads</code> value
+      is restricted. Apache httpd will correct the given value automatically
+      according to the following rules:</p>
       <ul>
-        <li>Avec <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="directive">MaxSpareThreads</code> doit être supérieure à <code class="directive"><a href="#minsparethreads">MinSpareThreads</a></code>.</li>
+        <li><code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code> wants the value to be greater than
+        <code class="directive"><a href="#minsparethreads">MinSpareThreads</a></code>.</li>
 
-        <li>Avec
-	<code class="module"><a href="../mod/worker.html">worker</a></code> et <code class="module"><a href="../mod/event.html">event</a></code>, <code class="directive">MaxSpareThreads</code>
-	doit être supérieure ou égale à la somme de <code class="directive"><a href="#minsparethreads">MinSpareThreads</a></code> et <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code>.</li>
+        <li>For <code class="module"><a href="../mod/worker.html">worker</a></code> and <code class="module"><a href="../mod/event.html">event</a></code>, the value
+        must be greater or equal to the sum of <code class="directive"><a href="#minsparethreads">
+        MinSpareThreads</a></code> and <code class="directive"><a href="#threadsperchild">
+	ThreadsPerChild</a></code>.</li>
       </ul>
     </div>
 
@@ -508,35 +460,32 @@ simultanément</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="minsparethreads" id="minsparethreads">Directive</a> <a name="MinSpareThreads" id="MinSpareThreads">MinSpareThreads</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nombre minimum de threads inactifs qui seront disponibles
-pour pouvoir traiter les pics de requêtes</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MinSpareThreads <var>nombre</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>Voir ci-dessous pour plus de détails</code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Minimum number of idle threads available to handle request
+spikes</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MinSpareThreads <var>number</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>See usage for details</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>MPM</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/event.html">event</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code></td></tr>
 </table>
-    <p>C'est le nombre minimum de threads inactifs pour être en mesure
-    de traiter les pics de requêtes. Les MPMs utilisent cette directive
-    de différentes manières.</p>
+    <p>Minimum number of idle threads to handle request spikes.
+    Different MPMs deal with this directive differently.</p>
 
-    <p>Avec <code class="module"><a href="../mod/worker.html">worker</a></code> et <code class="module"><a href="../mod/event.html">event</a></code>, la définition par défaut est
-    <code>MinSpareThreads 75</code>, et le nombre de threads inactifs
-    est surveillé au niveau du serveur. Si le serveur ne possède pas
-    assez de threads inactifs, des processus enfants sont créés jusqu'à
-    ce que le nombre de threads inactifs repasse au dessus de
-    <var>nombre</var>. Des processus/threads supplémentaires peuvent
-    être créés si <code class="directive"><a href="#listencoresbucketsratio">ListenCoresBucketsRatio</a></code> est activée.</p>
+    <p><code class="module"><a href="../mod/worker.html">worker</a></code> and <code class="module"><a href="../mod/event.html">event</a></code> use a default of
+    <code>MinSpareThreads 75</code> and deal with idle threads on a server-wide
+    basis. If there aren't enough idle threads in the server then child
+    processes are created until the number of idle threads is greater
+    than <var>number</var>. Additional processes/threads
+    might be created if <code class="directive"><a href="#listencoresbucketsratio">ListenCoresBucketsRatio</a></code> 
+    is enabled.</p>
 
-    <p>Avec <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, la définition par défaut est
-    <code>MinSpareThreads 10</code> et, comme ce MPM n'exécute qu'un
-    seul processus, le nombre de threads est surveillé au niveau du
-    serveur.</p>
+    <p><code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code> uses a default of
+    <code>MinSpareThreads 10</code> and, since it is a single-process
+    MPM, tracks this on a server-wide bases.</p>
 
-    <p><code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code> fonctionne de manière similaire à
-    <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>. Pour <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>, la
-    valeur par défaut est <code>5</code>.</p>
-
+    <p><code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code> works
+    similar to <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>.  For
+    <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code> the default value is <code>5</code>.</p>
 
 <h3>Voir aussi</h3>
 <ul>
@@ -548,384 +497,348 @@ pour pouvoir traiter les pics de requêtes</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="pidfile" id="pidfile">Directive</a> <a name="PidFile" id="PidFile">PidFile</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ficher dans lequel le serveur enregistre l'identificateur
-de processus du démon</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>PidFile <var>nom fichier</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>File where the server records the process ID
+of the daemon</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>PidFile <var>filename</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>PidFile httpd.pid</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>MPM</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/event.html">event</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code></td></tr>
 </table>
-    <p>La directive <code class="directive">PidFile</code> permet de définir le
-    ficher dans lequel le serveur
-    enregistre l'identificateur de processus du démon. Si le chemin du
-    fichier n'est pas absolu, il est considéré comme relatif au chemin
-    défini par la directive <code class="directive"><a href="../mod/core.html#defaultruntimedir">DefaultRuntimeDir</a></code>.</p>
+    <p>The <code class="directive">PidFile</code> directive sets the file to
+    which the server records the process id of the daemon. If the
+    filename is not absolute then it is assumed to be relative to the
+    <code class="directive"><a href="../mod/core.html#defaultruntimedir">DefaultRuntimeDir</a></code>.</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">PidFile /var/run/apache.pid</pre>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">PidFile /var/run/apache.pid</pre>
 </div>
 
-    <p>Il est souvent utile de pouvoir envoyer un signal au
-    serveur afin qu'il ferme et ouvre à nouveau ses journaux
-    d'<code class="directive"><a href="../mod/core.html#erreur">erreur</a></code> et de <code class="directive"><a href="../mod/mod_log_config.html#transfert">transfert</a></code>, et recharge son
-    fichier de configuration. Pour ce faire, on envoie un signal SIGHUP
-    (kill -1) à l'identificateur de processus enregistré dans le fichier
-    défini par la directive <code class="directive">PidFile</code>.</p>
+    <p>It is often useful to be able to send the server a signal,
+    so that it closes and then re-opens its <code class="directive"><a href="../mod/core.html#errorlog">ErrorLog</a></code> and <code class="directive"><a href="../mod/mod_log_config.html#transferlog">TransferLog</a></code>, and
+    re-reads its configuration files. This is done by sending a
+    SIGHUP (kill -1) signal to the process id listed in the
+    <code class="directive">PidFile</code>.</p>
 
-    <p>La directive <code class="directive">PidFile</code> fait l'objet des
-    mêmes avertissements que ceux concernant le chemin d'enregistrement
-    des fichiers journaux et la <a href="../misc/security_tips.html#serverroot">sécurité</a>.</p>
+    <p>The <code class="directive">PidFile</code> is subject to the same
+    warnings about log file placement and <a href="../misc/security_tips.html#serverroot">security</a>.</p>
 
     <div class="note"><h3>Note</h3>
-      <p>Depuis la version 2 du serveur HTTP Apache, nous recommandons de n'utiliser
-      que le script <code class="program"><a href="../programs/apachectl.html">apachectl</a></code>, ou le script de
-      démarrage fourni avec votre système d'exploitation pour (re)démarrer ou
-      arrêter le serveur.</p>
+      <p>As of Apache HTTP Server 2, we recommended that you only use the <code class="program"><a href="../programs/apachectl.html">apachectl</a></code> script, or the init script that your OS provides,
+      for (re-)starting or stopping the server.</p>
     </div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="receivebuffersize" id="receivebuffersize">Directive</a> <a name="ReceiveBufferSize" id="ReceiveBufferSize">ReceiveBufferSize</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Taille du tampon TCP en entrée</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ReceiveBufferSize <var>octets</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>TCP receive buffer size</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ReceiveBufferSize <var>bytes</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ReceiveBufferSize 0</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>MPM</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/event.html">event</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code></td></tr>
 </table>
-    <p>Le serveur va fixer la taille du tampon TCP en entrée au
-    nombre d'octets spécifié.</p>
+    <p>The server will set the TCP receive buffer size to the number of
+    bytes specified.</p>
 
-    <p>Si la directive est définie à <code>0</code>, le serveur va
-    utiliser la valeur par défaut adoptée par le système
-    d'exploitation.</p>
+    <p>If set to the value of <code>0</code>, the server will use the
+    OS default.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="scoreboardfile" id="scoreboardfile">Directive</a> <a name="ScoreBoardFile" id="ScoreBoardFile">ScoreBoardFile</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Chemin du fichier où sont stockées les données concernant
-la coordination des processus enfants</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Location of the file used to store coordination data for
+the child processes</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ScoreBoardFile <var>file-path</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ScoreBoardFile apache_runtime_status</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>MPM</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/event.html">event</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code></td></tr>
 </table>
-    <p>Le serveur HTTP Apache utilise un tableau de bord pour la
-    communication entre le processus parent et les processus enfants.
-    Pour faciliter cette communication, certaines architectures
-    nécessitent un fichier. En l'absence de cette directive, donc si
-    aucun nom de fichier n'est spécifié, Apache httpd tentera tout
-    d'abord de créer un tableau uniquement en mémoire (en utilisant la
-    mémoire partagée anonyme) ; et si il n'y parvient pas, il tentera de
-    créer un fichier sur disque (en utilisant la mémoire partagée à base
-    de fichier). Si cette directive est utilisée, Apache httpd créera
-    systématiquement un fichier sur disque.</p>
+    <p>Apache HTTP Server uses a scoreboard to communicate between its parent
+    and child processes.  Some architectures require a file to facilitate
+    this communication. If the file is left unspecified, Apache httpd first
+    attempts to create the scoreboard entirely in memory (using anonymous
+    shared memory) and, failing that, will attempt to create the file on
+    disk (using file-based shared memory). Specifying this directive causes
+    Apache httpd to always create the file on the disk.</p>
 
-    <p>Si <var>file-path</var> n'est pas un chemin absolu, il sera relatif à la
-    valeur spécifiée par la directive <code class="directive"><a href="../mod/core.html#defaultruntimedir">DefaultRuntimeDir</a></code>.
-    </p>
+    <p>If <var>file-path</var> is not an absolute path, the location specified
+    will be relative to the value of
+    <code class="directive"><a href="../mod/core.html#defaultruntimedir">DefaultRuntimeDir</a></code>.</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">ScoreBoardFile /var/run/apache_runtime_status</pre>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">ScoreBoardFile /var/run/apache_runtime_status</pre>
 </div>
 
-    <p>Une mémoire partagée sous forme de fichier est utile pour les
-    applications tierces qui nécessitent un accès direct au tableau de
-    bord des processus.</p>
+    <p>File-based shared memory is useful for third-party applications
+    that require direct access to the scoreboard.</p>
 
-    <p>Si vous utilisez un <code class="directive">ScoreBoardFile</code>, vous
-    pourrez constater une amélioration des performances en le plaçant
-    sur un disque virtuel en RAM. Assurez-vous cependant de tenir compte
-    des mêmes avertissements que ceux concernant le chemin du fichier
-    journal et la <a href="../misc/security_tips.html">sécurité</a>.</p>
+    <p>If you use a <code class="directive">ScoreBoardFile</code> then
+    you may see improved speed by placing it on a RAM disk. But be
+    careful that you heed the same warnings about log file placement
+    and <a href="../misc/security_tips.html">security</a>.</p>
 
 <h3>Voir aussi</h3>
 <ul>
-<li><a href="../stopping.html">Arrêter et redémarrer
-le serveur HTTP Apache</a></li>
+<li><a href="../stopping.html">Stopping and Restarting
+Apache HTTP Server</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="sendbuffersize" id="sendbuffersize">Directive</a> <a name="SendBufferSize" id="SendBufferSize">SendBufferSize</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Taille du tampon TCP en sortie</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SendBufferSize <var>octets</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>TCP buffer size</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SendBufferSize <var>bytes</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SendBufferSize 0</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>MPM</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/event.html">event</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code></td></tr>
 </table>
-    <p>Définit la taille du tampon TCP en sortie avec le nombre
-    d'octets spécifié. Ceci s'avère souvent très utile pour augmenter les
-    valeurs par défaut standards du passé des systèmes d'exploitation
-    pour les transmissions à grande vitesse et haute densité (<em>c'est
-    à dire</em> de l'ordre de 100ms comme sur les liaisons rapides
-    transcontinentales).</p>
+    <p>Sets the server's TCP send buffer size to the number of bytes
+    specified. It is often useful to set this past the OS's standard
+    default value on high speed, high latency connections
+    (<em>i.e.</em>, 100ms or so, such as transcontinental fast pipes).</p>
 
-    <p>Si la directive est définie à <code>0</code>, le serveur va
-    utiliser la valeur par défaut adoptée par le système
-    d'exploitation.</p>
+    <p>If set to the value of <code>0</code>, the server will use the
+    default value provided by your OS.</p>
 
-    <p>L'amélioration des performances des connexions à grande vitesse
-    et à temps de latence élevé, peut nécessiter
-    une intervention au niveau de la configuration de votre système
-    d'exploitation.</p>
+    <p>Further configuration of your operating system may be required to elicit
+    better performance on high speed, high latency connections.</p>
 
-    <div class="note"><p>Sous certains systèmes d'exploitation, la modification du
-    comportement TCP via une augmentation de la valeur de
-    <code class="directive">SendBufferSize</code> risque de ne pas être
-    perceptible, si la directive <code class="directive"><a href="../mod/core.html#enablesendfile">EnableSendfile</a></code> n'est pas définie à OFF.
-    Cette interaction ne s'applique qu'aux fichiers statiques.</p> </div>
+    <div class="note"> <p> On some operating systems, changes in TCP behavior resulting
+    from a larger <code class="directive">SendBufferSize</code> may not be seen unless
+    <code class="directive"><a href="../mod/core.html#enablesendfile">EnableSendfile</a></code> is set to OFF.  This
+    interaction applies only to static files.</p> </div>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="serverlimit" id="serverlimit">Directive</a> <a name="ServerLimit" id="ServerLimit">ServerLimit</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Limite supérieure de la définition du nombre de
-processus</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ServerLimit <var>nombre</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>Voir ci-dessous pour plus de détails</code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Upper limit on configurable number of processes</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ServerLimit <var>number</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>See usage for details</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>MPM</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/event.html">event</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code></td></tr>
 </table>
-    <p>Avec le MPM <code class="module"><a href="../mod/prefork.html">prefork</a></code>, cette directive définit le
-    nombre maximum que l'on peut affecter à la directive <code class="directive"><a href="#maxrequestworkers">MaxRequestWorkers</a></code>, et ceci pour la
-    durée de vie du processus Apache httpd. Avec les
-    MPMs <code class="module"><a href="../mod/worker.html">worker</a></code> et <code class="module"><a href="../mod/event.html">event</a></code>, cette directive, en combinaison avec
-    <code class="directive"><a href="#threadlimit">ThreadLimit</a></code>, définit le
-    nombre maximum que l'on peut affecter à <code class="directive"><a href="#maxrequestworkers">MaxRequestWorkers</a></code>, et ceci pour la durée de
-    vie du processus Apache httpd. Avec le MPM <code class="module"><a href="../mod/event.html">event</a></code>, cette
-    directive permet aussi de définir combien de processus anciens peuvent
-    continuer à s'exécuter pour terminer le traitement des connexions ouvertes.    
-    Au cours d'un redémarrage, vous pouvez
-    modifier la valeur de la directive <code class="directive"><a href="#maxrequestworkers">MaxRequestWorkers</a></code>, alors que toute
-    tentative de modification de la valeur de la directive <code class="directive"><a href="#serverlimit">ServerLimit</a></code> sera ignorée.</p>
+    <p>For the <code class="module"><a href="../mod/prefork.html">prefork</a></code> MPM, this directive sets the
+    maximum configured value for <code class="directive"><a href="#maxrequestworkers">MaxRequestWorkers</a></code> for the lifetime of the
+    Apache httpd process. For the <code class="module"><a href="../mod/worker.html">worker</a></code> and <code class="module"><a href="../mod/event.html">event
+    </a></code> MPMs, this directive in combination with <code class="directive"><a href="#threadlimit">ThreadLimit</a></code> sets
+    the maximum configured value for <code class="directive"><a href="#maxrequestworkers">MaxRequestWorkers</a></code> for the lifetime of the
+    Apache httpd process. For the <code class="module"><a href="../mod/event.html">event</a></code> MPM, this directive
+    also defines how many old server processes may keep running and finish processing
+    open connections.
+    Any attempts to change this directive during a restart will be ignored, but
+    <code class="directive"><a href="#maxrequestworkers">MaxRequestWorkers</a></code> can be modified
+    during a restart.</p>
 
-    <p>Cette directive doit être utilisée avec précaution. Si
-    <code class="directive">ServerLimit</code> est définie à une valeur beaucoup
-    plus grande que nécessaire, de la mémoire partagée supplémentaire
-    sera inutilement allouée. Si à la fois
-    <code class="directive">ServerLimit</code> et <code class="directive"><a href="#maxrequestworkers">MaxRequestWorkers</a></code> possèdent des valeurs
-    supérieures à ce que le système peut supporter, ce dernier peut
-    devenir instable ou Apache httpd peut tout simplement refuser de démarrer.</p>
+    <p>Special care must be taken when using this directive.  If
+    <code class="directive">ServerLimit</code> is set to a value much higher
+    than necessary, extra, unused shared memory will be allocated.  If
+    both <code class="directive">ServerLimit</code> and <code class="directive"><a href="#maxrequestworkers">MaxRequestWorkers</a></code> are set to values
+    higher than the system can handle, Apache httpd may not start or the
+    system may become unstable.</p>
 
-    <p>Avec les MPMs <code class="module"><a href="../mod/prefork.html">prefork</a></code> et <code class="module"><a href="../mod/event.html">event</a></code>, n'utilisez cette directive
-    que si vous devez définir <code class="directive"><a href="#maxrequestworkers">MaxRequestWorkers</a></code> à une valeur supérieure à
-    256 (valeur par défaut). N'affectez pas à la directive <code class="directive"><a href="#serverlimit">ServerLimit</a></code> une valeur supérieure à
-    celle que vous avez prévu d'affecter à la directive <code class="directive"><a href="#maxrequestworkers">MaxRequestWorkers</a></code>.</p>
+    <p>With the <code class="module"><a href="../mod/prefork.html">prefork</a></code> MPM, use this directive only
+    if you need to set <code class="directive"><a href="#maxrequestworkers">MaxRequestWorkers</a></code> higher than 256 (default).
+    Do not set the value of this directive any higher than what you
+    might want to set <code class="directive"><a href="#maxrequestworkers">MaxRequestWorkers</a></code> to.</p>
 
-    <p>Avec <code class="module"><a href="../mod/worker.html">worker</a></code>, n'utilisez cette directive que si
-    la définition de vos directives <code class="directive"><a href="#maxrequestworkers">MaxRequestWorkers</a></code> et <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code> nécessitent plus de
-    16 processus serveurs (valeur par défaut). N'affectez pas à la
-    directive <code class="directive"><a href="#serverlimit">ServerLimit</a></code> une
-    valeur supérieure au nombre de processus requis pour la définition
-    des directives <code class="directive"><a href="#maxrequestworkers">MaxRequestWorkers
-    </a></code> et <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code>.</p>
+    <p>With <code class="module"><a href="../mod/worker.html">worker</a></code>, use this directive only if your
+    <code class="directive"><a href="#maxrequestworkers">MaxRequestWorkers
+    </a></code> and <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code>
+    settings require more than 16 server processes (default). Do not set
+    the value of this directive any higher than the number of server
+    processes required by what you may want for <code class="directive"><a href="#maxrequestworkers">MaxRequestWorkers </a></code> and <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code>.</p>
 
-    <p>Avec le MPM <code class="module"><a href="../mod/event.html">event</a></code>, augmentez la valeur de cette
-    directive si le nombre de processus défini par les directives <code class="directive"><a href="#maxrequestworkers">MaxRequestWorkers</a></code> et <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code> augmenté du nombre de processus
-    en procédure d'arrêt "graceful" est supérieur à 16 (valeur par défaut).</p>
+    <p>With <code class="module"><a href="../mod/event.html">event</a></code>, increase this directive if the process
+    number defined by your <code class="directive"><a href="#maxrequestworkers">MaxRequestWorkers</a></code> and <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code> settings, plus the
+    number of gracefully shutting down processes, is more than 16 server
+    processes (default).</p>
 
     <div class="note"><h3>Note</h3>
-      <p>Il existe une limite de <code>ServerLimit 20000</code> codée en
-      dur dans le serveur (200000 pour le MPM <code class="module"><a href="../mod/prefork.html">prefork</a></code>).
-      Ceci est censé éviter les effets désastreux que pourrait provoquer
-      une faute de frappe. Pour dépasser cette limite, vous devez
-      modifier la valeur de MAX_SERVER_LIMIT dans le fichier source du
-      mpm et recompiler le serveur.</p>
+      <p>There is a hard limit of <code>ServerLimit 20000</code> compiled
+      into the server (for the <code class="module"><a href="../mod/prefork.html">prefork</a></code> MPM 200000). This is
+      intended to avoid nasty effects caused by typos. To increase it
+      even further past this limit, you will need to modify the value of
+      MAX_SERVER_LIMIT in the mpm source file and rebuild the server.</p>
     </div>
 
 <h3>Voir aussi</h3>
 <ul>
-<li><a href="../stopping.html">Arrêter et redémarrer
-le serveur HTTP Apache</a></li>
+<li><a href="../stopping.html">Stopping and Restarting Apache HTTP Server</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="startservers" id="startservers">Directive</a> <a name="StartServers" id="StartServers">StartServers</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nombre de processus enfants du serveur créés au
-démarrage</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>StartServers <var>nombre</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>Voir ci-dessous pour plus de détails</code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Number of child server processes created at startup</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>StartServers <var>number</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>See usage for details</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>MPM</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/event.html">event</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code></td></tr>
 </table>
-    <p>La directive <code class="directive">StartServers</code> permet de
-    définir le nombre de processus enfants du serveur créés au
-    démarrage. Comme le nombre de processus est contrôlé dynamiquement
-    en fonction de la charge (voir <code class="directive"><a href="#minsparethreads">MinSpareThreads</a></code>, <code class="directive"><a href="#maxsparethreads">MaxSpareThreads</a></code>, <code class="directive"><a href="../mod/prefork.html#minspareservers">MinSpareServers</a></code>, <code class="directive"><a href="../mod/prefork.html#maxspareservers">MaxSpareServers</a></code>), il n'est en général
-    pas nécessaire d'ajuster ce paramètre.</p>
+    <p>The <code class="directive">StartServers</code> directive sets the
+    number of child server processes created on startup. As the number
+    of processes is dynamically controlled depending on the load, (see
+    <code class="directive"><a href="#minsparethreads">MinSpareThreads</a></code>,
+    <code class="directive"><a href="#maxsparethreads">MaxSpareThreads</a></code>,
+    <code class="directive"><a href="../mod/prefork.html#minspareservers">MinSpareServers</a></code>, <code class="directive"><a href="../mod/prefork.html#maxspareservers">MaxSpareServers</a></code>)
+    there is usually little reason to adjust this parameter.</p>
 
-    <p>La valeur par défaut diffère d'un MPM à l'autre. Pour
-    <code class="module"><a href="../mod/worker.html">worker</a></code> et <code class="module"><a href="../mod/event.html">event</a></code>, la définition par défaut est
-    <code>StartServers 3</code> ; la valeur par défaut est
-    <code>5</code> pour <code class="module"><a href="../mod/prefork.html">prefork</a></code> et <code>2</code>
-    pour <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>.</p>
+    <p>The default value differs from MPM to MPM. <code class="module"><a href="../mod/worker.html">worker</a></code> and
+    <code class="module"><a href="../mod/event.html">event</a></code> default to <code>StartServers 3</code>; <code class="module"><a href="../mod/prefork.html">
+    prefork</a></code> defaults to <code>5</code>; <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>
+    defaults to <code>2</code>.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="startthreads" id="startthreads">Directive</a> <a name="StartThreads" id="StartThreads">StartThreads</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nombre de threads créés au démarrage</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>StartThreads <var>nombre</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>Voir ci-dessous pour plus de détails</code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Number of threads created on startup</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>StartThreads <var>number</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>See usage for details</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>MPM</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code></td></tr>
 </table>
-    <p>C'est le nombre de threads créés au démarrage du serveur. Comme
-    le nombre de threads est contrôlé dynamiquement
-    en fonction de la charge (voir <code class="directive"><a href="#minsparethreads">MinSpareThreads</a></code>, <code class="directive"><a href="#maxsparethreads">MaxSpareThreads</a></code>, <code class="directive"><a href="../mod/prefork.html#minspareservers">MinSpareServers</a></code>, <code class="directive"><a href="../mod/prefork.html#maxspareservers">MaxSpareServers</a></code>), il n'est en général
-    pas nécessaire d'ajuster ce paramètre.</p>
+    <p>Number of threads created on startup. As the
+    number of threads is dynamically controlled depending on the
+    load, (see
+    <code class="directive"><a href="#minsparethreads">MinSpareThreads</a></code>,
+    <code class="directive"><a href="#maxsparethreads">MaxSpareThreads</a></code>,
+    <code class="directive"><a href="../mod/prefork.html#minspareservers">MinSpareServers</a></code>, <code class="directive"><a href="../mod/prefork.html#maxspareservers">MaxSpareServers</a></code>)
+    there is usually little reason to adjust this
+    parameter.</p>
 
-    <p>Pour <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, la définition par défaut est
-    <code>StartThreads 50</code> et, comme il n'y a qu'un processus, il
-    s'agit du nombre total de threads créés au démarrage pour servir les
-    requêtes.</p>
+    <p>For <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code> the default is
+    <code>StartThreads 50</code> and, since there is only a single
+    process, this is the total number of threads created at startup to
+    serve requests.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="threadlimit" id="threadlimit">Directive</a> <a name="ThreadLimit" id="ThreadLimit">ThreadLimit</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le nombre de threads maximum que l'on peut définir par
-processus enfant</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ThreadLimit <var>nombre</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>Voir ci-dessous pour plus de détails</code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets the upper limit on the configurable number of threads
+per child process</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ThreadLimit <var>number</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>See usage for details</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>MPM</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/event.html">event</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code></td></tr>
 </table>
-    <p>Cette directive permet de définir le nombre maximum que l'on peut
-    affecter à la directive <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code> pour la durée de vie
-    du processus Apache httpd. La directive  <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code> peut être modifiée
-    au cours d'un redémarrage jusqu'à la valeur de la directive <code class="directive"><a href="#threadlimit">ThreadLimit</a></code>, mais toute tentative
-    de modification de la directive <code class="directive"><a href="#threadlimit">ThreadLimit</a></code> au cours d'un
-    redémarrage sera ignorée.</p>
+    <p>This directive sets the maximum configured value for <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code> for the lifetime
+    of the Apache httpd process.  Any attempts to change this directive
+    during a restart will be ignored, but <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code> can be modified
+    during a restart up to the value of this directive.</p>
 
-    <p>L'utilisation de cette directive doit faire l'objet de
-    précautions particulières. Si <code class="directive">ThreadLimit</code> est
-    définie à une valeur très supérieure à la directive <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code>, de la mémoire
-    partagée supplémentaire sera inutilement allouée. Si les directives
-    <code class="directive">ThreadLimit</code> et <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code> sont définies à des
-    valeurs supérieures à ce que le système peut supporter, ce dernier
-    peut devenir instable, ou Apache httpd peut tout simplement refuser de
-    démarrer. Ne définissez pas cette directive à une valeur supérieure
-    à la valeur maximale que vous pensez affecter à la directive <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code> pour le processus
-    Apache httpd en cours d'exécution.</p>
+    <p>Special care must be taken when using this directive.  If
+    <code class="directive">ThreadLimit</code> is set to a value much higher
+    than <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code>,
+    extra unused shared memory will be allocated.  If both
+    <code class="directive">ThreadLimit</code> and <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code> are set to values
+    higher than the system can handle, Apache httpd may not start or the
+    system may become unstable. Do not set the value of this directive
+    any higher than your greatest predicted setting of <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code> for the
+    current run of Apache httpd.</p>
 
-    <p>La valeur par défaut de la directive
-    <code class="directive">ThreadLimit</code> est <code>1920</code> avec
-    <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, et <code>64</code> avec les autres
-    MPMs.</p>
+    <p>The default value for <code class="directive">ThreadLimit</code> is
+    <code>1920</code> when used with <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code> and
+    <code>64</code> when used with the others.</p>
 
     <div class="note"><h3>Note</h3>
-      <p>Il existe une limite de <code>ThreadLimit 20000</code> (ou
-      <code>ThreadLimit 100000</code> avec <code class="module"><a href="../mod/event.html">event</a></code>,
-      <code>ThreadLimit 15000</code> avec <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>)
-      codée en dur dans le serveur. Ceci est censé éviter les effets
-      désastreux que pourrait provoquer une faute de frappe. Pour
-      dépasser cette limite, vous devez modifier la valeur de
-      MAX_THREAD_LIMIT dans le fichier source du mpm et recompiler le
-      serveur.</p>
+      <p>There is a hard limit of <code>ThreadLimit 20000</code> (or
+      <code>ThreadLimit 100000</code> with <code class="module"><a href="../mod/event.html">event</a></code>,
+      <code>ThreadLimit 15000</code> with <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>)
+      compiled into the server. This is intended to avoid nasty effects
+      caused by typos. To increase it even further past this limit, you
+      will need to modify the value of MAX_THREAD_LIMIT in the mpm
+      source file and rebuild the server.</p>
     </div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="threadsperchild" id="threadsperchild">Directive</a> <a name="ThreadsPerChild" id="ThreadsPerChild">ThreadsPerChild</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nombre de threads créés par chaque processus
-enfant</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ThreadsPerChild <var>nombre</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>Voir ci-dessous pour plus de détails</code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Number of threads created by each child process</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ThreadsPerChild <var>number</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>See usage for details</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>MPM</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/event.html">event</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code></td></tr>
 </table>
-    <p>Cette directive permet de définir le nombre de threads que va
-    créer chaque processus enfant. Un processus enfant crée ces threads
-    au démarrage et n'en crée plus d'autres par la suite. Si l'on
-    utilise un MPM comme <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code> qui ne lance qu'un
-    processus enfant, ce nombre doit être suffisamment grand pour
-    supporter la charge du serveur. Avec un MPM comme
-    <code class="module"><a href="../mod/worker.html">worker</a></code> qui lance plusieurs processus enfants, c'est
-    le nombre <em>total</em> de threads qui doit être suffisamment grand
-    pour supporter la charge du serveur.</p>
+    <p>This directive sets the number of threads created by each
+    child process. The child creates these threads at startup and
+    never creates more. If using an MPM like <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>,
+    where there is only one child process, this number should be high
+    enough to handle the entire load of the server. If using an MPM
+    like <code class="module"><a href="../mod/worker.html">worker</a></code>, where there are multiple child processes,
+    the <em>total</em> number of threads should be high enough to handle
+    the common load on the server.</p>
 
-    <p>La valeur par défaut de la directive
-    <code class="directive">ThreadsPerChild</code> est <code>64</code> avec
-    <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, et <code>25</code> avec les autres
-    MPMs.</p>
+    <p>The default value for <code class="directive">ThreadsPerChild</code> is
+    <code>64</code> when used with <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code> and
+    <code>25</code> when used with the others.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="threadstacksize" id="threadstacksize">Directive</a> <a name="ThreadStackSize" id="ThreadStackSize">ThreadStackSize</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>La taille en octets de la pile qu'utilisent les threads qui
-traitent les connexions clients</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ThreadStackSize <var>taille</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>65536 sous NetWare; varie en fonction des autres systèmes
-d'exploitation</code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The size in bytes of the stack used by threads handling
+client connections</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ThreadStackSize <var>size</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>65536 on NetWare; varies on other operating systems</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>MPM</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/event.html">event</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code></td></tr>
 </table>
-    <p>La directive <code class="directive">ThreadStackSize</code> permet de
-    définir la taille de la pile (pour les données propres) qu'utilisent
-    les threads qui traitent les connexions clients en faisant appel à
-    des modules. Dans la plupart des cas, la valeur par défaut de la
-    taille de la pile du système d'exploitation convient, mais il existe
-    certaines situations où il peut s'avérer nécessaire de l'ajuster
-    :</p>
+    <p>The <code class="directive">ThreadStackSize</code> directive sets the
+    size of the stack (for autodata) of threads which handle client
+    connections and call modules to help process those connections.
+    In most cases the operating system default for stack size is
+    reasonable, but there are some conditions where it may need to be
+    adjusted:</p>
 
     <ul>
-      <li>Sur les plates-formes qui possèdent une valeur par défaut de
-      taille de la pile relativement petite (par exemple HP-UX), Apache
-      httpd peut se crasher si l'on utilise certains modules tiers qui
-      possèdent un quantité de données propres stockées relativement
-      importante. Il se peut que ces mêmes modules fonctionnent
-      correctement sur d'autres plate-formes où la valeur par défaut de
-      la taille de la pile est supérieure. Ce type de crash peut être
-      evité en définissant <code class="directive">ThreadStackSize</code> à une
-      valeur supérieure à la valeur par défaut du système
-      d'exploitation. Ce type d'ajustement n'est nécessaire que si le
-      fournisseur du module tiers en fait mention, ou si le diagnostic
-      d'un crash d'Apache httpd indique que la taille de la pile était trop
-      petite.</li>
+      <li>On platforms with a relatively small default thread stack size
+      (e.g., HP-UX), Apache httpd may crash when using some third-party modules
+      which use a relatively large amount of autodata storage.  Those
+      same modules may have worked fine on other platforms where the
+      default thread stack size is larger.  This type of crash is
+      resolved by setting <code class="directive">ThreadStackSize</code> to a
+      value higher than the operating system default.  This type of
+      adjustment is necessary only if the provider of the third-party
+      module specifies that it is required, or if diagnosis of an Apache httpd
+      crash indicates that the thread stack size was too small.</li>
 
-      <li>Sur les plates-formes où la taille par défaut de la pile des
-      threads est sensiblement supérieure à la taille nécessaire pour la
-      configuration du serveur web, il est possible de disposer d'un
-      plus grand nombre de threads par processus enfant si la directive
-      <code class="directive">ThreadStackSize</code> est définie à une valeur
-      inférieure à la valeur par défaut du système d'exploitation.
-      Cependant, ce
-      type d'ajustement ne doit être effectué que dans un environnement
-      de test permettant de qualifier le serveur web au maximum de ses
-      possibilités, car il peut arriver, dans de rares cas, que des
-      requêtes nécessitent une taille de pile supérieure pour pouvoir
-      être traitées. La taille minimale requise pour la pile dépend
-      fortement des modules utilisés, mais toute modification dans la
-      configuration du serveur web peut invalider la définition courante
-      de la directive <code class="directive">ThreadStackSize</code>.</li>
+      <li>On platforms where the default thread stack size is
+      significantly larger than necessary for the web server
+      configuration, a higher number of threads per child process
+      will be achievable if <code class="directive">ThreadStackSize</code> is
+      set to a value lower than the operating system default.  This type
+      of adjustment should only be made in a test environment which allows
+      the full set of web server processing can be exercised, as there
+      may be infrequent requests which require more stack to process.
+      The minimum required stack size strongly depends on the modules
+      used, but any change in the web server configuration can invalidate
+      the current <code class="directive">ThreadStackSize</code> setting.</li>
 
-      <li>Sous Linux, cette directive ne peut être utilisée que pour
-      augmenter la valeur par defaut de la taille de la pile, car
-      l'appel système sous-jacent utilise cette valeur comme taille de pile
-      <em>minimale</em>. C'est la limite logicielle (souvent élevée)
-      pour <code>ulimit -s</code> (8Mo si aucune limite) qui est
-      utilisée comme taille de pile par défaut.</li>
+      <li>On Linux, this directive can only be used to increase the default
+      stack size, as the underlying system call uses the value as a
+      <em>minimum</em> stack size.  The (often large) soft limit for
+      <code>ulimit -s</code> (8MB if unlimited) is used as the default stack
+      size.</li>
     </ul>
 
-    <div class="note">Il est recommandé de ne pas réduire
-    <code class="directive">ThreadStackSize</code>, à moins qu'un grand nombre
-    de threads par processus enfant ne soit nécessaire. Sur certaines
-    plates-formes (y compris Linux), une valeur de 128000 est déjà trop
-    basse et provoque des crashes avec certains modules courants.</div>
+    <div class="note">It is recommended to not reduce <code class="directive">ThreadStackSize</code>
+    unless a high number of threads per child process is needed. On some
+    platforms (including Linux), a setting of 128000 is already too low and
+    causes crashes with some common modules.</div>
 
 </div>
 </div>

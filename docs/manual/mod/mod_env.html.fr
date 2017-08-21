@@ -63,78 +63,73 @@ pages SSI</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="passenv" id="passenv">Directive</a> <a name="PassEnv" id="PassEnv">PassEnv</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Transmet des variables d'environnement depuis le
-shell</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>PassEnv <var>var-env</var> [<var>var-env</var>]
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Passes environment variables from the shell</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>PassEnv <var>env-variable</var> [<var>env-variable</var>]
 ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_env</td></tr>
 </table>
-    <p>Cette directive permet de spécifier quelles variables
-    d'environnement système natives doivent être disponibles en tant que
-    variables d'environnement internes pour les modules du serveur HTTP
-    Apache, et propagées vers les scripts CGI et les pages SSI. Leurs
-    valeurs sont issues de l'environnement natif de l'OS associé au
-    shell qui a invoqué le processus <code class="program"><a href="../programs/httpd.html">httpd</a></code>.</p>
+    <p>Specifies one or more native system environment variables to make available
+    as internal environment variables, which are available to Apache HTTP Server modules
+    as well as propagated to CGI scripts and SSI pages. Values come from the
+    native OS environment of the shell which invoked the
+    <code class="program"><a href="../programs/httpd.html">httpd</a></code> process.</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">PassEnv LD_LIBRARY_PATH</pre>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">PassEnv LD_LIBRARY_PATH</pre>
 </div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="setenv" id="setenv">Directive</a> <a name="SetEnv" id="SetEnv">SetEnv</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit des variables d'environnement</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SetEnv <var>var-env</var> [<var>valeur</var>]</code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets environment variables</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SetEnv <var>env-variable</var> [<var>value</var>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_env</td></tr>
 </table>
-    <p>Définit une variable d'environnement interne, cette dernière étant
-    ensuite disponible pour les modules du serveur HTTP Apache et
-    transmise aux scripts CGI et aux pages SSI.</p>
+    <p>Sets an internal environment variable, which is then available to Apache
+    HTTP Server modules, and passed on to CGI scripts and SSI pages.</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">SetEnv SPECIAL_PATH /foo/bin</pre>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SetEnv SPECIAL_PATH /foo/bin</pre>
 </div>
 
-    <p>Si l'argument <var>valeur</var> est absent, la variable est
-    définie à la valeur d'une chaîne vide.</p>
+    <p> If you omit the <var>value</var> argument, the variable is set to
+    an empty string.</p>
 
-    <div class="note"><p>Les variables d'environnement internes définies par cette
-    directive le sont <em>après</em> l'exécution de la plupart des
-    directives du traitement initial des requêtes, comme les contrôles
-    d'accès et la mise en correspondance des URIs avec les noms de
-    fichiers. Si la variable d'environnement est sensée intervenir au
-    cours de cette phase initiale du traitement, par exemple pour la
-    directive <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>,
-    vous devez plutôt utiliser la directive <code class="directive"><a href="../mod/mod_setenvif.html#setenvif">SetEnvIf</a></code> pour définir cette
-    variable.</p>
+    <div class="note"><p>The internal environment variables set by this directive are set
+    <em>after</em> most early request processing directives are run, such as access
+    control and URI-to-filename mapping.  If the environment variable you're
+    setting is meant as input into this early phase of processing such as the
+    <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> directive, you should
+    instead set the environment variable with
+    <code class="directive"><a href="../mod/mod_setenvif.html#setenvif">SetEnvIf</a></code>.</p>
     </div>
 
 
 <h3>Voir aussi</h3>
 <ul>
-<li><a href="../env.html">Variables d'environnement</a></li>
+<li><a href="../env.html">Environment Variables</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="unsetenv" id="unsetenv">Directive</a> <a name="UnsetEnv" id="UnsetEnv">UnsetEnv</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Supprime des variables de l'environnement</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>UnsetEnv <var>var-env</var> [<var>var-env</var>]
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Removes variables from the environment</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>UnsetEnv <var>env-variable</var> [<var>env-variable</var>]
 ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_env</td></tr>
 </table>
-    <p>Supprime une ou plusieurs variables d'environnement internes parmi celles
-    qui sont transmises aux scripts CGI et aux pages SSI.</p>
+    <p>Removes one or more internal environment variables from those passed
+    on to CGI scripts and SSI pages.</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">UnsetEnv LD_LIBRARY_PATH</pre>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">UnsetEnv LD_LIBRARY_PATH</pre>
 </div>
 
 </div>

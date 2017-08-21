@@ -70,61 +70,55 @@ configuration supplémentaire n'est requise pour utiliser
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="heartbeatlisten" id="heartbeatlisten">Directive</a> <a name="HeartbeatListen" id="HeartbeatListen">HeartbeatListen</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Adresse multicast d'écoute des requêtes entrantes heartbeat</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>multicast address to listen for incoming heartbeat requests </td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>HeartbeatListen<var>addr:port</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>disabled</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_heartmonitor</td></tr>
 </table>
-    <p>La directive <code class="directive">HeartbeatListen</code> permet de
-    spécifier l'adresse multicast sur laquelle le serveur va surveiller les
-    informations d'état en provenance de serveurs où
-    <code class="module"><a href="../mod/mod_heartbeat.html">mod_heartbeat</a></code> est activé. Cette adresse correspond
-    en général à la valeur de la directive <code class="directive"><a href="../mod/mod_heartbeat.html#heartbeataddress">HeartbeatAddress</a></code> sur le serveur
-    d'origine.
+    <p>The <code class="directive">HeartbeatListen</code> directive specifies the
+    multicast address on which the server will listen for status information from
+    <code class="module"><a href="../mod/mod_heartbeat.html">mod_heartbeat</a></code>-enabled servers.  This
+    address will usually correspond to a configured  <code class="directive"><a href="../mod/mod_heartbeat.html#heartbeataddress">HeartbeatAddress</a></code> on an origin server.
     </p>
 
     <pre class="prettyprint lang-config">HeartbeatListen 239.0.0.1:27999</pre>
 
 
-    <p>Tant que cette directive n'est pas utilisée, le module est
-    désactivé.</p>
+    <p> This module is inactive until this directive is used.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="heartbeatmaxservers" id="heartbeatmaxservers">Directive</a> <a name="HeartbeatMaxServers" id="HeartbeatMaxServers">HeartbeatMaxServers</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Spécifie le nombre maximal de serveurs qui pourront envoyer
-des requêtes heartbeat à ce serveur.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>HeartbeatMaxServers <var>nombre-de-serveurs</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specifies the maximum number of servers that will be sending
+heartbeat requests to this server</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>HeartbeatMaxServers <var>number-of-servers</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>HeartbeatMaxServers 10</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_heartmonitor</td></tr>
 </table>
-    <p>La directive <code class="directive">HeartbeatMaxServers</code>
-    spécifie le nombre maximal de serveurs qui pourront envoyer des
-    requêtes heartbeat à ce serveur de monitoring. Elle permet ainsi de
-    contrôler la quantité de mémoire partagée allouée pour le stockage
-    des données heartbeat lorsqu'on utilise
-    <code class="module"><a href="../mod/mod_slotmem_shm.html">mod_slotmem_shm</a></code>.</p>
+    <p>The <code class="directive">HeartbeatMaxServers</code> directive specifies the
+    maximum number of servers that will be sending requests to this monitor
+    server.  It is used to control the size of the shared memory allocated
+    to store the heartbeat info when <code class="module"><a href="../mod/mod_slotmem_shm.html">mod_slotmem_shm</a></code> is in use.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="heartbeatstorage" id="heartbeatstorage">Directive</a> <a name="HeartbeatStorage" id="HeartbeatStorage">HeartbeatStorage</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Chemin vers le stockage des données heartbeat</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>HeartbeatStorage <var>chemin fichier</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Path to store heartbeat data</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>HeartbeatStorage <var>file-path</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>HeartbeatStorage logs/hb.dat</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_heartmonitor</td></tr>
 </table>
-    <p>La directive <code class="directive">HeartbeatStorage</code> permet de
-    spécifier le chemin de stockage des données heartbeat. Ce fichier
-    texte n'est utilisé que si <code class="module"><a href="../mod/mod_slotmem_shm.html">mod_slotmem_shm</a></code> n'est
-    pas chargé.</p>
+    <p>The <code class="directive">HeartbeatStorage</code> directive specifies the
+    path to store heartbeat data.  This flat-file is used only when
+    <code class="module"><a href="../mod/mod_slotmem_shm.html">mod_slotmem_shm</a></code> is not loaded.</p>
 
 </div>
 </div>

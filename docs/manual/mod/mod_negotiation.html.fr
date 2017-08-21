@@ -237,34 +237,32 @@ contenu</a></li>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="cachenegotiateddocs" id="cachenegotiateddocs">Directive</a> <a name="CacheNegotiatedDocs" id="CacheNegotiatedDocs">CacheNegotiatedDocs</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Permet la mise en cache au niveau des serveurs mandataires
-des documents dont le contenu a été négocié</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Allows content-negotiated documents to be
+cached by proxy servers</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheNegotiatedDocs On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CacheNegotiatedDocs Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_negotiation</td></tr>
 </table>
-    <p>Si elle est définie à "on", cette directive permet la mise en
-    cache au niveau des serveurs mandataires des documents dont le
-    contenu a été négocié. Le processus de mise en cache sera alors plus
-    efficace, mais des clients se trouvant derrière le mandataire
-    seront alors susceptibles de se voir servir des versions de
-    documents qui ne correspondent pas forcément à leurs attentes.</p>
+    <p>If set, this directive allows content-negotiated documents
+    to be cached by proxy servers. This could mean that clients
+    behind those proxys could retrieve versions of the documents
+    that are not the best match for their abilities, but it will
+    make caching more efficient.</p>
 
-    <p>Cette directive ne s'applique qu'aux requêtes en provenance de
-    navigateurs HTTP/1.0. HTTP/1.1 fournit un bien meilleur contrôle de
-    la mise en cache des documents au contenu négocié, et cette
-    directive n'a aucun effet sur les réponses aux requêtes
-    HTTP/1.1.</p>
+    <p>This directive only applies to requests which come from
+    HTTP/1.0 browsers. HTTP/1.1 provides much better control over
+    the caching of negotiated documents, and this directive has no
+    effect in responses to HTTP/1.1 requests.</p>
 
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="forcelanguagepriority" id="forcelanguagepriority">Directive</a> <a name="ForceLanguagePriority" id="ForceLanguagePriority">ForceLanguagePriority</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Action à entreprendre si un document acceptable unique
-n'est pas trouvé</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Action to take if a single acceptable document is not
+found</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ForceLanguagePriority None|Prefer|Fallback [Prefer|Fallback]</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ForceLanguagePriority Prefer</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
@@ -272,46 +270,41 @@ n'est pas trouvé</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_negotiation</td></tr>
 </table>
-    <p>La directive <code class="directive">ForceLanguagePriority</code> utilise
-    le langage défini par la directive <code class="directive"><a href="#languagepriority">LanguagePriority</a></code> pour terminer
-    la négociation lorsque le serveur n'est pas en mesure de trouver une
-    solution satisfaisante unique.</p>
+    <p>The <code class="directive">ForceLanguagePriority</code> directive uses
+    the given <code class="directive"><a href="#languagepriority">LanguagePriority</a></code> to satisfy
+    negotiation where the server could otherwise not return a single
+    matching document.</p>
 
-    <p><code>ForceLanguagePriority Prefer</code> utilise la directive
-    <code>LanguagePriority</code> pour servir le résultat d'un choix
-    unique, au lieu de renvoyer un résultat HTTP 300 (MULTIPLE CHOICES),
-    lorsque que plusieurs choix équivalents sont disponibles. Par
-    exemple, avec les deux directives ci-dessous, si l'en-tête
-    <code>Accept-Language</code> de l'utilisateur assigne à
-    <code>en</code> et <code>de</code> une qualité de <code>.500</code>
-    (les deux langages sont également acceptables), alors c'est la
-    première variante acceptable de langue <code>en</code> qui sera
-    servie.</p>
+    <p><code>ForceLanguagePriority Prefer</code> uses
+    <code>LanguagePriority</code> to serve a one valid result, rather
+    than returning an HTTP result 300 (MULTIPLE CHOICES) when there
+    are several equally valid choices.  If the directives below were
+    given, and the user's <code>Accept-Language</code> header assigned
+    <code>en</code> and <code>de</code> each as quality <code>.500</code>
+    (equally acceptable) then the first matching variant, <code>en</code>,
+    will be served.</p>
 
     <pre class="prettyprint lang-config">LanguagePriority en fr de
 ForceLanguagePriority Prefer</pre>
 
 
-    <p><code>ForceLanguagePriority Fallback</code> utilise la directive
-    <code class="directive"><a href="#languagepriority">LanguagePriority</a></code>
-    pour servir un résultat valide, au lieu de renvoyer un résultat HTTP
-    406 (NOT ACCEPTABLE). Avec les deux directives ci-dessous, si
-    l'en-tête <code>Accept-Language</code> de l'utilisateur ne mentionne
-    que les réponses de langage <code>es</code>, et si aucune variante
-    dans cette langue n'est trouvée, c'est la première variante de la
-    liste définie par la directive <code class="directive"><a href="#languagepriority">LanguagePriority</a></code> qui sera servie.</p>
+    <p><code>ForceLanguagePriority Fallback</code> uses
+    <code class="directive"><a href="#languagepriority">LanguagePriority</a></code> to
+    serve a valid result, rather than returning an HTTP result 406
+    (NOT ACCEPTABLE). If the directives below were given, and the user's
+    <code>Accept-Language</code> only permitted an <code>es</code>
+    language response, but such a variant isn't found, then the first
+    variant from the <code class="directive"><a href="#languagepriority">LanguagePriority</a></code> list below will be served.</p>
 
     <pre class="prettyprint lang-config">LanguagePriority en fr de
 ForceLanguagePriority Fallback</pre>
 
 
-    <p>Les deux options, <code>Prefer</code> et <code>Fallback</code>,
-    peuvent être spécifiées, de façon à ce que la variante servie soit
-    la première variante qui convient définie par la directive
-    <code class="directive"><a href="#languagepriority">LanguagePriority</a></code> si
-    plusieurs variantes sont également acceptables, ou le premier
-    document disponible si aucune variante ne convient à la liste de
-    langages acceptables fournie par le client.</p>
+    <p>Both options, <code>Prefer</code> and <code>Fallback</code>, may be
+    specified, so either the first matching variant from <code class="directive"><a href="#languagepriority">LanguagePriority</a></code> will be served if
+    more than one variant is acceptable, or first available document will
+    be served if none of the variants matched the client's acceptable list
+    of languages.</p>
 
 <h3>Voir aussi</h3>
 <ul>
@@ -321,35 +314,32 @@ ForceLanguagePriority Fallback</pre>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="languagepriority" id="languagepriority">Directive</a> <a name="LanguagePriority" id="LanguagePriority">LanguagePriority</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>L'ordre de priorité des variantes de langages pour les
-cas où le client n'a pas formulé de préférences</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LanguagePriority <var>langage-MIME</var> [<var>langage-MIME</var>]
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The precedence of language variants for cases where
+the client does not express a preference</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LanguagePriority <var>MIME-lang</var> [<var>MIME-lang</var>]
 ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_negotiation</td></tr>
 </table>
-    <p>La directive <code class="directive">LanguagePriority</code> permet de
-    définir, au cours du traitement d'une requête Multivues, l'ordre de
-    priorité des variantes de langages pour les cas
-    où le client n'a pas formulé de préférences. La liste énumère les
-    <var>langages-MIME</var> dans un ordre de préférences
-    décroissantes.</p>
+    <p>The <code class="directive">LanguagePriority</code> sets the precedence
+    of language variants for the case where the client does not
+    express a preference, when handling a Multiviews request. The list
+    of <var>MIME-lang</var> are in order of decreasing preference.</p>
 
     <pre class="prettyprint lang-config">LanguagePriority en fr de</pre>
 
 
-    <p>Dans le cas d'une requête pour <code>foo.html</code>, si
-    <code>foo.html.fr</code> et <code>foo.html.de</code> existent, et si
-    le client n'a pas formulé de préférences, c'est le fichier
-    <code>foo.html.fr</code> qui sera renvoyé.</p>
+    <p>For a request for <code>foo.html</code>, where
+    <code>foo.html.fr</code> and <code>foo.html.de</code> both
+    existed, but the browser did not express a language preference,
+    then <code>foo.html.fr</code> would be returned.</p>
 
-    <p>Notez que cette directive n'a d'effet que si le 'meilleur'
-    langage n'a pas pu être déterminé d'une autre manière ou si la
-    valeur de la directive  <code class="directive"><a href="#forcelanguagepriority">ForceLanguagePriority</a></code> est
-    différente de <code>None</code>. En général, c'est le client qui
-    détermine le langage préféré, non le serveur.</p>
+    <p>Note that this directive only has an effect if a 'best'
+    language cannot be determined by any other means or the <code class="directive"><a href="#forcelanguagepriority">ForceLanguagePriority</a></code> directive
+    is not <code>None</code>. In general, the client determines the
+    language preference, not the server.</p>
 
 <h3>Voir aussi</h3>
 <ul>

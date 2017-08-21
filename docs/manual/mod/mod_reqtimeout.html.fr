@@ -95,91 +95,84 @@ données minimum pour la réception des requêtes
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="requestreadtimeout" id="requestreadtimeout">Directive</a> <a name="RequestReadTimeout" id="RequestReadTimeout">RequestReadTimeout</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit des délais maximums pour la réception des en-têtes
-et corps des requêtes en provenance du client.
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Set timeout values for receiving request headers and body from client.
 </td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RequestReadTimeout
-[header=<var>délai</var>[-<var>délai-maxi</var>][,MinRate=<var>taux-mini</var>]
-[body=<var>délai</var>[-<var>délai-maxi</var>][,MinRate=<var>taux-mini</var>]
+[header=<var>timeout</var>[-<var>maxtimeout</var>][,MinRate=<var>rate</var>]
+[body=<var>timeout</var>[-<var>maxtimeout</var>][,MinRate=<var>rate</var>]
 </code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>header=20-40,MinRate=500 body=20,MinRate=500</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_reqtimeout</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Désactivée par défaut jusqu'à la version 2.3.14.</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Defaulted to disabled in
+version 2.3.14 and earlier.</td></tr>
 </table>
-    <p>Cette directive permet de définir différents délais pour la
-    réception des en-têtes et corps des requêtes en provenance du
-    client. Si le client ne parvient pas à respecter ces délais, un code
-    d'erreur <code>408 REQUEST TIME OUT</code> est envoyé.</p>
+    <p>This directive can set various timeouts for receiving the request headers
+    and the request body from the client. If the client fails to send headers or
+    body within the configured time, a <code>408 REQUEST TIME OUT</code> error
+    is sent.</p>
 
-    <p>Pour les serveurs virtuels SSL, le délai concernant les en-têtes
-    inclut le temps nécessaire à la négociation SSL initiale. Si le
-    navigateur du client est configuré pour demander des listes de
-    révocations de certificats, et si le serveur correspondant n'est pas
-    disponible, le délai avant lequel le navigateur va abandonner son
-    attente de CRL au cours de la négociation SSL initiale peut être
-    assez important. Par conséquent, les valeurs de délais d'en-têtes ne
-    doivent pas être trop basses pour les serveurs virtuels SSL. Le délai
-    concernant le corps inclut le temps nécessaire à la renégociation
-    SSL (si elle est nécessaire).</p>
+    <p>For SSL virtual hosts, the header timeout values include the time needed
+    to do the initial SSL handshake.  If the user's browser is configured to
+    query certificate revocation lists and the CRL server is not reachable, the
+    initial SSL handshake may take a significant time until the browser gives up
+    waiting for the CRL.  Therefore the header timeout values should not be set
+    to very low values for SSL virtual hosts.
+    The body timeout values include the time needed for SSL renegotiation
+    (if necessary).</p>
 
-    <p>Lorsqu'une directive <code class="directive"><a href="../mod/core.html#acceptfilter">AcceptFilter</a></code> est active (ce qui est en
-    général le cas sous Linux et FreeBSD), le socket n'est envoyé au
-    processus du serveur qu'après la réception du premier octet (ou de
-    l'ensemble de la requête si <code>httpready</code> est défini). Le
-    délai configuré pour les en-têtes via la directive
-    <code>RequestReadTimeout</code> n'entre en ligne de compte qu'une fois
-    le socket reçu par le processus du serveur.</p>
+    <p>When an <code class="directive"><a href="../mod/core.html#acceptfilter">AcceptFilter</a></code> is in use
+    (usually the case on Linux and FreeBSD), the socket is not sent to the
+    server process before at least one byte (or the whole request for
+    <code>httpready</code>) is received. The header timeout configured with
+    <code>RequestReadTimeout</code> is only effective after the server process has
+    received the socket.</p>
 
-    <p>Il existe deux méthodes pour spécifier le délai (pour l'en-tête
-    ou le corps) :
+    <p>For each of the two timeout types (header or body), there are three ways
+    to specify the timeout:
     </p>
 
     <ul>
 
-    <li><strong>Valeur de délai fixe</strong>:<br />
+    <li><strong>Fixed timeout value</strong>:<br />
 
-    <div class="example"><p><code><var>type</var>=<var>délai</var></code></p></div>
+    <div class="example"><p><code><var>type</var>=<var>timeout</var></code></p></div>
 
-    <p>Le temps en secondes alloué pour la lecture des en-têtes ou du
-    corps de la requête. La valeur 0 signifie aucune limite.</p>
+    <p>The time in seconds allowed for reading all of the request headers or
+    body, respectively. A value of 0 means no limit.</p>
     </li>
 
-    <li><strong>Désactivation du module pour un serveur virtuel :</strong>:<br />
+    <li><strong>Disable module for a vhost:</strong>:<br />
 
     <div class="example"><p><code>header=0 body=0</code></p></div>
 
-    <p>Avec cet exemple, le module <code class="module"><a href="../mod/mod_reqtimeout.html">mod_reqtimeout</a></code> est
-    complètement désactivé.</p>
+    <p>This disables <code class="module"><a href="../mod/mod_reqtimeout.html">mod_reqtimeout</a></code> completely.</p>
     </li>
 
-    <li><strong>La valeur du délai qui est augmentée lorsque des données
-    sont reçues</strong> :<br />
+    <li><strong>Timeout value that is increased when data is
+    received</strong>:<br />
     <div class="example"><p><code>
-    <var>type</var>=<var>délai</var>,MinRate=<var>taux-mini</var>
+    <var>type</var>=<var>timeout</var>,MinRate=<var>data_rate</var>
     </code></p></div>
 
-    <p>Identique à ce qui précède, mais chaque fois que des données sont
-    reçues, la valeur du délai est augmentée en fonction du taux-mini
-    spécifié (en octets par seconde).</p>
+    <p>Same as above, but whenever data is received, the timeout value is
+    increased according to the specified minimum data rate (in bytes per
+    second).</p>
     </li>
 
-    <li><strong>La valeur du délai augmente lorsque des données sont
-    reçues, jusqu'à une limite supérieure</strong>:<br />
+    <li><strong>Timeout value that is increased when data is received, with an
+    upper bound</strong>:<br />
     <div class="example"><p><code>
-    <var>type</var>=<var>délai</var>-<var>délai-maxi</var>,MinRate=<var>taux-mini</var>
+    <var>type</var>=<var>timeout</var>-<var>maxtimeout</var>,MinRate=<var>data_rate</var>
     </code></p></div>
 
-    <p>Identique à ce qui précède, mais le délai n'augmentera pas au
-    delà de la borne supérieure du délai spécifiée.</p>
+    <p>Same as above, but the timeout will not be increased above the second
+    value of the specified timeout range.</p>
     </li>
 
     </ul>
 
-      
-    
-    
 
 </div>
 </div>

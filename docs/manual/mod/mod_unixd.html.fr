@@ -51,66 +51,59 @@ famille Unix.</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="chrootdir" id="chrootdir">Directive</a> <a name="ChrootDir" id="ChrootDir">ChrootDir</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Répertoire dans lequel Apache doit se positionner au
-démarrage après avoir effectué un chroot(8).</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ChrootDir <var>chemin-répertoire</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Directory for apache to run chroot(8) after startup.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ChrootDir <var>/path/to/directory</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>none</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/mod_unixd.html">mod_unixd</a></code></td></tr>
 </table>
-    <p>Cette directive
-    permet de faire en sorte que le serveur effectue un
-    <var>chroot(8)</var> vers le répertoire spécifié après le démarrage,
-    mais avant d'accepter les requêtes en provenance du réseau.</p>
-    <p>Notez que l'exécution du serveur dans un environnement chroot
-    n'est pas simple et nécessite une configuration particulière, en
-    particulier si vous utilisez des scripts CGI ou PHP. Il est
-    conseillé de se familiariser avec l'opération chroot avant d'essayer
-    d'utiliser cette fonctionnalité.</p>
+    <p>This directive tells the server to <var>chroot(8)</var> to the
+    specified directory after startup, but before accepting requests
+    over the 'net.</p>
+    <p>Note that running the server under chroot is not simple,
+    and requires additional setup, particularly if you are running
+    scripts such as CGI or PHP.  Please make sure you are properly
+    familiar with the operation of chroot before attempting to use
+    this feature.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="group" id="group">Directive</a> <a name="Group" id="Group">Group</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Groupe sous lequel le serveur va traiter les
-requêtes</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Group <var>groupe unix</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Group under which the server will answer
+requests</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Group <var>unix-group</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>Group #-1</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_unixd</td></tr>
 </table>
-    <p>La directive <code class="directive">Group</code> permet de définir le
-    groupe sous lequel le serveur va traiter les requêtes. Pour pouvoir
-    utiliser cette directive, le serveur doit avoir été démarré par
-    <code>root</code>. Si vous démarrez le serveur en tant
-    qu'utilisateur non root, celui-ci ne pourra pas adopter le groupe
-    spécifié comme groupe d'exécution, et continuera à s'exécuter sous
-    le groupe de l'utilisateur qui l'aura lancé. <var>groupe unix</var>
-    peut se présenter sous la forme :</p>
+    <p>The <code class="directive">Group</code> directive sets the group under
+    which the server will answer requests. In order to use this
+    directive, the server must be run initially as <code>root</code>. If
+    you start the server as a non-root user, it will fail to change to the
+    specified group, and will instead continue to run as the group of the
+    original user. <var>Unix-group</var> is one of:</p>
 
     <dl>
-      <dt>d'un nom de groupe</dt>
-      <dd>Référence le groupe spécifié par son nom.</dd>
+      <dt>A group name</dt>
+      <dd>Refers to the given group by name.</dd>
 
-      <dt>du caractère <code>#</code> suivi d'un numéro de groupe.</dt>
-      <dd>Référence le groupe spécifié par son numéro.</dd>
+      <dt><code>#</code> followed by a group number.</dt>
+      <dd>Refers to a group by its number.</dd>
     </dl>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">Group www-group</pre>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">Group www-group</pre>
 </div>
 
-    <p>Il est conseillé de créer un groupe dédié à l'exécution du
-    serveur. Certains administrateurs utilisent l'utilisateur
-    <code>nobody</code>, mais ce n'est pas toujours souhaitable ou même
-    possible.</p>
+    <p>It is recommended that you set up a new group specifically for
+    running the server. Some admins use user <code>nobody</code>,
+    but this is not always possible or desirable.</p>
 
-    <div class="warning"><h3>Sécurité</h3>
-      <p>Ne définissez pas la directive <code class="directive">Group</code> (ou
-      <code class="directive"><a href="#user">User</a></code>) à
-      <code>root</code> à moins de savoir exactement ce que vous faites
-      ainsi que les dangers encourus.</p>
+    <div class="warning"><h3>Security</h3>
+      <p>Don't set <code class="directive">Group</code> (or <code class="directive"><a href="#user">User</a></code>) to <code>root</code> unless
+      you know exactly what you are doing, and what the dangers are.</p>
     </div>
 
 
@@ -123,68 +116,60 @@ requêtes</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="suexec" id="suexec">Directive</a> <a name="Suexec" id="Suexec">Suexec</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active ou désactive la fonctionnalité suEXEC</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable or disable the suEXEC feature</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Suexec On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>On si le binaire suexec existe avec les mode et propriétaire
-appropriés, Off dans le cas contraire</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>On if suexec binary exists with proper owner and mode,
+Off otherwise</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_unixd</td></tr>
 </table>
-    <p>Lorsque cette directive est définie à On, le démarrage échouera si
-    le binaire suexec n'existe pas, ou possède un propriétaire ou mode
-    fichier invalide.</p>
-    <p>Lorsque cette directive est définie à Off, suEXEC sera désactivé,
-    même si le binaire suexec existe et possède un propriétaire et mode
-    fichier valides.</p>
+    <p>When On, startup will fail if the suexec binary doesn't exist
+    or has an invalid owner or file mode.</p>
+    <p>When Off, suEXEC will be disabled even if the suexec binary exists
+    and has a valid owner and file mode.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="user" id="user">Directive</a> <a name="User" id="User">User</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>L'utilisateur sous lequel le serveur va traiter les
-requêtes</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>User <var>utilisateur unix</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The userid under which the server will answer
+requests</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>User <var>unix-userid</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>User #-1</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_unixd</td></tr>
 </table>
-    <p>La directive <code class="directive">User</code> permet de définir
-    l'utilisateur sous lequel le serveur va traiter les requêtes. Pour
-    pouvoir utiliser cette directive, le serveur doit avoir été démarré
-    par <code>root</code>. Si vous démarrez le serveur en tant
-    qu'utilisateur non root, celui-ci ne pourra pas adopter
-    l'utilisateur avec privilèges restreints comme utilisateur
-    d'exécution, et continuera à s'exécuter sous
-    l'utilisateur qui l'aura lancé. Si vous démarrez le serveur en tant
-    que <code>root</code>, il est normal que le processus parent
-    continue à s'exécuter sous root. <var>utilisateur unix</var> peut se
-    présenter sous la forme :</p>
+    <p>The <code class="directive">User</code> directive sets the user ID as
+    which the server will answer requests. In order to use this
+    directive, the server must be run initially as <code>root</code>.
+    If you start the server as a non-root user, it will fail to change
+    to the lesser privileged user, and will instead continue to run as
+    that original user. If you do start the server as <code>root</code>,
+    then it is normal for the parent process to remain running as root.
+    <var>Unix-userid</var> is one of:</p>
 
     <dl>
-      <dt>d'un nom d'utilisateur</dt>
-      <dd>Référence l'utilisateur spécifié par son nom.</dd>
+      <dt>A username</dt>
+      <dd>Refers to the given user by name.</dd>
 
-      <dt>le caractère # suivi d'un numéro d'utilisateur.</dt>
-      <dd>Référence l'utilisateur spécifié par son numéro.</dd>
+      <dt># followed by a user number.</dt>
+      <dd>Refers to a user by its number.</dd>
     </dl>
 
-    <p>L'utilisateur ne doit pas posséder de privilèges qui lui
-    permettent d'accéder à des fichiers qui ne doivent pas être visibles
-    du monde extérieur, et parallèlement, l'utilisateur ne doit pas
-    exécuter de code dont l'usage soit destiné à un usage autre que les
-    requêtes HTTP. Il est conseillé de créer un utilisateur et un groupe
-    dédiés à l'exécution du serveur. Certains administrateurs utilisent
-    l'utilisateur <code>nobody</code>, mais ce n'est pas toujours
-    souhaitable, car l'utilisateur <code>nobody</code> peut avoir
-    diverses utilisations dans le système.</p>
+    <p>The user should have no privileges that result in it being
+    able to access files that are not intended to be visible to the
+    outside world, and similarly, the user should not be able to
+    execute code that is not meant for HTTP requests. It is
+    recommended that you set up a new user and group specifically for
+    running the server. Some admins use user <code>nobody</code>, but
+    this is not always desirable, since the <code>nobody</code> user
+    can have other uses on the system.</p>
 
-    <div class="warning"><h3>Sécurité</h3>
-      <p>Ne définissez pas la directive <code class="directive">Group</code> (ou
-      <code class="directive"><a href="#user">User</a></code>) à
-      <code>root</code> à moins de savoir exactement ce que vous faites
-      ainsi que les dangers encourus.</p>
+    <div class="warning"><h3>Security</h3>
+      <p>Don't set <code class="directive">User</code> (or <code class="directive"><a href="#group">Group</a></code>) to <code>root</code> unless
+      you know exactly what you are doing, and what the dangers are.</p>
     </div>
 
 

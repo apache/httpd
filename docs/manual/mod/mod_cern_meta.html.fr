@@ -64,27 +64,26 @@ CERN</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="metadir" id="metadir">Directive</a> <a name="MetaDir" id="MetaDir">MetaDir</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le nom du répertoire où trouver les fichiers de
-métainformations dans le style du CERN</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MetaDir <var>répertoire</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Name of the directory to find CERN-style meta information
+files</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MetaDir <var>directory</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MetaDir .web</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>Indexes</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cern_meta</td></tr>
 </table>
-    <p>Spécifie le nom du répertoire dans lequel Apache pourra trouver
-    les fichiers de métainformations. Ce répertoire est en général un
-    sous-répertoire 'caché' du répertoire qui contient le fichier à
-    accéder. Définissez cette directive à "<code>.</code>" pour
-    rechercher les métafichiers dans le même répertoire que le fichier à
-    accéder :</p>
+    <p>Specifies the name of the directory in which Apache can find
+    meta information files. The directory is usually a 'hidden'
+    subdirectory of the directory that contains the file being
+    accessed. Set to "<code>.</code>" to look in the same directory
+    as the file:</p>
 
     <pre class="prettyprint lang-config">MetaDir .</pre>
 
 
-    <p>Ou, pour rechercher dans un sous-répertoire du répertoire
-    contenant le fichier à accéder :</p>
+    <p>Or, to set it to a subdirectory of the directory containing the
+    files:</p>
 
     <pre class="prettyprint lang-config">MetaDir .meta</pre>
 
@@ -93,7 +92,7 @@ métainformations dans le style du CERN</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="metafiles" id="metafiles">Directive</a> <a name="MetaFiles" id="MetaFiles">MetaFiles</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active le traitement des métafichiers du CERN</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Activates CERN meta-file processing</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MetaFiles on|off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MetaFiles off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
@@ -101,32 +100,30 @@ métainformations dans le style du CERN</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cern_meta</td></tr>
 </table>
-    <p>Active ou désactive le traitement des métafichiers pour certains
-    répertoires.</p>
+    <p>Turns on/off Meta file processing on a per-directory basis.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="metasuffix" id="metasuffix">Directive</a> <a name="MetaSuffix" id="MetaSuffix">MetaSuffix</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Suffixe du fichier contenant les métainformations dans le
-style du CERN</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MetaSuffix <var>suffixe</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>File name suffix for the file containing CERN-style
+meta information</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MetaSuffix <var>suffix</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MetaSuffix .meta</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>Indexes</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cern_meta</td></tr>
 </table>
-    <p>Spécifie le suffixe du fichier contenant les métainformations.
-    Par exemple, si on conserve les valeurs par défaut des deux
-    directives précédentes, une requête pour
-    <code>DOCUMENT_ROOT/un-rep/index.html</code> provoquera la recherche
-    du métafichier
-    <code>DOCUMENT_ROOT/un-rep/.web/index.html.meta</code>, et utilisera
-    son contenu pour générer les informations quant aux en-têtes MIME
-    additionnels.</p>
+    <p>Specifies the file name suffix for the file containing the
+    meta information. For example, the default values for the two
+    directives will cause a request to
+    <code>DOCUMENT_ROOT/somedir/index.html</code> to look in
+    <code>DOCUMENT_ROOT/somedir/.web/index.html.meta</code> and
+    will use its contents to generate additional MIME header
+    information.</p>
 
-    <div class="example"><h3>Exemple :</h3><pre class="prettyprint lang-config">MetaSuffix .meta</pre>
+    <div class="example"><h3>Example:</h3><pre class="prettyprint lang-config">MetaSuffix .meta</pre>
 </div>
 
 </div>

@@ -63,49 +63,44 @@ d'Apache httpd</a></li>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="action" id="action">Directive</a> <a name="Action" id="Action">Action</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active un script CGI pour un gestionnaire ou un type de
-contenu particulier</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Action <var>type d'action</var> <var>script cgi</var>
-[virtual]</code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Activates a CGI script for a particular handler or
+content-type</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Action <var>action-type</var> <var>cgi-script</var> [virtual]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_actions</td></tr>
 </table>
-    <p>Cette directive ajoute une action qui va activer <var>script
-    cgi</var> lorsque <var>type d'action</var> est déclenché par la
-    requête. <var>script cgi</var> est un chemin URL vers une ressource
-    qui a été désignée comme script CGI à l'aide des directives
-    <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code> ou <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code>. <var>type d'action</var>
-    peut être soit un <a href="../handler.html">gestionnaire</a>, soit
-    un <a class="glossarylink" href="../glossary.html#mime-type" title="voir glossaire">type de contenu MIME</a>. L'URL
-    et le chemin du document correspondant sont envoyés en utilisant
-    les variables d'environnement CGI standards <code>PATH_INFO</code>
-    et <code>PATH_TRANSLATED</code>. Le gestionnaire utilisé pour cette
-    requête particulière est transmis à l'aide de la variable
-    <code>REDIRECT_HANDLER</code>.</p>
+    <p>This directive adds an action, which will activate
+    <var>cgi-script</var> when <var>action-type</var> is triggered by
+    the request.  The <var>cgi-script</var> is the URL-path to a
+    resource that has been designated as a CGI script using <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code> or <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code>.  The
+    <var>action-type</var> can be either a <a href="../handler.html">handler</a> or a <a class="glossarylink" href="../glossary.html#mime-type" title="voir glossaire">MIME content type</a>. It sends the URL and
+    file path of the requested document using the standard CGI
+    <code>PATH_INFO</code> and <code>PATH_TRANSLATED</code>
+    environment variables. The handler used for the particular request
+    is passed using the <code>REDIRECT_HANDLER</code> variable.</p>
 
-    <div class="example"><h3>Exemple : type MIME</h3><pre class="prettyprint lang-config"># Requests for files of a particular MIME content type:
+    <div class="example"><h3>Example: MIME type</h3><pre class="prettyprint lang-config"># Requests for files of a particular MIME content type:
 Action image/gif /cgi-bin/images.cgi</pre>
 </div>
 
-    <p>Dans cet exemple, les requêtes pour des fichiers possédant
-    le type de contenu MIME <code>image/gif</code> seront traitées par
-    le script CGI <code>/cgi-bin/images.cgi</code>.</p>
+    <p>In this example, requests for files with a MIME content
+    type of <code>image/gif</code> will be handled by the
+    specified cgi script <code>/cgi-bin/images.cgi</code>.</p>
 
     <div class="example"><h3>Example: File extension</h3><pre class="prettyprint lang-config"># Files of a particular file extension
 AddHandler my-file-type .xyz
 Action my-file-type /cgi-bin/program.cgi</pre>
 </div>
-    <p>Dans cet exemple, les requêtes pour des fichiers possédant
-    l'extension <code>.xyz</code> seront traitées par
-    le script CGI <code>/cgi-bin/programme.cgi</code>.</p>
+    <p>In this example, requests for files with a file extension of
+    <code>.xyz</code> are handled by the specified cgi script
+    <code>/cgi-bin/program.cgi</code>.</p>
 
-    <p>Le modificateur optionnel <code>virtual</code> permet de
-    désactiver la vérification de l'existence du fichier demandé. Ceci
-    peut s'avérer utile, par exemple, si vous voulez utiliser la
-    directive <code class="directive">Action</code> pour des localisations
-    virtuelles.</p>
+    <p>The optional <code>virtual</code> modifier turns off the check
+    whether the requested file really exists. This is useful, for example,
+    if you want to use the <code class="directive">Action</code> directive in
+    virtual locations.</p>
 
     <pre class="prettyprint lang-config">&lt;Location "/news"&gt;
     SetHandler news-handler
@@ -121,37 +116,35 @@ Action my-file-type /cgi-bin/program.cgi</pre>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="script" id="script">Directive</a> <a name="Script" id="Script">Script</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active un script CGI dans le cas d'une méthode de requête
-particulière.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Script <var>méthode</var> <var>script cgi</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Activates a CGI script for a particular request
+method.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Script <var>method</var> <var>cgi-script</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_actions</td></tr>
 </table>
-    <p>Cette directive ajoute une action qui va activer <var>script
-    cgi</var> lorsqu'un fichier est demandé en utilisant la méthode
-    <var>méthode</var>. <var>script cgi</var> est le chemin URL d'une
-    ressource qui a été désignée comme script CGI en utilisant les
-    directives <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code> ou <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code>. L'URL et le chemin du
-    document demandé sont envoyés en utilisant les variables
-    d'environnement CGI standards <code>PATH_INFO</code> et
-    <code>PATH_TRANSLATED</code>.</p>
+    <p>This directive adds an action, which will activate
+    <var>cgi-script</var> when a file is requested using the method of
+    <var>method</var>. The <var>cgi-script</var> is the URL-path to a
+    resource that has been designated as a CGI script using <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code> or <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code>.  The URL and
+    file path of the requested document is sent using the standard CGI
+    <code>PATH_INFO</code> and <code>PATH_TRANSLATED</code> environment
+    variables.</p>
 
     <div class="note">
-      Tous les noms de méthode peuvent être utilisés. <strong>Les noms
-      de méthode sont sensibles à la casse</strong>, si bien que
-      <code>Script PUT</code> et <code>Script put</code> ont des effets
-      totalement différents.
+      Any arbitrary method name may be used. <strong>Method names are
+      case-sensitive</strong>, so <code>Script PUT</code> and
+      <code>Script put</code> have two entirely different
+      effects.
     </div>
 
-    <p>Notez que la commande <code class="directive">Script</code> ne définit
-    que des actions par défaut. Si un script CGI est appelé, ou toute
-    autre ressource capable de gérer la méthode de la requête en
-    interne, il agira en conséquence. Notez aussi que
-    <code class="directive">Script</code> avec une méthode <code>GET</code> ne
-    sera appelé que si la requête possède des arguments (par exemple
-    foo.html?hi). Dans le cas contraire, la requête sera traitée
-    normalement.</p>
+    <p>Note that the <code class="directive">Script</code> command defines default
+    actions only. If a CGI script is called, or some other resource that is
+    capable of handling the requested method internally, it will do
+    so. Also note that <code class="directive">Script</code> with a method of
+    <code>GET</code> will only be called if there are query arguments present
+    (<em>e.g.</em>, foo.html?hi). Otherwise, the request will
+    proceed normally.</p>
 
     <pre class="prettyprint lang-config"># All GET requests go here
 Script GET /cgi-bin/search

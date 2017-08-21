@@ -147,52 +147,45 @@ sécurité</a></h2>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="forensiclog" id="forensiclog">Directive</a> <a name="ForensicLog" id="ForensicLog">ForensicLog</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le nom de fichier du journal légal</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ForensicLog <var>nom-fichier</var>|<var>pipe</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets filename of the forensic log</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ForensicLog <var>filename</var>|<var>pipe</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_log_forensic</td></tr>
 </table>
-    <p>La directive <code class="directive">ForensicLog</code> permet de
-    contrôler la journalisation des requêtes à des fins d'analyse
-    légale. Chaque entrée du journal se voit assigner un identifiant
-    unique qui peut être associé à la requête en utilisant la directive
-    <code class="directive"><a href="../mod/mod_log_config.html#customlog">CustomLog</a></code> habituelle.
-    <code class="module"><a href="../mod/mod_log_forensic.html">mod_log_forensic</a></code> crée un élément nommé
-    <code>forensic-id</code>, qui peut être ajouté au journal standard
-    en utilisant l'élément de format <code>%{forensic-id}n</code>.</p>
+    <p>The <code class="directive">ForensicLog</code> directive is used to
+    log requests to the server for forensic analysis. Each log entry
+    is assigned a unique ID which can be associated with the request
+    using the normal <code class="directive"><a href="../mod/mod_log_config.html#customlog">CustomLog</a></code>
+    directive. <code class="module"><a href="../mod/mod_log_forensic.html">mod_log_forensic</a></code> creates a token called
+    <code>forensic-id</code>, which can be added to the transfer log
+    using the <code>%{forensic-id}n</code> format string.</p>
 
-    <p>L'argument, qui permet de spécifier l'emplacement vers lequel le
-    journal légal sera écrit, peut contenir les deux types de valeurs
-    suivants :</p>
+    <p>The argument, which specifies the location to which
+    the logs will be written, can take one of the following two
+    types of values:</p>
 
     <dl>
-      <dt><var>nom-fichier</var></dt>
-      <dd>Un nom de fichier relatif au répertoire défini par la
-      directive <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>.</dd>
+      <dt><var>filename</var></dt>
+      <dd>A filename, relative to the <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>.</dd>
 
       <dt><var>pipe</var></dt>
-      <dd>Le caractère pipe "<code>|</code>", suivi du chemin vers un
-      programme qui recevra les informations de la journalisation sur
-      son entrée standard. Le nom du programme peut être relatif au
-      répertoire défini par la directive <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>.
+      <dd>The pipe character "<code>|</code>", followed by the path
+      to a program to receive the log information on its standard
+      input. The program name can be specified relative to the <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code> directive.
 
-      <div class="warning"><h3>Sécurité :</h3>
-      <p>Si les journaux sont redirigés vers un programme, ce dernier
-      s'exécutera sous l'utilisateur qui a démarré
-      <code class="program"><a href="../programs/httpd.html">httpd</a></code>. Ce sera l'utilisateur root si le serveur
-      a été démarré par root ; vérifiez que le programme est
-      sécurisé ou passe sous le contrôle d'un utilisateur possédant des
-      droits restreints.</p>
+      <div class="warning"><h3>Security:</h3>
+      <p>If a program is used, then it will be run as the user who
+      started <code class="program"><a href="../programs/httpd.html">httpd</a></code>. This will be root if the server was
+      started by root; be sure that the program is secure or switches to a
+      less privileged user.</p>
       </div>
 
       <div class="note"><h3>Note</h3>
-        <p>Lors de la spécification d'un chemin de fichier sur les
-	plate-formes non-Unix, il faut prendre soin de ne pas oublier
-	que seuls les slashes directs doivent être utilisés, même si la
-	plate-forme autorise l'emploi d'anti-slashes. D'une manière
-	générale, c'est une bonne idée que de n'utiliser que des slashes
-	directs dans les fichiers de configuration.</p>
+        <p>When entering a file path on non-Unix platforms, care should be taken
+        to make sure that only forward slashes are used even though the platform
+        may allow the use of back slashes. In general it is a good idea to always
+        use forward slashes throughout the configuration files.</p>
       </div></dd>
     </dl>
 

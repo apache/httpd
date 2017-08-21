@@ -80,8 +80,7 @@ erreurs d'écriture mineures.</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="checkbasenamematch" id="checkbasenamematch">Directive</a> <a name="CheckBasenameMatch" id="CheckBasenameMatch">CheckBasenameMatch</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Vérifie aussi la correspondance des fichiers, même avec des
-extensions différentes</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Also match files with differing file name extensions.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CheckBasenameMatch on|off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CheckBasenameMatch Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
@@ -89,22 +88,17 @@ extensions différentes</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_speling</td></tr>
 </table>
-    <p>Cette option n'a aucun effet si
-    <code class="directive">CheckCaseOnly</code> a été défini.</p>
-
-    <p>Lorsqu'elle est définie, cette directive étend le processus de correction
-    orthographique à l'extension des noms de fichiers. Par exemple, un fichier
-    de nom <code>foo.gif</code> sera pris en compte par une requête pour
-    <code>foo</code> ou <code>foo.jpg</code>. Ceci peut s'avérer
-    particulièrement utile en conjonction avec les <a href="../content-negotiation.html">MultiViews</a>.</p>
-
+    <p>When set, this directive extends the action of the spelling correction
+    to the file name extension. For example a file <code>foo.gif</code> will
+    match a request for <code>foo</code> or <code>foo.jpg</code>. This can be
+    particulary useful in conjunction with
+    <a href="../content-negotiation.html">MultiViews</a>.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="checkcaseonly" id="checkcaseonly">Directive</a> <a name="CheckCaseOnly" id="CheckCaseOnly">CheckCaseOnly</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Limite l'action du module aux corrections de
-majuscules</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Limits the action of the speling module to case corrections</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CheckCaseOnly on|off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CheckCaseOnly Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
@@ -112,16 +106,16 @@ majuscules</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_speling</td></tr>
 </table>
-    <p>Lorsqu'elle est définie à "on", cette directive permet de limiter
-    l'action du module aux inversions majuscule/minuscule. Les autres
-    corrections ne sont pas effectuées sauf si la directive
-    <code class="directive">CheckBasenameMatch</code> est aussi à "on"..</p>
+    <p>When set, this directive limits the action of the spelling correction
+    to lower/upper case changes.  Other potential corrections are not performed,
+    except when <code class="directive">CheckBasenameMatch</code> is also set.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="checkspelling" id="checkspelling">Directive</a> <a name="CheckSpelling" id="CheckSpelling">CheckSpelling</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active le module de correction</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enables the spelling
+module</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CheckSpelling on|off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CheckSpelling Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
@@ -129,36 +123,35 @@ majuscules</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_speling</td></tr>
 </table>
-    <p>Cette directive permet d'activer ou de désactiver le module de
-    correction. Lorsqu'il est activé, rappelez-vous que :</p>
+    <p>This directive enables or disables the spelling module. When
+    enabled, keep in mind that</p>
 
     <ul>
-      <li>le parcours du répertoire nécessaire à la correction aura un
-      impact sur les performances du serveur lorsque de nombreuses
-      corrections devront être effectuées au même moment.</li>
+      <li>the directory scan which is necessary for the spelling
+      correction will have an impact on the server's performance
+      when many spelling corrections have to be performed at the
+      same time.</li>
 
-      <li>l'arborescence ne doit pas contenir de documents
-      sensibles qui pourraient être considérés par erreur comme
-      correspondant à la requête.</li>
+      <li>the document trees should not contain sensitive files
+      which could be matched inadvertently by a spelling
+      "correction".</li>
 
-      <li>le module ne corrige pas les noms d'utilisateur mal
-      orthographiés (comme dans
-      <code>http://mon.serveur/~apahce/</code>), mais seulement les noms
-      de fichiers ou de répertoires.</li>
+      <li>the module is unable to correct misspelled user names (as
+      in <code>http://my.host/~apahce/</code>), just file names or
+      directory names.</li>
 
-      <li>les corrections s'appliquent strictement aux fichiers
-      existants, si bien qu'une requête pour <code>&lt;Location
-      /status&gt;</code> pour être traitée de manière incorrecte comme
-      une requête pour le fichier négocié "<code>/stats.html</code>".</li>
+      <li>spelling corrections apply strictly to existing files, so
+      a request for the <code>&lt;Location /status&gt;</code> may
+      get incorrectly treated as the negotiated file
+      "<code>/stats.html</code>".</li>
     </ul>
 
     
-    <p>mod_speling ne doit pas être activé pour des répertoires où <a href="mod_dav.html">DAV</a> l'est aussi, car il va essayer de
-    "corriger" les noms des ressources nouvellement créées en fonction
-    des noms de fichiers existants ; par exemple, lors du chargement
-    d'un nouveau document <code>doc43.html</code>, il est possible qu'il
-    redirige vers un document existant <code>doc34.html</code>, ce qui
-    ne correspond pas à ce que l'on souhaite.
+    <p>mod_speling should not be enabled in <a href="mod_dav.html">DAV</a>
+    enabled directories, because it will try to "spell fix" newly created
+    resource names against existing filenames, e.g., when trying to upload
+    a new document <code>doc43.html</code> it might redirect to an existing
+    document <code>doc34.html</code>, which is not what was intended.
     </p>
 
 </div>
