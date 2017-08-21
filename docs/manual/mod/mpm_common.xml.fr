@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1772336 -->
+<!-- English Revision: 1805221 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -340,7 +340,33 @@ plateformes de type BSD.</compatibility>
     module="mpm_common">MaxSpareThreads</directive>. En effet, pour accepter les
     connexions de manière optimale, le nombre de processus enfants doit être un
     multiple du nombre de segments d'écoute.</p>
-</usage>
+
+    <note>
+    <title>Cas où plusieurs <directive>Listen</directive>ers ou serveurs HTTP
+    Apache partagent la même adresse IP et port</title>
+    <p>La définition de l'option <code>SO_REUSEPORT</code> pour les sockets
+    d'écoute permet à plusieurs processus (partageant le même <code>EUID</code>,
+    par exemple <code>root</code>) de se rattacher à la même adresse IP et port,
+    sans obtenir l'erreur de rattachement que le système génère habituellement
+    lorsque ce cas se produit.</p>
+    <p>Cela signifie aussi que plusieurs instances d'Apache httpd configurées
+    avec le même <code>IP:port</code> et avec une valeur
+    <directive>ListenCoresBucketsRatio</directive> positive pourraient démarrer
+    sans erreur, et fonctionner ensuite avec une répartition uniforme des
+    connexions entrantes sur ces différentes instances (ce n'est PAS une
+    recommandation et ne constitue pas un usage approprié à tous les cas, mais
+    juste un avertissement sur le fait qu'un véritable problème de rattachement
+    multiple à un <code>IP:port</code> pourrait alors être occulté).</p>
+    <p>Au sein d'une même instance, Apache httpd vérifie la présence de
+    directives <directive>Listen</directive> multiples avec la même adresse IP
+    (ou nom d'hôte) et le même port, et refuse de démarrer si c'est le cas, ce
+    qui permet d'éviter la création de segments d'écoute dupliqués qui seraient
+    du coup inutiles et affecteraient les performances. Cependant, il ne peut
+    pas (et n'essaiera pas de le faire) intercepter tous les cas possibles de
+    recouvrement (comme un nom d'hôte correspondant à une adresse IP utilisée
+    quelque part ailleurs).</p>
+    </note>
+    </usage>
 </directivesynopsis>
 
 <directivesynopsis>
