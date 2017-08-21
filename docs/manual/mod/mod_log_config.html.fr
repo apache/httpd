@@ -400,133 +400,122 @@ sécurité</a></h2>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="bufferedlogs" id="bufferedlogs">Directive</a> <a name="BufferedLogs" id="BufferedLogs">BufferedLogs</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enregistre les entrées du journal dans un tampon en mémoire
-avant de les écrire sur disque</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Buffer log entries in memory before writing to disk</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>BufferedLogs On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>BufferedLogs Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_log_config</td></tr>
 </table>
-    <p>Lorsque la directive <code class="directive">BufferedLogs</code> est à
-    "on", <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code> stocke de nombreuses entrées
-    du journal en mémoire, et les écrit d'un seul bloc sur disque,
-    plutôt que de les écrire après chaque requête. Sur certains
-    systèmes, ceci peut améliorer l'efficacité des accès disque, et par
-    conséquent les performances. La directive ne peut être définie
-    qu'une seule fois pour l'ensemble du serveur ; elle ne peut pas être
-    définie au niveau d'un serveur virtuel.</p>
+    <p>The <code class="directive">BufferedLogs</code> directive causes
+    <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code> to store several log entries in
+    memory and write them together to disk, rather than writing them
+    after each request.  On some systems, this may result in more
+    efficient disk access and hence higher performance.  It may be
+    set only once for the entire server; it cannot be configured
+    per virtual-host.</p>
 
-    <div class="note">Cette directive doit être utilisée avec
-    précautions car un crash peut provoquer la perte de données de
-    journalisation.</div>
+    <div class="note">This directive should be used with caution as a crash might
+    cause loss of logging data.</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="customlog" id="customlog">Directive</a> <a name="CustomLog" id="CustomLog">CustomLog</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le nom et le format du fichier
-journal</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CustomLog  <var>fichier</var>|<var>pipe</var>|<var>provider</var>
-<var>format</var>|<var>alias</var>
-[env=[!]<var>variable-environnement</var>|
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets filename and format of log file</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CustomLog  <var>file</var>|<var>pipe</var>|<var>provider</var>
+<var>format</var>|<var>nickname</var>
+[env=[!]<var>environment-variable</var>|
 expr=<var>expression</var>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_log_config</td></tr>
 </table>
-    <p>La directive <code class="directive">CustomLog</code> permet de contrôler
-    la journalisation des requêtes destinées au serveur. Un format de
-    journal est spécifié, et la journalisation peut s'effectuer de
-    manière conditionnelle en fonction des caractéristiques de la
-    requête en utilisant des variables d'environnement.</p>
+    <p>The <code class="directive">CustomLog</code> directive is used to
+    log requests to the server. A log format is specified, and the
+    logging can optionally be made conditional on request
+    characteristics using environment variables.</p>
 
-    <p>Le premier argument, qui spécifie l'emplacement où les journaux
-    seront écrits, accepte deux types de valeurs :</p>
+    <p>The first argument, which specifies the location to which
+    the logs will be written, can take one of the following two
+    types of values:</p>
 
     <dl>
-      <dt><var>fichier</var></dt>
-      <dd>Un nom de fichier, relatif au répertoire défini par la
-      directive <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>.</dd>
+      <dt><var>file</var></dt>
+      <dd>A filename, relative to the <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>.</dd>
 
       <dt><var>pipe</var></dt>
-      <dd>Le caractère pipe "<code>|</code>", suivi du chemin vers un
-      programme qui recevra les informations de la journalisation sur
-      son entrée standard. Voir les notes à propos de la <a href="../logs.html#piped">journalisation redirigée</a> pour plus
-      d'informations.
+      <dd>The pipe character "<code>|</code>", followed by the path
+      to a program to receive the log information on its standard
+      input. See the notes on <a href="../logs.html#piped">piped logs</a>
+      for more information.
 
-      <div class="warning"><h3>Sécurité :</h3>
-      <p>Si les journaux sont redirigés vers un programme, ce dernier
-      s'exécutera sous l'utilisateur qui a démarré
-      <code class="program"><a href="../programs/httpd.html">httpd</a></code>. Ce sera l'utilisateur root si le serveur
-      a été démarré par root ; vérifiez que le programme est
-      sécurisé.</p>
+      <div class="warning"><h3>Security:</h3>
+      <p>If a program is used, then it will be run as the user who
+      started <code class="program"><a href="../programs/httpd.html">httpd</a></code>. This will be root if the server was
+      started by root; be sure that the program is secure.</p>
       </div>
       <div class="warning"><h3>Note</h3>
-        <p>Lors de la spécification d'un chemin de fichier sur les
-	plate-formes non-Unix, il faut prendre soin de ne pas oublier
-	que seuls les slashes directs doivent être utilisés, même si la
-	plate-forme autorise l'emploi d'anti-slashes. D'une manière
-	générale, c'est une bonne idée que de n'utiliser que des slashes
-	directs dans les fichiers de configuration.</p>
+        <p>When entering a file path on non-Unix platforms, care should be taken
+        to make sure that only forward slashed are used even though the platform
+        may allow the use of back slashes. In general it is a good idea to always
+        use forward slashes throughout the configuration files.</p>
       </div></dd>
       <dt><var>provider</var></dt>
-      <dd>Les messages CustomLog peuvent aussi utiliser comme cible les
-      modules qui implémentent des fournisseurs ErrorLog. A cet effet,
-      utilisez la syntaxe "provider:argument". Comme fournisseur, vous
-      pouvez par exemple utiliser <code class="module"><a href="../mod/mod_journald.html">mod_journald</a></code> ou
-      <code class="module"><a href="../mod/mod_syslog.html">mod_syslog</a></code> :
-    <pre class="prettyprint lang-config"># Journalisation CustomLog vers journald
+      <dd>Modules implementing ErrorLog providers can also be used as a target
+      for CustomLog messages. To use ErrorLog provider as a target,
+      "provider:argument" syntax must be used. You can for example use
+      <code class="module"><a href="../mod/mod_journald.html">mod_journald</a></code> or <code class="module"><a href="../mod/mod_syslog.html">mod_syslog</a></code>
+      as a provider:
+    <pre class="prettyprint lang-config"># CustomLog logging to journald
 CustomLog "journald" "%h %l %u %t \"%r\" %&gt;s %b"
 
-# Journalisation CustomLog vers syslog avec l'option "user"
+# CustomLog logging to syslog with "user" facility
 CustomLog "syslog:user" "%h %l %u %t \"%r\" %&gt;s %b"</pre>
 
       </dd>
     </dl>
 
-    <p>Le second argument permet de définir ce qui va être écrit dans le
-    fichier journal. Il peut contenir soit un <var>alias</var> prédéfini
-    par une directive <code class="directive"><a href="#logformat">LogFormat</a></code>, soit une chaîne de
-    <var>format</var> explicite comme décrit dans la section <a href="#formats">formats de journaux</a>.</p>
+    <p>The second argument specifies what will be written to the
+    log file. It can specify either a <var>nickname</var> defined by
+    a previous <code class="directive"><a href="#logformat">LogFormat</a></code>
+    directive, or it can be an explicit <var>format</var> string as
+    described in the <a href="#formats">log formats</a> section.</p>
 
-    <p>Par exemple, les deux blocs de directives suivants produisent le
-    même effet :</p>
+    <p>For example, the following two sets of directives have
+    exactly the same effect:</p>
 
-    <pre class="prettyprint lang-config"># Journal personnalisé avec alias de format
+    <pre class="prettyprint lang-config"># CustomLog with format nickname
 LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common
 CustomLog "logs/access_log" common
 
-# Journal personnalisé avec chaîne de format explicite
+# CustomLog with explicit format string
 CustomLog "logs/access_log" "%h %l %u %t \"%r\" %&gt;s %b"</pre>
 
 
-    <p>Le troisième argument est optionnel et permet de contrôler si une
-    requête doit être ou non journalisée. Dans le cas d'une clause
-    '<code>env=!<var>nom</var></code>', la condition peut être la
-    présence ou l'absence d'une variable particulière dans
-    l'<a href="../env.html">environnement du serveur</a>. Dans le cas
-    d'une clause 'expr=<var>expression</var>', la condition consiste
-    en une <a href="../expr.html">expression</a> booléenne
-    quelconque. Si la condition n'est pas vérifiée, la requête ne sera
-    pas journalisée. D'éventuelles références à des en-têtes HTTP dans
-    l'expression rationnelle n'entraîneront pas l'ajout des noms
-    d'en-tête correspondants à l'en-tête Vary.</p>
+    <p>The third argument is optional and controls whether or
+    not to log a particular request. The condition can be the
+    presence or absence (in the case of a '<code>env=!<var>name</var></code>'
+    clause) of a particular variable in the server
+    <a href="../env.html">environment</a>. Alternatively, the condition
+    can be expressed as arbitrary boolean <a href="../expr.html">expression</a>. If the condition is not satisfied, the request
+    will not be logged. References to HTTP headers  in the expression
+    will not cause the header names to be added to the Vary header.</p>
 
-    <p>Les variables d'environnement peuvent être définies au niveau de
-    chaque requête en utilisant les modules
-    <code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code> et/ou <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>.
-    Par exemple, si vous voulez enregistrer les requêtes pour toutes les
-    images GIF sur votre serveur dans un fichier journal séparé, et pas
-    dans votre journal principal, vous pouvez utiliser :</p>
+    <p>Environment variables can be set on a per-request
+    basis using the <code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code>
+    and/or <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> modules. For
+    example, if you want to record requests for all GIF
+    images on your server in a separate logfile but not in your main
+    log, you can use:</p>
 
     <pre class="prettyprint lang-config">SetEnvIf Request_URI \.gif$ gif-image
 CustomLog "gif-requests.log" common env=gif-image
 CustomLog "nongif-requests.log" common env=!gif-image</pre>
 
 
-    <p>Ou, pour reproduire le comportement de l'ancienne directive
-    RefererIgnore, vous pouvez utiliser :</p>
+    <p>Or, to reproduce the behavior of the old RefererIgnore
+    directive, you might use the following:</p>
 
     <pre class="prettyprint lang-config">SetEnvIf Referer example\.com localreferer
 CustomLog "referer.log" referer env=!localreferer</pre>
@@ -536,7 +525,7 @@ CustomLog "referer.log" referer env=!localreferer</pre>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="globallog" id="globallog">Directive</a> <a name="GlobalLog" id="GlobalLog">GlobalLog</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le nom et le format du fichier journal</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets filename and format of log file</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>GlobalLog  <var>file</var>|<var>pipe</var>|<var>provider</var>
 <var>format</var>|<var>nickname</var>
 [env=[!]<var>environment-variable</var>|
@@ -544,65 +533,65 @@ expr=<var>expression</var>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_log_config</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.19 du serveur HTTP Apache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Available in Apache HTTP Server 2.4.19 and later</td></tr>
 </table>
 
-    <p>La directive <code class="directive">GlobalLog</code> permet de spécifier un
-    journal partagé entre le serveur principal et tous les serveurs virtuels
-    définis.</p>
+    <p>The <code class="directive">GlobalLog</code> directive defines a log shared
+       by the main server configuration and all defined virtual hosts.</p>
 
-    <p>Elle est identique à la directive <code class="directive">CustomLog</code> à ces
-    différences près : </p>
+    <p>The <code class="directive">GlobalLog</code> directive is identical to
+    the <code class="directive">CustomLog</code> directive, apart from the following
+    differences:</p>
     <ul>
-       <li>Elle n'est pas valide dans un contexte de serveur virtuel.</li>
-       <li>A la différence d'une directive <code class="directive">CustomLog</code>
-       définie globalement, elle est prise en compte par les serveurs virtuels
-       qui définissent leur propre directive <code class="directive">CustomLog</code>.</li>
+       <li><code class="directive">GlobalLog</code> is not valid in virtual host
+            context.</li>
+       <li><code class="directive">GlobalLog</code> is used by virtual hosts that
+           define their own <code class="directive">CustomLog</code>, unlike a 
+           globally specified <code class="directive">CustomLog</code>.</li>
     </ul>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="logformat" id="logformat">Directive</a> <a name="LogFormat" id="LogFormat">LogFormat</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Décrit un format utilisable dans un fichier
-journal</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LogFormat <var>format</var>|<var>alias</var>
-[<var>alias</var>]</code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Describes a format for use in a log file</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LogFormat <var>format</var>|<var>nickname</var>
+[<var>nickname</var>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>LogFormat "%h %l %u %t \"%r\" %&gt;s %b"</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_log_config</td></tr>
 </table>
-    <p>Cette directive permet de spécifier le format du fichier journal
-    des accès.</p>
+    <p>This directive specifies the format of the access log
+    file.</p>
 
-    <p>La directive <code class="directive">LogFormat</code> se présente sous
-    deux formes. Sous la première forme, qui ne possède qu'un seul
-    argument, la directive définit le format qui sera utilisé dans les
-    journaux spécifiés par les directives
-    <code class="directive">TransferLog</code> ultérieures. L'argument unique
-    peut contenir un <var>format</var> explicite comme décrit dans la
-    section <a href="#formats">formats de journaux personnalisés</a>
-    ci-dessus. Il peut aussi contenir un <var>alias</var> faisant
-    référence à un format de journal prédéfini par une directive
-    <code class="directive">LogFormat</code> comme décrit plus loin.</p>
+    <p>The <code class="directive">LogFormat</code> directive can take one of two
+    forms. In the first form, where only one argument is specified,
+    this directive sets the log format which will be used by logs
+    specified in subsequent <code class="directive">TransferLog</code>
+    directives. The single argument can specify an explicit
+    <var>format</var> as discussed in the <a href="#formats">custom log
+    formats</a> section above. Alternatively, it can use a
+    <var>nickname</var> to refer to a log format defined in a
+    previous <code class="directive">LogFormat</code> directive as described
+    below.</p>
 
-    <p>Sous sa seconde forme, la directive
-    <code class="directive">LogFormat</code> associe un <var>format</var>
-    explicite à un <var>alias</var>. Cet <var>alias</var> peut
-    ensuite s'utiliser dans les directives
-    <code class="directive">LogFormat</code> ou <code class="directive"><a href="#customlog">CustomLog</a></code> ultérieures, ce qui
-    évite d'avoir à répéter l'ensemble de la chaîne de format. Une
-    directive <code class="directive">LogFormat</code> qui définit un alias
-    <strong>ne fait rien d'autre</strong> -- c'est à dire qu'<em>elle ne
-    fait que</em> définir l'alias, elle n'applique pas le format et n'en
-    fait pas le format par défaut. Par conséquent, elle n'affecte pas
-    les directives <code class="directive"><a href="#transferlog">TransferLog</a></code> ultérieures. En
-    outre, la directive <code class="directive">LogFormat</code> ne peut pas
-    utiliser un alias pour en définir un autre. Notez que l'alias ne
-    doit pas contenir de caractère pourcent (<code>%</code>).</p>
+    <p>The second form of the <code class="directive">LogFormat</code>
+    directive associates an explicit <var>format</var> with a
+    <var>nickname</var>. This <var>nickname</var> can then be used in
+    subsequent <code class="directive">LogFormat</code> or
+    <code class="directive"><a href="#customlog">CustomLog</a></code> directives
+    rather than repeating the entire format string. A
+    <code class="directive">LogFormat</code> directive that defines a nickname
+    <strong>does nothing else</strong> -- that is, it <em>only</em>
+    defines the nickname, it doesn't actually apply the format and make
+    it the default. Therefore, it will not affect subsequent
+    <code class="directive"><a href="#transferlog">TransferLog</a></code> directives.
+    In addition, <code class="directive">LogFormat</code> cannot use one nickname
+    to define another nickname. Note that the nickname should not contain
+    percent signs (<code>%</code>).</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b" serveur_virtuel_commun</pre>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b" vhost_common</pre>
 </div>
 
 
@@ -610,22 +599,22 @@ journal</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="transferlog" id="transferlog">Directive</a> <a name="TransferLog" id="TransferLog">TransferLog</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Spécifie l'emplacement d'un fichier journal</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>TransferLog <var>fichier</var>|<var>pipe</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specify location of a log file</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>TransferLog <var>file</var>|<var>pipe</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_log_config</td></tr>
 </table>
-    <p>Cette directive possède exactement les mêmes arguments et produit
-    les mêmes effets que la directive <code class="directive"><a href="#customlog">CustomLog</a></code>, à l'exception qu'elle
-    ne permet pas de spécifier un format de journal explicite ou la
-    journalisation conditionnelle des requêtes. En l'occurrence, le
-    format de journal est déterminé par la dernière définition d'une
-    directive <code class="directive"><a href="#logformat">LogFormat</a></code>
-    qui ne définit pas d'alias. Si aucun format particulier n'a été
-    spécifié, c'est le Common Log Format qui sera utilisé.</p>
+    <p>This directive has exactly the same arguments and effect as
+    the <code class="directive"><a href="#customlog">CustomLog</a></code>
+    directive, with the exception that it does not allow the log format
+    to be specified explicitly or for conditional logging of requests.
+    Instead, the log format is determined by the most recently specified
+    <code class="directive"><a href="#logformat">LogFormat</a></code> directive
+    which does not define a nickname. Common Log Format is used if no
+    other format has been specified.</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\""
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\""
 TransferLog "logs/access_log"</pre>
 </div>
 

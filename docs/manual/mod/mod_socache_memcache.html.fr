@@ -68,37 +68,32 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="memcacheconnttl" id="memcacheconnttl">Directive</a> <a name="MemcacheConnTTL" id="MemcacheConnTTL">MemcacheConnTTL</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Durée de conservation des connexions inactives</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Keepalive time for idle connections</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MemcacheConnTTL <em>num[units]</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MemcacheConnTTL 15s</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_socache_memcache</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.17 du serveur HTTP
-Apache.</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Available in Apache 2.4.17 and later</td></tr>
 </table>
 
-    <p>Définit la durée pendant laquelle les connexions
-    inactives avec le(s) serveur(s) memcache seront conservées
-    (plateformes threadées seulement).</p>
+    <p>Set the time to keep idle connections with the memcache server(s)
+    alive (threaded platforms only).</p>
     
-    <p>Les valeurs valides de la directive
-    <code class="directive">MemcacheConnTTL</code> sont des durées d'une heure
-    maximum. La valeur 0 signifie une absence de péremption</p>
+    <p>Valid values for <code class="directive">MemcacheConnTTL</code> are times
+    up to one hour. 0 means no timeout.</p>
 
-    <div class="note"><p>L'unité par défaut pour ce délai est la seconde, mais vous
-    pouvez ajouter un suffixe pour spécifier une unité différente ; ms
-    pour milliseconde, s pour seconde, min pour minute et h pour heure..
+    <div class="note"><p>This timeout defaults to units of seconds, but accepts
+    suffixes for milliseconds (ms), seconds (s), minutes (min), and hours (h).
     </p></div>
 
-    <p>Dans les versions antérieures à 2.4.17, ce délai était codé en
-    dur et sa valeur était 600 microsecondes. La valeur la plus proche
-    de cette ancienne valeur pour la directive
-    <code class="directive">MemcacheConnTTL</code> est donc 1ms.</p>
+    <p>Before Apache 2.4.17, this timeout was hardcoded and its value was 600 usec.
+    So, the closest configuration to match the legacy behaviour is to set
+    <code class="directive">MemcacheConnTTL</code> to 1ms.</p>
 
-    <div class="example"><pre class="prettyprint lang-config"># Définition d'un délai de 10 minutes
+    <div class="example"><pre class="prettyprint lang-config"># Set a timeout of 10 minutes
 MemcacheConnTTL 10min
-# Définition d'un délai de 60 secondes
+# Set a timeout of 60 seconds
 MemcacheConnTTL 60</pre>
 </div>
 

@@ -73,36 +73,33 @@ CustomLog "logs/clickstream.log" usertrack</pre>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="cookiedomain" id="cookiedomain">Directive</a> <a name="CookieDomain" id="CookieDomain">CookieDomain</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le domaine auquel le cookie traceur
-s'applique</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CookieDomain <em>domaine</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The domain to which the tracking cookie applies</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CookieDomain <em>domain</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_usertrack</td></tr>
 </table>
 
-    <p>Cette directive permet de définir le domaine auquel le cookie
-    traceur s'applique. Si elle n'est pas présente, aucun domaine n'est
-    inclus dans le champ d'en-tête cookie.</p>
+    <p>This directive controls the setting of the domain to which
+    the tracking cookie applies. If not present, no domain is
+    included in the cookie header field.</p>
 
-    <p>La chaîne dommaine <strong>doit</strong> commencer par un point,
-    et <strong>doit</strong> comporter au moins un point entouré
-    d'autres caractères. Par exemple, <code>.example.com</code> est
-    une chaîne valide, mais <code>www.example.com</code> et
-    <code>.com</code> ne le sont pas.</p>
+    <p>The domain string <strong>must</strong> begin with a dot, and
+    <strong>must</strong> include at least one embedded dot. That is,
+    <code>.example.com</code> is legal, but <code>www.example.com</code> and
+    <code>.com</code> are not.</p>
 
-    <div class="note">La plupart des navigateurs utilisés actuellement n'autorisent
-    pas la définition de cookies pour un domaine racine de deux niveaux,
-    tel que <code>.co.uk</code>, bien qu'un tel domaine remplisse les
-    conditions de validité décrites ci-dessus.<br />
+    <div class="note">Most browsers in use today will not allow cookies to be set
+    for a two-part top level domain, such as <code>.co.uk</code>,
+    although such a domain ostensibly fulfills the requirements
+    above.<br />
 
-    Ces domaines sont équivalents à des domaines racines comme
-    <code>.com</code>, et autoriser de tels cookies peut constituer un
-    risque en matière de sécurité. Ainsi, si vous vous situez sous un
-    domaine racine de deux niveaux, vous devez encore utiliser votre
-    domaine véritable, comme vous le feriez avec tout autre domaine
-    racine (par exemple <code>.example.co.uk</code>).
+    These domains are equivalent to top level domains such as
+    <code>.com</code>, and allowing such cookies may be a security
+    risk. Thus, if you are under a two-part top level domain, you
+    should still use your actual domain, as you would with any other top
+    level domain (for example <code>.example.co.uk</code>).
     </div>
 
     <pre class="prettyprint lang-config">CookieDomain .example.com</pre>
@@ -112,24 +109,23 @@ s'applique</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="cookieexpires" id="cookieexpires">Directive</a> <a name="CookieExpires" id="CookieExpires">CookieExpires</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Durée avant expiration du cookie traceur</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CookieExpires <em>durée</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Expiry time for the tracking cookie</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CookieExpires <em>expiry-period</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_usertrack</td></tr>
 </table>
-    <p>Lorsqu'elle est utilisée, cette directive définit une durée avant
-    l'expiration du cookie généré par le module usertrack. La
-    <em>durée</em> peut être spécifiée sous la forme d'un nombre de
-    secondes, ou sous une forme du
-    style "2 weeks 3 days 7 hours". les termes valides sont : years,
-    months, weeks, days, hours, minutes et seconds. Si la durée est
-    spécifiée dans un format autre qu'un nombre de secondes, elle doit
-    être entourée de guillemets.</p>
+    <p>When used, this directive sets an expiry time on the cookie
+    generated by the usertrack module. The <em>expiry-period</em>
+    can be given either as a number of seconds, or in the format
+    such as "2 weeks 3 days 7 hours". Valid denominations are:
+    years, months, weeks, days, hours, minutes and seconds. If the expiry
+    time is in any format other than one number indicating the
+    number of seconds, it must be enclosed by double quotes.</p>
 
-    <p>Si cette directive est absente, la durée de vie des cookies est
-    limitée à la session actuelle du navigateur.</p>
+    <p>If this directive is not used, cookies last only for the
+    current browser session.</p>
 
     <pre class="prettyprint lang-config">CookieExpires "3 weeks"</pre>
 
@@ -138,22 +134,21 @@ s'applique</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="cookiename" id="cookiename">Directive</a> <a name="CookieName" id="CookieName">CookieName</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nom du cookie traceur</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CookieName <em>symbole</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Name of the tracking cookie</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CookieName <em>token</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CookieName Apache</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_usertrack</td></tr>
 </table>
-    <p>Cette directive vous permet de modifier le nom du cookie que ce
-    module utilise pour sa journalisation. Le nom par défaut du cookie
-    est "<code>Apache</code>".</p>
+    <p>This directive allows you to change the name of the cookie
+    this module uses for its tracking purposes. By default the
+    cookie is named "<code>Apache</code>".</p>
 
-    <p>Vous devez spécifier un nom de cookie valide ; les résultats sont
-    imprévisibles si vous utilisez un nom contenant des caractères
-    inhabituels. Les caractères valides font partie des intervales A-Z,
-    a-z, 0-9, "_", et "-".</p>
+    <p>You must specify a valid cookie name; results are
+    unpredictable if you use a name containing unusual characters.
+    Valid characters include A-Z, a-z, 0-9, "_", and "-".</p>
 
     <pre class="prettyprint lang-config">CookieName clicktrack</pre>
 
@@ -162,7 +157,7 @@ s'applique</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="cookiestyle" id="cookiestyle">Directive</a> <a name="CookieStyle" id="CookieStyle">CookieStyle</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Format du champ d'en-tête cookie</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Format of the cookie header field</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CookieStyle
     <em>Netscape|Cookie|Cookie2|RFC2109|RFC2965</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CookieStyle Netscape</code></td></tr>
@@ -171,26 +166,26 @@ s'applique</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_usertrack</td></tr>
 </table>
-    <p>Cette directive permet de contrôler le format du champ d'en-tête
-    cookie. Les trois formats autorisés sont :</p>
+    <p>This directive controls the format of the cookie header
+    field. The three formats allowed are:</p>
 
     <ul>
-      <li><strong>Netscape</strong> : il s'agit du format original, mais
-      est maintenant obsolète. C'est le format par défaut et il
-      correspond à la syntaxe historique utilisée par Apache.</li>
+      <li><strong>Netscape</strong>, which is the original but now deprecated
+      syntax. This is the default, and the syntax Apache has
+      historically used.</li>
 
-      <li><strong>Cookie</strong> ou <strong>RFC2109</strong> : c'est la
-      syntaxe qui remplace la syntaxe Netscape.</li>
+      <li><strong>Cookie</strong> or <strong>RFC2109</strong>, which is the syntax that
+      superseded the Netscape syntax.</li>
 
-      <li><strong>Cookie2</strong> ou <strong>RFC2965</strong> : c'est
-      la syntaxe de cookie la plus actuelle.</li>
+      <li><strong>Cookie2</strong> or <strong>RFC2965</strong>, which is the most
+      current cookie syntax.</li>
     </ul>
 
-    <p>Tous les clients ne supportent pas l'ensemble de ces formats,
-    mais il est conseillé d'utiliser le plus récent qui sera en général
-    supporté par le navigateur de votre utilisateur. A l'heure où ce
-    document est écrit, la plupart des navigateurs supportent ces trois
-    formats, <code>Cookie2</code> étant le format recommandé.</p>
+    <p>Not all clients can understand all of these formats, but you
+    should use the newest one that is generally acceptable to your
+    users' browsers. At the time of writing, most browsers support all
+    three of these formats, with <code>Cookie2</code> being the
+    preferred format.</p>
 
     <pre class="prettyprint lang-config">CookieStyle Cookie2</pre>
 
@@ -199,7 +194,7 @@ s'applique</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="cookietracking" id="cookietracking">Directive</a> <a name="CookieTracking" id="CookieTracking">CookieTracking</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active le cookie traceur</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enables tracking cookie</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CookieTracking on|off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CookieTracking off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
@@ -207,13 +202,13 @@ s'applique</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_usertrack</td></tr>
 </table>
-    <p>Lorsque le module <code class="module"><a href="../mod/mod_usertrack.html">mod_usertrack</a></code> est chargé, et
-    si <code>CookieTracking on</code> est définie, Apache enverra un
-    cookie traceur pour toute nouvelle requête. Cette directive peut
-    être utilisée pour activer ou désactiver ce comportement pour un
-    serveur virtuel ou un répertoire. Par défaut, l'activation de
-    <code class="module"><a href="../mod/mod_usertrack.html">mod_usertrack</a></code> ne suffit <strong>pas</strong> pour
-    activer les cookies.</p>
+    <p>When <code class="module"><a href="../mod/mod_usertrack.html">mod_usertrack</a></code> is loaded, and
+    <code>CookieTracking on</code> is set, Apache will send a
+    user-tracking cookie for all new requests. This directive can
+    be used to turn this behavior on or off on a per-server or
+    per-directory basis. By default, enabling
+    <code class="module"><a href="../mod/mod_usertrack.html">mod_usertrack</a></code> will <strong>not</strong>
+    activate cookies. </p>
 
     <pre class="prettyprint lang-config">CookieTracking on</pre>
 

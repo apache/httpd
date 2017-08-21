@@ -108,65 +108,64 @@ maintenant <code>dbm-group</code> :</em>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="authdbmgroupfile" id="authdbmgroupfile">Directive</a> <a name="AuthDBMGroupFile" id="AuthDBMGroupFile">AuthDBMGroupFile</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le nom du fichier de base de données qui liste
-les groupes d'utilisateurs.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthDBMGroupFile <var>chemin-fichier</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets the name of the database file containing the list
+of user groups for authorization</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthDBMGroupFile <var>file-path</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authz_dbm</td></tr>
 </table>
-    <p>La directive <code class="directive">AuthDBMGroupFile</code> définit
-    le nom d'un fichier DBM contenant la liste des groupes
-    d'utilisateurs, destinés à la gestion des autorisations.
-    <var>chemin-fichier</var> est le chemin absolu du
-    fichier de groupes.</p>
+    <p>The <code class="directive">AuthDBMGroupFile</code> directive sets the
+    name of a DBM file containing the list of user groups for user
+    authorization.  <var>File-path</var> is the absolute path to the
+    group file.</p>
 
-    <p>La clé du fichier de groupes est le nom d'utilisateur. La valeur
-    de chaque clé est la liste des groupes, séparés par des virgules,
-    auxquels l'utilisateur appartient. Cette liste ne doit comporter
-    ni espace, ni caractère ':'.</p>
+    <p>The group file is keyed on the username. The value for a
+    user is a comma-separated list of the groups to which the users
+    belongs. There must be no whitespace within the value, and it
+    must never contain any colons.</p>
 
-    <div class="warning"><h3>Sécurité</h3>
-      <p>Le fichier spécifié par la directive
-<code class="directive">AuthDBMGroupFile</code> doit être situé en dehors de
-l'arborescence des documents du serveur web. Ne le placez
-<strong>surtout pas</strong> dans le répertoire qu'il protège, faute
-de quoi, les clients pourraient le télécharger, en l'abscence de
-protection supplémentaire.</p>
+    <div class="warning"><h3>Security</h3>
+      <p>Make sure that the <code class="directive">AuthDBMGroupFile</code> is
+      stored outside the document tree of the web-server. Do
+      <strong>not</strong> put it in the directory that it protects.
+      Otherwise, clients will be able to download the
+      <code class="directive">AuthDBMGroupFile</code> unless otherwise
+      protected.</p>
     </div>
 
-    <p>Utilisation combinée de fichiers DBM de groupes et de mots de
-    passe : dans certains cas, il est plus simple de gérer une seule
-    base de données contenant les groupes et mots de passe de chaque
-    utilisateur. L'écriture de programmes de support en est ainsi
-    simplifiée car ils n'ont plus qu'un seul fichier DBM à gérer et
-    à verrouiller. Pour ce faire, on attribue le même nom de fichier
-    DBM aux fichiers de groupes et de mots de passe :</p>
+    <p>Combining Group and Password DBM files: In some cases it is
+    easier to manage a single database which contains both the
+    password and group details for each user. This simplifies any
+    support programs that need to be written: they now only have to
+    deal with writing to and locking a single DBM file. This can be
+    accomplished by first setting the group and password files to
+    point to the same DBM:</p>
 
     <pre class="prettyprint lang-config">AuthDBMGroupFile "/www/userbase"
 AuthDBMUserFile "/www/userbase"</pre>
 
 
-    <p>La clé du fichier DBM unique est le nom d'utilisateur. La
-    valeur associée à la clé contient :</p>
+    <p>The key for the single DBM is the username. The value consists
+    of</p>
 
     <div class="example"><p><code>
-      Mot de passe chiffré : Liste de groupes [ : (ignoré) ]
+      Encrypted Password : List of Groups [ : (ignored) ]
     </code></p></div>
 
-    <p>La partie mot de passe contient comme d'habitude le mot de
-    passe chiffré. Viennent ensuite le caractère ':' et la liste des
-    groupes séparés par des virgules. Il est possible d'ajouter
-    d'autres données en fin de ligne après un autre caractère ':',
-    mais elles seront ignorées par le module d'autorisation.</p>
+    <p>The password section contains the encrypted
+    password as before. This is followed by a colon and the comma
+    separated list of groups. Other data may optionally be left in the
+    DBM file after another colon; it is ignored by the authorization
+    module.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="authzdbmtype" id="authzdbmtype">Directive</a> <a name="AuthzDBMType" id="AuthzDBMType">AuthzDBMType</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le type de fichier de base de données contenant
-la liste des groupes d'utilisateurs</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets the type of database file that is used to
+store list of user groups</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthzDBMType default|SDBM|GDBM|NDBM|DB</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AuthzDBMType default</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
@@ -174,16 +173,14 @@ la liste des groupes d'utilisateurs</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authz_dbm</td></tr>
 </table>
-    <p>Définit le type de fichier de base de données contenant la
-    liste des groupes d'utilisateurs. Le type de base de données par
-    défaut est déterminé à la compilation. Les autres types de bases
-    de données disponibles dépendent aussi de la
-    <a href="../install.html#dbm">configuration de la
-    compilation</a>.</p>
+    <p>Sets the type of database file that is used to store the list
+    of user groups.
+    The default database type is determined at compile time.  The
+    availability of other types of database files also depends on
+    <a href="../install.html#dbm">compile-time settings</a>.</p>
 
-    <p>Quel que soit le programme que vous utilisez pour créer votre
-    fichier de groupes, il est impératif que celui-ci soit configuré
-    pour utiliser le même type de base de données.</p>
+    <p>It is crucial that whatever program you use to create your group
+    files is configured to use the same type of database.</p>
 
 </div>
 </div>

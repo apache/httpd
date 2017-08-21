@@ -101,29 +101,26 @@ débogage</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="logmessage" id="logmessage">Directive</a> <a name="LogMessage" id="LogMessage">LogMessage</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enregistre des messages personnalisés dans le journal des
-erreurs</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Log user-defined message to error log
+</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LogMessage <var>message</var>
 [hook=<var>hook</var>] [expr=<var>expression</var>]
 </code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>Non défini</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>Unset</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_log_debug</td></tr>
 </table>
-    <p>Cette directive permet d'enregistrer un message personnalisé dans
-    le journal des erreurs. Ce message peut utiliser des variables et
-    des fonctions dans la <a href="../expr.html">syntaxe ap_expr</a>.
-    D'éventuelles références à des en-têtes HTTP dans l'expression
-    rationnelle n'entraîneront pas l'ajout des noms d'en-tête
-    correspondants à l'en-tête Vary.
-    Les messages sont enregistrés au loglevel info.</p>
+    <p>This directive causes a user defined message to be logged to the
+    error log. The message can use variables and functions from the
+    <a href="../expr.html">ap_expr syntax</a>. References to HTTP headers
+    will not cause header names to be added to the Vary header. The
+    messages are logged at loglevel info.</p>
 
-    <p>Le branchement (hook) précise la phase du traitement de la
-    requête avant laquelle le message sera enregistré. Les branchements
-    suivants sont supportés :</p>
+    <p>The hook specifies before which phase of request processing the message
+    will be logged. The following hooks are supported:</p>
 
-    <table class="bordered"><tr class="header"><th>Nom</th></tr>
+    <table class="bordered"><tr class="header"><th>Name</th></tr>
 <tr><td><code>translate_name</code></td></tr>
 <tr class="odd"><td><code>type_checker</code></td></tr>
 <tr><td><code>quick_handler</code></td></tr>
@@ -138,17 +135,14 @@ erreurs</td></tr>
 <tr class="odd"><td><code>log_transaction</code></td></tr>
 </table>
 
-    <p>Le branchement par défaut est <code>log_transaction</code>. La
-    valeur spéciale <code>all</code> est aussi supportée ; dans ce cas,
-    le message sera enregistré à chaque phase. Tous les branchements ne
-    sont pas exécutés pour chaque requête.</p>
+    <p>The default is <code>log_transaction</code>. The special value
+    <code>all</code> is also supported, causing a message to be logged at each
+    phase. Not all hooks are executed for every request.</p>
 
-    <p>L'expression optionnelle permet de restreindre l'enregistrement
-    du message en fonction d'une certaine condition. La syntaxe de
-    l'expression est décrite dans la <a href="../expr.html">documentation ap_expr</a>. D'éventuelles
-    références à des en-têtes HTTP dans l'expression
-    rationnelle n'entraîneront pas l'ajout des noms d'en-tête
-    correspondants à l'en-tête Vary.</p>
+    <p>The optional expression allows to restrict the message if a
+    condition is met. The details of the expression syntax are described in
+    the <a href="../expr.html">ap_expr documentation</a>. References to HTTP
+    headers will not cause the header names to be added to the Vary header.</p>
 
 
 </div>

@@ -91,18 +91,17 @@ qu'utilise Apache httpd</a>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="maxthreads" id="maxthreads">Directive</a> <a name="MaxThreads" id="MaxThreads">MaxThreads</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le nombre maximum de threads esclaves</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MaxThreads <var>nombre</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Set the maximum number of worker threads</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MaxThreads <var>number</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MaxThreads 2048</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>MPM</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mpm_netware</td></tr>
 </table>
-    <p>La directive <code class="directive">MaxThreads</code> définit
-    le nombre maximum de threads esclaves que l'on désire autoriser. La
-    valeur par défaut correspondant à la valeur codée en dur à la
-    compilation, la valeur de cette directive ne peut donc qu'être
-    diminuée, comme dans l'exemple suivant :</p>
+    <p>The <code class="directive">MaxThreads</code> directive sets the desired
+    maximum number worker threads allowable. The default value is
+    also the compiled in hard limit. Therefore it can only be lowered,
+    for example:</p>
 
     <div class="example"><p><code>
       MaxThreads 512

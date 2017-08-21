@@ -83,19 +83,17 @@ filtres en sortie.</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="reflectorheader" id="reflectorheader">Directive</a> <a name="ReflectorHeader" id="ReflectorHeader">ReflectorHeader</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Renvoie un en-tête d'entrée dans les en-têtes de sortie</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ReflectorHeader <var>en-tête-entrée</var> <var>[en-tête-sortie]</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Reflect an input header to the output headers</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ReflectorHeader <var>inputheader</var> <var>[outputheader]</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>Options</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_reflector</td></tr>
 </table>
-    <p>Cette directive permet de contrôler la répercution des en-têtes
-    de la requête dans la réponse. Le premier argument correspond au nom
-    de l'en-tête à copier. Si le second argument (optionnel) est
-    spécifié, il définit le nom sous lequel l'en-tête sera répercuté
-    dans la réponse ; dans le cas contraire, c'est le nom de l'en-tête
-    original qui sera utilisé.</p>
+    <p>This directive controls the reflection of request headers to the response.
+    The first argument is the name of the request header to copy. If the optional
+    second argument is specified, it will be used as the name of the response
+    header, otherwise the original request header name will be used.</p>
 
 </div>
 </div>

@@ -208,29 +208,29 @@ UndefMacro DirGroup</pre>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="macro" id="macro">Directive</a> <a name="Macro" id="Macro">&lt;Macro&gt;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définition d'une macro dans un fichier de configuration</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Define a configuration file macro</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>
-&lt;Macro <var>nom</var> [<var>par1</var> .. <var>parN</var>]&gt;
+&lt;Macro <var>name</var> [<var>par1</var> .. <var>parN</var>]&gt;
 ... &lt;/Macro&gt;</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_macro</td></tr>
 </table>
-    <p>La directive <code class="directive">&lt;Macro&gt;</code> permet de définir une macro
-    dans un fichier de configuration Apache. Le premier argument est le nom
-    de la macro, et les arguments suivants sont les paramètres. Il
-    est de bon aloi de préfixer les noms des paramètres d'une macro
-    avec un caractère parmi '<code>$%@</code>', et d'éviter d'en faire
-    de même avec les noms de macros.
+    <p>The <code class="directive">&lt;Macro&gt;</code> directive controls the
+    definition of a macro within the server runtime configuration files.
+    The first argument is the name of the macro.
+    Other arguments are parameters to the macro. It is good practice to prefix
+    parameter names with any of '<code>$%@</code>', and not macro names
+    with such characters.
     </p>
 
     <pre class="prettyprint lang-config">&lt;Macro LocalAccessPolicy&gt;
-  Require ip 10.2.16.0/24
+    Require ip 10.2.16.0/24
 &lt;/Macro&gt;
 
 &lt;Macro RestrictedAccessPolicy $ipnumbers&gt;
-   Require ip $ipnumbers
+    Require ip $ipnumbers
 &lt;/Macro&gt;</pre>
 
 
@@ -238,8 +238,7 @@ UndefMacro DirGroup</pre>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="macroignorebadnesting" id="macroignorebadnesting">Directive</a> <a name="MacroIgnoreBadNesting" id="MacroIgnoreBadNesting">MacroIgnoreBadNesting</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ignore les avertissements et n'inscrit rien dans le journal à
-propos d'une imbrication de Macros non conforme</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ignore warnings, and does not log, about bad nesting of Macros</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MacroIgnoreBadNesting</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>All</td></tr>
@@ -250,8 +249,7 @@ propos d'une imbrication de Macros non conforme</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="macroignoreemptyargs" id="macroignoreemptyargs">Directive</a> <a name="MacroIgnoreEmptyArgs" id="MacroIgnoreEmptyArgs">MacroIgnoreEmptyArgs</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ignore les avertissements et n'inscrit rien dans le journal à
-propos des arguments de Macro vides</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ignore warnings, and does not log, about empty Macro argument(s)</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MacroIgnoreEmptyArgs</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>All</td></tr>
@@ -262,15 +260,15 @@ propos des arguments de Macro vides</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="undefmacro" id="undefmacro">Directive</a> <a name="UndefMacro" id="UndefMacro">UndefMacro</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Supprime une macro</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>UndefMacro <var>nom</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Undefine a macro</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>UndefMacro <var>name</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_macro</td></tr>
 </table>
-    <p>La directive <code class="directive">UndefMacro</code> annule la définition
-    d'une macro qui doit avoir été définie auparavant.</p>
+    <p>The <code class="directive">UndefMacro</code> directive undefines a macro
+    which has been defined before hand.</p>
 
     <pre class="prettyprint lang-config">UndefMacro LocalAccessPolicy
 UndefMacro RestrictedAccessPolicy</pre>
@@ -280,26 +278,26 @@ UndefMacro RestrictedAccessPolicy</pre>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="use" id="use">Directive</a> <a name="Use" id="Use">Use</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Utilisation d'une macro</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Use <var>nom</var> [<var>valeur1</var> ... <var>valeurN</var>]
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Use a macro</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Use <var>name</var> [<var>value1</var> ... <var>valueN</var>]
 </code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_macro</td></tr>
 </table>
-    <p> La directive <code class="directive">Use</code> permet d'utiliser une macro.
-    La macro considérée est expansée. Son nombre d'arguments doit être égal au
-    nombre de paramètres précisés dans sa définition. Les valeurs passées en
-    argument sont attribuées aux paramètres correspondants et
-    substituées avant l'interprétation du texte de la macro.</p>
+    <p>The <code class="directive">Use</code> directive controls the use of a macro.
+    The specified macro is expanded. It must be given the same number of
+    arguments as in the  macro definition. The provided values are
+    associated to their corresponding initial parameters and are substituted
+    before processing.</p>
 
     <pre class="prettyprint lang-config">Use LocalAccessPolicy
 ...
 Use RestrictedAccessPolicy "192.54.172.0/24 192.54.148.0/24"</pre>
 
 
-    <p>est équivalent, avec les macros définies ci-dessus à :</p>
+    <p>is equivalent, with the macros defined above, to:</p>
 
     <pre class="prettyprint lang-config">Require ip 10.2.16.0/24
 ...

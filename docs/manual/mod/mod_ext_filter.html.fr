@@ -213,141 +213,131 @@ close(SAVE);</pre>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="extfilterdefine" id="extfilterdefine">Directive</a> <a name="ExtFilterDefine" id="ExtFilterDefine">ExtFilterDefine</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit un filtre externe</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ExtFilterDefine <var>nom_filtre</var> <var>paramètres</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Define an external filter</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ExtFilterDefine <var>filtername</var> <var>parameters</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ext_filter</td></tr>
 </table>
-    <p>La directive <code class="directive">ExtFilterDefine</code>
-    définit les caractéristiques d'un filtre externe, et en particulier
-    le programme à exécuter ainsi que ses arguments.</p>
+    <p>The <code class="directive">ExtFilterDefine</code> directive defines the
+    characteristics of an external filter, including the program to
+    run and its arguments.</p>
 
-    <p><var>nom_filtre</var> spécifie le nom du filtre en cours de
-    définition. On peut ensuite utiliser ce nom pour référencer le
-    filtre dans les directives <code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code>. Il doit être unique parmi les noms de
-    tous les filtres enregistrés. <em>Pour le moment, aucune erreur
-    n'est signalée par l'API register-filter, si bien qu'un problème de
-    noms dupliqués ne sera pas porté à la connaissance de
-    l'utilisateur.</em></p>
+    <p><var>filtername</var> specifies the name of the filter being
+    defined. This name can then be used in <code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code>
+    directives. It must be unique among all registered filters.
+    <em>At the present time, no error is reported by the
+    register-filter API, so a problem with duplicate names isn't
+    reported to the user.</em></p>
 
-    <p>Viennent ensuite un ou plusieurs paramètres dans un ordre
-    indéfini, qui permettent de spécifier la commande externe à exécuter
-    et certaines autres caractéristiques. Le seul paramètre obligatoire
-    est <code>cmd=</code>. Voici la liste de ces paramètres :</p>
+    <p>Subsequent parameters can appear in any order and define the
+    external command to run and certain other characteristics. The
+    only required parameter is <code>cmd=</code>. These parameters
+    are:</p>
 
     <dl>
-      <dt><code>cmd=<var>ligne de commande</var></code></dt>
+      <dt><code>cmd=<var>cmdline</var></code></dt>
 
-      <dd>Le mot-clé <code>cmd=</code> spécifie la commande
-      externe à exécuter. Si la ligne de commande comporte des
-      arguments, elle doit être entourée de guillemets (par exemple
-      <code>cmd="<var>/bin/mypgm</var> <var>arg1</var>
-      <var>arg2</var>"</code>). Les guillemets habituels du shell ne
-      sont pas nécessaires car le programme est lancé directement, sans
-      passer par le shell. Les arguments du programme doivent être
-      séparés par des espaces. Si un argument contient des espaces, ces
-      derniers doivent être échappés par un antislash '\'. Si un
-      argument contient des antislashes '\', ces derniers doivent être
-      eux-mêmes échappés par un antislash '\'. Outre les variables
-      d'environnement CGI standards, les variables DOCUMENT_URI,
-      DOCUMENT_PATH_INFO, et QUERY_STRING_UNESCAPED seront également
-      définies pour le programme.</dd>
+      <dd>The <code>cmd=</code> keyword allows you to specify the
+      external command to run. If there are arguments after the
+      program name, the command line should be surrounded in
+      quotation marks (<em>e.g.</em>, <code>cmd="<var>/bin/mypgm</var>
+      <var>arg1</var> <var>arg2</var>"</code>.) Normal shell quoting is
+      not necessary since the program is run directly, bypassing the shell.
+      Program arguments are blank-delimited. A backslash can be used to
+      escape blanks which should be part of a program argument. Any
+      backslashes which are part of the argument must be escaped with
+      backslash themselves.  In addition to the standard CGI environment
+      variables, DOCUMENT_URI, DOCUMENT_PATH_INFO, and
+      QUERY_STRING_UNESCAPED will also be set for the program.</dd>
 
       <dt><code>mode=<var>mode</var></code></dt>
 
-      <dd>Utilisez <code>mode=output</code> (valeur par défaut) pour les
-      filtres qui traitent les réponses. Utilisez
-      <code>mode=input</code> pour les filtres qui traitent les
-      requêtes. <code>mode=input</code> est disponible depuis la version
-      2.1 d'Apache.</dd>
+      <dd>Use <code>mode=output</code> (the default) for filters which
+      process the response.  Use <code>mode=input</code> for filters
+      which process the request.  <code>mode=input</code> is available
+      in Apache 2.1 and later.</dd>
 
-      <dt><code>intype=<var>type MIME</var></code></dt>
+      <dt><code>intype=<var>imt</var></code></dt>
 
-      <dd>Ce paramètre spécifie le type de médium Internet
-      (c'est à dire le type MIME) des documents qui doivent être
-      filtrés. Par défaut, tous les documents sont filtrés. Aucun des
-      documents possédant un type MIME autre que celui spécifié par
-      <code>intype=</code> ne sera filtré.</dd>
+      <dd>This parameter specifies the internet media type (<em>i.e.</em>,
+      MIME type) of documents which should be filtered. By default,
+      all documents are filtered. If <code>intype=</code> is
+      specified, the filter will be disabled for documents of other
+      types.</dd>
 
-      <dt><code>outtype=<var>type MIME</var></code></dt>
+      <dt><code>outtype=<var>imt</var></code></dt>
 
-      <dd>Ce paramètre spécifie le type de médium Internet
-      (c'est à dire le type MIME) des documents filtrés. Il intervient
-      lorsque les opérations de filtrage comprennent une modification du
-      type MIME. Par défaut, le type MIME n'est pas modifié.</dd>
+      <dd>This parameter specifies the internet media type (<em>i.e.</em>,
+      MIME type) of filtered documents. It is useful when the
+      filter changes the internet media type as part of the
+      filtering operation. By default, the internet media type is
+      unchanged.</dd>
 
       <dt><code>PreservesContentLength</code></dt>
 
-      <dd>Le mot-clé <code>PreservesContentLength</code> indique que le
-      filtre doit conserver la taille du contenu. Ce n'est pas le
-      comportement par défaut, car la plupart des filtres modifient cette
-      taille. Ce mot-clé doit être spécifié si le filtre ne doit pas
-      modifier la taille du contenu.</dd>
+      <dd>The <code>PreservesContentLength</code> keyword specifies
+      that the filter preserves the content length. This is not the
+      default, as most filters change the content length. In the
+      event that the filter doesn't modify the length, this keyword
+      should be specified.</dd>
 
-      <dt><code>ftype=<var>type de filtre</var></code></dt>
+      <dt><code>ftype=<var>filtertype</var></code></dt>
 
-      <dd>Ce paramètre spécifie une valeur numérique
-      représentant le type de filtre sous lequel le filtre doit être
-      enregistré. La valeur par défaut, AP_FTYPE_RESOURCE, convient dans
-      la plupart des situations. Ce paramètre devient nécessaire dès lors
-      que le filtre doit opérer à un autre point de la chaîne de filtrage
-      que les filtres de ressources.
-      Voir les définitions de AP_FTYPE_...
-      dans util_filter.h pour trouver une valeur appropriée.</dd>
+      <dd>This parameter specifies the numeric value for filter type
+      that the filter should be registered as.  The default value,
+      AP_FTYPE_RESOURCE, is sufficient in most cases.  If the filter
+      needs to operate at a different point in the filter chain than
+      resource filters, then this parameter will be necessary.  See
+      the AP_FTYPE_foo definitions in util_filter.h for appropriate
+      values.</dd>
 
       <dt><code>disableenv=<var>env</var></code></dt>
 
-      <dd>Ce paramètre spécifie le nom d'une variable
-      d'environnement qui, si elle est définie, va désactiver le
-      filtre.</dd>
+      <dd>This parameter specifies the name of an environment variable
+      which, if set, will disable the filter.</dd>
 
       <dt><code>enableenv=<var>env</var></code></dt>
 
-      <dd>Ce paramètre spécifie le nom d'une variable
-      d'environnement qui doit être définie pour que le filtre ne soit
-      pas désactivé.</dd>
+      <dd>This parameter specifies the name of an environment variable
+      which must be set, or the filter will be disabled.</dd>
     </dl>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="extfilteroptions" id="extfilteroptions">Directive</a> <a name="ExtFilterOptions" id="ExtFilterOptions">ExtFilterOptions</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure les options de
-<code class="module"><a href="../mod/mod_ext_filter.html">mod_ext_filter</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure <code class="module"><a href="../mod/mod_ext_filter.html">mod_ext_filter</a></code> options</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ExtFilterOptions <var>option</var> [<var>option</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ExtFilterOptions NoLogStderr</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ext_filter</td></tr>
 </table>
-    <p>La directive <code class="directive">ExtFilterOptions</code>
-    spécifie des options de traitement particulières pour
-    <code class="module"><a href="../mod/mod_ext_filter.html">mod_ext_filter</a></code>. Les arguments <var>option</var>
-    peuvent contenir :</p>
+    <p>The <code class="directive">ExtFilterOptions</code> directive specifies
+    special processing options for <code class="module"><a href="../mod/mod_ext_filter.html">mod_ext_filter</a></code>.
+    <var>Option</var> can be one of</p>
 
     <dl>
       <dt><code>LogStderr | NoLogStderr</code></dt>
 
-      <dd>Le mot-clé <code>LogStderr</code> indique que les messages
-      envoyés par le programme de filtrage externe sur la sortie
-      d'erreurs standard doivent être enregistrés dans le journal des
-      erreurs d'Apache. <code>NoLogStderr</code> inverse ce
-      comportement.</dd>
+      <dd>The <code>LogStderr</code> keyword specifies that
+      messages written to standard error by the external filter
+      program will be saved in the Apache error log.
+      <code>NoLogStderr</code> disables this feature.</dd>
 
       <dt><code>Onfail=[abort|remove]</code></dt>
-      <dd>Indique la marche à suivre si le programme de filtrage externe
-      ne peut pas démarrer. Avec <code>abort</code> (la valeur par
-      défaut), le traitement de la requête sera abandonné. Avec <code>remove</code>, le
-      filtre est supprimé, et le traitement de la requête se poursuit
-      sans lui.</dd>
+      <dd>Determines how to proceed if the external filter program
+      cannot be started.  With <code>abort</code> (the default value)
+      the request will be aborted.  With <code>remove</code>, the
+      filter is removed and the request continues without it.</dd>
     </dl>
 
     <pre class="prettyprint lang-config">ExtFilterOptions LogStderr</pre>
 
 
-    <p>Les messages envoyés vers la sortie d'erreurs standard du filtre
-    seront enregistrés dans le journal des erreurs d'Apache.</p>
+    <p>Messages written to the filter's standard error will be stored
+    in the Apache error log.</p>
 
 </div>
 </div>

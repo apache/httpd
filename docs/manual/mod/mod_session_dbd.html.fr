@@ -191,30 +191,25 @@ SessionDBDPerUser On</pre>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="sessiondbdcookiename" id="sessiondbdcookiename">Directive</a> <a name="SessionDBDCookieName" id="SessionDBDCookieName">SessionDBDCookieName</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nom et attributs du cookie RFC2109 qui contient
-l'identifiant de session</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SessionDBDCookieName <var>nom</var> <var>attributs</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Name and attributes for the RFC2109 cookie storing the session ID</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SessionDBDCookieName <var>name</var> <var>attributes</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>none</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session_dbd</td></tr>
 </table>
-    <p>La directive <code class="directive">SessionDBDCookieName</code> permet
-    de spécifier le nom et les attributs optionnels d'un cookie
-    compatible RFC2109 qui contiendra l'identifiant de session. Les
-    cookies RFC2109 sont définis à l'aide de l'en-tête HTTP
-    <code>Set-Cookie</code>.
+    <p>The <code class="directive">SessionDBDCookieName</code> directive specifies the name and
+    optional attributes of an RFC2109 compliant cookie inside which the session ID will
+    be stored. RFC2109 cookies are set using the <code>Set-Cookie</code> HTTP header.
     </p>
 
-    <p>Une liste optionnelle d'attributs peut être spécifiée pour ce
-    cookie, comme dans l'exemple ci-dessous. Ces attributs sont insérés
-    dans le cookie tel quel, et ne sont pas interprétés par Apache.
-    Assurez-vous que vos attributs sont définis correctement selon la
-    spécification des cookies.
+    <p>An optional list of cookie attributes can be specified, as per the example below.
+    These attributes are inserted into the cookie as is, and are not interpreted by
+    Apache. Ensure that your attributes are defined correctly as per the cookie specification.
     </p>
 
-    <div class="example"><h3>Cookie avec attributs</h3><pre class="prettyprint lang-config">Session On
+    <div class="example"><h3>Cookie with attributes</h3><pre class="prettyprint lang-config">Session On
 SessionDBDCookieName session path=/private;domain=example.com;httponly;secure;version=1;</pre>
 </div>
 
@@ -223,30 +218,25 @@ SessionDBDCookieName session path=/private;domain=example.com;httponly;secure;ve
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="sessiondbdcookiename2" id="sessiondbdcookiename2">Directive</a> <a name="SessionDBDCookieName2" id="SessionDBDCookieName2">SessionDBDCookieName2</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nom et attributs du cookie RFC2965 qui contient
-l'identifiant de session</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SessionDBDCookieName2 <var>nom</var> <var>attributs</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Name and attributes for the RFC2965 cookie storing the session ID</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SessionDBDCookieName2 <var>name</var> <var>attributes</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>none</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session_dbd</td></tr>
 </table>
-    <p>La directive <code class="directive">SessionDBDCookieName2</code> permet
-    de spécifier le nom et les attributs optionnels d'un cookie
-    compatible RFC2965 qui contiendra l'identifiant de session. Les
-    cookies RFC2965 sont définis à l'aide de l'en-tête HTTP
-    <code>Set-Cookie2</code>.
+    <p>The <code class="directive">SessionDBDCookieName2</code> directive specifies the name and
+    optional attributes of an RFC2965 compliant cookie inside which the session ID will
+    be stored. RFC2965 cookies are set using the <code>Set-Cookie2</code> HTTP header.
     </p>
 
-    <p>Une liste optionnelle d'attributs peut être spécifiée pour ce
-    cookie, comme dans l'exemple ci-dessous. Ces attributs sont insérés
-    dans le cookie tel quel, et ne sont pas interprétés par Apache.
-    Assurez-vous que vos attributs sont définis correctement selon la
-    spécification des cookies.
+    <p>An optional list of cookie attributes can be specified, as per the example below.
+    These attributes are inserted into the cookie as is, and are not interpreted by
+    Apache. Ensure that your attributes are defined correctly as per the cookie specification.
     </p>
 
-    <div class="example"><h3>Cookie2 avec attributs</h3><pre class="prettyprint lang-config">Session On
+    <div class="example"><h3>Cookie2 with attributes</h3><pre class="prettyprint lang-config">Session On
 SessionDBDCookieName2 session path=/private;domain=example.com;httponly;secure;version=1;</pre>
 </div>
 
@@ -255,8 +245,7 @@ SessionDBDCookieName2 session path=/private;domain=example.com;httponly;secure;v
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="sessiondbdcookieremove" id="sessiondbdcookieremove">Directive</a> <a name="SessionDBDCookieRemove" id="SessionDBDCookieRemove">SessionDBDCookieRemove</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Détermine si les cookies de session doivent être supprimés
-des en-têtes HTTP entrants</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Control for whether session ID cookies should be removed from incoming HTTP headers</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SessionDBDCookieRemove On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SessionDBDCookieRemove On</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
@@ -264,67 +253,57 @@ des en-têtes HTTP entrants</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session_dbd</td></tr>
 </table>
-    <p>La directive <code class="directive">SessionDBDCookieRemove</code> permet
-    de déterminer si les cookies contenant l'identifiant de session
-    doivent être supprimés des en-têtes pendant le traitement de la
-    requête.</p>
+    <p>The <code class="directive">SessionDBDCookieRemove</code> flag controls whether the cookies
+    containing the session ID will be removed from the headers during request processing.</p>
 
-    <p>Dans le cas d'un mandataire inverse où le serveur Apache sert de
-    frontal à un serveur d'arrière-plan, révéler le contenu du cookie de
-    session à ce dernier peut conduire à une violation de la
-    confidentialité. A ce titre, si cette directive est définie à "on",
-    le cookie de session sera supprimé des en-têtes HTTP entrants.</p>
+    <p>In a reverse proxy situation where the Apache server acts as a server frontend for
+    a backend origin server, revealing the contents of the session ID cookie to the backend
+    could be a potential privacy violation. When set to on, the session ID cookie will be
+    removed from the incoming HTTP headers.</p>
 
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="sessiondbddeletelabel" id="sessiondbddeletelabel">Directive</a> <a name="SessionDBDDeleteLabel" id="SessionDBDDeleteLabel">SessionDBDDeleteLabel</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>La requête SQL à utiliser pour supprimer des sessions de la
-base de données</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SessionDBDDeleteLabel <var>étiquette</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The SQL query to use to remove sessions from the database</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SessionDBDDeleteLabel <var>label</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SessionDBDDeleteLabel deletesession</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session_dbd</td></tr>
 </table>
-    <p>La directive  <code class="directive">SessionDBDDeleteLabel</code> permet
-    de définir l'étiquette de la requête de suppression à utiliser par
-    défaut pour supprimer une session vide ou expirée. Cette
-    étiquette doit avoir été définie au préalable via une directive
-    <code class="directive"><a href="../mod/mod_dbd.html#dbdpreparesql">DBDPrepareSQL</a></code>.</p>
+    <p>The <code class="directive">SessionDBDDeleteLabel</code> directive sets the default delete
+    query label to be used to delete an expired or empty session. This label must have been previously
+    defined using the <code class="directive"><a href="../mod/mod_dbd.html#dbdpreparesql">DBDPrepareSQL</a></code> directive.</p>
 
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="sessiondbdinsertlabel" id="sessiondbdinsertlabel">Directive</a> <a name="SessionDBDInsertLabel" id="SessionDBDInsertLabel">SessionDBDInsertLabel</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>La requête SQL à utiliser pour insérer des sessions dans la
-base de données</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SessionDBDInsertLabel <var>étiquette</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The SQL query to use to insert sessions into the database</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SessionDBDInsertLabel <var>label</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SessionDBDInsertLabel insertsession</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session_dbd</td></tr>
 </table>
-    <p>La directive <code class="directive">SessionDBDInsertLabel</code> permet
-    de définir l'étiquette de la requête d'insertion par défaut à
-    charger dans une session. Cette
-    étiquette doit avoir été définie au préalable via une directive
-    <code class="directive"><a href="../mod/mod_dbd.html#dbdpreparesql">DBDPrepareSQL</a></code>.</p>
+    <p>The <code class="directive">SessionDBDInsertLabel</code> directive sets the default insert
+    query label to be used to load in a session. This label must have been previously defined using the
+    <code class="directive"><a href="../mod/mod_dbd.html#dbdpreparesql">DBDPrepareSQL</a></code> directive.</p>
 
-    <p>Si une tentative de mise à jour d'une session ne concerne aucun
-    enregistrement, c'est cette requête qui sera utilisée pour insérer
-    la session dans la base de données.</p>
+    <p>If an attempt to update the session affects no rows, this query will be called to insert the
+    session into the database.</p>
 
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="sessiondbdperuser" id="sessiondbdperuser">Directive</a> <a name="SessionDBDPerUser" id="SessionDBDPerUser">SessionDBDPerUser</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active une session propre à un utilisateur</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable a per user session</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SessionDBDPerUser On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SessionDBDPerUser Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
@@ -332,55 +311,47 @@ base de données</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session_dbd</td></tr>
 </table>
-    <p>La directive <code class="directive">SessionDBDPerUser</code> permet
-    d'activer une session propre à un utilisateur, dont la clé sera le
-    nom de l'utilisateur connecté. Si l'utilisateur n'est pas connecté,
-    la directive sera ignorée.</p>
+    <p>The <code class="directive">SessionDBDPerUser</code> flag enables a per user session keyed
+    against the user's login name. If the user is not logged in, this directive will be
+    ignored.</p>
 
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="sessiondbdselectlabel" id="sessiondbdselectlabel">Directive</a> <a name="SessionDBDSelectLabel" id="SessionDBDSelectLabel">SessionDBDSelectLabel</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>La requête SQL à utiliser pour sélectionner des sessions
-dans la base de données</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SessionDBDSelectLabel <var>étiquette</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The SQL query to use to select sessions from the database</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SessionDBDSelectLabel <var>label</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SessionDBDSelectLabel selectsession</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session_dbd</td></tr>
 </table>
-    <p>La directive <code class="directive">SessionDBDSelectLabel</code> permet
-    de définir l'étiquette de la requête de sélection par défaut à
-    utiliser pour charger une session. Cette étiquette doit avoir été
-    définie au préalable via une directive <code class="directive"><a href="../mod/mod_dbd.html#dbdpreparesql">DBDPrepareSQL</a></code>.</p>
+    <p>The <code class="directive">SessionDBDSelectLabel</code> directive sets the default select
+    query label to be used to load in a session. This label must have been previously defined using the
+    <code class="directive"><a href="../mod/mod_dbd.html#dbdpreparesql">DBDPrepareSQL</a></code> directive.</p>
 
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="sessiondbdupdatelabel" id="sessiondbdupdatelabel">Directive</a> <a name="SessionDBDUpdateLabel" id="SessionDBDUpdateLabel">SessionDBDUpdateLabel</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>La requête SQL à utiliser pour mettre à jour des sessions
-préexistantes dans la base de données</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SessionDBDUpdateLabel <var>étiquette</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The SQL query to use to update existing sessions in the database</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SessionDBDUpdateLabel <var>label</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SessionDBDUpdateLabel updatesession</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session_dbd</td></tr>
 </table>
-    <p>La directive <code class="directive">SessionDBDUpdateLabel</code> permet
-    de définir l'étiquette de la requête de mise à jour par défaut à
-    charger dans une session. Cette
-    étiquette doit avoir été définie au préalable via une directive
-    <code class="directive"><a href="../mod/mod_dbd.html#dbdpreparesql">DBDPrepareSQL</a></code>.</p>
+    <p>The <code class="directive">SessionDBDUpdateLabel</code> directive sets the default update
+    query label to be used to load in a session. This label must have been previously defined using the
+    <code class="directive"><a href="../mod/mod_dbd.html#dbdpreparesql">DBDPrepareSQL</a></code> directive.</p>
 
-    <p>Si une tentative de mise à jour d'une session ne concerne aucun
-    enregistrement, c'est la requête d'insertion qui sera appelée pour
-    insérer la session dans la base de données. Si la base de données
-    supporte InsertOrUpdate, modifiez cette requête pour effectuer la
-    mise à jour en une seule requête au lieu de deux.</p>
+    <p>If an attempt to update the session affects no rows, the insert query will be
+    called to insert the session into the database. If the database supports InsertOrUpdate,
+    override this query to perform the update in one query instead of two.</p>
 
 
 </div>

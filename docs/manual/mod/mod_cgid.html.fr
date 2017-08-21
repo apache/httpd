@@ -84,22 +84,22 @@ utilisateurs différents</a></li>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="cgidscripttimeout" id="cgidscripttimeout">Directive</a> <a name="CGIDScriptTimeout" id="CGIDScriptTimeout">CGIDScriptTimeout</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Durée maximale d'attente de la prochaine sortie du
-programme CGI</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The length of time to wait for more output from the
+CGI program</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CGIDScriptTimeout <var>time</var>[s|ms]</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>Valeur de la directive <code class="directive"><a href="../mod/core.html#timeout">Timeout</a></code></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>value of <code class="directive"><a href="../mod/core.html#timeout">Timeout</a></code> directive when
+unset</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cgid</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>La valeur de CGIDScriptTimeout est 0 dans les versions
-2.4 et antérieures
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>CGIDScriptTimeout defaults to zero in releases 2.4 and earlier
 </td></tr>
 </table>
-    <p>Cette directive permet de limiter la durée d'attente avant les prochaines données
-    reçues en sortie du programme CGI. Si ce temps est dépassé, la requête et le
-    programme CGI se terminent.</p>
+    <p>This directive limits the length of time to wait for more output from
+    the CGI program.  If the time is exceeded, the request and CGI are
+    terminated.</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">CGIDScriptTimeout 20</pre>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">CGIDScriptTimeout 20</pre>
 </div>
 
 
@@ -107,27 +107,27 @@ programme CGI</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="scriptsock" id="scriptsock">Directive</a> <a name="ScriptSock" id="ScriptSock">ScriptSock</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le préfixe du nom de fichier du socket à utiliser pour
-communiquer avec le démon CGI</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ScriptSock <var>chemin fichier</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The filename prefix of the socket to use for communication with
+the cgi daemon</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ScriptSock <var>file-path</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ScriptSock cgisock</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cgid</td></tr>
 </table>
-    <p>Cette directive permet de définir le préfixe du nom de fichier du
-    socket à utiliser pour communiquer avec le démon CGI, préfixe auquel
-    sera ajouté une extension correspondant à l'identifiant processus du
-    serveur. Le socket sera ouvert avec les permissions de l'utilisateur
-    qui a démarré Apache (en général root). Afin de préserver la
-    sécurité des communications avec les scripts CGI, il est impératif
-    de n'accorder à aucun autre utilisateur la permission d'écrire dans
-    le répertoire où se trouve le socket.</p>
+    <p>This directive sets the filename prefix of the socket to use for
+    communication with the CGI daemon, an extension corresponding to
+    the process ID of the server will be appended. The socket will be opened
+    using the permissions of the user who starts Apache (usually
+    root). To maintain the security of communications with CGI
+    scripts, it is important that no other user has permission to
+    write in the directory where the socket is located.</p>
 
-    <p>Si <var>chemin fichier</var> n'est pas un chemin absolu, il est
-    relatif au chemin défini par la directive <code class="directive"><a href="../mod/core.html#defaultruntimedir">DefaultRuntimeDir</a></code>.</p>
+    <p>If <var>file-path</var> is not an absolute path, the location specified
+    will be relative to the value of
+    <code class="directive"><a href="../mod/core.html#defaultruntimedir">DefaultRuntimeDir</a></code>.</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">ScriptSock /var/run/cgid.sock</pre>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">ScriptSock /var/run/cgid.sock</pre>
 </div>
 
 

@@ -76,34 +76,32 @@ erreurs de la manière souhaitée.</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="dumpioinput" id="dumpioinput">Directive</a> <a name="DumpIOInput" id="DumpIOInput">DumpIOInput</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enregistre toutes les entrées dans le journal des
-erreurs</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Dump all input data to the error log</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DumpIOInput On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>DumpIOInput Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dumpio</td></tr>
 </table>
-    <p>Active la journalisation de toutes les entrées.</p>
+    <p>Enable dumping of all input.</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">DumpIOInput On</pre>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">DumpIOInput On</pre>
 </div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="dumpiooutput" id="dumpiooutput">Directive</a> <a name="DumpIOOutput" id="DumpIOOutput">DumpIOOutput</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enregistre toutes les sorties dans le journal des
-erreurs</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Dump all output data to the error log</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DumpIOOutput On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>DumpIOOutput Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dumpio</td></tr>
 </table>
-    <p>Active la journalisation de toutes les sorties.</p>
+    <p>Enable dumping of all output.</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">DumpIOOutput On</pre>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">DumpIOOutput On</pre>
 </div>
 
 </div>

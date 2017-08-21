@@ -121,44 +121,42 @@ authentifiées</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="anonymous" id="anonymous">Directive</a> <a name="Anonymous" id="Anonymous">Anonymous</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit la liste des identifiants utilisateur autorisés à
-accéder sans vérification du mot de passe</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Anonymous <var>utilisateur</var> [<var>utilisateur</var>]
-...</code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specifies userIDs that are allowed access without
+password verification</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Anonymous <var>user</var> [<var>user</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authn_anon</td></tr>
 </table>
-    <p>Une liste d'un ou plusieurs identifiants utilisateur spéciaux
-    autorisés à accéder sans vérification du mot de passe. Les
-    identifiants doivent être séparés par un espace. Pour spécifier un
-    identifiant contenant un espace, on peut utiliser les guillemets '
-    ou ", ou le caractère d'échappement \.</p>
+    <p>A list of one or more 'magic' userIDs which are allowed
+    access without password verification. The userIDs are space
+    separated. It is possible to use the ' and " quotes to allow a
+    space in a userID as well as the \ escape character.</p>
 
-    <p>Veuillez noter que la vérification <strong>n'est pas sensible à
-    la casse</strong>.<br />
-    Il est fortement conseillé d'intégrer l'utilisateur spécial
-    '<code>anonymous</code>' dans la liste des identifiants.</p>
+    <p>Please note that the comparison is
+    <strong>case-IN-sensitive</strong>.<br />
+    It's strongly recommended that the magic username
+    '<code>anonymous</code>' is always one of the allowed
+    userIDs.</p>
 
-    <div class="example"><h3>Exemple:</h3><pre class="prettyprint lang-config">Anonymous anonymous "Not Registered" "I don't know"</pre>
+    <div class="example"><h3>Example:</h3><pre class="prettyprint lang-config">Anonymous anonymous "Not Registered" "I don't know"</pre>
 </div>
 
-    <p>Dans cet exemple, l'utilisateur peut accéder au site sans
-    vérification du mot de passe en utilisant l'identifiant "anonymous",
-    "Not Registered", "I Don't Know" ou encore "AnonyMous".</p>
+    <p>This would allow the user to enter without password
+    verification by using the userIDs "anonymous",
+    "AnonyMous", "Not Registered" and "I Don't Know".</p>
 
-    <p>Depuis Apache 2.1, il est possible de remplacer la liste des
-    identifiants autorisés par le caractère "<code>*</code>", ce qui
-    permet d'utiliser <em>n'importe quel</em> identifiant pour pouvoir
-    accéder au site.</p>
+    <p>As of Apache 2.1 it is possible to specify the userID as
+    "<code>*</code>". That allows <em>any</em> supplied userID to be
+    accepted.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="anonymous_logemail" id="anonymous_logemail">Directive</a> <a name="Anonymous_LogEmail" id="Anonymous_LogEmail">Anonymous_LogEmail</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Détermine si le mot de passe fourni sera enregistré dans le
-journal des erreurs</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets whether the password entered will be logged in the
+error log</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Anonymous_LogEmail On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>Anonymous_LogEmail On</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
@@ -166,16 +164,15 @@ journal des erreurs</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authn_anon</td></tr>
 </table>
-    <p>Lorsque cette directive est définie à <code>On</code>, valeur
-    par défaut, le 'mot de passe' fourni (censé contenir une adresse
-    email valide) est enregistré dans le journal des erreurs.</p>
+    <p>When set <code>On</code>, the default, the 'password' entered
+    (which hopefully contains a sensible email address) is logged in
+    the error log.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="anonymous_mustgiveemail" id="anonymous_mustgiveemail">Directive</a> <a name="Anonymous_MustGiveEmail" id="Anonymous_MustGiveEmail">Anonymous_MustGiveEmail</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Détermine si l'abscence de mot de passe est
-autorisée</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specifies whether blank passwords are allowed</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Anonymous_MustGiveEmail On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>Anonymous_MustGiveEmail On</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
@@ -183,16 +180,14 @@ autorisée</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authn_anon</td></tr>
 </table>
-    <p>Détermine si l'utilisateur doit spécifier une adresse email comme
-    mot de passe. Lorsque cette directive est définie à <code>On</code>,
-    fournir un mot de passe est obligatoire.</p>
+    <p>Specifies whether the user must specify an email address as
+    the password. This prohibits blank passwords.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="anonymous_nouserid" id="anonymous_nouserid">Directive</a> <a name="Anonymous_NoUserID" id="Anonymous_NoUserID">Anonymous_NoUserID</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Détermine si le champ identifiant peut être
-vide</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets whether the userID field may be empty</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Anonymous_NoUserID On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>Anonymous_NoUserID Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
@@ -200,21 +195,17 @@ vide</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authn_anon</td></tr>
 </table>
-    <p>Lorsque cette directive est définie à <code>On</code>, les
-    utilisateurs peuvent laisser le champ identifiant vide (et peut-être
-    aussi le champ mot de passe selon la définition de la directive
-    <code class="directive"><a href="#anonymous_mustgiveemail">Anonymous_MustGiveEmail</a></code>). Ceci
-    peut s'avérer très utile pour les utilisateurs de MS-Explorer qui
-    ont pour seule possibilité d'appuyer sur Entrée ou de cliquer
-    directement sur le bouton OK, ce qui semble être une réaction
-    naturelle.</p>
+    <p>When set <code>On</code>, users can leave the userID (and
+    perhaps the password field) empty. This can be very convenient for
+    MS-Explorer users who can just hit return or click directly on the
+    OK button; which seems a natural reaction.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="anonymous_verifyemail" id="anonymous_verifyemail">Directive</a> <a name="Anonymous_VerifyEmail" id="Anonymous_VerifyEmail">Anonymous_VerifyEmail</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Détermine s'il faut vérifier que le format de l'adresse
-email fournie comme mot de passe est correct</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets whether to check the password field for a correctly
+formatted email address</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Anonymous_VerifyEmail On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>Anonymous_VerifyEmail Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
@@ -222,10 +213,9 @@ email fournie comme mot de passe est correct</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authn_anon</td></tr>
 </table>
-    <p>Lorsque cette directive est définie à <code>On</code>, Apache
-    vérifie que le 'mot de passe' entré contient au moins un '@' et un
-    '.' afin d'inciter les utilisateurs à fournir des adresses email
-    valides (voir ci-dessus la directive <code class="directive"><a href="#anonymous_logemail">Anonymous_LogEmail</a></code>).</p>
+    <p>When set <code>On</code> the 'password' entered is checked for
+    at least one '@' and a '.' to encourage users to enter valid email
+    addresses (see the above <code class="directive"><a href="#anonymous_logemail">Anonymous_LogEmail</a></code>).</p>
 
 </div>
 </div>

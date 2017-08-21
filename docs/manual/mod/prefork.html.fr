@@ -133,28 +133,24 @@ qu'utilise le serveur HTTP Apache</a></li>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="maxspareservers" id="maxspareservers">Directive</a> <a name="MaxSpareServers" id="MaxSpareServers">MaxSpareServers</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nombre maximum de processus serveurs enfants
-inactifs</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MaxSpareServers <var>nombre</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum number of idle child server processes</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MaxSpareServers <var>number</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MaxSpareServers 10</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>MPM</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>prefork</td></tr>
 </table>
-    <p>La directive <code class="directive">MaxSpareServers</code> permet de
-    définir le nombre maximum souhaité de processus serveurs enfants
-    <em>inactifs</em>. Un processus inactif est un processus qui ne
-    traite pas de requête. S'il y a plus de
-    <code class="directive">MaxSpareServers</code> processus inactifs, le
-    processus parent arrêtera les processus excédentaires.</p>
+    <p>The <code class="directive">MaxSpareServers</code> directive sets the
+    desired maximum number of <em>idle</em> child server processes. An
+    idle process is one which is not handling a request. If there are
+    more than <code class="directive">MaxSpareServers</code> idle, then the
+    parent process will kill off the excess processes.</p>
 
-    <p>La modification de ce paramètre n'est nécessaire que
-    dans le cas de sites très sollicités. Définir ce paramètre à une
-    valeur très grande est cependant dans la plupart des cas une
-    mauvaise idée. Si vous essayez d'affecter à ce paramètre une valeur
-    égale ou inférieure à la valeur de <code class="directive"><a href="#minspareservers">MinSpareServers</a></code>, le serveur HTTP Apache
-    l'ajustera automatiquement à la valeur de <code class="directive">
-    MinSpareServers</code><code> + 1</code>.</p>
+    <p>Tuning of this parameter should only be necessary on very
+    busy sites. Setting this parameter to a large number is almost
+    always a bad idea. If you are trying to set the value equal to or lower than
+    <code class="directive"><a href="#minspareservers">MinSpareServers</a></code>, Apache HTTP Server
+    will automatically adjust it to <code class="directive">MinSpareServers</code><code> + 1</code>.</p>
 
 <h3>Voir aussi</h3>
 <ul>
@@ -166,31 +162,26 @@ inactifs</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="minspareservers" id="minspareservers">Directive</a> <a name="MinSpareServers" id="MinSpareServers">MinSpareServers</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nombre minimum de processus serveurs enfants
-inactifs</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MinSpareServers <var>nombre</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Minimum number of idle child server processes</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MinSpareServers <var>number</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MinSpareServers 5</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>MPM</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>prefork</td></tr>
 </table>
-    <p>La directive <code class="directive">MinSpareServers</code> permet de
-    définir le nombre minimum désiré de processus serveurs enfants
-    <em>inactifs</em>. Un processus inactif est un processus qui ne
-    traite pas de requête. S'il y a moins de
-    <code class="directive">MinSpareServers</code> processus inactifs, le
-    processus parent va créer de nouveaux enfants de la manière suivante
-    : il en crée un, attend une seconde, il en crée deux, attend une
-    seconde, il en crée quatre, puis continue ainsi exponentiellement
-    jusu'à ce que son taux de création de processus enfants soit de 32
-    par seconde. Il ne s'arrête que lorsque le nombre de processus
-    enfants correspond à la définition de la directive
-    <code class="directive">MinSpareServers</code>.</p>
+    <p>The <code class="directive">MinSpareServers</code> directive sets the
+    desired minimum number of <em>idle</em> child server processes. An
+    idle process is one which is not handling a request. If there are
+    fewer than <code class="directive">MinSpareServers</code> idle, then the parent
+    process creates new children: It will spawn one, wait a second, then spawn
+    two, wait a second, then spawn four, and it will
+    continue exponentially until it is spawning 32 children per second. It will
+    stop whenever it satisfies the <code class="directive">MinSpareServers</code>
+    setting.</p>
 
-    <p>La modification de ce paramètre n'est nécessaire que
-    dans le cas de sites très sollicités. Définir ce paramètre à une
-    valeur très grande est dans la plupart des cas une mauvaise
-    idée.</p>
+    <p>Tuning of this parameter should only be necessary on very
+    busy sites. Setting this parameter to a large number is almost
+    always a bad idea.</p>
 
 <h3>Voir aussi</h3>
 <ul>

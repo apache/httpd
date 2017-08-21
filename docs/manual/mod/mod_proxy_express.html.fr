@@ -101,25 +101,26 @@ dynamique inverse de masse</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="proxyexpressdbmfile" id="proxyexpressdbmfile">Directive</a> <a name="ProxyExpressDBMFile" id="ProxyExpressDBMFile">ProxyExpressDBMFile</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Chemin du fichier DBM.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyExpressDBMFile &lt;chemin&gt;</code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Pathname to DBM file.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyExpressDBMFile &lt;pathname&gt;</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>None</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_express</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.3.13 d'Apache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Available in Apache 2.3.13 and later</td></tr>
 </table>
-  <p>La directive <code class="directive">ProxyExpressDBMFile</code> permet de
-  définir le chemin du fichier DBM de correspondance Express. Ce fichier
-  permet de faire correspondre le nom de serveur extrait de l'en-tête
-  Host: de la requête entrante avec une URL d'arrière-plan.</p>
+  <p>The <code class="directive">ProxyExpressDBMFile</code> directive
+    points to the location of the Express map DBM file. This
+    file serves to map the incoming server name, obtained from
+    the Host: header, to a backend URL.</p>
 
     <div class="note"><h3>Note</h3>
-      <p>Ce fichier est élaboré à partir d'un fichier texte à l'aide de
-      l'utilitaire <code><a href="../programs/httxt2dbm.html">httxt2dbm</a></code>.</p>
+      <p>The file is constructed from a plain text file format using
+        the <code><a href="../programs/httxt2dbm.html">httxt2dbm</a></code>
+        utility.</p>
 
-      <div class="example"><h3>Fichier de correspondances ProxyExpress</h3><p><code>
+      <div class="example"><h3>ProxyExpress map file</h3><p><code>
         ##<br />
         ##express-map.txt:<br />
         ##<br />
@@ -129,13 +130,13 @@ dynamique inverse de masse</td></tr>
         www3.example.com   http://192.168.212.10<br />
       </code></p></div>
 
-      <div class="example"><h3>Création du fichier DBM</h3><p><code>
+      <div class="example"><h3>Create DBM file</h3><p><code>
         httxt2dbm -i express-map.txt -o emap<br />
         </code></p></div>
 
       <div class="example"><h3>Configuration</h3><p><code>
         ProxyExpressEnable on<br />
-	ProxyExpressDBMFile emap<br />
+        ProxyExpressDBMFile emap<br />
         </code></p></div>
     </div>
 
@@ -143,27 +144,26 @@ dynamique inverse de masse</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="proxyexpressdbmtype" id="proxyexpressdbmtype">Directive</a> <a name="ProxyExpressDBMType" id="ProxyExpressDBMType">ProxyExpressDBMType</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Type de fichier DBM.</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>DBM type of file.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyExpressDBMFile &lt;type&gt;</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>"default"</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_express</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.3.13 d'Apache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Available in Apache 2.3.13 and later</td></tr>
 </table>
-  <p>La directive <code class="directive">ProxyExpressDBMType</code> permet de
-  définir le type de fichier DBM requis par le module. La valeur par
-  défaut correspond au type DBM par défaut du fichier créé par
-  l'utilitaire <code><a href="../programs/httxt2dbm.html">httxt2dbm</a></code>.</p>
-  <p>Les valeurs possibles sont (mais toutes ne seront pas disponibles à
-  l'exécution) :</p>
+  <p>The <code class="directive">ProxyExpressDBMType</code> directive
+    controls the DBM type expected by the module. The default
+    is the default DBM type created with <code>
+    <a href="../programs/httxt2dbm.html">httxt2dbm</a></code>.</p>
+    <p>Possible values are (not all may be available at run time):</p>
 <table class="bordered"><tr class="header"><th>Value</th><th>Description</th></tr>
-<tr><td><code>db</code></td><td>Fichiers Berkeley DB</td></tr>
-<tr class="odd"><td><code>gdbm</code></td><td>Fichiers GDBM</td></tr>
-<tr><td><code>ndbm</code></td><td>Fichiers NDBM</td></tr>
-<tr class="odd"><td><code>sdbm</code></td><td>Fichiers SDBM (toujours disponible)</td></tr>
-<tr><td><code>default</code></td><td>type DBM par défaut</td></tr>
+<tr><td><code>db</code></td><td> Berkeley DB files</td></tr>
+<tr class="odd"><td><code>gdbm</code></td><td> GDBM files</td></tr>
+<tr><td><code>ndbm</code></td><td> NDBM files</td></tr>
+<tr class="odd"><td><code>sdbm</code></td><td> SDBM files (always available)</td></tr>
+<tr><td><code>default</code></td><td> default DBM type</td></tr>
 </table>
 
 
@@ -171,17 +171,17 @@ dynamique inverse de masse</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="proxyexpressenable" id="proxyexpressenable">Directive</a> <a name="ProxyExpressEnable" id="ProxyExpressEnable">ProxyExpressEnable</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active la fonctionnalité du module.</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable the module functionality.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyExpressEnable [on|off]</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_express</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.3.13 d'Apache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Available in Apache 2.3.13 and later</td></tr>
 </table>
-  <p>La directive <code class="directive">ProxyExpressEnable</code> permet
-  d'activer/désactiver le module.</p>
+  <p>The <code class="directive">ProxyExpressEnable</code> directive
+    controls whether the module will be active.</p>
 
 </div>
 </div>
