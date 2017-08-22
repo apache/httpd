@@ -170,7 +170,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   https://svn.apache.org/r1780470
                   https://svn.apache.org/r1795928
      2.4.x patch: svn merge -r 1780253:HEAD ^/httpd/httpd/branches/trunk-buildconf-noapr
-     +1: jchampion
+     +1: jchampion, jim
 
   *) docs: add an auto-generated Overrides class index.
            (I know this is technically CTR, but the new machinery is a little
@@ -210,7 +210,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1803396
                   http://svn.apache.org/r1803398
      2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-libressl.patch
-     +1: ylavic
+     +1: ylavic, jim
 
   *) mod_proxy: Name the scheme in the error message when the 
      mod_proxy_foo submodule is missing.
@@ -241,7 +241,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
            (r1739201 has been backported in the 2.4 branch in r1768079)
      trunk patch: http://svn.apache.org/r1766998
      2.4.x patch: svn merge -c 1766998 ^/httpd/httpd/trunk .
-     +1: jailletc36
+     +1: jailletc36, jim
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
