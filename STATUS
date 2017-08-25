@@ -116,6 +116,10 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) core: Support use of optional "tag" in syslog entries. PR 60525.
+     trunk patch: http://svn.apache.org/r1784318
+     2.4.x patch: http://home.apache.org/~jim/patches/syslog-tag.patch
+     +1: rpluem, jim, mrumph
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -196,11 +200,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   https://svn.apache.org/r1801665
      2.4.x patch: svn merge -c1729235 -c1730079 -c1801665 ^/httpd/httpd/trunk .
      +1: jchampion
-
-  *) core: Support use of optional "tag" in syslog entries. PR 60525.
-     trunk patch: http://svn.apache.org/r1784318
-     2.4.x patch: http://home.apache.org/~jim/patches/syslog-tag.patch
-     +1: rpluem, jim
 
   *) proxy: Ensure updatelbstatus() is NULL if not-implemented
      trunk patch: http://svn.apache.org/r1802845
