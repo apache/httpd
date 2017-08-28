@@ -41,7 +41,7 @@ donn&eacute;es pour la r&eacute;ception des requ&ecirc;tes
 	et 30 secondes pour la r&eacute;ception du corps :
 
         <highlight language="config">
-          RequestTimeout headerinit=10 body=30
+          RequestReadTimeout headerinit=10 body=30
         </highlight>
       </li>
 
