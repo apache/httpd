@@ -325,7 +325,22 @@
             <xsl:sort select="name" />
                 <xsl:choose>
                 <xsl:when test="$this[name=current()/name]">
-                    <xsl:apply-templates select="." />
+                    <!-- A directive name is allowed to be repeated if its type
+                         is different. There is currently only one allowed type
+                         to set, namely 'section', that represents
+                         directive/containers like <DirectiveName>.
+                         The following check is needed to avoid rendering
+                         multiple times the same content when a directive name
+                         is repeated.
+                     -->
+                    <xsl:choose>
+                        <xsl:when test="current()[@type='section']">
+                            <xsl:apply-templates select="$this[name=current()/name and @type='section']" />
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:apply-templates select="$this[name=current()/name and not(@type='section')]" />
+                        </xsl:otherwise>
+                    </xsl:choose>
                 </xsl:when>
                 <xsl:otherwise>
                     <xsl:apply-templates select=".">
