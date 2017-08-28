@@ -261,22 +261,23 @@ octets de son contenu</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="mimemagicfile" id="mimemagicfile">Directive</a> <a name="MimeMagicFile" id="MimeMagicFile">MimeMagicFile</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable MIME-type determination based on file contents
-using the specified magic file</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MimeMagicFile <var>file-path</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active la détermination du type MIME en se basant sur le
+contenu du fichier et en utilisant le fichier magique
+spécifié</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MimeMagicFile <var>chemin-fichier</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mime_magic</td></tr>
 </table>
-    <p>The <code class="directive">MimeMagicFile</code> directive can be used to
-    enable this module, the default file is distributed at
-    <code>conf/magic</code>. Non-rooted paths are relative to the
-    <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>. Virtual hosts will use
-    the same file as the main server unless a more specific setting is
-    used, in which case the more specific setting overrides the main
-    server's file.</p>
+    <p>La directive <code class="directive">MimeMagicFile</code> permet
+    d'activer ce module, le fichier par défaut fourni étant
+    <code>conf/magic</code>. Les chemins sans slash '/' de début sont
+    relatifs au répertoire défini par la directive <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>. Les serveurs virtuels
+    utilisent le même fichier que le serveur principal sauf si un
+    fichier spécifique a été défini pour ce serveur virtuel, auquel cas
+    c'est ce dernier fichier qui sera utilisé.</p>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">MimeMagicFile conf/magic</pre>
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">MimeMagicFile conf/magic</pre>
 </div>
 
 </div>

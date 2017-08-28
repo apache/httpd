@@ -98,26 +98,29 @@ des requêtes <code>CONNECT</code></td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="allowconnect" id="allowconnect">Directive</a> <a name="AllowCONNECT" id="AllowCONNECT">AllowCONNECT</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ports that are allowed to <code>CONNECT</code> through the
-proxy</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ports autorisés à se <code>CONNECT</code>er à travers le
+mandataire</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AllowCONNECT <var>port</var>[-<var>port</var>]
 [<var>port</var>[-<var>port</var>]] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AllowCONNECT 443 563</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_connect</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Moved from <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> in Apache 2.3.5.
-Port ranges available since Apache 2.3.7.</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Déplacé depuis <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> à partir
+d'Apache 2.3.5. Tranches de ports disponibles depuis Apache 2.3.7.</td></tr>
 </table>
-    <p>The <code class="directive">AllowCONNECT</code> directive specifies a list
-    of port numbers or ranges to which the proxy <code>CONNECT</code> method
-    may connect.  Today's browsers use this method when a <code>https</code>
-    connection is requested and proxy tunneling over HTTP is in effect.</p>
+    <p>La directive <code class="directive">AllowCONNECT</code> permet de
+    spécifier une liste de numéros ou de tranches de ports auxquels la
+    méthode de mandataire <code>CONNECT</code> pourra se connecter. Les
+    navigateurs d'aujourd'hui utilisent cette méthode dans le cas où une
+    connexion <code>https</code> est requise et où le tunneling
+    mandataire sur HTTP est en service.</p>
 
-    <p>By default, only the default https port (<code>443</code>) and the
-    default snews port (<code>563</code>) are enabled. Use the
-    <code class="directive">AllowCONNECT</code> directive to override this default and
-    allow connections to the listed ports only.</p>
+    <p>Par défaut, seuls les ports par défauts https (<code>443</code>)
+    et snews (<code>563</code>) sont pris en compte. Vous pouvez
+    utiliser la directive <code class="directive">AllowCONNECT</code> pour
+    outrepasser ces valeurs par défaut et n'autoriser les connexions que
+    vers les ports spécifiés.</p>
 
 </div>
 </div>

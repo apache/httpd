@@ -84,25 +84,25 @@ serveur HTTP Apache</a></li>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="browsermatch" id="browsermatch">Directive</a> <a name="BrowserMatch" id="BrowserMatch">BrowserMatch</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets environment variables conditional on HTTP User-Agent
-</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>BrowserMatch <em>regex [!]env-variable</em>[=<em>value</em>]
-[[!]<em>env-variable</em>[=<em>value</em>]] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit des variables d'environnement en fonction du
+contenu de l'en-tête HTTP User-Agent</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>BrowserMatch <em>regex [!]env-variable</em>[=<em>valeur</em>]
+[[!]<em>env-variable</em>[=<em>valeur</em>]] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_setenvif</td></tr>
 </table>
-  <p>The <code class="directive">BrowserMatch</code> is a special cases of the
-  <code class="directive"><a href="#setenvif">SetEnvIf</a></code> directive that
-  sets environment variables conditional on the
-  <code>User-Agent</code> HTTP request header.  The following two
-  lines have the same effect:</p>
+  <p>La directive <code class="directive">BrowserMatch</code> est un cas
+  particulier de la directive <code class="directive"><a href="#setenvif">SetEnvIf</a></code>, qui définit des variables
+  d'environnement en fonction du contenu de l'en-tête de requête HTTP
+  <code>User-Agent</code>. Les deux lignes suivantes produisent le même
+  effet :</p>
 <pre class="prettyprint lang-config">BrowserMatch Robot is_a_robot
 SetEnvIf User-Agent Robot is_a_robot</pre>
 
 
-    <p>Some additional examples:</p>
+    <p>Quelques exemples supplémentaires :</p>
 <pre class="prettyprint lang-config">BrowserMatch ^Mozilla forms jpeg=yes browser=netscape
 BrowserMatch "^Mozilla/[2-3]" tables agif frames javascript
 BrowserMatch MSIE !javascript</pre>
@@ -112,28 +112,29 @@ BrowserMatch MSIE !javascript</pre>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="browsermatchnocase" id="browsermatchnocase">Directive</a> <a name="BrowserMatchNoCase" id="BrowserMatchNoCase">BrowserMatchNoCase</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets environment variables conditional on User-Agent without
-respect to case</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>BrowserMatchNoCase  <em>regex [!]env-variable</em>[=<em>value</em>]
-    [[!]<em>env-variable</em>[=<em>value</em>]] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit des variables d'environnement en fonction du
+contenu de l'en-tête HTTP User-Agent sans tenir compte de la
+casse</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>BrowserMatchNoCase  <em>regex [!]env-variable</em>[=<em>valeur</em>]
+    [[!]<em>env-variable</em>[=<em>valeur</em>]] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_setenvif</td></tr>
 </table>
 
-    <p>The <code class="directive">BrowserMatchNoCase</code> directive is
-    semantically identical to the <code class="directive"><a href="#browsermatch">BrowserMatch</a></code> directive.
-    However, it provides for case-insensitive matching. For
-    example:</p>
+    <p>La directive <code class="directive">BrowserMatchNoCase</code> est
+    identique sur le plan sémantique à la directive <code class="directive"><a href="#browsermatch">BrowserMatch</a></code>. Elle permet
+    cependant une comparaison insensible à la casse. Par exemple :</p>
 <pre class="prettyprint lang-config">BrowserMatchNoCase mac platform=macintosh
 BrowserMatchNoCase win platform=windows</pre>
 
 
-    <p>The <code class="directive">BrowserMatch</code> and
-    <code class="directive">BrowserMatchNoCase</code> directives are special cases of
-    the <code class="directive"><a href="#setenvif">SetEnvIf</a></code> and <code class="directive"><a href="#setenvifnocase">SetEnvIfNoCase</a></code>
-    directives. The following two lines have the same effect:</p>
+    <p>Les directives <code class="directive">BrowserMatch</code> et
+    <code class="directive">BrowserMatchNoCase</code> sont des cas particuliers
+    des directives <code class="directive"><a href="#setenvif">SetEnvIf</a></code>
+    et <code class="directive"><a href="#setenvifnocase">SetEnvIfNoCase</a></code>.
+    Ainsi, les deux lignes suivantes produisent le même effet :</p>
 <pre class="prettyprint lang-config">BrowserMatchNoCase Robot is_a_robot
 SetEnvIfNoCase User-Agent Robot is_a_robot</pre>
 
@@ -142,190 +143,200 @@ SetEnvIfNoCase User-Agent Robot is_a_robot</pre>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="setenvif" id="setenvif">Directive</a> <a name="SetEnvIf" id="SetEnvIf">SetEnvIf</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets environment variables based on attributes of the request
-</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SetEnvIf <em>attribute
-    regex [!]env-variable</em>[=<em>value</em>]
-    [[!]<em>env-variable</em>[=<em>value</em>]] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit des variables d'environnement en fonction des
+attributs de la requête</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SetEnvIf <em>attribut
+    regex [!]env-variable</em>[=<em>valeur</em>]
+    [[!]<em>env-variable</em>[=<em>valeur</em>]] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_setenvif</td></tr>
 </table>
-    <p>The <code class="directive">SetEnvIf</code> directive defines
-    environment variables based on attributes of the request. The
-    <em>attribute</em> specified in the first argument can be one of the
-    following things:</p>
+    <p>La directive <code class="directive">SetEnvIf</code> permet de définir
+    des variables d'environnement en fonction des attributs de la
+    requête. L'<em>attribut</em> spécifié comme premier argument peut
+    se présenter sous l'une des formes suivantes :</p>
 
 <ol>
-<li>An HTTP request header field (see <a href="http://www.rfc-editor.org/rfc/rfc2616.txt">RFC2616</a>
-    for more information about these); for example: <code>Host</code>,
-    <code>User-Agent</code>, <code>Referer</code>, and
-    <code>Accept-Language</code>.  A regular expression may be
-    used to specify a set of request headers.</li>
+<li>Un champ d'en-tête de requête HTTP (voir la <a href="http://www.rfc-editor.org/rfc/rfc2616.txt">RFC2616</a> pour
+    plus d'information à leur propos) ; par exemple : <code>Host</code>,
+    <code>User-Agent</code>, <code>Referer</code>, ou
+    <code>Accept-Language</code>. Il est possible d'utiliser une
+    expression rationnelle pour spécifier un jeu d'en-têtes de
+    requête.</li>
 
-<li>One of the following aspects of the request:
+<li>Une des caractéristiques de la requête suivantes :
     <ul>
-      <li><code>Remote_Host</code> - the hostname (if available) of
-      the client making the request</li>
+      <li><code>Remote_Host</code> - le nom d'hôte (s'il est disponible)
+      du client qui effectue la requête</li>
 
-      <li><code>Remote_Addr</code> - the IP address of the client
-      making the request</li>
+      <li><code>Remote_Addr</code> - l'adresse IP du client qui effectue
+      la requête</li>
 
-      <li><code>Server_Addr</code> - the IP address of the server
-      on which the request was received (only with versions later
-      than 2.0.43)</li>
+      <li><code>Server_Addr</code> - l'adresse IP du serveur qui a reçu
+      la requête (uniquement à partir des versions supérieures à
+      2.0.43)</li>
 
-      <li><code>Request_Method</code> - the name of the method
-      being used (<code>GET</code>, <code>POST</code>, <em>et
-      cetera</em>)</li>
+      <li><code>Request_Method</code> - Le nom de la méthode HTTP
+      utilisée (<code>GET</code>, <code>POST</code>, <em>et
+      cetera...</em>)</li>
 
-      <li><code>Request_Protocol</code> - the name and version of
-      the protocol with which the request was made (<em>e.g.</em>,
-      "HTTP/0.9", "HTTP/1.1", <em>etc.</em>)</li>
+      <li><code>Request_Protocol</code> - le nom et la version du
+      protocole utilisé pour la requête (par exemple "HTTP/0.9",
+      "HTTP/1.1", <em>etc...</em>)</li>
 
-      <li><code>Request_URI</code> - the resource requested on the HTTP
-       request line -- generally the portion of the URL
-      following the scheme and host portion without the query string. See
-      the <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code>
-      directive of <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> for extra information on
-      how to match your query string.</li>
+      <li><code>Request_URI</code> - la ressource demandée dans la ligne
+      de requête HTTP -- en général la partie de l'URL suivant le
+      protocole et le nom du serveur, sans la chaîne d'arguments. Voir
+      la directive <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code> du module
+      <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> pour plus d'informations sur la
+      manière de mettre en correspondance votre chaîne d'arguments.</li>
     </ul>
 </li>
 
-<li>The name of an environment variable in the list of those
-associated with the request. This allows
-<code class="directive">SetEnvIf</code> directives to test against the result
-of prior matches. Only those environment variables defined by earlier
-<code>SetEnvIf[NoCase]</code> directives are available for testing in
-this manner. 'Earlier' means that they were defined at a broader scope
-(such as server-wide) or previously in the current directive's scope.
-Environment variables will be considered only if there was no match
-among request characteristics and a regular expression was not
-used for the <em>attribute</em>.</li>
+<li>Le nom d'une variable d'environnement parmi la liste de celles qui
+sont associées à la requête. Ceci permet à la directive
+<code class="directive">SetEnvIf</code> d'effectuer des tests en fonction du
+résultat de comparaisons précédentes. Seules les variables
+d'environnement définies par des directives
+<code>SetEnvIf[NoCase]</code> précédentes sont disponibles pour
+effectuer des tests de cette manière. 'Précédentes' signifie qu'elles se
+trouvent à un niveau plus global de la configuration (par exemple au
+niveau du serveur principal), ou plus haut chronologiquement dans le
+contexte de la directive. Les variables d'environnement ne seront prises
+en compte que si aucune correspondance n'a été trouvée parmi les
+caractéristiques de la requête, et si <em>attribut</em> n'a pas été
+spécifié sous la forme d'une expression rationnelle.</li>
 
 </ol>
 
-<p>The second argument (<em>regex</em>) is a <a class="glossarylink" href="../glossary.html#regex" title="voir glossaire">regular expression</a>.  If the <em>regex</em>
-matches against the <em>attribute</em>, then the remainder of the
-arguments are evaluated.</p>
+<p>Le second argument (<em>regex</em>) est une <a class="glossarylink" href="../glossary.html#regex" title="voir glossaire">expression rationnelle</a>. Si  <em>regex</em>
+correspond à l'<em>attribut</em>, les arguments suivants sont évalués.</p>
 
-<p>The rest of the arguments give the names of variables to set, and
-optionally values to which they should be set. These take the form
-of</p>
+<p>Le reste des arguments constitue les noms des variables à définir,
+ainsi que les valeurs optionnelles qui doivent leur être affectées. Ils
+peuvent se présenter sous les formes suivantes :</p>
 
     <ol>
-      <li><code><em>varname</em></code>, or</li>
+      <li><code><em>nom-variable</em></code>, ou</li>
 
-      <li><code>!<em>varname</em></code>, or</li>
+      <li><code>!<em>nom-variable</em></code>, ou</li>
 
-      <li><code><em>varname</em>=<em>value</em></code></li>
+      <li><code><em>nom-variable</em>=<em>valeur</em></code></li>
     </ol>
 
-    <p>In the first form, the value will be set to "1". The second
-    will remove the given variable if already defined, and the
-    third will set the variable to the literal value given by
-    <code><em>value</em></code>. Since version 2.0.51, Apache httpd will
-    recognize occurrences of <code>$1</code>..<code>$9</code> within
-    <var>value</var> and replace them by parenthesized subexpressions
-    of <var>regex</var>. <code>$0</code> provides access to the whole
-    string matched by that pattern.</p>
+    <p>Dans la première forme, la valeur sera définie à "1". Dans la
+    seconde forme, la variable sera supprimée si elle a été définie au
+    préalable, et dans la troisième forme, la variable sera définie à la
+    valeur littérale spécifiée par <code><em>valeur</em></code>. Depuis
+    la version 2.0.51, Apache httpd reconnaît les occurrences de variables
+    <code>$1</code>..<code>$9</code> à l'intérieur de
+    <code><em>valeur</em></code>, et les remplace par les
+    sous-expressions entre parenthèses correspondantes de
+    <var>regex</var>. <code>$0</code> permet d'accéder à l'ensemble de la chaîne
+    qui correspond à ce modèle.</p>
 
 <pre class="prettyprint lang-config">SetEnvIf Request_URI "\.gif$" object_is_image=gif
 SetEnvIf Request_URI "\.jpg$" object_is_image=jpg
 SetEnvIf Request_URI "\.xbm$" object_is_image=xbm
-
+    
 SetEnvIf Referer www\.mydomain\.example\.com intra_site_referral
-
+    
 SetEnvIf object_is_image xbm XBIT_PROCESSING=1
 
 SetEnvIf Request_URI "\.(.*)$" EXTENSION=$1
-
+    
 SetEnvIf ^TS  ^[a-z]  HAVE_TS</pre>
 
 
-    <p>The first three will set the environment variable
-    <code>object_is_image</code> if the request was for an image
-    file, and the fourth sets <code>intra_site_referral</code> if
-    the referring page was somewhere on the
-    <code>www.mydomain.example.com</code> Web site.</p>
+    <p>Les trois premières lignes définissent la variable
+    d'environnement <code>objet_est_une_image</code> si l'objet de la
+    requête est un fichier image, et la quatrième définit la variable
+    <code>intra_site_referral</code> si la page référante se trouve
+    quelque part dans le site web
+    <code>www.mydomain.example.com</code>.</p>
 
-    <p>The last example will set environment variable
-    <code>HAVE_TS</code> if the request contains any headers that
-    begin with "TS" whose values begins with any character in the
-    set [a-z].</p>
+    <p>La dernière ligne définit la variable d'environnement
+    <code>HAVE_TS</code> si la requête contient un en-tête dont le nom
+    commence par "TS" et dont la valeur commence par tout caractère du
+    jeu [a-z].</p>
 
 <h3>Voir aussi</h3>
 <ul>
-<li><a href="../env.html">Environment Variables in Apache HTTP Server</a>,
-for additional examples.
+<li><a href="../env.html">Les variables d'environnement et le
+serveur HTTP Apache</a> pour des exemples supplémentaires.
 </li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="setenvifexpr" id="setenvifexpr">Directive</a> <a name="SetEnvIfExpr" id="SetEnvIfExpr">SetEnvIfExpr</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets environment variables based on an ap_expr expression</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit des variables d'environnement en fonction d'une expression ap_expr</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SetEnvIfExpr <em>expr
-    [!]env-variable</em>[=<em>value</em>]
-    [[!]<em>env-variable</em>[=<em>value</em>]] ...</code></td></tr>
+    [!]env-variable</em>[=<em>valeur</em>]
+    [[!]<em>env-variable</em>[=<em>valeur</em>]] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_setenvif</td></tr>
 </table>
-    <p>The <code class="directive">SetEnvIfExpr</code> directive defines
-    environment variables based on an <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code>
-    <code>ap_expr</code>. These expressions will be evaluated at runtime,
-    and applied <em>env-variable</em> in the same fashion as <code class="directive">SetEnvIf</code>.</p>
+    <p>La directive <code class="directive">SetEnvIfExpr</code> permet de
+    définir des variables d'environnement en fonction d'une expression
+    <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code> <code>ap_expr</code>. Cette
+    expression est évaluée à l'exécution, et utilise les variables
+    d'environnement <em>env-variable</em> de la même manière que la
+    directive <code class="directive">SetEnvIf</code>.</p>
 
 <pre class="prettyprint lang-config">SetEnvIfExpr "tolower(req('X-Sendfile')) == 'd:\images\very_big.iso')" iso_delivered</pre>
 
 
-    <p>This would set the environment variable <code>iso_delivered</code>
-    every time our application attempts to send it via <code>X-Sendfile</code></p>
+    <p>Dans cet exemple, la variable d'environnement
+    <code>iso_delivered</code> est définie chaque fois que notre
+    application tente de l'envoyer via <code>X-Sendfile</code>.</p>
 
-    <p>A more useful example would be to set the variable rfc1918 if the
-    remote IP address is a private address according to RFC 1918:</p>
+    <p>Il pourrait être plus utile de définir une variable rfc1918 si
+    l'adresse IP distante est une adresse privée au sens de la RFC 1918
+    :</p>
 
 <pre class="prettyprint lang-config">SetEnvIfExpr "-R '10.0.0.0/8' || -R '172.16.0.0/12' || -R '192.168.0.0/16'" rfc1918</pre>
 
 
 <h3>Voir aussi</h3>
 <ul>
-<li><a href="../expr.html">Expressions in Apache HTTP Server</a>,
-for a complete reference and more examples.</li>
-<li><code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code> can be used to achieve similar
-results.</li>
+<li><a href="../expr.html">Les expressions dans le serveur HTTP
+Apache</a>, pour une référence complète et davantage d'exemples.</li>
+<li>La directive <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code> permet d'obtenir des résultats
+similaires.</li>
 <li><code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="setenvifnocase" id="setenvifnocase">Directive</a> <a name="SetEnvIfNoCase" id="SetEnvIfNoCase">SetEnvIfNoCase</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets environment variables based on attributes of the request
-without respect to case</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SetEnvIfNoCase <em>attribute regex
-        [!]env-variable</em>[=<em>value</em>]
-    [[!]<em>env-variable</em>[=<em>value</em>]] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit des variables d'environnement en fonction des
+attributs de la requête sans tenir compte de la casse</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SetEnvIfNoCase <em>attribut regex
+        [!]env-variable</em>[=<em>valeur</em>]
+    [[!]<em>env-variable</em>[=<em>valeur</em>]] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_setenvif</td></tr>
 </table>
 
-    <p>The <code class="directive">SetEnvIfNoCase</code> is semantically identical to
-    the <code class="directive"><a href="#setenvif">SetEnvIf</a></code> directive,
-    and differs only in that the regular expression matching is
-    performed in a case-insensitive manner. For example:</p>
+    <p>La directive <code class="directive">SetEnvIfNoCase</code> est identique
+    d'un point de vue sémantique à la directive <code class="directive"><a href="#setenvif">SetEnvIf</a></code>, et ne s'en distingue que
+    par le fait que la comparaison des expressions rationnelles est
+    effectuée sans tenir compte de la casse. Par exemple :</p>
 <pre class="prettyprint lang-config">SetEnvIfNoCase Host Example\.Org site=example</pre>
 
 
-    <p>This will cause the <code>site</code> environment variable
-    to be set to "<code>example</code>" if the HTTP request header
-    field <code>Host:</code> was included and contained
-    <code>Example.Org</code>, <code>example.org</code>, or any other
-    combination.</p>
+    <p>Cette ligne va définir la variable d'environnement
+    <code>site</code> avec la valeur "<code>example</code>" si le champ
+    d'en-tête de requête HTTP <code>Host:</code> est présent et contient
+    <code>Example.Org</code>, <code>example.org</code>, ou une autre
+    combinaison des mêmes caractères, sans tenir compte de la casse.</p>
 
 </div>
 </div>

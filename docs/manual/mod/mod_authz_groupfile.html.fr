@@ -93,34 +93,39 @@ fonction de leur appartenance à un groupe spécifié. Le module
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="authgroupfile" id="authgroupfile">Directive</a> <a name="AuthGroupFile" id="AuthGroupFile">AuthGroupFile</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets the name of a text file containing the list
-of user groups for authorization</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthGroupFile <var>file-path</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le nom d'un fichier texte contenant la liste des
+groupes d'utilisateurs permettant de définir les autorisations des
+utilisateurs</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthGroupFile <var>chemin-fichier</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authz_groupfile</td></tr>
 </table>
-    <p>The <code class="directive">AuthGroupFile</code> directive sets the
-    name of a textual file containing the list of user groups for user
-    authorization. <var>File-path</var> is the path to the group
-    file. If it is not absolute, it is treated as relative to the <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>.</p>
+    <p>La directive <code class="directive">AuthGroupFile</code> définit
+le nom d'un fichier texte, qui liste les groupes d'utilisateurs
+permettant de définir les autorisations.
+<var>chemin-fichier</var> est le chemin du fichier de groupes. S'il n'est
+pas absolu, ce chemin est considéré comme relatif au répertoire défini par
+la directive <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>.</p>
 
-    <p>Each line of the group file contains a groupname followed by a
-    colon, followed by the member usernames separated by spaces.</p>
+    <p>Chaque ligne du fichier de groupes contient un nom de groupe
+suivi du caractère ':' et des noms des utilisateurs membres du groupe
+séparés par des espaces.</p>
 
-    <div class="example"><h3>Example:</h3><p><code>
-      mygroup: bob joe anne
+    <div class="example"><h3>Exemple :</h3><p><code>
+      mon-groupe : bob joe anne
     </code></p></div>
 
-    <p>Note that searching large text files is <em>very</em>
-    inefficient; <code class="directive"><a href="../mod/mod_authz_dbm.html#authdbmgroupfile">AuthDBMGroupFile</a></code> provides a much better performance.</p>
+    <p>Notez que la recherche dans de grands fichiers textes est
+<em>très</em> inefficace ; la directive <code class="directive"><a href="../mod/mod_authz_dbm.html#authdbmgroupfile">AuthDBMGroupFile</a></code> fournit de bien meilleures
+    performances.</p>
 
-    <div class="warning"><h3>Security</h3>
-      <p>Make sure that the <code class="directive">AuthGroupFile</code> is
-      stored outside the document tree of the web-server; do <em>not</em>
-      put it in the directory that it protects. Otherwise, clients may
-      be able to download the <code class="directive">AuthGroupFile</code>.</p>
+    <div class="warning"><h3>Sécurité</h3>
+      <p>Le fichier <code class="directive">AuthGroupFile</code> ne doit pas
+être stocké dans l'arborescence des documents du site web ; ne le placez
+<em>surtout pas</em> dans le répertoire qu'il protège, faute de quoi les
+clients pourraient le télécharger.</p>
     </div>
 
 </div>

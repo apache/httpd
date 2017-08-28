@@ -134,28 +134,32 @@ recherche/remplacement de chaîne ou d'expression rationnelle.</p>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="inputsed" id="inputsed">Directive</a> <a name="InputSed" id="InputSed">InputSed</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sed command to filter request data (typically <code>POST</code> data)</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>InputSed <var>sed-command</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Commande sed à exécuter pour le filtrage des données d'une
+requête (en général des données <code>POST</code>)</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>InputSed <var>commande-sed</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td /></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_sed</td></tr>
 </table>
-    <p>The <code class="directive">InputSed</code> directive specifies the <code>sed</code> command
-    to execute on the request data e.g., <code>POST</code> data.
+    <p>La directive <code class="directive">InputSed</code> permet de spécifier
+    la commande sed à exécuter pour le filtrage des données (en général
+    des données <code>POST</code>) d'une requête.
     </p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="outputsed" id="outputsed">Directive</a> <a name="OutputSed" id="OutputSed">OutputSed</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sed command for filtering response content</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>OutputSed <var>sed-command</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Commande sed pour le filtrage des contenus de type
+réponse</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>OutputSed <var>commande-sed</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td /></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_sed</td></tr>
 </table>
-    <p>The <code class="directive">OutputSed</code> directive specifies the <code>sed</code>
-    command to execute on the response.
+    <p>La directive <code class="directive">OutputSed</code> permet de spécifier
+    la commande <code>sed</code> à exécuter dans le cadre du traitement
+    d'une réponse.
     </p>
 
 </div>

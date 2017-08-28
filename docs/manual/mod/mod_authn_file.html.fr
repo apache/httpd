@@ -69,65 +69,72 @@ passe</a></li>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="authuserfile" id="authuserfile">Directive</a> <a name="AuthUserFile" id="AuthUserFile">AuthUserFile</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets the name of a text file containing the list of users and
-passwords for authentication</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthUserFile <var>file-path</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le nom d'un fichier texte pour l'authentification
+contenant la liste des utilisateurs et de leurs mots de
+passe</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthUserFile <var>chemin-fichier</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authn_file</td></tr>
 </table>
-    <p>The <code class="directive">AuthUserFile</code> directive sets the name
-    of a textual file containing the list of users and passwords for
-    user authentication. <var>File-path</var> is the path to the user
-    file. If it is not absolute, it is treated as relative to the
-    <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>.</p>
+    <p>La directive <code class="directive">AuthUserFile</code> permet de
+    définir le nom d'un fichier texte pour l'authentification contenant
+    la liste des utilisateurs et de leurs mots de passe.
+    <var>chemin-fichier</var> est le chemin vers le fichier
+    des utilisateurs. S'il n'est pas absolu, il est considéré comme
+    relatif au répertoire défini par la directive <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>.</p>
 
-    <p>Each line of the user file contains a username followed by
-    a colon, followed by the encrypted password. If the same user
-    ID is defined multiple times, <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code> will
-    use the first occurrence to verify the password.</p>
+    <p>Chaque ligne du fichier des utilisateurs se compose du nom de
+    l'utilisateur, du caractère ':' et du mot de passe chiffré. Si le
+    même identifiant utilisateur est référencé plusieurs fois,
+    <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code> utilisera la première occurrence pour
+    vérifier le mot de passe.</p>
 
-    <p>The encrypted password format depends on which authentication
-    frontend (e.g. <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> or
-    <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code>) is being used.  See <a href="../misc/password_encryptions.html">Password Formats</a> for
-    more information.</p>
+     <p>Le format du mot de passe chiffré dépend du frontal
+     d'authentification utilisé (par exemple
+     <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> ou
+     <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code>). Voir la documentation sur les
+     <a href="../misc/password_encryptions.html">Formats de mots de
+     passe</a> pour plus de détails.</p>
 
-    <p>For <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code>, use the utility <code class="program"><a href="../programs/htpasswd.html">htpasswd</a></code>
-    which is installed as part of the binary distribution, or which
-    can be found in <code>src/support</code>. See the
-    <a href="../programs/htpasswd.html">man page</a> for more details.
-    In short:</p>
+    <p>Pour <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code>, utilisez le programme
+    <code class="program"><a href="../programs/htpasswd.html">htpasswd</a></code> fourni avec la distribution binaire,
+    mais que vous trouverez aussi dans le répertoire
+    <code>src/support</code> de l'arborescence des sources. Voir sa <a href="../programs/htpasswd.html">page de manuel</a> pour plus de
+    détails. En bref :</p>
 
-    <p>Create a password file <code>Filename</code> with
-    <code>username</code> as the initial ID. It will prompt for
-    the password:</p>
-
-    <div class="example"><p><code>
-      htpasswd -c Filename username
-    </code></p></div>
-
-    <p>Add or modify <code>username2</code> in the password file
-    <code>Filename</code>:</p>
+    <p>On crée un fichier de mots de passe <code>nom-fichier</code> avec
+    <code>nom-utilisateur</code> comme identifiant initial. Le mot de
+    passe correspondant sera alors demandé :</p>
 
     <div class="example"><p><code>
-      htpasswd Filename username2
+      htpasswd -c nom-fichier nom-utilisateur
     </code></p></div>
 
-    <p>Note that searching large text files is <em>very</em>
-    inefficient; <code class="directive"><a href="../mod/mod_authn_dbm.html#authdbmuserfile">AuthDBMUserFile</a></code> should be used
-    instead.</p>
+    <p>Pour ajouter ou modifier <code>nom-utilisateur2</code> dans le
+    fichier de mots de passe <code>nom-fichier</code> :</p>
 
-    <p>For <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code>, use <code class="program"><a href="../programs/htdigest.html">htdigest</a></code>
-    instead. Note that you cannot mix user data for Digest Authentication
-    and Basic Authentication within the same file.</p>
+    <div class="example"><p><code>
+      htpasswd nom-fichier nom-utilisateur2
+    </code></p></div>
 
-    <div class="warning"><h3>Security</h3>
-      <p>Make sure that the <code class="directive">AuthUserFile</code> is
-      stored outside the document tree of the web-server. Do
-      <strong>not</strong> put it in the directory that it protects.
-      Otherwise, clients may be able to download the
-      <code class="directive">AuthUserFile</code>.</p>
+    <p>Noter qu'une recherche dans de grands fichiers texte peut être
+    très longue ; dans ce cas, il vaut mieux utiliser les fichiers DBM
+    avec la directive <code class="directive"><a href="../mod/mod_authn_dbm.html#authdbmuserfile">AuthDBMUserFile</a></code>.</p>
+
+    <p>Pour <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code>, vous devez utiliser
+    le programme <code class="program"><a href="../programs/htdigest.html">htdigest</a></code>.
+    Notez que vous ne pouvez pas mélanger des données utilisateur pour
+    l'Authentification HTTP à base de condensé et des données pour
+    l'Authentification de Base dans le même fichier.</p>
+
+    <div class="warning"><h3>Sécurité</h3>
+      <p>Assurez-vous que le fichier <code class="directive">AuthUserFile</code>
+      soit bien stocké en dehors de l'arborescence des documents du
+      serveur web. Ne placez <strong>pas</strong> ce fichier dans le
+      répertoire qu'il protège. Dans le cas contraire, les clients
+      seraient en mesure de télécharger le fichier des mots de passe.</p>
     </div>
 
 </div>

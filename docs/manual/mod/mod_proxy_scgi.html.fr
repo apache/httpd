@@ -116,32 +116,36 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="proxyscgiinternalredirect" id="proxyscgiinternalredirect">Directive</a> <a name="ProxySCGIInternalRedirect" id="ProxySCGIInternalRedirect">ProxySCGIInternalRedirect</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable or disable internal redirect responses from the
-backend</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active ou désactive les réponses de redirection interne en
+provenance du serveur cible.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxySCGIInternalRedirect On|Off|<var>Headername</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ProxySCGIInternalRedirect On</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_scgi</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>The <var>Headername</var> feature is available in Apache
-httpd 2.4.13 and later.</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le paramètre <var>Headername</var> est disponible depuis
+la version 2.4.13 du serveur HTTP Apache.</td></tr>
 </table>
-    <p>The <code class="directive">ProxySCGIInternalRedirect</code> enables the backend
-    to internally redirect the gateway to a different URL. This feature
-    originates in <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>, which internally redirects the
-    response if the response status is <code>OK</code> (<code>200</code>) and
-    the response contains a <code>Location</code> (or configured alternate
-    header) and its value starts with a slash (<code>/</code>). This value is 
-    interpreted as a new local URL that Apache httpd internally redirects to.</p>
+    <p>La directive <code class="directive">ProxySCGIInternalRedirect</code>
+    permet au serveur cible de rediriger en interne la passerelle vers
+    une URL différente. Cette fonctionnalité trouve son origine dans
+    <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code> qui redirige la réponse en interne si
+    l'état de la réponse est <code>OK</code> (<code>200</code>), et si
+    la réponse contient un en-tête <code>Location</code> (ou un autre
+    en-tête défini) dont la valeur
+    débute par un slash (<code>/</code>). Cette valeur est interprétée
+    comme une nouvelle URL locale vers laquelle Apache httpd effectue sa
+    redirection.</p>
 
-    <p><code class="module"><a href="../mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code> does the same as
-    <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code> in this regard, except that you can turn off the
-    feature or specify the use of a header other than <code>Location</code>.</p>
+    <p>De ce point de vue, <code class="module"><a href="../mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code> fait la même
+    chose que <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>, mais vous pouvez en plus
+    désactiver la fonctionnalité ou spécifier l'utilisation d'un en-tête
+    autre que <code>Location</code>.</p>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">    ProxySCGIInternalRedirect Off
-
-# Django and some other frameworks will fully qualify "local URLs"
-# set by the application, so an alternate header must be used.
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">    ProxySCGIInternalRedirect Off
+# Django et certains autres frameworks qualifient pleinement les "URLs
+# locales" définies par l'application ; il faut donc utiliser un autre
+# en-tête.
 &lt;Location /django-app/&gt;
     ProxySCGIInternalRedirect X-Location
 &lt;/Location&gt;</pre>
@@ -151,41 +155,46 @@ httpd 2.4.13 and later.</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="proxyscgisendfile" id="proxyscgisendfile">Directive</a> <a name="ProxySCGISendfile" id="ProxySCGISendfile">ProxySCGISendfile</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable evaluation of <var>X-Sendfile</var> pseudo response
-header</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxySCGISendfile On|Off|<var>Headername</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active l'évaluation du pseudo en-tête de réponse
+<var>X-Sendfile</var></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxySCGISendfile On|Off|<var>nom-en-tête</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ProxySCGISendfile Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_scgi</td></tr>
 </table>
-    <p>The <code class="directive">ProxySCGISendfile</code> directive enables the
-    SCGI backend to let files be served directly by the gateway. This is useful
-    for performance purposes &#8212; httpd can use <code>sendfile</code> or other
-    optimizations, which are not possible if the file comes over the backend
-    socket.  Additionally, the file contents are not transmitted twice.</p>
-    <p>The <code class="directive">ProxySCGISendfile</code> argument determines the
-    gateway behaviour:</p>
+    <p>La directive <code class="directive">ProxySCGISendfile</code> permet au
+    serveur cible SCGI de faire servir les fichiers directement par la
+    passerelle. Ceci s'avère bénéfique en matière de performances &#8212;
+    httpd peut alors utiliser <code>sendfile</code> ou d'autres
+    optimisations, ce qui n'est pas possible si les fichiers passent par
+    le socket du serveur cible. En outre, les fichiers ne sont transmis
+    qu'une seule fois.</p>
+    <p>L'argument de la directive
+    <code class="directive">ProxySCGISendfile</code> détermine le comportement
+    de la passerelle :</p>
     <dl>
     <dt><code>Off</code></dt>
-    <dd>No special handling takes place.</dd>
+    <dd>Aucun traitement particulier n'est effectué.</dd>
 
     <dt><code>On</code></dt>
-    <dd>The gateway looks for a backend response header called
-    <code>X-Sendfile</code> and interprets the value as the filename to serve.
-    The  header is removed from the final response headers. This is equivalent to
+    <dd>La passerelle recherche un en-tête dans la réponse du serveur
+    cible nommé <code>X-Sendfile</code>, et interprète sa valeur comme
+    le nom du fichier à servir. L'en-tête est ensuite supprimé de la
+    réponse finale. Cet argument produit le même effet que
     <code>ProxySCGISendfile X-Sendfile</code>.</dd>
 
-    <dt>anything else</dt>
-    <dd>Similar to <code>On</code>, but instead of the hardcoded header name
-    <code>X-Sendfile</code>, the argument is used as the header name.</dd>
+    <dt>toute autre valeur</dt>
+    <dd>Identique à <code>On</code>, mais au lieu de rechercher le nom
+    d'en-tête codé en dur <code>X-Sendfile</code>, c'est la valeur de
+    l'argument qui constitue le nom de l'en-tête à rechercher.</dd>
     </dl>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config"># Use the default header (X-Sendfile)
-ProxySCGISendfile On
-
-# Use a different header
-ProxySCGISendfile X-Send-Static</pre>
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">    # Utilise le nom d'en-tête par défaut (X-Sendfile)
+    ProxySCGISendfile On
+    
+    # Utilise un nom d'en-tête différent
+    ProxySCGISendfile X-Send-Static</pre>
 </div>
 
 </div>

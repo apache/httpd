@@ -48,57 +48,62 @@ les corps de requêtes HTTP</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="keptbodysize" id="keptbodysize">Directive</a> <a name="KeptBodySize" id="KeptBodySize">KeptBodySize</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Keep the request body instead of discarding it up to
-the specified maximum size, for potential use by filters such as
-mod_include.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>KeptBodySize <var>maximum size in bytes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Conserve le corps de la requête à concurrence de la taille
+maximale spécifiée, pour une utilisation éventuelle par des filtres
+comme mod_include.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>KeptBodySize <var>taille maximale en octets</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>KeptBodySize 0</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_request</td></tr>
 </table>
-    <p>Under normal circumstances, request handlers such as the
-    default handler for static files will discard the request body
-    when it is not needed by the request handler. As a result,
-    filters such as mod_include are limited to making <code>GET</code> requests
-    only when including other URLs as subrequests, even if the
-    original request was a <code>POST</code> request, as the discarded
-    request body is no longer available once filter processing is
-    taking place.</p>
+    <p>Dans une situation normale, les gestionnaires de requête tels que
+    le gestionnaire par défaut des fichiers statiques suppriment le
+    corps de la requête s'il n'est pas nécessaire au gestionnaire de
+    requête. Il en résulte que les filtres comme mod_include sont
+    limités à des requêtes <code>GET</code> lors de l'inclusion d'autres
+    URLs en tant que sous-requêtes, et ceci même si la requête originale
+    était une requête <code>POST</code>, car le corps de la requête a
+    été supprimé et n'est donc plus disponible une fois le traitement du
+    filtre mis en oeuvre.</p>
 
-    <p>When this directive has a value greater than zero, request
-    handlers that would otherwise discard request bodies will
-    instead set the request body aside for use by filters up to
-    the maximum size specified. In the case of the mod_include
-    filter, an attempt to <code>POST</code> a request to the static
-    shtml file will cause any subrequests to be <code>POST</code>
-    requests, instead of <code>GET</code> requests as before.</p>
+    <p>Lorsque l'argument de cette directive a une valeur supérieure à
+    zéro, les gestionnaires de requête qui suppriment habituellement les
+    corps de requête vont alors conserver ces corps de requête, à
+    concurrence de la taille maximale spécifiée, pour être
+    éventuellement utilisés par des filtres. Dans le cas du filtre
+    mod_include, une tentative de requête <code>POST</code> pour un
+    fichier shtml statique se traduira par des sous-requêtes
+    <code>POST</code>, et non par des sous-requêtes <code>GET</code>
+    comme avant.</p>
 
-    <p>This feature makes it possible to break up complex web pages and
-    web applications into small individual components, and combine
-    the components and the surrounding web page structure together
-    using <code class="module"><a href="../mod/mod_include.html">mod_include</a></code>. The components can take the
-    form of CGI programs, scripted languages, or URLs reverse proxied
-    into the URL space from another server using
-    <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>.</p>
+    <p>Cette fonctionnalité permet de découper des pages web complexes
+    et des applications web en petits éléments individuels, et de
+    combiner ces éléments avec la structure de la page web sous-jacente
+    en utilisant <code class="module"><a href="../mod/mod_include.html">mod_include</a></code>. Les éléments peuvent se
+    présenter sous la forme de programmes CGI, de langages de scripts,
+    ou d'URLs issues d'un mandataire inverse dans l'espace d'URL d'un
+    autre serveur en utilisant <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>.</p>
 
-    <p><strong>Note:</strong> Each request set aside has to be set
-    aside in temporary RAM until the request is complete. As a result,
-    care should be taken to ensure sufficient RAM is available on the
-    server to support the intended load. Use of this directive
-    should be limited to where needed on targeted parts of your
-    URL space, and with the lowest possible value that is still big
-    enough to hold a request body.</p>
+    <p><strong>Note :</strong> Chaque requête dont le corps est ainsi
+    conservé doit être enregistrée temporairement en mémoire vive
+    jusqu'à la fin du traitement de la requête. Il faut donc s'assurer
+    que la mémoire RAM du serveur est suffisante pour pouvoir supporter
+    la charge induite. L'utilisation de cette directive doit être
+    limitée à certaines portions de votre espace d'URL bien précises qui
+    le nécessitent, et en spécifiant comme taille maximale une valeur la
+    plus petite possible, mais tout de même suffisante pour un corps de
+    requête.</p>
 
-    <p>If the request size sent by the client exceeds the maximum
-    size allocated by this directive, the server will return
+    <p>Si la taille de la requête envoyée par le client dépasse la taille
+    maximale autorisée par cette directive, le serveur renverra l'erreur
     <code>413 Request Entity Too Large</code>.</p>
 
 
 <h3>Voir aussi</h3>
 <ul>
-<li><a href="mod_include.html">mod_include</a> documentation</li>
-<li><a href="mod_auth_form.html">mod_auth_form</a> documentation</li>
+<li>la documentation de <a href="mod_include.html">mod_include</a></li>
+<li>la documentation de <a href="mod_auth_form.html">mod_auth_form</a></li>
 </ul>
 </div>
 </div>

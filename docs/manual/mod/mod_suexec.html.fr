@@ -55,21 +55,25 @@ le groupe spécifiés</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="suexecusergroup" id="suexecusergroup">Directive</a> <a name="SuexecUserGroup" id="SuexecUserGroup">SuexecUserGroup</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>User and group for CGI programs to run as</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SuexecUserGroup <em>User Group</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>L'utilisateur et le groupe sous lesquels les programmes CGI
+doivent s'exécuter</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SuexecUserGroup <em>Utilisateur Groupe</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_suexec</td></tr>
 </table>
-    <p>The <code class="directive">SuexecUserGroup</code> directive allows you
-    to specify a user and group for CGI programs to run as. Non-CGI
-    requests are still processed with the user specified in the <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code> directive.</p>
+    <p>La directive <code class="directive">SuexecUserGroup</code> permet de
+    spécifier l'utilisateur et le groupe sous lesquels les programmes
+    CGI doivent s'exécuter. Les requêtes non CGI seront toujours
+    traitées avec l'utilisateur spécifié par la directive <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code>.</p>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SuexecUserGroup nobody nogroup</pre>
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">SuexecUserGroup nobody nogroup</pre>
 </div>
 
-    <p>Startup will fail if this directive is specified but the suEXEC
-    feature is disabled.</p>
+    <p>Le démarrage va échouer si cette
+    directive est spécifiée et si la fonctionnalité suEXEC est
+    désactivée.</p>
+
 
 <h3>Voir aussi</h3>
 <ul>

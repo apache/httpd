@@ -163,65 +163,76 @@ configuration nécessaire de certaines applications web.
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="authdbduserpwquery" id="authdbduserpwquery">Directive</a> <a name="AuthDBDUserPWQuery" id="AuthDBDUserPWQuery">AuthDBDUserPWQuery</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>SQL query to look up a password for a user</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthDBDUserPWQuery <var>query</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Requête SQL servant à vérifier le mot de passe d'un
+utilisateur</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthDBDUserPWQuery <var>requête</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authn_dbd</td></tr>
 </table>
-    <p>The <code class="directive">AuthDBDUserPWQuery</code> specifies an
-    SQL query to look up a password for a specified user.  The user's ID
-    will be passed as a single string parameter when the SQL query is
-    executed.  It may be referenced within the query statement using
-    a <code>%s</code> format specifier.</p>
+    <p>La directive <code class="directive">AuthDBDUserPWQuery</code> permet de
+    spécifier une requête servant à vérifier le mot de passe d'un
+    utilisateur donné. L'identifiant utilisateur sera transmis comme
+    paramètre sous forme d'une seule chaîne de caractères lorsque la
+    requête sera exécutée. Cet identifiant est référencé dans la requête
+    en utilisant le spécificateur de format <code>%s</code>.</p>
     <pre class="prettyprint lang-config">AuthDBDUserPWQuery "SELECT password FROM authn WHERE user = %s"</pre>
 
-    <p>The first column value of the first row returned by the query
-    statement should be a string containing the encrypted password.
-    Subsequent rows will be ignored.  If no rows are returned, the user
-    will not be authenticated through <code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code>.</p>
-    <p>If httpd was built against <a class="glossarylink" href="../glossary.html#apr" title="voir glossaire">APR</a> version 1.3.0
-    or higher, any additional column values in the first row returned by
-    the query statement will be stored as environment variables with
-    names of the form <code>AUTHENTICATE_<var>COLUMN</var></code>.
+    <p>La première colonne du premier enregistrement renvoyé par la
+    requête se présentera sous la forme d'une chaîne de caractères
+    contenant le mot de passe chiffré. Les enregistrements suivants sont
+    ignorés. Si aucun enregistrement n'est renvoyé, l'utilisateur ne
+    sera pas authentifié par <code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code>.</p>
+    <p>Si httpd a été compilé avec la version 1.3.0 ou supérieure de
+    l'<a class="glossarylink" href="../glossary.html#apr" title="voir glossaire">APR</a>, toute valeur de colonne supplémentaire
+    du premier enregistrement renvoyé par la requête sera stockée dans
+    une variable d'environnement dont le nom aura la forme
+    <code>AUTHENTICATE_<var>valeur-colonne</var></code>.
     </p>
-    <p>The encrypted password format depends on which authentication
-    frontend (e.g. <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> or
-    <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code>) is being used.  See <a href="../misc/password_encryptions.html">Password Formats</a> for
-    more information.</p>
+    <p>Le format du mot de passe chiffré dépend du frontal
+    d'authentification utilisé (par exemple
+    <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> ou
+    <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code>). Voir la documentation sur les <a href="../misc/password_encryptions.html">Formats de mots de passe</a> pour
+    plus de détails.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="authdbduserrealmquery" id="authdbduserrealmquery">Directive</a> <a name="AuthDBDUserRealmQuery" id="AuthDBDUserRealmQuery">AuthDBDUserRealmQuery</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>SQL query to look up a password hash for a user and realm.
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Requête SQL servant à vérifier une empreinte de mot de
+passe pour un utilisateur et un identifiant d'authentification.
 </td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthDBDUserRealmQuery <var>query</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthDBDUserRealmQuery <var>requête</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authn_dbd</td></tr>
 </table>
-    <p>The <code class="directive">AuthDBDUserRealmQuery</code> specifies an
-    SQL query to look up a password for a specified user and realm in a
-    digest authentication process.
-    The user's ID and the realm, in that order, will be passed as string
-    parameters when the SQL query is executed.  They may be referenced
-    within the query statement using <code>%s</code> format specifiers.</p>
+    <p>La directive <code class="directive">AuthDBDUserRealmQuery</code> spécifie
+    une requête SQL servant à vérifier une empreinte de mot
+    de passe pour un utilisateur et un identifiant d'authentification
+    donnés au cours d'un processus d'authentification digest. Les
+    identifiants de l'utilisateur et de l'authentification
+    sont passés dans cet ordre comme paramètres à l'exécution de la
+    requête. Ils sont référencés dans la chaîne de la requête en
+    utilisant des spécificateurs de format <code>%s</code>.</p>
     <pre class="prettyprint lang-config">AuthDBDUserRealmQuery "SELECT password FROM authn WHERE user = %s AND realm = %s"</pre>
 
-    <p>The first column value of the first row returned by the query
-    statement should be a string containing the encrypted password.
-    Subsequent rows will be ignored.  If no rows are returned, the user
-    will not be authenticated through <code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code>.</p>
-    <p>If httpd was built against <a class="glossarylink" href="../glossary.html#apr" title="voir glossaire">APR</a> version 1.3.0
-    or higher, any additional column values in the first row returned by
-    the query statement will be stored as environment variables with
-    names of the form <code>AUTHENTICATE_<var>COLUMN</var></code>.
+    <p>La première colonne du premier enregistrement renvoyé par la
+    requête se présentera sous la forme d'une chaîne de caractères
+    contenant le mot de passe chiffré. Les enregistrements suivants
+    seront ignorés. Si aucun enregistrement n'est renvoyé, l'utilisateur
+    ne sera pas authentifié par <code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code>.</p>
+    <p>Si httpd a été compilé avec une version 1.3.0 ou supérieure de
+    l'<a class="glossarylink" href="../glossary.html#apr" title="voir glossaire">APR</a>, toute valeur de colonne supplémentaire
+    du premier enregistrement renvoyé par la requête sera stockée dans
+    une variable d'environnement avec un nom de la forme
+    <code>AUTHENTICATE_<var>COLONNE</var></code>.
     </p>
-    <p>The encrypted password format depends on which authentication
-    frontend (e.g. <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> or
-    <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code>) is being used.  See <a href="../misc/password_encryptions.html">Password Formats</a> for
-    more information.</p>
+    <p>Le format du mot de passe chiffré dépend du frontal
+    d'authentification utilisé (par exemple
+    <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> ou
+    <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code>). Voir la documentation sur les <a href="../misc/password_encryptions.html">Formats de mots de passe</a> pour
+    plus de détails.</p>
 
 </div>
 </div>

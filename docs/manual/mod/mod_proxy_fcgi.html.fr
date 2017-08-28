@@ -205,36 +205,39 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="proxyfcgibackendtype" id="proxyfcgibackendtype">Directive</a> <a name="ProxyFCGIBackendType" id="ProxyFCGIBackendType">ProxyFCGIBackendType</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specify the type of backend FastCGI application</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Spécifie le type de l'application FastCGI d'arrière-plan</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyFCGIBackendType FPM|GENERIC</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ProxyFCGIBackendType FPM</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_fcgi</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Available in version 2.4.26 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.26 du serveur HTTP Apache</td></tr>
 </table>
-<p>This directive allows the type of backend FastCGI application to be
-specified. Some FastCGI servers, such as PHP-FPM,  use historical quirks of
-environment variables to identify the type of proxy server being used.  Set
-this directive to "GENERIC" if your non PHP-FPM application has trouble
-interpreting environment variables such as SCRIPT_FILENAME or PATH_TRANSLATED
-as set by the server.</p>
+<p>Cette directive permet de spécifier le type de l'application FastCGI
+d'arrière-plan. Certains serveurs FastCGI, comme PHP-FPM, utilisent de manière
+historique des variables d'environnement exotiques pour identifier le type du
+serveur mandataire utilisé. Définissez cette directive à "GENERIC" si votre
+application n'est pas de type PHP-FPM et n'interpréter pas correctement des
+variables d'environnement comme SCRIPT_FILENAME ou PATH_TRANSLATED telles
+qu'elles sont définies par le serveur.</p>
 
-<p>One example of values that change based on the setting of this directive is
-SCRIPT_FILENAME. When using <code class="module"><a href="../mod/mod_proxy_fcgi.html">mod_proxy_fcgi</a></code> historically,
-SCRIPT_FILENAME was prefixed with the string "proxy:fcgi://". This variable is
-what some generic FastCGI applications would read as their script input, but
-PHP-FPM would strip the prefix then remember it was talking to Apache.  In
-2.4.21 through 2.4.25, this prefix was automatically stripped by the server,
-breaking the ability of PHP-FPM to detect and interoperate with Apache in some
-scenarios.</p>
+<p>SCRIPT_FILENAME est un exemple de valeur modifiée par la définition de cette
+directive. Historiquement, lorsqu'on utilisait le module
+<code class="module"><a href="../mod/mod_proxy_fcgi.html">mod_proxy_fcgi</a></code>, SCRIPT_FILENAME était préfixé par la chaîne
+"proxy:fcgi://". C'est cette variable que lisent certaines applications FastCGI
+génériques en tant que valeur en entrée pour leur script ; cependant, PHP-FPM
+peut supprimer le préfixe, puis garder en mémoire qu'il communique avec Apache.
+Avec les versions 2.4.21 à 2.4.25, ce préfixe était automatiquement supprimé par
+le serveur, empêchant ainsi PHP-FPM de détecter et interopérer avec Apache dans
+certains scénarios.</p> 
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="proxyfcgisetenvif" id="proxyfcgisetenvif">Directive</a> <a name="ProxyFCGISetEnvIf" id="ProxyFCGISetEnvIf">ProxyFCGISetEnvIf</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Allow variables sent to FastCGI servers to be fixed up</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Permet d'adapter la valeur des variables envoyées aux serveurs
+FastCGI</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyFCGISetEnvIf <var>conditional-expression</var>
     [!]<var>environment-variable-name</var>
     [<var>value-expression</var>]</code></td></tr>
@@ -242,14 +245,15 @@ scenarios.</p>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_fcgi</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Available in version 2.4.26 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.26 du serveur HTTP Apache.</td></tr>
 </table>
-<p>Just before passing a request to the configured FastCGI server, the core of
-the web server sets a number of environment variables based on details of the
-current request. FastCGI programs often uses these environment variables
-as inputs that determine what underlying scripts they will process, or what
-output they directly produce.</p>
-<p>Examples of noteworthy environment variables are:</p>
+<p>Juste avant la transmission d'une requête au serveur FastCGI configuré, le
+coeur du programme du serveur web définit un certain nombre de variables
+d'environnement en fonction de certains détails de la requête considérée. Les
+programmes FastCGI utilisent souvent ces variables comme données en entrée afin
+de déterminer quels scripts sous-jacents ils vont exécuter, ou quelles données
+en sortie doivent être produites.</p>
+<p>Voici quelques exemples de variables d'environnement importantes :</p>
 <ul>
   <li>SCRIPT_NAME</li>
   <li>SCRIPT_FILENAME</li>
@@ -258,59 +262,62 @@ output they directly produce.</p>
   <li>PATH_TRANSLATED</li>
 </ul>
 
-<p>This directive allows the environment variables above, or any others of
-interest, to be overridden.  This directive is evaluated after the initial
-values for these variables are set, so they can be used as input into both
-the condition expressions and value expressions.</p>
-<p>Parameter syntax:</p>
+<p>Cette directive permet de passer outre les variables d'environnement
+ci-dessus, entre autres. Elle est évaluée après la définition de la valeur
+initiale de ces variables ; elle peuvent donc être utilisées comme entrées dans
+les expressions définissants les conditions et les valeurs.</p>
+<p>Syntaxe des paramètres :</p>
 <dl>
-<dt>conditional-expression</dt>
-<dd>Specifies an expression that controls whether the environment variable that
-   follows will be modified.  For information on the expression syntax, see
-   the examples that follow or the full specification at the
-   <a href="../expr.html">ap_expr</a> documentation.
+<dt>conditional-expression</dt> 
+<dd>Définit une condition en fonction de laquelle la
+variable d'environnement qui suit sera modifiée ou non. Pour la syntaxe de cette
+expression, reportez-vous aux exemples qui suivent ou à la spécification
+détaillée dans le document <a href="../expr.html">ap_expr</a>.
    </dd>
-<dt>environment-variable-name</dt>
-<dd> Specifies the CGI environment variable to change,
-   such as PATH_INFO. If preceded by an exclamation point, the variable 
-   will be unset.</dd>
+<dt>environment-variable-name</dt> 
+<dd>Spécifie le nom de la variable d'environnement à modifier, par exemple
+PATH_INFO. Si elle est précédée d'un point d'exclamation, la définition de la
+variable sera annulée.</dd>
 <dt>value-expression</dt>
-<dd>Specifies the replacement value for the preceding environment variable.
-   Backreferences, such as "$1", can be included from regular expression
-   captures in <var>conditional-expression</var>. If omitted, the variable is
-   set (or overridden) to an empty string &#8212; but see the Note below.</dd>
+<dd>Spécifie la nouvelle valeur de la variable "environment-variable-name". On
+peut inclure des
+références arrières, comme "$1", issues de captures en provenance de
+l'expression rationnelle <var>conditional-expression</var>. Si cette valeur est
+omise, la variable est définie (ou sa valeur est écrasée) par une chaîne vide
+&#8212; voir cependant la note ci-après.</dd>
 </dl>
-
-<div class="example"><pre class="prettyprint lang-config"># A basic, unconditional override
+  
+<div class="example"><pre class="prettyprint lang-config"># Une modification basique, inconditionnelle
 ProxyFCGISetEnvIf "true" PATH_INFO "/example"
 
-# Use an environment variable in the value
+# Utilisation d'une variable d'environnement pour spécifier la nouvelle valeur
 ProxyFCGISetEnvIf "true" PATH_INFO "%{reqenv:SCRIPT_NAME}"
-
-# Use captures in the conditions and backreferences in the replacement
-ProxyFCGISetEnvIf "reqenv('PATH_TRANSLATED') =~ m|(/.*prefix)(\d+)(.*)|" PATH_TRANSLATED "$1$3"</pre>
+<br />
+# Utilisation de captures dans la condition et de références arrières dans la
+# nouvelle valeur
+ProxyFCGISetEnvIf "reqenv('PATH_TRANSLATED') =~ m#(/.*prefix)(\d+)(.*)#" PATH_TRANSLATED "$1$3"</pre>
 </div>
 
-<div class="note"><h3>Note: Unset vs. Empty</h3>
-  The following will unset <code>VARIABLE</code>, preventing it from being sent
-  to the FastCGI server:
+<div class="note"><h3>Note : Annulation définition ou valeur vide</h3>
+  La ligne suivante annule la définition de la variable <code>VARIABLE</code>,
+  ce qui l'empêche d'être envoyée au serveur FastCGI :
 
     <pre class="prettyprint lang-config">ProxyFCGISetEnvIf true !VARIABLE</pre>
 
 
-  Whereas the following will erase any existing <em>value</em> of
-  <code>VARIABLE</code> (by setting it to the empty string), but the empty
-  <code>VARIABLE</code> will still be sent to the server:
+  La ligne suivante, quant à elle, efface la <em>valeur</em> de la variable
+  <code>VARIABLE</code> en lui affectant la chaîne vide ; cette variable
+  <code>VARIABLE</code> sera alors tout de même envoyée au serveur FastCGI :
 
     <pre class="prettyprint lang-config">ProxyFCGISetEnvIf true VARIABLE</pre>
 
 
-  The CGI/1.1 specification
-  <a href="https://tools.ietf.org/html/rfc3875#section-4.1">does not
-  distinguish</a> between a variable with an empty value and a variable that
-  does not exist. However, many CGI and FastCGI implementations distinguish (or
-  allow scripts to distinguish) between the two. The choice of which to use is
-  dependent upon your implementation and your reason for modifying the variable.
+  La spécification CGI/1.1 <a href="https://tools.ietf.org/html/rfc3875#section-4.1">ne fait pas de
+  distinction</a> entre une variable contenant une chaîne vide et une variable qui
+  n'existe pas. De nombreuses implémentations CGI et FastCGI font cependant
+  cette distinction (ou permettent aux scripts de la faire). Le choix de celle
+  que vous allez utiliser dépend de votre implémentation et de la raison qui
+  vous pousse à modifier cette variable.
 </div>
 
 

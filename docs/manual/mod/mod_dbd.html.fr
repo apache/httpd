@@ -222,103 +222,110 @@ APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const c
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="dbdexptime" id="dbdexptime">Directive</a> <a name="DBDExptime" id="DBDExptime">DBDExptime</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Keepalive time for idle connections</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DBDExptime <var>time-in-seconds</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Durée de vie des connexions inactives</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DBDExptime <var>durée en secondes</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>DBDExptime 300</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dbd</td></tr>
 </table>
-    <p>Set the time to keep idle connections alive when the number
-    of connections specified in DBDKeep has been exceeded (threaded
-    platforms only).</p>
+    <p>Cette directive définit la durée de vie des connexions
+    inactives lorsque le nombre de connexions spécifié par la directive
+    DBDKeep a été dépassé (plates-formes threadées seulement).</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="dbdinitsql" id="dbdinitsql">Directive</a> <a name="DBDInitSQL" id="DBDInitSQL">DBDInitSQL</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Execute an SQL statement after connecting to a database</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DBDInitSQL <var>"SQL statement"</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Exécute une instruction SQL après connexion à une base de
+données</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DBDInitSQL <var>"instruction SQL"</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dbd</td></tr>
 </table>
-    <p>Modules, that wish it, can have one or more SQL statements
-    executed when a connection to a database is created. Example
-    usage could be initializing certain values or adding a log
-    entry when a new connection is made to the database.</p>
+    <p>Les modules qui le souhaitent peuvent exécuter une ou plusieurs
+    instructions SQL après connexion à une base de données. Par exemple
+    initialiser certaines valeurs, ou ajouter une entrée dans le journal
+    lors d'une nouvelle connexion à la base de données.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="dbdkeep" id="dbdkeep">Directive</a> <a name="DBDKeep" id="DBDKeep">DBDKeep</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum sustained number of connections</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DBDKeep <var>number</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nombre maximum de connexions maintenues</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DBDKeep <var>nombre</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>DBDKeep 2</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dbd</td></tr>
 </table>
-    <p>Set the maximum number of connections per process to be
-    sustained, other than for handling peak demand (threaded
-    platforms only).</p>
+    <p>Cette directive définit le nombre maximum de connexions
+    à maintenir par processus, en dehors de celles servant à gérer les
+    pics de demandes (plates-formes threadées seulement).</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="dbdmax" id="dbdmax">Directive</a> <a name="DBDMax" id="DBDMax">DBDMax</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum number of connections</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DBDMax <var>number</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nombre maximum de connexions</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DBDMax <var>nombre</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>DBDMax 10</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dbd</td></tr>
 </table>
-    <p>Set the hard maximum number of connections per process
-    (threaded platforms only).</p>
+    <p>Cette directive définit le nombre maximum effectif de
+    connexions par processus (plates-formes threadées seulement).</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="dbdmin" id="dbdmin">Directive</a> <a name="DBDMin" id="DBDMin">DBDMin</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Minimum number of connections</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DBDMin <var>number</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nombre minimum de connexions</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DBDMin <var>nombre</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>DBDMin 1</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dbd</td></tr>
 </table>
-    <p>Set the minimum number of connections per process (threaded
-    platforms only).</p>
+    <p>Cette directive définit le nombre minimum de connexions
+    par processus (plates-formes threadées seulement).</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="dbdparams" id="dbdparams">Directive</a> <a name="DBDParams" id="DBDParams">DBDParams</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Parameters for database connection</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Paramètres de la connexion à la base de
+données</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DBDParams
-<var>param1</var>=<var>value1</var>[,<var>param2</var>=<var>value2</var>]</code></td></tr>
+<var>param1</var>=<var>valeur1</var>[,<var>param2</var>=<var>valeur2</var>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dbd</td></tr>
 </table>
-    <p>As required by the underlying driver.  Typically this will be
-    used to pass whatever cannot be defaulted amongst username,
-    password, database name, hostname and port number for connection.</p>
-    <p>Connection string parameters for current drivers include:</p>
+    <p>Cette directive spécifie des paramètres selon les
+    besoins du pilote concerné. En général, les paramètres à passer
+    concernent tout ce qui n'a pas de valeur par défaut comme le nom
+    d'utilisateur, le mot de passe, le nom de la base de données, le nom
+    d'hôte et le numéro de port de la connexion.</p>
+    <p>Les paramètres de la chaîne de connexion en fonction des
+    différents pilotes comprennent :</p>
     <dl>
-    <dt>FreeTDS (for MSSQL and SyBase)</dt>
+    <dt>FreeTDS (pour MSSQL et SyBase)</dt>
     <dd>username, password, appname, dbname, host, charset, lang, server</dd>
     <dt>MySQL</dt>
     <dd>host, port, user, pass, dbname, sock, flags, fldsz, group, reconnect</dd>
     <dt>Oracle</dt>
     <dd>user, pass, dbname, server</dd>
     <dt>PostgreSQL</dt>
-    <dd>The connection string is passed straight through to <code>PQconnectdb</code></dd>
+    <dd>La chaîne de connexion est passée directement à <code>PQconnectdb</code></dd>
     <dt>SQLite2</dt>
-    <dd>The connection string is split on a colon, and <code>part1:part2</code> is used as <code>sqlite_open(part1, atoi(part2), NULL)</code></dd>
+    <dd>La chaîne de connexion est scindée avec comme séparateur le
+    caractère ':', et <code>partie1:partie2</code> est utilisé dans
+    <code>sqlite_open(partie1, atoi(partie2), NULL)</code></dd>
     <dt>SQLite3</dt>
-    <dd>The connection string is passed straight through to <code>sqlite3_open</code></dd>
+    <dd>La chaîne de connexion est passée directement à <code>sqlite3_open</code></dd>
     <dt>ODBC</dt>
     <dd>datasource, user, password, connect, ctimeout, stimeout, access, txmode, bufsize</dd>
     </dl>
@@ -327,54 +334,59 @@ APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const c
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="dbdpersist" id="dbdpersist">Directive</a> <a name="DBDPersist" id="DBDPersist">DBDPersist</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Whether to use persistent connections</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Utiliser ou non des connexions persistentes</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DBDPersist On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dbd</td></tr>
 </table>
-    <p>If set to Off, persistent and pooled connections are disabled.
-    A new database connection is opened when requested by a client,
-    and closed immediately on release.  This option is for debugging
-    and low-usage servers.</p>
+    <p>Si cette directive est définie à Off, les connexions persistentes
+    et les connexions groupées sont désactivées. À la demande d'un
+    client, une nouvelle connexion à la base de données est ouverte, et
+    fermée immédiatement à l'issue du traitement. Cette configuration ne
+    doit être utilisée qu'à des fins de débogage, ou sur des serveurs à
+    charge faible.</p>
 
-    <p>The default is to enable a pool of persistent connections
-    (or a single LAMP-style persistent connection in the case of a
-    non-threaded server), and should almost always be used in operation.</p>
+    <p>Par défaut, les groupes de connexions persistentes sont activés
+    (ou une seule connexion persistente du style LAMP pour les serveurs
+    non threadés), et c'est la configuration qui devrait être utilisée
+    dans la plupart des cas sur un serveur en production.</p>
 
-    <p>Prior to version 2.2.2, this directive accepted only the values
-    <code>0</code> and <code>1</code> instead of <code>Off</code> and
-    <code>On</code>, respectively.</p>
+    <p>Avant la version 2.2.2, cette directive n'acceptait que les
+    valeurs <code>0</code> et <code>1</code> au lieu de <code>Off</code>
+    et <code>On</code>, respectivement.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="dbdpreparesql" id="dbdpreparesql">Directive</a> <a name="DBDPrepareSQL" id="DBDPrepareSQL">DBDPrepareSQL</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Define an SQL prepared statement</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DBDPrepareSQL <var>"SQL statement"</var> <var>label</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit une requête SQL préparée</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DBDPrepareSQL <var>"requête SQL"</var> <var>étiquette</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dbd</td></tr>
 </table>
-    <p>For modules such as authentication that repeatedly use a
-    single SQL statement, optimum performance is achieved by preparing
-    the statement at startup rather than every time it is used.
-    This directive prepares an SQL statement and assigns it a label.</p>
+    <p>Pour les modules tels que les modules d'authentification, qui
+    utilisent de manière répétée la même requête SQL, on peut optimiser
+    les performances en préparant la requête une fois pour toutes au
+    démarrage, plutôt qu'à chaque utilisation. Cette directive permet de
+    préparer une requête SQL et de lui assigner une étiquette.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="dbdriver" id="dbdriver">Directive</a> <a name="DBDriver" id="DBDriver">DBDriver</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specify an SQL driver</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DBDriver <var>name</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Spécifie un pilote SQL</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DBDriver <var>nom</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dbd</td></tr>
 </table>
-    <p>Selects an apr_dbd driver by name.  The driver must be installed
-    on your system (on most systems, it will be a shared object or dll).
-    For example, <code>DBDriver mysql</code> will select the MySQL
-    driver in apr_dbd_mysql.so.</p>
+    <p>Cette directive spécifie un pilote apr_dbd par son
+    nom. Le pilote doit être installé sur votre système (sur la plupart
+    des systèmes, il s'agit d'un objet partagé ou d'une dll). Par
+    exemple, <code>DBDriver mysql</code> va sélectionner le pilote MySQL
+    dans la bibliothèque apr_dbd_mysql.so.</p>
 
 </div>
 </div>

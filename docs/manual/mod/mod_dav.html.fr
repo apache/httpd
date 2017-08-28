@@ -190,72 +190,80 @@ ForceType text/plain
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="dav" id="dav">Directive</a> <a name="Dav" id="Dav">Dav</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable WebDAV HTTP methods</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Dav On|Off|<var>provider-name</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active les méthodes HTTP WebDAV</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Dav On|Off|<var>nom fournisseur</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>Dav Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dav</td></tr>
 </table>
-    <p>Use the <code class="directive">Dav</code> directive to enable the
-    WebDAV HTTP methods for the given container:</p>
+    <p>La directive <code class="directive">Dav</code> active les
+    méthodes HTTP WebDAV pour le conteneur condidéré :</p>
 
     <pre class="prettyprint lang-config">&lt;Location "/foo"&gt;
     Dav On
 &lt;/Location&gt;</pre>
 
 
-    <p>The value <code>On</code> is actually an alias for the default
-    provider <code>filesystem</code> which is served by the <code class="module"><a href="../mod/mod_dav_fs.html">mod_dav_fs</a></code> module. Note, that once you have DAV enabled
-    for some location, it <em>cannot</em> be disabled for sublocations.
-    For a complete configuration example have a look at the <a href="#example">section above</a>.</p>
+    <p>La valeur <code>On</code> est en fait un alias vers le
+    fournisseur par défaut <code>filesystem</code> implémenté par le
+    module <code class="module"><a href="../mod/mod_dav_fs.html">mod_dav_fs</a></code>. Notez que lorsque DAV est activé
+    pour un conteneur, on <em>ne peut pas</em> le désactiver pour ses
+    sous-conteneurs. Pour un exemple de configuration complet,
+    reportez-vous à la <a href="#example">section précédente</a>.</p>
 
     <div class="warning">
-      Do not enable WebDAV until you have secured your server. Otherwise
-      everyone will be able to distribute files on your system.
+      N'activez pas WebDAV tant que votre serveur n'est pas sécurisé. Si
+      vous passez outre cette recommandation, tout le monde pourra
+      enregistrer des fichiers sur votre système.
     </div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="davdepthinfinity" id="davdepthinfinity">Directive</a> <a name="DavDepthInfinity" id="DavDepthInfinity">DavDepthInfinity</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Allow PROPFIND, Depth: Infinity requests</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Autorise les requêtes PROPFIND avec en-tête Depth:
+Infinity</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DavDepthInfinity on|off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>DavDepthInfinity off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dav</td></tr>
 </table>
-    <p>Use the <code class="directive">DavDepthInfinity</code> directive to
-    allow the processing of <code>PROPFIND</code> requests containing the
-    header 'Depth: Infinity'. Because this type of request could constitute
-    a denial-of-service attack, by default it is not allowed.</p>
+    <p>La directive <code class="directive">DavDepthInfinity</code>
+    autorise le traitement des requêtes <code>PROPFIND</code>
+    contenant l'en-tête Depth: Infinity. Par défaut, ce type de requête
+    n'est pas autorisé, car il peut favoriser les attaques de type Déni
+    de service.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="davmintimeout" id="davmintimeout">Directive</a> <a name="DavMinTimeout" id="DavMinTimeout">DavMinTimeout</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Minimum amount of time the server holds a lock on
-a DAV resource</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DavMinTimeout <var>seconds</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Durée minimale pendant laquelle le serveur maintient un
+verrou sur une ressource DAV</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DavMinTimeout <var>secondes</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>DavMinTimeout 0</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dav</td></tr>
 </table>
-    <p>When a client requests a DAV resource lock, it can also
-    specify a time when the lock will be automatically removed by
-    the server. This value is only a request, and the server can
-    ignore it or inform the client of an arbitrary value.</p>
+    <p>Lorsqu'un client demande le verrouillage d'une ressource DAV, il
+    peut aussi spécifier une durée au bout de laquelle le verrou sera
+    automatiquement supprimé par le serveur. Cette valeur ne constitue
+    qu'une requête, et le serveur peut l'ignorer ou informer le client
+    qu'il va utiliser une valeur arbitraire.</p>
 
-    <p>Use the <code class="directive">DavMinTimeout</code> directive to specify, in
-    seconds, the minimum lock timeout to return to a client.
-    Microsoft Web Folders defaults to a timeout of 120 seconds; the
-    <code class="directive">DavMinTimeout</code> can override this to a higher value
-    (like 600 seconds) to reduce the chance of the client losing
-    the lock due to network latency.</p>
+    <p>La directive <code class="directive">DavMinTimeout</code>
+    spécifie, en secondes, la durée minimale de verrouillage à renvoyer
+    au client. Les Répertoires Web de Microsoft présentent une durée par
+    défaut de 120 secondes ; la directive
+    <code class="directive">DavMinTimeout</code> permet de définir une valeur
+    supérieure (par exemple 600 secondes), afin de réduire les risques
+    de perte du verrou par le client suite à une surcharge du
+    réseau.</p>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">&lt;Location "/MSWord"&gt;
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">&lt;Location "/MSWord"&gt;
     DavMinTimeout 600
 &lt;/Location&gt;</pre>
 </div>

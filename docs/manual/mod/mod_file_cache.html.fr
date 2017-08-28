@@ -175,58 +175,66 @@ fichiers</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="cachefile" id="cachefile">Directive</a> <a name="CacheFile" id="CacheFile">CacheFile</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Cache a list of file handles at startup time</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheFile <var>file-path</var> [<var>file-path</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Met en cache une liste de gestionnaires de fichiers au
+démarrage</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheFile <var>chemin_fichier</var> [<var>chemin fichier</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_file_cache</td></tr>
 </table>
-    <p>The <code class="directive">CacheFile</code> directive opens handles to
-    one or more files (given as whitespace separated arguments) and
-    places these handles into the cache at server startup
-    time. Handles to cached files are automatically closed on a server
-    shutdown.  When the files have changed on the filesystem, the
-    server should be restarted to re-cache them.</p>
+    <p>La directive <code class="directive">CacheFile</code> associe
+    des gestionnaires à un ou plusieurs fichiers (séparés par des
+    espaces), et place ceux-ci dans le cache au démarrage du
+    serveur. Les gestionnaires des fichiers mis en cache sont
+    automatiquement fermés à l'arrêt du serveur. Lorsqu'un ou plusieurs
+    fichiers ont été modifiés sur disque, le serveur doit être redémarré
+    afin que les modifications soient prises en compte par le cache.</p>
 
-    <p>Be careful with the <var>file-path</var> arguments: They have
-    to literally match the filesystem path Apache's URL-to-filename
-    translation handlers create. We cannot compare inodes or other
-    stuff to match paths through symbolic links <em>etc.</em>
-    because that again would cost extra <code>stat()</code> system
-    calls which is not acceptable. This module may or may not work
-    with filenames rewritten by <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code> or
+    <p>Soyez prudent avec les arguments <var>chemin_fichier</var> : ils
+    doivent correspondre exactement au chemin du système de fichier que
+    créent les gestionnaires de traduction URL-vers-nom-fichier
+    d'Apache. On ne peut pas comparer des inodes ou autres identifiants
+    pour mettre en correspondance des chemins à l'aide de liens
+    symboliques <em>(etc...)</em>, car là encore, ceci nécessiterait un
+    appel à <code>stat()</code> supplémentaire, ce qui est inacceptable.
+    Il n'est pas garanti que ce module fonctionne avec des noms de
+    fichiers réécrits par <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code> ou
     <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">CacheFile /usr/local/apache/htdocs/index.html</pre>
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">CacheFile /usr/local/apache/htdocs/index.html</pre>
 </div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="mmapfile" id="mmapfile">Directive</a> <a name="MMapFile" id="MMapFile">MMapFile</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Map a list of files into memory at startup time</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MMapFile <var>file-path</var> [<var>file-path</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Charge au démarrage une liste de fichiers en
+mémoire</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MMapFile <var>chemin fichier</var> [<var>chemin_fichier</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_file_cache</td></tr>
 </table>
-    <p>The <code class="directive">MMapFile</code> directive maps one or more files
-    (given as whitespace separated arguments) into memory at server
-    startup time. They are automatically unmapped on a server
-    shutdown. When the files have changed on the filesystem at
-    least a <code>HUP</code> or <code>USR1</code> signal should be send to
-    the server to re-<code>mmap()</code> them.</p>
+    <p>La directive <code class="directive">MMapFile</code> provoque le chargement d'un
+    ou plusieurs fichiers (séparés par des espaces) en mémoire au
+    démarrage du serveur. Ceux-ci sont automatiquement déchargés de la
+    mémoire à l'arrêt du serveur. Lorsqu'un ou plusieurs fichiers ont
+    été modifiés sur disque, on doit au minimum envoyer un signal
+    <code>HUP</code> ou <code>USR1</code> au serveur afin de les
+    re<code>mmap()</code>er.</p>
 
-    <p>Be careful with the <var>file-path</var> arguments: They have
-    to literally match the filesystem path Apache's URL-to-filename
-    translation handlers create. We cannot compare inodes or other
-    stuff to match paths through symbolic links <em>etc.</em>
-    because that again would cost extra <code>stat()</code> system
-    calls which is not acceptable. This module may or may not work
-    with filenames rewritten by <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code> or
+    <p>Soyez prudent avec les arguments <var>chemin_fichier</var> : ils
+    doivent correspondre exactement au chemin du système de fichier que
+    créent les gestionnaires de traduction URL-vers-nom-fichier
+    d'Apache. On ne peut pas comparer des inodes ou autres identifiants
+    pour mettre en correspondance des chemins à l'aide de liens
+    symboliques <em>(etc...)</em>, car là encore, ceci nécessiterait un
+    appel à <code>stat()</code> supplémentaire, ce qui est inacceptable.
+    Il n'est pas garanti que ce module fonctionne avec des noms de
+    fichiers réécrits par <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code> ou
     <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">MMapFile /usr/local/apache/htdocs/index.html</pre>
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">MMapFile /usr/local/apache/htdocs/index.html</pre>
 </div>
 
 </div>

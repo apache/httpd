@@ -147,21 +147,22 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="example" id="example">Directive</a> <a name="Example" id="Example">Example</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Demonstration directive to illustrate the Apache module
-API</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Directive de démonstration pour illustrer l'API des modules
+Apache</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Example</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>Options</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_example_hooks</td></tr>
 </table>
-    <p>The <code class="directive">Example</code> directive just sets a demonstration
-    flag which the example module's content handler displays. It
-    takes no arguments. If you browse to an URL to which the
-    example-hooks content-handler applies, you will get a display of the
-    routines within the module and how and in what order they were
-    called to service the document request. The effect of this
-    directive one can observe under the point "<code>Example
+    <p>La directive <code class="directive">Example</code> n'a pour fonction que
+    de définir un drapeau de démonstration que le gestionnaire de
+    contenu du module example_hooks va afficher. Elle ne possède aucun
+    argument. Si vous naviguez vers une URL à laquelle le gestionnaire
+    de contenu example_hooks s'applique, vous verrez s'afficher les routines
+    du module, ainsi que l'ordre dans lequel elles ont été appelées pour
+    servir le document demandé. On peut observer l'effet de cette
+    directive dans la phrase "<code>Example
     directive declared here: YES/NO</code>".</p>
 
 </div>
