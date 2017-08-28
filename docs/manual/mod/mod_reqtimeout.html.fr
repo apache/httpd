@@ -56,7 +56,7 @@ données pour la réception des requêtes
         Accorde 10 secondes pour la réception des en-têtes de la requête
 	et 30 secondes pour la réception du corps :
 
-        <pre class="prettyprint lang-config">RequestTimeout headerinit=10 body=30</pre>
+        <pre class="prettyprint lang-config">RequestReadTimeout headerinit=10 body=30</pre>
 
       </li>
 
