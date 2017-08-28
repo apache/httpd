@@ -66,13 +66,14 @@ client.</p>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="modemstandard" id="modemstandard">Directive</a> <a name="ModemStandard" id="ModemStandard">ModemStandard</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Modem standard to simulate</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Standard de modem à simuler</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ModemStandard V.21|V.26bis|V.32|V.34|V.92</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dialup</td></tr>
 </table>
-<p>Specify what modem standard you wish to simulate.</p>
+<p>Cette directive permet de spécifier le standard de modem que vous
+souhaitez simuler.</p>
 
 <pre class="prettyprint lang-config">&lt;Location "/mysite"&gt;
     ModemStandard "V.26bis"

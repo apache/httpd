@@ -201,73 +201,83 @@ CGI</a></li>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="scriptlog" id="scriptlog">Directive</a> <a name="ScriptLog" id="ScriptLog">ScriptLog</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Location of the CGI script error logfile</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ScriptLog <var>file-path</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Chemin du fichier journal des erreurs du script
+CGI</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ScriptLog <var>chemin fichier</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>, <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code></td></tr>
 </table>
-    <p>The <code class="directive">ScriptLog</code> directive sets the CGI
-    script error logfile. If no <code class="directive">ScriptLog</code> is given,
-    no error log is created. If given, any CGI errors are logged into the
-    filename given as argument. If this is a relative file or path it is
-    taken relative to the <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>.
+    <p>La directive <code class="directive">ScriptLog</code> définit
+    le chemin du fichier journal des erreurs du script CGI. Si cette
+    directive n'est pas définie, aucune journalisation des erreurs n'est
+    effectuée. Si elle est définie, toute erreur CGI sera enregistrée
+    dans le fichier dont le nom est fourni en argument. S'il s'agit d'un
+    chemin de fichier relatif, il est considéré par rapport au
+    répertoire défini par la directive <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>.
     </p>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">ScriptLog logs/cgi_log</pre>
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">ScriptLog logs/cgi_log</pre>
 </div>
 
-    <p>This log will be opened as the user the child processes run
-    as, <em>i.e.</em> the user specified in the main <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code> directive. This means that
-    either the directory the script log is in needs to be writable
-    by that user or the file needs to be manually created and set
-    to be writable by that user. If you place the script log in
-    your main logs directory, do <strong>NOT</strong> change the
-    directory permissions to make it writable by the user the child
-    processes run as.</p>
+    <p>Ce journal sera ouvert par l'utilisateur sous lequel les
+    processus enfants s'exécutent, c'est à dire l'utilisateur spécifié
+    par la directive du serveur <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code>. Ceci implique que soit le
+    répertoire dans lequel se trouve le journal doit être accessible en
+    écriture pour cet utilisateur, soit le fichier doit être créé
+    manuellement et accessible en écriture pour cet utilisateur. Si vous
+    placez le journal du script dans votre répertoire principal des
+    journaux, ne modifiez <strong>PAS</strong> les permissions de ce
+    dernier afin de le le rendre accessible en écriture par
+    l'utilisateur sous lequel les processus enfants s'exécutent.</p>
 
-    <p>Note that script logging is meant to be a debugging feature
-    when writing CGI scripts, and is not meant to be activated
-    continuously on running servers. It is not optimized for speed
-    or efficiency, and may have security problems if used in a
-    manner other than that for which it was designed.</p>
+    <p>Notez que l'on ne doit activer la journalisation des scripts
+    qu'à des fins de débogage lors de l'écriture de scripts CGI, et non
+    de manière permanente sur un serveur en production. Elle n'est pas
+    optimisée en ce qui concerne la vitesse et l'efficacité, et peut
+    présenter des problèmes de sécurité si on l'utilise dans un cadre
+    autre que celui pour lequel elle a été conçue.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="scriptlogbuffer" id="scriptlogbuffer">Directive</a> <a name="ScriptLogBuffer" id="ScriptLogBuffer">ScriptLogBuffer</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum amount of PUT or POST requests that will be recorded
-in the scriptlog</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ScriptLogBuffer <var>bytes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Taille maximale des requêtes PUT ou POST qui seront
+enregistrées dans le journal du script</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ScriptLogBuffer <var>octets</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ScriptLogBuffer 1024</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>, <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code></td></tr>
 </table>
-    <p>The size of any PUT or POST entity body that is logged to
-    the file is limited, to prevent the log file growing too big
-    too quickly if large bodies are being received. By default, up
-    to 1024 bytes are logged, but this can be changed with this
-    directive.</p>
+    <p>Cette directive limite la taille du corps de toute
+    entité PUT ou POST qui sera enregistrée dans le journal, afin
+    de prévenir une croissance trop importante et trop rapide du fichier
+    journal due à la réception de corps de requête de grandes tailles.
+    Cette directive modifie cette taille maximale, dont la
+    valeur par défaut est de 1024 octets.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="scriptloglength" id="scriptloglength">Directive</a> <a name="ScriptLogLength" id="ScriptLogLength">ScriptLogLength</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Size limit of the CGI script logfile</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ScriptLogLength <var>bytes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Taille maximale du fichier journal des scripts
+CGI</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ScriptLogLength <var>octets</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ScriptLogLength 10385760</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>, <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code></td></tr>
 </table>
-    <p><code class="directive">ScriptLogLength</code> can be used to limit the
-    size of the CGI script logfile. Since the logfile logs a lot of
-    information per CGI error (all request headers, all script output)
-    it can grow to be a big file. To prevent problems due to unbounded
-    growth, this directive can be used to set an maximum file-size for
-    the CGI logfile. If the file exceeds this size, no more
-    information will be written to it.</p>
+    <p>La directive <code class="directive">ScriptLogLength</code>
+    définit la taille maximale du fichier journal des scripts CGI. Comme
+    le fichier journal accumule une grande quantité d'informations par
+    erreur CGI (tous les en-têtes de la requête, toutes les sorties du
+    script), il peut vite atteindre une grande taille. En limitant la
+    taille du fichier, cette directive permet d'éviter les problèmes que
+    causerait sa croissance sans limites. Lorsque le fichier a atteint
+    cette taille maximale, plus aucune information n'y est
+    enregistrée.</p>
 
 </div>
 </div>

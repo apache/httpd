@@ -105,25 +105,29 @@ SessionCookieName session path=/</pre>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="sessioncookiename" id="sessioncookiename">Directive</a> <a name="SessionCookieName" id="SessionCookieName">SessionCookieName</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Name and attributes for the RFC2109 cookie storing the session</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SessionCookieName <var>name</var> <var>attributes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nom et attributs du cookie RFC2109 dans lequel la session
+est stockée</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SessionCookieName <var>nom</var> <var>attributs</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>none</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session_cookie</td></tr>
 </table>
-    <p>The <code class="directive">SessionCookieName</code> directive specifies the name and
-    optional attributes of an RFC2109 compliant cookie inside which the session will
-    be stored. RFC2109 cookies are set using the <code>Set-Cookie</code> HTTP header.
+    <p>La directive <code class="directive">SessionCookieName</code> permet de
+    spécifier le nom et les attributs optionnels d'un cookie compatible
+    RFC2109 dans lequel la session sera stockée. Les cookies RFC2109
+    sont définis en utilisant l'en-tête HTTP <code>Set-Cookie</code>.
     </p>
 
-    <p>An optional list of cookie attributes can be specified, as per the example below.
-    These attributes are inserted into the cookie as is, and are not interpreted by
-    Apache. Ensure that your attributes are defined correctly as per the cookie specification.
+    <p>Une liste optionnelle d'attributs peut être spécifiée, comme dans
+    l'exemple suivant. Ces attributs sont insérés tel quel dans le
+    cookie, et ne sont pas interprétés par Apache. Assurez-vous que vos
+    attributs soient définis correctement selon la spécification des
+    cookies.
     </p>
 
-    <div class="example"><h3>Cookie with attributes</h3><pre class="prettyprint lang-config">Session On
+    <div class="example"><h3>Cookie avec attributs</h3><pre class="prettyprint lang-config">Session On
 SessionCookieName session path=/private;domain=example.com;httponly;secure;version=1;</pre>
 </div>
 
@@ -132,25 +136,30 @@ SessionCookieName session path=/private;domain=example.com;httponly;secure;versi
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="sessioncookiename2" id="sessioncookiename2">Directive</a> <a name="SessionCookieName2" id="SessionCookieName2">SessionCookieName2</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Name and attributes for the RFC2965 cookie storing the session</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SessionCookieName2 <var>name</var> <var>attributes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nom et attributs pour le cookie RFC2965 dans lequel est
+stockée la session</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SessionCookieName2 <var>nom</var> <var>attributs</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>none</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session_cookie</td></tr>
 </table>
-    <p>The <code class="directive">SessionCookieName2</code> directive specifies the name and
-    optional attributes of an RFC2965 compliant cookie inside which the session will
-    be stored. RFC2965 cookies are set using the <code>Set-Cookie2</code> HTTP header.
+    <p>La directive <code class="directive">SessionCookieName2</code> permet de
+    spécifier le nom et les attributs optionnels d'un cookie compatible
+    RFC2965 dans lequel la session sera stockée. Les cookies RFC2965
+    sont définis en utilisant l'en-tête HTTP
+    <code>Set-Cookie2</code>.
     </p>
 
-    <p>An optional list of cookie attributes can be specified, as per the example below.
-    These attributes are inserted into the cookie as is, and are not interpreted by
-    Apache. Ensure that your attributes are defined correctly as per the cookie specification.
+    <p>Une liste optionnelle d'attributs peut être spécifiée, comme dans
+    l'exemple suivant. Ces attributs sont insérés tel quel dans le
+    cookie, et ne sont pas interprétés par Apache. Assurez-vous que vos
+    attributs soient définis correctement selon la spécification des
+    cookies.
     </p>
 
-    <div class="example"><h3>Cookie2 with attributes</h3><pre class="prettyprint lang-config">Session On
+    <div class="example"><h3>Cookie2 avec attributs</h3><pre class="prettyprint lang-config">Session On
 SessionCookieName2 session path=/private;domain=example.com;httponly;secure;version=1;</pre>
 </div>
 
@@ -159,7 +168,8 @@ SessionCookieName2 session path=/private;domain=example.com;httponly;secure;vers
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="sessioncookieremove" id="sessioncookieremove">Directive</a> <a name="SessionCookieRemove" id="SessionCookieRemove">SessionCookieRemove</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Control for whether session cookies should be removed from incoming HTTP headers</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Détermine si les cookies de session doivent être supprimés
+des en-têtes HTTP entrants</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SessionCookieRemove On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SessionCookieRemove Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
@@ -167,13 +177,15 @@ SessionCookieName2 session path=/private;domain=example.com;httponly;secure;vers
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session_cookie</td></tr>
 </table>
-    <p>The <code class="directive">SessionCookieRemove</code> flag controls whether the cookies
-    containing the session will be removed from the headers during request processing.</p>
+    <p>La directive <code class="directive">SessionCookieRemove</code> permet de
+    déterminer si les cookies contenant la session doivent être
+    supprimés des en-têtes pendant le traitement de la requête.</p>
 
-    <p>In a reverse proxy situation where the Apache server acts as a server frontend for
-    a backend origin server, revealing the contents of the session cookie to the backend
-    could be a potential privacy violation. When set to on, the session cookie will be
-    removed from the incoming HTTP headers.</p>
+    <p>Dans le cas d'un mandataire inverse où le serveur Apache sert de
+    frontal à un serveur d'arrière-plan, révéler le contenu du cookie de
+    session à ce dernier peut conduire à une violation de la
+    confidentialité. A ce titre, si cette directive est définie à "on",
+    le cookie de session sera supprimé des en-têtes HTTP entrants.</p>
 
 
 </div>

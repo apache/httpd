@@ -57,7 +57,7 @@ est du style :</p>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="allowmethods" id="allowmethods">Directive</a> <a name="AllowMethods" id="AllowMethods">AllowMethods</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Restrict access to the listed HTTP methods</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Restreint l'accès aux méthodes HTTP spécifiées</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AllowMethods reset|<em>HTTP-method</em>
 [<em>HTTP-method</em>]...</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AllowMethods reset</code></td></tr>
@@ -66,24 +66,25 @@ est du style :</p>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_allowmethods</td></tr>
 </table>
 
-<p>The HTTP-methods are case sensitive and are generally, as per
-RFC, given in upper case. The GET and HEAD methods are treated as
-equivalent. The <code>reset</code> keyword can be used to
-turn off <code class="module"><a href="../mod/mod_allowmethods.html">mod_allowmethods</a></code> in a deeper nested context:</p>
+<p>Le nom de chaque méthode HTTP est sensible à la casse, et est le plus
+souvent défini en majuscules, comme dans les RFCs. Les méthodes GET et
+HEAD sont traitées de la même manière. Le mot-clé
+<code>reset</code> permet de désactiver
+<code class="module"><a href="../mod/mod_allowmethods.html">mod_allowmethods</a></code> dans les niveaux inférieurs
+d'imbrication :</p>
 
 <pre class="prettyprint lang-config">&lt;Location "/svn"&gt;
    AllowMethods reset
 &lt;/Location&gt;</pre>
 
 
-<div class="note"><h3>Caution</h3>
-  <p>The TRACE method cannot be denied by this module;
-  use <code class="directive"><a href="../mod/core.html#traceenable">TraceEnable</a></code> instead.</p>
+<div class="note"><h3>Avertissement</h3>
+  <p>La méthode TRACE ne peut pas être rejetée par ce module ; pour ce
+  faire, vous devez utiliser la directive <code class="directive"><a href="../mod/core.html#traceenable">TraceEnable</a></code>.</p>
 </div>
 
-<p><code class="module"><a href="../mod/mod_allowmethods.html">mod_allowmethods</a></code> was written to replace the rather
-kludgy implementation of <code class="directive"><a href="../mod/core.html#limit">Limit</a></code> and
-<code class="directive"><a href="../mod/core.html#limitexcept">LimitExcept</a></code>.</p>
+<p>Le module <code class="module"><a href="../mod/mod_allowmethods.html">mod_allowmethods</a></code> a été écrit pour
+remplacer l'implémentation "bricolée" des directives <code class="directive"><a href="../mod/core.html#limit">Limit</a></code> et <code class="directive"><a href="../mod/core.html#limitexcept">LimitExcept</a></code>.</p>
 
 </div>
 </div>

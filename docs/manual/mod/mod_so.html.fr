@@ -160,20 +160,23 @@ Windows</a></h2>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="loadfile" id="loadfile">Directive</a> <a name="LoadFile" id="LoadFile">LoadFile</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Link in the named object file or library</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LoadFile <em>filename</em> [<em>filename</em>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Liaison du fichier objet ou de la bibliothèque
+spécifié</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LoadFile <em>nom-fichier</em> [<em>nom-fichier</em>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_so</td></tr>
 </table>
 
-    <p>The <code class="directive">LoadFile</code> directive links in the named object files or
-    libraries when the server is started or restarted; this is used
-    to load additional code which may be required for some module
-    to work. <em>Filename</em> is either an absolute path or
-    relative to <a href="core.html#serverroot">ServerRoot</a>.</p>
+    <p>La directive <code class="directive">LoadFile</code> permet de lier le fichier
+    objet ou la bibliothèque spécifié au serveur lors du
+    démarrage ou du redémarrage
+    de ce dernier ; ceci permet d'ajouter tout code additionnel
+    nécessaire au fonctionnement d'un module.
+    <em>nom-fichier</em> est soit un chemin absolu, soit un chemin
+    relatif au répertoire défini par la directive <a href="core.html#serverroot">ServerRoot</a>.</p>
 
-    <p>For example:</p>
+    <p>Par exemple:</p>
 
     <pre class="prettyprint lang-config">LoadFile "libexec/libxmlparse.so"</pre>
 
@@ -183,27 +186,28 @@ Windows</a></h2>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="loadmodule" id="loadmodule">Directive</a> <a name="LoadModule" id="LoadModule">LoadModule</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Links in the object file or library, and adds to the list
-of active modules</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LoadModule <em>module filename</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Liaison avec le serveur du fichier objet ou de la
+bibliothèque spécifié, et ajout de ce dernier à la liste des modules
+actifs</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LoadModule <em>module nom-fichier</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_so</td></tr>
 </table>
-    <p>The <code class="directive">LoadModule</code> directive links in the object file or library
-    <em>filename</em> and adds the module structure named
-    <em>module</em> to the list of active modules. <em>Module</em>
-    is the name of the external variable of type
-    <code>module</code> in the file, and is listed as the <a href="module-dict.html#ModuleIdentifier">Module Identifier</a>
-    in the module documentation.</p>
+    <p>La directive <code class="directive">LoadModule</code> permet de lier le fichier objet ou la
+    bibliothèque <em>nom-fichier</em> avec le serveur, et d'ajouter la
+    structure de module nommée <em>module</em> à la liste des modules
+    actifs. <em>module</em> est le nom de la variable externe de type
+    <code>module</code> dans le fichier, et est référencé comme <a href="module-dict.html#ModuleIdentifier">Identificateur de
+    module</a> dans la documentation des modules.</p>
 
-    <p>For example:</p>
+    <p>Par exemple :</p>
 
-    <pre class="prettyprint lang-config">LoadModule status_module "modules/mod_status.so"</pre>
+    <pre class="prettyprint lang-config">LoadModule "status_module modules/mod_status.so"</pre>
 
 
-    <p>loads the named module from the modules subdirectory of the
-    ServerRoot.</p>
+    <p>charge le module spécifié depuis le sous-répertoire des modules
+    situé à la racine du serveur.</p>
 
 </div>
 </div>

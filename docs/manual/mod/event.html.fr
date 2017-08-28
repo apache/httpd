@@ -355,106 +355,118 @@ propose le MPM <code class="module"><a href="../mod/worker.html">worker</a></cod
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="asyncrequestworkerfactor" id="asyncrequestworkerfactor">Directive</a> <a name="AsyncRequestWorkerFactor" id="AsyncRequestWorkerFactor">AsyncRequestWorkerFactor</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Limit concurrent connections per process</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AsyncRequestWorkerFactor <var>factor</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Limite le nombre de connexions simultanées par thread</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AsyncRequestWorkerFactor <var>facteur</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>2</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>MPM</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>event</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Available in version 2.3.13 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.13</td></tr>
 </table>
-    <p>The event MPM handles some connections in an asynchronous way, where
-    request worker threads are only allocated for short periods of time as
-    needed, and other connections with one request worker thread reserved per
-    connection. This can lead to situations where all workers are tied up and
-    no worker thread is available to handle new work on established async
-    connections.</p>
+    <p>Le MPM event gère certaines connexions de manière asynchrone ;
+    dans ce cas, les threads traitant la requête sont alloués selon les
+    besoins et pour de courtes périodes. Dans les autres cas, un
+    thread est réservé par
+    connexion. Ceci peut conduire à des situations où tous les threads
+    sont saturés et où aucun thread n'est capable d'effectuer de
+    nouvelles tâches pour les connexions asynchrones établies.</p>
 
-    <p>To mitigate this problem, the event MPM does two things:</p>
+    <p>Pour minimiser les effets de ce problème, le MPM event utilise
+    deux méthodes :</p>
     <ul>
-        <li>it limits the number of connections accepted per process, depending on the
-            number of idle request workers;</li>
-        <li>if all workers are busy, it will
-            close connections in keep-alive state even if the keep-alive timeout has
-            not expired. This allows the respective clients to reconnect to a
-            different process which may still have worker threads available.</li>
+    	<li>il limite le nombre de connexions
+	    simultanées par thread en fonction du nombre de processus
+	    inactifs;</li>
+	<li>si tous les processus sont occupés, il ferme des connexions
+	permanentes, même si la limite de durée de la connexion n'a
+	pas été atteinte. Ceci autorise les clients
+	concernés à se reconnecter à un autre processus
+	possèdant encore des threads disponibles.</li>
     </ul>
 
-    <p>This directive can be used to fine-tune the per-process connection
-    limit. A <strong>process</strong> will only accept new connections if the current number of
-    connections (not counting connections in the "closing" state) is lower
-    than:</p>
+    <p>Cette directive permet de personnaliser finement la limite du
+    nombre de connexions par thread. Un <strong>processus</strong> n'acceptera de
+    nouvelles connexions que si le nombre actuel de connexions (sans
+    compter les connexions à l'état "closing") est
+    inférieur à :</p>
 
     <p class="indent"><strong>
         <code class="directive"><a href="../mod/mpm_common.html#threadsperchild">ThreadsPerChild</a></code> +
         (<code class="directive">AsyncRequestWorkerFactor</code> *
-        <var>number of idle workers</var>)
+        <var>nombre de threads inactifs</var>)
     </strong></p>
 
-    <p>An estimation of the maximum concurrent connections across all the processes given
-        an average value of idle worker threads can be calculated with:
+    <p>Il est possible d'effectuer une estimation du nombre maximum de
+    connexions simultanées pour tous les processus et pour un nombre donné moyen
+    de threads de travail inactifs comme suit :
     </p>
 
 
     <p class="indent"><strong>
         (<code class="directive"><a href="../mod/mpm_common.html#threadsperchild">ThreadsPerChild</a></code> +
         (<code class="directive">AsyncRequestWorkerFactor</code> *
-        <var>number of idle workers</var>)) *
+        <var>number of idle workers</var>)) * 
         <code class="directive"><a href="../mod/mpm_common.html#serverlimit">ServerLimit</a></code>
     </strong></p>
 
-    <div class="note"><h3>Example</h3>
+    <div class="note"><h3>Exemple</h3>
     <pre class="prettyprint lang-config">ThreadsPerChild = 10
 ServerLimit = 4
 AsyncRequestWorkerFactor = 2
 MaxRequestWorkers = 40
 
-idle_workers = 4 (average for all the processes to keep it simple)
+idle_workers = 4 (moyenne pour tous les processus pour faire simple)
 
-max_connections = (ThreadsPerChild + (AsyncRequestWorkerFactor * idle_workers)) * ServerLimit
+max_connections = (ThreadsPerChild + (AsyncRequestWorkerFactor * idle_workers)) * ServerLimit 
                 = (10 + (2 * 4)) * 4 = 72</pre>
 
     </div>
 
-    <p>When all the worker threads are idle, then absolute maximum numbers of concurrent
-        connections can be calculared in a simpler way:</p>
+    <p>Lorsque tous les threads de travail sont inactifs, le nombre maximum
+    absolu de connexions simultanées peut être calculé de manière plus simple :</p>
 
     <p class="indent"><strong>
         (<code class="directive">AsyncRequestWorkerFactor</code> + 1) *
         <code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code>
     </strong></p>
 
-
-    <div class="note"><h3>Example</h3>
-    <pre class="prettyprint lang-config">ThreadsPerChild = 10
+    <div class="note"><h3>Exemple</h3>
+    <pre class="prettyprint lang-config">ThreadsPerChild = 10 
 ServerLimit = 4
 MaxRequestWorkers = 40
 AsyncRequestWorkerFactor = 2</pre>
 
 
-    <p>If all the processes have all threads idle then: </p>
+    <p>Si tous les threads de tous les processus sont inactifs, alors :</p>
 
     <pre class="prettyprint lang-config">idle_workers = 10</pre>
 
 
-    <p>We can calculate the absolute maximum numbers of concurrent connections in two ways:</p>
-
-    <pre class="prettyprint lang-config">max_connections = (ThreadsPerChild + (AsyncRequestWorkerFactor * idle_workers)) * ServerLimit
+    <p>Nous pouvons calculer le nombre maximum absolu de connexions simultanées
+    de deux manières :</p>
+    
+    <pre class="prettyprint lang-config">max_connections = (ThreadsPerChild + (AsyncRequestWorkerFactor * idle_workers)) * ServerLimit 
                 = (10 + (2 * 10)) * 4 = 120
-
-max_connections = (AsyncRequestWorkerFactor + 1) * MaxRequestWorkers
+    
+max_connections = (AsyncRequestWorkerFactor + 1) * MaxRequestWorkers 
                 = (2 + 1) * 40 = 120</pre>
 
     </div>
 
-    <p>Tuning <code class="directive">AsyncRequestWorkerFactor</code> requires knowledge about the traffic handled by httpd in each specific use case, so changing the default value requires extensive testing and data gathering from <code class="module"><a href="../mod/mod_status.html">mod_status</a></code>.</p>
+    <p>Le réglage de la directive
+    <code class="directive">AsyncRequestWorkerFactor</code> nécessite de connaître le
+    trafic géré par httpd pour chaque style d'utilisation spécifique ; si vous
+    modifiez la valeur par défaut, vous devrez par conséquent effectuer des
+    tests approfondis en vous appuyant étroitement sur les données fournies par
+    <code class="module"><a href="../mod/mod_status.html">mod_status</a></code>.</p>
 
-    <p><code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code> was called
-    <code class="directive">MaxClients</code> prior to version 2.3.13. The above value
-    shows that the old name did not accurately describe its meaning for the event MPM.</p>
+    <p>La directive <code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code> se nommait
+    <code class="directive">MaxClients</code> avant la version 2.3.13. La valeur
+    ci-dessus montre que cet ancien nom ne correspondait pas à sa
+    signification exacte pour le MPM event.</p>
 
-    <p><code class="directive">AsyncRequestWorkerFactor</code> can take non-integer
-    arguments, e.g "1.5".</p>
+    <p>La directive <code class="directive">AsyncRequestWorkerFactor</code>
+    accepte des valeurs d'argument de type non entier, comme "1.5".</p>
 
 
 </div>

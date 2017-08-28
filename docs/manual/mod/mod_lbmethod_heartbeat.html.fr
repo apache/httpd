@@ -64,16 +64,18 @@ comme non entièrement initialisés.</p>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="heartbeatstorage" id="heartbeatstorage">Directive</a> <a name="HeartbeatStorage" id="HeartbeatStorage">HeartbeatStorage</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Path to read heartbeat data</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>HeartbeatStorage <var>file-path</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Indique le chemin permettant de lire les données
+heartbeat</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>HeartbeatStorage <var>chemin-fichier</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>HeartbeatStorage logs/hb.dat</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lbmethod_heartbeat</td></tr>
 </table>
-    <p>The <code class="directive">HeartbeatStorage</code> directive specifies the
-    path to read heartbeat data.  This flat-file is used only when
-    <code class="module"><a href="../mod/mod_slotmem_shm.html">mod_slotmem_shm</a></code> is not loaded.</p>
+    <p>La directive <code class="directive">HeartbeatStorage</code> permet de
+    spécifier le chemin d'accès aux données heartbeat. Ce fichier texte
+    n'est utilisé que si le module <code class="module"><a href="../mod/mod_slotmem_shm.html">mod_slotmem_shm</a></code>
+    n'est pas chargé.</p>
 
 </div>
 </div>

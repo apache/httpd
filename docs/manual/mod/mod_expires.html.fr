@@ -137,8 +137,8 @@ ExpiresByType image/gif "modification plus 5 hours 3 minutes"</pre>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="expiresactive" id="expiresactive">Directive</a> <a name="ExpiresActive" id="ExpiresActive">ExpiresActive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enables generation of <code>Expires</code>
-headers</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active la génération d'en-têtes
+<code>Expires</code></td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ExpiresActive On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ExpiresActive Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
@@ -146,102 +146,105 @@ headers</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_expires</td></tr>
 </table>
-    <p>This directive enables or disables the generation of the
-    <code>Expires</code> and <code>Cache-Control</code> headers for
-    the document realm in question.  (That is, if found in an
-    <code>.htaccess</code> file, for instance, it applies only to
-    documents generated from that directory.) If set to
-    <code>Off</code>, the headers will not be generated for any
-    document in the realm (unless overridden at a lower level, such as
-    an <code>.htaccess</code> file overriding a server config
-    file). If set to <code>On</code>, the headers will be added to
-    served documents according to the criteria defined by the
-    <code class="directive"><a href="#expiresbytype">ExpiresByType</a></code> and
-    <code class="directive"><a href="#expiresdefault">ExpiresDefault</a></code>
-    directives (<em>q.v.</em>).</p>
+    <p>Cette directive permet d'activer ou de désactiver la génération
+    des en-têtes <code>Expires</code> et <code>Cache-Control</code> pour
+    les documents concernés ; en d'autres termes, si cette directive se
+    trouve dans un fichier <code>.htaccess</code>, par exemple, elle ne
+    s'applique qu'aux documents générés à partir du répertoire
+    considéré. Si elle est définie à <code>Off</code>, les en-têtes ne
+    seront générés pour aucun document du domaine considéré (sauf
+    surcharge de la configuration à un niveau inférieur, comme un
+    fichier <code>.htaccess</code> qui l'emporterait sur le fichier de
+    configuration du serveur). Si elle est définie à <code>On</code>,
+    les en-têtes seront ajoutés aux documents servis en fonction des
+    critères définis par les directives <code class="directive"><a href="#expiresbytype">ExpiresByType</a></code> et <code class="directive"><a href="#expiresdefault">ExpiresDefault</a></code> (<em>voir plus
+    loin</em>).</p>
 
-    <p>Note that this directive does not guarantee that an
-    <code>Expires</code> or <code>Cache-Control</code> header will be
-    generated. If the criteria aren't met, no header will be sent, and
-    the effect will be as though this directive wasn't even
-    specified.</p>
+    <p>Notez que cette directive ne permet pas de garantir qu'un en-tête
+    <code>Expires</code> ou <code>Cache-Control</code> sera généré. Si
+    les critères ne sont pas respectés, aucun en-tête ne sera généré, et
+    la directive produira le même effet que si elle n'avait pas été
+    définie.</p>
  
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="expiresbytype" id="expiresbytype">Directive</a> <a name="ExpiresByType" id="ExpiresByType">ExpiresByType</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Value of the <code>Expires</code> header configured
-by MIME type</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ExpiresByType <var>MIME-type</var>
-<var>&lt;code&gt;seconds</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définition de la valeur de l'en-tête <code>Expires</code>
+en fonction du type MIME</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ExpiresByType <var>type MIME</var>
+<var>&lt;code&gt;secondes</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>Indexes</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_expires</td></tr>
 </table>
-    <p>This directive defines the value of the <code>Expires</code>
-    header and the <code>max-age</code> directive of the
-    <code>Cache-Control</code> header generated for documents of the
-    specified type (<em>e.g.</em>, <code>text/html</code>). The second
-    argument sets the number of seconds that will be added to a base
-    time to construct the expiration date.  The <code>Cache-Control:
-    max-age</code> is calculated by subtracting the request time from
-    the expiration date and expressing the result in seconds.</p>
+    <p>Cette directive permet de définir la valeur de l'en-tête
+    <code>Expires</code> et de la directive <code>max-age</code> de
+    l'en-tête <code>Cache-Control</code> générés pour les documents du
+    type MIME spécifié (par exemple, <code>text/html</code>). Le second
+    argument définit le nombre de secondes qui seront ajoutées à un
+    temps de base pour calculer la date d'expiration.
+    <code>Cache-Control: max-age</code> se calcule en soustrayant la
+    date de la requête de la date d'expiration et s'exprime en
+    secondes.</p>
 
-    <p>The base time is either the last modification time of the
-    file, or the time of the client's access to the document. Which
-    should be used is specified by the
-    <code><var>&lt;code&gt;</var></code> field; <code>M</code>
-    means that the file's last modification time should be used as
-    the base time, and <code>A</code> means the client's access
-    time should be used.</p>
+    <p>Le champ <code><var>&lt;code&gt;</var></code> permet de spécifier
+    quel temps doit être utilisé comme temps de base; <code>M</code>
+    signifie que c'est la date
+    de dernière modification du fichier qui doit être utilisée comme
+    temps de base, alors que <code>A</code> signifie que c'est le moment
+    où le client a accédé au document qui doit être utilisé comme temps
+    de base.</p>
 
-    <p>The difference in effect is subtle. If <code>M</code> is used,
-    all current copies of the document in all caches will expire at
-    the same time, which can be good for something like a weekly
-    notice that's always found at the same URL. If <code>A</code> is
-    used, the date of expiration is different for each client; this
-    can be good for image files that don't change very often,
-    particularly for a set of related documents that all refer to
-    the same images (<em>i.e.</em>, the images will be accessed
-    repeatedly within a relatively short timespan).</p>
+    <p>La différence d'effet est subtile. Si on utilise <code>M</code>,
+    toutes les copies existantes du document dans tous les caches
+    expireront au même moment, ce qui peut convenir par exemple pour une
+    notice hebdomadaire qui correspond toujours à la même URL. Si on
+    utilise <code>A</code>, la date d'expiration sera différente pour
+    chaque client, ce qui peut convenir pour des fichiers d'images qui
+    ne changent pas très souvent, et en particulier pour un ensemble de
+    documents en relation qui se réfèrent tous aux mêmes images (ces
+    images sont alors accédées de manière répétitive dans un intervalle
+    de temps assez court).</p>
 
-    <div class="example"><h3>Example:</h3><pre class="prettyprint lang-config"># enable expirations
+    <div class="example"><h3>Exemple :</h3><pre class="prettyprint lang-config"># active la génération des en-têtes Expires
 ExpiresActive On
-# expire GIF images after a month in the client's cache
+# les images GIF expirent au bout d'un mois dans le cache du
+# client
 ExpiresByType image/gif A2592000
-# HTML documents are good for a week from the
-# time they were changed
+# les documents HTML restent valables une semaine après leur date
+# de dernière modification
 ExpiresByType text/html M604800</pre>
 </div>
 
-    <p>Note that this directive only has effect if
-    <code>ExpiresActive On</code> has been specified. It overrides,
-    for the specified MIME type <em>only</em>, any expiration date
-    set by the <code class="directive"><a href="#expiresdefault">ExpiresDefault</a></code>
-    directive.</p>
+    <p>Notez que cette directive ne produit d'effet que si
+    <code>ExpiresActive On</code> a été spécifié. Elle l'emporte, mais
+    <em>seulement</em> pour le type MIME spécifié, sur toute date
+    d'expiration définie par la directive <code class="directive"><a href="#expiresdefault">ExpiresDefault</a></code>.</p>
 
-    <p>You can also specify the expiration time calculation using
-    an <a href="#AltSyn">alternate syntax</a>, described earlier in
-    this document.</p>
+    <p>Vous pouvez aussi définir le mode de calcul de la date
+    d'expiration en utilisant une <a href="#AltSyn">syntaxe
+    alternative</a>, comme décrit plus haut dans ce document.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="expiresdefault" id="expiresdefault">Directive</a> <a name="ExpiresDefault" id="ExpiresDefault">ExpiresDefault</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Default algorithm for calculating expiration time</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ExpiresDefault <var>&lt;code&gt;seconds</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Mode de calcul par défaut de la date
+d'expiration</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ExpiresDefault <var>&lt;code&gt;secondes</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>Indexes</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_expires</td></tr>
 </table>
-    <p>This directive sets the default algorithm for calculating the
-    expiration time for all documents in the affected realm. It can be
-    overridden on a type-by-type basis by the <code class="directive"><a href="#expiresbytype">ExpiresByType</a></code> directive. See the
-    description of that directive for details about the syntax of the
-    argument, and the <a href="#AltSyn">alternate syntax</a>
-    description as well.</p>
+    <p>Cette directive permet de définir le mode de calcul par défaut de
+    la date d'expiration pour tous les documents du domaine considéré.
+    Elle peut être annulée pour certains types de documents par la
+    directive <code class="directive"><a href="#expiresbytype">ExpiresByType</a></code>. Voir la description
+    de cette dernière directive pour plus de détails à propos de la
+    syntaxe de l'argument, ainsi que la description de la <a href="#AltSyn">syntaxe alternative</a>.</p>
 
 </div>
 </div>

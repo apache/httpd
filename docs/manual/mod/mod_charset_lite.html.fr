@@ -109,40 +109,44 @@ traductions ou les réencodages</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="charsetdefault" id="charsetdefault">Directive</a> <a name="CharsetDefault" id="CharsetDefault">CharsetDefault</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Charset to translate into</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CharsetDefault <var>charset</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Jeu de caractère vers lequel la traduction doit
+s'effectuer</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CharsetDefault <var>jeu de caractères</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_charset_lite</td></tr>
 </table>
-    <p>The <code class="directive">CharsetDefault</code> directive specifies the
-    charset that content in the associated container should be
-    translated to.</p>
+    <p>La directive <code class="directive">CharsetDefault</code>
+    spécifie le jeu de caractères vers lequel le contenu situé dans le
+    conteneur associé devra être traduit.</p>
 
-    <p>The value of the <var>charset</var> argument must be accepted
-    as a valid character set name by the character set support in
-    <a class="glossarylink" href="../glossary.html#apr" title="voir glossaire">APR</a>. Generally, this means that it must be
-    supported by iconv.</p>
+    <p>La valeur de l'argument <var>jeu de caractères</var> doit être
+    un nom de jeu de caractères valide du point de vue du support des
+    jeux de caractères dans <a class="glossarylink" href="../glossary.html#apr" title="voir glossaire">APR</a>. En général, cela
+    implique qu'elle doit être reconnue par iconv.</p>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">&lt;Directory "/export/home/trawick/apacheinst/htdocs/convert"&gt;
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">&lt;Directory "/export/home/trawick/apacheinst/htdocs/convert"&gt;
     CharsetSourceEnc  UTF-16BE
     CharsetDefault    ISO-8859-1
 &lt;/Directory&gt;</pre>
 </div>
 
-     <div class="note">
-     Specifying the same charset for both <code class="directive"><a href="#charsetsourceenc">CharsetSourceEnc</a></code>
-     and <code class="directive"><a href="#charsetdefault">CharsetDefault</a></code> disables translation. The charset
-     need not match the charset of the response, but it must be a valid charset on the system.
+    <div class="note">
+     Spécifier le même jeu de caractères pour les deux directives
+     <code class="directive"><a href="#charsetsourceenc">CharsetSourceEnc</a></code>
+     et <code class="directive"><a href="#charsetdefault">CharsetDefault</a></code>
+     désactive la traduction. Le jeu de caractères ne doit pas forcément
+     correspondre au jeu de caractères de la réponse, mais il doit être
+     valide du point de vue du système.
      </div>
-
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="charsetoptions" id="charsetoptions">Directive</a> <a name="CharsetOptions" id="CharsetOptions">CharsetOptions</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configures charset translation behavior</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Précise les détails de la traduction du jeu de
+caractères</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CharsetOptions <var>option</var> [<var>option</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CharsetOptions ImplicitAdd</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
@@ -150,27 +154,30 @@ traductions ou les réencodages</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_charset_lite</td></tr>
 </table>
-    <p>The <code class="directive">CharsetOptions</code> directive configures certain
-    behaviors of <code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code>. <var>Option</var> can
-    be one of</p>
+    <p>La directive <code class="directive">CharsetOptions</code>
+    précise certains détails du comportement du module
+    <code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code>. <var>Option</var> accepte les
+    valeurs suivantes :</p>
 
     <dl>
       <dt><code>ImplicitAdd | NoImplicitAdd</code></dt>
 
-      <dd>The <code>ImplicitAdd</code> keyword specifies that
-      <code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code> should implicitly insert its
-      filter when the configuration specifies that the character
-      set of content should be translated. If the filter chain is
-      explicitly configured using the <code class="directive"><a href="../mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code> directive, <code>NoImplicitAdd</code>
-      should be specified so that <code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code>
-      doesn't add its filter.</dd>
+      <dd>Le mot-clé <code>ImplicitAdd</code> indique que
+      <code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code> doit insérer son filtre de
+      manière implicite lorsque la configuration indique que le jeu de
+      caractère du contenu doit être traduit. Si la chaîne de filtrage
+      est configurée de manière explicite via la directive <code class="directive"><a href="../mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code>, l'option
+      <code>NoImplicitAdd</code> doit être utilisée afin que
+      <code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code> n'ajoute pas son propre
+      filtre.</dd>
 
       <dt><code>TranslateAllMimeTypes | NoTranslateAllMimeTypes</code></dt>
-      <dd>Normally, <code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code> will only perform
-      translation on a small subset of possible mimetypes.  When the
-      <code>TranslateAllMimeTypes</code> keyword is specified for a given
-      configuration section, translation is performed without regard for
-      mimetype.</dd>
+      <dd>Normalement, <code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code> n'effectuera
+      une traduction qu'en présence d'un petit nombre de types MIME
+      parmi tous les types possibles. Lorsque l'option
+      <code>TranslateAllMimeTypes</code> est utilisée pour une section
+      de configuration donnée, la traduction est effectuée sans se
+      préoccuper du type MIME.</dd>
 
     </dl>
 
@@ -178,36 +185,39 @@ traductions ou les réencodages</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="charsetsourceenc" id="charsetsourceenc">Directive</a> <a name="CharsetSourceEnc" id="CharsetSourceEnc">CharsetSourceEnc</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Source charset of files</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CharsetSourceEnc <var>charset</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Jeu de caractères source des fichiers</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CharsetSourceEnc <var>jeu de caractères</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_charset_lite</td></tr>
 </table>
-    <p>The <code class="directive">CharsetSourceEnc</code> directive specifies the
-    source charset of files in the associated container.</p>
+    <p>La directive <code class="directive">CharsetSourceEnc</code>
+    spécifie un jeu de caractères source pour les fichiers situés dans
+    le conteneur associé.</p>
 
-    <p>The value of the <var>charset</var> argument must be accepted
-    as a valid character set name by the character set support in
-    <a class="glossarylink" href="../glossary.html#apr" title="voir glossaire">APR</a>. Generally, this means that it must be
-    supported by iconv.</p>
+    <p>La valeur de l'argument <var>jeu de caractères</var> doit être
+    un nom de jeu de caractères valide du point de vue du support des
+    jeux de caractères dans <a class="glossarylink" href="../glossary.html#apr" title="voir glossaire">APR</a>. En général, cela
+    implique qu'elle doit être reconnue par iconv.</p>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">&lt;Directory "/export/home/trawick/apacheinst/htdocs/convert"&gt;
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">&lt;Directory "/export/home/trawick/apacheinst/htdocs/convert"&gt;
     CharsetSourceEnc  UTF-16BE
     CharsetDefault    ISO-8859-1
 &lt;/Directory&gt;</pre>
 </div>
 
-    <p>The character set names in this example work with the iconv
-    translation support in Solaris 8.</p>
+    <p>Les noms de jeux de caractères de cet exemple sont reconnus par
+    le mécanisme de traduction d'iconv sous Solaris 8.</p>
 
-     <div class="note">
-     Specifying the same charset for both <code class="directive"><a href="#charsetsourceenc">CharsetSourceEnc</a></code>
-     and <code class="directive"><a href="#charsetdefault">CharsetDefault</a></code> disables translation. The charset
-     need not match the charset of the response, but it must be a valid charset on the system.
+    <div class="note">
+     Spécifier le même jeu de caractères pour les deux directives
+     <code class="directive"><a href="#charsetsourceenc">CharsetSourceEnc</a></code>
+     et <code class="directive"><a href="#charsetdefault">CharsetDefault</a></code>
+     désactive la traduction. Le jeu de caractères ne doit pas forcément
+     correspondre au jeu de caractères de la réponse, mais il doit être
+     valide du point de vue du système.
      </div>
-
 
 </div>
 </div>

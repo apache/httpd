@@ -53,17 +53,17 @@ protocole</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="protocolecho" id="protocolecho">Directive</a> <a name="ProtocolEcho" id="ProtocolEcho">ProtocolEcho</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Turn the echo server on or off</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active ou désactive le serveur d'écho</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProtocolEcho On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ProtocolEcho Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_echo</td></tr>
 </table>
-    <p>The <code class="directive">ProtocolEcho</code> directive enables or
-    disables the echo server.</p>
+    <p>La directive <code class="directive">ProtocolEcho</code> permet d'activer
+    ou de désactiver le serveur d'écho.</p>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">ProtocolEcho On</pre>
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">ProtocolEcho On</pre>
 </div>
 
 </div>

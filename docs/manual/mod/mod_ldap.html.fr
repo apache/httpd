@@ -454,121 +454,144 @@ LDAPTrustedGlobalCert CA_BASE64 /certs/cacert2.pem
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ldapcacheentries" id="ldapcacheentries">Directive</a> <a name="LDAPCacheEntries" id="LDAPCacheEntries">LDAPCacheEntries</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum number of entries in the primary LDAP cache</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPCacheEntries <var>number</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nombre maximum d'entrées dans le cache LDAP
+primaire</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPCacheEntries <var>nombre</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>LDAPCacheEntries 1024</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
 </table>
-    <p>Specifies the maximum size of the primary LDAP cache. This
-    cache contains successful search/binds. Set it to 0 to turn off
-    search/bind caching. The default size is 1024 cached
-    searches.</p>
+    <p>Cette directive permet de spécifier la taille maximale du cache
+    LDAP primaire. Ce cache contient les résultats de
+    recherche/identification positifs. Définissez-la à 0 pour désactiver
+    la mise en cache des résultats de recherche/identification positifs.
+    La taille par défaut est de 1024 recherches en cache.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ldapcachettl" id="ldapcachettl">Directive</a> <a name="LDAPCacheTTL" id="LDAPCacheTTL">LDAPCacheTTL</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Time that cached items remain valid</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPCacheTTL <var>seconds</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Durée pendant laquelle les entrées du cache restent
+valides.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPCacheTTL <var>secondes</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>LDAPCacheTTL 600</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
 </table>
-    <p>Specifies the time (in seconds) that an item in the
-    search/bind cache remains valid. The default is 600 seconds (10
+    <p>Cette directive permet de spécifier la durée (en secondes)
+    pendant laquelle une entrée du cache de recherche/identification
+    reste valide. La valeur par défaut est de 600 secondes (10
     minutes).</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ldapconnectionpoolttl" id="ldapconnectionpoolttl">Directive</a> <a name="LDAPConnectionPoolTTL" id="LDAPConnectionPoolTTL">LDAPConnectionPoolTTL</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Discard backend connections that have been sitting in the connection pool too long</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Désactive les connexions d'arrière-plan qui sont restées
+inactives trop longtemps au sein du jeu de connexions.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPConnectionPoolTTL <var>n</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>LDAPConnectionPoolTTL -1</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Apache HTTP Server 2.3.12 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.3.12 du serveur HTTP
+Apache</td></tr>
 </table>
-    <p>Specifies the maximum age, in seconds, that a pooled LDAP connection can remain idle
-    and still be available for use.  Connections are cleaned up when they are next needed,
-    not asynchronously.</p>
+    <p>Cette directive permet de spécifier la durée maximale, en
+    secondes, pendant laquelle une connexion LDAP du jeu de connexions
+    peut demeurer inactive, mais rester quand-même disponible pour une
+    utilisation éventuelle. Le jeu de connexions est nettoyé au fur et à
+    mesure des besoins, de manière non asynchrone.</p>
 
-    <p>A setting of 0 causes connections to never be saved in the backend
-    connection pool.  The default value of -1, and any other negative value,
-    allows connections of any age to be reused.</p>
+    <p>Si cette directive est définie à 0, les connexions ne sont jamais
+    sauvegardées dans le jeu de connexions d'arrière-plan. Avec la
+    valeur par défaut -1, ou toute autre valeur négative, les connexions
+    peuvent être réutilisées sans limite de durée.</p>
 
-    <p>For performance reasons, the reference time used by this directive is
-    based on when the LDAP connection is returned to the pool, not the time
-    of the last successful I/O with the LDAP server.  </p>
+    <p>Dans le but d'améliorer les performances, le temps de référence
+    qu'utilise cette directive correspond au moment où la connexion LDAP
+    est enregistrée ou remise dans le jeu de connexions, et non au
+    moment du dernier échange réussi avec le serveur LDAP.</p>
 
-    <p>Since 2.4.10, new measures are in place to avoid the reference time
-    from being inflated by cache hits or slow requests.  First, the reference
-    time is not updated if no backend LDAP conncetions were needed. Second,
-    the reference time uses the time the HTTP request was received instead
-    of the time the request is completed.</p>
+    <p>La version 2.4.10 a introduit de nouvelles mesures permettant
+    d'éviter une augmentation excessive du temps de référence due à des
+    correspondances positives dans le cache ou des requêtes lentes. A
+    cet effet, le temps de référence n'est pas réactualisé si aucune
+    connexion LDAP d'arrière-plan n'est requise ; d'autre part, le temps
+    de référence se base sur le moment où la requête HTTP est reçue, et
+    non sur le moment où la requête a été traitée.</p>
 
-    <div class="note"><p>This timeout defaults to units of seconds, but accepts
-    suffixes for milliseconds (ms), minutes (min), and hours (h).
+    <div class="note"><p>Cette durée de vie s'exprime par défaut en secondes, mais
+    il est possible d'utiliser d'autres unités en ajoutant un suffixe :
+    millisecondes (ms), minutes (min), ou heures (h).
     </p></div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ldapconnectiontimeout" id="ldapconnectiontimeout">Directive</a> <a name="LDAPConnectionTimeout" id="LDAPConnectionTimeout">LDAPConnectionTimeout</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specifies the socket connection timeout in seconds</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPConnectionTimeout <var>seconds</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Spécifie le délai d'attente en secondes de la socket de
+connexion</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPConnectionTimeout <var>secondes</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
 </table>
-    <p>This directive configures the LDAP_OPT_NETWORK_TIMEOUT (or LDAP_OPT_CONNECT_TIMEOUT)
-    option in the underlying LDAP client library, when available.  This value
-    typically controls how long the LDAP client library will wait for the TCP
-    connection to the LDAP server to complete.</p>
+    <p>Cette directive configure l'option LDAP_OPT_NETWORK_TIMEOUT (ou
+    LDAP_OPT_CONNECT_TIMEOUT) dans la bibliothèque client LDAP
+    sous-jacente, si elle est disponible. Cette valeur représente la
+    durée pendant laquelle la bibliothèque client LDAP va attendre que
+    le processus de connexion TCP au serveur LDAP soit achevé.</p>
 
-    <p> If a connection is not successful with the timeout period, either an error will be
-    returned or the LDAP client library will attempt to connect to a secondary LDAP
-    server if one is specified (via a space-separated list of hostnames in the
-    <code class="directive"><a href="../mod/mod_authnz_ldap.html#authldapurl">AuthLDAPURL</a></code>).</p>
+    <p>Si la connexion n'a pas réussi avant ce délai, une erreur sera
+    renvoyée, ou la bibliothèque client LDAP tentera de se connecter à
+    un second serveur LDAP, s'il en a été défini un (via une liste de
+    noms d'hôtes séparés par des espaces dans la directive <code class="directive"><a href="../mod/mod_authnz_ldap.html#authldapurl">AuthLDAPURL</a></code>).</p>
 
-    <p>The default is 10 seconds, if the LDAP client library linked with the
-    server supports the LDAP_OPT_NETWORK_TIMEOUT option.</p>
+    <p>La valeur par défaut est 10 secondes, si la bibliothèque client
+    LDAP liée avec le serveur supporte l'option
+    LDAP_OPT_NETWORK_TIMEOUT.</p>
 
-    <div class="note">LDAPConnectionTimeout is only available when the LDAP client library linked
-    with the server supports the LDAP_OPT_NETWORK_TIMEOUT
-    (or LDAP_OPT_CONNECT_TIMEOUT) option, and the ultimate behavior is
-    dictated entirely by the LDAP client library.
+    <div class="note">LDAPConnectionTimeout n'est disponible que si la bibliothèque client
+    LDAP liée avec le serveur supporte l'option
+    LDAP_OPT_NETWORK_TIMEOUT (ou LDAP_OPT_CONNECT_TIMEOUT), et le
+    comportement final est entièrement dicté par la bibliothèque client
+    LDAP.
     </div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ldaplibrarydebug" id="ldaplibrarydebug">Directive</a> <a name="LDAPLibraryDebug" id="LDAPLibraryDebug">LDAPLibraryDebug</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable debugging in the LDAP SDK</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active le débogage dans le SDK LDAP</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPLibraryDebug <var>7</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>disabled</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
 </table>
-    <p>Turns on SDK-specific LDAP debug options that generally cause the LDAP
-    SDK to log verbose trace information to the main Apache error log.
-    The trace messages from the LDAP SDK provide gory details that
-    can be useful during debugging of connectivity problems with backend LDAP servers</p>
+    <p>Active les options de débogage LDAP spécifiques au SDK, qui
+    entraînent en général une journalisation d'informations verbeuses du
+    SDK LDAP dans le journal principal des erreurs d'Apache. Les
+    messages de traces en provenance du SDK LDAP fournissent des
+    informations très détaillées qui peuvent s'avérer utiles lors du
+    débogage des problèmes de connexion avec des serveurs LDAP
+    d'arrière-plan.</p>
 
-    <p>This option is only configurable when Apache HTTP Server is linked with
-    an LDAP SDK that implements <code>LDAP_OPT_DEBUG</code> or
-    <code>LDAP_OPT_DEBUG_LEVEL</code>, such as OpenLDAP (a value of 7 is verbose)
-    or Tivoli Directory Server (a value of 65535 is verbose).</p>
+    <p>Cette option n'est configurable que lorsque le serveur HTTP
+    Apache est lié avec un SDK LDAP qui implémente
+    <code>LDAP_OPT_DEBUG</code> ou <code>LDAP_OPT_DEBUG_LEVEL</code>,
+    comme OpenLDAP (une valeur de 7 est verbeuse) ou Tivoli Directory
+    Server (une valeur de 65535 est verbeuse).</p>
 
     <div class="warning">
-    <p>The logged information will likely contain plaintext credentials being used or
-    validated by LDAP authentication, so care should be taken in protecting and purging
-    the error log when this directive is used.</p>
+    <p>Les informations journalisées peuvent contenir des données
+    d'authentification en clair utilisées ou validées lors de
+    l'authentification LDAP ; vous devez donc prendre soin de protéger
+    et de purger le journal des erreurs lorsque cette directive est
+    utilisée.</p>
     </div>
 
 
@@ -576,183 +599,211 @@ LDAPTrustedGlobalCert CA_BASE64 /certs/cacert2.pem
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ldapopcacheentries" id="ldapopcacheentries">Directive</a> <a name="LDAPOpCacheEntries" id="LDAPOpCacheEntries">LDAPOpCacheEntries</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Number of entries used to cache LDAP compare
-operations</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPOpCacheEntries <var>number</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nombre d'entrées utilisées pour mettre en cache les
+opérations de comparaison LDAP</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPOpCacheEntries <var>nombre</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>LDAPOpCacheEntries 1024</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
 </table>
-    <p>This specifies the number of entries <code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code>
-    will use to cache LDAP compare operations. The default is 1024
-    entries.  Setting it to 0 disables operation caching.</p>
+    <p>Cette directive permet de spécifier le nombre d'entrées que
+    <code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code> va utiliser pour mettre en cache les
+    opérations de comparaison LDAP. La valeur par défaut est de 1024
+    entrées. Si elle est définie à 0, la mise en cache des opérations de
+    comparaison LDAP est désactivée.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ldapopcachettl" id="ldapopcachettl">Directive</a> <a name="LDAPOpCacheTTL" id="LDAPOpCacheTTL">LDAPOpCacheTTL</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Time that entries in the operation cache remain
-valid</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPOpCacheTTL <var>seconds</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Durée pendant laquelle les entrées du cache d'opérations
+restent valides</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPOpCacheTTL <var>secondes</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>LDAPOpCacheTTL 600</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
 </table>
-    <p>Specifies the time (in seconds) that entries in the
-    operation cache remain valid. The default is 600 seconds.</p>
+    <p>Cette directive permet de spécifier la durée (en secondes)
+    pendant laquelle les entrées du cache d'opérations restent valides.
+    La valeur par défaut est de 600 secondes.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ldapreferralhoplimit" id="ldapreferralhoplimit">Directive</a> <a name="LDAPReferralHopLimit" id="LDAPReferralHopLimit">LDAPReferralHopLimit</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The maximum number of referral hops to chase before terminating an LDAP query.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPReferralHopLimit <var>number</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SDK dependent, typically between 5 and 10</code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le nombre maximum de redirections vers des serveurs
+alternatifs (referrals) avant l'abandon de la requête
+LDAP.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPReferralHopLimit <var>nombre</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>Dépend du SDK, en général entre 5 et 10</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
 </table>
-    <p>This directive, if enabled by the <code class="directive">LDAPReferrals</code> directive,
-    limits the number of referral hops that are followed before terminating an
-    LDAP query.</p>
+    <p>Si elle est activée par la directive <code class="directive">LDAPReferrals</code>,
+    cette directive permet de définir le nombre maximum de sauts vers
+    des serveurs alternatifs (referrals) avant l'abandon de la requête
+    LDAP.</p>
 
 <div class="warning">
-<p> Support for this tunable is uncommon in LDAP SDKs.</p>
+<p>L'ajustement de ce paramètre n'est pas commun à tous les SDKs LDAP.</p>
 </div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ldapreferrals" id="ldapreferrals">Directive</a> <a name="LDAPReferrals" id="LDAPReferrals">LDAPReferrals</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable referral chasing during queries to the LDAP server.</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active la redirection vers des serveurs alternatifs au
+cours des requêtes vers le serveur LDAP.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPReferrals <var>On|Off|default</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>LDAPReferrals On</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>The <var>default</var> parameter is available in Apache 2.4.7 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le paramètre <var>default</var> est disponible depuis la
+version 2.4.7 du serveur HTTP Apache.</td></tr>
 </table>
-    <p>Some LDAP servers divide their directory among multiple domains and use referrals
-    to direct a client when a domain boundary is crossed. This is similar to a HTTP redirect.
-    LDAP client libraries may or may not chase referrals by default. This directive
-    explicitly configures the referral chasing in the underlying SDK.</p>
+    <p>Certains serveurs LDAP partagent leur annuaire en plusieurs
+    domaines et utilisent le système des redirections (referrals) pour
+    aiguiller un client lorsque les limites d'un domaine doivent être
+    franchies. Ce processus est similaire à une redirection HTTP. Les
+    bibliothèques client LDAP ne respectent pas forcément ces
+    redirections par défaut. Cette directive permet de configurer
+    explicitement les redirections LDAP dans le SDK sous-jacent.</p>
 
+    <p>La directive <code class="directive">LDAPReferrals</code> accepte les
+    valeurs suivantes :</p>
 
-    <p><code class="directive">LDAPReferrals</code> takes the following values:</p>
     <dl>
      <dt>"on"</dt>
-     <dd> <p> When set to "on", the underlying SDK's referral chasing state
-              is enabled, <code class="directive">LDAPReferralHopLimit</code> is used to
-              override the SDK's hop limit, and an LDAP rebind callback is
-              registered.</p></dd>
+     <dd> <p>Avec la valeur "on", la prise en compte des redirections
+     LDAP par le SDK sous-jacent est activée, la directive
+     <code class="directive">LDAPReferralHopLimit</code> permet de surcharger la
+     "hop limit" du SDK, et un "LDAP rebind callback" est enregistré.</p></dd>
      <dt>"off"</dt>
-     <dd> <p> When set to "off", the underlying SDK's referral chasing state
-              is disabled completely.</p></dd>
+     <dd> <p>Avec la valeur "off", la prise en compte des redirections
+     LDAP par le SDK sous-jacent est complètement désactivée.</p></dd>
      <dt>"default"</dt>
-     <dd> <p> When set to "default", the underlying SDK's referral chasing state
-              is not changed, <code class="directive">LDAPReferralHopLimit</code> is not
-              used to overide the SDK's hop limit, and no LDAP rebind callback is
-              registered.</p></dd>
+     <dd> <p>Avec la valeur "default", la prise en compte des redirections
+     LDAP par le SDK sous-jacent n'est pas modifiée, la directive
+     <code class="directive">LDAPReferralHopLimit</code> ne permet pas de surcharger la
+     "hop limit" du SDK, et aucun "LDAP rebind callback" n'est enregistré.</p></dd>
     </dl>
-
-    <p>The directive <code class="directive">LDAPReferralHopLimit</code> works in conjunction with
-    this directive to limit the number of referral hops to follow before terminating the LDAP query.
-    When referral processing is enabled by a value of "On", client credentials will be provided,
-    via a rebind callback, for any LDAP server requiring them.</p>
+    
+    <p>La directive <code class="directive">LDAPReferralHopLimit</code> travaille en
+    conjonction avec cette directive pour limiter le nombre de
+    redirections à suivre pour achever le traitement de la requête LDAP.
+    Lorsque le processus de redirection est activé par la valeur "On",
+    les données d'authentification du client sont transmises via un
+    "rebind callback" à tout serveur LDAP qui en fait la demande.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ldapretries" id="ldapretries">Directive</a> <a name="LDAPRetries" id="LDAPRetries">LDAPRetries</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configures the number of LDAP server retries.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPRetries <var>number-of-retries</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le nombre maximum de tentatives de connexions au
+serveur LDAP.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPRetries <var>nombre d'essais</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>LDAPRetries 3</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
 </table>
-    <p>The server will retry failed LDAP requests up to
-    <code class="directive">LDAPRetries</code> times.  Setting this
-    directive to 0 disables retries.</p>
-    <p>LDAP errors such as timeouts and refused connections are retryable.</p>
+    <p>Suite à des échecs de connexion au serveur LDAP, le serveur
+    tentera de se connecter autant de fois qu'indiqué par la directive
+    <code class="directive">LDAPRetries</code>. Si cette directive est définie à
+    0, le serveur ne tentera pas d'autre connexion après un échec.</p>
+    <p>Il est possible d'effectuer une autre tentative de connexion en
+    cas d'erreurs LDAP du type délai dépassé ou connexion refusée. </p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ldapretrydelay" id="ldapretrydelay">Directive</a> <a name="LDAPRetryDelay" id="LDAPRetryDelay">LDAPRetryDelay</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configures the delay between LDAP server retries.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPRetryDelay <var>seconds</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le temps d'attente avant un autre essai de connexion au
+serveur LDAP.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPRetryDelay <var>secondes</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>LDAPRetryDelay 0</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
 </table>
-    <p>If <code class="directive">LDAPRetryDelay</code> is set to a non-zero
-    value, the server will delay retrying an LDAP request for the
-    specified amount of time.  Setting this directive to 0 will
-    result in any retry to occur without delay.</p>
+    <p>Si la directive <code class="directive">LDAPRetryDelay</code> est définie
+    à une valeur différente de 0, le serveur attendra pendant la durée
+    spécifiée pour envoyer à nouveau sa requête LDAP. Une valeur de 0
+    implique une absence de délai pour les essais successifs.</p>
 
-    <p>LDAP errors such as timeouts and refused connections are retryable.</p>
+    <p>Il est possible d'effectuer une autre tentative de connexion en
+    cas d'erreurs LDAP du type délai dépassé ou connexion refusée. </p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ldapsharedcachefile" id="ldapsharedcachefile">Directive</a> <a name="LDAPSharedCacheFile" id="LDAPSharedCacheFile">LDAPSharedCacheFile</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets the shared memory cache file</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPSharedCacheFile <var>file-path</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le fichier du cache en mémoire
+partagée</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPSharedCacheFile <var>chemin-fichier</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
 </table>
-    <p>Specifies the path of the shared memory cache file. If not set,
-    anonymous shared memory will be used if the platform supports it.</p>
+    <p>Cette directive permet de spécifier le chemin du
+    fichier du cache en mémoire partagée. Si elle n'est pas définie, la
+    mémoire partagée anonyme sera utilisée si la plate-forme la
+    supporte.</p>
 
-    <p>If <var>file-path</var> is not an absolute path, the location specified
-    will be relative to the value of
-    <code class="directive"><a href="../mod/core.html#defaultruntimedir">DefaultRuntimeDir</a></code>.</p>
+    <p>Si <var>chemin-fichier</var> n'est pas un chemin absolu, il sera
+    relatif au répertoire défini via la directive <code class="directive"><a href="../mod/core.html#defaultruntimedir">DefaultRuntimeDir</a></code>.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ldapsharedcachesize" id="ldapsharedcachesize">Directive</a> <a name="LDAPSharedCacheSize" id="LDAPSharedCacheSize">LDAPSharedCacheSize</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Size in bytes of the shared-memory cache</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPSharedCacheSize <var>bytes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Taille en octets du cache en mémoire partagée</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPSharedCacheSize <var>octets</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>LDAPSharedCacheSize 500000</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
 </table>
-    <p>Specifies the number of bytes to allocate for the shared
-    memory cache. The default is 500kb. If set to 0, shared memory
-    caching will not be used and every HTTPD process will create its
-    own cache.</p>
+    <p>Cette directive permet de spécifier le nombre d'octets à allouer
+    pour le cache en mémoire partagée. La valeur par
+    défaut est 500kb.
+    Si elle est définie à 0, le cache en mémoire partagée ne sera pas
+    utilisé et chaque processus HTTPD va créer son propre cache.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ldaptimeout" id="ldaptimeout">Directive</a> <a name="LDAPTimeout" id="LDAPTimeout">LDAPTimeout</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specifies the timeout for LDAP search and bind operations, in seconds</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPTimeout <var>seconds</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Spécifie le délai d'attente pour les opérations de
+recherche et d'identification LDAP en secondes</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPTimeout <var>secondes</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>LDAPTimeout 60</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Apache HTTP Server 2.3.5 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.3.5 du serveur HTTP
+Apache</td></tr>
 </table>
-    <p>This directive configures the timeout for bind and search operations, as well as
-    the LDAP_OPT_TIMEOUT option in the underlying LDAP client library, when available.</p>
+    <p>Cette directive permet de spécifier le délai d'attente pour les
+    opérations de recherche et d'identification, ainsi que l'option
+    LDAP_OPT_TIMEOUT dans la bibliothèque LDAP client sous-jacente,
+    lorsqu'elle est disponible.</p>
 
-    <p> If the timeout expires, httpd will retry in case an existing connection has
-    been silently dropped by a firewall. However, performance will be much better if
-    the firewall is configured to send TCP RST packets instead of silently dropping
-    packets.</p>
+    <p>Lorsque le délai est atteint, httpd va refaire un essai dans le
+    cas où une connexion existante a été silencieusement fermée par un
+    pare-feu. Les performances seront cependant bien meilleures si le
+    pare-feu est configuré pour envoyer des paquets TCP RST au lieu de
+    rejeter silencieusement les paquets.</p>
 
     <div class="note">
-    <p>Timeouts for ldap compare operations requires an SDK with LDAP_OPT_TIMEOUT, such as OpenLDAP &gt;= 2.4.4.</p>
+    <p>Les délais pour les opérations de comparaison LDAP nécessitent un
+    SDK avec LDAP_OPT_TIMEOUT, comme OpenLDAP &gt;= 2.4.4.</p>
     </div>
 
 
@@ -760,114 +811,128 @@ valid</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ldaptrustedclientcert" id="ldaptrustedclientcert">Directive</a> <a name="LDAPTrustedClientCert" id="LDAPTrustedClientCert">LDAPTrustedClientCert</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets the file containing or nickname referring to a per
-connection client certificate. Not all LDAP toolkits support per
-connection client certificates.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPTrustedClientCert <var>type</var> <var>directory-path/filename/nickname</var> <var>[password]</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le nom de fichier contenant un certificat client ou
+un alias renvoyant vers un certificat client spécifique à une connexion.
+Tous les SDK LDAP ne supportent pas les certificats clients par
+connexion.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPTrustedClientCert <var>type</var>
+<var>chemin/nom-fichier/alias</var> <var>[mot de passe]</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
 </table>
-    <p>It specifies the directory path, file name or nickname of a
-    per connection client certificate used when establishing an SSL
-    or TLS connection to an LDAP server. Different locations or
-    directories may have their own independent client certificate
-    settings. Some LDAP toolkits (notably Novell)
-    do not support per connection client certificates, and will throw an
-    error on LDAP server connection if you try to use this directive
-    (Use the LDAPTrustedGlobalCert directive instead for Novell client
-    certificates - See the SSL/TLS certificate guide above for details).
-    The type specifies the kind of certificate parameter being
-    set, depending on the LDAP toolkit being used. Supported types are:</p>
+    <p>Cette directive permet de spécifier le chemin et le nom de
+    fichier ou l'alias d'un certificat client par connexion utilisé lors
+    de l'établissement d'une connexion SSL ou TLS avec un serveur LDAP.
+    Les sections directory ou location peuvent posséder leurs propres
+    configurations de certificats clients. Certains SDK LDAP (en
+    particulier Novell) ne supportent pas les certificats clients par
+    connexion, et renvoient une erreur lors de la connexion au serveur
+    LDAP si vous tenter d'utiliser cette directive (Utilisez à la place
+    la directive LDAPTrustedGlobalCert pour les certificats clients sous
+    Novell - Voir plus haut le guide des certificats SSL/TLS pour plus
+    de détails). Le paramètre type spécifie le type du certificat en
+    cours de définition, en fonction du SDK LDAP utilisé. Les types
+    supportés sont :</p>
     <ul>
-      <li>CA_DER - binary DER encoded CA certificate</li>
-      <li>CA_BASE64 - PEM encoded CA certificate</li>
-      <li>CERT_DER - binary DER encoded client certificate</li>
-      <li>CERT_BASE64 - PEM encoded client certificate</li>
-      <li>CERT_NICKNAME - Client certificate "nickname" (Netscape SDK)</li>
-      <li>KEY_DER - binary DER encoded private key</li>
-      <li>KEY_BASE64 - PEM encoded private key</li>
+      <li>CA_DER - certificat de CA codé en binaire DER</li>
+      <li>CA_BASE64 - certificat de CA codé en PEM</li>
+      <li>CERT_DER - certificat client codé en binaire DER</li>
+      <li>CERT_BASE64 - certificat client codé en PEM</li>
+      <li>CERT_NICKNAME - certificat client "nickname" (SDK Netscape)</li>
+      <li>KEY_DER - clé privée codée en binaire DER</li>
+      <li>KEY_BASE64 - clé privée codée en PEM</li>
     </ul>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ldaptrustedglobalcert" id="ldaptrustedglobalcert">Directive</a> <a name="LDAPTrustedGlobalCert" id="LDAPTrustedGlobalCert">LDAPTrustedGlobalCert</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets the file or database containing global trusted
-Certificate Authority or global client certificates</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPTrustedGlobalCert <var>type</var> <var>directory-path/filename</var> <var>[password]</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le nom de fichier ou la base de données contenant
+les Autorités de Certification de confiance globales ou les certificats
+clients globaux</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPTrustedGlobalCert <var>type</var>
+<var>chemin/nom-fichier</var> <var>[mot de passe]</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
 </table>
-    <p>It specifies the directory path and file name of the trusted CA
-    certificates and/or system wide client certificates <code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code>
-    should use when establishing an SSL or TLS connection to an LDAP
-    server. Note that all certificate information specified using this directive
-    is applied globally to the entire server installation. Some LDAP toolkits
-    (notably Novell) require all client certificates to be set globally using
-    this directive. Most other toolkits require clients certificates to be set
-    per Directory or per Location using LDAPTrustedClientCert. If you get this
-    wrong, an error may be logged when an attempt is made to contact the LDAP
-    server, or the connection may silently fail (See the SSL/TLS certificate
-    guide above for details).
-    The type specifies the kind of certificate parameter being
-    set, depending on the LDAP toolkit being used. Supported types are:</p>
+    <p>Cette directive permet de spécifier le chemin et le nom du
+    fichier contenant les certificats des CA de confiance et/ou les
+    certificats clients du système global que <code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code>
+    utilisera pour établir une connexion SSL ou TLS avec un serveur
+    LDAP. Notez que toute information relative aux certificats spécifiée
+    en utilisant cette directive s'applique globalement à l'ensemble de
+    l'installation du serveur. Certains SDK LDAP (en particulier Novell)
+    nécessitent la définition globale de tous les certificats clients en
+    utilisant cette directive. La plupart des autres SDK nécessitent la
+    définition des certificats clients dans une section Directory ou
+    Location en utilisant la directive LDAPTrustedClientCert. Si vous ne
+    définissez pas ces directives correctement, une erreur sera générée
+    lors des tentatives de contact avec un serveur LDAP, ou la connexion
+    échouera silencieusement (Voir plus haut le guide des certificats
+    SSL/TLS pour plus de détails). Le paramètre type spécifie le type de
+    certificat en cours de définition, en fonction du SDK LDAP utilisé.
+    Les types supportés sont :</p>
     <ul>
-      <li>CA_DER - binary DER encoded CA certificate</li>
-      <li>CA_BASE64 - PEM encoded CA certificate</li>
-      <li>CA_CERT7_DB - Netscape cert7.db CA certificate database file</li>
-      <li>CA_SECMOD - Netscape secmod database file</li>
-      <li>CERT_DER - binary DER encoded client certificate</li>
-      <li>CERT_BASE64 - PEM encoded client certificate</li>
-      <li>CERT_KEY3_DB - Netscape key3.db client certificate database file</li>
-      <li>CERT_NICKNAME - Client certificate "nickname" (Netscape SDK)</li>
-      <li>CERT_PFX - PKCS#12 encoded client certificate (Novell SDK)</li>
-      <li>KEY_DER - binary DER encoded private key</li>
-      <li>KEY_BASE64 - PEM encoded private key</li>
-      <li>KEY_PFX - PKCS#12 encoded private key (Novell SDK)</li>
+      <li>CA_DER - certificat de CA codé en binaire DER</li>
+      <li>CA_BASE64 - certificat de CA codé en PEM</li>
+      <li>CA_CERT7_DB - fichier de base de données des certificats de CA
+      de Netscape cert7.db</li>
+      <li>CA_SECMOD - fichier de base de données secmod de Netscape</li>
+      <li>CERT_DER - certificat client codé en binaire DER</li>
+      <li>CERT_BASE64 - certificat client codé en PEM</li>
+      <li>CERT_KEY3_DB - fichier de base de données des certificats
+      clients de Netscape key3.db</li>
+      <li>CERT_NICKNAME - certificat client "nickname" (SDK Netscape)</li>
+      <li>CERT_PFX - certificat client codé en PKCS#12 (SDK Novell)</li>
+      <li>KEY_DER - clé privée codée en binaire DER</li>
+      <li>KEY_BASE64 - clé privée codée en PEM</li>
+      <li>KEY_PFX - clé privée codée en PKCS#12 (SDK Novell)</li>
     </ul>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ldaptrustedmode" id="ldaptrustedmode">Directive</a> <a name="LDAPTrustedMode" id="LDAPTrustedMode">LDAPTrustedMode</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specifies the SSL/TLS mode to be used when connecting to an LDAP server.</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Spécifie le mode (SSL ou TLS) à utiliser lors de la
+connexion à un serveur LDAP.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPTrustedMode <var>type</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
 </table>
-    <p>The following modes are supported:</p>
+    <p>Les modes suivants sont supportés :</p>
     <ul>
-      <li>NONE - no encryption</li>
-      <li>SSL - ldaps:// encryption on default port 636</li>
-      <li>TLS - STARTTLS encryption on default port 389</li>
+      <li>NONE - aucun chiffrement</li>
+      <li>SSL - chiffrement ldaps:// sur le port par défaut 636</li>
+      <li>TLS - chiffrement STARTTLS sur le port par défaut 389</li>
     </ul>
 
-    <p>Not all LDAP toolkits support all the above modes. An error message
-    will be logged at runtime if a mode is not supported, and the
-    connection to the LDAP server will fail.
+    <p>Les modes ci-dessus ne sont pas supportés par tous les SDK LDAP.
+    Un message d'erreur sera généré à l'exécution si un mode n'est pas
+    supporté, et la connexion au serveur LDAP échouera.
     </p>
 
-    <p>If an ldaps:// URL is specified, the mode becomes SSL and the setting
-    of LDAPTrustedMode is ignored.</p>
+    <p>Si une URL de type ldaps:// est spécifiée, le mode est forcé à
+    SSL et la définition de LDAPTrustedMode est ignorée.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ldapverifyservercert" id="ldapverifyservercert">Directive</a> <a name="LDAPVerifyServerCert" id="LDAPVerifyServerCert">LDAPVerifyServerCert</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Force server certificate verification</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Force la vérification du certificat du
+serveur</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPVerifyServerCert <var>On|Off</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>LDAPVerifyServerCert On</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
 </table>
-    <p>Specifies whether to force the verification of a
-    server certificate when establishing an SSL connection to the
-    LDAP server.</p>
+    <p>Cette directive permet de spécifier s'il faut forcer la
+    vérification d'un certificat de serveur lors de l'établissement
+    d'une connexion SSL avec un serveur LDAP.</p>
 
 </div>
 </div>

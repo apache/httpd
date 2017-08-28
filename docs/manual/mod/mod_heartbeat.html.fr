@@ -94,19 +94,20 @@ v=1&amp;ready=75&amp;busy=0
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="heartbeataddress" id="heartbeataddress">Directive</a> <a name="HeartbeatAddress" id="HeartbeatAddress">HeartbeatAddress</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Multicast address for heartbeat packets</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Adresse multicast à laquelle envoyer les requêtes
+heartbeat</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>HeartbeatAddress <var>addr:port</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>disabled</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_heartbeat</td></tr>
 </table>
-<p>The <code class="directive">HeartbeatAddress</code> directive specifies the
-multicast address to which <code class="module"><a href="../mod/mod_heartbeat.html">mod_heartbeat</a></code> will send
-status information. This address will usually correspond to a configured
- <code class="directive"><a href="../mod/mod_heartmonitor.html#heartbeatlisten">HeartbeatListen</a></code> on a
-frontend proxy system.</p>
-<pre class="prettyprint lang-config">HeartbeatAddress 239.0.0.1:27999</pre>
+    <p>La directive <code class="directive">HeartbeatAddress</code> permet de
+    spécifier l'adresse multicast à laquelle <code class="module"><a href="../mod/mod_heartbeat.html">mod_heartbeat</a></code> va
+    envoyer ses informations. En général, cette adresse correspond à la
+    valeur définie par la directive  <code class="directive"><a href="../mod/mod_heartmonitor.html#heartbeatlisten">HeartbeatListen</a></code> sur le serveur
+    mandataire frontal.</p>
+    <pre class="prettyprint lang-config">HeartbeatAddress 239.0.0.1:27999</pre>
 
 
 </div>
