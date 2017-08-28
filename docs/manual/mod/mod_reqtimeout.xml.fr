@@ -40,7 +40,7 @@ données minimum pour la réception des requêtes
 	et 30 secondes pour la réception du corps :
 
         <highlight language="config">
-          RequestTimeout headerinit=10 body=30
+          RequestReadTimeout headerinit=10 body=30
         </highlight>
       </li>
 
