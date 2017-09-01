@@ -158,6 +158,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4 convenience patch (includes CHANGES):
                   http://home.apache.org/~jim/patches/RemoteIPProxyProtocol.2.4.x.patch
      +1: druggeri, jim
+     mrumph: I had a chance to review this proposal.
+             I committed some suggested changes to trunk in r1806985.
+             Also, the copyright in mod_remoteip.c is of some concern.
+             Perhaps the terms of the copyright should be included in that note.
+             And on a personal note, today is my last day with Oracle.
+             So it may well be my last day with Apache as well.
+             It has been great working with all of you.
 
    * mod_journald: Add new module mod_journald to log error logs into journald.
      trunk patch: http://svn.apache.org/r1610339
