@@ -85,7 +85,7 @@ via the request headers.
 <li><code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code></li>
 <li><code class="module"><a href="../mod/mod_status.html">mod_status</a></code></li>
 <li><code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code></li>
-<li><a href="http://www.haproxy.org/download/1.5/doc/proxy-protocol.txt">Proxy Protocol Spec</a></li>
+<li><a href="http://www.haproxy.org/download/1.8/doc/proxy-protocol.txt">Proxy Protocol Spec</a></li>
 <li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -235,23 +235,24 @@ RemoteIPProxiesHeader X-Forwarded-By</pre>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_remoteip</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>RemoteIPProxyProtocol is only available in httpd 2.4.26 and newer</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>RemoteIPProxyProtocol is only available in httpd 2.4.28 and newer</td></tr>
 </table>
     <p>The <code class="directive">RemoteIPProxyProtocol</code> directive enables or 
     disables the reading and handling of the PROXY protocol connection header.
     If enabled with the <code>On</code> flag, the upstream client <em>must</em>
     send the header every time it opens a connection or the connection will
-    be aborted unless it is in the list of disabled hosts provided by <code class="directive"><a href="#remoteipproxyprotocolexceptions">RemoteIPProxyProtocolExceptions</a></code>
+    be aborted unless it is in the list of disabled hosts provided by the
+    <code class="directive"><a href="#remoteipproxyprotocolexceptions">RemoteIPProxyProtocolExceptions</a></code>
     directive.</p>
 
     <p>While this directive may be specified in any virtual host, it is
     important to understand that because the PROXY protocol is connection
     based and protocol agnostic, the enabling and disabling is actually based
-    on ip-address and port. This means that if you have multiple name-based
-    virtual hosts for the same host and port, and you enable it any one of
-    them, then it is enabled for all them (with that host and port). It also
+    on IP address and port. This means that if you have multiple name-based
+    virtual hosts for the same host and port, and you enable it for any one of
+    them, then it is enabled for all of them (with that host and port). It also
     means that if you attempt to enable the PROXY protocol in one and disable
-    in the other, that won't work; in such a case the last one wins and a
+    in the other, that won't work; in such a case, the last one wins and a
     notice will be logged indicating which setting was being overridden.</p>
 
     <pre class="prettyprint lang-config">Listen 80
@@ -286,7 +287,7 @@ Listen 8080
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_remoteip</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>RemoteIPProxyProtocolExceptions is only available in httpd 2.4.26 and newer</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>RemoteIPProxyProtocolExceptions is only available in httpd 2.4.28 and newer</td></tr>
 </table>
     <p>The <code class="directive">RemoteIPProxyProtocol</code> directive enables or
     disables the reading and handling of the PROXY protocol connection header.
