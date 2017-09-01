@@ -65,7 +65,7 @@ via the request headers.
 <seealso><module>mod_authz_host</module></seealso>
 <seealso><module>mod_status</module></seealso>
 <seealso><module>mod_log_config</module></seealso>
-<seealso><a href="http://www.haproxy.org/download/1.5/doc/proxy-protocol.txt">Proxy Protocol Spec</a></seealso>
+<seealso><a href="http://www.haproxy.org/download/1.8/doc/proxy-protocol.txt">Proxy Protocol Spec</a></seealso>
 
 <section id="processing"><title>Remote IP Processing</title>
 
@@ -227,25 +227,25 @@ RemoteIPProxiesHeader X-Forwarded-By
 <syntax>RemoteIPProxyProtocol On|Off</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<compatibility>RemoteIPProxyProtocol is only available in httpd 2.4.26 and newer</compatibility>
+<compatibility>RemoteIPProxyProtocol is only available in httpd 2.4.28 and newer</compatibility>
 
 <usage>
     <p>The <directive>RemoteIPProxyProtocol</directive> directive enables or 
     disables the reading and handling of the PROXY protocol connection header.
     If enabled with the <code>On</code> flag, the upstream client <em>must</em>
     send the header every time it opens a connection or the connection will
-    be aborted unless it is in the list of disabled hosts provided by <directive
-    module="mod_remoteip">RemoteIPProxyProtocolExceptions</directive>
+    be aborted unless it is in the list of disabled hosts provided by the
+    <directive module="mod_remoteip">RemoteIPProxyProtocolExceptions</directive>
     directive.</p>
 
     <p>While this directive may be specified in any virtual host, it is
     important to understand that because the PROXY protocol is connection
     based and protocol agnostic, the enabling and disabling is actually based
-    on ip-address and port. This means that if you have multiple name-based
-    virtual hosts for the same host and port, and you enable it any one of
-    them, then it is enabled for all them (with that host and port). It also
+    on IP address and port. This means that if you have multiple name-based
+    virtual hosts for the same host and port, and you enable it for any one of
+    them, then it is enabled for all of them (with that host and port). It also
     means that if you attempt to enable the PROXY protocol in one and disable
-    in the other, that won't work; in such a case the last one wins and a
+    in the other, that won't work; in such a case, the last one wins and a
     notice will be logged indicating which setting was being overridden.</p>
 
     <highlight language="config">
@@ -280,7 +280,7 @@ Listen 8080
 <syntax>RemoteIPProxyProtocolExceptions host|range [host|range] [host|range]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<compatibility>RemoteIPProxyProtocolExceptions is only available in httpd 2.4.26 and newer</compatibility>
+<compatibility>RemoteIPProxyProtocolExceptions is only available in httpd 2.4.28 and newer</compatibility>
 
 <usage>
     <p>The <directive>RemoteIPProxyProtocol</directive> directive enables or
