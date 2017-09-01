@@ -62,7 +62,6 @@ struct md_acme_t {
     
     const char *nonce;
     int max_retries;
-    unsigned int pkey_bits;
 };
 
 /**
@@ -126,8 +125,12 @@ apr_status_t md_acme_agree(md_acme_t *acme, apr_pool_t *p, const char *tos);
  * accounces the Tos URL it wants. If this is equal to the agreement specified,
  * the server is notified of this. If the server requires a ToS that the account
  * thinks it has already given, it is resend.
+ *
+ * If an agreement is required, different from the current one, APR_INCOMPLETE is
+ * returned and the agreement url is returned in the parameter.
  */
-apr_status_t md_acme_check_agreement(md_acme_t *acme, apr_pool_t *p, const char *agreement);
+apr_status_t md_acme_check_agreement(md_acme_t *acme, apr_pool_t *p, 
+                                     const char *agreement, const char **prequired);
 
 /**
  * Get the ToS agreement for current account.

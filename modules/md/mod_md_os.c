@@ -34,7 +34,7 @@
 #include "md_util.h"
 #include "mod_md_os.h"
 
-apr_status_t md_try_chown(const char *fname, int uid, int gid, apr_pool_t *p)
+apr_status_t md_try_chown(const char *fname, unsigned int uid, int gid, apr_pool_t *p)
 {
 #if AP_NEED_SET_MUTEX_PERMS
     if (-1 == chown(fname, (uid_t)uid, (gid_t)gid)) {

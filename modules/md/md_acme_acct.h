@@ -41,4 +41,8 @@ struct md_acme_acct_t {
 #define MD_FN_ACCOUNT           "account.json"
 #define MD_FN_ACCT_KEY          "account.pem"
 
+/* ACME account private keys are always RSA and have that many bits. Since accounts
+ * are expected to live long, better err on the safe side. */
+#define MD_ACME_ACCT_PKEY_BITS  3072
+
 #endif /* md_acme_acct_h */
