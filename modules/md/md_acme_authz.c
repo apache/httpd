@@ -91,10 +91,10 @@ apr_status_t md_acme_authz_set_remove(md_acme_authz_set_t *set, const char *doma
     for (i = 0; i < set->authzs->nelts; ++i) {
         authz = APR_ARRAY_IDX(set->authzs, i, md_acme_authz_t *);
         if (!apr_strnatcasecmp(domain, authz->domain)) {
-            int n = i +1;
+            int n = i + 1;
             if (n < set->authzs->nelts) {
                 void **elems = (void **)set->authzs->elts;
-                memmove(elems + i, elems + n, set->authzs->nelts - n); 
+                memmove(elems + i, elems + n, (size_t)(set->authzs->nelts - n)); 
             }
             --set->authzs->nelts;
             return APR_SUCCESS;
@@ -292,7 +292,8 @@ static apr_status_t setup_key_authz(md_acme_authz_cha_t *cha, md_acme_authz_t *a
 }
 
 static apr_status_t cha_http_01_setup(md_acme_authz_cha_t *cha, md_acme_authz_t *authz, 
-                                      md_acme_t *acme, md_store_t *store, apr_pool_t *p)
+                                      md_acme_t *acme, md_store_t *store, 
+                                      md_pkey_spec_t *key_spec, apr_pool_t *p)
 {
     const char *data;
     apr_status_t rv;
@@ -347,7 +348,8 @@ static apr_status_t setup_cha_dns(const char **pdns, md_acme_authz_cha_t *cha, a
 }
 
 static apr_status_t cha_tls_sni_01_setup(md_acme_authz_cha_t *cha, md_acme_authz_t *authz, 
-                                         md_acme_t *acme, md_store_t *store, apr_pool_t *p)
+                                         md_acme_t *acme, md_store_t *store, 
+                                         md_pkey_spec_t *key_spec, apr_pool_t *p)
 {
     md_cert_t *cha_cert;
     md_pkey_t *cha_key;
@@ -365,7 +367,7 @@ static apr_status_t cha_tls_sni_01_setup(md_acme_authz_cha_t *cha, md_acme_authz
     if ((APR_SUCCESS == rv && !md_cert_covers_domain(cha_cert, cha_dns)) 
         || APR_STATUS_IS_ENOENT(rv)) {
         
-        if (APR_SUCCESS != (rv = md_pkey_gen_rsa(&cha_key, p, acme->pkey_bits))) {
+        if (APR_SUCCESS != (rv = md_pkey_gen(&cha_key, p, key_spec))) {
             md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, p, "%s: create tls-sni-01 challgenge key",
                           authz->domain);
             goto out;
@@ -405,7 +407,8 @@ out:
 }
 
 typedef apr_status_t cha_starter(md_acme_authz_cha_t *cha, md_acme_authz_t *authz, 
-                                 md_acme_t *acme, md_store_t *store, apr_pool_t *p);
+                                 md_acme_t *acme, md_store_t *store, 
+                                 md_pkey_spec_t *key_spec, apr_pool_t *p);
                                  
 typedef struct {
     const char *name;
@@ -449,7 +452,8 @@ static apr_status_t find_type(void *baton, size_t index, md_json_t *json)
 }
 
 apr_status_t md_acme_authz_respond(md_acme_authz_t *authz, md_acme_t *acme, md_store_t *store, 
-                                   apr_array_header_t *challenges, apr_pool_t *p)
+                                   apr_array_header_t *challenges, 
+                                   md_pkey_spec_t *key_spec, apr_pool_t *p)
 {
     apr_status_t rv;
     int i;
@@ -485,7 +489,7 @@ apr_status_t md_acme_authz_respond(md_acme_authz_t *authz, md_acme_t *acme, md_s
     
     for (i = 0; i < CHA_TYPES_LEN; ++i) {
         if (!apr_strnatcasecmp(CHA_TYPES[i].name, fctx.accepted->type)) {
-            return CHA_TYPES[i].start(fctx.accepted, authz, acme, store, p);
+            return CHA_TYPES[i].start(fctx.accepted, authz, acme, store, key_spec, p);
         }
     }
     
@@ -560,7 +564,7 @@ md_acme_authz_t *md_acme_authz_from_json(struct md_json_t *json, apr_pool_t *p)
         authz->domain = md_json_dups(p, json, MD_KEY_DOMAIN, NULL);            
         authz->location = md_json_dups(p, json, MD_KEY_LOCATION, NULL);            
         authz->dir = md_json_dups(p, json, MD_KEY_DIR, NULL);            
-        authz->state = (int)md_json_getl(json, MD_KEY_STATE, NULL);            
+        authz->state = (md_acme_authz_state_t)md_json_getl(json, MD_KEY_STATE, NULL);            
         return authz;
     }
     return NULL;
@@ -631,7 +635,7 @@ static apr_status_t p_save(void *baton, apr_pool_t *p, apr_pool_t *ptemp, va_lis
     const char *md_name;
     int create;
     
-    group = va_arg(ap, int);
+    group = (md_store_group_t)va_arg(ap, int);
     md_name = va_arg(ap, const char *);
     set = va_arg(ap, md_acme_authz_set_t *);
     create = va_arg(ap, int);
@@ -657,7 +661,7 @@ static apr_status_t p_purge(void *baton, apr_pool_t *p, apr_pool_t *ptemp, va_li
     const char *md_name;
     int i;
 
-    group = va_arg(ap, int);
+    group = (md_store_group_t)va_arg(ap, int);
     md_name = va_arg(ap, const char *);
 
     if (APR_SUCCESS == md_acme_authz_set_load(store, group, md_name, &authz_set, p)) {

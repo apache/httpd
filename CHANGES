@@ -1,7 +1,29 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
-  *) mod_md: v0.7.0:
+  *) mod_md: v0.8.1:
+     - New directive ```MDPrivateKeys``` to specify the type and parameter to private key generation.
+       Currently only 'RSA' is supported as type with an option number of bits >= 2048 as parameter.
+       Simple test cases for config handling added.
+     - Private RSA keys are now generated with 2048 bits by default. Use ```MDPrivateKeys``` for
+       higher security. 
+     - IMPORTANT: store format change. The following changes will be made to an existing md store on 
+       first start with a new version (be it by mod_md in the server or a run by a new 'a2md'):
+         - pkey.pem will be renamed to privkey.pem
+         - cert.pem and chain.pem will be concatenated to pubcert.pem. The former files will remain,
+           but no longer be used. They will disappear on next renewal.
+       ADVICE: If the current store data is vital to you, please make a backup first!
+     - Fixed test case clearing of store to keep key alive, enabling true random store key again.
+     - Removed pun "Something, like certbot" from the User-Agent request header. Refs issue #34
+     - Cleaned up reporting of missing/mismatched MDCertificateAgreement in the logs. This will
+       no longer trigger early retries.
+     - badNonce encounters are no longer reported as errors. Retries are attempted now silently.
+       Refs github issue #35
+     - new default MDRenewWindow. Instead of 14 days, the default is now a third before the end of
+       the certificates lifetime. For the usual 90 days of Let's Encrypt certificates, this makes
+       an effective renewal window of 30 days - as recommended by LE. Refs issue #30
+     - Enabled conversion warnings if supported by compiler, eliminated several signed/unsigned
+       warnings.
      - LIVE: the real Let's Encrypt CA is now live by default! If you need to experiment, configure
            MDCertificateAuthority https://acme-staging.api.letsencrypt.org/directory   
      - When existing, complete certificates are renewed, the activation of the new ones is

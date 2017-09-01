@@ -25,6 +25,7 @@
 #include <http_vhost.h>
 
 #include "md.h"
+#include "md_crypt.h"
 #include "md_util.h"
 #include "mod_md_private.h"
 #include "mod_md_config.h"
@@ -39,6 +40,7 @@
 #define MD_CMD_MEMBER         "MDMember"
 #define MD_CMD_MEMBERS        "MDMembers"
 #define MD_CMD_PORTMAP        "MDPortMap"
+#define MD_CMD_PKEYS          "MDPrivateKeys"
 #define MD_CMD_RENEWWINDOW    "MDRenewWindow"
 #define MD_CMD_STOREDIR       "MDStoreDir"
 
@@ -65,8 +67,9 @@ static md_srv_conf_t defconf = {
     1,
     MD_DRIVE_AUTO,
     0,
-    apr_time_from_sec(14 * MD_SECS_PER_DAY),
-
+    NULL, 
+    apr_time_from_sec(90 * MD_SECS_PER_DAY), /* If the cert lifetime were 90 days, renew */
+    apr_time_from_sec(30 * MD_SECS_PER_DAY), /* 30 days before. Adjust to actual lifetime */
     MD_ACME_DEF_URL,
     "ACME",
     NULL,
@@ -109,6 +112,8 @@ static void srv_conf_props_clear(md_srv_conf_t *sc)
     sc->transitive = DEF_VAL;
     sc->drive_mode = DEF_VAL;
     sc->must_staple = DEF_VAL;
+    sc->pkey_spec = NULL;
+    sc->renew_norm = DEF_VAL;
     sc->renew_window = DEF_VAL;
     sc->ca_url = NULL;
     sc->ca_proto = NULL;
@@ -121,6 +126,8 @@ static void srv_conf_props_copy(md_srv_conf_t *to, const md_srv_conf_t *from)
     to->transitive = from->transitive;
     to->drive_mode = from->drive_mode;
     to->must_staple = from->must_staple;
+    to->pkey_spec = from->pkey_spec;
+    to->renew_norm = from->renew_norm;
     to->renew_window = from->renew_window;
     to->ca_url = from->ca_url;
     to->ca_proto = from->ca_proto;
@@ -133,6 +140,8 @@ static void srv_conf_props_apply(md_t *md, const md_srv_conf_t *from, apr_pool_t
     if (from->transitive != DEF_VAL) md->transitive = from->transitive;
     if (from->drive_mode != DEF_VAL) md->drive_mode = from->drive_mode;
     if (from->must_staple != DEF_VAL) md->must_staple = from->must_staple;
+    if (from->pkey_spec) md->pkey_spec = from->pkey_spec;
+    if (from->renew_norm != DEF_VAL) md->renew_norm = from->renew_norm;
     if (from->renew_window != DEF_VAL) md->renew_window = from->renew_window;
 
     if (from->ca_url) md->ca_url = from->ca_url;
@@ -166,6 +175,9 @@ static void *md_config_merge(apr_pool_t *pool, void *basev, void *addv)
 
     nsc->transitive = (add->transitive != DEF_VAL)? add->transitive : base->transitive;
     nsc->drive_mode = (add->drive_mode != DEF_VAL)? add->drive_mode : base->drive_mode;
+    nsc->must_staple = (add->must_staple != DEF_VAL)? add->must_staple : base->must_staple;
+    nsc->pkey_spec = add->pkey_spec? add->pkey_spec : base->pkey_spec;
+    nsc->renew_window = (add->renew_norm != DEF_VAL)? add->renew_norm : base->renew_norm;
     nsc->renew_window = (add->renew_window != DEF_VAL)? add->renew_window : base->renew_window;
 
     nsc->ca_url = add->ca_url? add->ca_url : base->ca_url;
@@ -242,7 +254,7 @@ static const char *md_config_sec_start(cmd_parms *cmd, void *mconfig, const char
         return  MD_CMD_MD_SECTION "> directive missing closing '>'";
     }
 
-    arg = apr_pstrndup(cmd->pool, arg, endp-arg);
+    arg = apr_pstrndup(cmd->pool, arg, (apr_size_t)(endp-arg));
     if (!arg || !*arg) {
         return MD_CMD_MD_SECTION " > section must specify a unique domain name";
     }
@@ -444,23 +456,54 @@ static apr_status_t duration_parse(const char *value, apr_interval_time_t *ptime
     return rv;
 }
 
+static apr_status_t percentage_parse(const char *value, int *ppercent)
+{
+    char *endp;
+    apr_int64_t n;
+    
+    n = apr_strtoi64(value, &endp, 10);
+    if (errno) {
+        return errno;
+    }
+    if (*endp == '%') {
+        if (n < 0 || n >= 100) {
+            return APR_BADARG;
+        }
+        *ppercent = (int)n;
+        return APR_SUCCESS;
+    }
+    return APR_EINVAL;
+}
+
 static const char *md_config_set_renew_window(cmd_parms *cmd, void *dc, const char *value)
 {
     md_srv_conf_t *config = md_config_get(cmd->server);
     const char *err;
     apr_interval_time_t timeout;
-
-    /* Inspired by http_core.c */
-    if (duration_parse(value, &timeout, "d") != APR_SUCCESS) {
-        return "MDRenewWindow has wrong format";
-    }
-        
+    int percent;
+    
     if (!inside_section(cmd, MD_CMD_MD_SECTION)
         && (err = ap_check_cmd_context(cmd, GLOBAL_ONLY))) {
         return err;
     }
-    config->renew_window = timeout;
-    return NULL;
+
+    /* Inspired by http_core.c */
+    if (duration_parse(value, &timeout, "d") == APR_SUCCESS) {
+        config->renew_norm = 0;
+        config->renew_window = timeout;
+        return NULL;
+    }
+    else {
+        switch (percentage_parse(value, &percent)) {
+            case APR_SUCCESS:
+                config->renew_norm = 100;
+                config->renew_window = percent;
+                return NULL;
+            case APR_BADARG:
+                return "MDRenewWindow as percent must be less than 100";
+        }
+    }
+    return "MDRenewWindow has unrecognized format";
 }
 
 static const char *md_config_set_store_dir(cmd_parms *cmd, void *arg, const char *value)
@@ -555,6 +598,57 @@ static const char *md_config_set_cha_tyes(cmd_parms *cmd, void *dc,
     return NULL;
 }
 
+static const char *md_config_set_pkeys(cmd_parms *cmd, void *arg, 
+                                       int argc, char *const argv[])
+{
+    md_srv_conf_t *config = md_config_get(cmd->server);
+    const char *err, *ptype;
+    apr_int64_t bits;
+    
+    if (!inside_section(cmd, MD_CMD_MD_SECTION)
+        && (err = ap_check_cmd_context(cmd, GLOBAL_ONLY))) {
+        return err;
+    }
+    if (argc <= 0) {
+        return "needs to specify the private key type";
+    }
+    
+    ptype = argv[0];
+    if (!apr_strnatcasecmp("Default", ptype)) {
+        if (argc > 1) {
+            return "type 'Default' takes no parameter";
+        }
+        if (!config->pkey_spec) {
+            config->pkey_spec = apr_pcalloc(cmd->pool, sizeof(*config->pkey_spec));
+        }
+        config->pkey_spec->type = MD_PKEY_TYPE_DEFAULT;
+        return NULL;
+    }
+    else if (!apr_strnatcasecmp("RSA", ptype)) {
+        if (argc == 1) {
+            bits = MD_PKEY_RSA_BITS_DEF;
+        }
+        else if (argc == 2) {
+            bits = (int)apr_atoi64(argv[1]);
+            if (bits < 2048 || bits >= INT_MAX) {
+                return "must be a 2048 or higher in order to be considered safe. "
+                "Too large a value will slow down everything. Larger then 4096 probably does "
+                "not make sense unless quantum cryptography really changes spin.";
+            }
+        }
+        else {
+            return "key type 'RSA' has only one optinal parameter, the number of bits";
+        }
+
+        if (!config->pkey_spec) {
+            config->pkey_spec = apr_pcalloc(cmd->pool, sizeof(*config->pkey_spec));
+        }
+        config->pkey_spec->type = MD_PKEY_TYPE_RSA;
+        config->pkey_spec->params.rsa.bits = (unsigned int)bits;
+        return NULL;
+    }
+    return apr_pstrcat(cmd->pool, "unsupported private key type \"", ptype, "\"", NULL);
+}
 
 const command_rec md_cmds[] = {
     AP_INIT_TAKE1(     MD_CMD_CA, md_config_set_ca, NULL, RSRC_CONF, 
@@ -582,6 +676,8 @@ const command_rec md_cmds[] = {
                   "to indicate that the server port 8000 is reachable as port 80 from the "
                   "internet. Use 80:- to indicate that port 80 is not reachable from "
                   "the outside."),
+    AP_INIT_TAKE_ARGV( MD_CMD_PKEYS, md_config_set_pkeys, NULL, RSRC_CONF, 
+                  "set the type and parameters for private key generation"),
     AP_INIT_TAKE1(     MD_CMD_STOREDIR, md_config_set_store_dir, NULL, RSRC_CONF, 
                   "the directory for file system storage of managed domain data."),
     AP_INIT_TAKE1(     MD_CMD_RENEWWINDOW, md_config_set_renew_window, NULL, RSRC_CONF, 
@@ -654,6 +750,8 @@ int md_config_geti(const md_srv_conf_t *sc, md_config_var_t var)
 apr_interval_time_t md_config_get_interval(const md_srv_conf_t *sc, md_config_var_t var)
 {
     switch (var) {
+        case MD_CONFIG_RENEW_NORM:
+            return (sc->renew_norm != DEF_VAL)? sc->renew_norm : defconf.renew_norm;
         case MD_CONFIG_RENEW_WINDOW:
             return (sc->renew_window != DEF_VAL)? sc->renew_window : defconf.renew_window;
         default:

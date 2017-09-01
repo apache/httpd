@@ -25,8 +25,10 @@ struct md_cert_t;
 struct md_pkey_t;
 struct md_store_t;
 struct md_srv_conf_t;
+struct md_pkey_spec_t;
 
 #define MD_TLSSNI01_DNS_SUFFIX     ".acme.invalid"
+#define MD_PKEY_RSA_BITS_DEF       2048U
 
 typedef enum {
     MD_S_UNKNOWN,                   /* MD has not been analysed yet */
@@ -34,6 +36,7 @@ typedef enum {
     MD_S_COMPLETE,                  /* MD has all necessary information, can go live */
     MD_S_EXPIRED,                   /* MD is complete, but credentials have expired */
     MD_S_ERROR,                     /* MD data is flawed, unable to be processed as is */ 
+    MD_S_MISSING,                   /* MD is missing config information, cannot proceed */
 } md_state_t;
 
 typedef enum {
@@ -70,7 +73,9 @@ struct md_t {
 
     int transitive;                 /* != 0 iff VirtualHost names/aliases are auto-added */
     int drive_mode;                 /* mode of obtaining credentials */
+    struct md_pkey_spec_t *pkey_spec;/* specification for generating new private keys */
     int must_staple;                /* certificates should set the OCSP Must Staple extension */
+    apr_interval_time_t renew_norm; /* if > 0, normalized cert lifetime */
     apr_interval_time_t renew_window;/* time before expiration that starts renewal */
     
     const char *ca_url;             /* url of CA certificate service */
@@ -91,6 +96,7 @@ struct md_t {
 
 #define MD_KEY_ACCOUNT          "account"
 #define MD_KEY_AGREEMENT        "agreement"
+#define MD_KEY_BITS             "bits"
 #define MD_KEY_CA               "ca"
 #define MD_KEY_CA_URL           "ca-url"
 #define MD_KEY_CERT             "cert"
@@ -112,8 +118,10 @@ struct md_t {
 #define MD_KEY_KEYAUTHZ         "keyAuthorization"
 #define MD_KEY_LOCATION         "location"
 #define MD_KEY_NAME             "name"
+#define MD_KEY_PKEY             "privkey"
 #define MD_KEY_PROTO            "proto"
 #define MD_KEY_REGISTRATION     "registration"
+#define MD_KEY_RENEW_NORM       "renew-norm"
 #define MD_KEY_RENEW_WINDOW     "renew-window"
 #define MD_KEY_RESOURCE         "resource"
 #define MD_KEY_STATE            "state"
@@ -129,7 +137,8 @@ struct md_t {
 #define MD_KEY_VERSION          "version"
 
 #define MD_FN_MD                "md.json"
-#define MD_FN_PKEY              "pkey.pem"
+#define MD_FN_PRIVKEY           "privkey.pem"
+#define MD_FN_PUBCERT           "pubcert.pem"
 #define MD_FN_CERT              "cert.pem"
 #define MD_FN_CHAIN             "chain.pem"
 #define MD_FN_HTTPD_JSON        "httpd.json"
@@ -230,9 +239,9 @@ md_t *md_from_json(struct md_json_t *json, apr_pool_t *p);
 
 typedef struct md_creds_t md_creds_t;
 struct md_creds_t {
+    struct md_pkey_t *privkey;
+    struct apr_array_header_t *pubcert;    /* complete md_cert* chain */
     struct md_cert_t *cert;
-    struct md_pkey_t *pkey;
-    struct apr_array_header_t *chain;      /* list of md_cert* */
     int expired;
 };
 

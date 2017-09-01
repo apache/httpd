@@ -162,18 +162,13 @@ static apr_status_t state_init(md_reg_t *reg, apr_pool_t *p, md_t *md)
 
     if (APR_SUCCESS == (rv = md_reg_creds_get(&creds, reg, MD_SG_DOMAINS, md, p))) {
         state = MD_S_INCOMPLETE;
-        if (!creds->pkey) {
+        if (!creds->privkey) {
             md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, p, 
                           "md{%s}: incomplete, without private key", md->name);
         }
-        else if (!creds->cert) {
+        else if (!creds->pubcert) {
             md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, p, 
                           "md{%s}: incomplete, has key but no certificate", md->name);
-        }
-        else if (!creds->chain) {
-            md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, p, 
-                          "md{%s}: incomplete, has key and certificate, but no chain file.", 
-                          md->name);
         }
         else {
             valid_from = md_cert_get_not_before(creds->cert);
@@ -199,8 +194,8 @@ static apr_status_t state_init(md_reg_t *reg, apr_pool_t *p, md_t *md)
                 goto out;
             }
 
-            for (i = 0; i < creds->chain->nelts; ++i) {
-                cert = APR_ARRAY_IDX(creds->chain, i, const md_cert_t *);
+            for (i = 1; i < creds->pubcert->nelts; ++i) {
+                cert = APR_ARRAY_IDX(creds->pubcert, i, const md_cert_t *);
                 if (!md_cert_is_valid_now(cert)) {
                     state = MD_S_ERROR;
                     md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, p, 
@@ -281,16 +276,33 @@ apr_status_t md_reg_assess(md_reg_t *reg, md_t *md, int *perrored, int *prenew, 
                 md->state = MD_S_EXPIRED;
                 renew = 1;
             }
-            else if ((md->expires - now) <= md->renew_window) {
-                int days = (int)(apr_time_sec(md->expires - now) / MD_SECS_PER_DAY);
-                md_log_perror( MD_LOG_MARK, MD_LOG_DEBUG, 0, p,  
-                              "md(%s): %d days to expiry, attempt renewal", md->name, days);
-                renew = 1;
+            else {
+                apr_interval_time_t renew_win, left, life;
+
+                renew_win = md->renew_window;
+                if (md->renew_norm > 0 
+                    && md->renew_norm > renew_win
+                    && md->expires > md->valid_from) {
+                    /* Calc renewal days as fraction of cert lifetime - if known */
+                    life = md->expires - md->valid_from; 
+                    renew_win = life * md->renew_norm / renew_win;
+                }
+                
+                left = md->expires - now;
+                if (left <= renew_win) {
+                    int days_left = (int)(apr_time_sec(left) / MD_SECS_PER_DAY);
+                    md_log_perror( MD_LOG_MARK, MD_LOG_DEBUG, 0, p,  
+                                  "md(%s): %d days to expiry, attempt renewal", 
+                                  md->name, days_left);
+                    renew = 1;
+                }                
             }
             break;
         case MD_S_INCOMPLETE:
         case MD_S_EXPIRED:
             renew = 1;
+            break;
+        case MD_S_MISSING:
             break;
     }
     *prenew = renew;
@@ -417,16 +429,10 @@ apr_status_t md_reg_get_cred_files(md_reg_t *reg, const md_t *md, apr_pool_t *p,
 {
     apr_status_t rv;
     
-    rv = md_store_get_fname(pkeyfile, reg->store, MD_SG_DOMAINS, md->name, MD_FN_PKEY, p);
+    *pchainfile = NULL;
+    rv = md_store_get_fname(pkeyfile, reg->store, MD_SG_DOMAINS, md->name, MD_FN_PRIVKEY, p);
     if (APR_SUCCESS == rv) {
-        rv = md_store_get_fname(pcertfile, reg->store, MD_SG_DOMAINS, md->name, MD_FN_CERT, p);
-    }
-    if (APR_SUCCESS == rv) {
-        rv = md_store_get_fname(pchainfile, reg->store, MD_SG_DOMAINS, md->name, MD_FN_CHAIN, p);
-        if (APR_STATUS_IS_ENOENT(rv)) {
-            *pchainfile = NULL;
-            rv = APR_SUCCESS;
-        }
+        rv = md_store_get_fname(pcertfile, reg->store, MD_SG_DOMAINS, md->name, MD_FN_PUBCERT, p);
     }
     return rv;
 }
@@ -513,6 +519,7 @@ static apr_status_t p_md_update(void *baton, apr_pool_t *p, apr_pool_t *ptemp, v
     }
     if (MD_UPD_RENEW_WINDOW & fields) {
         md_log_perror(MD_LOG_MARK, MD_LOG_TRACE1, 0, ptemp, "update renew-window: %s", name);
+        nmd->renew_norm = updates->renew_norm;
         nmd->renew_window = updates->renew_window;
     }
     if (MD_UPD_CA_CHALLENGES & fields) {
@@ -544,29 +551,28 @@ static int ok_or_noent(apr_status_t rv)
 static apr_status_t creds_load(void *baton, apr_pool_t *p, apr_pool_t *ptemp, va_list ap)
 {
     md_reg_t *reg = baton;
-    apr_status_t rv;
-    md_cert_t *cert;
-    md_pkey_t *pkey;
-    apr_array_header_t *chain;
+    md_pkey_t *privkey;
+    apr_array_header_t *pubcert;
     md_creds_t *creds, **pcreds;
     const md_t *md;
     md_cert_state_t cert_state;
     md_store_group_t group;
+    apr_status_t rv;
     
     pcreds = va_arg(ap, md_creds_t **);
-    group = va_arg(ap, int);
+    group = (md_store_group_t)va_arg(ap, int);
     md = va_arg(ap, const md_t *);
     
-    if (ok_or_noent(rv = md_cert_load(reg->store, group, md->name, &cert, p))
-        && ok_or_noent(rv = md_pkey_load(reg->store, group, md->name, &pkey, p))
-        && ok_or_noent(rv = md_chain_load(reg->store, group, md->name, &chain, p))) {
+    if (ok_or_noent(rv = md_pkey_load(reg->store, group, md->name, &privkey, p))
+        && ok_or_noent(rv = md_pubcert_load(reg->store, group, md->name, &pubcert, p))) {
         rv = APR_SUCCESS;
             
         creds = apr_pcalloc(p, sizeof(*creds));
-        creds->cert = cert;
-        creds->pkey = pkey;
-        creds->chain = chain;
-        
+        creds->privkey = privkey;
+        if (pubcert && pubcert->nelts > 0) {
+            creds->pubcert = pubcert;
+            creds->cert = APR_ARRAY_IDX(pubcert, 0, md_cert_t *);
+        }
         if (creds->cert) {
             switch ((cert_state = md_cert_state_get(creds->cert))) {
                 case MD_CERT_VALID:
@@ -767,10 +773,12 @@ apr_status_t md_reg_sync(md_reg_t *reg, apr_pool_t *p, apr_pool_t *ptemp,
                     smd->contacts = md->contacts;
                     fields |= MD_UPD_CONTACTS;
                 }
-                if (MD_VAL_UPDATE(md, smd, renew_window)) {
+                if (MD_VAL_UPDATE(md, smd, renew_window) 
+                    || MD_VAL_UPDATE(md, smd, renew_norm)) {
                     md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, p, 
-                                  "%s: update renew_window, old=%ld, new=%ld", 
-                                  smd->name, (long)smd->renew_window, md->renew_window);
+                                  "%s: update renew norm=%ld, window=%ld", 
+                                  smd->name, (long)md->renew_norm, (long)md->renew_window);
+                    smd->renew_norm = md->renew_norm;
                     smd->renew_window = md->renew_window;
                     fields |= MD_UPD_RENEW_WINDOW;
                 }
@@ -880,7 +888,7 @@ apr_status_t md_reg_stage(md_reg_t *reg, const md_t *md, const char *challenge,
         return APR_SUCCESS;
     }
     
-    proto = apr_hash_get(reg->protos, md->ca_proto, strlen(md->ca_proto));
+    proto = apr_hash_get(reg->protos, md->ca_proto, (apr_ssize_t)strlen(md->ca_proto));
     if (!proto) {
         md_log_perror(MD_LOG_MARK, MD_LOG_WARNING, 0, p, 
                       "md %s has unknown CA protocol: %s", md->name, md->ca_proto);
@@ -918,7 +926,7 @@ static apr_status_t run_load(void *baton, apr_pool_t *p, apr_pool_t *ptemp, va_l
         return APR_EINVAL;
     }
     
-    proto = apr_hash_get(reg->protos, md->ca_proto, strlen(md->ca_proto));
+    proto = apr_hash_get(reg->protos, md->ca_proto, (apr_ssize_t)strlen(md->ca_proto));
     if (!proto) {
         md_log_perror(MD_LOG_MARK, MD_LOG_WARNING, 0, p, 
                       "md %s has unknown CA protocol: %s", md->name, md->ca_proto);

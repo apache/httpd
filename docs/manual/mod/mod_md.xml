@@ -342,6 +342,40 @@ MDPortMap 80:- 443:5002
     </directivesynopsis>
 
     <directivesynopsis>
+        <name>MDPrivateKeys</name>
+        <description></description>
+        <syntax>MDPrivateKeys type [ params... ]</syntax>
+        <default>MDPrivateKeys RSA 2048</default>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        <usage>
+            <p>
+                Defines what kind of private keys are generated for a managed domain and with
+                what parameters. The only supported type right now is 'RSA' and the only parameter
+                it takes is the number of bits used for the key.
+            </p><p>
+                The current (2017) recommendation is at least 2048 bits and a smaller number is
+                not accepted here. Higher numbers offer longer security, but are computationally more 
+                expensive, e.g. increase the load on your server. That might or might not be an
+                issue for you.
+            </p><p>
+                Other key types will be defined in the future.
+            </p>
+            <example><title>Example</title>
+                <highlight language="config">
+MDPrivateKeys RSA 3072
+                </highlight>
+            </example>
+            <p>
+                Please note that this setting only has an effect on new keys. Any existing
+                private key you have remains unaffected. Also, this only affects private keys
+                generated for certificates. ACME account keys are unaffected by this.
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
         <name>MDRenewWindow</name>
         <description></description>
         <syntax>MDRenewWindow duration</syntax>

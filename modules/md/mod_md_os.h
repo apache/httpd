@@ -20,7 +20,7 @@
  * Try chown'ing the file/directory. Give id -1 to not change uid/gid.
  * Will return APR_ENOTIMPL on platforms not supporting this operation.
  */
-apr_status_t md_try_chown(const char *fname, int uid, int gid, apr_pool_t *p);
+apr_status_t md_try_chown(const char *fname, unsigned int uid, int gid, apr_pool_t *p);
 
 /**
  * Make a file or directory read/write(/searchable) by httpd workers.

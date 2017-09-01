@@ -99,7 +99,7 @@ static size_t resp_data_cb(void *data, size_t len, size_t nmemb, void *baton)
         if (res->req->resp_limit) {
             apr_off_t body_len = 0;
             apr_brigade_length(res->body, 0, &body_len);
-            if (body_len + len > res->req->resp_limit) {
+            if (body_len + (apr_off_t)len > res->req->resp_limit) {
                 return 0; /* signal curl failure */
             }
         }
@@ -117,7 +117,7 @@ static size_t header_cb(void *buffer, size_t elen, size_t nmemb, void *baton)
     md_http_response_t *res = baton;
     size_t len, clen = elen * nmemb;
     const char *name = NULL, *value = "", *b = buffer;
-    int i;
+    apr_size_t i;
     
     len = (clen && b[clen-1] == '\n')? clen-1 : clen;
     len = (len && b[len-1] == '\r')? len-1 : len;
@@ -183,7 +183,7 @@ static int curlify_headers(void *baton, const char *key, const char *value)
 static apr_status_t curl_perform(md_http_request_t *req)
 {
     apr_status_t rv = APR_SUCCESS;
-    int curle;
+    CURLcode curle;
     md_http_response_t *res;
     CURL *curl;
     struct curl_slist *req_hdrs = NULL;
@@ -253,7 +253,8 @@ static apr_status_t curl_perform(md_http_request_t *req)
     }
     else {
         md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, res->rv, req->pool, 
-                      "request %ld failed(%d): %s", req->id, curle, curl_easy_strerror(curle));
+                      "request %ld failed(%d): %s", req->id, curle, 
+                      curl_easy_strerror(curle));
     }
     
     if (req->cb) {

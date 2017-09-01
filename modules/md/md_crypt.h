@@ -41,9 +41,25 @@ apr_status_t md_crypt_sha256_digest_hex(const char **pdigesthex, apr_pool_t *p,
 
 typedef struct md_pkey_t md_pkey_t;
 
+typedef enum {
+    MD_PKEY_TYPE_DEFAULT,
+    MD_PKEY_TYPE_RSA,
+} md_pkey_type_t;
+
+typedef struct md_pkey_rsa_spec_t {
+    apr_uint32_t bits;
+} md_pkey_rsa_spec_t;
+
+typedef struct md_pkey_spec_t {
+    md_pkey_type_t type;
+    union {
+        md_pkey_rsa_spec_t rsa;
+    } params;
+} md_pkey_spec_t;
+
 apr_status_t md_crypt_init(apr_pool_t *pool);
 
-apr_status_t md_pkey_gen_rsa(md_pkey_t **ppkey, apr_pool_t *p, int bits);
+apr_status_t md_pkey_gen(md_pkey_t **ppkey, apr_pool_t *p, md_pkey_spec_t *spec);
 void md_pkey_free(md_pkey_t *pkey);
 
 const char *md_pkey_get_rsa_e64(md_pkey_t *pkey, apr_pool_t *p);
@@ -61,6 +77,9 @@ apr_status_t md_crypt_sign64(const char **psign64, md_pkey_t *pkey, apr_pool_t *
 
 void *md_cert_get_X509(struct md_cert_t *cert);
 void *md_pkey_get_EVP_PKEY(struct md_pkey_t *pkey);
+
+struct md_json_t *md_pkey_spec_to_json(const md_pkey_spec_t *spec, apr_pool_t *p);
+md_pkey_spec_t *md_pkey_spec_from_json(struct md_json_t *json, apr_pool_t *p);
 
 /**************************************************************************************************/
 /* X509 certificates */
@@ -100,6 +119,8 @@ apr_status_t md_chain_fload(struct apr_array_header_t **pcerts,
                             apr_pool_t *p, const char *fname);
 apr_status_t md_chain_fsave(struct apr_array_header_t *certs, 
                             apr_pool_t *p, const char *fname, apr_fileperms_t perms);
+apr_status_t md_chain_fappend(struct apr_array_header_t *certs, 
+                              apr_pool_t *p, const char *fname);
 
 apr_status_t md_cert_req_create(const char **pcsr_der_64, const struct md_t *md, 
                                 md_pkey_t *pkey, apr_pool_t *p);

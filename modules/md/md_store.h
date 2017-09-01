@@ -146,5 +146,11 @@ apr_status_t md_chain_load(md_store_t *store, md_store_group_t group,
 apr_status_t md_chain_save(md_store_t *store, apr_pool_t *p, md_store_group_t group, 
                            const char *name, struct apr_array_header_t *chain, int create);
 
+apr_status_t md_pubcert_load(md_store_t *store, md_store_group_t group, const char *name, 
+                             struct apr_array_header_t **ppubcert, apr_pool_t *p);
+apr_status_t md_pubcert_save(md_store_t *store, apr_pool_t *p, 
+                             md_store_group_t group, const char *name, 
+                             struct apr_array_header_t *pubcert, int create);
+
 
 #endif /* mod_md_md_store_h */

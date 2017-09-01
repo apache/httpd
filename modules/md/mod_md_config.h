@@ -17,6 +17,7 @@
 #define mod_md_md_config_h
 
 struct md_store_t;
+struct md_pkey_spec_t;
 
 typedef enum {
     MD_CONFIG_CA_URL,
@@ -26,6 +27,7 @@ typedef enum {
     MD_CONFIG_DRIVE_MODE,
     MD_CONFIG_LOCAL_80,
     MD_CONFIG_LOCAL_443,
+    MD_CONFIG_RENEW_NORM,
     MD_CONFIG_RENEW_WINDOW,
     MD_CONFIG_TRANSITIVE,
 } md_config_var_t;
@@ -51,6 +53,10 @@ typedef struct md_srv_conf_t {
     int transitive;                    /* != 0 iff VirtualHost names/aliases are auto-added */
     int drive_mode;                    /* mode of obtaining credentials */
     int must_staple;                   /* certificates should set the OCSP Must Staple extension */
+    struct md_pkey_spec_t *pkey_spec;  /* specification for generating private keys */
+    apr_interval_time_t renew_norm;    /* If > 0, use as normalizing value for cert lifetime
+                                        * Example: renew_norm=90d renew_win=30d, cert lives
+                                        * for 12 days => renewal 4 days before */
     apr_interval_time_t renew_window;  /* time before expiration that starts renewal */
     
     const char *ca_url;                /* url of CA certificate service */

@@ -232,13 +232,13 @@ typedef struct {
 apr_status_t md_pkey_load(md_store_t *store, md_store_group_t group, const char *name, 
                           md_pkey_t **ppkey, apr_pool_t *p)
 {
-    return md_store_load(store, group, name, MD_FN_PKEY, MD_SV_PKEY, (void**)ppkey, p);
+    return md_store_load(store, group, name, MD_FN_PRIVKEY, MD_SV_PKEY, (void**)ppkey, p);
 }
 
 apr_status_t md_pkey_save(md_store_t *store, apr_pool_t *p, md_store_group_t group, const char *name, 
                           struct md_pkey_t *pkey, int create)
 {
-    return md_store_save(store, p, group, name, MD_FN_PKEY, MD_SV_PKEY, pkey, create);
+    return md_store_save(store, p, group, name, MD_FN_PRIVKEY, MD_SV_PKEY, pkey, create);
 }
 
 apr_status_t md_cert_load(md_store_t *store, md_store_group_t group, const char *name, 
@@ -265,6 +265,19 @@ apr_status_t md_chain_save(md_store_t *store, apr_pool_t *p,
                            struct apr_array_header_t *chain, int create)
 {
     return md_store_save(store, p, group, name, MD_FN_CHAIN, MD_SV_CHAIN, chain, create);
+}
+
+apr_status_t md_pubcert_load(md_store_t *store, md_store_group_t group, const char *name, 
+                             struct apr_array_header_t **ppubcert, apr_pool_t *p)
+{
+    return md_store_load(store, group, name, MD_FN_PUBCERT, MD_SV_CHAIN, (void**)ppubcert, p);
+}
+
+apr_status_t md_pubcert_save(md_store_t *store, apr_pool_t *p, 
+                             md_store_group_t group, const char *name, 
+                             struct apr_array_header_t *pubcert, int create)
+{
+    return md_store_save(store, p, group, name, MD_FN_PUBCERT, MD_SV_CHAIN, pubcert, create);
 }
 
 typedef struct {

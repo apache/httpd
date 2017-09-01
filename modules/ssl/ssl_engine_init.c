@@ -1723,8 +1723,9 @@ static apr_status_t ssl_init_server_ctx(server_rec *s,
             else if (APR_STATUS_IS_EAGAIN(rv)) {
                 /* Managed Domain not ready yet. This is not a reason to fail the config */
                 ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(10085)
-                             "Init: (%s) disabling this host for now as certificate/key data "
-                             "for the Managed Domain is incomplete.", ssl_util_vhostid(p, s));
+                             "Init: %s will respond with '503 Service Unavailable' for now. This "
+                             "host is part of a Managed Domain, but no SSL certificate is "
+                             "available (yet).", ssl_util_vhostid(p, s));
                 pks->service_unavailable = 1;
                 return APR_SUCCESS;
             }
