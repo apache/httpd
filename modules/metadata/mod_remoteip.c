@@ -133,11 +133,10 @@ typedef struct {
     int version;
     ap_input_mode_t mode;
     apr_bucket_brigade *bb;
-    int peeking;
     int done;
 } remoteip_filter_context;
 
-/** Holds the resolved proxy info for this connection and any addition
+/** Holds the resolved proxy info for this connection and any additional
   configurable parameters
 */
 typedef struct {
@@ -309,13 +308,13 @@ static const char *proxylist_read(cmd_parms *cmd, void *cfg,
     return NULL;
 }
 
-/** Similar apr_sockaddr_equal, except that it compares ports too. */
+/** Similar to apr_sockaddr_equal, except that it compares ports too. */
 static int remoteip_sockaddr_equal(apr_sockaddr_t *addr1, apr_sockaddr_t *addr2)
 {
     return (addr1->port == addr2->port && apr_sockaddr_equal(addr1, addr2));
 }
 
-/** Similar remoteip_sockaddr_equal, except that it handles wildcard addresses
+/** Similar to remoteip_sockaddr_equal, except that it handles wildcard addresses
  *  and ports too.
  */
 static int remoteip_sockaddr_compat(apr_sockaddr_t *addr1, apr_sockaddr_t *addr2)
@@ -793,8 +792,7 @@ static remoteip_parse_status_t remoteip_process_v1_header(conn_rec *c,
         valid_addr_chars = "0123456789abcdefABCDEF:";
 #else
         ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(03498)
-                      "RemoteIPProxyProtocol: Unable to parse v6 address - APR is not compiled with IPv6 support",
-                      word, hdr->v1.line);
+                      "RemoteIPProxyProtocol: Unable to parse v6 address - APR is not compiled with IPv6 support");
         return HDR_ERROR;
 #endif
     }
@@ -1190,7 +1188,7 @@ static const command_rec remoteip_cmds[] =
                   "The filename to read the list of internal proxies, "
                   "see the RemoteIPInternalProxy directive"),
     AP_INIT_FLAG("RemoteIPProxyProtocol", remoteip_enable_proxy_protocol, NULL,
-                  RSRC_CONF, "Enable PROXY protocol handling (`on', `off')"),
+                  RSRC_CONF, "Enable PROXY protocol handling ('on', 'off')"),
     AP_INIT_TAKE_ARGV("RemoteIPProxyProtocolExceptions",
                   remoteip_disable_networks, NULL, RSRC_CONF, "Disable PROXY "
                   "protocol handling for this list of networks in CIDR format"),
