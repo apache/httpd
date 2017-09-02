@@ -86,7 +86,7 @@ répartiteur de charge via les en-têtes de la requête.
 <li><code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code></li>
 <li><code class="module"><a href="../mod/mod_status.html">mod_status</a></code></li>
 <li><code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code></li>
-<li><a href="http://www.haproxy.org/download/1.5/doc/proxy-protocol.txt">Proxy Protocol Spec</a></li>
+<li><a href="http://www.haproxy.org/download/1.8/doc/proxy-protocol.txt">Proxy Protocol Spec</a></li>
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -260,7 +260,7 @@ RemoteIPProxiesHeader X-Forwarded-By</pre>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_remoteip</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.26 du serveur HTTP Apache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.28 du serveur HTTP Apache</td></tr>
 </table>
     <p>La directive <code class="directive">RemoteIPProxyProtocol</code> permet
     d'activer ou de désactiver la prise en compte et la gestion de l'en-tête de
@@ -315,7 +315,7 @@ ou réseaux</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_remoteip</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>RemoteIPProxyProtocolExceptions est disponible à partir de la
-version 2.4.26 du serveur HTTP Apache</td></tr>
+version 2.4.28 du serveur HTTP Apache</td></tr>
 </table>
     <p>La directive <code class="directive">RemoteIPProxyProtocol</code> permet de
     contrôler la prise en compte de l'en-tête de connexion du protocole PROXY.
