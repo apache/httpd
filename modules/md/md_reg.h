@@ -108,8 +108,7 @@ apr_status_t md_reg_creds_get(const md_creds_t **pcreds, md_reg_t *reg,
                               md_store_group_t group, const md_t *md, apr_pool_t *p);
 
 apr_status_t md_reg_get_cred_files(md_reg_t *reg, const md_t *md, apr_pool_t *p,
-                                   const char **pkeyfile, const char **pcertfile,
-                                   const char **pchainfile);
+                                   const char **pkeyfile, const char **pcertfile);
 
 /**
  * Synchronise the give master mds with the store.

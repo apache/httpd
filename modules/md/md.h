@@ -143,6 +143,9 @@ struct md_t {
 #define MD_FN_CHAIN             "chain.pem"
 #define MD_FN_HTTPD_JSON        "httpd.json"
 
+#define MD_FN_FALLBACK_PKEY     "fallback-privkey.pem"
+#define MD_FN_FALLBACK_CERT     "fallback-cert.pem"
+
 /* Check if a string member of a new MD (n) has 
  * a value and if it differs from the old MD o
  */
