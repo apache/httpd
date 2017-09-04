@@ -24,6 +24,17 @@ struct server_rec;
 APR_DECLARE_OPTIONAL_FN(int, 
                         md_is_managed, (struct server_rec *));
 
+/**
+ * Get the certificate/key for the managed domain (md_is_managed != 0).
+ * 
+ * @return APR_EAGAIN if the real certicate is not available yet
+ */
+APR_DECLARE_OPTIONAL_FN(apr_status_t, 
+                        md_get_certificate, (struct server_rec *, apr_pool_t *,
+                                             const char **pkeyfile, 
+                                             const char **pcertfile));
+
+/* previous version for md_get_certificate, to be phased out soon */
 APR_DECLARE_OPTIONAL_FN(apr_status_t, 
                         md_get_credentials, (struct server_rec *, apr_pool_t *,
                                              const char **pkeyfile, 

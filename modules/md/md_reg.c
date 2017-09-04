@@ -424,12 +424,10 @@ md_t *md_reg_find_overlap(md_reg_t *reg, const md_t *md, const char **pdomain, a
 }
 
 apr_status_t md_reg_get_cred_files(md_reg_t *reg, const md_t *md, apr_pool_t *p,
-                                   const char **pkeyfile, const char **pcertfile,
-                                   const char **pchainfile)
+                                   const char **pkeyfile, const char **pcertfile)
 {
     apr_status_t rv;
     
-    *pchainfile = NULL;
     rv = md_store_get_fname(pkeyfile, reg->store, MD_SG_DOMAINS, md->name, MD_FN_PRIVKEY, p);
     if (APR_SUCCESS == rv) {
         rv = md_store_get_fname(pcertfile, reg->store, MD_SG_DOMAINS, md->name, MD_FN_PUBCERT, p);

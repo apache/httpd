@@ -741,18 +741,11 @@ static void load_stage_sets(apr_array_header_t *names, apr_pool_t *p,
     return;
 }
 
-static apr_status_t md_post_config(apr_pool_t *p, apr_pool_t *plog,
-                                   apr_pool_t *ptemp, server_rec *s)
+static apr_status_t md_check_config(apr_pool_t *p, apr_pool_t *plog,
+                                    apr_pool_t *ptemp, server_rec *s)
 {
     const char *mod_md_init_key = "mod_md_init_counter";
     void *data = NULL;
-    md_srv_conf_t *sc;
-    md_mod_conf_t *mc;
-    apr_array_header_t *drive_names;
-    md_reg_t *reg;
-    apr_status_t rv = APR_SUCCESS;
-    const md_t *md;
-    int i;
     
     apr_pool_userdata_get(&data, mod_md_init_key, s->process->pool);
     if (data == NULL) {
@@ -767,20 +760,29 @@ static apr_status_t md_post_config(apr_pool_t *p, apr_pool_t *plog,
     }
 
     init_setups(p, s);
-    
     md_log_set(log_is_level, log_print, NULL);
+
+    /* Check uniqueness of MDs, calculate global, configured MD list.
+     * If successful, we have a list of MD definitions that do not overlap. */
+    /* We also need to find out if we can be reached on 80/443 from the outside (e.g. the CA) */
+    return md_calc_md_list(p, plog, ptemp, s);
+}
+    
+static apr_status_t md_post_config(apr_pool_t *p, apr_pool_t *plog,
+                                   apr_pool_t *ptemp, server_rec *s)
+{
+    md_srv_conf_t *sc;
+    md_mod_conf_t *mc;
+    md_reg_t *reg;
+    const md_t *md;
+    apr_array_header_t *drive_names;
+    apr_status_t rv = APR_SUCCESS;
+    int i;
 
     sc = md_config_get(s);
     mc = sc->mc;
     
-    /* 1. Check uniqueness of MDs, calculate global, configured MD list.
-     * If successful, we have a list of MD definitions that do not overlap. */
-    /* We also need to find out if we can be reached on 80/443 from the outside (e.g. the CA) */
-    if (APR_SUCCESS != (rv = md_calc_md_list(p, plog, ptemp, s))) {
-        goto out;
-    }
-    
-    /* 2. Synchronize the defintions we now have with the store via a registry (reg). */
+    /* Synchronize the defintions we now have with the store via a registry (reg). */
     if (APR_SUCCESS != (rv = setup_reg(&reg, p, s, 1))) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10072)
                      "setup md registry");
@@ -790,10 +792,9 @@ static apr_status_t md_post_config(apr_pool_t *p, apr_pool_t *plog,
                                          mc->can_http, mc->can_https))) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10073)
                      "synching %d mds to registry", mc->mds->nelts);
-        goto out;
     }
     
-    /* 3. Determine the managed domains that are in auto drive_mode. For those,
+    /* Determine the managed domains that are in auto drive_mode. For those,
      * determine in which state they are:
      *  - UNKNOWN:            should not happen, report, dont drive
      *  - ERROR:              something we do not know how to fix, report, dont drive
@@ -820,7 +821,7 @@ static apr_status_t md_post_config(apr_pool_t *p, apr_pool_t *plog,
         }
     }
     
-    /* 4. I there are MDs to drive, start a watchdog to check on them regularly */
+    /* If there are MDs to drive, start a watchdog to check on them regularly */
     if (drive_names->nelts > 0) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, s, APLOGNO(10074)
                      "%d out of %d mds are configured for auto-drive", 
@@ -834,7 +835,7 @@ static apr_status_t md_post_config(apr_pool_t *p, apr_pool_t *plog,
         ap_log_error( APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(10075)
                      "no mds to auto drive, no watchdog needed");
     }
-out:     
+out:
     return rv;
 }
 
@@ -855,9 +856,8 @@ static int md_is_managed(server_rec *s)
     return 0;
 }
 
-static apr_status_t md_get_credentials(server_rec *s, apr_pool_t *p,
-                                       const char **pkeyfile, const char **pcertfile,
-                                       const char **pchainfile)
+static apr_status_t md_get_certificate(server_rec *s, apr_pool_t *p,
+                                       const char **pkeyfile, const char **pcertfile)
 {
     apr_status_t rv = APR_ENOENT;    
     md_srv_conf_t *sc;
@@ -866,26 +866,53 @@ static apr_status_t md_get_credentials(server_rec *s, apr_pool_t *p,
     
     *pkeyfile = NULL;
     *pcertfile = NULL;
-    *pchainfile = NULL;
     
     sc = md_config_get(s);
     
     if (sc && sc->assigned) {
         assert(sc->mc);
         assert(sc->mc->store);
-        if (APR_SUCCESS == (rv = md_reg_init(&reg, p, sc->mc->store))) {
-            md = md_reg_get(reg, sc->assigned->name, p);
-            if (md->state != MD_S_COMPLETE) {
-                return APR_EAGAIN;
-            }
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(10077) 
-                         "%s: loading credentials for server %s", md->name, s->server_hostname);
-            return md_reg_get_cred_files(reg, md, p, pkeyfile, pcertfile, pchainfile);
+        if (APR_SUCCESS != (rv = md_reg_init(&reg, p, sc->mc->store))) {
+            return rv;
         }
+
+        md = md_reg_get(reg, sc->assigned->name, p);
+            
+        if (APR_SUCCESS != (rv = md_reg_get_cred_files(reg, md, p, pkeyfile, pcertfile))) {
+            return rv;
+        }
+
+        if (!*pkeyfile || !*pcertfile 
+            || APR_SUCCESS != md_util_is_file(*pkeyfile, p)
+            || APR_SUCCESS != md_util_is_file(*pcertfile, p)) {
+            /* Provide temporary, self-signed certificate as fallback, so that
+             * clients do not get obscure TLS handshake errors or will see a fallback
+             * virtual host that is not intended to be served here. */
+            md_store_get_fname(pkeyfile, sc->mc->store, MD_SG_NONE, NULL, MD_FN_FALLBACK_PKEY, p);
+            md_store_get_fname(pcertfile, sc->mc->store, MD_SG_NONE, NULL, MD_FN_FALLBACK_CERT, p);
+            
+            return APR_EAGAIN;
+        }
+
+        /* We have key and cert files, but they might no longer be valid or not
+         * match all domain names. Still use these files for now, but indicate that 
+         * resources should no longer be served until we have a new certificate again. */
+        if (md->state != MD_S_COMPLETE) {
+            return APR_EAGAIN;
+        }
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(10077) 
+                     "%s: providing certificate for server %s", md->name, s->server_hostname);
     }
     return rv;
 }
 
+static apr_status_t md_get_credentials(server_rec *s, apr_pool_t *p,
+                                       const char **pkeyfile, const char **pcertfile,
+                                       const char **pchainfile)
+{
+    *pchainfile = NULL;
+    return md_get_certificate(s, p, pkeyfile, pcertfile);
+}
 
 static int md_is_challenge(conn_rec *c, const char *servername,
                            X509 **pcert, EVP_PKEY **pkey)
@@ -1005,6 +1032,7 @@ static void md_hooks(apr_pool_t *pool)
     
     /* Run once after configuration is set, before mod_ssl.
      */
+    ap_hook_check_config(md_check_config, NULL, mod_ssl, APR_HOOK_MIDDLE);
     ap_hook_post_config(md_post_config, NULL, mod_ssl, APR_HOOK_MIDDLE);
     
     /* Run once after a child process has been created.
@@ -1015,6 +1043,7 @@ static void md_hooks(apr_pool_t *pool)
     ap_hook_post_read_request(md_http_challenge_pr, NULL, NULL, APR_HOOK_MIDDLE);
 
     APR_REGISTER_OPTIONAL_FN(md_is_managed);
+    APR_REGISTER_OPTIONAL_FN(md_get_certificate);
     APR_REGISTER_OPTIONAL_FN(md_get_credentials);
     APR_REGISTER_OPTIONAL_FN(md_is_challenge);
 }
