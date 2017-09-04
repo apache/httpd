@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_http2: DoS flow control protection is less agressive as long as active tasks stay
+     below worker capacity. Intended to fix problems with media streaming. [Stefan Eissing]
+     
   *) mod_md: v0.9.0:
      Certificate provisioning from Let's Encrypt (and other ACME CAs) for mod_ssl virtual hosts.
      [Stefan Eissing]
