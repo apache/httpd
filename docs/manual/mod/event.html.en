@@ -140,6 +140,13 @@ of the <code class="directive">AsyncRequestWorkerFactor</code>.</p>
 
         <p>These improvements are valid for both HTTP/HTTPS connections.</p>
 
+        <p>The above connection states are managed by the listener thread via dedicated queues, that up to 2.4.27 were checked every 100ms
+        to find which connections hit timeout settings like <code class="directive"><a href="../mod/mpm_common.html#timeout">Timeout</a></code> and
+        <code class="directive"><a href="../mod/core.html#keepalivetimeout">KeepAliveTimeout</a></code>. This was a simple and efficient solution, but it presented a downside: the pollset was
+        forcing a wake-up of the listener thread even if there was no need (for example because completely idle), wasting resources. From 2.4.27
+        these queues are completely managed via an event based logic, not relying anymore on active polling.
+        Resource constrained environments, like embedded servers, may benefit from this improvement.</p>
+
     
 
     <h3><a name="graceful-close" id="graceful-close">Graceful process termination and Scoreboard usage</a></h3>
