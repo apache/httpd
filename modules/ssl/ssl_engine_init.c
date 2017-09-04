@@ -173,6 +173,7 @@ static void ssl_add_version_components(apr_pool_t *p,
 
 static APR_OPTIONAL_FN_TYPE(md_is_managed) *md_is_managed;
 static APR_OPTIONAL_FN_TYPE(md_get_credentials) *md_get_credentials;
+static APR_OPTIONAL_FN_TYPE(md_get_certificate) *md_get_certificate;
 static APR_OPTIONAL_FN_TYPE(md_is_challenge) *md_is_challenge;
 
 int ssl_is_challenge(conn_rec *c, const char *servername, 
@@ -230,10 +231,12 @@ apr_status_t ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
      */
     md_is_managed = APR_RETRIEVE_OPTIONAL_FN(md_is_managed);
     md_get_credentials = APR_RETRIEVE_OPTIONAL_FN(md_get_credentials);
+    md_get_certificate = APR_RETRIEVE_OPTIONAL_FN(md_get_certificate);
     md_is_challenge = APR_RETRIEVE_OPTIONAL_FN(md_is_challenge);
-    if (!md_is_managed || !md_get_credentials) {
+    if (!md_is_managed || (!md_get_credentials && !md_get_certificate)) {
         md_is_managed = NULL;
         md_get_credentials = NULL;
+        md_get_certificate = NULL;
     }
 
     /*
@@ -1712,15 +1715,29 @@ static apr_status_t ssl_init_server_ctx(server_rec *s,
         else {
             const char *key_file, *cert_file, *chain_file;
             
-            rv = md_get_credentials(s, p, &key_file, &cert_file, &chain_file);
-            if (rv == APR_SUCCESS) {
+            key_file = cert_file = chain_file = NULL;
+            
+            if (md_get_certificate) {
+                /* mod_md >= v0.9.0 */
+                rv = md_get_certificate(s, p, &key_file, &cert_file);
+            }
+            else if (md_get_credentials) {
+                /* mod_md < v0.9.0, remove this after a while */
+                rv = md_get_credentials(s, p, &key_file, &cert_file, &chain_file);
+            }
+            else {
+                rv = APR_ENOTIMPL;
+            }
+            
+            if (key_file && cert_file) {
                 APR_ARRAY_PUSH(pks->key_files, const char *) = key_file;
                 APR_ARRAY_PUSH(pks->cert_files, const char *) = cert_file;
                 if (chain_file) {
                     sc->server->cert_chain = chain_file;
                 }
             }
-            else if (APR_STATUS_IS_EAGAIN(rv)) {
+            
+            if (APR_STATUS_IS_EAGAIN(rv)) {
                 /* Managed Domain not ready yet. This is not a reason to fail the config */
                 ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(10085)
                              "Init: %s will respond with '503 Service Unavailable' for now. This "
@@ -1729,7 +1746,7 @@ static apr_status_t ssl_init_server_ctx(server_rec *s,
                 pks->service_unavailable = 1;
                 return APR_SUCCESS;
             }
-            else {
+            else if (rv != APR_SUCCESS) {
                 return rv;
             }
         }
