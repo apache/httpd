@@ -1556,11 +1556,14 @@ int ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
 
         if (ap_is_HTTP_INFO(proxy_status)) {
             interim_response++;
-            /* Reset to old timeout iff we've adjusted it */
             if (do_100_continue
-                && (r->status == HTTP_CONTINUE)
-                && (worker->s->ping_timeout != old_timeout)) {
+                && (r->status == HTTP_CONTINUE)) {
+                /* Done with the 100 continue */
+                do_100_continue = 0;
+                /* Reset to old timeout if we've adjusted it */
+                if  (worker->s->ping_timeout != old_timeout) {
                     apr_socket_timeout_set(backend->sock, old_timeout);
+                }
             }
         }
         else {
