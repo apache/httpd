@@ -28,7 +28,9 @@ struct md_srv_conf_t;
 struct md_pkey_spec_t;
 
 #define MD_TLSSNI01_DNS_SUFFIX     ".acme.invalid"
-#define MD_PKEY_RSA_BITS_DEF       2048U
+
+#define MD_PKEY_RSA_BITS_MIN       2048
+#define MD_PKEY_RSA_BITS_DEF       2048
 
 typedef enum {
     MD_S_UNKNOWN,                   /* MD has not been analysed yet */
@@ -121,7 +123,7 @@ struct md_t {
 #define MD_KEY_PKEY             "privkey"
 #define MD_KEY_PROTO            "proto"
 #define MD_KEY_REGISTRATION     "registration"
-#define MD_KEY_RENEW_NORM       "renew-norm"
+#define MD_KEY_RENEW            "renew"
 #define MD_KEY_RENEW_WINDOW     "renew-window"
 #define MD_KEY_RESOURCE         "resource"
 #define MD_KEY_STATE            "state"
@@ -236,6 +238,11 @@ md_t *md_merge(apr_pool_t *p, const md_t *add, const md_t *base);
  */
 struct md_json_t *md_to_json (const md_t *md, apr_pool_t *p);
 md_t *md_from_json(struct md_json_t *json, apr_pool_t *p);
+
+/**
+ * Determine if MD should renew its cert (if it has one)
+ */
+int md_should_renew(const md_t *md);
 
 /**************************************************************************************************/
 /* domain credentials */

@@ -191,7 +191,7 @@ md_json_t *md_pkey_spec_to_json(const md_pkey_spec_t *spec, apr_pool_t *p)
                 break;
             case MD_PKEY_TYPE_RSA:
                 md_json_sets("RSA", json, MD_KEY_TYPE, NULL);
-                if (spec->params.rsa.bits > 2048) {
+                if (spec->params.rsa.bits >= MD_PKEY_RSA_BITS_MIN) {
                     md_json_setl(spec->params.rsa.bits, json, MD_KEY_BITS, NULL);
                 }
                 break;
@@ -217,12 +217,34 @@ md_pkey_spec_t *md_pkey_spec_from_json(struct md_json_t *json, apr_pool_t *p)
         else if (!apr_strnatcasecmp("RSA", s)) {
             spec->type = MD_PKEY_TYPE_RSA;
             l = md_json_getl(json, MD_KEY_BITS, NULL);
-            if (l > 2048) {
+            if (l >= MD_PKEY_RSA_BITS_MIN) {
                 spec->params.rsa.bits = (unsigned int)l;
+            }
+            else {
+                spec->params.rsa.bits = MD_PKEY_RSA_BITS_DEF;
             }
         }
     }
     return spec;
+}
+
+int md_pkey_spec_eq(md_pkey_spec_t *spec1, md_pkey_spec_t *spec2)
+{
+    if (spec1 == spec2) {
+        return 1;
+    }
+    if (spec1 && spec2 && spec1->type == spec2->type) {
+        switch (spec1->type) {
+            case MD_PKEY_TYPE_DEFAULT:
+                return 1;
+            case MD_PKEY_TYPE_RSA:
+                if (spec1->params.rsa.bits == spec2->params.rsa.bits) {
+                    return 1;
+                }
+                break;
+        }
+    }
+    return 0;
 }
 
 static md_pkey_t *make_pkey(apr_pool_t *p) 
@@ -363,7 +385,7 @@ static apr_status_t gen_rsa(md_pkey_t **ppkey, apr_pool_t *p, unsigned int bits)
         rv = APR_SUCCESS;
     }
     else {
-        md_log_perror(MD_LOG_MARK, MD_LOG_WARNING, 0, p, "unable to generate new key"); 
+        md_log_perror(MD_LOG_MARK, MD_LOG_WARNING, 0, p, "error generate pkey RSA %d", bits); 
         *ppkey = NULL;
         rv = APR_EGENERAL;
     }

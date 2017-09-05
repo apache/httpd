@@ -91,7 +91,8 @@ int md_reg_do(md_reg_do_cb *cb, void *baton, md_reg_t *reg, apr_pool_t *p);
 #define MD_UPD_DRIVE_MODE   0x0080
 #define MD_UPD_RENEW_WINDOW 0x0100
 #define MD_UPD_CA_CHALLENGES 0x0200
-#define MD_UPD_ALL          0x7FFF
+#define MD_UPD_PKEY_SPEC    0x0400
+#define MD_UPD_ALL          0x7FFFFFFF
 
 /**
  * Update the given fields for the managed domain. Take the new

@@ -37,7 +37,7 @@
 /**************************************************************************************************/
 /* file system based implementation of md_store_t */
 
-#define MD_STORE_VERSION        2
+#define MD_STORE_VERSION        3
 
 typedef struct {
     apr_fileperms_t dir;
@@ -99,7 +99,6 @@ static apr_status_t init_store_file(md_store_fs_t *s_fs, const char *fname,
     unsigned char *key;
     apr_status_t rv;
     
-    md_json_sets(MOD_MD_VERSION, json, MD_KEY_VERSION, NULL);
     md_json_setn(MD_STORE_VERSION, json, MD_KEY_STORE, MD_KEY_VERSION, NULL);
 
     s_fs->key_len = FS_STORE_KLEN;
@@ -217,8 +216,12 @@ static apr_status_t read_store_file(md_store_fs_t *s_fs, const char *fname,
         /* Need to migrate format? */
         if (store_version < MD_STORE_VERSION) {
             if (store_version <= 1.0) {
-                md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, 0, p, "migrating store v1.0 -> v1.1");
+                md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, 0, p, "migrating store v1 -> v2");
                 rv = upgrade_from_1_0(s_fs, p, ptemp);
+            }
+            if (store_version <= 2.0) {
+                md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, 0, p, "migrating store v2 -> v3");
+                md_json_del(json, MD_KEY_VERSION, NULL);
             }
             
             if (APR_SUCCESS == rv) {

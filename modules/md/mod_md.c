@@ -78,10 +78,8 @@ static void md_merge_srv(md_t *md, md_srv_conf_t *base_sc, apr_pool_t *p)
     if (md->drive_mode == MD_DRIVE_DEFAULT) {
         md->drive_mode = md_config_geti(md->sc, MD_CONFIG_DRIVE_MODE);
     }
-    if (md->renew_norm <= 0) {
+    if (md->renew_norm <= 0 && md->renew_window <= 0) {
         md->renew_norm = md_config_get_interval(md->sc, MD_CONFIG_RENEW_NORM);
-    }
-    if (md->renew_window <= 0) {
         md->renew_window = md_config_get_interval(md->sc, MD_CONFIG_RENEW_WINDOW);
     }
     if (md->transitive < 0) {
