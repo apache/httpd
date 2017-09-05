@@ -347,6 +347,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
          */
         if (APR_STATUS_IS_TIMEUP(status) &&
                 conn->worker->s->ping_timeout_set) {
+            apr_table_setn(r->notes, "proxy_timedout", "1");
             return HTTP_GATEWAY_TIME_OUT;
         }
 
