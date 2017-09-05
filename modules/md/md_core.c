@@ -201,6 +201,33 @@ md_t *md_create(apr_pool_t *p, apr_array_header_t *domains)
     return md;
 }
 
+int md_should_renew(const md_t *md) 
+{
+    apr_time_t now = apr_time_now();
+
+    if (md->expires <= now) {
+        return 1;
+    }
+    else if (md->expires > 0) {
+        apr_interval_time_t renew_win, left, life;
+        
+        renew_win = md->renew_window;
+        if (md->renew_norm > 0 
+            && md->renew_norm > renew_win
+            && md->expires > md->valid_from) {
+            /* Calc renewal days as fraction of cert lifetime - if known */
+            life = md->expires - md->valid_from; 
+            renew_win = (apr_time_t)(life * ((double)renew_win / md->renew_norm));
+        }
+        
+        left = md->expires - now;
+        if (left <= renew_win) {
+            return 1;
+        }                
+    }
+    return 0;
+}
+
 /**************************************************************************************************/
 /* lifetime */
 
@@ -304,12 +331,13 @@ md_json_t *md_to_json(const md_t *md, apr_pool_t *p)
             md_json_sets(ts, json, MD_KEY_CERT, MD_KEY_VALID_FROM, NULL);
         }
         if (md->renew_norm > 0) {
-            md_json_setl((long)apr_time_sec(md->renew_norm), json, MD_KEY_RENEW_NORM, NULL);
-            md_json_setl((long)apr_time_sec(md->renew_window), json, MD_KEY_RENEW_WINDOW, NULL);
+            md_json_sets(apr_psprintf(p, "%ld%%", (long)(md->renew_window * 100L / md->renew_norm)), 
+                                      json, MD_KEY_RENEW_WINDOW, NULL);
         }
         else {
             md_json_setl((long)apr_time_sec(md->renew_window), json, MD_KEY_RENEW_WINDOW, NULL);
         }
+        md_json_setb(md_should_renew(md), json, MD_KEY_RENEW, NULL);
         if (md->ca_challenges && md->ca_challenges->nelts > 0) {
             apr_array_header_t *na;
             na = md_array_str_compact(p, md->ca_challenges, 0);
@@ -348,8 +376,18 @@ md_t *md_from_json(md_json_t *json, apr_pool_t *p)
         if (s && *s) {
             md->valid_from = apr_date_parse_rfc(s);
         }
-        md->renew_norm = apr_time_from_sec(md_json_getl(json, MD_KEY_RENEW_NORM, NULL));
+        md->renew_norm = 0;
         md->renew_window = apr_time_from_sec(md_json_getl(json, MD_KEY_RENEW_WINDOW, NULL));
+        if (md->renew_window <= 0) {
+            const char *s = md_json_gets(json, MD_KEY_RENEW_WINDOW, NULL);
+            if (s && strchr(s, '%')) {
+                int percent = atoi(s);
+                if (0 < percent && percent < 100) {
+                    md->renew_norm = apr_time_from_sec(100 * MD_SECS_PER_DAY);
+                    md->renew_window = apr_time_from_sec(percent * MD_SECS_PER_DAY);
+                }
+            }
+        }
         if (md_json_has_key(json, MD_KEY_CA, MD_KEY_CHALLENGES, NULL)) {
             md->ca_challenges = apr_array_make(p, 5, sizeof(const char*));
             md_json_dupsa(md->ca_challenges, p, json, MD_KEY_CA, MD_KEY_CHALLENGES, NULL);

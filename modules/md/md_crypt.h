@@ -80,6 +80,7 @@ void *md_pkey_get_EVP_PKEY(struct md_pkey_t *pkey);
 
 struct md_json_t *md_pkey_spec_to_json(const md_pkey_spec_t *spec, apr_pool_t *p);
 md_pkey_spec_t *md_pkey_spec_from_json(struct md_json_t *json, apr_pool_t *p);
+int md_pkey_spec_eq(md_pkey_spec_t *spec1, md_pkey_spec_t *spec2);
 
 /**************************************************************************************************/
 /* X509 certificates */

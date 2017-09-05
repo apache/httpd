@@ -1,6 +1,15 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_md: v0.9.1:
+     - various fixes in MDRenewWindow handling when specifying percent. Serialization changed. If 
+       someone already used percent configurations, it is advised to change these to a new value,
+       reload and change back to the wanted ones.
+     - various fixes in handling of MDPrivateKeys when specifying 2048 bits (the default) explicitly.
+     - mod_md version removed from top level md_store.json file. The store has its own format version
+       to facilitate upgrades.
+    [Stefan Eissing]
+
   *) mod_http2: DoS flow control protection is less agressive as long as active tasks stay
      below worker capacity. Intended to fix problems with media streaming. [Stefan Eissing]
      
