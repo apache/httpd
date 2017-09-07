@@ -25,7 +25,6 @@ Patches considered for backport are noted in their branches' STATUS:
   * http://svn.apache.org/repos/asf/httpd/httpd/branches/2.4.x/STATUS
 
 
-
 Release history:
     [NOTE that x.{odd}.z versions are strictly Alpha/Beta releases,
           while x.{even}.z versions are Stable/GA releases.]
@@ -121,6 +120,24 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://home.apache.org/~jim/patches/syslog-tag.patch
      +1: rpluem, jim, mrumph
 
+  *) mod_proxy_wstunnel fix PR 61142
+     2.4.x patch: svn merge -c 1801594 ^/httpd/httpd/trunk .
+     +1: jfclere, jim, covener
+
+  *) ssl, ab: Compatibility with LibreSSL. PR 61184 and PR 61206.
+     trunk patch: http://svn.apache.org/r1803392
+                  http://svn.apache.org/r1803396
+                  http://svn.apache.org/r1803398
+     2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-libressl.patch
+     +1: ylavic, jim, covener
+
+  *) core: Follow up to r1739201.
+           These APR_TIMEUP special cases are now handled by ap_map_http_request_error().
+           (r1739201 has been backported in the 2.4 branch in r1768079)
+     trunk patch: http://svn.apache.org/r1766998
+     2.4.x patch: svn merge -c 1766998 ^/httpd/httpd/trunk .
+     +1: jailletc36, jim, covener
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -194,10 +211,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -r1793921:HEAD ^/httpd/httpd/branches/trunk-override-index
      +1: jchampion, jim
 
-  *) mod_proxy_wstunnel fix PR 61142
-     2.4.x patch: svn merge -c 1801594 ^/httpd/httpd/trunk .
-     +1: jfclere, jim, covener
-
   *) Makefile: Use different variables to track normal modules and MPMs during
                build. Only the enabled MPM is uncommented in the configuration
                if multiple DSOs are built, and LoadModule for MPMs will now come
@@ -212,13 +225,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1802845
      2.4.x patch: trunk patch works
      +1: jim, covener
-
-  *) ssl, ab: Compatibility with LibreSSL. PR 61184 and PR 61206.
-     trunk patch: http://svn.apache.org/r1803392
-                  http://svn.apache.org/r1803396
-                  http://svn.apache.org/r1803398
-     2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-libressl.patch
-     +1: ylavic, jim, covener
 
   *) mod_proxy: Name the scheme in the error message when the 
      mod_proxy_foo submodule is missing.
@@ -243,13 +249,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1805206 (partial)
      2.4.x patch: http://home.apache.org/~jim/patches/httpd-2.4-loadfactor.patch
      +1: jim
-
-  *) core: Follow up to r1739201.
-           These APR_TIMEUP special cases are now handled by ap_map_http_request_error().
-           (r1739201 has been backported in the 2.4 branch in r1768079)
-     trunk patch: http://svn.apache.org/r1766998
-     2.4.x patch: svn merge -c 1766998 ^/httpd/httpd/trunk .
-     +1: jailletc36, jim, covener
 
   *) core: Disallow Methods' registration at runtime (.htaccess), they may be
      used only if registered at init time (httpd.conf).
