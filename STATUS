@@ -196,7 +196,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
   *) mod_proxy_wstunnel fix PR 61142
      2.4.x patch: svn merge -c 1801594 ^/httpd/httpd/trunk .
-     +1: jfclere, jim
+     +1: jfclere, jim, covener
 
   *) Makefile: Use different variables to track normal modules and MPMs during
                build. Only the enabled MPM is uncommented in the configuration
@@ -211,14 +211,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) proxy: Ensure updatelbstatus() is NULL if not-implemented
      trunk patch: http://svn.apache.org/r1802845
      2.4.x patch: trunk patch works
-     +1: jim
+     +1: jim, covener
 
   *) ssl, ab: Compatibility with LibreSSL. PR 61184 and PR 61206.
      trunk patch: http://svn.apache.org/r1803392
                   http://svn.apache.org/r1803396
                   http://svn.apache.org/r1803398
      2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-libressl.patch
-     +1: ylavic, jim
+     +1: ylavic, jim, covener
 
   *) mod_proxy: Name the scheme in the error message when the 
      mod_proxy_foo submodule is missing.
@@ -236,7 +236,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1805206 (partial)
                   http://svn.apache.org/r1805322
      2.4.x patch: http://home.apache.org/~jim/patches/httpd-2.4-hcheck-ms.patch
-     +1: jim
+     +1: jim, covener
 
   *) mod_proxy: Loadfactor can now be a decimal number (eg: 1.25)
      trunk patch: http://svn.apache.org/r1805188
@@ -249,14 +249,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
            (r1739201 has been backported in the 2.4 branch in r1768079)
      trunk patch: http://svn.apache.org/r1766998
      2.4.x patch: svn merge -c 1766998 ^/httpd/httpd/trunk .
-     +1: jailletc36, jim
+     +1: jailletc36, jim, covener
 
   *) core: Disallow Methods' registration at runtime (.htaccess), they may be
      used only if registered at init time (httpd.conf).
      trunk patch: http://svn.apache.org/r1807655
      2.4.x patch: svn merge -c 1807655 ^/httpd/httpd/trunk .
                   (modulo CHANGES)
-     +1: ylavic
+     +1: ylavic, covener
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
