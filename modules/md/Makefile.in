@@ -40,6 +40,8 @@ LTLIBRARY_SOURCES = \
 LTLIBRARY_DEPENDENCIES = md.h
 
 
+a2md_CFLAGS = $(EXTRA_INCLUDES)
+
 a2md_OBJECTS = \
 	md_cmd_main.c \
 	md_cmd_acme.c \
@@ -47,7 +49,7 @@ a2md_OBJECTS = \
 	md_cmd_store.c
 
 a2md: $(a2md_OBJECTS) $(LTLIBRARY_NAME)
-	$(LINK) $(a2md_LTFLAGS) $(a2md_OBJECTS) -lmd $(A2MD_LDADD) $(AP_LIBS)
+	$(LINK) $(a2md_CFLAGS) $(a2md_LTFLAGS) $(a2md_OBJECTS) -lmd $(A2MD_LDADD) $(AP_LIBS)
 
 # top be installed in bin dir
 bin_PROGRAMS = a2md
