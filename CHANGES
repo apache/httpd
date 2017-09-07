@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core: Disallow Methods' registration at runtime (.htaccess), they may be
+     used only if registered at init time (httpd.conf).  [Yann Ylavic]
+
   *) mod_md: v0.9.1:
      - various fixes in MDRenewWindow handling when specifying percent. Serialization changed. If 
        someone already used percent configurations, it is advised to change these to a new value,
