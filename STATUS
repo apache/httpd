@@ -251,6 +251,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1766998 ^/httpd/httpd/trunk .
      +1: jailletc36, jim
 
+  *) core: Disallow Methods' registration at runtime (.htaccess), they may be
+     used only if registered at init time (httpd.conf).
+     trunk patch: http://svn.apache.org/r1766998
+     2.4.x patch: svn merge -c 1807655 ^/httpd/httpd/trunk .
+                  (modulo CHANGES)
+     +1: ylavic
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
