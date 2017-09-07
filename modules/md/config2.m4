@@ -273,7 +273,6 @@ APACHE_MODULE(md, [Managed Domain handling], $md_objs, , most, [
         enable_md=no
     fi
     
-    APR_ADDTO(MOD_MD_LDADD, [ "libmd.la" ])
     APR_ADDTO(A2MD_LDADD, [ "libmd.la" ])
 ])
 
