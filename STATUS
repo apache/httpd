@@ -119,16 +119,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1801594 ^/httpd/httpd/trunk .
      +1: jfclere, jim, covener
 
-  *) buildconf: add an apr-config mode, which allows builds to proceed without
-                APR source code as long as a valid APR installation exists.
-                Involves checking in the latest versions of APR's m4 files and
-                the PrintPath helper.
-     trunk patch: https://svn.apache.org/r1780441
-                  https://svn.apache.org/r1780470
-                  https://svn.apache.org/r1795928
-     2.4.x patch: svn merge -r 1780253:HEAD ^/httpd/httpd/branches/trunk-buildconf-noapr
-     +1: jchampion, jim, ylavic
-
   *) proxy: Ensure updatelbstatus() is NULL if not-implemented
      trunk patch: http://svn.apache.org/r1802845
      2.4.x patch: trunk patch works
