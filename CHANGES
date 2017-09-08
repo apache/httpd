@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.28
 
+  *) mod_watchdog/mod_proxy_hcheck: Time intervals can now be spefified
+     down to the millisecond. Supports 'mi' (minute), 'ms' (millisecond),
+     's' (second) and 'hr' (hour!) time suffixes. [Jim Jagielski]
+
   *) mod_http2: Fix for stalling when more than 32KB are written to a
      suspended stream.  [Stefan Eissing]
 
