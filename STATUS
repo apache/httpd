@@ -23,7 +23,8 @@ Patches considered for backport are noted in their branches' STATUS:
 Release history:
     [NOTE that x.{odd}.z versions are strictly Alpha/Beta releases,
           while x.{even}.z versions are Stable/GA releases.]
-    2.2.34  : Tagged July 6, 2017
+    2.2.35-dev  : Only security patch activity anticipated, not releases.
+    2.2.34  : Released July 11, 2017
     2.2.33  : Tagged June 23, 2017. Not released.
     2.2.32  : Released January 13, 2017
     2.2.31  : Released July 16, 2015
