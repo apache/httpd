@@ -740,6 +740,7 @@ struct SSLSrvConfigRec {
     
     apr_array_header_t *policies;      /* policy that shall be applied to this config */
     const char      *error_policy;     /* error in policy merge, bubble up */
+    server_addr_rec *enabled_on;       /* optional list of addresses where ssl is enabled */
 };
 
 /**
@@ -1090,6 +1091,8 @@ extern int ssl_running_on_valgrind;
 
 int ssl_is_challenge(conn_rec *c, const char *servername, 
                      X509 **pcert, EVP_PKEY **pkey);
+
+int ssl_server_addr_overlap(server_addr_rec *sar1, server_addr_rec *sar2);
 
 #endif /* SSL_PRIVATE_H */
 /** @} */

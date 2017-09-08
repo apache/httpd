@@ -269,6 +269,13 @@ apr_status_t ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
         if (sc->enabled == SSL_ENABLED_UNSET) {
             sc->enabled = SSL_ENABLED_FALSE;
         }
+        /* Check if conditions to enable apply to this server at all. Conditions
+         * might be inherited from base server and never match a vhost. */
+        if (sc->enabled_on && sc->enabled == SSL_ENABLED_TRUE) {
+            if (!ssl_server_addr_overlap(sc->enabled_on, s->addrs)) {
+                sc->enabled = SSL_ENABLED_FALSE;
+            }
+        }
 
         if (sc->session_cache_timeout == UNSET) {
             sc->session_cache_timeout = SSL_SESSION_CACHE_TIMEOUT;

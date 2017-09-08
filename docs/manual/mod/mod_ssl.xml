@@ -550,15 +550,15 @@ SSLSessionCacheTimeout 600
 <directivesynopsis>
 <name>SSLEngine</name>
 <description>SSL Engine Operation Switch</description>
-<syntax>SSLEngine on|off|optional</syntax>
+<syntax>SSLEngine on|off|optional|addr[:port] [addr[:port]] ...</syntax>
 <default>SSLEngine off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 
 <usage>
 <p>
-This directive toggles the usage of the SSL/TLS Protocol Engine. This
-is should be used inside a <directive module="core"
+This directive toggles the usage of the SSL/TLS Protocol Engine. Values 'on',
+'off' and 'optional' should be used inside a <directive module="core"
 type="section">VirtualHost</directive> section to enable SSL/TLS for a
 that virtual host. By default the SSL/TLS Protocol Engine is
 disabled for both the main server and all configured virtual hosts.</p>
@@ -566,6 +566,18 @@ disabled for both the main server and all configured virtual hosts.</p>
 <highlight language="config">
 &lt;VirtualHost _default_:443&gt;
 SSLEngine on
+#...
+&lt;/VirtualHost&gt;
+</highlight>
+</example>
+<p>In Apache 2.4 and later, addr:port values should be used in the 
+global server to enable the SSL/TLS Protocol Engine for <em>all</em> 
+<directive module="core" type="section">VirtualHost</directive>s 
+that match one of the addresses in the list.</p>
+<example><title>Example</title>
+<highlight language="config">
+SSLEngine *:443
+&lt;VirtualHost *:443&gt;
 #...
 &lt;/VirtualHost&gt;
 </highlight>
