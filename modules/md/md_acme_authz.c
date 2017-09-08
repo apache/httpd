@@ -456,7 +456,7 @@ apr_status_t md_acme_authz_respond(md_acme_authz_t *authz, md_acme_t *acme, md_s
                                    md_pkey_spec_t *key_spec, apr_pool_t *p)
 {
     apr_status_t rv;
-    int i;
+    unsigned int i;
     cha_find_ctx fctx;
     
     assert(acme);

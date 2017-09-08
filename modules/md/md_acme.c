@@ -90,7 +90,8 @@ apr_status_t md_acme_init(apr_pool_t *p, const char *base)
     return md_crypt_init(p);
 }
 
-apr_status_t md_acme_create(md_acme_t **pacme, apr_pool_t *p, const char *url)
+apr_status_t md_acme_create(md_acme_t **pacme, apr_pool_t *p, const char *url,
+                            const char *proxy_url)
 {
     md_acme_t *acme;
     const char *err = NULL;
@@ -113,6 +114,7 @@ apr_status_t md_acme_create(md_acme_t **pacme, apr_pool_t *p, const char *url)
     acme->p = p;
     acme->user_agent = apr_psprintf(p, "%s mod_md/%s", 
                                     base_product, MOD_MD_VERSION);
+    acme->proxy_url = proxy_url? apr_pstrdup(p, proxy_url) : NULL;
     acme->max_retries = 3;
     
     if (APR_SUCCESS != (rv = apr_uri_parse(p, url, &uri_parsed))) {
@@ -134,7 +136,7 @@ apr_status_t md_acme_setup(md_acme_t *acme)
     
     assert(acme->url);
     if (!acme->http && APR_SUCCESS != (rv = md_http_create(&acme->http, acme->p,
-                                                           acme->user_agent))) {
+                                                           acme->user_agent, acme->proxy_url))) {
         return rv;
     }
     md_http_set_response_limit(acme->http, 1024*1024);

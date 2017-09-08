@@ -75,7 +75,7 @@ static apr_status_t ad_set_acct(md_proto_driver_t *d)
     
     ad->phase = "setup acme";
     if (!ad->acme 
-        && APR_SUCCESS != (rv = md_acme_create(&ad->acme, d->p, md->ca_url))) {
+        && APR_SUCCESS != (rv = md_acme_create(&ad->acme, d->p, md->ca_url, d->proxy_url))) {
         goto out;
     }
 
@@ -701,7 +701,7 @@ static apr_status_t acme_stage(md_proto_driver_t *d)
     }
     
     if (renew) {
-        if (APR_SUCCESS != (rv = md_acme_create(&ad->acme, d->p, d->md->ca_url)) 
+        if (APR_SUCCESS != (rv = md_acme_create(&ad->acme, d->p, d->md->ca_url, d->proxy_url)) 
             || APR_SUCCESS != (rv = md_acme_setup(ad->acme))) {
             md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, d->p, "%s: setup ACME(%s)", 
                           d->md->name, d->md->ca_url);
@@ -876,7 +876,7 @@ static apr_status_t acme_driver_stage(md_proto_driver_t *d)
 /* ACME preload */
 
 static apr_status_t acme_preload(md_store_t *store, md_store_group_t load_group, 
-                                 const char *name, apr_pool_t *p) 
+                                 const char *name, const char *proxy_url, apr_pool_t *p) 
 {
     apr_status_t rv;
     md_pkey_t *privkey, *acct_key;
@@ -932,7 +932,7 @@ static apr_status_t acme_preload(md_store_t *store, md_store_group_t load_group,
     if (acct) {
         md_acme_t *acme;
         
-        if (APR_SUCCESS != (rv = md_acme_create(&acme, p, md->ca_url))
+        if (APR_SUCCESS != (rv = md_acme_create(&acme, p, md->ca_url, proxy_url))
             || APR_SUCCESS != (rv = md_acme_acct_save(store, p, acme, acct, acct_key))) {
             md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, p, "%s: error saving acct", name);
             return rv;
@@ -964,7 +964,7 @@ static apr_status_t acme_driver_preload(md_proto_driver_t *d, md_store_group_t g
     apr_status_t rv;
 
     ad->phase = "ACME preload";
-    if (APR_SUCCESS == (rv = acme_preload(d->store, group, d->md->name, d->p))) {
+    if (APR_SUCCESS == (rv = acme_preload(d->store, group, d->md->name, d->proxy_url, d->p))) {
         ad->phase = "preload done";
     }
         

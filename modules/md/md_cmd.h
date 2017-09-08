@@ -50,6 +50,8 @@ struct md_cmd_ctx {
     const char *const *argv;
 };
 
+#define MD_CMD_OPT_PROXY_URL        "proxy-url"
+
 int md_cmd_ctx_has_option(md_cmd_ctx *ctx, const char *key);
 const char *md_cmd_ctx_get_option(md_cmd_ctx *ctx, const char *key);
 

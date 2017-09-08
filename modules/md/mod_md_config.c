@@ -41,6 +41,7 @@
 #define MD_CMD_MEMBERS        "MDMembers"
 #define MD_CMD_PORTMAP        "MDPortMap"
 #define MD_CMD_PKEYS          "MDPrivateKeys"
+#define MD_CMD_PROXY          "MDHttpProxy"
 #define MD_CMD_RENEWWINDOW    "MDRenewWindow"
 #define MD_CMD_STOREDIR       "MDStoreDir"
 
@@ -50,6 +51,7 @@
 static md_mod_conf_t defmc = {
     NULL,
     "md",
+    NULL,
     NULL,
     80,
     443,
@@ -442,6 +444,9 @@ static apr_status_t duration_parse(const char *value, apr_interval_time_t *ptime
             funits = MD_SECS_PER_DAY;
         }
     }
+    else if (endp == value) {
+        return APR_EINVAL;
+    }
     else if (*endp == 'd') {
         *ptimeout = apr_time_from_sec(n * MD_SECS_PER_DAY);
         return APR_SUCCESS;
@@ -504,6 +509,19 @@ static const char *md_config_set_renew_window(cmd_parms *cmd, void *dc, const ch
         }
     }
     return "MDRenewWindow has unrecognized format";
+}
+
+static const char *md_config_set_proxy(cmd_parms *cmd, void *arg, const char *value)
+{
+    md_srv_conf_t *sc = md_config_get(cmd->server);
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+
+    if (err) {
+        return err;
+    }
+    sc->mc->proxy_url = value;
+    (void)arg;
+    return NULL;
 }
 
 static const char *md_config_set_store_dir(cmd_parms *cmd, void *arg, const char *value)
@@ -679,6 +697,8 @@ const command_rec md_cmds[] = {
                   "the outside."),
     AP_INIT_TAKE_ARGV( MD_CMD_PKEYS, md_config_set_pkeys, NULL, RSRC_CONF, 
                   "set the type and parameters for private key generation"),
+    AP_INIT_TAKE1(     MD_CMD_PROXY, md_config_set_proxy, NULL, RSRC_CONF, 
+                  "URL of a HTTP(S) proxy to use for outgoing connections"),
     AP_INIT_TAKE1(     MD_CMD_STOREDIR, md_config_set_store_dir, NULL, RSRC_CONF, 
                   "the directory for file system storage of managed domain data."),
     AP_INIT_TAKE1(     MD_CMD_RENEWWINDOW, md_config_set_renew_window, NULL, RSRC_CONF, 
@@ -725,6 +745,8 @@ const char *md_config_gets(const md_srv_conf_t *sc, md_config_var_t var)
             return sc->ca_proto? sc->ca_proto : defconf.ca_proto;
         case MD_CONFIG_BASE_DIR:
             return sc->mc->base_dir;
+        case MD_CONFIG_PROXY:
+            return sc->mc->proxy_url;
         case MD_CONFIG_CA_AGREEMENT:
             return sc->ca_agreement? sc->ca_agreement : defconf.ca_agreement;
         default:

@@ -40,12 +40,14 @@ struct md_reg_t {
     int was_synched;
     int can_http;
     int can_https;
+    const char *proxy_url;
 };
 
 /**************************************************************************************************/
 /* life cycle */
 
-apr_status_t md_reg_init(md_reg_t **preg, apr_pool_t *p, struct md_store_t *store)
+apr_status_t md_reg_init(md_reg_t **preg, apr_pool_t *p, struct md_store_t *store,
+                         const char *proxy_url)
 {
     md_reg_t *reg;
     apr_status_t rv;
@@ -55,7 +57,7 @@ apr_status_t md_reg_init(md_reg_t **preg, apr_pool_t *p, struct md_store_t *stor
     reg->protos = apr_hash_make(p);
     reg->can_http = 1;
     reg->can_https = 1;
-    
+    reg->proxy_url = proxy_url? apr_pstrdup(p, proxy_url) : NULL;
     rv = md_acme_protos_add(reg->protos, p);
     
     *preg = (rv == APR_SUCCESS)? reg : NULL;
@@ -821,6 +823,7 @@ static apr_status_t init_proto_driver(md_proto_driver_t *driver, const md_proto_
         driver->can_https = reg->can_https;
         driver->reg = reg;
         driver->store = md_reg_store_get(reg);
+        driver->proxy_url = reg->proxy_url;
         driver->md = md;
         driver->reset = reset;
     }

@@ -219,6 +219,9 @@ static apr_status_t curl_perform(md_http_request_t *req)
     if (req->user_agent) {
         curl_easy_setopt(curl, CURLOPT_USERAGENT, req->user_agent);
     }
+    if (req->proxy_url) {
+        curl_easy_setopt(curl, CURLOPT_PROXY, req->proxy_url);
+    }
     if (!apr_is_empty_table(req->headers)) {
         curlify_hdrs_ctx ctx;
         

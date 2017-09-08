@@ -174,7 +174,8 @@ static apr_status_t cmd_process(md_cmd_ctx *ctx, const md_cmd_t *cmd)
             fprintf(stderr, "need store for registry: %s\n", cmd->name);
             return APR_EINVAL;
         }
-        if (APR_SUCCESS != (rv = md_reg_init(&ctx->reg, ctx->p, ctx->store))) {
+        if (APR_SUCCESS != (rv = md_reg_init(&ctx->reg, ctx->p, ctx->store,
+                                             md_cmd_ctx_get_option(ctx, MD_CMD_OPT_PROXY_URL)))) {
             fprintf(stderr, "error %d creating registry from store: %s\n", rv, ctx->base_dir);
             return APR_EINVAL;
         }
@@ -184,7 +185,8 @@ static apr_status_t cmd_process(md_cmd_ctx *ctx, const md_cmd_t *cmd)
             fprintf(stderr, "need store for ACME: %s\n", cmd->name);
             return APR_EINVAL;
         }
-        rv = md_acme_create(&ctx->acme, ctx->p, ctx->ca_url);
+        rv = md_acme_create(&ctx->acme, ctx->p, ctx->ca_url, 
+                            md_cmd_ctx_get_option(ctx, MD_CMD_OPT_PROXY_URL));
         if (APR_SUCCESS != rv) {
             fprintf(stderr, "error creating acme instance %s (%s)\n", 
                     ctx->ca_url, ctx->base_dir);
@@ -326,6 +328,9 @@ static apr_status_t main_opts(md_cmd_ctx *ctx, int option, const char *optarg)
         case 'j':
             init_json_out(ctx);
             break;
+        case 'p':
+            md_cmd_ctx_set_option(ctx, MD_CMD_OPT_PROXY_URL, optarg);
+            break;
         case 'q':
             if (active_level > 0) {
                 --active_level;
@@ -363,6 +368,7 @@ static apr_getopt_option_t MainOptions [] = {
     { "dir",     'd', 1, "directory for file data"},
     { "help",    'h', 0, "print usage information"},
     { "json",    'j', 0, "produce json output"},
+    { "proxy",   'p', 1, "use the HTTP proxy url"},
     { "quiet",   'q', 0, "produce less output"},
     { "terms",   't', 1, "you agree to the terms of services (url)" },
     { "verbose", 'v', 0, "produce more output" },

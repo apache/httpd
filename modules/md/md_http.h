@@ -35,6 +35,7 @@ struct md_http_request_t {
     const char *method;
     const char *url;
     const char *user_agent;
+    const char *proxy_url;
     apr_table_t *headers;
     struct apr_bucket_brigade *body;
     apr_off_t body_len;
@@ -52,7 +53,8 @@ struct md_http_response_t {
     struct apr_bucket_brigade *body;
 };
 
-apr_status_t md_http_create(md_http_t **phttp, apr_pool_t *p, const char *user_agent);
+apr_status_t md_http_create(md_http_t **phttp, apr_pool_t *p, const char *user_agent,
+                            const char *proxy_url);
 
 void md_http_set_response_limit(md_http_t *http, apr_off_t resp_limit);
 

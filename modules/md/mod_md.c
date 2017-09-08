@@ -377,7 +377,7 @@ static apr_status_t setup_reg(md_reg_t **preg, apr_pool_t *p, server_rec *s, int
     mc = sc->mc;
     
     if (mc->store || APR_SUCCESS == (rv = setup_store(mc, p, s, post_config))) {
-        return md_reg_init(preg, p, mc->store);
+        return md_reg_init(preg, p, mc->store, mc->proxy_url);
     }
     return rv;
 }
@@ -870,7 +870,7 @@ static apr_status_t md_get_certificate(server_rec *s, apr_pool_t *p,
     if (sc && sc->assigned) {
         assert(sc->mc);
         assert(sc->mc->store);
-        if (APR_SUCCESS != (rv = md_reg_init(&reg, p, sc->mc->store))) {
+        if (APR_SUCCESS != (rv = md_reg_init(&reg, p, sc->mc->store, sc->mc->proxy_url))) {
             return rv;
         }
 

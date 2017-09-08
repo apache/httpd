@@ -32,7 +32,8 @@ typedef struct md_reg_t md_reg_t;
  * Initialize the registry, using the pool and loading any existing information
  * from the store.
  */
-apr_status_t md_reg_init(md_reg_t **preg, apr_pool_t *pm, struct md_store_t *store);
+apr_status_t md_reg_init(md_reg_t **preg, apr_pool_t *pm, struct md_store_t *store,
+                         const char *proxy_url);
 
 struct md_store_t *md_reg_store_get(md_reg_t *reg);
 
@@ -136,6 +137,7 @@ struct md_proto_driver_t {
     void *baton;
     int reset;
     apr_time_t stage_valid_from;
+    const char *proxy_url;
 };
 
 typedef apr_status_t md_proto_init_cb(md_proto_driver_t *driver);

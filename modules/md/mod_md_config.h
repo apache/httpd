@@ -30,11 +30,13 @@ typedef enum {
     MD_CONFIG_RENEW_NORM,
     MD_CONFIG_RENEW_WINDOW,
     MD_CONFIG_TRANSITIVE,
+    MD_CONFIG_PROXY,
 } md_config_var_t;
 
 typedef struct {
     apr_array_header_t *mds;           /* all md_t* defined in the config, shared */
     const char *base_dir;              /* base dir for store */
+    const char *proxy_url;             /* proxy url to use (or NULL) */
     struct md_store_t *store;          /* store instance, singleton, shared */
 
     int local_80;                      /* On which port http:80 arrives */

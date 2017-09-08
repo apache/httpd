@@ -13,13 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#
-#   standard stuff
-#
-
-
-LTLIBRARY_NAME    = libmd.la
-LTLIBRARY_SOURCES = \
+COMMON_SOURCES = \
 	md_acme.c \
 	md_acme_acct.c \
 	md_acme_authz.c \
@@ -35,10 +29,9 @@ LTLIBRARY_SOURCES = \
 	md_store.c \
 	md_store_fs.c \
 	md_util.c
-
-
-LTLIBRARY_DEPENDENCIES = md.h
-
+        
+COMMON_OBJECTS = $(COMMON_SOURCES:.c=.o)
+COMMON_SHOBJECTS = $(COMMON_SOURCES:.c=.slo)
 
 a2md_CFLAGS = $(EXTRA_INCLUDES)
 
@@ -48,8 +41,8 @@ a2md_OBJECTS = \
 	md_cmd_reg.c \
 	md_cmd_store.c
 
-a2md: $(a2md_OBJECTS) $(LTLIBRARY_NAME)
-	$(LINK) $(a2md_CFLAGS) $(a2md_LTFLAGS) $(a2md_OBJECTS) -lmd $(A2MD_LDADD) $(AP_LIBS)
+a2md: $(a2md_OBJECTS) $(COMMON_SHOBJECTS) md.h
+	$(LINK) $(a2md_CFLAGS) $(a2md_LTFLAGS) $(a2md_OBJECTS) $(COMMON_OBJECTS) $(A2MD_LDADD) $(AP_LIBS)
 
 # top be installed in bin dir
 bin_PROGRAMS = a2md

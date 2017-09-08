@@ -209,15 +209,16 @@ int md_should_renew(const md_t *md)
         return 1;
     }
     else if (md->expires > 0) {
-        apr_interval_time_t renew_win, left, life;
+        double renew_win,  life;
+        apr_interval_time_t left;
         
-        renew_win = md->renew_window;
+        renew_win = (double)md->renew_window;
         if (md->renew_norm > 0 
             && md->renew_norm > renew_win
             && md->expires > md->valid_from) {
             /* Calc renewal days as fraction of cert lifetime - if known */
-            life = md->expires - md->valid_from; 
-            renew_win = (apr_time_t)(life * ((double)renew_win / md->renew_norm));
+            life = (double)(md->expires - md->valid_from); 
+            renew_win = life * renew_win / (double)md->renew_norm;
         }
         
         left = md->expires - now;

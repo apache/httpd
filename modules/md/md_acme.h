@@ -50,6 +50,7 @@ struct md_acme_t {
     const char *sname;              /* short name for the service, not necessarily unique */
     apr_pool_t *p;
     const char *user_agent;
+    const char *proxy_url;
     struct md_acme_acct_t *acct;
     struct md_pkey_t *acct_key;
     
@@ -77,8 +78,10 @@ apr_status_t md_acme_init(apr_pool_t *pool, const char *base_version);
  * @param pacme   will hold the ACME server instance on success
  * @param p       pool to used
  * @param url     url of the server, optional if known at path
+ * @param proxy_url optional url of a HTTP(S) proxy to use
  */
-apr_status_t md_acme_create(md_acme_t **pacme, apr_pool_t *p, const char *url);
+apr_status_t md_acme_create(md_acme_t **pacme, apr_pool_t *p, const char *url,
+                            const char *proxy_url);
 
 /**
  * Contact the ACME server and retrieve its directory information.
