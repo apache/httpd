@@ -123,6 +123,25 @@
 #define MODSSL_SSL_METHOD_CONST
 #endif
 
+#if defined(LIBRESSL_VERSION_NUMBER)
+/* Missing from LibreSSL */
+#if LIBRESSL_VERSION_NUMBER < 0x2060000f
+#define SSL_CTRL_SET_MIN_PROTO_VERSION          123
+#define SSL_CTRL_SET_MAX_PROTO_VERSION          124
+#define SSL_CTX_set_min_proto_version(ctx, version) \
+        SSL_CTX_ctrl(ctx, SSL_CTRL_SET_MIN_PROTO_VERSION, version, NULL)
+#define SSL_CTX_set_max_proto_version(ctx, version) \
+        SSL_CTX_ctrl(ctx, SSL_CTRL_SET_MAX_PROTO_VERSION, version, NULL)
+#endif
+/* LibreSSL declares OPENSSL_VERSION_NUMBER == 2.0 but does not include most
+ * changes from OpenSSL >= 1.1 (new functions, macros, deprecations, ...), so
+ * we have to work around this...
+ */
+#define MODSSL_USE_OPENSSL_PRE_1_1_API (1)
+#else
+#define MODSSL_USE_OPENSSL_PRE_1_1_API (OPENSSL_VERSION_NUMBER < 0x10100000L)
+#endif
+
 #if defined(OPENSSL_FIPS)
 #define HAVE_FIPS
 #endif
@@ -136,7 +155,7 @@
 #endif
 
 /* session id constness */
-#if OPENSSL_VERSION_NUMBER < 0x10100000L
+#if MODSSL_USE_OPENSSL_PRE_1_1_API
 #define IDCONST
 #else
 #define IDCONST const
@@ -199,7 +218,7 @@
 
 #endif /* !defined(OPENSSL_NO_TLSEXT) && defined(SSL_set_tlsext_host_name) */
 
-#if OPENSSL_VERSION_NUMBER < 0x10100000L
+#if MODSSL_USE_OPENSSL_PRE_1_1_API
 #define BN_get_rfc2409_prime_768   get_rfc2409_prime_768
 #define BN_get_rfc2409_prime_1024  get_rfc2409_prime_1024
 #define BN_get_rfc3526_prime_1536  get_rfc3526_prime_1536
@@ -219,7 +238,7 @@ void init_bio_methods(void);
 void free_bio_methods(void);
 #endif
 
-#if OPENSSL_VERSION_NUMBER < 0x10002000L
+#if OPENSSL_VERSION_NUMBER < 0x10002000L || defined(LIBRESSL_VERSION_NUMBER)
 #define X509_STORE_CTX_get0_store(x) (x->ctx)
 #endif
 
@@ -933,10 +952,8 @@ void         ssl_util_ppclose(server_rec *, apr_pool_t *, apr_file_t *);
 char        *ssl_util_readfilter(server_rec *, apr_pool_t *, const char *,
                                  const char * const *);
 BOOL         ssl_util_path_check(ssl_pathcheck_t, const char *, apr_pool_t *);
-#if APR_HAS_THREADS
-#if OPENSSL_VERSION_NUMBER < 0x10100000L
+#if APR_HAS_THREADS && MODSSL_USE_OPENSSL_PRE_1_1_API
 void         ssl_util_thread_setup(apr_pool_t *);
-#endif
 void         ssl_util_thread_id_setup(apr_pool_t *);
 #endif
 int          ssl_init_ssl_connection(conn_rec *c, request_rec *r);
