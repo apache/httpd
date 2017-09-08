@@ -119,13 +119,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1801594 ^/httpd/httpd/trunk .
      +1: jfclere, jim, covener
 
-  *) ssl, ab: Compatibility with LibreSSL. PR 61184 and PR 61206.
-     trunk patch: http://svn.apache.org/r1803392
-                  http://svn.apache.org/r1803396
-                  http://svn.apache.org/r1803398
-     2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-libressl.patch
-     +1: ylavic, jim, covener
-
   *) core: Follow up to r1739201.
            These APR_TIMEUP special cases are now handled by ap_map_http_request_error().
            (r1739201 has been backported in the 2.4 branch in r1768079)
