@@ -119,13 +119,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1801594 ^/httpd/httpd/trunk .
      +1: jfclere, jim, covener
 
-  *) core: Follow up to r1739201.
-           These APR_TIMEUP special cases are now handled by ap_map_http_request_error().
-           (r1739201 has been backported in the 2.4 branch in r1768079)
-     trunk patch: http://svn.apache.org/r1766998
-     2.4.x patch: svn merge -c 1766998 ^/httpd/httpd/trunk .
-     +1: jailletc36, jim, covener
-
   *) buildconf: add an apr-config mode, which allows builds to proceed without
                 APR source code as long as a valid APR installation exists.
                 Involves checking in the latest versions of APR's m4 files and
