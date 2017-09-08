@@ -804,7 +804,7 @@ apr_size_t md_util_base64url_decode(const char **decoded, const char *encoded,
     while (*p && BASE64URL_UINT6[ *p ] != N6) {
         ++p;
     }
-    len = p - e;
+    len = (int)(p - e);
     mlen = (len/4)*4;
     *decoded = apr_pcalloc(pool, (apr_size_t)len + 1);
     

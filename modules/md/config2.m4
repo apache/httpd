@@ -242,19 +242,37 @@ AC_DEFUN([APACHE_CHECK_JANSSON],[
 dnl #  start of module specific part
 APACHE_MODPATH_INIT(md)
 
+dnl #  list of common object files
+md_common_objs="dnl
+md_acme.o dnl
+md_acme_acct.o dnl
+md_acme_authz.o dnl
+md_acme_drive.o dnl
+md_core.o dnl
+md_curl.o dnl
+md_crypt.o dnl
+md_http.o dnl
+md_json.o dnl
+md_jws.o dnl
+md_log.o dnl
+md_reg.o dnl
+md_store.o dnl
+md_store_fs.o dnl
+md_util.o dnl
+"
+
 dnl #  list of module object files
 md_objs="dnl
 mod_md.lo dnl
 mod_md_config.lo dnl
 mod_md_os.lo dnl
-libmd.la dnl
 "
 
 # Ensure that other modules can pick up mod_md.h
 APR_ADDTO(INCLUDES, [-I\$(top_srcdir)/$modpath_current])
 
 dnl # hook module into the Autoconf mechanism (--enable-md)
-APACHE_MODULE(md, [Managed Domain handling], $md_objs, , most, [
+APACHE_MODULE(md, [Managed Domain handling], $md_objs $md_common_objs, , most, [
     APACHE_CHECK_OPENSSL
     if test "x$ac_cv_openssl" = "xno" ; then
         AC_MSG_WARN([libssl (or compatible) not found])
@@ -272,8 +290,6 @@ APACHE_MODULE(md, [Managed Domain handling], $md_objs, , most, [
         AC_MSG_WARN([libcurl not found])
         enable_md=no
     fi
-    
-    APR_ADDTO(A2MD_LDADD, [ "libmd.la" ])
 ])
 
 dnl #  end of module specific part
