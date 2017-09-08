@@ -160,6 +160,21 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://home.apache.org/~jim/patches/httpd-2.4-hcheck-ms.patch
      +1: jim, covener, ylavic
 
+  *) docs: add an auto-generated Overrides class index.
+           (I know this is technically CTR, but the new machinery is a little
+           more complex than just a simple docs change. Make sure to svn-up your
+           docs-build directory.)
+     trunk patch: https://svn.apache.org/r1793922
+                  https://svn.apache.org/r1793923
+     2.4.x patch: svn merge -r1793921:HEAD ^/httpd/httpd/branches/trunk-override-index
+     +1: jchampion, jim, icing
+
+  *) mod_proxy: Name the scheme in the error message when the 
+     mod_proxy_foo submodule is missing.
+     trunk patch: http://svn.apache.org/r1745039 
+     2.4.x patch svn merge -c 1745039 ^/httpd/httpd/trunk .
+     +1: jim, ylavic, icing
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -217,15 +232,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                 mod_journald can't be configured in maintainer mode (-std=c89).
                 Can anyone else reproduce, or is it just my distro?
 
-  *) docs: add an auto-generated Overrides class index.
-           (I know this is technically CTR, but the new machinery is a little
-           more complex than just a simple docs change. Make sure to svn-up your
-           docs-build directory.)
-     trunk patch: https://svn.apache.org/r1793922
-                  https://svn.apache.org/r1793923
-     2.4.x patch: svn merge -r1793921:HEAD ^/httpd/httpd/branches/trunk-override-index
-     +1: jchampion, jim
-
   *) Makefile: Use different variables to track normal modules and MPMs during
                build. Only the enabled MPM is uncommented in the configuration
                if multiple DSOs are built, and LoadModule for MPMs will now come
@@ -234,13 +240,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   https://svn.apache.org/r1730079
                   https://svn.apache.org/r1801665
      2.4.x patch: svn merge -c1729235 -c1730079 -c1801665 ^/httpd/httpd/trunk .
-     +1: jchampion
-
-  *) mod_proxy: Name the scheme in the error message when the 
-     mod_proxy_foo submodule is missing.
-     trunk patch: http://svn.apache.org/r1745039 
-     2.4.x patch svn merge -c 1745039 ^/httpd/httpd/trunk .
-     +1: jim, ylavic
+     +1: jchampion, icing
 
   *) mod_proxy: Loadfactor can now be a decimal number (eg: 1.25)
      trunk patch: http://svn.apache.org/r1805188
