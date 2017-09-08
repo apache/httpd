@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_ssl: Adding option to set a list of addr:port specs, as used in VirtualHosts
+     to enable SSLEngine for all matching hosts. Updated documentation. [Stefan Eissing]
+  
   *) core: Disallow Methods' registration at runtime (.htaccess), they may be
      used only if registered at init time (httpd.conf).  [Yann Ylavic]
 

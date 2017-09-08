@@ -91,7 +91,7 @@ static const command_rec ssl_config_cmds[] = {
     /*
      * Per-server context configuration directives
      */
-    SSL_CMD_SRV(Engine, TAKE1,
+    SSL_CMD_SRV(Engine, RAW_ARGS,
                 "SSL switch for the protocol engine "
                 "('on', 'off')")
     SSL_CMD_SRV(FIPS, FLAG,
@@ -490,6 +490,75 @@ static SSLConnRec *ssl_init_connection_ctx(conn_rec *c,
     return sslconn;
 }
 
+static int ssl_server_addr_matches(server_addr_rec *sar, apr_sockaddr_t *sa)
+{
+    /* Determine if the list of server_addr_rec's matches the given socket address.
+     * IP Address/port may be wilcard/0 for a match to occur. */
+    while (sar) {
+        if (apr_sockaddr_is_wildcard(sar->host_addr)
+            || apr_sockaddr_equal(sar->host_addr, sa)) {
+            if (sar->host_addr->port == sa->port 
+                || sar->host_addr->port == 0
+                || sa->port == 0) {
+                return 1;
+            }
+        }
+        sar = sar->next;
+    }
+    return 0;
+}
+
+int ssl_server_addr_overlap(server_addr_rec *sar1, server_addr_rec *sar2)
+{
+    if (sar1) {
+        while (sar2) {
+            if (ssl_server_addr_matches(sar1, sar2->host_addr)) {
+                return 1;
+            }
+            sar2 = sar2->next;
+        }
+    }
+    return 0;
+}
+
+static ssl_enabled_t ssl_srv_enabled_on(server_rec *s, apr_sockaddr_t *sa)
+{
+    SSLSrvConfigRec *sc = mySrvConfig(s);
+    if (sc->enabled == SSL_ENABLED_TRUE && sc->enabled_on) {
+        if (!ssl_server_addr_matches(sc->enabled_on, sa)) {
+            return SSL_ENABLED_FALSE;
+        }
+    }
+    return sc->enabled;
+}
+
+static ssl_enabled_t ssl_conn_enabled(conn_rec *c)
+{
+    if (c->master) {
+        return ssl_conn_enabled(c->master);
+    }
+    else {
+        SSLConnRec *sslconn = myConnConfig(c);
+        if (sslconn) {
+            if (sslconn->disabled) {
+                return SSL_ENABLED_FALSE;
+            }
+            if (sslconn->is_proxy) {
+                if (!sslconn->dc->proxy_enabled) {
+                    return SSL_ENABLED_FALSE;
+                }
+            }
+            else {
+                return ssl_srv_enabled_on(sslconn->server, c->local_addr);
+            }
+        }
+        else {
+            return ssl_srv_enabled_on(c->base_server, c->local_addr);
+        }
+    }
+    return SSL_ENABLED_TRUE;
+}
+
 static int ssl_engine_status(conn_rec *c, SSLConnRec *sslconn)
 {
     if (c->master) {
@@ -504,16 +573,12 @@ static int ssl_engine_status(conn_rec *c, SSLConnRec *sslconn)
                 return DECLINED;
             }
         }
-        else {
-            if (mySrvConfig(sslconn->server)->enabled != SSL_ENABLED_TRUE) {
-                return DECLINED;
-            }
-        }
-    }
-    else {
-        if (mySrvConfig(c->base_server)->enabled != SSL_ENABLED_TRUE) {
+        else if (ssl_srv_enabled_on(sslconn->server, c->local_addr) != SSL_ENABLED_TRUE) {
             return DECLINED;
         }
+    }
+    else if (ssl_srv_enabled_on(c->base_server, c->local_addr) != SSL_ENABLED_TRUE) {
+        return DECLINED;
     }
     return OK;
 }
@@ -632,26 +697,29 @@ int ssl_init_ssl_connection(conn_rec *c, request_rec *r)
     return APR_SUCCESS;
 }
 
+/* FIXME: if we ever want to server http: requests over TLS, this 
+ * needs to change. We probably need the scheme in request_rec and
+ * return that iff it is set. */
 static const char *ssl_hook_http_scheme(const request_rec *r)
 {
-    SSLSrvConfigRec *sc = mySrvConfig(r->server);
-
-    if (sc->enabled == SSL_ENABLED_FALSE || sc->enabled == SSL_ENABLED_OPTIONAL) {
-        return NULL;
+    switch (ssl_conn_enabled(r->connection)) {
+        case SSL_ENABLED_FALSE:
+        case SSL_ENABLED_OPTIONAL:
+            return NULL;
+        default:
+            return "https";
     }
-
-    return "https";
 }
 
 static apr_port_t ssl_hook_default_port(const request_rec *r)
 {
-    SSLSrvConfigRec *sc = mySrvConfig(r->server);
-
-    if (sc->enabled == SSL_ENABLED_FALSE || sc->enabled == SSL_ENABLED_OPTIONAL) {
-        return 0;
+    switch (ssl_conn_enabled(r->connection)) {
+        case SSL_ENABLED_FALSE:
+        case SSL_ENABLED_OPTIONAL:
+            return 0;
+        default:
+            return 443;
     }
-
-    return 443;
 }
 
 static int ssl_hook_pre_connection(conn_rec *c, void *csd)
