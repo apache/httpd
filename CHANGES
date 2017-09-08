@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.28
 
+  *) mod_http2: Fix for stalling when more than 32KB are written to a
+     suspended stream.  [Stefan Eissing]
+
   *) build: allow configuration without APR sources.  [Jacob Champion]
 
   *) core: Disallow Methods' registration at runtime (.htaccess), they may be
