@@ -47,7 +47,7 @@ APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(ssl, SSL, int, init_server,
 #define KEYTYPES "RSA or DSA"
 #endif
 
-#if OPENSSL_VERSION_NUMBER < 0x10100000L
+#if MODSSL_USE_OPENSSL_PRE_1_1_API
 /* OpenSSL Pre-1.1.0 compatibility */
 /* Taken from OpenSSL 1.1.0 snapshot 20160410 */
 static int DH_set0_pqg(DH *dh, BIGNUM *p, BIGNUM *q, BIGNUM *g)
@@ -257,7 +257,7 @@ apr_status_t ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
 #endif
     }
 
-#if APR_HAS_THREADS && OPENSSL_VERSION_NUMBER < 0x10100000L
+#if APR_HAS_THREADS && MODSSL_USE_OPENSSL_PRE_1_1_API
     ssl_util_thread_setup(p);
 #endif
 
@@ -380,7 +380,7 @@ apr_status_t ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
     modssl_init_app_data2_idx(); /* for modssl_get_app_data2() at request time */
 
     init_dh_params();
-#if OPENSSL_VERSION_NUMBER >= 0x10100000L
+#if !MODSSL_USE_OPENSSL_PRE_1_1_API
     init_bio_methods();
 #endif
 
@@ -1301,7 +1301,7 @@ static apr_status_t ssl_init_server_certs(server_rec *s,
      * or configure NIST P-256 (required to enable ECDHE for earlier versions)
      * ECDH is always enabled in 1.1.0 unless excluded from SSLCipherList
      */
-#if (OPENSSL_VERSION_NUMBER < 0x10100000L)
+#if MODSSL_USE_OPENSSL_PRE_1_1_API
     else {
 #if defined(SSL_CTX_set_ecdh_auto)
         SSL_CTX_set_ecdh_auto(mctx->ssl_ctx, 1);
@@ -2011,7 +2011,7 @@ apr_status_t ssl_init_ModuleKill(void *data)
 
     }
 
-#if OPENSSL_VERSION_NUMBER >= 0x10100000L
+#if !MODSSL_USE_OPENSSL_PRE_1_1_API
     free_bio_methods();
 #endif
     free_dh_params();

@@ -246,8 +246,8 @@ void ssl_asn1_table_unset(apr_hash_t *table,
     apr_hash_set(table, key, klen, NULL);
 }
 
-#if APR_HAS_THREADS
-#if OPENSSL_VERSION_NUMBER < 0x10100000L
+#if APR_HAS_THREADS && MODSSL_USE_OPENSSL_PRE_1_1_API
+
 /*
  * To ensure thread-safetyness in OpenSSL - work in progress
  */
@@ -467,5 +467,5 @@ void ssl_util_thread_id_setup(apr_pool_t *p)
     apr_pool_cleanup_register(p, NULL, ssl_util_thr_id_cleanup,
                                        apr_pool_cleanup_null);
 }
-#endif /* #if OPENSSL_VERSION_NUMBER < 0x10100000L */
-#endif /* #if APR_HAS_THREADS */
+
+#endif /* #if APR_HAS_THREADS && MODSSL_USE_OPENSSL_PRE_1_1_API */
