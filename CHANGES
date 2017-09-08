@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.28
 
+  *) core: Disallow Methods' registration at runtime (.htaccess), they may be
+     used only if registered at init time (httpd.conf).  [Yann Ylavic]
+
   *) mod_ssl, ab: Fix compatibility with LibreSSL.  PR 61184.
      [Bernard Spil <brnrd freebsd.org>, Michael Schlenker <msc contact.de>,
       Yann Ylavic]
