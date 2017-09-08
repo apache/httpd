@@ -138,6 +138,25 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1766998 ^/httpd/httpd/trunk .
      +1: jailletc36, jim, covener
 
+  *) buildconf: add an apr-config mode, which allows builds to proceed without
+                APR source code as long as a valid APR installation exists.
+                Involves checking in the latest versions of APR's m4 files and
+                the PrintPath helper.
+     trunk patch: https://svn.apache.org/r1780441
+                  https://svn.apache.org/r1780470
+                  https://svn.apache.org/r1795928
+     2.4.x patch: svn merge -r 1780253:HEAD ^/httpd/httpd/branches/trunk-buildconf-noapr
+     +1: jchampion, jim, ylavic
+
+  *) proxy: Ensure updatelbstatus() is NULL if not-implemented
+     trunk patch: http://svn.apache.org/r1802845
+     2.4.x patch: trunk patch works
+     +1: jim, covener, ylavic
+
+  *) mod_http2: fix for stalling when more than 32KB are written to a suspended stream
+     2.4.x patch: svn merge -c 1803420,1803454,1804090 ^/httpd/httpd/trunk .
+     +1: icing, steffenal, ylavic
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -156,6 +175,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: ylavic, mrumph
      mrumph: Since this has been sitting for awhile, there are several places
              where this patch needs to be adjusted against recent changes to 2.4.x.
+     ylavic: With current 2.4.x (r1807662), there seems to be only a conflict with
+             MMN, which can probably be taken by the backporter. I don't see the
+             other places where it needs adjustments, Mike?
 
   *) mod_remoteip: Add PROXY protocol support
      trunk patch: http://svn.apache.org/r1776575
@@ -192,16 +214,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                 mod_journald can't be configured in maintainer mode (-std=c89).
                 Can anyone else reproduce, or is it just my distro?
 
-  *) buildconf: add an apr-config mode, which allows builds to proceed without
-                APR source code as long as a valid APR installation exists.
-                Involves checking in the latest versions of APR's m4 files and
-                the PrintPath helper.
-     trunk patch: https://svn.apache.org/r1780441
-                  https://svn.apache.org/r1780470
-                  https://svn.apache.org/r1795928
-     2.4.x patch: svn merge -r 1780253:HEAD ^/httpd/httpd/branches/trunk-buildconf-noapr
-     +1: jchampion, jim
-
   *) docs: add an auto-generated Overrides class index.
            (I know this is technically CTR, but the new machinery is a little
            more complex than just a simple docs change. Make sure to svn-up your
@@ -221,20 +233,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c1729235 -c1730079 -c1801665 ^/httpd/httpd/trunk .
      +1: jchampion
 
-  *) proxy: Ensure updatelbstatus() is NULL if not-implemented
-     trunk patch: http://svn.apache.org/r1802845
-     2.4.x patch: trunk patch works
-     +1: jim, covener
-
   *) mod_proxy: Name the scheme in the error message when the 
      mod_proxy_foo submodule is missing.
      trunk patch: http://svn.apache.org/r1745039 
      2.4.x patch svn merge -c 1745039 ^/httpd/httpd/trunk .
-     +1: jim
-
-  *) mod_http2: fix for stalling when more than 32KB are written to a suspended stream
-     2.4.x patch: svn merge -c 1803420,1803454,1804090 ^/httpd/httpd/trunk .
-     +1: icing, steffenal
+     +1: jim, ylavic
 
   *) mod_watchdog/mod_proxy_hcheck: Now accept ms interval settings
      trunk patch: http://svn.apache.org/r1799435
@@ -242,13 +245,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1805206 (partial)
                   http://svn.apache.org/r1805322
      2.4.x patch: http://home.apache.org/~jim/patches/httpd-2.4-hcheck-ms.patch
-     +1: jim, covener
+     +1: jim, covener, ylavic
 
   *) mod_proxy: Loadfactor can now be a decimal number (eg: 1.25)
      trunk patch: http://svn.apache.org/r1805188
                   http://svn.apache.org/r1805206 (partial)
      2.4.x patch: http://home.apache.org/~jim/patches/httpd-2.4-loadfactor.patch
      +1: jim
+     ylavic: Missing r1805190? Also, I'd use double/%lf instead of float/%f for
+             floating point arithmetic...
 
   *) core: Disallow Methods' registration at runtime (.htaccess), they may be
      used only if registered at init time (httpd.conf).
