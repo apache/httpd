@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.28
 
+  *) core/log: Support use of optional "tag" in syslog entries.
+     PR 60525. [Ben Rubson <ben.rubson gmail.com>, Jim Jagielski]
+
   *) mod_proxy: Fix ProxyAddHeaders merging.  [Joe Orton]
  
   *) core: Disallow multiple Listen on the same IP:port when listener buckets
