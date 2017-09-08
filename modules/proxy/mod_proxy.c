@@ -1268,10 +1268,11 @@ static int proxy_handler(request_rec *r)
 
     if (DECLINED == access_status) {
         ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01144)
-                      "No protocol handler was valid for the URL %s. "
+                      "No protocol handler was valid for the URL %s " 
+                      "(scheme '%s'). "
                       "If you are using a DSO version of mod_proxy, make sure "
                       "the proxy submodules are included in the configuration "
-                      "using LoadModule.", r->uri);
+                      "using LoadModule.", r->uri, scheme);
         access_status = HTTP_INTERNAL_SERVER_ERROR;
         goto cleanup;
     }
