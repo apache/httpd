@@ -28,7 +28,9 @@ module AP_MODULE_DECLARE_DATA proxy_hcheck_module;
 
 /* Why? So we can easily set/clear HC_USE_THREADS during dev testing */
 #if APR_HAS_THREADS
+#ifndef HC_USE_THREADS
 #define HC_USE_THREADS 1
+#endif
 #else
 #define HC_USE_THREADS 0
 typedef void apr_thread_pool_t;
@@ -113,7 +115,7 @@ static const char *set_worker_hc_param(apr_pool_t *p,
         hc_template_t *template;
         template = (hc_template_t *)ctx->templates->elts;
         for (ival = 0; ival < ctx->templates->nelts; ival++, template++) {
-            if (!strcasecmp(template->name, val)) {
+            if (!ap_cstr_casecmp(template->name, val)) {
                 if (worker) {
                     worker->s->method = template->method;
                     worker->s->interval = template->interval;
@@ -137,7 +139,7 @@ static const char *set_worker_hc_param(apr_pool_t *p,
     else if (!strcasecmp(key, "hcmethod")) {
         proxy_hcmethods_t *method = proxy_hcmethods;
         for (; method->name; method++) {
-            if (!strcasecmp(val, method->name)) {
+            if (!ap_cstr_casecmp(val, method->name)) {
                 if (!method->implemented) {
                     return apr_psprintf(p, "Health check method %s not (yet) implemented",
                                         val);
@@ -153,14 +155,18 @@ static const char *set_worker_hc_param(apr_pool_t *p,
         return "Unknown method";
     }
     else if (!strcasecmp(key, "hcinterval")) {
-        ival = atoi(val);
-        if (ival < HCHECK_WATHCHDOG_INTERVAL)
-            return apr_psprintf(p, "Interval must be a positive value greater than %d seconds",
-                                HCHECK_WATHCHDOG_INTERVAL);
+        apr_interval_time_t hci;
+        apr_status_t rv;
+        rv = ap_timeout_parameter_parse(val, &hci, "s");
+        if (rv != APR_SUCCESS)
+            return "Unparse-able hcinterval setting";
+        if (hci < AP_WD_TM_SLICE)
+            return apr_psprintf(p, "Interval must be a positive value greater than %"
+                                APR_TIME_T_FMT "ms", apr_time_as_msec(AP_WD_TM_SLICE));
         if (worker) {
-            worker->s->interval = apr_time_from_sec(ival);
+            worker->s->interval = hci;
         } else {
-            temp->interval = apr_time_from_sec(ival);
+            temp->interval = hci;
         }
     }
     else if (!strcasecmp(key, "hcpasses")) {
@@ -555,10 +561,10 @@ static apr_status_t backend_cleanup(const char *proxy_function, proxy_conn_rec *
         backend->close = 1;
         ap_proxy_release_connection(proxy_function, backend, s);
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(03251)
-                     "Health check %s Status (%d) for %s.",
-                     ap_proxy_show_hcmethod(backend->worker->s->method),
-                     status,
-                     backend->worker->s->name);
+                         "Health check %s Status (%d) for %s.",
+                         ap_proxy_show_hcmethod(backend->worker->s->method),
+                         status,
+                         backend->worker->s->name);
     }
     if (status != OK) {
         return APR_EGENERAL;
@@ -1020,7 +1026,7 @@ static int hc_post_config(apr_pool_t *p, apr_pool_t *plog,
             continue;
         }
         rv = hc_watchdog_register_callback(watchdog,
-                apr_time_from_sec(HCHECK_WATHCHDOG_INTERVAL),
+                AP_WD_TM_SLICE,
                 ctx,
                 hc_watchdog_callback);
         if (rv) {
@@ -1137,7 +1143,7 @@ static const char *hc_expr_var_fn(ap_expr_eval_ctx_t *ctx, const void *data)
 {
     char *var = (char *)data;
 
-    if (var && *var && ctx->r && strcasecmp(var, "BODY") == 0) {
+    if (var && *var && ctx->r && ap_cstr_casecmp(var, "BODY") == 0) {
         return hc_get_body(ctx->r);
     }
     return NULL;
@@ -1148,7 +1154,7 @@ static const char *hc_expr_func_fn(ap_expr_eval_ctx_t *ctx, const void *data,
 {
     char *var = (char *)arg;
 
-    if (var && *var && ctx->r && strcasecmp(var, "BODY") == 0) {
+    if (var && *var && ctx->r && ap_cstr_casecmp(var, "BODY") == 0) {
         return hc_get_body(ctx->r);
     }
     return NULL;
