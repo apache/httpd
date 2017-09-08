@@ -157,6 +157,14 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1803420,1803454,1804090 ^/httpd/httpd/trunk .
      +1: icing, steffenal, ylavic
 
+  *) mod_watchdog/mod_proxy_hcheck: Now accept ms interval settings
+     trunk patch: http://svn.apache.org/r1799435
+                  http://svn.apache.org/r1799437
+                  http://svn.apache.org/r1805206 (partial)
+                  http://svn.apache.org/r1805322
+     2.4.x patch: http://home.apache.org/~jim/patches/httpd-2.4-hcheck-ms.patch
+     +1: jim, covener, ylavic
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -238,14 +246,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1745039 
      2.4.x patch svn merge -c 1745039 ^/httpd/httpd/trunk .
      +1: jim, ylavic
-
-  *) mod_watchdog/mod_proxy_hcheck: Now accept ms interval settings
-     trunk patch: http://svn.apache.org/r1799435
-                  http://svn.apache.org/r1799437
-                  http://svn.apache.org/r1805206 (partial)
-                  http://svn.apache.org/r1805322
-     2.4.x patch: http://home.apache.org/~jim/patches/httpd-2.4-hcheck-ms.patch
-     +1: jim, covener, ylavic
 
   *) mod_proxy: Loadfactor can now be a decimal number (eg: 1.25)
      trunk patch: http://svn.apache.org/r1805188
