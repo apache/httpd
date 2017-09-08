@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.28
 
+  *) build: allow configuration without APR sources.  [Jacob Champion]
+
   *) core: Disallow Methods' registration at runtime (.htaccess), they may be
      used only if registered at init time (httpd.conf).  [Yann Ylavic]
 
