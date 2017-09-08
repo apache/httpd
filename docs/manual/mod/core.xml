@@ -345,10 +345,12 @@ NoDecode option available in 2.3.12 and later.</compatibility>
     <code>.htaccess</code> files.</p>
 
     <p>The <var>directive-type</var> can be one of the following
-    groupings of directives.</p>
+    groupings of directives. (See the <a href="overrides.html">override class
+    index</a> for an up-to-date listing of which directives are enabled by each
+    <var>directive-type</var>.)</p>
 
     <dl>
-      <dt>AuthConfig</dt>
+      <dt><a href="overrides.html#override-authconfig">AuthConfig</a></dt>
 
       <dd>
 
@@ -361,7 +363,7 @@ NoDecode option available in 2.3.12 and later.</compatibility>
       module="mod_authn_file">AuthUserFile</directive>, <directive
       module="mod_authz_core">Require</directive>, <em>etc.</em>).</dd>
 
-      <dt>FileInfo</dt>
+      <dt><a href="overrides.html#override-fileinfo">FileInfo</a></dt>
 
       <dd>
       Allow use of the directives controlling document types
@@ -398,7 +400,7 @@ NoDecode option available in 2.3.12 and later.</compatibility>
       <module>mod_actions</module>.
       </dd>
 
-      <dt>Indexes</dt>
+      <dt><a href="overrides.html#override-indexes">Indexes</a></dt>
 
       <dd>
       Allow use of the directives controlling directory indexing
@@ -416,7 +418,7 @@ NoDecode option available in 2.3.12 and later.</compatibility>
       module="mod_autoindex">ReadmeName</directive>,
       <em>etc.</em>).</dd>
 
-      <dt>Limit</dt>
+      <dt><a href="overrides.html#override-limit">Limit</a></dt>
 
       <dd>
       Allow use of the directives controlling host access (<directive
@@ -448,7 +450,7 @@ NoDecode option available in 2.3.12 and later.</compatibility>
       </note>
       </dd>
 
-      <dt>Options[=<var>Option</var>,...]</dt>
+      <dt><a href="overrides.html#override-options">Options</a>[=<var>Option</var>,...]</dt>
 
       <dd>
       Allow use of the directives controlling specific directory
@@ -495,6 +497,7 @@ AllowOverride AuthConfig Indexes
 <seealso><directive module="core">AllowOverrideList</directive></seealso>
 <seealso><a href="../configuring.html">Configuration Files</a></seealso>
 <seealso><a href="../howto/htaccess.html">.htaccess Files</a></seealso>
+<seealso><a href="overrides.html">Override Class Index for .htaccess</a></seealso>
 </directivesynopsis>
 
 <directivesynopsis>

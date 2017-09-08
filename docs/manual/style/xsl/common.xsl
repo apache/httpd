@@ -64,6 +64,7 @@
 <xsl:include href="indexpage.xsl" />
 <xsl:include href="quickreference.xsl" />
 <xsl:include href="faq.xsl" />
+<xsl:include href="overrideindex.xsl" />
 
 <!-- load utility snippets -->
 <xsl:include href="util/modtrans.xsl" />

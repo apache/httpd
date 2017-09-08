@@ -191,6 +191,7 @@ log_server_status</page>
 <page href="mod/">Module index</page>
 <page href="mod/directives.html">Directive index</page>
 <page href="mod/quickreference.html">Directive Quick-Reference</page>
+<page href="mod/overrides.html">Override class index for .htaccess</page>
 </category>
 
 </sitemap>
