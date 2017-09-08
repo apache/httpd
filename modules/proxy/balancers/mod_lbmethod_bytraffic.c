@@ -146,7 +146,8 @@ static const proxy_balancer_method bytraffic =
     &find_best_bytraffic,
     NULL,
     &reset,
-    &age
+    &age,
+    NULL
 };
 
 static void register_hook(apr_pool_t *p)
