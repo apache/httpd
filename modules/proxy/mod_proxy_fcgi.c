@@ -667,6 +667,7 @@ static apr_status_t dispatch(proxy_conn_rec *conn, proxy_dir_conf *conf,
             apr_bucket *b;
             unsigned char plen;
             unsigned char type, version;
+            int mayflush = 0;
 
             /* First, we grab the header... */
             rv = get_data_full(conn, (char *) farray, AP_FCGI_HEADER_LEN);
@@ -795,6 +796,7 @@ recv_again:
                                     *err = "passing brigade to output filters";
                                     break;
                                 }
+                                mayflush = 1;
                             }
                             apr_brigade_cleanup(ob);
 
@@ -821,6 +823,7 @@ recv_again:
                                 *err = "passing brigade to output filters";
                                 break;
                             }
+                            mayflush = 1;
                         }
                         apr_brigade_cleanup(ob);
                     }
@@ -886,10 +889,11 @@ recv_again:
                 }
             }
 
-            if ((conn->worker->s->flush_packets == flush_on) ||
-                ((conn->worker->s->flush_packets == flush_auto) && 
-                 (apr_poll(flushpoll, 1, &flushpoll_fd,
-                           conn->worker->s->flush_wait) == APR_TIMEUP))) {
+            if (((conn->worker->s->flush_packets == flush_on) ||
+                 ((conn->worker->s->flush_packets == flush_auto) && 
+                  (apr_poll(flushpoll, 1, &flushpoll_fd,
+                            conn->worker->s->flush_wait) == APR_TIMEUP))) && mayflush) {
+                mayflush = 0;
                 apr_bucket* flush_b = apr_bucket_flush_create(r->connection->bucket_alloc);
                 APR_BRIGADE_INSERT_TAIL(ob, flush_b);
                 rv = ap_pass_brigade(r->output_filters, ob);
