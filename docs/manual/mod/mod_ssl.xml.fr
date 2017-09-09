@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1805373:1807869 (outdated) -->
+<!-- English Revision: 1807869 -->
 <!-- French translation : Lucien GENTIS -->
 
 <!--
@@ -664,19 +664,20 @@ SSLSessionCacheTimeout 600
 <directivesynopsis>
 <name>SSLEngine</name>
 <description>Interrupteur marche/arrêt du moteur SSL</description>
-<syntax>SSLEngine on|off|optional</syntax>
+<syntax>SSLEngine on|off|optional|addr[:port] [addr[:port]] ...</syntax>
 <default>SSLEngine off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
+<compatibility>Le paramètre <code>addr:port</code> est disponible à partir de la
+version 2.4.28 du serveur HTTPApache.</compatibility>
 
 <usage>
-<p>
-Cette directive permet d'activer/désactiver le moteur du protocole
-SSL/TLS. Elle doit être utilisée dans une section <directive
-module="core" type="section">VirtualHost</directive> pour activer
-SSL/TLS pour ce serveur virtuel particulier. Par défaut, le moteur du
-protocole SSL/TLS est désactivé pour le serveur principal et tous les
-serveurs virtuels configurés.</p>
+<p> Cette directive permet d'activer/désactiver le moteur du protocole SSL/TLS.
+Les valeurs 'on', 'off' et 'optional' doivent être utilisées dans une section
+<directive module="core" type="section">VirtualHost</directive> pour activer
+SSL/TLS pour ce serveur virtuel particulier. Par défaut, le moteur du protocole
+SSL/TLS est désactivé pour le serveur principal et tous les serveurs virtuels
+configurés.</p>
 <example><title>Exemple</title>
 <highlight language="config">
 &lt;VirtualHost _default_:443&gt;
@@ -685,12 +686,23 @@ SSLEngine on
 &lt;/VirtualHost&gt;
 </highlight>
 </example>
-<p>Depuis la version 2.1 d'Apache, la directive
-<directive>SSLEngine</directive> peut être définie à
-<code>optional</code>, ce qui active le support de <a
-href="http://www.ietf.org/rfc/rfc2817.txt">RFC 2817</a>, Upgrading to
-TLS Within HTTP/1.1. Pour le moment, aucun navigateur web ne supporte
-RFC 2817.</p>
+<p>Le paramètre <code>addr:port</code> doit être défini au niveau de la
+configuration générale afin d'activer le moteur du protocole SSL/TLS pour
+<em>tous</em> les <directive module="core"
+type="section">VirtualHost</directive>s qui correspondent à une des adresses de
+la liste.</p>
+<example><title>Exemple</title>
+<highlight language="config">
+SSLEngine *:443
+&lt;VirtualHost *:443&gt;
+#...
+&lt;/VirtualHost&gt;
+</highlight>
+</example>
+<p><directive>SSLEngine</directive> peut être définie à <code>optional</code>,
+ce qui active le support de <a href="http://www.ietf.org/rfc/rfc2817.txt">RFC
+2817</a>.
+</p>
 </usage>
 </directivesynopsis>
 
