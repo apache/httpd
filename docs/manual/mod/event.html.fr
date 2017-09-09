@@ -178,6 +178,19 @@ propose le MPM <code class="module"><a href="../mod/worker.html">worker</a></cod
 
         <p>Ces améliorations sont disponible pour les connexions HTTP ou HTTPS.</p> 
 
+	<p>Les états de connexions ci-dessus sont gérés par le thread d'écoute
+	via des files d'attente dédiées qui, jusqu'à la version 2.4.27, étaient
+	lues toutes les 100ms pour déterminer quelles connexions avaient atteint
+	des limites de durées définies comme <code class="directive"><a href="../mod/mpm_common.html#timeout">Timeout</a></code> et <code class="directive"><a href="../mod/core.html#keepalivetimeout">KeepAliveTimeout</a></code>. C'était une solution simple
+	et efficace mais qui présentait un inconvénient : ces lectures
+	régulières forçaient le thread d'écoute à se réveiller, souvent sans
+	nécessité (alors qu'il était totalement inactif), ce qui consommait des
+	ressources pour rien. A partir de la version 2.4.28, ces files d'attente
+	sont entièrement gérées selon une logique basées sur les évènements, et
+	ne font donc plus l'objet d'une lecture systématique. Les environnements
+	aux ressources limitées, comme les serveurs embarqués, seront les plus
+	grands bénéficiaires de cette amélioration.</p>
+
     
 
     <h3><a name="graceful-close" id="graceful-close">Arrêt de processus en douceur et
