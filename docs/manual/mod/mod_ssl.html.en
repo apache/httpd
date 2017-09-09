@@ -950,15 +950,16 @@ SSLCryptoDevice ubsec</pre>
 <div class="directive-section"><h2><a name="SSLEngine" id="SSLEngine">SSLEngine</a> <a name="sslengine" id="sslengine">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>SSL Engine Operation Switch</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLEngine on|off|optional</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLEngine on|off|optional|addr[:port] [addr[:port]] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLEngine off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>The <code>addr:port</code> parameter is available in Apache 2.4.28 and later.</td></tr>
 </table>
 <p>
-This directive toggles the usage of the SSL/TLS Protocol Engine. This
-is should be used inside a <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> section to enable SSL/TLS for a
+This directive toggles the usage of the SSL/TLS Protocol Engine. Values 'on',
+'off' and 'optional' should be used inside a <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> section to enable SSL/TLS for a
 that virtual host. By default the SSL/TLS Protocol Engine is
 disabled for both the main server and all configured virtual hosts.</p>
 <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">&lt;VirtualHost _default_:443&gt;
@@ -966,10 +967,19 @@ SSLEngine on
 #...
 &lt;/VirtualHost&gt;</pre>
 </div>
-<p>In Apache 2.1 and later, <code class="directive">SSLEngine</code> can be set to
-<code>optional</code>. This enables support for
-<a href="http://www.ietf.org/rfc/rfc2817.txt">RFC 2817</a>, Upgrading to TLS
-Within HTTP/1.1. At this time no web browsers support RFC 2817.</p>
+<p>The <code>addr:port</code> values should be used in the 
+global server to enable the SSL/TLS Protocol Engine for <em>all</em> 
+<code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>s 
+that match one of the addresses in the list.</p>
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLEngine *:443
+&lt;VirtualHost *:443&gt;
+#...
+&lt;/VirtualHost&gt;</pre>
+</div>
+<p><code class="directive">SSLEngine</code> can be set to <code>optional</code>: 
+this enables support for
+<a href="http://www.ietf.org/rfc/rfc2817.txt">RFC 2817</a>.
+</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
