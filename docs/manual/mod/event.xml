@@ -105,7 +105,7 @@ of the <directive>AsyncRequestWorkerFactor</directive>.</p>
         <p>The above connection states are managed by the listener thread via dedicated queues, that up to 2.4.27 were checked every 100ms
         to find which connections hit timeout settings like <directive module="mpm_common">Timeout</directive> and
         <directive module="core">KeepAliveTimeout</directive>. This was a simple and efficient solution, but it presented a downside: the pollset was
-        forcing a wake-up of the listener thread even if there was no need (for example because completely idle), wasting resources. From 2.4.27
+        forcing a wake-up of the listener thread even if there was no need (for example because completely idle), wasting resources. From 2.4.28
         these queues are completely managed via an event based logic, not relying anymore on active polling.
         Resource constrained environments, like embedded servers, may benefit from this improvement.</p>
 
