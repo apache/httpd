@@ -554,6 +554,7 @@ SSLSessionCacheTimeout 600
 <default>SSLEngine off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
+<compatibility>The <code>addr:port</code> parameter is available in Apache 2.4.28 and later.</compatibility>
 
 <usage>
 <p>
@@ -570,7 +571,7 @@ SSLEngine on
 &lt;/VirtualHost&gt;
 </highlight>
 </example>
-<p>In Apache 2.4 and later, addr:port values should be used in the 
+<p>The <code>addr:port</code> values should be used in the 
 global server to enable the SSL/TLS Protocol Engine for <em>all</em> 
 <directive module="core" type="section">VirtualHost</directive>s 
 that match one of the addresses in the list.</p>
@@ -582,10 +583,10 @@ SSLEngine *:443
 &lt;/VirtualHost&gt;
 </highlight>
 </example>
-<p>In Apache 2.1 and later, <directive>SSLEngine</directive> can be set to
-<code>optional</code>. This enables support for
-<a href="http://www.ietf.org/rfc/rfc2817.txt">RFC 2817</a>, Upgrading to TLS
-Within HTTP/1.1. At this time no web browsers support RFC 2817.</p>
+<p><directive>SSLEngine</directive> can be set to <code>optional</code>: 
+this enables support for
+<a href="http://www.ietf.org/rfc/rfc2817.txt">RFC 2817</a>.
+</p>
 </usage>
 </directivesynopsis>
 
