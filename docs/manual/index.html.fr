@@ -56,6 +56,8 @@
 <li><a href="filter.html">Filtres</a></li>
 <li><a href="handler.html">Gestionnaires</a></li>
 <li><a href="expr.html">Interpréteur d'expressions</a></li>
+<li><a href="mod/overrides.html">Index des directives disponibles dans les
+    fichiers .htaccess</a></li>
 <li><a href="programs/">Le serveur et ses utilitaires</a></li>
 <li><a href="glossary.html">Glossaire</a></li>
 </ul>

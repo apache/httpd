@@ -354,6 +354,8 @@ threads dans la version 2.x</a></li>
 <li><a href="mod/">Index des modules</a></li>
 <li><a href="mod/directives.html">Index des directives</a></li>
 <li><a href="mod/quickreference.html">Référence rapide des directives</a></li>
+<li><a href="mod/overrides.html">Index des directives disponibles dans les
+fichiers .htaccess</a></li>
 </ul>
 </div></div>
 <div class="bottomlang">

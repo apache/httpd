@@ -465,10 +465,12 @@ All pour les versions antérieures</code></td></tr>
     autorisée dans les fichiers <code>.htaccess</code>.</p>
 
     <p>L'argument <var>type directive</var> peut contenir les
-    groupements de directives suivants :</p>
+    groupements de directives suivants (voir <a href="overrides.html">ce
+    document</a> pour obtenir la liste à jour des directives activées pour
+    chaque type de directive) :</p>
 
     <dl>
-      <dt>AuthConfig</dt>
+      <dt><a href="overrides.html#override-authconfig">AuthConfig</a></dt>
 
       <dd>
 
@@ -478,7 +480,7 @@ All pour les versions antérieures</code></td></tr>
       <code class="directive"><a href="../mod/mod_authn_core.html#authname">AuthName</a></code>,
       <code class="directive"><a href="../mod/mod_authn_core.html#authtype">AuthType</a></code>, <code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code>, <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>, <em>etc...</em>).</dd>
 
-      <dt>FileInfo</dt>
+      <dt><a href="overrides.html#override-fileinfo">FileInfo</a></dt>
 
       <dd>
       Permet l'utilisation des directives qui contrôlent les types de
@@ -492,7 +494,7 @@ All pour les versions antérieures</code></td></tr>
       <code class="module"><a href="../mod/mod_actions.html">mod_actions</a></code>.
       </dd>
 
-      <dt>Indexes</dt>
+      <dt><a href="overrides.html#override-indexes">Indexes</a></dt>
 
       <dd>
       Permet l'utilisation des directives qui contrôlent l'indexation
@@ -503,7 +505,7 @@ All pour les versions antérieures</code></td></tr>
       <code class="directive"><a href="../mod/mod_autoindex.html#headername">HeaderName</a></code>, <code class="directive"><a href="../mod/mod_autoindex.html#indexignore">IndexIgnore</a></code>, <code class="directive"><a href="../mod/mod_autoindex.html#indexoptions">IndexOptions</a></code>, <code class="directive"><a href="../mod/mod_autoindex.html#readmename">ReadmeName</a></code>,
       <em>etc...</em>).</dd>
 
-      <dt>Limit</dt>
+      <dt><a href="overrides.html#override-limit">Limit</a></dt>
 
       <dd>
       Permet l'utilisation des directives contrôlant l'accès au serveur
@@ -537,7 +539,7 @@ All pour les versions antérieures</code></td></tr>
       </div>
       </dd>
 
-      <dt>Options[=<var>Option</var>,...]</dt>
+      <dt><a href="overrides.html#override-options">Options</a>[=<var>Option</var>,...]</dt>
 
       <dd>
       Permet l'utilisation des directives contrôlant les fonctionnalités
@@ -588,6 +590,7 @@ All pour les versions antérieures</code></td></tr>
 <li><code class="directive"><a href="#allowoverridelist">AllowOverrideList</a></code></li>
 <li><a href="../configuring.html">Fichiers de configuration</a></li>
 <li><a href="../howto/htaccess.html">Fichiers .htaccess</a></li>
+<li><a href="overrides.html">Override Class Index for .htaccess</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1520,7 +1523,7 @@ personnalisation des réponses</a></li>
 <div class="directive-section"><h2><a name="errorlog" id="errorlog">Directive</a> <a name="ErrorLog" id="ErrorLog">ErrorLog</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définition du chemin du journal des erreurs</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code> ErrorLog <var>chemin fichier</var>|syslog[:<var>facility</var>]</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code> ErrorLog <var>file-path</var>|syslog[:[<var>facility</var>][:<var>tag</var>]]</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ErrorLog logs/error_log (Unix) ErrorLog logs/error.log (Windows and OS/2)</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
@@ -1528,14 +1531,14 @@ personnalisation des réponses</a></li>
 </table>
     <p>La directive <code class="directive">ErrorLog</code> permet de définir le
     nom du fichier dans lequel le serveur va journaliser toutes les
-    erreurs qu'il rencontre. Si le <var>chemin fichier</var> n'est pas
+    erreurs qu'il rencontre. Si le <var>file-path</var> n'est pas
     absolu, il est considéré comme relatif au chemin défini par la
     directive <code class="directive"><a href="#serverroot">ServerRoot</a></code>.</p>
 
     <pre class="prettyprint lang-config">ErrorLog "/var/log/httpd/error_log"</pre>
 
 
-    <p>Si le <var>chemin fichier</var> commence par une barre verticale
+    <p>Si le <var>file-path</var> commence par une barre verticale
     "<code>(|)</code>", il est considéré comme une commande à lancer pour traiter la
     journalisation de l'erreur.</p>
 
@@ -1553,9 +1556,14 @@ personnalisation des réponses</a></li>
     être remplacé par un des noms habituellement documentés dans la page
     de man syslog(1). Le dispositif syslog <code>local7</code> est
     global, et si il est modifié dans un serveur virtuel, le dispositif
-    final spécifié affecte l'ensemble du serveur</p>
+    final spécifié affecte l'ensemble du serveur. La même règle s'applique au
+    tag syslog qui utilise par défaut le nom du binaire du serveur HTTP Apache
+    <code>httpd</code> dans la plupart des cas. Vous pouvez aussi modifier cette
+    valeur en utilisant la syntaxe <code>syslog::<var>tag</var></code>.</p>
 
-    <pre class="prettyprint lang-config">ErrorLog syslog:user</pre>
+    <pre class="prettyprint lang-config">ErrorLog syslog:user
+ErrorLog syslog:user:httpd.srv1
+ErrorLog syslog::httpd.srv2</pre>
 
 
     <p>Des modules supplémentaires peuvent fournir leurs propres
