@@ -1106,28 +1106,38 @@ SSLCryptoDevice ubsec</pre>
 <div class="directive-section"><h2><a name="sslengine" id="sslengine">Directive</a> <a name="SSLEngine" id="SSLEngine">SSLEngine</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Interrupteur marche/arrêt du moteur SSL</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLEngine on|off|optional</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLEngine on|off|optional|addr[:port] [addr[:port]] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLEngine off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le paramètre <code>addr:port</code> est disponible à partir de la
+version 2.4.28 du serveur HTTPApache.</td></tr>
 </table>
-<p>
-Cette directive permet d'activer/désactiver le moteur du protocole
-SSL/TLS. Elle doit être utilisée dans une section <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> pour activer
-SSL/TLS pour ce serveur virtuel particulier. Par défaut, le moteur du
-protocole SSL/TLS est désactivé pour le serveur principal et tous les
-serveurs virtuels configurés.</p>
+<p> Cette directive permet d'activer/désactiver le moteur du protocole SSL/TLS.
+Les valeurs 'on', 'off' et 'optional' doivent être utilisées dans une section
+<code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> pour activer
+SSL/TLS pour ce serveur virtuel particulier. Par défaut, le moteur du protocole
+SSL/TLS est désactivé pour le serveur principal et tous les serveurs virtuels
+configurés.</p>
 <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">&lt;VirtualHost _default_:443&gt;
 SSLEngine on
 #...
 &lt;/VirtualHost&gt;</pre>
 </div>
-<p>Depuis la version 2.1 d'Apache, la directive
-<code class="directive">SSLEngine</code> peut être définie à
-<code>optional</code>, ce qui active le support de <a href="http://www.ietf.org/rfc/rfc2817.txt">RFC 2817</a>, Upgrading to
-TLS Within HTTP/1.1. Pour le moment, aucun navigateur web ne supporte
-RFC 2817.</p>
+<p>Le paramètre <code>addr:port</code> doit être défini au niveau de la
+configuration générale afin d'activer le moteur du protocole SSL/TLS pour
+<em>tous</em> les <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>s qui correspondent à une des adresses de
+la liste.</p>
+<div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">SSLEngine *:443
+&lt;VirtualHost *:443&gt;
+#...
+&lt;/VirtualHost&gt;</pre>
+</div>
+<p><code class="directive">SSLEngine</code> peut être définie à <code>optional</code>,
+ce qui active le support de <a href="http://www.ietf.org/rfc/rfc2817.txt">RFC
+2817</a>.
+</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

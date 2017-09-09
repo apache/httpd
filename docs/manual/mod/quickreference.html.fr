@@ -1335,7 +1335,7 @@ au cours de l'initialisation de la connexion SSL</td></tr>
 <tr><td><a href="mod_ssl.html#sslcompression">SSLCompression on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Permet d'activer la compression au niveau SSL</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslcryptodevice">SSLCryptoDevice <em>moteur</em></a></td><td> builtin </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active l'utilisation d'un accélérateur matériel de
 chiffrement</td></tr>
-<tr><td><a href="mod_ssl.html#sslengine">SSLEngine on|off|optional</a></td><td> off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Interrupteur marche/arrêt du moteur SSL</td></tr>
+<tr><td><a href="mod_ssl.html#sslengine">SSLEngine on|off|optional|addr[:port] [addr[:port]] ...</a></td><td> off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Interrupteur marche/arrêt du moteur SSL</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslfips">SSLFIPS on|off</a></td><td> off </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Coimmutateur du mode SSL FIPS</td></tr>
 <tr><td><a href="mod_ssl.html#sslhonorcipherorder">SSLHonorCipherOrder on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Option permettant de classer les algorithmes de chiffrement
 du serveur par ordre de préférence</td></tr>
