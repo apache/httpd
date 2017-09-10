@@ -58,8 +58,9 @@
 <dt><a href="core.html">core</a></dt><dd>Funcionalides básicas del Servidor HTTP Apache que siempre están presentes.</dd>
 <dt><a href="mpm_common.html">mpm_common</a></dt><dd class="separate">A collection of directives that are implemented by
 more than one multi-processing module (MPM)</dd>
-<dt><a href="event.html">event</a></dt><dd>A variant of the <code class="module"><a href="../mod/worker.html">worker</a></code> MPM with the goal
-of consuming threads only for connections with active processing</dd>
+<dt><a href="event.html">event</a></dt><dd>Una variante del MPM <code class="module"><a href="../mod/worker.html">worker</a></code> con el 
+objetivo de consumir hilos sólo para conexiones con procesamiento 
+activo</dd>
 <dt><a href="mpm_netware.html">mpm_netware</a></dt><dd>Multi-Processing Module implementing an exclusively threaded web
     server optimized for Novell NetWare</dd>
 <dt><a href="mpmt_os2.html">mpmt_os2</a></dt><dd>Hybrid multi-process, multi-threaded MPM for OS/2</dd>

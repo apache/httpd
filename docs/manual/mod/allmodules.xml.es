@@ -133,7 +133,7 @@
   <modulefile>mod_watchdog.xml</modulefile>
   <modulefile>mod_xml2enc.xml</modulefile>
   <modulefile>mpm_common.xml</modulefile>
-  <modulefile>event.xml</modulefile>
+  <modulefile>event.xml.es</modulefile>
   <modulefile>mpm_netware.xml</modulefile>
   <modulefile>mpmt_os2.xml</modulefile>
   <modulefile>prefork.xml</modulefile>
