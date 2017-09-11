@@ -2706,6 +2706,10 @@ static void modssl_auth_ctx_dump(modssl_auth_ctx_t *auth, apr_pool_t *p, int pro
 static void modssl_ctx_dump(modssl_ctx_t *ctx, apr_pool_t *p, int proxy,
                             apr_file_t *out, const char *indent, const char **psep)
 {
+#ifdef HAVE_SSL_CONF_CMD
+    int i;
+#endif
+
     if (ctx->protocol_set) {
         DMP_STRING(proxy? "SSLProxyProtocol" : "SSLProtocol", protocol_str(ctx->protocol, p));
     }
