@@ -41,7 +41,7 @@ a2md_OBJECTS = \
 	md_cmd_reg.c \
 	md_cmd_store.c
 
-a2md: $(a2md_OBJECTS) $(COMMON_SHOBJECTS) md.h
+a2md: $(a2md_OBJECTS) $(COMMON_OBJECTS) $(COMMON_SHOBJECTS) md.h
 	$(LINK) $(a2md_CFLAGS) $(a2md_LTFLAGS) $(a2md_OBJECTS) $(COMMON_OBJECTS) $(A2MD_LDADD) $(AP_LIBS)
 
 # top be installed in bin dir
