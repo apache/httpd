@@ -2706,14 +2706,12 @@ static void modssl_auth_ctx_dump(modssl_auth_ctx_t *auth, apr_pool_t *p, int pro
 static void modssl_ctx_dump(modssl_ctx_t *ctx, apr_pool_t *p, int proxy,
                             apr_file_t *out, const char *indent, const char **psep)
 {
-    int i;
-    
     if (ctx->protocol_set) {
         DMP_STRING(proxy? "SSLProxyProtocol" : "SSLProtocol", protocol_str(ctx->protocol, p));
     }
 
     modssl_auth_ctx_dump(&ctx->auth, p, proxy, out, indent, psep);
-    
+
     DMP_STRING(proxy? "SSLProxyCARevocationFile" : "SSLCARevocationFile", ctx->crl_file);
     DMP_STRING(proxy? "SSLProxyCARevocationPath" : "SSLCARevocationPath", ctx->crl_path);
     DMP_CRLCHK(proxy? "SSLProxyCARevocationCheck" : "SSLCARevocationCheck", ctx->crl_check_mask);
@@ -2736,7 +2734,7 @@ static void modssl_ctx_dump(modssl_ctx_t *ctx, apr_pool_t *p, int proxy,
         DMP_ITIME( "SSLStaplingResponderTimeout", ctx->stapling_responder_timeout);
         DMP_STRING("SSLStaplingForceURL", ctx->stapling_force_url);
 #endif /* if HAVE_OCSP_STAPLING */ 
-        
+
 #ifdef HAVE_SRP
         DMP_STRING("SSLSRPUnknownUserSeed", ctx->srp_unknown_user_seed);
         DMP_STRING("SSLSRPVerifierFile", ctx->srp_vfile);
@@ -2751,7 +2749,7 @@ static void modssl_ctx_dump(modssl_ctx_t *ctx, apr_pool_t *p, int proxy,
         DMP_URI(   "SSLOCSPProxyURL", ctx->proxy_uri);
         DMP_ON_OFF("SSLOCSPNoVerify", ctx->ocsp_noverify);
         DMP_STRING("SSLOCSPResponderCertificateFile", ctx->ocsp_certs_file);
-        
+
 #ifdef HAVE_SSL_CONF_CMD
         if (ctx->ssl_ctx_param && ctx->ssl_ctx_param->nelts > 0) {
             ssl_ctx_param_t *param = (ssl_ctx_param_t *)ctx->ssl_ctx_param->elts;
@@ -2761,7 +2759,7 @@ static void modssl_ctx_dump(modssl_ctx_t *ctx, apr_pool_t *p, int proxy,
                                 json_quote(param->value, p));
                 *psep = ", ";
             }
-        } 
+        }
 #endif
 
 #ifdef HAVE_TLS_SESSION_TICKETS
