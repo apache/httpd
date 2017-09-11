@@ -893,7 +893,6 @@ recv_again:
                  ((conn->worker->s->flush_packets == flush_auto) && 
                   (apr_poll(flushpoll, 1, &flushpoll_fd,
                             conn->worker->s->flush_wait) == APR_TIMEUP))) && mayflush) {
-                mayflush = 0;
                 apr_bucket* flush_b = apr_bucket_flush_create(r->connection->bucket_alloc);
                 APR_BRIGADE_INSERT_TAIL(ob, flush_b);
                 rv = ap_pass_brigade(r->output_filters, ob);
@@ -901,6 +900,7 @@ recv_again:
                     *err = "passing headers brigade to output filters";
                     break;
                 }
+                mayflush = 0;
             }
         }
     }
