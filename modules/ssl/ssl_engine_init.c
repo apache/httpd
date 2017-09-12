@@ -1737,11 +1737,12 @@ static apr_status_t ssl_init_server_ctx(server_rec *s,
             }
             
             if (key_file && cert_file) {
+                ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, s, 
+                             "%s: installing key=%s, cert=%s, chain=%s", 
+                             ssl_util_vhostid(p, s), key_file, cert_file, chain_file);
                 APR_ARRAY_PUSH(pks->key_files, const char *) = key_file;
                 APR_ARRAY_PUSH(pks->cert_files, const char *) = cert_file;
-                if (chain_file) {
-                    sc->server->cert_chain = chain_file;
-                }
+                sc->server->cert_chain = chain_file;
             }
             
             if (APR_STATUS_IS_EAGAIN(rv)) {
@@ -1751,7 +1752,6 @@ static apr_status_t ssl_init_server_ctx(server_rec *s,
                              "host is part of a Managed Domain, but no SSL certificate is "
                              "available (yet).", ssl_util_vhostid(p, s));
                 pks->service_unavailable = 1;
-                return APR_SUCCESS;
             }
             else if (rv != APR_SUCCESS) {
                 return rv;
