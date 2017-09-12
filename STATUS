@@ -195,6 +195,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      ylavic: Missing r1805190? Also, I'd use double/%lf instead of float/%f for
              floating point arithmetic...
 
+  *) htdigest: prevent a buffer overflow when a string exceeds its maximum size
+               in a password file. PR: 61511
+     trunk patch: http://svn.apache.org/r1808008
+                  http://svn.apache.org/r1808085
+     2.4.x patch: svn merge -c1808008 -c1808085 ^/httpd/httpd/trunk .
+     +1: elukey
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
