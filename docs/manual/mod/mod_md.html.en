@@ -276,9 +276,9 @@ MDCertificateAgreement https://letsencrypt.org/documents/LE-SA-v1.1.1-August-1-2
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="MDDriveMode" id="MDDriveMode">MDDriveMode</a> <a name="mddrivemode" id="mddrivemode">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Control when <code class="module"><a href="../mod/mod_md.html">mod_md</a></code> will try to obtain/renew certificates.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MDDriveMode  always|auto|manual</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>MDDriveMode  auto</code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Control when it is allowed to obtain/renew certificates.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MDDriveMode always|auto|manual</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>MDDriveMode auto</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
@@ -310,7 +310,7 @@ MDCertificateAgreement https://letsencrypt.org/documents/LE-SA-v1.1.1-August-1-2
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
 </table>
-            <p>Use a HTTP proxy to connect to the MDCertificateAuthority url.</p>
+            <p>Use a HTTP proxy to connect to the <code class="directive"><a href="#mdcertificateauthority">MDCertificateAuthority</a></code> url.</p>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
