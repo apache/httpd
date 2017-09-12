@@ -248,9 +248,9 @@ MDCertificateAgreement https://letsencrypt.org/documents/LE-SA-v1.1.1-August-1-2
 
     <directivesynopsis>
         <name>MDDriveMode</name>
-        <description>Control when <module>mod_md</module> will try to obtain/renew certificates.</description>
-        <syntax>MDDriveMode  always|auto|manual</syntax>
-        <default>MDDriveMode  auto</default>
+        <description>Control when it is allowed to obtain/renew certificates.</description>
+        <syntax>MDDriveMode always|auto|manual</syntax>
+        <default>MDDriveMode auto</default>
         <contextlist>
             <context>server config</context>
         </contextlist>
@@ -462,7 +462,7 @@ MDPrivateKeys RSA 3072
             <context>server config</context>
         </contextlist>
         <usage>
-            <p>Use a HTTP proxy to connect to the MDCertificateAuthority url.</p>
+            <p>Use a HTTP proxy to connect to the <directive module="mod_md">MDCertificateAuthority</directive> url.</p>
         </usage>
     </directivesynopsis>
 
