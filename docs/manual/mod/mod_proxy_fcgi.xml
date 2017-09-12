@@ -102,6 +102,27 @@ ProxyPassMatch "^/(.*\.php(/.*)?)$" "unix:/var/run/php5-fpm.sock|fcgi://localhos
     </highlight>
     </example>
 
+    <p> The following example forces the module to flush every chunk of data received
+    from the FCGI backend as soon as it receives it, without buffering.</p>
+    <example><title>Force flush of FCGI data without buffering</title>
+    <highlight language="config">
+ProxyPassMatch "^/myapp/.*\.php(/.*)?$" "fcgi://localhost:9000/var/www/" enablereuse=on flushpackets=on
+    </highlight>
+    </example>
+
+    <p> The following example is related to the previous one with a difference: the module waits/polls
+    for a fixed amount of time before flushing (buffering data from the FCGI backend).
+    This method is useful when the FCGI backend emits data in short bursts, since
+    forcing a flush would result inefficient and expensive for performances. Please note
+    that this setting might not be the best one in use cases when outgoing data chunks
+    from the FCGI application are blocked waiting on incoming chunks from the client.
+    </p>
+    <example><title>Force flush of FCGI data buffering for 20ms</title>
+    <highlight language="config">
+ProxyPassMatch "^/myapp/.*\.php(/.*)?$" "fcgi://localhost:9000/var/www/" flushpackets=on flushwait=20
+    </highlight>
+    </example>
+
     <p>The balanced gateway needs <module>mod_proxy_balancer</module> and
     at least one load balancer algorithm module, such as
     <module>mod_lbmethod_byrequests</module>, in addition to the proxy
