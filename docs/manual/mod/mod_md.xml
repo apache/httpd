@@ -79,7 +79,7 @@ ManagedDomain example.org
     
     <directivesynopsis>
         <name>ManagedDomain</name>
-        <description>Define list of domain names that belong to one group</description>
+        <description>Define list of domain names that belong to one group.</description>
         <syntax>ManagedDomain <var>dns-name</var> [ <var>other-dns-name</var>... ]</syntax>
         <contextlist>
             <context>server config</context>
@@ -159,7 +159,7 @@ ManagedDomain example.org
 
     <directivesynopsis type="section" idtype="section">
         <name>ManagedDomain</name>
-        <description>Container for directives applied to the same managed domains</description>
+        <description>Container for directives applied to the same managed domains.</description>
         <syntax>&lt;ManagedDomain <var>dns-name</var> [ <var>other-dns-name</var>... ]&gt;...&lt;/ManagedDomain&gt;</syntax>
         <contextlist>
             <context>server config</context>
@@ -209,7 +209,7 @@ ManagedDomain example.org www.example.org mail.example.org
 
     <directivesynopsis>
         <name>MDCertificateAuthority</name>
-        <description>The URL of the ACME CA service</description>
+        <description>The URL of the ACME Certificate Authority service.</description>
         <syntax>MDCertificateAuthority url</syntax>
         <default>MDCertificateAuthority https://acme-v01.api.letsencrypt.org/directory</default>
         <contextlist>
@@ -235,7 +235,7 @@ MDCertificateAgreement https://letsencrypt.org/documents/LE-SA-v1.1.1-August-1-2
 
     <directivesynopsis>
         <name>MDCertificateProtocol</name>
-        <description>The protocol to use with the CA</description>
+        <description>The protocol to use with the Certificate Authority.</description>
         <syntax>MDCertificateProtocol protocol</syntax>
         <default>MDCertificateProtocol ACME</default>
         <contextlist>
@@ -248,7 +248,7 @@ MDCertificateAgreement https://letsencrypt.org/documents/LE-SA-v1.1.1-August-1-2
 
     <directivesynopsis>
         <name>MDDriveMode</name>
-        <description>Controls when <module>mod_md</module> will try to obtain/renew certificates.</description>
+        <description>Control when <module>mod_md</module> will try to obtain/renew certificates.</description>
         <syntax>MDDriveMode  always|auto|manual</syntax>
         <default>MDDriveMode  auto</default>
         <contextlist>
@@ -275,7 +275,7 @@ MDCertificateAgreement https://letsencrypt.org/documents/LE-SA-v1.1.1-August-1-2
 
     <directivesynopsis>
         <name>MDMember</name>
-        <description>Additional hostname for the managed domain</description>
+        <description>Additional hostname for the managed domain.</description>
         <syntax>MDMember hostname</syntax>
         <contextlist>
             <context>server config</context>
@@ -295,17 +295,33 @@ MDCertificateAgreement https://letsencrypt.org/documents/LE-SA-v1.1.1-August-1-2
                 </highlight>
             </example>
             <p>
-                If you use it in the global context, outside a specific MD, you can only
-                specify one value, 'auto' or 'manual' as the default for all other MDs. See
-                <directive module="mod_md" type="section">ManagedDomain</directive> for a
-                description of these special values.
+               If you use it in the global context, outside a specific MD, you can only
+               specify one value, 'auto' or 'manual' as the default for all other MDs. See
+               <directive module="mod_md" type="section">ManagedDomain</directive> for a
+               description of these special values.
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>MDMembers</name>
+        <description>Control if the alias domain names are automatically added.</description>
+        <syntax>MDMembers auto|manual</syntax>
+        <default>MDDriveMode auto</default>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        <usage>
+            <p>Defines if the <directive module="core">ServerName</directive> and
+               <directive module="core">ServerAlias</directive> values of a VirtualHost
+               are automatically added to the members of a Managed Domain or not.
             </p>
         </usage>
     </directivesynopsis>
 
     <directivesynopsis>
         <name>MDPortMap</name>
-        <description></description>
+        <description>Map external to internal ports for domain ownership verification.</description>
         <syntax>MDPortMap map1 [ map2 ]</syntax>
         <default>MDPortMap 80:80 443:443</default>
         <contextlist>
@@ -343,7 +359,7 @@ MDPortMap 80:- 443:5002
 
     <directivesynopsis>
         <name>MDPrivateKeys</name>
-        <description></description>
+        <description>Set type and size of the private keys generated.</description>
         <syntax>MDPrivateKeys type [ params... ]</syntax>
         <default>MDPrivateKeys RSA 2048</default>
         <contextlist>
@@ -377,7 +393,7 @@ MDPrivateKeys RSA 3072
 
     <directivesynopsis>
         <name>MDRenewWindow</name>
-        <description></description>
+        <description>Control when a certificate will be renewed.</description>
         <syntax>MDRenewWindow duration</syntax>
         <default>MDRenewWindow 14d</default>
         <contextlist>
@@ -398,7 +414,7 @@ MDPrivateKeys RSA 3072
 
     <directivesynopsis>
         <name>MDStoreDir</name>
-        <description></description>
+        <description>Path on the local file system to store the Managed Domains data.</description>
         <syntax>MDStoreDir path</syntax>
         <default>MDStoreDir md</default>
         <contextlist>
@@ -420,7 +436,7 @@ MDPrivateKeys RSA 3072
 
     <directivesynopsis>
         <name>MDCAChallenges</name>
-        <description></description>
+        <description>Type of ACME challenge used to prove domain ownership.</description>
         <syntax>MDCAChallenges name [ name ... ]</syntax>
         <default>MDCAChallenges tls-sni-01 http-01</default>
         <contextlist>
@@ -434,6 +450,19 @@ MDPrivateKeys RSA 3072
                 types that are supported by <module>mod_md</module>. By default, it will try
                 the one on port 443 when available.
             </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>MDHttpProxy</name>
+        <description>The URL of the HTTP proxy to use.</description>
+        <syntax>MDHttpProxy url</syntax>
+        <default>MDHttpProxy </default>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        <usage>
+            <p>Use a HTTP proxy to connect to the MDCertificateAuthority url.</p>
         </usage>
     </directivesynopsis>
 
