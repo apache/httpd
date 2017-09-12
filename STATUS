@@ -200,7 +200,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1808008
                   http://svn.apache.org/r1808085
      2.4.x patch: svn merge -c1808008 -c1808085 ^/httpd/httpd/trunk .
-     +1: elukey
+     +1: elukey, icing
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
