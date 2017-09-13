@@ -43,7 +43,7 @@
         (<a href="https://datatracker.ietf.org/doc/draft-ietf-acme-acme/">RFC Draft</a>) 
         to automate certificate provisioning. These will be configured for managed domains and
         their virtual hosts automatically. This includes renewal of certificates before they
-        expire. The most famous Certificate Autority currently implementing the ACME protocol
+        expire. The most famous Certificate Authority currently implementing the ACME protocol
         is <a href="https://letsencrypt.org/">Let's Encrypt</a>.</p>
         
         <div class="warning"><h3>Warning</h3>
@@ -93,9 +93,11 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#mdhttpproxy">MDHttpProxy</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdmember">MDMember</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdmembers">MDMembers</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mdmuststaple">MDMustStaple</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdportmap">MDPortMap</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdprivatekeys">MDPrivateKeys</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdrenewwindow">MDRenewWindow</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mdrequirehttps">MDRequireHttps</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdstoredir">MDStoreDir</a></li>
 </ul>
 <h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_md">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_md">Report a bug</a></li></ul><h3>See also</h3>
@@ -152,7 +154,7 @@ ManagedDomain example.org www.example.org
             <p>
                 There are two special names that you may use in this directive: 'manual'
                 and 'auto'. This determines if a Managed Domain shall have exactly the 
-                name list as is configured ('manual') or offer more convenince. With 'auto'
+                name list as is configured ('manual') or offer more convenience. With 'auto'
                 all names of a virtual host are added to a MD.
             </p>
             <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">ManagedDomain example.org
@@ -251,7 +253,7 @@ ManagedDomain example.org www.example.org mail.example.org</pre>
                 The URL where the CA offers its service.
             </p><p>
                 Let's Encrypt offers, right now, two such URLs. One for the real certificates and
-                one for testing (their staging area, athttps://acme-staging.api.letsencrypt.org/directory).
+                one for testing (their staging area, at https://acme-staging.api.letsencrypt.org/directory).
                 In order to have <code class="module"><a href="../mod/mod_md.html">mod_md</a></code> use this testing service, configure your
                 server like this: 
             </p>
@@ -284,14 +286,14 @@ MDCertificateAgreement https://letsencrypt.org/documents/LE-SA-v1.1.1-August-1-2
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
 </table>
             <p>In 'auto' mode, <code class="module"><a href="../mod/mod_md.html">mod_md</a></code> will <em>drive</em> a Managed Domain's
-            properties (e.g. certicate management) whenever necessary. When a MD is not used
+            properties (e.g. certificate management) whenever necessary. When a MD is not used
             in any virtual host, the module will do nothing. When a certificate is missing, it
             will try to get one. When a certificate expires soon (see 
             <code class="directive"><a href="#mdrenewwindow">MDRenewWindow</a></code>), it will
             renew it.
             </p><p>
-            In 'manual' mode, it is your duty to  do all this. The module will provide existing
-            ceriticate to mod_ssl, if available. But it will not contact the CA for signup/renewal.
+            In 'manual' mode, it is your duty to do all this. The module will provide the existing
+            certificate to mod_ssl, if available. But it will not contact the CA for signup/renewal.
             This can be useful in clustered setups where you want just one node to perform
             the driving.
             </p><p>
@@ -303,14 +305,15 @@ MDCertificateAgreement https://letsencrypt.org/documents/LE-SA-v1.1.1-August-1-2
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="MDHttpProxy" id="MDHttpProxy">MDHttpProxy</a> <a name="mdhttpproxy" id="mdhttpproxy">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The URL of the HTTP proxy to use.</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Define a proxy for outgoing connections.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MDHttpProxy url</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>MDHttpProxy </code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
 </table>
-            <p>Use a HTTP proxy to connect to the <code class="directive"><a href="#mdcertificateauthority">MDCertificateAuthority</a></code> url.</p>
+            <p>Use a http proxy to connect to the MDCertificateAuthority. Define this
+            if your webserver can only reach the internet with a forward proxy.
+            </p>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -353,6 +356,24 @@ MDCertificateAgreement https://letsencrypt.org/documents/LE-SA-v1.1.1-August-1-2
             <p>Defines if the <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> and
                <code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code> values of a VirtualHost
                are automatically added to the members of a Managed Domain or not.
+            </p>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="MDMustStaple" id="MDMustStaple">MDMustStaple</a> <a name="mdmuststaple" id="mdmuststaple">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Control if new certificates carry the OCSP Must Staple flag.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MDMustStaple on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>MDMustStaple off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+</table>
+            <p>Defines if newly requested certificate should have the OCSP Must Staple flag 
+            set or not. If a certificate has this flag, the server is required to send a 
+            OCSP stapling response to every client. This only works if you configure 
+            mod_ssl to generate this (see <code class="directive"><a href="../mod/mod_ssl.html#sslusestapling">SSLUseStapling</a></code>
+            and friends).
             </p>
         
 </div>
@@ -427,20 +448,68 @@ MDCertificateAgreement https://letsencrypt.org/documents/LE-SA-v1.1.1-August-1-2
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Control when a certificate will be renewed.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MDRenewWindow duration</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>MDRenewWindow 14d</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>MDRenewWindow 33%</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
 </table>
             <p>
-                Tells mod_md when to renew a certificate. The default means 14 days before a
-                certificate actually expires. If you configure this too short, a CA might
-                not be reachable in time and your server will show an invalid certificate. If
-                you do it too long, the CA might think you are a bother and block your requests.
-                Let's Encrypt has a certificate expiration of 90 days. So, if you configure the
-                renew window to 89 days, <code class="module"><a href="../mod/mod_md.html">mod_md</a></code> will renew the certificate
-                every day and Let's Encrypt will block you.
+            If the validity of the certificate falls below duration, mod_md will get a 
+            new signed certificate.
+            </p><p>
+            Normally, certificates are valid for around 90 days and mod_md will renew 
+            them the earliest 33% of their complete lifetime before they expire (so for 
+            90 days validity, 30 days before it expires). If you think this is not what 
+            you need, you can specify either the exact time, as in:
             </p>
+            <div class="example"><h3>Example</h3><pre class="prettyprint lang-config"># 21 days before expiry
+MDRenewWindow 21d 
+# 30 seconds (might be close)
+MDRenewWindow 30s
+# 10% of the cert lifetime
+MDRenewWindow 10%</pre>
+</div>
+            <p>When in auto drive mode, the module will check every 12 hours at least 
+            what the status of the managed domains is and if it needs to do something. 
+            On errors, for example when the CA is unreachable, it will initially retry 
+            after some seconds. Should that continue to fail, it will back off to a 
+            maximum interval of hourly checks.
+            </p>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="MDRequireHttps" id="MDRequireHttps">MDRequireHttps</a> <a name="mdrequirehttps" id="mdrequirehttps">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Redirects http: traffic to https: for Managed Domains.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MDRequireHttps off|temporary|permanent</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>MDRequireHttps off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+</table>
+            <p>This is a convenience directive to ease http: to https: migration of 
+            your Managed Domains. With:
+            </p>
+            <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">MDRequireHttps temporary</pre>
+</div>
+            <p>you announce that you want all traffic via http: URLs to be redirected 
+            to the https: ones, for now. If you want client to no longer use the
+             http: URLs, configure:
+            </p>
+            <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">MDRequireHttps permanent</pre>
+</div>
+            <p>You can achieve the same with mod_alias and some Redirect configuration, 
+            basically. If you do it yourself, please make sure to exclude the paths 
+            /.well-known/* from your redirection, otherwise mod_md might have trouble 
+            signing on new certificates.
+            </p>
+            <p>If you set this globally, it applies to all managed domains. If you want 
+            it for a specific domain only, use:
+            </p>
+            <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">&lt;ManagedDomain xxx.yyy&gt;
+  MDRequireHttps permanent
+&lt;/ManagedDomain&gt;</pre>
+</div>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
