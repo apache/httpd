@@ -117,7 +117,8 @@ apr_size_t md_util_base64url_decode(const char **decoded, const char *encoded,
 const char *md_util_schemify(apr_pool_t *p, const char *s, const char *def_scheme);
 
 apr_status_t md_util_abs_uri_check(apr_pool_t *p, const char *s, const char **perr);
- 
+apr_status_t md_util_abs_http_uri_check(apr_pool_t *p, const char *uri, const char **perr);
+
 const char *md_link_find_relation(const struct apr_table_t *headers, 
                                   apr_pool_t *pool, const char *relation);
 

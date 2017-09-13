@@ -1,6 +1,24 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_md: v0.9.5:
+     - New directive (srly: what do you expect at this point?) "MDMustStaple on|off" to control if
+       new certificates are requested with the OCSP Must Staple extension.
+     - Known limitation: when the server is configured to ditch and restart child processes, for example
+       after a certain number of connections/requests, the mod_md watchdog instance might migrate 
+       to a new child process. Since not all its state is persisted, some messsages might appear a
+       second time in the logs.
+     - Adding checks when 'MDRequireHttps' is used. It is considered an error when 'MDPortMap 443:-'
+       is used - which negates that a https: port exists. Also, a warning is logged if no 
+       VirtualHost can be found for a Managed Domain that has port 443 (or the mapped one) in
+       its address list.
+     - New directive 'MDRequireHttps' for redirecting http: traffic to a Managed Domain, permanently
+       or temporarily.
+     - Fix for using a fallback certificate on initial signup of a Managed Domain. Requires also
+       a changed mod_ssl patch (v5) to take effect.
+     - compatibility with libressl
+       [Stefan Eissing]
+
   *) htdigest: prevent a buffer overflow when a string exceeds the allowed max
      length in a password file.
      [Luca Toscano, Hanno Böck <hanno hboeck de>]

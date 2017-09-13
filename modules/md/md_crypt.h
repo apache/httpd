@@ -127,7 +127,7 @@ apr_status_t md_cert_req_create(const char **pcsr_der_64, const struct md_t *md,
                                 md_pkey_t *pkey, apr_pool_t *p);
 
 apr_status_t md_cert_self_sign(md_cert_t **pcert, const char *cn, 
-                               const char *domain, md_pkey_t *pkey,
+                               struct apr_array_header_t *domains, md_pkey_t *pkey,
                                apr_interval_time_t valid_for, apr_pool_t *p);
 
 #endif /* md_crypt_h */

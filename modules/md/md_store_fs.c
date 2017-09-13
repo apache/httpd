@@ -261,57 +261,6 @@ read:
     return rv;
 }
 
-static apr_status_t setup_fallback_cert(void *baton, apr_pool_t *p, apr_pool_t *ptemp, va_list ap)
-{
-    md_store_fs_t *s_fs = baton;
-    md_pkey_t *fallback_key;
-    md_cert_t *fallback_cert;
-    md_pkey_spec_t spec;
-    apr_status_t rv;
-
-    if (APR_SUCCESS == (rv = fs_load(&s_fs->s, MD_SG_NONE, NULL, MD_FN_FALLBACK_PKEY, 
-                                     MD_SV_PKEY, (void**)&fallback_key, ptemp))
-        && APR_SUCCESS == (rv = fs_load(&s_fs->s, MD_SG_NONE, NULL, MD_FN_FALLBACK_CERT, 
-                                        MD_SV_CERT, (void**)&fallback_cert, ptemp))) {
-        apr_time_t not_after = md_cert_get_not_after(fallback_cert);
-        if (not_after > apr_time_now() + apr_time_from_sec(7 * MD_SECS_PER_DAY)) {
-            /* at least a week more valid, expect drive and restart way before that */
-            return APR_SUCCESS;
-        }
-    }
-    
-    spec.type = MD_PKEY_TYPE_RSA;
-    spec.params.rsa.bits = MD_PKEY_RSA_BITS_DEF;
-        
-    if (APR_SUCCESS != (rv = md_pkey_gen(&fallback_key, ptemp, &spec))) {
-        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, ptemp, "create fallback key");
-        return rv;
-    }
-    
-    if (APR_SUCCESS != (rv = md_store_save(&s_fs->s, ptemp, MD_SG_NONE, NULL, 
-                                           MD_FN_FALLBACK_PKEY, MD_SV_PKEY, 
-                                           (void*)fallback_key, 0))) {
-        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, ptemp, "save fallback key");
-        return rv;
-    }
-
-    if (APR_SUCCESS != (rv = md_cert_self_sign(&fallback_cert, "Apache Managed Domain Fallback", 
-                                               "temporary.invalid.certificate", fallback_key, 
-                                               apr_time_from_sec(14 * MD_SECS_PER_DAY), ptemp))) {
-        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, ptemp, "create fallback certificate");
-        return rv;
-    }
-
-    if (APR_SUCCESS != (rv = md_store_save(&s_fs->s, ptemp, MD_SG_NONE, NULL, 
-                                           MD_FN_FALLBACK_CERT, MD_SV_CERT, 
-                                           (void*)fallback_cert, 0))) {
-        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, ptemp, "save fallback certificate");
-        return rv;
-    }
-
-    return rv;
-}
-
 apr_status_t md_store_fs_init(md_store_t **pstore, apr_pool_t *p, const char *path)
 {
     md_store_fs_t *s_fs;
@@ -356,9 +305,6 @@ apr_status_t md_store_fs_init(md_store_t **pstore, apr_pool_t *p, const char *pa
         }
     }
     rv = md_util_pool_vdo(setup_store_file, s_fs, p, NULL);
-    if (APR_SUCCESS == rv) {
-        rv = md_util_pool_vdo(setup_fallback_cert, s_fs, p, NULL);
-    }
     
     if (APR_SUCCESS != rv) {
         md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, p, "init fs store at %s", path);

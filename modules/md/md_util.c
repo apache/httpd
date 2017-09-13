@@ -647,58 +647,93 @@ const char *md_util_schemify(apr_pool_t *p, const char *s, const char *def_schem
     return apr_psprintf(p, "%s:%s", def_scheme, s);
 }
 
-apr_status_t md_util_abs_uri_check(apr_pool_t *p, const char *uri, const char **perr)
+static apr_status_t uri_check(apr_uri_t *uri_parsed, apr_pool_t *p, 
+                              const char *uri, const char **perr)
 {
     const char *s, *err = NULL;
-    apr_uri_t uri_parsed;
     apr_status_t rv;
     
-    if (APR_SUCCESS != (rv = apr_uri_parse(p, uri, &uri_parsed))) {
+    if (APR_SUCCESS != (rv = apr_uri_parse(p, uri, uri_parsed))) {
         err = "not an uri";
     }
-    else if (!uri_parsed.scheme) {
-        err = "missing uri scheme";
+    else if (uri_parsed->scheme) {
+        if (strlen(uri_parsed->scheme) + 1 >= strlen(uri)) {
+            err = "missing uri identifier";
+        }
+        else if (!strncmp("http", uri_parsed->scheme, 4)) {
+            if (!uri_parsed->hostname) {
+                err = "missing hostname";
+            }
+            else if (!md_util_is_dns_name(p, uri_parsed->hostname, 0)) {
+                err = "invalid hostname";
+            }
+            if (uri_parsed->port_str 
+                && (!apr_isdigit(uri_parsed->port_str[0])
+                || uri_parsed->port == 0
+                || uri_parsed->port > 65353)) {
+                err = "invalid port";
+            }
+        }
+        else if (!strcmp("mailto", uri_parsed->scheme)) {
+            s = strchr(uri, '@');
+            if (!s) {
+                err = "missing @";
+            }
+            else if (strchr(s+1, '@')) {
+                err = "duplicate @";
+            }
+            else if (s == uri + strlen(uri_parsed->scheme) + 1) {
+                err = "missing local part";
+            }
+            else if (s == (uri + strlen(uri)-1)) {
+                err = "missing hostname";
+            }
+            else if (strstr(uri, "..")) {
+                err = "double period";
+            }
+        }
     }
-    else if (strlen(uri_parsed.scheme) + 1 >= strlen(uri)) {
-        err = "missing uri identifier";
-    }
-    else if (strchr(uri, ' ') || strchr(uri, '\t') ) {
+    if (strchr(uri, ' ') || strchr(uri, '\t') ) {
         err = "whitespace in uri";
-    }
-    else if (!strncmp("http", uri_parsed.scheme, 4)) {
-        if (!uri_parsed.hostname) {
-            err = "missing hostname";
-        }
-        else if (!md_util_is_dns_name(p, uri_parsed.hostname, 0)) {
-            err = "invalid hostname";
-        }
-        if (uri_parsed.port_str && (uri_parsed.port == 0 || uri_parsed.port > 65353)) {
-            err = "invalid port";
-        }
-    }
-    else if (!strcmp("mailto", uri_parsed.scheme)) {
-        s = strchr(uri, '@');
-        if (!s) {
-            err = "missing @";
-        }
-        else if (strchr(s+1, '@')) {
-            err = "duplicate @";
-        }
-        else if (s == uri + strlen(uri_parsed.scheme) + 1) {
-            err = "missing local part";
-        }
-        else if (s == (uri + strlen(uri)-1)) {
-            err = "missing hostname";
-        }
-        else if (strstr(uri, "..")) {
-            err = "double period";
-        }
     }
     
     if (err) {
         rv = APR_EINVAL;
     }
     *perr = err;
+    return rv;
+}
+
+apr_status_t md_util_abs_uri_check(apr_pool_t *p, const char *uri, const char **perr)
+{
+    apr_uri_t uri_parsed;
+    apr_status_t rv;
+
+    if (APR_SUCCESS == (rv = uri_check(&uri_parsed, p, uri, perr))) {
+        if (!uri_parsed.scheme) {
+            *perr = "missing uri scheme";
+            return APR_EINVAL;
+        }
+    }
+    return rv;
+}
+
+apr_status_t md_util_abs_http_uri_check(apr_pool_t *p, const char *uri, const char **perr)
+{
+    apr_uri_t uri_parsed;
+    apr_status_t rv;
+
+    if (APR_SUCCESS == (rv = uri_check(&uri_parsed, p, uri, perr))) {
+        if (!uri_parsed.scheme) {
+            *perr = "missing uri scheme";
+            return APR_EINVAL;
+        }
+        if (apr_strnatcasecmp("http", uri_parsed.scheme) 
+            && apr_strnatcasecmp("https", uri_parsed.scheme)) {
+            *perr = "uri scheme must be http or https";
+            return APR_EINVAL;
+        }
+    }
     return rv;
 }
 

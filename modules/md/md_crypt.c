@@ -179,6 +179,66 @@ static int pem_passwd(char *buf, int size, int rwflag, void *baton)
 }
 
 /**************************************************************************************************/
+/* date time things */
+
+/* Get the apr time (micro seconds, since 1970) from an ASN1 time, as stored in X509
+ * certificates. OpenSSL now has a utility function, but other *SSL derivatives have
+ * not caughts up yet or chose to ignore. An alternative is implemented, we prefer 
+ * however the *SSL to maintain such things.
+ */
+static apr_time_t md_asn1_time_get(const ASN1_TIME* time)
+{
+#ifdef LIBRESSL_VERSION_NUMBER
+    /* courtesy: https://stackoverflow.com/questions/10975542/asn1-time-to-time-t-conversion#11263731
+     * all bugs are mine */
+    apr_time_exp_t t;
+    apr_time_t ts;
+    const char* str = (const char*) time->data;
+    apr_size_t i = 0;
+
+    memset(&t, 0, sizeof(t));
+
+    if (time->type == V_ASN1_UTCTIME) {/* two digit year */
+        t.tm_year = (str[i++] - '0') * 10;
+        t.tm_year += (str[i++] - '0');
+        if (t.tm_year < 70)
+            t.tm_year += 100;
+    } 
+    else if (time->type == V_ASN1_GENERALIZEDTIME) {/* four digit year */
+        t.tm_year = (str[i++] - '0') * 1000;
+        t.tm_year+= (str[i++] - '0') * 100;
+        t.tm_year+= (str[i++] - '0') * 10;
+        t.tm_year+= (str[i++] - '0');
+        t.tm_year -= 1900;
+    }
+    t.tm_mon  = (str[i++] - '0') * 10;
+    t.tm_mon += (str[i++] - '0') - 1; /* -1 since January is 0 not 1. */
+    t.tm_mday = (str[i++] - '0') * 10;
+    t.tm_mday+= (str[i++] - '0');
+    t.tm_hour = (str[i++] - '0') * 10;
+    t.tm_hour+= (str[i++] - '0');
+    t.tm_min  = (str[i++] - '0') * 10;
+    t.tm_min += (str[i++] - '0');
+    t.tm_sec  = (str[i++] - '0') * 10;
+    t.tm_sec += (str[i++] - '0');
+    
+    if (APR_SUCCESS == apr_time_exp_gmt_get(&ts, &t)) {
+        return ts;
+    }
+    return 0;
+#else 
+    int secs, days;
+    apr_time_t ts = apr_time_now();
+    
+    if (ASN1_TIME_diff(&days, &secs, NULL, time)) {
+        ts += apr_time_from_sec((days * MD_SECS_PER_DAY) + secs); 
+    }
+    return ts;
+#endif
+}
+
+
+/**************************************************************************************************/
 /* private keys */
 
 md_json_t *md_pkey_spec_to_json(const md_pkey_spec_t *spec, apr_pool_t *p)
@@ -409,7 +469,7 @@ apr_status_t md_pkey_gen(md_pkey_t **ppkey, apr_pool_t *p, md_pkey_spec_t *spec)
     }
 }
 
-#if OPENSSL_VERSION_NUMBER < 0x10100000L
+#if OPENSSL_VERSION_NUMBER < 0x10100000L || defined(LIBRESSL_VERSION_NUMBER)
 
 #ifndef NID_tlsfeature
 #define NID_tlsfeature          1020
@@ -658,26 +718,12 @@ int md_cert_has_expired(const md_cert_t *cert)
 
 apr_time_t md_cert_get_not_after(md_cert_t *cert)
 {
-    int secs, days;
-    apr_time_t time = apr_time_now();
-    ASN1_TIME *not_after = X509_get_notAfter(cert->x509);
-    
-    if (ASN1_TIME_diff(&days, &secs, NULL, not_after)) {
-        time += apr_time_from_sec((days * MD_SECS_PER_DAY) + secs); 
-    }
-    return time;
+    return md_asn1_time_get(X509_get_notAfter(cert->x509));
 }
 
 apr_time_t md_cert_get_not_before(md_cert_t *cert)
 {
-    int secs, days;
-    apr_time_t time = apr_time_now();
-    ASN1_TIME *not_after = X509_get_notBefore(cert->x509);
-    
-    if (ASN1_TIME_diff(&days, &secs, NULL, not_after)) {
-        time += apr_time_from_sec((days * MD_SECS_PER_DAY) + secs); 
-    }
-    return time;
+    return md_asn1_time_get(X509_get_notBefore(cert->x509));
 }
 
 int md_cert_covers_domain(md_cert_t *cert, const char *domain_name)
@@ -991,11 +1037,6 @@ apr_status_t md_chain_fsave(apr_array_header_t *certs, apr_pool_t *p,
 /**************************************************************************************************/
 /* certificate signing requests */
 
-static const char *alt_name(const char *domain, apr_pool_t *p)
-{
-    return apr_psprintf(p, "DNS:%s", domain);
-}
-
 static const char *alt_names(apr_array_header_t *domains, apr_pool_t *p)
 {
     const char *alts = "", *sep = "", *domain;
@@ -1051,9 +1092,19 @@ static apr_status_t add_must_staple(STACK_OF(X509_EXTENSION) *exts, const md_t *
 {
     
     if (md->must_staple) {
-        X509_EXTENSION *x = X509V3_EXT_conf_nid(NULL, NULL, 
-                                                NID_tlsfeature, (char*)"DER:30:03:02:01:05");
+        X509_EXTENSION *x;
+        int nid;
+        
+        nid = OBJ_create("1.3.6.1.5.5.7.1.24", "OCSPReq", "OCSP Request");
+        if (NID_undef == nid) {
+            md_log_perror(MD_LOG_MARK, MD_LOG_ERR, 0, p, 
+                          "%s: unable to get NID for must-staple", md->name);
+            return APR_EGENERAL;
+        }
+        x = X509V3_EXT_conf_nid(NULL, NULL, nid, (char*)"DER:30:03:02:01:05");
         if (NULL == x) {
+            md_log_perror(MD_LOG_MARK, MD_LOG_ERR, 0, p, 
+                          "%s: unable to get x509 extension for must-staple", md->name);
             return APR_EGENERAL;
         }
         sk_X509_EXTENSION_push(exts, x);
@@ -1140,7 +1191,7 @@ out:
 }
 
 apr_status_t md_cert_self_sign(md_cert_t **pcert, const char *cn, 
-                               const char *domain, md_pkey_t *pkey,
+                               apr_array_header_t *domains, md_pkey_t *pkey,
                                apr_interval_time_t valid_for, apr_pool_t *p)
 {
     X509 *x;
@@ -1152,45 +1203,45 @@ apr_status_t md_cert_self_sign(md_cert_t **pcert, const char *cn,
     ASN1_INTEGER *asn1_rnd = NULL;
     unsigned char rnd[20];
     
-    assert(domain);
+    assert(domains);
     
     if (NULL == (x = X509_new()) 
         || NULL == (n = X509_NAME_new())) {
         rv = APR_ENOMEM;
-        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, 0, p, "%s: openssl alloc X509 things", domain);
+        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, 0, p, "%s: openssl alloc X509 things", cn);
         goto out; 
     }
     
     if (APR_SUCCESS != (rv = md_rand_bytes(rnd, sizeof(rnd), p))
         || !(big_rnd = BN_bin2bn(rnd, sizeof(rnd), NULL))
         || !(asn1_rnd = BN_to_ASN1_INTEGER(big_rnd, NULL))) {
-        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, 0, p, "%s: setup random serial", domain);
+        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, 0, p, "%s: setup random serial", cn);
         rv = APR_EGENERAL; goto out;
     } 
     if (!X509_set_serialNumber(x, asn1_rnd)) {
-        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, 0, p, "%s: set serial number", domain);
+        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, 0, p, "%s: set serial number", cn);
         rv = APR_EGENERAL; goto out;
     }
     /* set common name and issue */
     if (!X509_NAME_add_entry_by_txt(n, "CN", MBSTRING_ASC, (const unsigned char*)cn, -1, -1, 0)
         || !X509_set_subject_name(x, n)
         || !X509_set_issuer_name(x, n)) {
-        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, 0, p, "%s: name add entry", domain);
+        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, 0, p, "%s: name add entry", cn);
         rv = APR_EGENERAL; goto out;
     }
     /* cert are uncontrained (but not very trustworthy) */
     if (APR_SUCCESS != (rv = add_ext(x, NID_basic_constraints, "CA:TRUE, pathlen:0", p))) {
-        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, p, "%s: set basic constraints ext", domain);
+        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, p, "%s: set basic constraints ext", cn);
         goto out;
     }
     /* add the domain as alt name */
-    if (APR_SUCCESS != (rv = add_ext(x, NID_subject_alt_name, alt_name(domain, p), p))) {
-        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, p, "%s: set alt_name ext", domain);
+    if (APR_SUCCESS != (rv = add_ext(x, NID_subject_alt_name, alt_names(domains, p), p))) {
+        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, p, "%s: set alt_name ext", cn);
         goto out;
     }
     /* add our key */
     if (!X509_set_pubkey(x, pkey->pkey)) {
-        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, p, "%s: set pkey in x509", domain);
+        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, p, "%s: set pkey in x509", cn);
         rv = APR_EGENERAL; goto out;
     }
     
@@ -1204,7 +1255,7 @@ apr_status_t md_cert_self_sign(md_cert_t **pcert, const char *cn,
 
     /* sign with same key */
     if (!X509_sign(x, pkey->pkey, EVP_sha256())) {
-        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, p, "%s: sign x509", domain);
+        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, p, "%s: sign x509", cn);
         rv = APR_EGENERAL; goto out;
     }
 
