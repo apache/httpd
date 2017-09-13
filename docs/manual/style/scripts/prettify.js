@@ -350,7 +350,7 @@ var REGEXP_PRECEDER_PATTERN = '(?:^^\\.?|[+-]|[!=]=?=?|\\#|%=?|&&?=?|\\(|\\*=?|[
       // -> [[1, 12], [14, 14], [16, 17]]
       ranges.sort(function (a, b) { return (a[0] - b[0]) || (b[1]  - a[1]); });
       var consolidatedRanges = [];
-      var lastRange = [];
+      var lastRange = [0,0];
       for (var i = 0; i < ranges.length; ++i) {
         var range = ranges[i];
         if (range[0] <= lastRange[1] + 1) {
@@ -917,7 +917,7 @@ var REGEXP_PRECEDER_PATTERN = '(?:^^\\.?|[+-]|[!=]=?=?|\\#|%=?|&&?=?|\\(|\\*=?|[
         [PR_LITERAL,     /^@[a-z_$][a-z_$@0-9]*|\bNULL\b/i, null],
         [PR_LITERAL,     CONFIG_OPTIONS, null],
         //[PR_STRING,     CONFIG_ENVS, null],
-        [PR_TAG,     /^\b(AuthzProviderAlias|AuthnProviderAlias|RequireAny|RequireAll|RequireNone|Directory|DirectoryMatch|Location|LocationMatch|VirtualHost|If|Else|ElseIf|Proxy|LoadBalancer|Files|FilesMatch|Limit|LimitExcept|IfDefine|IfModule|IfVersion|SSLPolicy|ManagedDomain)\b/, null],
+        [PR_TAG,     /^<\/?\b(AuthzProviderAlias|AuthnProviderAlias|RequireAny|RequireAll|RequireNone|Directory|DirectoryMatch|Location|LocationMatch|VirtualHost|If|Else|ElseIf|Proxy|LoadBalancer|Files|FilesMatch|Limit|LimitExcept|IfDefine|IfModule|IfVersion|SSLPolicy|ManagedDomain).*?>/, null],
         [PR_TYPE,        /^(?:[@_]?[A-Z]+[a-z][A-Za-z_$@0-9]*|\w+_(t|req|module)\b)/, null],
         [PR_TAG,     /^apr_[a-z_0-9]+|ap_[a-z_0-9]+/i, null],
         [PR_PLAIN,       /^[a-z_$][a-z_$@0-9\-]*/i, null],
@@ -1188,7 +1188,10 @@ var REGEXP_PRECEDER_PATTERN = '(?:^^\\.?|[+-]|[!=]=?=?|\\#|%=?|&&?=?|\\(|\\*=?|[
           textNode.nodeValue = styledText;
           var document = textNode.ownerDocument;
           var span = document.createElement('span');
-          span.className = decorations[decorationIndex + 1];
+          // prettify may break locally and make duplicates.
+          // These don't have a className, so we'll simply hide them
+          // by defaulting to 'hidden' class.
+          span.className = decorations[decorationIndex + 1] || "hidden"; 
           var parentNode = textNode.parentNode;
           parentNode.replaceChild(span, textNode);
           span.appendChild(textNode);

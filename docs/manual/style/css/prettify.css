@@ -119,3 +119,7 @@ pre.lang-perl{
 .lang-perl .str { color: #009606 } /* string content */
 .lang-perl .kwd { color: #00C; font-weight: bold }  /* a keyword */
 .lang-perl .typ { color: #808 }  /* a type name */
+
+.hidden {
+  display: none;
+}
