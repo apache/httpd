@@ -37,7 +37,7 @@
         (<a href="https://datatracker.ietf.org/doc/draft-ietf-acme-acme/">RFC Draft</a>) 
         to automate certificate provisioning. These will be configured for managed domains and
         their virtual hosts automatically. This includes renewal of certificates before they
-        expire. The most famous Certificate Autority currently implementing the ACME protocol
+        expire. The most famous Certificate Authority currently implementing the ACME protocol
         is <a href="https://letsencrypt.org/">Let's Encrypt</a>.</p>
         
         <note type="warning"><title>Warning</title>
@@ -130,7 +130,7 @@ ManagedDomain example.org www.example.org
             <p>
                 There are two special names that you may use in this directive: 'manual'
                 and 'auto'. This determines if a Managed Domain shall have exactly the 
-                name list as is configured ('manual') or offer more convenince. With 'auto'
+                name list as is configured ('manual') or offer more convenience. With 'auto'
                 all names of a virtual host are added to a MD.
             </p>
             <example><title>Example</title>
@@ -256,14 +256,14 @@ MDCertificateAgreement https://letsencrypt.org/documents/LE-SA-v1.1.1-August-1-2
         </contextlist>
         <usage>
             <p>In 'auto' mode, <module>mod_md</module> will <em>drive</em> a Managed Domain's
-            properties (e.g. certicate management) whenever necessary. When a MD is not used
+            properties (e.g. certificate management) whenever necessary. When a MD is not used
             in any virtual host, the module will do nothing. When a certificate is missing, it
             will try to get one. When a certificate expires soon (see 
             <directive module="mod_md">MDRenewWindow</directive>), it will
             renew it.
             </p><p>
-            In 'manual' mode, it is your duty to  do all this. The module will provide existing
-            ceriticate to mod_ssl, if available. But it will not contact the CA for signup/renewal.
+            In 'manual' mode, it is your duty to do all this. The module will provide the existing
+            certificate to mod_ssl, if available. But it will not contact the CA for signup/renewal.
             This can be useful in clustered setups where you want just one node to perform
             the driving.
             </p><p>
