@@ -31,6 +31,8 @@ typedef enum {
     MD_CONFIG_RENEW_WINDOW,
     MD_CONFIG_TRANSITIVE,
     MD_CONFIG_PROXY,
+    MD_CONFIG_REQUIRE_HTTPS,
+    MD_CONFIG_MUST_STAPLE,
 } md_config_var_t;
 
 typedef struct {
@@ -53,6 +55,7 @@ typedef struct md_srv_conf_t {
     md_mod_conf_t *mc;                 /* global config settings */
     
     int transitive;                    /* != 0 iff VirtualHost names/aliases are auto-added */
+    md_require_t require_https;        /* If MDs require https: access */
     int drive_mode;                    /* mode of obtaining credentials */
     int must_staple;                   /* certificates should set the OCSP Must Staple extension */
     struct md_pkey_spec_t *pkey_spec;  /* specification for generating private keys */

@@ -356,6 +356,7 @@ static apr_status_t cha_tls_sni_01_setup(md_acme_authz_cha_t *cha, md_acme_authz
     const char *cha_dns;
     apr_status_t rv;
     int notify_server;
+    apr_array_header_t *domains;
     
     if (   APR_SUCCESS != (rv = setup_key_authz(cha, authz, acme, p, &notify_server))
         || APR_SUCCESS != (rv = setup_cha_dns(&cha_dns, cha, p))) {
@@ -374,7 +375,9 @@ static apr_status_t cha_tls_sni_01_setup(md_acme_authz_cha_t *cha, md_acme_authz
         }
 
         /* setup a certificate containing the challenge dns */
-        rv = md_cert_self_sign(&cha_cert, authz->domain, cha_dns, cha_key, 
+        domains = apr_array_make(p, 5, sizeof(const char*));
+        APR_ARRAY_PUSH(domains, const char*) = cha_dns;
+        rv = md_cert_self_sign(&cha_cert, authz->domain, domains, cha_key, 
                                apr_time_from_sec(7 * MD_SECS_PER_DAY), p);
         
         if (APR_SUCCESS != rv) {

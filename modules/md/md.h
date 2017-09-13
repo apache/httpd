@@ -42,6 +42,13 @@ typedef enum {
 } md_state_t;
 
 typedef enum {
+    MD_REQUIRE_UNSET = -1,
+    MD_REQUIRE_OFF,
+    MD_REQUIRE_TEMPORARY,
+    MD_REQUIRE_PERMANENT,
+} md_require_t;
+
+typedef enum {
     MD_SV_TEXT,
     MD_SV_JSON,
     MD_SV_CERT,
@@ -74,6 +81,8 @@ struct md_t {
     struct apr_array_header_t *contacts;   /* list of contact uris, e.g. mailto:xxx */
 
     int transitive;                 /* != 0 iff VirtualHost names/aliases are auto-added */
+    md_require_t require_https;     /* Iff https: is required for this MD */
+    
     int drive_mode;                 /* mode of obtaining credentials */
     struct md_pkey_spec_t *pkey_spec;/* specification for generating new private keys */
     int must_staple;                /* certificates should set the OCSP Must Staple extension */
@@ -119,16 +128,20 @@ struct md_t {
 #define MD_KEY_KEY              "key"
 #define MD_KEY_KEYAUTHZ         "keyAuthorization"
 #define MD_KEY_LOCATION         "location"
+#define MD_KEY_MUST_STAPLE      "must-staple"
 #define MD_KEY_NAME             "name"
+#define MD_KEY_PERMANENT        "permanent"
 #define MD_KEY_PKEY             "privkey"
 #define MD_KEY_PROTO            "proto"
 #define MD_KEY_REGISTRATION     "registration"
 #define MD_KEY_RENEW            "renew"
 #define MD_KEY_RENEW_WINDOW     "renew-window"
+#define MD_KEY_REQUIRE_HTTPS    "require-https"
 #define MD_KEY_RESOURCE         "resource"
 #define MD_KEY_STATE            "state"
 #define MD_KEY_STATUS           "status"
 #define MD_KEY_STORE            "store"
+#define MD_KEY_TEMPORARY        "temporary"
 #define MD_KEY_TOKEN            "token"
 #define MD_KEY_TRANSITIVE       "transitive"
 #define MD_KEY_TYPE             "type"

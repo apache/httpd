@@ -14,11 +14,13 @@
  */
 
 #include <assert.h>
+#include <apr_optional.h>
 #include <apr_strings.h>
 
 #include <ap_release.h>
 #include <mpm_common.h>
 #include <httpd.h>
+#include <http_core.h>
 #include <http_protocol.h>
 #include <http_request.h>
 #include <http_log.h>
@@ -41,6 +43,7 @@
 #include "mod_md.h"
 #include "mod_md_config.h"
 #include "mod_md_os.h"
+#include "mod_ssl.h"
 #include "mod_watchdog.h"
 
 static void md_hooks(apr_pool_t *pool);
@@ -92,6 +95,12 @@ static void md_merge_srv(md_t *md, md_srv_conf_t *base_sc, apr_pool_t *p)
         md->pkey_spec = md->sc->pkey_spec;
         
     }
+    if (md->require_https < 0) {
+        md->require_https = md_config_geti(md->sc, MD_CONFIG_REQUIRE_HTTPS);
+    }
+    if (md->must_staple < 0) {
+        md->must_staple = md_config_geti(md->sc, MD_CONFIG_MUST_STAPLE);
+    }
 }
 
 static apr_status_t check_coverage(md_t *md, const char *domain, server_rec *s, apr_pool_t *p)
@@ -113,28 +122,61 @@ static apr_status_t check_coverage(md_t *md, const char *domain, server_rec *s, 
     }
 }
 
-static apr_status_t apply_to_servers(md_t *md, server_rec *base_server, 
+static apr_status_t md_covers_server(md_t *md, server_rec *s, apr_pool_t *p)
+{
+    apr_status_t rv;
+    const char *name;
+    int i;
+    
+    if (APR_SUCCESS == (rv = check_coverage(md, s->server_hostname, s, p)) && s->names) {
+        for (i = 0; i < s->names->nelts; ++i) {
+            name = APR_ARRAY_IDX(s->names, i, const char*);
+            if (APR_SUCCESS != (rv = check_coverage(md, name, s, p))) {
+                break;
+            }
+        }
+    }
+    return rv;
+}
+
+static int matches_port_somewhere(server_rec *s, int port)
+{
+    server_addr_rec *sa;
+    
+    for (sa = s->addrs; sa; sa = sa->next) {
+        if (sa->host_port == port) {
+            /* host_addr might be general (0.0.0.0) or specific, we count this as match */
+            return 1;
+        }
+        if (sa->host_port == 0) {
+            /* wildcard port, answers to all ports. Rare, but may work. */
+            return 1;
+        }
+    }
+    return 0;
+}
+
+static apr_status_t assign_to_servers(md_t *md, server_rec *base_server, 
                                      apr_pool_t *p, apr_pool_t *ptemp)
 {
-    server_rec *s;
+    server_rec *s, *s_https;
     request_rec r;
     md_srv_conf_t *sc;
     md_mod_conf_t *mc;
-    apr_status_t rv = APR_SUCCESS, rv2;
-    int i, j;
-    const char *domain, *name;
+    apr_status_t rv = APR_SUCCESS;
+    int i;
+    const char *domain;
+    apr_array_header_t *servers;
     
     sc = md_config_get(base_server);
     mc = sc->mc;
-    
-    /* Find the (at most one) managed domain for each vhost/base server and
-     * remember it at our config for it. 
-     * The config is not accepted, if a vhost matches 2 or more managed domains.
+
+    /* Assign the MD to all server_rec configs that it matches. If there already
+     * is an assigned MD not equal this one, the configuration is in error.
      */
     memset(&r, 0, sizeof(r));
-    sc = NULL;
+    servers = apr_array_make(ptemp, 5, sizeof(server_rec*));
     
-    /* This MD may apply to 0, 1 or more sever_recs */
     for (s = base_server; s; s = s->next) {
         r.server = s;
         
@@ -142,8 +184,7 @@ static apr_status_t apply_to_servers(md_t *md, server_rec *base_server,
             domain = APR_ARRAY_IDX(md->domains, i, const char*);
             
             if (ap_matches_request_vhost(&r, domain, s->port)) {
-                /* Create a unique md_srv_conf_t record for this server. 
-                 * We keep local information here. */
+                /* Create a unique md_srv_conf_t record for this server, if there is none yet */
                 sc = md_config_get_unique(s, p);
                 
                 ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, base_server, APLOGNO(10041)
@@ -158,54 +199,91 @@ static apr_status_t apply_to_servers(md_t *md, server_rec *base_server,
                     ap_log_error(APLOG_MARK, APLOG_ERR, 0, base_server, APLOGNO(10042)
                                  "conflict: MD %s matches server %s, but MD %s also matches.",
                                  md->name, s->server_hostname, sc->assigned->name);
-                    rv = APR_EINVAL;
-                    goto next_server;
+                    return APR_EINVAL;
                 }
+                
+                /* If server has name or an alias not covered,
+                 * a generated certificate will not match. 
+                 */
+                if (APR_SUCCESS != (rv = md_covers_server(md, s, ptemp))) {
+                    return rv;
+                }
+
+                sc->assigned = md;
+                APR_ARRAY_PUSH(servers, server_rec*) = s;
                 
                 ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, base_server, APLOGNO(10043)
                              "Managed Domain %s applies to vhost %s:%d", md->name,
                              s->server_hostname, s->port);
                 
-                /* If there is a non-default ServerAdmin defined for this vhost, take
-                 * that one as contact info */
-                if (s->server_admin && strcmp(DEFAULT_ADMIN, s->server_admin)) {
-                    apr_array_clear(md->contacts);
-                    APR_ARRAY_PUSH(md->contacts, const char *) = 
-                    md_util_schemify(p, s->server_admin, "mailto");
-                    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, base_server, APLOGNO(10044)
-                                 "Managed Domain %s assigned server admin %s", md->name,
-                                 s->server_admin);
-                }
-                /* remember */
-                sc->assigned = md;
-                
-                /* This server matches a managed domain. If it contains names or
-                 * alias that are not in this md, a generated certificate will not match. */
-                if (APR_SUCCESS == (rv2 = check_coverage(md, s->server_hostname, s, p))
-                    && s->names) {
-                    for (j = 0; j < s->names->nelts; ++j) {
-                        name = APR_ARRAY_IDX(s->names, j, const char*);
-                        if (APR_SUCCESS != (rv2 = check_coverage(md, name, s, p))) {
-                            break;
-                        }
-                    }
-                }
-                
-                if (APR_SUCCESS != rv2) {
-                    rv = rv2;
-                }
                 goto next_server;
             }
         }
     next_server:
         continue;
     }
-    
-    if (sc == NULL && md->drive_mode != MD_DRIVE_ALWAYS) {
-        /* Not an error, but looks suspicious */
-        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, base_server, APLOGNO(10045)
-                     "No VirtualHost matches Managed Domain %s", md->name);
-        APR_ARRAY_PUSH(mc->unused_names, const char*)  = md->name;
+
+    if (APR_SUCCESS == rv) {
+        if (apr_is_empty_array(servers)) {
+            if (md->drive_mode != MD_DRIVE_ALWAYS) {
+                /* Not an error, but looks suspicious */
+                ap_log_error(APLOG_MARK, APLOG_WARNING, 0, base_server, APLOGNO(10045)
+                             "No VirtualHost matches Managed Domain %s", md->name);
+                APR_ARRAY_PUSH(mc->unused_names, const char*)  = md->name;
+            }
+        }
+        else {
+            const char *uri;
+            
+            /* Found matching server_rec's. Collect all 'ServerAdmin's into MD's contact list */
+            apr_array_clear(md->contacts);
+            for (i = 0; i < servers->nelts; ++i) {
+                s = APR_ARRAY_IDX(servers, i, server_rec*);
+                if (s->server_admin && strcmp(DEFAULT_ADMIN, s->server_admin)) {
+                    uri = md_util_schemify(p, s->server_admin, "mailto");
+                    if (md_array_str_index(md->contacts, uri, 0, 0) < 0) {
+                        APR_ARRAY_PUSH(md->contacts, const char *) = uri; 
+                        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, base_server, APLOGNO(10044)
+                                     "%s: added contact %s", md->name, uri);
+                    }
+                }
+            }
+            
+            if (md->require_https > MD_REQUIRE_OFF) {
+                /* We require https for this MD, but do we have port 443 (or a mapped one)
+                 * available? */
+                if (mc->local_443 <= 0) {
+                    ap_log_error(APLOG_MARK, APLOG_ERR, 0, base_server, APLOGNO()
+                                 "MDPortMap says there is no port for https (443), "
+                                 "but MD %s is configured to require https. This "
+                                 "only works when a 443 port is available.", md->name);
+                    return APR_EINVAL;
+                    
+                }
+                
+                /* Ok, we know which local port represents 443, do we have a server_rec
+                 * for MD that has addresses with port 443? */
+                s_https = NULL;
+                for (i = 0; i < servers->nelts; ++i) {
+                    s = APR_ARRAY_IDX(servers, i, server_rec*);
+                    if (matches_port_somewhere(s, mc->local_443)) {
+                        s_https = s;
+                        break;
+                    }
+                }
+                
+                if (!s_https) {
+                    /* Did not find any server_rec that matches this MD *and* has an
+                     * s->addrs match for the https port. Suspicious. */
+                    ap_log_error(APLOG_MARK, APLOG_WARNING, 0, base_server, APLOGNO()
+                                 "MD %s is configured to require https, but there seems to be "
+                                 "no VirtualHost for it that has port %d in its address list. "
+                                 "This looks as if it will not work.", 
+                                 md->name, mc->local_443);
+                }
+            }
+        }
+        
     }
     return rv;
 }
@@ -267,9 +345,9 @@ static apr_status_t md_calc_md_list(apr_pool_t *p, apr_pool_t *plog,
             }
         }
 
-        /* Apply to the vhost(s) that this MD matches - if any. Perform some
+        /* Assign MD to the server_rec configs that it matches. Perform some
          * last finishing touches on the MD. */
-        if (APR_SUCCESS != (rv = apply_to_servers(md, base_server, p, ptemp))) {
+        if (APR_SUCCESS != (rv = assign_to_servers(md, base_server, p, ptemp))) {
             return rv;
         }
 
@@ -433,6 +511,16 @@ static void init_setups(apr_pool_t *p, server_rec *base_server)
 }
 
 /**************************************************************************************************/
+/* mod_ssl interface */
+
+static APR_OPTIONAL_FN_TYPE(ssl_is_https) *opt_ssl_is_https;
+
+static void init_ssl(void)
+{
+    opt_ssl_is_https = APR_RETRIEVE_OPTIONAL_FN(ssl_is_https);
+}
+
+/**************************************************************************************************/
 /* watchdog based impl. */
 
 #define MD_WATCHDOG_NAME   "_md_"
@@ -442,72 +530,130 @@ static APR_OPTIONAL_FN_TYPE(ap_watchdog_register_callback) *wd_register_callback
 static APR_OPTIONAL_FN_TYPE(ap_watchdog_set_callback_interval) *wd_set_interval;
 
 typedef struct {
+    md_t *md;
+
+    int stalled;
+    int renewed;
+    int renewal_notified;
+    apr_time_t restart_at;
+    int need_restart;
+    int restart_processed;
+
+    apr_status_t last_rv;
+    apr_time_t next_check;
+    int error_runs;
+} md_job_t;
+
+typedef struct {
     apr_pool_t *p;
     server_rec *s;
     ap_watchdog_t *watchdog;
-    int all_valid;
-    apr_time_t valid_not_before;
-    int error_count;
-    int processed_count;
-
-    int error_runs;
-    apr_time_t next_change;
-    apr_time_t next_valid;
     
-    apr_array_header_t *mds;
+    apr_time_t next_change;
+    
+    apr_array_header_t *jobs;
     md_reg_t *reg;
 } md_watchdog;
 
-static apr_status_t drive_md(md_watchdog *wd, md_t *md, apr_pool_t *ptemp)
+static void assess_renewal(md_watchdog *wd, md_job_t *job, apr_pool_t *ptemp) 
+{
+    apr_time_t now = apr_time_now();
+    if (now >= job->restart_at) {
+        job->need_restart = 1;
+        ap_log_error( APLOG_MARK, APLOG_TRACE1, 0, wd->s, 
+                     "md(%s): has been renewed, needs restart now", job->md->name);
+    }
+    else {
+        job->next_check = job->restart_at;
+        
+        if (job->renewal_notified) {
+            ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, wd->s, 
+                         "%s: renewed cert valid in %s", 
+                         job->md->name, md_print_duration(ptemp, job->restart_at - now));
+        }
+        else {
+            char ts[APR_RFC822_DATE_LEN];
+
+            apr_rfc822_date(ts, job->restart_at);
+            ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, wd->s, APLOGNO(10051) 
+                         "%s: has been renewed successfully and should be activated at %s"
+                         " (this requires a server restart latest in %s)", 
+                         job->md->name, ts, md_print_duration(ptemp, job->restart_at - now));
+            job->renewal_notified = 1;
+        }
+    }
+}
+
+static apr_status_t check_job(md_watchdog *wd, md_job_t *job, apr_pool_t *ptemp)
 {
     apr_status_t rv = APR_SUCCESS;
-    apr_time_t renew_time, now, valid_from;
+    apr_time_t valid_from, delay;
     int errored, renew;
     char ts[APR_RFC822_DATE_LEN];
     
-    if (md->state == MD_S_MISSING) {
-        rv = APR_INCOMPLETE;
+    if (apr_time_now() < job->next_check) {
+        /* Job needs to wait */
+        return APR_EAGAIN;
     }
-    if (md->state == MD_S_COMPLETE && !md->expires) {
-        /* This is our indicator that we did already renewed this managed domain
-         * successfully and only wait on the next restart for it to activate */
-        now = apr_time_now();
-        ap_log_error( APLOG_MARK, APLOG_INFO, 0, wd->s, APLOGNO(10051) 
-                     "md(%s): has been renewed, should be activated in %s", 
-                     md->name, (md->valid_from <= now)? "about now" : 
-                     md_print_duration(ptemp, md->valid_from - now));
+    
+    job->next_check = 0;
+    if (job->md->state == MD_S_MISSING) {
+        job->stalled = 1;
     }
-    else if (APR_SUCCESS == (rv = md_reg_assess(wd->reg, md, &errored, &renew, wd->p))) {
+    
+    if (job->stalled) {
+        /* Missing information, this will not change until configuration
+         * is changed and server restarted */
+         return APR_INCOMPLETE;
+    }
+    else if (job->renewed) {
+        assess_renewal(wd, job, ptemp);
+    }
+    else if (APR_SUCCESS == (rv = md_reg_assess(wd->reg, job->md, &errored, &renew, wd->p))) {
         if (errored) {
             ap_log_error( APLOG_MARK, APLOG_DEBUG, 0, wd->s, APLOGNO(10050) 
-                         "md(%s): in error state", md->name);
+                         "md(%s): in error state", job->md->name);
         }
         else if (renew) {
             ap_log_error( APLOG_MARK, APLOG_DEBUG, 0, wd->s, APLOGNO(10052) 
-                         "md(%s): state=%d, driving", md->name, md->state);
+                         "md(%s): state=%d, driving", job->md->name, job->md->state);
                          
-            rv = md_reg_stage(wd->reg, md, NULL, 0, &valid_from, ptemp);
+            rv = md_reg_stage(wd->reg, job->md, NULL, 0, &valid_from, ptemp);
             
             if (APR_SUCCESS == rv) {
-                md->state = MD_S_COMPLETE;
-                md->expires = 0;
-                md->valid_from = valid_from;
-                ++wd->processed_count;
-                if (!wd->next_valid || wd->next_valid > valid_from) {
-                    wd->next_valid = valid_from;
-                }
+                job->renewed = 1;
+                job->restart_at = valid_from;
+                assess_renewal(wd, job, ptemp);
             }
         }
         else {
-            apr_rfc822_date(ts, md->expires);
+            job->next_check = job->md->expires - job->md->renew_window;
+
+            apr_rfc822_date(ts, job->md->expires);
             ap_log_error( APLOG_MARK, APLOG_DEBUG, 0, wd->s, APLOGNO(10053) 
-                         "md(%s): is complete, cert expires %s", md->name, ts);
-            renew_time = md->expires - md->renew_window;
-            if (renew_time < wd->next_change) {
-                wd->next_change = renew_time;
-            }
+                         "md(%s): is complete, cert expires %s", job->md->name, ts);
         }
     }
+    
+    if (APR_SUCCESS == rv) {
+        job->error_runs = 0;
+    }
+    else {
+        ap_log_error( APLOG_MARK, APLOG_ERR, rv, wd->s, APLOGNO(10056) 
+                     "processing %s", job->md->name);
+        ++job->error_runs;
+        /* back off duration, depending on the errors we encounter in a row */
+        delay = apr_time_from_sec(5 << (job->error_runs - 1));
+        if (delay > apr_time_from_sec(60*60)) {
+            delay = apr_time_from_sec(60*60);
+        }
+        job->next_check = apr_time_now() + delay;
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, wd->s, APLOGNO(10057) 
+                     "%s: encountered error for the %d. time, next run in %s",
+                     job->md->name, job->error_runs, md_print_duration(ptemp, delay));
+    }
+    
+    job->last_rv = rv;
     return rv;
 }
 
@@ -515,97 +661,50 @@ static apr_status_t run_watchdog(int state, void *baton, apr_pool_t *ptemp)
 {
     md_watchdog *wd = baton;
     apr_status_t rv = APR_SUCCESS;
-    md_t *md;
+    md_job_t *job;
     apr_time_t next_run, now;
+    int restart = 0;
     int i;
     
     switch (state) {
         case AP_WATCHDOG_STATE_STARTING:
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, wd->s, APLOGNO(10054)
-                         "md watchdog start, auto drive %d mds", wd->mds->nelts);
+                         "md watchdog start, auto drive %d mds", wd->jobs->nelts);
             break;
         case AP_WATCHDOG_STATE_RUNNING:
             assert(wd->reg);
             
-            wd->all_valid = 1;
-            wd->valid_not_before = 0;
-            wd->processed_count = 0;
-            wd->error_count = 0;
             wd->next_change = 0;
-            wd->next_valid = 0;
-            
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, wd->s, APLOGNO(10055)
-                         "md watchdog run, auto drive %d mds", wd->mds->nelts);
+                         "md watchdog run, auto drive %d mds", wd->jobs->nelts);
                          
-            /* Check if all Managed Domains are ok or if we have to do something */
-            for (i = 0; i < wd->mds->nelts; ++i) {
-                md = APR_ARRAY_IDX(wd->mds, i, md_t *);
-                
-                rv = drive_md(wd, md, ptemp);
-                
-                if (APR_STATUS_IS_INCOMPLETE(rv)) {
-                    /* configuration not complete, this MD cannot be driven further */
-                    wd->all_valid = 0;
-                }
-                else if (APR_SUCCESS != rv) {
-                    wd->all_valid = 0;
-                    ++wd->error_count;
-                    ap_log_error( APLOG_MARK, APLOG_ERR, rv, wd->s, APLOGNO(10056) 
-                                 "processing %s", md->name);
-                }
-            }
-
-            /* Determine when we want to run next */
-            wd->error_runs = wd->error_count? (wd->error_runs + 1) : 0;
-
-            if (wd->all_valid) {
-                ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, wd->s, "all managed domains are valid");
-            }
-            else if (wd->error_count == 0) {
-                ap_log_error(APLOG_MARK, APLOG_INFO, 0, wd->s, APLOGNO() 
-                             "all managed domains driven as far as possible");
-            }
-            
-            now = apr_time_now();
             /* normally, we'd like to run at least twice a day */
-            next_run = now + apr_time_from_sec(MD_SECS_PER_DAY / 2);
-            
-            /* Unless we know of an MD change before that */
-            if (wd->next_change > 0 && wd->next_change < next_run) {
-                next_run = wd->next_change;
-            }
-            
-            /* Or have to activate a new cert even before that */
-            if (wd->next_valid > now && wd->next_valid < next_run) {
-                next_run = wd->next_valid;
-                ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, wd->s, 
-                             "Delaying activation of %d Managed Domain%s by %s", 
-                             wd->processed_count, (wd->processed_count > 1)? "s have" : " has",
-                             md_print_duration(ptemp, next_run - now));
-            }
-            
-            /* Or encountered errors and like to retry even before that */
-            if (wd->error_count > 0) {
-                apr_interval_time_t delay;
+            next_run = apr_time_now() + apr_time_from_sec(MD_SECS_PER_DAY / 2);
+
+            /* Check on all the jobs we have */
+            for (i = 0; i < wd->jobs->nelts; ++i) {
+                job = APR_ARRAY_IDX(wd->jobs, i, md_job_t *);
                 
-                /* back off duration, depending on the errors we encounter in a row */
-                delay = apr_time_from_sec(5 << (wd->error_runs - 1));
-                if (delay > apr_time_from_sec(60*60)) {
-                    delay = apr_time_from_sec(60*60);
+                rv = check_job(wd, job, ptemp);
+
+                if (job->need_restart && !job->restart_processed) {
+                    restart = 1;
                 }
-                if (now + delay < next_run) {
-                    ap_log_error(APLOG_MARK, APLOG_INFO, 0, wd->s, APLOGNO(10057) 
-                                 "encountered errors for the %d. time, next try by %s",
-                                 wd->error_runs, md_print_duration(ptemp, delay));
-                    next_run = now + delay;
+                if (job->next_check && job->next_check < next_run) {
+                    next_run = job->next_check;
                 }
             }
-            
+
+            now = apr_time_now();
             if (APLOGdebug(wd->s)) {
                 ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, wd->s, APLOGNO()
                              "next run in %s", md_print_duration(ptemp, next_run - now));
             }
             wd_set_interval(wd->watchdog, next_run - now, wd, run_watchdog);
+
+            for (i = 0; i < wd->jobs->nelts; ++i) {
+                job = APR_ARRAY_IDX(wd->jobs, i, md_job_t *);
+            }
             break;
             
         case AP_WATCHDOG_STATE_STOPPING:
@@ -614,31 +713,31 @@ static apr_status_t run_watchdog(int state, void *baton, apr_pool_t *ptemp)
             break;
     }
 
-    if (wd->processed_count) {
-        now = apr_time_now();
+    if (restart) {
+        const char *action, *names = "";
+        int n;
         
-        if (wd->all_valid) {
-            if (wd->next_valid <= now) {
-                rv = md_server_graceful(ptemp, wd->s);
-                if (APR_ENOTIMPL == rv) {
-                    /* self-graceful restart not supported in this setup */
-                    ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, wd->s, APLOGNO(10059)
-                                 "%d Managed Domain%s been setup and changes will be "
-                                 "activated on next (graceful) server restart.",
-                                 wd->processed_count, (wd->processed_count > 1)? "s have" : " has");
-                }
-            }
-            else {
-                /* activation is delayed */
+        for (i = 0, n = 0; i < wd->jobs->nelts; ++i) {
+            job = APR_ARRAY_IDX(wd->jobs, i, md_job_t *);
+            if (job->need_restart && !job->restart_processed) {
+                names = apr_psprintf(ptemp, "%s%s%s", names, n? ", " : "", job->md->name);
+                ++n;
+                job->restart_processed = 1;
             }
         }
-        else {
-            ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, wd->s, APLOGNO(10060)
-                         "%d Managed Domain%s been setup, while %d%s "
-                         "still being worked on. You may activate the changes made "
-                         "by triggering a (graceful) restart at any time.",
-                         wd->processed_count, (wd->processed_count > 1)? "s have" : " has",
-                         wd->error_count, (wd->error_count > 1)? " are" : " is");
+
+        if (n > 0) {
+            rv = md_server_graceful(ptemp, wd->s);
+            if (APR_ENOTIMPL == rv) {
+                /* self-graceful restart not supported in this setup */
+                action = " and changes will be activated on next (graceful) server restart.";
+            }
+            else {
+                action = " and server has been asked to restart now.";
+            }
+            ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, wd->s, APLOGNO(10059) 
+                         "The Managed Domain%s %s %s been setup%s",
+                         (n > 1)? "s" : "", names, (n > 1)? "have" : "has", action);
         }
     }
     
@@ -654,6 +753,7 @@ static apr_status_t start_watchdog(apr_array_header_t *names, apr_pool_t *p,
     apr_status_t rv;
     const char *name;
     md_t *md;
+    md_job_t *job;
     int i, errored, renew;
     
     wd_get_instance = APR_RETRIEVE_OPTIONAL_FN(ap_watchdog_get_instance);
@@ -681,7 +781,7 @@ static apr_status_t start_watchdog(apr_array_header_t *names, apr_pool_t *p,
     wd->reg = reg;
     wd->s = s;
     
-    wd->mds = apr_array_make(wd->p, 10, sizeof(md_t *));
+    wd->jobs = apr_array_make(wd->p, 10, sizeof(md_job_t *));
     for (i = 0; i < names->nelts; ++i) {
         name = APR_ARRAY_IDX(names, i, const char *);
         md = md_reg_get(wd->reg, name, wd->p);
@@ -692,14 +792,18 @@ static apr_status_t start_watchdog(apr_array_header_t *names, apr_pool_t *p,
                              "md(%s): seems errored. Will not process this any further.", name);
             }
             else {
+                job = apr_pcalloc(wd->p, sizeof(*job));
+                
+                job->md = md;
+                APR_ARRAY_PUSH(wd->jobs, md_job_t*) = job;
+
                 ap_log_error( APLOG_MARK, APLOG_DEBUG, 0, wd->s, APLOGNO(10064) 
                              "md(%s): state=%d, driving", name, md->state);
-                APR_ARRAY_PUSH(wd->mds, md_t*) = md;
             }
         }
     }
 
-    if (!wd->mds->nelts) {
+    if (!wd->jobs->nelts) {
         ap_log_error( APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(10065)
                      "no managed domain in state to drive, no watchdog needed, "
                      "will check again on next server (graceful) restart");
@@ -819,6 +923,8 @@ static apr_status_t md_post_config(apr_pool_t *p, apr_pool_t *plog,
         }
     }
     
+    init_ssl();
+    
     /* If there are MDs to drive, start a watchdog to check on them regularly */
     if (drive_names->nelts > 0) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, s, APLOGNO(10074)
@@ -854,6 +960,34 @@ static int md_is_managed(server_rec *s)
     return 0;
 }
 
+static apr_status_t setup_fallback_cert(md_store_t *store, const md_t *md, apr_pool_t *p)
+{
+    md_pkey_t *pkey;
+    md_cert_t *cert;
+    md_pkey_spec_t spec;
+    apr_status_t rv;
+
+    spec.type = MD_PKEY_TYPE_RSA;
+    spec.params.rsa.bits = MD_PKEY_RSA_BITS_DEF;
+        
+    if (   APR_SUCCESS == (rv = md_pkey_gen(&pkey, p, &spec))
+        && APR_SUCCESS == (rv = md_store_save(store, p, MD_SG_DOMAINS, md->name, 
+                                              MD_FN_FALLBACK_PKEY, MD_SV_PKEY, (void*)pkey, 0))
+        && APR_SUCCESS == (rv = md_cert_self_sign(&cert, "Apache Managed Domain Fallback", 
+                                                  md->domains, pkey, 
+                                                  apr_time_from_sec(14 * MD_SECS_PER_DAY), p))) {
+        rv = md_store_save(store, p, MD_SG_DOMAINS, md->name, 
+                           MD_FN_FALLBACK_CERT, MD_SV_CERT, (void*)cert, 0);
+    }
+
+    return rv;
+}
+
+static int fexists(const char *fname, apr_pool_t *p)
+{
+    return (*fname && APR_SUCCESS == md_util_is_file(fname, p));
+}
+
 static apr_status_t md_get_certificate(server_rec *s, apr_pool_t *p,
                                        const char **pkeyfile, const char **pcertfile)
 {
@@ -871,24 +1005,38 @@ static apr_status_t md_get_certificate(server_rec *s, apr_pool_t *p,
         assert(sc->mc);
         assert(sc->mc->store);
         if (APR_SUCCESS != (rv = md_reg_init(&reg, p, sc->mc->store, sc->mc->proxy_url))) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO() "init registry");
             return rv;
         }
 
         md = md_reg_get(reg, sc->assigned->name, p);
             
         if (APR_SUCCESS != (rv = md_reg_get_cred_files(reg, md, p, pkeyfile, pcertfile))) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO() 
+                         "retrieving credentials for MD %s", md->name);
             return rv;
         }
 
-        if (!*pkeyfile || !*pcertfile 
-            || APR_SUCCESS != md_util_is_file(*pkeyfile, p)
-            || APR_SUCCESS != md_util_is_file(*pcertfile, p)) {
+        if (!fexists(*pkeyfile, p) || !fexists(*pcertfile, p)) { 
             /* Provide temporary, self-signed certificate as fallback, so that
              * clients do not get obscure TLS handshake errors or will see a fallback
              * virtual host that is not intended to be served here. */
-            md_store_get_fname(pkeyfile, sc->mc->store, MD_SG_NONE, NULL, MD_FN_FALLBACK_PKEY, p);
-            md_store_get_fname(pcertfile, sc->mc->store, MD_SG_NONE, NULL, MD_FN_FALLBACK_CERT, p);
+             
+            md_store_get_fname(pkeyfile, sc->mc->store, MD_SG_DOMAINS, 
+                               md->name, MD_FN_FALLBACK_PKEY, p);
+            md_store_get_fname(pcertfile, sc->mc->store, MD_SG_DOMAINS, 
+                               md->name, MD_FN_FALLBACK_CERT, p);
+            if (!fexists(*pkeyfile, p) || !fexists(*pcertfile, p)) { 
+                if (APR_SUCCESS != (rv = setup_fallback_cert(sc->mc->store, md, p))) {
+                    ap_log_error(APLOG_MARK, APLOG_TRACE1, rv, s,  
+                                 "%s: setup fallback certificate", md->name);
+                    return rv;
+                }
+            }
             
+            ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, s,  
+                         "%s: providing fallback certificate for server %s", 
+                         md->name, s->server_hostname);
             return APR_EAGAIN;
         }
 
@@ -957,7 +1105,8 @@ static int md_is_challenge(conn_rec *c, const char *servername,
 /**************************************************************************************************/
 /* ACME challenge responses */
 
-#define ACME_CHALLENGE_PREFIX       "/.well-known/acme-challenge/"
+#define WELL_KNOWN_PREFIX           "/.well-known/"
+#define ACME_CHALLENGE_PREFIX       WELL_KNOWN_PREFIX"acme-challenge/"
 
 static int md_http_challenge_pr(request_rec *r)
 {
@@ -965,14 +1114,13 @@ static int md_http_challenge_pr(request_rec *r)
     const md_srv_conf_t *sc;
     const char *name, *data;
     apr_status_t rv;
-            
+    
     if (!strncmp(ACME_CHALLENGE_PREFIX, r->parsed_uri.path, sizeof(ACME_CHALLENGE_PREFIX)-1)) {
         if (r->method_number == M_GET) {
             md_store_t *store;
         
             sc = ap_get_module_config(r->server->module_config, &md_module);
             store = sc? sc->mc->store : NULL;
-            
             name = r->parsed_uri.path + sizeof(ACME_CHALLENGE_PREFIX)-1;
 
             r->status = HTTP_NOT_FOUND;
@@ -1011,6 +1159,51 @@ static int md_http_challenge_pr(request_rec *r)
     return DECLINED;
 }
 
+/**************************************************************************************************/
+/* Require Https hook */
+
+static int md_require_https_maybe(request_rec *r)
+{
+    const md_srv_conf_t *sc;
+    apr_uri_t uri;
+    const char *s;
+    int status;
+    
+    if (strncmp(WELL_KNOWN_PREFIX, r->parsed_uri.path, sizeof(WELL_KNOWN_PREFIX)-1)) {
+        sc = ap_get_module_config(r->server->module_config, &md_module);
+        if (sc && sc->assigned && sc->assigned->require_https > MD_REQUIRE_OFF 
+            && opt_ssl_is_https && !opt_ssl_is_https(r->connection)) {
+            /* Do not have https:, but require it. Redirect the request accordingly. 
+             */
+            if (r->method_number == M_GET) {
+                /* safe to use the old-fashioned codes */
+                status = ((MD_REQUIRE_PERMANENT == sc->assigned->require_https)? 
+                          HTTP_MOVED_PERMANENTLY : HTTP_MOVED_TEMPORARILY);
+            }
+            else {
+                /* these should keep the method unchanged on retry */
+                status = ((MD_REQUIRE_PERMANENT == sc->assigned->require_https)? 
+                          HTTP_PERMANENT_REDIRECT : HTTP_TEMPORARY_REDIRECT);
+            }
+            
+            s = ap_construct_url(r->pool, r->uri, r);
+            if (APR_SUCCESS == apr_uri_parse(r->pool, s, &uri)) {
+                uri.scheme = (char*)"https";
+                uri.port = 443;
+                uri.port_str = (char*)"443";
+                uri.query = r->parsed_uri.query;
+                uri.fragment = r->parsed_uri.fragment;
+                s = apr_uri_unparse(r->pool, &uri, APR_URI_UNP_OMITUSERINFO);
+                if (s && *s) {
+                    apr_table_setn(r->headers_out, "Location", s);
+                    return status;
+                }
+            }
+        }
+    }
+    return DECLINED;
+}
+
 /* Runs once per created child process. Perform any process 
  * related initionalization here.
  */
@@ -1039,6 +1232,8 @@ static void md_hooks(apr_pool_t *pool)
 
     /* answer challenges *very* early, before any configured authentication may strike */
     ap_hook_post_read_request(md_http_challenge_pr, NULL, NULL, APR_HOOK_MIDDLE);
+    /* redirect to https if configured */
+    ap_hook_fixups(md_require_https_maybe, NULL, NULL, APR_HOOK_MIDDLE);
 
     APR_REGISTER_OPTIONAL_FN(md_is_managed);
     APR_REGISTER_OPTIONAL_FN(md_get_certificate);
