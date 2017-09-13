@@ -1708,62 +1708,88 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(
         ctx->tmpbb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
     }
 
-    /* Loop through this set of buckets to compute their length
-     */
+    /* Loop through the brigade to count the length. To avoid
+     * arbitrary memory consumption with morphing bucket types, this
+     * loop will stop and pass on the brigade when necessary. */
     e = APR_BRIGADE_FIRST(b);
     while (e != APR_BRIGADE_SENTINEL(b)) {
+        apr_status_t rv;
+
         if (APR_BUCKET_IS_EOS(e)) {
             eos = 1;
             break;
         }
-        if (e->length == (apr_size_t)-1) {
+        /* For a flush bucket, fall through to pass the brigade and
+         * flush now. */
+        else if (APR_BUCKET_IS_FLUSH(e)) {
+            e = APR_BUCKET_NEXT(e);
+        }
+        /* For metadata bucket types other than FLUSH, loop. */
+        else if (APR_BUCKET_IS_METADATA(e)) {
+            e = APR_BUCKET_NEXT(e);
+            continue;
+        }
+        /* For determinate length data buckets, count the length and
+         * continue. */
+        else if (e->length != (apr_size_t)-1) {
+            r->bytes_sent += e->length;
+            e = APR_BUCKET_NEXT(e);
+            continue;
+        }
+        /* For indeterminate length data buckets, perform one read. */
+        else /* e->length == (apr_size_t)-1 */ {
             apr_size_t len;
             const char *ignored;
-            apr_status_t rv;
-
-            /* This is probably a pipe bucket.  Send everything
-             * prior to this, and then read the data for this bucket.
-             */
+        
             rv = apr_bucket_read(e, &ignored, &len, eblock);
-            if (rv == APR_SUCCESS) {
-                /* Attempt a nonblocking read next time through */
-                eblock = APR_NONBLOCK_READ;
-                r->bytes_sent += len;
-            }
-            else if (APR_STATUS_IS_EAGAIN(rv)) {
-                /* Output everything prior to this bucket, and then
-                 * do a blocking read on the next batch.
-                 */
-                if (e != APR_BRIGADE_FIRST(b)) {
-                    apr_bucket *flush;
-                    apr_brigade_split_ex(b, e, ctx->tmpbb);
-                    flush = apr_bucket_flush_create(r->connection->bucket_alloc);
-
-                    APR_BRIGADE_INSERT_TAIL(b, flush);
-                    rv = ap_pass_brigade(f->next, b);
-                    if (rv != APR_SUCCESS || f->c->aborted) {
-                        return rv;
-                    }
-                    apr_brigade_cleanup(b);
-                    APR_BRIGADE_CONCAT(b, ctx->tmpbb);
-                    e = APR_BRIGADE_FIRST(b);
-
-                    ctx->data_sent = 1;
-                }
-                eblock = APR_BLOCK_READ;
-                continue;
-            }
-            else {
+            if ((rv != APR_SUCCESS) && !APR_STATUS_IS_EAGAIN(rv)) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(00574)
                               "ap_content_length_filter: "
                               "apr_bucket_read() failed");
                 return rv;
             }
+            if (rv == APR_SUCCESS) {
+                eblock = APR_NONBLOCK_READ;
+                e = APR_BUCKET_NEXT(e);
+                r->bytes_sent += len;
+            }
+            else if (APR_STATUS_IS_EAGAIN(rv)) {
+                apr_bucket *flush;
+
+                /* Next read must block. */
+                eblock = APR_BLOCK_READ;
+
+                /* Ensure the last bucket to pass down is a flush if
+                 * the next read will block. */
+                flush = apr_bucket_flush_create(f->c->bucket_alloc);
+                APR_BUCKET_INSERT_BEFORE(e, flush);
+            }
         }
-        else {
-            r->bytes_sent += e->length;
+
+        /* Optimization: if the next bucket is EOS (directly after a
+         * bucket morphed to the heap, or a flush), short-cut to
+         * handle EOS straight away - allowing C-L to be determined
+         * for content which is already entirely in memory. */
+        if (e != APR_BRIGADE_SENTINEL(b) && APR_BUCKET_IS_EOS(e)) {
+            continue;
         }
-        e = APR_BUCKET_NEXT(e);
+
+        /* On reaching here, pass on everything in the brigade up to
+         * this point. */
+        apr_brigade_split_ex(b, e, ctx->tmpbb);
+        
+        rv = ap_pass_brigade(f->next, b);
+        if (rv != APR_SUCCESS) {
+            return rv;
+        }
+        else if (f->c->aborted) {
+            return APR_ECONNABORTED;
+        }
+        apr_brigade_cleanup(b);
+        APR_BRIGADE_CONCAT(b, ctx->tmpbb);
+        e = APR_BRIGADE_FIRST(b);
+        
+        ctx->data_sent = 1;
     }
 
     /* If we've now seen the entire response and it's otherwise
