@@ -220,7 +220,7 @@ ManagedDomain example.org www.example.org mail.example.org
                 The URL where the CA offers its service.
             </p><p>
                 Let's Encrypt offers, right now, two such URLs. One for the real certificates and
-                one for testing (their staging area, athttps://acme-staging.api.letsencrypt.org/directory).
+                one for testing (their staging area, at https://acme-staging.api.letsencrypt.org/directory).
                 In order to have <module>mod_md</module> use this testing service, configure your
                 server like this: 
             </p>
@@ -274,6 +274,20 @@ MDCertificateAgreement https://letsencrypt.org/documents/LE-SA-v1.1.1-August-1-2
     </directivesynopsis>
 
     <directivesynopsis>
+        <name>MDHttpProxy</name>
+        <description>Define a proxy for outgoing connections.</description>
+        <syntax>MDHttpProxy url</syntax>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        <usage>
+            <p>Use a http proxy to connect to the MDCertificateAuthority. Define this
+            if your webserver can only reach the internet with a forward proxy.
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
         <name>MDMember</name>
         <description>Additional hostname for the managed domain.</description>
         <syntax>MDMember hostname</syntax>
@@ -315,6 +329,24 @@ MDCertificateAgreement https://letsencrypt.org/documents/LE-SA-v1.1.1-August-1-2
             <p>Defines if the <directive module="core">ServerName</directive> and
                <directive module="core">ServerAlias</directive> values of a VirtualHost
                are automatically added to the members of a Managed Domain or not.
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>MDMustStaple</name>
+        <description>Control if new certificates carry the OCSP Must Staple flag.</description>
+        <syntax>MDMustStaple on|off</syntax>
+        <default>MDMustStaple off</default>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        <usage>
+            <p>Defines if newly requested certificate should have the OCSP Must Staple flag 
+            set or not. If a certificate has this flag, the server is required to send a 
+            OCSP stapling response to every client. This only works if you configure 
+            mod_ssl to generate this (see <directive module="mod_ssl" >SSLUseStapling</directive>
+            and friends).
             </p>
         </usage>
     </directivesynopsis>
@@ -395,20 +427,80 @@ MDPrivateKeys RSA 3072
         <name>MDRenewWindow</name>
         <description>Control when a certificate will be renewed.</description>
         <syntax>MDRenewWindow duration</syntax>
-        <default>MDRenewWindow 14d</default>
+        <default>MDRenewWindow 33%</default>
         <contextlist>
             <context>server config</context>
         </contextlist>
         <usage>
             <p>
-                Tells mod_md when to renew a certificate. The default means 14 days before a
-                certificate actually expires. If you configure this too short, a CA might
-                not be reachable in time and your server will show an invalid certificate. If
-                you do it too long, the CA might think you are a bother and block your requests.
-                Let's Encrypt has a certificate expiration of 90 days. So, if you configure the
-                renew window to 89 days, <module>mod_md</module> will renew the certificate
-                every day and Let's Encrypt will block you.
+            If the validity of the certificate falls below duration, mod_md will get a 
+            new signed certificate.
+            </p><p>
+            Normally, certificates are valid for around 90 days and mod_md will renew 
+            them the earliest 33% of their complete lifetime before they expire (so for 
+            90 days validity, 30 days before it expires). If you think this is not what 
+            you need, you can specify either the exact time, as in:
             </p>
+            <example><title>Example</title>
+                <highlight language="config">
+# 21 days before expiry
+MDRenewWindow 21d 
+# 30 seconds (might be close)
+MDRenewWindow 30s
+# 10% of the cert lifetime
+MDRenewWindow 10%
+                </highlight>
+            </example>
+            <p>When in auto drive mode, the module will check every 12 hours at least 
+            what the status of the managed domains is and if it needs to do something. 
+            On errors, for example when the CA is unreachable, it will initially retry 
+            after some seconds. Should that continue to fail, it will back off to a 
+            maximum interval of hourly checks.
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>MDRequireHttps</name>
+        <description>Redirects http: traffic to https: for Managed Domains.</description>
+        <syntax>MDRequireHttps off|temporary|permanent</syntax>
+        <default>MDRequireHttps off</default>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        <usage>
+            <p>This is a convenience directive to ease http: to https: migration of 
+            your Managed Domains. With:
+            </p>
+            <example><title>Example</title>
+                <highlight language="config">
+MDRequireHttps temporary                
+                </highlight>
+            </example>
+            <p>you announce that you want all traffic via http: URLs to be redirected 
+            to the https: ones, for now. If you want client to no longer use the
+             http: URLs, configure:
+            </p>
+            <example><title>Example</title>
+                <highlight language="config">
+MDRequireHttps permanent                
+                </highlight>
+            </example>
+            <p>You can achieve the same with mod_alias and some Redirect configuration, 
+            basically. If you do it yourself, please make sure to exclude the paths 
+            /.well-known/* from your redirection, otherwise mod_md might have trouble 
+            signing on new certificates.
+            </p>
+            <p>If you set this globally, it applies to all managed domains. If you want 
+            it for a specific domain only, use:
+            </p>
+            <example><title>Example</title>
+                <highlight language="config">
+&lt;ManagedDomain xxx.yyy&gt;
+  MDRequireHttps permanent
+&lt;/ManagedDomain&gt;
+                </highlight>
+            </example>
         </usage>
     </directivesynopsis>
 
@@ -450,19 +542,6 @@ MDPrivateKeys RSA 3072
                 types that are supported by <module>mod_md</module>. By default, it will try
                 the one on port 443 when available.
             </p>
-        </usage>
-    </directivesynopsis>
-
-    <directivesynopsis>
-        <name>MDHttpProxy</name>
-        <description>The URL of the HTTP proxy to use.</description>
-        <syntax>MDHttpProxy url</syntax>
-        <default>MDHttpProxy </default>
-        <contextlist>
-            <context>server config</context>
-        </contextlist>
-        <usage>
-            <p>Use a HTTP proxy to connect to the <directive module="mod_md">MDCertificateAuthority</directive> url.</p>
         </usage>
     </directivesynopsis>
 
