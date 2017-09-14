@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_ssl: adding ssl_policies.h[.in] for policy cipher/protocol definitions. Use 
+     update_policies.py to update manually from Mozilla JSON definitions at
+     https://statics.tls.security.mozilla.org/server-side-tls-conf.json
+     [Stefan Eissing]
+     
   *) mod_md: v0.9.5:
      - New directive (srly: what do you expect at this point?) "MDMustStaple on|off" to control if
        new certificates are requested with the OCSP Must Staple extension.
