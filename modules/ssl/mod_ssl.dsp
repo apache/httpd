@@ -180,6 +180,10 @@ SOURCE=.\ssl_private.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\ssl_policies.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\ssl_util_ssl.h
 # End Source File
 # Begin Source File

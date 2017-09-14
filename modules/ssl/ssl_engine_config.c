@@ -30,6 +30,7 @@
 #include <stdlib.h>
 
 #include "ssl_private.h"
+#include "ssl_policies.h"
 #include "util_mutex.h"
 #include "ap_provider.h"
 
@@ -521,70 +522,6 @@ void ssl_config_proxy_merge(apr_pool_t *p,
 **  _________________________________________________________________
 */
 
-#define SSL_MOD_POLICIES_KEY "ssl_module_policies"
-
-#ifndef OPENSSL_NO_SSL3
-#define STUPID_PROTOCOL_CONSTANTS_SSLV3      SSL_PROTOCOL_SSLV3
-#else
-#define STUPID_PROTOCOL_CONSTANTS_SSLV3      0
-#endif
-
-/**
- * Define a core set of policies that are always there:
- * - 'modern' from https://wiki.mozilla.org/Security/Server_Side_TLS
- * - 'intermediate' from https://wiki.mozilla.org/Security/Server_Side_TLS
- * - 'old' from https://wiki.mozilla.org/Security/Server_Side_TLS
- */
-#ifdef HAVE_TLSV1_X
-    /* Only with OpenSSL > v1.0.2 do we have a chance to implement modern */
-#define SSL_POLICY_LEGACY_PROTOCOLS  \
-    (STUPID_PROTOCOL_CONSTANTS_SSLV3|SSL_PROTOCOL_TLSV1|SSL_PROTOCOL_TLSV1_1)
-
-#define SSL_POLICY_MODERN_PROTOCOLS  \
-    (SSL_PROTOCOL_ALL & ~SSL_POLICY_LEGACY_PROTOCOLS)
-#define SSL_POLICY_MODERN_CIPHERS  \
-    "ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:" \
-    "ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:" \
-    "ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:" \
-    "ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:" \
-    "ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256"
-#endif
-    
-#define SSL_POLICY_INTERMEDIATE_PROTOCOLS \
-    (SSL_PROTOCOL_ALL & ~STUPID_PROTOCOL_CONSTANTS_SSLV3)
-    
-#define SSL_POLICY_INTERMEDIATE_CIPHERS \
-    "ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:" \
-    "ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:" \
-    "ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:" \
-    "DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:" \
-    "ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA:" \
-    "ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES256-SHA384:" \
-    "ECDHE-ECDSA-AES256-SHA:ECDHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA256:" \
-    "DHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES256-SHA:" \
-    "ECDHE-ECDSA-DES-CBC3-SHA:ECDHE-RSA-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:" \
-    "AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:" \
-    "AES128-SHA:AES256-SHA:DES-CBC3-SHA:!DSS"
-
-#define SSL_POLICY_OLD_PROTOCOLS            (SSL_PROTOCOL_ALL)
-#define SSL_POLICY_OLD_CIPHERS \
-    "ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:" \
-    "ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:" \
-    "ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:" \
-    "DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:" \
-    "ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:" \
-    "ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:" \
-    "ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:" \
-    "DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:" \
-    "DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:ECDHE-RSA-DES-CBC3-SHA:" \
-    "ECDHE-ECDSA-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:AES128-GCM-SHA256:" \
-    "AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:AES:" \
-    "DES-CBC3-SHA:HIGH:SEED:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!RSAPSK:" \
-    "!aDH:!aECDH:!EDH-DSS-DES-CBC3-SHA:!KRB5-DES-CBC3-SHA:!SRP"
-
-#define SSL_POLICY_PROXY_VERIFY_MODE    SSL_CVERIFY_REQUIRE
-#define SSL_POLICY_PROXY_VERIFY_DEPTH   -1
-
 static void add_policy(apr_hash_t *policies, apr_pool_t *p, const char *name,
                        int protocols, const char *ciphers, 
                        int honor_order, int compression, int session_tickets,
@@ -632,22 +569,36 @@ static apr_hash_t *get_policies(apr_pool_t *p, int create)
     if (create) {
         policies = apr_hash_make(p);
         
-        /* We could also invoke the commands here and let them parse strings. */
-#ifdef HAVE_TLSV1_X
+#if SSL_POLICY_MODERN
         add_policy(policies, p, "modern", 
-                   SSL_POLICY_MODERN_PROTOCOLS, SSL_POLICY_MODERN_CIPHERS, 
-                   1, 0, 0, 
-                   SSL_POLICY_PROXY_VERIFY_MODE, SSL_POLICY_PROXY_VERIFY_DEPTH);
+                   SSL_POLICY_MODERN_PROTOCOLS, 
+                   SSL_POLICY_MODERN_CIPHERS, 
+                   SSL_POLICY_HONOR_ORDER, 
+                   SSL_POLICY_COMPRESSION, 
+                   SSL_POLICY_SESSION_TICKETS, 
+                   SSL_POLICY_PROXY_VERIFY_MODE, 
+                   SSL_POLICY_PROXY_VERIFY_DEPTH);
 #endif        
+#if SSL_POLICY_INTERMEDIATE
         add_policy(policies, p, "intermediate", 
-                   SSL_POLICY_INTERMEDIATE_PROTOCOLS, SSL_POLICY_INTERMEDIATE_CIPHERS, 
-                   1, 0, 0, 
-                   SSL_POLICY_PROXY_VERIFY_MODE, SSL_POLICY_PROXY_VERIFY_DEPTH);
-                   
+                   SSL_POLICY_INTERMEDIATE_PROTOCOLS, 
+                   SSL_POLICY_INTERMEDIATE_CIPHERS, 
+                   SSL_POLICY_HONOR_ORDER, 
+                   SSL_POLICY_COMPRESSION, 
+                   SSL_POLICY_SESSION_TICKETS, 
+                   SSL_POLICY_PROXY_VERIFY_MODE, 
+                   SSL_POLICY_PROXY_VERIFY_DEPTH);
+#endif        
+#if SSL_POLICY_OLD
         add_policy(policies, p, "old", 
-                   SSL_POLICY_OLD_PROTOCOLS, SSL_POLICY_OLD_CIPHERS, 
-                   1, 0, 0, 
-                   SSL_CVERIFY_NONE, -1);
+                   SSL_POLICY_OLD_PROTOCOLS, 
+                   SSL_POLICY_OLD_CIPHERS, 
+                   SSL_POLICY_HONOR_ORDER, 
+                   SSL_POLICY_COMPRESSION, 
+                   SSL_POLICY_SESSION_TICKETS, 
+                   SSL_CVERIFY_NONE, 
+                   SSL_POLICY_PROXY_VERIFY_DEPTH);
+#endif        
         
         apr_pool_userdata_set(policies, SSL_MOD_POLICIES_KEY,
                               apr_pool_cleanup_null, p);
