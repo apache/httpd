@@ -253,7 +253,7 @@ static apr_status_t assign_to_servers(md_t *md, server_rec *base_server,
                 /* We require https for this MD, but do we have port 443 (or a mapped one)
                  * available? */
                 if (mc->local_443 <= 0) {
-                    ap_log_error(APLOG_MARK, APLOG_ERR, 0, base_server, APLOGNO(10089)
+                    ap_log_error(APLOG_MARK, APLOG_ERR, 0, base_server, APLOGNO()
                                  "MDPortMap says there is no port for https (443), "
                                  "but MD %s is configured to require https. This "
                                  "only works when a 443 port is available.", md->name);
@@ -275,7 +275,7 @@ static apr_status_t assign_to_servers(md_t *md, server_rec *base_server,
                 if (!s_https) {
                     /* Did not find any server_rec that matches this MD *and* has an
                      * s->addrs match for the https port. Suspicious. */
-                    ap_log_error(APLOG_MARK, APLOG_WARNING, 0, base_server, APLOGNO(10090)
+                    ap_log_error(APLOG_MARK, APLOG_WARNING, 0, base_server, APLOGNO()
                                  "MD %s is configured to require https, but there seems to be "
                                  "no VirtualHost for it that has port %d in its address list. "
                                  "This looks as if it will not work.", 
@@ -697,7 +697,7 @@ static apr_status_t run_watchdog(int state, void *baton, apr_pool_t *ptemp)
 
             now = apr_time_now();
             if (APLOGdebug(wd->s)) {
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, wd->s, APLOGNO(10091)
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, wd->s, APLOGNO()
                              "next run in %s", md_print_duration(ptemp, next_run - now));
             }
             wd_set_interval(wd->watchdog, next_run - now, wd, run_watchdog);
@@ -881,6 +881,7 @@ static apr_status_t md_post_config(apr_pool_t *p, apr_pool_t *plog,
     apr_status_t rv = APR_SUCCESS;
     int i;
 
+    md_config_post_config(s, p);
     sc = md_config_get(s);
     mc = sc->mc;
     
@@ -1005,14 +1006,14 @@ static apr_status_t md_get_certificate(server_rec *s, apr_pool_t *p,
         assert(sc->mc);
         assert(sc->mc->store);
         if (APR_SUCCESS != (rv = md_reg_init(&reg, p, sc->mc->store, sc->mc->proxy_url))) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10092) "init registry");
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO() "init registry");
             return rv;
         }
 
         md = md_reg_get(reg, sc->assigned->name, p);
             
         if (APR_SUCCESS != (rv = md_reg_get_cred_files(reg, md, p, pkeyfile, pcertfile))) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10093) 
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO() 
                          "retrieving credentials for MD %s", md->name);
             return rv;
         }
@@ -1169,34 +1170,44 @@ static int md_require_https_maybe(request_rec *r)
     const char *s;
     int status;
     
-    if (strncmp(WELL_KNOWN_PREFIX, r->parsed_uri.path, sizeof(WELL_KNOWN_PREFIX)-1)) {
+    if (opt_ssl_is_https 
+        && strncmp(WELL_KNOWN_PREFIX, r->parsed_uri.path, sizeof(WELL_KNOWN_PREFIX)-1)) {
+        
         sc = ap_get_module_config(r->server->module_config, &md_module);
-        if (sc && sc->assigned && sc->assigned->require_https > MD_REQUIRE_OFF 
-            && opt_ssl_is_https && !opt_ssl_is_https(r->connection)) {
-            /* Do not have https:, but require it. Redirect the request accordingly. 
-             */
-            if (r->method_number == M_GET) {
-                /* safe to use the old-fashioned codes */
-                status = ((MD_REQUIRE_PERMANENT == sc->assigned->require_https)? 
-                          HTTP_MOVED_PERMANENTLY : HTTP_MOVED_TEMPORARILY);
+        if (sc && sc->assigned && sc->assigned->require_https > MD_REQUIRE_OFF) {
+            if (opt_ssl_is_https(r->connection)) {
+                /* Using https:
+                 * if 'permanent' and no one else set a HSTS header already, do it */
+                if (sc->assigned->require_https == MD_REQUIRE_PERMANENT 
+                    && sc->mc->hsts_header && !apr_table_get(r->headers_out, MD_HSTS_HEADER)) {
+                    apr_table_setn(r->headers_out, MD_HSTS_HEADER, sc->mc->hsts_header);
+                }
             }
             else {
-                /* these should keep the method unchanged on retry */
-                status = ((MD_REQUIRE_PERMANENT == sc->assigned->require_https)? 
-                          HTTP_PERMANENT_REDIRECT : HTTP_TEMPORARY_REDIRECT);
-            }
-            
-            s = ap_construct_url(r->pool, r->uri, r);
-            if (APR_SUCCESS == apr_uri_parse(r->pool, s, &uri)) {
-                uri.scheme = (char*)"https";
-                uri.port = 443;
-                uri.port_str = (char*)"443";
-                uri.query = r->parsed_uri.query;
-                uri.fragment = r->parsed_uri.fragment;
-                s = apr_uri_unparse(r->pool, &uri, APR_URI_UNP_OMITUSERINFO);
-                if (s && *s) {
-                    apr_table_setn(r->headers_out, "Location", s);
-                    return status;
+                /* Not using https:, but require it. Redirect. */
+                if (r->method_number == M_GET) {
+                    /* safe to use the old-fashioned codes */
+                    status = ((MD_REQUIRE_PERMANENT == sc->assigned->require_https)? 
+                              HTTP_MOVED_PERMANENTLY : HTTP_MOVED_TEMPORARILY);
+                }
+                else {
+                    /* these should keep the method unchanged on retry */
+                    status = ((MD_REQUIRE_PERMANENT == sc->assigned->require_https)? 
+                              HTTP_PERMANENT_REDIRECT : HTTP_TEMPORARY_REDIRECT);
+                }
+                
+                s = ap_construct_url(r->pool, r->uri, r);
+                if (APR_SUCCESS == apr_uri_parse(r->pool, s, &uri)) {
+                    uri.scheme = (char*)"https";
+                    uri.port = 443;
+                    uri.port_str = (char*)"443";
+                    uri.query = r->parsed_uri.query;
+                    uri.fragment = r->parsed_uri.fragment;
+                    s = apr_uri_unparse(r->pool, &uri, APR_URI_UNP_OMITUSERINFO);
+                    if (s && *s) {
+                        apr_table_setn(r->headers_out, "Location", s);
+                        return status;
+                    }
                 }
             }
         }
@@ -1233,7 +1244,7 @@ static void md_hooks(apr_pool_t *pool)
     /* answer challenges *very* early, before any configured authentication may strike */
     ap_hook_post_read_request(md_http_challenge_pr, NULL, NULL, APR_HOOK_MIDDLE);
     /* redirect to https if configured */
-    ap_hook_fixups(md_require_https_maybe, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_fixups(md_require_https_maybe, NULL, NULL, APR_HOOK_LAST);
 
     APR_REGISTER_OPTIONAL_FN(md_is_managed);
     APR_REGISTER_OPTIONAL_FN(md_get_certificate);

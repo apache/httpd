@@ -32,6 +32,10 @@ struct md_pkey_spec_t;
 #define MD_PKEY_RSA_BITS_MIN       2048
 #define MD_PKEY_RSA_BITS_DEF       2048
 
+/* Minimum age for the HSTS header (RFC 6797), considered appropriate by Mozilla Security */
+#define MD_HSTS_HEADER             "Strict-Transport-Security"
+#define MD_HSTS_MAX_AGE_DEFAULT    15768000
+
 typedef enum {
     MD_S_UNKNOWN,                   /* MD has not been analysed yet */
     MD_S_INCOMPLETE,                /* MD is missing necessary information, cannot go live */

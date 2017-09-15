@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_md: v0.9.6: a "MDRequireHttps permament" configured domain automatically sends out
+     HSTS (rfc 6797) headers in https: responses. [Stefan Eissing]
+
   *) mod_ssl: adding ssl_policies.h[.in] for policy cipher/protocol definitions. Use 
      update_policies.py to update manually from Mozilla JSON definitions at
      https://statics.tls.security.mozilla.org/server-side-tls-conf.json
