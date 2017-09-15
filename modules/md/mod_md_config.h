@@ -45,8 +45,9 @@ typedef struct {
     int local_443;                     /* On which port https:443 arrives */
     int can_http;                      /* Does someone listen to the local port 80 equivalent? */
     int can_https;                     /* Does someone listen to the local port 443 equivalent? */
-
-    apr_array_header_t *unused_names;  /* post config, names of all MDs not linked to a vhost */
+    int hsts_max_age;                  /* max-age of HSTS (rfc6797) header */
+    const char *hsts_header;           /* computed HTST header to use or NULL */
+    apr_array_header_t *unused_names;  /* post config, names of all MDs not assigned to a vhost */
 } md_mod_conf_t;
 
 typedef struct md_srv_conf_t {
@@ -77,6 +78,8 @@ void *md_config_create_svr(apr_pool_t *pool, server_rec *s);
 void *md_config_merge_svr(apr_pool_t *pool, void *basev, void *addv);
 
 extern const command_rec md_cmds[];
+
+apr_status_t md_config_post_config(server_rec *s, apr_pool_t *p);
 
 /* Get the effective md configuration for the connection */
 md_srv_conf_t *md_config_cget(conn_rec *c);

@@ -59,7 +59,9 @@ static md_mod_conf_t defmc = {
     443,
     0,
     0,
-    NULL
+    MD_HSTS_MAX_AGE_DEFAULT,
+    NULL,
+    NULL,
 };
 
 /* Default server specific setting */
@@ -770,6 +772,21 @@ const command_rec md_cmds[] = {
     AP_INIT_TAKE1(NULL, NULL, NULL, RSRC_CONF, NULL)
 };
 
+apr_status_t md_config_post_config(server_rec *s, apr_pool_t *p)
+{
+    md_srv_conf_t *sc;
+    md_mod_conf_t *mc;
+
+    sc = md_config_get(s);
+    mc = sc->mc;
+
+    mc->hsts_header = NULL;
+    if (mc->hsts_max_age > 0) {
+        mc->hsts_header = apr_psprintf(p, "max-age=%d", mc->hsts_max_age);
+    }
+    
+    return APR_SUCCESS;
+}
 
 static md_srv_conf_t *config_get_int(server_rec *s, apr_pool_t *p)
 {
