@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1803171:1808129 (outdated) -->
+<!-- English Revision: 1808129 -->
 <!-- French translation : Lucien GENTIS -->
 
 <!--
@@ -107,6 +107,33 @@ ProxyPassMatch "^/myapp/.*\.php(/.*)?$" "fcgi://localhost:9000/var/www/" enabler
     <example><title>PHP-FPM with UDS</title>
     <highlight language="config">
 ProxyPassMatch "^/(.*\.php(/.*)?)$" "unix:/var/run/php5-fpm.sock|fcgi://localhost/var/www/"
+    </highlight>
+    </example>
+
+    <p>Dans l'exemple suivant, on force le module à traiter les paquets de
+    données en provenance de l'arrière-plan du FCGI dès leur réception, sans les
+    faire transiter par un tampon.
+    </p>
+    <example><title>Force le traitement des données FCGI sans mise en tampon</title>
+    <highlight language="config">
+ProxyPassMatch "^/myapp/.*\.php(/.*)?$" "fcgi://localhost:9000/var/www/" enablereuse=on flushpackets=on
+    </highlight>
+    </example>
+
+    <p>L'exemple suivant est similaire au précédent avec une différence : ici,
+    les données en provenance de l'arrière-plan du FCGI sont traitées après un
+    temps de valeur fixe (elles sont mises en tampon). Cette méthode est
+    utile si l'arrière-plan du FCGI envoie ses données sous forme
+    de petits paquets, auquel cas le traitement immédiat de chacun d'entre eux
+    serait inefficace et couteux en ressources. Notez que cet exemple ne sera
+    peut-être pas adapté dans le cas où l'envoi de paquets de données par
+    l'application FCGI est bloqué par l'attente de données en provenance du
+    client.
+    </p>
+    <example><title>Force le traitement des données FCGI après une mise en
+    tampon de 20ms</title>
+    <highlight language="config">
+ProxyPassMatch "^/myapp/.*\.php(/.*)?$" "fcgi://localhost:9000/var/www/" flushpackets=on flushwait=20
     </highlight>
     </example>
 
