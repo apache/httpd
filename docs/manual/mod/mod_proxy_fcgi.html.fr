@@ -111,6 +111,27 @@
     <div class="example"><h3>PHP-FPM with UDS</h3><pre class="prettyprint lang-config">ProxyPassMatch "^/(.*\.php(/.*)?)$" "unix:/var/run/php5-fpm.sock|fcgi://localhost/var/www/"</pre>
 </div>
 
+    <p>Dans l'exemple suivant, on force le module à traiter les paquets de
+    données en provenance de l'arrière-plan du FCGI dès leur réception, sans les
+    faire transiter par un tampon.
+    </p>
+    <div class="example"><h3>Force le traitement des données FCGI sans mise en tampon</h3><pre class="prettyprint lang-config">ProxyPassMatch "^/myapp/.*\.php(/.*)?$" "fcgi://localhost:9000/var/www/" enablereuse=on flushpackets=on</pre>
+</div>
+
+    <p>L'exemple suivant est similaire au précédent avec une différence : ici,
+    les données en provenance de l'arrière-plan du FCGI sont traitées après un
+    temps de valeur fixe (elles sont mises en tampon). Cette méthode est
+    utile si l'arrière-plan du FCGI envoie ses données sous forme
+    de petits paquets, auquel cas le traitement immédiat de chacun d'entre eux
+    serait inefficace et couteux en ressources. Notez que cet exemple ne sera
+    peut-être pas adapté dans le cas où l'envoi de paquets de données par
+    l'application FCGI est bloqué par l'attente de données en provenance du
+    client.
+    </p>
+    <div class="example"><h3>Force le traitement des données FCGI après une mise en
+    tampon de 20ms</h3><pre class="prettyprint lang-config">ProxyPassMatch "^/myapp/.*\.php(/.*)?$" "fcgi://localhost:9000/var/www/" flushpackets=on flushwait=20</pre>
+</div>
+
     <p>La passerelle à répartition de charge nécessite le chargement du
     module <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code> et d'au moins un module
     fournissant un algorithme de répartition de charge, comme
