@@ -153,8 +153,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1789800 (remove optional processing)
                   http://svn.apache.org/r1790169 (rename "exception" directive)
                   http://svn.apache.org/r1790457 (Update directive name in err message)
+                  http://svn.apache.org/r1806985
      2.4 convenience patch (includes CHANGES):
                   http://home.apache.org/~jim/patches/RemoteIPProxyProtocol.2.4.x.patch
+                  http://svn.apache.org/r1806985
      +1: druggeri, jim
      mrumph: I had a chance to review this proposal.
              I committed some suggested changes to trunk in r1806985.
@@ -163,6 +165,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              And on a personal note, today is my last day with Oracle.
              So it may well be my last day with Apache as well.
              It has been great working with all of you.
+        jim: Not sure what the copyright concern is, but added r1806985
+             to the proposal.
 
    * mod_journald: Add new module mod_journald to log error logs into journald.
      trunk patch: http://svn.apache.org/r1610339
@@ -185,11 +189,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
   *) mod_proxy: Loadfactor can now be a decimal number (eg: 1.25)
      trunk patch: http://svn.apache.org/r1805188
+                  http://svn.apache.org/r1805190
                   http://svn.apache.org/r1805206 (partial)
-     2.4.x patch: http://home.apache.org/~jim/patches/httpd-2.4-loadfactor.patch
+                  http://svn.apache.org/r1808723
+     2.4.x patch: http://home.apache.org/~jim/patches/httpd-2.4-loadfactor-v2.patch
      +1: jim
      ylavic: Missing r1805190? Also, I'd use double/%lf instead of float/%f for
              floating point arithmetic...
+        jim: I don't see the need to use double when float is more than sufficient.
+             Is that a blocker?
 
   *) htdigest: prevent a buffer overflow when a string exceeds its maximum size
                in a password file. PR: 61511
