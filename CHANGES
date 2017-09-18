@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.28
 
+  *) mod_proxy_wstunnel: Allow upgrade to any protocol dynamically.
+     PR 61142.
+
   *) mod_watchdog/mod_proxy_hcheck: Time intervals can now be spefified
      down to the millisecond. Supports 'mi' (minute), 'ms' (millisecond),
      's' (second) and 'hr' (hour!) time suffixes. [Jim Jagielski]
