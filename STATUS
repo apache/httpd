@@ -205,6 +205,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                 mod_journald can't be configured in maintainer mode (-std=c89).
                 Can anyone else reproduce, or is it just my distro?
 
+   * mod_speling: Don't embed Referer data in link in error page.
+     trunk patch: http://svn.apache.org/r1808780
+     2.4.x: trunk patch applies
+     +1: niq
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
