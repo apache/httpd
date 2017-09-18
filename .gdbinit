@@ -404,7 +404,13 @@ define dump_one_pool
             set $done = 1
         end
     end
-    printf "Pool '%s' [%p]: %d/%d free (%d blocks)\n", $p->tag, $p, $free, $size, $nodes
+    printf "Pool '"
+    if $p->tag
+        printf "%s", $p->tag
+    else
+        printf "no tag"
+    end
+    printf "' [%p]: %d/%d free (%d blocks)\n", $p, $free, $size, $nodes
 end
 
 # Set sane defaults for common signals:
