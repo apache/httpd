@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.28
 
+  *) SECURITY: CVE-2017-9798 (cve.mitre.org)
+     Corrupted or freed memory access. <Limit[Except]> must now be used in the
+     main configuration file (httpd.conf) to register HTTP methods before the
+     .htaccess files.  [Yann Ylavic]
+
   *) mod_proxy_wstunnel: Allow upgrade to any protocol dynamically.
      PR 61142.
 
@@ -12,9 +17,6 @@ Changes with Apache 2.4.28
      suspended stream.  [Stefan Eissing]
 
   *) build: allow configuration without APR sources.  [Jacob Champion]
-
-  *) core: Disallow Methods' registration at runtime (.htaccess), they may be
-     used only if registered at init time (httpd.conf).  [Yann Ylavic]
 
   *) mod_ssl, ab: Fix compatibility with LibreSSL.  PR 61184.
      [Bernard Spil <brnrd freebsd.org>, Michael Schlenker <msc contact.de>,
