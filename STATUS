@@ -208,7 +208,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * mod_speling: Don't embed Referer data in link in error page.
      trunk patch: http://svn.apache.org/r1808780
      2.4.x: trunk patch applies
-     +1: niq
+     +1: niq, ylavic
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
