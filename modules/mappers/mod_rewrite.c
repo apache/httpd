@@ -2035,7 +2035,10 @@ static char *lookup_variable(char *var, rewrite_ctx *ctx)
 
             case 'S':
                 if (!strcmp(var, "HTTP_HOST")) {
-                    result = lookup_header("Host", ctx);
+                    /* Skip the 'Vary: Host' header combination
+                     * as indicated in rfc7231 section-7.1.4
+                     */
+                    result = apr_table_get(ctx->r->headers_in, "Host");
                 }
                 break;
 
