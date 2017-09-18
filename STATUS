@@ -192,6 +192,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              It has been great working with all of you.
         jim: Not sure what the copyright concern is, but added r1806985
              to the proposal.
+     ylavic: RemoteIPProxyProtocol* are documented as scoped to server config
+             and virtual host, though using ap_server_conf makes them global
+             only (thus less useful too...).
 
    * mod_journald: Add new module mod_journald to log error logs into journald.
      trunk patch: http://svn.apache.org/r1610339
