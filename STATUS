@@ -115,6 +115,31 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) htdigest: prevent a buffer overflow when a string exceeds its maximum size
+               in a password file. PR: 61511
+     trunk patch: http://svn.apache.org/r1808008
+                  http://svn.apache.org/r1808085
+     2.4.x patch: svn merge -c1808008 -c1808085 ^/httpd/httpd/trunk .
+     +1: elukey, icing, ylavic
+
+  *) Makefile: Use different variables to track normal modules and MPMs during
+               build. Only the enabled MPM is uncommented in the configuration
+               if multiple DSOs are built, and LoadModule for MPMs will now come
+               before LoadModule for the normal modules. Patch by rjung.
+     trunk patch: https://svn.apache.org/r1729235
+                  https://svn.apache.org/r1730079
+                  https://svn.apache.org/r1801665
+     2.4.x patch: svn merge -c1729235 -c1730079 -c1801665 ^/httpd/httpd/trunk .
+     +1: jchampion, icing, ylavic
+
+  *) mod_proxy: Loadfactor can now be a decimal number (eg: 1.25)
+     trunk patch: http://svn.apache.org/r1805188
+                  http://svn.apache.org/r1805190
+                  http://svn.apache.org/r1805206 (partial)
+                  http://svn.apache.org/r1808723
+     2.4.x patch: http://home.apache.org/~jim/patches/httpd-2.4-loadfactor-v2.patch
+     +1: jim, humbedooh, ylavic
+     ylavic: conflicts on the docs, addressable while backporting I guess.
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -177,30 +202,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                 mod_journald can't be configured in maintainer mode (-std=c89).
                 Can anyone else reproduce, or is it just my distro?
 
-  *) Makefile: Use different variables to track normal modules and MPMs during
-               build. Only the enabled MPM is uncommented in the configuration
-               if multiple DSOs are built, and LoadModule for MPMs will now come
-               before LoadModule for the normal modules. Patch by rjung.
-     trunk patch: https://svn.apache.org/r1729235
-                  https://svn.apache.org/r1730079
-                  https://svn.apache.org/r1801665
-     2.4.x patch: svn merge -c1729235 -c1730079 -c1801665 ^/httpd/httpd/trunk .
-     +1: jchampion, icing
-
-  *) mod_proxy: Loadfactor can now be a decimal number (eg: 1.25)
-     trunk patch: http://svn.apache.org/r1805188
-                  http://svn.apache.org/r1805190
-                  http://svn.apache.org/r1805206 (partial)
-                  http://svn.apache.org/r1808723
-     2.4.x patch: http://home.apache.org/~jim/patches/httpd-2.4-loadfactor-v2.patch
-     +1: jim, humbedooh
-
-  *) htdigest: prevent a buffer overflow when a string exceeds its maximum size
-               in a password file. PR: 61511
-     trunk patch: http://svn.apache.org/r1808008
-                  http://svn.apache.org/r1808085
-     2.4.x patch: svn merge -c1808008 -c1808085 ^/httpd/httpd/trunk .
-     +1: elukey, icing
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
