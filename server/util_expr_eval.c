@@ -1606,7 +1606,12 @@ static const char *req_header_var_fn(ap_expr_eval_ctx_t *ctx, const void *data)
         return "";
 
     name = req_header_header_names[index];
-    add_vary(ctx, name);
+    /* Skip the 'Vary: Host' header combination
+     * as indicated in rfc7231 section-7.1.4
+     */
+    if (strcmp(name, "Host")){
+        add_vary(ctx, name);
+    }
     return apr_table_get(ctx->r->headers_in, name);
 }
 
