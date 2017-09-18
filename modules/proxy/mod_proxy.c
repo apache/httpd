@@ -2883,7 +2883,7 @@ static int proxy_status_hook(request_rec *r, int flags)
                 ap_rvputs(r, ap_proxy_parse_wstatus(r->pool, *worker), NULL);
                 ap_rvputs(r, "</td><td>", (*worker)->s->route, NULL);
                 ap_rvputs(r, "</td><td>", (*worker)->s->redirect, NULL);
-                ap_rprintf(r, "</td><td>%f.2</td>", (float)((*worker)->s->lbfactor)/100.0);
+                ap_rprintf(r, "</td><td>%.2f</td>", (float)((*worker)->s->lbfactor)/100.0);
                 ap_rprintf(r, "<td>%d</td>", (*worker)->s->lbset);
                 ap_rprintf(r, "<td>%" APR_SIZE_T_FMT "</td><td>",
                            (*worker)->s->elected);
