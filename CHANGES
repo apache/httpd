@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_speling: Don't embed referer data in a link in error page.
+     PR 38923 [Nick Kew]
+
   *) mod_rewrite, core: Avoid the 'Vary: Host' response header when HTTP_HOST is
      used in a condition that evaluates to true. PR 58231 [Luca Toscano]
 
