@@ -131,6 +131,10 @@ static int proxy_wstunnel_request(apr_pool_t *p, request_rec *r,
 
     if (ap_cstr_casecmp(upgrade_method, "NONE") == 0) {
         buf = apr_pstrdup(p, "Upgrade: WebSocket" CRLF "Connection: Upgrade" CRLF CRLF);
+    } else if (ap_cstr_casecmp(upgrade_method, "ANY") == 0) {
+        const char *upgrade;
+        upgrade = apr_table_get(r->headers_in, "Upgrade");
+        buf = apr_pstrcat(p, "Upgrade: ", upgrade, CRLF "Connection: Upgrade" CRLF CRLF, NULL);
     } else {
         buf = apr_pstrcat(p, "Upgrade: ", upgrade_method, CRLF "Connection: Upgrade" CRLF CRLF, NULL);
     }
@@ -302,7 +306,8 @@ static int proxy_wstunnel_handler(request_rec *r, proxy_worker *worker,
     if (ap_cstr_casecmp(upgrade_method, "NONE") != 0) {
         const char *upgrade;
         upgrade = apr_table_get(r->headers_in, "Upgrade");
-        if (!upgrade || ap_cstr_casecmp(upgrade, upgrade_method) != 0) {
+        if (!upgrade || (ap_cstr_casecmp(upgrade, upgrade_method) != 0 &&
+            ap_cstr_casecmp(upgrade_method, "ANY") !=0)) {
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02900)
                           "declining URL %s  (not %s, Upgrade: header is %s)", 
                           url, upgrade_method, upgrade ? upgrade : "missing");
