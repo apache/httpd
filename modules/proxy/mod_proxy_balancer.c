@@ -700,10 +700,10 @@ static void recalc_factors(proxy_balancer *balancer)
     /* Recalculate lbfactors */
     workers = (proxy_worker **)balancer->workers->elts;
     /* Special case if there is only one worker its
-     * load factor will always be 1
+     * load factor will always be 100
      */
     if (balancer->workers->nelts == 1) {
-        (*workers)->s->lbstatus = (*workers)->s->lbfactor = 1;
+        (*workers)->s->lbstatus = (*workers)->s->lbfactor = 100;
         return;
     }
     for (i = 0; i < balancer->workers->nelts; i++) {
@@ -1093,8 +1093,10 @@ static int balancer_handler(request_rec *r)
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01192) "settings worker params");
 
         if ((val = apr_table_get(params, "w_lf"))) {
-            int ival = atoi(val);
-            if (ival >= 1 && ival <= 100) {
+            int ival;
+            double fval = atof(val);
+            ival = fval * 100.0;
+            if (ival >= 100 && ival <= 10000) {
                 wsel->s->lbfactor = ival;
                 if (bsel)
                     recalc_factors(bsel);
@@ -1362,8 +1364,8 @@ static int balancer_handler(request_rec *r)
                           "</httpd:scheme>\n", NULL);
                 ap_rvputs(r, "          <httpd:hostname>", worker->s->hostname,
                           "</httpd:hostname>\n", NULL);
-                ap_rprintf(r, "          <httpd:loadfactor>%d</httpd:loadfactor>\n",
-                          worker->s->lbfactor);
+                ap_rprintf(r, "          <httpd:loadfactor>%.2f</httpd:loadfactor>\n",
+                          (float)(worker->s->lbfactor)/100.0);
                 ap_rprintf(r,
                            "          <httpd:port>%d</httpd:port>\n",
                            worker->s->port);
@@ -1416,8 +1418,8 @@ static int balancer_handler(request_rec *r)
                            "          <httpd:lbstatus>%d</httpd:lbstatus>\n",
                            worker->s->lbstatus);
                 ap_rprintf(r,
-                           "          <httpd:loadfactor>%d</httpd:loadfactor>\n",
-                           worker->s->lbfactor);
+                           "          <httpd:loadfactor>%.2f</httpd:loadfactor>\n",
+                           (float)(worker->s->lbfactor)/100.0);
                 ap_rprintf(r,
                            "          <httpd:transferred>%" APR_OFF_T_FMT "</httpd:transferred>\n",
                            worker->s->transferred);
@@ -1603,7 +1605,7 @@ static int balancer_handler(request_rec *r)
                           NULL);
                 ap_rvputs(r, "</td><td>",
                           ap_escape_html(r->pool, worker->s->redirect), NULL);
-                ap_rprintf(r, "</td><td>%d</td>", worker->s->lbfactor);
+                ap_rprintf(r, "</td><td>%.2f</td>", (float)(worker->s->lbfactor)/100.0);
                 ap_rprintf(r, "<td>%d</td><td>", worker->s->lbset);
                 ap_rvputs(r, ap_proxy_parse_wstatus(r->pool, worker), NULL);
                 ap_rputs("</td>", r);
@@ -1638,7 +1640,7 @@ static int balancer_handler(request_rec *r)
             ap_rputs("<form method='POST' enctype='application/x-www-form-urlencoded' action='", r);
             ap_rvputs(r, ap_escape_uri(r->pool, action), "'>\n", NULL);
             ap_rputs("<table><tr><td>Load factor:</td><td><input name='w_lf' id='w_lf' type=text ", r);
-            ap_rprintf(r, "value='%d'></td></tr>\n", wsel->s->lbfactor);
+            ap_rprintf(r, "value='%.2f'></td></tr>\n", (float)(wsel->s->lbfactor)/100.0);
             ap_rputs("<tr><td>LB Set:</td><td><input name='w_ls' id='w_ls' type=text ", r);
             ap_rprintf(r, "value='%d'></td></tr>\n", wsel->s->lbset);
             ap_rputs("<tr><td>Route:</td><td><input name='w_wr' id='w_wr' type=text ", r);

@@ -103,7 +103,8 @@ static const char *set_worker_param(apr_pool_t *p,
         /* Normalized load factor. Used with BalancerMember,
          * it is a number between 1 and 100.
          */
-        ival = atoi(val);
+        double fval = atof(val);
+        ival = fval * 100.0;
         if (ival < 1 || ival > 100)
             return "LoadFactor must be a number between 1..100";
         worker->s->lbfactor = ival;
@@ -2685,7 +2686,7 @@ static int proxy_status_hook(request_rec *r, int flags)
                 ap_rvputs(r, ap_proxy_parse_wstatus(r->pool, *worker), NULL);
                 ap_rvputs(r, "</td><td>", (*worker)->s->route, NULL);
                 ap_rvputs(r, "</td><td>", (*worker)->s->redirect, NULL);
-                ap_rprintf(r, "</td><td>%d</td>", (*worker)->s->lbfactor);
+                ap_rprintf(r, "</td><td>%.2f</td>", (float)((*worker)->s->lbfactor)/100.0);
                 ap_rprintf(r, "<td>%d</td>", (*worker)->s->lbset);
                 ap_rprintf(r, "<td>%" APR_SIZE_T_FMT "</td><td>",
                            (*worker)->s->elected);
