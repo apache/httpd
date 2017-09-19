@@ -179,6 +179,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                 mod_journald can't be configured in maintainer mode (-std=c89).
                 Can anyone else reproduce, or is it just my distro?
 
+  *) event: Avoid possible blocking in the listener thread when shutting down
+     connections. PR 60956.
+     trunk patch: http://svn.apache.org/r1802875
+     2.4.x patch: trunks works (module CHANGES)
+                  svn merge -c 1802875 ^/httpd/httpd/trunk .
+     +1: ylavic
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
