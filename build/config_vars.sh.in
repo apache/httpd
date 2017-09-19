@@ -46,6 +46,8 @@ exec sed "
 /MPM_LIB/d
 /APACHECTL_ULIMIT/d
 /[a-z]*_LTFLAGS/d
+/^MPM_MODULES/d
+/^ENABLED_MPM_MODULE/d
 /^DSO_MODULES/d
 /^MODULE_/d
 /^PORT/d

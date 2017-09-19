@@ -90,6 +90,8 @@ AC_DEFUN([APACHE_GEN_CONFIG_VARS],[
   APACHE_SUBST(MK_IMPLIB)
   APACHE_SUBST(MKDEP)
   APACHE_SUBST(INSTALL_PROG_FLAGS)
+  APACHE_SUBST(MPM_MODULES)
+  APACHE_SUBST(ENABLED_MPM_MODULE)
   APACHE_SUBST(DSO_MODULES)
   APACHE_SUBST(ENABLED_DSO_MODULES)
   APACHE_SUBST(LOAD_ALL_MODULES)
@@ -262,10 +264,10 @@ DISTCLEAN_TARGETS = modules.mk
 static =
 shared = $libname
 EOF
-            DSO_MODULES="$DSO_MODULES mpm_$1"
+            MPM_MODULES="$MPM_MODULES mpm_$1"
             # add default MPM to LoadModule list
             if test $1 = $default_mpm; then
-                ENABLED_DSO_MODULES="${ENABLED_DSO_MODULES},mpm_$1"
+                ENABLED_MPM_MODULE="mpm_$1"
             fi
         fi
         $4
