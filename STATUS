@@ -115,13 +115,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) htdigest: prevent a buffer overflow when a string exceeds its maximum size
-               in a password file. PR: 61511
-     trunk patch: http://svn.apache.org/r1808008
-                  http://svn.apache.org/r1808085
-     2.4.x patch: svn merge -c1808008 -c1808085 ^/httpd/httpd/trunk .
-     +1: elukey, icing, ylavic
-
   *) Makefile: Use different variables to track normal modules and MPMs during
                build. Only the enabled MPM is uncommented in the configuration
                if multiple DSOs are built, and LoadModule for MPMs will now come
