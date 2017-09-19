@@ -488,10 +488,10 @@ static int check_speling(request_rec *r)
             if (ref != NULL) {
                 *(const char **)apr_array_push(t) =
                                "Please consider informing the owner of the "
-                               "<a href=\"";
-                *(const char **)apr_array_push(t) = ap_escape_uri(sub_pool, ref);
-                *(const char **)apr_array_push(t) = "\">referring page</a> "
-                               "about the broken link.\n";
+                               "referring page <tt>";
+                *(const char **)apr_array_push(t) = ap_escape_html(sub_pool, ref);
+                *(const char **)apr_array_push(t) =
+                               "</tt> about the broken link.\n";
             }
 
 
