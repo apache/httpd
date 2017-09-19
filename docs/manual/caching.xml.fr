@@ -496,7 +496,7 @@ Vary: negotiate,accept-language,accept-charset
       <title>Mise en cache sur disque</title>
 
       <p>Le module <module>mod_cache</module> s'appuie sur des
-      implémentations de stockage en arrière-plan spécifiques pour gérer
+      implémentations de stockage sous-jacentes spécifiques pour gérer
       le cache ; à ce titre, <module>mod_cache_disk</module> fournit le
       support de la mise en cache sur disque.</p>
 
@@ -719,7 +719,7 @@ CacheSocache dbm:/path/to/datafile
 
       <p>Le module <module>mod_authn_socache</module> permet la mise en
       cache des données issues d'une authentification, diminuant ainsi
-      la charge des serveurs d'authentification en arrière-plan.</p>
+      la charge des serveurs d'authentification d'arrière-plan.</p>
 
     </section>
 
