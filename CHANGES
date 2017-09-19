@@ -6,6 +6,10 @@ Changes with Apache 2.4.28
      main configuration file (httpd.conf) to register HTTP methods before the
      .htaccess files.  [Yann Ylavic]
 
+  *) htdigest: prevent a buffer overflow when a string exceeds the allowed max
+     length in a password file.
+     [Luca Toscano, Hanno Böck <hanno hboeck de>]
+
   *) mod_proxy_wstunnel: Allow upgrade to any protocol dynamically.
      PR 61142.
 

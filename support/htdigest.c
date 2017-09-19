@@ -59,6 +59,7 @@
 #endif /* APR_CHARSET_EBCDIC */
 
 #define MAX_STRING_LEN 256
+#define MAX_LINE_LEN 768
 
 apr_file_t *tfp = NULL;
 apr_file_t *errfile;
@@ -75,12 +76,16 @@ static void cleanup_tempfile_and_exit(int rc)
     exit(rc);
 }
 
-static void getword(char *word, char *line, char stop)
+static int getword(char *word, char *line, char stop)
 {
     int x = 0, y;
 
-    for (x = 0; ((line[x]) && (line[x] != stop)); x++)
+    for (x = 0; ((line[x]) && (line[x] != stop)); x++) {
+        if (x == (MAX_STRING_LEN - 1)) {
+            return 1;
+        }
         word[x] = line[x];
+    }
 
     word[x] = '\0';
     if (line[x])
@@ -88,6 +93,8 @@ static void getword(char *word, char *line, char stop)
     y = 0;
 
     while ((line[y++] = line[x++]));
+
+    return 0;
 }
 
 static int get_line(char *s, int n, apr_file_t *f)
@@ -127,7 +134,7 @@ static void add_password(const char *user, const char *realm, apr_file_t *f)
     char *pw;
     apr_md5_ctx_t context;
     unsigned char digest[16];
-    char string[3 * MAX_STRING_LEN]; /* this includes room for 2 * ':' + '\0' */
+    char string[MAX_LINE_LEN]; /* this includes room for 2 * ':' + '\0' */
     char pwin[MAX_STRING_LEN];
     char pwv[MAX_STRING_LEN];
     unsigned int i;
@@ -191,8 +198,8 @@ int main(int argc, const char * const argv[])
     char *dirname;
     char user[MAX_STRING_LEN];
     char realm[MAX_STRING_LEN];
-    char line[3 * MAX_STRING_LEN];
-    char l[3 * MAX_STRING_LEN];
+    char line[MAX_LINE_LEN];
+    char l[MAX_LINE_LEN];
     char w[MAX_STRING_LEN];
     char x[MAX_STRING_LEN];
     int found;
@@ -261,8 +268,11 @@ int main(int argc, const char * const argv[])
             continue;
         }
         strcpy(l, line);
-        getword(w, l, ':');
-        getword(x, l, ':');
+        if (getword(w, l, ':') || getword(x, l, ':')) {
+            apr_file_printf(errfile, "The following line contains a string longer than the "
+                                     "allowed maximum size (%i): %s\n", MAX_STRING_LEN - 1, line);
+            cleanup_tempfile_and_exit(1);
+        }
         if (strcmp(user, w) || strcmp(realm, x)) {
             putline(tfp, line);
             continue;
