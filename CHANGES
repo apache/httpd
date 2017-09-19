@@ -6,6 +6,9 @@ Changes with Apache 2.4.28
      main configuration file (httpd.conf) to register HTTP methods before the
      .htaccess files.  [Yann Ylavic]
 
+  *) mod_speling: Don't embed referer data in a link in error page.
+     PR 38923 [Nick Kew]
+
   *) htdigest: prevent a buffer overflow when a string exceeds the allowed max
      length in a password file.
      [Luca Toscano, Hanno Böck <hanno hboeck de>]
