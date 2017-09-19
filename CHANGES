@@ -10,6 +10,9 @@ Changes with Apache 2.4.28
      length in a password file.
      [Luca Toscano, Hanno Böck <hanno hboeck de>]
 
+  *) mod_proxy: loadfactor parameter can now be a decimal number (eg: 1.25).
+     [Jim Jagielski]
+
   *) mod_proxy_wstunnel: Allow upgrade to any protocol dynamically.
      PR 61142.
 
