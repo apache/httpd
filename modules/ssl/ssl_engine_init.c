@@ -168,11 +168,13 @@ static void ssl_add_version_components(apr_pool_t *p,
                  modver, AP_SERVER_BASEVERSION, incver);
 }
 
-/**************************************************************************************************/
-/* Managed Domains Interface */
+/*  _________________________________________________________________
+**
+**  Managed Domains Interface
+**  _________________________________________________________________
+*/
 
 static APR_OPTIONAL_FN_TYPE(md_is_managed) *md_is_managed;
-static APR_OPTIONAL_FN_TYPE(md_get_credentials) *md_get_credentials;
 static APR_OPTIONAL_FN_TYPE(md_get_certificate) *md_get_certificate;
 static APR_OPTIONAL_FN_TYPE(md_is_challenge) *md_is_challenge;
 
@@ -185,6 +187,25 @@ int ssl_is_challenge(conn_rec *c, const char *servername,
     *pcert = NULL;
     *pkey = NULL;
     return 0;
+}
+
+static SSLSrvConfigRec *ssl_config_server_uniq(apr_pool_t *p, server_rec *s,
+                                               server_rec *base_s)
+{
+    SSLSrvConfigRec *sc, *base_sc, *nsc;
+    
+    sc = mySrvConfig(s);
+    if (s != base_s) {
+        base_sc = mySrvConfig(base_s);
+        if (sc == base_sc) {
+            /* Give s its own SSLSrvConfigRec instance by using the
+             * standard create/merge methods. */
+            nsc = ssl_config_server_create(p, s);
+            sc = ssl_config_server_merge(p, base_sc, nsc);
+            ap_set_module_config(s->module_config, &ssl_module, sc);
+        }
+    }
+    return sc;
 }
 
 /*
@@ -230,15 +251,19 @@ apr_status_t ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
     /* Initialize our interface to mod_md, if it is loaded 
      */
     md_is_managed = APR_RETRIEVE_OPTIONAL_FN(md_is_managed);
-    md_get_credentials = APR_RETRIEVE_OPTIONAL_FN(md_get_credentials);
     md_get_certificate = APR_RETRIEVE_OPTIONAL_FN(md_get_certificate);
     md_is_challenge = APR_RETRIEVE_OPTIONAL_FN(md_is_challenge);
-    if (!md_is_managed || (!md_get_credentials && !md_get_certificate)) {
+    if (!md_is_managed || !md_get_certificate) {
         md_is_managed = NULL;
-        md_get_credentials = NULL;
         md_get_certificate = NULL;
     }
 
+    /* Take care that we have individual config records before
+     * we start modifying them. */
+    for (s = base_server->next; s; s = s->next) {
+        sc = ssl_config_server_uniq(p, s, base_server);
+    }
+    
     /*
      *  try to fix the configuration and open the dedicated SSL
      *  logfile as early as possible
@@ -253,6 +278,13 @@ apr_status_t ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
         /*
          * Create the server host:port string because we need it a lot
          */
+        if (sc->vhost_id) {
+            /* already set. This should only happen if this config rec is
+             * shared with another server. Argh! */
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO() 
+                         "%s, SSLSrvConfigRec shared from %s", 
+                         ssl_util_vhostid(p, s), sc->vhost_id);
+        }
         sc->vhost_id = ssl_util_vhostid(p, s);
         sc->vhost_id_len = strlen(sc->vhost_id);
 
@@ -272,7 +304,7 @@ apr_status_t ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
         /* Check if conditions to enable apply to this server at all. Conditions
          * might be inherited from base server and never match a vhost. */
         if (sc->enabled_on && sc->enabled == SSL_ENABLED_TRUE) {
-            if (!ssl_server_addr_overlap(sc->enabled_on, s->addrs)) {
+            if (s == base_server || !ssl_server_addr_overlap(sc->enabled_on, s->addrs)) {
                 sc->enabled = SSL_ENABLED_FALSE;
             }
         }
@@ -1692,6 +1724,7 @@ static apr_status_t ssl_init_server_ctx(server_rec *s,
                                         apr_array_header_t *pphrases)
 {
     apr_status_t rv;
+    modssl_pk_server_t *pks;
 #ifdef HAVE_SSL_CONF_CMD
     ssl_ctx_param_t *param = (ssl_ctx_param_t *)sc->server->ssl_ctx_param->elts;
     SSL_CONF_CTX *cctx = sc->server->ssl_ctx_config;
@@ -1711,8 +1744,8 @@ static apr_status_t ssl_init_server_ctx(server_rec *s,
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(10083)
                  "Init: (%s) mod_md support is %s.", ssl_util_vhostid(p, s),
                  md_is_managed? "available" : "unavailable");
-    if (md_is_managed && md_is_managed(s)) {
-        modssl_pk_server_t *const pks = sc->server->pks;
+    if (md_is_managed && md_get_certificate && md_is_managed(s)) {
+        pks = sc->server->pks;
         if (pks->cert_files->nelts > 0 || pks->key_files->nelts > 0) {
             ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(10084)
                          "Init: (%s) You configured certificate/key files on this host, but "
@@ -1720,30 +1753,10 @@ static apr_status_t ssl_init_server_ctx(server_rec *s,
                          "for the Managed Domain to take over.", ssl_util_vhostid(p, s));
         }
         else {
-            const char *key_file, *cert_file, *chain_file;
+            const char *key_file = NULL, *cert_file = NULL;
+            int service_unavailable = 0;
             
-            key_file = cert_file = chain_file = NULL;
-            
-            if (md_get_certificate) {
-                /* mod_md >= v0.9.0 */
-                rv = md_get_certificate(s, p, &key_file, &cert_file);
-            }
-            else if (md_get_credentials) {
-                /* mod_md < v0.9.0, remove this after a while */
-                rv = md_get_credentials(s, p, &key_file, &cert_file, &chain_file);
-            }
-            else {
-                rv = APR_ENOTIMPL;
-            }
-            
-            if (key_file && cert_file) {
-                ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, s, 
-                             "%s: installing key=%s, cert=%s, chain=%s", 
-                             ssl_util_vhostid(p, s), key_file, cert_file, chain_file);
-                APR_ARRAY_PUSH(pks->key_files, const char *) = key_file;
-                APR_ARRAY_PUSH(pks->cert_files, const char *) = cert_file;
-                sc->server->cert_chain = chain_file;
-            }
+            rv = md_get_certificate(s, p, &key_file, &cert_file);
             
             if (APR_STATUS_IS_EAGAIN(rv)) {
                 /* Managed Domain not ready yet. This is not a reason to fail the config */
@@ -1751,10 +1764,27 @@ static apr_status_t ssl_init_server_ctx(server_rec *s,
                              "Init: %s will respond with '503 Service Unavailable' for now. This "
                              "host is part of a Managed Domain, but no SSL certificate is "
                              "available (yet).", ssl_util_vhostid(p, s));
-                pks->service_unavailable = 1;
+                service_unavailable = 1;
+                rv = APR_SUCCESS;
             }
             else if (rv != APR_SUCCESS) {
                 return rv;
+            }
+            
+            /* We install the managed certificate and key in the server_rec config now
+             * and, if those are not ready/fallback ones, mark service as unavailable.
+             */
+            if (APR_SUCCESS == rv && key_file && cert_file) {
+                ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, s, 
+                             "%s: installing key=%s, cert=%s", 
+                             sc->vhost_id, key_file, cert_file);
+                APR_ARRAY_PUSH(pks->key_files, const char *) = key_file;
+                APR_ARRAY_PUSH(pks->cert_files, const char *) = cert_file;
+                sc->server->cert_chain = NULL;
+            }
+            
+            if (service_unavailable) {
+                pks->service_unavailable = 1;
             }
         }
     }
