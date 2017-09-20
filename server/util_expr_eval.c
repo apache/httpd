@@ -1044,7 +1044,12 @@ static const char *req_table_func(ap_expr_eval_ctx_t *ctx, const void *data,
         t = ctx->r->headers_in;
     else {                          /* req, http */
         t = ctx->r->headers_in;
-        add_vary(ctx, arg);
+        /* Skip the 'Vary: Host' header combination
+         * as indicated in rfc7231 section-7.1.4
+         */
+        if (strcasecmp(arg, "Host")){
+            add_vary(ctx, arg);
+        }
     }
     return apr_table_get(t, arg);
 }
@@ -1609,7 +1614,7 @@ static const char *req_header_var_fn(ap_expr_eval_ctx_t *ctx, const void *data)
     /* Skip the 'Vary: Host' header combination
      * as indicated in rfc7231 section-7.1.4
      */
-    if (strcmp(name, "Host")){
+    if (strcasecmp(name, "Host")){
         add_vary(ctx, name);
     }
     return apr_table_get(ctx->r->headers_in, name);
