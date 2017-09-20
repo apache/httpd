@@ -5,7 +5,7 @@ Changes with Apache 2.5.0
      PR 38923 [Nick Kew]
 
   *) mod_rewrite, core: Avoid the 'Vary: Host' response header when HTTP_HOST is
-     used in a condition that evaluates to true. PR 58231 [Luca Toscano]
+     used in a condition that evaluates to true. PR 58231 [Luca Toscano, Yann Ylavic]
 
   *) mod_md: v0.9.6: a "MDRequireHttps permament" configured domain automatically sends out
      HSTS (rfc 6797) headers in https: responses. [Stefan Eissing]

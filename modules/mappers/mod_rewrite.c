@@ -1808,7 +1808,10 @@ static const char *lookup_header(const char *name, rewrite_ctx *ctx)
 {
     const char *val = apr_table_get(ctx->r->headers_in, name);
 
-    if (val) {
+    /* Skip the 'Vary: Host' header combination
+     * as indicated in rfc7231 section-7.1.4
+     */
+    if (val && strcasecmp(name, "Host") != 0) {
         ctx->vary_this = ctx->vary_this
                          ? apr_pstrcat(ctx->r->pool, ctx->vary_this, ", ",
                                        name, NULL)
@@ -2035,10 +2038,7 @@ static char *lookup_variable(char *var, rewrite_ctx *ctx)
 
             case 'S':
                 if (!strcmp(var, "HTTP_HOST")) {
-                    /* Skip the 'Vary: Host' header combination
-                     * as indicated in rfc7231 section-7.1.4
-                     */
-                    result = apr_table_get(ctx->r->headers_in, "Host");
+                    result = lookup_header("Host", ctx);
                 }
                 break;
 
