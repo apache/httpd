@@ -184,7 +184,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1802875
      2.4.x patch: trunks works (module CHANGES)
                   svn merge -c 1802875 ^/httpd/httpd/trunk .
-     +1: ylavic
+     +1: ylavic, jim
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
