@@ -119,7 +119,7 @@ static int authz_dbd_login(request_rec *r, authz_dbd_cfg *cfg,
     const char *newuri = NULL;
     int nrows;
     const char *message;
-    ap_dbd_t *dbd = dbd_handle(r);
+    ap_dbd_t *dbd;
     apr_dbd_prepared_t *query;
     apr_dbd_results_t *res = NULL;
     apr_dbd_row_t *row = NULL;
@@ -129,6 +129,8 @@ static int authz_dbd_login(request_rec *r, authz_dbd_cfg *cfg,
                       "No query configured for %s!", action);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
+    
+    dbd = dbd_handle(r);
     if (dbd == NULL) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02902)
                       "No db handle available for %s! "
@@ -136,6 +138,7 @@ static int authz_dbd_login(request_rec *r, authz_dbd_cfg *cfg,
                       action);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
+
     query = apr_hash_get(dbd->prepared, cfg->query, APR_HASH_KEY_STRING);
     if (query == NULL) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01643)
@@ -212,7 +215,7 @@ static int authz_dbd_group_query(request_rec *r, authz_dbd_cfg *cfg,
     /* SELECT group FROM authz WHERE user = %s */
     int rv;
     const char *message;
-    ap_dbd_t *dbd = dbd_handle(r);
+    ap_dbd_t *dbd;
     apr_dbd_prepared_t *query;
     apr_dbd_results_t *res = NULL;
     apr_dbd_row_t *row = NULL;
@@ -222,12 +225,15 @@ static int authz_dbd_group_query(request_rec *r, authz_dbd_cfg *cfg,
                       "No query configured for dbd-group!");
         return HTTP_INTERNAL_SERVER_ERROR;
     }
+    
+    dbd = dbd_handle(r);
     if (dbd == NULL) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02903)
                       "No db handle available for dbd-query! "
                       "Check your database access");
         return HTTP_INTERNAL_SERVER_ERROR;
     }
+
     query = apr_hash_get(dbd->prepared, cfg->query, APR_HASH_KEY_STRING);
     if (query == NULL) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01650)
