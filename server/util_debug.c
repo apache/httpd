@@ -107,6 +107,17 @@ AP_DECLARE(void *) ap_get_module_config(const ap_conf_vector_t *cv,
     return ((void **)cv)[m->module_index];
 }
 
+AP_DECLARE(int) ap_get_module_flags(const module *m)
+{
+    if (m->version < AP_MODULE_FLAGS_MMN_MAJOR
+            || (m->version == AP_MODULE_FLAGS_MMN_MAJOR
+                && (m->minor_version < AP_MODULE_FLAGS_MMN_MINOR))) {
+        return 0;
+    }
+
+    return m->flags;
+}
+
 #if defined(ap_get_core_module_config)
 #undef ap_get_core_module_config
 AP_DECLARE(void *) ap_get_core_module_config(const ap_conf_vector_t *cv);
