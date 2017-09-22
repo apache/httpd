@@ -189,25 +189,6 @@ int ssl_is_challenge(conn_rec *c, const char *servername,
     return 0;
 }
 
-static SSLSrvConfigRec *ssl_config_server_uniq(apr_pool_t *p, server_rec *s,
-                                               server_rec *base_s)
-{
-    SSLSrvConfigRec *sc, *base_sc, *nsc;
-    
-    sc = mySrvConfig(s);
-    if (s != base_s) {
-        base_sc = mySrvConfig(base_s);
-        if (sc == base_sc) {
-            /* Give s its own SSLSrvConfigRec instance by using the
-             * standard create/merge methods. */
-            nsc = ssl_config_server_create(p, s);
-            sc = ssl_config_server_merge(p, base_sc, nsc);
-            ap_set_module_config(s->module_config, &ssl_module, sc);
-        }
-    }
-    return sc;
-}
-
 /*
  *  Per-module initialization
  */
@@ -258,12 +239,6 @@ apr_status_t ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
         md_get_certificate = NULL;
     }
 
-    /* Take care that we have individual config records before
-     * we start modifying them. */
-    for (s = base_server->next; s; s = s->next) {
-        sc = ssl_config_server_uniq(p, s, base_server);
-    }
-    
     /*
      *  try to fix the configuration and open the dedicated SSL
      *  logfile as early as possible
