@@ -555,6 +555,7 @@
  * 20161018.5 (2.5.0-dev)  Add ap_get_basic_auth_components() and deprecate
  *                         ap_get_basic_auth_pw()
  * 20161018.6 (2.5.0-dev)  Add ap_update_sb_handle()
+ * 20161018.7 (2.5.0-dev)  Add flags field to module_struct
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -562,7 +563,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20161018
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 6                 /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 7                 /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

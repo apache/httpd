@@ -333,6 +333,16 @@ struct cmd_parms_struct {
     ap_directive_t *parent;
 };
 
+#define AP_MODULE_HAS_FLAGS \
+        AP_MODULE_MAGIC_AT_LEAST(20161018,7)
+#if AP_MODULE_HAS_FLAGS
+/**
+ * Flags associated with a module.
+ */
+#define AP_MODULE_FLAG_NONE         (0)
+#define AP_MODULE_FLAG_ALWAYS_MERGE (1 << 0)
+#endif
+
 /**
  * Module structures.  Just about everything is dispatched through
  * these, directly or indirectly (through the command and handler
@@ -412,6 +422,11 @@ struct module_struct {
      *  @param p the pool to use for all allocations
      */
     void (*register_hooks) (apr_pool_t *p);
+
+#if AP_MODULE_HAS_FLAGS
+    /** A bitmask of AP_MODULE_FLAG_* */
+    int flags;
+#endif
 };
 
 /**
