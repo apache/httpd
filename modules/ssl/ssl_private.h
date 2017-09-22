@@ -256,12 +256,6 @@ APLOG_USE_MODULE(ssl);
 /*
  * Provide reasonable default for some defines
  */
-#ifndef PFALSE
-#define PFALSE ((void *)FALSE)
-#endif
-#ifndef PTRUE
-#define PTRUE ((void *)TRUE)
-#endif
 #ifndef UNSET
 #define UNSET (-1)
 #endif
