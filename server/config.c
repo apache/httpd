@@ -339,8 +339,14 @@ static void merge_server_configs(apr_pool_t *p, ap_conf_vector_t *base,
 
         if (!virt_vector[i]) {
 #if AP_MODULE_HAS_FLAGS
-            if (df && modp->create_server_config
-                   && modp->flags & AP_MODULE_FLAG_ALWAYS_MERGE) {
+            if (df
+                    && modp->create_server_config
+                    && (modp->version > AP_MODULE_FLAGS_MMN_MAJOR
+                        || (modp->version == AP_MODULE_FLAGS_MMN_MAJOR
+                            && (modp->minor_version >=
+                                AP_MODULE_FLAGS_MMN_MINOR)))
+                    /* keep this after version checks (flags out-of-bound) */
+                    && (modp->flags & AP_MODULE_FLAG_ALWAYS_MERGE)) {
                 virt_vector[i] = (*modp->create_server_config)(p, virt);
             }
             else

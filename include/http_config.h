@@ -333,8 +333,11 @@ struct cmd_parms_struct {
     ap_directive_t *parent;
 };
 
-#define AP_MODULE_HAS_FLAGS \
-        AP_MODULE_MAGIC_AT_LEAST(20161018,7)
+#define AP_MODULE_FLAGS_MMN_MAJOR 20161018
+#define AP_MODULE_FLAGS_MMN_MINOR 7
+#define AP_MODULE_HAS_FLAGS(m) \
+        AP_MODULE_MAGIC_AT_LEAST(AP_MODULE_FLAGS_MMN_MAJOR, \
+                                 AP_MODULE_FLAGS_MMN_MINOR)
 #if AP_MODULE_HAS_FLAGS
 /**
  * Flags associated with a module.
