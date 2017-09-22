@@ -315,6 +315,7 @@ static void TO_QUEUE_APPEND(struct timeout_queue *q, event_conn_state_t *el)
 static void TO_QUEUE_REMOVE(struct timeout_queue *q, event_conn_state_t *el)
 {
     APR_RING_REMOVE(el, timeout_list);
+    APR_RING_ELEM_INIT(el, timeout_list);
     apr_atomic_dec32(q->total);
     --q->count;
 }
@@ -837,17 +838,16 @@ static int start_lingering_close_blocking(event_conn_state_t *cs)
     apr_thread_mutex_lock(timeout_mutex);
     TO_QUEUE_APPEND(q, cs);
     rv = apr_pollset_add(event_pollset, &cs->pfd);
-    apr_thread_mutex_unlock(timeout_mutex);
     if (rv != APR_SUCCESS && !APR_STATUS_IS_EEXIST(rv)) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf, APLOGNO(03092)
-                     "start_lingering_close: apr_pollset_add failure");
-        apr_thread_mutex_lock(timeout_mutex);
         TO_QUEUE_REMOVE(q, cs);
         apr_thread_mutex_unlock(timeout_mutex);
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf, APLOGNO(03092)
+                     "start_lingering_close: apr_pollset_add failure");
         apr_socket_close(cs->pfd.desc.s);
         ap_push_pool(worker_queue_info, cs->p);
         return 0;
     }
+    apr_thread_mutex_unlock(timeout_mutex);
     return 1;
 }
 
@@ -1088,16 +1088,17 @@ read_request:
             apr_thread_mutex_lock(timeout_mutex);
             TO_QUEUE_APPEND(cs->sc->wc_q, cs);
             rc = apr_pollset_add(event_pollset, &cs->pfd);
-            apr_thread_mutex_unlock(timeout_mutex);
             if (rc != APR_SUCCESS && !APR_STATUS_IS_EEXIST(rc)) {
+                TO_QUEUE_REMOVE(cs->sc->wc_q, cs);
+                apr_thread_mutex_unlock(timeout_mutex);
                 ap_log_error(APLOG_MARK, APLOG_ERR, rc, ap_server_conf, APLOGNO(03465)
                              "process_socket: apr_pollset_add failure for "
                              "write completion");
-                apr_thread_mutex_lock(timeout_mutex);
-                TO_QUEUE_REMOVE(cs->sc->wc_q, cs);
-                apr_thread_mutex_unlock(timeout_mutex);
                 apr_socket_close(cs->pfd.desc.s);
                 ap_push_pool(worker_queue_info, cs->p);
+            }
+            else {
+                apr_thread_mutex_unlock(timeout_mutex);
             }
             return;
         }
@@ -1136,18 +1137,17 @@ read_request:
         apr_thread_mutex_lock(timeout_mutex);
         TO_QUEUE_APPEND(cs->sc->ka_q, cs);
         rc = apr_pollset_add(event_pollset, &cs->pfd);
-        apr_thread_mutex_unlock(timeout_mutex);
         if (rc != APR_SUCCESS && !APR_STATUS_IS_EEXIST(rc)) {
+            TO_QUEUE_REMOVE(cs->sc->ka_q, cs);
+            apr_thread_mutex_unlock(timeout_mutex);
             ap_log_error(APLOG_MARK, APLOG_ERR, rc, ap_server_conf, APLOGNO(03093)
                          "process_socket: apr_pollset_add failure for "
                          "keep alive");
-            apr_thread_mutex_lock(timeout_mutex);
-            TO_QUEUE_REMOVE(cs->sc->ka_q, cs);
-            apr_thread_mutex_unlock(timeout_mutex);
             apr_socket_close(cs->pfd.desc.s);
             ap_push_pool(worker_queue_info, cs->p);
             return;
         }
+        apr_thread_mutex_unlock(timeout_mutex);
     }
     else if (cs->pub.state == CONN_STATE_SUSPENDED) {
         cs->c->suspended_baton = cs;
@@ -1600,7 +1600,6 @@ static void process_lingering_close(event_conn_state_t *cs, const apr_pollfd_t *
     rv = apr_pollset_remove(event_pollset, pfd);
     apr_thread_mutex_unlock(timeout_mutex);
     AP_DEBUG_ASSERT(rv == APR_SUCCESS ||  APR_STATUS_IS_NOTFOUND(rv));
-    TO_QUEUE_ELEM_INIT(cs);
 
     rv = apr_socket_close(csd);
     AP_DEBUG_ASSERT(rv == APR_SUCCESS);
@@ -1902,7 +1901,6 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                     TO_QUEUE_REMOVE(remove_from_q, cs);
                     rc = apr_pollset_remove(event_pollset, &cs->pfd);
                     apr_thread_mutex_unlock(timeout_mutex);
-                    TO_QUEUE_ELEM_INIT(cs);
 
                     /*
                      * Some of the pollset backends, like KQueue or Epoll
