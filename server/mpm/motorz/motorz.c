@@ -397,19 +397,15 @@ read_request:
         }
 
         if (scon->cs.state == CONN_STATE_WRITE_COMPLETION) {
-            int not_complete_yet;
+            int pending;
 
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(03331)
                                   "motorz_io_process(): CONN_STATE_WRITE_COMPLETION");
 
             ap_update_child_status(scon->sbh, SERVER_BUSY_WRITE, NULL);
 
-            not_complete_yet = ap_run_output_pending(c);
-
-            if (not_complete_yet > OK) {
-                scon->cs.state = CONN_STATE_LINGER;
-            }
-            else if (not_complete_yet == OK) {
+            pending = ap_run_output_pending(c);
+            if (pending == OK) {
                 /* Still in WRITE_COMPLETION_STATE:
                  * Set a write timeout for this connection, and let the
                  * event thread poll for writeability.
@@ -432,7 +428,9 @@ read_request:
                 }
                 return APR_SUCCESS;
             }
-            else if (c->keepalive != AP_CONN_KEEPALIVE || c->aborted) {
+            if (pending != DECLINED
+                    || c->keepalive != AP_CONN_KEEPALIVE
+                    || c->aborted) {
                 scon->cs.state = CONN_STATE_LINGER;
             }
             else if (c->data_in_input_filters || ap_run_input_pending(c) == OK) {
