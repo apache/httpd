@@ -555,7 +555,8 @@
  * 20161018.5 (2.5.0-dev)  Add ap_get_basic_auth_components() and deprecate
  *                         ap_get_basic_auth_pw()
  * 20161018.6 (2.5.0-dev)  Add ap_update_sb_handle()
- * 20161018.7 (2.5.0-dev)  Add flags field to module_struct
+ * 20161018.7 (2.5.0-dev)  Add flags field to module_struct and function
+ *                         ap_get_module_flags()
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
