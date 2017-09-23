@@ -111,7 +111,7 @@ ProxyPassMatch "^/(.*\.php(/.*)?)$" "unix:/var/run/php5-fpm.sock|fcgi://localhos
     </example>
 
     <p>Dans l'exemple suivant, on force le module à traiter les paquets de
-    données en provenance de l'arrière-plan du FCGI dès leur réception, sans les
+    données en provenance du serveur FCGI d'arrière-plan dès leur réception, sans les
     faire transiter par un tampon.
     </p>
     <example><title>Force le traitement des données FCGI sans mise en tampon</title>
@@ -121,9 +121,9 @@ ProxyPassMatch "^/myapp/.*\.php(/.*)?$" "fcgi://localhost:9000/var/www/" enabler
     </example>
 
     <p>L'exemple suivant est similaire au précédent avec une différence : ici,
-    les données en provenance de l'arrière-plan du FCGI sont traitées après un
+    les données en provenance du serveur FCGI d'arrière-plan sont traitées après un
     temps de valeur fixe (elles sont mises en tampon). Cette méthode est
-    utile si l'arrière-plan du FCGI envoie ses données sous forme
+    utile si le serveur FCGI d'arrière-plan envoie ses données sous forme
     de petits paquets, auquel cas le traitement immédiat de chacun d'entre eux
     serait inefficace et couteux en ressources. Notez que cet exemple ne sera
     peut-être pas adapté dans le cas où l'envoi de paquets de données par
@@ -202,8 +202,11 @@ ProxyPass "/myapp/" "balancer://myappcluster/"
     fournisseur du protocole FCGI :</p>
     <dl>
         <dt>proxy-fcgi-pathinfo</dt>
-        <dd>Par défaut, <module>mod_proxy_fcgi</module> ne créera jamais
-	ni n'exportera la variable d'environnement <var>PATH_INFO</var>,
+        <dd>Lorsqu'il est configuré via les directives <directive
+	module="mod_proxy">ProxyPass</directive> ou <directive
+	module="mod_proxy">ProxyPassMatch</directive>,
+	<module>mod_proxy_fcgi</module> ne définit pas la variable
+	d'environnement <var>PATH_INFO</var>,
 	ce qui permet au serveur FCGI d'arrière-plan de déterminer
 	correctement <var>SCRIPT_NAME</var> et <var>Script-URI</var>, et
 	de se conformer à la section 3.3 de la RFC 3875. Si au contraire
