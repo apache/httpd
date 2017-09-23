@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1803258 -->
+<!-- English Revision: 1808855 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -891,7 +891,7 @@ charge</description>
     <directive module="mod_proxy">ProxyPass</directive>.</p>
     <p>La directive <directive>BalancerMember</directive> accepte un paramètre
     supplémentaire : <var>loadfactor</var>. Il s'agit du facteur de
-    charge du membre - un nombre entre 1 (valeur par défaut) et 100, qui
+    charge du membre - un nombre décimal entre 1.0 (valeur par défaut) et 100.0, qui
     définit la charge à appliquer au membre en question.</p>
     <p>L'argument <var>balancerurl</var> n'est requis que s'il ne se trouve pas
     dèjà dans la directive de conteneur <code>&lt;Proxy
@@ -1521,7 +1521,7 @@ ProxyPass "/" "balancer://mycluster/" stickysession=JSESSIONID|jsessionid nofail
 ProxyPass "/" "balancer://hotcluster/"
 &lt;Proxy "balancer://hotcluster"&gt;
     BalancerMember "ajp://1.2.3.4:8009" loadfactor=1
-    BalancerMember "ajp://1.2.3.5:8009" loadfactor=2
+    BalancerMember "ajp://1.2.3.5:8009" loadfactor=2.25
     # The server below is on hot standby
     BalancerMember "ajp://1.2.3.6:8009" status=+H
     ProxySet lbmethod=bytraffic

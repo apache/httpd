@@ -176,8 +176,11 @@ ProxyPass "/myapp/" "balancer://myappcluster/"
     fournisseur du protocole FCGI :</p>
     <dl>
         <dt>proxy-fcgi-pathinfo</dt>
-        <dd>Par défaut, <module>mod_proxy_fcgi</module> ne créera jamais
-	ni n'exportera la variable d'environnement <var>PATH_INFO</var>,
+        <dd>Lorsqu'il est configuré via les directives <directive
+	module="mod_proxy">ProxyPass</directive> ou <directive
+	module="mod_proxy">ProxyPassMatch</directive>,
+	<module>mod_proxy_fcgi</module> ne définit
+	pas la variable d'environnement <var>PATH_INFO</var>,
 	ce qui permet au serveur FCGI d'arrière-plan de déterminer
 	correctement <var>SCRIPT_NAME</var> et <var>Script-URI</var>, et
 	de se conformer à la section 3.3 de la RFC 3875. Si au contraire
