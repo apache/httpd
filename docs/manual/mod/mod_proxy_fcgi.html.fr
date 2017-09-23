@@ -112,16 +112,16 @@
 </div>
 
     <p>Dans l'exemple suivant, on force le module à traiter les paquets de
-    données en provenance de l'arrière-plan du FCGI dès leur réception, sans les
+    données en provenance du serveur FCGI d'arrière-plan dès leur réception, sans les
     faire transiter par un tampon.
     </p>
     <div class="example"><h3>Force le traitement des données FCGI sans mise en tampon</h3><pre class="prettyprint lang-config">ProxyPassMatch "^/myapp/.*\.php(/.*)?$" "fcgi://localhost:9000/var/www/" enablereuse=on flushpackets=on</pre>
 </div>
 
     <p>L'exemple suivant est similaire au précédent avec une différence : ici,
-    les données en provenance de l'arrière-plan du FCGI sont traitées après un
+    les données en provenance du serveur FCGI d'arrière-plan sont traitées après un
     temps de valeur fixe (elles sont mises en tampon). Cette méthode est
-    utile si l'arrière-plan du FCGI envoie ses données sous forme
+    utile si le serveur FCGI d'arrière-plan envoie ses données sous forme
     de petits paquets, auquel cas le traitement immédiat de chacun d'entre eux
     serait inefficace et couteux en ressources. Notez que cet exemple ne sera
     peut-être pas adapté dans le cas où l'envoi de paquets de données par
@@ -190,8 +190,9 @@
     fournisseur du protocole FCGI :</p>
     <dl>
         <dt>proxy-fcgi-pathinfo</dt>
-        <dd>Par défaut, <code class="module"><a href="../mod/mod_proxy_fcgi.html">mod_proxy_fcgi</a></code> ne créera jamais
-	ni n'exportera la variable d'environnement <var>PATH_INFO</var>,
+        <dd>Lorsqu'il est configuré via les directives <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> ou <code class="directive"><a href="../mod/mod_proxy.html#proxypassmatch">ProxyPassMatch</a></code>,
+	<code class="module"><a href="../mod/mod_proxy_fcgi.html">mod_proxy_fcgi</a></code> ne définit pas la variable
+	d'environnement <var>PATH_INFO</var>,
 	ce qui permet au serveur FCGI d'arrière-plan de déterminer
 	correctement <var>SCRIPT_NAME</var> et <var>Script-URI</var>, et
 	de se conformer à la section 3.3 de la RFC 3875. Si au contraire

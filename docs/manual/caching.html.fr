@@ -470,7 +470,7 @@ Vary: negotiate,accept-language,accept-charset
       
 
       <p>Le module <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> s'appuie sur des
-      implémentations de stockage en arrière-plan spécifiques pour gérer
+      implémentations de stockage sous-jacentes spécifiques pour gérer
       le cache ; à ce titre, <code class="module"><a href="./mod/mod_cache_disk.html">mod_cache_disk</a></code> fournit le
       support de la mise en cache sur disque.</p>
 
@@ -663,7 +663,7 @@ CacheSocache dbm:/path/to/datafile</pre>
 
       <p>Le module <code class="module"><a href="./mod/mod_authn_socache.html">mod_authn_socache</a></code> permet la mise en
       cache des données issues d'une authentification, diminuant ainsi
-      la charge des serveurs d'authentification en arrière-plan.</p>
+      la charge des serveurs d'authentification d'arrière-plan.</p>
 
     
 
