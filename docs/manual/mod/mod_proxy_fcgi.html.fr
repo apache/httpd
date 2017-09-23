@@ -169,8 +169,9 @@
     fournisseur du protocole FCGI :</p>
     <dl>
         <dt>proxy-fcgi-pathinfo</dt>
-        <dd>Par défaut, <code class="module"><a href="../mod/mod_proxy_fcgi.html">mod_proxy_fcgi</a></code> ne créera jamais
-	ni n'exportera la variable d'environnement <var>PATH_INFO</var>,
+        <dd>Lorsqu'il est configuré via les directives <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> ou <code class="directive"><a href="../mod/mod_proxy.html#proxypassmatch">ProxyPassMatch</a></code>,
+	<code class="module"><a href="../mod/mod_proxy_fcgi.html">mod_proxy_fcgi</a></code> ne définit
+	pas la variable d'environnement <var>PATH_INFO</var>,
 	ce qui permet au serveur FCGI d'arrière-plan de déterminer
 	correctement <var>SCRIPT_NAME</var> et <var>Script-URI</var>, et
 	de se conformer à la section 3.3 de la RFC 3875. Si au contraire
