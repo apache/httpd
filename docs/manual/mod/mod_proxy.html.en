@@ -550,8 +550,8 @@ ProxyPass "/examples" "http://backend.example.com/examples" timeout=10</pre>
             directive and can take any of the key value pair parameters available to
             <code class="directive"><a href="#proxypass">ProxyPass</a></code> directives.</p>
         <p>One additional parameter is available only to <code class="directive">BalancerMember</code> directives:
-            <var>loadfactor</var>. This is the member load factor - a number between 1
-            (default) and 100, which defines the weighted load to be applied to the
+            <var>loadfactor</var>. This is the member load factor - a decimal number between 1.0
+            (default) and 100.0, which defines the weighted load to be applied to the
             member in question.</p>
         <p>The <var>balancerurl</var> is only needed when not within a
             <code>&lt;Proxy <var>balancer://</var>...&gt;</code>
@@ -1438,7 +1438,7 @@ ProxyPass "/" "balancer://mycluster/" stickysession=JSESSIONID|jsessionid nofail
     <pre class="prettyprint lang-config">ProxyPass "/" "balancer://hotcluster/"
 &lt;Proxy "balancer://hotcluster"&gt;
     BalancerMember "ajp://1.2.3.4:8009" loadfactor=1
-    BalancerMember "ajp://1.2.3.5:8009" loadfactor=2
+    BalancerMember "ajp://1.2.3.5:8009" loadfactor=2.25
     # The server below is on hot standby
     BalancerMember "ajp://1.2.3.6:8009" status=+H
     ProxySet lbmethod=bytraffic
