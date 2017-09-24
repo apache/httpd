@@ -332,6 +332,7 @@ log_server_status</a></li>
 <li><a href="mod/">Module index</a></li>
 <li><a href="mod/directives.html">Directive index</a></li>
 <li><a href="mod/quickreference.html">Directive Quick-Reference</a></li>
+<li><a href="mod/overrides.html">Override class index for .htaccess</a></li>
 </ul>
 </div></div>
 <div class="bottomlang">
