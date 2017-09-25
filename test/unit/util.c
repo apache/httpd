@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-#include "check.h"
 #include "../httpdunit.h"
 
 #include "httpd.h"
