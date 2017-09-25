@@ -15,7 +15,15 @@
  */
 
 #include "apr.h"   /* for pid_t on Windows, needed by Check */
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wstrict-prototypes"
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wstrict-prototypes"
+
 #include "check.h"
+
+#pragma clang diagnostic pop
+#pragma GCC diagnostic pop
 
 #include "apr_general.h"
 
