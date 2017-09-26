@@ -14,9 +14,6 @@ Changes with Apache 2.5.0
   *) mod_ssl: unshare SSLSrvConfigRec instances between base server and virtual hosts. This avoids
      overwrites of later initializattions (vhost_id), selective disables by "SSLEngine addr-list"
      and certificate/key pickup from mod_md. [Stefan Eissing]
-  
-  *) mod_speling: Don't embed referer data in a link in error page.
-     PR 38923 [Nick Kew]
 
   *) mod_rewrite, core: Avoid the 'Vary: Host' response header when HTTP_HOST is
      used in a condition that evaluates to true. PR 58231 [Luca Toscano, Yann Ylavic]
@@ -46,10 +43,6 @@ Changes with Apache 2.5.0
        a changed mod_ssl patch (v5) to take effect.
      - compatibility with libressl
        [Stefan Eissing]
-
-  *) htdigest: prevent a buffer overflow when a string exceeds the allowed max
-     length in a password file.
-     [Luca Toscano, Hanno Böck <hanno hboeck de>]
 
   *) mod_md: v0.9.2: new directive 'MDHttpProxy' to define a proxy for outgoing connection,
      some minor bugfixes, twiddle the build system to avoid non-pic code generation.
@@ -99,9 +92,6 @@ Changes with Apache 2.5.0
      
   *) mod_ssl, ab: Fix compatibility with LibreSSL.  PR 61184.
      [Bernard Spil <brnrd freebsd.org>, Yann Ylavic]
-
-  *) event: Avoid possible blocking in the listener thread when shutting down
-     connections. PR 60956.  [Yann Ylavic]
 
   *) mod_proxy_fcgi: Add the support for mod_proxy's flushpackets and flushwait
      parameters. [Luca Toscano, Ruediger Pluem, Yann Ylavic]
@@ -161,9 +151,6 @@ Changes with Apache 2.5.0
 
   *) core: Add <IfFile> configuration section to allow any file on disk to be
      used as a conditional.  [Edward Lu, Eric Covener]
-
-  *) event: Avoid listener periodic wake ups by using the pollset wake-ability
-     when available.  PR 57399.  [Yann Ylavic, Luca Toscano]
 
   *) mod_crypto: Add the all purpose crypto filters with support for HLS.
      [Graham Leggett]
