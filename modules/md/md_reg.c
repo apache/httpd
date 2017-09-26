@@ -237,6 +237,7 @@ apr_status_t md_reg_assess(md_reg_t *reg, md_t *md, int *perrored, int *prenew, 
     int renew = 0;
     int errored = 0;
     
+    (void)reg;
     switch (md->state) {
         case MD_S_UNKNOWN:
             md_log_perror( MD_LOG_MARK, MD_LOG_ERR, 0, p, "md(%s): in unkown state.", md->name);
@@ -292,6 +293,7 @@ static int reg_md_iter(void *baton, md_store_t *store, md_t *md, apr_pool_t *pte
 {
     reg_do_ctx *ctx = baton;
     
+    (void)store;
     if (!ctx->exclude || strcmp(ctx->exclude, md->name)) {
         state_init(ctx->reg, ptemp, (md_t*)md, 1);
         return ctx->cb(ctx->baton, ctx->reg, md);
@@ -339,6 +341,7 @@ static int find_domain(void *baton, md_reg_t *reg, md_t *md)
 {
     find_domain_ctx *ctx = baton;
     
+    (void)reg;
     if (md_contains(md, ctx->domain, 0)) {
         ctx->md = md;
         return 0;
@@ -371,6 +374,7 @@ static int find_overlap(void *baton, md_reg_t *reg, md_t *md)
     find_overlap_ctx *ctx = baton;
     const char *overlap;
     
+    (void)reg;
     if ((overlap = md_common_name(ctx->md_checked, md))) {
         ctx->md = md;
         ctx->s = overlap;
@@ -608,6 +612,8 @@ static int find_changes(void *baton, md_store_t *store, md_t *md, apr_pool_t *pt
 {
     sync_ctx *ctx = baton;
 
+    (void)store;
+    (void)ptemp;
     APR_ARRAY_PUSH(ctx->store_mds, const md_t*) = md_clone(ctx->p, md);
     return 1;
 }
@@ -866,6 +872,7 @@ static apr_status_t run_stage(void *baton, apr_pool_t *p, apr_pool_t *ptemp, va_
     apr_time_t *pvalid_from;
     apr_status_t rv;
     
+    (void)p;
     proto = va_arg(ap, const md_proto_t *);
     md = va_arg(ap, const md_t *);
     challenge = va_arg(ap, const char *);

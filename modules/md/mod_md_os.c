@@ -16,6 +16,10 @@
 #include <assert.h>
 #include <apr_strings.h>
 
+#ifndef AP_ENABLE_EXCEPTION_HOOK
+#define AP_ENABLE_EXCEPTION_HOOK 0
+#endif
+
 #include <mpm_common.h>
 #include <httpd.h>
 #include <http_log.h>
@@ -73,6 +77,8 @@ apr_status_t md_server_graceful(apr_pool_t *p, server_rec *s)
 { 
     apr_status_t rv;
     
+    (void)p;
+    (void)s;
     rv = (kill(getppid(), AP_SIG_GRACEFUL) < 0)? APR_ENOTIMPL : APR_SUCCESS;
     ap_log_error(APLOG_MARK, APLOG_TRACE1, errno, NULL, "sent signal to parent");
     return rv;

@@ -59,7 +59,7 @@ static const char *GROUP_NAME[] = {
 
 const char *md_store_group_name(int group)
 {
-    if (group < sizeof(GROUP_NAME)/sizeof(GROUP_NAME[0])) {
+    if ((size_t)group < sizeof(GROUP_NAME)/sizeof(GROUP_NAME[0])) {
         return GROUP_NAME[group];
     }
     return "UNKNOWN";
@@ -200,6 +200,7 @@ static apr_status_t p_remove(void *baton, apr_pool_t *p, apr_pool_t *ptemp, va_l
     const char *name;
     int force;
     
+    (void)p;
     name = va_arg(ap, const char *);
     force = va_arg(ap, int);
 

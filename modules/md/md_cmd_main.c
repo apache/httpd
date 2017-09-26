@@ -232,6 +232,8 @@ static md_log_level_t active_level = MD_LOG_INFO;
 
 static int log_is_level(void *baton, apr_pool_t *p, md_log_level_t level)
 {
+    (void)baton;
+    (void)p;
     return level <= active_level;
 }
 
@@ -286,6 +288,7 @@ void md_cmd_print_md(md_cmd_ctx *ctx, const md_t *md)
 
 static int pool_abort(int rv)
 {
+    (void)rv;
     abort();
 }
 

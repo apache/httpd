@@ -1,6 +1,13 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_md: v0.9.7
+     - Use of the new module flag
+     - Removed obsolete function from interface to mod_ssl. 
+     - Fallback certificates has version set and no longer claims to be a CA. (re issue #32)
+     - MDRequireHttps now happens before any Redirect.
+     [Stefan Eissing]
+
   *) mod_authz_dbd: fix a segmentation fault if AuthzDBDQuery is not set.
      PR 61546 [Lubos Uhliarik <luhliari redhat.com>]
 

@@ -67,7 +67,7 @@ static acme_problem_status_t Problems[] = {
 };
 
 static apr_status_t problem_status_get(const char *type) {
-    int i;
+    size_t i;
 
     if (strstr(type, "urn:ietf:params:") == type) {
         type += strlen("urn:ietf:params:");
@@ -492,7 +492,10 @@ static apr_status_t on_got_json(md_acme_t *acme, apr_pool_t *p, const apr_table_
                                 md_json_t *jbody, void *baton)
 {
     json_ctx *ctx = baton;
-    
+
+    (void)acme;
+    (void)p;
+    (void)headers;
     ctx->json = md_json_clone(ctx->pool, jbody);
     return APR_SUCCESS;
 }

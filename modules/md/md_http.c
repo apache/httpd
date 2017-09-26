@@ -236,6 +236,8 @@ apr_status_t md_http_POSTd(md_http_t *http, const char *url,
 
 apr_status_t md_http_await(md_http_t *http, long req_id)
 {
+    (void)http;
+    (void)req_id;
     return APR_SUCCESS;
 }
 

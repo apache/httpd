@@ -297,6 +297,8 @@ static apr_status_t write_text(void *baton, struct apr_file_t *f, apr_pool_t *p)
 {
     const char *text = baton;
     apr_size_t len = strlen(text);
+    
+    (void)p;
     return apr_file_write_full(f, text, len, &len);
 }
 
@@ -374,6 +376,8 @@ static apr_status_t rm_recursive(const char *fpath, apr_pool_t *p, int max_level
 static apr_status_t prm_recursive(void *baton, apr_pool_t *p, apr_pool_t *ptemp, va_list ap)
 {
     int max_level = va_arg(ap, int);
+    
+    (void)p;
     return rm_recursive(baton, ptemp, max_level); 
 }
 
@@ -567,6 +571,8 @@ static apr_status_t rm_cb(void *baton, apr_pool_t *p, apr_pool_t *ptemp,
     apr_status_t rv;
     const char *fpath;
     
+    (void)baton;
+    (void)p;
     rv = md_util_path_merge(&fpath, ptemp, path, name, NULL);
     if (APR_SUCCESS == rv) {
         if (APR_DIR == ftype) {

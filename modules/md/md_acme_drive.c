@@ -107,7 +107,7 @@ static apr_status_t ad_set_acct(md_proto_driver_t *d)
         md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, d->p, "%s: looking at existing accounts",
                       d->proto->protocol);
         if (APR_SUCCESS == md_acme_find_acct(ad->acme, d->store, d->p)) {
-            md->ca_account = md_acme_get_acct(ad->acme, d->p);
+            md->ca_account = md_acme_get_acct_id(ad->acme);
             update = 1;
         }
     }
@@ -176,7 +176,7 @@ static apr_status_t ad_setup_authz(md_proto_driver_t *d)
      */
     rv = md_acme_authz_set_load(d->store, MD_SG_STAGING, md->name, &ad->authz_set, d->p);
     if (!ad->authz_set || APR_STATUS_IS_ENOENT(rv)) {
-        ad->authz_set = md_acme_authz_set_create(d->p, ad->acme);
+        ad->authz_set = md_acme_authz_set_create(d->p);
         rv = APR_SUCCESS;
     }
     else if (APR_SUCCESS != rv) {
@@ -292,7 +292,7 @@ static apr_status_t ad_start_challenges(md_proto_driver_t *d)
     return rv;
 }
 
-static apr_status_t check_challenges(void *baton, int attemmpt)
+static apr_status_t check_challenges(void *baton, int attempt)
 {
     md_proto_driver_t *d = baton;
     md_acme_driver_t *ad = d->baton;
@@ -302,8 +302,8 @@ static apr_status_t check_challenges(void *baton, int attemmpt)
     
     for (i = 0; i < ad->authz_set->authzs->nelts && APR_SUCCESS == rv; ++i) {
         authz = APR_ARRAY_IDX(ad->authz_set->authzs, i, md_acme_authz_t*);
-        md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, d->p, "%s: check AUTHZ for %s", 
-                      ad->md->name, authz->domain);
+        md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, d->p, "%s: check AUTHZ for %s(%d. attempt)", 
+                      ad->md->name, authz->domain, attempt);
         if (APR_SUCCESS == (rv = md_acme_authz_update(authz, ad->acme, d->store, d->p))) {
             switch (authz->state) {
                 case MD_ACME_AUTHZ_S_VALID:
@@ -366,7 +366,7 @@ static apr_status_t on_got_cert(md_acme_t *acme, const md_http_response_t *res, 
     md_acme_driver_t *ad = d->baton;
     apr_status_t rv = APR_SUCCESS;
     
-    
+    (void)acme;
     if (APR_SUCCESS == (rv = read_http_cert(&ad->cert, d->p, res))) {
         rv = md_store_save(d->store, d->p, MD_SG_STAGING, ad->md->name, MD_FN_CERT, 
                            MD_SV_CERT, ad->cert, 0);
@@ -380,6 +380,7 @@ static apr_status_t get_cert(void *baton, int attempt)
     md_proto_driver_t *d = baton;
     md_acme_driver_t *ad = d->baton;
     
+    (void)attempt;
     return md_acme_GET(ad->acme, ad->md->cert_url, NULL, NULL, on_got_cert, d);
 }
 
@@ -426,6 +427,7 @@ static apr_status_t csr_req(md_acme_t *acme, const md_http_response_t *res, void
     md_acme_driver_t *ad = d->baton;
     apr_status_t rv = APR_SUCCESS;
     
+    (void)acme;
     ad->md->cert_url = apr_table_get(res->headers, "location");
     if (!ad->md->cert_url) {
         md_log_perror(MD_LOG_MARK, MD_LOG_ERR, APR_EINVAL, d->p, 
@@ -511,6 +513,7 @@ static apr_status_t on_add_chain(md_acme_t *acme, const md_http_response_t *res,
     md_cert_t *cert;
     const char *ct;
     
+    (void)acme;
     ct = apr_table_get(res->headers, "Content-Type");
     if (ct && !strcmp("application/x-pkcs7-mime", ct)) {
         /* root cert most likely, end it here */
@@ -531,7 +534,7 @@ static apr_status_t get_chain(void *baton, int attempt)
     md_cert_t *cert;
     const char *url, *last_url = NULL;
     apr_status_t rv = APR_SUCCESS;
-    
+
     while (APR_SUCCESS == rv && ad->chain->nelts < 10) {
         int nelts = ad->chain->nelts;
         if (ad->chain && nelts > 0) {
@@ -569,7 +572,7 @@ static apr_status_t get_chain(void *baton, int attempt)
         }
     }
     md_log_perror(MD_LOG_MARK, MD_LOG_TRACE1, rv, d->p, 
-                  "got chain with %d certs", ad->chain->nelts);
+                  "got chain with %d certs (%d. attempt)", ad->chain->nelts, attempt);
     return rv;
 }
 
@@ -979,6 +982,7 @@ static md_proto_t ACME_PROTO = {
  
 apr_status_t md_acme_protos_add(apr_hash_t *protos, apr_pool_t *p)
 {
+    (void)p;
     apr_hash_set(protos, MD_PROTO_ACME, sizeof(MD_PROTO_ACME)-1, &ACME_PROTO);
     return APR_SUCCESS;
 }

@@ -300,6 +300,7 @@ static md_http_impl_t impl = {
 md_http_impl_t * md_curl_get_impl(apr_pool_t *p)
 {
     /* trigger early global curl init, before we are down a rabbit hole */
+    (void)p;
     md_curl_init();
     return &impl;
 }
