@@ -342,7 +342,7 @@ end</pre>
     processing, allowing you to either add new requirements that were not previously
     supported by httpd, or tweaking existing ones to accommodate your needs.
 </p>
-<pre class="prettyprint lang-config">LuaHookAuthChecker /path/too/foo.lua check_auth</pre>
+<pre class="prettyprint lang-config">LuaHookCheckUserID /path/too/foo.lua check_auth</pre>
 
 
 

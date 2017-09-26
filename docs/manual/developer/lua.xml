@@ -353,7 +353,7 @@ end
     supported by httpd, or tweaking existing ones to accommodate your needs.
 </p>
 <highlight language="config">
-LuaHookAuthChecker /path/too/foo.lua check_auth
+LuaHookCheckUserID /path/too/foo.lua check_auth
 </highlight>
 
 <!-- BEGIN EXAMPLE CODE -->
