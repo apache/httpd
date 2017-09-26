@@ -41,6 +41,7 @@ static apr_status_t cmd_add(md_cmd_ctx *ctx, const md_cmd_t *cmd)
     md_t *md, *nmd;
     apr_status_t rv;
 
+    (void)cmd;
     md = md_create(ctx->p, md_cmd_gather_args(ctx, 0));
     if (md->domains->nelts == 0) {
         return APR_EINVAL;
@@ -92,6 +93,7 @@ static apr_status_t cmd_remove(md_cmd_ctx *ctx, const md_cmd_t *cmd)
 
 static apr_status_t opts_remove(md_cmd_ctx *ctx, int option, const char *optarg)
 {
+    (void)optarg;
     switch (option) {
         case 'f':
             md_cmd_ctx_set_option(ctx, "force", "1");
@@ -120,12 +122,15 @@ static md_cmd_t RemoveCmd = {
 
 static int list_md(void *baton, md_store_t *store, md_t *md, apr_pool_t *ptemp)
 {
+    (void)store;
+    (void)ptemp;
     md_cmd_print_md(baton, md);
     return 1;
 }
 
 static apr_status_t cmd_list(md_cmd_ctx *ctx, const md_cmd_t *cmd)
 {
+    (void)cmd;
     return md_store_md_iter(list_md, ctx, ctx->store, ctx->p, MD_SG_DOMAINS, "*");
 }
 

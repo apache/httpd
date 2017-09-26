@@ -41,6 +41,7 @@ static apr_status_t cmd_reg_add(md_cmd_ctx *ctx, const md_cmd_t *cmd)
     md_t *md;
     apr_status_t rv;
 
+    (void)cmd;
     md = md_create(ctx->p, md_cmd_gather_args(ctx, 0));
     if (md->domains->nelts == 0) {
         return APR_EINVAL;
@@ -70,6 +71,7 @@ static int list_add_md(void *baton, md_reg_t *reg, md_t *md)
 {
     apr_array_header_t *mdlist = baton;
     
+    (void)reg;
     APR_ARRAY_PUSH(mdlist, const md_t *) = md;
     return 1;
 }
@@ -86,6 +88,7 @@ static apr_status_t cmd_reg_list(md_cmd_ctx *ctx, const md_cmd_t *cmd)
     const md_t *md;
     int i;
     
+    (void)cmd;
     if (ctx->argc > 0) {
         for (i = 0; i < ctx->argc; ++i) {
             name = ctx->argv[i];
@@ -304,6 +307,7 @@ static apr_status_t cmd_reg_drive(md_cmd_ctx *ctx, const md_cmd_t *cmd)
     apr_status_t rv;
     int i;
  
+    (void)cmd;
     md_log_perror(MD_LOG_MARK, MD_LOG_TRACE4, 0, ctx->p, "drive do");
     if (ctx->argc > 0) {
         for (i = 0; i < ctx->argc; ++i) {
@@ -322,7 +326,7 @@ static apr_status_t cmd_reg_drive(md_cmd_ctx *ctx, const md_cmd_t *cmd)
     
     rv = APR_SUCCESS;
     for (i = 0; i < mdlist->nelts; ++i) {
-        md_t *md = APR_ARRAY_IDX(mdlist, i, md_t*);
+        md = APR_ARRAY_IDX(mdlist, i, md_t*);
         if (APR_SUCCESS != (rv = assess_and_drive(ctx, md))) {
             break;
         }

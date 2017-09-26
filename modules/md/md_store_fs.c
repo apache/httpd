@@ -122,6 +122,8 @@ static apr_status_t rename_pkey(void *baton, apr_pool_t *p, apr_pool_t *ptemp,
     const char *from, *to;
     apr_status_t rv = APR_SUCCESS;
 
+    (void)baton;
+    (void)ftype;
     if (APR_SUCCESS == (rv = md_util_path_merge(&from, ptemp, dir, name, NULL))
         && APR_SUCCESS == (rv = md_util_path_merge(&to, ptemp, dir, MD_FN_PRIVKEY, NULL))) {
         md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, 0, p, "renaming %s/%s to %s", 
@@ -140,6 +142,9 @@ static apr_status_t mk_pubcert(void *baton, apr_pool_t *p, apr_pool_t *ptemp,
     const char *fname, *fpubcert;
     apr_status_t rv = APR_SUCCESS;
     
+    (void)baton;
+    (void)ftype;
+    (void)p;
     if (   APR_SUCCESS == (rv = md_util_path_merge(&fpubcert, ptemp, dir, MD_FN_PUBCERT, NULL))
         && APR_STATUS_IS_ENOENT((rv = md_chain_fload(&pubcert, ptemp, fpubcert)))
         && APR_SUCCESS == (rv = md_util_path_merge(&fname, ptemp, dir, name, NULL))
@@ -166,6 +171,7 @@ static apr_status_t upgrade_from_1_0(md_store_fs_t *s_fs, apr_pool_t *p, apr_poo
     md_store_group_t g;
     apr_status_t rv = APR_SUCCESS;
     
+    (void)ptemp;
     /* Migrate pkey.pem -> privkey.pem */
     for (g = MD_SG_NONE; g < MD_SG_COUNT && APR_SUCCESS == rv; ++g) {
         rv = md_util_files_do(rename_pkey, s_fs, p, s_fs->base, 
@@ -240,6 +246,7 @@ static apr_status_t setup_store_file(void *baton, apr_pool_t *p, apr_pool_t *pte
     const char *fname;
     apr_status_t rv;
 
+    (void)ap;
     s_fs->plain_pkey[MD_SG_DOMAINS] = 1;
     s_fs->plain_pkey[MD_SG_TMP] = 1;
     
@@ -458,6 +465,7 @@ static apr_status_t pfs_load(void *baton, apr_pool_t *p, apr_pool_t *ptemp, va_l
 static apr_status_t dispatch(md_store_fs_t *s_fs, md_store_fs_ev_t ev, int group, 
                              const char *fname, apr_filetype_e ftype, apr_pool_t *p)
 {
+    (void)ev;
     if (s_fs->event_cb) {
         return s_fs->event_cb(s_fs->event_baton, &s_fs->s, MD_S_FS_EV_CREATED, 
                               group, fname, ftype, p);
@@ -506,6 +514,7 @@ static apr_status_t pfs_is_newer(void *baton, apr_pool_t *p, apr_pool_t *ptemp, 
     int *pnewer;
     apr_status_t rv;
     
+    (void)p;
     group1 = (md_store_group_t)va_arg(ap, int);
     group2 = (md_store_group_t)va_arg(ap, int);
     name = va_arg(ap, const char*);
@@ -608,6 +617,7 @@ static apr_status_t pfs_remove(void *baton, apr_pool_t *p, apr_pool_t *ptemp, va
     apr_finfo_t info;
     md_store_group_t group;
     
+    (void)p;
     group = (md_store_group_t)va_arg(ap, int);
     name = va_arg(ap, const char*);
     aspect = va_arg(ap, const char *);
@@ -667,6 +677,7 @@ static apr_status_t pfs_purge(void *baton, apr_pool_t *p, apr_pool_t *ptemp, va_
     md_store_group_t group;
     apr_status_t rv;
     
+    (void)p;
     group = (md_store_group_t)va_arg(ap, int);
     name = va_arg(ap, const char*);
     
@@ -707,7 +718,8 @@ static apr_status_t insp(void *baton, apr_pool_t *p, apr_pool_t *ptemp,
     apr_status_t rv;
     void *value;
     const char *fpath;
-    
+ 
+    (void)ftype;   
     md_log_perror(MD_LOG_MARK, MD_LOG_TRACE3, 0, ptemp, "inspecting value at: %s/%s", dir, name);
     if (APR_SUCCESS == (rv = md_util_path_merge(&fpath, ptemp, dir, name, NULL))) {
         rv = fs_fload(&value, ctx->s_fs, fpath, ctx->group, ctx->vtype, p, ptemp);
@@ -752,6 +764,7 @@ static apr_status_t pfs_move(void *baton, apr_pool_t *p, apr_pool_t *ptemp, va_l
     int archive;
     apr_status_t rv;
     
+    (void)p;
     from = (md_store_group_t)va_arg(ap, int);
     to = (md_store_group_t)va_arg(ap, int);
     name = va_arg(ap, const char*);

@@ -58,10 +58,6 @@ static apr_status_t acct_make(md_acme_acct_t **pacct, apr_pool_t *p,
 }
 
 
-static void md_acme_acct_free(md_acme_acct_t *acct)
-{
-}
-
 static const char *mk_acct_id(apr_pool_t *p, md_acme_t *acme, int i)
 {
     return apr_psprintf(p, "ACME-%s-%04d", acme->sname, i);
@@ -225,20 +221,25 @@ static int find_acct(void *baton, const char *name, const char *aspect,
                      md_store_vtype_t vtype, void *value, apr_pool_t *ptemp)
 {
     find_ctx *ctx = baton;
-    md_json_t *json = value;
     int disabled;
     const char *ca_url, *id;
     
-    id = md_json_gets(json, MD_KEY_ID, NULL);
-    disabled = md_json_getb(json, MD_KEY_DISABLED, NULL);
-    ca_url = md_json_gets(json, MD_KEY_CA_URL, NULL);
-    
-    if (!disabled && ca_url && !strcmp(ctx->acme->url, ca_url)) {
-        md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, 0, ctx->p, 
-                      "found account %s for %s: %s, disabled=%d, ca-url=%s", 
-                      name, ctx->acme->url, id, disabled, ca_url);
-        ctx->id = id;
-        return 0;
+    (void)aspect;
+    (void)ptemp;
+    if (MD_SV_JSON == vtype) {
+        md_json_t *json = value;
+        
+        id = md_json_gets(json, MD_KEY_ID, NULL);
+        disabled = md_json_getb(json, MD_KEY_DISABLED, NULL);
+        ca_url = md_json_gets(json, MD_KEY_CA_URL, NULL);
+        
+        if (!disabled && ca_url && !strcmp(ctx->acme->url, ca_url)) {
+            md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, 0, ctx->p, 
+                          "found account %s for %s: %s, disabled=%d, ca-url=%s", 
+                          name, ctx->acme->url, id, disabled, ca_url);
+            ctx->id = id;
+            return 0;
+        }
     }
     return 1;
 }
@@ -371,7 +372,6 @@ static apr_status_t acct_register(md_acme_t *acme, apr_pool_t *p,
 
 out:    
     if (APR_SUCCESS != rv && acme->acct) {
-        md_acme_acct_free(acme->acct);
         acme->acct = NULL;
     }
     return rv;
@@ -384,6 +384,7 @@ static apr_status_t on_init_acct_valid(md_acme_req_t *req, void *baton)
 {
     md_json_t *jpayload;
 
+    (void)baton;
     jpayload = md_json_create(req->p);
     md_json_sets("reg", jpayload, MD_KEY_RESOURCE, NULL);
     
@@ -398,6 +399,8 @@ static apr_status_t acct_valid(md_acme_t *acme, apr_pool_t *p, const apr_table_t
     const char *body_str;
     const char *tos_required;
     
+    (void)p;
+    (void)baton;
     apr_array_clear(acct->contacts);
     md_json_getsa(acct->contacts, body, MD_KEY_CONTACT, NULL);
     acct->registration = md_json_clone(acme->p, body);
@@ -493,7 +496,7 @@ apr_status_t md_acme_use_acct_staged(md_acme_t *acme, struct md_store_t *store,
     return rv;
 }
 
-const char *md_acme_get_acct(md_acme_t *acme, apr_pool_t *p)
+const char *md_acme_get_acct_id(md_acme_t *acme)
 {
     return acme->acct? acme->acct->id : NULL;
 }
@@ -553,6 +556,7 @@ static apr_status_t on_init_acct_del(md_acme_req_t *req, void *baton)
 {
     md_json_t *jpayload;
 
+    (void)baton;
     jpayload = md_json_create(req->p);
     md_json_sets("reg", jpayload, MD_KEY_RESOURCE, NULL);
     md_json_setb(1, jpayload, "delete", NULL);
@@ -565,7 +569,9 @@ static apr_status_t acct_del(md_acme_t *acme, apr_pool_t *p,
 {
     md_store_t *store = baton;
     apr_status_t rv = APR_SUCCESS;
-    
+
+    (void)hdrs;
+    (void)body;
     md_log_perror(MD_LOG_MARK, MD_LOG_INFO, 0, p, "deleted account %s", acme->acct->url);
     if (store) {
         rv = md_acme_unstore_acct(store, p, acme->acct->id);
@@ -579,6 +585,7 @@ apr_status_t md_acme_delete_acct(md_acme_t *acme, md_store_t *store, apr_pool_t 
 {
     md_acme_acct_t *acct = acme->acct;
     
+    (void)p;
     if (!acct) {
         return APR_EINVAL;
     }

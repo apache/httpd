@@ -34,13 +34,6 @@ APR_DECLARE_OPTIONAL_FN(apr_status_t,
                                              const char **pkeyfile, 
                                              const char **pcertfile));
 
-/* previous version for md_get_certificate, to be phased out soon */
-APR_DECLARE_OPTIONAL_FN(apr_status_t, 
-                        md_get_credentials, (struct server_rec *, apr_pool_t *,
-                                             const char **pkeyfile, 
-                                             const char **pcertfile, 
-                                             const char **pchainfile));
-
 APR_DECLARE_OPTIONAL_FN(int, 
                         md_is_challenge, (struct conn_rec *, const char *,
                                           X509 **pcert, EVP_PKEY **pkey));

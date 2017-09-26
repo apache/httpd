@@ -42,10 +42,7 @@ static const char *level_names[] = {
 
 const char *md_log_level_name(md_log_level_t level)
 {
-    if ((int)level < (sizeof(level_names)/sizeof(level_names[0]))) {
-        return level_names[level];
-    }
-    return "???";
+    return level_names[level];
 }
 
 static md_log_print_cb *log_printv;

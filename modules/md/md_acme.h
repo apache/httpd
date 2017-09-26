@@ -113,7 +113,7 @@ apr_status_t md_acme_use_acct_staged(md_acme_t *acme, struct md_store_t *store,
  * Get the local name of the account currently used by the acme instance.
  * Will be NULL if no account has been setup successfully.
  */
-const char *md_acme_get_acct(md_acme_t *acme, apr_pool_t *p);
+const char *md_acme_get_acct_id(md_acme_t *acme);
 
 /**
  * Agree to the given Terms-of-Service url for the current account.

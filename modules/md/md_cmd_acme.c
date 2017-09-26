@@ -54,7 +54,7 @@ static apr_status_t cmd_acme_newreg(md_cmd_ctx *ctx, const md_cmd_t *cmd)
 
     if (APR_SUCCESS == (rv = md_acme_create_acct(ctx->acme, ctx->p, contacts, ctx->tos))) {
         md_acme_save(ctx->acme, ctx->store, ctx->p);
-        fprintf(stdout, "registered: %s\n", md_acme_get_acct(ctx->acme, ctx->p));
+        fprintf(stdout, "registered: %s\n", md_acme_get_acct_id(ctx->acme));
     }
     else {
         md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, ctx->p, "register new account");
@@ -106,6 +106,7 @@ static apr_status_t cmd_acme_agree(md_cmd_ctx *ctx, const md_cmd_t *cmd)
     apr_status_t rv = APR_SUCCESS;
     int i;
     
+    (void)cmd;
     for (i = 0; i < ctx->argc; ++i) {
         rv = acct_agree_tos(ctx, ctx->argv[i], ctx->tos, ctx->p);
         if (rv != APR_SUCCESS) {
@@ -146,6 +147,7 @@ static apr_status_t cmd_acme_validate(md_cmd_ctx *ctx, const md_cmd_t *cmd)
     apr_status_t rv = APR_SUCCESS;
     int i;
     
+    (void)cmd;
     for (i = 0; i < ctx->argc; ++i) {
         rv = acct_validate(ctx, ctx->argv[i], ctx->p);
         if (rv != APR_SUCCESS) {
@@ -200,6 +202,7 @@ static apr_status_t cmd_acme_delreg(md_cmd_ctx *ctx, const md_cmd_t *cmd)
     apr_status_t rv = APR_SUCCESS;
     int i;
     
+    (void)cmd;
     for (i = 0; i < ctx->argc; ++i) {
         rv = acme_delreg(ctx, ctx->argv[i], ctx->p);
         if (rv != APR_SUCCESS) {
@@ -223,7 +226,8 @@ static apr_status_t acme_newauthz(md_cmd_ctx *ctx, md_acme_acct_t *acct, const c
 {
     apr_status_t rv;
     md_acme_authz_t *authz;
-    
+
+    (void)acct;
     rv = md_acme_authz_register(&authz, ctx->acme, ctx->store, domain, ctx->p); 
     
     if (rv == APR_SUCCESS) {

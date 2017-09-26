@@ -61,6 +61,8 @@ struct md_pkey_t {
 static void seed_RAND(int pid)
 {
     char seed[128];
+    
+    (void)pid;
     arc4random_buf(seed, sizeof(seed));
     RAND_seed(seed, sizeof(seed));
 }
@@ -105,11 +107,6 @@ static void seed_RAND(int pid)
     /*
      * seed in some current state of the run-time stack (128 bytes)
      */
-#if HAVE_VALGRIND && 0
-    if (ssl_running_on_valgrind) {
-        VALGRIND_MAKE_MEM_DEFINED(stackdata, sizeof(stackdata));
-    }
-#endif
     n = rand_choosenum(0, sizeof(stackdata)-128-1);
     RAND_seed(stackdata+n, 128);
 }
@@ -140,11 +137,13 @@ apr_status_t md_crypt_init(apr_pool_t *pool)
 typedef struct {
     char *data;
     apr_size_t len;
-} buffer;
+} buffer_rec;
 
 static apr_status_t fwrite_buffer(void *baton, apr_file_t *f, apr_pool_t *p) 
 {
-    buffer *buf = baton;
+    buffer_rec *buf = baton;
+    
+    (void)p;
     return apr_file_write_full(f, buf->data, buf->len, &buf->len);
 }
 
@@ -169,6 +168,8 @@ typedef struct {
 static int pem_passwd(char *buf, int size, int rwflag, void *baton)
 {
     passwd_ctx *ctx = baton;
+    
+    (void)rwflag;
     if (ctx->pass_len > 0) {
         if (ctx->pass_len < size) {
             size = (int)ctx->pass_len;
@@ -252,7 +253,7 @@ md_json_t *md_pkey_spec_to_json(const md_pkey_spec_t *spec, apr_pool_t *p)
             case MD_PKEY_TYPE_RSA:
                 md_json_sets("RSA", json, MD_KEY_TYPE, NULL);
                 if (spec->params.rsa.bits >= MD_PKEY_RSA_BITS_MIN) {
-                    md_json_setl(spec->params.rsa.bits, json, MD_KEY_BITS, NULL);
+                    md_json_setl((long)spec->params.rsa.bits, json, MD_KEY_BITS, NULL);
                 }
                 break;
             default:
@@ -368,7 +369,7 @@ apr_status_t md_pkey_fload(md_pkey_t **ppkey, apr_pool_t *p,
     return rv;
 }
 
-static apr_status_t pkey_to_buffer(buffer *buffer, md_pkey_t *pkey, apr_pool_t *p,
+static apr_status_t pkey_to_buffer(buffer_rec *buffer, md_pkey_t *pkey, apr_pool_t *p,
                                    const char *pass, apr_size_t pass_len)
 {
     BIO *bio = BIO_new(BIO_s_mem());
@@ -420,7 +421,7 @@ apr_status_t md_pkey_fsave(md_pkey_t *pkey, apr_pool_t *p,
                            const char *pass_phrase, apr_size_t pass_len,
                            const char *fname, apr_fileperms_t perms)
 {
-    buffer buffer;
+    buffer_rec buffer;
     apr_status_t rv;
     
     if (APR_SUCCESS == (rv = pkey_to_buffer(&buffer, pkey, p, pass_phrase, pass_len))) {
@@ -649,7 +650,7 @@ apr_status_t md_crypt_sha256_digest_hex(const char **pdigesthex, apr_pool_t *p,
     unsigned char *buffer;
     size_t blen;
     apr_status_t rv;
-    int i;
+    unsigned int i;
     
     if (APR_SUCCESS == (rv = sha256_digest(&buffer, &blen, p, d, dlen))) {
         cp = dhex = apr_pcalloc(p,  2 * blen + 1);
@@ -852,7 +853,7 @@ apr_status_t md_cert_fload(md_cert_t **pcert, apr_pool_t *p, const char *fname)
     return rv;
 }
 
-static apr_status_t cert_to_buffer(buffer *buffer, md_cert_t *cert, apr_pool_t *p)
+static apr_status_t cert_to_buffer(buffer_rec *buffer, md_cert_t *cert, apr_pool_t *p)
 {
     BIO *bio = BIO_new(BIO_s_mem());
     int i;
@@ -882,7 +883,7 @@ static apr_status_t cert_to_buffer(buffer *buffer, md_cert_t *cert, apr_pool_t *
 apr_status_t md_cert_fsave(md_cert_t *cert, apr_pool_t *p, 
                            const char *fname, apr_fileperms_t perms)
 {
-    buffer buffer;
+    buffer_rec buffer;
     apr_status_t rv;
     
     if (APR_SUCCESS == (rv = cert_to_buffer(&buffer, cert, p))) {
@@ -893,7 +894,7 @@ apr_status_t md_cert_fsave(md_cert_t *cert, apr_pool_t *p,
 
 apr_status_t md_cert_to_base64url(const char **ps64, md_cert_t *cert, apr_pool_t *p)
 {
-    buffer buffer;
+    buffer_rec buffer;
     apr_status_t rv;
     
     if (APR_SUCCESS == (rv = cert_to_buffer(&buffer, cert, p))) {
@@ -1011,6 +1012,7 @@ apr_status_t md_chain_fsave(apr_array_header_t *certs, apr_pool_t *p,
     unsigned long err = 0;
     int i;
     
+    (void)p;
     rv = md_util_fopen(&f, fname, "w");
     if (rv == APR_SUCCESS) {
         apr_file_perms_set(fname, perms);
@@ -1217,7 +1219,13 @@ apr_status_t md_cert_self_sign(md_cert_t **pcert, const char *cn,
         || !(asn1_rnd = BN_to_ASN1_INTEGER(big_rnd, NULL))) {
         md_log_perror(MD_LOG_MARK, MD_LOG_ERR, 0, p, "%s: setup random serial", cn);
         rv = APR_EGENERAL; goto out;
-    } 
+    }
+     
+    if (1 != X509_set_version(x, 2L)) {
+        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, 0, p, "%s: setting x.509v3", cn);
+        rv = APR_EGENERAL; goto out;
+    }
+
     if (!X509_set_serialNumber(x, asn1_rnd)) {
         md_log_perror(MD_LOG_MARK, MD_LOG_ERR, 0, p, "%s: set serial number", cn);
         rv = APR_EGENERAL; goto out;
@@ -1230,7 +1238,7 @@ apr_status_t md_cert_self_sign(md_cert_t **pcert, const char *cn,
         rv = APR_EGENERAL; goto out;
     }
     /* cert are uncontrained (but not very trustworthy) */
-    if (APR_SUCCESS != (rv = add_ext(x, NID_basic_constraints, "CA:TRUE, pathlen:0", p))) {
+    if (APR_SUCCESS != (rv = add_ext(x, NID_basic_constraints, "CA:FALSE, pathlen:0", p))) {
         md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, p, "%s: set basic constraints ext", cn);
         goto out;
     }

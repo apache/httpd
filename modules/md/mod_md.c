@@ -18,6 +18,9 @@
 #include <apr_strings.h>
 
 #include <ap_release.h>
+#ifndef AP_ENABLE_EXCEPTION_HOOK
+#define AP_ENABLE_EXCEPTION_HOOK 0
+#endif
 #include <mpm_common.h>
 #include <httpd.h>
 #include <http_core.h>
@@ -55,7 +58,10 @@ AP_DECLARE_MODULE(md) = {
     md_config_create_svr, /* func to create per server config */
     md_config_merge_svr,  /* func to merge per server config */
     md_cmds,              /* command handlers */
-    md_hooks
+    md_hooks,
+#if defined(AP_MODULE_FLAG_NONE)
+    AP_MODULE_FLAG_ALWAYS_MERGE
+#endif
 };
 
 static void md_merge_srv(md_t *md, md_srv_conf_t *base_sc, apr_pool_t *p)
@@ -300,6 +306,7 @@ static apr_status_t md_calc_md_list(apr_pool_t *p, apr_pool_t *plog,
     apr_sockaddr_t *sa;
     int i, j;
 
+    (void)plog;
     sc = md_config_get(base_server);
     mc = sc->mc;
     
@@ -371,6 +378,7 @@ static apr_status_t store_file_ev(void *baton, struct md_store_t *store,
     server_rec *s = baton;
     apr_status_t rv;
     
+    (void)store;
     ap_log_error(APLOG_MARK, APLOG_TRACE3, 0, s, "store event=%d on %s %s (group %d)", 
                  ev, (ftype == APR_DIR)? "dir" : "file", fname, group);
                  
@@ -467,8 +475,10 @@ static server_rec *log_server;
 
 static int log_is_level(void *baton, apr_pool_t *p, md_log_level_t level)
 {
+    (void)baton;
+    (void)p;
     if (log_server) {
-        return APLOG_IS_LEVEL(log_server, level);
+        return APLOG_IS_LEVEL(log_server, (int)level);
     }
     return level <= MD_LOG_INFO;
 }
@@ -856,10 +866,9 @@ static apr_status_t md_check_config(apr_pool_t *p, apr_pool_t *plog,
         apr_pool_userdata_set((const void *)1, mod_md_init_key,
                               apr_pool_cleanup_null, s->process->pool);
     }
-    else {
-        ap_log_error( APLOG_MARK, APLOG_INFO, 0, s, APLOGNO(10071)
-                     "mod_md (v%s), initializing...", MOD_MD_VERSION);
-    }
+    
+    ap_log_error( APLOG_MARK, APLOG_INFO, 0, s, APLOGNO(10071)
+                 "mod_md (v%s), initializing...", MOD_MD_VERSION);
 
     init_setups(p, s);
     md_log_set(log_is_level, log_print, NULL);
@@ -881,6 +890,7 @@ static apr_status_t md_post_config(apr_pool_t *p, apr_pool_t *plog,
     apr_status_t rv = APR_SUCCESS;
     int i;
 
+    (void)plog;
     md_config_post_config(s, p);
     sc = md_config_get(s);
     mc = sc->mc;
@@ -1053,14 +1063,6 @@ static apr_status_t md_get_certificate(server_rec *s, apr_pool_t *p,
     return rv;
 }
 
-static apr_status_t md_get_credentials(server_rec *s, apr_pool_t *p,
-                                       const char **pkeyfile, const char **pcertfile,
-                                       const char **pchainfile)
-{
-    *pchainfile = NULL;
-    return md_get_certificate(s, p, pkeyfile, pcertfile);
-}
-
 static int md_is_challenge(conn_rec *c, const char *servername,
                            X509 **pcert, EVP_PKEY **pkey)
 {
@@ -1220,6 +1222,8 @@ static int md_require_https_maybe(request_rec *r)
  */
 static void md_child_init(apr_pool_t *pool, server_rec *s)
 {
+    (void)pool;
+    (void)s;
 }
 
 /* Install this module into the apache2 infrastructure.
@@ -1242,12 +1246,10 @@ static void md_hooks(apr_pool_t *pool)
     ap_hook_child_init(md_child_init, NULL, mod_ssl, APR_HOOK_MIDDLE);
 
     /* answer challenges *very* early, before any configured authentication may strike */
+    ap_hook_post_read_request(md_require_https_maybe, NULL, NULL, APR_HOOK_FIRST);
     ap_hook_post_read_request(md_http_challenge_pr, NULL, NULL, APR_HOOK_MIDDLE);
-    /* redirect to https if configured */
-    ap_hook_fixups(md_require_https_maybe, NULL, NULL, APR_HOOK_LAST);
 
     APR_REGISTER_OPTIONAL_FN(md_is_managed);
     APR_REGISTER_OPTIONAL_FN(md_get_certificate);
-    APR_REGISTER_OPTIONAL_FN(md_get_credentials);
     APR_REGISTER_OPTIONAL_FN(md_is_challenge);
 }
