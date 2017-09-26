@@ -838,7 +838,7 @@ module AP_MODULE_DECLARE_DATA ssl_module = {
     ssl_config_server_merge,    /* merge  per-server config structures */
     ssl_config_cmds,            /* table of configuration directives   */
     ssl_register_hooks          /* register hooks */
-#if AP_MODULE_HAS_FLAGS
+#if defined(AP_MODULE_HAS_FLAGS)
    ,AP_MODULE_FLAG_ALWAYS_MERGE /* flags */
 #endif
 };
