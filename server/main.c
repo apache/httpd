@@ -295,6 +295,13 @@ static int abort_on_oom(int retcode)
     return retcode; /* unreachable, hopefully. */
 }
 
+static apr_status_t deregister_all_hooks(void *unused)
+{
+    (void)unused;
+    apr_hook_deregister_all();
+    return APR_SUCCESS;
+}
+
 static process_rec *init_process(int *argc, const char * const * *argv)
 {
     process_rec *process;
@@ -496,6 +503,10 @@ int main(int argc, const char * const argv[])
         destroy_and_exit_process(process, 1);
     }
 #endif
+
+    /* Deregister all hooks (lastly) when done with pconf */
+    apr_pool_cleanup_register(pconf, NULL, deregister_all_hooks,
+                              apr_pool_cleanup_null);
 
     apr_pool_create(&pcommands, ap_pglobal);
     apr_pool_tag(pcommands, "pcommands");
@@ -743,9 +754,12 @@ int main(int argc, const char * const argv[])
 
     do {
         ap_main_state = AP_SQ_MS_DESTROY_CONFIG;
-        apr_hook_deregister_all();
         apr_pool_clear(pconf);
         ap_clear_auth_internal();
+
+        /* Deregister all hooks (lastly) when done with pconf */
+        apr_pool_cleanup_register(pconf, NULL, deregister_all_hooks,
+                                  apr_pool_cleanup_null);
 
         ap_main_state = AP_SQ_MS_CREATE_CONFIG;
         ap_config_generation++;
