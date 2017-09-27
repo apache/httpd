@@ -171,7 +171,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              and virtual host, though using ap_server_conf makes them global
              only (thus less useful too...).
 
-   * mod_journald: Add new module mod_journald to log error logs into journald.
+   *) mod_journald: Add new module mod_journald to log error logs into journald.
      trunk patch: http://svn.apache.org/r1610339
                   http://svn.apache.org/r1621806
      2.4.x patch: http://people.apache.org/~jkaluza/patches/httpd-2.4.x-mod_journald.patch
@@ -179,6 +179,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      jchampion: Looks like the headers require GCC extensions to compile, so
                 mod_journald can't be configured in maintainer mode (-std=c89).
                 Can anyone else reproduce, or is it just my distro?
+
+   *) Quiet spurious gcc warning in ap_parse_form_data
+      trunk patch: http://svn.apache.org/r1798785
+      2.4.x patch: svn merge -c 1798785 ^/httpd/httpd/trunk .
+     +1: jailletc36
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
