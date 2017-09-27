@@ -393,6 +393,8 @@ luascope	mod/mod_lua.html#luascope
 macro	mod/mod_macro.html#macro
 macroignorebadnesting	mod/mod_macro.html#macroignorebadnesting
 macroignoreemptyargs	mod/mod_macro.html#macroignoreemptyargs
+manageddomain	mod/mod_md.html#manageddomain
+manageddomain	mod/mod_md.html#manageddomain
 maxconnectionsperchild	mod/mpm_common.html#maxconnectionsperchild
 maxkeepaliverequests	mod/core.html#maxkeepaliverequests
 maxmemfree	mod/mpm_common.html#maxmemfree
@@ -403,6 +405,20 @@ maxrequestworkers	mod/mpm_common.html#maxrequestworkers
 maxspareservers	mod/prefork.html#maxspareservers
 maxsparethreads	mod/mpm_common.html#maxsparethreads
 maxthreads	mod/mpm_netware.html#maxthreads
+mdcachallenges	mod/mod_md.html#mdcachallenges
+mdcertificateagreement	mod/mod_md.html#mdcertificateagreement
+mdcertificateauthority	mod/mod_md.html#mdcertificateauthority
+mdcertificateprotocol	mod/mod_md.html#mdcertificateprotocol
+mddrivemode	mod/mod_md.html#mddrivemode
+mdhttpproxy	mod/mod_md.html#mdhttpproxy
+mdmember	mod/mod_md.html#mdmember
+mdmembers	mod/mod_md.html#mdmembers
+mdmuststaple	mod/mod_md.html#mdmuststaple
+mdportmap	mod/mod_md.html#mdportmap
+mdprivatekeys	mod/mod_md.html#mdprivatekeys
+mdrenewwindow	mod/mod_md.html#mdrenewwindow
+mdrequirehttps	mod/mod_md.html#mdrequirehttps
+mdstoredir	mod/mod_md.html#mdstoredir
 memcacheconnttl	mod/mod_socache_memcache.html#memcacheconnttl
 mergetrailers	mod/core.html#mergetrailers
 metadir	mod/mod_cern_meta.html#metadir
@@ -631,6 +647,8 @@ sslocspuserequestnonce	mod/mod_ssl.html#sslocspuserequestnonce
 sslopensslconfcmd	mod/mod_ssl.html#sslopensslconfcmd
 ssloptions	mod/mod_ssl.html#ssloptions
 sslpassphrasedialog	mod/mod_ssl.html#sslpassphrasedialog
+sslpolicy	mod/mod_ssl.html#sslpolicy
+sslpolicy	mod/mod_ssl.html#sslpolicy
 sslprotocol	mod/mod_ssl.html#sslprotocol
 sslproxycacertificatefile	mod/mod_ssl.html#sslproxycacertificatefile
 sslproxycacertificatepath	mod/mod_ssl.html#sslproxycacertificatepath
@@ -645,6 +663,7 @@ sslproxyengine	mod/mod_ssl.html#sslproxyengine
 sslproxymachinecertificatechainfile	mod/mod_ssl.html#sslproxymachinecertificatechainfile
 sslproxymachinecertificatefile	mod/mod_ssl.html#sslproxymachinecertificatefile
 sslproxymachinecertificatepath	mod/mod_ssl.html#sslproxymachinecertificatepath
+sslproxypolicy	mod/mod_ssl.html#sslproxypolicy
 sslproxyprotocol	mod/mod_ssl.html#sslproxyprotocol
 sslproxyverify	mod/mod_ssl.html#sslproxyverify
 sslproxyverifydepth	mod/mod_ssl.html#sslproxyverifydepth
