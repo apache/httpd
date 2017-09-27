@@ -187,7 +187,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
    *) mod_authz_dbd: Fix a segmentation fault if AuthzDBDQuery is not set.
       PR 61546
-      trunk patch: http://svn.apache.org/r1798785
+      trunk patch: http://svn.apache.org/r1809209
       2.4.x patch: svn merge -c 1809209 ^/httpd/httpd/trunk .
       +1: jailletc36 (by inspection)
 
