@@ -437,11 +437,19 @@ AP_DECLARE(apr_status_t) ap_unixd_accept(void **accepted, ap_listen_rec *lr,
 /* Unixes MPMs' */
 
 static ap_unixd_mpm_retained_data *retained_data = NULL;
+static apr_status_t retained_data_cleanup(void *unused)
+{
+    (void)unused;
+    retained_data = NULL;
+    return APR_SUCCESS;
+}
+
 AP_DECLARE(ap_unixd_mpm_retained_data *) ap_unixd_mpm_get_retained_data()
 {
     if (!retained_data) {
         retained_data = ap_retained_data_create("ap_unixd_mpm_retained_data",
                                                 sizeof(*retained_data));
+        apr_pool_pre_cleanup_register(ap_pglobal, NULL, retained_data_cleanup);
         retained_data->mpm_state = AP_MPMQ_STARTING;
     }
     return retained_data;
@@ -449,6 +457,10 @@ AP_DECLARE(ap_unixd_mpm_retained_data *) ap_unixd_mpm_get_retained_data()
 
 static void sig_term(int sig)
 {
+    if (!retained_data) {
+        /* Main process (ap_pglobal) is dying */
+        return;
+    }
     retained_data->mpm_state = AP_MPMQ_STOPPING;
     if (retained_data->shutdown_pending
             && (retained_data->is_ungraceful
@@ -465,6 +477,10 @@ static void sig_term(int sig)
 
 static void sig_restart(int sig)
 {
+    if (!retained_data) {
+        /* Main process (ap_pglobal) is dying */
+        return;
+    }
     retained_data->mpm_state = AP_MPMQ_STOPPING;
     if (retained_data->restart_pending
             && (retained_data->is_ungraceful
@@ -493,6 +509,10 @@ AP_DECLARE(void) ap_unixd_mpm_set_signals(apr_pool_t *pconf, int one_process)
 #ifndef NO_USE_SIGACTION
     struct sigaction sa;
 #endif
+
+    if (!one_process) {
+        ap_fatal_signal_setup(ap_server_conf, pconf);
+    }
 
     /* Signals' handlers depend on retained data */
     (void)ap_unixd_mpm_get_retained_data();

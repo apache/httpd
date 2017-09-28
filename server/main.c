@@ -295,11 +295,28 @@ static int abort_on_oom(int retcode)
     return retcode; /* unreachable, hopefully. */
 }
 
+/* Deregister all hooks when clearing pconf (pre_cleanup).
+ * TODO: have a hook to deregister and run them from here?
+ *       ap_clear_auth_internal() is already a candidate.
+ */
 static apr_status_t deregister_all_hooks(void *unused)
 {
     (void)unused;
+    ap_clear_auth_internal();
     apr_hook_deregister_all();
     return APR_SUCCESS;
+}
+
+static void reset_process_pconf(process_rec *process)
+{
+    if (process->pconf) {
+        apr_pool_clear(process->pconf);
+    }
+    else {
+        apr_pool_create(&process->pconf, process->pool);
+        apr_pool_tag(process->pconf, "pconf");
+    }
+    apr_pool_pre_cleanup_register(process->pconf, NULL, deregister_all_hooks);
 }
 
 static process_rec *init_process(int *argc, const char * const * *argv)
@@ -346,8 +363,9 @@ static process_rec *init_process(int *argc, const char * const * *argv)
     process = apr_palloc(cntx, sizeof(process_rec));
     process->pool = cntx;
 
-    apr_pool_create(&process->pconf, process->pool);
-    apr_pool_tag(process->pconf, "pconf");
+    process->pconf = NULL;
+    reset_process_pconf(process);
+
     process->argc = *argc;
     process->argv = *argv;
     process->short_name = apr_filepath_name_get((*argv)[0]);
@@ -503,10 +521,6 @@ int main(int argc, const char * const argv[])
         destroy_and_exit_process(process, 1);
     }
 #endif
-
-    /* Deregister all hooks (lastly) when done with pconf */
-    apr_pool_cleanup_register(pconf, NULL, deregister_all_hooks,
-                              apr_pool_cleanup_null);
 
     apr_pool_create(&pcommands, ap_pglobal);
     apr_pool_tag(pcommands, "pcommands");
@@ -754,12 +768,7 @@ int main(int argc, const char * const argv[])
 
     do {
         ap_main_state = AP_SQ_MS_DESTROY_CONFIG;
-        apr_pool_clear(pconf);
-        ap_clear_auth_internal();
-
-        /* Deregister all hooks (lastly) when done with pconf */
-        apr_pool_cleanup_register(pconf, NULL, deregister_all_hooks,
-                                  apr_pool_cleanup_null);
+        reset_process_pconf(process);
 
         ap_main_state = AP_SQ_MS_CREATE_CONFIG;
         ap_config_generation++;
