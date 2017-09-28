@@ -233,11 +233,11 @@ OutDir=.\Debug
 
 !IF "$(RECURSE)" == "0" 
 
-ALL : ".\server\test_char.h" ".\include\mod_so.h" ".\include\mod_proxy.h" ".\include\mod_include.h" ".\include\mod_dav.h" ".\include\mod_cgi.h" ".\include\ap_config_layout.h" "$(OUTDIR)\libhttpd.dll" "$(DS_POSTBUILD_DEP)"
+ALL : ".\server\test_char.h" ".\include\mod_watchdog.h" ".\include\mod_so.h" ".\include\mod_proxy.h" ".\include\mod_include.h" ".\include\mod_dav.h" ".\include\mod_cgi.h" ".\include\ap_config_layout.h" "$(OUTDIR)\libhttpd.dll" "$(DS_POSTBUILD_DEP)"
 
 !ELSE 
 
-ALL : "gen_test_char - Win32 Debug" "libaprutil - Win32 Debug" "libapriconv - Win32 Debug" "libapr - Win32 Debug" ".\server\test_char.h" ".\include\mod_so.h" ".\include\mod_proxy.h" ".\include\mod_include.h" ".\include\mod_dav.h" ".\include\mod_cgi.h" ".\include\ap_config_layout.h" "$(OUTDIR)\libhttpd.dll" "$(DS_POSTBUILD_DEP)"
+ALL : "gen_test_char - Win32 Debug" "libaprutil - Win32 Debug" "libapriconv - Win32 Debug" "libapr - Win32 Debug" ".\server\test_char.h" ".\include\mod_watchdog.h" ".\include\mod_so.h" ".\include\mod_proxy.h" ".\include\mod_include.h" ".\include\mod_dav.h" ".\include\mod_cgi.h" ".\include\ap_config_layout.h" "$(OUTDIR)\libhttpd.dll" "$(DS_POSTBUILD_DEP)"
 
 !ENDIF 
 
@@ -305,6 +305,7 @@ CLEAN :
 	-@erase ".\include\mod_include.h"
 	-@erase ".\include\mod_proxy.h"
 	-@erase ".\include\mod_so.h"
+	-@erase ".\include\mod_watchdog.h"
 	-@erase ".\server\test_char.h"
 
 "$(OUTDIR)" :
@@ -765,6 +766,34 @@ InputPath=.\modules\core\mod_so.h
 	<<tempfile.bat 
 	@echo off 
 	type .\modules\core\mod_so.h > .\include\mod_so.h
+<< 
+	
+
+!ELSEIF  "$(CFG)" == "libhttpd - Win32 Lexical"
+
+!ENDIF 
+
+SOURCE=.\modules\core\mod_watchdog.h
+
+!IF  "$(CFG)" == "libhttpd - Win32 Release"
+
+InputPath=.\modules\core\mod_watchdog.h
+
+".\include\mod_watchdog.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	<<tempfile.bat 
+	@echo off 
+	type .\modules\core\mod_watchdog.h > .\include\mod_watchdog.h
+<< 
+	
+
+!ELSEIF  "$(CFG)" == "libhttpd - Win32 Debug"
+
+InputPath=.\modules\core\mod_watchdog.h
+
+".\include\mod_watchdog.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	<<tempfile.bat 
+	@echo off 
+	type .\modules\core\mod_watchdog.h > .\include\mod_watchdog.h
 << 
 	
 
