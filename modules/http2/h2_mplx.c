@@ -542,9 +542,6 @@ static apr_status_t out_open(h2_mplx *m, int stream_id, h2_bucket_beam *beam)
         h2_beam_on_file_beam(stream->output, h2_beam_no_files, NULL);
     }
     
-    /* time to protect the beam against multi-threaded use */
-    h2_beam_mutex_enable(stream->output);
-    
     /* we might see some file buckets in the output, see
      * if we have enough handles reserved. */
     check_data_for(m, stream, 0);
@@ -852,10 +849,6 @@ static void task_done(h2_mplx *m, h2_task *task, h2_req_engine *ngn)
                           H2_STRM_MSG(stream, "task_done, stream open")); 
             if (stream->input) {
                 h2_beam_leave(stream->input);
-                h2_beam_mutex_disable(stream->input);
-            }
-            if (stream->output) {
-                h2_beam_mutex_disable(stream->output);
             }
 
             /* more data will not arrive, resume the stream */
@@ -868,10 +861,6 @@ static void task_done(h2_mplx *m, h2_task *task, h2_req_engine *ngn)
                       H2_STRM_MSG(stream, "task_done, in hold"));
         if (stream->input) {
             h2_beam_leave(stream->input);
-            h2_beam_mutex_disable(stream->input);
-        }
-        if (stream->output) {
-            h2_beam_mutex_disable(stream->output);
         }
         stream_joined(m, stream);
     }
