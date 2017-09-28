@@ -497,6 +497,10 @@ static void sig_restart(int sig)
 
 static apr_status_t unset_signals(void *unused)
 {
+    if (!retained_data) {
+        /* Main process (ap_pglobal) is dying */
+        return APR_SUCCESS;
+    }
     retained_data->shutdown_pending = retained_data->restart_pending = 0;
     retained_data->was_graceful = !retained_data->is_ungraceful;
     retained_data->is_ungraceful = 0;
