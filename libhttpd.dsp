@@ -377,6 +377,28 @@ InputPath=.\modules\core\mod_so.h
 !ENDIF 
 
 # End Source File
+# Begin Custom Build - Creating include/mod_watchdog.h
+InputPath=.\modules\core\mod_watchdog.h
+
+".\include\mod_watchdog.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	type .\modules\core\mod_watchdog.h > .\include\mod_watchdog.h
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "libhttpd - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Creating include/mod_watchdog.h
+InputPath=.\modules\core\mod_watchdog.h
+
+".\include\mod_watchdog.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	type .\modules\core\mod_watchdog.h > .\include\mod_watchdog.h
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
 # Begin Source File
 
 SOURCE=.\os\win32\os.h
