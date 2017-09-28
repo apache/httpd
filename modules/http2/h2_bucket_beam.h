@@ -64,13 +64,11 @@ typedef struct {
  * via the h2_beam_send(). It gives the beam to the green thread which then
  * can receive buckets into its own brigade via h2_beam_receive().
  *
- * Sending and receiving can happen concurrently, if a thread mutex is set
- * for the beam, see h2_beam_mutex_set.
+ * Sending and receiving can happen concurrently.
  *
  * The beam can limit the amount of data it accepts via the buffer_size. This
- * can also be adjusted during its lifetime. When the beam not only gets a 
- * mutex but als a condition variable (in h2_beam_mutex_set()), sends and
- * receives can be done blocking. A timeout can be set for such blocks.
+ * can also be adjusted during its lifetime. Sends and receives can be done blocking. 
+ * A timeout can be set for such blocks.
  *
  * Care needs to be taken when terminating the beam. The beam registers at
  * the pool it was created with and will cleanup after itself. However, if
@@ -191,8 +189,6 @@ struct h2_bucket_beam {
 
     struct apr_thread_mutex_t *lock;
     struct apr_thread_cond_t *change;
-    void *m_ctx;
-    h2_beam_mutex_enter *m_enter;
     
     apr_off_t cons_bytes_reported;    /* amount of bytes reported as consumed */
     h2_beam_ev_callback *cons_ev_cb;
@@ -314,13 +310,6 @@ int h2_beam_is_closed(h2_bucket_beam *beam);
  * Call from the sender side only.
  */
 apr_status_t h2_beam_wait_empty(h2_bucket_beam *beam, apr_read_type_e block);
-
-void h2_beam_mutex_set(h2_bucket_beam *beam, 
-                       h2_beam_mutex_enter m_enter,
-                       void *m_ctx);
-
-void h2_beam_mutex_enable(h2_bucket_beam *beam);
-void h2_beam_mutex_disable(h2_bucket_beam *beam);
 
 /** 
  * Set/get the timeout for blocking read/write operations. Only works

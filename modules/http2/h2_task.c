@@ -613,10 +613,6 @@ apr_status_t h2_task_do(h2_task *task, apr_thread_t *thread, int worker_id)
     h2_ctx_create_for(c, task);
     apr_table_setn(c->notes, H2_TASK_ID_NOTE, task->id);
 
-    if (task->input.beam) {
-        h2_beam_mutex_enable(task->input.beam);
-    }
-    
     h2_slave_run_pre_connection(c, ap_get_conn_socket(c));            
 
     task->input.bb = apr_brigade_create(task->pool, c->bucket_alloc);

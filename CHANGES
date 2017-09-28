@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  * mod_http2: v0.10.12, removed optimization for mutex handling in bucket beams that 
+    could lead to assertion failure in edge cases. [Stefan Eissing] 
+     
   *) mod_md: v0.9.7
      - Use of the new module flag
      - Removed obsolete function from interface to mod_ssl. 

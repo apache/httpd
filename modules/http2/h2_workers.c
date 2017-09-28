@@ -98,6 +98,8 @@ static apr_status_t activate_slot(h2_workers *workers, h2_slot *slot)
         }
     }
     
+    ap_log_error(APLOG_MARK, APLOG_TRACE2, 0, workers->s,
+                 "h2_workers: new thread for slot %d", slot->id); 
     /* thread will either immediately start work or add itself
      * to the idle queue */
     apr_thread_create(&slot->thread, workers->thread_attr, slot_run, slot, 
