@@ -1672,9 +1672,6 @@ static int worker_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         ap_scoreboard_image->global->running_generation = retained->mpm->my_generation;
     }
 
-    if (!one_process) {
-        ap_fatal_signal_setup(ap_server_conf, pconf);
-    }
     ap_unixd_mpm_set_signals(pconf, one_process);
 
     /* Don't thrash since num_buckets depends on the
