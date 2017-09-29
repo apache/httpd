@@ -195,6 +195,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: svn merge -c 1804096,1807238,1809981,1810088,1810089 ^/httpd/httpd/trunk .
       +1: icing
 
+   *) mod_rewrite,core: Avoid the 'Vary: Host' response header when HTTP_HOST
+                        is used in a condition that evaluates to true.
+      trunk patch: http://svn.apache.org/r1808746
+                   http://svn.apache.org/r1809028
+      2.4.x patch: svn merge -c 1808746,1809028 ^/httpd/httpd/trunk .
+      +1 elukey
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
