@@ -191,6 +191,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: svn merge -c 1809209 ^/httpd/httpd/trunk .
       +1: jailletc36 (by inspection), ylavic
 
+   *) mod_http2: Fix race condition on request body handlign.
+i     2.4.x patch: svn merge -c 1804096,1807238,1809981,1810088,1810089 ^/httpd/httpd/trunk .
+      +1: icing
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
