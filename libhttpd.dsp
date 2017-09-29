@@ -377,6 +377,13 @@ InputPath=.\modules\core\mod_so.h
 !ENDIF 
 
 # End Source File
+# Begin Source File
+
+SOURCE=.\modules\core\mod_watchdog.h
+
+!IF  "$(CFG)" == "libhttpd - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
 # Begin Custom Build - Creating include/mod_watchdog.h
 InputPath=.\modules\core\mod_watchdog.h
 
