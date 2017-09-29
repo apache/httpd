@@ -193,7 +193,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
    *) mod_http2: Fix race condition on request body handlign.
       2.4.x patch: svn merge -c 1804096,1807238,1809981,1810088,1810089 ^/httpd/httpd/trunk .
-      +1: icing
+      +1: icing, steffenal
 
    *) mod_rewrite,core: Avoid the 'Vary: Host' response header when HTTP_HOST
                         is used in a condition that evaluates to true.
