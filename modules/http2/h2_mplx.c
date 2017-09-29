@@ -957,29 +957,19 @@ static h2_stream *get_timed_out_busy_stream(h2_mplx *m)
 static apr_status_t unschedule_slow_tasks(h2_mplx *m) 
 {
     h2_stream *stream;
-    int n, amax;
+    int n;
     
     /* Try to get rid of streams that occupy workers. Look for safe requests
      * that are repeatable. If none found, fail the connection.
-     *
-     * see: https://github.com/icing/mod_h2/issues/120
-     * Enforcing m->limit_active (which can go as low as 2) was too 
-     * aggressive for media streaming. Players needed to re-open streams/connections
-     * continously as they were reading large files very slowly.
      */
-    amax = m->max_active/2;
-    if (m->limit_active > amax) {
-        amax = m->limit_active; 
-    }
-    n = (m->tasks_active - amax - (int)h2_ihash_count(m->sredo));
-    
+    n = (m->tasks_active - m->limit_active - (int)h2_ihash_count(m->sredo));
     while (n > 0 && (stream = get_latest_repeatable_unsubmitted_stream(m))) {
         h2_task_rst(stream->task, H2_ERR_CANCEL);
         h2_ihash_add(m->sredo, stream);
         --n;
     }
     
-    if ((m->tasks_active - h2_ihash_count(m->sredo)) > amax) {
+    if ((m->tasks_active - h2_ihash_count(m->sredo)) > m->limit_active) {
         h2_stream *stream = get_timed_out_busy_stream(m);
         if (stream) {
             /* Too many busy workers, unable to cancel enough streams
