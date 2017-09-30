@@ -125,8 +125,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
    *) mod_http2: Fix race condition on request body handlign.
       2.4.x patch: svn merge -c 1804096,1807238,1809981,1810088,1810089 ^/httpd/httpd/trunk .
       +1: icing, steffenal, ylavic
-      ylavic: Not sure about MOD_HTTP2_VERSION[_NUM] from the above merge.
-              Shouldn't it be 1.10.11 instead of 1.10.12-DEV?
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
