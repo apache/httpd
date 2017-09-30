@@ -164,7 +164,7 @@ la version 2.4.13 du serveur HTTP Apache.</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_scgi</td></tr>
 </table>
     <p>La directive <code class="directive">ProxySCGISendfile</code> permet au
-    serveur cible SCGI de faire servir les fichiers directement par la
+    serveur SCGI d'arrière-plan de faire servir les fichiers directement par la
     passerelle. Ceci s'avère bénéfique en matière de performances &#8212;
     httpd peut alors utiliser <code>sendfile</code> ou d'autres
     optimisations, ce qui n'est pas possible si les fichiers passent par
