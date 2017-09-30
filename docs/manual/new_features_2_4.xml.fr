@@ -112,11 +112,11 @@ serveur HTTP Apache</title>
     <dl>      
 
       <dt><module>mod_proxy_fcgi</module></dt>
-      <dd>Mise à disposition du protocole FastCGI pour
+      <dd>Support des serveur FastCGI d'arrière-plan pour
       <module>mod_proxy</module>.</dd>
 
       <dt><module>mod_proxy_scgi</module></dt>
-      <dd>Mise à disposition du protocole SCGI pour
+      <dd>Support des serveurs SCGI d'arrière-plan pour
       <module>mod_proxy</module>.</dd>
 
       <dt><module>mod_proxy_express</module></dt>

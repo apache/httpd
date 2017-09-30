@@ -116,7 +116,7 @@ ProxyPass "/scgi-bin/" "balancer://somecluster/"
 
 <usage>
     <p>La directive <directive>ProxySCGISendfile</directive> permet au
-    serveur cible SCGI de faire servir les fichiers directement par la
+    serveur SCGI d'arrière-plan de faire servir les fichiers directement par la
     passerelle. Ceci s'avère bénéfique en matière de performances &mdash;
     httpd peut alors utiliser <code>sendfile</code> ou d'autres
     optimisations, ce qui n'est pas possible si les fichiers passent par
