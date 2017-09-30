@@ -116,11 +116,11 @@ serveur HTTP Apache</h1>
     <dl>      
 
       <dt><code class="module"><a href="./mod/mod_proxy_fcgi.html">mod_proxy_fcgi</a></code></dt>
-      <dd>Mise à disposition du protocole FastCGI pour
+      <dd>Support des serveur FastCGI d'arrière-plan pour
       <code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code>.</dd>
 
       <dt><code class="module"><a href="./mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code></dt>
-      <dd>Mise à disposition du protocole SCGI pour
+      <dd>Support des serveurs SCGI d'arrière-plan pour
       <code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code>.</dd>
 
       <dt><code class="module"><a href="./mod/mod_proxy_express.html">mod_proxy_express</a></code></dt>
