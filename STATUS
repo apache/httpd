@@ -122,6 +122,13 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1809209 ^/httpd/httpd/trunk .
      +1: jailletc36 (by inspection), ylavic, elukey
 
+   *) mod_http2: Fix race condition on request body handlign.
+      2.4.x patch: svn merge -c 1804096,1807238,1809981,1810088,1810089 ^/httpd/httpd/trunk .
+      +1: icing, steffenal, ylavic
+      ylavic: Not sure about MOD_HTTP2_VERSION[_NUM] from the above merge.
+              Shouldn't it be 1.10.11 instead of 1.10.12-DEV?
+
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -189,10 +196,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       trunk patch: http://svn.apache.org/r1798785
       2.4.x patch: svn merge -c 1798785 ^/httpd/httpd/trunk .
      +1: jailletc36, ylavic
-
-   *) mod_http2: Fix race condition on request body handlign.
-      2.4.x patch: svn merge -c 1804096,1807238,1809981,1810088,1810089 ^/httpd/httpd/trunk .
-      +1: icing, steffenal
 
    *) mod_rewrite,core: Avoid the 'Vary: Host' response header when HTTP_HOST
                         is used in a condition that evaluates to true.
