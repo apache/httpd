@@ -113,6 +113,13 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
+  *) configure.in: Latest macOS Xcode 9 installs clang-900, which more
+     fully honors strict-prototypes, which causes AC_CHECK_LIB to
+     fail when --enable-maintainer-mode is set.
+     trunk patch: http://svn.apache.org/r1810448
+     2.4.x patch: svn merge -c 1810448 ^/httpd/httpd/trunk .
+     +1: jim
+
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
