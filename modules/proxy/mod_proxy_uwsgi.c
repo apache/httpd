@@ -66,12 +66,12 @@ static int uwsgi_canon(request_rec *r, char *url)
     if (strncasecmp(url, UWSGI_SCHEME "://", sizeof(UWSGI_SCHEME) + 2)) {
         return DECLINED;
     }
-    url += sizeof(UWSGI_SCHEME); /* Keep slashes */
+    url += sizeof(UWSGI_SCHEME);        /* Keep slashes */
 
     err = ap_proxy_canon_netloc(r->pool, &url, NULL, NULL, &host, &port);
     if (err) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                    "error parsing URL %s: %s", url, err);
+                      "error parsing URL %s: %s", url, err);
         return HTTP_BAD_REQUEST;
     }
 
@@ -90,15 +90,16 @@ static int uwsgi_canon(request_rec *r, char *url)
         return HTTP_BAD_REQUEST;
     }
 
-    r->filename = apr_pstrcat(r->pool, "proxy:" UWSGI_SCHEME "://", host, sport, "/",
-                              path, NULL);
+    r->filename =
+        apr_pstrcat(r->pool, "proxy:" UWSGI_SCHEME "://", host, sport, "/",
+                    path, NULL);
 
     return OK;
 }
 
 
-static int uwsgi_send(proxy_conn_rec *conn, const char *buf, apr_size_t length,
-                   request_rec *r)
+static int uwsgi_send(proxy_conn_rec * conn, const char *buf,
+                      apr_size_t length, request_rec *r)
 {
     apr_status_t rv;
     apr_size_t written;
@@ -125,7 +126,7 @@ static int uwsgi_send(proxy_conn_rec *conn, const char *buf, apr_size_t length,
 /*
  * Send uwsgi header block
  */
-static int uwsgi_send_headers(request_rec *r, proxy_conn_rec *conn)
+static int uwsgi_send_headers(request_rec *r, proxy_conn_rec * conn)
 {
     char *buf, *ptr;
 
@@ -141,15 +142,15 @@ static int uwsgi_send_headers(request_rec *r, proxy_conn_rec *conn)
     ap_add_cgi_vars(r);
 
     /*
-     this is not a security problem (in Linux) as uWSGI destroy the env memory area readable in /proc
-     and generally if you host untrusted apps in your server and allows them to read others uid /proc/<pid>
-     files you have higher problems...
+       this is not a security problem (in Linux) as uWSGI destroy the env memory area readable in /proc
+       and generally if you host untrusted apps in your server and allows them to read others uid /proc/<pid>
+       files you have higher problems...
      */
     const char *script_name;
     const char *path_info;
     const char *auth = apr_table_get(r->headers_in, "Authorization");
     if (auth) {
-        apr_table_setn(r->subprocess_env, "HTTP_AUTHORIZATION", auth); 
+        apr_table_setn(r->subprocess_env, "HTTP_AUTHORIZATION", auth);
     }
 
     script_name = apr_table_get(r->subprocess_env, "SCRIPT_NAME");
@@ -157,8 +158,11 @@ static int uwsgi_send_headers(request_rec *r, proxy_conn_rec *conn)
 
     if (script_name && path_info) {
         if (strcmp(path_info, "/")) {
-            apr_table_set(r->subprocess_env, "SCRIPT_NAME", apr_pstrndup(r->pool, script_name, strlen(script_name)-strlen(path_info)));
-	}
+            apr_table_set(r->subprocess_env, "SCRIPT_NAME",
+                          apr_pstrndup(r->pool, script_name,
+                                       strlen(script_name) -
+                                       strlen(path_info)));
+        }
         else {
             if (!strcmp(script_name, "/")) {
                 apr_table_set(r->subprocess_env, "SCRIPT_NAME", "");
@@ -167,29 +171,31 @@ static int uwsgi_send_headers(request_rec *r, proxy_conn_rec *conn)
     }
 
     env_table = apr_table_elts(r->subprocess_env);
-    env = (apr_table_entry_t *)env_table->elts;
+    env = (apr_table_entry_t *) env_table->elts;
 
     for (j = 0; j < env_table->nelts; ++j) {
-        headerlen += 2 + strlen(env[j].key) + 2 + strlen(env[j].val) ;
+        headerlen += 2 + strlen(env[j].key) + 2 + strlen(env[j].val);
     }
 
     ptr = buf = apr_palloc(r->pool, headerlen);
 
-    ptr+=4;
+    ptr += 4;
 
     for (j = 0; j < env_table->nelts; ++j) {
-	keylen = strlen(env[j].key);
-	*ptr++= (uint8_t) (keylen & 0xff);
-	*ptr++= (uint8_t) ((keylen >> 8)  & 0xff);
-	memcpy(ptr, env[j].key, keylen) ; ptr+=keylen;
+        keylen = strlen(env[j].key);
+        *ptr++ = (uint8_t) (keylen & 0xff);
+        *ptr++ = (uint8_t) ((keylen >> 8) & 0xff);
+        memcpy(ptr, env[j].key, keylen);
+        ptr += keylen;
 
-	vallen = strlen(env[j].val);
-	*ptr++= (uint8_t) (vallen & 0xff);
-	*ptr++= (uint8_t) ((vallen >> 8)  & 0xff);
-	memcpy(ptr, env[j].val, vallen) ; ptr+=vallen;
+        vallen = strlen(env[j].val);
+        *ptr++ = (uint8_t) (vallen & 0xff);
+        *ptr++ = (uint8_t) ((vallen >> 8) & 0xff);
+        memcpy(ptr, env[j].val, vallen);
+        ptr += vallen;
     }
 
-    pktsize = headerlen-4;
+    pktsize = headerlen - 4;
 
     buf[0] = 0;
     buf[1] = (uint8_t) (pktsize & 0xff);
@@ -200,7 +206,7 @@ static int uwsgi_send_headers(request_rec *r, proxy_conn_rec *conn)
 }
 
 
-static int uwsgi_send_body(request_rec *r, proxy_conn_rec *conn)
+static int uwsgi_send_body(request_rec *r, proxy_conn_rec * conn)
 {
     if (ap_should_client_block(r)) {
         char *buf = apr_palloc(r->pool, AP_IOBUFSIZE);
@@ -234,117 +240,126 @@ static request_rec *make_fake_req(conn_rec *c, request_rec *r)
 
     rp = apr_pcalloc(pool, sizeof(*r));
 
-    rp->pool            = pool;
-    rp->status          = HTTP_OK;
+    rp->pool = pool;
+    rp->status = HTTP_OK;
 
-    rp->headers_in      = apr_table_make(pool, 50);
-    rp->subprocess_env  = apr_table_make(pool, 50);
-    rp->headers_out     = apr_table_make(pool, 12);
+    rp->headers_in = apr_table_make(pool, 50);
+    rp->subprocess_env = apr_table_make(pool, 50);
+    rp->headers_out = apr_table_make(pool, 12);
     rp->err_headers_out = apr_table_make(pool, 5);
-    rp->notes           = apr_table_make(pool, 5);
+    rp->notes = apr_table_make(pool, 5);
 
     rp->server = r->server;
     rp->log = r->log;
     rp->proxyreq = r->proxyreq;
     rp->request_time = r->request_time;
-    rp->connection      = c;
-    rp->output_filters  = c->output_filters;
-    rp->input_filters   = c->input_filters;
-    rp->proto_output_filters  = c->output_filters;
-    rp->proto_input_filters   = c->input_filters;
+    rp->connection = c;
+    rp->output_filters = c->output_filters;
+    rp->input_filters = c->input_filters;
+    rp->proto_output_filters = c->output_filters;
+    rp->proto_input_filters = c->input_filters;
     rp->useragent_ip = c->client_ip;
     rp->useragent_addr = c->client_addr;
 
-    rp->request_config  = ap_create_request_config(pool);
+    rp->request_config = ap_create_request_config(pool);
     proxy_run_create_req(r, rp);
 
     return rp;
 }
 
-static int uwsgi_response(request_rec *r, proxy_conn_rec *backend, proxy_server_conf *conf)
+static int uwsgi_response(request_rec *r, proxy_conn_rec * backend,
+                          proxy_server_conf * conf)
 {
 
-	char buffer[HUGE_STRING_LEN];
-	const char *buf;
+    char buffer[HUGE_STRING_LEN];
+    const char *buf;
     char *value, *end;
     char keepchar;
-	int len;
-	int backend_broke = 0;
+    int len;
+    int backend_broke = 0;
     int status_start;
     int status_end;
     int finish = 0;
-	conn_rec *c = r->connection;
-	apr_off_t readbytes;
-	apr_status_t rv;
-	apr_bucket *e;
-	apr_read_type_e mode = APR_NONBLOCK_READ;
+    conn_rec *c = r->connection;
+    apr_off_t readbytes;
+    apr_status_t rv;
+    apr_bucket *e;
+    apr_read_type_e mode = APR_NONBLOCK_READ;
     apr_bucket_brigade *pass_bb;
     apr_bucket_brigade *bb;
 
-	request_rec *rp = make_fake_req(backend->connection, r);
-	rp->proxyreq = PROXYREQ_RESPONSE;
+    request_rec *rp = make_fake_req(backend->connection, r);
+    rp->proxyreq = PROXYREQ_RESPONSE;
 
-	bb = apr_brigade_create(r->pool, c->bucket_alloc);
-	pass_bb = apr_brigade_create(r->pool, c->bucket_alloc);
+    bb = apr_brigade_create(r->pool, c->bucket_alloc);
+    pass_bb = apr_brigade_create(r->pool, c->bucket_alloc);
 
-	len = ap_getline(buffer, sizeof(buffer), rp, 1);
+    len = ap_getline(buffer, sizeof(buffer), rp, 1);
 
-	if (len <= 0) {
-		// oops
-		return HTTP_INTERNAL_SERVER_ERROR;
-	}
+    if (len <= 0) {
+        // oops
+        return HTTP_INTERNAL_SERVER_ERROR;
+    }
 
-	backend->worker->s->read += len;
+    backend->worker->s->read += len;
 
-	if (len >= sizeof(buffer)-1) {
-		// oops
-		return HTTP_INTERNAL_SERVER_ERROR;
-	}
-	/* Position of http status code */
-	if (apr_date_checkmask(buffer, "HTTP/#.# ###*")) {
-		status_start = 9;
-	} else if (apr_date_checkmask(buffer, "HTTP/# ###*")) {
-		status_start = 7;
-	} else {
-		// oops
-		return HTTP_INTERNAL_SERVER_ERROR;
-	}
-	status_end = status_start + 3;
+    if (len >= sizeof(buffer) - 1) {
+        // oops
+        return HTTP_INTERNAL_SERVER_ERROR;
+    }
+    /* Position of http status code */
+    if (apr_date_checkmask(buffer, "HTTP/#.# ###*")) {
+        status_start = 9;
+    }
+    else if (apr_date_checkmask(buffer, "HTTP/# ###*")) {
+        status_start = 7;
+    }
+    else {
+        // oops
+        return HTTP_INTERNAL_SERVER_ERROR;
+    }
+    status_end = status_start + 3;
 
-	keepchar = buffer[status_end];
-	buffer[status_end] = '\0';
-	r->status = atoi(&buffer[status_start]);
+    keepchar = buffer[status_end];
+    buffer[status_end] = '\0';
+    r->status = atoi(&buffer[status_start]);
 
-	if (keepchar != '\0') {
-		buffer[status_end] = keepchar;
-	} else {
-		/* 2616 requires the space in Status-Line; the origin
-		* server may have sent one but ap_rgetline_core will
-		* have stripped it. */
-		buffer[status_end] = ' ';
-		buffer[status_end+1] = '\0';
-	}
-	r->status_line = apr_pstrdup(r->pool, &buffer[status_start]);
+    if (keepchar != '\0') {
+        buffer[status_end] = keepchar;
+    }
+    else {
+        /* 2616 requires the space in Status-Line; the origin
+         * server may have sent one but ap_rgetline_core will
+         * have stripped it. */
+        buffer[status_end] = ' ';
+        buffer[status_end + 1] = '\0';
+    }
+    r->status_line = apr_pstrdup(r->pool, &buffer[status_start]);
 
-	// start parsing headers;
-	while ((len = ap_getline(buffer, sizeof(buffer), rp, 1)) > 0) {
-		value = strchr(buffer, ':');
-		// invalid header skip
-		if (!value) continue;
-		*value = '\0';
-		++value;
-		while (apr_isspace(*value)) ++value; 
-		for (end = &value[strlen(value)-1]; end > value && apr_isspace(*end); --end) *end = '\0';
-		apr_table_add(r->headers_out, buffer, value);
-	}
+    // start parsing headers;
+    while ((len = ap_getline(buffer, sizeof(buffer), rp, 1)) > 0) {
+        value = strchr(buffer, ':');
+        // invalid header skip
+        if (!value)
+            continue;
+        *value = '\0';
+        ++value;
+        while (apr_isspace(*value))
+            ++value;
+        for (end = &value[strlen(value) - 1];
+             end > value && apr_isspace(*end); --end)
+            *end = '\0';
+        apr_table_add(r->headers_out, buffer, value);
+    }
 
-	if ((buf = apr_table_get(r->headers_out, "Content-Type"))) {
-		ap_set_content_type(r, apr_pstrdup(r->pool, buf));
-	}
+    if ((buf = apr_table_get(r->headers_out, "Content-Type"))) {
+        ap_set_content_type(r, apr_pstrdup(r->pool, buf));
+    }
 
     // honor ProxyErrorOverride and ErrorDocument
 #if AP_MODULE_MAGIC_AT_LEAST(20101106,0)
-    proxy_dir_conf *dconf = ap_get_module_config(r->per_dir_config, &proxy_module);
+    proxy_dir_conf *dconf =
+        ap_get_module_config(r->per_dir_config, &proxy_module);
     if (dconf->error_override && ap_is_HTTP_ERROR(r->status)) {
 #else
     if (conf->error_override && ap_is_HTTP_ERROR(r->status)) {
@@ -354,80 +369,82 @@ static int uwsgi_response(request_rec *r, proxy_conn_rec *backend, proxy_server_
         r->status_line = NULL;
 
         apr_brigade_cleanup(bb);
-               apr_brigade_cleanup(pass_bb);
+        apr_brigade_cleanup(pass_bb);
 
         return status;
     }
 
-	while(!finish) {
-		rv = ap_get_brigade(rp->input_filters, bb,
-                                        AP_MODE_READBYTES, mode,
-                                        conf->io_buffer_size);
-		if (APR_STATUS_IS_EAGAIN(rv)
-                        || (rv == APR_SUCCESS && APR_BRIGADE_EMPTY(bb)) ) {
-			e = apr_bucket_flush_create(c->bucket_alloc);
-			APR_BRIGADE_INSERT_TAIL(bb, e);
-			if (ap_pass_brigade(r->output_filters, bb) || c->aborted) {
-				break;
-			}
-			apr_brigade_cleanup(bb);
-			mode = APR_BLOCK_READ;
-			continue;
-		}
-		else if (rv == APR_EOF) {
-			break;
-		}
-		else if (rv != APR_SUCCESS) {
-			ap_proxy_backend_broke(r, bb);
-			ap_pass_brigade(r->output_filters, bb);
-			backend_broke = 1;
-			break;
-		}
-
-		mode = APR_NONBLOCK_READ;
-		apr_brigade_length(bb, 0, &readbytes);
-		backend->worker->s->read += readbytes;
-
-		if (APR_BRIGADE_EMPTY(bb)) {
-                        apr_brigade_cleanup(bb);
-                        break;
-                }
-
-		ap_proxy_buckets_lifetime_transform(r, bb, pass_bb);
-
-		// found the last brigade?
-		if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(bb))) finish = 1;
-
-		// do not pass chunk if it is zero_sized
-		apr_brigade_length(pass_bb, 0, &readbytes);
-
-		if ((readbytes > 0 && ap_pass_brigade(r->output_filters, pass_bb) != APR_SUCCESS) || c->aborted) {
-			finish = 1;
-		}
-
-		apr_brigade_cleanup(bb);
-		apr_brigade_cleanup(pass_bb);
-	}
-
-	e = apr_bucket_eos_create(c->bucket_alloc);
-	APR_BRIGADE_INSERT_TAIL(bb, e);
-        ap_pass_brigade(r->output_filters, bb);
-
-	apr_brigade_cleanup(bb);
-
-	if (c->aborted || backend_broke) {
-        	return DONE;
+    while (!finish) {
+        rv = ap_get_brigade(rp->input_filters, bb,
+                            AP_MODE_READBYTES, mode, conf->io_buffer_size);
+        if (APR_STATUS_IS_EAGAIN(rv)
+            || (rv == APR_SUCCESS && APR_BRIGADE_EMPTY(bb))) {
+            e = apr_bucket_flush_create(c->bucket_alloc);
+            APR_BRIGADE_INSERT_TAIL(bb, e);
+            if (ap_pass_brigade(r->output_filters, bb) || c->aborted) {
+                break;
+            }
+            apr_brigade_cleanup(bb);
+            mode = APR_BLOCK_READ;
+            continue;
+        }
+        else if (rv == APR_EOF) {
+            break;
+        }
+        else if (rv != APR_SUCCESS) {
+            ap_proxy_backend_broke(r, bb);
+            ap_pass_brigade(r->output_filters, bb);
+            backend_broke = 1;
+            break;
         }
 
-	return OK;
+        mode = APR_NONBLOCK_READ;
+        apr_brigade_length(bb, 0, &readbytes);
+        backend->worker->s->read += readbytes;
+
+        if (APR_BRIGADE_EMPTY(bb)) {
+            apr_brigade_cleanup(bb);
+            break;
+        }
+
+        ap_proxy_buckets_lifetime_transform(r, bb, pass_bb);
+
+        // found the last brigade?
+        if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(bb)))
+            finish = 1;
+
+        // do not pass chunk if it is zero_sized
+        apr_brigade_length(pass_bb, 0, &readbytes);
+
+        if ((readbytes > 0
+             && ap_pass_brigade(r->output_filters, pass_bb) != APR_SUCCESS)
+            || c->aborted) {
+            finish = 1;
+        }
+
+        apr_brigade_cleanup(bb);
+        apr_brigade_cleanup(pass_bb);
+    }
+
+    e = apr_bucket_eos_create(c->bucket_alloc);
+    APR_BRIGADE_INSERT_TAIL(bb, e);
+    ap_pass_brigade(r->output_filters, bb);
+
+    apr_brigade_cleanup(bb);
+
+    if (c->aborted || backend_broke) {
+        return DONE;
+    }
+
+    return OK;
 }
 
-static int uwsgi_handler(request_rec *r, proxy_worker *worker,
-                        proxy_server_conf *conf, char *url,
-                        const char *proxyname, apr_port_t proxyport)
+static int uwsgi_handler(request_rec *r, proxy_worker * worker,
+                         proxy_server_conf * conf, char *url,
+                         const char *proxyname, apr_port_t proxyport)
 {
     int status;
-    int delta = 0;    
+    int delta = 0;
     proxy_conn_rec *backend = NULL;
     apr_pool_t *p = r->pool;
     size_t w_len;
@@ -436,8 +453,7 @@ static int uwsgi_handler(request_rec *r, proxy_worker *worker,
     apr_uri_t *uri = apr_palloc(r->pool, sizeof(*uri));
 
     if (strncasecmp(url, UWSGI_SCHEME "://", sizeof(UWSGI_SCHEME) + 2)) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
-                      "declining URL %s", url);
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, "declining URL %s", url);
         return DECLINED;
     }
 
@@ -451,14 +467,13 @@ static int uwsgi_handler(request_rec *r, proxy_worker *worker,
     if (u_path_info[0] != '/') {
         delta = 1;
     }
-    int decode_status = ap_unescape_url(url+w_len-delta);
+    int decode_status = ap_unescape_url(url + w_len - delta);
     if (decode_status) {
-       ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                      "unable to decode uri: %s",
-                      url+w_len-delta);
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                      "unable to decode uri: %s", url + w_len - delta);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
-    apr_table_add(r->subprocess_env, "PATH_INFO", url+w_len-delta);
+    apr_table_add(r->subprocess_env, "PATH_INFO", url + w_len - delta);
 
 
     /* Create space for state information */
@@ -472,7 +487,8 @@ static int uwsgi_handler(request_rec *r, proxy_worker *worker,
     /* Step One: Determine Who To Connect To */
     status = ap_proxy_determine_connection(p, r, conf, worker, backend,
                                            uri, &url, proxyname, proxyport,
-                                           server_portstr, sizeof(server_portstr));
+                                           server_portstr,
+                                           sizeof(server_portstr));
     if (status != OK) {
         goto cleanup;
     }
@@ -489,29 +505,30 @@ static int uwsgi_handler(request_rec *r, proxy_worker *worker,
 
     /* Step Three: Create conn_rec */
     if (!backend->connection) {
-	if ((status = ap_proxy_connection_create(UWSGI_SCHEME, backend,
-						r->connection, r->server)) != OK)
-		goto cleanup;
+        if ((status = ap_proxy_connection_create(UWSGI_SCHEME, backend,
+                                                 r->connection,
+                                                 r->server)) != OK)
+            goto cleanup;
     }
 
     /* Step Four: Process the Request */
-    if (   ((status = ap_setup_client_block(r, REQUEST_CHUNKED_ERROR)) != OK)
+    if (((status = ap_setup_client_block(r, REQUEST_CHUNKED_ERROR)) != OK)
         || ((status = uwsgi_send_headers(r, backend)) != OK)
         || ((status = uwsgi_send_body(r, backend)) != OK)
         || ((status = uwsgi_response(r, backend, conf)) != OK)) {
         goto cleanup;
     }
 
-cleanup:
+  cleanup:
     if (backend) {
-        backend->close = 1; /* always close the socket */
+        backend->close = 1;     /* always close the socket */
         ap_proxy_release_connection(UWSGI_SCHEME, backend, r->server);
     }
     return status;
 }
 
 
-static void register_hooks(apr_pool_t *p)
+static void register_hooks(apr_pool_t * p)
 {
     proxy_hook_scheme_handler(uwsgi_handler, NULL, NULL, APR_HOOK_FIRST);
     proxy_hook_canon_handler(uwsgi_canon, NULL, NULL, APR_HOOK_FIRST);
@@ -520,10 +537,10 @@ static void register_hooks(apr_pool_t *p)
 
 module AP_MODULE_DECLARE_DATA proxy_uwsgi_module = {
     STANDARD20_MODULE_STUFF,
-    NULL,		/* create per-directory config structure */
-    NULL,		/* merge per-directory config structures */
-    NULL,		/* create per-server config structure */
-    NULL,		/* merge per-server config structures */
-    NULL,		/* command table */
-    register_hooks	/* register hooks */
+    NULL,                       /* create per-directory config structure */
+    NULL,                       /* merge per-directory config structures */
+    NULL,                       /* create per-server config structure */
+    NULL,                       /* merge per-server config structures */
+    NULL,                       /* command table */
+    register_hooks              /* register hooks */
 };
