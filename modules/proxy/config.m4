@@ -10,6 +10,7 @@ proxy_ftp_objs="mod_proxy_ftp.lo"
 proxy_http_objs="mod_proxy_http.lo"
 proxy_fcgi_objs="mod_proxy_fcgi.lo"
 proxy_scgi_objs="mod_proxy_scgi.lo"
+proxy_uwsgi_objs="mod_proxy_uwsgi.lo"
 proxy_fdpass_objs="mod_proxy_fdpass.lo"
 proxy_ajp_objs="mod_proxy_ajp.lo ajp_header.lo ajp_link.lo ajp_msg.lo ajp_utils.lo"
 proxy_wstunnel_objs="mod_proxy_wstunnel.lo"
@@ -24,6 +25,7 @@ case "$host" in
     proxy_http_objs="$proxy_http_objs mod_proxy.la"
     proxy_fcgi_objs="$proxy_fcgi_objs mod_proxy.la"
     proxy_scgi_objs="$proxy_scgi_objs mod_proxy.la"
+    proxy_uwsgi_objs="$proxy_uwsgi_objs mod_proxy.la"
     proxy_fdpass_objs="$proxy_fdpass_objs mod_proxy.la"
     proxy_ajp_objs="$proxy_ajp_objs mod_proxy.la"
     proxy_wstunnel_objs="$proxy_wstunnel_objs mod_proxy.la"
@@ -36,6 +38,7 @@ APACHE_MODULE(proxy_ftp, Apache proxy FTP module.  Requires --enable-proxy., $pr
 APACHE_MODULE(proxy_http, Apache proxy HTTP module.  Requires --enable-proxy., $proxy_http_objs, , most, , proxy)
 APACHE_MODULE(proxy_fcgi, Apache proxy FastCGI module.  Requires --enable-proxy., $proxy_fcgi_objs, , most, , proxy)
 APACHE_MODULE(proxy_scgi, Apache proxy SCGI module.  Requires --enable-proxy., $proxy_scgi_objs, , most, , proxy)
+APACHE_MODULE(proxy_uwsgi, Apache proxy UWSGI module.  Requires --enable-proxy., $proxy_uwsgi_objs, , most, , proxy)
 APACHE_MODULE(proxy_fdpass, Apache proxy to Unix Daemon Socket module.  Requires --enable-proxy., $proxy_fdpass_objs, , most, [
   AC_CHECK_DECL(CMSG_DATA,,, [
     #include <sys/types.h>
