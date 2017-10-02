@@ -1,7 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
-  * mod_http2: v0.10.12, removed optimization for mutex handling in bucket beams that 
+  *) mod_proxy_uwsgi: New UWSGI mod_proxy (sub)module contributed by unbit.com.
+
+  *) mod_http2: v0.10.12, removed optimization for mutex handling in bucket beams that 
     could lead to assertion failure in edge cases. [Stefan Eissing] 
      
   *) mod_md: v0.9.7
