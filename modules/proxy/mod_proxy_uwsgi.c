@@ -297,14 +297,14 @@ static int uwsgi_response(request_rec *r, proxy_conn_rec * backend,
     len = ap_getline(buffer, sizeof(buffer), rp, 1);
 
     if (len <= 0) {
-        // oops
+        /* oops */
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
     backend->worker->s->read += len;
 
     if (len >= sizeof(buffer) - 1) {
-        // oops
+        /* oops */
         return HTTP_INTERNAL_SERVER_ERROR;
     }
     /* Position of http status code */
@@ -315,7 +315,7 @@ static int uwsgi_response(request_rec *r, proxy_conn_rec * backend,
         status_start = 7;
     }
     else {
-        // oops
+        /* oops */
         return HTTP_INTERNAL_SERVER_ERROR;
     }
     status_end = status_start + 3;
@@ -336,10 +336,10 @@ static int uwsgi_response(request_rec *r, proxy_conn_rec * backend,
     }
     r->status_line = apr_pstrdup(r->pool, &buffer[status_start]);
 
-    // start parsing headers;
+    /* start parsing headers */
     while ((len = ap_getline(buffer, sizeof(buffer), rp, 1)) > 0) {
         value = strchr(buffer, ':');
-        // invalid header skip
+        /* invalid header skip */
         if (!value)
             continue;
         *value = '\0';
@@ -356,7 +356,7 @@ static int uwsgi_response(request_rec *r, proxy_conn_rec * backend,
         ap_set_content_type(r, apr_pstrdup(r->pool, buf));
     }
 
-    // honor ProxyErrorOverride and ErrorDocument
+    /* honor ProxyErrorOverride and ErrorDocument */
 #if AP_MODULE_MAGIC_AT_LEAST(20101106,0)
     proxy_dir_conf *dconf =
         ap_get_module_config(r->per_dir_config, &proxy_module);
@@ -409,11 +409,11 @@ static int uwsgi_response(request_rec *r, proxy_conn_rec * backend,
 
         ap_proxy_buckets_lifetime_transform(r, bb, pass_bb);
 
-        // found the last brigade?
+        /* found the last brigade? */
         if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(bb)))
             finish = 1;
 
-        // do not pass chunk if it is zero_sized
+        /* do not pass chunk if it is zero_sized */
         apr_brigade_length(pass_bb, 0, &readbytes);
 
         if ((readbytes > 0
@@ -457,7 +457,7 @@ static int uwsgi_handler(request_rec *r, proxy_worker * worker,
         return DECLINED;
     }
 
-    // ADD PATH_INFO
+    /* ADD PATH_INFO */
 #if AP_MODULE_MAGIC_AT_LEAST(20111130,0)
     w_len = strlen(worker->s->name);
 #else
