@@ -206,6 +206,7 @@ from Clients' networks in a proxy context.</dd>
 <dt><a href="mod_proxy_http2.html">mod_proxy_http2</a></dt><dd>HTTP/2 support module for
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
 <dt><a href="mod_proxy_scgi.html">mod_proxy_scgi</a></dt><dd>SCGI gateway module for <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
+<dt><a href="mod_proxy_uwsgi.html">mod_proxy_uwsgi</a></dt><dd>UWSGI gateway module for <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
 <dt><a href="mod_proxy_wstunnel.html">mod_proxy_wstunnel</a></dt><dd>Websockets support module for
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
 <dt><a href="mod_ratelimit.html" id="R" name="R">mod_ratelimit</a></dt><dd>Bandwidth Rate Limiting for Clients</dd>
