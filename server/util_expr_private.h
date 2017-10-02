@@ -54,9 +54,10 @@ typedef enum {
     op_REG, op_NRE,
     op_STR_EQ, op_STR_NE, op_STR_LT, op_STR_LE, op_STR_GT, op_STR_GE,
     op_Concat,
-    op_Digit, op_String, op_Regex, op_RegexBackref,
-    op_Var,
-    op_ListElement,
+    op_Digit, op_String,
+    op_Var, op_Word, op_Bool, op_Join,
+    op_Regex, op_Regsub, op_Regref,
+    op_ListElement, op_ListRegex,
     /*
      * call external functions/operators.
      * The info node contains the function pointer and some function specific
@@ -79,6 +80,15 @@ struct ap_expr_node {
     const void *node_arg2;
 };
 
+/** The stack used by scanner and parser */
+typedef struct ap_expr_parser_stack {
+    char *scan_ptr;
+    char  scan_buf[MAX_STRING_LEN];
+    int   scan_stop;
+    int   scan_flag;
+    struct ap_expr_parser_stack *next;
+} ap_expr_parser_stack_t;
+
 /** The context used by scanner and parser */
 typedef struct {
     /* internal state of the scanner */
@@ -86,9 +96,8 @@ typedef struct {
     int                inputlen;
     const char        *inputptr;
     void              *scanner;
-    char              *scan_ptr;
-    char               scan_buf[MAX_STRING_LEN];
-    char               scan_del;
+    ap_expr_parser_stack_t *current,
+                           *spares;
     int                at_start;
 
     /* pools for result and temporary usage */
@@ -119,12 +128,23 @@ void ap_expr_yyset_extra(ap_expr_parse_ctx_t *context, void *scanner);
 /* create a parse tree node */
 ap_expr_t *ap_expr_make(ap_expr_node_op_e op, const void *arg1,
                         const void *arg2, ap_expr_parse_ctx_t *ctx);
+ap_expr_t *ap_expr_concat_make(const void *a1, const void *a2,
+                               ap_expr_parse_ctx_t *ctx);
+ap_expr_t *ap_expr_str_word_make(const ap_expr_t *arg,
+                                 ap_expr_parse_ctx_t *ctx);
+ap_expr_t *ap_expr_str_bool_make(const ap_expr_t *arg,
+                                 ap_expr_parse_ctx_t *ctx);
+ap_expr_t *ap_expr_regex_make(const char *pattern, const char *flags,
+                              const ap_expr_t *subst, int split,
+                              ap_expr_parse_ctx_t *ctx);
 /* create parse tree node for the string-returning function 'name' */
 ap_expr_t *ap_expr_str_func_make(const char *name, const ap_expr_t *arg,
                                ap_expr_parse_ctx_t *ctx);
 /* create parse tree node for the list-returning function 'name' */
 ap_expr_t *ap_expr_list_func_make(const char *name, const ap_expr_t *arg,
                                 ap_expr_parse_ctx_t *ctx);
+ap_expr_t *ap_expr_list_regex_make(const ap_expr_t *lst, const ap_expr_t *re,
+                                   ap_expr_parse_ctx_t *ctx);
 /* create parse tree node for the variable 'name' */
 ap_expr_t *ap_expr_var_make(const char *name, ap_expr_parse_ctx_t *ctx);
 /* create parse tree node for the unary operator 'name' */

@@ -76,6 +76,9 @@ extern "C" {
 #define AP_REG_MULTI    0x10 /**< perl's /g (needs fixing) */
 #define AP_REG_NOMEM    0x20 /**< nomem in our code */
 #define AP_REG_DOTALL   0x40 /**< perl's /s flag */
+ 
+#define AP_REG_NOTEMPTY 0x080 /**< Empty match not valid */
+#define AP_REG_ANCHORED 0x100 /**< Match at the first position */
 
 #define AP_REG_MATCH "MATCH_" /**< suggested prefix for ap_regname */
 

@@ -246,6 +246,10 @@ AP_DECLARE(int) ap_regexec_len(const ap_regex_t *preg, const char *buff,
         options |= PCREn(NOTBOL);
     if ((eflags & AP_REG_NOTEOL) != 0)
         options |= PCREn(NOTEOL);
+    if ((eflags & AP_REG_NOTEMPTY) != 0)
+        options |= PCREn(NOTEMPTY);
+    if ((eflags & AP_REG_ANCHORED) != 0)
+        options |= PCREn(ANCHORED);
 
 #ifdef HAVE_PCRE2
     /* TODO: create a generic TLS matchdata buffer of some nmatch limit,
