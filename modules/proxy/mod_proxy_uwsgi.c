@@ -140,16 +140,20 @@ static int uwsgi_send_headers(request_rec *r, proxy_conn_rec *conn)
     ap_add_common_vars(r);
     ap_add_cgi_vars(r);
 
-    // this is not a security problem (in Linux) as uWSGI destroy the env memory area readable in /proc
-    // and generally if you host untrusted apps in your server and allows them to read others uid /proc/<pid>
-    // files you have higher problems...
+    /*
+     this is not a security problem (in Linux) as uWSGI destroy the env memory area readable in /proc
+     and generally if you host untrusted apps in your server and allows them to read others uid /proc/<pid>
+     files you have higher problems...
+     */
+    const char *script_name;
+    const char *path_info;
     const char *auth = apr_table_get(r->headers_in, "Authorization");
     if (auth) {
         apr_table_setn(r->subprocess_env, "HTTP_AUTHORIZATION", auth); 
     }
 
-    const char *script_name = apr_table_get(r->subprocess_env, "SCRIPT_NAME");
-    const char *path_info = apr_table_get(r->subprocess_env, "PATH_INFO");
+    script_name = apr_table_get(r->subprocess_env, "SCRIPT_NAME");
+    path_info = apr_table_get(r->subprocess_env, "PATH_INFO");
 
     if (script_name && path_info) {
         if (strcmp(path_info, "/")) {
@@ -262,21 +266,26 @@ static int uwsgi_response(request_rec *r, proxy_conn_rec *backend, proxy_server_
 
 	char buffer[HUGE_STRING_LEN];
 	const char *buf;
-	char *value, *end;
+    char *value, *end;
+    char keepchar;
 	int len;
 	int backend_broke = 0;
-	apr_status_t rc;
+    int status_start;
+    int status_end;
+    int finish = 0;
 	conn_rec *c = r->connection;
 	apr_off_t readbytes;
 	apr_status_t rv;
 	apr_bucket *e;
 	apr_read_type_e mode = APR_NONBLOCK_READ;
+    apr_bucket_brigade *pass_bb;
+    apr_bucket_brigade *bb;
 
 	request_rec *rp = make_fake_req(backend->connection, r);
 	rp->proxyreq = PROXYREQ_RESPONSE;
 
-	apr_bucket_brigade *bb = apr_brigade_create(r->pool, c->bucket_alloc);
-	apr_bucket_brigade *pass_bb = apr_brigade_create(r->pool, c->bucket_alloc);
+	bb = apr_brigade_create(r->pool, c->bucket_alloc);
+	pass_bb = apr_brigade_create(r->pool, c->bucket_alloc);
 
 	len = ap_getline(buffer, sizeof(buffer), rp, 1);
 
@@ -292,7 +301,6 @@ static int uwsgi_response(request_rec *r, proxy_conn_rec *backend, proxy_server_
 		return HTTP_INTERNAL_SERVER_ERROR;
 	}
 	/* Position of http status code */
-	int status_start;
 	if (apr_date_checkmask(buffer, "HTTP/#.# ###*")) {
 		status_start = 9;
 	} else if (apr_date_checkmask(buffer, "HTTP/# ###*")) {
@@ -301,9 +309,9 @@ static int uwsgi_response(request_rec *r, proxy_conn_rec *backend, proxy_server_
 		// oops
 		return HTTP_INTERNAL_SERVER_ERROR;
 	}
-	int status_end = status_start + 3;
+	status_end = status_start + 3;
 
-	char keepchar = buffer[status_end];
+	keepchar = buffer[status_end];
 	buffer[status_end] = '\0';
 	r->status = atoi(&buffer[status_start]);
 
@@ -351,7 +359,6 @@ static int uwsgi_response(request_rec *r, proxy_conn_rec *backend, proxy_server_
         return status;
     }
 
-	int finish = 0;
 	while(!finish) {
 		rv = ap_get_brigade(rp->input_filters, bb,
                                         AP_MODE_READBYTES, mode,
@@ -420,10 +427,13 @@ static int uwsgi_handler(request_rec *r, proxy_worker *worker,
                         const char *proxyname, apr_port_t proxyport)
 {
     int status;
+    int delta = 0;    
     proxy_conn_rec *backend = NULL;
     apr_pool_t *p = r->pool;
-    apr_uri_t *uri = apr_palloc(r->pool, sizeof(*uri));
+    size_t w_len;
     char server_portstr[32];
+    char *u_path_info;
+    apr_uri_t *uri = apr_palloc(r->pool, sizeof(*uri));
 
     if (strncasecmp(url, UWSGI_SCHEME "://", sizeof(UWSGI_SCHEME) + 2)) {
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
@@ -433,12 +443,11 @@ static int uwsgi_handler(request_rec *r, proxy_worker *worker,
 
     // ADD PATH_INFO
 #if AP_MODULE_MAGIC_AT_LEAST(20111130,0)
-    size_t w_len = strlen(worker->s->name);
+    w_len = strlen(worker->s->name);
 #else
-    size_t w_len = strlen(worker->name);
+    w_len = strlen(worker->name);
 #endif
-    char *u_path_info = r->filename + 6 + w_len;
-    int delta = 0;
+    u_path_info = r->filename + 6 + w_len;
     if (u_path_info[0] != '/') {
         delta = 1;
     }
