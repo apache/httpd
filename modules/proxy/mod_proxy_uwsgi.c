@@ -137,6 +137,9 @@ static int uwsgi_send_headers(request_rec *r, proxy_conn_rec * conn)
 
     apr_size_t headerlen = 4;
     uint16_t pktsize, keylen, vallen;
+    const char *script_name;
+    const char *path_info;
+    const char *auth;
 
     ap_add_common_vars(r);
     ap_add_cgi_vars(r);
@@ -146,9 +149,7 @@ static int uwsgi_send_headers(request_rec *r, proxy_conn_rec * conn)
        and generally if you host untrusted apps in your server and allows them to read others uid /proc/<pid>
        files you have higher problems...
      */
-    const char *script_name;
-    const char *path_info;
-    const char *auth = apr_table_get(r->headers_in, "Authorization");
+    auth = apr_table_get(r->headers_in, "Authorization");
     if (auth) {
         apr_table_setn(r->subprocess_env, "HTTP_AUTHORIZATION", auth);
     }
@@ -287,6 +288,7 @@ static int uwsgi_response(request_rec *r, proxy_conn_rec * backend,
     apr_read_type_e mode = APR_NONBLOCK_READ;
     apr_bucket_brigade *pass_bb;
     apr_bucket_brigade *bb;
+    proxy_dir_conf *dconf;
 
     request_rec *rp = make_fake_req(backend->connection, r);
     rp->proxyreq = PROXYREQ_RESPONSE;
@@ -358,7 +360,7 @@ static int uwsgi_response(request_rec *r, proxy_conn_rec * backend,
 
     /* honor ProxyErrorOverride and ErrorDocument */
 #if AP_MODULE_MAGIC_AT_LEAST(20101106,0)
-    proxy_dir_conf *dconf =
+    dconf =
         ap_get_module_config(r->per_dir_config, &proxy_module);
     if (dconf->error_override && ap_is_HTTP_ERROR(r->status)) {
 #else
@@ -445,6 +447,7 @@ static int uwsgi_handler(request_rec *r, proxy_worker * worker,
 {
     int status;
     int delta = 0;
+    int decode_status;
     proxy_conn_rec *backend = NULL;
     apr_pool_t *p = r->pool;
     size_t w_len;
@@ -467,7 +470,7 @@ static int uwsgi_handler(request_rec *r, proxy_worker * worker,
     if (u_path_info[0] != '/') {
         delta = 1;
     }
-    int decode_status = ap_unescape_url(url + w_len - delta);
+    decode_status = ap_unescape_url(url + w_len - delta);
     if (decode_status) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "unable to decode uri: %s", url + w_len - delta);
