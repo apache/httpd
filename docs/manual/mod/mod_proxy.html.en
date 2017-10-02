@@ -319,6 +319,14 @@ ProxyPass "/examples" "http://backend.example.com/examples" timeout=10</pre>
 
       </div> 
 
+      <div class="warning"><h3>Host part in the URL</h3>
+        <p>The host part needs to start with a letter [a-z]. For example:</p>
+        <pre class="prettyprint lang-config">ProxyPass "/apps"     "http://127"</pre>
+
+        <p>is not valid and will cause an error while processing a request that
+        maps the path.</p>
+      </div>
+
       <p>Explicitly configured workers come in two flavors:
       <dfn>direct workers</dfn> and <dfn>(load) balancer workers</dfn>.
       They support many important configuration attributes which are
