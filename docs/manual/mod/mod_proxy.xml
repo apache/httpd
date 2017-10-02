@@ -281,6 +281,15 @@ ProxyPass "/examples" "http://backend.example.com/examples" timeout=10
 
       </note> <!-- /worker_sharing -->
 
+      <note type="warning"><title>Host part in the URL</title>
+        <p>The host part needs to start with a letter [a-z]. For example:</p>
+        <highlight language="config">
+ProxyPass "/apps"     "http://127"
+        </highlight>
+        <p>is not valid and will cause an error while processing a request that
+        maps the path.</p>
+      </note>
+
       <p>Explicitly configured workers come in two flavors:
       <dfn>direct workers</dfn> and <dfn>(load) balancer workers</dfn>.
       They support many important configuration attributes which are
