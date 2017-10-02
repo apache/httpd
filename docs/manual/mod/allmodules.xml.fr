@@ -96,6 +96,7 @@
   <modulefile>mod_proxy_http.xml.fr</modulefile>
   <modulefile>mod_proxy_http2.xml</modulefile>
   <modulefile>mod_proxy_scgi.xml.fr</modulefile>
+  <modulefile>mod_proxy_uwsgi.xml</modulefile>
   <modulefile>mod_proxy_wstunnel.xml</modulefile>
   <modulefile>mod_ratelimit.xml.fr</modulefile>
   <modulefile>mod_reflector.xml.fr</modulefile>

@@ -286,6 +286,7 @@ log_server_status</a></li>
 <li><a href="mod/mod_proxy_http.html">Apache Module mod_proxy_http</a></li>
 <li><a href="mod/mod_proxy_http2.html">Apache Module mod_proxy_http2</a></li>
 <li><a href="mod/mod_proxy_scgi.html">Apache Module mod_proxy_scgi</a></li>
+<li><a href="mod/mod_proxy_uwsgi.html">Apache Module mod_proxy_uwsgi</a></li>
 <li><a href="mod/mod_proxy_wstunnel.html">Apache Module mod_proxy_wstunnel</a></li>
 <li><a href="mod/mod_ratelimit.html">Apache Module mod_ratelimit</a></li>
 <li><a href="mod/mod_reflector.html">Apache Module mod_reflector</a></li>

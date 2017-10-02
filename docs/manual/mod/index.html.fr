@@ -242,6 +242,7 @@ mandataire.</dd>
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
 <dt><a href="mod_proxy_scgi.html">mod_proxy_scgi</a></dt><dd>Module fournissant le support de la passerelle SCGI à
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
+<dt><a href="mod_proxy_uwsgi.html">mod_proxy_uwsgi</a></dt><dd>UWSGI gateway module for <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
 <dt><a href="mod_proxy_wstunnel.html">mod_proxy_wstunnel</a></dt><dd>Websockets support module for
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
 <dt><a href="mod_ratelimit.html" id="R" name="R">mod_ratelimit</a></dt><dd>Limitation de la bande passante pour les clients</dd>
