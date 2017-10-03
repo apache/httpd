@@ -365,8 +365,7 @@ static const char *ap_expr_regexec(const char *subject,
             if (list) {
                 char *tmp = apr_palloc(ctx->p, pos + len + 1);
                 memcpy(tmp, val, pos);
-                memcpy(tmp + pos, str, len);
-                tmp[pos + len] = '\0';
+                memcpy(tmp + pos, str, len + 1);
                 APR_ARRAY_PUSH(list, const char*) = tmp;
             }
             else { /* regctx->type == 's' */
@@ -387,7 +386,7 @@ static const char *ap_expr_regexec(const char *subject,
             /* Skip this non-matching character (or CRLF) and restart
              * another "normal" match (possibly empty) from there.
              */
-            if (val[0] == APR_ASCII_CR && val[1] == APR_ASCII_LF) {
+            if (val[0] == '\r' && val[1] == '\n') {
                 val += 2;
             }
             else {
