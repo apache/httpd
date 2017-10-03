@@ -207,7 +207,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       trunk patch: http://svn.apache.org/r1808746
                    http://svn.apache.org/r1809028
       2.4.x patch: svn merge -c 1808746,1809028 ^/httpd/httpd/trunk .
-      +1 elukey
+      +1 elukey, ylavic
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
