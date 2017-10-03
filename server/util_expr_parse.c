@@ -551,11 +551,12 @@ static const char *const yytname[] =
 {
   "$end", "error", "$undefined", "\"true\"", "\"false\"",
   "\"boolean expression\"", "\"string expression\"", "\"error token\"",
-  "\"number\"", "\"identifier\"", "\"string\"", "\"match regex\"",
-  "\"substitution regex\"", "\"match pattern of the regex\"",
-  "\"substitution pattern of the regex\"", "\"flags of the regex\"",
-  "\"regex back reference\"", "\"unary operator\"", "\"binary operator\"",
-  "\"start of string\"", "\"end of string\"", "\"start of variable name\"",
+  "\"number\"", "\"identifier\"", "\"string literal\"",
+  "\"matching regex\"", "\"substitution regex\"",
+  "\"pattern of the regex\"", "\"replacement of the regex\"",
+  "\"pattern flags of the regex\"", "\"capture reference in the regex\"",
+  "\"unary operator\"", "\"binary operator\"", "\"start of string\"",
+  "\"end of string\"", "\"start of variable name\"",
   "\"end of variable name\"", "\"start of variable expression\"",
   "\"end of variable expression\"", "\"integer equal\"",
   "\"integer not equal\"", "\"integer less than\"",
@@ -567,14 +568,12 @@ static const char *const yytname[] =
   "\"string concatenation\"", "\"split operator\"", "\"join operator\"",
   "\"logical or\"", "\"logical and\"", "\"logical not\"", "\"condition\"",
   "\"comparison\"", "\"string function\"", "\"list function\"",
-  "\"list of words\"", "\"tuple of words\"", "\"word expression\"",
-  "\"any string expression\"", "\"variable expression\"",
-  "\"regular expression match\"", "\"regular expression substitution\"",
-  "\"regular expression split\"", "\"any regular expression\"",
-  "\"regular expression back reference\"", "'('", "')'", "'{'", "'}'",
-  "','", "':'", "$accept", "root", "cond", "comp", "wordlist", "words",
-  "string", "strany", "var", "word", "regex", "regsub", "regsplit",
-  "regany", "regref", "lstfunc", "strfunc", YY_NULL
+  "\"list of words\"", "\"tuple of words\"", "\"word\"", "\"string\"",
+  "\"substring\"", "\"variable\"", "\"regex substitution\"",
+  "\"regex split\"", "\"regex any\"", "\"regex capture reference\"", "'('",
+  "')'", "'{'", "'}'", "','", "':'", "$accept", "root", "cond", "comp",
+  "wordlist", "words", "string", "substr", "var", "word", "regex",
+  "regsub", "regsplit", "regany", "regref", "lstfunc", "strfunc", YY_NULL
 };
 #endif
 
@@ -2023,7 +2022,7 @@ yyreduce:
 
 
 /* Line 1787 of yacc.c  */
-#line 2027 "util_expr_parse.c"
+#line 2026 "util_expr_parse.c"
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires

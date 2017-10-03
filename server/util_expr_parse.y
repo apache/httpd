@@ -48,14 +48,14 @@
 
 %token  <cpVal> T_DIGIT             "number"
 %token  <cpVal> T_ID                "identifier"
-%token  <cpVal> T_STRING            "string"
+%token  <cpVal> T_STRING            "string literal"
 
-%token          T_REGEX             "match regex"
+%token          T_REGEX             "matching regex"
 %token          T_REGSUB            "substitution regex"
-%token  <cpVal> T_REG_MATCH         "match pattern of the regex"
-%token  <cpVal> T_REG_SUBST         "substitution pattern of the regex"
-%token  <cpVal> T_REG_FLAGS         "flags of the regex"
-%token  <num>   T_REG_REF           "regex back reference"
+%token  <cpVal> T_REG_MATCH         "pattern of the regex"
+%token  <cpVal> T_REG_SUBST         "replacement of the regex"
+%token  <cpVal> T_REG_FLAGS         "pattern flags of the regex"
+%token  <num>   T_REG_REF           "capture reference in the regex"
 
 %token  <cpVal> T_OP_UNARY          "unary operator"
 %token  <cpVal> T_OP_BINARY         "binary operator"
@@ -103,15 +103,15 @@
 %type   <exVal>   lstfunc           "list function"
 %type   <exVal>   wordlist          "list of words"
 %type   <exVal>   words             "tuple of words"
-%type   <exVal>   word              "word expression"
-%type   <exVal>   string            "string expression"
-%type   <exVal>   strany            "any string expression"
-%type   <exVal>   var               "variable expression"
-%type   <exVal>   regex             "regular expression match"
-%type   <exVal>   regsub            "regular expression substitution"
-%type   <exVal>   regsplit          "regular expression split"
-%type   <exVal>   regany            "any regular expression"
-%type   <exVal>   regref            "regular expression back reference"
+%type   <exVal>   word              "word"
+%type   <exVal>   string            "string"
+%type   <exVal>   substr            "substring"
+%type   <exVal>   var               "variable"
+%type   <exVal>   regex             "regex match"
+%type   <exVal>   regsub            "regex substitution"
+%type   <exVal>   regsplit          "regex split"
+%type   <exVal>   regany            "regex any"
+%type   <exVal>   regref            "regex capture reference"
 
 %{
 #include "util_expr_private.h"
@@ -168,12 +168,12 @@ words     : word                         { $$ = ap_expr_make(op_ListElement, $1,
           | word ',' words               { $$ = ap_expr_make(op_ListElement, $1, $3,   ctx); }
           ;
 
-string    : strany                       { $$ = $1; }
-          | string strany                { $$ = ap_expr_concat_make($1, $2, ctx); }
+string    : substr                       { $$ = $1; }
+          | string substr                { $$ = ap_expr_concat_make($1, $2, ctx); }
           | T_ERROR                      { YYABORT; }
           ;
 
-strany    : T_STRING                     { $$ = ap_expr_make(op_String, $1, NULL, ctx); }
+substr    : T_STRING                     { $$ = ap_expr_make(op_String, $1, NULL, ctx); }
           | var                          { $$ = $1; }
           | regref                       { $$ = $1; }
           ;
