@@ -25,19 +25,24 @@
 /* jansson thinks everyone compiles with the platform's cc in its fullest capabilities
  * when undefining their INLINEs, we get static, unused functions, arg 
  */
+#if defined(__GNUC__)
 #pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunknown-pragmas"
 #pragma GCC diagnostic ignored "-Wunreachable-code"
+#elif defined(__clang__)
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunused-function"
+#endif
 
 #include <jansson_config.h>
-#undef   JSON_INLINE
+#undef  JSON_INLINE
 #define JSON_INLINE 
 #include <jansson.h>
 
-#pragma clang diagnostic pop
+#if defined(__GNUC__)
 #pragma GCC diagnostic pop
+#elif defined(__clang__)
+#pragma clang diagnostic pop
+#endif
 
 struct md_json_t {
     apr_pool_t *p;
