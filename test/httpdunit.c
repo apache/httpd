@@ -14,23 +14,7 @@
  * limitations under the License.
  */
 
-#include "apr.h"   /* for pid_t on Windows, needed by Check */
-
-#if defined(__GNUC__)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wstrict-prototypes"
-#elif defined(__clang__)
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wstrict-prototypes"
-#endif
-
-#include "check.h"
-
-#if defined(__GNUC__)
-#pragma GCC diagnostic pop
-#elif defined(__clang__)
-#pragma clang diagnostic pop
-#endif
+#include "httpdunit.h"
 
 #include "apr_general.h"
 
