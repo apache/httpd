@@ -55,9 +55,6 @@ Changes with Apache 2.5.0
   
   *) mod_ssl: Adding option to set a list of addr:port specs, as used in VirtualHosts
      to enable SSLEngine for all matching hosts. Updated documentation. [Stefan Eissing]
-  
-  *) core: Disallow Methods' registration at runtime (.htaccess), they may be
-     used only if registered at init time (httpd.conf).  [Yann Ylavic]
 
   *) mod_md: v0.9.1:
      - various fixes in MDRenewWindow handling when specifying percent. Serialization changed. If 
@@ -71,19 +68,10 @@ Changes with Apache 2.5.0
   *) mod_md: v0.9.0:
      Certificate provisioning from Let's Encrypt (and other ACME CAs) for mod_ssl virtual hosts.
      [Stefan Eissing]
-  
-  *) mod_proxy: loadfactor parameter can now be a decimal number (eg: 1.25).
-     [Jim Jagielski]
-
-  *) mod_watchdog/mod_proxy_hcheck: Time intervals can now be spefified
-     down to the millisecond. Supports 'mi' (minute), 'ms' (millisecond),
-     's' (second) and 'hr' (hour!) time suffixes. [Jim Jagielski]
 
   *) mod_ssl: add SSLPolicy (define/use) and SSLProxyPolicy directives plus documentation. Add
      core definitions for policies 'modern', 'intermediate' and 'old', as defined by Mozilla
      in <https://wiki.mozilla.org/Security/Server_Side_TLS>. [Stefan Eissing]
-     
-  *) mod_proxy: Fix ProxyAddHeaders merging.  [Joe Orton]
 
   *) mod_md: new module for managing domains across VirtualHosts with ACME protocol 
      implementation for automated certificate signup and renewal. Default CA is
@@ -91,22 +79,12 @@ Changes with Apache 2.5.0
      Will be switched to the real service endpoint rather soon. If you need it now,
      configure 'MDCertificateAuthority https://acme-v01.api.letsencrypt.org/directory'.
      [Stefan Eissing] 
-     
-  *) mod_ssl, ab: Fix compatibility with LibreSSL.  PR 61184.
-     [Bernard Spil <brnrd freebsd.org>, Yann Ylavic]
 
   *) mod_proxy_fcgi: Add the support for mod_proxy's flushpackets and flushwait
      parameters. [Luca Toscano, Ruediger Pluem, Yann Ylavic]
 
-  *) mod_proxy_wstunnel: Fix detection of unresponded request which could have
-     led to spurious HTTP 502 error messages sent on upgrade connections.
-     PR 61283.  [Yann Ylavic]
-
   *) mod_http2: Simplify ready queue, less memory and better performance. Update
      mod_http2 version to 1.10.7. [Stefan Eissing]
-  
-  *) htpasswd / htdigest: Do not apply the strict permissions of the temporary
-     passwd file to a possibly existing passwd file. PR 61240. [Ruediger Pluem]
 
   *) mod_rewrite: Add 'RewriteOptions LongURLOptimization' to free memory
      from each set of unmatched rewrite conditions.
@@ -119,15 +97,7 @@ Changes with Apache 2.5.0
   *) Introduce request taint checking framework to prevent privilege
      hijacking through .htaccess. [Nick Kew]
 
-  *) core: Disallow multiple Listen on the same IP:port when listener buckets
-     are configured (ListenCoresBucketsRatio > 0), consistently with the single
-     bucket case (default), thus avoiding the leak of the corresponding socket
-     descriptors on graceful restart.  [Yann Ylavic]
-
   *) Add <IfDirective> and <IfSection> directives.  [Joe Orton]
-
-  *) mod_syslog: Support use of optional "tag" in syslog entries.
-     PR 60525. [Ben Rubson <ben.rubson gmail.com>, Jim Jagielski]
 
   *) When using mod_status with the Event MPM, report the number of requests
      associated with an active connection in the "ACC" field. Previously
