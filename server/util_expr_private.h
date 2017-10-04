@@ -54,10 +54,10 @@ typedef enum {
     op_REG, op_NRE,
     op_STR_EQ, op_STR_NE, op_STR_LT, op_STR_LE, op_STR_GT, op_STR_GE,
     op_Concat,
-    op_Digit, op_String,
-    op_Var, op_Word, op_Bool, op_Join,
-    op_Regex, op_Regsub, op_Regref,
-    op_ListElement, op_ListRegex,
+    op_String, op_Word,
+    op_Digit, op_Var, op_Bool, op_ListElement,
+    op_Sub, op_Split, op_Join,
+    op_Regex, op_Backref,
     /*
      * call external functions/operators.
      * The info node contains the function pointer and some function specific
@@ -130,23 +130,18 @@ ap_expr_t *ap_expr_make(ap_expr_node_op_e op, const void *arg1,
                         const void *arg2, ap_expr_parse_ctx_t *ctx);
 ap_expr_t *ap_expr_concat_make(const void *a1, const void *a2,
                                ap_expr_parse_ctx_t *ctx);
-ap_expr_t *ap_expr_str_word_make(const ap_expr_t *arg,
-                                 ap_expr_parse_ctx_t *ctx);
-ap_expr_t *ap_expr_str_bool_make(const ap_expr_t *arg,
-                                 ap_expr_parse_ctx_t *ctx);
-ap_expr_t *ap_expr_regex_make(const char *pattern, const char *flags,
-                              const ap_expr_t *subst, int split,
-                              ap_expr_parse_ctx_t *ctx);
+ap_expr_t *ap_expr_regex_make(const char *pattern, const ap_expr_t *subst,
+                              const char *flags, ap_expr_parse_ctx_t *ctx);
 /* create parse tree node for the string-returning function 'name' */
 ap_expr_t *ap_expr_str_func_make(const char *name, const ap_expr_t *arg,
                                ap_expr_parse_ctx_t *ctx);
 /* create parse tree node for the list-returning function 'name' */
 ap_expr_t *ap_expr_list_func_make(const char *name, const ap_expr_t *arg,
                                 ap_expr_parse_ctx_t *ctx);
-ap_expr_t *ap_expr_list_regex_make(const ap_expr_t *lst, const ap_expr_t *re,
-                                   ap_expr_parse_ctx_t *ctx);
 /* create parse tree node for the variable 'name' */
 ap_expr_t *ap_expr_var_make(const char *name, ap_expr_parse_ctx_t *ctx);
+/* create parse tree node for the back reference 'num' */
+ap_expr_t *ap_expr_backref_make(int num, ap_expr_parse_ctx_t *ctx);
 /* create parse tree node for the unary operator 'name' */
 ap_expr_t *ap_expr_unary_op_make(const char *name, const ap_expr_t *arg,
                                ap_expr_parse_ctx_t *ctx);
