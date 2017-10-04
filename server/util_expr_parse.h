@@ -59,7 +59,7 @@ extern int ap_expr_yydebug;
      T_REG_MATCH = 268,
      T_REG_SUBST = 269,
      T_REG_FLAGS = 270,
-     T_REG_REF = 271,
+     T_BACKREF = 271,
      T_OP_UNARY = 272,
      T_OP_BINARY = 273,
      T_STR_BEGIN = 274,
@@ -84,11 +84,12 @@ extern int ap_expr_yydebug;
      T_OP_STR_GT = 293,
      T_OP_STR_GE = 294,
      T_OP_CONCAT = 295,
-     T_OP_SPLIT = 296,
-     T_OP_JOIN = 297,
-     T_OP_OR = 298,
-     T_OP_AND = 299,
-     T_OP_NOT = 300
+     T_OP_JOIN = 296,
+     T_OP_SPLIT = 297,
+     T_OP_SUB = 298,
+     T_OP_OR = 299,
+     T_OP_AND = 300,
+     T_OP_NOT = 301
    };
 #endif
 
@@ -105,7 +106,7 @@ typedef union YYSTYPE
 
 
 /* Line 2053 of yacc.c  */
-#line 109 "util_expr_parse.h"
+#line 110 "util_expr_parse.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
