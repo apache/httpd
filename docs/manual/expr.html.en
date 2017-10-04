@@ -55,27 +55,40 @@
       Form</a> (BNF) is a notation technique for context-free grammars,
       often used to describe the syntax of languages used in computing.
       In most cases, expressions are used to express boolean values.
-      For these, the starting point in the BNF is <code>expr</code>.
-      However, a few directives like <code class="directive"><a href="./mod/mod_log_debug.html#logmessage">LogMessage</a></code> accept expressions
+      For these, the starting point in the BNF is <code>cond</code>.
+      Directives like <code class="directive"><a href="./mod/core.html#errordocument">ErrorDocument</a></code>,
+      <code class="directive"><a href="./mod/mod_authz_core.html#require">Require</a></code>,
+      <code class="directive"><a href="./mod/mod_authn_core.html#authname">AuthName</a></code>,
+      <code class="directive"><a href="./mod/mod_alias.html#redirect">Redirect</a></code>,
+      <code class="directive"><a href="./mod/mod_headers.html#header">Header</a></code>,
+      <code class="directive"><a href="./mod/mod_crypto.html#cryptokey">CryptoKey</a></code> or
+      <code class="directive"><a href="./mod/mod_log_debug.html#logmessage">LogMessage</a></code> accept expressions
       that evaluate to a string value. For those, the starting point in
       the BNF is <code>string</code>.
       </p>
 <blockquote>
-<pre>expr        ::= "<strong>true</strong>" | "<strong>false</strong>"
-              | "<strong>!</strong>" expr
-              | expr "<strong>&amp;&amp;</strong>" expr
-              | expr "<strong>||</strong>" expr
-              | "<strong>(</strong>" expr "<strong>)</strong>"
+<pre>expr        ::= cond
+              | string
+
+string      ::= substring
+              | string substring
+
+cond        ::= "<strong>true</strong>" 
+              | "<strong>false</strong>"
+              | "<strong>!</strong>" cond
+              | cond "<strong>&amp;&amp;</strong>" cond
+              | cond "<strong>||</strong>" cond
               | comp
+              | "<strong>(</strong>" cond "<strong>)</strong>"
 
 comp        ::= stringcomp
               | integercomp
               | unaryop word
               | word binaryop word
-              | word "<strong>in</strong>" "<strong>{</strong>" wordlist "<strong>}</strong>"
-              | word "<strong>in</strong>" listfunction
+              | word "<strong>in</strong>" listfunc
               | word "<strong>=~</strong>" regex
               | word "<strong>!~</strong>" regex
+              | word "<strong>in</strong>" "<strong>{</strong>" list "<strong>}</strong>"
 
 
 stringcomp  ::= word "<strong>==</strong>" word
@@ -92,35 +105,64 @@ integercomp ::= word "<strong>-eq</strong>" word | word "<strong>eq</strong>" wo
               | word "<strong>-gt</strong>" word | word "<strong>gt</strong>" word
               | word "<strong>-ge</strong>" word | word "<strong>ge</strong>" word
 
-wordlist    ::= word
-              | wordlist "<strong>,</strong>" word
-
-word        ::= word "<strong>.</strong>" word
-              | digit
+word        ::= digits
               | "<strong>'</strong>" string "<strong>'</strong>"
-              | "<strong>"</strong>" string "<strong>"</strong>"
+              | '<strong>"</strong>' string '<strong>"</strong>'
+              | word "<strong>.</strong>" word
               | variable
-              | rebackref
+              | sub
+              | join
               | function
+              | "<strong>(</strong>" word "<strong>)</strong>"
 
-string      ::= stringpart
-              | string stringpart
+list        ::= split
+              | listfunc
+              | "<strong>{</strong>" words "<strong>}</strong>"
+              | "<strong>(</strong>" list "<strong>)</strong>"
 
-stringpart  ::= cstring
+substring   ::= cstring
               | variable
-              | rebackref
-
-cstring     ::= ...
-digit       ::= [0-9]+
 
 variable    ::= "<strong>%{</strong>" varname "<strong>}</strong>"
               | "<strong>%{</strong>" funcname "<strong>:</strong>" funcargs "<strong>}</strong>"
+              | "<strong>%{:</strong>" word "<strong>:}</strong>"
+              | "<strong>%{:</strong>" cond "<strong>:}</strong>"
+              | rebackref
 
-rebackref   ::= "<strong>$</strong>" [0-9]
+sub         ::= "<strong>sub</strong>" ["<strong>(</strong>"] regsub "<strong>,</strong>" word ["<strong>)</strong>"]
 
-function     ::= funcname "<strong>(</strong>" wordlist "<strong>)</strong>"
+join        ::= "<strong>join</strong>" ["<strong>(</strong>"] list ["<strong>)</strong>"]
+              | "<strong>join</strong>" ["<strong>(</strong>"] list "<strong>,</strong>" word ["<strong>)</strong>"]
 
-listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"</pre>
+split       ::= "<strong>split</strong>" ["<strong>(</strong>"] regany "<strong>,</strong>" list ["<strong>)</strong>"]
+              | "<strong>split</strong>" ["<strong>(</strong>"] regany "<strong>,</strong>" word ["<strong>)</strong>"]
+
+function    ::= funcname "<strong>(</strong>" words "<strong>)</strong>"
+
+listfunc    ::= listfuncname "<strong>(</strong>" words "<strong>)</strong>"
+
+words       ::= word
+              | word "<strong>,</strong>" list
+
+regex       ::= "<strong>/</strong>" regpattern "<strong>/</strong>" [regflags]
+              | "<strong>m</strong>" regsep regpattern regsep [regflags]
+
+regsub      ::= "<strong>s</strong>" regsep regpattern regsep string regsep [regflags]
+
+regany      ::= regex | regsub
+
+regsep      ::= "/" | "#" | "$" | "%" | "^" | "|" | "?" | "!" | "'" | '"' | "," | ";" | ":" | "." | "_" | "-"
+
+regflags    ::= 1*("i" | "s" | "m" | "g")
+regpattern  ::= cstring ; except enclosing <em>regsep</em>
+
+rebackref   ::= "<strong>$</strong>" DIGIT
+
+digits      ::= 1*(DIGIT)
+cstring     ::= 0*(TEXT)
+
+TEXT        ::= &lt;any OCTET except CTLs&gt;
+DIGIT       ::= &lt;any US-ASCII digit "0".."9"&gt;</pre>
 </blockquote>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -295,6 +337,21 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"</pr
 
     <p>Some modules register additional variables, see e.g.
     <code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code>.</p>
+
+    <p>Any variable can be embedded in a <em>string</em>, both in quoted
+    strings from boolean expressions but also in string expressions,
+    resulting in the concatenation of the constant and dynamic parts as
+    expected.</p>
+
+    <p>There exists another form of variables (temporaries) expressed like
+    <code>%{:<em>word</em>:}</code> and which allow embedding of the more
+    powerful <em>word</em> syntax (and constructs) in both type of expressions,
+    without colliding with the constant part of such strings. They are mainly
+    useful in string expressions though, since the <em>word</em> is directly
+    available in boolean expressions already. By using this form of variables,
+    one can evaluate regexes, substitutions, join and/or split strings and
+    lists in the scope of string expressions, hence construct complex strings
+    dynamically.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -529,7 +586,7 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"</pr
 
     <p>In addition to string-valued functions, there are also
     list-valued functions which take one string as argument and return a
-    wordlist, i.e. a list of strings. The wordlist can be used with the
+    list, i.e. a list of strings. The list can be used with the
     special <code>-in</code> operator.  Functions names are not case
     sensitive.  Modules may register additional functions.</p>
 
@@ -598,7 +655,15 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"</pr
 Header set foo-checksum "expr=%{md5:foo}"
 
 # This delays the evaluation of the condition clause compared to &lt;If&gt;
-Header always set CustomHeader my-value "expr=%{REQUEST_URI} =~ m#^/special_path\.php$#"</pre>
+Header always set CustomHeader my-value "expr=%{REQUEST_URI} =~ m#^/special_path\.php$#"
+
+# Add a header to forward client's certificate SAN to some backend
+RequestHeader set X-Client-SAN "expr=%{:join PeerExtList('subjectAltName'):}"
+
+# Require that the remote IP be in the client's certificate SAN
+Require expr %{REMOTE_ADDR} -in split s/.*?IP Address:([^,]+)/$1/, PeerExtList('subjectAltName')
+# or alternatively:
+Require expr "IP Address:%{REMOTE_ADDR}" -in split/, /, join PeerExtList('subjectAltName')</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -608,7 +673,7 @@ Header always set CustomHeader my-value "expr=%{REQUEST_URI} =~ m#^/special_path
     <table class="bordered"><tr class="header"><th>Name</th><th>Alternative</th> <th>Description</th></tr>
 <tr><td><code>-in</code></td>
         <td><code>in</code></td>
-        <td>string contained in wordlist</td></tr>
+        <td>string contained in list</td></tr>
 <tr class="odd"><td><code>/regexp/</code></td>
         <td><code>m#regexp#</code></td>
         <td>Regular expression (the second form allows different
