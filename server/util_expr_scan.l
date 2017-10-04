@@ -37,7 +37,7 @@
 
 %x str expr
 %x var vararg
-%x split regex regsub regflags
+%x regex regsub regflags
 
 %{
 #include "util_expr_private.h"
@@ -174,7 +174,7 @@ VAR_END      (\})
 VAREXP_BEGIN (\%\{\:)
 VAREXP_END   (\:\})
 REG_SEP      [/#$%^|?!'",;:._-]
-REG_REF      (\$[0-9])
+BACKREF      (\$[0-9])
 
 %%
 
@@ -228,14 +228,14 @@ REG_REF      (\$[0-9])
 }
 
  /* regexp backref inside string/arg */
-<str,vararg,regsub>{REG_REF} {
+<str,vararg,regsub>{BACKREF} {
     if (!STR_EMPTY()) {
         yyless(0); /* come back below */
         yylval->cpVal = STR_RETURN();
         return T_STRING;
     }
     yylval->num = yytext[1] - '0';
-    return T_REG_REF;
+    return T_BACKREF;
 }
 
  /* variable inside string/arg */
@@ -358,6 +358,7 @@ REG_REF      (\$[0-9])
 }
 <regex>{ANY} {
     if (yytext[0] == str_stop) {
+        yylval->cpVal = STR_RETURN();
         STATE_POP(0); /* <regex> */
         if (str_flag == 'm') {
             STATE_PUSH(regflags, 0);
@@ -365,33 +366,30 @@ REG_REF      (\$[0-9])
         else {
             STATE_PUSH(regsub, 0);
         }
-        yylval->cpVal = STR_RETURN();
         return T_REG_MATCH;
     }
     STR_APPEND_CHECK(yytext[0], 1);
 }
 <regsub>{ANY} {
     if (yytext[0] == str_stop) {
+        yylval->cpVal = STR_RETURN();
         STATE_POP(0); /* <regsub> */
         STATE_PUSH(regflags, 0);
+        return T_STRING;
     }
-    else {
-        STR_APPEND_CHECK(yytext[0], 1);
-    }
+    STR_APPEND_CHECK(yytext[0], 1);
 }
 <regflags>{ANY} {
-    if (ap_strchr_c("ismg", yytext[0])) {
-        STR_APPEND_NOCHECK(yytext[0]);
-    }
-    else if (apr_isalnum(yytext[0])) {
-        PERROR("Invalid regexp flag(s)");
-    }
-    else {
+    if (!ap_strchr_c("ismg", yytext[0])) {
+        if (apr_isalnum(yytext[0])) {
+            PERROR("Invalid regexp flag(s)");
+        }
         yyless(0); /* not a flags, rewind */
         yylval->cpVal = STR_RETURN();
         STATE_POP(1); /* <regflags> */
         return T_REG_FLAGS;
     }
+    STR_APPEND_NOCHECK(yytext[0]);
 }
 <regflags><<EOF>> {
     yylval->cpVal = STR_RETURN();
@@ -402,9 +400,9 @@ REG_REF      (\$[0-9])
     PERROR("Unterminated regexp");
 }
 
-<expr>{REG_REF} {
+<expr>{BACKREF} {
     yylval->num = yytext[1] - '0';
-    return T_REG_REF;
+    return T_BACKREF;
 }
 
  /*
@@ -452,27 +450,19 @@ REG_REF      (\$[0-9])
     return T_OP_UNARY;
 }
 
- /* Split a string (or list) into a(nother) list */
-<expr>"split" {
-    STATE_PUSH(split, 0);
-    return T_OP_SPLIT;
-}
-<split>{REG_SEP} {
-    STATE_POP(0); /* <split> */
-    STATE_PUSH(regex, 1);
-    str_stop = yytext[0];
-    str_flag = 'S';
-}
-<split>{ANY} {
-    PERROR("Expecting split regular expression");
-}
-<split><<EOF>> {
-    PERROR("Unterminated split");
+ /* Apply subtitution to a string */
+<expr>"sub"   {
+    return T_OP_SUB;
 }
 
  /* Join a list into a string */
 <expr>"join"  {
     return T_OP_JOIN;
+}
+
+ /* Split a string (or list) into a(nother) list */
+<expr>"split" {
+    return T_OP_SPLIT;
 }
 
  /*

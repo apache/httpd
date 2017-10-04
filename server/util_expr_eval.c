@@ -67,7 +67,7 @@ static const char *ap_expr_eval_var(ap_expr_eval_ctx_t *ctx,
                                     const void *data);
 
 typedef struct {
-    int type, flags;
+    int flags;
     const ap_expr_t *subst;
 } ap_expr_regctx_t;
 
@@ -228,13 +228,13 @@ static const char *ap_expr_eval_word(ap_expr_eval_ctx_t *ctx,
         result = ap_expr_list_pstrcat(ctx->p, list, sep);
         break;
     }
-    case op_Regsub: {
+    case op_Sub: {
         const ap_expr_t *reg = node->node_arg2;
         const char *subject = ap_expr_eval_word(ctx, node->node_arg1);
         result = ap_expr_regexec(subject, reg, NULL, ctx);
         break;
     }
-    case op_Regref: {
+    case op_Backref: {
         const unsigned int *np = node->node_arg1;
         result = ap_expr_eval_re_backref(ctx, *np);
         break;
@@ -327,7 +327,7 @@ static const char *ap_expr_regexec(const char *subject,
         nmatch = ctx->re_nmatch;
         pmatch = ctx->re_pmatch;
     }
-    else if (regctx->type != 'm') {
+    else if (regctx->subst) {
         nmatch = 1;
         pmatch = &match0;
     }
@@ -339,17 +339,7 @@ static const char *ap_expr_regexec(const char *subject,
          */
         rv = ap_regexec(regex, val, nmatch, pmatch, 
                         empty ? AP_REG_ANCHORED | AP_REG_NOTEMPTY : 0);
-        if (regctx->type == 'm') {
-            /* Simple match "m//", just return whether it matched (subject)
-             * or not (NULL) 
-             */
-            return (rv == 0) ? subject : NULL;
-        }
         if (rv == 0) {
-            /* Substitution "s//" or split "S//" matched.
-             * s// => replace $0 with evaluated regctx->subst
-             * S// => split at $0 (keeping evaluated regctx->subst if any)
-             */
             int pos = pmatch[0].rm_so,
                 end = pmatch[0].rm_eo;
             AP_DEBUG_ASSERT(pos >= 0 && pos <= end);
@@ -359,16 +349,13 @@ static const char *ap_expr_regexec(const char *subject,
                 str = ap_expr_eval_word(ctx, regctx->subst);
                 len = strlen(str);
             }
-            /* Splitting makes sense into a given list only, if NULL we fall
-             * back into returning a s// string...
-             */
             if (list) {
                 char *tmp = apr_palloc(ctx->p, pos + len + 1);
                 memcpy(tmp, val, pos);
                 memcpy(tmp + pos, str, len + 1);
                 APR_ARRAY_PUSH(list, const char*) = tmp;
             }
-            else { /* regctx->type == 's' */
+            else {
                 ap_varbuf_grow(&vb, pos + len + 1);
                 ap_varbuf_strmemcat(&vb, val, pos);
                 ap_varbuf_strmemcat(&vb, str, len);
@@ -383,7 +370,7 @@ static const char *ap_expr_regexec(const char *subject,
             val += end;
         }
         else if (empty) {
-            /* Skip this non-matching character (or CRLF) and restart
+            /* Skip this non-matching character (or full CRLF) and restart
              * another "normal" match (possibly empty) from there.
              */
             if (val[0] == '\r' && val[1] == '\n') {
@@ -416,25 +403,16 @@ static apr_array_header_t *ap_expr_list_make(ap_expr_eval_ctx_t *ctx,
 {
     apr_array_header_t *list = NULL;
 
-    if (node->node_op == op_ListRegex) {
+    if (node->node_op == op_Split) {
         const ap_expr_t *arg = node->node_arg1;
         const ap_expr_t *reg = node->node_arg2;
-        const ap_expr_regctx_t *regctx = reg->node_arg2;
         const apr_array_header_t *source = ap_expr_list_make(ctx, arg);
         int i;
 
         list = apr_array_make(ctx->p, source->nelts, sizeof(const char*));
         for (i = 0; i < source->nelts; ++i) {
             const char *val = APR_ARRAY_IDX(source, i, const char*);
-            if (regctx->type == 'S') {
-                (void)ap_expr_regexec(val, reg, list, ctx);
-            }
-            else {
-                val = ap_expr_regexec(val, reg, NULL, ctx);
-                if (val) {
-                    APR_ARRAY_PUSH(list, const char*) = val;
-                }
-            }
+            (void)ap_expr_regexec(val, reg, list, ctx);
         }
     }
     else if (node->node_op == op_ListElement) {
@@ -461,10 +439,8 @@ static apr_array_header_t *ap_expr_list_make(ap_expr_eval_ctx_t *ctx,
                        ap_expr_eval_word(ctx, node->node_arg2));
     }
     else {
-        const char *subject = ap_expr_eval_word(ctx, node);
-
-        list = apr_array_make(ctx->p, 8, sizeof(const char*));
-        (void)ap_expr_regexec(subject, node->node_arg2, list, ctx);
+        list = apr_array_make(ctx->p, 1, sizeof(const char*));
+        APR_ARRAY_PUSH(list, const char*) = ap_expr_eval_word(ctx, node);
     }
 
     return list;
@@ -698,37 +674,15 @@ ap_expr_t *ap_expr_concat_make(const void *a1, const void *a2,
     return ap_expr_make(op_Concat, a1, a2, ctx);
 }
 
-ap_expr_t *ap_expr_str_word_make(const ap_expr_t *arg,
-                                 ap_expr_parse_ctx_t *ctx)
-{
-    ap_expr_t *node = apr_palloc(ctx->pool, sizeof(ap_expr_t));
-    node->node_op   = op_Word;
-    node->node_arg1 = arg;
-    node->node_arg2 = NULL;
-    return node;
-}
-
-ap_expr_t *ap_expr_str_bool_make(const ap_expr_t *arg,
-                                 ap_expr_parse_ctx_t *ctx)
-{
-    ap_expr_t *node = apr_palloc(ctx->pool, sizeof(ap_expr_t));
-    node->node_op   = op_Bool;
-    node->node_arg1 = arg;
-    node->node_arg2 = NULL;
-    return node;
-}
-
-ap_expr_t *ap_expr_regex_make(const char *pattern, const char *flags,
-                              const ap_expr_t *subst, int split,
-                              ap_expr_parse_ctx_t *ctx)
+ap_expr_t *ap_expr_regex_make(const char *pattern, const ap_expr_t *subst,
+                              const char *flags, ap_expr_parse_ctx_t *ctx)
 {
     ap_expr_t *node = NULL;
     ap_expr_regctx_t *regctx;
     ap_regex_t *regex;
 
-    regctx = apr_palloc(ctx->pool, sizeof *regctx);
+    regctx = apr_pcalloc(ctx->pool, sizeof *regctx);
     regctx->subst = subst;
-    regctx->flags = 0;
     if (flags) {
         for (; *flags; ++flags) {
             switch (*flags) {
@@ -747,19 +701,6 @@ ap_expr_t *ap_expr_regex_make(const char *pattern, const char *flags,
             }
         }
     }
-    if (subst) {
-        if (split) {
-            regctx->type = 'S';
-            regctx->flags |= AP_REG_MULTI;
-        }
-        else {
-            regctx->type = 's';
-        }
-    }
-    else {
-        regctx->type = 'm';
-    }
-
     regex = ap_pregcomp(ctx->pool, pattern, regctx->flags);
     if (!regex) {
         return NULL;
@@ -832,16 +773,6 @@ ap_expr_t *ap_expr_list_func_make(const char *name, const ap_expr_t *arg,
     return ap_expr_make(op_ListFuncCall, info, arg, ctx);
 }
 
-ap_expr_t *ap_expr_list_regex_make(const ap_expr_t *arg, const ap_expr_t *reg,
-                                   ap_expr_parse_ctx_t *ctx)
-{
-    ap_expr_t *node = apr_palloc(ctx->pool, sizeof(ap_expr_t));
-    node->node_op   = op_ListRegex;
-    node->node_arg1 = arg;
-    node->node_arg2 = reg;
-    return node;
-}
-
 ap_expr_t *ap_expr_unary_op_make(const char *name, const ap_expr_t *arg,
                                ap_expr_parse_ctx_t *ctx)
 {
@@ -876,6 +807,12 @@ ap_expr_t *ap_expr_var_make(const char *name, ap_expr_parse_ctx_t *ctx)
 
     node->node_op = op_Var;
     return node;
+}
+
+ap_expr_t *ap_expr_backref_make(int num, ap_expr_parse_ctx_t *ctx)
+{
+    int *n = apr_pmemdup(ctx->pool, &num, sizeof(num));
+    return ap_expr_make(op_Backref, n, NULL, ctx);
 }
 
 #ifdef AP_EXPR_DEBUG
@@ -965,13 +902,13 @@ static void expr_dump_tree(const ap_expr_t *e, const server_rec *s,
     case op_NRE:
     case op_Word:
     case op_Bool:
+    case op_Sub:
     case op_Join:
-    case op_Regsub:
+    case op_Split:
     case op_Concat:
     case op_StringFuncCall:
     case op_ListFuncCall:
     case op_ListElement:
-    case op_ListRegex:
         {
             char *name;
             switch (e->node_op) {
@@ -996,13 +933,13 @@ static void expr_dump_tree(const ap_expr_t *e, const server_rec *s,
             CASE_OP(op_NRE);
             CASE_OP(op_Word);
             CASE_OP(op_Bool);
+            CASE_OP(op_Sub);
             CASE_OP(op_Join);
-            CASE_OP(op_Regsub);
+            CASE_OP(op_Split);
             CASE_OP(op_Concat);
             CASE_OP(op_StringFuncCall);
             CASE_OP(op_ListFuncCall);
             CASE_OP(op_ListElement);
-            CASE_OP(op_ListRegex);
             default:
                 ap_assert(0);
             }
@@ -1048,8 +985,8 @@ static void expr_dump_tree(const ap_expr_t *e, const server_rec *s,
         DUMP_P("op_Regex", e->node_arg1);
         break;
     /* arg1: pointer to int */
-    case op_Regref:
-        DUMP_IP("op_Regref", e->node_arg1);
+    case op_Backref:
+        DUMP_IP("op_Backref", e->node_arg1);
         break;
     default:
         ap_log_error(MARK, "%*sERROR: INVALID OP %d", indent, " ", e->node_op);
