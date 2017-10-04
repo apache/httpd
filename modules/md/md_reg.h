@@ -37,6 +37,8 @@ apr_status_t md_reg_init(md_reg_t **preg, apr_pool_t *pm, struct md_store_t *sto
 
 struct md_store_t *md_reg_store_get(md_reg_t *reg);
 
+apr_status_t md_reg_set_props(md_reg_t *reg, apr_pool_t *p, int can_http, int can_https);
+
 /**
  * Add a new md to the registry. This will check the name for uniqueness and
  * that domain names do not overlap with already existing mds.
@@ -119,7 +121,7 @@ apr_status_t md_reg_get_cred_files(md_reg_t *reg, const md_t *md, apr_pool_t *p,
  * Synchronise the give master mds with the store.
  */
 apr_status_t md_reg_sync(md_reg_t *reg, apr_pool_t *p, apr_pool_t *ptemp, 
-                         apr_array_header_t *master_mds, int can_http, int can_https);
+                         apr_array_header_t *master_mds);
 
 /**************************************************************************************************/
 /* protocol drivers */

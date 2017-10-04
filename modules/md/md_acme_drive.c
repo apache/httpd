@@ -632,6 +632,21 @@ static apr_status_t acme_driver_init(md_proto_driver_t *d)
         return APR_EGENERAL;
     }
     
+    if (!d->can_http) {
+        ad->ca_challenges = md_array_str_remove(d->p, ad->ca_challenges, MD_AUTHZ_TYPE_HTTP01, 0);
+    }
+    if (!d->can_https) {
+        ad->ca_challenges = md_array_str_remove(d->p, ad->ca_challenges, MD_AUTHZ_TYPE_TLSSNI01, 0);
+    }
+
+    if (apr_is_empty_array(ad->ca_challenges)) {
+        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, 0, d->p, "%s: specific CA challenge methods "
+                      "have been configured, but the server is unable to use any of those. "
+                      "For 'http-01' it needs to be reachable on port 80, for 'tls-sni-01'"
+                      " port 443 is needed.", d->md->name);
+        return APR_EGENERAL;
+    }
+    
     md_log_perror(MD_LOG_MARK, MD_LOG_TRACE1, 0, d->p, "%s: init driver", d->md->name);
     
     return rv;
