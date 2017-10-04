@@ -415,55 +415,55 @@ static apr_status_t check_group_dir(md_store_t *store, md_store_group_t group,
     return rv;
 }
 
-static apr_status_t setup_store(md_mod_conf_t *mc, apr_pool_t *p, server_rec *s,
-                                int post_config)
+static apr_status_t setup_store(md_store_t **pstore, md_mod_conf_t *mc, 
+                                apr_pool_t *p, server_rec *s)
 {
     const char *base_dir;
-    md_store_t *store;
     apr_status_t rv;
     
     base_dir = ap_server_root_relative(p, mc->base_dir);
     
-    if (APR_SUCCESS != (rv = md_store_fs_init(&store, p, base_dir))) {
+    if (APR_SUCCESS != (rv = md_store_fs_init(pstore, p, base_dir))) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10046)"setup store for %s", base_dir);
         goto out;
     }
 
-    if (post_config) {
-        md_store_fs_set_event_cb(store, store_file_ev, s);
-        if (APR_SUCCESS != (rv = check_group_dir(store, MD_SG_CHALLENGES, p, s))) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10047) 
-                         "setup challenges directory");
-            goto out;
-        }
-        if (APR_SUCCESS != (rv = check_group_dir(store, MD_SG_STAGING, p, s))) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10048) 
-                         "setup staging directory");
-            goto out;
-        }
-        if (APR_SUCCESS != (rv = check_group_dir(store, MD_SG_ACCOUNTS, p, s))) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10049) 
-                         "setup accounts directory");
-            goto out;
-        }
+    md_store_fs_set_event_cb(*pstore, store_file_ev, s);
+    if (APR_SUCCESS != (rv = check_group_dir(*pstore, MD_SG_CHALLENGES, p, s))) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10047) 
+                     "setup challenges directory");
+        goto out;
+    }
+    if (APR_SUCCESS != (rv = check_group_dir(*pstore, MD_SG_STAGING, p, s))) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10048) 
+                     "setup staging directory");
+        goto out;
+    }
+    if (APR_SUCCESS != (rv = check_group_dir(*pstore, MD_SG_ACCOUNTS, p, s))) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10049) 
+                     "setup accounts directory");
+        goto out;
     }
     
-    mc->store = store;
 out:
     return rv;
 }
 
-static apr_status_t setup_reg(md_reg_t **preg, apr_pool_t *p, server_rec *s, int post_config)
+static apr_status_t setup_reg(md_reg_t **preg, apr_pool_t *p, server_rec *s, 
+                              int can_http, int can_https)
 {
     md_srv_conf_t *sc;
     md_mod_conf_t *mc;
+    md_store_t *store;
     apr_status_t rv;
     
     sc = md_config_get(s);
     mc = sc->mc;
     
-    if (mc->store || APR_SUCCESS == (rv = setup_store(mc, p, s, post_config))) {
-        return md_reg_init(preg, p, mc->store, mc->proxy_url);
+    if (APR_SUCCESS == (rv = setup_store(&store, mc, p, s))
+        && APR_SUCCESS == (rv = md_reg_init(preg, p, store, mc->proxy_url))) {
+        mc->reg = *preg;
+        return md_reg_set_props(*preg, p, can_http, can_https); 
     }
     return rv;
 }
@@ -896,13 +896,12 @@ static apr_status_t md_post_config(apr_pool_t *p, apr_pool_t *plog,
     mc = sc->mc;
     
     /* Synchronize the defintions we now have with the store via a registry (reg). */
-    if (APR_SUCCESS != (rv = setup_reg(&reg, p, s, 1))) {
+    if (APR_SUCCESS != (rv = setup_reg(&reg, p, s, mc->can_http, mc->can_https))) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10072)
                      "setup md registry");
         goto out;
     }
-    if (APR_SUCCESS != (rv = md_reg_sync(reg, p, ptemp, mc->mds, 
-                                         mc->can_http, mc->can_https))) {
+    if (APR_SUCCESS != (rv = md_reg_sync(reg, p, ptemp, mc->mds))) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10073)
                      "synching %d mds to registry", mc->mds->nelts);
     }
@@ -1005,6 +1004,7 @@ static apr_status_t md_get_certificate(server_rec *s, apr_pool_t *p,
     apr_status_t rv = APR_ENOENT;    
     md_srv_conf_t *sc;
     md_reg_t *reg;
+    md_store_t *store;
     const md_t *md;
     
     *pkeyfile = NULL;
@@ -1014,11 +1014,10 @@ static apr_status_t md_get_certificate(server_rec *s, apr_pool_t *p,
     
     if (sc && sc->assigned) {
         assert(sc->mc);
-        assert(sc->mc->store);
-        if (APR_SUCCESS != (rv = md_reg_init(&reg, p, sc->mc->store, sc->mc->proxy_url))) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO() "init registry");
-            return rv;
-        }
+        reg = sc->mc->reg;
+        assert(reg);
+        store = md_reg_store_get(reg);
+        assert(store);
 
         md = md_reg_get(reg, sc->assigned->name, p);
             
@@ -1033,12 +1032,12 @@ static apr_status_t md_get_certificate(server_rec *s, apr_pool_t *p,
              * clients do not get obscure TLS handshake errors or will see a fallback
              * virtual host that is not intended to be served here. */
              
-            md_store_get_fname(pkeyfile, sc->mc->store, MD_SG_DOMAINS, 
+            md_store_get_fname(pkeyfile, store, MD_SG_DOMAINS, 
                                md->name, MD_FN_FALLBACK_PKEY, p);
-            md_store_get_fname(pcertfile, sc->mc->store, MD_SG_DOMAINS, 
+            md_store_get_fname(pcertfile, store, MD_SG_DOMAINS, 
                                md->name, MD_FN_FALLBACK_CERT, p);
             if (!fexists(*pkeyfile, p) || !fexists(*pcertfile, p)) { 
-                if (APR_SUCCESS != (rv = setup_fallback_cert(sc->mc->store, md, p))) {
+                if (APR_SUCCESS != (rv = setup_fallback_cert(store, md, p))) {
                     ap_log_error(APLOG_MARK, APLOG_TRACE1, rv, s,  
                                  "%s: setup fallback certificate", md->name);
                     return rv;
@@ -1077,8 +1076,8 @@ static int md_is_challenge(conn_rec *c, const char *servername,
     }
     
     sc = md_config_get(c->base_server);
-    if (sc && sc->mc->store) {
-        md_store_t *store = sc->mc->store;
+    if (sc && sc->mc->reg) {
+        md_store_t *store = md_reg_store_get(sc->mc->reg);
         md_cert_t *mdcert;
         md_pkey_t *mdpkey;
         
@@ -1116,18 +1115,19 @@ static int md_http_challenge_pr(request_rec *r)
     apr_bucket_brigade *bb;
     const md_srv_conf_t *sc;
     const char *name, *data;
+    md_reg_t *reg;
     apr_status_t rv;
     
     if (!strncmp(ACME_CHALLENGE_PREFIX, r->parsed_uri.path, sizeof(ACME_CHALLENGE_PREFIX)-1)) {
         if (r->method_number == M_GET) {
-            md_store_t *store;
         
             sc = ap_get_module_config(r->server->module_config, &md_module);
-            store = sc? sc->mc->store : NULL;
+            reg = sc && sc->mc? sc->mc->reg : NULL;
             name = r->parsed_uri.path + sizeof(ACME_CHALLENGE_PREFIX)-1;
 
             r->status = HTTP_NOT_FOUND;
-            if (!ap_strchr_c(name, '/') && store) {
+            if (!ap_strchr_c(name, '/') && reg) {
+                md_store_t *store = md_reg_store_get(reg);
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, 
                               "Challenge for %s (%s)", r->hostname, r->uri);
 
@@ -1253,3 +1253,4 @@ static void md_hooks(apr_pool_t *pool)
     APR_REGISTER_OPTIONAL_FN(md_get_certificate);
     APR_REGISTER_OPTIONAL_FN(md_is_challenge);
 }
+

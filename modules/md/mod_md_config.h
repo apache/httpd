@@ -17,6 +17,7 @@
 #define mod_md_md_config_h
 
 struct md_store_t;
+struct md_reg_t;
 struct md_pkey_spec_t;
 
 typedef enum {
@@ -39,7 +40,7 @@ typedef struct {
     apr_array_header_t *mds;           /* all md_t* defined in the config, shared */
     const char *base_dir;              /* base dir for store */
     const char *proxy_url;             /* proxy url to use (or NULL) */
-    struct md_store_t *store;          /* store instance, singleton, shared */
+    struct md_reg_t *reg;              /* md registry instance, singleton, shared */
 
     int local_80;                      /* On which port http:80 arrives */
     int local_443;                     /* On which port https:443 arrives */
