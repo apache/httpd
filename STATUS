@@ -119,7 +119,11 @@ RELEASE SHOWSTOPPERS:
      trunk patch: http://svn.apache.org/r1810448
                   http://svn.apache.org/r1810998
      2.4.x patch: svn merge -c 1810448,1810998 ^/httpd/httpd/trunk .
-     +1: jim
+     +1: jim, wrowe
+     [Not a regression, so how a showstopper? This seems to fit into the mold
+      of per-platform quirks which we process in CTR flow, adding a +1 to note
+      that the patch looks sane.]
+
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
