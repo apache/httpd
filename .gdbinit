@@ -413,6 +413,98 @@ define dump_one_pool
     printf "' [%p]: %d/%d free (%d blocks)\n", $p, $free, $size, $nodes
 end
 
+define dump_all_pools
+    set $root = $arg0
+    while $root->parent
+        set $root = $root->parent
+    end
+    dump_pool_and_childs $root
+end
+document dump_all_pools
+    Dump the whole pool hierarchy starting from apr_global_pool. Requires an arbitrary pool as starting parameter.
+end
+
+python
+class DumpPoolAndChilds (gdb.Command):
+  """Dump a pool and all its childs"""
+
+  def __init__ (self):
+    super (DumpPoolAndChilds, self).__init__ ("dump_pool_and_childs", gdb.COMMAND_USER)
+
+  def _allocator_free_blocks(self, alloc):
+    salloc = "%s" % (alloc)
+    if self.total_free_blocks.get(salloc) != None:
+      return self.total_free_blocks[salloc]
+    i = 0
+    dalloc = alloc.dereference()
+    max =(dalloc['free'].type.sizeof)/(dalloc['free'][0].type.sizeof)
+    kb = 0
+    while i < max:
+      node = dalloc['free'][i]
+      if node != 0:
+        while node != 0:
+          noded = node.dereference()
+          kb = kb + (4 << int(node['index']))
+          node = noded['next']
+      i = i + 1
+    self.total_free_blocks[salloc] = kb
+    return kb
+
+
+  def _dump_one_pool(self, arg):
+    size = 0
+    free = 0
+    nodes = 0
+    darg = arg.dereference()
+    active = darg['active']
+    node = active
+    done = 0
+    while done == 0:
+      noded = node.dereference()
+      size = size + (4096 << noded['index'])
+      free = free + (noded['endp'] - noded['first_avail'])
+      nodes = nodes + 1
+      node = noded['next']
+      if node == active:
+        done = 1
+    if darg['tag'] != 0:
+      tag = darg['tag'].string()
+    else:
+      tag = "No tag"
+    print "Pool '%s' [%s]: %d/%d free (%d blocks) allocator: %s free blocks in allocator: %i kiB" % (tag, arg, free, size, nodes, darg['allocator'], self._allocator_free_blocks(darg['allocator']))
+    self.free = self.free + free
+    self.size = self.size + size
+    self.nodes = self.nodes + nodes
+
+  def _dump(self, arg, depth):
+    pool = arg
+    print "%*c" % (depth * 4 + 1, " "),
+    self._dump_one_pool(pool)
+    if pool['child'] != 0:
+      self._dump(pool['child'], depth + 1)
+    s = pool['sibling']
+    if s != 0:
+      self._dump(s, depth)
+
+  def invoke (self, arg, from_tty):
+    pool = gdb.parse_and_eval(arg)
+    self.free = 0
+    self.size = 0
+    self.nodes = 0
+    self.total_free_blocks = {}
+    self._dump(pool, 0)
+    print "Total %d/%d free (%d blocks)" % (self.free, self.size, self.nodes)
+    sum = 0
+    for key in self.total_free_blocks:
+      sum = sum + self.total_free_blocks[key]
+    print "Total free allocator blocks: %i kiB" % (sum)
+
+DumpPoolAndChilds ()
+end
+document dump_pool_and_childs
+    Dump the whole pool hierarchy starting from the given pool.
+end
+
 # Set sane defaults for common signals:
 handle SIGPIPE noprint pass nostop
 handle SIGUSR1 print pass nostop
