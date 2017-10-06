@@ -18,6 +18,25 @@ document dump_table
     Print the key/value pairs in a table.
 end
 
+define dump_skiplist
+    set $sl = (apr_skiplist *)$arg0
+    set $m = $sl->bottom
+    printf "skiplist@%p: size=%lu: height=%d\n", $sl, $sl->size, $sl->height
+    while ($m)
+        printf "(%p,%.12lx)", $m, $m->data
+        set $u = $m->up
+        while ($u)
+            printf " (%p,%.12lx)", $u, $u->data
+            set $u = $u->up
+        end
+        printf "\n"
+        set $m = $m->next
+    end
+end
+document dump_skiplist
+    Print the nodes/values in a skiplist
+end
+
 define dump_string_hash
     set $h = $arg0->array
     set $n = $arg0->max
