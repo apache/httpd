@@ -418,7 +418,7 @@ define dump_all_pools
     while $root->parent
         set $root = $root->parent
     end
-    dump_pool_and_childs $root
+    dump_pool_and_children $root
 end
 document dump_all_pools
     Dump the whole pool hierarchy starting from apr_global_pool. Requires an arbitrary pool as starting parameter.
@@ -426,10 +426,10 @@ end
 
 python
 class DumpPoolAndChilds (gdb.Command):
-  """Dump a pool and all its childs"""
+  """Dump the whole pool hierarchy starting from the given pool."""
 
   def __init__ (self):
-    super (DumpPoolAndChilds, self).__init__ ("dump_pool_and_childs", gdb.COMMAND_USER)
+    super (DumpPoolAndChilds, self).__init__ ("dump_pool_and_children", gdb.COMMAND_USER)
 
   def _allocator_free_blocks(self, alloc):
     salloc = "%s" % (alloc)
@@ -501,7 +501,7 @@ class DumpPoolAndChilds (gdb.Command):
 
 DumpPoolAndChilds ()
 end
-document dump_pool_and_childs
+document dump_pool_and_children
     Dump the whole pool hierarchy starting from the given pool.
 end
 
