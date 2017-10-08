@@ -546,7 +546,9 @@ static void add_policy(apr_hash_t *policies, apr_pool_t *p, const char *name,
         policy->dc->proxy->auth.cipher_suite = ciphers;
     }
 
+#ifndef OPENSSL_NO_COMP
     policy->sc->compression               = compression ? TRUE : FALSE;
+#endif
     policy->sc->session_tickets           = session_tickets ? TRUE : FALSE;
     
     policy->dc->proxy->auth.verify_mode  = proxy_verify_mode;
