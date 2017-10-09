@@ -425,6 +425,9 @@ document dump_all_pools
 end
 
 python
+
+from __future__ import print_function
+
 class DumpPoolAndChilds (gdb.Command):
   """Dump the whole pool hierarchy starting from the given pool."""
 
@@ -471,14 +474,14 @@ class DumpPoolAndChilds (gdb.Command):
       tag = darg['tag'].string()
     else:
       tag = "No tag"
-    print "Pool '%s' [%s]: %d/%d free (%d blocks) allocator: %s free blocks in allocator: %i kiB" % (tag, arg, free, size, nodes, darg['allocator'], self._allocator_free_blocks(darg['allocator']))
+    print("Pool '%s' [%s]: %d/%d free (%d blocks) allocator: %s free blocks in allocator: %i kiB" % (tag, arg, free, size, nodes, darg['allocator'], self._allocator_free_blocks(darg['allocator'])))
     self.free = self.free + free
     self.size = self.size + size
     self.nodes = self.nodes + nodes
 
   def _dump(self, arg, depth):
     pool = arg
-    print "%*c" % (depth * 4 + 1, " "),
+    print("%*c" % (depth * 4 + 1, " "), end="")
     self._dump_one_pool(pool)
     if pool['child'] != 0:
       self._dump(pool['child'], depth + 1)
@@ -493,11 +496,11 @@ class DumpPoolAndChilds (gdb.Command):
     self.nodes = 0
     self.total_free_blocks = {}
     self._dump(pool, 0)
-    print "Total %d/%d free (%d blocks)" % (self.free, self.size, self.nodes)
+    print("Total %d/%d free (%d blocks)" % (self.free, self.size, self.nodes))
     sum = 0
     for key in self.total_free_blocks:
       sum = sum + self.total_free_blocks[key]
-    print "Total free allocator blocks: %i kiB" % (sum)
+    print("Total free allocator blocks: %i kiB" % (sum))
 
 DumpPoolAndChilds ()
 end
