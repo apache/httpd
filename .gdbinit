@@ -461,7 +461,7 @@ class DumpPoolAndChilds (gdb.Command):
     done = 0
     while done == 0:
       noded = node.dereference()
-      size = size + (4096 << noded['index'])
+      size = size + (4096 << int(noded['index']))
       free = free + (noded['endp'] - noded['first_avail'])
       nodes = nodes + 1
       node = noded['next']
