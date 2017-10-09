@@ -374,8 +374,8 @@ define dump_allocator
         if $node != 0
             printf " #%2d: ", $i
             while $node != 0
-                printf "%d, ", ($node->index + 1) << 12
-                set $kb = $kb + (($node->index + 1) << 2)
+                printf "%d, ", 4096 << $node->index
+                set $kb = $kb + (4 << $node->index)
                 set $node = $node->next
             end
             printf "ends.\n"
@@ -396,7 +396,7 @@ define dump_one_pool
     set $node = $arg0->active
     set $done = 0
     while $done == 0
-        set $size = $size + (($node->index + 1) << 12)
+        set $size = $size + (4096 << $node->index)
         set $free = $free + ($node->endp - $node->first_avail)
         set $nodes = $nodes + 1
         set $node = $node->next
@@ -444,7 +444,7 @@ class DumpPoolAndChilds (gdb.Command):
       if node != 0:
         while node != 0:
           noded = node.dereference()
-          kb = kb + ((int(noded['index']) + 1) << 2)
+          kb = kb + (4 << int(node['index']))
           node = noded['next']
       i = i + 1
     self.total_free_blocks[salloc] = kb
@@ -461,7 +461,7 @@ class DumpPoolAndChilds (gdb.Command):
     done = 0
     while done == 0:
       noded = node.dereference()
-      size = size + ((int(noded['index']) + 1) << 12)
+      size = size + (4096 << noded['index'])
       free = free + (noded['endp'] - noded['first_avail'])
       nodes = nodes + 1
       node = noded['next']
