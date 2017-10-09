@@ -444,7 +444,7 @@ class DumpPoolAndChilds (gdb.Command):
       if node != 0:
         while node != 0:
           noded = node.dereference()
-          kb = kb + (4 << int(node['index']))
+          kb = kb + (4 << int(noded['index']))
           node = noded['next']
       i = i + 1
     self.total_free_blocks[salloc] = kb
