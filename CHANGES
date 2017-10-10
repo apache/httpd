@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.29
 
+  *) core: Rewrite the Content-Length filter to avoid excessive memory
+     consumption. Chunked responses will be generated in more cases
+     than in previous releases.  PR 61222.  [Joe Orton, Ruediger Pluem]
+
   *) mod_ssl: Fix SessionTicket callback return value, which does seem to
      matter with OpenSSL 1.1. [Yann Ylavic]
 
