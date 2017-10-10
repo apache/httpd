@@ -217,15 +217,19 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    *) Quiet spurious gcc warning in ap_parse_form_data
       trunk patch: http://svn.apache.org/r1798785
       2.4.x patch: svn merge -c 1798785 ^/httpd/httpd/trunk .
-     +1: jailletc36, ylavic
+     +1: jailletc36, ylavic, jorton
 
    *) mod_rewrite,core: Avoid the 'Vary: Host' response header when HTTP_HOST
                         is used in a condition that evaluates to true.
       trunk patch: http://svn.apache.org/r1808746
                    http://svn.apache.org/r1809028
       2.4.x patch: svn merge -c 1808746,1809028 ^/httpd/httpd/trunk .
-      +1 elukey, ylavic
+      +1: elukey, ylavic
 
+   *) mod_ssl: Fix SessionTicket callback return value, which does
+      seem to matter with OpenSSL 1.1.
+      trunk: https://svn.apache.org/r1736186
+      +1: jorton, 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
