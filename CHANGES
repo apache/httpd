@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.29
 
+  *) mod_authz_dbd: fix a segmentation fault if AuthzDBDQuery is not set.
+     PR 61546.  [Lubos Uhliarik <luhliari redhat.com>]
+
   *) mod_rewrite: Add support for starting External Rewriting Programs
      as non-root user on UNIX systems by specifying username and group
      name as third argument of RewriteMap directive.  [Jan Kaluza]
