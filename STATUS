@@ -128,12 +128,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_authz_dbd: Fix a segmentation fault if AuthzDBDQuery is not set.
-     PR 61546
-     trunk patch: http://svn.apache.org/r1809209
-     2.4.x patch: svn merge -c 1809209 ^/httpd/httpd/trunk .
-     +1: jailletc36 (by inspection), ylavic, elukey
-
    *) mod_http2: Fix race condition on request body handlign.
       2.4.x patch: svn merge -c 1804096,1807238,1809981,1810088,1810089 ^/httpd/httpd/trunk .
       +1: icing, steffenal, ylavic
@@ -144,18 +138,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
                    http://svn.apache.org/r1809028
       2.4.x patch: svn merge -c 1808746,1809028 ^/httpd/httpd/trunk .
       +1: elukey, ylavic, wrowe
-
-  *) mod_rewrite: Add support for running external mapping programs
-     as non-root user.
-     trunk patch: https://svn.apache.org/r1664565
-     2.4.x patch: trunk works modulo docs, CHANGES
-     +1: jorton, wrowe, ylavic
-
-  *) core: Rewrite Content-Length filter to avoid arbitrary memory
-     consumption for streaming responses (e.g. large CGI scripts)
-     trunk patch: https://svn.apache.org/r1808230
-     2.4.x patch: trunk works
-     +1: jorton, wrowe, ylavic
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
