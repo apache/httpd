@@ -26,8 +26,6 @@
 <p><span>Langues Disponibles: </span><a href="./en/expr.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/expr.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>Historiquement, il existe de nombreuses variantes dans la syntaxe
     des expressions permettant d'exprimer une condition dans les
@@ -61,28 +59,42 @@
       (souvent abrégée en BNF, de l'anglais Backus-Naur Form) est une notation permettant de décrire
       les règles syntaxiques des langages de programmation. En
       général, les expressions représentent des valeurs booléennes. Dans
-      ce cas, le point de départ de la BNF est <code>expr</code>.
-      Cependant, certaines directives comme <code class="directive"><a href="./mod/mod_log_debug.html#logmessage">LogMessage</a></code> utilisent comme
+      ce cas, le point de départ de la BNF est <code>cond</code>.
+      Les directives comme
+      <code class="directive"><a href="./mod/core.html#errordocument">ErrorDocument</a></code>,
+      <code class="directive"><a href="./mod/mod_authz_core.html#require">Require</a></code>,
+      <code class="directive"><a href="./mod/mod_authn_core.html#authname">AuthName</a></code>,
+      <code class="directive"><a href="./mod/mod_alias.html#redirect">Redirect</a></code>,
+      <code class="directive"><a href="./mod/mod_headers.html#header">Header</a></code>,
+      <code class="directive"><a href="./mod/mod_crypto.html#cryptokey">CryptoKey</a></code> ou
+      <code class="directive"><a href="./mod/mod_log_debug.html#logmessage">LogMessage</a></code> utilisent comme
       paramètres des expressions qui représentent des chaînes de
       caractères. Dans ce cas, le point de départ de la BNF est
       <code>string</code>.
       </p>
 <blockquote>
-<pre>expr        ::= "<strong>true</strong>" | "<strong>false</strong>"
-              | "<strong>!</strong>" expr
-              | expr "<strong>&amp;&amp;</strong>" expr
-              | expr "<strong>||</strong>" expr
-              | "<strong>(</strong>" expr "<strong>)</strong>"
+<pre>expr        ::= cond
+              | string
+
+string      ::= substring
+              | string substring
+
+cond        ::= "<strong>true</strong>" 
+              | "<strong>false</strong>"
+              | "<strong>!</strong>" cond
+              | cond "<strong>&amp;&amp;</strong>" cond
+              | cond "<strong>||</strong>" cond
               | comp
+	      | "<strong>(</strong>" cond "<strong>)</strong>"
 
 comp        ::= stringcomp
               | integercomp
               | unaryop word
               | word binaryop word
-              | word "<strong>in</strong>" "<strong>{</strong>" wordlist "<strong>}</strong>"
-              | word "<strong>in</strong>" listfunction
+              | word "<strong>in</strong>" listfunc
               | word "<strong>=~</strong>" regex
               | word "<strong>!~</strong>" regex
+	      | word "<strong>in</strong>" "<strong>{</strong>" list "<strong>}</strong>"
 
 
 stringcomp  ::= word "<strong>==</strong>" word
@@ -99,35 +111,65 @@ integercomp ::= word "<strong>-eq</strong>" word | word "<strong>eq</strong>" wo
               | word "<strong>-gt</strong>" word | word "<strong>gt</strong>" word
               | word "<strong>-ge</strong>" word | word "<strong>ge</strong>" word
 
-wordlist    ::= word
-              | wordlist "<strong>,</strong>" word
-
-word        ::= word "<strong>.</strong>" word
-              | digit
+word        ::= digits
               | "<strong>'</strong>" string "<strong>'</strong>"
-              | "<strong>"</strong>" string "<strong>"</strong>"
+              | '<strong>"</strong>' string '<strong>"</strong>'
+              | word "<strong>.</strong>" word
               | variable
-	      | rebackref
+	      | sub
+              | join
               | function
+	      | "<strong>(</strong>" word "<strong>)</strong>"
 
-string      ::= stringpart
-              | string stringpart
+list        ::= split
+              | listfunc
+              | "<strong>{</strong>" words "<strong>}</strong>"
+              | "<strong>(</strong>" list "<strong>)</strong>"
 
-stringpart  ::= cstring
+substring   ::= cstring
               | variable
-	      | rebackref
 
-cstring     ::= ...
-digit       ::= [0-9]+
 
 variable    ::= "<strong>%{</strong>" varname "<strong>}</strong>"
               | "<strong>%{</strong>" funcname "<strong>:</strong>" funcargs "<strong>}</strong>"
+	      | "<strong>%{:</strong>" word "<strong>:}</strong>"
+              | "<strong>%{:</strong>" cond "<strong>:}</strong>"
+              | rebackref
 
-rebackref   ::= "<strong>$</strong>" [0-9]
+sub         ::= "<strong>sub</strong>" ["<strong>(</strong>"] regsub "<strong>,</strong>" word ["<strong>)</strong>"]
 
-function     ::= funcname "<strong>(</strong>" wordlist "<strong>)</strong>"
+join        ::= "<strong>join</strong>" ["<strong>(</strong>"] list ["<strong>)</strong>"]
+              | "<strong>join</strong>" ["<strong>(</strong>"] list "<strong>,</strong>" word ["<strong>)</strong>"]
 
-listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"</pre>
+split       ::= "<strong>split</strong>" ["<strong>(</strong>"] regany "<strong>,</strong>" list ["<strong>)</strong>"]
+              | "<strong>split</strong>" ["<strong>(</strong>"] regany "<strong>,</strong>" word ["<strong>)</strong>"]
+
+function    ::= funcname "<strong>(</strong>" words "<strong>)</strong>"
+
+listfunc    ::= listfuncname "<strong>(</strong>" words "<strong>)</strong>"
+
+words       ::= word
+              | word "<strong>,</strong>" list
+
+regex       ::= "<strong>/</strong>" regpattern "<strong>/</strong>" [regflags]
+              | "<strong>m</strong>" regsep regpattern regsep [regflags]
+
+regsub      ::= "<strong>s</strong>" regsep regpattern regsep string regsep [regflags]
+
+regany      ::= regex | regsub
+
+regsep      ::= "/" | "#" | "$" | "%" | "^" | "|" | "?" | "!" | "'" | '"' | "," | ";" | ":" | "." | "_" | "-"
+
+regflags    ::= 1*("i" | "s" | "m" | "g")
+regpattern  ::= cstring ; except enclosing <em>regsep</em>
+
+rebackref   ::= "<strong>$</strong>" DIGIT
+
+digits      ::= 1*(DIGIT)
+cstring     ::= 0*(TEXT)
+
+TEXT        ::= &lt;any OCTET except CTLs&gt;
+DIGIT       ::= &lt;any US-ASCII digit "0".."9"&gt;</pre>
 </blockquote>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -302,6 +344,22 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"</pr
 
     <p>Certains modules, comme <code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code>, définissent des
     variables supplémentaires.</p>
+
+    <p>Toute variable peut être insérée dans une <em>chaîne</em>, et ceci non
+    seulement dans les chaînes entre quotes des expressions booléennes, mais
+    aussi dans les expressions littérales issues de la concaténation de chaînes
+    constantes et dynamiques.</p>
+
+    <p>On peut utiliser ici les variables (temporaires) du style
+    <code>%{:<em>word</em>:}</code> qui permettent d'insérer dans les deux types
+    d'expressions des variables (et des constructions) avec la syntaxe puissante
+    <em>word</em> sans entrer en conflit avec les parties constantes de telles
+    chaînes. Même si la syntaxe <em>word</em> est directement utilisable au sein
+    des expressions booléennes, ces variables sont cependant surtout utiles dans
+    les expressions littérales. Ces variables permettent d'évaluer des
+    expressions rationnelles, des substitutions, de concaténer ou dissocier des
+    chaînes et des listes au sein des expressions littérales, et donc de
+    construire des chaînes complexes dynamiquement.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -555,8 +613,8 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"</pr
 
     <p>En plus des fonctions dont la valeur est une chaîne, il existe
     aussi des fonctions dont la valeur est une liste, qui acceptent une
-    chaîne comme argument, et renvoient une liste de mots, autrement dit
-    une liste de chaînes. La liste de mot peut être utilisée avec
+    chaîne comme argument, et renvoient une liste , par exemple
+    une liste de chaînes. La liste peut être utilisée avec
     l'opérateur spécial <code>-in</code>. Les noms de fonctions sont
     insensibles à la casse. Les modules peuvent fournir des fonctions
     supplémentaires.</p>
@@ -627,13 +685,22 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"</pr
 &lt;/If&gt;
 
 
-# Function example in string context
+# Exemple de fonction dans un contexte littéral
 Header set foo-checksum "expr=%{md5:foo}"
 
 # L'exemple suivant retarde l'évaluation de la clause de condition par rapport à
 # &lt;If&gt;
 Header always set CustomHeader my-value "expr=%{REQUEST_URI} =~
-m#^/special_path\.php$#"</pre>
+m#^/special_path\.php$#"
+
+# Ajoute un en-tête permettant d'acheminer le SAN du certificat d'un client vers
+# un quelconque serveur d'arrière-plan
+RequestHeader set X-Client-SAN "expr=%{:join PeerExtList('subjectAltName'):}"
+
+# Impose la présence de l'adresse IP distante dans le SAN du certificat d'un client
+Require expr %{REMOTE_ADDR} -in split s/.*?IP Address:([^,]+)/$1/, PeerExtList('subjectAltName')
+# autre solution :
+Require expr "IP Address:%{REMOTE_ADDR}" -in split/, /, join PeerExtList('subjectAltName')</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -643,7 +710,7 @@ m#^/special_path\.php$#"</pre>
     <table class="bordered"><tr class="header"><th>Nom</th><th>Alternative</th> <th>Description</th></tr>
 <tr><td><code>-in</code></td>
         <td><code>in</code></td>
-        <td>chaîne contenue dans une liste de mots</td></tr>
+        <td>chaîne contenue dans une liste</td></tr>
 <tr class="odd"><td><code>/regexp/</code></td>
         <td><code>m#regexp#</code></td>
         <td>Expression rationnelle (la seconde forme permet de spécifier
