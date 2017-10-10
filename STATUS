@@ -214,11 +214,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                 mod_journald can't be configured in maintainer mode (-std=c89).
                 Can anyone else reproduce, or is it just my distro?
 
-   *) Quiet spurious gcc warning in ap_parse_form_data
-      trunk patch: http://svn.apache.org/r1798785
-      2.4.x patch: svn merge -c 1798785 ^/httpd/httpd/trunk .
-     +1: jailletc36, ylavic, jorton
-
    *) mod_rewrite,core: Avoid the 'Vary: Host' response header when HTTP_HOST
                         is used in a condition that evaluates to true.
       trunk patch: http://svn.apache.org/r1808746
@@ -229,6 +224,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    *) mod_ssl: Fix SessionTicket callback return value, which does
       seem to matter with OpenSSL 1.1.
       trunk: https://svn.apache.org/r1736186
+      2.4.x patch: trunk works
       +1: jorton, 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
