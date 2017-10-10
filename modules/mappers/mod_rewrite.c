@@ -5226,6 +5226,8 @@ static int hook_fixup(request_rec *r)
                 }
             }
 
+            apr_table_setn(r->notes, "redirect-keeps-vary", "");
+
             /* now initiate the internal redirect */
             rewritelog((r, 1, dconf->directory, "internal redirect with %s "
                         "[INTERNAL REDIRECT]", r->filename));
