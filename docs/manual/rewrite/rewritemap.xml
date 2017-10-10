@@ -366,6 +366,11 @@ by many requests.
     module="mod_rewrite">RewriteEngine</directive> set to
     <code>on</code>.</p>
 
+    <p>By default, external rewriting programs are started as root.
+    This can be changed on UNIX systems by passing user name and
+    group name as third argument to <directive module="mod_rewrite">
+    RewriteMap</directive> in the <code>username:groupname</code> format.</p>
+
     <p>This feature utilizes the <code>rewrite-map</code> mutex,
     which is required for reliable communication with the program.
     The mutex mechanism and lock file can be configured with the
@@ -376,7 +381,7 @@ by many requests.
 
     <p><strong>Rewrite configuration</strong></p>
     <highlight language="config">
-RewriteMap d2u "prg:/www/bin/dash2under.pl"
+RewriteMap d2u "prg:/www/bin/dash2under.pl" apache:apache
 RewriteRule "-" "${d2u:%{REQUEST_URI}}"
     </highlight>
 
