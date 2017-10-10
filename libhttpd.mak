@@ -37,11 +37,11 @@ OutDir=.\Release
 
 !IF "$(RECURSE)" == "0" 
 
-ALL : ".\include\mod_dav.h" "$(OUTDIR)\libhttpd.dll" "$(DS_POSTBUILD_DEP)"
+ALL : ".\include\mod_dav.h" ".\include\mod_watchdog.h" "$(OUTDIR)\libhttpd.dll" "$(DS_POSTBUILD_DEP)"
 
 !ELSE 
 
-ALL : "gen_test_char - Win32 Release" "libaprutil - Win32 Release" "libapriconv - Win32 Release" "libapr - Win32 Release" ".\include\mod_dav.h" "$(OUTDIR)\libhttpd.dll" "$(DS_POSTBUILD_DEP)"
+ALL : "gen_test_char - Win32 Release" "libaprutil - Win32 Release" "libapriconv - Win32 Release" "libapr - Win32 Release" ".\include\mod_dav.h" ".\include\mod_watchdog.h" "$(OUTDIR)\libhttpd.dll" "$(DS_POSTBUILD_DEP)"
 
 !ENDIF 
 
