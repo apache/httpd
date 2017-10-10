@@ -151,21 +151,21 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       2.4.x patch: trunk works
       +1: jorton, ylavic, wrowe
 
-
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
   *) mod_rewrite: Add support for running external mapping programs
      as non-root user.
      trunk patch: https://svn.apache.org/r1664565
      2.4.x patch: trunk works modulo docs, CHANGES
-     +1: jorton, wrowe
+     +1: jorton, wrowe, ylavic
 
   *) core: Rewrite Content-Length filter to avoid arbitrary memory
      consumption for streaming responses (e.g. large CGI scripts)
      trunk patch: https://svn.apache.org/r1808230
      2.4.x patch: trunk works
-     +1: jorton, wrowe, 
+     +1: jorton, wrowe, ylavic
+
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
 
   *) mod_proxy, mod_ssl: Handle SSLProxy* directives in <Proxy> sections,
      allowing per backend TLS configuration.
