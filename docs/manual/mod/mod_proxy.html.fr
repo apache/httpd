@@ -30,8 +30,6 @@
 <a href="../fr/mod/mod_proxy.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_proxy.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Serveur mandataire/passerelle multi-protocole</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>proxy_module</td></tr>
@@ -350,6 +348,14 @@ ProxyPass "/examples" "http://backend.example.com/examples" timeout=10</pre>
 	<code class="directive"><a href="#proxypass">ProxyPass</a></code>.</p>
 
       </div> 
+
+      <div class="warning"><h3>Nom d'hôte dans l'URL</h3>
+        <p>Le nom d'hôte doit commencer par une lettre [a-z]. Par exemple :</p>
+        <pre class="prettyprint lang-config">ProxyPass "/apps"     "http://127"</pre>
+
+        <p>n'est pas valide et provoquera une erreur si une requête correspond
+	au chemin.</p>
+      </div>
 
       <p>Les workers définis explicitement sont de deux sortes :
       <dfn>workers directs</dfn> et <dfn>workers de répartition (de
