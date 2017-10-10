@@ -225,7 +225,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       seem to matter with OpenSSL 1.1.
       trunk: https://svn.apache.org/r1736186
       2.4.x patch: trunk works
-      +1: jorton, 
+      +1: jorton, ylavic
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
