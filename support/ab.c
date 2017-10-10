@@ -1506,6 +1506,7 @@ static void read_connection(struct connection * c)
     int i;
 
     r = sizeof(buffer);
+read_more:
 #ifdef USE_SSL
     if (c->ssl) {
         status = SSL_read(c->ssl, buffer, r);
@@ -1711,6 +1712,10 @@ static void read_connection(struct connection * c)
         /* outside header, everything we have read is entity body */
         c->bread += r;
         totalbread += r;
+    }
+    if (r == sizeof(buffer) && c->bread < c->length) {
+        /* read was full, try more immediately (nonblocking already) */
+        goto read_more;
     }
 
     if (c->keepalive && (c->bread >= c->length)) {
