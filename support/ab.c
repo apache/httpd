@@ -776,8 +776,8 @@ static void ssl_proceed_handshake(struct connection *c)
             do_next = 0;
             break;
         case SSL_ERROR_WANT_WRITE:
-            /* Try again */
-            do_next = 1;
+            set_polled_events(c, APR_POLLOUT);
+            do_next = 0;
             break;
         case SSL_ERROR_WANT_CONNECT:
         case SSL_ERROR_SSL:
@@ -827,26 +827,42 @@ static void write_request(struct connection * c)
 
 #ifdef USE_SSL
         if (c->ssl) {
-            apr_size_t e_ssl;
-            e_ssl = SSL_write(c->ssl,request + c->rwrote, l);
-            if (e_ssl != l) {
-                BIO_printf(bio_err, "SSL write failed - closing connection\n");
-                ERR_print_errors(bio_err);
-                close_connection (c);
+            e = SSL_write(c->ssl, request + c->rwrote, l);
+            if (e <= 0) {
+                switch (SSL_get_error(c->ssl, e)) {
+                case SSL_ERROR_WANT_READ:
+                    set_polled_events(c, APR_POLLIN);
+                    break;
+                case SSL_ERROR_WANT_WRITE:
+                    set_polled_events(c, APR_POLLOUT);
+                    break;
+                default:
+                    BIO_printf(bio_err, "SSL write failed - closing connection\n");
+                    ERR_print_errors(bio_err);
+                    close_connection (c);
+                    break;
+                }
                 return;
             }
-            l = e_ssl;
+            l = e;
             e = APR_SUCCESS;
         }
         else
 #endif
+        {
             e = apr_socket_send(c->aprsock, request + c->rwrote, &l);
-
-        if (e != APR_SUCCESS && !APR_STATUS_IS_EAGAIN(e)) {
-            epipe++;
-            printf("Send request failed!\n");
-            close_connection(c);
-            return;
+            if (e != APR_SUCCESS) {
+                if (!APR_STATUS_IS_EAGAIN(e)) {
+                    epipe++;
+                    printf("Send request failed!\n");
+                    close_connection(c);
+                    return;
+                }
+                if (!l) {
+                    set_polled_events(c, APR_POLLOUT);
+                    return;
+                }
+            }
         }
         totalposted += l;
         c->rwrote += l;
@@ -1387,6 +1403,7 @@ static void start_connect(struct connection * c)
         ssl_rand_seed();
         apr_os_sock_get(&fd, c->aprsock);
         bio = BIO_new_socket(fd, BIO_NOCLOSE);
+        BIO_set_nbio(bio, 1);
         SSL_set_bio(c->ssl, bio, bio);
         SSL_set_connect_state(c->ssl);
         if (verbosity >= 4) {
@@ -1535,8 +1552,13 @@ read_more:
                      && good == 0) {
                 return;
             }
-            else if (scode != SSL_ERROR_WANT_WRITE
-                     && scode != SSL_ERROR_WANT_READ) {
+            else if (scode == SSL_ERROR_WANT_READ) {
+                set_polled_events(c, APR_POLLIN);
+            }
+            else if (scode == SSL_ERROR_WANT_WRITE) {
+                set_polled_events(c, APR_POLLOUT);
+            }
+            else {
                 /* some fatal error: */
                 c->read = 0;
                 BIO_printf(bio_err, "SSL read failed (%d) - closing connection\n", scode);
@@ -1750,6 +1772,7 @@ read_more:
         c->read = c->bread = 0;
         /* zero connect time with keep-alive */
         c->start = c->connect = lasttime = apr_time_now();
+        set_conn_state(c, STATE_CONNECTED);
         write_request(c);
     }
 }
@@ -1996,6 +2019,7 @@ static void test(void)
             }
             if (rtnev & APR_POLLOUT) {
                 if (c->state == STATE_CONNECTING) {
+                    /* call connect() again to detect errors */
                     rv = apr_socket_connect(c->aprsock, destsa);
                     if (rv != APR_SUCCESS) {
                         set_conn_state(c, STATE_UNCONNECTED);
@@ -2020,7 +2044,14 @@ static void test(void)
                     }
                 }
                 else {
-                    write_request(c);
+                    /* POLLOUT is one shot */
+                    set_polled_events(c, APR_POLLIN);
+                    if (c->state == STATE_READ) {
+                        read_connection(c);
+                    }
+                    else {
+                        write_request(c);
+                    }
                 }
             }
         }
