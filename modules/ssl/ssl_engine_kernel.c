@@ -2301,7 +2301,7 @@ int ssl_callback_SessionTicket(SSL *ssl,
                       "TLS session ticket key for %s successfully set, "
                       "creating new session ticket", sc->vhost_id);
 
-        return 0;
+        return 1;
     }
     else if (mode == 0) {
         /* 

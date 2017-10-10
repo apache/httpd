@@ -145,12 +145,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       2.4.x patch: svn merge -c 1808746,1809028 ^/httpd/httpd/trunk .
       +1: elukey, ylavic, wrowe
 
-   *) mod_ssl: Fix SessionTicket callback return value, which does
-      seem to matter with OpenSSL 1.1.
-      trunk: https://svn.apache.org/r1736186
-      2.4.x patch: trunk works
-      +1: jorton, ylavic, wrowe
-
   *) mod_rewrite: Add support for running external mapping programs
      as non-root user.
      trunk patch: https://svn.apache.org/r1664565
