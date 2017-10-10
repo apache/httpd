@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1805323:1810316 (outdated) -->
+<!-- English Revision: 1810316 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -316,6 +316,15 @@ ProxyPass "/examples" "http://backend.example.com/examples" timeout=10
 	<directive module="mod_proxy">ProxyPass</directive>.</p>
 
       </note> <!-- /worker_sharing -->
+
+      <note type="warning"><title>Nom d'hôte dans l'URL</title>
+        <p>Le nom d'hôte doit commencer par une lettre [a-z]. Par exemple :</p>
+        <highlight language="config">
+ProxyPass "/apps"     "http://127"
+        </highlight>
+        <p>n'est pas valide et provoquera une erreur si une requête correspond
+	au chemin.</p>
+      </note>
 
       <p>Les workers définis explicitement sont de deux sortes :
       <dfn>workers directs</dfn> et <dfn>workers de répartition (de
