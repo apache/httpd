@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) ab: Keep reading nonblocking to exhaust TCP or SSL buffers when previous
+     read was incomplete (the SSL case can cause the next poll() to timeout
+     since data are buffered already).  PR 61301 [Luca Toscano, Yann Ylavic]
+
   *) mod_md: v0.9.9, fix for applying challenge type based on available ports. [Stefan Eissing]
 
   *) mod_proxy_uwsgi: New UWSGI mod_proxy (sub)module contributed by unbit.com.
