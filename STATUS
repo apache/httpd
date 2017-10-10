@@ -138,6 +138,19 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       2.4.x patch: svn merge -c 1804096,1807238,1809981,1810088,1810089 ^/httpd/httpd/trunk .
       +1: icing, steffenal, ylavic
 
+   *) mod_rewrite,core: Avoid the 'Vary: Host' response header when HTTP_HOST
+                        is used in a condition that evaluates to true.
+      trunk patch: http://svn.apache.org/r1808746
+                   http://svn.apache.org/r1809028
+      2.4.x patch: svn merge -c 1808746,1809028 ^/httpd/httpd/trunk .
+      +1: elukey, ylavic, wrowe
+
+   *) mod_ssl: Fix SessionTicket callback return value, which does
+      seem to matter with OpenSSL 1.1.
+      trunk: https://svn.apache.org/r1736186
+      2.4.x patch: trunk works
+      +1: jorton, ylavic, wrowe
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -146,7 +159,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      as non-root user.
      trunk patch: https://svn.apache.org/r1664565
      2.4.x patch: trunk works modulo docs, CHANGES
-     +1: jorton,
+     +1: jorton, wrowe
 
   *) core: Rewrite Content-Length filter to avoid arbitrary memory
      consumption for streaming responses (e.g. large CGI scripts)
@@ -213,19 +226,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      jchampion: Looks like the headers require GCC extensions to compile, so
                 mod_journald can't be configured in maintainer mode (-std=c89).
                 Can anyone else reproduce, or is it just my distro?
-
-   *) mod_rewrite,core: Avoid the 'Vary: Host' response header when HTTP_HOST
-                        is used in a condition that evaluates to true.
-      trunk patch: http://svn.apache.org/r1808746
-                   http://svn.apache.org/r1809028
-      2.4.x patch: svn merge -c 1808746,1809028 ^/httpd/httpd/trunk .
-      +1: elukey, ylavic
-
-   *) mod_ssl: Fix SessionTicket callback return value, which does
-      seem to matter with OpenSSL 1.1.
-      trunk: https://svn.apache.org/r1736186
-      2.4.x patch: trunk works
-      +1: jorton, ylavic
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
