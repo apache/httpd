@@ -265,6 +265,8 @@ typedef struct {
     const char *dbdq;              /* SQL SELECT statement for rewritemap */
     const char *checkfile2;        /* filename to check for map existence
                                       NULL if only one file               */
+    const char *user;              /* run RewriteMap program as this user */
+    const char *group;             /* run RewriteMap program as this group */
 } rewritemap_entry;
 
 /* special pattern types for RewriteCond */
@@ -1191,6 +1193,7 @@ static void rewrite_child_errfn(apr_pool_t *p, apr_status_t err,
 
 static apr_status_t rewritemap_program_child(apr_pool_t *p,
                                              const char *progname, char **argv,
+                                             const char *user, const char *group,
                                              apr_file_t **fpout,
                                              apr_file_t **fpin)
 {
@@ -1203,6 +1206,8 @@ static apr_status_t rewritemap_program_child(apr_pool_t *p,
                                                   APR_FULL_BLOCK, APR_NO_PIPE))
         && APR_SUCCESS == (rc=apr_procattr_dir_set(procattr,
                                              ap_make_dirstr_parent(p, argv[0])))
+        && (!user || APR_SUCCESS == (rc=apr_procattr_user_set(procattr, user, "")))
+        && (!group || APR_SUCCESS == (rc=apr_procattr_group_set(procattr, group)))
         && APR_SUCCESS == (rc=apr_procattr_cmdtype_set(procattr, APR_PROGRAM))
         && APR_SUCCESS == (rc=apr_procattr_child_errfn_set(procattr,
                                                            rewrite_child_errfn))
@@ -1260,6 +1265,7 @@ static apr_status_t run_rewritemap_programs(server_rec *s, apr_pool_t *p)
         }
 
         rc = rewritemap_program_child(p, map->argv[0], map->argv,
+                                      map->user, map->group,
                                       &fpout, &fpin);
         if (rc != APR_SUCCESS || fpin == NULL || fpout == NULL) {
             ap_log_error(APLOG_MARK, APLOG_ERR, rc, s, APLOGNO(00654)
@@ -3048,7 +3054,7 @@ static const char *cmd_rewriteoptions(cmd_parms *cmd,
 }
 
 static const char *cmd_rewritemap(cmd_parms *cmd, void *dconf, const char *a1,
-                                  const char *a2)
+                                  const char *a2, const char *a3)
 {
     rewrite_server_conf *sconf;
     rewritemap_entry *newmap;
@@ -3154,6 +3160,11 @@ static const char *cmd_rewritemap(cmd_parms *cmd, void *dconf, const char *a1,
 
         newmap->type      = MAPTYPE_PRG;
         newmap->checkfile = newmap->argv[0];
+        if (a3) {
+            char *tok_cntx;
+            newmap->user = apr_strtok(apr_pstrdup(cmd->pool, a3), ":", &tok_cntx);
+            newmap->group = apr_strtok(NULL, ":", &tok_cntx);
+        }
     }
     else if (strncasecmp(a2, "int:", 4) == 0) {
         newmap->type      = MAPTYPE_INT;
@@ -5265,8 +5276,8 @@ static const command_rec command_table[] = {
                      "an input string and a to be applied regexp-pattern"),
     AP_INIT_RAW_ARGS("RewriteRule",     cmd_rewriterule,     NULL, OR_FILEINFO,
                      "an URL-applied regexp-pattern and a substitution URL"),
-    AP_INIT_TAKE2(   "RewriteMap",      cmd_rewritemap,      NULL, RSRC_CONF,
-                     "a mapname and a filename"),
+    AP_INIT_TAKE23(   "RewriteMap",      cmd_rewritemap,      NULL, RSRC_CONF,
+                     "a mapname and a filename and options"),
     { NULL }
 };
 

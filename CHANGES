@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.29
 
+  *) mod_rewrite: Add support for starting External Rewriting Programs
+     as non-root user on UNIX systems by specifying username and group
+     name as third argument of RewriteMap directive.  [Jan Kaluza]
+
   *) core: Rewrite the Content-Length filter to avoid excessive memory
      consumption. Chunked responses will be generated in more cases
      than in previous releases.  PR 61222.  [Joe Orton, Ruediger Pluem]
