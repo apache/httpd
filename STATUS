@@ -203,6 +203,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                 mod_journald can't be configured in maintainer mode (-std=c89).
                 Can anyone else reproduce, or is it just my distro?
 
+   *) mod_unique_id: Use PRNG output rather than needing to use DNS,
+      an IPv4 address (or failing) and PID, and slowing down startup
+      by up to a second.
+      trunk patch: http://svn.apache.org/r1610339
+      2.4.x patch: trunk works
+      +1: jorton,
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
