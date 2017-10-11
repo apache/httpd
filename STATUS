@@ -206,7 +206,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    *) mod_unique_id: Use PRNG output rather than needing to use DNS,
       an IPv4 address (or failing) and PID, and slowing down startup
       by up to a second.
-      trunk patch: http://svn.apache.org/r1610339
+      trunk patch: http://svn.apache.org/r1501827
       2.4.x patch: trunk works
       +1: jorton,
 
