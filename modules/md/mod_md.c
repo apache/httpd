@@ -34,6 +34,7 @@
 #include "md_curl.h"
 #include "md_crypt.h"
 #include "md_http.h"
+#include "md_json.h"
 #include "md_store.h"
 #include "md_store_fs.h"
 #include "md_log.h"
@@ -557,6 +558,7 @@ typedef struct {
 typedef struct {
     apr_pool_t *p;
     server_rec *s;
+    md_mod_conf_t *mc;
     ap_watchdog_t *watchdog;
     
     apr_time_t next_change;
@@ -725,18 +727,77 @@ static apr_status_t run_watchdog(int state, void *baton, apr_pool_t *ptemp)
 
     if (restart) {
         const char *action, *names = "";
+        md_json_t *jprops;
+        md_store_t *store = md_reg_store_get(wd->reg);
         int n;
         
         for (i = 0, n = 0; i < wd->jobs->nelts; ++i) {
             job = APR_ARRAY_IDX(wd->jobs, i, md_job_t *);
             if (job->need_restart && !job->restart_processed) {
-                names = apr_psprintf(ptemp, "%s%s%s", names, n? ", " : "", job->md->name);
-                ++n;
-                job->restart_processed = 1;
+                rv = md_store_load_json(store, MD_SG_STAGING, job->md->name, 
+                                        "job.json", &jprops, ptemp);
+                if (APR_SUCCESS == rv) {
+                    job->restart_processed = md_json_getb(jprops, MD_KEY_PROCESSED, NULL);
+                }
+                if (!job->restart_processed) {
+                    names = apr_psprintf(ptemp, "%s%s%s", names, n? " " : "", job->md->name);
+                    ++n;
+                }
             }
         }
 
         if (n > 0) {
+            int notified = 1;
+
+            /* Run notifiy command for ready MDs (if configured) and persist that
+             * we have done so. This process might be reaped after n requests or die
+             * of another cause. The one taking over the watchdog need to notify again.
+             */
+            if (wd->mc->notify_cmd) {
+                const char * const *argv;
+                const char *cmdline;
+                int exit_code;
+                
+                cmdline = apr_psprintf(ptemp, "%s %s", wd->mc->notify_cmd, names); 
+                apr_tokenize_to_argv(cmdline, (char***)&argv, ptemp);
+                if (APR_SUCCESS == (rv = md_util_exec(ptemp, argv[0], argv, &exit_code))) {
+                    ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, wd->s, APLOGNO() 
+                                 "notify command '%s' returned %d", 
+                                 wd->mc->notify_cmd, exit_code);
+                }
+                else {
+                    ap_log_error(APLOG_MARK, APLOG_ERR, rv, wd->s, APLOGNO() 
+                                 "executing configured MDNotifyCmd %s", wd->mc->notify_cmd);
+                    notified = 0;
+                } 
+            }
+            
+            if (notified) {
+                /* persist the jobs that were notified */
+                for (i = 0, n = 0; i < wd->jobs->nelts; ++i) {
+                    job = APR_ARRAY_IDX(wd->jobs, i, md_job_t *);
+                    if (job->need_restart && !job->restart_processed) {
+                        job->restart_processed = 1;
+                        
+                        rv = md_store_load_json(store, MD_SG_STAGING, job->md->name, 
+                                                MD_FN_JOB, &jprops, ptemp);
+                        if (APR_SUCCESS == rv) {
+                            md_json_setb(1, jprops, MD_KEY_PROCESSED, NULL);
+                            rv = md_store_save_json(store, ptemp, MD_SG_STAGING, job->md->name, 
+                                                    MD_FN_JOB, jprops, 0);
+                        }
+                    }
+                }
+            }
+            
+            /* FIXME: the server needs to start gracefully to take the new certficate in.
+             * This poses a variety of problems to solve satisfactory for everyone:
+             * - I myself, have no implementation for Windows 
+             * - on *NIX, child processes run with less privileges, preventing
+             *   the signal based restart trigger to work
+             * - admins want better control of timing windows for restarts, e.g.
+             *   during less busy hours/days.
+             */
             rv = md_server_graceful(ptemp, wd->s);
             if (APR_ENOTIMPL == rv) {
                 /* self-graceful restart not supported in this setup */
@@ -755,7 +816,7 @@ static apr_status_t run_watchdog(int state, void *baton, apr_pool_t *ptemp)
 }
 
 static apr_status_t start_watchdog(apr_array_header_t *names, apr_pool_t *p, 
-                                   md_reg_t *reg, server_rec *s)
+                                   md_reg_t *reg, server_rec *s, md_mod_conf_t *mc)
 {
     apr_allocator_t *allocator;
     md_watchdog *wd;
@@ -790,6 +851,7 @@ static apr_status_t start_watchdog(apr_array_header_t *names, apr_pool_t *p,
     wd->p = wdp;
     wd->reg = reg;
     wd->s = s;
+    wd->mc = mc;
     
     wd->jobs = apr_array_make(wd->p, 10, sizeof(md_job_t *));
     for (i = 0; i < names->nelts; ++i) {
@@ -943,7 +1005,7 @@ static apr_status_t md_post_config(apr_pool_t *p, apr_pool_t *plog,
     
         load_stage_sets(drive_names, p, reg, s);
         md_http_use_implementation(md_curl_get_impl(p));
-        rv = start_watchdog(drive_names, p, reg, s);
+        rv = start_watchdog(drive_names, p, reg, s, mc);
     }
     else {
         ap_log_error( APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(10075)

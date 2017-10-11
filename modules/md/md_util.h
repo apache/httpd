@@ -53,6 +53,11 @@ int md_array_str_add_missing(struct apr_array_header_t *dest,
                              struct apr_array_header_t *src, int case_sensitive);
 
 /**************************************************************************************************/
+/* process execution */
+apr_status_t md_util_exec(apr_pool_t *p, const char *cmd, const char * const *argv,
+                          int *exit_code);
+
+/**************************************************************************************************/
 /* dns name check */
 
 int md_util_is_dns_name(apr_pool_t *p, const char *hostname, int need_fqdn);
