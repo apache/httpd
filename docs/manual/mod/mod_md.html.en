@@ -94,6 +94,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#mdmember">MDMember</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdmembers">MDMembers</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdmuststaple">MDMustStaple</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mdnotifycmd">MDNotifyCmd</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdportmap">MDPortMap</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdprivatekeys">MDPrivateKeys</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdrenewwindow">MDRenewWindow</a></li>
@@ -374,6 +375,22 @@ MDCertificateAgreement https://letsencrypt.org/documents/LE-SA-v1.1.1-August-1-2
             OCSP stapling response to every client. This only works if you configure 
             mod_ssl to generate this (see <code class="directive"><a href="../mod/mod_ssl.html#sslusestapling">SSLUseStapling</a></code>
             and friends).
+            </p>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="MDNotifyCmd" id="MDNotifyCmd">MDNotifyCmd</a> <a name="mdnotifycmd" id="mdnotifycmd">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Run a program when Managed Domain are ready.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MDNotifyCmd  path</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+</table>
+            <p>The configured executable is run when Managed Domains have signed up or
+            renewed their certificates. It is given the names of the processed MDs as
+            arguments. It should return status code 0 to indicate that it has 
+            run successfully.
             </p>
         
 </div>

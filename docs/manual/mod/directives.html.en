@@ -457,6 +457,7 @@
 <li><a href="mod_md.html#mdmember">MDMember</a></li>
 <li><a href="mod_md.html#mdmembers">MDMembers</a></li>
 <li><a href="mod_md.html#mdmuststaple">MDMustStaple</a></li>
+<li><a href="mod_md.html#mdnotifycmd">MDNotifyCmd</a></li>
 <li><a href="mod_md.html#mdportmap">MDPortMap</a></li>
 <li><a href="mod_md.html#mdprivatekeys">MDPrivateKeys</a></li>
 <li><a href="mod_md.html#mdrenewwindow">MDRenewWindow</a></li>
