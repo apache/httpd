@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_md: v1.0.0, new config directive 'MDNotifyCmd' to hook in a program when Managed
+     Domains have obtained/renewed their certificates successfully. [Stefan Eissing]
+
   *) mod_rewrite, core: add the Vary header when a condition evaluates to true
      and the related RewriteRule is used in a Directory context
      (triggering an internal redirect). [Luca Toscano]

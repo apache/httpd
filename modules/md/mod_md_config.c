@@ -39,13 +39,14 @@
 #define MD_CMD_DRIVEMODE      "MDDriveMode"
 #define MD_CMD_MEMBER         "MDMember"
 #define MD_CMD_MEMBERS        "MDMembers"
-#define MD_CMD_MUST_STAPLE    "MDMustStaple"
+#define MD_CMD_MUSTSTAPLE     "MDMustStaple"
 #define MD_CMD_PORTMAP        "MDPortMap"
 #define MD_CMD_PKEYS          "MDPrivateKeys"
 #define MD_CMD_PROXY          "MDHttpProxy"
 #define MD_CMD_RENEWWINDOW    "MDRenewWindow"
 #define MD_CMD_REQUIREHTTPS   "MDRequireHttps"
 #define MD_CMD_STOREDIR       "MDStoreDir"
+#define MD_CMD_NOTIFYCMD      "MDNotifyCmd"
 
 #define DEF_VAL     (-1)
 
@@ -60,6 +61,7 @@ static md_mod_conf_t defmc = {
     0,
     0,
     MD_HSTS_MAX_AGE_DEFAULT,
+    NULL,
     NULL,
     NULL,
 };
@@ -745,6 +747,19 @@ static const char *md_config_set_pkeys(cmd_parms *cmd, void *dc,
     return apr_pstrcat(cmd->pool, "unsupported private key type \"", ptype, "\"", NULL);
 }
 
+static const char *md_config_set_notify_cmd(cmd_parms *cmd, void *arg, const char *value)
+{
+    md_srv_conf_t *sc = md_config_get(cmd->server);
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+
+    if (err) {
+        return err;
+    }
+    sc->mc->notify_cmd = value;
+    (void)arg;
+    return NULL;
+}
+
 const command_rec md_cmds[] = {
     AP_INIT_TAKE1(     MD_CMD_CA, md_config_set_ca, NULL, RSRC_CONF, 
                   "URL of CA issueing the certificates"),
@@ -766,7 +781,7 @@ const command_rec md_cmds[] = {
     AP_INIT_TAKE_ARGV( MD_CMD_MEMBERS, md_config_sec_add_members, NULL, RSRC_CONF, 
                       "Define domain name(s) part of the Managed Domain. Use 'auto' or "
                       "'manual' to enable/disable auto adding names from virtual hosts."),
-    AP_INIT_TAKE1(     MD_CMD_MUST_STAPLE, md_config_set_must_staple, NULL, RSRC_CONF, 
+    AP_INIT_TAKE1(     MD_CMD_MUSTSTAPLE, md_config_set_must_staple, NULL, RSRC_CONF, 
                   "Enable/Disable the Must-Staple flag for new certificates."),
     AP_INIT_TAKE12(    MD_CMD_PORTMAP, md_config_set_port_map, NULL, RSRC_CONF, 
                   "Declare the mapped ports 80 and 443 on the local server. E.g. 80:8000 "
@@ -783,6 +798,8 @@ const command_rec md_cmds[] = {
                   "Time length for renewal before certificate expires (defaults to days)"),
     AP_INIT_TAKE1(     MD_CMD_REQUIREHTTPS, md_config_set_require_https, NULL, RSRC_CONF, 
                   "Redirect non-secure requests to the https: equivalent."),
+    AP_INIT_TAKE1(     MD_CMD_NOTIFYCMD, md_config_set_notify_cmd, NULL, RSRC_CONF, 
+                  "set the command to run when signup/renew of domain is complete."),
     AP_INIT_TAKE1(NULL, NULL, NULL, RSRC_CONF, NULL)
 };
 
@@ -844,6 +861,8 @@ const char *md_config_gets(const md_srv_conf_t *sc, md_config_var_t var)
             return sc->mc->proxy_url;
         case MD_CONFIG_CA_AGREEMENT:
             return sc->ca_agreement? sc->ca_agreement : defconf.ca_agreement;
+        case MD_CONFIG_NOTIFY_CMD:
+            return sc->mc->notify_cmd;
         default:
             return NULL;
     }

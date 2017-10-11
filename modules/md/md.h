@@ -136,6 +136,7 @@ struct md_t {
 #define MD_KEY_NAME             "name"
 #define MD_KEY_PERMANENT        "permanent"
 #define MD_KEY_PKEY             "privkey"
+#define MD_KEY_PROCESSED        "processed"
 #define MD_KEY_PROTO            "proto"
 #define MD_KEY_REGISTRATION     "registration"
 #define MD_KEY_RENEW            "renew"
@@ -156,6 +157,7 @@ struct md_t {
 #define MD_KEY_VERSION          "version"
 
 #define MD_FN_MD                "md.json"
+#define MD_FN_JOB               "job.json"
 #define MD_FN_PRIVKEY           "privkey.pem"
 #define MD_FN_PUBCERT           "pubcert.pem"
 #define MD_FN_CERT              "cert.pem"

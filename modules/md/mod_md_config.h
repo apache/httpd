@@ -34,6 +34,7 @@ typedef enum {
     MD_CONFIG_PROXY,
     MD_CONFIG_REQUIRE_HTTPS,
     MD_CONFIG_MUST_STAPLE,
+    MD_CONFIG_NOTIFY_CMD,
 } md_config_var_t;
 
 typedef struct {
@@ -49,6 +50,8 @@ typedef struct {
     int hsts_max_age;                  /* max-age of HSTS (rfc6797) header */
     const char *hsts_header;           /* computed HTST header to use or NULL */
     apr_array_header_t *unused_names;  /* post config, names of all MDs not assigned to a vhost */
+
+    const char *notify_cmd;            /* notification command to execute on signup/renew */
 } md_mod_conf_t;
 
 typedef struct md_srv_conf_t {

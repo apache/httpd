@@ -17,11 +17,10 @@
 
 #include <apr_lib.h>
 #include <apr_strings.h>
-#include <apr_file_io.h>
+#include <apr_portable.h>
 #include <apr_file_info.h>
 #include <apr_fnmatch.h>
 #include <apr_tables.h>
-#include <apr_time.h>
 #include <apr_uri.h>
 
 #include "md_log.h"
@@ -743,7 +742,7 @@ apr_status_t md_util_abs_http_uri_check(apr_pool_t *p, const char *uri, const ch
     return rv;
 }
 
-/* retry login ************************************************************************************/
+/* try and retry for a while **********************************************************************/
 
 apr_status_t md_util_try(md_util_try_fn *fn, void *baton, int ignore_errs, 
                          apr_interval_time_t timeout, apr_interval_time_t start_delay, 
@@ -786,6 +785,36 @@ apr_status_t md_util_try(md_util_try_fn *fn, void *baton, int ignore_errs,
     }
     return rv;
 }
+
+/* execute process ********************************************************************************/
+
+apr_status_t md_util_exec(apr_pool_t *p, const char *cmd, const char * const *argv,
+                          int *exit_code)
+{
+    apr_status_t rv;
+    apr_procattr_t *procattr;
+    apr_proc_t *proc;
+    apr_exit_why_e ewhy;
+
+    *exit_code = 0;
+    if (!(proc = apr_pcalloc(p, sizeof(*proc)))) {
+        return APR_ENOMEM;
+    }
+    if (   APR_SUCCESS == (rv = apr_procattr_create(&procattr, p))
+        && APR_SUCCESS == (rv = apr_procattr_io_set(procattr, APR_NO_FILE, 
+                                                    APR_NO_PIPE, APR_NO_PIPE))
+        && APR_SUCCESS == (rv = apr_procattr_cmdtype_set(procattr, APR_PROGRAM))
+        && APR_SUCCESS == (rv = apr_proc_create(proc, cmd, argv, NULL, procattr, p))
+        && APR_CHILD_DONE == (rv = apr_proc_wait(proc, exit_code, &ewhy, APR_WAIT))) {
+        /* let's not dwell on exit stati, but core should signal something's bad */
+        if (*exit_code > 127 || APR_PROC_SIGNAL_CORE == ewhy) {
+            return APR_EINCOMPLETE;
+        }
+        return APR_SUCCESS;
+    }
+    return rv;
+}
+
 
 /* date/time encoding *****************************************************************************/
 
