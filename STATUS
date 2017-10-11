@@ -128,7 +128,7 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   *) mod_http2: Fix race condition on request body handlign.
+   *) mod_http2: Fix race condition on request body handling.
       2.4.x patch: svn merge -c 1804096,1807238,1809981,1810088,1810089 ^/httpd/httpd/trunk .
       +1: icing, steffenal, ylavic
 
@@ -160,6 +160,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      ylavic: With current 2.4.x (r1807662), there seems to be only a conflict with
              MMN, which can probably be taken by the backporter. I don't see the
              other places where it needs adjustments, Mike?
+      wrowe: Suspect that this is an MMN Major bump, not minor, without some
+             additional detection/workaround of legacy 2.4 compiled modules.
 
   *) mod_remoteip: Add PROXY protocol support
      trunk patch: http://svn.apache.org/r1776575
@@ -208,7 +210,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       by up to a second.
       trunk patch: http://svn.apache.org/r1501827
       2.4.x patch: trunk works
-      +1: jorton,
+      +1: jorton, wrowe
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
