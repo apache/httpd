@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy: Fix regression for non decimal loadfactor parameter introduced
+     in 2.4.28.  [Jim Jagielski]
+
   *) mod_md: v1.0.0, new config directive 'MDNotifyCmd' to hook in a program when Managed
      Domains have obtained/renewed their certificates successfully. [Stefan Eissing]
 
