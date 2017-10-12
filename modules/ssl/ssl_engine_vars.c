@@ -41,7 +41,7 @@
 
 static char *ssl_var_lookup_ssl(apr_pool_t *p, const SSLConnRec *sslconn, request_rec *r, char *var);
 static char *ssl_var_lookup_ssl_cert(apr_pool_t *p, request_rec *r, X509 *xs, char *var);
-static char *ssl_var_lookup_ssl_cert_dn(apr_pool_t *p, X509_NAME *xsname, char *var);
+static char *ssl_var_lookup_ssl_cert_dn(apr_pool_t *p, X509_NAME *xsname, const char *var);
 static char *ssl_var_lookup_ssl_cert_san(apr_pool_t *p, X509 *xs, char *var);
 static char *ssl_var_lookup_ssl_cert_valid(apr_pool_t *p, ASN1_TIME *tm);
 static char *ssl_var_lookup_ssl_cert_remain(apr_pool_t *p, ASN1_TIME *tm);
@@ -662,15 +662,23 @@ static const struct {
     { NULL,    0,                          0 }
 };
 
-static char *ssl_var_lookup_ssl_cert_dn(apr_pool_t *p, X509_NAME *xsname, char *var)
+static char *ssl_var_lookup_ssl_cert_dn(apr_pool_t *p, X509_NAME *xsname,
+                                        const char *var)
 {
-    char *result, *ptr;
+    const char *ptr;
+    char *result;
     X509_NAME_ENTRY *xsne;
-    int i, j, n, idx = 0;
+    int i, j, n, idx = 0, raw = 0;
     apr_size_t varlen;
 
+    ptr = ap_strrchr_c(var, '_');
+    if (ptr && ptr > var && strcmp(ptr + 1, "RAW") == 0) {
+        var = apr_pstrmemdup(p, var, ptr - var);
+        raw = 1;
+    }
+    
     /* if an _N suffix is used, find the Nth attribute of given name */
-    ptr = strchr(var, '_');
+    ptr = ap_strchr_c(var, '_');
     if (ptr != NULL && strspn(ptr + 1, "0123456789") == strlen(ptr + 1)) {
         idx = atoi(ptr + 1);
         varlen = ptr - var;
@@ -689,7 +697,7 @@ static char *ssl_var_lookup_ssl_cert_dn(apr_pool_t *p, X509_NAME *xsname, char *
                 n =OBJ_obj2nid((ASN1_OBJECT *)X509_NAME_ENTRY_get_object(xsne));
 
                 if (n == ssl_var_lookup_ssl_cert_dn_rec[i].nid && idx-- == 0) {
-                    result = modssl_X509_NAME_ENTRY_to_string(p, xsne);
+                    result = modssl_X509_NAME_ENTRY_to_string(p, xsne, raw);
                     break;
                 }
             }
@@ -1023,7 +1031,7 @@ static void extract_dn(apr_table_t *t, apr_hash_t *nids, const char *pfx,
                  apr_hash_set(count, &nid, sizeof nid, dup);
                  key = apr_pstrcat(p, pfx, tag, NULL);
              }
-             value = modssl_X509_NAME_ENTRY_to_string(p, xsne);
+             value = modssl_X509_NAME_ENTRY_to_string(p, xsne, 0);
              apr_table_setn(t, key, value);
          }
     }
