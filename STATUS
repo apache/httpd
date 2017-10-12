@@ -216,7 +216,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       server config records non-shared instances, set for mod_ssl to make manipulations
       in post_config safe.
       trunk patch: svn merge -c 1809302,1809303,1809305,1809311,1809314,1809713 ^/httpd/httpd/trunk .
-      2.4.x patch: ^/httpd/httpd/patches/2.4.x/backport-module-flags.diff (merge with alterations for mmn etc.)
+      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/backport-module-flags.diff
+                   (merge with alterations for mmn etc.)
       +1: icing
 
   *) mod_proxy: Add missing commit from r1808855 (loadfactor now decimal)
