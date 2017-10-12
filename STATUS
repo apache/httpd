@@ -212,6 +212,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: trunk works
       +1: jorton, wrowe
 
+   *) core/mod_ssl: Add new flag int to module struct. Define first bit for keeping
+      server config records non-shared instances, set for mod_ssl to make manipulations
+      in post_config safe.
+      trunk patch: svn merge -c 1809302,1809303,1809305,1809311,1809314,1809713 ^/httpd/httpd/trunk .
+      2.4.x patch: patches/backport-module-flags.diff (merge with alterations for mmn etc.)
+      +1: icing
+      
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
