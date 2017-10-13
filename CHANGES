@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core: A signal received while stopping could have crashed the main
+     process.  PR 61558.  [Yann Ylavic]
+
   *) mod_proxy: Fix regression for non decimal loadfactor parameter introduced
      in 2.4.28.  [Jim Jagielski]
 
