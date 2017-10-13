@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.29
 
+  *) mod_http2: v0.10.12, removed optimization for mutex handling in bucket
+     beams that could lead to assertion failure in edge cases.
+     [Stefan Eissing] 
+
   *) mod_proxy: Fix regression for non decimal loadfactor parameter introduced
      in 2.4.28.  [Jim Jagielski]
 

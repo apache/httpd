@@ -128,10 +128,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   *) mod_http2: Fix race condition on request body handling.
-      2.4.x patch: svn merge -c 1804096,1807238,1809981,1810088,1810089 ^/httpd/httpd/trunk .
-      +1: icing, steffenal, ylavic
-
    *) mod_rewrite,core: Avoid the 'Vary: Host' response header when HTTP_HOST
                         is used in a condition that evaluates to true.
       trunk patch: http://svn.apache.org/r1808746

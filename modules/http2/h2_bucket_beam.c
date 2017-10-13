@@ -210,16 +210,7 @@ static apr_status_t mutex_enter(void *ctx, h2_beam_lock *pbl)
 
 static apr_status_t enter_yellow(h2_bucket_beam *beam, h2_beam_lock *pbl)
 {
-    h2_beam_mutex_enter *enter = beam->m_enter;
-    if (enter) {
-        void *ctx = beam->m_ctx;
-        if (ctx) {
-            return enter(ctx, pbl);
-        }
-    }
-    pbl->mutex = NULL;
-    pbl->leave = NULL;
-    return APR_SUCCESS;
+    return mutex_enter(beam, pbl);
 }
 
 static void leave_yellow(h2_bucket_beam *beam, h2_beam_lock *pbl)
@@ -568,13 +559,12 @@ static apr_status_t beam_cleanup(void *data)
 {
     h2_bucket_beam *beam = data;
     apr_status_t status = APR_SUCCESS;
-    int safe_send = !beam->m_enter || (beam->owner == H2_BEAM_OWNER_SEND);
-    int safe_recv = !beam->m_enter || (beam->owner == H2_BEAM_OWNER_RECV);
+    int safe_send = (beam->owner == H2_BEAM_OWNER_SEND);
+    int safe_recv = (beam->owner == H2_BEAM_OWNER_RECV);
     
     /* 
      * Owner of the beam is going away, depending on which side it owns,
-     * cleanup strategies will differ with multi-thread protection
-     * still in place (beam->m_enter).
+     * cleanup strategies will differ.
      *
      * In general, receiver holds references to memory from sender. 
      * Clean up receiver first, if safe, then cleanup sender, if safe.
@@ -678,29 +668,6 @@ apr_size_t h2_beam_buffer_size_get(h2_bucket_beam *beam)
         leave_yellow(beam, &bl);
     }
     return buffer_size;
-}
-
-void h2_beam_mutex_set(h2_bucket_beam *beam, 
-                       h2_beam_mutex_enter m_enter,
-                       void *m_ctx)
-{
-    h2_beam_lock bl;
-    
-    if (enter_yellow(beam, &bl) == APR_SUCCESS) {
-        beam->m_enter = m_enter;
-        beam->m_ctx   = m_ctx;
-        leave_yellow(beam, &bl);
-    }
-}
-
-void h2_beam_mutex_enable(h2_bucket_beam *beam)
-{
-    h2_beam_mutex_set(beam, mutex_enter, beam);
-}
-
-void h2_beam_mutex_disable(h2_bucket_beam *beam)
-{
-    h2_beam_mutex_set(beam, NULL, NULL);
 }
 
 void h2_beam_timeout_set(h2_bucket_beam *beam, apr_interval_time_t timeout)
