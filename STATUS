@@ -220,6 +220,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    (merge with alterations for mmn etc.)
       +1: icing, ylavic
 
+   *) core: A signal received while stopping could have crashed the main
+      process.  PR 61558.
+      trunk patch: svn merge -c 1809881,1809973,1809976,1812075 ^/httpd/httpd/trunk .
+      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/stop_signals-PR61558.patch
+                   (merge without changes to motorz)
+      +1: ylavic,
+ 
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
