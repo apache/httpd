@@ -113,17 +113,6 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
-  *) configure.in: Latest macOS Xcode 9 installs clang-900, which more
-     fully honors strict-prototypes, which causes AC_CHECK_LIB to
-     fail when --enable-maintainer-mode is set. Also affects clang 5.
-     trunk patch: http://svn.apache.org/r1810448
-                  http://svn.apache.org/r1810998
-     2.4.x patch: svn merge -c 1810448,1810998 ^/httpd/httpd/trunk .
-     +1: jim, wrowe
-     [Not a regression, so how a showstopper? This seems to fit into the mold
-      of per-platform quirks which we process in CTR flow, adding a +1 to note
-      that the patch looks sane.]
-
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
@@ -218,6 +207,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/stop_signals-PR61558.patch
                   (merge without changes to motorz)
      +1: ylavic,
+
+  *) configure.in: Latest macOS Xcode 9 installs clang-900, which more
+     fully honors strict-prototypes, which causes AC_CHECK_LIB to
+     fail when --enable-maintainer-mode is set. Also affects clang 5.
+     trunk patch: http://svn.apache.org/r1810448
+                  http://svn.apache.org/r1810998
+     2.4.x patch: svn merge -c 1810448,1810998 ^/httpd/httpd/trunk .
+     +1: jim, wrowe
+     [This seems to fit into the mold of per-platform quirks which we process
+      in CTR flow, adding my +1 to note that the patch looks sane.]
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
