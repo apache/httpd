@@ -222,11 +222,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
    *) core: A signal received while stopping could have crashed the main
       process.  PR 61558.
-      trunk patch: svn merge -c 1809881,1809973,1809976,1812075 ^/httpd/httpd/trunk .
+      trunk patch: http://svn.apache.org/r1809881
+                   http://svn.apache.org/r1809973
+                   http://svn.apache.org/r1809976
+                   http://svn.apache.org/r1812075
       2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/stop_signals-PR61558.patch
                    (merge without changes to motorz)
       +1: ylavic,
- 
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
