@@ -128,13 +128,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   *) mod_rewrite,core: Avoid the 'Vary: Host' response header when HTTP_HOST
-                        is used in a condition that evaluates to true.
-      trunk patch: http://svn.apache.org/r1808746
-                   http://svn.apache.org/r1809028
-      2.4.x patch: svn merge -c 1808746,1809028 ^/httpd/httpd/trunk .
-      +1: elukey, ylavic, wrowe
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
