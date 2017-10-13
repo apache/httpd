@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.29
 
+  *) mod_proxy: Fix regression for non decimal loadfactor parameter introduced
+     in 2.4.28.  [Jim Jagielski]
+
   *) mod_authz_dbd: fix a segmentation fault if AuthzDBDQuery is not set.
      PR 61546.  [Lubos Uhliarik <luhliari redhat.com>]
 
