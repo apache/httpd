@@ -188,7 +188,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      by up to a second.
      trunk patch: http://svn.apache.org/r1501827
      2.4.x patch: trunk works
-     +1: jorton, wrowe
+     +1: jorton, wrowe, jim
 
   *) core/mod_ssl: Add new flag int to module struct. Define first bit for keeping
      server config records non-shared instances, set for mod_ssl to make manipulations
@@ -206,7 +206,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1812075
      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/stop_signals-PR61558.patch
                   (merge without changes to motorz)
-     +1: ylavic,
+     +1: ylavic, jim
 
   *) configure.in: Latest macOS Xcode 9 installs clang-900, which more
      fully honors strict-prototypes, which causes AC_CHECK_LIB to
