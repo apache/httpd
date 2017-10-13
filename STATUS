@@ -196,39 +196,39 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              and virtual host, though using ap_server_conf makes them global
              only (thus less useful too...).
 
-   *) mod_journald: Add new module mod_journald to log error logs into journald.
-     trunk patch: http://svn.apache.org/r1610339
-                  http://svn.apache.org/r1621806
-     2.4.x patch: http://people.apache.org/~jkaluza/patches/httpd-2.4.x-mod_journald.patch
-     +1: jkaluza, jim
-     jchampion: Looks like the headers require GCC extensions to compile, so
-                mod_journald can't be configured in maintainer mode (-std=c89).
-                Can anyone else reproduce, or is it just my distro?
+  *) mod_journald: Add new module mod_journald to log error logs into journald.
+    trunk patch: http://svn.apache.org/r1610339
+                 http://svn.apache.org/r1621806
+    2.4.x patch: http://people.apache.org/~jkaluza/patches/httpd-2.4.x-mod_journald.patch
+    +1: jkaluza, jim
+    jchampion: Looks like the headers require GCC extensions to compile, so
+               mod_journald can't be configured in maintainer mode (-std=c89).
+               Can anyone else reproduce, or is it just my distro?
 
-   *) mod_unique_id: Use PRNG output rather than needing to use DNS,
-      an IPv4 address (or failing) and PID, and slowing down startup
-      by up to a second.
-      trunk patch: http://svn.apache.org/r1501827
-      2.4.x patch: trunk works
-      +1: jorton, wrowe
+  *) mod_unique_id: Use PRNG output rather than needing to use DNS,
+     an IPv4 address (or failing) and PID, and slowing down startup
+     by up to a second.
+     trunk patch: http://svn.apache.org/r1501827
+     2.4.x patch: trunk works
+     +1: jorton, wrowe
 
-   *) core/mod_ssl: Add new flag int to module struct. Define first bit for keeping
-      server config records non-shared instances, set for mod_ssl to make manipulations
-      in post_config safe.
-      trunk patch: svn merge -c 1809302,1809303,1809305,1809311,1809314,1809713 ^/httpd/httpd/trunk .
-      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/backport-module-flags.diff
-                   (merge with alterations for mmn etc.)
-      +1: icing, ylavic
+  *) core/mod_ssl: Add new flag int to module struct. Define first bit for keeping
+     server config records non-shared instances, set for mod_ssl to make manipulations
+     in post_config safe.
+     trunk patch: svn merge -c 1809302,1809303,1809305,1809311,1809314,1809713 ^/httpd/httpd/trunk .
+     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/backport-module-flags.diff
+                  (merge with alterations for mmn etc.)
+     +1: icing, ylavic
 
-   *) core: A signal received while stopping could have crashed the main
-      process.  PR 61558.
-      trunk patch: http://svn.apache.org/r1809881
-                   http://svn.apache.org/r1809973
-                   http://svn.apache.org/r1809976
-                   http://svn.apache.org/r1812075
-      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/stop_signals-PR61558.patch
-                   (merge without changes to motorz)
-      +1: ylavic,
+  *) core: A signal received while stopping could have crashed the main
+     process.  PR 61558.
+     trunk patch: http://svn.apache.org/r1809881
+                  http://svn.apache.org/r1809973
+                  http://svn.apache.org/r1809976
+                  http://svn.apache.org/r1812075
+     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/stop_signals-PR61558.patch
+                  (merge without changes to motorz)
+     +1: ylavic,
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
