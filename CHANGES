@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.29
 
+  *) mod_rewrite, core: Avoid the 'Vary: Host' response header when HTTP_HOST
+     is used in a condition that evaluates to true. PR 58231 [Luca Toscano]
+
   *) mod_http2: v0.10.12, removed optimization for mutex handling in bucket
      beams that could lead to assertion failure in edge cases.
      [Stefan Eissing] 

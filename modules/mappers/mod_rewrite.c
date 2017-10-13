@@ -1802,7 +1802,10 @@ static const char *lookup_header(const char *name, rewrite_ctx *ctx)
 {
     const char *val = apr_table_get(ctx->r->headers_in, name);
 
-    if (val) {
+    /* Skip the 'Vary: Host' header combination
+     * as indicated in rfc7231 section-7.1.4
+     */
+    if (val && strcasecmp(name, "Host") != 0) {
         ctx->vary_this = ctx->vary_this
                          ? apr_pstrcat(ctx->r->pool, ctx->vary_this, ", ",
                                        name, NULL)
