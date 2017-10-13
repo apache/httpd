@@ -117,6 +117,13 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_unique_id: Use PRNG output rather than needing to use DNS,
+     an IPv4 address (or failing) and PID, and slowing down startup
+     by up to a second.
+     trunk patch: http://svn.apache.org/r1501827
+     2.4.x patch: trunk works
+     +1: jorton, wrowe, jim
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -182,13 +189,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     jchampion: Looks like the headers require GCC extensions to compile, so
                mod_journald can't be configured in maintainer mode (-std=c89).
                Can anyone else reproduce, or is it just my distro?
-
-  *) mod_unique_id: Use PRNG output rather than needing to use DNS,
-     an IPv4 address (or failing) and PID, and slowing down startup
-     by up to a second.
-     trunk patch: http://svn.apache.org/r1501827
-     2.4.x patch: trunk works
-     +1: jorton, wrowe, jim
 
   *) core/mod_ssl: Add new flag int to module struct. Define first bit for keeping
      server config records non-shared instances, set for mod_ssl to make manipulations
