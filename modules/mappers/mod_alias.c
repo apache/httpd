@@ -131,7 +131,7 @@ static const char *add_alias_internal(cmd_parms *cmd, void *dummy,
 
     /* XXX: real can NOT be relative to DocumentRoot here... compat bug. */
 
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE);
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_CONTEXT);
 
     if (err != NULL) {
         return err;
