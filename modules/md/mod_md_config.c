@@ -346,7 +346,7 @@ static const char *md_config_set_names(cmd_parms *cmd, void *dc,
     int i, transitive = -1;
 
     (void)dc;
-    err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE);
+    err = ap_check_cmd_context(cmd, NOT_IN_DIR_CONTEXT);
     if (err) {
         return err;
     }

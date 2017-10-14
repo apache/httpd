@@ -557,6 +557,8 @@
  * 20161018.6 (2.5.0-dev)  Add ap_update_sb_handle()
  * 20161018.7 (2.5.0-dev)  Add flags field to module_struct and function
  *                         ap_get_module_flags()
+ * 20171014.1 (2.5.0-dev)  Add NOT_IN_DIR_CONTEXT replacing NOT_IN_DIR_LOC_FILE
+ *                         semantics
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
