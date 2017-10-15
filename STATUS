@@ -124,31 +124,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1: jorton, wrowe, jim
 
-  *) configure.in: Latest macOS Xcode 9 installs clang-900, which more
-     fully honors strict-prototypes, which causes AC_CHECK_LIB to
-     fail when --enable-maintainer-mode is set. Also affects clang 5.
-     trunk patch: http://svn.apache.org/r1810448
-                  http://svn.apache.org/r1810998
-     2.4.x patch: svn merge -c 1810448,1810998 ^/httpd/httpd/trunk .
-     +1: jim, wrowe, rjung
-     [This seems to fit into the mold of per-platform quirks which we process
-      in CTR flow, adding my +1 to note that the patch looks sane.]
-     rjung: The following two comments are not meant to block applying that change.
-            - A possible enhancement would be to detect the problem, e.g.
-            using AC_CHECK_LIB for a test that should always succeed and
-            if it fails, try again with "-Wno-error=strict-prototypes".
-            - Another more far reaching enhancement would be to add
-            "-Wno-error=strict-prototypes" only during configure but not
-            later when we do the actual build in order to still detect missing
-            prototypes then. Since configure does not seem to have the
-            concept of settings only applied during configure run, we would
-            need to remember "-Wno-error=strict-prototypes" as a flag we just
-            added to make configure work. Then, right before configure
-            generates output files, we would strip any such flag from CFLAGS
-            to generate the correct build time CFLAGS.
-            Unfortunately things might get trickier when building apr/apu
-            in combination with httpd.
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -232,6 +207,19 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/stop_signals-PR61558.patch
                   (merge without changes to motorz)
      +1: ylavic, jim
+
+  *) configure.in: Latest macOS Xcode 9 installs clang-900, which more
+     fully honors strict-prototypes, which causes AC_CHECK_LIB to
+     fail when --enable-maintainer-mode is set. Also affects clang 5.
+     trunk patch: http://svn.apache.org/r1810448
+                  http://svn.apache.org/r1810998
+     2.4.x patch: svn merge -c 1810448,1810998 ^/httpd/httpd/trunk .
+     +1: jim, wrowe
+     -1: rjung
+     [This seems to fit into the mold of per-platform quirks which we process
+      in CTR flow, adding my +1 to note that the patch looks sane.]
+     rjung: I think we need this also for GCC, not only recent clang.
+            See my separate mail to the dev list.
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
