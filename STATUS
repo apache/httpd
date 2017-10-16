@@ -219,7 +219,19 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      [This seems to fit into the mold of per-platform quirks which we process
       in CTR flow, adding my +1 to note that the patch looks sane.]
      rjung: I think we need this also for GCC, not only recent clang.
-            See my separate mail to the dev list.
+            See my below suggestion (r1812263)
+
+  *) configure.in: Fix maintainer mode with GCC/Clang.
+     Setting -Wstrict-prototypes in combination with -Werror leads to compiler
+     errors during configure checks (autoconf generates incomplete prototypes).
+     Adding -Wno-error=strict-prototypes lets the compiler tolerate those.
+     Possible future enhancement: remember such "configure time only" flags and
+     remove them from CFLAGS before generating our build time files
+     (Makefile, config_vars.mk etc.), so that the full -Werror is in place
+     during building.
+     trunk patch: http://svn.apache.org/r1812263
+     2.4.x patch: svn merge -c r1812263 ^/httpd/httpd/trunk .
+     +1: rjung
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
