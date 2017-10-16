@@ -214,6 +214,19 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       in CTR flow, adding my +1 to note that the patch looks sane.]
      rjung: I think we need this also for GCC, not only recent clang.
             See the dev list discusion about using NOTEST_CFLAGS.
+     ylavic: Consider (and test ;) proposal below instead?
+
+  *) configure.in: Fix maintainer mode with GCC/Clang.
+     Setting -Wstrict-prototypes in combination with -Werror leads to compiler
+     errors during configure checks (autoconf generates incomplete prototypes).
+     As suggested by Joe, add --maintainer/debugger-mode's CFLAGS in
+     NOTEST_CFLAGS to avoid interractions with autoconf's AC_LANG_PROGRAM.
+     APACHE_ADD_GCC_CFLAG now also forces -Wno-strict-prototypes for -Werror
+     to work despite AC_LANG_PROGRAM generating this warning by itself.
+     trunk patch: http://svn.apache.org/r1812263
+                  http://svn.apache.org/r1812301
+     2.4.x patch: svn merge -c 1812263,1812301 ^/httpd/httpd/trunk .
+     +1: ylavic
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
