@@ -212,8 +212,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      -1: rjung
      [This seems to fit into the mold of per-platform quirks which we process
       in CTR flow, adding my +1 to note that the patch looks sane.]
-     rjung: I think we need this also for GCC, not only recent clang.
-            See the dev list discusion about using NOTEST_CFLAGS.
      ylavic: Consider (and test ;) proposal below instead?
 
   *) configure.in: Fix maintainer mode with GCC/Clang.
@@ -226,7 +224,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1812263
                   http://svn.apache.org/r1812301
      2.4.x patch: svn merge -c 1812263,1812301 ^/httpd/httpd/trunk .
-     +1: ylavic
+     +1: ylavic, rjung
+
+  *) ap_expr: Fix compiler warning "comparison between pointer and zero
+     character constant" detected by maintainer mode with -Werror.
+     One level of derefencing was missing.
+     trunk patch: http://svn.apache.org/r1812307
+     2.4.x patch: svn merge -c 1812307 ^/httpd/httpd/trunk .
+     +1: rjung
+     -1: 
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
