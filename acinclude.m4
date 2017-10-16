@@ -958,22 +958,26 @@ YES_IS_DEFINED
 ])
 
 dnl
-dnl APACHE_ADD_GCC_CFLAGS
+dnl APACHE_ADD_GCC_CFLAG
 dnl
-dnl Check if compiler is gcc and supports flag. If yes, add to CFLAGS.
+dnl Check if compiler is gcc and supports flag. If yes, add to NOTEST_CFLAGS.
+dnl NOTEST_CFLAGS is merged lately, thus it won't accumulate in CFLAGS here.
+dnl Also, AC_LANG_PROGRAM() itself is known to trigger [-Wstrict-prototypes]
+dnl with some autoconf versions, so we force -Wno-strict-prototypes for the
+dnl check to avoid spurious failures when adding flags like -Werror.
 dnl
 AC_DEFUN([APACHE_ADD_GCC_CFLAG], [
   define([ap_gcc_ckvar], [ac_cv_gcc_]translit($1, [-:.=], [____]))
   if test "$GCC" = "yes"; then
     AC_CACHE_CHECK([whether gcc accepts $1], ap_gcc_ckvar, [
       save_CFLAGS="$CFLAGS"
-      CFLAGS="$CFLAGS $1"
+      CFLAGS="$CFLAGS $1 -Wno-strict-prototypes"
       AC_COMPILE_IFELSE([AC_LANG_PROGRAM()],
         [ap_gcc_ckvar=yes], [ap_gcc_ckvar=no])
       CFLAGS="$save_CFLAGS"
     ])
     if test "$]ap_gcc_ckvar[" = "yes" ; then
-       APR_ADDTO(CFLAGS,[$1])
+       APR_ADDTO(NOTEST_CFLAGS,[$1])
     fi
   fi
   undefine([ap_gcc_ckvar])
