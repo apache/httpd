@@ -1149,8 +1149,9 @@ static apr_status_t remoteip_input_filter(ap_filter_t *f,
     if (ctx->rcvd > ctx->need || !APR_BRIGADE_EMPTY(ctx->bb)) {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, f->c, APLOGNO(03513)
                       "RemoteIPProxyProtocol: internal error: have data left over; "
-                      " need=%lu, rcvd=%lu, brigade-empty=%d", ctx->need,
-                      ctx->rcvd, APR_BRIGADE_EMPTY(ctx->bb));
+                      " need=%" APR_SIZE_T_FMT ", rcvd=%" APR_SIZE_T_FMT
+                      ", brigade-empty=%d", ctx->need, ctx->rcvd,
+                      APR_BRIGADE_EMPTY(ctx->bb));
         f->c->aborted = 1;
         apr_brigade_destroy(ctx->bb);
         return APR_ECONNABORTED;
