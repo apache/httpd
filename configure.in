@@ -630,11 +630,6 @@ AC_ARG_ENABLE(maintainer-mode,APACHE_HELP_STRING(--enable-maintainer-mode,Turn o
     APR_ADDTO(CPPFLAGS, -DAP_DEBUG)
     if test "$GCC" = "yes"; then
       APR_ADDTO(CFLAGS,[-Wall -Wmissing-prototypes -Wstrict-prototypes -Wmissing-declarations -Wpointer-arith])
-      case `($CC --version) 2>/dev/null` in
-        *clang-900* | *"clang version 5.0.0"*)
-          APACHE_ADD_GCC_CFLAG([-Wno-error=strict-prototypes])
-          ;;
-      esac
       APACHE_ADD_GCC_CFLAG([-std=c89])
       APACHE_ADD_GCC_CFLAG([-Werror])
       APACHE_ADD_GCC_CFLAG([-Wdeclaration-after-statement])
@@ -661,11 +656,6 @@ AC_ARG_ENABLE(debugger-mode,APACHE_HELP_STRING(--enable-debugger-mode,Turn on de
     APR_ADDTO(CPPFLAGS, -DAP_DEBUG)
     if test "$GCC" = "yes"; then
       APR_ADDTO(CFLAGS,[-Wall -Wmissing-prototypes -Wstrict-prototypes -Wmissing-declarations -Wpointer-arith -O0])
-      case `($CC --version) 2>/dev/null` in
-        *clang-900* | *"clang version 5.0.0"*)
-          APACHE_ADD_GCC_CFLAG([-Wno-error=strict-prototypes])
-          ;;
-      esac
       APACHE_ADD_GCC_CFLAG([-Wdeclaration-after-statement])
       APACHE_ADD_GCC_CFLAG([-Werror=declaration-after-statement])
       APACHE_ADD_GCC_CFLAG([-Wformat])
