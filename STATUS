@@ -203,7 +203,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1812263
                   http://svn.apache.org/r1812301
      2.4.x patch: svn merge -c 1812263,1812301 ^/httpd/httpd/trunk .
-     +1: ylavic, rjung
+     +1: ylavic, rjung, jim
      ylavic: if the below mod_journald proposal gets accepted, it will
              also need a backport of r1812339, otherwise maintainer
              mode builds will fail due to -Werror.
@@ -211,7 +211,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_journald: Add new module mod_journald to log error logs into journald.
      trunk patch: http://svn.apache.org/r1610339
                   http://svn.apache.org/r1621806
+                  http://svn.apache.org/r1812339
      2.4.x patch: http://people.apache.org/~jkaluza/patches/httpd-2.4.x-mod_journald.patch
+                  http://svn.apache.org/r1812339
      +1: jkaluza, jim
      jchampion: Looks like the headers require GCC extensions to compile, so
                 mod_journald can't be configured in maintainer mode (-std=c89).
