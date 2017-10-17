@@ -222,14 +222,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              add r1812339 to that proposal, or after and we'll add it to this
              proposal (resetting the one or the other votes in any case...).
 
-  *) ap_expr: Fix compiler warning "comparison between pointer and zero
-     character constant" detected by maintainer mode with -Werror.
-     One level of derefencing was missing.
-     trunk patch: http://svn.apache.org/r1812307
-     2.4.x patch: svn merge -c 1812307 ^/httpd/httpd/trunk .
-     +1: rjung, ylavic
-     -1: 
-
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
