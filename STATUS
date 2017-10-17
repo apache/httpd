@@ -117,6 +117,21 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) configure.in: Fix maintainer mode with GCC/Clang.
+     Setting -Wstrict-prototypes in combination with -Werror leads to compiler
+     errors during configure checks (autoconf generates incomplete prototypes).
+     As suggested by Joe, add --maintainer/debugger-mode's CFLAGS in
+     NOTEST_CFLAGS to avoid interractions with autoconf's AC_LANG_PROGRAM.
+     APACHE_ADD_GCC_CFLAG now also forces -Wno-strict-prototypes for -Werror
+     to work despite AC_LANG_PROGRAM generating this warning by itself.
+     trunk patch: http://svn.apache.org/r1812263
+                  http://svn.apache.org/r1812301
+     2.4.x patch: svn merge -c 1812263,1812301 ^/httpd/httpd/trunk .
+     +1: ylavic, rjung, jim
+     ylavic: if the below mod_journald proposal gets accepted, it will
+             also need a backport of r1812339, otherwise maintainer
+             mode builds will fail due to -Werror.
+
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -192,21 +207,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/stop_signals-PR61558.patch
                   (merge without changes to motorz)
      +1: ylavic, jim
-
-  *) configure.in: Fix maintainer mode with GCC/Clang.
-     Setting -Wstrict-prototypes in combination with -Werror leads to compiler
-     errors during configure checks (autoconf generates incomplete prototypes).
-     As suggested by Joe, add --maintainer/debugger-mode's CFLAGS in
-     NOTEST_CFLAGS to avoid interractions with autoconf's AC_LANG_PROGRAM.
-     APACHE_ADD_GCC_CFLAG now also forces -Wno-strict-prototypes for -Werror
-     to work despite AC_LANG_PROGRAM generating this warning by itself.
-     trunk patch: http://svn.apache.org/r1812263
-                  http://svn.apache.org/r1812301
-     2.4.x patch: svn merge -c 1812263,1812301 ^/httpd/httpd/trunk .
-     +1: ylavic, rjung, jim
-     ylavic: if the below mod_journald proposal gets accepted, it will
-             also need a backport of r1812339, otherwise maintainer
-             mode builds will fail due to -Werror.
 
   *) mod_journald: Add new module mod_journald to log error logs into journald.
      trunk patch: http://svn.apache.org/r1610339
