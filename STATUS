@@ -207,7 +207,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      ylavic: don't backport this before the one(s) below, or maintainer-mode in
              2.4.x would -Werror, so depends on (to be completed?):
                 - mod_journald
-                - apr_expr
+                - ap_expr
 
   *) mod_journald: Add new module mod_journald to log error logs into journald.
      trunk patch: http://svn.apache.org/r1610339
