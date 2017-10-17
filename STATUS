@@ -229,7 +229,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          svn merge -c 1799341 ^/httpd/httpd/trunk .
       Backport version for 2.2.x of patch:
          Trunk version of patch works
-      +1: rpluem,
+      +1: rpluem, icing
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
