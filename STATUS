@@ -117,13 +117,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   *) mod_http2 / mod_proxy_http2: Detect libnghttp2.pc correctly if installed
-      in lib64 directory instead of lib directory on 64 bit systems.
-      Trunk version of patch:
-         svn merge -c 1799341 ^/httpd/httpd/trunk .
-      Backport version for 2.2.x of patch:
-         Trunk version of patch works
-      +1: rpluem, icing, ylavic
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
