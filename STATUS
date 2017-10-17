@@ -175,16 +175,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              and virtual host, though using ap_server_conf makes them global
              only (thus less useful too...).
 
-  *) mod_journald: Add new module mod_journald to log error logs into journald.
-    trunk patch: http://svn.apache.org/r1610339
-                 http://svn.apache.org/r1621806
-    2.4.x patch: http://people.apache.org/~jkaluza/patches/httpd-2.4.x-mod_journald.patch
-    +1: jkaluza, jim
-    jchampion: Looks like the headers require GCC extensions to compile, so
-               mod_journald can't be configured in maintainer mode (-std=c89).
-               Can anyone else reproduce, or is it just my distro?
-    ylavic: missing r1812339 for -Werror/maintainer-mode/c89 compliance
-
   *) core/mod_ssl: Add new flag int to module struct. Define first bit for keeping
      server config records non-shared instances, set for mod_ssl to make manipulations
      in post_config safe.
@@ -203,18 +193,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   (merge without changes to motorz)
      +1: ylavic, jim
 
-  *) configure.in: Latest macOS Xcode 9 installs clang-900, which more
-     fully honors strict-prototypes, which causes AC_CHECK_LIB to
-     fail when --enable-maintainer-mode is set. Also affects clang 5.
-     trunk patch: http://svn.apache.org/r1810448
-                  http://svn.apache.org/r1810998
-     2.4.x patch: svn merge -c 1810448,1810998 ^/httpd/httpd/trunk .
-     +1: jim, wrowe
-     -1: rjung
-     [This seems to fit into the mold of per-platform quirks which we process
-      in CTR flow, adding my +1 to note that the patch looks sane.]
-     ylavic: Consider (and test ;) proposal below instead?
-
   *) configure.in: Fix maintainer mode with GCC/Clang.
      Setting -Wstrict-prototypes in combination with -Werror leads to compiler
      errors during configure checks (autoconf generates incomplete prototypes).
@@ -226,6 +204,23 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1812301
      2.4.x patch: svn merge -c 1812263,1812301 ^/httpd/httpd/trunk .
      +1: ylavic, rjung
+     ylavic: don't backport this before the one(s) below, or maintainer-mode in
+             2.4.x would -Werror, so depends on (to be completed?):
+                - mod_journald
+                - apr_expr
+
+  *) mod_journald: Add new module mod_journald to log error logs into journald.
+     trunk patch: http://svn.apache.org/r1610339
+                  http://svn.apache.org/r1621806
+     2.4.x patch: http://people.apache.org/~jkaluza/patches/httpd-2.4.x-mod_journald.patch
+     +1: jkaluza, jim
+     jchampion: Looks like the headers require GCC extensions to compile, so
+                mod_journald can't be configured in maintainer mode (-std=c89).
+                Can anyone else reproduce, or is it just my distro?
+     ylavic: missing r1812339 for maintainer-mode/c89/-Werror compliance,
+             so either this is backported before configure.in above and we'll
+             add r1812339 to that proposal, or after and we'll add it to this
+             proposal (resetting the one or the other votes in any case...).
 
   *) ap_expr: Fix compiler warning "comparison between pointer and zero
      character constant" detected by maintainer mode with -Werror.
