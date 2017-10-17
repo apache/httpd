@@ -593,17 +593,21 @@ AC_ARG_ENABLE(load-all-modules,APACHE_HELP_STRING(--enable-load-all-modules,Load
 AC_ARG_ENABLE(maintainer-mode,APACHE_HELP_STRING(--enable-maintainer-mode,Turn on debugging and compile time warnings and load all compiled modules),
 [
   if test "$enableval" = "yes"; then
-    APR_ADDTO(CPPFLAGS, -DAP_DEBUG)
+    APR_ADDTO(NOTEST_CPPFLAGS, -DAP_DEBUG)
     if test "$GCC" = "yes"; then
-      APR_ADDTO(CFLAGS,[-Wall -Wmissing-prototypes -Wstrict-prototypes -Wmissing-declarations -Wpointer-arith])
       APACHE_ADD_GCC_CFLAG([-std=c89])
       APACHE_ADD_GCC_CFLAG([-Werror])
+      APACHE_ADD_GCC_CFLAG([-Wall])
+      APACHE_ADD_GCC_CFLAG([-Wstrict-prototypes])
+      APACHE_ADD_GCC_CFLAG([-Wmissing-prototypes])
+      APACHE_ADD_GCC_CFLAG([-Wmissing-declarations])
       APACHE_ADD_GCC_CFLAG([-Wdeclaration-after-statement])
+      APACHE_ADD_GCC_CFLAG([-Wpointer-arith])
       APACHE_ADD_GCC_CFLAG([-Wformat])
       APACHE_ADD_GCC_CFLAG([-Wformat-security])
       APACHE_ADD_GCC_CFLAG([-Wunused])
     elif test "$AIX_XLC" = "yes"; then
-      APR_ADDTO(CFLAGS,-qfullpath -qinitauto=FE -qcheck=all -qinfo=pro)
+      APR_ADDTO(NOTEST_CFLAGS,-qfullpath -qinitauto=FE -qcheck=all -qinfo=pro)
     fi
     if test "x$enable_load_all_modules" = "x"; then
       LOAD_ALL_MODULES=yes
@@ -619,16 +623,21 @@ AC_ARG_ENABLE(maintainer-mode,APACHE_HELP_STRING(--enable-maintainer-mode,Turn o
 AC_ARG_ENABLE(debugger-mode,APACHE_HELP_STRING(--enable-debugger-mode,Turn on debugging and compile time warnings and turn off optimization),
 [
   if test "$enableval" = "yes"; then
-    APR_ADDTO(CPPFLAGS, -DAP_DEBUG)
+    APR_ADDTO(NOTEST_CPPFLAGS, -DAP_DEBUG)
     if test "$GCC" = "yes"; then
-      APR_ADDTO(CFLAGS,[-Wall -Wmissing-prototypes -Wstrict-prototypes -Wmissing-declarations -Wpointer-arith -O0])
+      APACHE_ADD_GCC_CFLAG([-O0])
+      APACHE_ADD_GCC_CFLAG([-Wall])
+      APACHE_ADD_GCC_CFLAG([-Wstrict-prototypes])
+      APACHE_ADD_GCC_CFLAG([-Wmissing-prototypes])
+      APACHE_ADD_GCC_CFLAG([-Wmissing-declarations])
       APACHE_ADD_GCC_CFLAG([-Wdeclaration-after-statement])
       APACHE_ADD_GCC_CFLAG([-Werror=declaration-after-statement])
+      APACHE_ADD_GCC_CFLAG([-Wpointer-arith])
       APACHE_ADD_GCC_CFLAG([-Wformat])
       APACHE_ADD_GCC_CFLAG([-Wformat-security])
       APACHE_ADD_GCC_CFLAG([-Werror=format-security])
     elif test "$AIX_XLC" = "yes"; then
-      APR_ADDTO(CFLAGS,-qfullpath -qinitauto=FE -qcheck=all -qinfo=pro)
+      APR_ADDTO(NOTEST_CFLAGS,-qfullpath -qinitauto=FE -qcheck=all -qinfo=pro)
     fi
   fi
 ])dnl
@@ -810,10 +819,10 @@ AC_MSG_NOTICE([Restore user-defined environment settings...])
 AC_MSG_NOTICE([])
 
 APACHE_CONF_SEL_CC=${CC}
-APACHE_CONF_SEL_CFLAGS=${CFLAGS}
-APACHE_CONF_SEL_LDFLAGS=${LDFLAGS}
-APACHE_CONF_SEL_LIBS=${LIBS}
-APACHE_CONF_SEL_CPPFLAGS=${CPPFLAGS}
+APACHE_CONF_SEL_CFLAGS="${CFLAGS} ${EXTRA_CFLAGS} ${NOTEST_CFLAGS}"
+APACHE_CONF_SEL_CPPFLAGS="${CPPFLAGS} ${EXTRA_CPPFLAGS} ${NOTEST_CPPFLAGS}"
+APACHE_CONF_SEL_LDFLAGS="${LDFLAGS} ${EXTRA_LDFLAGS} ${NOTEST_LDFLAGS}"
+APACHE_CONF_SEL_LIBS="${LIBS} ${EXTRA_LIBS} ${NOTEST_LIBS}"
 APACHE_CONF_SEL_CPP=${CPP}
 
 APR_RESTORE_THE_ENVIRONMENT(CPPFLAGS, EXTRA_)
@@ -879,8 +888,8 @@ AC_MSG_NOTICE([summary of build options:
     Install prefix: ${prefix}
     C compiler:     ${APACHE_CONF_SEL_CC}
     CFLAGS:         ${APACHE_CONF_SEL_CFLAGS}
+    CPPFLAGS:       ${APACHE_CONF_SEL_CPPFLAGS}
     LDFLAGS:        ${APACHE_CONF_SEL_LDFLAGS}
     LIBS:           ${APACHE_CONF_SEL_LIBS}
-    CPPFLAGS:       ${APACHE_CONF_SEL_CPPFLAGS}
     C preprocessor: ${APACHE_CONF_SEL_CPP}
 ])
