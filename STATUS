@@ -183,6 +183,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     jchampion: Looks like the headers require GCC extensions to compile, so
                mod_journald can't be configured in maintainer mode (-std=c89).
                Can anyone else reproduce, or is it just my distro?
+    ylavic: missing r1812339 for -Werror/maintainer-mode/c89 compliance
 
   *) core/mod_ssl: Add new flag int to module struct. Define first bit for keeping
      server config records non-shared instances, set for mod_ssl to make manipulations
@@ -231,7 +232,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      One level of derefencing was missing.
      trunk patch: http://svn.apache.org/r1812307
      2.4.x patch: svn merge -c 1812307 ^/httpd/httpd/trunk .
-     +1: rjung
+     +1: rjung, ylavic
      -1: 
 
 
