@@ -80,12 +80,18 @@ AC_DEFUN([APACHE_CHECK_NGHTTP2],[
     if test -n "$PKGCONFIG"; then
       saved_PKG_CONFIG_PATH="$PKG_CONFIG_PATH"
       AC_MSG_CHECKING([for pkg-config along $PKG_CONFIG_PATH])
-      if test "x$ap_nghttp2_base" != "x" -a \
-              -f "${ap_nghttp2_base}/lib/pkgconfig/libnghttp2.pc"; then
-        dnl Ensure that the given path is used by pkg-config too, otherwise
-        dnl the system libnghttp2.pc might be picked up instead.
-        PKG_CONFIG_PATH="${ap_nghttp2_base}/lib/pkgconfig${PKG_CONFIG_PATH+:}${PKG_CONFIG_PATH}"
-        export PKG_CONFIG_PATH
+      if test "x$ap_nghttp2_base" != "x" ; then
+        if test -f "${ap_nghttp2_base}/lib/pkgconfig/libnghttp2.pc"; then
+          dnl Ensure that the given path is used by pkg-config too, otherwise
+          dnl the system libnghttp2.pc might be picked up instead.
+          PKG_CONFIG_PATH="${ap_nghttp2_base}/lib/pkgconfig${PKG_CONFIG_PATH+:}${PKG_CONFIG_PATH}"
+          export PKG_CONFIG_PATH
+        elif test -f "${ap_nghttp2_base}/lib64/pkgconfig/libnghttp2.pc"; then
+          dnl Ensure that the given path is used by pkg-config too, otherwise
+          dnl the system libnghttp2.pc might be picked up instead.
+          PKG_CONFIG_PATH="${ap_nghttp2_base}/lib64/pkgconfig${PKG_CONFIG_PATH+:}${PKG_CONFIG_PATH}"
+          export PKG_CONFIG_PATH
+        fi
       fi
       AC_ARG_ENABLE(nghttp2-staticlib-deps,APACHE_HELP_STRING(--enable-nghttp2-staticlib-deps,[link mod_http2 with dependencies of libnghttp2's static libraries (as indicated by "pkg-config --static"). Must be specified in addition to --enable-http2.]), [
         if test "$enableval" = "yes"; then
