@@ -1,4 +1,7 @@
                                                          -*- coding: utf-8 -*-
+Changes with Apache 2.4.30
+
+
 Changes with Apache 2.4.29
 
   *) mod_unique_id: Use output of the PRNG rather than IP address and
