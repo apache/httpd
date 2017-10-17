@@ -26,6 +26,8 @@
 <p><span>Langues Disponibles: </span><a href="../en/rewrite/rewritemap.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/rewrite/rewritemap.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
 
 
     <p>Ce document est un complément à la <a href="../mod/mod_rewrite.html">documentation de référence</a> du
