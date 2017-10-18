@@ -511,7 +511,7 @@ MDRequireHttps permanent
                 <li>All request to the <code>http:</code> resources are redirected to the
                     same url with the <code>https:</code> scheme using the <code>301</code>
                 status code. This tells clients that this is intended to be forever and
-                the should update any links they have accodingly.
+                the should update any links they have accordingly.
                 </li>
                 <li>All answers to <code>https:</code> requests will carry the header
                     <code>Strict-Transport-Security</code> with a life time of half a year.
