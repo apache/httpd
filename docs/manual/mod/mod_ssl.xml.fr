@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1807869:1811976 (outdated) -->
+<!-- English Revision: 1811976 -->
 <!-- French translation : Lucien GENTIS -->
 
 <!--
@@ -172,7 +172,7 @@ certificat serveur, sous la forme SRVName (OID 1.3.6.1.5.5.7.8.7, RFC 4985)</td>
 
 <p><em>x509</em> spécifie un élément de DN X.509 parmi
 <code>C,ST,L,O,OU,CN,T,I,G,S,D,UID,Email</code>. A partir de la version
-2.1 d'Apache, <em>x509</em> peut aussi comporter un suffixe numérique
+2.2.0 de httpd, <em>x509</em> peut aussi comporter un suffixe numérique
 <code>_n</code>. Si le DN en question comporte plusieurs attributs de
 noms identiques, ce suffixe constitue un index débutant à zéro et
 permettant de sélectionner un
@@ -189,6 +189,12 @@ module="mod_ssl">SSLOptions</directive>, le premier attribut (ou le
 seul) caractérisant le DN est enregistré avec un nom sans suffixe ;
 autrement dit, aucune entrée possédant comme suffixe <code>_0</code>
 n'est enregistrée.</p>
+
+<p>Depuis la version 2.5.0 de httpd, il est possible d'ajouter le suffixe
+<em>_RAW</em> à <em>x509</em> dans un élément DN afin d'éviter la conversion en
+UTF-8 de la valeur de l'attribut. Il doit être placé après le suffixe index
+(s'il existe), par exemple <code>SSL_SERVER_S_DN_OU_RAW</code> ou
+<code>SSL_SERVER_S_DN_OU_0_RAW</code>.</p>
 
 <p>Le format des variables <em>*_DN</em> a changé depuis la version
 2.3.11 d'Apache HTTPD. Voir l'option <code>LegacyDNStringFormat</code>
