@@ -26,8 +26,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/rewrite/rewritemap.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/rewrite/rewritemap.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
     <p>Ce document est un complément à la <a href="../mod/mod_rewrite.html">documentation de référence</a> du
@@ -387,6 +385,12 @@ directive <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">R
     n'ont pas été définis dans un contexte où la directive <code class="directive"><a href="../mod/mod_rewrite.html#rewriteengine">RewriteEngine</a></code> est définie à
     <code>on</code>.</p>
 
+    <p>Par défaut, les programmes de réécriture externes sont lancés par
+    l'utilisateur root. Pour en changer, il est possible
+    sur les systèmes de style Unix de spécifier un autre couple
+    utilisateur/groupe via le troisième argument de la directive <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>, et ceci au format
+    <code>utilisateur:groupe</code>.</p>
+
     <p>Cette fonctionnalité utilise le mutex <code>rewrite-map</code>
     nécessaire à la fiabilité des communications avec le programme. Le
     mécanisme de mutex et le fichier verrou peuvent être définis via la
@@ -396,7 +400,7 @@ directive <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">R
     caractères de soulignement dans l'URI de la requête.</p>
 
     <p><strong>Configuration de la réécriture</strong></p>
-    <pre class="prettyprint lang-config">RewriteMap d2u "prg:/www/bin/dash2under.pl"
+    <pre class="prettyprint lang-config">RewriteMap d2u "prg:/www/bin/dash2under.pl" apache:apache
 RewriteRule "-" "${d2u:%{REQUEST_URI}}"</pre>
 
 
