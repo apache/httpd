@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_md: v1.0.1, ServerName/Alias names from pure-http: virtual hosts are no longer
+     auto-added to a Managed Domain. Error counts of jobs are presisted. When the server
+     restarts (gracefully) any errored staging areas are purged to reset the signup/renewal
+     process. [Stefan Eissing]
+
   *) htpasswd: Don't fail in -v mode if password file is unwritable.
      PR 61631.  [Joe Orton]
 
