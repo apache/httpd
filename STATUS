@@ -133,15 +133,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1742697
                   http://svn.apache.org/r1756976
                   http://svn.apache.org/r1781313
-     2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-r1740928_and_co-v3.patch
-     +1: ylavic, mrumph
-     mrumph: Since this has been sitting for awhile, there are several places
-             where this patch needs to be adjusted against recent changes to 2.4.x.
-     ylavic: With current 2.4.x (r1807662), there seems to be only a conflict with
-             MMN, which can probably be taken by the backporter. I don't see the
-             other places where it needs adjustments, Mike?
+                  http://svn.apache.org/r1812193
+     2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-r1740928_and_co-v4.patch
+     +1: ylavic,
       wrowe: Suspect that this is an MMN Major bump, not minor, without some
              additional detection/workaround of legacy 2.4 compiled modules.
+     ylavic: Changed to v4 (+r1812193) which hopefully should address compat
+             issues, Bill?
 
   *) mod_remoteip: Add PROXY protocol support
      trunk patch: http://svn.apache.org/r1776575
