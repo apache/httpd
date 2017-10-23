@@ -124,6 +124,7 @@ struct md_t {
 #define MD_KEY_DOMAIN           "domain"
 #define MD_KEY_DOMAINS          "domains"
 #define MD_KEY_DRIVE_MODE       "drive-mode"
+#define MD_KEY_ERRORS           "errors"
 #define MD_KEY_EXPIRES          "expires"
 #define MD_KEY_HTTP             "http"
 #define MD_KEY_HTTPS            "https"
