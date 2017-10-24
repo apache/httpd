@@ -24,6 +24,7 @@
 #include "os.h"
 #include "ap_mpm.h"
 #include "apr_thread_proc.h"
+#include "apr_signal.h"
 #include "apr_strings.h"
 #include "apr_portable.h"
 #ifdef HAVE_PWD_H
@@ -180,7 +181,7 @@ static apr_status_t ap_unix_create_privileged_process(
     ** we force everything to be APR_PROGRAM, and never
     ** APR_SHELLCMD
     */
-    if(apr_procattr_cmdtype_set(attr, APR_PROGRAM) != APR_SUCCESS) {
+    if (apr_procattr_cmdtype_set(attr, APR_PROGRAM) != APR_SUCCESS) {
         return APR_EGENERAL;
     }
 
