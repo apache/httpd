@@ -732,7 +732,6 @@ static apr_status_t run_watchdog(int state, void *baton, apr_pool_t *ptemp)
 {
     md_watchdog *wd = baton;
     apr_status_t rv = APR_SUCCESS;
-    md_store_t *store;
     md_job_t *job;
     apr_time_t next_run, now;
     int restart = 0;
@@ -743,7 +742,6 @@ static apr_status_t run_watchdog(int state, void *baton, apr_pool_t *ptemp)
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, wd->s, APLOGNO(10054)
                          "md watchdog start, auto drive %d mds", wd->jobs->nelts);
             assert(wd->reg);
-            store = md_reg_store_get(wd->reg);
         
             for (i = 0; i < wd->jobs->nelts; ++i) {
                 job = APR_ARRAY_IDX(wd->jobs, i, md_job_t *);
