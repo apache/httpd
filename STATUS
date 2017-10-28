@@ -213,6 +213,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x: svn merge -c 1811744 ^/httpd/httpd/trunk .
      +1: elukey
 
+  *) mod_macro: fix usability of globally defined macros in .htaccess files.
+                PR 57525.
+     trunk patch: http://svn.apache.org/r1813643
+     2.4.x patch: trunk works (modulo CHANGES)
+                  svn merge -c 1813643 ^/httpd/httpd/trunk .
+     +1: ylavic
+
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
