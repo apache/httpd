@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_http2: avoid unnecessary data retrieval for a trace log. Allow certain
+     information retrievals on null bucket beams where it makes sense. [Stefan Eissing]
+
   *) mod_macro: fix usability of globally defined macros in .htaccess files.
      PR 57525.  [Jose Kahan <jose w3.org>, Yann Ylavic]
 
