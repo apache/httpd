@@ -227,6 +227,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   svn merge -c 1811649 ^/httpd/httpd/trunk .
      +1: elukey
 
+  *) mod_http2: avoid unnecessary data retrieval for a trace log. Allow certain
+     information retrievals on null bucket beams where it makes sense.
+     trunk patch: https://svn.apache.org/r1813767
+     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/mod_http2_v1.10.13.diff
+     +1: icing
+     
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
