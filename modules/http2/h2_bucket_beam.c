@@ -663,7 +663,7 @@ apr_size_t h2_beam_buffer_size_get(h2_bucket_beam *beam)
     h2_beam_lock bl;
     apr_size_t buffer_size = 0;
     
-    if (enter_yellow(beam, &bl) == APR_SUCCESS) {
+    if (beam && enter_yellow(beam, &bl) == APR_SUCCESS) {
         buffer_size = beam->max_buf_size;
         leave_yellow(beam, &bl);
     }
@@ -696,7 +696,7 @@ void h2_beam_abort(h2_bucket_beam *beam)
 {
     h2_beam_lock bl;
     
-    if (enter_yellow(beam, &bl) == APR_SUCCESS) {
+    if (beam && enter_yellow(beam, &bl) == APR_SUCCESS) {
         if (!beam->aborted) {
             beam->aborted = 1;
             r_purge_sent(beam);
@@ -712,7 +712,7 @@ apr_status_t h2_beam_close(h2_bucket_beam *beam)
 {
     h2_beam_lock bl;
     
-    if (enter_yellow(beam, &bl) == APR_SUCCESS) {
+    if (beam && enter_yellow(beam, &bl) == APR_SUCCESS) {
         r_purge_sent(beam);
         beam_close(beam);
         report_consumption(beam, &bl);
@@ -725,7 +725,7 @@ apr_status_t h2_beam_leave(h2_bucket_beam *beam)
 {
     h2_beam_lock bl;
     
-    if (enter_yellow(beam, &bl) == APR_SUCCESS) {
+    if (beam && enter_yellow(beam, &bl) == APR_SUCCESS) {
         recv_buffer_cleanup(beam, &bl);
         beam->aborted = 1;
         beam_close(beam);
@@ -1165,7 +1165,7 @@ apr_off_t h2_beam_get_buffered(h2_bucket_beam *beam)
     apr_off_t l = 0;
     h2_beam_lock bl;
     
-    if (enter_yellow(beam, &bl) == APR_SUCCESS) {
+    if (beam && enter_yellow(beam, &bl) == APR_SUCCESS) {
         for (b = H2_BLIST_FIRST(&beam->send_list); 
             b != H2_BLIST_SENTINEL(&beam->send_list);
             b = APR_BUCKET_NEXT(b)) {
@@ -1183,7 +1183,7 @@ apr_off_t h2_beam_get_mem_used(h2_bucket_beam *beam)
     apr_off_t l = 0;
     h2_beam_lock bl;
     
-    if (enter_yellow(beam, &bl) == APR_SUCCESS) {
+    if (beam && enter_yellow(beam, &bl) == APR_SUCCESS) {
         for (b = H2_BLIST_FIRST(&beam->send_list); 
             b != H2_BLIST_SENTINEL(&beam->send_list);
             b = APR_BUCKET_NEXT(b)) {
@@ -1199,7 +1199,7 @@ int h2_beam_empty(h2_bucket_beam *beam)
     int empty = 1;
     h2_beam_lock bl;
     
-    if (enter_yellow(beam, &bl) == APR_SUCCESS) {
+    if (beam && enter_yellow(beam, &bl) == APR_SUCCESS) {
         empty = (H2_BLIST_EMPTY(&beam->send_list) 
                  && (!beam->recv_buffer || APR_BRIGADE_EMPTY(beam->recv_buffer)));
         leave_yellow(beam, &bl);
@@ -1212,7 +1212,7 @@ int h2_beam_holds_proxies(h2_bucket_beam *beam)
     int has_proxies = 1;
     h2_beam_lock bl;
     
-    if (enter_yellow(beam, &bl) == APR_SUCCESS) {
+    if (beam && enter_yellow(beam, &bl) == APR_SUCCESS) {
         has_proxies = !H2_BPROXY_LIST_EMPTY(&beam->proxies);
         leave_yellow(beam, &bl);
     }
@@ -1224,7 +1224,7 @@ int h2_beam_was_received(h2_bucket_beam *beam)
     int happend = 0;
     h2_beam_lock bl;
     
-    if (enter_yellow(beam, &bl) == APR_SUCCESS) {
+    if (beam && enter_yellow(beam, &bl) == APR_SUCCESS) {
         happend = (beam->received_bytes > 0);
         leave_yellow(beam, &bl);
     }
@@ -1236,7 +1236,7 @@ apr_size_t h2_beam_get_files_beamed(h2_bucket_beam *beam)
     apr_size_t n = 0;
     h2_beam_lock bl;
     
-    if (enter_yellow(beam, &bl) == APR_SUCCESS) {
+    if (beam && enter_yellow(beam, &bl) == APR_SUCCESS) {
         n = beam->files_beamed;
         leave_yellow(beam, &bl);
     }
