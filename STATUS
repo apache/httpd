@@ -133,7 +133,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1756976
                   http://svn.apache.org/r1781313
                   http://svn.apache.org/r1812193
-     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4.x-r1740928_and_co-v5.patch
+     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4.x-r1740928_and_co-v6.patch
      +1: ylavic, icing
       wrowe: Suspect that this is an MMN Major bump, not minor, without some
              additional detection/workaround of legacy 2.4 compiled modules.
@@ -142,6 +142,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      icing: builds and runs fine in my tests. However I do not have <Proxy> specific
             setups to check that all config commands apply properly. Otherwise, looks
             backward compatible to me.
+     ylavic: Argh, update to v6 since v5 partially reverted r1747069 (which was
+             a later change than the original proposal). Here is v5 vs v6 diff:
+             http://home.apache.org/~ylavic/patches/httpd-2.4.x-r1740928_and_co-v5_vs_v6.diff
+             Not really related to the functionality of this proposal, so I
+             didn't reset Stefan's vote...
 
   *) mod_remoteip: Add PROXY protocol support
      trunk patch: http://svn.apache.org/r1776575
