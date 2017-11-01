@@ -57,7 +57,7 @@ extensive <a href="http://apache.webthing.com/mod_proxy_html/"
 <name>ProxyHTMLMeta</name>
 <description>Turns on or off extra pre-parsing of metadata in HTML
 <code>&lt;head&gt;</code> sections.</description>
-<syntax>ProxyHTMLMeta <var>On|Off</var></syntax>
+<syntax>ProxyHTMLMeta On|Off</syntax>
 <default>ProxyHTMLMeta Off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
@@ -71,7 +71,7 @@ module for earlier 2.x versions.</compatibility>
     <p>If not required, turning ProxyHTMLMeta Off will give a small
     performance boost by skipping this parse step.  However, it
     is sometimes necessary for internationalisation to work correctly.</p>
-    <p>ProxyHTMLMeta has two effects.  Firstly and most importantly
+    <p><directive>ProxyHTMLMeta</directive> has two effects.  Firstly and most importantly
     it enables detection of character encodings declared in the form</p>
     <pre>&lt;meta http-equiv="Content-Type" content="text/html;charset=<var>foo</var>"&gt;</pre>
     <p>or, in the case of an XHTML document, an XML declaration.
@@ -81,10 +81,10 @@ module for earlier 2.x versions.</compatibility>
     You may also be able to dispense with it where documents use a
     default declared using <directive module="mod_xml2enc"
     >xml2EncDefault</directive>, but that risks propagating an
-    incorrect declaration.  A <directive>ProxyHTMLCharsetOut</directive>
+    incorrect declaration.  A <directive module="mod_proxy_html">ProxyHTMLCharsetOut</directive>
     can remove that risk, but is likely to be a bigger processing
     overhead than enabling ProxyHTMLMeta.</p>
-    <p>The other effect of enabling ProxyHTMLMeta is to parse all
+    <p>The other effect of enabling <directive>ProxyHTMLMeta</directive> is to parse all
     <code>&lt;meta http-equiv=...&gt;</code> declarations and convert
     them to real HTTP headers, in keeping with the original purpose
     of this form of the HTML &lt;meta&gt; element.</p>
@@ -103,7 +103,7 @@ module for earlier 2.x versions.</compatibility>
 <directivesynopsis>
 <name>ProxyHTMLEnable</name>
 <description>Turns the proxy_html filter on or off.</description>
-<syntax>ProxyHTMLEnable <var>On|Off</var></syntax>
+<syntax>ProxyHTMLEnable On|Off</syntax>
 <default>ProxyHTMLEnable Off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
@@ -191,20 +191,20 @@ A string of the form <code>${varname|default}</code> will be replaced by the
 value of environment variable <code>varname</code>.  If that is unset, it
 is replaced by <code>default</code>.  The <code>|default</code> is optional.</p>
 <p>NOTE: interpolation will only be enabled if
-<directive>ProxyHTMLInterp</directive> is <var>On</var>.</p>
+<directive module="mod_proxy_html">ProxyHTMLInterp</directive> is <var>On</var>.</p>
 </dd>
 
 <dt>v</dt>
 <dd><p>Interpolate environment variables in <code>from-pattern</code>.
 Patterns supported are as above.</p>
 <p>NOTE: interpolation will only be enabled if
-<directive>ProxyHTMLInterp</directive> is <var>On</var>.</p>
+<directive module="mod_proxy_html">ProxyHTMLInterp</directive> is <var>On</var>.</p>
 </dd>
 </dl>
 
 <p>The optional fourth <strong>cond</strong> argument defines a condition
 that will be evaluated per Request, provided
-<directive>ProxyHTMLInterp</directive> is <var>On</var>.
+<directive module="mod_proxy_html">ProxyHTMLInterp</directive> is <var>On</var>.
 If the condition evaluates FALSE the map will not be applied in this request.
 If TRUE, or if no condition is defined, the map is applied.</p>
 <p>A <strong>cond</strong> is evaluated by the <a href="../expr.html"
@@ -217,7 +217,7 @@ in mod_proxy_html 3.x for HTTPD 2.0 and 2.2 is also supported.</p>
 <name>ProxyHTMLInterp</name>
 <description>Enables per-request interpolation of
 <directive>ProxyHTMLURLMap</directive> rules.</description>
-<syntax>ProxyHTMLInterp <var>On|Off</var></syntax>
+<syntax>ProxyHTMLInterp On|Off</syntax>
 <default>ProxyHTMLInterp Off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
@@ -227,7 +227,7 @@ for earlier 2.x versions</compatibility>
 
 <usage>
     <p>This enables per-request interpolation in
-    <directive>ProxyHTMLURLMap</directive> to- and from- patterns.</p>
+    <directive module="mod_proxy_html">ProxyHTMLURLMap</directive> to- and from- patterns.</p>
     <p>If interpolation is not enabled, all rules are pre-compiled at startup.
     With interpolation, they must be re-compiled for every request, which
     implies an extra processing overhead.  It should therefore be
@@ -238,10 +238,10 @@ for earlier 2.x versions</compatibility>
 <directivesynopsis>
 <name>ProxyHTMLDocType</name>
 <description>Sets an HTML or XHTML document type declaration.</description>
-<syntax>ProxyHTMLDocType <var>HTML|XHTML [Legacy]</var><br/><strong>OR</strong>
-<br/>ProxyHTMLDocType <var>fpi [SGML|XML]</var><br/><strong>OR</strong>
-<br/>ProxyHTMLDocType <var>html5</var><br/><strong>OR</strong>
-<br/>ProxyHTMLDocType <var>auto</var></syntax>
+<syntax>ProxyHTMLDocType HTML|XHTML [Legacy]<br/><strong>OR</strong>
+<br/>ProxyHTMLDocType <var>fpi</var> [SGML|XML]<br/><strong>OR</strong>
+<br/>ProxyHTMLDocType html5<br/><strong>OR</strong>
+<br/>ProxyHTMLDocType auto</syntax>
 <default>ProxyHTMLDocType auto (2.5/trunk versions); no FPI (2.4.x)</default>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
@@ -274,7 +274,7 @@ module="core">LogLevel</directive> Debug.</p>
 <directivesynopsis>
 <name>ProxyHTMLFixups</name>
 <description>Fixes for simple HTML errors.</description>
-<syntax>ProxyHTMLFixups <var>[lowercase] [dospath] [reset]</var></syntax>
+<syntax>ProxyHTMLFixups [lowercase] [dospath] [reset]</syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
 </contextlist>
@@ -297,7 +297,7 @@ Only use them if you know you have a broken backend server.</p>
 <name>ProxyHTMLExtended</name>
 <description>Determines whether to fix links in inline scripts, stylesheets,
 and scripting events.</description>
-<syntax>ProxyHTMLExtended <var>On|Off</var></syntax>
+<syntax>ProxyHTMLExtended On|Off</syntax>
 <default>ProxyHTMLExtended Off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
@@ -306,11 +306,11 @@ and scripting events.</description>
 for earlier 2.x versions</compatibility>
 <usage>
 <p>Set to <code>Off</code>, HTML links are rewritten according to the
-<directive>ProxyHTMLURLMap</directive> directives, but links appearing
+<directive module="mod_proxy_html">ProxyHTMLURLMap</directive> directives, but links appearing
 in Javascript and CSS are ignored.</p>
 <p>Set to <code>On</code>, all scripting events (as determined by
-<directive>ProxyHTMLEvents</directive>) and embedded scripts or
-stylesheets are also processed by the <directive>ProxyHTMLURLMap</directive>
+<directive module="mod_proxy_html">ProxyHTMLEvents</directive>) and embedded scripts or
+stylesheets are also processed by the <directive module="mod_proxy_html">ProxyHTMLURLMap</directive>
 rules, according to the flags set for each rule.  Since this requires more
 parsing, performance will be best if you only enable it when strictly necessary.
 </p><p>
@@ -325,7 +325,7 @@ false matches.
 <directivesynopsis>
 <name>ProxyHTMLStripComments</name>
 <description>Determines whether to strip HTML comments.</description>
-<syntax>ProxyHTMLStripComments <var>On|Off</var></syntax>
+<syntax>ProxyHTMLStripComments On|Off</syntax>
 <default>ProxyHTMLStripComments Off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
@@ -379,10 +379,10 @@ size and avoid the need to resize the buffer dynamically during a request.
 for earlier 2.x versions</compatibility>
 <usage>
 <p>Specifies one or more attributes to treat as scripting events and
-apply <directive>ProxyHTMLURLMap</directive>s to where enabled.
+apply <directive module="mod_proxy_html">ProxyHTMLURLMap</directive>s to where enabled.
 You can specify any number of attributes in one or more
-<code>ProxyHTMLEvents</code> directives.</p>
-<p>Normally you'll set this globally.  If you set ProxyHTMLEvents in more than
+<directive>ProxyHTMLEvents</directive> directives.</p>
+<p>Normally you'll set this globally.  If you set <directive>ProxyHTMLEvents</directive> in more than
 one scope so that one overrides the other, you'll need to specify a complete
 set in each of those scopes.</p>
 <p>A default configuration is supplied in <var>proxy-html.conf</var>
@@ -402,9 +402,9 @@ for earlier 2.x versions</compatibility>
 <usage>
 <p>Specifies elements that have URL attributes that should be rewritten
 using standard <directive module="mod_proxy_html">ProxyHTMLURLMap</directive>s.
-You will need one ProxyHTMLLinks directive per element,
+You will need one <directive>ProxyHTMLLinks</directive> directive per element,
 but it can have any number of attributes.</p>
-<p>Normally you'll set this globally.  If you set ProxyHTMLLinks in more than
+<p>Normally you'll set this globally.  If you set <directive>ProxyHTMLLinks</directive> in more than
 one scope so that one overrides the other, you'll need to specify a complete
 set in each of those scopes.</p>
 <p>A default configuration is supplied in <var>proxy-html.conf</var>
