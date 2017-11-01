@@ -444,7 +444,7 @@ Changes with Apache 2.4.24 (not released)
   *) core: New directive RegisterHttpMethod for registering non-standard
      HTTP methods. [Stefan Fritsch]
 
-  *) mod_socache_memcache: Pass expiration time through to memcached.
+  *) mod_socache_memcache: Pass expiration time through to memcached. PR 55445.
      [Faidon Liambotis <paravoid debian.org>, Joe Orton]
 
   *) mod_cache: Use the actual URI path and query-string for identifying the
