@@ -1181,7 +1181,7 @@ static const char *set_doctype(cmd_parms *cmd, void *CFG,
         cfg->doctype = fpi_html5;
     }
     else {
-        cfg->doctype = apr_pstrdup(cmd->pool, t);
+        cfg->doctype = t;
         if (l && ((l[0] == 'x') || (l[0] == 'X')))
             cfg->etag = xhtml_etag;
         else
