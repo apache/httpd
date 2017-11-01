@@ -18,9 +18,6 @@ Changes with Apache 2.5.0
   *) core: A signal received while stopping could have crashed the main
      process.  PR 61558.  [Yann Ylavic]
 
-  *) mod_proxy: Fix regression for non decimal loadfactor parameter introduced
-     in 2.4.28.  [Jim Jagielski]
-
   *) mod_md: v1.0.0, new config directive 'MDNotifyCmd' to hook in a program when Managed
      Domains have obtained/renewed their certificates successfully. [Stefan Eissing]
 
@@ -120,9 +117,6 @@ Changes with Apache 2.5.0
   *) mod_proxy_fcgi: Add the support for mod_proxy's flushpackets and flushwait
      parameters. [Luca Toscano, Ruediger Pluem, Yann Ylavic]
 
-  *) mod_http2: Simplify ready queue, less memory and better performance. Update
-     mod_http2 version to 1.10.7. [Stefan Eissing]
-
   *) mod_rewrite: Add 'RewriteOptions LongURLOptimization' to free memory
      from each set of unmatched rewrite conditions.
      [Eric Covener]
@@ -215,8 +209,6 @@ Changes with Apache 2.5.0
   *) mod_cache: Allow caching of responses with an Expires header
      in the past that also has Cache-Control: max-age or s-maxage.
      PR55156. [Eric Covener]
-
-  *) Added many log numbers to log statements that had none.
 
   *) mod_session: Introduce SessionExpiryUpdateInterval which allows to
      configure the session/cookie expiry's update interval. PR 57300.
