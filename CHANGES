@@ -261,9 +261,6 @@ Changes with Apache 2.5.0
      default for connection or 500/503 errors, and honor status=+I for
      any error.  PR 48388.  [Yann Ylavic]
 
-  *) mod_socache_memcache: Pass expiration time through to memcached. PR 55445.
-     [Faidon Liambotis <paravoid debian.org>, Joe Orton]
-
   *) ap_expr: Add filemod function for checking file modification dates
      [Daniel Gruno]
 
