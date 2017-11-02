@@ -732,6 +732,7 @@ static void clean_child_exit(int code)
 
     if (one_process) {
         event_note_child_killed(/* slot */ 0, 0, 0);
+        atexit(apr_terminate);
     }
 
     exit(code);
