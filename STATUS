@@ -118,6 +118,20 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) ab: Keep reading nonblocking to exhaust TCP or SSL buffers when previous
+     read was incomplete.  PR 61301
+     trunk patch: https://svn.apache.org/r1811649
+     2.4.x patch: trunk works modulo CHANGES
+                  svn merge -c 1811649 ^/httpd/httpd/trunk .
+     +1: elukey, icing, ylavic
+
+  *) core, mod_rewrite: introduce the 'keeps-redirect-vary' note in the internal redirect
+                        workflow to keep the Vary headers set by RewriteCond/Rule
+                        directives combinations in the directory context. PR: 58231
+     trunk patch: https://svn.apache.org/r1811744
+     2.4.x: svn merge -c 1811744 ^/httpd/httpd/trunk .
+     +1: elukey, icing, ylavic
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -214,13 +228,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              Note that r1812339 could be backported in any case, even if
              the above configure.in proposal does not get accepted.
 
-  *) core, mod_rewrite: introduce the 'keeps-redirect-vary' note in the internal redirect
-                        workflow to keep the Vary headers set by RewriteCond/Rule
-                        directives combinations in the directory context. PR: 58231
-     trunk patch: https://svn.apache.org/r1811744
-     2.4.x: svn merge -c 1811744 ^/httpd/httpd/trunk .
-     +1: elukey, icing
-
   *) mod_macro: fix usability of globally defined macros in .htaccess files.
                 PR 57525.
      trunk patch: http://svn.apache.org/r1813643
@@ -228,18 +235,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   svn merge -c 1813643 ^/httpd/httpd/trunk .
      +1: ylavic, icing
 
-  *) ab: Keep reading nonblocking to exhaust TCP or SSL buffers when previous
-     read was incomplete.  PR 61301
-     trunk patch: https://svn.apache.org/r1811649
-     2.4.x patch: trunk works modulo CHANGES
-                  svn merge -c 1811649 ^/httpd/httpd/trunk .
-     +1: elukey, icing
-
   *) mod_http2: avoid unnecessary data retrieval for a trace log. Allow certain
      information retrievals on null bucket beams where it makes sense.
      trunk patch: https://svn.apache.org/r1813767
      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/mod_http2_v1.10.13.diff
-     +1: icing
+     +1: icing, ylavic
      
 
 PATCHES/ISSUES THAT ARE BEING WORKED
