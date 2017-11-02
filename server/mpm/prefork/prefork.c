@@ -230,6 +230,7 @@ static void clean_child_exit(int code)
 
     if (one_process) {
         prefork_note_child_killed(/* slot */ 0, 0, 0);
+        atexit(apr_terminate);
     }
 
     ap_mpm_pod_close(my_bucket->pod);
