@@ -293,10 +293,6 @@ Changes with Apache 2.5.0
   *) mod_proxy_html: skip documents shorter than 4 bytes
      PR 56286 [Micha Lenk <micha lenk info>]
 
-  *) mod_proxy_fdpass: Fix computation of the size of 'struct sockaddr_un'
-     when passed to 'connect()'.
-     [Graham Dumpleton <grahamd apache org>]
-
   *) core: Add ap_mpm_resume_suspended() API to allow a suspended connection
      to resume. PR56333 
      [Artem <artemciy gmail.com>, Edward Lu <Chaosed0 gmail.com>]
