@@ -241,6 +241,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/mod_http2_v1.10.13.diff
      +1: icing, ylavic
      
+  *) ab: Make the TLS layer aware that the underlying socket is nonblocking,
+     and use/handle POLLOUT where needed to avoid busy IOs and recover write
+     errors when appropriate.
+     trunk patch: http://svn.apache.org/r1811664
+                  http://svn.apache.org/r1814118
+     2.4.x patch: trunk works (modulo CHANGES)
+                  svn merge -c 1811664,1814118 ^/httpd/httpd/trunk .
+     +1: ylavic
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
