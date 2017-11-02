@@ -233,7 +233,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: https://svn.apache.org/r1811649
      2.4.x patch: trunk works modulo CHANGES
                   svn merge -c 1811649 ^/httpd/httpd/trunk .
-     +1: elukey
+     +1: elukey, icing
 
   *) mod_http2: avoid unnecessary data retrieval for a trace log. Allow certain
      information retrievals on null bucket beams where it makes sense.
