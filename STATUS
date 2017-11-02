@@ -219,7 +219,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                         directives combinations in the directory context. PR: 58231
      trunk patch: https://svn.apache.org/r1811744
      2.4.x: svn merge -c 1811744 ^/httpd/httpd/trunk .
-     +1: elukey
+     +1: elukey, icing
 
   *) mod_macro: fix usability of globally defined macros in .htaccess files.
                 PR 57525.
