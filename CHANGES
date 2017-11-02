@@ -341,13 +341,6 @@ Changes with Apache 2.5.0
      is modified. The 'NoChange' parameter mimics 2.2.x behavior.
      PR 45023, PR 39727. [Eric Covener]
 
-  *) mod_rewrite: Add 'BNF' (backreferences-no-plus) flag to RewriteRule to 
-     allow spaces in backreferences to be encoded as %20 instead of '+'.
-     [Eric Covener]
-
-  *) mod_rewrite: Support an optional list of characters to escape in the 
-     argument for the 'B' (escape backreferences) flag. [Eric Covener]
-
   *) mod_dir: Default to 2.2-like behavior and skip execution when method is
      neither GET nor POST, such as for DAV requests. PR 54914. [Chris Darroch]
 
