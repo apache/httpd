@@ -845,23 +845,21 @@ static void write_request(struct connection * c)
                 return;
             }
             l = e;
-            e = APR_SUCCESS;
         }
         else
 #endif
         {
             e = apr_socket_send(c->aprsock, request + c->rwrote, &l);
-            if (e != APR_SUCCESS) {
+            if (e != APR_SUCCESS && !l) {
                 if (!APR_STATUS_IS_EAGAIN(e)) {
                     epipe++;
                     printf("Send request failed!\n");
                     close_connection(c);
-                    return;
                 }
-                if (!l) {
+                else {
                     set_polled_events(c, APR_POLLOUT);
-                    return;
                 }
+                return;
             }
         }
         totalposted += l;
