@@ -230,13 +230,13 @@ SetEnvIf User-Agent "^KnockKnock/2\.0" let_me_in
 &lt;AuthzProviderAlias ldap-group ldap-group-alias1 "cn=my-group,o=ctx"&gt;
     AuthLDAPBindDN "cn=youruser,o=ctx"
     AuthLDAPBindPassword yourpassword
-    AuthLDAPURL "ldap://ldap.host/o=ctx"
+    AuthLDAPUrl "ldap://ldap.host/o=ctx"
 &lt;/AuthzProviderAlias&gt;
 
 &lt;AuthzProviderAlias ldap-group ldap-group-alias2 "cn=my-other-group,o=dev"&gt;
     AuthLDAPBindDN "cn=yourotheruser,o=dev"
     AuthLDAPBindPassword yourotherpassword
-    AuthLDAPURL "ldap://other.ldap.host/o=dev?cn"
+    AuthLDAPUrl "ldap://other.ldap.host/o=dev?cn"
 &lt;/AuthzProviderAlias&gt;
 
 Alias "/secure" "/webpages/secure"
