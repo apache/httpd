@@ -396,9 +396,6 @@ Changes with Apache 2.5.0
      plus improving randomness for IPv6-only hosts.
      [Jan Kaluza <jkaluza redhat.com>]
 
-  *) mod_file_cache: mod_file_cache should be able to serve files that
-     haven't had a Content-Type set via e.g. mod_mime. [Eric Covener]
-
   *) core: merge AllowEncodedSlashes from the base configuration into
      virtual hosts. [Eric Covener]
 
