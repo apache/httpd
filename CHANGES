@@ -414,6 +414,9 @@ Changes with Apache 2.4.24 (not released)
   *) mod_socache_memcache: Provide memcache stats to mod_status.
      [Jim Jagielski]
 
+  *) mod_file_cache: mod_file_cache should be able to serve files that
+     haven't had a Content-Type set via e.g. mod_mime. [Eric Covener]
+
   *) http_filters: Fix potential looping in new check_headers() due to new
      pattern of ap_die() from http header filter. Explicitly clear the
      previous headers and body.
