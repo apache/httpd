@@ -1021,23 +1021,23 @@ taille initiale, pour la mise en
 tampon des scripts en ligne et des feuilles de style.</td></tr>
 <tr class="odd"><td><a href="mod_proxy_html.html#proxyhtmlcharsetout">ProxyHTMLCharsetOut <var>jeu-de-caractères | *</var></a></td><td></td><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Spécifie un jeu de caractères pour la sortie de
 mod_proxy_html.</td></tr>
-<tr><td><a href="mod_proxy_html.html#proxyhtmldoctype">ProxyHTMLDocType <var>HTML|XHTML [Legacy]</var><br /><strong>OU</strong>
-<br />ProxyHTMLDocType <var>fpi [SGML|XML]</var><br /><strong>OU</strong>
-<br />ProxyHTMLDocType <var>html5</var><br /><strong>OU</strong>
-<br />ProxyHTMLDocType <var>auto</var></a></td><td> auto (2.5/trunk ver +</td><td>svd</td><td>B</td></tr><tr><td class="descr" colspan="4">Définit une déclaration de type de document HTML ou XHTML.</td></tr>
-<tr class="odd"><td><a href="mod_proxy_html.html#proxyhtmlenable">ProxyHTMLEnable <var>On|Off</var></a></td><td> Off </td><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Permet d'activer/désactiver le filtre proxy_html.</td></tr>
+<tr><td><a href="mod_proxy_html.html#proxyhtmldoctype">ProxyHTMLDocType HTML|XHTML [Legacy]<br /><strong>OR</strong>
+<br />ProxyHTMLDocType <var>fpi</var> [SGML|XML]<br /><strong>OR</strong>
+<br />ProxyHTMLDocType html5<br /><strong>OR</strong>
+<br />ProxyHTMLDocType auto</a></td><td> auto (2.5/trunk ver +</td><td>svd</td><td>B</td></tr><tr><td class="descr" colspan="4">Définit une déclaration de type de document HTML ou XHTML.</td></tr>
+<tr class="odd"><td><a href="mod_proxy_html.html#proxyhtmlenable">ProxyHTMLEnable On|Off</a></td><td> Off </td><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Permet d'activer/désactiver le filtre proxy_html.</td></tr>
 <tr><td><a href="mod_proxy_html.html#proxyhtmlevents">ProxyHTMLEvents <var>attribut [attribut ...]</var></a></td><td></td><td>svd</td><td>B</td></tr><tr><td class="descr" colspan="4">Spécifie les attributs à traiter comme des évènements de
 type scripting.</td></tr>
-<tr class="odd"><td><a href="mod_proxy_html.html#proxyhtmlextended">ProxyHTMLExtended <var>On|Off</var></a></td><td> Off </td><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Détermine si l'on doit corriger les liens dans les scripts
+<tr class="odd"><td><a href="mod_proxy_html.html#proxyhtmlextended">ProxyHTMLExtended On|Off</a></td><td> Off </td><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Détermine si l'on doit corriger les liens dans les scripts
 en ligne, les feuilles de style et les évènements de type scripting.</td></tr>
-<tr><td><a href="mod_proxy_html.html#proxyhtmlfixups">ProxyHTMLFixups <var>[lowercase] [dospath] [reset]</var></a></td><td></td><td>svd</td><td>B</td></tr><tr><td class="descr" colspan="4">Corrige les erreurs HTML simples.</td></tr>
-<tr class="odd"><td><a href="mod_proxy_html.html#proxyhtmlinterp">ProxyHTMLInterp <var>On|Off</var></a></td><td> Off </td><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Active la réinterprétation des règles
+<tr><td><a href="mod_proxy_html.html#proxyhtmlfixups">ProxyHTMLFixups [lowercase] [dospath] [reset]</a></td><td></td><td>svd</td><td>B</td></tr><tr><td class="descr" colspan="4">Corrige les erreurs HTML simples.</td></tr>
+<tr class="odd"><td><a href="mod_proxy_html.html#proxyhtmlinterp">ProxyHTMLInterp On|Off</a></td><td> Off </td><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Active la réinterprétation des règles
 <code class="directive">ProxyHTMLURLMap</code> pour chaque requête.</td></tr>
 <tr><td><a href="mod_proxy_html.html#proxyhtmllinks">ProxyHTMLLinks <var>élément attribut [attribut2 ...]</var></a></td><td></td><td>svd</td><td>B</td></tr><tr><td class="descr" colspan="4">Spécifie les éléments HTML dont les attributs d'URL doivent
 être réécrits.</td></tr>
-<tr class="odd"><td><a href="mod_proxy_html.html#proxyhtmlmeta">ProxyHTMLMeta <var>On|Off</var></a></td><td> Off </td><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Active ou désactive une préinterprétation supplémentaire
+<tr class="odd"><td><a href="mod_proxy_html.html#proxyhtmlmeta">ProxyHTMLMeta On|Off</a></td><td> Off </td><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Active ou désactive une préinterprétation supplémentaire
 des métadonnées dans les sections HTML <code>&lt;head&gt;</code>.</td></tr>
-<tr><td><a href="mod_proxy_html.html#proxyhtmlstripcomments">ProxyHTMLStripComments <var>On|Off</var></a></td><td> Off </td><td>svd</td><td>B</td></tr><tr><td class="descr" colspan="4">Détermine si les commentaires HTML doivent être supprimés.</td></tr>
+<tr><td><a href="mod_proxy_html.html#proxyhtmlstripcomments">ProxyHTMLStripComments On|Off</a></td><td> Off </td><td>svd</td><td>B</td></tr><tr><td class="descr" colspan="4">Détermine si les commentaires HTML doivent être supprimés.</td></tr>
 <tr class="odd"><td><a href="mod_proxy_html.html#proxyhtmlurlmap">ProxyHTMLURLMap <var>modèle-source modèle-cible [drapeaux] [cond]</var></a></td><td></td><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Définit une règle de réécriture des liens HTML</td></tr>
 <tr><td><a href="mod_proxy.html#proxyiobuffersize">ProxyIOBufferSize <var>octets</var></a></td><td> 8192 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Détermine la taille du tampon interne de transfert de
 données</td></tr>
