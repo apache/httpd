@@ -101,7 +101,7 @@ la charge des serveurs d'arrière-plan</dd>
 httpd authentication and authorization</dd>
 <dt><a href="mod_authnz_ldap.html">mod_authnz_ldap</a></dt><dd>Permet d'utiliser un annuaire LDAP pour l'authentification
 HTTP de base.</dd>
-<dt><a href="mod_authz_core.html">mod_authz_core</a></dt><dd>Autorisation basique</dd>
+<dt><a href="mod_authz_core.html">mod_authz_core</a></dt><dd>Core Authorization</dd>
 <dt><a href="mod_authz_dbd.html">mod_authz_dbd</a></dt><dd>Autorisation en groupe et reconnaissance d'identité avec base
 SQL</dd>
 <dt><a href="mod_authz_dbm.html">mod_authz_dbm</a></dt><dd>Autorisation basée sur les groupes à l'aide de fichiers

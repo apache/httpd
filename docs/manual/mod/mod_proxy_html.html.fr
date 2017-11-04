@@ -139,8 +139,8 @@ l'entrée.</p>
 <div class="directive-section"><h2><a name="proxyhtmldoctype" id="proxyhtmldoctype">Directive</a> <a name="ProxyHTMLDocType" id="ProxyHTMLDocType">ProxyHTMLDocType</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit une déclaration de type de document HTML ou XHTML.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyHTMLDocType <var>HTML|XHTML [Legacy]</var><br /><strong>OU</strong>
-<br />ProxyHTMLDocType <var>fpi [SGML|XML]</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyHTMLDocType HTML|XHTML [Legacy]<br /><strong>OR</strong>
+<br />ProxyHTMLDocType <var>fpi</var> [SGML|XML]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_html</td></tr>
@@ -175,7 +175,7 @@ Debug.</p>
 <div class="directive-section"><h2><a name="proxyhtmlenable" id="proxyhtmlenable">Directive</a> <a name="ProxyHTMLEnable" id="ProxyHTMLEnable">ProxyHTMLEnable</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Permet d'activer/désactiver le filtre proxy_html.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyHTMLEnable <var>On|Off</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyHTMLEnable On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ProxyHTMLEnable Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
@@ -209,11 +209,11 @@ Disponible en tant que module tiers dans les versions 2.x antérieures.</td></tr>
 <p>Cette directive permet de spécifier un ou plusieurs attributs à
 traiter comme
 des évènements de type scripting et de leur appliquer les règles
-<code class="directive">ProxyHTMLURLMap</code> lorsqu'elles ont été définies. Vous
+<code class="directive"><a href="#proxyhtmlurlmap">ProxyHTMLURLMap</a></code> lorsqu'elles ont été définies. Vous
 pouvez spécifier un nombre quelconque d'attributs dans une ou plusieurs
-directives <code>ProxyHTMLEvents</code>.</p>
+directives <code class="directive">ProxyHTMLEvents</code>.</p>
 <p>Normalement, cette directive est définie globalement. Si vous
-définissez ProxyHTMLEvents à plusieurs niveaux, certains niveaux
+définissez <code class="directive">ProxyHTMLEvents</code> à plusieurs niveaux, certains niveaux
 l'emportant sur d'autres, vous devrez spécifier un jeu complet
 d'évènements pour chaque niveau.</p>
 <p>Le fichier <var>proxy-html.conf</var> fournit une configuration par
@@ -226,7 +226,7 @@ HTML 4 et XHTML 1.</p>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Détermine si l'on doit corriger les liens dans les scripts
 en ligne, les feuilles de style et les évènements de type scripting.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyHTMLExtended <var>On|Off</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyHTMLExtended On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ProxyHTMLExtended Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
@@ -236,13 +236,13 @@ Disponible en tant que module tiers dans les versions 2.x antérieures.</td></tr>
 </table>
 <p>Si cette directive est définie à <code>Off</code>, les liens HTML
 sont réécrits en fonction des directives
-<code class="directive">ProxyHTMLURLMap</code>, mais les liens qui apparaissent
+<code class="directive"><a href="#proxyhtmlurlmap">ProxyHTMLURLMap</a></code>, mais les liens qui apparaissent
 dans le code Javascript et les feuilles de style restent inchangés.</p>
 <p>Si elle est définie à <code>On</code>, tous les évènements de type
 scripting (définis par la directive
-<code class="directive">ProxyHTMLEvents</code>) et les scripts inclus ou les
+<code class="directive"><a href="#proxyhtmlevents">ProxyHTMLEvents</a></code>) et les scripts inclus ou les
 feuilles de style sont aussi
-traités par les règles <code class="directive">ProxyHTMLURLMap</code>, en
+traités par les règles <code class="directive"><a href="#proxyhtmlurlmap">ProxyHTMLURLMap</a></code>, en
 fonction des drapeaux définis pour chacune d'entre elles. Ne définissez
 cette directive à <code>On</code> qu'en cas de nécessité absolue, car la
 charge supplémentaire induite impacte les performances.</p>
@@ -257,7 +257,7 @@ correspondances erronées.</p>
 <div class="directive-section"><h2><a name="proxyhtmlfixups" id="proxyhtmlfixups">Directive</a> <a name="ProxyHTMLFixups" id="ProxyHTMLFixups">ProxyHTMLFixups</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Corrige les erreurs HTML simples.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyHTMLFixups <var>[lowercase] [dospath] [reset]</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyHTMLFixups [lowercase] [dospath] [reset]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_html</td></tr>
@@ -283,7 +283,7 @@ d'arrière-plan est déficient.</p>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active la réinterprétation des règles
 <code class="directive">ProxyHTMLURLMap</code> pour chaque requête.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyHTMLInterp <var>On|Off</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyHTMLInterp On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ProxyHTMLInterp Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
@@ -293,7 +293,7 @@ Disponible en tant que module tiers dans les versions 2.x antérieures.</td></tr>
 </table>
     <p>Cette directive permet d'activer le réinterprétation pour chaque
     requête des modèles source et cible de la directive
-    <code class="directive">ProxyHTMLURLMap</code>.</p>
+    <code class="directive"><a href="#proxyhtmlurlmap">ProxyHTMLURLMap</a></code>.</p>
     <p>Si la réinterprétation n'est pas activée, toutes les règles sont
     précompilées au démarrage du serveur. Si elle est activée, les
     règles doivent être recompilées pour chaque requête, ce qui induit
@@ -315,9 +315,9 @@ Disponible en tant que module tiers dans les versions 2.x antérieures.</td></tr>
 </table>
 <p>Cette directive permet de spécifier les éléments dont les attributs d'URL
 doivent être réécrits en utilisant les règles standards <code class="directive"><a href="#proxyhtmlurlmap">ProxyHTMLURLMap</a></code>. Vous devez définir une
-directive ProxyHTMLLinks pour chaque élément, mais chacune d'entre elles peut
+directive <code class="directive">ProxyHTMLLinks</code> pour chaque élément, mais chacune d'entre elles peut
 spécifier un nombre quelconque d'attributs</p> <p>Normalement, cette directive
-est définie globalement. Si vous définissez ProxyHTMLLinks à plusieurs niveaux,
+est définie globalement. Si vous définissez <code class="directive">ProxyHTMLLinks</code> à plusieurs niveaux,
 certains niveaux l'emportant sur d'autres, vous devrez spécifier un jeu complet
 de liens pour chaque niveau.</p> <p>Le fichier <var>proxy-html.conf</var>
 fournit une configuration par défaut et définit les liens HTML selon les
@@ -344,7 +344,7 @@ ProxyHTMLLinks  script     src for</pre>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active ou désactive une préinterprétation supplémentaire
 des métadonnées dans les sections HTML <code>&lt;head&gt;</code>.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyHTMLMeta <var>On|Off</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyHTMLMeta On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ProxyHTMLMeta Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
@@ -359,7 +359,7 @@ précédentes.</td></tr>
     requise, définissez ProxyHTMLMeta à Off et les performances
     seront légèrement améliorées. Cependant, elle s'avère parfois
     nécessaire pour assurer un fonctionnement correct de l'internationalisation.</p>
-    <p>La directive ProxyHTMLMeta a deux effets. Le premier et le plus
+    <p>La directive <code class="directive">ProxyHTMLMeta</code> a deux effets. Le premier et le plus
     important est la détection des codages de caractères déclarés sous
     la forme</p>
     <pre>&lt;meta http-equiv="Content-Type" content="text/html;charset=<var>foo</var>"&gt;</pre>
@@ -372,7 +372,7 @@ précédentes.</td></tr>
     lorsque le document utilise une valeur par défaut déclarée via la
     directive <code class="directive"><a href="../mod/mod_xml2enc.html#xml2encdefault">xml2EncDefault</a></code>, avec le risque de
     propager une déclaration incorrecte. Une directive
-    <code class="directive">ProxyHTMLCharsetOut</code> permettra d'annuler ce
+    <code class="directive"><a href="#proxyhtmlcharsetout">ProxyHTMLCharsetOut</a></code> permettra d'annuler ce
     risque, mais pourra induire une surcharge de traitement supérieure à
     celle de ProxyHTMLMeta.</p>
     <p>Le deuxième effet est l'interprétation de toutes les déclarations
@@ -395,7 +395,7 @@ précédentes.</td></tr>
 <div class="directive-section"><h2><a name="proxyhtmlstripcomments" id="proxyhtmlstripcomments">Directive</a> <a name="ProxyHTMLStripComments" id="ProxyHTMLStripComments">ProxyHTMLStripComments</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Détermine si les commentaires HTML doivent être supprimés.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyHTMLStripComments <var>On|Off</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyHTMLStripComments On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ProxyHTMLStripComments Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
@@ -433,7 +433,7 @@ la directive <code class="directive"><a href="#proxyhtmlextended">ProxyHTMLExten
 Ne seront considérés comme des liens HTML que les éléments spécifiés via la
 directive <code class="directive"><a href="#proxyhtmllinks">ProxyHTMLLinks</a></code>.</p>
 
-<p>Le troisième argument optionnel permet de féfinir un des drapeaux
+<p>Le troisième argument optionnel permet de définir un des drapeaux
 suivants (les drapeaux sont sensibles à la casse) :</p>
 <dl>
 <dt>h</dt>
@@ -498,7 +498,7 @@ pas définie, <code>modèle-cible</code> sera remplacé par
 <code>default</code>. La spécification de <code>|default</code> est
 facultative.</p>
 <p>NOTE: l'insertion de variables d'environnement n'est possible que si
-la directive <code class="directive">ProxyHTMLInterp</code> a été définie à
+la directive <code class="directive"><a href="#proxyhtmlinterp">ProxyHTMLInterp</a></code> a été définie à
 <var>On</var>.</p>
 </dd>
 
@@ -507,14 +507,14 @@ la directive <code class="directive">ProxyHTMLInterp</code> a été définie à
 <code>modèle-source</code>. La syntaxe du modèle est identique à la
 syntaxe précédente.</p>
 <p>NOTE: l'insertion de variables d'environnement n'est possible que si
-la directive <code class="directive">ProxyHTMLInterp</code> a été définie à
+la directive <code class="directive"><a href="#proxyhtmlinterp">ProxyHTMLInterp</a></code> a été définie à
 <var>On</var>.</p>
 </dd>
 </dl>
 
 <p>Le quatrième argument optionnel <strong>cond</strong> définit une
 condition qui sera évaluée pour chaque requête, sous réserve que la
-directive <code class="directive">ProxyHTMLInterp</code> ait été définie à
+directive <code class="directive"><a href="#proxyhtmlinterp">ProxyHTMLInterp</a></code> ait été définie à
 <var>On</var>. Si la condition est évaluée à FALSE, la règle ne sera pas
 appliquée à la requête. Si elle est évaluée à TRUE, ou si aucune
 condition n'est définie, la règle s'applique.</p>
