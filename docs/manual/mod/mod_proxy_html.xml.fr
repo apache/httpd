@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1765357:1813997 (outdated) -->
+<!-- English Revision: 1813997 -->
 <!-- French translation : Lucien GENTIS -->
-<!-- $LastChangedRevision: 2016102201 $ -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -65,7 +64,7 @@ détaillée pourra s'avérer utile aux utilisateurs.</p>
 <name>ProxyHTMLMeta</name>
 <description>Active ou désactive une préinterprétation supplémentaire
 des métadonnées dans les sections HTML <code>&lt;head&gt;</code>.</description>
-<syntax>ProxyHTMLMeta <var>On|Off</var></syntax>
+<syntax>ProxyHTMLMeta On|Off</syntax>
 <default>ProxyHTMLMeta Off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
@@ -81,7 +80,7 @@ précédentes.</compatibility>
     requise, définissez ProxyHTMLMeta à Off et les performances
     seront légèrement améliorées. Cependant, elle s'avère parfois
     nécessaire pour assurer un fonctionnement correct de l'internationalisation.</p>
-    <p>La directive ProxyHTMLMeta a deux effets. Le premier et le plus
+    <p>La directive <directive>ProxyHTMLMeta</directive> a deux effets. Le premier et le plus
     important est la détection des codages de caractères déclarés sous
     la forme</p>
     <pre>&lt;meta http-equiv="Content-Type" content="text/html;charset=<var>foo</var>"&gt;</pre>
@@ -95,7 +94,7 @@ précédentes.</compatibility>
     directive <directive
     module="mod_xml2enc">xml2EncDefault</directive>, avec le risque de
     propager une déclaration incorrecte. Une directive
-    <directive>ProxyHTMLCharsetOut</directive> permettra d'annuler ce
+    <directive module="mod_proxy_html">ProxyHTMLCharsetOut</directive> permettra d'annuler ce
     risque, mais pourra induire une surcharge de traitement supérieure à
     celle de ProxyHTMLMeta.</p>
     <p>Le deuxième effet est l'interprétation de toutes les déclarations
@@ -118,7 +117,7 @@ précédentes.</compatibility>
 <directivesynopsis>
 <name>ProxyHTMLEnable</name>
 <description>Permet d'activer/désactiver le filtre proxy_html.</description>
-<syntax>ProxyHTMLEnable <var>On|Off</var></syntax>
+<syntax>ProxyHTMLEnable On|Off</syntax>
 <default>ProxyHTMLEnable Off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
@@ -224,7 +223,7 @@ pas définie, <code>modèle-cible</code> sera remplacé par
 <code>default</code>. La spécification de <code>|default</code> est
 facultative.</p>
 <p>NOTE: l'insertion de variables d'environnement n'est possible que si
-la directive <directive>ProxyHTMLInterp</directive> a été définie à
+la directive <directive module="mod_proxy_html">ProxyHTMLInterp</directive> a été définie à
 <var>On</var>.</p>
 </dd>
 
@@ -233,14 +232,14 @@ la directive <directive>ProxyHTMLInterp</directive> a été définie à
 <code>modèle-source</code>. La syntaxe du modèle est identique à la
 syntaxe précédente.</p>
 <p>NOTE: l'insertion de variables d'environnement n'est possible que si
-la directive <directive>ProxyHTMLInterp</directive> a été définie à
+la directive <directive module="mod_proxy_html">ProxyHTMLInterp</directive> a été définie à
 <var>On</var>.</p>
 </dd>
 </dl>
 
 <p>Le quatrième argument optionnel <strong>cond</strong> définit une
 condition qui sera évaluée pour chaque requête, sous réserve que la
-directive <directive>ProxyHTMLInterp</directive> ait été définie à
+directive <directive module="mod_proxy_html">ProxyHTMLInterp</directive> ait été définie à
 <var>On</var>. Si la condition est évaluée à FALSE, la règle ne sera pas
 appliquée à la requête. Si elle est évaluée à TRUE, ou si aucune
 condition n'est définie, la règle s'applique.</p>
@@ -255,7 +254,7 @@ supportée.</p>
 <name>ProxyHTMLInterp</name>
 <description>Active la réinterprétation des règles
 <directive>ProxyHTMLURLMap</directive> pour chaque requête.</description>
-<syntax>ProxyHTMLInterp <var>On|Off</var></syntax>
+<syntax>ProxyHTMLInterp On|Off</syntax>
 <default>ProxyHTMLInterp Off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
@@ -266,7 +265,7 @@ Disponible en tant que module tiers dans les versions 2.x antérieures.</compati
 <usage>
     <p>Cette directive permet d'activer le réinterprétation pour chaque
     requête des modèles source et cible de la directive
-    <directive>ProxyHTMLURLMap</directive>.</p>
+    <directive module="mod_proxy_html">ProxyHTMLURLMap</directive>.</p>
     <p>Si la réinterprétation n'est pas activée, toutes les règles sont
     précompilées au démarrage du serveur. Si elle est activée, les
     règles doivent être recompilées pour chaque requête, ce qui induit
@@ -278,10 +277,10 @@ Disponible en tant que module tiers dans les versions 2.x antérieures.</compati
 <directivesynopsis>
 <name>ProxyHTMLDocType</name>
 <description>Définit une déclaration de type de document HTML ou XHTML.</description>
-<syntax>ProxyHTMLDocType <var>HTML|XHTML [Legacy]</var><br/><strong>OU</strong>
-<br/>ProxyHTMLDocType <var>fpi [SGML|XML]</var><br/><strong>OU</strong>
-<br/>ProxyHTMLDocType <var>html5</var><br/><strong>OU</strong>
-<br/>ProxyHTMLDocType <var>auto</var></syntax>
+<syntax>ProxyHTMLDocType HTML|XHTML [Legacy]<br/><strong>OR</strong>
+<br/>ProxyHTMLDocType <var>fpi</var> [SGML|XML]<br/><strong>OR</strong>
+<br/>ProxyHTMLDocType html5<br/><strong>OR</strong>
+<br/>ProxyHTMLDocType auto</syntax>
 <default>ProxyHTMLDocType auto (2.5/trunk versions); no FPI (2.4.x)</default>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
@@ -318,7 +317,7 @@ Debug.</p>
 <directivesynopsis>
 <name>ProxyHTMLFixups</name>
 <description>Corrige les erreurs HTML simples.</description>
-<syntax>ProxyHTMLFixups <var>[lowercase] [dospath] [reset]</var></syntax>
+<syntax>ProxyHTMLFixups [lowercase] [dospath] [reset]</syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
 </contextlist>
@@ -344,7 +343,7 @@ d'arrière-plan est déficient.</p>
 <name>ProxyHTMLExtended</name>
 <description>Détermine si l'on doit corriger les liens dans les scripts
 en ligne, les feuilles de style et les évènements de type scripting.</description>
-<syntax>ProxyHTMLExtended <var>On|Off</var></syntax>
+<syntax>ProxyHTMLExtended On|Off</syntax>
 <default>ProxyHTMLExtended Off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
@@ -354,13 +353,13 @@ Disponible en tant que module tiers dans les versions 2.x antérieures.</compati
 <usage>
 <p>Si cette directive est définie à <code>Off</code>, les liens HTML
 sont réécrits en fonction des directives
-<directive>ProxyHTMLURLMap</directive>, mais les liens qui apparaissent
+<directive module="mod_proxy_html">ProxyHTMLURLMap</directive>, mais les liens qui apparaissent
 dans le code Javascript et les feuilles de style restent inchangés.</p>
 <p>Si elle est définie à <code>On</code>, tous les évènements de type
 scripting (définis par la directive
-<directive>ProxyHTMLEvents</directive>) et les scripts inclus ou les
+<directive module="mod_proxy_html">ProxyHTMLEvents</directive>) et les scripts inclus ou les
 feuilles de style sont aussi
-traités par les règles <directive>ProxyHTMLURLMap</directive>, en
+traités par les règles <directive module="mod_proxy_html">ProxyHTMLURLMap</directive>, en
 fonction des drapeaux définis pour chacune d'entre elles. Ne définissez
 cette directive à <code>On</code> qu'en cas de nécessité absolue, car la
 charge supplémentaire induite impacte les performances.</p>
@@ -375,7 +374,7 @@ correspondances erronées.</p>
 <directivesynopsis>
 <name>ProxyHTMLStripComments</name>
 <description>Détermine si les commentaires HTML doivent être supprimés.</description>
-<syntax>ProxyHTMLStripComments <var>On|Off</var></syntax>
+<syntax>ProxyHTMLStripComments On|Off</syntax>
 <default>ProxyHTMLStripComments Off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
@@ -438,11 +437,11 @@ Disponible en tant que module tiers dans les versions 2.x antérieures.</compati
 <p>Cette directive permet de spécifier un ou plusieurs attributs à
 traiter comme
 des évènements de type scripting et de leur appliquer les règles
-<directive>ProxyHTMLURLMap</directive> lorsqu'elles ont été définies. Vous
+<directive module="mod_proxy_html">ProxyHTMLURLMap</directive> lorsqu'elles ont été définies. Vous
 pouvez spécifier un nombre quelconque d'attributs dans une ou plusieurs
-directives <code>ProxyHTMLEvents</code>.</p>
+directives <directive>ProxyHTMLEvents</directive>.</p>
 <p>Normalement, cette directive est définie globalement. Si vous
-définissez ProxyHTMLEvents à plusieurs niveaux, certains niveaux
+définissez <directive>ProxyHTMLEvents</directive> à plusieurs niveaux, certains niveaux
 l'emportant sur d'autres, vous devrez spécifier un jeu complet
 d'évènements pour chaque niveau.</p>
 <p>Le fichier <var>proxy-html.conf</var> fournit une configuration par
@@ -465,9 +464,9 @@ Disponible en tant que module tiers dans les versions 2.x antérieures.</compati
 <p>Cette directive permet de spécifier les éléments dont les attributs d'URL
 doivent être réécrits en utilisant les règles standards <directive
 module="mod_proxy_html">ProxyHTMLURLMap</directive>. Vous devez définir une
-directive ProxyHTMLLinks pour chaque élément, mais chacune d'entre elles peut
+directive <directive>ProxyHTMLLinks</directive> pour chaque élément, mais chacune d'entre elles peut
 spécifier un nombre quelconque d'attributs</p> <p>Normalement, cette directive
-est définie globalement. Si vous définissez ProxyHTMLLinks à plusieurs niveaux,
+est définie globalement. Si vous définissez <directive>ProxyHTMLLinks</directive> à plusieurs niveaux,
 certains niveaux l'emportant sur d'autres, vous devrez spécifier un jeu complet
 de liens pour chaque niveau.</p> <p>Le fichier <var>proxy-html.conf</var>
 fournit une configuration par défaut et définit les liens HTML selon les
