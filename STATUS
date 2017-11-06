@@ -240,7 +240,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1814118
      2.4.x patch: trunk works (modulo CHANGES)
                   svn merge -c 1811664,1814118 ^/httpd/httpd/trunk .
-     +1: ylavic
+     +1: ylavic, jim
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
