@@ -132,6 +132,12 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x: svn merge -c 1811744 ^/httpd/httpd/trunk .
      +1: elukey, icing, ylavic
 
+  *) mod_http2: avoid unnecessary data retrieval for a trace log. Allow certain
+     information retrievals on null bucket beams where it makes sense.
+     trunk patch: https://svn.apache.org/r1813767
+     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/mod_http2_v1.10.13.diff
+     +1: icing, ylavic, steffenal
+     
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -233,12 +239,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   svn merge -c 1813643 ^/httpd/httpd/trunk .
      +1: ylavic, icing
 
-  *) mod_http2: avoid unnecessary data retrieval for a trace log. Allow certain
-     information retrievals on null bucket beams where it makes sense.
-     trunk patch: https://svn.apache.org/r1813767
-     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/mod_http2_v1.10.13.diff
-     +1: icing, ylavic, steffenal
-     
   *) ab: Make the TLS layer aware that the underlying socket is nonblocking,
      and use/handle POLLOUT where needed to avoid busy IOs and recover write
      errors when appropriate.
