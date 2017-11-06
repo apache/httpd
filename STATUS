@@ -237,7 +237,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      information retrievals on null bucket beams where it makes sense.
      trunk patch: https://svn.apache.org/r1813767
      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/mod_http2_v1.10.13.diff
-     +1: icing, ylavic
+     +1: icing, ylavic, steffenal
      
   *) ab: Make the TLS layer aware that the underlying socket is nonblocking,
      and use/handle POLLOUT where needed to avoid busy IOs and recover write
