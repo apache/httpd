@@ -22,14 +22,6 @@ Changes with Apache 2.5.0
      and the related RewriteRule is used in a Directory context
      (triggering an internal redirect). [Luca Toscano]
 
-  *) ab: Make the TLS layer aware that the underlying socket is nonblocking,
-     and use/handle POLLOUT where needed to avoid busy IOs and recover write
-     errors when appropriate.  [Yann Ylavic]
-
-  *) ab: Keep reading nonblocking to exhaust TCP or SSL buffers when previous
-     read was incomplete (the SSL case can cause the next poll() to timeout
-     since data are buffered already).  PR 61301 [Luca Toscano, Yann Ylavic]
-
   *) mod_md: v0.9.9, fix for applying challenge type based on available ports. [Stefan Eissing]
 
   *) mod_proxy_uwsgi: New UWSGI mod_proxy (sub)module contributed by unbit.com.
