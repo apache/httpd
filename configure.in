@@ -819,7 +819,7 @@ APACHE_HELP_STRING(--with-suexec-logfile,Set the logfile),[
 ])
 
 AC_ARG_WITH(suexec-syslog,
-APACHE_HELP_STRING(--with-suexec-syslog,Set the logfile),[
+APACHE_HELP_STRING(--with-suexec-syslog,Use syslog for suexec logging),[
   if test $withval = "yes"; then
     if test "x${with_suexec_logfile}" != "xno"; then
       AC_MSG_NOTICE([hint: use "--without-suexec-logfile --with-suexec-syslog"])
