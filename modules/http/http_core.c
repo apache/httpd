@@ -151,7 +151,9 @@ static int ap_process_http_async_connection(conn_rec *c)
 
             if (r->status == HTTP_OK) {
                 cs->state = CONN_STATE_HANDLER;
-                if (ap_extended_status) ap_set_conn_count(c->sbh, r, c->keepalives+1);
+                if (ap_extended_status) {
+                    ap_set_conn_count(c->sbh, r, c->keepalives + 1);
+                }
                 ap_update_child_status(c->sbh, SERVER_BUSY_WRITE, r);
                 ap_process_async_request(r);
                 /* After the call to ap_process_request, the
