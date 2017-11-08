@@ -140,11 +140,12 @@ static int ap_process_http_async_connection(conn_rec *c)
     AP_DEBUG_ASSERT(cs != NULL);
     AP_DEBUG_ASSERT(cs->state == CONN_STATE_READ_REQUEST_LINE);
 
-    while (cs->state == CONN_STATE_READ_REQUEST_LINE) {
+    if (cs->state == CONN_STATE_READ_REQUEST_LINE) {
         ap_update_child_status_from_conn(c->sbh, SERVER_BUSY_READ, c);
-        if (ap_extended_status) ap_set_conn_count(c->sbh, r, c->keepalives);
+        if (ap_extended_status) {
+            ap_set_conn_count(c->sbh, r, c->keepalives);
+        }
         if ((r = ap_read_request(c))) {
-
             c->keepalive = AP_CONN_UNKNOWN;
             /* process the request if it was read without error */
 
