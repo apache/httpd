@@ -43,7 +43,7 @@
 
 #define AP_SERVER_MAJORVERSION_NUMBER 2
 #define AP_SERVER_MINORVERSION_NUMBER 5
-#define AP_SERVER_PATCHLEVEL_NUMBER   0
+#define AP_SERVER_PATCHLEVEL_NUMBER   1
 #define AP_SERVER_DEVBUILD_BOOLEAN    1
 
 /* Synchronize the above with docs/manual/style/version.ent */

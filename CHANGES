@@ -1,4 +1,6 @@
                                                          -*- coding: utf-8 -*-
+Changes with Apache 2.5.0-alpha
+
 Changes with Apache 2.5.0
 
   *) mod_macro: fix usability of globally defined macros in .htaccess files.
