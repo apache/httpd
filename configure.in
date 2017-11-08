@@ -284,9 +284,13 @@ save_CPPFLAGS="$CPPFLAGS"
 CPPFLAGS="$CPPFLAGS $PCRE_INCLUDES"
 AC_EGREP_CPP(yes,
 [
+#ifdef HAVE_PCRE2
+yes
+#else
 #include <pcre.h>
 #ifdef PCRE_DUPNAMES
 yes
+#endif
 #endif
 ],pcre_have_dupnames=yes,pcre_have_dupnames=no)
 if test "$pcre_have_dupnames" != "yes"; then

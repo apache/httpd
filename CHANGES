@@ -1,7 +1,9 @@
                                                          -*- coding: utf-8 -*-
-Changes with Apache 2.5.0-alpha
+Changes with Apache 2.5.1
 
-Changes with Apache 2.5.0
+  *) core: fix pcre feature detection in configure when using pcre2.  [Rainer Jung]
+
+Changes with Apache 2.5.0-alpha
 
   *) mod_macro: fix usability of globally defined macros in .htaccess files.
      PR 57525.  [Jose Kahan <jose w3.org>, Yann Ylavic]
