@@ -226,6 +226,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   svn merge -c 1813643 ^/httpd/httpd/trunk .
      +1: ylavic, icing
 
+  *) mpm_event: avoid a very unlikely race condition between the listener and
+     the workers when the latter fails to add a connection to the pollset.
+     trunk patch: http://svn.apache.org/r1809273
+                  http://svn.apache.org/r1814719 (CHANGES only)
+     2.4.x patch: trunk works (modulo CHANGES)
+                  svn merge -c 1809273,1814719 ^/httpd/httpd/trunk .
+     +1: ylavic
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
