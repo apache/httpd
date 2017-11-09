@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_md: fix compilation of helper binary a2md.  [Rainer Jung]
+
   *) core: fix pcre feature detection in configure when using pcre2.  [Rainer Jung]
 
 Changes with Apache 2.5.0-alpha

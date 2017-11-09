@@ -35,11 +35,14 @@ COMMON_SHOBJECTS = $(COMMON_SOURCES:.c=.slo)
 
 a2md_CFLAGS = $(EXTRA_CPPFLAGS) $(EXTRA_INCLUDES)
 
-a2md_OBJECTS = \
+a2md_SOURCES = \
 	md_cmd_main.c \
 	md_cmd_acme.c \
 	md_cmd_reg.c \
 	md_cmd_store.c
+        
+a2md_OBJECTS = $(a2md_SOURCES:.c=.o)
+a2md_SHOBJECTS = $(a2md_SOURCES:.c=.slo)
 
 a2md: $(a2md_OBJECTS) $(COMMON_OBJECTS) $(COMMON_SHOBJECTS) md.h
 	$(LINK) $(a2md_CFLAGS) $(a2md_LTFLAGS) $(a2md_OBJECTS) $(COMMON_OBJECTS) $(A2MD_LDADD) $(AP_LIBS)
