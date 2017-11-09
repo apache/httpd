@@ -5,6 +5,10 @@ Changes with Apache 2.5.1
 
 Changes with Apache 2.5.0-alpha
 
+  *) mpm_event: avoid a very unlikely race condition between the listener and
+     the workers when the latter fails to add a connection to the pollset.
+     [Yann Ylavic]
+
   *) mod_macro: fix usability of globally defined macros in .htaccess files.
      PR 57525.  [Jose Kahan <jose w3.org>, Yann Ylavic]
 
