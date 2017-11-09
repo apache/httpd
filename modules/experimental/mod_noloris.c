@@ -57,8 +57,6 @@ static int thread_limit;
 
 static int noloris_conn(conn_rec *conn)
 {
-    struct { int child_num; int thread_num; } *sbh = conn->sbh;
-
     char *shm_rec;
     if (shm == NULL) {
         return DECLINED;  /* we're disabled */
