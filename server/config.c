@@ -1971,6 +1971,15 @@ static const char *process_resource_config_nofnmatch(server_rec *s,
 
         return NULL;
     }
+    else if (optional) {
+        /* If the optinal flag is set (like for IncludeOptional) we can
+         * tolerate that no file or directory is present and bail out.
+         */
+        apr_finfo_t finfo;
+        if (apr_stat(&finfo, fname, APR_FINFO_TYPE, ptemp) != APR_SUCCESS
+            || finfo.filetype == APR_NOFILE)
+            return NULL;
+    }
 
     return ap_process_resource_config(s, fname, conftree, p, ptemp);
 }
@@ -2021,6 +2030,12 @@ static const char *process_resource_config_fnmatch(server_rec *s,
      */
     rv = apr_dir_open(&dirp, path, ptemp);
     if (rv != APR_SUCCESS) {
+        /* If the directory doesn't exist and the optional flag is set
+         * there is no need to return an error.
+         */
+        if (rv == APR_ENOENT && optional) {
+            return NULL;
+        }
         return apr_psprintf(p, "Could not open config directory %s: %pm",
                             path, &rv);
     }

@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) core: silently ignore a not existent file path when IncludeOptional
+     is used. PR 57585. [Alberto Murillo Silva <powerbsd yahoo.com>, Luca Toscano]
+
   *) mod_noloris: complete build setup.  [Rainer Jung]
 
   *) mod_md: fix static compilation.  [Rainer Jung]
