@@ -1,9 +1,6 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
-  *) mod_serf, event MPM: look for serf-1 instead of serf-0 during configure.
-     [Rainer Jung]
-
   *) mod_noloris: complete build setup.  [Rainer Jung]
 
   *) mod_md: fix static compilation.  [Rainer Jung]

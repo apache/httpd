@@ -795,11 +795,11 @@ AC_DEFUN([APACHE_CHECK_SERF], [
 
     if test "$serf_prefix" != "no" ; then
       save_cppflags="$CPPFLAGS"
-      CPPFLAGS="$CPPFLAGS $APR_INCLUDES $APU_INCLUDES -I$serf_prefix/include/serf-1"
+      CPPFLAGS="$CPPFLAGS $APR_INCLUDES $APU_INCLUDES -I$serf_prefix/include/serf-0"
       AC_CHECK_HEADERS(serf.h,[
         save_ldflags="$LDFLAGS"
         LDFLAGS="$LDFLAGS -L$serf_prefix/lib"
-        AC_CHECK_LIB(serf-1, serf_context_create,[ac_cv_serf="yes"])
+        AC_CHECK_LIB(serf-0, serf_context_create,[ac_cv_serf="yes"])
         LDFLAGS="$save_ldflags"])
       CPPFLAGS="$save_cppflags"
     fi
@@ -808,8 +808,8 @@ AC_DEFUN([APACHE_CHECK_SERF], [
   APACHE_SUBST(SERF_LIBS)
   if test "$ac_cv_serf" = "yes"; then
     AC_DEFINE(HAVE_SERF, 1, [Define if libserf is available])
-    APR_SETVAR(SERF_LIBS, [-L$serf_prefix/lib -lserf-1])
-    APR_ADDTO(MOD_INCLUDES, [-I$serf_prefix/include/serf-1])
+    APR_SETVAR(SERF_LIBS, [-L$serf_prefix/lib -lserf-0])
+    APR_ADDTO(MOD_INCLUDES, [-I$serf_prefix/include/serf-0])
   fi
 ])
 
