@@ -3,6 +3,8 @@ Changes with Apache 2.5.1
 
   *) mod_noloris: complete build setup.  [Rainer Jung]
 
+  *) mod_md: fix static compilation.  [Rainer Jung]
+
   *) mod_md: fix compilation of helper binary a2md.  [Rainer Jung]
 
   *) core: fix pcre feature detection in configure when using pcre2.  [Rainer Jung]

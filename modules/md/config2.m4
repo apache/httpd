@@ -244,21 +244,21 @@ APACHE_MODPATH_INIT(md)
 
 dnl #  list of common object files
 md_common_objs="dnl
-md_acme.o dnl
-md_acme_acct.o dnl
-md_acme_authz.o dnl
-md_acme_drive.o dnl
-md_core.o dnl
-md_curl.o dnl
-md_crypt.o dnl
-md_http.o dnl
-md_json.o dnl
-md_jws.o dnl
-md_log.o dnl
-md_reg.o dnl
-md_store.o dnl
-md_store_fs.o dnl
-md_util.o dnl
+md_acme.lo dnl
+md_acme_acct.lo dnl
+md_acme_authz.lo dnl
+md_acme_drive.lo dnl
+md_core.lo dnl
+md_curl.lo dnl
+md_crypt.lo dnl
+md_http.lo dnl
+md_json.lo dnl
+md_jws.lo dnl
+md_log.lo dnl
+md_reg.lo dnl
+md_store.lo dnl
+md_store_fs.lo dnl
+md_util.lo dnl
 "
 
 dnl #  list of module object files
