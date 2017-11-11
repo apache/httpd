@@ -2580,15 +2580,16 @@ the server configuration files</description>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
 </contextlist>
-<compatibility>Available in 2.3.6 and later</compatibility>
+<compatibility>Available in 2.3.6 and later. Not existent file paths without wildcards
+               do not cause SyntaxError after 2.4.30</compatibility>
 
 <usage>
     <p>This directive allows inclusion of other configuration files
     from within the server configuration files. It works identically to the
-    <directive module="core">Include</directive> directive, with the
-    exception that if wildcards do not match any file or directory, the
-    <directive module="core">IncludeOptional</directive> directive will be
-    silently ignored instead of causing an error.</p>
+    <directive module="core">Include</directive> directive, but it will be
+    silently ignored (instead of causing an error) if wildcards are used and
+    they do not match any file or directory or if a file path does not exist
+    on the file system.</p>
 </usage>
 
 <seealso><directive module="core">Include</directive></seealso>
