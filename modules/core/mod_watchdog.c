@@ -534,11 +534,13 @@ static int wd_post_config_hook(apr_pool_t *pconf, apr_pool_t *plog,
                                                   w->name, s,
                                                   wd_server_conf->pool, 0);
                         if (rv != APR_SUCCESS) {
+                            ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, APLOGNO(10095)
+                                         "Watchdog: Failed to create singleton mutex.");
                             return rv;
                         }
+                        ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, s, APLOGNO(02979)
+                                "Watchdog: Created singleton mutex (%s).", w->name);
                     }
-                    ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, s, APLOGNO(02979)
-                            "Watchdog: Created child worker thread (%s).", w->name);
                     wd_server_conf->child_workers++;
                 }
             }
@@ -580,12 +582,12 @@ static void wd_child_init_hook(apr_pool_t *p, server_rec *s)
                  */
                 if ((rv = wd_startup(w, wd_server_conf->pool)) != APR_SUCCESS) {
                     ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, APLOGNO(01573)
-                                 "Watchdog: Failed to create worker thread.");
+                                 "Watchdog: Failed to create child worker thread.");
                     /* No point to continue */
                     return;
                 }
                 ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, s, APLOGNO(02981)
-                             "Watchdog: Created worker thread (%s).", wn[i].provider_name);
+                             "Watchdog: Created child worker thread (%s).", wn[i].provider_name);
             }
         }
     }
