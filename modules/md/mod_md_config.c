@@ -556,7 +556,7 @@ static const char *md_config_set_renew_window(cmd_parms *cmd, void *dc, const ch
     md_srv_conf_t *config = md_config_get(cmd->server);
     const char *err;
     apr_interval_time_t timeout;
-    int percent;
+    int percent = 0;
     
     (void)dc;
     if (!inside_section(cmd, MD_CMD_MD_SECTION)
