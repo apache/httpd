@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_watchdog: Correct some log messages.  [Rainer Jung]
+
   *) core: silently ignore a not existent file path when IncludeOptional
      is used. PR 57585. [Alberto Murillo Silva <powerbsd yahoo.com>, Luca Toscano]
 
