@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_md: v1.0.2, fix staging reset when MDCertificateAgreemen was initially missing.
+     [Stefan Eissing]
+
   *) mod_watchdog: Correct some log messages.  [Rainer Jung]
 
   *) core: silently ignore a not existent file path when IncludeOptional
