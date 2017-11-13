@@ -118,13 +118,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) core, mod_rewrite: introduce the 'keeps-redirect-vary' note in the internal redirect
-                        workflow to keep the Vary headers set by RewriteCond/Rule
-                        directives combinations in the directory context. PR: 58231
-     trunk patch: https://svn.apache.org/r1811744
-     2.4.x: svn merge -c 1811744 ^/httpd/httpd/trunk .
-     +1: elukey, icing, ylavic
-
   *) mod_macro: fix usability of globally defined macros in .htaccess files.
                 PR 57525.
      trunk patch: http://svn.apache.org/r1813643

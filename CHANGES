@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.30
 
+  *) mod_rewrite, core: add the Vary header when a condition evaluates to true
+     and the related RewriteRule is used in a Directory context
+     (triggering an internal redirect). [Luca Toscano]
+
   *) ab: Make the TLS layer aware that the underlying socket is nonblocking,
      and use/handle POLLOUT where needed to avoid busy IOs and recover write
      errors when appropriate.  [Yann Ylavic]
