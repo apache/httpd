@@ -224,7 +224,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1813643
      2.4.x patch: trunk works (modulo CHANGES)
                   svn merge -c 1813643 ^/httpd/httpd/trunk .
-     +1: ylavic, icing
+     +1: ylavic, icing, jim
 
   *) mpm_event: avoid a very unlikely race condition between the listener and
      the workers when the latter fails to add a connection to the pollset.
@@ -232,13 +232,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1814719 (CHANGES only)
      2.4.x patch: trunk works (modulo CHANGES)
                   svn merge -c 1809273,1814719 ^/httpd/httpd/trunk .
-     +1: ylavic
+     +1: ylavic, jim
 
   *) core: silently ignore a not existent file path when IncludeOptional is used.
      trunk patch: http://svn.apache.org/r1814968
      2.4.x patch: trunk works (modulo CHANGES)
                   svn merge -c r1814968 ^/httpd/httpd/trunk .
-     +1: elukey
+     +1: elukey, jim
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
