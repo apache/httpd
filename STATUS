@@ -125,6 +125,13 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x: svn merge -c 1811744 ^/httpd/httpd/trunk .
      +1: elukey, icing, ylavic
 
+  *) mod_macro: fix usability of globally defined macros in .htaccess files.
+                PR 57525.
+     trunk patch: http://svn.apache.org/r1813643
+     2.4.x patch: trunk works (modulo CHANGES)
+                  svn merge -c 1813643 ^/httpd/httpd/trunk .
+     +1: ylavic, icing, jim
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -218,13 +225,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              needed if the above configure.in proposal gets backported.
              Note that r1812339 could be backported in any case, even if
              the above configure.in proposal does not get accepted.
-
-  *) mod_macro: fix usability of globally defined macros in .htaccess files.
-                PR 57525.
-     trunk patch: http://svn.apache.org/r1813643
-     2.4.x patch: trunk works (modulo CHANGES)
-                  svn merge -c 1813643 ^/httpd/httpd/trunk .
-     +1: ylavic, icing, jim
 
   *) mpm_event: avoid a very unlikely race condition between the listener and
      the workers when the latter fails to add a connection to the pollset.
