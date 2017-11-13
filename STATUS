@@ -234,6 +234,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   svn merge -c 1809273,1814719 ^/httpd/httpd/trunk .
      +1: ylavic
 
+  *) core: silently ignore a not existent file path when IncludeOptional is used.
+     trunk patch: http://svn.apache.org/r1814968
+     2.4.x patch: trunk works (modulo CHANGES)
+                  svn merge -c r1814968 ^/httpd/httpd/trunk .
+     +1: elukey
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
