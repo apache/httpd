@@ -693,11 +693,17 @@ static const char *macro_section(cmd_parms * cmd,
     debug(fprintf(stderr, "macro_section: arg='%s'\n", arg));
 
     /* lazy initialization */
-    if (ap_macros == NULL)
-        ap_macros = apr_hash_make(cmd->temp_pool);
-    ap_assert(ap_macros != NULL);
-
-    pool = apr_hash_pool_get(ap_macros);
+    if (ap_macros == NULL) {
+        pool = cmd->pool;
+        ap_macros = apr_hash_make(pool);
+        ap_assert(ap_macros != NULL);
+        apr_pool_cleanup_register(pool, &ap_macros,
+                                  ap_pool_cleanup_set_null,
+                                  apr_pool_cleanup_null);
+    }
+    else {
+        pool = apr_hash_pool_get(ap_macros);
+    }
 
     endp = (char *) ap_strrchr_c(arg, '>');
 
@@ -905,12 +911,6 @@ static const char *undef_macro(cmd_parms * cmd, void *dummy, const char *arg)
     return NULL;
 }
 
-static int macro_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp)
-{
-    ap_macros = NULL;
-    return OK;
-}
-
 /************************************************************* EXPORT MODULE */
 
 /*
@@ -929,11 +929,6 @@ static const command_rec macro_cmds[] = {
     {NULL}
 };
 
-static void macro_hooks(apr_pool_t *p)
-{
-    ap_hook_pre_config(macro_pre_config, NULL, NULL, APR_HOOK_MIDDLE);
-}
-
 /*
   Module hooks are request-oriented thus it does not suit configuration
   file utils a lot. I haven't found any clean hook to apply something
@@ -951,5 +946,5 @@ AP_DECLARE_MODULE(macro) = {
         NULL,                   /* create per-server config structure */
         NULL,                   /* merge per-server config structures */
         macro_cmds,             /* configuration commands */
-        macro_hooks             /* register hooks */
+        NULL                    /* register hooks */
 };

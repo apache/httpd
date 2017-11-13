@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.30
 
+  *) mod_macro: fix usability of globally defined macros in .htaccess files.
+     PR 57525.  [Jose Kahan <jose w3.org>, Yann Ylavic]
+
   *) mod_rewrite, core: add the Vary header when a condition evaluates to true
      and the related RewriteRule is used in a Directory context
      (triggering an internal redirect). [Luca Toscano]
