@@ -515,6 +515,7 @@ static request_rec *internal_internal_redirect(const char *new_uri,
                                                request_rec *r) {
     int access_status;
     request_rec *new;
+    const char *vary_header;
 
     if (ap_is_recursion_limit_exceeded(r)) {
         ap_die(HTTP_INTERNAL_SERVER_ERROR, r);
@@ -578,6 +579,16 @@ static request_rec *internal_internal_redirect(const char *new_uri,
         if (location)
             apr_table_setn(new->headers_out, "Location", location);
     }
+
+    /* A module (like mod_rewrite) can force an internal redirect
+     * to carry over the Vary header (if present).
+     */
+    if (apr_table_get(r->notes, "redirect-keeps-vary")) {
+        if((vary_header = apr_table_get(r->headers_out, "Vary"))) {
+            apr_table_setn(new->headers_out, "Vary", vary_header);
+        }
+    }
+
     new->err_headers_out = r->err_headers_out;
     new->trailers_out    = apr_table_make(r->pool, 5);
     new->subprocess_env  = rename_original_env(r->pool, r->subprocess_env);
