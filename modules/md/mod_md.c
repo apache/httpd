@@ -671,7 +671,8 @@ static apr_status_t check_job(md_watchdog *wd, md_job_t *job, apr_pool_t *ptemp)
     if (job->stalled) {
         /* Missing information, this will not change until configuration
          * is changed and server restarted */
-         return APR_INCOMPLETE;
+         rv = APR_INCOMPLETE;
+         goto out;
     }
     else if (job->renewed) {
         assess_renewal(wd, job, ptemp);
@@ -720,6 +721,7 @@ static apr_status_t check_job(md_watchdog *wd, md_job_t *job, apr_pool_t *ptemp)
                      job->md->name, job->error_runs, md_print_duration(ptemp, delay));
     }
     
+out:
     if (error_runs != job->error_runs) {
         save_job_props(wd->reg, job, ptemp);
     }
