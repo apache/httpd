@@ -159,6 +159,7 @@ BEGIN {
           print "#LoadModule log_forensic_module modules/mod_log_forensic.so" > dstfl;
           print "#LoadModule lua_module modules/mod_lua.so" > dstfl;
           print "#LoadModule macro_module modules/mod_macro.so" > dstfl;
+          print "#LoadModule md_module modules/mod_md.so" > dstfl;
           print "LoadModule mime_module modules/mod_mime.so" > dstfl;
           print "#LoadModule mime_magic_module modules/mod_mime_magic.so" > dstfl;
           print "LoadModule negotiation_module modules/mod_negotiation.so" > dstfl;
