@@ -274,6 +274,34 @@ _trynghttp2:
 
 !ENDIF
 
+!IF EXIST("srclib\openssl") && EXIST("srclib\jansson") && EXIST("srclib\curl")
+
+_trymd:
+!IF $(USEMAK) == 1
+	cd modules\md
+	$(MAKE) $(MAKEOPT) $(SSLOPT) -f mod_md.mak CFG="mod_md - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	$(MAKE) $(MAKEOPT) $(SSLOPT) -f a2md.mak CFG="a2md - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	cd ..\..
+!ELSEIF $(USESLN) == 1
+	devenv $(TLP).sln /useenv $(CTARGET) $(LONG) /project mod_md
+	devenv $(TLP).sln /useenv $(CTARGET) $(LONG) /project a2md
+!ELSE
+	@msdev $(TLP).dsw /USEENV /MAKE \
+		"mod_md - Win32 $(LONG)" /NORECURSE $(CTARGET)
+	@msdev $(TLP).dsw /USEENV /MAKE \
+		"a2md - Win32 $(LONG)" /NORECURSE $(CTARGET)
+!ENDIF
+
+!ELSE
+#     NOT EXIST("srclib\openssl") && EXIST("srclib\jansson") && EXIST("srclib\curl")
+
+_trymd:
+	@echo -----
+	@echo mod_md and a2md will not build unless OpenSSL, Jansson and Curl are built in placed
+	@echo in srclib. Example: srclib/openssl, srclib/jansson and srclib/curl
+
+!ENDIF
+
 _trydb:
 !IF $(USEMAK) == 1
 	cd srclib\$(UTILDIR)\dbd
@@ -620,6 +648,12 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f mod_slotmem_shm.mak    CFG="mod_slotmem_shm - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 !IF EXIST("srclib\openssl")
+!IF EXIST("srclib\jansson") && EXIST("srclib\curl")
+	cd modules\md
+	 $(MAKE) $(MAKEOPT) $(SSLOPT) -f a2md.mak            CFG="a2md - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) $(SSLOPT) -f mod_md.mak          CFG="mod_md - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	cd ..\..
+!ENDIF
 #	cd modules\session
 #	 $(MAKE) $(MAKEOPT) -f mod_session_crypto.mak CFG="mod_session_crypto - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 #	cd ..\..
@@ -903,6 +937,12 @@ _copybin:
 	copy modules\slotmem\$(LONG)\mod_slotmem_plain.$(src_so)    "$(inst_so)" <.y
 	copy modules\slotmem\$(LONG)\mod_slotmem_shm.$(src_so)    "$(inst_so)" <.y
 !IF EXIST("srclib\openssl")
+!IF EXIST("srclib\jansson") &&  EXIST("srclib\curl")
+	copy modules\md\$(LONG)\mod_md.$(src_so) 		"$(inst_so)" <.y
+	copy modules\md\$(LONG)\a2md.$(src_exe)			"$(inst_exe)" <.y
+	-copy srclib\jansson\bin\jansson.$(src_dll)		"$(inst_dll)" <.y
+	-copy srclib\curl\bin\libcurl.$(src_dll)		"$(inst_dll)" <.y
+!ENDIF
 #	copy modules\session\$(LONG)\mod_session_crypto.$(src_so) "$(inst_so)" <.y
 	copy modules\ssl\$(LONG)\mod_ssl.$(src_so) 		"$(inst_so)" <.y
 	-copy srclib\openssl\$(SSLBIN)\libeay32.$(src_dll) 	"$(inst_dll)" <.y
