@@ -420,6 +420,27 @@ Package=<4>
 
 ###############################################################################
 
+Project: "a2md"=.\modules\md\a2md.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name apr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name abs
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Project: "ab"=.\support\ab.dsp - Package Owner=<4>
 
 Package=<5>
@@ -2168,6 +2189,24 @@ Package=<4>
 ###############################################################################
 
 Project: "mod_macro"=.\modules\core\mod_macro.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_md"=.\modules\md\mod_mmd.dsp - Package Owner=<4>
 
 Package=<5>
 {{{

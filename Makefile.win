@@ -648,12 +648,6 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f mod_slotmem_shm.mak    CFG="mod_slotmem_shm - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 !IF EXIST("srclib\openssl")
-!IF EXIST("srclib\jansson") && EXIST("srclib\curl")
-	cd modules\md
-	 $(MAKE) $(MAKEOPT) $(SSLOPT) -f a2md.mak            CFG="a2md - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) $(SSLOPT) -f mod_md.mak          CFG="mod_md - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	cd ..\..
-!ENDIF
 #	cd modules\session
 #	 $(MAKE) $(MAKEOPT) -f mod_session_crypto.mak CFG="mod_session_crypto - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 #	cd ..\..
@@ -663,6 +657,12 @@ _build:
 	cd support
 	 $(MAKE) $(MAKEOPT) -f abs.mak             CFG="abs - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..
+!IF EXIST("srclib\jansson") && EXIST("srclib\curl")
+	cd modules\md
+	 $(MAKE) $(MAKEOPT) $(SSLOPT) -f a2md.mak            CFG="a2md - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) $(SSLOPT) -f mod_md.mak          CFG="mod_md - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	cd ..\..
+!ENDIF
 !ENDIF
 	cd support
 	 $(MAKE) $(MAKEOPT) -f ab.mak              CFG="ab - Win32 $(LONG)" RECURSE=0 $(CTARGET)
