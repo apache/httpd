@@ -621,8 +621,14 @@ apr_status_t md_acme_agree(md_acme_t *acme, apr_pool_t *p, const char *agreement
 
 static int agreement_required(md_acme_acct_t *acct)
 {
-    return (!acct->agreement 
-            || (acct->tos_required && strcmp(acct->tos_required, acct->agreement)));
+    /* We used to really check if the account agreement and the one
+     * indicated as valid are the very same:
+     * return (!acct->agreement 
+     *       || (acct->tos_required && strcmp(acct->tos_required, acct->agreement)));
+     * However, LE is happy if the account has agreed to a ToS in the past and
+     * does not required a renewed acceptance.
+     */
+     return !acct->agreement; 
 }
 
 apr_status_t md_acme_check_agreement(md_acme_t *acme, apr_pool_t *p, 
