@@ -136,7 +136,7 @@ out:
     if (APR_SUCCESS == rv) {
         const char *agreement = md_acme_get_agreement(ad->acme);
         /* Persist the account chosen at the md so we use the same on future runs */
-        if (agreement && (!md->ca_agreement || strcmp(agreement, md->ca_agreement))) { 
+        if (agreement && !md->ca_agreement) { 
             md->ca_agreement = agreement;
             update = 1;
         }
