@@ -69,6 +69,9 @@
         or regex of a subsequent one.</dd>
     </dl>
 
+    <p>The <var>substitution</var> is may contain literal text and regular
+    expression backreferences</p>
+
     <example><title>Example</title>
     <highlight language="config">
 &lt;Location "/"&gt;
