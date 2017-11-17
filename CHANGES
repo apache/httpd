@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_ssl: Fail with 403 if the username for FakeBasicAuth mode
+     includes a colon character.  PR 52644.  [Joe Orton]
+
   *) mod_md: v1.0.3, fixed various bugs in persisting job properties, so that status is 
      persisted accross child process changes and staging is reset on reloads. Changed 
      MDCertificateAgreement url checks. As long as the CA reports that the account has 

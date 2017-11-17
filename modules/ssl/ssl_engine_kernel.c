@@ -1181,8 +1181,7 @@ int ssl_hook_UserCheck(request_rec *r)
     SSLConnRec *sslconn = myConnConfig(r->connection);
     SSLSrvConfigRec *sc = mySrvConfig(r->server);
     SSLDirConfigRec *dc = myDirConfig(r);
-    char *user;
-    const char *auth_line, *username, *password;
+    const char *user, *auth_line, *username, *password;
 
     /*
      * Additionally forbid access (again)
@@ -1258,7 +1257,14 @@ int ssl_hook_UserCheck(request_rec *r)
         }
     }
     else {
-        user = (char *)sslconn->client_dn;
+        user = sslconn->client_dn;
+    }
+
+    if (ap_strchr_c(user, ':') != NULL) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10096)
+                      "Cannot use FakeBasicAuth for username "
+                      "containing a colon: %s", user);
+        return HTTP_FORBIDDEN;
     }
 
     /*
