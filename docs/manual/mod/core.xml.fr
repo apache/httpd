@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1799680:1814968 (outdated) -->
+<!-- English Revision: 1814968 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -2800,15 +2800,16 @@ Include conf/vhosts/*.conf
 <context>directory</context>
 </contextlist>
 <compatibility>Disponible à partir de la version 2.3.6 du serveur HTTP
-Apache</compatibility>
+Apache. Les chemins de fichier inexistants sans caractère générique ne
+provoquent plus d'erreur de syntaxe après de la version 2.4.30</compatibility>
  
 <usage>
-    <p>Cette directive permet d'inclure des fichiers dans les fichiers
-    de configuration du serveur. Elle fonctionne de manière identique à
-    la directive <directive module="core">Include</directive>, à
-    l'exception du fait que si l'expression avec caractères génériques
-    wilcard ne correspond à aucun fichier ou répertoire, elle sera
-    ignorée silencieusement au lieu de causer une erreur.</p>    
+    <p>Cette directive permet d'inclure des fichiers dans les fichiers de
+    configuration du serveur. Elle fonctionne de manière identique à la
+    directive <directive module="core">Include</directive>, à l'exception du
+    fait que si l'expression avec ou sans caractères génériques wilcard ne
+    correspond à aucun fichier ou répertoire, elle sera ignorée silencieusement
+    au lieu de causer une erreur.</p>    
     
 </usage>
 

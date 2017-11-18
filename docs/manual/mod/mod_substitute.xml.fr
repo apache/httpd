@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1743798 -->
+<!-- English Revision : 1815480 -->
 <!-- French translation : Lucien GENTIS -->
-<!-- $LastChangedRevision: 2016052101 $ -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -80,6 +79,10 @@ réponse</description>
 	corresponde au modèle ou à l'expression rationnelle d'une
 	substitution ultérieure.</dd>
     </dl>
+
+    <p><var>substitution</var> peut contenir du texte et des références arrières
+    d'expressions rationnelles.
+    </p>
 
     <example><title>Exemple</title>
         <highlight language="config">
