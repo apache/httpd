@@ -19,7 +19,7 @@
   <modulefile>mod_authn_socache.xml.fr</modulefile>
   <modulefile>mod_authnz_fcgi.xml</modulefile>
   <modulefile>mod_authnz_ldap.xml.fr</modulefile>
-  <modulefile>mod_authz_core.xml</modulefile>
+  <modulefile>mod_authz_core.xml.fr</modulefile>
   <modulefile>mod_authz_dbd.xml.fr</modulefile>
   <modulefile>mod_authz_dbm.xml.fr</modulefile>
   <modulefile>mod_authz_groupfile.xml.fr</modulefile>

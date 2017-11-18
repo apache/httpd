@@ -277,9 +277,9 @@ objets de l'annuaire qui sont des groupes au cours du traitement des
 sous-groupes.</td></tr>
 <tr><td><a href="mod_authnz_ldap.html#authldapurl">AuthLDAPUrl <em>url [NONE|SSL|TLS|STARTTLS]</em></a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">L'URL permettant de spécifier les paramètres de la
 recherche LDAP</td></tr>
-<tr class="odd"><td><a href="mod_authz_core.html#authmerging">AuthMerging Off | And | Or</a></td><td> Off </td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Controls the manner in which each configuration section's
-authorization logic is combined with that of preceding configuration
-sections.</td></tr>
+<tr class="odd"><td><a href="mod_authz_core.html#authmerging">AuthMerging Off | And | Or</a></td><td> Off </td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Définit la manière dont chaque logique d'autorisation des
+sections de configuration se combine avec celles des sections de
+configuration précédentes.</td></tr>
 <tr><td><a href="mod_authn_core.html#authname">AuthName <var>domaine d'autorisation</var></a></td><td></td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">L'identifiant de l'autorisation à utiliser avec
 l'authentification HTTP</td></tr>
 <tr class="odd"><td><a href="mod_authn_socache.html#authncachecontext">AuthnCacheContext <var>directory|server|chaîne-personnalisée</var></a></td><td></td><td>d</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Spécifie une chaîne de contexte à utiliser dans la clé du
@@ -313,13 +313,14 @@ de requête <code>Referer</code> est présent</td></tr>
 rediriger l'utilisateur après une connexion réussie</td></tr>
 <tr><td><a href="mod_authz_dbm.html#authzdbmtype">AuthzDBMType default|SDBM|GDBM|NDBM|DB</a></td><td> default </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Définit le type de fichier de base de données contenant
 la liste des groupes d'utilisateurs</td></tr>
-<tr class="odd"><td><a href="mod_authz_core.html#authzprovideralias">&lt;AuthzProviderAlias <var>baseProvider Alias Require-Parameters</var>&gt;
+<tr class="odd"><td><a href="mod_authz_core.html#authzprovideralias">&lt;AuthzProviderAlias <var>fournisseur-de-base Alias
+Paramètres-Require</var>&gt;
 ... &lt;/AuthzProviderAlias&gt;
-</a></td><td></td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Enclose a group of directives that represent an
-extension of a base authorization provider and referenced by the specified
-alias</td></tr>
-<tr><td><a href="mod_authz_core.html#authzsendforbiddenonfailure">AuthzSendForbiddenOnFailure On|Off</a></td><td> Off </td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Send '403 FORBIDDEN' instead of '401 UNAUTHORIZED' if
-authentication succeeds but authorization fails
+</a></td><td></td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Regroupe des directives représentant une extension d'un
+fournisseur d'autorisation de base qui pourra être référencée à l'aide
+de l'alias spécifié</td></tr>
+<tr><td><a href="mod_authz_core.html#authzsendforbiddenonfailure">AuthzSendForbiddenOnFailure On|Off</a></td><td> Off </td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Envoie '403 FORBIDDEN' au lieu de '401 UNAUTHORIZED' si
+l'authentification réussit et si l'autorisation a été refusée.
 </td></tr>
 <tr class="odd"><td><a href="mod_proxy.html#balancergrowth" id="B" name="B">BalancerGrowth <var>#</var></a></td><td> 5 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Nombre de membres supplémentaires pouvant être ajoutés
 après la configuration initiale</td></tr>
@@ -1060,16 +1061,20 @@ d'extensions de noms de fichiers</td></tr>
 </a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Définit des délais maximums pour la réception des en-têtes
 et corps des requêtes en provenance du client.
 </td></tr>
-<tr><td><a href="mod_authz_core.html#require">Require [not] <var>entity-name</var>
-    [<var>entity-name</var>] ...</a></td><td></td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Tests whether an authenticated user is authorized by
-an authorization provider.</td></tr>
-<tr class="odd"><td><a href="mod_authz_core.html#requireall">&lt;RequireAll&gt; ... &lt;/RequireAll&gt;</a></td><td></td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Enclose a group of authorization directives of which none
-must fail and at least one must succeed for the enclosing directive to
-succeed.</td></tr>
-<tr><td><a href="mod_authz_core.html#requireany">&lt;RequireAny&gt; ... &lt;/RequireAny&gt;</a></td><td></td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Enclose a group of authorization directives of which one
-must succeed for the enclosing directive to succeed.</td></tr>
-<tr class="odd"><td><a href="mod_authz_core.html#requirenone">&lt;RequireNone&gt; ... &lt;/RequireNone&gt;</a></td><td></td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Enclose a group of authorization directives of which none
-must succeed for the enclosing directive to not fail.</td></tr>
+<tr><td><a href="mod_authz_core.html#require">Require [not] <var>nom-entité</var> [<var>nom-entité</var>]
+...</a></td><td></td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Vérifie si un utilisateur authentifié a une
+autorisation d'accès accordée par un fournisseur
+d'autorisation.</td></tr>
+<tr class="odd"><td><a href="mod_authz_core.html#requireall">&lt;RequireAll&gt; ... &lt;/RequireAll&gt;</a></td><td></td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Regroupe plusieurs directives d'autorisation dont aucune ne
+doit échouer et dont au moins une doit retourner un résultat positif
+pour que la directive globale retourne elle-même un résultat
+positif.</td></tr>
+<tr><td><a href="mod_authz_core.html#requireany">&lt;RequireAny&gt; ... &lt;/RequireAny&gt;</a></td><td></td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Regroupe des directives d'autorisation dont au moins une
+doit retourner un résultat positif pour que la directive globale
+retourne elle-même un résultat positif.</td></tr>
+<tr class="odd"><td><a href="mod_authz_core.html#requirenone">&lt;RequireNone&gt; ... &lt;/RequireNone&gt;</a></td><td></td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Regroupe des directives d'autorisation dont aucune ne doit
+retourner un résultat positif pour que la directive globale n'échoue
+pas.</td></tr>
 <tr><td><a href="mod_rewrite.html#rewritebase">RewriteBase <em>chemin_URL</em></a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Définit l'URL de base pour les réécritures au niveau
 répertoire</td></tr>
 <tr class="odd"><td><a href="mod_rewrite.html#rewritecond"> RewriteCond
