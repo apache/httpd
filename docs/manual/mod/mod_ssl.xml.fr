@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1811976 -->
+<!-- English Revision: 1815599 -->
 <!-- French translation : Lucien GENTIS -->
 
 <!--
@@ -1702,6 +1702,13 @@ Les <em>option</em>s disponibles sont :</p>
     <module>mod_auth_basic</module> permet de contrôler à la
     fois le nom d'utilisateur et le mot de passe ; elle fournit donc un
     mécanisme plus général de simulation d'authentification de base.</p>
+
+    <note type="warning">
+      <p>Les noms d'utilisateur pour <code>FakeBasicAuth</code> ne doivent pas
+      contenir de caractères non-ASCII, de caractères d'échappement ASCII (comme
+      newline), ou de caractère ':'. A partir de la version 2.5.1 de httpd, si
+      un caractère ':' est rencontré, une erreur 403 Forbidden sera générée.</p>
+    </note>
 </li>
 <li><code>StrictRequire</code>
     <p>
