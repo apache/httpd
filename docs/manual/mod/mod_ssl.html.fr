@@ -1527,6 +1527,13 @@ Les <em>option</em>s disponibles sont :</p>
     <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> permet de contrôler à la
     fois le nom d'utilisateur et le mot de passe ; elle fournit donc un
     mécanisme plus général de simulation d'authentification de base.</p>
+
+    <div class="warning">
+      <p>Les noms d'utilisateur pour <code>FakeBasicAuth</code> ne doivent pas
+      contenir de caractères non-ASCII, de caractères d'échappement ASCII (comme
+      newline), ou de caractère ':'. A partir de la version 2.5.1 de httpd, si
+      un caractère ':' est rencontré, une erreur 403 Forbidden sera générée.</p>
+    </div>
 </li>
 <li><code>StrictRequire</code>
     <p>

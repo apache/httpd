@@ -93,6 +93,10 @@ réponse</td></tr>
 	substitution ultérieure.</dd>
     </dl>
 
+    <p><var>substitution</var> peut contenir du texte et des références arrières
+    d'expressions rationnelles.
+    </p>
+
     <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">&lt;Location "/"&gt;
     AddOutputFilterByType SUBSTITUTE text/html
     Substitute "s/foo/bar/ni"

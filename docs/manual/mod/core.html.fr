@@ -2731,14 +2731,15 @@ Include conf/vhosts/*.conf</pre>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.3.6 du serveur HTTP
-Apache</td></tr>
+Apache. Les chemins de fichier inexistants sans caractère générique ne
+provoquent plus d'erreur de syntaxe après de la version 2.4.30</td></tr>
 </table>
-    <p>Cette directive permet d'inclure des fichiers dans les fichiers
-    de configuration du serveur. Elle fonctionne de manière identique à
-    la directive <code class="directive"><a href="#include">Include</a></code>, à
-    l'exception du fait que si l'expression avec caractères génériques
-    wilcard ne correspond à aucun fichier ou répertoire, elle sera
-    ignorée silencieusement au lieu de causer une erreur.</p>    
+    <p>Cette directive permet d'inclure des fichiers dans les fichiers de
+    configuration du serveur. Elle fonctionne de manière identique à la
+    directive <code class="directive"><a href="#include">Include</a></code>, à l'exception du
+    fait que si l'expression avec ou sans caractères génériques wilcard ne
+    correspond à aucun fichier ou répertoire, elle sera ignorée silencieusement
+    au lieu de causer une erreur.</p>    
     
 
 <h3>Voir aussi</h3>
