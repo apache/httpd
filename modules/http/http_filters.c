@@ -1063,8 +1063,16 @@ static void basic_http_header(request_rec *r, apr_bucket_brigade *bb,
 
     if (!server && *us)
         server = us;
-    if (server)
-        form_header_field(&h, "Server", server);
+    if (server) {
+        const char *server_version = ap_get_server_banner();
+        if(server_version[0] != '\0') {
+            form_header_field(&h, "Server", ap_get_server_banner());
+        }
+        else {
+            form_header_field(&h, "Server", server);
+        }
+    }
+        
 
     if (APLOGrtrace3(r)) {
         ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, r,
