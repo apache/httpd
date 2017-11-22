@@ -1237,7 +1237,7 @@ apr_status_t md_cert_self_sign(md_cert_t **pcert, const char *cn,
         md_log_perror(MD_LOG_MARK, MD_LOG_ERR, 0, p, "%s: name add entry", cn);
         rv = APR_EGENERAL; goto out;
     }
-    /* cert are uncontrained (but not very trustworthy) */
+    /* cert are unconstrained (but not very trustworthy) */
     if (APR_SUCCESS != (rv = add_ext(x, NID_basic_constraints, "CA:FALSE, pathlen:0", p))) {
         md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, p, "%s: set basic constraints ext", cn);
         goto out;

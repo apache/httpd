@@ -263,7 +263,7 @@ apr_status_t md_reg_assess(md_reg_t *reg, md_t *md, int *perrored, int *prenew, 
     (void)reg;
     switch (md->state) {
         case MD_S_UNKNOWN:
-            md_log_perror( MD_LOG_MARK, MD_LOG_ERR, 0, p, "md(%s): in unkown state.", md->name);
+            md_log_perror( MD_LOG_MARK, MD_LOG_ERR, 0, p, "md(%s): in unknown state.", md->name);
             break;
         case MD_S_ERROR:
             md_log_perror( MD_LOG_MARK, MD_LOG_ERR, 0, p,  

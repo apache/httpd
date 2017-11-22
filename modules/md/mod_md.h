@@ -27,7 +27,7 @@ APR_DECLARE_OPTIONAL_FN(int,
 /**
  * Get the certificate/key for the managed domain (md_is_managed != 0).
  * 
- * @return APR_EAGAIN if the real certicate is not available yet
+ * @return APR_EAGAIN if the real certificate is not available yet
  */
 APR_DECLARE_OPTIONAL_FN(apr_status_t, 
                         md_get_certificate, (struct server_rec *, apr_pool_t *,

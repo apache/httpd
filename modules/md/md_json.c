@@ -52,7 +52,7 @@ struct md_json_t {
 };
 
 /**************************************************************************************************/
-/* lifecylce */
+/* lifecycle */
 
 static apr_status_t json_pool_cleanup(void *data)
 {

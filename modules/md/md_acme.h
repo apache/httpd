@@ -72,7 +72,7 @@ apr_status_t md_acme_init(apr_pool_t *pool, const char *base_version);
 
 /**
  * Create a new ACME server instance. If path is not NULL, will use that directory
- * for persisting information. Will load any inforation persisted in earlier session.
+ * for persisting information. Will load any information persisted in earlier session.
  * url needs only be specified for instances where this has never been persisted before.
  *
  * @param pacme   will hold the ACME server instance on success
@@ -125,7 +125,7 @@ apr_status_t md_acme_agree(md_acme_t *acme, apr_pool_t *p, const char *tos);
  * given in the agreement url.
  * If the known agreement is equal to this, nothing is done.
  * If it differs, the account is re-validated in the hope that the server
- * accounces the Tos URL it wants. If this is equal to the agreement specified,
+ * announces the Tos URL it wants. If this is equal to the agreement specified,
  * the server is notified of this. If the server requires a ToS that the account
  * thinks it has already given, it is resend.
  *
@@ -176,7 +176,7 @@ apr_status_t md_acme_unstore_acct(struct md_store_t *store, apr_pool_t *p, const
 /* request handling */
 
 /**
- * Request callback on a successfull HTTP response (status 2xx).
+ * Request callback on a successful HTTP response (status 2xx).
  */
 typedef apr_status_t md_acme_req_res_cb(md_acme_t *acme, 
                                         const struct md_http_response_t *res, void *baton);
@@ -193,7 +193,7 @@ typedef struct md_acme_req_t md_acme_req_t;
 typedef apr_status_t md_acme_req_init_cb(md_acme_req_t *req, void *baton);
 
 /**
- * Request callback on a successfull response (HTTP response code 2xx) and content
+ * Request callback on a successful response (HTTP response code 2xx) and content
  * type matching application/.*json.
  */
 typedef apr_status_t md_acme_req_json_cb(md_acme_t *acme, apr_pool_t *p, 
@@ -210,7 +210,7 @@ struct md_acme_req_t {
     struct md_json_t *req_json;    /* JSON to be POSTed in request body */
 
     apr_table_t *resp_hdrs;        /* HTTP response headers */
-    struct md_json_t *resp_json;   /* JSON response body recevied */
+    struct md_json_t *resp_json;   /* JSON response body received */
     
     apr_status_t rv;               /* status of request */
     
