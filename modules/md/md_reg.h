@@ -75,7 +75,7 @@ apr_status_t md_reg_assess(md_reg_t *reg, md_t *md, int *perrored, int *prenew, 
 typedef int md_reg_do_cb(void *baton, md_reg_t *reg, md_t *md);
 
 /**
- * Invoke callback for all mds in this registry. Order is not guarantueed.
+ * Invoke callback for all mds in this registry. Order is not guaranteed.
  * If the callback returns 0, iteration stops. Returns 0 if iteration was
  * aborted.
  */

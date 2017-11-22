@@ -61,7 +61,7 @@ md_cmd_t MD_RegAddCmd = {
     "add", MD_CTX_REG,  
     NULL, cmd_reg_add, MD_NoOptions, NULL,
     "add [opts] domain [domain...]", 
-    "Adds a new mananged domain. Must not overlap with existing domains.", 
+    "Adds a new managed domain. Must not overlap with existing domains.", 
 };
 
 /**************************************************************************************************/

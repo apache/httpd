@@ -384,7 +384,7 @@ static md_cmd_t MainCmd = {
     main_opts, NULL,
     MainOptions, MainSubCmds,
     "a2md [options] cmd [cmd options] [args]", 
-    "Show and manipulate Apache Manged Domains", 
+    "Show and manipulate Apache Managed Domains", 
 };
 
 #define BASE_VERSION "apachemd/" MOD_MD_VERSION

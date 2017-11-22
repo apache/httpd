@@ -812,7 +812,7 @@ static apr_status_t run_watchdog(int state, void *baton, apr_pool_t *ptemp)
         if (n > 0) {
             int notified = 1;
 
-            /* Run notifiy command for ready MDs (if configured) and persist that
+            /* Run notify command for ready MDs (if configured) and persist that
              * we have done so. This process might be reaped after n requests or die
              * of another cause. The one taking over the watchdog need to notify again.
              */
@@ -846,7 +846,7 @@ static apr_status_t run_watchdog(int state, void *baton, apr_pool_t *ptemp)
                 }
             }
             
-            /* FIXME: the server needs to start gracefully to take the new certficate in.
+            /* FIXME: the server needs to start gracefully to take the new certificate in.
              * This poses a variety of problems to solve satisfactory for everyone:
              * - I myself, have no implementation for Windows 
              * - on *NIX, child processes run with less privileges, preventing
@@ -1025,7 +1025,7 @@ static apr_status_t md_post_config(apr_pool_t *p, apr_pool_t *plog,
     sc = md_config_get(s);
     mc = sc->mc;
     
-    /* Synchronize the defintions we now have with the store via a registry (reg). */
+    /* Synchronize the definitions we now have with the store via a registry (reg). */
     if (APR_SUCCESS != (rv = setup_reg(&reg, p, s, mc->can_http, mc->can_https))) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10072)
                      "setup md registry");
@@ -1348,7 +1348,7 @@ static int md_require_https_maybe(request_rec *r)
 }
 
 /* Runs once per created child process. Perform any process 
- * related initionalization here.
+ * related initialization here.
  */
 static void md_child_init(apr_pool_t *pool, server_rec *s)
 {

@@ -734,7 +734,7 @@ static const char *md_config_set_pkeys(cmd_parms *cmd, void *dc,
             }
         }
         else {
-            return "key type 'RSA' has only one optinal parameter, the number of bits";
+            return "key type 'RSA' has only one optional parameter, the number of bits";
         }
 
         if (!config->pkey_spec) {
@@ -762,7 +762,7 @@ static const char *md_config_set_notify_cmd(cmd_parms *cmd, void *arg, const cha
 
 const command_rec md_cmds[] = {
     AP_INIT_TAKE1(     MD_CMD_CA, md_config_set_ca, NULL, RSRC_CONF, 
-                  "URL of CA issueing the certificates"),
+                  "URL of CA issuing the certificates"),
     AP_INIT_TAKE1(     MD_CMD_CAAGREEMENT, md_config_set_agreement, NULL, RSRC_CONF, 
                   "URL of CA Terms-of-Service agreement you accept"),
     AP_INIT_TAKE_ARGV( MD_CMD_CACHALLENGES, md_config_set_cha_tyes, NULL, RSRC_CONF, 
@@ -774,7 +774,7 @@ const command_rec md_cmds[] = {
     AP_INIT_TAKE_ARGV( MD_CMD_MD, md_config_set_names, NULL, RSRC_CONF, 
                       "A group of server names with one certificate"),
     AP_INIT_RAW_ARGS(  MD_CMD_MD_SECTION, md_config_sec_start, NULL, RSRC_CONF, 
-                     "Container for a manged domain with common settings and certificate."),
+                     "Container for a managed domain with common settings and certificate."),
     AP_INIT_TAKE_ARGV( MD_CMD_MEMBER, md_config_sec_add_members, NULL, RSRC_CONF, 
                       "Define domain name(s) part of the Managed Domain. Use 'auto' or "
                       "'manual' to enable/disable auto adding names from virtual hosts."),

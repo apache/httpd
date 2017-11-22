@@ -284,7 +284,7 @@ static apr_status_t inspect_problem(md_acme_req_t *req, const md_http_response_t
                 return APR_ENOENT;
             default:
                 md_log_perror(MD_LOG_MARK, MD_LOG_WARNING, 0, req->p,
-                              "acme problem unknonw: http status %d", res->status);
+                              "acme problem unknown: http status %d", res->status);
                 return APR_EGENERAL;
         }
     }

@@ -185,7 +185,7 @@ apr_status_t md_acme_authz_register(struct md_acme_authz_t **pauthz, md_acme_t *
 }
 
 /**************************************************************************************************/
-/* Update an exiosting authorization */
+/* Update an existing authorization */
 
 apr_status_t md_acme_authz_update(md_acme_authz_t *authz, md_acme_t *acme, 
                                   md_store_t *store, apr_pool_t *p)
@@ -379,7 +379,7 @@ static apr_status_t cha_tls_sni_01_setup(md_acme_authz_cha_t *cha, md_acme_authz
         || APR_STATUS_IS_ENOENT(rv)) {
         
         if (APR_SUCCESS != (rv = md_pkey_gen(&cha_key, p, key_spec))) {
-            md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, p, "%s: create tls-sni-01 challgenge key",
+            md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, p, "%s: create tls-sni-01 challenge key",
                           authz->domain);
             goto out;
         }
