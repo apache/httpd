@@ -113,7 +113,41 @@ Listen 192.0.2.5:8000
 
   </section>
 
-  <section id="ipv6">
+  <section id="reload">
+    <title>Changing Listen configuration on restart</title>
+
+    <p>When httpd is restarted, special consideration must be made for
+    changes to <directive module="mpm_common">Listen</directive> directives.  During a restart, httpd keeps ports
+    bound (as in the original configuration) to avoid generating
+    "Connection refused" errors for any new attempts to connect to the
+    server. If changes are made to the set of <directive module="mpm_common">Listen</directive> directives used
+    which conflict with the old configuration, configuration will fail
+    and the server will terminate.</p>
+
+    <p>For example, changing from configuration:</p>
+    
+    <example>
+    <highlight language="config">
+      Listen 127.0.0.1:80
+    </highlight>
+    </example>
+
+    <p>to the following may fail, because binding to port 80 across
+    all addresses conflicts with binding to port 80 on just
+    127.0.0.1.</p>
+    
+    <example>
+    <highlight language="config">
+      Listen 80
+    </highlight>
+    </example>
+
+    <p>To have such configuration changes take effect, it is necessary
+    to stop and then start the server.</p>
+    
+  </section>
+
+    <section id="ipv6">
     <title>Special IPv6 Considerations</title>
 
     <p>A growing number of platforms implement IPv6, and
