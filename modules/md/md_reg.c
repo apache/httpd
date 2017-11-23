@@ -267,11 +267,9 @@ apr_status_t md_reg_assess(md_reg_t *reg, md_t *md, int *perrored, int *prenew, 
             break;
         case MD_S_ERROR:
             md_log_perror( MD_LOG_MARK, MD_LOG_ERR, 0, p,  
-                         "md(%s): in error state, unable to drive forward. It could "
-                         "be that files have gotten corrupted. You may check with "
-                         "a2md the status of this managed domain to diagnose the "
-                         " problem. As a last resort, you may delete the files for "
-                         " this md and start all over.", md->name);
+                         "md(%s): in error state, unable to drive forward. If unable to "
+                         " detect the cause, you may remove the staging or even domain "
+                         " sub-directory for this MD and start all over.", md->name);
             errored = 1;
             break;
         case MD_S_COMPLETE:
