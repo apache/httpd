@@ -242,8 +242,8 @@ AC_DEFUN([APACHE_CHECK_JANSSON],[
 dnl #  start of module specific part
 APACHE_MODPATH_INIT(md)
 
-dnl #  list of common object files
-md_common_objs="dnl
+dnl #  list of module object files
+md_objs="dnl
 md_acme.lo dnl
 md_acme_acct.lo dnl
 md_acme_authz.lo dnl
@@ -259,10 +259,6 @@ md_reg.lo dnl
 md_store.lo dnl
 md_store_fs.lo dnl
 md_util.lo dnl
-"
-
-dnl #  list of module object files
-md_objs="dnl
 mod_md.lo dnl
 mod_md_config.lo dnl
 mod_md_os.lo dnl
@@ -272,7 +268,7 @@ mod_md_os.lo dnl
 APR_ADDTO(INCLUDES, [-I\$(top_srcdir)/$modpath_current])
 
 dnl # hook module into the Autoconf mechanism (--enable-md)
-APACHE_MODULE(md, [Managed Domain handling], $md_objs $md_common_objs, , most, [
+APACHE_MODULE(md, [Managed Domain handling], $md_objs, , most, [
     APACHE_CHECK_OPENSSL
     if test "x$ac_cv_openssl" = "xno" ; then
         AC_MSG_WARN([libssl (or compatible) not found])

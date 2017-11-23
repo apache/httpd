@@ -13,46 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-COMMON_SOURCES = \
-	md_acme.c \
-	md_acme_acct.c \
-	md_acme_authz.c \
-	md_acme_drive.c \
-	md_core.c \
-	md_curl.c \
-	md_crypt.c \
-	md_http.c \
-	md_json.c \
-	md_jws.c \
-	md_log.c \
-	md_reg.c \
-	md_store.c \
-	md_store_fs.c \
-	md_util.c
-        
-COMMON_OBJECTS = $(COMMON_SOURCES:.c=.o)
-COMMON_SHOBJECTS = $(COMMON_SOURCES:.c=.slo)
+#
+#   standard stuff
+#
 
-a2md_CFLAGS = $(EXTRA_CPPFLAGS) $(EXTRA_INCLUDES)
-
-a2md_SOURCES = \
-	md_cmd_main.c \
-	md_cmd_acme.c \
-	md_cmd_reg.c \
-	md_cmd_store.c
-        
-a2md_OBJECTS = $(a2md_SOURCES:.c=.o)
-a2md_SHOBJECTS = $(a2md_SOURCES:.c=.slo)
-
-a2md: $(a2md_OBJECTS) $(COMMON_OBJECTS) $(COMMON_SHOBJECTS) md.h
-	$(LINK) $(a2md_CFLAGS) $(a2md_LTFLAGS) $(a2md_OBJECTS) $(COMMON_OBJECTS) $(A2MD_LDADD) $(AP_LIBS)
-
-# top be installed in bin dir
-bin_PROGRAMS = a2md
-
-TARGETS = $(bin_PROGRAMS)
-
-local-shared-build: $(LTLIBRARY_NAME) $(SHARED_TARGETS) a2md
-
-include $(top_srcdir)/build/library.mk
 include $(top_srcdir)/build/special.mk

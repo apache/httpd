@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_md: v1.0.4, removed the 'a2md' utility command from build. Only used in github
+     testing. Avoid problems with our build system that had problems after the latest
+     changes to make a clean initial build. Remove the windows a2md.dsp therefore also.
+     [Stefan Eissing] 
+
   *) mod_ssl: Fail with 403 if the username for FakeBasicAuth mode
      includes a colon character.  PR 52644.  [Joe Orton]
 
