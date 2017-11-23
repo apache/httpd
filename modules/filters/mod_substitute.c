@@ -51,6 +51,7 @@ typedef struct subst_pattern_t {
     apr_size_t replen;
     apr_size_t patlen;
     int flatten;
+    const char *from;
 } subst_pattern_t;
 
 typedef struct {
@@ -121,6 +122,8 @@ static void *merge_substitute_dcfg(apr_pool_t *p, void *basev, void *overv)
     apr_bucket_delete(tmp_b);                        \
 } while (0)
 
+#define CAP2LINEMAX(n) ((n) < (apr_size_t)200 ? (int)(n) : 200)
+
 static apr_status_t do_pattmatch(ap_filter_t *f, apr_bucket *inb,
                                  apr_bucket_brigade *mybb,
                                  apr_pool_t *pool)
@@ -165,6 +168,17 @@ static apr_status_t do_pattmatch(ap_filter_t *f, apr_bucket *inb,
             if (apr_bucket_read(b, &buff, &bytes, APR_BLOCK_READ)
                     == APR_SUCCESS) {
                 int have_match = 0;
+
+                ap_log_rerror(APLOG_MARK, APLOG_TRACE8, 0, f->r,
+                              "Line read (%" APR_SIZE_T_FMT " bytes): %.*s",
+                              bytes, CAP2LINEMAX(bytes), buff);
+                ap_log_rerror(APLOG_MARK, APLOG_TRACE8, 0, f->r,
+                              "Replacing %s:'%s' by '%s'",
+                              script->pattern ? "string" :
+                              script->regexp  ? "regex"  :
+                                                "unknown",
+                              script->from, script->replacement);
+
                 vb.strlen = 0;
                 if (script->pattern) {
                     const char *repl;
@@ -176,6 +190,9 @@ static apr_status_t do_pattmatch(ap_filter_t *f, apr_bucket *inb,
                     apr_size_t repl_len = strlen(script->replacement);
                     while ((repl = apr_strmatch(script->pattern, buff, bytes)))
                     {
+                        ap_log_rerror(APLOG_MARK, APLOG_TRACE8, 0, f->r,
+                                      "Matching found, result: '%s'",
+                                      script->replacement);
                         have_match = 1;
                         /* get offset into buff for pattern */
                         len = (apr_size_t) (repl - buff);
@@ -231,6 +248,9 @@ static apr_status_t do_pattmatch(ap_filter_t *f, apr_bucket *inb,
                              */
                             char *copy = ap_varbuf_pdup(pool, &vb, NULL, 0,
                                                         buff, bytes, &len);
+                            ap_log_rerror(APLOG_MARK, APLOG_TRACE8, 0, f->r,
+                                          "New line (%" APR_SIZE_T_FMT " bytes): %.*s",
+                                          len, CAP2LINEMAX(len), copy);
                             tmp_b = apr_bucket_pool_create(copy, len, pool,
                                                            f->r->connection->bucket_alloc);
                             APR_BUCKET_INSERT_BEFORE(b, tmp_b);
@@ -248,6 +268,9 @@ static apr_status_t do_pattmatch(ap_filter_t *f, apr_bucket *inb,
                              */
                             if (space_left < b->length)
                                 return APR_ENOMEM;
+                            ap_log_rerror(APLOG_MARK, APLOG_TRACE8, 0, f->r,
+                                          "New line (%" APR_SIZE_T_FMT " bytes): %.*s",
+                                          bytes, CAP2LINEMAX(bytes), buff);
                         }
                     }
                 }
@@ -259,6 +282,8 @@ static apr_status_t do_pattmatch(ap_filter_t *f, apr_bucket *inb,
                     while (!ap_regexec_len(script->regexp, pos, left,
                                        AP_MAX_REG_MATCH, regm, 0)) {
                         apr_status_t rv;
+                        ap_log_rerror(APLOG_MARK, APLOG_TRACE8, 0, f->r,
+                                      "Matching found");
                         have_match = 1;
                         if (script->flatten && !force_quick) {
                             /* check remaining buffer size */
@@ -276,6 +301,8 @@ static apr_status_t do_pattmatch(ap_filter_t *f, apr_bucket *inb,
                                                   cfg->max_line_length - vb.strlen);
                             if (rv != APR_SUCCESS)
                                 return rv;
+                            ap_log_rerror(APLOG_MARK, APLOG_TRACE8, 0, f->r,
+                                          "Result: '%s'", vb.buf);
                         }
                         else {
                             apr_size_t repl_len;
@@ -296,6 +323,8 @@ static apr_status_t do_pattmatch(ap_filter_t *f, apr_bucket *inb,
                             tmp_b = apr_bucket_transient_create(repl, repl_len,
                                                 f->r->connection->bucket_alloc);
                             APR_BUCKET_INSERT_BEFORE(b, tmp_b);
+                            ap_log_rerror(APLOG_MARK, APLOG_TRACE8, 0, f->r,
+                                          "Result: '%s'", repl);
                         }
                         /*
                          * reset to past what we just did. pos now maps to b
@@ -311,6 +340,9 @@ static apr_status_t do_pattmatch(ap_filter_t *f, apr_bucket *inb,
                          */
                         copy = ap_varbuf_pdup(pool, &vb, NULL, 0, pos, left,
                                               &len);
+                        ap_log_rerror(APLOG_MARK, APLOG_TRACE8, 0, f->r,
+                                      "New line (%" APR_SIZE_T_FMT " bytes): %.*s",
+                                      len, CAP2LINEMAX(len), copy);
                         tmp_b = apr_bucket_pool_create(copy, len, pool,
                                            f->r->connection->bucket_alloc);
                         APR_BUCKET_INSERT_BEFORE(b, tmp_b);
@@ -647,6 +679,7 @@ static const char *set_pattern(cmd_parms *cmd, void *cfg, const char *line)
     nscript->regexp = NULL;
     nscript->replacement = NULL;
     nscript->patlen = 0;
+    nscript->from = from;
 
     if (is_pattern) {
         nscript->patlen = strlen(from);
