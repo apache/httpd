@@ -233,12 +233,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/mod_md-r1816156_svn.diff
          svn merge of revisions with many conflicts in CHANGES, generated html and some changes that do not belong
      +1: icing
+     -1: steffenal: OS signals error at httpd start, win build not complete. Details see post dev list
  
-   *) mod_md: backport of mod_ssl changes to get interworking ACME support. Needs mod_md backport propoals above to find mod_md.h include file with otional functions.
-      trunk revisions: 1804530,1804531,1805186,1806939,1807232,1808122
-      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/mod_ssl_minimal_md.diff
-   +1: icing, jorton, 
-   
+  *) mod_md: backport of mod_ssl changes to get interworking ACME support. Needs mod_md backport propoals above to find mod_md.h include file with otional functions.
+     trunk revisions: 1804530,1804531,1805186,1806939,1807232,1808122
+     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/mod_ssl_minimal_md.diff
+     +1: icing, jorton 
+     -0: steffenal: Not sure it not conflicts with other LE utilities challenges. Details see post dev list   
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
