@@ -437,8 +437,6 @@
 <li><a href="mod_macro.html#macro" id="M" name="M">&lt;Macro&gt;</a></li>
 <li><a href="mod_macro.html#macroignorebadnesting">MacroIgnoreBadNesting</a></li>
 <li><a href="mod_macro.html#macroignoreemptyargs">MacroIgnoreEmptyArgs</a></li>
-<li><a href="mod_md.html#manageddomain">ManagedDomain</a></li>
-<li><a href="mod_md.html#manageddomain">&lt;ManagedDomain&gt;</a></li>
 <li><a href="mpm_common.html#maxconnectionsperchild">MaxConnectionsPerChild</a></li>
 <li><a href="core.html#maxkeepaliverequests">MaxKeepAliveRequests</a></li>
 <li><a href="mpm_common.html#maxmemfree">MaxMemFree</a></li>
@@ -449,21 +447,6 @@
 <li><a href="prefork.html#maxspareservers">MaxSpareServers</a></li>
 <li><a href="mpm_common.html#maxsparethreads">MaxSpareThreads</a></li>
 <li><a href="mpm_netware.html#maxthreads">MaxThreads</a></li>
-<li><a href="mod_md.html#mdcachallenges">MDCAChallenges</a></li>
-<li><a href="mod_md.html#mdcertificateagreement">MDCertificateAgreement</a></li>
-<li><a href="mod_md.html#mdcertificateauthority">MDCertificateAuthority</a></li>
-<li><a href="mod_md.html#mdcertificateprotocol">MDCertificateProtocol</a></li>
-<li><a href="mod_md.html#mddrivemode">MDDriveMode</a></li>
-<li><a href="mod_md.html#mdhttpproxy">MDHttpProxy</a></li>
-<li><a href="mod_md.html#mdmember">MDMember</a></li>
-<li><a href="mod_md.html#mdmembers">MDMembers</a></li>
-<li><a href="mod_md.html#mdmuststaple">MDMustStaple</a></li>
-<li><a href="mod_md.html#mdnotifycmd">MDNotifyCmd</a></li>
-<li><a href="mod_md.html#mdportmap">MDPortMap</a></li>
-<li><a href="mod_md.html#mdprivatekeys">MDPrivateKeys</a></li>
-<li><a href="mod_md.html#mdrenewwindow">MDRenewWindow</a></li>
-<li><a href="mod_md.html#mdrequirehttps">MDRequireHttps</a></li>
-<li><a href="mod_md.html#mdstoredir">MDStoreDir</a></li>
 <li><a href="mod_socache_memcache.html#memcacheconnttl">MemcacheConnTTL</a></li>
 <li><a href="core.html#mergetrailers">MergeTrailers</a></li>
 <li><a href="mod_cern_meta.html#metadir">MetaDir</a></li>
