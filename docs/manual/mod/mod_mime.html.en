@@ -578,7 +578,7 @@ type</td></tr>
     <var>extension</var> argument will be compared against each of
     them.</p>
 
-    <p>A simmilar effect to <code class="module"><a href="../mod/mod_negotiation.html">mod_negotiation</a></code>'s
+    <p>A similar effect to <code class="module"><a href="../mod/mod_negotiation.html">mod_negotiation</a></code>'s
     <code class="directive"><a href="../mod/mod_negotiation.html#languagepriority">LanguagePriority</a></code>
     can be achieved by qualifying a <var>media-type</var> with
     <code>qs</code>:</p>
@@ -599,21 +599,21 @@ type</td></tr>
     <div class="note"><h3>Note</h3>
     <p>If no handler is explicitly set for a request, the specified content
     type will also be used as the handler name. </p>
-   
-    <p>When explicit directives such as 
-    <code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code> or 
-    <code class="directive"><a href="#addhandler">AddHandler</a></code> do not apply 
+
+    <p>When explicit directives such as
+    <code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code> or
+    <code class="directive"><a href="#addhandler">AddHandler</a></code> do not apply
     to the current request, the internal handler name normally set by those
-    directives is instead set to the content type specified by this directive. 
-    </p> 
+    directives is instead set to the content type specified by this directive.
+    </p>
     <p>
-    This is a historical behavior that may be used by some third-party modules 
+    This is a historical behavior that may be used by some third-party modules
     (such as mod_php) for taking responsibility for the matching request.
     </p>
 
-    <p>Configurations that rely on such "synthetic" types should be avoided. 
-    Additionally, configurations that restrict access to 
-    <code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code> or 
+    <p>Configurations that rely on such "synthetic" types should be avoided.
+    Additionally, configurations that restrict access to
+    <code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code> or
     <code class="directive"><a href="#addhandler">AddHandler</a></code> should
     restrict access to this directive as well.</p>
     </div>
