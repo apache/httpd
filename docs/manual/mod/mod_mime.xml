@@ -588,7 +588,7 @@ AddType image/jpeg jpeg jpg jpe
     <var>extension</var> argument will be compared against each of
     them.</p>
 
-    <p>A simmilar effect to <module>mod_negotiation</module>'s
+    <p>A similar effect to <module>mod_negotiation</module>'s
     <directive module="mod_negotiation">LanguagePriority</directive>
     can be achieved by qualifying a <var>media-type</var> with
     <code>qs</code>:</p>
@@ -612,21 +612,21 @@ AddType application/rss+xml;qs=0.8 .xml
     <note><title>Note</title>
     <p>If no handler is explicitly set for a request, the specified content
     type will also be used as the handler name. </p>
-   
-    <p>When explicit directives such as 
-    <directive module="core" >SetHandler</directive> or 
-    <directive module="mod_mime">AddHandler</directive> do not apply 
+
+    <p>When explicit directives such as
+    <directive module="core" >SetHandler</directive> or
+    <directive module="mod_mime">AddHandler</directive> do not apply
     to the current request, the internal handler name normally set by those
-    directives is instead set to the content type specified by this directive. 
-    </p> 
+    directives is instead set to the content type specified by this directive.
+    </p>
     <p>
-    This is a historical behavior that may be used by some third-party modules 
+    This is a historical behavior that may be used by some third-party modules
     (such as mod_php) for taking responsibility for the matching request.
     </p>
 
-    <p>Configurations that rely on such "synthetic" types should be avoided. 
-    Additionally, configurations that restrict access to 
-    <directive module="core" >SetHandler</directive> or 
+    <p>Configurations that rely on such "synthetic" types should be avoided.
+    Additionally, configurations that restrict access to
+    <directive module="core" >SetHandler</directive> or
     <directive module="mod_mime">AddHandler</directive> should
     restrict access to this directive as well.</p>
     </note>
