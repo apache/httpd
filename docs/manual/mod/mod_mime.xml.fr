@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1678565:1816282 (outdated) -->
+<!-- English Revision: 1816282 -->
 <!-- French translation : Lucien GENTIS -->
-<!-- $LastChangedRevision: 2015053001 $ -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
