@@ -192,7 +192,9 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
     resource, in order to tell the client browser about the
     encoding method.</p>
 
-    <highlight language="config">Content-encoding: pkzip</highlight>
+    <highlight language="config">
+Content-encoding: pkzip
+    </highlight>
 </section>
 
 <section id="charset-lang"><title>Character sets and languages</title>
@@ -364,7 +366,7 @@ handler</description>
     might use:</p>
 
     <highlight language="config">
-      AddHandler cgi-script .cgi
+AddHandler cgi-script .cgi
     </highlight>
 
     <p>Once that has been put into your httpd.conf file, any file containing
@@ -497,7 +499,7 @@ responses from the server</description>
     compress the output using <module>mod_deflate</module>.</p>
 
     <highlight language="config">
-      AddOutputFilter INCLUDES;DEFLATE shtml
+AddOutputFilter INCLUDES;DEFLATE shtml
     </highlight>
 
     <p>If more than one filter is specified, they must be separated
@@ -568,16 +570,16 @@ type</description>
 
     <example><title>Example</title>
     <highlight language="config">
-      AddType image/gif .gif
-      </highlight>
+AddType image/gif .gif
+    </highlight>
     </example>
 
     <p>Or, to specify multiple file extensions in one directive:</p>
 
     <example><title>Example</title>
     <highlight language="config">
-      AddType image/jpeg jpeg jpg jpe
-      </highlight>
+AddType image/jpeg jpeg jpg jpe
+    </highlight>
     </example>
 
     <p>The <var>extension</var> argument is case-insensitive and can
@@ -586,15 +588,15 @@ type</description>
     <var>extension</var> argument will be compared against each of
     them.</p>
 
-    <p>A simmilar effect to <module>mod_negotiation</module>'s
+    <p>A similar effect to <module>mod_negotiation</module>'s
     <directive module="mod_negotiation">LanguagePriority</directive>
     can be achieved by qualifying a <var>media-type</var> with
     <code>qs</code>:</p>
 
     <example><title>Example</title>
     <highlight language="config">
-      AddType application/rss+xml;qs=0.8 .xml
-      </highlight>
+AddType application/rss+xml;qs=0.8 .xml
+    </highlight>
     </example>
 
     <p>This is useful in situations, <em>e.g.</em> when a client
@@ -681,7 +683,7 @@ a matching file with MultiViews</description>
     files:</p>
 
     <highlight language="config">
-      MultiviewsMatch Handlers Filters
+MultiviewsMatch Handlers Filters
     </highlight>
 
     <p><directive>MultiviewsMatch</directive> is not allowed in a
@@ -723,8 +725,8 @@ assigned a language-tag by some other means.</description>
 
     <example><title>Example</title>
     <highlight language="config">
-      DefaultLanguage en
-      </highlight>
+DefaultLanguage en
+    </highlight>
     </example>
 </usage>
 <seealso><module>mod_negotiation</module></seealso>
@@ -749,8 +751,8 @@ components as part of the filename</description>
 
     <example><title>Example</title>
     <highlight language="config">
-      ModMimeUsePathInfo On
-      </highlight>
+ModMimeUsePathInfo On
+    </highlight>
     </example>
 
     <p>If you have a request for <code>/index.php/foo.shtml</code>
@@ -788,8 +790,8 @@ extensions</description>
 
     <example><title>Example</title>
     <highlight language="config">
-      RemoveCharset .html .shtml
-      </highlight>
+RemoveCharset .html .shtml
+    </highlight>
     </example>
 </usage>
 </directivesynopsis>
@@ -856,14 +858,14 @@ extensions</description>
 
     <example><title>/foo/.htaccess:</title>
     <highlight language="config">
-      AddHandler server-parsed .html
-      </highlight>
+AddHandler server-parsed .html
+    </highlight>
     </example>
 
     <example><title>/foo/bar/.htaccess:</title>
     <highlight language="config">
-      RemoveHandler .html
-      </highlight>
+RemoveHandler .html
+    </highlight>
     </example>
 
     <p>This has the effect of returning <code>.html</code> files in
@@ -946,8 +948,8 @@ extensions</description>
 
     <example><title>Example</title>
     <highlight language="config">
-      RemoveOutputFilter shtml
-      </highlight>
+RemoveOutputFilter shtml
+    </highlight>
     </example>
 </usage>
 <seealso><directive module="mod_mime">AddOutputFilter</directive></seealso>
@@ -973,8 +975,8 @@ extensions</description>
 
     <example><title>/foo/.htaccess:</title>
     <highlight language="config">
-      RemoveType .cgi
-      </highlight>
+RemoveType .cgi
+    </highlight>
     </example>
 
     <p>This will remove any special handling of <code>.cgi</code>
