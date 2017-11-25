@@ -31,13 +31,12 @@
 <a href="./ko/bind.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/bind.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>Configuration du serveur HTTP Apache pour l'écoute
     sur un port et une adresse IP spécifiques.</p>
   </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#overview">Vue d'ensemble</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#reload">Changer la configuration de l'écoute au redémarrage</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#ipv6">Remarques spécifiques à IPv6</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#protocol">Spécification du protocole avec Listen</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#virtualhost">Comment tout ceci fonctionne-t-il avec les hôtes virtuels</a></li>
@@ -108,6 +107,34 @@ Listen 192.0.2.5:8000</pre>
 
     </div>
 
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="reload" id="reload">Changer la configuration de l'écoute au redémarrage</a></h2>
+    
+
+    <p>Lorsque httpd est redémarré, certaines remarques sont à prendre en compte
+    quant aux modifications apportées aux directives <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>. Au cours du redémarrage, httpd
+    conserve la liaison avec les ports de la configuration précédente afin
+    d'éviter l'obtention d'un message d'erreur "Connection refused" lors d'une
+    tentative ultérieure de connexion au serveur. Si les modifications apportées au jeu de
+    directives <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> utilisé entrent
+    en conflit avec ce dernier, le serveur refusera de redémarrer.</p>
+
+    <p>Par exemple, modifier la configuration suivante :</p>
+    
+    <div class="example"><pre class="prettyprint lang-config">Listen 127.0.0.1:80</pre>
+</div>
+
+    <p>pour utiliser la suivante pourra échouer car écouter le port 80 sur
+    toutes les adresses IP entre en conflit avec une écoute sélective du port 80
+    sur la seule adresse IP 127.0.0.1.</p>
+    
+    <div class="example"><pre class="prettyprint lang-config">Listen 80</pre>
+</div>
+
+    <p>Pour qu'une telle modification de configuration soit prise en compte avec
+    succès, il est nécessaire d'arrêter, puis de démarrer le serveur.</p>
+    
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="ipv6" id="ipv6">Remarques spécifiques à IPv6</a></h2>

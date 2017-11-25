@@ -201,9 +201,6 @@ chaque requête</dd>
 traitement des requêtes httpd</dd>
 <dt><a href="mod_macro.html" id="M" name="M">mod_macro</a></dt><dd>Ce module permet d'utiliser des macros dans les fichiers
 de configuration Apache.</dd>
-<dt><a href="mod_md.html">mod_md</a></dt><dd>Managing domains across virtual hosts, certificate provisioning 
-        via the ACME protocol
-    </dd>
 <dt><a href="mod_mime.html">mod_mime</a></dt><dd>Associe les extensions des fichiers demandés avec l'action
 déclenchée par ces fichiers et avec leur contenu (type MIME, langage,
 jeu de caractère et codage)</dd>
