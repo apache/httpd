@@ -578,7 +578,7 @@ type</td></tr>
     <var>extension</var> argument will be compared against each of
     them.</p>
 
-    <p>A simmilar effect to <code class="module"><a href="../mod/mod_negotiation.html">mod_negotiation</a></code>'s
+    <p>A similar effect to <code class="module"><a href="../mod/mod_negotiation.html">mod_negotiation</a></code>'s
     <code class="directive"><a href="../mod/mod_negotiation.html#languagepriority">LanguagePriority</a></code>
     can be achieved by qualifying a <var>media-type</var> with
     <code>qs</code>:</p>
