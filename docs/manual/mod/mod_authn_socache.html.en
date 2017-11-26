@@ -147,7 +147,6 @@ AuthnCacheSOCache dbm
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable Authn caching configured anywhere</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthnCacheEnable</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>None</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authn_socache</td></tr>
 </table>
@@ -187,7 +186,6 @@ AuthnCacheSOCache dbm
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Select socache backend provider to use</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthnCacheSOCache <var>provider-name[:provider-args]</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>None</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authn_socache</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Optional provider arguments are available in

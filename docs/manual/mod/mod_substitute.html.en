@@ -86,6 +86,9 @@
         or regex of a subsequent one.</dd>
     </dl>
 
+    <p>The <var>substitution</var> is may contain literal text and regular
+    expression backreferences</p>
+
     <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">&lt;Location "/"&gt;
     AddOutputFilterByType SUBSTITUTE text/html
     Substitute "s/foo/bar/ni"

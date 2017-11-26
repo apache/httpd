@@ -122,61 +122,63 @@ presence or absence of a specific module</td></tr>
 from the client</td></tr>
 <tr class="odd"><td><a href="core.html#limitxmlrequestbody">LimitXMLRequestBody</a></td><td class="module"><a href="core.html">core</a></td></tr>
 <tr class="odd"><td colspan="2" class="descr">Limits the size of an XML-based request body</td></tr>
-<tr><td><a href="mod_lua.html#luacodecache">LuaCodeCache</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
-<tr><td colspan="2" class="descr">Configure the compiled code cache.</td></tr>
-<tr class="odd"><td><a href="mod_lua.html#luahookaccesschecker">LuaHookAccessChecker</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Provide a hook for the access_checker phase of request processing</td></tr>
-<tr><td><a href="mod_lua.html#luahookauthchecker">LuaHookAuthChecker</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
-<tr><td colspan="2" class="descr">Provide a hook for the auth_checker phase of request processing</td></tr>
-<tr class="odd"><td><a href="mod_lua.html#luahookcheckuserid">LuaHookCheckUserID</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Provide a hook for the check_user_id phase of request processing</td></tr>
-<tr><td><a href="mod_lua.html#luahookfixups">LuaHookFixups</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
-<tr><td colspan="2" class="descr">Provide a hook for the fixups phase of a request
+<tr><td><a href="mod_logio.html#logiotrackttfb">LogIOTrackTTFB</a></td><td class="module"><a href="mod_logio.html">mod_logio</a></td></tr>
+<tr><td colspan="2" class="descr">Enable tracking of time to first byte (TTFB)</td></tr>
+<tr class="odd"><td><a href="mod_lua.html#luacodecache">LuaCodeCache</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Configure the compiled code cache.</td></tr>
+<tr><td><a href="mod_lua.html#luahookaccesschecker">LuaHookAccessChecker</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
+<tr><td colspan="2" class="descr">Provide a hook for the access_checker phase of request processing</td></tr>
+<tr class="odd"><td><a href="mod_lua.html#luahookauthchecker">LuaHookAuthChecker</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Provide a hook for the auth_checker phase of request processing</td></tr>
+<tr><td><a href="mod_lua.html#luahookcheckuserid">LuaHookCheckUserID</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
+<tr><td colspan="2" class="descr">Provide a hook for the check_user_id phase of request processing</td></tr>
+<tr class="odd"><td><a href="mod_lua.html#luahookfixups">LuaHookFixups</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Provide a hook for the fixups phase of a request
 processing</td></tr>
-<tr class="odd"><td><a href="mod_lua.html#luahookinsertfilter">LuaHookInsertFilter</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Provide a hook for the insert_filter phase of request processing</td></tr>
-<tr><td><a href="mod_lua.html#luahooklog">LuaHookLog</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
-<tr><td colspan="2" class="descr">Provide a hook for the access log phase of a request
+<tr><td><a href="mod_lua.html#luahookinsertfilter">LuaHookInsertFilter</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
+<tr><td colspan="2" class="descr">Provide a hook for the insert_filter phase of request processing</td></tr>
+<tr class="odd"><td><a href="mod_lua.html#luahooklog">LuaHookLog</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Provide a hook for the access log phase of a request
 processing</td></tr>
-<tr class="odd"><td><a href="mod_lua.html#luahookmaptostorage">LuaHookMapToStorage</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Provide a hook for the map_to_storage phase of request processing</td></tr>
-<tr><td><a href="mod_lua.html#luahooktranslatename">LuaHookTranslateName</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
-<tr><td colspan="2" class="descr">Provide a hook for the translate name phase of request processing</td></tr>
-<tr class="odd"><td><a href="mod_lua.html#luahooktypechecker">LuaHookTypeChecker</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Provide a hook for the type_checker phase of request processing</td></tr>
-<tr><td><a href="mod_lua.html#luainherit">LuaInherit</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
-<tr><td colspan="2" class="descr">Controls how parent configuration sections are merged into children</td></tr>
-<tr class="odd"><td><a href="mod_lua.html#luamaphandler">LuaMapHandler</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Map a path to a lua handler</td></tr>
-<tr><td><a href="mod_lua.html#luapackagecpath">LuaPackageCPath</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
-<tr><td colspan="2" class="descr">Add a directory to lua's package.cpath</td></tr>
-<tr class="odd"><td><a href="mod_lua.html#luapackagepath">LuaPackagePath</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Add a directory to lua's package.path</td></tr>
-<tr><td><a href="mod_lua.html#luaquickhandler">LuaQuickHandler</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
-<tr><td colspan="2" class="descr">Provide a hook for the quick handler of request processing</td></tr>
-<tr class="odd"><td><a href="mod_lua.html#luaroot">LuaRoot</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Specify the base path for resolving relative paths for mod_lua directives</td></tr>
-<tr><td><a href="mod_lua.html#luascope">LuaScope</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
-<tr><td colspan="2" class="descr">One of once, request, conn, thread -- default is once</td></tr>
-<tr class="odd"><td><a href="core.html#rlimitcpu">RLimitCPU</a></td><td class="module"><a href="core.html">core</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Limits the CPU consumption of processes launched
+<tr><td><a href="mod_lua.html#luahookmaptostorage">LuaHookMapToStorage</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
+<tr><td colspan="2" class="descr">Provide a hook for the map_to_storage phase of request processing</td></tr>
+<tr class="odd"><td><a href="mod_lua.html#luahooktranslatename">LuaHookTranslateName</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Provide a hook for the translate name phase of request processing</td></tr>
+<tr><td><a href="mod_lua.html#luahooktypechecker">LuaHookTypeChecker</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
+<tr><td colspan="2" class="descr">Provide a hook for the type_checker phase of request processing</td></tr>
+<tr class="odd"><td><a href="mod_lua.html#luainherit">LuaInherit</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Controls how parent configuration sections are merged into children</td></tr>
+<tr><td><a href="mod_lua.html#luamaphandler">LuaMapHandler</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
+<tr><td colspan="2" class="descr">Map a path to a lua handler</td></tr>
+<tr class="odd"><td><a href="mod_lua.html#luapackagecpath">LuaPackageCPath</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Add a directory to lua's package.cpath</td></tr>
+<tr><td><a href="mod_lua.html#luapackagepath">LuaPackagePath</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
+<tr><td colspan="2" class="descr">Add a directory to lua's package.path</td></tr>
+<tr class="odd"><td><a href="mod_lua.html#luaquickhandler">LuaQuickHandler</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Provide a hook for the quick handler of request processing</td></tr>
+<tr><td><a href="mod_lua.html#luaroot">LuaRoot</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
+<tr><td colspan="2" class="descr">Specify the base path for resolving relative paths for mod_lua directives</td></tr>
+<tr class="odd"><td><a href="mod_lua.html#luascope">LuaScope</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">One of once, request, conn, thread -- default is once</td></tr>
+<tr><td><a href="core.html#rlimitcpu">RLimitCPU</a></td><td class="module"><a href="core.html">core</a></td></tr>
+<tr><td colspan="2" class="descr">Limits the CPU consumption of processes launched
 by Apache httpd children</td></tr>
-<tr><td><a href="core.html#rlimitmem">RLimitMEM</a></td><td class="module"><a href="core.html">core</a></td></tr>
-<tr><td colspan="2" class="descr">Limits the memory consumption of processes launched
+<tr class="odd"><td><a href="core.html#rlimitmem">RLimitMEM</a></td><td class="module"><a href="core.html">core</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Limits the memory consumption of processes launched
 by Apache httpd children</td></tr>
-<tr class="odd"><td><a href="core.html#rlimitnproc">RLimitNPROC</a></td><td class="module"><a href="core.html">core</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Limits the number of processes that can be launched by
+<tr><td><a href="core.html#rlimitnproc">RLimitNPROC</a></td><td class="module"><a href="core.html">core</a></td></tr>
+<tr><td colspan="2" class="descr">Limits the number of processes that can be launched by
 processes launched by Apache httpd children</td></tr>
-<tr><td><a href="core.html#serversignature">ServerSignature</a></td><td class="module"><a href="core.html">core</a></td></tr>
-<tr><td colspan="2" class="descr">Configures the footer on server-generated documents</td></tr>
-<tr class="odd"><td><a href="mod_include.html#ssierrormsg">SSIErrorMsg</a></td><td class="module"><a href="mod_include.html">mod_include</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Error message displayed when there is an SSI
+<tr class="odd"><td><a href="core.html#serversignature">ServerSignature</a></td><td class="module"><a href="core.html">core</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Configures the footer on server-generated documents</td></tr>
+<tr><td><a href="mod_include.html#ssierrormsg">SSIErrorMsg</a></td><td class="module"><a href="mod_include.html">mod_include</a></td></tr>
+<tr><td colspan="2" class="descr">Error message displayed when there is an SSI
 error</td></tr>
-<tr><td><a href="mod_include.html#ssitimeformat">SSITimeFormat</a></td><td class="module"><a href="mod_include.html">mod_include</a></td></tr>
-<tr><td colspan="2" class="descr">Configures the format in which date strings are
+<tr class="odd"><td><a href="mod_include.html#ssitimeformat">SSITimeFormat</a></td><td class="module"><a href="mod_include.html">mod_include</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Configures the format in which date strings are
 displayed</td></tr>
-<tr class="odd"><td><a href="mod_include.html#ssiundefinedecho">SSIUndefinedEcho</a></td><td class="module"><a href="mod_include.html">mod_include</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">String displayed when an unset variable is echoed</td></tr>
+<tr><td><a href="mod_include.html#ssiundefinedecho">SSIUndefinedEcho</a></td><td class="module"><a href="mod_include.html">mod_include</a></td></tr>
+<tr><td colspan="2" class="descr">String displayed when an unset variable is echoed</td></tr>
 </table></div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a name="override-authconfig">AuthConfig</a></h2>
     <p>
       The following directives are allowed in .htaccess files when
@@ -670,39 +672,6 @@ except the named ones</td></tr>
 <tr><td colspan="2" class="descr">Controls the default access state and the order in which
 <code class="directive">Allow</code> and <code class="directive">Deny</code> are
 evaluated.</td></tr>
-</table></div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a name="override-none">none</a></h2>
-    <p><em>
-    [This section has no description. It's possible that the documentation is
-    incomplete, or that the directives here have an incorrect or misspelled
-    Override type. Please consider reporting this in the
-    <a href="#comments_section">comments section</a>.]
-    </em></p>
-  <table class="qref"><tr><td><a href="mod_logio.html#logiotrackttfb">LogIOTrackTTFB</a></td><td class="module"><a href="mod_logio.html">mod_logio</a></td></tr>
-<tr><td colspan="2" class="descr">Enable tracking of time to first byte (TTFB)</td></tr>
-</table></div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a name="override-none">None</a></h2>
-    <p><em>
-    [This section has no description. It's possible that the documentation is
-    incomplete, or that the directives here have an incorrect or misspelled
-    Override type. Please consider reporting this in the
-    <a href="#comments_section">comments section</a>.]
-    </em></p>
-  <table class="qref"><tr><td><a href="mod_authn_socache.html#authncacheenable">AuthnCacheEnable</a></td><td class="module"><a href="mod_authn_socache.html">mod_authn_socache</a></td></tr>
-<tr><td colspan="2" class="descr">Enable Authn caching configured anywhere</td></tr>
-<tr class="odd"><td><a href="mod_authn_socache.html#authncachesocache">AuthnCacheSOCache</a></td><td class="module"><a href="mod_authn_socache.html">mod_authn_socache</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Select socache backend provider to use</td></tr>
-</table></div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a name="override-not applicable">Not applicable</a></h2>
-    <p><em>
-    [This section has no description. It's possible that the documentation is
-    incomplete, or that the directives here have an incorrect or misspelled
-    Override type. Please consider reporting this in the
-    <a href="#comments_section">comments section</a>.]
-    </em></p>
-  <table class="qref"><tr><td><a href="mod_ssl.html#sslproxymachinecertificatechainfile">SSLProxyMachineCertificateChainFile</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
-<tr><td colspan="2" class="descr">File of concatenated PEM-encoded CA certificates to be used by the proxy for choosing a certificate</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslproxymachinecertificatefile">SSLProxyMachineCertificateFile</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">File of concatenated PEM-encoded client certificates and keys to be used by the proxy</td></tr>
-<tr><td><a href="mod_ssl.html#sslproxymachinecertificatepath">SSLProxyMachineCertificatePath</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
-<tr><td colspan="2" class="descr">Directory of PEM-encoded client certificates and keys to be used by the proxy</td></tr>
 </table></div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a name="override-options">Options</a></h2>
     <p>
       The following directives are allowed in .htaccess files when
