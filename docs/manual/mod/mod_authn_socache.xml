@@ -100,7 +100,6 @@ AuthnCacheSOCache dbm
 <description>Enable Authn caching configured anywhere</description>
 <syntax>AuthnCacheEnable</syntax>
 <contextlist><context>server config</context></contextlist>
-<override>None</override>
 
 <usage>
     <p>This directive is not normally necessary: it is implied if
@@ -117,7 +116,6 @@ AuthnCacheSOCache dbm
 <description>Select socache backend provider to use</description>
 <syntax>AuthnCacheSOCache <var>provider-name[:provider-args]</var></syntax>
 <contextlist><context>server config</context></contextlist>
-<override>None</override>
 <compatibility>Optional provider arguments are available in
 Apache HTTP Server 2.4.7 and later</compatibility>
 

@@ -1741,7 +1741,6 @@ SSLStrictSNIVHostCheck on
 <description>Directory of PEM-encoded client certificates and keys to be used by the proxy</description>
 <syntax>SSLProxyMachineCertificatePath <em>directory</em></syntax>
 <contextlist><context>server config</context></contextlist>
-<override>Not applicable</override>
 
 <usage>
 <p>
@@ -1769,7 +1768,6 @@ SSLProxyMachineCertificatePath "/usr/local/apache2/conf/proxy.crt/"
 <description>File of concatenated PEM-encoded client certificates and keys to be used by the proxy</description>
 <syntax>SSLProxyMachineCertificateFile <em>filename</em></syntax>
 <contextlist><context>server config</context></contextlist>
-<override>Not applicable</override>
 
 <usage>
 <p>
@@ -1797,7 +1795,6 @@ SSLProxyMachineCertificateFile "/usr/local/apache2/conf/ssl.crt/proxy.pem"
 <description>File of concatenated PEM-encoded CA certificates to be used by the proxy for choosing a certificate</description>
 <syntax>SSLProxyMachineCertificateChainFile <em>filename</em></syntax>
 <contextlist><context>server config</context></contextlist>
-<override>Not applicable</override>
 
 <usage>
 <p>
