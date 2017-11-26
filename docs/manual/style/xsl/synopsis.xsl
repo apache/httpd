@@ -201,8 +201,8 @@
                                     /modulesynopsis/directivesynopsis">
                             <xsl:sort select="name" />
                                 <xsl:variable name="lowername"
-                                    select="translate(name, $uppercase,
-                                                      $lowercase)" />
+                                    select="concat(translate(name, $uppercase,
+                                                   $lowercase),@idtype)" />
 
                                 <xsl:choose>
                                 <xsl:when test="not(@location)">
@@ -349,7 +349,22 @@
             <xsl:sort select="name" />
                 <xsl:choose>
                 <xsl:when test="$this[name=current()/name]">
-                    <xsl:apply-templates select="$this[name=current()/name]" />
+                    <!-- A directive name is allowed to be repeated if its type
+                         is different. There is currently only one allowed type
+                         to set, namely 'section', that represents
+                         directive/containers like <DirectiveName>.
+                         The following check is needed to avoid rendering
+                         multiple times the same content when a directive name
+                         is repeated.
+                     -->
+                    <xsl:choose>
+                        <xsl:when test="current()[@type='section']">
+                            <xsl:apply-templates select="$this[name=current()/name and @type='section']" />
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:apply-templates select="$this[name=current()/name and not(@type='section')]" />
+                        </xsl:otherwise>
+                    </xsl:choose>
                 </xsl:when>
                 <xsl:otherwise>
                     <xsl:apply-templates select=".">
@@ -377,9 +392,12 @@
     <xsl:call-template name="toplink" />&lf;
 
     <div class="directive-section">
+        <!-- Concatenate the Directive name with its type to allow
+             a directive to be referenced multiple times
+             with different types -->
         <xsl:variable name="lowername"
-            select="translate(name, $uppercase, $lowercase)" />
-
+            select="concat(translate(name, $uppercase, $lowercase),@idtype)" />
+        <xsl:variable name="directivename" select="concat(name,@idtype)" />
         <!-- Directive heading gets both mixed case and lowercase      -->
         <!-- anchors, and includes lt/gt only for "section" directives -->
         <h2>
@@ -401,7 +419,7 @@
                 </xsl:otherwise>
                 </xsl:choose>
 
-                <a id="{name}" name="{name}">
+                <a id="{$directivename}" name="{$directivename}">
                     <xsl:if test="@type='section'">&lt;</xsl:if>
                     <xsl:value-of select="name" />
                     <xsl:if test="@type='section'">&gt;</xsl:if>
@@ -409,7 +427,7 @@
             </xsl:when>
 
             <xsl:otherwise>
-                <a id="{name}" name="{name}">
+                <a id="{$directivename}" name="{$directivename}">
                     <xsl:if test="@type='section'">&lt;</xsl:if>
                     <xsl:value-of select="name" />
                     <xsl:if test="@type='section'">&gt;</xsl:if>
