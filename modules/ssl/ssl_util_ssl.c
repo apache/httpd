@@ -115,6 +115,33 @@ EVP_PKEY *modssl_read_privatekey(const char* filename, EVP_PKEY **key, pem_passw
     return rc;
 }
 
+typedef struct {
+    const char *pass;
+    int pass_len;
+} pass_ctx;
+
+static int provide_pass(char *buf, int size, int rwflag, void *baton)
+{
+    pass_ctx *ctx = baton;
+    if (ctx->pass_len > 0) {
+        if (ctx->pass_len < size) {
+            size = (int)ctx->pass_len;
+        }
+        memcpy(buf, ctx->pass, size);
+    }
+    return ctx->pass_len;
+}
+
+EVP_PKEY   *modssl_read_encrypted_pkey(const char *filename, EVP_PKEY **key, 
+                                       const char *pass, apr_size_t pass_len)
+{
+    pass_ctx ctx;
+    
+    ctx.pass = pass;
+    ctx.pass_len = pass_len;
+    return modssl_read_privatekey(filename, key, provide_pass, &ctx);
+}
+
 /*  _________________________________________________________________
 **
 **  Smart shutdown
