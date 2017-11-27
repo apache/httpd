@@ -30,6 +30,7 @@
 #include "mod_ssl.h"
 #include "mod_ssl_openssl.h"
 #include "mpm_common.h"
+#include "mod_md.h"
 
 APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(ssl, SSL, int, init_server,
                                     (server_rec *s,apr_pool_t *p,int is_proxy,SSL_CTX *ctx),
@@ -164,6 +165,24 @@ static void ssl_add_version_components(apr_pool_t *p,
                  modver, AP_SERVER_BASEVERSION, incver);
 }
 
+/**************************************************************************************************/
+/* Managed Domains Interface */
+
+static APR_OPTIONAL_FN_TYPE(md_is_managed) *md_is_managed;
+static APR_OPTIONAL_FN_TYPE(md_get_certificate) *md_get_certificate;
+static APR_OPTIONAL_FN_TYPE(md_is_challenge) *md_is_challenge;
+
+int ssl_is_challenge(conn_rec *c, const char *servername, 
+                     X509 **pcert, EVP_PKEY **pkey)
+{
+    if (md_is_challenge) {
+        return md_is_challenge(c, servername, pcert, pkey);
+    }
+    *pcert = NULL;
+    *pkey = NULL;
+    return 0;
+}
+
 /*
  *  Per-module initialization
  */
@@ -203,6 +222,16 @@ apr_status_t ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
      */
     ssl_config_global_create(base_server); /* just to avoid problems */
     ssl_config_global_fix(mc);
+
+    /* Initialize our interface to mod_md, if it is loaded 
+     */
+    md_is_managed = APR_RETRIEVE_OPTIONAL_FN(md_is_managed);
+    md_get_certificate = APR_RETRIEVE_OPTIONAL_FN(md_get_certificate);
+    md_is_challenge = APR_RETRIEVE_OPTIONAL_FN(md_is_challenge);
+    if (!md_is_managed || !md_get_certificate) {
+        md_is_managed = NULL;
+        md_get_certificate = NULL;
+    }
 
     /*
      *  try to fix the configuration and open the dedicated SSL
@@ -1606,6 +1635,52 @@ static apr_status_t ssl_init_server_ctx(server_rec *s,
         return APR_EGENERAL;
     }
 
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(10083)
+                 "Init: (%s) mod_md support is %s.", ssl_util_vhostid(p, s),
+                 md_is_managed? "available" : "unavailable");
+    if (md_is_managed && md_is_managed(s)) {
+        modssl_pk_server_t *const pks = sc->server->pks;
+        if (pks->cert_files->nelts > 0 || pks->key_files->nelts > 0) {
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(10084)
+                         "Init: (%s) You configured certificate/key files on this host, but "
+                         "is is covered by a Managed Domain. You need to remove these directives "
+                         "for the Managed Domain to take over.", ssl_util_vhostid(p, s));
+        }
+        else {
+            const char *key_file, *cert_file, *chain_file;
+            
+            key_file = cert_file = chain_file = NULL;
+            
+            if (md_get_certificate) {
+                rv = md_get_certificate(s, p, &key_file, &cert_file);
+            }
+            else {
+                rv = APR_ENOTIMPL;
+            }
+            
+            if (key_file && cert_file) {
+                ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, s, 
+                             "%s: installing key=%s, cert=%s, chain=%s", 
+                             ssl_util_vhostid(p, s), key_file, cert_file, chain_file);
+                APR_ARRAY_PUSH(pks->key_files, const char *) = key_file;
+                APR_ARRAY_PUSH(pks->cert_files, const char *) = cert_file;
+                sc->server->cert_chain = chain_file;
+            }
+            
+            if (APR_STATUS_IS_EAGAIN(rv)) {
+                /* Managed Domain not ready yet. This is not a reason to fail the config */
+                ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(10085)
+                             "Init: %s will respond with '503 Service Unavailable' for now. This "
+                             "host is part of a Managed Domain, but no SSL certificate is "
+                             "available (yet).", ssl_util_vhostid(p, s));
+                pks->service_unavailable = 1;
+            }
+            else if (rv != APR_SUCCESS) {
+                return rv;
+            }
+        }
+    }
+    
     if ((rv = ssl_init_ctx(s, p, ptemp, sc->server)) != APR_SUCCESS) {
         return rv;
     }

@@ -524,6 +524,7 @@ typedef struct {
     server_rec *server;
     
     const char *cipher_suite; /* cipher suite used in last reneg */
+    int service_unavailable;  /* thouugh we negotiate SSL, no requests will be served */
 } SSLConnRec;
 
 /* BIG FAT WARNING: SSLModConfigRec has unusual memory lifetime: it is
@@ -600,6 +601,9 @@ typedef struct {
      * sent in the CertificateRequest message: */
     const char  *ca_name_path;
     const char  *ca_name_file;
+    
+    /* TLS service for this server is suspended */
+    int service_unavailable;
 } modssl_pk_server_t;
 
 typedef struct {
@@ -1062,6 +1066,9 @@ void ssl_init_ocsp_certificates(server_rec *s, modssl_ctx_t *mctx);
  * be treated as unmutable, since it is stored in process-global
  * memory. */
 DH *modssl_get_dh_params(unsigned keylen);
+
+int ssl_is_challenge(conn_rec *c, const char *servername, 
+                     X509 **pcert, EVP_PKEY **pkey);
 
 #endif /* SSL_PRIVATE_H */
 /** @} */

@@ -264,6 +264,15 @@ int ssl_hook_ReadReq(request_rec *r)
         return DECLINED;
     }
 
+    if (sslconn->service_unavailable) {
+        /* This is set when the SSL properties of this connection are
+         * incomplete or if this connection was made to challenge a 
+         * particular hostname (ACME). We never serve any request on 
+         * such a connection. */
+         /* TODO: a retry-after indicator would be nice here */
+        return HTTP_SERVICE_UNAVAILABLE;
+    }
+
     if (sslconn->non_ssl_request == NON_SSL_SET_ERROR_MSG) {
         apr_table_setn(r->notes, "error-notes",
                        "Reason: You're speaking plain HTTP to an SSL-enabled "
@@ -2110,6 +2119,8 @@ void ssl_callback_Info(const SSL *ssl, int where, int rc)
 static apr_status_t init_vhost(conn_rec *c, SSL *ssl)
 {
     const char *servername;
+    X509 *cert;
+    EVP_PKEY *key;
     
     if (c) {
         SSLConnRec *sslcon = myConnConfig(c);
@@ -2126,7 +2137,34 @@ static apr_status_t init_vhost(conn_rec *c, SSL *ssl)
                 ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(02043)
                               "SSL virtual host for servername %s found",
                               servername);
+                
                 return APR_SUCCESS;
+            }
+            else if (ssl_is_challenge(c, servername, &cert, &key)) {
+            
+                sslcon->service_unavailable = 1;
+                if ((SSL_use_certificate(ssl, cert) < 1)) {
+                    ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, c, APLOGNO(10086)
+                                  "Failed to configure challenge certificate %s",
+                                  servername);
+                    return APR_EGENERAL;
+                }
+                
+                if (!SSL_use_PrivateKey(ssl, key)) {
+                    ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, c, APLOGNO(10087)
+                                  "error '%s' using Challenge key: %s",
+                                  ERR_error_string(ERR_peek_last_error(), NULL), 
+                                  servername);
+                    return APR_EGENERAL;
+                }
+                
+                if (SSL_check_private_key(ssl) < 1) {
+                    ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, c, APLOGNO(10088)
+                                  "Challenbge certificate and private key %s "
+                                  "do not match", servername);
+                    return APR_EGENERAL;
+                }
+                
             }
             else {
                 ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(02044)
@@ -2233,6 +2271,8 @@ static int ssl_find_vhost(void *servername, conn_rec *c, server_rec *s)
          */
         sslcon->server = s;
         sslcon->cipher_suite = sc->server->auth.cipher_suite;
+        sslcon->service_unavailable = sc->server->pks? 
+            sc->server->pks->service_unavailable : 0; 
         
         ap_update_child_status_from_server(c->sbh, SERVER_BUSY_READ, c, s);
         /*
