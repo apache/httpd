@@ -230,10 +230,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_md: backport of ACME (Let's Encrypt) support. Needs mod_ssl backport proposal beneath to
      not only compile but do something.
      trunk revisions: 1804530,1804531,1804542,1804545,1804671,1804759,1804787,1804975,1805180,1805188,1805192,1805194,1805256,1805294,1805373,1806939,1807228,1807347,1807577,1807593,1807774,1807777,1808005,1808092,1808100,1808241,1808242,1808243,1808249,1808444,1809719,1809888,1810723,1811082,1811812,1812193,1812517,1812518,1812999,1813642,1814720,1814939,1815005,1815078,1815264,1815370,1815483,1816055,1816154,1816156
-     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/mod_md-r1816156_svn.diff
+     2.4.x branch: ^/httpd/httpd/branches/2.4.x-mod_md
+     2.4.x diff: svn diff ^/httpd/httpd/branches/2.4.x  ^/httpd/httpd/branches/2.4.x-mod_md 
+     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/mod_md_ssl_complete.diff
          svn merge of revisions with many conflicts in CHANGES, generated html and some changes that do not belong
+         The win build system changes are excluded at the moment, as I was unable to merge the
+         changes via svn. Probably the 2.4.x is hand-edited so it does not allow that. The necessary
+         windows changes are best made to the new branch and then, once working satisfactory, merged
+         over.
+         Resetting the votes.
      +1: icing
-     -1: steffenal: OS signals error at httpd start, win build not complete. Details see post dev list
  
   *) mod_md: backport of mod_ssl changes to get interworking ACME support. Needs mod_md backport propoals above to find mod_md.h include file with otional functions.
      trunk revisions: 1804530,1804531,1805186,1806939,1807232,1808122
