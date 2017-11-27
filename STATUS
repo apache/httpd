@@ -240,7 +240,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          over.
          Resetting the votes.
      +1: icing
- 
+     -1: steffenal: OS signals error at httpd start. Details see post dev list
+
   *) mod_md: backport of mod_ssl changes to get interworking ACME support. Needs mod_md backport propoals above to find mod_md.h include file with otional functions.
      trunk revisions: 1804530,1804531,1805186,1806939,1807232,1808122
      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/mod_ssl_minimal_md.diff
