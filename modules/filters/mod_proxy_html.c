@@ -401,28 +401,22 @@ static void pstartElement(void *ctxt, const xmlChar *uname,
     int enforce = 0;
     if ((ctx->cfg->doctype == fpi_html) || (ctx->cfg->doctype == fpi_xhtml)) {
         /* enforce html */
-        enforce = 2;
-        if (!desc || desc->depr)
-            return;
-    
-    }
-    else if ((ctx->cfg->doctype == fpi_html)
-             || (ctx->cfg->doctype == fpi_xhtml)) {
-        enforce = 1;
-        /* enforce html legacy */
-        if (!desc) {
+        if (!desc || desc->depr) {
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, ctx->f->r, APLOGNO(01416)
+                          "Bogus HTML element %s dropped", name);
             return;
         }
+        enforce = 2;
     }
-    if (!desc && enforce) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, ctx->f->r, APLOGNO(01416)
-                      "Bogus HTML element %s dropped", name);
-        return;
-    }
-    if (desc && desc->depr && (enforce == 2)) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, ctx->f->r, APLOGNO(01417)
-                      "Deprecated HTML element %s dropped", name);
-        return;
+    else if ((ctx->cfg->doctype == fpi_html_legacy)
+             || (ctx->cfg->doctype == fpi_xhtml_legacy)) {
+        /* enforce html legacy */
+        if (!desc) {
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, ctx->f->r, APLOGNO(01417)
+                          "Deprecated HTML element %s dropped", name);
+            return;
+        }
+        enforce = 1;
     }
 #ifdef HAVE_STACK
     descp = apr_array_push(ctx->stack);
