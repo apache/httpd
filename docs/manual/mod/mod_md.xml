@@ -131,7 +131,8 @@ ManagedDomain example.org www.example.org
                 There are two special names that you may use in this directive: 'manual'
                 and 'auto'. This determines if a Managed Domain shall have exactly the 
                 name list as is configured ('manual') or offer more convenience. With 'auto'
-                all names of a virtual host are added to a MD.
+                all names of a virtual host are added to a MD. Conventiently, 'auto' is also
+                the default.
             </p>
             <example><title>Example</title>
                 <highlight language="config">
@@ -144,12 +145,21 @@ ManagedDomain example.org
 
     SSLEngine on
 &lt;/VirtualHost&gt;
+
+ManagedDomain example2.org auto
+
+&lt;VirtualHost *:443&gt;
+    ServerName example2.org
+    ServerAlias www.example2.org
+    ...
+&lt;/VirtualHost&gt;
                 </highlight>
             </example>
             <p>
                 In this example, the domain 'www.example.org' is automatically added to
-                the MD 'example.org'. And when you add more ServerAlias names to this
-                virtual host, they will be added as well.
+                the MD 'example.org'. Similarly for 'example2.org' where 'auto' is configured
+                explicitly. Whenever you add more ServerAlias names to this
+                virtual host, they will be added as well to the Manged Domain.
             </p><p>
                 If this is too much automagic for you, define 'manual' mode. 
                 <module>mod_md</module> will then complain if the names do not match.
@@ -175,7 +185,6 @@ ManagedDomain example.org
             <example><title>Example</title>
                 <highlight language="config">
 &lt;ManagedDomain sandbox.example.org&gt;
-    MDDriveMode manual
     MDCertificateAuthority   https://someotherca.com/ACME
     MDCertificateAgreement   https://someotherca.com/terms/v_1.02.pdf
 &lt;/ManagedDomain&gt;
@@ -321,7 +330,7 @@ MDCertificateAgreement https://letsencrypt.org/documents/LE-SA-v1.1.1-August-1-2
         <name>MDMembers</name>
         <description>Control if the alias domain names are automatically added.</description>
         <syntax>MDMembers auto|manual</syntax>
-        <default>MDDriveMode auto</default>
+        <default>MDMembers auto</default>
         <contextlist>
             <context>server config</context>
         </contextlist>
