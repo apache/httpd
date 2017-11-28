@@ -600,9 +600,9 @@ AC_DEFUN([APACHE_CHECK_OPENSSL],[
       ap_openssl_libs="${ap_openssl_libs:--lssl -lcrypto} `$apr_config --libs`"
       APR_ADDTO(MOD_LDFLAGS, [$ap_openssl_libs])
       APR_ADDTO(LIBS, [$ap_openssl_libs])
-      APR_SETVAR(ab_LDFLAGS, [$MOD_LDFLAGS])
+      APR_SETVAR(ab_LIBS, [$MOD_LDFLAGS])
       APACHE_SUBST(ab_CFLAGS)
-      APACHE_SUBST(ab_LDFLAGS)
+      APACHE_SUBST(ab_LIBS)
 
       dnl Run library and function checks
       liberrors=""
