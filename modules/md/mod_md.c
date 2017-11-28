@@ -983,54 +983,72 @@ static void load_stage_sets(apr_array_header_t *names, apr_pool_t *p,
     return;
 }
 
-static apr_status_t md_check_config(apr_pool_t *p, apr_pool_t *plog,
-                                    apr_pool_t *ptemp, server_rec *s)
-{
-    const char *mod_md_init_key = "mod_md_init_counter";
-    void *data = NULL;
-    
-    apr_pool_userdata_get(&data, mod_md_init_key, s->process->pool);
-    if (data == NULL) {
-        ap_log_error( APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(10070)
-                     "initializing post config dry run");
-        apr_pool_userdata_set((const void *)1, mod_md_init_key,
-                              apr_pool_cleanup_null, s->process->pool);
-    }
-    
-    ap_log_error( APLOG_MARK, APLOG_INFO, 0, s, APLOGNO(10071)
-                 "mod_md (v%s), initializing...", MOD_MD_VERSION);
-
-    init_setups(p, s);
-    md_log_set(log_is_level, log_print, NULL);
-
-    /* Check uniqueness of MDs, calculate global, configured MD list.
-     * If successful, we have a list of MD definitions that do not overlap. */
-    /* We also need to find out if we can be reached on 80/443 from the outside (e.g. the CA) */
-    return md_calc_md_list(p, plog, ptemp, s);
-}
-    
 static apr_status_t md_post_config(apr_pool_t *p, apr_pool_t *plog,
                                    apr_pool_t *ptemp, server_rec *s)
 {
+    void *data = NULL;
+    const char *mod_md_init_key = "mod_md_init_counter";
     md_srv_conf_t *sc;
     md_mod_conf_t *mc;
     md_reg_t *reg;
     const md_t *md;
     apr_array_header_t *drive_names;
     apr_status_t rv = APR_SUCCESS;
-    int i;
+    int i, dry_run = 0;
+
+    apr_pool_userdata_get(&data, mod_md_init_key, s->process->pool);
+    if (data == NULL) {
+        /* At the first start, httpd makes a config check dry run. It
+         * runs all config hooks to check if it can. If so, it does
+         * this all again and starts serving requests.
+         * 
+         * This is known.
+         *
+         * On a dry run, we therefore do all the cheap config things we
+         * need to do. Because otherwise mod_ssl fails because it calls
+         * us unprepared.
+         * But synching our configuration with the md store
+         * and determining which domains to drive and start a watchdog
+         * and all that, we do not.
+         */
+        ap_log_error( APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(10070)
+                     "initializing post config dry run");
+        apr_pool_userdata_set((const void *)1, mod_md_init_key,
+                              apr_pool_cleanup_null, s->process->pool);
+        dry_run = 1;
+    }
+    else {
+        ap_log_error( APLOG_MARK, APLOG_INFO, 0, s, APLOGNO(10071)
+                     "mod_md (v%s), initializing...", MOD_MD_VERSION);
+    }
 
     (void)plog;
+    init_setups(p, s);
+    md_log_set(log_is_level, log_print, NULL);
+
+    /* Check uniqueness of MDs, calculate global, configured MD list.
+     * If successful, we have a list of MD definitions that do not overlap. */
+    /* We also need to find out if we can be reached on 80/443 from the outside (e.g. the CA) */
+    if (APR_SUCCESS != (rv =  md_calc_md_list(p, plog, ptemp, s))) {
+        return rv;
+    }
+
     md_config_post_config(s, p);
     sc = md_config_get(s);
     mc = sc->mc;
-    
+
     /* Synchronize the definitions we now have with the store via a registry (reg). */
     if (APR_SUCCESS != (rv = setup_reg(&reg, p, s, mc->can_http, mc->can_https))) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10072)
                      "setup md registry");
         goto out;
     }
+    
+    if (dry_run) {
+        /* enough done in this case */
+        return APR_SUCCESS;
+    }
+    
     if (APR_SUCCESS != (rv = md_reg_sync(reg, p, ptemp, mc->mds))) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10073)
                      "synching %d mds to registry", mc->mds->nelts);
@@ -1368,7 +1386,6 @@ static void md_hooks(apr_pool_t *pool)
     
     /* Run once after configuration is set, before mod_ssl.
      */
-    ap_hook_check_config(md_check_config, NULL, mod_ssl, APR_HOOK_MIDDLE);
     ap_hook_post_config(md_post_config, NULL, mod_ssl, APR_HOOK_MIDDLE);
     
     /* Run once after a child process has been created.

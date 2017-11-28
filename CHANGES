@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_md: v1.0.5, restricting post_config dry run to be more silent and performing
+     only necessary work for mod_ssl to be also happy with the configuration.
+     [Stefan Eissing] 
+
   *) mod_md: v1.0.4, removed the 'a2md' utility command from build. Only used in github
      testing. Avoid problems with our build system that had problems after the latest
      changes to make a clean initial build. Remove the windows a2md.dsp therefore also.
