@@ -233,19 +233,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x branch: ^/httpd/httpd/branches/2.4.x-mod_md
      2.4.x diff: svn diff ^/httpd/httpd/branches/2.4.x  ^/httpd/httpd/branches/2.4.x-mod_md 
      +1: icing
-     -1: steffenal: OS signals error at httpd start. Details see post dev list
 
   *) mod_md: backport of mod_ssl changes to get interworking ACME support. Needs mod_md backport propoals above to find mod_md.h include file with otional functions.
      trunk revisions: 1804530,1804531,1805186,1806939,1807232,1808122
      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/mod_ssl_minimal_md.diff
      +1: icing, jorton 
-     -0: steffenal: Not sure it not conflicts with other LE utilities challenges. Details see post dev list   
 
   *) mod_http2: fixes unfair scheduling when number of active connections exceeds the
      scheduling fifo capacity.
      trunk revision: r1816619
      2.4.x patch: svn merge -c 1816619 ^/httpd/httpd/trunk .
-     +1: icing
+     +1: icing, steffenal
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
