@@ -23,6 +23,7 @@
 #include "apr.h"
 #include "apr_strings.h"
 #include "apr_lib.h"
+#include "apr_version.h"
 
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
@@ -181,9 +182,14 @@ static const char *get_addresses(apr_pool_t *p, const char *w_,
     if (!host) {
         return "Missing address for VirtualHost";
     }
+#if !APR_VERSION_AT_LEAST(1,7,0)
     if (scope_id) {
-        return "Scope ids are not supported";
+        return apr_pstrcat(p,
+                           "Scope ID in address '", w,
+                           "' not supported with APR " APR_VERSION_STRING,
+                           NULL);
     }
+#endif
     if (!port && !wild_port) {
         port = default_port;
     }
@@ -202,6 +208,17 @@ static const char *get_addresses(apr_pool_t *p, const char *w_,
                 "Could not resolve host name %s -- ignoring!", host);
             return NULL;
         }
+#if APR_VERSION_AT_LEAST(1,7,0)
+        if (scope_id) {
+            rv = apr_sockaddr_zone_set(my_addr, scope_id);
+            if (rv) {
+                ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL, APLOGNO()
+                             "Could not set scope ID %s for %pI -- ignoring!",
+                             scope_id, my_addr);
+                return NULL;
+            }
+        }
+#endif
     }
 
     /* Remember all addresses for the host */
