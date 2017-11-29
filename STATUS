@@ -235,6 +235,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1816619 ^/httpd/httpd/trunk .
      +1: icing, steffenal, jim
 
+  *) mod_proxy_uwsgi: Add in UWSGI proxy (sub)module
+     trunk patch: http://svn.apache.org/r1810358
+                  http://svn.apache.org/r1810362
+                  http://svn.apache.org/r1810363
+                  http://svn.apache.org/r1810365
+                  http://svn.apache.org/r1810447
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: jim
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
