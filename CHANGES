@@ -2,7 +2,7 @@
 Changes with Apache 2.5.1
 
   *) core: Support zone/scope in IPv6 link-local addresses in Listen and
-     VirtualHost directives (requires APR 1.7.x or later).  [Joe Orton]
+     VirtualHost directives (requires APR 1.7.x or later).  PR 59396.  [Joe Orton]
 
   *) mod_md: v1.0.5, restricting post_config dry run to be more silent and performing
      only necessary work for mod_ssl to be also happy with the configuration.
