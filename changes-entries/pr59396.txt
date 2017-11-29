@@ -1,0 +1,3 @@
+  *) core: Support zone/scope in IPv6 link-local addresses in Listen and
+     VirtualHost directives (requires APR 1.7.x or later).  PR 59396
+     [Joe Orton]
