@@ -130,3 +130,4 @@ mod_proxy_hcheck.so         0x70C10000    0x00020000
 mod_proxy_http2.so          0x70C30000    0x00020000
 mod_http2.so                0x70C50000    0x00040000
 mod_brotli.so               0x70C90000    0x000C0000
+mod_md.so                   0x70D50000    0x00020000
