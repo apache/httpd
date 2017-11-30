@@ -2086,6 +2086,24 @@ Package=<4>
 
 ###############################################################################
 
+Project: "mod_md"=.\modules\md\mod_md.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Project: "mod_mime"=.\modules\http\mod_mime.dsp - Package Owner=<4>
 
 Package=<5>

@@ -85,7 +85,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /debug /out:".\Debug\mod_md.so" /base:@..\..\os\win32\BaseAddr.ref,mod_md.so
-# ADD LINK32 kernel32.lib libhttpd.lib libapr-1.lib libaprutil-1.lib ssleay32.lib libeay32.lib jansson_d.lib libcurl.lib /nologo /subsystem:windows /dll /libpath:"../../srclib/openssl/out32dll" /libpath:"../../srclib/jansson/lib" /libpath:"../../srclib/curl/lib" /incremental:no /debug /out:".\Debug\mod_md.so" /base:@..\..\os\win32\BaseAddr.ref,mod_md.so
+# ADD LINK32 kernel32.lib libhttpd.lib libapr-1.lib libaprutil-1.lib ssleay32.lib libeay32.lib jansson_d.lib libcurl_debug.lib /nologo /subsystem:windows /dll /libpath:"../../srclib/openssl/out32dll" /libpath:"../../srclib/jansson/lib" /libpath:"../../srclib/curl/lib" /incremental:no /debug /out:".\Debug\mod_md.so" /base:@..\..\os\win32\BaseAddr.ref,mod_md.so
 # Begin Special Build Tool
 TargetPath=.\Debug\mod_md.so
 SOURCE="$(InputPath)"
