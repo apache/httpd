@@ -63,7 +63,7 @@ static int uwsgi_canon(request_rec *r, char *url)
     const char *err, *path;
     apr_port_t port = UWSGI_DEFAULT_PORT;
 
-    if (strncasecmp(url, UWSGI_SCHEME "://", sizeof(UWSGI_SCHEME) + 2)) {
+    if (ap_cstr_casecmpn(url, UWSGI_SCHEME "://", sizeof(UWSGI_SCHEME) + 2)) {
         return DECLINED;
     }
     url += sizeof(UWSGI_SCHEME);        /* Keep slashes */
@@ -166,7 +166,7 @@ static int uwsgi_send_headers(request_rec *r, proxy_conn_rec * conn)
         }
         else {
             if (!strcmp(script_name, "/")) {
-                apr_table_set(r->subprocess_env, "SCRIPT_NAME", "");
+                apr_table_setn(r->subprocess_env, "SCRIPT_NAME", "");
             }
         }
     }
@@ -453,12 +453,14 @@ static int uwsgi_handler(request_rec *r, proxy_worker * worker,
     size_t w_len;
     char server_portstr[32];
     char *u_path_info;
-    apr_uri_t *uri = apr_palloc(r->pool, sizeof(*uri));
+    apr_uri_t *uri;
 
-    if (strncasecmp(url, UWSGI_SCHEME "://", sizeof(UWSGI_SCHEME) + 2)) {
+    if (ap_cstr_casecmpn(url, UWSGI_SCHEME "://", sizeof(UWSGI_SCHEME) + 2)) {
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, "declining URL %s", url);
         return DECLINED;
     }
+
+    uri = apr_palloc(r->pool, sizeof(*uri));
 
     /* ADD PATH_INFO */
 #if AP_MODULE_MAGIC_AT_LEAST(20111130,0)
