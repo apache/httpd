@@ -70,7 +70,7 @@ static int uwsgi_canon(request_rec *r, char *url)
 
     err = ap_proxy_canon_netloc(r->pool, &url, NULL, NULL, &host, &port);
     if (err) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10097)
                       "error parsing URL %s: %s", url, err);
         return HTTP_BAD_REQUEST;
     }
@@ -107,7 +107,7 @@ static int uwsgi_send(proxy_conn_rec * conn, const char *buf,
     while (length > 0) {
         written = length;
         if ((rv = apr_socket_send(conn->sock, buf, &written)) != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(10098)
                           "sending data to %s:%u failed",
                           conn->hostname, conn->port);
             return HTTP_SERVICE_UNAVAILABLE;
@@ -223,7 +223,7 @@ static int uwsgi_send_body(request_rec *r, proxy_conn_rec * conn)
             readlen = ap_get_client_block(r, buf, AP_IOBUFSIZE);
         }
         if (readlen == -1) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10099)
                           "receiving request body failed");
             return HTTP_INTERNAL_SERVER_ERROR;
         }
@@ -474,7 +474,7 @@ static int uwsgi_handler(request_rec *r, proxy_worker * worker,
     }
     decode_status = ap_unescape_url(url + w_len - delta);
     if (decode_status) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10100)
                       "unable to decode uri: %s", url + w_len - delta);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
@@ -501,7 +501,7 @@ static int uwsgi_handler(request_rec *r, proxy_worker * worker,
 
     /* Step Two: Make the Connection */
     if (ap_proxy_connect_backend(UWSGI_SCHEME, backend, worker, r->server)) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10101)
                       "failed to make connection to backend: %s:%u",
                       backend->hostname, backend->port);
         status = HTTP_SERVICE_UNAVAILABLE;
