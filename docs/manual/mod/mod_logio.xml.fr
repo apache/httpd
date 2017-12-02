@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1684312:1816356 (outdated) -->
+<!-- English Revision: 1816356 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -109,7 +109,9 @@ to first byte - TTFB)</description>
 <default>LogIOTrackTTFB OFF</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
-<override>none</override>
+<override>All</override>
+<compatibility>Disponible à partir de la version 2.4.13 du serveur HTTP
+Apache</compatibility>
 
 <usage>
     <p>Cette directive permet de définir si ce module mesure le délai
