@@ -160,7 +160,7 @@ static apr_status_t slot_pull_task(h2_slot *slot, h2_mplx *m)
          * If we still have idle workers, we let the worker be sticky, 
          * e.g. making it poll the task's h2_mplx instance for more work 
          * before asking back here. */
-        slot->sticks = 1;/*slot->workers->max_workers;*/
+        slot->sticks = slot->workers->max_workers;
         return rv;            
     }
     slot->sticks = 0;
