@@ -737,7 +737,7 @@ simultaneously</td></tr>
 <tr class="odd"><td><a href="mod_md.html#mddrivemode">MDDriveMode always|auto|manual</a></td><td> auto </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Control when it is allowed to obtain/renew certificates.</td></tr>
 <tr><td><a href="mod_md.html#mdhttpproxy">MDHttpProxy url</a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Define a proxy for outgoing connections.</td></tr>
 <tr class="odd"><td><a href="mod_md.html#mdmember">MDMember hostname</a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Additional hostname for the managed domain.</td></tr>
-<tr><td><a href="mod_md.html#mdmembers">MDMembers auto|manual</a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Control if the alias domain names are automatically added.</td></tr>
+<tr><td><a href="mod_md.html#mdmembers">MDMembers auto|manual</a></td><td> auto </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Control if the alias domain names are automatically added.</td></tr>
 <tr class="odd"><td><a href="mod_md.html#mdmuststaple">MDMustStaple on|off</a></td><td> off </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Control if new certificates carry the OCSP Must Staple flag.</td></tr>
 <tr><td><a href="mod_md.html#mdnotifycmd">MDNotifyCmd  path</a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Run a program when Managed Domain are ready.</td></tr>
 <tr class="odd"><td><a href="mod_md.html#mdportmap">MDPortMap map1 [ map2 ]</a></td><td> 80:80 443:443 </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Map external to internal ports for domain ownership verification.</td></tr>
