@@ -79,9 +79,6 @@ Changes with Apache 2.5.0-alpha
      - MDRequireHttps now happens before any Redirect.
      [Stefan Eissing]
 
-  *) mod_authz_dbd: fix a segmentation fault if AuthzDBDQuery is not set.
-     PR 61546 [Lubos Uhliarik <luhliari redhat.com>]
-
   *) mod_ssl: unshare SSLSrvConfigRec instances between base server and virtual hosts. This avoids
      overwrites of later initializattions (vhost_id), selective disables by "SSLEngine addr-list"
      and certificate/key pickup from mod_md. [Stefan Eissing]
