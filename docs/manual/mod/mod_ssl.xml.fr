@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1792337:1816356 (outdated) -->
+<!-- English Revision: 1816356 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1973,7 +1973,6 @@ SSLStrictSNIVHostCheck on
 le mandataire doit utiliser</description>
 <syntax>SSLProxyMachineCertificatePath <em>chemin-répertoire</em></syntax>
 <contextlist><context>server config</context></contextlist>
-<override>Sans objet</override>
 
 <usage>
 <p>
@@ -2004,7 +2003,6 @@ SSLProxyMachineCertificatePath "/usr/local/apache2/conf/proxy.crt/"
 clients codés en PEM que le mandataire doit utiliser</description>
 <syntax>SSLProxyMachineCertificateFile <em>chemin-fichier</em></syntax>
 <contextlist><context>server config</context></contextlist>
-<override>Sans objet</override>
 
 <usage>
 <p>
@@ -2036,7 +2034,6 @@ SSLProxyMachineCertificateFile
 mandataire de choisir un certificat</description>
 <syntax>SSLProxyMachineCertificateChainFile <em>nom-fichier</em></syntax>
 <contextlist><context>server config</context></contextlist>
-<override>Sans objet</override>
 
 <usage>
 <p>

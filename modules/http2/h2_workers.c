@@ -160,7 +160,7 @@ static apr_status_t slot_pull_task(h2_slot *slot, h2_mplx *m)
          * If we still have idle workers, we let the worker be sticky, 
          * e.g. making it poll the task's h2_mplx instance for more work 
          * before asking back here. */
-        slot->sticks = slot->workers->max_workers;
+        slot->sticks = 1;/*slot->workers->max_workers;*/
         return rv;            
     }
     slot->sticks = 0;
@@ -305,7 +305,18 @@ h2_workers *h2_workers_create(server_rec *s, apr_pool_t *server_pool,
     workers->max_workers = max_workers;
     workers->max_idle_secs = (idle_secs > 0)? idle_secs : 10;
 
-    status = h2_fifo_create(&workers->mplxs, pool, 2 * workers->max_workers);
+    /* FIXME: the fifo set we use here has limited capacity. Once the
+     * set is full, connections with new requests do a wait. Unfortunately,
+     * we have optimizations in place there that makes such waiting "unfair"
+     * in the sense that it may take connections a looong time to get scheduled.
+     *
+     * Need to rewrite this to use one of our double-linked lists and a mutex
+     * to have unlimited capacity and fair scheduling.
+     *
+     * For now, we just make enough room to have many connections inside one
+     * process.
+     */
+    status = h2_fifo_set_create(&workers->mplxs, pool, 8 * 1024);
     if (status != APR_SUCCESS) {
         return NULL;
     }
