@@ -286,6 +286,10 @@ APACHE_MODULE(md, [Managed Domain handling], $md_objs, , most, [
         AC_MSG_WARN([libcurl not found])
         enable_md=no
     fi
+    
+    AC_CHECK_FUNCS([arc4random_buf], 
+        [APR_ADDTO(MOD_CPPFLAGS, ["-DMD_HAVE_ARC4RANDOM"])], [])
+    
 ])
 
 dnl #  end of module specific part
