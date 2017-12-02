@@ -229,9 +229,6 @@ Changes with Apache 2.5.0-alpha
      to leave the WRITE_COMPLETION phase. Move filter code out of the MPMs.
      [Graham Leggett]
 
-  *) core: Added support for HTTP code 451. PR58985.
-     [Yehuda Katz <yehuda ymkatz.net>, Jim Jagielski]
-
   *) mod_filter: Fix AddOutputFilterByType with non-content-level filters.
      PR58856 [Micha Lenk <micha lenk.info>]
 
