@@ -1338,6 +1338,13 @@ The available <em>option</em>s are:</p>
     directive within <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> can be used as a more
     general mechanism for faking basic authentication, giving control over the
     structure of both the username and password.</p>
+
+    <div class="warning">
+      <p>The usernames used for <code>FakeBasicAuth</code> must not
+      include any non-ASCII characters, ASCII escape characters (such
+      a newline), or a colon.  If a colon is found, a 403 Forbidden
+      error will be generated with httpd 2.5.1 and later.</p>
+    </div>
 </li>
 <li><code>StrictRequire</code>
     <p>
