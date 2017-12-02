@@ -142,18 +142,11 @@ content</title>
 
     <highlight language="config">
 &lt;IfModule mod_headers.c&gt;
-    # Serve brotli compressed CSS files if they exist
+    # Serve brotli compressed CSS and JS files if they exist
     # and the client accepts brotli.
     RewriteCond "%{HTTP:Accept-encoding}" "br"
     RewriteCond "%{REQUEST_FILENAME}\.br" "-s"
-    RewriteRule "^(.*)\.css"              "$1\.css\.br" [QSA]
-
-    # Serve brotli compressed JS files if they exist
-    # and the client accepts brotli.
-    RewriteCond "%{HTTP:Accept-encoding}" "br"
-    RewriteCond "%{REQUEST_FILENAME}\.br" "-s"
-    RewriteRule "^(.*)\.js"               "$1\.js\.br" [QSA]
-
+    RewriteRule "^(.*)\.(js|css)"              "$1\.$2\.br" [QSA]
 
     # Serve correct content types, and prevent double compression.
     RewriteRule "\.css\.br$" "-" [T=text/css,E=no-brotli:1]
