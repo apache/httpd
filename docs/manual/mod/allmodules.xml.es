@@ -137,7 +137,6 @@
   <modulefile>event.xml.es</modulefile>
   <modulefile>mpm_netware.xml</modulefile>
   <modulefile>mpmt_os2.xml</modulefile>
-  <modulefile>overrides.xml</modulefile>
   <modulefile>prefork.xml</modulefile>
   <modulefile>mpm_winnt.xml</modulefile>
   <modulefile>worker.xml</modulefile>
