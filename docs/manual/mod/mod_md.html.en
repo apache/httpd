@@ -109,7 +109,7 @@
 <div class="directive-section"><h2><a name="ManagedDomain" id="ManagedDomain">ManagedDomain</a> <a name="manageddomain" id="manageddomain">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Define list of domain names that belong to one group.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ManagedDomain <var>dns-name</var> [ <var>other-dns-name</var>... ]</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ManagedDomain <var>dns-name</var> [ <var>other-dns-name</var>... ] [auto|manual]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
@@ -183,8 +183,8 @@ ManagedDomain example2.org auto
                 explicitly. Whenever you add more ServerAlias names to this
                 virtual host, they will be added as well to the Manged Domain.
             </p><p>
-                If this is too much automagic for you, define 'manual' mode. 
-                <code class="module"><a href="../mod/mod_md.html">mod_md</a></code> will then complain if the names do not match.
+                If you prefer to explicitly declare all the domain names, use 'manual' mode. 
+                An error will be logged if the names do not match with the expected ones.
             </p>
         
 </div>
@@ -208,6 +208,10 @@ ManagedDomain example2.org auto
     MDCertificateAgreement   https://someotherca.com/terms/v_1.02.pdf
 &lt;/ManagedDomain&gt;</pre>
 </div>
+        <p>This is a specialized version of <code class="directive"><a href="#manageddomain">ManagedDomain</a></code>,
+        it should be used only when a fine grained configuration is required.
+        <code class="directive"><a href="#manageddomain">ManagedDomain</a></code> is the suggested choice
+        for the general use case.</p>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -221,9 +225,9 @@ ManagedDomain example2.org auto
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
 </table>
             <p>
-                This tells <code class="module"><a href="../mod/mod_md.html">mod_md</a></code> which challenge types it shall use in
-                which order when proving domain ownership. The names are protocol specific. The
-                current ACME protocol version that Let's Encrypt speaks defines two challenge
+                Sets challenge types and their execution order when proving domain ownership.
+                The names are protocol specific.
+                The current ACME protocol version implemented by Let's Encrypt defines two challenge
                 types that are supported by <code class="module"><a href="../mod/mod_md.html">mod_md</a></code>. By default, it will try
                 the one on port 443 when available.
             </p>
@@ -307,8 +311,8 @@ MDCertificateAgreement https://letsencrypt.org/documents/LE-SA-v1.1.1-August-1-2
             This can be useful in clustered setups where you want just one node to perform
             the driving.
             </p><p>
-            The third mode 'always' is like 'auto' only that <code class="module"><a href="../mod/mod_md.html">mod_md</a></code> will not
-            check if the MD is actually used somewhere. 
+            The third mode 'always' is like 'auto', with the difference that
+            <code class="module"><a href="../mod/mod_md.html">mod_md</a></code> will not check if the MD is actually used. 
             </p>
         
 </div>
@@ -348,7 +352,7 @@ MDCertificateAgreement https://letsencrypt.org/documents/LE-SA-v1.1.1-August-1-2
             <p>
                If you use it in the global context, outside a specific MD, you can only
                specify one value, 'auto' or 'manual' as the default for all other MDs. See
-               <code class="directive"><a href="#manageddomain">&lt;ManagedDomain&gt;</a></code> for a
+               <code class="directive"><a href="#manageddomain">ManagedDomain</a></code> for a
                description of these special values.
             </p>
         
