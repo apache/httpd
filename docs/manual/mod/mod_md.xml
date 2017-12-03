@@ -80,7 +80,7 @@ ManagedDomain example.org
     <directivesynopsis>
         <name>ManagedDomain</name>
         <description>Define list of domain names that belong to one group.</description>
-        <syntax>ManagedDomain <var>dns-name</var> [ <var>other-dns-name</var>... ]</syntax>
+        <syntax>ManagedDomain <var>dns-name</var> [ <var>other-dns-name</var>... ] [auto|manual]</syntax>
         <contextlist>
             <context>server config</context>
         </contextlist>
@@ -161,8 +161,8 @@ ManagedDomain example2.org auto
                 explicitly. Whenever you add more ServerAlias names to this
                 virtual host, they will be added as well to the Manged Domain.
             </p><p>
-                If this is too much automagic for you, define 'manual' mode. 
-                <module>mod_md</module> will then complain if the names do not match.
+                If you prefer to explicitly declare all the domain names, use 'manual' mode. 
+                An error will be logged if the names do not match with the expected ones.
             </p>
         </usage>
     </directivesynopsis>
@@ -190,6 +190,10 @@ ManagedDomain example2.org auto
 &lt;/ManagedDomain&gt;
                 </highlight>
             </example>
+        <p>This is a specialized version of <directive module="mod_md">ManagedDomain</directive>,
+        it should be used only when a fine grained configuration is required.
+        <directive module="mod_md">ManagedDomain</directive> is the suggested choice
+        for the general use case.</p>
         </usage>
     </directivesynopsis>
 
@@ -276,8 +280,8 @@ MDCertificateAgreement https://letsencrypt.org/documents/LE-SA-v1.1.1-August-1-2
             This can be useful in clustered setups where you want just one node to perform
             the driving.
             </p><p>
-            The third mode 'always' is like 'auto' only that <module>mod_md</module> will not
-            check if the MD is actually used somewhere. 
+            The third mode 'always' is like 'auto', with the difference that
+            <module>mod_md</module> will not check if the MD is actually used. 
             </p>
         </usage>
     </directivesynopsis>
@@ -320,7 +324,7 @@ MDCertificateAgreement https://letsencrypt.org/documents/LE-SA-v1.1.1-August-1-2
             <p>
                If you use it in the global context, outside a specific MD, you can only
                specify one value, 'auto' or 'manual' as the default for all other MDs. See
-               <directive module="mod_md" type="section">ManagedDomain</directive> for a
+               <directive module="mod_md">ManagedDomain</directive> for a
                description of these special values.
             </p>
         </usage>
@@ -581,9 +585,9 @@ MDRequireHttps permanent
         </contextlist>
         <usage>
             <p>
-                This tells <module>mod_md</module> which challenge types it shall use in
-                which order when proving domain ownership. The names are protocol specific. The
-                current ACME protocol version that Let's Encrypt speaks defines two challenge
+                Sets challenge types and their execution order when proving domain ownership.
+                The names are protocol specific.
+                The current ACME protocol version implemented by Let's Encrypt defines two challenge
                 types that are supported by <module>mod_md</module>. By default, it will try
                 the one on port 443 when available.
             </p>
