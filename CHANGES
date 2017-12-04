@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_auth_basic: Be less tolerant when parsing the credencial. Only spaces
+     should be accepted after the authorization scheme. \t are also tolerated.
+     [Christophe Jaillet]
+  
   *) mod_http2: fixed unfair scheduling when number of active connections
      exceeded the scheduling fifo capacity. [Stefan Eissing]
 

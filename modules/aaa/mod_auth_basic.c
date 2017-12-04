@@ -270,7 +270,7 @@ static int get_basic_auth(request_rec *r, const char **user,
     }
 
     /* Skip leading spaces. */
-    while (apr_isspace(*auth_line)) {
+    while (*auth_line == ' ' || *auth_line == '\t') {
         auth_line++;
     }
 
