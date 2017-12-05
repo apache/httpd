@@ -104,6 +104,13 @@ Va rugam sa il contactati pe
 in cazul in care credeti ca aceasta este o eroare a serverului.
 ----------ro--
 
+Content-language: ru
+Content-type: text/html; charset=UTF-8
+Body:----------ru--
+Если Вы считаете, что это ошибка сервера, пожалуйста, сообщите об этом
+<a href="mailto:<!--#echo encoding="url" var="SERVER_ADMIN" -->">веб-мастеру</a>.
+----------ru--
+
 Content-language: sr
 Content-type: text/html; charset=UTF-8
 Body:----------sr--

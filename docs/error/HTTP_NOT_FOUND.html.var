@@ -385,6 +385,32 @@ Body:----------ro--
 <!--#include virtual="include/bottom.html" -->
 ----------ro--
 
+Content-language: ru
+Content-type: text/html; charset=UTF-8
+Body:----------ru--
+<!--#set var="TITLE" value="Объект не найден!"
+--><!--#include virtual="include/top.html" -->
+
+    Запрашиваемый ресурс не найден.
+
+  <!--#if expr="-n v('HTTP_REFERER')" -->
+
+    Ссылка на
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">странице
+    </a> неверна или устарела. Пожалуйста, сообщите автору
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">этой страницы</a>
+    об ошибке.
+
+  <!--#else -->
+
+    Если Вы ввели адрес данного ресурса вручную, пожалуйста, удостовертесь,
+    что в написании адреса нет ошибок.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------ru--
+
 Content-language: sr
 Content-type: text/html; charset=UTF-8
 Body:----------sr--

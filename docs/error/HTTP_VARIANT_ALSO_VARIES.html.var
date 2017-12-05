@@ -200,6 +200,18 @@ Body:----------ro--
 <!--#include virtual="include/bottom.html" -->
 ----------ro--
 
+Content-language: ru
+Content-type: text/html; charset=UTF-8
+Body:----------ru--
+<!--#set var="TITLE" value="Вариант также варьируется!"
+--><!--#include virtual="include/top.html" -->
+
+    Вариант запрашиваемого объекта - и сам ресурс непостоянный.
+    Доступ к объекту невозможен.
+
+<!--#include virtual="include/bottom.html" -->
+----------ru--
+
 Content-language: sr
 Content-type: text/html; charset=UTF-8
 Body:----------sr--

@@ -341,6 +341,27 @@ Body:----------ro--
 <!--#include virtual="include/bottom.html" -->
 ----------ro--
 
+Content-language: ru
+Content-type: text/html; charset=UTF-8
+Body:----------ru--
+<!--#set var="TITLE" value="Доступ запрещён!"
+--><!--#include virtual="include/top.html" -->
+
+  <!--#if expr="v('REDIRECT_URL') =~ m:/$:" -->
+
+    У Вас нет прав доступа к этой директории.
+    Отсутствует индексный файл, или директория недоступна для чтения.
+
+  <!--#else -->
+
+    У Вас нет прав доступа к этому объекту.
+    Файл недоступен для чтения, или сервер не может его прочитать.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------ru--
+
 Content-language: sr
 Content-type: text/html; charset=UTF-8
 Body:----------sr--

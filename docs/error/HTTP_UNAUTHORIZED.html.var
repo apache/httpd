@@ -310,6 +310,25 @@ Body:----------ro--
 <!--#include virtual="include/bottom.html" -->
 ----------ro--
 
+Content-language: ru
+Content-type: text/html; charset=UTF-8
+Body:----------ru--
+<!--#set var="TITLE" value="Необходима аутентификация!"
+--><!--#include virtual="include/top.html" -->
+
+    Сервер не смог проверить данные аутентификации
+    на доступ к "<!--#echo encoding="url" var="REDIRECT_URL" -->".
+    Вы предоставили неверные учётные данные (например: пароль), или Ваш
+    браузер не знает, как их предоставить.
+
+  <!--#include virtual="include/spacer.html" -->
+
+    Если Вам разрешено запрашивать данный документ, пожалуйста,
+    проверьте свои учётные данные и повторите запрос.
+
+<!--#include virtual="include/bottom.html" -->
+----------ru--
+
 Content-language: sr
 Content-type: text/html; charset=UTF-8
 Body:----------sr--

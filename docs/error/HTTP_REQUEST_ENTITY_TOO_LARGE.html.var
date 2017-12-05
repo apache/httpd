@@ -204,6 +204,18 @@ Body:----------ro--
 <!--#include virtual="include/bottom.html" -->
 ----------ro--
 
+Content-language: ru
+Content-type: text/html; charset=UTF-8
+Body:----------ru--
+<!--#set var="TITLE" value="Размер запроса слишком велик!"
+--><!--#include virtual="include/top.html" -->
+
+    Тип передаваеиых данных запрещён методом <!--#echo var="REDIRECT_REQUEST_METHOD" -->,
+    или размера тела запроса слишком велик.
+
+<!--#include virtual="include/bottom.html" -->
+----------ru--
+
 Content-language: sr
 Content-type: text/html; charset=UTF-8
 Body:----------sr--
