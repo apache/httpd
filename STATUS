@@ -118,6 +118,11 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_http2: fixes unfair scheduling when number of active connections exceeds the
+     scheduling fifo capacity.
+     trunk revision: r1816619
+     2.4.x patch: svn merge -c 1816619 ^/httpd/httpd/trunk .
+     +1: icing, steffenal, jim
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -228,12 +233,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk revisions: 1804530,1804531,1805186,1806939,1807232,1808122
      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/mod_ssl_minimal_md.diff
      +1: icing, jorton, jim
-
-  *) mod_http2: fixes unfair scheduling when number of active connections exceeds the
-     scheduling fifo capacity.
-     trunk revision: r1816619
-     2.4.x patch: svn merge -c 1816619 ^/httpd/httpd/trunk .
-     +1: icing, steffenal, jim
 
   *) mod_proxy_uwsgi: Add in UWSGI proxy (sub)module
      trunk patch: http://svn.apache.org/r1810358
