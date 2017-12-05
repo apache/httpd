@@ -118,11 +118,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_http2: fixes unfair scheduling when number of active connections exceeds the
-     scheduling fifo capacity.
-     trunk revision: r1816619
-     2.4.x patch: svn merge -c 1816619 ^/httpd/httpd/trunk .
-     +1: icing, steffenal, jim
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
