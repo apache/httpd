@@ -194,6 +194,18 @@ Body:----------ro--
 <!--#include virtual="include/bottom.html" -->
 ----------ro--
 
+Content-language: ru
+Content-type: text/html; charset=UTF-8
+Body:----------ru--
+<!--#set var="TITLE" value="Истекло время ожидания!"
+--><!--#include virtual="include/top.html" -->
+
+    Сервер закрыл соединение из-за истечения времени,
+    отведённого браузеру на выполнение запроса.
+
+<!--#include virtual="include/bottom.html" -->
+----------ru--
+
 Content-language: sr
 Content-type: text/html; charset=UTF-8
 Body:----------sr--

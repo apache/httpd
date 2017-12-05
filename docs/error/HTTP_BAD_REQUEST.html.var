@@ -190,6 +190,18 @@ Body:----------ro--
 <!--#include virtual="include/bottom.html" -->
 ----------ro--
 
+Content-language: ru
+Content-type: text/html; charset=UTF-8
+Body:----------ru--
+<!--#set var="TITLE" value="Неверный запрос!"
+--><!--#include virtual="include/top.html" -->
+
+    Запрос, посланный Вашим браузером (или прокси-сервером),
+    содержит ошибку и не может быть обработан.
+
+<!--#include virtual="include/bottom.html" -->
+----------ru--
+
 Content-language: sr
 Content-type: text/html; charset=UTF-8
 Body:----------sr--

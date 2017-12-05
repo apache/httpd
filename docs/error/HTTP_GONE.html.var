@@ -387,6 +387,30 @@ Body:----------ro--
 <!--#include virtual="include/bottom.html" -->
 ----------ro--
 
+Content-language: ru
+Content-type: text/html; charset=UTF-8
+Body:----------ru--
+<!--#set var="TITLE" value="Документ удалён!"
+--><!--#include virtual="include/top.html" -->
+
+    Документ удалён, и адрес перенаправления отсутствует.
+
+  <!--#if expr="-n v('HTTP_REFERER')" -->
+
+    Пожалуйста, сообщите автору
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">страницы</a>,
+    ссылающейся на документ, что ссылка устарела.
+
+  <!--#else -->
+
+    Если Вы обратились к документу по ссылке с другой страницы, пожалуйста,
+    сообщите её автору об ошибке.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------ru--
+
 Content-language: sr
 Content-type: text/html; charset=UTF-8
 Body:----------sr--

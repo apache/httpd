@@ -181,6 +181,17 @@ Body:----------ro--
 <!--#include virtual="include/bottom.html" -->
 ----------ro--
 
+Content-language: ru
+Content-type: text/html; charset=UTF-8
+Body:----------ru--
+<!--#set var="TITLE" value="Запрос не может быть обработан!"
+--><!--#include virtual="include/top.html" -->
+
+    Сервер не поддерживает возможностей, необходимых для обработки запроса.
+
+<!--#include virtual="include/bottom.html" -->
+----------ru--
+
 Content-language: sr
 Content-type: text/html; charset=UTF-8
 Body:----------sr--

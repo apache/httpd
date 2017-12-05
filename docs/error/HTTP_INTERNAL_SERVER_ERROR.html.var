@@ -416,6 +416,33 @@ Body:----------ro--
 <!--#include virtual="include/bottom.html" -->
 ----------ro--
 
+Content-language: ru
+Content-type: text/html; charset=UTF-8
+Body:----------ru--
+<!--#set var="TITLE" value="Ошибка сервера!"
+--><!--#include virtual="include/top.html" -->
+
+  <!--#if expr="-n v('REDIRECT_ERROR_NOTES')" -->
+
+    Произошла внутренняя ошибка сервера, в результате которой
+    серверу не удалось завершить обработку Вашего запроса.
+
+    <!--#include virtual="include/spacer.html" -->
+
+    Error message:
+    <br /><!--#echo encoding="none" var="REDIRECT_ERROR_NOTES" -->
+
+  <!--#else -->
+
+    Произошла внутренняя ошибка сервера, в результате которой
+    серверу не удалось завершить обработку Вашего запроса.
+    Сервер перегружен, или в CGI-скрипте обнаружена ошибка.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------ru--
+
 Content-language: sr
 Content-type: text/html; charset=UTF-8
 Body:----------sr--
