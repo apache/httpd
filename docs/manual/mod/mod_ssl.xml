@@ -560,7 +560,7 @@ SSLSessionCacheTimeout 600
 <default>SSLEngine off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility>The <code>addr:port</code> parameter is available in Apache 2.4.28 and later.</compatibility>
+<compatibility>The <code>addr:port</code> parameter is available in Apache 2.4.30 and later.</compatibility>
 
 <usage>
 <p>
@@ -2840,11 +2840,11 @@ SSLOpenSSLConfCmd SignatureAlgorithms RSA+SHA384:ECDSA+SHA256
 </directivesynopsis>
 
 <directivesynopsis type="section" idtype="section">
-<name>SSLPolicy</name>
+<name>SSLPolicyDefine</name>
 <description>Define a named set of SSL configurations</description>
 <syntax>&lt;SSLPolicy <em>name</em>&gt;</syntax>
 <contextlist><context>server config</context></contextlist>
-<compatibility>Available in httpd 2.4.28 and later</compatibility>
+<compatibility>Available in httpd 2.4.30 and later</compatibility>
 
 <usage>
 <p>This directive defines a set of SSL* configurations under
@@ -2854,13 +2854,13 @@ to apply this configuration set in the current context.</p>
 
 <example><title>Define and Use of a Policy</title>
 <highlight language="config">
-&lt;SSLPolicy safe-stapling&gt;
+&lt;SSLPolicyDefine safe-stapling&gt;
    SSLUseStapling on
    SSLStaplingResponderTimeout 2
    SSLStaplingReturnResponderErrors off
    SSLStaplingFakeTryLater off
    SSLStaplingStandardCacheTimeout 86400
-&lt;/SSLPolicy&gt;
+&lt;/SSLPolicyDefine&gt;
 
    ...
    &lt;VirtualHost...&gt;
@@ -2887,19 +2887,25 @@ httpd -t -D DUMP_SSL_POLICIES
 </highlight>
 </example>
 
-<p>The directive can only be used in the server config (global context), so 
-there cannot be two policies with the same name. However, policies can
+<p>The directive can only be used in the server config (global context). It can take
+most SSL* directives, however a few can only be set once and are not allowed inside
+policy defintions. These are <directive>SSLCryptoDevice</directive>, 
+<directive>SSLRandomSeed</directive>, 
+<directive>SSLSessionCache</directive> and 
+<directive>SSLStaplingCache</directive>.
+</p>
+<p>Two policies cannot have the same name. However, policies can
 be redefined:</p>
 
 <example><title>Policy Overwrite</title>
 <highlight language="config">
-&lt;SSLPolicy proxy-trust&gt;
+&lt;SSLPolicyDefine proxy-trust&gt;
    SSLProxyVerify require
-&lt;/SSLPolicy&gt;
+&lt;/SSLPolicyDefine&gt;
    ...
-&lt;SSLPolicy proxy-trust&gt;
+&lt;SSLPolicyDefine proxy-trust&gt;
    SSLProxyVerify none
-&lt;/SSLPolicy&gt;
+&lt;/SSLPolicyDefine&gt;
 </highlight>
 </example>
 
@@ -2914,14 +2920,14 @@ an aspect of a policy:</p>
 
 <example><title>Policy Redefine</title>
 <highlight language="config">
-&lt;SSLPolicy proxy-trust&gt;
+&lt;SSLPolicyDefine proxy-trust&gt;
    SSLProxyVerify require
-&lt;/SSLPolicy&gt;
+&lt;/SSLPolicyDefine&gt;
    ...
-&lt;SSLPolicy proxy-trust&gt;
+&lt;SSLPolicyDefine proxy-trust&gt;
    SSLPolicy proxy-trust
    SSLProxyVerifyDepth 10
-&lt;/SSLPolicy&gt;
+&lt;/SSLPolicyDefine&gt;
 </highlight>
 </example>
 
@@ -2936,10 +2942,10 @@ be setup like this:</p>
 <highlight language="config">
 Include ssl-policies.conf
 
-&lt;SSLPolicy modern&gt;
+&lt;SSLPolicyDefine modern&gt;
    SSLPolicy modern
    SSLProxyVerify none
-&lt;/SSLPolicy&gt;
+&lt;/SSLPolicyDefine&gt;
 </highlight>
 </example>
 
@@ -2952,11 +2958,11 @@ Include ssl-policies.conf
 <syntax>SSLPolicy <em>name</em></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility>Available in httpd 2.4.28 and later</compatibility>
+<compatibility>Available in httpd 2.4.30 and later</compatibility>
 
 <usage>
 <p>This directive applies the set of SSL* directives defined
-under 'name' (see <directive type="section">SSLPolicy</directive>) as the <em>base</em>
+under 'name' (see <directive type="section">SSLPolicyDefine</directive>) as the <em>base</em>
 settings in the current context. Apache comes with the following pre-defined policies from 
 Mozilla, the makers of the Firefox browser 
 (<a href="https://wiki.mozilla.org/Security/Server_Side_TLS#Recommended_configurations">see here
@@ -3029,7 +3035,7 @@ later ones overshadowing the earlier ones:</p>
 <syntax>SSLProxyPolicy <em>name</em></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility>Available in httpd 2.4.28 and later</compatibility>
+<compatibility>Available in httpd 2.4.30 and later</compatibility>
 
 <usage>
 <p>This directive is similar to <directive>SSLPolicy</directive>, but 

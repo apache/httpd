@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_ssl: renamed section <SSLPolicy to <SSLPolicyDefine. Fixed behaviour
+     for new server config merge flag. Denying global, only once used directives
+     inside a SSLPolicyDefine. [Stefan Eissing]
+
   *) mod_auth_basic: Be less tolerant when parsing the credencial. Only spaces
      should be accepted after the authorization scheme. \t are also tolerated.
      [Christophe Jaillet]
