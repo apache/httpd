@@ -70,7 +70,7 @@ def required_ifdef(conf):
         # if it has a non-1_X protocol, it works without OpenSSL 1.0.2
         if not tlsv in TLS_1_X_VERSIONS:
             return None
-    return "HAVE_TLS1_X"
+    return "HAVE_TLSV1_X"
     
 
 def getPolicyDef():

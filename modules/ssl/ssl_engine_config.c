@@ -93,7 +93,7 @@ void ssl_config_global_fix(SSLModConfigRec *mc)
 
 BOOL ssl_config_global_isfixed(SSLModConfigRec *mc)
 {
-    return mc->bFixed;
+    return mc && mc->bFixed;
 }
 
 /*  _________________________________________________________________
@@ -635,7 +635,7 @@ static apr_array_header_t *get_policy_names(apr_pool_t *p, int create)
 
 SSLPolicyRec *ssl_policy_lookup(apr_pool_t *pool, const char *name)
 {
-    apr_hash_t *policies = get_policies(pool, 0);
+    apr_hash_t *policies = get_policies(pool, 1);
     if (policies) {
         return apr_hash_get(policies, name, APR_HASH_KEY_STRING);
     }
@@ -670,7 +670,7 @@ const char *ssl_cmd_SSLPolicyDefine(cmd_parms *cmd, void *mconfig, const char *a
 
     arg = apr_pstrndup(cmd->pool, arg, endp-arg);
     if (!arg || !*arg) {
-        return "<SSLPolicy > block must specify a name";
+        return "<SSLPolicyDefine > block must specify a name";
     }
 
     name = ap_getword_white(cmd->pool, &arg);
@@ -681,6 +681,7 @@ const char *ssl_cmd_SSLPolicyDefine(cmd_parms *cmd, void *mconfig, const char *a
     policy = apr_pcalloc(cmd->pool, sizeof(*policy));
     policy->name = name;
     policy->sc = ssl_config_server_new(cmd->pool);
+    policy->sc->mc = NULL; /* No global configs during SSLPolicy definition */
     policy->dc = ssl_config_perdir_create(cmd->pool, "/");/* TODO */
 
     ap_set_module_config(s->module_config,  &ssl_module, policy->sc);
@@ -846,6 +847,9 @@ const char *ssl_cmd_SSLCryptoDevice(cmd_parms *cmd,
     if ((err = ap_check_cmd_context(cmd, GLOBAL_ONLY))) {
         return err;
     }
+    if (!mc) {
+        return "SSLCryptoDevice: cannot be used inside SSLPolicyDefine";
+    }
 
     if (strcEQ(arg, "builtin")) {
         mc->szCryptoDevice = NULL;
@@ -886,6 +890,9 @@ const char *ssl_cmd_SSLRandomSeed(cmd_parms *cmd,
     /* replace: check_no_policy_and(flags) */
     if ((err = ap_check_cmd_context(cmd, GLOBAL_ONLY))) {
         return err;
+    }
+    if (!mc) {
+        return "SSLRandomSeed: cannot be used inside SSLPolicyDefine";
     }
 
     if (ssl_config_global_isfixed(mc)) {
@@ -1485,6 +1492,9 @@ const char *ssl_cmd_SSLSessionCache(cmd_parms *cmd,
 
     if ((err = ap_check_cmd_context(cmd, GLOBAL_ONLY))) {
         return err;
+    }
+    if (!mc) {
+        return "SSLSessionCache: cannot be used inside SSLPolicyDefine";
     }
 
     /* The OpenSSL session cache mode must have both the flags
@@ -2109,6 +2119,9 @@ const char *ssl_cmd_SSLStaplingCache(cmd_parms *cmd,
 
     if ((err = ap_check_cmd_context(cmd, GLOBAL_ONLY))) {
         return err;
+    }
+    if (!mc) {
+        return "SSLStaplingCache: cannot be used inside SSLPolicyDefine";
     }
 
     /* Argument is of form 'name:args' or just 'name'. */
