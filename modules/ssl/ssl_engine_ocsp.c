@@ -159,7 +159,7 @@ static int verify_ocsp_status(X509 *cert, X509_STORE_CTX *ctx, conn_rec *c,
 
         if (r != OCSP_RESPONSE_STATUS_SUCCESSFUL) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(01922)
-                         "OCSP response not successful: %d", rc);
+                         "OCSP response not successful: %d", r);
             rc = V_OCSP_CERTSTATUS_UNKNOWN;
         }
     }
