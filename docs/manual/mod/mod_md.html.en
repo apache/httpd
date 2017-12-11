@@ -56,7 +56,7 @@
         <p>Simple configuration example:</p>
         
         <div class="note"><h3>TLS in a VirtualHost context</h3>
-        <pre class="prettyprint lang-config">ManagedDomain example.org
+        <pre class="prettyprint lang-config">MDomain example.org
 
 &lt;VirtualHost *:443&gt;
     ServerName example.org
@@ -83,8 +83,6 @@
     </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#manageddomain">ManagedDomain</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#manageddomainsection">&lt;ManagedDomain&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdcachallenges">MDCAChallenges</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdcertificateagreement">MDCertificateAgreement</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdcertificateauthority">MDCertificateAuthority</a></li>
@@ -95,6 +93,8 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#mdmembers">MDMembers</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdmuststaple">MDMustStaple</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdnotifycmd">MDNotifyCmd</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mdomain">MDomain</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mdomainsetsection">&lt;MDomainSet&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdportmap">MDPortMap</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdprivatekeys">MDPrivateKeys</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdrenewwindow">MDRenewWindow</a></li>
@@ -105,115 +105,6 @@
 <ul class="seealso">
 <li><a href="#comments_section">Comments</a></li></ul></div>
 
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ManagedDomain" id="ManagedDomain">ManagedDomain</a> <a name="manageddomain" id="manageddomain">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Define list of domain names that belong to one group.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ManagedDomain <var>dns-name</var> [ <var>other-dns-name</var>... ] [auto|manual]</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
-</table>
-            <p>
-                All the names in the list are managed as one Managed Domain (MD). 
-                mod_md will request one single certificate that is valid for all these names. This
-                directive uses the global settings (see other MD directives below). If you
-                need specific settings for one MD, use
-                the <code class="directive"><a href="#manageddomain">&lt;ManagedDomain&gt;</a></code>.
-            </p><p>
-                There are 2 additional settings that are necessary for a Managed Domain:
-                <code class="directive"><a href="../mod/core.html#serveradmin">ServerAdmin</a></code>
-                and <code class="directive"><a href="#mdcertificateagreement">MDCertificateAgreement</a></code>.
-                The mail address of <code class="directive"><a href="../mod/core.html#serveradmin">ServerAdmin</a></code>
-                is used to register at the CA (Let's Encrypt by default).
-                The CA may use it to notify you about
-                changes in its service or status of your certificates.
-            </p><p>
-                The second setting, <code class="directive"><a href="#mdcertificateagreement">MDCertificateAgreement</a></code>, 
-                is the URL of the Terms of Service of the CA. When you configure the URL, 
-                you confirm that you have read and agree to the terms described in the linked 
-                document. Before you do that, the CA will  not hand out certificates to you.
-            </p>
-            <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">ServerAdmin mailto:admin@example.org
-MDCertificateAgreement https://letsencrypt.org/documents/LE-SA-v1.1.1-August-1-2016.pdf
-ManagedDomain example.org www.example.org
-
-&lt;VirtualHost *:443&gt;
-    ServerName example.org
-    DocumentRoot htdocs/root
-
-    SSLEngine on
-&lt;/VirtualHost&gt;
-
-&lt;VirtualHost *:443&gt;
-    ServerName www.example.org
-    DocumentRoot htdocs/www
-
-    SSLEngine on
-&lt;/VirtualHost&gt;</pre>
-</div>
-            <p>
-                There are two special names that you may use in this directive: 'manual'
-                and 'auto'. This determines if a Managed Domain shall have exactly the 
-                name list as is configured ('manual') or offer more convenience. With 'auto'
-                all names of a virtual host are added to a MD. Conventiently, 'auto' is also
-                the default.
-            </p>
-            <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">ManagedDomain example.org
-
-&lt;VirtualHost *:443&gt;
-    ServerName example.org
-    ServerAlias www.example.org
-    DocumentRoot htdocs/root
-
-    SSLEngine on
-&lt;/VirtualHost&gt;
-
-ManagedDomain example2.org auto
-
-&lt;VirtualHost *:443&gt;
-    ServerName example2.org
-    ServerAlias www.example2.org
-    ...
-&lt;/VirtualHost&gt;</pre>
-</div>
-            <p>
-                In this example, the domain 'www.example.org' is automatically added to
-                the MD 'example.org'. Similarly for 'example2.org' where 'auto' is configured
-                explicitly. Whenever you add more ServerAlias names to this
-                virtual host, they will be added as well to the Manged Domain.
-            </p><p>
-                If you prefer to explicitly declare all the domain names, use 'manual' mode. 
-                An error will be logged if the names do not match with the expected ones.
-            </p>
-        
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ManagedDomainsection" id="ManagedDomainsection">&lt;ManagedDomain&gt;</a> <a name="manageddomainsection" id="manageddomainsection">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Container for directives applied to the same managed domains.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>&lt;ManagedDomain <var>dns-name</var> [ <var>other-dns-name</var>... ]&gt;...&lt;/ManagedDomain&gt;</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
-</table>
-            <p>
-                This directive allows you to define a Managed Domain (MD) with specific
-                settings, different from the global MD* ones. For example, you can have
-                such an MD use another CA then Let's Encrypt, have its unique renewal duration
-                etc.
-            </p>
-            <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">&lt;ManagedDomain sandbox.example.org&gt;
-    MDCertificateAuthority   https://someotherca.com/ACME
-    MDCertificateAgreement   https://someotherca.com/terms/v_1.02.pdf
-&lt;/ManagedDomain&gt;</pre>
-</div>
-        <p>This is a specialized version of <code class="directive"><a href="#manageddomain">ManagedDomain</a></code>,
-        it should be used only when a fine grained configuration is required.
-        <code class="directive"><a href="#manageddomain">ManagedDomain</a></code> is the suggested choice
-        for the general use case.</p>
-        
-</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="MDCAChallenges" id="MDCAChallenges">MDCAChallenges</a> <a name="mdcachallenges" id="mdcachallenges">Directive</a></h2>
 <table class="directive">
@@ -249,7 +140,7 @@ ManagedDomain example2.org auto
             <p>In case of Let's Encrypt, their current <a href="https://letsencrypt.org/documents/LE-SA-v1.1.1-August-1-2016.pdf">Terms of Service are here</a>. 
             Those terms might (and probably will) change over time. So, the certificate renewal might require you to update this agreement URL.</p>
             <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">MDCertificateAgreement https://letsencrypt.org/documents/LE-SA-v1.1.1-August-1-2016.pdf
-ManagedDomain example.org www.example.org mail.example.org</pre>
+MDomain example.org www.example.org mail.example.org</pre>
 </div>
         
 </div>
@@ -344,15 +235,15 @@ MDCertificateAgreement https://letsencrypt.org/documents/LE-SA-v1.1.1-August-1-2
             <code class="directive"><a href="#mdmember">MDMember</a></code> to add such names
             to a managed domain.
             </p>
-            <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">&lt;ManagedDomain example.org&gt;
+            <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">&lt;MDomainSet example.org&gt;
     MDMember www.example.org
     MDMember mail.example.org
-&lt;/ManagedDomain example.org&gt;</pre>
+&lt;/MDomainSet example.org&gt;</pre>
 </div>
             <p>
                If you use it in the global context, outside a specific MD, you can only
                specify one value, 'auto' or 'manual' as the default for all other MDs. See
-               <code class="directive"><a href="#manageddomain">ManagedDomain</a></code> for a
+               <code class="directive"><a href="#mdomain">MDomain</a></code> for a
                description of these special values.
             </p>
         
@@ -405,6 +296,115 @@ MDCertificateAgreement https://letsencrypt.org/documents/LE-SA-v1.1.1-August-1-2
             arguments. It should return status code 0 to indicate that it has 
             run successfully.
             </p>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="MDomain" id="MDomain">MDomain</a> <a name="mdomain" id="mdomain">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Define list of domain names that belong to one group.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MDomain <var>dns-name</var> [ <var>other-dns-name</var>... ] [auto|manual]</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+</table>
+            <p>
+                All the names in the list are managed as one Managed Domain (MD). 
+                mod_md will request one single certificate that is valid for all these names. This
+                directive uses the global settings (see other MD directives below). If you
+                need specific settings for one MD, use
+                the <code class="directive"><a href="#mdomainset">&lt;MDomainSet&gt;</a></code>.
+            </p><p>
+                There are 2 additional settings that are necessary for a Managed Domain:
+                <code class="directive"><a href="../mod/core.html#serveradmin">ServerAdmin</a></code>
+                and <code class="directive"><a href="#mdcertificateagreement">MDCertificateAgreement</a></code>.
+                The mail address of <code class="directive"><a href="../mod/core.html#serveradmin">ServerAdmin</a></code>
+                is used to register at the CA (Let's Encrypt by default).
+                The CA may use it to notify you about
+                changes in its service or status of your certificates.
+            </p><p>
+                The second setting, <code class="directive"><a href="#mdcertificateagreement">MDCertificateAgreement</a></code>, 
+                is the URL of the Terms of Service of the CA. When you configure the URL, 
+                you confirm that you have read and agree to the terms described in the linked 
+                document. Before you do that, the CA will  not hand out certificates to you.
+            </p>
+            <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">ServerAdmin mailto:admin@example.org
+MDCertificateAgreement https://letsencrypt.org/documents/LE-SA-v1.1.1-August-1-2016.pdf
+MDomain example.org www.example.org
+
+&lt;VirtualHost *:443&gt;
+    ServerName example.org
+    DocumentRoot htdocs/root
+
+    SSLEngine on
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost *:443&gt;
+    ServerName www.example.org
+    DocumentRoot htdocs/www
+
+    SSLEngine on
+&lt;/VirtualHost&gt;</pre>
+</div>
+            <p>
+                There are two special names that you may use in this directive: 'manual'
+                and 'auto'. This determines if a Managed Domain shall have exactly the 
+                name list as is configured ('manual') or offer more convenience. With 'auto'
+                all names of a virtual host are added to a MD. Conventiently, 'auto' is also
+                the default.
+            </p>
+            <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">MDomain example.org
+
+&lt;VirtualHost *:443&gt;
+    ServerName example.org
+    ServerAlias www.example.org
+    DocumentRoot htdocs/root
+
+    SSLEngine on
+&lt;/VirtualHost&gt;
+
+MDomain example2.org auto
+
+&lt;VirtualHost *:443&gt;
+    ServerName example2.org
+    ServerAlias www.example2.org
+    ...
+&lt;/VirtualHost&gt;</pre>
+</div>
+            <p>
+                In this example, the domain 'www.example.org' is automatically added to
+                the MD 'example.org'. Similarly for 'example2.org' where 'auto' is configured
+                explicitly. Whenever you add more ServerAlias names to this
+                virtual host, they will be added as well to the Manged Domain.
+            </p><p>
+                If you prefer to explicitly declare all the domain names, use 'manual' mode. 
+                An error will be logged if the names do not match with the expected ones.
+            </p>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="MDomainSetsection" id="MDomainSetsection">&lt;MDomainSet&gt;</a> <a name="mdomainsetsection" id="mdomainsetsection">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Container for directives applied to the same managed domains.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>&lt;MDomainSet <var>dns-name</var> [ <var>other-dns-name</var>... ]&gt;...&lt;/MDomainSet&gt;</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+</table>
+            <p>
+                This directive allows you to define a Managed Domain (MD) with specific
+                settings, different from the global MD* ones. For example, you can have
+                such an MD use another CA then Let's Encrypt, have its unique renewal duration
+                etc.
+            </p>
+            <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">&lt;MDomainSet sandbox.example.org&gt;
+    MDCertificateAuthority   https://someotherca.com/ACME
+    MDCertificateAgreement   https://someotherca.com/terms/v_1.02.pdf
+&lt;/MDomainSet&gt;</pre>
+</div>
+        <p>This is a specialized version of <code class="directive"><a href="#mdomain">MDomain</a></code>,
+        it should be used only when a fine grained configuration is required.
+        <code class="directive"><a href="#mdomain">MDomain</a></code> is the suggested choice
+        for the general use case.</p>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -556,9 +556,9 @@ MDRenewWindow 10%</pre>
             <p>If you set this globally, it applies to all managed domains. If you want 
             it for a specific domain only, use:
             </p>
-            <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">&lt;ManagedDomain xxx.yyy&gt;
+            <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">&lt;MDomainSet xxx.yyy&gt;
   MDRequireHttps temporary
-&lt;/ManagedDomain&gt;</pre>
+&lt;/MDomainSet&gt;</pre>
 </div>
         
 </div>
