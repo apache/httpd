@@ -47,7 +47,8 @@ typedef struct {
     
     md_cert_t *cert;                 /* the new certificate */
     apr_array_header_t *chain;       /* the chain certificates */
-
+    const char *next_up_link;        /* where the next chain cert is */
+    
     md_acme_t *acme;
     md_t *md;
     const md_creds_t *ncreds;
@@ -58,8 +59,6 @@ typedef struct {
     
     const char *csr_der_64;
     apr_interval_time_t cert_poll_timeout;
-    
-    const char *chain_url;
     
 } md_acme_driver_t;
 
@@ -345,6 +344,16 @@ static apr_status_t ad_monitor_challenges(md_proto_driver_t *d)
 /**************************************************************************************************/
 /* poll cert */
 
+static void get_up_link(md_proto_driver_t *d, apr_table_t *headers)
+{
+    md_acme_driver_t *ad = d->baton;
+
+    ad->next_up_link = md_link_find_relation(headers, d->p, "up");
+    if (ad->next_up_link) {
+        md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, 0, d->p, 
+                      "server reports up link as %s", ad->next_up_link);
+    }
+} 
 
 static apr_status_t read_http_cert(md_cert_t **pcert, apr_pool_t *p,
                                    const md_http_response_t *res)
@@ -371,6 +380,9 @@ static apr_status_t on_got_cert(md_acme_t *acme, const md_http_response_t *res, 
         rv = md_store_save(d->store, d->p, MD_SG_STAGING, ad->md->name, MD_FN_CERT, 
                            MD_SV_CERT, ad->cert, 0);
         md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, d->p, "cert parsed and saved");
+        if (APR_SUCCESS == rv) {
+            get_up_link(d, res->headers);
+        }
     }
     return rv;
 }
@@ -441,9 +453,13 @@ static apr_status_t csr_req(md_acme_t *acme, const md_http_response_t *res, void
     }
     
     /* Check if it already was sent with this response */
+    ad->next_up_link = NULL;
     if (APR_SUCCESS == (rv = md_cert_read_http(&ad->cert, d->p, res))) {
         rv = md_cert_save(d->store, d->p, MD_SG_STAGING, ad->md->name, ad->cert, 0);
         md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, d->p, "cert parsed and saved");
+        if (APR_SUCCESS == rv) {
+            get_up_link(d, res->headers);
+        }
     }
     else if (APR_STATUS_IS_ENOENT(rv)) {
         rv = APR_SUCCESS;
@@ -523,6 +539,9 @@ static apr_status_t on_add_chain(md_acme_t *acme, const md_http_response_t *res,
     if (APR_SUCCESS == (rv = read_http_cert(&cert, d->p, res))) {
         md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, d->p, "chain cert parsed");
         APR_ARRAY_PUSH(ad->chain, md_cert_t *) = cert;
+        if (APR_SUCCESS == rv) {
+            get_up_link(d, res->headers);
+        }
     }
     return rv;
 }
@@ -532,7 +551,7 @@ static apr_status_t get_chain(void *baton, int attempt)
     md_proto_driver_t *d = baton;
     md_acme_driver_t *ad = d->baton;
     md_cert_t *cert;
-    const char *url, *last_url = NULL;
+    const char *prev_link = NULL;
     apr_status_t rv = APR_SUCCESS;
 
     while (APR_SUCCESS == rv && ad->chain->nelts < 10) {
@@ -544,29 +563,18 @@ static apr_status_t get_chain(void *baton, int attempt)
             cert = ad->cert;
         }
         
-        if (APR_SUCCESS == (rv = md_cert_get_issuers_uri(&url, cert, d->p))
-            && (!last_url || strcmp(last_url, url))) {
-            md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, d->p, "next issuer is  %s", url);
-#if MD_EXPERIMENTAL
-            if (!strncmp("http://127.0.0.1:", url, sizeof("http://127.0.0.1:")-1)) {
-                /* test boulder instance always reports issuer cert on localhost, but we
-                 * may use a different address to reach the boulder server */
-                apr_uri_t curi, ca;
-                
-                if (APR_SUCCESS == apr_uri_parse(d->p, url, &curi)
-                    && APR_SUCCESS == apr_uri_parse(d->p, ad->acme->url, &ca)) {
-                    url = apr_psprintf(d->p, "%s://%s:%s%s", 
-                                       ca.scheme, ca.hostname, ca.port_str, curi.path);
-                }
-            }
-#endif
-            rv = md_acme_GET(ad->acme, url, NULL, NULL, on_add_chain, d);
+        if (ad->next_up_link && (!prev_link || strcmp(prev_link, ad->next_up_link))) {
+            prev_link = ad->next_up_link;
+
+            md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, d->p, 
+                          "next issuer is  %s", ad->next_up_link);
+            rv = md_acme_GET(ad->acme, ad->next_up_link, NULL, NULL, on_add_chain, d);
             
             if (APR_SUCCESS == rv && nelts == ad->chain->nelts) {
                 break;
             }
         }
-        else if (APR_STATUS_IS_ENOENT(rv) || !url || !strlen(url)) {
+        else {
             rv = APR_SUCCESS;
             break;
         }
@@ -580,6 +588,22 @@ static apr_status_t ad_chain_install(md_proto_driver_t *d)
 {
     md_acme_driver_t *ad = d->baton;
     apr_status_t rv;
+    
+    /* We should have that from initial cert retrieval, but if we restarted
+     * or switched child process, we need to retrieve this again from the 
+     * certificate resources. */
+    if (!ad->next_up_link) {
+        if (APR_SUCCESS != (rv = ad_cert_poll(d, 0))) {
+            return rv;
+        }
+        if (!ad->next_up_link) {
+            md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, d->p, 
+                "server reports no link header 'up' for certificate at %s", ad->md->cert_url);
+            return APR_EINVAL;
+        }
+    }
+    md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, 0, d->p, 
+                  "chain starts at %s", ad->next_up_link);
     
     ad->chain = apr_array_make(d->p, 5, sizeof(md_cert_t *));
     if (APR_SUCCESS == (rv = md_util_try(get_chain, d, 0, ad->cert_poll_timeout, 0, 0, 0))) {
