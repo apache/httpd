@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_md: name change in configuration directives. The old names are still working
+     in this version, so you can safely upgrade. They will give warnings in the log and
+     will disappear in the immediate future. ManagedDomain is now MDomain,
+     <ManagedDomain> is now <MDomainSet>. [Stefan Eissing]
+
   *) mod_ssl: renamed section <SSLPolicy to <SSLPolicyDefine. Fixed behaviour
      for new server config merge flag. Denying global, only once used directives
      inside a SSLPolicyDefine. [Stefan Eissing]
