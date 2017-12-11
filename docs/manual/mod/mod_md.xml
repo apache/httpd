@@ -51,7 +51,7 @@
         
         <note><title>TLS in a VirtualHost context</title>
         <highlight language="config">
-ManagedDomain example.org
+MDomain example.org
 
 &lt;VirtualHost *:443&gt;
     ServerName example.org
@@ -78,9 +78,9 @@ ManagedDomain example.org
     </summary>
     
     <directivesynopsis>
-        <name>ManagedDomain</name>
+        <name>MDomain</name>
         <description>Define list of domain names that belong to one group.</description>
-        <syntax>ManagedDomain <var>dns-name</var> [ <var>other-dns-name</var>... ] [auto|manual]</syntax>
+        <syntax>MDomain <var>dns-name</var> [ <var>other-dns-name</var>... ] [auto|manual]</syntax>
         <contextlist>
             <context>server config</context>
         </contextlist>
@@ -91,7 +91,7 @@ ManagedDomain example.org
                 mod_md will request one single certificate that is valid for all these names. This
                 directive uses the global settings (see other MD directives below). If you
                 need specific settings for one MD, use
-                the <directive module="mod_md" type="section">ManagedDomain</directive>.
+                the <directive module="mod_md" type="section">MDomainSet</directive>.
             </p><p>
                 There are 2 additional settings that are necessary for a Managed Domain:
                 <directive module="core">ServerAdmin</directive>
@@ -110,7 +110,7 @@ ManagedDomain example.org
                 <highlight language="config">
 ServerAdmin mailto:admin@example.org
 MDCertificateAgreement https://letsencrypt.org/documents/LE-SA-v1.1.1-August-1-2016.pdf
-ManagedDomain example.org www.example.org
+MDomain example.org www.example.org
 
 &lt;VirtualHost *:443&gt;
     ServerName example.org
@@ -136,7 +136,7 @@ ManagedDomain example.org www.example.org
             </p>
             <example><title>Example</title>
                 <highlight language="config">
-ManagedDomain example.org
+MDomain example.org
 
 &lt;VirtualHost *:443&gt;
     ServerName example.org
@@ -146,7 +146,7 @@ ManagedDomain example.org
     SSLEngine on
 &lt;/VirtualHost&gt;
 
-ManagedDomain example2.org auto
+MDomain example2.org auto
 
 &lt;VirtualHost *:443&gt;
     ServerName example2.org
@@ -168,9 +168,9 @@ ManagedDomain example2.org auto
     </directivesynopsis>
 
     <directivesynopsis type="section" idtype="section">
-        <name>ManagedDomain</name>
+        <name>MDomainSet</name>
         <description>Container for directives applied to the same managed domains.</description>
-        <syntax>&lt;ManagedDomain <var>dns-name</var> [ <var>other-dns-name</var>... ]&gt;...&lt;/ManagedDomain&gt;</syntax>
+        <syntax>&lt;MDomainSet <var>dns-name</var> [ <var>other-dns-name</var>... ]&gt;...&lt;/MDomainSet&gt;</syntax>
         <contextlist>
             <context>server config</context>
         </contextlist>
@@ -184,15 +184,15 @@ ManagedDomain example2.org auto
             </p>
             <example><title>Example</title>
                 <highlight language="config">
-&lt;ManagedDomain sandbox.example.org&gt;
+&lt;MDomainSet sandbox.example.org&gt;
     MDCertificateAuthority   https://someotherca.com/ACME
     MDCertificateAgreement   https://someotherca.com/terms/v_1.02.pdf
-&lt;/ManagedDomain&gt;
+&lt;/MDomainSet&gt;
                 </highlight>
             </example>
-        <p>This is a specialized version of <directive module="mod_md">ManagedDomain</directive>,
+        <p>This is a specialized version of <directive module="mod_md">MDomain</directive>,
         it should be used only when a fine grained configuration is required.
-        <directive module="mod_md">ManagedDomain</directive> is the suggested choice
+        <directive module="mod_md">MDomain</directive> is the suggested choice
         for the general use case.</p>
         </usage>
     </directivesynopsis>
@@ -214,7 +214,7 @@ ManagedDomain example2.org auto
             <example><title>Example</title>
                 <highlight language="config">
 MDCertificateAgreement https://letsencrypt.org/documents/LE-SA-v1.1.1-August-1-2016.pdf
-ManagedDomain example.org www.example.org mail.example.org
+MDomain example.org www.example.org mail.example.org
                 </highlight>
             </example>
         </usage>
@@ -315,16 +315,16 @@ MDCertificateAgreement https://letsencrypt.org/documents/LE-SA-v1.1.1-August-1-2
             </p>
             <example><title>Example</title>
                 <highlight language="config">
-&lt;ManagedDomain example.org&gt;
+&lt;MDomainSet example.org&gt;
     MDMember www.example.org
     MDMember mail.example.org
-&lt;/ManagedDomain example.org&gt;
+&lt;/MDomainSet example.org&gt;
                 </highlight>
             </example>
             <p>
                If you use it in the global context, outside a specific MD, you can only
                specify one value, 'auto' or 'manual' as the default for all other MDs. See
-               <directive module="mod_md">ManagedDomain</directive> for a
+               <directive module="mod_md">MDomain</directive> for a
                description of these special values.
             </p>
         </usage>
@@ -545,9 +545,9 @@ MDRequireHttps permanent
             </p>
             <example><title>Example</title>
                 <highlight language="config">
-&lt;ManagedDomain xxx.yyy&gt;
+&lt;MDomainSet xxx.yyy&gt;
   MDRequireHttps temporary
-&lt;/ManagedDomain&gt;
+&lt;/MDomainSet&gt;
                 </highlight>
             </example>
         </usage>
