@@ -30,8 +30,8 @@
 #include "mod_md_private.h"
 #include "mod_md_config.h"
 
-#define MD_CMD_MD             "ManagedDomain"
-#define MD_CMD_MD_SECTION     "<ManagedDomain"
+#define MD_CMD_MD             "MDomain"
+#define MD_CMD_MD_SECTION     "<MDomainSet"
 #define MD_CMD_CA             "MDCertificateAuthority"
 #define MD_CMD_CAAGREEMENT    "MDCertificateAgreement"
 #define MD_CMD_CACHALLENGES   "MDCAChallenges"
@@ -760,6 +760,21 @@ static const char *md_config_set_notify_cmd(cmd_parms *cmd, void *arg, const cha
     return NULL;
 }
 
+static const char *md_config_set_names_old(cmd_parms *cmd, void *dc, 
+                                           int argc, char *const argv[])
+{
+    ap_log_error( APLOG_MARK, APLOG_WARNING, 0, cmd->server,  
+                 "mod_md: directive 'ManagedDomain' is deprecated, replace with 'MDomain'.");
+    return md_config_set_names(cmd, dc, argc, argv);
+}
+
+static const char *md_config_sec_start_old(cmd_parms *cmd, void *mconfig, const char *arg)
+{
+    ap_log_error( APLOG_MARK, APLOG_WARNING, 0, cmd->server,  
+                 "mod_md: directive '<ManagedDomain' is deprecated, replace with '<MDomainSet'.");
+    return md_config_sec_start(cmd, mconfig, arg);
+}
+
 const command_rec md_cmds[] = {
     AP_INIT_TAKE1(     MD_CMD_CA, md_config_set_ca, NULL, RSRC_CONF, 
                   "URL of CA issuing the certificates"),
@@ -800,6 +815,14 @@ const command_rec md_cmds[] = {
                   "Redirect non-secure requests to the https: equivalent."),
     AP_INIT_TAKE1(     MD_CMD_NOTIFYCMD, md_config_set_notify_cmd, NULL, RSRC_CONF, 
                   "set the command to run when signup/renew of domain is complete."),
+
+/* This will disappear soon */
+    AP_INIT_TAKE_ARGV( "ManagedDomain", md_config_set_names_old, NULL, RSRC_CONF, 
+                      "Deprecated, replace with 'MDomain'."),
+    AP_INIT_RAW_ARGS(  "<ManagedDomain", md_config_sec_start_old, NULL, RSRC_CONF, 
+                     "Deprecated, replace with 'MDomainSet'."),
+/* */
+
     AP_INIT_TAKE1(NULL, NULL, NULL, RSRC_CONF, NULL)
 };
 

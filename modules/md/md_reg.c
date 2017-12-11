@@ -712,7 +712,7 @@ apr_status_t md_reg_sync(md_reg_t *reg, apr_pool_t *p, apr_pool_t *ptemp,
                  * someone only changed upper/lowercase, we'd like to persist that. */
                 if (!md_equal_domains(md, smd, 1)) {
                     md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, p, 
-                                 "%s: %d domains changed", smd->name);
+                                 "%s: domains changed", smd->name);
                     smd->domains = md_array_str_clone(ptemp, md->domains);
                     fields |= MD_UPD_DOMAINS;
                 }
