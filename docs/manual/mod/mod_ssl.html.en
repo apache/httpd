@@ -84,8 +84,8 @@ to provide the cryptography engine.</p>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslopensslconfcmd">SSLOpenSSLConfCmd</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ssloptions">SSLOptions</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslpassphrasedialog">SSLPassPhraseDialog</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslpolicysection">&lt;SSLPolicy&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslpolicy">SSLPolicy</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#sslpolicydefinesection">&lt;SSLPolicyDefine&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslprotocol">SSLProtocol</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslproxycacertificatefile">SSLProxyCACertificateFile</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslproxycacertificatepath">SSLProxyCACertificatePath</a></li>
@@ -961,7 +961,7 @@ SSLCryptoDevice ubsec</pre>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>The <code>addr:port</code> parameter is available in Apache 2.4.28 and later.</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>The <code>addr:port</code> parameter is available in Apache 2.4.30 and later.</td></tr>
 </table>
 <p>
 This directive toggles the usage of the SSL/TLS Protocol Engine. Values 'on',
@@ -1472,99 +1472,6 @@ query can be done in two ways which can be configured by
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLPolicysection" id="SSLPolicysection">&lt;SSLPolicy&gt;</a> <a name="sslpolicysection" id="sslpolicysection">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Define a named set of SSL configurations</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>&lt;SSLPolicy <em>name</em>&gt;</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.4.28 and later</td></tr>
-</table>
-<p>This directive defines a set of SSL* configurations under
-and gives it a name. This name can be used in the directives
-<code class="directive">SSLPolicy</code> and <code class="directive">SSLProxyPolicy</code>
-to apply this configuration set in the current context.</p>
-
-<div class="example"><h3>Define and Use of a Policy</h3><pre class="prettyprint lang-config">&lt;SSLPolicy safe-stapling&gt;
-   SSLUseStapling on
-   SSLStaplingResponderTimeout 2
-   SSLStaplingReturnResponderErrors off
-   SSLStaplingFakeTryLater off
-   SSLStaplingStandardCacheTimeout 86400
-&lt;/SSLPolicy&gt;
-
-   ...
-   &lt;VirtualHost...&gt;
-      SSLPolicy safe-stapling
-      ...</pre>
-</div>
-
-<p>On the one hand, this can make server configurations easier to 
-<em>read</em> and <em>maintain</em>. On the other hand, it is 
-intended to make SSL easier and safer to <em>use</em>. For the 
-latter, Apache httpd ships with a set of pre-defined policies
-that reflect good open source practise. The policy "modern",
-for example, carries the settings to make your server work
-compatible and securely with current browsers.</p>
-
-<p>The list of predefined policies in your Apache can be obtained
-by running the following command. This list shows you the 
-detailed configurations each policy is made of:</p>
-
-<div class="example"><h3>List all Defined Policies</h3><pre class="prettyprint lang-sh">httpd -t -D DUMP_SSL_POLICIES</pre>
-</div>
-
-<p>The directive can only be used in the server config (global context), so 
-there cannot be two policies with the same name. However, policies can
-be redefined:</p>
-
-<div class="example"><h3>Policy Overwrite</h3><pre class="prettyprint lang-config">&lt;SSLPolicy proxy-trust&gt;
-   SSLProxyVerify require
-&lt;/SSLPolicy&gt;
-   ...
-&lt;SSLPolicy proxy-trust&gt;
-   SSLProxyVerify none
-&lt;/SSLPolicy&gt;</pre>
-</div>
-
-<p>Policy definitions are <em>added</em> in the order they appear, but are
-<em>applied</em> when the whole configuration has been read. This means that any
-use of 'proxy-trust' will mean 'SSLProxyVerify none'. The first definition
-has no effect at all. That allows pre-installed policies to be replaced
-without the need to disable them.</p>
-
-<p>Additional to replacing policies, redefinitions may just alter
-an aspect of a policy:</p>
-
-<div class="example"><h3>Policy Redefine</h3><pre class="prettyprint lang-config">&lt;SSLPolicy proxy-trust&gt;
-   SSLProxyVerify require
-&lt;/SSLPolicy&gt;
-   ...
-&lt;SSLPolicy proxy-trust&gt;
-   SSLPolicy proxy-trust
-   SSLProxyVerifyDepth 10
-&lt;/SSLPolicy&gt;</pre>
-</div>
-
-<p>This re-uses all settings from the previous 'proxy-trust' and adds
-one directive on top of it. All others still apply. This is very handy
-when pre-defined policies (from Apache itself or a distributor)
-that <em>almost</em> what you need. Previously, such definitions were
-(copied and) edited. This made updating them difficult. Now they can
-be setup like this:</p>
-
-<div class="example"><h3>Tweak a Pre-Defined Policy</h3><pre class="prettyprint lang-config">Include ssl-policies.conf
-
-&lt;SSLPolicy modern&gt;
-   SSLPolicy modern
-   SSLProxyVerify none
-&lt;/SSLPolicy&gt;</pre>
-</div>
-
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SSLPolicy" id="SSLPolicy">SSLPolicy</a> <a name="sslpolicy" id="sslpolicy">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Apply a SSLPolicy by name</td></tr>
@@ -1572,10 +1479,10 @@ be setup like this:</p>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.4.28 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.4.30 and later</td></tr>
 </table>
 <p>This directive applies the set of SSL* directives defined
-under 'name' (see <code class="directive">&lt;SSLPolicy&gt;</code>) as the <em>base</em>
+under 'name' (see <code class="directive">&lt;SSLPolicyDefine&gt;</code>) as the <em>base</em>
 settings in the current context. Apache comes with the following pre-defined policies from 
 Mozilla, the makers of the Firefox browser 
 (<a href="https://wiki.mozilla.org/Security/Server_Side_TLS#Recommended_configurations">see here
@@ -1628,6 +1535,105 @@ later ones overshadowing the earlier ones:</p>
    SSLPolicy intermediate
    SSLPolicy modern
 &lt;/VirtualHost&gt;</pre>
+</div>
+
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SSLPolicyDefinesection" id="SSLPolicyDefinesection">&lt;SSLPolicyDefine&gt;</a> <a name="sslpolicydefinesection" id="sslpolicydefinesection">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Define a named set of SSL configurations</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>&lt;SSLPolicy <em>name</em>&gt;</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.4.30 and later</td></tr>
+</table>
+<p>This directive defines a set of SSL* configurations under
+and gives it a name. This name can be used in the directives
+<code class="directive">SSLPolicy</code> and <code class="directive">SSLProxyPolicy</code>
+to apply this configuration set in the current context.</p>
+
+<div class="example"><h3>Define and Use of a Policy</h3><pre class="prettyprint lang-config">&lt;SSLPolicyDefine safe-stapling&gt;
+   SSLUseStapling on
+   SSLStaplingResponderTimeout 2
+   SSLStaplingReturnResponderErrors off
+   SSLStaplingFakeTryLater off
+   SSLStaplingStandardCacheTimeout 86400
+&lt;/SSLPolicyDefine&gt;
+
+   ...
+   &lt;VirtualHost...&gt;
+      SSLPolicy safe-stapling
+      ...</pre>
+</div>
+
+<p>On the one hand, this can make server configurations easier to 
+<em>read</em> and <em>maintain</em>. On the other hand, it is 
+intended to make SSL easier and safer to <em>use</em>. For the 
+latter, Apache httpd ships with a set of pre-defined policies
+that reflect good open source practise. The policy "modern",
+for example, carries the settings to make your server work
+compatible and securely with current browsers.</p>
+
+<p>The list of predefined policies in your Apache can be obtained
+by running the following command. This list shows you the 
+detailed configurations each policy is made of:</p>
+
+<div class="example"><h3>List all Defined Policies</h3><pre class="prettyprint lang-sh">httpd -t -D DUMP_SSL_POLICIES</pre>
+</div>
+
+<p>The directive can only be used in the server config (global context). It can take
+most SSL* directives, however a few can only be set once and are not allowed inside
+policy defintions. These are <code class="directive">SSLCryptoDevice</code>, 
+<code class="directive">SSLRandomSeed</code>, 
+<code class="directive">SSLSessionCache</code> and 
+<code class="directive">SSLStaplingCache</code>.
+</p>
+<p>Two policies cannot have the same name. However, policies can
+be redefined:</p>
+
+<div class="example"><h3>Policy Overwrite</h3><pre class="prettyprint lang-config">&lt;SSLPolicyDefine proxy-trust&gt;
+   SSLProxyVerify require
+&lt;/SSLPolicyDefine&gt;
+   ...
+&lt;SSLPolicyDefine proxy-trust&gt;
+   SSLProxyVerify none
+&lt;/SSLPolicyDefine&gt;</pre>
+</div>
+
+<p>Policy definitions are <em>added</em> in the order they appear, but are
+<em>applied</em> when the whole configuration has been read. This means that any
+use of 'proxy-trust' will mean 'SSLProxyVerify none'. The first definition
+has no effect at all. That allows pre-installed policies to be replaced
+without the need to disable them.</p>
+
+<p>Additional to replacing policies, redefinitions may just alter
+an aspect of a policy:</p>
+
+<div class="example"><h3>Policy Redefine</h3><pre class="prettyprint lang-config">&lt;SSLPolicyDefine proxy-trust&gt;
+   SSLProxyVerify require
+&lt;/SSLPolicyDefine&gt;
+   ...
+&lt;SSLPolicyDefine proxy-trust&gt;
+   SSLPolicy proxy-trust
+   SSLProxyVerifyDepth 10
+&lt;/SSLPolicyDefine&gt;</pre>
+</div>
+
+<p>This re-uses all settings from the previous 'proxy-trust' and adds
+one directive on top of it. All others still apply. This is very handy
+when pre-defined policies (from Apache itself or a distributor)
+that <em>almost</em> what you need. Previously, such definitions were
+(copied and) edited. This made updating them difficult. Now they can
+be setup like this:</p>
+
+<div class="example"><h3>Tweak a Pre-Defined Policy</h3><pre class="prettyprint lang-config">Include ssl-policies.conf
+
+&lt;SSLPolicyDefine modern&gt;
+   SSLPolicy modern
+   SSLProxyVerify none
+&lt;/SSLPolicyDefine&gt;</pre>
 </div>
 
 
@@ -2045,7 +2051,7 @@ directory contains the appropriate symbolic links.</p>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.4.28 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.4.30 and later</td></tr>
 </table>
 <p>This directive is similar to <code class="directive">SSLPolicy</code>, but 
 applies only the SSLProxy* directives defined in the policy. This helps
