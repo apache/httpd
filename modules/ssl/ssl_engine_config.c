@@ -636,13 +636,7 @@ static apr_array_header_t *get_policy_names(apr_pool_t *p, int create)
 SSLPolicyRec *ssl_policy_lookup(apr_pool_t *pool, const char *name)
 {
     apr_hash_t *policies = get_policies(pool, 1);
-    if (policies) {
-        return apr_hash_get(policies, name, APR_HASH_KEY_STRING);
-    }
-    else if ((pool = apr_pool_parent_get(pool))) {
-        return ssl_policy_lookup(pool, name);
-    }
-    return NULL;
+    return apr_hash_get(policies, name, APR_HASH_KEY_STRING);
 }
 
 static void ssl_policy_set(apr_pool_t *pool, SSLPolicyRec *policy)
