@@ -151,7 +151,11 @@ not dynamically checked at all.</p>
     <example><title>ProxyHCExpr: Allow for 2xx/3xx/4xx as passing</title>
     <highlight language="config">
 ProxyHCExpr ok234 {%{REQUEST_STATUS} =~ /^[234]/}
-ProxyPass "/apps"     "http://backend.example.com/" hcexpr=ok234
+ProxyPass "/apps"     "balancer://foo"
+
+&lt;Proxy balancer://foo&gt;
+  BalancerMember http://www2.example.com/  hcmethod=HEAD hcexpr=ok234 hcinterval=10
+&lt;/Proxy&gt;
     </highlight>
     </example>
 
@@ -171,7 +175,11 @@ ProxyPass "/apps"     "http://backend.example.com/" hcexpr=ok234
     <example><title>ProxyHCExpr: Checking response body</title>
     <highlight language="config">
 ProxyHCExpr in_maint {hc('body') !~ /Under maintenance/}
-ProxyPass "/apps"     "http://backend.example.com/" hcexpr=in_maint hcmethod=get hcuri=/status.php
+ProxyPass "/apps"     "balancer://foo"
+
+&lt;Proxy balancer://foo&gt;
+  BalancerMember http://www.example.com/ hcexpr=in_maint hcmethod=get hcuri=/status.php
+&lt;/Proxy&gt;
     </highlight>
     </example>
 
@@ -197,7 +205,11 @@ ProxyPass "/apps"     "http://backend.example.com/" hcexpr=in_maint hcmethod=get
     <example><title>ProxyHCTemplate</title>
     <highlight language="config">
 ProxyHCTemplate tcp5 hcmethod=tcp hcinterval=5
-ProxyPass "/apps"     "http://backend.example.com/" hctemplate=tcp5
+ProxyPass "/apps"     "balancer://foo"
+
+&lt;Proxy balancer://foo&gt;
+  BalancerMember http://www2.example.com/ hctemplate=tcp5
+&lt;/Proxy&gt;
     </highlight>
     </example>
 
