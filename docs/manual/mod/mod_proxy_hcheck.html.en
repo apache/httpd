@@ -163,7 +163,11 @@ not dynamically checked at all.</p>
        parameter</p>
 
     <div class="example"><h3>ProxyHCExpr: Allow for 2xx/3xx/4xx as passing</h3><pre class="prettyprint lang-config">ProxyHCExpr ok234 {%{REQUEST_STATUS} =~ /^[234]/}
-ProxyPass "/apps"     "http://backend.example.com/" hcexpr=ok234</pre>
+ProxyPass "/apps"     "balancer://foo"
+
+&lt;Proxy balancer://foo&gt;
+  BalancerMember http://www2.example.com/  hcmethod=HEAD hcexpr=ok234 hcinterval=10
+&lt;/Proxy&gt;</pre>
 </div>
 
     <div class="note">
@@ -180,7 +184,11 @@ ProxyPass "/apps"     "http://backend.example.com/" hcexpr=ok234</pre>
     we want to disable the backend.</p>
 
     <div class="example"><h3>ProxyHCExpr: Checking response body</h3><pre class="prettyprint lang-config">ProxyHCExpr in_maint {hc('body') !~ /Under maintenance/}
-ProxyPass "/apps"     "http://backend.example.com/" hcexpr=in_maint hcmethod=get hcuri=/status.php</pre>
+ProxyPass "/apps"     "balancer://foo"
+
+&lt;Proxy balancer://foo&gt;
+  BalancerMember http://www.example.com/ hcexpr=in_maint hcmethod=get hcuri=/status.php
+&lt;/Proxy&gt;</pre>
 </div>
 
     <p><em>NOTE:</em> Since response body can quite large, it is best if used against specific status pages.</p>
@@ -202,7 +210,11 @@ ProxyPass "/apps"     "http://backend.example.com/" hcexpr=in_maint hcmethod=get
        parameter</p>
 
     <div class="example"><h3>ProxyHCTemplate</h3><pre class="prettyprint lang-config">ProxyHCTemplate tcp5 hcmethod=tcp hcinterval=5
-ProxyPass "/apps"     "http://backend.example.com/" hctemplate=tcp5</pre>
+ProxyPass "/apps"     "balancer://foo"
+
+&lt;Proxy balancer://foo&gt;
+  BalancerMember http://www2.example.com/ hctemplate=tcp5
+&lt;/Proxy&gt;</pre>
 </div>
 
 
