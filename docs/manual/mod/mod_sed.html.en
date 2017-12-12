@@ -59,10 +59,6 @@ The <code class="module"><a href="../mod/mod_sed.html">mod_sed</a></code> input 
 Both the input and output filters only process the data if newline characters are seen in the content. At the end of the data, the rest of the data is treated as the last line.
 </p>
 
-<p>A tutorial article on <code class="module"><a href="../mod/mod_sed.html">mod_sed</a></code>, and why it is more powerful than simple
-string or regular expression search and replace, is available <a href="https://blogs.oracle.com/basant/entry/using_mod_sed_to_filter">on
-the author's blog</a>.</p>
-
 </div>
 <div id="quickview"><h3>Topics</h3>
 <ul id="topics">
