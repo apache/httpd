@@ -433,8 +433,6 @@
 <li><a href="mod_macro.html#macro" id="M" name="M">&lt;Macro&gt;</a></li>
 <li><a href="mod_macro.html#macroignorebadnesting">MacroIgnoreBadNesting</a></li>
 <li><a href="mod_macro.html#macroignoreemptyargs">MacroIgnoreEmptyArgs</a></li>
-<li><a href="mod_md.html#manageddomain">ManagedDomain</a></li>
-<li><a href="mod_md.html#manageddomain">&lt;ManagedDomain&gt;</a></li>
 <li><a href="mpm_common.html#maxconnectionsperchild">MaxConnectionsPerChild</a></li>
 <li><a href="core.html#maxkeepaliverequests">MaxKeepAliveRequests</a></li>
 <li><a href="mpm_common.html#maxmemfree">MaxMemFree</a></li>
@@ -455,6 +453,8 @@
 <li><a href="mod_md.html#mdmembers">MDMembers</a></li>
 <li><a href="mod_md.html#mdmuststaple">MDMustStaple</a></li>
 <li><a href="mod_md.html#mdnotifycmd">MDNotifyCmd</a></li>
+<li><a href="mod_md.html#mdomain">MDomain</a></li>
+<li><a href="mod_md.html#mdomainset">&lt;MDomainSet&gt;</a></li>
 <li><a href="mod_md.html#mdportmap">MDPortMap</a></li>
 <li><a href="mod_md.html#mdprivatekeys">MDPrivateKeys</a></li>
 <li><a href="mod_md.html#mdrenewwindow">MDRenewWindow</a></li>
@@ -688,8 +688,8 @@
 <li><a href="mod_ssl.html#sslopensslconfcmd">SSLOpenSSLConfCmd</a></li>
 <li><a href="mod_ssl.html#ssloptions">SSLOptions</a></li>
 <li><a href="mod_ssl.html#sslpassphrasedialog">SSLPassPhraseDialog</a></li>
-<li><a href="mod_ssl.html#sslpolicy">&lt;SSLPolicy&gt;</a></li>
 <li><a href="mod_ssl.html#sslpolicy">SSLPolicy</a></li>
+<li><a href="mod_ssl.html#sslpolicydefine">&lt;SSLPolicyDefine&gt;</a></li>
 <li><a href="mod_ssl.html#sslprotocol">SSLProtocol</a></li>
 <li><a href="mod_ssl.html#sslproxycacertificatefile">SSLProxyCACertificateFile</a></li>
 <li><a href="mod_ssl.html#sslproxycacertificatepath">SSLProxyCACertificatePath</a></li>

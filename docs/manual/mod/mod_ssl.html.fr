@@ -29,6 +29,8 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_ssl.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_ssl.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Chiffrement de haut niveau basé sur les protocoles Secure
 Sockets Layer (SSL) et Transport Layer Security (TLS)</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -86,8 +88,8 @@ disponibles avec Require</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslopensslconfcmd">SSLOpenSSLConfCmd</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ssloptions">SSLOptions</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslpassphrasedialog">SSLPassPhraseDialog</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslpolicysection">&lt;SSLPolicy&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslpolicy">SSLPolicy</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#sslpolicydefinesection">&lt;SSLPolicyDefine&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslprotocol">SSLProtocol</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslproxycacertificatefile">SSLProxyCACertificateFile</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslproxycacertificatepath">SSLProxyCACertificatePath</a></li>
@@ -1683,101 +1685,6 @@ cette demande peut être formulée parmi les trois suivantes :</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="sslpolicysection" id="sslpolicysection">Directive</a> <a name="SSLPolicysection" id="SSLPolicysection">&lt;SSLPolicy&gt;</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit par un nom un jeu de configurations SSL</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>&lt;SSLPolicy <em>name</em>&gt;</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.28 du serveur HTTP Apache</td></tr>
-</table>
-<p>Cette directive permet de définir un jeu de configurations SSL et de lui
-attribuer un nom. Ce nom peut alors être utilisé par les directives
-<code class="directive">SSLPolicy</code> et <code class="directive">SSLProxyPolicy</code> pour
-appliquer ce jeu de configurations au contexte courant.</p>
-
-<div class="example"><h3>Définition et utilisation d'une configuration SSL</h3><pre class="prettyprint lang-config">&lt;SSLPolicy safe-stapling&gt;
-   SSLUseStapling on
-   SSLStaplingResponderTimeout 2
-   SSLStaplingReturnResponderErrors off
-   SSLStaplingFakeTryLater off
-   SSLStaplingStandardCacheTimeout 86400
-&lt;/SSLPolicy&gt;
-
-   ...
-   &lt;VirtualHost...&gt;
-      SSLPolicy safe-stapling
-      ...</pre>
-</div>
-
-<p>Cette directive permet d'une part de faciliter la <em>lecture</em> et la
-<em>maintenance</em> des configurations des serveurs. Elle a été conçue d'autre
-part pour faciliter et sécuriser l'<em>utilisation</em> de SSL. Sur ce dernier
-point, Apache httpd est fourni avec un jeu de configurations SSL prédéfinies qui
-respecte les bonnes pratiques du code open source. Par exemple, le jeu de
-configurations "modern" fait en sorte que votre serveur fonctionne de manière
-compatible et sécurisée avec les navigateurs courants.</p>
-
-<p>Vous pouvez obtenir la liste des politiques SSL prédéfinies de votre serveur
-Apache en lançant la commande suivante. Cette liste vous montre le détail du
-contenu de chaque politique SSL prédéfinie :</p>
-
-<div class="example"><h3>Liste de toutes les politiques SSL prédéfinies</h3><pre class="prettyprint lang-sh">httpd -t -D DUMP_SSL_POLICIES</pre>
-</div>
-
-<p>Cette directive ne peut être utilisée qu'au niveau de la configuration
-globale du serveur ; il ne peut donc coexister deux politiques de même nom. Les
-politiques SSL peuvent cependant être redéfinies :</p>
-
-<div class="example"><h3>Redéfinition d'une politique</h3><pre class="prettyprint lang-config">&lt;SSLPolicy proxy-trust&gt;
-   SSLProxyVerify require
-&lt;/SSLPolicy&gt;
-   ...
-&lt;SSLPolicy proxy-trust&gt;
-   SSLProxyVerify none
-&lt;/SSLPolicy&gt;</pre>
-</div>
-
-<p>Les définitions des politiques SSL sont <em>ajoutées</em> selon l'ordre dans
-lequel elles apparaissent, mais sont appliquées lorsque l'ensemble du fichier de
-configuration a été lu. Cela implique que dans l'exemple précédent, toute
-utilisation de la politique 'proxy-trust' sera équivalente à la directive
-'SSLProxyVerify none' et que la première définition de cette politique sera
-ignorée. Il est ainsi possible de modifier des politiques préinstallées sans
-avoir à les désactiver.</p>
-
-<p>Il est aussi possible de ne modifier qu'un aspect de la polique SSL :</p>
-
-<div class="example"><h3>Redéfinition d'un aspect d'une politique SSL</h3><pre class="prettyprint lang-config">&lt;SSLPolicy proxy-trust&gt;
-   SSLProxyVerify require
-&lt;/SSLPolicy&gt;
-   ...
-&lt;SSLPolicy proxy-trust&gt;
-   SSLPolicy proxy-trust
-   SSLProxyVerifyDepth 10
-&lt;/SSLPolicy&gt;</pre>
-</div>
-
-<p>Toutes les directives de la politique 'proxy-trust' sont alors réutilisées et
-la directive 'SSLProxyVerifyDepth 10' est ajoutée en tête de cette dernière. Cela
-s'avère particulièrement utile lorsque les politiques prédéfinies (par Apache ou
-une distribution) satisfont <em>presque</em> à vos besoins. Auparavant, ces
-politiques devaient être éditées et modifiées après copie éventuelle, ce qui
-compliquait les mises à jour. Elles peuvent maintenant être modifiées comme suit
-:</p>
-
-<div class="example"><h3>Tweak a Pre-Defined Policy</h3><pre class="prettyprint lang-config">Include ssl-policies.conf
-
-&lt;SSLPolicy modern&gt;
-   SSLPolicy modern
-   SSLProxyVerify none
-&lt;/SSLPolicy&gt;</pre>
-</div>
-
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="sslpolicy" id="sslpolicy">Directive</a> <a name="SSLPolicy" id="SSLPolicy">SSLPolicy</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Applique une politique SSL en la référençant par son nom</td></tr>
@@ -1850,6 +1757,18 @@ contexte. Les dernières auront alors priorité sur les précédentes :</p>
 
 
 </div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="sslpolicydefinesection" id="sslpolicydefinesection">Directive</a> <a name="SSLPolicyDefinesection" id="SSLPolicyDefinesection">&lt;SSLPolicyDefine&gt;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Define a named set of SSL configurations</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>&lt;SSLPolicy <em>name</em>&gt;</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Available in httpd 2.4.30 and later</td></tr>
+</table><p>La documentation de cette directive
+	n'a pas encore t traduite. Veuillez vous reporter  la version
+	en langue anglaise.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="sslprotocol" id="sslprotocol">Directive</a> <a name="SSLProtocol" id="SSLProtocol">SSLProtocol</a></h2>
 <table class="directive">

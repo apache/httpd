@@ -872,8 +872,6 @@ relatifs dans les directives de mod_lua</td></tr>
 propos d'une imbrication de Macros non conforme</td></tr>
 <tr><td><a href="mod_macro.html#macroignoreemptyargs">MacroIgnoreEmptyArgs</a></td><td></td><td>svd</td><td>B</td></tr><tr><td class="descr" colspan="4">Ignore les avertissements et n'inscrit rien dans le journal à
 propos des arguments de Macro vides</td></tr>
-<tr class="odd"><td><a href="mod_md.html#manageddomain">ManagedDomain <var>dns-name</var> [ <var>other-dns-name</var>... ]&lt;ManagedDomain <var>dns-name</var> [ <var>other-dns-name</var>... ]&gt;...&lt;/ManagedDomain&gt;</a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Define list of domain names that belong to one group.Container for directives applied to the same managed domains.</td></tr>
-<tr><td><a href="mod_md.html#manageddomain">ManagedDomain <var>dns-name</var> [ <var>other-dns-name</var>... ]&lt;ManagedDomain <var>dns-name</var> [ <var>other-dns-name</var>... ]&gt;...&lt;/ManagedDomain&gt;</a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Define list of domain names that belong to one group.Container for directives applied to the same managed domains.</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#maxconnectionsperchild">MaxConnectionsPerChild <var>number</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Limite le nombre de connexions qu'un processus enfant va
 traiter au cours de son fonctionnement</td></tr>
 <tr><td><a href="core.html#maxkeepaliverequests">MaxKeepAliveRequests <var>nombre</var></a></td><td> 100 </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Nombre de requêtes permises pour une connexion
@@ -906,6 +904,8 @@ inactifs</td></tr>
 <tr><td><a href="mod_md.html#mdmembers">MDMembers auto|manual</a></td><td> auto </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Control if the alias domain names are automatically added.</td></tr>
 <tr class="odd"><td><a href="mod_md.html#mdmuststaple">MDMustStaple on|off</a></td><td> off </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Control if new certificates carry the OCSP Must Staple flag.</td></tr>
 <tr><td><a href="mod_md.html#mdnotifycmd">MDNotifyCmd  path</a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Run a program when Managed Domain are ready.</td></tr>
+<tr class="odd"><td><a href="mod_md.html#mdomain">MDomain <var>dns-name</var> [ <var>other-dns-name</var>... ] [auto|manual]</a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Define list of domain names that belong to one group.</td></tr>
+<tr><td><a href="mod_md.html#mdomainset">&lt;MDomainSet <var>dns-name</var> [ <var>other-dns-name</var>... ]&gt;...&lt;/MDomainSet&gt;</a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Container for directives applied to the same managed domains.</td></tr>
 <tr class="odd"><td><a href="mod_md.html#mdportmap">MDPortMap map1 [ map2 ]</a></td><td> 80:80 443:443 </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Map external to internal ports for domain ownership verification.</td></tr>
 <tr><td><a href="mod_md.html#mdprivatekeys">MDPrivateKeys type [ params... ]</a></td><td> RSA 2048 </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Set type and size of the private keys generated.</td></tr>
 <tr class="odd"><td><a href="mod_md.html#mdrenewwindow">MDRenewWindow duration</a></td><td> 33% </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Control when a certificate will be renewed.</td></tr>
@@ -1368,7 +1368,7 @@ SSL</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslpassphrasedialog">SSLPassPhraseDialog <em>type</em></a></td><td> builtin </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Méthode utilisée pour entrer le mot de passe pour les clés
 privées chiffrées</td></tr>
 <tr><td><a href="mod_ssl.html#sslpolicy">&lt;SSLPolicy <em>name</em>&gt;SSLPolicy <em>name</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Définit par un nom un jeu de configurations SSLApplique une politique SSL en la référençant par son nom</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslpolicy">&lt;SSLPolicy <em>name</em>&gt;SSLPolicy <em>name</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Définit par un nom un jeu de configurations SSLApplique une politique SSL en la référençant par son nom</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslpolicydefine">&lt;SSLPolicy <em>name</em>&gt;</a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Define a named set of SSL configurations</td></tr>
 <tr><td><a href="mod_ssl.html#sslprotocol">SSLProtocol [+|-]<em>protocole</em> ...</a></td><td> all -SSLv3 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Indique les versions du protocole SSL/TLS
 disponibles</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslproxycacertificatefile">SSLProxyCACertificateFile <em>file-path</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Fichier contenant la concaténation des certificats de CA
