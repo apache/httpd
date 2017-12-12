@@ -99,7 +99,7 @@
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>LogIOTrackTTFB ON|OFF</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">기본값:</a></th><td><code>LogIOTrackTTFB OFF</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override 옵션:</a></th><td>none</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override 옵션:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_logio</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">지원:</a></th><td>Apache HTTP Server 2.4.13 and later</td></tr>
