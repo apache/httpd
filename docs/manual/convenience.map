@@ -393,8 +393,6 @@ luascope	mod/mod_lua.html#luascope
 macro	mod/mod_macro.html#macro
 macroignorebadnesting	mod/mod_macro.html#macroignorebadnesting
 macroignoreemptyargs	mod/mod_macro.html#macroignoreemptyargs
-manageddomain	mod/mod_md.html#manageddomain
-manageddomain	mod/mod_md.html#manageddomain
 maxconnectionsperchild	mod/mpm_common.html#maxconnectionsperchild
 maxkeepaliverequests	mod/core.html#maxkeepaliverequests
 maxmemfree	mod/mpm_common.html#maxmemfree
@@ -414,6 +412,9 @@ mdhttpproxy	mod/mod_md.html#mdhttpproxy
 mdmember	mod/mod_md.html#mdmember
 mdmembers	mod/mod_md.html#mdmembers
 mdmuststaple	mod/mod_md.html#mdmuststaple
+mdnotifycmd	mod/mod_md.html#mdnotifycmd
+mdomain	mod/mod_md.html#mdomain
+mdomainset	mod/mod_md.html#mdomainset
 mdportmap	mod/mod_md.html#mdportmap
 mdprivatekeys	mod/mod_md.html#mdprivatekeys
 mdrenewwindow	mod/mod_md.html#mdrenewwindow
@@ -648,7 +649,7 @@ sslopensslconfcmd	mod/mod_ssl.html#sslopensslconfcmd
 ssloptions	mod/mod_ssl.html#ssloptions
 sslpassphrasedialog	mod/mod_ssl.html#sslpassphrasedialog
 sslpolicy	mod/mod_ssl.html#sslpolicy
-sslpolicy	mod/mod_ssl.html#sslpolicy
+sslpolicydefine	mod/mod_ssl.html#sslpolicydefine
 sslprotocol	mod/mod_ssl.html#sslprotocol
 sslproxycacertificatefile	mod/mod_ssl.html#sslproxycacertificatefile
 sslproxycacertificatepath	mod/mod_ssl.html#sslproxycacertificatepath
