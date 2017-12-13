@@ -536,7 +536,7 @@ static const char *alloc_listener(process_rec *process, const char *addr,
         if (scope_id) {
             status = apr_sockaddr_zone_set(new->bind_addr, scope_id);
             if (status) {
-                ap_log_perror(APLOG_MARK, APLOG_CRIT, status, process->pool, APLOGNO()
+                ap_log_perror(APLOG_MARK, APLOG_CRIT, status, process->pool, APLOGNO(10102)
                               "alloc_listener: failed to set scope for %pI to %s",
                               new->bind_addr, scope_id);
                 return "Listen step failed";
