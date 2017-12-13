@@ -212,7 +212,7 @@ static const char *get_addresses(apr_pool_t *p, const char *w_,
         if (scope_id) {
             rv = apr_sockaddr_zone_set(my_addr, scope_id);
             if (rv) {
-                ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL, APLOGNO()
+                ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL, APLOGNO(10103)
                              "Could not set scope ID %s for %pI -- ignoring!",
                              scope_id, my_addr);
                 return NULL;

@@ -282,7 +282,7 @@ static apr_status_t assign_to_servers(md_t *md, server_rec *base_server,
                 /* We require https for this MD, but do we have port 443 (or a mapped one)
                  * available? */
                 if (mc->local_443 <= 0) {
-                    ap_log_error(APLOG_MARK, APLOG_ERR, 0, base_server, APLOGNO()
+                    ap_log_error(APLOG_MARK, APLOG_ERR, 0, base_server, APLOGNO(10105)
                                  "MDPortMap says there is no port for https (443), "
                                  "but MD %s is configured to require https. This "
                                  "only works when a 443 port is available.", md->name);
@@ -304,7 +304,7 @@ static apr_status_t assign_to_servers(md_t *md, server_rec *base_server,
                 if (!s_https) {
                     /* Did not find any server_rec that matches this MD *and* has an
                      * s->addrs match for the https port. Suspicious. */
-                    ap_log_error(APLOG_MARK, APLOG_WARNING, 0, base_server, APLOGNO()
+                    ap_log_error(APLOG_MARK, APLOG_WARNING, 0, base_server, APLOGNO(10106)
                                  "MD %s is configured to require https, but there seems to be "
                                  "no VirtualHost for it that has port %d in its address list. "
                                  "This looks as if it will not work.", 
@@ -781,7 +781,7 @@ static apr_status_t run_watchdog(int state, void *baton, apr_pool_t *ptemp)
 
             now = apr_time_now();
             if (APLOGdebug(wd->s)) {
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, wd->s, APLOGNO()
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, wd->s, APLOGNO(10107)
                              "next run in %s", md_print_duration(ptemp, next_run - now));
             }
             wd_set_interval(wd->watchdog, next_run - now, wd, run_watchdog);
@@ -824,12 +824,12 @@ static apr_status_t run_watchdog(int state, void *baton, apr_pool_t *ptemp)
                 cmdline = apr_psprintf(ptemp, "%s %s", wd->mc->notify_cmd, names); 
                 apr_tokenize_to_argv(cmdline, (char***)&argv, ptemp);
                 if (APR_SUCCESS == (rv = md_util_exec(ptemp, argv[0], argv, &exit_code))) {
-                    ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, wd->s, APLOGNO() 
+                    ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, wd->s, APLOGNO(10108) 
                                  "notify command '%s' returned %d", 
                                  wd->mc->notify_cmd, exit_code);
                 }
                 else {
-                    ap_log_error(APLOG_MARK, APLOG_ERR, rv, wd->s, APLOGNO() 
+                    ap_log_error(APLOG_MARK, APLOG_ERR, rv, wd->s, APLOGNO(10109) 
                                  "executing configured MDNotifyCmd %s", wd->mc->notify_cmd);
                     notified = 0;
                 } 
@@ -1170,7 +1170,7 @@ static apr_status_t md_get_certificate(server_rec *s, apr_pool_t *p,
         md = md_reg_get(reg, sc->assigned->name, p);
             
         if (APR_SUCCESS != (rv = md_reg_get_cred_files(reg, md, p, pkeyfile, pcertfile))) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO() 
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10110) 
                          "retrieving credentials for MD %s", md->name);
             return rv;
         }

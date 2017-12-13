@@ -256,7 +256,7 @@ apr_status_t ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
         if (sc->vhost_id) {
             /* already set. This should only happen if this config rec is
              * shared with another server. Argh! */
-            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO() 
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(10104) 
                          "%s, SSLSrvConfigRec shared from %s", 
                          ssl_util_vhostid(p, s), sc->vhost_id);
         }
