@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_ldap: Fix a case where a full LDAP cache would continually fail to 
+     purge old entries and log AH01323. PR61891.  
+     [Hendrik Harms <hendrik.harms gmail.com>]
+
   *) mod_md: name change in configuration directives. The old names are still working
      in this version, so you can safely upgrade. They will give warnings in the log and
      will disappear in the immediate future. ManagedDomain is now MDomain,

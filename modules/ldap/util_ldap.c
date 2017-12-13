@@ -2245,7 +2245,7 @@ static const char *util_ldap_set_opcache_ttl(cmd_parms *cmd, void *dummy,
         return err;
     }
 
-    st->compare_cache_ttl = atol(ttl) * 1000000;
+    st->compare_cache_ttl = atol(ttl) * APR_USEC_PER_SEC;
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server, APLOGNO(01301)
                  "ldap cache: Setting operation cache TTL to %ld microseconds.",
@@ -2816,9 +2816,9 @@ static void *util_ldap_create_config(apr_pool_t *p, server_rec *s)
 #endif
 
     st->cache_bytes = 500000;
-    st->search_cache_ttl = 600000000;
+    st->search_cache_ttl = 600 * APR_USEC_PER_SEC; /* 10 minutes */
     st->search_cache_size = 1024;
-    st->compare_cache_ttl = 600000000;
+    st->compare_cache_ttl = 600 * APR_USEC_PER_SEC; /* 10 minutes */
     st->compare_cache_size = 1024;
     st->connections = NULL;
     st->ssl_supported = 0;
