@@ -240,6 +240,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES)
      +1: jim
 
+  *) mod_ldap: PR61891: Failure to make progreass purging a mostly full cache.
+     trunk patch: http://svn.apache.org/r1818040
+     2.4.x patch: svn merge -c r1818040  ^/httpd/httpd/trunk . 
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
