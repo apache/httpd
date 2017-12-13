@@ -85,7 +85,7 @@
     and arrange for the process at the other end to split up the log
     files into one per virtual host. One example of such a process can
     be found in the <a
-    href="../programs/other.html#split-logfile">split-logfile</a>
+    href="../programs/split-logfile.html">split-logfile</a>
     utility.</p>
 
 </section>
