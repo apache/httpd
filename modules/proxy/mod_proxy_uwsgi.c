@@ -136,7 +136,7 @@ static int uwsgi_send_headers(request_rec *r, proxy_conn_rec * conn)
     int j;
 
     apr_size_t headerlen = 4;
-    uint16_t pktsize, keylen, vallen;
+    apr_uint16_t pktsize, keylen, vallen;
     const char *script_name;
     const char *path_info;
     const char *auth;
