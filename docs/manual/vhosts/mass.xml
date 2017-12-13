@@ -85,7 +85,7 @@
     and arrange for the process at the other end to split up the log
     files into one per virtual host. One example of such a process can
     be found in the <a
-    href="../programs/other.html#split-logfile">split-logfile</a>
+    href="../programs/split-logfile.html">split-logfile</a>
     utility.</p>
 
 </section>
@@ -188,7 +188,7 @@ examples.</p>
 UseCanonicalName Off
 
 LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon
-CustomLog logs/access_log vcommon
+CustomLog "logs/access_log" vcommon
 
 # include part of the server name in the filenames
 VirtualDocumentRoot "/home/%2/www"
@@ -232,18 +232,18 @@ LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon
 
 &lt;VirtualHost 111.22.33.44&gt;
     ServerName www.commercial.example.com
-    
+
     CustomLog "logs/access_log.commercial" vcommon
-    
+
     VirtualDocumentRoot "/www/commercial/%0/docs"
     VirtualScriptAlias  "/www/commercial/%0/cgi-bin"
 &lt;/VirtualHost&gt;
 
 &lt;VirtualHost 111.22.33.45&gt;
     ServerName www.homepages.example.com
-    
+
     CustomLog "logs/access_log.homepages" vcommon
-    
+
     VirtualDocumentRoot "/www/homepages/%0/docs"
     ScriptAlias         "/cgi-bin/" "/www/std-cgi/"
 &lt;/VirtualHost&gt;
@@ -299,6 +299,16 @@ and accessing them via <directive
 module="mod_rewrite">RewriteMap</directive>. These techniques are
 discussed in the <a href="../rewrite/vhosts.html">rewrite
 documentation</a>.</p>
+</section>
+
+<section id="macro"><title>Mass virtual hosts with mod_macro</title>
+
+<p>Another option for dynamically generated virtual hosts is
+<module>mod_macro</module>, with which you can create a virtualhost
+template, and invoke it for multiple hostnames. An example of this is
+provided in the <strong>Usage</strong> section of the module
+documentation.
+</p>
 </section>
 
 </manualpage>
