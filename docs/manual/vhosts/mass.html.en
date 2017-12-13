@@ -99,7 +99,7 @@ mod_rewrite</a></li>
     It is better to <a href="../logs.html#piped">log to a pipe or a fifo</a>,
     and arrange for the process at the other end to split up the log
     files into one per virtual host. One example of such a process can
-    be found in the <a href="../programs/other.html#split-logfile">split-logfile</a>
+    be found in the <a href="../programs/split-logfile.html">split-logfile</a>
     utility.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
