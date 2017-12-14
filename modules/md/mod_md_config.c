@@ -31,7 +31,9 @@
 #include "mod_md_config.h"
 
 #define MD_CMD_MD             "MDomain"
+#define MD_CMD_OLD_MD         "ManagedDomain"
 #define MD_CMD_MD_SECTION     "<MDomainSet"
+#define MD_CMD_MD_OLD_SECTION "<ManagedDomain"
 #define MD_CMD_CA             "MDCertificateAuthority"
 #define MD_CMD_CAAGREEMENT    "MDCertificateAgreement"
 #define MD_CMD_CACHALLENGES   "MDCAChallenges"
@@ -221,10 +223,14 @@ static int inside_section(cmd_parms *cmd, const char *section) {
     return 0; 
 }
 
-static const char *md_section_check(cmd_parms *cmd, const char *section) {
-    if (!inside_section(cmd, section)) {
-        return apr_pstrcat(cmd->pool, cmd->cmd->name, " is only valid inside a '", 
-                           section, "' context, not here", NULL);
+static int inside_md_section(cmd_parms *cmd) {
+    return (inside_section(cmd, MD_CMD_MD_SECTION) || inside_section(cmd, MD_CMD_MD_OLD_SECTION));
+}
+
+static const char *md_section_check(cmd_parms *cmd) {
+    if (!inside_md_section(cmd)) {
+        return apr_pstrcat(cmd->pool, cmd->cmd->name, " is only valid inside a '",  
+                           MD_CMD_MD_SECTION, "' context, not here", NULL);
     }
     return NULL;
 }
@@ -319,7 +325,7 @@ static const char *md_config_sec_add_members(cmd_parms *cmd, void *dc,
     int i;
     
     (void)dc;
-    if (NULL != (err = md_section_check(cmd, MD_CMD_MD_SECTION))) {
+    if (NULL != (err = md_section_check(cmd))) {
         if (argc == 1) {
             /* only these values are allowed outside a section */
             return set_transitive(&sc->transitive, argv[0]);
@@ -382,8 +388,7 @@ static const char *md_config_set_ca(cmd_parms *cmd, void *dc, const char *value)
     const char *err;
 
     (void)dc;
-    if (!inside_section(cmd, MD_CMD_MD_SECTION)
-        && (err = ap_check_cmd_context(cmd, GLOBAL_ONLY))) {
+    if (!inside_md_section(cmd) && (err = ap_check_cmd_context(cmd, GLOBAL_ONLY))) {
         return err;
     }
     sc->ca_url = value;
@@ -396,8 +401,7 @@ static const char *md_config_set_ca_proto(cmd_parms *cmd, void *dc, const char *
     const char *err;
 
     (void)dc;
-    if (!inside_section(cmd, MD_CMD_MD_SECTION)
-        && (err = ap_check_cmd_context(cmd, GLOBAL_ONLY))) {
+    if (!inside_md_section(cmd) && (err = ap_check_cmd_context(cmd, GLOBAL_ONLY))) {
         return err;
     }
     config->ca_proto = value;
@@ -410,8 +414,7 @@ static const char *md_config_set_agreement(cmd_parms *cmd, void *dc, const char 
     const char *err;
 
     (void)dc;
-    if (!inside_section(cmd, MD_CMD_MD_SECTION)
-        && (err = ap_check_cmd_context(cmd, GLOBAL_ONLY))) {
+    if (!inside_md_section(cmd) && (err = ap_check_cmd_context(cmd, GLOBAL_ONLY))) {
         return err;
     }
     config->ca_agreement = value;
@@ -438,8 +441,7 @@ static const char *md_config_set_drive_mode(cmd_parms *cmd, void *dc, const char
         return apr_pstrcat(cmd->pool, "unknown MDDriveMode ", value, NULL);
     }
     
-    if (!inside_section(cmd, MD_CMD_MD_SECTION)
-        && (err = ap_check_cmd_context(cmd, GLOBAL_ONLY))) {
+    if (!inside_md_section(cmd) && (err = ap_check_cmd_context(cmd, GLOBAL_ONLY))) {
         return err;
     }
     config->drive_mode = drive_mode;
@@ -452,8 +454,7 @@ static const char *md_config_set_must_staple(cmd_parms *cmd, void *dc, const cha
     const char *err;
 
     (void)dc;
-    if (!inside_section(cmd, MD_CMD_MD_SECTION)
-        && (err = ap_check_cmd_context(cmd, GLOBAL_ONLY))) {
+    if (!inside_md_section(cmd) && (err = ap_check_cmd_context(cmd, GLOBAL_ONLY))) {
         return err;
     }
 
@@ -476,8 +477,7 @@ static const char *md_config_set_require_https(cmd_parms *cmd, void *dc, const c
     const char *err;
 
     (void)dc;
-    if (!inside_section(cmd, MD_CMD_MD_SECTION)
-        && (err = ap_check_cmd_context(cmd, GLOBAL_ONLY))) {
+    if (!inside_md_section(cmd) && (err = ap_check_cmd_context(cmd, GLOBAL_ONLY))) {
         return err;
     }
 
@@ -559,7 +559,7 @@ static const char *md_config_set_renew_window(cmd_parms *cmd, void *dc, const ch
     int percent = 0;
     
     (void)dc;
-    if (!inside_section(cmd, MD_CMD_MD_SECTION)
+    if (!inside_md_section(cmd)
         && (err = ap_check_cmd_context(cmd, GLOBAL_ONLY))) {
         return err;
     }
@@ -676,7 +676,7 @@ static const char *md_config_set_cha_tyes(cmd_parms *cmd, void *dc,
     int i;
 
     (void)dc;
-    if (!inside_section(cmd, MD_CMD_MD_SECTION)
+    if (!inside_md_section(cmd)
         && (err = ap_check_cmd_context(cmd, GLOBAL_ONLY))) {
         return err;
     }
@@ -701,7 +701,7 @@ static const char *md_config_set_pkeys(cmd_parms *cmd, void *dc,
     apr_int64_t bits;
     
     (void)dc;
-    if (!inside_section(cmd, MD_CMD_MD_SECTION)
+    if (!inside_md_section(cmd)
         && (err = ap_check_cmd_context(cmd, GLOBAL_ONLY))) {
         return err;
     }
@@ -817,10 +817,10 @@ const command_rec md_cmds[] = {
                   "set the command to run when signup/renew of domain is complete."),
 
 /* This will disappear soon */
-    AP_INIT_TAKE_ARGV( "ManagedDomain", md_config_set_names_old, NULL, RSRC_CONF, 
+    AP_INIT_TAKE_ARGV( MD_CMD_OLD_MD, md_config_set_names_old, NULL, RSRC_CONF, 
                       "Deprecated, replace with 'MDomain'."),
-    AP_INIT_RAW_ARGS(  "<ManagedDomain", md_config_sec_start_old, NULL, RSRC_CONF, 
-                     "Deprecated, replace with 'MDomainSet'."),
+    AP_INIT_RAW_ARGS(  MD_CMD_MD_OLD_SECTION, md_config_sec_start_old, NULL, RSRC_CONF, 
+                     "Deprecated, replace with '<MDomainSet'."),
 /* */
 
     AP_INIT_TAKE1(NULL, NULL, NULL, RSRC_CONF, NULL)

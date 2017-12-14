@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_md: fixed backward compatibility to old <ManagedDomain configuration.
+     Add higher level WARNING log when initial request to ACME server fails, mentioning
+     some advice. [Stefan Eissing] 
+     
   *) mod_ldap: Fix a case where a full LDAP cache would continually fail to 
      purge old entries and log AH01323. PR61891.  
      [Hendrik Harms <hendrik.harms gmail.com>]

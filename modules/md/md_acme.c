@@ -154,6 +154,16 @@ apr_status_t md_acme_setup(md_acme_t *acme)
         }
         rv = APR_EINVAL;
     }
+    else {
+        md_log_perror(MD_LOG_MARK, MD_LOG_WARNING, 0, acme->p, "unsuccessful in contacting ACME "
+                      "server at %s. If this problem persists, please check your network "
+                      "connectivity from your Apache server to the ACME server. Also, older "
+                      "servers might have trouble verifying the certificates of the ACME "
+                      "server. You can check if you are able to contact it manually via the "
+                      "curl command. Sometimes, the ACME server might be down for maintenance, "
+                      "so failing to contact it is not an immediate problem. mod_md will "
+                      "continue retrying this.", acme->url);
+    }
     return rv;
 }
 
@@ -379,6 +389,8 @@ static apr_status_t md_acme_req_send(md_acme_req_t *req)
         }
         if (!acme->nonce) {
             if (APR_SUCCESS != (rv = md_acme_new_nonce(acme))) {
+                md_log_perror(MD_LOG_MARK, MD_LOG_WARNING, rv, req->p, 
+                              "error retrieving new nonce from ACME server");
                 return rv;
             }
         }
