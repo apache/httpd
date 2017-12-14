@@ -109,7 +109,7 @@
     <div class="example"><h3>Example of using backreferences and captures</h3><pre class="prettyprint lang-config">&lt;Location "/"&gt;
     AddOutputFilterByType SUBSTITUTE text/html
     # "foo=k,bar=k" -&gt; "foo/bar=k"
-    Substitute "s|foo=(\w+),bar=\1|foo/bar=$1"
+    Substitute "s|foo=(\w+),bar=\1|foo/bar=$1|"
 &lt;/Location&gt;</pre>
 </div>
 
@@ -122,7 +122,7 @@
     <p>In this case, <code>mod_substitute</code> can be used to rewrite
     those URLs into something that will work from the front end:</p>
 
-    <div class="example"><h3>Rewriting URLs embedded in proxied content</h3><pre class="prettyprint lang-config">ProxyPass        "/blog/" "http://internal.blog.example.com"
+    <div class="example"><h3>Rewriting URLs embedded in proxied content</h3><pre class="prettyprint lang-config">ProxyPass        "/blog/" "http://internal.blog.example.com/"
 ProxyPassReverse "/blog/" "http://internal.blog.example.com/"
 
 Substitute "s|http://internal.blog.example.com/|http://www.example.com/blog/|i"</pre>
