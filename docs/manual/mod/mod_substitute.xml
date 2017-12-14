@@ -117,7 +117,7 @@
 
     <example><title>Rewriting URLs embedded in proxied content</title>
     <highlight language="config">
-ProxyPass        "/blog/" "http://internal.blog.example.com"
+ProxyPass        "/blog/" "http://internal.blog.example.com/"
 ProxyPassReverse "/blog/" "http://internal.blog.example.com/"
 
 Substitute "s|http://internal.blog.example.com/|http://www.example.com/blog/|i"
