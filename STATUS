@@ -224,7 +224,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x diff: svn diff ^/httpd/httpd/branches/2.4.x  ^/httpd/httpd/branches/2.4.x-mod_md
          Updated 2.4.x-mod_md branch to current trunk (mod_md v1.1.0) with renamed configuration
          directives and improved certificate chain retrieval. Resetting votes.
-     +1: icing
+     +1: icing, jim
 
   *) mod_md: backport of mod_ssl changes to get interworking ACME support. Needs mod_md backport propoals above to find mod_md.h include file with otional functions.
      trunk revisions: 1804530,1804531,1805186,1806939,1807232,1808122
@@ -243,6 +243,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_ldap: PR61891: Failure to make progreass purging a mostly full cache.
      trunk patch: http://svn.apache.org/r1818040
      2.4.x patch: svn merge -c r1818040  ^/httpd/httpd/trunk . 
+     +1: 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
