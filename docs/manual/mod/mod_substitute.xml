@@ -100,7 +100,7 @@
 &lt;Location "/"&gt;
     AddOutputFilterByType SUBSTITUTE text/html
     # "foo=k,bar=k" -> "foo/bar=k"
-    Substitute "s|foo=(\w+),bar=\1|foo/bar=$1"
+    Substitute "s|foo=(\w+),bar=\1|foo/bar=$1|"
 &lt;/Location&gt;
     </highlight>
     </example>
