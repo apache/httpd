@@ -227,7 +227,7 @@
     <tr><td><code>%T</code></td>
         <td>The time taken to serve the request, in seconds. The time measured
         begins when the first line of the HTTP request is read from the host
-        operating system by by the HTTP server and ends when the last byte of
+        operating system by the HTTP server and ends when the last byte of
         the response is written by the HTTP server to the host operating system.
         <p> The time measured does <em>not</em> include any of the following:
         <ul>
