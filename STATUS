@@ -163,8 +163,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1790169 (rename "exception" directive)
                   http://svn.apache.org/r1790457 (Update directive name in err message)
                   http://svn.apache.org/r1806985
+                  http://svn.apache.org/r1818279
      2.4 convenience patch (includes CHANGES):
                   http://home.apache.org/~jim/patches/RemoteIPProxyProtocol.2.4-v2.patch
+                  http://svn.apache.org/r1818279
      +1: druggeri, jim
      ylavic: RemoteIPProxyProtocol* are documented as scoped to server config
              and virtual host, though using ap_server_conf makes them global
@@ -237,6 +239,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1810363
                   http://svn.apache.org/r1810365
                   http://svn.apache.org/r1810447
+                  http://svn.apache.org/r1818280
      2.4.x patch: trunk works (modulo CHANGES)
      +1: jim
      -1: steffenal: does not build on windows (uint8_t)
@@ -246,6 +249,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c r1818040  ^/httpd/httpd/trunk . 
      +1: 
 
+  *) mod_brotli.c: APR-ize uint values
+     trunk patch: http://svn.apache.org/r1818278
+     2.4.x patch: svn merge -c r1818278  ^/httpd/httpd/trunk . 
+     +1: 
+     
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
