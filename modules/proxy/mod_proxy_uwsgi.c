@@ -184,14 +184,14 @@ static int uwsgi_send_headers(request_rec *r, proxy_conn_rec * conn)
 
     for (j = 0; j < env_table->nelts; ++j) {
         keylen = strlen(env[j].key);
-        *ptr++ = (uint8_t) (keylen & 0xff);
-        *ptr++ = (uint8_t) ((keylen >> 8) & 0xff);
+        *ptr++ = (apr_byte_t) (keylen & 0xff);
+        *ptr++ = (apr_byte_t) ((keylen >> 8) & 0xff);
         memcpy(ptr, env[j].key, keylen);
         ptr += keylen;
 
         vallen = strlen(env[j].val);
-        *ptr++ = (uint8_t) (vallen & 0xff);
-        *ptr++ = (uint8_t) ((vallen >> 8) & 0xff);
+        *ptr++ = (apr_byte_t) (vallen & 0xff);
+        *ptr++ = (apr_byte_t) ((vallen >> 8) & 0xff);
         memcpy(ptr, env[j].val, vallen);
         ptr += vallen;
     }
@@ -199,8 +199,8 @@ static int uwsgi_send_headers(request_rec *r, proxy_conn_rec * conn)
     pktsize = headerlen - 4;
 
     buf[0] = 0;
-    buf[1] = (uint8_t) (pktsize & 0xff);
-    buf[2] = (uint8_t) ((pktsize >> 8) & 0xff);
+    buf[1] = (apr_byte_t) (pktsize & 0xff);
+    buf[2] = (apr_byte_t) ((pktsize >> 8) & 0xff);
     buf[3] = 0;
 
     return uwsgi_send(conn, buf, headerlen, r);
