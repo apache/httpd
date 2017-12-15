@@ -111,6 +111,9 @@
         href="mod_authz_host.html#reqhost">the Require host
         documentation</a>.</td></tr>
 
+    <tr><td><code>%{c}h</code></td>
+        <td></td></tr>
+
     <tr><td><code>%H</code></td>
         <td>The request protocol.</td></tr>
 
