@@ -239,6 +239,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1810447
      2.4.x patch: trunk works (modulo CHANGES)
      +1: jim
+     -1: steffenal: does not build on windows (uint8_t)
 
   *) mod_ldap: PR61891: Failure to make progreass purging a mostly full cache.
      trunk patch: http://svn.apache.org/r1818040
