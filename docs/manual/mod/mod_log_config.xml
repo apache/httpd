@@ -146,6 +146,9 @@
             logged to the error log for this request). Look for the
             matching error log line to see what request caused what error.</td></tr>
 
+    <tr><td><code>%{c}L</code></td>
+        <td></td></tr>
+
     <tr><td><code>%m</code></td>
         <td>The request method.</td></tr>
 
