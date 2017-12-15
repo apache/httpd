@@ -212,11 +212,11 @@ static apr_status_t process_chunk(brotli_ctx_t *ctx,
                                   apr_size_t len,
                                   ap_filter_t *f)
 {
-    const uint8_t *next_in = data;
+    const apr_byte_t *next_in = data;
     apr_size_t avail_in = len;
 
     while (avail_in > 0) {
-        uint8_t *next_out = NULL;
+        apr_byte_t *next_out = NULL;
         apr_size_t avail_out = 0;
 
         if (!BrotliEncoderCompressStream(ctx->state,
@@ -230,7 +230,7 @@ static apr_status_t process_chunk(brotli_ctx_t *ctx,
 
         if (BrotliEncoderHasMoreOutput(ctx->state)) {
             apr_size_t output_len = 0;
-            const uint8_t *output;
+            const apr_byte_t *output;
             apr_status_t rv;
             apr_bucket *b;
 
@@ -265,12 +265,12 @@ static apr_status_t flush(brotli_ctx_t *ctx,
                           ap_filter_t *f)
 {
     while (1) {
-        const uint8_t *next_in = NULL;
+        const apr_byte_t *next_in = NULL;
         apr_size_t avail_in = 0;
-        uint8_t *next_out = NULL;
+        apr_byte_t *next_out = NULL;
         apr_size_t avail_out = 0;
         apr_size_t output_len;
-        const uint8_t *output;
+        const apr_byte_t *output;
         apr_bucket *b;
 
         if (!BrotliEncoderCompressStream(ctx->state, op,
