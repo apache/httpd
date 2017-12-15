@@ -109,10 +109,13 @@
         for only a few hosts, you probably have access control
         directives mentioning them by name. See <a
         href="mod_authz_host.html#reqhost">the Require host
-        documentation</a>.</td></tr>
+        documentation</a>. This format is affected by modifications to the 
+        remote hostname by modules like <module>mod_remoteip</module>.</td></tr>
 
     <tr><td><code>%{c}h</code></td>
-        <td></td></tr>
+        <td>Like <code>%h</code>, but always reports on the hostname of the
+        underlying TCP connection and not any modifications to the 
+        remote hostname by modules like <module>mod_remoteip</module>.</td></tr>
 
     <tr><td><code>%H</code></td>
         <td>The request protocol.</td></tr>
@@ -147,7 +150,9 @@
             matching error log line to see what request caused what error.</td></tr>
 
     <tr><td><code>%{c}L</code></td>
-        <td></td></tr>
+        <td>The connection log ID from the error log (or '-' if nothing has been
+            logged to the error log for this request). Look for the
+            matching error log line to see what request caused what error.</td></tr>
 
     <tr><td><code>%m</code></td>
         <td>The request method.</td></tr>
