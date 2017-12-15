@@ -85,28 +85,28 @@ typedef struct {
 
 typedef union {
     struct {        /* for TCP/UDP over IPv4, len = 12 */
-        uint32_t src_addr;
-        uint32_t dst_addr;
-        uint16_t src_port;
-        uint16_t dst_port;
+        apr_uint32_t src_addr;
+        apr_uint32_t dst_addr;
+        apr_uint16_t src_port;
+        apr_uint16_t dst_port;
     } ip4;
     struct {        /* for TCP/UDP over IPv6, len = 36 */
-         uint8_t  src_addr[16];
-         uint8_t  dst_addr[16];
-         uint16_t src_port;
-         uint16_t dst_port;
+         apr_byte_t  src_addr[16];
+         apr_byte_t  dst_addr[16];
+         apr_uint16_t src_port;
+         apr_uint16_t dst_port;
     } ip6;
     struct {        /* for AF_UNIX sockets, len = 216 */
-         uint8_t src_addr[108];
-         uint8_t dst_addr[108];
+         apr_byte_t src_addr[108];
+         apr_byte_t dst_addr[108];
     } unx;
 } proxy_v2_addr;
 
 typedef struct {
-    uint8_t  sig[12];  /* hex 0D 0A 0D 0A 00 0D 0A 51 55 49 54 0A */
-    uint8_t  ver_cmd;  /* protocol version and command */
-    uint8_t  fam;      /* protocol family and address */
-    uint16_t len;     /* number of following bytes part of the header */
+    apr_byte_t  sig[12];  /* hex 0D 0A 0D 0A 00 0D 0A 51 55 49 54 0A */
+    apr_byte_t  ver_cmd;  /* protocol version and command */
+    apr_byte_t  fam;      /* protocol family and address */
+    apr_uint16_t len;     /* number of following bytes part of the header */
     proxy_v2_addr addr;
 } proxy_v2;
 
