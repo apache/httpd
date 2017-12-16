@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_proxy_html: fix handling of <meta http-equiv> elements.
+     PR 58121.  [Nick Kew]
+
   *) mod_md: fixed backward compatibility to old <ManagedDomain configuration.
      Add higher level WARNING log when initial request to ACME server fails, mentioning
      some advice. [Stefan Eissing] 
