@@ -179,6 +179,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/backport-module-flags.diff
                   (merge with alterations for mmn etc., updated after review by Yann)
      +1: icing, ylavic
+     niq: Can someone post a pointer to discussion of this on dev list?
+          In particular the API change and apparent #ifdef ABI?
 
   *) core: A signal received while stopping could have crashed the main
      process.  PR 61558.
@@ -217,7 +219,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1814968
      2.4.x patch: trunk works (modulo CHANGES)
                   svn merge -c r1814968 ^/httpd/httpd/trunk .
-     +1: elukey, jim
+     +1: elukey, jim, niq
 
   *) mod_md: backport of ACME (Let's Encrypt) support. Needs mod_ssl backport proposal beneath to
      not only compile but do something.
@@ -252,6 +254,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1818278
      2.4.x patch: svn merge -c r1818278  ^/httpd/httpd/trunk . 
      +1: 
+
+  *) mod_proxy_html: Add HTML5 FPI, fix typo in handling legacy FPIs,
+     process parsed comments immediately.  Fix PR 56457
+     trunk patch: http://svn.apache.org/r1442409
+                  http://svn.apache.org/r1816458
+     2.4.x patch: trunk works
+     +1: niq
      
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
