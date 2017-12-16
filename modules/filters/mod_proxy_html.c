@@ -684,7 +684,12 @@ static meta *metafix(request_rec *r, const char *buf)
         while (!apr_isalpha(*++p));
         for (q = p; apr_isalnum(*q) || (*q == '-'); ++q);
         header = apr_pstrndup(r->pool, p, q-p);
-        if (ap_cstr_casecmpn(header, "Content-", 8)) {
+        if (!ap_cstr_casecmpn(header, "Content-Type", 12)) {
+            ret = apr_palloc(r->pool, sizeof(meta));
+            ret->start = offs+pmatch[0].rm_so;
+            ret->end = offs+pmatch[0].rm_eo;
+        }
+        else {
             /* find content=... string */
             p = apr_strmatch(seek_content, buf+offs+pmatch[0].rm_so,
                               pmatch[0].rm_eo - pmatch[0].rm_so);
@@ -711,11 +716,6 @@ static meta *metafix(request_rec *r, const char *buf)
                     break;
                 }
             }
-        }
-        else if (!ap_cstr_casecmpn(header, "Content-Type", 12)) {
-            ret = apr_palloc(r->pool, sizeof(meta));
-            ret->start = offs+pmatch[0].rm_so;
-            ret->end = offs+pmatch[0].rm_eo;
         }
         if (header && content) {
 #ifndef GO_FASTER
