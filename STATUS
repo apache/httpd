@@ -399,23 +399,6 @@ PATCHES/ISSUES THAT ARE STALLED
          really cover a very narrow set of parameters with the way it skips over backreferences?
          Also, why a new API vs. just setting the field inline?
 
-   * mod_systemd: New module, for integration with systemd on Linux.
-     trunk patch: http://svn.apache.org/r1393976
-                  http://svn.apache.org/r1393997
-                  http://svn.apache.org/r1484554
-                  http://svn.apache.org/r1528032
-                  http://svn.apache.org/r1528034
-                  http://svn.apache.org/r1614821
-                  http://svn.apache.org/r1618579
-                  http://svn.apache.org/r1618588
-     2.4.x patch: http://people.apache.org/~jkaluza/patches/mod_systemd/httpd-2.4.x-mod_systemd.patch
-     +1: jkaluza
-     sf comments: The IdleShutdown logic seems broken. Consider a single
-                  active connection that is stalled for 10 seconds. That
-                  connection will be broken after GracefulShutdownTimeout.
-                  A better logic would be to check if there is any open
-                  connection that is not in keep-alive state.
-
    * core: Add support for systemd socket activation.
      trunk patch: http://svn.apache.org/r1511033
                   http://svn.apache.org/r1608686
@@ -509,4 +492,19 @@ PATCHES/ISSUES THAT ARE STALLED
              Note that r1812339 could be backported in any case, even if
              the above configure.in proposal does not get accepted.
 
-
+   * mod_systemd: New module, for integration with systemd on Linux.
+     trunk patch: http://svn.apache.org/r1393976
+                  http://svn.apache.org/r1393997
+                  http://svn.apache.org/r1484554
+                  http://svn.apache.org/r1528032
+                  http://svn.apache.org/r1528034
+                  http://svn.apache.org/r1614821
+                  http://svn.apache.org/r1618579
+                  http://svn.apache.org/r1618588
+     2.4.x patch: http://people.apache.org/~jkaluza/patches/mod_systemd/httpd-2.4.x-mod_systemd.patch
+     +1: jkaluza
+     sf comments: The IdleShutdown logic seems broken. Consider a single
+                  active connection that is stalled for 10 seconds. That
+                  connection will be broken after GracefulShutdownTimeout.
+                  A better logic would be to check if there is any open
+                  connection that is not in keep-alive state.
