@@ -469,15 +469,6 @@ PATCHES/ISSUES THAT ARE STALLED
             cgi-examples/ dir alongside cgi-bin/? Otherwise manual/cgi/examples
             might work?
 
-   * core: block Define and Undefine in vhost and directory context. Because
-     it is EXEC_ON_READ, it "breaks out" of these contexts anyway.
-     trunk patch: http://svn.apache.org/r1656063
-                  http://svn.apache.org/r1656122
-     2.4.x patch:  http://people.apache.org/~covener/patches/2.4.x-define-limits.diff
-     +1: covener (I need to review the docs manually in this area)
-     -1: wrowe (blocking will break "working" .conf files on a subversion update
-                meant to pick up security fixes.  "Alerting" I would agree to.)
-
   *) mod_journald: Add new module mod_journald to log error logs into journald.
      trunk patch: http://svn.apache.org/r1610339
                   http://svn.apache.org/r1621806
