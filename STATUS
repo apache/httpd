@@ -192,21 +192,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   (merge without changes to motorz)
      +1: ylavic, jim
 
-  *) mod_journald: Add new module mod_journald to log error logs into journald.
-     trunk patch: http://svn.apache.org/r1610339
-                  http://svn.apache.org/r1621806
-                  http://svn.apache.org/r1812339
-     2.4.x patch: http://people.apache.org/~jkaluza/patches/httpd-2.4.x-mod_journald.patch
-                  http://svn.apache.org/r1812339
-     +1: jkaluza, jim
-     jchampion: Looks like the headers require GCC extensions to compile, so
-                mod_journald can't be configured in maintainer mode (-std=c89).
-                Can anyone else reproduce, or is it just my distro?
-     ylavic: missing r1812339 for maintainer-mode/c89/-Werror compliance,
-             needed if the above configure.in proposal gets backported.
-             Note that r1812339 could be backported in any case, even if
-             the above configure.in proposal does not get accepted.
-
   *) mpm_event: avoid a very unlikely race condition between the listener and
      the workers when the latter fails to add a connection to the pollset.
      trunk patch: http://svn.apache.org/r1809273
@@ -508,5 +493,20 @@ PATCHES/ISSUES THAT ARE STALLED
      +1: covener (I need to review the docs manually in this area)
      -1: wrowe (blocking will break "working" .conf files on a subversion update
                 meant to pick up security fixes.  "Alerting" I would agree to.)
+
+  *) mod_journald: Add new module mod_journald to log error logs into journald.
+     trunk patch: http://svn.apache.org/r1610339
+                  http://svn.apache.org/r1621806
+                  http://svn.apache.org/r1812339
+     2.4.x patch: http://people.apache.org/~jkaluza/patches/httpd-2.4.x-mod_journald.patch
+                  http://svn.apache.org/r1812339
+     +1: jkaluza, jim
+     jchampion: Looks like the headers require GCC extensions to compile, so
+                mod_journald can't be configured in maintainer mode (-std=c89).
+                Can anyone else reproduce, or is it just my distro?
+     ylavic: missing r1812339 for maintainer-mode/c89/-Werror compliance,
+             needed if the above configure.in proposal gets backported.
+             Note that r1812339 could be backported in any case, even if
+             the above configure.in proposal does not get accepted.
 
 
