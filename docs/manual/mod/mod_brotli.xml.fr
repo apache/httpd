@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 1816992 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_brotli.xml.meta">
+
+<name>mod_brotli</name>
+<description>Compression du contenu via Brotli avant sa livraison au client</description>
+<status>Extension</status>
+<sourcefile>mod_brotli.c</sourcefile>
+<identifier>brotli_module</identifier>
+<compatibility>Disponible &agrave; partir de la version 2.4.26 du serveur HTTP Apache</compatibility>
+
+<summary>
+    <p>Le module <module>mod_brotli</module> fournit le filtre en sortie
+    <code>BROTLI_COMPRESS</code> qui permet de compresser un contenu avant sa
+    livraison au client en utilisant la biblioth&egrave;que brotli. Ce filtre est
+    impl&eacute;ment&eacute; en utilisant la biblioth&egrave;que Brotli que l'on peut trouver &agrave; <a
+    href="https://github.com/google/brotli">https://github.com/google/brotli</a>.</p>
+</summary>
+<seealso><a href="../filter.html">Filters</a></seealso>
+
+<section id="recommended"><title>Exemples de configurations</title>
+    <note type="warning"><title>Compression et TLS</title>
+        <p>Certaines applications web sont vuln&eacute;rables &agrave; une attaque de type vol
+	d'informations lorsqu'une connexion TLS transmet des donn&eacute;es
+	compress&eacute;es. Pour plus d'informations, &eacute;tudiez en d&eacute;tail la famille
+	d'attaques "BREACH".</p>
+    </note>
+    <p>Voici une configuration simple qui compresse des types de contenus
+    courants au format texte :</p>
+
+    <example><title>Compression de certains types seulement</title>
+    <highlight language="config">
+AddOutputFilterByType BROTLI_COMPRESS text/html text/plain text/xml text/css text/javascript application/javascript
+    </highlight>
+    </example>
+
+</section>
+
+<section id="enable"><title>Activation de la compression</title>
+    <note type="warning"><title>Compression et TLS</title>
+        <p>Certaines applications web sont vuln&eacute;rables &agrave; une attaque de type vol
+	d'informations lorsqu'une connexion TLS transmet des donn&eacute;es
+	compress&eacute;es. Pour plus d'informations, &eacute;tudiez en d&eacute;tail la famille
+	d'attaques "BREACH".</p>
+    </note>
+
+    <section id="output"><title>Compression en sortie</title>
+      <p>La compression est impl&eacute;ment&eacute;e par le <a
+      href="../filter.html">filtre</a> <code>BROTLI_COMPRESS</code>. La
+      directive suivante active la compression pour les documents correspondant
+      au conteneur dans lequel elle est plac&eacute;e :</p>
+
+      <highlight language="config">
+SetOutputFilter BROTLI_COMPRESS
+SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-brotli
+      </highlight>
+
+      <p>Si vous voulez restreindre la compression &agrave; certains types MIME
+      particuliers, vous pouvez utiliser la directive <directive
+      module="mod_filter">AddOutputFilterByType</directive>. Dans l'exemple
+      suivant, l'activation de la compression est restreinte aux fichiers html
+      de la documentation d'Apache :</p>
+
+      <highlight language="config">
+&lt;Directory "/your-server-root/manual"&gt;
+    AddOutputFilterByType BROTLI_COMPRESS text/html
+&lt;/Directory&gt;
+      </highlight>
+
+      <note><title>Note</title>
+        Le filtre <code>BROTLI_COMPRESS</code> est toujours ins&eacute;r&eacute; apr&egrave;s les
+	filtres RESOURCE comme PHP ou SSI. Il n'affecte jamais les sous-requ&ecirc;tes
+	internes.
+      </note>
+      <note><title>Note</title>
+        D&eacute;finie via <directive module="mod_env">SetEnv</directive>, la variable
+	d'environnement <code>no-brotli</code> permet de d&eacute;sactiver la
+	compression brotli pour une requ&ecirc;te particuli&egrave;re, et ceci m&ecirc;me si elle
+	est support&eacute;e par le client.
+      </note>
+
+    </section>
+
+</section>
+
+<section id="proxies"><title>Interaction avec les serveurs mandataires</title>
+
+    <p>Le module <module>mod_brotli</module> envoie un en-t&ecirc;te de r&eacute;ponse HTTP
+    <code>Vary:Accept-Encoding</code> pour indiquer aux mandataires qu'une
+    r&eacute;ponse mise en cache ne doit &ecirc;tre envoy&eacute;e qu'aux clients qui envoient
+    l'en-t&ecirc;te de requ&ecirc;te <code>Accept-Encoding</code> appropri&eacute;. Ceci permet
+    d'&eacute;viter d'envoyer du contenu compress&eacute; &agrave; un client qui ne sera pas en
+    mesure de le d&eacute;compresser.</p>
+
+    <p>Si vous utilisez des exclusions sp&eacute;ciales d&eacute;pendant, par exemple, de
+    l'en-t&ecirc;te <code>User-Agent</code>, vous devez faire un ajout manuel &agrave;
+    l'en-t&ecirc;te <code>Vary</code> afin d'informer les mandataires des restrictions
+    suppl&eacute;mentaires. Par exemple, dans une configuration typique o&ugrave; l'addition
+    du filtre <code>BROTLI_COMPRESS</code> d&eacute;pend de l'en-t&ecirc;te <code>User-Agent</code>,
+    vous devez ajouter :</p>
+
+    <highlight language="config">
+Header append Vary User-Agent
+    </highlight>
+
+    <p>Si votre d&eacute;cision d'utiliser la compression ou non d&eacute;pend d'autres
+    informations que le contenu d'en-t&ecirc;tes de requ&ecirc;tes (par exemple la version
+    HTTP), vous devez affecter la valeur <code>*</code> &agrave; l'en-t&ecirc;te
+    <code>Vary</code>. Ceci permet d'&eacute;viter que des mandataires qui le
+    supportent n'effectuent une mise en cache int&eacute;grale.</p>
+
+    <example><title>Exemple</title>
+    <highlight language="config">
+Header set Vary *
+    </highlight>
+    </example>
+</section>
+
+<section id="precompressed"><title>Servir un contenu pr&eacute;-compress&eacute;</title>
+
+    <p>comme <module>mod_brotli</module> compresse syst&eacute;matiquement un contenu
+    pour chaque requ&ecirc;te le concernant, il est possible d'obtenir un gain en
+    performance en pr&eacute;-compressant le contenu et en disant &agrave; mod_brotli de le
+    servir sans le recompresser. Pour cela, vous pouvez utiliser une
+    configuration du style :</p>
+
+    <highlight language="config">
+&lt;IfModule mod_headers.c&gt;
+    # Sert des fichiers CSS et JS compress&eacute;s par brotli, s'ils existent
+    # et si le client supporte brotli.
+    RewriteCond "%{HTTP:Accept-encoding}" "br"
+    RewriteCond "%{REQUEST_FILENAME}\.br" "-s"
+    RewriteRule "^(.*)\.(js|css)"              "$1\.$2\.br" [QSA]
+
+    # Sert des types de contenu corrects, et &eacute;vite la double compression.
+    RewriteRule "\.css\.gz$" "-" [T=text/css,E=no-brotli:1]
+    RewriteRule "\.js\.gz$"  "-" [T=text/javascript,E=no-brotli:1]
+
+
+    &lt;FilesMatch "(\.js\.br|\.css\.br)$"&gt;
+      # Sert un type d'encodage correct.
+      Header append Content-Encoding br
+
+      # Force les mandataires &agrave; mettre en cache s&eacute;par&eacute;ment les fichiers css/js
+      # compress&eacute;s ou non par brotli.
+      Header append Vary Accept-Encoding
+    &lt;/FilesMatch&gt;
+&lt;/IfModule&gt;
+    </highlight>
+
+</section>
+
+<directivesynopsis>
+<name>BrotliFilterNote</name>
+<description>Enregistre le taux de compression dans une note &agrave; des fins de
+journalisation</description>
+<syntax>BrotliFilterNote [<var>type</var>] <var>notename</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>La directive <directive>BrotliFilterNote</directive> permet d'indiquer
+    qu'une note &agrave; propos du taux de compression doit &ecirc;tre attach&eacute;e &agrave; la
+    requ&ecirc;te. L'argument <var>notename</var> permet de sp&eacute;cifier le nom de la
+    note. Vous pouvez utiliser cette note &agrave; des fins de statistiques en ajoutant
+    l'information correspondante &agrave; votre <a href="../logs.html#accesslog">access
+    log</a>.</p>
+
+    <example><title>Exemple</title>
+    <highlight language="config">
+BrotliFilterNote ratio
+
+LogFormat '"%r" %b (%{ratio}n) "%{User-agent}i"' brotli
+CustomLog "logs/brotli_log" brotli
+    </highlight>
+    </example>
+
+    <p>Si vous souhaitez que l'information enregistr&eacute;e dans vos journaux soit
+    plus pertinente, vous pouvez renseigner l'argument optionnel <var>type</var>
+    afin de sp&eacute;cifier le type de donn&eacute;es &agrave; enregistrer dans la note &agrave;
+    journaliser. L'argument <var>type</var> accepte les valeurs suivantes :</p>
+
+    <dl>
+      <dt><code>Input</code></dt>
+      <dd>Enregistre dans la note le nombre d'octets contenus dans le flux
+      d'entr&eacute;e du filtre.</dd>
+
+      <dt><code>Output</code></dt>
+      <dd>Enregistre dans la note le nombre d'octets contenus dans le flux
+      de sortie du filtre.</dd>
+
+      <dt><code>Ratio</code></dt>
+      <dd>Enregistre dans la note le taux de compression (<code>output/input *
+      100</code>). Il s'agit de l'option par d&eacute;faut si l'argument
+      <var>type</var> est omis.</dd>
+    </dl>
+
+    <p>Vous pouvez alors configurer vos journaux de la mani&egrave;re suivante :</p>
+
+    <example><title>Journalisation sp&eacute;cifique</title>
+    <highlight language="config">
+BrotliFilterNote Input instream
+BrotliFilterNote Output outstream
+BrotliFilterNote Ratio ratio
+
+LogFormat '"%r" %{outstream}n/%{instream}n (%{ratio}n%%)' brotli
+CustomLog "logs/brotli_log" brotli
+    </highlight>
+    </example>
+</usage>
+<seealso><module>mod_log_config</module></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>BrotliCompressionQuality</name>
+<description>Qualit&eacute; de la compression</description>
+<syntax>BrotliCompressionQuality <var>value</var></syntax>
+<default>BrotliCompressionQuality 5</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>La directive <directive>BrotliCompressionQuality</directive> permet de
+    sp&eacute;cifier la qualit&eacute; de la compression (une valeur entre 0 et
+    11). Les valeurs les plus hautes correspondent &agrave; une compression de
+    meilleure qualit&eacute; mais plus lente.
+  </p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>BrotliCompressionWindow</name>
+<description>Taille de la fen&ecirc;tre de compression glissante brotli</description>
+<syntax>BrotliCompressionWindow <var>value</var></syntax>
+<default>BrotliCompressionWindow 18</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>La directive <directive>BrotliCompressionWindow</directive> permet de
+    sp&eacute;cifier la taille de la fen&ecirc;tre de compression glissante brotli (une
+    valeur comprise entre 10 et 24). Une taille de fen&ecirc;tre plus grande peut
+    am&eacute;liorer la qualit&eacute; de la compression mais consomme d'avantage de m&eacute;moire.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+
+<name>BrotliCompressionMaxInputBlock</name>
+<description>Taille maximale du bloc de donn&eacute;es en entr&eacute;e</description>
+<syntax>BrotliCompressionMaxInputBlock <var>value</var></syntax>
+<default>(automatic)</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>La directive <directive>BrotliCompressionMaxInputBlock</directive> permet
+    de sp&eacute;cifier la taille maximale du bloc de donn&eacute;es en entr&eacute;e entre 16 et 24,
+    sachant que plus cette taille sera grande, plus grande sera la quantit&eacute; de
+    m&eacute;moire consomm&eacute;e.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>BrotliAlterETag</name>
+<description>Comment l'en-t&ecirc;te de r&eacute;ponse ETag doit &ecirc;tre modifi&eacute; au cours de la
+compression</description>
+<syntax>BrotliAlterETag AddSuffix|NoChange|Remove</syntax>
+<default>BrotliAlterETag AddSuffix</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>La directive <directive>BrotliAlterETag</directive> permet d'indiquer
+    comment l'en-t&ecirc;te ETag doit &ecirc;tre modifi&eacute; lorsqu'une r&eacute;ponse est compress&eacute;e.</p>
+    <dl>
+    <dt>AddSuffix</dt>
+    <dd><p>Ajoute la m&eacute;thode de compression &agrave; la fin de l'en-t&ecirc;te ETag, ce qui
+    implique que les repr&eacute;sentations compress&eacute;es et non compress&eacute;es poss&egrave;deront
+    des en-t&ecirc;tes ETag uniques. C'&eacute;tait le comportement par d&eacute;faut depuis la
+    version 2.4.0 avec un autre module de compression dynamique,
+    mod-deflate. Ce param&egrave;tre permet d'&eacute;viter l'envoi de messages
+    "HTTP Not Modified" (304) en r&eacute;ponse aux requ&ecirc;tes conditionnelles pour des
+    contenus compress&eacute;s.</p></dd>
+    <dt>NoChange</dt>
+    <dd><p>Ne modifie pas l'en-t&ecirc;te ETag d'une r&eacute;ponse compress&eacute;e. C'&eacute;tait le
+    comportement par d&eacute;faut depuis la version 2.4.0 avec un autre module de
+    compression dynamique, mod-deflate. Ce param&egrave;tre ne respecte pas la
+    propri&eacute;t&eacute; HTTP/1.1 selon laquelle toutes les repr&eacute;sentations d'une m&ecirc;me
+    ressource ont des en-t&ecirc;tes ETag uniques.</p></dd>
+    <dt>Remove</dt>
+    <dd><p>Supprime l'en-t&ecirc;te ETag des r&eacute;ponses compress&eacute;es, ce qui rend
+    impossibles certaines requ&ecirc;tes conditionnelles, mais &eacute;vite les inconv&eacute;nients
+    des options pr&eacute;c&eacute;dentes.</p></dd>
+    </dl>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>
