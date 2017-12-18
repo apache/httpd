@@ -1,0 +1,106 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 1675797 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- $LastChangedRevision: 2015053001 $ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_journald.xml.meta">
+
+<name>mod_journald</name>
+<description>Impl&eacute;mentation du fournisseur de journalisation d'erreurs
+"journald"</description>
+<status>Extension</status>
+<sourcefile>mod_journald.c</sourcefile>
+<identifier>journald_module</identifier>
+
+<summary>
+    <p>Ce module impl&eacute;mente le fournisseur de journalisation d'erreurs
+    "journald". Il permet l'enregistrement des messages d'erreur et la
+    gestion des journaux personnalis&eacute;s via systemd-journald(8).</p>
+</summary>
+
+<section id="structured">
+    <title>Jounalisation structur&eacute;e</title>
+    <p>Systemd-journald permet d'effectuer une journalisation
+    structur&eacute;e, et autorise donc le filtrage des messages en fonction de
+    diverses variables. Les variables actuellement support&eacute;es sont :
+    </p>
+    <dl>
+      <dt><code>LOG</code></dt>
+      <dd>Le nom du journal. Pour ErrorLog, la valeur est "error_log".
+      Pour CustomLog ou TransferLog, la valeur correspond au premier
+      argument de ces directives.</dd>
+      <dt><code>REQUEST_HOSTNAME</code></dt>
+      <dd>Le nom d'h&ocirc;te tel qu'il est fourni dans l'URI, ou l'en-t&ecirc;te
+      Host: de la requ&ecirc;te.</dd>
+      <dt><code>REQUEST_USER</code></dt>
+      <dd>Correspond au nom d'utilisateur si une authentification a eu
+      lieu.</dd>
+      <dt><code>REQUEST_USERAGENT_IP</code></dt>
+      <dd>L'adresse IP de l'agent qui a envoy&eacute; la requ&ecirc;te.</dd>
+      <dt><code>REQUEST_URI</code></dt>
+      <dd>La partie chemin de l'URI, ou "/" si l'URI ne contient pas de
+      chemin.</dd>
+      <dt><code>SERVER_HOSTNAME</code></dt>
+      <dd>Le nom d'h&ocirc;te du serveur pour lequel le message a &eacute;t&eacute; g&eacute;n&eacute;r&eacute;.</dd>
+    </dl>
+
+    <p>Ces variables peuvent par exemple &ecirc;tre utilis&eacute;es pour ne montrer
+    que les messages concernant un URI particulier via la commande
+    <code>journalctl</code> :
+    </p>
+    
+    <highlight>journalctl REQUEST_URI=/index.html -a</highlight>
+    
+    <p>Pour d'autres exemples, voir la documentation de
+    systemd-journalctl.</p>
+</section>
+
+<section id="examples">
+    <title>Exemples</title>
+
+    <p>Si le syst&egrave;me le supporte, il est possible d'utiliser
+    systemd-journald(8) pour effectuer la journalisation en sp&eacute;cifiant
+    <code>journald</code> &agrave; la place d'un nom de fichier dans la
+    directive ErrorLog (voir <module>core</module>).
+    </p>
+    
+    <highlight language="config">ErrorLog journald</highlight>
+
+    <p>Sp&eacute;cifier <code>journald</code> comme fournisseur de journal
+    d'erreurs avec la directive CustomLog (voir
+    <module>mod_log_config</module>) active la journalisation via
+    systemd-journald(8) si le syst&egrave;me le supporte.
+    </p>
+
+    <highlight language="config">
+CustomLog "journald" "%h %l %u %t \"%r\" %>s %b"
+    </highlight>
+
+    <note type="warning"><title>Avertissement en mati&egrave;re de performances</title><p>
+    Actuellement, systemd-journald n'est pas con&ccedil;u pour une
+    jounalisation &agrave; haut d&eacute;bit et son utilisation pour la journalisation
+    des acc&egrave;s peut induire une baisse importante de performances.
+    </p></note>
+
+</section>
+
+</modulesynopsis>
