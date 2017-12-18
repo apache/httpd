@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1722703 -->
+<!-- English Revision: 1818346 -->
 <!-- French translation : Lucien GENTIS -->
-<!-- $LastChangedRevision: 2016010901 $ -->
+<!-- Reviewed by : Vincent Deffontaines -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -106,7 +106,7 @@ d'Apache</a></seealso>
 
     <tr><td><code>%D</code></td>
         <td>Le temps mis à servir la requête, en
-	microsecondes.</td></tr>
+	microsecondes. Voir %T pour plus de détails</td></tr>
 
     <tr><td><code>%{<var>NOMVAR</var>}e</code></td>
         <td>Le contenu de la variable d'environnement
@@ -123,7 +123,13 @@ d'Apache</a></seealso>
 	avez probablement défini des directives de contrôle d'accès qui
 	mentionnent ces derniers par leurs noms. Voir la <a
         href="mod_authz_host.html#reqhost">documentation de Require
-	host</a>.</td></tr>
+	host</a>. Ce format peut être impacté par la modifications
+        du nom d'hote distant par des modules comme <module>mod_remoteip</module>.</td></tr>
+
+    <tr><td><code>%{c}h</code></td>
+        <td>Semblable à <code>%h</code>, mais exploite toujours le nom d'hôte de la connection
+        TCP sous-jacente, en ignorant toute modification réalisée sur le nom d'hôte distant
+        par des modules tels que <module>mod_remoteip</module>.</td></tr>
 
     <tr><td><code>%H</code></td>
         <td>Le protocole de la requête</td></tr>
@@ -159,7 +165,16 @@ d'Apache</a></seealso>
     <tr><td><code>%L</code></td>
         <td>L'identifiant du message de journalisation de la requête
 	dans le journal des erreurs (ou '-' si aucun message n'a
-	été enregistré dans le journal des erreurs pour cette requête)</td></tr>
+	été enregistré dans le journal des erreurs pour cette requête).
+        Consulter le journal d'erreurs pour voir quelle requête a généré
+        quelle erreur.</td></tr>
+
+    <tr><td><code>%{c}L</code></td>
+        <td>L'identifiant du message de journalisation de la connexion
+	dans le journal des erreurs (ou '-' si aucun message n'a
+	été enregistré dans le journal des erreurs pour cette requête).
+        Consulter le journal d'erreurs pour voir quelle requête a généré
+        quelle erreur.</td></tr>
 
     <tr><td><code>%m</code></td>
         <td>La méthode de la requête</td></tr>
@@ -235,7 +250,20 @@ d'Apache</a></seealso>
 	<code>%{<var>format</var>}t</code>.</td></tr>
 
     <tr><td><code>%T</code></td>
-        <td>Le temps mis pour servir la requête, en secondes.</td></tr>
+        <td>Le temps mis pour servir la requête, en secondes.
+        Le temps commence à être mesuré au moment où la première ligne de la requête HTTP
+        est transmise par le système d'exploitation au serveur HTTP, et se termine au moment
+        où le dernier octet de la réponse est envoyé au système d'exploitation par le serveur HTTP.
+        <p> Le temps mesuré n'inclut donc <em>aucune</em> des rubriques suivantes :
+        <ul>
+         <li> Temps passé dans les échanges TCP ou TLS.</li>
+         <li> Temps écoulé avant qu'un thread du serveur web ne réussisse à lire la première ligne
+         de la requête.</li>
+         <li> Retards pris par le système d'exploitation pour renvoyer la réponse sur le réseau.</li>
+         <li> Temps pris par la réponse pour arriver au système d'exploitation du client.</li>
+         <li> Temps pris par le client pour lire et traiter la réponse.</li>
+        </ul></p>
+        </td></tr>
 
     <tr><td><code>%{<var>UNIT</var>}T</code></td>
         <td>Le temps mis pour traiter la requête dans une unité définie
