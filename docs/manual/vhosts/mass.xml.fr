@@ -1,8 +1,9 @@
 <?xml version="1.0" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1719576:1818059 (outdated) -->
+<!-- English Revision: 1818059 -->
 <!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -92,7 +93,7 @@
     une file fifo</a> vers un
     programme, et faire en sorte que ce dernier &eacute;clate les journaux
     en un journal par serveur virtuel. L'utilitaire <a
-    href="../programs/other.html#split-logfile">split-logfile</a>
+    href="../programs/split-logfile.html">split-logfile</a>
     constitue un exemple de ce traitement.</p>
 
 </section>
@@ -244,18 +245,18 @@ LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon
 
 &lt;VirtualHost 111.22.33.44&gt;
     ServerName www.commercial.example.com
-    
+
     CustomLog "logs/access_log.commercial" vcommon
-    
+
     VirtualDocumentRoot "/www/commercial/%0/docs"
     VirtualScriptAlias  "/www/commercial/%0/cgi-bin"
 &lt;/VirtualHost&gt;
 
 &lt;VirtualHost 111.22.33.45&gt;
     ServerName www.homepages.example.com
-    
+
     CustomLog "logs/access_log.homepages" vcommon
-    
+
     VirtualDocumentRoot "/www/homepages/%0/docs"
     ScriptAlias         "/cgi-bin/" "/www/std-cgi/"
 &lt;/VirtualHost&gt;
