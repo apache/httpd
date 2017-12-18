@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 1242907 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="firehose.xml.meta">
+<parentdocument href="./">Programs</parentdocument>
+
+<title>firehose - D&eacute;multiplexe un flux firehose</title>
+
+<summary>
+    <p><code>firehose</code> d&eacute;multiplexe le flux de connexions
+    multiplex&eacute;es donn&eacute;, et enregistre chacune d'entre elles dans un
+    fichier individuel.</p>
+
+    <p>Lors de son enregistrement, chaque connexion est plac&eacute;e dans un
+    fichier d&eacute;di&eacute; dont le nom est g&eacute;n&eacute;r&eacute; &agrave; partir de l'UUID de la
+    connexion dans le flux. Si le flux comporte des requ&ecirc;tes et des
+    r&eacute;ponses, ces derni&egrave;res feront l'objet de fichiers s&eacute;par&eacute;s.</p>
+
+    <p>Si le param&egrave;tre optionnel prefix est sp&eacute;cifi&eacute;, les connexions qui
+    commencent par le pr&eacute;fixe donn&eacute; seront incluses. Le pr&eacute;fixe doit
+    correspondre exactement au premier fragment pour un r&eacute;sultat de
+    comparaison positif.</p>
+
+</summary>
+<seealso><module>mod_firehose</module></seealso>
+
+<section id="synopsis"><title>Syntaxe</title>
+    <p><code><strong>firehose</strong>
+    [ -<strong>f</strong> <var>entr&eacute;e</var> ]
+    [ -<strong>o</strong> <var>r&eacute;pertoire-sortie</var> ]
+    [ -<strong>u</strong> <var>uuid</var> ]
+    [ -<strong>h</strong> ]
+    [ --<strong>version</strong> ]
+    [<var>pr&eacute;fixe1</var> [...]]</code></p>
+
+</section>
+
+<section id="options"><title>Options</title>
+    <dl>
+    <dt><code>--file, -f <var>nom-fichier</var></code></dt>
+    <dd>Fichier depuis lequel doit &ecirc;tre lu le flux firehose. La valeur
+    par d&eacute;faut est stdin.</dd>
+
+    <dt><code>--output-directory, -o </code> <var>r&eacute;pertoire-sortie</var></dt>
+    <dd>R&eacute;pertoire dans lequel les connexions d&eacute;multiplex&eacute;es doivent
+    &ecirc;tre enregistr&eacute;es.</dd>
+
+    <dt><code>--uuid, -u</code> <var>uuid</var></dt>
+    <dd>L'UUID de la connexion &agrave; d&eacute;multiplexer. Plusieurs UUID peuvent
+    &ecirc;tre sp&eacute;cifi&eacute;s. Par d&eacute;faut, tout les UUID seront d&eacute;multiplex&eacute;s.</dd>
+
+    <dt><code>--help, -h</code></dt>
+    <dd>Ce texte d'aide.</dd>
+
+    <dt><code>--version</code></dt>
+    <dd>Affiche la version du programme.</dd>
+    </dl>
+
+</section>
+
+</manualpage>
