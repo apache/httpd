@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1815480:1818201 (outdated) -->
+<!-- English Revision: 1818201 -->
 <!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -113,8 +114,8 @@ réponse</description>
         <highlight language="config">
 &lt;Location "/"&gt;
     AddOutputFilterByType SUBSTITUTE text/html
-    # "foo=k,bar=k" -> "foo/bar=k" 
-    Substitute "s|foo=(\w+),bar=\1|foo/bar=$1"
+    # "foo=k,bar=k" -> "foo/bar=k"
+    Substitute "s|foo=(\w+),bar=\1|foo/bar=$1|"
 &lt;/Location&gt;
     </highlight>
     </example>
@@ -132,7 +133,7 @@ réponse</description>
 
     <example><title>Réécriture des URLs intégrées à un contenu mandaté</title>
     <highlight language="config">
-ProxyPass "/blog/" "http://internal.blog.example.com"
+ProxyPass        "/blog/" "http://internal.blog.example.com/"
 ProxyPassReverse "/blog/" "http://internal.blog.example.com/"
 
 Substitute "s|http://internal.blog.example.com/|http://www.example.com/blog/|i"
