@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 1592205 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="ctlogconfig.xml.meta">
+<parentdocument href="./">Programs</parentdocument>
+
+<title>ctlogconfig, l'utilitaire de configuration du service de
+transparence des certificats</title>
+
+<summary>
+    <p><code>ctlogconfig</code> est un utilitaire permettant de cr&eacute;er et
+    maintenir une base de donn&eacute;es pour la configuration du service de
+    transparence des certificats utilisable par le module
+    <module>mod_ssl_ct</module> ; nous nous r&eacute;f&eacute;rerons &agrave; ce service
+    sous le terme "log" dans la suite de cette documentation.</p>
+
+    <p>Avant d'aller plus loin, et si ce n'est d&eacute;j&agrave; fait, veuillez
+    consulter le document <a
+    href="../mod/mod_ssl_ct.html#logconf">Configuration des logs</a>
+    dans la documentation du module <module>mod_ssl_ct</module>.</p>
+
+    <p>Vous pouvez vous inspirer des <a href="#examples">exemples
+    ci-dessous</a> pour une utilisation typique.</p>
+
+</summary>
+<seealso><module>mod_ssl_ct</module></seealso>
+
+<section id="synopsis">
+  <title>Exemples et d&eacute;finitions</title>
+  <p><code>
+    <strong>ctlogconfig</strong> <em>/path/to/db</em> <strong>dump</strong>
+  </code></p>
+
+  <p><code>
+    <strong>ctlogconfig</strong> <em>/path/to/db</em> <strong>configure-public-key</strong>
+    [ <em>log-id</em>|<em>record-id</em> ]
+    <em>/path/to/public-key.pem</em>
+  </code></p>
+
+  <p><code>
+    <strong>ctlogconfig</strong> <em>/path/to/db</em> <strong>configure-url</strong>
+    [ <em>log-id</em>|<em>record-id</em> ]
+    <em>log-URL</em>
+  </code></p>
+
+  <p><code>
+    <strong>ctlogconfig</strong> <em>/path/to/db</em> <strong>valid-time-range</strong>
+    <em>log-id</em>|<em>record-id</em>
+    <em>min-timestamp</em> <em>max-timestamp</em>
+  </code></p>
+
+  <p><code>
+    <strong>ctlogconfig</strong> <em>/path/to/db</em> <strong>trust</strong>
+    <em>log-id</em>|<em>record-id</em>
+  </code></p>
+
+  <p><code>
+    <strong>ctlogconfig</strong> <em>/path/to/db</em> <strong>distrust</strong>
+    <em>log-id</em>|<em>record-id</em>
+  </code></p>
+
+  <p><code>
+    <strong>ctlogconfig</strong> <em>/path/to/db</em> <strong>forget</strong>
+    <em>log-id</em>|<em>record-id</em>
+  </code></p>
+
+  <dl>
+    <dt><em>log-id</em></dt>
+    <dd>Il s'agit de l'identifiant du log qui est g&eacute;n&eacute;r&eacute; en effectuant
+    un hash SHA-256 au format hexad&eacute;cimal de la cl&eacute; publique du log.
+    La taille de cette cha&icirc;ne est de 64 caract&egrave;res. </dd>
+
+    <dt><em>record-id</em></dt>
+    <dd>Il s'agit du num&eacute;ro d'enregistrement dans la base de donn&eacute;es,
+    tel qu'il s'affiche avec la sous-commande <strong>dump</strong>,
+    pr&eacute;fix&eacute; par le caract&egrave;re <strong>#</strong>. Par exemple,
+    <strong>#4</strong> renvoie au quatri&egrave;me enregistrement de la base
+    de donn&eacute;es (utilisez le m&eacute;canisme d'&eacute;chappement du shell si
+    n&eacute;cessaire).</dd>
+
+    <dt><em>/path/to/public-key.pem</em></dt>
+    <dd>Il s'agit du chemin vers le fichier contenant la cl&eacute; publique du
+    log au format PEM. En effet, la cl&eacute; publique n'est pas stock&eacute;e dans la base de
+    donn&eacute;es, et le fichier ne peut donc pas &ecirc;tre supprim&eacute; jusqu'&agrave; ce que
+    la donn&eacute;e qui y fait r&eacute;f&eacute;rence dans la base de donn&eacute;es soit
+    supprim&eacute;e ou modifi&eacute;e.</dd>
+
+    <dt><em>min-timestamp</em>, <em>max-timestamp</em></dt>
+    <dd>Un rep&egrave;re de temps (timestamp) est un temps exprim&eacute; en
+    millisecondes depuis le temps epoch, sans tenir compte des secondes
+    saut&eacute;es. C'est le format de temps utilis&eacute; dans les SCTs. Le rep&egrave;re
+    de temps doit &ecirc;tre fourni sous la forme d'un nombre d&eacute;cimal.
+    <br />
+    Sp&eacute;cifiez <strong><code>-</code></strong> pour un des rep&egrave;res de
+    temps s'il n'est pas connu. Par exemple, lorsque vous d&eacute;finissez le
+    rep&egrave;re de temps minimum valide pour un log qui reste valide,
+    sp&eacute;cifiez <strong><code>-</code></strong> pour
+    <em>max-timestamp</em>.
+    <br />
+    Les SCTs re&ccedil;u par le mandataire depuis ce log seront invalides si le
+    rep&egrave;re de temps est plus ancien que <em>min-timestamp</em> ou plus
+    r&eacute;cent que <em>max-timestamp</em>.</dd>
+
+  </dl>
+
+</section>
+
+<section id="subcommands">
+  <title>Commandes</title>
+  <dl>
+    <dt>dump</dt>
+    <dd>Affiche les &eacute;l&eacute;ments de configuration de la base de donn&eacute;es.
+    L'identifiant des enregistrements que cette commande affiche peut
+    servir de r&eacute;f&eacute;rence pour les enregistrements devant &ecirc;tre affect&eacute;s
+    par les autres commandes.</dd>
+
+    <dt>configure-public-key</dt>
+    <dd>Ajoute une cl&eacute; publique pour un log de la base de donn&eacute;es ou
+    modifie la cl&eacute; publique d'un log existant. La cl&eacute; publique d'un log
+    permet de valider la signature des SCTs (Signed certificate
+    Timestamp) re&ccedil;us par un mandataire depuis un serveur d'arri&egrave;re-plan
+    (La base de donn&eacute;es sera cr&eacute;&eacute;e si elle n'existe pas encore).</dd>
+
+    <dt>configure-url</dt>
+    <dd>Ajoute une URL pour un log de la base de donn&eacute;es ou modifie
+    l'URL d'un log existant. L'URL d'un log permet de soumettre des
+    certificats de serveur &agrave; ce dernier afin d'obtenir des SCTs qui
+    pourront &ecirc;tre envoy&eacute;s aux clients (La base de donn&eacute;es sera cr&eacute;&eacute;e si
+    elle n'existe pas encore).</dd>
+
+    <dt>valid-time-range</dt>
+    <dd>Cette commande permet de d&eacute;finir le temps de validation minimum
+    et/ou maximum pour un log. Les SCTs en provenance du log poss&eacute;dant
+    un rep&egrave;re de temps en dehors de la plage d&eacute;finie seront rejet&eacute;s.
+    Utilisez <code>-</code> pour un temps non d&eacute;fini (La base de donn&eacute;es
+    sera cr&eacute;&eacute;e si elle n'existe pas encore).</dd>
+
+    <dt>trust</dt>
+    <dd>Marque un log comme digne de confiance, ce qui est la situation
+    par d&eacute;faut. Cette command permet de marquer un log comme digne de
+    confiance, alors que ce n'&eacute;tait pas le cas auparavant (La base de
+    donn&eacute;es sera cr&eacute;&eacute;e si elle n'existe pas encore).</dd>
+
+    <dt>distrust</dt>
+    <dd>Marque un log comme non digne de confiance (La base de
+    donn&eacute;es sera cr&eacute;&eacute;e si elle n'existe pas encore).</dd>
+
+    <dt>forget</dt>
+    <dd>Supprime de la base de donn&eacute;es les informations relatives
+    &agrave; un log.</dd>
+  </dl>
+</section>
+
+<section id="examples">
+  <title>Exemples</title>
+
+  <p>Soit une instance de httpd Apache qui fonctionne en tant que
+  serveur TLS et mandataire. Le serveur TLS doit obtenir des SCTs de la
+  part de certains logs connus afin de pouvoir les transmettre aux
+  clients, et le mandataire doit pouvoir valider la signature des SCTs
+  en provenance des serveurs d'arri&egrave;re-plan.</p>
+
+  <p>Nous allons tout d'abord d&eacute;finir les URLs des logs o&ugrave; les
+  certificats sont enregistr&eacute;s :</p>
+
+  <example>
+    $ ctlogconfig /path/to/conf/log-config configure-url http://log1.example.com/<br />
+    $ ctlogconfig /path/to/conf/log-config configure-url http://log2.example.com/<br />
+    $ ctlogconfig /path/to/conf/log-config dump<br />
+    Log entry:<br />
+      Record 1<br />
+      Log id         : (not configured)<br />
+      Public key file: (not configured)<br />
+      URL            : http://log1.example.com/<br />
+      Time range     : -INF to +INF<br />
+<br />
+    Log entry:<br />
+      Record 2<br />
+      Log id         : (not configured)<br />
+      Public key file: (not configured)<br />
+      URL            : http://log2.example.com/<br />
+      Time range     : -INF to +INF<br />
+  </example>
+
+  <p>Nous pouvons maintenant attribuer une cl&eacute; publique &agrave; un log o&ugrave; le
+  certificat de notre seul serveur d'arri&egrave;re-plan est publi&eacute;. Dans notre
+  cas, il s'agit du log dont l'URL est http://log2.example.com/, et qui
+  a d&eacute;j&agrave; &eacute;t&eacute; configur&eacute;.</p>
+
+  <example>
+    $ ctlogconfig /path/to/conf/log-config configure-public-key \#2 /path/to/conf/log2-pub.pem<br />
+    $ ctlogconfig /path/to/conf/log-config dump<br />
+    Log entry:<br />
+      Record 1<br />
+      Log id         : (not configured)<br />
+      Public key file: (not configured)<br />
+      URL            : http://log1.example.com/<br />
+      Time range     : -INF to +INF<br />
+<br />
+    Log entry:<br />
+      Record 2<br />
+      Log id         : (not configured)<br />
+      Public key file: /path/to/conf/log2-pub.pem<br />
+      URL            : http://log2.example.com/<br />
+      Time range     : -INF to +INF<br />
+  </example>
+</section>
+
+</manualpage>
