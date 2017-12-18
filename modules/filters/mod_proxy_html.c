@@ -919,15 +919,15 @@ static apr_status_t proxy_html_filter(ap_filter_t *f, apr_bucket_brigade *bb)
                  * And the HTML parser needs at least four bytes to initialise correctly.
                  */
                 if ((bytes < 4) && APR_BUCKET_IS_EOS(APR_BUCKET_NEXT(b))) {
-                    ap_remove_output_filter(f) ;
-                    return ap_pass_brigade(f->next, bb) ;
+                    ap_remove_output_filter(f);
+                    return ap_pass_brigade(f->next, bb);
                 }
 
                 if (!xml2enc_charset ||
                     (xml2enc_charset(f->r, &enc, &cenc) != APR_SUCCESS)) {
                     if (!xml2enc_charset)
                         ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, f->r, APLOGNO(01422)
-                     "No i18n support found.  Install mod_xml2enc if required");
+                                      "No i18n support found.  Install mod_xml2enc if required");
                     enc = XML_CHAR_ENCODING_NONE;
                     ap_set_content_type(f->r, "text/html;charset=utf-8");
                 }
