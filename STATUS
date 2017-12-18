@@ -247,9 +247,22 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      process parsed comments immediately.  Fix PR 56457
      trunk patch: http://svn.apache.org/r1442409
                   http://svn.apache.org/r1816458
-     2.4.x patch: trunk works
-     +1: niq, covener`
-     
+     2.4.x patch: svn merge -c r1442409,r1816458 ^/httpd/httpd/trunk .
+     +1: niq, covener
+
+  *) mod_proxy_html: skip documents < 4 bytes. PR 56286
+     trunk patch: http://svn.apache.org/r1599012
+                  http://svn.apache.org/r1601559
+                  http://svn.apache.org/r1818624   (style only)
+     2.4.x patch: svn merge -c r1599012,r1601559,r1818624 ^/httpd/httpd/trunk .
+     +1: 
+
+  *) mod_proxy_html: Save a few bytes in the conf pool when handling
+     'ProxyHTMLDoctype' directive with a user defined  FPI
+     trunk patch: http://svn.apache.org/r1813991
+     2.4.x patch: svn merge -c r1813991 ^/httpd/httpd/trunk .
+     +1: jailletc36
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
