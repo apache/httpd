@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1673947:1817950 (outdated) -->
+<!-- English Revision: 1817950 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -65,12 +65,6 @@ caract&egrave;res newline sont d&eacute;tect&eacute;s dans le contenu &agrave; f
 donn&eacute;es, ce qui reste est trait&eacute; comme la derni&egrave;re ligne.
 </p>
 
-<p>Vous trouverez sur le <a
-href="https://blogs.oracle.com/basant/entry/using_mod_sed_to_filter">blog de
-l'auteur</a> un article en forme de tutoriel, ainsi que les raisons pour
-lesquelles ce filtre est plus puissant qu'une simple
-recherche/remplacement de cha&icirc;ne ou d'expression rationnelle.</p>
-
 </summary>
 
 <section id="sampleconf"><title>Exemple de configuration</title>
@@ -79,11 +73,11 @@ recherche/remplacement de cha&icirc;ne ou d'expression rationnelle.</p>
 # Dans l'exemple suivant, le filtre sed va remplacer la cha&icirc;ne
 	 # "monday" par "MON" et la cha&icirc;ne "sunday" par "SUN" dans les
 	 # documents html avant de les envoyer au client.
-&lt;Directory "/var/www/docs/sed"&gt; 
-    AddOutputFilter Sed html 
-    OutputSed "s/monday/MON/g" 
-    OutputSed "s/sunday/SUN/g" 
-&lt;/Directory&gt; 
+&lt;Directory "/var/www/docs/sed"&gt;
+    AddOutputFilter Sed html
+    OutputSed "s/monday/MON/g"
+    OutputSed "s/sunday/SUN/g"
+&lt;/Directory&gt;
     </highlight>
     </example>
 
@@ -92,11 +86,11 @@ recherche/remplacement de cha&icirc;ne ou d'expression rationnelle.</p>
          # Dans l'exemple suivant, le filtre sed va remplacer la cha&icirc;ne
 	 # "monday" par "MON" et la cha&icirc;ne "sunday" par "SUN" dans les
 	 # donn&eacute;es POST envoy&eacute;es &agrave; PHP.
-        &lt;Directory "/var/www/docs/sed"&gt; 
-    AddInputFilter Sed php 
-    InputSed "s/monday/MON/g" 
-    InputSed "s/sunday/SUN/g" 
-&lt;/Directory&gt; 
+        &lt;Directory "/var/www/docs/sed"&gt;
+    AddInputFilter Sed php
+    InputSed "s/monday/MON/g"
+    InputSed "s/sunday/SUN/g"
+&lt;/Directory&gt;
         </highlight>
     </example>
 </section>
