@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8' ?>
+<?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- English Revision : 1784674 -->
@@ -28,30 +28,30 @@
   <title>Guide de configuration d'un mandataire inverse</title>
 
   <summary>
-    <p>En plus de ses fonctions de serveur web "basique", à savoir fournir du
-    contenu statique et dynamique à l'utilisateur, Apache httpd (comme la
+    <p>En plus de ses fonctions de serveur web "basique", &agrave; savoir fournir du
+    contenu statique et dynamique &agrave; l'utilisateur, Apache httpd (comme la
     plupart des autres serveurs web) peut aussi assurer les fonctions de serveur
     mandataire inverse, connu aussi sous le nom de serveur "passerelle".</p>
 
-    <p>Dans un tel scénario, httpd ne génère et n'héberge pas lui-même les
-    données, le contenu étant en général obtenu à partir d'un ou plusieurs serveurs
-    d'arrière-plan qui n'ont normalement aucune connexion directe avec le réseau
-    externe. Lorsque httpd reçoit une requête en provenance d'un client, la
-    requête proprement dite est <em>mandatée</em> vers un de ces serveurs
-    d'arrière-plan qui traite la requête, génère le contenu et l'envoie à httpd,
-    ce dernier générant la véritable réponse HTTP à destination du client.</p>
+    <p>Dans un tel sc&eacute;nario, httpd ne g&eacute;n&egrave;re et n'h&eacute;berge pas lui-m&ecirc;me les
+    donn&eacute;es, le contenu &eacute;tant en g&eacute;n&eacute;ral obtenu &agrave; partir d'un ou plusieurs serveurs
+    d'arri&egrave;re-plan qui n'ont normalement aucune connexion directe avec le r&eacute;seau
+    externe. Lorsque httpd re&ccedil;oit une requ&ecirc;te en provenance d'un client, la
+    requ&ecirc;te proprement dite est <em>mandat&eacute;e</em> vers un de ces serveurs
+    d'arri&egrave;re-plan qui traite la requ&ecirc;te, g&eacute;n&egrave;re le contenu et l'envoie &agrave; httpd,
+    ce dernier g&eacute;n&eacute;rant la v&eacute;ritable r&eacute;ponse HTTP &agrave; destination du client.</p>
 
-    <p>De nombreuses raisons peuvent vous motiver à utiliser cette
-    fonctionnalité, mais elles sont souvent du domaine de la sécurité, de
-    la haute disponibilité, de la répartition de charge et de
-    l'authentification/autorisation centralisée. Il est alors indispensable que
+    <p>De nombreuses raisons peuvent vous motiver &agrave; utiliser cette
+    fonctionnalit&eacute;, mais elles sont souvent du domaine de la s&eacute;curit&eacute;, de
+    la haute disponibilit&eacute;, de la r&eacute;partition de charge et de
+    l'authentification/autorisation centralis&eacute;e. Il est alors indispensable que
     l'organisation, la conception et l'architecture de l'infrastructure
-    d'arrière-plan (les serveurs qui traitent au sens propre les requêtes) soient
-    isolées et protégées de l'extérieur ; vu du client, le serveur mandataire
+    d'arri&egrave;re-plan (les serveurs qui traitent au sens propre les requ&ecirc;tes) soient
+    isol&eacute;es et prot&eacute;g&eacute;es de l'ext&eacute;rieur ; vu du client, le serveur mandataire
     inverse <em>est</em> le seul serveur accessible pouvant lui fournir du
     contenu.</p>
 
-    <p>Voici un exemple typique d'implémentation de cette fonctionnalité :</p>
+    <p>Voici un exemple typique d'impl&eacute;mentation de cette fonctionnalit&eacute; :</p>
     <p class="centered"><img src="../images/reverse-proxy-arch.png" alt="reverse-proxy-arch" /></p>
 
   </summary>
@@ -77,10 +77,10 @@
 
     <p>
       La directive <directive module="mod_proxy">ProxyPass</directive> permet de
-      rediriger les requêtes entrantes vers un serveur d'arrière-plan (ou un
+      rediriger les requ&ecirc;tes entrantes vers un serveur d'arri&egrave;re-plan (ou un
       cluster de serveurs plus connu sous le nom de groupe
       <code>Balancer</code>). Dans cet exemple le plus simple, toutes les
-      requêtes (<code>"/"</code>) sont redirigées vers un serveur d'arrière-plan
+      requ&ecirc;tes (<code>"/"</code>) sont redirig&eacute;es vers un serveur d'arri&egrave;re-plan
       unique :
     </p>
 
@@ -89,10 +89,10 @@ ProxyPass "/"  "http://www.example.com/"
     </highlight>
 
     <p>
-      Pour être sur que cette redirection soit effectuée et que les en-têtes
-      <code>Location:</code> générés par le serveur d'arrière-plan soient
-      modifiés pour pointer vers le mandataire inverse, et non vers le serveur
-      d'arrière-plan, la directive <directive
+      Pour &ecirc;tre sur que cette redirection soit effectu&eacute;e et que les en-t&ecirc;tes
+      <code>Location:</code> g&eacute;n&eacute;r&eacute;s par le serveur d'arri&egrave;re-plan soient
+      modifi&eacute;s pour pointer vers le mandataire inverse, et non vers le serveur
+      d'arri&egrave;re-plan, la directive <directive
       module="mod_proxy">ProxyPassReverse</directive> est souvent requise :
     </p>
 
@@ -101,7 +101,7 @@ ProxyPass "/"  "http://www.example.com/"
 ProxyPassReverse "/"  "http://www.example.com/"
     </highlight>
 
-    <p>Seules des URIs spécifiques peuvent être mandatées, comme le montre
+    <p>Seules des URIs sp&eacute;cifiques peuvent &ecirc;tre mandat&eacute;es, comme le montre
     l'exemple suivant :</p>
 
     <highlight language="config">
@@ -109,9 +109,9 @@ ProxyPass "/images"  "http://www.example.com/"
 ProxyPassReverse "/images"  "http://www.example.com/"
     </highlight>
 
-    <p>Dans l'exemple précédent, si le chemin d'une requête commence par
-    <code>/images</code>, elle sera redirigée vers le serveur d'arrière-plan
-    spécifié ; dans le cas contraire, elle sera traitée localement.
+    <p>Dans l'exemple pr&eacute;c&eacute;dent, si le chemin d'une requ&ecirc;te commence par
+    <code>/images</code>, elle sera redirig&eacute;e vers le serveur d'arri&egrave;re-plan
+    sp&eacute;cifi&eacute; ; dans le cas contraire, elle sera trait&eacute;e localement.
     </p>
   </section>
 
@@ -119,15 +119,15 @@ ProxyPassReverse "/images"  "http://www.example.com/"
     <title>Clusters et Balancers</title>
 
     <p>
-      Utiliser un serveur d'arrière-plan unique n'est cependant pas une solution
-      idéale car ce dernier peut devenir indisponible ou surchargé, et le
-      mandatement inverse vers ce serveur ne présente alors plus aucun avantage.
-      La solution réside dans la définition d'un groupe de serveurs
-      d'arrière-plan qui vont se partager le traitement des requêtes via un
-      mécanisme de répartition de charge et de gestion des indisponibilités pris
-      en charge par le mandataire. Ce groupe de répartition est plus connu sous le nom de
+      Utiliser un serveur d'arri&egrave;re-plan unique n'est cependant pas une solution
+      id&eacute;ale car ce dernier peut devenir indisponible ou surcharg&eacute;, et le
+      mandatement inverse vers ce serveur ne pr&eacute;sente alors plus aucun avantage.
+      La solution r&eacute;side dans la d&eacute;finition d'un groupe de serveurs
+      d'arri&egrave;re-plan qui vont se partager le traitement des requ&ecirc;tes via un
+      m&eacute;canisme de r&eacute;partition de charge et de gestion des indisponibilit&eacute;s pris
+      en charge par le mandataire. Ce groupe de r&eacute;partition est plus connu sous le nom de
       <em>cluster</em>, mais dans la terminologie d'Apache httpd, on utilise
-      plutôt le terme de <em>balancer</em>. Un balancer se définit en
+      plut&ocirc;t le terme de <em>balancer</em>. Un balancer se d&eacute;finit en
       utilisant les directives <directive module="mod_proxy"
       type="section">Proxy</directive> et <directive
       module="mod_proxy">BalancerMember</directive> comme suit :
@@ -145,20 +145,20 @@ ProxyPassReverse "/images/"  "balancer://myset/"
     </highlight>
 
     <p>
-      Le protocole <code>balancer://</code> indique à httpd que l'on souhaite
-      créer un balancer nommé <em>myset</em>. Ce balancer comporte deux serveurs
-      d'arrière-plan référencés dans la terminologie httpd sous le nom de
-      <em>BalancerMembers</em>. Avec cet exemple, toute requête dont le chemin
-      commence par <code>/images</code> sera mandatée vers <em>un</em> des deux
-      serveurs d'arrière-plan. La directive <directive
-      module="mod_proxy">ProxySet</directive> définit ici pour le balancer
+      Le protocole <code>balancer://</code> indique &agrave; httpd que l'on souhaite
+      cr&eacute;er un balancer nomm&eacute; <em>myset</em>. Ce balancer comporte deux serveurs
+      d'arri&egrave;re-plan r&eacute;f&eacute;renc&eacute;s dans la terminologie httpd sous le nom de
+      <em>BalancerMembers</em>. Avec cet exemple, toute requ&ecirc;te dont le chemin
+      commence par <code>/images</code> sera mandat&eacute;e vers <em>un</em> des deux
+      serveurs d'arri&egrave;re-plan. La directive <directive
+      module="mod_proxy">ProxySet</directive> d&eacute;finit ici pour le balancer
       <em>myset</em> un algorithme de
-      répartition de charge basé sur le trafic entrées/sorties.
+      r&eacute;partition de charge bas&eacute; sur le trafic entr&eacute;es/sorties.
     </p>
 
     <note type="hint"><title>Remarque</title>
       <p>
-      	Les <em>BalancerMembers</em> sont aussi souvent référencés sous le terme
+      	Les <em>BalancerMembers</em> sont aussi souvent r&eacute;f&eacute;renc&eacute;s sous le terme
 	<em>workers</em>.
       </p>
    </note>
@@ -169,8 +169,8 @@ ProxyPassReverse "/images/"  "balancer://myset/"
     <title>Configuration du Balancer et des BalancerMembers</title>
 
     <p>
-      Vous pouvez configurer de manière détaillée les <em>balancers</em> et
-      <em>workers</em> via les nombreux paramètres de la directive <directive
+      Vous pouvez configurer de mani&egrave;re d&eacute;taill&eacute;e les <em>balancers</em> et
+      <em>workers</em> via les nombreux param&egrave;tres de la directive <directive
       module="mod_proxy">ProxyPass</directive>. Par exemple, si vous souhaitez
       que <code>http://www3.example.com:8080</code> traite avec un facteur 3 le
       trafic avec un timeout d'une seconde, utilisez la configuration suivante :
@@ -190,19 +190,19 @@ ProxyPassReverse "/images"  "balancer://myset/"
   </section>
 
   <section id="failover">
-    <title>Gestion des indisponibilités (Failover)</title>
+    <title>Gestion des indisponibilit&eacute;s (Failover)</title>
 
     <p>
-      Vous pouvez aussi définir finement des scénarios pour les cas
-      d'indisponibilité d'un ou plusieurs serveurs d'arrière-plan en spécifiant
+      Vous pouvez aussi d&eacute;finir finement des sc&eacute;narios pour les cas
+      d'indisponibilit&eacute; d'un ou plusieurs serveurs d'arri&egrave;re-plan en sp&eacute;cifiant
       quels serveurs doivent alors prendre le relai. Dans l'exemple suivant,
-      deux scénarios sont envisagés : dans le premier, seul
+      deux sc&eacute;narios sont envisag&eacute;s : dans le premier, seul
       <code>http://hstandby.example.com:8080</code> se voit envoyer du trafic si
       tous les autres membres du balancer <em>myset</em> sont indisponibles.
       Dans le second, si <code>http://hstandby.example.com:8080</code> est
-      lui-même indisponible, <code>http://bkup1.example.com:8080</code> et
+      lui-m&ecirc;me indisponible, <code>http://bkup1.example.com:8080</code> et
       <code>http://bkup2.example.com:8080</code> deviennent les deux seuls
-      membres du groupe de répartition de charge actifs :
+      membres du groupe de r&eacute;partition de charge actifs :
     </p>
 
     <highlight language="config">
@@ -220,32 +220,32 @@ ProxyPassReverse "/images/"  "balancer://myset/"
     </highlight>
 
     <p>
-      Le point central de cet exemple de gestion des indisponibilités est la
-      configuration du serveur d'arrière-plan
+      Le point central de cet exemple de gestion des indisponibilit&eacute;s est la
+      configuration du serveur d'arri&egrave;re-plan
       <code>http://hstandby.example.com:8080</code> avec le drapeau
       <code>+H</code> qui le place en mode <em>hot standby</em>, et
       l'inscription des deux serveurs <code>bkup#</code> dans le groupe de
-      répartition de charge avec un niveau 1 (le niveau par défaut étant 0) ; en
+      r&eacute;partition de charge avec un niveau 1 (le niveau par d&eacute;faut &eacute;tant 0) ; en
       effet, les serveurs en mode <em>hot standby</em>, s'il existent, sont
-      utilisés en premier en cas d'indisponibilité de tous les autres serveurs
-      d'arrière-plan, et ce sont toujours les serveurs de niveau le plus bas qui
-      sont utilisés en premier.
+      utilis&eacute;s en premier en cas d'indisponibilit&eacute; de tous les autres serveurs
+      d'arri&egrave;re-plan, et ce sont toujours les serveurs de niveau le plus bas qui
+      sont utilis&eacute;s en premier.
     </p>
 
   </section>
 
   <section id="manager">
-    <title>Gestion du répartiteur de charge</title>
+    <title>Gestion du r&eacute;partiteur de charge</title>
 
     <p>
      L'application <em>balancer-manager</em> fournie avec le mandataire inverse
      d'Apache httpd en est un des outils les plus utiles. Comme
      <module>mod_status</module>, <em>balancer-manager</em> affiche la
-     configuration et l'activité actuelles des balancers actifs. L'affichage de
+     configuration et l'activit&eacute; actuelles des balancers actifs. L'affichage de
      ces informations n'est cependant pas sa seule fonction ; il permet aussi de
-     modifier la plupart d'entre elles et même d'ajouter des membres au groupe
-     de répartition de charge en temps réel. Pour activer ces fonctionnalités,
-     vous devez ajouter les lignes suivantes à votre fichier de configuration : 
+     modifier la plupart d'entre elles et m&ecirc;me d'ajouter des membres au groupe
+     de r&eacute;partition de charge en temps r&eacute;el. Pour activer ces fonctionnalit&eacute;s,
+     vous devez ajouter les lignes suivantes &agrave; votre fichier de configuration : 
     </p>
 
     <highlight language="config">
@@ -256,89 +256,89 @@ ProxyPassReverse "/images/"  "balancer://myset/"
     </highlight>
 
     <note type="warning"><title>Avertissement</title>
-      <p>N'activez le <em>balancer-manager</em> que si vous avez déjà <a
-      href="../mod/mod_proxy.html#access">sécurisé votre serveur</a>.
-      Assurez-vous en particulier que l'accès à l'URL soit fortement restreint.</p>
+      <p>N'activez le <em>balancer-manager</em> que si vous avez d&eacute;j&agrave; <a
+      href="../mod/mod_proxy.html#access">s&eacute;curis&eacute; votre serveur</a>.
+      Assurez-vous en particulier que l'acc&egrave;s &agrave; l'URL soit fortement restreint.</p>
     </note>
 
     <p>
-      Lorsque vous accédez au serveur mandataire avec une adresse du style
+      Lorsque vous acc&eacute;dez au serveur mandataire avec une adresse du style
       <code>http://rproxy.example.com/balancer-manager/</code>, la page suivante
       s'affiche :
     </p>
     <p class="centered"><img src="../images/bal-man.png" alt="balancer-manager page" /></p>
 
     <p>
-      Ce formulaire permet à l'administrateur de modifier certains paramètres,
-      de désactiver ou d'ajouter certains serveurs d'arrière-plan, et de
-      modifier les règles de répartition de charge. Par exemple, si on clique
-      sur le répartiteur, la page suivante s'affiche : 
+      Ce formulaire permet &agrave; l'administrateur de modifier certains param&egrave;tres,
+      de d&eacute;sactiver ou d'ajouter certains serveurs d'arri&egrave;re-plan, et de
+      modifier les r&egrave;gles de r&eacute;partition de charge. Par exemple, si on clique
+      sur le r&eacute;partiteur, la page suivante s'affiche : 
     </p>
     <p class="centered"><img src="../images/bal-man-b.png" alt="balancer-manager page" /></p>
 
     <p>
-      Si on clique sur un membre du groupe de répartition de charge, la page
+      Si on clique sur un membre du groupe de r&eacute;partition de charge, la page
       suivante s'affiche :
     </p>
     <p class="centered"><img src="../images/bal-man-w.png" alt="balancer-manager page" /></p>
 
     <p>
-      Si vous souhaitez que ces modifications soient conservées après un
-      redémarrage du serveur, assurez-vous que la directive <directive
-      module="mod_proxy">BalancerPersist</directive> soit définie à On.
+      Si vous souhaitez que ces modifications soient conserv&eacute;es apr&egrave;s un
+      red&eacute;marrage du serveur, assurez-vous que la directive <directive
+      module="mod_proxy">BalancerPersist</directive> soit d&eacute;finie &agrave; On.
     </p>
 
   </section>
 
   <section id="health-check">
-    <title>Vérification dynamique du bon fonctionnement d'un serveur
-    d'arrière-plan</title>
+    <title>V&eacute;rification dynamique du bon fonctionnement d'un serveur
+    d'arri&egrave;re-plan</title>
 
     <p>
-      Avant que le mandataire httpd ne fasse appel à un serveur d'arrière-plan, il
-      peut <em>"tester"</em> si ce dernier est disponible en définissant le
-      paramètre <code>ping</code> de ce serveur via la directive <directive
+      Avant que le mandataire httpd ne fasse appel &agrave; un serveur d'arri&egrave;re-plan, il
+      peut <em>"tester"</em> si ce dernier est disponible en d&eacute;finissant le
+      param&egrave;tre <code>ping</code> de ce serveur via la directive <directive
       module="mod_proxy">ProxyPass</directive>. Cependant, il est souvent plus
-      judicieux de vérifier le bon fonctionnement d'un serveur <em>hors
-      bande</em> et de manière dynamique via le module
+      judicieux de v&eacute;rifier le bon fonctionnement d'un serveur <em>hors
+      bande</em> et de mani&egrave;re dynamique via le module
       <module>mod_proxy_hcheck</module> d'Apache httpd.
     </p>
 
   </section>
 
   <section id="status">
-    <title>Drapeaux d'état d'un membre du groupe de répartition de charge</title>
+    <title>Drapeaux d'&eacute;tat d'un membre du groupe de r&eacute;partition de charge</title>
 
     <p>
-      <em>balancer-manager</em> permet d'afficher et de modifier l'état d'un
-      membre du groupe de répartition de charge. Les différents états et leurs
+      <em>balancer-manager</em> permet d'afficher et de modifier l'&eacute;tat d'un
+      membre du groupe de r&eacute;partition de charge. Les diff&eacute;rents &eacute;tats et leurs
       significations sont les suivants :
     </p>
       <table border="1">
       	<tr><th>Drapeau</th><th>Sigle</th><th>Description</th></tr>
       	<tr><td>&nbsp;</td><td><em>Ok</em></td><td>Le serveur est disponible</td></tr>
-      	<tr><td>&nbsp;</td><td><em>Init</em></td><td>Le serveur a été initialisé</td></tr>
+      	<tr><td>&nbsp;</td><td><em>Init</em></td><td>Le serveur a &eacute;t&eacute; initialis&eacute;</td></tr>
         <tr><td><code>D</code></td><td><em>Dis</em></td><td>Le serveur est
-	désactivé et n'accepte aucune requête ; il sera retesté automatiquement.</td></tr>
-        <tr><td><code>S</code></td><td><em>Stop</em></td><td>Le serveur a été
-	arrêté par l'administrateur ; il n'accepte aucune requête et il ne sera
-	pas retesté automatiquement.</td></tr>
+	d&eacute;sactiv&eacute; et n'accepte aucune requ&ecirc;te ; il sera retest&eacute; automatiquement.</td></tr>
+        <tr><td><code>S</code></td><td><em>Stop</em></td><td>Le serveur a &eacute;t&eacute;
+	arr&ecirc;t&eacute; par l'administrateur ; il n'accepte aucune requ&ecirc;te et il ne sera
+	pas retest&eacute; automatiquement.</td></tr>
         <tr><td><code>I</code></td><td><em>Ign</em></td><td>Les erreurs
-	concernant ce serveur sont ignorées et il sera donc toujours considéré
+	concernant ce serveur sont ignor&eacute;es et il sera donc toujours consid&eacute;r&eacute;
 	comme disponible.</td></tr>
         <tr><td><code>H</code></td><td><em>Stby</em></td><td>Le serveur est en
-	mode hot-standby et ne sera donc utilisé que si aucun autre serveur
+	mode hot-standby et ne sera donc utilis&eacute; que si aucun autre serveur
 	n'est disponible.</td></tr>
         <tr><td><code>E</code></td><td><em>Err</em></td><td>Le serveur est en
-	erreur, en général suite à un test préalable à une requête ; aucune
-	requête ne lui sera soumise, mais il sera retesté en fonction de la
-	valeur de son paramètre <code>retry</code>.</td></tr>
+	erreur, en g&eacute;n&eacute;ral suite &agrave; un test pr&eacute;alable &agrave; une requ&ecirc;te ; aucune
+	requ&ecirc;te ne lui sera soumise, mais il sera retest&eacute; en fonction de la
+	valeur de son param&egrave;tre <code>retry</code>.</td></tr>
         <tr><td><code>N</code></td><td><em>Drn</em></td><td>Le serveur est en
-	mode drain ; il n'acceptera de requêtes que dans le cadre des sessions
-	persistantes qui lui sont réservées et ignorera toutes les autres.</td></tr>
-        <tr><td><code>C</code></td><td><em>HcFl</em></td><td>Le serveur a échoué
-	au test dynamique de bon fonctionnement et ne sera utilisé que lorsqu'il
-	aura réussi un test ultérieur.</td></tr>
+	mode drain ; il n'acceptera de requ&ecirc;tes que dans le cadre des sessions
+	persistantes qui lui sont r&eacute;serv&eacute;es et ignorera toutes les autres.</td></tr>
+        <tr><td><code>C</code></td><td><em>HcFl</em></td><td>Le serveur a &eacute;chou&eacute;
+	au test dynamique de bon fonctionnement et ne sera utilis&eacute; que lorsqu'il
+	aura r&eacute;ussi un test ult&eacute;rieur.</td></tr>
       </table>
   </section>
 
