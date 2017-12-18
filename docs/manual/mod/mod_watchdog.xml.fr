@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 1799460 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_watchdog.xml.meta">
+<name>mod_watchdog</name>
+<description>Fournit une infrastructure permettant &agrave; d'autres modules
+d'ex&eacute;cuter des t&acirc;ches p&eacute;riodiques.</description>
+<status>Base</status>
+<sourcefile>mod_watchdog.c</sourcefile>
+<identifier>watchdog_module</identifier>
+<compatibility>Disponible &agrave; partir de la version 2.3 du serveur HTTP
+Apache</compatibility>
+
+<summary>
+<p>Le module <module>mod_watchdog</module> d&eacute;finit des
+branchements (hooks) programm&eacute;s pour permettre &agrave; d'autres modules
+d'ex&eacute;cuter des t&acirc;ches p&eacute;riodiques. Ces modules peuvent enregistrer des
+gestionnaires (handlers) pour les branchements de
+<module>mod_watchdog</module>. Actuellement, seuls les modules suivants
+de la distribution Apache utilisent cette fonctionnalit&eacute; :</p>
+<ul>
+<li><module>mod_heartbeat</module></li>
+<li><module>mod_heartmonitor</module></li>
+</ul>
+<note type="warning">
+Pour qu'un module puisse utiliser la fonctionnalit&eacute; de
+<module>mod_watchdog</module>, ce dernier doit &ecirc;tre li&eacute; statiquement
+avec le serveur httpd ; s'il a &eacute;t&eacute; li&eacute; dynamiquement, il doit &ecirc;tre
+charg&eacute; avant l'appel au module qui doit utiliser sa fonctionnalit&eacute;.
+</note>
+</summary>
+
+<directivesynopsis>
+<name>WatchdogInterval</name>
+<description>Intervalle Watchdog en secondes</description>
+<syntax>WatchdogInterval <var>time-interval</var>[s]</syntax>
+<default>WatchdogInterval 1</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+<p>Cette directive permet de d&eacute;finir l'intervalle entre chaque ex&eacute;cution
+du branchement watchdog. La valeur par d&eacute;faut est de 1 seconde.</p>
+</usage>
+</directivesynopsis>
+</modulesynopsis>
+
