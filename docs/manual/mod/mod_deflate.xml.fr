@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1793934:1816989 (outdated) -->
+<!-- English Revision: 1816989 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -81,7 +81,7 @@ client</description>
 
       <highlight language="config">
 SetOutputFilter DEFLATE
-SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip   
+SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip
 	</highlight>
 
       <p>Si vous voulez limiter la compression à certains types MIME
@@ -212,18 +212,11 @@ SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip
 
     <highlight language="config">
 &lt;IfModule mod_headers.c&gt;
-    # Servir des fichiers CSS compressés avec gzip, s'ils existent, et
+    # Servir des fichiers JS et CSS compressés avec gzip, s'ils existent, et
     # si le client accepte gzip.
     RewriteCond "%{HTTP:Accept-encoding}" "gzip"
     RewriteCond "%{REQUEST_FILENAME}\.gz" "-s"
-    RewriteRule "^(.*)\.css"              "$1\.css\.gz" [QSA]
-
-    # Servir des fichiers JS compressés avec gzip, s'ils existent, et
-    # si le client accepte gzip.
-    RewriteCond "%{HTTP:Accept-encoding}" "gzip"
-    RewriteCond "%{REQUEST_FILENAME}\.gz" "-s"
-    RewriteRule "^(.*)\.js"               "$1\.js\.gz" [QSA]
-
+    RewriteRule "^(.*)\.(css|js)"              "$1\.$2\.gz" [QSA]
 
     # Servir des types de contenus corrects, et empêcher mod_deflate
     # d'effectuer un double gzip.
@@ -263,7 +256,7 @@ SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip
     <example><title>Exemple</title>
       <highlight language="config">
       DeflateFilterNote ratio
-    
+
       LogFormat '"%r" %b (%{ratio}n) "%{User-agent}i"' deflate
       CustomLog "logs/deflate_log" deflate
       </highlight>
