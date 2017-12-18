@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1815599:1817381 (outdated) -->
+<!-- English Revision: 1817381 -->
 <!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -675,7 +676,7 @@ SSLSessionCacheTimeout 600
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 <compatibility>Le paramètre <code>addr:port</code> est disponible à partir de la
-version 2.4.28 du serveur HTTPApache.</compatibility>
+version 2.4.30 du serveur HTTPApache.</compatibility>
 
 <usage>
 <p> Cette directive permet d'activer/désactiver le moteur du protocole SSL/TLS.
@@ -3206,11 +3207,11 @@ SSLOpenSSLConfCmd SignatureAlgorithms RSA+SHA384:ECDSA+SHA256
 </directivesynopsis>
 
 <directivesynopsis type="section" idtype="section">
-<name>SSLPolicy</name>
+<name>SSLPolicyDefine</name>
 <description>Définit par un nom un jeu de configurations SSL</description>
 <syntax>&lt;SSLPolicy <em>name</em>&gt;</syntax>
 <contextlist><context>server config</context></contextlist>
-<compatibility>Disponible à partir de la version 2.4.28 du serveur HTTP Apache</compatibility>
+<compatibility>Disponible à partir de la version 2.4.30 du serveur HTTP Apache</compatibility>
 
 <usage>
 <p>Cette directive permet de définir un jeu de configurations SSL et de lui
@@ -3220,13 +3221,13 @@ appliquer ce jeu de configurations au contexte courant.</p>
 
 <example><title>Définition et utilisation d'une configuration SSL</title>
 <highlight language="config">
-&lt;SSLPolicy safe-stapling&gt;
+&lt;SSLPolicyDefine safe-stapling&gt;
    SSLUseStapling on
    SSLStaplingResponderTimeout 2
    SSLStaplingReturnResponderErrors off
    SSLStaplingFakeTryLater off
    SSLStaplingStandardCacheTimeout 86400
-&lt;/SSLPolicy&gt;
+&lt;/SSLPolicyDefine&gt;
 
    ...
    &lt;VirtualHost...&gt;
@@ -3254,18 +3255,24 @@ httpd -t -D DUMP_SSL_POLICIES
 </example>
 
 <p>Cette directive ne peut être utilisée qu'au niveau de la configuration
-globale du serveur ; il ne peut donc coexister deux politiques de même nom. Les
-politiques SSL peuvent cependant être redéfinies :</p>
+globale du serveur. Elle peut gérer la plupart des directives SSL*, à l'exception de
+quelques unes qui ne peuvent être positionnées qu'une seule fois et ne sont pas
+autorisées dans les définitions de politiques. Il s'agit de <directive>SSLCryptoDevice</directive>,
+<directive>SSLRandomSeed</directive>,
+<directive>SSLSessionCache</directive> et
+<directive>SSLStaplingCache</directive>.</p>
+<p>Deux politiques ne peuvent pas partager le même nom. Pour autant, elles peuvent être
+redéfinies :</p>
 
 <example><title>Redéfinition d'une politique</title>
 <highlight language="config">
-&lt;SSLPolicy proxy-trust&gt;
+&lt;SSLPolicyDefine proxy-trust&gt;
    SSLProxyVerify require
-&lt;/SSLPolicy&gt;
+&lt;/SSLPolicyDefine&gt;
    ...
-&lt;SSLPolicy proxy-trust&gt;
+&lt;SSLPolicyDefine proxy-trust&gt;
    SSLProxyVerify none
-&lt;/SSLPolicy&gt;
+&lt;/SSLPolicyDefine&gt;
 </highlight>
 </example>
 
@@ -3281,14 +3288,14 @@ avoir à les désactiver.</p>
 
 <example><title>Redéfinition d'un aspect d'une politique SSL</title>
 <highlight language="config">
-&lt;SSLPolicy proxy-trust&gt;
+&lt;SSLPolicyDefine proxy-trust&gt;
    SSLProxyVerify require
-&lt;/SSLPolicy&gt;
+&lt;/SSLPolicyDefine&gt;
    ...
-&lt;SSLPolicy proxy-trust&gt;
+&lt;SSLPolicyDefine proxy-trust&gt;
    SSLPolicy proxy-trust
    SSLProxyVerifyDepth 10
-&lt;/SSLPolicy&gt;
+&lt;/SSLPolicyDefine&gt;
 </highlight>
 </example>
 
@@ -3304,10 +3311,10 @@ compliquait les mises à jour. Elles peuvent maintenant être modifiées comme s
 <highlight language="config">
 Include ssl-policies.conf
 
-&lt;SSLPolicy modern&gt;
+&lt;SSLPolicyDefine modern&gt;
    SSLPolicy modern
    SSLProxyVerify none
-&lt;/SSLPolicy&gt;
+&lt;/SSLPolicyDefine&gt;
 </highlight>
 </example>
 
@@ -3320,12 +3327,12 @@ Include ssl-policies.conf
 <syntax>SSLPolicy <em>name</em></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility>Disponible à partir de la version 2.4.28 du serveur HTTP Apache</compatibility>
+<compatibility>Disponible à partir de la version 2.4.30 du serveur HTTP Apache</compatibility>
 
 <usage>
 <p>Cette directive permet d'appliquer le jeu de directives définies au sein
 de la polique SSL de nom 'name' (voir directive <directive
-type="section">SSLPolicy</directive>) comme configuration <em>de base</em> dans
+type="section">SSLPolicyDefine</directive>) comme configuration <em>de base</em> dans
 le contexte courant. Apache httpd est fourni avec les politiques SSL prédéfinies
 suivantes de Mozilla, l'éditeur du navigateur Firefox (<a
 href="https://wiki.mozilla.org/Security/Server_Side_TLS#Recommended_configurations">description
@@ -3370,7 +3377,7 @@ SSLPolicy modern
 &lt;VirtualHost...&gt; # effective : 'all'
    SSLProtocol all
 &lt;/VirtualHost&gt;
-   
+
 SSLProtocol all
 &lt;VirtualHost...&gt; # effective : '+TLSv1.2'
   SSLPolicy modern
@@ -3404,7 +3411,7 @@ contexte. Les dernières auront alors priorité sur les précédentes :</p>
 <syntax>SSLProxyPolicy <em>name</em></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility>Disponible à partir de la version 2.4.28 du serveur HTTP Apache</compatibility>
+<compatibility>Disponible à partir de la version 2.4.30 du serveur HTTP Apache</compatibility>
 
 <usage>
 <p>Cette directive est similaire à la directive <directive>SSLPolicy</directive>
