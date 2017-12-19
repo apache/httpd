@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_proxy: allow SSLProxyCheckPeer* usage for all proxy modules.
+     PR 61857.  [Yann Ylavic]
+
   *) mod_proxy_html: fix handling of <meta http-equiv> elements.
      PR 58121.  [Nick Kew]
 

@@ -588,21 +588,12 @@ run_connect:
             goto reconnect;
         }
         
-        if (!ctx->p_conn->data) {
-            /* New conection: set a note on the connection what CN is
-             * requested and what protocol we want */
-            if (ctx->p_conn->ssl_hostname) {
-                ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, ctx->owner, 
-                              "set SNI to %s for (%s)", 
-                              ctx->p_conn->ssl_hostname, 
-                              ctx->p_conn->hostname);
-                apr_table_setn(ctx->p_conn->connection->notes,
-                               "proxy-request-hostname", ctx->p_conn->ssl_hostname);
-            }
-            if (ctx->is_ssl) {
-                apr_table_setn(ctx->p_conn->connection->notes,
-                               "proxy-request-alpn-protos", "h2");
-            }
+        if (!ctx->p_conn->data && ctx->is_ssl) {
+            /* New SSL connection: set a note on the connection about what
+             * protocol we want.
+             */
+            apr_table_setn(ctx->p_conn->connection->notes,
+                           "proxy-request-alpn-protos", "h2");
         }
     }
 
