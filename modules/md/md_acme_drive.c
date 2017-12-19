@@ -566,18 +566,11 @@ static apr_status_t get_chain(void *baton, int attempt)
 {
     md_proto_driver_t *d = baton;
     md_acme_driver_t *ad = d->baton;
-    md_cert_t *cert;
     const char *prev_link = NULL;
     apr_status_t rv = APR_SUCCESS;
 
     while (APR_SUCCESS == rv && ad->chain->nelts < 10) {
         int nelts = ad->chain->nelts;
-        if (ad->chain && nelts > 0) {
-            cert = APR_ARRAY_IDX(ad->chain, nelts - 1, md_cert_t *);
-        }
-        else {
-            cert = ad->cert;
-        }
         
         if (ad->next_up_link && (!prev_link || strcmp(prev_link, ad->next_up_link))) {
             prev_link = ad->next_up_link;
