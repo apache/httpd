@@ -2086,17 +2086,6 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
                                                         backend, r)) != OK)
                 break;
             backconn = backend->connection;
-
-            /*
-             * On SSL connections set a note on the connection what CN is
-             * requested, such that mod_ssl can check if it is requested to do
-             * so.
-             */
-            if (backend->ssl_hostname) {
-                apr_table_setn(backend->connection->notes,
-                               "proxy-request-hostname",
-                               backend->ssl_hostname);
-            }
         }
 
         /* Don't recycle the connection if prefetch (above) told not to do so */
