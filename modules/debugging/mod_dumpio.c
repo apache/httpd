@@ -181,9 +181,9 @@ static int dumpio_pre_conn(conn_rec *c, void *csd)
 {
     dumpio_conf_t *ptr;
 
-    if (APLOGctrace7(c)) {
+    if (!APLOGctrace7(c)) {
         /* Nothing to do below TRACE7 */
-        return OK;
+        return DECLINED;
     }
 
     ptr = (dumpio_conf_t *) ap_get_module_config(c->base_server->module_config,
