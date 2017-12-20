@@ -1,3 +1,19 @@
+/* Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+ 
 /* Copyright 2015 greenbytes GmbH (https://www.greenbytes.de)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -234,7 +250,7 @@ static apr_status_t assign_to_servers(md_t *md, server_rec *base_server,
                  * If mode is "manual", a generated certificate will not match
                  * all necessary names. */
                 if ((!mc->local_80 || !uses_port_only(s, mc->local_80))
-                    && APR_SUCCESS != (rv = md_covers_server(md, s, ptemp))) {
+                    && APR_SUCCESS != (rv = md_covers_server(md, s, p))) {
                     return rv;
                 }
 
@@ -1044,11 +1060,6 @@ static apr_status_t md_post_config(apr_pool_t *p, apr_pool_t *plog,
         goto out;
     }
     
-    if (dry_run) {
-        /* enough done in this case */
-        return APR_SUCCESS;
-    }
-    
     if (APR_SUCCESS != (rv = md_reg_sync(reg, p, ptemp, mc->mds))) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10073)
                      "synching %d mds to registry", mc->mds->nelts);
@@ -1056,8 +1067,8 @@ static apr_status_t md_post_config(apr_pool_t *p, apr_pool_t *plog,
     
     /* Determine the managed domains that are in auto drive_mode. For those,
      * determine in which state they are:
-     *  - UNKNOWN:            should not happen, report, dont drive
-     *  - ERROR:              something we do not know how to fix, report, dont drive
+     *  - UNKNOWN:            should not happen, report, don't drive
+     *  - ERROR:              something we do not know how to fix, report, don't drive
      *  - INCOMPLETE/EXPIRED: need to drive them right away
      *  - COMPLETE:           determine when cert expires, drive when the time comes
      *
@@ -1082,6 +1093,10 @@ static apr_status_t md_post_config(apr_pool_t *p, apr_pool_t *plog,
     }
     
     init_ssl();
+    
+    if (dry_run) {
+        goto out;
+    }
     
     /* If there are MDs to drive, start a watchdog to check on them regularly */
     if (drive_names->nelts > 0) {

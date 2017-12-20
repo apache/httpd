@@ -1,3 +1,19 @@
+/* Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+ 
 /* Copyright 2017 greenbytes GmbH (https://www.greenbytes.de)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -550,18 +566,11 @@ static apr_status_t get_chain(void *baton, int attempt)
 {
     md_proto_driver_t *d = baton;
     md_acme_driver_t *ad = d->baton;
-    md_cert_t *cert;
     const char *prev_link = NULL;
     apr_status_t rv = APR_SUCCESS;
 
     while (APR_SUCCESS == rv && ad->chain->nelts < 10) {
         int nelts = ad->chain->nelts;
-        if (ad->chain && nelts > 0) {
-            cert = APR_ARRAY_IDX(ad->chain, nelts - 1, md_cert_t *);
-        }
-        else {
-            cert = ad->cert;
-        }
         
         if (ad->next_up_link && (!prev_link || strcmp(prev_link, ad->next_up_link))) {
             prev_link = ad->next_up_link;
@@ -885,7 +894,7 @@ static apr_status_t acme_stage(md_proto_driver_t *d)
                 /**
                  * The MD is complete and un-expired. This is a renewal run. 
                  * Give activation 24 hours leeway (if we have that time) to
-                 * accomodate for clients with somewhat weird clocks.
+                 * accommodate for clients with somewhat weird clocks.
                  */
                 delay_activation = apr_time_from_sec(MD_SECS_PER_DAY);
                 if (delay_activation > (max_delay = d->md->expires - now)) {
