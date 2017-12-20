@@ -95,8 +95,14 @@
 &lt;/Location&gt;</pre>
 </div>
 
+    <p>The character which is used to separate (or "delimit") the
+    various parts of the substituion string is referred to as the
+    "delimiter", and it is most common to use a slash for this
+    purpose.</p>
+
     <p>If either the pattern or the substitution contain a slash
-    character then an alternative delimiter should be used:</p>
+    character then an alternative delimiter may be used to make the
+    directive more readable:</p>
 
     <div class="example"><h3>Example of using an alternate delimiter</h3><pre class="prettyprint lang-config">&lt;Location "/"&gt;
     AddOutputFilterByType SUBSTITUTE text/html
