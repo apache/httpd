@@ -111,6 +111,7 @@ md_json_t *md_json_create_s(apr_pool_t *pool, const char *s)
 void md_json_destroy(md_json_t *json)
 {
     if (json && json->j) {
+        assert(json->j->refcount > 0);
         json_decref(json->j);
         json->j = NULL;
     }
