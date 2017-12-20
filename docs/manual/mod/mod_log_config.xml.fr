@@ -250,11 +250,11 @@ d'Apache</a></seealso>
 	<code>%{<var>format</var>}t</code>.</td></tr>
 
     <tr><td><code>%T</code></td>
-        <td>Le temps mis pour servir la requête, en secondes.
+        <td><p>Le temps mis pour servir la requête, en secondes.
         Le temps commence à être mesuré au moment où la première ligne de la requête HTTP
         est transmise par le système d'exploitation au serveur HTTP, et se termine au moment
-        où le dernier octet de la réponse est envoyé au système d'exploitation par le serveur HTTP.
-        <p> Le temps mesuré n'inclut donc <em>aucune</em> des rubriques suivantes :
+        où le dernier octet de la réponse est envoyé au système d'exploitation par le serveur HTTP.</p>
+        <p> Le temps mesuré n'inclut donc <em>aucune</em> des rubriques suivantes :</p>
         <ul>
          <li> Temps passé dans les échanges TCP ou TLS.</li>
          <li> Temps écoulé avant qu'un thread du serveur web ne réussisse à lire la première ligne
@@ -262,7 +262,7 @@ d'Apache</a></seealso>
          <li> Retards pris par le système d'exploitation pour renvoyer la réponse sur le réseau.</li>
          <li> Temps pris par la réponse pour arriver au système d'exploitation du client.</li>
          <li> Temps pris par le client pour lire et traiter la réponse.</li>
-        </ul></p>
+        </ul>
         </td></tr>
 
     <tr><td><code>%{<var>UNIT</var>}T</code></td>
