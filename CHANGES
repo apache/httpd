@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_dumpio: do nothing below log level TRACE7.  [Yann Ylavic]
+
   *) mod_md: reverses most of v1.0.5 optimization of post_config init, so that
      mod_ssl can ask for certiticates without crashing. [Stefan Eissing]
 
