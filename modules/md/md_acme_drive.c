@@ -894,7 +894,7 @@ static apr_status_t acme_stage(md_proto_driver_t *d)
                 /**
                  * The MD is complete and un-expired. This is a renewal run. 
                  * Give activation 24 hours leeway (if we have that time) to
-                 * accomodate for clients with somewhat weird clocks.
+                 * accommodate for clients with somewhat weird clocks.
                  */
                 delay_activation = apr_time_from_sec(MD_SECS_PER_DAY);
                 if (delay_activation > (max_delay = d->md->expires - now)) {
