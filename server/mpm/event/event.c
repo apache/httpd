@@ -1049,20 +1049,30 @@ static void process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * soc
          * otherwise write, should set the sense appropriately.
          */
         apr_atomic_inc32(&clogged_count);
-        ap_run_process_connection(c);
-        if (cs->pub.state != CONN_STATE_SUSPENDED) {
+        rc = ap_run_process_connection(c);
+        if (rc || cs->pub.state != CONN_STATE_SUSPENDED) {
             cs->pub.state = CONN_STATE_LINGER;
         }
         apr_atomic_dec32(&clogged_count);
     }
     else if (cs->pub.state == CONN_STATE_READ_REQUEST_LINE) {
 read_request:
-        ap_run_process_connection(c);
+        rc = ap_run_process_connection(c);
 
-        /* state will be updated upon return
-         * fall thru to either wait for readability/timeout or
-         * do lingering close
+        /* State will be updated upon successful return: fall thru to either
+         * wait for readability/timeout, do write completion or lingering
+         * close. But forcibly close the connection if the run failed (handler
+         * raised an error for it) or the state is something unexpected at the
+         * MPM level (meaning that no module handled it and we can't do much
+         * here; note that if a handler wants mpm_event to keep POLLIN for the
+         * rest of the request line it should use CHECK_REQUEST_LINE_READABLE
+         * and not simply return OK with the initial READ_REQUEST_LINE state).
          */
+        if (rc || (cs->pub.state != CONN_STATE_CHECK_REQUEST_LINE_READABLE
+                   && cs->pub.state != CONN_STATE_WRITE_COMPLETION
+                   && cs->pub.state != CONN_STATE_SUSPENDED)) {
+            cs->pub.state = CONN_STATE_LINGER;
+        }
     }
 
     if (cs->pub.state == CONN_STATE_WRITE_COMPLETION) {
