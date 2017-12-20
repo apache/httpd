@@ -1,3 +1,19 @@
+/* Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+ 
 /* Copyright 2017 greenbytes GmbH (https://www.greenbytes.de)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -219,13 +235,25 @@ apr_status_t md_acme_authz_update(md_acme_authz_t *authz, md_acme_t *acme,
     }
     else if (s && !strcmp(s, "valid")) {
         authz->state = MD_ACME_AUTHZ_S_VALID;
+        if (md_log_is_level(p, MD_LOG_DEBUG)) {
+            md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, 0, p, "ACME server validated challenge "
+                          "for %s in %s, ACME response is: %s", 
+                          authz->domain, authz->location, 
+                          md_json_writep(json, p, MD_JSON_FMT_COMPACT));
+        }
     }
     else if (s && !strcmp(s, "invalid")) {
         authz->state = MD_ACME_AUTHZ_S_INVALID;
+        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, 0, p, "ACME server reports challenge "
+                      "for %s in %s as 'invalid', ACME response is: %s", 
+                      authz->domain, authz->location, 
+                      md_json_writep(json, p, MD_JSON_FMT_COMPACT));
     }
     else if (s) {
-        md_log_perror(MD_LOG_MARK, MD_LOG_WARNING, 0, p, "unknown authz state '%s' "
-                      "for %s in %s", s, authz->domain, authz->location);
+        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, 0, p, "ACME server reports unrecognized "
+                      "authz state '%s' for %s in %s, ACME response is: %s", 
+                      s, authz->domain, authz->location, 
+                      md_json_writep(json, p, MD_JSON_FMT_COMPACT));
         return APR_EINVAL;
     }
     return rv;

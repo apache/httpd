@@ -1,3 +1,19 @@
+/* Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+ 
 /* Copyright 2017 greenbytes GmbH (https://www.greenbytes.de)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -1097,16 +1113,16 @@ static apr_status_t add_must_staple(STACK_OF(X509_EXTENSION) *exts, const md_t *
         X509_EXTENSION *x;
         int nid;
         
-        nid = OBJ_create("1.3.6.1.5.5.7.1.24", "OCSPReq", "OCSP Request");
+        nid = OBJ_create("1.3.6.1.5.5.7.1.24", "tlsfeature", "TLS Feature");
         if (NID_undef == nid) {
             md_log_perror(MD_LOG_MARK, MD_LOG_ERR, 0, p, 
-                          "%s: unable to get NID for must-staple", md->name);
-            return APR_EGENERAL;
+                          "%s: unable to get NID for v3 must-staple TLS feature", md->name);
+            return APR_ENOTIMPL;
         }
         x = X509V3_EXT_conf_nid(NULL, NULL, nid, (char*)"DER:30:03:02:01:05");
         if (NULL == x) {
             md_log_perror(MD_LOG_MARK, MD_LOG_ERR, 0, p, 
-                          "%s: unable to get x509 extension for must-staple", md->name);
+                          "%s: unable to create x509 extension for must-staple", md->name);
             return APR_EGENERAL;
         }
         sk_X509_EXTENSION_push(exts, x);
@@ -1148,7 +1164,11 @@ apr_status_t md_cert_req_create(const char **pcsr_der_64, const md_t *md,
         rv = APR_EGENERAL; goto out;
     }
     if (APR_SUCCESS != (rv = add_must_staple(exts, md, p))) {
-        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, p, "%s: must staple", md->name);
+        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, p, "%s: you requested that a certificate "
+            "is created with the 'must-staple' extension, however the SSL library was "
+            "unable to initialized that extension. Please file a bug report on which platform "
+            "and with which library this happens. To continue before this problem is resolved, "
+            "configure 'MDMustStaple off' for your domains", md->name);
         rv = APR_EGENERAL; goto out;
     }
     /* add extensions to csr */
