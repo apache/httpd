@@ -27,7 +27,8 @@
 <div id="preamble"><h1>Módulo Apache mod_allowhandlers</h1>
 <div class="toplang">
 <p><span>Idiomas disponibles: </span><a href="../en/mod/mod_allowhandlers.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/mod/mod_allowhandlers.html" title="Español">&nbsp;es&nbsp;</a></p>
+<a href="../es/mod/mod_allowhandlers.html" title="Español">&nbsp;es&nbsp;</a> |
+<a href="../fr/mod/mod_allowhandlers.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Descripción:</a></th><td>Restringir fácilmente qué handlers HTTP pueden ser usados en el servidor</td></tr>
 <tr><th><a href="module-dict.html#Status">Estado:</a></th><td>Experimental</td></tr>
@@ -82,7 +83,8 @@
 </div>
 <div class="bottomlang">
 <p><span>Idiomas disponibles: </span><a href="../en/mod/mod_allowhandlers.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/mod/mod_allowhandlers.html" title="Español">&nbsp;es&nbsp;</a></p>
+<a href="../es/mod/mod_allowhandlers.html" title="Español">&nbsp;es&nbsp;</a> |
+<a href="../fr/mod/mod_allowhandlers.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comentarios</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
