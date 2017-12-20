@@ -116,7 +116,7 @@ d'Apache</a></li>
 	supportés.</td></tr>
 <tr class="odd"><td><code>%D</code></td>
         <td>Le temps mis à servir la requête, en
-	microsecondes.</td></tr>
+	microsecondes. Voir %T pour plus de détails</td></tr>
 <tr><td><code>%{<var>NOMVAR</var>}e</code></td>
         <td>Le contenu de la variable d'environnement
 	<var>NOMVAR</var></td></tr>
@@ -129,10 +129,15 @@ d'Apache</a></li>
 	adresse IP n'est enregistrée que pour certains serveurs, vous
 	avez probablement défini des directives de contrôle d'accès qui
 	mentionnent ces derniers par leurs noms. Voir la <a href="mod_authz_host.html#reqhost">documentation de Require
-	host</a>.</td></tr>
-<tr class="odd"><td><code>%H</code></td>
+	host</a>. Ce format peut être impacté par la modifications
+        du nom d'hote distant par des modules comme <code class="module"><a href="../mod/mod_remoteip.html">mod_remoteip</a></code>.</td></tr>
+<tr class="odd"><td><code>%{c}h</code></td>
+        <td>Semblable à <code>%h</code>, mais exploite toujours le nom d'hôte de la connection
+        TCP sous-jacente, en ignorant toute modification réalisée sur le nom d'hôte distant
+        par des modules tels que <code class="module"><a href="../mod/mod_remoteip.html">mod_remoteip</a></code>.</td></tr>
+<tr><td><code>%H</code></td>
         <td>Le protocole de la requête</td></tr>
-<tr><td><code>%{<var>NOMVAR</var>}i</code></td>
+<tr class="odd"><td><code>%{<var>NOMVAR</var>}i</code></td>
         <td>Le contenu des lignes d'en-tête
 	<code><var>NOMVAR</var>:</code> dans la requête envoyée au
 	serveur. Ces en-têtes sont ajoutés par d'autres modules (par
@@ -144,21 +149,29 @@ d'Apache</a></li>
 	le champ <code>%{<var>VARNAME</var>}e</code> décrit plus haut.
 
         </td></tr>
-<tr class="odd"><td><code>%k</code></td>
+<tr><td><code>%k</code></td>
         <td>Nombre de requêtes persistantes en cours pour cette
 	connexion. Interessant si la directive <code class="directive"><a href="../mod/core.html#keepalive">KeepAlive</a></code> est utilisée ; par exemple,
 	'1' signifie la première requête après la requête initiale, '2'
 	la seconde, etc... ; autrement, il s'agit toujours de 0
 	(indiquant la requête initiale).</td></tr>
-<tr><td><code>%l</code></td>
+<tr class="odd"><td><code>%l</code></td>
         <td>Le nom de connexion distant (en provenance d'identd, si
 	disponible). Affiche un tiret, sauf si
 	<code class="module"><a href="../mod/mod_ident.html">mod_ident</a></code> est présent et si <code class="directive"><a href="../mod/mod_ident.html#identitycheck">IdentityCheck</a></code> est à
 	<code>On</code>.</td></tr>
-<tr class="odd"><td><code>%L</code></td>
+<tr><td><code>%L</code></td>
         <td>L'identifiant du message de journalisation de la requête
 	dans le journal des erreurs (ou '-' si aucun message n'a
-	été enregistré dans le journal des erreurs pour cette requête)</td></tr>
+	été enregistré dans le journal des erreurs pour cette requête).
+        Consulter le journal d'erreurs pour voir quelle requête a généré
+        quelle erreur.</td></tr>
+<tr class="odd"><td><code>%{c}L</code></td>
+        <td>L'identifiant du message de journalisation de la connexion
+	dans le journal des erreurs (ou '-' si aucun message n'a
+	été enregistré dans le journal des erreurs pour cette requête).
+        Consulter le journal d'erreurs pour voir quelle requête a généré
+        quelle erreur.</td></tr>
 <tr><td><code>%m</code></td>
         <td>La méthode de la requête</td></tr>
 <tr class="odd"><td><code>%{<var>NOMVAR</var>}n</code></td>
@@ -220,7 +233,20 @@ d'Apache</a></li>
 	format. Par contre, vous pouvez utiliser plusieurs symboles
 	<code>%{<var>format</var>}t</code>.</td></tr>
 <tr class="odd"><td><code>%T</code></td>
-        <td>Le temps mis pour servir la requête, en secondes.</td></tr>
+        <td><p>Le temps mis pour servir la requête, en secondes.
+        Le temps commence à être mesuré au moment où la première ligne de la requête HTTP
+        est transmise par le système d'exploitation au serveur HTTP, et se termine au moment
+        où le dernier octet de la réponse est envoyé au système d'exploitation par le serveur HTTP.</p>
+        <p> Le temps mesuré n'inclut donc <em>aucune</em> des rubriques suivantes :</p>
+        <ul>
+         <li> Temps passé dans les échanges TCP ou TLS.</li>
+         <li> Temps écoulé avant qu'un thread du serveur web ne réussisse à lire la première ligne
+         de la requête.</li>
+         <li> Retards pris par le système d'exploitation pour renvoyer la réponse sur le réseau.</li>
+         <li> Temps pris par la réponse pour arriver au système d'exploitation du client.</li>
+         <li> Temps pris par le client pour lire et traiter la réponse.</li>
+        </ul>
+        </td></tr>
 <tr><td><code>%{<var>UNIT</var>}T</code></td>
         <td>Le temps mis pour traiter la requête dans une unité définie
 	par <code>UNIT</code>. Les valeurs d'unité valides sont

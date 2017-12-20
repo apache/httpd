@@ -104,7 +104,7 @@
         <td>The contents of cookie <var>VARNAME</var> in the request sent
         to the server. Only version 0 cookies are fully supported.</td></tr>
 <tr class="odd"><td><code>%D</code></td>
-        <td>The time taken to serve the request, in microseconds.</td></tr>
+        <td>The time taken to serve the request, in microseconds. See %T for details.</td></tr>
 <tr><td><code>%{<var>VARNAME</var>}e</code></td>
         <td>The contents of the environment variable
         <var>VARNAME</var>.</td></tr>
@@ -115,10 +115,15 @@
         <code>Off</code>, which is the default. If it logs the hostname
         for only a few hosts, you probably have access control
         directives mentioning them by name. See <a href="mod_authz_host.html#reqhost">the Require host
-        documentation</a>.</td></tr>
-<tr class="odd"><td><code>%H</code></td>
+        documentation</a>. This format is affected by modifications to the 
+        remote hostname by modules like <code class="module"><a href="../mod/mod_remoteip.html">mod_remoteip</a></code>.</td></tr>
+<tr class="odd"><td><code>%{c}h</code></td>
+        <td>Like <code>%h</code>, but always reports on the hostname of the
+        underlying TCP connection and not any modifications to the 
+        remote hostname by modules like <code class="module"><a href="../mod/mod_remoteip.html">mod_remoteip</a></code>.</td></tr>
+<tr><td><code>%H</code></td>
         <td>The request protocol.</td></tr>
-<tr><td><code>%{<var>VARNAME</var>}i</code></td>
+<tr class="odd"><td><code>%{<var>VARNAME</var>}i</code></td>
         <td>The contents of <code><var>VARNAME</var>:</code> header line(s)
         in the request sent to the server. Changes made by other
         modules (e.g. <code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code>) affect this.  If you're
@@ -128,18 +133,22 @@
         that value with the <code>%{<var>VARNAME</var>}e</code> described
         above.
         </td></tr>
-<tr class="odd"><td><code>%k</code></td>
+<tr><td><code>%k</code></td>
         <td>Number of keepalive requests handled on this connection.  Interesting if
           <code class="directive"><a href="../mod/core.html#keepalive">KeepAlive</a></code> is being used, so that,
           for example, a '1' means the first keepalive request after the initial
           one, '2' the second, etc...;
           otherwise this is always 0 (indicating the initial request).</td></tr>
-<tr><td><code>%l</code></td>
+<tr class="odd"><td><code>%l</code></td>
         <td>Remote logname (from identd, if supplied). This will return a
         dash unless <code class="module"><a href="../mod/mod_ident.html">mod_ident</a></code> is present and <code class="directive"><a href="../mod/mod_ident.html#identitycheck">IdentityCheck</a></code> is set
         <code>On</code>.</td></tr>
-<tr class="odd"><td><code>%L</code></td>
+<tr><td><code>%L</code></td>
         <td>The request log ID from the error log (or '-' if nothing has been
+            logged to the error log for this request). Look for the
+            matching error log line to see what request caused what error.</td></tr>
+<tr class="odd"><td><code>%{c}L</code></td>
+        <td>The connection log ID from the error log (or '-' if nothing has been
             logged to the error log for this request). Look for the
             matching error log line to see what request caused what error.</td></tr>
 <tr><td><code>%m</code></td>
@@ -200,7 +209,22 @@
         <code>%{<var>format</var>}t</code> tokens instead.
         </td></tr>
 <tr class="odd"><td><code>%T</code></td>
-        <td>The time taken to serve the request, in seconds.</td></tr>
+        <td><p>The time taken to serve the request, in seconds. The time measured
+        begins when the first line of the HTTP request is read from the host
+        operating system by the HTTP server and ends when the last byte of
+        the response is written by the HTTP server to the host operating system.</p>
+        <p>The time measured does <em>not</em> include any of the following:</p>
+        <ul>
+         <li> Time spent in TCP or TLS handshakes.</li>
+         <li> The time before a webserver thread is able to read the first 
+              line of the request.</li>
+         <li> Delays in the operating system putting the response data out 
+              onto the network.</li>
+         <li> Time taken for the response to arrive at the client host.</li>
+         <li> Time taken for the the useragent to read and process the 
+              response.</li>
+       </ul>
+    </td></tr>
 <tr><td><code>%{<var>UNIT</var>}T</code></td>
         <td>The time taken to serve the request, in a time unit given by
         <code>UNIT</code>. Valid units are <code>ms</code> for milliseconds,

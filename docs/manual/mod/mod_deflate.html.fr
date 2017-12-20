@@ -31,8 +31,6 @@
 <a href="../ja/mod/mod_deflate.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_deflate.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Comprime le contenu avant de le servir au
 client</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -226,18 +224,11 @@ SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip</pre>
     Pour ce faire, utilisez une configuration du style :</p>
 
     <pre class="prettyprint lang-config">&lt;IfModule mod_headers.c&gt;
-    # Servir des fichiers CSS compressés avec gzip, s'ils existent, et
+    # Servir des fichiers JS et CSS compressés avec gzip, s'ils existent, et
     # si le client accepte gzip.
     RewriteCond "%{HTTP:Accept-encoding}" "gzip"
     RewriteCond "%{REQUEST_FILENAME}\.gz" "-s"
-    RewriteRule "^(.*)\.css"              "$1\.css\.gz" [QSA]
-
-    # Servir des fichiers JS compressés avec gzip, s'ils existent, et
-    # si le client accepte gzip.
-    RewriteCond "%{HTTP:Accept-encoding}" "gzip"
-    RewriteCond "%{REQUEST_FILENAME}\.gz" "-s"
-    RewriteRule "^(.*)\.js"               "$1\.js\.gz" [QSA]
-
+    RewriteRule "^(.*)\.(css|js)"              "$1\.$2\.gz" [QSA]
 
     # Servir des types de contenus corrects, et empêcher mod_deflate
     # d'effectuer un double gzip.
@@ -355,7 +346,7 @@ sortie</td></tr>
     fins statistiques en enregistrant sa valeur dans votre <a href="../logs.html#accesslog">journal des accès</a>.</p>
 
     <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">      DeflateFilterNote ratio
-    
+
       LogFormat '"%r" %b (%{ratio}n) "%{User-agent}i"' deflate
       CustomLog "logs/deflate_log" deflate</pre>
 </div>

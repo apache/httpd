@@ -139,8 +139,8 @@ serveur</td></tr>
 mandataire</td></tr>
 <tr class="odd"><td><a href="core.html#allowencodedslashes">AllowEncodedSlashes On|Off|NoDecode</a></td><td> Off </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Détermine si les séparateurs de chemin encodés sont
 autorisés à transiter dans les URLs tels quels</td></tr>
-<tr><td><a href="mod_allowhandlers.html#allowhandlers">AllowHandlers [not] none|<em>handler-name</em>
-[none|<em>handler-name</em>]...</a></td><td> all </td><td>d</td><td>X</td></tr><tr><td class="descr" colspan="4">Restrict access to the listed handlers</td></tr>
+<tr><td><a href="mod_allowhandlers.html#allowhandlers">AllowHandlers [not] none|<em>nom-gestionnaire</em>
+[none|<em>nom-gestionnaire</em>]...</a></td><td> all </td><td>d</td><td>X</td></tr><tr><td class="descr" colspan="4">Restreint l'accès aux gestionnaires spécifiés</td></tr>
 <tr class="odd"><td><a href="mod_allowmethods.html#allowmethods">AllowMethods reset|<em>HTTP-method</em>
 [<em>HTTP-method</em>]...</a></td><td> reset </td><td>d</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Restreint l'accès aux méthodes HTTP spécifiées</td></tr>
 <tr><td><a href="core.html#allowoverride">AllowOverride All|None|<var>directive-type</var>
@@ -303,11 +303,11 @@ utiliser</td></tr>
 extension d'un fournisseur d'authentification de base et lui attribue
 l'alias spécifié</td></tr>
 <tr class="odd"><td><a href="mod_authnz_fcgi.html#authnzfcgicheckauthnprovider">AuthnzFcgiCheckAuthnProvider <em>provider-name</em>|<code>None</code>
-<em>option</em> ...</a></td><td></td><td>d</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enables a FastCGI application to handle the check_authn
-authentication hook.</td></tr>
+<em>option</em> ...</a></td><td></td><td>d</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Permet à une application FastCGI de gérer l'accroche
+d'authentification check_authn.</td></tr>
 <tr><td><a href="mod_authnz_fcgi.html#authnzfcgidefineprovider">AuthnzFcgiDefineProvider <em>type</em> <em>provider-name</em>
-<em>backend-address</em></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Defines a FastCGI application as a provider for
-authentication and/or authorization</td></tr>
+<em>backend-address</em></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Définit une application FastCGI en tant que fournisseur
+d'authentification et/ou autorisation</td></tr>
 <tr class="odd"><td><a href="mod_authn_core.html#authtype">AuthType None|Basic|Digest|Form</a></td><td></td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Type d'authentification utilisateur</td></tr>
 <tr><td><a href="mod_authn_file.html#authuserfile">AuthUserFile <var>chemin-fichier</var></a></td><td></td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Définit le nom d'un fichier texte pour l'authentification
 contenant la liste des utilisateurs et de leurs mots de
@@ -339,11 +339,13 @@ charge</td></tr>
 <tr><td><a href="mod_proxy.html#balancerpersist">BalancerPersist On|Off</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Tente de conserver les changements effectués par le
     gestionnaire de répartition de charge après un redémarrage du
     serveur.</td></tr>
-<tr class="odd"><td><a href="mod_brotli.html#brotlialteretag">BrotliAlterETag AddSuffix|NoChange|Remove</a></td><td> AddSuffix </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">How the outgoing ETag header should be modified during compression</td></tr>
-<tr><td><a href="mod_brotli.html#brotlicompressionmaxinputblock">BrotliCompressionMaxInputBlock <var>value</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum input block size</td></tr>
-<tr class="odd"><td><a href="mod_brotli.html#brotlicompressionquality">BrotliCompressionQuality <var>value</var></a></td><td> 5 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Compression quality</td></tr>
-<tr><td><a href="mod_brotli.html#brotlicompressionwindow">BrotliCompressionWindow <var>value</var></a></td><td> 18 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Brotli sliding compression window size</td></tr>
-<tr class="odd"><td><a href="mod_brotli.html#brotlifilternote">BrotliFilterNote [<var>type</var>] <var>notename</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Places the compression ratio in a note for logging</td></tr>
+<tr class="odd"><td><a href="mod_brotli.html#brotlialteretag">BrotliAlterETag AddSuffix|NoChange|Remove</a></td><td> AddSuffix </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Comment l'en-tête de réponse ETag doit être modifié au cours de la
+compression</td></tr>
+<tr><td><a href="mod_brotli.html#brotlicompressionmaxinputblock">BrotliCompressionMaxInputBlock <var>value</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Taille maximale du bloc de données en entrée</td></tr>
+<tr class="odd"><td><a href="mod_brotli.html#brotlicompressionquality">BrotliCompressionQuality <var>value</var></a></td><td> 5 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Qualité de la compression</td></tr>
+<tr><td><a href="mod_brotli.html#brotlicompressionwindow">BrotliCompressionWindow <var>value</var></a></td><td> 18 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Taille de la fenêtre de compression glissante brotli</td></tr>
+<tr class="odd"><td><a href="mod_brotli.html#brotlifilternote">BrotliFilterNote [<var>type</var>] <var>notename</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enregistre le taux de compression dans une note à des fins de
+journalisation</td></tr>
 <tr><td><a href="mod_setenvif.html#browsermatch">BrowserMatch <em>regex [!]env-variable</em>[=<em>valeur</em>]
 [[!]<em>env-variable</em>[=<em>valeur</em>]] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Définit des variables d'environnement en fonction du
 contenu de l'en-tête HTTP User-Agent</td></tr>
@@ -451,25 +453,29 @@ s'applique</td></tr>
 <tr class="odd"><td><a href="mod_usertrack.html#cookietracking">CookieTracking on|off</a></td><td> off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active le cookie traceur</td></tr>
 <tr><td><a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory <var>répertoire</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Le répertoire dans lequel le serveur HTTP Apache va tenter de se
 positionner avant d'effectuer un vidage mémoire</td></tr>
-<tr class="odd"><td><a href="mod_crypto.html#cryptocipher">CryptoCipher name</a></td><td> aes256 </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Cipher to be used by the crypto filter</td></tr>
-<tr><td><a href="mod_crypto.html#cryptodriver">CryptoDriver name</a></td><td> openssl </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Name of the crypto driver to use</td></tr>
-<tr class="odd"><td><a href="mod_crypto.html#cryptoiv">CryptoIV value</a></td><td> none </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">IV (Initialisation Vector) to be used by the crypto filter</td></tr>
-<tr><td><a href="mod_crypto.html#cryptokey">CryptoKey value</a></td><td> none </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Key to be used by the crypto filter</td></tr>
-<tr class="odd"><td><a href="mod_crypto.html#cryptosize">CryptoSize integer</a></td><td> 131072 </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum size in bytes to buffer by the crypto filter</td></tr>
-<tr><td><a href="mod_ssl_ct.html#ctauditstorage">CTAuditStorage <em>directory</em></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Existing directory where data for off-line audit will be stored</td></tr>
-<tr class="odd"><td><a href="mod_ssl_ct.html#ctlogclient">CTLogClient <em>executable</em></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Location of certificate-transparency log client tool</td></tr>
-<tr><td><a href="mod_ssl_ct.html#ctlogconfigdb">CTLogConfigDB <em>filename</em></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Log configuration database supporting dynamic updates</td></tr>
-<tr class="odd"><td><a href="mod_ssl_ct.html#ctmaxsctage">CTMaxSCTAge <em>num-seconds</em></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum age of SCT obtained from a log, before it will be
-refreshed</td></tr>
-<tr><td><a href="mod_ssl_ct.html#ctproxyawareness">CTProxyAwareness <em>oblivious|aware|require</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Level of CT awareness and enforcement for a proxy
+<tr class="odd"><td><a href="mod_crypto.html#cryptocipher">CryptoCipher name</a></td><td> aes256 </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">L'algorithme de chiffrement que le filtre crypto doit utiliser</td></tr>
+<tr><td><a href="mod_crypto.html#cryptodriver">CryptoDriver name</a></td><td> openssl </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Nom du pilote crypto à utiliser</td></tr>
+<tr class="odd"><td><a href="mod_crypto.html#cryptoiv">CryptoIV value</a></td><td> none </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Le Vecteur d'Initialisation IV (Initialisation Vector) que le
+filtre crypto doit utiliser</td></tr>
+<tr><td><a href="mod_crypto.html#cryptokey">CryptoKey value</a></td><td> none </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Clé que le filtre crypto doit utiliser</td></tr>
+<tr class="odd"><td><a href="mod_crypto.html#cryptosize">CryptoSize integer</a></td><td> 131072 </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Taille maximale en octets du tampon utilisé par le filtre crypto</td></tr>
+<tr><td><a href="mod_ssl_ct.html#ctauditstorage">CTAuditStorage <em>directory</em></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Répertoire de stockage des données pour l'audit hors ligne</td></tr>
+<tr class="odd"><td><a href="mod_ssl_ct.html#ctlogclient">CTLogClient <em>executable</em></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Chemin de l'utilitaire client du log certificate-transparency</td></tr>
+<tr><td><a href="mod_ssl_ct.html#ctlogconfigdb">CTLogConfigDB <em>filename</em></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Base de données pour la configuration des logs avec mises à
+jour dynamiques</td></tr>
+<tr class="odd"><td><a href="mod_ssl_ct.html#ctmaxsctage">CTMaxSCTAge <em>num-seconds</em></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Age maximum d'un SCT obtenu depuis un log avant son
+raffraîchissement</td></tr>
+<tr><td><a href="mod_ssl_ct.html#ctproxyawareness">CTProxyAwareness <em>oblivious|aware|require</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Niveau de prise en compte et de mise en oeuvre des CTs pour un
+mandataire
 </td></tr>
-<tr class="odd"><td><a href="mod_ssl_ct.html#ctsctstorage">CTSCTStorage <em>directory</em></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Existing directory where SCTs are managed</td></tr>
-<tr><td><a href="mod_ssl_ct.html#ctserverhellosctlimit">CTServerHelloSCTLimit <em>limit</em></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Limit on number of SCTs that can be returned in
-ServerHello</td></tr>
+<tr class="odd"><td><a href="mod_ssl_ct.html#ctsctstorage">CTSCTStorage <em>directory</em></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Répertoire où les SCTs sont stockés</td></tr>
+<tr><td><a href="mod_ssl_ct.html#ctserverhellosctlimit">CTServerHelloSCTLimit <em>limit</em></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Nombre maximum de SCTs pouvant être renvoyés au cours de la
+phase ServerHello</td></tr>
 <tr class="odd"><td><a href="mod_ssl_ct.html#ctstaticlogconfig">CTStaticLogConfig <em>log-id|-</em> <em>public-key-file|-</em>
 <em>1|0|-</em> <em>min-timestamp|-</em> <em>max-timestamp|-</em>
-<em>log-URL|-</em></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Static configuration of information about a log</td></tr>
-<tr><td><a href="mod_ssl_ct.html#ctstaticscts">CTStaticSCTs <em>certificate-pem-file</em> <em>sct-directory</em></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Static configuration of one or more SCTs for a server certificate
+<em>log-URL|-</em></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configuration statique d'un log</td></tr>
+<tr><td><a href="mod_ssl_ct.html#ctstaticscts">CTStaticSCTs <em>certificate-pem-file</em> <em>sct-directory</em></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Configuration statique d'un ou plusieurs SCTs pour un
+certificat de serveur
 </td></tr>
 <tr class="odd"><td><a href="mod_log_config.html#customlog">CustomLog  <var>fichier</var>|<var>pipe</var>|<var>provider</var>
 <var>format</var>|<var>alias</var>
@@ -604,12 +610,13 @@ spécifiés sous la forme d'expressions rationnelles</td></tr>
  <var>expression</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Register a content filter</td></tr>
 <tr class="odd"><td><a href="mod_filter.html#filtertrace">FilterTrace <var>filter-name</var> <var>level</var></a></td><td></td><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Get debug/diagnostic information from
     <code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code></td></tr>
-<tr><td><a href="mod_firehose.html#firehoseconnectioninput">FirehoseConnectionInput <var>[ block | nonblock ]</var> <var>filename</var></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Capture traffic coming into the server on each connection</td></tr>
-<tr class="odd"><td><a href="mod_firehose.html#firehoseconnectionoutput">FirehoseConnectionOutput <var>[ block | nonblock ]</var> <var>filename</var></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Capture traffic going out of the server on each connection</td></tr>
-<tr><td><a href="mod_firehose.html#firehoseproxyconnectioninput">FirehoseProxyConnectionInput <var>[ block | nonblock ]</var> <var>filename</var></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Capture traffic coming into the back of mod_proxy</td></tr>
-<tr class="odd"><td><a href="mod_firehose.html#firehoseproxyconnectionoutput">FirehoseProxyConnectionOutput <var>[ block | nonblock ]</var> <var>filename</var></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Capture traffic sent out from the back of mod_proxy</td></tr>
-<tr><td><a href="mod_firehose.html#firehoserequestinput">FirehoseRequestInput <var>[ block | nonblock ]</var> <var>filename</var></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Capture traffic coming into the server on each request</td></tr>
-<tr class="odd"><td><a href="mod_firehose.html#firehoserequestoutput">FirehoseRequestOutput <var>[ block | nonblock ]</var> <var>filename</var></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Capture traffic going out of the server on each request</td></tr>
+<tr><td><a href="mod_firehose.html#firehoseconnectioninput">FirehoseConnectionInput <var>[ block | nonblock ]</var> <var>filename</var></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Capture le trafic entrant dans le serveur à chaque
+connexion.</td></tr>
+<tr class="odd"><td><a href="mod_firehose.html#firehoseconnectionoutput">FirehoseConnectionOutput <var>[ block | nonblock ]</var> <var>filename</var></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Capture le trafic sortant du serveur à chaque connexion</td></tr>
+<tr><td><a href="mod_firehose.html#firehoseproxyconnectioninput">FirehoseProxyConnectionInput <var>[ block | nonblock ]</var> <var>filename</var></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Capture le trafic entrant dans mod_proxy</td></tr>
+<tr class="odd"><td><a href="mod_firehose.html#firehoseproxyconnectionoutput">FirehoseProxyConnectionOutput <var>[ block | nonblock ]</var> <var>filename</var></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Capture le trafic envoyé par mod_proxy</td></tr>
+<tr><td><a href="mod_firehose.html#firehoserequestinput">FirehoseRequestInput <var>[ block | nonblock ]</var> <var>filename</var></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Capture le trafic entrant dans le serveur à chaque requête</td></tr>
+<tr class="odd"><td><a href="mod_firehose.html#firehoserequestoutput">FirehoseRequestOutput <var>[ block | nonblock ]</var> <var>filename</var></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Capture le trafic sortant du serveur à chaque requête</td></tr>
 <tr><td><a href="mod_negotiation.html#forcelanguagepriority">ForceLanguagePriority None|Prefer|Fallback [Prefer|Fallback]</a></td><td> Prefer </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Action à entreprendre si un document acceptable unique
 n'est pas trouvé</td></tr>
 <tr class="odd"><td><a href="core.html#forcetype">ForceType <var>type médium</var>|None</a></td><td></td><td>dh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Force le type de médium spécifié dans le champ d'en-tête
@@ -625,24 +632,31 @@ gmon.out.</td></tr>
 s'arrêter dans le cas d'un arrêt "en douceur"</td></tr>
 <tr><td><a href="mod_unixd.html#group">Group <var>groupe unix</var></a></td><td> #-1 </td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">Groupe sous lequel le serveur va traiter les
 requêtes</td></tr>
-<tr class="odd"><td><a href="mod_http2.html#h2copyfiles" id="H" name="H">H2CopyFiles on|off</a></td><td> off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Determine file handling in responses</td></tr>
-<tr><td><a href="mod_http2.html#h2direct">H2Direct on|off</a></td><td> on for h2c, off for +</td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">H2 Direct Protocol Switch</td></tr>
-<tr class="odd"><td><a href="mod_http2.html#h2earlyhints">H2EarlyHints on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Determine sending of 103 status codes</td></tr>
-<tr><td><a href="mod_http2.html#h2maxsessionstreams">H2MaxSessionStreams <em>n</em></a></td><td> 100 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum number of active streams per HTTP/2 session.</td></tr>
-<tr class="odd"><td><a href="mod_http2.html#h2maxworkeridleseconds">H2MaxWorkerIdleSeconds <em>n</em></a></td><td> 600 </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum number of seconds h2 workers remain idle until shut down.</td></tr>
-<tr><td><a href="mod_http2.html#h2maxworkers">H2MaxWorkers <em>n</em></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum number of worker threads to use per child process.</td></tr>
-<tr class="odd"><td><a href="mod_http2.html#h2minworkers">H2MinWorkers <em>n</em></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Minimal number of worker threads to use per child process.</td></tr>
-<tr><td><a href="mod_http2.html#h2moderntlsonly">H2ModernTLSOnly on|off</a></td><td> on </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Require HTTP/2 connections to be "modern TLS" only</td></tr>
-<tr class="odd"><td><a href="mod_http2.html#h2push">H2Push on|off</a></td><td> on </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">H2 Server Push Switch</td></tr>
-<tr><td><a href="mod_http2.html#h2pushdiarysize">H2PushDiarySize <em>n</em></a></td><td> 256 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">H2 Server Push Diary Size</td></tr>
-<tr class="odd"><td><a href="mod_http2.html#h2pushpriority">H2PushPriority <em>mime-type</em> [after|before|interleaved] [weight]</a></td><td> * After 16 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">H2 Server Push Priority</td></tr>
-<tr><td><a href="mod_http2.html#h2pushresource">H2PushResource [add] path [critical]</a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Declares resources for early pushing to the client</td></tr>
-<tr class="odd"><td><a href="mod_http2.html#h2serializeheaders">H2SerializeHeaders on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Serialize Request/Response Processing Switch</td></tr>
-<tr><td><a href="mod_http2.html#h2streammaxmemsize">H2StreamMaxMemSize <em>bytes</em></a></td><td> 65536 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum amount of output data buffered per stream.</td></tr>
+<tr class="odd"><td><a href="mod_http2.html#h2copyfiles" id="H" name="H">H2CopyFiles on|off</a></td><td> off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Contrôle la gestion des fichiers dans les réponses</td></tr>
+<tr><td><a href="mod_http2.html#h2direct">H2Direct on|off</a></td><td> on pour h2c, off po +</td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Activation du protocole H2 Direct</td></tr>
+<tr class="odd"><td><a href="mod_http2.html#h2earlyhints">H2EarlyHints on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Contrôle l'envoi de codes d'état 103</td></tr>
+<tr><td><a href="mod_http2.html#h2maxsessionstreams">H2MaxSessionStreams <em>n</em></a></td><td> 100 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Nombre maximal de flux actifs par session HTTP/2.</td></tr>
+<tr class="odd"><td><a href="mod_http2.html#h2maxworkeridleseconds">H2MaxWorkerIdleSeconds <em>n</em></a></td><td> 600 </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Nombre maximal de secondes pendant lequel une unité de
+	traitement h2 pourra rester inactive sans être arrêtée.</td></tr>
+<tr><td><a href="mod_http2.html#h2maxworkers">H2MaxWorkers <em>n</em></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Nombre maximal de threads à utiliser pour chaque processus
+	enfant.</td></tr>
+<tr class="odd"><td><a href="mod_http2.html#h2minworkers">H2MinWorkers <em>n</em></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Nombre minimal de threads à utiliser pour chaque processus
+	enfant.</td></tr>
+<tr><td><a href="mod_http2.html#h2moderntlsonly">H2ModernTLSOnly on|off</a></td><td> on </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Impose les connexions HTTP/2 en mode "TLS moderne"
+	seulement</td></tr>
+<tr class="odd"><td><a href="mod_http2.html#h2push">H2Push on|off</a></td><td> on </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Activation/désactivation du server push H2</td></tr>
+<tr><td><a href="mod_http2.html#h2pushdiarysize">H2PushDiarySize n</a></td><td> 256 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Taille du journal des Pushes H2</td></tr>
+<tr class="odd"><td><a href="mod_http2.html#h2pushpriority">H2PushPriority mime-type [after|before|interleaved] [weight]</a></td><td> * After 16 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Priorité des pushes H2</td></tr>
+<tr><td><a href="mod_http2.html#h2pushresource">H2PushResource [add] path [critical]</a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Déclare des ressources à proposer ("pusher") au client</td></tr>
+<tr class="odd"><td><a href="mod_http2.html#h2serializeheaders">H2SerializeHeaders on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active/désactive la sérialisation du traitement des
+	requêtes/réponses</td></tr>
+<tr><td><a href="mod_http2.html#h2streammaxmemsize">H2StreamMaxMemSize <em>bytes</em></a></td><td> 65536 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Quantité maximale de données en sortie mises en tampon par
+	flux.</td></tr>
 <tr class="odd"><td><a href="mod_http2.html#h2tlscooldownsecs">H2TLSCoolDownSecs <em>seconds</em></a></td><td> 1 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">-</td></tr>
 <tr><td><a href="mod_http2.html#h2tlswarmupsize">H2TLSWarmUpSize <em>amount</em></a></td><td> 1048576 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">-</td></tr>
-<tr class="odd"><td><a href="mod_http2.html#h2upgrade">H2Upgrade on|off</a></td><td> on for h2c, off for +</td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">H2 Upgrade Protocol Switch</td></tr>
-<tr><td><a href="mod_http2.html#h2windowsize">H2WindowSize <em>bytes</em></a></td><td> 65535 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Size of Stream Window for upstream data.</td></tr>
+<tr class="odd"><td><a href="mod_http2.html#h2upgrade">H2Upgrade on|off</a></td><td> on pour h2c, off po +</td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Activation/Désactivation du protocole de mise à jour H2</td></tr>
+<tr><td><a href="mod_http2.html#h2windowsize">H2WindowSize <em>bytes</em></a></td><td> 65535 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Taille maximale des paquets de données pour les transmissions client
+	vers serveur.</td></tr>
 <tr class="odd"><td><a href="mod_headers.html#header">Header [<var>condition</var>] add|append|echo|edit|edit*|merge|set|setifempty|unset|note
 <var>en-tête</var> [[expr=]<var>valeur</var>
 [<var>remplacement</var>]
@@ -666,7 +680,8 @@ clients</td></tr>
 l'utilisateur distant</td></tr>
 <tr class="odd"><td><a href="mod_ident.html#identitychecktimeout">IdentityCheckTimeout <var>secondes</var></a></td><td> 30 </td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Détermine le délai d'attente pour les requêtes
 ident</td></tr>
-<tr><td><a href="mod_systemd.html#idleshutdown">IdleShutdown seconds</a></td><td> 0 </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Enable shutting down the httpd when it is idle for some time.</td></tr>
+<tr><td><a href="mod_systemd.html#idleshutdown">IdleShutdown seconds</a></td><td> 0 </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Permet d'arrêter httpd lorsque qu'il est inactif pendant un
+certain temps.</td></tr>
 <tr class="odd"><td><a href="core.html#if">&lt;If <var>expression</var>&gt; ... &lt;/If&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Contient des directives qui ne s'appliquent que si une
 condition est satisfaite au cours du traitement d'une
 requête</td></tr>
@@ -685,8 +700,9 @@ de la présence ou de l'absence d'un module spécifique</td></tr>
 <tr><td><a href="core.html#ifsection">&lt;IfSection [!]<var>section-name</var>&gt; ...
     &lt;/IfSection&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Regroupe des directives dont le traitement est conditionné par la
 présence ou l'absence d'une section particulière</td></tr>
-<tr class="odd"><td><a href="mod_version.html#ifversion">&lt;IfVersion [[!]<var>operator</var>] <var>version</var>&gt; ...
-&lt;/IfVersion&gt;</a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">contains version dependent configuration</td></tr>
+<tr class="odd"><td><a href="mod_version.html#ifversion">&lt;IfVersion [[!]<var>opérateur</var>] <var>version</var>&gt; ...
+&lt;/IfVersion&gt;</a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Contient des portions de configuration dépendantes de la
+version</td></tr>
 <tr><td><a href="mod_imagemap.html#imapbase">ImapBase map|referer|<var>URL</var></a></td><td> http://nom_serveur/ +</td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Valeur par défaut de la directive <code>base</code> des
 fichiers imagemap</td></tr>
 <tr class="odd"><td><a href="mod_imagemap.html#imapdefault">ImapDefault error|nocontent|map|referer|<var>URL</var></a></td><td> nocontent </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Action à entreprendre par défaut lorsqu'un fichier imagemap
@@ -959,26 +975,39 @@ réponse</td></tr>
 shell</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#pidfile">PidFile <var>nom fichier</var></a></td><td> httpd.pid </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Ficher dans lequel le serveur enregistre l'identificateur
 de processus du démon</td></tr>
-<tr><td><a href="mod_policy.html#policyconditional">PolicyConditional <var>ignore|log|enforce</var></a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Enable the conditional request policy.</td></tr>
-<tr class="odd"><td><a href="mod_policy.html#policyconditionalurl">PolicyConditionalURL <var>url</var></a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">URL describing the conditional request policy.</td></tr>
-<tr><td><a href="mod_policy.html#policyenvironment">PolicyEnvironment <var>variable</var> <var>log-value</var> <var>ignore-value</var></a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Override policies based on an environment variable.</td></tr>
-<tr class="odd"><td><a href="mod_policy.html#policyfilter">PolicyFilter <var>on|off</var></a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enable or disable policies for the given URL space.</td></tr>
-<tr><td><a href="mod_policy.html#policykeepalive">PolicyKeepalive <var>ignore|log|enforce</var></a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Enable the keepalive policy.</td></tr>
-<tr class="odd"><td><a href="mod_policy.html#policykeepaliveurl">PolicyKeepaliveURL <var>url</var></a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">URL describing the keepalive policy.</td></tr>
-<tr><td><a href="mod_policy.html#policylength">PolicyLength <var>ignore|log|enforce</var></a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Enable the content length policy.</td></tr>
-<tr class="odd"><td><a href="mod_policy.html#policylengthurl">PolicyLengthURL <var>url</var></a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">URL describing the content length policy.</td></tr>
-<tr><td><a href="mod_policy.html#policymaxage">PolicyMaxage <var>ignore|log|enforce</var> <var>age</var></a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Enable the caching minimum max-age policy.</td></tr>
-<tr class="odd"><td><a href="mod_policy.html#policymaxageurl">PolicyMaxageURL <var>url</var></a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">URL describing the caching minimum freshness lifetime policy.</td></tr>
-<tr><td><a href="mod_policy.html#policynocache">PolicyNocache <var>ignore|log|enforce</var></a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Enable the caching no-cache policy.</td></tr>
-<tr class="odd"><td><a href="mod_policy.html#policynocacheurl">PolicyNocacheURL <var>url</var></a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">URL describing the caching no-cache policy.</td></tr>
-<tr><td><a href="mod_policy.html#policytype">PolicyType <var>ignore|log|enforce</var> <var>type</var> [ <var>type</var> [ ... ]]</a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Enable the content type policy.</td></tr>
-<tr class="odd"><td><a href="mod_policy.html#policytypeurl">PolicyTypeURL <var>url</var></a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">URL describing the content type policy.</td></tr>
-<tr><td><a href="mod_policy.html#policyvalidation">PolicyValidation <var>ignore|log|enforce</var></a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Enable the validation policy.</td></tr>
-<tr class="odd"><td><a href="mod_policy.html#policyvalidationurl">PolicyValidationURL <var>url</var></a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">URL describing the content type policy.</td></tr>
-<tr><td><a href="mod_policy.html#policyvary">PolicyVary <var>ignore|log|enforce</var> <var>header</var> [ <var>header</var> [ ... ]]</a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Enable the Vary policy.</td></tr>
-<tr class="odd"><td><a href="mod_policy.html#policyvaryurl">PolicyVaryURL <var>url</var></a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">URL describing the content type policy.</td></tr>
-<tr><td><a href="mod_policy.html#policyversion">PolicyVersion <var>ignore|log|enforce</var> <var>HTTP/0.9|HTTP/1.0|HTTP/1.1</var></a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Enable the version policy.</td></tr>
-<tr class="odd"><td><a href="mod_policy.html#policyversionurl">PolicyVersionURL <var>url</var></a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">URL describing the minimum request HTTP version policy.</td></tr>
+<tr><td><a href="mod_policy.html#policyconditional">PolicyConditional <var>ignore|log|enforce</var></a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Active le filtrage des requêtes conditionnelles.</td></tr>
+<tr class="odd"><td><a href="mod_policy.html#policyconditionalurl">PolicyConditionalURL <var>url</var></a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">URL contenant la description de la politique de filtrage
+des requêtes conditionnelles.</td></tr>
+<tr><td><a href="mod_policy.html#policyenvironment">PolicyEnvironment <var>variable</var> <var>log-value</var> <var>ignore-value</var></a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Modification des règles de filtrage en fonction d'une
+variable d'environnement.</td></tr>
+<tr class="odd"><td><a href="mod_policy.html#policyfilter">PolicyFilter <var>on|off</var></a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active ou désactive le filtrage pour un espace d'URL donné.</td></tr>
+<tr><td><a href="mod_policy.html#policykeepalive">PolicyKeepalive <var>ignore|log|enforce</var></a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Active la politique de persistance.</td></tr>
+<tr class="odd"><td><a href="mod_policy.html#policykeepaliveurl">PolicyKeepaliveURL <var>url</var></a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">URL contenant la description de la politique de persistance.</td></tr>
+<tr><td><a href="mod_policy.html#policylength">PolicyLength <var>ignore|log|enforce</var></a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Active le filtrage de la spécification de la longueur du
+contenu.</td></tr>
+<tr class="odd"><td><a href="mod_policy.html#policylengthurl">PolicyLengthURL <var>url</var></a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">URL contenant la description de la politique de filtrage de
+la spécification de la longueur du contenu.</td></tr>
+<tr><td><a href="mod_policy.html#policymaxage">PolicyMaxage <var>ignore|log|enforce</var> <var>age</var></a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Active le filtrage de la durée de vie des réponses.</td></tr>
+<tr class="odd"><td><a href="mod_policy.html#policymaxageurl">PolicyMaxageURL <var>url</var></a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">URL contenant la description de la politique de filtrage
+des réponses en fonction de leur durée de vie.</td></tr>
+<tr><td><a href="mod_policy.html#policynocache">PolicyNocache <var>ignore|log|enforce</var></a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Active le filtrage des réponses qui se définissent
+elles-mêmes comme impossibles à mettre en cache.</td></tr>
+<tr class="odd"><td><a href="mod_policy.html#policynocacheurl">PolicyNocacheURL <var>url</var></a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">URL contenant la description de la politique de filtrage
+des réponses qui se définissent elles-mêmes comme impossibles à mettre
+en cache.</td></tr>
+<tr><td><a href="mod_policy.html#policytype">PolicyType <var>ignore|log|enforce</var> <var>type</var> [ <var>type</var> [ ... ]]</a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Active la politique des types de contenus.</td></tr>
+<tr class="odd"><td><a href="mod_policy.html#policytypeurl">PolicyTypeURL <var>url</var></a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">URL contenant la description de la politique des types de
+contenu.</td></tr>
+<tr><td><a href="mod_policy.html#policyvalidation">PolicyValidation <var>ignore|log|enforce</var></a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Active le filtrage de la validation du contenu.</td></tr>
+<tr class="odd"><td><a href="mod_policy.html#policyvalidationurl">PolicyValidationURL <var>url</var></a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">URL contenant la description de la politique de filtrage de
+la validation du contenu.</td></tr>
+<tr><td><a href="mod_policy.html#policyvary">PolicyVary <var>ignore|log|enforce</var> <var>header</var> [ <var>header</var> [ ... ]]</a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Active la politique de filtrage de l'en-tête Vary.</td></tr>
+<tr class="odd"><td><a href="mod_policy.html#policyvaryurl">PolicyVaryURL <var>url</var></a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">URL contenant la description de la politique de filtrage de
+l'en-tête Vary.</td></tr>
+<tr><td><a href="mod_policy.html#policyversion">PolicyVersion <var>ignore|log|enforce</var> <var>HTTP/0.9|HTTP/1.0|HTTP/1.1</var></a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Active le filtrage des requêtes en fonction du numéro de
+version HTTP.</td></tr>
+<tr class="odd"><td><a href="mod_policy.html#policyversionurl">PolicyVersionURL <var>url</var></a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">URL contenant la description de la politique de filtrage
+des requêtes en fonction du numéro de version HTTP.</td></tr>
 <tr><td><a href="mod_privileges.html#privilegesmode">PrivilegesMode FAST|SECURE|SELECTIVE</a></td><td> FAST </td><td>svd</td><td>X</td></tr><tr><td class="descr" colspan="4">Fait un compromis entre d'une part l'efficacité et la
 vitesse de traitement et d'autre part la sécurité à l'encontre des codes
 malicieux supportant les privilèges.</td></tr>
@@ -1013,9 +1042,13 @@ mandatés</td></tr>
 doivent-ils être échappés lorsqu'ils sont envoyés au serveur FTP ?</td></tr>
 <tr><td><a href="mod_proxy_ftp.html#proxyftplistonwildcard">ProxyFtpListOnWildcard [on|off]</a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Les caractères génériques dans les noms de fichiers
 demandés doivent-ils déclencher l'affichage d'un listing ?</td></tr>
-<tr class="odd"><td><a href="mod_proxy_hcheck.html#proxyhcexpr">ProxyHCExpr name {ap_expr expression}</a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Creates a named condition expression to use to determine health of the backend based on its response.</td></tr>
-<tr><td><a href="mod_proxy_hcheck.html#proxyhctemplate">ProxyHCTemplate name parameter=setting &lt;...&gt;</a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Creates a named template for setting various health check parameters</td></tr>
-<tr class="odd"><td><a href="mod_proxy_hcheck.html#proxyhctpsize">ProxyHCTPsize &lt;size&gt;</a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the total server-wide size of the threadpool used for the health check workers.</td></tr>
+<tr class="odd"><td><a href="mod_proxy_hcheck.html#proxyhcexpr">ProxyHCExpr name {ap_expr expression}</a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Crée et nomme une expression conditionnelle à utiliser pour
+déterminer la santé d'un serveur d'arrière-plan en fonction de sa valeur.</td></tr>
+<tr><td><a href="mod_proxy_hcheck.html#proxyhctemplate">ProxyHCTemplate name parameter=setting &lt;...&gt;</a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Crée et nomme un modèle permettant de définir différents
+paramètres de check up</td></tr>
+<tr class="odd"><td><a href="mod_proxy_hcheck.html#proxyhctpsize">ProxyHCTPsize &lt;size&gt;</a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Définit la taille totale, pour l'ensemble du
+serveur, du jeu de threads utilisé pour le check up des
+équipiers.</td></tr>
 <tr><td><a href="mod_proxy_html.html#proxyhtmlbufsize">ProxyHTMLBufSize <var>nb-octets</var></a></td><td></td><td>svd</td><td>B</td></tr><tr><td class="descr" colspan="4">Définit l'incrément de la taille du tampon, ainsi que sa
 taille initiale, pour la mise en
 tampon des scripts en ligne et des feuilles de style.</td></tr>
@@ -1090,9 +1123,9 @@ mod_status</td></tr>
 mandatées</td></tr>
 <tr class="odd"><td><a href="mod_proxy.html#proxyvia">ProxyVia On|Off|Full|Block</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Information fournie dans l'en-tête de réponse HTTP
 <code>Via</code> pour les requêtes mandatées</td></tr>
-<tr><td><a href="mod_proxy_wstunnel.html#proxywebsocketasync">ProxyWebsocketAsync ON|OFF</a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Instructs this module to try to create an asynchronous tunnel</td></tr>
-<tr class="odd"><td><a href="mod_proxy_wstunnel.html#proxywebsocketasyncdelay">ProxyWebsocketAsyncDelay <var>num</var>[ms]</a></td><td> 0 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the amount of time the tunnel waits synchronously for data</td></tr>
-<tr><td><a href="mod_proxy_wstunnel.html#proxywebsocketidletimeout">ProxyWebsocketIdleTimeout <var>num</var>[ms]</a></td><td> 0 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets the maximum amount of time to wait for data on the websockets tunnel</td></tr>
+<tr><td><a href="mod_proxy_wstunnel.html#proxywebsocketasync">ProxyWebsocketAsync ON|OFF</a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Création d'un tunnel asynchrone</td></tr>
+<tr class="odd"><td><a href="mod_proxy_wstunnel.html#proxywebsocketasyncdelay">ProxyWebsocketAsyncDelay <var>num</var>[ms]</a></td><td> 0 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Temps d'attente synchrone maximum pour des données</td></tr>
+<tr><td><a href="mod_proxy_wstunnel.html#proxywebsocketidletimeout">ProxyWebsocketIdleTimeout <var>num</var>[ms]</a></td><td> 0 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Temps d'attente maximum pour des données sur le tunnel websockets</td></tr>
 <tr class="odd"><td><a href="core.html#qualifyredirecturl" id="Q" name="Q">QualifyRedirectURL ON|OFF</a></td><td> OFF </td><td>svd</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Vérifie si la variable d'environnement REDIRECT_URL est
 pleinement qualifiée</td></tr>
 <tr><td><a href="mod_autoindex.html#readmename" id="R" name="R">ReadmeName <var>nom-fichier</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Nom du fichier dont le contenu sera inséré à la fin de
@@ -1367,8 +1400,8 @@ OCSP</td></tr>
 SSL</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslpassphrasedialog">SSLPassPhraseDialog <em>type</em></a></td><td> builtin </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Méthode utilisée pour entrer le mot de passe pour les clés
 privées chiffrées</td></tr>
-<tr><td><a href="mod_ssl.html#sslpolicy">&lt;SSLPolicy <em>name</em>&gt;SSLPolicy <em>name</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Définit par un nom un jeu de configurations SSLApplique une politique SSL en la référençant par son nom</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslpolicydefine">&lt;SSLPolicy <em>name</em>&gt;</a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Define a named set of SSL configurations</td></tr>
+<tr><td><a href="mod_ssl.html#sslpolicy">SSLPolicy <em>name</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Applique une politique SSL en la référençant par son nom</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslpolicydefine">&lt;SSLPolicy <em>name</em>&gt;</a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Définit par un nom un jeu de configurations SSL</td></tr>
 <tr><td><a href="mod_ssl.html#sslprotocol">SSLProtocol [+|-]<em>protocole</em> ...</a></td><td> all -SSLv3 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Indique les versions du protocole SSL/TLS
 disponibles</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslproxycacertificatefile">SSLProxyCACertificateFile <em>file-path</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Fichier contenant la concaténation des certificats de CA
@@ -1513,7 +1546,7 @@ un serveur virtuel donné</td></tr>
 un serveur virtuel donné</td></tr>
 <tr class="odd"><td><a href="core.html#warning" id="W" name="W">Warning <var>message</var></a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Message d'avertissement personnalisable en provenance de
 l'interprétation du fichier de configuration</td></tr>
-<tr><td><a href="mod_watchdog.html#watchdoginterval">WatchdogInterval <var>time-interval</var>[s]</a></td><td> 1 </td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">Watchdog interval in seconds</td></tr>
+<tr><td><a href="mod_watchdog.html#watchdoginterval">WatchdogInterval <var>time-interval</var>[s]</a></td><td> 1 </td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">Intervalle Watchdog en secondes</td></tr>
 <tr class="odd"><td><a href="mod_include.html#xbithack" id="X" name="X">XBitHack on|off|full</a></td><td> off </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Interprète les directives SSI dans les fichiers dont le bit
 d'exécution est positionné</td></tr>
 <tr><td><a href="mod_xml2enc.html#xml2encalias">xml2EncAlias <var>charset alias [alias ...]</var></a></td><td></td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">Recognise Aliases for encoding values</td></tr>
