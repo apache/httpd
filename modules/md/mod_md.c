@@ -250,7 +250,7 @@ static apr_status_t assign_to_servers(md_t *md, server_rec *base_server,
                  * If mode is "manual", a generated certificate will not match
                  * all necessary names. */
                 if ((!mc->local_80 || !uses_port_only(s, mc->local_80))
-                    && APR_SUCCESS != (rv = md_covers_server(md, s, ptemp))) {
+                    && APR_SUCCESS != (rv = md_covers_server(md, s, p))) {
                     return rv;
                 }
 

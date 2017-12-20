@@ -235,13 +235,25 @@ apr_status_t md_acme_authz_update(md_acme_authz_t *authz, md_acme_t *acme,
     }
     else if (s && !strcmp(s, "valid")) {
         authz->state = MD_ACME_AUTHZ_S_VALID;
+        if (md_log_is_level(p, MD_LOG_DEBUG)) {
+            md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, 0, p, "ACME server validated challenge "
+                          "for %s in %s, ACME response is: %s", 
+                          authz->domain, authz->location, 
+                          md_json_writep(json, p, MD_JSON_FMT_COMPACT));
+        }
     }
     else if (s && !strcmp(s, "invalid")) {
         authz->state = MD_ACME_AUTHZ_S_INVALID;
+        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, 0, p, "ACME server reports challenge "
+                      "for %s in %s as 'invalid', ACME response is: %s", 
+                      authz->domain, authz->location, 
+                      md_json_writep(json, p, MD_JSON_FMT_COMPACT));
     }
     else if (s) {
-        md_log_perror(MD_LOG_MARK, MD_LOG_WARNING, 0, p, "unknown authz state '%s' "
-                      "for %s in %s", s, authz->domain, authz->location);
+        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, 0, p, "ACME server reports unrecognized "
+                      "authz state '%s' for %s in %s, ACME response is: %s", 
+                      s, authz->domain, authz->location, 
+                      md_json_writep(json, p, MD_JSON_FMT_COMPACT));
         return APR_EINVAL;
     }
     return rv;
