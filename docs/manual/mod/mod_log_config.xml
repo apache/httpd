@@ -225,11 +225,11 @@
         </td></tr>
 
     <tr><td><code>%T</code></td>
-        <td>The time taken to serve the request, in seconds. The time measured
+        <td><p>The time taken to serve the request, in seconds. The time measured
         begins when the first line of the HTTP request is read from the host
         operating system by the HTTP server and ends when the last byte of
-        the response is written by the HTTP server to the host operating system.
-        <p> The time measured does <em>not</em> include any of the following:
+        the response is written by the HTTP server to the host operating system.</p>
+        <p>The time measured does <em>not</em> include any of the following:</p>
         <ul>
          <li> Time spent in TCP or TLS handshakes.</li>
          <li> The time before a webserver thread is able to read the first 
@@ -239,7 +239,7 @@
          <li> Time taken for the response to arrive at the client host.</li>
          <li> Time taken for the the useragent to read and process the 
               response.</li>
-       </ul></p>
+       </ul>
     </td></tr>
 
     <tr><td><code>%{<var>UNIT</var>}T</code></td>
