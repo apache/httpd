@@ -1032,14 +1032,12 @@ static void process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * soc
         c->current_thread = thd;
         /* Subsequent request on a conn, and thread number is part of ID */
         c->id = conn_id;
-
-        if (c->aborted) {
-            cs->pub.state = CONN_STATE_LINGER;
-        }
     }
 
-    if (cs->pub.state == CONN_STATE_LINGER) {
+    rc = OK;
+    if (c->aborted || cs->pub.state == CONN_STATE_LINGER) {
         /* do lingering close below */
+        cs->pub.state = CONN_STATE_LINGER;
     }
     else if (c->clogging_input_filters) {
         /* Since we have an input filter which 'clogs' the input stream,
@@ -1050,29 +1048,45 @@ static void process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * soc
          */
         apr_atomic_inc32(&clogged_count);
         rc = ap_run_process_connection(c);
-        if (rc || cs->pub.state != CONN_STATE_SUSPENDED) {
-            cs->pub.state = CONN_STATE_LINGER;
-        }
         apr_atomic_dec32(&clogged_count);
     }
     else if (cs->pub.state == CONN_STATE_READ_REQUEST_LINE) {
 read_request:
         rc = ap_run_process_connection(c);
-
-        /* State will be updated upon successful return: fall thru to either
-         * wait for readability/timeout, do write completion or lingering
-         * close. But forcibly close the connection if the run failed (handler
-         * raised an error for it) or the state is something unexpected at the
-         * MPM level (meaning that no module handled it and we can't do much
-         * here; note that if a handler wants mpm_event to keep POLLIN for the
-         * rest of the request line it should use CHECK_REQUEST_LINE_READABLE
-         * and not simply return OK with the initial READ_REQUEST_LINE state).
-         */
-        if (rc || (cs->pub.state != CONN_STATE_CHECK_REQUEST_LINE_READABLE
-                   && cs->pub.state != CONN_STATE_WRITE_COMPLETION
-                   && cs->pub.state != CONN_STATE_SUSPENDED)) {
-            cs->pub.state = CONN_STATE_LINGER;
-        }
+    }
+    /*
+     * The process_connection hooks above should set the connection state
+     * appropriately upon return, for event MPM to either:
+     * - do lingering close (CONN_STATE_LINGER),
+     * - wait for (readability of) the next request according to the
+     *   keepalive timeout (CONN_STATE_CHECK_REQUEST_LINE_READABLE),
+     * - wait for read/write-ability on the underlying socket according to
+     *   its timeout (CONN_STATE_WRITE_COMPLETION, a legacy name which can
+     *   be also used for readability by setting CONN_SENSE_WANT_READ),
+     * - suspend the connection such that it now interracts with the MPM
+     *   through suspend/resume_connection() hooks, and/or registered poll
+     *   callbacks (PT_USER), and/or registered timed callbacks triggered
+     *   by timer events.
+     * If a process_connection hook returns an error or no hook sets the
+     * the state to one of the above expected value, we forcibly close the
+     * connection (=> CONN_STATE_LINGER).  This covers the cases where no
+     * process_connection hook executes (DECLINED), or one returns OK w/o
+     * touching the state (i.e. CONN_STATE_READ_REQUEST_LINE remains after
+     * the call) which can happen for third-party modules not updated to
+     * work specifically with event/async MPMs while this was expected to
+     * do lingering close unconditionally with worker or prefork MPMs for
+     * instance.
+     */
+    if (rc != OK || (cs->pub.state != CONN_STATE_LINGER
+                     && cs->pub.state != CONN_STATE_CHECK_REQUEST_LINE_READABLE
+                     && cs->pub.state != CONN_STATE_WRITE_COMPLETION
+                     && cs->pub.state != CONN_STATE_SUSPENDED)) {
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO()
+                      "process_socket: connection processing %s: closing",
+                      rc ? apr_psprintf(c->pool, "returned error %i", rc)
+                         : apr_psprintf(c->pool, "unexpected state %i",
+                                                 (int)cs->pub.state));
+        cs->pub.state = CONN_STATE_LINGER;
     }
 
     if (cs->pub.state == CONN_STATE_WRITE_COMPLETION) {
