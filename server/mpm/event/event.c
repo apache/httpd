@@ -1049,10 +1049,16 @@ static void process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * soc
         apr_atomic_inc32(&clogged_count);
         rc = ap_run_process_connection(c);
         apr_atomic_dec32(&clogged_count);
+        if (rc == DONE) {
+            rc = OK;
+        }
     }
     else if (cs->pub.state == CONN_STATE_READ_REQUEST_LINE) {
 read_request:
         rc = ap_run_process_connection(c);
+        if (rc == DONE) {
+            rc = OK;
+        }
     }
     /*
      * The process_connection hooks above should set the connection state
@@ -1077,8 +1083,8 @@ read_request:
      * worker or prefork MPMs for instance.
      */
     if (rc != OK || (cs->pub.state != CONN_STATE_LINGER
-                     && cs->pub.state != CONN_STATE_CHECK_REQUEST_LINE_READABLE
                      && cs->pub.state != CONN_STATE_WRITE_COMPLETION
+                     && cs->pub.state != CONN_STATE_CHECK_REQUEST_LINE_READABLE
                      && cs->pub.state != CONN_STATE_SUSPENDED)) {
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO()
                       "process_socket: connection processing %s: closing",
