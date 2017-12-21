@@ -1058,24 +1058,23 @@ read_request:
      * The process_connection hooks above should set the connection state
      * appropriately upon return, for event MPM to either:
      * - do lingering close (CONN_STATE_LINGER),
-     * - wait for (readability of) the next request according to the
-     *   keepalive timeout (CONN_STATE_CHECK_REQUEST_LINE_READABLE),
-     * - wait for read/write-ability on the underlying socket according to
-     *   its timeout (CONN_STATE_WRITE_COMPLETION, a legacy name which can
-     *   be also used for readability by setting CONN_SENSE_WANT_READ),
-     * - suspend the connection such that it now interracts with the MPM
-     *   through suspend/resume_connection() hooks, and/or registered poll
-     *   callbacks (PT_USER), and/or registered timed callbacks triggered
+     * - wait for (readability of) the next request according to the keepalive
+     *   timeout (CONN_STATE_CHECK_REQUEST_LINE_READABLE),
+     * - wait for read/write-ability of the underlying socket according to its
+     *   timeout (CONN_STATE_WRITE_COMPLETION, a legacy name which can also be
+     *   used for readability by setting the sense to CONN_SENSE_WANT_READ),
+     * - suspend the connection (SUSPENDED) such that it now interracts with
+     *   the MPM through suspend/resume_connection() hooks, and/or registered
+     *   poll callbacks (PT_USER), and/or registered timed callbacks triggered
      *   by timer events.
-     * If a process_connection hook returns an error or no hook sets the
-     * the state to one of the above expected value, we forcibly close the
-     * connection (=> CONN_STATE_LINGER).  This covers the cases where no
-     * process_connection hook executes (DECLINED), or one returns OK w/o
-     * touching the state (i.e. CONN_STATE_READ_REQUEST_LINE remains after
-     * the call) which can happen for third-party modules not updated to
-     * work specifically with event/async MPMs while this was expected to
-     * do lingering close unconditionally with worker or prefork MPMs for
-     * instance.
+     * If a process_connection hook returns an error or no hook sets the state
+     * to one of the above expected value, we forcibly close the connection w/
+     * CONN_STATE_LINGER.  This covers the cases where no process_connection
+     * hook executes (DECLINED), or one returns OK w/o touching the state (i.e.
+     * CONN_STATE_READ_REQUEST_LINE remains after the call) which can happen
+     * with third-party modules not updated to work specifically with event MPM
+     * while this was expected to do lingering close unconditionally with
+     * worker or prefork MPMs for instance.
      */
     if (rc != OK || (cs->pub.state != CONN_STATE_LINGER
                      && cs->pub.state != CONN_STATE_CHECK_REQUEST_LINE_READABLE
