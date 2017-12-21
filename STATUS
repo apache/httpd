@@ -118,12 +118,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) core: silently ignore a not existent file path when IncludeOptional is used.
-     trunk patch: http://svn.apache.org/r1814968
-     2.4.x patch: trunk works (modulo CHANGES)
-                  svn merge -c r1814968 ^/httpd/httpd/trunk .
-     +1: elukey, jim, niq
-
   *) mod_md: backport of mod_ssl changes to get interworking ACME support. Needs mod_md backport propoals above to 
              find mod_md.h include file with otional functions.
      trunk revisions: 1804530,1804531,1805186,1806939,1807232,1808122
