@@ -5,6 +5,9 @@ Changes with Apache 2.4.30
      the workers when the latter fails to add a connection to the pollset.
      [Yann Ylavic]
 
+  *) core: silently ignore a not existent file path when IncludeOptional
+     is used. PR 57585. [Alberto Murillo Silva <powerbsd yahoo.com>, Luca Toscano]
+
   *) mod_macro: fix usability of globally defined macros in .htaccess files.
      PR 57525.  [Jose Kahan <jose w3.org>, Yann Ylavic]
 
