@@ -1064,11 +1064,14 @@ read_request:
      * The process_connection hooks above should set the connection state
      * appropriately upon return, for event MPM to either:
      * - do lingering close (CONN_STATE_LINGER),
-     * - wait for (readability of) the next request according to the keepalive
+     * - wait for readability of the next request with respect to the keepalive
      *   timeout (CONN_STATE_CHECK_REQUEST_LINE_READABLE),
-     * - wait for read/write-ability of the underlying socket according to its
-     *   timeout (CONN_STATE_WRITE_COMPLETION, a legacy name which can also be
-     *   used for readability by setting the sense to CONN_SENSE_WANT_READ),
+     * - keep flushing the output filters stack in nonblocking mode, and then
+     *   if required wait for read/write-ability of the underlying socket with
+     *   respect to its own timeout (CONN_STATE_WRITE_COMPLETION); since write
+     *   completion at some point may require reads (e.g. SSL_ERROR_WANT_READ),
+     *   an output filter can set the sense to CONN_SENSE_WANT_READ at any time
+     *   for event MPM to do the right thing,
      * - suspend the connection (SUSPENDED) such that it now interracts with
      *   the MPM through suspend/resume_connection() hooks, and/or registered
      *   poll callbacks (PT_USER), and/or registered timed callbacks triggered
@@ -1107,10 +1110,20 @@ read_request:
              */
             cs->queue_timestamp = apr_time_now();
             notify_suspend(cs);
-            cs->pfd.reqevents = (
-                    cs->pub.sense == CONN_SENSE_WANT_READ ? APR_POLLIN :
-                            APR_POLLOUT) | APR_POLLHUP | APR_POLLERR;
+
+            if (cs->pub.sense == CONN_SENSE_WANT_READ) {
+                cs->pfd.reqevents = APR_POLLIN;
+            }
+            else {
+                cs->pfd.reqevents = APR_POLLOUT;
+            }
+            /* POLLHUP/ERR are usually returned event only (ignored here), but
+             * some pollset backends may require them in reqevents to do the
+             * right thing, so it shouldn't hurt.
+             */
+            cs->pfd.reqevents |= APR_POLLHUP | APR_POLLERR;
             cs->pub.sense = CONN_SENSE_DEFAULT;
+
             apr_thread_mutex_lock(timeout_mutex);
             TO_QUEUE_APPEND(cs->sc->wc_q, cs);
             rc = apr_pollset_add(event_pollset, &cs->pfd);
