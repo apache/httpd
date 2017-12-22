@@ -403,6 +403,7 @@ static apr_status_t decrypt_string(request_rec * r, const apr_crypto_t *f,
          */
         compute_auth(slider, len, passphrase, passlen, auth);
         if (!ap_crypto_equals(auth, decoded, AP_SIPHASH_DSIZE)) {
+            res = APR_ECRYPT;
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, res, r, APLOGNO(10006)
                     "auth does not match, skipping");
             continue;
