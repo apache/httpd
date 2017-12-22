@@ -124,6 +124,12 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/mod_ssl_minimal_md.diff
      +1: icing, jorton, jim
 
+  *) mod_proxy_html: Add HTML5 FPI, fix typo in handling legacy FPIs,
+     process parsed comments immediately.  Fix PR 56457
+     trunk patch: http://svn.apache.org/r1442409
+                  http://svn.apache.org/r1816458
+     2.4.x patch: svn merge -c r1442409,r1816458 ^/httpd/httpd/trunk .
+     +1: niq, covener, elukey
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -231,13 +237,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1818278
      2.4.x patch: svn merge -c r1818278  ^/httpd/httpd/trunk . 
      +1:  covener, jim
-
-  *) mod_proxy_html: Add HTML5 FPI, fix typo in handling legacy FPIs,
-     process parsed comments immediately.  Fix PR 56457
-     trunk patch: http://svn.apache.org/r1442409
-                  http://svn.apache.org/r1816458
-     2.4.x patch: svn merge -c r1442409,r1816458 ^/httpd/httpd/trunk .
-     +1: niq, covener
 
   *) mod_proxy_html: skip documents < 4 bytes. PR 56286
      trunk patch: http://svn.apache.org/r1599012
