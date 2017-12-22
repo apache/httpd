@@ -964,7 +964,7 @@ static void output_results(int sig)
     if (send_body)
         printf("Total body sent:        %" APR_INT64_T_FMT "\n",
                totalposted);
-    printf("HTML transferred:       %" APR_INT64_T_FMT " bytes\n", totalbread);
+    printf("Body transferred:       %" APR_INT64_T_FMT " bytes\n", totalbread);
 
     /* avoid divide by zero */
     if (timetaken && done) {
@@ -1256,7 +1256,7 @@ static void output_html_results(void)
            "<td colspan=2 %s>%" APR_INT64_T_FMT "</td></tr>\n",
            trstring, tdstring,
            tdstring, totalposted);
-    printf("<tr %s><th colspan=2 %s>HTML transferred:</th>"
+    printf("<tr %s><th colspan=2 %s>Body transferred:</th>"
        "<td colspan=2 %s>%" APR_INT64_T_FMT " bytes</td></tr>\n",
        trstring, tdstring, tdstring, totalbread);
 
@@ -1543,7 +1543,7 @@ read_more:
                 good++;
                 close_connection(c);
             }
-            else if (scode == SSL_ERROR_SYSCALL 
+            else if (scode == SSL_ERROR_SYSCALL
                      && c->read == 0
                      && destsa->next
                      && c->state == STATE_CONNECTING

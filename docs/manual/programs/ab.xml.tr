@@ -298,7 +298,7 @@
         <dd>Sunucudan alınan toplam bayt sayısı. Bu sayı aslında hattan
           gönderilen bayt sayısıdır.</dd>
 
-        <dt>HTML transferred</dt>
+        <dt>Body transferred</dt>
         <dd>Sunucudan alınan belge baytlarının sayısı. Bu sayı HTTP
           başlıklarının bayt sayısını içermez.</dd>
 

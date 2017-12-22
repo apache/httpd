@@ -290,7 +290,7 @@
         <dd>The total number of bytes received from the server. This number
         is essentially the number of bytes sent over the wire.</dd>
 
-        <dt>HTML transferred</dt>
+        <dt>Body transferred</dt>
         <dd>The total number of document bytes received from the server. This
         number excludes bytes received in HTTP headers</dd>
 
