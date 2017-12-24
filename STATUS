@@ -246,6 +246,20 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c r1813991 ^/httpd/httpd/trunk .
      +1: jailletc36, niq
 
+  *) mpm_event: close connections not reported as handled by any module to
+     avoid losing track of them and leaking scoreboard entries.  PR 61551.
+     trunk patch: http://svn.apache.org/r1818804
+                  http://svn.apache.org/r1818951
+                  http://svn.apache.org/r1818958
+                  http://svn.apache.org/r1818960
+                  http://svn.apache.org/r1819027
+                  http://svn.apache.org/r1819214
+     2.4.x patch: trunk works (modulo CHANGES)
+                  svn merge -c 1818804,1818951,1818958,1818960,1819027,1819214 ^/httpd/httpd/trunk .
+                  http://home.apache.org/~ylavic/patches/PR61551.patch
+     +1: ylavic,
+
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
