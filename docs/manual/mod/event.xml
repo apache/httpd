@@ -97,7 +97,9 @@ of the <directive>AsyncRequestWorkerFactor</directive>.</p>
             sockets and they can be re-used to serve other requests.</dd>
 
             <dt>Closing</dt>
-            <dd>Sometimes the MPM needs to perform a lingering close, namely sending back an early error to the client while it is still transmitting data to httpd. Sending the response and then closing the connection immediately is not the correct thing to do since the client (still trying to send the rest of the request) would get a connection reset and could not read the httpd's response. So in such cases, httpd tries to read the rest of the request to allow the client to consume the response. The lingering close is time bounded but it can take relatively long time, so a worker thread can offload this work to the listener.</dd>
+            <dd>Sometimes the MPM needs to perform a lingering close, namely sending back an early error to the client while it is still transmitting data to httpd. Sending the response and then closing the connection immediately is not the correct thing to do since the client (still trying to send the rest of the request) would get a connection reset and could not read the httpd's response. So in such cases, httpd tries to read the rest of the request to allow the client to consume the response. The lingering close is time bounded but it can take relatively long time, so a worker thread can offload this work to the listener. From 2.4.28 onward
+            the listener does not perform the lingering close anymore but it offloads the job to the first worker available.
+            </dd>
         </dl>
 
         <p>These improvements are valid for both HTTP/HTTPS connections.</p>
