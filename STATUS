@@ -238,13 +238,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1601559
                   http://svn.apache.org/r1818624   (style only)
      2.4.x patch: svn merge -c r1599012,r1601559,r1818624 ^/httpd/httpd/trunk .
-     +1: niq
+     +1: niq, jim
 
   *) mod_proxy_html: Save a few bytes in the conf pool when handling
      'ProxyHTMLDoctype' directive with a user defined  FPI
      trunk patch: http://svn.apache.org/r1813991
      2.4.x patch: svn merge -c r1813991 ^/httpd/httpd/trunk .
-     +1: jailletc36, niq
+     +1: jailletc36, niq, jim
 
   *) mpm_event: close connections not reported as handled by any module to
      avoid losing track of them and leaking scoreboard entries.  PR 61551.
