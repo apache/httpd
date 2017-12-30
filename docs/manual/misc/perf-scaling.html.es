@@ -24,7 +24,8 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentación</a> &gt; <a href="../">Versión 2.5</a> &gt; <a href="./">Documentación diversa</a></div><div id="page-content"><div id="preamble"><h1>Escalado de Rendimiento</h1>
 <div class="toplang">
 <p><span>Idiomas disponibles: </span><a href="../en/misc/perf-scaling.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/misc/perf-scaling.html" title="Español">&nbsp;es&nbsp;</a></p>
+<a href="../es/misc/perf-scaling.html" title="Español">&nbsp;es&nbsp;</a> |
+<a href="../fr/misc/perf-scaling.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
 
         <p>La página de ajuste de rendimiento en la documentación de Apache 1.3 dice:</p>
@@ -705,7 +706,8 @@ CacheMaxExpire 21600</pre>
     </div></div>
 <div class="bottomlang">
 <p><span>Idiomas disponibles: </span><a href="../en/misc/perf-scaling.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/misc/perf-scaling.html" title="Español">&nbsp;es&nbsp;</a></p>
+<a href="../es/misc/perf-scaling.html" title="Español">&nbsp;es&nbsp;</a> |
+<a href="../fr/misc/perf-scaling.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comentarios</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
