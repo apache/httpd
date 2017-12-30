@@ -2020,7 +2020,8 @@ the server configuration files</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directorio</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilidad:</a></th><td>Available in 2.3.6 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilidad:</a></th><td>Available in 2.3.6 and later. Not existent file paths without wildcards
+               do not cause SyntaxError after 2.4.30</td></tr>
 </table><p>La Documentación para esta directiva 
         	no ha sido traducida aún. Por favor use la versión en inglés 
         	mientras tanto.
