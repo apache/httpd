@@ -30,6 +30,10 @@
 <a href="../es/mod/event.html" title="Español">&nbsp;es&nbsp;</a> |
 <a href="../fr/mod/event.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
+<div class="outofdate">Esta traducción podría estar
+            obsoleta. Consulte la versión en inglés de la
+            documentación para comprobar si se han producido cambios
+            recientemente.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Descripción:</a></th><td>Una variante del MPM <code class="module"><a href="../mod/worker.html">worker</a></code> con el 
 objetivo de consumir hilos sólo para conexiones con procesamiento 
 activo</td></tr>

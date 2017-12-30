@@ -204,15 +204,15 @@ FilterChain gzip</pre>
     <dd>Suppose we want to downsample all web images, and have filters
     for GIF, JPEG and PNG.
     <pre class="prettyprint lang-config">FilterProvider unpack jpeg_unpack "%{CONTENT_TYPE} = 'image/jpeg'"
-FilterProvider unpack gif_unpack "%{CONTENT_TYPE} = 'image/gif'"
-FilterProvider unpack png_unpack "%{CONTENT_TYPE} = 'image/png'"
+FilterProvider unpack gif_unpack  "%{CONTENT_TYPE} = 'image/gif'"
+FilterProvider unpack png_unpack  "%{CONTENT_TYPE} = 'image/png'"
 
 FilterProvider downsample downsample_filter "%{CONTENT_TYPE} = m|^image/(jpeg|gif|png)|"
 FilterProtocol downsample "change=yes"
 
 FilterProvider repack jpeg_pack "%{CONTENT_TYPE} = 'image/jpeg'"
-FilterProvider repack gif_pack "%{CONTENT_TYPE} = 'image/gif'"
-FilterProvider repack png_pack "%{CONTENT_TYPE} = 'image/png'"
+FilterProvider repack gif_pack  "%{CONTENT_TYPE} = 'image/gif'"
+FilterProvider repack png_pack  "%{CONTENT_TYPE} = 'image/png'"
 &lt;Location "/image-filter"&gt;
     FilterChain unpack downsample repack
 &lt;/Location&gt;</pre>
