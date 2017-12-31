@@ -58,7 +58,7 @@
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_substitute</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>expr= substitution values were added in 2.5.1</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>"expr=" substitution values were added in 2.5.1</td></tr>
 </table>
     <p>The <code class="directive">Substitute</code> directive specifies a
     search and replace pattern to apply to the response body.</p>
@@ -123,7 +123,7 @@
 </div>
 
     <p> When using an <a href="../expr.html">expression</a> for the 
-    <var>substitution</var>, regular expression backreferencwa must be 
+    <var>substitution</var>, regular expression backreferences must be 
     backslash ('\') escaped as illustrated in the example below:</p> 
     <div class="example"><h3>Expression Example</h3><pre class="prettyprint lang-config">&lt;Location "/"&gt;
     AddOutputFilterByType SUBSTITUTE text/html
@@ -132,7 +132,12 @@
 &lt;/Location&gt;</pre>
 </div>
 
-
+    <div class="warning"><h3>Expressions and caching</h3>
+    <p>Caution must be exercised when performing substitutions that reference
+    HTTP request headers.  Because this module operates after response headers
+    have been sent, the <a href="../expr.html">expression parser</a> cannot add
+    referenced HTTP request headers to the outgoing Vary header. </p>
+    </div>
 
     <p>A common use scenario for <code>mod_substitute</code> is the
     situation in which a front-end server proxies requests to a back-end
