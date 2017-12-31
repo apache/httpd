@@ -58,6 +58,7 @@
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_substitute</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>expr= substitution values were added in 2.5.1</td></tr>
 </table>
     <p>The <code class="directive">Substitute</code> directive specifies a
     search and replace pattern to apply to the response body.</p>
@@ -85,8 +86,11 @@
         or regex of a subsequent one.</dd>
     </dl>
 
-    <p>The <var>substitution</var> is may contain literal text and regular
-    expression backreferences</p>
+    <p>The <var>substitution</var> may contain literal text and regular
+    expression backreferences. If the substitution begins with the text 
+    <code>expr=</code> it is intepreted as an <a href="../expr.html">
+    expression</a> which allows access to environment variables and
+    header values.  </p>
 
     <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">&lt;Location "/"&gt;
     AddOutputFilterByType SUBSTITUTE text/html
@@ -117,6 +121,18 @@
     Substitute "s|foo=(\w+),bar=\1|foo/bar=$1|"
 &lt;/Location&gt;</pre>
 </div>
+
+    <p> When using an <a href="../expr.html">expression</a> for the 
+    <var>substitution</var>, regular expression backreferencwa must be 
+    backslash ('\') escaped as illustrated in the example below:</p> 
+    <div class="example"><h3>Expression Example</h3><pre class="prettyprint lang-config">&lt;Location "/"&gt;
+    AddOutputFilterByType SUBSTITUTE text/html
+    Substitute "s/example.com/expr=%{HTTP:HOST}/i"
+    Substitute "s/Hello, (\S+)/expr=Hello from %{REQUEST_URI}, \$1,/i"
+&lt;/Location&gt;</pre>
+</div>
+
+
 
     <p>A common use scenario for <code>mod_substitute</code> is the
     situation in which a front-end server proxies requests to a back-end
