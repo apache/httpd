@@ -123,7 +123,7 @@
 &lt;Location "/"&gt;
     AddOutputFilterByType SUBSTITUTE text/html
     Substitute "s/example.com/expr=%{HTTP:HOST}/i"
-    Substitute "s/Hello, (\S+)/expr=Hello from %{REQUEST_URI}, \$1,/i"
+    Substitute "s/Hello, (\S+)/expr=Hello from %{REQUEST_URI}, \$1/i"
 &lt;/Location&gt;
         </highlight>
     </example>
