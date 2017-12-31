@@ -41,6 +41,7 @@
 <contextlist><context>directory</context>
 <context>.htaccess</context></contextlist>
 <override>FileInfo</override>
+<compatibility>"expr=" substitution values were added in 2.5.1</compatibility>
 
 <usage>
     <p>The <directive>Substitute</directive> directive specifies a
@@ -69,8 +70,11 @@
         or regex of a subsequent one.</dd>
     </dl>
 
-    <p>The <var>substitution</var> is may contain literal text and regular
-    expression backreferences</p>
+    <p>The <var>substitution</var> may contain literal text and regular
+    expression backreferences. If the substitution begins with the text 
+    <code>expr=</code> it is intepreted as an <a href="../expr.html">
+    expression</a> which allows access to environment variables and
+    header values.  </p>
 
     <example><title>Example</title>
     <highlight language="config">
@@ -110,6 +114,26 @@
 &lt;/Location&gt;
     </highlight>
     </example>
+
+    <p> When using an <a href="../expr.html">expression</a> for the 
+    <var>substitution</var>, regular expression backreferences must be 
+    backslash ('\') escaped as illustrated in the example below:</p> 
+    <example><title>Expression Example</title>
+    <highlight language="config">
+&lt;Location "/"&gt;
+    AddOutputFilterByType SUBSTITUTE text/html
+    Substitute "s/example.com/expr=%{HTTP:HOST}/i"
+    Substitute "s/Hello, (\S+)/expr=Hello from %{REQUEST_URI}, \$1,/i"
+&lt;/Location&gt;
+        </highlight>
+    </example>
+
+    <note type="warning"><title>Expressions and caching</title>
+    <p>Caution must be exercised when performing substitutions that reference
+    HTTP request headers.  Because this module operates after response headers
+    have been sent, the <a href="../expr.html">expression parser</a> cannot add
+    referenced HTTP request headers to the outgoing Vary header. </p>
+    </note>
 
     <p>A common use scenario for <code>mod_substitute</code> is the
     situation in which a front-end server proxies requests to a back-end

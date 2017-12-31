@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_susbtitute: Allow expressions in the subtitution, prefixed with expr=
+     [Eric Covener]
+
   *) mod_md: fixed mem pool usage for auto-added server names. Added
      error logging of exact ACME response when challenges failed.
      [Stefan Eissing]
