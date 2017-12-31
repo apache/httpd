@@ -178,7 +178,7 @@ if (@opt_S) {
 		&usage;
 	    }
 
-	    eval "\$CFG_${var}=\"${val}\"";
+	    eval "\$CFG_${var}='${val}'";
 	} else {
 	    print STDERR "apxs:Error: malformatted -S option\n";
 	    &usage;
