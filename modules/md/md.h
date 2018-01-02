@@ -119,6 +119,7 @@ struct md_t {
 #define MD_KEY_CONTACT          "contact"
 #define MD_KEY_CONTACTS         "contacts"
 #define MD_KEY_CSR              "csr"
+#define MD_KEY_DETAIL           "detail"
 #define MD_KEY_DISABLED         "disabled"
 #define MD_KEY_DIR              "dir"
 #define MD_KEY_DOMAIN           "domain"
@@ -274,5 +275,15 @@ struct md_creds_t {
     struct md_cert_t *cert;
     int expired;
 };
+
+/* TODO: not sure this is a good idea, testing some readability and debuggabiltiy of
+ * cascaded apr_status_t checks. */
+#define MD_CHK_VARS                 const char *md_chk_
+#define MD_LAST_CHK                 md_chk_
+#define MD_CHK_STEP(c, status, s)   (md_chk_ = s, status == (rv = (c)))
+#define MD_CHK(c, status)           MD_CHK_STEP(c, status, #c)
+#define MD_IS_ERR(c, err)           (md_chk_ = #c, APR_STATUS_IS_##err((rv = (c))))
+#define MD_CHK_SUCCESS(c)           MD_CHK(c, APR_SUCCESS)
+#define MD_OK(c)                    MD_CHK_SUCCESS(c)
 
 #endif /* mod_md_md_h */

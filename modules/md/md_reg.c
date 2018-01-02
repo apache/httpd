@@ -234,6 +234,15 @@ static apr_status_t state_init(md_reg_t *reg, apr_pool_t *p, md_t *md, int save_
                               "needs sign up for a new certificate", md->name);
                 goto out;
             }
+            if (!md->must_staple != !md_cert_must_staple(creds->cert)) {
+                state = MD_S_INCOMPLETE;
+                md_log_perror(MD_LOG_MARK, MD_LOG_INFO, rv, p, 
+                              "md{%s}: OCSP Stapling is%s requested, but certificate "
+                              "has it%s enabled. Need to get a new certificate.", md->name,
+                              md->must_staple? "" : " not", 
+                              !md->must_staple? "" : " not");
+                goto out;
+            }
 
             for (i = 1; i < creds->pubcert->nelts; ++i) {
                 cert = APR_ARRAY_IDX(creds->pubcert, i, const md_cert_t *);
