@@ -570,6 +570,17 @@ static void close_worker_sockets(void)
 static void wakeup_listener(void)
 {
     listener_may_exit = 1;
+
+    /* Unblock the listener if it's poll()ing */
+    if (event_pollset && listener_is_wakeable) {
+        apr_pollset_wakeup(event_pollset);
+    }
+
+    /* unblock the listener if it's waiting for a worker */
+    if (worker_queue_info) {
+        ap_queue_info_term(worker_queue_info);
+    }
+
     if (!listener_os_thread) {
         /* XXX there is an obscure path that this doesn't handle perfectly:
          *     right after listener thread is created but before
@@ -578,15 +589,6 @@ static void wakeup_listener(void)
          */
         return;
     }
-
-    /* Unblock the listener if it's poll()ing */
-    if (listener_is_wakeable) {
-        apr_pollset_wakeup(event_pollset);
-    }
-
-    /* unblock the listener if it's waiting for a worker */
-    ap_queue_info_term(worker_queue_info);
-
     /*
      * we should just be able to "kill(ap_my_pid, LISTENER_SIGNAL)" on all
      * platforms and wake up the listener thread since it is the only thread
@@ -607,7 +609,7 @@ static int terminate_mode = ST_INIT;
 
 static void signal_threads(int mode)
 {
-    if (terminate_mode == mode) {
+    if (terminate_mode >= mode) {
         return;
     }
     terminate_mode = mode;
@@ -3607,6 +3609,10 @@ static int event_pre_config(apr_pool_t * pconf, apr_pool_t * plog,
     defer_linger_chain = NULL;
     had_healthy_child = 0;
     ap_extended_status = 0;
+
+    event_pollset = NULL;
+    worker_queue_info = NULL;
+    listener_os_thread = NULL;
 
     return OK;
 }
