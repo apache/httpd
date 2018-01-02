@@ -1,6 +1,18 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_md v1.1.7:
+     - MDMustStaple was unable to create the necessary OpenSSL OBJ identifier on some platforms, 
+       possibly because this fails if the OID is already configured in ```openssl.cnf```, see
+       [here](https://github.com/openssl/openssl/issues/2795).
+     - Two memory leaks in cert issuer and alt-names lookup eliminated by Yann Ylavic.
+     - Changing MDMustStaple triggers certificate renewal.
+     - More verbosity when *not* handing out certificates, e.g. mod_ssl asks, but mod_md has no
+       idea what it is talking about. Some people report misbehaviour here.
+     - Re-enabled support for md_get_credentials() function that was used in older mod_ssl
+       patch, so that people with old patched servers get a chance to upgrade.
+     [Stefan Eissing, Yann Ylavic]
+
   *) mod_susbtitute: Allow expressions in the subtitution, prefixed with expr=
      [Eric Covener]
 
