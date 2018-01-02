@@ -2413,9 +2413,14 @@ static void *APR_THREAD_FUNC start_threads(apr_thread_t * thd, void *dummy)
     int loops;
     int prev_threads_created;
     int max_recycled_pools = -1;
-    int good_methods[] = {APR_POLLSET_KQUEUE, APR_POLLSET_PORT, APR_POLLSET_EPOLL};
-    /* XXX don't we need more to handle K-A or lingering close? */
-    const apr_uint32_t pollset_size = threads_per_child * 2;
+    const int good_methods[] = { APR_POLLSET_KQUEUE,
+                                 APR_POLLSET_PORT,
+                                 APR_POLLSET_EPOLL };
+    /* XXX: K-A or lingering close connection included in the async factor */
+    const apr_uint32_t async_factor = worker_factor / WORKER_FACTOR_SCALE;
+    const apr_uint32_t pollset_size = (apr_uint32_t)num_listensocks +
+                                      (apr_uint32_t)threads_per_child *
+                                      (async_factor > 2 ? async_factor : 2);
 
     /* We must create the fd queues before we start up the listener
      * and worker threads. */
@@ -4035,8 +4040,9 @@ static const char *set_worker_factor(cmd_parms * cmd, void *dummy,
         return "AsyncRequestWorkerFactor argument must be a positive number";
 
     worker_factor = val * WORKER_FACTOR_SCALE;
-    if (worker_factor == 0)
-        worker_factor = 1;
+    if (worker_factor < WORKER_FACTOR_SCALE) {
+        worker_factor = WORKER_FACTOR_SCALE;
+    }
     return NULL;
 }
 
