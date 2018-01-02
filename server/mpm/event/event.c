@@ -180,10 +180,10 @@ static int max_workers = 0;                 /* MaxRequestWorkers */
 static int server_limit = 0;                /* ServerLimit */
 static int thread_limit = 0;                /* ThreadLimit */
 static int had_healthy_child = 0;
-static int dying = 0;
-static int workers_may_exit = 0;
-static int start_thread_may_exit = 0;
-static int listener_may_exit = 0;
+static volatile int dying = 0;
+static volatile int workers_may_exit = 0;
+static volatile int start_thread_may_exit = 0;
+static volatile int listener_may_exit = 0;
 static int listener_is_wakeable = 0;        /* Pollset supports APR_POLLSET_WAKEABLE */
 static int num_listensocks = 0;
 static apr_int32_t conns_this_child;        /* MaxConnectionsPerChild, only access
