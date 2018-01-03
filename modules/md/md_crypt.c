@@ -1107,7 +1107,7 @@ static apr_status_t sk_add_alt_names(STACK_OF(X509_EXTENSION) *exts,
 #define MD_OID_MUST_STAPLE_SNAME        "tlsfeature"
 #define MD_OID_MUST_STAPLE_LNAME        "TLS Feature" 
 
-static int get_must_staple_nid()
+static int get_must_staple_nid(void)
 {
     /* Funny API, the OID for must staple might be configured or
      * might be not. In the second case, we need to add it. But adding
