@@ -669,7 +669,7 @@ static void pstartElement(void *ctxt, const xmlChar *uname,
     }
 }
 
-static meta *metafix(request_rec *r, const char *buf)
+static meta *metafix(request_rec *r, const char *buf, apr_size_t len)
 {
     meta *ret = NULL;
     size_t offs = 0;
@@ -680,7 +680,8 @@ static meta *metafix(request_rec *r, const char *buf)
     ap_regmatch_t pmatch[2];
     char delim;
 
-    while (!ap_regexec(seek_meta, buf+offs, 2, pmatch, 0)) {
+    while (offs < len &&
+           !ap_regexec_len(seek_meta, buf + offs, len - offs, 2, pmatch, 0)) {
         header = NULL;
         content = NULL;
         p = buf+offs+pmatch[1].rm_eo;
@@ -1004,7 +1005,7 @@ static apr_status_t proxy_html_filter(ap_filter_t *f, apr_bucket_brigade *bb)
                                   "Unsupported parser opts %x", xmlopts);
 #endif
                 if (ctxt->cfg->metafix)
-                    m = metafix(f->r, buf);
+                    m = metafix(f->r, buf, bytes);
                 if (m) {
                     consume_buffer(ctxt, buf, m->start, 0);
                     consume_buffer(ctxt, buf+m->end, bytes-m->end, 0);
