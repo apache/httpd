@@ -245,6 +245,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1818624   (style only)
      2.4.x patch: svn merge -c r1599012,r1601559,r1818624 ^/httpd/httpd/trunk .
      +1: niq, jim
+     ylavic: +1 with r1819969 and r1819970, see dev@ thread re r1599012.
 
   *) mpm_event: close connections not reported as handled by any module to
      avoid losing track of them and leaking scoreboard entries.  PR 61551.
