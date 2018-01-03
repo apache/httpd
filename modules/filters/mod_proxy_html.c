@@ -854,7 +854,6 @@ static saxctxt *check_filter_init (ap_filter_t *f)
 #ifndef GO_FASTER
             ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, f->r, "%s", errmsg);
 #endif
-            ap_remove_output_filter(f);
             return NULL;
         }
 
@@ -890,41 +889,42 @@ static void prepend_rbuf(saxctxt *ctxt, apr_bucket_brigade *bb)
 
 static apr_status_t proxy_html_filter(ap_filter_t *f, apr_bucket_brigade *bb)
 {
-    apr_bucket* b;
-    meta *m = NULL;
     xmlCharEncoding enc;
-    const char *buf = 0;
-    apr_size_t bytes = 0;
+    const char *buf;
+    apr_size_t bytes;
 #ifndef USE_OLD_LIBXML2
     int xmlopts = XML_PARSE_RECOVER | XML_PARSE_NONET |
                   XML_PARSE_NOBLANKS | XML_PARSE_NOERROR | XML_PARSE_NOWARNING;
 #endif
 
     saxctxt *ctxt = check_filter_init(f);
-    if (!ctxt)
+    if (!ctxt) {
+        ap_remove_output_filter(f);
         return ap_pass_brigade(f->next, bb);
-    for (b = APR_BRIGADE_FIRST(bb);
-         b != APR_BRIGADE_SENTINEL(bb);
-         b = APR_BUCKET_NEXT(b)) {
+    }
+
+    while (!APR_BRIGADE_EMPTY(bb)) {
+        apr_bucket *b = APR_BRIGADE_FIRST(bb);
+
         if (APR_BUCKET_IS_METADATA(b)) {
             if (APR_BUCKET_IS_EOS(b)) {
                 if (ctxt->parser != NULL) {
                     consume_buffer(ctxt, "", 0, 1);
+                    APR_BRIGADE_PREPEND(bb, ctxt->bb);
                 }
                 else {
-                    prepend_rbuf(ctxt, ctxt->bb);
+                    prepend_rbuf(ctxt, bb);
                 }
-                APR_BRIGADE_INSERT_TAIL(ctxt->bb,
-                    apr_bucket_eos_create(ctxt->bb->bucket_alloc));
-                ap_pass_brigade(ctxt->f->next, ctxt->bb);
-                apr_brigade_cleanup(ctxt->bb);
+                ap_remove_output_filter(f);
+                return ap_pass_brigade(f->next, bb);
             }
             else if (APR_BUCKET_IS_FLUSH(b)) {
                 /* pass on flush, except at start where it would cause
                  * headers to be sent before doc sniffing
                  */
                 if (ctxt->parser != NULL) {
-                    ap_fflush(ctxt->f->next, ctxt->bb);
+                    ap_fflush(f->next, ctxt->bb);
+                    apr_brigade_cleanup(ctxt->bb);
                 }
             }
         }
@@ -941,6 +941,7 @@ static apr_status_t proxy_html_filter(ap_filter_t *f, apr_bucket_brigade *bb)
                 if (ctxt->rmin < sizeof(ctxt->rbuf)) {
                     memcpy(ctxt->rbuf + ctxt->rlen, buf, bytes);
                     ctxt->rlen += bytes;
+                    apr_bucket_delete(b);
                     continue;
                 }
                 if (ctxt->rlen && ctxt->rlen < sizeof(ctxt->rbuf)) {
@@ -1004,27 +1005,28 @@ static apr_status_t proxy_html_filter(ap_filter_t *f, apr_bucket_brigade *bb)
                     ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, f->r, APLOGNO(01423)
                                   "Unsupported parser opts %x", xmlopts);
 #endif
-                if (ctxt->cfg->metafix)
-                    m = metafix(f->r, buf, bytes);
-                if (m) {
-                    consume_buffer(ctxt, buf, m->start, 0);
-                    consume_buffer(ctxt, buf+m->end, bytes-m->end, 0);
-                }
-                else {
-                    consume_buffer(ctxt, buf, bytes, 0);
+                if (ctxt->cfg->metafix) {
+                    meta *m = metafix(f->r, buf, bytes);
+                    if (m) {
+                        consume_buffer(ctxt, buf, m->start, 0);
+                        buf += m->end;
+                        bytes -= m->end;
+                    }
                 }
             }
-            else {
-                consume_buffer(ctxt, buf, bytes, 0);
-            }
+            consume_buffer(ctxt, buf, bytes, 0);
         }
         else {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, f->r, APLOGNO(01424)
                           "Error in bucket read");
         }
+
+        apr_bucket_delete(b);
     }
-    /*ap_fflush(ctxt->f->next, ctxt->bb);        // uncomment for debug */
-    apr_brigade_cleanup(bb);
+#if 0  /* uncomment for debug */
+    ap_fflush(f->next, ctxt->bb);
+    apr_brigade_cleanup(ctxt->bb);
+#endif
     return APR_SUCCESS;
 }
 
