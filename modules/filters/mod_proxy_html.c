@@ -109,6 +109,9 @@ typedef struct {
     const char *encoding;
     urlmap *map;
     const char *etag;
+    char rbuf[4];
+    apr_size_t rlen;
+    apr_size_t rmin;
 } saxctxt;
 
 
@@ -873,6 +876,17 @@ static saxctxt *check_filter_init (ap_filter_t *f)
     return f->ctx;
 }
 
+static void prepend_rbuf(saxctxt *ctxt, apr_bucket_brigade *bb)
+{
+    if (ctxt->rlen) {
+        apr_bucket *b = apr_bucket_transient_create(ctxt->rbuf,
+                                                    ctxt->rlen,
+                                                    bb->bucket_alloc);
+        APR_BRIGADE_INSERT_HEAD(bb, b);
+        ctxt->rlen = 0;
+    }
+}
+
 static apr_status_t proxy_html_filter(ap_filter_t *f, apr_bucket_brigade *bb)
 {
     apr_bucket* b;
@@ -894,11 +908,15 @@ static apr_status_t proxy_html_filter(ap_filter_t *f, apr_bucket_brigade *bb)
         if (APR_BUCKET_IS_METADATA(b)) {
             if (APR_BUCKET_IS_EOS(b)) {
                 if (ctxt->parser != NULL) {
-                    consume_buffer(ctxt, buf, 0, 1);
+                    consume_buffer(ctxt, "", 0, 1);
+                }
+                else {
+                    prepend_rbuf(ctxt, ctxt->bb);
                 }
                 APR_BRIGADE_INSERT_TAIL(ctxt->bb,
-                apr_bucket_eos_create(ctxt->bb->bucket_alloc));
+                    apr_bucket_eos_create(ctxt->bb->bucket_alloc));
                 ap_pass_brigade(ctxt->f->next, ctxt->bb);
+                apr_brigade_cleanup(ctxt->bb);
             }
             else if (APR_BUCKET_IS_FLUSH(b)) {
                 /* pass on flush, except at start where it would cause
@@ -918,9 +936,18 @@ static apr_status_t proxy_html_filter(ap_filter_t *f, apr_bucket_brigade *bb)
                  * HTML rewriting. The URL schema (i.e. 'http') needs four bytes alone.
                  * And the HTML parser needs at least four bytes to initialise correctly.
                  */
-                if ((bytes < 4) && APR_BUCKET_IS_EOS(APR_BUCKET_NEXT(b))) {
-                    ap_remove_output_filter(f);
-                    return ap_pass_brigade(f->next, bb);
+                ctxt->rmin += bytes;
+                if (ctxt->rmin < sizeof(ctxt->rbuf)) {
+                    memcpy(ctxt->rbuf + ctxt->rlen, buf, bytes);
+                    ctxt->rlen += bytes;
+                    continue;
+                }
+                if (ctxt->rlen && ctxt->rlen < sizeof(ctxt->rbuf)) {
+                    apr_size_t rem = sizeof(ctxt->rbuf) - ctxt->rlen;
+                    memcpy(ctxt->rbuf + ctxt->rlen, buf, rem);
+                    ctxt->rlen += rem;
+                    buf += rem;
+                    bytes -= rem;
                 }
 
                 if (!xml2enc_charset ||
@@ -949,15 +976,25 @@ static apr_status_t proxy_html_filter(ap_filter_t *f, apr_bucket_brigade *bb)
                 }
 
                 ap_fputs(f->next, ctxt->bb, ctxt->cfg->doctype);
-                ctxt->parser = htmlCreatePushParserCtxt(&sax, ctxt, buf,
-                                                        4, 0, enc);
-                buf += 4;
-                bytes -= 4;
-                if (ctxt->parser == NULL) {
-                    apr_status_t rv = ap_pass_brigade(f->next, bb);
-                    ap_remove_output_filter(f);
-                    return rv;
+
+                if (ctxt->rlen) {
+                    ctxt->parser = htmlCreatePushParserCtxt(&sax, ctxt,
+                                                            ctxt->rbuf,
+                                                            ctxt->rlen,
+                                                            NULL, enc);
                 }
+                else {
+                    ctxt->parser = htmlCreatePushParserCtxt(&sax, ctxt, buf, 4,
+                                                            NULL, enc);
+                    buf += 4;
+                    bytes -= 4;
+                }
+                if (ctxt->parser == NULL) {
+                    prepend_rbuf(ctxt, bb);
+                    ap_remove_output_filter(f);
+                    return ap_pass_brigade(f->next, bb);
+                }
+                ctxt->rlen = 0;
                 apr_pool_cleanup_register(f->r->pool, ctxt->parser,
                                           (int(*)(void*))htmlFreeParserCtxt,
                                           apr_pool_cleanup_null);
