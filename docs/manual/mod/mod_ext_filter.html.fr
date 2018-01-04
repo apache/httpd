@@ -31,8 +31,6 @@
 <a href="../ja/mod/mod_ext_filter.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_ext_filter.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fait traiter le corps de la réponse par un programme
 externe avant de l'envoyer au client</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -91,7 +89,7 @@ externe avant de l'envoyer au client</td></tr>
 # fichier résultant étant défini à text/html
 ExtFilterDefine c-to-html mode=output \
     intype=text/c outtype=text/html \
-    cmd="/usr/bin/enscript --color -W html -Ec -o - -"
+    cmd="/usr/bin/enscript --color -w html -Ec -o -"
 
 &lt;Directory "/export/home/trawick/apacheinst/htdocs/c"&gt;
     # directive de base permettant de traiter la sortie avec le

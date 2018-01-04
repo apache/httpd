@@ -1118,7 +1118,7 @@ SSLCryptoDevice ubsec</pre>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le paramètre <code>addr:port</code> est disponible à partir de la
-version 2.4.30 du serveur HTTPApache.</td></tr>
+version 2.4.30 du serveur HTTP Apache.</td></tr>
 </table>
 <p> Cette directive permet d'activer/désactiver le moteur du protocole SSL/TLS.
 Les valeurs 'on', 'off' et 'optional' doivent être utilisées dans une section
