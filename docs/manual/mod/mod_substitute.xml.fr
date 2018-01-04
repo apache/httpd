@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1815482:1818828 (outdated) -->
+<!-- English Revision: 1818828 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -95,8 +95,13 @@ réponse</description>
         </highlight>
     </example>
 
+    <p>Le caractère utilisé pour séparer (ou "délimiter") les différentes partie
+    de la valeur de substitution est référencé sous le nom de "délimiteur", et
+    il s'agit le plus souvent d'un "slash".</p>
+
     <p>Si le modèle ou la chaîne de substitution contient un caractère
-    slash '/', il faut utiliser un autre délimiteur :</p>
+    slash '/', il est possible d'utiliser un autre délimiteur afin de rendre la
+    directive plus lisible :</p>
 
     <example><title>Exemple d'utilisation d'un délimiteur
     alternatif</title>
@@ -116,7 +121,7 @@ réponse</description>
 &lt;Location "/"&gt;
     AddOutputFilterByType SUBSTITUTE text/html
     # "foo=k,bar=k" -> "foo/bar=k"
-    Substitute "s|foo=(\w+),bar=\1|foo/bar=$1"
+    Substitute "s|foo=(\w+),bar=\1|foo/bar=$1|"
 &lt;/Location&gt;
     </highlight>
     </example>
@@ -134,7 +139,7 @@ réponse</description>
 
     <example><title>Réécriture des URLs intégrées à un contenu mandaté</title>
     <highlight language="config">
-ProxyPass        "/blog/" "http://internal.blog.example.com"
+ProxyPass        "/blog/" "http://internal.blog.example.com/"
 ProxyPassReverse "/blog/" "http://internal.blog.example.com/"
 
 Substitute "s|http://internal.blog.example.com/|http://www.example.com/blog/|i"
