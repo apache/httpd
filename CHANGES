@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.30
  
+  *) mod_ssl: support for mod_md added. [Stefan Eissing]
+  
   *) mod_proxy_html: process parsed comments immediately. 
      Fixes bug (seen in the wild when used with IBM's HTTPD bundle)
      where parsed comments may be lost. [Nick Kew]
