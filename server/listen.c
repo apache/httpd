@@ -1144,8 +1144,12 @@ AP_DECLARE_NONSTD(const char *) ap_set_accept_errors_nonfatal(cmd_parms *cmd,
                                                            void *dummy,
                                                            int flag)
 {
-   ap_accept_errors_nonfatal = flag;
-   return NULL;
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL) {
+        return err;
+    }
+    ap_accept_errors_nonfatal = flag;
+    return NULL;
 }
 
 AP_DECLARE_NONSTD(const char *) ap_set_receive_buffer_size(cmd_parms *cmd,
