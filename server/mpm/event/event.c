@@ -1117,7 +1117,7 @@ read_request:
                      && cs->pub.state != CONN_STATE_WRITE_COMPLETION
                      && cs->pub.state != CONN_STATE_CHECK_REQUEST_LINE_READABLE
                      && cs->pub.state != CONN_STATE_SUSPENDED)) {
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO()
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(10111)
                       "process_socket: connection processing %s: closing",
                       rc ? apr_psprintf(c->pool, "returned error %i", rc)
                          : apr_psprintf(c->pool, "unexpected state %i",
