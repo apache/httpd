@@ -118,14 +118,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_md: backport of mod_ssl changes to get interworking ACME support. Needs mod_md backport propoals above to 
-             find mod_md.h include file with otional functions.
-     trunk revisions: 1804530,1804531,1805186,1806939,1807232,1808122
-     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/mod_ssl_minimal_md.diff
-     +1: icing, jorton, jim
-     [niq: I was about to backport along with the mod_proxy_html accepted
-      patch, but I see this is on hold pending mod_md.h]
-
   *) mod_proxy_html: Save a few bytes in the conf pool when handling
      'ProxyHTMLDoctype' directive with a user defined  FPI
      trunk patch: http://svn.apache.org/r1813991
