@@ -253,18 +253,18 @@ LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon
 
 &lt;VirtualHost 111.22.33.44&gt;
     ServerName www.commercial.example.com
-
+    
     CustomLog "logs/access_log.commercial" vcommon
-
+    
     VirtualDocumentRoot "/www/commercial/%0/docs"
     VirtualScriptAlias  "/www/commercial/%0/cgi-bin"
 &lt;/VirtualHost&gt;
 
 &lt;VirtualHost 111.22.33.45&gt;
     ServerName www.homepages.example.com
-
+    
     CustomLog "logs/access_log.homepages" vcommon
-
+    
     VirtualDocumentRoot "/www/homepages/%0/docs"
     ScriptAlias         "/cgi-bin/" "/www/std-cgi/"
 &lt;/VirtualHost&gt;</pre>

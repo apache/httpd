@@ -33,8 +33,6 @@
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fonctionnalités de base du serveur HTTP Apache toujours
 disponibles</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Core</td></tr></table>
@@ -4409,19 +4407,23 @@ comme si la directive QualifyRedirectURL était définie à ON.</td></tr>
 <div class="directive-section"><h2><a name="registerhttpmethod" id="registerhttpmethod">Directive</a> <a name="RegisterHttpMethod" id="RegisterHttpMethod">RegisterHttpMethod</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enregistrement de méthodes HTTP non standards</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RegisterHttpMethod <var>méthode</var> [<var>méthode</var> [...]]</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RegisterHttpMethod <var>method</var> [<var>method</var> [...]]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 </table>
-<p>Normalement, les méthodes HTTP non conformes aux RFCs correspondantes
-sont rejetées au cours du traitement de la requête par HTTPD. Pour
-éviter ceci, les modules peuvent enregistrer les méthodes HTTP non
-standards qu'ils supportent. La directive
-<code class="directive">RegisterHttpMethod</code> permet d'enregistrer de telles
-méthodes manuellement. Ceci peut s'avérer utile si de telle méthodes
-doivent être utilisées dans un traitement externe, comme un script CGI.</p>
+<p>Cette directive permet d'enregistrer des méthodes HTTP supplémentaires. Ceci
+s'avérera nécessaire si l'on doit utiliser des méthodes non standards avec des
+directives qui acceptent des noms de méthodes en paramètres, ou pour permettre
+l'utilisation de méthodes particulières non standards en passant par un serveur
+mandataire ou au sein de scripts CGI, et ceci alors que le serveur a été
+configuré pour ne transmettre que des méthodes reconnues aux modules.</p>
 
+<h3>Voir aussi</h3>
+<ul>
+<li><code class="directive"><a href="#httpprotocoloptions">HTTPProtocolOptions</a></code></li>
+<li><code class="directive"><a href="../mod/mod_allowmethods.html#allowmethods">AllowMethods</a></code></li>
+</ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="rlimitcpu" id="rlimitcpu">Directive</a> <a name="RLimitCPU" id="RLimitCPU">RLimitCPU</a></h2>

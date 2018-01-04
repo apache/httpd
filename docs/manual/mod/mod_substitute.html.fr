@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_substitute.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_substitute.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Effectue des opérations de recherche/remplacement sur les
 corps de réponses</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -62,6 +60,8 @@ réponse</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_substitute</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Les valeurs de substitution "expr=" ont été ajoutées à partir de
+la version 2.5.1</td></tr>
 </table>
     <p>La directive <code class="directive">Substitute</code> permet de
     spécifier un modèle de recherche/remplacement à appliquer au corps
@@ -96,7 +96,9 @@ réponse</td></tr>
     </dl>
 
     <p><var>substitution</var> peut contenir du texte et des références arrières
-    d'expressions rationnelles.
+    d'expressions rationnelles. Si la valeur de substitution commence par la
+    chaîne <code>expr=</code>, elle est interprétée comme une <a href="../expr.html">expression rationnelle</a>, ce qui permet d'utiliser des
+    variables d'environnement et des valeurs d'en-têtes.
     </p>
 
     <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">&lt;Location "/"&gt;
@@ -105,8 +107,13 @@ réponse</td></tr>
 &lt;/Location&gt;</pre>
 </div>
 
+    <p>Le caractère utilisé pour séparer (ou "délimiter") les différentes partie
+    de la valeur de substitution est référencé sous le nom de "délimiteur", et
+    il s'agit le plus souvent d'un "slash".</p>
+
     <p>Si le modèle ou la chaîne de substitution contient un caractère
-    slash '/', il faut utiliser un autre délimiteur :</p>
+    slash '/', il est possible d'utiliser un autre délimiteur afin de rendre la
+    directive plus lisible :</p>
 
     <div class="example"><h3>Exemple d'utilisation d'un délimiteur
     alternatif</h3><pre class="prettyprint lang-config">&lt;Location "/"&gt;
@@ -124,6 +131,25 @@ réponse</td></tr>
     Substitute "s|foo=(\w+),bar=\1|foo/bar=$1|"
 &lt;/Location&gt;</pre>
 </div>
+
+    <p>Lorsque la valeur de <var>substitution</var> est spécifiée sous la forme
+    d'une <a href="../expr.html">expression rationnelle</a>, les références
+    arrières doivent être échappées avec un backslash ('\') comme illustré dans
+    l'exemple suivant :</p> 
+    <div class="example"><h3>Exemple de substitution sous forme d'expression rationnelle</h3><pre class="prettyprint lang-config">&lt;Location "/"&gt;
+    AddOutputFilterByType SUBSTITUTE text/html
+    Substitute "s/example.com/expr=%{HTTP:HOST}/i"
+    Substitute "s/Hello, (\S+)/expr=Hello from %{REQUEST_URI}, \$1/i"
+&lt;/Location&gt;</pre>
+</div>
+
+    <div class="warning"><h3>Expressions rationnelles et mise en cache</h3>
+    <p>La prudence s'impose lorsqu'on effectue des substitutions qui font
+    références à des en-têtes de requêtes HTTP. En effet, comme ce module agit
+    après l'envoi des en-têtes de la réponse, l'<a href="../expr.html">interpréteur d'expression</a> n'est pas en mesure
+    d'ajouter les en-têtes de la requête HTTP référencés à l'en-tête Vary de
+    sortie.</p>
+    </div>
 
     <p>Un scénario courant d'utilisation de <code>mod_substitute</code>
     est la situation où un serveur frontal mandate des requêtes pour un
