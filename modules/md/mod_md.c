@@ -1165,7 +1165,7 @@ static apr_status_t md_get_certificate(server_rec *s, apr_pool_t *p,
     *pkeyfile = NULL;
     *pcertfile = NULL;
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO()
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(10113)
                  "md_get_certificate called for vhost %s.", s->server_hostname);
 
     sc = md_config_get(s);
@@ -1182,7 +1182,7 @@ static apr_status_t md_get_certificate(server_rec *s, apr_pool_t *p,
          * that server with SSL certs, has misspelled a server name or we have
          * a bug that prevented us from taking responsibility for this server.
          * Either way, make some polite noise */
-        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s, APLOGNO()  
+        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s, APLOGNO(10114)  
                      "asked for certificate of server %s which has no MD assigned. This "
                      "could be ok, but most likely it is either a misconfiguration or "
                      "a bug. Please check server names and MD names carefully and if "
@@ -1197,7 +1197,7 @@ static apr_status_t md_get_certificate(server_rec *s, apr_pool_t *p,
     
     md = md_reg_get(reg, sc->assigned->name, p);
     if (!md) {
-        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO() 
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(10115) 
                      "unable to hand out certificates, as registry can no longer "
                      "find MD '%s'.", sc->assigned->name);
         return APR_ENOENT;
@@ -1226,7 +1226,7 @@ static apr_status_t md_get_certificate(server_rec *s, apr_pool_t *p,
             }
         }
         
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO()  
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(10116)  
                      "%s: providing fallback certificate for server %s", 
                      md->name, s->server_hostname);
         return APR_EAGAIN;
