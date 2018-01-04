@@ -559,6 +559,8 @@
  *                         ap_get_module_flags()
  * 20171014.1 (2.5.0-dev)  Add NOT_IN_DIR_CONTEXT replacing NOT_IN_DIR_LOC_FILE
  *                         semantics
+ * 20171014.2 (2.5.1-dev)  Add "use_specific_errors" to listen_rec and 
+ *                         ap_accept_error_is_nonfatal()
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -566,7 +568,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20171014
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 1                 /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 2                 /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
