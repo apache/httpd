@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1818201:1819742 (outdated) -->
+<!-- English Revision: 1819742 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -45,6 +45,8 @@ réponse</description>
 <contextlist><context>directory</context>
 <context>.htaccess</context></contextlist>
 <override>FileInfo</override>
+<compatibility>Les valeurs de substitution "expr=" ont été ajoutées à partir de
+la version 2.5.1</compatibility>
 
 <usage>
     <p>La directive <directive>Substitute</directive> permet de
@@ -82,7 +84,10 @@ réponse</description>
     </dl>
 
     <p><var>substitution</var> peut contenir du texte et des références arrières
-    d'expressions rationnelles.
+    d'expressions rationnelles. Si la valeur de substitution commence par la
+    chaîne <code>expr=</code>, elle est interprétée comme une <a
+    href="../expr.html">expression rationnelle</a>, ce qui permet d'utiliser des
+    variables d'environnement et des valeurs d'en-têtes.
     </p>
 
     <example><title>Exemple</title>
@@ -94,8 +99,13 @@ réponse</description>
         </highlight>
     </example>
 
+    <p>Le caractère utilisé pour séparer (ou "délimiter") les différentes partie
+    de la valeur de substitution est référencé sous le nom de "délimiteur", et
+    il s'agit le plus souvent d'un "slash".</p>
+
     <p>Si le modèle ou la chaîne de substitution contient un caractère
-    slash '/', il faut utiliser un autre délimiteur :</p>
+    slash '/', il est possible d'utiliser un autre délimiteur afin de rendre la
+    directive plus lisible :</p>
 
     <example><title>Exemple d'utilisation d'un délimiteur
     alternatif</title>
@@ -119,6 +129,29 @@ réponse</description>
 &lt;/Location&gt;
     </highlight>
     </example>
+
+    <p>Lorsque la valeur de <var>substitution</var> est spécifiée sous la forme
+    d'une <a href="../expr.html">expression rationnelle</a>, les références
+    arrières doivent être échappées avec un backslash ('\') comme illustré dans
+    l'exemple suivant :</p> 
+    <example><title>Exemple de substitution sous forme d'expression rationnelle</title>
+    <highlight language="config">
+&lt;Location "/"&gt;
+    AddOutputFilterByType SUBSTITUTE text/html
+    Substitute "s/example.com/expr=%{HTTP:HOST}/i"
+    Substitute "s/Hello, (\S+)/expr=Hello from %{REQUEST_URI}, \$1/i"
+&lt;/Location&gt;
+        </highlight>
+    </example>
+
+    <note type="warning"><title>Expressions rationnelles et mise en cache</title>
+    <p>La prudence s'impose lorsqu'on effectue des substitutions qui font
+    références à des en-têtes de requêtes HTTP. En effet, comme ce module agit
+    après l'envoi des en-têtes de la réponse, l'<a
+    href="../expr.html">interpréteur d'expression</a> n'est pas en mesure
+    d'ajouter les en-têtes de la requête HTTP référencés à l'en-tête Vary de
+    sortie.</p>
+    </note>
 
     <p>Un scénario courant d'utilisation de <code>mod_substitute</code>
     est la situation où un serveur frontal mandate des requêtes pour un

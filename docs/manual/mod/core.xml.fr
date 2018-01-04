@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1814968:1818701 (outdated) -->
+<!-- English Revision: 1818701 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -5515,18 +5515,19 @@ entre elles à la réception d'une requête</seealso>
 <directivesynopsis>
 <name>RegisterHttpMethod</name>
 <description>Enregistrement de méthodes HTTP non standards</description>
-<syntax>RegisterHttpMethod <var>méthode</var> [<var>méthode</var> [...]]</syntax>
+<syntax>RegisterHttpMethod <var>method</var> [<var>method</var> [...]]</syntax>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
-<p>Normalement, les méthodes HTTP non conformes aux RFCs correspondantes
-sont rejetées au cours du traitement de la requête par HTTPD. Pour
-éviter ceci, les modules peuvent enregistrer les méthodes HTTP non
-standards qu'ils supportent. La directive
-<directive>RegisterHttpMethod</directive> permet d'enregistrer de telles
-méthodes manuellement. Ceci peut s'avérer utile si de telle méthodes
-doivent être utilisées dans un traitement externe, comme un script CGI.</p>
+<p>Cette directive permet d'enregistrer des méthodes HTTP supplémentaires. Ceci
+s'avérera nécessaire si l'on doit utiliser des méthodes non standards avec des
+directives qui acceptent des noms de méthodes en paramètres, ou pour permettre
+l'utilisation de méthodes particulières non standards en passant par un serveur
+mandataire ou au sein de scripts CGI, et ceci alors que le serveur a été
+configuré pour ne transmettre que des méthodes reconnues aux modules.</p>
 </usage>
+<seealso><directive module="core">HTTPProtocolOptions</directive></seealso>
+<seealso><directive module="mod_allowmethods">AllowMethods</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>

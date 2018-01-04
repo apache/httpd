@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1807868:1819322 (outdated) -->
+<!-- English Revision: 1819322 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -138,7 +138,9 @@ propose le MPM <module>worker</module>, avec l'unique addition de la directive
 	    entièrement. La fermeture progressive est limitée dans le temps,
 	    mais elle peut tout de même être assez longue, si bien qu'il est
 	    intéressant qu'un thread de travail puisse se décharger de cette
-	    tâche sur le thread d'écoute.</dd>
+	    tâche sur le thread d'écoute. A partir de la version 2.4.28, au lieu
+	    d'effectuer lui-même la fermeture progressive, le thread d'écoute
+	    confie cette tâche au premier thread de travail disponible.</dd>
         </dl>
 
         <p>Ces améliorations sont disponible pour les connexions HTTP ou HTTPS.</p> 

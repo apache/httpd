@@ -676,7 +676,7 @@ SSLSessionCacheTimeout 600
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 <compatibility>Le paramètre <code>addr:port</code> est disponible à partir de la
-version 2.4.30 du serveur HTTPApache.</compatibility>
+version 2.4.30 du serveur HTTP Apache.</compatibility>
 
 <usage>
 <p> Cette directive permet d'activer/désactiver le moteur du protocole SSL/TLS.
