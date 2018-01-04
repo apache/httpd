@@ -247,11 +247,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1818960
                   http://svn.apache.org/r1819027
                   http://svn.apache.org/r1819214
+                  http://svn.apache.org/r1820035
      2.4.x patch: trunk works (modulo CHANGES)
-                  svn merge -c 1818804,1818951,1818958,1818960,1819027,1819214 ^/httpd/httpd/trunk .
-                  http://home.apache.org/~ylavic/patches/PR61551.patch
+                  svn merge -c 1818804,1818951,1818958,1818960,1819027,1819214,1820035 ^/httpd/httpd/trunk .
+                  http://home.apache.org/~ylavic/patches/PR61551+APLOGNO.patch
      +1: ylavic, icing
-     jailletc36: an APLOGNO is missing a value. Fixed in r1820035
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
