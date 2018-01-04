@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_filter.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_filter.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Module de configuration de filtre intelligent sensible au
 contexte</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
@@ -237,15 +235,15 @@ FilterChain gzip</pre>
     images web, et que nous disposions de filtres pour les images GIF,
     JPEG et PNG.
     <pre class="prettyprint lang-config">FilterProvider unpack jpeg_unpack "%{CONTENT_TYPE} = 'image/jpeg'"
-FilterProvider unpack gif_unpack "%{CONTENT_TYPE} = 'image/gif'"
-FilterProvider unpack png_unpack "%{CONTENT_TYPE} = 'image/png'"
+FilterProvider unpack gif_unpack  "%{CONTENT_TYPE} = 'image/gif'"
+FilterProvider unpack png_unpack  "%{CONTENT_TYPE} = 'image/png'"
 
 FilterProvider downsample downsample_filter "%{CONTENT_TYPE} = m|^image/(jpeg|gif|png)|"
 FilterProtocol downsample "change=yes"
 
 FilterProvider repack jpeg_pack "%{CONTENT_TYPE} = 'image/jpeg'"
-FilterProvider repack gif_pack "%{CONTENT_TYPE} = 'image/gif'"
-FilterProvider repack png_pack "%{CONTENT_TYPE} = 'image/png'"
+FilterProvider repack gif_pack  "%{CONTENT_TYPE} = 'image/gif'"
+FilterProvider repack png_pack  "%{CONTENT_TYPE} = 'image/png'"
 &lt;Location "/image-filter"&gt;
     FilterChain unpack downsample repack
 &lt;/Location&gt;</pre>

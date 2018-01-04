@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_sed.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_sed.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Filtre les contenus en entrée (requêtes) et en sortie
 (réponses) en utilisant la syntaxe de <code>sed</code></td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td /></tr>
@@ -69,11 +67,6 @@ Les filtres en entrée ou en sortie ne traitent les données que si des
 caractères newline sont détectés dans le contenu à filtrer. A la fin des
 données, ce qui reste est traité comme la dernière ligne.
 </p>
-
-<p>Vous trouverez sur le <a href="https://blogs.oracle.com/basant/entry/using_mod_sed_to_filter">blog de
-l'auteur</a> un article en forme de tutoriel, ainsi que les raisons pour
-lesquelles ce filtre est plus puissant qu'une simple
-recherche/remplacement de chaîne ou d'expression rationnelle.</p>
 
 </div>
 <div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><h3>Sujets</h3>
