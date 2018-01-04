@@ -699,6 +699,10 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t *thd, void * dummy)
                 resource_shortage = 1;
                 signal_threads(ST_GRACEFUL);
             }
+            else if (ap_accept_error_is_nonfatal(rv)) {
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, ap_server_conf,
+                        "accept() on client socket failed");
+            }
             if ((rv = SAFE_ACCEPT(apr_proc_mutex_unlock(my_bucket->mutex)))
                 != APR_SUCCESS) {
 

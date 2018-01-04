@@ -600,7 +600,12 @@ static void child_main(int child_num_arg, int child_bucket)
             /* resource shortage or should-not-occur occurred */
             clean_child_exit(APEXIT_CHILDSICK);
         }
-        else if (status != APR_SUCCESS) {
+        else if (ap_accept_error_is_nonfatal(rc)) {
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, rc, ap_server_conf,
+                    "accept() on client socket failed");
+        }
+
+        if (status != APR_SUCCESS) {
             continue;
         }
 

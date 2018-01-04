@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+
+  *) core: Add "AcceptErrorsNonFatal" to allow ECONNREFUSED, ECONNABORTED, and
+     ECONNRESET during the client accept() to not trigger graceful shutdown of
+     the child process.  [Eric Covener]
+
   *) mod_md v1.1.7:
      - MDMustStaple was unable to create the necessary OpenSSL OBJ identifier on some platforms, 
        possibly because this fails if the OID is already configured in ```openssl.cnf```, see

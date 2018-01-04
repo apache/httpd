@@ -71,6 +71,12 @@ struct ap_listen_rec {
     const char* protocol;
 
     ap_slave_t *slave;
+
+    /**
+     * Allow the accept_func to return a wider set of return codes
+     */
+    int use_specific_errors;
+
 };
 
 /**
@@ -79,6 +85,9 @@ struct ap_listen_rec {
 AP_DECLARE_DATA extern ap_listen_rec *ap_listeners;
 AP_DECLARE_DATA extern int ap_num_listen_buckets;
 AP_DECLARE_DATA extern int ap_have_so_reuseport;
+AP_DECLARE_DATA extern int ap_accept_errors_nonfatal;
+
+AP_DECLARE(int) ap_accept_error_is_nonfatal(apr_status_t rv);
 
 /**
  * Setup all of the defaults for the listener list
@@ -143,6 +152,10 @@ AP_DECLARE_NONSTD(const char *) ap_set_receive_buffer_size(cmd_parms *cmd,
                                                            void *dummy,
                                                            const char *arg);
 
+AP_DECLARE_NONSTD(const char *) ap_set_accept_errors_nonfatal(cmd_parms *cmd,
+                                                           void *dummy,
+                                                           int flag);
+
 #define LISTEN_COMMANDS \
 AP_INIT_TAKE1("ListenBacklog", ap_set_listenbacklog, NULL, RSRC_CONF, \
   "Maximum length of the queue of pending connections, as used by listen(2)"), \
@@ -153,8 +166,9 @@ AP_INIT_TAKE_ARGV("Listen", ap_set_listener, NULL, RSRC_CONF, \
 AP_INIT_TAKE1("SendBufferSize", ap_set_send_buffer_size, NULL, RSRC_CONF, \
   "Send buffer size in bytes"), \
 AP_INIT_TAKE1("ReceiveBufferSize", ap_set_receive_buffer_size, NULL, \
-              RSRC_CONF, "Receive buffer size in bytes")
-
+              RSRC_CONF, "Receive buffer size in bytes"), \
+AP_INIT_FLAG("AcceptErrorsNonFatal", ap_set_accept_errors_nonfatal, NULL, \
+              RSRC_CONF, "Some accept() errors are not fatal to the process")
 #ifdef __cplusplus
 }
 #endif

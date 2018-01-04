@@ -202,6 +202,11 @@ static apr_status_t motorz_io_accept(motorz_core_t *mz, motorz_sb_t *sb)
                      "motorz_io_accept failed");
         clean_child_exit(APEXIT_CHILDSICK);
     }
+    else if (ap_accept_error_is_nonfatal(rv)) {
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, ap_server_conf,
+                "accept() on client socket failed");
+    }
+
     else {
         motorz_conn_t *scon = apr_pcalloc(ptrans, sizeof(motorz_conn_t));
         scon->pool = ptrans;
