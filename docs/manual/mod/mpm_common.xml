@@ -873,4 +873,35 @@ client connections</description>
 </usage>
 </directivesynopsis>
 
+<directivesynopsis>
+<name>AcceptErrorsNonFatal</name>
+<description>Treat some errors accepting a new connection as non-fatal
+to the httpd process.</description>
+<syntax>AcceptErrorsNonFatal ON</syntax>
+<default>OFF (ECONNREFUSED, ECONNABORTED, ECONNRESET cause the process to 
+         exit)</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>event</module><module>worker</module>
+<module>prefork</module>
+</modulelist>
+<compatibility>2.5.1 and later</compatibility>
+
+<usage>
+    <p>The <directive>AcceptErrorsNonFatal</directive> alters the servers
+    behavior under some rare errors that may occur while accepting a new 
+    client connection.  By default, the child process handling a request
+    will gracefully exit when nearly any socket error occurs during the
+    accept() system call.  This is to ensure a potentially unhealthy
+    child process does not try to take on more new connections.</p>
+
+    <p>With <directive>AcceptErrorsNonFatal</directive> set to "ON",
+    the process will <em>not</em> begin to exit if the accept() error is
+    ECONNREFUSED, ECONNABORTED, or ECONNRESET.</p>
+ 
+    <note>Some third-party firwewall software components may inject errors
+    into accept() processing, using return codes not specified by the 
+    operating system</note>
+</usage>
+</directivesynopsis>
+
 </modulesynopsis>
