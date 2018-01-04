@@ -55,6 +55,9 @@ static ap_listen_rec **ap_listen_buckets;
  */
 AP_DECLARE_DATA int ap_have_so_reuseport = -1;
 
+/* Whether some accept() errors are non-fatal to the process */
+AP_DECLARE_DATA int ap_accept_errors_nonfatal = 0;
+
 static ap_listen_rec *old_listeners;
 static int ap_listenbacklog;
 static int ap_listencbratio;
@@ -773,6 +776,7 @@ AP_DECLARE(int) ap_setup_listeners(server_rec *s)
     }
 
     for (lr = ap_listeners; lr; lr = lr->next) {
+        lr->use_specific_errors = ap_accept_errors_nonfatal;
         num_listeners++;
         found = 0;
         for (ls = s; ls && !found; ls = ls->next) {
@@ -983,6 +987,14 @@ AP_DECLARE(void) ap_listen_pre_config(void)
     }
 }
 
+AP_DECLARE(int) ap_accept_error_is_nonfatal(apr_status_t status)
+{
+
+   return APR_STATUS_IS_ECONNREFUSED(status)
+             || APR_STATUS_IS_ECONNABORTED(status)
+             || APR_STATUS_IS_ECONNRESET(status);
+}
+
 AP_DECLARE_NONSTD(const char *) ap_set_listener(cmd_parms *cmd, void *dummy,
                                                 int argc, char *const argv[])
 {
@@ -1112,6 +1124,18 @@ AP_DECLARE_NONSTD(const char *) ap_set_send_buffer_size(cmd_parms *cmd,
     }
 
     send_buffer_size = s;
+    return NULL;
+}
+
+AP_DECLARE_NONSTD(const char *) ap_set_accept_errors_nonfatal(cmd_parms *cmd,
+                                                           void *dummy,
+                                                           int flag)
+{
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL) {
+        return err;
+    }
+    ap_accept_errors_nonfatal = flag;
     return NULL;
 }
 
