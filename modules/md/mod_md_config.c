@@ -50,6 +50,7 @@
 #define MD_CMD_OLD_MD         "ManagedDomain"
 #define MD_CMD_MD_SECTION     "<MDomainSet"
 #define MD_CMD_MD_OLD_SECTION "<ManagedDomain"
+#define MD_CMD_BASE_SERVER    "MDBaseServer"
 #define MD_CMD_CA             "MDCertificateAuthority"
 #define MD_CMD_CAAGREEMENT    "MDCertificateAgreement"
 #define MD_CMD_CACHALLENGES   "MDCAChallenges"
@@ -58,13 +59,13 @@
 #define MD_CMD_MEMBER         "MDMember"
 #define MD_CMD_MEMBERS        "MDMembers"
 #define MD_CMD_MUSTSTAPLE     "MDMustStaple"
+#define MD_CMD_NOTIFYCMD      "MDNotifyCmd"
 #define MD_CMD_PORTMAP        "MDPortMap"
 #define MD_CMD_PKEYS          "MDPrivateKeys"
 #define MD_CMD_PROXY          "MDHttpProxy"
 #define MD_CMD_RENEWWINDOW    "MDRenewWindow"
 #define MD_CMD_REQUIREHTTPS   "MDRequireHttps"
 #define MD_CMD_STOREDIR       "MDStoreDir"
-#define MD_CMD_NOTIFYCMD      "MDNotifyCmd"
 
 #define DEF_VAL     (-1)
 
@@ -76,6 +77,7 @@ static md_mod_conf_t defmc = {
     NULL,
     80,
     443,
+    0,
     0,
     0,
     MD_HSTS_MAX_AGE_DEFAULT,
@@ -487,6 +489,27 @@ static const char *md_config_set_must_staple(cmd_parms *cmd, void *dc, const cha
     return NULL;
 }
 
+static const char *md_config_set_base_server(cmd_parms *cmd, void *dc, const char *value)
+{
+    md_srv_conf_t *config = md_config_get(cmd->server);
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+
+    (void)dc;
+    if (!err) {
+        if (!apr_strnatcasecmp("off", value)) {
+            config->mc->manage_base_server = 0;
+        }
+        else if (!apr_strnatcasecmp("on", value)) {
+            config->mc->manage_base_server = 1;
+        }
+        else {
+            err = apr_pstrcat(cmd->pool, "unknown '", value, 
+                              "', supported parameter values are 'on' and 'off'", NULL);
+        }
+    }
+    return err;
+}
+
 static const char *md_config_set_require_https(cmd_parms *cmd, void *dc, const char *value)
 {
     md_srv_conf_t *config = md_config_get(cmd->server);
@@ -831,6 +854,8 @@ const command_rec md_cmds[] = {
                   "Redirect non-secure requests to the https: equivalent."),
     AP_INIT_TAKE1(     MD_CMD_NOTIFYCMD, md_config_set_notify_cmd, NULL, RSRC_CONF, 
                   "set the command to run when signup/renew of domain is complete."),
+    AP_INIT_TAKE1(     MD_CMD_BASE_SERVER, md_config_set_base_server, NULL, RSRC_CONF, 
+                  "allow managing of base server outside virtual hosts."),
 
 /* This will disappear soon */
     AP_INIT_TAKE_ARGV( MD_CMD_OLD_MD, md_config_set_names_old, NULL, RSRC_CONF, 

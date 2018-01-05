@@ -218,8 +218,12 @@ static apr_status_t assign_to_servers(md_t *md, server_rec *base_server,
     servers = apr_array_make(ptemp, 5, sizeof(server_rec*));
     
     for (s = base_server; s; s = s->next) {
-        r.server = s;
+        if (!mc->manage_base_server && s == base_server) {
+            /* we shall not assign ourselves to the base server */
+            continue;
+        }
         
+        r.server = s;
         for (i = 0; i < md->domains->nelts; ++i) {
             domain = APR_ARRAY_IDX(md->domains, i, const char*);
             

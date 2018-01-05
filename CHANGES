@@ -2,6 +2,11 @@
 Changes with Apache 2.5.1
 
 
+  *) mod_md v1.1.8: new configuration directive "MDBaseServer on|off" to allow/inhibit 
+     management of the base server domains outside VirtualHosts. By default, this is "off", 
+     e.g. mod_md will not manage certificates or perform https: redirections on the 
+     base server. [Stefan Eissing]
+              
   *) core: Add "AcceptErrorsNonFatal" to allow ECONNREFUSED, ECONNABORTED, and
      ECONNRESET during the client accept() to not trigger graceful shutdown of
      the child process.  [Eric Covener]
