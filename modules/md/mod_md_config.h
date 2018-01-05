@@ -47,6 +47,7 @@ typedef struct {
     int local_443;                     /* On which port https:443 arrives */
     int can_http;                      /* Does someone listen to the local port 80 equivalent? */
     int can_https;                     /* Does someone listen to the local port 443 equivalent? */
+    int manage_base_server;            /* If base server outside vhost may be managed */
     int hsts_max_age;                  /* max-age of HSTS (rfc6797) header */
     const char *hsts_header;           /* computed HTST header to use or NULL */
     apr_array_header_t *unused_names;  /* post config, names of all MDs not assigned to a vhost */

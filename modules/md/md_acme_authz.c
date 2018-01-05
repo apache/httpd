@@ -207,8 +207,10 @@ apr_status_t md_acme_authz_update(md_acme_authz_t *authz, md_acme_t *acme,
                                   md_store_t *store, apr_pool_t *p)
 {
     md_json_t *json;
-    const char *s;
+    const char *s, *err;
+    md_log_level_t log_level;
     apr_status_t rv;
+    MD_CHK_VARS;
     
     (void)store;
     assert(acme);
@@ -216,46 +218,46 @@ apr_status_t md_acme_authz_update(md_acme_authz_t *authz, md_acme_t *acme,
     assert(authz);
     assert(authz->location);
 
-    if (APR_SUCCESS != (rv = md_acme_get_json(&json, acme, authz->location, p))) {
-        md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, p, "update authz for %s at %s",
-                      authz->domain, authz->location);
-        return rv;
-    }
-    
-    authz->resource = json;
-    s = md_json_gets(json, "identifier", "type", NULL);
-    if (!s || strcmp(s, "dns")) return APR_EINVAL;
-    s = md_json_gets(json, "identifier", "value", NULL);
-    if (!s || strcmp(s, authz->domain)) return APR_EINVAL;
-    
     authz->state = MD_ACME_AUTHZ_S_UNKNOWN;
-    s = md_json_gets(json, "status", NULL);
-    if (s && !strcmp(s, "pending")) {
-        authz->state = MD_ACME_AUTHZ_S_PENDING;
-    }
-    else if (s && !strcmp(s, "valid")) {
-        authz->state = MD_ACME_AUTHZ_S_VALID;
-        if (md_log_is_level(p, MD_LOG_DEBUG)) {
-            md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, 0, p, "ACME server validated challenge "
-                          "for %s in %s, ACME response is: %s", 
-                          authz->domain, authz->location, 
-                          md_json_writep(json, p, MD_JSON_FMT_COMPACT));
+    json = NULL;
+    err = "unable to parse response";
+    log_level = MD_LOG_ERR;
+    
+    if (MD_OK(md_acme_get_json(&json, acme, authz->location, p))
+        && (s = md_json_gets(json, MD_KEY_IDENTIFIER, MD_KEY_TYPE, NULL))
+        && !strcmp(s, "dns")
+        && (s = md_json_gets(json, MD_KEY_IDENTIFIER, MD_KEY_VALUE, NULL))
+        && !strcmp(s, authz->domain)
+        && (s = md_json_gets(json, MD_KEY_STATUS, NULL))) {
+        
+        authz->resource = json;
+        if (!strcmp(s, "pending")) {
+            authz->state = MD_ACME_AUTHZ_S_PENDING;
+            err = "challenge 'pending'";
+            log_level = MD_LOG_DEBUG;
+        }
+        else if (!strcmp(s, "valid")) {
+            authz->state = MD_ACME_AUTHZ_S_VALID;
+            err = "challenge 'valid'";
+            log_level = MD_LOG_DEBUG;
+        }
+        else if (!strcmp(s, "invalid")) {
+            authz->state = MD_ACME_AUTHZ_S_INVALID;
+            err = "challenge 'invalid'";
         }
     }
-    else if (s && !strcmp(s, "invalid")) {
-        authz->state = MD_ACME_AUTHZ_S_INVALID;
-        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, 0, p, "ACME server reports challenge "
-                      "for %s in %s as 'invalid', ACME response is: %s", 
-                      authz->domain, authz->location, 
-                      md_json_writep(json, p, MD_JSON_FMT_COMPACT));
+
+    if (json && authz->state == MD_ACME_AUTHZ_S_UNKNOWN) {
+        err = "unable to understand response";
+        rv = APR_EINVAL;
     }
-    else if (s) {
-        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, 0, p, "ACME server reports unrecognized "
-                      "authz state '%s' for %s in %s, ACME response is: %s", 
-                      s, authz->domain, authz->location, 
-                      md_json_writep(json, p, MD_JSON_FMT_COMPACT));
-        return APR_EINVAL;
+    
+    if (md_log_is_level(p, log_level)) {
+        md_log_perror(MD_LOG_MARK, log_level, rv, p, "ACME server authz: %s for %s at %s. "
+                      "Exact repsonse was: %s", err? err : "", authz->domain, authz->location,
+                      json? md_json_writep(json, p, MD_JSON_FMT_COMPACT) : "not available");
     }
+    
     return rv;
 }
 
@@ -306,13 +308,14 @@ static apr_status_t setup_key_authz(md_acme_authz_cha_t *cha, md_acme_authz_t *a
 {
     const char *thumb64, *key_authz;
     apr_status_t rv;
+    MD_CHK_VARS;
     
     (void)authz;
     assert(cha);
     assert(cha->token);
     
     *pchanged = 0;
-    if (APR_SUCCESS == (rv = md_jws_pkey_thumb(&thumb64, p, acme->acct_key))) {
+    if (MD_OK(md_jws_pkey_thumb(&thumb64, p, acme->acct_key))) {
         key_authz = apr_psprintf(p, "%s.%s", cha->token, thumb64);
         if (cha->key_authz) {
             if (strcmp(key_authz, cha->key_authz)) {
@@ -335,9 +338,10 @@ static apr_status_t cha_http_01_setup(md_acme_authz_cha_t *cha, md_acme_authz_t 
     const char *data;
     apr_status_t rv;
     int notify_server;
+    MD_CHK_VARS;
     
     (void)key_spec;
-    if (APR_SUCCESS != (rv = setup_key_authz(cha, authz, acme, p, &notify_server))) {
+    if (!MD_OK(setup_key_authz(cha, authz, acme, p, &notify_server))) {
         goto out;
     }
     
@@ -395,9 +399,10 @@ static apr_status_t cha_tls_sni_01_setup(md_acme_authz_cha_t *cha, md_acme_authz
     apr_status_t rv;
     int notify_server;
     apr_array_header_t *domains;
+    MD_CHK_VARS;
     
-    if (   APR_SUCCESS != (rv = setup_key_authz(cha, authz, acme, p, &notify_server))
-        || APR_SUCCESS != (rv = setup_cha_dns(&cha_dns, cha, p))) {
+    if (   !MD_OK(setup_key_authz(cha, authz, acme, p, &notify_server))
+        || !MD_OK(setup_cha_dns(&cha_dns, cha, p))) {
         goto out;
     }
 
@@ -415,18 +420,15 @@ static apr_status_t cha_tls_sni_01_setup(md_acme_authz_cha_t *cha, md_acme_authz
         /* setup a certificate containing the challenge dns */
         domains = apr_array_make(p, 5, sizeof(const char*));
         APR_ARRAY_PUSH(domains, const char*) = cha_dns;
-        rv = md_cert_self_sign(&cha_cert, authz->domain, domains, cha_key, 
-                               apr_time_from_sec(7 * MD_SECS_PER_DAY), p);
-        
-        if (APR_SUCCESS != rv) {
+        if (!MD_OK(md_cert_self_sign(&cha_cert, authz->domain, domains, cha_key, 
+                                     apr_time_from_sec(7 * MD_SECS_PER_DAY), p))) {
             md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, p, "%s: setup self signed cert for %s",
                           authz->domain, cha_dns);
             goto out;
         }
         
-        rv = md_store_save(store, p, MD_SG_CHALLENGES, cha_dns, MD_FN_TLSSNI01_PKEY,
-                           MD_SV_PKEY, (void*)cha_key, 0);
-        if (APR_SUCCESS == rv) {
+        if (MD_OK(md_store_save(store, p, MD_SG_CHALLENGES, cha_dns, MD_FN_TLSSNI01_PKEY,
+                                MD_SV_PKEY, (void*)cha_key, 0))) {
             rv = md_store_save(store, p, MD_SG_CHALLENGES, cha_dns, MD_FN_TLSSNI01_CERT,
                                MD_SV_CERT, (void*)cha_cert, 0);
         }

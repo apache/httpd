@@ -251,6 +251,13 @@ apr_status_t ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
         /*
          * Create the server host:port string because we need it a lot
          */
+        if (sc->vhost_id) {
+            /* already set. This should only happen if this config rec is
+             * shared with another server. Argh! */
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(10104) 
+                         "%s, SSLSrvConfigRec shared from %s", 
+                         ssl_util_vhostid(p, s), sc->vhost_id);
+        }
         sc->vhost_id = ssl_util_vhostid(p, s);
         sc->vhost_id_len = strlen(sc->vhost_id);
 

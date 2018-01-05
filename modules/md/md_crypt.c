@@ -783,30 +783,26 @@ int md_cert_covers_md(md_cert_t *cert, const md_t *md)
 
 apr_status_t md_cert_get_issuers_uri(const char **puri, md_cert_t *cert, apr_pool_t *p)
 {
-    int i, ext_idx, nid = NID_info_access;
-    X509_EXTENSION *ext;
-    X509V3_EXT_METHOD *ext_cls;
-    void *ext_data;
-    const char *uri = NULL;
     apr_status_t rv = APR_ENOENT;
-    
-    /* Waddle through x509  API history to get someone that may be able
-     * to hand us the issuer url for the cert chain */
-    ext_idx = X509_get_ext_by_NID(cert->x509, nid, -1);
-    ext = (ext_idx >= 0)? X509_get_ext(cert->x509, ext_idx) : NULL;
-    ext_cls = ext? (X509V3_EXT_METHOD*)X509V3_EXT_get(ext) : NULL;
-    if (ext_cls && (ext_data = X509_get_ext_d2i(cert->x509, nid, 0, 0))) {
-        CONF_VALUE *cval;
-        STACK_OF(CONF_VALUE) *ext_vals = ext_cls->i2v(ext_cls, ext_data, 0);
-        
-        for (i = 0; i < sk_CONF_VALUE_num(ext_vals); ++i) {
-            cval = sk_CONF_VALUE_value(ext_vals, i);
-            if (!strcmp("CA Issuers - URI", cval->name)) {
-                uri = apr_pstrdup(p, cval->value);
+    STACK_OF(ACCESS_DESCRIPTION) *xinfos;
+    const char *uri = NULL;
+    unsigned char *buf;
+    int i;
+
+    xinfos = X509_get_ext_d2i(cert->x509, NID_info_access, NULL, NULL);
+    if (xinfos) {
+        for (i = 0; i < sk_ACCESS_DESCRIPTION_num(xinfos); i++) {
+            ACCESS_DESCRIPTION *val = sk_ACCESS_DESCRIPTION_value(xinfos, i);
+            if (OBJ_obj2nid(val->method) == NID_ad_ca_issuers
+                    && val->location && val->location->type == GEN_URI) {
+                ASN1_STRING_to_UTF8(&buf, val->location->d.uniformResourceIdentifier);
+                uri = apr_pstrdup(p, (char *)buf);
+                OPENSSL_free(buf);
                 rv = APR_SUCCESS;
                 break;
             }
         }
+        sk_ACCESS_DESCRIPTION_pop_free(xinfos, ACCESS_DESCRIPTION_free);
     } 
     *puri = (APR_SUCCESS == rv)? uri : NULL;
     return rv;
@@ -820,7 +816,7 @@ apr_status_t md_cert_get_alt_names(apr_array_header_t **pnames, md_cert_t *cert,
     unsigned char *buf;
     int i;
     
-    xalt_names = (GENERAL_NAMES*)X509_get_ext_d2i(cert->x509, NID_subject_alt_name, NULL, NULL);
+    xalt_names = X509_get_ext_d2i(cert->x509, NID_subject_alt_name, NULL, NULL);
     if (xalt_names) {
         GENERAL_NAME *cval;
         
@@ -839,6 +835,7 @@ apr_status_t md_cert_get_alt_names(apr_array_header_t **pnames, md_cert_t *cert,
                     break;
             }
         }
+        sk_GENERAL_NAME_pop_free(xalt_names, GENERAL_NAME_free);
         rv = APR_SUCCESS;
     }
     *pnames = (APR_SUCCESS == rv)? names : NULL;
@@ -1106,6 +1103,30 @@ static apr_status_t sk_add_alt_names(STACK_OF(X509_EXTENSION) *exts,
     return APR_SUCCESS;
 }
 
+#define MD_OID_MUST_STAPLE_NUM          "1.3.6.1.5.5.7.1.24"
+#define MD_OID_MUST_STAPLE_SNAME        "tlsfeature"
+#define MD_OID_MUST_STAPLE_LNAME        "TLS Feature" 
+
+static int get_must_staple_nid(void)
+{
+    /* Funny API, the OID for must staple might be configured or
+     * might be not. In the second case, we need to add it. But adding
+     * when it already is there is an error... */
+    int nid = OBJ_txt2nid(MD_OID_MUST_STAPLE_NUM);
+    if (NID_undef == nid) {
+        nid = OBJ_create(MD_OID_MUST_STAPLE_NUM, 
+                         MD_OID_MUST_STAPLE_SNAME, MD_OID_MUST_STAPLE_LNAME);
+    }
+    return nid;
+}
+
+int md_cert_must_staple(md_cert_t *cert)
+{
+    /* In case we do not get the NID for it, we treat this as not set. */
+    int nid = get_must_staple_nid();
+    return ((NID_undef != nid)) && X509_get_ext_by_NID(cert->x509, nid, -1) >= 0;
+}
+
 static apr_status_t add_must_staple(STACK_OF(X509_EXTENSION) *exts, const md_t *md, apr_pool_t *p)
 {
     
@@ -1113,7 +1134,7 @@ static apr_status_t add_must_staple(STACK_OF(X509_EXTENSION) *exts, const md_t *
         X509_EXTENSION *x;
         int nid;
         
-        nid = OBJ_create("1.3.6.1.5.5.7.1.24", "tlsfeature", "TLS Feature");
+        nid = get_must_staple_nid();
         if (NID_undef == nid) {
             md_log_perror(MD_LOG_MARK, MD_LOG_ERR, 0, p, 
                           "%s: unable to get NID for v3 must-staple TLS feature", md->name);
