@@ -2546,19 +2546,20 @@ Include conf/vhosts/*.conf</pre>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Inclusion de fichiers dans le fichier de configuration</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>IncludeOptional
-<var>chemin-fichier</var>|<var>chemin-répertoire</var>|<var>wildcard</var></code></td></tr>
+<var>file-path</var>|<var>directory-path</var>|<var>wildcard</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.3.6 du serveur HTTP
-Apache</td></tr>
+Apache. Après la version 2.4.30, les chemins de fichiers non existants et
+ne comportant pas de caractères génériques ne génèrent plus d'erreurs de syntaxe</td></tr>
 </table>
     <p>Cette directive permet d'inclure des fichiers dans les fichiers
     de configuration du serveur. Elle fonctionne de manière identique à
-    la directive <code class="directive"><a href="#include">Include</a></code>, à
-    l'exception du fait que si l'expression avec caractères génériques
-    wilcard ne correspond à aucun fichier ou répertoire, elle sera
-    ignorée silencieusement au lieu de causer une erreur.</p>    
+    la directive <code class="directive"><a href="#include">Include</a></code>, mais au lieu de
+    générer une erreur, elle sera ignorée silensieusement si malgré
+    l'utilisation de caractères génériques, le chemin de fichier ou de
+    répertoire spécifié n'existe pas dans le système de fichiers.</p>    
     
 
 <h3>Voir aussi</h3>
@@ -4177,14 +4178,18 @@ comme si la directive QualifyRedirectURL était définie à ON.</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 </table>
-<p>Normalement, les méthodes HTTP non conformes aux RFCs correspondantes
-sont rejetées au cours du traitement de la requête par HTTPD. Pour
-éviter ceci, les modules peuvent enregistrer les méthodes HTTP non
-standards qu'ils supportent. La directive
-<code class="directive">RegisterHttpMethod</code> permet d'enregistrer de telles
-méthodes manuellement. Ceci peut s'avérer utile si de telle méthodes
-doivent être utilisées dans un traitement externe, comme un script CGI.</p>
+<p>Cette directive permet d'enregistrer des méthodes HTTP supplémentaires. Ceci
+s'avérera nécessaire si l'on doit utiliser des méthodes non standards avec des
+directives qui acceptent des noms de méthodes en paramètres, ou pour permettre
+l'utilisation de méthodes particulières non standards en passant par un serveur
+mandataire ou au sein de scripts CGI, et ceci alors que le serveur a été
+configuré pour ne transmettre que des méthodes reconnues aux modules.</p>
 
+<h3>Voir aussi</h3>
+<ul>
+<li><code class="directive"><a href="#httpprotocoloptions">HTTPProtocolOptions</a></code></li>
+<li><code class="directive"><a href="../mod/mod_allowmethods.html#allowmethods">AllowMethods</a></code></li>
+</ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="rlimitcpu" id="rlimitcpu">Directive</a> <a name="RLimitCPU" id="RLimitCPU">RLimitCPU</a></h2>
@@ -5268,7 +5273,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.4/mod/core.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2017 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

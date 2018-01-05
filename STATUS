@@ -118,6 +118,21 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_proxy_html: Save a few bytes in the conf pool when handling
+     'ProxyHTMLDoctype' directive with a user defined  FPI
+     trunk patch: http://svn.apache.org/r1813991
+     2.4.x patch: svn merge -c r1813991 ^/httpd/httpd/trunk .
+     +1: jailletc36, niq, jim
+
+  *) mod_ldap: PR61891: Failure to make progreass purging a mostly full cache.
+     trunk patch: http://svn.apache.org/r1818040
+     2.4.x patch: svn merge -c r1818040  ^/httpd/httpd/trunk . 
+     +1: covener, jim, ylavic
+
+  *) mod_brotli.c: APR-ize uint values
+     trunk patch: http://svn.apache.org/r1818278
+     2.4.x patch: svn merge -c r1818278  ^/httpd/httpd/trunk . 
+     +1:  covener, jim, ylavic
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -163,8 +178,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1790169 (rename "exception" directive)
                   http://svn.apache.org/r1790457 (Update directive name in err message)
                   http://svn.apache.org/r1806985
+                  http://svn.apache.org/r1818279
      2.4 convenience patch (includes CHANGES):
                   http://home.apache.org/~jim/patches/RemoteIPProxyProtocol.2.4-v2.patch
+                  http://svn.apache.org/r1818279
      +1: druggeri, jim
      ylavic: RemoteIPProxyProtocol* are documented as scoped to server config
              and virtual host, though using ap_server_conf makes them global
@@ -177,6 +194,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/backport-module-flags.diff
                   (merge with alterations for mmn etc., updated after review by Yann)
      +1: icing, ylavic
+     niq: Can someone post a pointer to discussion of this on dev list?
+          In particular the API change and apparent #ifdef ABI?
 
   *) core: A signal received while stopping could have crashed the main
      process.  PR 61558.
@@ -188,52 +207,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   (merge without changes to motorz)
      +1: ylavic, jim
 
-  *) mod_journald: Add new module mod_journald to log error logs into journald.
-     trunk patch: http://svn.apache.org/r1610339
-                  http://svn.apache.org/r1621806
-                  http://svn.apache.org/r1812339
-     2.4.x patch: http://people.apache.org/~jkaluza/patches/httpd-2.4.x-mod_journald.patch
-                  http://svn.apache.org/r1812339
-     +1: jkaluza, jim
-     jchampion: Looks like the headers require GCC extensions to compile, so
-                mod_journald can't be configured in maintainer mode (-std=c89).
-                Can anyone else reproduce, or is it just my distro?
-     ylavic: missing r1812339 for maintainer-mode/c89/-Werror compliance,
-             needed if the above configure.in proposal gets backported.
-             Note that r1812339 could be backported in any case, even if
-             the above configure.in proposal does not get accepted.
-
-  *) mpm_event: avoid a very unlikely race condition between the listener and
-     the workers when the latter fails to add a connection to the pollset.
-     trunk patch: http://svn.apache.org/r1809273
-                  http://svn.apache.org/r1814719 (CHANGES only)
-     2.4.x patch: trunk works (modulo CHANGES)
-                  svn merge -c 1809273,1814719 ^/httpd/httpd/trunk .
-     +1: ylavic, jim
-
-  *) core: silently ignore a not existent file path when IncludeOptional is used.
-     trunk patch: http://svn.apache.org/r1814968
-     2.4.x patch: trunk works (modulo CHANGES)
-                  svn merge -c r1814968 ^/httpd/httpd/trunk .
-     +1: elukey, jim
-
   *) mod_md: backport of ACME (Let's Encrypt) support. Needs mod_ssl backport proposal beneath to
      not only compile but do something.
-     trunk revisions: 1804530,1804531,1804542,1804545,1804671,1804759,1804787,1804975,1805180,1805188,1805192,1805194,1805256,1805294,1805373,1806939,1807228,1807347,1807577,1807593,1807774,1807777,1808005,1808092,1808100,1808241,1808242,1808243,1808249,1808444,1809719,1809888,1810723,1811082,1811812,1812193,1812517,1812518,1812999,1813642,1814720,1814939,1815005,1815078,1815264,1815370,1815483,1816055,1816154,1816156
+     trunk revisions: 1804530,1804531,1804542,1804545,1804671,1804759,1804787,1804975,1805180,1805188,1805192,1805194,1805256,1805294,1805373,1806939,1807228,1807347,1807577,1807593,1807774,1807777,1808005,1808092,1808100,1808241,1808242,1808243,1808249,1808444,1809719,1809888,1810723,1811082,1811812,1812193,1812517,1812518,1812999,1813642,1814720,1814939,1815005,1815078,1815264,1815370,1815483,1816055,1816154,1816156 and more
      2.4.x branch: ^/httpd/httpd/branches/2.4.x-mod_md
-     2.4.x diff: svn diff ^/httpd/httpd/branches/2.4.x  ^/httpd/httpd/branches/2.4.x-mod_md 
+     2.4.x diff: svn diff ^/httpd/httpd/branches/2.4.x  ^/httpd/httpd/branches/2.4.x-mod_md
+         Updated 2.4.x-mod_md branch to current trunk (mod_md v1.1.0) with renamed configuration
+         directives and improved certificate chain retrieval. Resetting votes.
      +1: icing, jim
-
-  *) mod_md: backport of mod_ssl changes to get interworking ACME support. Needs mod_md backport propoals above to find mod_md.h include file with otional functions.
-     trunk revisions: 1804530,1804531,1805186,1806939,1807232,1808122
-     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/mod_ssl_minimal_md.diff
-     +1: icing, jorton, jim
-
-  *) mod_http2: fixes unfair scheduling when number of active connections exceeds the
-     scheduling fifo capacity.
-     trunk revision: r1816619
-     2.4.x patch: svn merge -c 1816619 ^/httpd/httpd/trunk .
-     +1: icing, steffenal, jim
 
   *) mod_proxy_uwsgi: Add in UWSGI proxy (sub)module
      trunk patch: http://svn.apache.org/r1810358
@@ -241,8 +222,37 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1810363
                   http://svn.apache.org/r1810365
                   http://svn.apache.org/r1810447
+                  http://svn.apache.org/r1816919
+                  http://svn.apache.org/r1816922
+                  http://svn.apache.org/r1818013
+                  http://svn.apache.org/r1818280
      2.4.x patch: trunk works (modulo CHANGES)
+                  svn merge -c r1810358,r1810362,r1810363,r1810365,r1810447,r1816919,r1816922,r1818013,r1818280 ^/httpd/httpd/trunk .
+                  (or svn copy ...)
      +1: jim
+
+  *) mod_proxy_html: skip documents < 4 bytes. PR 56286
+     trunk patch: http://svn.apache.org/r1599012
+                  http://svn.apache.org/r1601559
+                  http://svn.apache.org/r1818624   (style only)
+     2.4.x patch: svn merge -c r1599012,r1601559,r1818624 ^/httpd/httpd/trunk .
+     +1: niq, jim
+     ylavic: +1 with r1819969 and r1819970, see dev@ thread re r1599012.
+
+  *) mpm_event: close connections not reported as handled by any module to
+     avoid losing track of them and leaking scoreboard entries.  PR 61551.
+     trunk patch: http://svn.apache.org/r1818804
+                  http://svn.apache.org/r1818951
+                  http://svn.apache.org/r1818958
+                  http://svn.apache.org/r1818960
+                  http://svn.apache.org/r1819027
+                  http://svn.apache.org/r1819214
+                  http://svn.apache.org/r1820035
+     2.4.x patch: trunk works (modulo CHANGES)
+                  svn merge -c 1818804,1818951,1818958,1818960,1819027,1819214,1820035 ^/httpd/httpd/trunk .
+                  http://home.apache.org/~ylavic/patches/PR61551+APLOGNO.patch
+     +1: ylavic, icing
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
@@ -396,23 +406,6 @@ PATCHES/ISSUES THAT ARE STALLED
          really cover a very narrow set of parameters with the way it skips over backreferences?
          Also, why a new API vs. just setting the field inline?
 
-   * mod_systemd: New module, for integration with systemd on Linux.
-     trunk patch: http://svn.apache.org/r1393976
-                  http://svn.apache.org/r1393997
-                  http://svn.apache.org/r1484554
-                  http://svn.apache.org/r1528032
-                  http://svn.apache.org/r1528034
-                  http://svn.apache.org/r1614821
-                  http://svn.apache.org/r1618579
-                  http://svn.apache.org/r1618588
-     2.4.x patch: http://people.apache.org/~jkaluza/patches/mod_systemd/httpd-2.4.x-mod_systemd.patch
-     +1: jkaluza
-     sf comments: The IdleShutdown logic seems broken. Consider a single
-                  active connection that is stalled for 10 seconds. That
-                  connection will be broken after GracefulShutdownTimeout.
-                  A better logic would be to check if there is any open
-                  connection that is not in keep-alive state.
-
    * core: Add support for systemd socket activation.
      trunk patch: http://svn.apache.org/r1511033
                   http://svn.apache.org/r1608686
@@ -482,13 +475,34 @@ PATCHES/ISSUES THAT ARE STALLED
             cgi-examples/ dir alongside cgi-bin/? Otherwise manual/cgi/examples
             might work?
 
-   * core: block Define and Undefine in vhost and directory context. Because
-     it is EXEC_ON_READ, it "breaks out" of these contexts anyway.
-     trunk patch: http://svn.apache.org/r1656063
-                  http://svn.apache.org/r1656122
-     2.4.x patch:  http://people.apache.org/~covener/patches/2.4.x-define-limits.diff
-     +1: covener (I need to review the docs manually in this area)
-     -1: wrowe (blocking will break "working" .conf files on a subversion update
-                meant to pick up security fixes.  "Alerting" I would agree to.)
+  *) mod_journald: Add new module mod_journald to log error logs into journald.
+     trunk patch: http://svn.apache.org/r1610339
+                  http://svn.apache.org/r1621806
+                  http://svn.apache.org/r1812339
+     2.4.x patch: http://people.apache.org/~jkaluza/patches/httpd-2.4.x-mod_journald.patch
+                  http://svn.apache.org/r1812339
+     +1: jkaluza, jim
+     jchampion: Looks like the headers require GCC extensions to compile, so
+                mod_journald can't be configured in maintainer mode (-std=c89).
+                Can anyone else reproduce, or is it just my distro?
+     ylavic: missing r1812339 for maintainer-mode/c89/-Werror compliance,
+             needed if the above configure.in proposal gets backported.
+             Note that r1812339 could be backported in any case, even if
+             the above configure.in proposal does not get accepted.
 
-
+   * mod_systemd: New module, for integration with systemd on Linux.
+     trunk patch: http://svn.apache.org/r1393976
+                  http://svn.apache.org/r1393997
+                  http://svn.apache.org/r1484554
+                  http://svn.apache.org/r1528032
+                  http://svn.apache.org/r1528034
+                  http://svn.apache.org/r1614821
+                  http://svn.apache.org/r1618579
+                  http://svn.apache.org/r1618588
+     2.4.x patch: http://people.apache.org/~jkaluza/patches/mod_systemd/httpd-2.4.x-mod_systemd.patch
+     +1: jkaluza
+     sf comments: The IdleShutdown logic seems broken. Consider a single
+                  active connection that is stalled for 10 seconds. That
+                  connection will be broken after GracefulShutdownTimeout.
+                  A better logic would be to check if there is any open
+                  connection that is not in keep-alive state.

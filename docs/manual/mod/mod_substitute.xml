@@ -82,8 +82,14 @@
         </highlight>
     </example>
 
+    <p>The character which is used to separate (or "delimit") the
+    various parts of the substituion string is referred to as the
+    "delimiter", and it is most common to use a slash for this
+    purpose.</p>
+
     <p>If either the pattern or the substitution contain a slash
-    character then an alternative delimiter should be used:</p>
+    character then an alternative delimiter may be used to make the
+    directive more readable:</p>
 
     <example><title>Example of using an alternate delimiter</title>
     <highlight language="config">
@@ -101,7 +107,7 @@
 &lt;Location "/"&gt;
     AddOutputFilterByType SUBSTITUTE text/html
     # "foo=k,bar=k" -> "foo/bar=k"
-    Substitute "s|foo=(\w+),bar=\1|foo/bar=$1"
+    Substitute "s|foo=(\w+),bar=\1|foo/bar=$1|"
 &lt;/Location&gt;
     </highlight>
     </example>
@@ -117,7 +123,7 @@
 
     <example><title>Rewriting URLs embedded in proxied content</title>
     <highlight language="config">
-ProxyPass        "/blog/" "http://internal.blog.example.com"
+ProxyPass        "/blog/" "http://internal.blog.example.com/"
 ProxyPassReverse "/blog/" "http://internal.blog.example.com/"
 
 Substitute "s|http://internal.blog.example.com/|http://www.example.com/blog/|i"

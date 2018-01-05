@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1784914 -->
+<!-- English Revision: 1819908 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -303,9 +303,12 @@ access.log - GET /server-status 200 127.0.0.1
       <example>
         <title>Version 2.2 :</title>
         <highlight language="config">
+# configuration en version 2.2 qui désactive le contrôle d'accès basé sur le nom
+# d'hôte pour n'utiliser que l'authentification
 Order Deny,Allow
-Deny from all
-AuthBasicProvider File
+Allow from all
+AuthType Basic
+AuthBasicProvider file
 AuthUserFile /example.com/conf/users.passwd
 AuthName secure
 Require valid-user
@@ -314,8 +317,10 @@ Require valid-user
       <example>
         <title>Version 2.4 :</title>
         <highlight language="config">
-# Pas besoin de remplacer les directives Order et deny
-AuthBasicProvider File
+# Pas besoin de remplacer les directives de contrôle d'accès basées sur le nom
+# d'hôte désactivées
+AuthType Basic
+AuthBasicProvider file
 AuthUserFile /example.com/conf/users.passwd
 AuthName secure
 Require valid-user
@@ -334,7 +339,8 @@ Deny from all
 # ALL est la valeur par défaut de Satisfy
 Satisfy ALL
 Allow from 127.0.0.1
-AuthBasicProvider File
+AuthType Basic
+AuthBasicProvider file
 AuthUserFile /example.com/conf/users.passwd
 AuthName secure
 Require valid-user
@@ -343,7 +349,8 @@ Require valid-user
       <example>
         <title>Version 2.4 :</title>
         <highlight language="config">
-AuthBasicProvider File
+AuthType Basic
+AuthBasicProvider file
 AuthUserFile /example.com/conf/users.passwd
 AuthName secure
 &lt;RequireAll&gt;
@@ -364,7 +371,8 @@ Order allow,deny
 Deny from all
 Satisfy any
 Allow from 127.0.0.1
-AuthBasicProvider File
+AuthType Basic
+AuthBasicProvider file
 AuthUserFile /example.com/conf/users.passwd
 AuthName secure
 Require valid-user
@@ -373,7 +381,8 @@ Require valid-user
       <example>
         <title>Version 2.4 :</title>
         <highlight language="config">
-AuthBasicProvider File
+AuthType Basic
+AuthBasicProvider file
 AuthUserFile /example.com/conf/users.passwd
 AuthName secure
 # Implicite : &lt;RequireAny&gt;

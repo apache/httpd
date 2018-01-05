@@ -252,15 +252,20 @@ access.log - GET /server-status 200 127.0.0.1</pre>
      <em>ALL</em>, les lignes de configuration qui désactivent le contrôle
      d'accès basé sur l'hôte sont maintenant omises :</p>
 
-      <div class="example"><h3>Version 2.2 :</h3><pre class="prettyprint lang-config">Order Deny,Allow
-Deny from all
-AuthBasicProvider File
+      <div class="example"><h3>Version 2.2 :</h3><pre class="prettyprint lang-config"># configuration en version 2.2 qui désactive le contrôle d'accès basé sur le nom
+# d'hôte pour n'utiliser que l'authentification
+Order Deny,Allow
+Allow from all
+AuthType Basic
+AuthBasicProvider file
 AuthUserFile /example.com/conf/users.passwd
 AuthName secure
 Require valid-user</pre>
 </div>
-      <div class="example"><h3>Version 2.4 :</h3><pre class="prettyprint lang-config"># Pas besoin de remplacer les directives Order et deny
-AuthBasicProvider File
+      <div class="example"><h3>Version 2.4 :</h3><pre class="prettyprint lang-config"># Pas besoin de remplacer les directives de contrôle d'accès basées sur le nom
+# d'hôte désactivées
+AuthType Basic
+AuthBasicProvider file
 AuthUserFile /example.com/conf/users.passwd
 AuthName secure
 Require valid-user</pre>
@@ -275,12 +280,14 @@ Deny from all
 # ALL est la valeur par défaut de Satisfy
 Satisfy ALL
 Allow from 127.0.0.1
-AuthBasicProvider File
+AuthType Basic
+AuthBasicProvider file
 AuthUserFile /example.com/conf/users.passwd
 AuthName secure
 Require valid-user</pre>
 </div>
-      <div class="example"><h3>Version 2.4 :</h3><pre class="prettyprint lang-config">AuthBasicProvider File
+      <div class="example"><h3>Version 2.4 :</h3><pre class="prettyprint lang-config">AuthType Basic
+AuthBasicProvider file
 AuthUserFile /example.com/conf/users.passwd
 AuthName secure
 &lt;RequireAll&gt;
@@ -297,12 +304,14 @@ AuthName secure
 Deny from all
 Satisfy any
 Allow from 127.0.0.1
-AuthBasicProvider File
+AuthType Basic
+AuthBasicProvider file
 AuthUserFile /example.com/conf/users.passwd
 AuthName secure
 Require valid-user</pre>
 </div>
-      <div class="example"><h3>Version 2.4 :</h3><pre class="prettyprint lang-config">AuthBasicProvider File
+      <div class="example"><h3>Version 2.4 :</h3><pre class="prettyprint lang-config">AuthType Basic
+AuthBasicProvider file
 AuthUserFile /example.com/conf/users.passwd
 AuthName secure
 # Implicite : &lt;RequireAny&gt;
@@ -580,7 +589,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.4/upgrading.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2017 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
