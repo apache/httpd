@@ -137,11 +137,12 @@ static apr_status_t rename_pkey(void *baton, apr_pool_t *p, apr_pool_t *ptemp,
 {
     const char *from, *to;
     apr_status_t rv = APR_SUCCESS;
-
+    MD_CHK_VARS;
+    
     (void)baton;
     (void)ftype;
-    if (APR_SUCCESS == (rv = md_util_path_merge(&from, ptemp, dir, name, NULL))
-        && APR_SUCCESS == (rv = md_util_path_merge(&to, ptemp, dir, MD_FN_PRIVKEY, NULL))) {
+    if (   MD_OK(md_util_path_merge(&from, ptemp, dir, name, NULL))
+        && MD_OK(md_util_path_merge(&to, ptemp, dir, MD_FN_PRIVKEY, NULL))) {
         md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, 0, p, "renaming %s/%s to %s", 
                       dir, name, MD_FN_PRIVKEY);
         return apr_file_rename(from, to, ptemp);
@@ -157,15 +158,16 @@ static apr_status_t mk_pubcert(void *baton, apr_pool_t *p, apr_pool_t *ptemp,
     apr_array_header_t *chain, *pubcert;
     const char *fname, *fpubcert;
     apr_status_t rv = APR_SUCCESS;
+    MD_CHK_VARS;
     
     (void)baton;
     (void)ftype;
     (void)p;
-    if (   APR_SUCCESS == (rv = md_util_path_merge(&fpubcert, ptemp, dir, MD_FN_PUBCERT, NULL))
-        && APR_STATUS_IS_ENOENT((rv = md_chain_fload(&pubcert, ptemp, fpubcert)))
-        && APR_SUCCESS == (rv = md_util_path_merge(&fname, ptemp, dir, name, NULL))
-        && APR_SUCCESS == (rv = md_cert_fload(&cert, ptemp, fname))
-        && APR_SUCCESS == (rv = md_util_path_merge(&fname, ptemp, dir, MD_FN_CHAIN, NULL))) {
+    if (   MD_OK(md_util_path_merge(&fpubcert, ptemp, dir, MD_FN_PUBCERT, NULL))
+        && MD_IS_ERR(md_chain_fload(&pubcert, ptemp, fpubcert), ENOENT)
+        && MD_OK(md_util_path_merge(&fname, ptemp, dir, name, NULL))
+        && MD_OK(md_cert_fload(&cert, ptemp, fname))
+        && MD_OK(md_util_path_merge(&fname, ptemp, dir, MD_FN_CHAIN, NULL))) {
         
         rv = md_chain_fload(&chain, ptemp, fname);
         if (APR_STATUS_IS_ENOENT(rv)) {
@@ -209,8 +211,9 @@ static apr_status_t read_store_file(md_store_fs_t *s_fs, const char *fname,
     const char *key64, *key;
     apr_status_t rv;
     double store_version;
+    MD_CHK_VARS;
     
-    if (APR_SUCCESS == (rv = md_json_readf(&json, p, fname))) {
+    if (MD_OK(md_json_readf(&json, p, fname))) {
         store_version = md_json_getn(json, MD_KEY_STORE, MD_KEY_VERSION, NULL);
         if (store_version <= 0.0) {
             /* ok, an old one, compatible to 1.0 */
@@ -261,25 +264,23 @@ static apr_status_t setup_store_file(void *baton, apr_pool_t *p, apr_pool_t *pte
     md_store_fs_t *s_fs = baton;
     const char *fname;
     apr_status_t rv;
+    MD_CHK_VARS;
 
     (void)ap;
     s_fs->plain_pkey[MD_SG_DOMAINS] = 1;
     s_fs->plain_pkey[MD_SG_TMP] = 1;
     
-    rv = md_util_path_merge(&fname, ptemp, s_fs->base, FS_STORE_JSON, NULL);
-    if (APR_SUCCESS != rv) {
+    if (!MD_OK(md_util_path_merge(&fname, ptemp, s_fs->base, FS_STORE_JSON, NULL))) {
         return rv;
     }
     
 read:
-    if (APR_SUCCESS == (rv = md_util_is_file(fname, ptemp))) {
+    if (MD_OK(md_util_is_file(fname, ptemp))) {
         rv = read_store_file(s_fs, fname, p, ptemp);
     }
-    else if (APR_STATUS_IS_ENOENT(rv)) {
-        rv = init_store_file(s_fs, fname, p, ptemp);
-        if (APR_STATUS_IS_EEXIST(rv)) {
-            goto read;
-        }
+    else if (APR_STATUS_IS_ENOENT(rv)
+        && MD_IS_ERR(init_store_file(s_fs, fname, p, ptemp), EEXIST)) {
+        goto read;
     }
     return rv;
 }
@@ -288,6 +289,7 @@ apr_status_t md_store_fs_init(md_store_t **pstore, apr_pool_t *p, const char *pa
 {
     md_store_fs_t *s_fs;
     apr_status_t rv = APR_SUCCESS;
+    MD_CHK_VARS;
     
     s_fs = apr_pcalloc(p, sizeof(*s_fs));
 
@@ -316,20 +318,15 @@ apr_status_t md_store_fs_init(md_store_t **pstore, apr_pool_t *p, const char *pa
 
     s_fs->base = apr_pstrdup(p, path);
     
-    if (APR_SUCCESS != (rv = md_util_is_dir(s_fs->base, p))) {
-        if (APR_STATUS_IS_ENOENT(rv)) {
-            rv = apr_dir_make_recursive(s_fs->base, s_fs->def_perms.dir, p);
-            if (APR_SUCCESS == rv) {
-                rv = apr_file_perms_set(s_fs->base, MD_FPROT_D_UALL_WREAD);
-                if (APR_STATUS_IS_ENOTIMPL(rv)) {
-                    rv = APR_SUCCESS;
-                }
-            }
+    if (MD_IS_ERR(md_util_is_dir(s_fs->base, p), ENOENT)
+        && MD_OK(apr_dir_make_recursive(s_fs->base, s_fs->def_perms.dir, p))) {
+        rv = apr_file_perms_set(s_fs->base, MD_FPROT_D_UALL_WREAD);
+        if (APR_STATUS_IS_ENOTIMPL(rv)) {
+            rv = APR_SUCCESS;
         }
     }
-    rv = md_util_pool_vdo(setup_store_file, s_fs, p, NULL);
     
-    if (APR_SUCCESS != rv) {
+    if ((APR_SUCCESS != rv) || !MD_OK(md_util_pool_vdo(setup_store_file, s_fs, p, NULL))) {
         md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, p, "init fs store at %s", path);
     }
     *pstore = (rv == APR_SUCCESS)? &(s_fs->s) : NULL;
@@ -464,6 +461,7 @@ static apr_status_t pfs_load(void *baton, apr_pool_t *p, apr_pool_t *ptemp, va_l
     md_store_group_t group;
     void **pvalue;
     apr_status_t rv;
+    MD_CHK_VARS;
     
     group = (md_store_group_t)va_arg(ap, int);
     name = va_arg(ap, const char *);
@@ -471,8 +469,7 @@ static apr_status_t pfs_load(void *baton, apr_pool_t *p, apr_pool_t *ptemp, va_l
     vtype = (md_store_vtype_t)va_arg(ap, int);
     pvalue= va_arg(ap, void **);
         
-    rv = fs_get_fname(&fpath, &s_fs->s, group, name, aspect, ptemp);
-    if (APR_SUCCESS == rv) {
+    if (MD_OK(fs_get_fname(&fpath, &s_fs->s, group, name, aspect, ptemp))) {
         rv = fs_fload(pvalue, s_fs, fpath, group, vtype, p, ptemp);
     }
     return rv;
@@ -495,18 +492,14 @@ static apr_status_t mk_group_dir(const char **pdir, md_store_fs_t *s_fs,
 {
     const perms_t *perms;
     apr_status_t rv;
+    MD_CHK_VARS;
     
     perms = gperms(s_fs, group);
 
-    if (APR_SUCCESS == (rv = fs_get_dname(pdir, &s_fs->s, group, name, p))
-        && (MD_SG_NONE != group)) {
-        if (APR_SUCCESS != md_util_is_dir(*pdir, p)) {
-            if (APR_SUCCESS == (rv = apr_dir_make_recursive(*pdir, perms->dir, p))) {
-                rv = dispatch(s_fs, MD_S_FS_EV_CREATED, group, *pdir, APR_DIR, p);
-            }
-        }
-        else {
-            /* already exists */
+    if (MD_OK(fs_get_dname(pdir, &s_fs->s, group, name, p)) && (MD_SG_NONE != group)) {
+        if (  !MD_OK(md_util_is_dir(*pdir, p))
+            && MD_OK(apr_dir_make_recursive(*pdir, perms->dir, p))) {
+            rv = dispatch(s_fs, MD_S_FS_EV_CREATED, group, *pdir, APR_DIR, p);
         }
         
         if (APR_SUCCESS == rv) {
@@ -529,6 +522,7 @@ static apr_status_t pfs_is_newer(void *baton, apr_pool_t *p, apr_pool_t *ptemp, 
     apr_finfo_t inf1, inf2;
     int *pnewer;
     apr_status_t rv;
+    MD_CHK_VARS;
     
     (void)p;
     group1 = (md_store_group_t)va_arg(ap, int);
@@ -538,10 +532,10 @@ static apr_status_t pfs_is_newer(void *baton, apr_pool_t *p, apr_pool_t *ptemp, 
     pnewer = va_arg(ap, int*);
     
     *pnewer = 0;
-    if (   APR_SUCCESS == (rv = fs_get_fname(&fname1, &s_fs->s, group1, name, aspect, ptemp))
-        && APR_SUCCESS == (rv = fs_get_fname(&fname2, &s_fs->s, group2, name, aspect, ptemp))
-        && APR_SUCCESS == (rv = apr_stat(&inf1, fname1, APR_FINFO_MTIME, ptemp))
-        && APR_SUCCESS == (rv = apr_stat(&inf2, fname2, APR_FINFO_MTIME, ptemp))) {
+    if (   MD_OK(fs_get_fname(&fname1, &s_fs->s, group1, name, aspect, ptemp))
+        && MD_OK(fs_get_fname(&fname2, &s_fs->s, group2, name, aspect, ptemp))
+        && MD_OK(apr_stat(&inf1, fname1, APR_FINFO_MTIME, ptemp))
+        && MD_OK(apr_stat(&inf2, fname2, APR_FINFO_MTIME, ptemp))) {
         *pnewer = inf1.mtime > inf2.mtime;
     }
 
@@ -575,6 +569,7 @@ static apr_status_t pfs_save(void *baton, apr_pool_t *p, apr_pool_t *ptemp, va_l
     const perms_t *perms;
     const char *pass;
     apr_size_t pass_len;
+    MD_CHK_VARS;
     
     group = (md_store_group_t)va_arg(ap, int);
     name = va_arg(ap, const char*);
@@ -585,9 +580,9 @@ static apr_status_t pfs_save(void *baton, apr_pool_t *p, apr_pool_t *ptemp, va_l
     
     perms = gperms(s_fs, group);
     
-    if (APR_SUCCESS == (rv = mk_group_dir(&gdir, s_fs, group, NULL, p)) 
-        && APR_SUCCESS == (rv = mk_group_dir(&dir, s_fs, group, name, p))
-        && APR_SUCCESS == (rv = md_util_path_merge(&fpath, ptemp, dir, aspect, NULL))) {
+    if (   MD_OK(mk_group_dir(&gdir, s_fs, group, NULL, p)) 
+        && MD_OK(mk_group_dir(&dir, s_fs, group, name, p))
+        && MD_OK(md_util_path_merge(&fpath, ptemp, dir, aspect, NULL))) {
         
         md_log_perror(MD_LOG_MARK, MD_LOG_TRACE3, 0, ptemp, "storing in %s", fpath);
         switch (vtype) {
@@ -632,6 +627,7 @@ static apr_status_t pfs_remove(void *baton, apr_pool_t *p, apr_pool_t *ptemp, va
     int force;
     apr_finfo_t info;
     md_store_group_t group;
+    MD_CHK_VARS;
     
     (void)p;
     group = (md_store_group_t)va_arg(ap, int);
@@ -641,12 +637,12 @@ static apr_status_t pfs_remove(void *baton, apr_pool_t *p, apr_pool_t *ptemp, va
     
     groupname = md_store_group_name(group);
     
-    if (APR_SUCCESS == (rv = md_util_path_merge(&dir, ptemp, s_fs->base, groupname, name, NULL))
-        && APR_SUCCESS == (rv = md_util_path_merge(&fpath, ptemp, dir, aspect, NULL))) {
+    if (   MD_OK(md_util_path_merge(&dir, ptemp, s_fs->base, groupname, name, NULL))
+        && MD_OK(md_util_path_merge(&fpath, ptemp, dir, aspect, NULL))) {
         md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, 0, ptemp, "start remove of md %s/%s/%s", 
                       groupname, name, aspect);
 
-        if (APR_SUCCESS != (rv = apr_stat(&info, dir, APR_FINFO_TYPE, ptemp))) {
+        if (!MD_OK(apr_stat(&info, dir, APR_FINFO_TYPE, ptemp))) {
             if (APR_ENOENT == rv && force) {
                 return APR_SUCCESS;
             }
@@ -692,6 +688,7 @@ static apr_status_t pfs_purge(void *baton, apr_pool_t *p, apr_pool_t *ptemp, va_
     const char *dir, *name, *groupname;
     md_store_group_t group;
     apr_status_t rv;
+    MD_CHK_VARS;
     
     (void)p;
     group = (md_store_group_t)va_arg(ap, int);
@@ -699,7 +696,7 @@ static apr_status_t pfs_purge(void *baton, apr_pool_t *p, apr_pool_t *ptemp, va_
     
     groupname = md_store_group_name(group);
 
-    if (APR_SUCCESS == (rv = md_util_path_merge(&dir, ptemp, s_fs->base, groupname, name, NULL))) {
+    if (MD_OK(md_util_path_merge(&dir, ptemp, s_fs->base, groupname, name, NULL))) {
         /* Remove all files in dir, there should be no sub-dirs */
         rv = md_util_rm_recursive(dir, ptemp, 1);
     }
@@ -734,15 +731,14 @@ static apr_status_t insp(void *baton, apr_pool_t *p, apr_pool_t *ptemp,
     apr_status_t rv;
     void *value;
     const char *fpath;
+    MD_CHK_VARS;
  
     (void)ftype;   
     md_log_perror(MD_LOG_MARK, MD_LOG_TRACE3, 0, ptemp, "inspecting value at: %s/%s", dir, name);
-    if (APR_SUCCESS == (rv = md_util_path_merge(&fpath, ptemp, dir, name, NULL))) {
-        rv = fs_fload(&value, ctx->s_fs, fpath, ctx->group, ctx->vtype, p, ptemp);
-        if (APR_SUCCESS == rv 
-            && !ctx->inspect(ctx->baton, name, ctx->aspect, ctx->vtype, value, ptemp)) {
-            return APR_EOF;
-        }
+    if (   MD_OK(md_util_path_merge(&fpath, ptemp, dir, name, NULL)) 
+        && MD_OK(fs_fload(&value, ctx->s_fs, fpath, ctx->group, ctx->vtype, p, ptemp))
+        && !ctx->inspect(ctx->baton, name, ctx->aspect, ctx->vtype, value, ptemp)) {
+        return APR_EOF;
     }
     return rv;
 }
@@ -779,6 +775,7 @@ static apr_status_t pfs_move(void *baton, apr_pool_t *p, apr_pool_t *ptemp, va_l
     md_store_group_t from, to;
     int archive;
     apr_status_t rv;
+    MD_CHK_VARS;
     
     (void)p;
     from = (md_store_group_t)va_arg(ap, int);
@@ -792,27 +789,26 @@ static apr_status_t pfs_move(void *baton, apr_pool_t *p, apr_pool_t *ptemp, va_l
         return APR_EINVAL;
     }
 
-    rv = md_util_path_merge(&from_dir, ptemp, s_fs->base, from_group, name, NULL);
-    if (APR_SUCCESS != rv) goto out;
-    rv = md_util_path_merge(&to_dir, ptemp, s_fs->base, to_group, name, NULL);
-    if (APR_SUCCESS != rv) goto out;
+    if (   !MD_OK(md_util_path_merge(&from_dir, ptemp, s_fs->base, from_group, name, NULL))
+        || !MD_OK(md_util_path_merge(&to_dir, ptemp, s_fs->base, to_group, name, NULL))) {
+        goto out;
+    }
     
-    if (APR_SUCCESS != (rv = md_util_is_dir(from_dir, ptemp))) {
+    if (!MD_OK(md_util_is_dir(from_dir, ptemp))) {
         md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, ptemp, "source is no dir: %s", from_dir);
         goto out;
     }
     
-    rv = archive? md_util_is_dir(to_dir, ptemp) : APR_ENOENT;
-    if (APR_SUCCESS == rv) {
+    if (MD_OK(archive? md_util_is_dir(to_dir, ptemp) : APR_ENOENT)) {
         int n = 1;
         const char *narch_dir;
 
-        rv = md_util_path_merge(&dir, ptemp, s_fs->base, md_store_group_name(MD_SG_ARCHIVE), NULL);
-        if (APR_SUCCESS != rv) goto out;
-        rv = apr_dir_make_recursive(dir, MD_FPROT_D_UONLY, ptemp); 
-        if (APR_SUCCESS != rv) goto out;
-        rv = md_util_path_merge(&arch_dir, ptemp, dir, name, NULL);
-        if (APR_SUCCESS != rv) goto out;
+        if (    !MD_OK(md_util_path_merge(&dir, ptemp, s_fs->base, 
+                                          md_store_group_name(MD_SG_ARCHIVE), NULL))
+            || !MD_OK(apr_dir_make_recursive(dir, MD_FPROT_D_UONLY, ptemp))
+            || !MD_OK(md_util_path_merge(&arch_dir, ptemp, dir, name, NULL))) {
+            goto out;
+        }
         
 #ifdef WIN32
         /* WIN32 and handling of files/dirs. What can one say? */
@@ -835,8 +831,7 @@ static apr_status_t pfs_move(void *baton, apr_pool_t *p, apr_pool_t *ptemp, va_l
 
         while (n < 1000) {
             narch_dir = apr_psprintf(ptemp, "%s.%d", arch_dir, n);
-            rv = apr_dir_make(narch_dir, MD_FPROT_D_UONLY, ptemp);
-            if (APR_SUCCESS == rv) {
+            if (MD_OK(apr_dir_make(narch_dir, MD_FPROT_D_UONLY, ptemp))) {
                 md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, ptemp, "using archive dir: %s", 
                               narch_dir);
                 break;
@@ -863,19 +858,18 @@ static apr_status_t pfs_move(void *baton, apr_pool_t *p, apr_pool_t *ptemp, va_l
             goto out;
         }
         
-        if (APR_SUCCESS != (rv = apr_file_rename(to_dir, narch_dir, ptemp))) {
+        if (!MD_OK(apr_file_rename(to_dir, narch_dir, ptemp))) {
                 md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, ptemp, "rename from %s to %s", 
                               to_dir, narch_dir);
                 goto out;
         }
-        if (APR_SUCCESS != (rv = apr_file_rename(from_dir, to_dir, ptemp))) {
+        if (!MD_OK(apr_file_rename(from_dir, to_dir, ptemp))) {
             md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, ptemp, "moving %s to %s: %s", 
                           from_dir, to_dir);
             apr_file_rename(narch_dir, to_dir, ptemp);
             goto out;
         }
-        rv = dispatch(s_fs, MD_S_FS_EV_MOVED, to, to_dir, APR_DIR, ptemp);
-        if (APR_SUCCESS == rv) {
+        if (MD_OK(dispatch(s_fs, MD_S_FS_EV_MOVED, to, to_dir, APR_DIR, ptemp))) {
             rv = dispatch(s_fs, MD_S_FS_EV_MOVED, MD_SG_ARCHIVE, narch_dir, APR_DIR, ptemp);
         }
     }

@@ -284,8 +284,8 @@ static apr_status_t inspect_problem(md_acme_req_t *req, const md_http_response_t
             const char *ptype, *pdetail;
             
             req->resp_json = problem;
-            ptype = md_json_gets(problem, "type", NULL); 
-            pdetail = md_json_gets(problem, "detail", NULL);
+            ptype = md_json_gets(problem, MD_KEY_TYPE, NULL); 
+            pdetail = md_json_gets(problem, MD_KEY_DETAIL, NULL);
             req->rv = problem_status_get(ptype);
             
             if (APR_STATUS_IS_EAGAIN(req->rv)) {

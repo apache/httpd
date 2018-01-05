@@ -594,4 +594,23 @@ MDRequireHttps permanent
         </usage>
     </directivesynopsis>
 
+    <directivesynopsis>
+        <name>MDBaseServer</name>
+        <description>Control if base server may be managed or only virtual hosts.</description>
+        <syntax>MDBaseServer on|off</syntax>
+        <default>MDBaseServer off</default>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        <usage>
+            <p>
+            Controls if the base server, the one outside all VirtualHosts should be managed by 
+            <module>mod_md</module> or not. Default is to not do this, for the very reason that 
+            it may have confusing side-effects. It is recommended that you have virtual hosts 
+            for all managed domains and do not rely on the global, fallback server configuration.
+            </p>
+        </usage>
+    </directivesynopsis>
+
+
 </modulesynopsis>

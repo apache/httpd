@@ -218,8 +218,12 @@ static apr_status_t assign_to_servers(md_t *md, server_rec *base_server,
     servers = apr_array_make(ptemp, 5, sizeof(server_rec*));
     
     for (s = base_server; s; s = s->next) {
-        r.server = s;
+        if (!mc->manage_base_server && s == base_server) {
+            /* we shall not assign ourselves to the base server */
+            continue;
+        }
         
+        r.server = s;
         for (i = 0; i < md->domains->nelts; ++i) {
             domain = APR_ARRAY_IDX(md->domains, i, const char*);
             
@@ -459,29 +463,21 @@ static apr_status_t setup_store(md_store_t **pstore, md_mod_conf_t *mc,
 {
     const char *base_dir;
     apr_status_t rv;
+    MD_CHK_VARS;
     
     base_dir = ap_server_root_relative(p, mc->base_dir);
     
-    if (APR_SUCCESS != (rv = md_store_fs_init(pstore, p, base_dir))) {
+    if (!MD_OK(md_store_fs_init(pstore, p, base_dir))) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10046)"setup store for %s", base_dir);
         goto out;
     }
 
     md_store_fs_set_event_cb(*pstore, store_file_ev, s);
-    if (APR_SUCCESS != (rv = check_group_dir(*pstore, MD_SG_CHALLENGES, p, s))) {
+    if (   !MD_OK(check_group_dir(*pstore, MD_SG_CHALLENGES, p, s))
+        || !MD_OK(check_group_dir(*pstore, MD_SG_STAGING, p, s))
+        || !MD_OK(check_group_dir(*pstore, MD_SG_ACCOUNTS, p, s))) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10047) 
-                     "setup challenges directory");
-        goto out;
-    }
-    if (APR_SUCCESS != (rv = check_group_dir(*pstore, MD_SG_STAGING, p, s))) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10048) 
-                     "setup staging directory");
-        goto out;
-    }
-    if (APR_SUCCESS != (rv = check_group_dir(*pstore, MD_SG_ACCOUNTS, p, s))) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10049) 
-                     "setup accounts directory");
-        goto out;
+                     "setup challenges directory, call %s", MD_LAST_CHK);
     }
     
 out:
@@ -495,12 +491,13 @@ static apr_status_t setup_reg(md_reg_t **preg, apr_pool_t *p, server_rec *s,
     md_mod_conf_t *mc;
     md_store_t *store;
     apr_status_t rv;
+    MD_CHK_VARS;
     
     sc = md_config_get(s);
     mc = sc->mc;
     
-    if (APR_SUCCESS == (rv = setup_store(&store, mc, p, s))
-        && APR_SUCCESS == (rv = md_reg_init(preg, p, store, mc->proxy_url))) {
+    if (   MD_OK(setup_store(&store, mc, p, s))
+        && MD_OK(md_reg_init(preg, p, store, mc->proxy_url))) {
         mc->reg = *preg;
         return md_reg_set_props(*preg, p, can_http, can_https); 
     }
@@ -801,10 +798,6 @@ static apr_status_t run_watchdog(int state, void *baton, apr_pool_t *ptemp)
                              "next run in %s", md_print_duration(ptemp, next_run - now));
             }
             wd_set_interval(wd->watchdog, next_run - now, wd, run_watchdog);
-
-            for (i = 0; i < wd->jobs->nelts; ++i) {
-                job = APR_ARRAY_IDX(wd->jobs, i, md_job_t *);
-            }
             break;
             
         case AP_WATCHDOG_STATE_STOPPING:
@@ -1133,26 +1126,28 @@ static int md_is_managed(server_rec *s)
     return 0;
 }
 
-static apr_status_t setup_fallback_cert(md_store_t *store, const md_t *md, apr_pool_t *p)
+static apr_status_t setup_fallback_cert(md_store_t *store, const md_t *md, 
+                                        server_rec *s, apr_pool_t *p)
 {
     md_pkey_t *pkey;
     md_cert_t *cert;
     md_pkey_spec_t spec;
     apr_status_t rv;
-
+    MD_CHK_VARS;
+    
     spec.type = MD_PKEY_TYPE_RSA;
     spec.params.rsa.bits = MD_PKEY_RSA_BITS_DEF;
-        
-    if (   APR_SUCCESS == (rv = md_pkey_gen(&pkey, p, &spec))
-        && APR_SUCCESS == (rv = md_store_save(store, p, MD_SG_DOMAINS, md->name, 
-                                              MD_FN_FALLBACK_PKEY, MD_SV_PKEY, (void*)pkey, 0))
-        && APR_SUCCESS == (rv = md_cert_self_sign(&cert, "Apache Managed Domain Fallback", 
-                                                  md->domains, pkey, 
-                                                  apr_time_from_sec(14 * MD_SECS_PER_DAY), p))) {
-        rv = md_store_save(store, p, MD_SG_DOMAINS, md->name, 
-                           MD_FN_FALLBACK_CERT, MD_SV_CERT, (void*)cert, 0);
+    
+    if (   !MD_OK(md_pkey_gen(&pkey, p, &spec))
+        || !MD_OK(md_store_save(store, p, MD_SG_DOMAINS, md->name, 
+                                MD_FN_FALLBACK_PKEY, MD_SV_PKEY, (void*)pkey, 0))
+        || !MD_OK(md_cert_self_sign(&cert, "Apache Managed Domain Fallback", 
+                                    md->domains, pkey, apr_time_from_sec(14 * MD_SECS_PER_DAY), p))
+        || !MD_OK(md_store_save(store, p, MD_SG_DOMAINS, md->name, 
+                                MD_FN_FALLBACK_CERT, MD_SV_CERT, (void*)cert, 0))) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,  
+                     "%s: setup fallback certificate, call %s", md->name, MD_LAST_CHK);
     }
-
     return rv;
 }
 
@@ -1169,60 +1164,103 @@ static apr_status_t md_get_certificate(server_rec *s, apr_pool_t *p,
     md_reg_t *reg;
     md_store_t *store;
     const md_t *md;
+    MD_CHK_VARS;
     
     *pkeyfile = NULL;
     *pcertfile = NULL;
-    
+
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(10113)
+                 "md_get_certificate called for vhost %s.", s->server_hostname);
+
     sc = md_config_get(s);
-    
-    if (sc && sc->assigned) {
-        assert(sc->mc);
-        reg = sc->mc->reg;
-        assert(reg);
-        store = md_reg_store_get(reg);
-        assert(store);
-
-        md = md_reg_get(reg, sc->assigned->name, p);
-            
-        if (APR_SUCCESS != (rv = md_reg_get_cred_files(reg, md, p, pkeyfile, pcertfile))) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10110) 
-                         "retrieving credentials for MD %s", md->name);
-            return rv;
-        }
-
-        if (!fexists(*pkeyfile, p) || !fexists(*pcertfile, p)) { 
-            /* Provide temporary, self-signed certificate as fallback, so that
-             * clients do not get obscure TLS handshake errors or will see a fallback
-             * virtual host that is not intended to be served here. */
-             
-            md_store_get_fname(pkeyfile, store, MD_SG_DOMAINS, 
-                               md->name, MD_FN_FALLBACK_PKEY, p);
-            md_store_get_fname(pcertfile, store, MD_SG_DOMAINS, 
-                               md->name, MD_FN_FALLBACK_CERT, p);
-            if (!fexists(*pkeyfile, p) || !fexists(*pcertfile, p)) { 
-                if (APR_SUCCESS != (rv = setup_fallback_cert(store, md, p))) {
-                    ap_log_error(APLOG_MARK, APLOG_TRACE1, rv, s,  
-                                 "%s: setup fallback certificate", md->name);
-                    return rv;
-                }
-            }
-            
-            ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, s,  
-                         "%s: providing fallback certificate for server %s", 
-                         md->name, s->server_hostname);
-            return APR_EAGAIN;
-        }
-
-        /* We have key and cert files, but they might no longer be valid or not
-         * match all domain names. Still use these files for now, but indicate that 
-         * resources should no longer be served until we have a new certificate again. */
-        if (md->state != MD_S_COMPLETE) {
-            return APR_EAGAIN;
-        }
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(10077) 
-                     "%s: providing certificate for server %s", md->name, s->server_hostname);
+    if (!sc) {
+        ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, s,  
+                     "asked for certificate of server %s which has no md config", 
+                     s->server_hostname);
+        return APR_ENOENT;
     }
+    
+    if (!sc->assigned) {
+        /* Hmm, mod_ssl (or someone like it) asks for certificates for a server
+         * where we did not assign a MD to. Either the user forgot to configure
+         * that server with SSL certs, has misspelled a server name or we have
+         * a bug that prevented us from taking responsibility for this server.
+         * Either way, make some polite noise */
+        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s, APLOGNO(10114)  
+                     "asked for certificate of server %s which has no MD assigned. This "
+                     "could be ok, but most likely it is either a misconfiguration or "
+                     "a bug. Please check server names and MD names carefully and if "
+                     "everything checks open, please open an issue.", 
+                     s->server_hostname);
+        return APR_ENOENT;
+    }
+    
+    assert(sc->mc);
+    reg = sc->mc->reg;
+    assert(reg);
+    
+    md = md_reg_get(reg, sc->assigned->name, p);
+    if (!md) {
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(10115) 
+                     "unable to hand out certificates, as registry can no longer "
+                     "find MD '%s'.", sc->assigned->name);
+        return APR_ENOENT;
+    }
+    
+    if (!MD_OK(md_reg_get_cred_files(reg, md, p, pkeyfile, pcertfile))) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10110) 
+                     "retrieving credentials for MD %s", md->name);
+        return rv;
+    }
+    
+    if (!fexists(*pkeyfile, p) || !fexists(*pcertfile, p)) { 
+        /* Provide temporary, self-signed certificate as fallback, so that
+         * clients do not get obscure TLS handshake errors or will see a fallback
+         * virtual host that is not intended to be served here. */
+        store = md_reg_store_get(reg);
+        assert(store);    
+        
+        md_store_get_fname(pkeyfile, store, MD_SG_DOMAINS, 
+                           md->name, MD_FN_FALLBACK_PKEY, p);
+        md_store_get_fname(pcertfile, store, MD_SG_DOMAINS, 
+                           md->name, MD_FN_FALLBACK_CERT, p);
+        if (!fexists(*pkeyfile, p) || !fexists(*pcertfile, p)) { 
+            if (!MD_OK(setup_fallback_cert(store, md, s, p))) {
+                return rv;
+            }
+        }
+        
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(10116)  
+                     "%s: providing fallback certificate for server %s", 
+                     md->name, s->server_hostname);
+        return APR_EAGAIN;
+    }
+    
+    /* We have key and cert files, but they might no longer be valid or not
+     * match all domain names. Still use these files for now, but indicate that 
+     * resources should no longer be served until we have a new certificate again. */
+    if (md->state != MD_S_COMPLETE) {
+        rv = APR_EAGAIN;
+    }
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, s, APLOGNO(10077) 
+                 "%s: providing certificate for server %s", md->name, s->server_hostname);
     return rv;
+}
+
+static int compat_warned;
+static apr_status_t md_get_credentials(server_rec *s, apr_pool_t *p,
+                                       const char **pkeyfile, 
+                                       const char **pcertfile, 
+                                       const char **pchainfile)
+{
+    *pchainfile = NULL;
+    if (!compat_warned) {
+        compat_warned = 1;
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, /* no APLOGNO */
+                     "You are using mod_md with an old patch to mod_ssl. This will "
+                     " work for now, but support will be dropped in a future release.");
+    }
+    return md_get_certificate(s, p, pkeyfile, pcertfile);
 }
 
 static int md_is_challenge(conn_rec *c, const char *servername,
@@ -1414,5 +1452,6 @@ static void md_hooks(apr_pool_t *pool)
     APR_REGISTER_OPTIONAL_FN(md_is_managed);
     APR_REGISTER_OPTIONAL_FN(md_get_certificate);
     APR_REGISTER_OPTIONAL_FN(md_is_challenge);
+    APR_REGISTER_OPTIONAL_FN(md_get_credentials);
 }
 
