@@ -38,6 +38,7 @@ more than one multi-processing module (MPM)</td></tr>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#accepterrorsnonfatal">AcceptErrorsNonFatal</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#coredumpdirectory">CoreDumpDirectory</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#enableexceptionhook">EnableExceptionHook</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#gracefulshutdowntimeout">GracefulShutdownTimeout</a></li>
@@ -64,6 +65,35 @@ more than one multi-processing module (MPM)</td></tr>
 <ul class="seealso">
 <li><a href="#comments_section">Comments</a></li></ul></div>
 
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AcceptErrorsNonFatal" id="AcceptErrorsNonFatal">AcceptErrorsNonFatal</a> <a name="accepterrorsnonfatal" id="accepterrorsnonfatal">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Treat some errors accepting a new connection as non-fatal
+to the httpd process.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AcceptErrorsNonFatal ON</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>OFF (ECONNREFUSED, ECONNABORTED, ECONNRESET cause the process to 
+         exit)</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/event.html">event</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>2.5.1 and later</td></tr>
+</table>
+    <p>The <code class="directive">AcceptErrorsNonFatal</code> alters the servers
+    behavior under some rare errors that may occur while accepting a new 
+    client connection.  By default, the child process handling a request
+    will gracefully exit when nearly any socket error occurs during the
+    accept() system call.  This is to ensure a potentially unhealthy
+    child process does not try to take on more new connections.</p>
+
+    <p>With <code class="directive">AcceptErrorsNonFatal</code> set to "ON",
+    the process will <em>not</em> begin to exit if the accept() error is
+    ECONNREFUSED, ECONNABORTED, or ECONNRESET.</p>
+ 
+    <div class="note">Some third-party firwewall software components may inject errors
+    into accept() processing, using return codes not specified by the 
+    operating system</div>
+
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CoreDumpDirectory" id="CoreDumpDirectory">CoreDumpDirectory</a> <a name="coredumpdirectory" id="coredumpdirectory">Directive</a></h2>
 <table class="directive">

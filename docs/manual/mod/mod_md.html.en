@@ -83,6 +83,7 @@
     </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#mdbaseserver">MDBaseServer</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdcachallenges">MDCAChallenges</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdcertificateagreement">MDCertificateAgreement</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdcertificateauthority">MDCertificateAuthority</a></li>
@@ -105,6 +106,24 @@
 <ul class="seealso">
 <li><a href="#comments_section">Comments</a></li></ul></div>
 
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="MDBaseServer" id="MDBaseServer">MDBaseServer</a> <a name="mdbaseserver" id="mdbaseserver">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Control if base server may be managed or only virtual hosts.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MDBaseServer on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>MDBaseServer off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+</table>
+            <p>
+            Controls if the base server, the one outside all VirtualHosts should be managed by 
+            <code class="module"><a href="../mod/mod_md.html">mod_md</a></code> or not. Default is to not do this, for the very reason that 
+            it may have confusing side-effects. It is recommended that you have virtual hosts 
+            for all managed domains and do not rely on the global, fallback server configuration.
+            </p>
+        
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="MDCAChallenges" id="MDCAChallenges">MDCAChallenges</a> <a name="mdcachallenges" id="mdcachallenges">Directive</a></h2>
 <table class="directive">
