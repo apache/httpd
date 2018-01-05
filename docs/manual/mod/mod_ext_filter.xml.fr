@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1673563 -->
+<!-- English Revision: 1818953 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -25,35 +25,35 @@
 <modulesynopsis metafile="mod_ext_filter.xml.meta">
 
 <name>mod_ext_filter</name>
-<description>Fait traiter le corps de la r&eacute;ponse par un programme
+<description>Fait traiter le corps de la réponse par un programme
 externe avant de l'envoyer au client</description>
 <status>Extension</status>
 <sourcefile>mod_ext_filter.c</sourcefile>
 <identifier>ext_filter_module</identifier>
 
 <summary>
-    <p><module>mod_ext_filter</module> repr&eacute;sente un mod&egrave;le de
+    <p><module>mod_ext_filter</module> représente un modèle de
     programmation simple et bien connu pour les <a
     href="../filter.html">filtres</a>. Avec ce module, tout programme
-    qui lit l'entr&eacute;e standard stdin et &eacute;crit sur la sortie standard
+    qui lit l'entrée standard stdin et écrit sur la sortie standard
     stdout (autrement dit une commande filtre de style Unix) peut
-    servir de filtre pour Apache. Ce m&eacute;canisme de filtrage est beaucoup
-    plus lent qu'un filtre sp&eacute;cialement &eacute;crit pour
-    l'API d'Apache et faisant partie int&eacute;grante du processus du serveur
-    Apache, mais il pr&eacute;sente les avantages suivants :</p>
+    servir de filtre pour Apache. Ce mécanisme de filtrage est beaucoup
+    plus lent qu'un filtre spécialement écrit pour
+    l'API d'Apache et faisant partie intégrante du processus du serveur
+    Apache, mais il présente les avantages suivants :</p>
 
     <ul>
-      <li>le mod&egrave;le de programmation est beaucoup plus simple</li>
+      <li>le modèle de programmation est beaucoup plus simple</li>
 
-      <li>tout langage de script ou de programmation peut &ecirc;tre utilis&eacute;,
-      pourvu qu'il permette au programme de lire l'entr&eacute;e standard et
-      d'&eacute;crire sur la sortie standard.</li>
+      <li>tout langage de script ou de programmation peut être utilisé,
+      pourvu qu'il permette au programme de lire l'entrée standard et
+      d'écrire sur la sortie standard.</li>
 
       <li>on peut utiliser des programmes existants comme filtres Apache
       sans modification.</li>
     </ul>
 
-    <p>M&ecirc;me dans le cas o&ugrave; le niveau de performance est insuffisant pour
+    <p>Même dans le cas où le niveau de performance est insuffisant pour
     une utilisation en production, on peut utiliser
     <module>mod_ext_filter</module> comme prototype d'environnement pour
     les filtres.</p>
@@ -63,39 +63,39 @@ externe avant de l'envoyer au client</description>
 
 <section id="examples"><title>Exemples</title>
 
-    <section><title>G&eacute;n&eacute;rer du HTML &agrave; partir d'un autre type de
+    <section><title>Générer du HTML à partir d'un autre type de
     contenu</title>
 
       <highlight language="config">
-# la directive de mod_ext_filter d&eacute;finissant un filtre
+# la directive de mod_ext_filter définissant un filtre
 # permettant de mettre des fichiers text/c au format HTML en
 # utilisant le programme externe /usr/bin/enscript, le type du
-# fichier r&eacute;sultant &eacute;tant d&eacute;fini &agrave; text/html
+# fichier résultant étant défini à text/html
 ExtFilterDefine c-to-html mode=output \
     intype=text/c outtype=text/html \
-    cmd="/usr/bin/enscript --color -W html -Ec -o - -"
+    cmd="/usr/bin/enscript --color -w html -Ec -o -"
 
 &lt;Directory "/export/home/trawick/apacheinst/htdocs/c"&gt;
     # directive de base permettant de traiter la sortie avec le
     # nouveau filtre
     SetOutputFilter c-to-html
 
-    # directive de mod_mime d&eacute;finissant le type des fichiers dont
-    # le nom poss&egrave;de l'extension .c &agrave; text/c
+    # directive de mod_mime définissant le type des fichiers dont
+    # le nom possède l'extension .c à text/c
     AddType text/c .c
 &lt;/Directory&gt;
       </highlight>
     </section>
 
-    <section><title>Impl&eacute;mentation d'un filtre de codage de
+    <section><title>Implémentation d'un filtre de codage de
     contenu</title>
-      <p>Note : cet exemple avec gzip n'est fourni qu'&agrave; titre
-      d'illustration. Veuillez vous reporter &agrave; la documentation de
-      <module>mod_deflate</module> pour un exemple d'impl&eacute;mentation plus
+      <p>Note : cet exemple avec gzip n'est fourni qu'à titre
+      d'illustration. Veuillez vous reporter à la documentation de
+      <module>mod_deflate</module> pour un exemple d'implémentation plus
       pratique.</p>
 
       <highlight language="config">
-# la directive de mod_ext_filter qui d&eacute;finit le filtre externe
+# la directive de mod_ext_filter qui définit le filtre externe
 ExtFilterDefine gzip mode=output cmd=/bin/gzip
 
 &lt;Location "/gzipped"&gt;
@@ -105,7 +105,7 @@ ExtFilterDefine gzip mode=output cmd=/bin/gzip
     SetOutputFilter gzip
 
     # la directive de mod_headers permettant d'ajouter le champ
-  # d'en-t&ecirc;te "Content-Encoding: gzip"
+  # d'en-tête "Content-Encoding: gzip"
     Header set Content-Encoding gzip
 &lt;/Location&gt;
       </highlight>
@@ -114,10 +114,10 @@ ExtFilterDefine gzip mode=output cmd=/bin/gzip
 
     <section><title>Ralentissement du serveur</title>
       <highlight language="config">
-# directive de mod_ext_filter d&eacute;finissant un filtre qui fait
+# directive de mod_ext_filter définissant un filtre qui fait
 # passer tous les flux en sortie par la commande cat ; cat ne
 # modifie rien ; elle ne fait que compliquer le cheminement des
-# flux et consommer des ressources suppl&eacute;mentaires
+# flux et consommer des ressources supplémentaires
        ExtFilterDefine slowdown mode=output cmd=/bin/cat \
 ExtFilterDefine slowdown mode=output cmd=/bin/cat \
     preservescontentlength
@@ -132,11 +132,11 @@ ExtFilterDefine slowdown mode=output cmd=/bin/cat \
     </section>
 
     <section><title>Utilisation de sed pour remplacer du texte dans la
-    r&eacute;ponse</title>
+    réponse</title>
 
       <highlight language="config">
-# directive de mod_ext_filter d&eacute;finissant un filtre qui
-# remplace du texte dans la r&eacute;ponse
+# directive de mod_ext_filter définissant un filtre qui
+# remplace du texte dans la réponse
 #
 ExtFilterDefine fixtext mode=output intype=text/html \
     cmd="/bin/sed s/verdana/arial/g"
@@ -150,7 +150,7 @@ ExtFilterDefine fixtext mode=output intype=text/html \
 
 <note>
 <p>Vous pouvez aussi utiliser <module>mod_substitute</module> pour
-effectuer le m&ecirc;me traitement sans avoir &agrave; invoquer un programme
+effectuer le même traitement sans avoir à invoquer un programme
 externe.</p>
 </note>      
 
@@ -158,8 +158,8 @@ externe.</p>
 
     <section><title>Tracer un autre filtre</title>
       <highlight language="config">
-# Trace les donn&eacute;es lues et &eacute;crites par mod_deflate pour un
-# client particulier (IP 192.168.1.31) qui a des probl&egrave;mes de
+# Trace les données lues et écrites par mod_deflate pour un
+# client particulier (IP 192.168.1.31) qui a des problèmes de
 # compression.
 # Ce premier filtre va tracer ce qui entre dans mod_deflate.
 ExtFilterDefine tracebefore \
@@ -167,12 +167,12 @@ ExtFilterDefine tracebefore \
     EnableEnv=trace_this_client
 
 # Ce second filtre va tracer ce qui sort de mod_deflate.
-# Notez que sans le param&egrave;tre ftype, le type de filtre par
-# d&eacute;faut AP_FTYPE_RESOURCE placerait le filtre *avant*
-# mod_deflate dans la cha&icirc;ne de filtrage. Le fait d'affecter
-# &agrave; ce param&egrave;tre une valeur num&eacute;rique sensiblement sup&eacute;rieure &agrave;
+# Notez que sans le paramètre ftype, le type de filtre par
+# défaut AP_FTYPE_RESOURCE placerait le filtre *avant*
+# mod_deflate dans la chaîne de filtrage. Le fait d'affecter
+# à ce paramètre une valeur numérique sensiblement supérieure à
 # AP_FTYPE_CONTENT_SET permet de s'assurer que le filtre sera
-# plac&eacute; apr&egrave;s mod_deflate.
+# placé après mod_deflate.
 ExtFilterDefine traceafter \
     cmd="/bin/tracefilter.pl /tmp/traceafter" \
     EnableEnv=trace_this_client ftype=21
@@ -183,7 +183,7 @@ ExtFilterDefine traceafter \
 &lt;/Directory&gt;
       </highlight>
 
-      <example><title>Voici le filtre qui trace les donn&eacute;es :</title>
+      <example><title>Voici le filtre qui trace les données :</title>
         <highlight language="perl">
 #!/usr/local/bin/perl -w
 use strict;
@@ -204,100 +204,100 @@ close(SAVE);
 
 <directivesynopsis>
 <name>ExtFilterDefine</name>
-<description>D&eacute;finit un filtre externe</description>
-<syntax>ExtFilterDefine <var>nom_filtre</var> <var>param&egrave;tres</var></syntax>
+<description>Définit un filtre externe</description>
+<syntax>ExtFilterDefine <var>nom_filtre</var> <var>paramètres</var></syntax>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
     <p>La directive <directive>ExtFilterDefine</directive>
-    d&eacute;finit les caract&eacute;ristiques d'un filtre externe, et en particulier
-    le programme &agrave; ex&eacute;cuter ainsi que ses arguments.</p>
+    définit les caractéristiques d'un filtre externe, et en particulier
+    le programme à exécuter ainsi que ses arguments.</p>
 
-    <p><var>nom_filtre</var> sp&eacute;cifie le nom du filtre en cours de
-    d&eacute;finition. On peut ensuite utiliser ce nom pour r&eacute;f&eacute;rencer le
+    <p><var>nom_filtre</var> spécifie le nom du filtre en cours de
+    définition. On peut ensuite utiliser ce nom pour référencer le
     filtre dans les directives <directive module="core"
-    >SetOutputFilter</directive>. Il doit &ecirc;tre unique parmi les noms de
-    tous les filtres enregistr&eacute;s. <em>Pour le moment, aucune erreur
-    n'est signal&eacute;e par l'API register-filter, si bien qu'un probl&egrave;me de
-    noms dupliqu&eacute;s ne sera pas port&eacute; &agrave; la connaissance de
+    >SetOutputFilter</directive>. Il doit être unique parmi les noms de
+    tous les filtres enregistrés. <em>Pour le moment, aucune erreur
+    n'est signalée par l'API register-filter, si bien qu'un problème de
+    noms dupliqués ne sera pas porté à la connaissance de
     l'utilisateur.</em></p>
 
-    <p>Viennent ensuite un ou plusieurs param&egrave;tres dans un ordre
-    ind&eacute;fini, qui permettent de sp&eacute;cifier la commande externe &agrave; ex&eacute;cuter
-    et certaines autres caract&eacute;ristiques. Le seul param&egrave;tre obligatoire
-    est <code>cmd=</code>. Voici la liste de ces param&egrave;tres :</p>
+    <p>Viennent ensuite un ou plusieurs paramètres dans un ordre
+    indéfini, qui permettent de spécifier la commande externe à exécuter
+    et certaines autres caractéristiques. Le seul paramètre obligatoire
+    est <code>cmd=</code>. Voici la liste de ces paramètres :</p>
 
     <dl>
       <dt><code>cmd=<var>ligne de commande</var></code></dt>
 
-      <dd>Le mot-cl&eacute; <code>cmd=</code> sp&eacute;cifie la commande
-      externe &agrave; ex&eacute;cuter. Si la ligne de commande comporte des
-      arguments, elle doit &ecirc;tre entour&eacute;e de guillemets (par exemple
+      <dd>Le mot-clé <code>cmd=</code> spécifie la commande
+      externe à exécuter. Si la ligne de commande comporte des
+      arguments, elle doit être entourée de guillemets (par exemple
       <code>cmd="<var>/bin/mypgm</var> <var>arg1</var>
       <var>arg2</var>"</code>). Les guillemets habituels du shell ne
-      sont pas n&eacute;cessaires car le programme est lanc&eacute; directement, sans
-      passer par le shell. Les arguments du programme doivent &ecirc;tre
-      s&eacute;par&eacute;s par des espaces. Si un argument contient des espaces, ces
-      derniers doivent &ecirc;tre &eacute;chapp&eacute;s par un antislash '\'. Si un
-      argument contient des antislashes '\', ces derniers doivent &ecirc;tre
-      eux-m&ecirc;mes &eacute;chapp&eacute;s par un antislash '\'. Outre les variables
+      sont pas nécessaires car le programme est lancé directement, sans
+      passer par le shell. Les arguments du programme doivent être
+      séparés par des espaces. Si un argument contient des espaces, ces
+      derniers doivent être échappés par un antislash '\'. Si un
+      argument contient des antislashes '\', ces derniers doivent être
+      eux-mêmes échappés par un antislash '\'. Outre les variables
       d'environnement CGI standards, les variables DOCUMENT_URI,
-      DOCUMENT_PATH_INFO, et QUERY_STRING_UNESCAPED seront &eacute;galement
-      d&eacute;finies pour le programme.</dd>
+      DOCUMENT_PATH_INFO, et QUERY_STRING_UNESCAPED seront également
+      définies pour le programme.</dd>
 
       <dt><code>mode=<var>mode</var></code></dt>
 
-      <dd>Utilisez <code>mode=output</code> (valeur par d&eacute;faut) pour les
-      filtres qui traitent les r&eacute;ponses. Utilisez
+      <dd>Utilisez <code>mode=output</code> (valeur par défaut) pour les
+      filtres qui traitent les réponses. Utilisez
       <code>mode=input</code> pour les filtres qui traitent les
-      requ&ecirc;tes. <code>mode=input</code> est disponible depuis la version
+      requêtes. <code>mode=input</code> est disponible depuis la version
       2.1 d'Apache.</dd>
 
       <dt><code>intype=<var>type MIME</var></code></dt>
 
-      <dd>Ce param&egrave;tre sp&eacute;cifie le type de m&eacute;dium Internet
-      (c'est &agrave; dire le type MIME) des documents qui doivent &ecirc;tre
-      filtr&eacute;s. Par d&eacute;faut, tous les documents sont filtr&eacute;s. Aucun des
-      documents poss&eacute;dant un type MIME autre que celui sp&eacute;cifi&eacute; par
-      <code>intype=</code> ne sera filtr&eacute;.</dd>
+      <dd>Ce paramètre spécifie le type de médium Internet
+      (c'est à dire le type MIME) des documents qui doivent être
+      filtrés. Par défaut, tous les documents sont filtrés. Aucun des
+      documents possédant un type MIME autre que celui spécifié par
+      <code>intype=</code> ne sera filtré.</dd>
 
       <dt><code>outtype=<var>type MIME</var></code></dt>
 
-      <dd>Ce param&egrave;tre sp&eacute;cifie le type de m&eacute;dium Internet
-      (c'est &agrave; dire le type MIME) des documents filtr&eacute;s. Il intervient
-      lorsque les op&eacute;rations de filtrage comprennent une modification du
-      type MIME. Par d&eacute;faut, le type MIME n'est pas modifi&eacute;.</dd>
+      <dd>Ce paramètre spécifie le type de médium Internet
+      (c'est à dire le type MIME) des documents filtrés. Il intervient
+      lorsque les opérations de filtrage comprennent une modification du
+      type MIME. Par défaut, le type MIME n'est pas modifié.</dd>
 
       <dt><code>PreservesContentLength</code></dt>
 
-      <dd>Le mot-cl&eacute; <code>PreservesContentLength</code> indique que le
+      <dd>Le mot-clé <code>PreservesContentLength</code> indique que le
       filtre doit conserver la taille du contenu. Ce n'est pas le
-      comportement par d&eacute;faut, car la plupart des filtres modifient cette
-      taille. Ce mot-cl&eacute; doit &ecirc;tre sp&eacute;cifi&eacute; si le filtre ne doit pas
+      comportement par défaut, car la plupart des filtres modifient cette
+      taille. Ce mot-clé doit être spécifié si le filtre ne doit pas
       modifier la taille du contenu.</dd>
 
       <dt><code>ftype=<var>type de filtre</var></code></dt>
 
-      <dd>Ce param&egrave;tre sp&eacute;cifie une valeur num&eacute;rique
-      repr&eacute;sentant le type de filtre sous lequel le filtre doit &ecirc;tre
-      enregistr&eacute;. La valeur par d&eacute;faut, AP_FTYPE_RESOURCE, convient dans
-      la plupart des situations. Ce param&egrave;tre devient n&eacute;cessaire d&egrave;s lors
-      que le filtre doit op&eacute;rer &agrave; un autre point de la cha&icirc;ne de filtrage
+      <dd>Ce paramètre spécifie une valeur numérique
+      représentant le type de filtre sous lequel le filtre doit être
+      enregistré. La valeur par défaut, AP_FTYPE_RESOURCE, convient dans
+      la plupart des situations. Ce paramètre devient nécessaire dès lors
+      que le filtre doit opérer à un autre point de la chaîne de filtrage
       que les filtres de ressources.
-      Voir les d&eacute;finitions de AP_FTYPE_...
-      dans util_filter.h pour trouver une valeur appropri&eacute;e.</dd>
+      Voir les définitions de AP_FTYPE_...
+      dans util_filter.h pour trouver une valeur appropriée.</dd>
 
       <dt><code>disableenv=<var>env</var></code></dt>
 
-      <dd>Ce param&egrave;tre sp&eacute;cifie le nom d'une variable
-      d'environnement qui, si elle est d&eacute;finie, va d&eacute;sactiver le
+      <dd>Ce paramètre spécifie le nom d'une variable
+      d'environnement qui, si elle est définie, va désactiver le
       filtre.</dd>
 
       <dt><code>enableenv=<var>env</var></code></dt>
 
-      <dd>Ce param&egrave;tre sp&eacute;cifie le nom d'une variable
-      d'environnement qui doit &ecirc;tre d&eacute;finie pour que le filtre ne soit
-      pas d&eacute;sactiv&eacute;.</dd>
+      <dd>Ce paramètre spécifie le nom d'une variable
+      d'environnement qui doit être définie pour que le filtre ne soit
+      pas désactivé.</dd>
     </dl>
 </usage>
 </directivesynopsis>
@@ -312,24 +312,24 @@ close(SAVE);
 
 <usage>
     <p>La directive <directive>ExtFilterOptions</directive>
-    sp&eacute;cifie des options de traitement particuli&egrave;res pour
+    spécifie des options de traitement particulières pour
     <module>mod_ext_filter</module>. Les arguments <var>option</var>
     peuvent contenir :</p>
 
     <dl>
       <dt><code>LogStderr | NoLogStderr</code></dt>
 
-      <dd>Le mot-cl&eacute; <code>LogStderr</code> indique que les messages
-      envoy&eacute;s par le programme de filtrage externe sur la sortie
-      d'erreurs standard doivent &ecirc;tre enregistr&eacute;s dans le journal des
+      <dd>Le mot-clé <code>LogStderr</code> indique que les messages
+      envoyés par le programme de filtrage externe sur la sortie
+      d'erreurs standard doivent être enregistrés dans le journal des
       erreurs d'Apache. <code>NoLogStderr</code> inverse ce
       comportement.</dd>
 
       <dt><code>Onfail=[abort|remove]</code></dt>
-      <dd>Indique la marche &agrave; suivre si le programme de filtrage externe
-      ne peut pas d&eacute;marrer. Avec <code>abort</code> (la valeur par
-      d&eacute;faut), le traitement de la requ&ecirc;te sera abandonn&eacute;. Avec <code>remove</code>, le
-      filtre est supprim&eacute;, et le traitement de la requ&ecirc;te se poursuit
+      <dd>Indique la marche à suivre si le programme de filtrage externe
+      ne peut pas démarrer. Avec <code>abort</code> (la valeur par
+      défaut), le traitement de la requête sera abandonné. Avec <code>remove</code>, le
+      filtre est supprimé, et le traitement de la requête se poursuit
       sans lui.</dd>
     </dl>
 
@@ -337,8 +337,8 @@ close(SAVE);
       ExtFilterOptions LogStderr
     </highlight>
 
-    <p>Les messages envoy&eacute;s vers la sortie d'erreurs standard du filtre
-    seront enregistr&eacute;s dans le journal des erreurs d'Apache.</p>
+    <p>Les messages envoyés vers la sortie d'erreurs standard du filtre
+    seront enregistrés dans le journal des erreurs d'Apache.</p>
 </usage>
 </directivesynopsis>
 

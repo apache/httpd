@@ -53,11 +53,6 @@ The <module>mod_sed</module> input filter reads the data from the next filter in
 Both the input and output filters only process the data if newline characters are seen in the content. At the end of the data, the rest of the data is treated as the last line.
 </p>
 
-<p>A tutorial article on <module>mod_sed</module>, and why it is more powerful than simple
-string or regular expression search and replace, is available <a
-href="https://blogs.oracle.com/basant/entry/using_mod_sed_to_filter">on
-the author's blog</a>.</p>
-
 </summary>
 
 <section id="sampleconf"><title>Sample Configuration</title>

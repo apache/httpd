@@ -68,11 +68,6 @@ caractères newline sont détectés dans le contenu à filtrer. A la fin des
 données, ce qui reste est traité comme la dernière ligne.
 </p>
 
-<p>Vous trouverez sur le <a href="https://blogs.oracle.com/basant/entry/using_mod_sed_to_filter">blog de
-l'auteur</a> un article en forme de tutoriel, ainsi que les raisons pour
-lesquelles ce filtre est plus puissant qu'une simple
-recherche/remplacement de chaîne ou d'expression rationnelle.</p>
-
 </div>
 <div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><h3>Sujets</h3>
 <ul id="topics">
@@ -185,7 +180,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.4/mod/mod_sed.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2017 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

@@ -49,6 +49,7 @@ d'hébergement virtuel sur le même serveur</a></li>
 efficace</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rewrite">Hébergement virtuel de masse avec
 mod_rewrite</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#macro">Hébergement virtuel en masse avec mod_macro</a></li>
 </ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -103,7 +104,7 @@ mod_rewrite</a></li>
     fichier</a>. Il est préférable de rediriger <a href="../logs.html#piped">les journaux via un pipe ou
     une file fifo</a> vers un
     programme, et faire en sorte que ce dernier éclate les journaux
-    en un journal par serveur virtuel. L'utilitaire <a href="../programs/other.html#split-logfile">split-logfile</a>
+    en un journal par serveur virtuel. L'utilitaire <a href="../programs/split-logfile.html">split-logfile</a>
     constitue un exemple de ce traitement.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -207,7 +208,7 @@ simplifié</a></h2>
 <pre class="prettyprint lang-config">UseCanonicalName Off
 
 LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon
-CustomLog logs/access_log vcommon
+CustomLog "logs/access_log" vcommon
 
 # insertion d'une partie du nom du serveur dans les noms de fichiers
 VirtualDocumentRoot "/home/%2/www"
@@ -319,6 +320,16 @@ des serveurs virtuels, ces dernières étant accessibles via des
 directives <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>. Ces
 techniques sont décrites dans la <a href="../rewrite/vhosts.html">documentation sur la réécriture</a>.</p>
 
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="macro" id="macro">Hébergement virtuel en masse avec mod_macro</a></h2>
+
+<p>Une autre option pour générer dynamiquement des serveurs virtuels :
+mod_macro ; ce module permet de créer un modèle de serveur virtuel que
+vous pourrez invoquer pour des noms d'hôtes multiples. La section
+<strong>Usage</strong> de la documentation du module présente un exemple qui
+illustre cette méthode.
+</p>
 </div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/vhosts/mass.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
@@ -343,7 +354,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.4/vhosts/mass.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2017 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
