@@ -38,6 +38,7 @@ modules multi-processus (MPM)</td></tr>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#accepterrorsnonfatal">AcceptErrorsNonFatal</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#coredumpdirectory">CoreDumpDirectory</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#enableexceptionhook">EnableExceptionHook</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#gracefulshutdowntimeout">GracefulShutdownTimeout</a></li>
@@ -64,6 +65,37 @@ modules multi-processus (MPM)</td></tr>
 <ul class="seealso">
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="accepterrorsnonfatal" id="accepterrorsnonfatal">Directive</a> <a name="AcceptErrorsNonFatal" id="AcceptErrorsNonFatal">AcceptErrorsNonFatal</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Traite certaines erreurs lors de l'acceptation d'une nouvelle connexion comme
+non fatales pour le processus httpd.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AcceptErrorsNonFatal ON</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>OFF (les erreurs ECONNREFUSED, ECONNABORTED, ECONNRESET entraînent
+alors la fermeture du processus httpd)</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>MPM</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/event.html">event</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.5.1 du serveur HTTP Apache</td></tr>
+</table>
+    <p>La directive <code class="directive">AcceptErrorsNonFatal</code> permet de
+    modifier le comportement du serveur lorsque certaines erreurs
+    rares apparaissent lors de l'acceptation d'une nouvelle connexion avec un
+    client. Par défaut, le processus enfant qui traite la requête se terminera
+    en douceur pratiquement chaque fois qu'une erreur de socket apparaît au
+    cours de l'appel système accept(), ceci dans le but de s'assurer qu'un
+    processus enfant potentiellement endommagé ne tentera pas de prendre en
+    compte de nouvelles connexions.</p>
+
+    <p>Lorsque la directive <code class="directive">AcceptErrorsNonFatal</code> est à
+    "ON", le processus n'enclenchera <em>pas</em> sa procédure d'arrêt si
+    l'erreur accept() est ECONNREFUSED, ECONNABORTED, ou ECONNRESET.</p>
+ 
+    <div class="note">Certains composants de logiciels pare-feu tiers peuvent injecter des
+    erreurs dans le traitement de l'appel accept() en utilisant des codes de
+    retour non spécifés par le système d'exploitation.</div>
+
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="coredumpdirectory" id="coredumpdirectory">Directive</a> <a name="CoreDumpDirectory" id="CoreDumpDirectory">CoreDumpDirectory</a></h2>
 <table class="directive">
