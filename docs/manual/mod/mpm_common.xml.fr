@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1792675:1820098 (outdated) -->
+<!-- English Revision: 1820098 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -980,6 +980,39 @@ d'exploitation</default>
     de threads par processus enfant ne soit nécessaire. Sur certaines
     plates-formes (y compris Linux), une valeur de 128000 est déjà trop
     basse et provoque des crashes avec certains modules courants.</note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AcceptErrorsNonFatal</name>
+<description>Traite certaines erreurs lors de l'acceptation d'une nouvelle connexion comme
+non fatales pour le processus httpd.</description>
+<syntax>AcceptErrorsNonFatal ON</syntax>
+<default>OFF (les erreurs ECONNREFUSED, ECONNABORTED, ECONNRESET entraînent
+alors la fermeture du processus httpd)</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>event</module><module>worker</module>
+<module>prefork</module>
+</modulelist>
+<compatibility>Disponible à partir de la version 2.5.1 du serveur HTTP Apache</compatibility>
+
+<usage>
+    <p>La directive <directive>AcceptErrorsNonFatal</directive> permet de
+    modifier le comportement du serveur lorsque certaines erreurs
+    rares apparaissent lors de l'acceptation d'une nouvelle connexion avec un
+    client. Par défaut, le processus enfant qui traite la requête se terminera
+    en douceur pratiquement chaque fois qu'une erreur de socket apparaît au
+    cours de l'appel système accept(), ceci dans le but de s'assurer qu'un
+    processus enfant potentiellement endommagé ne tentera pas de prendre en
+    compte de nouvelles connexions.</p>
+
+    <p>Lorsque la directive <directive>AcceptErrorsNonFatal</directive> est à
+    "ON", le processus n'enclenchera <em>pas</em> sa procédure d'arrêt si
+    l'erreur accept() est ECONNREFUSED, ECONNABORTED, ou ECONNRESET.</p>
+ 
+    <note>Certains composants de logiciels pare-feu tiers peuvent injecter des
+    erreurs dans le traitement de l'appel accept() en utilisant des codes de
+    retour non spécifés par le système d'exploitation.</note>
 </usage>
 </directivesynopsis>
 
