@@ -156,9 +156,9 @@
             so that you understand what they offer and what they might exclude or require from you. 
             <code class="module"><a href="../mod/mod_md.html">mod_md</a></code> cannot, by itself, agree to such a thing. 
             </p>
-            <p>In case of Let's Encrypt, their current <a href="https://letsencrypt.org/documents/LE-SA-v1.1.1-August-1-2016.pdf">Terms of Service are here</a>. 
+            <p>In case of Let's Encrypt, their current <a href="https://letsencrypt.org/documents/2017.11.15-LE-SA-v1.2.pdf">Terms of Service are here</a>. 
             Those terms might (and probably will) change over time. So, the certificate renewal might require you to update this agreement URL.</p>
-            <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">MDCertificateAgreement https://letsencrypt.org/documents/LE-SA-v1.1.1-August-1-2016.pdf
+            <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">MDCertificateAgreement https://letsencrypt.org/documents/2017.11.15-LE-SA-v1.2.pdf
 MDomain example.org www.example.org mail.example.org</pre>
 </div>
         
@@ -182,7 +182,7 @@ MDomain example.org www.example.org mail.example.org</pre>
                 server like this: 
             </p>
             <div class="example"><h3>LE Staging Setup</h3><pre class="prettyprint lang-config">MDCertificateAuthority https://acme-staging.api.letsencrypt.org/directory
-MDCertificateAgreement https://letsencrypt.org/documents/LE-SA-v1.1.1-August-1-2016.pdf</pre>
+MDCertificateAgreement https://letsencrypt.org/documents/2017.11.15-LE-SA-v1.2.pdf</pre>
 </div>
         
 </div>
@@ -347,7 +347,7 @@ MDCertificateAgreement https://letsencrypt.org/documents/LE-SA-v1.1.1-August-1-2
                 document. Before you do that, the CA will  not hand out certificates to you.
             </p>
             <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">ServerAdmin mailto:admin@example.org
-MDCertificateAgreement https://letsencrypt.org/documents/LE-SA-v1.1.1-August-1-2016.pdf
+MDCertificateAgreement https://letsencrypt.org/documents/2017.11.15-LE-SA-v1.2.pdf
 MDomain example.org www.example.org
 
 &lt;VirtualHost *:443&gt;
