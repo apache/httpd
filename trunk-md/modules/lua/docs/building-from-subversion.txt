@@ -1,0 +1,72 @@
+Install Lua 5.1
+    http://www.lua.org/download.html
+    
+    Lua does not use autoconf for compiling. This means that you do not use
+    ./configure. It has good build instructions, though, so hopefully things
+    will go smoothly.
+    
+    I like to change the directory Lua installs to. In order to do this you
+    need to set LUA_TOP in the configuration makefile for Lua. For these 
+    instructions I have set LUA_TOP to /Users/brianm/.opt/lua-5.1.2 -- you
+    will see this directory referred to later.
+    
+    
+Install Apache HTTPD 2.2
+    http://httpd.apache.org/download.cgi
+    
+    You can build apache pretty much any way you like, as long as you enable
+    dynamic module loading (--enable-so) so that mod_wombat can be loaded.
+    
+    You may user (and I encourage you to!) the threaded MPMs -- mod_wombat
+    plays nicely with them.
+
+    I build it with these flags:
+        
+    ./configure --prefix=/Users/brianm/.opt/httpd-2.2.4-worker-wombat \
+                --with-mpm=worker  \
+                --enable-so
+    
+    
+Install libapreq2
+    http://httpd.apache.org/apreq/download.cgi
+        The download link is in the page body, NOT under the "Download!" link
+        in the left hand column.
+    
+    Right now, mod_wombat requires libapreq2 for parsing entity bodies. This
+    dependency will probably be made optional in the near future, but for now
+    you need it.
+    
+    I build it with these flags:
+    
+    ./configure --prefix=/Users/brianm/.opt/libapreq2-2.0.8 \
+      --with-apache2-apxs=/Users/brianm/.opt/httpd-2.2.4-worker-wombat/bin/apxs
+    
+    
+Install mod_wombat from subversion
+    http://svn.apache.org/repos/asf/httpd/mod_wombat/trunk
+    
+    The first step, when building from subversion, is to bootstrap autoconf. 
+    To do this run the bootstrap script:
+    
+    ./bootstrap
+    
+    The bootstrap script may report an error that it cannot find
+    libtoolize or glibtoolize. That is fine as long as it 
+    doesn't report that it cannot find both of them. The script
+    just sets up the autoconf magic. 
+    
+    After that, it is a normal configure and build:
+    
+    ./configure  --with-lua=/Users/brianm/.opt/lua-5.1.2/ \
+      --with-apxs=/Users/brianm/.opt/httpd-2.2.4-worker-wombat/bin/apxs \
+      --with-apreq2=/Users/brianm/.opt/libapreq2-2.0.8/
+      
+    If compiling (make) reports an error that it cannot find the
+    libapreq2 header file, please tell me ( brianm@apache.org )
+    as this occurs under some configurations but we haven't 
+    hammered down the weird things libapreq2 does with its
+    install. If you build libapreq2 with a --prefix configuration
+    option, it always seems to work.
+  
+      
+That is it. To configure mod_wombat, look at the basic-configuration.txt document.

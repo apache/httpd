@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision$ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_request.xml.meta">
+
+<name>mod_request</name>
+<description>Filters to handle and make available HTTP request bodies</description>
+<status>Base</status>
+<sourcefile>mod_request.c</sourcefile>
+<identifier>request_module</identifier>
+<compatibility>Available in Apache 2.3 and later</compatibility>
+
+<directivesynopsis>
+<name>KeptBodySize</name>
+<description>Keep the request body instead of discarding it up to
+the specified maximum size, for potential use by filters such as
+mod_include.</description>
+<syntax>KeptBodySize <var>maximum size in bytes</var></syntax>
+<default>KeptBodySize 0</default>
+<contextlist><context>directory</context>
+</contextlist>
+
+<usage>
+    <p>Under normal circumstances, request handlers such as the
+    default handler for static files will discard the request body
+    when it is not needed by the request handler. As a result,
+    filters such as mod_include are limited to making <code>GET</code> requests
+    only when including other URLs as subrequests, even if the
+    original request was a <code>POST</code> request, as the discarded
+    request body is no longer available once filter processing is
+    taking place.</p>
+
+    <p>When this directive has a value greater than zero, request
+    handlers that would otherwise discard request bodies will
+    instead set the request body aside for use by filters up to
+    the maximum size specified. In the case of the mod_include
+    filter, an attempt to <code>POST</code> a request to the static
+    shtml file will cause any subrequests to be <code>POST</code>
+    requests, instead of <code>GET</code> requests as before.</p>
+
+    <p>This feature makes it possible to break up complex web pages and
+    web applications into small individual components, and combine
+    the components and the surrounding web page structure together
+    using <module>mod_include</module>. The components can take the
+    form of CGI programs, scripted languages, or URLs reverse proxied
+    into the URL space from another server using
+    <module>mod_proxy</module>.</p>
+
+    <p><strong>Note:</strong> Each request set aside has to be set
+    aside in temporary RAM until the request is complete. As a result,
+    care should be taken to ensure sufficient RAM is available on the
+    server to support the intended load. Use of this directive
+    should be limited to where needed on targeted parts of your
+    URL space, and with the lowest possible value that is still big
+    enough to hold a request body.</p>
+
+    <p>If the request size sent by the client exceeds the maximum
+    size allocated by this directive, the server will return
+    <code>413 Request Entity Too Large</code>.</p>
+
+</usage>
+
+<seealso><a href="mod_include.html">mod_include</a> documentation</seealso>
+<seealso><a href="mod_auth_form.html">mod_auth_form</a> documentation</seealso>
+</directivesynopsis>
+
+</modulesynopsis>

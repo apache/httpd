@@ -1,0 +1,12 @@
+# testing with conf/test56.conf
+[macro:warn] bad cumulated nesting (+1) in macro 'open' (defined on line 2 of "./conf/test56.conf")
+[macro:warn] bad (negative) nesting on line 3 of macro 'close' (defined on line 6 of "./conf/test56.conf")
+[macro:warn] bad cumulated nesting (-1) in macro 'close' (defined on line 6 of "./conf/test56.conf")
+[core:warn] Open:2 /tmp on line 2 of macro 'open' (defined on line 2 of "./conf/test56.conf") used on line 12 of "./conf/test56.conf"
+[core:warn] Close:1 on line 1 of macro 'close' (defined on line 6 of "./conf/test56.conf") used on line 13 of "./conf/test56.conf"
+[core:warn] Open:2 /etc on line 2 of macro 'open' (defined on line 2 of "./conf/test56.conf") used on line 15 of "./conf/test56.conf"
+[core:warn] Close:1 on line 1 of macro 'close' (defined on line 6 of "./conf/test56.conf") used on line 16 of "./conf/test56.conf"
+[core:error] done line 18. on line 18 of ./conf/test56.conf
+AH00526: Syntax error on line 18 of ./conf/test56.conf:
+Configuration processing stopped by Error directive
+# exit: 1

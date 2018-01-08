@@ -1,0 +1,235 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 1674195 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- $LastChangedRevision: 2015042601 $ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_usertrack.xml.meta">
+<name>mod_usertrack</name>
+<description>
+Journalisation <em>Clickstream</em> des liens parcourus par un
+utilisateur sur un site
+</description>
+<status>Extension</status>
+<sourcefile>mod_usertrack.c</sourcefile>
+<identifier>usertrack_module</identifier>
+
+<summary>
+    <p>Ce module permet de suivre le parcours d'un utilisateur à travers
+    votre site web en faisant appel aux cookies de navigateur.</p>
+</summary>
+
+
+<section id="logging">
+<title>Journalisation</title>
+
+    <p><module>mod_usertrack</module> définit un cookie qui peut être
+    journalisé via les formats configurables du module
+    <module>mod_log_config</module> :</p>
+
+    <highlight language="config">
+LogFormat "%{Apache}n %r %t" usertrack
+CustomLog "logs/clickstream.log" usertrack
+    </highlight>
+
+
+</section>
+
+<directivesynopsis>
+<name>CookieDomain</name>
+<description>Le domaine auquel le cookie traceur
+s'applique</description>
+<syntax>CookieDomain <em>domaine</em></syntax>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>FileInfo</override>
+
+<usage>
+
+    <p>Cette directive permet de définir le domaine auquel le cookie
+    traceur s'applique. Si elle n'est pas présente, aucun domaine n'est
+    inclus dans le champ d'en-tête cookie.</p>
+
+    <p>La chaîne dommaine <strong>doit</strong> commencer par un point,
+    et <strong>doit</strong> comporter au moins un point entouré
+    d'autres caractères. Par exemple, <code>.example.com</code> est
+    une chaîne valide, mais <code>www.example.com</code> et
+    <code>.com</code> ne le sont pas.</p>
+
+    <note>La plupart des navigateurs utilisés actuellement n'autorisent
+    pas la définition de cookies pour un domaine racine de deux niveaux,
+    tel que <code>.co.uk</code>, bien qu'un tel domaine remplisse les
+    conditions de validité décrites ci-dessus.<br />
+
+    Ces domaines sont équivalents à des domaines racines comme
+    <code>.com</code>, et autoriser de tels cookies peut constituer un
+    risque en matière de sécurité. Ainsi, si vous vous situez sous un
+    domaine racine de deux niveaux, vous devez encore utiliser votre
+    domaine véritable, comme vous le feriez avec tout autre domaine
+    racine (par exemple <code>.example.co.uk</code>).
+    </note>
+
+    <highlight language="config">
+    CookieDomain .example.com
+    </highlight>
+</usage>
+</directivesynopsis>
+
+
+<directivesynopsis>
+<name>CookieExpires</name>
+<description>Durée avant expiration du cookie traceur</description>
+<syntax>CookieExpires <em>durée</em></syntax>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>FileInfo</override>
+
+<usage>
+    <p>Lorsqu'elle est utilisée, cette directive définit une durée avant
+    l'expiration du cookie généré par le module usertrack. La
+    <em>durée</em> peut être spécifiée sous la forme d'un nombre de
+    secondes, ou sous une forme du
+    style "2 weeks 3 days 7 hours". les termes valides sont : years,
+    months, weeks, days, hours, minutes et seconds. Si la durée est
+    spécifiée dans un format autre qu'un nombre de secondes, elle doit
+    être entourée de guillemets.</p>
+
+    <p>Si cette directive est absente, la durée de vie des cookies est
+    limitée à la session actuelle du navigateur.</p>
+
+    <highlight language="config">
+    CookieExpires "3 weeks"
+    </highlight>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CookieName</name>
+<description>Nom du cookie traceur</description>
+<syntax>CookieName <em>symbole</em></syntax>
+<default>CookieName Apache</default>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>FileInfo</override>
+
+<usage>
+    <p>Cette directive vous permet de modifier le nom du cookie que ce
+    module utilise pour sa journalisation. Le nom par défaut du cookie
+    est "<code>Apache</code>".</p>
+
+    <p>Vous devez spécifier un nom de cookie valide ; les résultats sont
+    imprévisibles si vous utilisez un nom contenant des caractères
+    inhabituels. Les caractères valides font partie des intervales A-Z,
+    a-z, 0-9, "_", et "-".</p>
+
+    <highlight language="config">
+    CookieName clicktrack
+    </highlight>
+</usage>
+
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CookieStyle</name>
+<description>Format du champ d'en-tête cookie</description>
+<syntax>CookieStyle
+    <em>Netscape|Cookie|Cookie2|RFC2109|RFC2965</em></syntax>
+<default>CookieStyle Netscape</default>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>FileInfo</override>
+
+<usage>
+    <p>Cette directive permet de contrôler le format du champ d'en-tête
+    cookie. Les trois formats autorisés sont :</p>
+
+    <ul>
+      <li><strong>Netscape</strong> : il s'agit du format original, mais
+      est maintenant obsolète. C'est le format par défaut et il
+      correspond à la syntaxe historique utilisée par Apache.</li>
+
+      <li><strong>Cookie</strong> ou <strong>RFC2109</strong> : c'est la
+      syntaxe qui remplace la syntaxe Netscape.</li>
+
+      <li><strong>Cookie2</strong> ou <strong>RFC2965</strong> : c'est
+      la syntaxe de cookie la plus actuelle.</li>
+    </ul>
+
+    <p>Tous les clients ne supportent pas l'ensemble de ces formats,
+    mais il est conseillé d'utiliser le plus récent qui sera en général
+    supporté par le navigateur de votre utilisateur. A l'heure où ce
+    document est écrit, la plupart des navigateurs supportent ces trois
+    formats, <code>Cookie2</code> étant le format recommandé.</p>
+
+    <highlight language="config">
+    CookieStyle Cookie2
+    </highlight>
+</usage>
+</directivesynopsis>
+
+
+
+<directivesynopsis>
+<name>CookieTracking</name>
+<description>Active le cookie traceur</description>
+<syntax>CookieTracking on|off</syntax>
+<default>CookieTracking off</default>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>FileInfo</override>
+
+<usage>
+    <p>Lorsque le module <module>mod_usertrack</module> est chargé, et
+    si <code>CookieTracking on</code> est définie, Apache enverra un
+    cookie traceur pour toute nouvelle requête. Cette directive peut
+    être utilisée pour activer ou désactiver ce comportement pour un
+    serveur virtuel ou un répertoire. Par défaut, l'activation de
+    <module>mod_usertrack</module> ne suffit <strong>pas</strong> pour
+    activer les cookies.</p>
+
+    <highlight language="config">
+    CookieTracking on
+    </highlight>
+
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

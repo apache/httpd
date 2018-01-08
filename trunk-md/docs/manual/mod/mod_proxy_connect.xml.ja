@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
+<!-- English Revision: 894522:1780210 (outdated) -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_proxy_connect.xml.meta">
+
+<name>mod_proxy_connect</name>
+<description><code>CONNECT</code> リクエストを扱う
+<module>mod_proxy</module> 用の拡張</description>
+<status>Extension</status>
+<sourcefile>mod_proxy_connect.c</sourcefile>
+<identifier>proxy_connect_module</identifier>
+
+<summary>
+    <p>本モジュールには <module>mod_proxy</module> が<em>必要です</em>。
+    <code>CONNECT</code> HTTP メソッドをサポートします。
+    このメソッドは主にプロキシに SSL リクエストを通す
+    <transnote>SSLトンネリング</transnote>に使われます。</p>
+
+    <p><code>CONNECT</code> リクエストを扱えるようにするには
+    <module>mod_proxy</module> と <module>mod_proxy_connect</module>
+    をサーバに組み込む必要があります。</p>
+
+    <note type="warning"><title>警告</title>
+      <p><a href="mod_proxy.html#access"
+      >安全なサーバにする</a>までプロキシ機能は有効にしないでください。
+      オープンプロキシサーバはあなた自身のネットワークにとっても、
+      インターネット全体にとっても危険です。</p>
+    </note>
+</summary>
+<seealso><module>mod_proxy</module></seealso>
+
+<directivesynopsis>
+<name>AllowCONNECT</name>
+<description>プロキシを経由して、どのポートに <code>CONNECT</code>
+できるかを指定する</description>
+<syntax>AllowCONNECT <var>port</var>[-<var>port</var>]
+[<var>port</var>[-<var>port</var>]] ...</syntax>
+<default>AllowCONNECT 443 563</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+<compatibility><module>mod_proxy</module> から Apache 2.3.5 で移動してきた。
+ポートの範囲指定は Apache 2.3.7 からできるようになった。</compatibility>
+
+<usage>
+    <p><directive>AllowCONNECT</directive> はプロキシの <code>CONNECT</code>
+    メソッドが接続を許可するポート番号のリストや範囲を指定します。
+    今日のブラウザは、<code>https</code> コネクションが要求されていて、
+    HTTP 上でのプロキシによるトンネリングができるときに、
+    このメソッドを使います。</p>
+
+    <p>デフォルトの設定では、https のデフォルトポート (<code>443</code>) と
+    デフォルトの snews ポート (<code>563</code>) が有効になっています。
+    このデフォルトを上書きして、リストに記載したポートにのみ接続を許可したい場合、
+    <directive>AllowCONNECT</directive> ディレクティブを使用します。</p>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

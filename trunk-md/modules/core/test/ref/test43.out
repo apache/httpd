@@ -1,0 +1,8 @@
+# testing with conf/test43.conf
+[macro:warn] bad cumulated nesting (+1) in macro 'begindir' (defined on line 3 of "./conf/test43.conf")
+[macro:warn] bad (negative) nesting on line 2 of macro 'enddir' (defined on line 8 of "./conf/test43.conf")
+[macro:warn] bad cumulated nesting (-1) in macro 'enddir' (defined on line 8 of "./conf/test43.conf")
+[core:error] ok! on line 29 of ./conf/test43.conf
+AH00526: Syntax error on line 29 of ./conf/test43.conf:
+Configuration processing stopped by Error directive
+# exit: 1

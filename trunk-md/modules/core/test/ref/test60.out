@@ -1,0 +1,15 @@
+# testing with conf/test60.conf
+[core:warn] macro Foo arg 1: hello on line 1 of macro 'foo' (defined on line 2 of "./conf/test60.conf") used on line 14 of "./conf/test60.conf"
+[core:warn] macro Foo arg 2: world on line 2 of macro 'foo' (defined on line 2 of "./conf/test60.conf") used on line 14 of "./conf/test60.conf"
+[core:warn] Macro Bla arg 1: "hello world" on line 1 of macro 'bla' (defined on line 6 of "./conf/test60.conf") used on line 15 of "./conf/test60.conf"
+[core:warn] Macro Bla arg 2: "thank you" on line 2 of macro 'bla' (defined on line 6 of "./conf/test60.conf") used on line 15 of "./conf/test60.conf"
+[core:warn] macro Foo arg 1: hello world on line 1 of macro 'foo' (defined on line 2 of "./conf/test60.conf") used on line 3 of "macro 'bla' (defined on line 6 of "./conf/test60.conf") used on line 15 of "./conf/test60.conf""
+[core:warn] macro Foo arg 2: second on line 2 of macro 'foo' (defined on line 2 of "./conf/test60.conf") used on line 3 of "macro 'bla' (defined on line 6 of "./conf/test60.conf") used on line 15 of "./conf/test60.conf""
+[core:warn] macro Foo arg 1: first on line 1 of macro 'foo' (defined on line 2 of "./conf/test60.conf") used on line 4 of "macro 'bla' (defined on line 6 of "./conf/test60.conf") used on line 15 of "./conf/test60.conf""
+[core:warn] macro Foo arg 2: thank you on line 2 of macro 'foo' (defined on line 2 of "./conf/test60.conf") used on line 4 of "macro 'bla' (defined on line 6 of "./conf/test60.conf") used on line 15 of "./conf/test60.conf""
+[core:warn] macro Foo arg 1: hello world on line 1 of macro 'foo' (defined on line 2 of "./conf/test60.conf") used on line 5 of "macro 'bla' (defined on line 6 of "./conf/test60.conf") used on line 15 of "./conf/test60.conf""
+[core:warn] macro Foo arg 2: thank you on line 2 of macro 'foo' (defined on line 2 of "./conf/test60.conf") used on line 5 of "macro 'bla' (defined on line 6 of "./conf/test60.conf") used on line 15 of "./conf/test60.conf""
+[core:error] done on line 17. on line 17 of ./conf/test60.conf
+AH00526: Syntax error on line 17 of ./conf/test60.conf:
+Configuration processing stopped by Error directive
+# exit: 1

@@ -1,0 +1,91 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 1673947 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- $LastChangedRevision: 2015050301 $ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_slotmem_plain.xml.meta">
+
+<name>mod_slotmem_plain</name>
+<description>Fournisseur de mémoire partagée à base de
+slots.</description>
+<status>Extension</status>
+<sourcefile>mod_slotmem_plain.c</sourcefile>
+<identifier>slotmem_plain_module</identifier>
+
+<summary>
+    <p><code>mod_slotmem_plain</code> est un fournisseur de mémoire qui
+    permet la création et l'utilisation d'un segment de mémoire contigu
+    dans lequel les ensembles de données sont organisés en "slots".
+    </p>
+
+    <p>Si la mémoire doit être partagée entre des threads et des
+    processus, il est préférable d'utiliser le fournisseur
+    <module>mod_slotmem_shm</module>.
+    </p>
+
+    <p><code>mod_slotmem_plain</code> fournit une API comprenant les
+    fonctions suivantes :
+    </p>
+
+    <dl>
+      <dt>apr_status_t doall(ap_slotmem_instance_t *s, ap_slotmem_callback_fn_t *func, void *data, apr_pool_t *pool)</dt>
+      <dd>appelle le callback sur tous les slots actifs</dd>
+
+      <dt>apr_status_t create(ap_slotmem_instance_t **new, const char *name, apr_size_t item_size, unsigned int item_num, ap_slotmem_type_t type, apr_pool_t *pool)</dt>
+      <dd>crée un nouveau slot de mémoire dont chaque item aura une
+      taille de item_size.</dd>
+
+      <dt>apr_status_t attach(ap_slotmem_instance_t **new, const char *name, apr_size_t *item_size, unsigned int *item_num, apr_pool_t *pool)</dt>
+      <dd>rattache à un slot de mémoire existant.</dd>
+
+      <dt>apr_status_t dptr(ap_slotmem_instance_t *s, unsigned int item_id, void**mem)</dt>
+      <dd>indique la mémoire associée à ce slot actif.</dd>
+
+      <dt>apr_status_t get(ap_slotmem_instance_t *s, unsigned int item_id, unsigned char *dest, apr_size_t dest_len)</dt>
+      <dd>lit la mémoire depuis ce slot et la transfert vers dest</dd>
+
+      <dt>apr_status_t put(ap_slotmem_instance_t *slot, unsigned int item_id, unsigned char *src, apr_size_t src_len)</dt>
+      <dd>écrit dans ce slot la mémoire en provenance de src</dd>
+
+      <dt>unsigned int num_slots(ap_slotmem_instance_t *s)</dt>
+      <dd>renvoie le nombre total de slots contenus dans ce segment</dd>
+
+      <dt>apr_size_t slot_size(ap_slotmem_instance_t *s)</dt>
+      <dd>renvoie la taille totale des données, en octets, contenues
+      dans un slot de ce segment</dd>
+
+      <dt>apr_status_t grab(ap_slotmem_instance_t *s, unsigned int *item_id);</dt>
+      <dd>alloue le premier slot libre et le marque comme utilisé (n'effectue aucune
+      copie de données)</dd>
+
+      <dt>apr_status_t fgrab(ap_slotmem_instance_t *s, unsigned int item_id);</dt>
+      <dd>appropriation ou allocation forcée du slot spécifié et marquage comme
+      utilisé (n'effectue aucune copie de données)</dd>
+        
+     <dt>apr_status_t release(ap_slotmem_instance_t *s, unsigned int item_id);</dt>
+      <dd>libère un slot et le marque comme non utilisé (n'effectue aucune
+      copie de données)</dd>
+    </dl>
+
+</summary>
+
+</modulesynopsis>

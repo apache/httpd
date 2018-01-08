@@ -1,0 +1,277 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision: 1330964 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_cache_disk.xml.meta">
+
+<name>mod_cache_disk</name>
+<description>Module de stockage sur disque pour le filtre de mise en
+cache HTTP.</description>
+<status>Extension</status>
+<sourcefile>mod_cache_disk.c</sourcefile>
+<identifier>cache_disk_module</identifier>
+
+<summary>
+    <p><module>mod_cache_disk</module> impl&eacute;mente un gestionnaire de
+    stockage sur disque pour le module <module>mod_cache</module>.</p>
+
+    <p>Les en-t&ecirc;tes et corps des r&eacute;ponses mises en cache sont stock&eacute;s
+    s&eacute;par&eacute;ment sur le disque, dans une structure de r&eacute;pertoires bas&eacute;e
+    sur le condens&eacute; md5 de l'URL mise en cache.</p>
+
+    <p>Plusieurs r&eacute;ponses au contenu n&eacute;goci&eacute; peuvent &ecirc;tre stock&eacute;es en
+    m&ecirc;me temps, mais la mise en cache de contenus partiels n'est pas
+    support&eacute;e actuellement par ce module.</p>
+
+    <p>Les mises &agrave; jour atomiques du cache pour les fichiers d'en-t&ecirc;te
+    et de corps peuvent &ecirc;tre effectu&eacute;es sans verrouillage en
+    enregistrant les num&eacute;ros d'inode et de p&eacute;riph&eacute;rique du fichier de
+    corps dans le fichier d'en-t&ecirc;te. Ceci implique que les entr&eacute;es du
+    cache d&eacute;plac&eacute;es manuellement dans le cache seront ignor&eacute;es.</p>
+
+    <p>L'utilitaire <program>htcacheclean</program> permet de lister et
+    de supprimer les URLs du cache, ou de maintenir le cache en de&ccedil;&agrave; de
+    certaines limites de taille et/ou de nombre d'inodes. L'utilitaire
+    peut &ecirc;tre ex&eacute;cut&eacute; &agrave; la demande, ou automatiquement pour assurer un
+    contr&ocirc;le continu des tailles des r&eacute;pertoires.</p>
+
+    <note><title>Note :</title>
+      <p><module>mod_cache</module> doit &ecirc;tre charg&eacute; avant
+      <module>mod_cache_disk</module> pour que ce dernier puisse
+      fonctionner.</p>
+    </note>
+    <note><title>Note :</title>
+    <p>Lorsque la plate-forme la supporte, et si elle est activ&eacute;e via la
+    directive <directive module="core">EnableSendfile</directive>,
+    <module>mod_cache_disk</module> utilise la fonctionnalit&eacute; sendfile
+    pour servir les fichiers &agrave; partir du cache. Cependant,
+    <module>mod_cache_disk</module> ignore la configuration de la
+    directive <directive module="core">EnableSendfile</directive> dans
+    un contexte de r&eacute;pertoire ou de fichier .htaccess, car le module ne
+    dispose pas des d&eacute;finitions correspondantes lorsque la requ&ecirc;te est
+    servie depuis le cache.</p>
+    </note>
+</summary>
+<seealso><module>mod_cache</module></seealso>
+<seealso><module>mod_cache_socache</module></seealso>
+<seealso><a href="../caching.html">Guide de la mise en cache</a></seealso>
+
+<directivesynopsis>
+<name>CacheRoot</name>
+<description>La racine du r&eacute;pertoire dans lequel les fichiers du cache
+seront stock&eacute;s</description>
+<syntax>CacheRoot <var>r&eacute;pertoire</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>La directive <directive>CacheRoot</directive> permet de d&eacute;finir
+    le nom du r&eacute;pertoire sur disque qui contiendra les fichiers du
+    cache. Si le module <module>mod_cache_disk</module> a &eacute;t&eacute; charg&eacute; ou
+    compil&eacute; dans le serveur Apache, cette directive <em>doit</em> &ecirc;tre
+    d&eacute;finie. L'absence de d&eacute;finition de la directive
+    <directive>CacheRoot</directive> provoquera une erreur de traitement
+    du fichier de configuration. Les directives <directive
+    module="mod_cache_disk">CacheDirLevels</directive> et <directive
+    module="mod_cache_disk">CacheDirLength</directive> permettent de
+    d&eacute;finir la structure des sous-r&eacute;pertoires du r&eacute;pertoire racine
+    sp&eacute;cifi&eacute;.</p>
+
+    <highlight language="config">
+      CacheRoot c:/cacheroot
+    </highlight>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheDirLevels</name>
+<description>Le nombre de niveaux de sous-r&eacute;pertoires que comportera le
+cache.</description>
+<syntax>CacheDirLevels <var>niveaux</var></syntax>
+<default>CacheDirLevels 2</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>La directive <directive>CacheDirLevels</directive> permet de
+    d&eacute;finir le nombre de niveaux de sous-r&eacute;pertoires que comportera le
+    cache. Les donn&eacute;es du cache seront stok&eacute;es au niveau correspondant
+    par rapport au r&eacute;pertoire <directive module="mod_cache_disk"
+    >CacheRoot</directive>.</p>
+    <p>Une valeur haute pour <directive>CacheDirLevels</directive>
+    combin&eacute;e avec une valeur basse pour
+    <directive>CacheDirLength</directive> g&eacute;n&eacute;rera une arborescence
+    tr&egrave;s d&eacute;velopp&eacute;e, avec un petit nombre de sous-r&eacute;pertoires &agrave; chaque
+    niveau.</p>
+
+    <note>
+      <p>La valeur du produit <directive>CacheDirLevels</directive> *
+      <directive module="mod_cache_disk">CacheDirLength</directive> ne
+      doit pas d&eacute;passer 20.</p>
+    </note>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheDirLength</name>
+<description>Le nombre de caract&egrave;res des noms des
+sous-r&eacute;pertoires</description>
+<syntax>CacheDirLength <var>longueur</var></syntax>
+<default>CacheDirLength 2</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>la directive <directive>CacheDirLength</directive> permet de
+    d&eacute;finir le nombre de caract&egrave;res que comportera chaque nom de
+    sous-r&eacute;pertoire de la hi&eacute;rarchie du cache. On peut l'utiliser en
+    conjonction avec <directive>CacheDirLevels</directive> pour
+    d&eacute;terminer une structure approximative de la hi&eacute;rarchie de
+    cache.</p>
+    <p>Une valeur haute pour <directive>CacheDirLength</directive>
+    combin&eacute;e avec une valeur basse pour
+    <directive>CacheDirLevels</directive> g&eacute;n&eacute;rera une hi&eacute;rarchie
+    relativement peu profonde, avec un grand nombre de sous-r&eacute;pertoires
+    &agrave; chaque niveau.</p>
+
+    <note>
+      <p>La valeur du produit <directive>CacheDirLevels</directive> *
+      <directive module="mod_cache_disk">CacheDirLength</directive> ne
+      doit pas d&eacute;passer 20.</p>
+    </note>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheMinFileSize</name>
+<description>La taille minimale (en octets) d'un document pour pouvoir
+&ecirc;tre stock&eacute; dans le cache</description>
+<syntax>CacheMinFileSize <var>octets</var></syntax>
+<default>CacheMinFileSize 1</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+
+<usage>
+    <p>La directive <directive>CacheMinFileSize</directive> permet de
+    d&eacute;finir la taille minimale d'un document, en octets, pour que
+    celui-ci puisse faire l'objet d'un stockage dans le cache.</p>
+
+    <highlight language="config">
+      CacheMinFileSize 64
+    </highlight>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheMaxFileSize</name>
+<description>>La taille maximale (en octets) d'un document pour pouvoir
+&ecirc;tre stock&eacute; dans le cache</description>
+<syntax>CacheMaxFileSize <var>octets</var></syntax>
+<default>CacheMaxFileSize 1000000</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+
+<usage>
+    <p>La directive <directive>CacheMaxFileSize</directive> permet de
+    d&eacute;finir la taille maximale d'un document, en octets, pour que
+    celui-ci puisse faire l'objet d'un stockage dans le cache.</p>
+
+    <highlight language="config">
+      CacheMaxFileSize 64000
+    </highlight>
+</usage>
+</directivesynopsis>
+<directivesynopsis>
+<name>CacheReadSize</name>
+<description>La quantit&eacute; minimale (en octets) de donn&eacute;es &agrave; lire et &agrave;
+mettre en cache avant de les envoyer au client</description>
+<syntax>CacheReadSize <var>octets</var></syntax>
+<default>CacheReadSize 0</default>
+<contextlist><context>server config</context>
+    <context>virtual host</context>
+    <context>directory</context>
+    <context>.htaccess</context>
+</contextlist>
+    
+<usage>
+    <p>La directive <directive>CacheReadSize</directive> permet de
+    d&eacute;finir la quantit&eacute; minimale de donn&eacute;es, en octets, &agrave; lire depuis le
+    serveur d'arri&egrave;re-plan avant de les envoyer au client. Avec la
+    valeur par d&eacute;faut z&eacute;ro, toute donn&eacute;e de toutes tailles est envoy&eacute;e
+    au client d&egrave;s qu'elle est disponible. Avec une valeur non nulle, le
+    cache disque met en tampon au moins la quantit&eacute; de donn&eacute;es
+    correspondante avant d'envoyer la r&eacute;ponse au client. Les
+    performances peuvent s'en trouver am&eacute;lior&eacute;es lorsqu'on met en cache
+    du contenu en provenance d'un mandataire inverse.</p>
+
+    <p>Cette directive ne prend effet que lorsque les donn&eacute;es sont
+    enregistr&eacute;es dans le cache, et non lorsque les donn&eacute;es sont servies &agrave;
+    partir du cache.</p>
+  
+    <highlight language="config">
+      CacheReadSize 102400
+    </highlight>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheReadTime</name>
+<description>Le temps minimum (en millisecondes) qui doit s'&eacute;couler
+avant d'envoyer les donn&eacute;es au client</description>
+<syntax>CacheReadTime <var>millisecondes</var></syntax>
+<default>CacheReadTime 0</default>
+<contextlist><context>server config</context>
+  <context>virtual host</context>
+  <context>directory</context>
+  <context>.htaccess</context>
+</contextlist>
+
+<usage>
+    <p>La directive <directive>CacheReadTime</directive> permet de
+    d&eacute;finir le temps minimum qui doit s'&eacute;couler avant d'essayer
+    d'envoyer des donn&eacute;es au client. Pendant ce temps, les donn&eacute;es sont
+    mises en tampon avant de pouvoir &ecirc;tre envoy&eacute;es au client. Les
+    performances peuvent s'en trouver am&eacute;lior&eacute;es lorsqu'on met en cache
+    du contenu en provenance d'un mandataire inverse.</p>
+
+    <p>La valeur par d&eacute;faut z&eacute;ro d&eacute;sactive cette option.</p>
+
+    <p>Cette directive ne prend effet que lorsque les donn&eacute;es sont
+    enregistr&eacute;es dans le cache, et non lorsque les donn&eacute;es sont servies &agrave;
+    partir du cache. Il est recommand&eacute; d'harmoniser l'utilisation de cette
+    directive avec celle de la directive <directive
+    module="mod_cache_disk">CacheReadSize</directive>, afin de s'assurer
+    que le serveur n'effectue pas une mise en tampon excessive au cas
+    o&ugrave; les donn&eacute;es arriveraient plus vite que pr&eacute;vu.</p>
+
+    <highlight language="config">
+      CacheReadTime 1000
+    </highlight>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

@@ -1,0 +1,9 @@
+# testing with conf/test19.conf
+[core:warn] macro foo line 2 in Directory on line 1 of macro 'foo' (defined on line 3 of "./conf/test19.conf") used on line 9 of "./conf/test19.conf"
+[core:warn] macro foo line 2 in Location on line 1 of macro 'foo' (defined on line 3 of "./conf/test19.conf") used on line 13 of "./conf/test19.conf"
+[core:warn] macro foo line 2 in VirtualHost on line 1 of macro 'foo' (defined on line 3 of "./conf/test19.conf") used on line 17 of "./conf/test19.conf"
+[core:warn] macro foo line 2 in VirtualHost & Directory on line 1 of macro 'foo' (defined on line 3 of "./conf/test19.conf") used on line 22 of "./conf/test19.conf"
+[core:error] done line 26. on line 26 of ./conf/test19.conf
+AH00526: Syntax error on line 26 of ./conf/test19.conf:
+Configuration processing stopped by Error directive
+# exit: 1

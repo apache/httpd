@@ -1,0 +1,103 @@
+/* Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+#include <windows.h>
+
+#include "ApacheMonitor.h"
+
+#define LONG_NAME Apache HTTP Server Monitor
+
+#include "../../build/win32/httpd.rc"
+
+
+IDI_APSRVMON            ICON    DISCARDABLE     "ApacheMonitor.ico"
+IDI_ICOSTOP             ICON    DISCARDABLE     "apstop.ico"
+IDI_ICORUN              ICON    DISCARDABLE     "aprun.ico"
+CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST  "ApacheMonitor.manifest"
+
+IDD_DLGSERVICES DIALOGEX 0, 0, 350, 192
+STYLE DS_MODALFRAME | DS_SETFOREGROUND | WS_MINIMIZEBOX | WS_VISIBLE | 
+    WS_CLIPCHILDREN | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_CONTROLPARENT
+CAPTION "Apache Service Monitor"
+FONT 8, "MS Sans Serif"
+BEGIN
+    PUSHBUTTON      "OK",IDCANCEL,298,161,50,14
+    CONTROL         IDB_BMPHEADER,IDC_STATIC,"Static",SS_BITMAP,0,0,349,38
+    LTEXT           "Service St&atus :",IDC_SSTATUS,3,40,272,8
+    LISTBOX         IDL_SERVICES,2,49,285,73,LBS_OWNERDRAWFIXED | 
+                    LBS_HASSTRINGS | LBS_USETABSTOPS | LBS_NOINTEGRALHEIGHT | 
+                    LBS_DISABLENOSCROLL | WS_VSCROLL | WS_TABSTOP
+    LISTBOX         IDL_STDOUT,2,124,285,51,LBS_NOINTEGRALHEIGHT | 
+                    LBS_DISABLENOSCROLL | LBS_NOSEL | WS_VSCROLL
+    PUSHBUTTON      "&Start",IDC_SSTART,298,49,50,14
+    PUSHBUTTON      "S&top",IDC_SSTOP,298,65,50,14
+    PUSHBUTTON      "&Restart",IDC_SRESTART,298,81,50,14
+    PUSHBUTTON      "Ser&vices",IDC_SMANAGER,298,97,50,14
+    PUSHBUTTON      "&Connect",IDC_SCONNECT,298,113,50,14
+    PUSHBUTTON      "&Disconnect",IDC_SDISCONN,298,129,50,14
+END
+
+IDD_DLGCONNECT DIALOGEX 0, 0, 240, 54
+STYLE DS_MODALFRAME | DS_SETFOREGROUND | WS_VISIBLE | WS_CLIPCHILDREN | 
+    WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_CONTROLPARENT
+CAPTION "Connect To A Remote Computer"
+FONT 8, "MS Sans Serif"
+BEGIN
+    LTEXT           "Computer &Name:",IDC_LREMOTE,7,4,155,8
+    EDITTEXT        IDC_COMPUTER,7,14,169,14,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "&OK",IDOK,183,14,50,14
+    PUSHBUTTON      "&Cancel",IDCANCEL,183,34,50,14
+    PUSHBUTTON      "&Browse",IDC_LBROWSE,7,34,50,14
+END
+
+IDB_BMPSTOP             BITMAP  DISCARDABLE     "sstop.bmp"
+IDB_BMPRUN              BITMAP  DISCARDABLE     "srun.bmp"
+IDB_BMPHEADER           BITMAP  DISCARDABLE     "apache_header.bmp"
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_APMONITORTITLE      "Apache Service Monitor"
+    IDS_APMONITORCLASS      "ApacheServiceMonitorClass"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_MSG_APPRUNNING      "Apache monitor is already started"
+    IDS_MSG_ERROR           "Error"
+    IDS_MSG_RUNNINGALL      "Running all Apache services"
+    IDS_MSG_RUNNING         "Running %d of %d Apache services"
+    IDS_MSG_RUNNINGNONE     "Running none of %d Apache services"
+    IDS_MSG_NOSERVICES      "No services installed"
+    IDS_MSG_MNUSERVICES     "Open &Services"
+    IDS_MSG_MNUSHOW         "&Open Apache Monitor"
+    IDS_MSG_MNUEXIT         "E&xit"
+    IDS_MSG_OK              "OK"
+    IDS_MSG_SRVSTART        "The %s service is starting."
+    IDS_MSG_SRVSTARTED      "The %s service has started."
+    IDS_MSG_SRVSTOP         "The %s service is stopping."
+    IDS_MSG_SRVSTOPPED      "The %s service has stopped."
+    IDS_MSG_SRVRESTART      "The %s service is restarting."
+    IDS_MSG_SRVRESTARTED    "The %s service has restarted."
+    IDS_MSG_SRVFAILED       "The requested operation has failed!"
+    IDS_MSG_SSTART          "&Start"
+    IDS_MSG_SSTOP           "S&top"
+    IDS_MSG_SRESTART        "&Restart"
+    IDS_MSG_SERVICES        "Ser&vices"
+    IDS_MSG_CONNECT         "&Connect"
+    IDS_MSG_ECONNECT        "Unable to connect to the remote registry on %s"
+END

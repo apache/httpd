@@ -1,0 +1,33 @@
+mod_heartbeat
+
+Broadcasts the current Apache Connection status over multicast.
+
+Example Configuration:
+  HeartbeatAddress 239.0.0.1:27999
+
+Dependencies:
+  mod_status must be either a static module, or if a dynamic module, it must be 
+  loaded before mod_heartbeat.
+
+
+Consuming:
+  Every 1 second, this module generates a single multicast UDP packet,
+  containing the number of busy and idle workers.
+  
+  The packet is a simple ASCII format, similar to GET query parameters in UDP.
+  
+  An Example packet:
+    v=1&ready=75&busy=0
+
+  Consumers should handle new variables besides busy and ready, separated by '&'
+  being added in the future.
+  
+Misc:
+  The interval of 1 seconds is controlled by the HEARTBEAT_INTERVAL
+  compile time define.  This is not currently tunable at run time. To make this
+  module send the status packet more often, you must add to the CFLAGS used to
+  compile the module to include:
+    -DHEARTBEAT_INTERVAL=3
+  Would cause the broadcasts to be sent every 3 seconds.
+
+

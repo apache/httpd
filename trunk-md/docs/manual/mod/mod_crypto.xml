@@ -1,0 +1,278 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision$ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_crypto.xml.meta">
+
+<name>mod_crypto</name>
+<description>Support for symmetrical encryption and decryption</description>
+<status>Extension</status>
+<sourcefile>mod_crypto.c</sourcefile>
+<identifier>crypto_module</identifier>
+<compatibility>Available in Apache 2.5 and later</compatibility>
+
+<summary>
+    <p>This module provides the ability to <strong>encrypt and decrypt</strong>
+    data on the input and output filter stacks.</p>
+
+    <p>Most specifically, it can be used to implement <strong>on-the-fly HLS
+    encryption</strong> as described by
+    <a href="http://www.ietf.org/id/draft-pantos-http-live-streaming-19.txt">
+    draft-pantos-http-live-streaming-19</a>.</p>
+
+    <p>Alternatively, it can be used to deliver secure data over insecure CDN
+    to suitable clients.</p>
+
+    <p>The crypto filter may be added to either the input or the
+    output filter stacks, as appropriate, using the
+    <directive module="core">SetInputFilter</directive>,
+    <directive module="core">SetOutputFilter</directive>,
+    <directive module="mod_mime">AddOutputFilter</directive> or
+    <directive module="mod_filter">AddOutputFilterByType</directive> directives.</p>
+
+</summary>
+<seealso><a href="../filter.html">Filters</a></seealso>
+
+<section id="format">
+    <title>Stream Format</title>
+
+    <p>The encrypted stream consists of an optional IV block, followed by encrypted
+    blocks using the chosen cipher. The final block is padded before being written. The
+    size of the blocks is governed by the choice of cipher in use.</p>
+
+    <p>When the IV is specified with the <directive module="mod_crypto">CryptoIV</directive>
+    directive, that IV is used, and is not written to or read from the stream.</p>
+
+</section>
+
+<section id="config">
+    <title>Keys and IVs</title>
+
+    <p>
+        The
+        <directive module="mod_crypto">CryptoKey</directive>
+        and
+        <directive module="mod_crypto">CryptoIV</directive>
+        directives expect binary
+        values which can be specified in a number of ways as below. The most significant bits of the relevant values
+        are used, and if the values are too short, they are padded on the left
+        with zero bits.
+    </p>
+
+    <dl>
+    <dt>file:</dt><dd>Read the value directly from the given file.</dd>
+    <dt>hex:</dt><dd>Parse the expression as a hex value, which may contain colon separators.</dd>
+    <dt>decimal:</dt><dd>Parse the expression as a decimal value.</dd>
+    <dt>base64:</dt><dd>Parse the expression as a base64 value.</dd>
+    <dt>none</dt><dd>No value is specified.</dd>
+    </dl>
+
+    <p>If the IV is unspecified a random IV will be generated during
+        encryption and written
+        as the first block. During decryption, the first block will be
+        interpreted as the IV.
+    </p>
+
+    <p>With the exception of file:, the <directive module="mod_crypto">CryptoKey</directive>
+       and <directive module="mod_crypto">CryptoIV</directive> directives allow
+       <a href="../expr.html">expression syntax</a> to provide flexibility when setting the values.
+       This allows both keys and IVs to be salted with values available to the webserver, such
+       as REMOTE_USER, or the URL.
+    </p>
+
+</section>
+
+<section id="handler">
+    <title>Crypto Key Handler</title>
+
+    <p>For convenience, the <strong>crypto-key</strong> handler can be used to serve the key
+    to suitably authorized clients, removing the need to store the key within the directory
+    space of the webserver. This also allows the same <a href="../expr.html">expression
+    syntax</a> to be used to derive the key for both the clients and the encrypted content.</p>
+
+    <example><title>Crypto Key Handler with a File</title>
+      &lt;Location /key&gt;<br />
+      <indent>
+        SetHandler crypto-key<br />
+        CryptoCipher aes128<br />
+        CryptoKey file:/path/to/file.key<br />
+        AuthType basic<br />
+        ...<br />
+        </indent>
+      &lt;/Location&gt;<br />
+    </example>
+
+</section>
+
+<section id="hls">
+    <title>HTTP Live Streaming</title>
+
+    <p>The HLS protocol supports encrypted streams using the AES-128 cipher and a
+    corresponding key. Access is granted to the stream by sharing the key with
+    the HLS client, typically over a secured connection.</p>
+
+    <p>The IV used for encrypting each media segment is specified within
+        HLS in one of two ways:</p>
+
+    <ul>
+        <li>
+            Explicitly specified within an IV attribute inside the EXT-X-KEY
+            tag as a <strong>hexadecimal</strong> value.
+        </li>
+        <li>
+            Implicitly specified by interpreting the <strong>decimal</strong>
+            value of the EXT-X-MEDIA-SEQUENCE tag.
+        </li>
+    </ul>
+
+    <p>The media sequence value is usually embedded within the media
+        segment filenames, and can be matched by using named regular
+        expressions as per the example below.
+    </p>
+
+    <example><title>HLS Example - IV from media sequence</title>
+      &lt;LocationMatch (?&lt;SEQUENCE&gt;[\d]+)[^\d^/]+$&gt;<br />
+      <indent>
+        SetOutputFilter ENCRYPT<br />
+        CryptoCipher aes128<br />
+        CryptoKey file:/path/to/file.key<br />
+        CryptoIV decimal:%{env:MATCH_SEQUENCE}<br />
+        </indent>
+      &lt;/LocationMatch&gt;<br />
+    </example>
+
+</section>
+
+<directivesynopsis>
+<name>CryptoDriver</name>
+<description>Name of the crypto driver to use</description>
+<syntax>CryptoDriver name</syntax>
+<default>CryptoDriver openssl</default>
+<contextlist><context>server config</context>
+</contextlist>
+
+<usage>
+    <p>The <directive module="mod_crypto">CryptoDriver</directive>
+    directive specifies the name of the crypto driver to use. There is usually
+    a recommended default driver on each platform. Possible values include
+    <strong>openssl</strong>, <strong>commoncrypto</strong> and
+    <strong>nss</strong>.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CryptoCipher</name>
+<description>Cipher to be used by the crypto filter</description>
+<syntax>CryptoCipher name</syntax>
+<default>CryptoCipher aes256</default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+
+<usage>
+    <p>The <directive>CryptoCipher</directive> directive allows specification of
+    the cipher to be used during encryption or decryption. If not specified, the
+    cipher defaults to <code>aes256</code>.</p>
+
+    <p>Possible values depend on the crypto driver in use, and could be one of:</p>
+
+    <ul><li>3des192</li><li>aes128</li><li>aes192</li><li>aes256</li></ul>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CryptoIV</name>
+<description>IV (Initialisation Vector) to be used by the crypto filter</description>
+<syntax>CryptoIV value</syntax>
+<default>CryptoIV none</default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+
+<usage>
+    <p>The <directive>CryptoIV</directive> directive allows the IV (initialisation
+    vector) to be specified for the particular URL space. The IV can be read from
+    a file, or can be set based on the <a href="../expr.html">expression parser</a>,
+    allowing for flexible scenarios for the setting of keys.</p>
+
+    <p>Values can be specified as read from a file, or as a hexadecimal, decimal or
+    base64 value based on the following prefixes:</p>
+
+    <ul><li>file:</li><li>hex:</li><li>decimal:</li><li>base64:</li></ul>
+
+    <p>The value 'none' disables setting of the IV. In this case, during encryption
+    a random IV will be generated and inserted as the first block, and during
+    decryption the first block will interpreted as the IV.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CryptoKey</name>
+<description>Key to be used by the crypto filter</description>
+<syntax>CryptoKey value</syntax>
+<default>CryptoKey none</default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+
+<usage>
+    <p>The <directive>CryptoKey</directive> directive allows the encryption / decryption
+    key to be specified for the particular URL space. The key can be read from a file, or
+    can be set based on the <a href="../expr.html">expression parser</a>, allowing for
+    flexible scenarios for the setting of keys.</p>
+
+    <p>Values can be specified as read from a file, or as a hexadecimal, decimal or
+    base64 value based on the following prefixes:</p>
+
+    <ul><li>file:</li><li>hex:</li><li>decimal:</li><li>base64:</li></ul>
+
+    <p>The value 'none' disables the key. An attempt to serve a file through the ENCRYPT
+    or DECRYPT filters without a key will cause the request to fail.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CryptoSize</name>
+<description>Maximum size in bytes to buffer by the crypto filter</description>
+<syntax>CryptoSize integer</syntax>
+<default>CryptoSize 131072</default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+
+<usage>
+    <p>The <directive module="mod_crypto">CryptoSize</directive>
+    directive specifies the amount of data in bytes that will be
+    buffered before being encrypted or decrypted during each request.
+    The default is 128 kilobytes.</p>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

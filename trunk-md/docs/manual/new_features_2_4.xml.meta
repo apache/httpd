@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- GENERATED FROM XML: DO NOT EDIT -->
+
+<metafile reference="new_features_2_4.xml">
+  <basename>new_features_2_4</basename>
+  <path>/</path>
+  <relpath>.</relpath>
+
+  <variants>
+    <variant>en</variant>
+    <variant outdated="yes">es</variant>
+    <variant>fr</variant>
+    <variant outdated="yes">tr</variant>
+  </variants>
+</metafile>

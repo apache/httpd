@@ -1,0 +1,70 @@
+The http2 module adds support for the HTTP/2 protocol to the server.
+
+Specifically, it supports the protocols "h2" (HTTP2 over TLS) and "h2c" 
+(HTTP2 over plain HTTP connections via Upgrade). Additionally it offers
+the "direct" mode for both encrypted and unencrypted connections.
+
+You may enable it for the whole server or specific virtual hosts only. 
+
+
+BUILD
+
+If you have libnghttp2 (https://nghttp2.org) installed on your system, simply
+add 
+
+    --enable-http2
+
+to your httpd ./configure invocation. Should libnghttp2 reside in a unusual
+location, add
+
+    --with-nghttp2=<path>
+
+to ./configure. <path> is expected to be the installation prefix, so there
+should be a <path>/lib/libnghttp2.*. If your system support pkg-config,
+<path>/lib/pkgconfig/libnghttp2.pc will be inspected.
+
+If you want to link nghttp2 statically into the mod_http2 module, you may
+similarly to mod_ssl add
+
+    --enable-nghttp2-staticlib-deps
+
+For this, the lib directory should only contain the libnghttp2.a, not its
+shared cousins.
+
+
+CONFIGURATION
+
+If mod_http2 is enabled for a site or not depends on the new "Protocols"
+directive. This directive list all protocols enabled for a server or
+virtual host.
+
+If you do not specify "Protocols" all available protocols are enabled. For
+sites using TLS, the protocol supported by mod_http2 is "h2". For cleartext
+http:, the offered protocol is "h2c".
+
+The following is an example of a server that only supports http/1.1 in
+general and offers h2 for a specific virtual host.
+
+    ...
+    Protocols http/1.1
+    <virtualhost *:443>
+        Protocols h2 http/1.1
+        ...
+    </virtualhost>
+
+Please see the documentation of mod_http2 for a complete list and explanation 
+of all options.
+
+
+TLS CONFIGURATION
+
+If you want to use HTTP/2 with a browser, most modern browsers will support
+it without further configuration. However, browsers so far only support
+HTTP/2 over TLS and are especially picky about the certificate and
+encryption ciphers used.
+
+Server admins may look for up-to-date information about "modern" TLS
+compatibility under: 
+
+  https://wiki.mozilla.org/Security/Server_Side_TLS#Modern_compatibility
+

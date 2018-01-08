@@ -1,0 +1,15 @@
+# testing with conf/test42.conf
+[macro:warn] macro 'foo' (defined on line 3 of "./conf/test42.conf") used on line 7 of "./conf/test42.conf": empty argument #1
+[macro:warn] macro 'foo' (defined on line 3 of "./conf/test42.conf") used on line 8 of "./conf/test42.conf": empty argument #1
+[macro:warn] macro 'foo' (defined on line 3 of "./conf/test42.conf") used on line 9 of "./conf/test42.conf": empty argument #1
+[macro:warn] macro 'foo' (defined on line 3 of "./conf/test42.conf") used on line 10 of "./conf/test42.conf": empty argument #1
+[macro:warn] macro 'foo' (defined on line 3 of "./conf/test42.conf") used on line 11 of "./conf/test42.conf": empty argument #1
+[core:warn] macro foo  on line 1 of macro 'foo' (defined on line 3 of "./conf/test42.conf") used on line 7 of "./conf/test42.conf"
+[core:warn] macro foo  on line 1 of macro 'foo' (defined on line 3 of "./conf/test42.conf") used on line 8 of "./conf/test42.conf"
+[core:warn] macro foo  on line 1 of macro 'foo' (defined on line 3 of "./conf/test42.conf") used on line 9 of "./conf/test42.conf"
+[core:warn] macro foo  on line 1 of macro 'foo' (defined on line 3 of "./conf/test42.conf") used on line 10 of "./conf/test42.conf"
+[core:warn] macro foo  on line 1 of macro 'foo' (defined on line 3 of "./conf/test42.conf") used on line 11 of "./conf/test42.conf"
+[core:error] done on line 13. on line 13 of ./conf/test42.conf
+AH00526: Syntax error on line 13 of ./conf/test42.conf:
+Configuration processing stopped by Error directive
+# exit: 1

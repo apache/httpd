@@ -1,0 +1,7 @@
+# testing with conf/test23.conf
+[core:warn] macro foo in /tmp on line 1 of macro 'foo' (defined on line 4 of "./conf/test23.conf") used on line 9 of "./conf/test23.conf"
+[core:warn] macro foo in /tmp on line 1 of macro 'foo' (defined on line 4 of "./conf/test23.conf") used on line 12 of "./conf/test23.conf"
+[core:error] done! on line 15 of ./conf/test23.conf
+AH00526: Syntax error on line 15 of ./conf/test23.conf:
+Configuration processing stopped by Error directive
+# exit: 1

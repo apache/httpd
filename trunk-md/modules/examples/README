@@ -1,0 +1,54 @@
+README for Apache 2.0 Example Module
+[April, 1997, updated May 2000]
+
+The files in the src/modules/examples directory under the Apache
+distribution directory tree are provided as an example to those that
+wish to write modules that use the Apache API.
+
+The main file is mod_example_hooks.c, which illustrates all the different
+callback mechanisms and call syntaces.  By no means does an add-on
+module need to include routines for all of the callbacks - quite the
+contrary!
+
+The example module is an actual working module.  If you link it into
+your server, enable the "example-hooks-handler" handler for a location,
+and then browse to that location, you will see a display of some of the
+tracing the example module did as the various callbacks were made.
+
+To include the example module in your server add --enable-example-hooks
+to the other ./configure arguments executed from the httpd source tree.
+After that run 'make'.
+
+To add another module of your own:
+
+    A. cp modules/examples/mod_example_hooks.c modules/examples/mod_myexample.c
+    B. Modify the file
+    C. Add an entry to modules/examples/config.m4, e.g.
+         APACHE_MODULE(myexample, my new module, , , no)
+       The last argument specifies if the module is built by-default
+    D. Build the server with --enable-myexample
+
+For windows, the process is slightly different;
+
+    A. copy modules\examples\mod_example_hooks.c modules\examples\mod_myexample.c
+    B. copy modules\examples\mod_example_hooks.dsp modules\examples\mod_myexample.dsp
+    C. replace the occurrences of 'example_hooks' with your module name.
+    D. add the new .dsp to your Apache.dsw workspace, with dependencies
+       on the libapr, libaprutil and libhttpd projects.  With the newer
+       Developer Studio 2002 through 2005, when you add the new .dsp
+       file it will be converted to a .vcproj file.
+
+To activate the example module, include a block similar to the
+following in your httpd.conf file:
+
+    <Location /example-info>
+	SetHandler example-hooks-handler
+    </Location>
+
+As an alternative, you can put the following into a .htaccess file and
+then request the file "test.example" from that location:
+
+    AddHandler example-hooks-handler .example
+
+After reloading/restarting your server, you should be able to browse
+to this location and see the brief display mentioned earlier.

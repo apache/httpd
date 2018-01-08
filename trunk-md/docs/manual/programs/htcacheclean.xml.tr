@@ -1,0 +1,212 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
+<!-- English Revision: 1174747 -->
+<!-- =====================================================
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
+   Reviewed by: Orhan Berent <berent belgeler.org>
+========================================================== -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="htcacheclean.xml.meta">
+<parentdocument href="./">Programlar</parentdocument>
+
+<title>htcacheclean - Disk arabelleğini temizler</title>
+
+<summary>
+    <p><code><strong>htcacheclean</strong></code>,
+    <module>mod_cache_disk</module> deposunun boyutlarını belli sınırlar
+    içinde veya kullanımdaki dosya düğümlerinin sınırları içinde tutmak için
+    kullanılır. Bu araç ya elle ya da bir artalan süreci
+    olarak çalıştırılır. Artalan süreci olarak çalıştırıldığında, silinecek
+    arabellek içeriğini tespit etmek için arabellek dizinlerine belli
+    aralıklarla bakmak dışında uykuda olur. Artalan sürecini temiz olarak
+    durdurmak için TERM veya INT sinyali göndermeniz yeterlidir. Elle
+    çalıştırıldığında, silinecek arabellek içeriğini tespit etmek için
+    arabellek dizinlerine bir kereliğine bakar. Bir veya daha fazla URL
+    belirtilmesi durumunda arabellekte olanlar arabellekten silinir.</p>
+</summary>
+<seealso><module>mod_cache_disk</module></seealso>
+
+<section id="synopsis"><title>Kullanım</title>
+    <p><code><strong>htcacheclean</strong>
+    [ -<strong>D</strong> ]
+    [ -<strong>v</strong> ]
+    [ -<strong>t</strong> ]
+    [ -<strong>r</strong> ]
+    [ -<strong>n</strong> ]
+    [ -<strong>R</strong><var>boyut</var> ]
+    -<strong>p</strong><var>yol</var>
+    [ -<strong>l</strong><var>sınır</var> |
+    -<strong>L</strong><var>limit</var> ]</code></p>
+
+    <p><code><strong>htcacheclean</strong>
+    [ -<strong>n</strong> ]
+    [ -<strong>t</strong> ]
+    [ -<strong>i</strong> ]
+    [ -<strong>P</strong><var>piddosyası</var> ]
+    [ -<strong>R</strong><var>boyut</var> ]
+    -<strong>d</strong><var>süre</var>
+    -<strong>p</strong><var>yol</var>
+    [ -<strong>l</strong><var>sınır</var> |
+    -<strong>L</strong><var>limit</var> ]</code></p>
+
+    <p><code><strong>htcacheclean</strong>
+    [ -<strong>v</strong> ]
+    [ -<strong>R</strong><var>boyut</var> ]
+    -<strong>p</strong><var>yol</var>
+    [ -<strong>a</strong> ]
+    [ -<strong>A</strong> ]</code></p>
+
+    <p><code><strong>htcacheclean</strong>
+    [ -<strong>D</strong> ]
+    [ -<strong>v</strong> ]
+    [ -<strong>t</strong> ]
+    [ -<strong>R</strong><var>boyut</var> ]
+    -<strong>p</strong><var>yol</var>
+    <var>url</var></code></p>
+</section>
+
+<section id="options"><title>Seçenekler</title>
+    <dl>
+    <dt><code><strong>-d</strong><var> süre</var></code></dt>
+    <dd>Artalanda çalışarak <code><var>süre</var></code> dakikada bir
+    arabelleği temizler. Bu seçenek <code><strong>-D</strong></code>,
+    <code><strong>-v</strong></code> ve <code><strong>-r</strong></code>
+    seçenekleri ile birlikte kullanılamaz. Artalan sürecini temiz olarak
+    sonlandırmak için <code>SIGTERM</code> veya <code>SIGINT</code> göndermek
+    yeterlidir.</dd>
+
+    <dt><code><strong>-D</strong></code></dt>
+    <dd>Kuru kuruya çalışıp, hiçbir şeyi silmez.
+    <code><strong>-d</strong></code> seçeneği ile birlikte kullanılamaz. Kuru
+    çalıştırma sırasında <code><strong>-t</strong></code> seçeneği ile dizinler
+    silinmek istenirse, statlarda silinmiş görünen dosya düğümleri silinmiş
+    dizinler olarak hesaba katılmaz ve tahmini olarak imlenir.</dd>
+
+    <dt><code><strong>-v</strong></code></dt>
+    <dd>Çıktı daha ayrıntılı olur. <code><strong>-d</strong></code> seçeneği
+    ile birlikte kullanılamaz.</dd>
+
+    <dt><code><strong>-r</strong></code></dt>
+    <dd>İyice temizlik yapılır. Bunun için Apache HTTP sunucusunun
+    çalışmadığı varsayılır (aksi takdirde arabellek içeriği bozulabilir).
+    <code><strong>-t</strong></code> seçeneğinin de uygulanmasını sağlar.
+    <code><strong>-d</strong></code> seçeneği ile birlikte kullanılamaz.</dd>
+
+    <dt><code><strong>-n</strong></code></dt>
+    <dd>Nazik olur. Diğer süreçlerin yararına daha yavaş çalışır. (a) disk
+    G/Ç işlemlerinde gecikmeler olursa ve (b) çekirdek bu arada başka bir
+    süreci öne çekmişse <code><strong>htcacheclean</strong></code> uyumayı
+    tercih edecektir.</dd>
+
+    <dt><code><strong>-t</strong></code></dt>
+    <dd>Tüm boş dizinleri siler. Öntanımlı olarak, sadece arabellek dosyaları
+    silinirse de bazı yapılandırmalarda büyük miktarda dizin oluşturulması bu
+    seçeneğin kullanılmasını gerektirebilir. Yapılandırmanız çok sayıda dizin
+    gerektiriyorsa ve dosya düğümlerinin veya dosya ayırma tablolarının
+    tükenmesi sözkonusu ise bu seçeneğin kullanılması önerilir.</dd>
+
+    <dt><code><strong>-p</strong><var> yol</var></code></dt>
+    <dd><code><var>yol</var></code>, disk arabelleğinin kök dizini olarak
+    belirtilir. <directive module="mod_cache_disk">CacheRoot</directive>
+    yönergesinde belirtilen dizin olmalıdır.</dd>
+
+    <dt><code><strong>-P</strong><var>piddosyası</var></code></dt>
+    <dd>Artalan süreci olarak çalışmada süreç kimliğinin yazılacağı dosyanın
+    adını belirtmek için kullanılır.</dd>
+
+    <dt><code><strong>-R</strong><var>boyut</var></code></dt>
+    <dd>Disk bloklarının boyunu denkleştirmek için yuvarlanacak üst boyutu
+    belirtmekte kullanılır. Arabellek bölümünün blok boyutunu belirler.</dd>
+
+    <dt><code><strong>-l</strong><var> sınır</var></code></dt>
+    <dd><code><var>sınır</var></code>, disk arabelleğinin toplam boyutu
+    olarak belirtilir. Değerin öntanımlı olarak bayt cinsinden belirtileceği
+    varsayılır. Değerin sonuna kilobayt için <code>K</code>, megabayt
+    <code>M</code>, bayt için <code>B</code>  harfi konulabilir.</dd>
+
+    <dt><code><strong>-L</strong><var>limit</var></code></dt>
+    <dd>Disk arabellek dosyası düğümü toplamının sınırını belirlemekte
+    kullanılır.</dd>
+
+    <dt><code><strong>-i</strong></code></dt>
+    <dd>Akıllı olup sadece disk arabelleği değiştiği zaman çalışır. Bu
+    seçenek <code><strong>-d</strong></code> seçeneği ile birlikte
+    belirtilmek zorundadır.</dd>
+
+    <dt><code><strong>-a</strong></code></dt>
+    <dd>O an arabellekte saklanmakta olan URL'leri listeler. Birden fazla aynı
+    URL varsa yalnız biri listelenir.</dd>
+
+    <dt><code><strong>-A</strong></code></dt>
+    <dd>O an arabellekte saklanmakta olan URL'leri öznitelikleri ile listeler.
+    Öznitelikler şu sırayla verilir: url, header size, body size, status,
+    entity version, date, expiry, request time, response time, body present,
+    head request</dd>
+    </dl>
+</section>
+
+<section id="delete"><title>Belli bir URL'nin silinmesi</title>
+    <p><code><strong>htcacheclean</strong></code> tarafından aktarılan URL'ler
+    arabellekten silinir. Bir URL birden fazla mevcutsa hepsi silinir.</p>
+
+    <p>Ters vekilli bir URL silinmişse, etkin URL <strong>Host</strong> başlığı
+    <strong>port</strong>, <strong>yol</strong> ve <strong>sorgu</strong> ile
+    oluşturulur. Bir sorgu dizgesi olsun olmasın, URL içinde '?' daima açıkça
+    belirtilmelidir. Örneğin, <strong>localhost</strong> sunucusundaki
+    <strong>/</strong> yolu silinmek istenirse silinecek URL
+    <strong>http://localhost:80/?</strong> olurdu.</p>
+
+</section>
+
+<section id="list"><title>Arabellekteki URL'lerin listelenmesi</title>
+    <p><code><strong>htcacheclean</strong></code>'e
+    <code><strong>-a</strong></code> veya <code><strong>-A</strong></code>
+    seçeneğinin aktarılmasıyla, arabellekteki URL'ler bulundukça her satıra bir
+    URL gelecek biçemde listelenir. <code><strong>-A</strong></code> seçeneği
+    URL'nin ardından arabellek içeriğini tamamını şu sırayla dökümler:</p>
+
+    <dl>
+        <dt>url</dt><dd>Öğenin URL'si.</dd>
+        <dt>header size</dt><dd>Bayt cinsinden başlık uzunluğu.</dd>
+        <dt>body size</dt><dd>Bayt cinsinden gövde uzunluğu.</dd>
+        <dt>status</dt><dd>Arabellekteki yanıtın durumu.</dd>
+        <dt>entity version</dt><dd>Öğenin silinmeksizin kaç kere
+          doğrulandığı.</dd>
+        <dt>date</dt><dd>Yanıt tarihi.</dd>
+        <dt>expiry</dt><dd>Yanıtın zaman aşımı tarihi.</dd>
+        <dt>request time</dt><dd>İsteğin başlama zamanı.</dd>
+        <dt>response time</dt><dd>İsteğin bitiş zamanı.</dd>
+        <dt>body present</dt><dd>0 ise istekle birlikte gövde saklanmaz, 1 ise
+          saklanır.</dd>
+        <dt>head request</dt><dd>1 ise, öğe, gövde olmaksızın arabellekli bir
+          HEAD isteği içerir, 0 ise içermez.</dd>
+    </dl>
+</section>
+
+<section id="exit"><title>Çıkış Durumu</title>
+    <p><code><strong>htcacheclean</strong></code>, tüm işlemler başarıyla
+    yerine getirildiğinde <code>0</code>, aksi takdirde <code>1</code>
+    döndürür. Bir URL belirtildiğinde, bu URL arablleklenmi ve silinmişse
+    <code>0</code>, aksi takdirde <code>2</code> döndürür. URL'nin silinmesi
+    sırasında bir hata oluşursa <code>1</code> döndürür.</p>
+</section>
+
+</manualpage>
