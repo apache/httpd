@@ -32,22 +32,6 @@
 #include "mpm_common.h"
 #include "mod_md.h"
 
-/* Use the header, once mod_md is backported. break the dependency loop for now. */
-#define MOD_MD_BACKPORTED   0
-#if MOD_MD_BACKPORTED
-#include "mod_md.h"
-#else 
-APR_DECLARE_OPTIONAL_FN(int, 
-                        md_is_managed, (struct server_rec *));
-APR_DECLARE_OPTIONAL_FN(apr_status_t, 
-                        md_get_certificate, (struct server_rec *, apr_pool_t *,
-                                             const char **pkeyfile, 
-                                             const char **pcertfile));
-APR_DECLARE_OPTIONAL_FN(int, 
-                        md_is_challenge, (struct conn_rec *, const char *,
-                                          X509 **pcert, EVP_PKEY **pkey));
-#endif
-
 APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(ssl, SSL, int, init_server,
                                     (server_rec *s,apr_pool_t *p,int is_proxy,SSL_CTX *ctx),
                                     (s,p,is_proxy,ctx), OK, DECLINED)
