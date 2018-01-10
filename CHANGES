@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.30
  
+  *) mpm_event: close connections not reported as handled by any module to
+     avoid losing track of them and leaking scoreboard entries.  PR 61551.
+     [Yann Ylavic]
+
   *) core: A signal received while stopping could have crashed the main
      process.  PR 61558.  [Yann Ylavic]
 
