@@ -118,12 +118,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_proxy_html: Save a few bytes in the conf pool when handling
-     'ProxyHTMLDoctype' directive with a user defined  FPI
-     trunk patch: http://svn.apache.org/r1813991
-     2.4.x patch: svn merge -c r1813991 ^/httpd/httpd/trunk .
-     +1: jailletc36, niq, jim
-
   *) mod_ldap: PR61891: Failure to make progreass purging a mostly full cache.
      trunk patch: http://svn.apache.org/r1818040
      2.4.x patch: svn merge -c r1818040  ^/httpd/httpd/trunk . 
