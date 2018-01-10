@@ -806,6 +806,9 @@ static int do_headers_fixup(request_rec *r, apr_table_t *headers,
             break;
         case hdr_unset:
             apr_table_unset(headers, hdr->header);
+            if (!ap_cstr_casecmp(hdr->header, "Content-Type")) {
+                ap_set_content_type(r, NULL);
+            }
             break;
         case hdr_echo:
             v.r = r;
