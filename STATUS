@@ -134,16 +134,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c r1818278  ^/httpd/httpd/trunk . 
      +1:  covener, jim, ylavic
 
-  *) core: A signal received while stopping could have crashed the main
-     process.  PR 61558.
-     trunk patch: http://svn.apache.org/r1809881
-                  http://svn.apache.org/r1809973
-                  http://svn.apache.org/r1809976
-                  http://svn.apache.org/r1812075
-     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/stop_signals-PR61558.patch
-                  (merge without changes to motorz)
-     +1: ylavic, jim, covener
-
   *) mpm_event: close connections not reported as handled by any module to
      avoid losing track of them and leaking scoreboard entries.  PR 61551.
      trunk patch: http://svn.apache.org/r1818804
