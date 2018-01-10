@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_cgi: Improve AH01215 messages to make it more clear that the message is
+     the CGI scripts stderr output. PR 61980. [Hank Ibell <hwibell gmail.com>]
+
   *) mod_headers: Allow 'Header unset Content-Type' to remove the Content-Type
      header. PR 61983. [Hank Ibell <hwibell gmail.com>]
 
