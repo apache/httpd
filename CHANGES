@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.30
  
+  *) core: A signal received while stopping could have crashed the main
+     process.  PR 61558.  [Yann Ylavic]
+
   *) mod_ssl: support for mod_md added. [Stefan Eissing]
   
   *) mod_proxy_html: process parsed comments immediately. 
