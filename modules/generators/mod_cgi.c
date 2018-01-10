@@ -167,12 +167,11 @@ static int log_scripterror(request_rec *r, cgi_server_conf * conf, int ret,
     apr_file_t *f = NULL;
     apr_finfo_t finfo;
     char time_str[APR_CTIME_LEN];
-    int log_flags = rv ? APLOG_ERR : APLOG_ERR;
 
     /* Intentional no APLOGNO */
     /* Callee provides APLOGNO in error text */
-    ap_log_rerror(APLOG_MARK, log_flags, rv, r,
-                  "%s%s: %s", logno ? logno : "", error, r->filename);
+    ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                  "%sstderr from %s: %s", logno ? logno : "", r->filename, error);
 
     /* XXX Very expensive mainline case! Open, then getfileinfo! */
     if (!conf->logname ||
@@ -209,8 +208,14 @@ static apr_status_t log_script_err(request_rec *r, apr_file_t *script_err)
 
     while ((rv = apr_file_gets(argsbuffer, HUGE_STRING_LEN,
                                script_err)) == APR_SUCCESS) {
+
         newline = strchr(argsbuffer, '\n');
         if (newline) {
+            char *prev = newline - 1;
+            if (prev >= argsbuffer && *prev == '\r') {
+                newline = prev;
+            }
+
             *newline = '\0';
         }
         log_scripterror(r, conf, r->status, 0, APLOGNO(01215), argsbuffer);
