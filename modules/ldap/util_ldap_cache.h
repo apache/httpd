@@ -46,6 +46,7 @@ struct util_ald_cache {
     unsigned long numentries;           /* Current number of cache entries */
     unsigned long fullmark;             /* Used to keep track of when cache becomes 3/4 full */
     apr_time_t marktime;                /* Time that the cache became 3/4 full */
+    unsigned long ttl;                  /* Time to live for items in cache */
     unsigned long (*hash)(void *);      /* Func to hash the payload */
     int (*compare)(void *, void *);     /* Func to compare two payloads */
     void * (*copy)(util_ald_cache_t *cache, void *); /* Func to alloc mem and copy payload to new mem */
@@ -188,6 +189,7 @@ void util_ald_cache_purge(util_ald_cache_t *cache);
 util_url_node_t *util_ald_create_caches(util_ldap_state_t *s, const char *url);
 util_ald_cache_t *util_ald_create_cache(util_ldap_state_t *st,
                                 long cache_size,
+                                long cache_ttl,
                                 unsigned long (*hashfunc)(void *),
                                 int (*comparefunc)(void *, void *),
                                 void * (*copyfunc)(util_ald_cache_t *cache, void *),

@@ -233,14 +233,21 @@ void util_ald_cache_purge(util_ald_cache_t *cache)
 {
     unsigned long i;
     util_cache_node_t *p, *q, **pp;
-    apr_time_t t;
+    apr_time_t now;
 
     if (!cache)
         return;
 
-    cache->last_purge = apr_time_now();
+    now = cache->last_purge = apr_time_now();
     cache->npurged = 0;
     cache->numpurges++;
+
+    /* If the marktime is farther back than TTL from now, 
+       move the marktime forward to include additional expired entries.
+    */
+    if (now - cache->ttl > cache->marktime) {
+        cache->marktime = now - cache->ttl;
+    }
 
     for (i=0; i < cache->size; ++i) {
         pp = cache->nodes + i;
@@ -261,9 +268,9 @@ void util_ald_cache_purge(util_ald_cache_t *cache)
         }
     }
 
-    t = apr_time_now();
+    now = apr_time_now();
     cache->avg_purgetime =
-         ((t - cache->last_purge) + (cache->avg_purgetime * (cache->numpurges-1))) /
+         ((now - cache->last_purge) + (cache->avg_purgetime * (cache->numpurges-1))) /
          cache->numpurges;
 }
 
@@ -281,6 +288,7 @@ util_url_node_t *util_ald_create_caches(util_ldap_state_t *st, const char *url)
     /* create the three caches */
     search_cache = util_ald_create_cache(st,
                       st->search_cache_size,
+                      st->search_cache_ttl,
                       util_ldap_search_node_hash,
                       util_ldap_search_node_compare,
                       util_ldap_search_node_copy,
@@ -288,6 +296,7 @@ util_url_node_t *util_ald_create_caches(util_ldap_state_t *st, const char *url)
                       util_ldap_search_node_display);
     compare_cache = util_ald_create_cache(st,
                       st->compare_cache_size,
+                      st->compare_cache_ttl,
                       util_ldap_compare_node_hash,
                       util_ldap_compare_node_compare,
                       util_ldap_compare_node_copy,
@@ -295,6 +304,7 @@ util_url_node_t *util_ald_create_caches(util_ldap_state_t *st, const char *url)
                       util_ldap_compare_node_display);
     dn_compare_cache = util_ald_create_cache(st,
                       st->compare_cache_size,
+                      st->compare_cache_ttl,
                       util_ldap_dn_compare_node_hash,
                       util_ldap_dn_compare_node_compare,
                       util_ldap_dn_compare_node_copy,
@@ -323,6 +333,7 @@ util_url_node_t *util_ald_create_caches(util_ldap_state_t *st, const char *url)
 
 util_ald_cache_t *util_ald_create_cache(util_ldap_state_t *st,
                                 long cache_size,
+                                long cache_ttl,
                                 unsigned long (*hashfunc)(void *),
                                 int (*comparefunc)(void *, void *),
                                 void * (*copyfunc)(util_ald_cache_t *cache, void *),
@@ -381,8 +392,10 @@ util_ald_cache_t *util_ald_create_cache(util_ldap_state_t *st,
     cache->free = freefunc;
     cache->display = displayfunc;
 
+    
     cache->fullmark = cache->maxentries / 4 * 3;
     cache->marktime = 0;
+    cache->ttl = cache_ttl;
     cache->avg_purgetime = 0.0;
     cache->numpurges = 0;
     cache->last_purge = 0;
@@ -727,6 +740,10 @@ char *util_ald_cache_display(request_rec *r, util_ldap_state_t *st)
                                "<td bgcolor='#ffffff'><font size='-1' face='Arial,Helvetica' color='#000000'><b>%ld</b></font></td>"
                                "</tr>\n"
                                "<tr>\n"
+                               "<td bgcolor='#000000'><font size='-1' face='Arial,Helvetica' color='#ffffff'><b>TTL (sec):</b></font></td>"
+                               "<td bgcolor='#ffffff'><font size='-1' face='Arial,Helvetica' color='#000000'><b>%ld</b></font></td>"
+                               "</tr>\n"
+                               "<tr>\n"
                                "<td bgcolor='#000000'><font size='-1' face='Arial,Helvetica' color='#ffffff'><b>Full Mark:</b></font></td>"
                                "<td bgcolor='#ffffff'><font size='-1' face='Arial,Helvetica' color='#000000'><b>%ld</b></font></td>"
                                "</tr>\n"
@@ -738,6 +755,7 @@ char *util_ald_cache_display(request_rec *r, util_ldap_state_t *st)
                                util_ldap_cache->size,
                                util_ldap_cache->maxentries,
                                util_ldap_cache->numentries,
+                               util_ldap_cache->ttl / APR_USEC_PER_SEC,
                                util_ldap_cache->fullmark,
                                date_str);
 
@@ -748,6 +766,7 @@ char *util_ald_cache_display(request_rec *r, util_ldap_state_t *st)
                              "<td><font size='-1' face='Arial,Helvetica' color='#ffffff'><b>Size</b></font></td>"
                              "<td><font size='-1' face='Arial,Helvetica' color='#ffffff'><b>Max Entries</b></font></td>"
                              "<td><font size='-1' face='Arial,Helvetica' color='#ffffff'><b># Entries</b></font></td>"
+                             "<td><font size='-1' face='Arial,Helvetica' color='#ffffff'><b>TTL (sec)</b></font></td>"
                              "<td><font size='-1' face='Arial,Helvetica' color='#ffffff'><b>Full Mark</b></font></td>"
                              "<td><font size='-1' face='Arial,Helvetica' color='#ffffff'><b>Full Mark Time</b></font></td>"
                              "</tr>\n", r
