@@ -1,7 +1,15 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.64
 
+  *) mod_headers: 'RequestHeader set|edit|edit_r Content-Type X' could 
+     inadvertently modify the Content-Type _response_ header. Applies to
+     Content-Type only and likely to only affect static file responses.
+     [Eric Covener]
+
 Changes with Apache 2.4.63
+
+  *) mod_cgi: Improve AH01215 messages to make it more clear that the message is
+     the CGI scripts stderr output. PR 61980. [Hank Ibell <hwibell gmail.com>]
 
   *) mod_dav: Update redirect-carefully example BrowserMatch config
      to match more recent client versions.  PR 66148, 67039.
