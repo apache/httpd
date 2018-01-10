@@ -185,13 +185,12 @@ static int h2_protocol_switch(conn_rec *c, request_rec *r, server_rec *s,
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, status, r, APLOGNO(03088)
                               "session setup");
                 h2_ctx_clear(c);
-                return status;
+                return !OK;
             }
             
             h2_conn_run(ctx, c);
-            return DONE;
         }
-        return DONE;
+        return OK;
     }
     
     return DECLINED;
