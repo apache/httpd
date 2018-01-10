@@ -1009,6 +1009,33 @@ AP_DECLARE(apr_status_t) ap_fatal_signal_child_setup(server_rec *s)
     return APR_SUCCESS;
 }
 
+/* We can't call sig_coredump (ap_log_error) once pconf is destroyed, so
+ * avoid double faults by restoring each default signal handler on cleanup.
+ */
+static apr_status_t fatal_signal_cleanup(void *unused)
+{
+    (void)unused;
+
+    apr_signal(SIGSEGV, SIG_DFL);
+#ifdef SIGBUS
+    apr_signal(SIGBUS, SIG_DFL);
+#endif /* SIGBUS */
+#ifdef SIGABORT
+    apr_signal(SIGABORT, SIG_DFL);
+#endif /* SIGABORT */
+#ifdef SIGABRT
+    apr_signal(SIGABRT, SIG_DFL);
+#endif /* SIGABRT */
+#ifdef SIGILL
+    apr_signal(SIGILL, SIG_DFL);
+#endif /* SIGILL */
+#ifdef SIGFPE
+    apr_signal(SIGFPE, SIG_DFL);
+#endif /* SIGFPE */
+
+    return APR_SUCCESS;
+}
+
 AP_DECLARE(apr_status_t) ap_fatal_signal_setup(server_rec *s,
                                                apr_pool_t *in_pconf)
 {
@@ -1071,6 +1098,8 @@ AP_DECLARE(apr_status_t) ap_fatal_signal_setup(server_rec *s,
 
     pconf = in_pconf;
     parent_pid = my_pid = getpid();
+    apr_pool_cleanup_register(pconf, NULL, fatal_signal_cleanup,
+                              fatal_signal_cleanup);
 
     return APR_SUCCESS;
 }
