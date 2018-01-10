@@ -1,6 +1,12 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+
+  *) mod_headers: 'RequestHeader set|edit|edit_r Content-Type X' could 
+     inadvertently modify the Content-Type _response_ header. Applies to
+     Content-Type only and likely to only affect static file responses.
+     [Eric Covener]
+
   *) mod_cgi: Improve AH01215 messages to make it more clear that the message is
      the CGI scripts stderr output. PR 61980. [Hank Ibell <hwibell gmail.com>]
 
