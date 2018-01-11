@@ -219,8 +219,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1741277
                   http://svn.apache.org/r1820809 (CHANGES)
      diff so far: http://people.apache.org/~ylavic/patches/httpd-2.4.x-event_ka_status.diff
-                  http://svn.apache.org/r1820808
-                  http://svn.apache.org/r1820809 (CHANGES)
+                  http://svn.apache.org/r1802618
+                  http://svn.apache.org/r1820808 (CHANGES)
      2.4.x patch: http://people.apache.org/~ylavic/patches/httpd-2.4.x-event_ka_status+sbh_leak.patch
      +1: ylavic
      ylavic: joint proposal because the second change depends on the
