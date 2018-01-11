@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mpm_event: Update scoreboard status for KeepAlive state.  [Yann Ylavic]
+
   *) core, mpm_event: Avoid a small memory leak of the scoreboard handle, for
      the lifetime of the connection, each time it is processed by MPM event.
      [Yann Ylavic]
