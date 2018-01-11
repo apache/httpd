@@ -213,6 +213,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: niq, jim
      ylavic: +1 with r1819969 and r1819970, see dev@ thread re r1599012.
 
+  *) mpm_event: Update scoreboard status for KeepAlive state.
+     trunk patch: http://svn.apache.org/r1740910
+                  http://svn.apache.org/r1741277
+                  http://svn.apache.org/r1820809 (CHANGES)
+     2.4.x patch: http://people.apache.org/~ylavic/patches/httpd-2.4.x-event_ka_status.patch
+     +1: ylavic
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
