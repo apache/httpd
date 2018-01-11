@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) core, mpm_event: Avoid a small memory leak of the scoreboard handle, for
+     the lifetime of the connection, each time it is processed by MPM event.
+     [Yann Ylavic]
 
   *) mod_headers: 'RequestHeader set|edit|edit_r Content-Type X' could 
      inadvertently modify the Content-Type _response_ header. Applies to
