@@ -213,12 +213,20 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: niq, jim
      ylavic: +1 with r1819969 and r1819970, see dev@ thread re r1599012.
 
-  *) mpm_event: Update scoreboard status for KeepAlive state.
+  *) mpm_event: Update scoreboard status for KeepAlive state, plus avoid a
+                small sbh memory leak.
      trunk patch: http://svn.apache.org/r1740910
                   http://svn.apache.org/r1741277
                   http://svn.apache.org/r1820809 (CHANGES)
-     2.4.x patch: http://people.apache.org/~ylavic/patches/httpd-2.4.x-event_ka_status.patch
+     diff so far: http://people.apache.org/~ylavic/patches/httpd-2.4.x-event_ka_status.diff
+                  http://svn.apache.org/r1820808
+                  http://svn.apache.org/r1820809 (CHANGES)
+     2.4.x patch: http://people.apache.org/~ylavic/patches/httpd-2.4.x-event_ka_status+sbh_leak.patch
      +1: ylavic
+     ylavic: joint proposal because the second change depends on the
+             ap_update_child_status() added by the first one. Hopefully the
+             first change is simple enough, the second one is quite straight
+             forward too.
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
