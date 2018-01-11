@@ -118,7 +118,7 @@
   <modulefile>mod_socache_memcache.xml</modulefile>
   <modulefile>mod_socache_shmcb.xml</modulefile>
   <modulefile>mod_speling.xml</modulefile>
-  <modulefile>mod_ssl.xml</modulefile>
+  <modulefile>mod_ssl.xml.es</modulefile>
   <modulefile>mod_ssl_ct.xml</modulefile>
   <modulefile>mod_status.xml</modulefile>
   <modulefile>mod_substitute.xml</modulefile>

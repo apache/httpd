@@ -239,8 +239,9 @@ modules into the server at start-up or restart time</dd>
 <dt><a href="mod_speling.html">mod_speling</a></dt><dd>Attempts to correct mistaken URLs by ignoring
 capitalization, or attempting to correct various minor
 misspellings.</dd>
-<dt><a href="mod_ssl.html">mod_ssl</a></dt><dd>Strong cryptography using the Secure Sockets
-Layer (SSL) and Transport Layer Security (TLS) protocols</dd>
+<dt><a href="mod_ssl.html">mod_ssl</a></dt><dd>Criptografía fuerte usando una Capa de Sockets Seguros (Secure 
+  Sockets Layer SSL) y protocolos de Seguridad de la Capa de Transporte 
+  (Transport Layer Security TLS)</dd>
 <dt><a href="mod_ssl_ct.html">mod_ssl_ct</a></dt><dd>Implementation of Certificate Transparency (RFC 6962)
 </dd>
 <dt><a href="mod_status.html">mod_status</a></dt><dd>Provides information on server activity and
