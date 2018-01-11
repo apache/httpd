@@ -226,7 +226,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      ylavic: joint proposal because the second change depends on the
              ap_update_child_status() added by the first one. Hopefully the
              first change is simple enough, the second one is quite straight
-             forward too.
+             forward too. We can really separate the two changes for the real
+             backport; once the first patch (event_ka_status.diff + records)
+             is applied, svn merge -c 1802618,1820808 ^/httpd/httpd/trunk .
+             works (modulo CHANGES).
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
