@@ -223,7 +223,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1802618
                   http://svn.apache.org/r1820808 (CHANGES)
      2.4.x patch: http://people.apache.org/~ylavic/patches/httpd-2.4.x-event_ka_status+sbh_leak.patch
-     +1: ylavic, icing (joint vote)
+     +1: ylavic, icing (joint vote), jim
      ylavic: joint proposal because the second change depends on the
              ap_update_child_status() added by the first one. Hopefully the
              first change is simple enough, the second one is quite straight
