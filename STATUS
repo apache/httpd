@@ -209,10 +209,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1599012
                   http://svn.apache.org/r1601559
                   http://svn.apache.org/r1818624   (style only)
-     2.4.x patch: svn merge -c r1599012,r1601559,r1818624 ^/httpd/httpd/trunk .
-     +1: niq, jim
-     ylavic: +1 with r1819969 and r1819970, see dev@ thread re r1599012.
-     icing: what ylavic said
+                  http://svn.apache.org/r1819969
+                  http://svn.apache.org/r1819970
+     2.4.x patch: svn merge -c r1599012,r1601559,r1818624, r1819969, r1819970 ^/httpd/httpd/trunk .
+     +1: niq, jim, ylavic, icing
 
   *) mpm_event: Update scoreboard status for KeepAlive state, plus avoid a
                 small sbh memory leak.
