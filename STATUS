@@ -118,6 +118,32 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_proxy_html: skip documents < 4 bytes. PR 56286
+     trunk patch: http://svn.apache.org/r1599012
+                  http://svn.apache.org/r1601559
+                  http://svn.apache.org/r1818624   (style only)
+                  http://svn.apache.org/r1819969
+                  http://svn.apache.org/r1819970
+     2.4.x patch: svn merge -c r1599012,r1601559,r1818624, r1819969, r1819970 ^/httpd/httpd/trunk .
+     +1: niq, jim, ylavic, icing
+
+  *) mpm_event: Update scoreboard status for KeepAlive state, plus avoid a
+                small sbh memory leak.
+     trunk patch: http://svn.apache.org/r1740910
+                  http://svn.apache.org/r1741277
+                  http://svn.apache.org/r1820809 (CHANGES)
+     diff so far: http://people.apache.org/~ylavic/patches/httpd-2.4.x-event_ka_status.diff
+                  http://svn.apache.org/r1802618
+                  http://svn.apache.org/r1820808 (CHANGES)
+     2.4.x patch: http://people.apache.org/~ylavic/patches/httpd-2.4.x-event_ka_status+sbh_leak.patch
+     +1: ylavic, icing (joint vote), jim
+     ylavic: joint proposal because the second change depends on the
+             ap_update_child_status() added by the first one. Hopefully the
+             first change is simple enough, the second one is quite straight
+             forward too. We can really separate the two changes for the real
+             backport; once the first patch (event_ka_status.diff + records)
+             is applied, svn merge -c 1802618,1820808 ^/httpd/httpd/trunk .
+             works (modulo CHANGES).
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -204,33 +230,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   svn merge -c r1810358,r1810362,r1810363,r1810365,r1810447,r1816919,r1816922,r1818013,r1818280 ^/httpd/httpd/trunk .
                   (or svn copy ...)
      +1: jim
-
-  *) mod_proxy_html: skip documents < 4 bytes. PR 56286
-     trunk patch: http://svn.apache.org/r1599012
-                  http://svn.apache.org/r1601559
-                  http://svn.apache.org/r1818624   (style only)
-                  http://svn.apache.org/r1819969
-                  http://svn.apache.org/r1819970
-     2.4.x patch: svn merge -c r1599012,r1601559,r1818624, r1819969, r1819970 ^/httpd/httpd/trunk .
-     +1: niq, jim, ylavic, icing
-
-  *) mpm_event: Update scoreboard status for KeepAlive state, plus avoid a
-                small sbh memory leak.
-     trunk patch: http://svn.apache.org/r1740910
-                  http://svn.apache.org/r1741277
-                  http://svn.apache.org/r1820809 (CHANGES)
-     diff so far: http://people.apache.org/~ylavic/patches/httpd-2.4.x-event_ka_status.diff
-                  http://svn.apache.org/r1802618
-                  http://svn.apache.org/r1820808 (CHANGES)
-     2.4.x patch: http://people.apache.org/~ylavic/patches/httpd-2.4.x-event_ka_status+sbh_leak.patch
-     +1: ylavic, icing (joint vote), jim
-     ylavic: joint proposal because the second change depends on the
-             ap_update_child_status() added by the first one. Hopefully the
-             first change is simple enough, the second one is quite straight
-             forward too. We can really separate the two changes for the real
-             backport; once the first patch (event_ka_status.diff + records)
-             is applied, svn merge -c 1802618,1820808 ^/httpd/httpd/trunk .
-             works (modulo CHANGES).
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
