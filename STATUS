@@ -188,7 +188,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x diff: svn diff ^/httpd/httpd/branches/2.4.x  ^/httpd/httpd/branches/2.4.x-mod_md
          Updated 2.4.x-mod_md branch to current trunk (mod_md v1.1.0) with renamed configuration
          directives and improved certificate chain retrieval. Resetting votes.
-     +1: icing, jim, steffen
+     +1: icing, jim
 
   *) mod_proxy_uwsgi: Add in UWSGI proxy (sub)module
      trunk patch: http://svn.apache.org/r1810358
