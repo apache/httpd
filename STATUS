@@ -145,6 +145,17 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
              is applied, svn merge -c 1802618,1820808 ^/httpd/httpd/trunk .
              works (modulo CHANGES).
 
+  *) core/mod_ssl: Add new flag int to module struct. Define first bit for keeping
+     server config records non-shared instances, set for mod_ssl to make manipulations
+     in post_config safe.
+     trunk patch: svn merge -c 1809302,1809303,1809305,1809311,1809314,1809713 ^/httpd/httpd/trunk .
+     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/backport-module-flags.diff
+                  (merge with alterations for mmn etc., updated after review by Yann)
+     +1: icing, ylavic, covener
+     niq: Can someone post a pointer to discussion of this on dev list?
+          In particular the API change and apparent #ifdef ABI?
+
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -196,16 +207,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      ylavic: RemoteIPProxyProtocol* are documented as scoped to server config
              and virtual host, though using ap_server_conf makes them global
              only (thus less useful too...).
-
-  *) core/mod_ssl: Add new flag int to module struct. Define first bit for keeping
-     server config records non-shared instances, set for mod_ssl to make manipulations
-     in post_config safe.
-     trunk patch: svn merge -c 1809302,1809303,1809305,1809311,1809314,1809713 ^/httpd/httpd/trunk .
-     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/backport-module-flags.diff
-                  (merge with alterations for mmn etc., updated after review by Yann)
-     +1: icing, ylavic
-     niq: Can someone post a pointer to discussion of this on dev list?
-          In particular the API change and apparent #ifdef ABI?
 
   *) mod_md: backport of ACME (Let's Encrypt) support. Needs mod_ssl backport proposal beneath to
      not only compile but do something.
