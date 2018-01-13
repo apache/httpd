@@ -169,14 +169,15 @@ propose le MPM <code class="module"><a href="../mod/worker.html">worker</a></cod
 	    fermer immédiatement la connexion n'est pas une bonne solution car
 	    le client (qui est encore en train d'envoyer le reste de la requête)
 	    verrait sa connexion réinitialisée et ne pourrait pas lire la
-	    réponse de httpd. Si cela se produit, httpd essaie donc de lire le
-	    reste de la requête afin de permettre au client de lire la réponse
-	    entièrement. La fermeture progressive est limitée dans le temps,
-	    mais elle peut tout de même être assez longue, si bien qu'il est
-	    intéressant qu'un thread de travail puisse se décharger de cette
-	    tâche sur le thread d'écoute. A partir de la version 2.4.28, au lieu
-	    d'effectuer lui-même la fermeture progressive, le thread d'écoute
-	    confie cette tâche au premier thread de travail disponible.</dd>
+	    réponse de httpd. 	    
+	    La fermeture progressive est limitée dans le temps,
+	    mais elle peut tout de même être assez longue, si bien qu'elle est
+	    confiée à un thread de travail (y compris les procédures d'arrêt et
+	    la fermeture effective du socket). A partir de la version 2.4.28,
+	    c'est aussi le cas lorsque des connexions finissent par dépasser
+	    leur délai d'attente (le thread d'écoute ne gère jamais les
+	    connexions, si ce n'est attendre et dispatcher les évènements
+	    qu'elles génèrent).</dd>
         </dl>
 
         <p>Ces améliorations sont disponible pour les connexions HTTP ou HTTPS.</p> 
