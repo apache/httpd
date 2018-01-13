@@ -465,7 +465,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "apr_dbd_freetds"=".\srclib\apr\dbd\apr_dbd_freetds.dsp" - Package Owner=<4>
+Project: "apr_dbd_freetds"=".\srclib\apr-util\dbd\unsupported\apr_dbd_freetds.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -480,7 +480,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "apr_dbd_odbc"=".\srclib\apr\dbd\apr_dbd_odbc.dsp" - Package Owner=<4>
+Project: "apr_dbd_odbc"=".\srclib\apr-util\dbd\apr_dbd_odbc.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -495,7 +495,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "apr_dbd_mysql"=".\srclib\apr\dbd\apr_dbd_mysql.dsp" - Package Owner=<4>
+Project: "apr_dbd_mysql"=".\srclib\apr-util\dbd\apr_dbd_mysql.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -510,7 +510,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "apr_dbd_oracle"=".\srclib\apr\dbd\apr_dbd_oracle.dsp" - Package Owner=<4>
+Project: "apr_dbd_oracle"=".\srclib\apr-util\dbd\apr_dbd_oracle.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -525,7 +525,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "apr_dbd_pgsql"=".\srclib\apr\dbd\apr_dbd_pgsql.dsp" - Package Owner=<4>
+Project: "apr_dbd_pgsql"=".\srclib\apr-util\dbd\apr_dbd_pgsql.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -540,7 +540,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "apr_dbd_sqlite2"=".\srclib\apr\dbd\apr_dbd_sqlite2.dsp" - Package Owner=<4>
+Project: "apr_dbd_sqlite2"=".\srclib\apr-util\dbd\apr_dbd_sqlite2.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -555,7 +555,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "apr_dbd_sqlite3"=".\srclib\apr\dbd\apr_dbd_sqlite3.dsp" - Package Owner=<4>
+Project: "apr_dbd_sqlite3"=".\srclib\apr-util\dbd\apr_dbd_sqlite3.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -570,7 +570,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "apr_dbm_db"=".\srclib\apr\dbm\apr_dbm_db.dsp" - Package Owner=<4>
+Project: "apr_dbm_db"=".\srclib\apr-util\dbm\apr_dbm_db.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -585,7 +585,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "apr_dbm_gdbm"=".\srclib\apr\dbm\apr_dbm_gdbm.dsp" - Package Owner=<4>
+Project: "apr_dbm_gdbm"=".\srclib\apr-util\dbm\apr_dbm_gdbm.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -2185,7 +2185,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_md"=.\modules\md\mod_mmd.dsp - Package Owner=<4>
+Project: "mod_md"=.\modules\md\mod_md.dsp - Package Owner=<4>
 
 Package=<5>
 {{{

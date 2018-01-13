@@ -513,7 +513,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "apr_dbd_freetds"=".\srclib\apr-util\dbd\apr_dbd_freetds.dsp" - Package Owner=<4>
+Project: "apr_dbd_freetds"=".\srclib\apr-util\dbd\unsupported\apr_dbd_freetds.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -2569,7 +2569,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_md"=.\modules\md\mod_mmd.dsp - Package Owner=<4>
+Project: "mod_md"=.\modules\md\mod_md.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
