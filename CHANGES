@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.30
  
+  *) mod_proxy_html: skip documents shorter than 4 bytes
+     PR 56286 [Micha Lenk <micha lenk info>]
+
   *) core, mpm_event: Avoid a small memory leak of the scoreboard handle, for
      the lifetime of the connection, each time it is processed by MPM event.
      [Yann Ylavic]
