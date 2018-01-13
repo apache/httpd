@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.30
  
+  *) core, mpm_event: Avoid a small memory leak of the scoreboard handle, for
+     the lifetime of the connection, each time it is processed by MPM event.
+     [Yann Ylavic]
+
   *) mpm_event: Update scoreboard status for KeepAlive state.  [Yann Ylavic]
 
   *) mod_ldap: Fix a case where a full LDAP cache would continually fail to 

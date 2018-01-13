@@ -496,6 +496,7 @@
  *                          to ap_[r]getline()
  * 20120211.68 (2.4.26-dev) Add ap_get_basic_auth_components() and deprecate
  *                          ap_get_basic_auth_pw()
+ * 20120211.69 (2.4.30-dev) Add ap_update_sb_handle()
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -503,7 +504,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20120211
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 68                  /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 69                  /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
