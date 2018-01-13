@@ -120,7 +120,7 @@
   <modulefile>mod_speling.xml</modulefile>
   <modulefile>mod_ssl.xml.es</modulefile>
   <modulefile>mod_ssl_ct.xml</modulefile>
-  <modulefile>mod_status.xml</modulefile>
+  <modulefile>mod_status.xml.es</modulefile>
   <modulefile>mod_substitute.xml</modulefile>
   <modulefile>mod_suexec.xml</modulefile>
   <modulefile>mod_syslog.xml</modulefile>
