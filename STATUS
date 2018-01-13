@@ -127,16 +127,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c r1599012,r1601559,r1818624, r1819969, r1819970 ^/httpd/httpd/trunk .
      +1: niq, jim, ylavic, icing
 
-  *) core/mod_ssl: Add new flag int to module struct. Define first bit for keeping
-     server config records non-shared instances, set for mod_ssl to make manipulations
-     in post_config safe.
-     trunk patch: svn merge -c 1809302,1809303,1809305,1809311,1809314,1809713 ^/httpd/httpd/trunk .
-     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/backport-module-flags.diff
-                  (merge with alterations for mmn etc., updated after review by Yann)
-     +1: icing, ylavic, covener
-     niq: Can someone post a pointer to discussion of this on dev list?
-          In particular the API change and apparent #ifdef ABI?
-
   *) mod_md: backport of ACME (Let's Encrypt) support. Needs mod_ssl backport proposal beneath to
      not only compile but do something.
      trunk revisions: 1804530,1804531,1804542,1804545,1804671,1804759,1804787,1804975,1805180,1805188,1805192,1805194,1805256,1805294,1805373,1806939,1807228,1807347,1807577,1807593,1807774,1807777,1808005,1808092,1808100,1808241,1808242,1808243,1808249,1808444,1809719,1809888,1810723,1811082,1811812,1812193,1812517,1812518,1812999,1813642,1814720,1814939,1815005,1815078,1815264,1815370,1815483,1816055,1816154,1816156 and more
