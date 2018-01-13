@@ -244,8 +244,8 @@ misspellings.</dd>
   (Transport Layer Security TLS)</dd>
 <dt><a href="mod_ssl_ct.html">mod_ssl_ct</a></dt><dd>Implementation of Certificate Transparency (RFC 6962)
 </dd>
-<dt><a href="mod_status.html">mod_status</a></dt><dd>Provides information on server activity and
-performance</dd>
+<dt><a href="mod_status.html">mod_status</a></dt><dd>Provee información de la actividad y rendimiento del 
+  servidor</dd>
 <dt><a href="mod_substitute.html">mod_substitute</a></dt><dd>Perform search and replace operations on response bodies</dd>
 <dt><a href="mod_suexec.html">mod_suexec</a></dt><dd>Allows CGI scripts to run as a specified user
 and Group</dd>
