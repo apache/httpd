@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.30
  
+  *) mpm_event: Update scoreboard status for KeepAlive state.  [Yann Ylavic]
+
   *) mod_ldap: Fix a case where a full LDAP cache would continually fail to 
      purge old entries and log AH01323. PR61891.  
      [Hendrik Harms <hendrik.harms gmail.com>]
