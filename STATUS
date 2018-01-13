@@ -127,24 +127,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c r1599012,r1601559,r1818624, r1819969, r1819970 ^/httpd/httpd/trunk .
      +1: niq, jim, ylavic, icing
 
-  *) mpm_event: Update scoreboard status for KeepAlive state, plus avoid a
-                small sbh memory leak.
-     trunk patch: http://svn.apache.org/r1740910
-                  http://svn.apache.org/r1741277
-                  http://svn.apache.org/r1820809 (CHANGES)
-     diff so far: http://people.apache.org/~ylavic/patches/httpd-2.4.x-event_ka_status.diff
-                  http://svn.apache.org/r1802618
-                  http://svn.apache.org/r1820808 (CHANGES)
-     2.4.x patch: http://people.apache.org/~ylavic/patches/httpd-2.4.x-event_ka_status+sbh_leak.patch
-     +1: ylavic, icing (joint vote), jim
-     ylavic: joint proposal because the second change depends on the
-             ap_update_child_status() added by the first one. Hopefully the
-             first change is simple enough, the second one is quite straight
-             forward too. We can really separate the two changes for the real
-             backport; once the first patch (event_ka_status.diff + records)
-             is applied, svn merge -c 1802618,1820808 ^/httpd/httpd/trunk .
-             works (modulo CHANGES).
-
   *) core/mod_ssl: Add new flag int to module struct. Define first bit for keeping
      server config records non-shared instances, set for mod_ssl to make manipulations
      in post_config safe.
