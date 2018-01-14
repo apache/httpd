@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision: 1796297 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_authz_dbd.xml.meta">
+
+<name>mod_authz_dbd</name>
+<description>Autorisation en groupe et reconnaissance d'identité avec base
+SQL</description>
+<status>Extension</status>
+<sourcefile>mod_authz_dbd.c</sourcefile>
+<identifier>authz_dbd_module</identifier>
+<compatibility>Disponible dans les versions 2.4 et supérieures
+d'Apache</compatibility>
+
+<summary>
+    <p>Ce module fournit des fonctionnalités d'autorisation permettant
+    d'accorder ou de refuser aux utilisateurs authentifiés l'accès à
+    certaines zones du site web en fonction de leur appartenance à tel
+    ou tel groupe. Les modules <module>mod_authz_groupfile</module> et
+    <module>mod_authz_dbm</module> fournissent une fonctionnalité
+    similaire, mais ici le module interroge une base de données SQL pour
+    déterminer si un utilisateur appartient ou non à tel ou tel groupe.</p>
+    <p>Ce module propose également des fonctionnalités de connexion
+    utilisateur s'appuyant sur une base de données, ce qui peut se révéler
+    particulièrement utile lorsque le module est utilisé conjointement avec
+    <module>mod_authn_dbd</module>.</p>
+    <p>Ce module s'appuie sur <module>mod_dbd</module> pour spécifier le
+    pilote de la base de données sous-jacente et les paramètres de
+    connexion, et gérer les connexions à la base de données.</p>
+</summary>
+
+<seealso><directive module="mod_authz_core">Require</directive></seealso>
+<seealso>
+  <directive module="mod_authn_dbd">AuthDBDUserPWQuery</directive>
+</seealso>
+<seealso><directive module="mod_dbd">DBDriver</directive></seealso>
+<seealso><directive module="mod_dbd">DBDParams</directive></seealso>
+
+<section id="requiredirectives"><title>Les directives Require</title>
+
+    <p>Les directives <directive
+    module="mod_authz_core">Require</directive> d'Apache permettent,
+    au cours de la phase d'autorisation, de s'assurer qu'un utilisateur
+    est bien autorisé à accéder à une ressource. mod_authz_dbd ajoute
+    les types d'autorisation <code>dbd-group</code>,
+    <code>dbd-login</code> et <code>dbd-logout</code>.</p>
+
+    <p>A partir de la version 2.4.8, les directives require DBD
+    supportent les <a href="../expr.html">expressions</a>.</p>
+
+<section id="reqgroup"><title>Require dbd-group</title>
+
+    <p>Cette directive permet de spécifier à quel groupe un utilisateur
+    doit appartenir pour obtenir l'autorisation d'accès.</p>
+
+    <highlight language="config">
+Require dbd-group team
+AuthzDBDQuery "SELECT group FROM authz WHERE user = %s"
+    </highlight>
+
+</section>
+
+<section id="reqlogin"><title>Require dbd-login</title>
+
+    <p>Cette directive permet de spécifier une requête à exécuter pour
+    indiquer que l'utilisateur s'est authentifié.</p>
+
+    <highlight language="config">
+Require dbd-login
+AuthzDBDQuery "UPDATE authn SET login = 'true' WHERE user = %s"
+    </highlight>
+
+</section>
+
+<section id="reqlogout"><title>Require dbd-logout</title>
+
+    <p>Cette directive permet de spécifier une requête à exécuter pour
+    indiquer que l'utilisateur s'est déconnecté.</p>
+
+    <highlight language="config">
+Require dbd-logout
+AuthzDBDQuery "UPDATE authn SET login = 'false' WHERE user = %s"
+    </highlight>
+
+</section>
+
+</section>
+
+<section id="login">
+<title>Reconnaissance d'identité s'appuyant sur une base de données</title>
+<p>
+Outre sa fonction d'autorisation standard consistant à vérifier
+l'appartenance à des groupes, ce module permet aussi de gérer des
+sessions utilisateur côté serveur grâce à sa fonctionnalité de connexion utilisateur
+en s'appuyant sur une base de données. En particulier, il peut mettre à
+jour le statut de session de l'utilisateur dans la base de données
+chaque fois que celui-ci visite certaines URLs (sous réserve bien
+entendu que l'utilisateur fournissent les informations de connexion
+nécessaires).</p>
+<p>Pour cela, il faut definir deux directives <directive
+module="mod_authz_core">Require</directive> spéciales : <code>Require
+dbd-login</code> et <code>Require dbd-logout</code>. Pour les détails de
+leur utilisation, voir l'exemple de configuration ci-dessous.</p>
+</section>
+
+<section id="client">
+<title>Reconnaissance d'identité côté client</title>
+<p>Certains administrateurs peuvent vouloir implémenter une gestion de
+session côté client fonctionnant de concert avec les fonctionnalités de
+connexion/déconnexion des utilisateurs côté serveur offertes par ce module, en
+définissant ou en annulant par exemple un cookie HTTP ou un jeton
+similaire lorsqu'un utilisateur se connecte ou se déconnecte.</p>
+
+<p>Pour supporter une telle intégration, <module>mod_authz_dbd</module> exporte
+un programme à déclenchement optionnel (hook) qui sera lancé chaque fois
+que le statut d'un utilisateur sera mis à jour dans la base de données.
+D'autres modules de gestion de session pourront alors utiliser ce
+programme pour implémenter des fonctions permettant d'ouvrir et de
+fermer des sessions côté client.</p>
+</section>
+
+<section id="example">
+<title>Exemple de configuration</title>
+<highlight language="config">
+# configuration de mod_dbd
+DBDriver pgsql
+DBDParams "dbname=apacheauth user=apache pass=xxxxxx"
+
+DBDMin  4
+DBDKeep 8
+DBDMax  20
+DBDExptime 300
+
+&lt;Directory "/usr/www/mon.site/team-private/"&gt;
+  # configuration de mod_authn_core et mod_auth_basic
+  # pour mod_authn_dbd
+  AuthType Basic
+  AuthName Team
+  AuthBasicProvider dbd
+
+  # requête SQL de mod_authn_dbd pour authentifier un utilisateur qui se
+  # connecte
+  AuthDBDUserPWQuery \
+    "SELECT password FROM authn WHERE user = %s AND login = 'true'"
+
+  # configuration de mod_authz_core pour mod_authz_dbd
+  Require dbd-group team
+
+  # configuration de mod_authz_dbd
+  AuthzDBDQuery "SELECT group FROM authz WHERE user = %s"
+
+  # lorsqu'un utilisateur échoue dans sa tentative d'authentification ou
+  # d'autorisation, on l'invite à se connecter ; cette page doit
+  # contenir un lien vers /team-private/login.html
+  ErrorDocument 401 "/login-info.html"
+
+  &lt;Files "login.html"&gt;
+    # il n'est pas nécessaire que l'utilisateur soit déjà connecté !
+    AuthDBDUserPWQuery "SELECT password FROM authn WHERE user = %s"
+
+    # le processus de connexion dbd exécute une requête pour enregistrer
+    # la connexion de l'utilisateur
+    Require dbd-login
+    AuthzDBDQuery "UPDATE authn SET login = 'true' WHERE user = %s"
+
+    # redirige l'utilisateur vers la page d'origine (si elle existe)
+    # après une connexion réussie
+    AuthzDBDLoginToReferer On
+  &lt;/Files&gt;
+
+  &lt;Files "logout.html"&gt;
+    # le processus de déconnexion dbd exécute une requête pour
+    # enregistrer la déconnexion de l'utilisateur
+    Require dbd-logout
+    AuthzDBDQuery "UPDATE authn SET login = 'false' WHERE user = %s"
+  &lt;/Files&gt;
+&lt;/Directory&gt;
+</highlight>
+</section>
+
+<directivesynopsis>
+<name>AuthzDBDQuery</name>
+<description>Définit la requête SQL pour l'opération requise</description>
+<syntax>AuthzDBDQuery <var>requête</var></syntax>
+<contextlist><context>directory</context></contextlist>
+
+<usage>
+    <p>La directive <directive>AuthzDBDQuery</directive> permet de
+    spécifier une requête SQL à exécuter. Le but de cette requête dépend
+    de la directive <directive
+    module="mod_authz_core">Require</directive> en cours de
+    traitement.</p>
+    <ul>
+    <li>Avec la directive <code>Require dbd-group</code>, elle spécifie
+    une requête permettant de rechercher les groupes d'appartenance de
+    l'utilisateur courant. Ceci correspond à la fonctionnalité standard
+    d'autres modules d'autorisation comme
+    <module>mod_authz_groupfile</module> et
+    <module>mod_authz_dbm</module>.
+    La première colonne de chaque enregistrement renvoyé par la requête
+    doit contenir une chaîne de caractères correspondant à un nom de
+    groupe. La requête peut renvoyer zéro, un ou plusieurs
+    enregistrements.
+    <highlight language="config">
+Require dbd-group
+AuthzDBDQuery "SELECT group FROM groups WHERE user = %s"
+</highlight>
+    </li>
+    <li>Avec la directive <code>Require dbd-login</code> ou
+    <code>Require dbd-logout</code>, elle ne refusera jamais l'accès,
+    mais au contraire exécutera une requête SQL permettant d'enregistrer
+    la connexion ou la déconnexion de l'utilisateur. Ce dernier doit
+    être déjà authentifié avec <module>mod_authn_dbd</module>.
+    <highlight language="config">
+Require dbd-login
+AuthzDBDQuery "UPDATE authn SET login = 'true' WHERE user = %s"
+</highlight>
+    </li>
+    </ul>
+    <p>Dans tous les cas, l'identifiant utilisateur sera transmis comme
+    paramètre sous la forme d'une simple chaîne lorsque la requête SQL
+    sera exécutée. Il y sera fait référence dans la requête en utilisant
+    le spécificateur de format <code>%s</code>.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthzDBDRedirectQuery</name>
+<description>Définit une requête pour rechercher une page vers laquelle
+rediriger l'utilisateur après une connexion réussie</description>
+<syntax>AuthzDBDRedirectQuery <var>requête</var></syntax>
+<contextlist><context>directory</context></contextlist>
+
+<usage>
+    <p>Spécifie une requête SQL optionnelle à utiliser après une
+    connexion (ou une déconnexion) réussie pour rediriger l'utilisateur
+    vers une URL, qui peut être spécifique à l'utilisateur.
+    L'identifiant utilisateur sera transmis comme paramètre sous la
+    forme d'une simple chaîne lorsque la requête SQL sera exécutée. Il y
+    sera fait référence dans la requête en utilisant le spécificateur de
+    format <code>%s</code>.</p>
+    <highlight language="config">
+AuthzDBDRedirectQuery "SELECT userpage FROM userpages WHERE user = %s"
+</highlight>
+    <p>La première colonne du premier enregistrement renvoyé par la
+    requête doit contenir une chaîne de caractères correspondant à une
+    URL vers laquelle rediriger le client. Les enregistrements suivants
+    sont ignorés. Si aucun enregistrement n'est renvoyé, le client ne
+    sera pas redirigé.</p>
+    <p>Notez que <directive>AuthzDBDLoginToReferer</directive> l'emporte
+    sur cette directive si les deux sont définies.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthzDBDLoginToReferer</name>
+<description>Définit si le client doit être redirigé vers la page
+d'origine en cas de connexion ou de déconnexion réussie si un en-tête
+de requête <code>Referer</code> est présent</description>
+<syntax>AuthzDBDLoginToReferer On|Off</syntax>
+<default>AuthzDBDLoginToReferer Off</default>
+<contextlist><context>directory</context></contextlist>
+
+<usage>
+    <p>Utilisée en conjonction avec <code>Require dbd-login</code> ou
+    <code>Require dbd-logout</code>, cette directive permet de rediriger
+    le client vers la page d'origine (l'URL contenue dans l'en-tête
+    de requête HTTP <code>Referer</code>, s'il est présent). En
+    l'absence d'en-tête <code>Referer</code>, la définition
+    <code>AuthzDBDLoginToReferer On</code> sera ignorée.</p>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

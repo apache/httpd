@@ -1,0 +1,7 @@
+# Microsoft Developer Studio Generated Dependency File, included by gen_test_char.mak
+
+.\gen_test_char.c : \
+	"..\srclib\apr\include\apr.h"\
+	"..\srclib\apr\include\apr_errno.h"\
+	"..\srclib\apr\include\apr_lib.h"\
+	

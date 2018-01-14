@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="EUC-KR" ?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
+<!-- English Revision: 395228:1673563 (outdated) -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_speling.xml.meta">
+
+<name>mod_speling</name>
+<description>사용자가 대소문자를 잘못 사용하거나 맞춤법이 틀리는
+것을 한번까지 허용하여 잘못된 URL을 고치려고 시도한다</description>
+<status>Extension</status>
+<sourcefile>mod_speling.c</sourcefile>
+<identifier>speling_module</identifier>
+
+
+
+<summary>
+
+    <p>종종 맞춤법이 틀리거나 대소문자를 잘못 사용하여 아파치가
+    문서 요청을 서비스할 수 없는 경우가 있다. 이 모듈은 다른
+    모든 모듈들이 포기한 요청에 해당하는 문서를 찾는다. 모듈은
+    요청한 디렉토리 안에 있는 모든 문서를 요청한 문서이름과
+    <strong>대소문자 구별없이</strong> (문자 첨가 / 생략 / 교체
+    혹은 잘못된 문자 ) <strong>맞춤법이 한번까지 틀려도
+    봐주며</strong> 비교한다. 이런 방법으로 문서목록을 만든다.</p>
+
+    <p>디렉토리를 살펴본 후에,</p>
+
+    <ul>
+      <li>문서를 찾지못하면, 아파치는 일반적인 "document not
+      found (문서를 찾을 수 없음)" 오류를 반환한다.</li>
+
+      <li>요청에 "거의" 일치하는 문서를 하나만 찾은 경우, 그
+      문서로 리다이렉션 응답을 한다.</li>
+
+      <li>근접한 문서를 여러개 찾은 경우, 클라이언트가 올바른
+      문서를 선택할 수 있도록 문서목록을 보낸다.</li>
+    </ul>
+
+</summary>
+
+
+<directivesynopsis>
+<name>CheckSpelling</name>
+<description>맞춤법 모듈을 사용한다</description>
+<syntax>CheckSpelling on|off</syntax>
+<default>CheckSpelling Off</default>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>Options</override>
+<compatibility>아파치 1.1은 CheckSpelling을 별도로 제공하였지만,
+대소문자가 다른 경우만을 처리할 수 있었다. 아파치 1.3에서 아파치
+배포본의 일부가 되었다. 아파치 1.3.2 이전에는
+<code>CheckSpelling</code> 지시어를 "주서버"와 "가상호스트"
+사용장소에서만 사용할 수 있었다.</compatibility>
+
+<usage>
+    <p>이 지시어는 맞춤법 모듈의 사용여부를 결정한다. 사용한다면
+    다음을 주의하라</p>
+
+    <ul>
+      <li>맞춤법 교정을 위해 디렉토리를 살펴보는 작업을 동시에
+      여러번 할 경우 서버 성능에 영향을 준다.</li>
+
+      <li>문서중에 맞춤법 "교정"으로 우연히 보여질 수 있는
+      기밀문서가 없어야 한다.</li>
+
+      <li>모듈은 파일명과 디렉토리명만을 교정할 수 있으며,
+      (<code>http://my.host/~apahce/</code>와 같이) 맞춤법이
+      틀린 사용자명을 교정하지 못한다.</li>
+
+      <li>맞춤법 교정은 존재하는 파일에만 적용된다. 그래서
+      <code>&lt;Location /status&gt;</code>에 대한 요청을
+      내용협상을 거친 "<code>/stats.html</code>" 파일로 오인할
+      수 있다.</li>
+    </ul>
+
+    <!-- XXX: is that really true?! -nd -->
+    <p><a href="mod_dav.html">DAV</a>를 사용하는 디렉토리에
+    mod_speling을 사용하면 안된다. 이유는 새로 업로드하려는
+    <code>doc43.html</code> 문서를 엉뚱하게 기존의
+    <code>doc34.html</code> 파일로 리다이렉트하는 등, DAV가
+    새로 만드는 리소스명을 기존의 파일명으로 "맞춤법 교정"을
+    시도하기 때문이다.
+    </p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CheckCaseOnly</name>
+<description>Limits the action of the speling module to case corrections</description>
+<contextlist><context>server config</context><context>virtual host</context><context>directory</context><context>.htaccess</context></contextlist>
+<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
+</directivesynopsis>
+
+</modulesynopsis>

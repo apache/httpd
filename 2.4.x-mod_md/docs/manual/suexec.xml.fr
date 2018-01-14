@@ -1,0 +1,657 @@
+<?xml version="1.0" ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+<!-- English Revision: 1334033 -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="suexec.xml.meta">
+
+  <title>Support suEXEC</title>
+
+  <summary>
+    <p>La fonctionnalit&eacute; <strong>suEXEC</strong> permet
+    l'ex&eacute;cution des programmes <strong>CGI</strong> et
+    <strong>SSI</strong> sous un utilisateur autre que celui sous
+    lequel s'ex&eacute;cute le serveur web qui appelle ces programmes.
+    Normalement, lorsqu'un programme CGI ou SSI est lanc&eacute;, il
+    s'ex&eacute;cute sous le m&ecirc;me utilisateur que celui du serveur web qui
+    l'appelle.</p>
+
+    <p>Utilis&eacute;e de mani&egrave;re appropri&eacute;e, cette fonctionnalit&eacute; peut
+    r&eacute;duire consid&eacute;rablement les risques de s&eacute;curit&eacute; encourus
+    lorsqu'on autorise les utilisateurs &agrave; d&eacute;velopper et faire
+    s'ex&eacute;cuter des programmes CGI ou SSI de leur cru. Cependant, mal
+    configur&eacute;, suEXEC peut causer de nombreux probl&egrave;mes et m&ecirc;me cr&eacute;er
+    de nouvelles failles dans la s&eacute;curit&eacute; de votre ordinateur. Si
+    vous n'&ecirc;tes pas familier avec la gestion des programmes
+    <em>setuid root</em> et les risques de s&eacute;curit&eacute; qu'ils comportent,
+    nous vous recommandons vivement de ne pas tenter
+    d'utiliser suEXEC.</p>
+  </summary>
+
+<section id="before"><title>Avant de commencer</title>
+
+    <p>Avant de foncer t&ecirc;te baiss&eacute;e dans la lecture de ce document,
+    vous devez tenir compte de certaines hypoth&egrave;ses concernant vous-m&ecirc;me
+    et l'environnement dans lequel vous allez utiliser suexec.</p>
+
+    <p>Premi&egrave;rement, vous devez utiliser un syst&egrave;me d'exploitation
+    UNIX ou d&eacute;riv&eacute;, capable d'effectuer des op&eacute;rations
+    <strong>setuid</strong> et <strong>setgid</strong>. Tous les
+    exemples de commande sont donn&eacute;s en cons&eacute;quence. D'autres
+    plates-formes, m&ecirc;me si elles supportent suEXEC, peuvent
+    avoir une configuration diff&eacute;rente.</p>
+
+    <p>Deuxi&egrave;mement, vous devez &ecirc;tre familier avec les concepts de base
+    relatifs &agrave; la s&eacute;curit&eacute; de votre ordinateur et son administration.
+    Ceci implique la compr&eacute;hension des op&eacute;rations
+    <strong>setuid/setgid</strong> et des diff&eacute;rents effets qu'elles
+    peuvent produire sur votre syst&egrave;me et son niveau de s&eacute;curit&eacute;.</p>
+
+    <p>Troisi&egrave;mement, vous devez utiliser une version
+    <strong>non modifi&eacute;e</strong> du code de suEXEC. L'ensemble du
+    code de suEXEC a &eacute;t&eacute; scrut&eacute; et test&eacute; avec soin par les d&eacute;veloppeurs
+    et de nombreux b&ecirc;ta testeurs. Toutes les pr&eacute;cautions ont &eacute;t&eacute; prises
+    pour s'assurer d'une base s&ucirc;re de code non seulement simple, mais
+    aussi solide. La modification de ce code peut causer des probl&egrave;mes
+    inattendus et de nouveaux risques de s&eacute;curit&eacute;. Il est
+    <strong>vivement</strong> recommand&eacute; de ne pas modifier le code de
+    suEXEC, &agrave; moins que vous ne soyez un programmeur sp&eacute;cialiste des
+    particularit&eacute;s li&eacute;es &agrave; la s&eacute;curit&eacute;, et souhaitez partager votre
+    travail avec l'&eacute;quipe de d&eacute;veloppement du serveur HTTP Apache afin
+    de pouvoir en discuter.</p>
+
+    <p>Quatri&egrave;mement et derni&egrave;rement, l'&eacute;quipe de d&eacute;veloppement du
+    serveur HTTP Apache a d&eacute;cid&eacute; de ne
+    <strong>PAS</strong> inclure suEXEC dans l'installation par d&eacute;faut
+    d'Apache httpd. Pour pouvoir mettre en oeuvre suEXEC, l'administrateur
+    doit porter la plus grande attention aux d&eacute;tails. Apr&egrave;s avoir bien
+    r&eacute;fl&eacute;chi aux diff&eacute;rents points de la configuration de suEXEC,
+    l'administrateur peut l'installer selon les m&eacute;thodes classiques.
+    Les valeurs des param&egrave;tres de configuration doivent &ecirc;tre
+    d&eacute;termin&eacute;es et sp&eacute;cifi&eacute;es avec soin par l'administrateur, afin de
+    maintenir la s&eacute;curit&eacute; du syst&egrave;me de mani&egrave;re appropri&eacute;e lors de
+    l'utilisation de la fonctionnalit&eacute; suEXEC. C'est par le biais de
+    ce processus minutieux que nous esp&eacute;rons r&eacute;server
+    l'installation de suEXEC aux administrateurs prudents et
+    suffisamment d&eacute;termin&eacute;s &agrave; vouloir l'utiliser.</p>
+
+    <p>Vous &ecirc;tes encore avec nous ? Oui ? Bien.
+    Alors nous pouvons continuer !</p>
+</section>
+
+<section id="model"><title>Mod&egrave;le de s&eacute;curit&eacute; de suEXEC</title>
+
+    <p>Avant d'installer et configurer suEXEC, nous allons tout d'abord
+    d&eacute;crire le mod&egrave;le de s&eacute;curit&eacute; que vous &ecirc;tes sur le point
+    d'impl&eacute;menter. Vous devriez ainsi mieux comprendre ce qui se passe
+    vraiment &agrave; l'int&eacute;rieur de suEXEC et quelles pr&eacute;cautions ont &eacute;t&eacute;
+    prises pour pr&eacute;server la s&eacute;curit&eacute; de votre syst&egrave;me.</p>
+
+    <p><strong>suEXEC</strong> est bas&eacute; sur un programme "conteneur"
+    (wrapper) setuid qui est appel&eacute; par le serveur HTTP Apache principal.
+    Ce conteneur est appel&eacute; quand une requ&ecirc;te HTTP concerne
+    un programme CGI ou SSI que l'administrateur
+    a d&eacute;cid&eacute; de faire s'ex&eacute;cuter
+    sous un utilisateur autre que celui du serveur principal.
+    Lorsqu'il re&ccedil;oit une telle requ&ecirc;te, Apache httpd fournit au conteneur
+    suEXEC le nom du programme, ainsi que les identifiants utilisateur
+    et groupe sous lesquels le programme doit s'ex&eacute;cuter.</p>
+
+    <p>Le conteneur effectue ensuite les v&eacute;rifications suivantes afin
+    de d&eacute;terminer la r&eacute;ussite ou l'&eacute;chec du processus -- si une seule
+    de ces conditions n'est pas v&eacute;rifi&eacute;e, le programme journalise
+    l'erreur et se termine en retournant un code d'erreur, sinon il
+    continue :</p>
+
+    <ol>
+      <li>
+        <strong>L'utilisateur qui ex&eacute;cute le conteneur est-il un
+	utilisateur valide de ce syst&egrave;me ?</strong>
+
+        <p class="indent">
+          Ceci permet de s'assurer que l'utilisateur qui ex&eacute;cute le
+	  conteneur est vraiment un utilisateur appartenant au syst&egrave;me.
+        </p>
+     </li>
+
+     <li>
+        <strong>Le conteneur a-t-il &eacute;t&eacute; appel&eacute; avec un nombre
+	d'arguments correct ?</strong>
+
+        <p class="indent">
+          Le conteneur ne s'ex&eacute;cutera que si on lui fournit un nombre
+	  d'arguments correct. Le serveur HTTP apache sait quel est le
+	  bon format des arguments. Si le conteneur ne re&ccedil;oit pas un
+	  nombre d'arguments correct, soit il a &eacute;t&eacute; modifi&eacute;,
+	  soit quelque chose ne va pas dans la portion suEXEC de
+	  votre binaire Apache httpd.
+        </p>
+      </li>
+
+      <li>
+        <strong>Cet utilisateur valide est-il autoris&eacute; &agrave; ex&eacute;cuter le
+	conteneur ?</strong>
+
+        <p class="indent">
+          Cet utilisateur est-il celui autoris&eacute; &agrave; ex&eacute;cuter le
+	  conteneur ? Un seul utilisateur (celui d'Apache) est
+	  autoris&eacute; &agrave; ex&eacute;cuter ce programme.
+        </p>
+      </li>
+
+      <li>
+        <strong>Le chemin du programme CGI ou SSI cible est-il
+	non s&ucirc;r ?</strong>
+
+        <p class="indent">
+          Le chemin du programme CGI ou SSI cible d&eacute;bute-t-il par un
+	  '/' ou contient-il une r&eacute;f&eacute;rence arri&egrave;re '..' ? Ceci est
+	  interdit ; le programme CGI ou SSI cible doit se trouver dans
+	  la hi&eacute;rarchie de la racine des documents de suEXEC (voir
+	  <code>--with-suexec-docroot=<em>DIR</em></code> ci-dessous).
+        </p>
+      </li>
+
+      <li>
+        <strong>Le nom utilisateur cible est-il valide ?</strong>
+
+        <p class="indent">
+          L'utilisateur cible existe-t-il ?
+        </p>
+      </li>
+
+      <li>
+        <strong>Le nom du groupe cible est-il valide ?</strong>
+
+        <p class="indent">
+          Le groupe cible existe-t-il ?
+        </p>
+      </li>
+
+      <li>
+        <strong>L'utilisateur cible n'est-il <em>PAS</em>
+	superutilisateur ?</strong>
+
+
+        <p class="indent">
+          suEXEc ne permet pas &agrave;
+	  <code><em>root</em></code> d'ex&eacute;cuter des programmes CGI/SSI.
+        </p>
+      </li>
+
+      <li>
+        <strong>Le num&eacute;ro de l'identifiant de l'utilisateur cible
+	est-il <em>SUPERIEUR</em> au num&eacute;ro d'identifiant
+	minimum ?</strong>
+
+        <p class="indent">
+          Le num&eacute;ro d'identifiant utilisateur minimum est d&eacute;fini &agrave;
+	  l'ex&eacute;cution du script configure. Ceci vous permet de d&eacute;finir
+	  le num&eacute;ro d'identifiant utilisateur le plus bas qui sera
+	  autoris&eacute; &agrave; &eacute;x&eacute;cuter des programmes CGI/SSI. En particulier,
+	  cela permet d'&eacute;carter les comptes syst&egrave;me.
+        </p>
+      </li>
+
+      <li>
+        <strong>Le groupe cible n'est-il <em>PAS</em> le groupe
+	superutilisateur ?</strong>
+
+        <p class="indent">
+          Actuellement, suEXEC ne permet pas au groupe
+	  <code><em>root</em></code> d'ex&eacute;cuter des programmes CGI/SSI.
+        </p>
+      </li>
+
+      <li>
+        <strong> Le num&eacute;ro d'identifiant du groupe cible est-il
+	<em>SUPERIEUR</em> au num&eacute;ro d'identifiant minimum ?</strong>
+
+        <p class="indent">
+          Le num&eacute;ro d'identifiant de groupe minimum est sp&eacute;cifi&eacute; lors
+	  de l'ex&eacute;cution du script configure. Ceci vous permet de
+	  d&eacute;finir l'identifiant de groupe le plus bas possible qui sera
+	  autoris&eacute; &agrave; ex&eacute;cuter des programmes CGI/SSI, et est
+	  particuli&egrave;rement utile pour &eacute;carter les groupes "syst&egrave;me".
+        </p>
+      </li>
+
+      <li>
+        <strong>Le conteneur peut-il obtenir avec succ&egrave;s l'identit&eacute;
+	des utilisateur et groupe cibles ?</strong>
+
+        <p class="indent">
+          C'est ici que le programme obtient l'identit&eacute; des utilisateur
+	  et groupe cibles via des appels &agrave; setuid et setgid. De m&ecirc;me,
+	  la liste des acc&egrave;s groupe est initialis&eacute;e avec tous les
+	  groupes auxquels l'utilisateur cible appartient.
+        </p>
+      </li>
+
+      <li>
+        <strong>Peut-on se positionner dans le r&eacute;pertoire dans dequel
+	sont situ&eacute;s les programmes CGI/SSI ?</strong>
+
+        <p class="indent">
+          S'il n'existe pas, il ne peut pas contenir de fichier. Et si
+	  l'on ne peut pas s'y positionner, il n'existe probablement
+	  pas.
+        </p>
+      </li>
+
+      <li>
+        <strong>Le r&eacute;pertoire est-il dans l'espace web
+	de httpd ?</strong>
+
+        <p class="indent">
+          Si la requ&ecirc;te concerne une portion de la racine du serveur,
+	  le r&eacute;pertoire demand&eacute; est-il dans la hi&eacute;rarchie de la racine
+	  des documents de suEXEC ? Si la requ&ecirc;te concerne un
+	 <directive module="mod_userdir"
+          >UserDir</directive>, le r&eacute;pertoire demand&eacute; est-il dans
+	  la hi&eacute;rarchie du r&eacute;pertoire d&eacute;fini comme le r&eacute;pertoire
+	  utilisateur de suEXEC (voir les
+	  <a href="#install">options de configuration de suEXEC</a>) ?
+        </p>
+      </li>
+
+      <li>
+        <strong>L'&eacute;criture dans le r&eacute;pertoire est-elle interdite pour
+	un utilisateur autre que le propri&eacute;taire </strong>
+
+        <p class="indent">
+          Le r&eacute;pertoire ne doit pas &ecirc;tre ouvert aux autres
+	  utilisateurs ; seul l'utilisateur propri&eacute;taire doit pouvoir
+	  modifier le contenu du r&eacute;pertoire.
+        </p>
+      </li>
+
+      <li>
+        <strong>Le programme CGI/SSI cible existe-t-il ?</strong>
+
+        <p class="indent">
+          S'il n'existe pas, il ne peut pas &ecirc;tre ex&eacute;cut&eacute;.
+        </p>
+      </li>
+
+      <li>
+        <strong>Les utilisateurs autres que le propri&eacute;taire n'ont-ils
+	<em>PAS</em> de droits en &eacute;criture sur le programme
+	CGI/SSI ?</strong>
+
+        <p class="indent">
+          Les utilisateurs autres que le propri&eacute;taire ne doivent pas
+	  pouvoir modifier le programme CGI/SSI.
+        </p>
+      </li>
+
+      <li>
+        <strong>Le programme CGI/SSI n'est-il <em>PAS</em> setuid ou
+	setgid ?</strong>
+
+        <p class="indent">
+          Les programmes cibles ne doivent pas pouvoir modifier &agrave;
+	  nouveau les identifiants utilisateur/groupe.
+        </p>
+      </li>
+
+      <li>
+        <strong>Le couple utilisateur/groupe cible est-il le m&ecirc;me que
+	celui du programme ?</strong>
+
+        <p class="indent">
+          L'utilisateur est-il le propri&eacute;taire du fichier ?
+        </p>
+      </li>
+
+      <li>
+        <strong>Peut-on nettoyer avec succ&egrave;s l'environnement des
+	processus afin de garantir la s&ucirc;ret&eacute; des op&eacute;rations ?</strong>
+
+        <p class="indent">
+          suExec nettoie l'environnement des processus en &eacute;tablissant
+	  un chemin d'ex&eacute;cution s&ucirc;r (d&eacute;fini lors de la configuration),
+	  et en ne passant que les variables dont les noms font partie
+	  de la liste de l'environnement s&ucirc;r (cr&eacute;&eacute;e de m&ecirc;me lors de la
+	  configuration).
+        </p>
+      </li>
+
+      <li>
+        <strong>Le conteneur peut-il avec succ&egrave;s se substituer au
+	programme CGI/SSI cible et s'ex&eacute;cuter ?</strong>
+
+        <p class="indent">
+          C'est l&agrave; o&ugrave; l'ex&eacute;cution de suEXEC s'arr&ecirc;te et o&ugrave; commence
+	  celle du programme CGI/ssi cible.
+        </p>
+      </li>
+    </ol>
+
+    <p>Ce sont les op&eacute;rations standards effectu&eacute;es par le mod&egrave;le de
+    s&eacute;curit&eacute; du conteneur suEXEC. Il peut para&icirc;tre strict et est
+    susceptible d'imposer de nouvelles limitations et orientations
+    dans la conception des programmes CGI/SSI, mais il a &eacute;t&eacute; d&eacute;velopp&eacute;
+    avec le plus grand soin, &eacute;tape par &eacute;tape, en se focalisant sur
+    la s&eacute;curit&eacute;.</p>
+
+    <p>Pour plus d'informations sur la mesure dans laquelle ce mod&egrave;le
+    de s&eacute;curit&eacute; peut limiter vos possibilit&eacute;s au regard de la
+    configuration du serveur, ainsi que les risques de s&eacute;curit&eacute; qui
+    peuvent &ecirc;tre &eacute;vit&eacute;s gr&acirc;ce &agrave; une configuration appropri&eacute;e de suEXEC,
+    se r&eacute;f&eacute;rer &agrave; la section <a
+    href="#jabberwock">"Avis &agrave; la population !"</a> de ce document.</p>
+</section>
+
+<section id="install"><title>Configurer et installer suEXEC</title>
+
+    <p>C'est ici que nous entrons dans le vif du sujet.</p>
+
+    <p><strong>Options de configuration de suEXEC</strong><br />
+    </p>
+
+    <dl>
+      <dt><code>--enable-suexec</code></dt>
+
+      <dd>Cette option active la fonctionnalit&eacute; suEXEC qui n'est
+      jamais install&eacute;e ou activ&eacute;e par d&eacute;faut. Au moins une option
+      <code>--with-suexec-xxxxx</code> doit accompagner l'option
+      <code>--enable-suexec</code> pour qu'APACI (l'utilitaire de
+      configuration de la compilation d'Apache) accepte votre demande
+      d'utilisation de la fonctionnalit&eacute; suEXEC.</dd>
+
+      <dt><code>--with-suexec-bin=<em>PATH</em></code></dt>
+
+      <dd>Le chemin du binaire <code>suexec</code> doit &ecirc;tre cod&eacute; en
+      dur dans le serveur pour des raisons de s&eacute;curit&eacute;. Cette option
+      vous permet de modifier le chemin par d&eacute;faut.
+      <em>Par exemple</em>
+      <code>--with-suexec-bin=/usr/sbin/suexec</code></dd>
+
+      <dt><code>--with-suexec-caller=<em>UID</em></code></dt>
+
+      <dd>L'<a href="mod/mpm_common.html#user">utilisateur</a> sous
+      lequel httpd s'ex&eacute;cute habituellement. C'est le seul utilisateur
+      autoris&eacute; &agrave; ex&eacute;cuter le wrapper suEXEC.</dd>
+
+      <dt><code>--with-suexec-userdir=<em>DIR</em></code></dt>
+
+      <dd>Cette option d&eacute;finit le sous-r&eacute;pertoire de la hi&eacute;rarchie des
+      r&eacute;pertoires utilisateurs dans lequel l'utilisation
+      de suEXEC sera autoris&eacute;e. Tous les ex&eacute;cutables situ&eacute;s dans ce
+      r&eacute;pertoire seront ex&eacute;cutables par suEXEC sous l'utilisateur
+      cible ; ces programmes doivent donc &ecirc;tre s&ucirc;rs. Si vous utilisez
+      une directive <directive module="mod_userdir">UserDir</directive>
+      "simple" (c'est &agrave; dire ne contenant pas de
+      "*"), l'option --with-suexec-userdir
+      devra contenir la m&ecirc;me valeur. SuEXEC ne fonctionnera pas
+      correctement si la directive <directive
+      module="mod_userdir">UserDir</directive> contient une valeur
+      diff&eacute;rente du r&eacute;pertoire home de l'utilisateur tel qu'il est
+      d&eacute;fini dans le fichier <code>passwd</code>. la valeur par d&eacute;faut
+      est "<code>public_html</code>".<br />
+      Si vous avez plusieurs h&ocirc;tes virtuels avec une directive
+      <directive module="mod_userdir">UserDir</directive> diff&eacute;rente
+      pour chacun d'entre eux, vous devrez faire en sorte que chaque
+      UserDir poss&egrave;de un r&eacute;pertoire parent commun ; donnez alors &agrave;
+      l'option --with-suexec-userdir le nom
+      de ce r&eacute;pertoire commun. <strong>Si tout ceci n'est pas d&eacute;fini
+      correctement, les requ&ecirc;tes CGI "~userdir" ne fonctionneront
+      pas !</strong></dd>
+
+      <dt><code>--with-suexec-docroot=<em>DIR</em></code></dt>
+
+      <dd>Cette option fonctionne comme la directive DocumentRoot pour
+      httpd. Il s'agit de la seule hi&eacute;rarchie (en dehors des directives
+      <directive module="mod_userdir"
+      >UserDir</directive>) dans laquelle la fonctionnalit&eacute; suEXEC
+      pourra &ecirc;tre utilis&eacute;e. La valeur par d&eacute;faut est la valeur de
+      <code>--datadir</code> accompagn&eacute;e du suffixe
+      "<code>/htdocs</code>" ;
+      <em>Par exemple</em>, si vous ex&eacute;cutez configure avec
+      "<code>--datadir=/home/apache</code>", la valeur
+      "<code>/home/apache/htdocs</code>" sera utilis&eacute;e par d&eacute;faut comme
+      racine des documents pour le conteneur suEXEC.</dd>
+
+      <dt><code>--with-suexec-uidmin=<em>UID</em></code></dt>
+
+      <dd>Cette option d&eacute;finit l'identifiant utilisateur le plus bas
+      avec lequel un utilisateur pourra &ecirc;tre la cible de
+      suEXEC. 500 ou 100 sont des valeurs courantes sur la plupart des
+      syst&egrave;mes. la valeur par d&eacute;faut est 100.</dd>
+
+      <dt><code>--with-suexec-gidmin=<em>GID</em></code></dt>
+
+      <dd>Cette option d&eacute;finit l'identifiant de groupe le plus bas
+      avec lequel un utilisateur pourra &ecirc;tre la cible de
+      suEXEC. 100 est une valeur courante sur la plupart des
+      syst&egrave;mes et est par cons&eacute;quent la valeur par d&eacute;faut.</dd>
+
+      <dt><code>--with-suexec-logfile=<em>FILE</em></code></dt>
+
+      <dd>Cette option permet de d&eacute;finir le fichier dans lequel
+      toutes les transactions et erreurs de suEXEC seront journalis&eacute;es
+      (&agrave; des fins d'analyse ou de d&eacute;bogage). Par d&eacute;faut, le fichier
+      journal se nomme "<code>suexec_log</code>" et se trouve dans votre
+      r&eacute;pertoire standard des fichiers journaux d&eacute;fini par
+      <code>--logfiledir</code></dd>
+
+      <dt><code>--with-suexec-safepath=<em>PATH</em></code></dt>
+
+      <dd>Cette option permet de d&eacute;finir une variable d'environnement
+      PATH s&ucirc;re &agrave; passer aux ex&eacute;cutables CGI. La valeur par d&eacute;faut
+      est "<code>/usr/local/bin:/usr/bin:/bin</code>".</dd>
+    </dl>
+
+    <section>
+      <title>Compilation et installation du conteneur suEXEC</title>
+
+    <p>Si vous avez activ&eacute; la fonctionnalit&eacute; suEXEC &agrave; l'aide de
+     l'option <code>--enable-suexec</code>, le binaire
+     <code>suexec</code> sera automatiquement construit (en m&ecirc;me temps
+     que httpd) lorsque vous ex&eacute;cuterez la commande
+     <code>make</code>.</p>
+
+     <p>Lorsque tous les composants auront &eacute;t&eacute; construits, vous pourrez
+     ex&eacute;cuter la commande <code>make install</code> afin de les
+     installer. Le binaire <code>suexec</code> sera install&eacute; dans le
+     r&eacute;pertoire d&eacute;fini &agrave; l'aide de l'option <code>--sbindir</code>. La
+     localisation par d&eacute;faut est "/usr/local/apache2/bin/suexec".</p>
+     <p>Veuillez noter que vous aurez besoin des
+     <strong><em>privil&egrave;ges root</em></strong> pour passer l'&eacute;tape de
+     l'installation. Pour que le conteneur puisse changer
+     l'identifiant utilisateur, il doit avoir comme propri&eacute;taire
+     <code><em>root</em></code>, et les droits du fichier doivent
+     inclure le bit d'ex&eacute;cution setuserid.</p>
+   </section>
+
+   <section>
+	<title>>Mise en place de permissions pour
+    parano&iuml;aque</title>
+    <p>Bien que le conteneur suEXEC v&eacute;rifie que l'utilisateur qui
+    l'appelle correspond bien &agrave; l'utilisateur sp&eacute;cifi&eacute; &agrave; l'aide de
+    l'option <code>--with-suexec-caller</code> du programme
+    <program>configure</program>, il subsiste toujours le risque qu'un
+    appel syst&egrave;me ou une biblioth&egrave;que fasse appel &agrave; suEXEC avant que
+    cette v&eacute;rification ne soit exploitable sur votre syst&egrave;me. Pour
+    tenir compte de ceci, et parce que c'est en g&eacute;n&eacute;ral la meilleure
+    pratique, vous devez utiliser les permissions du syst&egrave;me de
+    fichiers afin de vous assurer que seul le groupe sous lequel
+    s'ex&eacute;cute httpd puisse faire appel &agrave; suEXEC.</p>
+
+    <p>Si, par exemple, votre serveur web est configur&eacute; pour
+    s'ex&eacute;cuter en tant que :</p>
+
+<highlight language="config">
+User www
+Group webgroup
+      </highlight>
+
+    <p>et <program>suexec</program> se trouve &agrave;
+    "/usr/local/apache2/bin/suexec", vous devez ex&eacute;cuter les
+    commandes</p>
+
+<example>
+    chgrp webgroup /usr/local/apache2/bin/suexec<br />
+    chmod 4750 /usr/local/apache2/bin/suexec<br />
+</example>
+
+    <p>Ceci permet de s'assurer que seul le groupe sous lequel httpd
+    s'ex&eacute;cute (ici webgroup) puisse faire appel au conteneur
+    suEXEC.</p>
+  </section>
+</section>
+
+<section id="enable"><title>Activation et d&eacute;sactivation
+de suEXEC</title>
+
+    <p>Au d&eacute;marrage, httpd v&eacute;rifie la pr&eacute;sence du fichier
+    <program>suexec</program> dans le r&eacute;pertoire d&eacute;fini par
+    l'option <code>--sbindir</code> du script configure (le
+    r&eacute;pertoire par d&eacute;faut est "/usr/local/apache/sbin/suexec"). Si
+    httpd trouve un conteneur suEXEC correctement configur&eacute;, il
+    enregistrera le message suivant dans le journal des erreurs :</p>
+
+<example>
+    [notice] suEXEC mechanism enabled (wrapper: <var>/path/to/suexec</var>)
+</example>
+
+    <p>Si ce message n'est pas g&eacute;n&eacute;r&eacute; au d&eacute;marrage du serveur, ce
+    dernier ne trouve probablement pas le programme conteneur &agrave;
+    l'endroit o&ugrave; il est sens&eacute; &ecirc;tre, ou l'ex&eacute;cutable suexec n'est pas
+    install&eacute; en <em>setuid root</em>.</p>
+
+     <p>Si le serveur HTTP Apache est d&eacute;j&agrave; en cours d'ex&eacute;cution, et si
+     vous activez le m&eacute;canisme suEXEC pour la premi&egrave;re fois, vous
+     devez arr&ecirc;ter et red&eacute;marrer httpd. Un red&eacute;marrage
+     &agrave; l'aide d'un simple signal HUP ou USR1 suffira. </p>
+     <p>Pour d&eacute;sactiver suEXEC, vous devez supprimer le fichier
+     <program>suexec</program>, puis arr&ecirc;ter et red&eacute;marrer
+     httpd.</p>
+</section>
+
+<section id="usage"><title>Utilisation de suEXEC</title>
+
+    <p>Les requ&ecirc;tes pour des programmes CGI ne feront appel au
+    conteneur suEXEC que si elles concernent un h&ocirc;te virtuel
+    contenant une directive <directive
+    module="mod_suexec">SuexecUserGroup</directive>, ou si elles sont
+    trait&eacute;es par <module>mod_userdir</module>.</p>
+
+    <p><strong>H&ocirc;tes virtuels :</strong><br /> Une des m&eacute;thodes
+    d'utilisation du conteneur suEXEC consiste &agrave; ins&eacute;rer une
+    directive <directive
+    module="mod_suexec">SuexecUserGroup</directive> dans une section
+    <directive module="core">VirtualHost</directive>. En d&eacute;finissant
+    des valeurs diff&eacute;rentes de celles du serveur principal, toutes les
+    requ&ecirc;tes pour des ressources CGI seront ex&eacute;cut&eacute;es sous
+    les <em>User</em> et <em>Group</em> d&eacute;finis pour cette section
+    <directive
+    module="core" type="section">VirtualHost</directive>. Si cette
+    directive est absente de la section <directive module="core"
+    type="section">VirtualHost</directive>, l'utilisateur du
+    serveur principal sera pris par d&eacute;faut</p>
+
+    <p><strong>R&eacute;pertoires des utilisateurs :</strong><br /> Avec
+    cette m&eacute;thode, les
+    requ&ecirc;tes trait&eacute;es par <module>mod_userdir</module> appelleront le
+    conteneur suEXEC pour ex&eacute;cuter le programme CGI sous l'identifiant
+    utilisateur du r&eacute;pertoire utilisateur concern&eacute;. Seuls pr&eacute;requis
+    pour pouvoir acc&eacute;der &agrave; cette fonctionnalit&eacute; : l'ex&eacute;cution des CGI
+    doit &ecirc;tre activ&eacute;e pour l'utilisateur concern&eacute;, et le script doit
+    passer avec succ&egrave;s le test des <a href="#model">v&eacute;rifications de
+    s&eacute;curit&eacute;</a> d&eacute;crit plus haut. Voir aussi l'
+    <a href="#install">option de compilation</a>
+    <code>--with-suexec-userdir</code>.</p> </section>
+
+<section id="debug"><title>D&eacute;bogage de suEXEC</title>
+
+    <p>Le conteneur suEXEC va &eacute;crire ses informations de journalisation
+    dans le fichier d&eacute;fini par l'option de compilation
+    <code>--with-suexec-logfile</code> comme indiqu&eacute; plus haut. Si vous
+    pensez avoir configur&eacute; et install&eacute; correctement le conteneur,
+    consultez ce journal, ainsi que le journal des erreurs du serveur
+    afin de d&eacute;terminer l'endroit o&ugrave; vous avez fait fausse route.</p>
+
+</section>
+
+<section id="jabberwock"><title>Avis &agrave; la population !
+    Avertissements et exemples</title>
+
+    <p><strong>NOTE !</strong> Cette section est peut-&ecirc;tre incompl&egrave;te.
+    Pour en consulter la derni&egrave;re r&eacute;vision, voir la version de la <a
+    href="http://httpd.apache.org/docs/&httpd.docs;/suexec.html"
+    >Documentation en ligne</a>.</p>
+
+    <p>Quelques points importants du conteneur peuvent
+    imposer des contraintes du point de vue de la configuration du
+    serveur. Veuillez en prendre connaissance avant de soumettre un
+    rapport de bogue &agrave; propos de suEXEC.</p>
+
+    <ul>
+      <li><strong>Points importants de suEXEC</strong></li>
+
+      <li>
+        Limitations concernant la hi&eacute;rarchie.
+
+        <p class="indent">
+          Pour des raisons de s&eacute;curit&eacute; et d'efficacit&eacute;, toutes les
+	  requ&ecirc;tes suEXEC ne doivent concerner que des ressources
+	  situ&eacute;es dans la racine des documents d&eacute;finie pour les
+	  requ&ecirc;tes concernant un h&ocirc;te virtuel, ou des ressources
+	  situ&eacute;es dans la racine des documents d&eacute;finies pour les
+	  requ&ecirc;tes concernant un r&eacute;pertoire utilisateur. Par exemple,
+	  si vous avez configur&eacute; quatre h&ocirc;tes virtuels, vous devrez
+	  d&eacute;finir la structure des racines de documents de vos h&ocirc;tes
+	  virtuels en dehors d'une hi&eacute;rarchie de documents principale
+	  de httpd, afin de tirer parti de suEXEC dans le contexte des
+	  h&ocirc;tes virtuels (Exemple &agrave; venir).
+        </p>
+      </li>
+
+      <li>
+        La variable d'environnement PATH de suEXEC
+
+        <p class="indent">
+          Modifier cette variable peut s'av&eacute;rer dangereux. Assurez-vous
+	  que tout chemin que vous ajoutez &agrave; cette variable est un
+	  r&eacute;pertoire <strong>de confiance</strong>. Vous n'avez
+	  probablement pas l'intention d'ouvrir votre serveur de fa&ccedil;on
+	  &agrave; ce que l'on puisse y ex&eacute;cuter un cheval de Troie.
+        </p>
+      </li>
+
+      <li>
+        Modification de suEXEC
+
+        <p class="indent">
+          Encore une fois, ceci peut vous causer de
+	  <strong>graves ennuis</strong> si vous vous y essayez sans
+	  savoir ce que vous faites. Evitez de vous y risquer dans la
+	  mesure du possible.
+        </p>
+      </li>
+    </ul>
+
+</section>
+
+</manualpage>

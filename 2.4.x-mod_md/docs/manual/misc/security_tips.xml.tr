@@ -1,0 +1,463 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
+<!-- English Revision: 1673563 -->
+<!-- =====================================================
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
+   Reviewed by: Orhan Berent <berent belgeler.gen.tr>
+========================================================== -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="security_tips.xml.meta">
+  <parentdocument href="./">Çeşitli Belgeler</parentdocument>
+
+  <title>Güvenlik İpuçları</title>
+
+  <summary>
+    <p>Bir HTTP Sunucusunu ayarlarken dikkat edilmesi gerekenler ve bazı
+    ipuçları.  Öneriler kısmen Apache’ye özel kısmen de genel olacaktır.</p>
+  </summary>
+
+  <section id="uptodate"><title>Güncel Tutma</title>
+
+    <p>Apache HTTP Sunucusu iyi bir güvenlik sicilinin yanında güvenlik
+      konularıyla oldukça ilgili bir geliştirici topluluğuna sahiptir. Fakat,
+      bir yazılımın dağıtılmasının ardından küçük ya da büyük bazı sorunların
+      keşfedilmesi kaçınılmazdır. Bu sebeple, yazılım güncellemelerinden
+      haberdar olmak oldukça önem kazanır. HTTP sunucunuzu doğrudan
+      Apache’den temin ediyorsanız yeni sürümler ve güvenlik güncellemeleri
+      ile ilgili bilgileri tam zamanında alabilmek için <a
+      href="http://httpd.apache.org/lists.html#http-announce">Apache
+      HTTP Sunucusu Duyuru Listesi</a>ne mutlaka üye olmanızı öneririz.
+      Apache yazılımının üçüncü parti dağıtımlarını yapanların da buna benzer
+      hizmetleri vardır.</p>
+
+    <p>Şüphesiz, bir HTTP sunucusu, sunucu kodunda bir sorun olmasa da
+      tehlike altındadır. Eklenti kodları, CGI betikleri hatta işletim
+      sisteminden kaynaklanan sorunlar nedeniyle bu ortaya çıkabilir. Bu
+      bakımdan, sisteminizdeki tüm yazılımların sorunları ve güncellemeleri
+      hakkında bilgi sahibi olmalısınız.</p>
+
+  </section>
+
+  <section id="dos">
+    <title>Hizmet Reddi (DoS) Saldırıları</title>
+
+    <p>Tüm ağ sunucuları, istemcilerin sistem kaynaklarından yararlanmalarını
+      engellemeye çalışan hizmet reddi saldırılarına (HRS) maruz kalabilir.
+      Bu tür saldırıları tamamen engellemek mümkün değildir, fakat
+      yarattıkları sorunları azaltmak için bazı şeyler yapabilirsiniz.</p>
+
+    <p>Çoğunlukla en etkili anti-HRS aracı bir güvenlik duvarı veya başka bir
+      işletim sistemi yapılandırmasıdır. Örneğin, çoğu güvenlik duvarı
+      herhangi bir IP adresinden aynı anda yapılan bağlantıların sayısına bir
+      sınırlama getirmek üzere yapılandırılabilir. Böylece basit saldırılar
+      engellenebilir. Ancak bunun dağıtık hizmet reddi saldırılarına (DHRS)
+      karşı bir etkisi olmaz.</p>
+
+    <p>Bunların yanında Apache HTTP Sunucusunun da sorunları azaltıcı
+      tedbirler alınmasını sağlayacak bazı yapılandırmaları vardır:</p>
+
+    <ul>
+      <li><directive module="mod_reqtimeout">RequestReadTimeout</directive>
+        yönergesi bir istemcinin isteği göndermek için harcadığı zamanı
+        sınırlamayı sağlar.</li>
+
+      <li>HRS’ye maruz kalması olası sitelerde <directive module="core"
+        >TimeOut</directive> yönergesinin değeri düşürülmelidir. Birkaç
+        saniye gibi mümkün olduğunca düşük bir ayar uygun olabilir. Ancak
+        <directive module="core">TimeOut</directive> başka işlemlerde de
+        kullanıldığından çok düşük değerler, örneğin, uzun süre çalışan CGI
+        betiklerinde sorunlar çıkmasına sebep olabilir.</li>
+
+      <li>HRS’ye maruz kalması olası sitelerde <directive module="core"
+        >KeepAliveTimeout</directive> yönergesinin değeri de düşürülebilir.
+        Hatta bazı siteler başarımı arttırmak amacıyla <directive
+        module="core">KeepAlive</directive> yönergesi üzerinden kalıcı
+        bağlantıları tamamen kapatabilirler.</li>
+
+      <li>Zaman aşımıyla ilgili yönergeler bakımından diğer modüller de
+        araştırılmalıdır.</li>
+
+      <li><directive module="core">LimitRequestBody</directive>,
+      <directive module="core">LimitRequestFields</directive>,
+      <directive module="core">LimitRequestFieldSize</directive>,
+      <directive module="core">LimitRequestLine</directive> ve
+      <directive module="core">LimitXMLRequestBody</directive> yönergeleri,
+        istemci girdileri ile tetiklenen özkaynak tüketimini sınırlamak için
+        yapılandırılırken dikkatli olunmalıdır.</li>
+
+      <li>İşletim sisteminiz desteklediği takdirde, işletim sisteminin isteği
+        işleyen kısmını yüksüz bırakmak için <directive module="core"
+        >AcceptFilter</directive> yönergesinin etkin olmasını sağlamalısınız.
+        Bu, Apache HTTP Sunucusunda zaten öntanımlı olarak etkindir.
+        Yapacağınız şey işletim sistemi çekirdeğini buna göre yapılandırmak
+        olacaktır.</li>
+
+      <li>Sunucu tarafından özkaynakları tüketmeden aynı anda işlenebilecek
+        bağlantıların sayısını sınırlamak için <directive module="mpm_common"
+        >MaxRequestWorkers</directive> yönergesini kullanın. Ayrıca, <a
+        href="perf-tuning.html">başarım arttırma belgesine</a> de
+        bakabilirsiniz.</li>
+
+      <li>HRS’lerin etkilerini azaltmak için aynı andaki bağlantı sayısını
+        arttırabilecek evreli <a href="../mpm.html">MPM</a>’lerden birini
+        kullanmak iyi olabilir. Dahası, <module>event</module> MPM’i
+        her bağlantıya yeni bir evre atanmaması için eşzamansız işlem yapar.
+        OpenSSL kütüphanesinin doğası nedeniyle
+        <module>event</module> MPM’i <module>mod_ssl</module> ve diğer girdi
+        süzgeçleri ile henüz uyumlu değildir. Bu durumlarda,
+        <module>worker</module> MPM'inin davranışına geri döner.</li>
+
+      <li><a href="http://modules.apache.org/">http://modules.apache.org/</a>
+        adresinde, belli istemci davranışlarını sınırlayacak ve HRS ile
+        ilgili sorunları azaltmaya yardımcı olacak üçüncü parti modüller
+        bulunabilir.</li>
+    </ul>
+  </section>
+
+
+  <section id="serverroot">
+    <title><code>ServerRoot</code> Dizinlerinin İzinleri</title>
+
+    <p>Normalde, Apache root kullanıcı tarafından başlatılır ve hizmetleri
+      sunarken <directive module="mod_unixd">User</directive> yönergesi
+      tarafından tanımlanan kullanıcının aidiyetinde çalışır. Root tarafından
+      çalıştırılan komutlarda olduğu gibi, root olmayan kullanıcıların
+      yapacakları değişikliklerden korunmak konusunda da dikkatli
+      olmalısınız. Dosyaların sadece root tarafından yazılabilir olmasını
+      sağlamak yeterli değildir, bu dizinler ve üst dizinler için de
+      yapılmalıdır. Örneğin, sunucu kök dizininin
+      <code>/usr/local/apache</code> olmasına karar verdiyseniz, bu dizini
+      root olarak şöyle oluşturmanız önerilir:</p>
+
+    <example>
+      mkdir /usr/local/apache <br />
+      cd /usr/local/apache <br />
+      mkdir bin conf logs <br />
+      chown 0 . bin conf logs <br />
+      chgrp 0 . bin conf logs <br />
+      chmod 755 . bin conf logs
+    </example>
+
+    <p><code>/</code>, <code>/usr</code>, <code>/usr/local</code>
+      dizinlerinde sadece root tarafından değişiklik yapılabileceği kabul
+      edilir. <program>httpd</program> çalıştırılabilirini kurarken de benzer
+      bir önlemin alındığından emin olmalısınız:</p>
+
+    <example>
+      cp httpd /usr/local/apache/bin <br />
+      chown 0 /usr/local/apache/bin/httpd <br />
+      chgrp 0 /usr/local/apache/bin/httpd <br />
+      chmod 511 /usr/local/apache/bin/httpd
+    </example>
+
+    <p>Diğer kullanıcıların değişiklik yapabileceği bir dizin olarak bir
+      <code>htdocs</code> dizini oluşturabilirsiniz. Bu dizine root
+      tarafından çalıştırılabilecek dosyalar konulmamalı ve burada root
+      tarafından hiçbir dosya oluşturulmamalıdır.</p>
+
+    <p>Diğer kullanıcılara root tarafından yazılabilen ve çalıştırılabilen
+      dosyalarda değişiklik yapma hakkını tanırsanız, onlara root
+      kullanıcısını ele geçirilebilme hakkını da tanımış olursunuz. Örneğin,
+      biri <program>httpd</program> çalıştırılabilirini zararlı bir programla
+      değiştirebilir ve o programı tekrar çalıştırdığınız sırada program
+      yapacağını yapmış olur. Günlükleri kaydettiğiniz dizin herkes
+      tarafından yazılabilen bir dizin olduğu takdirde, birileri bir günlük
+      dosyasını bir sistem dosyasına sembolik bağ haline getirerek root
+      kullanıcısının bu dosyaya ilgisiz şeyler yazmasına sebep olabilir.
+      Günlüklerin dosyaları herkes tarafından yazılabilir olduğu takdirde ise
+      birileri dosyaya yanıltıcı veriler girebilir.</p>
+  </section>
+
+  <section id="ssi">
+    <title>Sunucu Taraflı İçerik Yerleştirme</title>
+
+    <p>SSI sayfaları bir sunucu yöneticisi açısından çeşitli olası risklere
+      kaynaklık edebilir.</p>
+
+    <p>İlk risk, sunucu yükündeki artış olasılığıdır. Tüm SSI sayfaları,  SSI
+      kodu içersin içermesin Apache tarafından çözümlenir. Bu küçük bir artış
+      gibi görünürse de bir paylaşımlı sunucu ortamında önemli bir yük haline
+      gelebilir.</p>
+
+    <p>SSI sayfaları, CGI betikleriyle ilgili riskleri de taşır. <code>exec
+      cmd</code> elemanı kullanılarak bir SSI sayfasından herhangi bir CGI
+      betiğini veya bir sistem programını Apache’nin aidiyetinde olduğu
+      kullanıcının yetkisiyle çalıştırmak mümkündür.</p>
+
+    <p>SSI sayfalarının yararlı özelliklerinden yararlanırken güvenliğini de
+      arttırmanın bazı yolları vardır.</p>
+
+    <p>Sunucu yöneticisi, bir başıbozuk SSI sayfasının sebep olabileceği
+      zararları bertaraf etmek için <a href="#cgi">CGI Genelinde</a>
+      bölümünde açıklandığı gibi <a href="../suexec.html">suexec</a>’i etkin
+      kılabilir.</p>
+
+    <p>SSI sayfalarını <code>.html</code> veya <code>.htm</code>
+      uzantılarıyla etkinleştirmek tehlikeli olabilir. Bu özellikle
+      paylaşımlı ve yüksek trafikli bir sunucu ortamında önemlidir. SSI
+      sayfalarını normal sayfalardan farklı olarak <code>.shtml</code> gibi
+      bildik bir uzantıyla etkinleştirmek gerekir. Bu, sunucu yükünü asgari
+      düzeyde tutmaya ve risk yönetimini kolaylaştırmaya yarar.</p>
+
+    <p>Diğer bir çözüm de SSI sayfalarından betik ve program çalıştırmayı
+      iptal etmektir. Bu, <directive module="core">Options</directive>
+      yönergesine değer olarak <code>Includes</code> yerine
+      <code>IncludesNOEXEC</code> vererek sağlanır. Ancak, eğer betiklerin
+      bulunduğu dizinde <directive module="mod_alias">ScriptAlias</directive>
+      yönergesiyle CGI betiklerinin çalışması mümkün kılınmışsa,
+      kullanıcıların <code>&lt;--#include virtual="..." --&gt;</code> ile bu
+      betikleri  çalıştırabileceklerine dikkat ediniz.</p>
+
+  </section>
+
+  <section id="cgi">
+    <title>CGI Genelinde</title>
+
+    <p>Herşeyden önce ya CGI betiğini/programını yazanlara ya da kendinizin
+      CGI'deki güvenlik açıklarını (ister kasıtlı olsun ister tesadüfi)
+      yakalama becerinize güvenmek zorundasınız. CGI betikleri esasen
+      sisteminizdeki komutları site kullanıcılarının izinleriyle
+      çalıştırırlar. Bu bakımdan dikkatle denenmedikleri takdirde oldukça
+      tehlikeli olabilirler.</p>
+
+    <p>CGI betiklerinin hepsi aynı kullanıcının aidiyetinde çalışırsa diğer
+      betiklerle aralarında çelişkilerin ortaya çıkması ister istemez
+      kaçınılmazdır. Örneğin A kullanıcısının B kullanıcısına garezi varsa
+      bir betik yazıp B’nin CGI veritabanını silebilir. Bu gibi durumların
+      ortaya çıkmaması için betiklerin farklı kullanıcıların aidiyetlerinde
+      çalışmasını sağlayan ve 1.2 sürümünden beri Apache ile dağıtılan <a
+      href="../suexec.html">suEXEC</a> diye bir program vardır. Başka bir yol
+      da <a href="http://cgiwrap.sourceforge.net/">CGIWrap</a> kullanmaktır.</p>
+
+  </section>
+
+  <section id="nsaliasedcgi">
+    <title><code>ScriptAlias</code>’sız CGI</title>
+
+    <p>Kullanıcıların sitenin her yerinde CGI betiklerini çalıştırmalarına
+      izin vermek ancak şu koşullarda mümkün olabilir:</p>
+
+    <ul>
+      <li>Kullanıcılarınızın kasıtlı ya da kasıtsız sistemi saldırıya açık
+        hale getirecek betikler yazmayacaklarına tam güveniniz vardır.</li>
+      <li>Sitenizin güvenliği zaten o kadar kötüdür ki, bir delik daha
+        açılmasının mahzuru yoktur.</li>
+      <li>Sitenizin sizden başka kullanıcısı yoktur ve sunucunuzu sizden
+        başka hiç kimsenin ziyaret etmesi mümkün değildir.</li>
+    </ul>
+
+  </section>
+
+  <section id="saliasedcgi">
+    <title><code>ScriptAlias</code>’lı CGI</title>
+
+    <p>CGI’yi belli dizinlerle sınırlamak yöneticiye bu dizinlerde daha iyi
+      denetim imkanı sağlar. Bu kaçınılmaz olarak <directive
+      module="mod_alias">ScriptAlias</directive>’sız CGI’den çok daha
+      güvenlidir, ancak bu dizinlere yazma hakkı olan kullanıcılarınız
+      güvenilir kişiler olması ve site yöneticisinin de olası güvenlik
+      açıklarına karşı CGI betiklerini ve programlarını denemeye istekli
+      olması şartıyla.</p>
+
+    <p>Çoğu site yöneticisi <code>ScriptAlias</code>’sız CGI yerine bu
+      yaklaşımı seçer.</p>
+
+  </section>
+
+  <section id="dynamic">
+    <title>Devingen içerikli kaynaklar</title>
+
+    <p>Sunucunun bir parçası gibi çalışan, <code>mod_php</code>,
+      <code>mod_perl</code>, <code>mod_tcl</code> ve <code>mod_python</code>
+      gibi gömülü betik çalıştırma seçenekleri sunucuyu çalıştıran
+      kullanıcının aidiyetinde çalışırlar (<directive module="mod_unixd"
+      >User</directive> yönergesine bakınız). Bu bakımdan bu betik
+      yorumlayıcılar tarafından çalıştırılan betikler, sunucu kullanıcısının
+      eriştiği herşeye erişebilirler. Bazı betik yorumlayıcıların getirdiği
+      bazı sınırlamalar varsa da bunlara pek güvenmemek, gerekli sınamaları
+      yine de yapmak gerekir.</p>
+
+  </section>
+
+  <section id="dynamicsec">
+    <title>Devingen içeriğin güvenliği</title>
+
+    <p><code>mod_php</code>, <code>mod_perl</code> veya
+      <code>mod_python</code> gibi devingen içeriği yapılandırırken
+      güvenlikle ilgili değerlendirmelerin çoğu <code>httpd</code>'nin
+      kapsamından çıkar ve bu modüllerin belgelerini incelemek ihtiyacı
+      duyarsınız. Örneğin, PHP çoğu zaman kapalı tutulan
+      <a href="http://www.php.net/manual/en/ini.sect.safe-mode.php">Güvenli
+      Kip</a> ayarını etkin kılmanızı önerir. Daha fazla güvenlik için bir
+      diğer örnek bir PHP eklentisi olan
+      <a href="http://www.hardened-php.net/suhosin/">Suhosin</a>'dir. Bunlar
+      hakkında daha ayrıntılı bilgi için her projenin kendi belgelerine
+      başvurun.</p>
+
+    <p>Apache seviyesinde, <a href="http://modsecurity.org/">mod_security</a>
+      adı verilen modülü bir HTTP güvenlik duvarı gibi ele alabilir, devingen
+      içeriğin güvenliğini arttırmanıza yardımcı olmak üzere inceden inceye
+      yapılandırabilirsiniz.</p>
+
+  </section>
+
+  <section id="systemsettings">
+    <title>Sistem Ayarlarının Korunması</title>
+
+    <p>Güvenliği gerçekten sıkı tutmak istiyorsanız, kullanıcılarınızın
+      yapılandırmanızdaki güvenlik ayarlarını geçersiz kılmak için
+      <code>.htaccess</code> dosyalarını kullanabilmelerinin de önüne
+      geçmelisiniz. Bunu yapmanın tek bir yolu vardır.</p>
+
+    <p>Sunucu yapılandırma dosyanıza şunu yerleştirin:</p>
+
+    <highlight language="config">
+&lt;Directory "/"&gt;
+    AllowOverride None
+&lt;/Directory&gt;
+    </highlight>
+
+    <p>Böylece, belli dizinlerde özellikle etkinleştirilmedikçe bütün
+      dizinlerde <code>.htaccess</code> dosyalarının kullanımını engellemiş
+      olursunuz.</p>
+
+    <p>Bu ayar Apache 2.3.9 itibariyle öntanımlıdır.</p>
+  </section>
+
+  <section id="protectserverfiles">
+    <title>Sunucu dosyalarının öntanımlı olarak korunması</title>
+
+    <p>Apache’nin ister istemez yanlış anlaşılan yönlerinden biri öntanımlı
+      erişim özelliğidir. Yani siz aksine bir şeyler yapmadıkça, sunucu normal
+      URL eşleme kurallarını kullanarak bir dosyayı bulabildiği sürece onu
+      istemciye sunacaktır.</p>
+
+    <p>Örneğin, aşağıdaki durumu ele alalım:</p>
+
+    <example>
+      # cd /; ln -s / public_html
+    </example>
+
+    <p>Ve, tarayıcınıza <code>http://localhost/~root/</code> yazın.</p>
+
+    <p>Böylece, istemcilerin tüm dosya sisteminizi gezmelerine izin vermiş
+      olursunuz. Bu işlemin sonuçlarının önünü almak için sunucu yapılandırma
+      dosyanıza şunları yazın:</p>
+
+    <highlight language="config">
+&lt;Directory "/"&gt;
+    Require all denied
+&lt;/Directory&gt;
+    </highlight>
+
+    <p>Bu suretle, dosya sisteminize öntanımlı erişimi yasaklamış olursunuz.
+      Erişime izin vermek istediğiniz dizinler için uygun <directive
+      module="core">Directory</directive> bölümleri eklemeniz yeterli
+      olacaktır. Örnek:</p>
+
+    <highlight language="config">
+&lt;Directory "/usr/users/*/public_html"&gt;
+    Require all granted
+&lt;/Directory&gt;
+&lt;Directory "/usr/local/httpd"&gt;
+    Require all granted
+&lt;/Directory&gt;
+    </highlight>
+
+    <p><directive module="core">Location</directive> ve <directive
+      module="core">Directory</directive> yönergelerinin etkileşimine de
+      özellikle önem vermelisiniz; örneğin <code>&lt;Directory "/"&gt;</code>
+      erişimi yasaklarken bir <code>&lt;Location "/"&gt;</code> yönergesi bunu
+      ortadan kaldırabilir.</p>
+
+    <p><directive module="mod_userdir">UserDir</directive> yönergesi de size
+      buna benzer bir oyun oynayabilir; yönergeye <code>./</code> atamasını
+      yaparsanız, root kullanıcısı söz konusu olduğunda yukarıda ilk örnekteki
+      durumla karşılaşırız. Sunucu yapılandırma dosyanızda aşağıdaki satırın
+      mutlaka bulunmasını öneririz:</p>
+
+    <highlight language="config">UserDir disabled root</highlight>
+
+  </section>
+
+  <section id="watchyourlogs">
+    <title>Günlüklerin İzlenmesi</title>
+
+    <p>Sunucunuzda olup biteni günü gününe bilmek istiyorsanız <a
+      href="../logs.html">günlük dosyalarına</a> bakmalısınız. Günlük dosyaları
+      sadece olup biteni raporlamakla kalmaz, sunucunuza ne tür saldırılar
+      yapıldığını ve güvenlik seviyenizin yeterli olup olmadığını anlamanızı da
+      sağlarlar.</p>
+
+    <p>Bazı örnekler:</p>
+
+    <example>
+      grep -c "/jsp/source.jsp?/jsp/ /jsp/source.jsp??" access_log <br />
+      grep "client denied" error_log | tail -n 10
+    </example>
+
+    <p>İlk örnek, <a href="http://online.securityfocus.com/bid/4876/info/"
+      >Apache Tomcat Source.JSP Bozuk İstek Bilgilerini İfşa Açığı</a>nı
+      istismar etmeyi deneyen saldırıların sayısını verirken ikinci örnek,
+      reddedilen son on istemciyi listeler; örnek:</p>
+
+    <example>
+      [Thu Jul 11 17:18:39 2002] [error] [client foo.example.com] client denied
+      by server configuration: /usr/local/apache/htdocs/.htpasswd
+    </example>
+
+    <p>Gördüğünüz gibi günlük dosyaları sadece ne olup bittiğini raporlar, bu
+      bakımdan eğer istemci <code>.htpasswd</code> dosyasına erişebiliyorsa <a
+      href="../logs.html#accesslog">erişim günlüğünüzde</a> şuna benzer bir
+      kayıt görürsünüz:</p>
+
+    <example>
+      foo.example.com - - [12/Jul/2002:01:59:13 +0200] "GET /.htpasswd HTTP/1.1"
+    </example>
+
+    <p>Bu, sunucu yapılandırma dosyanızda aşağıdaki yapılandırmayı iptal
+      ettiğiniz anlamına gelir:</p>
+
+    <highlight language="config">
+&lt;Files ".ht*"&gt;
+    Require all denied
+&lt;/Files&gt;
+    </highlight>
+
+  </section>
+
+  <section id="merging">
+
+    <title>Yapılandırma bölümlerinin birleştirilmesi</title>
+
+    <p>Yapılandırma bölümlerinin birleştirilmesi karmaşık bir işlem olup bazı
+      durumlarda yönergelere bağlıdır. Yönergeleri bir araya getirirken
+      aralarındaki bağımlılıkları daima sınayın.</p>
+
+    <p><directive>mod_access_compat</directive> gibi henüz yönerge katıştırma
+      mantığını gerçeklememiş modüller için sonraki bölümlerdeki davranış, bu
+      modüllerin yönergelerini içerip içermemesine bağlıdır. Yapılandırmada
+      yönergelerin <em>yerleri değiştirildiğinde</em> fakat bir katıştırma
+      yapılmadığında, yapılandırma bir değişiklik yapılana kadar miras
+      alınır.</p>
+  </section>
+
+</manualpage>

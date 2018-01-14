@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- GENERATED FROM XML: DO NOT EDIT -->
+
+<metafile reference="mod_ldap.xml">
+  <basename>mod_ldap</basename>
+  <path>/mod/</path>
+  <relpath>..</relpath>
+
+  <variants>
+    <variant>en</variant>
+    <variant>fr</variant>
+  </variants>
+</metafile>

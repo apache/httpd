@@ -1,0 +1,8 @@
+# testing with conf/test24.conf
+[core:warn] macro bla intra on line 2 of macro 'bla' (defined on line 3 of "./conf/test24.conf") used on line 13 of "./conf/test24.conf"
+[core:warn] macro bla private on line 5 of macro 'bla' (defined on line 3 of "./conf/test24.conf") used on line 13 of "./conf/test24.conf"
+[core:warn] macro bla intra on line 2 of macro 'bla' (defined on line 3 of "./conf/test24.conf") used on line 17 of "./conf/test24.conf"
+[core:warn] macro bla private on line 5 of macro 'bla' (defined on line 3 of "./conf/test24.conf") used on line 17 of "./conf/test24.conf"
+AH00526: Syntax error on line 1 of macro 'bla' (defined on line 3 of "./conf/test24.conf") used on line 22 of "./conf/test24.conf":
+<Location not allowed here
+# exit: 1

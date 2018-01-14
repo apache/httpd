@@ -1,0 +1,5 @@
+# Microsoft Developer Studio Generated Dependency File, included by mod_proxy_hcheck.mak
+
+..\..\build\win32\httpd.rc : \
+	"..\..\include\ap_release.h"\
+	

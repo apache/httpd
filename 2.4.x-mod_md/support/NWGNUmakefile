@@ -1,0 +1,51 @@
+#
+# Get the 'head' of the build environment.  This includes default targets and
+# paths to tools
+#
+
+include $(AP_WORK)/build/NWGNUhead.inc
+
+#
+# build this level's files
+
+#
+# If there is an NLM target, put it here
+#
+TARGET_nlm = \
+	$(OBJDIR)/ab.nlm \
+	$(OBJDIR)/htpasswd.nlm \
+	$(OBJDIR)/htdigest.nlm \
+	$(OBJDIR)/htdbm.nlm \
+	$(OBJDIR)/htcacheclean.nlm \
+	$(OBJDIR)/httxt2dbm.nlm \
+	$(OBJDIR)/logres.nlm \
+	$(OBJDIR)/rotlogs.nlm \
+	$(EOLIST)
+
+#
+# implement targets and dependancies (leave this section alone)
+#
+
+libs :: $(OBJDIR) $(TARGET_lib)
+
+nlms :: libs $(TARGET_nlm)
+
+#
+# Updated this target to create necessary directories and copy files to the 
+# correct place.  (See $(AP_WORK)/build/NWGNUhead.inc for examples)
+#
+install :: nlms FORCE
+	$(call COPY,$(OBJDIR)/*.nlm, $(INSTALLBASE)/bin/)
+
+#
+# Any specialized rules here
+#
+
+#
+# Include the 'tail' makefile that has targets that depend on variables defined
+# in this makefile
+#
+
+include $(APBUILD)/NWGNUtail.inc
+
+

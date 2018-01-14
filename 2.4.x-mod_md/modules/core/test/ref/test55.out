@@ -1,0 +1,8 @@
+# testing with conf/test55.conf
+[core:warn] macro foo(:2) line 1 (file line 9) on line 1 of macro 'foo' (defined on line 2 of "./conf/test55.conf") used on line 9 of "./conf/test55.conf"
+[core:warn] macro bla(:5) line 1 (file line 10) on line 1 of macro 'bla' (defined on line 5 of "./conf/test55.conf") used on line 10 of "./conf/test55.conf"
+[core:warn] macro foo(:2) line 1 (bla line 2) on line 1 of macro 'foo' (defined on line 2 of "./conf/test55.conf") used on line 2 of "macro 'bla' (defined on line 5 of "./conf/test55.conf") used on line 10 of "./conf/test55.conf""
+[core:error] done line 11. on line 11 of ./conf/test55.conf
+AH00526: Syntax error on line 11 of ./conf/test55.conf:
+Configuration processing stopped by Error directive
+# exit: 1

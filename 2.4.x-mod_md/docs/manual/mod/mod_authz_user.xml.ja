@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
+<!-- English Revision: 635137:1587031 (outdated) -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_authz_user.xml.meta">
+
+<name>mod_authz_user</name> 
+<description>ユーザ承認</description>
+<status>Base</status>
+<sourcefile>mod_authz_user.c</sourcefile>
+<identifier>authz_user_module</identifier>
+<compatibility>Apache 2.1 以降で使用可能</compatibility>
+
+<summary>
+    <p>このモジュールは、認証されたユーザにウェブサイトの一部への
+    アクセスを許可したり拒否したりするための承認機能を提供します。
+    <module>mod_authz_user</module> は認証されたユーザが
+    <code>Require user</code> ディレクティブに書かれていれば
+    アクセスを認めます。認証に成功したユーザすべてにアクセスを
+    許可するには、代わりに <code>Require valid-user</code> を
+    使うことができます。</p>
+</summary>
+<seealso><directive module="mod_authz_core">Require</directive></seealso>
+
+</modulesynopsis>

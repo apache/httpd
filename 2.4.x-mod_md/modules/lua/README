@@ -1,0 +1,54 @@
+-*- mode:org -*-
+* Requirements:
+** lua 5.1, 5.2, 5.3 ( http://www.lua.org/ ) or LuaJIT 2.x ( http://www.luajit.org/ )
+** Apache HTTPD 2.4 ( http://httpd.apache.org/ ) or higher
+
+* Documentation
+  See docs/README
+
+* Building
+  For now, see docs/building-from-subversion.txt
+
+
+* Task List
+** TODO Use r->file to determine file, doing rewriting in translate_name   
+** TODO Provide means to get useful output from lua errors in response body
+   Probably have to put it on the vm spec for pre-handler errors, as
+   it is pre-handler, will prolly be on the request_config somewhere,
+   but sometimes cannot put there, so... fun
+** TODO Mapping in the server_rec
+** TODO Figure out how reentrancy works regarding filter chain stuff. 
+   Do we need new "threads"?
+** TODO: Flatten LuaHook* to LuaHook phase file fn ?
+** TODO: document or remove block sections
+** TODO: test per-dir behavior of block sections
+** TODO: Suppress internal details (fs path to scripts, etc) in error responses
+** TODO: Check whether we can tighten the mode flag in lua_load(),
+         luaL_loadfile() an dluaL_loadbuffer() from NULL (="bt")
+         to e.g. "t".
+    
+* License
+  Apache License, Version 2.0,
+  
+  http://www.apache.org/licenses/LICENSE-2.0 
+
+  See NOTICE file for more information
+        
+* Problems and Patches:
+  Please use dev@httpd.apache.org for discussing mod_lua development
+  To subscribe send email to dev-subscribe@httpd.apache.org  
+  Note that this is for development discussion, not user support :-)
+   
+* Contributors Include
+** Brian McCallister
+** Paul Querna
+** Garrett Rooney
+** Martin Traverso
+** Brian Akins
+** Justin Erenkrantz
+** Philip M. Gollucci
+** Stefan Fritsch
+** Eric Covener
+** Daniel Gruno
+** Günter Knauf
+** Jim Jagielski

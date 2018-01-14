@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision: 1744985 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_authz_groupfile.xml.meta">
+
+<name>mod_authz_groupfile</name>
+<description>Autorisation basée sur les groupes à l'aide de fichiers
+textes</description>
+<status>Base</status>
+<sourcefile>mod_authz_groupfile.c</sourcefile>
+<identifier>authz_groupfile_module</identifier>
+<compatibility>Disponible depuis les versions 2.1 et supérieures
+d'Apache</compatibility>
+
+<summary>
+    <p>Ce module permet d'autoriser ou d'interdire l'accès à
+certaines zones du site web aux utilisateurs authentifiés en
+fonction de leur appartenance à un groupe spécifié. Le module
+<module>mod_authz_dbm</module> fournit une fonctionnalité similaire.</p>
+</summary>
+
+<seealso><directive module="mod_authz_core">Require</directive></seealso>
+
+<section id="requiredirectives"><title>Les directives Require</title>
+
+    <p>Les directives <directive
+    module="mod_authz_core">Require</directive> d'Apache permettent,
+    au cours de la phase d'autorisation, de s'assurer qu'un utilisateur
+    est bien autorisé à accéder à une ressource. mod_authz_groupfile ajoute
+    les types d'autorisation <code>group</code> et <code>file-group</code>.
+    </p>
+
+    <p>A partir de la version 2.4.8, les directives require groupfile
+    supportent les <a href="../expr.html">expressions</a>.</p>
+
+<section id="reqgroup"><title>Require group</title>
+
+    <p>Cette directive permet de spécifier à quel groupe un utilisateur
+    doit appartenir pour obtenir l'autorisation d'accès.</p>
+
+    <highlight language="config">
+      Require group admin
+    </highlight>
+
+</section>
+
+<section id="reqfilegroup"><title>Require file-group</title>
+
+    <p>Lorsque cette directive est définie, Les permissions système du fichier
+    auquel on veut accéder sont vérifiées. L'utilisateur doit être un membre d'un
+    groupe de même nom que le groupe qui possède le fichier. Voir
+    <module>mod_authz_owner</module> pour plus de détails.</p>
+
+    <highlight language="config">
+      Require file-group
+    </highlight>
+
+</section>
+
+</section>
+
+<directivesynopsis>
+<name>AuthGroupFile</name>
+<description>Définit le nom d'un fichier texte contenant la liste des
+groupes d'utilisateurs permettant de définir les autorisations des
+utilisateurs</description>
+<syntax>AuthGroupFile <var>chemin-fichier</var></syntax>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>La directive <directive>AuthGroupFile</directive> permet de définir
+le nom d'un fichier texte contenant la liste des groupes d'utilisateurs.
+L'appartenance d'un utilisateur à tel ou tel groupe pourra dès lors être utilisée
+pour définir les permissions d'accès de l'utilisateur.
+<var>chemin-fichier</var> est le chemin du fichier de groupes. S'il n'est
+pas absolu, ce chemin est considéré comme relatif au répertoire défini par
+la directive <directive module="core">ServerRoot</directive>.</p>
+
+    <p>Chaque ligne du fichier de groupes contient un nom de groupe
+suivi du caractère ':' et des noms des utilisateurs membres du groupe
+séparés par des espaces.</p>
+
+    <example><title>Exemple :</title>
+      mon-groupe : bob joe anne
+    </example>
+
+    <p>Notez que la recherche dans de grands fichiers textes est
+<em>très</em> inefficace ; la directive <directive module="mod_authz_dbm"
+    >AuthDBMGroupFile</directive> fournit de bien meilleures
+    performances.</p>
+
+    <note type="warning"><title>Sécurité</title>
+      <p>Le fichier <directive>AuthGroupFile</directive> ne doit pas
+être stocké dans l'arborescence des documents du site web ; ne le placez
+<em>surtout pas</em> dans le répertoire qu'il protège, faute de quoi les
+clients pourraient le télécharger.</p>
+    </note>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

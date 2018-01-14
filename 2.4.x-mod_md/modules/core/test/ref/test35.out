@@ -1,0 +1,13 @@
+# testing with conf/test35.conf
+[macro:warn] macro 'warnings' (defined on line 3 of "./conf/test35.conf") argument name 'u1' (#1) without expected prefix, better prefix argument names with one of '$%@'.
+[macro:warn] macro 'warnings' (defined on line 3 of "./conf/test35.conf") argument name 'u2' (#2) without expected prefix, better prefix argument names with one of '$%@'.
+[macro:warn] macro 'warnings' (defined on line 3 of "./conf/test35.conf") argument name 'n1' (#3) without expected prefix, better prefix argument names with one of '$%@'.
+[macro:warn] macro 'warnings' (defined on line 3 of "./conf/test35.conf") argument name 'n2' (#4) without expected prefix, better prefix argument names with one of '$%@'.
+[macro:warn] macro 'warnings' (defined on line 3 of "./conf/test35.conf") argument name 'u3' (#5) without expected prefix, better prefix argument names with one of '$%@'.
+[macro:warn] macro 'warnings' (defined on line 3 of "./conf/test35.conf"): argument 'n1' (#3) never used
+[macro:warn] macro 'warnings' (defined on line 3 of "./conf/test35.conf"): argument 'n2' (#4) never used
+[core:warn] macro cannot be used just within a comment 1 2 5 on line 1 of macro 'warnings' (defined on line 3 of "./conf/test35.conf") used on line 8 of "./conf/test35.conf"
+[core:error] done on line 10. on line 10 of ./conf/test35.conf
+AH00526: Syntax error on line 10 of ./conf/test35.conf:
+Configuration processing stopped by Error directive
+# exit: 1

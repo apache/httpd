@@ -1,0 +1,81 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision$ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_nw_ssl.xml.meta">
+
+<name>mod_nw_ssl</name>
+<description>Enable SSL encryption for NetWare</description>
+<status>Base</status>
+<sourcefile>mod_nw_ssl.c</sourcefile>
+<identifier>nwssl_module</identifier>
+<compatibility>NetWare only</compatibility>
+
+<summary>
+    <p>This module enables SSL encryption for a specified port. It
+    takes advantage of the SSL encryption functionality that is
+    built into the NetWare operating system.</p>
+</summary>
+
+<directivesynopsis>
+<name>SecureListen</name>
+<description>Enables SSL encryption for the specified port</description>
+<syntax>SecureListen [<var>IP-address</var>:]<var>portnumber</var>
+<var>Certificate-Name</var> [MUTUAL]</syntax>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>Specifies the port and the eDirectory based certificate name
+    that will be used to enable SSL encryption. An optional third
+    parameter also enables mutual authentication.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>NWSSLTrustedCerts</name>
+<description>List of additional client certificates</description>
+<syntax>NWSSLTrustedCerts <var>filename</var> [<var>filename</var>] ...</syntax>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>Specifies a list of client certificate files (DER format)
+    that are used when creating a proxied SSL connection. Each
+    client certificate used by a server must be listed separately
+    in its own <code>.der</code> file.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>NWSSLUpgradeable</name>
+<description>Allows a connection to be upgraded to an SSL connection upon request</description>
+<syntax>NWSSLUpgradeable [<var>IP-address</var>:]<var>portnumber</var></syntax>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>Allow a connection that was created on the specified address
+    and/or port to be upgraded to an SSL connection upon request from
+    the client. The address and/or port must have already be defined
+    previously with a <directive module="mpm_common">Listen</directive>
+    directive.</p>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

@@ -1,0 +1,51 @@
+.\" XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+.\" DO NOT EDIT! Generated from XML source.
+.\" XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+.de Sh \" Subsection
+.br
+.if t .Sp
+.ne 5
+.PP
+\fB\\$1\fR
+.PP
+..
+.de Sp \" Vertical space (when we can't use .PP)
+.if t .sp .5v
+.if n .sp
+..
+.de Ip \" List item
+.br
+.ie \\n(.$>=3 .ne \\$3
+.el .ne 3
+.IP "\\$1" \\$2
+..
+.TH "LOGRESOLVE" 1 "2012-01-09" "Apache HTTP Server" "logresolve"
+
+.SH NAME
+logresolve \- Resolve IP-addresses to hostnames in Apache log files
+
+.SH "SYNOPSIS"
+ 
+.PP
+\fBlogresolve\fR [ -\fBs\fR \fIfilename\fR ] [ -\fBc\fR ] < \fIaccess_log\fR > \fIaccess_log\&.new\fR
+ 
+
+.SH "SUMMARY"
+ 
+.PP
+logresolve is a post-processing program to resolve IP-addresses in Apache's access logfiles\&. To minimize impact on your nameserver, logresolve has its very own internal hash-table cache\&. This means that each IP number will only be looked up the first time it is found in the log file\&.
+ 
+.PP
+Takes an Apache log file on standard input\&. The IP addresses must be the first thing on each line and must be separated from the remainder of the line by a space\&.
+ 
+
+.SH "OPTIONS"
+ 
+ 
+.TP
+-s \fIfilename\fR
+Specifies a filename to record statistics\&.  
+.TP
+-c
+This causes logresolve to apply some DNS checks: after finding the hostname from the IP address, it looks up the IP addresses for the hostname and checks that one of these matches the original address\&.  
+ 

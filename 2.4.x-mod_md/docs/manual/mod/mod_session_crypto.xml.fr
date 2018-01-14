@@ -1,0 +1,277 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 1587098 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_session_crypto.xml.meta">
+
+<name>mod_session_crypto</name>
+<description>Support du chiffrement des sessions</description>
+<status>Experimental</status>
+<sourcefile>mod_session_crypto.c</sourcefile>
+<identifier>session_crypto_module</identifier>
+<compatibility>Disponible depuis la version 2.3 d'Apache</compatibility>
+
+<summary>
+    <note type="warning"><title>Avertissement</title>
+      <p>Les modules de session font usage des cookies HTTP, et peuvent
+      &agrave; ce titre &ecirc;tre victimes d'attaques de type Cross Site Scripting,
+      ou divulguer des informations &agrave; caract&egrave;re priv&eacute; aux clients.
+      Veuillez vous assurer que les risques ainsi encourus ont &eacute;t&eacute; pris
+      en compte avant d'activer le support des sessions sur votre
+      serveur.</p>
+    </note>
+
+    <p>Ce sous-module du module <module>mod_session</module> fournit le
+    support du chiffrement des sessions utilisateur avant de les
+    enregistrer dans une base de donn&eacute;es locale, ou dans un cookie HTTP
+    au niveau du navigateur distant.</p>
+
+    <p>Il peut contribuer &agrave; pr&eacute;server la confidentialit&eacute; des sessions
+    lorsque leur contenu doit rester priv&eacute; pour
+    l'utilisateur, ou lorsqu'une protection contre les attaques de type
+    cross site scripting est n&eacute;cessaire.</p>
+
+    <p>Pour plus de d&eacute;tails &agrave; propos de l'interface des sessions, voir
+    la documentation du module <module>mod_session</module>.</p>
+
+</summary>
+<seealso><module>mod_session</module></seealso>
+<seealso><module>mod_session_cookie</module></seealso>
+<seealso><module>mod_session_dbd</module></seealso>
+
+    <section id="basicusage"><title>Utilisation de base</title>
+
+      <p>Pour cr&eacute;er une session chiffr&eacute;e et la stocker dans un cookie
+      nomm&eacute; <var>session</var>, configurez la comme suit :</p>
+
+      <example><title>Session chiffr&eacute;e stock&eacute;e au niveau du
+      serveur</title>
+        <highlight language="config">
+Session On
+SessionCookieName session path=/
+SessionCryptoPassphrase secret
+    </highlight>
+      </example>
+
+      <p>La session sera chiffr&eacute;e avec la cl&eacute; sp&eacute;cifi&eacute;e. Il est possible
+      de configurer plusieurs serveurs pour qu'ils puissent partager des
+      sessions, en s'assurant que la m&ecirc;me cl&eacute; de chiffrement est
+      utilis&eacute;e sur chaque serveur.</p>
+
+      <p>Si la cl&eacute; de chiffrement est modifi&eacute;e, les sessions seront
+      automatiquement invalid&eacute;es.</p>
+
+      <p>Pour des d&eacute;tails sur la mani&egrave;re dont une session peut &ecirc;tre
+      utilis&eacute;e pour stocker des informations de type nom
+      d'utilisateur/mot de passe, voir la documentation du module
+      <module>mod_auth_form</module>.</p>
+
+    </section>
+
+<directivesynopsis>
+<name>SessionCryptoDriver</name>
+<description>Le pilote de chiffrement &agrave; utiliser pour chiffrer les
+sessions</description>
+<syntax>SessionCryptoDriver <var>nom</var> <var>[param[=valeur]]</var></syntax>
+<default>aucun</default>
+<contextlist><context>server config</context>
+</contextlist>
+<compatibility>Disponible depuis la version 2.3.0
+d'Apache</compatibility>
+
+<usage>
+    <p>La directive <directive>SessionCryptoDriver</directive> permet de
+    sp&eacute;cifier le nom du pilote &agrave; utiliser pour le chiffrement. Si aucun
+    pilote n'est sp&eacute;cifi&eacute;, le pilote utilis&eacute; par d&eacute;faut sera le pilote
+    recommand&eacute; compil&eacute; avec APR-util.</p>
+
+    <p>Le pilote de chiffrement <var>NSS</var> n&eacute;cessite certains
+    param&egrave;tres de configuration, qui seront sp&eacute;cifi&eacute;s comme arguments de
+    la directive avec des valeurs optionnelles apr&egrave;s le nom du
+    pilote.</p>
+
+    <example><title>NSS sans base de donn&eacute;es de certificats</title>
+    <highlight language="config">
+      SessionCryptoDriver nss
+      </highlight>
+    </example>
+
+    <example><title>NSS avec base de donn&eacute;es de certificats</title>
+    <highlight language="config">
+      SessionCryptoDriver nss dir=certs
+      </highlight>
+    </example>
+
+    <example><title>NSS avec base de donn&eacute;es de certificats et
+    param&egrave;tres</title>
+    <highlight language="config">
+      SessionCryptoDriver nss dir=certs cl&eacute;3=cl&eacute;3.db cert7=cert7.db secmod=secmod
+      </highlight>
+    </example>
+
+    <example><title>NSS avec chemins contenant des espaces</title>
+    <highlight language="config">
+      SessionCryptoDriver nss "dir=My Certs" key3=key3.db cert7=cert7.db secmod=secmod
+      </highlight>
+    </example>
+
+    <p>Le pilote de chiffrement <var>NSS</var> peut avoir &eacute;t&eacute; configur&eacute;
+    au pr&eacute;alable dans une autre partie du serveur, par exemple depuis
+    <module>mod_nss</module> ou <module>mod_ldap</module>. Si c'est le
+    cas, un avertissement sera enregistr&eacute; dans le journal, et la
+    configuration existante s'en trouvera affect&eacute;e. Pour &eacute;viter cet
+    avertissement, utilisez le param&egrave;tre <code>noinit</code> comme suit :</p>
+
+    <example><title>NSS avec base de donn&eacute;es de certificats</title>
+    <highlight language="config">
+      SessionCryptoDriver nss noinit
+      </highlight>
+    </example>
+
+    <p>Pour &eacute;viter la confusion, assurez-vous que tous les modules
+    utilisant NSS soient configur&eacute;s avec des param&egrave;tres identiques.</p>
+
+    <p>Le pilote de chiffrement <var>openssl</var> accepte un param&egrave;tre
+    optionnel permettant de sp&eacute;cifier le moteur de chiffrement &agrave;
+    utiliser.</p>
+
+    <example><title>OpenSSL avec sp&eacute;cification du moteur de chiffrement</title>
+    <highlight language="config">
+      SessionCryptoDriver openssl engine=nom-moteur
+      </highlight>
+    </example>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SessionCryptoPassphrase</name>
+<description>La cl&eacute; utilis&eacute;e pour chiffrer la session</description>
+<syntax>SessionCryptoPassphrase <var>secret</var> [ <var>secret</var> ... ] </syntax>
+<default>none</default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<compatibility>Disponible depuis la version 2.3.0
+d'Apache</compatibility>
+
+<usage>
+    <p>La directive <directive>SessionCryptoPassphrase</directive>
+    permet de sp&eacute;cifier les cl&eacute;s &agrave; utiliser pour chiffrer de mani&egrave;re
+    sym&eacute;trique le contenu de la session avant de l'enregistrer, ou pour
+    d&eacute;chiffrer le contenu de la session apr&egrave;s sa lecture.</p>
+
+    <p>L'utilisation de cl&eacute;s longues et compos&eacute;es de caract&egrave;res vraiment
+    al&eacute;atoires est plus performant en mati&egrave;re de s&eacute;curit&eacute;. Modifier une
+    cl&eacute; sur un serveur a pour effet d'invalider toutes les sessions
+    existantes.</p>
+
+    <p>Il est possible de sp&eacute;cifier plusieurs cl&eacute;s afin de mettre en
+    oeuvre la rotation de cl&eacute;s. La premi&egrave;re cl&eacute; sp&eacute;cifi&eacute;e sera utilis&eacute;e
+    pour le chiffrement, alors que l'ensemble des cl&eacute;s sp&eacute;cifi&eacute;es le
+    sera pour le d&eacute;chiffrement. Pour effectuer une rotation p&eacute;riodique
+    des cl&eacute;s sur plusieurs serveurs, ajoutez une nouvelle cl&eacute; en fin de
+    liste, puis, une fois la rotation compl&egrave;te effectu&eacute;e, supprimez la
+    premi&egrave;re cl&eacute; de la liste.</p>
+
+    <p>Depuis la version 2.4.7, si la valeur de l'argument commence par <var>exec:</var> , la commande
+    sp&eacute;cifi&eacute;e sera ex&eacute;cut&eacute;e, et la premi&egrave;re ligne que cette derni&egrave;re
+    renverra sur la sortie standard sera utilis&eacute;e comme cl&eacute;.</p>
+<example><pre>
+# cl&eacute; sp&eacute;cifi&eacute;e et utilis&eacute;e en tant que tel
+SessionCryptoPassphrase secret
+
+# ex&eacute;cution de /path/to/program pour g&eacute;n&eacute;rer la cl&eacute;
+SessionCryptoPassphrase exec:/path/to/program
+
+# ex&eacute;cution de /path/to/program avec un argument pour g&eacute;n&eacute;rer la cl&eacute;
+SessionCryptoPassphrase "exec:/path/to/otherProgram argument1"
+</pre></example>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SessionCryptoPassphraseFile</name>
+<description>Le fichier contenant les cl&eacute;s utilis&eacute;es pour chiffrer la
+session</description>
+<syntax>SessionCryptoPassphraseFile <var>nom-fichier</var></syntax>
+<default>none</default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+</contextlist>
+<compatibility>Disponible depuis la version 2.3.0 du serveur HTTP Apache</compatibility>
+
+<usage>
+    <p>La directive <directive>SessionCryptoPassphraseFile</directive>
+    permet de sp&eacute;cifier le nom d'un fichier de configuration contenant
+    les cl&eacute;s &agrave; utiliser pour le chiffrement et le d&eacute;chiffrement de la
+    session (une cl&eacute; par ligne). Le fichier est lu au d&eacute;marrage du
+    serveur, et un red&eacute;marrage graceful est n&eacute;cessaire pour prendre en
+    compte un &eacute;ventuel changement de cl&eacute;s.</p>
+
+    <p>&Agrave; la diff&eacute;rence de la directive
+    <directive>SessionCryptoPassphrase</directive>, les cl&eacute;s ne sont pas
+    pr&eacute;sentes dans le fichier de configuration de httpd et peuvent &ecirc;tre
+    cach&eacute;es via une protection appropri&eacute;e du fichier de cl&eacute;s.</p>
+
+    <p>Il est possible de sp&eacute;cifier plusieurs cl&eacute;s afin de mettre en
+    oeuvre la rotation de cl&eacute;s. La premi&egrave;re cl&eacute; sp&eacute;cifi&eacute;e sera utilis&eacute;e
+    pour le chiffrement, alors que l'ensemble des cl&eacute;s sp&eacute;cifi&eacute;es le
+    sera pour le d&eacute;chiffrement. Pour effectuer une rotation p&eacute;riodique
+    des cl&eacute;s sur plusieurs serveurs, ajoutez une nouvelle cl&eacute; en fin de
+    liste, puis, une fois la rotation compl&egrave;te effectu&eacute;e, supprimez la
+    premi&egrave;re cl&eacute; de la liste.</p>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SessionCryptoCipher</name>
+<description>L'algorithme &agrave; utiliser pour le chiffrement de la session</description>
+<syntax>SessionCryptoCipher <var>algorithme</var></syntax>
+<default>aes256</default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<compatibility>Disponible depuis la version 2.3.0 du serveur HTTP Apache</compatibility>
+
+<usage>
+    <p>La directive <directive>SessionCryptoCipher</directive> permet de
+    sp&eacute;cifier l'algorithme &agrave; utiliser pour le chiffrement. En l'absence
+    de sp&eacute;cification, l'algorithme par d&eacute;faut est <code>aes256</code>.</p>
+
+    <p>L'algorithme peut &ecirc;tre choisi, en fonction du moteur de chiffrement
+    utilis&eacute;, parmi les valeurs suivantes :</p>
+
+    <ul><li>3des192</li><li>aes128</li><li>aes192</li><li>aes256</li></ul>
+
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

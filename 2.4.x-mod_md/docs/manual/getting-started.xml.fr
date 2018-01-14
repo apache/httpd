@@ -1,0 +1,256 @@
+<?xml version="1.0" ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
+<!-- English Revision : 1690345 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="getting-started.xml.meta">
+
+  <title>Pour d&eacute;marrer</title>
+
+<summary>
+<p>Si vous ne connaissez rien au serveur HTTP Apache, ou m&ecirc;me au
+fonctionnement d'un site web, vous vous demandez probablement par o&ugrave;
+commencer et quelles questions poser. Ce document vous permettra de
+parcourir les bases du sujet.</p>
+</summary>
+
+<section id="clientserver">
+<title>Clients, serveurs et URLs</title>
+
+<p>
+Les adresses des pages web sur la Toile se pr&eacute;sentent sous forme d'URLs
+- Uniform Resource Locators - qui comportent un protocole (par
+  exemple <code>http</code>), un nom de serveur (par exemple
+  <code>www.apache.org</code>), un chemin (par exemple
+  <code>/docs/current/getting-started.html</code>), et le cas &eacute;ch&eacute;ant
+  une cha&icirc;ne de requ&ecirc;te (query string) (par exemple <code>?arg=value</code>)
+  permettant de transmettre des informations suppl&eacute;mentaires au serveur.
+</p>
+
+<p>Un client (par exemple un navigateur web) se connecte &agrave; un serveur
+(par exemple votre serveur HTTP Apache) avec un protocole sp&eacute;cifique, et
+effectue une <strong>requ&ecirc;te</strong> pour une ressource en sp&eacute;cifiant
+son chemin.</p>
+
+<p>Un chemin peut repr&eacute;senter plusieurs types de ressources sur le
+serveur. Ce peut &ecirc;tre un fichier (comme
+<code>getting-started.html</code>), un gestionnaire (comme <a
+href="mod/mod_status.html">server-status</a>), ou toute sorte de
+programme (comme <code>index.php</code>). Nous d&eacute;crirons tout ceci plus
+en d&eacute;tails ci-dessous dans la section <a href="#content">Contenu d'un
+site web</a>.</p>
+
+<p>
+Le serveur envoie alors une <strong>r&eacute;ponse</strong> comportant un code
+d'&eacute;tat, et &eacute;ventuellement un corps de r&eacute;ponse. Le code d'&eacute;tat indique si
+la requ&ecirc;te a &eacute;t&eacute; trait&eacute;e avec succ&egrave;s, ou dans la n&eacute;gative quel type
+d'erreur a &eacute;t&eacute; rencontr&eacute;. Le client est alors sens&eacute; savoir quoi faire de
+la r&eacute;ponse. Vous pouvez vous familiariser avec les diff&eacute;rents codes
+d'&eacute;tat en consultant le <a
+href="http://wiki.apache.org/httpd/CommonHTTPStatusCodes">Wiki du
+serveur HTTP Apache</a>.</p>
+
+<p>Les d&eacute;tails de la transaction, ainsi que les erreurs rencontr&eacute;es,
+sont enregistr&eacute;s dans des fichiers journaux. Tout ceci est d&eacute;crit en
+d&eacute;tails ci-dessous dans la section <a href="#logs">D&eacute;bogage et fichiers
+journaux</a>.</p>
+
+</section>
+
+<section id="dns">
+<title>Noms d'h&ocirc;te et DNS</title>
+
+<p>Pour se connecter &agrave; un serveur, le client doit tout d'abord r&eacute;soudre
+le nom du serveur en adresse IP, cette derni&egrave;re permettant de localiser
+le serveur sur Internet. Ainsi, pour que votre serveur web soit
+accessible, son nom doit &ecirc;tre enregistr&eacute; dans le DNS.</p>
+
+<p>Si vous ne savez pas comment effectuer cet enregistrement, vous
+devrez contacter votre administrateur r&eacute;seau ou votre fournisseur
+d'acc&egrave;s &agrave; Internet afin qu'il effectue cette op&eacute;ration pour vous.</p>
+
+<p>Plusieurs noms d'h&ocirc;te peuvent pointer vers la m&ecirc;me adresse IP, et
+plusieurs adresses IP peuvent &ecirc;tre attach&eacute;es au m&ecirc;me serveur physique.
+Vous pouvez ainsi h&eacute;berger plusieurs serveurs web sur le m&ecirc;me serveur
+physique gr&acirc;ce au m&eacute;canisme des <a href="vhosts/">serveurs virtuels</a>.</p>
+
+<p>Pour tester un serveur non encore accessible sur Internet, vous
+pouvez renseigner son nom d'h&ocirc;te dans votre fichier hosts afin
+d'effectuer une r&eacute;solution de nom locale. Par exemple, pour tester le
+serveur web <code>www.example.com</code> depuis le serveur physique qui
+l'h&eacute;berge, vous pouvez ajouter la ligne suivante au fichier hosts de ce
+dernier : </p>
+
+<example>
+127.0.0.1 www.example.com
+</example>
+
+<p>En g&eacute;n&eacute;ral, le fichier hosts se trouve dans le r&eacute;pertoire
+<code>/etc</code> sur les syst&egrave;mes de style Unix, ou
+<code>C:\Windows\system32\drivers\etc</code> sous Windows.</p>
+
+<p>Vous trouverez plus de d&eacute;tails &agrave; propos du fichier hosts &agrave; <a
+href="http://en.wikipedia.org/wiki/Hosts_(file)">Wikipedia.org/wiki/Hosts_(file)</a>,
+et &agrave; propos du DNS &agrave; <a
+href="http://en.wikipedia.org/wiki/Domain_Name_System">Wikipedia.org/wiki/Domain_Name_System</a>.</p>
+</section>
+
+<section id="configuration">
+<title>Fichiers de configuration et directives</title>
+
+<p>La configuration du serveur HTTP Apache s'effectue via de simples
+fichiers textes. Ces fichiers peuvent se trouver dans de nombreux
+endroits diff&eacute;rents en fonction du mode d'installation du serveur. Vous
+trouverez les positions courantes de ces fichiers dans le <a
+href="http://wiki.apache.org/httpd/DistrosDefaultLayout">wiki httpd</a>.
+Si vous installez httpd depuis le code source, le r&eacute;pertoire par d&eacute;faut
+des fichiers de configuration est <code>/usr/local/apache2/conf</code>.
+Le nom du fichier de configuration par d&eacute;faut est en g&eacute;n&eacute;ral
+<code>httpd.conf</code>, mais peut aussi varier en fonction des
+distributions tierces du serveur.</p>
+
+<p>L'ensemble de la configuration est en g&eacute;n&eacute;ral divis&eacute; en plusieurs
+fichiers afin d'en faciliter la gestion. Ces fichiers sont inclus dans
+le fichier de configuration principal via la directive <directive
+module="core">Include</directive>. Les noms ou positions de ces fichiers
+ne sont pas fig&eacute;s et peuvent varier consid&eacute;rablement d'une distribution
+&agrave; l'autre. N'h&eacute;sitez pas &agrave; les arranger et subdiviser selon
+<strong>vos</strong> go&ucirc;ts et besoins, quitte &agrave; en modifier
+l'organisation par d&eacute;faut.</p>
+
+<p>La configuration du serveur s'effectue via des <a
+href="mod/quickreference.html">directives de configuration</a> que l'on
+ins&egrave;re dans les fichiers de configuration. Une directive se compose d'un
+mot-cl&eacute; suivi d'un ou plusieurs arguments qui d&eacute;finissent sa valeur.</p>
+
+<p>La r&eacute;ponse &agrave; la question "<em>O&ugrave; dois-je placer cette directive
+?</em>" d&eacute;pend en g&eacute;n&eacute;ral du niveau auquel cette directive doit &ecirc;tre
+prise en compte. S'il s'agit du niveau global, elle doit &ecirc;tre plac&eacute;e
+dans le fichier de configuration principal, et en dehors de toute
+section  <directive type="section" module="core">Directory</directive>, <directive
+type="section" module="core">Location</directive>, <directive
+type="section" module="core">VirtualHost</directive>, ou de toute autre section. Si
+par exemple elle ne doit s'appliquer qu'&agrave; un r&eacute;pertoire particulier,
+elle doit &ecirc;tre plac&eacute;e dans la section <directive
+type="section" module="core">Directory</directive> qui fait r&eacute;f&eacute;rence &agrave; ce r&eacute;pertoire.
+Voir la documentation sur les <a href="sections.html">Sections de
+configuration</a> pour plus de d&eacute;tails.</p>
+
+<p>En compl&eacute;ment des fichiers de configuration principaux, certaines
+directives peuvent &ecirc;tre ins&eacute;r&eacute;es dans des fichiers
+<code>.htaccess</code> que l'on place directement dans le r&eacute;pertoire
+concern&eacute;. Les fichiers <code>.htaccess</code> sont essentiellement
+destin&eacute;s aux personnes qui n'ont pas acc&egrave;s aux fichiers de configuration
+du serveur. Vous trouverez plus de d&eacute;tails &agrave; propos des fichiers
+<code>.htaccess</code> dans ce <a
+href="howto/htaccess.html"><code>.htaccess</code>howto</a>.</p>
+
+</section>
+
+<section id="content">
+<title>Contenu du site web</title>
+
+<p>Si le contenu du site web peut se pr&eacute;senter sous de nombreuses
+formes, il peut en g&eacute;n&eacute;ral &ecirc;tre scind&eacute; en deux formes principales : les
+contenus statiques et les contenus dynamiques.</p>
+
+<p>Les contenus statiques sont par exemple les fichiers HTML, les
+images, les fichiers CSS et tout autre fichier r&eacute;sidant dans le syst&egrave;me
+de fichiers. La directive <directive
+module="core">DocumentRoot</directive> permet de d&eacute;finir la position
+dans l'arborescence du site o&ugrave; vous devez placer ces fichiers. Cette
+directive peut &ecirc;tre d&eacute;finie au niveau global, ou au niveau de chaque
+serveur virtuel. Vous pouvez consulter vos fichiers de configuration
+pour v&eacute;rifier la mani&egrave;re dont cette directive est d&eacute;finie pour votre
+serveur.</p>
+
+<p>En g&eacute;n&eacute;ral, et si aucun nom de fichier n'est sp&eacute;cifi&eacute; dans la
+requ&ecirc;te, c'est une page de nom <code>index.html</code> qui sera
+renvoy&eacute;e. Par exemple, si la directive <code>DocumentRoot</code> est
+d&eacute;finie &agrave; <code>/var/www/html</code>, et si une requ&ecirc;te est effectu&eacute;e
+pour l'adresse <code>http://www.example.com/work/</code>, c'est le
+fichier <code>/var/www/html/work/index.html</code> qui sera envoy&eacute; au
+client par le serveur.</p>
+
+<p>Un contenu dynamique est un contenu qui est g&eacute;n&eacute;r&eacute; au moment du
+traitement de la requ&ecirc;te, et qui peut diff&eacute;rer d'une requ&ecirc;te &agrave; l'autre.
+Ces contenus dynamiques peuvent &ecirc;tre g&eacute;n&eacute;r&eacute;s de nombreuses mani&egrave;res par
+l'interm&eacute;diaire de <a href="handler.html">gestionnaires de contenu</a>
+ou "handlers". Il est aussi possible de cr&eacute;er des <a
+href="howto/cgi.html">programmes CGI</a> pour g&eacute;n&eacute;rer le contenu de
+votre site.</p>
+
+<p>Enfin, on peut utiliser des modules tiers comme mod_php pour &eacute;crire
+du code permettant d'effectuer de nombreuses choses. De nombreuses
+applications tierces &eacute;crites &agrave; partir de divers langages ou outils sont
+disponibles en t&eacute;l&eacute;chargement et peuvent &ecirc;tre install&eacute;es sur votre
+serveur HTTP Apache. Le support de ces applications d&eacute;passe le sujet de
+ce document, et nous vous invitons &agrave; consulter le site de leur &eacute;diteur
+pour acc&eacute;der &agrave; leur documentation.</p>
+</section>
+
+<section id="logs">
+<title>Fichiers journaux et r&eacute;solution des probl&egrave;mes</title>
+<p>En tant qu'administrateur d'un serveur HTTP Apache, vos sources
+d'informations principales sont les fichiers journaux, et en particulier
+le journal des erreurs. Toute tentative de r&eacute;solution d'un probl&egrave;me sans
+consulter le journal des erreurs revient &agrave; conduire les yeux ferm&eacute;s.</p>
+
+<p>La position dans le syst&egrave;me de fichiers du journal des erreurs est
+sp&eacute;cifi&eacute;e par la directive <directive module="core">ErrorLog</directive>
+qui peut &ecirc;tre d&eacute;finie au niveau global, ou au niveau de chaque serveur
+virtuel. Chaque entr&eacute;e du journal des erreurs vous informe sur la nature
+des probl&egrave;mes et le moment de leur survenue. En outre, elle vous indique
+souvent comment r&eacute;soudre le probl&egrave;me. Chaque message d'erreur contient
+un code d'erreur que vous pouvez utiliser pour effectuer une recherche
+en ligne afin d'obtenir une description plus d&eacute;taill&eacute;e de la mani&egrave;re de
+r&eacute;soudre le probl&egrave;me. Vous pouvez aussi configurer votre journal des
+erreurs de mani&egrave;re &agrave; ce qu'il enregistre un identifiant d'erreur que
+vous pourrez ensuite utiliser pour effectuer une corr&eacute;lation avec le
+journal des acc&egrave;s afin de d&eacute;terminer quelle requ&ecirc;te est &agrave; l'origine de
+l'erreur.</p>
+
+<p>Vous trouverez plus de d&eacute;tails &agrave; ce sujet dans la <a
+href="logs.html">Documentation sur la journalisation</a>.</p>
+</section>
+
+<section id="other">
+<title>Et maintenant, quelle est la suite des op&eacute;rations ?</title>
+
+<p>La question des pr&eacute;requis &eacute;tant r&eacute;gl&eacute;e, il est temps de passer aux
+choses s&eacute;rieuses.</p>
+
+<p>Ce document ne couvre que les notions de base. Nous esp&eacute;rons qu'il
+vous permettra de mettre le pied &agrave; l'&eacute;trier, mais il y a encore de
+nombreuses choses que vous devez savoir.</p>
+
+<ul>
+<li><a href="http://httpd.apache.org/download.cgi">T&eacute;l&eacute;chargement</a></li>
+<li><a href="install.html">Installation</a></li>
+<li><a href="configuring.html">Configuration</a></li>
+<li><a href="invoking.html">D&eacute;marrage du serveur</a></li>
+<li><a href="http://wiki.apache.org/httpd/FAQ">Foire aux questions</a></li>
+</ul>
+
+</section>
+
+</manualpage>

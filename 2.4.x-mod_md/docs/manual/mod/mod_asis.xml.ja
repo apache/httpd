@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
+<!-- English Revision: 420990:1334008 (outdated) -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_asis.xml.meta">
+
+<name>mod_asis</name>
+<description>自分用の HTTP ヘッダの書かれているファイルを送信する</description>
+<status>Base</status>
+<sourcefile>mod_asis.c</sourcefile>
+<identifier>asis_module</identifier>
+
+<summary>
+    <p>このモジュールはハンドラ <code>send-as-is</code>
+    を提供します。このハンドラは通常の HTTP
+    ヘッダをほとんど追加することなくドキュメントを送信します。</p>
+
+    <p>これはサーバからどんな種類のデータを送るときにも使用できます。
+    Cgi スクリプトや nph スクリプトが無くてもリダイレクトや他の特別な
+    HTTP 応答を送ることができます。</p>
+
+    <p>歴史的な理由により、このモジュールは mime タイプ
+    <code>httpd/send-as-is</code> のファイルも処理します。</p>
+</summary>
+
+<seealso><module>mod_headers</module></seealso>
+<seealso><module>mod_cern_meta</module></seealso>
+<seealso><a href="../handler.html">Apache のハンドラの使用</a></seealso>
+
+<section id="usage"><title>使用法</title>
+
+    <p>サーバ設定ファイルで、ファイルと <code>send-as-is</code>
+    ハンドラを例えば以下のように関連付けてください。</p>
+
+    <example>AddHandler send-as-is asis</example>
+
+    <p>拡張子が <code>.asis</code> のすべてのファイルの内容は Apache
+    からクライアントへほとんど変更無く送られます。
+    HTTP ヘッダは特別で、ファイルから <module>mod_cgi</module>
+    のルールに従って取り出されます。ですから asis ファイルには
+    正しいヘッダが記載されていなければなりませし、
+    また CGI での表記法であるところの Status: ヘッダを使って
+    HTTP レスポンスコードを決めることもできます。</p>
+
+    <p>これはクライアントにファイルが移動したことを知らせるために
+    <em>as is</em> (そのまま) で送られるファイルの内容の例です。
+    </p>
+
+
+    <example>
+      Status: 301 Now where did I leave that URL<br />
+      Location: http://xyz.abc.com/foo/bar.html<br />
+      Content-type: text/html<br />
+      <br />
+      &lt;html&gt;<br />
+      &lt;head&gt;<br />
+      &lt;title&gt;Lame excuses'R'us&lt;/title&gt;<br />
+      &lt;/head&gt;<br />
+      &lt;body&gt;<br />
+      &lt;h1&gt;Fred's exceptionally wonderful page has moved to<br />
+      &lt;a href="http://xyz.abc.com/foo/bar.html"&gt;Joe's&lt;/a&gt;
+      site.<br />
+      &lt;/h1&gt;<br />
+      &lt;/body&gt;<br />
+      &lt;/html&gt;
+    </example>
+
+    <note><title>注意</title>
+    <p>注意: サーバはクライアントに返されるデータに常に <code>Date:</code>
+    と <code>Server:</code> ヘッダを追加しますので、
+    それらがファイルに書かれていてはいけません。
+    サーバは <code>Last-Modified</code> ヘッダを追加<em>しません</em>。
+    おそらくはそうすべきでしょうけれど。</p>
+    </note>
+</section>
+
+</modulesynopsis>

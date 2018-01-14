@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision: 1673563 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_data.xml.meta">
+
+<name>mod_data</name>
+<description>Convertit un corps de r&eacute;ponse en URL de type donn&eacute;es RFC2397</description>
+<status>Extension</status>
+<sourcefile>mod_data.c</sourcefile>
+<identifier>data_module</identifier>
+<compatibility>Disponible depuis la version 2.3 du serveur HTTP Apache</compatibility>
+
+<summary>
+    <p>Ce module permet de convertir une r&eacute;ponse en <a
+    href="http://tools.ietf.org/html/rfc2397">URL de type donn&eacute;es
+    RFC2397</a>.
+    </p>
+
+    <p>Les URLs de type donn&eacute;es peuvent &ecirc;tre incluses en ligne dans les
+    pages web via le module <module>mod_include</module> par exemple,
+    afin d'&eacute;viter aux clients d'avoir &agrave; effectuer des connexions
+    s&eacute;par&eacute;es pour &eacute;ventuellement extraire un grand nombre de petites
+    images. Les URLs de type donn&eacute;es peuvent aussi &ecirc;tre incluses dans
+    des pages g&eacute;n&eacute;r&eacute;es par langages de scripting tels que PHP.</p>
+
+    <example><title>Un exemple d'URL de type donn&eacute;es</title>
+        data:image/gif;base64,R0lGODdhMAAwAPAAAAAAAP///ywAAAAAMAAw<br />
+        AAAC8IyPqcvt3wCcDkiLc7C0qwyGHhSWpjQu5yqmCYsapyuvUUlvONmOZtfzgFz<br />
+        ByTB10QgxOR0TqBQejhRNzOfkVJ+5YiUqrXF5Y5lKh/DeuNcP5yLWGsEbtLiOSp<br />
+        a/TPg7JpJHxyendzWTBfX0cxOnKPjgBzi4diinWGdkF8kjdfnycQZXZeYGejmJl<br />
+        ZeGl9i2icVqaNVailT6F5iJ90m6mvuTS4OK05M0vDk0Q4XUtwvKOzrcd3iq9uis<br />
+        F81M1OIcR7lEewwcLp7tuNNkM3uNna3F2JQFo97Vriy/Xl4/f1cf5VWzXyym7PH<br />
+        hhx4dbgYKAAA7<br />
+    </example>
+
+    <p>Le filtre n'accepte aucun param&egrave;tre, et peut &ecirc;tre ajout&eacute; &agrave; la
+    pile des filtres via la directive <directive
+    module="core">SetOutputFilter</directive>, ou toute autre directive
+    support&eacute;e par le module <module>mod_filter</module>.</p>
+
+    <example><title>Configuration du filtre</title>
+        <highlight language="config">
+&lt;Location "/data/images"&gt;
+    SetOutputFilter DATA
+&lt;/Location&gt;
+        </highlight>
+    </example>
+
+</summary>
+<seealso><a href="../filter.html">Les filtres</a></seealso>
+
+</modulesynopsis>

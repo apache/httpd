@@ -1,0 +1,48 @@
+.\" XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+.\" DO NOT EDIT! Generated from XML source.
+.\" XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+.de Sh \" Subsection
+.br
+.if t .Sp
+.ne 5
+.PP
+\fB\\$1\fR
+.PP
+..
+.de Sp \" Vertical space (when we can't use .PP)
+.if t .sp .5v
+.if n .sp
+..
+.de Ip \" List item
+.br
+.ie \\n(.$>=3 .ne \\$3
+.el .ne 3
+.IP "\\$1" \\$2
+..
+.TH "SUEXEC" 8 "2013-08-16" "Apache HTTP Sunucusu" "suexec"
+.nh
+.SH İSİM
+suexec \- harici programları çalıştırmadan önce kullanıcıyı değiştirir
+
+.SH "KULLANIM"
+ 
+.PP
+\fBsuexec\fR -\fBV\fR
+ 
+
+.SH "ÖZET"
+ 
+.PP
+\fBsuexec\fR, CGI programlarını çalıştırmadan önce Apache HTTP Sunucusu tarafından kullanıcı değiştirmek için kullanılır\&. Bunu yapabilmek için sunucunun root tarafından çalıştırılmış olması gerekir\&. HTTP artalan süreci normalde root aidiyetinde çalışmadığından \fBsuexec\fR'in çalıştırılabilir dosyasının sahibi root olmalı, setuid biti etkin (u+s) olmalı ve dosyaya root dışında hiç kimse yazamamalıdır\&.
+ 
+.PP
+\fBsuexec\fR güvenlik modeli ve kavramlar hakkında bilgi edinmek için suexec belgesine (http://httpd\&.apache\&.org/docs/2\&.4/suexec\&.html) bakınız\&.
+ 
+
+.SH "SEÇENEKLER"
+ 
+ 
+.TP
+\fB-V\fR
+root iseniz, bu seçenek \fBsuexec\fR derleme seçeneklerini gösterir\&. Güvenlik sebebiyle tüm yapılandırma seçenekleri sadece derleme sırasında değiştirilebilir\&.  
+ 

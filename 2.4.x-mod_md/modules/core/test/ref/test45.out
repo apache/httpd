@@ -1,0 +1,19 @@
+# testing with conf/test45.conf
+[macro:warn] macro 'warnings' (defined on line 3 of "./conf/test45.conf") argument name '&3' (#3) without expected prefix, better prefix argument names with one of '$%@'.
+[macro:warn] macro 'warnings' (defined on line 3 of "./conf/test45.conf") argument name '#5' (#5) without expected prefix, better prefix argument names with one of '$%@'.
+[macro:warn] macro 'warnings' (defined on line 3 of "./conf/test45.conf") argument name '~6' (#6) without expected prefix, better prefix argument names with one of '$%@'.
+[macro:warn] macro 'warnings' (defined on line 3 of "./conf/test45.conf") argument name '*7' (#7) without expected prefix, better prefix argument names with one of '$%@'.
+[macro:warn] macro 'warnings' (defined on line 3 of "./conf/test45.conf") argument name '.8' (#8) without expected prefix, better prefix argument names with one of '$%@'.
+[macro:warn] macro 'warnings' (defined on line 3 of "./conf/test45.conf") argument name ',9' (#9) without expected prefix, better prefix argument names with one of '$%@'.
+[macro:warn] macro 'warnings' (defined on line 3 of "./conf/test45.conf") argument name '!a' (#10) without expected prefix, better prefix argument names with one of '$%@'.
+[macro:warn] macro 'warnings' (defined on line 3 of "./conf/test45.conf") argument name '-b' (#11) without expected prefix, better prefix argument names with one of '$%@'.
+[macro:warn] macro 'warnings' (defined on line 3 of "./conf/test45.conf") argument name '+c' (#12) without expected prefix, better prefix argument names with one of '$%@'.
+[macro:warn] macro 'warnings' (defined on line 3 of "./conf/test45.conf") argument name '=d' (#13) without expected prefix, better prefix argument names with one of '$%@'.
+[macro:warn] macro 'warnings' (defined on line 3 of "./conf/test45.conf") argument name ':e' (#14) without expected prefix, better prefix argument names with one of '$%@'.
+[macro:warn] macro 'warnings' (defined on line 3 of "./conf/test45.conf") argument name ';f' (#15) without expected prefix, better prefix argument names with one of '$%@'.
+[macro:warn] macro 'warnings' (defined on line 3 of "./conf/test45.conf") argument name '?g' (#16) without expected prefix, better prefix argument names with one of '$%@'.
+[macro:warn] macro 'warnings' (defined on line 3 of "./conf/test45.conf"): empty contents!
+[core:error] done on line 7. on line 7 of ./conf/test45.conf
+AH00526: Syntax error on line 7 of ./conf/test45.conf:
+Configuration processing stopped by Error directive
+# exit: 1

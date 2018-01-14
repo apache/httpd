@@ -1,0 +1,7 @@
+# testing with conf/test65.conf
+[core:warn] Line: on line 6-7 on line 1 of macro 'line' (defined on line 2 of "./conf/test65.conf") used on line 7 of "./conf/test65.conf"
+[core:warn] Line: on line 8-10 on line 1 of macro 'line' (defined on line 2 of "./conf/test65.conf") used on line 10 of "./conf/test65.conf"
+[core:error] done on line 11. on line 11 of ./conf/test65.conf
+AH00526: Syntax error on line 11 of ./conf/test65.conf:
+Configuration processing stopped by Error directive
+# exit: 1

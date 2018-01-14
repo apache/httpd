@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision: 1718324 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_proxy_fdpass.xml.meta">
+
+<name>mod_proxy_fdpass</name>
+<description>Module fournissant le support des processus externes fdpass
+&agrave; <module>mod_proxy</module></description>
+<status>Extension</status>
+<sourcefile>mod_proxy_fdpass.c</sourcefile>
+<identifier>proxy_fdpass_module</identifier>
+<compatibility>Disponible pour unix depuis la version 2.3
+d'Apache</compatibility>
+
+<summary>
+    <p>Pour fonctionner, ce module <em>n&eacute;cessite</em> le chargement de
+    <module>mod_proxy</module>. Il permet le passage de la socket du client
+    vers un autre processus.</p>
+
+    <p><code>mod_proxy_fdpass</code> utilise la capacit&eacute; des sockets de
+    domaine AF_UNIX &agrave; <a
+    href="http://www.freebsd.org/cgi/man.cgi?query=recv">transmettre un
+    descripteur de fichier ouvert</a> afin de permettre &agrave; un autre
+    processus de terminer le traitement de la requ&ecirc;te.
+    </p>
+
+    <p>Le module poss&egrave;de une interface de fournisseur
+    <code>proxy_fdpass_flusher</code> qui permet &eacute;ventuellement &agrave; un
+    autre module d'envoyer les en-t&ecirc;tes de la r&eacute;ponse, ou m&ecirc;me le d&eacute;but
+    du corps de la r&eacute;ponse. Le fournisseur par d&eacute;faut <code>flush</code> d&eacute;sactive la
+    persistence, et envoie les en-t&ecirc;tes de la r&eacute;ponse, laissant le soin
+    au processus externe d'envoyer le corps de la r&eacute;ponse.</p>
+
+    <p>Pour utiliser un autre fournisseur, vous devez sp&eacute;cifier le param&egrave;tre
+    <code>flusher</code> de la directive <directive
+    module="mod_proxy">ProxyPass</directive>.
+    </p>
+
+    <p>&Agrave; l'heure actuelle, la seule donn&eacute;e transmise au processus
+    externe est la socket du client. Pour recevoir une socket client,
+    appelez recvfrom avec une structure <a
+    href="http://www.kernel.org/doc/man-pages/online/pages/man3/
+    cmsg.3.html"><code>struct cmsghdr</code></a> allou&eacute;e. Les versions
+    futures de ce module pourront transmettre d'autres donn&eacute;es que le
+    socket client.
+    </p>
+</summary>
+
+<seealso><module>mod_proxy</module></seealso>
+</modulesynopsis>

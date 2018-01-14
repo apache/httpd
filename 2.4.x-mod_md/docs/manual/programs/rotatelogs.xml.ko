@@ -1,0 +1,136 @@
+<?xml version='1.0' encoding='EUC-KR' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
+<!-- English Revision: 420993:1645865 (outdated) -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="rotatelogs.xml.meta">
+<parentdocument href="./">Programs</parentdocument>
+
+  <title>rotatelogs - 아파치 로그를 순환하기위해 파이프로 연결할
+  로그 프로그램</title>
+
+<summary>
+     <p><code>rotatelogs</code>는 아파치의 파이프 로그파일 기능을
+     위한 간단한 프로그램이다. 예를 들어:</p>
+
+<example>
+     CustomLog "|bin/rotatelogs /var/logs/logfile 86400" common
+</example>
+	 
+     <p>그러면 /var/logs/logfile.nnnn 파일을 만든다. nnnn은
+     로그를 시작한 시스템시간이다 (이 시간은 항상 순환기간의
+     배수이다. 그래서 cron 스크립트로 처리하기 쉽다). 순환기간
+     (여기서는 24 시간) 마다 새로운 로그를 시작한다.</p>
+
+<example>
+     CustomLog "|bin/rotatelogs /var/logs/logfile 5M" common
+</example>
+
+     <p>이 설정은 로그파일 크기가 5 메가바이트가 될때마다
+     순환한다.</p>
+	 
+<example>
+     ErrorLog "|bin/rotatelogs /var/logs/errorlog.%Y-%m-%d-%H_%M_%S 5M"
+</example>
+     <p>이 설정은 오류로그 파일 크기가 5 메가바이트가 될때마다
+     <code>errorlog.YYYY-mm-dd-HH_MM_SS</code>와 같은 파일을
+     만들어서 오류로그 파일을 순환한다.</p>
+
+</summary>
+
+<section id="synopsis"><title>개요</title>
+
+     <p><code><strong>rotatelogs</strong>
+     [ -<strong>l</strong> ]
+     <var>logfile</var>
+     [ <var>rotationtime</var> [ <var>offset</var> ]] |
+     [ <var>filesize</var>M ]</code></p>
+</section>
+
+<section id="options"><title>옵션</title>
+
+<dl>
+
+<dt><code>-l</code></dt>
+<dd>순환주기로 GMT 대신 지역시간을 사용한다. (BST나 DST와 같이)
+GMT 시간차가 변하는 환경에서 <code>-l</code>을 사용하면 예기치
+않은 결과가 발생할 수 있다!</dd>
+
+<dt><code><var>logfile</var></code></dt>
+
+<dd>로그파일의 경로와 이름. <var>logfile</var>에 '%' 문자가
+있다면 <code>strftime(3)</code>의 형식문자열과 같이 처리한다.
+'%' 문자가 없다면 뒤에 초단위 시간 <var>.nnnnnnnnnn</var>을
+자동으로 붙인다. 두 형식 모두 현재 기간부터 시작시간을 계산한다.</dd>
+
+<dt><code><var>rotationtime</var></code></dt>
+
+<dd>로그파일을 순환할 초단위 시간.</dd>
+
+<dt><code><var>offset</var></code></dt>
+
+<dd>UTC에서 분단위 시간차이. 생략하면 0으로 가정하여 UTC를
+사용한다. 예를 들어, UTC -5 시간대의 지역시간을 사용한다면
+아규먼트로 <code>-300</code>을 지정한다.</dd>
+
+<dt><code><var>filesize</var>M</code></dt>
+
+<dd>시간이 아닌 크기를 지정할때 메가바이트단위 최대 파일크기
+뒤에 <code>M</code>을 붙인다. rotationtime과 offset 대신 이
+파라미터를 사용한다.</dd>
+</dl>
+</section>
+
+<section id="portability"><title>포팅가능성</title>
+
+<p>다음 로그파일 형식문자열 표현은 모든 <code>strftime(3)</code>
+구현이 지원해야 한다. 라이브러리 특유의 확장은
+<code>strftime(3)</code> manpage를 참고하라.</p>
+
+<table border="1" style="zebra">
+<tr><td><code>%A</code></td><td>(지역화된) 완전한 요일 이름</td></tr>
+<tr><td><code>%a</code></td><td>(지역화된) 3-문자 요일 이름</td></tr>
+<tr><td><code>%B</code></td><td>(지역화된) 완전한 달 이름</td></tr>
+<tr><td><code>%b</code></td><td>(지역화된) 3-문자 달 이름</td></tr>
+<tr><td><code>%c</code></td><td>(지역화된) 날짜와 시간</td></tr>
+<tr><td><code>%d</code></td><td>2-자리 일</td></tr>
+<tr><td><code>%H</code></td><td>2-자리 시간 (24 시간 시계)</td></tr>
+<tr><td><code>%I</code></td><td>2-자리 시간 (12 시간 시계)</td></tr>
+<tr><td><code>%j</code></td><td>3-자리 날짜수</td></tr>
+<tr><td><code>%M</code></td><td>2-자리 분</td></tr>
+<tr><td><code>%m</code></td><td>2-자리 달</td></tr>
+<tr><td><code>%p</code></td><td>(지역화된) 12 시간 시계의 am/pm</td></tr>
+<tr><td><code>%S</code></td><td>2-자리 초</td></tr>
+<tr><td><code>%U</code></td><td>2-자리 주일수 (주의 첫번재 날은
+일요일)</td></tr>
+<tr><td><code>%W</code></td><td>2-자리 주일수 (주의 첫번재 날은
+월요일)</td></tr>
+<tr><td><code>%w</code></td><td>1-자리 요일수 (주의 첫번째 날은
+일요일)</td></tr>
+<tr><td><code>%X</code></td><td>(지역화된) 시간</td></tr>
+<tr><td><code>%x</code></td><td>(지역화된) 날짜</td></tr>
+<tr><td><code>%Y</code></td><td>4-자리 연도</td></tr>
+<tr><td><code>%y</code></td><td>2-자리 연도</td></tr>
+<tr><td><code>%Z</code></td><td>시간대 이름</td></tr>
+<tr><td><code>%%</code></td><td>문자그대로 `%'</td></tr>
+</table>
+
+</section>
+</manualpage>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 1363282 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="htdigest.xml.meta">
+<parentdocument href="./">Programmes</parentdocument>
+
+<title>htdigest - Gestion des fichiers d'utilisateurs pour
+l'authentification à base de condensés</title>
+
+<summary>
+    <p><code>htdigest</code> permet de créer et maintenir les fichiers
+    textes dans lesquels sont stockés des noms d'utilisateurs, des
+    domaines de protection (realms) et des mots de passe pour
+    l'authentification à base de condensés des utilisateurs HTTP.
+    L'accès aux ressources du serveur HTTP Apache peut être limité aux
+    seuls utilisateurs enregistrés dans les fichiers créés par
+    <code>htdigest</code>.</p>
+
+    <p>Cette page de manuel ne décrit que les arguments de la ligne de
+    commande. Pour plus de détails à propos des directives nécessaires à
+    la configuration de l'authentification à base de condensés dans
+    <program>httpd</program>, voir le manuel Apache qui est fourni avec
+    la distribution et peut être consulté à <a
+    href="http://httpd.apache.org/">http://httpd.apache.org/</a>.</p>
+</summary>
+<seealso><program>httpd</program></seealso>
+<seealso><module>mod_auth_digest</module></seealso>
+
+<section id="synopsis"><title>Syntaxe</title>
+    <p><code><strong>htdigest</strong> [ -<strong>c</strong> ]
+    <var>fichier-mots-de-passe</var> <var>realm</var>
+    <var>nom-utilisateur</var></code></p>
+</section>
+
+<section id="options"><title>options</title>
+    <dl>
+    <dt><code>-c</code></dt>
+    <dd>Crée le fichier <var>fichier-mots-de-passe</var>. Si
+    <var>fichier-mots-de-passe</var> existe déjà, il est tout d'abord
+    supprimé.</dd>
+
+    <dt><code><var>fichier-mots-de-passe</var></code></dt>
+    <dd>Nom du fichier contenant les noms utilisateurs, realms et mots
+    de passe. Si l'option <code>-c</code> est spécifiée, le fichier est
+    créé s'il n'existe pas, ou supprimé et recréé s'il existe
+    déjà.</dd>
+
+    <dt><code><var>realm</var></code></dt>
+    <dd>Le nom du domaine de protection auquel le nom d'utilisateur
+    appartient. Voir <a
+    href="http://tools.ietf.org/html/rfc2617#section-3.2.1">http://tools.ietf.org/html/rfc2617#section-3.2.1</a>
+    pour plus de détails.</dd>
+
+    <dt><code><var>nom-utilisateur</var></code></dt>
+    <dd>Le nom d'utilisateur à créer ou mettre à jour dans le
+    <var>fichier-mots-de-passe</var>. Si <var>nom-utilisateur</var> est
+    absent de ce fichier, une nouvelle entrée est ajoutée. Si
+    l'utilisateur existe déjà, le mot de passe est modifié.</dd>
+    </dl>
+</section>
+
+<section id="security"><title>Considérations à propos de sécurité</title>
+    <p>En tant qu'exécutable setuid, ce programme n'est pas sûr. En
+    conséquence, évitez de lui attribuer des permissions setuid.</p>
+</section>
+
+</manualpage>

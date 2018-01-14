@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- GENERATED FROM XML: DO NOT EDIT -->
+
+<metafile reference="mod_access_compat.xml">
+  <basename>mod_access_compat</basename>
+  <path>/mod/</path>
+  <relpath>..</relpath>
+
+  <variants>
+    <variant>en</variant>
+    <variant>fr</variant>
+    <variant outdated="yes">ja</variant>
+  </variants>
+</metafile>

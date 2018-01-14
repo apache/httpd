@@ -1,0 +1,791 @@
+#!@perlbin@ -w
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+require 5.004;
+use strict;
+package apxs;
+
+##
+##  Configuration
+##
+
+my %config_vars = ();
+
+my $installbuilddir = "@exp_installbuilddir@";
+get_config_vars("$installbuilddir/config_vars.mk",\%config_vars);
+
+# read the configuration variables once
+
+my $prefix         = get_vars("prefix");
+my $CFG_PREFIX     = $prefix;
+my $exec_prefix    = get_vars("exec_prefix");
+my $datadir        = get_vars("datadir");
+my $localstatedir  = get_vars("localstatedir");
+my $CFG_TARGET     = get_vars("progname");
+my $CFG_SYSCONFDIR = get_vars("sysconfdir");
+my $CFG_CFLAGS     = join ' ', map { get_vars($_) }
+  qw(SHLTCFLAGS CFLAGS NOTEST_CPPFLAGS EXTRA_CPPFLAGS EXTRA_CFLAGS);
+my $CFG_LDFLAGS    = join ' ', map { get_vars($_) }
+  qw(LDFLAGS NOTEST_LDFLAGS SH_LDFLAGS);
+my $includedir     = get_vars("includedir");
+my $CFG_INCLUDEDIR = eval qq("$includedir");
+my $CFG_CC         = get_vars("CC");
+my $libexecdir     = get_vars("libexecdir");
+my $CFG_LIBEXECDIR = eval qq("$libexecdir");
+my $sbindir        = get_vars("sbindir");
+my $CFG_SBINDIR    = eval qq("$sbindir");
+my $ltflags        = $ENV{'LTFLAGS'};
+$ltflags or $ltflags = "--silent";
+
+my %internal_vars = map {$_ => 1}
+    qw(TARGET CC CFLAGS CFLAGS_SHLIB LD_SHLIB LDFLAGS_SHLIB LIBS_SHLIB
+       PREFIX SBINDIR INCLUDEDIR LIBEXECDIR SYSCONFDIR);
+
+##
+##  parse argument line
+##
+
+#   defaults for parameters
+my $opt_n = '';
+my $opt_g = '';
+my $opt_c = 0;
+my $opt_o = '';
+my @opt_D = ();
+my @opt_I = ();
+my @opt_L = ();
+my @opt_l = ();
+my @opt_W = ();
+my @opt_S = ();
+my $opt_e = 0;
+my $opt_i = 0;
+my $opt_a = 0;
+my $opt_A = 0;
+my $opt_q = 0;
+my $opt_h = 0;
+my $opt_p = 0;
+my $opt_v = 0;
+
+#   this subroutine is derived from Perl's getopts.pl with the enhancement of
+#   the "+" metacharacter at the format string to allow a list to be built by
+#   subsequent occurrences of the same option.
+sub Getopts {
+    my ($argumentative, @ARGV) = @_;
+    my $errs = 0;
+    local $_;
+
+    my @args = split / */, $argumentative;
+    while (@ARGV && ($_ = $ARGV[0]) =~ /^-(.)(.*)/) {
+        my ($first, $rest) = ($1,$2);
+        if ($_ =~ m|^--$|) {
+            shift @ARGV;
+            last;
+        }
+        my $pos = index($argumentative,$first);
+        if ($pos >= 0) {
+            if ($pos < $#args && $args[$pos+1] eq ':') {
+                shift @ARGV;
+                if ($rest eq '') {
+                    unless (@ARGV) {
+                        error("Incomplete option: $first (needs an argument)");
+                        $errs++;
+                    }
+                    $rest = shift(@ARGV);
+                }
+                eval "\$opt_$first = \$rest;";
+            }
+            elsif ($pos < $#args && $args[$pos+1] eq '+') {
+                shift @ARGV;
+                if ($rest eq '') {
+                    unless (@ARGV) {
+                        error("Incomplete option: $first (needs an argument)");
+                        $errs++;
+                    }
+                    $rest = shift(@ARGV);
+                }
+                eval "push(\@opt_$first, \$rest);";
+            }
+            else {
+                eval "\$opt_$first = 1";
+                if ($rest eq '') {
+                    shift(@ARGV);
+                }
+                else {
+                    $ARGV[0] = "-$rest";
+                }
+            }
+        }
+        else {
+            error("Unknown option: $first");
+            $errs++;
+            if ($rest ne '') {
+                $ARGV[0] = "-$rest";
+            }
+            else {
+                shift(@ARGV);
+            }
+        }
+    }
+    return ($errs == 0, @ARGV);
+}
+
+sub usage {
+    print STDERR "Usage: apxs -g [-S <var>=<val>] -n <modname>\n";
+    print STDERR "       apxs -q [-v] [-S <var>=<val>] [<query> ...]\n";
+    print STDERR "       apxs -c [-S <var>=<val>] [-o <dsofile>] [-D <name>[=<value>]]\n";
+    print STDERR "               [-I <incdir>] [-L <libdir>] [-l <libname>] [-Wc,<flags>]\n";
+    print STDERR "               [-Wl,<flags>] [-p] <files> ...\n";
+    print STDERR "       apxs -i [-S <var>=<val>] [-a] [-A] [-n <modname>] <dsofile> ...\n";
+    print STDERR "       apxs -e [-S <var>=<val>] [-a] [-A] [-n <modname>] <dsofile> ...\n";
+    exit(1);
+}
+
+#   option handling
+my $rc;
+($rc, @ARGV) = &Getopts("qn:gco:I+D+L+l+W+S+eiaApv", @ARGV);
+&usage if ($rc == 0);
+&usage if ($#ARGV == -1 and not $opt_g and not $opt_q);
+&usage if (not $opt_q and not ($opt_g and $opt_n) and not $opt_i and not $opt_c and not $opt_e);
+
+#   argument handling
+my @args = @ARGV;
+my $name = 'unknown';
+$name = $opt_n if ($opt_n ne '');
+
+if (@opt_S) {
+    my ($opt_S);
+    foreach $opt_S (@opt_S) {
+	if ($opt_S =~ m/^([^=]+)=(.*)$/) {
+	    my ($var) = $1;
+	    my ($val) = $2;
+	    my $oldval = eval "\$CFG_$var";
+
+	    unless ($var and $oldval) {
+		print STDERR "apxs:Error: no config variable $var\n";
+		&usage;
+	    }
+
+	    eval "\$CFG_${var}=\"${val}\"";
+	} else {
+	    print STDERR "apxs:Error: malformatted -S option\n";
+	    &usage;
+	}	
+    }
+}
+
+##
+##  Initial shared object support check
+##
+unless ("@MOD_SO_ENABLED@" eq "yes") {
+    error("Sorry, no shared object support for Apache");
+    error("available under your platform. Make sure");
+    error("the Apache module mod_so is compiled into");
+    error("the server binary.");
+    exit 1;
+}
+
+sub get_config_vars{
+    my ($file, $rh_config) = @_;
+
+    open IN, $file or die "cannot open $file: $!";
+    while (<IN>){
+        if (/^\s*(.*?)\s*=\s*(.*)$/){
+            $rh_config->{$1} = $2;
+        }
+    }
+    close IN;
+}
+
+sub get_vars {
+    my $result = '';
+    my $ok = 0;
+    my $arg;
+    foreach $arg (@_) {
+        if (exists $config_vars{$arg} or exists $config_vars{lc $arg}) {
+            my $val = exists $config_vars{$arg}
+                ? $config_vars{$arg}
+                : $config_vars{lc $arg};
+            $val =~ s/[()]//g;
+            $result .= eval "qq($val)" if defined $val;
+            $result .= ";;";
+            $ok = 1;
+        }
+        if (not $ok) {
+            if (exists $internal_vars{$arg} or exists $internal_vars{lc $arg}) {
+                my $val = exists $internal_vars{$arg} ? $arg : lc $arg;
+                $val = eval "\$CFG_$val";
+                $result .= eval "qq($val)" if defined $val;
+                $result .= ";;";
+                $ok = 1;
+            }
+            if (not $ok) {
+                error("Invalid query string `$arg'");
+                exit(1);
+            }
+        }
+    }
+    $result =~ s|;;$||;
+    return $result;
+}
+
+##
+##  Operation
+##
+
+#   helper function for executing a list of
+#   system command with return code checks
+sub execute_cmds {
+    my (@cmds) = @_;
+    my ($cmd, $rc);
+
+    foreach $cmd (@cmds) {
+        notice($cmd);
+        $rc = system $cmd;
+        if ($rc) {
+            error(sprintf "Command failed with rc=%d\n", $rc << 8);
+            exit 1 ;
+        }
+    }
+}
+
+if ($opt_g) {
+    ##
+    ##  SAMPLE MODULE SOURCE GENERATION
+    ##
+
+    if (-d $name) {
+        error("Directory `$name' already exists. Remove first");
+        exit(1);
+    }
+
+    my $data = join('', <DATA>);
+    $data =~ s|%NAME%|$name|sg;
+    $data =~ s|%TARGET%|$CFG_TARGET|sg;
+    $data =~ s|%PREFIX%|$prefix|sg;
+    $data =~ s|%INSTALLBUILDDIR%|$installbuilddir|sg;
+
+    my ($mkf, $mods, $src) = ($data =~ m|^(.+)-=#=-\n(.+)-=#=-\n(.+)|s);
+
+    notice("Creating [DIR]  $name");
+    system("mkdir $name");
+    notice("Creating [FILE] $name/Makefile");
+    open(FP, ">${name}/Makefile") || die;
+    print FP $mkf;
+    close(FP);
+    notice("Creating [FILE] $name/modules.mk");
+    open(FP, ">${name}/modules.mk") || die;
+    print FP $mods;
+    close(FP);
+    notice("Creating [FILE] $name/mod_$name.c");
+    open(FP, ">${name}/mod_${name}.c") || die;
+    print FP $src;
+    close(FP);
+    notice("Creating [FILE] $name/.deps");
+    system("touch ${name}/.deps");
+
+    exit(0);
+}
+
+
+if ($opt_q) {
+    ##
+    ##  QUERY INFORMATION 
+    ##
+    my $result;
+    if ($#args >= 0) { 
+        $result = get_vars(@args);
+        print "$result\n";
+    } else {
+        # -q without var name prints all variables and their values
+        
+        # Additional -v pretty-prints output
+        if ($opt_v) {
+            # Variable names in alphabetic order
+            my @vars = sort {uc($a) cmp uc($b)} keys %config_vars;
+            
+            # Make the left column as wide as the longest variable name
+            my $width = 0;
+            foreach (@vars) {
+                my $l = length $_; 
+                $width = $l unless ($l <= $width);
+            }
+    
+            foreach (@vars) {
+                printf "%-${width}s = %s\n", $_, $config_vars{$_};
+            }
+        } else {
+            # Unprettified name=value list
+            foreach (keys %config_vars) {
+                print "$_=$config_vars{$_}\n";
+            }
+        }
+    }
+}
+
+my $apr_config = get_vars("APR_CONFIG");
+
+if (! -x "$apr_config") {
+    error("$apr_config not found!");
+    exit(1);
+}
+
+my $apr_major_version = (split /\./, `$apr_config --version`)[0];
+
+my $apu_config = "";
+if ($apr_major_version < 2) {
+    $apu_config = get_vars("APU_CONFIG");
+
+    if (! -x "$apu_config") {
+        error("$apu_config not found!");
+        exit(1);
+    }
+}
+
+my $libtool = `$apr_config --apr-libtool`;
+chomp($libtool);
+
+my $apr_includedir = `$apr_config --includes`;
+chomp($apr_includedir);
+my $apu_includedir = "";
+if ($apr_major_version < 2) {
+    $apu_includedir = `$apu_config --includes`;
+    chomp($apu_includedir);
+}
+
+if ($opt_c) {
+    ##
+    ##  SHARED OBJECT COMPILATION
+    ##
+
+    #   split files into sources and objects
+    my @srcs = ();
+    my @objs = ();
+    my $f;
+    foreach $f (@args) {
+        if ($f =~ m|\.c$|) {
+            push(@srcs, $f);
+        }
+        else {
+            push(@objs, $f);
+        }
+    }
+
+    #   determine output file
+    my $dso_file;
+    if ($opt_o eq '') {
+        if ($#srcs > -1) {
+            $dso_file = $srcs[0];
+            $dso_file =~ s|\.[^.]+$|.la|;
+        }
+        elsif ($#objs > -1) {
+            $dso_file = $objs[0];
+            $dso_file =~ s|\.[^.]+$|.la|;
+        }
+        else {
+            $dso_file = "mod_unknown.la";
+        }
+    }
+    else {
+        $dso_file = $opt_o;
+        $dso_file =~ s|\.[^.]+$|.la|;
+    }
+
+    #   create compilation commands
+    my @cmds = ();
+    my $opt = '';
+    my ($opt_Wc, $opt_I, $opt_D);
+    foreach $opt_Wc (@opt_W) {
+        $opt .= "$1 " if ($opt_Wc =~ m|^\s*c,(.*)$|);
+    }
+    foreach $opt_I (@opt_I) {
+        $opt .= "-I$opt_I ";
+    }
+    foreach $opt_D (@opt_D) {
+        $opt .= "-D$opt_D ";
+    }
+    my $cflags = "$CFG_CFLAGS";
+    my $s;
+    my $mod;
+    foreach $s (@srcs) {
+        my $slo = $s;
+        $slo =~ s|\.c$|.slo|;
+        my $lo = $s;
+        $lo =~ s|\.c$|.lo|;
+        my $la = $s;
+        $la =~ s|\.c$|.la|;
+        my $o = $s;
+        $o =~ s|\.c$|.o|;
+        push(@cmds, "$libtool $ltflags --mode=compile $CFG_CC $cflags -I$CFG_INCLUDEDIR $apr_includedir $apu_includedir $opt -c -o $lo $s && touch $slo");
+        unshift(@objs, $lo);
+    }
+
+    #   create link command
+    my $o;
+    my $lo;	
+    foreach $o (@objs) {
+        $lo .= " $o";
+    }
+    my ($opt_Wl, $opt_L, $opt_l);
+    $opt = '';
+    foreach $opt_Wl (@opt_W) {
+        $opt .= "$1 " if ($opt_Wl =~ m|^\s*l,(.*)$|);
+    }
+    foreach $opt_L (@opt_L) {
+        $opt .= " -L$opt_L";
+    }
+    foreach $opt_l (@opt_l) {
+        $opt .= " -l$opt_l";
+    }
+
+    my $ldflags = "$CFG_LDFLAGS";
+    if ($opt_p == 1) {
+        
+        my $apr_libs=`$apr_config --cflags --ldflags --link-libtool --libs`;
+        chomp($apr_libs);
+        my $apu_libs="";
+        if ($apr_major_version < 2) {
+            $apu_libs=`$apu_config --ldflags --link-libtool --libs`;
+            chomp($apu_libs);
+        }
+        
+        $opt .= " ".$apu_libs." ".$apr_libs;
+    }
+    else {
+        my $apr_ldflags=`$apr_config --ldflags`;
+        chomp($apr_ldflags);
+        $opt .= " -rpath $CFG_LIBEXECDIR -module -avoid-version $apr_ldflags";
+    }
+
+    push(@cmds, "$libtool $ltflags --mode=link $CFG_CC $ldflags -o $dso_file $opt $lo");
+
+    #   execute the commands
+    &execute_cmds(@cmds);
+
+    #   allow one-step compilation and installation
+    if ($opt_i or $opt_e) {
+        @args = ( $dso_file );
+    }
+}
+
+if ($opt_i or $opt_e) {
+    ##
+    ##  SHARED OBJECT INSTALLATION
+    ##
+
+    #   determine installation commands
+    #   and corresponding LoadModule directive
+    my @lmd = ();
+    my @cmds = ();
+    my $f;
+    foreach $f (@args) {
+        #  ack all potential gcc, hp/ux, win32+os2+aix and os/x extensions
+        if ($f !~ m#(\.so$|\.la$|\.sl$|\.dll$|\.dylib$|)#) {
+            error("file $f is not a shared object");
+            exit(1);
+        }
+        my $t = $f;
+        $t =~ s|^.+/([^/]+)$|$1|;
+        #  use .so unambigiously for installed shared library modules
+        $t =~ s|\.[^./\\]+$|\.so|;
+        if ($opt_i) {
+	    push(@cmds, "$installbuilddir/instdso.sh SH_LIBTOOL='" .
+                 "$libtool' $f $CFG_LIBEXECDIR");
+	    push(@cmds, "chmod 755 $CFG_LIBEXECDIR/$t");
+        }
+
+        #   determine module symbolname and filename
+        my $filename = '';
+        if ($name eq 'unknown') {
+            $name = '';
+            my $base = $f;
+            $base =~ s|\.[^.]+$||;
+            if (-f "$base.c") {
+                open(FP, "<$base.c");
+                my $content = join('', <FP>);
+                close(FP);
+                if ($content =~ m|.*AP_DECLARE_MODULE\s*\(\s*([a-zA-Z0-9_]+)\s*\)\s*=.*|s || $content =~ m|.*module\s+(?:AP_MODULE_DECLARE_DATA\s+)?([a-zA-Z0-9_]+)_module\s*=\s*.*|s) {
+                    $name = "$1";
+                    $filename = "$base.c";
+                    $filename =~ s|^[^/]+/||;
+                }
+            }
+            if ($name eq '') {
+                if ($base =~ m|.*mod_([a-zA-Z0-9_]+)\..+|) {
+                    $name = "$1";
+                    $filename = $base;
+                    $filename =~ s|^[^/]+/||;
+                }
+            }
+            if ($name eq '') {
+                error("Sorry, cannot determine bootstrap symbol name");
+                error("Please specify one with option `-n'");
+                exit(1);
+            }
+        }
+        if ($filename eq '') {
+            $filename = "mod_${name}.c";
+        }
+        my $dir = $CFG_LIBEXECDIR;
+        $dir =~ s|^$CFG_PREFIX/?||;
+        $dir =~ s|(.)$|$1/|;
+	$t =~ s|\.la$|.so|;
+        push(@lmd, sprintf("LoadModule %-18s %s", "${name}_module", "$dir$t"));
+    }
+
+    #   execute the commands
+    &execute_cmds(@cmds);
+
+    #   activate module via LoadModule/AddModule directive
+    if ($opt_a or $opt_A) {
+        if (not -f "$CFG_SYSCONFDIR/$CFG_TARGET.conf") {
+            error("Config file $CFG_SYSCONFDIR/$CFG_TARGET.conf not found");
+            exit(1);
+        }
+
+        open(FP, "<$CFG_SYSCONFDIR/$CFG_TARGET.conf") || die;
+        my $content = join('', <FP>);
+        close(FP);
+
+        if ($content !~ m|\n#?\s*LoadModule\s+|) {
+            error("Activation failed for custom $CFG_SYSCONFDIR/$CFG_TARGET.conf file.");
+            error("At least one `LoadModule' directive already has to exist.");
+            exit(1);
+        }
+
+        my $lmd;
+        my $c = '';
+        $c = '#' if ($opt_A);
+        foreach $lmd (@lmd) {
+            my $what = $opt_A ? "preparing" : "activating";
+            my $lmd_re = $lmd;
+            $lmd_re =~ s/\s+/\\s+/g;
+
+            if ($content !~ m|\n#?\s*$lmd_re|) {
+                # check for open <containers>, so that the new LoadModule
+                # directive always appears *outside* of an <container>.
+
+                my $before = ($content =~ m|^(.*\n)#?\s*LoadModule\s+[^\n]+\n|s)[0];
+
+                # the '()=' trick forces list context and the scalar
+                # assignment counts the number of list members (aka number
+                # of matches) then
+                my $cntopen = () = ($before =~ m|^\s*<[^/].*$|mg);
+                my $cntclose = () = ($before =~ m|^\s*</.*$|mg);
+
+                if ($cntopen == $cntclose) {
+                    # fine. Last LoadModule is contextless.
+                    $content =~ s|^(.*\n#?\s*LoadModule\s+[^\n]+\n)|$1$c$lmd\n|s;
+                }
+                elsif ($cntopen < $cntclose) {
+                    error('Configuration file is not valid. There are sections'
+                          . ' closed before opened.');
+                    exit(1);
+                }
+                else {
+                    # put our cmd after the section containing the last
+                    # LoadModule.
+                    my $found =
+                    $content =~ s!\A (               # string and capture start
+                                  (?:(?:
+                                    ^\s*             # start of conf line with a
+                                    (?:[^<]|<[^/])   # directive which does not
+                                                     # start with '</'
+
+                                    .*(?:$)\n        # rest of the line.
+                                                     # the '$' is in parentheses
+                                                     # to avoid misinterpreting
+                                                     # the string "$\" as
+                                                     # perl variable.
+
+                                    )*               # catch as much as possible
+                                                     # of such lines. (including
+                                                     # zero)
+
+                                    ^\s*</.*(?:$)\n? # after the above, we
+                                                     # expect a config line with
+                                                     # a closing container (</)
+
+                                  ) {$cntopen}       # the whole pattern (bunch
+                                                     # of lines that end up with
+                                                     # a closing directive) must
+                                                     # be repeated $cntopen
+                                                     # times. That's it.
+                                                     # Simple, eh? ;-)
+
+                                  )                  # capture end
+                                 !$1$c$lmd\n!mx;
+
+                    unless ($found) {
+                        error('Configuration file is not valid. There are '
+                              . 'sections opened and not closed.');
+                        exit(1);
+                    }
+                }
+            } else {
+                # replace already existing LoadModule line
+                $content =~ s|^(.*\n)#?\s*$lmd_re[^\n]*\n|$1$c$lmd\n|s;
+            }
+            $lmd =~ m|LoadModule\s+(.+?)_module.*|;
+            notice("[$what module `$1' in $CFG_SYSCONFDIR/$CFG_TARGET.conf]");
+        }
+        if (@lmd) {
+            if (open(FP, ">$CFG_SYSCONFDIR/$CFG_TARGET.conf.new")) {
+                print FP $content;
+                close(FP);
+                system("cp $CFG_SYSCONFDIR/$CFG_TARGET.conf $CFG_SYSCONFDIR/$CFG_TARGET.conf.bak && " .
+                       "cp $CFG_SYSCONFDIR/$CFG_TARGET.conf.new $CFG_SYSCONFDIR/$CFG_TARGET.conf && " .
+                       "rm $CFG_SYSCONFDIR/$CFG_TARGET.conf.new");
+            } else {
+                notice("unable to open configuration file");
+            }
+	}
+    }
+}
+
+sub error{
+    print STDERR "apxs:Error: $_[0].\n";
+}
+
+sub notice{
+    print STDERR "$_[0]\n";
+}
+
+##EOF##
+__DATA__
+##
+##  Makefile -- Build procedure for sample %NAME% Apache module
+##  Autogenerated via ``apxs -n %NAME% -g''.
+##
+
+builddir=.
+top_srcdir=%PREFIX%
+top_builddir=%PREFIX%
+include %INSTALLBUILDDIR%/special.mk
+
+#   the used tools
+APACHECTL=apachectl
+
+#   additional defines, includes and libraries
+#DEFS=-Dmy_define=my_value
+#INCLUDES=-Imy/include/dir
+#LIBS=-Lmy/lib/dir -lmylib
+
+#   the default target
+all: local-shared-build
+
+#   install the shared object file into Apache 
+install: install-modules-yes
+
+#   cleanup
+clean:
+	-rm -f mod_%NAME%.o mod_%NAME%.lo mod_%NAME%.slo mod_%NAME%.la 
+
+#   simple test
+test: reload
+	lynx -mime_header http://localhost/%NAME%
+
+#   install and activate shared object by reloading Apache to
+#   force a reload of the shared object file
+reload: install restart
+
+#   the general Apache start/restart/stop
+#   procedures
+start:
+	$(APACHECTL) start
+restart:
+	$(APACHECTL) restart
+stop:
+	$(APACHECTL) stop
+
+-=#=-
+mod_%NAME%.la: mod_%NAME%.slo
+	$(SH_LINK) -rpath $(libexecdir) -module -avoid-version  mod_%NAME%.lo
+DISTCLEAN_TARGETS = modules.mk
+shared =  mod_%NAME%.la
+-=#=-
+/* 
+**  mod_%NAME%.c -- Apache sample %NAME% module
+**  [Autogenerated via ``apxs -n %NAME% -g'']
+**
+**  To play with this sample module first compile it into a
+**  DSO file and install it into Apache's modules directory 
+**  by running:
+**
+**    $ apxs -c -i mod_%NAME%.c
+**
+**  Then activate it in Apache's %TARGET%.conf file for instance
+**  for the URL /%NAME% in as follows:
+**
+**    #   %TARGET%.conf
+**    LoadModule %NAME%_module modules/mod_%NAME%.so
+**    <Location /%NAME%>
+**    SetHandler %NAME%
+**    </Location>
+**
+**  Then after restarting Apache via
+**
+**    $ apachectl restart
+**
+**  you immediately can request the URL /%NAME% and watch for the
+**  output of this module. This can be achieved for instance via:
+**
+**    $ lynx -mime_header http://localhost/%NAME% 
+**
+**  The output should be similar to the following one:
+**
+**    HTTP/1.1 200 OK
+**    Date: Tue, 31 Mar 1998 14:42:22 GMT
+**    Server: Apache/1.3.4 (Unix)
+**    Connection: close
+**    Content-Type: text/html
+**  
+**    The sample page from mod_%NAME%.c
+*/ 
+
+#include "httpd.h"
+#include "http_config.h"
+#include "http_protocol.h"
+#include "ap_config.h"
+
+/* The sample content handler */
+static int %NAME%_handler(request_rec *r)
+{
+    if (strcmp(r->handler, "%NAME%")) {
+        return DECLINED;
+    }
+    r->content_type = "text/html";      
+
+    if (!r->header_only)
+        ap_rputs("The sample page from mod_%NAME%.c\n", r);
+    return OK;
+}
+
+static void %NAME%_register_hooks(apr_pool_t *p)
+{
+    ap_hook_handler(%NAME%_handler, NULL, NULL, APR_HOOK_MIDDLE);
+}
+
+/* Dispatch list for API hooks */
+module AP_MODULE_DECLARE_DATA %NAME%_module = {
+    STANDARD20_MODULE_STUFF, 
+    NULL,                  /* create per-dir    config structures */
+    NULL,                  /* merge  per-dir    config structures */
+    NULL,                  /* create per-server config structures */
+    NULL,                  /* merge  per-server config structures */
+    NULL,                  /* table of config file commands       */
+    %NAME%_register_hooks  /* register hooks                      */
+};
+

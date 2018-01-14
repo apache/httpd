@@ -1,0 +1,6 @@
+# testing with conf/test15.conf
+[macro:warn] bad cumulated nesting (+1) in macro 'test' (defined on line 2 of "./conf/test15.conf")
+[core:error] should not reach this point. on line 9 of ./conf/test15.conf
+AH00526: Syntax error on line 9 of ./conf/test15.conf:
+Configuration processing stopped by Error directive
+# exit: 1

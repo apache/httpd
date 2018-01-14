@@ -1,0 +1,835 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
+<!-- English Revision: 656287:1747085 (outdated) -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_include.xml.meta">
+
+<name>mod_include</name>
+<description>サーバがパースする html ドキュメント (Server Side Includes)</description>
+<status>Base</status>
+<sourcefile>mod_include.c</sourcefile>
+<identifier>include_module</identifier>
+<compatibility>Apache 2.0 から出力フィルタとして実装されました。</compatibility>
+
+<summary>
+    <p>このモジュールはファイルがクライアントに送られる前に処理するフィルタを
+    提供します。処理の内容は<dfn>要素</dfn>と呼ばれる特別な形式の SGML コメントにより
+    制御されます。これらの要素は条件分岐や、他のファイルや
+    プログラムの出力の取り込み、環境変数の設定や表示を行なうことが
+    できます。</p>
+</summary>
+<seealso><directive module="core">Options</directive></seealso>
+<seealso><directive module="core">AcceptPathInfo</directive></seealso>
+<seealso><a href="../filter.html">フィルタ</a></seealso>
+<seealso><a href="../howto/ssi.html">SSI チュートリアル</a></seealso>
+
+<section id="enabling">
+    <title>Server-Side Includes を有効にする</title>
+
+    <p>Server Side Includes は <code>INCLUDES</code>
+    <a href="../filter.html">フィルタ</a> により実装されています。
+    Server-side include のディレクティブを含むドキュメントの拡張子が
+    .shtml の場合、以下のディレクティブでは Apache がそれらを
+    パースして、その結果できるドキュメントに <code>text/html</code> の
+    MIME タイプを割り当てます:</p>
+
+    <example>
+      AddType text/html .shtml<br />
+      AddOutputFilter INCLUDES .shtml
+    </example>
+
+    <p>以下のディレクティブは shtml ファイルのあるディレクトリで指定されている
+    必要があります (通常は <directive module="core" 
+    type="section">Directory</directive> セクションで指定しますが、
+    <directive module="core">AllowOverride</directive> <code>Options</code>
+    が設定されていると、<code>.htaccess</code> ファイルに書くこともできます):</p>
+
+    <example>
+      Options +Includes
+    </example>
+
+    <p>互換性を保つために、<code>server-parsed</code>
+    <a href="../handler.html">ハンドラ</a> も INCLUDES フィルタを
+    有効にします。MIME タイプ <code>text/x-server-parsed-html</code> や
+    <code>text/x-server-parsed-html3</code> のドキュメントに対しても
+    Apache は INCLUDES フィルタを有効にします (出力されるものは
+    MIME タイプ <code>text/html</code> になります)。</p>
+
+    <p>詳しい情報は <a
+    href="../howto/ssi.html">Tutorial on Server Side Includes</a>.</p>
+</section> <!-- /enabling -->
+
+<section id="pathinfo">
+    <title>サーバサイドインクルード (SSI) での PATH_INFO</title>
+
+    <p>SSI で処理されるファイルはデフォルトでは <code>PATH_INFO</code>
+    (後続のパス名情報)
+    付きのリクエストを受け入れなくなりました。<directive 
+    module="core">AcceptPathInfo</directive> ディレクティブで
+    <code>PATH_INFO</code> 付きのリクエストを受け入れるようにサーバを
+    設定できます。</p>
+</section> <!-- /pathinfo -->
+
+<section id="elements"><title>基本要素</title>
+    <p>ドキュメントは、SGML のコメントとして特別なコマンドが埋め込まれた
+    HTML ドキュメントとしてパースされます。コマンドの構文は次のように
+    なっています:</p>
+
+    <example>
+      &lt;!--#<var>element</var> <var>attribute</var>=<var>value</var>
+      <var>attribute</var>=<var>value</var> ... --&gt;
+    </example>
+
+    <p>値 <transnote>value</transnote> は二重引用符で囲むのが一般的ですが、
+    シングルクオート (') とバッククオート (`) も使用できます。
+    多くのコマンドは属性-値 <transnote>attribute-value</transnote> の組を一つだけ指定できます。
+    コメントの終わり (<code>--&gt;</code>)
+    の前には、SSI の句の一部だと解釈されないようにするために空白を
+    入れてください。最初の <code>&lt;!--#</code> はまとめて<em>一つ</em>の
+    句で、空白をふくんではいけないこと注意してください。</p>
+
+    <p>要素 <transnote>element</transnote> を以下の表に示します。</p>
+
+    <table border="1">
+    <tr><th>要素</th><th>説明</th></tr>
+    <tr><td><code><a href="#element.config">config</a></code></td>
+        <td>configure output formats</td></tr>
+    <tr><td><code><a href="#element.echo">echo</a></code></td>
+        <td>print variables</td></tr>
+    <tr><td><code><a href="#element.exec">exec</a></code></td>
+        <td>execute external programs</td></tr>
+    <tr><td><code><a href="#element.fsize">fsize</a></code></td>
+        <td>print size of a file</td></tr>
+    <tr><td><code><a href="#element.flastmod">flastmod</a></code></td>
+        <td>print last modification time of a file</td></tr>
+    <tr><td><code><a href="#element.include">include</a></code></td>
+        <td>include a file</td></tr>
+    <tr><td><code><a href="#element.printenv">printenv</a></code></td>
+        <td>print all available variables</td></tr>
+    <tr><td><code><a href="#element.set">set</a></code></td>
+        <td>set a value of a variable</td></tr>
+    </table>
+
+    <p>SSI 要素は <module>mod_include</module> 以外のモジュールで
+    定義されることもあります。実際、
+    <code><a href="#element.exec">exec</a></code> 要素は
+    <module>mod_cgi</module> で提供されていて、このモジュールが
+    ロードされる場合にのみ利用可能となります。</p>
+
+    <section id="element.config"><title>config 要素</title>
+      <p>次のコマンドは解析の様々な側面を制御します。属性は次の通りです。</p>
+
+      <dl>
+      <dt><code>echomsg</code> (<em>Apache 2.1 以降</em>)</dt>
+      <dd>指定される値は、<code><a href="#element.echo">echo</a></code>
+      要素が未定義の変数をエコーしようとした際に、
+      クライアントに送られるメッセージになります。
+      <directive module="mod_include">SSIUndefinedEcho</directive> 
+      ディレクティブを上書きします。</dd>
+
+      <dt><code>errmsg</code></dt>
+      <dd>この値が、ドキュメントの解析中にエラーが発生した時に
+      クライアントに送信されるメッセージになります。
+      <directive module="mod_include">SSIErrorMsg</directive>
+      ディレクティブを上書きします。</dd>
+
+      <dt><code>sizefmt</code></dt>
+      <dd>この値は、ファイルのサイズを表示する際に使用する
+      フォーマットを設定します。値は バイトカウントの
+      <code>bytes</code>か、Kb や Mb を優先的に使用する
+      <code>abbrec</code> (例えば 1024 バイトは "1K" と表示されます)
+      です。</dd>
+
+      <dt><code>timefmt</code></dt>
+      <dd>この値は <code>strftime(3)</code> ライブラリルーチンが
+      日時をプリントする際に用いられます。</dd>
+      </dl>
+    </section> <!-- /config -->
+
+    <section id="element.echo"><title>echo 要素</title>
+      <p>このコマンドは以下で定義されている <a href="#includevars">include
+      変数</a> を表示します。変数が設定されていない場合は <directive 
+      module="mod_include">SSIUndefinedEcho</directive> ディレクティブで
+      決定される結果となります。日付はその時点での <code>timefmt</code> に従って
+      表示されます。属性は次の通りです。</p>
+
+      <dl>
+      <dt><code>var</code></dt>
+      <dd>値は表示する変数の名前です。</dd>
+
+      <dt><code>encoding</code></dt>
+      <dd><p>変数を出力する前に、変数中の特別文字をどのようにエンコードするかを
+      指定します。<code>none</code> に設定されていると、エンコードは行なわれません。
+      <code>url</code> に設定されていると、URL エンコード (%-エンコードとも
+      呼ばれています。これはリンク等の URL の使用に適切です) が
+      行なわれます。<code>echo</code> 要素の開始時は、デフォルトは
+      <code>entity</code> に設定されています。これはエンティティエンコード
+      (段落やテキストなどのブロックレベルの HTML エレメントのコンテキストに
+      適しています) を行ないます。これは <code>encoding</code> 属性
+      を加えることで変更できます。変更は次の <code>encoding</code> 属性か、
+      要素の終了まで効力を持ちます。</p>
+
+      <p><code>encoding</code> 属性はエンコードの変更をしたい <code>var</code> 
+      の<em>前に</em> ある必要があることに注意してください。
+      また、ISO-8859-1 エンコーディングで
+      定義されている特別な文字だけがエンコードされます。
+      別の文字のエンコーディングの場合は、このエンコーディングは
+      望みの結果にならないかもしれません。</p>
+
+      <note type="warning">
+        クロスサイトスクリプティングの問題を避けるために、
+        <em>常に</em>ユーザからのデータをエンコードすべきです。
+      </note>
+      </dd>
+      </dl>
+    </section> <!-- /echo -->
+
+    <section id="element.exec"><title>exec 要素</title>
+      <p><code>exec</code> コマンドは指定されたシェルコマンドや CGI スクリプトを
+      実行します。<module>mod_cgi</module> がサーバに組み込まれているいなければ
+      なりません。<directive module="core">Option</directive> 
+      <code>IncludesNOEXEC</code> はこのコマンドを無効にします。
+      使用可能な属性は次の通りです。</p>
+
+      <dl>
+      <dt><code>cgi</code></dt>
+      <dd><p>値は (%-エンコードされた) URL を指定します。パスが
+      スラッシュ (/) で始まらないときは、ドキュメントからの
+      相対パスとして扱われます。このパスで参照されているドキュメントは
+      サーバが CGI スクリプトとして扱っていなくても CGI スクリプトとして
+      起動されます。ただし、スクリプトのあるディレクトリでは
+      (<directive module="mod_alias">ScriptAlias</directive>
+      や <directive module="core">Option</directive> <code>ExecCGI</code>
+      によって) CGI スクリプトの使用が許可されている必要があります。</p>
+
+      <p>CGI スクリプトには、クライアントからの元々のリクエストの
+      <code>PATH_INFO</code> とクエリー文字列 (<code>QUERY_STRING</code>) が渡されます。
+      これらは URL パスとして特定<em>できない</em>ものです。
+      スクリプトは標準 <a href="mod_cgi.html">CGI</a> 環境に加えて、include 変数を
+      使用することができます。</p>
+
+      <example><title>例</title>
+        &lt;!--#exec cgi="/cgi-bin/example.cgi" --&gt;
+      </example>
+
+      <p>スクリプトが、出力の代わりに <code>Location:</code> ヘッダを返すと、
+      HTML のアンカー <transnote>リンク</transnote> に変換されます。</p>
+
+      <p><code>exec cgi</code> よりも、
+      <code><a href="#includevirtual">include virtual</a></code>
+      の方を使うようにしてください。特に、CGI への追加の引数を
+      クエリー文字列を使って渡すことは <code>exec cgi</code> は
+      できませんが、<code>include virtual</code> は以下のようにして
+      可能です。</p>
+
+      <example>
+        &lt;!--#include virtual="/cgi-bin/example.cgi?argument=value" --&gt;
+      </example>
+      </dd>
+
+      <dt><code>cmd</code></dt>
+      <dd><p>サーバは指定された文字列を <code>/bin/sh</code> を使って
+      実行します。コマンドは通常の CGI 変数に加えて <a
+      href="#includevars">include 変数</a>も使うことができます。</p>
+
+      <p>ほとんどの場合、<code><a href="#includevirtual">#include 
+      virtual</a></code> を使う方が <code>#exec cgi</code> や <code>#exec
+      cmd</code> を使うよりも良いです。前者 (<code>#include virtual</code>)
+      は標準の Apache のサブリクエスト機構を使ってファイルやスクリプトの
+      出力を取り込みます。
+      こちらの方がよくテストされメンテナンスされた方法です。</p>
+
+      <p>さらに、Win32 のようないくつかのプラットフォームや、<a 
+      href="../suexec.html">suexec</a> を使っている unix では、
+      <code>exec</code> ディレクティブのコマンドに
+      引数を渡したり、コマンドに空白を入れることはできません。
+      ですから、以下のものは unix の suexec でない設定では動作しますが、
+      Win32 や suexec を使っている unix では期待した結果にはなりません:</p>
+
+      <example>
+        &lt;!--#exec cmd="perl /path/to/perlscript arg1 arg2" --&gt;
+      </example>
+      </dd>
+      </dl>
+    </section> <!-- /exec -->
+
+    <section id="element.fsize"><title>fsize 要素</title>
+      <p>このコマンドは指定されたファイルの大きさを <code>sizefmt</code> の
+      書式指定に基づいて出力します。属性は次の通りです。</p>
+
+      <dl>
+      <dt><code>file</code></dt>
+      <dd>値は解析されているドキュメントの存在するディレクトリからの
+      相対パスです。</dd>
+
+      <dt><code>virtual</code></dt>
+      <dd> 値は (% エンコードされた) URL-path です。スラッシュ (/) で
+      始まらないときはドキュメントからの相対パスとして扱われます。
+      CGI の出力のサイズはプリント<em>されません</em>。CGI
+      スクリプト自体のサイズがプリントされることに注意してください。</dd>
+      </dl>
+    </section> <!-- /fsize -->
+
+    <section id="element.flastmod"><title>flastmod 要素</title>
+      <p>このコマンドは指定されたファイルの最終修正時刻を
+      <code>timefmt</code> 書式指定に従って表示します。
+      指定可能な属性は <code>fsize</code> コマンドと同じです。</p>
+    </section> <!-- /flastmod -->
+
+    <section id="element.include"><title>include 要素</title>
+      <p>このコマンドは別の文書やファイルのテキストを解析しているファイルに
+      挿入します。挿入されるファイルはアクセス制御の管理下にあります。
+      解析しているファイルの存在するディレクトリに
+      <a href="core.html#options">Option</a> <code>IncludesNOEXEC</code>
+      が設定されている場合、text <glossary ref="mime-type">MIME タイプ</glossary>
+      (<code>text/plain</code>, <code>text/html</code> 等) 
+      のドキュメントのみインクルードが行なわれます。
+      その他の場合は、クエリー文字列も含め、コマンドで指定された
+      完全な URL を使って普通に CGI スクリプトが呼び出されます。</p>
+
+      <p>属性が文書の位置を指定します。include コマンドに与えられたそれぞれの
+      属性に対して挿入作業が行なわれます。有効な属性は次の通りです。</p>
+
+      <dl>
+      <dt><code>file</code></dt>
+      <dd>値は解析されているドキュメントの存在するディレクトリからの
+      相対パスです。
+      <code>../</code> を含んでいたり、絶対パスを指定したりはできません。
+      ですから、ドキュメントルートの外にあるファイルや、ディレクトリ構造で
+      上位にあるファイルを挿入することはできません。
+      常にこの属性よりは、<code>virtual</code> 属性を使うようにしてください。
+      </dd>
+
+      <dt><code><a id="includevirtual" name="includevirtual"
+      >virtual</a></code></dt>
+      <dd><p>値は解析されているドキュメントからの (% エンコードされた) URL
+      です。URL にはスキームやホスト名を含めることはできません。パスと、
+      もしあればクエリー文字列を指定できるだけです。スラッシュ (/) から
+      始まらない場合は、ドキュメントからの相対パスとして扱われます。</p>
+
+      <p>URL は属性から作られ、その URL をクライアントがアクセスしたときに
+      出力される内容が解析後の出力に含められます。ですから、挿入される
+      ファイルは入れ子構造にすることができます。</p>
+
+      <p>指定された URL が CGI プログラムであった場合は、
+      プログラムが実行され、その出力が解析しているファイル中の
+      ディレクティブがあった位置に挿入されます。CGI の url に
+      クエリー URL を入れることもできます。</p>
+
+      <example>
+        &lt;!--#include virtual="/cgi-bin/example.cgi?argument=value" --&gt;
+      </example>
+
+      <p>HTML ドキュメントに CGI プログラムの出力を含める方法としては、
+      <code>include virtual</code> の方が <code>exec cgi</code> よりも
+      好ましい方法です。</p>
+
+      <p><directive module="mod_request">KeptBodySize</directive>
+      ディレクティブが設定されていて、かつ、この対象ファイルが
+      <transnote>POST リクエストを</transnote>受け入れできるなら、
+      POST リクエストを受け取ってサブリクエストを発行する際にも
+      POST リクエストが渡されます。
+      このディレクティブが設定されていない場合は、
+      サブリクエストは GET リクエストとして処理されます。</p>
+
+      </dd>
+      </dl>
+    </section> <!-- /include -->
+
+    <section id="element.printenv"><title>printenv 要素</title>
+      <p>これは、存在するすべての変数とその値を表示します。Apache 1.3.12 から、
+      特別な文字は出力される前にエンティティエンコード (詳細は <a
+      href="#element.echo"><code>echo</code></a> 要素を参照)
+      されるようになりました。属性はありません。</p>
+
+      <example><title>例</title>
+        &lt;!--#printenv --&gt;
+      </example>
+    </section> <!-- /printenv -->
+
+    <section id="element.set"><title>set 要素</title>
+      <p>これは変数の値を設定します。属性は次の通りです。</p>
+
+      <dl>
+      <dt><code>var</code></dt>
+      <dd>設定する変数の名前。</dd>
+
+      <dt><code>value</code></dt>      
+      <dd>変数に設定する値。</dd>
+      </dl>
+
+      <example><title>例</title>
+        &lt;!--#set var="category" value="help" --&gt;
+      </example>
+    </section> <!-- /set -->
+</section> <!-- /basic elements -->
+
+<section id="includevars">
+    <title>Include 変数</title>
+
+    <p>標準 CGI 環境の変数に加えて、<code>echo</code> コマンドや、
+    <code>if</code> や <code>elif</code>, それにドキュメントから呼び出される
+    すべてのプログラムから使用できる変数があります。</p>
+
+    <dl>
+      <dt><code>DATE_GMT</code></dt>
+      <dd>グリニッジ標準時による現在時刻。</dd>
+
+      <dt><code>DATE_LOCAL</code></dt>
+      <dd>ローカルの標準時による現在時刻。</dd>
+
+      <dt><code>DOCUMENT_NAME</code></dt>
+      <dd>ユーザがリクエストした (ディレクトリを除いた) ファイル名。</dd>
+
+      <dt><code>DOCUMENT_URI</code></dt>
+      <dd>ユーザがリクエストした (% エンコードされた) URL-path。
+      挿入ファイルが入れ子になっている場合は、解析されている
+     ドキュメントの URL では<em>ない</em>ことに注意してください。</dd>
+
+      <dt><code>LAST_MODIFIED</code></dt>
+      <dd>ユーザがリクエストしたドキュメントの最終修正時刻。</dd>
+
+      <dt><code>QUERY_STRING_UNESCAPED</code></dt>
+      <dd>クエリー文字列がある場合、この変数には (%-デコードされた)
+      クエリー文字列が代入されていて、shell で使用できるように
+      <em>エスケープ</em>されています (<code>&amp;</code>
+      といった特殊文字にはバックスラッシュが直前に置かれます)。</dd>
+    </dl>
+</section>
+
+<section id="substitution"><title>変数置換</title>
+
+    <p>変数置換はたいていの場合 SSI ディレクティブの引数として妥当な場所にある
+    引用符で囲まれた文字列中で行なわれます。これに該当するものには、
+    <code>config</code>,
+    <code>exec</code>, <code>flastmod</code>, <code>fsize</code>,
+    <code>include</code>, <code>echo</code>, <code>set</code> の
+    各ディレクティブと、条件分岐用のオペレータへの引数があります。
+    ドル記号はバックスラッシュを使うことで使うことができます:</p>
+
+    <example>
+      &lt;!--#if expr="$a = \$test" --&gt;
+    </example>
+
+    <p>変数名としてみなされる文字列の中で変数への参照を置換する必要があるときは、
+    シェルでの変数置換のように、中括弧で括ることで区別することができます:</p>
+
+    <example>
+      &lt;!--#set var="Zed" value="${REMOTE_HOST}_${REQUEST_METHOD}" --&gt;
+    </example>
+
+    <p>この例では、<code>REMOTE_HOST</code> が
+    "<code>X</code>" で <code>REQUEST_METHOD</code> が
+    "<code>Y</code>" のときに変数 <code>Zed</code> を "<code>X_Y</code>"
+    に設定します。</p>
+
+    <p>以下の例では、<code>DOCUMENT_URI</code> が <code>/foo/file.html</code>
+    のときに "in foo" を、<code>/bar/file.html</code> のときに "in bar" を、
+    どちらでもないときには "in neither" を表示します。</p>
+
+    <example>
+      &lt;!--#if expr='"$DOCUMENT_URI" = "/foo/file.html"' --&gt;<br />
+      <indent>
+        in foo<br />
+      </indent>
+      &lt;!--#elif expr='"$DOCUMENT_URI" = "/bar/file.html"' --&gt;<br />
+      <indent>
+        in bar<br />
+      </indent>
+      &lt;!--#else --&gt;<br />
+      <indent>
+        in neither<br />
+      </indent>
+      &lt;!--#endif --&gt;
+    </example>
+</section>
+
+<section id="flowctrl">
+    <title>フロー制御要素</title>
+
+    <p>基本的なフローコントロール要素は次の通りです。</p>
+
+    <example>
+      &lt;!--#if expr="<var>test_condition</var>" --&gt;<br />
+      &lt;!--#elif expr="<var>test_condition</var>" --&gt;<br />
+      &lt;!--#else --&gt;<br />
+      &lt;!--#endif --&gt;
+    </example>
+
+    <p><code>if</code> 要素はプログラミング言語の
+    if 文と同じように動作します。条件が評価され、結果が真であれば次の
+    <code>elif</code> か <code>else</code> か <code>endif</code>
+    要素までの文字列が出力に挿入されます。</p>
+
+    <p><code>elif</code> や <code>else</code> 文は <var>test_condition</var> 
+    が偽のときにテキストを出力に挿入するために使われます。
+    これらの要素はあってもなくても構いません。</p>
+
+    <p><code>endif</code> 要素は <code>if</code>
+    要素を終了させます。この要素は必須です。</p>
+
+    <p><var>test_condition</var> は以下のどれかです:</p>
+
+    <dl>
+      <dt><code><var>string</var></code></dt>
+      <dd><var>string</var> が空でない場合に真です</dd>
+
+      <dt><code><var>-A string</var></code></dt>
+      <dd><p><transnote>httpd の</transnote>設定を検査して、
+      文字列で指定した URL にアクセスできる場合 true で、
+      そうでなければ false になります。
+      <directive>SSIAccessEnable</directive> が有効のときにのみ
+      この検査は行われます。
+      承認されていないユーザからは隠しておきたい URL についての情報、
+      たとえば URL へのリンクなどがある場合に、便利です。
+      検査では URL へアクセスできるかの権限のみが行われ、URL
+      が存在するかどうかについては検査されないことに注意してください。</p>
+
+      <example><title>Example</title>
+        &lt;!--#if expr="-A /private" --&gt;<br />
+        <indent>
+          Click &lt;a href="/private"&gt;here&lt;/a&gt; to access private
+          information.<br />
+        </indent>
+        &lt;!--#endif --&gt;
+      </example>
+      </dd>
+
+      <dt><code><var>string1</var> = <var>string2</var><br />
+      <var>string1</var> == <var>string2</var><br />
+      <var>string1</var> != <var>string2</var></code></dt>
+
+      <dd><p><var>string1</var> と <var>string2</var> を比較します。
+      <var>string2</var> が <code>/<var>string</var>/</code>
+      という形式であれば、正規表現として比較されます。正規表現は
+      <a href="http://www.pcre.org">PCRE</a> エンジンで実装されていて、
+      <a href="http://www.perl.com">perl 5</a> と同じ構文を使用します。
+      <code>==</code> は単に <code>=</code> の別名で、まったく同じ動作を
+      します。</p>
+
+      <p>正のマッチング (<code>=</code> または <code>==</code>) の場合は、
+      正規表現でグループ分けされたパーツをキャプチャすることができます。
+      キャプチャされた部分は特殊変数 <code>$1</code> .. <code>$9</code>
+      に格納されます。</p>
+
+      <example><title>例</title>
+        &lt;!--#if expr="$QUERY_STRING = /^sid=([a-zA-Z0-9]+)/" --&gt;<br />
+        <indent>
+          &lt;!--#set var="session" value="$1" --&gt;<br />
+        </indent>
+        &lt;!--#endif --&gt;
+      </example>
+      </dd>
+
+      <dt><code><var>string1</var> &lt; <var>string2</var><br />
+       <var>string1</var> &lt;= <var>string2</var><br />
+       <var>string1</var> &gt; <var>string2</var><br />
+       <var>string1</var> &gt;= <var>string2</var></code></dt>
+
+      <dd><var>string1</var> と <var>string2</var> を比較します。
+      <em>文字列として</em>比較される (<code>strcmp(3)</code> を使用)
+      ことに注意してください。ですから、文字列 "100" は "20" 
+      よりも小さいことになります。</dd>
+
+      <dt><code>( <var>test_condition</var> )</code></dt>
+      <dd><var>test_condition</var> が真のとき、真</dd>
+
+      <dt><code>! <var>test_condition</var></code></dt>
+      <dd><var>test_condition</var> が偽のとき、真</dd>
+
+      <dt><code><var>test_condition1</var> &amp;&amp;
+        <var>test_condition2</var></code></dt>
+      <dd><var>test_condition1</var> かつ
+      <var>test_condition2</var> が真のとき、真</dd>
+
+      <dt><code><var>test_condition1</var> ||
+        <var>test_condition2</var></code></dt>
+      <dd><var>test_condition1</var> または
+      <var>test_condition2</var> が真のとき、真</dd>
+    </dl>
+
+    <p>"<em>=</em>" と "<em>!=</em>" の方が "<em>&amp;&amp;</em>" より
+    きつく束縛します。"<em>!</em>" の束縛が一番きつくなっています。
+    ですから以下の二つは等価です:</p>
+
+    <example>
+      &lt;!--#if expr="$a = test1 &amp;&amp; $b = test2" --&gt;<br />
+      &lt;!--#if expr="($a = test1) &amp;&amp; ($b = test2)" --&gt;
+    </example>
+
+    <p>真偽値オペレータ <code>&amp;&amp;</code> と <code>||</code>
+    は同じ優先度です。
+    これらのオペレータで一方により強い優先度をつけたい場合には、
+    括弧を使う必要があります。</p>
+
+    <p>変数やオペレータとして認識されないものはすべて文字列として
+    扱われます。文字列は引用符で囲むこともできます: <code>'string'</code>
+    のように。引用符で囲まれていない文字列には空白 (スペースとタブ)
+    を含めることはできません。それらは変数などの句を分離するために
+    使われているからです。複数の文字列が続いているときは、
+    空白を間に入れて一つにくっつけられます。ですから、</p>
+
+    <example>
+      <p><code><var>string1</var>&nbsp;&nbsp;&nbsp;&nbsp;<var
+      >string2</var></code> は <code><var>string1</var>&nbsp;<var
+      >string2</var></code> になります。<br />
+      <br />
+      また、<br />
+      <br />
+      <code>'<var>string1</var>&nbsp;&nbsp;&nbsp;&nbsp;<var
+      >string2</var>'</code> は <code><var
+      >string1</var>&nbsp;&nbsp;&nbsp;&nbsp;<var>string2</var></code>
+      になります。</p>
+    </example>
+
+    <note><title>真偽値表現の最適化</title>
+      <p>式がもっと複雑になり、処理の速度低下が顕著になった場合は、
+      評価ルールに従って最適化してみると良いでしょう。</p>
+      <ul>
+      <li>評価は左から右に向かって行われます。</li>
+      <li>二値真偽値オペレータ (<code>&amp;&amp;</code> と <code>||</code>)
+          は、出来る限り短絡評価されます。つまり結果として上記のルールは、
+          <module>mod_include</module> が左の評価式を評価します。
+          左側で結果を十分決定できる場合は、評価はそこで停止します。
+          そうでない場合は右側を評価して、左と右の両方から結果を計算します。</li>
+      <li>短絡評価は評価の対象に正規表現が含まれる場合、オフになります。
+          後方参照する変数 (<code>$1</code> .. <code>$9</code>) 
+          を埋めるために、実際に評価する必要があるからです。</li>
+      </ul>
+      <p>特定の式がどのように扱われるかを知りたい場合は、
+      <code>-DDEBUG_INCLUDE</code> コンパイラオプションを付けて
+      <module>mod_include</module> をリコンパイルすると良いでしょう。
+      これにより、全てのパースされた式に対して、字句解析情報、
+      パースツリーと、
+      それがどのようにクライアントに送られた出力まで評価されたかを
+      挿入します。</p>
+    </note>
+ 
+    <note><title>正規表現内での / のエスケープ</title>
+    <p>正規表現内でデリミタとして扱いたくない / があれば、それらは全て
+    エスケープしなければなりません。
+    正規表現の意味がどうであろうとエスケープは必要です。</p>
+    </note>
+</section>
+
+<directivesynopsis>
+<name>SSIEndTag</name>
+<description>include 要素を終了させる文字列</description>
+<syntax>SSIEndTag <var>tag</var></syntax>
+<default>SSIEndTag &quot;--&gt;&quot;</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+<compatibility>2.0.30 以降で利用可能</compatibility>
+
+<usage>
+    <p>このディレクティブは <module>mod_include</module> が探す、
+    include 要素の終了を示す文字列を変更します。</p>
+
+    <example><title>例</title>
+      SSIEndTag "%&gt;"
+    </example>
+
+</usage>
+<seealso><directive module="mod_include">SSIStartTag</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSIUndefinedEcho</name>
+<description>未定義の変数が echo されたときに表示される文字列</description>
+<syntax>SSIUndefinedEcho <var>string</var></syntax>
+<default>SSIUndefinedEcho &quot;(none)&quot;</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>All</override>
+<compatibility>2.0.34 以降で利用可能</compatibility>
+
+<usage>
+    <p>このディレクティブは変数が定義されていないにも関わらず
+    &quot;echo&quot; されたときに <module>mod_include</module>
+    が表示する文字列を変更します。</p>
+
+    <example><title>例</title>
+      SSIUndefinedEcho "&lt;!-- undef --&gt;"
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSIErrorMsg</name>
+<description>SSI のエラーがあったときに表示されるエラーメッセージ</description>
+<syntax>SSIErrorMsg <var>message</var></syntax>
+<default>SSIErrorMsg &quot;[an error occurred while processing this
+directive]&quot;</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>All</override>
+<compatibility>バージョン 2.0.30 以降で使用可能</compatibility>
+
+<usage>
+    <p><directive>SSIErrorMsg</directive> ディレクティブは <module>mod_include</module>
+    がエラーが起こったときに表示するメッセージを変更します。プロダクションサーバでは
+    メッセージがユーザに表示されないようにするために
+    デフォルトエラーメッセージを <code>&quot;&lt;!-- Error --&gt;&quot;</code>
+    に変えるというようなことを考えるかもしれません。</p>
+
+    <p>このディレクティブは <code>&lt;!--#config
+    errmsg=<var>message</var> --&gt;</code> 要素と同じ効果になります。</p>
+
+    <example><title>例</title>
+      SSIErrorMsg "&lt;!-- Error --&gt;"
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSIStartTag</name>
+<description>include 要素を開始する文字列</description>
+<syntax>SSIStartTag <var>tag</var></syntax>
+<default>SSIStartTag &quot;&lt;!--#&quot;</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+<compatibility>バージョン 2.0.30 以降で使用可能</compatibility>
+
+<usage>
+
+    <p>このディレクティブは <module>mod_include</module> が探す、include
+    要素の開始を示す文字列を変更します。</p>
+
+    <p>二つのサーバで (もしかすると別々の段階で) ファイルの出力を解析していて、
+    それぞれに違うコマンドを処理させたい、
+    というようなときにこのオプションを使います。</p>
+
+    <example><title>例</title>
+      SSIStartTag "&lt;%"<br />
+      SSIEndTag   "%&gt;"
+    </example>
+
+    <p>上の例のように対応する
+    <directive module="mod_include">SSIEndTag</directive> を併せて使うと、
+    下に示す例のように SSI ディレクティブを使えます:</p>
+
+    <example><title>違う開始と終了のタグを使った SSI ディレクティブ</title>
+      &lt;%printenv %&gt;
+    </example>
+</usage>
+<seealso><directive module="mod_include">SSIEndTag</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSITimeFormat</name>
+<description>日付けを現す文字列の書式を設定する</description>
+<syntax>SSITimeFormat <var>formatstring</var></syntax>
+<default>SSITimeFormat &quot;%A, %d-%b-%Y %H:%M:%S %Z&quot;</default>
+<contextlist>
+<context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>All</override>
+<compatibility>2.0.30 以降で使用可能</compatibility>
+
+<usage>
+<p>このディレクティブは <code>DATE</code> 環境変数を echo して日付を現す文字列が
+    表示されるときの書式を変更します。<var>formatstring</var> は
+    C 標準ライブラリの <code>strftime(3)</code> と同じ形式です。</p>
+
+    <p>このディレクティブは <code>&lt;!--#config
+    timefmt=<var>formatstring</var> --&gt;</code> 要素と同じ効果になります。</p>
+
+    <example><title>例</title>
+      SSITimeFormat "%R, %B %d, %Y"
+    </example>
+
+    <p>上のディレクティブでは、日付は "22:26, June 14, 2002" という
+    形式で表示されます。</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSIAccessEnable</name>
+<description>条件分岐フローの制御で -A フラグが使えるようにする</description>
+<syntax>SSIAccessEnable on|off</syntax>
+<default>SSIAccessEnable off</default>
+<contextlist><context>directory</context><context>.htaccess</context></contextlist>
+
+<usage>
+    <p><directive>SSIAccessEnable</directive> ディレクティブを使って、
+    条件分岐フローの制御で -A 検査が使えるようにします。
+    <directive>SSIAccessEnable</directive> は次の値を引数にとります:</p>
+
+    <dl>
+
+      <dt><code>off</code></dt>
+      <dd>&lt;!--#if expr="-A /foo"--&gt; では文字列や正規表現として
+      解釈され、-A は特別な意味は持ちません。</dd>
+
+      <dt><code>on</code></dt>
+      <dd>&lt;!--#if expr="-A /foo"--&gt; では、設定上 URL /foo
+      にアクセスできない場合 false で、アクセスできる場合は true</dd>
+
+    </dl>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>XBitHack</name>
+<description>実行ビットが設定されたファイルの SSI ディレクティブを
+解析する</description>
+<syntax>XBitHack on|off|full</syntax>
+<default>XBitHack off</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>Options</override>
+
+<usage>
+    <p><directive>XBitHack</directive> ディレクティブは通常の HTML
+    ドキュメントの解析を制御します。このディレクティブは <glossary ref="mime-type">MIME タイプ</glossary>
+    <code>text/html</code> と関連付けられているファイルにのみ影響します。
+    <directive>XBitHack</directive> は以下の値をとることができます。</p>
+
+    <dl>
+      <dt><code>off</code></dt>
+      <dd>実行可能ファイルに対して特別な扱いをしません。</dd>
+
+      <dt><code>on</code></dt>
+      <dd>ユーザの実行ビットが設定されている <code>text/html</code>
+      ファイルは全てサーバで解析する html ドキュメントとして扱われます。</dd>
+
+      <dt><code>full</code></dt>
+      <dd><code>on</code> と同様ですが、グループ実行ビットもテストします。
+      もしそれが設定されていれば、返されるファイルの <code>Last-modified</code> の
+      日付をファイルの最終修正時刻にします。それが設定されていないときは、
+      last-modified の日付は送られません。このビットを設定すると、
+      クライアントやプロキシがリクエストをキャッシュできるようになります。
+
+      <note><strong>注意</strong> 他の CGI を <code>#include</code>
+      するかもしれないものや、各アクセスに対して違う出力を生成する
+      (もしくは後のリクエストで変わるかもしれないもの)
+      すべての SSI スクリプトに対してグループ実行ビットが
+      設定されていないことを確認できない場合は、full は使わない方が良い
+      でしょう。</note>
+      </dd>
+    </dl>
+
+    </usage>
+</directivesynopsis>
+
+</modulesynopsis>
+

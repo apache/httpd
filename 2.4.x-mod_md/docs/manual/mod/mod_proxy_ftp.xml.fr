@@ -1,0 +1,245 @@
+<?xml version="1.0" ?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 1421892 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_proxy_ftp.xml.meta">
+
+<name>mod_proxy_ftp</name>
+<description>Module fournissant le support FTP &agrave;
+<module>mod_proxy</module></description>
+<status>Extension</status>
+<sourcefile>mod_proxy_ftp.c</sourcefile>
+<identifier>proxy_ftp_module</identifier>
+
+<summary>
+    <p>Pour pouvoir fonctionner, ce module <em>requiert</em> le
+    chargement de <module>mod_proxy</module>. Il fournit le support du
+    mandatement des sites FTP. Notez que le support FTP est
+    actuellement limit&eacute; &agrave; la m&eacute;thode GET.</p>
+
+    <p>Ainsi, pour pouvoir traiter les requ&ecirc;tes FTP mandat&eacute;es,
+    <module>mod_proxy</module>, et <module>mod_proxy_ftp</module>
+    doivent &ecirc;tre charg&eacute;s dans le serveur.</p>
+
+    <note type="warning"><title>Avertissement</title>
+      <p>N'activez pas la fonctionnalit&eacute; de mandataire avant d'avoir <a
+      href="mod_proxy.html#access">s&eacute;curis&eacute; votre serveur</a>. Les
+      serveurs mandataires ouverts sont dangereux non seulement pour
+      votre r&eacute;seau, mais aussi pour l'Internet au sens large.</p>
+    </note>
+</summary>
+<seealso><module>mod_proxy</module></seealso>
+
+    <section id="mimetypes"><title>Pourquoi les fichiers du type
+    <var>xxx</var> ne sont-ils pas t&eacute;l&eacute;chargeables par FTP ?</title>
+      <p>Ce type particulier de fichier n'est probablement pas d&eacute;fini en
+      temps que <code>application/octet-stream</code> dans le fichier
+      de configuration mime.types de votre mandataire. La ligne suivante
+      peut y rem&eacute;dier :</p>
+
+      <example>
+<pre>application/octet-stream   bin dms lha lzh exe class tgz taz</pre>
+      </example>
+    <p>Vous pouvez aussi d&eacute;finir par d&eacute;faut tous les types de fichiers
+    en tant que fichiers binaires :</p>
+      <example>
+<highlight language="config">ForceType application/octet-stream</highlight>
+      </example>
+    </section> <!-- /mimetypes -->
+
+    <section id="type"><title>Comment puis-je forcer le t&eacute;l&eacute;chargement
+    FTP en mode ASCII du fichier <var>xxx</var> ?</title>
+      <p>Dans les rares siruations o&ugrave; vous devez t&eacute;l&eacute;charger un fichier
+      sp&eacute;cifique en utilisant la m&eacute;thode de transfert FTP
+      <code>ASCII</code> (alors que le mode transfert par d&eacute;faut est
+      <code>binary</code>), vous pouvez modifier le mode de transfert de
+      <module>mod_proxy</module> en suffixant la requ&ecirc;te avec
+      <code>;type=a</code> pour forcer un transfert en mode ASCII (les
+      listings de r&eacute;pertoires FTP sont cependant quant &agrave; eux transmis en
+      mode ASCII).</p>
+    </section> <!-- /type -->
+
+    <section id="ftpnonget"><title>Comment puis-je effectuer un
+    chargement FTP ?</title>
+    <p>Actuellement, seule la m&eacute;thode GET est support&eacute;e pour FTP dans
+    mod_proxy. Vous pouvez en revanche utiliser le chargement HTTP (POST
+    or PUT) via un mandataire Apache.</p>
+    </section>
+
+    <section id="percent2fhck"><title>Comment puis-je acc&eacute;der par FTP &agrave;
+    des fichiers situ&eacute;s en dehors de mon r&eacute;pertoire home ?</title>
+      <p>Un URI FTP est consid&eacute;r&eacute; comme relatif au r&eacute;pertoire home de
+      l'utilisateur connect&eacute;. H&eacute;las, vous ne pouvez pas utiliser /../
+      pour atteindre des r&eacute;pertoires de niveau sup&eacute;rieur, car les points
+      sont interpr&eacute;t&eacute;s par le navigateur et ne sont donc pas vraiment
+      envoy&eacute;s au serveur FTP. Pour traiter ce probl&egrave;me, une m&eacute;thode
+      nomm&eacute;e <dfn>Squid %2f hack</dfn> a &eacute;t&eacute; impl&eacute;ment&eacute;e dans le
+      mandataire FTP Apache ; cette solution est aussi utilis&eacute;e par
+      d'autres serveurs mandataires courants comme le <a
+      href="http://www.squid-cache.org/">Cache mandataire Squid</a>. En
+      pr&eacute;fixant par <code>/%2f</code> le chemin de votre requ&ecirc;te, vous
+      pouvez faire en sorte que le mandataire modifie le r&eacute;pertoire FTP
+      racine en <code>/</code> (au lieu du r&eacute;pertoire home). Par
+      exemple, pour extraire le fichier <code>/etc/motd</code>, vous
+      pourriez utiliser l'URL :</p>
+
+      <example>
+        ftp://<var>utilisateur</var>@<var>serveur</var>/%2f/etc/motd
+      </example>
+    </section> <!-- /percent2fhck -->
+
+    <section id="ftppass"><title>Comment puis-je dissimuler le mot de
+    passe FTP apparaissant en clair dans la ligne d'URL de mon
+    navigateur ?</title>
+      <p>Apache utilise diff&eacute;rentes strat&eacute;gies pour effectuer une
+      connexion &agrave; un serveur FTP &agrave; l'aide d'un nom d'utilisateur et d'un
+      mot de passe. En l'absence de nom d'utilisateur et de mot de passe
+      dans l'URL, Apache tente une connexion anonyme aupr&egrave;s du serveur
+      FTP comme suit :</p>
+
+      <example>
+        utilisateur : anonymous<br />
+        mot de passe : apache_proxy@
+      </example>
+
+      <p>Ceci fonctionne avec tous les serveurs FTP courants configur&eacute;s
+      pour accepter les connexions anonymes.</p>
+
+      <p>Pour une connexion personnalis&eacute;e avec un nom d'utilisateur
+      sp&eacute;cifique, vous pouvez int&eacute;grer ce dernier dans l'URL comme suit
+      :</p>
+
+      <example>
+        ftp://<var>nom-utilisateur</var>@<var>serveur</var>/mon-fichier
+      </example>
+
+      <p>Si le serveur FTP demande un mot de passe pour ce nom
+      d'utilisateur (ce qu'il est cens&eacute; faire), Apache va renvoyer au
+      client une r&eacute;ponse <code>401</code> (Autorisation requise), ce qui
+      fera afficher au navigateur une bo&icirc;te de dialogue utilisateur/mot
+      de passe. Une fois le mot de passe saisi, la connexion est tent&eacute;e
+      &agrave; nouveau, et si elle r&eacute;ussit, la ressource demand&eacute;e est
+      pr&eacute;sent&eacute;e. L'avantage de cette proc&eacute;dure r&eacute;side dans le fait que
+      votre navigateur n'affiche pas le mot de passe en clair, ce qu'il
+      aurait fait si vous aviez utilis&eacute; l'URL :</p>
+
+      <example>
+        ftp://<var>nom-utilisateur</var>:<var>mot-de-passe</var>
+	@<var>serveur</var>/mon-fichier
+      </example>
+
+      <note><title>Note</title>
+        <p>Le mot de passe transmis de cette mani&egrave;re n'est pas chiffr&eacute;
+	lorsqu'il est envoy&eacute;. Il transite entre votre navigateur et le
+	serveur mandataire Apache sous la forme d'une cha&icirc;ne de texte en
+	clair cod&eacute;e en base64, et entre le mandataire Apache et le
+	serveur FTP en texte pur. Vous devez par cons&eacute;quent r&eacute;fl&eacute;chir &agrave;
+	deux fois avant d'acc&eacute;der &agrave; votre serveur FTP via HTTP (et d'une
+	mani&egrave;re g&eacute;n&eacute;rale avant d'acc&eacute;der &agrave; vos fichiers personnels via
+	FTP !) sur des canaux non s&eacute;curis&eacute;s, car des oreilles
+	indiscr&egrave;tes pourraient intercepter votre mot de passe au cours
+	de son transfert.</p>
+      </note>
+    </section> <!-- /ftppass -->
+
+    <section id="wildcard"><title>Pourquoi re&ccedil;ois-je un listing de
+    fichiers alors que j'ai demand&eacute; le t&eacute;l&eacute;chargement d'un fichier
+    ?</title>
+      <p>Apache examine l'URL de la requ&ecirc;te afin de permettre la
+      navigation dans les r&eacute;pertoires d'un serveur FTP ainsi que le
+      t&eacute;l&eacute;chargement de fichiers. Si elle ressemble &agrave; un r&eacute;pertoire, ou
+      contient des caract&egrave;res g&eacute;n&eacute;riques ("*?[{~"), alors Apache
+      consid&egrave;re que c'est un listing qui est demand&eacute;, et non un
+      t&eacute;l&eacute;chargement.</p>
+      <p>Vous pouvez d&eacute;sactiver le traitement sp&eacute;cial des noms contenant
+      des caract&egrave;res g&eacute;n&eacute;riques. Voir &agrave; cet effet la directive
+      <directive>ProxyFtpListOnWildcard</directive>.
+      </p>
+    </section> <!-- /wildcard -->
+
+<directivesynopsis>
+<name>ProxyFtpListOnWildcard</name>
+<description>Les caract&egrave;res g&eacute;n&eacute;riques dans les noms de fichiers
+demand&eacute;s doivent-ils d&eacute;clencher l'affichage d'un listing ?</description>
+<syntax>ProxyFtpListOnWildcard [on|off]</syntax>
+<default>on</default>
+<contextlist><context>server config</context><context>virtual host</context>
+  <context>directory</context></contextlist>
+<compatibility>Disponible depuis la version 2.3.3 du serveur HTTP Apache</compatibility>
+
+<usage>
+  <p>La directive <directive>ProxyFtpListOnWildcard</directive> permet
+  de d&eacute;terminer si les caract&egrave;res g&eacute;n&eacute;riques ("*?[{~") que contiennent
+  les noms de fichiers demand&eacute;s provoquent l'affichage d'un listing de
+  fichiers par <module>mod_proxy_ftp</module> au lieu de t&eacute;l&eacute;charger un
+  fichier. Il s'agit de leur comportement par d&eacute;faut (valeur on).
+  D&eacute;finissez cette directive &agrave; "off" pour permettre le t&eacute;l&eacute;chargement de
+  fichiers m&ecirc;me si leur nom contient des caract&egrave;res g&eacute;n&eacute;riques.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ProxyFtpEscapeWildcards</name>
+<description>Les caract&egrave;res g&eacute;n&eacute;riques dans les noms de fichiers
+doivent-ils &ecirc;tre &eacute;chapp&eacute;s lorsqu'ils sont envoy&eacute;s au serveur FTP ?</description>
+<syntax>ProxyFtpEscapeWildcards [on|off]</syntax>
+<default>on</default>
+<contextlist><context>server config</context><context>virtual host</context>
+  <context>directory</context></contextlist>
+<compatibility>Disponible depuis la version 2.3.3 du serveur HTTP Apache</compatibility>
+
+<usage>
+  <p>La directive <directive>ProxyFtpEscapeWildcards</directive> permet
+  de d&eacute;terminer si les caract&egrave;res g&eacute;n&eacute;riques ("*?[{~") que contiennent
+  les noms de fichiers demand&eacute;s doivent &ecirc;tre &eacute;chapp&eacute;s pas un slash
+  invers&eacute; avant d'&ecirc;tre envoy&eacute;s au serveur FTP. Il s'agit du comportement
+  par d&eacute;faut ; cependant, de nombreux serveurs FTP n'ont aucune
+  connaissance de la notion d'&eacute;chappement, et tentent de servir le
+  fichier demand&eacute; sous sa forme litt&eacute;rale, en incluant les slashes
+  invers&eacute;s dans son nom.</p>
+    <p>D&eacute;finissez cette directive &agrave; "off" pour permettre le
+    t&eacute;l&eacute;chargement de fichiers dont les noms contiennent des caract&egrave;res
+    g&eacute;n&eacute;riques depuis des serveurs FTP qui ne connaissent pas
+    l'&eacute;chappement des caract&egrave;res g&eacute;n&eacute;riques.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ProxyFtpDirCharset</name>
+<description>D&eacute;finit le jeu de caract&egrave;res des listings FTP
+mandat&eacute;s</description>
+<syntax>ProxyFtpDirCharset <var>jeu-caract&egrave;res</var></syntax>
+<default>ProxyFtpDirCharset ISO-8859-1</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context></contextlist>
+<compatibility>Disponible depuis la version 2.2.7 d'Apache. D&eacute;plac&eacute;
+depuis <module>mod_proxy</module> &agrave; partir de la version 2.3.5 d'Apache</compatibility>
+
+<usage>
+    <p>La directive <directive>ProxyFtpDirCharset</directive> permet de
+    d&eacute;finir le jeu de caract&egrave;res &agrave; utiliser pour les listings FTP en
+    HTML g&eacute;n&eacute;r&eacute;s par <module>mod_proxy_ftp</module>.</p>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

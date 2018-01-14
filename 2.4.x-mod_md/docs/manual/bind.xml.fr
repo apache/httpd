@@ -1,0 +1,221 @@
+<?xml version="1.0" ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+<!-- English Revision : 1565335 -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="bind.xml.meta">
+
+  <title>Ecoute s&eacute;lective</title>
+
+  <summary>
+    <p>Configuration du serveur HTTP Apache pour l'&eacute;coute
+    sur un port et une adresse IP sp&eacute;cifiques.</p>
+  </summary>
+
+  <seealso><a href="vhosts/">H&ocirc;tes virtuels</a></seealso>
+  <seealso><a href="dns-caveats.html">Probl&egrave;mes li&eacute;s &agrave; DNS</a></seealso>
+
+  <section id="overview">
+    <title>Vue d'ensemble</title>
+
+    <related>
+      <modulelist>
+        <module>core</module>
+        <module>mpm_common</module>
+      </modulelist>
+      <directivelist>
+        <directive module="core" type="section">VirtualHost</directive>
+        <directive module="mpm_common">Listen</directive>
+      </directivelist>
+    </related>
+
+
+    <p>Au d&eacute;marrage de httpd, un port et une adresse lui sont associ&eacute;s sur
+    l'h&ocirc;te local et le serveur se met en attente de l'arriv&eacute;e d'une requ&ecirc;te.
+    Par d&eacute;faut, le serveur &eacute;coute toutes les adresses de l'h&ocirc;te local.
+    Cependant, on peut lui pr&eacute;ciser des ports et des adresses sp&eacute;cifiques &agrave; &eacute;couter,
+    ou une combinaison des deux.
+    Tout ceci est souvent associ&eacute; avec la fonctionnalit&eacute;
+    des <a href="vhosts/">h&ocirc;tes virtuels</a>
+    qui d&eacute;termine la mani&egrave;re dont <code>httpd</code> r&eacute;pond aux diff&eacute;rents ports,
+    noms d'h&ocirc;tes et adresses IP.</p>
+
+    <p>La directive <directive module="mpm_common">Listen</directive>
+    enjoint le serveur de n'accepter des requ&ecirc;tes que sur le(s)
+    port(s) sp&eacute;cifi&eacute;s ou
+    une combinaison adresse/port. Si seul un num&eacute;ro de port est sp&eacute;cifi&eacute;
+    dans la directive <directive module="mpm_common">Listen</directive>,
+    le serveur se met &agrave; l'&eacute;coute sur ce port, sur toutes les interfaces r&eacute;seau.
+    Si une adresse IP est sp&eacute;cifi&eacute;e en plus du port, le serveur va &eacute;couter
+    sur ce port, uniquement sur l'interface r&eacute;seau correspondante. On peut utiliser
+    de multiples directives
+    <directive module="mpm_common">Listen</directive> pour
+    sp&eacute;cifier plusieurs adresses et ports &agrave; &eacute;couter. Le serveur r&eacute;pondra alors
+    aux requ&ecirc;tes sur ces ports et adresses sp&eacute;cifi&eacute;s.</p>
+
+    <p>Par exemple, pour faire en sorte que le serveur accepte des connexions
+    sur les ports 80 et 8000, sur toutes les interfaces, utilisez :</p>
+
+    <example>
+    <highlight language="config">
+Listen 80
+Listen 8000
+    </highlight>
+    </example>
+
+    <p>Pour faire en sorte que le serveur accepte des connexions sur le port 80
+    pour une interface, et sur le port 8000 pour une
+    autre interface, utilisez :</p>
+
+    <example>
+    <highlight language="config">
+Listen 192.0.2.1:80
+Listen 192.0.2.5:8000
+    </highlight>
+    </example>
+
+    <p>Les adresses IPv6 doivent &ecirc;tre mises entre crochets, comme dans
+    l'exemple suivant :</p>
+
+    <example>
+    <highlight language="config">
+      Listen [2001:db8::a00:20ff:fea7:ccea]:80
+    </highlight>
+    </example>
+
+    <note type="warning"><p>Des directives <directive
+    module="mpm_common">Listen</directive>
+    imbriqu&eacute;es provoqueront une erreur fatale qui
+    emp&ecirc;chera le serveur de d&eacute;marrer.</p>
+
+    <example>
+      (48)Address already in use: make_sock: could not bind to address [::]:80
+    </example>
+
+    <p>Voir <a
+    href="http://wiki.apache.org/httpd/CouldNotBindToAddress">cette
+    discussion dans le wiki</a> pour plus de conseils pour r&eacute;soudre ce
+    probl&egrave;me.</p>
+
+    </note>
+
+  </section>
+
+  <section id="ipv6">
+    <title>Remarques sp&eacute;cifiques &agrave; IPv6</title>
+
+    <p>Un nombre croissant de plateformes impl&eacute;mentent IPv6, et
+    <glossary>APR</glossary> supporte IPv6 sur la plupart d'entre elles,
+    ce qui permet &agrave; httpd d'allouer des points de connexion (sockets) IPv6
+    et de traiter des requ&ecirc;tes envoy&eacute;es sur IPv6.</p>
+
+    <p>Les administrateurs de httpd doivent se pr&eacute;occuper de la possibilit&eacute;
+    pour un point de connexion IPv6 de traiter &agrave; la fois des connexions IPv4
+    et des connexions IPv6.
+    Le traitement de connexions IPv4 avec un point de connexion IPv6 utilise
+    des adresses IPv6 traduites en IPv4, qui sont autoris&eacute;es par d&eacute;faut sur la
+    plupart des plateformes, mais sont interdites par d&eacute;faut sous FreeBSD, NetBSD,
+    et OpenBSD, afin de respecter la politique de s&eacute;curit&eacute; du syst&egrave;me sur ces plateformes.
+    Sur les syst&egrave;mes o&ugrave; ces adresses sont interdites par d&eacute;faut, un
+    param&egrave;tre sp&eacute;cial du script <program>configure</program> permet de modifier
+    ce comportement pour httpd.</p>
+
+    <p>En revanche, sur certaines plateformes comme Linux et Tru64, la
+    <strong>seule</strong> mani&egrave;re de g&eacute;rer &agrave; la fois IPv6 et IPv4 passe
+    par l'utilisation d'adresses traduites. Si vous voulez que <code>httpd</code> g&egrave;re
+    des connexions IPv4 et IPv6 avec un minimum de points de connexion,
+    ce qui n&eacute;cessite l'utilisation d'adresses IPv6 traduites en IPv4,
+    utilisez l'option <code>--enable-v4-mapped</code> du script <program>
+    configure</program>.</p>
+
+    <p>L'option <code>--enable-v4-mapped</code> est utilis&eacute;e par d&eacute;faut sur
+    toutes les plateformes sauf FreeBSD, NetBSD, et OpenBSD;
+    votre httpd a donc probablement &eacute;t&eacute; construit avec cette option.</p>
+
+    <p>Si vous souhaitez que httpd ne g&egrave;re que des connexions IPv4, sans se
+    soucier de ce que vos plateforme et APR supportent, sp&eacute;cifiez une adresse
+    IPv4 dans toutes les directives
+    <directive module="mpm_common">Listen</directive>, comme dans l'exemple
+    suivant :</p>
+
+    <example>
+    <highlight language="config">
+Listen 0.0.0.0:80
+Listen 192.0.2.1:80
+    </highlight>
+    </example>
+
+    <p>Si votre plateforme le supporte et si vous souhaitez que httpd g&egrave;re
+    des connexions IPv4 et IPv6 sur des points de connexion s&eacute;par&eacute;s
+    (c'est &agrave; dire d&eacute;sactiver la traduction des adresses IPv6 au format IPv4),
+    utilisez l'option <code>--disable-v4-mapped</code> du script
+    <program> configure</program>. <code>--disable-v4-mapped</code> est
+    utilis&eacute; par d&eacute;faut sur FreeBSD, NetBSD, et OpenBSD.</p>
+  </section>
+
+  <section id="protocol">
+    <title>Sp&eacute;cification du protocole avec Listen</title>
+    <p>Dans la plupart des configurations, le second param&egrave;tre optionnel
+    <var>protocol</var> de la directive <directive
+    module="mpm_common">Listen</directive> n'est pas obligatoire. S'il
+    n'est pas sp&eacute;cifi&eacute;, les protocoles par d&eacute;faut
+    sont <code>https</code> pour le port 443, et <code>http</code> pour
+    tous les autres ports. Le protocole sert &agrave; d&eacute;terminer quel module
+    doit traiter une requ&ecirc;te, et &agrave; appliquer les optimisations
+    sp&eacute;cifiques au protocole via la directive <directive
+    module="core">AcceptFilter</directive>.</p>
+
+    <p>Vous ne devez d&eacute;finir le protocole que si vous travaillez avec
+    des ports non standards. Par exemple, pour travailler en
+    <code>https</code> sur le port 8443 :</p>
+
+    <example>
+    <highlight language="config">
+      Listen 192.170.2.1:8443 https
+    </highlight>
+    </example>
+  </section>
+
+  <section id="virtualhost">
+    <title>Comment tout ceci fonctionne-t-il avec les h&ocirc;tes virtuels</title>
+
+    <p> La directive <directive
+    module="mpm_common">Listen</directive> n'impl&eacute;mente pas les h&ocirc;tes virtuels.
+    Elle indique simplement au serveur principal sur quels adresses et ports
+    il doit &eacute;couter. Si aucune directive
+    <directive module="core" type="section">VirtualHost</directive>
+    n'est pr&eacute;sente, le serveur se comportera de la m&ecirc;me fa&ccedil;on pour toutes
+    les requ&ecirc;tes accept&eacute;es. En revanche, la directive
+    <directive module="core" type="section">VirtualHost</directive>
+    peut &ecirc;tre utilis&eacute;e pour provoquer une r&eacute;action diff&eacute;rente du serveur
+    pour un ou plusieurs adresses ou ports. Pour impl&eacute;menter un h&ocirc;te virtuel,
+    on doit d'abord indiquer au serveur sur quels adresses et ports il doit &eacute;couter.
+    Ensuite, une section
+    <directive module="core" type="section">VirtualHost</directive>
+    doit &ecirc;tre cr&eacute;&eacute;e pour le couple adresse+port sp&eacute;cifi&eacute; afin de d&eacute;finir le
+    comportement de cet h&ocirc;te virtuel. Notez que si la directive
+    <directive module="core" type="section">VirtualHost</directive>
+    est d&eacute;finie pour une adresse et un port sur lesquels le serveur n'est pas cens&eacute;
+    &eacute;couter, cet h&ocirc;te virtuel ne sera pas accessible.</p>
+  </section>
+</manualpage>
+

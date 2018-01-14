@@ -1,0 +1,3 @@
+# testing with conf/test04.conf
+httpd: Syntax error on line 5 of ./conf/test04.conf: macro 'foo' (defined on line 2 of "./conf/test04.conf") used with 1 arguments instead of 0
+# exit: 1

@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
+<!-- $LastChangedRevision$ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="filter.xml.meta">
+
+  <title>Filters</title>
+
+  <summary>
+    <p>This document describes the use of filters in Apache.</p>
+  </summary>
+
+  <section id="intro">
+    <title>Filtering in Apache 2</title>
+    <related>
+      <modulelist>
+        <module>mod_filter</module>
+        <module>mod_deflate</module>
+        <module>mod_ext_filter</module>
+        <module>mod_include</module>
+        <module>mod_charset_lite</module>
+        <module>mod_reflector</module>
+        <module>mod_buffer</module>
+        <module>mod_data</module>
+        <module>mod_ratelimit</module>
+        <module>mod_reqtimeout</module>
+        <module>mod_request</module>
+        <module>mod_sed</module>
+        <module>mod_substitute</module>
+        <module>mod_xml2enc</module>
+        <module>mod_proxy_html</module>
+      </modulelist>
+      <directivelist>
+        <directive module="mod_filter">FilterChain</directive>
+        <directive module="mod_filter">FilterDeclare</directive>
+        <directive module="mod_filter">FilterProtocol</directive>
+        <directive module="mod_filter">FilterProvider</directive>
+        <directive module="mod_mime">AddInputFilter</directive>
+        <directive module="mod_mime">AddOutputFilter</directive>
+        <directive module="mod_mime">RemoveInputFilter</directive>
+        <directive module="mod_mime">RemoveOutputFilter</directive>
+        <directive module="mod_reflector">ReflectorHeader</directive>
+        <directive module="mod_ext_filter">ExtFilterDefine</directive>
+        <directive module="mod_ext_filter">ExtFilterOptions</directive>
+        <directive module="core">SetInputFilter</directive>
+        <directive module="core">SetOutputFilter</directive>
+      </directivelist>
+    </related>
+
+<p>The Filter Chain is available in Apache 2.0 and higher,
+and enables applications to process incoming and outgoing data
+in a highly flexible and configurable manner, regardless of
+where the data comes from.  We can pre-process incoming data,
+and post-process outgoing data, at will.  This is basically
+independent of the traditional request processing phases.</p>
+<p class="figure">
+<img src="images/filter_arch.png" width="569" height="392" alt=
+"Filters can be chained, in a Data Axis orthogonal to request processing"
+/>
+</p>
+<p>Some examples of filtering in the standard Apache distribution are:</p>
+<ul>
+<li><module>mod_include</module>, implements server-side includes.</li>
+<li><module>mod_ssl</module>, implements SSL encryption (https).</li>
+<li><module>mod_deflate</module>, implements compression/decompression on the fly.</li>
+<li><module>mod_charset_lite</module>, transcodes between different character sets.</li>
+<li><module>mod_ext_filter</module>, runs an external program as a filter.</li>
+</ul>
+<p>Apache also uses a number of filters internally to perform
+functions like chunking and byte-range handling.</p>
+
+<p>A wider range of applications are implemented by third-party filter
+modules available from <a
+href="http://modules.apache.org/">modules.apache.org</a> and
+elsewhere.  A few of these are:</p>
+
+<ul>
+<li>HTML and XML processing and rewriting</li>
+<li>XSLT transforms and XIncludes</li>
+<li>XML Namespace support</li>
+<li>File Upload handling and decoding of HTML Forms</li>
+<li>Image processing</li>
+<li>Protection of vulnerable applications such as PHP scripts</li>
+<li>Text search-and-replace editing</li>
+</ul>
+</section>
+
+<section id="smart">
+<title>Smart Filtering</title>
+<p class="figure">
+<img src="images/mod_filter_new.png" width="423" height="331"
+alt="Smart filtering applies different filter providers according to the state of request processing"/>
+</p>
+<p><module>mod_filter</module>, included in Apache 2.1 and later,
+enables the filter chain to be configured dynamically at run time.
+So for example you can set up a proxy to rewrite
+HTML with an HTML filter and JPEG images with a completely
+separate filter, despite the proxy having no prior information
+about what the origin server will send.  This works by using a
+filter harness, that dispatches to different providers according
+to the actual contents at runtime.  Any filter may be either
+inserted directly in the chain and run unconditionally, or
+used as a provider and inserted dynamically.  For example,</p>
+<ul>
+<li>an HTML processing filter will only run if the content is
+text/html or application/xhtml+xml</li>
+<li>A compression filter will only run if the input is a
+compressible type and not already compressed</li>
+<li>A charset conversion filter will be inserted if a text
+document is not already in the desired charset</li>
+</ul>
+</section>
+
+<section id="service">
+
+<title>Exposing Filters as an HTTP Service</title>
+<p>Filters can be used to process content originating from the client in
+addition to processing content originating on the server using the
+<module>mod_reflector</module> module.</p>
+
+<p><module>mod_reflector</module> accepts POST requests from clients, and reflects
+the content request body received within the POST request back in the response,
+passing through the output filter stack on the way back to the client.</p>
+
+<p>This technique can be used as an alternative to a web service running within
+an application server stack, where an output filter provides the transformation
+required on the request body. For example, the <module>mod_deflate</module>
+module might be used to provide a general compression service, or an image
+transformation filter might be turned into an image transformation service.</p>
+
+</section>
+
+<section id="using">
+<title>Using Filters</title>
+<p>There are two ways to use filtering: Simple and Dynamic.
+In general, you should use one or the other; mixing them can
+have unexpected consequences (although simple Input filtering
+can be mixed freely with either simple or dynamic Output filtering).</p>
+<p>The Simple Way is the only way to configure input filters, and is
+sufficient for output filters where you need a static filter chain.
+Relevant directives are
+    <directive module="core">SetInputFilter</directive>,
+    <directive module="core">SetOutputFilter</directive>,
+    <directive module="mod_mime">AddInputFilter</directive>,
+    <directive module="mod_mime">AddOutputFilter</directive>,
+    <directive module="mod_mime">RemoveInputFilter</directive>, and
+    <directive module="mod_mime">RemoveOutputFilter</directive>.</p>
+
+<p>The Dynamic Way enables both static and flexible, dynamic configuration
+of output filters, as discussed in the <module>mod_filter</module> page.
+Relevant directives are
+    <directive module="mod_filter">FilterChain</directive>,
+    <directive module="mod_filter">FilterDeclare</directive>, and
+    <directive module="mod_filter">FilterProvider</directive>.</p>
+
+<p>One further directive <directive
+module="mod_filter">AddOutputFilterByType</directive> is still supported,
+but deprecated.  Use dynamic configuration instead.</p>
+
+  </section>
+</manualpage>

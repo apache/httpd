@@ -1,0 +1,94 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision$ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_socache_memcache.xml.meta">
+
+<name>mod_socache_memcache</name>
+<description>Memcache based shared object cache provider.</description>
+<status>Extension</status>
+<sourcefile>mod_socache_memcache.c</sourcefile>
+<identifier>socache_memcache_module</identifier>
+
+<summary>
+    <p><code>mod_socache_memcache</code> is a shared object cache provider
+    which provides for creation and access to a cache backed by the
+    <a href="http://memcached.org/">memcached</a>
+    high-performance, distributed memory object caching system.
+    </p>
+
+ 
+    <p>This shared object cache provider's "create" method requires a 
+       comma separated list of memcached host/port specifications. If using
+       this provider via another modules configuration (such as 
+       <directive module="mod_ssl">SSLSessionCache</directive>), provide
+       the list of servers as the optional "arg" parameter.</p>
+
+     <highlight language="config">
+         SSLSessionCache memcache:memcache.example.com:12345,memcache2.example.com:12345
+     </highlight>
+      
+    <p>Details of other shared object cache providers can be found
+    <a href="../socache.html">here</a>.
+    </p>
+
+</summary>
+
+<directivesynopsis>
+<name>MemcacheConnTTL</name>
+<description>Keepalive time for idle connections</description>
+<syntax>MemcacheConnTTL <em>num[units]</em></syntax>
+<default>MemcacheConnTTL 15s</default>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+</contextlist>
+<compatibility>Available in Apache 2.4.17 and later</compatibility>
+
+<usage>
+
+    <p>Set the time to keep idle connections with the memcache server(s)
+    alive (threaded platforms only).</p>
+    
+    <p>Valid values for <directive>MemcacheConnTTL</directive> are times
+    up to one hour. 0 means no timeout.</p>
+
+    <note><p>This timeout defaults to units of seconds, but accepts
+    suffixes for milliseconds (ms), seconds (s), minutes (min), and hours (h).
+    </p></note>
+
+    <p>Before Apache 2.4.17, this timeout was hardcoded and its value was 600 usec.
+    So, the closest configuration to match the legacy behaviour is to set
+    <directive>MemcacheConnTTL</directive> to 1ms.</p>
+
+    <example>
+    <highlight language="config">
+# Set a timeout of 10 minutes
+MemcacheConnTTL 10min
+# Set a timeout of 60 seconds
+MemcacheConnTTL 60
+    </highlight>
+    </example>
+
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

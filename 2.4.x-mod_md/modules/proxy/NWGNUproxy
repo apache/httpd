@@ -1,0 +1,337 @@
+#
+# Make sure all needed macro's are defined
+#
+
+#
+# Get the 'head' of the build environment if necessary.  This includes default
+# targets and paths to tools
+#
+
+ifndef EnvironmentDefined
+include $(AP_WORK)/build/NWGNUhead.inc
+endif
+
+#
+# These directories will be at the beginning of the include list, followed by
+# INCDIRS
+#
+XINCDIRS	+= \
+			$(APR)/include \
+			$(APRUTIL)/include \
+			$(AP_WORK)/include \
+			$(AP_WORK)/modules/http \
+			$(AP_WORK)/modules/generators \
+			$(AP_WORK)/modules/ssl \
+			$(NWOS) \
+			$(EOLIST)
+
+#
+# These flags will come after CFLAGS
+#
+XCFLAGS		+= \
+			$(EOLIST)
+
+#
+# These defines will come after DEFINES
+#
+XDEFINES	+= \
+			$(EOLIST)
+
+#
+# These flags will be added to the link.opt file
+#
+XLFLAGS		+= \
+			$(EOLIST)
+
+#
+# These values will be appended to the correct variables based on the value of
+# RELEASE
+#
+ifeq "$(RELEASE)" "debug"
+XINCDIRS	+= \
+			$(EOLIST)
+
+XCFLAGS		+= \
+			$(EOLIST)
+
+XDEFINES	+= \
+			$(EOLIST)
+
+XLFLAGS		+= \
+			$(EOLIST)
+endif
+
+ifeq "$(RELEASE)" "noopt"
+XINCDIRS	+= \
+			$(EOLIST)
+
+XCFLAGS		+= \
+			$(EOLIST)
+
+XDEFINES	+= \
+			$(EOLIST)
+
+XLFLAGS		+= \
+			$(EOLIST)
+endif
+
+ifeq "$(RELEASE)" "release"
+XINCDIRS	+= \
+			$(EOLIST)
+
+XCFLAGS		+= \
+			$(EOLIST)
+
+XDEFINES	+= \
+			$(EOLIST)
+
+XLFLAGS		+= \
+			$(EOLIST)
+endif
+
+#
+# These are used by the link target if an NLM is being generated
+# This is used by the link 'name' directive to name the nlm.  If left blank
+# TARGET_nlm (see below) will be used.
+#
+NLM_NAME	= proxy
+
+#
+# This is used by the link '-desc ' directive.
+# If left blank, NLM_NAME will be used.
+#
+NLM_DESCRIPTION	= Apache $(VERSION_STR) Proxy Module
+
+#
+# This is used by the '-threadname' directive.  If left blank,
+# NLM_NAME Thread will be used.
+#
+NLM_THREAD_NAME	= Proxy Module
+
+#
+# If this is specified, it will override VERSION value in
+# $(AP_WORK)/build/NWGNUenvironment.inc
+#
+NLM_VERSION	=
+
+#
+# If this is specified, it will override the default of 64K
+#
+NLM_STACK_SIZE	= 8192
+
+
+#
+# If this is specified it will be used by the link '-entry' directive
+#
+NLM_ENTRY_SYM	=
+
+#
+# If this is specified it will be used by the link '-exit' directive
+#
+NLM_EXIT_SYM	=
+
+#
+# If this is specified it will be used by the link '-check' directive
+#
+NLM_CHECK_SYM	=
+
+#
+# If these are specified it will be used by the link '-flags' directive
+#
+NLM_FLAGS	=
+
+#
+# If this is specified it will be linked in with the XDCData option in the def
+# file instead of the default of $(NWOS)/apache.xdc.  XDCData can be disabled
+# by setting APACHE_UNIPROC in the environment
+#
+XDCDATA		=
+
+#
+# If there is an NLM target, put it here
+#
+TARGET_nlm = \
+	$(OBJDIR)/proxy.nlm \
+	$(EOLIST)
+
+#
+# If there is an LIB target, put it here
+#
+TARGET_lib = \
+	$(EOLIST)
+
+#
+# These are the OBJ files needed to create the NLM target above.
+# Paths must all use the '/' character
+#
+FILES_nlm_objs = \
+	$(OBJDIR)/mod_proxy.o \
+	$(OBJDIR)/proxy_util.o \
+	$(OBJDIR)/libprews.o \
+	$(EOLIST)
+
+#
+# These are the LIB files needed to create the NLM target above.
+# These will be added as a library command in the link.opt file.
+#
+FILES_nlm_libs = \
+	$(PRELUDE) \
+	$(EOLIST)
+
+#
+# These are the modules that the above NLM target depends on to load.
+# These will be added as a module command in the link.opt file.
+#
+FILES_nlm_modules = \
+	aprlib \
+	libc \
+	$(EOLIST)
+
+#
+# If the nlm has a msg file, put it's path here
+#
+FILE_nlm_msg =
+
+#
+# If the nlm has a hlp file put it's path here
+#
+FILE_nlm_hlp =
+
+#
+# If this is specified, it will override $(NWOS)\copyright.txt.
+#
+FILE_nlm_copyright =
+
+#
+# Any additional imports go here
+#
+FILES_nlm_Ximports = \
+	@aprlib.imp \
+	@httpd.imp \
+	@libc.imp \
+	$(EOLIST)
+
+# Don't link with Winsock if standard sockets are being used
+ifndef USE_STDSOCKETS
+FILES_nlm_Ximports += @ws2nlm.imp \
+	$(EOLIST)
+endif
+
+#
+# Any symbols exported to here
+#
+FILES_nlm_exports = \
+	@$(OBJDIR)/mod_proxy.imp \
+	$(EOLIST)
+
+#
+# These are the OBJ files needed to create the LIB target above.
+# Paths must all use the '/' character
+#
+FILES_lib_objs = \
+	$(EOLIST)
+
+#
+# implement targets and dependancies (leave this section alone)
+#
+
+libs :: $(OBJDIR) $(TARGET_lib)
+
+nlms :: libs $(OBJDIR)/mod_proxy.imp $(TARGET_nlm)
+
+#
+# Updated this target to create necessary directories and copy files to the
+# correct place.  (See $(AP_WORK)/build/NWGNUhead.inc for examples)
+#
+install :: nlms FORCE
+
+#
+# Any specialized rules here
+#
+
+vpath %.c ../arch/netware
+
+$(OBJDIR)/mod_proxy.imp: NWGNUproxy
+	@echo $(DL)GEN  $@$(DL)
+	@echo $(DL)# Exports of mod_proxy$(DL)> $@
+	@echo $(DL) (AP$(VERSION_MAJMIN))$(DL)>> $@
+	@echo $(DL) proxy_module,$(DL)>> $@
+	@echo $(DL) proxy_hcmethods,$(DL)>> $@
+	@echo $(DL) proxy_hook_canon_handler,$(DL)>> $@
+	@echo $(DL) proxy_hook_get_canon_handler,$(DL)>> $@
+	@echo $(DL) proxy_hook_get_post_request,$(DL)>> $@
+	@echo $(DL) proxy_hook_get_pre_request,$(DL)>> $@
+	@echo $(DL) proxy_hook_get_scheme_handler,$(DL)>> $@
+	@echo $(DL) proxy_hook_post_request,$(DL)>> $@
+	@echo $(DL) proxy_hook_pre_request,$(DL)>> $@
+	@echo $(DL) proxy_hook_scheme_handler,$(DL)>> $@
+	@echo $(DL) proxy_run_canon_handler,$(DL)>> $@
+	@echo $(DL) proxy_run_create_req,$(DL)>> $@
+	@echo $(DL) proxy_run_fixups,$(DL)>> $@
+	@echo $(DL) proxy_run_post_request,$(DL)>> $@
+	@echo $(DL) proxy_run_pre_request,$(DL)>> $@
+	@echo $(DL) proxy_run_request_status,$(DL)>> $@
+	@echo $(DL) proxy_run_scheme_handler,$(DL)>> $@
+	@echo $(DL) ap_proxy_acquire_connection,$(DL)>> $@
+	@echo $(DL) ap_proxy_backend_broke,$(DL)>> $@
+	@echo $(DL) ap_proxy_buckets_lifetime_transform,$(DL)>> $@
+	@echo $(DL) ap_proxy_c2hex,$(DL)>> $@
+	@echo $(DL) ap_proxy_canon_netloc,$(DL)>> $@
+	@echo $(DL) ap_proxy_canonenc,$(DL)>> $@
+	@echo $(DL) ap_proxy_check_connection,$(DL)>> $@
+	@echo $(DL) ap_proxy_checkproxyblock,$(DL)>> $@
+	@echo $(DL) ap_proxy_checkproxyblock2,$(DL)>> $@
+	@echo $(DL) ap_proxy_conn_is_https,$(DL)>> $@
+	@echo $(DL) ap_proxy_connect_backend,$(DL)>> $@
+	@echo $(DL) ap_proxy_connect_to_backend,$(DL)>> $@
+	@echo $(DL) ap_proxy_connection_create,$(DL)>> $@
+	@echo $(DL) ap_proxy_connection_reusable,$(DL)>> $@
+	@echo $(DL) ap_proxy_cookie_reverse_map,$(DL)>> $@
+	@echo $(DL) ap_proxy_create_hdrbrgd,$(DL)>> $@
+	@echo $(DL) ap_proxy_define_balancer,$(DL)>> $@
+	@echo $(DL) ap_proxy_define_worker,$(DL)>> $@
+	@echo $(DL) ap_proxy_determine_connection,$(DL)>> $@
+	@echo $(DL) ap_proxy_find_balancershm,$(DL)>> $@
+	@echo $(DL) ap_proxy_find_workershm,$(DL)>> $@
+	@echo $(DL) ap_proxy_get_balancer,$(DL)>> $@
+	@echo $(DL) ap_proxy_get_worker,$(DL)>> $@
+	@echo $(DL) ap_proxy_hashfunc,$(DL)>> $@
+	@echo $(DL) ap_proxy_hex2c,$(DL)>> $@
+	@echo $(DL) ap_proxy_initialize_balancer,$(DL)>> $@
+	@echo $(DL) ap_proxy_initialize_worker,$(DL)>> $@
+	@echo $(DL) ap_proxy_is_domainname,$(DL)>> $@
+	@echo $(DL) ap_proxy_is_hostname,$(DL)>> $@
+	@echo $(DL) ap_proxy_is_ipaddr,$(DL)>> $@
+	@echo $(DL) ap_proxy_is_word,$(DL)>> $@
+	@echo $(DL) ap_proxy_location_reverse_map,$(DL)>> $@
+	@echo $(DL) ap_proxy_parse_wstatus,$(DL)>> $@
+	@echo $(DL) ap_proxy_pass_brigade,$(DL)>> $@
+	@echo $(DL) ap_proxy_port_of_scheme,$(DL)>> $@
+	@echo $(DL) ap_proxy_post_request,$(DL)>> $@
+	@echo $(DL) ap_proxy_pre_http_request,$(DL)>> $@
+	@echo $(DL) ap_proxy_pre_request,$(DL)>> $@
+	@echo $(DL) ap_proxy_release_connection,$(DL)>> $@
+	@echo $(DL) ap_proxy_set_wstatus,$(DL)>> $@
+	@echo $(DL) ap_proxy_share_balancer,$(DL)>> $@
+	@echo $(DL) ap_proxy_share_worker,$(DL)>> $@
+	@echo $(DL) ap_proxy_show_hcmethod,$(DL)>> $@
+	@echo $(DL) ap_proxy_ssl_connection_cleanup,$(DL)>> $@
+	@echo $(DL) ap_proxy_ssl_disable,$(DL)>> $@
+	@echo $(DL) ap_proxy_ssl_enable,$(DL)>> $@
+	@echo $(DL) ap_proxy_ssl_val,$(DL)>> $@
+	@echo $(DL) ap_proxy_strncpy,$(DL)>> $@
+	@echo $(DL) ap_proxy_sync_balancer,$(DL)>> $@
+	@echo $(DL) ap_proxy_trans_match,$(DL)>> $@
+	@echo $(DL) ap_proxy_transfer_between_connections,$(DL)>> $@
+	@echo $(DL) ap_proxy_valid_balancer_name,$(DL)>> $@
+	@echo $(DL) ap_proxy_worker_name,$(DL)>> $@
+	@echo $(DL) ap_proxyerror$(DL)>> $@
+
+#
+# Include the 'tail' makefile that has targets that depend on variables defined
+# in this makefile
+#
+
+include $(APBUILD)/NWGNUtail.inc
+
+

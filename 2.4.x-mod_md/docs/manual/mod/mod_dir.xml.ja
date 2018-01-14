@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
+<!-- English Revision: 420990:1755988 (outdated) -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_dir.xml.meta">
+
+<name>mod_dir</name>
+<description>「最後のスラッシュ」のリダイレクトと、ディレクトリの
+インデックスファイルを扱う機能を提供する</description>
+<status>Base</status>
+<sourcefile>mod_dir.c</sourcefile>
+<identifier>dir_module</identifier>
+
+<summary>
+    <p>ディレクトリインデックスは、次の二つのうちどちらかが利用されます:</p>
+
+    <ul>
+      <li>一つ目は、ユーザが作成したファイルを用いるもので、通常
+      <code>index.html</code> というファイル名を使います。このファイル名は、
+      <directive module="mod_dir">DirectoryIndex</directive> ディレクティブで
+      指定することができます。この機能は <module>mod_dir</module>
+      モジュールで提供されます。</li>
+
+      <li>もう一つの方法は、
+      サーバによって自動的に生成されるディレクトリリストを用いる場合です。
+      この機能は、<module>mod_autoindex</module>
+      モジュールにより提供されます。</li>
+    </ul>
+
+    <p>自動的なインデックス生成機能を削除 (もしくは交換)
+    できるように、この二つの機能は分離されています。</p>
+
+    <p>なお <code>http://servername/foo/dirname</code> という URL
+    へのリクエストがあった際に、<code>dirname</code>
+    というディレクトリがあれば、「最後にスラッシュをつけた形」の URL
+    へのリダイレクトを送出します。
+    ディレクトリへのアクセスはスラッシュで終わっている必要があり、
+    <code>mod_dir</code> は、<code>http://servername/foo/dirname/</code>
+    へのリダイレクトを送出することになります。</p>
+</summary>
+
+<directivesynopsis>
+<name>DirectoryIndex</name>
+<description>クライアントがディレクトリをリクエストしたときに調べる
+リソースのリスト</description>
+<syntax>DirectoryIndex
+    <var>local-url</var> [<var>local-url</var>] ...</syntax>
+<default>DirectoryIndex index.html</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>Indexes</override>
+
+<usage>
+    <p>
+    クライアントが、ディレクトリ名の最後に「/」
+    を指定してディレクトリインデックスを要求する場合に探すリソースのリストを
+    <directive>DirectoryIndex</directive> ディレクティブで設定します。
+    <var>Local-url</var>
+    は、リクエストされたディレクトリに対応する、サーバ上のドキュメントの
+    (% エンコードされた) URL で、普通はディレクトリ中のファイルの名前です。
+    複数の URL が設定された場合には、最初に見つかったものを返します。
+    それらが見つからず、<code>Indexes</code>
+    オプションがセットされている場合、ディレクトリのリストを生成します。
+    </p>
+
+    <example><title>例</title>
+      DirectoryIndex index.html
+    </example>
+
+    <p><code>http://myserver/docs/</code> へのアクセスがあり、
+    <code>http://myserver/docs/index.html</code>
+    が存在すれば、この URL が返されます。
+    もし存在しなければ、ディレクトリのリストが返されます。</p>
+
+    <p>注: ドキュメントが同じディレクトリ内に存在するは必要ありません。
+    </p>
+
+    <example>
+      DirectoryIndex index.html index.txt  /cgi-bin/index.pl
+    </example>
+
+    <p>とした場合、<code>index.html</code> と <code>index.txt</code>
+    のどちらもディレクトリ内に存在しない場合、CGI スクリプト
+    <code>/cgi-bin/index.pl</code> が実行されます。</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>DirectorySlash</name>
+<description>パス末尾のスラッシュでリダイレクトするかどうかのオンオフをトグルさせる</description>
+<syntax>DirectorySlash On|Off</syntax>
+<default>DirectorySlash On</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>Indexes</override>
+<compatibility>2.0.51 以降</compatibility>
+
+<usage>
+    <p>要求のあった URL がディレクトリを指すかどうかを、
+    <module>mod_dir</module> が調整するべきかどうかを
+    <directive>DirectorySlash</directive>
+    ディレクティブで設定します。</p>
+
+    <p>典型的には、ユーザが末尾のスラッシュ無しでリソースへのリクエストを発行し、
+    そして、そのリソースがディレクトリを指していた場合、<module>mod_dir</module>
+    は、末尾にスラッシュを<em>付加</em>した上で同じリソースにリダイレクトさせます。
+    この挙動には幾つか理由があります:</p>
+
+    <ul>
+    <li>ユーザは、最終的にはリソースの別名 URL をリクエストすることになる。</li>
+    <li><module>mod_autoindex</module> が期待通りに動く。<module>mod_autoindex</module> 
+    の生成するリンクはパスを出力しませんので、スラッシュがない場合は間違ったパスを
+    指してしまうことになります。</li>
+    <li><directive module="mod_dir">DirectoryIndex</directive> は、
+    末尾にスラッシュがついているリクエストについて<em>のみ</em>評価される。</li>
+    <li>HTML ページの相対 URL 参照が正しく動作する。</li>
+    </ul>
+
+    <p>とはいえ、もしこういった効果を望まない、かつ、
+    上記のような理由が当てはまらない場合は、リダイレクトを次のようにしてオフにできます:</p>
+
+    <example>
+        # see security warning below!<br />
+        &lt;Location /some/path&gt;<br />
+        <indent>
+            DirectorySlash Off<br />
+            SetHandler some-handler<br />
+        </indent>
+        &lt;/Location&gt;
+    </example>
+
+    <note type="warning"><title>セキュリティ警告</title>
+    <p>末尾のスラッシュでのリダイレクトをオフにすると、結果的に情報漏洩を
+    招くことになるかもしれません。
+    <module>mod_autoindex</module> が有効 (<code>Options +Indexes</code>) で、
+    <directive module="mod_dir">DirectoryIndex</directive> が有効なリソース (例えば
+    <code>index.html</code>) を指していて、また、要求のあった URL に特別な
+    ハンドラが設定されていない場合を考えてみてください。
+    この場合末尾にスラッシュのついているリクエストに対しては <code>index.html</code>
+    ファイルが返されます。<strong>しかしスラッシュのないリクエストに対しては、
+    ディレクトリの内容一覧を返してしまいます。</strong></p>
+    </note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>FallbackResource</name>
+<description>Define a default URL for requests that don't map to a file</description>
+<contextlist><context>server config</context><context>virtual host</context><context>directory</context><context>.htaccess</context></contextlist>
+<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
+</directivesynopsis>
+
+</modulesynopsis>
