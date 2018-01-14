@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.30
  
+  *) mod_md: new experimental, module for managing domains across virtual hosts,
+     implementing the Let's Encrypt ACMEv1 protocol to signup and renew 
+     certificates. Please read the modules documentation for further instructions
+     on how to use it. [Stefan Eissing]
+  
   *) mod_proxy_html: skip documents shorter than 4 bytes
      PR 56286 [Micha Lenk <micha lenk info>]
 

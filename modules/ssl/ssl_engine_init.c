@@ -30,22 +30,7 @@
 #include "mod_ssl.h"
 #include "mod_ssl_openssl.h"
 #include "mpm_common.h"
-
-/* Use the header, once mod_md is backported. break the dependency loop for now. */
-#define MOD_MD_BACKPORTED   0
-#if MOD_MD_BACKPORTED
 #include "mod_md.h"
-#else 
-APR_DECLARE_OPTIONAL_FN(int, 
-                        md_is_managed, (struct server_rec *));
-APR_DECLARE_OPTIONAL_FN(apr_status_t, 
-                        md_get_certificate, (struct server_rec *, apr_pool_t *,
-                                             const char **pkeyfile, 
-                                             const char **pcertfile));
-APR_DECLARE_OPTIONAL_FN(int, 
-                        md_is_challenge, (struct conn_rec *, const char *,
-                                          X509 **pcert, EVP_PKEY **pkey));
-#endif
 
 APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(ssl, SSL, int, init_server,
                                     (server_rec *s,apr_pool_t *p,int is_proxy,SSL_CTX *ctx),
@@ -266,6 +251,13 @@ apr_status_t ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
         /*
          * Create the server host:port string because we need it a lot
          */
+        if (sc->vhost_id) {
+            /* already set. This should only happen if this config rec is
+             * shared with another server. Argh! */
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(10104) 
+                         "%s, SSLSrvConfigRec shared from %s", 
+                         ssl_util_vhostid(p, s), sc->vhost_id);
+        }
         sc->vhost_id = ssl_util_vhostid(p, s);
         sc->vhost_id_len = strlen(sc->vhost_id);
 
@@ -1667,7 +1659,6 @@ static apr_status_t ssl_init_server_ctx(server_rec *s,
             key_file = cert_file = chain_file = NULL;
             
             if (md_get_certificate) {
-                /* mod_md >= v0.9.0 */
                 rv = md_get_certificate(s, p, &key_file, &cert_file);
             }
             else {
