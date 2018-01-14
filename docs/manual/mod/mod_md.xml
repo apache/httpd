@@ -29,7 +29,7 @@
     <status>Extension</status>
     <sourcefile>mod_md.c</sourcefile>
     <identifier>md_module</identifier>
-    <compatibility>Available in version 2.5.0 and later</compatibility>
+    <compatibility>Available in version 2.4.30 and later</compatibility>
     <summary>
         <p>
         This module manages common properties of domains for one or more virtual hosts. 
@@ -58,7 +58,7 @@ MDomain example.org
     DocumentRoot htdocs/a
 
     SSLEngine on
-    # no certificates specification needed!
+    # no certificates specification
 &lt;/VirtualHost&gt;
         </highlight>
         <p>
@@ -75,6 +75,30 @@ MDomain example.org
         </p>
         </note>
 
+        <note><title>Prerequisites</title>
+        <p>
+            This module requires <module>mod_watchdog</module> to be loaded as well.
+        </p><p>
+            Certificate signup and renewal with Let's Encrypt requires your server to be
+            reachable on port 80 (http:) from the outside. The alternative method over
+            port 443 (https:) is currently disabled for security reasons (status from
+            2018-01-14).
+        </p><p>
+            The module will select from the methods offered by Let's Encrypt. If LE decides
+            at one point in the future, to re-enable it again, <module>mod_md</module> will
+            use it when suitable.
+        </p><p>
+            But for now, only the port 80 variant is available (termed "http-01"). Only
+            when LE can reach your server on port 80 will <module>mod_md</module> work for
+            you. For now, at least.
+        </p><p>
+            If you do not want to offer any sites on port 80 any more, you may leave it open
+            and redirect all requests to your https: sites instead. Use the
+            <directive module="mod_md">MDRequireHttps</directive> described below to do
+            that in a convenient fashion. This will continue to answer http: challenges
+            from Let's Encrypt. 
+        </p>
+        </note>
     </summary>
     
     <directivesynopsis>
