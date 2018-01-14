@@ -72,6 +72,7 @@
   <modulefile>mod_logio.xml</modulefile>
   <modulefile>mod_lua.xml</modulefile>
   <modulefile>mod_macro.xml</modulefile>
+  <modulefile>mod_md.xml</modulefile>
   <modulefile>mod_mime.xml</modulefile>
   <modulefile>mod_mime_magic.xml</modulefile>
   <modulefile>mod_negotiation.xml</modulefile>
