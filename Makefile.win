@@ -295,6 +295,30 @@ _trybrotli:
 
 !ENDIF
 
+!IF EXIST("srclib\openssl") && EXIST("srclib\jansson") && EXIST("srclib\curl")
+
+_trymd:
+!IF $(USEMAK) == 1
+	cd modules\md
+	$(MAKE) $(MAKEOPT) $(SSLOPT) -f mod_md.mak CFG="mod_md - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	cd ..\..
+!ELSEIF $(USESLN) == 1
+	devenv $(TLP).sln /useenv $(CTARGET) $(LONG) /project mod_md
+!ELSE
+	@msdev $(TLP).dsw /USEENV /MAKE \
+		"mod_md - Win32 $(LONG)" /NORECURSE $(CTARGET)
+!ENDIF
+
+!ELSE
+#     NOT EXIST("srclib\openssl") && EXIST("srclib\jansson") && EXIST("srclib\curl")
+
+_trymd:
+	@echo -----
+	@echo mod_md will not build unless OpenSSL, Jansson and Curl are built and placed
+	@echo in srclib. Example: srclib/openssl, srclib/jansson and srclib/curl
+
+!ENDIF
+
 _trydb:
 !IF $(USEMAK) == 1
 	cd srclib\$(UTILDIR)\dbd
@@ -586,6 +610,11 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f mod_userdir.mak     CFG="mod_userdir - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_vhost_alias.mak CFG="mod_vhost_alias - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
+!IF EXIST("srclib\openssl") && EXIST("srclib\jansson") && EXIST("srclib\curl")
+	cd modules\md
+	 $(MAKE) $(MAKEOPT) $(SSLOPT) -f mod_md.mak          CFG="mod_md - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	cd ..\..
+!ENDIF
 	cd modules\metadata
 	 $(MAKE) $(MAKEOPT) -f mod_cern_meta.mak   CFG="mod_cern_meta - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_env.mak         CFG="mod_env - Win32 $(LONG)" RECURSE=0 $(CTARGET)
@@ -871,6 +900,16 @@ _copybin:
 	copy modules\mappers\$(LONG)\mod_speling.$(src_so) 	"$(inst_so)" <.y
 	copy modules\mappers\$(LONG)\mod_userdir.$(src_so) 	"$(inst_so)" <.y
 	copy modules\mappers\$(LONG)\mod_vhost_alias.$(src_so) 	"$(inst_so)" <.y
+!IF EXIST("srclib\openssl") &&  EXIST("srclib\jansson") &&  EXIST("srclib\curl")
+	copy modules\md\$(LONG)\mod_md.$(src_so) 		"$(inst_so)" <.y
+!IF "$(SHORT)" == "D"
+	-copy srclib\curl\bin\libcurl_debug.$(src_dll)		"$(inst_dll)" <.y
+	-copy srclib\jansson\bin\jansson_d.$(src_dll)		"$(inst_dll)" <.y
+!ELSE
+	-copy srclib\curl\bin\libcurl.$(src_dll)		"$(inst_dll)" <.y
+	-copy srclib\jansson\bin\jansson.$(src_dll)		"$(inst_dll)" <.y
+!ENDIF
+!ENDIF
 	copy modules\metadata\$(LONG)\mod_cern_meta.$(src_so) 	"$(inst_so)" <.y
 	copy modules\metadata\$(LONG)\mod_env.$(src_so) 	"$(inst_so)" <.y
 	copy modules\metadata\$(LONG)\mod_expires.$(src_so) 	"$(inst_so)" <.y
