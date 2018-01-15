@@ -170,6 +170,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      ylavic: RemoteIPProxyProtocol* are documented as scoped to server config
              and virtual host, though using ap_server_conf makes them global
              only (thus less useful too...).
+        jim: Can docco patch be post-backport?
 
   *) mod_proxy_uwsgi: Add in UWSGI proxy (sub)module
      trunk patch: http://svn.apache.org/r1810358
