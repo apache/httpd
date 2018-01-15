@@ -112,7 +112,7 @@
         <!-- the optional attribute before-name takes a string.
              if "yes", the 'Directive' word is place before the name instead of
              being placed behind. See fr.xml for an example. -->
-        <message id="directive">Directiva</message>
+        <message id="directive" before-name="yes">Directiva</message>
         <message id="nodirectives">Este módulo no suministra ninguna
             directiva.</message>
 
