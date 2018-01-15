@@ -439,6 +439,10 @@ InputPath=.\os\win32\os.h
 
 SOURCE=.\server\test_char.h
 # End Source File
+# Begin Source File
+
+SOURCE=.\include\util_cookies.h
+# End Source File
 # End Group
 # Begin Group "httpd"
 
@@ -566,7 +570,7 @@ SOURCE=.\server\util_cookies.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\server\util_cookies.h
+SOURCE=.\server\util_debug.c
 # End Source File
 # Begin Source File
 

@@ -85,6 +85,7 @@ CLEAN :
 	-@erase "$(INTDIR)\util.obj"
 	-@erase "$(INTDIR)\util_cfgtree.obj"
 	-@erase "$(INTDIR)\util_cookies.obj"
+	-@erase "$(INTDIR)\util_debug.obj"
 	-@erase "$(INTDIR)\util_expr_eval.obj"
 	-@erase "$(INTDIR)\util_expr_parse.obj"
 	-@erase "$(INTDIR)\util_expr_scan.obj"
@@ -176,6 +177,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\util.obj" \
 	"$(INTDIR)\util_cfgtree.obj" \
 	"$(INTDIR)\util_cookies.obj" \
+	"$(INTDIR)\util_debug.obj" \
 	"$(INTDIR)\util_expr_eval.obj" \
 	"$(INTDIR)\util_expr_scan.obj" \
 	"$(INTDIR)\util_expr_parse.obj" \
@@ -281,6 +283,7 @@ CLEAN :
 	-@erase "$(INTDIR)\util.obj"
 	-@erase "$(INTDIR)\util_cfgtree.obj"
 	-@erase "$(INTDIR)\util_cookies.obj"
+	-@erase "$(INTDIR)\util_debug.obj"
 	-@erase "$(INTDIR)\util_expr_eval.obj"
 	-@erase "$(INTDIR)\util_expr_parse.obj"
 	-@erase "$(INTDIR)\util_expr_scan.obj"
@@ -379,6 +382,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\util.obj" \
 	"$(INTDIR)\util_cfgtree.obj" \
 	"$(INTDIR)\util_cookies.obj" \
+	"$(INTDIR)\util_debug.obj" \
 	"$(INTDIR)\util_expr_eval.obj" \
 	"$(INTDIR)\util_expr_scan.obj" \
 	"$(INTDIR)\util_expr_parse.obj" \
@@ -484,6 +488,7 @@ CLEAN :
 	-@erase "$(INTDIR)\util.obj"
 	-@erase "$(INTDIR)\util_cfgtree.obj"
 	-@erase "$(INTDIR)\util_cookies.obj"
+	-@erase "$(INTDIR)\util_debug.obj"
 	-@erase "$(INTDIR)\util_expr_eval.obj"
 	-@erase "$(INTDIR)\util_expr_parse.obj"
 	-@erase "$(INTDIR)\util_expr_scan.obj"
@@ -577,6 +582,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\util.obj" \
 	"$(INTDIR)\util_cfgtree.obj" \
 	"$(INTDIR)\util_cookies.obj" \
+	"$(INTDIR)\util_debug.obj" \
 	"$(INTDIR)\util_expr_eval.obj" \
 	"$(INTDIR)\util_expr_scan.obj" \
 	"$(INTDIR)\util_expr_parse.obj" \
@@ -999,6 +1005,12 @@ SOURCE=.\server\util_cfgtree.c
 SOURCE=.\server\util_cookies.c
 
 "$(INTDIR)\util_cookies.obj" : $(SOURCE) "$(INTDIR)" ".\include\os.h" ".\include\ap_config_layout.h"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\server\util_debug.c
+
+"$(INTDIR)\util_debug.obj" : $(SOURCE) "$(INTDIR)" ".\include\os.h" ".\include\ap_config_layout.h"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
