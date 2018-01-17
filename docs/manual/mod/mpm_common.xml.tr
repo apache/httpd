@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1772336:1805221 (outdated) -->
+<!-- English Revision: 1805221 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -309,6 +309,33 @@ açıklaması</a></seealso>
       <var>oran</var> her sistem için hesaplanmalı, çok sayıda değer denenmeli 
       ve başlıca başarım ölçütlerinizin çeşitli sonuçları iyi gözlemlenmelidir. 
       </p>
+      
+    <p>Bu yönerge aşağı yuvarlanan    
+      <directive module="mpm_common">MinSpareThreads</directive> ve 
+      <directive module="mpm_common">MaxSpareThreads</directive> değerlerinin 
+      hesabını etkiler. Bağlantıları en uygun şekilde kabul etmek için çocuk 
+      süreçlerin sayısının buket sayısının katları olması gerekir.</p>
+
+    <note>
+    <title>Çok sayıda <directive>Listen</directive> veya aynı adres veya port 
+      üstünda çok sayıda Apache HTTP sunucusu</title>
+    <p>Dinleyen soketler üzerinde <code>SO_REUSEPORT</code> seçeneğini tanımlamak 
+      normal bir durumda sistem tarafından oluşturulmuş bir bağlama hatası 
+      olmaksızın çok sayıda sürecin aynı adres ve porta bağlanması sonucunu 
+      doğurur.</p>
+    <p>Bu ayrıca pozitif bir <directive>ListenCoresBucketsRatio</directive> 
+      değeriyle aynı <code>IP:port</code> üzerinde yapılandırılmış çok sayıda 
+      Apache httpd örneğinin hatasız başlamasının yanında gelen çağrıların her 
+      iki örneğe eşit olarak dağıtılacağı anlamına da gelir. (Bu, 
+      herhangi bir durumda bir öneri veya makul bir kullanım DEĞİL, böyle bir 
+      olası sorunun algılanmasının engelleneceğine dair bir uyarıdır.)</p>
+    <p>Aynı örnek dahilinde, çok sayıda <directive>Listen</directive> 
+      yönergesinin tam olarak aynı IP ve port üzerinde yapılandırılması durumunda 
+      Apache httpd gerekli sınamaları yaptıktan sonra başlamayacak, böylelikle 
+      birbirinin benzeri çok sayıda kullanışsız buketin oluşturulması 
+      engellenecektir. Ancak, olası tüm örtüşmeler (bir konak adının başka bir 
+      yerde kullanılmış bir IP'ye çözümlenmesi gibi) yakalanamayacaktır.</p>
+    </note>
 </usage>
 </directivesynopsis>
 

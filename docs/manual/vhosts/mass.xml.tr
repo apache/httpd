@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1673563:1818061 (outdated) -->
+<!-- English Revision: 1818061 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -88,7 +88,7 @@
       istemezsiniz. Günlük kayıtları için bir <a href="../logs.html#piped">fifo
       veya bir boru hattı</a> oluşturmak ve diğer uçta çalışan bir süreç
       vasıtasıyla günlükleri müşterilere paylaştırmak daha iyidir. Böyle bir
-      işlemle ilgili bir örneği <a href="../programs/other.html#split-logfile"
+      işlemle ilgili bir örneği <a href="../programs/split-logfile.html"
       >split-logfile</a> aracının belgesinde bulabilirsiniz.</p>
 
 </section>
@@ -185,7 +185,7 @@ VirtualScriptAlias  "/siteler/%0/cgi-bin"
 UseCanonicalName Off
 
 LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon
-CustomLog logs/access_log vcommon
+CustomLog "logs/access_log" vcommon
 
 # sunucu ismini içerecek dosya isimlerini oluşturalım
 VirtualDocumentRoot "/home/%2/www"
@@ -291,6 +291,15 @@ VirtualScriptAliasIP  "/siteler/%0/cgi-bin"
       <a href="../rewrite/vhosts.html">rewrite belgelerinde</a>
       açıklanmıştır.</p>
 
+</section>
+
+<section id="macro">
+    <title><code>mod_macro</code> ile Kitlesel Sanal Konaklar</title>
+
+    <p>Devingen olarak üretilen sanal konaklar için diğer bir seçenek 
+      <module>mod_macro</module> modülüdür. Bir sanal konak şablonu oluşturup 
+      bunu çok sayıda konak ismi için çağırabilirsiniz. Modül belgelerinin 
+      <strong>Kullanım</strong> bölümünde böyle bir örneğe yer verilmiştir.</p>
 </section>
 
 </manualpage>

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1799789:1818964 (outdated) -->
+<!-- English Revision: 1818964 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -357,13 +357,16 @@ AddDefaultCharset utf-8
 
     <p>Bu yönergeye <code>All</code> değeri atanırsa, .htaccess <a
       href="directive-dict.html#Context">bağlamında</a> kullanılabilecek her
-      yönergeye <code>.htaccess</code> dosyalarında izin verilir.</p>
+      yönergeye <code>.htaccess</code> dosyalarında izin verilir. (Hangi 
+      <var>yönerge-türü</var> türü için hangi yönergelerin etkin olduğunu görmek 
+      için <a href="overrides.html">.htaccess için Geçersizleştirme Sınıfları</a> 
+      sayfasına bakınız)</p>
 
     <p><code><var>yönerge-türü</var></code> olarak aşağıdaki yönerge grup
       isimlerinden biri belirtilebilir:</p>
 
     <dl>
-      <dt>AuthConfig</dt>
+      <dt><a href="overrides.html#override-authconfig">AuthConfig</a></dt>
 
       <dd><directive module="mod_authz_dbm">AuthDBMGroupFile</directive>,
         <directive module="mod_authn_dbm">AuthDBMUserFile</directive>,
@@ -375,7 +378,7 @@ AddDefaultCharset utf-8
         <em>ve benzeri</em> yetkilendirme yönergelerinin kullanımını izin
         verilir.</dd>
 
-      <dt>FileInfo</dt>
+      <dt><a href="overrides.html#override-fileinfo">FileInfo</a></dt>
 
       <dd>Belge türünü denetleyen <module>mod_mime</module>
         <code>Add*</code> ve <code>Remove*</code> yönergeleri,
@@ -413,7 +416,7 @@ AddDefaultCharset utf-8
         yönergesinin kullanımına izin verilir.
       </dd>
 
-      <dt>Indexes</dt>
+      <dt><a href="overrides.html#override-indexes">Indexes</a></dt>
 
       <dd>Dizin içeriğinin listelenmesini denetleyen
         <directive module="mod_autoindex">AddDescription</directive>,
@@ -431,7 +434,7 @@ AddDefaultCharset utf-8
         yönergelerinin <em>ve benzerlerinin</em> kullanımına izin
         verilir.</dd>
 
-      <dt>Limit</dt>
+      <dt><a href="overrides.html#override-limit">Limit</a></dt>
 
       <dd>Konak erişimini denetleyen
         <directive module="mod_access_compat">Allow</directive>,
@@ -466,8 +469,9 @@ AddDefaultCharset utf-8
       </note>
       </dd>
 
-      <dt>Options[=<var>seçenek</var>,...]</dt>
-
+      <dt><a href="overrides.html#override-options" 
+             >Options</a>[=<var>seçenek</var>,...]</dt>
+      
       <dd>Dizinlere özgü özellikleri denetleyen
         <directive module="core">Options</directive> ve
         <directive module="mod_include">XBitHack</directive> yönergelerinin
@@ -513,6 +517,7 @@ AllowOverride AuthConfig Indexes
 <seealso><directive module="core">AllowOverrideList</directive></seealso>
 <seealso><a href="../configuring.html">Yapılandırma Dosyaları</a></seealso>
 <seealso><a href="../howto/htaccess.html">.htaccess Dosyaları</a></seealso>
+<seealso><a href="overrides.html">.htaccess için Geçersizleştirme Sınıfları</a></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -1520,7 +1525,7 @@ ErrorDocument 404 /cgi-bin/bad_urls.pl
 <directivesynopsis>
 <name>ErrorLog</name>
 <description>Sunucunun hata günlüğünü tutacağı yeri belirler.</description>
-<syntax> ErrorLog <var>dosya-yolu</var>|syslog[:<var>oluşum</var>]</syntax>
+<syntax> ErrorLog <var>dosya-yolu</var>|syslog[:[<var>oluşum</var>][:<var>etiket</var>]]</syntax>
 <default>ErrorLog logs/error_log (Unix) ErrorLog logs/error.log (Windows ve OS/2)</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
@@ -1555,10 +1560,16 @@ ErrorLog "|/usr/local/bin/httpd_errors"
       syslog.conf(5) kılavuz sayfasında belirtilen oluşum isimlerinden biri
       olabilir. Oluşum aslında küreseldir ve sanal konaklardan bazılarında
       değiştirilmişse, belirtilen en son oluşum tüm sunucuyu
-      etkileyecektir.</p>
+      etkileyecektir. <code><var>etiket</var></code> için de aynı kurallar 
+      uygulanır. Genellikle, öntanımlı etiket olarak Apache çalıştırılabilirinin 
+      ismi olan <code>httpd</code> kullanılır. Öntanımlı etiketi 
+      <code>syslog::<var>etiket</var></code> sözdizimini kullanarak 
+      değiştirebilirsiniz </p>
 
     <highlight language="config">
 ErrorLog syslog:user
+ErrorLog syslog:user:httpd.srv1
+ErrorLog syslog::httpd.srv2
     </highlight>
 
     <p>Buna ek olarak, modüller kendi günlük kaydı oluşturucusunu sağlayabilir.
@@ -2408,16 +2419,17 @@ IncludeOptional conf/vhosts/*/*.conf
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
 </contextlist>
-<compatibility>2.3.6 ve sonrasına kullanılabilmektedir.</compatibility>
+<compatibility>2.3.6 ve sonrasına kullanılabilmektedir. Dosya kalıp karakterleri 
+  içermeyen dosya yollarından mevcut olmayanlar 2.4.30 sürümünden itibaren 
+  sözdizimi hatalarına sebep olmamaktadır.</compatibility>
 
 <usage>
     <p>Bu yönerge, diğer yapılandırma dosyalarının sunucu yapılandırma
       dosyasında içerilmesini sağlar. Çalışması <directive
       module="core">Include</directive> yönergesi ile bir istisna dışında
       aynıdır. Dosya kalıp karakterlerinin hiçbir dosya veya dizinle
-      eşleşmemesi durumunda <directive module="core"
-      >IncludeOptional</directive> yönergesi bir hataya sebep olmak yerine
-      bunu sadece yoksayacaktır.</p>
+      eşleşmemesi veya dosya yolunun dosya sisteminde mevcut olmaması durumunda 
+      bir hata oluşmayacak ve bu durum sadece yoksayılacaktır.</p>
 </usage>
 
 <seealso><directive module="core">Include</directive></seealso>
@@ -4856,18 +4868,20 @@ davranılır.</compatibility>
 
 <directivesynopsis>
 <name>RegisterHttpMethod</name>
-<description>Standart olamayan HTTP yöntemlerini belirler</description>
+<description>Standart olmayan HTTP yöntemlerini devreye alır</description>
 <syntax>RegisterHttpMethod <var>yöntem</var> [<var>yöntem</var> [...]]</syntax>
 <contextlist><context>server config</context></contextlist>
  
 <usage>
-    <p>İlgili RFClerle uyumlu olmayan HTTP Yöntemleri Apache HTTPD'de isteğin 
-      işlenmesi sırasında  normal olarak reddedilir. Bundan kaçınmak için, uyumsuz 
-      HTTP yöntemlerini modüller destekli hale getirebilir.  
-      <directive>RegisterHttpMethod</directive> yönergesi böyle yöntemleri elle 
-      desteklenir yapmaya yarar. Bu tür yöntemler CGI gibi harici işlemlere 
-      aktarılıyorsa bu işlem yararlıdır.</p>
+    <p>Bu yönerge sunucunun standatta bulunmayan ek HTTP yöntemlerini 
+      kullanabilmesini sağlar. Yönergelerde standartta olmayan yöntem isimleri 
+      kullanmak gerektiğinde veya sunucunun modüllere sadece standart yöntemleri 
+      aktaracak şekilde yapılandırıldığı durumlarda bazı standart-dışı 
+      yöntemleri vekil veya CGI betikleriyle aktarmayı mümkün kılmak için bu 
+      gereklidir.</p>
 </usage>
+<seealso><directive module="core">HTTPProtocolOptions</directive></seealso>
+<seealso><directive module="mod_allowmethods">AllowMethods</directive></seealso>
 </directivesynopsis>
 
 </modulesynopsis>
