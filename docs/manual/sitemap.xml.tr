@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE sitemap SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 1780358:1807765 (outdated) -->
+<!-- English Revision: 1807765 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -190,6 +190,7 @@ Windows ile Apache Kullanımı</page>
 <page href="mod/">Modül Dizini</page>
 <page href="mod/directives.html">Yönerge Dizini</page>
 <page href="mod/quickreference.html">Hızlı Yönerge Kılavuzu</page>
+<page href="mod/overrides.html">.htaccess için Geçersizleştirme Sınıfları</page>
 </category>
 
 </sitemap>
