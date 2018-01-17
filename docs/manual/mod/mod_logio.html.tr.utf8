@@ -32,7 +32,6 @@
 <a href="../ko/mod/mod_logio.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_logio.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Her isteğin girdi ve çıktı uzunluklarının günlüklenmesi.
 </td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Eklenti</td></tr>
@@ -108,7 +107,7 @@
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>LogIOTrackTTFB ON|OFF</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>LogIOTrackTTFB OFF</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>none</td></tr>
+<tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Eklenti</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_logio</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Apache 2.4.13 ve sonrasında kullanılabilir</td></tr>

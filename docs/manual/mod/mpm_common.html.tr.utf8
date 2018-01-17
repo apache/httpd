@@ -32,7 +32,6 @@
 <a href="../ja/mod/mpm_common.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/mpm_common.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Birden fazla Çok Süreçlilik Modülü (MPM) tarafından gerçeklenmiş
   yönergeler bütünü.</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>MPM</td></tr></table>
@@ -313,6 +312,33 @@ açıklaması</a></li>
       <var>oran</var> her sistem için hesaplanmalı, çok sayıda değer denenmeli 
       ve başlıca başarım ölçütlerinizin çeşitli sonuçları iyi gözlemlenmelidir. 
       </p>
+      
+    <p>Bu yönerge aşağı yuvarlanan    
+      <code class="directive"><a href="#minsparethreads">MinSpareThreads</a></code> ve 
+      <code class="directive"><a href="#maxsparethreads">MaxSpareThreads</a></code> değerlerinin 
+      hesabını etkiler. Bağlantıları en uygun şekilde kabul etmek için çocuk 
+      süreçlerin sayısının buket sayısının katları olması gerekir.</p>
+
+    <div class="note">
+    <h3>Çok sayıda <code class="directive">Listen</code> veya aynı adres veya port 
+      üstünda çok sayıda Apache HTTP sunucusu</h3>
+    <p>Dinleyen soketler üzerinde <code>SO_REUSEPORT</code> seçeneğini tanımlamak 
+      normal bir durumda sistem tarafından oluşturulmuş bir bağlama hatası 
+      olmaksızın çok sayıda sürecin aynı adres ve porta bağlanması sonucunu 
+      doğurur.</p>
+    <p>Bu ayrıca pozitif bir <code class="directive">ListenCoresBucketsRatio</code> 
+      değeriyle aynı <code>IP:port</code> üzerinde yapılandırılmış çok sayıda 
+      Apache httpd örneğinin hatasız başlamasının yanında gelen çağrıların her 
+      iki örneğe eşit olarak dağıtılacağı anlamına da gelir. (Bu, 
+      herhangi bir durumda bir öneri veya makul bir kullanım DEĞİL, böyle bir 
+      olası sorunun algılanmasının engelleneceğine dair bir uyarıdır.)</p>
+    <p>Aynı örnek dahilinde, çok sayıda <code class="directive">Listen</code> 
+      yönergesinin tam olarak aynı IP ve port üzerinde yapılandırılması durumunda 
+      Apache httpd gerekli sınamaları yaptıktan sonra başlamayacak, böylelikle 
+      birbirinin benzeri çok sayıda kullanışsız buketin oluşturulması 
+      engellenecektir. Ancak, olası tüm örtüşmeler (bir konak adının başka bir 
+      yerde kullanılmış bir IP'ye çözümlenmesi gibi) yakalanamayacaktır.</p>
+    </div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

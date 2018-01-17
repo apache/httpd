@@ -33,7 +33,6 @@
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Apache HTTP Sunucusunda daima mevcut olan çekirdek
  özellikler</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr></table>
@@ -441,13 +440,16 @@ AcceptFilter https connect</pre>
       dosyalarını okumaya dahi çalışmayacaktır.</p>
 
     <p>Bu yönergeye <code>All</code> değeri atanırsa, .htaccess <a href="directive-dict.html#Context">bağlamında</a> kullanılabilecek her
-      yönergeye <code>.htaccess</code> dosyalarında izin verilir.</p>
+      yönergeye <code>.htaccess</code> dosyalarında izin verilir. (Hangi 
+      <var>yönerge-türü</var> türü için hangi yönergelerin etkin olduğunu görmek 
+      için <a href="overrides.html">.htaccess için Geçersizleştirme Sınıfları</a> 
+      sayfasına bakınız)</p>
 
     <p><code><var>yönerge-türü</var></code> olarak aşağıdaki yönerge grup
       isimlerinden biri belirtilebilir:</p>
 
     <dl>
-      <dt>AuthConfig</dt>
+      <dt><a href="overrides.html#override-authconfig">AuthConfig</a></dt>
 
       <dd><code class="directive"><a href="../mod/mod_authz_dbm.html#authdbmgroupfile">AuthDBMGroupFile</a></code>,
         <code class="directive"><a href="../mod/mod_authn_dbm.html#authdbmuserfile">AuthDBMUserFile</a></code>,
@@ -459,7 +461,7 @@ AcceptFilter https connect</pre>
         <em>ve benzeri</em> yetkilendirme yönergelerinin kullanımını izin
         verilir.</dd>
 
-      <dt>FileInfo</dt>
+      <dt><a href="overrides.html#override-fileinfo">FileInfo</a></dt>
 
       <dd>Belge türünü denetleyen <code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code>
         <code>Add*</code> ve <code>Remove*</code> yönergeleri,
@@ -497,7 +499,7 @@ AcceptFilter https connect</pre>
         yönergesinin kullanımına izin verilir.
       </dd>
 
-      <dt>Indexes</dt>
+      <dt><a href="overrides.html#override-indexes">Indexes</a></dt>
 
       <dd>Dizin içeriğinin listelenmesini denetleyen
         <code class="directive"><a href="../mod/mod_autoindex.html#adddescription">AddDescription</a></code>,
@@ -514,7 +516,7 @@ AcceptFilter https connect</pre>
         yönergelerinin <em>ve benzerlerinin</em> kullanımına izin
         verilir.</dd>
 
-      <dt>Limit</dt>
+      <dt><a href="overrides.html#override-limit">Limit</a></dt>
 
       <dd>Konak erişimini denetleyen
         <code class="directive"><a href="../mod/mod_access_compat.html#allow">Allow</a></code>,
@@ -549,8 +551,8 @@ AcceptFilter https connect</pre>
       </div>
       </dd>
 
-      <dt>Options[=<var>seçenek</var>,...]</dt>
-
+      <dt><a href="overrides.html#override-options">Options</a>[=<var>seçenek</var>,...]</dt>
+      
       <dd>Dizinlere özgü özellikleri denetleyen
         <code class="directive"><a href="#options">Options</a></code> ve
         <code class="directive"><a href="../mod/mod_include.html#xbithack">XBitHack</a></code> yönergelerinin
@@ -595,6 +597,7 @@ AcceptFilter https connect</pre>
 <li><code class="directive"><a href="#allowoverridelist">AllowOverrideList</a></code></li>
 <li><a href="../configuring.html">Yapılandırma Dosyaları</a></li>
 <li><a href="../howto/htaccess.html">.htaccess Dosyaları</a></li>
+<li><a href="overrides.html">.htaccess için Geçersizleştirme Sınıfları</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1455,7 +1458,7 @@ ErrorDocument 403 /errors/forbidden.pl?referrer=%{escape:%{HTTP_REFERER}}</pre>
 <div class="directive-section"><h2><a name="ErrorLog" id="ErrorLog">ErrorLog</a> <a name="errorlog" id="errorlog">Yönergesi</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Sunucunun hata günlüğünü tutacağı yeri belirler.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code> ErrorLog <var>dosya-yolu</var>|syslog[:<var>oluşum</var>]</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code> ErrorLog <var>dosya-yolu</var>|syslog[:[<var>oluşum</var>][:<var>etiket</var>]]</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>ErrorLog logs/error_log (Unix) ErrorLog logs/error.log (Windows ve OS/2)</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
@@ -1488,9 +1491,15 @@ ErrorDocument 403 /errors/forbidden.pl?referrer=%{escape:%{HTTP_REFERER}}</pre>
       syslog.conf(5) kılavuz sayfasında belirtilen oluşum isimlerinden biri
       olabilir. Oluşum aslında küreseldir ve sanal konaklardan bazılarında
       değiştirilmişse, belirtilen en son oluşum tüm sunucuyu
-      etkileyecektir.</p>
+      etkileyecektir. <code><var>etiket</var></code> için de aynı kurallar 
+      uygulanır. Genellikle, öntanımlı etiket olarak Apache çalıştırılabilirinin 
+      ismi olan <code>httpd</code> kullanılır. Öntanımlı etiketi 
+      <code>syslog::<var>etiket</var></code> sözdizimini kullanarak 
+      değiştirebilirsiniz </p>
 
-    <pre class="prettyprint lang-config">ErrorLog syslog:user</pre>
+    <pre class="prettyprint lang-config">ErrorLog syslog:user
+ErrorLog syslog:user:httpd.srv1
+ErrorLog syslog::httpd.srv2</pre>
 
 
     <p>Buna ek olarak, modüller kendi günlük kaydı oluşturucusunu sağlayabilir.
@@ -2404,13 +2413,15 @@ Include conf/vhosts/*.conf</pre>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>2.3.6 ve sonrasına kullanılabilmektedir.</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>2.3.6 ve sonrasına kullanılabilmektedir. Dosya kalıp karakterleri 
+  içermeyen dosya yollarından mevcut olmayanlar 2.4.30 sürümünden itibaren 
+  sözdizimi hatalarına sebep olmamaktadır.</td></tr>
 </table>
     <p>Bu yönerge, diğer yapılandırma dosyalarının sunucu yapılandırma
       dosyasında içerilmesini sağlar. Çalışması <code class="directive"><a href="#include">Include</a></code> yönergesi ile bir istisna dışında
       aynıdır. Dosya kalıp karakterlerinin hiçbir dosya veya dizinle
-      eşleşmemesi durumunda <code class="directive"><a href="#includeoptional">IncludeOptional</a></code> yönergesi bir hataya sebep olmak yerine
-      bunu sadece yoksayacaktır.</p>
+      eşleşmemesi veya dosya yolunun dosya sisteminde mevcut olmaması durumunda 
+      bir hata oluşmayacak ve bu durum sadece yoksayılacaktır.</p>
 
 <h3>Ayrıca bakınız:</h3>
 <ul>
@@ -3860,19 +3871,24 @@ davranılır.</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="RegisterHttpMethod" id="RegisterHttpMethod">RegisterHttpMethod</a> <a name="registerhttpmethod" id="registerhttpmethod">Yönergesi</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Standart olamayan HTTP yöntemlerini belirler</td></tr>
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Standart olmayan HTTP yöntemlerini devreye alır</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>RegisterHttpMethod <var>yöntem</var> [<var>yöntem</var> [...]]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
 </table>
-    <p>İlgili RFClerle uyumlu olmayan HTTP Yöntemleri Apache HTTPD'de isteğin 
-      işlenmesi sırasında  normal olarak reddedilir. Bundan kaçınmak için, uyumsuz 
-      HTTP yöntemlerini modüller destekli hale getirebilir.  
-      <code class="directive">RegisterHttpMethod</code> yönergesi böyle yöntemleri elle 
-      desteklenir yapmaya yarar. Bu tür yöntemler CGI gibi harici işlemlere 
-      aktarılıyorsa bu işlem yararlıdır.</p>
+    <p>Bu yönerge sunucunun standatta bulunmayan ek HTTP yöntemlerini 
+      kullanabilmesini sağlar. Yönergelerde standartta olmayan yöntem isimleri 
+      kullanmak gerektiğinde veya sunucunun modüllere sadece standart yöntemleri 
+      aktaracak şekilde yapılandırıldığı durumlarda bazı standart-dışı 
+      yöntemleri vekil veya CGI betikleriyle aktarmayı mümkün kılmak için bu 
+      gereklidir.</p>
 
+<h3>Ayrıca bakınız:</h3>
+<ul>
+<li><code class="directive"><a href="#httpprotocoloptions">HTTPProtocolOptions</a></code></li>
+<li><code class="directive"><a href="../mod/mod_allowmethods.html#allowmethods">AllowMethods</a></code></li>
+</ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="RLimitCPU" id="RLimitCPU">RLimitCPU</a> <a name="rlimitcpu" id="rlimitcpu">Yönergesi</a></h2>
