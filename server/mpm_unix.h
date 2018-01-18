@@ -50,9 +50,8 @@ apr_status_t ap_queue_info_set_idle(fd_queue_info_t *queue_info,
 apr_status_t ap_queue_info_try_get_idler(fd_queue_info_t *queue_info);
 apr_status_t ap_queue_info_wait_for_idler(fd_queue_info_t *queue_info,
                                           int *had_to_block);
+apr_uint32_t ap_queue_info_num_idlers(fd_queue_info_t *queue_info);
 apr_status_t ap_queue_info_term(fd_queue_info_t *queue_info);
-apr_uint32_t ap_queue_info_get_idlers(fd_queue_info_t *queue_info);
-void ap_free_idle_pools(fd_queue_info_t *queue_info);
 
 typedef struct timer_event_t timer_event_t;
 
@@ -82,6 +81,7 @@ typedef struct fd_queue_t fd_queue_t;
 
 void ap_pop_pool(apr_pool_t **recycled_pool, fd_queue_info_t *queue_info);
 void ap_push_pool(fd_queue_info_t *queue_info, apr_pool_t *pool_to_recycle);
+void ap_free_idle_pools(fd_queue_info_t *queue_info);
 
 apr_status_t ap_queue_init(fd_queue_t *queue, int queue_capacity,
                            apr_pool_t *a);
