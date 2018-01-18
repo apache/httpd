@@ -2663,10 +2663,18 @@ static void child_main(int child_num_arg, int child_bucket)
     /*stuff to do before we switch id's, so we have permissions. */
     ap_reopen_scoreboard(pchild, NULL, 0);
 
-    /* done with init critical section */
     if (ap_run_drop_privileges(pchild, ap_server_conf)) {
         clean_child_exit(APEXIT_CHILDFATAL);
     }
+
+    apr_thread_mutex_create(&g_timer_skiplist_mtx, APR_THREAD_MUTEX_DEFAULT, pchild);
+    APR_RING_INIT(&timer_free_ring, timer_event_t, link);
+    apr_pool_create(&pskip, pchild);
+    apr_skiplist_init(&timer_skiplist, pskip);
+    apr_skiplist_set_compare(timer_skiplist, timer_comp, timer_comp);
+    ap_run_child_init(pchild, ap_server_conf);
+
+    /* done with init critical section */
 
     /* Just use the standard apr_setup_signal_thread to block all signals
      * from being received.  The child processes no longer use signals for
@@ -2678,14 +2686,6 @@ static void child_main(int child_num_arg, int child_bucket)
                      "Couldn't initialize signal thread");
         clean_child_exit(APEXIT_CHILDFATAL);
     }
-
-    ap_run_child_init(pchild, ap_server_conf);
-
-    apr_thread_mutex_create(&g_timer_skiplist_mtx, APR_THREAD_MUTEX_DEFAULT, pchild);
-    APR_RING_INIT(&timer_free_ring, timer_event_t, link);
-    apr_pool_create(&pskip, pchild);
-    apr_skiplist_init(&timer_skiplist, pskip);
-    apr_skiplist_set_compare(timer_skiplist, timer_comp, timer_comp);
 
     if (ap_max_requests_per_child) {
         conns_this_child = ap_max_requests_per_child;
