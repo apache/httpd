@@ -1,7 +1,7 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
-  *) mod_event: Let the listener thread do its maintenance job on resources
+  *) mpm_event: Let the listener thread do its maintenance job on resources
      shortage.  PR 61979.  [Yann Ylavic]
 
   *) mod_headers: 'RequestHeader set|edit|edit_r Content-Type X' could 
