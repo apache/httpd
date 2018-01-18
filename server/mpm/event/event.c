@@ -184,7 +184,6 @@ static volatile int dying = 0;
 static volatile int workers_may_exit = 0;
 static volatile int start_thread_may_exit = 0;
 static volatile int listener_may_exit = 0;
-static volatile int listeners_disabled = 0;
 static int listener_is_wakeable = 0;        /* Pollset supports APR_POLLSET_WAKEABLE */
 static int num_listensocks = 0;
 static apr_int32_t conns_this_child;        /* MaxConnectionsPerChild, only access
@@ -472,6 +471,8 @@ static pid_t ap_my_pid;         /* Linux getpid() doesn't work except in main
 static pid_t parent_pid;
 static apr_os_thread_t *listener_os_thread;
 
+static int ap_child_slot;       /* Current child process slot in scoreboard */
+
 /* The LISTENER_SIGNAL signal will be sent from the main thread to the
  * listener thread to wake it up for graceful termination (what a child
  * process from an old generation does when the admin does "apachectl
@@ -485,23 +486,29 @@ static apr_os_thread_t *listener_os_thread;
  */
 static apr_socket_t **worker_sockets;
 
-static void disable_listensocks(int process_slot)
-{
-    int i;
-    listeners_disabled = 1;
-    for (i = 0; i < num_listensocks; i++) {
-        apr_pollset_remove(event_pollset, &listener_pollfd[i]);
-    }
-    ap_scoreboard_image->parent[process_slot].not_accepting = 1;
-}
+static volatile apr_uint32_t listensocks_disabled;
 
-static void enable_listensocks(int process_slot)
+static void disable_listensocks(void)
 {
     int i;
-    if (listener_may_exit) {
+    if (apr_atomic_cas32(&listensocks_disabled, 1, 0) != 0) {
         return;
     }
-    listeners_disabled = 0;
+    if (event_pollset) {
+        for (i = 0; i < num_listensocks; i++) {
+            apr_pollset_remove(event_pollset, &listener_pollfd[i]);
+        }
+    }
+    ap_scoreboard_image->parent[ap_child_slot].not_accepting = 1;
+}
+
+static void enable_listensocks(void)
+{
+    int i;
+    if (listener_may_exit
+            || apr_atomic_cas32(&listensocks_disabled, 0, 1) != 1) {
+        return;
+    }
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(00457)
                  "Accepting new connections again: "
                  "%u active conns (%u lingering/%u clogged/%u suspended), "
@@ -517,7 +524,12 @@ static void enable_listensocks(int process_slot)
      * XXX: This is not yet optimal. If many workers suddenly become available,
      * XXX: the parent may kill some processes off too soon.
      */
-    ap_scoreboard_image->parent[process_slot].not_accepting = 0;
+    ap_scoreboard_image->parent[ap_child_slot].not_accepting = 0;
+}
+
+static APR_INLINE apr_uint32_t listeners_disabled(void)
+{
+    return apr_atomic_read32(&listensocks_disabled);
 }
 
 static APR_INLINE int connections_above_limit(void)
@@ -527,9 +539,9 @@ static APR_INLINE int connections_above_limit(void)
         apr_uint32_t c_count = apr_atomic_read32(&connection_count);
         apr_uint32_t l_count = apr_atomic_read32(&lingering_count);
         if (c_count <= l_count
-                /* Off by 'listeners_disabled' to avoid flip flop */
+                /* Off by 'listeners_disabled()' to avoid flip flop */
                 || c_count - l_count < (apr_uint32_t)threads_per_child +
-                                       (i_count - (listeners_disabled != 0)) *
+                                       (i_count - listeners_disabled()) *
                                        (worker_factor / WORKER_FACTOR_SCALE)) {
             return 0;
         }
@@ -592,6 +604,7 @@ static void close_worker_sockets(void)
 static void wakeup_listener(void)
 {
     listener_may_exit = 1;
+    disable_listensocks();
 
     /* Unblock the listener if it's poll()ing */
     if (event_pollset && listener_is_wakeable) {
@@ -795,7 +808,7 @@ static apr_status_t decrement_connection_count(void *cs_)
     is_last_connection = !apr_atomic_dec32(&connection_count);
     if (listener_is_wakeable
             && ((is_last_connection && listener_may_exit)
-                || (listeners_disabled && !connections_above_limit()))) {
+                || (listeners_disabled() && !connections_above_limit()))) {
         apr_pollset_wakeup(event_pollset);
     }
     return APR_SUCCESS;
@@ -1272,17 +1285,16 @@ static void check_infinite_requests(void)
     }
 }
 
-static void close_listeners(int process_slot, int *closed)
+static void close_listeners(int *closed)
 {
     if (!*closed) {
         int i;
-        disable_listensocks(process_slot);
         ap_close_listeners_ex(my_bucket->listeners);
         *closed = 1;
         dying = 1;
-        ap_scoreboard_image->parent[process_slot].quiescing = 1;
+        ap_scoreboard_image->parent[ap_child_slot].quiescing = 1;
         for (i = 0; i < threads_per_child; ++i) {
-            ap_update_child_status_from_indexes(process_slot, i,
+            ap_update_child_status_from_indexes(ap_child_slot, i,
                                                 SERVER_GRACEFUL, NULL);
         }
         /* wake up the main thread */
@@ -1796,8 +1808,9 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
         ap_log_error(APLOG_MARK, APLOG_ERR, rc, ap_server_conf,
                      APLOGNO(03266)
                      "failed to initialize pollset, "
-                     "attempting to shutdown process gracefully");
-        signal_threads(ST_GRACEFUL);
+                     "shutdown process now");
+        resource_shortage = 1;
+        signal_threads(ST_UNGRACEFUL);
         return NULL;
     }
 
@@ -1819,7 +1832,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
             check_infinite_requests();
 
         if (listener_may_exit) {
-            close_listeners(process_slot, &closed);
+            close_listeners(&closed);
             if (terminate_mode == ST_UNGRACEFUL
                 || apr_atomic_read32(&connection_count) == 0)
                 break;
@@ -1928,7 +1941,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                  * need to update timeouts (logic is above, so simply restart
                  * the loop).
                  */
-                if (!listener_may_exit && !listeners_disabled) {
+                if (!listener_may_exit && !listeners_disabled()) {
                     continue;
                 }
                 timeout_time = 0;
@@ -1944,13 +1957,13 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
         }
 
         if (listener_may_exit) {
-            close_listeners(process_slot, &closed);
+            close_listeners(&closed);
             if (terminate_mode == ST_UNGRACEFUL
                 || apr_atomic_read32(&connection_count) == 0)
                 break;
         }
 
-        while (num) {
+        for (; num; --num, ++out_pfd) {
             listener_poll_type *pt = (listener_poll_type *) out_pfd->client_data;
             if (pt->type == PT_CSD) {
                 /* one of the sockets is readable */
@@ -2011,17 +2024,17 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                     ap_assert(0);
                 }
             }
-            else if (pt->type == PT_ACCEPT && !listeners_disabled) {
+            else if (pt->type == PT_ACCEPT && !listeners_disabled()) {
                 /* A Listener Socket is ready for an accept() */
                 if (workers_were_busy) {
-                    disable_listensocks(process_slot);
+                    disable_listensocks();
                     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
                                  APLOGNO(03268)
                                  "All workers busy, not accepting new conns "
                                  "in this process");
                 }
                 else if (connections_above_limit()) {
-                    disable_listensocks(process_slot);
+                    disable_listensocks();
                     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
                                  APLOGNO(03269)
                                  "Too many open connections (%u), "
@@ -2050,8 +2063,9 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                                          ap_server_conf, APLOGNO(03097)
                                          "Failed to create transaction pool");
                             apr_allocator_destroy(allocator);
+                            resource_shortage = 1;
                             signal_threads(ST_GRACEFUL);
-                            return NULL;
+                            continue;
                         }
                         apr_allocator_owner_set(allocator, ptrans);
                     }
@@ -2120,9 +2134,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                     push_timer2worker(te);
                 }
             }
-            out_pfd++;
-            num--;
-        }                   /* while for processing poll */
+        } /* for processing poll */
 
         /* XXX possible optimization: stash the current time for use as
          * r->request_time for new requests
@@ -2194,14 +2206,14 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
             }
         }
 
-        if (listeners_disabled
+        if (listeners_disabled()
                 && !workers_were_busy
                 && !connections_above_limit()) {
-            enable_listensocks(process_slot);
+            enable_listensocks();
         }
     } /* listener main loop */
 
-    close_listeners(process_slot, &closed);
+    close_listeners(&closed);
     ap_queue_term(worker_queue);
 
     apr_thread_exit(thd, APR_SUCCESS);
@@ -2652,6 +2664,7 @@ static void child_main(int child_num_arg, int child_bucket)
     retained->mpm->mpm_state = AP_MPMQ_STARTING;
 
     ap_my_pid = getpid();
+    ap_child_slot = child_num_arg;
     ap_fatal_signal_child_setup(ap_server_conf);
     apr_pool_create(&pchild, pconf);
 
@@ -3630,6 +3643,7 @@ static int event_pre_config(apr_pool_t * pconf, apr_pool_t * plog,
     event_pollset = NULL;
     worker_queue_info = NULL;
     listener_os_thread = NULL;
+    listensocks_disabled = 0;
 
     return OK;
 }
