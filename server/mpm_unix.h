@@ -28,7 +28,10 @@
 
 #ifndef WIN32
 
-#include "httpd.h"
+#include <apr.h>
+#include <apr_ring.h>
+#include <apr_pools.h>
+#include <apr_network_io.h>
 #include <apr_thread_mutex.h>
 #include <apr_thread_cond.h>
 
