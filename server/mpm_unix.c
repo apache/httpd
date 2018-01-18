@@ -29,7 +29,6 @@
 
 #include "mpm_unix.h"
 
-#include "apr.h"
 #include "apr_thread_proc.h"
 #include "apr_signal.h"
 #include "apr_strings.h"
@@ -41,12 +40,12 @@
 #include "apr_atomic.h"
 #include "apr_errno.h"
 
+#include "httpd.h"
 #include "http_config.h"
 #include "http_core.h"
 #include "http_log.h"
 #include "http_main.h"
 #include "mpm_common.h"
-#include "ap_mpm.h"
 #include "ap_listen.h"
 #include "scoreboard.h"
 #include "util_mutex.h"
