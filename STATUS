@@ -118,6 +118,14 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mpm_event,worker: Mask signals for threads created by modules in child
+     init, so that they don't receive (implicitely) the ones meant for the MPM.
+     PR 62009.
+     trunk patch: http://svn.apache.org/r1821504
+                  http://svn.apache.org/r1821505
+     2.4.x patch: svn merge -c 1821504,1821505 ^/httpd/httpd/trunk .
+                  (modulo CHANGES)
+     +1: ylavic, icing, covener
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -187,15 +195,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   (or svn copy ...)
      +1: jim, icing
      icing: tested on ubuntu 16.04 with a simple uwsgi python app.
-
-  *) mpm_event,worker: Mask signals for threads created by modules in child
-     init, so that they don't receive (implicitely) the ones meant for the MPM.
-     PR 62009.
-     trunk patch: http://svn.apache.org/r1821504
-                  http://svn.apache.org/r1821505
-     2.4.x patch: svn merge -c 1821504,1821505 ^/httpd/httpd/trunk .
-                  (modulo CHANGES)
-     +1: ylavic, icing
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
