@@ -2676,7 +2676,9 @@ static void child_main(int child_num_arg, int child_bucket)
 
     /* Just use the standard apr_setup_signal_thread to block all signals
      * from being received.  The child processes no longer use signals for
-     * any communication with the parent process.
+     * any communication with the parent process. Let's also do this before
+     * child_init() hooks are called and possibly create threads that
+     * otherwise could "steal" (implicitely) MPM's signals.
      */
     rv = apr_setup_signal_thread();
     if (rv != APR_SUCCESS) {
