@@ -1,16 +1,6 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
-  *) mpm_event,worker: Mask signals for threads created by modules in child
-     init, so that they don't receive (implicitely) the ones meant for the MPM.
-     PR 62009. [Armin Abfalterer <a.abfalterer gmail com>, Yann Ylavic]
-
-  *) mpm_event: Update scoreboard status for KeepAlive state.  [Yann Ylavic]
-
-  *) core, mpm_event: Avoid a small memory leak of the scoreboard handle, for
-     the lifetime of the connection, each time it is processed by MPM event.
-     [Yann Ylavic]
-
   *) mod_headers: 'RequestHeader set|edit|edit_r Content-Type X' could 
      inadvertently modify the Content-Type _response_ header. Applies to
      Content-Type only and likely to only affect static file responses.
@@ -49,10 +39,6 @@ Changes with Apache 2.5.1
   *) mod_md: fixed mem pool usage for auto-added server names. Added
      error logging of exact ACME response when challenges failed.
      [Stefan Eissing]
-
-  *) mpm_event: close connections not reported as handled by any module to
-     avoid losing track of them and leaking scoreboard entries.  PR 61551.
-     [Yann Ylavic]
 
   *) mod_dumpio: do nothing below log level TRACE7.  [Yann Ylavic]
 
@@ -124,10 +110,6 @@ Changes with Apache 2.5.1
   *) core: fix pcre feature detection in configure when using pcre2.  [Rainer Jung]
 
 Changes with Apache 2.5.0-alpha
-
-  *) mpm_event: avoid a very unlikely race condition between the listener and
-     the workers when the latter fails to add a connection to the pollset.
-     [Yann Ylavic]
 
   *) mod_macro: fix usability of globally defined macros in .htaccess files.
      PR 57525.  [Jose Kahan <jose w3.org>, Yann Ylavic]
