@@ -150,7 +150,7 @@
         <!-- retirement (needs translation) -->
         <message id="retired.headline">Please note</message>
         <message id="retired.description">
-            <p> This document refers to a legacy release (<strong>2.2</strong>) of Apache httpd. The active release (<strong>2.4</strong>) is documented <a href="http://httpd.apache.org/docs/current">here</a>. If you have not already upgraded, please follow <a href="http://httpd.apache.org/docs/current/upgrading.html">this link</a> for more information.</p>
+            <p>This document refers to the <strong>2.2</strong> version of Apache httpd, which is no longer maintained. The active release is documented <a href="http://httpd.apache.org/docs/current">here</a>. If you have not already upgraded, please follow <a href="http://httpd.apache.org/docs/current/upgrading.html">this link</a> for more information.</p>
         </message>
         <message id="retired.document">You may follow <link>this link</link> to go to the current version of this document.</message>
         
