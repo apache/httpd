@@ -4,6 +4,9 @@ Changes with Apache 2.5.1
   *) mpm_event: Let the listener thread do its maintenance job on resources
      shortage.  PR 61979.  [Yann Ylavic]
 
+  *) mpm_event: Wakeup the listener to re-enable listening sockets.
+     [Yann Ylavic]
+
   *) mod_headers: 'RequestHeader set|edit|edit_r Content-Type X' could 
      inadvertently modify the Content-Type _response_ header. Applies to
      Content-Type only and likely to only affect static file responses.
