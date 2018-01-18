@@ -1136,6 +1136,13 @@ struct fd_queue_info_t
     struct recycled_pool *volatile recycled_pools;
 };
 
+struct fd_queue_elem_t
+{
+    apr_socket_t *sd;
+    apr_pool_t *p;
+    void *baton;
+};
+
 static apr_status_t queue_info_cleanup(void *data_)
 {
     fd_queue_info_t *qi = data_;
@@ -1469,7 +1476,7 @@ apr_status_t ap_queue_init(fd_queue_t * queue, int queue_capacity,
  *               to reserve an idle worker thread
  */
 apr_status_t ap_queue_push(fd_queue_t * queue, apr_socket_t * sd,
-                           event_conn_state_t * ecs, apr_pool_t * p)
+                           void * baton, apr_pool_t * p)
 {
     fd_queue_elem_t *elem;
     apr_status_t rv;
@@ -1486,7 +1493,7 @@ apr_status_t ap_queue_push(fd_queue_t * queue, apr_socket_t * sd,
     if (queue->in >= queue->bounds)
         queue->in -= queue->bounds;
     elem->sd = sd;
-    elem->ecs = ecs;
+    elem->baton = baton;
     elem->p = p;
     queue->nelts++;
 
@@ -1527,7 +1534,7 @@ apr_status_t ap_queue_push_timer(fd_queue_t * queue, timer_event_t *te)
  * 'sd'.
  */
 apr_status_t ap_queue_pop_something(fd_queue_t * queue, apr_socket_t ** sd,
-                                    event_conn_state_t ** ecs, apr_pool_t ** p,
+                                    void ** baton, apr_pool_t ** p,
                                     timer_event_t ** te_out)
 {
     fd_queue_elem_t *elem;
@@ -1570,7 +1577,7 @@ apr_status_t ap_queue_pop_something(fd_queue_t * queue, apr_socket_t ** sd,
             queue->out -= queue->bounds;
         queue->nelts--;
         *sd = elem->sd;
-        *ecs = elem->ecs;
+        *baton = elem->baton;
         *p = elem->p;
 #ifdef AP_DEBUG
         elem->sd = NULL;
