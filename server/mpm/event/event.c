@@ -91,7 +91,7 @@
 #include "mpm_common.h"
 #include "ap_listen.h"
 #include "scoreboard.h"
-#include "fdqueue.h"
+#include "mpm_unix.h"
 #include "mpm_default.h"
 #include "http_vhost.h"
 #include "unixd.h"
