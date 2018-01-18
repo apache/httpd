@@ -27,6 +27,8 @@
 
 #ifndef WIN32
 
+#include "mpm_unix.h"
+
 #include "apr.h"
 #include "apr_thread_proc.h"
 #include "apr_signal.h"
@@ -37,8 +39,8 @@
 #include "apr_optional.h"
 #include "apr_allocator.h"
 #include "apr_atomic.h"
+#include "apr_errno.h"
 
-#include "httpd.h"
 #include "http_config.h"
 #include "http_core.h"
 #include "http_log.h"
@@ -48,8 +50,6 @@
 #include "ap_listen.h"
 #include "scoreboard.h"
 #include "util_mutex.h"
-
-#include "mpm_unix.h"
 
 #ifdef HAVE_PWD_H
 #include <pwd.h>

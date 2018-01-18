@@ -15,27 +15,22 @@
  */
 
 /**
- * @file  event/fdqueue.h
+ * @file  mpm_unix.h
  * @brief fd queue declarations
  *
- * @addtogroup APACHE_MPM_EVENT
+ * @defgroup APACHE_MPM Multi-Processing Modules
+ * @ingroup  APACHE
  * @{
  */
 
-#ifndef FDQUEUE_H
-#define FDQUEUE_H
+#ifndef MPM_UNIX_H
+#define MPM_UNIX_H
+
+#ifndef WIN32
+
 #include "httpd.h"
-#include <stdlib.h>
-#if APR_HAVE_UNISTD_H
-#include <unistd.h>
-#endif
 #include <apr_thread_mutex.h>
 #include <apr_thread_cond.h>
-#include <sys/types.h>
-#if APR_HAVE_SYS_SOCKET_H
-#include <sys/socket.h>
-#endif
-#include <apr_errno.h>
 
 #include "ap_mpm.h"
 
@@ -104,5 +99,7 @@ apr_status_t ap_queue_interrupt_all(fd_queue_t * queue);
 apr_status_t ap_queue_interrupt_one(fd_queue_t * queue);
 apr_status_t ap_queue_term(fd_queue_t * queue);
 
-#endif /* FDQUEUE_H */
+#endif /* WIN32 */
+
+#endif /* MPM_UNIX_H */
 /** @} */
