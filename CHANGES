@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.30
  
+  *) mpm_event,worker: Mask signals for threads created by modules in child
+     init, so that they don't receive (implicitely) the ones meant for the MPM.
+     PR 62009. [Armin Abfalterer <a.abfalterer gmail com>, Yann Ylavic]
+
   *) mod_md: new experimental, module for managing domains across virtual hosts,
      implementing the Let's Encrypt ACMEv1 protocol to signup and renew 
      certificates. Please read the modules documentation for further instructions
