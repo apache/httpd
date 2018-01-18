@@ -1,10 +1,6 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
-  *) mpm_event,worker: Mask signals for threads created by modules in child
-     init, so that they don't receive (implicitely) the ones meant for the MPM.
-     PR 62009. [Armin Abfalterer <a.abfalterer gmail.com>, Yann Ylavic]
-
   *) mpm_event: Update scoreboard status for KeepAlive state.  [Yann Ylavic]
 
   *) core, mpm_event: Avoid a small memory leak of the scoreboard handle, for

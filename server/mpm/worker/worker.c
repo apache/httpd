@@ -1112,16 +1112,17 @@ static void child_main(int child_num_arg, int child_bucket)
         clean_child_exit(APEXIT_CHILDFATAL);
     }
 
-    /* done with init critical section */
     if (ap_run_drop_privileges(pchild, ap_server_conf)) {
         clean_child_exit(APEXIT_CHILDFATAL);
     }
 
+    ap_run_child_init(pchild, ap_server_conf);
+
+    /* done with init critical section */
+
     /* Just use the standard apr_setup_signal_thread to block all signals
      * from being received.  The child processes no longer use signals for
-     * any communication with the parent process. Let's also do this before
-     * child_init() hooks are called and possibly create threads that
-     * otherwise could "steal" (implicitely) MPM's signals.
+     * any communication with the parent process.
      */
     rv = apr_setup_signal_thread();
     if (rv != APR_SUCCESS) {
@@ -1129,8 +1130,6 @@ static void child_main(int child_num_arg, int child_bucket)
                      "Couldn't initialize signal thread");
         clean_child_exit(APEXIT_CHILDFATAL);
     }
-
-    ap_run_child_init(pchild, ap_server_conf);
 
     if (ap_max_requests_per_child) {
         requests_this_child = ap_max_requests_per_child;
