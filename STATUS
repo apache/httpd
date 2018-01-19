@@ -214,9 +214,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   svn merge --record-only -c 1819855,1821562 .
      trunk patch: http://svn.apache.org/r1821558
                   http://svn.apache.org/r1821561
-       2.4.x 4/4: http://home.apache.org/~ylavic/patches/event-staging-4_on_4.patch
+                  http://svn.apache.org/r1821595
+       2.4.x 4/4: http://home.apache.org/~ylavic/patches/event-staging-4_on_4-v2.patch
                   svn merge --record-only -c 1821558,1821561 .
-     (2.4.x full: http://home.apache.org/~ylavic/patches/event-staging-full.patch)
+     (2.4.x full: http://home.apache.org/~ylavic/patches/event-staging-full-v2.patch)
      +1: ylavic, 
 
 
