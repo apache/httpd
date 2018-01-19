@@ -180,7 +180,9 @@ apr_status_t ap_queue_info_wait_for_idler(fd_queue_info_t *queue_info,
          *     threads are waiting on an idle worker.
          */
         if (queue_info->idlers < zero_pt) {
-            *had_to_block = 1;
+            if (had_to_block) {
+                *had_to_block = 1;
+            }
             rv = apr_thread_cond_wait(queue_info->wait_for_idler,
                                       queue_info->idlers_mutex);
             if (rv != APR_SUCCESS) {
@@ -442,6 +444,7 @@ apr_status_t ap_queue_pop_something(fd_queue_t *queue, apr_socket_t **sd,
                                     timer_event_t **te_out)
 {
     fd_queue_elem_t *elem;
+    timer_event_t *te;
     apr_status_t rv;
 
     if ((rv = apr_thread_mutex_lock(queue->one_big_mutex)) != APR_SUCCESS) {
@@ -468,20 +471,24 @@ apr_status_t ap_queue_pop_something(fd_queue_t *queue, apr_socket_t **sd,
         }
     }
 
-    *te_out = NULL;
-
-    if (!APR_RING_EMPTY(&queue->timers, timer_event_t, link)) {
-        *te_out = APR_RING_FIRST(&queue->timers);
-        APR_RING_REMOVE(*te_out, link);
+    te = NULL;
+    if (te_out) {
+        if (!APR_RING_EMPTY(&queue->timers, timer_event_t, link)) {
+            te = APR_RING_FIRST(&queue->timers);
+            APR_RING_REMOVE(te, link);
+        }
+        *te_out = te;
     }
-    else {
+    if (!te) {
         elem = &queue->data[queue->out];
         queue->out++;
         if (queue->out >= queue->bounds)
             queue->out -= queue->bounds;
         queue->nelts--;
         *sd = elem->sd;
-        *baton = elem->baton;
+        if (baton) {
+            *baton = elem->baton;
+        }
         *p = elem->p;
 #ifdef AP_DEBUG
         elem->sd = NULL;
