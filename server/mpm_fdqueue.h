@@ -43,16 +43,16 @@ struct fd_queue_elem_t; /* opaque */
 typedef struct fd_queue_info_t fd_queue_info_t;
 typedef struct fd_queue_elem_t fd_queue_elem_t;
 
-apr_status_t ap_queue_info_create(fd_queue_info_t ** queue_info,
-                                  apr_pool_t * pool, int max_idlers,
+apr_status_t ap_queue_info_create(fd_queue_info_t **queue_info,
+                                  apr_pool_t *pool, int max_idlers,
                                   int max_recycled_pools);
-apr_status_t ap_queue_info_set_idle(fd_queue_info_t * queue_info,
-                                    apr_pool_t * pool_to_recycle);
-apr_status_t ap_queue_info_try_get_idler(fd_queue_info_t * queue_info);
-apr_status_t ap_queue_info_wait_for_idler(fd_queue_info_t * queue_info,
+apr_status_t ap_queue_info_set_idle(fd_queue_info_t *queue_info,
+                                    apr_pool_t *pool_to_recycle);
+apr_status_t ap_queue_info_try_get_idler(fd_queue_info_t *queue_info);
+apr_status_t ap_queue_info_wait_for_idler(fd_queue_info_t *queue_info,
                                           int *had_to_block);
-apr_status_t ap_queue_info_term(fd_queue_info_t * queue_info);
-apr_uint32_t ap_queue_info_get_idlers(fd_queue_info_t * queue_info);
+apr_status_t ap_queue_info_term(fd_queue_info_t *queue_info);
+apr_uint32_t ap_queue_info_get_idlers(fd_queue_info_t *queue_info);
 void ap_free_idle_pools(fd_queue_info_t *queue_info);
 
 typedef struct timer_event_t timer_event_t;
@@ -81,21 +81,20 @@ struct fd_queue_t
 };
 typedef struct fd_queue_t fd_queue_t;
 
-void ap_pop_pool(apr_pool_t ** recycled_pool, fd_queue_info_t * queue_info);
-void ap_push_pool(fd_queue_info_t * queue_info,
-                                    apr_pool_t * pool_to_recycle);
+void ap_pop_pool(apr_pool_t **recycled_pool, fd_queue_info_t *queue_info);
+void ap_push_pool(fd_queue_info_t *queue_info, apr_pool_t *pool_to_recycle);
 
-apr_status_t ap_queue_init(fd_queue_t * queue, int queue_capacity,
-                           apr_pool_t * a);
-apr_status_t ap_queue_push(fd_queue_t * queue, apr_socket_t * sd,
-                           void * baton, apr_pool_t * p);
+apr_status_t ap_queue_init(fd_queue_t *queue, int queue_capacity,
+                           apr_pool_t *a);
+apr_status_t ap_queue_push(fd_queue_t *queue, apr_socket_t *sd,
+                           void *baton, apr_pool_t *p);
 apr_status_t ap_queue_push_timer(fd_queue_t *queue, timer_event_t *te);
-apr_status_t ap_queue_pop_something(fd_queue_t * queue, apr_socket_t ** sd,
-                                    void ** baton, apr_pool_t ** p,
-                                    timer_event_t ** te);
-apr_status_t ap_queue_interrupt_all(fd_queue_t * queue);
-apr_status_t ap_queue_interrupt_one(fd_queue_t * queue);
-apr_status_t ap_queue_term(fd_queue_t * queue);
+apr_status_t ap_queue_pop_something(fd_queue_t *queue, apr_socket_t **sd,
+                                    void **baton, apr_pool_t **p,
+                                    timer_event_t **te);
+apr_status_t ap_queue_interrupt_all(fd_queue_t *queue);
+apr_status_t ap_queue_interrupt_one(fd_queue_t *queue);
+apr_status_t ap_queue_term(fd_queue_t *queue);
 
 #endif /* APR_HAS_THREADS */
 
