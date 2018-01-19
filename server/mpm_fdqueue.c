@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-#include "fdqueue.h"
-#include "apr_atomic.h"
+#include "mpm_fdqueue.h"
+
+#include <apr_atomic.h>
 
 static const apr_uint32_t zero_pt = APR_UINT32_MAX/2;
 
