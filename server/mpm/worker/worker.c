@@ -64,7 +64,7 @@
 #include "mpm_common.h"
 #include "ap_listen.h"
 #include "scoreboard.h"
-#include "mpm_unix.h"
+#include "fdqueue.h"
 #include "mpm_default.h"
 #include "util_mutex.h"
 #include "unixd.h"
@@ -597,7 +597,11 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t *thd, void * dummy)
         if (listener_may_exit) break;
 
         if (!have_idle_worker) {
-            rv = ap_queue_info_wait_for_idler(worker_queue_info, NULL);
+            /* the following pops a recycled ptrans pool off a stack
+             * if there is one, in addition to reserving a worker thread
+             */
+            rv = ap_queue_info_wait_for_idler(worker_queue_info,
+                                              &ptrans);
             if (APR_STATUS_IS_EOF(rv)) {
                 break; /* we've been signaled to die now */
             }
@@ -675,8 +679,6 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t *thd, void * dummy)
         } /* if/else */
 
         if (!listener_may_exit) {
-            /* the following pops a recycled ptrans pool off a stack */
-            ap_pop_pool(&ptrans, worker_queue_info);
             if (ptrans == NULL) {
                 /* we can't use a recycled transaction pool this time.
                  * create a new transaction pool */
@@ -686,8 +688,8 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t *thd, void * dummy)
                 apr_allocator_max_free_set(allocator, ap_max_mem_free);
                 apr_pool_create_ex(&ptrans, pconf, NULL, allocator);
                 apr_allocator_owner_set(allocator, ptrans);
-                apr_pool_tag(ptrans, "transaction");
             }
+            apr_pool_tag(ptrans, "transaction");
             rv = lr->accept_func(&csd, lr, ptrans);
             /* later we trash rv and rely on csd to indicate success/failure */
             AP_DEBUG_ASSERT(rv == APR_SUCCESS || !csd);
@@ -710,7 +712,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t *thd, void * dummy)
                 accept_mutex_error("unlock", rv, process_slot);
             }
             if (csd != NULL) {
-                rv = ap_queue_push(worker_queue, csd, NULL, ptrans);
+                rv = ap_queue_push(worker_queue, csd, ptrans);
                 if (rv) {
                     /* trash the connection; we couldn't queue the connected
                      * socket to a worker
@@ -916,7 +918,7 @@ static void * APR_THREAD_FUNC start_threads(apr_thread_t *thd, void *dummy)
     }
 
     rv = ap_queue_info_create(&worker_queue_info, pchild,
-                              threads_per_child, -1);
+                              threads_per_child);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf, APLOGNO(03141)
                      "ap_queue_info_create() failed");
