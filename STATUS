@@ -188,6 +188,34 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: jim, icing
      icing: tested on ubuntu 16.04 with a simple uwsgi python app.
 
+  *) event: staging changes (incremental patches) to sync 2.4.x with trunk.
+     Patch 1/4: Local variables scope (no functional changes)
+     Patch 2/4: Optimizations and correctness (synchronization) which don't
+                seem to have bitten us so far (no proven fix somehow)
+     Patch 3/4: A wakeup fix regarding disabled listening sockets (corner case)
+     Patch 4/4: Let the listener thread do its maintenance job on resources
+                shortage
+     trunk patch: http://svn.apache.org/r1605328
+                  http://svn.apache.org/r1629576
+     seq patch 1: http://home.apache.org/~ylavic/patches/event-staging-1_on_4.patch
+                  http://svn.apache.org/r1643279
+                  http://svn.apache.org/r1703241
+                  http://svn.apache.org/r1802535
+                  http://svn.apache.org/r1819847
+                  http://svn.apache.org/r1819848
+                  http://svn.apache.org/r1819852
+                  http://svn.apache.org/r1819853
+     seq patch 2: http://home.apache.org/~ylavic/patches/event-staging-2_on_4.patch
+                  http://svn.apache.org/r1819855
+                  http://svn.apache.org/r1821562
+     seq patch 3: http://home.apache.org/~ylavic/patches/event-staging-3_on_4.patch
+                  http://svn.apache.org/r1821558
+                  http://svn.apache.org/r1821561
+     seq patch 4: http://home.apache.org/~ylavic/patches/event-staging-4_on_4.patch
+     2.4.x patch: the above patches in order and then:
+                  svn merge --record-only -c 1605328,1629576,1643279,1703241,1802535,1819847,1819848,1819852,1819853,1819855,1821562,1821558,1821561 .
+     +1: ylavic, 
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
