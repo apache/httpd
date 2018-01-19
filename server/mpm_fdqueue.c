@@ -207,7 +207,7 @@ apr_status_t ap_queue_info_wait_for_idler(fd_queue_info_t *queue_info,
     }
 }
 
-apr_uint32_t ap_queue_info_get_idlers(fd_queue_info_t *queue_info)
+apr_uint32_t ap_queue_info_num_idlers(fd_queue_info_t *queue_info)
 {
     apr_uint32_t val;
     val = apr_atomic_read32(&queue_info->idlers);

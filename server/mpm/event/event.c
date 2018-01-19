@@ -517,7 +517,7 @@ static void enable_listensocks(void)
                  apr_atomic_read32(&lingering_count),
                  apr_atomic_read32(&clogged_count),
                  apr_atomic_read32(&suspended_count),
-                 ap_queue_info_get_idlers(worker_queue_info));
+                 ap_queue_info_num_idlers(worker_queue_info));
     for (i = 0; i < num_listensocks; i++)
         apr_pollset_add(event_pollset, &listener_pollfd[i]);
     /*
@@ -534,7 +534,7 @@ static APR_INLINE apr_uint32_t listeners_disabled(void)
 
 static APR_INLINE int connections_above_limit(void)
 {
-    apr_uint32_t i_count = ap_queue_info_get_idlers(worker_queue_info);
+    apr_uint32_t i_count = ap_queue_info_num_idlers(worker_queue_info);
     if (i_count > 0) {
         apr_uint32_t c_count = apr_atomic_read32(&connection_count);
         apr_uint32_t l_count = apr_atomic_read32(&lingering_count);
@@ -2042,7 +2042,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                                  apr_atomic_read32(&connection_count));
                     ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, ap_server_conf,
                                  "Idle workers: %u",
-                                 ap_queue_info_get_idlers(worker_queue_info));
+                                 ap_queue_info_num_idlers(worker_queue_info));
                     workers_were_busy = 1;
                 }
                 else if (!listener_may_exit) {
