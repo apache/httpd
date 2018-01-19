@@ -61,9 +61,8 @@ static apr_status_t queue_info_cleanup(void *data_)
         if (first_pool == NULL) {
             break;
         }
-        if (apr_atomic_casptr
-            ((void*) &(qi->recycled_pools), first_pool->next,
-             first_pool) == first_pool) {
+        if (apr_atomic_casptr((void *)&qi->recycled_pools, first_pool->next,
+                              first_pool) == first_pool) {
             apr_pool_destroy(first_pool->pool);
         }
     }
@@ -71,8 +70,8 @@ static apr_status_t queue_info_cleanup(void *data_)
     return APR_SUCCESS;
 }
 
-apr_status_t ap_queue_info_create(fd_queue_info_t ** queue_info,
-                                  apr_pool_t * pool, int max_idlers,
+apr_status_t ap_queue_info_create(fd_queue_info_t **queue_info,
+                                  apr_pool_t *pool, int max_idlers,
                                   int max_recycled_pools)
 {
     apr_status_t rv;
@@ -101,8 +100,8 @@ apr_status_t ap_queue_info_create(fd_queue_info_t ** queue_info,
     return APR_SUCCESS;
 }
 
-apr_status_t ap_queue_info_set_idle(fd_queue_info_t * queue_info,
-                                    apr_pool_t * pool_to_recycle)
+apr_status_t ap_queue_info_set_idle(fd_queue_info_t *queue_info,
+                                    apr_pool_t *pool_to_recycle)
 {
     apr_status_t rv;
 
@@ -129,7 +128,7 @@ apr_status_t ap_queue_info_set_idle(fd_queue_info_t * queue_info,
     return APR_SUCCESS;
 }
 
-apr_status_t ap_queue_info_try_get_idler(fd_queue_info_t * queue_info)
+apr_status_t ap_queue_info_try_get_idler(fd_queue_info_t *queue_info)
 {
     /* Don't block if there isn't any idle worker. */
     for (;;) {
@@ -144,7 +143,7 @@ apr_status_t ap_queue_info_try_get_idler(fd_queue_info_t * queue_info)
     }
 }
 
-apr_status_t ap_queue_info_wait_for_idler(fd_queue_info_t * queue_info,
+apr_status_t ap_queue_info_wait_for_idler(fd_queue_info_t *queue_info,
                                           int *had_to_block)
 {
     apr_status_t rv;
@@ -208,7 +207,7 @@ apr_status_t ap_queue_info_wait_for_idler(fd_queue_info_t * queue_info,
     }
 }
 
-apr_uint32_t ap_queue_info_get_idlers(fd_queue_info_t * queue_info)
+apr_uint32_t ap_queue_info_get_idlers(fd_queue_info_t *queue_info)
 {
     apr_uint32_t val;
     val = apr_atomic_read32(&queue_info->idlers);
@@ -217,8 +216,7 @@ apr_uint32_t ap_queue_info_get_idlers(fd_queue_info_t * queue_info)
     return val - zero_pt;
 }
 
-void ap_push_pool(fd_queue_info_t * queue_info,
-                                    apr_pool_t * pool_to_recycle)
+void ap_push_pool(fd_queue_info_t *queue_info, apr_pool_t *pool_to_recycle)
 {
     struct recycled_pool *new_recycle;
     /* If we have been given a pool to recycle, atomically link
@@ -237,8 +235,7 @@ void ap_push_pool(fd_queue_info_t * queue_info,
     }
 
     apr_pool_clear(pool_to_recycle);
-    new_recycle = (struct recycled_pool *) apr_palloc(pool_to_recycle,
-                                                      sizeof (*new_recycle));
+    new_recycle = apr_palloc(pool_to_recycle, sizeof *new_recycle);
     new_recycle->pool = pool_to_recycle;
     for (;;) {
         /*
@@ -254,7 +251,7 @@ void ap_push_pool(fd_queue_info_t * queue_info,
     }
 }
 
-void ap_pop_pool(apr_pool_t ** recycled_pool, fd_queue_info_t * queue_info)
+void ap_pop_pool(apr_pool_t **recycled_pool, fd_queue_info_t *queue_info)
 {
     /* Atomically pop a pool from the recycled list */
 
@@ -274,9 +271,8 @@ void ap_pop_pool(apr_pool_t ** recycled_pool, fd_queue_info_t * queue_info)
         if (first_pool == NULL) {
             break;
         }
-        if (apr_atomic_casptr
-            ((void*) &(queue_info->recycled_pools),
-             first_pool->next, first_pool) == first_pool) {
+        if (apr_atomic_casptr((void *)&queue_info->recycled_pools,
+                              first_pool->next, first_pool) == first_pool) {
             *recycled_pool = first_pool->pool;
             if (queue_info->max_recycled_pools >= 0)
                 apr_atomic_dec32(&queue_info->recycled_pools_count);
@@ -298,7 +294,7 @@ void ap_free_idle_pools(fd_queue_info_t *queue_info)
 }
 
 
-apr_status_t ap_queue_info_term(fd_queue_info_t * queue_info)
+apr_status_t ap_queue_info_term(fd_queue_info_t *queue_info)
 {
     apr_status_t rv;
     rv = apr_thread_mutex_lock(queue_info->idlers_mutex);
@@ -342,8 +338,8 @@ static apr_status_t ap_queue_destroy(void *data)
 /**
  * Initialize the fd_queue_t.
  */
-apr_status_t ap_queue_init(fd_queue_t * queue, int queue_capacity,
-                           apr_pool_t * a)
+apr_status_t ap_queue_init(fd_queue_t *queue, int queue_capacity,
+                           apr_pool_t *a)
 {
     int i;
     apr_status_t rv;
@@ -381,8 +377,8 @@ apr_status_t ap_queue_init(fd_queue_t * queue, int queue_capacity,
  * precondition: ap_queue_info_wait_for_idler has already been called
  *               to reserve an idle worker thread
  */
-apr_status_t ap_queue_push(fd_queue_t * queue, apr_socket_t * sd,
-                           void * baton, apr_pool_t * p)
+apr_status_t ap_queue_push(fd_queue_t *queue, apr_socket_t *sd,
+                           void *baton, apr_pool_t *p)
 {
     fd_queue_elem_t *elem;
     apr_status_t rv;
@@ -412,7 +408,7 @@ apr_status_t ap_queue_push(fd_queue_t * queue, apr_socket_t * sd,
     return APR_SUCCESS;
 }
 
-apr_status_t ap_queue_push_timer(fd_queue_t * queue, timer_event_t *te)
+apr_status_t ap_queue_push_timer(fd_queue_t *queue, timer_event_t *te)
 {
     apr_status_t rv;
 
@@ -439,9 +435,9 @@ apr_status_t ap_queue_push_timer(fd_queue_t * queue, timer_event_t *te)
  * Once retrieved, the socket is placed into the address specified by
  * 'sd'.
  */
-apr_status_t ap_queue_pop_something(fd_queue_t * queue, apr_socket_t ** sd,
-                                    void ** baton, apr_pool_t ** p,
-                                    timer_event_t ** te_out)
+apr_status_t ap_queue_pop_something(fd_queue_t *queue, apr_socket_t **sd,
+                                    void **baton, apr_pool_t **p,
+                                    timer_event_t **te_out)
 {
     fd_queue_elem_t *elem;
     apr_status_t rv;
@@ -516,17 +512,17 @@ static apr_status_t queue_interrupt(fd_queue_t *queue, int all, int term)
     return apr_thread_mutex_unlock(queue->one_big_mutex);
 }
 
-apr_status_t ap_queue_interrupt_all(fd_queue_t * queue)
+apr_status_t ap_queue_interrupt_all(fd_queue_t *queue)
 {
     return queue_interrupt(queue, 1, 0);
 }
 
-apr_status_t ap_queue_interrupt_one(fd_queue_t * queue)
+apr_status_t ap_queue_interrupt_one(fd_queue_t *queue)
 {
     return queue_interrupt(queue, 0, 0);
 }
 
-apr_status_t ap_queue_term(fd_queue_t * queue)
+apr_status_t ap_queue_term(fd_queue_t *queue)
 {
     return queue_interrupt(queue, 1, 1);
 }
