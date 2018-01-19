@@ -16,6 +16,8 @@
 
 #include "mpm_fdqueue.h"
 
+#if APR_HAS_THREADS
+
 #include <apr_atomic.h>
 
 static const apr_uint32_t zero_pt = APR_UINT32_MAX/2;
@@ -535,3 +537,5 @@ apr_status_t ap_queue_term(fd_queue_t *queue)
 {
     return queue_interrupt(queue, 1, 1);
 }
+
+#endif /* APR_HAS_THREADS */
