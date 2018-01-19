@@ -219,6 +219,8 @@ static apr_pollfd_t *listener_pollfd;
  */
 static apr_pollset_t *event_pollset;
 
+typedef struct event_conn_state_t event_conn_state_t;
+
 /*
  * The chain of connections to be shutdown by a worker thread (deferred),
  * linked list updated atomically.
@@ -2307,7 +2309,8 @@ static void *APR_THREAD_FUNC worker_thread(apr_thread_t * thd, void *dummy)
             break;
         }
 
-        rv = ap_queue_pop_something(worker_queue, &csd, &cs, &ptrans, &te);
+        rv = ap_queue_pop_something(worker_queue, &csd, (void **)&cs,
+                                    &ptrans, &te);
 
         if (rv != APR_SUCCESS) {
             /* We get APR_EOF during a graceful shutdown once all the
