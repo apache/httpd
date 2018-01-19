@@ -15,29 +15,28 @@
  */
 
 /**
- * @file  event/fdqueue.h
+ * @file  server/mpm_fdqueue.h
  * @brief fd queue declarations
  *
  * @addtogroup APACHE_MPM_EVENT
  * @{
  */
 
-#ifndef FDQUEUE_H
-#define FDQUEUE_H
-#include "httpd.h"
-#include <stdlib.h>
-#if APR_HAVE_UNISTD_H
-#include <unistd.h>
-#endif
-#include <apr_thread_mutex.h>
-#include <apr_thread_cond.h>
-#include <sys/types.h>
-#if APR_HAVE_SYS_SOCKET_H
-#include <sys/socket.h>
-#endif
-#include <apr_errno.h>
+#ifndef MPM_FDQUEUE_H
+#define MPM_FDQUEUE_H
+
+#include <apr.h>
+
+/* Not worth thinking about w/o threads... */
+#if APR_HAS_THREADS
 
 #include "ap_mpm.h"
+
+#include <apr_ring.h>
+#include <apr_pools.h>
+#include <apr_network_io.h>
+#include <apr_thread_mutex.h>
+#include <apr_thread_cond.h>
 
 typedef struct fd_queue_info_t fd_queue_info_t;
 typedef struct event_conn_state_t event_conn_state_t;
@@ -104,5 +103,7 @@ apr_status_t ap_queue_interrupt_all(fd_queue_t * queue);
 apr_status_t ap_queue_interrupt_one(fd_queue_t * queue);
 apr_status_t ap_queue_term(fd_queue_t * queue);
 
-#endif /* FDQUEUE_H */
+#endif /* APR_HAS_THREADS */
+
+#endif /* MPM_FDQUEUE_H */
 /** @} */
