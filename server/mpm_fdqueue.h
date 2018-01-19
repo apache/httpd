@@ -27,7 +27,7 @@
 
 #include <apr.h>
 
-/* This code is not AP_DECLARE()ed/exported, and use by MPMs event/worker
+/* This code is not AP_DECLARE()ed/exported, and used by MPMs event/worker
  * only (for now), not worth thinking about w/o threads either...
  */
 #if APR_HAS_THREADS
