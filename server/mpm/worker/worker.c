@@ -908,11 +908,10 @@ static void * APR_THREAD_FUNC start_threads(apr_thread_t *thd, void *dummy)
 
     /* We must create the fd queues before we start up the listener
      * and worker threads. */
-    worker_queue = apr_pcalloc(pchild, sizeof(*worker_queue));
-    rv = ap_queue_init(worker_queue, threads_per_child, pchild);
+    rv = ap_queue_create(&worker_queue, threads_per_child, pchild);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf, APLOGNO(03140)
-                     "ap_queue_init() failed");
+                     "ap_queue_create() failed");
         clean_child_exit(APEXIT_CHILDFATAL);
     }
 

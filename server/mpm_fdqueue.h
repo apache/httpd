@@ -86,7 +86,7 @@ void ap_pop_pool(apr_pool_t **recycled_pool, fd_queue_info_t *queue_info);
 void ap_push_pool(fd_queue_info_t *queue_info, apr_pool_t *pool_to_recycle);
 void ap_free_idle_pools(fd_queue_info_t *queue_info);
 
-apr_status_t ap_queue_init(fd_queue_t *queue, int capacity, apr_pool_t *p);
+apr_status_t ap_queue_create(fd_queue_t **pqueue, int capacity, apr_pool_t *p);
 apr_status_t ap_queue_push_socket(fd_queue_t *queue,
                                   apr_socket_t *sd, void *sd_baton,
                                   apr_pool_t *p);

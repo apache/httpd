@@ -343,10 +343,12 @@ static apr_status_t ap_queue_destroy(void *data)
 /**
  * Initialize the fd_queue_t.
  */
-apr_status_t ap_queue_init(fd_queue_t *queue, int capacity, apr_pool_t *p)
+apr_status_t ap_queue_create(fd_queue_t **pqueue, int capacity, apr_pool_t *p)
 {
-    int i;
     apr_status_t rv;
+    fd_queue_t *queue;
+
+    queue = apr_pcalloc(p, sizeof *queue);
 
     if ((rv = apr_thread_mutex_create(&queue->one_big_mutex,
                                       APR_THREAD_MUTEX_DEFAULT,
@@ -359,18 +361,12 @@ apr_status_t ap_queue_init(fd_queue_t *queue, int capacity, apr_pool_t *p)
 
     APR_RING_INIT(&queue->timers, timer_event_t, link);
 
-    queue->data = apr_palloc(p, capacity * sizeof(fd_queue_elem_t));
+    queue->data = apr_pcalloc(p, capacity * sizeof(fd_queue_elem_t));
     queue->bounds = capacity;
-    queue->nelts = 0;
-    queue->in = 0;
-    queue->out = 0;
-
-    /* Set all the sockets in the queue to NULL */
-    for (i = 0; i < capacity; ++i)
-        queue->data[i].sd = NULL;
 
     apr_pool_cleanup_register(p, queue, ap_queue_destroy,
                               apr_pool_cleanup_null);
+    *pqueue = queue;
 
     return APR_SUCCESS;
 }
@@ -422,11 +418,7 @@ apr_status_t ap_queue_push_timer(fd_queue_t *queue, timer_event_t *te)
 
     apr_thread_cond_signal(queue->not_empty);
 
-    if ((rv = apr_thread_mutex_unlock(queue->one_big_mutex)) != APR_SUCCESS) {
-        return rv;
-    }
-
-    return APR_SUCCESS;
+    return apr_thread_mutex_unlock(queue->one_big_mutex);
 }
 
 /**
