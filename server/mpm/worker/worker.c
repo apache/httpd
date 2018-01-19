@@ -710,14 +710,14 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t *thd, void * dummy)
                 accept_mutex_error("unlock", rv, process_slot);
             }
             if (csd != NULL) {
-                rv = ap_queue_push(worker_queue, csd, NULL, ptrans);
+                rv = ap_queue_push_socket(worker_queue, csd, NULL, ptrans);
                 if (rv) {
                     /* trash the connection; we couldn't queue the connected
                      * socket to a worker
                      */
                     apr_socket_close(csd);
                     ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf, APLOGNO(03138)
-                                 "ap_queue_push failed");
+                                 "ap_queue_push_socket failed");
                 }
                 else {
                     have_idle_worker = 0;
@@ -807,7 +807,7 @@ worker_pop:
         if (workers_may_exit) {
             break;
         }
-        rv = ap_queue_pop(worker_queue, &csd, &ptrans);
+        rv = ap_queue_pop_socket(worker_queue, &csd, &ptrans);
 
         if (rv != APR_SUCCESS) {
             /* We get APR_EOF during a graceful shutdown once all the connections
@@ -816,9 +816,9 @@ worker_pop:
             if (APR_STATUS_IS_EOF(rv)) {
                 break;
             }
-            /* We get APR_EINTR whenever ap_queue_pop() has been interrupted
+            /* We get APR_EINTR whenever ap_queue_pop_*() has been interrupted
              * from an explicit call to ap_queue_interrupt_all(). This allows
-             * us to unblock threads stuck in ap_queue_pop() when a shutdown
+             * us to unblock threads stuck in ap_queue_pop_*() when a shutdown
              * is pending.
              *
              * If workers_may_exit is set and this is ungraceful termination/
@@ -833,7 +833,7 @@ worker_pop:
             /* We got some other error. */
             else if (!workers_may_exit) {
                 ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf, APLOGNO(03139)
-                             "ap_queue_pop failed");
+                             "ap_queue_pop_socket failed");
             }
             continue;
         }

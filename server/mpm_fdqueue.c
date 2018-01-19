@@ -215,9 +215,7 @@ apr_uint32_t ap_queue_info_num_idlers(fd_queue_info_t *queue_info)
 {
     apr_uint32_t val;
     val = apr_atomic_read32(&queue_info->idlers);
-    if (val <= zero_pt)
-        return 0;
-    return val - zero_pt;
+    return (val > zero_pt) ? val - zero_pt : 0;
 }
 
 void ap_push_pool(fd_queue_info_t *queue_info, apr_pool_t *pool_to_recycle)
@@ -349,34 +347,33 @@ static apr_status_t ap_queue_destroy(void *data)
 /**
  * Initialize the fd_queue_t.
  */
-apr_status_t ap_queue_init(fd_queue_t *queue, int queue_capacity,
-                           apr_pool_t *a)
+apr_status_t ap_queue_init(fd_queue_t *queue, int capacity, apr_pool_t *p)
 {
     int i;
     apr_status_t rv;
 
     if ((rv = apr_thread_mutex_create(&queue->one_big_mutex,
                                       APR_THREAD_MUTEX_DEFAULT,
-                                      a)) != APR_SUCCESS) {
+                                      p)) != APR_SUCCESS) {
         return rv;
     }
-    if ((rv = apr_thread_cond_create(&queue->not_empty, a)) != APR_SUCCESS) {
+    if ((rv = apr_thread_cond_create(&queue->not_empty, p)) != APR_SUCCESS) {
         return rv;
     }
 
     APR_RING_INIT(&queue->timers, timer_event_t, link);
 
-    queue->data = apr_palloc(a, queue_capacity * sizeof(fd_queue_elem_t));
-    queue->bounds = queue_capacity;
+    queue->data = apr_palloc(p, capacity * sizeof(fd_queue_elem_t));
+    queue->bounds = capacity;
     queue->nelts = 0;
     queue->in = 0;
     queue->out = 0;
 
     /* Set all the sockets in the queue to NULL */
-    for (i = 0; i < queue_capacity; ++i)
+    for (i = 0; i < capacity; ++i)
         queue->data[i].sd = NULL;
 
-    apr_pool_cleanup_register(a, queue, ap_queue_destroy,
+    apr_pool_cleanup_register(p, queue, ap_queue_destroy,
                               apr_pool_cleanup_null);
 
     return APR_SUCCESS;
@@ -388,8 +385,9 @@ apr_status_t ap_queue_init(fd_queue_t *queue, int queue_capacity,
  * precondition: ap_queue_info_wait_for_idler has already been called
  *               to reserve an idle worker thread
  */
-apr_status_t ap_queue_push(fd_queue_t *queue, apr_socket_t *sd,
-                           void *sd_baton, apr_pool_t *p)
+apr_status_t ap_queue_push_socket(fd_queue_t *queue,
+                                  apr_socket_t *sd, void *sd_baton,
+                                  apr_pool_t *p)
 {
     fd_queue_elem_t *elem;
     apr_status_t rv;
