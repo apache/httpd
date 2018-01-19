@@ -2053,23 +2053,31 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
 
                     if (ptrans == NULL) {
                         /* create a new transaction pool for each accepted socket */
-                        apr_allocator_t *allocator;
+                        apr_allocator_t *allocator = NULL;
 
-                        apr_allocator_create(&allocator);
-                        apr_allocator_max_free_set(allocator, ap_max_mem_free);
-                        apr_pool_create_ex(&ptrans, pconf, NULL, allocator);
-                        if (ptrans == NULL) {
+                        rc = apr_allocator_create(&allocator);
+                        if (rc == APR_SUCCESS) {
+                            apr_allocator_max_free_set(allocator,
+                                                       ap_max_mem_free);
+                            rc = apr_pool_create_ex(&ptrans, pconf, NULL,
+                                                    allocator);
+                            if (rc == APR_SUCCESS) {
+                                apr_pool_tag(ptrans, "transaction");
+                                apr_allocator_owner_set(allocator, ptrans);
+                            }
+                        }
+                        if (rc != APR_SUCCESS) {
                             ap_log_error(APLOG_MARK, APLOG_CRIT, rc,
                                          ap_server_conf, APLOGNO(03097)
                                          "Failed to create transaction pool");
-                            apr_allocator_destroy(allocator);
+                            if (allocator) {
+                                apr_allocator_destroy(allocator);
+                            }
                             resource_shortage = 1;
                             signal_threads(ST_GRACEFUL);
                             continue;
                         }
-                        apr_allocator_owner_set(allocator, ptrans);
                     }
-                    apr_pool_tag(ptrans, "transaction");
 
                     get_worker(&have_idle_worker, 1, &workers_were_busy);
                     rc = lr->accept_func(&csd, lr, ptrans);
