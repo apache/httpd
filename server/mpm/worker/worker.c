@@ -743,6 +743,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t *thd, void * dummy)
     }
 
     ap_close_listeners_ex(my_bucket->listeners);
+    ap_free_idle_pools(worker_queue_info);
     ap_queue_term(worker_queue);
     dying = 1;
     ap_scoreboard_image->parent[process_slot].quiescing = 1;
