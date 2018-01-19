@@ -86,15 +86,15 @@ void ap_pop_pool(apr_pool_t **recycled_pool, fd_queue_info_t *queue_info);
 void ap_push_pool(fd_queue_info_t *queue_info, apr_pool_t *pool_to_recycle);
 void ap_free_idle_pools(fd_queue_info_t *queue_info);
 
-apr_status_t ap_queue_init(fd_queue_t *queue, int queue_capacity,
-                           apr_pool_t *a);
-apr_status_t ap_queue_push(fd_queue_t *queue, apr_socket_t *sd,
-                           void *baton, apr_pool_t *p);
+apr_status_t ap_queue_init(fd_queue_t *queue, int capacity, apr_pool_t *p);
+apr_status_t ap_queue_push_socket(fd_queue_t *queue,
+                                  apr_socket_t *sd, void *sd_baton,
+                                  apr_pool_t *p);
 apr_status_t ap_queue_push_timer(fd_queue_t *queue, timer_event_t *te);
-apr_status_t ap_queue_pop_something(fd_queue_t *queue, apr_socket_t **sd,
-                                    void **baton, apr_pool_t **p,
-                                    timer_event_t **te);
-#define      ap_queue_pop(q_, s_, p_) \
+apr_status_t ap_queue_pop_something(fd_queue_t *queue,
+                                    apr_socket_t **sd, void **sd_baton,
+                                    apr_pool_t **p, timer_event_t **te);
+#define      ap_queue_pop_socket(q_, s_, p_) \
                 ap_queue_pop_something((q_), (s_), NULL, (p_), NULL)
 apr_status_t ap_queue_interrupt_all(fd_queue_t *queue);
 apr_status_t ap_queue_interrupt_one(fd_queue_t *queue);
