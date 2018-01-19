@@ -36,9 +36,9 @@
 
 #include <apr_ring.h>
 #include <apr_pools.h>
-#include <apr_network_io.h>
 #include <apr_thread_mutex.h>
 #include <apr_thread_cond.h>
+#include <apr_network_io.h>
 
 struct fd_queue_info_t; /* opaque */
 struct fd_queue_elem_t; /* opaque */
