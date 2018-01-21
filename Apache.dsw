@@ -195,9 +195,6 @@ Package=<4>
     Project_Dep_Name mod_charset_lite
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name mod_crypto
-    End Project Dependency
-    Begin Project Dependency
     Project_Dep_Name mod_data
     End Project Dependency
     Begin Project Dependency
