@@ -170,7 +170,7 @@
 #define SK_VALUE(x,y) sk_X509_value(x,y)
 typedef STACK_OF(X509) X509_STACK_TYPE;
 
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) && !defined(LIBRESSL_VERSION_NUMBER)
 /* The following logic ensures we correctly glue FILE* within one CRT used
  * by the OpenSSL library build to another CRT used by the ab.exe build.
  * This became especially problematic with Visual Studio 2015.
