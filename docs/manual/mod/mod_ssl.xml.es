@@ -32,10 +32,10 @@
 <identifier>ssl_module</identifier>
 
 <summary>
-<p>Éste módulo ofrce soporte para SSL v3 y TLS v1.x para el Servidor Apache
+<p>Este módulo ofrece soporte para SSL v3 y TLS v1.x para el Servidor Apache
   HTTP. SSL v2 ya no está soportado.</p>
 
-<p>Éste módulo depende de <a href="http://www.openssl.org/">OpenSSL</a> para
+<p>Este módulo depende de <a href="http://www.openssl.org/">OpenSSL</a> para
 proveer el motor de criptografía.</p>
 
 <p>Se facilitan más detalles, discusión y ejemplos en la 
@@ -44,7 +44,7 @@ proveer el motor de criptografía.</p>
 
 <section id="envvars"><title>Variables de Entorno</title>
 
-<p>Éste módulo puede ser configurado para proveer muchos elementos de información
+<p>Este módulo puede ser configurado para proveer muchos elementos de información
 SSL como variables de entorno adicionales para el espacio de nombres de SSI y 
 CGI. Esta información no se facilita por defecto por razones de rendimiento. 
 (Vea StdEnvVars de <directive>SSLOptions</directive> más adelante.) Las 
@@ -75,20 +75,20 @@ para más detalles sobre las variables de compatibilidad.</p>
 <tr><td><code>SSL_VERSION_LIBRARY</code></td>           <td>string</td>    <td>La versión del programa OpenSSL</td></tr>
 <tr><td><code>SSL_CLIENT_M_VERSION</code></td>          <td>string</td>    <td>La versión del certificado cliente</td></tr>
 <tr><td><code>SSL_CLIENT_M_SERIAL</code></td>           <td>string</td>    <td>El serial del certificado cliente</td></tr>
-<tr><td><code>SSL_CLIENT_S_DN</code></td>               <td>string</td>    <td>Sujeto DN en el certificado del cliente</td></tr>
-<tr><td><code>SSL_CLIENT_S_DN_</code><em>x509</em></td> <td>string</td>    <td>Componente del Sujeto DN del cliente</td></tr>
+<tr><td><code>SSL_CLIENT_S_DN</code></td>               <td>string</td>    <td>Sujeto DN en el certificado cliente</td></tr>
+<tr><td><code>SSL_CLIENT_S_DN_</code><em>x509</em></td> <td>string</td>    <td>Componente del Sujeto DN cliente</td></tr>
 <tr><td><code>SSL_CLIENT_SAN_Email_</code><em>n</em></td> <td>string</td>  <td>Entradas de extensión subjectAltName del certificado cliente del tipo rfc822Name</td></tr>
 <tr><td><code>SSL_CLIENT_SAN_DNS_</code><em>n</em></td> <td>string</td>    <td>Entradas de extensión subjectAltName del tipo dNSName</td></tr>
 <tr><td><code>SSL_CLIENT_SAN_OTHER_msUPN_</code><em>n</em></td> <td>string</td>    <td>Entradas de extensión subjectAltName del certificado cliente del tipo otherName, Microsoft User Principal Name form (OID 1.3.6.1.4.1.311.20.2.3)</td></tr>
-<tr><td><code>SSL_CLIENT_I_DN</code></td>               <td>string</td>    <td>DN del firmante del certificado cliente</td></tr>
+<tr><td><code>SSL_CLIENT_I_DN</code></td>               <td>string</td>    <td>DN del firmante en el certificado cliente</td></tr>
 <tr><td><code>SSL_CLIENT_I_DN_</code><em>x509</em></td> <td>string</td>    <td>Componente del DN en el firmante del certificado cliente</td></tr>
-<tr><td><code>SSL_CLIENT_V_START</code></td>            <td>string</td>    <td>Validez del certificado del cliente (fecha de inicio)</td></tr>
-<tr><td><code>SSL_CLIENT_V_END</code></td>              <td>string</td>    <td>Validez del certificado del dlicnete (fecha fin)</td></tr>
-<tr><td><code>SSL_CLIENT_V_REMAIN</code></td>           <td>string</td>    <td>Número de días hasta que el certificado del cliente expira</td></tr>
-<tr><td><code>SSL_CLIENT_A_SIG</code></td>              <td>string</td>    <td>Algoritmo usado para la firma del certificado del cliente</td></tr>
-<tr><td><code>SSL_CLIENT_A_KEY</code></td>              <td>string</td>    <td>Algoritmo usado para la clave pública del certificado del cliente.</td></tr>
-<tr><td><code>SSL_CLIENT_CERT</code></td>               <td>string</td>    <td>Certificado del cliente condificado en PEM</td></tr>
-<tr><td><code>SSL_CLIENT_CERT_CHAIN_</code><em>n</em></td> <td>string</td>    <td>Certificados codificados en PEM en la cadena de certificados del cliente</td></tr>
+<tr><td><code>SSL_CLIENT_V_START</code></td>            <td>string</td>    <td>Validez del certificado cliente (fecha de inicio)</td></tr>
+<tr><td><code>SSL_CLIENT_V_END</code></td>              <td>string</td>    <td>Validez del certificado cliente (fecha fin)</td></tr>
+<tr><td><code>SSL_CLIENT_V_REMAIN</code></td>           <td>string</td>    <td>Número de días hasta que el certificado cliente expira</td></tr>
+<tr><td><code>SSL_CLIENT_A_SIG</code></td>              <td>string</td>    <td>Algoritmo usado para la firma del certificado cliente</td></tr>
+<tr><td><code>SSL_CLIENT_A_KEY</code></td>              <td>string</td>    <td>Algoritmo usado para la clave pública del certificado cliente.</td></tr>
+<tr><td><code>SSL_CLIENT_CERT</code></td>               <td>string</td>    <td>Certificado cliente condificado en PEM</td></tr>
+<tr><td><code>SSL_CLIENT_CERT_CHAIN_</code><em>n</em></td> <td>string</td>    <td>Certificados codificados en PEM en la cadena de certificados cliente</td></tr>
 <tr><td><code>SSL_CLIENT_CERT_RFC4523_CEA</code></td>   <td>string</td>    <td>Número de serie y distribuidor del certificado. El formato coincide con el CertificateExactAssertion en RFC4523</td></tr>
 <tr><td><code>SSL_CLIENT_VERIFY</code></td>             <td>string</td>    <td><code>NONE</code>, <code>SUCCESS</code>, <code>GENEROUS</code> or <code>FAILED:</code><em>reason</em></td></tr>
 <tr><td><code>SSL_SERVER_M_VERSION</code></td>          <td>string</td>    <td>La versión del certificado del servidor</td></tr>
@@ -99,7 +99,7 @@ para más detalles sobre las variables de compatibilidad.</p>
 <tr><td><code>SSL_SERVER_SAN_OTHER_dnsSRV_</code><em>n</em></td> <td>string</td>    <td>Entradas de extensión subjectAltName del tipo otherName, forma SRVName (OID 1.3.6.1.5.5.7.8.7, RFC 4985) del certificado del servidor.</td></tr>
 <tr><td><code>SSL_SERVER_S_DN_</code><em>x509</em></td> <td>string</td>    <td>Componente del Sujeto DN del servidor</td></tr>
 <tr><td><code>SSL_SERVER_I_DN</code></td>               <td>string</td>    <td>DN del Firmante del certificado del servidor</td></tr>
-<tr><td><code>SSL_SERVER_I_DN_</code><em>x509</em></td> <td>string</td>    <td>Componente del DN del firmante del servidor</td></tr>
+<tr><td><code>SSL_SERVER_I_DN_</code><em>x509</em></td> <td>string</td>    <td>Componente en el DN del firmante del servidor</td></tr>
 <tr><td><code>SSL_SERVER_V_START</code></td>            <td>string</td>    <td>Validez del certificado del servidor (fecha de inicio)</td></tr>
 <tr><td><code>SSL_SERVER_V_END</code></td>              <td>string</td>    <td>Validez del certificado del servidor (fecha de fin)</td></tr>
 <tr><td><code>SSL_SERVER_A_SIG</code></td>              <td>string</td>    <td>Algoritmo utilizado para la firma del certificado del servidor</td></tr>
@@ -214,7 +214,7 @@ usarse en el registro de logs con la cadena de caracteres
   soporta la extensión de renegociación segura, esta nota se configura con el 
   valor <code>1</code> si se usa SSL para la conexión actual y el cliente
   también soporta la extensión de renegociación segura.  Si el cliente no 
-  la extensión de renegociación segura, esta nota se configura con el valor
+  soporta la extensión de renegociación segura, esta nota se configura con el valor
   <code>0</code>.
   Si se compila <module>mod_ssl</module> con una versión de OpenSSL que no
   soporta renegociación segura, o si SSL no se usa en la conexión actual, esta
@@ -1784,7 +1784,7 @@ de memoria que se usará para este búfer.</p>
 <note type="warning"><p>
 Tenga en cuenta que en muchas configuraciones, el cliente enviando el cuerpo de 
 la petición no es confiable así que se debe considerar un ataque de denegación
-de servicio por consumición de memoria cuando se cambie este valor de 
+de servicio por consumo de memoria cuando se cambie este valor de 
 configuración.
 </p></note>
 
@@ -2977,7 +2977,7 @@ SSLOpenSSLConfCmd SignatureAlgorithms RSA+SHA384:ECDSA+SHA256
 <directivesynopsis type="section" idtype="section">
 <name>SSLPolicyDefine</name>
 <description>Define un conjunto de nombres de configuraciones SSL</description>
-<syntax>&lt;SSLPolicy <em>nombre</em>&gt;</syntax>
+<syntax>&lt;SSLPolicyDefine <em>nombre</em>&gt;</syntax>
 <contextlist><context>server config</context></contextlist>
 <compatibility>Disponible in httpd 2.4.30 y posterior</compatibility>
 
@@ -2995,7 +2995,7 @@ contexto actual.</p>
    SSLStaplingReturnResponderErrors off
    SSLStaplingFakeTryLater off
    SSLStaplingStandardCacheTimeout 86400
-&lt;/SSLPolicy&gt;
+&lt;/SSLPolicyDefine&gt;
 
    ...
    &lt;VirtualHost...&gt;
