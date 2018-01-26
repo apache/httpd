@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_slotmem_shm: Add generation number to shm filename to fix races
+     with graceful restarts. PR 62044.
+
   *) mpm_event: Let the listener thread do its maintenance job on resources
      shortage.  PR 61979.  [Yann Ylavic]
 
