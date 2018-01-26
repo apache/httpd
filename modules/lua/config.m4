@@ -104,7 +104,7 @@ APACHE_MODULE(lua, Apache Lua Framework, $lua_objects, , , [
   CHECK_LUA()
   if test "x$enable_lua" != "xno" ; then
     APR_ADDTO(MOD_INCLUDES, [$LUA_CFLAGS])
-    APR_ADDTO(MOD_LUA_LDADD, [$LUA_LIBS])
+    APR_ADDTO(MOD_LUA_LDADD, [$LUA_LIBS $CRYPT_LIBS])
   fi
 ])
 
