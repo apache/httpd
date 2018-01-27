@@ -845,7 +845,7 @@ static int start_lingering_close_blocking(event_conn_state_t *cs)
     if (ap_start_lingering_close(cs->c)) {
         notify_suspend(cs);
         apr_socket_close(csd);
-        ap_push_pool(worker_queue_info, cs->p);
+        ap_queue_info_push_pool(worker_queue_info, cs->p);
         return 0;
     }
 
@@ -888,7 +888,7 @@ static int start_lingering_close_blocking(event_conn_state_t *cs)
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf, APLOGNO(03092)
                      "start_lingering_close: apr_pollset_add failure");
         apr_socket_close(cs->pfd.desc.s);
-        ap_push_pool(worker_queue_info, cs->p);
+        ap_queue_info_push_pool(worker_queue_info, cs->p);
         return 0;
     }
     apr_thread_mutex_unlock(timeout_mutex);
@@ -929,7 +929,7 @@ static int stop_lingering_close(event_conn_state_t *cs)
     ap_log_error(APLOG_MARK, APLOG_TRACE4, 0, ap_server_conf,
                  "socket reached timeout in lingering-close state");
     abort_socket_nonblocking(csd);
-    ap_push_pool(worker_queue_info, cs->p);
+    ap_queue_info_push_pool(worker_queue_info, cs->p);
     if (dying)
         ap_queue_interrupt_one(worker_queue);
     return 0;
@@ -1020,7 +1020,7 @@ static void process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * soc
         c = ap_run_create_connection(p, ap_server_conf, sock,
                                      conn_id, cs->sbh, cs->bucket_alloc);
         if (!c) {
-            ap_push_pool(worker_queue_info, p);
+            ap_queue_info_push_pool(worker_queue_info, p);
             return;
         }
         apr_atomic_inc32(&connection_count);
@@ -1177,7 +1177,7 @@ read_request:
                              "process_socket: apr_pollset_add failure for "
                              "write completion");
                 apr_socket_close(cs->pfd.desc.s);
-                ap_push_pool(worker_queue_info, cs->p);
+                ap_queue_info_push_pool(worker_queue_info, cs->p);
             }
             else {
                 apr_thread_mutex_unlock(timeout_mutex);
@@ -1228,7 +1228,7 @@ read_request:
                          "process_socket: apr_pollset_add failure for "
                          "keep alive");
             apr_socket_close(cs->pfd.desc.s);
-            ap_push_pool(worker_queue_info, cs->p);
+            ap_queue_info_push_pool(worker_queue_info, cs->p);
             return;
         }
         apr_thread_mutex_unlock(timeout_mutex);
@@ -1300,7 +1300,7 @@ static void close_listeners(int *closed)
         /* wake up the main thread */
         kill(ap_my_pid, SIGTERM);
 
-        ap_free_idle_pools(worker_queue_info);
+        ap_queue_info_free_idle_pools(worker_queue_info);
         ap_queue_interrupt_all(worker_queue);
     }
 }
@@ -1428,7 +1428,7 @@ static apr_status_t push2worker(event_conn_state_t *cs, apr_socket_t *csd,
             abort_socket_nonblocking(csd);
         }
         if (ptrans) {
-            ap_push_pool(worker_queue_info, ptrans);
+            ap_queue_info_push_pool(worker_queue_info, ptrans);
         }
         signal_threads(ST_GRACEFUL);
     }
@@ -1687,7 +1687,7 @@ static void process_lingering_close(event_conn_state_t *cs, const apr_pollfd_t *
     rv = apr_socket_close(csd);
     AP_DEBUG_ASSERT(rv == APR_SUCCESS);
 
-    ap_push_pool(worker_queue_info, cs->p);
+    ap_queue_info_push_pool(worker_queue_info, cs->p);
     if (dying)
         ap_queue_interrupt_one(worker_queue);
 }
@@ -2049,7 +2049,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                     void *csd = NULL;
                     ap_listen_rec *lr = (ap_listen_rec *) pt->baton;
                     apr_pool_t *ptrans;         /* Pool for per-transaction stuff */
-                    ap_pop_pool(&ptrans, worker_queue_info);
+                    ap_queue_info_pop_pool(worker_queue_info, &ptrans);
 
                     if (ptrans == NULL) {
                         /* create a new transaction pool for each accepted socket */
@@ -2104,7 +2104,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                         }
                     }
                     else {
-                        ap_push_pool(worker_queue_info, ptrans);
+                        ap_queue_info_push_pool(worker_queue_info, ptrans);
                     }
                 }
             }               /* if:else on pt->type */
