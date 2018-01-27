@@ -214,7 +214,8 @@ apr_uint32_t ap_queue_info_num_idlers(fd_queue_info_t *queue_info)
     return (val > zero_pt) ? val - zero_pt : 0;
 }
 
-void ap_queue_info_push_pool(fd_queue_info_t *queue_info, apr_pool_t *pool_to_recycle)
+void ap_queue_info_push_pool(fd_queue_info_t *queue_info,
+                             apr_pool_t *pool_to_recycle)
 {
     struct recycled_pool *new_recycle;
     /* If we have been given a pool to recycle, atomically link
