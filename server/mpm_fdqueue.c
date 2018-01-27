@@ -107,7 +107,7 @@ apr_status_t ap_queue_info_set_idle(fd_queue_info_t *queue_info,
 {
     apr_status_t rv;
 
-    ap_push_pool(queue_info, pool_to_recycle);
+    ap_queue_info_push_pool(queue_info, pool_to_recycle);
 
     /* If other threads are waiting on a worker, wake one up */
     if (apr_atomic_inc32(&queue_info->idlers) < zero_pt) {
@@ -214,7 +214,7 @@ apr_uint32_t ap_queue_info_num_idlers(fd_queue_info_t *queue_info)
     return (val > zero_pt) ? val - zero_pt : 0;
 }
 
-void ap_push_pool(fd_queue_info_t *queue_info, apr_pool_t *pool_to_recycle)
+void ap_queue_info_push_pool(fd_queue_info_t *queue_info, apr_pool_t *pool_to_recycle)
 {
     struct recycled_pool *new_recycle;
     /* If we have been given a pool to recycle, atomically link
@@ -249,7 +249,8 @@ void ap_push_pool(fd_queue_info_t *queue_info, apr_pool_t *pool_to_recycle)
     }
 }
 
-void ap_pop_pool(apr_pool_t **recycled_pool, fd_queue_info_t *queue_info)
+void ap_queue_info_pop_pool(fd_queue_info_t *queue_info,
+                            apr_pool_t **recycled_pool)
 {
     /* Atomically pop a pool from the recycled list */
 
@@ -279,13 +280,13 @@ void ap_pop_pool(apr_pool_t **recycled_pool, fd_queue_info_t *queue_info)
     }
 }
 
-void ap_free_idle_pools(fd_queue_info_t *queue_info)
+void ap_queue_info_free_idle_pools(fd_queue_info_t *queue_info)
 {
     apr_pool_t *p;
 
     queue_info->max_recycled_pools = 0;
     for (;;) {
-        ap_pop_pool(&p, queue_info);
+        ap_queue_info_pop_pool(queue_info, &p);
         if (p == NULL)
             break;
         apr_pool_destroy(p);

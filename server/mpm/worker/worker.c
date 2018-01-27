@@ -676,7 +676,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t *thd, void * dummy)
 
         if (!listener_may_exit) {
             /* the following pops a recycled ptrans pool off a stack */
-            ap_pop_pool(&ptrans, worker_queue_info);
+            ap_queue_info_pop_pool(worker_queue_info, &ptrans);
             if (ptrans == NULL) {
                 /* we can't use a recycled transaction pool this time.
                  * create a new transaction pool */
@@ -743,7 +743,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t *thd, void * dummy)
     }
 
     ap_close_listeners_ex(my_bucket->listeners);
-    ap_free_idle_pools(worker_queue_info);
+    ap_queue_info_free_idle_pools(worker_queue_info);
     ap_queue_term(worker_queue);
     dying = 1;
     ap_scoreboard_image->parent[process_slot].quiescing = 1;
