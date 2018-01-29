@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_slotmem_shm: Rework SHM reuse/deletion to fix races with graceful
+     restarts. PR 62044. [Yann Ylavic, Jim Jagielski]
+
   *) mod_http2: discourage gzip/brotli content encoding on http2-status responses as
      they are inserted into the reponse when filters are already done. [Stefan Eissing]
      
