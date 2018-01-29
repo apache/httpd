@@ -317,11 +317,10 @@ static apr_status_t cleanup_slotmem(void *is_startup)
         }
         if (unlink) {
             /* Some systems may require the descriptor to be closed before
-             * unlink, thus call destroy() first (this won't free mem->shm
-             * so it's safe to call delete() afterward).
+             * unlink, thus call destroy() first.
              */
             apr_shm_destroy(mem->shm);
-            apr_shm_delete(mem->shm);
+            apr_shm_remove(mem->name, mem->pool);
         }
     }
 
