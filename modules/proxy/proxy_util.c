@@ -1306,10 +1306,7 @@ static void socket_cleanup(proxy_conn_rec *conn)
 
 static apr_status_t conn_pool_cleanup(void *theworker)
 {
-    proxy_worker *worker = (proxy_worker *)theworker;
-    if (worker->cp->res) {
-        worker->cp->pool = NULL;
-    }
+    ((proxy_worker *)theworker)->cp = NULL;
     return APR_SUCCESS;
 }
 
@@ -1346,14 +1343,6 @@ static apr_status_t connection_cleanup(void *theconn)
 {
     proxy_conn_rec *conn = (proxy_conn_rec *)theconn;
     proxy_worker *worker = conn->worker;
-
-    /*
-     * If the connection pool is NULL the worker
-     * cleanup has been run. Just return.
-     */
-    if (!worker->cp->pool) {
-        return APR_SUCCESS;
-    }
 
     if (conn->r) {
         apr_pool_destroy(conn->r->pool);
@@ -1476,7 +1465,7 @@ static apr_status_t connection_destructor(void *resource, void *params,
     proxy_worker *worker = params;
 
     /* Destroy the pool only if not called from reslist_destroy */
-    if (worker->cp->pool) {
+    if (worker->cp) {
         proxy_conn_rec *conn = resource;
         apr_pool_destroy(conn->pool);
     }
@@ -1907,9 +1896,8 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
                                     connection_constructor, connection_destructor,
                                     worker, worker->cp->pool);
 
-            apr_pool_cleanup_register(worker->cp->pool, (void *)worker,
-                                      conn_pool_cleanup,
-                                      apr_pool_cleanup_null);
+            apr_pool_pre_cleanup_register(worker->cp->pool, worker,
+                                          conn_pool_cleanup);
 
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00930)
                 "initialized pool in child %" APR_PID_T_FMT " for (%s) min=%d max=%d smax=%d",
