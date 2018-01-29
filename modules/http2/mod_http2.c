@@ -53,7 +53,10 @@ AP_DECLARE_MODULE(http2) = {
     h2_config_create_svr, /* func to create per server config */
     h2_config_merge_svr,  /* func to merge per server config */
     h2_cmds,              /* command handlers */
-    h2_hooks
+    h2_hooks,
+#if defined(AP_MODULE_FLAG_NONE)
+    AP_MODULE_FLAG_ALWAYS_MERGE
+#endif
 };
 
 static int h2_h2_fixups(request_rec *r);

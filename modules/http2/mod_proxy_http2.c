@@ -38,7 +38,10 @@ AP_DECLARE_MODULE(proxy_http2) = {
     NULL,              /* create per-server config structure */
     NULL,              /* merge per-server config structures */
     NULL,              /* command apr_table_t */
-    register_hook      /* register hooks */
+    register_hook,     /* register hooks */
+#if defined(AP_MODULE_FLAG_NONE)
+    AP_MODULE_FLAG_ALWAYS_MERGE
+#endif
 };
 
 /* Optional functions from mod_http2 */
