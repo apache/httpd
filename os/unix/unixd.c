@@ -18,6 +18,7 @@
 #include "httpd.h"
 #include "http_config.h"
 #include "http_main.h"
+#include "http_core.h"
 #include "http_log.h"
 #include "unixd.h"
 #include "mpm_common.h"
@@ -515,6 +516,13 @@ static apr_status_t unset_signals(void *unused)
     return APR_SUCCESS;
 }
 
+static void ap_terminate(void)
+{
+    ap_main_state = AP_SQ_MS_EXITING;
+    apr_pool_destroy(ap_pglobal);
+    apr_terminate();
+}
+
 AP_DECLARE(void) ap_unixd_mpm_set_signals(apr_pool_t *pconf, int one_process)
 {
 #ifndef NO_USE_SIGACTION
@@ -523,6 +531,13 @@ AP_DECLARE(void) ap_unixd_mpm_set_signals(apr_pool_t *pconf, int one_process)
 
     if (!one_process) {
         ap_fatal_signal_setup(ap_server_conf, pconf);
+    }
+    else {
+        static int once = 0;
+        if (!once) {
+            atexit(ap_terminate);
+            once = 1;
+        }
     }
 
     /* Signals' handlers depend on retained data */
