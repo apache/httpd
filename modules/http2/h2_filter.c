@@ -519,6 +519,11 @@ int h2_filter_h2_status_handler(request_rec *r)
         r->clength = -1;
         r->chunked = 1;
         apr_table_unset(r->headers_out, "Content-Length");
+        /* Discourage content-encodings */
+        apr_table_unset(r->headers_out, "Content-Encoding");
+        apr_table_setn(r->subprocess_env, "no-brotli", "1");
+        apr_table_setn(r->subprocess_env, "no-gzip", "1");
+
         ap_set_content_type(r, "application/json");
         apr_table_setn(r->notes, H2_FILTER_DEBUG_NOTE, "on");
 
