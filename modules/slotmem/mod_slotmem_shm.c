@@ -71,6 +71,31 @@ static apr_pool_t *gpool = NULL;
 #define DEFAULT_SLOTMEM_SUFFIX ".shm"
 #define DEFAULT_SLOTMEM_PERSIST_SUFFIX ".persist"
 
+/* Unixes (and Netware) have the unlink() semantic, which allows to
+ * apr_file_remove() a file still in use (opened elsewhere), the inode
+ * remains until the last fd is closed, whereas any file created with
+ * the same name/path will use a new inode.
+ *
+ * On windows and OS/2 ("\SHAREMEM\..." tree), apr_file_remove() marks
+ * the files for deletion until the last HANDLE is closed, meanwhile the
+ * same file/path can't be opened/recreated.
+ * Thus on graceful restart (the only restart mode with mpm_winnt), the
+ * old file may still exist until all the children stop, while we ought
+ * to create a new one for our new clear SHM.  Therefore, we would only
+ * be able to reuse (attach) the old SHM, preventing some changes to
+ * the config file, like the number of balancers/members, since the
+ * size checks (to fit the new config) would fail.  Let's avoid this by
+ * including the generation number in the SHM filename (obviously not
+ * the persisted name!)
+ */
+#ifndef SLOTMEM_UNLINK_SEMANTIC
+#if defined(WIN32) || defined(OS2)
+#define SLOTMEM_UNLINK_SEMANTIC 0
+#else
+#define SLOTMEM_UNLINK_SEMANTIC 1
+#endif
+#endif
+
 /*
  * Persist the slotmem in a file
  * slotmem name and file name.
@@ -88,11 +113,18 @@ static int slotmem_filenames(apr_pool_t *pool,
 
     if (slotname && *slotname && strcasecmp(slotname, "none") != 0) {
         if (slotname[0] != '/') {
+#if !SLOTMEM_UNLINK_SEMANTIC
             /* Each generation needs its own file name. */
             int generation = 0;
             ap_mpm_query(AP_MPMQ_GENERATION, &generation);
             fname = apr_psprintf(pool, "%s%s_%x%s", DEFAULT_SLOTMEM_PREFIX,
                                  slotname, generation, DEFAULT_SLOTMEM_SUFFIX);
+#else
+            /* Reuse the same file name for each generation. */
+            fname = apr_pstrcat(pool, DEFAULT_SLOTMEM_PREFIX,
+                                slotname, DEFAULT_SLOTMEM_SUFFIX,
+                                NULL);
+#endif
             fname = ap_runtime_dir_relative(pool, fname);
         }
         else {
@@ -104,6 +136,7 @@ static int slotmem_filenames(apr_pool_t *pool,
 
         if (persistname) {
             /* Persisted file names are immutable... */
+#if !SLOTMEM_UNLINK_SEMANTIC
             if (slotname[0] != '/') {
                 pname = apr_pstrcat(pool, DEFAULT_SLOTMEM_PREFIX,
                                     slotname, DEFAULT_SLOTMEM_SUFFIX,
@@ -111,11 +144,11 @@ static int slotmem_filenames(apr_pool_t *pool,
                                     NULL);
                 pname = ap_runtime_dir_relative(pool, pname);
             }
-            else {
-                pname = apr_pstrcat(pool, slotname,
-                                    DEFAULT_SLOTMEM_PERSIST_SUFFIX,
-                                    NULL);
-            }
+            else
+#endif
+            pname = apr_pstrcat(pool, fname,
+                                DEFAULT_SLOTMEM_PERSIST_SUFFIX,
+                                NULL);
         }
     }
 

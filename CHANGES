@@ -7,9 +7,6 @@ Changes with Apache 2.5.1
   *) core: adding defines to allow interworking with honggfuzz without
      further patches. [Stefan Eissing, Robert Swiecki]
 
-  *) mod_slotmem_shm: Add generation number to shm filename to fix races
-     with graceful restarts. PR 62044.
-
   *) mpm_event: Let the listener thread do its maintenance job on resources
      shortage.  PR 61979.  [Yann Ylavic]
 
