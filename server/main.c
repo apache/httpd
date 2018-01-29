@@ -484,7 +484,11 @@ static void usage(process_rec *process)
     destroy_and_exit_process(process, 1);
 }
 
-int main(int argc, const char * const argv[])
+#ifdef HFND_FUZZING_ENTRY_FUNCTION
+ HFND_FUZZING_ENTRY_FUNCTION(int argc, const char *const *argv)
+#else
+ int main(int argc, const char *const *argv)
+#endif
 {
     char c;
     int showcompile = 0, showdirectives = 0;
