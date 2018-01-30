@@ -556,9 +556,8 @@ static void recv_buffer_cleanup(h2_bucket_beam *beam, h2_beam_lock *bl)
     }
 }
 
-static apr_status_t beam_cleanup(void *data)
+static apr_status_t beam_cleanup(h2_bucket_beam *beam, int from_pool)
 {
-    h2_bucket_beam *beam = data;
     apr_status_t status = APR_SUCCESS;
     int safe_send = (beam->owner == H2_BEAM_OWNER_SEND);
     int safe_recv = (beam->owner == H2_BEAM_OWNER_RECV);
@@ -570,6 +569,11 @@ static apr_status_t beam_cleanup(void *data)
      * In general, receiver holds references to memory from sender. 
      * Clean up receiver first, if safe, then cleanup sender, if safe.
      */
+     
+     /* When called from pool destroy, io callbacks are disabled */
+     if (from_pool) {
+         beam->cons_io_cb = NULL;
+     }
      
     /* When modify send is not safe, this means we still have multi-thread
      * protection and the owner is receiving the buckets. If the sending
@@ -606,10 +610,15 @@ static apr_status_t beam_cleanup(void *data)
     return status;
 }
 
+static apr_status_t beam_pool_cleanup(void *data)
+{
+    return beam_cleanup(data, 1);
+}
+
 apr_status_t h2_beam_destroy(h2_bucket_beam *beam)
 {
-    apr_pool_cleanup_kill(beam->pool, beam, beam_cleanup);
-    return beam_cleanup(beam);
+    apr_pool_cleanup_kill(beam->pool, beam, beam_pool_cleanup);
+    return beam_cleanup(beam, 0);
 }
 
 apr_status_t h2_beam_create(h2_bucket_beam **pbeam, apr_pool_t *pool, 
@@ -642,7 +651,7 @@ apr_status_t h2_beam_create(h2_bucket_beam **pbeam, apr_pool_t *pool,
     if (APR_SUCCESS == rv) {
         rv = apr_thread_cond_create(&beam->change, pool);
         if (APR_SUCCESS == rv) {
-            apr_pool_pre_cleanup_register(pool, beam, beam_cleanup);
+            apr_pool_pre_cleanup_register(pool, beam, beam_pool_cleanup);
             *pbeam = beam;
         }
     }

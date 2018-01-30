@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_http2: removed obsolete stream detach code, no longer generating events
+     in beam shutdown on pool destroy. [Stefan Eissing]
+     
   *) mod_slotmem_shm: Rework SHM reuse/deletion to fix races with graceful
      restarts. PR 62044. [Yann Ylavic, Jim Jagielski]
 
