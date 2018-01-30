@@ -2069,6 +2069,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_request_core_filter(ap_filter_t *f,
     apr_bucket *flush_upto = NULL;
     apr_status_t status = APR_SUCCESS;
     apr_bucket_brigade *tmp_bb = f->ctx;
+    int seen_eor = 0;
 
     /*
      * Handle the AsyncFilter directive. We limit the filters that are
@@ -2101,6 +2102,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_request_core_filter(ap_filter_t *f,
              */
             APR_BRIGADE_CONCAT(tmp_bb, bb);
             ap_remove_output_filter(f);
+            seen_eor = 1;
             f->r = NULL;
         }
         else {
@@ -2119,7 +2121,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_request_core_filter(ap_filter_t *f,
              * needing to be set aside.
              */
             if (!APR_BUCKET_IS_METADATA(bucket)
-                    && bucket->length == (apr_size_t) - 1) {
+                    && bucket->length == (apr_size_t)-1) {
                 const char *data;
                 apr_size_t size;
                 if (APR_SUCCESS
@@ -2135,7 +2137,8 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_request_core_filter(ap_filter_t *f,
         }
 
         status = ap_pass_brigade(f->next, tmp_bb);
-        if (!f->r || (status != APR_SUCCESS && !APR_STATUS_IS_EOF(status))) {
+        if (seen_eor || (status != APR_SUCCESS &&
+                         !APR_STATUS_IS_EOF(status))) {
             apr_brigade_cleanup(tmp_bb);
             return status;
         }
