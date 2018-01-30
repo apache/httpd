@@ -578,17 +578,7 @@ void h2_stream_destroy(h2_stream *stream)
     ap_assert(stream);
     ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, stream->session->c, 
                   H2_STRM_MSG(stream, "destroy"));
-    if (stream->pool) {
-        apr_pool_destroy(stream->pool);
-        stream->pool = NULL;
-    }
-}
-
-apr_pool_t *h2_stream_detach_pool(h2_stream *stream)
-{
-    apr_pool_t *pool = stream->pool;
-    stream->pool = NULL;
-    return pool;
+    apr_pool_destroy(stream->pool);
 }
 
 apr_status_t h2_stream_prep_processing(h2_stream *stream)

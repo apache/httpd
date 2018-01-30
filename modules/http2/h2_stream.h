@@ -158,15 +158,6 @@ void h2_stream_dispatch(h2_stream *stream, h2_stream_event_t ev);
 void h2_stream_cleanup(h2_stream *stream);
 
 /**
- * Detach the memory pool from the stream. Will prevent stream
- * destruction to take the pool with it.
- *
- * @param stream the stream to detach the pool from
- * @result the detached memory pool or NULL if stream no longer has one
- */
-apr_pool_t *h2_stream_detach_pool(h2_stream *stream);
-
-/**
  * Notify the stream that amount bytes have been consumed of its input
  * since the last invocation of this method (delta amount).
  */
