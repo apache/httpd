@@ -221,6 +221,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      (2.4.x full: http://home.apache.org/~ylavic/patches/event-staging-full-v2.patch)
      +1: ylavic, 
 
+  *) mod_http2: obsolete code removed, no more events on beam pool destruction,
+     discourage content encoders on http2-status response (where they do not work)
+     2.4.x patch: svn merge -c 1821371,1822502,1822503 ^/httpd/httpd/trunk .
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
