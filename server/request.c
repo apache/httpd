@@ -2080,7 +2080,13 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_request_core_filter(ap_filter_t *f,
     }
 
     if (!tmp_bb) {
-        tmp_bb = f->ctx = apr_brigade_create(f->r->pool, f->c->bucket_alloc);
+        const char *tmp_bb_key = "ap_request_core_filter_bb";
+        tmp_bb = (void *)apr_table_get(f->c->notes, tmp_bb_key);
+        if (!tmp_bb) {
+            tmp_bb = apr_brigade_create(f->c->pool, f->c->bucket_alloc);
+            apr_table_setn(f->c->notes, tmp_bb_key, (void *)tmp_bb);
+        }
+        f->ctx = tmp_bb;
     }
 
     /* Reinstate any buffered content */
@@ -2089,22 +2095,31 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_request_core_filter(ap_filter_t *f,
     while (!APR_BRIGADE_EMPTY(bb)) {
         apr_bucket *bucket = APR_BRIGADE_FIRST(bb);
 
-        /* if the core has set aside data, back off and try later */
-        if (!flush_upto) {
-            if (ap_filter_should_yield(f)) {
-                break;
+        if (AP_BUCKET_IS_EOR(bucket)) {
+            /* pass out everything and never come back again,
+             * r is destroyed with this bucket!
+             */
+            APR_BRIGADE_CONCAT(tmp_bb, bb);
+            ap_remove_output_filter(f);
+            f->r = NULL;
+        }
+        else {
+            /* if the core has set aside data, back off and try later */
+            if (!flush_upto) {
+                if (ap_filter_should_yield(f)) {
+                    break;
+                }
             }
-        }
-        else if (flush_upto == bucket) {
-            flush_upto = NULL;
-        }
+            else if (flush_upto == bucket) {
+                flush_upto = NULL;
+            }
 
-        /* have we found a morphing bucket? if so, force it to morph into something
-         * safe to pass down to the connection filters without needing to be set
-         * aside.
-         */
-        if (!APR_BUCKET_IS_METADATA(bucket)) {
-            if (bucket->length == (apr_size_t) - 1) {
+            /* have we found a morphing bucket? if so, force it to morph into
+             * something safe to pass down to the connection filters without
+             * needing to be set aside.
+             */
+            if (!APR_BUCKET_IS_METADATA(bucket)
+                    && bucket->length == (apr_size_t) - 1) {
                 const char *data;
                 apr_size_t size;
                 if (APR_SUCCESS
@@ -2113,21 +2128,22 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_request_core_filter(ap_filter_t *f,
                     return status;
                 }
             }
+
+            /* pass each bucket down the chain */
+            APR_BUCKET_REMOVE(bucket);
+            APR_BRIGADE_INSERT_TAIL(tmp_bb, bucket);
         }
 
-        /* pass each bucket down the chain */
-        APR_BUCKET_REMOVE(bucket);
-        APR_BRIGADE_INSERT_TAIL(tmp_bb, bucket);
-
         status = ap_pass_brigade(f->next, tmp_bb);
-        if (!APR_STATUS_IS_EOF(status) && (status != APR_SUCCESS)) {
+        if (!f->r || (status != APR_SUCCESS && !APR_STATUS_IS_EOF(status))) {
+            apr_brigade_cleanup(tmp_bb);
             return status;
         }
 
+        apr_brigade_cleanup(tmp_bb);
     }
 
-    ap_filter_setaside_brigade(f, bb);
-    return status;
+    return ap_filter_setaside_brigade(f, bb);
 }
 
 extern APR_OPTIONAL_FN_TYPE(authz_some_auth_required) *ap__authz_ap_some_auth_required;

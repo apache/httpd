@@ -744,11 +744,10 @@ AP_DECLARE(apr_status_t) ap_filter_setaside_brigade(ap_filter_t *f,
     }
 
     if (!APR_BRIGADE_EMPTY(bb)) {
-        apr_pool_t *pool = NULL;
         /*
          * Set aside the brigade bb within f->bb.
          */
-        ap_filter_prepare_brigade(f, &pool);
+        ap_filter_prepare_brigade(f, NULL);
 
         /* decide what pool we setaside to, request pool or deferred pool? */
         if (f->r) {
@@ -762,7 +761,6 @@ AP_DECLARE(apr_status_t) ap_filter_setaside_brigade(ap_filter_t *f,
                     }
                 }
             }
-            pool = f->r->pool;
             APR_BRIGADE_CONCAT(f->bb, bb);
         }
         else {
@@ -770,8 +768,7 @@ AP_DECLARE(apr_status_t) ap_filter_setaside_brigade(ap_filter_t *f,
                 apr_pool_create(&f->deferred_pool, f->c->pool);
                 apr_pool_tag(f->deferred_pool, "deferred_pool");
             }
-            pool = f->deferred_pool;
-            return ap_save_brigade(f, &f->bb, &bb, pool);
+            return ap_save_brigade(f, &f->bb, &bb, f->deferred_pool);
         }
 
     }
