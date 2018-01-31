@@ -792,7 +792,7 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                           (s->defn_name ? s->defn_name : "?"),
                           s->defn_line_number,
                           (s->error_fname ? s->error_fname : DEFAULT_ERRORLOG));
-        conf->id = apr_psprintf(pconf, "balancers.p%x",
+        conf->id = apr_psprintf(pconf, "balancers_p%x",
                                 ap_proxy_hashfunc(id, PROXY_HASHFUNC_DEFAULT));
         if (conf->bslot) {
             /* Shared memory already created for this proxy_server_conf.
@@ -830,12 +830,11 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
             proxy_balancer_shared *bshm;
             const char *sname;
             unsigned int index;
-            char *balancer_id;
 
             /* now that we have the right id, we need to redo the sname field */
             ap_pstr2_alnum(pconf, balancer->s->name + sizeof(BALANCER_PREFIX) - 1,
                            &sname);
-            sname = apr_pstrcat(pconf, conf->id, "_", sname, NULL);
+            sname = apr_pstrcat(ptemp, conf->id, "_", sname, NULL);
             PROXY_STRNCPY(balancer->s->sname, sname); /* We know this will succeed */
 
             balancer->max_workers = balancer->workers->nelts + balancer->growth;
@@ -876,17 +875,14 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                 return !OK;
             }
 
-            balancer_id = apr_psprintf(ptemp, "%s.%s",
-                                       conf->id, balancer->s->sname);
-
             /* create slotmem slots for workers */
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01184)
                          "Doing workers create: %s (%s), %d, %d [%u]",
-                         balancer->s->name, balancer_id,
+                         balancer->s->name, sname,
                          (int)ALIGNED_PROXY_WORKER_SHARED_SIZE,
                          (int)balancer->max_workers, i);
 
-            rv = storage->create(&new, balancer_id,
+            rv = storage->create(&new, sname,
                                  ALIGNED_PROXY_WORKER_SHARED_SIZE,
                                  balancer->max_workers, type, pconf);
             if (rv != APR_SUCCESS) {
