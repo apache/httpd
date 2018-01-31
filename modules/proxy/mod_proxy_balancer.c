@@ -792,7 +792,7 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                           (s->defn_name ? s->defn_name : "?"),
                           s->defn_line_number,
                           (s->error_fname ? s->error_fname : DEFAULT_ERRORLOG));
-        conf->id = apr_psprintf(pconf, "p%x",
+        conf->id = apr_psprintf(pconf, "balancers.p%x",
                                 ap_proxy_hashfunc(id, PROXY_HASHFUNC_DEFAULT));
         if (conf->bslot) {
             /* Shared memory already created for this proxy_server_conf.
@@ -830,6 +830,7 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
             proxy_balancer_shared *bshm;
             const char *sname;
             unsigned int index;
+            char *balancer_id;
 
             /* now that we have the right id, we need to redo the sname field */
             ap_pstr2_alnum(pconf, balancer->s->name + sizeof(BALANCER_PREFIX) - 1,
@@ -875,13 +876,17 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                 return !OK;
             }
 
+            balancer_id = apr_psprintf(ptemp, "%s.%s",
+                                       conf->id, balancer->s->sname);
+
             /* create slotmem slots for workers */
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01184) "Doing workers create: %s (%s), %d, %d [%u]",
-                         balancer->s->name, balancer->s->sname,
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01184)
+                         "Doing workers create: %s (%s), %d, %d [%u]",
+                         balancer->s->name, balancer_id,
                          (int)ALIGNED_PROXY_WORKER_SHARED_SIZE,
                          (int)balancer->max_workers, i);
 
-            rv = storage->create(&new, balancer->s->sname,
+            rv = storage->create(&new, balancer_id,
                                  ALIGNED_PROXY_WORKER_SHARED_SIZE,
                                  balancer->max_workers, type, pconf);
             if (rv != APR_SUCCESS) {
