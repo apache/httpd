@@ -1816,16 +1816,9 @@ PROXY_DECLARE(apr_status_t) ap_proxy_share_worker(proxy_worker *worker, proxy_wo
 
 PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, server_rec *s, apr_pool_t *p)
 {
-    static int have_get_h2_num_workers = 0;
-    static APR_OPTIONAL_FN_TYPE(http2_get_num_workers)
-              *get_h2_num_workers = NULL;
+    APR_OPTIONAL_FN_TYPE(http2_get_num_workers) *get_h2_num_workers;
     apr_status_t rv = APR_SUCCESS;
     int max_threads, minw, maxw;
-
-    if (get_h2_num_workers == NULL) {
-        get_h2_num_workers = APR_RETRIEVE_OPTIONAL_FN(http2_get_num_workers);
-        have_get_h2_num_workers = (get_h2_num_workers != NULL);
-    }
 
     if (worker->s->status & PROXY_WORKER_INITIALIZED) {
         /* The worker is already initialized */
@@ -1854,7 +1847,8 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
          * since it has it's own pool of processing threads.
          */
         ap_mpm_query(AP_MPMQ_MAX_THREADS, &max_threads);
-        if (have_get_h2_num_workers) {
+        get_h2_num_workers = APR_RETRIEVE_OPTIONAL_FN(http2_get_num_workers);
+        if (get_h2_num_workers) {
             get_h2_num_workers(s, &minw, &maxw);
             if (max_threads < maxw) {
                 max_threads = maxw;
