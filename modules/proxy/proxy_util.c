@@ -1841,8 +1841,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
 
         ap_mpm_query(AP_MPMQ_MAX_THREADS, &mpm_threads);
         if (mpm_threads > 1) {
-            /* Set hard max to no more then mpm_threads */
-            if (worker->s->hmax == 0 || worker->s->hmax > mpm_threads) {
+            if (worker->s->hmax == 0) {
                 worker->s->hmax = mpm_threads;
             }
             if (worker->s->smax == -1 || worker->s->smax > worker->s->hmax) {
