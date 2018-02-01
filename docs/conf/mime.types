@@ -1632,6 +1632,7 @@ message/rfc822					eml mime
 # message/vnd.si.simp
 # message/vnd.wfa.wsc
 # model/example
+model/gltf-binary				glb
 # model/gltf+json
 model/iges					igs iges
 model/mesh					msh mesh silo
