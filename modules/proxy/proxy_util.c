@@ -24,6 +24,8 @@
 #include "ajp.h"
 #include "scgi.h"
 
+#include "mod_http2.h" /* for http2_get_num_workers() */
+
 #if APR_HAVE_UNISTD_H
 #include <unistd.h>         /* for getpid() */
 #endif
@@ -1814,8 +1816,16 @@ PROXY_DECLARE(apr_status_t) ap_proxy_share_worker(proxy_worker *worker, proxy_wo
 
 PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, server_rec *s, apr_pool_t *p)
 {
+    static int have_get_h2_num_workers = 0;
+    static APR_OPTIONAL_FN_TYPE(http2_get_num_workers)
+              *get_h2_num_workers = NULL;
     apr_status_t rv = APR_SUCCESS;
-    int mpm_threads;
+    int max_threads, minw, maxw;
+
+    if (get_h2_num_workers == NULL) {
+        get_h2_num_workers = APR_RETRIEVE_OPTIONAL_FN(http2_get_num_workers);
+        have_get_h2_num_workers = (get_h2_num_workers != NULL);
+    }
 
     if (worker->s->status & PROXY_WORKER_INITIALIZED) {
         /* The worker is already initialized */
@@ -1839,15 +1849,23 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
             worker->s->is_address_reusable = 1;
         }
 
-        ap_mpm_query(AP_MPMQ_MAX_THREADS, &mpm_threads);
-        if (mpm_threads > 1) {
-            /*
-             * Do not limit hmax to mpm_threads any longer as we might have
-             * more processing threads around when mod_http2 is loaded which
-             * has it's own pool of processing threads on top of this.
+        /*
+         * When mod_http2 is loaded we might have more processing threads
+         * since it has it's own pool of processing threads.
+         */
+        ap_mpm_query(AP_MPMQ_MAX_THREADS, &max_threads);
+        if (have_get_h2_num_workers) {
+            get_h2_num_workers(s, &minw, &maxw);
+            if (max_threads < maxw) {
+                max_threads = maxw;
+            }
+        }
+        if (max_threads > 1) {
+            /* Default hmax is max_threads to scale with the load and never
+             * wait for an idle connection to proceed.
              */
             if (worker->s->hmax == 0) {
-                worker->s->hmax = mpm_threads;
+                worker->s->hmax = max_threads;
             }
             if (worker->s->smax == -1 || worker->s->smax > worker->s->hmax) {
                 worker->s->smax = worker->s->hmax;

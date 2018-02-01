@@ -193,6 +193,11 @@ static void http2_req_engine_done(h2_req_engine *ngn, conn_rec *r_conn,
     h2_mplx_req_engine_done(ngn, r_conn, status);
 }
 
+static void http2_get_num_workers(server_rec *s, int *minw, int *maxw)
+{
+    h2_get_num_workers(s, minw, maxw);
+}
+
 /* Runs once per created child process. Perform any process 
  * related initionalization here.
  */
@@ -218,6 +223,7 @@ static void h2_hooks(apr_pool_t *pool)
     APR_REGISTER_OPTIONAL_FN(http2_req_engine_push);
     APR_REGISTER_OPTIONAL_FN(http2_req_engine_pull);
     APR_REGISTER_OPTIONAL_FN(http2_req_engine_done);
+    APR_REGISTER_OPTIONAL_FN(http2_get_num_workers);
 
     ap_log_perror(APLOG_MARK, APLOG_TRACE1, 0, pool, "installing hooks");
     
