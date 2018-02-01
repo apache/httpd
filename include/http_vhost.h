@@ -50,7 +50,7 @@ AP_DECLARE(void) ap_fini_vhost_config(apr_pool_t *p, server_rec *main_server);
  * @param hostname The hostname in the VirtualHost statement
  * @param s The list of Virtual Hosts.
  */
-const char *ap_parse_vhost_addrs(apr_pool_t *p, const char *hostname, server_rec *s);
+AP_DECLARE(const char *) ap_parse_vhost_addrs(apr_pool_t *p, const char *hostname, server_rec *s);
 
 /**
  * handle NameVirtualHost directive

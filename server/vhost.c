@@ -238,9 +238,9 @@ static const char *get_addresses(apr_pool_t *p, const char *w_,
 
 
 /* parse the <VirtualHost> addresses */
-const char *ap_parse_vhost_addrs(apr_pool_t *p,
-                                 const char *hostname,
-                                 server_rec *s)
+AP_DECLARE(const char *)ap_parse_vhost_addrs(apr_pool_t *p,
+                                             const char *hostname,
+                                             server_rec *s)
 {
     server_addr_rec **addrs;
     const char *err;
