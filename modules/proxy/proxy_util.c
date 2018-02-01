@@ -1841,6 +1841,11 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
 
         ap_mpm_query(AP_MPMQ_MAX_THREADS, &mpm_threads);
         if (mpm_threads > 1) {
+            /*
+             * Do not limit hmax to mpm_threads any longer as we might have
+             * more processing threads around when mod_http2 is loaded which
+             * has it's own pool of processing threads on top of this.
+             */
             if (worker->s->hmax == 0) {
                 worker->s->hmax = mpm_threads;
             }
