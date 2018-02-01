@@ -93,4 +93,9 @@ APR_DECLARE_OPTIONAL_FN(void,
                         http2_req_engine_done, (h2_req_engine *engine, 
                                                 conn_rec *rconn,
                                                 apr_status_t status));
+
+APR_DECLARE_OPTIONAL_FN(void,
+                        http2_get_num_workers, (server_rec *s,
+                                                int *minw, int *max));
+
 #endif

@@ -604,6 +604,30 @@ static const char *h2_conf_set_early_hints(cmd_parms *parms,
     return "value must be On or Off";
 }
 
+void h2_get_num_workers(server_rec *s, int *minw, int *maxw)
+{
+    int threads_per_child = 0;
+    const h2_config *config = h2_config_sget(s);
+
+    *minw = h2_config_geti(config, H2_CONF_MIN_WORKERS);
+    *maxw = h2_config_geti(config, H2_CONF_MAX_WORKERS);    
+    ap_mpm_query(AP_MPMQ_MAX_THREADS, &threads_per_child);
+
+    if (*minw <= 0) {
+        *minw = threads_per_child;
+    }
+    if (*maxw <= 0) {
+        /* As a default, this seems to work quite well under mpm_event. 
+         * For people enabling http2 under mpm_prefork, start 4 threads unless 
+         * configured otherwise. People get unhappy if their http2 requests are 
+         * blocking each other. */
+        *maxw = 3 * (*minw) / 2;
+        if (*maxw < 4) {
+            *maxw = 4;
+        }
+    }
+}
+
 #define AP_END_CMD     AP_INIT_TAKE1(NULL, NULL, NULL, RSRC_CONF, NULL)
 
 const command_rec h2_cmds[] = {

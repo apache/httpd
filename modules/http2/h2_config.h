@@ -95,6 +95,8 @@ const h2_config *h2_config_rget(request_rec *r);
 int h2_config_geti(const h2_config *conf, h2_config_var_t var);
 apr_int64_t h2_config_geti64(const h2_config *conf, h2_config_var_t var);
 
+void h2_get_num_workers(server_rec *s, int *minw, int *maxw);
+
 void h2_config_init(apr_pool_t *pool);
 
 const struct h2_priority *h2_config_get_priority(const h2_config *conf, 
