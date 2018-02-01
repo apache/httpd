@@ -1843,16 +1843,18 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
         }
 
         /*
-         * When mod_http2 is loaded we might have more processing threads
-         * since it has it's own pool of processing threads.
+         * When mod_http2 is loaded we might have more threads since it has
+         * its own pool of processing threads.
          */
         ap_mpm_query(AP_MPMQ_MAX_THREADS, &max_threads);
         get_h2_num_workers = APR_RETRIEVE_OPTIONAL_FN(http2_get_num_workers);
         if (get_h2_num_workers) {
             get_h2_num_workers(s, &minw, &maxw);
-            if (max_threads < maxw) {
-                max_threads = maxw;
-            }
+            /* So now the max is:
+             *   max_threads-1 threads for HTTP/1 each requiring one connection
+             *   + one thread for HTTP/2 requiring maxw connections
+             */
+            max_threads = max_threads - 1 + maxw;
         }
         if (max_threads > 1) {
             /* Default hmax is max_threads to scale with the load and never
