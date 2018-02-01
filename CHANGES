@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) core: adding AP_DECLARE for ap_parse_vhost_addrs() and minor bumb mmn. Resolves
+     building mod_ssl on Windows. [Stefan Eissing, Gregg Smith]
+
   *) mod_http2: removed obsolete stream detach code, no longer generating events
      in beam shutdown on pool destroy. [Stefan Eissing]
      
