@@ -225,6 +225,21 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      discourage content encoders on http2-status response (where they do not work)
      2.4.x patch: svn merge -c 1821371,1822502,1822503 ^/httpd/httpd/trunk .
 
+  *) config.layout: Add Fedora layout.
+     trunk patch: http://svn.apache.org/r1823179
+     2.4.x patch: trunk works
+     +1: jorton,
+
+  *) mod_lua: Link against -lcrypt if present
+     trunk patch: http://svn.apache.org/r1822305
+     2.4.x patch: trunk works
+     +1: jorton,
+
+  *) ab: Fix potential link issues with SSL libraries.
+     trunk patch: http://svn.apache.org/r1816534
+     2.4.x patch: trunk works
+     +1: jorton,
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
@@ -336,6 +351,9 @@ PATCHES/ISSUES THAT ARE BEING WORKED
      So the only fix allowing us to use PCRE 10 in httpd 2.4 would be to write
      this as a thread safe storage buffer for the majority of cases (<10 $args)
      and we don't have a portable tls mechanism to do so.
+     jorton: Adding ap_pregexec/_len which pass a pool would also work
+             for internal users of this api; not sure if performance
+             impact is significant from using malloc here.
 
 
 PATCHES/ISSUES THAT ARE STALLED
