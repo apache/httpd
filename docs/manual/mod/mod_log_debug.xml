@@ -46,7 +46,7 @@
         Log message if request to /foo/* is processed in a sub-request:
         <highlight language="config">
 &lt;Location "/foo/"&gt;
-&nbsp;&nbsp;LogMessage "subrequest to /foo/" hook=type_checker expr=%{IS_SUBREQ}
+&nbsp;&nbsp;LogMessage "subrequest to /foo/" hook=type_checker "expr=-T %{IS_SUBREQ}"
 &lt;/Location&gt;
         </highlight>
 
