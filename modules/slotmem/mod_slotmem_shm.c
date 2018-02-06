@@ -56,12 +56,18 @@ struct ap_slotmem_instance_t {
 };
 
 /*
- * Memory layout:
- *     sharedslotdesc_t | num_free | slots | isuse array |
- *                      ^          ^
- *                      |          . base
- *                      . persist (also num_free)
+ * Layout for SHM and persited file :
+ *
+ *   +-------------------------------------------------------------+~>
+ *   | desc | num_free | base (slots) | inuse (array) | md5 | desc | compat..
+ *   +------+-----------------------------------------+------------+~>
+ *   ^      ^                                         ^    \ /     ^   :
+ *   |______|_____________ SHM (mem->@) ______________|     | _____|__/
+ *          |                                               |/     |
+ *          |                                         ^     v      |
+ *          |_____________________ File (mem->persist +  [meta]) __|
  */
+
 
 /* global pool and list of slotmem we are handling */
 static struct ap_slotmem_instance_t *globallistmem = NULL,
@@ -351,8 +357,7 @@ static apr_status_t slotmem_doall(ap_slotmem_instance_t *mem,
     ptr = (char *)mem->base;
     inuse = mem->inuse;
     for (i = 0; i < mem->desc->num; i++, inuse++) {
-        if (!AP_SLOTMEM_IS_PREGRAB(mem) ||
-           (AP_SLOTMEM_IS_PREGRAB(mem) && *inuse)) {
+        if (!AP_SLOTMEM_IS_PREGRAB(mem) || *inuse) {
             retval = func((void *) ptr, data, pool);
             if (retval != APR_SUCCESS)
                 break;
