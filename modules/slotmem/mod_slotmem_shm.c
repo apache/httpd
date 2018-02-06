@@ -362,6 +362,32 @@ static apr_status_t slotmem_doall(ap_slotmem_instance_t *mem,
     return retval;
 }
 
+static int check_slotmem(ap_slotmem_instance_t *mem, apr_size_t size,
+                         apr_size_t item_size, unsigned int item_num)
+{
+    sharedslotdesc_t *desc;
+
+    /* check size */
+    if (apr_shm_size_get(mem->shm) != size) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf, APLOGNO(02599)
+                     "existing shared memory for %s could not be used "
+                     "(failed size check)",
+                     mem->name);
+        return 0;
+    }
+
+    desc = apr_shm_baseaddr_get(mem->shm);
+    if (desc->size != item_size || desc->num != item_num) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf, APLOGNO(02600)
+                     "existing shared memory for %s could not be used "
+                     "(failed contents check)",
+                     mem->name);
+        return 0;
+    }
+
+    return 1;
+}
+
 static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
                                    const char *name, apr_size_t item_size,
                                    unsigned int item_num,
@@ -382,13 +408,31 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
     apr_status_t rv;
     apr_pool_t *p;
 
+    *new = NULL;
+
     if (slotmem_filenames(pool, name, &fname, persist ? &pname : NULL)) {
         /* first try to attach to existing slotmem */
         if (next) {
+            ap_slotmem_instance_t *prev = NULL;
             for (;;) {
                 if (strcmp(next->name, fname) == 0) {
+                    *new = next; /* either returned here or reused finally */
+                    if (!check_slotmem(next, size, item_size, item_num)) {
+                        apr_shm_destroy(next->shm);
+                        next = next->next;
+                        if (prev) {
+                            prev->next = next;
+                        }
+                        else {
+                            globallistmem = next;
+                        }
+                        if (next) {
+                            continue;
+                        }
+                        next = prev;
+                        break;
+                    }
                     /* we already have it */
-                    *new = next;
                     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(02603)
                                  "create found %s in global list", fname);
                     return APR_SUCCESS;
@@ -396,6 +440,7 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
                 if (!next->next) {
                      break;
                 }
+                prev = next;
                 next = next->next;
             }
         }
@@ -411,7 +456,6 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(02300)
                  "create %s: %"APR_SIZE_T_FMT"/%u", fname, item_size,
                  item_num);
-
 
     {
         if (fbased) {
@@ -460,10 +504,14 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
     p = fbased ? gpool : pool;
     ptr = (char *)desc + AP_SLOTMEM_OFFSET;
 
-    /* For the chained slotmem stuff */
-    res = apr_pcalloc(p, sizeof(ap_slotmem_instance_t));
-    res->name = apr_pstrdup(p, fname);
-    res->pname = apr_pstrdup(p, pname);
+    /* For the chained slotmem stuff (*new may be reused from above) */
+    res = *new;
+    if (res == NULL) {
+        res = apr_pcalloc(p, sizeof(ap_slotmem_instance_t));
+        res->name = apr_pstrdup(p, fname);
+        res->pname = apr_pstrdup(p, pname);
+        *new = res;
+    }
     res->fbased = fbased;
     res->shm = shm;
     res->persist = (void *)ptr;
@@ -486,7 +534,6 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
         }
     }
 
-    *new = res;
     return APR_SUCCESS;
 }
 
