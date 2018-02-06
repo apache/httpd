@@ -579,7 +579,7 @@ static apr_status_t slotmem_attach(ap_slotmem_instance_t **new,
     }
 
     /* next try to attach to existing shared memory */
-    rv = apr_shm_attach(&shm, fname, gpool);
+    rv = apr_shm_attach(&shm, fname, pool);
     if (rv != APR_SUCCESS) {
         return rv;
     }
@@ -589,8 +589,8 @@ static apr_status_t slotmem_attach(ap_slotmem_instance_t **new,
     ptr = (char *)desc + AP_SLOTMEM_OFFSET;
 
     /* For the chained slotmem stuff */
-    res = apr_pcalloc(gpool, sizeof(ap_slotmem_instance_t));
-    res->name = apr_pstrdup(gpool, fname);
+    res = apr_pcalloc(pool, sizeof(ap_slotmem_instance_t));
+    res->name = apr_pstrdup(pool, fname);
     res->fbased = 1;
     res->shm = shm;
     res->persist = (void *)ptr;
@@ -601,12 +601,6 @@ static apr_status_t slotmem_attach(ap_slotmem_instance_t **new,
     res->pool = pool;
     res->inuse = ptr + (desc->size * desc->num);
     res->next = NULL;
-    if (globallistmem == NULL) {
-        globallistmem = res;
-    }
-    else {
-        next->next = res;
-    }
 
     *new = res;
     *item_size = desc->size;
