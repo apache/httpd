@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_proxy: Worker schemes and hostnames which are too large are no
+     longer fatal errors; it is logged and the truncated values are stored.
+
   *) core: adding AP_DECLARE for ap_parse_vhost_addrs() and minor bumb mmn. Resolves
      building mod_ssl on Windows. [Stefan Eissing, Gregg Smith]
 
