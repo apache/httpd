@@ -246,6 +246,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1: jorton, 
 
+  *) proxy_util: Schemes and hostnames that are "too long" are
+     no longer automatically fatal errors but are instead logged
+     and truncated, at which point the admin can determine if that
+     is OK or not.
+     trunk patch: http://svn.apache.org/r1823482
+     2.4.x patch: trunk works
+     +1: jim,
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
