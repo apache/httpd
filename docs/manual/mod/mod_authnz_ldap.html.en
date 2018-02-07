@@ -504,7 +504,7 @@ AuthLDAPMaxSubGroupDepth 1</pre>
     <p>The following directive would grant access to anyone with
     the city attribute equal to "San Jose" or status equal to "Active"</p>
 
-    <pre class="prettyprint lang-config">Require ldap-attribute city="San Jose" "status=active"</pre>
+    <pre class="prettyprint lang-config">Require ldap-attribute city="San Jose" status="active"</pre>
 
 
 
