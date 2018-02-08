@@ -254,6 +254,23 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1: jim,
 
+  *) mod_proxy_balancer,mod_slotmem_shm: Rework SHM reuse/deletion to not
+     depend on the number of restarts (non-Unix systems) and preserve shared
+     names as much as possible on configuration changes for SHMs and persisted
+     files.  PR 62044.
+     trunk patch: http://svn.apache.org/r1822509
+                  http://svn.apache.org/r1822511
+                  http://svn.apache.org/r1823412
+                  http://svn.apache.org/r1823415
+                  http://svn.apache.org/r1823416
+                  http://svn.apache.org/r1823564
+                  http://svn.apache.org/r1823572
+                  http://svn.apache.org/r1823575
+     2.4.x patch: trunk works (modulo CHANGES)
+                  (or http://home.apache.org/~ylavic/patches/httpd-2.4.x-PR62044-slotmems_reuse.patch)
+     +1: ylavic, 
+
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
