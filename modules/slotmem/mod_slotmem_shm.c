@@ -78,31 +78,6 @@ static apr_pool_t *gpool = NULL;
 #define DEFAULT_SLOTMEM_SUFFIX ".shm"
 #define DEFAULT_SLOTMEM_PERSIST_SUFFIX ".persist"
 
-/* Unixes (and Netware) have the unlink() semantic, which allows to
- * apr_file_remove() a file still in use (opened elsewhere), the inode
- * remains until the last fd is closed, whereas any file created with
- * the same name/path will use a new inode.
- *
- * On windows and OS/2 ("\SHAREMEM\..." tree), apr_file_remove() marks
- * the files for deletion until the last HANDLE is closed, meanwhile the
- * same file/path can't be opened/recreated.
- * Thus on graceful restart (the only restart mode with mpm_winnt), the
- * old file may still exist until all the children stop, while we ought
- * to create a new one for our new clear SHM.  Therefore, we would only
- * be able to reuse (attach) the old SHM, preventing some changes to
- * the config file, like the number of balancers/members, since the
- * size checks (to fit the new config) would fail.  Let's avoid this by
- * including the generation number in the SHM filename (obviously not
- * the persisted name!)
- */
-#ifndef SLOTMEM_UNLINK_SEMANTIC
-#if defined(WIN32) || defined(OS2)
-#define SLOTMEM_UNLINK_SEMANTIC 0
-#else
-#define SLOTMEM_UNLINK_SEMANTIC 1
-#endif
-#endif
-
 /*
  * Persist the slotmem in a file
  * slotmem name and file name.
