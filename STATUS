@@ -119,6 +119,22 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_lua: Link against -lcrypt if present
+     trunk patch: http://svn.apache.org/r1822305
+     2.4.x patch: trunk works
+     +1: jorton, jim, ylavic
+
+  *) ab: Fix potential link issues with SSL libraries.
+     trunk patch: http://svn.apache.org/r1816534
+     2.4.x patch: trunk works
+     +1: jorton, jim, ylavic
+
+  *) mod_ssl: Fail if SSLCompression is used and OpenSSL is
+     built without compression methods.
+     trunk patch: http://svn.apache.org/r1556473
+     2.4.x patch: trunk works
+     +1: jorton, jim, ylavic
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -224,28 +240,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_http2: obsolete code removed, no more events on beam pool destruction,
      discourage content encoders on http2-status response (where they do not work)
      2.4.x patch: svn merge -c 1821371,1822502,1822503 ^/httpd/httpd/trunk .
-     +1:
+     +1: ylavic
 
   *) config.layout: Add Fedora layout.
      trunk patch: http://svn.apache.org/r1823179
      2.4.x patch: trunk works
-     +1: jorton, jim,
-
-  *) mod_lua: Link against -lcrypt if present
-     trunk patch: http://svn.apache.org/r1822305
-     2.4.x patch: trunk works
-     +1: jorton, jim,
-
-  *) ab: Fix potential link issues with SSL libraries.
-     trunk patch: http://svn.apache.org/r1816534
-     2.4.x patch: trunk works
-     +1: jorton, jim,
-
-  *) mod_ssl: Fail if SSLCompression is used and OpenSSL is
-     built without compression methods.
-     trunk patch: http://svn.apache.org/r1556473
-     2.4.x patch: trunk works
-     +1: jorton, jim,
+     +1: jorton, jim
+     ylavic: isn't this applicable to CTR? (no Fedora at hand to test/vote)
 
   *) proxy_util: Schemes and hostnames that are "too long" are
      no longer automatically fatal errors but are instead logged
