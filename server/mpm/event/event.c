@@ -177,6 +177,7 @@ static volatile int dying = 0;
 static volatile int workers_may_exit = 0;
 static volatile int start_thread_may_exit = 0;
 static volatile int listener_may_exit = 0;
+static volatile int listeners_disabled = 0;
 static int listener_is_wakeable = 0;        /* Pollset supports APR_POLLSET_WAKEABLE */
 static int num_listensocks = 0;
 static apr_int32_t conns_this_child;        /* MaxConnectionsPerChild, only access
@@ -456,6 +457,7 @@ static apr_socket_t **worker_sockets;
 static void disable_listensocks(int process_slot)
 {
     int i;
+    listeners_disabled = 1;
     for (i = 0; i < num_listensocks; i++) {
         apr_pollset_remove(event_pollset, &listener_pollfd[i]);
     }
@@ -468,6 +470,7 @@ static void enable_listensocks(int process_slot)
     if (listener_may_exit) {
         return;
     }
+    listeners_disabled = 0;
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(00457)
                  "Accepting new connections again: "
                  "%u active conns (%u lingering/%u clogged/%u suspended), "
@@ -484,6 +487,23 @@ static void enable_listensocks(int process_slot)
      * XXX: the parent may kill some processes off too soon.
      */
     ap_scoreboard_image->parent[process_slot].not_accepting = 0;
+}
+
+static APR_INLINE int connections_above_limit(void)
+{
+    apr_uint32_t i_count = ap_queue_info_get_idlers(worker_queue_info);
+    if (i_count > 0) {
+        apr_uint32_t c_count = apr_atomic_read32(&connection_count);
+        apr_uint32_t l_count = apr_atomic_read32(&lingering_count);
+        if (c_count <= l_count
+                /* Off by 'listeners_disabled' to avoid flip flop */
+                || c_count - l_count < (apr_uint32_t)threads_per_child +
+                                       (i_count - (listeners_disabled != 0)) *
+                                       (worker_factor / WORKER_FACTOR_SCALE)) {
+            return 0;
+        }
+    }
+    return 1;
 }
 
 static void abort_socket_nonblocking(apr_socket_t *csd)
@@ -714,6 +734,7 @@ static int child_fatal;
 
 static apr_status_t decrement_connection_count(void *cs_)
 {
+    int is_last_connection;
     event_conn_state_t *cs = cs_;
     switch (cs->pub.state) {
         case CONN_STATE_LINGER_NORMAL:
@@ -726,9 +747,14 @@ static apr_status_t decrement_connection_count(void *cs_)
         default:
             break;
     }
-    /* Unblock the listener if it's waiting for connection_count = 0 */
-    if (!apr_atomic_dec32(&connection_count)
-             && listener_is_wakeable && listener_may_exit) {
+    /* Unblock the listener if it's waiting for connection_count = 0,
+     * or if the listening sockets were disabled due to limits and can
+     * now accept new connections.
+     */
+    is_last_connection = !apr_atomic_dec32(&connection_count);
+    if (listener_is_wakeable
+            && ((is_last_connection && listener_may_exit)
+                || (listeners_disabled && !connections_above_limit()))) {
         apr_pollset_wakeup(event_pollset);
     }
     return APR_SUCCESS;
@@ -1553,7 +1579,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
     int process_slot = ti->pslot;
     struct process_score *ps = ap_get_scoreboard_process(process_slot);
     apr_pool_t *tpool = apr_thread_pool_get(thd);
-    int closed = 0, listeners_disabled = 0;
+    int closed = 0;
     int have_idle_worker = 0;
     apr_time_t last_log;
 
@@ -1579,10 +1605,12 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
         timer_event_t *te;
         const apr_pollfd_t *out_pfd;
         apr_int32_t num = 0;
-        apr_uint32_t c_count, l_count, i_count;
         apr_interval_time_t timeout_interval;
         apr_time_t now, timeout_time;
         int workers_were_busy = 0;
+
+        if (conns_this_child <= 0)
+            check_infinite_requests();
 
         if (listener_may_exit) {
             close_listeners(process_slot, &closed);
@@ -1590,9 +1618,6 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                 || apr_atomic_read32(&connection_count) == 0)
                 break;
         }
-
-        if (conns_this_child <= 0)
-            check_infinite_requests();
 
         now = apr_time_now();
         if (APLOGtrace6(ap_server_conf)) {
@@ -1668,11 +1693,13 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
         rc = apr_pollset_poll(event_pollset, timeout_interval, &num, &out_pfd);
         if (rc != APR_SUCCESS) {
             if (APR_STATUS_IS_EINTR(rc)) {
-                /* Woken up, if we are exiting we must fall through to kill
-                 * kept-alive connections, otherwise we only need to update
-                 * timeouts (logic is above, so restart the loop).
+                /* Woken up, if we are exiting or listeners are disabled we
+                 * must fall through to kill kept-alive connections or test
+                 * whether listeners should be re-enabled. Otherwise we only
+                 * need to update timeouts (logic is above, so simply restart
+                 * the loop).
                  */
-                if (!listener_may_exit) {
+                if (!listener_may_exit && !listeners_disabled) {
                     continue;
                 }
                 timeout_time = 0;
@@ -1754,25 +1781,16 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                     ap_assert(0);
                 }
             }
-            else if (pt->type == PT_ACCEPT) {
+            else if (pt->type == PT_ACCEPT && !listeners_disabled) {
                 /* A Listener Socket is ready for an accept() */
                 if (workers_were_busy) {
-                    if (!listeners_disabled)
-                        disable_listensocks(process_slot);
-                    listeners_disabled = 1;
+                    disable_listensocks(process_slot);
                     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
                                  "All workers busy, not accepting new conns "
                                  "in this process");
                 }
-                else if ((c_count = apr_atomic_read32(&connection_count))
-                             > (l_count = apr_atomic_read32(&lingering_count))
-                         && (c_count - l_count
-                                > ap_queue_info_get_idlers(worker_queue_info)
-                                  * worker_factor / WORKER_FACTOR_SCALE
-                                  + threads_per_child))
-                {
-                    if (!listeners_disabled)
-                        disable_listensocks(process_slot);
+                else if (connections_above_limit()) {
+                    disable_listensocks(process_slot);
                     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
                                  "Too many open connections (%u), "
                                  "not accepting new conns in this process",
@@ -1780,13 +1798,9 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                     ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, ap_server_conf,
                                  "Idle workers: %u",
                                  ap_queue_info_get_idlers(worker_queue_info));
-                    listeners_disabled = 1;
+                    workers_were_busy = 1;
                 }
-                else if (listeners_disabled) {
-                    listeners_disabled = 0;
-                    enable_listensocks(process_slot);
-                }
-                if (!listeners_disabled) {
+                else if (!listener_may_exit) {
                     void *csd = NULL;
                     ap_listen_rec *lr = (ap_listen_rec *) pt->baton;
                     apr_pool_t *ptrans;         /* Pool for per-transaction stuff */
@@ -1910,22 +1924,12 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
             }
         }
 
-        if (listeners_disabled && !workers_were_busy
-            && ((c_count = apr_atomic_read32(&connection_count))
-                    >= (l_count = apr_atomic_read32(&lingering_count))
-                && (i_count = ap_queue_info_get_idlers(worker_queue_info)) > 0
-                && (c_count - l_count
-                        < (i_count - 1) * worker_factor / WORKER_FACTOR_SCALE
-                          + threads_per_child)))
-        {
-            listeners_disabled = 0;
+        if (listeners_disabled
+                && !workers_were_busy
+                && !connections_above_limit()) {
             enable_listensocks(process_slot);
         }
-        /*
-         * XXX: do we need to set some timeout that re-enables the listensocks
-         * XXX: in case no other event occurs?
-         */
-    }     /* listener main loop */
+    } /* listener main loop */
 
     close_listeners(process_slot, &closed);
     ap_queue_term(worker_queue);
