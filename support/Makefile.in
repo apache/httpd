@@ -60,12 +60,12 @@ htdbm: $(htdbm_OBJECTS)
 	$(LINK) $(htdbm_LTFLAGS) $(htdbm_OBJECTS) $(PROGRAM_LDADD) $(CRYPT_LIBS)
 
 ab_OBJECTS = ab.lo
-ab_LDADD = $(PROGRAM_LDADD) $(MATH_LIBS)
+ab_LDADD = $(PROGRAM_LDADD) $(MATH_LIBS) $(ab_LIBS)
 ab.lo: ab.c
 	$(LIBTOOL) --mode=compile $(CC) $(ab_CFLAGS) $(ALL_CFLAGS) $(ALL_CPPFLAGS) \
 	    $(ALL_INCLUDES) $(PICFLAGS) $(LTCFLAGS) -c $< && touch $@
 ab: $(ab_OBJECTS)
-	$(LIBTOOL) --mode=link $(CC) $(ALL_CFLAGS) $(ab_LDFLAGS) $(PILDFLAGS) \
+	$(LIBTOOL) --mode=link $(CC) $(ALL_CFLAGS) $(PILDFLAGS) \
 	    $(LT_LDFLAGS) $(ALL_LDFLAGS) -o $@ $(ab_LTFLAGS) $(ab_OBJECTS) $(ab_LDADD)
 
 checkgid_OBJECTS = checkgid.lo
