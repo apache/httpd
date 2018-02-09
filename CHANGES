@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.30
  
+  *) mpm_event: Let the listener thread do its maintenance job on resources
+     shortage.  PR 61979.  [Yann Ylavic]
+
   *) mpm_event: Wakeup the listener to re-enable listening sockets.
      [Yann Ylavic]
 
