@@ -382,7 +382,18 @@ apr_status_t ap_queue_pop(fd_queue_t *queue, apr_socket_t **sd, apr_pool_t **p)
     return rv;
 }
 
-static apr_status_t queue_interrupt_all(fd_queue_t *queue, int term)
+apr_status_t ap_queue_interrupt_all(fd_queue_t *queue)
+{
+    apr_status_t rv;
+
+    if ((rv = apr_thread_mutex_lock(queue->one_big_mutex)) != APR_SUCCESS) {
+        return rv;
+    }
+    apr_thread_cond_broadcast(queue->not_empty);
+    return apr_thread_mutex_unlock(queue->one_big_mutex);
+}
+
+apr_status_t ap_queue_term(fd_queue_t *queue)
 {
     apr_status_t rv;
 
@@ -393,19 +404,9 @@ static apr_status_t queue_interrupt_all(fd_queue_t *queue, int term)
      * we could end up setting it and waking everybody up just after a
      * would-be popper checks it but right before they block
      */
-    if (term) {
-        queue->terminated = 1;
+    queue->terminated = 1;
+    if ((rv = apr_thread_mutex_unlock(queue->one_big_mutex)) != APR_SUCCESS) {
+        return rv;
     }
-    apr_thread_cond_broadcast(queue->not_empty);
-    return apr_thread_mutex_unlock(queue->one_big_mutex);
-}
-
-apr_status_t ap_queue_interrupt_all(fd_queue_t *queue)
-{
-    return queue_interrupt_all(queue, 0);
-}
-
-apr_status_t ap_queue_term(fd_queue_t *queue)
-{
-    return queue_interrupt_all(queue, 1);
+    return ap_queue_interrupt_all(queue);
 }
