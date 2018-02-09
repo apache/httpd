@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.30
  
+  *) mod_ssl: The SSLCompression directive will now give an error if used
+     with an OpenSSL build which does not support any compression methods.
+     [Joe Orton]
+
   *) mpm_event,worker: Mask signals for threads created by modules in child
      init, so that they don't receive (implicitely) the ones meant for the MPM.
      PR 62009. [Armin Abfalterer <a.abfalterer gmail com>, Yann Ylavic]
