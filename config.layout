@@ -130,6 +130,30 @@
     proxycachedir: ${localstatedir}/cache/httpd
 </Layout>     
 
+# Layout used in Fedora httpd packaging.
+<Layout Fedora>
+    prefix:        /usr
+    exec_prefix:   ${prefix}
+    bindir:        ${prefix}/bin
+    sbindir:       ${prefix}/sbin
+    libdir:        ${prefix}/lib
+    libexecdir:    ${prefix}/libexec
+    mandir:        ${prefix}/man
+    sysconfdir:    /etc/httpd/conf
+    datadir:       ${prefix}/share/httpd
+    installbuilddir: ${libdir}/httpd/build
+    errordir:      ${datadir}/error
+    iconsdir:      ${datadir}/icons
+    htdocsdir:     /var/www/html
+    manualdir:     ${datadir}/manual
+    cgidir:        /var/www/cgi-bin
+    includedir:    ${prefix}/include/httpd
+    localstatedir: /var
+    runtimedir:    /run/httpd
+    logfiledir:    ${localstatedir}/log/httpd
+    proxycachedir: ${localstatedir}/cache/httpd/proxy
+</Layout>     
+
 #   According to the /opt filesystem conventions
 <Layout opt>
     prefix:        /opt/apache
