@@ -197,7 +197,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) config.layout: Add Fedora layout.
      trunk patch: http://svn.apache.org/r1823179
      2.4.x patch: trunk works
-     +1: jorton, jim
+     +1: jorton, jim, icing
      ylavic: isn't this applicable to CTR? (no Fedora at hand to test/vote)
 
   *) proxy_util: Schemes and hostnames that are "too long" are
