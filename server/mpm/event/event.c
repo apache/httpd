@@ -1547,22 +1547,14 @@ static void process_keepalive_queue(apr_time_t timeout_time)
 
 static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
 {
-    timer_event_t *te;
     apr_status_t rc;
     proc_info *ti = dummy;
     int process_slot = ti->pslot;
     struct process_score *ps = ap_get_scoreboard_process(process_slot);
     apr_pool_t *tpool = apr_thread_pool_get(thd);
-    void *csd = NULL;
-    apr_pool_t *ptrans;         /* Pool for per-transaction stuff */
-    ap_listen_rec *lr;
-    int have_idle_worker = 0;
-    const apr_pollfd_t *out_pfd;
-    apr_int32_t num = 0;
-    apr_interval_time_t timeout_interval;
-    apr_time_t timeout_time = 0, now, last_log;
-    listener_poll_type *pt;
     int closed = 0, listeners_disabled = 0;
+    int have_idle_worker = 0;
+    apr_time_t last_log;
 
     last_log = apr_time_now();
     free(ti);
@@ -1583,6 +1575,11 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
     apr_signal(LISTENER_SIGNAL, dummy_signal_handler);
 
     for (;;) {
+        timer_event_t *te;
+        const apr_pollfd_t *out_pfd;
+        apr_int32_t num = 0;
+        apr_interval_time_t timeout_interval;
+        apr_time_t now, timeout_time;
         int workers_were_busy = 0;
 
         if (listener_may_exit) {
@@ -1695,7 +1692,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
         }
 
         while (num) {
-            pt = (listener_poll_type *) out_pfd->client_data;
+            listener_poll_type *pt = (listener_poll_type *) out_pfd->client_data;
             if (pt->type == PT_CSD) {
                 /* one of the sockets is readable */
                 event_conn_state_t *cs = (event_conn_state_t *) pt->baton;
@@ -1787,7 +1784,9 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                     enable_listensocks(process_slot);
                 }
                 if (!listeners_disabled) {
-                    lr = (ap_listen_rec *) pt->baton;
+                    void *csd = NULL;
+                    ap_listen_rec *lr = (ap_listen_rec *) pt->baton;
+                    apr_pool_t *ptrans;         /* Pool for per-transaction stuff */
                     ap_pop_pool(&ptrans, worker_queue_info);
 
                     if (ptrans == NULL) {
@@ -1970,12 +1969,8 @@ static void *APR_THREAD_FUNC worker_thread(apr_thread_t * thd, void *dummy)
     proc_info *ti = dummy;
     int process_slot = ti->pslot;
     int thread_slot = ti->tslot;
-    apr_socket_t *csd = NULL;
-    event_conn_state_t *cs;
-    apr_pool_t *ptrans;         /* Pool for per-transaction stuff */
     apr_status_t rv;
     int is_idle = 0;
-    timer_event_t *te = NULL;
 
     free(ti);
 
@@ -1986,6 +1981,11 @@ static void *APR_THREAD_FUNC worker_thread(apr_thread_t * thd, void *dummy)
                                         SERVER_STARTING, NULL);
 
     while (!workers_may_exit) {
+        apr_socket_t *csd = NULL;
+        event_conn_state_t *cs;
+        timer_event_t *te = NULL;
+        apr_pool_t *ptrans;         /* Pool for per-transaction stuff */
+
         if (!is_idle) {
             rv = ap_queue_info_set_idle(worker_queue_info, NULL);
             if (rv != APR_SUCCESS) {
@@ -2009,7 +2009,6 @@ static void *APR_THREAD_FUNC worker_thread(apr_thread_t * thd, void *dummy)
             break;
         }
 
-        te = NULL;
         rv = ap_queue_pop_something(worker_queue, &csd, &cs, &ptrans, &te);
 
         if (rv != APR_SUCCESS) {
