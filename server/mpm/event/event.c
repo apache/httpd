@@ -173,10 +173,10 @@ static int max_workers = 0;                 /* MaxRequestWorkers */
 static int server_limit = 0;                /* ServerLimit */
 static int thread_limit = 0;                /* ThreadLimit */
 static int had_healthy_child = 0;
-static int dying = 0;
-static int workers_may_exit = 0;
-static int start_thread_may_exit = 0;
-static int listener_may_exit = 0;
+static volatile int dying = 0;
+static volatile int workers_may_exit = 0;
+static volatile int start_thread_may_exit = 0;
+static volatile int listener_may_exit = 0;
 static int listener_is_wakeable = 0;        /* Pollset supports APR_POLLSET_WAKEABLE */
 static int num_listensocks = 0;
 static apr_int32_t conns_this_child;        /* MaxConnectionsPerChild, only access
@@ -287,7 +287,7 @@ static void TO_QUEUE_APPEND(struct timeout_queue *q, event_conn_state_t *el)
     apr_time_t next_expiry;
 
     APR_RING_INSERT_TAIL(&q->head, el, event_conn_state_t, timeout_list);
-    apr_atomic_inc32(q->total);
+    ++*q->total;
     ++q->count;
 
     /* Cheaply update the overall queues' next expiry according to the
@@ -309,7 +309,7 @@ static void TO_QUEUE_REMOVE(struct timeout_queue *q, event_conn_state_t *el)
 {
     APR_RING_REMOVE(el, timeout_list);
     APR_RING_ELEM_INIT(el, timeout_list);
-    apr_atomic_dec32(q->total);
+    --*q->total;
     --q->count;
 }
 
@@ -541,6 +541,17 @@ static void close_worker_sockets(void)
 static void wakeup_listener(void)
 {
     listener_may_exit = 1;
+
+    /* Unblock the listener if it's poll()ing */
+    if (event_pollset && listener_is_wakeable) {
+        apr_pollset_wakeup(event_pollset);
+    }
+
+    /* unblock the listener if it's waiting for a worker */
+    if (worker_queue_info) {
+        ap_queue_info_term(worker_queue_info);
+    }
+
     if (!listener_os_thread) {
         /* XXX there is an obscure path that this doesn't handle perfectly:
          *     right after listener thread is created but before
@@ -549,15 +560,6 @@ static void wakeup_listener(void)
          */
         return;
     }
-
-    /* Unblock the listener if it's poll()ing */
-    if (listener_is_wakeable) {
-        apr_pollset_wakeup(event_pollset);
-    }
-
-    /* unblock the listener if it's waiting for a worker */
-    ap_queue_info_term(worker_queue_info);
-
     /*
      * we should just be able to "kill(ap_my_pid, LISTENER_SIGNAL)" on all
      * platforms and wake up the listener thread since it is the only thread
@@ -578,7 +580,7 @@ static int terminate_mode = ST_INIT;
 
 static void signal_threads(int mode)
 {
-    if (terminate_mode == mode) {
+    if (terminate_mode >= mode) {
         return;
     }
     terminate_mode = mode;
@@ -1461,7 +1463,7 @@ static void process_timeout_queue(struct timeout_queue *q,
     struct timeout_queue *qp;
     apr_status_t rv;
 
-    if (!apr_atomic_read32(q->total)) {
+    if (!*q->total) {
         return;
     }
 
@@ -1511,8 +1513,8 @@ static void process_timeout_queue(struct timeout_queue *q,
         APR_RING_UNSPLICE(first, last, timeout_list);
         APR_RING_SPLICE_TAIL(&trash, first, last, event_conn_state_t,
                              timeout_list);
-        AP_DEBUG_ASSERT(apr_atomic_read32(q->total) >= count);
-        apr_atomic_sub32(q->total, count);
+        AP_DEBUG_ASSERT(*q->total >= count && qp->count >= count);
+        *q->total -= count;
         qp->count -= count;
         total += count;
     }
@@ -1538,8 +1540,7 @@ static void process_keepalive_queue(apr_time_t timeout_time)
     if (!timeout_time) {
         ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, ap_server_conf,
                      "All workers are busy or dying, will close %u "
-                     "keep-alive connections",
-                     apr_atomic_read32(keepalive_q->total));
+                     "keep-alive connections", *keepalive_q->total);
     }
     process_timeout_queue(keepalive_q, timeout_time,
                           start_lingering_close_nonblocking);
@@ -1578,6 +1579,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
         timer_event_t *te;
         const apr_pollfd_t *out_pfd;
         apr_int32_t num = 0;
+        apr_uint32_t c_count, l_count, i_count;
         apr_interval_time_t timeout_interval;
         apr_time_t now, timeout_time;
         int workers_were_busy = 0;
@@ -1603,8 +1605,8 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                              "keep-alive: %d lingering: %d suspended: %u)",
                              apr_atomic_read32(&connection_count),
                              apr_atomic_read32(&clogged_count),
-                             apr_atomic_read32(write_completion_q->total),
-                             apr_atomic_read32(keepalive_q->total),
+                             *(volatile apr_uint32_t*)write_completion_q->total,
+                             *(volatile apr_uint32_t*)keepalive_q->total,
                              apr_atomic_read32(&lingering_count),
                              apr_atomic_read32(&suspended_count));
                 if (dying) {
@@ -1762,11 +1764,12 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                                  "All workers busy, not accepting new conns "
                                  "in this process");
                 }
-                else if (  (int)apr_atomic_read32(&connection_count)
-                           - (int)apr_atomic_read32(&lingering_count)
-                         > threads_per_child
-                           + ap_queue_info_get_idlers(worker_queue_info) *
-                             worker_factor / WORKER_FACTOR_SCALE)
+                else if ((c_count = apr_atomic_read32(&connection_count))
+                             > (l_count = apr_atomic_read32(&lingering_count))
+                         && (c_count - l_count
+                                > ap_queue_info_get_idlers(worker_queue_info)
+                                  * worker_factor / WORKER_FACTOR_SCALE
+                                  + threads_per_child))
                 {
                     if (!listeners_disabled)
                         disable_listensocks(process_slot);
@@ -1875,14 +1878,14 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
 
             apr_thread_mutex_unlock(timeout_mutex);
 
-            ps->keep_alive = apr_atomic_read32(keepalive_q->total);
-            ps->write_completion = apr_atomic_read32(write_completion_q->total);
+            ps->keep_alive = *(volatile apr_uint32_t*)keepalive_q->total;
+            ps->write_completion = *(volatile apr_uint32_t*)write_completion_q->total;
             ps->connections = apr_atomic_read32(&connection_count);
             ps->suspended = apr_atomic_read32(&suspended_count);
             ps->lingering_close = apr_atomic_read32(&lingering_count);
         }
         else if ((workers_were_busy || dying)
-                 && apr_atomic_read32(keepalive_q->total)) {
+                 && *(volatile apr_uint32_t*)keepalive_q->total) {
             apr_thread_mutex_lock(timeout_mutex);
             process_keepalive_queue(0); /* kill'em all \m/ */
             apr_thread_mutex_unlock(timeout_mutex);
@@ -1908,10 +1911,12 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
         }
 
         if (listeners_disabled && !workers_were_busy
-            && (int)apr_atomic_read32(&connection_count)
-               - (int)apr_atomic_read32(&lingering_count)
-               < ((int)ap_queue_info_get_idlers(worker_queue_info) - 1)
-                 * worker_factor / WORKER_FACTOR_SCALE + threads_per_child)
+            && ((c_count = apr_atomic_read32(&connection_count))
+                    >= (l_count = apr_atomic_read32(&lingering_count))
+                && (i_count = ap_queue_info_get_idlers(worker_queue_info)) > 0
+                && (c_count - l_count
+                        < (i_count - 1) * worker_factor / WORKER_FACTOR_SCALE
+                          + threads_per_child)))
         {
             listeners_disabled = 0;
             enable_listensocks(process_slot);
@@ -2143,9 +2148,14 @@ static void *APR_THREAD_FUNC start_threads(apr_thread_t * thd, void *dummy)
     int loops;
     int prev_threads_created;
     int max_recycled_pools = -1;
-    int good_methods[] = {APR_POLLSET_KQUEUE, APR_POLLSET_PORT, APR_POLLSET_EPOLL};
-    /* XXX don't we need more to handle K-A or lingering close? */
-    const apr_uint32_t pollset_size = threads_per_child * 2;
+    const int good_methods[] = { APR_POLLSET_KQUEUE,
+                                 APR_POLLSET_PORT,
+                                 APR_POLLSET_EPOLL };
+    /* XXX: K-A or lingering close connection included in the async factor */
+    const apr_uint32_t async_factor = worker_factor / WORKER_FACTOR_SCALE;
+    const apr_uint32_t pollset_size = (apr_uint32_t)num_listensocks +
+                                      (apr_uint32_t)threads_per_child *
+                                      (async_factor > 2 ? async_factor : 2);
 
     /* We must create the fd queues before we start up the listener
      * and worker threads. */
@@ -3339,6 +3349,10 @@ static int event_pre_config(apr_pool_t * pconf, apr_pool_t * plog,
     had_healthy_child = 0;
     ap_extended_status = 0;
 
+    event_pollset = NULL;
+    worker_queue_info = NULL;
+    listener_os_thread = NULL;
+
     return OK;
 }
 
@@ -3752,8 +3766,9 @@ static const char *set_worker_factor(cmd_parms * cmd, void *dummy,
         return "AsyncRequestWorkerFactor argument must be a positive number";
 
     worker_factor = val * WORKER_FACTOR_SCALE;
-    if (worker_factor == 0)
-        worker_factor = 1;
+    if (worker_factor < WORKER_FACTOR_SCALE) {
+        worker_factor = WORKER_FACTOR_SCALE;
+    }
     return NULL;
 }
 
