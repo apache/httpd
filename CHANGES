@@ -1,6 +1,12 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.30
  
+  *) mpm_event: Let the listener thread do its maintenance job on resources
+     shortage.  PR 61979.  [Yann Ylavic]
+
+  *) mpm_event: Wakeup the listener to re-enable listening sockets.
+     [Yann Ylavic]
+
   *) mod_ssl: The SSLCompression directive will now give an error if used
      with an OpenSSL build which does not support any compression methods.
      [Joe Orton]
