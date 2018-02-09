@@ -119,22 +119,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_lua: Link against -lcrypt if present
-     trunk patch: http://svn.apache.org/r1822305
-     2.4.x patch: trunk works
-     +1: jorton, jim, ylavic
-
-  *) ab: Fix potential link issues with SSL libraries.
-     trunk patch: http://svn.apache.org/r1816534
-     2.4.x patch: trunk works
-     +1: jorton, jim, ylavic
-
-  *) mod_ssl: Fail if SSLCompression is used and OpenSSL is
-     built without compression methods.
-     trunk patch: http://svn.apache.org/r1556473
-     2.4.x patch: trunk works
-     +1: jorton, jim, ylavic
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
