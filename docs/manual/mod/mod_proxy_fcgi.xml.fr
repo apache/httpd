@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1803258 -->
+<!-- English Revision: 1823753 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -87,6 +87,34 @@
       ProxyPass "/myapp/" "fcgi://localhost:4000/" enablereuse=on
       </highlight>
     </example>
+
+    <note><title>Active la réutilisation des connexions vers un serveur FCGI
+    d'arrière-plan tel que PHP-FPM</title>
+    <p>Il faut garder à l'esprit que PHP-FPM (en février 2018)
+    utilise un modèle du style prefork ; autrement dit, chacun de ses processus
+    de travail ne peut gérer qu'une connexion à la fois.<br /> 
+    Par défaut et lorsqu'il est configuré avec <code>enablereuse=on</code>,
+    mod_proxy autorise un jeu de <directive
+    module="mpm_common">ThreadsPerChild</directive> connexions vers le serveur
+    d'arrière-plan pour chaque processus httpd, et par conséquent, il faut
+    prêter une attention particulière aux situations suivantes :</p>
+    <ul>
+      <li>Avec une charge en HTTP/1, il est fort probable que le nombre de
+      connexions vers le serveur FCGI d'arrière-plan augmente jusqu'à atteindre
+      <directive module="mpm_common">MaxRequestWorkers</directive>.</li>
+      <li>Avec une charge en HTTP/2, et vue la manière dont
+      <module>mod_http2</module> est implémenté, il y a des threads de travail
+      h2 additionnels qui peuvent forcer la création de connexions
+      supplémentaires vers le serveur d'arrière-plan. Le nombre total de
+      connexions que contiennent les jeux de connexions peut alors dépasser
+      <directive module="mpm_common">MaxRequestWorkers</directive>.</li>
+    </ul>
+    <p>Le nombre maximum de processus de travail PHP-FPM doit être défini
+    judicieusement car il est possible qu'ils finissent par rester dans l'état
+    occupé ("busy") pour ne gérer que des connexions persistantes inactives,
+    sans avoir la possibilité d'en établir de nouvelles ; ce qui se traduira
+    pour l'utilisateur final par une pile de "HTTP request timeouts".</p>
+    </note>
 
     <p>Dans l'exemple suivant, l'URI de la requête est transmis en tant
     que chemin du système de fichiers pour l'exécution du démon PHP-FPM.
