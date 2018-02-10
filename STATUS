@@ -119,6 +119,10 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_http2: obsolete code removed, no more events on beam pool destruction,
+     discourage content encoders on http2-status response (where they do not work)
+     2.4.x patch: svn merge -c 1821371,1822502,1822503 ^/httpd/httpd/trunk .
+     +1: ylavic, icing, jim
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -188,11 +192,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   (or svn copy ...)
      +1: jim, icing
      icing: tested on ubuntu 16.04 with a simple uwsgi python app.
-
-  *) mod_http2: obsolete code removed, no more events on beam pool destruction,
-     discourage content encoders on http2-status response (where they do not work)
-     2.4.x patch: svn merge -c 1821371,1822502,1822503 ^/httpd/httpd/trunk .
-     +1: ylavic, icing, jim
 
   *) proxy_util: Schemes and hostnames that are "too long" are
      no longer automatically fatal errors but are instead logged
