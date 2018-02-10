@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1780218:1823464 (outdated) -->
+<!-- English Revision: 1823464 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -548,7 +548,7 @@ Require ldap-dn cn=Barbara Jenson, o=Example
     donc l'attribut status aurait pour valeur "actif" :</p>
 
     <highlight language="config">
-    Require ldap-attribute city="San Jose" status=active
+    Require ldap-attribute city="San Jose" status="active"
     </highlight>
 
 </section>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1673563:1823289 (outdated) -->
+<!-- English Revision: 1823289 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -50,7 +50,7 @@
 	dans une sous-requête :
         <highlight language="config">
 &lt;Location "/foo/"&gt;
-&nbsp;&nbsp;LogMessage "subrequest to /foo/" hook=type_checker expr=%{IS_SUBREQ}
+&nbsp;&nbsp;LogMessage "subrequest to /foo/" hook=type_checker "expr=-T %{IS_SUBREQ}"
 &lt;/Location&gt;
         </highlight>
 
