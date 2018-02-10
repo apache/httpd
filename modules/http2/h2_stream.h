@@ -1,11 +1,12 @@
-/* Copyright 2015 greenbytes GmbH (https://www.greenbytes.de)
+/* Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * http://www.apache.org/licenses/LICENSE-2.0
- 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -155,15 +156,6 @@ void h2_stream_dispatch(h2_stream *stream, h2_stream_event_t ev);
  * @param stream the stream to cleanup
  */
 void h2_stream_cleanup(h2_stream *stream);
-
-/**
- * Detach the memory pool from the stream. Will prevent stream
- * destruction to take the pool with it.
- *
- * @param stream the stream to detach the pool from
- * @result the detached memory pool or NULL if stream no longer has one
- */
-apr_pool_t *h2_stream_detach_pool(h2_stream *stream);
 
 /**
  * Notify the stream that amount bytes have been consumed of its input

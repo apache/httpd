@@ -14,21 +14,6 @@
  * limitations under the License.
  */
  
-/* Copyright 2015 greenbytes GmbH (https://www.greenbytes.de)
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 #include <assert.h>
 #include <stddef.h>
 
@@ -593,17 +578,7 @@ void h2_stream_destroy(h2_stream *stream)
     ap_assert(stream);
     ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, stream->session->c, 
                   H2_STRM_MSG(stream, "destroy"));
-    if (stream->pool) {
-        apr_pool_destroy(stream->pool);
-        stream->pool = NULL;
-    }
-}
-
-apr_pool_t *h2_stream_detach_pool(h2_stream *stream)
-{
-    apr_pool_t *pool = stream->pool;
-    stream->pool = NULL;
-    return pool;
+    apr_pool_destroy(stream->pool);
 }
 
 apr_status_t h2_stream_prep_processing(h2_stream *stream)
