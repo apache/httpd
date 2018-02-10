@@ -82,6 +82,30 @@ ProxyPass "/myapp/" "fcgi://localhost:4000/" enablereuse=on
     </highlight>
     </example>
 
+    <note><title>Enable connection reuse to a FCGI backend like PHP-FPM</title>
+    <p>Please keep in mind that PHP-FPM (at the time of writing, February 2018)
+    uses a prefork model, namely each of its worker processes can handle one
+    connection at the time.<br /> 
+    By default mod_proxy (configured with <code>enablereuse=on</code>)
+    allows a connection pool of
+    <directive module="mpm_common">ThreadsPerChild</directive> connections to the
+    backend for each httpd process, so the following use cases should be taken
+    into account:</p>
+    <ul>
+      <li>Under HTTP/1.1 load it will likely cause the creation of up to
+      <directive module="mpm_common">MaxRequestWorkers</directive>
+      connections to the FCGI backend.</li>
+      <li>Under HTTP/2 load, due to how <module>mod_http2</module> is implemented,
+      there are additional h2 worker threads that may force the creation of other
+      backend connections. The overall count of connections in the pools may raise
+      to more than <directive module="mpm_common">MaxRequestWorkers</directive>.</li>
+    </ul>
+    <p>The maximum number of PHP-FPM worker processes needs to be configured wisely,
+    since there is the chance that they will all end up "busy" handling idle
+    persistent connections, without any room for new ones to be established,
+    and the end user experience will be a pile of HTTP request timeouts.</p>
+    </note>
+
     <p> The following example passes the request URI as a filesystem
     path for the PHP-FPM daemon to run. The request URL is implicitly added
     to the 2nd parameter. The hostname and port following fcgi:// are where
