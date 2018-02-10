@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.30
  
+  *) mod_http2: obsolete code removed, no more events on beam pool destruction,
+     discourage content encoders on http2-status response (where they do not work).
+     [Stefan Eissing]
+
   *) mpm_event: Let the listener thread do its maintenance job on resources
      shortage.  PR 61979.  [Yann Ylavic]
 
