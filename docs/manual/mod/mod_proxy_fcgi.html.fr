@@ -94,6 +94,33 @@
     des connexions (versions 2.4.11 et supérieures)</h3><pre class="prettyprint lang-config">ProxyPass "/myapp/" "fcgi://localhost:4000/" enablereuse=on</pre>
 </div>
 
+    <div class="note"><h3>Active la réutilisation des connexions vers un serveur FCGI
+    d'arrière-plan tel que PHP-FPM</h3>
+    <p>Il faut garder à l'esprit que PHP-FPM (en février 2018)
+    utilise un modèle du style prefork ; autrement dit, chacun de ses processus
+    de travail ne peut gérer qu'une connexion à la fois.<br /> 
+    Par défaut et lorsqu'il est configuré avec <code>enablereuse=on</code>,
+    mod_proxy autorise un jeu de <code class="directive"><a href="../mod/mpm_common.html#threadsperchild">ThreadsPerChild</a></code> connexions vers le serveur
+    d'arrière-plan pour chaque processus httpd, et par conséquent, il faut
+    prêter une attention particulière aux situations suivantes :</p>
+    <ul>
+      <li>Avec une charge en HTTP/1, il est fort probable que le nombre de
+      connexions vers le serveur FCGI d'arrière-plan augmente jusqu'à atteindre
+      <code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code>.</li>
+      <li>Avec une charge en HTTP/2, et vue la manière dont
+      <code class="module"><a href="../mod/mod_http2.html">mod_http2</a></code> est implémenté, il y a des threads de travail
+      h2 additionnels qui peuvent forcer la création de connexions
+      supplémentaires vers le serveur d'arrière-plan. Le nombre total de
+      connexions que contiennent les jeux de connexions peut alors dépasser
+      <code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code>.</li>
+    </ul>
+    <p>Le nombre maximum de processus de travail PHP-FPM doit être défini
+    judicieusement car il est possible qu'ils finissent par rester dans l'état
+    occupé ("busy") pour ne gérer que des connexions persistantes inactives,
+    sans avoir la possibilité d'en établir de nouvelles ; ce qui se traduira
+    pour l'utilisateur final par une pile de "HTTP request timeouts".</p>
+    </div>
+
     <p>Dans l'exemple suivant, l'URI de la requête est transmis en tant
     que chemin du système de fichiers pour l'exécution du démon PHP-FPM.
     L'URL de la requête est implicitement ajoutée au second paramètre.
