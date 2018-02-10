@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1780210:1823463 (outdated) -->
+<!-- English Revision: 1823463 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -546,7 +546,7 @@ AuthLDAPMaxSubGroupDepth 1
     donc l'attribut status aurait pour valeur "actif" :</p>
 
     <highlight language="config">Require ldap-attribute city="San Jose"
-    "status=active"</highlight>
+    status="active"</highlight>
 
 </section>
 
