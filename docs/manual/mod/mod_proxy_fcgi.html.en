@@ -99,8 +99,9 @@
     By default mod_proxy (configured with <code>enablereuse=on</code>)
     allows a connection pool of
     <code class="directive"><a href="../mod/mpm_common.html#threadsperchild">ThreadsPerChild</a></code> connections to the
-    backend for each httpd process, so the following use cases should be taken
-    into account:</p>
+    backend for each httpd process when using a threaded mpm (like
+    <code class="module"><a href="../mod/worker.html">worker</a></code> or <code class="module"><a href="../mod/event.html">event</a></code>),
+    so the following use cases should be taken into account:</p>
     <ul>
       <li>Under HTTP/1.1 load it will likely cause the creation of up to
       <code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code>
