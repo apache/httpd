@@ -889,10 +889,10 @@ recv_again:
                 }
             }
 
-            if (((conn->worker->s->flush_packets == flush_on) ||
-                 ((conn->worker->s->flush_packets == flush_auto) && 
-                  (apr_poll(flushpoll, 1, &flushpoll_fd,
-                            conn->worker->s->flush_wait) == APR_TIMEUP))) && mayflush) {
+            if (mayflush && ((conn->worker->s->flush_packets == flush_on) ||
+                             ((conn->worker->s->flush_packets == flush_auto) && 
+                              (apr_poll(flushpoll, 1, &flushpoll_fd,
+                               conn->worker->s->flush_wait) == APR_TIMEUP)))) {
                 apr_bucket* flush_b = apr_bucket_flush_create(r->connection->bucket_alloc);
                 APR_BRIGADE_INSERT_TAIL(ob, flush_b);
                 rv = ap_pass_brigade(r->output_filters, ob);
