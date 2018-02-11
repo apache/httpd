@@ -29,8 +29,6 @@ int ctutil_file_exists(apr_pool_t *p, const char *filename);
 void ctutil_buffer_to_array(apr_pool_t *p, const char *b,
                             apr_size_t b_size, apr_array_header_t **out);
 
-int ctutil_in_array(const char *needle, const apr_array_header_t *haystack);
-
 apr_status_t ctutil_fopen(const char *fn, const char *mode, FILE **f);
 
 apr_status_t ctutil_read_dir(apr_pool_t *p,
