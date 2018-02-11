@@ -123,7 +123,7 @@ Una variable sin un sufijo <code>_n</code> es equivalente a ese nombre con un
 sufijo <code>_0</code>; el primer (y único) atributo.
 Cuando la tabla del entorno se llena usando la opción <code>StdEnvVars</code> 
 de la directiva <directive module="mod_ssl">SSLOptions</directive>, el primer
-(o único) atributo de cualquier DN se añade solo bajo un nombre sin sufijo; 
+(o único) atributo de cualquier DN se añade sólo bajo un nombre sin sufijo; 
 p. ej. no se añaden entradas con sufijo <code>_0</code>.</p>
 
 <p>En httpd 2.5.0 y posterior, se puede añadir un sufijo <em>_RAW</em> a
@@ -136,7 +136,7 @@ hay). Por ejemplo, se podría usar <code>SSL_SERVER_S_DN_OU_RAW</code> o
 2.3.11. Vea la opción <code>LegacyDNStringFormat</code> para
 <directive module="mod_ssl">SSLOptions</directive> para más detalles.</p>
 
-<p><code>SSL_CLIENT_V_REMAIN</code> solo está disponible en la versión 2.1 y
+<p><code>SSL_CLIENT_V_REMAIN</code> sólo está disponible en la versión 2.1 y
 posterior.</p>
 
 <p>Se puede usar varias variables de entorno adicionales con expresiones en
@@ -267,7 +267,7 @@ Header set X-SSL-CIPHER "expr=%{SSL:SSL_CIPHER}"
 
   <section id="reqverifyclient"><title>Require ssl-verify-client</title>
     <p>El proveedor de <code>ssl</code> permite acceso si el usuario se autentica
-    con un certificado cliente válido. Esto solo es útil si se está usando
+    con un certificado cliente válido. Esto sólo es útil si se está usando
     <code>SSLVerifyClient optional</code>.</p>
 
     <p>El siguiente ejemplo permite acceso si el usuario se autentica o bien
@@ -297,21 +297,21 @@ Cuando Apache arranca tiene que leer varios ficheros Certificado (vea
 <directive module="mod_ssl">SSLCertificateKeyFile</directive>) de los servidores
 virtuales que tienen SSL activado. Por razones de seguridad los ficheros
 de clave privada están generalmente encriptados, mod_ssl necesita preguntar al
-administrador por la contraseña para desencritar esos ficheros. Esta solicitud
+administrador por la contraseña para desencriptar esos ficheros. Esta solicitud
 puede hacerse de dos maneras que se pueden configurar por
 <em>tipo</em>:</p>
 <ul>
 <li><code>builtin</code>
     <p>
     Este es el método por defecto donde una ventana de terminal interactiva
-    aparece al inicio antes de que Apache pase a segundo plano. Aquí un
+    aparece al inicio antes que Apache pase a segundo plano. Aquí un
     administrador tiene que introducir manualmente la contraseña para cada
     fichero de Clave Privada Encriptada. Puesto que puede haber muchos 
     hosts virtuales configurados con SSL, se usa el siguiente esquema de 
     reutilización para minimizar el número de veces que se pide la contraseña:
-    Cuanto una fichero de clave privada está encriptado, se intentará usar
+    Cuanto un fichero de clave privada está encriptado, se intentará usar
     todas las Contraseñas conocidas (al principio no hay ninguna, por supuesto). 
-    Si una de essas contraseñas conocidas funciona no se abre ventana de diálogo
+    Si una de esas contraseñas conocidas funciona no se abre ventana de diálogo
     para este fichero de clave privada en particular. Si ninguna funciona, 
     se vuelve a solicitar la contraseña en la terminal y se recuerda para las
     siguientes (donde quizás se pueden reutilizar).</p>
@@ -321,7 +321,7 @@ puede hacerse de dos maneras que se pueden configurar por
     contraseñas diferentes - pero entonces tiene que introducir todas ellas, por
     supuesto) al mismo tiempo que se minimizan las solicitudes de contraseña
     por terminal (p.ej. cuando usa una sola contraseña para todos los N ficheros
-    de Clave Privada esta contraseña solo se pide una vez).</p></li>
+    de Clave Privada esta contraseña sólo se pide una vez).</p></li>
 
 <li><code>|/path/to/program [args...]</code>
 
@@ -337,20 +337,20 @@ puede hacerse de dos maneras que se pueden configurar por
 <li><code>exec:/path/to/program</code>
     <p>
     Aquí se configura un programa externo que se lanza en el arranque para cada
-    uno de los ficheros de Clave Privada encriptados. Se le llama con un solo
+    uno de los ficheros de Clave Privada encriptados. Se le llama con un sólo
     parámetro, una cadena de caracteres de la forma 
     ``<code>servername:portnumber:index</code>'' (cuando <code>index</code> es 
     un número basado en una secuencia de ceros), que indica para qué servidor,
     puerto TCP y número de certificado debe imprimir la Contraseña
     correspondiente a <code>stdout</code>.  La intención es que este programa 
     externo primero ejecuta comprobaciones de seguridad para asegurar que el 
-    sistema no se ha visto comprometido por un atacante, y solo cuando estas
+    sistema no se ha visto comprometido por un atacante, y sólo cuando estas
     comprobaciones se realizan satisfactoriamente entonces facilita la
     Contraseña.</p>
 
     <p>
     Ambas comprobaciones de seguridad y el método en que se determina la 
-    contraseña, puede ser tan complejo como usted desee. Mod_ssl solo define 
+    contraseña, puede ser tan complejo como usted desee. Mod_ssl sólo define 
     el interfaz: un programa ejecutable que provee la contraseña en 
     <code>stdout</code>. Ni más y ni menos. Así que, si usted es realmente
     paranoico con la seguridad, este es su interfaz. Cualquier otra cosa se debe
@@ -359,7 +359,7 @@ puede hacerse de dos maneras que se pueden configurar por
     
     <p>
     El algoritmo de reutilización descrito previamente se usa aquí también. En 
-    otras palabras: se llama solo una vez al programa externo cuando hay una 
+    otras palabras: se llama sólo una vez al programa externo cuando hay una 
     única contraseña.</p></li>
 </ul>
 <example><title>Ejemplo</title>
@@ -384,7 +384,7 @@ SSLPassPhraseDialog "exec:/usr/local/apache/sbin/pp-filter"
   números "Pseudo Random Number Generator (PRNG)" en OpenSSL en el arranque 
   (<em>contexto</em> es <code>startup</code>) y/o justo antes de que se 
   establezca una nueva conexión SSL
-  (<em>contexto</em> es <code>connect</code>). Esta directiva solo se puede usar
+  (<em>contexto</em> es <code>connect</code>). Esta directiva sólo se puede usar
   en el contexto global de configuración del servidor porque PRNG es una
   característica global.</p>
   <p>
@@ -398,7 +398,7 @@ SSLPassPhraseDialog "exec:/usr/local/apache/sbin/pp-filter"
     (cuando es aplicable) un extracto de 1KB escogido aleatoriamente de la
     estructura de scoreboard de Apache. La pega es que no es realmente una 
     fuente muy compleja y en el momento del arranque (cuando el scoreboard 
-    todavía no está disponible) esta fuente solo produce unos pocos bytes de 
+    todavía no está disponible) esta fuente sólo produce unos pocos bytes de 
     entropía. Así que usted debería, al menos en el arranque, usar una fuente
     adicional de generación de semilla.</p></li>
 
@@ -406,7 +406,7 @@ SSLPassPhraseDialog "exec:/usr/local/apache/sbin/pp-filter"
     <p>
     Esta variante usa un fichero externo <code>/ruta/hacia/la/fuente</code> con
     la fuente de generación de semilla para PRNG. Cuando se especifica 
-    <em>bytes</em>, solo los primeros <em>bytes</em> del número de bytes del 
+    <em>bytes</em>, sólo los primeros <em>bytes</em> del número de bytes del 
     fichero forman la entropía (y <em>bytes</em> se da a 
     <code>/ruta/hacia/la/fuente</code> como el primer parámetro). Cuando
     no se especifica <em>bytes</em> el fichero al completo forma la entropía
@@ -417,9 +417,9 @@ SSLPassPhraseDialog "exec:/usr/local/apache/sbin/pp-filter"
     modernos como FreeBSD y Linux).</p>
     <p>
     <em>Pero tenga cuidado</em>: Generalmente <code>/dev/random</code> facilita
-    solo tantos datos de entropía como tiene en ese momento, p.ej. cuando solicita
-    512 bytes de entropía, pero el dispositivo solo tiene 100 bytes disponibles
-    dos cosas pasan: En algunas plataformas recibe solo 100 bytes mientras que 
+    sólo tantos datos de entropía como tiene en ese momento, p.ej. cuando solicita
+    512 bytes de entropía, pero el dispositivo sólo tiene 100 bytes disponibles
+    dos cosas pasan: En algunas plataformas recibe sólo 100 bytes mientras que 
     en otras plataformas la lectura se bloquea hasta que hay suficientes bytes 
     disponibles (lo cual puede llevar bastante tiempo). Aquí usar un
     <code>/dev/urandom</code> existente es mejor, porque nunca bloquea y porque
@@ -430,10 +430,10 @@ SSLPassPhraseDialog "exec:/usr/local/apache/sbin/pp-filter"
     <p>
     Esta variante usa un ejecutable externo
     <code>/ruta/al/programa</code> como la fuente de generación de semilla de
-    PRNG. Cuando se especifica <em>bytes</em>, solo los primeros
+    PRNG. Cuando se especifica <em>bytes</em>, sólo los primeros
     <em>bytes</em> del número de bytes de su contenido de <code>stdout</code> 
     forman la entropía. Cuando no se especifica <em>bytes</em>, el total de los
-    datos producidos en <code>stdout</code> forman la entropía. Use esto solo
+    datos producidos en <code>stdout</code> forman la entropía. Use esto sólo
     en el tiempo de arranque cuando necesita una generación de semilla muy 
     compleja con la ayuda de un programa externo (como en el
     ejemplo de más arriba con la utilidad <code>truerand</code> que puede
@@ -442,7 +442,7 @@ SSLPassPhraseDialog "exec:/usr/local/apache/sbin/pp-filter"
     ralentiza al servidor de manera dramática, por supuesto. Así que debería 
     evitar programas externos en ese contexto. </p></li>
 
-<li><code>egd:/ruta/al/egd-socket</code> (Unix solo)
+<li><code>egd:/ruta/al/egd-socket</code> (Sólo Unix)
     <p>
     Esta variante usa el socket de dominio Unix del Demonio de Recolección de 
     Entropía externo (Entropy Gathering Daemon (EGD)) (vea <a
@@ -496,7 +496,7 @@ Los cinto <em>tipos</em> de almacenamientos siguientes están soportados:</p>
 
 <li><code>nonenotnull</code>
 
-    <p>Esto solo desactiva la Cache de Sesión de interproceso/global. Aun así no
+    <p>Esto sólo desactiva la Cache de Sesión de interproceso/global. Aun así no
     fuerza a OpenSSL a enviar ID de sesión no-nula para adaptarse a clientes
     que requieren una.</p></li>
 
@@ -600,7 +600,7 @@ SSLEngine on
 <p>Se deberían usar los valores <code>addr:port</code> en la configuración 
 global del servidor para activar el motor del Protocolo SSL/TLS para 
 <em>todos</em> los
-<directive module="core" type="section">VirtualHost</directive>s 
+<directive module="core" type="section">VirtualHost</directive> 
 que coincidan con una de las direcciones de la lista.</p>
 <example><title>Ejemplo</title>
 <highlight language="config">
@@ -638,7 +638,7 @@ Si httpd fuera compilado contra una librería SSL que no soporta FIPS_mode,
 <code>SSLFIPS on</code> fallará. Vea el documento de Políticas de Seguridad
 FIPS 140-2 de su proveedor de librería SSL para requerimientos específicos para
 usar mod_ssl en un modo de operación aprobado; tenga en cuenta que mod_ssl
-en sí mismo no está validado, pero puede ser descrito como usando un módulo 
+en sí mismo no está validado, pero puede ser descrito como un módulo 
 validado de criptofrafía FIPS 140-2, cuando todos los componentes son montados
 y gestionados bajo las reglas impuestas por la Política de Seguridad aplicable.
 </p>
@@ -721,7 +721,7 @@ de cifrados que se le permite negociar al cliente en la fase de saludo SSL.
 Tenga en cuenta que esta directiva se puede usar en contexto de servidor y de
 directorio. En contexto de servidor aplica el saludo estándar de SSL cuando se
 establece una conexión. En contexto directorio fuerza una renegociación SSL con 
-el juego de cifrados después de que la solicitud HTTP ha sido leía pero antes de
+el juego de cifrados después de que la solicitud HTTP ha sido leída pero antes de
 que se envíe la respuesta.</p>
 <p>
 Una especificación de cifrado SSL en <em>especificación-de-cifrado</em> se compone de 4 
@@ -800,7 +800,7 @@ adicionales.</p>
 </table>
 
 <p>
-La parte en que esto se vuelve interesante es que estos se pueden poner juntos
+La parte en que ésto se vuelve interesante es que éstos se pueden poner juntos
 para especificar el orden y los cifrados que quiere usar. Para acelerar esto
 también hay pseudónimos (<code>SSLv3, TLSv1, EXP, LOW, MEDIUM,
 HIGH</code>) para ciertos grupos de cifrados. Estas etiquetas se pueden juntar
@@ -835,7 +835,7 @@ Hacemos esto, porque estos cifrados ofrecen un buen compromiso entre velocidad y
 seguridad. Después, incluye los cifrados de seguridad alta y media. Finalmente,
 elimina todos los cifrados que no autentican, p.ej. para SSL los cifrados 
 Anónimos Diffie-Hellman, así como todos los cifrados que usan <code>MD5</code> 
-como algoritmo de hash, porque se ha probado que son insuficientes.</p>
+como algoritmo de hash porque se ha probado que son insuficientes.</p>
 <example>
 <pre>
 $ openssl ciphers -v 'RC4-SHA:AES128-SHA:HIGH:MEDIUM:!aNULL:!MD5'
@@ -848,7 +848,7 @@ PSK-RC4-SHA             SSLv3 Kx=PSK      Au=PSK  Enc=RC4(128)  Mac=SHA1
 KRB5-RC4-SHA            SSLv3 Kx=KRB5     Au=KRB5 Enc=RC4(128)  Mac=SHA1
 </pre>
 </example>
-<p>La lista al completo cifrados RSA &amp; DH concretos para SSL se facilita en
+<p>La lista completa de cifrados RSA &amp; DH concretos para SSL se facilita en
 la <a href="#table2">Tabla 2</a>.</p>
 <example><title>Ejemplo</title>
 <highlight language="config">
@@ -897,7 +897,7 @@ SSLCipherSuite RSA:!EXP:!NULL:+HIGH:+MEDIUM:-LOW
 <usage>
 <p>
 Esta directiva apunta a un fichero con datos de certificado en formato PEM. Como
-mínimo, el fichero debe incluir un certificado final (no solo CA a menos que sea
+mínimo, el fichero debe incluir un certificado final (no sólo CA a menos que sea
 autofirmado). La directiva puede usarse multiples veces (haciendo referencia a
 ficheros distintos) para dar soporte a múltiples algoritmos para la 
 autenticación de servidor - típicamente RSA, DSA y ECC. El número de algoritmos
@@ -914,7 +914,7 @@ desde el certificado firmado hasta el certificado raíz. Esto está soportado co
 la versión 2.4.8 y posterior, y deja obsoleta la directiva 
 <directive module="mod_ssl">SSLCertificateChainFile</directive>.
 Cuando se trabaja con OpenSSL 1.0.2 o posterior, esto permite que se configuren
-la cadena de CAs internmedias por certificado.
+la cadena de CAs intermedias por certificado.
 </p>
 
 <p>
@@ -925,14 +925,14 @@ Esto está soportado en la versión 2.4.7 y posterior.
 
 Tales parámetros pueden ser generados usando los comandos
 <code>openssl dhparam</code> y <code>openssl ecparam</code>. Los parámetros se 
-pueden añadir tal cual al final del primer fichero de certificado. Solo se puede
+pueden añadir tal cual al final del primer fichero de certificado. sólo se puede
 usar el primer fichero para los parámetros personalizados, puesto que estos
 se aplican independientemente del tipo de algoritmo de autenticación.
 </p>
 
 <p>
 Finalmente la clave privada del certificado también se puede añadir al fichero
-de certificado een lugar de usar por separado la directiva 
+de certificado en lugar de usar por separado la directiva 
 <directive module="mod_ssl">SSLCertificateKeyFile</directive>. Esta práctica
 está muy desaconsejada. Si se usa, los ficheros de certificado usando tales
 ficheros de claves embebidas deben configurarse después de los certificados que
@@ -962,10 +962,10 @@ y versiones de OpenSSL anteriores a 1.0.2</title>
 Cuando se usan múltiples certificados para dar soporte a algoritmos de 
 autenticación diferentes (como RSA, DSA pero principalmente ECC) y OpenSSL 
 anterior a 1.0.2, se recomienda usar o bien parámetros DH personalizados 
-(preferiblemente) añadiendolos al primer fichero de certificado (como se 
+(preferiblemente) añadiéndolos al primer fichero de certificado (como se 
 describe más arriba), o ordenar las directivas
 <directive>SSLCertificateFile</directive> para que los certificados RSA/DSA
-estén colocadas <strong>después</strong> del de ECC.
+estén colocadas <strong>después</strong> del ECC.
 </p>
 
 <p>
@@ -981,7 +981,7 @@ seleccionar primos DH).
 
 <p>
 Puesto que los parámetros personalizados DH siempre tienen precedencia sobre
-los de por defecto, este problema se puede evitar creando y configurandolos 
+los de por defecto, este problema se puede evitar creando y configurándolos 
 (como se describe arriba), y así usar una longitud adecuada/personalizada.
 </p>
 </note>
@@ -1019,7 +1019,7 @@ relacionada.</p>
 La clave privada se puede combinar con el certificado en el fichero indicado en
 <directive module="mod_ssl">SSLCertificateFile</directive>, pero esta práctica
 es muy desaconsejable. Si se usa, los ficheros de certificado con la clave
-privada dentro deben configurarse despúés de los certificados que tienen una
+privada dentro deben configurarse después de los certificados que tienen una
 clave privada en otro fichero.</p>
 
 <example><title>Ejemplo</title>
@@ -1068,9 +1068,9 @@ adicional en la que los certificados cliente firmados por el mismo certificado C
 también se aceptan en la autenticación de cliente.</p>
 
 <p>
-Pero tenga cuidado: Proveer la cadena de certificados funciona solo si está
-usando <em>un solo</em> certificado de servidor basado en RSA <em>o</em> DSA. Si
-está usando un par de certificados juntos RSA+DSA, esto solo funcionará si
+Pero tenga cuidado: Proveer la cadena de certificados funciona sólo si está
+usando <em>un sólo</em> certificado de servidor basado en RSA <em>o</em> DSA. Si
+está usando un par de certificados juntos RSA+DSA, esto sólo funcionará si
 ambos certificados usan <em>la misma</em> cadena de certificados. Si no los 
 navegadores se confundirán en esta situación.</p>
 <example><title>Ejemplo</title>
@@ -1093,8 +1093,8 @@ autenticación de Cliente</description>
 <usage>
 <p>
 Esta directiva configura el directorio donde guarda los certificados de 
-Autorizades de Certificación (CAs) de los clientes que accederán a su servidor. 
-Esto se usarán para verificar el certificado cliente en la Autencicación de
+Autoridades de Certificación (CAs) de los clientes que accederán a su servidor. 
+Esto se usarán para verificar el certificado cliente en la Autenticación de
 Cliente.</p>
 
 <p>
@@ -1229,10 +1229,10 @@ certificado cliente en la Autenticación de Cliente.</p>
 
 <p>
 Los ficheros en este directorio tienen que ser codificados en PEM y se accede a
-ellos con nombres de ficheros con hash. Así que generalmente no solo tiene que
+ellos con nombres de ficheros con hash. Así que generalmente no sólo tiene que
 poner los ficheros CRL ahí. Adicionalmente tiene que crear enlaces simbólicos
 llamados <em>valor-de-hash</em><code>.rN</code>. Y debería asegurarse siempre 
-de que este directorio contiene los enlaces simbólicos apropiados.</p>
+que este directorio contiene los enlaces simbólicos apropiados.</p>
 <example><title>Ejemplo</title>
 <highlight language="config">
 SSLCARevocationPath "/usr/local/apache2/conf/ssl.crl/"
@@ -1394,7 +1394,7 @@ enviado la respuesta HTTP.</p>
 <p>
 La profundidad es en realidad el número máximo de certificados CA intermedios,
 p. ej. el número de certificados CA máximo permitido a seguir en la verificación
-del certificado cliente. Una profundidad de 0 significa que solo se 
+del certificado cliente. Una profundidad de 0 significa que sólo se 
 aceptan los certificados cliente autofirmados, la profundidad por defecto de 1
 significa que el cliente puede ser autofirmado o tiene que estar firmado por una
 CA que es directamente conocida por el servidor (p. ej. los certificados CA 
@@ -1494,8 +1494,8 @@ Las <em>opciones</em> disponibles son:</p>
     Cuando esta opción está habilitada, se generan las variables de entorno 
     estándar de SSL relacionadas con CGI/SSI. Esto está desactivado por defecto
     por razones de rendimiento, porque el paso de extracción de la información
-    es una operación bastante costosa. Así que uno solo activaría esta opción 
-    solo para peticiones CGI o SSI.</p>
+    es una operación bastante costosa. Así que uno sólo activaría esta opción 
+    para peticiones CGI o SSI.</p>
 </li>
 <li><code>ExportCertData</code>
     <p>
@@ -1506,15 +1506,16 @@ Las <em>opciones</em> disponibles son:</p>
     y el cliente para la conexión actual HTTPs y pueden usarse por scripts CGI
     para una comprobación más detallada de los Certificados. Adicionalmente 
     también se facilitan todos los demás certificados de la cadena  del 
-    certificado cliente. Esto llena el entorno de variables un poco así que por
-    esto deberá usar esta opción para activarla cuando sea necesario.</p>
+    certificado cliente. Esto carga el entorno de variables un poco, así
+    que por esto deberá usar esta opción para activarla sólo cuando sea 
+    necesario.</p>
 </li>
 <li><code>FakeBasicAuth</code>
     <p>
     Cuando se activa esta opción, el Nombre Distinguido de Sujeto (DN) del 
     Certificado Cliente X509 se traduce a un nombre de Autenticación HTTP Básica.
     Esto significa que se pueden usar los métodos estándar de autenticación para
-    control de acceso. El nombre de usuario es tan solo el Sujeto del 
+    control de acceso. El nombre de usuario es tan sólo el Sujeto del 
     Certificado Cliente X509 (se puede determinar ejecutando el comando 
     de OpenSSL <code>openssl x509</code>: <code>openssl x509 -noout -subject -in
     </code><em>certificado</em><code>.crt</code>). La directiva 
@@ -1533,7 +1534,7 @@ Las <em>opciones</em> disponibles son:</p>
     la directiva <directive module="mod_auth_basic">AuthBasicFake</directive>
     dentro de <module>mod_auth_basic</module> puede usarse como un mecanismo
     general para fingir la autenticación básica, dando control sobre la 
-    estructura tando del nombre como de la contraseña.</p>
+    estructura tanto del nombre como de la contraseña.</p>
 
     <note type="warning">
       <p>Los nombres de usuarios utilizados para <code>FakeBasicAuth</code> no
@@ -1562,11 +1563,11 @@ Las <em>opciones</em> disponibles son:</p>
     Esto activa la gestión optimizada de renegociación de conexión SSL cuando
     se usan directivas SSL en contexto de directorio. Por defecto un esquema
     estricto está habilitado donde <em>cada</em> reconfiguración de directorio de
-    parámetros SSL provoca una renegociación <em>total</em> del saluddo SSL. 
+    parámetros SSL provoca una renegociación <em>total</em> del saludo SSL. 
     Cuando se usa esta opción mod_ssl intenta evitar saludos SSL innecesarios
     haciendo comprobaciones más específicas (pero todavía seguras) de parámetros.
     Sin embargo estas comprobaciones más específicas pueden no ser lo que espera
-    el usuario, así que lo recomendable es que active esto tan solo en contexto
+    el usuario, así que, lo recomendable es que active ésto sólo en contexto
     directorio.</p>
 </li>
 <li><code>LegacyDNStringFormat</code>
@@ -1622,7 +1623,7 @@ SSLRequireSSL
 
 <directivesynopsis>
 <name>SSLRequire</name>
-<description>Permite acceso solo cuando una compleja expresión booleana 
+<description>Permite acceso sólo cuando una compleja expresión booleana 
   arbitraría es cierta</description>
 <syntax>SSLRequire <em>expresión</em></syntax>
 <contextlist><context>directory</context>
@@ -1818,7 +1819,7 @@ host virtual en particular.
 </p>
 
 <note type="warning"><p>
-Esta opción solo está disponible si httpd fue compilado contra una versión 
+Esta opción sólo está disponible si httpd fue compilado contra una versión 
 compatible con SNI de OpenSSL.
 </p></note>
 
@@ -1949,7 +1950,7 @@ Los siguientes niveles están disponibles para <em>nivel</em>:</p>
      el servidor remoto puede presentar un Certificado válido<br />
      pero no tiene por qué ser verificable (con éxito).</li>
 </ul>
-<p>En la práctica solo los niveles <strong>none</strong> y
+<p>En la práctica sólo los niveles <strong>none</strong> y
 <strong>require</strong> son realmente interesantes, porque el nivel 
 <strong>optional</strong> no funciona en todos los servidores y el nivel
 <strong>optional_no_ca</strong> va actualmente contra la idea de autenticación
@@ -1980,7 +1981,7 @@ que el servidor remoto not tiene un certificado válido.</p>
 La profundidad actualmente es el número máximo de expedidores intermedios de 
 certificados, p. ej. el número de certificados CA que se permiten seguir como 
 máximo para verificar el certificado del servidor remoto. Una profundidad de 0
-sigifnica que solo se permiten certificados auto-firmados, la profundidad por
+sigifnica que sólo se permiten certificados auto-firmados, la profundidad por
 defecto de 1 significa que el servidor remoto puede ser autofirmado o fimado por 
 una CA que es directamente conocida por el servidor (p. ej. el certificado CA
 bajo <directive module="mod_ssl">SSLProxyCACertificatePath</directive>), 
@@ -2052,7 +2053,7 @@ usarán el nuevo comportamiento de
 <directive module="mod_ssl">SSLProxyCheckPeerName</directive>, y todas las
 configuraciones que deshabilitan una de las opciones de
 <code>SSLProxyCheckPeerName</code> o <code>SSLProxyCheckPeerCN</code> 
-suprimirán la validación del nombre del certificado del servidor remoto. Solo
+suprimirán la validación del nombre del certificado del servidor remoto. sólo
 la siguiente configuración habilitará la comparación antigua del CN en 2.4.21 y
 versiones posteriores;
 </p>
@@ -2099,7 +2100,7 @@ elementos en el nombre de host respectivo es diferente.
 <p>
 Esta característica fue introducida en 2.4.5 y sustituye el comportamiento de
 la directiva <directive module="mod_ssl">SSLProxyCheckPeerCN</directive>, que
-solo comprobaba el valor exacto en el primer atributo CN contra el nombre de
+sólo comprobaba el valor exacto en el primer atributo CN contra el nombre de
 host. Sin embargo, muchos usuarios estaban confundidos por el comportamiento de
 usar estas directivas individualmente, así que el comportamiento mutuo de las 
 directivas <code>SSLProxyCheckPeerName</code> y <code>SSLProxyCheckPeerCN</code> 
@@ -2124,7 +2125,7 @@ Esta directiva activa el uso del motor de protocolo SSL/TLS para proxy. Esto
 se usa actualmente dentro de una sección 
 <directive module="core" type="section">VirtualHost</directive> para activar el
 uso de proxy con SSL/TLS en un host virtual en particular. Por defecto el Motor
-de Protocolo SSL/TLS está desactivado para ambos el servidor principal y todos
+de Protocolo SSL/TLS está desactivado para tanto el servidor principal como todos
 los hosts virtuales.</p>
 
 <p>Tenga en cuenta que la directiva <directive>SSLProxyEngine</directive> no 
@@ -2159,7 +2160,7 @@ forward proxy para hacer proxy de peticiones SSL/TLS.</p>
 <!-- XXX Why does this have an override and not .htaccess context? -->
 <p>
 Esta directiva puede usarse para controlar los sabores de protocolo SSL que
-mod_ssl debería usar cuando establece si entorno de servidor para proxy. Solo
+mod_ssl debería usar cuando establece si entorno de servidor para proxy. sólo
 conectará con servidores usando uno de sus protocolos facilitados.</p>
 <p>Por favor vea <directive module="mod_ssl">SSLProtocol</directive> para 
 información adicional.
@@ -2202,7 +2203,7 @@ Autenticación de Servidor Remoto.</p>
 <p>
 Los ficheros en este directorio tienen que estar codificados en PEM y se accede
 a ellos a través de nombres de ficheros con hash. Así que generalmente no puede
-tan solo colocar los ficheros de Certificado ahí: también tiene que crear 
+tan sólo colocar los ficheros de Certificado ahí: también tiene que crear 
 enlaces simbólicos llamados <em>valor-de-hash</em><code>.N</code>. Y debería
 asegurarse siempre de que este directorio contiene los enlaces símbólicos 
 apropiados.</p>
@@ -2255,7 +2256,7 @@ los que conecta. Estas se usan para revocar el certificado del servidor remoto
 en la Autenticación del Servidor Remoto.</p>
 <p>
 Los ficheros en este directorio tienen que ser codificados en PEM y se acceden
-con nombres de ficheros con hash. Así que generalmente no solo tiene que poner
+con nombres de ficheros con hash. Así que generalmente no sólo tiene que poner
 los ficheros CRL ahí. También tiene que crear enlaces simbólicos llamados
 <em>valor-de-hash</em><code>.rN</code>. Y siempre debería asegurarse de que este
 directorio tiene los enlaces simbólicos apropiados.</p>
@@ -2397,7 +2398,7 @@ SSLHonorCipherOrder on
 <p>
 Esta directiva activa el uso de una placa hardware acelerador criptográfico 
 para aliviar parte de la carga del procesamiento de SSL. Esta directiva
-solo puede usarse si el kit de herramientas SSL está compilado con soporte de
+sólo puede usarse si el kit de herramientas SSL está compilado con soporte de
 "engine"; OpenSSL 0.9.7 y posteriores versiones tienen soporte de "engine" por
 defecto, en versiones Openssl 0.9.6 debe usarse "-engine".</p>
 
@@ -2426,10 +2427,10 @@ cliente</description>
 <p>Esta opción activa la validación OCSP de la cadena de certificados del 
 cliente. Si esta opción está activada, los certificados en la cadena de 
 certificados del cliente se validarán contra un respondedor OCSP después de que
-las verificaciones normales han ocurrido (incluidas las comprobaciones de 
+se hayan hecho las verificaciones normales (incluidas las comprobaciones de 
 CRL).</p>
 
-<p>El respondedor OCSPutilizado o bien se extrae del mismo certificado, o 
+<p>El respondedor OCSP utilizado o bien se extrae del mismo certificado, o 
 derivado de la configuración; vea las directivas 
 <directive module="mod_ssl">SSLOCSPDefaultResponder</directive> y
 <directive module="mod_ssl">SSLOCSPOverrideResponder</directive>
@@ -2528,7 +2529,7 @@ está activado.</p>
 
 <directivesynopsis>
 <name>SSLOCSPUseRequestNonce</name>
-<description>Usar un nonce entro de las consultas OCSP</description>
+<description>Usar un nonce dentro de las consultas OCSP</description>
 <syntax>SSLOCSPUseRequestNonce on|off</syntax>
 <default>SSLOCSPUseRequestNonce on</default>
 <contextlist><context>server config</context>
@@ -2539,7 +2540,7 @@ está activado.</p>
 <p>Esta opción determina si las consultas a respondedores OCSP deberían contener
 un "nonce" o no. Por defecto, una consulta "nonce" siempre se comprueba y se usa
 contra la de la respuesta. Cuando el responderdor no usa "nonce"s (p.ej. Microsoft
-OCSP Responder), esta opción debería estar configurarda a 
+OCSP Responder), esta opción debería estar configuada a 
 <code>off</code>.</p>
 </usage>
 </directivesynopsis>
@@ -2572,7 +2573,7 @@ posterior</compatibility>
   0.9.7 o posterior</compatibility>
 <usage>
 
-<p>Esto aporta una lista de certificicados confiables de respondedor OCSP para
+<p>Esto aporta una lista de certificados confiables de respondedor OCSP para
 ser usados durante la validación de certificados de respondedor OCSP. Se confía
 en los certificados facilitados de manera implícita sin ninguna comprobación
 posterior. Esto se usa generalmente cuando el certificado del respondedor
@@ -2606,17 +2607,16 @@ todas las consultas a respondedores OCSP.</p>
 
 <usage>
 <p>Tal y como se especificó originalmente, todas las versiones de protocolo SSL y
-TLS (inlcuido TLS/1.2) eran vulnerables a ataques tipo Man-in-the-Middle
+TLS (incluído TLS/1.2) eran vulnerables a ataques tipo Man-in-the-Middle
 (<a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CAN-2009-3555">CVE-2009-3555</a>)
 durante una renegociación. Esta vulnerabilidad permitía a un atancante poner
 un prefijo a un texto plano específico en la petición HTTP tal y como se veía 
-en el servidor web. Una extensión del protocolo fue desarrollada que arreglaba
-esta vulnerabilidad si estaba soportada tanto por el cliente como por el 
+en el servidor web. Se desarrolló una extensión del protocolo para esta vulnerabilidad si estaba soportada tanto por el cliente como por el 
 servidor.</p>
 
 <p>Si <module>mod_ssl</module> está compilado contra la versión OpenSSL 0.9.8m
-o posterior, por defecto la renegociación solo está soportada por clientes
-que tegan soporte para la nueva extensión del protocolo. Si esta directiva está
+o posterior, por defecto la renegociación sólo está soportada por clientes
+que tengan soporte para la nueva extensión del protocolo. Si esta directiva está
 activada, la renegociación se permitirá con los clientes antiguos (no 
 parcheados), aunque de manera insegura.</p>
 
@@ -2659,10 +2659,10 @@ activar stapling de OCSP.</p>
 
 <p>El stapling de OCSP releva al cliente de consultar el respondedor OCSP por si
 mismo, pero debería tenerse en cuenta que con la especificación RFC 6066, la 
-respuesta de <code>CertificateStatus</code> del servidor podría solo incluir 
-una respuesta OCSP de un solo certificado. Para los certificados de servidor
+respuesta de <code>CertificateStatus</code> del servidor podría sólo incluir 
+una respuesta OCSP de un sólo certificado. Para los certificados de servidor
 con certificados de CA intermedias en su cadena (lo típico hoy en día),
-stapling en su implementación actual por tanto solo consigue su objetivo
+stapling en su implementación actual por tanto sólo consigue su objetivo
 parcialmente de "ahorrar varias peticiones y consumo de recursos" - vea también
 el <a href="http://www.ietf.org/rfc/rfc6961.txt">RFC 6961</a>
 (Extensión de TLS del Estado de Múltiples Certificados).
@@ -2710,7 +2710,7 @@ los mismos tipos de almacenamiento que con
 <usage>
 <p>Esta opción configura el tiempo máximo de desviación cuando mod_ssl comprueba 
 los campos <code>thisUpdate</code> y <code>nextUpdate</code> de las respuestas
-OCSP que se incluyen en el saludo TLS (Stapling de OCSP). Solo aplicable si
+OCSP que se incluyen en el saludo TLS (Stapling de OCSP). sólo aplicable si
 <directive module="mod_ssl">SSLUseStapling</directive> está activada.</p>
 </usage>
 </directivesynopsis>
@@ -2786,7 +2786,7 @@ usa para controlar el límite de tiempo para respuestas inválidas/indisponibles
 relacionadas con el stapling OCSP (tales como respuestas con un estado general
 que no sea otro que "con éxito", respuestas con un estado de certificado que no
 sea otro que "bueno", respuestas de expirado, etc.) al cliente.
-Si la configura a <code>off</code>, solo respuestas indicando un estado de 
+Si la configura a <code>off</code>, sólo respuestas indicando un estado de 
 certificado "bueno" se incluirán en el saludo TLS.</p>
 </usage>
 </directivesynopsis>
@@ -2803,7 +2803,7 @@ de OCSP</description>
 
 <usage>
 <p>Cuando se activa y una consulta de stapling a un respondedor OCSP falla, 
-mod_ssl sintetizará una respuesta "tryLater" para el cliente. Solo efectiva si
+mod_ssl sintetizará una respuesta "tryLater" para el cliente. sólo efectiva si
 <directive module="mod_ssl">SSLStaplingReturnResponderErrors</directive> 
 también está activada.</p>
 </usage>
@@ -2874,7 +2874,7 @@ dd if=/dev/random of=/path/to/file.tkey bs=1 count=48
 <p>Las claves de ticket deberían rotarse (sustituirse) frecuentemente, puesto
 que esta es la única forma de invalidar sesiones de ticket existentes - Openssl 
 actualmente no permite especificar un tiempo límite de validez de tickets. Una 
-nueva clave de ticket solo se usa después de reiniciar el servidor web.
+nueva clave de ticket sólo se usa después de reiniciar el servidor web.
 Todas las sesiones de tickets existentes son inválidas después de un 
 reinicio.</p>
 
@@ -2896,7 +2896,7 @@ usar para los ficheros utilizados con
 <context>virtual host</context></contextlist>
 <compatibility>Disponible en httpd 2.4.3 y posterior, si se usa OpenSSL 0.9.8 o
 posterior; disponible en el contexto de virtualhost si se usa OpenSSL 1.0.0 o
-posterior. El valor por defecto sólía ser <code>on</code> en la versión 
+posterior. El valor por defecto solía ser <code>on</code> en la versión 
 2.4.3</compatibility>
 
 <usage>
@@ -3022,8 +3022,8 @@ httpd -t -D DUMP_SSL_POLICIES
 </highlight>
 </example>
 
-<p>Esta directiva solo se puede usar en la configuración del servidor (contexto
-global). Puede usar la mayoría de las directivas SSL*, sin embargo algunas solo
+<p>Esta directiva sólo se puede usar en la configuración del servidor (contexto
+global). Puede usar la mayoría de las directivas SSL*, sin embargo algunas sólo
 se pueden usar una vez y no se pueden utilizar dentro de definiciones de 
 política. Estas son  <directive>SSLCryptoDevice</directive>, 
 <directive>SSLRandomSeed</directive>, 
@@ -3183,10 +3183,10 @@ sobreescribiendo las previas: :</p>
 
 <usage>
 <p>Esta directiva es similar a <directive>SSLPolicy</directive>, pero aplica
-solo a directivas de SSLProxy* definidas en la política. Esto ayuda cuando 
+sólo a directivas de SSLProxy* definidas en la política. Esto ayuda cuando 
 necesita distintas políticas para los clientes y los backends:</p>
 
-<example><title>Otras Políticas solo para Proxy</title>
+<example><title>Otras Políticas sólo para Proxy</title>
 <highlight language="config">
 SSLPolicy modern
 SSLProxyPolicy intermediate
