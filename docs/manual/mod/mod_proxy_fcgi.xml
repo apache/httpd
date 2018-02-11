@@ -89,8 +89,9 @@ ProxyPass "/myapp/" "fcgi://localhost:4000/" enablereuse=on
     By default mod_proxy (configured with <code>enablereuse=on</code>)
     allows a connection pool of
     <directive module="mpm_common">ThreadsPerChild</directive> connections to the
-    backend for each httpd process, so the following use cases should be taken
-    into account:</p>
+    backend for each httpd process when using a threaded mpm (like
+    <module>worker</module> or <module>event</module>),
+    so the following use cases should be taken into account:</p>
     <ul>
       <li>Under HTTP/1.1 load it will likely cause the creation of up to
       <directive module="mpm_common">MaxRequestWorkers</directive>
