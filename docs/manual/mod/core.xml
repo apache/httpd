@@ -553,8 +553,8 @@ AllowOverride AuthConfig
 AllowOverrideList CookieTracking CookieName
     </highlight>
 
-    <p>In the example above, <directive module="core">AllowOverride
-    </directive> grants permission to the <code>AuthConfig</code>
+    <p>In the example above, <directive module="core">AllowOverride</directive> 
+    grants permission to the <code>AuthConfig</code>
     directive grouping and <directive>AllowOverrideList</directive> grants
     permission to only two directives from the <code>FileInfo</code> directive
     grouping. All others will cause an Internal Server Error.</p>
