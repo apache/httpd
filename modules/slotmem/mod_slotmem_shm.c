@@ -25,11 +25,11 @@
 
 #include "httpd.h"
 #include "http_main.h"
-#include "ap_mpm.h" /* for ap_mpm_query() */
+#include "http_core.h"
 
-#define AP_SLOTMEM_IS_PREGRAB(t)    (t->desc.type & AP_SLOTMEM_TYPE_PREGRAB)
-#define AP_SLOTMEM_IS_PERSIST(t)    (t->desc.type & AP_SLOTMEM_TYPE_PERSIST)
-#define AP_SLOTMEM_IS_CLEARINUSE(t) (t->desc.type & AP_SLOTMEM_TYPE_CLEARINUSE)
+#define AP_SLOTMEM_IS_PREGRAB(t)    (t->desc->type & AP_SLOTMEM_TYPE_PREGRAB)
+#define AP_SLOTMEM_IS_PERSIST(t)    (t->desc->type & AP_SLOTMEM_TYPE_PERSIST)
+#define AP_SLOTMEM_IS_CLEARINUSE(t) (t->desc->type & AP_SLOTMEM_TYPE_CLEARINUSE)
 
 /* The description of the slots to reuse the slotmem */
 typedef struct {
@@ -47,54 +47,36 @@ struct ap_slotmem_instance_t {
     int                  fbased;      /* filebased? */
     void                 *shm;        /* ptr to memory segment (apr_shm_t *) */
     void                 *base;       /* data set start */
-    apr_pool_t           *gpool;      /* per segment global pool */
+    apr_pool_t           *pool;       /* per segment pool (generation cleared) */
     char                 *inuse;      /* in-use flag table*/
     unsigned int         *num_free;   /* slot free count for this instance */
     void                 *persist;    /* persist dataset start */
-    sharedslotdesc_t     desc;        /* per slot desc */
+    const sharedslotdesc_t *desc;     /* per slot desc */
     struct ap_slotmem_instance_t  *next;       /* location of next allocated segment */
 };
 
 /*
- * Memory layout:
- *     sharedslotdesc_t | num_free | slots | isuse array |
- *                      ^          ^
- *                      |          . base
- *                      . persist (also num_free)
+ * Layout for SHM and persited file :
+ *
+ *   +-------------------------------------------------------------+~>
+ *   | desc | num_free | base (slots) | inuse (array) | md5 | desc | compat..
+ *   +------+-----------------------------------------+------------+~>
+ *   ^      ^                                         ^    \ /     ^   :
+ *   |______|_____________ SHM (mem->@) ______________|     | _____|__/
+ *          |                                               |/     |
+ *          |                                         ^     v      |
+ *          |_____________________ File (mem->persist +  [meta]) __|
  */
 
+
 /* global pool and list of slotmem we are handling */
-static struct ap_slotmem_instance_t *globallistmem = NULL;
+static struct ap_slotmem_instance_t *globallistmem = NULL,
+                                   **retained_globallistmem = NULL;
 static apr_pool_t *gpool = NULL;
 
 #define DEFAULT_SLOTMEM_PREFIX "slotmem-shm-"
 #define DEFAULT_SLOTMEM_SUFFIX ".shm"
 #define DEFAULT_SLOTMEM_PERSIST_SUFFIX ".persist"
-
-/* Unixes (and Netware) have the unlink() semantic, which allows to
- * apr_file_remove() a file still in use (opened elsewhere), the inode
- * remains until the last fd is closed, whereas any file created with
- * the same name/path will use a new inode.
- *
- * On windows and OS/2 ("\SHAREMEM\..." tree), apr_file_remove() marks
- * the files for deletion until the last HANDLE is closed, meanwhile the
- * same file/path can't be opened/recreated.
- * Thus on graceful restart (the only restart mode with mpm_winnt), the
- * old file may still exist until all the children stop, while we ought
- * to create a new one for our new clear SHM.  Therefore, we would only
- * be able to reuse (attach) the old SHM, preventing some changes to
- * the config file, like the number of balancers/members, since the
- * size checks (to fit the new config) would fail.  Let's avoid this by
- * including the generation number in the SHM filename (obviously not
- * the persisted name!)
- */
-#ifndef SLOTMEM_UNLINK_SEMANTIC
-#if defined(WIN32) || defined(OS2)
-#define SLOTMEM_UNLINK_SEMANTIC 0
-#else
-#define SLOTMEM_UNLINK_SEMANTIC 1
-#endif
-#endif
 
 /*
  * Persist the slotmem in a file
@@ -113,18 +95,9 @@ static int slotmem_filenames(apr_pool_t *pool,
 
     if (slotname && *slotname && strcasecmp(slotname, "none") != 0) {
         if (slotname[0] != '/') {
-#if !SLOTMEM_UNLINK_SEMANTIC
-            /* Each generation needs its own file name. */
-            int generation = 0;
-            ap_mpm_query(AP_MPMQ_GENERATION, &generation);
-            fname = apr_psprintf(pool, "%s%s_%x%s", DEFAULT_SLOTMEM_PREFIX,
-                                 slotname, generation, DEFAULT_SLOTMEM_SUFFIX);
-#else
-            /* Reuse the same file name for each generation. */
             fname = apr_pstrcat(pool, DEFAULT_SLOTMEM_PREFIX,
                                 slotname, DEFAULT_SLOTMEM_SUFFIX,
                                 NULL);
-#endif
             fname = ap_runtime_dir_relative(pool, fname);
         }
         else {
@@ -135,17 +108,6 @@ static int slotmem_filenames(apr_pool_t *pool,
         }
 
         if (persistname) {
-            /* Persisted file names are immutable... */
-#if !SLOTMEM_UNLINK_SEMANTIC
-            if (slotname[0] != '/') {
-                pname = apr_pstrcat(pool, DEFAULT_SLOTMEM_PREFIX,
-                                    slotname, DEFAULT_SLOTMEM_SUFFIX,
-                                    DEFAULT_SLOTMEM_PERSIST_SUFFIX,
-                                    NULL);
-                pname = ap_runtime_dir_relative(pool, pname);
-            }
-            else
-#endif
             pname = apr_pstrcat(pool, fname,
                                 DEFAULT_SLOTMEM_PERSIST_SUFFIX,
                                 NULL);
@@ -170,7 +132,7 @@ static void slotmem_clearinuse(ap_slotmem_instance_t *slot)
     
     inuse = slot->inuse;
     
-    for (i = 0; i < slot->desc.num; i++, inuse++) {
+    for (i = 0; i < slot->desc->num; i++, inuse++) {
         if (*inuse) {
             *inuse = 0;
             (*slot->num_free)++;
@@ -191,11 +153,11 @@ static void store_slotmem(ap_slotmem_instance_t *slotmem)
 
     if (storename) {
         rv = apr_file_open(&fp, storename, APR_CREATE | APR_READ | APR_WRITE,
-                           APR_OS_DEFAULT, slotmem->gpool);
+                           APR_OS_DEFAULT, slotmem->pool);
         if (APR_STATUS_IS_EEXIST(rv)) {
-            apr_file_remove(storename, slotmem->gpool);
+            apr_file_remove(storename, slotmem->pool);
             rv = apr_file_open(&fp, storename, APR_CREATE | APR_READ | APR_WRITE,
-                               APR_OS_DEFAULT, slotmem->gpool);
+                               APR_OS_DEFAULT, slotmem->pool);
         }
         if (rv != APR_SUCCESS) {
             return;
@@ -203,28 +165,36 @@ static void store_slotmem(ap_slotmem_instance_t *slotmem)
         if (AP_SLOTMEM_IS_CLEARINUSE(slotmem)) {
             slotmem_clearinuse(slotmem);
         }
-        nbytes = (slotmem->desc.size * slotmem->desc.num) +
-                 (slotmem->desc.num * sizeof(char)) + AP_UNSIGNEDINT_OFFSET;
+        nbytes = (slotmem->desc->size * slotmem->desc->num) +
+                 (slotmem->desc->num * sizeof(char)) + AP_UNSIGNEDINT_OFFSET;
         apr_md5(digest, slotmem->persist, nbytes);
         rv = apr_file_write_full(fp, slotmem->persist, nbytes, NULL);
         if (rv == APR_SUCCESS) {
             rv = apr_file_write_full(fp, digest, APR_MD5_DIGESTSIZE, NULL);
         }
+        if (rv == APR_SUCCESS) {
+            rv = apr_file_write_full(fp, slotmem->desc, AP_SLOTMEM_OFFSET,
+                                     NULL);
+        }
         apr_file_close(fp);
         if (rv != APR_SUCCESS) {
-            apr_file_remove(storename, slotmem->gpool);
+            apr_file_remove(storename, slotmem->pool);
         }
     }
 }
 
-static apr_status_t restore_slotmem(void *ptr, const char *storename,
-                                    apr_size_t size, apr_pool_t *pool)
+static apr_status_t restore_slotmem(sharedslotdesc_t *desc,
+                                    const char *storename, apr_size_t size,
+                                    apr_pool_t *pool)
 {
     apr_file_t *fp;
-    apr_size_t nbytes = size;
-    apr_status_t rv = APR_SUCCESS;
+    apr_status_t rv = APR_ENOTIMPL;
+    void *ptr = (char *)desc + AP_SLOTMEM_OFFSET;
+    apr_size_t dsize = size - AP_SLOTMEM_OFFSET;
+    apr_size_t nbytes = dsize;
     unsigned char digest[APR_MD5_DIGESTSIZE];
     unsigned char digest2[APR_MD5_DIGESTSIZE];
+    char desc_buf[AP_SLOTMEM_OFFSET];
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(02335)
                  "restoring %s", storename);
@@ -234,7 +204,7 @@ static apr_status_t restore_slotmem(void *ptr, const char *storename,
                            pool);
         if (rv == APR_SUCCESS) {
             rv = apr_file_read(fp, ptr, &nbytes);
-            if ((rv == APR_SUCCESS || rv == APR_EOF) && nbytes == size) {
+            if ((rv == APR_SUCCESS || rv == APR_EOF) && nbytes == dsize) {
                 rv = APR_SUCCESS;   /* for successful return @ EOF */
                 /*
                  * if at EOF, don't bother checking md5
@@ -243,27 +213,60 @@ static apr_status_t restore_slotmem(void *ptr, const char *storename,
                 if (apr_file_eof(fp) != APR_EOF) {
                     apr_size_t ds = APR_MD5_DIGESTSIZE;
                     rv = apr_file_read(fp, digest, &ds);
-                    if ((rv == APR_SUCCESS || rv == APR_EOF) &&
-                        ds == APR_MD5_DIGESTSIZE) {
-                        rv = APR_SUCCESS;
+                    if ((rv == APR_SUCCESS || rv == APR_EOF)
+                            && ds == APR_MD5_DIGESTSIZE) {
                         apr_md5(digest2, ptr, nbytes);
                         if (memcmp(digest, digest2, APR_MD5_DIGESTSIZE)) {
-                            ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf,
-                                         APLOGNO(02551) "bad md5 match");
-                            rv = APR_EGENERAL;
+                            rv = APR_EMISMATCH;
                         }
+                        /*
+                         * if at EOF, don't bother checking desc
+                         *  - backwards compatibility
+                         *  */
+                        else if (apr_file_eof(fp) != APR_EOF) {
+                            nbytes = sizeof(desc_buf);
+                            rv = apr_file_read(fp, desc_buf, &nbytes);
+                            if ((rv == APR_SUCCESS || rv == APR_EOF)
+                                    && nbytes == sizeof(desc_buf)) {
+                                if (memcmp(desc, desc_buf, nbytes)) {
+                                    rv = APR_EMISMATCH;
+                                }
+                                else {
+                                    rv = APR_SUCCESS;
+                                }
+                            }
+                            else if (rv == APR_SUCCESS || rv == APR_EOF) {
+                                rv = APR_INCOMPLETE;
+                            }
+                        }
+                        else {
+                            rv = APR_EOF;
+                        }
+                    }
+                    else if (rv == APR_SUCCESS || rv == APR_EOF) {
+                        rv = APR_INCOMPLETE;
                     }
                 }
                 else {
-                    ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf,
-                                 APLOGNO(02552) "at EOF... bypassing md5 match check (old persist file?)");
+                    rv = APR_EOF;
+                }
+                if (rv == APR_EMISMATCH) {
+                    ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf, APLOGNO(02551)
+                                 "persisted slotmem md5/desc mismatch");
+                }
+                else if (rv == APR_EOF) {
+                    ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf, APLOGNO(02552)
+                                 "persisted slotmem at EOF... bypassing md5/desc match check "
+                                 "(old persist file?)");
+                    rv = APR_SUCCESS;
                 }
             }
-            else if (nbytes != size) {
-                ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf,
-                             APLOGNO(02553) "Expected %" APR_SIZE_T_FMT ": Read %" APR_SIZE_T_FMT,
-                             size, nbytes);
-                rv = APR_EGENERAL;
+            else if (rv == APR_SUCCESS || rv == APR_EOF) {
+                rv = APR_INCOMPLETE;
+            }
+            if (rv == APR_INCOMPLETE) {
+                ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf, APLOGNO(02553)
+                             "persisted slotmem read had unexpected size");
             }
             apr_file_close(fp);
         }
@@ -271,26 +274,45 @@ static apr_status_t restore_slotmem(void *ptr, const char *storename,
     return rv;
 }
 
-static apr_status_t cleanup_slotmem(void *param)
+static apr_status_t cleanup_slotmem(void *is_startup)
 {
-    ap_slotmem_instance_t **mem = param;
+    int is_exiting = (ap_state_query(AP_SQ_MAIN_STATE) == AP_SQ_MS_EXITING);
+    ap_slotmem_instance_t *mem;
 
-    if (*mem) {
-        ap_slotmem_instance_t *next = *mem;
-        while (next) {
-            if (AP_SLOTMEM_IS_PERSIST(next)) {
-                store_slotmem(next);
+    /* When in startup/pre-config's cleanup, the retained data and global pool
+     * are not used yet, but the SHMs contents were untouched hence they don't
+     * need to be persisted, simply unlink them.
+     * Otherwise when restarting or stopping we want to flush persisted data,
+     * and in the stopping/exiting case we also want to unlink the SHMs.
+     */
+    for (mem = globallistmem; mem; mem = mem->next) {
+        int unlink;
+        if (is_startup) {
+            unlink = mem->fbased;
+        }
+        else {
+            if (AP_SLOTMEM_IS_PERSIST(mem)) {
+                store_slotmem(mem);
             }
-            apr_shm_destroy((apr_shm_t *)next->shm);
-            if (next->fbased) {
-                apr_shm_remove(next->name, next->gpool);
-                apr_file_remove(next->name, next->gpool);
-            }
-            next = next->next;
+            unlink = is_exiting;
+        }
+        if (unlink) {
+            /* Some systems may require the descriptor to be closed before
+             * unlink, thus call destroy() first.
+             */
+            apr_shm_destroy(mem->shm);
+            apr_shm_remove(mem->name, mem->pool);
         }
     }
-    /* apr_pool_destroy(gpool); */
+
+    if (is_exiting) {
+        *retained_globallistmem = NULL;
+    }
+    else if (!is_startup) {
+        *retained_globallistmem = globallistmem;
+    }
     globallistmem = NULL;
+
     return APR_SUCCESS;
 }
 
@@ -309,16 +331,41 @@ static apr_status_t slotmem_doall(ap_slotmem_instance_t *mem,
 
     ptr = (char *)mem->base;
     inuse = mem->inuse;
-    for (i = 0; i < mem->desc.num; i++, inuse++) {
-        if (!AP_SLOTMEM_IS_PREGRAB(mem) ||
-           (AP_SLOTMEM_IS_PREGRAB(mem) && *inuse)) {
+    for (i = 0; i < mem->desc->num; i++, inuse++) {
+        if (!AP_SLOTMEM_IS_PREGRAB(mem) || *inuse) {
             retval = func((void *) ptr, data, pool);
             if (retval != APR_SUCCESS)
                 break;
         }
-        ptr += mem->desc.size;
+        ptr += mem->desc->size;
     }
     return retval;
+}
+
+static int check_slotmem(ap_slotmem_instance_t *mem, apr_size_t size,
+                         apr_size_t item_size, unsigned int item_num)
+{
+    sharedslotdesc_t *desc;
+
+    /* check size */
+    if (apr_shm_size_get(mem->shm) != size) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf, APLOGNO(02599)
+                     "existing shared memory for %s could not be used "
+                     "(failed size check)",
+                     mem->name);
+        return 0;
+    }
+
+    desc = apr_shm_baseaddr_get(mem->shm);
+    if (desc->size != item_size || desc->num != item_num) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf, APLOGNO(02600)
+                     "existing shared memory for %s could not be used "
+                     "(failed contents check)",
+                     mem->name);
+        return 0;
+    }
+
+    return 1;
 }
 
 static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
@@ -329,7 +376,7 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
     int fbased = 1;
     int restored = 0;
     char *ptr;
-    sharedslotdesc_t desc;
+    sharedslotdesc_t *desc;
     ap_slotmem_instance_t *res;
     ap_slotmem_instance_t *next = globallistmem;
     const char *fname, *pname = NULL;
@@ -339,17 +386,33 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
                       (item_num * sizeof(char)) + basesize;
     int persist = (type & AP_SLOTMEM_TYPE_PERSIST) != 0;
     apr_status_t rv;
+    apr_pool_t *p;
 
-    if (gpool == NULL) {
-        return APR_ENOSHMAVAIL;
-    }
+    *new = NULL;
+
     if (slotmem_filenames(pool, name, &fname, persist ? &pname : NULL)) {
         /* first try to attach to existing slotmem */
         if (next) {
+            ap_slotmem_instance_t *prev = NULL;
             for (;;) {
                 if (strcmp(next->name, fname) == 0) {
+                    *new = next; /* either returned here or reused finally */
+                    if (!check_slotmem(next, size, item_size, item_num)) {
+                        apr_shm_destroy(next->shm);
+                        next = next->next;
+                        if (prev) {
+                            prev->next = next;
+                        }
+                        else {
+                            globallistmem = next;
+                        }
+                        if (next) {
+                            continue;
+                        }
+                        next = prev;
+                        break;
+                    }
                     /* we already have it */
-                    *new = next;
                     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(02603)
                                  "create found %s in global list", fname);
                     return APR_SUCCESS;
@@ -357,6 +420,7 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
                 if (!next->next) {
                      break;
                 }
+                prev = next;
                 next = next->next;
             }
         }
@@ -372,43 +436,14 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(02300)
                  "create %s: %"APR_SIZE_T_FMT"/%u", fname, item_size,
                  item_num);
-    if (fbased) {
-        rv = apr_shm_attach(&shm, fname, gpool);
-    }
-    else {
-        rv = APR_EINVAL;
-    }
-    if (rv == APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(02598)
-                     "apr_shm_attach() succeeded");
 
-        /* check size */
-        if (apr_shm_size_get(shm) != size) {
-            apr_shm_detach(shm);
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf, APLOGNO(02599)
-                         "existing shared memory for %s could not be used (failed size check)",
-                         fname);
-            return APR_EINVAL;
-        }
-        ptr = (char *)apr_shm_baseaddr_get(shm);
-        memcpy(&desc, ptr, sizeof(desc));
-        if (desc.size != item_size || desc.num != item_num) {
-            apr_shm_detach(shm);
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf, APLOGNO(02600)
-                         "existing shared memory for %s could not be used (failed contents check)",
-                         fname);
-            return APR_EINVAL;
-        }
-        ptr += AP_SLOTMEM_OFFSET;
-    }
-    else {
-        apr_size_t dsize = size - AP_SLOTMEM_OFFSET;
+    {
         if (fbased) {
-            apr_shm_remove(fname, gpool);
+            apr_shm_remove(fname, pool);
             rv = apr_shm_create(&shm, size, fname, gpool);
         }
         else {
-            rv = apr_shm_create(&shm, size, NULL, gpool);
+            rv = apr_shm_create(&shm, size, NULL, pool);
         }
         ap_log_error(APLOG_MARK, rv == APR_SUCCESS ? APLOG_DEBUG : APLOG_ERR,
                      rv, ap_server_conf, APLOGNO(02611)
@@ -418,57 +453,67 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
         if (rv != APR_SUCCESS) {
             return rv;
         }
-        ptr = (char *)apr_shm_baseaddr_get(shm);
-        desc.size = item_size;
-        desc.num = item_num;
-        desc.type = type;
-        memcpy(ptr, &desc, sizeof(desc));
-        ptr += AP_SLOTMEM_OFFSET;
-        memset(ptr, 0, dsize);
+
+        desc = (sharedslotdesc_t *)apr_shm_baseaddr_get(shm);
+        memset(desc, 0, size);
+        desc->size = item_size;
+        desc->num = item_num;
+        desc->type = type;
+
         /*
          * TODO: Error check the below... What error makes
          * sense if the restore fails? Any?
+         * For now, we continue with a fresh new slotmem,
+         * but NOTICE in the log.
          */
         if (persist) {
-            rv = restore_slotmem(ptr, pname, dsize, pool);
+            rv = restore_slotmem(desc, pname, size, pool);
             if (rv == APR_SUCCESS) {
                 restored = 1;
             }
             else {
                 /* just in case, re-zero */
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
+                ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf,
                              APLOGNO(02554) "could not restore %s", fname);
-                memset(ptr, 0, dsize);
+                memset((char *)desc + AP_SLOTMEM_OFFSET, 0,
+                       size - AP_SLOTMEM_OFFSET);
             }
         }
     }
 
-    /* For the chained slotmem stuff */
-    res = (ap_slotmem_instance_t *) apr_pcalloc(gpool,
-                                                sizeof(ap_slotmem_instance_t));
-    res->name = apr_pstrdup(gpool, fname);
-    res->pname = apr_pstrdup(gpool, pname);
+    p = fbased ? gpool : pool;
+    ptr = (char *)desc + AP_SLOTMEM_OFFSET;
+
+    /* For the chained slotmem stuff (*new may be reused from above) */
+    res = *new;
+    if (res == NULL) {
+        res = apr_pcalloc(p, sizeof(ap_slotmem_instance_t));
+        res->name = apr_pstrdup(p, fname);
+        res->pname = apr_pstrdup(p, pname);
+        *new = res;
+    }
     res->fbased = fbased;
     res->shm = shm;
+    res->persist = (void *)ptr;
     res->num_free = (unsigned int *)ptr;
+    ptr += AP_UNSIGNEDINT_OFFSET;
     if (!restored) {
         *res->num_free = item_num;
     }
-    res->persist = (void *)ptr;
-    ptr += AP_UNSIGNEDINT_OFFSET;
     res->base = (void *)ptr;
     res->desc = desc;
-    res->gpool = gpool;
+    res->pool = pool;
     res->next = NULL;
     res->inuse = ptr + basesize;
-    if (globallistmem == NULL) {
-        globallistmem = res;
-    }
-    else {
-        next->next = res;
+    if (fbased) {
+        if (globallistmem == NULL) {
+            globallistmem = res;
+        }
+        else {
+            next->next = res;
+        }
     }
 
-    *new = res;
     return APR_SUCCESS;
 }
 
@@ -480,14 +525,11 @@ static apr_status_t slotmem_attach(ap_slotmem_instance_t **new,
     char *ptr;
     ap_slotmem_instance_t *res;
     ap_slotmem_instance_t *next = globallistmem;
-    sharedslotdesc_t desc;
+    sharedslotdesc_t *desc;
     const char *fname;
     apr_shm_t *shm;
     apr_status_t rv;
 
-    if (gpool == NULL) {
-        return APR_ENOSHMAVAIL;
-    }
     if (!slotmem_filenames(pool, name, &fname, NULL)) {
         return APR_ENOSHMAVAIL;
     }
@@ -501,8 +543,8 @@ static apr_status_t slotmem_attach(ap_slotmem_instance_t **new,
             if (strcmp(next->name, fname) == 0) {
                 /* we already have it */
                 *new = next;
-                *item_size = next->desc.size;
-                *item_num = next->desc.num;
+                *item_size = next->desc->size;
+                *item_num = next->desc->num;
                 ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
                              APLOGNO(02302)
                              "attach found %s: %"APR_SIZE_T_FMT"/%u", fname,
@@ -517,40 +559,32 @@ static apr_status_t slotmem_attach(ap_slotmem_instance_t **new,
     }
 
     /* next try to attach to existing shared memory */
-    rv = apr_shm_attach(&shm, fname, gpool);
+    rv = apr_shm_attach(&shm, fname, pool);
     if (rv != APR_SUCCESS) {
         return rv;
     }
 
     /* Read the description of the slotmem */
-    ptr = (char *)apr_shm_baseaddr_get(shm);
-    memcpy(&desc, ptr, sizeof(desc));
-    ptr += AP_SLOTMEM_OFFSET;
+    desc = (sharedslotdesc_t *)apr_shm_baseaddr_get(shm);
+    ptr = (char *)desc + AP_SLOTMEM_OFFSET;
 
     /* For the chained slotmem stuff */
-    res = (ap_slotmem_instance_t *) apr_pcalloc(gpool,
-                                                sizeof(ap_slotmem_instance_t));
-    res->name = apr_pstrdup(gpool, fname);
+    res = apr_pcalloc(pool, sizeof(ap_slotmem_instance_t));
+    res->name = apr_pstrdup(pool, fname);
     res->fbased = 1;
     res->shm = shm;
-    res->num_free = (unsigned int *)ptr;
     res->persist = (void *)ptr;
+    res->num_free = (unsigned int *)ptr;
     ptr += AP_UNSIGNEDINT_OFFSET;
     res->base = (void *)ptr;
     res->desc = desc;
-    res->gpool = gpool;
-    res->inuse = ptr + (desc.size * desc.num);
+    res->pool = pool;
+    res->inuse = ptr + (desc->size * desc->num);
     res->next = NULL;
-    if (globallistmem == NULL) {
-        globallistmem = res;
-    }
-    else {
-        next->next = res;
-    }
 
     *new = res;
-    *item_size = desc.size;
-    *item_num = desc.num;
+    *item_size = desc->size;
+    *item_num = desc->num;
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
                  APLOGNO(02303)
                  "attach found %s: %"APR_SIZE_T_FMT"/%u", fname,
@@ -566,11 +600,11 @@ static apr_status_t slotmem_dptr(ap_slotmem_instance_t *slot,
     if (!slot) {
         return APR_ENOSHMAVAIL;
     }
-    if (id >= slot->desc.num) {
+    if (id >= slot->desc->num) {
         return APR_EINVAL;
     }
 
-    ptr = (char *)slot->base + slot->desc.size * id;
+    ptr = (char *)slot->base + slot->desc->size * id;
     if (!ptr) {
         return APR_ENOSHMAVAIL;
     }
@@ -590,7 +624,7 @@ static apr_status_t slotmem_get(ap_slotmem_instance_t *slot, unsigned int id,
     }
 
     inuse = slot->inuse + id;
-    if (id >= slot->desc.num) {
+    if (id >= slot->desc->num) {
         return APR_EINVAL;
     }
     if (AP_SLOTMEM_IS_PREGRAB(slot) && !*inuse) {
@@ -617,7 +651,7 @@ static apr_status_t slotmem_put(ap_slotmem_instance_t *slot, unsigned int id,
     }
 
     inuse = slot->inuse + id;
-    if (id >= slot->desc.num) {
+    if (id >= slot->desc->num) {
         return APR_EINVAL;
     }
     if (AP_SLOTMEM_IS_PREGRAB(slot) && !*inuse) {
@@ -634,7 +668,7 @@ static apr_status_t slotmem_put(ap_slotmem_instance_t *slot, unsigned int id,
 
 static unsigned int slotmem_num_slots(ap_slotmem_instance_t *slot)
 {
-    return slot->desc.num;
+    return slot->desc->num;
 }
 
 static unsigned int slotmem_num_free_slots(ap_slotmem_instance_t *slot)
@@ -644,7 +678,7 @@ static unsigned int slotmem_num_free_slots(ap_slotmem_instance_t *slot)
     else {
         unsigned int i, counter=0;
         char *inuse = slot->inuse;
-        for (i=0; i<slot->desc.num; i++, inuse++) {
+        for (i=0; i<slot->desc->num; i++, inuse++) {
             if (!*inuse)
                 counter++;
         }
@@ -654,7 +688,7 @@ static unsigned int slotmem_num_free_slots(ap_slotmem_instance_t *slot)
 
 static apr_size_t slotmem_slot_size(ap_slotmem_instance_t *slot)
 {
-    return slot->desc.size;
+    return slot->desc->size;
 }
 
 static apr_status_t slotmem_grab(ap_slotmem_instance_t *slot, unsigned int *id)
@@ -668,12 +702,12 @@ static apr_status_t slotmem_grab(ap_slotmem_instance_t *slot, unsigned int *id)
 
     inuse = slot->inuse;
 
-    for (i = 0; i < slot->desc.num; i++, inuse++) {
+    for (i = 0; i < slot->desc->num; i++, inuse++) {
         if (!*inuse) {
             break;
         }
     }
-    if (i >= slot->desc.num) {
+    if (i >= slot->desc->num) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(02293)
                      "slotmem(%s) grab failed. Num %u/num_free %u",
                      slot->name, slotmem_num_slots(slot),
@@ -694,7 +728,7 @@ static apr_status_t slotmem_fgrab(ap_slotmem_instance_t *slot, unsigned int id)
         return APR_ENOSHMAVAIL;
     }
 
-    if (id >= slot->desc.num) {
+    if (id >= slot->desc->num) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(02397)
                      "slotmem(%s) fgrab failed. Num %u/num_free %u",
                      slot->name, slotmem_num_slots(slot),
@@ -721,12 +755,12 @@ static apr_status_t slotmem_release(ap_slotmem_instance_t *slot,
 
     inuse = slot->inuse;
 
-    if (id >= slot->desc.num || !inuse[id] ) {
+    if (id >= slot->desc->num || !inuse[id] ) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(02294)
                      "slotmem(%s) release failed. Num %u/inuse[%u] %d",
                      slot->name, slotmem_num_slots(slot),
                      id, (int)inuse[id]);
-        if (id >= slot->desc.num) {
+        if (id >= slot->desc->num) {
             return APR_EINVAL;
         } else {
             return APR_NOTFOUND;
@@ -759,33 +793,35 @@ static const ap_slotmem_provider_t *slotmem_shm_getstorage(void)
     return (&storage);
 }
 
-/* initialise the global pool */
-static void slotmem_shm_initgpool(apr_pool_t *p)
-{
-    gpool = p;
-}
-
-/* Add the pool_clean routine */
-static void slotmem_shm_initialize_cleanup(apr_pool_t *p)
-{
-    apr_pool_cleanup_register(p, &globallistmem, cleanup_slotmem,
-                              apr_pool_cleanup_null);
-}
-
-/*
- * Make sure the shared memory is cleaned
+/* Initialize or reuse the retained slotmems list, and register the
+ * cleanup to make sure the persisted SHMs are stored and the retained
+ * data are up to date on next restart/stop.
  */
-static int post_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
-                       server_rec *s)
-{
-    slotmem_shm_initialize_cleanup(p);
-    return OK;
-}
-
-static int pre_config(apr_pool_t *p, apr_pool_t *plog,
+static int pre_config(apr_pool_t *pconf, apr_pool_t *plog,
                       apr_pool_t *ptemp)
 {
-    slotmem_shm_initgpool(p);
+    void *is_startup = NULL;
+    const char *retained_key = "mod_slotmem_shm";
+
+    retained_globallistmem = ap_retained_data_get(retained_key);
+    if (!retained_globallistmem) {
+        retained_globallistmem =
+            ap_retained_data_create(retained_key,
+                                    sizeof *retained_globallistmem);
+    }
+    globallistmem = *retained_globallistmem;
+
+    if (ap_state_query(AP_SQ_MAIN_STATE) != AP_SQ_MS_CREATE_PRE_CONFIG) {
+        gpool = ap_pglobal;
+    }
+    else {
+        is_startup = (void *)1;
+        gpool = pconf;
+    }
+
+    apr_pool_cleanup_register(pconf, is_startup, cleanup_slotmem,
+                              apr_pool_cleanup_null);
+
     return OK;
 }
 
@@ -794,7 +830,6 @@ static void ap_slotmem_shm_register_hook(apr_pool_t *p)
     const ap_slotmem_provider_t *storage = slotmem_shm_getstorage();
     ap_register_provider(p, AP_SLOTMEM_PROVIDER_GROUP, "shm",
                          AP_SLOTMEM_PROVIDER_VERSION, storage);
-    ap_hook_post_config(post_config, NULL, NULL, APR_HOOK_LAST);
     ap_hook_pre_config(pre_config, NULL, NULL, APR_HOOK_MIDDLE);
 }
 

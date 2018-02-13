@@ -22,6 +22,7 @@
 #include "apr_version.h"
 #include "ap_hooks.h"
 #include "apr_date.h"
+#include "apr_escape.h"
 #include "mod_watchdog.h"
 
 static const char *balancer_mutex_type = "proxy-balancer-shm";
@@ -730,6 +731,115 @@ static apr_status_t lock_remove(void *data)
     return(0);
 }
 
+/*
+ * Compute an ID for a vhost based on what makes it selected by requests.
+ * The second and more Host(s)/IP(s):port(s), and the ServerAlias(es) are
+ * optional (see make_servers_ids() below).
+ */
+ static const char *make_server_id(server_rec *s, apr_pool_t *p, int full)
+{
+    apr_md5_ctx_t md5_ctx;
+    unsigned char md5[APR_MD5_DIGESTSIZE];
+    char host_ip[64]; /* for any IPv[46] string */
+    server_addr_rec *sar;
+    int i;
+
+    apr_md5_init(&md5_ctx);
+    for (sar = s->addrs; sar; sar = sar->next) {
+        host_ip[0] = '\0';
+        apr_sockaddr_ip_getbuf(host_ip, sizeof host_ip, sar->host_addr);
+        apr_md5_update(&md5_ctx, (void *)sar->virthost, strlen(sar->virthost));
+        apr_md5_update(&md5_ctx, (void *)host_ip, strlen(host_ip));
+        apr_md5_update(&md5_ctx, (void *)&sar->host_port,
+                       sizeof(sar->host_port));
+        if (!full) {
+            break;
+        }
+    }
+    if (s->server_hostname) {
+        apr_md5_update(&md5_ctx, (void *)s->server_hostname,
+                       strlen(s->server_hostname));
+    }
+    if (full) {
+        if (s->names) {
+            for (i = 0; i < s->names->nelts; ++i) {
+                const char *name = APR_ARRAY_IDX(s->names, i, char *);
+                apr_md5_update(&md5_ctx, (void *)name, strlen(name));
+            }
+        }
+        if (s->wild_names) {
+            for (i = 0; i < s->wild_names->nelts; ++i) {
+                const char *name = APR_ARRAY_IDX(s->wild_names, i, char *);
+                apr_md5_update(&md5_ctx, (void *)name, strlen(name));
+            }
+        }
+    }
+    apr_md5_final(md5, &md5_ctx);
+
+    return apr_pescape_hex(p, md5, sizeof md5, 0);
+}
+
+/*
+ * First try to compute an unique ID for each vhost with minimal criteria,
+ * that is the first Host/IP:port and ServerName. For most cases this should
+ * be enough and avoids changing the ID unnecessarily accross restart (or
+ * stop/start w.r.t. persisted files) for things that this module does not
+ * care about.
+ *
+ * But if it's not enough (collisions) do a second pass for the full monty,
+ * that is additionally the other Host(s)/IP(s):port(s) and ServerAlias(es).
+ *
+ * Finally, for pathological configs where this is still not enough, let's
+ * append a counter to duplicates, because we really want that ID to be unique
+ * even if the vhost will never be selected to handle requests at run time, at
+ * load time a duplicate may steal the original slotmems (depending on its
+ * balancers' configurations), see how mod_slotmem_shm reuses slots/files based
+ * solely on this ID and resets them if the sizes don't match.
+ */
+static apr_array_header_t *make_servers_ids(server_rec *main_s, apr_pool_t *p)
+{
+    server_rec *s = main_s;
+    apr_array_header_t *ids = apr_array_make(p, 10, sizeof(const char *));
+    apr_hash_t *dups = apr_hash_make(p);
+    int idx, *dup, full_monty = 0;
+    const char *id;
+
+    for (idx = 0, s = main_s; s; s = s->next, ++idx) {
+        id = make_server_id(s, p, 0);
+        dup = apr_hash_get(dups, id, APR_HASH_KEY_STRING);
+        apr_hash_set(dups, id, APR_HASH_KEY_STRING,
+                     apr_pmemdup(p, &idx, sizeof(int)));
+        if (dup) {
+            full_monty = 1;
+            APR_ARRAY_IDX(ids, *dup, const char *) = NULL;
+            APR_ARRAY_PUSH(ids, const char *) = NULL;
+        }
+        else {
+            APR_ARRAY_PUSH(ids, const char *) = id;
+        }
+    }
+    if (full_monty) {
+        apr_hash_clear(dups);
+        for (idx = 0, s = main_s; s; s = s->next, ++idx) {
+            id = APR_ARRAY_IDX(ids, idx, const char *);
+            if (id) {
+                /* Preserve non-duplicates */
+                continue;
+            }
+            id = make_server_id(s, p, 1);
+            if (apr_hash_get(dups, id, APR_HASH_KEY_STRING)) {
+                id = apr_psprintf(p, "%s_%x", id, idx);
+            }
+            else {
+                apr_hash_set(dups, id, APR_HASH_KEY_STRING, (void *)-1);
+            }
+            APR_ARRAY_IDX(ids, idx, const char *) = id;
+        }
+    }
+
+    return ids;
+}
+
 /* post_config hook: */
 static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                          apr_pool_t *ptemp, server_rec *s)
@@ -738,6 +848,8 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     proxy_server_conf *conf;
     ap_slotmem_instance_t *new = NULL;
     apr_time_t tstamp;
+    apr_array_header_t *ids;
+    int idx;
 
     /* balancer_post_config() will be called twice during startup.  So, don't
      * set up the static data the 1st time through. */
@@ -768,14 +880,16 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
         return !OK;
     }
 
+    ids = make_servers_ids(s, ptemp);
+
     tstamp = apr_time_now();
     /*
      * Go thru each Vhost and create the shared mem slotmem for
      * each balancer's workers
      */
-    while (s) {
+    for (idx = 0; s; ++idx) {
         int i,j;
-        char *id;
+        const char *id;
         proxy_balancer *balancer;
         ap_slotmem_type_t type;
         void *sconf = s->module_config;
@@ -784,14 +898,7 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
          * During create_proxy_config() we created a dummy id. Now that
          * we have identifying info, we can create the real id
          */
-        id = apr_psprintf(pconf, "%s.%s.%d.%s.%s.%u.%s",
-                          (s->server_scheme ? s->server_scheme : "????"),
-                          (s->server_hostname ? s->server_hostname : "???"),
-                          (int)s->port,
-                          (s->server_admin ? s->server_admin : "??"),
-                          (s->defn_name ? s->defn_name : "?"),
-                          s->defn_line_number,
-                          (s->error_fname ? s->error_fname : DEFAULT_ERRORLOG));
+        id = APR_ARRAY_IDX(ids, idx, const char *);
         conf->id = apr_psprintf(pconf, "p%x",
                                 ap_proxy_hashfunc(id, PROXY_HASHFUNC_DEFAULT));
         if (conf->bslot) {
