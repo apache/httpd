@@ -2879,7 +2879,7 @@ static int proxy_status_hook(request_rec *r, int flags)
             char fbuf[50];
             if (!(flags & AP_STATUS_SHORT)) {
                 ap_rvputs(r, "<tr>\n<td>", (*worker)->s->scheme, "</td>", NULL);
-                ap_rvputs(r, "<td>", (*worker)->s->hostname, "</td><td>", NULL);
+                ap_rvputs(r, "<td>", (*worker)->s->hostname_ex, "</td><td>", NULL);
                 ap_rvputs(r, ap_proxy_parse_wstatus(r->pool, *worker), NULL);
                 ap_rvputs(r, "</td><td>", (*worker)->s->route, NULL);
                 ap_rvputs(r, "</td><td>", (*worker)->s->redirect, NULL);
@@ -2971,7 +2971,8 @@ static void child_init(apr_pool_t *p, server_rec *s)
             ap_proxy_define_worker(p, &forward, NULL, NULL, "http://www.apache.org", 0);
             conf->forward = forward;
             PROXY_STRNCPY(conf->forward->s->name,     "proxy:forward");
-            PROXY_STRNCPY(conf->forward->s->hostname, "*");
+            PROXY_STRNCPY(conf->forward->s->hostname, "*"); /* for compatibility */
+            PROXY_STRNCPY(conf->forward->s->hostname_ex, "*");
             PROXY_STRNCPY(conf->forward->s->scheme,   "*");
             conf->forward->hash.def = conf->forward->s->hash.def =
                 ap_proxy_hashfunc(conf->forward->s->name, PROXY_HASHFUNC_DEFAULT);
@@ -2988,7 +2989,8 @@ static void child_init(apr_pool_t *p, server_rec *s)
         if (!reverse) {
             ap_proxy_define_worker(p, &reverse, NULL, NULL, "http://www.apache.org", 0);
             PROXY_STRNCPY(reverse->s->name,     "proxy:reverse");
-            PROXY_STRNCPY(reverse->s->hostname, "*");
+            PROXY_STRNCPY(reverse->s->hostname, "*"); /* for compatibility */
+            PROXY_STRNCPY(reverse->s->hostname_ex, "*");
             PROXY_STRNCPY(reverse->s->scheme,   "*");
             reverse->hash.def = reverse->s->hash.def =
                 ap_proxy_hashfunc(reverse->s->name, PROXY_HASHFUNC_DEFAULT);
