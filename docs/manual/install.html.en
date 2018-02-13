@@ -69,8 +69,7 @@
     <dt>Installing on Fedora/CentOS/Red Hat Enterprise Linux</dt>
     <dd>
     <pre class="prettyprint lang-">sudo yum install httpd
-sudo systemctl enable httpd
-sudo systemctl start httpd</pre>
+sudo service httpd start</pre>
 
 
     <div class="warning">Newer releases of these distros use
