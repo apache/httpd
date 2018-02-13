@@ -84,7 +84,7 @@
 <li><a href="#comments_section">Comentarios</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Allow" id="Allow">Allow</a> <a name="allow" id="allow">Directiva</a></h2>
+<div class="directive-section"><h2><a name="allow" id="allow">Directiva</a> <a name="Allow" id="Allow">Allow</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Controla qué hosts pueden acceder a un área del servidor</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code> Allow from all|<var>host</var>|env=[!]<var>env-variable</var>
@@ -175,7 +175,7 @@ Allow from 2001:db8::a00:20ff:fea7:ccea/10</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Deny" id="Deny">Deny</a> <a name="deny" id="deny">Directiva</a></h2>
+<div class="directive-section"><h2><a name="deny" id="deny">Directiva</a> <a name="Deny" id="Deny">Deny</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Controla a qué hosts se les deniega el acceso al servidor</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code> Deny from all|<var>host</var>|env=[!]<var>env-variable</var>
@@ -191,7 +191,7 @@ Allow from 2001:db8::a00:20ff:fea7:ccea/10</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Order" id="Order">Order</a> <a name="order" id="order">Directiva</a></h2>
+<div class="directive-section"><h2><a name="order" id="order">Directiva</a> <a name="Order" id="Order">Order</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Controla el estado por defecto del acceso y el orden en que se evalúan 
   <code class="directive">Allow</code> y 
@@ -299,7 +299,7 @@ Deny from foo.example.org</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Satisfy" id="Satisfy">Satisfy</a> <a name="satisfy" id="satisfy">Directiva</a></h2>
+<div class="directive-section"><h2><a name="satisfy" id="satisfy">Directiva</a> <a name="Satisfy" id="Satisfy">Satisfy</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Interacción entre control de acceso a nivel-de-hostess y autenticación de usuario</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>Satisfy Any|All</code></td></tr>

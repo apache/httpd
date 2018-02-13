@@ -55,7 +55,7 @@
 <li><a href="#comments_section">Comentarios</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Action" id="Action">Action</a> <a name="action" id="action">Directiva</a></h2>
+<div class="directive-section"><h2><a name="action" id="action">Directiva</a> <a name="Action" id="Action">Action</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Activa un script CGI para un handler concreto o content-type</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>Action <var>action-type</var> <var>cgi-script</var> [virtual]</code></td></tr>
@@ -97,7 +97,7 @@ Action my-file-type /cgi-bin/program.cgi</pre>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Script" id="Script">Script</a> <a name="script" id="script">Directiva</a></h2>
+<div class="directive-section"><h2><a name="script" id="script">Directiva</a> <a name="Script" id="Script">Script</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Activa un script CGI para peticiones con un método concreto.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>Script <var>method</var> <var>cgi-script</var></code></td></tr>

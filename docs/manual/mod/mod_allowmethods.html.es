@@ -54,7 +54,7 @@
 <li><a href="#comments_section">Comentarios</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AllowMethods" id="AllowMethods">AllowMethods</a> <a name="allowmethods" id="allowmethods">Directiva</a></h2>
+<div class="directive-section"><h2><a name="allowmethods" id="allowmethods">Directiva</a> <a name="AllowMethods" id="AllowMethods">AllowMethods</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Restringe acceso a los métodos HTTP indicados</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>AllowMethods reset|<em>HTTP-method</em>

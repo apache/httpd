@@ -39,6 +39,7 @@
 </div>
 <div id="quickview"><h3 class="directives">Yönergeler</h3>
 <ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#accepterrorsnonfatal">AcceptErrorsNonFatal</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#coredumpdirectory">CoreDumpDirectory</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#enableexceptionhook">EnableExceptionHook</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#gracefulshutdowntimeout">GracefulShutdownTimeout</a></li>
@@ -65,6 +66,20 @@
 <ul class="seealso">
 <li><a href="#comments_section">Yorum</a></li></ul></div>
 
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AcceptErrorsNonFatal" id="AcceptErrorsNonFatal">AcceptErrorsNonFatal</a> <a name="accepterrorsnonfatal" id="accepterrorsnonfatal">Yönergesi</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Treat some errors accepting a new connection as non-fatal
+to the httpd process.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>AcceptErrorsNonFatal ON</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>OFF (ECONNREFUSED, ECONNABORTED, ECONNRESET cause the process to 
+         exit)</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>MPM</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td><code class="module"><a href="../mod/event.html">event</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>2.5.1 and later</td></tr>
+</table><p>Bu yönergenin belgesi henüz Türkçeye çevrilmedi.
+            Lütfen İngilizce sürümüne bakınız.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CoreDumpDirectory" id="CoreDumpDirectory">CoreDumpDirectory</a> <a name="coredumpdirectory" id="coredumpdirectory">Yönergesi</a></h2>
 <table class="directive">

@@ -621,8 +621,8 @@ AllowOverrideList Redirect RedirectMatch</pre>
 AllowOverrideList CookieTracking CookieName</pre>
 
 
-    <p>In the example above, <code class="directive"><a href="#allowoverride">AllowOverride
-    </a></code> grants permission to the <code>AuthConfig</code>
+    <p>In the example above, <code class="directive"><a href="#allowoverride">AllowOverride</a></code> 
+    grants permission to the <code>AuthConfig</code>
     directive grouping and <code class="directive">AllowOverrideList</code> grants
     permission to only two directives from the <code>FileInfo</code> directive
     grouping. All others will cause an Internal Server Error.</p>
