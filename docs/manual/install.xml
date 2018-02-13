@@ -52,6 +52,34 @@
 <section id="overview"><title>Overview for the
     impatient</title>
 
+    <dl>
+    <dt>Installing on Fedora/CentOS/Red Hat Enterprise Linux</dt>
+    <dd>
+    <highlight>
+sudo yum install httpd
+sudo systemctl enable httpd
+sudo systemctl start httpd
+    </highlight>
+
+    <note type="warning">Newer releases of these distros use
+    <code>dnf</code> rather than <code>yum</code>. See <a
+    href="https://fedoraproject.org/wiki/Apache_HTTP_Server">the
+    Fedora project's documentation</a> for platform-specific notes.</note>
+    </dd>
+
+    <dt>Installing on Ubuntu/Debian</dt>
+    <dd>
+<highlight>
+sudo apt install apache2
+sudo service apache2 start
+</highlight>
+
+    <note type="warning">See <a href="https://help.ubuntu.com/lts/serverguide/httpd.html">Ubuntu's documentation</a> for platform-specific notes.</note>
+
+    </dd>
+
+    <dt>Installing from source</dt>
+    <dd>
     <table>
       <columnspec><column width=".13"/><column width=".80"/></columnspec>
       <tr>
@@ -102,15 +130,22 @@
       </tr>
     </table>
 
-    <p><em>NN</em> must be replaced with the current version
-    number, and <em>PREFIX</em> must be replaced with the
-    filesystem path under which the server should be installed. If
-    <em>PREFIX</em> is not specified, it defaults to
-    <code>/usr/local/apache2</code>.</p>
+        <p><em>NN</em> must be replaced with the current version
+        number, and <em>PREFIX</em> must be replaced with the
+        filesystem path under which the server should be installed. If
+        <em>PREFIX</em> is not specified, it defaults to
+        <code>/usr/local/apache2</code>.</p>
 
-    <p>Each section of the compilation and installation process is
-    described in more detail below, beginning with the requirements
-    for compiling and installing Apache httpd.</p>
+        <p>Each section of the compilation and installation process is
+        described in more detail below, beginning with the requirements
+        for compiling and installing Apache httpd.</p>
+    </dd>
+    </dl>
+
+    <note type="warning">Don't see your favorite platform mentioned
+    here? <a href="http://httpd.apache.org/docs-project/">Come help us
+    improve this doc.</a>
+
 </section>
 
 <section id="requirements"><title>Requirements</title>
