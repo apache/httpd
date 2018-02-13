@@ -495,7 +495,7 @@ AuthLDAPMaxSubGroupDepth 1</pre>
     <p>The following directive would grant access to anyone with
     the attribute employeeType = active</p>
 
-    <pre class="prettyprint lang-config">Require ldap-attribute "employeeType=active"</pre>
+    <pre class="prettyprint lang-config">Require ldap-attribute employeeType="active"</pre>
 
 
     <p>Multiple attribute/value pairs can be specified on the same line
