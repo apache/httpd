@@ -499,6 +499,12 @@
  * 20120211.69 (2.4.30-dev) Add ap_update_sb_handle()
  * 20120211.70 (2.4.30-dev) Add flags field to module_struct and function
  *                          ap_get_module_flags()
+ * 20120211.71 (2.4.30-dev) Add optional proxy_{hook,run}_section_post_config(),
+ *                          ap_proxy_connection_create_ex() and section_config
+ *                          to struct proxy_{worker,balancer} in mod_proxy.h,
+ *                          and optional ssl_engine_set() to mod_ssl.h.
+ * 20120211.72 (2.4.30-dev) Add NOT_IN_DIR_CONTEXT replacing NOT_IN_DIR_LOC_FILE
+ *                          semantics
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -506,7 +512,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20120211
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 70                  /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 72                  /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

@@ -117,6 +117,16 @@
                                 select="$message[@id='htaccess']"/>
                         </td>
                     </tr>&lf;
+                    <tr>
+                        <th>
+                            <xsl:value-of
+                                select="$message[@id='proxy']/@letter"/>
+                        </th>
+                        <td>
+                            <xsl:value-of
+                                select="$message[@id='proxy']"/>
+                        </td>
+                    </tr>&lf;
                     </table>
                 </td>&lf;
                 <td>
@@ -348,6 +358,10 @@
             <xsl:if test="$directive/contextlist/context
                           [normalize-space(.)='.htaccess']">
                 <xsl:value-of select="$message[@id='htaccess']/@letter"/>
+            </xsl:if>
+            <xsl:if test="$directive/contextlist/context
+                          [normalize-space(.)='proxy section']">
+                <xsl:value-of select="$message[@id='proxy']/@letter"/>
             </xsl:if>
         </td>
         <td>

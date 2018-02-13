@@ -97,6 +97,7 @@
         <message id="virtualhost" letter="v">virtual host</message>
         <message id="directory" letter="d">directory</message>
         <message id="htaccess" letter="h">.htaccess</message>
+        <message id="proxy" letter="p">proxy section</message>
 
         <!-- Used for directive lists -->
         <message id="directives">Directives</message>

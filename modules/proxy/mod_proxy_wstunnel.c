@@ -285,7 +285,6 @@ static int proxy_wstunnel_handler(request_rec *r, proxy_worker *worker,
     proxy_conn_rec *backend = NULL;
     char *scheme;
     int retry;
-    conn_rec *c = r->connection;
     apr_pool_t *p = r->pool;
     apr_uri_t *uri;
     int is_ssl = 0;
@@ -352,11 +351,13 @@ static int proxy_wstunnel_handler(request_rec *r, proxy_worker *worker,
             status = HTTP_SERVICE_UNAVAILABLE;
             break;
         }
+
         /* Step Three: Create conn_rec */
         if (!backend->connection) {
-            if ((status = ap_proxy_connection_create(scheme, backend,
-                                                     c, r->server)) != OK)
+            status = ap_proxy_connection_create_ex(scheme, backend, r);
+            if (status  != OK) {
                 break;
+            }
         }
 
         backend->close = 1; /* must be after ap_proxy_determine_connection */
