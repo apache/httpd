@@ -57,8 +57,7 @@
     <dd>
     <highlight>
 sudo yum install httpd
-sudo systemctl enable httpd
-sudo systemctl start httpd
+sudo service httpd start
     </highlight>
 
     <note type="warning">Newer releases of these distros use
