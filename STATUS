@@ -195,7 +195,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      is OK or not.
      trunk patch: http://svn.apache.org/r1823482
      2.4.x patch: trunk works
-     +1: jim,
+     +1: jim, minfrin
 
   *) mod_proxy_balancer,mod_slotmem_shm: Rework SHM reuse/deletion to not
      depend on the number of restarts (non-Unix systems) and preserve shared
