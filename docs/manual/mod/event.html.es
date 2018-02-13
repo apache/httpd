@@ -218,7 +218,7 @@ activo</td></tr>
     </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AsyncRequestWorkerFactor" id="AsyncRequestWorkerFactor">AsyncRequestWorkerFactor</a> <a name="asyncrequestworkerfactor" id="asyncrequestworkerfactor">Directiva</a></h2>
+<div class="directive-section"><h2><a name="asyncrequestworkerfactor" id="asyncrequestworkerfactor">Directiva</a> <a name="AsyncRequestWorkerFactor" id="AsyncRequestWorkerFactor">AsyncRequestWorkerFactor</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Limita el número de conexiones concurrentes por 
     proceso</td></tr>

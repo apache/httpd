@@ -1094,7 +1094,7 @@ validación OCSP</td></tr>
 <tr><td><a href="mod_ssl.html#sslocspresponsemaxage">SSLOCSPResponseMaxAge <em>segundos</em></a></td><td> -1 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Edad máxima permitida para las respuestas OCSP</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslocspresponsetimeskew">SSLOCSPResponseTimeSkew <em>segundos</em></a></td><td> 300 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Desviación máxima de tiempo permitida para la validación de la
 respuesta OCSP</td></tr>
-<tr><td><a href="mod_ssl.html#sslocspuserequestnonce">SSLOCSPUseRequestNonce on|off</a></td><td> on </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Usar un nonce entro de las consultas OCSP</td></tr>
+<tr><td><a href="mod_ssl.html#sslocspuserequestnonce">SSLOCSPUseRequestNonce on|off</a></td><td> on </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Usar un nonce dentro de las consultas OCSP</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslopensslconfcmd">SSLOpenSSLConfCmd <em>nombre-de-comando</em> 
 <em>parámetro-de-comando</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configura parámetros OpenSSL a través de su API <em>SSL_CONF</em>
 </td></tr>
@@ -1103,7 +1103,7 @@ respuesta OCSP</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslpassphrasedialog">SSLPassPhraseDialog <em>tipo</em></a></td><td> builtin </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Tipo de díalogo de solicitud de contraseña para claves privadas 
   encriptadas</td></tr>
 <tr><td><a href="mod_ssl.html#sslpolicy">SSLPolicy <em>nombre</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Aplica una Política SSL por nombre</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslpolicydefine">&lt;SSLPolicy <em>nombre</em>&gt;</a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Define un conjunto de nombres de configuraciones SSL</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslpolicydefine">&lt;SSLPolicyDefine <em>nombre</em>&gt;</a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Define un conjunto de nombres de configuraciones SSL</td></tr>
 <tr><td><a href="mod_ssl.html#sslprotocol">SSLProtocol [+|-]<em>protocol</em> ...</a></td><td> all -SSLv3 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Configura versiones de protocolo SSL/TLS utilizables</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslproxycacertificatefile">SSLProxyCACertificateFile <em>ruta-al-fichero</em></a></td><td></td><td>svp</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Fichero de Certificados CA concatenados codificados en PEM para
 la Autenticación Remota del Servidor</td></tr>
@@ -1142,7 +1142,7 @@ Certificado en el Servidor Remoto</td></tr>
   (PRNG)</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslrenegbuffersize">SSLRenegBufferSize <var>bytes</var></a></td><td> 131072 </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configure el tamaño para el búfer de renegociación 
   SSL</td></tr>
-<tr><td><a href="mod_ssl.html#sslrequire">SSLRequire <em>expresión</em></a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Permite acceso solo cuando una compleja expresión booleana 
+<tr><td><a href="mod_ssl.html#sslrequire">SSLRequire <em>expresión</em></a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Permite acceso sólo cuando una compleja expresión booleana 
   arbitraría es cierta</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslrequiressl">SSLRequireSSL</a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Denegar el acceso cuando no se usa SSL para la petición 
   HTTP</td></tr>

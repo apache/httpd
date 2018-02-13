@@ -58,7 +58,7 @@
 <li><a href="#comments_section">Comentarios</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthBasicAuthoritative" id="AuthBasicAuthoritative">AuthBasicAuthoritative</a> <a name="authbasicauthoritative" id="authbasicauthoritative">Directiva</a></h2>
+<div class="directive-section"><h2><a name="authbasicauthoritative" id="authbasicauthoritative">Directiva</a> <a name="AuthBasicAuthoritative" id="AuthBasicAuthoritative">AuthBasicAuthoritative</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Configura si se pasan autorización o autenticación a los módulos de más bajo nivel</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>AuthBasicAuthoritative On|Off</code></td></tr>
@@ -78,7 +78,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthBasicFake" id="AuthBasicFake">AuthBasicFake</a> <a name="authbasicfake" id="authbasicfake">Directiva</a></h2>
+<div class="directive-section"><h2><a name="authbasicfake" id="authbasicfake">Directiva</a> <a name="AuthBasicFake" id="AuthBasicFake">AuthBasicFake</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Autenticación básica falsa usando las expresiones facilitadas para usario y contraseña</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>AuthBasicFake off|username [password]</code></td></tr>
@@ -122,7 +122,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthBasicProvider" id="AuthBasicProvider">AuthBasicProvider</a> <a name="authbasicprovider" id="authbasicprovider">Directiva</a></h2>
+<div class="directive-section"><h2><a name="authbasicprovider" id="authbasicprovider">Directiva</a> <a name="AuthBasicProvider" id="AuthBasicProvider">AuthBasicProvider</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Configura el/los proveedor/es de autenticación para esta 
 ubicación</td></tr>
@@ -156,7 +156,7 @@ ubicación</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthBasicUseDigestAlgorithm" id="AuthBasicUseDigestAlgorithm">AuthBasicUseDigestAlgorithm</a> <a name="authbasicusedigestalgorithm" id="authbasicusedigestalgorithm">Directiva</a></h2>
+<div class="directive-section"><h2><a name="authbasicusedigestalgorithm" id="authbasicusedigestalgorithm">Directiva</a> <a name="AuthBasicUseDigestAlgorithm" id="AuthBasicUseDigestAlgorithm">AuthBasicUseDigestAlgorithm</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Comprueba contraseñas en proveedores de autenticación como si la Autenticación Digest estuviera en uso en lugar de la Autenticación Básica.
 </td></tr>

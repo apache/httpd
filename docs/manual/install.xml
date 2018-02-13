@@ -144,7 +144,7 @@ sudo service apache2 start
 
     <note type="warning">Don't see your favorite platform mentioned
     here? <a href="http://httpd.apache.org/docs-project/">Come help us
-    improve this doc.</a>
+    improve this doc.</a></note>
 
 </section>
 
