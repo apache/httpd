@@ -457,6 +457,7 @@ struct proxy_worker {
     proxy_balancer  *balancer;  /* which balancer am I in? */
     apr_thread_mutex_t  *tmutex; /* Thread lock for updating address cache */
     void            *context;   /* general purpose storage */
+    ap_conf_vector_t *section_config; /* <Proxy>-section wherein defined */
 };
 
 /* default to health check every 30 seconds */
@@ -513,6 +514,7 @@ struct proxy_balancer {
     void            *context;    /* general purpose storage */
     proxy_balancer_shared *s;    /* Shared data */
     int failontimeout;           /* Whether to mark a member in Err if IO timeout occurs */
+    ap_conf_vector_t *section_config; /* <Proxy>-section wherein defined */
 };
 
 struct proxy_balancer_method {
@@ -574,14 +576,21 @@ APR_DECLARE_OPTIONAL_FN(const char *, set_worker_hc_param,
                         (apr_pool_t *, server_rec *, proxy_worker *,
                          const char *, const char *, void *));
 
-APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, scheme_handler, (request_rec *r,
-                          proxy_worker *worker, proxy_server_conf *conf, char *url,
-                          const char *proxyhost, apr_port_t proxyport))
-APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, canon_handler, (request_rec *r,
-                          char *url))
+APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, section_post_config,
+                          (apr_pool_t *p, apr_pool_t *plog,
+                           apr_pool_t *ptemp, server_rec *s,
+                           ap_conf_vector_t *section_config))
+
+APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, scheme_handler,
+                          (request_rec *r, proxy_worker *worker,
+                           proxy_server_conf *conf, char *url,
+                           const char *proxyhost, apr_port_t proxyport))
+APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, canon_handler,
+                          (request_rec *r, char *url))
 
 APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, create_req, (request_rec *r, request_rec *pr))
 APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, fixups, (request_rec *r))
+
 
 /**
  * pre request hook.
@@ -643,6 +652,9 @@ PROXY_DECLARE(apr_status_t) ap_proxy_ssl_connection_cleanup(proxy_conn_rec *conn
                                                             request_rec *r);
 PROXY_DECLARE(int) ap_proxy_ssl_enable(conn_rec *c);
 PROXY_DECLARE(int) ap_proxy_ssl_disable(conn_rec *c);
+PROXY_DECLARE(int) ap_proxy_ssl_engine(conn_rec *c,
+                                       ap_conf_vector_t *per_dir_config,
+                                       int enable);
 PROXY_DECLARE(int) ap_proxy_conn_is_https(conn_rec *c);
 PROXY_DECLARE(const char *) ap_proxy_ssl_val(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, const char *var);
 
@@ -974,7 +986,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_connect_uds(apr_socket_t *sock,
  * Make a connection record for backend connection
  * @param proxy_function calling proxy scheme (http, ajp, ...)
  * @param conn    acquired connection
- * @param c       client connection record
+ * @param c       client connection record (unused, deprecated)
  * @param s       current server record
  * @return        OK or HTTP_XXX error
  * @note The function will return immediately if conn->connection
@@ -984,6 +996,18 @@ PROXY_DECLARE(int) ap_proxy_connection_create(const char *proxy_function,
                                               proxy_conn_rec *conn,
                                               conn_rec *c, server_rec *s);
 
+/**
+ * Make a connection record for backend connection, using request dir config
+ * @param proxy_function calling proxy scheme (http, ajp, ...)
+ * @param conn    acquired connection
+ * @param r       current request record
+ * @return        OK or HTTP_XXX error
+ * @note The function will return immediately if conn->connection
+ * is already set,
+ */
+PROXY_DECLARE(int) ap_proxy_connection_create_ex(const char *proxy_function,
+                                                 proxy_conn_rec *conn,
+                                                 request_rec *r);
 /**
  * Determine if proxy connection can potentially be reused at the
  * end of this request.

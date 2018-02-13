@@ -105,6 +105,10 @@
                       [normalize-space(.)='.htaccess']">
             <xsl:value-of select="$message[@id='htaccess']/@letter"/>
         </xsl:if>
+        <xsl:if test="contextlist/context
+                      [normalize-space(.)='proxy section']">
+            <xsl:value-of select="$message[@id='proxy']/@letter"/>
+        </xsl:if>
 
       <xsl:text>&amp;</xsl:text>
         <xsl:variable name="status" select="translate(

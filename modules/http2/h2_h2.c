@@ -60,7 +60,6 @@ const char *H2_MAGIC_TOKEN = "PRI * HTTP/2.0\r\n\r\nSM\r\n\r\n";
 /*******************************************************************************
  * The optional mod_ssl functions we need. 
  */
-static APR_OPTIONAL_FN_TYPE(ssl_engine_disable) *opt_ssl_engine_disable;
 static APR_OPTIONAL_FN_TYPE(ssl_is_https) *opt_ssl_is_https;
 static APR_OPTIONAL_FN_TYPE(ssl_var_lookup) *opt_ssl_var_lookup;
 
@@ -446,7 +445,6 @@ apr_status_t h2_h2_init(apr_pool_t *pool, server_rec *s)
 {
     (void)pool;
     ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, s, "h2_h2, child_init");
-    opt_ssl_engine_disable = APR_RETRIEVE_OPTIONAL_FN(ssl_engine_disable);
     opt_ssl_is_https = APR_RETRIEVE_OPTIONAL_FN(ssl_is_https);
     opt_ssl_var_lookup = APR_RETRIEVE_OPTIONAL_FN(ssl_var_lookup);
     

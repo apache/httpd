@@ -580,9 +580,9 @@ run_connect:
     
     /* Step Three: Create conn_rec for the socket we have open now. */
     if (!ctx->p_conn->connection) {
-        if ((status = ap_proxy_connection_create(ctx->proxy_func, ctx->p_conn,
-                                                 ctx->owner, 
-                                                 ctx->server)) != OK) {
+        status = ap_proxy_connection_create_ex(ctx->proxy_func,
+                                               ctx->p_conn, ctx->rbase);
+        if (status != OK) {
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, ctx->owner, APLOGNO(03353)
                           "setup new connection: is_ssl=%d %s %s %s", 
                           ctx->p_conn->is_ssl, ctx->p_conn->ssl_hostname, 

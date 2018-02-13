@@ -1740,7 +1740,8 @@ SSLStrictSNIVHostCheck on
 <name>SSLProxyMachineCertificatePath</name>
 <description>Directory of PEM-encoded client certificates and keys to be used by the proxy</description>
 <syntax>SSLProxyMachineCertificatePath <em>directory</em></syntax>
-<contextlist><context>server config</context></contextlist>
+<contextlist><context>server config</context> <context>virtual host</context>
+<context>proxy section</context></contextlist>
 
 <usage>
 <p>
@@ -1767,7 +1768,8 @@ SSLProxyMachineCertificatePath "/usr/local/apache2/conf/proxy.crt/"
 <name>SSLProxyMachineCertificateFile</name>
 <description>File of concatenated PEM-encoded client certificates and keys to be used by the proxy</description>
 <syntax>SSLProxyMachineCertificateFile <em>filename</em></syntax>
-<contextlist><context>server config</context></contextlist>
+<contextlist><context>server config</context> <context>virtual host</context>
+<context>proxy section</context></contextlist>
 
 <usage>
 <p>
@@ -1794,7 +1796,8 @@ SSLProxyMachineCertificateFile "/usr/local/apache2/conf/ssl.crt/proxy.pem"
 <name>SSLProxyMachineCertificateChainFile</name>
 <description>File of concatenated PEM-encoded CA certificates to be used by the proxy for choosing a certificate</description>
 <syntax>SSLProxyMachineCertificateChainFile <em>filename</em></syntax>
-<contextlist><context>server config</context></contextlist>
+<contextlist><context>server config</context> <context>virtual host</context>
+<context>proxy section</context></contextlist>
 
 <usage>
 <p>
@@ -1826,8 +1829,9 @@ SSLProxyMachineCertificateChainFile "/usr/local/apache2/conf/ssl.crt/proxyCA.pem
 <description>Type of remote server Certificate verification</description>
 <syntax>SSLProxyVerify <em>level</em></syntax>
 <default>SSLProxyVerify none</default>
-<contextlist><context>server config</context>
-<context>virtual host</context> </contextlist>
+<contextlist><context>server config</context> <context>virtual host</context>
+<context>proxy section</context></contextlist>
+<override>Not applicable</override>
 
 <usage>
 
@@ -1866,8 +1870,9 @@ SSLProxyVerify require
 Certificate verification</description>
 <syntax>SSLProxyVerifyDepth <em>number</em></syntax>
 <default>SSLProxyVerifyDepth 1</default>
-<contextlist><context>server config</context>
-<context>virtual host</context> </contextlist>
+<contextlist><context>server config</context> <context>virtual host</context>
+<context>proxy section</context></contextlist>
+<override>Not applicable</override>
 
 <usage>
 <p>
@@ -1895,8 +1900,9 @@ SSLProxyVerifyDepth 10
 </description>
 <syntax>SSLProxyCheckPeerExpire on|off</syntax>
 <default>SSLProxyCheckPeerExpire on</default>
-<contextlist><context>server config</context>
-<context>virtual host</context></contextlist>
+<contextlist><context>server config</context> <context>virtual host</context>
+<context>proxy section</context></contextlist>
+<override>Not applicable</override>
 
 <usage>
 <p>
@@ -1918,8 +1924,9 @@ SSLProxyCheckPeerExpire on
 </description>
 <syntax>SSLProxyCheckPeerCN on|off</syntax>
 <default>SSLProxyCheckPeerCN on</default>
-<contextlist><context>server config</context>
-<context>virtual host</context></contextlist>
+<contextlist><context>server config</context> <context>virtual host</context>
+<context>proxy section</context></contextlist>
+<override>Not applicable</override>
 
 <usage>
 <p>
@@ -1962,8 +1969,9 @@ SSLProxyCheckPeerName off
 </description>
 <syntax>SSLProxyCheckPeerName on|off</syntax>
 <default>SSLProxyCheckPeerName on</default>
-<contextlist><context>server config</context>
-<context>virtual host</context></contextlist>
+<contextlist><context>server config</context> <context>virtual host</context>
+<context>proxy section</context></contextlist>
+<override>Not applicable</override>
 <compatibility>Apache HTTP Server 2.4.5 and later</compatibility>
 
 <usage>
@@ -2001,8 +2009,9 @@ improvements.
 <description>SSL Proxy Engine Operation Switch</description>
 <syntax>SSLProxyEngine on|off</syntax>
 <default>SSLProxyEngine off</default>
-<contextlist><context>server config</context>
-<context>virtual host</context></contextlist>
+<contextlist><context>server config</context> <context>virtual host</context>
+<context>proxy section</context></contextlist>
+<override>Not applicable</override>
 
 <usage>
 <p>
@@ -2035,9 +2044,9 @@ server to proxy SSL/TLS requests.</p>
 <description>Configure usable SSL protocol flavors for proxy usage</description>
 <syntax>SSLProxyProtocol [+|-]<em>protocol</em> ...</syntax>
 <default>SSLProxyProtocol all -SSLv3 (up to 2.4.16: all)</default>
-<contextlist><context>server config</context>
-<context>virtual host</context></contextlist>
-<override>Options</override>
+<contextlist><context>server config</context> <context>virtual host</context>
+<context>proxy section</context></contextlist>
+<override>Not applicable</override>
 
 <usage>
 <!-- XXX Why does this have an override and not .htaccess context? -->
@@ -2057,11 +2066,10 @@ for additional information.
 proxy handshake</description>
 <syntax>SSLProxyCipherSuite <em>cipher-spec</em></syntax>
 <default>SSLProxyCipherSuite ALL:!ADH:RC4+RSA:+HIGH:+MEDIUM:+LOW:+EXP</default>
-<contextlist><context>server config</context>
-<context>virtual host</context>
-<context>directory</context>
-<context>.htaccess</context></contextlist>
-<override>AuthConfig</override>
+<contextlist><context>server config</context> <context>virtual host</context>
+<context>proxy section</context></contextlist>
+<override>Not applicable</override>
+
 <usage>
 <p>Equivalent to <directive module="mod_ssl">SSLCipherSuite</directive>, but
 for the proxy connection.
@@ -2075,8 +2083,9 @@ for additional information.</p>
 <description>Directory of PEM-encoded CA Certificates for
 Remote Server Auth</description>
 <syntax>SSLProxyCACertificatePath <em>directory-path</em></syntax>
-<contextlist><context>server config</context>
-<context>virtual host</context></contextlist>
+<contextlist><context>server config</context> <context>virtual host</context>
+<context>proxy section</context></contextlist>
+<override>Not applicable</override>
 
 <usage>
 <p>
@@ -2102,8 +2111,9 @@ SSLProxyCACertificatePath "/usr/local/apache2/conf/ssl.crt/"
 <description>File of concatenated PEM-encoded CA Certificates
 for Remote Server Auth</description>
 <syntax>SSLProxyCACertificateFile <em>file-path</em></syntax>
-<contextlist><context>server config</context>
-<context>virtual host</context></contextlist>
+<contextlist><context>server config</context> <context>virtual host</context>
+<context>proxy section</context></contextlist>
+<override>Not applicable</override>
 
 <usage>
 <p>
@@ -2126,8 +2136,9 @@ SSLProxyCACertificateFile "/usr/local/apache2/conf/ssl.crt/ca-bundle-remote-serv
 <description>Directory of PEM-encoded CA CRLs for
 Remote Server Auth</description>
 <syntax>SSLProxyCARevocationPath <em>directory-path</em></syntax>
-<contextlist><context>server config</context>
-<context>virtual host</context></contextlist>
+<contextlist><context>server config</context> <context>virtual host</context>
+<context>proxy section</context></contextlist>
+<override>Not applicable</override>
 
 <usage>
 <p>
@@ -2153,8 +2164,9 @@ SSLProxyCARevocationPath "/usr/local/apache2/conf/ssl.crl/"
 <description>File of concatenated PEM-encoded CA CRLs for
 Remote Server Auth</description>
 <syntax>SSLProxyCARevocationFile <em>file-path</em></syntax>
-<contextlist><context>server config</context>
-<context>virtual host</context></contextlist>
+<contextlist><context>server config</context> <context>virtual host</context>
+<context>proxy section</context></contextlist>
+<override>Not applicable</override>
 
 <usage>
 <p>
@@ -2178,8 +2190,9 @@ SSLProxyCARevocationFile "/usr/local/apache2/conf/ssl.crl/ca-bundle-remote-serve
 <description>Enable CRL-based revocation checking for Remote Server Auth</description>
 <syntax>SSLProxyCARevocationCheck chain|leaf|none</syntax>
 <default>SSLProxyCARevocationCheck none</default>
-<contextlist><context>server config</context>
-<context>virtual host</context></contextlist>
+<contextlist><context>server config</context> <context>virtual host</context>
+<context>proxy section</context></contextlist>
+<override>Not applicable</override>
 
 <usage>
 <p>

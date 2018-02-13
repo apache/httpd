@@ -1252,8 +1252,7 @@ AP_DECLARE(const char *) ap_check_cmd_context(cmd_parms *cmd,
                            " cannot occur within <VirtualHost> section", NULL);
     }
 
-    if ((forbidden & (NOT_IN_LIMIT | NOT_IN_DIR_LOC_FILE))
-        && cmd->limited != -1) {
+    if ((forbidden & NOT_IN_DIR_CONTEXT) && cmd->limited != -1) {
         return apr_pstrcat(cmd->pool, cmd->cmd->name, gt,
                            " cannot occur within <Limit> or <LimitExcept> "
                            "section", NULL);
@@ -1267,8 +1266,7 @@ AP_DECLARE(const char *) ap_check_cmd_context(cmd_parms *cmd,
     if ((forbidden & NOT_IN_DIR_LOC_FILE) == NOT_IN_DIR_LOC_FILE) {
         if (cmd->path != NULL) {
             return apr_pstrcat(cmd->pool, cmd->cmd->name, gt,
-                            " cannot occur within <Directory/Location/Files> "
-                            "section", NULL);
+                            " cannot occur within directory context", NULL);
         }
         if (cmd->cmd->req_override & EXEC_ON_READ) {
             /* EXEC_ON_READ must be NOT_IN_DIR_LOC_FILE, if not, it will
@@ -1289,7 +1287,10 @@ AP_DECLARE(const char *) ap_check_cmd_context(cmd_parms *cmd,
                 || (found = find_parent(cmd->directive, "<FilesMatch"))
                 || (found = find_parent(cmd->directive, "<If"))
                 || (found = find_parent(cmd->directive, "<ElseIf"))
-                || (found = find_parent(cmd->directive, "<Else"))))) {
+                || (found = find_parent(cmd->directive, "<Else"))))
+        || ((forbidden & NOT_IN_PROXY)
+            && ((found = find_parent(cmd->directive, "<Proxy"))
+                || (found = find_parent(cmd->directive, "<ProxyMatch"))))) {
         return apr_pstrcat(cmd->pool, cmd->cmd->name, gt,
                            " cannot occur within ", found->directive,
                            "> section", NULL);
@@ -1304,7 +1305,7 @@ static const char *set_access_name(cmd_parms *cmd, void *dummy,
     void *sconf = cmd->server->module_config;
     core_server_config *conf = ap_get_core_module_config(sconf);
 
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE);
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_CONTEXT);
     if (err != NULL) {
         return err;
     }
@@ -1511,7 +1512,7 @@ static const char *set_gprof_dir(cmd_parms *cmd, void *dummy, const char *arg)
     void *sconf = cmd->server->module_config;
     core_server_config *conf = ap_get_core_module_config(sconf);
 
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE);
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_CONTEXT);
     if (err != NULL) {
         return err;
     }
@@ -1547,7 +1548,7 @@ static const char *set_document_root(cmd_parms *cmd, void *dummy,
     void *sconf = cmd->server->module_config;
     core_server_config *conf = ap_get_core_module_config(sconf);
 
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE);
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_CONTEXT);
     if (err != NULL) {
         return err;
     }
@@ -2326,7 +2327,7 @@ static const char *dirsection(cmd_parms *cmd, void *mconfig, const char *arg)
     ap_regex_t *r = NULL;
     const command_rec *thiscmd = cmd->cmd;
 
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE);
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_CONTEXT);
     if (err != NULL) {
         return err;
     }
@@ -2427,7 +2428,7 @@ static const char *urlsection(cmd_parms *cmd, void *mconfig, const char *arg)
     ap_regex_t *r = NULL;
     const command_rec *thiscmd = cmd->cmd;
     ap_conf_vector_t *new_url_conf = ap_create_per_dir_config(cmd->pool);
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE);
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_CONTEXT);
     if (err != NULL) {
         return err;
     }
@@ -2905,7 +2906,7 @@ AP_DECLARE(void) ap_set_server_protocol(server_rec* s, const char* proto)
 static const char *set_protocol(cmd_parms *cmd, void *dummy,
                                 const char *arg)
 {
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE);
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_CONTEXT);
     core_server_config *conf =
         ap_get_core_module_config(cmd->server->module_config);
     char* proto;
@@ -2929,8 +2930,7 @@ static const char *set_server_string_slot(cmd_parms *cmd, void *dummy,
     int offset = (int)(long)cmd->info;
     char *struct_ptr = (char *)cmd->server;
 
-    const char *err = ap_check_cmd_context(cmd,
-                                           NOT_IN_DIR_LOC_FILE);
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_CONTEXT);
     if (err != NULL) {
         return err;
     }
@@ -2949,7 +2949,7 @@ static const char *set_server_string_slot(cmd_parms *cmd, void *dummy,
 
 static const char *server_hostname_port(cmd_parms *cmd, void *dummy, const char *arg)
 {
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE);
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_CONTEXT);
     const char *portstr, *part;
     char *scheme;
     int port;
@@ -3053,7 +3053,7 @@ static const char *set_runtime_dir(cmd_parms *cmd, void *dummy, const char *arg)
 
 static const char *set_timeout(cmd_parms *cmd, void *dummy, const char *arg)
 {
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE);
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_CONTEXT);
 
     if (err != NULL) {
         return err;
@@ -3108,7 +3108,7 @@ static const char *set_hostname_lookups(cmd_parms *cmd, void *d_,
 static const char *set_serverpath(cmd_parms *cmd, void *dummy,
                                   const char *arg)
 {
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE);
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_CONTEXT);
 
     if (err != NULL) {
         return err;
@@ -3500,7 +3500,7 @@ static const char *set_serv_tokens(cmd_parms *cmd, void *dummy,
 static const char *set_limit_req_line(cmd_parms *cmd, void *dummy,
                                       const char *arg)
 {
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE);
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_CONTEXT);
     int lim;
 
     if (err != NULL) {
@@ -3520,7 +3520,7 @@ static const char *set_limit_req_line(cmd_parms *cmd, void *dummy,
 static const char *set_limit_req_fieldsize(cmd_parms *cmd, void *dummy,
                                            const char *arg)
 {
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE);
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_CONTEXT);
     int lim;
 
     if (err != NULL) {
@@ -3541,7 +3541,7 @@ static const char *set_limit_req_fieldsize(cmd_parms *cmd, void *dummy,
 static const char *set_limit_req_fields(cmd_parms *cmd, void *dummy,
                                         const char *arg)
 {
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE);
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_CONTEXT);
     int lim;
 
     if (err != NULL) {
@@ -3878,7 +3878,7 @@ static const char *set_protocols(cmd_parms *cmd, void *dummy,
     core_server_config *conf =
     ap_get_core_module_config(cmd->server->module_config);
     const char **np;
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE);
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_CONTEXT);
 
     if (err) {
         return err;
@@ -3895,7 +3895,7 @@ static const char *set_protocols_honor_order(cmd_parms *cmd, void *dummy,
 {
     core_server_config *conf =
     ap_get_core_module_config(cmd->server->module_config);
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE);
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_CONTEXT);
     
     if (err) {
         return err;
