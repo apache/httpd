@@ -34,7 +34,6 @@
 <a href="./tr/sitemap.html" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="./zh-cn/sitemap.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
 <p>Bu sayfada <a href="./">Apache HTTP Sunucusu Sürüm 2.4
 Belgeleri</a>nin tamamı listelenmiştir.</p>
@@ -256,6 +255,7 @@ Windows ile Apache Kullanımı</a></li>
 <li><a href="mod/mod_logio.html">Apache Modülü mod_logio</a></li>
 <li><a href="mod/mod_lua.html">Apache Modülü mod_lua</a></li>
 <li><a href="mod/mod_macro.html">Apache Modülü mod_macro</a></li>
+<li><a href="mod/mod_md.html">Apache Modülü mod_md</a></li>
 <li><a href="mod/mod_mime.html">Apache Modülü mod_mime</a></li>
 <li><a href="mod/mod_mime_magic.html">Apache Modülü mod_mime_magic</a></li>
 <li><a href="mod/mod_negotiation.html">Apache Modülü mod_negotiation</a></li>
@@ -328,6 +328,7 @@ Windows ile Apache Kullanımı</a></li>
 <li><a href="mod/">Modül Dizini</a></li>
 <li><a href="mod/directives.html">Yönerge Dizini</a></li>
 <li><a href="mod/quickreference.html">Hızlı Yönerge Kılavuzu</a></li>
+<li><a href="mod/overrides.html">.htaccess için Geçersizleştirme Sınıfları</a></li>
 </ul>
 </div></div>
 <div class="bottomlang">
