@@ -217,10 +217,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Due to a logic error, there could be a NULL pointer dereference.
      [Stefan Fritsch]
      trunk patch: http://svn.apache.org/r1745863
+                  http://svn.apache.org/r1745864
      2.4.x patch: trunk works
-     +1: jailletc36 (by inspection),
-     jailletc36: a CHANGES entry should be added, IMHO
-                 r1745864 could be backported at the same time to synch 2.4 and trunk
+     +1: jailletc36, minfrin
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
