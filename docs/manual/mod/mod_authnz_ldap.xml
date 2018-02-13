@@ -482,7 +482,7 @@ Require ldap-dn cn=Barbara Jenson, o=Example
     the attribute employeeType = active</p>
 
     <highlight language="config">
-Require ldap-attribute "employeeType=active"
+Require ldap-attribute employeeType="active"
 </highlight>
 
     <p>Multiple attribute/value pairs can be specified on the same line
