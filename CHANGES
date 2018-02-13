@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.30
 
+  *) mod_proxy_uwsgi: Add in UWSGI proxy (sub)module. [Roberto De Ioris,
+     Jim Jagielski]
+
   *) mod_proxy_balancer,mod_slotmem_shm: Rework SHM reuse/deletion to not
      depend on the number of restarts (non-Unix systems) and preserve shared
      names as much as possible on configuration changes for SHMs and persisted
