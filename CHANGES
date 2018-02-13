@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_proxy: Provide an RFC1035 compliant version of the hostname in the
+     proxy_worker_shared structure. PR62085 [Graham Leggett]
+
   *) mod_proxy: Worker schemes and hostnames which are too large are no
      longer fatal errors; it is logged and the truncated values are stored.
 

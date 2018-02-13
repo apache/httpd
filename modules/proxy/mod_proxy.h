@@ -355,6 +355,8 @@ PROXY_WORKER_HC_FAIL )
 #define PROXY_BALANCER_MAX_STICKY_SIZE   64
 #define PROXY_WORKER_MAX_SECRET_SIZE     64
 
+#define PROXY_RFC1035_HOSTNAME_SIZE	256
+
 /* RFC-1035 mentions limits of 255 for host-names and 253 for domain-names,
  * dotted together(?) this would fit the below size (+ trailing NUL).
  */
@@ -390,7 +392,7 @@ typedef struct {
 typedef struct {
     char      name[PROXY_WORKER_MAX_NAME_SIZE];
     char      scheme[PROXY_WORKER_MAX_SCHEME_SIZE];   /* scheme to use ajp|http|https */
-    char      hostname[PROXY_WORKER_MAX_HOSTNAME_SIZE];  /* remote backend address */
+    char      hostname[PROXY_WORKER_MAX_HOSTNAME_SIZE];  /* remote backend address (deprecated, use hostname_ex below) */
     char      route[PROXY_WORKER_MAX_ROUTE_SIZE];     /* balancing route */
     char      redirect[PROXY_WORKER_MAX_ROUTE_SIZE];  /* temporary balancing redirection route */
     char      flusher[PROXY_WORKER_MAX_SCHEME_SIZE];  /* flush provider used by mod_proxy_fdpass */
@@ -452,6 +454,7 @@ typedef struct {
     unsigned int     is_name_matchable:1;
     char      secret[PROXY_WORKER_MAX_SECRET_SIZE]; /* authentication secret (e.g. AJP13) */
     char      upgrade[PROXY_WORKER_MAX_SCHEME_SIZE];/* upgrade protocol used by mod_proxy_wstunnel */
+    char      hostname_ex[PROXY_RFC1035_HOSTNAME_SIZE];  /* RFC1035 compliant version of the remote backend address */
 } proxy_worker_shared;
 
 #define ALIGNED_PROXY_WORKER_SHARED_SIZE (APR_ALIGN_DEFAULT(sizeof(proxy_worker_shared)))

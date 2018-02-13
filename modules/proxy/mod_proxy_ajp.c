@@ -217,7 +217,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
         ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(00868)
                       "request failed to %pI (%s)",
                       conn->worker->cp->addr,
-                      conn->worker->s->hostname);
+                      conn->worker->s->hostname_ex);
         if (status == AJP_EOVERFLOW)
             return HTTP_BAD_REQUEST;
         else {
@@ -299,7 +299,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(00876)
                               "send failed to %pI (%s)",
                               conn->worker->cp->addr,
-                              conn->worker->s->hostname);
+                              conn->worker->s->hostname_ex);
                 /*
                  * It is fatal when we failed to send a (part) of the request
                  * body.
@@ -339,7 +339,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
         ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(00878)
                       "read response failed from %pI (%s)",
                       conn->worker->cp->addr,
-                      conn->worker->s->hostname);
+                      conn->worker->s->hostname_ex);
 
         /* If we had a successful cping/cpong and then a timeout
          * we assume it is a request that cause a back-end timeout,
@@ -639,7 +639,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00892)
                       "got response from %pI (%s)",
                       conn->worker->cp->addr,
-                      conn->worker->s->hostname);
+                      conn->worker->s->hostname_ex);
 
         if (conf->error_override && ap_is_HTTP_ERROR(r->status)) {
             /* clear r->status for override error, otherwise ErrorDocument
@@ -663,7 +663,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
         ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(00893)
                       "dialog to %pI (%s) failed",
                       conn->worker->cp->addr,
-                      conn->worker->s->hostname);
+                      conn->worker->s->hostname_ex);
         /*
          * If we already send data, signal a broken backend connection
          * upwards in the chain.
@@ -809,7 +809,7 @@ static int proxy_ajp_handler(request_rec *r, proxy_worker *worker,
                 backend->close = 1;
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(00897)
                               "cping/cpong failed to %pI (%s)",
-                              worker->cp->addr, worker->s->hostname);
+                              worker->cp->addr, worker->s->hostname_ex);
                 status = HTTP_SERVICE_UNAVAILABLE;
                 retry++;
                 continue;
