@@ -148,6 +148,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              and virtual host, though using ap_server_conf makes them global
              only (thus less useful too...).
         jim: Can docco patch be post-backport?
+     minfrin: The docs seem correct, and there is a long explanation in the docs of
+              why the scoping is as it is.
+              +1 with this to fix a warning:
+                  http://svn.apache.org/r1776734
 
   *) proxy_util: Schemes and hostnames that are "too long" are
      no longer automatically fatal errors but are instead logged
