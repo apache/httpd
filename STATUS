@@ -135,7 +135,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1824176
      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/proxy-rfc1035-hostname.diff
      +1: minfrin, jim, 
-
+     jailletc36: is message 010118 still needed? Or at least mitigated with
+                 something like: "for third party proxy module usage only"?
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
