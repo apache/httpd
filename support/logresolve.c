@@ -284,7 +284,7 @@ int main(int argc, const char * const argv[])
              */
             status = apr_sockaddr_info_get(&ipdouble, hostname, ip->family, 0,
                                            0, pline);
-            if (status == APR_SUCCESS ||
+            if (status != APR_SUCCESS ||
                 memcmp(ipdouble->ipaddr_ptr, ip->ipaddr_ptr, ip->ipaddr_len)) {
                 /* Double-lookup failed  */
                 *space = ' ';
@@ -299,7 +299,7 @@ int main(int argc, const char * const argv[])
             }
         }
 
-        /* Outout the resolved name */
+        /* Output the resolved name */
         apr_file_printf(outfile, "%s %s", hostname, space + 1);
 
         /* Store it in the cache */

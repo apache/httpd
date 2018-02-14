@@ -119,13 +119,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) logresolve: Fix segfault with logresolve -c and IPv6
-     Due to a logic error, there could be a NULL pointer dereference.
-     [Stefan Fritsch]
-     trunk patch: http://svn.apache.org/r1745863
-                  http://svn.apache.org/r1745864
-     2.4.x patch: trunk works
-     +1: jailletc36, minfrin, jim
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
