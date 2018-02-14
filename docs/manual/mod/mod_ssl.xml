@@ -2842,7 +2842,7 @@ SSLOpenSSLConfCmd SignatureAlgorithms RSA+SHA384:ECDSA+SHA256
 <directivesynopsis type="section" idtype="section">
 <name>SSLPolicyDefine</name>
 <description>Define a named set of SSL configurations</description>
-<syntax>&lt;SSLPolicy <em>name</em>&gt;</syntax>
+<syntax>&lt;SSLPolicyDefine <em>name</em>&gt;</syntax>
 <contextlist><context>server config</context></contextlist>
 <compatibility>Available in httpd 2.4.30 and later</compatibility>
 
