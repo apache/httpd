@@ -3,6 +3,7 @@ Changes with Apache 2.5.1
 
   *) logresolve: Fix incorrect behavior or segfault if -c flag is used
      Fixes: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=823259
+     [Stefan Fritsch]
 
   *) mod_proxy: Provide an RFC1035 compliant version of the hostname in the
      proxy_worker_shared structure. PR62085 [Graham Leggett]
