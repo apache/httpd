@@ -137,6 +137,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: minfrin, jim, 
      jailletc36: is message 010118 still needed? Or at least mitigated with
                  something like: "for third party proxy module usage only"?
+                 Also, does it require a ap_mmn.h update?
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
