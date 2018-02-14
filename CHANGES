@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.30
 
+  *) logresolve: Fix incorrect behavior or segfault if -c flag is used
+     Fixes: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=823259
+     [Stefan Fritsch]
+
   *) mod_remoteip: Add support for PROXY protocol (code donated by Cloudzilla).
      Add ability for PROXY protocol processing to be optional to donated code.
      See also: http://www.haproxy.org/download/1.5/doc/proxy-protocol.txt
