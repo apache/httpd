@@ -1,11 +1,6 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.30
 
-  *) mod_remoteip: Add support for PROXY protocol (code donated by Cloudzilla).
-     Add ability for PROXY protocol processing to be optional to donated code.
-     See also: http://www.haproxy.org/download/1.5/doc/proxy-protocol.txt
-     [Cloudzilla/roadrunner2@GitHub, Jim Jagielski, Daniel Ruggeri]
-
   *) mod_proxy, mod_ssl: Handle SSLProxy* directives in <Proxy> sections,
      allowing per backend TLS configuration.  [Yann Ylavic]
 
