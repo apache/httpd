@@ -169,6 +169,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1: jailletc36, minfrin
 
+  *) mod_proxy: Provide an RFC1035 compliant version of the hostname in the
+     proxy_worker_shared structure. PR62085
+     trunk patch: http://svn.apache.org/r1824176
+     2.4.x patch: trunk works
+     +1: minfrin
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
