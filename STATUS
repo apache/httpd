@@ -119,35 +119,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_remoteip: Add PROXY protocol support
-     trunk patch: http://svn.apache.org/r1776575
-                  http://svn.apache.org/r1776578 (doc fix)
-                  http://svn.apache.org/r1776624
-                  http://svn.apache.org/r1776627 (shortened name + doc fix)
-                  http://svn.apache.org/r1776674 (attribution moved to CHANGES)
-                  http://svn.apache.org/r1776734
-                  http://svn.apache.org/r1776740 (attribution updated in mod_remotip.c)
-                  http://svn.apache.org/r1778268 (fix compiler warning)
-                  http://svn.apache.org/r1780725 (set buckets aside)
-                  http://svn.apache.org/r1781030 (fix strict GCC warning)
-                  http://svn.apache.org/r1781031 (reference the filter by handle)
-                  http://svn.apache.org/r1781701 (rework optional processing case)
-                  http://svn.apache.org/r1788674 (final edge cases/ignore slave conns)
-                  http://svn.apache.org/r1789800 (remove optional processing)
-                  http://svn.apache.org/r1790169 (rename "exception" directive)
-                  http://svn.apache.org/r1790457 (Update directive name in err message)
-                  http://svn.apache.org/r1790691
-                  http://svn.apache.org/r1806985
-                  http://svn.apache.org/r1818279
-     2.4 convenience patch (includes CHANGES):
-                  http://home.apache.org/~ylavic/patches/RemoteIPProxyProtocol.2.4-v3.patch
-     +1: druggeri, jim, minfrin
-     ylavic: RemoteIPProxyProtocol* are documented as scoped to server config
-             and virtual host, though using ap_server_conf makes them global
-             only (thus less useful too...).
-        jim: Can docco patch be post-backport?
-     minfrin: The docs seem correct, and there is a long explanation in the docs of
-              why the scoping is as it is.
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
