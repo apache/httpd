@@ -118,6 +118,12 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_proxy: fix slotmem selection for proxy balancers. Without this, balancers
+     silently fail and proxy requests result in a 500 response.
+     trunk patch: /httpd/httpd/trunk:r1667707
+     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/balancer-slotmem-selection.diff
+     +1: icing, jim, ylavic
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -138,12 +144,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      jailletc36: is message 010118 still needed? Or at least mitigated with
                  something like: "for third party proxy module usage only"?
                  Also, does it require a ap_mmn.h update?
-
-  *) mod_proxy: fix slotmem selection for proxy balancers. Without this, balancers
-     silently fail and proxy requests result in a 500 response.
-     trunk patch: /httpd/httpd/trunk:r1667707
-     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/balancer-slotmem-selection.diff
-     +1: icing, jim
     
 
 PATCHES/ISSUES THAT ARE BEING WORKED
