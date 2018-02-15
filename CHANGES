@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) regex: Allow to configure global/default options for regexes, like
+     caseless matching or extended format.  [Yann Ylavic]
+
   *) mod_authnz_ldap: Fix language long names detection as short name.
      [Yann Ylavic]
 
