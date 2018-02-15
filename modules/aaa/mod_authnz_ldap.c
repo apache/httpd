@@ -126,9 +126,13 @@ static char* derive_codepage_from_lang (apr_pool_t *p, char *language)
 
     charset = (char*) apr_hash_get(charset_conversions, language, APR_HASH_KEY_STRING);
 
-    if (!charset) {
-        language[2] = '\0';
-        charset = (char*) apr_hash_get(charset_conversions, language, APR_HASH_KEY_STRING);
+    /*
+     * Test if language values like 'en-US' return a match from the charset
+     * conversion map when shortened to 'en'.
+     */
+    if (!charset && strlen(language) > 3 && language[2] == '-') {
+        char *language_short = apr_pstrndup(p, language, 2);
+        charset = (char*) apr_hash_get(charset_conversions, language_short, APR_HASH_KEY_STRING);
     }
 
     if (charset) {
