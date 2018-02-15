@@ -562,6 +562,8 @@
  * 20171014.2 (2.5.1-dev)  Add "use_specific_errors" to listen_rec and 
  *                         ap_accept_error_is_nonfatal()
  * 20171014.3 (2.5.1-dev)  AP_DECLARE ap_parse_vhost_addrs() as public 
+ * 20171014.4 (2.5.1-dev)  Add failontimeout_set, growth_set and lbmethod_set
+ *                         to proxy_balancer struct
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -569,7 +571,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20171014
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 3                 /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 4                 /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
