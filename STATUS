@@ -138,7 +138,24 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      jailletc36: is message 010118 still needed? Or at least mitigated with
                  something like: "for third party proxy module usage only"?
                  Also, does it require a ap_mmn.h update?
-    
+
+  *) core: For consistency, ensure that read lines are NUL terminated on any
+     error, not only on buffer full.
+     trunk patch: http://svn.apache.org/r1824303
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: ylavic
+
+  *) mod_authnz_ldap: Fix language long names detection as short name.
+     trunk patch: http://svn.apache.org/r1824336
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: ylavic
+
+  *) regex: Allow to configure global/default options for regexes, like
+     caseless matching or extended format.
+     trunk patch: http://svn.apache.org/r1824339
+     2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-global_regex_options.patch
+     +1: ylavic
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
