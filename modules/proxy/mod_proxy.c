@@ -365,6 +365,7 @@ static const char *set_balancer_param(proxy_server_conf *conf,
         }
         else
             balancer->s->sticky_separator = *val;
+        balancer->s->sticky_separator_set = 1;
     }
     else if (!strcasecmp(key, "nofailover")) {
         /* If set to 'on' the session will break
@@ -377,6 +378,7 @@ static const char *set_balancer_param(proxy_server_conf *conf,
             balancer->s->sticky_force = 0;
         else
             return "failover must be On|Off";
+        balancer->s->sticky_force_set = 1;
     }
     else if (!strcasecmp(key, "timeout")) {
         /* Balancer timeout in seconds.
@@ -407,6 +409,7 @@ static const char *set_balancer_param(proxy_server_conf *conf,
         if (provider) {
             balancer->lbmethod = provider;
             if (PROXY_STRNCPY(balancer->s->lbpname, val) == APR_SUCCESS) {
+                balancer->lbmethod_set = 1;
                 return NULL;
             }
             else {
@@ -426,6 +429,7 @@ static const char *set_balancer_param(proxy_server_conf *conf,
             balancer->s->scolonsep = 0;
         else
             return "scolonpathdelim must be On|Off";
+        balancer->s->scolonsep_set = 1;
     }
     else if (!strcasecmp(key, "failonstatus")) {
         char *val_split;
@@ -456,6 +460,7 @@ static const char *set_balancer_param(proxy_server_conf *conf,
             balancer->failontimeout = 0;
         else
             return "failontimeout must be On|Off";
+        balancer->failontimeout_set = 1;
     }
     else if (!strcasecmp(key, "nonce")) {
         if (!strcasecmp(val, "None")) {
@@ -466,12 +471,14 @@ static const char *set_balancer_param(proxy_server_conf *conf,
                 return "Provided nonce is too large";
             }
         }
+        balancer->s->nonce_set = 1;
     }
     else if (!strcasecmp(key, "growth")) {
         ival = atoi(val);
         if (ival < 1 || ival > 100)   /* arbitrary limit here */
             return "growth must be between 1 and 100";
         balancer->growth = ival;
+        balancer->growth_set = 1;
     }
     else if (!strcasecmp(key, "forcerecovery")) {
         if (!strcasecmp(val, "on"))
@@ -480,6 +487,7 @@ static const char *set_balancer_param(proxy_server_conf *conf,
             balancer->s->forcerecovery = 0;
         else
             return "forcerecovery must be On|Off";
+        balancer->s->forcerecovery_set = 1;
     }
     else {
         return "unknown Balancer parameter";
@@ -1360,6 +1368,99 @@ static void * create_proxy_config(apr_pool_t *p, server_rec *s)
     return ps;
 }
 
+static apr_array_header_t *merge_balancers(apr_pool_t *p,
+                                           apr_array_header_t *base,
+                                           apr_array_header_t *overrides)
+{
+    proxy_balancer *b1;
+    proxy_balancer *b2;
+    proxy_balancer tmp;
+    int x, y, found;
+    apr_array_header_t *tocopy = apr_array_make(p, 1, sizeof(proxy_balancer));
+
+    /* Check if the balancer is defined in both override and base configs:
+     * a) If it is, Create copy of base balancer and change the configuration
+     *    which can be changed by ProxyPass.
+     * b) Otherwise, copy the balancer to tocopy array and merge it later.
+     */
+    b1 = (proxy_balancer *) base->elts;
+    for (y = 0; y < base->nelts; y++) {
+        b2 = (proxy_balancer *) overrides->elts;
+        for (x = 0, found = 0; x < overrides->nelts; x++) {
+            if (b1->hash.def == b2->hash.def && b1->hash.fnv == b2->hash.fnv) {
+                tmp = *b2;
+                *b2 = *b1;
+                b2->s = tmp.s;
+
+                /* For shared memory entries, b2->s belongs to override
+                 * balancer, so if some entry is not set there, we have to
+                 * update it according to the base balancer. */
+                if (*b2->s->sticky == 0 && *b1->s->sticky) {
+                    PROXY_STRNCPY(b2->s->sticky_path, b1->s->sticky_path);
+                    PROXY_STRNCPY(b2->s->sticky, b1->s->sticky);
+                }
+                if (!b2->s->sticky_separator_set
+                    && b1->s->sticky_separator_set) {
+                    b2->s->sticky_separator_set = b1->s->sticky_separator_set;
+                    b2->s->sticky_separator = b1->s->sticky_separator;
+                }
+                if (!b2->s->timeout && b1->s->timeout) {
+                    b2->s->timeout = b1->s->timeout;
+                }
+                if (!b2->s->max_attempts_set && b1->s->max_attempts_set) {
+                    b2->s->max_attempts_set = b1->s->max_attempts_set;
+                    b2->s->max_attempts = b1->s->max_attempts;
+                }
+                if (!b2->s->nonce_set && b1->s->nonce_set) {
+                    b2->s->nonce_set = b1->s->nonce_set;
+                    PROXY_STRNCPY(b2->s->nonce, b1->s->nonce);
+                }
+                if (!b2->s->sticky_force_set && b1->s->sticky_force_set) {
+                    b2->s->sticky_force_set = b1->s->sticky_force_set;
+                    b2->s->sticky_force = b1->s->sticky_force;
+                }
+                if (!b2->s->scolonsep_set && b1->s->scolonsep_set) {
+                    b2->s->scolonsep_set = b1->s->scolonsep_set;
+                    b2->s->scolonsep = b1->s->scolonsep;
+                }
+                if (!b2->s->forcerecovery_set && b1->s->forcerecovery_set) {
+                    b2->s->forcerecovery_set = b1->s->forcerecovery_set;
+                    b2->s->forcerecovery = b1->s->forcerecovery;
+                }
+
+                /* For non-shared memory entries, b2 is copy of b1, so we have
+                 * to use tmp copy of b1 to detect changes done in override. */
+                if (tmp.lbmethod_set) {
+                    b2->lbmethod_set = tmp.lbmethod_set;
+                    b2->lbmethod = tmp.lbmethod;
+                }
+                if (tmp.growth_set) {
+                    b2->growth_set = tmp.growth_set;
+                    b2->growth = tmp.growth;
+                }
+                if (tmp.failontimeout_set) {
+                    b2->failontimeout_set = tmp.failontimeout_set;
+                    b2->failontimeout = tmp.failontimeout;
+                }
+                if (!apr_is_empty_array(tmp.errstatuses)) {
+                    apr_array_cat(tmp.errstatuses, b2->errstatuses);
+                    b2->errstatuses = tmp.errstatuses;
+                }
+
+                found = 1;
+                break;
+            }
+            b2++;
+        }
+        if (!found) {
+            *(proxy_balancer *)apr_array_push(tocopy) = *b1;
+        }
+        b1++;
+    }
+
+    return apr_array_append(p, tocopy, overrides);
+}
+
 static void * merge_proxy_config(apr_pool_t *p, void *basev, void *overridesv)
 {
     proxy_server_conf *ps = apr_pcalloc(p, sizeof(proxy_server_conf));
@@ -1384,7 +1485,7 @@ static void * merge_proxy_config(apr_pool_t *p, void *basev, void *overridesv)
     ps->dirconn = apr_array_append(p, base->dirconn, overrides->dirconn);
     if (ps->inherit || ps->ppinherit) {
         ps->workers = apr_array_append(p, base->workers, overrides->workers);
-        ps->balancers = apr_array_append(p, base->balancers, overrides->balancers);
+        ps->balancers = merge_balancers(p, base->balancers, overrides->balancers);
     }
     else {
         ps->workers = overrides->workers;
