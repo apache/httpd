@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_cache_socache: Fix caching of empty headers up to carriage return.
+     [Yann Ylavic]
+
   *) regex: Allow to configure global/default options for regexes, like
      caseless matching or extended format.  [Yann Ylavic]
 
