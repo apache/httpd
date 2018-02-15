@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_authnz_ldap: Fix language long names detection as short name.
+     [Yann Ylavic]
+
   *) core: For consistency, ensure that read lines are NUL terminated on any
      error, not only on buffer full.  [Yann Ylavic]
 
