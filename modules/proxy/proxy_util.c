@@ -1731,7 +1731,7 @@ PROXY_DECLARE(char *) ap_proxy_define_worker(apr_pool_t *p,
         return apr_psprintf(p, "worker hostname (%s) too long", uri.hostname);
     }
     if (PROXY_STRNCPY(wshared->hostname, uri.hostname) != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf, APLOGNO(010118)
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, ap_server_conf, APLOGNO(010118)
         "worker hostname (%s) too long; truncated for legacy modules that do not use "
         "proxy_worker_shared->hostname_ex: %s", uri.hostname, wshared->hostname);
     }
