@@ -118,17 +118,22 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
   *) proxy_util: Schemes and hostnames that are "too long" are
      no longer automatically fatal errors but are instead logged
      and truncated, at which point the admin can determine if that
      is OK or not.
      trunk patch: http://svn.apache.org/r1823482
      2.4.x patch: trunk works
-     +1: jim, minfrin
+     +1: jim, minfrin, rpluem
+
+  *) mod_authnz_ldap: Fix language long names detection as short name.
+     trunk patch: http://svn.apache.org/r1824336
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: ylavic, elukey, rpluem
+
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
 
   *) mod_proxy: Provide an RFC1035 compliant version of the hostname in the
      proxy_worker_shared structure. PR62085
@@ -138,33 +143,31 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      jailletc36: is message 010118 still needed? Or at least mitigated with
                  something like: "for third party proxy module usage only"?
                  Also, does it require a ap_mmn.h update?
+     rpluem: Patch failed:
+     Hunk #3 FAILED at 400.
+     1 out of 3 hunks FAILED -- saving rejects to file modules/proxy/mod_proxy.h.rej
 
   *) core: For consistency, ensure that read lines are NUL terminated on any
      error, not only on buffer full.
      trunk patch: http://svn.apache.org/r1824303
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic
-
-  *) mod_authnz_ldap: Fix language long names detection as short name.
-     trunk patch: http://svn.apache.org/r1824336
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, elukey
+     +1: ylavic, rpluem
 
   *) regex: Allow to configure global/default options for regexes, like
      caseless matching or extended format.
      trunk patch: http://svn.apache.org/r1824339
      2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-global_regex_options.patch
-     +1: ylavic
+     +1: ylavic, rpluem
 
   *) mod_cache_socache: Fix caching of empty headers up to carriage return.
      trunk patch: http://svn.apache.org/r1824343
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic
+     +1: ylavic, rpluem
 
   *) mod_session: Strip Session header when SessionEnv is on.
      trunk patch: http://svn.apache.org/r1824390
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic
+     +1: ylavic, rpluem
 
   *) mpm_queue: Put fdqueue code in common for MPMs event and worker.
      trunk patch: http://svn.apache.org/r1821624
