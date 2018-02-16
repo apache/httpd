@@ -1078,14 +1078,14 @@ static void process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * soc
              * where they would otherwise read, or read where they would
              * otherwise write, should set the sense appropriately.
              */
+read_request:
             if (clogging) {
                 apr_atomic_inc32(&clogged_count);
             }
-read_request:
             rc = ap_run_process_connection(c);
             if (clogging) {
                 apr_atomic_dec32(&clogged_count);
-                clogging = 0;
+                clogging = c->clogging_input_filters;
             }
             if (cs->pub.state > CONN_STATE_LINGER) {
                 cs->pub.state = CONN_STATE_LINGER;
