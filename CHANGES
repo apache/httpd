@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.30
 
+  *) mod_session: Strip Session header when SessionEnv is on.  [Yann Ylavic]
+
   *) mod_cache_socache: Fix caching of empty headers up to carriage return.
      [Yann Ylavic]
 

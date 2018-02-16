@@ -118,11 +118,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_session: Strip Session header when SessionEnv is on.
-     trunk patch: http://svn.apache.org/r1824390
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, rpluem, minfrin
-
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
