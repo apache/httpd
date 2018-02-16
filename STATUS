@@ -129,10 +129,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      jailletc36: is message 010118 still needed? Or at least mitigated with
                  something like: "for third party proxy module usage only"?
                  Also, does it require a ap_mmn.h update?
-     minfrin: message 010118 toned down, MMN bump updated, clash with r1823482 resolved
-                  http://svn.apache.org/r1824460
-     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/proxy-rfc1035-hostname-v2.diff
      ylavic: +1 with s/APLOG_NOTICE/APLOG_INFO/...
+     minfrin: message 010118 toned down, MMN bump updated, clash with r1823482 resolved, s/APLOG_NOTICE/APLOG_INFO/
+                  http://svn.apache.org/r1824460
+                  http://svn.apache.org/r1824482
+     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/proxy-rfc1035-hostname-v3.diff
 
   *) mpm_queue: Put fdqueue code in common for MPMs event and worker.
      trunk patch: http://svn.apache.org/r1821624
