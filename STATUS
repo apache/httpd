@@ -183,6 +183,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              worker fdqueue.[ch] differ(ed) between 2.4.x and trunk. The patch
              is provided only to help review.
 
+   *) mod_auth_digest: Fix nonce generation.  PR 54637
+      trunk patch: http://svn.apache.org/r1463049
+                   http://svn.apache.org/r1492395
+                   http://svn.apache.org/r1493257
+                   http://svn.apache.org/r1494532
+      2.4.x patch: http://people.apache.org/~jorton/mad_pr54637.diff
+      +1: jorton, 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
