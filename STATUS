@@ -118,6 +118,11 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_cache_socache: Fix caching of empty headers up to carriage return.
+     trunk patch: http://svn.apache.org/r1824343
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: ylavic, rpluem, minfrin
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -133,11 +138,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1824460
      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/proxy-rfc1035-hostname-v2.diff
      ylavic: +1 with s/APLOG_NOTICE/APLOG_INFO/...
-
-  *) mod_cache_socache: Fix caching of empty headers up to carriage return.
-     trunk patch: http://svn.apache.org/r1824343
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, rpluem
 
   *) mod_session: Strip Session header when SessionEnv is on.
      trunk patch: http://svn.apache.org/r1824390
