@@ -161,6 +161,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              worker fdqueue.[ch] differ(ed) between 2.4.x and trunk. The patch
              is provided only to help review.
 
+  *) mpm_event: Do lingering close in worker(s).
+     trunk patch: http://svn.apache.org/r1823047
+                  http://svn.apache.org/r1824454
+                  http://svn.apache.org/r1824463
+                  http://svn.apache.org/r1824464
+                  http://svn.apache.org/r1824497
+     2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-event-lingering_close_in_worker.patch
+                  (trunk works if mpm_queue above is merged first, otherwise
+                   the mpm_queue can be synchronized after this merge...)
+     +1: ylavic,
+
   *) mod_ssl: Introduce SSLPolicy/SSLPolicyDefine directives.
      trunk patch: http://svn.apache.org/r1805182
                   http://svn.apache.org/r1805186
