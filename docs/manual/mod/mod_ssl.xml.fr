@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1817381:1824247 (outdated) -->
+<!-- English Revision: 1824247 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -3209,7 +3209,7 @@ SSLOpenSSLConfCmd SignatureAlgorithms RSA+SHA384:ECDSA+SHA256
 <directivesynopsis type="section" idtype="section">
 <name>SSLPolicyDefine</name>
 <description>Définit par un nom un jeu de configurations SSL</description>
-<syntax>&lt;SSLPolicy <em>name</em>&gt;</syntax>
+<syntax>&lt;SSLPolicyDefine <em>name</em>&gt;</syntax>
 <contextlist><context>server config</context></contextlist>
 <compatibility>Disponible à partir de la version 2.4.30 du serveur HTTP Apache</compatibility>
 

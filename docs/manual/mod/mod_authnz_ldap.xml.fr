@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1823463:1824144 (outdated) -->
+<!-- English Revision: 1824144 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -528,8 +528,9 @@ AuthLDAPMaxSubGroupDepth 1
     <p>La directive suivante accorderait l'autorisation d'accès à tout
     utilisateur dont l'attribut employeeType a pour valeur "actif" :</p>
 
-    <highlight language="config">Require ldap-attribute
-    "employeeType=active"</highlight>
+    <highlight language="config">
+    Require ldap-attribute employeeType="active"
+    </highlight>
 
     <p>Plusieurs paires attribut/valeur peuvent être spécifiées par une
     même directive en les séparant par des espaces, ou en définissant
