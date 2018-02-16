@@ -1070,22 +1070,22 @@ static void process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * soc
         /* fall through */
     }
     else {
-        clogging = c->clogging_input_filters;
-        if (clogging || cs->pub.state == CONN_STATE_READ_REQUEST_LINE) {
+        if (cs->pub.state == CONN_STATE_READ_REQUEST_LINE
             /* If we have an input filter which 'clogs' the input stream,
              * like mod_ssl used to, lets just do the normal read from input
              * filters, like the Worker MPM does. Filters that need to write
              * where they would otherwise read, or read where they would
              * otherwise write, should set the sense appropriately.
              */
+             || c->clogging_input_filters) {
 read_request:
+            clogging = c->clogging_input_filters;
             if (clogging) {
                 apr_atomic_inc32(&clogged_count);
             }
             rc = ap_run_process_connection(c);
             if (clogging) {
                 apr_atomic_dec32(&clogged_count);
-                clogging = c->clogging_input_filters;
             }
             if (cs->pub.state > CONN_STATE_LINGER) {
                 cs->pub.state = CONN_STATE_LINGER;
