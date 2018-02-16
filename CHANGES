@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.30
 
+  *) mod_proxy: Provide an RFC1035 compliant version of the hostname in the
+     proxy_worker_shared structure. PR62085 [Graham Leggett]
+
   *) mod_session: Strip Session header when SessionEnv is on.  [Yann Ylavic]
 
   *) mod_cache_socache: Fix caching of empty headers up to carriage return.

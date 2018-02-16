@@ -452,7 +452,7 @@ static void force_recovery(proxy_balancer *balancer, server_rec *s)
             (*worker)->s->status &= ~PROXY_WORKER_IN_ERROR;
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01165)
                          "%s: Forcing recovery for worker (%s)",
-                         balancer->s->name, (*worker)->s->hostname);
+                         balancer->s->name, (*worker)->s->hostname_ex);
         }
     }
 }
@@ -1469,7 +1469,7 @@ static int balancer_handler(request_rec *r)
                           "</httpd:name>\n", NULL);
                 ap_rvputs(r, "          <httpd:scheme>", worker->s->scheme,
                           "</httpd:scheme>\n", NULL);
-                ap_rvputs(r, "          <httpd:hostname>", worker->s->hostname,
+                ap_rvputs(r, "          <httpd:hostname>", worker->s->hostname_ex,
                           "</httpd:hostname>\n", NULL);
                 ap_rprintf(r, "          <httpd:loadfactor>%.2f</httpd:loadfactor>\n",
                           (float)(worker->s->lbfactor)/100.0);

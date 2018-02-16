@@ -300,7 +300,7 @@ static proxy_worker *find_best_hb(proxy_balancer *balancer,
 
     for (i = 0; i < balancer->workers->nelts; i++) {
         worker = &APR_ARRAY_IDX(balancer->workers, i, proxy_worker *);
-        server = apr_hash_get(servers, (*worker)->s->hostname, APR_HASH_KEY_STRING);
+        server = apr_hash_get(servers, (*worker)->s->hostname_ex, APR_HASH_KEY_STRING);
 
         if (!server) {
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r, APLOGNO(01214)
