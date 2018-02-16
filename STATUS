@@ -132,6 +132,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      minfrin: message 010118 toned down, MMN bump updated, clash with r1823482 resolved
                   http://svn.apache.org/r1824460
      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/proxy-rfc1035-hostname-v2.diff
+     ylavic: +1 with s/APLOG_NOTICE/APLOG_INFO/...
 
   *) mod_cache_socache: Fix caching of empty headers up to carriage return.
      trunk patch: http://svn.apache.org/r1824343
@@ -176,7 +177,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    http://svn.apache.org/r1493257
                    http://svn.apache.org/r1494532
       2.4.x patch: http://people.apache.org/~jorton/mad_pr54637.diff
-      +1: jorton, 
+      +1: jorton, ylavic,
 
   *) mod_ssl: Introduce SSLPolicy/SSLPolicyDefine directives.
      trunk patch: http://svn.apache.org/r1805182
