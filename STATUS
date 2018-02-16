@@ -118,14 +118,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) proxy_util: Schemes and hostnames that are "too long" are
-     no longer automatically fatal errors but are instead logged
-     and truncated, at which point the admin can determine if that
-     is OK or not.
-     trunk patch: http://svn.apache.org/r1823482
-     2.4.x patch: trunk works
-     +1: jim, minfrin, rpluem
-
   *) mod_authnz_ldap: Fix language long names detection as short name.
      trunk patch: http://svn.apache.org/r1824336
      2.4.x patch: trunk works (modulo CHANGES)
