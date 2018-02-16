@@ -149,6 +149,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              worker fdqueue.[ch] differ(ed) between 2.4.x and trunk. The patch
              is provided only to help review.
      ylavic: re MMN, the API is private, so no bump (supposedly).
+     minfrin: Keeping mpm_fdqueue.h private makes it hard for people to fork event
+              and worker and make their own mpms. Can we make this public?
 
   *) mpm_event: Do lingering close in worker(s).
      trunk patch: http://svn.apache.org/r1823047
