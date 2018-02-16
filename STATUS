@@ -169,7 +169,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1824497
      2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-event-lingering_close_in_worker.patch
                   (trunk works if mpm_queue above is merged first, otherwise
-                   the mpm_queue can be synchronized after this merge...)
+                   the mpm_queue branch can also be synchronized after this
+                   merge, YMMV :)
      +1: ylavic,
 
   *) mod_ssl: Introduce SSLPolicy/SSLPolicyDefine directives.
