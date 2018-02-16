@@ -125,14 +125,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_proxy: Provide an RFC1035 compliant version of the hostname in the
      proxy_worker_shared structure. PR62085
      trunk patch: http://svn.apache.org/r1824176
-     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/proxy-rfc1035-hostname.diff
      +1: minfrin, jim, 
      jailletc36: is message 010118 still needed? Or at least mitigated with
                  something like: "for third party proxy module usage only"?
                  Also, does it require a ap_mmn.h update?
-     rpluem: Patch failed:
-     Hunk #3 FAILED at 400.
-     1 out of 3 hunks FAILED -- saving rejects to file modules/proxy/mod_proxy.h.rej
+     minfrin: message 010118 toned down, MMN bump updated, clash with r1823482 resolved
+                  http://svn.apache.org/r1824460
+     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/proxy-rfc1035-hostname-v2.diff
 
   *) core: For consistency, ensure that read lines are NUL terminated on any
      error, not only on buffer full.
