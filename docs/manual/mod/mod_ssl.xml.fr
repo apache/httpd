@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1816356 -->
+<!-- English Revision: 1824187 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1972,7 +1972,8 @@ SSLStrictSNIVHostCheck on
 <description>Répertoire des clés et certificats clients codés en PEM que
 le mandataire doit utiliser</description>
 <syntax>SSLProxyMachineCertificatePath <em>chemin-répertoire</em></syntax>
-<contextlist><context>server config</context></contextlist>
+<contextlist><context>server config</context> <context>virtual host</context>
+<context>proxy section</context></contextlist>
 
 <usage>
 <p>
@@ -2002,7 +2003,8 @@ SSLProxyMachineCertificatePath "/usr/local/apache2/conf/proxy.crt/"
 <description>Fichier contenant la concaténation des clés et certificats
 clients codés en PEM que le mandataire doit utiliser</description>
 <syntax>SSLProxyMachineCertificateFile <em>chemin-fichier</em></syntax>
-<contextlist><context>server config</context></contextlist>
+<contextlist><context>server config</context> <context>virtual host</context>
+<context>proxy section</context></contextlist>
 
 <usage>
 <p>
@@ -2033,7 +2035,8 @@ SSLProxyMachineCertificateFile
 <description>Fichier de certificats de CA encodés PEM concaténés permettant au
 mandataire de choisir un certificat</description>
 <syntax>SSLProxyMachineCertificateChainFile <em>nom-fichier</em></syntax>
-<contextlist><context>server config</context></contextlist>
+<contextlist><context>server config</context> <context>virtual host</context>
+<context>proxy section</context></contextlist>
 
 <usage>
 <p>
@@ -2070,8 +2073,9 @@ SSLProxyMachineCertificateChainFile
 distant</description>
 <syntax>SSLProxyVerify <em>niveau</em></syntax>
 <default>SSLProxyVerify none</default>
-<contextlist><context>server config</context>
-<context>virtual host</context> </contextlist>
+<contextlist><context>server config</context> <context>virtual host</context>
+<context>proxy section</context></contextlist>
+<override>Non applicable</override>
 
 <usage>
 
@@ -2113,9 +2117,9 @@ SSLProxyVerify require
 lors de la vérification du certificat du serveur distant</description>
 <syntax>SSLProxyVerifyDepth <em>niveau</em></syntax>
 <default>SSLProxyVerifyDepth 1</default>
-<contextlist><context>server config</context>
-<context>virtual host</context> </contextlist>
-<override>AuthConfig</override>
+<contextlist><context>server config</context> <context>virtual host</context>
+<context>proxy section</context></contextlist>
+<override>Non applicable</override>
 
 <usage>
 <p>
@@ -2149,8 +2153,9 @@ certificat du serveur distant
 </description>
 <syntax>SSLProxyCheckPeerExpire on|off</syntax>
 <default>SSLProxyCheckPeerExpire on</default>
-<contextlist><context>server config</context>
-<context>virtual host</context></contextlist>
+<contextlist><context>server config</context> <context>virtual host</context>
+<context>proxy section</context></contextlist>
+<override>Non applicable</override>
 
 <usage>
 <p>
@@ -2173,8 +2178,9 @@ du serveur distant
 </description>
 <syntax>SSLProxyCheckPeerCN on|off</syntax>
 <default>SSLProxyCheckPeerCN on</default>
-<contextlist><context>server config</context>
-<context>virtual host</context></contextlist>
+<contextlist><context>server config</context> <context>virtual host</context>
+<context>proxy section</context></contextlist>
+<override>Non applicable</override>
 
 <usage>
 <p>
@@ -2219,8 +2225,9 @@ certificats serveur distants
 </description>
 <syntax>SSLProxyCheckPeerName on|off</syntax>
 <default>SSLProxyCheckPeerName on</default>
-<contextlist><context>server config</context>
-<context>virtual host</context></contextlist>
+<contextlist><context>server config</context> <context>virtual host</context>
+<context>proxy section</context></contextlist>
+<override>Non applicable</override>
 <compatibility>Disponible à partir de la version 2.4.5 du serveur HTTP
 Apache</compatibility>
 <usage>
@@ -2260,8 +2267,9 @@ comportement original et des détails à propos de ces améliorations.
 SSL</description>
 <syntax>SSLProxyEngine on|off</syntax>
 <default>SSLProxyEngine off</default>
-<contextlist><context>server config</context>
-<context>virtual host</context></contextlist>
+<contextlist><context>server config</context> <context>virtual host</context>
+<context>proxy section</context></contextlist>
+<override>Non applicable</override>
 
 <usage>
 <p>
@@ -2300,9 +2308,9 @@ serveur mandataire direct pour les requêtes SSL/TLS.</p>
 mandataire</description>
 <syntax>SSLProxyProtocol [+|-]<em>protocole</em> ...</syntax>
 <default>SSLProxyProtocol all -SSLv3 (jusqu'à la version 2.4.16: all)</default>
-<contextlist><context>server config</context>
-<context>virtual host</context></contextlist>
-<override>Options</override>
+<contextlist><context>server config</context> <context>virtual host</context>
+<context>proxy section</context></contextlist>
+<override>Non applicable</override>
 
 <usage>
 <!-- XXX Why does this have an override and not .htaccess context? -->
@@ -2323,11 +2331,9 @@ module="mod_ssl">SSLProtocol</directive> pour plus d'informations.
 lors de l'initialisation d'une connexion SSL de mandataire</description>
 <syntax>SSLProxyCipherSuite <em>algorithmes</em></syntax>
 <default>SSLProxyCipherSuite ALL:!ADH:RC4+RSA:+HIGH:+MEDIUM:+LOW:+EXP</default>
-<contextlist><context>server config</context>
-<context>virtual host</context>
-<context>directory</context>
-<context>.htaccess</context></contextlist>
-<override>AuthConfig</override>
+<contextlist><context>server config</context> <context>virtual host</context>
+<context>proxy section</context></contextlist>
+<override>Non applicable</override>
 <usage>
 <p>Cette directive est équivalente à la directive <directive
 module="mod_ssl">SSLCipherSuite</directive>, mais s'applique à une connexion de
@@ -2341,8 +2347,9 @@ module="mod_ssl">SSLCipherSuite</directive> pour plus d'informations.</p>
 <description>Répertoire des certificats de CA codés en PEM pour
 l'authentification des serveurs distants</description>
 <syntax>SSLProxyCACertificatePath <em>chemin-répertoire</em></syntax>
-<contextlist><context>server config</context>
-<context>virtual host</context></contextlist>
+<contextlist><context>server config</context> <context>virtual host</context>
+<context>proxy section</context></contextlist>
+<override>Non applicable</override>
 
 <usage>
 <p>
@@ -2371,8 +2378,9 @@ SSLProxyCACertificatePath "/usr/local/apache2/conf/ssl.crt/"
 <description>Fichier contenant la concaténation des certificats de CA
 codés en PEM pour l'authentification des serveurs distants</description>
 <syntax>SSLProxyCACertificateFile <em>file-path</em></syntax>
-<contextlist><context>server config</context>
-<context>virtual host</context></contextlist>
+<contextlist><context>server config</context> <context>virtual host</context>
+<context>proxy section</context></contextlist>
+<override>Not applicable</override>
 
 <usage>
 <p>
@@ -2398,8 +2406,9 @@ SSLProxyCACertificateFile
 <description>Répertoire des CRLs de CA codés en PEM pour
 l'authentification des serveurs distants</description>
 <syntax>SSLProxyCARevocationPath <em>chemin-répertoire</em></syntax>
-<contextlist><context>server config</context>
-<context>virtual host</context></contextlist>
+<contextlist><context>server config</context> <context>virtual host</context>
+<context>proxy section</context></contextlist>
+<override>Non applicable</override>
 
 <usage>
 <p>
@@ -2428,8 +2437,9 @@ SSLProxyCARevocationPath "/usr/local/apache2/conf/ssl.crl/"
 <description>Fichier contenant la concaténation des CRLs de CA codés en
 PEM pour l'authentification des serveurs distants</description>
 <syntax>SSLProxyCARevocationFile <em>chemin-fichier</em></syntax>
-<contextlist><context>server config</context>
-<context>virtual host</context></contextlist>
+<contextlist><context>server config</context> <context>virtual host</context>
+<context>proxy section</context></contextlist>
+<override>Non applicable</override>
 
 <usage>
 <p>
@@ -2457,8 +2467,9 @@ SSLProxyCARevocationFile
 pour l'authentification du serveur distant</description>
 <syntax>SSLProxyCARevocationCheck chain|leaf|none</syntax>
 <default>SSLProxyCARevocationCheck none</default>
-<contextlist><context>server config</context>
-<context>virtual host</context></contextlist>
+<contextlist><context>server config</context> <context>virtual host</context>
+<context>proxy section</context></contextlist>
+<override>Non applicable</override>
 
 <usage>
 <p>
