@@ -161,6 +161,38 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic
 
+  *) mod_cache_socache: Fix caching of empty headers up to carriage return.
+     trunk patch: http://svn.apache.org/r1824343
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: ylavic
+
+  *) mpm_queue: Put fdqueue code in common for MPMs event and worker.
+     trunk patch: http://svn.apache.org/r1821624
+                  http://svn.apache.org/r1821625
+                  http://svn.apache.org/r1821626
+                  http://svn.apache.org/r1821627
+                  http://svn.apache.org/r1821629
+                  http://svn.apache.org/r1821632
+                  http://svn.apache.org/r1821635
+                  http://svn.apache.org/r1821639
+                  http://svn.apache.org/r1821644
+                  http://svn.apache.org/r1821647
+                  http://svn.apache.org/r1821648
+                  http://svn.apache.org/r1821649
+                  http://svn.apache.org/r1821650
+                  http://svn.apache.org/r1821651
+                  http://svn.apache.org/r1821659
+                  http://svn.apache.org/r1821660
+                  http://svn.apache.org/r1822366
+                  http://svn.apache.org/r1822367
+                  http://svn.apache.org/r1824381
+     2.4.x patch: svn merge ^/httpd/httpd/branches/2.4.x-mpm_fdqueue .
+                  (http://home.apache.org/~ylavic/patches/httpd-2.4.x-mpm_fdqueue.patch)
+     +1: ylavic
+     ylavic: The branch merge helps resolve move conflicts since event and
+             worker fdqueue.[ch] differ(ed) between 2.4.x and trunk. The patch
+             is provided only to help review.
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
