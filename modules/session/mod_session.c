@@ -510,12 +510,15 @@ static int session_fixups(request_rec * r)
      */
     ap_session_load(r, &z);
 
-    if (z && conf->env) {
-        session_identity_encode(r, z);
-        if (z->encoded) {
-            apr_table_set(r->subprocess_env, HTTP_SESSION, z->encoded);
-            z->encoded = NULL;
+    if (conf->env) {
+        if (z) {
+            session_identity_encode(r, z);
+            if (z->encoded) {
+                apr_table_set(r->subprocess_env, HTTP_SESSION, z->encoded);
+                z->encoded = NULL;
+            }
         }
+        apr_table_unset(r->headers_in, "Session");
     }
 
     return OK;
