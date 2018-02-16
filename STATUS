@@ -156,7 +156,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1824381
      2.4.x patch: svn merge ^/httpd/httpd/branches/2.4.x-mpm_fdqueue .
                   (http://home.apache.org/~ylavic/patches/httpd-2.4.x-mpm_fdqueue.patch)
-     +1: ylavic
+     +1: ylavic, minfrin (with mmn bump for mpm_fdqueue.h)
      ylavic: The branch merge helps resolve move conflicts since event and
              worker fdqueue.[ch] differ(ed) between 2.4.x and trunk. The patch
              is provided only to help review.
