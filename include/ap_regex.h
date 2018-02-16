@@ -77,6 +77,8 @@ extern "C" {
 #define AP_REG_NOMEM 0x20    /* nomem in our code */
 #define AP_REG_DOTALL 0x40   /* perl's /s flag */
 
+#define AP_REG_DOLLAR_ENDONLY 0x200 /* '$' matches at end of subject string only */
+
 #define AP_REG_MATCH "MATCH_" /** suggested prefix for ap_regname */
 
 /* Error values: */
@@ -101,6 +103,26 @@ typedef struct {
 } ap_regmatch_t;
 
 /* The functions */
+
+/**
+ * Get default compile flags
+ * @return Bitwise OR of AP_REG_* flags
+ */
+AP_DECLARE(int) ap_regcomp_get_default_cflags(void);
+
+/**
+ * Set default compile flags
+ * @param cflags Bitwise OR of AP_REG_* flags
+ */
+AP_DECLARE(void) ap_regcomp_set_default_cflags(int cflags);
+
+/**
+ * Get the AP_REG_* corresponding to the string.
+ * @param name The name (i.e. AP_REG_<name>)
+ * @return The AP_REG_*, or zero if the string is unknown
+ *
+ */
+AP_DECLARE(int) ap_regcomp_default_cflag_by_name(const char *name);
 
 /**
  * Compile a regular expression.
