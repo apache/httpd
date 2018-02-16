@@ -191,6 +191,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: http://people.apache.org/~jorton/mad_pr54637.diff
       +1: jorton, 
 
+  *) mod_ssl: Introduce SSLPolicy/SSLPolicyDefine directives.
+     trunk patch: http://svn.apache.org/r1805182
+                  http://svn.apache.org/r1805186
+                  http://svn.apache.org/r1808335
+                  http://svn.apache.org/r1811475
+                  http://svn.apache.org/r1817381
+                  http://svn.apache.org/r1817894
+     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/mod_ssl_policy.diff
+     +1: icing
+
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
