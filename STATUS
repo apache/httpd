@@ -148,6 +148,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      ylavic: The branch merge helps resolve move conflicts since event and
              worker fdqueue.[ch] differ(ed) between 2.4.x and trunk. The patch
              is provided only to help review.
+     ylavic: re MMN, the API is private, so no bump (supposedly).
 
   *) mpm_event: Do lingering close in worker(s).
      trunk patch: http://svn.apache.org/r1823047
