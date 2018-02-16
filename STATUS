@@ -152,6 +152,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      minfrin: Keeping mpm_fdqueue.h private makes it hard for people to fork event
               and worker and make their own mpms. Can we make this public?
      ylavic: not easier/harder than now I suppose (worker/event fqueues are private).
+             maybe make them public in trunk only, so that we have more time to
+             discuss the API (if needed).
 
   *) mpm_event: Do lingering close in worker(s).
      trunk patch: http://svn.apache.org/r1823047
