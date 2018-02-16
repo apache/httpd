@@ -64,7 +64,7 @@
 #include "mpm_common.h"
 #include "ap_listen.h"
 #include "scoreboard.h"
-#include "fdqueue.h"
+#include "mpm_fdqueue.h"
 #include "mpm_default.h"
 #include "util_mutex.h"
 #include "unixd.h"
@@ -595,11 +595,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t *thd, void * dummy)
         if (listener_may_exit) break;
 
         if (!have_idle_worker) {
-            /* the following pops a recycled ptrans pool off a stack
-             * if there is one, in addition to reserving a worker thread
-             */
-            rv = ap_queue_info_wait_for_idler(worker_queue_info,
-                                              &ptrans);
+            rv = ap_queue_info_wait_for_idler(worker_queue_info, NULL);
             if (APR_STATUS_IS_EOF(rv)) {
                 break; /* we've been signaled to die now */
             }
@@ -677,6 +673,8 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t *thd, void * dummy)
         } /* if/else */
 
         if (!listener_may_exit) {
+            /* the following pops a recycled ptrans pool off a stack */
+            ap_queue_info_pop_pool(worker_queue_info, &ptrans);
             if (ptrans == NULL) {
                 /* we can't use a recycled transaction pool this time.
                  * create a new transaction pool */
@@ -686,8 +684,8 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t *thd, void * dummy)
                 apr_allocator_max_free_set(allocator, ap_max_mem_free);
                 apr_pool_create_ex(&ptrans, pconf, NULL, allocator);
                 apr_allocator_owner_set(allocator, ptrans);
+                apr_pool_tag(ptrans, "transaction");
             }
-            apr_pool_tag(ptrans, "transaction");
             rv = lr->accept_func(&csd, lr, ptrans);
             /* later we trash rv and rely on csd to indicate success/failure */
             AP_DEBUG_ASSERT(rv == APR_SUCCESS || !csd);
@@ -706,14 +704,14 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t *thd, void * dummy)
                 accept_mutex_error("unlock", rv, process_slot);
             }
             if (csd != NULL) {
-                rv = ap_queue_push(worker_queue, csd, ptrans);
+                rv = ap_queue_push_socket(worker_queue, csd, NULL, ptrans);
                 if (rv) {
                     /* trash the connection; we couldn't queue the connected
                      * socket to a worker
                      */
                     apr_socket_close(csd);
                     ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf, APLOGNO(03138)
-                                 "ap_queue_push failed");
+                                 "ap_queue_push_socket failed");
                 }
                 else {
                     have_idle_worker = 0;
@@ -739,6 +737,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t *thd, void * dummy)
     }
 
     ap_close_listeners_ex(my_bucket->listeners);
+    ap_queue_info_free_idle_pools(worker_queue_info);
     ap_queue_term(worker_queue);
     dying = 1;
     ap_scoreboard_image->parent[process_slot].quiescing = 1;
@@ -802,7 +801,7 @@ worker_pop:
         if (workers_may_exit) {
             break;
         }
-        rv = ap_queue_pop(worker_queue, &csd, &ptrans);
+        rv = ap_queue_pop_socket(worker_queue, &csd, &ptrans);
 
         if (rv != APR_SUCCESS) {
             /* We get APR_EOF during a graceful shutdown once all the connections
@@ -811,9 +810,9 @@ worker_pop:
             if (APR_STATUS_IS_EOF(rv)) {
                 break;
             }
-            /* We get APR_EINTR whenever ap_queue_pop() has been interrupted
+            /* We get APR_EINTR whenever ap_queue_pop_*() has been interrupted
              * from an explicit call to ap_queue_interrupt_all(). This allows
-             * us to unblock threads stuck in ap_queue_pop() when a shutdown
+             * us to unblock threads stuck in ap_queue_pop_*() when a shutdown
              * is pending.
              *
              * If workers_may_exit is set and this is ungraceful termination/
@@ -828,7 +827,7 @@ worker_pop:
             /* We got some other error. */
             else if (!workers_may_exit) {
                 ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf, APLOGNO(03139)
-                             "ap_queue_pop failed");
+                             "ap_queue_pop_socket failed");
             }
             continue;
         }
@@ -903,16 +902,15 @@ static void * APR_THREAD_FUNC start_threads(apr_thread_t *thd, void *dummy)
 
     /* We must create the fd queues before we start up the listener
      * and worker threads. */
-    worker_queue = apr_pcalloc(pchild, sizeof(*worker_queue));
-    rv = ap_queue_init(worker_queue, threads_per_child, pchild);
+    rv = ap_queue_create(&worker_queue, threads_per_child, pchild);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf, APLOGNO(03140)
-                     "ap_queue_init() failed");
+                     "ap_queue_create() failed");
         clean_child_exit(APEXIT_CHILDFATAL);
     }
 
     rv = ap_queue_info_create(&worker_queue_info, pchild,
-                              threads_per_child);
+                              threads_per_child, -1);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf, APLOGNO(03141)
                      "ap_queue_info_create() failed");

@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.30
 
+  *) mpm_queue: Put fdqueue code in common for MPMs event and worker.
+     [Yann Ylavic]
+
   *) mod_proxy: Allow setting options to globally defined balancer from
      ProxyPass used in VirtualHost. Balancers are now merged using the new
      merge_balancers method which merges the balancers options.  [Jan Kaluza]
