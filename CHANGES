@@ -3,55 +3,17 @@ Changes with Apache 2.5.1
 
   *) mpm_event: Do lingering close in worker(s).  [Yann Ylavic]
 
-  *) mod_session: Strip Session header when SessionEnv is on.  [Yann Ylavic]
-
   *) mpm_queue: Put fdqueue code in common for MPMs event and worker.
      [Yann Ylavic]
-
-  *) mod_cache_socache: Fix caching of empty headers up to carriage return.
-     [Yann Ylavic]
-
-  *) regex: Allow to configure global/default options for regexes, like
-     caseless matching or extended format.  [Yann Ylavic]
-
-  *) mod_authnz_ldap: Fix language long names detection as short name.
-     [Yann Ylavic]
-
-  *) core: For consistency, ensure that read lines are NUL terminated on any
-     error, not only on buffer full.  [Yann Ylavic]
-
-  *) logresolve: Fix incorrect behavior or segfault if -c flag is used
-     Fixes: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=823259
-     [Stefan Fritsch]
-
-  *) mod_proxy: Provide an RFC1035 compliant version of the hostname in the
-     proxy_worker_shared structure. PR62085 [Graham Leggett]
-
-  *) mod_proxy: Worker schemes and hostnames which are too large are no
-     longer fatal errors; it is logged and the truncated values are stored.
 
   *) core: adding AP_DECLARE for ap_parse_vhost_addrs() and minor bumb mmn. Resolves
      building mod_ssl on Windows. [Stefan Eissing, Gregg Smith]
 
-  *) mod_http2: removed obsolete stream detach code, no longer generating events
-     in beam shutdown on pool destroy. [Stefan Eissing]
-     
-  *) mod_proxy_balancer,mod_slotmem_shm: Rework SHM reuse/deletion to not
-     depend on the number of restarts (non-Unix systems) and preserve shared
-     names as much as possible on configuration changes for SHMs and persisted
-     files.  PR 62044.  [Yann Ylavic, Jim Jagielski]
-
   *) mod_http2: discourage gzip/brotli content encoding on http2-status responses as
      they are inserted into the reponse when filters are already done. [Stefan Eissing]
-     
+
   *) core: adding defines to allow interworking with honggfuzz without
      further patches. [Stefan Eissing, Robert Swiecki]
-
-  *) mpm_event: Let the listener thread do its maintenance job on resources
-     shortage.  PR 61979.  [Yann Ylavic]
-
-  *) mpm_event: Wakeup the listener to re-enable listening sockets.
-     [Yann Ylavic]
 
   *) mod_headers: 'RequestHeader set|edit|edit_r Content-Type X' could 
      inadvertently modify the Content-Type _response_ header. Applies to
