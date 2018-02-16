@@ -49,14 +49,16 @@ répartiteur de charge via les en-têtes de la requête.
     l'en-tête de requête configuré via la directive
     <code class="directive"><a href="#remoteipheader">RemoteIPHeader</a></code>.</p>
 
+    <p>Ce module implémente aussi la partie serveur du <a href="http://blog.haproxy.com/haproxy/proxy-protocol/">protocole PROXY</a>
+    de HAProxy via la directive <code class="directive"><a href="#remoteipproxyprotocol">RemoteIPProxyProtocol</a></code>.</p>
+
     <p>Une fois sa valeur modifiée comme indiqué, cette adresse IP client est
-    utilisée pour la fonctionnalité <code class="directive"><a href="../mod/mod_authz_host.html#require">Require ip</a></code> de
-    <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code> ; elle est aussi affichée par
-    <code class="module"><a href="../mod/mod_status.html">mod_status</a></code>, et enregistrée via les chaînes de formatage
-    <code>%a</code> des modules <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code> et <code class="module"><a href="../mod/core.html">core</a></code>.
-    L'adresse IP client sous-jacente de la connexion est enregistrée via la chaîne de
-    formatage <code>%{c}a</code>.
-    </p>
+    utilisée pour la fonctionnalité <code class="directive"><a href="../mod/mod_authz_core.html#require">Require ip</a></code> de <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code> ;
+    elle est aussi affichée par <code class="module"><a href="../mod/mod_status.html">mod_status</a></code>, et enregistrée via
+    les chaînes de formatage <code>%a</code> des modules
+    <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code> et <code class="module"><a href="../mod/core.html">core</a></code>.  L'adresse IP
+    client sous-jacente de la connexion est enregistrée via la chaîne de
+    formatage <code>%{c}a</code>.  </p>
 
     <div class="warning">Il est essentiel de n'activer cette
     fonctionnalité que pour les requêtes en provenance des serveurs
@@ -73,6 +75,8 @@ répartiteur de charge via les en-têtes de la requête.
 <li><img alt="" src="../images/down.gif" /> <a href="#remoteipinternalproxy">RemoteIPInternalProxy</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#remoteipinternalproxylist">RemoteIPInternalProxyList</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#remoteipproxiesheader">RemoteIPProxiesHeader</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#remoteipproxyprotocol">RemoteIPProxyProtocol</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#remoteipproxyprotocolexceptions">RemoteIPProxyProtocolExceptions</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#remoteiptrustedproxy">RemoteIPTrustedProxy</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#remoteiptrustedproxylist">RemoteIPTrustedProxyList</a></li>
 </ul>
@@ -81,6 +85,8 @@ répartiteur de charge via les en-têtes de la requête.
 <li><code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code></li>
 <li><code class="module"><a href="../mod/mod_status.html">mod_status</a></code></li>
 <li><code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code></li>
+<li><a href="http://www.haproxy.org/download/1.8/doc/proxy-protocol.txt">Proxy Protocol
+Spec</a></li>
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -247,6 +253,80 @@ adresses IP intermédiaires</td></tr>
     <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">RemoteIPHeader X-Forwarded-For
 RemoteIPProxiesHeader X-Forwarded-By</pre>
 </div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="remoteipproxyprotocol" id="remoteipproxyprotocol">Directive</a> <a name="RemoteIPProxyProtocol" id="RemoteIPProxyProtocol">RemoteIPProxyProtocol</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active ou désactive la gestion du protocole PROXY</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RemoteIPProxyProtocol On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_remoteip</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.28 du serveur HTTP Apache</td></tr>
+</table>
+    <p>La directive <code class="directive">RemoteIPProxyProtocol</code> permet
+    d'activer ou de désactiver la prise en compte et la gestion de l'en-tête de
+    connexion du protocole PROXY. Si elle est définie à <code>On</code>, la
+    demande du client <em>doit</em> envoyer l'en-tête approprié pour chaque
+    nouvelle connexion, sinon cette dernière sera fermée à moins qu'il ne fasse
+    partie de la liste, définie via la directive <code class="directive"><a href="#remoteipproxyprotocoldisablehosts">RemoteIPProxyProtocolDisableHosts</a></code>, des
+    hôtes pour lesquels le protocole PROXY est désactivé.</p>
+
+    <p>Bien que cette directive peut être définie au niveau de n'importe quel
+    serveur virtuel, il est important de garder à l'esprit que, étant donné que
+    le protocole PROXY est basé sur la connexion et agnostique quant au
+    protocle, son activation/désactivation est basée sur le couple adresse
+    IP/port. Cela signifie que si plusieurs serveurs virtuels à base de nom sont
+    configurés avec le même couple adresse IP/port, et si vous activez le
+    protocole PROXY pour l'un d'entre eux, il le sera aussi pour tous les autres
+    (avec le même couple adresse IP/port). Cela signifie aussi que si vous
+    tentez d'activer le protocole PROXY pour un serveur virtuel et de le
+    désactiver pour un autre, cela ne marchera pas ; dans ce dernier cas, la
+    dernière directive l'emporte sur les autres et une notification sera
+    enregistrée dans le journal pour indiquer les réglages qui ont été annulés.</p>
+
+    <pre class="prettyprint lang-config">Listen 80
+&lt;VirtualHost *:80&gt;
+    ServerName www.example.com
+    RemoteIPProxyProtocol On
+
+    #Les requêtes pour ce serveur virtuel doivent contenir un en-tête du
+    #protocole PROXY. Si ce n'est pas le cas, la connexion sera fermée.
+&lt;/VirtualHost&gt;
+
+Listen 8080
+&lt;VirtualHost *:8080&gt;
+    ServerName www.example.com
+    RemoteIPProxyProtocol On
+    RemoteIPProxyProtocolExceptions 127.0.0.1 10.0.0.0/8
+
+    #Les requêtes pour ce serveur virtuel doivent contenir un en-tête du
+    #protocole PROXY. Si ce n'est pas le cas, la connexion sera fermée à moins
+    que sa source ne soit localhost ou la gamme d'adresses RFC1918 10.x.x.x
+&lt;/VirtualHost&gt;</pre>
+
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="remoteipproxyprotocolexceptions" id="remoteipproxyprotocolexceptions">Directive</a> <a name="RemoteIPProxyProtocolExceptions" id="RemoteIPProxyProtocolExceptions">RemoteIPProxyProtocolExceptions</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Désactive la prise en compte de l'en-tête PROXY pour certains hôtes
+ou réseaux</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RemoteIPProxyProtocolExceptions host|range [host|range] [host|range]</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_remoteip</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>RemoteIPProxyProtocolExceptions est disponible à partir de la
+version 2.4.28 du serveur HTTP Apache</td></tr>
+</table>
+    <p>La directive <code class="directive">RemoteIPProxyProtocol</code> permet de
+    contrôler la prise en compte de l'en-tête de connexion du protocole PROXY.
+    Il est parfois souhaitable d'exiger pour certains clients la
+    présence de l'en-tête PROXY, mais aussi de permettre aux autres clients de
+    se connecter sans ce dernier. Cette directive permet à l'administrateur du
+    serveur d'autoriser cette possibilité à un hôte isolé ou à une gamme d'hôtes
+    au format CIDR.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
