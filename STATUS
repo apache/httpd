@@ -144,7 +144,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1824381
      2.4.x patch: svn merge ^/httpd/httpd/branches/2.4.x-mpm_fdqueue .
                   (http://home.apache.org/~ylavic/patches/httpd-2.4.x-mpm_fdqueue.patch)
-     +1: ylavic, minfrin (with mmn bump for mpm_fdqueue.h)
+     +1: ylavic, minfrin
      ylavic: The branch merge helps resolve move conflicts since event and
              worker fdqueue.[ch] differ(ed) between 2.4.x and trunk. The patch
              is provided only to help review.
@@ -154,6 +154,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      ylavic: not easier/harder than now I suppose (worker/event fqueues are private).
              maybe make them public in trunk only, so that we have more time to
              discuss the API (if needed).
+     minfrin: happy with that, we can backport the final API.
 
   *) mpm_event: Do lingering close in worker(s).
      trunk patch: http://svn.apache.org/r1823047
