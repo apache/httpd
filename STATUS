@@ -169,7 +169,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1817381
                   http://svn.apache.org/r1817894
      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/mod_ssl_policy.diff
-     +1: icing
+     +1: icing, minfrin
+     minfrin: 2.4.x patch not applying for me, trunk patches work
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
