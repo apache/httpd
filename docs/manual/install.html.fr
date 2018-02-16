@@ -31,8 +31,6 @@
 <a href="./ko/install.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/install.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
     <p>Ce document couvre l'installation et la compilation du serveur
@@ -69,6 +67,32 @@
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="overview" id="overview">Aperçu pour les plus pressés</a></h2>
+
+    <dl>
+    <dt>Installation sous Fedora/CentOS/Red Hat Enterprise Linux</dt>
+    <dd>
+    <pre class="prettyprint lang-">sudo yum install httpd
+sudo service httpd start</pre>
+
+
+    <div class="warning">Les dernières versions de ces distributions préfèrent
+    <code>dnf</code> à <code>yum</code>. Voir la <a href="https://fedoraproject.org/wiki/Apache_HTTP_Server">documentation du
+    projet Fedora</a> pour des informations spécifiques à cette plateforme.</div>
+    </dd>
+
+    <dt>Installation sous Ubuntu/Debian</dt>
+    <dd>
+<pre class="prettyprint lang-">sudo apt install apache2
+sudo service apache2 start</pre>
+
+
+    <div class="warning">Voir la <a href="https://help.ubuntu.com/lts/serverguide/httpd.html">documentation
+    Ubuntu</a> pour des informations spécifiques à cette plateforme.</div>
+
+    </dd>
+
+    <dt>Installation à partir des sources</dt>
+    <dd>
 
     <table>
       
@@ -120,16 +144,24 @@
       </tr>
     </table>
 
-    <p><em>NN</em> doit être remplacé par le numéro de version courant,
-    et <em>PREFIX</em> par le
-    chemin du répertoire d'installation. Si
-    <em>PREFIX</em> n'est pas spécifié, le chemin du répertoire
-    d'installation prendra sa valeur par défaut, à savoir
-    <code>/usr/local/apache2</code>.</p>
+	    <p><em>NN</em> doit être remplacé par le numéro de version courant,
+	    et <em>PREFIX</em> par le
+	    chemin du répertoire d'installation. Si
+	    <em>PREFIX</em> n'est pas spécifié, le chemin du répertoire
+	    d'installation prendra sa valeur par défaut, à savoir
+	    <code>/usr/local/apache2</code>.</p>
 
-    <p>Chaque étape du processus de compilation et d'installation est
-    décrite plus en détails ci-dessous, à commencer par les prérequis
-    pour compiler et installer Apache httpd.</p>
+	    <p>Chaque étape du processus de compilation et d'installation est
+	    décrite plus en détails ci-dessous, à commencer par les prérequis
+	    pour compiler et installer Apache httpd.</p>
+    </dd>
+    </dl>
+
+    <div class="warning">L'installation sous votre plateforme favorite n'est pas
+    traitée ici ? N'hésitez pas à nous <a href="http://httpd.apache.org/docs-project/">aider à compléter cette
+    documentation</a> en nous faisant profiter de votre expérience.</div>
+
+
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="requirements" id="requirements">Prérequis</a></h2>

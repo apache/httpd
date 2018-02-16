@@ -1760,7 +1760,7 @@ contexte. Les dernières auront alors priorité sur les précédentes :</p>
 <div class="directive-section"><h2><a name="sslpolicydefinesection" id="sslpolicydefinesection">Directive</a> <a name="SSLPolicyDefinesection" id="SSLPolicyDefinesection">&lt;SSLPolicyDefine&gt;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit par un nom un jeu de configurations SSL</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>&lt;SSLPolicy <em>name</em>&gt;</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>&lt;SSLPolicyDefine <em>name</em>&gt;</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
