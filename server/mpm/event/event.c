@@ -90,7 +90,7 @@
 #include "mpm_common.h"
 #include "ap_listen.h"
 #include "scoreboard.h"
-#include "fdqueue.h"
+#include "mpm_fdqueue.h"
 #include "mpm_default.h"
 #include "http_vhost.h"
 #include "unixd.h"
@@ -211,6 +211,8 @@ static apr_pollfd_t *listener_pollfd;
  * XXX: cases.
  */
 static apr_pollset_t *event_pollset;
+
+typedef struct event_conn_state_t event_conn_state_t;
 
 /*
  * The chain of connections to be shutdown by a worker thread (deferred),
@@ -486,7 +488,7 @@ static void enable_listensocks(void)
                  apr_atomic_read32(&lingering_count),
                  apr_atomic_read32(&clogged_count),
                  apr_atomic_read32(&suspended_count),
-                 ap_queue_info_get_idlers(worker_queue_info));
+                 ap_queue_info_num_idlers(worker_queue_info));
     for (i = 0; i < num_listensocks; i++)
         apr_pollset_add(event_pollset, &listener_pollfd[i]);
     /*
@@ -503,7 +505,7 @@ static APR_INLINE apr_uint32_t listeners_disabled(void)
 
 static APR_INLINE int connections_above_limit(void)
 {
-    apr_uint32_t i_count = ap_queue_info_get_idlers(worker_queue_info);
+    apr_uint32_t i_count = ap_queue_info_num_idlers(worker_queue_info);
     if (i_count > 0) {
         apr_uint32_t c_count = apr_atomic_read32(&connection_count);
         apr_uint32_t l_count = apr_atomic_read32(&lingering_count);
@@ -804,7 +806,7 @@ static int start_lingering_close_blocking(event_conn_state_t *cs)
     if (ap_start_lingering_close(cs->c)) {
         notify_suspend(cs);
         apr_socket_close(csd);
-        ap_push_pool(worker_queue_info, cs->p);
+        ap_queue_info_push_pool(worker_queue_info, cs->p);
         return 0;
     }
 
@@ -847,7 +849,7 @@ static int start_lingering_close_blocking(event_conn_state_t *cs)
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf, APLOGNO(03092)
                      "start_lingering_close: apr_pollset_add failure");
         apr_socket_close(cs->pfd.desc.s);
-        ap_push_pool(worker_queue_info, cs->p);
+        ap_queue_info_push_pool(worker_queue_info, cs->p);
         return 0;
     }
     apr_thread_mutex_unlock(timeout_mutex);
@@ -888,7 +890,7 @@ static int stop_lingering_close(event_conn_state_t *cs)
     ap_log_error(APLOG_MARK, APLOG_TRACE4, 0, ap_server_conf,
                  "socket reached timeout in lingering-close state");
     abort_socket_nonblocking(csd);
-    ap_push_pool(worker_queue_info, cs->p);
+    ap_queue_info_push_pool(worker_queue_info, cs->p);
     if (dying)
         ap_queue_interrupt_one(worker_queue);
     return 0;
@@ -979,7 +981,7 @@ static void process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * soc
         c = ap_run_create_connection(p, ap_server_conf, sock,
                                      conn_id, cs->sbh, cs->bucket_alloc);
         if (!c) {
-            ap_push_pool(worker_queue_info, p);
+            ap_queue_info_push_pool(worker_queue_info, p);
             return;
         }
         apr_atomic_inc32(&connection_count);
@@ -1143,7 +1145,7 @@ read_request:
                              "process_socket: apr_pollset_add failure for "
                              "write completion");
                 apr_socket_close(cs->pfd.desc.s);
-                ap_push_pool(worker_queue_info, cs->p);
+                ap_queue_info_push_pool(worker_queue_info, cs->p);
             }
             else {
                 apr_thread_mutex_unlock(timeout_mutex);
@@ -1192,7 +1194,7 @@ read_request:
                          "process_socket: apr_pollset_add failure for "
                          "keep alive");
             apr_socket_close(cs->pfd.desc.s);
-            ap_push_pool(worker_queue_info, cs->p);
+            ap_queue_info_push_pool(worker_queue_info, cs->p);
             return;
         }
         apr_thread_mutex_unlock(timeout_mutex);
@@ -1234,7 +1236,7 @@ static void close_listeners(int *closed)
         /* wake up the main thread */
         kill(ap_my_pid, SIGTERM);
 
-        ap_free_idle_pools(worker_queue_info);
+        ap_queue_info_free_idle_pools(worker_queue_info);
         ap_queue_interrupt_all(worker_queue);
     }
 }
@@ -1308,10 +1310,10 @@ static apr_status_t push2worker(event_conn_state_t *cs, apr_socket_t *csd,
         csd = cs->pfd.desc.s;
         ptrans = cs->p;
     }
-    rc = ap_queue_push(worker_queue, csd, cs, ptrans);
+    rc = ap_queue_push_socket(worker_queue, csd, cs, ptrans);
     if (rc != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rc, ap_server_conf, APLOGNO(00471)
-                     "push2worker: ap_queue_push failed");
+                     "push2worker: ap_queue_push_socket failed");
         /* trash the connection; we couldn't queue the connected
          * socket to a worker
          */
@@ -1319,7 +1321,7 @@ static apr_status_t push2worker(event_conn_state_t *cs, apr_socket_t *csd,
             abort_socket_nonblocking(csd);
         }
         if (ptrans) {
-            ap_push_pool(worker_queue_info, ptrans);
+            ap_queue_info_push_pool(worker_queue_info, ptrans);
         }
         signal_threads(ST_GRACEFUL);
     }
@@ -1482,7 +1484,7 @@ static void process_lingering_close(event_conn_state_t *cs, const apr_pollfd_t *
     rv = apr_socket_close(csd);
     AP_DEBUG_ASSERT(rv == APR_SUCCESS);
 
-    ap_push_pool(worker_queue_info, cs->p);
+    ap_queue_info_push_pool(worker_queue_info, cs->p);
     if (dying)
         ap_queue_interrupt_one(worker_queue);
 }
@@ -1810,14 +1812,14 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                                  apr_atomic_read32(&connection_count));
                     ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, ap_server_conf,
                                  "Idle workers: %u",
-                                 ap_queue_info_get_idlers(worker_queue_info));
+                                 ap_queue_info_num_idlers(worker_queue_info));
                     workers_were_busy = 1;
                 }
                 else if (!listener_may_exit) {
                     void *csd = NULL;
                     ap_listen_rec *lr = (ap_listen_rec *) pt->baton;
                     apr_pool_t *ptrans;         /* Pool for per-transaction stuff */
-                    ap_pop_pool(&ptrans, worker_queue_info);
+                    ap_queue_info_pop_pool(worker_queue_info, &ptrans);
 
                     if (ptrans == NULL) {
                         /* create a new transaction pool for each accepted socket */
@@ -1868,7 +1870,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                         }
                     }
                     else {
-                        ap_push_pool(worker_queue_info, ptrans);
+                        ap_queue_info_push_pool(worker_queue_info, ptrans);
                     }
                 }
             }               /* if:else on pt->type */
@@ -2038,7 +2040,8 @@ static void *APR_THREAD_FUNC worker_thread(apr_thread_t * thd, void *dummy)
             break;
         }
 
-        rv = ap_queue_pop_something(worker_queue, &csd, &cs, &ptrans, &te);
+        rv = ap_queue_pop_something(worker_queue, &csd, (void **)&cs,
+                                    &ptrans, &te);
 
         if (rv != APR_SUCCESS) {
             /* We get APR_EOF during a graceful shutdown once all the
@@ -2047,9 +2050,9 @@ static void *APR_THREAD_FUNC worker_thread(apr_thread_t * thd, void *dummy)
             if (APR_STATUS_IS_EOF(rv)) {
                 break;
             }
-            /* We get APR_EINTR whenever ap_queue_pop() has been interrupted
+            /* We get APR_EINTR whenever ap_queue_pop_*() has been interrupted
              * from an explicit call to ap_queue_interrupt_all(). This allows
-             * us to unblock threads stuck in ap_queue_pop() when a shutdown
+             * us to unblock threads stuck in ap_queue_pop_*() when a shutdown
              * is pending.
              *
              * If workers_may_exit is set and this is ungraceful termination/
@@ -2064,7 +2067,7 @@ static void *APR_THREAD_FUNC worker_thread(apr_thread_t * thd, void *dummy)
             /* We got some other error. */
             else if (!workers_may_exit) {
                 ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
-                             APLOGNO(03099) "ap_queue_pop failed");
+                             APLOGNO(03099) "ap_queue_pop_socket failed");
             }
             continue;
         }
@@ -2183,11 +2186,10 @@ static void *APR_THREAD_FUNC start_threads(apr_thread_t * thd, void *dummy)
 
     /* We must create the fd queues before we start up the listener
      * and worker threads. */
-    worker_queue = apr_pcalloc(pchild, sizeof(*worker_queue));
-    rv = ap_queue_init(worker_queue, threads_per_child, pchild);
+    rv = ap_queue_create(&worker_queue, threads_per_child, pchild);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf, APLOGNO(03100)
-                     "ap_queue_init() failed");
+                     "ap_queue_create() failed");
         clean_child_exit(APEXIT_CHILDFATAL);
     }
 
