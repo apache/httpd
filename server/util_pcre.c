@@ -164,16 +164,16 @@ AP_DECLARE(int) ap_regcomp_default_cflag_by_name(const char *name)
 {
     int cflag = 0;
 
-    if (strcasecmp(name, "ICASE") == 0) {
+    if (ap_cstr_casecmp(name, "ICASE") == 0) {
         cflag = AP_REG_ICASE;
     }
-    else if (strcasecmp(name, "DOTALL") == 0) {
+    else if (ap_cstr_casecmp(name, "DOTALL") == 0) {
         cflag = AP_REG_DOTALL;
     }
-    else if (strcasecmp(name, "DOLLAR_ENDONLY") == 0) {
+    else if (ap_cstr_casecmp(name, "DOLLAR_ENDONLY") == 0) {
         cflag = AP_REG_DOLLAR_ENDONLY;
     }
-    else if (strcasecmp(name, "EXTENDED") == 0) {
+    else if (ap_cstr_casecmp(name, "EXTENDED") == 0) {
         cflag = AP_REG_EXTENDED;
     }
 
