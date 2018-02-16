@@ -118,6 +118,11 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_session: Strip Session header when SessionEnv is on.
+     trunk patch: http://svn.apache.org/r1824390
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: ylavic, rpluem, minfrin
+
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -134,11 +139,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1824460
      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/proxy-rfc1035-hostname-v2.diff
      ylavic: +1 with s/APLOG_NOTICE/APLOG_INFO/...
-
-  *) mod_session: Strip Session header when SessionEnv is on.
-     trunk patch: http://svn.apache.org/r1824390
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, rpluem
 
   *) mpm_queue: Put fdqueue code in common for MPMs event and worker.
      trunk patch: http://svn.apache.org/r1821624
