@@ -111,6 +111,38 @@ AP_DECLARE(void) ap_regfree(ap_regex_t *preg)
  *            Compile a regular expression       *
  *************************************************/
 
+static int default_cflags = AP_REG_DOLLAR_ENDONLY;
+
+AP_DECLARE(int) ap_regcomp_get_default_cflags(void)
+{
+    return default_cflags;
+}
+
+AP_DECLARE(void) ap_regcomp_set_default_cflags(int cflags)
+{
+    default_cflags = cflags;
+}
+
+AP_DECLARE(int) ap_regcomp_default_cflag_by_name(const char *name)
+{
+    int cflag = 0;
+
+    if (ap_cstr_casecmp(name, "ICASE") == 0) {
+        cflag = AP_REG_ICASE;
+    }
+    else if (ap_cstr_casecmp(name, "DOTALL") == 0) {
+        cflag = AP_REG_DOTALL;
+    }
+    else if (ap_cstr_casecmp(name, "DOLLAR_ENDONLY") == 0) {
+        cflag = AP_REG_DOLLAR_ENDONLY;
+    }
+    else if (ap_cstr_casecmp(name, "EXTENDED") == 0) {
+        cflag = AP_REG_EXTENDED;
+    }
+
+    return cflag;
+}
+
 /*
  * Arguments:
  *  preg        points to a structure for recording the compiled expression
@@ -127,12 +159,15 @@ AP_DECLARE(int) ap_regcomp(ap_regex_t * preg, const char *pattern, int cflags)
     int errcode = 0;
     int options = PCRE_DUPNAMES;
 
+    cflags |= default_cflags;
     if ((cflags & AP_REG_ICASE) != 0)
         options |= PCRE_CASELESS;
     if ((cflags & AP_REG_NEWLINE) != 0)
         options |= PCRE_MULTILINE;
     if ((cflags & AP_REG_DOTALL) != 0)
         options |= PCRE_DOTALL;
+    if ((cflags & AP_REG_DOLLAR_ENDONLY) != 0)
+        options |= PCRE_DOLLAR_ENDONLY;
 
     preg->re_pcre =
         pcre_compile2(pattern, options, &errcode, &errorptr, &erroffset, NULL);

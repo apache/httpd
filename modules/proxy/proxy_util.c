@@ -1691,10 +1691,12 @@ PROXY_DECLARE(char *) ap_proxy_define_worker(apr_pool_t *p,
         "Alert! worker name (%s) too long; truncated to: %s", ptr, wshared->name);
     }
     if (PROXY_STRNCPY(wshared->scheme, uri.scheme) != APR_SUCCESS) {
-        return apr_psprintf(p, "worker scheme (%s) too long", uri.scheme);
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf, APLOGNO(010117)
+        "Alert! worker scheme (%s) too long; truncated to: %s", uri.scheme, wshared->scheme);
     }
     if (PROXY_STRNCPY(wshared->hostname, uri.hostname) != APR_SUCCESS) {
-        return apr_psprintf(p, "worker hostname (%s) too long", uri.hostname);
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf, APLOGNO(010118)
+        "Alert! worker hostname (%s) too long; truncated to: %s", uri.hostname, wshared->hostname);
     }
     wshared->flush_packets = flush_off;
     wshared->flush_wait = PROXY_FLUSH_WAIT;

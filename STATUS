@@ -118,48 +118,71 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_proxy: Provide an RFC1035 compliant version of the hostname in the
+     proxy_worker_shared structure. PR62085
+     trunk patch: http://svn.apache.org/r1824176
+     +1: minfrin, jim, ylavic
+     jailletc36: is message 010118 still needed? Or at least mitigated with
+                 something like: "for third party proxy module usage only"?
+                 Also, does it require a ap_mmn.h update?
+     minfrin: message 010118 toned down, MMN bump updated, clash with r1823482 resolved, s/APLOG_NOTICE/APLOG_INFO/
+                  http://svn.apache.org/r1824460
+                  http://svn.apache.org/r1824482
+     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/proxy-rfc1035-hostname-v3.diff
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
-  *) proxy_util: Schemes and hostnames that are "too long" are
-     no longer automatically fatal errors but are instead logged
-     and truncated, at which point the admin can determine if that
-     is OK or not.
-     trunk patch: http://svn.apache.org/r1823482
-     2.4.x patch: trunk works
-     +1: jim, minfrin
+  *) mpm_queue: Put fdqueue code in common for MPMs event and worker.
+     trunk patch: http://svn.apache.org/r1821624
+                  http://svn.apache.org/r1821625
+                  http://svn.apache.org/r1821626
+                  http://svn.apache.org/r1821627
+                  http://svn.apache.org/r1821629
+                  http://svn.apache.org/r1821632
+                  http://svn.apache.org/r1821635
+                  http://svn.apache.org/r1821639
+                  http://svn.apache.org/r1821644
+                  http://svn.apache.org/r1821647
+                  http://svn.apache.org/r1821648
+                  http://svn.apache.org/r1821649
+                  http://svn.apache.org/r1821650
+                  http://svn.apache.org/r1821651
+                  http://svn.apache.org/r1821659
+                  http://svn.apache.org/r1821660
+                  http://svn.apache.org/r1822366
+                  http://svn.apache.org/r1822367
+                  http://svn.apache.org/r1824381
+     2.4.x patch: svn merge ^/httpd/httpd/branches/2.4.x-mpm_fdqueue .
+                  (http://home.apache.org/~ylavic/patches/httpd-2.4.x-mpm_fdqueue.patch)
+     +1: ylavic, minfrin (with mmn bump for mpm_fdqueue.h)
+     ylavic: The branch merge helps resolve move conflicts since event and
+             worker fdqueue.[ch] differ(ed) between 2.4.x and trunk. The patch
+             is provided only to help review.
 
-  *) mod_proxy: Provide an RFC1035 compliant version of the hostname in the
-     proxy_worker_shared structure. PR62085
-     trunk patch: http://svn.apache.org/r1824176
-     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/proxy-rfc1035-hostname.diff
-     +1: minfrin, jim, 
-     jailletc36: is message 010118 still needed? Or at least mitigated with
-                 something like: "for third party proxy module usage only"?
-                 Also, does it require a ap_mmn.h update?
+  *) mpm_event: Do lingering close in worker(s).
+     trunk patch: http://svn.apache.org/r1823047
+                  http://svn.apache.org/r1824454
+                  http://svn.apache.org/r1824463
+                  http://svn.apache.org/r1824464
+                  http://svn.apache.org/r1824497
+     2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-event-lingering_close_in_worker.patch
+                  (trunk works if mpm_queue above is merged first, otherwise
+                   the mpm_queue branch can also be synchronized after this
+                   merge, YMMV :)
+     +1: ylavic,
 
-  *) core: For consistency, ensure that read lines are NUL terminated on any
-     error, not only on buffer full.
-     trunk patch: http://svn.apache.org/r1824303
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic
-
-  *) mod_authnz_ldap: Fix language long names detection as short name.
-     trunk patch: http://svn.apache.org/r1824336
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic
-
-  *) regex: Allow to configure global/default options for regexes, like
-     caseless matching or extended format.
-     trunk patch: http://svn.apache.org/r1824339
-     2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-global_regex_options.patch
-     +1: ylavic
-
-  *) mod_cache_socache: Fix caching of empty headers up to carriage return.
-     trunk patch: http://svn.apache.org/r1824343
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic
+  *) mod_ssl: Introduce SSLPolicy/SSLPolicyDefine directives.
+     trunk patch: http://svn.apache.org/r1805182
+                  http://svn.apache.org/r1805186
+                  http://svn.apache.org/r1808335
+                  http://svn.apache.org/r1811475
+                  http://svn.apache.org/r1817381
+                  http://svn.apache.org/r1817894
+     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/mod_ssl_policy.diff
+     +1: icing, minfrin
+     minfrin: 2.4.x patch not applying for me, trunk patches work
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
