@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.30
 
+  *) mod_proxy: Worker schemes and hostnames which are too large are no
+     longer fatal errors; it is logged and the truncated values are stored.
+     [Jim Jagielski]
+
   *) mod_proxy: Allow setting options to globally defined balancer from
      ProxyPass used in VirtualHost. Balancers are now merged using the new
      merge_balancers method which merges the balancers options.  [Jan Kaluza]
