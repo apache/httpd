@@ -118,18 +118,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_proxy: Provide an RFC1035 compliant version of the hostname in the
-     proxy_worker_shared structure. PR62085
-     trunk patch: http://svn.apache.org/r1824176
-     +1: minfrin, jim, ylavic
-     jailletc36: is message 010118 still needed? Or at least mitigated with
-                 something like: "for third party proxy module usage only"?
-                 Also, does it require a ap_mmn.h update?
-     minfrin: message 010118 toned down, MMN bump updated, clash with r1823482 resolved, s/APLOG_NOTICE/APLOG_INFO/
-                  http://svn.apache.org/r1824460
-                  http://svn.apache.org/r1824482
-     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/proxy-rfc1035-hostname-v3.diff
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
