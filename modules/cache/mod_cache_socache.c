@@ -213,7 +213,8 @@ static apr_status_t read_table(cache_handle_t *handle, request_rec *r,
                         "Premature end of cache headers.");
                 return APR_EGENERAL;
             }
-            while (apr_isspace(buffer[colon])) {
+            /* Do not go past the \r from above as apr_isspace('\r') is true */
+            while (apr_isspace(buffer[colon]) && (colon < *slider)) {
                 colon++;
             }
             apr_table_addn(table, apr_pstrndup(r->pool, (const char *) buffer

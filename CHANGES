@@ -4,6 +4,28 @@ Changes with Apache 2.4.30
   *) mpm_queue: Put fdqueue code in common for MPMs event and worker.
      [Yann Ylavic]
 
+  *) mod_session: Strip Session header when SessionEnv is on.  [Yann Ylavic]
+
+  *) mod_cache_socache: Fix caching of empty headers up to carriage return.
+     [Yann Ylavic]
+
+  *) core: For consistency, ensure that read lines are NUL terminated on any
+     error, not only on buffer full.  [Yann Ylavic]
+
+  *) mod_authnz_ldap: Fix language long names detection as short name.
+     [Yann Ylavic]
+
+  *) mod_proxy: Worker schemes and hostnames which are too large are no
+     longer fatal errors; it is logged and the truncated values are stored.
+     [Jim Jagielski]
+
+  *) regex: Allow to configure global/default options for regexes, like
+     caseless matching or extended format.  [Yann Ylavic]
+
+  *) mod_auth_digest: Actually use the secret when generating nonces. This change
+     may cause problems if used with round robin load balancers. PR 54637
+     [Stefan Fritsch]
+
   *) mod_proxy: Allow setting options to globally defined balancer from
      ProxyPass used in VirtualHost. Balancers are now merged using the new
      merge_balancers method which merges the balancers options.  [Jan Kaluza]

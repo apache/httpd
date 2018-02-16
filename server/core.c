@@ -48,6 +48,7 @@
 #include "mod_core.h"
 #include "mod_proxy.h"
 #include "ap_listen.h"
+#include "ap_regex.h"
 
 #include "mod_so.h" /* for ap_find_loaded_module_symbol */
 
@@ -2847,6 +2848,58 @@ static const char *virtualhost_section(cmd_parms *cmd, void *dummy,
     return errmsg;
 }
 
+static const char *set_regex_default_options(cmd_parms *cmd,
+                                             void *dummy,
+                                             const char *arg)
+{
+    const command_rec *thiscmd = cmd->cmd;
+    int cflags, cflag;
+
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL) {
+        return err;
+    }
+
+    cflags = ap_regcomp_get_default_cflags();
+    while (*arg) {
+        const char *name = ap_getword_conf(cmd->pool, &arg);
+        int how = 0;
+
+        if (strcasecmp(name, "none") == 0) {
+            cflags = 0;
+            continue;
+        }
+
+        if (*name == '+') {
+            name++;
+            how = +1;
+        }
+        else if (*name == '-') {
+            name++;
+            how = -1;
+        }
+
+        cflag = ap_regcomp_default_cflag_by_name(name);
+        if (!cflag) {
+            return apr_psprintf(cmd->pool, "%s: option '%s' unknown",
+                                thiscmd->name, name);
+        }
+
+        if (how > 0) {
+            cflags |= cflag;
+        }
+        else if (how < 0) {
+            cflags &= ~cflag;
+        }
+        else {
+            cflags = cflag;
+        }
+    }
+    ap_regcomp_set_default_cflags(cflags);
+
+    return NULL;
+}
+
 static const char *set_server_alias(cmd_parms *cmd, void *dummy,
                                     const char *arg)
 {
@@ -4421,6 +4474,9 @@ AP_INIT_TAKE12("RLimitNPROC", no_set_limit, NULL,
    OR_ALL, "soft/hard limits for max number of processes per uid"),
 #endif
 
+AP_INIT_RAW_ARGS("RegexDefaultOptions", set_regex_default_options, NULL, RSRC_CONF,
+                 "default options for regexes (prefixed by '+' to add, '-' to del)"),
+
 /* internal recursion stopper */
 AP_INIT_TAKE12("LimitInternalRecursion", set_recursion_limit, NULL, RSRC_CONF,
               "maximum recursion depth of internal redirects and subrequests"),
@@ -4855,6 +4911,8 @@ static int core_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptem
         init_config_defines(pconf);
     apr_pool_cleanup_register(pconf, NULL, reset_config_defines,
                               apr_pool_cleanup_null);
+
+    ap_regcomp_set_default_cflags(AP_REG_DOLLAR_ENDONLY);
 
     mpm_common_pre_config(pconf);
 
