@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.30
 
+  *) mod_cache_socache: Fix caching of empty headers up to carriage return.
+     [Yann Ylavic]
+
   *) core: For consistency, ensure that read lines are NUL terminated on any
      error, not only on buffer full.  [Yann Ylavic]
 

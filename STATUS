@@ -118,10 +118,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_cache_socache: Fix caching of empty headers up to carriage return.
-     trunk patch: http://svn.apache.org/r1824343
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, rpluem, minfrin
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
