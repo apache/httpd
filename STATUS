@@ -118,6 +118,12 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) core: For consistency, ensure that read lines are NUL terminated on any
+     error, not only on buffer full.
+     trunk patch: http://svn.apache.org/r1824303
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: ylavic, rpluem, minfrin
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -132,12 +138,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      minfrin: message 010118 toned down, MMN bump updated, clash with r1823482 resolved
                   http://svn.apache.org/r1824460
      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/proxy-rfc1035-hostname-v2.diff
-
-  *) core: For consistency, ensure that read lines are NUL terminated on any
-     error, not only on buffer full.
-     trunk patch: http://svn.apache.org/r1824303
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, rpluem
 
   *) regex: Allow to configure global/default options for regexes, like
      caseless matching or extended format.
