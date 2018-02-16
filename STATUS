@@ -161,8 +161,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic
 
-  *) mod_cache_socache: Fix caching of empty headers up to carriage return.
-     trunk patch: http://svn.apache.org/r1824343
+  *) mod_session: Strip Session header when SessionEnv is on.
+     trunk patch: http://svn.apache.org/r1824390
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic
 
