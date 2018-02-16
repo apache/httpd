@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mpm_event: Do lingering close in worker(s).  [Yann Ylavic]
+
   *) mod_session: Strip Session header when SessionEnv is on.  [Yann Ylavic]
 
   *) mpm_queue: Put fdqueue code in common for MPMs event and worker.
