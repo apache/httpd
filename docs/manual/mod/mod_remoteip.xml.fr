@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1568654 -->
+<!-- English Revision: 1824248 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -46,15 +46,19 @@ répartiteur de charge via les en-têtes de la requête.
     l'en-tête de requête configuré via la directive
     <directive module="mod_remoteip">RemoteIPHeader</directive>.</p>
 
+    <p>Ce module implémente aussi la partie serveur du <a
+    href="http://blog.haproxy.com/haproxy/proxy-protocol/">protocole PROXY</a>
+    de HAProxy via la directive <directive
+    module="mod_remoteip">RemoteIPProxyProtocol</directive>.</p>
+
     <p>Une fois sa valeur modifiée comme indiqué, cette adresse IP client est
-    utilisée pour la fonctionnalité <directive
-    module="mod_authz_host" name="require">Require ip</directive> de
-    <module>mod_authz_host</module> ; elle est aussi affichée par
-    <module>mod_status</module>, et enregistrée via les chaînes de formatage
-    <code>%a</code> des modules <module>mod_log_config</module> et <module>core</module>.
-    L'adresse IP client sous-jacente de la connexion est enregistrée via la chaîne de
-    formatage <code>%{c}a</code>.
-    </p>
+    utilisée pour la fonctionnalité <directive module="mod_authz_core"
+    name="require">Require ip</directive> de <module>mod_authz_host</module> ;
+    elle est aussi affichée par <module>mod_status</module>, et enregistrée via
+    les chaînes de formatage <code>%a</code> des modules
+    <module>mod_log_config</module> et <module>core</module>.  L'adresse IP
+    client sous-jacente de la connexion est enregistrée via la chaîne de
+    formatage <code>%{c}a</code>.  </p>
 
     <note type="warning">Il est essentiel de n'activer cette
     fonctionnalité que pour les requêtes en provenance des serveurs
@@ -66,6 +70,9 @@ répartiteur de charge via les en-têtes de la requête.
 <seealso><module>mod_authz_host</module></seealso>
 <seealso><module>mod_status</module></seealso>
 <seealso><module>mod_log_config</module></seealso>
+<seealso><a
+href="http://www.haproxy.org/download/1.8/doc/proxy-protocol.txt">Proxy Protocol
+Spec</a></seealso>
 
 <section id="processing"><title>Traitement des adresses distantes</title>
 
@@ -247,6 +254,82 @@ RemoteIPHeader X-Forwarded-For
 RemoteIPProxiesHeader X-Forwarded-By
     </highlight>
     </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>RemoteIPProxyProtocol</name>
+<description>Active ou désactive la gestion du protocole PROXY</description>
+<syntax>RemoteIPProxyProtocol On|Off</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+<compatibility>Disponible à partir de la version 2.4.28 du serveur HTTP Apache</compatibility>
+
+<usage>
+    <p>La directive <directive>RemoteIPProxyProtocol</directive> permet
+    d'activer ou de désactiver la prise en compte et la gestion de l'en-tête de
+    connexion du protocole PROXY. Si elle est définie à <code>On</code>, la
+    demande du client <em>doit</em> envoyer l'en-tête approprié pour chaque
+    nouvelle connexion, sinon cette dernière sera fermée à moins qu'il ne fasse
+    partie de la liste, définie via la directive <directive
+    module="mod_remoteip">RemoteIPProxyProtocolDisableHosts</directive>, des
+    hôtes pour lesquels le protocole PROXY est désactivé.</p>
+
+    <p>Bien que cette directive peut être définie au niveau de n'importe quel
+    serveur virtuel, il est important de garder à l'esprit que, étant donné que
+    le protocole PROXY est basé sur la connexion et agnostique quant au
+    protocle, son activation/désactivation est basée sur le couple adresse
+    IP/port. Cela signifie que si plusieurs serveurs virtuels à base de nom sont
+    configurés avec le même couple adresse IP/port, et si vous activez le
+    protocole PROXY pour l'un d'entre eux, il le sera aussi pour tous les autres
+    (avec le même couple adresse IP/port). Cela signifie aussi que si vous
+    tentez d'activer le protocole PROXY pour un serveur virtuel et de le
+    désactiver pour un autre, cela ne marchera pas ; dans ce dernier cas, la
+    dernière directive l'emporte sur les autres et une notification sera
+    enregistrée dans le journal pour indiquer les réglages qui ont été annulés.</p>
+
+    <highlight language="config">
+Listen 80
+&lt;VirtualHost *:80&gt;
+    ServerName www.example.com
+    RemoteIPProxyProtocol On
+
+    #Les requêtes pour ce serveur virtuel doivent contenir un en-tête du
+    #protocole PROXY. Si ce n'est pas le cas, la connexion sera fermée.
+&lt;/VirtualHost&gt;
+
+Listen 8080
+&lt;VirtualHost *:8080&gt;
+    ServerName www.example.com
+    RemoteIPProxyProtocol On
+    RemoteIPProxyProtocolExceptions 127.0.0.1 10.0.0.0/8
+
+    #Les requêtes pour ce serveur virtuel doivent contenir un en-tête du
+    #protocole PROXY. Si ce n'est pas le cas, la connexion sera fermée à moins
+    que sa source ne soit localhost ou la gamme d'adresses RFC1918 10.x.x.x
+&lt;/VirtualHost&gt;
+    </highlight>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>RemoteIPProxyProtocolExceptions</name>
+<description>Désactive la prise en compte de l'en-tête PROXY pour certains hôtes
+ou réseaux</description>
+<syntax>RemoteIPProxyProtocolExceptions host|range [host|range] [host|range]</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+<compatibility>RemoteIPProxyProtocolExceptions est disponible à partir de la
+version 2.4.28 du serveur HTTP Apache</compatibility>
+
+<usage>
+    <p>La directive <directive>RemoteIPProxyProtocol</directive> permet de
+    contrôler la prise en compte de l'en-tête de connexion du protocole PROXY.
+    Il est parfois souhaitable d'exiger pour certains clients la
+    présence de l'en-tête PROXY, mais aussi de permettre aux autres clients de
+    se connecter sans ce dernier. Cette directive permet à l'administrateur du
+    serveur d'autoriser cette possibilité à un hôte isolé ou à une gamme d'hôtes
+    au format CIDR.</p>
 </usage>
 </directivesynopsis>
 
