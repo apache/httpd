@@ -166,7 +166,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   (trunk works if mpm_queue above is merged first, otherwise
                    the mpm_queue branch can also be synchronized after this
                    merge, YMMV :)
-     +1: ylavic,
+     +1: ylavic, minfrin (with mmn bump for CONN_STATE_NUM)
 
   *) mod_ssl: Introduce SSLPolicy/SSLPolicyDefine directives.
      trunk patch: http://svn.apache.org/r1805182
