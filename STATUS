@@ -181,7 +181,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      icing: fixed the patch to include complete new files instead of svn's internal optimizations
 
   *) mod_dav: Allow other modules to become providers and add ACLs
-     to the DAV response. Requires a release of apr-util v1.6.
+     to the DAV response.
      trunk patch: http://svn.apache.org/r1748322
                   http://svn.apache.org/r1824590
      2.4.x: trunk works modulo CHANGES/MMN
