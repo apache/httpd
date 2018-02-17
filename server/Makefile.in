@@ -68,6 +68,7 @@ export_files:
 	( for dir in $(EXPORT_DIRS); do \
 	      ls $$dir/*.h ; \
 	  done; \
+          echo "$(top_srcdir)/server/core.h"; \
 	  echo "$(top_srcdir)/server/mpm_fdqueue.h"; \
 	  for dir in $(EXPORT_DIRS_APR); do \
 	      ls $$dir/ap[ru].h $$dir/ap[ru]_*.h 2>/dev/null; \
