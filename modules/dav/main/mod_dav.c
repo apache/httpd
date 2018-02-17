@@ -117,6 +117,12 @@ static int dav_init_handler(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
     dav_methods[DAV_M_BIND] = ap_method_register(p, "BIND");
     dav_methods[DAV_M_SEARCH] = ap_method_register(p, "SEARCH");
 
+    /* log a warning if ACL support is unavailable */
+#ifndef APR_XML_X2T_PARSED
+    ap_log_error(APLOG_MARK, APLOG_INFO, 0, NULL, APLOGNO()
+                 "mod_dav ACL support disabled. Compile with apr-util >= 1.6 to enable.");
+#endif
+
     return OK;
 }
 
