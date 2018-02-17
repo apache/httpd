@@ -184,7 +184,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      to the DAV response.
      trunk patch: http://svn.apache.org/r1748322
                   http://svn.apache.org/r1824590
-     2.4.x: trunk works modulo CHANGES/MMN
+                  http://svn.apache.org/r1824596
+     2.4.x: trunk works modulo CHANGES/MMN/log-message
      +1: minfrin
 
 
