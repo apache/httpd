@@ -50,6 +50,7 @@
 #include "ap_listen.h"
 #include "ap_provider.h"
 #include "ap_regex.h"
+#include "core.h"
 
 #include "mod_so.h" /* for ap_find_loaded_module_symbol */
 
@@ -5231,7 +5232,9 @@ AP_DECLARE(void **) ap_get_request_note(request_rec *r, apr_size_t note_num)
 
 AP_DECLARE(apr_socket_t *) ap_get_conn_socket(conn_rec *c)
 {
-    return ap_get_core_module_config(c->conn_config);
+    conn_config_t *conn_config = ap_get_core_module_config(c->conn_config);
+
+    return AP_CORE_DEFAULT(conn_config, socket, NULL);
 }
 
 static int core_create_req(request_rec *r)
@@ -5344,6 +5347,7 @@ static conn_rec *core_create_conn(apr_pool_t *ptrans, server_rec *s,
 static int core_pre_connection(conn_rec *c, void *csd)
 {
     core_net_rec *net;
+    conn_config_t *conn_config;
     apr_status_t rv;
 
     if (c->master) {
@@ -5385,7 +5389,10 @@ static int core_pre_connection(conn_rec *c, void *csd)
     net->out_ctx = NULL;
     net->client_socket = csd;
 
-    ap_set_core_module_config(net->c->conn_config, csd);
+    conn_config = apr_palloc(c->pool, sizeof(conn_config));
+    conn_config->socket = csd;
+    ap_set_core_module_config(net->c->conn_config, conn_config);
+
     /* only the master connection talks to the network */
     if (c->master == NULL) {
         ap_add_input_filter_handle(ap_core_input_filter_handle, net, NULL,

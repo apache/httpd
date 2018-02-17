@@ -1112,6 +1112,11 @@ AP_DECLARE(int) ap_state_query(int query_code);
  */
 AP_CORE_DECLARE(conn_rec *) ap_create_slave_connection(conn_rec *c);
 
+
+/** Macro to provide a default value if the pointer is not yet initialised
+ */
+#define AP_CORE_DEFAULT(X, Y, Z)    (X ? X->Y : Z)
+
 #ifdef __cplusplus
 }
 #endif
