@@ -180,6 +180,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      minfrin: 2.4.x patch not applying for me, trunk patches work
      icing: fixed the patch to include complete new files instead of svn's internal optimizations
 
+  *) mod_dav: Allow other modules to become providers and add ACLs
+     to the DAV response. Requires a release of apr-util v1.6.
+     trunk patch: http://svn.apache.org/r1748322
+                  http://svn.apache.org/r1824590
+     2.4.x: trunk works modulo CHANGES/MMN
+     +1: minfrin
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
@@ -254,23 +261,6 @@ PATCHES/ISSUES THAT ARE BEING WORKED
              Do you think we'd better remove the prefetch, or maybe just
              make it nonblocking (by default)?
         jim: Non-blocking seems the best way to handle...
-
-   * mod_dav: Allow other modules to become providers and add ACLs
-     to the DAV response. Requires a release of apr-util v1.6.
-     trunk patch: http://svn.apache.org/r1748322
-     2.4.x: trunk works modulo CHANGES/MMN
-     +1: minfrin
-     rpluem asks: Will this compile with apr-util < v1.6 and keep
-     mod_dav working (without the new features of the patch of course)?
-     I doubt that we will require apr-util 1.6 for the lifetime of 2.4.x
-     (see the discussion around ap_cstr_casecmp[n] an apr 1.6)
-     minfrin: Yes, as you can see in the patch everything applies only
-     if APR_XML_X2T_PARSED is defined, and the patch was tested with
-     both apr-util v1.6 and apr-util v1.5.
-     -1: jorton, breaks binary backwards compat per dev@ discuss
-         msgid <20160902120654.GA12674@redhat.com>
-         (& also, making the structure change with apr-util version
-         means it breaks binary compat across an apr-util upgrade?)
 
    * Support PCRE2 (10.x) in place of PCRE (8.x).
      Submitted by: wrowe, Petr Pisar [ppisar redhat.com]
