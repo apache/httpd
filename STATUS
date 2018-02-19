@@ -145,7 +145,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1824381
      2.4.x patch: svn merge ^/httpd/httpd/branches/2.4.x-mpm_fdqueue .
                   (http://home.apache.org/~ylavic/patches/httpd-2.4.x-mpm_fdqueue.patch)
-     +1: ylavic, minfrin
+     +1: ylavic, minfrin, jim
      ylavic: The branch merge helps resolve move conflicts since event and
              worker fdqueue.[ch] differ(ed) between 2.4.x and trunk. The patch
              is provided only to help review.
@@ -167,7 +167,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   (trunk works if mpm_queue above is merged first, otherwise
                    the mpm_queue branch can also be synchronized after this
                    merge, YMMV :)
-     +1: ylavic, minfrin (with mmn bump for CONN_STATE_NUM)
+     +1: ylavic, minfrin (with mmn bump for CONN_STATE_NUM), jim
 
   *) mod_dav: Allow other modules to become providers and add ACLs
      to the DAV response.
@@ -175,7 +175,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1824590
                   http://svn.apache.org/r1824596
      2.4.x: trunk works modulo CHANGES/MMN/log-message
-     +1: minfrin
+     +1: minfrin, jim
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
