@@ -2859,7 +2859,6 @@ static void *util_ldap_merge_config(apr_pool_t *p, void *basev,
     st->search_cache_size = base->search_cache_size;
     st->compare_cache_ttl = base->compare_cache_ttl;
     st->compare_cache_size = base->compare_cache_size;
-    st->util_ldap_cache_lock = base->util_ldap_cache_lock;
 
     st->connections = NULL;
     st->ssl_supported = 0; /* not known until post-config and re-merged */
@@ -2978,12 +2977,12 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
             st_vhost = (util_ldap_state_t *)
                        ap_get_module_config(s_vhost->module_config,
                                             &ldap_module);
-
+            st_vhost->util_ldap_cache = st->util_ldap_cache;
+            st_vhost->util_ldap_cache_lock = st->util_ldap_cache_lock;
 #if APR_HAS_SHARED_MEMORY
             st_vhost->cache_shm = st->cache_shm;
             st_vhost->cache_rmm = st->cache_rmm;
             st_vhost->cache_file = st->cache_file;
-            st_vhost->util_ldap_cache = st->util_ldap_cache;
             ap_log_error(APLOG_MARK, APLOG_DEBUG, result, s, APLOGNO(01316)
                          "LDAP merging Shared Cache conf: shm=0x%pp rmm=0x%pp "
                          "for VHOST: %s", st->cache_shm, st->cache_rmm,
