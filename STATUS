@@ -168,18 +168,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    merge, YMMV :)
      +1: ylavic, minfrin (with mmn bump for CONN_STATE_NUM)
 
-  *) mod_ssl: Introduce SSLPolicy/SSLPolicyDefine directives.
-     trunk patch: http://svn.apache.org/r1805182
-                  http://svn.apache.org/r1805186
-                  http://svn.apache.org/r1808335
-                  http://svn.apache.org/r1811475
-                  http://svn.apache.org/r1817381
-                  http://svn.apache.org/r1817894
-     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/mod_ssl_policy.diff
-     +1: icing, minfrin
-     minfrin: 2.4.x patch not applying for me, trunk patches work
-     icing: fixed the patch to include complete new files instead of svn's internal optimizations
-
   *) mod_dav: Allow other modules to become providers and add ACLs
      to the DAV response.
      trunk patch: http://svn.apache.org/r1748322
