@@ -177,6 +177,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x: trunk works modulo CHANGES/MMN/log-message
      +1: minfrin, jim
 
+  *) mod_ldap: apr_rmm loops/hangs/crashes when LDAP auth is used in vhosts
+               due to unlocked access. 
+     trunk patch: http://svn.apache.org/r1824811
+     2.4.x: trunk works
+     +1 covener
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
