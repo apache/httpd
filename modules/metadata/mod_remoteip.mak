@@ -103,7 +103,7 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\mod_remoteip.bsc"
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=kernel32.lib /nologo /subsystem:windows /dll /incremental:no /pdb:"$(OUTDIR)\mod_remoteip.pdb" /debug /out:"$(OUTDIR)\mod_remoteip.so" /implib:"$(OUTDIR)\mod_remoteip.lib" /base:@..\..\os\win32\BaseAddr.ref,mod_remoteip.so /opt:ref 
+LINK32_FLAGS=kernel32.lib ws2_32.lib /nologo /subsystem:windows /dll /incremental:no /pdb:"$(OUTDIR)\mod_remoteip.pdb" /debug /out:"$(OUTDIR)\mod_remoteip.so" /implib:"$(OUTDIR)\mod_remoteip.lib" /base:@..\..\os\win32\BaseAddr.ref,mod_remoteip.so /opt:ref 
 LINK32_OBJS= \
 	"$(INTDIR)\mod_remoteip.obj" \
 	"$(INTDIR)\mod_remoteip.res" \
@@ -207,7 +207,7 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\mod_remoteip.bsc"
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=kernel32.lib /nologo /subsystem:windows /dll /incremental:no /pdb:"$(OUTDIR)\mod_remoteip.pdb" /debug /out:"$(OUTDIR)\mod_remoteip.so" /implib:"$(OUTDIR)\mod_remoteip.lib" /base:@..\..\os\win32\BaseAddr.ref,mod_remoteip.so 
+LINK32_FLAGS=kernel32.lib ws2_32.lib /nologo /subsystem:windows /dll /incremental:no /pdb:"$(OUTDIR)\mod_remoteip.pdb" /debug /out:"$(OUTDIR)\mod_remoteip.so" /implib:"$(OUTDIR)\mod_remoteip.lib" /base:@..\..\os\win32\BaseAddr.ref,mod_remoteip.so 
 LINK32_OBJS= \
 	"$(INTDIR)\mod_remoteip.obj" \
 	"$(INTDIR)\mod_remoteip.res" \
