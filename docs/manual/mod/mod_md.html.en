@@ -34,7 +34,7 @@
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>md_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_md.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.5.0 and later</td></tr></table>
+<tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.4.30 and later</td></tr></table>
 <h3>Summary</h3>
 
         <p>
@@ -63,7 +63,7 @@
     DocumentRoot htdocs/a
 
     SSLEngine on
-    # no certificates specification needed!
+    # no certificates specification
 &lt;/VirtualHost&gt;</pre>
 
         <p>
@@ -80,6 +80,30 @@
         </p>
         </div>
 
+        <div class="note"><h3>Prerequisites</h3>
+        <p>
+            This module requires <code class="module"><a href="../mod/mod_watchdog.html">mod_watchdog</a></code> to be loaded as well.
+        </p><p>
+            Certificate signup and renewal with Let's Encrypt requires your server to be
+            reachable on port 80 (http:) from the outside. The alternative method over
+            port 443 (https:) is currently disabled for security reasons (status from
+            2018-01-14).
+        </p><p>
+            The module will select from the methods offered by Let's Encrypt. If LE decides
+            at one point in the future, to re-enable it again, <code class="module"><a href="../mod/mod_md.html">mod_md</a></code> will
+            use it when suitable.
+        </p><p>
+            But for now, only the port 80 variant is available (termed "http-01"). Only
+            when LE can reach your server on port 80 will <code class="module"><a href="../mod/mod_md.html">mod_md</a></code> work for
+            you. For now, at least.
+        </p><p>
+            If you do not want to offer any sites on port 80 any more, you may leave it open
+            and redirect all requests to your https: sites instead. Use the
+            <code class="directive"><a href="#mdrequirehttps">MDRequireHttps</a></code> described below to do
+            that in a convenient fashion. This will continue to answer http: challenges
+            from Let's Encrypt. 
+        </p>
+        </div>
     </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">

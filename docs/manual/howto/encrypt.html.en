@@ -163,7 +163,7 @@
     Internet."
     </p>
     <p>
-    They not offer free certificates, they also developed a interface that can be used by
+    They not only offer free certificates, they also developed an interface that can be used by
     your Apache httpd to get one. This is where <a href="../mod/mod_md.html">mod_md</a>
     comes in.
     </p>
