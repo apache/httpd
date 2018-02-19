@@ -1773,10 +1773,11 @@ SSLStrictSNIVHostCheck on
 This directive sets the directory where you keep the certificates and
 keys used for authentication of the proxy server to remote servers.
 </p>
-<p>The files in this directory must be PEM-encoded and are accessed through
-hash filenames. Additionally, you must create symbolic links named
-<code><em>hash-value</em>.N</code>. And you should always make sure this
-directory contains the appropriate symbolic links.</p>
+<p>
+mod_ssl will attempt to load every file inside the specified
+directory, but will ignore any sub-directories. Each file should
+contain a PEM-encoded certificate and matching private key.
+</p>
 <note type="warning">
 <p>Currently there is no support for encrypted private keys</p>
 </note>
