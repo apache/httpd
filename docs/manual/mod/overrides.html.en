@@ -351,23 +351,20 @@ user authentication</td></tr>
 <tr><td><a href="mod_ssl.html#sslciphersuite">SSLCipherSuite</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
 <tr><td colspan="2" class="descr">Cipher Suite available for negotiation in SSL
 handshake</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslproxyciphersuite">SSLProxyCipherSuite</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Cipher Suite available for negotiation in SSL
-proxy handshake</td></tr>
-<tr><td><a href="mod_ssl.html#sslrenegbuffersize">SSLRenegBufferSize</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
-<tr><td colspan="2" class="descr">Set the size for the SSL renegotiation buffer</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslrequire">SSLRequire</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Allow access only when an arbitrarily complex
+<tr class="odd"><td><a href="mod_ssl.html#sslrenegbuffersize">SSLRenegBufferSize</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Set the size for the SSL renegotiation buffer</td></tr>
+<tr><td><a href="mod_ssl.html#sslrequire">SSLRequire</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
+<tr><td colspan="2" class="descr">Allow access only when an arbitrarily complex
 boolean expression is true</td></tr>
-<tr><td><a href="mod_ssl.html#sslrequiressl">SSLRequireSSL</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
-<tr><td colspan="2" class="descr">Deny access when SSL is not used for the
+<tr class="odd"><td><a href="mod_ssl.html#sslrequiressl">SSLRequireSSL</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Deny access when SSL is not used for the
 HTTP request</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslusername">SSLUserName</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Variable name to determine user name</td></tr>
-<tr><td><a href="mod_ssl.html#sslverifyclient">SSLVerifyClient</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
-<tr><td colspan="2" class="descr">Type of Client Certificate verification</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslverifydepth">SSLVerifyDepth</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Maximum depth of CA Certificates in Client
+<tr><td><a href="mod_ssl.html#sslusername">SSLUserName</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
+<tr><td colspan="2" class="descr">Variable name to determine user name</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslverifyclient">SSLVerifyClient</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Type of Client Certificate verification</td></tr>
+<tr><td><a href="mod_ssl.html#sslverifydepth">SSLVerifyDepth</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
+<tr><td colspan="2" class="descr">Maximum depth of CA Certificates in Client
 Certificate verification</td></tr>
 </table></div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a name="override-fileinfo">FileInfo</a></h2>
     <p>
@@ -672,6 +669,48 @@ except the named ones</td></tr>
 <tr><td colspan="2" class="descr">Controls the default access state and the order in which
 <code class="directive">Allow</code> and <code class="directive">Deny</code> are
 evaluated.</td></tr>
+</table></div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a name="override-not applicable">Not applicable</a></h2>
+    <p><em>
+    [This section has no description. It's possible that the documentation is
+    incomplete, or that the directives here have an incorrect or misspelled
+    Override type. Please consider reporting this in the
+    <a href="#comments_section">comments section</a>.]
+    </em></p>
+  <table class="qref"><tr><td><a href="mod_ssl.html#sslproxycacertificatefile">SSLProxyCACertificateFile</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
+<tr><td colspan="2" class="descr">File of concatenated PEM-encoded CA Certificates
+for Remote Server Auth</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslproxycacertificatepath">SSLProxyCACertificatePath</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Directory of PEM-encoded CA Certificates for
+Remote Server Auth</td></tr>
+<tr><td><a href="mod_ssl.html#sslproxycarevocationcheck">SSLProxyCARevocationCheck</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
+<tr><td colspan="2" class="descr">Enable CRL-based revocation checking for Remote Server Auth</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslproxycarevocationfile">SSLProxyCARevocationFile</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">File of concatenated PEM-encoded CA CRLs for
+Remote Server Auth</td></tr>
+<tr><td><a href="mod_ssl.html#sslproxycarevocationpath">SSLProxyCARevocationPath</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
+<tr><td colspan="2" class="descr">Directory of PEM-encoded CA CRLs for
+Remote Server Auth</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslproxycheckpeercn">SSLProxyCheckPeerCN</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Whether to check the remote server certificate's CN field
+</td></tr>
+<tr><td><a href="mod_ssl.html#sslproxycheckpeerexpire">SSLProxyCheckPeerExpire</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
+<tr><td colspan="2" class="descr">Whether to check if remote server certificate is expired
+</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslproxycheckpeername">SSLProxyCheckPeerName</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Configure host name checking for remote server certificates
+</td></tr>
+<tr><td><a href="mod_ssl.html#sslproxyciphersuite">SSLProxyCipherSuite</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
+<tr><td colspan="2" class="descr">Cipher Suite available for negotiation in SSL
+proxy handshake</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslproxyengine">SSLProxyEngine</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">SSL Proxy Engine Operation Switch</td></tr>
+<tr><td><a href="mod_ssl.html#sslproxyprotocol">SSLProxyProtocol</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
+<tr><td colspan="2" class="descr">Configure usable SSL protocol flavors for proxy usage</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslproxyverify">SSLProxyVerify</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Type of remote server Certificate verification</td></tr>
+<tr><td><a href="mod_ssl.html#sslproxyverifydepth">SSLProxyVerifyDepth</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
+<tr><td colspan="2" class="descr">Maximum depth of CA Certificates in Remote Server
+Certificate verification</td></tr>
 </table></div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a name="override-options">Options</a></h2>
     <p>
       The following directives are allowed in .htaccess files when
@@ -702,10 +741,8 @@ directory</td></tr>
 <tr><td colspan="2" class="descr">Reflect an input header to the output headers</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#ssloptions">SSLOptions</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
 <tr class="odd"><td colspan="2" class="descr">Configure various SSL engine run-time options</td></tr>
-<tr><td><a href="mod_ssl.html#sslproxyprotocol">SSLProxyProtocol</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
-<tr><td colspan="2" class="descr">Configure usable SSL protocol flavors for proxy usage</td></tr>
-<tr class="odd"><td><a href="mod_include.html#xbithack">XBitHack</a></td><td class="module"><a href="mod_include.html">mod_include</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Parse SSI directives in files with the execute bit
+<tr><td><a href="mod_include.html#xbithack">XBitHack</a></td><td class="module"><a href="mod_include.html">mod_include</a></td></tr>
+<tr><td colspan="2" class="descr">Parse SSI directives in files with the execute bit
 set</td></tr>
 </table></div></div></div><div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/overrides.html" title="English">&nbsp;en&nbsp;</a></p>

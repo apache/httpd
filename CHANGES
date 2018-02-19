@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.30
 
+Changes with Apache 2.4.30
+
   *) mod_proxy: Provide an RFC1035 compliant version of the hostname in the
      proxy_worker_shared structure. PR62085 [Graham Leggett]
 
