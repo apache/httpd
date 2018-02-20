@@ -1,10 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.31
 
-Changes with Apache 2.4.30
+  *) mpm_queue: Put fdqueue code in common for MPMs event and worker.
+     [Yann Ylavic]
 
-  *) mod_proxy: Provide an RFC1035 compliant version of the hostname in the
-     proxy_worker_shared structure. PR62085 [Graham Leggett]
+Changes with Apache 2.4.30
 
   *) mod_session: Strip Session header when SessionEnv is on.  [Yann Ylavic]
 
