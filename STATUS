@@ -119,40 +119,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mpm_queue: Put fdqueue code in common for MPMs event and worker.
-     trunk patch: http://svn.apache.org/r1821624
-                  http://svn.apache.org/r1821625
-                  http://svn.apache.org/r1821626
-                  http://svn.apache.org/r1821627
-                  http://svn.apache.org/r1821629
-                  http://svn.apache.org/r1821632
-                  http://svn.apache.org/r1821635
-                  http://svn.apache.org/r1821639
-                  http://svn.apache.org/r1821644
-                  http://svn.apache.org/r1821647
-                  http://svn.apache.org/r1821648
-                  http://svn.apache.org/r1821649
-                  http://svn.apache.org/r1821650
-                  http://svn.apache.org/r1821651
-                  http://svn.apache.org/r1821659
-                  http://svn.apache.org/r1821660
-                  http://svn.apache.org/r1822366
-                  http://svn.apache.org/r1822367
-                  http://svn.apache.org/r1824381
-     2.4.x patch: svn merge ^/httpd/httpd/branches/2.4.x-mpm_fdqueue .
-                  (http://home.apache.org/~ylavic/patches/httpd-2.4.x-mpm_fdqueue.patch)
-     +1: ylavic, minfrin, jim
-     ylavic: The branch merge helps resolve move conflicts since event and
-             worker fdqueue.[ch] differ(ed) between 2.4.x and trunk. The patch
-             is provided only to help review.
-     ylavic: re MMN, the API is private, so no bump (supposedly).
-     minfrin: Keeping mpm_fdqueue.h private makes it hard for people to fork event
-              and worker and make their own mpms. Can we make this public?
-     ylavic: not easier/harder than now I suppose (worker/event fqueues are private).
-             maybe make them public in trunk only, so that we have more time to
-             discuss the API (if needed).
-     minfrin: happy with that, we can backport the final API.
-
   *) mpm_event: Do lingering close in worker(s).
      trunk patch: http://svn.apache.org/r1823047
                   http://svn.apache.org/r1824454
