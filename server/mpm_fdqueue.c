@@ -14,8 +14,11 @@
  * limitations under the License.
  */
 
-#include "fdqueue.h"
-#include "apr_atomic.h"
+#include "mpm_fdqueue.h"
+
+#if APR_HAS_THREADS
+
+#include <apr_atomic.h>
 
 static const apr_uint32_t zero_pt = APR_UINT32_MAX/2;
 
@@ -41,6 +44,13 @@ struct fd_queue_info_t
     struct recycled_pool *volatile recycled_pools;
 };
 
+struct fd_queue_elem_t
+{
+    apr_socket_t *sd;
+    void *sd_baton;
+    apr_pool_t *p;
+};
+
 static apr_status_t queue_info_cleanup(void *data_)
 {
     fd_queue_info_t *qi = data_;
@@ -53,9 +63,8 @@ static apr_status_t queue_info_cleanup(void *data_)
         if (first_pool == NULL) {
             break;
         }
-        if (apr_atomic_casptr
-            ((void*) &(qi->recycled_pools), first_pool->next,
-             first_pool) == first_pool) {
+        if (apr_atomic_casptr((void *)&qi->recycled_pools, first_pool->next,
+                              first_pool) == first_pool) {
             apr_pool_destroy(first_pool->pool);
         }
     }
@@ -63,8 +72,8 @@ static apr_status_t queue_info_cleanup(void *data_)
     return APR_SUCCESS;
 }
 
-apr_status_t ap_queue_info_create(fd_queue_info_t ** queue_info,
-                                  apr_pool_t * pool, int max_idlers,
+apr_status_t ap_queue_info_create(fd_queue_info_t **queue_info,
+                                  apr_pool_t *pool, int max_idlers,
                                   int max_recycled_pools)
 {
     apr_status_t rv;
@@ -93,12 +102,12 @@ apr_status_t ap_queue_info_create(fd_queue_info_t ** queue_info,
     return APR_SUCCESS;
 }
 
-apr_status_t ap_queue_info_set_idle(fd_queue_info_t * queue_info,
-                                    apr_pool_t * pool_to_recycle)
+apr_status_t ap_queue_info_set_idle(fd_queue_info_t *queue_info,
+                                    apr_pool_t *pool_to_recycle)
 {
     apr_status_t rv;
 
-    ap_push_pool(queue_info, pool_to_recycle);
+    ap_queue_info_push_pool(queue_info, pool_to_recycle);
 
     /* If other threads are waiting on a worker, wake one up */
     if (apr_atomic_inc32(&queue_info->idlers) < zero_pt) {
@@ -121,7 +130,7 @@ apr_status_t ap_queue_info_set_idle(fd_queue_info_t * queue_info,
     return APR_SUCCESS;
 }
 
-apr_status_t ap_queue_info_try_get_idler(fd_queue_info_t * queue_info)
+apr_status_t ap_queue_info_try_get_idler(fd_queue_info_t *queue_info)
 {
     /* Don't block if there isn't any idle worker. */
     for (;;) {
@@ -136,7 +145,7 @@ apr_status_t ap_queue_info_try_get_idler(fd_queue_info_t * queue_info)
     }
 }
 
-apr_status_t ap_queue_info_wait_for_idler(fd_queue_info_t * queue_info,
+apr_status_t ap_queue_info_wait_for_idler(fd_queue_info_t *queue_info,
                                           int *had_to_block)
 {
     apr_status_t rv;
@@ -173,16 +182,14 @@ apr_status_t ap_queue_info_wait_for_idler(fd_queue_info_t * queue_info,
          *     threads are waiting on an idle worker.
          */
         if (queue_info->idlers < zero_pt) {
-            *had_to_block = 1;
+            if (had_to_block) {
+                *had_to_block = 1;
+            }
             rv = apr_thread_cond_wait(queue_info->wait_for_idler,
                                       queue_info->idlers_mutex);
             if (rv != APR_SUCCESS) {
-                apr_status_t rv2;
                 AP_DEBUG_ASSERT(0);
-                rv2 = apr_thread_mutex_unlock(queue_info->idlers_mutex);
-                if (rv2 != APR_SUCCESS) {
-                    return rv2;
-                }
+                apr_thread_mutex_unlock(queue_info->idlers_mutex);
                 return rv;
             }
         }
@@ -200,17 +207,15 @@ apr_status_t ap_queue_info_wait_for_idler(fd_queue_info_t * queue_info,
     }
 }
 
-apr_uint32_t ap_queue_info_get_idlers(fd_queue_info_t * queue_info)
+apr_uint32_t ap_queue_info_num_idlers(fd_queue_info_t *queue_info)
 {
     apr_uint32_t val;
     val = apr_atomic_read32(&queue_info->idlers);
-    if (val <= zero_pt)
-        return 0;
-    return val - zero_pt;
+    return (val > zero_pt) ? val - zero_pt : 0;
 }
 
-void ap_push_pool(fd_queue_info_t * queue_info,
-                                    apr_pool_t * pool_to_recycle)
+void ap_queue_info_push_pool(fd_queue_info_t *queue_info,
+                             apr_pool_t *pool_to_recycle)
 {
     struct recycled_pool *new_recycle;
     /* If we have been given a pool to recycle, atomically link
@@ -220,8 +225,8 @@ void ap_push_pool(fd_queue_info_t * queue_info,
         return;
 
     if (queue_info->max_recycled_pools >= 0) {
-        apr_uint32_t cnt = apr_atomic_read32(&queue_info->recycled_pools_count);
-        if (cnt >= queue_info->max_recycled_pools) {
+        apr_uint32_t n = apr_atomic_read32(&queue_info->recycled_pools_count);
+        if (n >= queue_info->max_recycled_pools) {
             apr_pool_destroy(pool_to_recycle);
             return;
         }
@@ -229,8 +234,7 @@ void ap_push_pool(fd_queue_info_t * queue_info,
     }
 
     apr_pool_clear(pool_to_recycle);
-    new_recycle = (struct recycled_pool *) apr_palloc(pool_to_recycle,
-                                                      sizeof (*new_recycle));
+    new_recycle = apr_palloc(pool_to_recycle, sizeof *new_recycle);
     new_recycle->pool = pool_to_recycle;
     for (;;) {
         /*
@@ -240,13 +244,14 @@ void ap_push_pool(fd_queue_info_t * queue_info,
          */
         struct recycled_pool *next = queue_info->recycled_pools;
         new_recycle->next = next;
-        if (apr_atomic_casptr((void*) &(queue_info->recycled_pools),
+        if (apr_atomic_casptr((void *)&queue_info->recycled_pools,
                               new_recycle, next) == next)
             break;
     }
 }
 
-void ap_pop_pool(apr_pool_t ** recycled_pool, fd_queue_info_t * queue_info)
+void ap_queue_info_pop_pool(fd_queue_info_t *queue_info,
+                            apr_pool_t **recycled_pool)
 {
     /* Atomically pop a pool from the recycled list */
 
@@ -266,9 +271,8 @@ void ap_pop_pool(apr_pool_t ** recycled_pool, fd_queue_info_t * queue_info)
         if (first_pool == NULL) {
             break;
         }
-        if (apr_atomic_casptr
-            ((void*) &(queue_info->recycled_pools),
-             first_pool->next, first_pool) == first_pool) {
+        if (apr_atomic_casptr((void *)&queue_info->recycled_pools,
+                              first_pool->next, first_pool) == first_pool) {
             *recycled_pool = first_pool->pool;
             if (queue_info->max_recycled_pools >= 0)
                 apr_atomic_dec32(&queue_info->recycled_pools_count);
@@ -277,28 +281,33 @@ void ap_pop_pool(apr_pool_t ** recycled_pool, fd_queue_info_t * queue_info)
     }
 }
 
-void ap_free_idle_pools(fd_queue_info_t *queue_info)
+void ap_queue_info_free_idle_pools(fd_queue_info_t *queue_info)
 {
     apr_pool_t *p;
 
     queue_info->max_recycled_pools = 0;
-    do {
-        ap_pop_pool(&p, queue_info);
-        if (p != NULL)
-            apr_pool_destroy(p);
-    } while (p != NULL);
+    for (;;) {
+        ap_queue_info_pop_pool(queue_info, &p);
+        if (p == NULL)
+            break;
+        apr_pool_destroy(p);
+    }
+    apr_atomic_set32(&queue_info->recycled_pools_count, 0);
 }
 
 
-apr_status_t ap_queue_info_term(fd_queue_info_t * queue_info)
+apr_status_t ap_queue_info_term(fd_queue_info_t *queue_info)
 {
     apr_status_t rv;
+
     rv = apr_thread_mutex_lock(queue_info->idlers_mutex);
     if (rv != APR_SUCCESS) {
         return rv;
     }
+
     queue_info->terminated = 1;
     apr_thread_cond_broadcast(queue_info->wait_for_idler);
+
     return apr_thread_mutex_unlock(queue_info->idlers_mutex);
 }
 
@@ -312,7 +321,9 @@ apr_status_t ap_queue_info_term(fd_queue_info_t * queue_info)
  * Detects when the fd_queue_t is empty. This utility function is expected
  * to be called from within critical sections, and is not threadsafe.
  */
-#define ap_queue_empty(queue) ((queue)->nelts == 0 && APR_RING_EMPTY(&queue->timers ,timer_event_t, link))
+#define ap_queue_empty(queue) ((queue)->nelts == 0 && \
+                               APR_RING_EMPTY(&queue->timers, \
+                                              timer_event_t, link))
 
 /**
  * Callback routine that is called to destroy this
@@ -334,35 +345,30 @@ static apr_status_t ap_queue_destroy(void *data)
 /**
  * Initialize the fd_queue_t.
  */
-apr_status_t ap_queue_init(fd_queue_t * queue, int queue_capacity,
-                           apr_pool_t * a)
+apr_status_t ap_queue_create(fd_queue_t **pqueue, int capacity, apr_pool_t *p)
 {
-    int i;
     apr_status_t rv;
+    fd_queue_t *queue;
+
+    queue = apr_pcalloc(p, sizeof *queue);
 
     if ((rv = apr_thread_mutex_create(&queue->one_big_mutex,
                                       APR_THREAD_MUTEX_DEFAULT,
-                                      a)) != APR_SUCCESS) {
+                                      p)) != APR_SUCCESS) {
         return rv;
     }
-    if ((rv = apr_thread_cond_create(&queue->not_empty, a)) != APR_SUCCESS) {
+    if ((rv = apr_thread_cond_create(&queue->not_empty, p)) != APR_SUCCESS) {
         return rv;
     }
 
     APR_RING_INIT(&queue->timers, timer_event_t, link);
 
-    queue->data = apr_palloc(a, queue_capacity * sizeof(fd_queue_elem_t));
-    queue->bounds = queue_capacity;
-    queue->nelts = 0;
-    queue->in = 0;
-    queue->out = 0;
+    queue->data = apr_pcalloc(p, capacity * sizeof(fd_queue_elem_t));
+    queue->bounds = capacity;
 
-    /* Set all the sockets in the queue to NULL */
-    for (i = 0; i < queue_capacity; ++i)
-        queue->data[i].sd = NULL;
-
-    apr_pool_cleanup_register(a, queue, ap_queue_destroy,
+    apr_pool_cleanup_register(p, queue, ap_queue_destroy,
                               apr_pool_cleanup_null);
+    *pqueue = queue;
 
     return APR_SUCCESS;
 }
@@ -373,8 +379,9 @@ apr_status_t ap_queue_init(fd_queue_t * queue, int queue_capacity,
  * precondition: ap_queue_info_wait_for_idler has already been called
  *               to reserve an idle worker thread
  */
-apr_status_t ap_queue_push(fd_queue_t * queue, apr_socket_t * sd,
-                           event_conn_state_t * ecs, apr_pool_t * p)
+apr_status_t ap_queue_push_socket(fd_queue_t *queue,
+                                  apr_socket_t *sd, void *sd_baton,
+                                  apr_pool_t *p)
 {
     fd_queue_elem_t *elem;
     apr_status_t rv;
@@ -386,25 +393,20 @@ apr_status_t ap_queue_push(fd_queue_t * queue, apr_socket_t * sd,
     AP_DEBUG_ASSERT(!queue->terminated);
     AP_DEBUG_ASSERT(!ap_queue_full(queue));
 
-    elem = &queue->data[queue->in];
-    queue->in++;
+    elem = &queue->data[queue->in++];
     if (queue->in >= queue->bounds)
         queue->in -= queue->bounds;
     elem->sd = sd;
-    elem->ecs = ecs;
+    elem->sd_baton = sd_baton;
     elem->p = p;
     queue->nelts++;
 
     apr_thread_cond_signal(queue->not_empty);
 
-    if ((rv = apr_thread_mutex_unlock(queue->one_big_mutex)) != APR_SUCCESS) {
-        return rv;
-    }
-
-    return APR_SUCCESS;
+    return apr_thread_mutex_unlock(queue->one_big_mutex);
 }
 
-apr_status_t ap_queue_push_timer(fd_queue_t * queue, timer_event_t *te)
+apr_status_t ap_queue_push_timer(fd_queue_t *queue, timer_event_t *te)
 {
     apr_status_t rv;
 
@@ -418,11 +420,7 @@ apr_status_t ap_queue_push_timer(fd_queue_t * queue, timer_event_t *te)
 
     apr_thread_cond_signal(queue->not_empty);
 
-    if ((rv = apr_thread_mutex_unlock(queue->one_big_mutex)) != APR_SUCCESS) {
-        return rv;
-    }
-
-    return APR_SUCCESS;
+    return apr_thread_mutex_unlock(queue->one_big_mutex);
 }
 
 /**
@@ -431,11 +429,12 @@ apr_status_t ap_queue_push_timer(fd_queue_t * queue, timer_event_t *te)
  * Once retrieved, the socket is placed into the address specified by
  * 'sd'.
  */
-apr_status_t ap_queue_pop_something(fd_queue_t * queue, apr_socket_t ** sd,
-                                    event_conn_state_t ** ecs, apr_pool_t ** p,
-                                    timer_event_t ** te_out)
+apr_status_t ap_queue_pop_something(fd_queue_t *queue,
+                                    apr_socket_t **sd, void **sd_baton,
+                                    apr_pool_t **p, timer_event_t **te_out)
 {
     fd_queue_elem_t *elem;
+    timer_event_t *te;
     apr_status_t rv;
 
     if ((rv = apr_thread_mutex_lock(queue->one_big_mutex)) != APR_SUCCESS) {
@@ -462,20 +461,24 @@ apr_status_t ap_queue_pop_something(fd_queue_t * queue, apr_socket_t ** sd,
         }
     }
 
-    *te_out = NULL;
-
-    if (!APR_RING_EMPTY(&queue->timers, timer_event_t, link)) {
-        *te_out = APR_RING_FIRST(&queue->timers);
-        APR_RING_REMOVE(*te_out, link);
+    te = NULL;
+    if (te_out) {
+        if (!APR_RING_EMPTY(&queue->timers, timer_event_t, link)) {
+            te = APR_RING_FIRST(&queue->timers);
+            APR_RING_REMOVE(te, link);
+        }
+        *te_out = te;
     }
-    else {
-        elem = &queue->data[queue->out];
-        queue->out++;
+    if (!te) {
+        elem = &queue->data[queue->out++];
         if (queue->out >= queue->bounds)
             queue->out -= queue->bounds;
         queue->nelts--;
+
         *sd = elem->sd;
-        *ecs = elem->ecs;
+        if (sd_baton) {
+            *sd_baton = elem->sd_baton;
+        }
         *p = elem->p;
 #ifdef AP_DEBUG
         elem->sd = NULL;
@@ -483,17 +486,17 @@ apr_status_t ap_queue_pop_something(fd_queue_t * queue, apr_socket_t ** sd,
 #endif /* AP_DEBUG */
     }
 
-    rv = apr_thread_mutex_unlock(queue->one_big_mutex);
-    return rv;
+    return apr_thread_mutex_unlock(queue->one_big_mutex);
 }
 
-static apr_status_t queue_interrupt(fd_queue_t * queue, int all, int term)
+static apr_status_t queue_interrupt(fd_queue_t *queue, int all, int term)
 {
     apr_status_t rv;
 
     if ((rv = apr_thread_mutex_lock(queue->one_big_mutex)) != APR_SUCCESS) {
         return rv;
     }
+
     /* we must hold one_big_mutex when setting this... otherwise,
      * we could end up setting it and waking everybody up just after a
      * would-be popper checks it but right before they block
@@ -505,20 +508,23 @@ static apr_status_t queue_interrupt(fd_queue_t * queue, int all, int term)
         apr_thread_cond_broadcast(queue->not_empty);
     else
         apr_thread_cond_signal(queue->not_empty);
+
     return apr_thread_mutex_unlock(queue->one_big_mutex);
 }
 
-apr_status_t ap_queue_interrupt_all(fd_queue_t * queue)
+apr_status_t ap_queue_interrupt_all(fd_queue_t *queue)
 {
     return queue_interrupt(queue, 1, 0);
 }
 
-apr_status_t ap_queue_interrupt_one(fd_queue_t * queue)
+apr_status_t ap_queue_interrupt_one(fd_queue_t *queue)
 {
     return queue_interrupt(queue, 0, 0);
 }
 
-apr_status_t ap_queue_term(fd_queue_t * queue)
+apr_status_t ap_queue_term(fd_queue_t *queue)
 {
     return queue_interrupt(queue, 1, 1);
 }
+
+#endif /* APR_HAS_THREADS */
