@@ -416,7 +416,7 @@ static void create_hcheck_req(wctx_t *wctx, proxy_worker *hc,
                                "OPTIONS * HTTP/1.0\r\n"
                                "Host: %s:%d\r\n"
                                "\r\n",
-                               hc->s->hostname, (int)hc->s->port);
+                               hc->s->hostname_ex, (int)hc->s->port);
             break;
 
         case HEAD:
@@ -434,7 +434,7 @@ static void create_hcheck_req(wctx_t *wctx, proxy_worker *hc,
                                (wctx->path ? wctx->path : ""),
                                (wctx->path && *hc->s->hcuri ? "/" : "" ),
                                (*hc->s->hcuri ? hc->s->hcuri : ""),
-                               hc->s->hostname, (int)hc->s->port);
+                               hc->s->hostname_ex, (int)hc->s->port);
             break;
 
         default:
@@ -461,12 +461,13 @@ static proxy_worker *hc_get_hcworker(sctx_t *ctx, proxy_worker *worker,
                                 : ap_proxy_port_of_scheme(worker->s->scheme));
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO(03248)
                      "Creating hc worker %pp for %s://%s:%d",
-                     worker, worker->s->scheme, worker->s->hostname,
+                     worker, worker->s->scheme, worker->s->hostname_ex,
                      (int)port);
 
         ap_proxy_define_worker(ctx->p, &hc, NULL, NULL, worker->s->name, 0);
         apr_snprintf(hc->s->name, sizeof hc->s->name, "%pp", worker);
-        PROXY_STRNCPY(hc->s->hostname, worker->s->hostname);
+        PROXY_STRNCPY(hc->s->hostname, worker->s->hostname); /* for compatibility */
+        PROXY_STRNCPY(hc->s->hostname_ex, worker->s->hostname_ex);
         PROXY_STRNCPY(hc->s->scheme,   worker->s->scheme);
         PROXY_STRNCPY(hc->s->hcuri,    worker->s->hcuri);
         PROXY_STRNCPY(hc->s->hcexpr,   worker->s->hcexpr);
@@ -498,7 +499,7 @@ static proxy_worker *hc_get_hcworker(sctx_t *ctx, proxy_worker *worker,
                                 : ap_proxy_port_of_scheme(worker->s->scheme));
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO(03311)
                      "Updating hc worker %pp for %s://%s:%d",
-                     worker, worker->s->scheme, worker->s->hostname,
+                     worker, worker->s->scheme, worker->s->hostname_ex,
                      (int)port);
         hc->s->method = worker->s->method;
         create_hcheck_req(wctx, hc, ctx->p);
@@ -519,12 +520,12 @@ static int hc_determine_connection(sctx_t *ctx, proxy_worker *worker,
         *addr = worker->cp->addr;
     }
     else {
-        rv = apr_sockaddr_info_get(addr, worker->s->hostname,
+        rv = apr_sockaddr_info_get(addr, worker->s->hostname_ex,
                                    APR_UNSPEC, worker->s->port, 0, p);
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO(03249)
                          "DNS lookup failure for: %s:%d",
-                         worker->s->hostname, (int)worker->s->port);
+                         worker->s->hostname_ex, (int)worker->s->port);
         }
     }
     return (rv == APR_SUCCESS ? OK : !OK);
@@ -579,7 +580,7 @@ static int hc_get_backend(const char *proxy_function, proxy_conn_rec **backend,
     status = ap_proxy_acquire_connection(proxy_function, backend, hc, ctx->s);
     if (status == OK) {
         (*backend)->addr = hc->cp->addr;
-        (*backend)->hostname = hc->s->hostname;
+        (*backend)->hostname = hc->s->hostname_ex;
         if (strcmp(hc->s->scheme, "https") == 0) {
             if (!ap_proxy_ssl_enable(NULL)) {
                 ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ctx->s, APLOGNO(03252)
