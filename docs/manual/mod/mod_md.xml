@@ -133,7 +133,7 @@ MDomain example.org
             <example><title>Example</title>
                 <highlight language="config">
 ServerAdmin mailto:admin@example.org
-MDCertificateAgreement https://letsencrypt.org/documents/LE-SA-v1.1.1-August-1-2016.pdf
+MDCertificateAgreement https://letsencrypt.org/documents/2017.11.15-LE-SA-v1.2.pdf
 MDomain example.org www.example.org
 
 &lt;VirtualHost *:443&gt;
@@ -233,11 +233,11 @@ MDomain example2.org auto
             so that you understand what they offer and what they might exclude or require from you. 
             <module>mod_md</module> cannot, by itself, agree to such a thing. 
             </p>
-            <p>In case of Let's Encrypt, their current <a href="https://letsencrypt.org/documents/LE-SA-v1.1.1-August-1-2016.pdf">Terms of Service are here</a>. 
+            <p>In case of Let's Encrypt, their current <a href="https://letsencrypt.org/documents/2017.11.15-LE-SA-v1.2.pdf">Terms of Service are here</a>. 
             Those terms might (and probably will) change over time. So, the certificate renewal might require you to update this agreement URL.</p>
             <example><title>Example</title>
                 <highlight language="config">
-MDCertificateAgreement https://letsencrypt.org/documents/LE-SA-v1.1.1-August-1-2016.pdf
+MDCertificateAgreement https://letsencrypt.org/documents/2017.11.15-LE-SA-v1.2.pdf
 MDomain example.org www.example.org mail.example.org
                 </highlight>
             </example>
@@ -264,7 +264,7 @@ MDomain example.org www.example.org mail.example.org
             <example><title>LE Staging Setup</title>
                 <highlight language="config">
 MDCertificateAuthority https://acme-staging.api.letsencrypt.org/directory
-MDCertificateAgreement https://letsencrypt.org/documents/LE-SA-v1.1.1-August-1-2016.pdf
+MDCertificateAgreement https://letsencrypt.org/documents/2017.11.15-LE-SA-v1.2.pdf
                 </highlight>
             </example>
         </usage>
