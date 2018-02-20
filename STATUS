@@ -119,10 +119,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
   *) mpm_queue: Put fdqueue code in common for MPMs event and worker.
      trunk patch: http://svn.apache.org/r1821624
                   http://svn.apache.org/r1821625
@@ -168,6 +164,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    the mpm_queue branch can also be synchronized after this
                    merge, YMMV :)
      +1: ylavic, minfrin (with mmn bump for CONN_STATE_NUM), jim
+     ylavic:    + http://svn.apache.org/r1824862 (MMN bump)
+
+  *) mod_ldap: apr_rmm loops/hangs/crashes when LDAP auth is used in vhosts
+               due to unlocked access. 
+     trunk patch: http://svn.apache.org/r1824811
+     2.4.x: trunk works
+     +1 covener, rpluem, jim
+
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
 
   *) mod_dav: Allow other modules to become providers and add ACLs
      to the DAV response.
@@ -176,12 +183,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1824596
      2.4.x: trunk works modulo CHANGES/MMN/log-message
      +1: minfrin, jim
-
-  *) mod_ldap: apr_rmm loops/hangs/crashes when LDAP auth is used in vhosts
-               due to unlocked access. 
-     trunk patch: http://svn.apache.org/r1824811
-     2.4.x: trunk works
-     +1 covener, rpluem, jim
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
