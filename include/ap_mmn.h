@@ -511,7 +511,6 @@
  *                          ap_regcomp_set_default_cflags and
  *                          ap_regcomp_default_cflag_by_name
  * 20120211.75 (2.4.30-dev) Add hostname_ex to proxy_worker_shared
- * 20120211.76 (2.4.30-dev) Add CONN_STATE_NUM to enum conn_state_e
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -519,7 +518,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20120211
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 76                  /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 75                  /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

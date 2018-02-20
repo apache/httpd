@@ -1199,9 +1199,7 @@ typedef enum  {
     CONN_STATE_SUSPENDED,
     CONN_STATE_LINGER,          /* connection may be closed with lingering */
     CONN_STATE_LINGER_NORMAL,   /* MPM has started lingering close with normal timeout */
-    CONN_STATE_LINGER_SHORT,    /* MPM has started lingering close with short timeout */
-
-    CONN_STATE_NUM              /* Number of states (keep/kept last) */
+    CONN_STATE_LINGER_SHORT     /* MPM has started lingering close with short timeout */
 } conn_state_e;
 
 typedef enum  {
