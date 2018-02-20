@@ -569,6 +569,7 @@
  *                         ap_regcomp_set_default_cflags and
  *                         ap_regcomp_default_cflag_by_name
  * 20171014.7 (2.5.1-dev)  Add AP_CORE_DEFAULT macro
+ * 20171014.8 (2.5.1-dev)  Add CONN_STATE_NUM to enum conn_state_e
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -576,7 +577,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20171014
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 7                 /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 8                 /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
