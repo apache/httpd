@@ -1087,9 +1087,6 @@ read_request:
             if (clogging) {
                 apr_atomic_dec32(&clogged_count);
             }
-            if (cs->pub.state > CONN_STATE_LINGER) {
-                cs->pub.state = CONN_STATE_LINGER;
-            }
             if (rc == DONE) {
                 rc = OK;
             }
@@ -1124,7 +1121,7 @@ read_request:
      * worker or prefork MPMs for instance.
      */
     if (rc != OK || (cs->pub.state >= CONN_STATE_NUM)
-                 || (cs->pub.state < CONN_STATE_LINGER
+                 || (cs->pub.state != CONN_STATE_LINGER
                      && cs->pub.state != CONN_STATE_WRITE_COMPLETION
                      && cs->pub.state != CONN_STATE_CHECK_REQUEST_LINE_READABLE
                      && cs->pub.state != CONN_STATE_SUSPENDED)) {
