@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1823753:1823834 (outdated) -->
+<!-- English Revision: 1823834 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -90,11 +90,12 @@
 
     <note><title>Active la réutilisation des connexions vers un serveur FCGI
     d'arrière-plan tel que PHP-FPM</title>
-    <p>Il faut garder à l'esprit que PHP-FPM (en février 2018)
-    utilise un modèle du style prefork ; autrement dit, chacun de ses processus
-    de travail ne peut gérer qu'une connexion à la fois.<br /> 
-    Par défaut et lorsqu'il est configuré avec <code>enablereuse=on</code>,
-    mod_proxy autorise un jeu de <directive
+    <p>Il faut garder à l'esprit que PHP-FPM (en février 2018) utilise un modèle
+    du style prefork ; autrement dit, chacun de ses processus de travail ne peut
+    gérer qu'une connexion à la fois.<br /> Par défaut et lorsqu'il est
+    configuré avec <code>enablereuse=on</code> et lorsqu'un MPM à base de
+    threads est utilisé (comme <module>worker</module> ou
+    <module>event</module>), mod_proxy autorise un jeu de <directive
     module="mpm_common">ThreadsPerChild</directive> connexions vers le serveur
     d'arrière-plan pour chaque processus httpd, et par conséquent, il faut
     prêter une attention particulière aux situations suivantes :</p>

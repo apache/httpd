@@ -29,7 +29,8 @@ Release history:
     [NOTE that x.{odd}.z versions are strictly Alpha/Beta releases,
           while x.{even}.z versions are Stable/GA releases.]
 
-    2.4.30  : In development. Jim proposes a T&R Feb. 19, 2018.
+    2.4.31  : In development.
+    2.4.30  : Tagged on February 19, 2018.
     2.4.29  : Tagged on October 17, 2017. Released on October 23, 2017.
     2.4.28  : Tagged on September 25, 2017. Released on October 5, 2017.
     2.4.27  : Tagged on July 6, 2017. Released on July 11, 2017.
@@ -118,22 +119,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_proxy: Provide an RFC1035 compliant version of the hostname in the
-     proxy_worker_shared structure. PR62085
-     trunk patch: http://svn.apache.org/r1824176
-     +1: minfrin, jim, ylavic
-     jailletc36: is message 010118 still needed? Or at least mitigated with
-                 something like: "for third party proxy module usage only"?
-                 Also, does it require a ap_mmn.h update?
-     minfrin: message 010118 toned down, MMN bump updated, clash with r1823482 resolved, s/APLOG_NOTICE/APLOG_INFO/
-                  http://svn.apache.org/r1824460
-                  http://svn.apache.org/r1824482
-     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/proxy-rfc1035-hostname-v3.diff
-
-
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
   *) mpm_queue: Put fdqueue code in common for MPMs event and worker.
      trunk patch: http://svn.apache.org/r1821624
                   http://svn.apache.org/r1821625
@@ -156,10 +141,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1824381
      2.4.x patch: svn merge ^/httpd/httpd/branches/2.4.x-mpm_fdqueue .
                   (http://home.apache.org/~ylavic/patches/httpd-2.4.x-mpm_fdqueue.patch)
-     +1: ylavic, minfrin (with mmn bump for mpm_fdqueue.h)
+     +1: ylavic, minfrin, jim
      ylavic: The branch merge helps resolve move conflicts since event and
              worker fdqueue.[ch] differ(ed) between 2.4.x and trunk. The patch
              is provided only to help review.
+     ylavic: re MMN, the API is private, so no bump (supposedly).
+     minfrin: Keeping mpm_fdqueue.h private makes it hard for people to fork event
+              and worker and make their own mpms. Can we make this public?
+     ylavic: not easier/harder than now I suppose (worker/event fqueues are private).
+             maybe make them public in trunk only, so that we have more time to
+             discuss the API (if needed).
+     minfrin: happy with that, we can backport the final API.
 
   *) mpm_event: Do lingering close in worker(s).
      trunk patch: http://svn.apache.org/r1823047
@@ -171,18 +163,26 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   (trunk works if mpm_queue above is merged first, otherwise
                    the mpm_queue branch can also be synchronized after this
                    merge, YMMV :)
-     +1: ylavic,
+     +1: ylavic, minfrin (with mmn bump for CONN_STATE_NUM), jim
+     ylavic:    + http://svn.apache.org/r1824862 (MMN bump)
 
-  *) mod_ssl: Introduce SSLPolicy/SSLPolicyDefine directives.
-     trunk patch: http://svn.apache.org/r1805182
-                  http://svn.apache.org/r1805186
-                  http://svn.apache.org/r1808335
-                  http://svn.apache.org/r1811475
-                  http://svn.apache.org/r1817381
-                  http://svn.apache.org/r1817894
-     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/mod_ssl_policy.diff
-     +1: icing, minfrin
-     minfrin: 2.4.x patch not applying for me, trunk patches work
+  *) mod_ldap: apr_rmm loops/hangs/crashes when LDAP auth is used in vhosts
+               due to unlocked access. 
+     trunk patch: http://svn.apache.org/r1824811
+     2.4.x: trunk works
+     +1 covener, rpluem, jim
+
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
+
+  *) mod_dav: Allow other modules to become providers and add ACLs
+     to the DAV response.
+     trunk patch: http://svn.apache.org/r1748322
+                  http://svn.apache.org/r1824590
+                  http://svn.apache.org/r1824596
+     2.4.x: trunk works modulo CHANGES/MMN/log-message
+     +1: minfrin, jim
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
@@ -258,23 +258,6 @@ PATCHES/ISSUES THAT ARE BEING WORKED
              Do you think we'd better remove the prefetch, or maybe just
              make it nonblocking (by default)?
         jim: Non-blocking seems the best way to handle...
-
-   * mod_dav: Allow other modules to become providers and add ACLs
-     to the DAV response. Requires a release of apr-util v1.6.
-     trunk patch: http://svn.apache.org/r1748322
-     2.4.x: trunk works modulo CHANGES/MMN
-     +1: minfrin
-     rpluem asks: Will this compile with apr-util < v1.6 and keep
-     mod_dav working (without the new features of the patch of course)?
-     I doubt that we will require apr-util 1.6 for the lifetime of 2.4.x
-     (see the discussion around ap_cstr_casecmp[n] an apr 1.6)
-     minfrin: Yes, as you can see in the patch everything applies only
-     if APR_XML_X2T_PARSED is defined, and the patch was tested with
-     both apr-util v1.6 and apr-util v1.5.
-     -1: jorton, breaks binary backwards compat per dev@ discuss
-         msgid <20160902120654.GA12674@redhat.com>
-         (& also, making the structure change with apr-util version
-         means it breaks binary compat across an apr-util upgrade?)
 
    * Support PCRE2 (10.x) in place of PCRE (8.x).
      Submitted by: wrowe, Petr Pisar [ppisar redhat.com]

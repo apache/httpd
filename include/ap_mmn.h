@@ -508,8 +508,9 @@
  * 20120211.73 (2.4.30-dev) Add failontimeout_set, growth_set and lbmethod_set
  *                          to proxy_balancer struct
  * 20120211.74 (2.4.30-dev) Add AP_REG_DOLLAR_ENDONLY, ap_regcomp_get_default_cflags
- *                         ap_regcomp_set_default_cflags and
- *                         ap_regcomp_default_cflag_by_name
+ *                          ap_regcomp_set_default_cflags and
+ *                          ap_regcomp_default_cflag_by_name
+ * 20120211.75 (2.4.30-dev) Add hostname_ex to proxy_worker_shared
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -517,7 +518,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20120211
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 74                  /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 75                  /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

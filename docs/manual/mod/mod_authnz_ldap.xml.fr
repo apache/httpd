@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1823464:1824143 (outdated) -->
+<!-- English Revision: 1824143 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -530,7 +530,7 @@ Require ldap-dn cn=Barbara Jenson, o=Example
     utilisateur dont l'attribut employeeType a pour valeur "actif" :</p>
 
     <highlight language="config">
-    Require ldap-attribute employeeType=active
+    Require ldap-attribute employeeType="active"
     </highlight>
 
     <p>Plusieurs paires attribut/valeur peuvent être spécifiées par une

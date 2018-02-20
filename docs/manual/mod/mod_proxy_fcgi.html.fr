@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_proxy_fcgi.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_proxy_fcgi.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Module fournissant le support de FastCGI à
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -98,11 +96,12 @@
 
     <div class="note"><h3>Active la réutilisation des connexions vers un serveur FCGI
     d'arrière-plan tel que PHP-FPM</h3>
-    <p>Il faut garder à l'esprit que PHP-FPM (en février 2018)
-    utilise un modèle du style prefork ; autrement dit, chacun de ses processus
-    de travail ne peut gérer qu'une connexion à la fois.<br /> 
-    Par défaut et lorsqu'il est configuré avec <code>enablereuse=on</code>,
-    mod_proxy autorise un jeu de <code class="directive"><a href="../mod/mpm_common.html#threadsperchild">ThreadsPerChild</a></code> connexions vers le serveur
+    <p>Il faut garder à l'esprit que PHP-FPM (en février 2018) utilise un modèle
+    du style prefork ; autrement dit, chacun de ses processus de travail ne peut
+    gérer qu'une connexion à la fois.<br /> Par défaut et lorsqu'il est
+    configuré avec <code>enablereuse=on</code> et lorsqu'un MPM à base de
+    threads est utilisé (comme <code class="module"><a href="../mod/worker.html">worker</a></code> ou
+    <code class="module"><a href="../mod/event.html">event</a></code>), mod_proxy autorise un jeu de <code class="directive"><a href="../mod/mpm_common.html#threadsperchild">ThreadsPerChild</a></code> connexions vers le serveur
     d'arrière-plan pour chaque processus httpd, et par conséquent, il faut
     prêter une attention particulière aux situations suivantes :</p>
     <ul>
