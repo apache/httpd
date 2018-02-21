@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 
-/* Derived from PCRE's pcreposix.h.
+/* This code is based on pcreposix.h from the PCRE Library distribution,
+ * as originally written by Philip Hazel <ph10@cam.ac.uk>, and forked by
+ * the Apache HTTP Server project to provide POSIX-style regex function
+ * wrappers around underlying PCRE library functions for httpd.
+ * 
+ * The original source file pcreposix.h is copyright and licensed as follows;
 
             Copyright (c) 1997-2004 University of Cambridge
 
