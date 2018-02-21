@@ -147,7 +147,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  http://svn.apache.org/r1805490
                  http://svn.apache.org/r1823886
     2.4.x: svn merge -c 1802040,1807876,1808014,1805490,1823886 ^/httpd/httpd/trunk .
-    +1: elukey
+    +1: elukey, jim
     elukey: this patch has been requested a couple of times in the users@ mailing list,
             but from my tests in trunk the async/set-aside core features would already
             do the job without the need of this patch. I am proposing the backport
