@@ -103,6 +103,9 @@
     &lf;
     <meta http-equiv="Content-Type"
           content="text/html; charset={$output-encoding}" />&lf;
+    <xsl:if test="$is-retired">
+        <meta name="robots" content="noindex, nofollow" />&lf;
+    </xsl:if>
     <xsl:if test="not($is-chm or $is-zip)">
         <xsl:comment>
             &lf;
