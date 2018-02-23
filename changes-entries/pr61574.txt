@@ -1,0 +1,4 @@
+  *) mod_ssl: Use OpenSSL-standard functions to assemble CA
+     name lists for SSLCACertificatePath/SSLCADNRequestPath.
+     Names will now be consistently sorted. PR 61574.
+     [Joe Orton]

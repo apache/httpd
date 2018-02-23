@@ -2228,46 +2228,6 @@ static int ssl_init_FindCAList_X509NameCmp(const X509_NAME * const *a,
     return(X509_NAME_cmp(*a, *b));
 }
 
-static void ssl_init_PushCAList(STACK_OF(X509_NAME) *ca_list,
-                                server_rec *s, apr_pool_t *ptemp,
-                                const char *file)
-{
-    int n;
-    STACK_OF(X509_NAME) *sk;
-
-    sk = (STACK_OF(X509_NAME) *)
-             SSL_load_client_CA_file(file);
-
-    if (!sk) {
-        return;
-    }
-
-    for (n = 0; n < sk_X509_NAME_num(sk); n++) {
-        X509_NAME *name = sk_X509_NAME_value(sk, n);
-
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(02209)
-                     "CA certificate: %s",
-                     modssl_X509_NAME_to_string(ptemp, name, 0));
-
-        /*
-         * note that SSL_load_client_CA_file() checks for duplicates,
-         * but since we call it multiple times when reading a directory
-         * we must also check for duplicates ourselves.
-         */
-
-        if (sk_X509_NAME_find(ca_list, name) < 0) {
-            /* this will be freed when ca_list is */
-            sk_X509_NAME_push(ca_list, name);
-        }
-        else {
-            /* need to free this ourselves, else it will leak */
-            X509_NAME_free(name);
-        }
-    }
-
-    sk_X509_NAME_free(sk);
-}
-
 static apr_status_t ssl_init_ca_cert_path(server_rec *s,
                                           apr_pool_t *ptemp,
                                           const char *path,
@@ -2290,7 +2250,7 @@ static apr_status_t ssl_init_ca_cert_path(server_rec *s,
         }
         file = apr_pstrcat(ptemp, path, "/", direntry.name, NULL);
         if (ca_list) {
-            ssl_init_PushCAList(ca_list, s, ptemp, file);
+            SSL_add_file_cert_subjects_to_stack(ca_list, file);
         }
         if (xi_list) {
             load_x509_info(ptemp, xi_list, file);
@@ -2319,7 +2279,7 @@ STACK_OF(X509_NAME) *ssl_init_FindCAList(server_rec *s,
      * Process CA certificate bundle file
      */
     if (ca_file) {
-        ssl_init_PushCAList(ca_list, s, ptemp, ca_file);
+        SSL_add_file_cert_subjects_to_stack(ca_list, ca_file);
         /*
          * If ca_list is still empty after trying to load ca_file
          * then the file failed to load, and users should hear about that.
