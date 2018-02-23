@@ -100,7 +100,7 @@ AC_DEFUN([FIND_LIBXML2], [
   AC_CACHE_CHECK([for libxml2], [ac_cv_libxml2], [
     AC_ARG_WITH(libxml2,
       [APACHE_HELP_STRING(--with-libxml2=PATH,location for libxml2)],
-      [test_paths="${with_libxml2}"],
+      [test_paths="${with_libxml2}/include/libxml2 ${with_libxml2}/include ${with_libxml2}"],
       [test_paths="/usr/include/libxml2 /usr/local/include/libxml2 /usr/include /usr/local/include"]
     )
     AC_MSG_CHECKING(for libxml2)
