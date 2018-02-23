@@ -156,11 +156,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) Use liblua paths from pkg-config if available [jorton]
      Fixes unexpected addition of -L/usr/lib for mod_lua
      trunk patch: http://svn.apache.org/r1825147
-     +1: wrowe
+     +1: wrowe, ylavic
 
   *) Permit package root paths to --with-libxml2= configure option
      trunk patch: http://svn.apache.org/r1825169
-     +1: wrowe
+     +1: wrowe, ylavic
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
