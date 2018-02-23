@@ -153,6 +153,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
             do the job without the need of this patch. I am proposing the backport
             to allow more users to migrate away from mod_fastcgi.
 
+  *) Use liblua paths from pkg-config if available [jorton]
+     Fixes unexpected addition of -L/usr/lib for mod_lua
+     trunk patch: http://svn.apache.org/r1825147
+     +1: wrowe
+
+  *) Permit package root paths to --with-libxml2= configure option
+     trunk patch: http://svn.apache.org/r1825169
+     +1: wrowe
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
