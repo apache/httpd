@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1760550:1824884 (outdated) -->
+<!-- English Revision: 1824884 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -54,6 +54,36 @@
 <seealso><a href="stopping.html">Arrêt et redémarrage</a></seealso>
 
 <section id="overview"><title>Aperçu pour les plus pressés</title>
+
+    <dl>
+    <dt>Installation sous Fedora/CentOS/Red Hat Enterprise Linux</dt>
+    <dd>
+    <highlight>
+sudo yum install httpd
+sudo service httpd start
+    </highlight>
+
+    <note type="warning">Les dernières versions de ces distributions préfèrent
+    <code>dnf</code> à <code>yum</code>. Voir la <a
+    href="https://fedoraproject.org/wiki/Apache_HTTP_Server">documentation du
+    projet Fedora</a> pour des informations spécifiques à cette plateforme.</note>
+    </dd>
+
+    <dt>Installation sous Ubuntu/Debian</dt>
+    <dd>
+<highlight>
+sudo apt install apache2
+sudo service apache2 start
+</highlight>
+
+    <note type="warning">Voir la <a
+    href="https://help.ubuntu.com/lts/serverguide/httpd.html">documentation
+    Ubuntu</a> pour des informations spécifiques à cette plateforme.</note>
+
+    </dd>
+
+    <dt>Installation à partir des sources</dt>
+    <dd>
 
     <table>
       <columnspec><column width=".13"/><column width=".80"/></columnspec>
@@ -115,6 +145,14 @@
     <p>Chaque étape du processus de compilation et d'installation est
     décrite plus en détails ci-dessous, à commencer par les prérequis
     pour compiler et installer Apache httpd.</p>
+
+    </dd>
+    </dl>
+
+    <note type="warning">L'installation sous votre plateforme favorite n'est pas
+    traitée ici ? N'hésitez pas à nous <a
+    href="http://httpd.apache.org/docs-project/">aider à compléter cette
+    documentation</a> en nous faisant profiter de votre expérience.</note>
 </section>
 
 <section id="requirements"><title>Prérequis</title>
