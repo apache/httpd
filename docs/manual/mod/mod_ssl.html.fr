@@ -2281,11 +2281,10 @@ Cette directive permet de définir le répertoire où sont stockés les clés
 et certificats permettant au serveur mandataire de s'authentifier auprès
 des serveurs distants.
 </p>
-<p>Les fichiers de ce répertoire doivent être codés en PEM et ils sont
-accédés via des noms de fichier sous forme de condensés ou hash. Vous
-devez donc aussi créer des liens symboliques nommés
-<em>valeur-de-hashage</em><code>.N</code>, et vous devez toujours vous
-assurer que ce répertoire contient les liens symboliques appropriés.</p>
+<p>mod_ssl va essayer de charger tous les fichiers contenus dans le répertoire
+spécifié, mais en ignorera les éventuels sous-répertoires. Chaque fichier doit
+contenir un certificat codé au format PEM ainsi que la clé privée
+correspondante.</p>
 <div class="warning">
 <p>Actuellement, les clés privées chiffrées ne sont pas supportées.</p>
 </div>
