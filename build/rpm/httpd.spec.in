@@ -97,16 +97,6 @@ a filter to rewrite HTML links within web content when used within
 a reverse proxy environment. The mod_xml2enc module provides
 enhanced charset/internationalisation support for mod_proxy_html.
 
-%package -n mod_socache_dc
-Group: System Environment/Daemons
-Summary: Distcache shared object cache module for the Apache HTTP server
-BuildRequires: distcache-devel
-Requires: httpd = %{version}-%{release}, httpd-mmn = %{mmn}
-
-%description -n mod_socache_dc
-The mod_socache_dc module for the Apache HTTP server allows the shared
-object cache to use the distcache shared caching mechanism.
-
 %package -n mod_ssl
 Group: System Environment/Daemons
 Summary: SSL/TLS module for the Apache HTTP server
@@ -156,7 +146,7 @@ rm -rf srclib/{apr,apr-util,pcre}
         --enable-pie \
         --with-pcre \
         --enable-mods-shared=all \
-        --enable-ssl --with-ssl --enable-socache-dc --enable-bucketeer \
+        --enable-ssl --with-ssl --enable-bucketeer \
         --enable-case-filter --enable-case-filter-in \
         --disable-imagemap
 
@@ -474,10 +464,6 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root)
 %{_libdir}/httpd/modules/mod_proxy_html.so
 %{_libdir}/httpd/modules/mod_xml2enc.so
-
-%files -n mod_socache_dc
-%defattr(-,root,root)
-%{_libdir}/httpd/modules/mod_socache_dc.so
 
 %files -n mod_ssl
 %defattr(-,root,root)
