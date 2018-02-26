@@ -149,6 +149,7 @@ rm -rf srclib/{apr,apr-util,pcre}
         --enable-ssl --with-ssl --enable-bucketeer \
         --enable-case-filter --enable-case-filter-in \
         --enable-policy --enable-crypto \
+        --enable-ssl-ct \
         --disable-imagemap
 
 make %{?_smp_mflags}
@@ -480,6 +481,8 @@ rm -rf $RPM_BUILD_ROOT
 %files -n mod_ssl
 %defattr(-,root,root)
 %{_libdir}/httpd/modules/mod_ssl.so
+%{_libdir}/httpd/modules/mod_ssl_ct.so
+%{_sbindir}/ctlogconfig
 %config(noreplace) %{_sysconfdir}/httpd/conf/original/extra/httpd-ssl.conf
 %config(noreplace) %{_sysconfdir}/httpd/conf/extra/httpd-ssl.conf
 %attr(0700,apache,root) %dir %{_localstatedir}/cache/mod_ssl
