@@ -486,6 +486,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/httpd/modules/mod_ssl.so
 %{_libdir}/httpd/modules/mod_ssl_ct.so
 %{_sbindir}/ctlogconfig
+%{_mandir}/man8/ctlogconfig.8*
 %config(noreplace) %{_sysconfdir}/httpd/conf/original/extra/httpd-ssl.conf
 %config(noreplace) %{_sysconfdir}/httpd/conf/extra/httpd-ssl.conf
 %attr(0700,apache,root) %dir %{_localstatedir}/cache/mod_ssl
