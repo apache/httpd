@@ -408,6 +408,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/httpd/modules/mod_status.so
 %{_libdir}/httpd/modules/mod_substitute.so
 %{_libdir}/httpd/modules/mod_suexec.so
+%{_libdir}/httpd/modules/mod_syslog.so
 %{_libdir}/httpd/modules/mod_unique_id.so
 %{_libdir}/httpd/modules/mod_unixd.so
 %{_libdir}/httpd/modules/mod_userdir.so
