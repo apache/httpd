@@ -227,7 +227,7 @@ RemoteIPProxiesHeader X-Forwarded-By
 <syntax>RemoteIPProxyProtocol On|Off</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<compatibility>RemoteIPProxyProtocol is only available in httpd 2.4.28 and newer</compatibility>
+<compatibility>RemoteIPProxyProtocol is only available in httpd 2.4.31 and newer</compatibility>
 
 <usage>
     <p>The <directive>RemoteIPProxyProtocol</directive> directive enables or 
@@ -280,7 +280,7 @@ Listen 8080
 <syntax>RemoteIPProxyProtocolExceptions host|range [host|range] [host|range]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<compatibility>RemoteIPProxyProtocolExceptions is only available in httpd 2.4.28 and newer</compatibility>
+<compatibility>RemoteIPProxyProtocolExceptions is only available in httpd 2.4.31 and newer</compatibility>
 
 <usage>
     <p>The <directive>RemoteIPProxyProtocol</directive> directive enables or
