@@ -619,6 +619,7 @@ SET(LIBHTTPD_SOURCES
   server/util.c
   server/util_cfgtree.c
   server/util_cookies.c
+  server/util_debug.c
   server/util_expr_eval.c
   server/util_expr_parse.c
   server/util_fcgi.c
