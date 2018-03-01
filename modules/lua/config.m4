@@ -55,9 +55,16 @@ else
     test_paths="${lua_path}"
 fi
 
-AC_CHECK_LIB(m, pow, lib_m="-lm")
-AC_CHECK_LIB(m, sqrt, lib_m="-lm")
-for x in $test_paths ; do
+if test -n "$PKGCONFIG" -a -z "$lua_path" \
+   && $PKGCONFIG --atleast-version=5.1 lua; then
+  LUA_LIBS="`$PKGCONFIG --libs lua`"
+  LUA_CFLAGS="`$PKGCONFIG --cflags lua`"
+  LUA_VERSION="`$PKGCONFIG --modversion lua`"
+  AC_MSG_NOTICE([using Lua $LUA_VERSION configuration from pkg-config])
+else
+  AC_CHECK_LIB(m, pow, lib_m="-lm")
+  AC_CHECK_LIB(m, sqrt, lib_m="-lm")
+  for x in $test_paths ; do
     CHECK_LUA_PATH([${x}], [include/lua-5.3], [lib/lua-5.3], [lua-5.3])
     CHECK_LUA_PATH([${x}], [include/lua5.3], [lib], [lua5.3])
     CHECK_LUA_PATH([${x}], [include/lua53], [lib/lua53], [lua])
@@ -71,7 +78,8 @@ for x in $test_paths ; do
     CHECK_LUA_PATH([${x}], [include/lua-5.1], [lib/lua-5.1], [lua-5.1])
     CHECK_LUA_PATH([${x}], [include/lua5.1], [lib], [lua5.1])
     CHECK_LUA_PATH([${x}], [include/lua51], [lib/lua51], [lua])
-done
+  done
+fi
 
 AC_SUBST(LUA_LIBS)
 AC_SUBST(LUA_CFLAGS)
