@@ -155,7 +155,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
   *) Permit package root paths to --with-libxml2= configure option
      trunk patch: http://svn.apache.org/r1825169
-     +1: wrowe, ylavic
+     +1: wrowe, ylavic, jim
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
