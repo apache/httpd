@@ -119,9 +119,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) Permit package root paths to --with-libxml2= configure option
-     trunk patch: http://svn.apache.org/r1825169
-     +1: wrowe, ylavic, jim
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
