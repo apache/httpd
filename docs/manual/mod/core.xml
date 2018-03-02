@@ -4970,8 +4970,8 @@ port</description>
      </dd>
     </dl>
 
-    <p>With <code>UseCanonicalPhysicalPort Off</code>, the
-    physical ports are removed from the ordering.</p>
+    <p>Only with <code>UseCanonicalPhysicalPort On</code>, the
+    physical ports are included in the search.</p>
     </note>
 
 </usage>
