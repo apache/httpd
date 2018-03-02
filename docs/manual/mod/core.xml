@@ -4955,7 +4955,7 @@ port</description>
      <dd>
      <ol>
       <li>Port provided in <directive module="core">Servername</directive></li>
-      <li>Physical port</li>
+      <li>Physical port (only with <directive>UseCanonicalPhysicalPort</directive> ON)</li>
       <li>Default port</li>
      </ol>
      </dd>
@@ -4963,7 +4963,7 @@ port</description>
      <dd>
      <ol>
       <li>Parsed port from <code>Host:</code> header</li>
-      <li>Physical port</li>
+      <li>Physical port (only with <directive>UseCanonicalPhysicalPort</directive> ON)</li>
       <li>Port provided in <directive module="core">Servername</directive></li>
       <li>Default port</li>
      </ol>
