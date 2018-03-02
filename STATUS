@@ -119,6 +119,10 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) Permit package root paths to --with-libxml2= configure option
+     trunk patch: http://svn.apache.org/r1825169
+     +1: wrowe, ylavic, jim
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -152,10 +156,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
             but from my tests in trunk the async/set-aside core features would already
             do the job without the need of this patch. I am proposing the backport
             to allow more users to migrate away from mod_fastcgi.
-
-  *) Permit package root paths to --with-libxml2= configure option
-     trunk patch: http://svn.apache.org/r1825169
-     +1: wrowe, ylavic, jim
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
