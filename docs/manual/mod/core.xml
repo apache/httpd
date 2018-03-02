@@ -4951,14 +4951,6 @@ port</description>
     <p>The ordering of the lookup when the physical port is used is as
     follows:</p>
      <dl>
-     <dt><code>UseCanonicalName On</code></dt>
-     <dd>
-     <ol>
-      <li>Port provided in <directive module="core">Servername</directive></li>
-      <li>Physical port (only with <directive>UseCanonicalPhysicalPort</directive> ON)</li>
-      <li>Default port</li>
-     </ol>
-     </dd>
      <dt><code>UseCanonicalName Off | DNS</code></dt>
      <dd>
      <ol>
@@ -4968,7 +4960,15 @@ port</description>
       <li>Default port</li>
      </ol>
      </dd>
-     </dl>
+     <dt><code>UseCanonicalName On</code></dt>
+     <dd>
+     <ol>
+      <li>Port provided in <directive module="core">Servername</directive></li>
+      <li>Physical port (only with <directive>UseCanonicalPhysicalPort</directive> ON)</li>
+      <li>Default port</li>
+     </ol>
+     </dd>
+    </dl>
 
     <p>With <code>UseCanonicalPhysicalPort Off</code>, the
     physical ports are removed from the ordering.</p>
