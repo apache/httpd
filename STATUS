@@ -119,6 +119,18 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_proxy_fcgi: Add the support for the mod_proxy's flushpackets parameter.
+    trunk patch: http://svn.apache.org/r1802040
+                 http://svn.apache.org/r1807876
+                 http://svn.apache.org/r1808014
+                 http://svn.apache.org/r1805490
+                 http://svn.apache.org/r1823886
+    2.4.x: svn merge -c 1802040,1807876,1808014,1805490,1823886 ^/httpd/httpd/trunk .
+    +1: elukey, jim, ylavic
+    elukey: this patch has been requested a couple of times in the users@ mailing list,
+            but from my tests in trunk the async/set-aside core features would already
+            do the job without the need of this patch. I am proposing the backport
+            to allow more users to migrate away from mod_fastcgi.
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -140,19 +152,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  suffer from the clash we created.
                  See also:
                  https://lists.apache.org/thread.html/b924afe0fcc58a8636b753e630421bf6dc2080653a79575fd5fd641a@%3Cdev.httpd.apache.org%3E
-
-  *) mod_proxy_fcgi: Add the support for the mod_proxy's flushpackets parameter.
-    trunk patch: http://svn.apache.org/r1802040
-                 http://svn.apache.org/r1807876
-                 http://svn.apache.org/r1808014
-                 http://svn.apache.org/r1805490
-                 http://svn.apache.org/r1823886
-    2.4.x: svn merge -c 1802040,1807876,1808014,1805490,1823886 ^/httpd/httpd/trunk .
-    +1: elukey, jim
-    elukey: this patch has been requested a couple of times in the users@ mailing list,
-            but from my tests in trunk the async/set-aside core features would already
-            do the job without the need of this patch. I am proposing the backport
-            to allow more users to migrate away from mod_fastcgi.
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
