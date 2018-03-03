@@ -106,8 +106,8 @@ still be configured using regular filter directives, this will not support
 i18n at all.  Instead, a new directive <directive>ProxyHTMLEnable</directive>
 has been introduced to configure both mod_proxy_html's filter and mod_xml2enc.
 It is recommended that you always use ProxyHTMLEnable even where i18n
-support is not required.  <b>Note that this is a change from earlier
-versions where filter directives were used to activate mod_proxy_html.</b></p>
+support is not required. <strong>Note that this is a change from earlier
+versions where filter directives were used to activate mod_proxy_html.</strong></p>
 
 </section>
 
