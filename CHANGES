@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.31
 
+  *) mod_proxy_fcgi: Add the support for mod_proxy's flushpackets and flushwait
+     parameters. [Luca Toscano, Ruediger Pluem, Yann Ylavic]
+
   *) mod_ldap: Avoid possible crashes, hangs, and busy loops due to
      improper merging of the cache lock in vhost config.
      PR 43164 [Eric Covener]
