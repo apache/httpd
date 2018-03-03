@@ -232,7 +232,7 @@ RemoteIPProxiesHeader X-Forwarded-By</pre>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_remoteip</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>RemoteIPProxyProtocol is only available in httpd 2.4.28 and newer</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>RemoteIPProxyProtocol is only available in httpd 2.4.31 and newer</td></tr>
 </table>
     <p>The <code class="directive">RemoteIPProxyProtocol</code> directive enables or 
     disables the reading and handling of the PROXY protocol connection header.
@@ -284,7 +284,7 @@ Listen 8080
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_remoteip</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>RemoteIPProxyProtocolExceptions is only available in httpd 2.4.28 and newer</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>RemoteIPProxyProtocolExceptions is only available in httpd 2.4.31 and newer</td></tr>
 </table>
     <p>The <code class="directive">RemoteIPProxyProtocol</code> directive enables or
     disables the reading and handling of the PROXY protocol connection header.
