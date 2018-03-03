@@ -1030,7 +1030,7 @@ handshake</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslpassphrasedialog">SSLPassPhraseDialog <em>type</em></a></td><td> builtin </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Type of pass phrase dialog for encrypted private
 keys</td></tr>
 <tr><td><a href="mod_ssl.html#sslpolicy">SSLPolicy <em>name</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Apply a SSLPolicy by name</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslpolicydefine">&lt;SSLPolicy <em>name</em>&gt;</a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Define a named set of SSL configurations</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslpolicydefine">&lt;SSLPolicyDefine <em>name</em>&gt;</a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Define a named set of SSL configurations</td></tr>
 <tr><td><a href="mod_ssl.html#sslprotocol">SSLProtocol [+|-]<em>protocol</em> ...</a></td><td> all -SSLv3 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Configure usable SSL/TLS protocol versions</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslproxycacertificatefile">SSLProxyCACertificateFile <em>file-path</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">File of concatenated PEM-encoded CA Certificates
 for Remote Server Auth</td></tr>
