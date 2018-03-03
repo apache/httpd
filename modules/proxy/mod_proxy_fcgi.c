@@ -532,6 +532,8 @@ static apr_status_t dispatch(proxy_conn_rec *conn, proxy_dir_conf *conf,
     ap_fcgi_header header;
     unsigned char farray[AP_FCGI_HEADER_LEN];
     apr_pollfd_t pfd;
+    apr_pollfd_t *flushpoll = NULL;
+    apr_int32_t flushpoll_fd;
     int header_state = HDR_STATE_READING_HEADERS;
     char stack_iobuf[AP_IOBUFSIZE];
     apr_size_t iobuf_size = AP_IOBUFSIZE;
@@ -547,6 +549,13 @@ static apr_status_t dispatch(proxy_conn_rec *conn, proxy_dir_conf *conf,
     pfd.desc.s = conn->sock;
     pfd.p = r->pool;
     pfd.reqevents = APR_POLLIN | APR_POLLOUT;
+
+    if (conn->worker->s->flush_packets == flush_auto) {
+        flushpoll = apr_pcalloc(r->pool, sizeof(apr_pollfd_t));
+        flushpoll->reqevents = APR_POLLIN;
+        flushpoll->desc_type = APR_POLL_SOCKET;
+        flushpoll->desc.s = conn->sock;
+    }
 
     ib = apr_brigade_create(r->pool, c->bucket_alloc);
     ob = apr_brigade_create(r->pool, c->bucket_alloc);
@@ -658,6 +667,7 @@ static apr_status_t dispatch(proxy_conn_rec *conn, proxy_dir_conf *conf,
             apr_bucket *b;
             unsigned char plen;
             unsigned char type, version;
+            int mayflush = 0;
 
             /* First, we grab the header... */
             rv = get_data_full(conn, (char *) farray, AP_FCGI_HEADER_LEN);
@@ -786,6 +796,7 @@ recv_again:
                                     *err = "passing brigade to output filters";
                                     break;
                                 }
+                                mayflush = 1;
                             }
                             apr_brigade_cleanup(ob);
 
@@ -812,6 +823,7 @@ recv_again:
                                 *err = "passing brigade to output filters";
                                 break;
                             }
+                            mayflush = 1;
                         }
                         apr_brigade_cleanup(ob);
                     }
@@ -875,6 +887,20 @@ recv_again:
                                   "Error occurred reading padding");
                     break;
                 }
+            }
+
+            if (mayflush && ((conn->worker->s->flush_packets == flush_on) ||
+                             ((conn->worker->s->flush_packets == flush_auto) && 
+                              (apr_poll(flushpoll, 1, &flushpoll_fd,
+                               conn->worker->s->flush_wait) == APR_TIMEUP)))) {
+                apr_bucket* flush_b = apr_bucket_flush_create(r->connection->bucket_alloc);
+                APR_BRIGADE_INSERT_TAIL(ob, flush_b);
+                rv = ap_pass_brigade(r->output_filters, ob);
+                if (rv != APR_SUCCESS) {
+                    *err = "passing headers brigade to output filters";
+                    break;
+                }
+                mayflush = 0;
             }
         }
     }
