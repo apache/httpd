@@ -1,4 +1,6 @@
                                                          -*- coding: utf-8 -*-
+Changes with Apache 2.4.32
+
 Changes with Apache 2.4.31
 
   *) mod_proxy_fcgi: Add the support for mod_proxy's flushpackets and flushwait
