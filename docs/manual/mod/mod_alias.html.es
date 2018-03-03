@@ -114,7 +114,7 @@ Alias "/foo" "/gaq"</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Alias" id="Alias">Alias</a> <a name="alias" id="alias">Directiva</a></h2>
+<div class="directive-section"><h2><a name="alias" id="alias">Directiva</a> <a name="Alias" id="Alias">Alias</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Mapea URLs a rutas del sistema de ficheros</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>Alias [<var>URL-path</var>]
@@ -182,7 +182,7 @@ Alias "/foo" "/gaq"</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AliasMatch" id="AliasMatch">AliasMatch</a> <a name="aliasmatch" id="aliasmatch">Directiva</a></h2>
+<div class="directive-section"><h2><a name="aliasmatch" id="aliasmatch">Directiva</a> <a name="AliasMatch" id="AliasMatch">AliasMatch</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Mapea URLs a ubicaciones del sistema de ficheros usando expresiones regulares</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>AliasMatch <var>regex</var>
@@ -250,7 +250,7 @@ AliasMatch "^/image/(.*)\.gif$" "/files/gif.images/$1.gif"</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Redirect" id="Redirect">Redirect</a> <a name="redirect" id="redirect">Directiva</a></h2>
+<div class="directive-section"><h2><a name="redirect" id="redirect">Directiva</a> <a name="Redirect" id="Redirect">Redirect</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Envía una redirección externa indicando al cliente que solicite una URL distinta</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>Redirect [<var>status</var>] [<var>URL-path</var>]
@@ -347,7 +347,7 @@ Redirect 303 "/three" "http://example.com/other"</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RedirectMatch" id="RedirectMatch">RedirectMatch</a> <a name="redirectmatch" id="redirectmatch">Directiva</a></h2>
+<div class="directive-section"><h2><a name="redirectmatch" id="redirectmatch">Directiva</a> <a name="RedirectMatch" id="RedirectMatch">RedirectMatch</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Envía una redirección externa basada en una coincidencia de expresión regular con la URL actual
 </td></tr>
@@ -381,7 +381,7 @@ Redirect 303 "/three" "http://example.com/other"</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RedirectPermanent" id="RedirectPermanent">RedirectPermanent</a> <a name="redirectpermanent" id="redirectpermanent">Directiva</a></h2>
+<div class="directive-section"><h2><a name="redirectpermanent" id="redirectpermanent">Directiva</a> <a name="RedirectPermanent" id="RedirectPermanent">RedirectPermanent</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Envía una redirección externa permanente indicando al cliente que solicite una URL diferente</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>RedirectPermanent <var>URL-path</var> <var>URL</var></code></td></tr>
@@ -396,7 +396,7 @@ Redirect 303 "/three" "http://example.com/other"</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RedirectTemp" id="RedirectTemp">RedirectTemp</a> <a name="redirecttemp" id="redirecttemp">Directiva</a></h2>
+<div class="directive-section"><h2><a name="redirecttemp" id="redirecttemp">Directiva</a> <a name="RedirectTemp" id="RedirectTemp">RedirectTemp</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Envía una redirección externa temporal indicando al cliente que solicite una URL diferente</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>RedirectTemp <var>URL-path</var> <var>URL</var></code></td></tr>
@@ -410,7 +410,7 @@ Redirect 303 "/three" "http://example.com/other"</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ScriptAlias" id="ScriptAlias">ScriptAlias</a> <a name="scriptalias" id="scriptalias">Directiva</a></h2>
+<div class="directive-section"><h2><a name="scriptalias" id="scriptalias">Directiva</a> <a name="ScriptAlias" id="ScriptAlias">ScriptAlias</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Mapea una URL a una ubicación del sistema de ficheros y designa el destino como un script CGI</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>ScriptAlias [<var>URL-path</var>]
@@ -479,7 +479,7 @@ Redirect 303 "/three" "http://example.com/other"</pre>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ScriptAliasMatch" id="ScriptAliasMatch">ScriptAliasMatch</a> <a name="scriptaliasmatch" id="scriptaliasmatch">Directiva</a></h2>
+<div class="directive-section"><h2><a name="scriptaliasmatch" id="scriptaliasmatch">Directiva</a> <a name="ScriptAliasMatch" id="ScriptAliasMatch">ScriptAliasMatch</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Mapea una URL a una ubicación del sistema de ficheros usando 
 una expresión regular y designa el destino como un script CGI</td></tr>

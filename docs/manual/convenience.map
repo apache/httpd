@@ -6,6 +6,7 @@
 # RewriteCond ${dir2url:$1} (.+)
 # RewriteRule ^/+([^/]+)$ /manual/%1 [R=301,NE,L]
 
+accepterrorsnonfatal	mod/mpm_common.html#accepterrorsnonfatal
 acceptfilter	mod/core.html#acceptfilter
 acceptpathinfo	mod/core.html#acceptpathinfo
 accessfilename	mod/core.html#accessfilename
@@ -403,6 +404,7 @@ maxrequestworkers	mod/mpm_common.html#maxrequestworkers
 maxspareservers	mod/prefork.html#maxspareservers
 maxsparethreads	mod/mpm_common.html#maxsparethreads
 maxthreads	mod/mpm_netware.html#maxthreads
+mdbaseserver	mod/mod_md.html#mdbaseserver
 mdcachallenges	mod/mod_md.html#mdcachallenges
 mdcertificateagreement	mod/mod_md.html#mdcertificateagreement
 mdcertificateauthority	mod/mod_md.html#mdcertificateauthority

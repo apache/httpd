@@ -30,6 +30,10 @@
 <a href="../es/mod/mod_ssl.html" title="Español">&nbsp;es&nbsp;</a> |
 <a href="../fr/mod/mod_ssl.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
+<div class="outofdate">Esta traducción podría estar
+            obsoleta. Consulte la versión en inglés de la
+            documentación para comprobar si se han producido cambios
+            recientemente.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Descripción:</a></th><td>Criptografía fuerte usando una Capa de Sockets Seguros (Secure 
   Sockets Layer SSL) y protocolos de Seguridad de la Capa de Transporte 
   (Transport Layer Security TLS)</td></tr>
