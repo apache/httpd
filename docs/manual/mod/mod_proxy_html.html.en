@@ -53,11 +53,13 @@ rewritten to work through the gateway. mod_proxy_html serves to rewrite
 <code>&lt;a href="http://appserver.example.com/foo/bar.html"&gt;foobar&lt;/a&gt;</code> to
 <code>&lt;a href="http://www.example.com/appserver/foo/bar.html"&gt;foobar&lt;/a&gt;</code>
 making it accessible from outside.</p>
-
-<p>mod_proxy_html was originally developed at Webﬁing, whose
-extensive <a href="http://apache.webthing.com/mod_proxy_html/">documentation</a> may be useful to users.</p>
 </div>
-<div id="quickview"><h3 class="directives">Directives</h3>
+<div id="quickview"><h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#intro">Introduction</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#custom">Customised HTML Parsing</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#i18n">Internationalisation</a></li>
+</ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#proxyhtmlbufsize">ProxyHTMLBufSize</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxyhtmlcharsetout">ProxyHTMLCharsetOut</a></li>
@@ -75,7 +77,71 @@ extensive <a href="http://apache.webthing.com/mod_proxy_html/">documentation</a>
 <h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_proxy_html">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_proxy_html">Report a bug</a></li></ul><h3>See also</h3>
 <ul class="seealso">
 <li><a href="#comments_section">Comments</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="intro" id="intro">Introduction</a></h2>
+<p>mod_proxy_html was originally a third-party module for Apache HTTPD
+2.0.x and later versions.  It was donated to the ASF in 2011 along with
+<code class="module"><a href="../mod/mod_xml2enc.html">mod_xml2enc</a></code> (see <a href="#i18n">Internationalisation</a>)
+and is a standard module in HTTPD 2.4 and development versions.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="custom" id="custom">Customised HTML Parsing</a></h2>
+<p>Internally, mod_proxy_html uses the HTMLParser module from the
+third-party <a href="http://xmlsoft.org/">libxml2</a> library.
+Unlike other libxml2 parsers, HTMLParser deals with HTML without
+requiring it to be well-formed XML. In particular, it understands
+about implied tags - like a closing &lt;/p&gt; - and inserts them
+into the stream of SAX events used by mod_proxy_html.  It also has
+explicit knowledge of W3C standards HTML 4 and XHTML 1, and can
+correct certain errors in them.</p>
+<p>mod_proxy_html offers a range of options to control HTML parsing.
+Error correction can be enabled (to your choice of HTML standard)
+or disabled using <code class="directive">ProxyHTMLDocType</code>.
+And in response to popular demand, it can be configured
+to treat non-standard elements and attributes as links that may
+need rewriting, and to rewrite links in embedded non-HTML contents
+(stylesheets and scripts).  Note that it is not suitable for external
+stylesheets or scripts: for those you should use another parser such as
+<code class="module"><a href="../mod/mod_substitute.html">mod_substitute</a></code> or <code class="module"><a href="../mod/mod_sed.html">mod_sed</a></code>.
+The main customisation directives are <code class="directive">ProxyHTMLLinks</code>
+and <code class="directive">ProxyHTMLEvents</code>.  By default these are set in 
+configuration file <var>proxy-html.conf</var>, which also contains
+comments to help you customise your parser if required.</p>
+<div class="note">For historical reasons, configuring mod_proxy_html to rewrite
+URLs in scripting events does not by default rewrite URLs in stylesheets.
+This can be changed by uncommenting the relevant line in
+<var>proxy-html.conf</var> as documented there.</div>
 
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="i18n" id="i18n">Internationalisation</a></h2>
+<p>Internally, mod_proxy_html uses a smart HTML parser from the
+third-party <a href="http://xmlsoft.org/">libxml2</a> library.
+The parser uses Unicode (utf-8) internally.  This makes it a
+somewhat-complex task to handle other encodings required to process
+many non-English-language websites.  If this is not handled correctly,
+websites that display non-ASCII characters in encodings other than
+utf-8 (Unicode) will display incorrectly.</p>
+<p>From the first release in 2003 to the donation to Apache in 2011,
+internationalisation (i18n) support developed from near nothing to a
+sophisticated framework capable of applying rules from HTTP, HTML and XML
+to detect a document's encoding and handle it correctly.  However,
+this processing was common to mod_proxy_html and other modules using
+libxml2, so it made sense to move it to a separate module rather than
+maintain it in multiple places.  That module is <code class="module"><a href="../mod/mod_xml2enc.html">mod_xml2enc</a></code>,
+and must be loaded for i18n to work.</p>
+<p>The interaction of mod_proxy_html with mod_xml2enc is too complex to
+be configured using regular filter configuration, including
+<code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code> directives.  Thus while mod_proxy_html can
+still be configured using regular filter directives, this will not support
+i18n at all.  Instead, a new directive <code class="directive">ProxyHTMLEnable</code>
+has been introduced to configure both mod_proxy_html's filter and mod_xml2enc.
+It is recommended that you always use ProxyHTMLEnable even where i18n
+support is not required. <strong>Note that this is a change from earlier
+versions where filter directives were used to activate mod_proxy_html.</strong></p>
+
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ProxyHTMLBufSize" id="ProxyHTMLBufSize">ProxyHTMLBufSize</a> <a name="proxyhtmlbufsize" id="proxyhtmlbufsize">Directive</a></h2>
 <table class="directive">
@@ -184,7 +250,7 @@ module for earlier 2.x versions.</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_html</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Version 2.4 and later; available as a third-party
-for earlier 2.x versions</td></tr>
+module for earlier 2.x versions</td></tr>
 </table>
 <p>Specifies one or more attributes to treat as scripting events and
 apply <code class="directive"><a href="#proxyhtmlurlmap">ProxyHTMLURLMap</a></code>s to where enabled.
@@ -194,7 +260,10 @@ You can specify any number of attributes in one or more
 one scope so that one overrides the other, you'll need to specify a complete
 set in each of those scopes.</p>
 <p>A default configuration is supplied in <var>proxy-html.conf</var>
-and defines the events in standard HTML 4 and XHTML 1.</p>
+and defines the events in standard HTML 4 and XHTML 1.  This can be
+extended to apply to URLs embedded in CSS stylesheet attributes
+by adding the <var>style</var> attribute to ProxyHTMLEvents, although
+this is not enabled in the shipped default.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
