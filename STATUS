@@ -121,7 +121,7 @@ RELEASE SHOWSTOPPERS:
                   http://svn.apache.org/r1580935
      2.4.x: trunk works (patch below includes CHANGES entry)
                   http://home.apache.org/~ylavic/patches/httpd-2.4.x-ab-nonblock_length.patch
-     +1: ylavic,
+     +1: ylavic, druggeri
 
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
