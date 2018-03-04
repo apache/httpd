@@ -780,6 +780,7 @@ static void write_request(struct connection * c)
             c->rwrite = reqlen;
             if (send_body)
                 c->rwrite += postlen;
+            l = c->rwrite;
         }
         else if (tnow > c->connect + aprtimeout) {
             printf("Send request timed out!\n");
