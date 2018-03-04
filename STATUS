@@ -123,6 +123,18 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
+  *) ab: Fix send length calculation for the non-blocking connect case
+     introduced in 2.4.30.
+     trunk patch: http://svn.apache.org/r1580928
+                  http://svn.apache.org/r1580935
+     2.4.x: trunk works (patch below includes CHANGES entry)
+                  http://home.apache.org/~ylavic/patches/httpd-2.4.x-ab-nonblock_length.patch
+     +1: ylavic,
+
+
+PATCHES/ISSUES THAT ARE BEING WORKED
+  [ New entries should be added at the START of the list ]
+
   *) mod_dav: Allow other modules to become providers and add ACLs
      to the DAV response.
      trunk patch: http://svn.apache.org/r1748322
@@ -139,18 +151,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  suffer from the clash we created.
                  See also:
                  https://lists.apache.org/thread.html/b924afe0fcc58a8636b753e630421bf6dc2080653a79575fd5fd641a@%3Cdev.httpd.apache.org%3E
-
-  *) ab: Fix send length calculation for the non-blocking connect case
-     introduced in 2.4.30.
-     trunk patch: http://svn.apache.org/r1580928
-                  http://svn.apache.org/r1580935
-     2.4.x: trunk works (patch below includes CHANGES entry)
-                  http://home.apache.org/~ylavic/patches/httpd-2.4.x-ab-nonblock_length.patch
-     +1: ylavic,
-
-
-PATCHES/ISSUES THAT ARE BEING WORKED
-  [ New entries should be added at the START of the list ]
 
   *) mod_ssl: Return 502 instead of 500 when SSL peer check or 
      proxy_post_handshake hook fails. 
