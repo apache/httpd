@@ -115,14 +115,6 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
-
-PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
-  [ start all new proposals below, under PATCHES PROPOSED. ]
-
-
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
   *) ab: Fix send length calculation for the non-blocking connect case
      introduced in 2.4.30.
      trunk patch: http://svn.apache.org/r1580928
@@ -130,6 +122,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x: trunk works (patch below includes CHANGES entry)
                   http://home.apache.org/~ylavic/patches/httpd-2.4.x-ab-nonblock_length.patch
      +1: ylavic,
+
+
+PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
+  [ start all new proposals below, under PATCHES PROPOSED. ]
+
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
