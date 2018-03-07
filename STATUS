@@ -124,6 +124,13 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
+  *) rotatelogs: Fix %Z expansion in localhost (-l) mode, fix Y2K38 bug.
+     trunk patch: http://svn.apache.org/r1532281
+                  http://svn.apache.org/r1532289
+                  http://svn.apache.org/r1537718
+     2.4.x patch: trunk works
+           svn merge -c 1532281,1532289,1537718 ^/httpd/httpd/trunk .
+     +1: jorton,
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
