@@ -132,6 +132,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
            svn merge -c 1532281,1532289,1537718 ^/httpd/httpd/trunk .
      +1: jorton,
 
+  *) mod_ssl: Add _RAW DN variable lookup suffix.
+     trunk patch: http://svn.apache.org/r1811976
+     2.4.x patch: trunk works + version num update in docs
+           svn merge -c 1811976 ^/httpd/httpd/trunk .
+           sed -i 's/httpd 2.5.0/httpd 2.4.32/g' docs/manual/mod/mod_ssl.xml
+     +1: jorton, 
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
