@@ -302,7 +302,7 @@ PATCHES/ISSUES THAT ARE STALLED
                   http://svn.apache.org/r1641381
      ylavic: Merge patch provided (reusing new->real to avoid double de_socketfy() call).
              Also added missing r1609688 to the patchset.
-     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-ap_proxy_define_match_worker.patch
+     2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-ap_proxy_define_match_worker.patch
      +1: ylavic
      -0: covener tried to review this one in Austin with Jeff.  Does the added match function 
          really cover a very narrow set of parameters with the way it skips over backreferences?
