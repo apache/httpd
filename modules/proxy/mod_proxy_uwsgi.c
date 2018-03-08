@@ -212,20 +212,21 @@ static int uwsgi_send_body(request_rec *r, proxy_conn_rec * conn)
     if (ap_should_client_block(r)) {
         char *buf = apr_palloc(r->pool, AP_IOBUFSIZE);
         int status;
-        apr_size_t readlen;
+        long readlen;
 
         readlen = ap_get_client_block(r, buf, AP_IOBUFSIZE);
         while (readlen > 0) {
-            status = uwsgi_send(conn, buf, readlen, r);
+            status = uwsgi_send(conn, buf, (apr_size_t)readlen, r);
             if (status != OK) {
                 return HTTP_SERVICE_UNAVAILABLE;
             }
             readlen = ap_get_client_block(r, buf, AP_IOBUFSIZE);
         }
         if (readlen == -1) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10099)
+            apr_status_t rv = apr_get_netos_error();
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(10099)
                           "receiving request body failed");
-            return HTTP_INTERNAL_SERVER_ERROR;
+            return APR_STATUS_IS_EAGAIN(rv) ? HTTP_REQUEST_TIME_OUT : HTTP_INTERNAL_SERVER_ERROR;
         }
     }
 
