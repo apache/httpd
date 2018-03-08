@@ -55,13 +55,18 @@ else
     test_paths="${lua_path}"
 fi
 
-if test -n "$PKGCONFIG" -a -z "$lua_path" \
-   && $PKGCONFIG --atleast-version=5.1 lua; then
-  LUA_LIBS="`$PKGCONFIG --libs lua`"
-  LUA_CFLAGS="`$PKGCONFIG --cflags lua`"
-  LUA_VERSION="`$PKGCONFIG --modversion lua`"
-  AC_MSG_NOTICE([using Lua $LUA_VERSION configuration from pkg-config])
-else
+for pklua in lua lua5.3 lua5.2 lua5.1; do
+  if test -n "$PKGCONFIG" -a -z "$lua_path" \
+     && $PKGCONFIG --atleast-version=5.1 $pklua; then
+    LUA_LIBS="`$PKGCONFIG --libs $pklua`"
+    LUA_CFLAGS="`$PKGCONFIG --cflags $pklua`"
+    LUA_VERSION="`$PKGCONFIG --modversion $pklua`"
+    AC_MSG_NOTICE([using Lua $LUA_VERSION configuration from pkg-config])
+    break
+  fi
+done
+
+if test -z "$LUA_VERSION"; then
   AC_CHECK_LIB(m, pow, lib_m="-lm")
   AC_CHECK_LIB(m, sqrt, lib_m="-lm")
   for x in $test_paths ; do
