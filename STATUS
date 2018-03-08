@@ -144,6 +144,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1: jorton, 
 
+  *) mod_access_compat, mod_authz_host: Prevent access control misconfiguration
+     due to interpretation of #comments in Require host or Allow/Deny directives.
+     trunk patch: http://svn.apache.org/r1667676
+                  http://svn.apache.org/r1826207
+     2.4.x patch: trunk works, svn merge -c 1667676,1826207 ^/httpd/httpd/trunk .
+     +1: jorton, 
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
