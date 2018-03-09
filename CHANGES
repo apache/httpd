@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.32
 
+  *) mod_ssl: Support SSL DN raw variable extraction without conversion
+     to UTF-8, using _RAW suffix on variable names.  [Joe Orton]
+
   *) ab: Fix send length calculation for the non-blocking connect case
      introduced in 2.4.30.  [Joe Orton]
 

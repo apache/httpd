@@ -217,18 +217,21 @@ BOOL modssl_X509_getBC(X509 *cert, int *ca, int *pathlen)
     return TRUE;
 }
 
-/* convert an ASN.1 string to a UTF-8 string (escaping control characters) */
-static char *asn1_string_to_utf8(apr_pool_t *p, ASN1_STRING *asn1str)
+/* Convert ASN.1 string to a pool-allocated char * string, escaping
+ * control characters.  If raw is zero, convert to UTF-8, otherwise
+ * unchanged from the character set. */
+static char *asn1_string_convert(apr_pool_t *p, ASN1_STRING *asn1str, int raw)
 {
     char *result = NULL;
     BIO *bio;
-    int len;
+    int len, flags = ASN1_STRFLGS_ESC_CTRL;
 
     if ((bio = BIO_new(BIO_s_mem())) == NULL)
         return NULL;
 
-    ASN1_STRING_print_ex(bio, asn1str, ASN1_STRFLGS_ESC_CTRL|
-                                       ASN1_STRFLGS_UTF8_CONVERT);
+    if (!raw) flags |= ASN1_STRFLGS_UTF8_CONVERT;
+    
+    ASN1_STRING_print_ex(bio, asn1str, flags);
     len = BIO_pending(bio);
     if (len > 0) {
         result = apr_palloc(p, len+1);
@@ -239,10 +242,13 @@ static char *asn1_string_to_utf8(apr_pool_t *p, ASN1_STRING *asn1str)
     return result;
 }
 
+#define asn1_string_to_utf8(p, a) asn1_string_convert(p, a, 0)
+
 /* convert a NAME_ENTRY to UTF8 string */
-char *modssl_X509_NAME_ENTRY_to_string(apr_pool_t *p, X509_NAME_ENTRY *xsne)
+char *modssl_X509_NAME_ENTRY_to_string(apr_pool_t *p, X509_NAME_ENTRY *xsne,
+                                       int raw)
 {
-    char *result = asn1_string_to_utf8(p, X509_NAME_ENTRY_get_data(xsne));
+    char *result = asn1_string_convert(p, X509_NAME_ENTRY_get_data(xsne), raw);
     ap_xlate_proto_from_ascii(result, len);
     return result;
 }
@@ -395,7 +401,7 @@ static BOOL getIDs(apr_pool_t *p, X509 *x509, apr_array_header_t **ids)
     subj = X509_get_subject_name(x509);
     while ((i = X509_NAME_get_index_by_NID(subj, NID_commonName, i)) != -1) {
         APR_ARRAY_PUSH(*ids, const char *) = 
-            modssl_X509_NAME_ENTRY_to_string(p, X509_NAME_get_entry(subj, i));
+            modssl_X509_NAME_ENTRY_to_string(p, X509_NAME_get_entry(subj, i), 0);
     }
 
     return apr_is_empty_array(*ids) ? FALSE : TRUE;
