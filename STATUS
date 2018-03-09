@@ -133,8 +133,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1609680
                   http://svn.apache.org/r1609688
                   http://svn.apache.org/r1641381
-		  http://svn.apache.org/r1826289
-		  http://svn.apache.org/r1826313
+                  http://svn.apache.org/r1826289
+                  http://svn.apache.org/r1826313
      ylavic: Merge patch provided (reusing new->real to avoid double de_socketfy() call).
              Also added missing r1609688 to the patchset.
      2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-ap_proxy_define_match_worker-v2.patch
