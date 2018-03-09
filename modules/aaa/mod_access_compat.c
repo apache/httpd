@@ -187,6 +187,9 @@ static const char *allow_cmd(cmd_parms *cmd, void *dv, const char *from,
             return apr_psprintf(cmd->pool, "%pm", &rv);
         a->type = T_IP;
     }
+    else if (ap_strchr(where, '#')) {
+        return "No comments are allowed here";
+    }
     else { /* no slash, didn't look like an IP address => must be a host */
         a->type = T_HOST;
     }

@@ -192,6 +192,27 @@ static authz_status host_check_authorization(request_rec *r,
             host names to check rather than a single name.  This is different
             from the previous host based syntax. */
         t = require;
+
+        /* '#' is not a valid hostname character and admin could
+         * specify 'Require host localhost# Add example.com later'. We
+         * should not grant access to 'example.com' in that case. */
+        w = ap_strchr_c(t, '#');
+        if (w) {
+            if (w == t) {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10120)
+                              "authz_host authorize: dubious empty "
+                              "'Require host %s' with only comment", t);
+                return AUTHZ_DENIED;
+            }
+
+            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(10121)
+                          "authz_host authorize: ignoring comment in "
+                          "'Require host %s'", t);
+
+            /* Truncate the string at the #. */
+            t = apr_pstrmemdup(r->pool, t, w - t);
+        }
+        
         while ((w = ap_getword_conf(r->pool, &t)) && w[0]) {
             if (in_domain(w, remotehost)) {
                 return AUTHZ_GRANTED;
