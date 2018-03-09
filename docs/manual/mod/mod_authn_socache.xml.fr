@@ -38,7 +38,7 @@ la charge des serveurs d'arrière-plan</description>
 </summary>
 
 <section id="intro"><title>Mise en cache des données d'authentification</title>
-    <p>Certains utilisateurs qui mettent oeuvre une authentification
+    <p>Certains utilisateurs qui mettent en oeuvre une authentification
     lourde s'appuyant par exemple sur des requêtes SQL
     (<module>mod_authn_dbd</module>) ont signalé une charge induite
     inacceptable sur leur fournisseur d'authentification. Cela se
