@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.32
 
+  *) rotatelogs: Fix expansion of %Z in localtime (-l) mode, and fix
+     Y2K38 bug.  [Joe Orton]
+
   *) mod_ssl: Support SSL DN raw variable extraction without conversion
      to UTF-8, using _RAW suffix on variable names.  [Joe Orton]
 
