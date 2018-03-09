@@ -1502,10 +1502,7 @@ static int ap_proxy_strcmp_ematch(const char *str, const char *expected)
     apr_size_t x, y;
 
     for (x = 0, y = 0; expected[y]; ++y, ++x) {
-        int backref = (expected[y] == '$' && apr_isdigit(expected[y + 1]));
-        if (!str[x] && !backref)
-            return -1;
-        if (backref) {
+        if (expected[y] == '$' && apr_isdigit(expected[y + 1])) {
             do {
                 y += 2;
             } while (expected[y] == '$' && apr_isdigit(expected[y + 1]));
@@ -1518,10 +1515,12 @@ static int ap_proxy_strcmp_ematch(const char *str, const char *expected)
             }
             return -1;
         }
-        else if (expected[y] == '\\') {
+        else if (!str[x]) {
+            return -1;
+        }
+        else if (expected[y] == '\\' && !expected[++y]) {
             /* NUL is an invalid char! */
-            if (!expected[++y])
-                return -2;
+            return -2;
         }
         if (str[x] != expected[y])
             return 1;
