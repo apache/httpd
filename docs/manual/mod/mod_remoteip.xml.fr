@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1824248:1825468 (outdated) -->
+<!-- English Revision: 1825468 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -263,7 +263,7 @@ RemoteIPProxiesHeader X-Forwarded-By
 <syntax>RemoteIPProxyProtocol On|Off</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<compatibility>Disponible à partir de la version 2.4.28 du serveur HTTP Apache</compatibility>
+<compatibility>Disponible à partir de la version 2.4.31 du serveur HTTP Apache</compatibility>
 
 <usage>
     <p>La directive <directive>RemoteIPProxyProtocol</directive> permet
@@ -320,7 +320,7 @@ ou réseaux</description>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 <compatibility>RemoteIPProxyProtocolExceptions est disponible à partir de la
-version 2.4.28 du serveur HTTP Apache</compatibility>
+version 2.4.31 du serveur HTTP Apache</compatibility>
 
 <usage>
     <p>La directive <directive>RemoteIPProxyProtocol</directive> permet de
