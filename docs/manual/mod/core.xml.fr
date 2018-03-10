@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1824076:1825742 (outdated) -->
+<!-- English Revision: 1825742 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -5359,27 +5359,29 @@ host</context>
     <p>L'ordre dans lequel s'effectue la recherche quand on utilise le
     port physique est le suivant :</p>
      <dl>
-     <dt><code>UseCanonicalName On</code></dt>
-     <dd>
-     <ol>
-      <li>Port indiqué dans <directive module="core">Servername</directive></li>
-      <li>Port physique</li>
-      <li>Port par défaut</li>
-     </ol>
-     </dd>
      <dt><code>UseCanonicalName Off | DNS</code></dt>
      <dd>
      <ol>
-      <li>Port spécifié dans l'en-tête <code>Host:</code></li>
-      <li>Port physique</li>
-      <li>Port spécifié par <directive module="core">Servername</directive></li>
+      <li>Port extrait de l'en-tête <code>Host:</code></li>
+      <li>Port physique (seulement avec
+      <directive>UseCanonicalPhysicalPort</directive> ON)</li>
+      <li>Port indiqué dans <directive module="core">Servername</directive></li>
       <li>Port par défaut</li>
      </ol>
      </dd>
-     </dl>
+     <dt><code>UseCanonicalName On</code></dt>
+     <dd>
+     <ol>
+      <li>Port spécifié par <directive module="core">Servername</directive></li>
+      <li>Port physique (seulement avec
+      <directive>UseCanonicalPhysicalPort</directive> ON)</li>
+      <li>Port par défaut</li>
+     </ol>
+     </dd>
+    </dl>
 
-    <p>Avec <code>UseCanonicalPhysicalPort Off</code>, on reprend
-    l'ordre ci-dessus en supprimant "Port physique".</p>
+    <p>Les ports physiques ne sont inclus dans la recherche qu'avec
+    <directive>UseCanonicalPhysicalPort</directive> ON</p>
     </note>
 
 </usage>
