@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_ssl.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_ssl.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Chiffrement de haut niveau basé sur les protocoles Secure
 Sockets Layer (SSL) et Transport Layer Security (TLS)</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -265,7 +263,7 @@ certificat serveur, sous la forme SRVName (OID 1.3.6.1.5.5.7.8.7, RFC 4985)</td>
 
 <p><em>x509</em> spécifie un élément de DN X.509 parmi
 <code>C,ST,L,O,OU,CN,T,I,G,S,D,UID,Email</code>. A partir de la version
-2.1 d'Apache, <em>x509</em> peut aussi comporter un suffixe numérique
+2.2.0 d'Apache, <em>x509</em> peut aussi comporter un suffixe numérique
 <code>_n</code>. Si le DN en question comporte plusieurs attributs de
 noms identiques, ce suffixe constitue un index débutant à zéro et
 permettant de sélectionner un
@@ -281,6 +279,12 @@ Lorsque la table d'environnement est remplie en utilisant l'option
 seul) caractérisant le DN est enregistré avec un nom sans suffixe ;
 autrement dit, aucune entrée possédant comme suffixe <code>_0</code>
 n'est enregistrée.</p>
+
+<p>A partir de la version 2.4.32 de httpd, on peut ajouter le suffixe
+<em>_RAW</em> à <em>x509</em> dans un composant DN afin d'empêcher la conversion
+de la valeur de l'attribut en UTF-8. Il doit être placé après le suffixe index
+(s'il existe). On utilisera par exemple <code>SSL_SERVER_S_DN_OU_RAW</code> ou
+<code>SSL_SERVER_S_DN_OU_0_RAW</code>.</p>
 
 <p>Le format des variables <em>*_DN</em> a changé depuis la version
 2.3.11 d'Apache HTTPD. Voir l'option <code>LegacyDNStringFormat</code>
