@@ -59,7 +59,7 @@ la charge des serveurs d'arrière-plan</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="intro" id="intro">Mise en cache des données d'authentification</a></h2>
-    <p>Certains utilisateurs qui mettent oeuvre une authentification
+    <p>Certains utilisateurs qui mettent en oeuvre une authentification
     lourde s'appuyant par exemple sur des requêtes SQL
     (<code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code>) ont signalé une charge induite
     inacceptable sur leur fournisseur d'authentification. Cela se
