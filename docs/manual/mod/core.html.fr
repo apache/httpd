@@ -33,8 +33,6 @@
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fonctionnalités de base du serveur HTTP Apache toujours
 disponibles</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Core</td></tr></table>
@@ -5333,27 +5331,29 @@ détermine son propre port</td></tr>
     <p>L'ordre dans lequel s'effectue la recherche quand on utilise le
     port physique est le suivant :</p>
      <dl>
-     <dt><code>UseCanonicalName On</code></dt>
-     <dd>
-     <ol>
-      <li>Port indiqué dans <code class="directive"><a href="#servername">Servername</a></code></li>
-      <li>Port physique</li>
-      <li>Port par défaut</li>
-     </ol>
-     </dd>
      <dt><code>UseCanonicalName Off | DNS</code></dt>
      <dd>
      <ol>
-      <li>Port spécifié dans l'en-tête <code>Host:</code></li>
-      <li>Port physique</li>
-      <li>Port spécifié par <code class="directive"><a href="#servername">Servername</a></code></li>
+      <li>Port extrait de l'en-tête <code>Host:</code></li>
+      <li>Port physique (seulement avec
+      <code class="directive">UseCanonicalPhysicalPort</code> ON)</li>
+      <li>Port indiqué dans <code class="directive"><a href="#servername">Servername</a></code></li>
       <li>Port par défaut</li>
      </ol>
      </dd>
-     </dl>
+     <dt><code>UseCanonicalName On</code></dt>
+     <dd>
+     <ol>
+      <li>Port spécifié par <code class="directive"><a href="#servername">Servername</a></code></li>
+      <li>Port physique (seulement avec
+      <code class="directive">UseCanonicalPhysicalPort</code> ON)</li>
+      <li>Port par défaut</li>
+     </ol>
+     </dd>
+    </dl>
 
-    <p>Avec <code>UseCanonicalPhysicalPort Off</code>, on reprend
-    l'ordre ci-dessus en supprimant "Port physique".</p>
+    <p>Les ports physiques ne sont inclus dans la recherche qu'avec
+    <code class="directive">UseCanonicalPhysicalPort</code> ON</p>
     </div>
 
 
