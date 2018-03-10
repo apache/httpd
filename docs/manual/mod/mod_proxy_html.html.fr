@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_proxy_html.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_proxy_html.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Réécrit les liens HTML afin de s'assurer qu'ils soient bien
 adressables depuis les réseaux des clients dans un contexte de
 mandataire.</td></tr>
@@ -61,11 +59,13 @@ en <code>&lt;a
 href="http://www.example.com/appserver/foo/bar.html"&gt;foobar&lt;/a&gt;</code>,
 ce qui permet de rendre le serveur d'applications accessible depuis
 l'extérieur.</p>
-
-<p>mod_proxy_html a été développé à l'origine à WebÞing, dont la <a href="http://apache.webthing.com/mod_proxy_html/">documentation</a>
-détaillée pourra s'avérer utile aux utilisateurs.</p>
 </div>
-<div id="quickview"><h3 class="directives">Directives</h3>
+<div id="quickview"><h3>Sujets</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#intro">Introduction</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#custom">Interprétation HTML personnalisée</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#i18n">Internationalisation</a></li>
+</ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#proxyhtmlbufsize">ProxyHTMLBufSize</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxyhtmlcharsetout">ProxyHTMLCharsetOut</a></li>
@@ -83,7 +83,78 @@ détaillée pourra s'avérer utile aux utilisateurs.</p>
 <h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_proxy_html">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_proxy_html">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="intro" id="intro">Introduction</a></h2>
+<p>mod_proxy_html est apparu en tant que module tiers avec les versions 2.0.x du
+serveur HTTP Apache. Il a ensuite été donné à l'ASF en 2011 avec le module
+<code class="module"><a href="../mod/mod_xml2enc.html">mod_xml2enc</a></code> (voir <a href="#i18n">Internationalisation</a>), et
+fait maintenant partie des modules standards de HTTPD 2.4 et de ses versions de
+développement.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="custom" id="custom">Interprétation HTML personnalisée</a></h2>
+<p>mod_proxy_html utilise en interne le module HTMLParser fourni par la
+bibliothèque tierce <a href="http://xmlsoft.org/">libxml2</a>. A la différence
+des autres interpréteurs libxml2, HTMLParser traite les documents HTML sans
+imposer à ces derniers d'être bien formés du point de vue XML. En particulier,
+il sait gérer les tags implicites - comme le &lt;/p&gt; fermant - et les insère
+dans le flux des évènements SAX utilisé par mod_proxy_html. Il possède aussi une
+connaissance explicite des standards HTML 4 et XHTML 1 du W3C, et peut en
+corriger certaines erreurs.</p>
+<p>mod_proxy_html offre toute une panoplie d'options permettant de contrôler
+l'interprétation du code HTML. La correction d'erreur peut être activée (selon
+votre choix de standard HTML) ou désactivée via la directive
+<code class="directive">ProxyHTMLDocType</code>. Et à la demande générale, il peut être
+configuré pour traiter les éléments et attributs non standards en tant que liens
+qui devront peut-être être réécrits, et pour réécrire les liens dans les contenus
+embarqués non-HTML (feuilles de style et scripts). Notez que ce module ne
+convient pas pour traiter les feuilles de style ou scripts externes ; pour ces
+derniers, vous devez utiliser un autre interpréteur comme
+<code class="module"><a href="../mod/mod_substitute.html">mod_substitute</a></code> ou <code class="module"><a href="../mod/mod_sed.html">mod_sed</a></code>. Les principales
+directives permettant de personnaliser l'interprétation du code HTML sont
+<code class="directive">ProxyHTMLLinks</code> et <code class="directive">ProxyHTMLEvents</code>.
+Par défaut, elles sont définies dans le fichier de configuration
+<var>proxy-html.conf</var> qui contient aussi des commentaires pour vous aider à
+personnaliser votre interpréteur si nécessaire. </p>
+<div class="note">Pour des raisons historiques, configurer mod_proxy_html pour réécrire les
+URLs dans les évènements de scripting n'entraîne pas par défaut la réécriture des
+URLs dans les feuilles de style. Ce comportement peut être modifié en
+décommentant la ligne correspondante du fichier <var>proxy-html.conf</var> comme
+indiqué dans la documentation que contient ce dernier.</div>
 
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="i18n" id="i18n">Internationalisation</a></h2>
+<p>mod_proxy_html utilise en interne un interpréteur HTML intelligent fourni par
+la bibliothèque tierce <a href="http://xmlsoft.org/">libxml2</a>. L'interpréteur
+utilise Unicode (UTF-8) en interne. Ceci complexifie la gestion
+des autres encodages nécessaires pour traiter de nombreux sites web dont le
+langage est autre que l'anglais. Si ce traitement n'est pas effectué
+de manière appropriée, les sites web qui utilisent des caractères non-ASCII dans un
+codage autre que UTF-8 (Unicode) ne s'afficheront pas correctement.</p>
+<p>Entre sa première version en 2003 et sa donnation à Apache en 2011, le
+support de l'internationalisation (i18n) est parti de rien pour arriver à une
+structure sophistiquée capable d'appliquer des règles issues de HTTP, HTML et
+XML pour détecter le codage d'un document et ainsi le traiter correctement. Ce
+traitement était cependant commun à mod_proxy_html et à d'autres modules
+utilisant libxml2, et plutôt que de le maintenir au niveau de chacun de ces
+modules, il parut sensé de l'extraire de ces derniers pour en faire
+un module à part entière. Ce module est <code class="module"><a href="../mod/mod_xml2enc.html">mod_xml2enc</a></code> et il doit
+être chargé pour que l'internationalisation fonctionne.</p>
+<p>L'interaction entre mod_proxy_html et mod_xml2enc est trop complexe pour être
+configurée en utilisant les règles de filtrage classiques, y compris les
+directives de <code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code>. Ainsi, même si mod_proxy_html peut
+quand-même être configuré via les directives de filtrage classiques, ce ne sera
+pas suffisant pour le support de l'internationalisation. A cet effet, on a
+introduit la nouvelle directive <code class="directive">ProxyHTMLEnable</code> qui
+permet de configurer à la fois le filtre de mod_proxy_html et mod_xml2enc. Il
+est d'ailleurs recommandé de toujours utiliser ProxyHTMLEnable, même
+si le support de l'internationalisation n'est pas nécessaire. <strong>Notez que
+ceci constitue un changement par rapport aux précédentes versions où
+mod_proxy_html était activé via les directives de filtrage.</strong></p>
+
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="proxyhtmlbufsize" id="proxyhtmlbufsize">Directive</a> <a name="ProxyHTMLBufSize" id="ProxyHTMLBufSize">ProxyHTMLBufSize</a></h2>
 <table class="directive">
@@ -223,7 +294,10 @@ l'emportant sur d'autres, vous devrez spécifier un jeu complet
 d'évènements pour chaque niveau.</p>
 <p>Le fichier <var>proxy-html.conf</var> fournit une configuration par
 défaut et définit les évènements selon les standards
-HTML 4 et XHTML 1.</p>
+HTML 4 et XHTML 1. Cette configuration peut être adaptée pour s'appliquer aux
+URLs embarquées dans les attributs des feuilles de style CSS en ajoutant
+l'attribut <var>style</var> à ProxyHTMLEvents, même s'il n'existe pas dans la
+configuration par défaut.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
