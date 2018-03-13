@@ -644,13 +644,13 @@ apr_status_t md_acme_check_agreement(md_acme_t *acme, apr_pool_t *p,
         if (!tos) {
             if (APR_SUCCESS != (rv = md_acme_validate_acct(acme))) {
                 md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, acme->p, 
-                              "validate for account %", acme->acct->id); 
+                              "validate for account %s", acme->acct->id); 
                 return rv;
             }
             tos = acme->acct->tos_required; 
             if (!tos) {
                 md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, acme->p, "unknown terms-of-service "
-                              "required after validation of account %", acme->acct->id); 
+                              "required after validation of account %s", acme->acct->id); 
                 return APR_EGENERAL;
             }
         }

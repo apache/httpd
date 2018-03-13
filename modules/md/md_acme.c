@@ -106,7 +106,7 @@ apr_status_t md_acme_create(md_acme_t **pacme, apr_pool_t *p, const char *url,
     }
     
     if (APR_SUCCESS != (rv = md_util_abs_uri_check(p, url, &err))) {
-        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, p, "invalid ACME uri ($s): %s", err, url);
+        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, p, "invalid ACME uri (%s): %s", err, url);
         return rv;
     }
     
@@ -119,7 +119,7 @@ apr_status_t md_acme_create(md_acme_t **pacme, apr_pool_t *p, const char *url,
     acme->max_retries = 3;
     
     if (APR_SUCCESS != (rv = apr_uri_parse(p, url, &uri_parsed))) {
-        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, p, "parsing ACME uri: ", url);
+        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, p, "parsing ACME uri: %s", url);
         return APR_EINVAL;
     }
     
@@ -250,7 +250,7 @@ apr_status_t md_acme_req_body_init(md_acme_req_t *req, md_json_t *jpayload)
 
     payload_len = strlen(payload);
     md_log_perror(MD_LOG_MARK, MD_LOG_TRACE1, 0, req->p, 
-                  "acct payload(len=%d): %s", payload_len, payload);
+                  "acct payload(len=%" APR_SIZE_T_FMT "): %s", payload_len, payload);
     return md_jws_sign(&req->req_json, req->p, payload, payload_len,
                        req->prot_hdrs, req->acme->acct_key, NULL);
 } 
