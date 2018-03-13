@@ -1,30 +1,10 @@
 APACHE 2.2 STATUS:                                              -*-text-*-
 Last modified at [$Date$]
 
-The current version of this file can be found at:
-
-  * http://svn.apache.org/repos/asf/httpd/httpd/branches/2.2.x/STATUS
-
-Documentation status is maintained separately and can be found at:
-
-  * docs/STATUS in this source tree, or
-  * http://svn.apache.org/repos/asf/httpd/httpd/trunk/docs/STATUS
-
-The current development branch of this software can be found at:
-
-  * http://svn.apache.org/repos/asf/httpd/httpd/trunk
-
-Patches considered for backport are noted in their branches' STATUS:
-
-  * http://svn.apache.org/repos/asf/httpd/httpd/branches/2.0.x/STATUS
-  * http://svn.apache.org/repos/asf/httpd/httpd/branches/2.2.x/STATUS
-
 
 Release history:
-    [NOTE that x.{odd}.z versions are strictly Alpha/Beta releases,
-          while x.{even}.z versions are Stable/GA releases.]
-    2.2.35-dev  : Only security patch activity anticipated, not releases.
-    2.2.34  : Released July 11, 2017
+
+    2.2.34  : Released and Retired July 11, 2017
     2.2.33  : Tagged June 23, 2017. Not released.
     2.2.32  : Released January 13, 2017
     2.2.31  : Released July 16, 2015
@@ -72,32 +52,14 @@ Release history:
     2.1.0   : not released.
 
 
-Contributors looking for a mission:
-
-  * Just do an egrep on "TODO" or "XXX" in the source.
-
-  * Review the bug database at: http://issues.apache.org/bugzilla/
-
-  * Review the "PatchAvailable" bugs in the bug database:
-
-    https://issues.apache.org/bugzilla/buglist.cgi?bug_status=NEW&bug_status=ASSIGNED&bug_status=REOPENED&product=Apache+httpd-2&keywords=PatchAvailable
-
-    After testing, you can append a comment saying "Reviewed and tested".
-
-  * Open bugs in the bug database.
-
-
 CURRENT RELEASE NOTES:
 
-  * Forward binary compatibility is expected of Apache 2.2.x releases, such
-    that no MMN major number changes will occur.  Such changes can only be
-    made in the trunk.  Note 2.2.18 contained an incompatible ABI change,
-    subsequently corrected, and should not be referenced.
-
-  * All commits to branches/2.2.x must be reflected in SVN trunk,
-    as well, if they apply.  Logical progression is commit to trunk,
-    get feedback and votes on list or in STATUS, then merge into
-    branches/2.2.x, as applicable.
+  ** THIS BRANCH IS CLOSED TO DEVELOPMENT AND MAINTENANCE **
+ 
+  * Refer to the development trunk and maintained/stable branches for current
+    activity;
+ 
+      http://svn.apache.org/repos/asf/httpd/httpd/trunk/STATUS
 
 
 RELEASE SHOWSTOPPERS:
