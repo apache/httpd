@@ -291,6 +291,8 @@ apr_bucket *h2_bucket_observer_beam(struct h2_bucket_beam *beam,
 }
 
 static apr_status_t bbout(apr_bucket_brigade *bb, const char *fmt, ...)
+                             __attribute__((format(printf,2,3)));
+static apr_status_t bbout(apr_bucket_brigade *bb, const char *fmt, ...)
 {
     va_list args;
     apr_status_t rv;
