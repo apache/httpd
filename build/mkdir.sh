@@ -38,7 +38,6 @@ for file in ${1+"$@"} ; do
                  continue ;;
         esac
         if test ! -d "$pathcomp"; then
-            echo "mkdir $pathcomp" 1>&2
             mkdir "$pathcomp" || errstatus=$?
         fi
         pathcomp="$pathcomp/"
