@@ -404,6 +404,10 @@ static apr_status_t xml2enc_ffunc(ap_filter_t* f, apr_bucket_brigade* bb)
                 /* send remaining data */
                 APR_BRIGADE_INSERT_TAIL(ctx->bbnext, b);
                 return ap_fflush(f->next, ctx->bbnext);
+            } else if (AP_BUCKET_IS_ERROR(b)) {
+                /* passing error bucket down the chain */
+                APR_BRIGADE_INSERT_TAIL(ctx->bbnext, b);
+                continue;
             } else if (APR_BUCKET_IS_FLUSH(b)) {
                 ap_fflush(f->next, ctx->bbnext);
             }
