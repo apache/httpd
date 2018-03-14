@@ -144,6 +144,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          really cover a very narrow set of parameters with the way it skips over backreferences?
          Also, why a new API vs. just setting the field inline?
 
+   * mod_md: Instrument 'md_log_perror' and fix corresponding errors reported by gcc.
+     trunk patch: http://svn.apache.org/r1826686
+     2.4.x patch: svn merge -c 1826686 ^/httpd/httpd/trunk .
+     +1: jailletc36
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
