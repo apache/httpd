@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.33
 
+  *) mod_slomem_shm: Fix failure to create balancers's slotmems in Windows MPM,
+     where children processes need to attach them instead since they are owned
+     by the parent process already.  [Yann Ylavic]
+
   *) ab: try all destination socket addresses returned by
      apr_sockaddr_info_get instead of failing on first one when not available.
      Needed for instance if localhost resolves to both ::1 and 127.0.0.1
