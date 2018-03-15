@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.33
 
+  *) htpasswd: Don't fail in -v mode if password file is unwritable.
+     PR 61631.  [Joe Orton]
+
   *) htpasswd: don't point to (unused) stack memory on output
      to make static analysers happy.  PR 60634.
      [Yann Ylavic, reported by shqking and Zhenwei Zou]
