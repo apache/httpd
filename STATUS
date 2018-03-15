@@ -141,14 +141,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      +1: rjung, covener, ylavic
      jung: I'll wait a bit whether the other rotatelogs patches make it to apply in order.
 
-  *) mod_slotmem_shm: Fix failure to create balancers's slotmems in Windows MPM,
-     where children processes need to attach them instead since they are owned
-     by the parent process already.
-     trunk patch: http://svn.apache.org/r1826845
-     2.4.x patch: svn merge -c 1826845 ^/httpd/httpd/trunk .
-                  (modulo CHANGES)
-     +1: ylavic, covener, rjung
-
   *) core: Fix request timeout logging and possible crash for error_log hooks.
      trunk patch: http://svn.apache.org/r1826556
                   http://svn.apache.org/r1826847
