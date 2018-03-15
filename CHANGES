@@ -147,9 +147,6 @@ Changes with Apache 2.5.0-alpha
      restarts (gracefully) any errored staging areas are purged to reset the signup/renewal
      process. [Stefan Eissing]
 
-  *) htpasswd: Don't fail in -v mode if password file is unwritable.
-     PR 61631.  [Joe Orton]
-
   *) core: A signal received while stopping could have crashed the main
      process.  PR 61558.  [Yann Ylavic]
 
