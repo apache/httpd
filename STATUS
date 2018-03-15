@@ -126,7 +126,7 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
-   * mod_proxy: Add ap_proxy_define_match_worker() and use it for ProxyPassMatch
+  *) mod_proxy: Add ap_proxy_define_match_worker() and use it for ProxyPassMatch
      and ProxyMatch section to distinguish between normal workers and workers
      with regex substitutions in the name. Implement handling of such workers
      in ap_proxy_get_worker(). Fixes the bug when regex workers were not
@@ -144,12 +144,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          really cover a very narrow set of parameters with the way it skips over backreferences?
          Also, why a new API vs. just setting the field inline?
 
-   * mod_md: Instrument 'md_log_perror' and fix corresponding errors reported by gcc.
+  *) mod_md: Instrument 'md_log_perror' and fix corresponding errors reported by gcc.
      trunk patch: http://svn.apache.org/r1826686
      2.4.x patch: svn merge -c 1826686 ^/httpd/httpd/trunk .
      +1: jailletc36
 
-   * ab: try all destination socket addresses returned by apr_sockaddr_info_get
+  *) ab: try all destination socket addresses returned by apr_sockaddr_info_get
      instead of failing on first one when not available.
      Needed for instance if localhost resolves to both ::1 and 127.0.0.1
      e.g. if both are in /etc/hosts.
@@ -160,13 +160,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   plus CHANGES
      +1: rjung
 
-   * ab: LibreSSL doesn't have or require applink.c
+  *) ab: LibreSSL doesn't have or require applink.c
      trunk patch: http://svn.apache.org/r1821767
      2.4.x patch: svn merge -c 1821767 ^/httpd/httpd/trunk .
                   plus CHANGES
      +1: rjung
 
-   * ab: print Server Temp Key information.
+  *) ab: print Server Temp Key information.
      Plus follow up to r1738415: EC_curve_nid2nist() available in OpenSSL-1.0.2 and later.
      This brings 2.4.x ab in sync with trunk.
      trunk patches: http://svn.apache.org/r1738415
@@ -175,7 +175,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   plus CHANGES
      +1: rjung
 
-   * htpasswd/htdigest: Disable support for bcrypt on EBCDIC platforms.
+  *) htpasswd/htdigest: Disable support for bcrypt on EBCDIC platforms.
      apr-util's bcrypt implementation doesn't tolerate EBCDIC.
      This brings 2.4.x passwd_common.h in sync with trunk.
      trunk patch: http://svn.apache.org/r1710403
@@ -183,28 +183,28 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   minus second unrelated CHANGES entry
      +1: rjung
 
-   * htpasswd/htdbm: report the right limit when get_password() overflows.
+  *) htpasswd/htdbm: report the right limit when get_password() overflows.
      This brings 2.4.x passwd_common.c in sync with trunk.
      trunk patch: http://svn.apache.org/r1781516
      2.4.x patch: svn merge -c 1781516 ^/httpd/httpd/trunk .
                   plus CHANGES
      +1: rjung
 
-   * htpasswd: don't point to (unused) stack memory on output
+  *) htpasswd: don't point to (unused) stack memory on output
      to make static analysers happy.  PR 60634.
      trunk patch: http://svn.apache.org/r1781509
      2.4.x patch: svn merge -c 1781509 ^/httpd/httpd/trunk .
                   plus CHANGES
      +1: rjung
 
-   * htpasswd: Don't fail in -v mode if password file is unwritable.
+  *) htpasswd: Don't fail in -v mode if password file is unwritable.
      PR 61631.
      This brings 2.4.x htpasswd in sync with trunk.
      trunk patch: http://svn.apache.org/r1812756
      2.4.x patch: svn merge -c 1812756 ^/httpd/httpd/trunk .
      +1: rjung
 
-   * rotatelogs: Add an option to autocreate directories to rotatelogs.
+  *) rotatelogs: Add an option to autocreate directories to rotatelogs.
      PR: 46669
      trunk patch: http://svn.apache.org/r1533810
      2.4.x patch: https://home.apache.org/~rjung/patches/httpd-2.4.x-rotatelogs-create-directories.patch
@@ -212,7 +212,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   Merge only fails due to small docs conflicts.
      +1: rjung
 
-   * rotatelogs: Remove multiple uses of constant length error buffers.
+  *) rotatelogs: Remove multiple uses of constant length error buffers.
      trunk patches: http://svn.apache.org/r1534895
                     http://svn.apache.org/r1534896
                     http://svn.apache.org/r1534914
@@ -220,7 +220,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   plus CHANGES
      +1: rjung
 
-   * rotatelogs: Small changes to rotatelogs:
+  *) rotatelogs: Small changes to rotatelogs:
      - add "-n num" to help text
      - clarify in help text, that "program is invoked"
        is the "-p" case
@@ -234,7 +234,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1666415,1780308 ^/httpd/httpd/trunk .
      +1: rjung
 
-   * rotatelogs: Choose "-D" instead of "-d" for the rotatelogs
+  *) rotatelogs: Choose "-D" instead of "-d" for the rotatelogs
      option that creates the path to the log file.
      I want to use "-d" for another directory related
      option next where (I think) the "directory" "d"
