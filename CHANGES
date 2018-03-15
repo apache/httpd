@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) core: Fix request timeout logging and possible crash for error_log hooks.
+     [Yann Ylavic]
+
   *) mod_slomem_shm: Fix failure to create balancers's slotmems in Windows MPM,
      where children processes need to attach them instead since they are owned
      by the parent process already.  [Yann Ylavic]
