@@ -146,6 +146,13 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1812756 ^/httpd/httpd/trunk .
      +1: rjung, ylavic, covener
 
+  *) htpasswd/htdbm: report the right limit when get_password() overflows.
+     This brings 2.4.x passwd_common.c in sync with trunk.
+     trunk patch: http://svn.apache.org/r1781516
+     2.4.x patch: svn merge -c 1781516 ^/httpd/httpd/trunk .
+                  plus CHANGES
+     +1: rjung, covener, jailletc36
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -192,13 +199,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1710403
      2.4.x patch: svn merge -c 1710403 ^/httpd/httpd/trunk .
                   minus second unrelated CHANGES entry
-     +1: rjung, covener
-
-  *) htpasswd/htdbm: report the right limit when get_password() overflows.
-     This brings 2.4.x passwd_common.c in sync with trunk.
-     trunk patch: http://svn.apache.org/r1781516
-     2.4.x patch: svn merge -c 1781516 ^/httpd/httpd/trunk .
-                  plus CHANGES
      +1: rjung, covener
 
   *) rotatelogs: Add an option to autocreate directories to rotatelogs.
