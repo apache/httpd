@@ -149,6 +149,30 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1826686 ^/httpd/httpd/trunk .
      +1: jailletc36
 
+   * ab: try all destination socket addresses returned by apr_sockaddr_info_get
+         instead of failing on first one when not available.
+         Needed for instance if localhost resolves to both ::1 and 127.0.0.1
+         e.g. if both are in /etc/hosts.
+     ab: Use only one connection to determine working destination socket address.
+     trunk patches: http://svn.apache.org/r1626956
+                    http://svn.apache.org/r1628388
+     2.4.x patch: https://home.apache.org/~rjung/patches/httpd-2.4.x-ab-apr_sockaddr_info_get-all.patch
+     +1: rjung
+
+   * ab: LibreSSL doesn't have or require applink.c
+     trunk patch: http://svn.apache.org/r1821767
+     2.4.x patch: svn merge -c 1821767 ^/httpd/httpd/trunk .
+     +1: rjung
+
+   * ab: print Server Temp Key information.
+         Plus follow up to r1738415: EC_curve_nid2nist() available in OpenSSL-1.0.2 and later.
+         This brings 2.4.x ab in sync with trunk ab.
+     trunk patches: http://svn.apache.org/r1738415
+                    http://svn.apache.org/r1741566
+     2.4.x patch: https://home.apache.org/~rjung/patches/httpd-2.4.x-ab-print-server-temp-key.patch
+     +1: rjung
+
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
