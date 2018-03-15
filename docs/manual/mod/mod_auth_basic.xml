@@ -114,7 +114,7 @@ lower level modules</description>
 <name>AuthBasicFake</name>
 <description>Fake basic authentication using the given expressions for
 username and password</description>
-<syntax>AuthBasicFake off|username [password]</syntax>
+<syntax>AuthBasicFake off|<var>username</var> [<var>password</var>]</syntax>
 <default>none</default>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
@@ -220,7 +220,7 @@ Digest Authentication was in force instead of Basic Authentication.
     providers which support Digest Authentication.</p>
 
     <p>Setting the <directive
-    module="mod_auth_basic">AuthBasicUseDigestAlgorithm</directive> directive
+    >AuthBasicUseDigestAlgorithm</directive> directive
     to <code>MD5</code> will cause the user's Basic Authentication password
     to be checked using the same encrypted format as for Digest
     Authentication.  First a string composed from the username, realm name,
@@ -233,7 +233,7 @@ Digest Authentication was in force instead of Basic Authentication.
     </p>
 
     <p>Through the use of <directive
-    module="mod_auth_basic">AuthBasicUseDigestAlgorithm</directive>
+    >AuthBasicUseDigestAlgorithm</directive>
     a site may switch from Digest to Basic Authentication without
     requiring users to be assigned new passwords.</p>
 
@@ -250,7 +250,7 @@ Digest Authentication was in force instead of Basic Authentication.
     <note>
       Only providers which support Digest Authentication will be able
       to authenticate users when <directive
-      module="mod_auth_basic">AuthBasicUseDigestAlgorithm</directive>
+      >AuthBasicUseDigestAlgorithm</directive>
       is set to <code>MD5</code>.  Use of other providers will result
       in an error response and the client will be denied access.
     </note>
