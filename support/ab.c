@@ -764,6 +764,11 @@ static void ssl_proceed_handshake(struct connection *c)
                         break;
                         }
 #endif
+                    default:
+                        apr_snprintf(ssl_tmp_key, 128, "%s %d bits",
+                                     OBJ_nid2sn(EVP_PKEY_id(key)),
+                                     EVP_PKEY_bits(key));
+                        break;
                     }
                     EVP_PKEY_free(key);
                 }
