@@ -153,10 +153,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
                   plus CHANGES
      +1: rjung, covener, jailletc36
 
-
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
   *) ab: try all destination socket addresses returned by apr_sockaddr_info_get
      instead of failing on first one when not available.
      Needed for instance if localhost resolves to both ::1 and 127.0.0.1
@@ -166,7 +162,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                     http://svn.apache.org/r1628388
      2.4.x patch: https://home.apache.org/~rjung/patches/httpd-2.4.x-ab-apr_sockaddr_info_get-all.patch
                   plus CHANGES
-     +1: rjung, covener
+     +1: rjung, covener, ylavic
+
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
 
   *) ab: print Server Temp Key information.
      Plus follow up to r1738415: EC_curve_nid2nist() available in OpenSSL-1.0.2 and later.
@@ -176,6 +176,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://home.apache.org/~rjung/patches/httpd-2.4.x-ab-print-server-temp-key.patch
                   plus CHANGES
      +1: rjung, covener
+     ylavic: r1826880 needed, for instance google returns any of the
+             handled key IDs.
 
   *) htpasswd/htdigest: Disable support for bcrypt on EBCDIC platforms.
      apr-util's bcrypt implementation doesn't tolerate EBCDIC.
