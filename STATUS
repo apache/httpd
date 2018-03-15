@@ -164,6 +164,28 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
                   plus CHANGES
      +1: rjung, covener, ylavic
 
+  *) rotatelogs: Small changes to rotatelogs:
+     - add "-n num" to help text
+     - clarify in help text, that "program is invoked"
+       is the "-p" case
+     - prevent crash with "-v" (verbose) if no
+       "-p prog" is used
+     - add one space for formatting
+     plus: fix -n help text
+     this closes #24
+     trunk patches: http://svn.apache.org/r1666415
+                    http://svn.apache.org/r1780308
+     2.4.x patch: svn merge -c 1666415,1780308 ^/httpd/httpd/trunk .
+     +1: rjung, covener, ylavic
+
+  *) htpasswd/htdigest: Disable support for bcrypt on EBCDIC platforms.
+     apr-util's bcrypt implementation doesn't tolerate EBCDIC.
+     This brings 2.4.x passwd_common.h in sync with trunk.
+     trunk patch: http://svn.apache.org/r1710403
+     2.4.x patch: svn merge -c 1710403 ^/httpd/httpd/trunk .
+                  minus second unrelated CHANGES entry
+     +1: rjung, covener, ylavic
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -178,14 +200,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: rjung, covener
      ylavic: r1826880 needed, for instance google returns any of the
              handled key IDs.
-
-  *) htpasswd/htdigest: Disable support for bcrypt on EBCDIC platforms.
-     apr-util's bcrypt implementation doesn't tolerate EBCDIC.
-     This brings 2.4.x passwd_common.h in sync with trunk.
-     trunk patch: http://svn.apache.org/r1710403
-     2.4.x patch: svn merge -c 1710403 ^/httpd/httpd/trunk .
-                  minus second unrelated CHANGES entry
-     +1: rjung, covener
 
   *) rotatelogs: Add an option to autocreate directories to rotatelogs.
      PR: 46669
@@ -203,20 +217,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1534895,1534896,1534914 ^/httpd/httpd/trunk .
                   plus CHANGES
      +1: rjung
-
-  *) rotatelogs: Small changes to rotatelogs:
-     - add "-n num" to help text
-     - clarify in help text, that "program is invoked"
-       is the "-p" case
-     - prevent crash with "-v" (verbose) if no
-       "-p prog" is used
-     - add one space for formatting
-     plus: fix -n help text
-     this closes #24
-     trunk patches: http://svn.apache.org/r1666415
-                    http://svn.apache.org/r1780308
-     2.4.x patch: svn merge -c 1666415,1780308 ^/httpd/httpd/trunk .
-     +1: rjung, covener
+     ylavic: missing previous one to apply cleanly?
 
   *) rotatelogs: Choose "-D" instead of "-d" for the rotatelogs
      option that creates the path to the log file.
@@ -231,6 +232,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   plus CHANGES change from "-d" to "-D"
                   Merge only fails due to small docs conflicts.
      +1: rjung
+     ylavic: likewise, patch not found
 
   *) mod_slomem_shm: Fix failure to create balancers's slotmems in Windows MPM,
      where children processes need to attach them instead since they are owned
