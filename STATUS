@@ -147,7 +147,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_md: Instrument 'md_log_perror' and fix corresponding errors reported by gcc.
      trunk patch: http://svn.apache.org/r1826686
      2.4.x patch: svn merge -c 1826686 ^/httpd/httpd/trunk .
-     +1: jailletc36
+     +1: jailletc36, ylavic
 
   *) ab: try all destination socket addresses returned by apr_sockaddr_info_get
      instead of failing on first one when not available.
@@ -164,7 +164,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1821767
      2.4.x patch: svn merge -c 1821767 ^/httpd/httpd/trunk .
                   plus CHANGES
-     +1: rjung
+     +1: rjung, ylavic
 
   *) ab: print Server Temp Key information.
      Plus follow up to r1738415: EC_curve_nid2nist() available in OpenSSL-1.0.2 and later.
@@ -195,14 +195,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1781509
      2.4.x patch: svn merge -c 1781509 ^/httpd/httpd/trunk .
                   plus CHANGES
-     +1: rjung
+     +1: rjung, ylavic
 
   *) htpasswd: Don't fail in -v mode if password file is unwritable.
      PR 61631.
      This brings 2.4.x htpasswd in sync with trunk.
      trunk patch: http://svn.apache.org/r1812756
      2.4.x patch: svn merge -c 1812756 ^/httpd/httpd/trunk .
-     +1: rjung
+     +1: rjung, ylavic
 
   *) rotatelogs: Add an option to autocreate directories to rotatelogs.
      PR: 46669
