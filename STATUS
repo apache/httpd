@@ -171,7 +171,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://home.apache.org/~rjung/patches/httpd-2.4.x-ab-print-server-temp-key.patch
                   plus CHANGES
      +1: rjung, covener
-     ylavic: r1826880 needed, for instance google returns any of the
+     ylavic: r1826880 needed, for instance google returns none of the
              handled key IDs (my +1 with it).
 
   *) rotatelogs: Add an option to autocreate directories to rotatelogs.
