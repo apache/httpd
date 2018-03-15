@@ -140,15 +140,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1666415,1780308 ^/httpd/httpd/trunk .
      +1: rjung, covener, ylavic
 
-  *) htpasswd/htdigest: Disable support for bcrypt on EBCDIC platforms.
-     apr-util's bcrypt implementation doesn't tolerate EBCDIC.
-     This brings 2.4.x passwd_common.h in sync with trunk.
-     trunk patch: http://svn.apache.org/r1710403
-     2.4.x patch: svn merge -c 1710403 ^/httpd/httpd/trunk .
-                  minus second unrelated CHANGES entry
-     +1: rjung, covener, ylavic
-
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
