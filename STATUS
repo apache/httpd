@@ -177,7 +177,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   plus CHANGES for new "-d" flag (see svn log for credits).
                   Merge only fails due to small docs conflicts.
      +1: rjung,
-     covener:  patch didn't make it
 
   *) rotatelogs: Remove multiple uses of constant length error buffers.
      trunk patches: http://svn.apache.org/r1534895
@@ -186,7 +185,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1534895,1534896,1534914 ^/httpd/httpd/trunk .
                   plus CHANGES
      +1: rjung
-     ylavic: missing previous one to apply cleanly?
 
   *) rotatelogs: Choose "-D" instead of "-d" for the rotatelogs
      option that creates the path to the log file.
@@ -201,7 +199,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   plus CHANGES change from "-d" to "-D"
                   Merge only fails due to small docs conflicts.
      +1: rjung
-     ylavic: likewise, patch not found
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
