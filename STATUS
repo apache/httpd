@@ -141,12 +141,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      +1: rjung, covener, ylavic
      jung: I'll wait a bit whether the other rotatelogs patches make it to apply in order.
 
-  *) core: Fix request timeout logging and possible crash for error_log hooks.
-     trunk patch: http://svn.apache.org/r1826556
-                  http://svn.apache.org/r1826847
-     2.4.x patch: svn merge -c 1826556,1826847 ^/httpd/httpd/trunk .
-                  (modulo CHANGES)
-     +1: ylavic, covener, rjung
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
