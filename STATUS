@@ -126,17 +126,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1826686 ^/httpd/httpd/trunk .
      +1: jailletc36, ylavic, covener
 
-  *) ab: try all destination socket addresses returned by apr_sockaddr_info_get
-     instead of failing on first one when not available.
-     Needed for instance if localhost resolves to both ::1 and 127.0.0.1
-     e.g. if both are in /etc/hosts.
-     ab: Use only one connection to determine working destination socket address.
-     trunk patches: http://svn.apache.org/r1626956
-                    http://svn.apache.org/r1628388
-     2.4.x patch: https://home.apache.org/~rjung/patches/httpd-2.4.x-ab-apr_sockaddr_info_get-all.patch
-                  plus CHANGES
-     +1: rjung, covener, ylavic
-
   *) rotatelogs: Small changes to rotatelogs:
      - add "-n num" to help text
      - clarify in help text, that "program is invoked"

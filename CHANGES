@@ -1,6 +1,14 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.33
 
+  *) ab: try all destination socket addresses returned by
+     apr_sockaddr_info_get instead of failing on first one when not available.
+     Needed for instance if localhost resolves to both ::1 and 127.0.0.1
+     e.g. if both are in /etc/hosts.  [Jan Kaluza]
+
+  *) ab: Use only one connection to determine working destination socket
+     address.  [Jan Kaluza]
+
   *) htpasswd/htdbm: report the right limit when get_password() overflows.
      [Yann Ylavic]
 
