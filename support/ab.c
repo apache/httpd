@@ -366,6 +366,7 @@ apr_time_t start, lasttime, stoptime;
 char _request[8192];
 char *request = _request;
 apr_size_t reqlen;
+int requests_initialized = 0;
 
 /* one global throw-away buffer to read stuff into */
 char buffer[8192];
@@ -1386,11 +1387,17 @@ static void start_connect(struct connection * c)
         else {
             set_conn_state(c, STATE_UNCONNECTED);
             apr_socket_close(c->aprsock);
-            err_conn++;
-            if (bad++ > 10) {
+            if (good == 0 && destsa->next) {
+                destsa = destsa->next;
+                err_conn = 0;
+            }
+            else if (bad++ > 10) {
                 fprintf(stderr,
                    "\nTest aborted after 10 failures\n\n");
                 apr_err("apr_socket_connect()", rv);
+            }
+            else {
+                err_conn++;
             }
 
             start_connect(c);
@@ -1472,6 +1479,7 @@ static void read_connection(struct connection * c)
     apr_status_t status;
     char *part;
     char respcode[4];       /* 3 digits and null */
+    int i;
 
     r = sizeof(buffer);
 read_more:
@@ -1495,6 +1503,13 @@ read_more:
                  */
                 good++;
                 close_connection(c);
+            }
+            else if (scode == SSL_ERROR_SYSCALL 
+                     && c->read == 0
+                     && destsa->next
+                     && c->state == STATE_CONNECTING
+                     && good == 0) {
+                return;
             }
             else if (scode == SSL_ERROR_WANT_READ) {
                 set_polled_events(c, APR_POLLIN);
@@ -1526,8 +1541,8 @@ read_more:
         }
         /* catch legitimate fatal apr_socket_recv errors */
         else if (status != APR_SUCCESS) {
-            err_recv++;
             if (recverrok) {
+                err_recv++;
                 bad++;
                 close_connection(c);
                 if (verbosity >= 1) {
@@ -1535,7 +1550,12 @@ read_more:
                     fprintf(stderr,"%s: %s (%d)\n", "apr_socket_recv", apr_strerror(status, buf, sizeof buf), status);
                 }
                 return;
-            } else {
+            } else if (destsa->next && c->state == STATE_CONNECTING
+                       && c->read == 0 && good == 0) {
+                return;
+            }
+            else {
+                err_recv++;
                 apr_err("apr_socket_recv", status);
             }
         }
@@ -1657,6 +1677,16 @@ read_more:
             }
             c->bread += c->cbx - (s + l - c->cbuff) + r - tocopy;
             totalbread += c->bread;
+
+            /* We have received the header, so we know this destination socket
+             * address is working, so initialize all remaining requests. */
+            if (!requests_initialized) {
+                for (i = 1; i < concurrency; i++) {
+                    con[i].socknum = i;
+                    start_connect(&con[i]);
+                }
+                requests_initialized = 1;
+            }
         }
     }
     else {
@@ -1878,11 +1908,10 @@ static void test(void)
     apr_signal(SIGINT, output_results);
 #endif
 
-    /* initialise lots of requests */
-    for (i = 0; i < concurrency; i++) {
-        con[i].socknum = i;
-        start_connect(&con[i]);
-    }
+    /* initialise first connection to determine destination socket address
+     * which should be used for next connections. */
+    con[0].socknum = 0;
+    start_connect(&con[0]);
 
     do {
         apr_int32_t n;
@@ -1930,14 +1959,20 @@ static void test(void)
             if ((rtnev & APR_POLLIN) || (rtnev & APR_POLLPRI) || (rtnev & APR_POLLHUP))
                 read_connection(c);
             if ((rtnev & APR_POLLERR) || (rtnev & APR_POLLNVAL)) {
-                bad++;
-                err_except++;
-                /* avoid apr_poll/EINPROGRESS loop on HP-UX, let recv discover ECONNREFUSED */
-                if (c->state == STATE_CONNECTING) {
-                    read_connection(c);
+                if (destsa->next && c->state == STATE_CONNECTING && good == 0) {
+                    destsa = destsa->next;
+                    start_connect(c);
                 }
                 else {
-                    start_connect(c);
+                    bad++;
+                    err_except++;
+                    /* avoid apr_poll/EINPROGRESS loop on HP-UX, let recv discover ECONNREFUSED */
+                    if (c->state == STATE_CONNECTING) {
+                        read_connection(c);
+                    }
+                    else {
+                        start_connect(c);
+                    }
                 }
                 continue;
             }
