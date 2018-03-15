@@ -140,6 +140,21 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1666415,1780308 ^/httpd/httpd/trunk .
      +1: rjung, covener, ylavic
 
+  *) mod_slotmem_shm: Fix failure to create balancers's slotmems in Windows MPM,
+     where children processes need to attach them instead since they are owned
+     by the parent process already.
+     trunk patch: http://svn.apache.org/r1826845
+     2.4.x patch: svn merge -c 1826845 ^/httpd/httpd/trunk .
+                  (modulo CHANGES)
+     +1: ylavic, covener, rjung
+
+  *) core: Fix request timeout logging and possible crash for error_log hooks.
+     trunk patch: http://svn.apache.org/r1826556
+                  http://svn.apache.org/r1826847
+     2.4.x patch: svn merge -c 1826556,1826847 ^/httpd/httpd/trunk .
+                  (modulo CHANGES)
+     +1: ylavic, covener, rjung
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -186,21 +201,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   Merge only fails due to small docs conflicts.
      +1: rjung
      ylavic: likewise, patch not found
-
-  *) mod_slotmem_shm: Fix failure to create balancers's slotmems in Windows MPM,
-     where children processes need to attach them instead since they are owned
-     by the parent process already.
-     trunk patch: http://svn.apache.org/r1826845
-     2.4.x patch: svn merge -c 1826845 ^/httpd/httpd/trunk .
-                  (modulo CHANGES)
-     +1: ylavic, covener
-
-  *) core: Fix request timeout logging and possible crash for error_log hooks.
-     trunk patch: http://svn.apache.org/r1826556
-                  http://svn.apache.org/r1826847
-     2.4.x patch: svn merge -c 1826556,1826847 ^/httpd/httpd/trunk .
-                  (modulo CHANGES)
-     +1: ylavic, covener
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
