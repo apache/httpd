@@ -126,12 +126,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1826686 ^/httpd/httpd/trunk .
      +1: jailletc36, ylavic, covener
 
-  *) ab: LibreSSL doesn't have or require applink.c
-     trunk patch: http://svn.apache.org/r1821767
-     2.4.x patch: svn merge -c 1821767 ^/httpd/httpd/trunk .
-                  plus CHANGES
-     +1: rjung, ylavic, covener
-
   *) htpasswd: don't point to (unused) stack memory on output
      to make static analysers happy.  PR 60634.
      trunk patch: http://svn.apache.org/r1781509

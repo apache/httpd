@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.33
 
+  *) ab: LibreSSL doesn't have or require Windows applink.c.  [Gregg L. Smith]
+
 Changes with Apache 2.4.32
 
   *) mod_access_compat: Fail if a comment is found in an Allow or Deny
