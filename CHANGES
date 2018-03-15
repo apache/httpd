@@ -1,24 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
-  *) core: Fix request timeout logging and possible crash for error_log hooks.
-     [Yann Ylavic]
-
-  *) mod_slomem_shm: Fix failure to create balancers's slotmems in Windows MPM,
-     where children processes need to attach them instead since they are owned
-     by the parent process already.  [Yann Ylavic]
-
-  *) mod_ldap: Avoid possible crashes, hangs, and busy loops due to
-     improper merging of the cache lock in vhost config.
-     PR 43164 [Eric Covener]
-
   *) core: Create a conn_config_t structure to hold an extendable core config rather
      than consuming the whole pointer with the connection socket. [Graham Leggett]
-
-  *) mpm_event: Do lingering close in worker(s).  [Yann Ylavic]
-
-  *) mpm_queue: Put fdqueue code in common for MPMs event and worker.
-     [Yann Ylavic]
 
   *) core: adding AP_DECLARE for ap_parse_vhost_addrs() and minor bumb mmn. Resolves
      building mod_ssl on Windows. [Stefan Eissing, Gregg Smith]
@@ -139,16 +123,10 @@ Changes with Apache 2.5.1
 
 Changes with Apache 2.5.0-alpha
 
-  *) mod_macro: fix usability of globally defined macros in .htaccess files.
-     PR 57525.  [Jose Kahan <jose w3.org>, Yann Ylavic]
-
   *) mod_md: v1.0.1, ServerName/Alias names from pure-http: virtual hosts are no longer
      auto-added to a Managed Domain. Error counts of jobs are presisted. When the server
      restarts (gracefully) any errored staging areas are purged to reset the signup/renewal
      process. [Stefan Eissing]
-
-  *) core: A signal received while stopping could have crashed the main
-     process.  PR 61558.  [Yann Ylavic]
 
   *) mod_md: v1.0.0, new config directive 'MDNotifyCmd' to hook in a program when Managed
      Domains have obtained/renewed their certificates successfully. [Stefan Eissing]
@@ -158,8 +136,6 @@ Changes with Apache 2.5.0-alpha
      (triggering an internal redirect). [Luca Toscano]
 
   *) mod_md: v0.9.9, fix for applying challenge type based on available ports. [Stefan Eissing]
-
-  *) mod_proxy_uwsgi: New UWSGI mod_proxy (sub)module contributed by unbit.com.
 
   *) mod_http2: v0.10.12, removed optimization for mutex handling in bucket beams that 
     could lead to assertion failure in edge cases. [Stefan Eissing] 
@@ -174,9 +150,6 @@ Changes with Apache 2.5.0-alpha
   *) mod_ssl: unshare SSLSrvConfigRec instances between base server and virtual hosts. This avoids
      overwrites of later initializattions (vhost_id), selective disables by "SSLEngine addr-list"
      and certificate/key pickup from mod_md. [Stefan Eissing]
-
-  *) mod_rewrite, core: Avoid the 'Vary: Host' response header when HTTP_HOST is
-     used in a condition that evaluates to true. PR 58231 [Luca Toscano, Yann Ylavic]
 
   *) mod_md: v0.9.6: a "MDRequireHttps permament" configured domain automatically sends out
      HSTS (rfc 6797) headers in https: responses. [Stefan Eissing]
@@ -235,9 +208,6 @@ Changes with Apache 2.5.0-alpha
      configure 'MDCertificateAuthority https://acme-v01.api.letsencrypt.org/directory'.
      [Stefan Eissing] 
 
-  *) mod_proxy_fcgi: Add the support for mod_proxy's flushpackets and flushwait
-     parameters. [Luca Toscano, Ruediger Pluem, Yann Ylavic]
-
   *) mod_rewrite: Add 'RewriteOptions LongURLOptimization' to free memory
      from each set of unmatched rewrite conditions.
      [Eric Covener]
@@ -255,11 +225,6 @@ Changes with Apache 2.5.0-alpha
      associated with an active connection in the "ACC" field. Previously
      zero was always reported with this MPM.  PR60647. [Eric Covener]
 
-  *) mod_remoteip: Add support for PROXY protocol (code donated by Cloudzilla).
-     Add ability for PROXY protocol processing to be optional to donated code.
-     See also: http://www.haproxy.org/download/1.5/doc/proxy-protocol.txt
-     [Cloudzilla/roadrunner2@GitHub, Jim Jagielski, Daniel Ruggeri]
-
   *) mod_remoteip: When overriding the useragent address from X-Forwarded-For,
      zero out what had been initialized as the connection-level port.  PR59931.
      [Hank Ibell <hwibell gmail.com>]
@@ -267,9 +232,6 @@ Changes with Apache 2.5.0-alpha
   *) mod_proxy_wstunnel: Reliably run before mod_proxy_http.
      [Eric Covener]
 
-  *) mod_proxy_protocol: Add server-side, front-end support for PROXY PROTOCOL
-     (http://blog.haproxy.com/haproxy/proxy-protocol/).  [roadrunner2]
-     
   *) http: Allow unknown response status' lines returned in the form of
      "HTTP/x.x xxx Status xxx".  [Yann Ylavic]
 
@@ -293,9 +255,6 @@ Changes with Apache 2.5.0-alpha
      dav_finish_multistatus, dav_send_multistatus, dav_handle_err,
      dav_failed_proppatch, dav_success_proppatch to mod_dav.h.
      [Jari Urpalainen <jari.urpalainen nokia.com>, Graham Leggett]
-
-  *) mod_proxy, mod_ssl: Handle SSLProxy* directives in <Proxy> sections,
-     allowing per backend TLS configuration.  [Yann Ylavic]
 
   *) core: explicitly exclude 'h2' from protocols announced via an Upgrade: 
      header as commanded by http-wg. [Stefan Eissing]
