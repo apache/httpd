@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.33
 
+  *) htpasswd/htdbm: report the right limit when get_password() overflows.
+     [Yann Ylavic]
+
   *) htpasswd: Don't fail in -v mode if password file is unwritable.
      PR 61631.  [Joe Orton]
 

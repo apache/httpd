@@ -126,13 +126,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1826686 ^/httpd/httpd/trunk .
      +1: jailletc36, ylavic, covener
 
-  *) htpasswd/htdbm: report the right limit when get_password() overflows.
-     This brings 2.4.x passwd_common.c in sync with trunk.
-     trunk patch: http://svn.apache.org/r1781516
-     2.4.x patch: svn merge -c 1781516 ^/httpd/httpd/trunk .
-                  plus CHANGES
-     +1: rjung, covener, jailletc36
-
   *) ab: try all destination socket addresses returned by apr_sockaddr_info_get
      instead of failing on first one when not available.
      Needed for instance if localhost resolves to both ::1 and 127.0.0.1
@@ -214,7 +207,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: rjung
      ylavic: likewise, patch not found
 
-  *) mod_slomem_shm: Fix failure to create balancers's slotmems in Windows MPM,
+  *) mod_slotmem_shm: Fix failure to create balancers's slotmems in Windows MPM,
      where children processes need to attach them instead since they are owned
      by the parent process already.
      trunk patch: http://svn.apache.org/r1826845
