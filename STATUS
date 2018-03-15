@@ -150,28 +150,59 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: jailletc36
 
    * ab: try all destination socket addresses returned by apr_sockaddr_info_get
-         instead of failing on first one when not available.
-         Needed for instance if localhost resolves to both ::1 and 127.0.0.1
-         e.g. if both are in /etc/hosts.
+     instead of failing on first one when not available.
+     Needed for instance if localhost resolves to both ::1 and 127.0.0.1
+     e.g. if both are in /etc/hosts.
      ab: Use only one connection to determine working destination socket address.
      trunk patches: http://svn.apache.org/r1626956
                     http://svn.apache.org/r1628388
      2.4.x patch: https://home.apache.org/~rjung/patches/httpd-2.4.x-ab-apr_sockaddr_info_get-all.patch
+                  plus CHANGES
      +1: rjung
 
    * ab: LibreSSL doesn't have or require applink.c
      trunk patch: http://svn.apache.org/r1821767
      2.4.x patch: svn merge -c 1821767 ^/httpd/httpd/trunk .
+                  plus CHANGES
      +1: rjung
 
    * ab: print Server Temp Key information.
-         Plus follow up to r1738415: EC_curve_nid2nist() available in OpenSSL-1.0.2 and later.
-         This brings 2.4.x ab in sync with trunk ab.
+     Plus follow up to r1738415: EC_curve_nid2nist() available in OpenSSL-1.0.2 and later.
+     This brings 2.4.x ab in sync with trunk.
      trunk patches: http://svn.apache.org/r1738415
                     http://svn.apache.org/r1741566
      2.4.x patch: https://home.apache.org/~rjung/patches/httpd-2.4.x-ab-print-server-temp-key.patch
+                  plus CHANGES
      +1: rjung
 
+   * htpasswd/htdigest: Disable support for bcrypt on EBCDIC platforms.
+     apr-util's bcrypt implementation doesn't tolerate EBCDIC.
+     This brings 2.4.x passwd_common.h in sync with trunk.
+     trunk patch: http://svn.apache.org/r1710403
+     2.4.x patch: svn merge -c 1710403 ^/httpd/httpd/trunk .
+                  minus second unrelated CHANGES entry
+     +1: rjung
+
+   * htpasswd/htdbm: report the right limit when get_password() overflows.
+     This brings 2.4.x passwd_common.c in sync with trunk.
+     trunk patch: http://svn.apache.org/r1781516
+     2.4.x patch: svn merge -c 1781516 ^/httpd/httpd/trunk .
+                  plus CHANGES
+     +1: rjung
+
+   * htpasswd: don't point to (unused) stack memory on output
+     to make static analysers happy.  PR 60634.
+     trunk patch: http://svn.apache.org/r1781509
+     2.4.x patch: svn merge -c 1781509 ^/httpd/httpd/trunk .
+                  plus CHANGES
+     +1: rjung
+
+   * htpasswd: Don't fail in -v mode if password file is unwritable.
+     PR 61631.
+     This brings 2.4.x htpasswd in sync with trunk.
+     trunk patch: http://svn.apache.org/r1812756
+     2.4.x patch: svn merge -c 1812756 ^/httpd/httpd/trunk .
+     +1: rjung
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
