@@ -121,6 +121,30 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_md: Instrument 'md_log_perror' and fix corresponding errors reported by gcc.
+     trunk patch: http://svn.apache.org/r1826686
+     2.4.x patch: svn merge -c 1826686 ^/httpd/httpd/trunk .
+     +1: jailletc36, ylavic, covener
+
+  *) ab: LibreSSL doesn't have or require applink.c
+     trunk patch: http://svn.apache.org/r1821767
+     2.4.x patch: svn merge -c 1821767 ^/httpd/httpd/trunk .
+                  plus CHANGES
+     +1: rjung, ylavic, covener
+
+  *) htpasswd: don't point to (unused) stack memory on output
+     to make static analysers happy.  PR 60634.
+     trunk patch: http://svn.apache.org/r1781509
+     2.4.x patch: svn merge -c 1781509 ^/httpd/httpd/trunk .
+                  plus CHANGES
+     +1: rjung, ylavic, covener
+
+  *) htpasswd: Don't fail in -v mode if password file is unwritable.
+     PR 61631.
+     This brings 2.4.x htpasswd in sync with trunk.
+     trunk patch: http://svn.apache.org/r1812756
+     2.4.x patch: svn merge -c 1812756 ^/httpd/httpd/trunk .
+     +1: rjung, ylavic, covener
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -140,14 +164,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              Also added missing r1609688 to the patchset.
      2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-ap_proxy_define_match_worker-v2.patch
      +1: ylavic
-     -0: covener tried to review this one in Austin with Jeff.  Does the added match function 
-         really cover a very narrow set of parameters with the way it skips over backreferences?
-         Also, why a new API vs. just setting the field inline?
-
-  *) mod_md: Instrument 'md_log_perror' and fix corresponding errors reported by gcc.
-     trunk patch: http://svn.apache.org/r1826686
-     2.4.x patch: svn merge -c 1826686 ^/httpd/httpd/trunk .
-     +1: jailletc36, ylavic
+     -0: covener: lots of folks getting dns and connection reuse implicitly after we backport this.
 
   *) ab: try all destination socket addresses returned by apr_sockaddr_info_get
      instead of failing on first one when not available.
@@ -158,13 +175,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                     http://svn.apache.org/r1628388
      2.4.x patch: https://home.apache.org/~rjung/patches/httpd-2.4.x-ab-apr_sockaddr_info_get-all.patch
                   plus CHANGES
-     +1: rjung
-
-  *) ab: LibreSSL doesn't have or require applink.c
-     trunk patch: http://svn.apache.org/r1821767
-     2.4.x patch: svn merge -c 1821767 ^/httpd/httpd/trunk .
-                  plus CHANGES
-     +1: rjung, ylavic
+     +1: rjung, covener
 
   *) ab: print Server Temp Key information.
      Plus follow up to r1738415: EC_curve_nid2nist() available in OpenSSL-1.0.2 and later.
@@ -173,7 +184,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                     http://svn.apache.org/r1741566
      2.4.x patch: https://home.apache.org/~rjung/patches/httpd-2.4.x-ab-print-server-temp-key.patch
                   plus CHANGES
-     +1: rjung
+     +1: rjung, covener
 
   *) htpasswd/htdigest: Disable support for bcrypt on EBCDIC platforms.
      apr-util's bcrypt implementation doesn't tolerate EBCDIC.
@@ -181,28 +192,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1710403
      2.4.x patch: svn merge -c 1710403 ^/httpd/httpd/trunk .
                   minus second unrelated CHANGES entry
-     +1: rjung
+     +1: rjung, covener
 
   *) htpasswd/htdbm: report the right limit when get_password() overflows.
      This brings 2.4.x passwd_common.c in sync with trunk.
      trunk patch: http://svn.apache.org/r1781516
      2.4.x patch: svn merge -c 1781516 ^/httpd/httpd/trunk .
                   plus CHANGES
-     +1: rjung
-
-  *) htpasswd: don't point to (unused) stack memory on output
-     to make static analysers happy.  PR 60634.
-     trunk patch: http://svn.apache.org/r1781509
-     2.4.x patch: svn merge -c 1781509 ^/httpd/httpd/trunk .
-                  plus CHANGES
-     +1: rjung, ylavic
-
-  *) htpasswd: Don't fail in -v mode if password file is unwritable.
-     PR 61631.
-     This brings 2.4.x htpasswd in sync with trunk.
-     trunk patch: http://svn.apache.org/r1812756
-     2.4.x patch: svn merge -c 1812756 ^/httpd/httpd/trunk .
-     +1: rjung, ylavic
+     +1: rjung, covener
 
   *) rotatelogs: Add an option to autocreate directories to rotatelogs.
      PR: 46669
@@ -210,7 +207,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://home.apache.org/~rjung/patches/httpd-2.4.x-rotatelogs-create-directories.patch
                   plus CHANGES for new "-d" flag (see svn log for credits).
                   Merge only fails due to small docs conflicts.
-     +1: rjung
+     +1: rjung,
+     covener:  patch didn't make it
 
   *) rotatelogs: Remove multiple uses of constant length error buffers.
      trunk patches: http://svn.apache.org/r1534895
@@ -232,7 +230,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patches: http://svn.apache.org/r1666415
                     http://svn.apache.org/r1780308
      2.4.x patch: svn merge -c 1666415,1780308 ^/httpd/httpd/trunk .
-     +1: rjung
+     +1: rjung, covener
 
   *) rotatelogs: Choose "-D" instead of "-d" for the rotatelogs
      option that creates the path to the log file.
@@ -254,15 +252,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1826845
      2.4.x patch: svn merge -c 1826845 ^/httpd/httpd/trunk .
                   (modulo CHANGES)
-     +1: ylavic
+     +1: ylavic, covener
 
   *) core: Fix request timeout logging and possible crash for error_log hooks.
      trunk patch: http://svn.apache.org/r1826556
                   http://svn.apache.org/r1826847
      2.4.x patch: svn merge -c 1826556,1826847 ^/httpd/httpd/trunk .
                   (modulo CHANGES)
-     +1: ylavic
-
+     +1: ylavic, covener
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
