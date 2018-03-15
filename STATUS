@@ -151,7 +151,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://home.apache.org/~rjung/patches/httpd-2.4.x-rotatelogs-create-directories.patch
                   plus CHANGES for new "-d" flag (see svn log for credits).
                   Merge only fails due to small docs conflicts.
-     +1: rjung,
+     +1: rjung, ylavic,
 
   *) rotatelogs: Remove multiple uses of constant length error buffers.
      trunk patches: http://svn.apache.org/r1534895
@@ -159,7 +159,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                     http://svn.apache.org/r1534914
      2.4.x patch: svn merge -c 1534895,1534896,1534914 ^/httpd/httpd/trunk .
                   plus CHANGES
-     +1: rjung
+     +1: rjung, ylavic,
 
   *) rotatelogs: Choose "-D" instead of "-d" for the rotatelogs
      option that creates the path to the log file.
@@ -173,7 +173,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://home.apache.org/~rjung/patches/httpd-2.4.x-rotatelogs-create-directories-rename-flag.patch
                   plus CHANGES change from "-d" to "-D"
                   Merge only fails due to small docs conflicts.
-     +1: rjung
+     +1: rjung, ylavic,
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
