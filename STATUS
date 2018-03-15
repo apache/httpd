@@ -172,7 +172,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   plus CHANGES
      +1: rjung, covener
      ylavic: r1826880 needed, for instance google returns any of the
-             handled key IDs.
+             handled key IDs (my +1 with it).
 
   *) rotatelogs: Add an option to autocreate directories to rotatelogs.
      PR: 46669
