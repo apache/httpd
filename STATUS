@@ -157,22 +157,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
-  *) mod_proxy: Add ap_proxy_define_match_worker() and use it for ProxyPassMatch
-     and ProxyMatch section to distinguish between normal workers and workers
-     with regex substitutions in the name. Implement handling of such workers
-     in ap_proxy_get_worker(). Fixes the bug when regex workers were not
-     matched and used for request. PR 43513.
-     trunk patch: http://svn.apache.org/r1609680
-                  http://svn.apache.org/r1609688
-                  http://svn.apache.org/r1641381
-                  http://svn.apache.org/r1826289
-                  http://svn.apache.org/r1826313
-     ylavic: Merge patch provided (reusing new->real to avoid double de_socketfy() call).
-             Also added missing r1609688 to the patchset.
-     2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-ap_proxy_define_match_worker-v2.patch
-     +1: ylavic
-     -0: covener: lots of folks getting dns and connection reuse implicitly after we backport this.
-
   *) ab: try all destination socket addresses returned by apr_sockaddr_info_get
      instead of failing on first one when not available.
      Needed for instance if localhost resolves to both ::1 and 127.0.0.1
@@ -377,6 +361,23 @@ PATCHES/ISSUES THAT ARE BEING WORKED
 
 
 PATCHES/ISSUES THAT ARE STALLED
+
+  *) mod_proxy: Add ap_proxy_define_match_worker() and use it for ProxyPassMatch
+     and ProxyMatch section to distinguish between normal workers and workers
+     with regex substitutions in the name. Implement handling of such workers
+     in ap_proxy_get_worker(). Fixes the bug when regex workers were not
+     matched and used for request. PR 43513.
+     trunk patch: http://svn.apache.org/r1609680
+                  http://svn.apache.org/r1609688
+                  http://svn.apache.org/r1641381
+                  http://svn.apache.org/r1826289
+                  http://svn.apache.org/r1826313
+     ylavic: Merge patch provided (reusing new->real to avoid double de_socketfy() call).
+             Also added missing r1609688 to the patchset.
+     2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-ap_proxy_define_match_worker-v2.patch
+     +1:
+     -0: covener: lots of folks getting dns and connection reuse implicitly after we backport this.
+     ylavic: agreed, withdrawing
 
    * core: Add ap_errorlog_provider to make ErrorLog logging modular. This
            backport keeps syslog logging as part of httpd core and only adds
