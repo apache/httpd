@@ -274,10 +274,29 @@ static apr_status_t restore_slotmem(sharedslotdesc_t *desc,
     return rv;
 }
 
+/*
+ * Whether the module is called from a MPM that re-enter main() and
+ * pre/post_config phases.
+ */
+static APR_INLINE int is_child_process(void)
+{
+#ifdef WIN32
+    return getenv("AP_PARENT_PID") != NULL;
+#else
+    return 0;
+#endif
+}
+
 static apr_status_t cleanup_slotmem(void *is_startup)
 {
     int is_exiting = (ap_state_query(AP_SQ_MAIN_STATE) == AP_SQ_MS_EXITING);
     ap_slotmem_instance_t *mem;
+
+    if (is_child_process()) {
+        /* No reuse/retained data from here, let pconf cleanup everything */
+        *retained_globallistmem = globallistmem = NULL;
+        return APR_SUCCESS;
+    }
 
     /* When in startup/pre-config's cleanup, the retained data and global pool
      * are not used yet, but the SHMs contents were untouched hence they don't
@@ -439,17 +458,26 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
 
     {
         if (fbased) {
-            apr_shm_remove(fname, pool);
-            rv = apr_shm_create(&shm, size, fname, gpool);
+            /* For MPMs (e.g. winnt) that run pre/post_config() phases in
+             * both the parent and children processes, SHMs created by the
+             * parent exist in the children already; only attach them.
+             */
+            if (is_child_process()) {
+                rv = apr_shm_attach(&shm, fname, gpool);
+            }
+            else {
+                apr_shm_remove(fname, pool);
+                rv = apr_shm_create(&shm, size, fname, gpool);
+            }
         }
         else {
             rv = apr_shm_create(&shm, size, NULL, pool);
         }
         ap_log_error(APLOG_MARK, rv == APR_SUCCESS ? APLOG_DEBUG : APLOG_ERR,
                      rv, ap_server_conf, APLOGNO(02611)
-                     "create: apr_shm_create(%s) %s",
-                     fname ? fname : "",
-                     rv == APR_SUCCESS ? "succeeded" : "failed");
+                     "create: apr_shm_%s(%s) %s",
+                     fbased && is_child_process() ? "attach" : "create",
+                     fname, rv == APR_SUCCESS ? "succeeded" : "failed");
         if (rv != APR_SUCCESS) {
             return rv;
         }
@@ -811,7 +839,15 @@ static int pre_config(apr_pool_t *pconf, apr_pool_t *plog,
     }
     globallistmem = *retained_globallistmem;
 
-    if (ap_state_query(AP_SQ_MAIN_STATE) != AP_SQ_MS_CREATE_PRE_CONFIG) {
+    /* For the first (dry-)loading or children in MPMs which (re-)run
+     * pre_config we don't need to retain slotmems, so use pconf and its
+     * normal cleanups. Otherwise we use ap_pglobal to match the lifetime
+     * of retained data and register our own cleanup to update them.
+     */
+    if (is_child_process()) {
+        gpool = pconf;
+    }
+    else if (ap_state_query(AP_SQ_MAIN_STATE) != AP_SQ_MS_CREATE_PRE_CONFIG) {
         gpool = ap_pglobal;
     }
     else {

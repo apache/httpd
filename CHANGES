@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_slomem_shm: Fix failure to create balancers's slotmems in Windows MPM,
+     where children processes need to attach them instead since they are owned
+     by the parent process already.  [Yann Ylavic]
+
   *) mod_ldap: Avoid possible crashes, hangs, and busy loops due to
      improper merging of the cache lock in vhost config.
      PR 43164 [Eric Covener]
