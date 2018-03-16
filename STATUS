@@ -178,6 +178,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) ab: print Server Temp Key information.
      Plus follow up to r1738415: EC_curve_nid2nist() only available in OpenSSL-1.0.2 and later
      so do not use it for older OpenSSL.
+     Plus follow up to r1738415: handle any tmp key id.
+     Otherwise, we print garbage (e.g. for X25519).
      This brings 2.4.x ab in sync with trunk.
      trunk patches: http://svn.apache.org/r1738415
                     http://svn.apache.org/r1741566
