@@ -175,6 +175,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   Merge only fails due to small docs conflicts.
      +1: rjung, ylavic,
 
+  *) ab: print Server Temp Key information.
+     Plus follow up to r1738415: EC_curve_nid2nist() only available in OpenSSL-1.0.2 and later
+     so do not use it for older OpenSSL.
+     This brings 2.4.x ab in sync with trunk.
+     trunk patches: http://svn.apache.org/r1738415
+                    http://svn.apache.org/r1741566
+                    http://svn.apache.org/r1826880
+     2.4.x patch: https://home.apache.org/~rjung/patches/httpd-2.4.x-ab-print-server-temp-key-v2.patch
+                  plus CHANGES
+     +1: rjung, ylavic
+     rjung: covener, are you still +1 with r1826880 now added (v2 patch)?
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
