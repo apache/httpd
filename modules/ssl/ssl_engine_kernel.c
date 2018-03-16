@@ -1596,7 +1596,6 @@ int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
     int errdepth = X509_STORE_CTX_get_error_depth(ctx);
     int depth, verify;
 
-
     /*
      * Log verification information
      */
@@ -1670,7 +1669,8 @@ int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
     /*
      * Perform OCSP-based revocation checks
      */
-    if (ok && sc->server->ocsp_enabled == TRUE) {
+    if (ok && ((sc->server->ocsp_mask & SSL_OCSPCHECK_CHAIN) ||
+         (errdepth == 0 && (sc->server->ocsp_mask & SSL_OCSPCHECK_LEAF)))) {     
         /* If there was an optional verification error, it's not
          * possible to perform OCSP validation since the issuer may be
          * missing/untrusted.  Fail in that case. */
