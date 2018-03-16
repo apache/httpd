@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_md: Fix compilation with OpenSSL before version 1.0.2.  [Rainer Jung]
+
   *) core: Create a conn_config_t structure to hold an extendable core config rather
      than consuming the whole pointer with the connection socket. [Graham Leggett]
 
