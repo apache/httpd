@@ -186,6 +186,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_ssl: Add option "leaf" to OCSPEnable that will only check the leaf in the
      certificate chain. PR62112.
      trunk patch: http://svn.apache.org/r1826995
+                  http://svn.apache.org/r1827001
      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/ssl-ocsp-enable-leaf.patch
      +1: icing
 
