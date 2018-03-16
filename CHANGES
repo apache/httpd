@@ -67,10 +67,6 @@ Changes with Apache 2.5.1
      Add higher level WARNING log when initial request to ACME server fails, mentioning
      some advice. [Stefan Eissing] 
      
-  *) mod_ldap: Fix a case where a full LDAP cache would continually fail to 
-     purge old entries and log AH01323. PR61891.  
-     [Hendrik Harms <hendrik.harms gmail.com>]
-
   *) mod_md: name change in configuration directives. The old names are still working
      in this version, so you can safely upgrade. They will give warnings in the log and
      will disappear in the immediate future. ManagedDomain is now MDomain,
@@ -110,9 +106,6 @@ Changes with Apache 2.5.1
 
   *) mod_watchdog: Correct some log messages.  [Rainer Jung]
 
-  *) core: silently ignore a not existent file path when IncludeOptional
-     is used. PR 57585. [Alberto Murillo Silva <powerbsd yahoo.com>, Luca Toscano]
-
   *) mod_noloris: complete build setup.  [Rainer Jung]
 
   *) mod_md: fix static compilation.  [Rainer Jung]
@@ -131,15 +124,8 @@ Changes with Apache 2.5.0-alpha
   *) mod_md: v1.0.0, new config directive 'MDNotifyCmd' to hook in a program when Managed
      Domains have obtained/renewed their certificates successfully. [Stefan Eissing]
 
-  *) mod_rewrite, core: add the Vary header when a condition evaluates to true
-     and the related RewriteRule is used in a Directory context
-     (triggering an internal redirect). [Luca Toscano]
-
   *) mod_md: v0.9.9, fix for applying challenge type based on available ports. [Stefan Eissing]
 
-  *) mod_http2: v0.10.12, removed optimization for mutex handling in bucket beams that 
-    could lead to assertion failure in edge cases. [Stefan Eissing] 
-     
   *) mod_md: v0.9.7
      - Use of the new module flag
      - Removed obsolete function from interface to mod_ssl. 
@@ -277,9 +263,6 @@ Changes with Apache 2.5.0-alpha
      to leave the WRITE_COMPLETION phase. Move filter code out of the MPMs.
      [Graham Leggett]
 
-  *) mod_filter: Fix AddOutputFilterByType with non-content-level filters.
-     PR58856 [Micha Lenk <micha lenk.info>]
-
   *) mod_cache: Consider Cache-Control: s-maxage in expiration
      calculations.  [Eric Covener]
 
@@ -304,10 +287,6 @@ Changes with Apache 2.5.0-alpha
      it comes from an origin server, module or script.  [Yann Ylavic]
 
   *) http: Add support for RFC2324/RFC7168. [Graham Leggett]
-
-  *) mod_rewrite: Add support for starting External Rewriting Programs
-     as non-root user on UNIX systems by specifying username and group name
-     as third argument of RewriteMap directive. [Jan Kaluza]
 
   *) mod_authn_core: Add expression support to AuthName and AuthType.
      [Graham Leggett]
@@ -366,9 +345,6 @@ Changes with Apache 2.5.0-alpha
 
   *) mod_proxy_html: support automatic detection of doctype and processing
      of FPIs.  PR56285 [Micha Lenk <micha lenk info>, Nick Kew]
-
-  *) mod_proxy_html: skip documents shorter than 4 bytes
-     PR 56286 [Micha Lenk <micha lenk info>]
 
   *) core: Add ap_mpm_resume_suspended() API to allow a suspended connection
      to resume. PR56333 
@@ -468,11 +444,6 @@ Changes with Apache 2.5.0-alpha
      They were truncated to 31 characters which is not enough for IPv6 addresses.
      PR 54848 [Bernhard Schmidt <berni birkenwald de>]
 
-  *) mod_unique_id: Use output of the PRNG rather than IP address and
-     pid, avoiding sleep() call and possible DNS issues at startup,
-     plus improving randomness for IPv6-only hosts.
-     [Jan Kaluza <jkaluza redhat.com>]
-
   *) core: merge AllowEncodedSlashes from the base configuration into
      virtual hosts. [Eric Covener]
 
@@ -507,16 +478,6 @@ Changes with Apache 2.5.0-alpha
   *) mod_ldap: LDAP connections used for authentication were not respecting
      LDAPConnectionPoolTimeout.  PR 54587
 
-  *) core: ap_rgetline_core now pulls from r->proto_input_filters.
-
-  *) mod_proxy_html: process parsed comments immediately. 
-     Fixes bug where parsed comments may be lost. [Nick Kew]
-
-  *) mod_proxy_html: introduce doctype for HTML 5 [Nick Kew]
-
-  *) mod_proxy_html: fix typo-bug processing "strict" vs "transitional"
-     HTML/XHTML [Nick Kew]
-
   *) core: Add option to add valgrind support. Use it to reduce false positive
      warnings in mod_ssl. [Stefan Fritsch]
 
@@ -544,9 +505,6 @@ Changes with Apache 2.5.0-alpha
 
   *) ap_expr: Add SERVER_PROTOCOL_VERSION, ..._MAJOR, and ..._MINOR
      variables. [Stefan Fritsch]
-
-  *) core: New directive RegisterHttpMethod for registering non-standard
-     HTTP methods. [Stefan Fritsch]
 
   *) core: New directive HttpProtocol which allows to disable HTTP/0.9
      support. [Stefan Fritsch]
