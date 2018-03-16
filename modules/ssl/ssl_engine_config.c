@@ -1972,7 +1972,7 @@ static const char *ssl_cmd_ocspcheck_parse(cmd_parms *parms,
     const char *w;
 
     w = ap_getword_conf(parms->temp_pool, &arg);
-    if (strcEQ(w, "none")) {
+    if (strcEQ(w, "off")) {
         *mask = SSL_OCSPCHECK_NONE;
     }
     else if (strcEQ(w, "leaf")) {
