@@ -944,6 +944,10 @@ static apr_status_t ssl_init_ctx_crl(server_rec *s,
     char *cfgp = mctx->pkp ? "SSLProxy" : "SSL";
     int crl_check_mode;
 
+    if (mctx->ocsp_mask == UNSET) {
+        mctx->ocsp_mask = SSL_OCSPCHECK_NONE;
+    }
+
     if (mctx->crl_check_mask == UNSET) {
         mctx->crl_check_mask = SSL_CRLCHECK_NONE;
     }
