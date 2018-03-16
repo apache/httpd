@@ -292,17 +292,11 @@ static apr_status_t cleanup_slotmem(void *is_startup)
     int is_exiting = (ap_state_query(AP_SQ_MAIN_STATE) == AP_SQ_MS_EXITING);
     ap_slotmem_instance_t *mem;
 
-    if (is_child_process()) {
-        /* No reuse/retained data from here, let pconf cleanup everything */
-        *retained_globallistmem = globallistmem = NULL;
-        return APR_SUCCESS;
-    }
-
-    /* When in startup/pre-config's cleanup, the retained data and global pool
-     * are not used yet, but the SHMs contents were untouched hence they don't
-     * need to be persisted, simply unlink them.
-     * Otherwise when restarting or stopping we want to flush persisted data,
-     * and in the stopping/exiting case we also want to unlink the SHMs.
+    /* When restarting or stopping we want to flush persisted data, and in the
+     * stopping case we also want to unlink the SHMs. On the first (dry-)load
+     * though (is_startup != NULL), the retained list is not used yet and SHMs
+     * contents were untouched (so they don't need to be persisted); unlink
+     * everything before the real loading (from scratch).
      */
     for (mem = globallistmem; mem; mem = mem->next) {
         int unlink;
@@ -324,13 +318,12 @@ static apr_status_t cleanup_slotmem(void *is_startup)
         }
     }
 
-    if (is_exiting) {
+    if (is_startup || is_exiting) {
         *retained_globallistmem = NULL;
     }
-    else if (!is_startup) {
+    else {
         *retained_globallistmem = globallistmem;
     }
-    globallistmem = NULL;
 
     return APR_SUCCESS;
 }
@@ -458,9 +451,9 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
 
     {
         if (fbased) {
-            /* For MPMs (e.g. winnt) that run pre/post_config() phases in
-             * both the parent and children processes, SHMs created by the
-             * parent exist in the children already; only attach them.
+            /* For MPMs that run pre/post_config() phases in both the parent
+             * and children processes (e.g. winnt), SHMs created by the
+             * parent exist in the children already; attach them.
              */
             if (is_child_process()) {
                 rv = apr_shm_attach(&shm, fname, gpool);
@@ -839,24 +832,30 @@ static int pre_config(apr_pool_t *pconf, apr_pool_t *plog,
     }
     globallistmem = *retained_globallistmem;
 
-    /* For the first (dry-)loading or children in MPMs which (re-)run
-     * pre_config we don't need to retain slotmems, so use pconf and its
-     * normal cleanups. Otherwise we use ap_pglobal to match the lifetime
-     * of retained data and register our own cleanup to update them.
-     */
-    if (is_child_process()) {
-        gpool = pconf;
-    }
-    else if (ap_state_query(AP_SQ_MAIN_STATE) != AP_SQ_MS_CREATE_PRE_CONFIG) {
-        gpool = ap_pglobal;
+    if (!is_child_process()) {
+        /* For the first (dry-)load, create SHMs on pconf and let them be
+         * cleaned up before the real loading. Otherwise SHMs shall have the
+         * same lifetime as the retained list (ap_pglobal). The cleanup is to
+         * update the retained list on restart, or to unlink the SHMs on stop
+         * or after the first (dry-)load (is_startup != NULL).
+         */
+        if (ap_state_query(AP_SQ_MAIN_STATE) != AP_SQ_MS_CREATE_PRE_CONFIG) {
+            gpool = ap_pglobal;
+        }
+        else {
+            is_startup = (void *)1;
+            gpool = pconf;
+        }
+
+        apr_pool_cleanup_register(pconf, is_startup, cleanup_slotmem,
+                                  apr_pool_cleanup_null);
     }
     else {
-        is_startup = (void *)1;
+        /* For MPMs which (re-)run pre_config we don't need to retain slotmems
+         * in children, so use pconf and let it detach SHMs when children exit.
+         */
         gpool = pconf;
     }
-
-    apr_pool_cleanup_register(pconf, is_startup, cleanup_slotmem,
-                              apr_pool_cleanup_null);
 
     return OK;
 }
