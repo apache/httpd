@@ -168,7 +168,7 @@ email fournie comme mot de passe est correct</td></tr>
 <tr><td><a href="mod_auth_basic.html#authbasicauthoritative">AuthBasicAuthoritative On|Off</a></td><td> On </td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Définit si les processus d'autorisation et
 d'authentification peuvent être confiés à des modules de plus bas
 niveau</td></tr>
-<tr class="odd"><td><a href="mod_auth_basic.html#authbasicfake">AuthBasicFake off|nom-utilisateur [mot-de-passe]</a></td><td></td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Authentification de base simulée à l'aide des nom
+<tr class="odd"><td><a href="mod_auth_basic.html#authbasicfake">AuthBasicFake off|<var>username</var> [<var>password</var>]</a></td><td></td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Authentification de base simulée à l'aide des nom
 d'utilisateur et mot de passe fournis</td></tr>
 <tr><td><a href="mod_auth_basic.html#authbasicprovider">AuthBasicProvider <var>nom fournisseur</var>
 [<var>nom fournisseur</var>] ...</a></td><td> file </td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Définit le(les) fournisseur(s) d'authentification pour
@@ -1385,7 +1385,7 @@ du serveur par ordre de préférence</td></tr>
 non sécurisée</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslocspdefaultresponder">SSLOCSDefaultResponder <em>uri</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Définit l'URI du répondeur par défaut pour la validation
 OCSP</td></tr>
-<tr><td><a href="mod_ssl.html#sslocspenable">SSLOCSPEnable on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Active la validation OCSP de la chaîne de certificats du
+<tr><td><a href="mod_ssl.html#sslocspenable">SSLOCSPEnable on|leaf|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Active la validation OCSP de la chaîne de certificats du
 client</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslocspnoverify">SSLOCSPNoverify <em>On/Off</em></a></td><td> Off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Evite la vérification des certificats des répondeurs OCSP</td></tr>
 <tr><td><a href="mod_ssl.html#sslocspoverrideresponder">SSLOCSPOverrideResponder on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Force l'utilisation de l'URI du répondeur par défaut pour
