@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1824779 -->
+<!-- English Revision: 1826995 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -2633,7 +2633,7 @@ SSLCryptoDevice ubsec
 <name>SSLOCSPEnable</name>
 <description>Active la validation OCSP de la chaîne de certificats du
 client</description>
-<syntax>SSLOCSPEnable on|off</syntax>
+<syntax>SSLOCSPEnable on|leaf|off</syntax>
 <default>SSLOCSPEnable off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
@@ -2643,7 +2643,7 @@ client</description>
 certificats du client. Si elle est activée, les certificats de la chaîne
 de certificats du client seront validés auprès d'un répondeur OCSP, une
 fois la vérification normale effectuée (vérification des CRLs
-incluse).</p>
+incluse). En mode 'leaf', seul le certificat du client sera validé.</p>
 
 <p>Le répondeur OCSP utilisé est soit extrait du certificat lui-même,
 soit spécifié dans la configuration ; voir les directives <directive
