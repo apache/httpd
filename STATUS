@@ -121,11 +121,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_md: Instrument 'md_log_perror' and fix corresponding errors reported by gcc.
-     trunk patch: http://svn.apache.org/r1826686
-     2.4.x patch: svn merge -c 1826686 ^/httpd/httpd/trunk .
-     +1: jailletc36, ylavic, covener
-
   *) rotatelogs: Small changes to rotatelogs:
      - add "-n num" to help text
      - clarify in help text, that "program is invoked"
