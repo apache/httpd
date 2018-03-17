@@ -147,6 +147,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   plus CHANGES for new "-d" flag (see svn log for credits).
                   Merge only fails due to small docs conflicts.
      +1: rjung, ylavic,
+     -1: niq: this patch is broken: it edits a generated HTML file instead
+              of the source XML.  Fix and I'm +1.
 
   *) rotatelogs: Remove multiple uses of constant length error buffers.
      trunk patches: http://svn.apache.org/r1534895
@@ -169,6 +171,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   plus CHANGES change from "-d" to "-D"
                   Merge only fails due to small docs conflicts.
      +1: rjung, ylavic,
+     niq: +1 when the other bug is fixed and backported
 
   *) mod_md: Fix compilation with OpenSSL before version 1.0.2.
      Symbol ASN1_TIME_diff is only available for 1.0.2+,
