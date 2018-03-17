@@ -1,4 +1,6 @@
                                                          -*- coding: utf-8 -*-
+Changes with Apache 2.4.34
+
 Changes with Apache 2.4.33
 
   *) core: Fix request timeout logging and possible crash for error_log hooks.
