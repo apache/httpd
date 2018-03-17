@@ -205,7 +205,7 @@ static apr_status_t read_store_file(md_store_fs_t *s_fs, const char *fname,
             store_version = 1.0;
         }
         if (store_version > MD_STORE_VERSION) {
-            md_log_perror(MD_LOG_MARK, MD_LOG_ERR, 0, p, "version too new: %s", store_version);
+            md_log_perror(MD_LOG_MARK, MD_LOG_ERR, 0, p, "version too new: %f", store_version);
             return APR_EINVAL;
         }
 
@@ -218,7 +218,7 @@ static apr_status_t read_store_file(md_store_fs_t *s_fs, const char *fname,
         s_fs->key_len = md_util_base64url_decode(&key, key64, p);
         s_fs->key = (const unsigned char*)key;
         if (s_fs->key_len != FS_STORE_KLEN) {
-            md_log_perror(MD_LOG_MARK, MD_LOG_ERR, 0, p, "key length unexpected: %d", 
+            md_log_perror(MD_LOG_MARK, MD_LOG_ERR, 0, p, "key length unexpected: %" APR_SIZE_T_FMT, 
                           s_fs->key_len);
             return APR_EINVAL;
         }
@@ -849,7 +849,7 @@ static apr_status_t pfs_move(void *baton, apr_pool_t *p, apr_pool_t *ptemp, va_l
                 goto out;
         }
         if (!MD_OK(apr_file_rename(from_dir, to_dir, ptemp))) {
-            md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, ptemp, "moving %s to %s: %s", 
+            md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, ptemp, "rename from %s to %s", 
                           from_dir, to_dir);
             apr_file_rename(narch_dir, to_dir, ptemp);
             goto out;

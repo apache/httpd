@@ -43,8 +43,8 @@ const char *md_log_level_name(md_log_level_t level);
 int md_log_is_level(apr_pool_t *p, md_log_level_t level);
 
 void md_log_perror(const char *file, int line, md_log_level_t level, 
-                   apr_status_t rv, apr_pool_t *p, const char *fmt, ...);
-
+                   apr_status_t rv, apr_pool_t *p, const char *fmt, ...)
+                                __attribute__((format(printf,6,7)));
 
 typedef int md_log_level_cb(void *baton, apr_pool_t *p, md_log_level_t level);
 
