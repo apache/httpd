@@ -30,6 +30,27 @@
 #ifndef _MOD_LOG_CONFIG_H
 #define _MOD_LOG_CONFIG_H 1
 
+/* POSIX.1 defines PIPE_BUF as the maximum number of bytes that is
+ * guaranteed to be atomic when writing a pipe.  And PIPE_BUF >= 512
+ * is guaranteed.  So we'll just guess 512 in the event the system
+ * doesn't have this.  Now, for file writes there is actually no limit,
+ * the entire write is atomic.  Whether all systems implement this
+ * correctly is another question entirely ... so we'll just use PIPE_BUF
+ * because it's probably a good guess as to what is implemented correctly
+ * everywhere.
+ */
+#ifdef PIPE_BUF
+#define LOG_BUFSIZE     PIPE_BUF
+#else
+#define LOG_BUFSIZE     (512)
+#endif
+
+#define MSG_HEADER_ELT_CNT 5
+#define MSG_HEADER_LEN (sizeof(uint32_t) * MSG_HEADER_ELT_CNT)
+#define LOG_BUFSIZE_LESS_CHUNKHEAD (LOG_BUFSIZE - MSG_HEADER_LEN)
+
+typedef struct config_log_state config_log_state;
+
 /**
  * callback function prototype for a external log handler
  */
@@ -39,7 +60,7 @@ typedef const char *ap_log_handler_fn_t(request_rec *r, char *a);
  * callback function prototype for external writer initialization.
  */
 typedef void *ap_log_writer_init(apr_pool_t *p, server_rec *s,
-                                 const char *name);
+                                 config_log_state* cls);
 /**
  * callback which gets called where there is a log line to write.
  */
@@ -49,7 +70,8 @@ typedef apr_status_t ap_log_writer(
                             const char **portions,
                             int *lengths,
                             int nelts,
-                            apr_size_t len);
+                            apr_size_t len,
+                            int chunk_msgs);
 
 typedef struct ap_log_handler {
     ap_log_handler_fn_t *func;

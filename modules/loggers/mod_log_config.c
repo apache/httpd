@@ -146,11 +146,14 @@
  *
  * --- rst */
 
+#include <arpa/inet.h>
+
 #include "apr_strings.h"
 #include "apr_lib.h"
 #include "apr_hash.h"
 #include "apr_optional.h"
 #include "apr_anylock.h"
+#include "apr_env.h"
 
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
@@ -164,6 +167,7 @@
 #include "http_protocol.h"
 #include "util_time.h"
 #include "ap_mpm.h"
+#include "scoreboard.h"
 
 #if APR_HAVE_UNISTD_H
 #include <unistd.h>
@@ -177,25 +181,39 @@
 module AP_MODULE_DECLARE_DATA log_config_module;
 
 
+typedef struct {
+    apr_file_t *handle;
+    apr_size_t outcnt;
+    char outbuf[LOG_BUFSIZE];
+    apr_anylock_t mutex;
+} buffered_log;
+
 static int xfer_flags = (APR_WRITE | APR_APPEND | APR_CREATE | APR_LARGEFILE);
 static apr_fileperms_t xfer_perms = APR_OS_DEFAULT;
 static apr_hash_t *log_hash;
+static apr_status_t write_atomic_pipe_chunks(request_rec *r,
+                           void *handle,
+                           const char *str,
+                           apr_size_t len,
+                           buffered_log *buf);
 static apr_status_t ap_default_log_writer(request_rec *r,
                            void *handle,
                            const char **strs,
                            int *strl,
                            int nelts,
-                           apr_size_t len);
+                           apr_size_t len,
+                           int chunk_msgs);
 static apr_status_t ap_buffered_log_writer(request_rec *r,
                            void *handle,
                            const char **strs,
                            int *strl,
                            int nelts,
-                           apr_size_t len);
+                           apr_size_t len,
+                           int chunk_msgs);
 static void *ap_default_log_writer_init(apr_pool_t *p, server_rec *s,
-                                        const char* name);
+                                        config_log_state* cls);
 static void *ap_buffered_log_writer_init(apr_pool_t *p, server_rec *s,
-                                        const char* name);
+                                         config_log_state* cls);
 
 static ap_log_writer_init *ap_log_set_writer_init(ap_log_writer_init *handle);
 static ap_log_writer *ap_log_set_writer(ap_log_writer *handle);
@@ -203,21 +221,6 @@ static ap_log_writer *log_writer = ap_default_log_writer;
 static ap_log_writer_init *log_writer_init = ap_default_log_writer_init;
 static int buffered_logs = 0; /* default unbuffered */
 static apr_array_header_t *all_buffered_logs = NULL;
-
-/* POSIX.1 defines PIPE_BUF as the maximum number of bytes that is
- * guaranteed to be atomic when writing a pipe.  And PIPE_BUF >= 512
- * is guaranteed.  So we'll just guess 512 in the event the system
- * doesn't have this.  Now, for file writes there is actually no limit,
- * the entire write is atomic.  Whether all systems implement this
- * correctly is another question entirely ... so we'll just use PIPE_BUF
- * because it's probably a good guess as to what is implemented correctly
- * everywhere.
- */
-#ifdef PIPE_BUF
-#define LOG_BUFSIZE     PIPE_BUF
-#else
-#define LOG_BUFSIZE     (512)
-#endif
 
 /*
  * multi_log_state is our per-(virtual)-server configuration. We store
@@ -252,14 +255,7 @@ typedef struct {
  * set to a opaque structure (usually a fd) after it is opened.
 
  */
-typedef struct {
-    apr_file_t *handle;
-    apr_size_t outcnt;
-    char outbuf[LOG_BUFSIZE];
-    apr_anylock_t mutex;
-} buffered_log;
-
-typedef struct {
+struct config_log_state {
     const char *fname;
     const char *format_string;
     apr_array_header_t *format;
@@ -269,7 +265,8 @@ typedef struct {
     ap_expr_info_t *condition_expr;
     /** place of definition or NULL if already checked */
     const ap_directive_t *directive;
-} config_log_state;
+    int chunked;
+};
 
 /*
  * log_request_state holds request specific log data that is not
@@ -1175,7 +1172,7 @@ static int config_log_transaction(request_rec *r, config_log_state *cls,
                 "log writer isn't correctly setup");
         return HTTP_INTERNAL_SERVER_ERROR;
     }
-    rv = log_writer(r, cls->log_writer, strs, strl, format->nelts, len);
+    rv = log_writer(r, cls->log_writer, strs, strl, format->nelts, len, cls->chunked);
     if (rv != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_WARNING, rv, r, APLOGNO(00646)
                       "Error writing to %s", cls->fname);
@@ -1327,6 +1324,9 @@ static const char *add_custom_log(cmd_parms *cmd, void *dummy, const char *fn,
     }
 
     cls->fname = fn;
+    if (fn && !strncmp(fn, "||", 2)) {
+        cls->chunked = 1;
+    }
     cls->format_string = fmt;
     cls->directive = cmd->directive;
     if (fmt == NULL) {
@@ -1386,6 +1386,7 @@ static const char *set_buffered_logs_on(cmd_parms *parms, void *dummy, int flag)
     }
     return NULL;
 }
+
 static const command_rec config_log_cmds[] =
 {
 AP_INIT_TAKE23("CustomLog", add_custom_log, NULL, RSRC_CONF,
@@ -1414,7 +1415,7 @@ static config_log_state *open_config_log(server_rec *s, apr_pool_t *p,
         return cls;             /* Leave it NULL to decline.  */
     }
 
-    cls->log_writer = log_writer_init(p, s, cls->fname);
+    cls->log_writer = log_writer_init(p, s, cls);
     if (cls->log_writer == NULL)
         return NULL;
 
@@ -1603,12 +1604,85 @@ static ap_log_writer *ap_log_set_writer(ap_log_writer *handle)
     return old;
 }
 
+static apr_status_t write_atomic_pipe_chunks(request_rec *r,
+                           void *handle,
+                           const char *str,
+                           apr_size_t len,
+                           buffered_log *buf)
+{
+    apr_status_t rv;
+    apr_size_t chunk_body_len;
+    apr_size_t write_cnt;
+    apr_size_t msg_read_len = 0;
+    uint32_t proc_slot_xfer, thread_slot_xfer;
+    char msg_chunk[LOG_BUFSIZE];
+    uint32_t chunk_order = 1;
+    uint32_t chunk_order_xfer;
+    uint32_t total_chunk_cnt = (len / LOG_BUFSIZE_LESS_CHUNKHEAD) +
+        !!(len % LOG_BUFSIZE_LESS_CHUNKHEAD);
+    uint32_t total_chunk_cnt_xfer = htonl(total_chunk_cnt);
+    uint32_t chunk_body_len_xfer;
+    ap_sb_handle_t *sbh = r->connection->sbh;
+    uint32_t cpy_pos = 0;
+    char *msg_buf = msg_chunk;
+
+    if (buf != NULL)
+        msg_buf = &buf->outbuf[buf->outcnt];
+
+    proc_slot_xfer = htonl(sbh->child_num);
+    thread_slot_xfer = htonl(sbh->thread_num);
+
+    // Split the log line into PIPE_BUF chunks to avoid interleaving concurrent
+    // writes to the pipe that may corrupt the log data.
+    do {
+        if (buf == NULL)
+            cpy_pos = 0;
+        chunk_body_len = len - msg_read_len;
+        if (chunk_body_len > LOG_BUFSIZE_LESS_CHUNKHEAD)
+            chunk_body_len = LOG_BUFSIZE_LESS_CHUNKHEAD;
+        memcpy(msg_buf + cpy_pos, &proc_slot_xfer, sizeof(uint32_t));
+        cpy_pos += sizeof(uint32_t);
+        memcpy(msg_buf + cpy_pos, &thread_slot_xfer, sizeof(uint32_t));
+        cpy_pos += sizeof(uint32_t);
+        chunk_order_xfer = htonl(chunk_order);
+        memcpy(msg_buf + cpy_pos, &chunk_order_xfer, sizeof(uint32_t));
+        cpy_pos += sizeof(uint32_t);
+        memcpy(msg_buf + cpy_pos, &total_chunk_cnt_xfer, sizeof(uint32_t));
+        cpy_pos += sizeof(uint32_t);
+
+        // Convert potentially long int to message header uint32_t.
+        chunk_body_len_xfer = htonl(chunk_body_len);
+        memcpy(msg_buf + cpy_pos, &chunk_body_len_xfer, sizeof(uint32_t));
+        cpy_pos += sizeof(uint32_t);
+        memcpy(msg_buf + cpy_pos, str + msg_read_len, chunk_body_len);
+        cpy_pos += chunk_body_len;
+
+        if (buf == NULL) {
+            write_cnt = chunk_body_len + MSG_HEADER_LEN;
+            if ((rv = apr_file_write((apr_file_t*)handle, msg_buf, &write_cnt))
+                != APR_SUCCESS) {
+                return rv;
+            }
+        }
+
+        msg_read_len += chunk_body_len;
+        chunk_order++;
+
+    } while (msg_read_len < len);
+
+    if (buf != NULL)
+        buf->outcnt += cpy_pos;
+
+    return rv;
+}
+
 static apr_status_t ap_default_log_writer( request_rec *r,
                            void *handle,
                            const char **strs,
                            int *strl,
                            int nelts,
-                           apr_size_t len)
+                           apr_size_t len,
+                           int chunk_msgs)
 
 {
     char *str;
@@ -1627,16 +1701,30 @@ static apr_status_t ap_default_log_writer( request_rec *r,
         s += strl[i];
     }
 
-    rv = apr_file_write((apr_file_t*)handle, str, &len);
+    if (chunk_msgs) {
+        rv = write_atomic_pipe_chunks(r, handle, str, len, NULL);
+    }
+    else {
+        rv = apr_file_write((apr_file_t*)handle, str, &len);
+    }
 
     return rv;
 }
 static void *ap_default_log_writer_init(apr_pool_t *p, server_rec *s,
-                                        const char* name)
+                                        config_log_state* cls)
 {
+    apr_status_t rv;
+    const char *name = cls->fname;
+
     if (*name == '|') {
         piped_log *pl;
 
+        if (cls->chunked && (rv = apr_env_set("AP_MOD_LOG_CONFIG_CHUNKED_MSG",
+                             "", p) != APR_SUCCESS)) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(00648)
+                            "Unable to apr_env_set");
+            return NULL;
+        }
         pl = ap_open_piped_log(p, name + 1);
         if (pl == NULL) {
            return NULL;
@@ -1663,11 +1751,11 @@ static void *ap_default_log_writer_init(apr_pool_t *p, server_rec *s,
     }
 }
 static void *ap_buffered_log_writer_init(apr_pool_t *p, server_rec *s,
-                                        const char* name)
+                                         config_log_state* cls)
 {
     buffered_log *b;
     b = apr_pcalloc(p, sizeof(buffered_log));
-    b->handle = ap_default_log_writer_init(p, s, name);
+    b->handle = ap_default_log_writer_init(p, s, cls);
 
     if (b->handle) {
         *(buffered_log **)apr_array_push(all_buffered_logs) = b;
@@ -1681,23 +1769,29 @@ static apr_status_t ap_buffered_log_writer(request_rec *r,
                                            const char **strs,
                                            int *strl,
                                            int nelts,
-                                           apr_size_t len)
+                                           apr_size_t len,
+                                           int chunk_msgs)
 
 {
     char *str;
     char *s;
     int i;
     apr_status_t rv;
+    apr_size_t buf_len_limit = LOG_BUFSIZE;
     buffered_log *buf = (buffered_log*)handle;
 
     if ((rv = APR_ANYLOCK_LOCK(&buf->mutex)) != APR_SUCCESS) {
         return rv;
     }
 
-    if (len + buf->outcnt > LOG_BUFSIZE) {
+    if (chunk_msgs) {
+        buf_len_limit = LOG_BUFSIZE_LESS_CHUNKHEAD;
+    }
+
+    if (len + buf->outcnt > buf_len_limit) {
         flush_log(buf);
     }
-    if (len >= LOG_BUFSIZE) {
+    if (len >= buf_len_limit) {
         apr_size_t w;
 
         /*
@@ -1709,17 +1803,38 @@ static apr_status_t ap_buffered_log_writer(request_rec *r,
             memcpy(s, strs[i], strl[i]);
             s += strl[i];
         }
-        w = len;
-        rv = apr_file_write(buf->handle, str, &w);
+
+        if (chunk_msgs) {
+            rv = write_atomic_pipe_chunks(r, buf->handle, str, len, NULL);
+        }
+        else {
+            w = len;
+            rv = apr_file_write(buf->handle, str, &w);
+        }
 
     }
     else {
-        for (i = 0, s = &buf->outbuf[buf->outcnt]; i < nelts; ++i) {
-            memcpy(s, strs[i], strl[i]);
-            s += strl[i];
+        if (chunk_msgs) {
+            /*
+             * We do this memcpy dance because write() is atomic for
+             * len < PIPE_BUF, while writev() need not be.
+             */
+            str = apr_palloc(r->pool, len + 1);
+            for (i = 0, s = str; i < nelts; ++i) {
+                memcpy(s, strs[i], strl[i]);
+                s += strl[i];
+            }
+
+            rv = write_atomic_pipe_chunks(r, buf->handle, str, len, buf);
         }
-        buf->outcnt += len;
-        rv = APR_SUCCESS;
+        else {
+            for (i = 0, s = &buf->outbuf[buf->outcnt]; i < nelts; ++i) {
+                memcpy(s, strs[i], strl[i]);
+                s += strl[i];
+            }
+            buf->outcnt += len;
+            rv = APR_SUCCESS;
+        }
     }
 
     APR_ANYLOCK_UNLOCK(&buf->mutex);
