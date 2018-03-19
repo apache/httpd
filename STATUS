@@ -189,6 +189,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/ssl-ocsp-enable-leaf.patch
      +1: icing
 
+  *) mod_remoteip: make proxy-protocol work on HTTP/2 connections.
+     trunk patch: http://svn.apache.org/r1827196
+     2.4.x patch: svn merge -c 1827196 ^/httpd/httpd/trunk .
+     +1: icing
+
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
