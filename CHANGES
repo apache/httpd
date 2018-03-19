@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_md: fixes error in renew window calculation that may lead to mod_md running
+     watchdog in a tight loop until actual renewal becomes necessary. [Stefan Eissing]
+
   *) mod_md: /.well-known/acme-challenge requests that cannot be answered for hostnames
      outside the configured MDs are free to be answered by other handlers. This allows
      co-existance between mod_md and other ACME clients on the same server (implements PR62189).
