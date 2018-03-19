@@ -698,11 +698,11 @@ static apr_status_t check_job(md_watchdog *wd, md_job_t *job, apr_pool_t *ptemp)
             }
         }
         else {
-            job->next_check = job->md->expires - job->md->renew_window;
-
+            /* Renew is not necessary yet, leave job->next_check as 0 since 
+             * that keeps the default schedule of running twice a day. */
             apr_rfc822_date(ts, job->md->expires);
             ap_log_error( APLOG_MARK, APLOG_DEBUG, 0, wd->s, APLOGNO(10053) 
-                         "md(%s): is complete, cert expires %s", job->md->name, ts);
+                         "md(%s): no need to renew yet, cert expires %s", job->md->name, ts);
         }
     }
     
