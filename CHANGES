@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_md: /.well-known/acme-challenge requests that cannot be answered for hostnames
+     outside the configured MDs are free to be answered by other handlers. This allows
+     co-existance between mod_md and other ACME clients on the same server (implements PR62189).
+     [Stefan Eissing, Arkadiusz Miskiewicz <arekm@maven.pl>]
+
   *) mod_md: Fix compilation with OpenSSL before version 1.0.2.  [Rainer Jung]
 
   *) core: Create a conn_config_t structure to hold an extendable core config rather
