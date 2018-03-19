@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_remoteip: make proxy-protocol work on slave connections, e.g. in HTTP/2
+     requests. See also https://github.com/roadrunner2/mod-proxy-protocol/issues/6
+     [Stefan Eissing]
+
   *) mod_md: fixes error in renew window calculation that may lead to mod_md running
      watchdog in a tight loop until actual renewal becomes necessary. [Stefan Eissing]
 
