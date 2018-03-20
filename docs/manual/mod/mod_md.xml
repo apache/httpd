@@ -67,7 +67,7 @@ MDomain example.org
             to request a certificate for the domain. If Let's Encrypt can verify the ownership
             of the domain, the module will retrieve the certificate and its chain, store it
             in the local file system (see <directive module="mod_md">MDStoreDir</directive>)
-            and provide it, on next restart, to mod_ssl.
+            and provide it, on next restart, to <module>mod_ssl</module>.
         </p><p>
             This happens while the server is already running. All other hosts will continue
             to work as before. While a certificate is not available, requests for the managed
@@ -112,7 +112,7 @@ MDomain example.org
         <usage>
             <p>
                 All the names in the list are managed as one Managed Domain (MD). 
-                mod_md will request one single certificate that is valid for all these names. This
+                <module>mod_md</module> will request one single certificate that is valid for all these names. This
                 directive uses the global settings (see other MD directives below). If you
                 need specific settings for one MD, use
                 the <directive module="mod_md" type="section">MDomainSet</directive>.
@@ -183,7 +183,7 @@ MDomain example2.org auto
                 In this example, the domain 'www.example.org' is automatically added to
                 the MD 'example.org'. Similarly for 'example2.org' where 'auto' is configured
                 explicitly. Whenever you add more ServerAlias names to this
-                virtual host, they will be added as well to the Manged Domain.
+                virtual host, they will be added as well to the Managed Domain.
             </p><p>
                 If you prefer to explicitly declare all the domain names, use 'manual' mode. 
                 An error will be logged if the names do not match with the expected ones.
@@ -224,7 +224,7 @@ MDomain example2.org auto
     <directivesynopsis>
         <name>MDCertificateAgreement</name>
         <description>The URL of the Terms-of-Service document, that the CA server requires you to accept.</description>
-        <syntax>MDCertificateAgreement url-of-terms-of-service</syntax>
+        <syntax>MDCertificateAgreement <var>url-of-terms-of-service</var></syntax>
         <contextlist>
             <context>server config</context>
         </contextlist>
@@ -247,7 +247,7 @@ MDomain example.org www.example.org mail.example.org
     <directivesynopsis>
         <name>MDCertificateAuthority</name>
         <description>The URL of the ACME Certificate Authority service.</description>
-        <syntax>MDCertificateAuthority url</syntax>
+        <syntax>MDCertificateAuthority <var>url</var></syntax>
         <default>MDCertificateAuthority https://acme-v01.api.letsencrypt.org/directory</default>
         <contextlist>
             <context>server config</context>
@@ -273,7 +273,7 @@ MDCertificateAgreement https://letsencrypt.org/documents/LE-SA-v1.2-November-15-
     <directivesynopsis>
         <name>MDCertificateProtocol</name>
         <description>The protocol to use with the Certificate Authority.</description>
-        <syntax>MDCertificateProtocol protocol</syntax>
+        <syntax>MDCertificateProtocol <var>protocol</var></syntax>
         <default>MDCertificateProtocol ACME</default>
         <contextlist>
             <context>server config</context>
@@ -300,7 +300,7 @@ MDCertificateAgreement https://letsencrypt.org/documents/LE-SA-v1.2-November-15-
             renew it.
             </p><p>
             In 'manual' mode, it is your duty to do all this. The module will provide the existing
-            certificate to mod_ssl, if available. But it will not contact the CA for signup/renewal.
+            certificate to <module>mod_ssl</module>, if available. But it will not contact the CA for signup/renewal.
             This can be useful in clustered setups where you want just one node to perform
             the driving.
             </p><p>
@@ -313,7 +313,7 @@ MDCertificateAgreement https://letsencrypt.org/documents/LE-SA-v1.2-November-15-
     <directivesynopsis>
         <name>MDHttpProxy</name>
         <description>Define a proxy for outgoing connections.</description>
-        <syntax>MDHttpProxy url</syntax>
+        <syntax>MDHttpProxy <var>url</var></syntax>
         <contextlist>
             <context>server config</context>
         </contextlist>
@@ -327,14 +327,14 @@ MDCertificateAgreement https://letsencrypt.org/documents/LE-SA-v1.2-November-15-
     <directivesynopsis>
         <name>MDMember</name>
         <description>Additional hostname for the managed domain.</description>
-        <syntax>MDMember hostname</syntax>
+        <syntax>MDMember <var>hostname</var></syntax>
         <contextlist>
             <context>server config</context>
         </contextlist>
         <usage>
             <p>
             Instead of listing all dns names on the same line, you may use
-            <directive module="mod_md">MDMember</directive> to add such names
+            <directive>MDMember</directive> to add such names
             to a managed domain.
             </p>
             <example><title>Example</title>
@@ -382,7 +382,7 @@ MDCertificateAgreement https://letsencrypt.org/documents/LE-SA-v1.2-November-15-
             <p>Defines if newly requested certificate should have the OCSP Must Staple flag 
             set or not. If a certificate has this flag, the server is required to send a 
             OCSP stapling response to every client. This only works if you configure 
-            mod_ssl to generate this (see <directive module="mod_ssl" >SSLUseStapling</directive>
+            <module>mod_ssl</module> to generate this (see <directive module="mod_ssl">SSLUseStapling</directive>
             and friends).
             </p>
         </usage>
@@ -391,7 +391,7 @@ MDCertificateAgreement https://letsencrypt.org/documents/LE-SA-v1.2-November-15-
     <directivesynopsis>
         <name>MDNotifyCmd</name>
         <description>Run a program when Managed Domain are ready.</description>
-        <syntax>MDNotifyCmd  path</syntax>
+        <syntax>MDNotifyCmd <var>path</var></syntax>
         <contextlist>
             <context>server config</context>
         </contextlist>
@@ -407,14 +407,14 @@ MDCertificateAgreement https://letsencrypt.org/documents/LE-SA-v1.2-November-15-
     <directivesynopsis>
         <name>MDPortMap</name>
         <description>Map external to internal ports for domain ownership verification.</description>
-        <syntax>MDPortMap map1 [ map2 ]</syntax>
+        <syntax>MDPortMap <var>map1</var> [ <var>map2</var> ]</syntax>
         <default>MDPortMap 80:80 443:443</default>
         <contextlist>
             <context>server config</context>
         </contextlist>
         <usage>
             <p>
-                The ACME protocol provides two method to verify domain ownership: one that uses
+                The ACME protocol provides two methods to verify domain ownership: one that uses
                 port 80 and one for port 443. If your server is not reachable by at least one
                 of the two, ACME will not work for you.
             </p><p>
@@ -427,8 +427,8 @@ MDCertificateAgreement https://letsencrypt.org/documents/LE-SA-v1.2-November-15-
                 another one. Your server might only listen on ports 5001 and 5002, but be reached
                 on ports 443 and 80. How should <module>mod_md</module> figure that one out?
             </p><p>
-                With MDPortMap you can tell it which 'Internet port' corresponds to which local
-                port.
+                With <directive>MDPortMap</directive> you can tell it which 'Internet port'
+                corresponds to which local port.
             </p>
             <example><title>Example</title>
                 <highlight language="config">
@@ -445,7 +445,7 @@ MDPortMap 80:- 443:5002
     <directivesynopsis>
         <name>MDPrivateKeys</name>
         <description>Set type and size of the private keys generated.</description>
-        <syntax>MDPrivateKeys type [ params... ]</syntax>
+        <syntax>MDPrivateKeys <var>type</var> [ <var>params</var>... ]</syntax>
         <default>MDPrivateKeys RSA 2048</default>
         <contextlist>
             <context>server config</context>
@@ -479,17 +479,17 @@ MDPrivateKeys RSA 3072
     <directivesynopsis>
         <name>MDRenewWindow</name>
         <description>Control when a certificate will be renewed.</description>
-        <syntax>MDRenewWindow duration</syntax>
+        <syntax>MDRenewWindow <var>duration</var></syntax>
         <default>MDRenewWindow 33%</default>
         <contextlist>
             <context>server config</context>
         </contextlist>
         <usage>
             <p>
-            If the validity of the certificate falls below duration, mod_md will get a 
-            new signed certificate.
+            If the validity of the certificate falls below duration, <module>mod_md</module>
+            will get a new signed certificate.
             </p><p>
-            Normally, certificates are valid for around 90 days and mod_md will renew 
+            Normally, certificates are valid for around 90 days and <module>mod_md</module> will renew 
             them the earliest 33% of their complete lifetime before they expire (so for 
             90 days validity, 30 days before it expires). If you think this is not what 
             you need, you can specify either the exact time, as in:
@@ -559,10 +559,11 @@ MDRequireHttps permanent
                     you cannot simply take it back again.
                 </li>
             </ol>
-            <p>You can achieve the same with mod_alias and some Redirect configuration,
+            <p>You can achieve the same with <module>mod_alias</module> and some
+            <directive module="mod_alias">Redirect</directive> configuration,
             basically. If you do it yourself, please make sure to exclude the paths 
-            /.well-known/* from your redirection, otherwise mod_md might have trouble 
-            signing on new certificates.
+            /.well-known/* from your redirection, otherwise <module>mod_md</module> 
+            might have trouble signing on new certificates.
             </p>
             <p>If you set this globally, it applies to all managed domains. If you want 
             it for a specific domain only, use:
@@ -602,7 +603,7 @@ MDRequireHttps permanent
     <directivesynopsis>
         <name>MDCAChallenges</name>
         <description>Type of ACME challenge used to prove domain ownership.</description>
-        <syntax>MDCAChallenges name [ name ... ]</syntax>
+        <syntax>MDCAChallenges <var>name</var> [ <var>name</var> ... ]</syntax>
         <default>MDCAChallenges tls-sni-01 http-01</default>
         <contextlist>
             <context>server config</context>
