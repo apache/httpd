@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.34
 
+ *) core: On ECBDIC platforms, some errors related to oversized headers
+     may be misreported or be logged as ASCII escapes.  PR62200
+     [Hank Ibell <hwibell gmail.com>]
+
 Changes with Apache 2.4.33
 
   *) core: Fix request timeout logging and possible crash for error_log hooks.
