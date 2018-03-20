@@ -113,7 +113,7 @@ void util_ldap_url_node_display(request_rec *r, util_ald_cache_t *cache, void *n
                    "<td nowrap>%ld</td>"
                    "<td nowrap>%ld</td>"
                    "<td nowrap>%ld</td>"
-                   "<td nowrap>%ld</td>"
+                   "<td nowrap>%" APR_TIME_T_FMT "</td>"
                    "<td nowrap>%ld</td>"
                    "<td nowrap>%s</td>"
                    "</tr>",
@@ -122,7 +122,7 @@ void util_ldap_url_node_display(request_rec *r, util_ald_cache_t *cache, void *n
                    cache_node->size,
                    cache_node->maxentries,
                    cache_node->numentries,
-                   cache_node->ttl / APR_USEC_PER_SEC,
+                   apr_time_sec(cache_node->ttl),
                    cache_node->fullmark,
                    date_str);
     }
