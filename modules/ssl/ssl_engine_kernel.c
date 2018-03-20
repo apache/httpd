@@ -839,10 +839,8 @@ int ssl_hook_Access(request_rec *r)
      * request body, and then to reinject that request body later.
      */
     if (renegotiate && !renegotiate_quick
-        && (apr_table_get(r->headers_in, "transfer-encoding")
-            || (apr_table_get(r->headers_in, "content-length")
-                && strcmp(apr_table_get(r->headers_in, "content-length"), "0")))
-        && !r->expecting_100) {
+        && !r->expecting_100
+        && ap_request_has_body(r)) {
         int rv;
         apr_size_t rsize;
 
