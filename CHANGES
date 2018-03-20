@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) core: On ECBDIC platforms, some errors related to oversized headers
+     may be misreported or be logged as ASCII escapes.  PR62200
+     [Hank Ibell <hwibell gmail.com>]
+
   *) mod_remoteip: make proxy-protocol work on slave connections, e.g. in HTTP/2
      requests. See also https://github.com/roadrunner2/mod-proxy-protocol/issues/6
      [Stefan Eissing]
