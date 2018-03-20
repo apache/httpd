@@ -227,6 +227,7 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
 
     if (!n) {
         /* Needs room for NUL byte at least */
+        *read = 0;
         return APR_BADARG;
     }
 
