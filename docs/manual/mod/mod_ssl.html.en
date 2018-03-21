@@ -1093,7 +1093,7 @@ the certificate being verified.</p>
 <div class="directive-section"><h2><a name="SSLOCSPEnable" id="SSLOCSPEnable">SSLOCSPEnable</a> <a name="sslocspenable" id="sslocspenable">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable OCSP validation of the client certificate chain</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLOCSPEnable on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLOCSPEnable on|leaf|off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLOCSPEnable off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -1102,7 +1102,8 @@ the certificate being verified.</p>
 <p>This option enables OCSP validation of the client certificate
 chain.  If this option is enabled, certificates in the client's
 certificate chain will be validated against an OCSP responder after
-normal verification (including CRL checks) have taken place.</p>
+normal verification (including CRL checks) have taken place. In 
+mode 'leaf', only the client certificate itself will be validated.</p>
 
 <p>The OCSP responder used is either extracted from the certificate
 itself, or derived by configuration; see the
