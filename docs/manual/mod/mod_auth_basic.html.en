@@ -92,7 +92,7 @@ lower level modules</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fake basic authentication using the given expressions for
 username and password</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthBasicFake off|username [password]</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthBasicFake off|<var>username</var> [<var>password</var>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>none</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
@@ -221,7 +221,7 @@ Digest Authentication was in force instead of Basic Authentication.
     be recovered from the password storage scheme imposed on those
     providers which support Digest Authentication.</p>
 
-    <p>Setting the <code class="directive"><a href="#authbasicusedigestalgorithm">AuthBasicUseDigestAlgorithm</a></code> directive
+    <p>Setting the <code class="directive">AuthBasicUseDigestAlgorithm</code> directive
     to <code>MD5</code> will cause the user's Basic Authentication password
     to be checked using the same encrypted format as for Digest
     Authentication.  First a string composed from the username, realm name,
@@ -233,7 +233,7 @@ Digest Authentication was in force instead of Basic Authentication.
     was set to <code>Digest</code> and Digest Authentication was in force.
     </p>
 
-    <p>Through the use of <code class="directive"><a href="#authbasicusedigestalgorithm">AuthBasicUseDigestAlgorithm</a></code>
+    <p>Through the use of <code class="directive">AuthBasicUseDigestAlgorithm</code>
     a site may switch from Digest to Basic Authentication without
     requiring users to be assigned new passwords.</p>
 
@@ -249,7 +249,7 @@ Digest Authentication was in force instead of Basic Authentication.
 
     <div class="note">
       Only providers which support Digest Authentication will be able
-      to authenticate users when <code class="directive"><a href="#authbasicusedigestalgorithm">AuthBasicUseDigestAlgorithm</a></code>
+      to authenticate users when <code class="directive">AuthBasicUseDigestAlgorithm</code>
       is set to <code>MD5</code>.  Use of other providers will result
       in an error response and the client will be denied access.
     </div>
