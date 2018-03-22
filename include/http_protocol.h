@@ -677,8 +677,8 @@ AP_DECLARE(apr_status_t) ap_rgetline(char **s, apr_size_t n,
                                      request_rec *r, int flags,
                                      apr_bucket_brigade *bb);
 #else /* ASCII box */
-#define ap_rgetline(s, n, read, r, fold, bb) \
-        ap_rgetline_core((s), (n), (read), (r), (fold), (bb))
+#define ap_rgetline(s, n, read, r, flags, bb) \
+        ap_rgetline_core((s), (n), (read), (r), (flags), (bb))
 #endif
 
 /** @see ap_rgetline */
@@ -817,8 +817,7 @@ AP_DECLARE_HOOK(int,protocol_propose,(conn_rec *c, request_rec *r,
  * @param c The current connection
  * @param r The current request or NULL
  * @param s The server/virtual host selected
- * @param choices A list of protocol identifiers, normally the client's wishes
- * @param proposals the list of protocol identifiers proposed by the hooks
+ * @param protocol The protocol identifier we try to swicth to
  * @return OK or DECLINED
  */
 AP_DECLARE_HOOK(int,protocol_switch,(conn_rec *c, request_rec *r,
