@@ -64,7 +64,6 @@ h2_headers *h2_headers_copy(apr_pool_t *pool, h2_headers *h);
 
 /**
  * Create the headers for the given error.
- * @param stream_id id of the stream to create the headers for
  * @param type the error code
  * @param req the original h2_request
  * @param pool the memory pool to use
