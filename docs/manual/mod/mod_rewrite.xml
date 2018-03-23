@@ -310,9 +310,9 @@ LogLevel alert rewrite:trace3
     [<em>MapTypeOptions</em>]
 </syntax>
 <contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
 <compatibility>The 3rd parameter, MapTypeOptions, in only available from Apache
 2.4.30 and later</compatibility>
-</contextlist>
 
 <usage>
       <p>The <directive>RewriteMap</directive> directive defines a
