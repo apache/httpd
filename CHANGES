@@ -55,7 +55,7 @@ Changes with Apache 2.4.32
   *) ab: Fix https:// connection failures (regression in 2.4.30); fix
      crash generating CSV output for large -n.  [Joe Orton, Jan Kaluza]
 
-Changes with Apache 2.4.31
+Changes with Apache 2.4.31 (not released)
 
   *) mod_proxy_fcgi: Add the support for mod_proxy's flushpackets and flushwait
      parameters. [Luca Toscano, Ruediger Pluem, Yann Ylavic]
@@ -69,7 +69,7 @@ Changes with Apache 2.4.31
   *) mpm_queue: Put fdqueue code in common for MPMs event and worker.
      [Yann Ylavic]
 
-Changes with Apache 2.4.30
+Changes with Apache 2.4.30 (not released)
 
   *) mod_session: Strip Session header when SessionEnv is on.  [Yann Ylavic]
 
