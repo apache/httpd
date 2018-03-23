@@ -4911,6 +4911,7 @@ as if 'QualifyRedirectURL ON' was configured.</compatibility>
 <description>Register non-standard HTTP methods</description>
 <syntax>RegisterHttpMethod <var>method</var> [<var>method</var> [...]]</syntax>
 <contextlist><context>server config</context></contextlist>
+<compatibility>Available in Apache HTTP Server 2.4.24 and later</compatibility>
 
 <usage>
 <p>This directive may be used to register additional HTTP methods.  This is
