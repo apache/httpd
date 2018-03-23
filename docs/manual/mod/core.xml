@@ -4148,8 +4148,6 @@ Protocols h2 http/1.1
 
             <dt><code>DOLLAR_ENDONLY</code></dt>
             <dd>'$' matches at end of subject string only.</dd>
-
-            <dt><code>EXTENDED</code></dt>
             <dd>.</dd>
         </dl>
         <highlight language="config">
@@ -4159,8 +4157,8 @@ RegexDefaultOptions +ICASE +DOLLAR_ENDONLY
 # Remove the ICASE option, but keep all the other already set options
 RegexDefaultOptions -ICASE
 ...
-# Set the default option to EXTENDED, resetting any other option
-RegexDefaultOptions EXTENDED
+# Set the default option to DOTALL, resetting any other option
+RegexDefaultOptions DOTALL
 ...
 # Reset all defined option
 RegexDefaultOptions none
