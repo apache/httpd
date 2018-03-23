@@ -195,13 +195,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: icing
 
   *) core: Add <IfFile>, <IfDirective>, <IfSection>
-     trunk patch: http://svn.apache.org/1769718
-                  http://svn.apache.org/1785943
-                  http://svn.apache.org/1786110
-                  http://svn.apache.org/1786119
+     trunk patch: http://svn.apache.org/r1769718
+                  http://svn.apache.org/r1785943
+                  http://svn.apache.org/r1786110
+                  http://svn.apache.org/r1786119
      2.4.x patch: http://people.apache.org/~jorton/ap_ifmany.diff
           or resolve CHANGES & ap_mmn.h conflicts with:
           svn merge -c 1769718,1785943,1786110,1786119 ^/httpd/httpd/trunk .
+     +1: jorton, 
+
+  *) core: Allow mod_env to override all system path envvars not just PATH
+     trunk patch: http://svn.apache.org/1811831
+     2.4.x patch: svn merge -c 1811831 ^/httpd/httpd/trunk .
      +1: jorton, 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
