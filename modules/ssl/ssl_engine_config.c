@@ -230,8 +230,6 @@ static SSLSrvConfigRec *ssl_config_server_new(apr_pool_t *p)
     sc->compression            = UNSET;
 #endif
     sc->session_tickets        = UNSET;
-    sc->policies               = NULL;
-    sc->error_policy           = NULL;
     sc->enabled_on             = NULL;
 
     modssl_ctx_init_server(sc, p);
@@ -346,19 +344,12 @@ static void modssl_ctx_cfg_merge_server(apr_pool_t *p,
 #endif
 }
 
-static void ssl_policy_apply(SSLSrvConfigRec *sc, apr_pool_t *p);
-static void ssl_dir_policy_apply(SSLDirConfigRec *dc, apr_pool_t *p);
-
 void *ssl_config_server_merge(apr_pool_t *p, void *basev, void *addv)
 {
     SSLSrvConfigRec *base = (SSLSrvConfigRec *)basev;
     SSLSrvConfigRec *add  = (SSLSrvConfigRec *)addv;
     SSLSrvConfigRec *mrg  = ssl_config_server_new(p);
 
-    /* This is a NOP, unless a policy has not been applied yet */
-    ssl_policy_apply(base, p);
-    ssl_policy_apply(add, p);
-    
     cfgMerge(mc, NULL);
     cfgMerge(enabled, SSL_ENABLED_UNSET);
     cfgMergeInt(session_cache_timeout);
@@ -374,9 +365,6 @@ void *ssl_config_server_merge(apr_pool_t *p, void *basev, void *addv)
     cfgMergeBool(compression);
 #endif
     cfgMergeBool(session_tickets);
-
-    mrg->policies = NULL;
-    cfgMergeString(error_policy);
 
     mrg->enabled_on = (add->enabled == SSL_ENABLED_UNSET)? base->enabled_on : add->enabled_on;
                          
@@ -429,9 +417,6 @@ void *ssl_config_perdir_create(apr_pool_t *p, char *dir)
     modssl_ctx_init_proxy(dc, p);
     dc->proxy_post_config = FALSE;
 
-    dc->policies = NULL;
-    dc->error_policy = NULL;
-    
     return dc;
 }
 
@@ -457,9 +442,6 @@ void *ssl_config_perdir_merge(apr_pool_t *p, void *basev, void *addv)
     SSLDirConfigRec *add  = (SSLDirConfigRec *)addv;
     SSLDirConfigRec *mrg  = (SSLDirConfigRec *)apr_palloc(p, sizeof(*mrg));
 
-    ssl_dir_policy_apply(base, p);
-    ssl_dir_policy_apply(add, p);
-    
     cfgMerge(bSSLRequired, FALSE);
     cfgMergeArray(aRequirement);
 
@@ -499,9 +481,6 @@ void *ssl_config_perdir_merge(apr_pool_t *p, void *basev, void *addv)
         mrg->proxy = add->proxy;
     }
 
-    mrg->policies = NULL;
-    cfgMergeString(error_policy);
-
     return mrg;
 }
 
@@ -524,37 +503,27 @@ void ssl_config_proxy_merge(apr_pool_t *p,
 
 static void add_policy(apr_hash_t *policies, apr_pool_t *p, const char *name,
                        int protocols, const char *ciphers, 
-                       int honor_order, int compression, int session_tickets,
-                       ssl_verify_t proxy_verify_mode, int proxy_verify_depth)
+                       int honor_order, int compression, int session_tickets)
 {
     SSLPolicyRec *policy;
     
     policy = apr_pcalloc(p, sizeof(*policy));
     policy->name = name;
     policy->sc = ssl_config_server_new(p);
-    policy->dc = ssl_config_perdir_create(p, "/");
     
     if (protocols || ciphers) {
         policy->sc->server->protocol_set      = 1;
         policy->sc->server->protocol          = protocols;
-        policy->dc->proxy->protocol_set       = 1;
-        policy->dc->proxy->protocol           = protocols;
     }
     
     if (ciphers) {
         policy->sc->server->auth.cipher_suite = ciphers;
-        policy->dc->proxy->auth.cipher_suite = ciphers;
     }
 
 #ifndef OPENSSL_NO_COMP
     policy->sc->compression               = compression ? TRUE : FALSE;
 #endif
     policy->sc->session_tickets           = session_tickets ? TRUE : FALSE;
-    
-    policy->dc->proxy->auth.verify_mode  = proxy_verify_mode;
-    if (proxy_verify_depth >= 0) {
-        policy->dc->proxy->auth.verify_depth = proxy_verify_depth;
-    }
     
     apr_hash_set(policies, policy->name, APR_HASH_KEY_STRING, policy);
 }
@@ -577,9 +546,7 @@ static apr_hash_t *get_policies(apr_pool_t *p, int create)
                    SSL_POLICY_MODERN_CIPHERS, 
                    SSL_POLICY_HONOR_ORDER, 
                    SSL_POLICY_COMPRESSION, 
-                   SSL_POLICY_SESSION_TICKETS, 
-                   SSL_POLICY_PROXY_VERIFY_MODE, 
-                   SSL_POLICY_PROXY_VERIFY_DEPTH);
+                   SSL_POLICY_SESSION_TICKETS);
 #endif        
 #if SSL_POLICY_INTERMEDIATE
         add_policy(policies, p, "intermediate", 
@@ -587,9 +554,7 @@ static apr_hash_t *get_policies(apr_pool_t *p, int create)
                    SSL_POLICY_INTERMEDIATE_CIPHERS, 
                    SSL_POLICY_HONOR_ORDER, 
                    SSL_POLICY_COMPRESSION, 
-                   SSL_POLICY_SESSION_TICKETS, 
-                   SSL_POLICY_PROXY_VERIFY_MODE, 
-                   SSL_POLICY_PROXY_VERIFY_DEPTH);
+                   SSL_POLICY_SESSION_TICKETS);
 #endif        
 #if SSL_POLICY_OLD
         add_policy(policies, p, "old", 
@@ -597,9 +562,7 @@ static apr_hash_t *get_policies(apr_pool_t *p, int create)
                    SSL_POLICY_OLD_CIPHERS, 
                    SSL_POLICY_HONOR_ORDER, 
                    SSL_POLICY_COMPRESSION, 
-                   SSL_POLICY_SESSION_TICKETS, 
-                   SSL_CVERIFY_NONE, 
-                   SSL_POLICY_PROXY_VERIFY_DEPTH);
+                   SSL_POLICY_SESSION_TICKETS);
 #endif        
         
         apr_pool_userdata_set(policies, SSL_MOD_POLICIES_KEY,
@@ -639,143 +602,21 @@ SSLPolicyRec *ssl_policy_lookup(apr_pool_t *pool, const char *name)
     return apr_hash_get(policies, name, APR_HASH_KEY_STRING);
 }
 
-static void ssl_policy_set(apr_pool_t *pool, SSLPolicyRec *policy)
-{
-    apr_hash_t *policies = get_policies(pool, 1);
-    return apr_hash_set(policies, policy->name, APR_HASH_KEY_STRING, policy);
-}
-
-const char *ssl_cmd_SSLPolicyDefine(cmd_parms *cmd, void *mconfig, const char *arg)
-{
-    server_rec *s = cmd->server;
-    SSLSrvConfigRec *sc = mySrvConfig(s);
-    SSLDirConfigRec *dc = ap_get_module_config(s->lookup_defaults, &ssl_module);
-    SSLPolicyRec *policy;
-    const char *endp = ap_strrchr_c(arg, '>');
-    const char *err, *name;
-
-    if ((err = ap_check_cmd_context(cmd, GLOBAL_ONLY))) {
-        return err;
-    }
-        
-    if (endp == NULL) {
-        return apr_pstrcat(cmd->pool, cmd->cmd->name, "> directive missing closing '>'", NULL);
-    }
-
-    arg = apr_pstrndup(cmd->pool, arg, endp-arg);
-    if (!arg || !*arg) {
-        return "<SSLPolicyDefine > block must specify a name";
-    }
-
-    name = ap_getword_white(cmd->pool, &arg);
-    if (*arg != '\0') {
-        return apr_pstrcat(cmd->pool, cmd->cmd->name, "> takes only 1 argument", NULL);
-    }
-    
-    policy = apr_pcalloc(cmd->pool, sizeof(*policy));
-    policy->name = name;
-    policy->sc = ssl_config_server_new(cmd->pool);
-    policy->sc->mc = NULL; /* No global configs during SSLPolicy definition */
-    policy->dc = ssl_config_perdir_create(cmd->pool, "/");/* TODO */
-
-    ap_set_module_config(s->module_config,  &ssl_module, policy->sc);
-    ap_set_module_config(s->lookup_defaults,  &ssl_module, policy->dc);
-    
-    err = ap_walk_config(cmd->directive->first_child, cmd, cmd->context);
-    if (!err) {
-        /* If this new policy uses other policies, we need to merge it
-         * before adding, otherwise a policy cannot re-use an existing one */
-        ssl_policy_apply(policy->sc, cmd->pool);
-        ssl_dir_policy_apply(policy->dc, cmd->pool);
-        /* time to persist */
-        ssl_policy_set(cmd->pool, policy);
-    }
-    
-    ap_set_module_config(s->module_config,  &ssl_module, sc);
-    ap_set_module_config(s->lookup_defaults,  &ssl_module, dc);
-
-    return err;
-}
-
 const char *ssl_cmd_SSLPolicyApply(cmd_parms *cmd, void *mconfig, const char *arg)
 {
-    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
-    
-    if (!sc->policies) {
-        sc->policies = apr_array_make(cmd->pool, 5, sizeof(const char*));
-    }
-    APR_ARRAY_PUSH(sc->policies, const char *) = arg;
-
-    /* Also apply the proxy parts of the policy */
-    return ssl_cmd_SSLProxyPolicyApply(cmd, mconfig, arg);
-}
-
-const char *ssl_cmd_SSLProxyPolicyApply(cmd_parms *cmd, void *mconfig, const char *arg)
-{
-    SSLDirConfigRec *dc = ap_get_module_config(cmd->server->lookup_defaults, &ssl_module);
-    
-    if (!dc->policies) {
-        dc->policies = apr_array_make(cmd->pool, 5, sizeof(const char*));
-    }
-    APR_ARRAY_PUSH(dc->policies, const char *) = arg;
-
-    return NULL;
-}
-
-void ssl_policy_apply(SSLSrvConfigRec *sc, apr_pool_t *p)
-{
-    SSLSrvConfigRec *mrg;
+    SSLSrvConfigRec *mrg, *sc = mySrvConfig(cmd->server);
     SSLPolicyRec *policy;
-    apr_array_header_t *policies;
-    const char *name;
-    int i;
-
-    policies = sc->policies;
-    if (policies && policies->nelts > 0 && !sc->error_policy) {
-        sc->policies = NULL;
-        for (i = policies->nelts - 1; i >= 0; --i) {
-            name = APR_ARRAY_IDX(policies, i, const char *);
-            policy = ssl_policy_lookup(p, name);
-            if (policy) {
-                mrg = ssl_config_server_merge(p, policy->sc, sc);
-                /* apply in place */
-                memcpy(sc, mrg, sizeof(*sc));
-            }
-            else {
-                sc->error_policy = name;
-                break;
-                /* report error policies in post_config */
-            }
-        }
-    }
-}
-
-void ssl_dir_policy_apply(SSLDirConfigRec *dc, apr_pool_t *p)
-{
-    SSLDirConfigRec *mrg;
-    SSLPolicyRec *policy;
-    apr_array_header_t *policies;
-    const char *name;
-    int i;
     
-    policies = dc->policies;
-    if (policies && policies->nelts > 0 &&!dc->error_policy) {
-        dc->policies = NULL;
-        for (i = policies->nelts - 1; i >= 0; --i) {
-            name = APR_ARRAY_IDX(policies, i, const char *);
-            policy = ssl_policy_lookup(p, name);
-            if (policy) {
-                mrg = ssl_config_perdir_merge(p, policy->dc, dc);
-                /* apply in place */
-                memcpy(dc, mrg, sizeof(*dc));
-            }
-            else {
-                dc->error_policy = name;
-                break;
-                /* report error policies in post_config */
-            }
-        }
+    policy = ssl_policy_lookup(cmd->pool, arg);
+    if (policy) {
+        mrg = ssl_config_server_merge(cmd->pool, policy->sc, sc);
+        /* apply in place */
+        memcpy(sc, mrg, sizeof(*sc));
+        return NULL;
     }
+    return apr_pstrcat(cmd->pool,
+                       "An SSLPolicy with the name '", arg,
+                       "' does not exist", NULL);
 }
 
 /*
@@ -2366,8 +2207,6 @@ const char *ssl_cmd_SSLOCSPResponderCertificateFile(cmd_parms *cmd, void *dcfg,
 
 static void ssl_srv_dump(SSLSrvConfigRec *sc, apr_pool_t *p, 
                             apr_file_t *out, const char *indent, const char **psep);
-static void ssl_dir_dump(SSLDirConfigRec *dc, apr_pool_t *p, 
-                         apr_file_t *out, const char *indent, const char **psep);
 static void ssl_policy_dump(SSLPolicyRec *policy, apr_pool_t *p, 
                             apr_file_t *out, const char *indent);
 
@@ -2622,20 +2461,6 @@ static void val_crl_check_dump(apr_file_t *out, const char *key, int mask,
     }
 }
 
-static void val_option_dump(apr_file_t *out, const char *key, const char *optname,
-                            int val, int set_mask, int add_mask, int del_mask, 
-                            apr_pool_t *p, const char *indent, const char **psep)
-{
-    const char *op = ((val & set_mask)? "" : 
-                      ((val & add_mask)? "+" :
-                       (val & del_mask)? "-" : NULL));
-    if (op) {
-        apr_file_printf(out, "%s\n%s\"%s\": \"%s%s\"", *psep, indent, key, op, 
-                        json_quote(optname, p));
-        *psep = ", ";
-    }
-}
-
 static const char *protocol_str(ssl_proto_t proto, apr_pool_t *p)
 {
     if (SSL_PROTOCOL_NONE == proto) {
@@ -2798,34 +2623,6 @@ static void ssl_srv_dump(SSLSrvConfigRec *sc, apr_pool_t *p,
     DMP_ON_OFF("SSLFIPS", sc->fips);
 #endif
     DMP_ON_OFF("SSLSessionTickets", sc->session_tickets);
-    DMP_STRARR("SSLPolicy", sc->policies);
-}
-
-static void ssl_dir_dump(SSLDirConfigRec *dc, apr_pool_t *p, 
-                         apr_file_t *out, const char *indent, const char **psep)
-{
-    int i;
-    
-    DMP_ON_OFF("SSLProxyEngine", dc->proxy_enabled);
-
-    modssl_ctx_dump(dc->proxy, p, 1, out, indent, psep);
-
-    if (dc->bSSLRequired == TRUE) {
-        DMP_ON_OFF("SSLRequireSSL", dc->bSSLRequired);
-    }
-    if (dc->aRequirement && dc->aRequirement->nelts > 0) {
-        ssl_require_t *r = (ssl_require_t *)dc->aRequirement->elts;
-        for (i = 0; i < dc->aRequirement->nelts; ++i, ++r) {
-            DMP_STRING("SSLRequire", r->cpExpr);
-        }
-    }
-    DMP_OPTION("StdEnvVars", SSL_OPT_STDENVVARS);
-    DMP_OPTION("ExportCertData", SSL_OPT_EXPORTCERTDATA);
-    DMP_OPTION("FakeBasicAuth", SSL_OPT_FAKEBASICAUTH);
-    DMP_OPTION("StrictRequire", SSL_OPT_STRICTREQUIRE);
-    DMP_OPTION("OptRenegotiate", SSL_OPT_OPTRENEGOTIATE);
-    DMP_OPTION("LegacyDNStringFormat", SSL_OPT_LEGACYDNFORMAT);
-    DMP_STRARR("SSLProxyPolicy", dc->policies);
 }
 
 static void ssl_policy_dump(SSLPolicyRec *policy, apr_pool_t *p, 
@@ -2834,9 +2631,6 @@ static void ssl_policy_dump(SSLPolicyRec *policy, apr_pool_t *p,
     const char *sep = "";
     if (policy->sc) {
         ssl_srv_dump(policy->sc, p, out, indent, &sep);
-    }
-    if (policy->dc) {
-        ssl_dir_dump(policy->dc, p, out, indent, &sep);
     }
 }
 

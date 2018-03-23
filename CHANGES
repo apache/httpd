@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_ssl: heavily simplified SSLPolicy. No more user defines, no propxy policies,
+     just the basic "modern", "intermediate" and "old" as specified by Mozilla security.
+     [Stefan Eissing]
+
   *) mod_remoteip: make proxy-protocol work on slave connections, e.g. in HTTP/2
      requests. See also https://github.com/roadrunner2/mod-proxy-protocol/issues/6
      [Stefan Eissing]

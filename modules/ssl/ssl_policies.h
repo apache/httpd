@@ -51,8 +51,6 @@
 #define SSL_POLICY_HONOR_ORDER              1
 #define SSL_POLICY_COMPRESSION              0
 #define SSL_POLICY_SESSION_TICKETS          0
-#define SSL_POLICY_PROXY_VERIFY_MODE        SSL_CVERIFY_REQUIRE
-#define SSL_POLICY_PROXY_VERIFY_DEPTH       -1
 
 /**
  * Define a core set of policies that are always there:
