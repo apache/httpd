@@ -209,6 +209,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1811831 ^/httpd/httpd/trunk .
      +1: jorton, 
 
+  *) suexec: Support logging to syslog and Linux capabilities.
+     trunk patch: http://svn.apache.org/r1341905
+                  http://svn.apache.org/r1341930
+                  http://svn.apache.org/r1342065
+                  http://svn.apache.org/r1345147
+                  http://svn.apache.org/r1344712
+                  http://svn.apache.org/r1814465
+     2.4.x patch: http://people.apache.org/~jorton/ap_suexec_jumbo.patch
+         or svn merge -c 1341905,1342065,1341930,1345147,1344712,1814465 ^/httpd/httpd/trunk .
+     +1: jorton, 
+     
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
