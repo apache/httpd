@@ -151,8 +151,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      -1: niq: this patch is broken: it edits a generated HTML file instead
               of the source XML.  Fix and I'm +1.
      jailletc36: Doc has been fixed in http://svn.apache.org/viewvc?view=revision&revision=1533935
-                 But what about r1666417 (and r1680166)?. If -d is kept, -D should
-                 be axed from trunk
 
   *) rotatelogs: Remove multiple uses of constant length error buffers.
      trunk patches: http://svn.apache.org/r1534895
