@@ -742,8 +742,6 @@ struct SSLSrvConfigRec {
 #endif
     BOOL             session_tickets;
     
-    apr_array_header_t *policies;      /* policy that shall be applied to this config */
-    const char      *error_policy;     /* error in policy merge, bubble up */
     server_addr_rec *enabled_on;       /* optional list of addresses where ssl is enabled */
 };
 
@@ -767,16 +765,12 @@ struct SSLDirConfigRec {
     modssl_ctx_t *proxy;
     BOOL          proxy_enabled;
     BOOL          proxy_post_config;
-
-    apr_array_header_t *policies;      /* policy that shall be applied to this config */
-    const char      *error_policy;     /* error in policy merge, bubble up */
 };
 
 typedef struct SSLPolicyRec SSLPolicyRec;
 struct SSLPolicyRec {
     const char *name;
     SSLSrvConfigRec *sc;
-    SSLDirConfigRec *dc;
 };
 
 SSLPolicyRec *ssl_policy_lookup(apr_pool_t *pool, const char *name);
@@ -798,7 +792,6 @@ void        *ssl_config_perdir_create(apr_pool_t *, char *);
 void        *ssl_config_perdir_merge(apr_pool_t *, void *, void *);
 void         ssl_config_proxy_merge(apr_pool_t *,
                                     SSLDirConfigRec *, SSLDirConfigRec *);
-const char  *ssl_cmd_SSLPolicyDefine(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLPolicyApply(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLPassPhraseDialog(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLCryptoDevice(cmd_parms *, void *, const char *);
@@ -831,7 +824,6 @@ const char  *ssl_cmd_SSLRenegBufferSize(cmd_parms *cmd, void *dcfg, const char *
 const char  *ssl_cmd_SSLStrictSNIVHostCheck(cmd_parms *cmd, void *dcfg, int flag);
 const char *ssl_cmd_SSLInsecureRenegotiation(cmd_parms *cmd, void *dcfg, int flag);
 
-const char  *ssl_cmd_SSLProxyPolicyApply(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLProxyEngine(cmd_parms *cmd, void *dcfg, int flag);
 const char  *ssl_cmd_SSLProxyProtocol(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLProxyCipherSuite(cmd_parms *, void *, const char *);
