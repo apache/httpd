@@ -300,10 +300,12 @@ LogLevel alert rewrite:trace3
 <name>RewriteMap</name>
 <description>Defines a mapping function for key-lookup</description>
 <syntax>RewriteMap <em>MapName</em> <em>MapType</em>:<em>MapSource</em>
-    <em>MapTypeOptions</em>
+    [<em>MapTypeOptions</em>]
 </syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
+<compatibility>The 3rd parameter, MapTypeOptions, in only available from Apache
+2.4.30 and later</compatibility>
 
 <usage>
       <p>The <directive>RewriteMap</directive> directive defines a
@@ -342,7 +344,7 @@ RewriteMap examplemap "txt:/path/to/file/map.txt"
       </highlight>
 
       <p>You would then be able to use this map in a
-      <directive>RewriteRule</directive> as follows:</p>
+      <directive module="mod_rewrite">RewriteRule</directive> as follows:</p>
 
       <highlight language="config">
 RewriteRule "^/ex/(.*)" "${examplemap:$1}"
@@ -590,7 +592,7 @@ AliasMatch "^/myapp" "/opt/myapp-1.2.3"
                 <directive module="core">UseCanonicalPhysicalPort</directive>
                 respectively.</p>
 
-                <p>Those that are special to mod_rewrite include those below.</p>
+                <p>Those that are special to <module>mod_rewrite</module> include those below.</p>
                 <dl>
                   <dt><code>API_VERSION</code></dt>
 
@@ -743,9 +745,9 @@ AliasMatch "^/myapp" "/opt/myapp-1.2.3"
         per-server context (<code>httpd.conf</code> file) you must
         use <code>%{LA-U:REMOTE_USER}</code> - this
         variable is set by the authorization phases, which come
-        <em>after</em> the URL translation phase (during which mod_rewrite
-        operates).</p>
-        <p>On the other hand, because mod_rewrite implements
+        <em>after</em> the URL translation phase (during which
+        <module>mod_rewrite</module> operates).</p>
+        <p>On the other hand, because <module>mod_rewrite</module> implements
         its per-directory context (<code>.htaccess</code> file) via
         the Fixup phase of the API and because the authorization
         phases come <em>before</em> this phase, you just can use
@@ -980,7 +982,7 @@ RewriteRule "^/images" "-" [F]
 
      <p>You can also set special flags for <em>CondPattern</em> by appending
         <strong><code>[</code><em>flags</em><code>]</code></strong>
-      as the third argument to the <code>RewriteCond</code>
+      as the third argument to the <directive>RewriteCond</directive>
       directive, where <em>flags</em> is a comma-separated list of any of the
       following flags:</p>
       
@@ -1086,8 +1088,8 @@ RewriteRule  "^/$"                 "/homepage.std.html"     [L]
       this context only match against the portion of the currently mapped filesystem path 
       "below" where the rule is defined.</p>
 
-      <p>Directives such as <directive
-      >DocumentRoot</directive> and <directive>Alias</directive>, or even the 
+      <p>Directives such as <directive module="core"
+      >DocumentRoot</directive> and <directive module="mod_alias">Alias</directive>, or even the 
       result of previous <directive>RewriteRule</directive> substitutions, determine
       the currently mapped filesystem path.  
       </p>
@@ -1140,7 +1142,7 @@ to break in these contexts is relative substitutions.</li>
       the <a href="../rewrite/intro.html#regex">mod_rewrite
       Introduction</a>.</p>
 
-      <p>In mod_rewrite, the NOT character
+      <p>In <module>mod_rewrite</module>, the NOT character
       ('<code>!</code>') is also available as a possible pattern
       prefix. This enables you to negate a pattern; to say, for instance:
       ``<em>if the current URL does <strong>NOT</strong> match this
@@ -1425,7 +1427,7 @@ cannot use <code>$N</code> in the substitution string!
 
 <note><title>Home directory expansion</title>
 <p> When the substitution string begins with a string
-resembling "/~user" (via explicit text or backreferences), mod_rewrite performs
+resembling "/~user" (via explicit text or backreferences), <module>mod_rewrite</module> performs
 home directory expansion independent of the presence or configuration
 of <module>mod_userdir</module>.</p>
 
