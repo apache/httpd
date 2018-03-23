@@ -4121,6 +4121,56 @@ Protocols h2 http/1.1
 
 
 <directivesynopsis>
+    <name>RegexDefaultOptions</name>
+    <description>Allow to configure global/default options for regexes</description>
+    <syntax>RegexDefaultOptions [none] [+|-]<var>option</var> [[+|-]<var>option</var>] ...</syntax>
+    <default>RegexDefaultOptions DOLLAR_ENDONLY</default>
+    <contextlist><context>server config</context></contextlist>
+    <compatibility>Only available from Apache 2.4.30 and later.</compatibility>
+    
+    <usage>
+        <p>This directive adds some default behavior to ANY regular expression
+        used afterwards.</p>
+
+        <p>Any option preceded by a '+' is added to the already set options.<br />
+        Any option preceded by a '-' is removed from the already set options.<br />
+        Any option without a '+' or a '-' will be set, removing any other
+        already set option.<br />
+        The <code>none</code> keyword resets any already set options.</p>
+
+        <p><var>option</var> can be:</p>
+        <dl>
+            <dt><code>ICASE</code></dt>
+            <dd>Use a case-insensitive match.</dd>
+
+            <dt><code>DOTALL</code></dt>
+            <dd>Perl's /s flag.</dd>
+
+            <dt><code>DOLLAR_ENDONLY</code></dt>
+            <dd>'$' matches at end of subject string only.</dd>
+
+            <dt><code>EXTENDED</code></dt>
+            <dd>.</dd>
+        </dl>
+        <highlight language="config">
+# 
+RegexDefaultOptions +ICASE +DOLLAR_ENDONLY
+...
+# Remove the ICASE option, but keep all the other already set options
+RegexDefaultOptions -ICASE
+...
+# Set the default option to EXTENDED, resetting any other option
+RegexDefaultOptions EXTENDED
+...
+# Reset all defined option
+RegexDefaultOptions none
+...
+        </highlight>
+    </usage>
+</directivesynopsis>
+
+
+<directivesynopsis>
 <name>RLimitCPU</name>
 <description>Limits the CPU consumption of processes launched
 by Apache httpd children</description>
