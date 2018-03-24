@@ -101,14 +101,13 @@ Changes with Apache 2.4.30 (not released)
      may cause problems if used with round robin load balancers. PR 54637
      [Stefan Fritsch]
 
+  *) SECURITY: CVE-2018-1302 (cve.mitre.org)
+     mod_http2: Potential crash w/ mod_http2.
+     [Stefan Eissing]
+
   *) mod_proxy: Worker schemes and hostnames which are too large are no
      longer fatal errors; it is logged and the truncated values are stored.
      [Jim Jagielski]
-
-
-  *) CVE-2018-1302 (cve.mitre.org)
-     mod_http2: Potential crash w/ mod_http2.
-     [Stefan Eissing]
 
   *) mod_proxy: Allow setting options to globally defined balancer from
      ProxyPass used in VirtualHost. Balancers are now merged using the new
