@@ -75,7 +75,7 @@ Changes with Apache 2.4.30 (not released)
      Out of bound write in mod_authnz_ldap with AuthLDAPCharsetConfig enabled
      [Eric Covener, Luca Toscano, Yann Ylavic]
 
-  *) CVE-2018-1283 (cve.mitre.org)
+  *) SECURITY: CVE-2018-1283 (cve.mitre.org)
      mod_session: CGI-like applications that intend to read from mod_session's 
      'SessionEnv ON' could be fooled into reading user-supplied data instead.
      [Yann Ylavic]
@@ -84,19 +84,12 @@ Changes with Apache 2.4.30 (not released)
      mod_cache_socache: Fix request headers parsing to avoid a possible crash
      with specially crafted input data.  [Ruediger Pluem]
 
-  *) CVE-2018-1301 (cve.mitre.org)
+  *) SECURITY: CVE-2018-1301 (cve.mitre.org)
      core: Possible crash with excessively long HTTP request headers. 
      Impractical to exploit with a production build and production LogLevel.
      [Yann Ylavic]
 
-  *) mod_authnz_ldap: Fix language long names detection as short name.
-     [Yann Ylavic]
-
-  *) mod_proxy: Worker schemes and hostnames which are too large are no
-     longer fatal errors; it is logged and the truncated values are stored.
-     [Jim Jagielski]
-
-  *) CVE-2017-15715 (cve.mitre.org)
+  *) SECURITY: CVE-2017-15715 (cve.mitre.org)
      core: Configure the regular expression engine to match '$' to the end of
      the input string only, excluding matching the end of any embedded 
      newline characters. Behavior can be changed with new directive 
@@ -107,6 +100,15 @@ Changes with Apache 2.4.30 (not released)
      attacks across servers using a common Digest domain. This change
      may cause problems if used with round robin load balancers. PR 54637
      [Stefan Fritsch]
+
+  *) mod_proxy: Worker schemes and hostnames which are too large are no
+     longer fatal errors; it is logged and the truncated values are stored.
+     [Jim Jagielski]
+
+
+  *) CVE-2018-1302 (cve.mitre.org)
+     mod_http2: Potential crash w/ mod_http2.
+     [Stefan Eissing]
 
   *) mod_proxy: Allow setting options to globally defined balancer from
      ProxyPass used in VirtualHost. Balancers are now merged using the new
@@ -123,10 +125,6 @@ Changes with Apache 2.4.30 (not released)
 
   *) mod_proxy, mod_ssl: Handle SSLProxy* directives in <Proxy> sections,
      allowing per backend TLS configuration.  [Yann Ylavic]
-  *) CVE-2018-1302 (cve.mitre.org)
-     mod_http2: Potential crash w/ mod_http2.
-     [Stefan Eissing]
-
 
   *) mod_proxy_uwsgi: Add in UWSGI proxy (sub)module. [Roberto De Ioris,
      Jim Jagielski]
