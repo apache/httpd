@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_remoteip: Restore compatibility with APR 1.4 (apr_sockaddr_is_wildcard).
+     [Eric Covener]
+
   *) mod_ssl: heavily simplified SSLPolicy. No more user defines, no propxy policies,
      just the basic "modern", "intermediate" and "old" as specified by Mozilla security.
      [Stefan Eissing]
