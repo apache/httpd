@@ -59,7 +59,7 @@ typedef struct sed_filter_ctxt
 module AP_MODULE_DECLARE_DATA sed_module;
 
 /* This function will be call back from libsed functions if there is any error
- * happend during execution of sed scripts
+ * happened during execution of sed scripts
  */
 static apr_status_t log_sed_errf(void *data, const char *error)
 {
@@ -412,7 +412,7 @@ static apr_status_t sed_request_filter(ap_filter_t *f,
      * the buckets in bbinp and read the data from buckets and invoke
      * sed_eval_buffer on the data. libsed will generate its output using
      * sed_write_output which will add data in ctx->bb. Do it until it have
-     * atleast one bucket in ctx->bb. At the end of data eos bucket
+     * at least one bucket in ctx->bb. At the end of data eos bucket
      * should be there.
      *
      * Once eos bucket is seen, then invoke sed_finalize_eval to clear the

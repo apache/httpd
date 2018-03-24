@@ -227,7 +227,7 @@ void apreq_value_table_add(const apreq_value_t *v, apr_table_t *t) {
  * and apreq_post_initialize() instead.
  *
  * @param pool a base pool persisting while libapreq2 is used
- * @remarks after you detroy the pool, you have to call this function again
+ * @remarks after you destroy the pool, you have to call this function again
  *    with a new pool if you still plan to use libapreq2
  */
 APREQ_DECLARE(apr_status_t) apreq_initialize(apr_pool_t *pool);
@@ -241,7 +241,7 @@ APREQ_DECLARE(apr_status_t) apreq_initialize(apr_pool_t *pool);
  * create a post-config hook using APR_HOOK_MIDDLE.
  *
  * @param pool a base pool persisting while libapreq2 is used
- * @remarks after you detroyed the pool, you have to call this function again
+ * @remarks after you destroyed the pool, you have to call this function again
  *    with a new pool if you still plan to use libapreq2
  */
 APREQ_DECLARE(apr_status_t) apreq_pre_initialize(apr_pool_t *pool);

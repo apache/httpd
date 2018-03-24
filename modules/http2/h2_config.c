@@ -419,7 +419,7 @@ static const char *h2_conf_add_push_priority(cmd_parms *cmd, void *_cfg,
     else if (!strcasecmp("BEFORE", sdependency)) {
         dependency = H2_DEPENDANT_BEFORE;
         if (sweight) {
-            return "dependecy 'Before' does not allow a weight";
+            return "dependency 'Before' does not allow a weight";
         }
     } 
     else if (!strcasecmp("INTERLEAVED", sdependency)) {

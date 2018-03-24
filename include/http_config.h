@@ -427,7 +427,7 @@ struct module_struct {
  * The AP_MAYBE_UNUSED macro is used for variable declarations that
  * might potentially exhibit "unused var" warnings on some compilers if
  * left untreated.
- * Since static intializers are not part of the C language (C89), making
+ * Since static initializers are not part of the C language (C89), making
  * (void) usage is not possible. However many compiler have proprietary 
  * mechanism to suppress those warnings.  
  */

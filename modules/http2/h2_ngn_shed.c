@@ -281,7 +281,7 @@ apr_status_t h2_ngn_shed_pull_request(h2_ngn_shed *shed,
     if (H2_REQ_ENTRIES_EMPTY(&ngn->entries)) {
         if (want_shutdown) {
             ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, shed->c,
-                          "h2_ngn_shed(%ld): emtpy queue, shutdown engine %s", 
+                          "h2_ngn_shed(%ld): empty queue, shutdown engine %s", 
                           shed->c->id, ngn->id);
             ngn->shutdown = 1;
         }
