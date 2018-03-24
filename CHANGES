@@ -71,13 +71,23 @@ Changes with Apache 2.4.31 (not released)
 
 Changes with Apache 2.4.30 (not released)
 
-  *) mod_session: Strip Session header when SessionEnv is on.  [Yann Ylavic]
+  *) SECURITY: CVE-2017-15710 (cve.mitre.org)
+     Out of bound write in mod_authnz_ldap with AuthLDAPCharsetConfig enabled
+     [Eric Covener, Luca Toscano, Yann Ylavic]
 
-  *) mod_cache_socache: Fix caching of empty headers up to carriage return.
+  *) CVE-2018-1283 (cve.mitre.org)
+     mod_session: CGI-like applications that intend to read from mod_session's 
+     'SessionEnv ON' could be fooled into reading user-supplied data instead.
      [Yann Ylavic]
 
-  *) core: For consistency, ensure that read lines are NUL terminated on any
-     error, not only on buffer full.  [Yann Ylavic]
+  *) SECURITY: CVE-2018-1303 (cve.mitre.org)
+     mod_cache_socache: Fix request headers parsing to avoid a possible crash
+     with specially crafted input data.  [Ruediger Pluem]
+
+  *) CVE-2018-1301 (cve.mitre.org)
+     core: Possible crash with excessively long HTTP request headers. 
+     Impractical to exploit with a production build and production LogLevel.
+     [Yann Ylavic]
 
   *) mod_authnz_ldap: Fix language long names detection as short name.
      [Yann Ylavic]
@@ -86,10 +96,15 @@ Changes with Apache 2.4.30 (not released)
      longer fatal errors; it is logged and the truncated values are stored.
      [Jim Jagielski]
 
-  *) regex: Allow to configure global/default options for regexes, like
-     caseless matching or extended format.  [Yann Ylavic]
-
-  *) mod_auth_digest: Actually use the secret when generating nonces. This change
+  *) CVE-2017-15715 (cve.mitre.org)
+     core: Configure the regular expression engine to match '$' to the end of
+     the input string only, excluding matching the end of any embedded 
+     newline characters. Behavior can be changed with new directive 
+     'RegexDefaultOptions'. [Yann Ylavic]
+     
+  *) SECURITY: CVE-2018-1312 (cve.mitre.org)
+     mod_auth_digest: Fix generation of nonce values to prevent replay
+     attacks across servers using a common Digest domain. This change
      may cause problems if used with round robin load balancers. PR 54637
      [Stefan Fritsch]
 
@@ -108,6 +123,10 @@ Changes with Apache 2.4.30 (not released)
 
   *) mod_proxy, mod_ssl: Handle SSLProxy* directives in <Proxy> sections,
      allowing per backend TLS configuration.  [Yann Ylavic]
+  *) CVE-2018-1302 (cve.mitre.org)
+     mod_http2: Potential crash w/ mod_http2.
+     [Stefan Eissing]
+
 
   *) mod_proxy_uwsgi: Add in UWSGI proxy (sub)module. [Roberto De Ioris,
      Jim Jagielski]
