@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1811748 -->
+<!-- English Revision: 1827600 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : VIncent Deffontaines -->
 <!--
@@ -384,8 +384,8 @@ directive <directive module="mod_rewrite">RewriteMap</directive>.</p>
     <code>on</code>.</p>
 
     <p>Par défaut, les programmes de réécriture externes sont lancés par
-    l'utilisateur root. Pour en changer, il est possible
-    sur les systèmes de style Unix de spécifier un autre couple
+    l'utilisateur/groupe qui a démarré httpd. Pour changer ce comportement, il
+    est possible sur les systèmes de style Unix de spécifier un autre couple
     utilisateur/groupe via le troisième argument de la directive <directive
     module="mod_rewrite">RewriteMap</directive>, et ceci au format
     <code>utilisateur:groupe</code>.</p>
