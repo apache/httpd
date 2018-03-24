@@ -256,7 +256,7 @@ Changes with Apache 2.4.28
      PR 38923 [Nick Kew]
 
   *) htdigest: prevent a buffer overflow when a string exceeds the allowed max
-     length in a password file.
+     length in a password file. PR 61511.
      [Luca Toscano, Hanno Böck <hanno hboeck de>]
 
   *) mod_proxy: loadfactor parameter can now be a decimal number (eg: 1.25).
