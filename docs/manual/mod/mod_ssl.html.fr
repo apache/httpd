@@ -88,7 +88,6 @@ disponibles avec Require</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ssloptions">SSLOptions</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslpassphrasedialog">SSLPassPhraseDialog</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslpolicy">SSLPolicy</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslpolicydefinesection">&lt;SSLPolicyDefine&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslprotocol">SSLProtocol</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslproxycacertificatefile">SSLProxyCACertificateFile</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslproxycacertificatepath">SSLProxyCACertificatePath</a></li>
@@ -103,7 +102,6 @@ disponibles avec Require</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslproxymachinecertificatechainfile">SSLProxyMachineCertificateChainFile</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslproxymachinecertificatefile">SSLProxyMachineCertificateFile</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslproxymachinecertificatepath">SSLProxyMachineCertificatePath</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslproxypolicy">SSLProxyPolicy</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslproxyprotocol">SSLProxyProtocol</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslproxyverify">SSLProxyVerify</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslproxyverifydepth">SSLProxyVerifyDepth</a></li>
@@ -1709,150 +1707,14 @@ détaillée</a>) :
     (ultime recours).</li>
 </ul>
 
-<p>Vous poubez obtenir une description détaillée de toutes les politiques
+<p>La directive SSLPolicy s'applique à l'endroit où elle est définie, ce qui
+signifie que des valeurs définies évntuellement au préalable sont écrasées, et
+bien entendu que cette même directive peut être écrasée par d'éventuelles
+directives définies plus loin dans le fichier de configuration.</p>
+
+<p>Vous pouvez obtenir une description détaillée de toutes les politiques
 prédéfinies via la commande :</p>
 <div class="example"><h3>Liste de toutes les politiques SSL prédéfinies</h3><pre class="prettyprint lang-sh">httpd -t -D DUMP_SSL_POLICIES</pre>
-</div>
-
-<p>Une politique SSL définit une base de départ pour le contexte dans lequel
-elle est définie. Autrement dit, toute directive SSL complémentaire l'emporte
-sur cette politique. A titre d'exemple, observez la valeur effective de
-<code class="directive">SSLProtocol</code> dans la configuration suivante :</p>
-
-<div class="example"><h3>Politiques SSL et priorités</h3><pre class="prettyprint lang-config">&lt;VirtualHost...&gt; # effective : 'all'
-   SSLPolicy modern
-   SSLProtocol all
-&lt;/VirtualHost&gt;
-
-&lt;VirtualHost...&gt; # effective : 'all'
-   SSLProtocol all
-   SSLPolicy modern
-&lt;/VirtualHost&gt;
-
-SSLPolicy modern
-&lt;VirtualHost...&gt; # effective : 'all'
-   SSLProtocol all
-&lt;/VirtualHost&gt;
-
-SSLProtocol all
-&lt;VirtualHost...&gt; # effective : '+TLSv1.2'
-  SSLPolicy modern
-&lt;/VirtualHost&gt;</pre>
-</div>
-
-<p>Il est possible d'appliquer plusieurs politiques SSL au sein d'un même
-contexte. Les dernières auront alors priorité sur les précédentes :</p>
-
-<div class="example"><h3>Ordonnancement des politiques SSL</h3><pre class="prettyprint lang-config">&lt;VirtualHost...&gt; # protocole effectif : 'all -SSLv3'
-   SSLPolicy modern
-   SSLPolicy intermediate
-&lt;/VirtualHost&gt;
-
-&lt;VirtualHost...&gt; # protocole effectif : '+TLSv1.2'
-   SSLPolicy intermediate
-   SSLPolicy modern
-&lt;/VirtualHost&gt;</pre>
-</div>
-
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="sslpolicydefinesection" id="sslpolicydefinesection">Directive</a> <a name="SSLPolicyDefinesection" id="SSLPolicyDefinesection">&lt;SSLPolicyDefine&gt;</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit par un nom un jeu de configurations SSL</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>&lt;SSLPolicyDefine <em>name</em>&gt;</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.30 du serveur HTTP Apache</td></tr>
-</table>
-<p>Cette directive permet de définir un jeu de configurations SSL et de lui
-attribuer un nom. Ce nom peut alors être utilisé par les directives
-<code class="directive">SSLPolicy</code> et <code class="directive">SSLProxyPolicy</code> pour
-appliquer ce jeu de configurations au contexte courant.</p>
-
-<div class="example"><h3>Définition et utilisation d'une configuration SSL</h3><pre class="prettyprint lang-config">&lt;SSLPolicyDefine safe-stapling&gt;
-   SSLUseStapling on
-   SSLStaplingResponderTimeout 2
-   SSLStaplingReturnResponderErrors off
-   SSLStaplingFakeTryLater off
-   SSLStaplingStandardCacheTimeout 86400
-&lt;/SSLPolicyDefine&gt;
-
-   ...
-   &lt;VirtualHost...&gt;
-      SSLPolicy safe-stapling
-      ...</pre>
-</div>
-
-<p>Cette directive permet d'une part de faciliter la <em>lecture</em> et la
-<em>maintenance</em> des configurations des serveurs. Elle a été conçue d'autre
-part pour faciliter et sécuriser l'<em>utilisation</em> de SSL. Sur ce dernier
-point, Apache httpd est fourni avec un jeu de configurations SSL prédéfinies qui
-respecte les bonnes pratiques du code open source. Par exemple, le jeu de
-configurations "modern" fait en sorte que votre serveur fonctionne de manière
-compatible et sécurisée avec les navigateurs courants.</p>
-
-<p>Vous pouvez obtenir la liste des politiques SSL prédéfinies de votre serveur
-Apache en lançant la commande suivante. Cette liste vous montre le détail du
-contenu de chaque politique SSL prédéfinie :</p>
-
-<div class="example"><h3>Liste de toutes les politiques SSL prédéfinies</h3><pre class="prettyprint lang-sh">httpd -t -D DUMP_SSL_POLICIES</pre>
-</div>
-
-<p>Cette directive ne peut être utilisée qu'au niveau de la configuration
-globale du serveur. Elle peut gérer la plupart des directives SSL*, à l'exception de
-quelques unes qui ne peuvent être positionnées qu'une seule fois et ne sont pas
-autorisées dans les définitions de politiques. Il s'agit de <code class="directive">SSLCryptoDevice</code>,
-<code class="directive">SSLRandomSeed</code>,
-<code class="directive">SSLSessionCache</code> et
-<code class="directive">SSLStaplingCache</code>.</p>
-<p>Deux politiques ne peuvent pas partager le même nom. Pour autant, elles peuvent être
-redéfinies :</p>
-
-<div class="example"><h3>Redéfinition d'une politique</h3><pre class="prettyprint lang-config">&lt;SSLPolicyDefine proxy-trust&gt;
-   SSLProxyVerify require
-&lt;/SSLPolicyDefine&gt;
-   ...
-&lt;SSLPolicyDefine proxy-trust&gt;
-   SSLProxyVerify none
-&lt;/SSLPolicyDefine&gt;</pre>
-</div>
-
-<p>Les définitions des politiques SSL sont <em>ajoutées</em> selon l'ordre dans
-lequel elles apparaissent, mais sont appliquées lorsque l'ensemble du fichier de
-configuration a été lu. Cela implique que dans l'exemple précédent, toute
-utilisation de la politique 'proxy-trust' sera équivalente à la directive
-'SSLProxyVerify none' et que la première définition de cette politique sera
-ignorée. Il est ainsi possible de modifier des politiques préinstallées sans
-avoir à les désactiver.</p>
-
-<p>Il est aussi possible de ne modifier qu'un aspect de la polique SSL :</p>
-
-<div class="example"><h3>Redéfinition d'un aspect d'une politique SSL</h3><pre class="prettyprint lang-config">&lt;SSLPolicyDefine proxy-trust&gt;
-   SSLProxyVerify require
-&lt;/SSLPolicyDefine&gt;
-   ...
-&lt;SSLPolicyDefine proxy-trust&gt;
-   SSLPolicy proxy-trust
-   SSLProxyVerifyDepth 10
-&lt;/SSLPolicyDefine&gt;</pre>
-</div>
-
-<p>Toutes les directives de la politique 'proxy-trust' sont alors réutilisées et
-la directive 'SSLProxyVerifyDepth 10' est ajoutée en tête de cette dernière. Cela
-s'avère particulièrement utile lorsque les politiques prédéfinies (par Apache ou
-une distribution) satisfont <em>presque</em> à vos besoins. Auparavant, ces
-politiques devaient être éditées et modifiées après copie éventuelle, ce qui
-compliquait les mises à jour. Elles peuvent maintenant être modifiées comme suit
-:</p>
-
-<div class="example"><h3>Tweak a Pre-Defined Policy</h3><pre class="prettyprint lang-config">Include ssl-policies.conf
-
-&lt;SSLPolicyDefine modern&gt;
-   SSLPolicy modern
-   SSLProxyVerify none
-&lt;/SSLPolicyDefine&gt;</pre>
 </div>
 
 
@@ -2290,30 +2152,6 @@ correspondante.</p>
 </div>
 <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">SSLProxyMachineCertificatePath "/usr/local/apache2/conf/proxy.crt/"</pre>
 </div>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="sslproxypolicy" id="sslproxypolicy">Directive</a> <a name="SSLProxyPolicy" id="SSLProxyPolicy">SSLProxyPolicy</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>N'applique que les directives SSLProxy* d'une politique SSL</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLProxyPolicy <em>name</em></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.30 du serveur HTTP Apache</td></tr>
-</table>
-<p>Cette directive est similaire à la directive <code class="directive">SSLPolicy</code>
-mais elle n'applique que les directives SSLProxy* définies dans la politique SSL
-spécifiée. Ceci s'avère utile lorsque vous avez besoin de politiques SSL
-différentes pour les serveurs d'avant et d'arrière-plan :</p>
-
-<div class="example"><h3>Autre politique SSL pour le mandataire seulement</h3><pre class="prettyprint lang-config">SSLPolicy modern
-SSLProxyPolicy intermediate</pre>
-</div>
-
-<p>Dans cet exemple, la politique 'modern' est tout d'abord appliquée pour
-l'avant et l'arrière-plan. La politique 'intermediate' est ensuite appliquée au
-mandataire en ne prenant en compte que les directives SSLProxy*.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
