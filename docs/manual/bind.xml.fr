@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision : 1565335 -->
+<!-- English Revision : 1827552 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -118,6 +118,41 @@ Listen 192.0.2.5:8000
 
     </note>
 
+  </section>
+
+  <section id="reload">
+    <title>Changer la configuration de l'écoute au redémarrage</title>
+
+    <p>Lorsque httpd est redémarré, certaines remarques sont à prendre en compte
+    quant aux modifications apportées aux directives <directive
+    module="mpm_common">Listen</directive>. Au cours du redémarrage, httpd
+    conserve la liaison avec les ports de la configuration précédente afin
+    d'éviter l'obtention d'un message d'erreur "Connection refused" lors d'une
+    tentative ultérieure de connexion au serveur. Si les modifications apportées au jeu de
+    directives <directive module="mpm_common">Listen</directive> utilisé entrent
+    en conflit avec ce dernier, le serveur refusera de redémarrer.</p>
+
+    <p>Par exemple, modifier la configuration suivante :</p>
+    
+    <example>
+    <highlight language="config">
+      Listen 127.0.0.1:80
+    </highlight>
+    </example>
+
+    <p>pour utiliser la suivante pourra échouer car écouter le port 80 sur
+    toutes les adresses IP entre en conflit avec une écoute sélective du port 80
+    sur la seule adresse IP 127.0.0.1.</p>
+    
+    <example>
+    <highlight language="config">
+      Listen 80
+    </highlight>
+    </example>
+
+    <p>Pour qu'une telle modification de configuration soit prise en compte avec
+    succès, il est nécessaire d'arrêter, puis de démarrer le serveur.</p>
+    
   </section>
 
   <section id="ipv6">

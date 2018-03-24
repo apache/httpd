@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1798332 -->
+<!-- English Revision: 1827609 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -338,10 +338,12 @@ pour le moteur de réécriture</description>
 <name>RewriteMap</name>
 <description>Définit une fonction de mise en correspondance pour la
 recherche de mots-clés</description>
-<syntax>RewriteMap <em>MapName</em> <em>MapType</em>:<em>MapSource</em>
+<syntax>RewriteMap <em>MapName</em> <em>MapType</em>:<em>MapSource</em> [<em>MapTypeOptions</em>]
 </syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
+<compatibility>Le troisième paramètre, MapTypeOptions, est disponible à partir
+de la version 2.4.29 du serveur HTTP Apache</compatibility>
 
 <usage>
       <p>La directive <directive>RewriteMap</directive> définit une
@@ -384,11 +386,16 @@ recherche de mots-clés</description>
       </highlight>
 
       <p>Vous pourrez ensuite utiliser cette table dans une
-      directive <directive>RewriteRule</directive> comme suit :</p>
+      directive <directive module="mod_rewrite">RewriteRule</directive> comme suit :</p>
 
       <highlight language="config">
       RewriteRule "^/ex/(.*)" "${map-exemple:$1}"
       </highlight>
+
+      <p>La signification de l'argument <em>MapTypeOptions</em> dépend du <em>MapType</em>
+      spécifié. Veuillez vous référer au document <a
+      href="../rewrite/rewritemap.html">Utiliser RewriteMap</a> pour
+      plus de détails.</p>
 
       <p>Les combinaisons suivantes pour <em>type de correspondance</em>
       et <em>MapSource</em>
@@ -643,7 +650,7 @@ la réécriture soit effectuée
 		module="core">UseCanonicalPhysicalPort</directive>.</p>
 
 		<p>Parmi les variables
-		spécifiques à mod_rewrite, ou trouve les suivantes :</p>
+		spécifiques à <module>mod_rewrite</module>, ou trouve les suivantes :</p>
         
                 <dl>
                   <dt><code>API_VERSION</code></dt>
@@ -815,8 +822,9 @@ la réécriture soit effectuée
 	principal (fichier <code>httpd.conf</code>), vous devez utiliser
 	<code>%{LA-U:REMOTE_USER}</code> - cette variable est définie
 	par la phase d'autorisation qui intervient <em>après</em> la
-	phase de traduction d'URL (pendant laquelle mod_rewrite opère).</p>
-        <p>Par contre, comme mod_rewrite implémente son contexte de
+	phase de traduction d'URL (pendant laquelle <module>mod_rewrite</module>
+	opère).</p>
+        <p>Par contre, comme <module>mod_rewrite</module> implémente son contexte de
 	répertoire (fichier <code>.htaccess</code>) via la phase Fixup
 	de l'API, et comme la phase d'autorisation intervient
 	<em>avant</em> cette dernière, vous pouvez vous contenter
@@ -1062,7 +1070,7 @@ RewriteRule ^(.+) /other/archive/$1 [R]
 	l'<em>expression_de_comparaison</em> en ajoutant ces
 	<strong><code>[</code><em>drapeaux</em><code>]</code></strong>
 	comme troisième argument de la directive
-	<code>RewriteCond</code>, où <em>drapeaux</em> est un
+	<directive>RewriteCond</directive>, où <em>drapeaux</em> est un
 	sous-ensemble séparé par des virgules des drapeaux suivants :</p>
 
       <ul>
@@ -1179,9 +1187,9 @@ RewriteRule  "^/$"                 "/homepage.std.html"  [L]
       du système de fichiers "en dessous" de l'endroit où la règle est définie.</p>
 
       <p>Le chemin correspondant actuel du système de fichiers est déterminé par
-      des directives telles que <directive>DocumentRoot</directive> et
-      <directive>Alias</directive>, ou même le résultat de substitutions dans
-      des règles <directive>RewriteRule</directive> précédentes.  
+      des directives telles que <directive module="core">DocumentRoot</directive> et
+      <directive module="mod_alias">Alias</directive>, ou même le résultat de
+      substitutions dans des règles <directive>RewriteRule</directive> précédentes.  
       </p>
       </li>
 
@@ -1243,8 +1251,8 @@ dans ce genre de contexte.</li>
 	href="../rewrite/intro.html#regex">Introduction à
 	mod_rewrite</a>.</p>
 
-      <p>Dans mod_rewrite, on peut aussi utiliser le caractère NON
-      ('<code>!</code>') comme préfixe de modèle. Ceci vous permet
+      <p>Dans <module>mod_rewrite</module>, on peut aussi utiliser le caractère
+      NOT ('<code>!</code>') comme préfixe de modèle. Ceci vous permet
       d'inverser la signification d'un modèle, soit pour dire
       ``<em>si l'URL considérée ne correspond <strong>PAS</strong> à
       ce modèle</em>''. Le caractère NON peut donc être utilisé à
@@ -1558,7 +1566,7 @@ substitution !
 
 <note><title>Développement du répertoire home</title>
 <p> Quand la chaîne de substitution commence par quelque chose comme
-"/~user" (de manière explicite ou par références arrières), mod_rewrite
+"/~user" (de manière explicite ou par références arrières), <module>mod_rewrite</module>
 développe le répertoire home sans tenir compte de la présence ou de la
 configuration du module <module>mod_userdir</module>.</p>
 
