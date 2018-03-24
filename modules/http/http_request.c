@@ -378,7 +378,7 @@ AP_DECLARE(void) ap_process_request_after_handler(request_rec *r)
 
     /* The EOR bucket has either been handled by an output filter (eg.
      * deleted or moved to a buffered_bb => no more in bb), or an error
-     * occured before that (eg. c->aborted => still in bb) and we ought
+     * occurred before that (eg. c->aborted => still in bb) and we ought
      * to destroy it now. So cleanup any remaining bucket along with
      * the orphan request (if any).
      */
@@ -779,7 +779,7 @@ AP_DECLARE(void) ap_internal_redirect(const char *new_uri, request_rec *r)
 
     AP_INTERNAL_REDIRECT(r->uri, new_uri);
 
-    /* ap_die was already called, if an error occured */
+    /* ap_die was already called, if an error occurred */
     if (!new) {
         return;
     }
@@ -803,7 +803,7 @@ AP_DECLARE(void) ap_internal_redirect_handler(const char *new_uri, request_rec *
     int access_status;
     request_rec *new = internal_internal_redirect(new_uri, r);
 
-    /* ap_die was already called, if an error occured */
+    /* ap_die was already called, if an error occurred */
     if (!new) {
         return;
     }

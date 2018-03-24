@@ -334,7 +334,7 @@ static char* ap_lua_binstrstr (const char * haystack, size_t hsize, const char* 
     return NULL;
 } 
 
-/* r:parsebody(): Parses regular (url-enocded) or multipart POST data and returns two tables*/
+/* r:parsebody(): Parses regular (url-encoded) or multipart POST data and returns two tables*/
 static int req_parsebody(lua_State *L)
 {
     apr_array_header_t          *pairs;
@@ -1599,7 +1599,7 @@ static int lua_ap_set_context_info(lua_State *L)
 
 /**
  * ap_os_escape_path (apr_pool_t *p, const char *path, int partial)
- * convert an OS path to a URL in an OS dependant way.
+ * convert an OS path to a URL in an OS dependent way.
  * @param p The pool to allocate from
  * @param path The path to convert
  * @param partial if set, assume that the path will be appended to something

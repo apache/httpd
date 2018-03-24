@@ -2387,7 +2387,7 @@ static int ssl_ct_init_server(server_rec *s, apr_pool_t *p, int is_proxy,
                                            NULL, NULL,
                                            client_extension_parse_callback, cbi)) {
             ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s,
-                         APLOGNO(02740) "Unable to initalize Certificate "
+                         APLOGNO(02740) "Unable to initialize Certificate "
                          "Transparency client extension callbacks "
                          "(callback for %d already registered?)",
                          CT_EXTENSION_TYPE);
@@ -2409,7 +2409,7 @@ static int ssl_ct_init_server(server_rec *s, apr_pool_t *p, int is_proxy,
                                            NULL, NULL,
                                            server_extension_parse_callback, cbi)) {
             ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s,
-                         APLOGNO(02741) "Unable to initalize Certificate "
+                         APLOGNO(02741) "Unable to initialize Certificate "
                          "Transparency server extension callback "
                          "(callbacks for %d already registered?)",
                          CT_EXTENSION_TYPE);

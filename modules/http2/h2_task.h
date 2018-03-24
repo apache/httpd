@@ -21,7 +21,7 @@
 
 /**
  * A h2_task fakes a HTTP/1.1 request from the data in a HTTP/2 stream 
- * (HEADER+CONT.+DATA) the module recieves.
+ * (HEADER+CONT.+DATA) the module receives.
  *
  * In order to answer a HTTP/2 stream, we want all Apache httpd infrastructure
  * to be involved as usual, as if this stream can as a separate HTTP/1.1
@@ -113,7 +113,7 @@ void h2_task_rst(h2_task *task, int error);
 
 void h2_task_register_hooks(void);
 /*
- * One time, post config intialization.
+ * One time, post config initialization.
  */
 apr_status_t h2_task_init(apr_pool_t *pool, server_rec *s);
 

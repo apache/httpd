@@ -158,7 +158,7 @@ APREQ_DECLARE(apreq_charset_t) apreq_charset_divine(const char *src,
  * @return ::APREQ_ERROR_BADSEQ or ::APREQ_ERROR_BADCHAR on malformed input.
  *
  * @remarks In the non-success case, dlen will be set to include
- *          the last succesfully decoded value.  This function decodes
+ *          the last successfully decoded value.  This function decodes
  *          \%uXXXX into a utf8 (wide) character, following ECMA-262
  *          (the Javascript spec) Section B.2.1.
  */
@@ -181,7 +181,7 @@ APREQ_DECLARE(apr_status_t) apreq_decode(char *dest, apr_size_t *dlen,
  * @return ::APREQ_ERROR_BADSEQ or ::APREQ_ERROR_BADCHAR on malformed input.
  *
  * @remarks In the non-APR_SUCCESS case, dlen will be set to include
- *          the last succesfully decoded value.  This function decodes
+ *          the last successfully decoded value.  This function decodes
  *          \%uXXXX into a utf8 (wide) character, following ECMA-262
  *          (the Javascript spec) Section B.2.1.
  */
