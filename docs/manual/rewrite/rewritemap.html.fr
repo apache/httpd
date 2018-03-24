@@ -386,8 +386,8 @@ directive <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">R
     <code>on</code>.</p>
 
     <p>Par défaut, les programmes de réécriture externes sont lancés par
-    l'utilisateur root. Pour en changer, il est possible
-    sur les systèmes de style Unix de spécifier un autre couple
+    l'utilisateur/groupe qui a démarré httpd. Pour changer ce comportement, il
+    est possible sur les systèmes de style Unix de spécifier un autre couple
     utilisateur/groupe via le troisième argument de la directive <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>, et ceci au format
     <code>utilisateur:groupe</code>.</p>
 

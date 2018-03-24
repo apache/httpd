@@ -319,7 +319,7 @@ la réécriture soit effectuée
 		des valeurs des directives <code class="directive"><a href="../mod/core.html#usecanonicalname">UseCanonicalName</a></code> et <code class="directive"><a href="../mod/core.html#usecanonicalphysicalport">UseCanonicalPhysicalPort</a></code>.</p>
 
 		<p>Parmi les variables
-		spécifiques à mod_rewrite, ou trouve les suivantes :</p>
+		spécifiques à <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>, ou trouve les suivantes :</p>
         
                 <dl>
                   <dt><code>API_VERSION</code></dt>
@@ -488,8 +488,9 @@ la réécriture soit effectuée
 	principal (fichier <code>httpd.conf</code>), vous devez utiliser
 	<code>%{LA-U:REMOTE_USER}</code> - cette variable est définie
 	par la phase d'autorisation qui intervient <em>après</em> la
-	phase de traduction d'URL (pendant laquelle mod_rewrite opère).</p>
-        <p>Par contre, comme mod_rewrite implémente son contexte de
+	phase de traduction d'URL (pendant laquelle <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
+	opère).</p>
+        <p>Par contre, comme <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> implémente son contexte de
 	répertoire (fichier <code>.htaccess</code>) via la phase Fixup
 	de l'API, et comme la phase d'autorisation intervient
 	<em>avant</em> cette dernière, vous pouvez vous contenter
@@ -732,7 +733,7 @@ RewriteRule ^(.+) /other/archive/$1 [R]</pre>
 	l'<em>expression_de_comparaison</em> en ajoutant ces
 	<strong><code>[</code><em>drapeaux</em><code>]</code></strong>
 	comme troisième argument de la directive
-	<code>RewriteCond</code>, où <em>drapeaux</em> est un
+	<code class="directive">RewriteCond</code>, où <em>drapeaux</em> est un
 	sous-ensemble séparé par des virgules des drapeaux suivants :</p>
 
       <ul>
@@ -840,11 +841,13 @@ moteur de réécriture</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit une fonction de mise en correspondance pour la
 recherche de mots-clés</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RewriteMap <em>MapName</em> <em>MapType</em>:<em>MapSource</em>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RewriteMap <em>MapName</em> <em>MapType</em>:<em>MapSource</em> [<em>MapTypeOptions</em>]
 </code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_rewrite</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le troisième paramètre, MapTypeOptions, est disponible à partir
+de la version 2.4.29 du serveur HTTP Apache</td></tr>
 </table>
       <p>La directive <code class="directive">RewriteMap</code> définit une
       <em>Table de correspondance pour la réécriture</em> que les
@@ -885,10 +888,14 @@ recherche de mots-clés</td></tr>
 
 
       <p>Vous pourrez ensuite utiliser cette table dans une
-      directive <code class="directive">RewriteRule</code> comme suit :</p>
+      directive <code class="directive"><a href="#rewriterule">RewriteRule</a></code> comme suit :</p>
 
       <pre class="prettyprint lang-config">RewriteRule "^/ex/(.*)" "${map-exemple:$1}"</pre>
 
+
+      <p>La signification de l'argument <em>MapTypeOptions</em> dépend du <em>MapType</em>
+      spécifié. Veuillez vous référer au document <a href="../rewrite/rewritemap.html">Utiliser RewriteMap</a> pour
+      plus de détails.</p>
 
       <p>Les combinaisons suivantes pour <em>type de correspondance</em>
       et <em>MapSource</em>
@@ -1152,9 +1159,9 @@ pour le moteur de réécriture</td></tr>
       du système de fichiers "en dessous" de l'endroit où la règle est définie.</p>
 
       <p>Le chemin correspondant actuel du système de fichiers est déterminé par
-      des directives telles que <code class="directive">DocumentRoot</code> et
-      <code class="directive">Alias</code>, ou même le résultat de substitutions dans
-      des règles <code class="directive">RewriteRule</code> précédentes.  
+      des directives telles que <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> et
+      <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code>, ou même le résultat de
+      substitutions dans des règles <code class="directive">RewriteRule</code> précédentes.  
       </p>
       </li>
 
@@ -1211,8 +1218,8 @@ dans ce genre de contexte.</li>
 	document <a href="../rewrite/intro.html#regex">Introduction à
 	mod_rewrite</a>.</p>
 
-      <p>Dans mod_rewrite, on peut aussi utiliser le caractère NON
-      ('<code>!</code>') comme préfixe de modèle. Ceci vous permet
+      <p>Dans <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>, on peut aussi utiliser le caractère
+      NOT ('<code>!</code>') comme préfixe de modèle. Ceci vous permet
       d'inverser la signification d'un modèle, soit pour dire
       ``<em>si l'URL considérée ne correspond <strong>PAS</strong> à
       ce modèle</em>''. Le caractère NON peut donc être utilisé à
@@ -1497,7 +1504,7 @@ substitution !
 
 <div class="note"><h3>Développement du répertoire home</h3>
 <p> Quand la chaîne de substitution commence par quelque chose comme
-"/~user" (de manière explicite ou par références arrières), mod_rewrite
+"/~user" (de manière explicite ou par références arrières), <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
 développe le répertoire home sans tenir compte de la présence ou de la
 configuration du module <code class="module"><a href="../mod/mod_userdir.html">mod_userdir</a></code>.</p>
 
