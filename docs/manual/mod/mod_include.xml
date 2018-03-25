@@ -552,6 +552,11 @@ Options +Includes
       <dd>The filename (excluding directories) of the document
       requested by the user.</dd>
 
+      <dt><code>DOCUMENT_PATH_INFO</code></dt>
+      <dd>The trailing pathname information. See directive <directive
+      module="core">AcceptPathInfo</directive> for more information
+      about <code>PATH_INFO</code>.</dd>
+
       <dt><code>DOCUMENT_URI</code></dt>
       <dd>The (%-decoded) URL path of the document requested by the
       user. Note that in the case of nested include files, this is
@@ -573,6 +578,9 @@ Options +Includes
       backslashes).  It is not set if a query string is not
       present.  Use <code>DOCUMENT_ARGS</code> if shell escaping
       is not desired.</dd>
+
+      <dt><code>USER_NAME</code></dt>
+      <dd>The user name of the owner of the file.</dd>
     </dl>
 </section>
 
