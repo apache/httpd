@@ -118,6 +118,12 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
+  *) mod_remoteip: restore apr 1.4.x compat by copying apr_sock_is_wildcard
+     trunk patch: http://svn.apache.org/r1827654
+                  http://svn.apache.org/r1827671
+     2.4.x patch:
+        svn merge -c 1827654,1827671 ^/httpd/httpd/trunk .
+     +1: covener,
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
@@ -206,7 +212,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: jorton, 
 
   *) core: Allow mod_env to override all system path envvars not just PATH
-     trunk patch: http://svn.apache.org/1811831
+     trunk patch: http://svn.apache.org/r1811831
      2.4.x patch: svn merge -c 1811831 ^/httpd/httpd/trunk .
      +1: jorton, 
 
@@ -220,7 +226,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~jorton/ap_suexec_jumbo.patch
          or svn merge -c 1341905,1342065,1341930,1345147,1344712,1814465 ^/httpd/httpd/trunk .
      +1: jorton, 
-     
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
