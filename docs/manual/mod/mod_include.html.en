@@ -572,6 +572,10 @@ AddOutputFilter INCLUDES .shtml</pre>
       <dd>The filename (excluding directories) of the document
       requested by the user.</dd>
 
+      <dt><code>DOCUMENT_PATH_INFO</code></dt>
+      <dd>The trailing pathname information. See directive <code class="directive"><a href="../mod/core.html#acceptpathinfo">AcceptPathInfo</a></code> for more information
+      about <code>PATH_INFO</code>.</dd>
+
       <dt><code>DOCUMENT_URI</code></dt>
       <dd>The (%-decoded) URL path of the document requested by the
       user. Note that in the case of nested include files, this is
@@ -591,6 +595,9 @@ AddOutputFilter INCLUDES .shtml</pre>
       backslashes).  It is not set if a query string is not
       present.  Use <code>DOCUMENT_ARGS</code> if shell escaping
       is not desired.</dd>
+
+      <dt><code>USER_NAME</code></dt>
+      <dd>The user name of the owner of the file.</dd>
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
