@@ -227,6 +227,21 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          or svn merge -c 1341905,1342065,1341930,1345147,1344712,1814465 ^/httpd/httpd/trunk .
      +1: jorton, 
 
+  *) mod_ssl: Add "SSLPolicy" directive for Mozilla Security defined protocol settings.
+     trunk patch: http://svn.apache.org/r1827760
+                  http://svn.apache.org/r1827561
+                  http://svn.apache.org/r1818030
+                  http://svn.apache.org/r1817894
+                  http://svn.apache.org/r1817381
+                  http://svn.apache.org/r1808335
+                  http://svn.apache.org/r1808244
+                  http://svn.apache.org/r1807709
+                  http://svn.apache.org/r1805186
+                  http://svn.apache.org/r1804531
+     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/ssl-policy.patch
+     +1: icing
+
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
