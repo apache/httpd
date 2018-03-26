@@ -29,6 +29,21 @@
 <sourcefile>mod_reqtimeout.c</sourcefile>
 <identifier>reqtimeout_module</identifier>
 
+<summary>
+    <p>This module provides a convenient way to set timeouts and minimum data
+    rates for receiving requests. Should a timeout occur or a data rate be
+    to low, the corresponding connection will be closed by the server.</p>
+
+    <p>This is logged at <directive module="core">LogLevel</directive>
+    <code>info</code>.</p>
+    
+    <p>If needed, the <directive module="core">LogLevel</directive> directive
+    can be tweaked to explicitly log it:</p>
+    <highlight language="config">
+      LogLevel reqtimeout:info
+    </highlight>
+</summary>
+
 <section id="examples"><title>Examples</title>
 
     <ol>
