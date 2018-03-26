@@ -230,7 +230,6 @@ static SSLSrvConfigRec *ssl_config_server_new(apr_pool_t *p)
     sc->compression            = UNSET;
 #endif
     sc->session_tickets        = UNSET;
-    sc->enabled_on             = NULL;
 
     modssl_ctx_init_server(sc, p);
 
@@ -366,8 +365,6 @@ void *ssl_config_server_merge(apr_pool_t *p, void *basev, void *addv)
 #endif
     cfgMergeBool(session_tickets);
 
-    mrg->enabled_on = (add->enabled == SSL_ENABLED_UNSET)? base->enabled_on : add->enabled_on;
-                         
     modssl_ctx_cfg_merge_server(p, base->server, add->server, mrg->server);
 
     return mrg;
@@ -808,54 +805,24 @@ const char *ssl_cmd_SSLRandomSeed(cmd_parms *cmd,
     return NULL;
 }
 
-const char *ssl_cmd_SSLEngine(cmd_parms *cmd, void *dcfg, const char *args)
+const char *ssl_cmd_SSLEngine(cmd_parms *cmd, void *dcfg, const char *arg)
 {
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
-    const char *w, *err;
-    server_addr_rec **psar;
-    server_rec s;
-        
-    w = ap_getword_conf(cmd->pool, &args);
 
-    if (*w == '\0') {
-        return "SSLEngine takes at least one argument";
+    if (!strcasecmp(arg, "On")) {
+        sc->enabled = SSL_ENABLED_TRUE;
+        return NULL;
     }
-    
-    if (*args == 0) {
-        if (!strcasecmp(w, "On")) {
-            sc->enabled = SSL_ENABLED_TRUE;
-            sc->enabled_on = NULL;
-            return NULL;
-        }
-        else if (!strcasecmp(w, "Off")) {
-            sc->enabled = SSL_ENABLED_FALSE;
-            sc->enabled_on = NULL;
-            return NULL;
-        }
-        else if (!strcasecmp(w, "Optional")) {
-            sc->enabled = SSL_ENABLED_OPTIONAL;
-            sc->enabled_on = NULL;
-            return NULL;
-        }
+    else if (!strcasecmp(arg, "Off")) {
+        sc->enabled = SSL_ENABLED_FALSE;
+        return NULL;
     }
-    
-    memset(&s, 0, sizeof(s));
-    err = ap_parse_vhost_addrs(cmd->pool, w, &s);
-    sc->enabled_on = s.addrs;
-    sc->enabled = SSL_ENABLED_TRUE;
-    
-    if (!err && *args) {
-        s.addrs = NULL;
-        err = ap_parse_vhost_addrs(cmd->pool, args, &s);
-        if (!err && s.addrs) {
-            psar = &sc->enabled_on;
-            while (*psar) {
-                psar = &(*psar)->next;
-            }
-            *psar = s.addrs;
-        }
+    else if (!strcasecmp(arg, "Optional")) {
+        sc->enabled = SSL_ENABLED_OPTIONAL;
+        return NULL;
     }
-    return err;
+
+    return "Argument must be On, Off, or Optional";
 }
 
 const char *ssl_cmd_SSLFIPS(cmd_parms *cmd, void *dcfg, int flag)

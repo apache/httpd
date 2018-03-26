@@ -188,9 +188,6 @@ Changes with Apache 2.5.0-alpha
      some minor bugfixes, twiddle the build system to avoid non-pic code generation.
      [Stefan Eissing]
   
-  *) mod_ssl: Adding option to set a list of addr:port specs, as used in VirtualHosts
-     to enable SSLEngine for all matching hosts. Updated documentation. [Stefan Eissing]
-
   *) mod_md: v0.9.1:
      - various fixes in MDRenewWindow handling when specifying percent. Serialization changed. If 
        someone already used percent configurations, it is advised to change these to a new value,
