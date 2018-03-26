@@ -111,7 +111,7 @@ version 2.3.14 and earlier.</compatibility>
     (usually the case on Linux and FreeBSD), the socket is not sent to the
     server process before at least one byte (or the whole request for
     <code>httpready</code>) is received. The header timeout configured with
-    <code>RequestReadTimeout</code> is only effective after the server process has
+    <directive>RequestReadTimeout</directive> is only effective after the server process has
     received the socket.</p>
 
     <p>For each of the two timeout types (header or body), there are three ways
@@ -128,7 +128,7 @@ version 2.3.14 and earlier.</compatibility>
     body, respectively. A value of 0 means no limit.</p>
     </li>
 
-    <li><strong>Disable module for a vhost:</strong>:<br />
+    <li><strong>Disable module for a vhost</strong>:<br />
 
     <example>header=0 body=0</example>
 
