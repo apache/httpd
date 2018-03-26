@@ -34,6 +34,19 @@
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>reqtimeout_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_reqtimeout.c</td></tr></table>
+<h3>Summary</h3>
+
+    <p>This module provides a convenient way to set timeouts and minimum data
+    rates for receiving requests. Should a timeout occur or a data rate be
+    to low, the corresponding connection will be closed by the server.</p>
+
+    <p>This is logged at <code class="directive"><a href="../mod/core.html#loglevel">LogLevel</a></code>
+    <code>info</code>.</p>
+    
+    <p>If needed, the <code class="directive"><a href="../mod/core.html#loglevel">LogLevel</a></code> directive
+    can be tweaked to explicitly log it:</p>
+    <pre class="prettyprint lang-config">LogLevel reqtimeout:info</pre>
+
 </div>
 <div id="quickview"><h3>Topics</h3>
 <ul id="topics">
@@ -124,7 +137,7 @@ version 2.3.14 and earlier.</td></tr>
     (usually the case on Linux and FreeBSD), the socket is not sent to the
     server process before at least one byte (or the whole request for
     <code>httpready</code>) is received. The header timeout configured with
-    <code>RequestReadTimeout</code> is only effective after the server process has
+    <code class="directive">RequestReadTimeout</code> is only effective after the server process has
     received the socket.</p>
 
     <p>For each of the two timeout types (header or body), there are three ways
@@ -141,7 +154,7 @@ version 2.3.14 and earlier.</td></tr>
     body, respectively. A value of 0 means no limit.</p>
     </li>
 
-    <li><strong>Disable module for a vhost:</strong>:<br />
+    <li><strong>Disable module for a vhost</strong>:<br />
 
     <div class="example"><p><code>header=0 body=0</code></p></div>
 
