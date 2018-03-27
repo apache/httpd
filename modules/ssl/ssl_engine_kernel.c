@@ -321,7 +321,7 @@ int ssl_hook_ReadReq(request_rec *r)
              * )
              */
             if (!r->hostname) {
-                ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server, APLOGNO(02031)
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02031)
                             "Hostname %s provided via SNI, but no hostname"
                             " provided in HTTP request", servername);
                 return HTTP_BAD_REQUEST;
@@ -333,7 +333,7 @@ int ssl_hook_ReadReq(request_rec *r)
                  * selected by the SNI and its SSL parameters are different
                  */
                 
-                ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server, APLOGNO(02032)
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02032)
                              "Hostname %s provided via SNI and hostname %s provided"
                              " via HTTP have no compatible SSL setup",
                              servername, r->hostname);
@@ -350,7 +350,7 @@ int ssl_hook_ReadReq(request_rec *r)
              * server config we used for handshaking or in our current server.
              * This should avoid insecure configuration by accident.
              */
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server, APLOGNO(02033)
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02033)
                          "No hostname was provided via SNI for a name based"
                          " virtual host");
             apr_table_setn(r->notes, "error-notes",
