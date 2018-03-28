@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_ssl: add support for TLSv1.3 (tested with OpenSSL v1.1.1-pre3, other libs may
+     need more sugar). [Stefan Eissing]
+
   *) mod_remoteip: Restore compatibility with APR 1.4 (apr_sockaddr_is_wildcard).
      [Eric Covener]
 
