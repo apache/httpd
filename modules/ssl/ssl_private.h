@@ -640,6 +640,11 @@ typedef struct {
     /** for client or downstream server authentication */
     int          verify_depth;
     ssl_verify_t verify_mode;
+
+    /** TLSv1.3 has its separate cipher list, separate from the
+     settings for older TLS protocol versions. Since which one takes
+     effect is a matter of negotiation, we need separate settings */
+    const char  *cipher_suite_tlsv1_3;
 } modssl_auth_ctx_t;
 
 #ifdef HAVE_TLS_SESSION_TICKETS
@@ -806,6 +811,7 @@ const char  *ssl_cmd_SSLCryptoDevice(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLRandomSeed(cmd_parms *, void *, const char *, const char *, const char *);
 const char  *ssl_cmd_SSLEngine(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLCipherSuite(cmd_parms *, void *, const char *);
+const char  *ssl_cmd_SSLCipherSuiteV1_3(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLCertificateFile(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLCertificateKeyFile(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLCertificateChainFile(cmd_parms *, void *, const char *);
@@ -835,6 +841,7 @@ const char *ssl_cmd_SSLInsecureRenegotiation(cmd_parms *cmd, void *dcfg, int fla
 const char  *ssl_cmd_SSLProxyEngine(cmd_parms *cmd, void *dcfg, int flag);
 const char  *ssl_cmd_SSLProxyProtocol(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLProxyCipherSuite(cmd_parms *, void *, const char *);
+const char  *ssl_cmd_SSLProxyCipherSuiteV1_3(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLProxyVerify(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLProxyVerifyDepth(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLProxyCACertificatePath(cmd_parms *, void *, const char *);

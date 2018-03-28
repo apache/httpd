@@ -140,6 +140,7 @@ static void modssl_ctx_init(modssl_ctx_t *mctx, apr_pool_t *p)
     mctx->auth.cipher_suite   = NULL;
     mctx->auth.verify_depth   = UNSET;
     mctx->auth.verify_mode    = SSL_CVERIFY_UNSET;
+    mctx->auth.cipher_suite_tlsv1_3 = NULL;
 
     mctx->ocsp_mask           = UNSET;
     mctx->ocsp_force_default  = UNSET;
@@ -284,6 +285,7 @@ static void modssl_ctx_cfg_merge(apr_pool_t *p,
     cfgMergeString(auth.cipher_suite);
     cfgMergeInt(auth.verify_depth);
     cfgMerge(auth.verify_mode, SSL_CVERIFY_UNSET);
+    cfgMergeString(auth.cipher_suite_tlsv1_3);
 
     cfgMergeInt(ocsp_mask);
     cfgMergeBool(ocsp_force_default);
@@ -864,6 +866,17 @@ const char *ssl_cmd_SSLCipherSuite(cmd_parms *cmd,
     else {
         sc->server->auth.cipher_suite = arg;
     }
+
+    return NULL;
+}
+
+const char *ssl_cmd_SSLCipherSuiteV1_3(cmd_parms *cmd,
+                                      void *dcfg,
+                                      const char *arg)
+{
+    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
+
+    sc->server->auth.cipher_suite_tlsv1_3 = arg;
 
     return NULL;
 }
@@ -1609,6 +1622,17 @@ const char *ssl_cmd_SSLProxyCipherSuite(cmd_parms *cmd,
     arg = apr_pstrcat(cmd->pool, arg, ":!aNULL:!eNULL:!EXP", NULL);
 
     dc->proxy->auth.cipher_suite = arg;
+
+    return NULL;
+}
+
+const char *ssl_cmd_SSLProxyCipherSuiteV1_3(cmd_parms *cmd,
+                                            void *dcfg,
+                                            const char *arg)
+{
+    SSLDirConfigRec *dc = (SSLDirConfigRec *)dcfg;
+
+    dc->proxy->auth.cipher_suite_tlsv1_3 = arg;
 
     return NULL;
 }
@@ -2487,6 +2511,9 @@ static void modssl_auth_ctx_dump(modssl_auth_ctx_t *auth, apr_pool_t *p, int pro
                                  apr_file_t *out, const char *indent, const char **psep)
 {
     DMP_STRING(proxy? "SSLProxyCipherSuite" : "SSLCipherSuite", auth->cipher_suite);
+#ifdef SSL_OP_NO_TLSv1_3
+    DMP_STRING(proxy? "SSLProxyCipherSuiteV1.3" : "SSLCipherSuiteV1.3", auth->cipher_suite_tlsv1_3);
+#endif
     DMP_VERIFY(proxy? "SSLProxyVerify" : "SSLVerifyClient", auth->verify_mode);
     DMP_LONG(  proxy? "SSLProxyVerify" : "SSLVerifyDepth", auth->verify_depth);
     DMP_STRING(proxy? "SSLProxyCACertificateFile" : "SSLCACertificateFile", auth->ca_cert_file);

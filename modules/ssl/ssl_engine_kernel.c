@@ -188,6 +188,12 @@ static int ssl_auth_compatible(modssl_auth_ctx_t *a1,
             || strcmp(a1->cipher_suite, a2->cipher_suite))) {
         return 0;
     }
+    /* both have the same ca cipher suite string */
+    if ((a1->cipher_suite_tlsv1_3 != a2->cipher_suite_tlsv1_3)
+        && (!a1->cipher_suite_tlsv1_3 || !a2->cipher_suite_tlsv1_3 
+            || strcmp(a1->cipher_suite_tlsv1_3, a2->cipher_suite_tlsv1_3))) {
+        return 0;
+    }
     return 1;
 }
 
