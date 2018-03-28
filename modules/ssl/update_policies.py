@@ -27,12 +27,15 @@ KEY_VERSION      = 'version'
 # TLS Versions we know how to handle
 #
 TLS_VERSIONS     = {
-    'TLSv1.2' : "SSL_PROTOCOL_TLSV1_2",
+    'TLSv1.3' : "SSL_PROTOCOL_TLSV1_3",
+# Mozilla does not list TLSv1.3 yet, but we want it in there!
+    'TLSv1.2' : "(SSL_PROTOCOL_TLSV1_2|SSL_PROTOCOL_TLSV1_3)",
+    #'TLSv1.2' : "SSL_PROTOCOL_TLSV1_2",
     'TLSv1.1' : "SSL_PROTOCOL_TLSV1_1",
     'TLSv1'   : "SSL_PROTOCOL_TLSV1",
     'SSLv3'   : "SSL_PROTOCOL_CONSTANTS_SSLV3",
 }
-TLS_1_X_VERSIONS = [ 'TLSv1.2' ]
+TLS_1_X_VERSIONS = [ 'TLSv1.2', 'TLSv1.3' ]
 
 # the Security configurations to extract
 POLICY_NAMES = [ 'modern', 'intermediate', 'old' ]
