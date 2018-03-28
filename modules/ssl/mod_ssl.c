@@ -100,6 +100,11 @@ static const command_rec ssl_config_cmds[] = {
     SSL_CMD_ALL(CipherSuite, TAKE1,
                 "Colon-delimited list of permitted SSL Ciphers "
                 "('XXX:...:XXX' - see manual)")
+#ifdef SSL_OP_NO_TLSv1_3
+    SSL_CMD_SRV(CipherSuiteV1_3, TAKE1,
+                "Colon-delimited list of permitted TLSv1.3 Ciphers "
+                "('XXX:...:XXX' - see manual)")
+#endif
     SSL_CMD_SRV(CertificateFile, TAKE1,
                 "SSL Server Certificate file "
                 "('/path/to/file' - PEM or DER encoded)")
@@ -192,6 +197,11 @@ static const command_rec ssl_config_cmds[] = {
     SSL_CMD_PXY(ProxyCipherSuite, TAKE1,
                "SSL Proxy: colon-delimited list of permitted SSL ciphers "
                "('XXX:...:XXX' - see manual)")
+#ifdef SSL_OP_NO_TLSv1_3
+    SSL_CMD_PXY(ProxyCipherSuiteV1_3, TAKE1,
+               "SSL Proxy: colon-delimited list of permitted TLSv1.3 ciphers "
+               "('XXX:...:XXX' - see manual)")
+#endif
     SSL_CMD_PXY(ProxyVerify, TAKE1,
                "SSL Proxy: whether to verify the remote certificate "
                "('on' or 'off')")
