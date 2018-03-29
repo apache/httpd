@@ -99,7 +99,9 @@ def printPolicies(doc):
             print "#ifdef %s" % ifdef
             
         print "#define %s    1" % prefix
-        print "#define %s_CIPHERS \"%s\"" % (prefix, p[KEY_OSSL_CIPHERS])
+        print "#define %s_SSL_CIPHERS \"%s\"" % (prefix, p[KEY_OSSL_CIPHERS])
+        # Mozilla has not specced this yet
+        print "#define %s_TLS13_CIPHERS NULL" % (prefix)
         print "#define %s_PROTOCOLS %s" % (prefix, proto_conf(p[KEY_TLS_VERSIONS]))
         
         if ifdef:

@@ -189,9 +189,9 @@ static int ssl_auth_compatible(modssl_auth_ctx_t *a1,
         return 0;
     }
     /* both have the same ca cipher suite string */
-    if ((a1->cipher_suite_tlsv1_3 != a2->cipher_suite_tlsv1_3)
-        && (!a1->cipher_suite_tlsv1_3 || !a2->cipher_suite_tlsv1_3 
-            || strcmp(a1->cipher_suite_tlsv1_3, a2->cipher_suite_tlsv1_3))) {
+    if ((a1->tls13_ciphers != a2->tls13_ciphers)
+        && (!a1->tls13_ciphers || !a2->tls13_ciphers 
+            || strcmp(a1->tls13_ciphers, a2->tls13_ciphers))) {
         return 0;
     }
     return 1;

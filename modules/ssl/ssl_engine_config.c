@@ -140,7 +140,7 @@ static void modssl_ctx_init(modssl_ctx_t *mctx, apr_pool_t *p)
     mctx->auth.cipher_suite   = NULL;
     mctx->auth.verify_depth   = UNSET;
     mctx->auth.verify_mode    = SSL_CVERIFY_UNSET;
-    mctx->auth.cipher_suite_tlsv1_3 = NULL;
+    mctx->auth.tls13_ciphers = NULL;
 
     mctx->ocsp_mask           = UNSET;
     mctx->ocsp_force_default  = UNSET;
@@ -285,7 +285,7 @@ static void modssl_ctx_cfg_merge(apr_pool_t *p,
     cfgMergeString(auth.cipher_suite);
     cfgMergeInt(auth.verify_depth);
     cfgMerge(auth.verify_mode, SSL_CVERIFY_UNSET);
-    cfgMergeString(auth.cipher_suite_tlsv1_3);
+    cfgMergeString(auth.tls13_ciphers);
 
     cfgMergeInt(ocsp_mask);
     cfgMergeBool(ocsp_force_default);
@@ -501,7 +501,7 @@ void ssl_config_proxy_merge(apr_pool_t *p,
 */
 
 static void add_policy(apr_hash_t *policies, apr_pool_t *p, const char *name,
-                       int protocols, const char *ciphers, 
+                       int protocols, const char *ssl_ciphers, const char *tls13_ciphers, 
                        int honor_order, int compression, int session_tickets)
 {
     SSLPolicyRec *policy;
@@ -510,13 +510,15 @@ static void add_policy(apr_hash_t *policies, apr_pool_t *p, const char *name,
     policy->name = name;
     policy->sc = ssl_config_server_new(p);
     
-    if (protocols || ciphers) {
+    if (protocols) {
         policy->sc->server->protocol_set      = 1;
         policy->sc->server->protocol          = protocols;
     }
-    
-    if (ciphers) {
-        policy->sc->server->auth.cipher_suite = ciphers;
+    if (ssl_ciphers) {
+        policy->sc->server->auth.cipher_suite = ssl_ciphers;
+    }
+    if (tls13_ciphers) {
+        policy->sc->server->auth.tls13_ciphers = tls13_ciphers;
     }
 
 #ifndef OPENSSL_NO_COMP
@@ -542,7 +544,8 @@ static apr_hash_t *get_policies(apr_pool_t *p, int create)
 #if SSL_POLICY_MODERN
         add_policy(policies, p, "modern", 
                    SSL_POLICY_MODERN_PROTOCOLS, 
-                   SSL_POLICY_MODERN_CIPHERS, 
+                   SSL_POLICY_MODERN_SSL_CIPHERS, 
+                   SSL_POLICY_MODERN_TLS13_CIPHERS, 
                    SSL_POLICY_HONOR_ORDER, 
                    SSL_POLICY_COMPRESSION, 
                    SSL_POLICY_SESSION_TICKETS);
@@ -550,7 +553,8 @@ static apr_hash_t *get_policies(apr_pool_t *p, int create)
 #if SSL_POLICY_INTERMEDIATE
         add_policy(policies, p, "intermediate", 
                    SSL_POLICY_INTERMEDIATE_PROTOCOLS, 
-                   SSL_POLICY_INTERMEDIATE_CIPHERS, 
+                   SSL_POLICY_INTERMEDIATE_SSL_CIPHERS, 
+                   SSL_POLICY_INTERMEDIATE_TLS13_CIPHERS, 
                    SSL_POLICY_HONOR_ORDER, 
                    SSL_POLICY_COMPRESSION, 
                    SSL_POLICY_SESSION_TICKETS);
@@ -558,7 +562,8 @@ static apr_hash_t *get_policies(apr_pool_t *p, int create)
 #if SSL_POLICY_OLD
         add_policy(policies, p, "old", 
                    SSL_POLICY_OLD_PROTOCOLS, 
-                   SSL_POLICY_OLD_CIPHERS, 
+                   SSL_POLICY_OLD_SSL_CIPHERS, 
+                   SSL_POLICY_OLD_TLS13_CIPHERS, 
                    SSL_POLICY_HONOR_ORDER, 
                    SSL_POLICY_COMPRESSION, 
                    SSL_POLICY_SESSION_TICKETS);
@@ -852,33 +857,37 @@ const char *ssl_cmd_SSLFIPS(cmd_parms *cmd, void *dcfg, int flag)
 
 const char *ssl_cmd_SSLCipherSuite(cmd_parms *cmd,
                                    void *dcfg,
-                                   const char *arg)
+                                   const char *arg1, const char *arg2)
 {
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
     SSLDirConfigRec *dc = (SSLDirConfigRec *)dcfg;
 
-    /* always disable null and export ciphers */
-    arg = apr_pstrcat(cmd->pool, arg, ":!aNULL:!eNULL:!EXP", NULL);
-
-    if (cmd->path) {
-        dc->szCipherSuite = arg;
+    if (arg2 == NULL) {
+        arg2 = arg1;
+        arg1 = "SSL";
     }
-    else {
-        sc->server->auth.cipher_suite = arg;
+    
+    if (!strcmp("SSL", arg1)) {
+        /* always disable null and export ciphers */
+        arg2 = apr_pstrcat(cmd->pool, arg2, ":!aNULL:!eNULL:!EXP", NULL);
+        if (cmd->path) {
+            dc->szCipherSuite = arg2;
+        }
+        else {
+            sc->server->auth.cipher_suite = arg2;
+        }
+        return NULL;
     }
-
-    return NULL;
-}
-
-const char *ssl_cmd_SSLCipherSuiteV1_3(cmd_parms *cmd,
-                                      void *dcfg,
-                                      const char *arg)
-{
-    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
-
-    sc->server->auth.cipher_suite_tlsv1_3 = arg;
-
-    return NULL;
+#ifdef SSL_OP_NO_TLSv1_3
+    else if (!strcmp("TLSv1.3", arg1)) {
+        if (cmd->path) {
+            return "TLSv1.3 ciphers cannot be set inside a directory context";
+        }
+        sc->server->auth.tls13_ciphers = arg2;
+        return NULL;
+    }
+#endif
+    return apr_pstrcat(cmd->pool, "procotol '", arg1, "' not supported", NULL);
 }
 
 #define SSL_FLAGS_CHECK_FILE \
@@ -1614,27 +1623,28 @@ const char *ssl_cmd_SSLProxyProtocol(cmd_parms *cmd,
 
 const char *ssl_cmd_SSLProxyCipherSuite(cmd_parms *cmd,
                                         void *dcfg,
-                                        const char *arg)
+                                        const char *arg1, const char *arg2)
 {
     SSLDirConfigRec *dc = (SSLDirConfigRec *)dcfg;
-
-    /* always disable null and export ciphers */
-    arg = apr_pstrcat(cmd->pool, arg, ":!aNULL:!eNULL:!EXP", NULL);
-
-    dc->proxy->auth.cipher_suite = arg;
-
-    return NULL;
-}
-
-const char *ssl_cmd_SSLProxyCipherSuiteV1_3(cmd_parms *cmd,
-                                            void *dcfg,
-                                            const char *arg)
-{
-    SSLDirConfigRec *dc = (SSLDirConfigRec *)dcfg;
-
-    dc->proxy->auth.cipher_suite_tlsv1_3 = arg;
-
-    return NULL;
+    
+    if (arg2 == NULL) {
+        arg2 = arg1;
+        arg1 = "SSL";
+    }
+    
+    if (!strcmp("SSL", arg1)) {
+        /* always disable null and export ciphers */
+        arg2 = apr_pstrcat(cmd->pool, arg2, ":!aNULL:!eNULL:!EXP", NULL);
+        dc->proxy->auth.cipher_suite = arg2;
+        return NULL;
+    }
+#ifdef SSL_OP_NO_TLSv1_3
+    else if (!strcmp("TLSv1.3", arg1)) {
+        dc->proxy->auth.tls13_ciphers = arg2;
+        return NULL;
+    }
+#endif
+    return apr_pstrcat(cmd->pool, "procotol '", arg1, "' not supported", NULL);
 }
 
 const char *ssl_cmd_SSLProxyVerify(cmd_parms *cmd,
@@ -2512,7 +2522,10 @@ static void modssl_auth_ctx_dump(modssl_auth_ctx_t *auth, apr_pool_t *p, int pro
 {
     DMP_STRING(proxy? "SSLProxyCipherSuite" : "SSLCipherSuite", auth->cipher_suite);
 #ifdef SSL_OP_NO_TLSv1_3
-    DMP_STRING(proxy? "SSLProxyCipherSuiteV1.3" : "SSLCipherSuiteV1.3", auth->cipher_suite_tlsv1_3);
+    if (auth->tls13_ciphers) {
+        DMP_STRING(proxy? "SSLProxyCipherSuite" : "SSLCipherSuite", 
+            apr_pstrcat(p, "TLSv1.3 ", auth->tls13_ciphers, NULL));
+    }
 #endif
     DMP_VERIFY(proxy? "SSLProxyVerify" : "SSLVerifyClient", auth->verify_mode);
     DMP_LONG(  proxy? "SSLProxyVerify" : "SSLVerifyDepth", auth->verify_depth);
