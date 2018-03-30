@@ -302,7 +302,7 @@ AliasMatch "^/myapp" "/opt/myapp-1.2.3"
                 <code class="directive"><a href="../mod/core.html#usecanonicalphysicalport">UseCanonicalPhysicalPort</a></code>
                 respectively.</p>
 
-                <p>Those that are special to mod_rewrite include those below.</p>
+                <p>Those that are special to <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> include those below.</p>
                 <dl>
                   <dt><code>API_VERSION</code></dt>
 
@@ -455,9 +455,9 @@ AliasMatch "^/myapp" "/opt/myapp-1.2.3"
         per-server context (<code>httpd.conf</code> file) you must
         use <code>%{LA-U:REMOTE_USER}</code> - this
         variable is set by the authorization phases, which come
-        <em>after</em> the URL translation phase (during which mod_rewrite
-        operates).</p>
-        <p>On the other hand, because mod_rewrite implements
+        <em>after</em> the URL translation phase (during which
+        <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> operates).</p>
+        <p>On the other hand, because <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> implements
         its per-directory context (<code>.htaccess</code> file) via
         the Fixup phase of the API and because the authorization
         phases come <em>before</em> this phase, you just can use
@@ -690,7 +690,7 @@ RewriteRule "^/images" "-" [F]</pre>
 
      <p>You can also set special flags for <em>CondPattern</em> by appending
         <strong><code>[</code><em>flags</em><code>]</code></strong>
-      as the third argument to the <code>RewriteCond</code>
+      as the third argument to the <code class="directive">RewriteCond</code>
       directive, where <em>flags</em> is a comma-separated list of any of the
       following flags:</p>
       
@@ -789,10 +789,13 @@ RewriteRule  "^/$"                 "/homepage.std.html"     [L]</pre>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Defines a mapping function for key-lookup</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RewriteMap <em>MapName</em> <em>MapType</em>:<em>MapSource</em>
+    [<em>MapTypeOptions</em>]
 </code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_rewrite</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>The 3rd parameter, MapTypeOptions, in only available from Apache
+2.4.29 and later</td></tr>
 </table>
       <p>The <code class="directive">RewriteMap</code> directive defines a
       <em>Rewriting Map</em> which can be used inside rule
@@ -829,10 +832,15 @@ RewriteRule  "^/$"                 "/homepage.std.html"     [L]</pre>
 
 
       <p>You would then be able to use this map in a
-      <code class="directive">RewriteRule</code> as follows:</p>
+      <code class="directive"><a href="#rewriterule">RewriteRule</a></code> as follows:</p>
 
       <pre class="prettyprint lang-config">RewriteRule "^/ex/(.*)" "${examplemap:$1}"</pre>
 
+
+      <p>The meaning of the <em>MapTypeOptions</em> argument depends on
+      particular <em>MapType</em>. See the
+      <a href="../rewrite/rewritemap.html">Using RewriteMap</a> for
+      more information.</p>
 
       <p>The following combinations for <em>MapType</em> and
       <em>MapSource</em> can be used:</p>
@@ -1076,7 +1084,7 @@ RewriteRule  "^/$"                 "/homepage.std.html"     [L]</pre>
       this context only match against the portion of the currently mapped filesystem path 
       "below" where the rule is defined.</p>
 
-      <p>Directives such as <code class="directive">DocumentRoot</code> and <code class="directive">Alias</code>, or even the 
+      <p>Directives such as <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> and <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code>, or even the 
       result of previous <code class="directive">RewriteRule</code> substitutions, determine
       the currently mapped filesystem path.  
       </p>
@@ -1125,7 +1133,7 @@ to break in these contexts is relative substitutions.</li>
       the <a href="../rewrite/intro.html#regex">mod_rewrite
       Introduction</a>.</p>
 
-      <p>In mod_rewrite, the NOT character
+      <p>In <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>, the NOT character
       ('<code>!</code>') is also available as a possible pattern
       prefix. This enables you to negate a pattern; to say, for instance:
       ``<em>if the current URL does <strong>NOT</strong> match this
@@ -1389,7 +1397,7 @@ cannot use <code>$N</code> in the substitution string!
 
 <div class="note"><h3>Home directory expansion</h3>
 <p> When the substitution string begins with a string
-resembling "/~user" (via explicit text or backreferences), mod_rewrite performs
+resembling "/~user" (via explicit text or backreferences), <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> performs
 home directory expansion independent of the presence or configuration
 of <code class="module"><a href="../mod/mod_userdir.html">mod_userdir</a></code>.</p>
 
