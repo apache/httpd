@@ -107,6 +107,7 @@ available</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#protocols">Protocols</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#protocolshonororder">ProtocolsHonorOrder</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#qualifyredirecturl">QualifyRedirectURL</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#regexdefaultoptions">RegexDefaultOptions</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#registerhttpmethod">RegisterHttpMethod</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rlimitcpu">RLimitCPU</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rlimitmem">RLimitMEM</a></li>
@@ -2620,7 +2621,7 @@ the server configuration files</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Amount of time the server will wait for subsequent
 requests on a persistent connection</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>KeepAliveTimeout <var>time-interval</var>[s]</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>KeepAliveTimeout <var>num</var>[ms]</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>KeepAliveTimeout 5</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
@@ -4110,6 +4111,53 @@ as if 'QualifyRedirectURL ON' was configured.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="RegexDefaultOptions" id="RegexDefaultOptions">RegexDefaultOptions</a> <a name="regexdefaultoptions" id="regexdefaultoptions">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Allow to configure global/default options for regexes</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RegexDefaultOptions [none] [+|-]<var>option</var> [[+|-]<var>option</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>RegexDefaultOptions DOLLAR_ENDONLY</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Only available from Apache 2.4.30 and later.</td></tr>
+</table>
+        <p>This directive adds some default behavior to ANY regular expression
+        used afterwards.</p>
+
+        <p>Any option preceded by a '+' is added to the already set options.<br />
+        Any option preceded by a '-' is removed from the already set options.<br />
+        Any option without a '+' or a '-' will be set, removing any other
+        already set option.<br />
+        The <code>none</code> keyword resets any already set options.</p>
+
+        <p><var>option</var> can be:</p>
+        <dl>
+            <dt><code>ICASE</code></dt>
+            <dd>Use a case-insensitive match.</dd>
+
+            <dt><code>DOTALL</code></dt>
+            <dd>Perl's /s flag.</dd>
+
+            <dt><code>DOLLAR_ENDONLY</code></dt>
+            <dd>'$' matches at end of subject string only.</dd>
+            <dd>.</dd>
+        </dl>
+        <pre class="prettyprint lang-config"># 
+RegexDefaultOptions +ICASE +DOLLAR_ENDONLY
+...
+# Remove the ICASE option, but keep all the other already set options
+RegexDefaultOptions -ICASE
+...
+# Set the default option to DOTALL, resetting any other option
+RegexDefaultOptions DOTALL
+...
+# Reset all defined option
+RegexDefaultOptions none
+...</pre>
+
+    
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="RegisterHttpMethod" id="RegisterHttpMethod">RegisterHttpMethod</a> <a name="registerhttpmethod" id="registerhttpmethod">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Register non-standard HTTP methods</td></tr>
@@ -4117,6 +4165,7 @@ as if 'QualifyRedirectURL ON' was configured.</td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache HTTP Server 2.4.24 and later</td></tr>
 </table>
 <p>This directive may be used to register additional HTTP methods.  This is
 necessary if non-standard methods need to be used with directives that accept 
