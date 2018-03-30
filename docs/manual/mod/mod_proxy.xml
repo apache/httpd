@@ -980,6 +980,19 @@ ProxyPass "/mirror/foo"   "http://backend.example.com"
     <code>backend.example.com</code> <em>except</em> requests made to
     <code>/mirror/foo/i</code>.</p>
 
+    <p>Mixing ProxyPass settings in different contexts does not work:</p>
+    <highlight language="config">
+ProxyPass "/mirror/foo/i" "!"
+&lt;Location "/mirror/foo/"&gt;
+    ProxyPass "http://backend.example.com/"
+&lt;/Location&gt;
+    </highlight>
+    <p>In this case, a request to <code>/mirror/foo/i</code> will get proxied,
+       because the <directive>ProxyPass</directive> directive in the Location block will be evaluated
+       first. The fact that <directive>ProxyPass</directive> supports both server and directory contexts
+       does not mean that their scope and position in the configuration file will
+       guarantee any ordering or override.</p>
+
     <note type="warning"><title>Ordering ProxyPass Directives</title>
       <p>The configured <directive module="mod_proxy">ProxyPass</directive>
       and <directive module="mod_proxy">ProxyPassMatch</directive>
@@ -988,12 +1001,15 @@ ProxyPass "/mirror/foo"   "http://backend.example.com"
       <directive module="mod_proxy">ProxyPass</directive> rules starting with the
       longest URLs first. Otherwise, later rules for longer URLS will be hidden
       by any earlier rule which uses a leading substring of the URL. Note that
-      there is some relation with worker sharing. In contrast, only one
-      <directive module="mod_proxy">ProxyPass</directive> directive can be placed
-      in a <directive module="core">Location</directive> block, and the most
-      specific location will take precedence.</p>
-
-      <p>For the same reasons, exclusions must come <em>before</em> the
+      there is some relation with worker sharing.</p>
+    </note>
+    <note type="warning"><title>Ordering ProxyPass Directives in Locations</title>
+      <p>Only one <directive module="mod_proxy">ProxyPass</directive> directive
+      can be placed in a <directive module="core">Location</directive> block,
+      and the most specific location will take precedence.</p>
+    </note>
+    <note type="warning"><title>Exclusions and the no-proxy environment variable</title>
+      <p>Exclusions must come <em>before</em> the
       general <directive>ProxyPass</directive> directives. In 2.4.26 and later, the "no-proxy"
       environment variable is an alternative to exclusions, and is the only
       way to configure an exclusion of a <directive>ProxyPass</directive>
