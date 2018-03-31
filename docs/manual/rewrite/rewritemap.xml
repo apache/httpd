@@ -442,6 +442,11 @@ RewriteMap myquery "fastdbd:SELECT destination FROM rewrite WHERE source = %s"
     </highlight>
     </example>
 
+    <note><title>Note</title>
+    <p>The query name is passed to the database driver as a label for
+    an SQL prepared statement, and will therefore need to follow any rules
+    (such as case-sensitivity) required for your database.</p></note>
+
   </section>
   <section id="summary">
     <title>Summary</title>
