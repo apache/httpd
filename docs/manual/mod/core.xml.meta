@@ -7,9 +7,7 @@
   <relpath>..</relpath>
 
   <variants>
-    <variant>2</variant>
     <variant outdated="yes">de</variant>
-    <variant>edited</variant>
     <variant>en</variant>
     <variant outdated="yes">es</variant>
     <variant outdated="yes">fr</variant>

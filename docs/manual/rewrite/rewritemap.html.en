@@ -430,6 +430,11 @@ this process, or if the script itself is very slow.</li>
     <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">RewriteMap myquery "fastdbd:SELECT destination FROM rewrite WHERE source = %s"</pre>
 </div>
 
+    <div class="note"><h3>Note</h3>
+    <p>The query name is passed to the database driver as a label for
+    an SQL prepared statement, and will therefore need to follow any rules
+    (such as case-sensitivity) required for your database.</p></div>
+
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="summary" id="summary">Summary</a></h2>

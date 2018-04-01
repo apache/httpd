@@ -26,9 +26,7 @@
 <div id="page-content">
 <div id="preamble"><h1>Apache Core Features</h1>
 <div class="toplang">
-<p><span>Available Languages: </span><a href="../2/mod/core.html" hreflang="2" rel="alternate" title="">&nbsp;2&nbsp;</a> |
-<a href="../de/mod/core.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
-<a href="../edited/mod/core.html" hreflang="edited" rel="alternate" title="">&nbsp;edited&nbsp;</a> |
+<p><span>Available Languages: </span><a href="../de/mod/core.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/core.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../es/mod/core.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
 <a href="../fr/mod/core.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
@@ -4934,9 +4932,7 @@ hostname or IP address</td></tr>
 </div>
 </div>
 <div class="bottomlang">
-<p><span>Available Languages: </span><a href="../2/mod/core.html" hreflang="2" rel="alternate" title="">&nbsp;2&nbsp;</a> |
-<a href="../de/mod/core.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
-<a href="../edited/mod/core.html" hreflang="edited" rel="alternate" title="">&nbsp;edited&nbsp;</a> |
+<p><span>Available Languages: </span><a href="../de/mod/core.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/core.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../es/mod/core.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
 <a href="../fr/mod/core.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
