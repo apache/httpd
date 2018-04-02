@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_cgi: Add CGIScriptTimeout to make mod_cgi's timeout per-directory and
+     independent of the core Timeout directive.  PR 62229.  
+     [Hank Ibell <hwibell gmail.com>]
+
   *) mod_ssl: add support for TLSv1.3 (tested with OpenSSL v1.1.1-pre3, other libs may
      need more sugar). SSL(Proxy)CipherSuite now has an optional first parameter for the
      protocol the ciphers are for.
