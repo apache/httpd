@@ -263,6 +263,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1827865 ^/httpd/httpd/trunk .
      +1: jailletc36, jorton, 
 
+  *) mod_http2: normalize trace2 logging of http2 unencrypted connection
+     upgrades.
+     trunk patch: http://svn.apache.org/r1828210
+     2.4.x patch: svn merge -c 1828210 ^/httpd/httpd/trunk .
+     +1: icing
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
