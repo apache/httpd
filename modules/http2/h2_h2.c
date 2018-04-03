@@ -639,8 +639,8 @@ int h2_h2_process_conn(conn_rec* c)
             }
             else {
                 ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c,
-                              "h2_h2, not detected in %d bytes: %s", 
-                              (int)slen, s);
+                              "h2_h2, not detected in %d bytes(base64): %s", 
+                              (int)slen, h2_util_base64url_encode(s, slen, c->pool));
             }
             
             apr_brigade_destroy(temp);
