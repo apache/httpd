@@ -651,7 +651,6 @@ sslopensslconfcmd	mod/mod_ssl.html#sslopensslconfcmd
 ssloptions	mod/mod_ssl.html#ssloptions
 sslpassphrasedialog	mod/mod_ssl.html#sslpassphrasedialog
 sslpolicy	mod/mod_ssl.html#sslpolicy
-sslpolicydefine	mod/mod_ssl.html#sslpolicydefine
 sslprotocol	mod/mod_ssl.html#sslprotocol
 sslproxycacertificatefile	mod/mod_ssl.html#sslproxycacertificatefile
 sslproxycacertificatepath	mod/mod_ssl.html#sslproxycacertificatepath
