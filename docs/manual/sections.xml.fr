@@ -57,7 +57,6 @@ configuration</title>
 <directive type="section" idtype="section" module="mod_md">MDomainSet</directive>
 <directive type="section" module="mod_proxy">Proxy</directive>
 <directive type="section" module="mod_proxy">ProxyMatch</directive>
-<directive type="section" idtype="section" module="mod_ssl">SSLPolicyDefine</directive>
 <directive type="section" module="core">VirtualHost</directive>
 </directivelist>
 </related>
