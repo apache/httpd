@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_ssl: proper checks for libressl 2.07/8 and its TLSv1_3 support, see PR 62236.
+     [Bernard Spil <brnrd@freebsd.org>]
+  
   *) mod_http2: on level trace2, log any unsuccessful HTTP/2 direct connection upgrade
      with base64 encoding to unify its appearance in possible bug reports. [Stefan Eissing]
 
