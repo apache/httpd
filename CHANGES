@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_http2: on level trace2, log any unsuccessful HTTP/2 direct connection upgrade
+     with base64 encoding to unify its appearance in possible bug reports. [Stefan Eissing]
+
   *) mod_cgi: Add CGIScriptTimeout to make mod_cgi's timeout per-directory and
      independent of the core Timeout directive.  PR 62229.  
      [Hank Ibell <hwibell gmail.com>]
