@@ -685,9 +685,12 @@ static apr_status_t ssl_init_ctx_protocol(server_rec *s,
 
 #else /* #if OPENSSL_VERSION_NUMBER < 0x10100000L */
     /* We first determine the maximum protocol version we should provide */
+#ifdef SSL_OP_NO_TLSv1_3
     if (SSL_HAVE_PROTOCOL_TLSV1_3 && (protocol & SSL_PROTOCOL_TLSV1_3)) {
         prot = TLS1_3_VERSION;
-    } else  if (protocol & SSL_PROTOCOL_TLSV1_2) {
+    } else
+#endif
+    if (protocol & SSL_PROTOCOL_TLSV1_2) {
         prot = TLS1_2_VERSION;
     } else if (protocol & SSL_PROTOCOL_TLSV1_1) {
         prot = TLS1_1_VERSION;
@@ -708,9 +711,11 @@ static apr_status_t ssl_init_ctx_protocol(server_rec *s,
 
     /* Next we scan for the minimal protocol version we should provide,
      * but we do not allow holes between max and min */
+#ifdef SSL_OP_NO_TLSv1_3
     if (prot == TLS1_3_VERSION && protocol & SSL_PROTOCOL_TLSV1_2) {
         prot = TLS1_2_VERSION;
     }
+#endif
     if (prot == TLS1_2_VERSION && protocol & SSL_PROTOCOL_TLSV1_1) {
         prot = TLS1_1_VERSION;
     }
