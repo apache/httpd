@@ -281,34 +281,6 @@ SSLCertificateKeyFile "@rel_sysconfdir@/server.key"
     SSLOptions +StdEnvVars
 </Directory>
 
-#   SSL Protocol Adjustments:
-#   The safe and default but still SSL/TLS standard compliant shutdown
-#   approach is that mod_ssl sends the close notify alert but doesn't wait for
-#   the close notify alert from client. When you need a different shutdown
-#   approach you can use one of the following variables:
-#   o ssl-unclean-shutdown:
-#     This forces an unclean shutdown when the connection is closed, i.e. no
-#     SSL close notify alert is sent or allowed to be received.  This violates
-#     the SSL/TLS standard but is needed for some brain-dead browsers. Use
-#     this when you receive I/O errors because of the standard approach where
-#     mod_ssl sends the close notify alert.
-#   o ssl-accurate-shutdown:
-#     This forces an accurate shutdown when the connection is closed, i.e. a
-#     SSL close notify alert is sent and mod_ssl waits for the close notify
-#     alert of the client. This is 100% SSL/TLS standard compliant, but in
-#     practice often causes hanging connections with brain-dead browsers. Use
-#     this only for browsers where you know that their SSL implementation
-#     works correctly. 
-#   Notice: Most problems of broken clients are also related to the HTTP
-#   keep-alive facility, so you usually additionally want to disable
-#   keep-alive for those clients, too. Use variable "nokeepalive" for this.
-#   Similarly, one has to force some clients to use HTTP/1.0 to workaround
-#   their broken HTTP/1.1 implementation. Use variables "downgrade-1.0" and
-#   "force-response-1.0" for this.
-BrowserMatch "MSIE [2-5]" \
-         nokeepalive ssl-unclean-shutdown \
-         downgrade-1.0 force-response-1.0
-
 #   Per-Server Logging:
 #   The home of a custom SSL log file. Use this when you want a
 #   compact non-error SSL logfile on a virtual host basis.
