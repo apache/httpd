@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_ssl: Fix merging of proxy SSL context outside <Proxy> sections,
+     regression introduced in 2.4.30. PR 62232. [Rainer Jung, Yann Ylavic]
+
   *) mod_ssl: proper checks for libressl 2.07/8 and its TLSv1_3 support, see PR 62236.
      [Bernard Spil <brnrd@freebsd.org>]
   

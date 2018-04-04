@@ -467,13 +467,21 @@ void *ssl_config_perdir_merge(apr_pool_t *p, void *basev, void *addv)
     cfgMergeInt(nRenegBufferSize);
 
     mrg->proxy_post_config = add->proxy_post_config;
-    if (!add->proxy_post_config) {
+    if (!mrg->proxy_post_config) {
         cfgMergeBool(proxy_enabled);
         modssl_ctx_init_proxy(mrg, p);
         modssl_ctx_cfg_merge_proxy(p, base->proxy, add->proxy, mrg->proxy);
+
+        /* Since ssl_proxy_section_post_config() hook won't be called if there
+         * is no SSLProxy* in this dir config, the ssl_ctx may still be NULL
+         * here at runtime. Merging it is either a no-op (NULL => NULL) because
+         * we are still before post config, or we really want to reuse the one
+         * from the upper/server context (outside of <Proxy> sections).
+         */
+        cfgMerge(proxy->ssl_ctx, NULL);
     }
     else {
-        /* post_config hook has already merged and initialized the
+        /* The post_config hook has already merged and initialized the
          * proxy context, use it.
          */
         mrg->proxy_enabled = add->proxy_enabled;
