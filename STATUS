@@ -149,6 +149,22 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      +1: rjung, covener, ylavic
      jung: I'll wait a bit whether the other rotatelogs patches make it to apply in order.
 
+  *) Some easy proposals:
+        - mod_logio, mod_ssl: Remove pointless static in optional fn pointer
+          variable declaration
+        - core: Fix a potential compiler warning about uninitialized variable.
+          PR 59821
+     trunk patch: http://svn.apache.org/r1822931
+                  http://svn.apache.org/r1827783
+     2.4.x patch: svn merge -c 1822931,1827783 ^/httpd/httpd/trunk .
+     +1: jailletc36, jorton, ylavic
+
+  *) mod_dumpio: do nothing below log level TRACE7
+     trunk patch: http://svn.apache.org/r1818802
+                  http://svn.apache.org/r1818825
+     2.4.x patch: svn merge -c 1818802,1818825 ^/httpd/httpd/trunk .
+     +1: jailletc36, jorton, ylavic
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -193,19 +209,19 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      available, originally written for the LibreSSL case.
      trunk patch: http://svn.apache.org/r1826973
      2.4.x patch: svn merge -c 1826973 ^/httpd/httpd/trunk .
-     +1: rjung
+     +1: rjung, ylavic
 
   *) mod_ssl: Add option "leaf" to OCSPEnable that will only check the leaf in the
-     certificate chain. PR62112.
+     certificate chain. PR 62112.
      trunk patch: http://svn.apache.org/r1826995
                   http://svn.apache.org/r1827001
      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/ssl-ocsp-enable-leaf.patch
-     +1: icing
+     +1: icing, ylavic
 
   *) mod_remoteip: make proxy-protocol work on HTTP/2 connections.
      trunk patch: http://svn.apache.org/r1827196
      2.4.x patch: svn merge -c 1827196 ^/httpd/httpd/trunk .
-     +1: icing
+     +1: icing, ylavic
 
   *) core: Add <IfFile>, <IfDirective>, <IfSection>
      trunk patch: http://svn.apache.org/r1769718
@@ -215,12 +231,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~jorton/ap_ifmany.diff
           or resolve CHANGES & ap_mmn.h conflicts with:
           svn merge -c 1769718,1785943,1786110,1786119 ^/httpd/httpd/trunk .
-     +1: jorton, 
+     +1: jorton, ylavic
 
   *) core: Allow mod_env to override all system path envvars not just PATH
      trunk patch: http://svn.apache.org/r1811831
      2.4.x patch: svn merge -c 1811831 ^/httpd/httpd/trunk .
-     +1: jorton, 
+     +1: jorton
+     ylavic: same as dev@; since SetEnv* are usable from htaccess, wouldn't
+             we open a door here (unconditionally)?
 
   *) suexec: Support logging to syslog and Linux capabilities.
      trunk patch: http://svn.apache.org/r1341905
@@ -247,34 +265,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/ssl-policy.patch
      +1: icing
 
-  *) Some easy proposals:
-        - mod_logio, mod_ssl: Remove pointless static in optional fn pointer
-          variable declaration
-        - core: Fix a potential compiler warning about uninitialized variable.
-          PR 59821
-     trunk patch: http://svn.apache.org/r1822931
-                  http://svn.apache.org/r1827783
-     2.4.x patch: svn merge -c 1822931,1827783 ^/httpd/httpd/trunk .
-     +1: jailletc36, jorton, 
-
-  *) mod_dumpio: do nothing below log level TRACE7
-     trunk patch: http://svn.apache.org/r1818802
-                  http://svn.apache.org/r1818825
-     2.4.x patch: svn merge -c 1818802,1818825 ^/httpd/httpd/trunk .
-     +1: jailletc36, jorton, 
-
   *) mod_ssl: Use 'ap_log_rerror()' instead of 'ap_log_error()' consistently
      PR 62003
      trunk patch: http://svn.apache.org/r1827865
      2.4.x patch: svn merge -c 1827865 ^/httpd/httpd/trunk .
-     +1: jailletc36, jorton, 
+     +1: jailletc36, jorton, ylavic
 
   *) mod_http2: normalize trace2 logging of http2 unencrypted connection
      upgrades.
      trunk patch: http://svn.apache.org/r1828210
                   http://svn.apache.org/r1828232
      2.4.x patch: svn merge -c 1828210,182823 ^/httpd/httpd/trunk .
-     +1: icing
+     +1: icing, ylavic
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
