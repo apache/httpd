@@ -165,6 +165,12 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1818802,1818825 ^/httpd/httpd/trunk .
      +1: jailletc36, jorton, ylavic
 
+  *) mod_ssl: Use 'ap_log_rerror()' instead of 'ap_log_error()' consistently
+     PR 62003
+     trunk patch: http://svn.apache.org/r1827865
+     2.4.x patch: svn merge -c 1827865 ^/httpd/httpd/trunk .
+     +1: jailletc36, jorton, ylavic
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -264,12 +270,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1804531
      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/ssl-policy.patch
      +1: icing
-
-  *) mod_ssl: Use 'ap_log_rerror()' instead of 'ap_log_error()' consistently
-     PR 62003
-     trunk patch: http://svn.apache.org/r1827865
-     2.4.x patch: svn merge -c 1827865 ^/httpd/httpd/trunk .
-     +1: jailletc36, jorton, ylavic
 
   *) mod_http2: normalize trace2 logging of http2 unencrypted connection
      upgrades.
