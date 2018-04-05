@@ -223,6 +223,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1827001
      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/ssl-ocsp-enable-leaf.patch
      +1: icing, ylavic
+     jailletc36: There should be a compatibility note for the new parameter.
+                 There is also a new optional 2nd argument to the SSLOCSPEnable directive,
+                 'no_ocsp_for_cert_ok', which is undocumented.
+                 Adding some new paramters also deserves a CHANGES entry.
 
   *) mod_remoteip: make proxy-protocol work on HTTP/2 connections.
      trunk patch: http://svn.apache.org/r1827196
@@ -238,6 +242,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           or resolve CHANGES & ap_mmn.h conflicts with:
           svn merge -c 1769718,1785943,1786110,1786119 ^/httpd/httpd/trunk .
      +1: jorton, ylavic
+     jailletc36: There should be a compatibility note for the new directives.
+                 (done in r1828478)
 
   *) core: Allow mod_env to override all system path envvars not just PATH
      trunk patch: http://svn.apache.org/r1811831
