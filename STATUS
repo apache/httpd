@@ -123,13 +123,13 @@ RELEASE SHOWSTOPPERS:
                   http://svn.apache.org/r1827671
      2.4.x patch:
         svn merge -c 1827654,1827671 ^/httpd/httpd/trunk .
-     +1: covener, ylavic,
+     +1: covener, ylavic, rpluem
 
   *) mod_ssl: Fix merging of proxy SSL context outside <Proxy> sections,
      regression introduced in 2.4.30. PR 62232.
      trunk patch: http://svn.apache.org/r1828390
      2.4.x patch: svn merge -c 1828390 ^/httpd/httpd/trunk .
-     +1: ylavic,
+     +1: ylavic, rpluem
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
