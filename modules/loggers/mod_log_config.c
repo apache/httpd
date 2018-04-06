@@ -146,8 +146,6 @@
  *
  * --- rst */
 
-#include <arpa/inet.h>
-
 #include "apr_strings.h"
 #include "apr_lib.h"
 #include "apr_hash.h"
@@ -156,6 +154,7 @@
 #include "apr_env.h"
 
 #define APR_WANT_STRFUNC
+#define APR_WANT_BYTEFUNC   /* for htons() et al */
 #include "apr_want.h"
 
 #include "ap_config.h"
@@ -1324,7 +1323,7 @@ static const char *add_custom_log(cmd_parms *cmd, void *dummy, const char *fn,
     }
 
     cls->fname = fn;
-    if (fn && !strncmp(fn, "||", 2)) {
+    if (fn && (!strncmp(fn, "|<", 2) || !strncmp(fn, "||<", 3))) {
         cls->chunked = 1;
     }
     cls->format_string = fmt;
@@ -1719,11 +1718,16 @@ static void *ap_default_log_writer_init(apr_pool_t *p, server_rec *s,
     if (*name == '|') {
         piped_log *pl;
 
-        if (cls->chunked && (rv = apr_env_set("AP_MOD_LOG_CONFIG_CHUNKED_MSG",
+        if (cls->chunked) {
+            if ((rv = apr_env_set("AP_MOD_LOG_CONFIG_CHUNKED_MSG",
                              "", p) != APR_SUCCESS)) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(00648)
-                            "Unable to apr_env_set");
-            return NULL;
+                ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(03474)
+                                "Unable to apr_env_set");
+                return NULL;
+            }
+            ++name;
+            if (*name == '|')
+                ++name;
         }
         pl = ap_open_piped_log(p, name + 1);
         if (pl == NULL) {

@@ -375,6 +375,12 @@ static int open_error_log(server_rec *s, int is_main, apr_pool_t *p)
          */
         if (*fname == '|')
             ++fname;
+        if (*fname == '<') {
+            ap_log_error(APLOG_MARK, APLOG_STARTUP, rc, NULL, APLOGNO(03473)
+                         "Safe pipe '<' not supported for ErrorLog: '%s'.",
+                         s->error_fname);
+            ++fname;
+        }
         if (*fname == '$') {
             cmdtype = APR_SHELLCMD_ENV;
             ++fname;

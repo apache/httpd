@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-#include <arpa/inet.h>
-
 #include "apr.h"
 #include "apr_lib.h"
 #include "apr_strings.h"
@@ -38,6 +36,7 @@
 #include <stdlib.h>
 #endif
 #define APR_WANT_STRFUNC
+#define APR_WANT_BYTEFUNC   /* for htons() et al */
 #include "apr_want.h"
 #include "mod_log_config.h"
 
