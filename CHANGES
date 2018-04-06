@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_proxy: Do not restrict the maximum pool size for backend connections
+     any longer by the maximum number of threads per process and use a better
+     default if mod_http2 is loaded.
+     [Yann Ylavic, Ruediger Pluem, Stefan Eissing, Gregg Smith]
+
   *) mod_ssl: Fix merging of proxy SSL context outside <Proxy> sections,
      regression introduced in 2.4.30. PR 62232. [Rainer Jung, Yann Ylavic]
 
