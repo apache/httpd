@@ -19,6 +19,7 @@
 
 <!DOCTYPE xsl:stylesheet [
     <!ENTITY lf SYSTEM "util/lf.xml">
+    <!ENTITY para SYSTEM "util/para.xml">
 ]>
 <xsl:stylesheet version="1.0"
               xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -425,6 +426,7 @@
                 </a>
             </xsl:otherwise>
             </xsl:choose>
+        <a class="permalink" href="#{$lowername}" title="{$message[@id='permalink']}">&para;</a>
         </h2>&lf;
 
         <!-- Directive header -->

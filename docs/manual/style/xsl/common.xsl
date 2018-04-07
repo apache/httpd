@@ -18,8 +18,9 @@
 -->
 
 <!DOCTYPE xsl:stylesheet [
-    <!ENTITY nbsp SYSTEM "util/nbsp.xml">
     <!ENTITY lf SYSTEM "util/lf.xml">
+    <!ENTITY nbsp SYSTEM "util/nbsp.xml">
+    <!ENTITY para SYSTEM "util/para.xml">
     <!ENTITY % HTTPD-VERSION SYSTEM "../version.ent">
     %HTTPD-VERSION;
 ]>
@@ -522,6 +523,7 @@ if (typeof(prettyPrint) !== 'undefined') {
           <a id="{@id}" name="{@id}">
               <xsl:apply-templates select="title" mode="print" />
           </a>
+          <a class="permalink" href="#{@id}" title="{$message[@id='permalink']}">&para;</a>
         </xsl:when>
 
         <xsl:otherwise>
