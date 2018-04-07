@@ -99,7 +99,7 @@ AP_IMPLEMENT_HOOK_RUN_FIRST(apr_status_t,dirwalk_stat,
                             (apr_finfo_t *finfo, request_rec *r, apr_int32_t wanted),
                             (finfo, r, wanted), AP_DECLINED)
 AP_IMPLEMENT_HOOK_RUN_FIRST(int,force_authn,
-                          (request_rec *r), (r), DECLINED)
+                            (request_rec *r), (r), DECLINED)
 
 static int auth_internal_per_conf = 0;
 static int auth_internal_per_conf_hooks = 0;
