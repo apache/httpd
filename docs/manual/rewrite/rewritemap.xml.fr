@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1827600:1828122 (outdated) -->
+<!-- English Revision: 1828122 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : VIncent Deffontaines -->
 <!--
@@ -465,6 +465,11 @@ script lui-même est très lent.</li>
 RewriteMap ma-requete "fastdbd:SELECT destination FROM rewrite WHERE source = %s"
     </highlight>
     </example>
+
+    <note><title>Note</title>
+    <p>Le nom de la requête est transmis au pilote de base de données en tant
+    que label pour une requête SQL préparée, et doit donc respecter toutes les
+    règles imposées par votre base de données (comme la sensibilité à la casse).</p></note>
 
   </section>
   <section id="summary">

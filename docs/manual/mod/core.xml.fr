@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1827611:1828061 (outdated) -->
+<!-- English Revision: 1828061 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -4215,6 +4215,56 @@ seulement depuis la version 2.3.3 sous Windows.</compatibility>
         
     </usage>
     <seealso><directive module="core">Protocols</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+    <name>RegexDefaultOptions</name>
+    <description>Configuration des options globales par défaut pour les
+    expressions rationnelles</description>
+    <syntax>RegexDefaultOptions [none] [+|-]<var>option</var> [[+|-]<var>option</var>] ...</syntax>
+    <default>RegexDefaultOptions DOLLAR_ENDONLY</default>
+    <contextlist><context>server config</context></contextlist>
+    <compatibility>Disponible à partir de la version 2.4.30 du serveur HTTP
+    Apache.</compatibility>
+    
+    <usage>
+        <p>Cette directive permet d'ajouter certains comportements par défaut à
+	TOUTES les expressions rationnelles utilisées ultérieurement.</p>
+
+        <p>Toute option précédée d'un '+' est ajoutée aux options déjà définies.<br />
+        Toute option précédée d'un '-' est enlevée des options déjà définies.<br />
+	Toute option non suffixée par '+' ou '-' sera définie et remplacera
+	l'option correspondante éventuellement déjà définie.<br />
+        Le mot-clé <code>none</code> annule toutes les options déjà définies.</p>
+
+        <p><var>option</var> peut être :</p>
+        <dl>
+            <dt><code>ICASE</code></dt>
+            <dd>Utilise une recherche de correspondance insensible à la casse.</dd>
+
+            <dt><code>DOTALL</code></dt>
+            <dd>Le drapeau Perl /s.</dd>
+
+            <dt><code>DOLLAR_ENDONLY</code></dt>
+            <dd>'$' n'est actif qu'à la fin de la chaîne de référence.</dd>
+            <dd>.</dd>
+        </dl>
+        <highlight language="config">
+# 
+RegexDefaultOptions +ICASE +DOLLAR_ENDONLY
+...
+# Supprime l'option ICASE, tout en conservant toutes les autres options
+# préexistantes
+RegexDefaultOptions -ICASE
+...
+# Définit l'option par défaut à DOTALL et annule toutes les autres options
+RegexDefaultOptions DOTALL
+...
+# Annule toutes les options définies
+RegexDefaultOptions none
+...
+        </highlight>
+    </usage>
 </directivesynopsis>
 
 <directivesynopsis>
