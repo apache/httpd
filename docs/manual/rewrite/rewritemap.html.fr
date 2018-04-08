@@ -460,6 +460,11 @@ script lui-même est très lent.</li>
     <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">RewriteMap ma-requete "fastdbd:SELECT destination FROM rewrite WHERE source = %s"</pre>
 </div>
 
+    <div class="note"><h3>Note</h3>
+    <p>Le nom de la requête est transmis au pilote de base de données en tant
+    que label pour une requête SQL préparée, et doit donc respecter toutes les
+    règles imposées par votre base de données (comme la sensibilité à la casse).</p></div>
+
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="summary" id="summary">Résumé</a></h2>

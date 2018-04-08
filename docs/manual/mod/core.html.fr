@@ -102,6 +102,7 @@ disponibles</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#protocols">Protocols</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#protocolshonororder">ProtocolsHonorOrder</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#qualifyredirecturl">QualifyRedirectURL</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#regexdefaultoptions">RegexDefaultOptions</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#registerhttpmethod">RegisterHttpMethod</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rlimitcpu">RLimitCPU</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rlimitmem">RLimitMEM</a></li>
@@ -4168,6 +4169,56 @@ comme si la directive QualifyRedirectURL était définie à ON.</td></tr>
     contiendra quand-même une URL pleinement qualifiée.
     </p>
 
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="regexdefaultoptions" id="regexdefaultoptions">Directive</a> <a name="RegexDefaultOptions" id="RegexDefaultOptions">RegexDefaultOptions</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configuration des options globales par défaut pour les
+    expressions rationnelles</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RegexDefaultOptions [none] [+|-]<var>option</var> [[+|-]<var>option</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>RegexDefaultOptions DOLLAR_ENDONLY</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.30 du serveur HTTP
+    Apache.</td></tr>
+</table>
+        <p>Cette directive permet d'ajouter certains comportements par défaut à
+	TOUTES les expressions rationnelles utilisées ultérieurement.</p>
+
+        <p>Toute option précédée d'un '+' est ajoutée aux options déjà définies.<br />
+        Toute option précédée d'un '-' est enlevée des options déjà définies.<br />
+	Toute option non suffixée par '+' ou '-' sera définie et remplacera
+	l'option correspondante éventuellement déjà définie.<br />
+        Le mot-clé <code>none</code> annule toutes les options déjà définies.</p>
+
+        <p><var>option</var> peut être :</p>
+        <dl>
+            <dt><code>ICASE</code></dt>
+            <dd>Utilise une recherche de correspondance insensible à la casse.</dd>
+
+            <dt><code>DOTALL</code></dt>
+            <dd>Le drapeau Perl /s.</dd>
+
+            <dt><code>DOLLAR_ENDONLY</code></dt>
+            <dd>'$' n'est actif qu'à la fin de la chaîne de référence.</dd>
+            <dd>.</dd>
+        </dl>
+        <pre class="prettyprint lang-config"># 
+RegexDefaultOptions +ICASE +DOLLAR_ENDONLY
+...
+# Supprime l'option ICASE, tout en conservant toutes les autres options
+# préexistantes
+RegexDefaultOptions -ICASE
+...
+# Définit l'option par défaut à DOTALL et annule toutes les autres options
+RegexDefaultOptions DOTALL
+...
+# Annule toutes les options définies
+RegexDefaultOptions none
+...</pre>
+
+    
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="registerhttpmethod" id="registerhttpmethod">Directive</a> <a name="RegisterHttpMethod" id="RegisterHttpMethod">RegisterHttpMethod</a></h2>
