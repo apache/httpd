@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE language SYSTEM "../lang.dtd">
-<!-- English revision: 1741065 -->
+<!-- English revision: 1828588 -->
 <!-- Updated by Luis Gil de Bernabé Pfeiffer lgilbernabe[AT]apache.org -->
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -75,11 +75,11 @@
         <message id="uppercase">ABCDEFGHIJKLMNÑOPQRSTUVWXYZ</message>
         <message id="name-section">Nombre</message>
         <message id="hyphenation">Cesura</message>
-        <message id="foundabug">Bugfix checklist</message>
-        <message id="httpdchangelog">httpd changelog</message>
-        <message id="httpdknownissues">Known issues</message>
-        <message id="httpdreportabug">Report a bug</message>
-        <message id="permalink">Permanent link</message>
+        <message id="foundabug">Lista de comprobación de errores corregidos</message>
+        <message id="httpdchangelog">httpd historial de cambios</message>
+        <message id="httpdknownissues">Problemas Conocidos</message>
+        <message id="httpdreportabug">Reportar un error</message>
+        <message id="permalink">Enlace permanente</message>
 
         <!-- Used in description box for directives -->
         <message id="syntax">Sintaxis</message>
