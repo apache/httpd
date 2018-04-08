@@ -103,7 +103,7 @@ du serveur</td></tr>
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="enable" id="enable">Activation du rapport d'état</a></h2>
+<h2><a name="enable" id="enable">Activation du rapport d'état</a><a title="Lien permanent" href="#enable" class="permalink">&para;</a></h2>
     
 
     <p>Pour n'activer les rapports d'état que pour les navigateurs
@@ -120,7 +120,7 @@ du serveur</td></tr>
     <code>http://votre.serveur/etat-serveur</code>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="autoupdate" id="autoupdate">Actualisation automatique</a></h2>
+<h2><a name="autoupdate" id="autoupdate">Actualisation automatique</a><a title="Lien permanent" href="#autoupdate" class="permalink">&para;</a></h2>
 
     
     <p>Vous pouvez faire en sorte que cette page d'état s'actualise
@@ -131,7 +131,7 @@ du serveur</td></tr>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="machinereadable" id="machinereadable">Fichier d'état lisible par une machine</a></h2>
+<h2><a name="machinereadable" id="machinereadable">Fichier d'état lisible par une machine</a><a title="Lien permanent" href="#machinereadable" class="permalink">&para;</a></h2>
 
     
     <p>La page <code>http://votre.serveur/etat-serveur?auto</code>
@@ -144,7 +144,7 @@ du serveur</td></tr>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="troubleshoot" id="troubleshoot">Utilisation de server-status pour la recherche de défauts de
-    fonctionnement</a></h2>
+    fonctionnement</a><a title="Lien permanent" href="#troubleshoot" class="permalink">&para;</a></h2>
     
 
     <p>La page <code>server-status</code> peut servir de point de départ

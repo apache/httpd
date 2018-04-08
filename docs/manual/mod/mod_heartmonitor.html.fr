@@ -68,7 +68,7 @@ configuration supplémentaire n'est requise pour utiliser
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="heartbeatlisten" id="heartbeatlisten">Directive</a> <a name="HeartbeatListen" id="HeartbeatListen">HeartbeatListen</a></h2>
+<div class="directive-section"><h2><a name="heartbeatlisten" id="heartbeatlisten">Directive</a> <a name="HeartbeatListen" id="HeartbeatListen">HeartbeatListen</a><a title="Lien permanent" href="#heartbeatlisten" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Adresse multicast d'écoute des requêtes entrantes heartbeat</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>HeartbeatListen<var>addr:port</var></code></td></tr>
@@ -93,7 +93,7 @@ configuration supplémentaire n'est requise pour utiliser
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="heartbeatmaxservers" id="heartbeatmaxservers">Directive</a> <a name="HeartbeatMaxServers" id="HeartbeatMaxServers">HeartbeatMaxServers</a></h2>
+<div class="directive-section"><h2><a name="heartbeatmaxservers" id="heartbeatmaxservers">Directive</a> <a name="HeartbeatMaxServers" id="HeartbeatMaxServers">HeartbeatMaxServers</a><a title="Lien permanent" href="#heartbeatmaxservers" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Spécifie le nombre maximal de serveurs qui pourront envoyer
 des requêtes heartbeat à ce serveur.</td></tr>
@@ -112,7 +112,7 @@ des requêtes heartbeat à ce serveur.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="heartbeatstorage" id="heartbeatstorage">Directive</a> <a name="HeartbeatStorage" id="HeartbeatStorage">HeartbeatStorage</a></h2>
+<div class="directive-section"><h2><a name="heartbeatstorage" id="heartbeatstorage">Directive</a> <a name="HeartbeatStorage" id="HeartbeatStorage">HeartbeatStorage</a><a title="Lien permanent" href="#heartbeatstorage" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Chemin vers le stockage des données heartbeat</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>HeartbeatStorage <var>chemin fichier</var></code></td></tr>

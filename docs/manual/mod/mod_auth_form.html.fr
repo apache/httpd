@@ -106,7 +106,7 @@ l'authentification</a></li>
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="basicconfig" id="basicconfig">Configuration de base</a></h2>
+<h2><a name="basicconfig" id="basicconfig">Configuration de base</a><a title="Lien permanent" href="#basicconfig" class="permalink">&para;</a></h2>
 
       <p>Pour protéger une URL particulière avec le module
       <code class="module"><a href="../mod/mod_auth_form.html">mod_auth_form</a></code>, vous devez déterminer l'endroit où
@@ -159,7 +159,7 @@ l'authentification</a></li>
       courante.</p>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="standalone" id="standalone">Page de connexion dédiée</a></h2>
+<h2><a name="standalone" id="standalone">Page de connexion dédiée</a><a title="Lien permanent" href="#standalone" class="permalink">&para;</a></h2>
 
       <p>Le formulaire de connexion peut être contenu dans une page
       indépendante, ou être inclus dans la page courante. </p>
@@ -223,7 +223,7 @@ l'authentification</a></li>
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="inline" id="inline">Connexion à la volée</a></h2>
+<h2><a name="inline" id="inline">Connexion à la volée</a><a title="Lien permanent" href="#inline" class="permalink">&para;</a></h2>
 
       <div class="warning"><h3>Avertissement</h3>
         <p>Il existe un risque, dans certaines circonstances, que le
@@ -292,7 +292,7 @@ SessionCookieName session path=/</pre>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="inlinepreservebody" id="inlinepreservebody">Connexion à la volée avec
-    conservation du contenu</a></h2>
+    conservation du contenu</a><a title="Lien permanent" href="#inlinepreservebody" class="permalink">&para;</a></h2>
 
       <p>Il existe une limite à la technique de connexion à la volée
       décrite ci-dessus ; si un formulaire HTML POST entraîne une
@@ -345,7 +345,7 @@ SessionCookieName session path=/</pre>
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="loggingout" id="loggingout">Déconnexion</a></h2>
+<h2><a name="loggingout" id="loggingout">Déconnexion</a><a title="Lien permanent" href="#loggingout" class="permalink">&para;</a></h2>
 
       <p>Pour permettre à un utilisateur de se déconnecter d'une session
       particulière, vous devez configurer une page pour qu'elle soit
@@ -389,7 +389,7 @@ SessionCookieName session path=/</pre>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="urlencoding" id="urlencoding">Noms d'utilisateurs et mots de
-    passe</a></h2>
+    passe</a><a title="Lien permanent" href="#urlencoding" class="permalink">&para;</a></h2>
     <p>Notez que la soumission d'un formulaire implique l'encodage URL
     (URLEncoding) des données du formulaire, ici le nom d'utilisateur et
     le mot de passe. Vous devez donc choisir des noms d'utilisateurs et
@@ -398,7 +398,7 @@ SessionCookieName session path=/</pre>
     d'obtenir des résultats inattendus.</p>
     </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="authformauthoritative" id="authformauthoritative">Directive</a> <a name="AuthFormAuthoritative" id="AuthFormAuthoritative">AuthFormAuthoritative</a></h2>
+<div class="directive-section"><h2><a name="authformauthoritative" id="authformauthoritative">Directive</a> <a name="AuthFormAuthoritative" id="AuthFormAuthoritative">AuthFormAuthoritative</a><a title="Lien permanent" href="#authformauthoritative" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Détermine si l'autorisation et l'authentification sont confiés à
 des modules de plus bas niveau</td></tr>
@@ -427,7 +427,7 @@ des modules de plus bas niveau</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="authformbody" id="authformbody">Directive</a> <a name="AuthFormBody" id="AuthFormBody">AuthFormBody</a></h2>
+<div class="directive-section"><h2><a name="authformbody" id="authformbody">Directive</a> <a name="AuthFormBody" id="AuthFormBody">AuthFormBody</a><a title="Lien permanent" href="#authformbody" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le nom du champ de formulaire contenant le corps de la
 requête à effectuer en cas de connexion réussie</td></tr>
@@ -450,7 +450,7 @@ requête à effectuer en cas de connexion réussie</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="authformdisablenostore" id="authformdisablenostore">Directive</a> <a name="AuthFormDisableNoStore" id="AuthFormDisableNoStore">AuthFormDisableNoStore</a></h2>
+<div class="directive-section"><h2><a name="authformdisablenostore" id="authformdisablenostore">Directive</a> <a name="AuthFormDisableNoStore" id="AuthFormDisableNoStore">AuthFormDisableNoStore</a><a title="Lien permanent" href="#authformdisablenostore" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Désactive l'en-tête CacheControl no-store sur la page de
 connexion</td></tr>
@@ -474,7 +474,7 @@ connexion</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="authformfakebasicauth" id="authformfakebasicauth">Directive</a> <a name="AuthFormFakeBasicAuth" id="AuthFormFakeBasicAuth">AuthFormFakeBasicAuth</a></h2>
+<div class="directive-section"><h2><a name="authformfakebasicauth" id="authformfakebasicauth">Directive</a> <a name="AuthFormFakeBasicAuth" id="AuthFormFakeBasicAuth">AuthFormFakeBasicAuth</a><a title="Lien permanent" href="#authformfakebasicauth" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Simule une en-tête d'authentification de base</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthFormFakeBasicAuth <var>On|Off</var></code></td></tr>
@@ -496,7 +496,7 @@ connexion</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="authformlocation" id="authformlocation">Directive</a> <a name="AuthFormLocation" id="AuthFormLocation">AuthFormLocation</a></h2>
+<div class="directive-section"><h2><a name="authformlocation" id="authformlocation">Directive</a> <a name="AuthFormLocation" id="AuthFormLocation">AuthFormLocation</a><a title="Lien permanent" href="#authformlocation" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le nom du champ de formulaire qui contiendra l'URL vers
 laquelle l'utilisateur sera redirigé en cas de connexion
@@ -516,7 +516,7 @@ réussie</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="authformloginrequiredlocation" id="authformloginrequiredlocation">Directive</a> <a name="AuthFormLoginRequiredLocation" id="AuthFormLoginRequiredLocation">AuthFormLoginRequiredLocation</a></h2>
+<div class="directive-section"><h2><a name="authformloginrequiredlocation" id="authformloginrequiredlocation">Directive</a> <a name="AuthFormLoginRequiredLocation" id="AuthFormLoginRequiredLocation">AuthFormLoginRequiredLocation</a><a title="Lien permanent" href="#authformloginrequiredlocation" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>L'URL de la page vers laquelle on doit être redirigé si une
 authentification est requise</td></tr>
@@ -546,7 +546,7 @@ depuis la version 2.4.4.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="authformloginsuccesslocation" id="authformloginsuccesslocation">Directive</a> <a name="AuthFormLoginSuccessLocation" id="AuthFormLoginSuccessLocation">AuthFormLoginSuccessLocation</a></h2>
+<div class="directive-section"><h2><a name="authformloginsuccesslocation" id="authformloginsuccesslocation">Directive</a> <a name="AuthFormLoginSuccessLocation" id="AuthFormLoginSuccessLocation">AuthFormLoginSuccessLocation</a><a title="Lien permanent" href="#authformloginsuccesslocation" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>L'URL de la page vers laquelle on doit être redirigé en cas
 de connexion réussie</td></tr>
@@ -575,7 +575,7 @@ depuis la version 2.4.4.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="authformlogoutlocation" id="authformlogoutlocation">Directive</a> <a name="AuthFormLogoutLocation" id="AuthFormLogoutLocation">AuthFormLogoutLocation</a></h2>
+<div class="directive-section"><h2><a name="authformlogoutlocation" id="authformlogoutlocation">Directive</a> <a name="AuthFormLogoutLocation" id="AuthFormLogoutLocation">AuthFormLogoutLocation</a><a title="Lien permanent" href="#authformlogoutlocation" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>L'URL vers laquelle un utilisateur devra être redirigé
 après s'être déconnecté</td></tr>
@@ -616,7 +616,7 @@ depuis la version 2.4.4.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="authformmethod" id="authformmethod">Directive</a> <a name="AuthFormMethod" id="AuthFormMethod">AuthFormMethod</a></h2>
+<div class="directive-section"><h2><a name="authformmethod" id="authformmethod">Directive</a> <a name="AuthFormMethod" id="AuthFormMethod">AuthFormMethod</a><a title="Lien permanent" href="#authformmethod" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le nom du champ de formulaire contenant la méthode de la
 requête à effectuer en cas de connexion réussie</td></tr>
@@ -639,7 +639,7 @@ requête à effectuer en cas de connexion réussie</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="authformmimetype" id="authformmimetype">Directive</a> <a name="AuthFormMimetype" id="AuthFormMimetype">AuthFormMimetype</a></h2>
+<div class="directive-section"><h2><a name="authformmimetype" id="authformmimetype">Directive</a> <a name="AuthFormMimetype" id="AuthFormMimetype">AuthFormMimetype</a><a title="Lien permanent" href="#authformmimetype" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le nom du champ de formulaire contenant le type MIME du
 corps de la requête à effectuer en cas de connexion
@@ -663,7 +663,7 @@ réussie</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="authformpassword" id="authformpassword">Directive</a> <a name="AuthFormPassword" id="AuthFormPassword">AuthFormPassword</a></h2>
+<div class="directive-section"><h2><a name="authformpassword" id="authformpassword">Directive</a> <a name="AuthFormPassword" id="AuthFormPassword">AuthFormPassword</a><a title="Lien permanent" href="#authformpassword" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le nom du champ de formulaire qui contient le mot de passe
 de connexion</td></tr>
@@ -681,7 +681,7 @@ de connexion</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="authformprovider" id="authformprovider">Directive</a> <a name="AuthFormProvider" id="AuthFormProvider">AuthFormProvider</a></h2>
+<div class="directive-section"><h2><a name="authformprovider" id="authformprovider">Directive</a> <a name="AuthFormProvider" id="AuthFormProvider">AuthFormProvider</a><a title="Lien permanent" href="#authformprovider" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le(s) fournisseur(s) d'authentification pour la
 zone concernée</td></tr>
@@ -718,7 +718,7 @@ zone concernée</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="authformsitepassphrase" id="authformsitepassphrase">Directive</a> <a name="AuthFormSitePassphrase" id="AuthFormSitePassphrase">AuthFormSitePassphrase</a></h2>
+<div class="directive-section"><h2><a name="authformsitepassphrase" id="authformsitepassphrase">Directive</a> <a name="AuthFormSitePassphrase" id="AuthFormSitePassphrase">AuthFormSitePassphrase</a><a title="Lien permanent" href="#authformsitepassphrase" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Court-circuite l'authentification pour les sites à fort
 trafic</td></tr>
@@ -759,7 +759,7 @@ trafic</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="authformsize" id="authformsize">Directive</a> <a name="AuthFormSize" id="AuthFormSize">AuthFormSize</a></h2>
+<div class="directive-section"><h2><a name="authformsize" id="authformsize">Directive</a> <a name="AuthFormSize" id="AuthFormSize">AuthFormSize</a><a title="Lien permanent" href="#authformsize" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>La taille maximale en octets du formulaire dont seront
 extraites les informations de connexion</td></tr>
@@ -785,7 +785,7 @@ extraites les informations de connexion</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="authformusername" id="authformusername">Directive</a> <a name="AuthFormUsername" id="AuthFormUsername">AuthFormUsername</a></h2>
+<div class="directive-section"><h2><a name="authformusername" id="authformusername">Directive</a> <a name="AuthFormUsername" id="AuthFormUsername">AuthFormUsername</a><a title="Lien permanent" href="#authformusername" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le nom du champ de formulaire qui contient le nom de
 connexion</td></tr>

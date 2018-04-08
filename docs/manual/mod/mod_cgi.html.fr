@@ -64,6 +64,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#cgi-debug">Débogage des scripts CGI</a></li>
 </ul><h3 class="directives">Directives</h3>
 <ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#cgiscripttimeout">CGIScriptTimeout</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#scriptlog">ScriptLog</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#scriptlogbuffer">ScriptLogBuffer</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#scriptloglength">ScriptLogLength</a></li>
@@ -81,7 +82,7 @@ CGI</a></li>
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="env" id="env">Les variables d'environnement CGI</a></h2>
+<h2><a name="env" id="env">Les variables d'environnement CGI</a><a title="Lien permanent" href="#env" class="permalink">&para;</a></h2>
     <p>Le serveur va définir les variables d'environnement CGI comme
     décrit dans la <a href="http://www.ietf.org/rfc/rfc3875">Spécification CGI</a>, de la
     manière suivante :</p>
@@ -149,7 +150,7 @@ CGI</a></li>
     </p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="cgi-debug" id="cgi-debug">Débogage des scripts CGI</a></h2>
+<h2><a name="cgi-debug" id="cgi-debug">Débogage des scripts CGI</a><a title="Lien permanent" href="#cgi-debug" class="permalink">&para;</a></h2>
     <p>Le débogage des scripts CGI était difficile par le passé,
     principalement parce qu'il n'était pas possible d'étudier la sortie
     (sortie standard et erreurs) des scripts dont l'exécution échouait.
@@ -199,7 +200,26 @@ CGI</a></li>
     
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="scriptlog" id="scriptlog">Directive</a> <a name="ScriptLog" id="ScriptLog">ScriptLog</a></h2>
+<div class="directive-section"><h2><a name="cgiscripttimeout" id="cgiscripttimeout">Directive</a> <a name="CGIScriptTimeout" id="CGIScriptTimeout">CGIScriptTimeout</a><a title="Lien permanent" href="#cgiscripttimeout" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le temps d'attente maximum pour une sortie du programme CGI</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CGIScriptTimeout <var>time</var>[s|ms]</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>La valeur par défaut de la directive <code class="directive"><a href="../mod/core.html#timeout">Timeout</a></code> lorsqu'elle n'est pas définie</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cgi</td></tr>
+</table>
+    <p>Cette directive permet de limiter le temps d'attente jusqu'à une
+    prochaine sortie du programme CGI. Si ce temps est dépassé, le traitement de
+    la requête et l'exécution du programme CGI sont terminés. </p>
+
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">CGIScriptTimeout 20</pre>
+</div>
+
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="scriptlog" id="scriptlog">Directive</a> <a name="ScriptLog" id="ScriptLog">ScriptLog</a><a title="Lien permanent" href="#scriptlog" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Chemin du fichier journal des erreurs du script
 CGI</td></tr>
@@ -240,7 +260,7 @@ CGI</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="scriptlogbuffer" id="scriptlogbuffer">Directive</a> <a name="ScriptLogBuffer" id="ScriptLogBuffer">ScriptLogBuffer</a></h2>
+<div class="directive-section"><h2><a name="scriptlogbuffer" id="scriptlogbuffer">Directive</a> <a name="ScriptLogBuffer" id="ScriptLogBuffer">ScriptLogBuffer</a><a title="Lien permanent" href="#scriptlogbuffer" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Taille maximale des requêtes PUT ou POST qui seront
 enregistrées dans le journal du script</td></tr>
@@ -259,7 +279,7 @@ enregistrées dans le journal du script</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="scriptloglength" id="scriptloglength">Directive</a> <a name="ScriptLogLength" id="ScriptLogLength">ScriptLogLength</a></h2>
+<div class="directive-section"><h2><a name="scriptloglength" id="scriptloglength">Directive</a> <a name="ScriptLogLength" id="ScriptLogLength">ScriptLogLength</a><a title="Lien permanent" href="#scriptloglength" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Taille maximale du fichier journal des scripts
 CGI</td></tr>

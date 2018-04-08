@@ -82,7 +82,7 @@ serveur HTTP Apache</a></li>
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="browsermatch" id="browsermatch">Directive</a> <a name="BrowserMatch" id="BrowserMatch">BrowserMatch</a></h2>
+<div class="directive-section"><h2><a name="browsermatch" id="browsermatch">Directive</a> <a name="BrowserMatch" id="BrowserMatch">BrowserMatch</a><a title="Lien permanent" href="#browsermatch" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit des variables d'environnement en fonction du
 contenu de l'en-tête HTTP User-Agent</td></tr>
@@ -110,7 +110,7 @@ BrowserMatch MSIE !javascript</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="browsermatchnocase" id="browsermatchnocase">Directive</a> <a name="BrowserMatchNoCase" id="BrowserMatchNoCase">BrowserMatchNoCase</a></h2>
+<div class="directive-section"><h2><a name="browsermatchnocase" id="browsermatchnocase">Directive</a> <a name="BrowserMatchNoCase" id="BrowserMatchNoCase">BrowserMatchNoCase</a><a title="Lien permanent" href="#browsermatchnocase" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit des variables d'environnement en fonction du
 contenu de l'en-tête HTTP User-Agent sans tenir compte de la
@@ -141,7 +141,7 @@ SetEnvIfNoCase User-Agent Robot is_a_robot</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="setenvif" id="setenvif">Directive</a> <a name="SetEnvIf" id="SetEnvIf">SetEnvIf</a></h2>
+<div class="directive-section"><h2><a name="setenvif" id="setenvif">Directive</a> <a name="SetEnvIf" id="SetEnvIf">SetEnvIf</a><a title="Lien permanent" href="#setenvif" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit des variables d'environnement en fonction des
 attributs de la requête</td></tr>
@@ -270,7 +270,7 @@ serveur HTTP Apache</a> pour des exemples supplémentaires.
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="setenvifexpr" id="setenvifexpr">Directive</a> <a name="SetEnvIfExpr" id="SetEnvIfExpr">SetEnvIfExpr</a></h2>
+<div class="directive-section"><h2><a name="setenvifexpr" id="setenvifexpr">Directive</a> <a name="SetEnvIfExpr" id="SetEnvIfExpr">SetEnvIfExpr</a><a title="Lien permanent" href="#setenvifexpr" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit des variables d'environnement en fonction d'une expression ap_expr</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SetEnvIfExpr <em>expr
@@ -312,7 +312,7 @@ similaires.</li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="setenvifnocase" id="setenvifnocase">Directive</a> <a name="SetEnvIfNoCase" id="SetEnvIfNoCase">SetEnvIfNoCase</a></h2>
+<div class="directive-section"><h2><a name="setenvifnocase" id="setenvifnocase">Directive</a> <a name="SetEnvIfNoCase" id="SetEnvIfNoCase">SetEnvIfNoCase</a><a title="Lien permanent" href="#setenvifnocase" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit des variables d'environnement en fonction des
 attributs de la requête sans tenir compte de la casse</td></tr>

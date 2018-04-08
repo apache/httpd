@@ -62,7 +62,7 @@ comme non entièrement initialisés.</p>
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="heartbeatstorage" id="heartbeatstorage">Directive</a> <a name="HeartbeatStorage" id="HeartbeatStorage">HeartbeatStorage</a></h2>
+<div class="directive-section"><h2><a name="heartbeatstorage" id="heartbeatstorage">Directive</a> <a name="HeartbeatStorage" id="HeartbeatStorage">HeartbeatStorage</a><a title="Lien permanent" href="#heartbeatstorage" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Indique le chemin permettant de lire les données
 heartbeat</td></tr>

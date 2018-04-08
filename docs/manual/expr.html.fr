@@ -53,7 +53,7 @@
 </ul><h3>Voir aussi</h3><ul class="seealso"><li><code class="directive"><a href="./mod/core.html#if">If</a></code></li><li><code class="directive"><a href="./mod/core.html#if">&lt;If&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#elseif">&lt;ElseIf&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#else">&lt;Else&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#errordocument">ErrorDocument</a></code></li><li><code class="directive"><a href="./mod/mod_alias.html#alias">Alias</a></code></li><li><code class="directive"><a href="./mod/mod_alias.html#scriptalias">ScriptAlias</a></code></li><li><code class="directive"><a href="./mod/mod_alias.html#redirect">Redirect</a></code></li><li><code class="directive"><a href="./mod/mod_auth_basic.html#authbasicfake">AuthBasicFake</a></code></li><li><code class="directive"><a href="./mod/mod_auth_form.html#authformloginrequiredlocation">AuthFormLoginRequiredLocation</a></code></li><li><code class="directive"><a href="./mod/mod_auth_form.html#authformloginsuccesslocation">AuthFormLoginSuccessLocation</a></code></li><li><code class="directive"><a href="./mod/mod_auth_form.html#authformlogoutlocation">AuthFormLogoutLocation</a></code></li><li><code class="directive"><a href="./mod/mod_authn_core.html#authname">AuthName</a></code></li><li><code class="directive"><a href="./mod/mod_authn_core.html#authtype">AuthType</a></code></li><li><code class="directive"><a href="./mod/mod_rewrite.html#rewritecond">RewriteCond</a></code></li><li><code class="directive"><a href="./mod/mod_setenvif.html#setenvifexpr">SetEnvIfExpr</a></code></li><li><code class="directive"><a href="./mod/mod_headers.html#header">Header</a></code></li><li><code class="directive"><a href="./mod/mod_headers.html#requestheader">RequestHeader</a></code></li><li><code class="directive"><a href="./mod/mod_filter.html#filterprovider">FilterProvider</a></code></li><li><code class="directive"><a href="./mod/mod_crypto.html#cryptokey">CryptoKey</a></code></li><li><code class="directive"><a href="./mod/mod_crypto.html#cryptoiv">CryptoIV</a></code></li><li><a href="mod/mod_authz_core.html#reqexpr">Require expr</a></li><li><a href="mod/mod_authnz_ldap.html#requser">Require ldap-user</a></li><li><a href="mod/mod_authnz_ldap.html#reqgroup">Require ldap-group</a></li><li><a href="mod/mod_authnz_ldap.html#reqdn">Require ldap-dn</a></li><li><a href="mod/mod_authnz_ldap.html#reqattribute">Require ldap-attribute</a></li><li><a href="mod/mod_authnz_ldap.html#reqfilter">Require ldap-filter</a></li><li><a href="mod/mod_authnz_ldap.html#reqsearch">Require ldap-search</a></li><li><a href="mod/mod_authz_dbd.html#reqgroup">Require dbd-group</a></li><li><a href="mod/mod_authz_dbm.html#reqgroup">Require dbm-group</a></li><li><a href="mod/mod_authz_groupfile.html#reqgroup">Require group</a></li><li><a href="mod/mod_authz_host.html#reqhost">Require host</a></li><li><code class="directive"><a href="./mod/mod_ssl.html#sslrequire">SSLRequire</a></code></li><li><code class="directive"><a href="./mod/mod_log_debug.html#logmessage">LogMessage</a></code></li><li><code class="module"><a href="./mod/mod_include.html">mod_include</a></code></li><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="grammar" id="grammar">Syntaxe en Forme de Backus-Naur</a></h2>
+<h2><a name="grammar" id="grammar">Syntaxe en Forme de Backus-Naur</a><a title="Lien permanent" href="#grammar" class="permalink">&para;</a></h2>
     
       <p>La <a href="http://fr.wikipedia.org/wiki/Forme_de_Backus-Naur">Forme de Backus-Naur</a>
       (souvent abrégée en BNF, de l'anglais Backus-Naur Form) est une notation permettant de décrire
@@ -173,7 +173,7 @@ DIGIT       ::= &lt;any US-ASCII digit "0".."9"&gt;</pre>
 </blockquote>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="vars" id="vars">Variables</a></h2>
+<h2><a name="vars" id="vars">Variables</a><a title="Lien permanent" href="#vars" class="permalink">&para;</a></h2>
     
 
     <p>L'interpréteur d'expressions fournit plusieurs variables de la
@@ -363,7 +363,7 @@ DIGIT       ::= &lt;any US-ASCII digit "0".."9"&gt;</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="binop" id="binop">Opérateurs binaires</a></h2>
+<h2><a name="binop" id="binop">Opérateurs binaires</a><a title="Lien permanent" href="#binop" class="permalink">&para;</a></h2>
     
 
     <p>À l'exception de quelques opérateurs de comparaison internes, les
@@ -440,7 +440,7 @@ DIGIT       ::= &lt;any US-ASCII digit "0".."9"&gt;</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="unnop" id="unnop">Opérateurs unaires</a></h2>
+<h2><a name="unnop" id="unnop">Opérateurs unaires</a><a title="Lien permanent" href="#unnop" class="permalink">&para;</a></h2>
     
 
     <p>Les opérateurs unaires acceptent un seul argument et sont
@@ -505,7 +505,7 @@ DIGIT       ::= &lt;any US-ASCII digit "0".."9"&gt;</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="functions" id="functions">Fonctions</a></h2>
+<h2><a name="functions" id="functions">Fonctions</a><a title="Lien permanent" href="#functions" class="permalink">&para;</a></h2>
     
 
     <p>Normalement, les fonctions dont la valeur est une chaîne acceptent une chaîne
@@ -628,7 +628,7 @@ DIGIT       ::= &lt;any US-ASCII digit "0".."9"&gt;</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="examples" id="examples">Exemples d'expressions</a></h2>
+<h2><a name="examples" id="examples">Exemples d'expressions</a><a title="Lien permanent" href="#examples" class="permalink">&para;</a></h2>
     
 	
 	<p>Les exemples suivants montent comment utiliser les
@@ -704,7 +704,7 @@ Require expr "IP Address:%{REMOTE_ADDR}" -in split/, /, join PeerExtList('subjec
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="other" id="other">Autres</a></h2>
+<h2><a name="other" id="other">Autres</a><a title="Lien permanent" href="#other" class="permalink">&para;</a></h2>
     
 
     <table class="bordered"><tr class="header"><th>Nom</th><th>Alternative</th> <th>Description</th></tr>
@@ -735,7 +735,7 @@ Require expr "IP Address:%{REMOTE_ADDR}" -in split/, /, join PeerExtList('subjec
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="sslrequire" id="sslrequire">Comparaison avec SSLRequire</a></h2>
+<h2><a name="sslrequire" id="sslrequire">Comparaison avec SSLRequire</a><a title="Lien permanent" href="#sslrequire" class="permalink">&para;</a></h2>
     
     <p>La syntaxe <em>ap_expr</em> consiste principalement en une
     surcouche de la syntaxe de la directive obsolète <code class="directive"><a href="./mod/mod_ssl.html#sslrequire">SSLRequire</a></code>. Vous pouvez consulter la
@@ -743,7 +743,7 @@ Require expr "IP Address:%{REMOTE_ADDR}" -in split/, /, join PeerExtList('subjec
     <code class="directive"><a href="./mod/mod_ssl.html#sslrequire">SSLRequire</a></code>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="compatibility" id="compatibility">Historique de version</a></h2>
+<h2><a name="compatibility" id="compatibility">Historique de version</a><a title="Lien permanent" href="#compatibility" class="permalink">&para;</a></h2>
     
     <p>La <a href="#functions">fonction</a> <code>req_novary</code> est
     disponible à partir de la version 2.4.4 du serveur HTTP Apache.</p>

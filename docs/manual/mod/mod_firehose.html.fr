@@ -76,7 +76,7 @@
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="enable" id="enable">Activation de la "Lance à incendie" (Firehose)</a></h2>
+<h2><a name="enable" id="enable">Activation de la "Lance à incendie" (Firehose)</a><a title="Lien permanent" href="#enable" class="permalink">&para;</a></h2>
     
 
     <p>Pour activer ce module, il doit être compilé et chargé via la
@@ -110,7 +110,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="format" id="format">Format du flux</a></h2>
+<h2><a name="format" id="format">Format du flux</a><a title="Lien permanent" href="#format" class="permalink">&para;</a></h2>
     
 
     <p>En général, le serveur gère plusieurs connexions simultanément,
@@ -169,7 +169,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="firehoseconnectioninput" id="firehoseconnectioninput">Directive</a> <a name="FirehoseConnectionInput" id="FirehoseConnectionInput">FirehoseConnectionInput</a></h2>
+<div class="directive-section"><h2><a name="firehoseconnectioninput" id="firehoseconnectioninput">Directive</a> <a name="FirehoseConnectionInput" id="FirehoseConnectionInput">FirehoseConnectionInput</a><a title="Lien permanent" href="#firehoseconnectioninput" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Capture le trafic entrant dans le serveur à chaque
 connexion.</td></tr>
@@ -190,7 +190,7 @@ Apache.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="firehoseconnectionoutput" id="firehoseconnectionoutput">Directive</a> <a name="FirehoseConnectionOutput" id="FirehoseConnectionOutput">FirehoseConnectionOutput</a></h2>
+<div class="directive-section"><h2><a name="firehoseconnectionoutput" id="firehoseconnectionoutput">Directive</a> <a name="FirehoseConnectionOutput" id="FirehoseConnectionOutput">FirehoseConnectionOutput</a><a title="Lien permanent" href="#firehoseconnectionoutput" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Capture le trafic sortant du serveur à chaque connexion</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>FirehoseConnectionOutput <var>[ block | nonblock ]</var> <var>filename</var></code></td></tr>
@@ -211,7 +211,7 @@ Apache.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="firehoseproxyconnectioninput" id="firehoseproxyconnectioninput">Directive</a> <a name="FirehoseProxyConnectionInput" id="FirehoseProxyConnectionInput">FirehoseProxyConnectionInput</a></h2>
+<div class="directive-section"><h2><a name="firehoseproxyconnectioninput" id="firehoseproxyconnectioninput">Directive</a> <a name="FirehoseProxyConnectionInput" id="FirehoseProxyConnectionInput">FirehoseProxyConnectionInput</a><a title="Lien permanent" href="#firehoseproxyconnectioninput" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Capture le trafic entrant dans mod_proxy</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>FirehoseProxyConnectionInput <var>[ block | nonblock ]</var> <var>filename</var></code></td></tr>
@@ -228,7 +228,7 @@ Apache.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="firehoseproxyconnectionoutput" id="firehoseproxyconnectionoutput">Directive</a> <a name="FirehoseProxyConnectionOutput" id="FirehoseProxyConnectionOutput">FirehoseProxyConnectionOutput</a></h2>
+<div class="directive-section"><h2><a name="firehoseproxyconnectionoutput" id="firehoseproxyconnectionoutput">Directive</a> <a name="FirehoseProxyConnectionOutput" id="FirehoseProxyConnectionOutput">FirehoseProxyConnectionOutput</a><a title="Lien permanent" href="#firehoseproxyconnectionoutput" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Capture le trafic envoyé par mod_proxy</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>FirehoseProxyConnectionOutput <var>[ block | nonblock ]</var> <var>filename</var></code></td></tr>
@@ -246,7 +246,7 @@ Apache.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="firehoserequestinput" id="firehoserequestinput">Directive</a> <a name="FirehoseRequestInput" id="FirehoseRequestInput">FirehoseRequestInput</a></h2>
+<div class="directive-section"><h2><a name="firehoserequestinput" id="firehoserequestinput">Directive</a> <a name="FirehoseRequestInput" id="FirehoseRequestInput">FirehoseRequestInput</a><a title="Lien permanent" href="#firehoserequestinput" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Capture le trafic entrant dans le serveur à chaque requête</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>FirehoseRequestInput <var>[ block | nonblock ]</var> <var>filename</var></code></td></tr>
@@ -266,7 +266,7 @@ Apache.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="firehoserequestoutput" id="firehoserequestoutput">Directive</a> <a name="FirehoseRequestOutput" id="FirehoseRequestOutput">FirehoseRequestOutput</a></h2>
+<div class="directive-section"><h2><a name="firehoserequestoutput" id="firehoserequestoutput">Directive</a> <a name="FirehoseRequestOutput" id="FirehoseRequestOutput">FirehoseRequestOutput</a><a title="Lien permanent" href="#firehoserequestoutput" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Capture le trafic sortant du serveur à chaque requête</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>FirehoseRequestOutput <var>[ block | nonblock ]</var> <var>filename</var></code></td></tr>

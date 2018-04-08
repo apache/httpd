@@ -66,7 +66,7 @@
 	des sources</a></li><li><a href="invoking.html">Démarrer Apache httpd</a></li><li><a href="stopping.html">Arrêt et redémarrage</a></li><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="overview" id="overview">Aperçu pour les plus pressés</a></h2>
+<h2><a name="overview" id="overview">Aperçu pour les plus pressés</a><a title="Lien permanent" href="#overview" class="permalink">&para;</a></h2>
 
     <dl>
     <dt>Installation sous Fedora/CentOS/Red Hat Enterprise Linux</dt>
@@ -164,7 +164,7 @@ sudo service apache2 start</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="requirements" id="requirements">Prérequis</a></h2>
+<h2><a name="requirements" id="requirements">Prérequis</a><a title="Lien permanent" href="#requirements" class="permalink">&para;</a></h2>
 
     <p>Les prérequis pour la construction d'Apache httpd sont les suivants:</p>
 
@@ -237,7 +237,7 @@ sudo service apache2 start</pre>
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="download" id="download">Téléchargement</a></h2>
+<h2><a name="download" id="download">Téléchargement</a><a title="Lien permanent" href="#download" class="permalink">&para;</a></h2>
 
     <p>Le serveur HTTP Apache peut être téléchargé à partir du
     <a href="http://httpd.apache.org/download.cgi">site de téléchargement
@@ -259,7 +259,7 @@ sudo service apache2 start</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="extract" id="extract">Extraction</a></h2>
+<h2><a name="extract" id="extract">Extraction</a><a title="Lien permanent" href="#extract" class="permalink">&para;</a></h2>
 
     <p>L'extraction des sources depuis l'archive du serveur HTTP Apache consiste
     simplement à décompresser et à désarchiver cette dernière :</p>
@@ -274,7 +274,7 @@ $ tar xvf httpd-<em>NN</em>.tar
     dans ce répertoire avant de procéder à la compilation du serveur.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="configure" id="configure">Configuration de l'arborescence des sources</a></h2>
+<h2><a name="configure" id="configure">Configuration de l'arborescence des sources</a><a title="Lien permanent" href="#configure" class="permalink">&para;</a></h2>
 
     <p>L'étape suivante consiste à configurer l'arborescence des sources
     d'Apache en fonction de votre plateforme et de vos besoins personnels.
@@ -350,7 +350,7 @@ $ tar xvf httpd-<em>NN</em>.tar
     <code class="program"><a href="./programs/configure.html">configure</a></code> dans sa page de manuel.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="compile" id="compile">Construction</a></h2>
+<h2><a name="compile" id="compile">Construction</a><a title="Lien permanent" href="#compile" class="permalink">&para;</a></h2>
 
     <p>Vous pouvez maintenant construire les différents éléments qui
     composent le paquet Apache en lançant tout simplement la commande :</p>
@@ -362,7 +362,7 @@ $ tar xvf httpd-<em>NN</em>.tar
     en fonction de votre matériel et du nombre de modules que vous avez activés.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="install" id="install">Installation</a></h2>
+<h2><a name="install" id="install">Installation</a><a title="Lien permanent" href="#install" class="permalink">&para;</a></h2>
 
     <p>Il est temps maintenant d'installer le paquet dans le répertoire
     d'installation défini par <em>PREFIX</em> (voir plus haut l'option
@@ -379,7 +379,7 @@ $ tar xvf httpd-<em>NN</em>.tar
     vos fichiers de configuration ou autres documents.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="customize" id="customize">Personnalisation</a></h2>
+<h2><a name="customize" id="customize">Personnalisation</a><a title="Lien permanent" href="#customize" class="permalink">&para;</a></h2>
 
     <p>Ensuite, vous pourrez personnaliser votre Serveur HTTP Apache en
     éditant les <a href="configuring.html">fichiers de configuration</a>
@@ -393,7 +393,7 @@ $ tar xvf httpd-<em>NN</em>.tar
     récente de ce manuel et la liste complète des <a href="mod/directives.html">directives de configuration</a> disponibles.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="test" id="test">Test</a></h2>
+<h2><a name="test" id="test">Test</a><a title="Lien permanent" href="#test" class="permalink">&para;</a></h2>
 
     <p>Vous pouvez maintenant <a href="invoking.html">démarrer</a> votre
     serveur HTTP Apache en lançant:</p>
@@ -410,7 +410,7 @@ $ tar xvf httpd-<em>NN</em>.tar
 <div class="example"><p><code>$ <em>PREFIX</em>/bin/apachectl -k stop</code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="upgrading" id="upgrading">Mise à jour</a></h2>
+<h2><a name="upgrading" id="upgrading">Mise à jour</a><a title="Lien permanent" href="#upgrading" class="permalink">&para;</a></h2>
 
     <p>La première étape d'une mise à jour consiste à lire l'annonce de la
     sortie de la nouvelle version et le fichier <code>CHANGES</code>
@@ -473,7 +473,7 @@ $ tar xvf httpd-<em>NN</em>.tar
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="thirdp" id="thirdp">Paquets tiers</a></h2>
+<h2><a name="thirdp" id="thirdp">Paquets tiers</a><a title="Lien permanent" href="#thirdp" class="permalink">&para;</a></h2>
 
     <p>De nombreux tiers fournissent leur propre distribution du
     serveur HTTP Apache à installer sur une plate-forme particulière. On

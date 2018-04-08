@@ -80,7 +80,7 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="mimetypes" id="mimetypes">Pourquoi les fichiers du type
-    <var>xxx</var> ne sont-ils pas téléchargeables par FTP ?</a></h2>
+    <var>xxx</var> ne sont-ils pas téléchargeables par FTP ?</a><a title="Lien permanent" href="#mimetypes" class="permalink">&para;</a></h2>
       <p>Ce type particulier de fichier n'est probablement pas défini en
       temps que <code>application/octet-stream</code> dans le fichier
       de configuration mime.types de votre mandataire. La ligne suivante
@@ -94,7 +94,7 @@
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="type" id="type">Comment puis-je forcer le téléchargement
-    FTP en mode ASCII du fichier <var>xxx</var> ?</a></h2>
+    FTP en mode ASCII du fichier <var>xxx</var> ?</a><a title="Lien permanent" href="#type" class="permalink">&para;</a></h2>
       <p>Dans les rares siruations où vous devez télécharger un fichier
       spécifique en utilisant la méthode de transfert FTP
       <code>ASCII</code> (alors que le mode transfert par défaut est
@@ -106,14 +106,14 @@
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="ftpnonget" id="ftpnonget">Comment puis-je effectuer un
-    chargement FTP ?</a></h2>
+    chargement FTP ?</a><a title="Lien permanent" href="#ftpnonget" class="permalink">&para;</a></h2>
     <p>Actuellement, seule la méthode GET est supportée pour FTP dans
     mod_proxy. Vous pouvez par contre utiliser le chargement HTTP (POST
     or PUT) via un mandataire Apache.</p>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="percent2fhck" id="percent2fhck">Comment puis-je accéder par FTP à
-    des fichiers situés en dehors de mon répertoire home ?</a></h2>
+    des fichiers situés en dehors de mon répertoire home ?</a><a title="Lien permanent" href="#percent2fhck" class="permalink">&para;</a></h2>
       <p>Un URI FTP est considéré comme relatif au répertoire home de
       l'utilisateur connecté. Hélas, vous ne pouvez pas utiliser /../
       pour atteindre des répertoires de niveau supérieur, car les points
@@ -135,7 +135,7 @@
 <div class="section">
 <h2><a name="ftppass" id="ftppass">Comment puis-je dissimuler le mot de
     passe FTP apparaissant en clair dans la ligne d'URL de mon
-    navigateur ?</a></h2>
+    navigateur ?</a><a title="Lien permanent" href="#ftppass" class="permalink">&para;</a></h2>
       <p>Apache utilise différentes stratégies pour effectuer une
       connexion à un serveur FTP à l'aide d'un nom d'utilisateur et d'un
       mot de passe. En l'absence de nom d'utilisateur et de mot de passe
@@ -188,7 +188,7 @@
 <div class="section">
 <h2><a name="wildcard" id="wildcard">Pourquoi reçois-je un listing de
     fichiers alors que j'ai demandé le téléchargement d'un fichier
-    ?</a></h2>
+    ?</a><a title="Lien permanent" href="#wildcard" class="permalink">&para;</a></h2>
       <p>Apache examine l'URL de la requête afin de permettre la
       navigation dans les répertoires d'un serveur FTP ainsi que le
       téléchargement de fichiers. Si elle ressemble à un répertoire, ou
@@ -201,7 +201,7 @@
       </p>
     </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="proxyftpdircharset" id="proxyftpdircharset">Directive</a> <a name="ProxyFtpDirCharset" id="ProxyFtpDirCharset">ProxyFtpDirCharset</a></h2>
+<div class="directive-section"><h2><a name="proxyftpdircharset" id="proxyftpdircharset">Directive</a> <a name="ProxyFtpDirCharset" id="ProxyFtpDirCharset">ProxyFtpDirCharset</a><a title="Lien permanent" href="#proxyftpdircharset" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le jeu de caractères des listings FTP
 mandatés</td></tr>
@@ -219,7 +219,7 @@ depuis <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="proxyftpescapewildcards" id="proxyftpescapewildcards">Directive</a> <a name="ProxyFtpEscapeWildcards" id="ProxyFtpEscapeWildcards">ProxyFtpEscapeWildcards</a></h2>
+<div class="directive-section"><h2><a name="proxyftpescapewildcards" id="proxyftpescapewildcards">Directive</a> <a name="ProxyFtpEscapeWildcards" id="ProxyFtpEscapeWildcards">ProxyFtpEscapeWildcards</a><a title="Lien permanent" href="#proxyftpescapewildcards" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Les caractères génériques dans les noms de fichiers
 doivent-ils être échappés lorsqu'ils sont envoyés au serveur FTP ?</td></tr>
@@ -245,7 +245,7 @@ doivent-ils être échappés lorsqu'ils sont envoyés au serveur FTP ?</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="proxyftplistonwildcard" id="proxyftplistonwildcard">Directive</a> <a name="ProxyFtpListOnWildcard" id="ProxyFtpListOnWildcard">ProxyFtpListOnWildcard</a></h2>
+<div class="directive-section"><h2><a name="proxyftplistonwildcard" id="proxyftplistonwildcard">Directive</a> <a name="ProxyFtpListOnWildcard" id="ProxyFtpListOnWildcard">ProxyFtpListOnWildcard</a><a title="Lien permanent" href="#proxyftplistonwildcard" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Les caractères génériques dans les noms de fichiers
 demandés doivent-ils déclencher l'affichage d'un listing ?</td></tr>

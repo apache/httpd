@@ -55,7 +55,7 @@ de termes utilisés par mod_ssl.</p>
 </ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="configuration" id="configuration">Directives de configuration</a></h2>
+<h2><a name="configuration" id="configuration">Directives de configuration</a><a title="Lien permanent" href="#configuration" class="permalink">&para;</a></h2>
 <p>La correspondance entre les directives de configuration qu'utilise
 Apache-SSL 1.x et mod_ssl 2.0.x est fournie dans le <a href="#table1">Tableau
 1</a>. La correspondance depuis Sioux 1.x et Stronghold 2.x n'est que
@@ -121,7 +121,7 @@ de niveau module <code class="directive"><a href="../mod/core.html#loglevel">Log
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="variables" id="variables">Variables d'environnement</a></h2>
+<h2><a name="variables" id="variables">Variables d'environnement</a><a title="Lien permanent" href="#variables" class="permalink">&para;</a></h2>
 
 <p>La correspondance entre les noms des variables d'environnement utilisés par
 les solutions SSL plus anciennes et les noms utilisés par mod_ssl est fournie
@@ -199,7 +199,7 @@ dans le <a href="#table2">Tableau 2</a>.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="customlog" id="customlog">Fonctions de personnalisation des journaux</a></h2>
+<h2><a name="customlog" id="customlog">Fonctions de personnalisation des journaux</a><a title="Lien permanent" href="#customlog" class="permalink">&para;</a></h2>
 <p>Quand mod_ssl est activé, le <a href="../mod/mod_log_config.html#formats">Format de journal courant
 (Custom Log Format)</a> du module <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code> possède
 des fonctions supplémentaires comme indiqué dans le chapitre de référence.

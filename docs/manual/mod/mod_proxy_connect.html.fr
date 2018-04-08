@@ -72,7 +72,7 @@ des requêtes <code>CONNECT</code></td></tr>
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="notes" id="notes">Informations sur les requêtes</a></h2>
+<h2><a name="notes" id="notes">Informations sur les requêtes</a><a title="Lien permanent" href="#notes" class="permalink">&para;</a></h2>
     <p><code class="module"><a href="../mod/mod_proxy_connect.html">mod_proxy_connect</a></code> enregistre les informations
     suivantes pour journalisation via le format <code>%{NOMVAR}n</code>
     dans les directives <code class="directive"><a href="../mod/mod_log_config.html#logformat">LogFormat</a></code> ou <code class="directive"><a href="../mod/core.html#errorlogformat">ErrorLogFormat</a></code> :
@@ -96,7 +96,7 @@ des requêtes <code>CONNECT</code></td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="allowconnect" id="allowconnect">Directive</a> <a name="AllowCONNECT" id="AllowCONNECT">AllowCONNECT</a></h2>
+<div class="directive-section"><h2><a name="allowconnect" id="allowconnect">Directive</a> <a name="AllowCONNECT" id="AllowCONNECT">AllowCONNECT</a><a title="Lien permanent" href="#allowconnect" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ports autorisés à se <code>CONNECT</code>er à travers le
 mandataire</td></tr>

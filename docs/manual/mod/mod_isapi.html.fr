@@ -69,7 +69,7 @@
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="usage" id="usage">Utilisation</a></h2>
+<h2><a name="usage" id="usage">Utilisation</a><a title="Lien permanent" href="#usage" class="permalink">&para;</a></h2>
 
     <p>Dans le fichier de configuration du serveur, utilisez la
     directive <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code> pour
@@ -106,7 +106,7 @@
     le module <code class="module"><a href="../mod/mod_isapi.html">mod_isapi</a></code>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="notes" id="notes">Notes additionnelles</a></h2>
+<h2><a name="notes" id="notes">Notes additionnelles</a><a title="Lien permanent" href="#notes" class="permalink">&para;</a></h2>
 
     <p>L'implémentation ISAPI d'Apache se conforme à toutes les
     spécifications ISAPI 2.0, à l'exception de certaines extensions
@@ -138,7 +138,7 @@
     pas encore été planifié.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="journal" id="journal">Journal du programmeur</a></h2>
+<h2><a name="journal" id="journal">Journal du programmeur</a><a title="Lien permanent" href="#journal" class="permalink">&para;</a></h2>
 
     <p>Si vous écrivez des modules <code class="module"><a href="../mod/mod_isapi.html">mod_isapi</a></code> Apache
     2.0, vous devez limiter vos appels à
@@ -248,7 +248,7 @@
     des .dlls ISAPI à des fins de performances.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="isapiappendlogtoerrors" id="isapiappendlogtoerrors">Directive</a> <a name="ISAPIAppendLogToErrors" id="ISAPIAppendLogToErrors">ISAPIAppendLogToErrors</a></h2>
+<div class="directive-section"><h2><a name="isapiappendlogtoerrors" id="isapiappendlogtoerrors">Directive</a> <a name="ISAPIAppendLogToErrors" id="ISAPIAppendLogToErrors">ISAPIAppendLogToErrors</a><a title="Lien permanent" href="#isapiappendlogtoerrors" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enregistrement des requêtes
 <code>HSE_APPEND_LOG_PARAMETER</code> de la part des extensions ISAPI
@@ -266,7 +266,7 @@ dans le journal des erreurs</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="isapiappendlogtoquery" id="isapiappendlogtoquery">Directive</a> <a name="ISAPIAppendLogToQuery" id="ISAPIAppendLogToQuery">ISAPIAppendLogToQuery</a></h2>
+<div class="directive-section"><h2><a name="isapiappendlogtoquery" id="isapiappendlogtoquery">Directive</a> <a name="ISAPIAppendLogToQuery" id="ISAPIAppendLogToQuery">ISAPIAppendLogToQuery</a><a title="Lien permanent" href="#isapiappendlogtoquery" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enregistre les requêtes
 <code>HSE_APPEND_LOG_PARAMETER</code> de la part des extensions ISAPI
@@ -285,7 +285,7 @@ dans la partie arguments de la requête</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="isapicachefile" id="isapicachefile">Directive</a> <a name="ISAPICacheFile" id="ISAPICacheFile">ISAPICacheFile</a></h2>
+<div class="directive-section"><h2><a name="isapicachefile" id="isapicachefile">Directive</a> <a name="ISAPICacheFile" id="ISAPICacheFile">ISAPICacheFile</a><a title="Lien permanent" href="#isapicachefile" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fichiers .dll ISAPI devant être chargés au
 démarrage</td></tr>
@@ -306,7 +306,7 @@ démarrage</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="isapifakeasync" id="isapifakeasync">Directive</a> <a name="ISAPIFakeAsync" id="ISAPIFakeAsync">ISAPIFakeAsync</a></h2>
+<div class="directive-section"><h2><a name="isapifakeasync" id="isapifakeasync">Directive</a> <a name="ISAPIFakeAsync" id="ISAPIFakeAsync">ISAPIFakeAsync</a><a title="Lien permanent" href="#isapifakeasync" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Emulation du support des entrées/sorties asynchrones pour
 les appels ISAPI</td></tr>
@@ -322,7 +322,7 @@ les appels ISAPI</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="isapilognotsupported" id="isapilognotsupported">Directive</a> <a name="ISAPILogNotSupported" id="ISAPILogNotSupported">ISAPILogNotSupported</a></h2>
+<div class="directive-section"><h2><a name="isapilognotsupported" id="isapilognotsupported">Directive</a> <a name="ISAPILogNotSupported" id="ISAPILogNotSupported">ISAPILogNotSupported</a><a title="Lien permanent" href="#isapilognotsupported" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Journalisation des demandes de fonctionnalités non
 supportées de la part des extensions ISAPI</td></tr>
@@ -341,7 +341,7 @@ supportées de la part des extensions ISAPI</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="isapireadaheadbuffer" id="isapireadaheadbuffer">Directive</a> <a name="ISAPIReadAheadBuffer" id="ISAPIReadAheadBuffer">ISAPIReadAheadBuffer</a></h2>
+<div class="directive-section"><h2><a name="isapireadaheadbuffer" id="isapireadaheadbuffer">Directive</a> <a name="ISAPIReadAheadBuffer" id="ISAPIReadAheadBuffer">ISAPIReadAheadBuffer</a><a title="Lien permanent" href="#isapireadaheadbuffer" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Taille du tampon de lecture anticipée envoyé aux extensions
 ISAPI</td></tr>
