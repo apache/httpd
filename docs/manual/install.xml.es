@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.es.xsl"?>
-<!-- English Revision: 1760549:1824141 (outdated) -->
+<!-- English Revision: 1824141 -->
 <!-- Spanish Translation by: Luis Gil de Bernabé --> 
-<!-- Reviewed by: Sergio Ramos -->
+
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -50,6 +50,34 @@
 <seealso><a href="stopping.html">Parada y Reinicio</a></seealso>
 
 <section id="overview"><title>Descripción general para los impacientes</title>
+
+   <dl>
+       <dt>Instalando en Fedora/CentOS/Red Hat Enterprise Linux</dt>
+       <dd>
+       <highlight>
+   sudo yum install httpd
+   sudo service httpd start
+       </highlight>
+   
+         <note type="warning">Las versiones más recientes de estas distribuciones utilizan
+         <code>dnf</code> en lugar de <code>yum</code>. Vea la <a
+       href="https://fedoraproject.org/wiki/Apache_HTTP_Server"> documentación del Proyecto Fedora
+       </a> para más detalles en concreto de esta plataforma.</note>
+         </dd>
+   
+         <dt>Instalación en Ubuntu/Debian</dt>
+         <dd>
+     <highlight>
+   sudo apt install apache2
+   sudo service apache2 start
+     </highlight>
+ 
+<note type="warning">Vea <a href="https://help.ubuntu.com/lts/serverguide/httpd.html">La documentacion oficial de Ubuntu </a> para detalles en concreto de esta plataforma.</note>
+   
+         </dd>
+     
+       <dt>Installing from source</dt>
+       <dd>
 
     <table>
       <columnspec><column width=".13"/><column width=".80"/></columnspec>
@@ -106,6 +134,12 @@
     <p><em>NN</em> hay que reemplazarlo por el número de la versión menor, y <em>PREFIX</em> hay que reemplazarlo por la ruta en la que se va a instalar Apache. Si no especifica ningún valor en <em>PREFIX</em>, el valor por defecto que se toma es /usr/local/apache2.</p>
 
     <p>Cada parte del proceso de configuración e instalación se describe detalladamente más abajo, empezando por los requisitos para compilar e instalar Apache.</p>
+
+     <note type="warning">¿No se encuentra aquí su plataforma o sistema favorito?
+    <a href="http://httpd.apache.org/docs-project/">únete a colaborar y mejorar esta documentación.
+    </a></note>
+  </dd>
+</dl>
 </section>
 
 <section id="requirements"><title>Requisitos</title>
