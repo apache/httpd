@@ -54,7 +54,7 @@ configuration courante</a></li><li><a href="mass.html">Hébergement virtuel de ma
 dynamiquement</a></li><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="configparsing" id="configparsing">Fichier de configuration</a></h2>
+<h2><a name="configparsing" id="configparsing">Fichier de configuration</a><a title="Lien permanent" href="#configparsing" class="permalink">&para;</a></h2>
 
     <p>Un <em>serveur  principal (main_server)</em> contient toutes
     les définitions qui apparaissent en dehors des sections
@@ -173,7 +173,7 @@ dynamiquement</a></li><li><a href="#comments_section">Commentaires</a></li></ul>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="hostmatching" id="hostmatching">Choix du serveur virtuel</a></h2>
+<h2><a name="hostmatching" id="hostmatching">Choix du serveur virtuel</a><a title="Lien permanent" href="#hostmatching" class="permalink">&para;</a></h2>
 
     <p>À la réception d'une requête, le serveur procède comme suit pour
     déterminer quel serveur virtuel utiliser&nbsp;:</p>
@@ -318,7 +318,7 @@ dynamiquement</a></li><li><a href="#comments_section">Commentaires</a></li></ul>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="tips" id="tips">Trucs et astuces</a></h2>
+<h2><a name="tips" id="tips">Trucs et astuces</a><a title="Lien permanent" href="#tips" class="permalink">&para;</a></h2>
 
     <p>En plus des points évoqués sur la page des
     <a href="../dns-caveats.html#tips">problèmes liés au DNS</a>,

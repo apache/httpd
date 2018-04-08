@@ -64,7 +64,7 @@ client.</p>
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="modemstandard" id="modemstandard">Directive</a> <a name="ModemStandard" id="ModemStandard">ModemStandard</a></h2>
+<div class="directive-section"><h2><a name="modemstandard" id="modemstandard">Directive</a> <a name="ModemStandard" id="ModemStandard">ModemStandard</a><a title="Lien permanent" href="#modemstandard" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Standard de modem à simuler</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ModemStandard V.21|V.26bis|V.32|V.34|V.92</code></td></tr>

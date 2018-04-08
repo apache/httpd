@@ -46,7 +46,7 @@
 </ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="introduction" id="introduction">Introduction</a></h2>
+<h2><a name="introduction" id="introduction">Introduction</a><a title="Lien permanent" href="#introduction" class="permalink">&para;</a></h2>
     
 
     <p>Le serveur HTTP Apache offre tout un ensemble de fonctionnalités
@@ -103,7 +103,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="http-caching" id="http-caching">Mise en cache HTTP à trois états RFC2616</a></h2>
+<h2><a name="http-caching" id="http-caching">Mise en cache HTTP à trois états RFC2616</a><a title="Lien permanent" href="#http-caching" class="permalink">&para;</a></h2>
 
     
 
@@ -460,7 +460,7 @@ Vary: negotiate,accept-language,accept-charset
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="examples" id="examples">Exemples de configuration du cache</a></h2>
+<h2><a name="examples" id="examples">Exemples de configuration du cache</a><a title="Lien permanent" href="#examples" class="permalink">&para;</a></h2>
 
     
 
@@ -632,7 +632,7 @@ CacheSocache dbm:/path/to/datafile</pre>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="socache-caching" id="socache-caching">Mise en cache générale d'objets partagés à deux états de forme
-    clé/valeur</a></h2>
+    clé/valeur</a><a title="Lien permanent" href="#socache-caching" class="permalink">&para;</a></h2>
 
     
 
@@ -680,7 +680,7 @@ CacheSocache dbm:/path/to/datafile</pre>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="file-caching" id="file-caching">Mise en cache à base de fichiers spécialisés</a></h2>
+<h2><a name="file-caching" id="file-caching">Mise en cache à base de fichiers spécialisés</a><a title="Lien permanent" href="#file-caching" class="permalink">&para;</a></h2>
 
     
 
@@ -846,7 +846,7 @@ sys     0m0.000s</pre></div>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="security" id="security">Considérations sur la sécurité</a></h2>
+<h2><a name="security" id="security">Considérations sur la sécurité</a><a title="Lien permanent" href="#security" class="permalink">&para;</a></h2>
     
 
     <h3>Autorisation et contrôle d'accès</h3>

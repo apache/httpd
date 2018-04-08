@@ -58,7 +58,7 @@ d'authentification</a></li>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="authnalias" id="authnalias">Création d'alias de fournisseurs
-d'authentification</a></h2>
+d'authentification</a><a title="Lien permanent" href="#authnalias" class="permalink">&para;</a></h2>
 
     <p>Il est possible de créer des fournisseurs d'authentification
     étendus dans le fichier de configuration et de leur assigner un
@@ -132,7 +132,7 @@ Alias "/secure" "/webpages/secure"
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="authname" id="authname">Directive</a> <a name="AuthName" id="AuthName">AuthName</a></h2>
+<div class="directive-section"><h2><a name="authname" id="authname">Directive</a> <a name="AuthName" id="AuthName">AuthName</a><a title="Lien permanent" href="#authname" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>L'identifiant de l'autorisation à utiliser avec
 l'authentification HTTP</td></tr>
@@ -177,7 +177,7 @@ l'authentification HTTP</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="authnprovideralias" id="authnprovideralias">Directive</a> <a name="AuthnProviderAlias" id="AuthnProviderAlias">&lt;AuthnProviderAlias&gt;</a></h2>
+<div class="directive-section"><h2><a name="authnprovideralias" id="authnprovideralias">Directive</a> <a name="AuthnProviderAlias" id="AuthnProviderAlias">&lt;AuthnProviderAlias&gt;</a><a title="Lien permanent" href="#authnprovideralias" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Regroupe un ensemble de directives qui constituent une
 extension d'un fournisseur d'authentification de base et lui attribue
@@ -200,7 +200,7 @@ l'alias spécifié</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="authtype" id="authtype">Directive</a> <a name="AuthType" id="AuthType">AuthType</a></h2>
+<div class="directive-section"><h2><a name="authtype" id="authtype">Directive</a> <a name="AuthType" id="AuthType">AuthType</a><a title="Lien permanent" href="#authtype" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Type d'authentification utilisateur</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthType None|Basic|Digest|Form</code></td></tr>

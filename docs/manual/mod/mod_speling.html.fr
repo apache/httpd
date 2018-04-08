@@ -78,7 +78,7 @@ erreurs d'écriture mineures.</td></tr>
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="checkbasenamematch" id="checkbasenamematch">Directive</a> <a name="CheckBasenameMatch" id="CheckBasenameMatch">CheckBasenameMatch</a></h2>
+<div class="directive-section"><h2><a name="checkbasenamematch" id="checkbasenamematch">Directive</a> <a name="CheckBasenameMatch" id="CheckBasenameMatch">CheckBasenameMatch</a><a title="Lien permanent" href="#checkbasenamematch" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Vérifie aussi la correspondance des fichiers, même avec des
 extensions différentes</td></tr>
@@ -101,7 +101,7 @@ extensions différentes</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="checkcaseonly" id="checkcaseonly">Directive</a> <a name="CheckCaseOnly" id="CheckCaseOnly">CheckCaseOnly</a></h2>
+<div class="directive-section"><h2><a name="checkcaseonly" id="checkcaseonly">Directive</a> <a name="CheckCaseOnly" id="CheckCaseOnly">CheckCaseOnly</a><a title="Lien permanent" href="#checkcaseonly" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Limite l'action du module aux corrections de
 majuscules</td></tr>
@@ -119,7 +119,7 @@ majuscules</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="checkspelling" id="checkspelling">Directive</a> <a name="CheckSpelling" id="CheckSpelling">CheckSpelling</a></h2>
+<div class="directive-section"><h2><a name="checkspelling" id="checkspelling">Directive</a> <a name="CheckSpelling" id="CheckSpelling">CheckSpelling</a><a title="Lien permanent" href="#checkspelling" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active le module de correction</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CheckSpelling on|off</code></td></tr>

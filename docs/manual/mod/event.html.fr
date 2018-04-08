@@ -84,7 +84,7 @@ mobiliser des threads que pour les connexions en cours de traitement</td></tr>
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="event-worker-relationship" id="event-worker-relationship">Relations avec le MPM Worker</a></h2>
+<h2><a name="event-worker-relationship" id="event-worker-relationship">Relations avec le MPM Worker</a><a title="Lien permanent" href="#event-worker-relationship" class="permalink">&para;</a></h2>
 <p>Le MPM <code class="module"><a href="../mod/event.html">event</a></code> s'inspire du MPM <code class="module"><a href="../mod/worker.html">worker</a></code> qui
 implémente un serveur hybride multi-processus et multi-threads. Un processus de
 contrôle unique (le parent) est chargé de lancer des processus enfants. Chaque
@@ -99,7 +99,7 @@ propose le MPM <code class="module"><a href="../mod/worker.html">worker</a></cod
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="how-it-works" id="how-it-works">Comment tout cela fonctionne</a></h2>
+<h2><a name="how-it-works" id="how-it-works">Comment tout cela fonctionne</a><a title="Lien permanent" href="#how-it-works" class="permalink">&para;</a></h2>
     
     <p>Ce module MPM a été conçu à l'origine pour résoudre le "problème keep
     alive" de HTTP. Lorsqu'un client a effectué une première requête, il peut
@@ -336,7 +336,7 @@ propose le MPM <code class="module"><a href="../mod/worker.html">worker</a></cod
         
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="requirements" id="requirements">Prérequis</a></h2>
+<h2><a name="requirements" id="requirements">Prérequis</a><a title="Lien permanent" href="#requirements" class="permalink">&para;</a></h2>
     <p>Ce MPM dépend des opérations atomiques compare-and-swap
     d'<a class="glossarylink" href="../glossary.html#apr" title="voir glossaire">APR</a> pour la synchronisation des threads. Si
     vous compilez pour une plate-forme x86 et n'avez pas besoin du
@@ -370,7 +370,7 @@ propose le MPM <code class="module"><a href="../mod/worker.html">worker</a></cod
     </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="asyncrequestworkerfactor" id="asyncrequestworkerfactor">Directive</a> <a name="AsyncRequestWorkerFactor" id="AsyncRequestWorkerFactor">AsyncRequestWorkerFactor</a></h2>
+<div class="directive-section"><h2><a name="asyncrequestworkerfactor" id="asyncrequestworkerfactor">Directive</a> <a name="AsyncRequestWorkerFactor" id="AsyncRequestWorkerFactor">AsyncRequestWorkerFactor</a><a title="Lien permanent" href="#asyncrequestworkerfactor" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Limite le nombre de connexions simultanées par thread</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AsyncRequestWorkerFactor <var>facteur</var></code></td></tr>

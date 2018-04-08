@@ -96,7 +96,7 @@ cache HTTP.</td></tr>
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="cachedirlength" id="cachedirlength">Directive</a> <a name="CacheDirLength" id="CacheDirLength">CacheDirLength</a></h2>
+<div class="directive-section"><h2><a name="cachedirlength" id="cachedirlength">Directive</a> <a name="CacheDirLength" id="CacheDirLength">CacheDirLength</a><a title="Lien permanent" href="#cachedirlength" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le nombre de caractères des noms des
 sous-répertoires</td></tr>
@@ -127,7 +127,7 @@ sous-répertoires</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="cachedirlevels" id="cachedirlevels">Directive</a> <a name="CacheDirLevels" id="CacheDirLevels">CacheDirLevels</a></h2>
+<div class="directive-section"><h2><a name="cachedirlevels" id="cachedirlevels">Directive</a> <a name="CacheDirLevels" id="CacheDirLevels">CacheDirLevels</a><a title="Lien permanent" href="#cachedirlevels" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le nombre de niveaux de sous-répertoires que comportera le
 cache.</td></tr>
@@ -156,7 +156,7 @@ cache.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="cachemaxfilesize" id="cachemaxfilesize">Directive</a> <a name="CacheMaxFileSize" id="CacheMaxFileSize">CacheMaxFileSize</a></h2>
+<div class="directive-section"><h2><a name="cachemaxfilesize" id="cachemaxfilesize">Directive</a> <a name="CacheMaxFileSize" id="CacheMaxFileSize">CacheMaxFileSize</a><a title="Lien permanent" href="#cachemaxfilesize" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>&gt;La taille maximale (en octets) d'un document pour pouvoir
 être stocké dans le cache</td></tr>
@@ -175,7 +175,7 @@ cache.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="cacheminfilesize" id="cacheminfilesize">Directive</a> <a name="CacheMinFileSize" id="CacheMinFileSize">CacheMinFileSize</a></h2>
+<div class="directive-section"><h2><a name="cacheminfilesize" id="cacheminfilesize">Directive</a> <a name="CacheMinFileSize" id="CacheMinFileSize">CacheMinFileSize</a><a title="Lien permanent" href="#cacheminfilesize" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>La taille minimale (en octets) d'un document pour pouvoir
 être stocké dans le cache</td></tr>
@@ -194,7 +194,7 @@ cache.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="cachereadsize" id="cachereadsize">Directive</a> <a name="CacheReadSize" id="CacheReadSize">CacheReadSize</a></h2>
+<div class="directive-section"><h2><a name="cachereadsize" id="cachereadsize">Directive</a> <a name="CacheReadSize" id="CacheReadSize">CacheReadSize</a><a title="Lien permanent" href="#cachereadsize" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>La quantité minimale (en octets) de données à lire et à
 mettre en cache avant de les envoyer au client</td></tr>
@@ -223,7 +223,7 @@ mettre en cache avant de les envoyer au client</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="cachereadtime" id="cachereadtime">Directive</a> <a name="CacheReadTime" id="CacheReadTime">CacheReadTime</a></h2>
+<div class="directive-section"><h2><a name="cachereadtime" id="cachereadtime">Directive</a> <a name="CacheReadTime" id="CacheReadTime">CacheReadTime</a><a title="Lien permanent" href="#cachereadtime" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le temps minimum (en millisecondes) qui doit s'écouler
 avant d'envoyer les données au client</td></tr>
@@ -254,7 +254,7 @@ avant d'envoyer les données au client</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="cacheroot" id="cacheroot">Directive</a> <a name="CacheRoot" id="CacheRoot">CacheRoot</a></h2>
+<div class="directive-section"><h2><a name="cacheroot" id="cacheroot">Directive</a> <a name="CacheRoot" id="CacheRoot">CacheRoot</a><a title="Lien permanent" href="#cacheroot" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>La racine du répertoire dans lequel les fichiers du cache
 seront stockés</td></tr>

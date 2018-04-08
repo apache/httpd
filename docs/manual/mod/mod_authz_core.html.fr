@@ -68,7 +68,7 @@ d'autorisation</a></li>
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="logic" id="logic">Conteneurs d'autorisation</a></h2>
+<h2><a name="logic" id="logic">Conteneurs d'autorisation</a><a title="Lien permanent" href="#logic" class="permalink">&para;</a></h2>
 
     <p>Les directives de conteneur d'autorisation <code class="directive"><a href="#requireall">&lt;RequireAll&gt;</a></code>,
     <code class="directive"><a href="#requireany">&lt;RequireAny&gt;</a></code> et <code class="directive"><a href="#requirenone">&lt;RequireNone&gt;</a></code>
@@ -107,7 +107,7 @@ d'autorisation</a></li>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="requiredirectives" id="requiredirectives">Les directives Require</a></h2>
+<h2><a name="requiredirectives" id="requiredirectives">Les directives Require</a><a title="Lien permanent" href="#requiredirectives" class="permalink">&para;</a></h2>
 
   <p>Le module <code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code> met à disposition des
   fournisseurs d'autorisation génériques utilisables avec la directive
@@ -219,7 +219,7 @@ d'autorisation</a></li>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="authzalias" id="authzalias">Création des alias du fournisseur
-d'autorisation</a></h2>
+d'autorisation</a><a title="Lien permanent" href="#authzalias" class="permalink">&para;</a></h2>
 
     <p>Il est possible de créer des fournisseurs d'autorisation étendus
     dans le fichier de configuration et de leur assigner un nom d'alias.
@@ -269,7 +269,7 @@ Alias "/secure" "/webpages/secure"
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="authmerging" id="authmerging">Directive</a> <a name="AuthMerging" id="AuthMerging">AuthMerging</a></h2>
+<div class="directive-section"><h2><a name="authmerging" id="authmerging">Directive</a> <a name="AuthMerging" id="AuthMerging">AuthMerging</a><a title="Lien permanent" href="#authmerging" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit la manière dont chaque logique d'autorisation des
 sections de configuration se combine avec celles des sections de
@@ -338,7 +338,7 @@ configuration précédentes.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="authzprovideralias" id="authzprovideralias">Directive</a> <a name="AuthzProviderAlias" id="AuthzProviderAlias">&lt;AuthzProviderAlias&gt;</a></h2>
+<div class="directive-section"><h2><a name="authzprovideralias" id="authzprovideralias">Directive</a> <a name="AuthzProviderAlias" id="AuthzProviderAlias">&lt;AuthzProviderAlias&gt;</a><a title="Lien permanent" href="#authzprovideralias" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Regroupe des directives représentant une extension d'un
 fournisseur d'autorisation de base qui pourra être référencée à l'aide
@@ -359,7 +359,7 @@ Paramètres-Require</var>&gt;
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="authzsendforbiddenonfailure" id="authzsendforbiddenonfailure">Directive</a> <a name="AuthzSendForbiddenOnFailure" id="AuthzSendForbiddenOnFailure">AuthzSendForbiddenOnFailure</a></h2>
+<div class="directive-section"><h2><a name="authzsendforbiddenonfailure" id="authzsendforbiddenonfailure">Directive</a> <a name="AuthzSendForbiddenOnFailure" id="AuthzSendForbiddenOnFailure">AuthzSendForbiddenOnFailure</a><a title="Lien permanent" href="#authzsendforbiddenonfailure" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Envoie '403 FORBIDDEN' au lieu de '401 UNAUTHORIZED' si
 l'authentification réussit et si l'autorisation a été refusée.
@@ -388,7 +388,7 @@ l'authentification réussit et si l'autorisation a été refusée.
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="require" id="require">Directive</a> <a name="Require" id="Require">Require</a></h2>
+<div class="directive-section"><h2><a name="require" id="require">Directive</a> <a name="Require" id="Require">Require</a><a title="Lien permanent" href="#require" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Vérifie si un utilisateur authentifié a une
 autorisation d'accès accordée par un fournisseur
@@ -531,7 +531,7 @@ Require group admin</pre>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="requireall" id="requireall">Directive</a> <a name="RequireAll" id="RequireAll">&lt;RequireAll&gt;</a></h2>
+<div class="directive-section"><h2><a name="requireall" id="requireall">Directive</a> <a name="RequireAll" id="RequireAll">&lt;RequireAll&gt;</a><a title="Lien permanent" href="#requireall" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Regroupe plusieurs directives d'autorisation dont aucune ne
 doit échouer et dont au moins une doit retourner un résultat positif
@@ -564,7 +564,7 @@ contrôle d'accès</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="requireany" id="requireany">Directive</a> <a name="RequireAny" id="RequireAny">&lt;RequireAny&gt;</a></h2>
+<div class="directive-section"><h2><a name="requireany" id="requireany">Directive</a> <a name="RequireAny" id="RequireAny">&lt;RequireAny&gt;</a><a title="Lien permanent" href="#requireany" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Regroupe des directives d'autorisation dont au moins une
 doit retourner un résultat positif pour que la directive globale
@@ -605,7 +605,7 @@ contrôle d'accès</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="requirenone" id="requirenone">Directive</a> <a name="RequireNone" id="RequireNone">&lt;RequireNone&gt;</a></h2>
+<div class="directive-section"><h2><a name="requirenone" id="requirenone">Directive</a> <a name="RequireNone" id="RequireNone">&lt;RequireNone&gt;</a><a title="Lien permanent" href="#requirenone" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Regroupe des directives d'autorisation dont aucune ne doit
 retourner un résultat positif pour que la directive globale n'échoue

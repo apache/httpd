@@ -64,7 +64,7 @@ l'authentification</a></li>
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="authbasicauthoritative" id="authbasicauthoritative">Directive</a> <a name="AuthBasicAuthoritative" id="AuthBasicAuthoritative">AuthBasicAuthoritative</a></h2>
+<div class="directive-section"><h2><a name="authbasicauthoritative" id="authbasicauthoritative">Directive</a> <a name="AuthBasicAuthoritative" id="AuthBasicAuthoritative">AuthBasicAuthoritative</a><a title="Lien permanent" href="#authbasicauthoritative" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit si les processus d'autorisation et
 d'authentification peuvent être confiés à des modules de plus bas
@@ -94,7 +94,7 @@ niveau</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="authbasicfake" id="authbasicfake">Directive</a> <a name="AuthBasicFake" id="AuthBasicFake">AuthBasicFake</a></h2>
+<div class="directive-section"><h2><a name="authbasicfake" id="authbasicfake">Directive</a> <a name="AuthBasicFake" id="AuthBasicFake">AuthBasicFake</a><a title="Lien permanent" href="#authbasicfake" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Authentification de base simulée à l'aide des nom
 d'utilisateur et mot de passe fournis</td></tr>
@@ -159,7 +159,7 @@ Apache</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="authbasicprovider" id="authbasicprovider">Directive</a> <a name="AuthBasicProvider" id="AuthBasicProvider">AuthBasicProvider</a></h2>
+<div class="directive-section"><h2><a name="authbasicprovider" id="authbasicprovider">Directive</a> <a name="AuthBasicProvider" id="AuthBasicProvider">AuthBasicProvider</a><a title="Lien permanent" href="#authbasicprovider" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le(les) fournisseur(s) d'authentification pour
 cette zone du site web</td></tr>
@@ -201,7 +201,7 @@ cette zone du site web</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="authbasicusedigestalgorithm" id="authbasicusedigestalgorithm">Directive</a> <a name="AuthBasicUseDigestAlgorithm" id="AuthBasicUseDigestAlgorithm">AuthBasicUseDigestAlgorithm</a></h2>
+<div class="directive-section"><h2><a name="authbasicusedigestalgorithm" id="authbasicusedigestalgorithm">Directive</a> <a name="AuthBasicUseDigestAlgorithm" id="AuthBasicUseDigestAlgorithm">AuthBasicUseDigestAlgorithm</a><a title="Lien permanent" href="#authbasicusedigestalgorithm" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Vérifie les mots de passe auprès des fournisseurs
 d'authentification à la manière de l'authentification de type Digest.

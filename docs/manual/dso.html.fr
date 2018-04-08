@@ -53,7 +53,7 @@
 </ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="implementation" id="implementation">Implémentation</a></h2>
+<h2><a name="implementation" id="implementation">Implémentation</a><a title="Lien permanent" href="#implementation" class="permalink">&para;</a></h2>
 
 <table class="related"><tr><th>Modules Apparentés</th><th>Directives Apparentées</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_so.html">mod_so</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code></li></ul></td></tr></table>
 
@@ -91,7 +91,7 @@
     régler les drapeaux du compilateur et de l'éditeur de liens pour le support DSO.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="usage" id="usage">Mode d'emploi succinct</a></h2>
+<h2><a name="usage" id="usage">Mode d'emploi succinct</a><a title="Lien permanent" href="#usage" class="permalink">&para;</a></h2>
 
     <p>Afin que vous puissiez vous faire une idée des fonctionnalités DSO
     du serveur HTTP Apache 2.x, en voici un résumé court et concis :</p>
@@ -162,7 +162,7 @@ $ apxs -cia mod_foo.c
     pour plus de détails.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="background" id="background">Les dessous du fonctionnement des DSO</a></h2>
+<h2><a name="background" id="background">Les dessous du fonctionnement des DSO</a><a title="Lien permanent" href="#background" class="permalink">&para;</a></h2>
 
     <p>Les clônes modernes d'UNIX proposent un mécanisme
     appelé édition de liens et chargement dynamiques d'
@@ -259,7 +259,7 @@ $ apxs -cia mod_foo.c
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="advantages" id="advantages">Avantages et inconvénients</a></h2>
+<h2><a name="advantages" id="advantages">Avantages et inconvénients</a><a title="Lien permanent" href="#advantages" class="permalink">&para;</a></h2>
 
     <p>Les fonctionnalités ci-dessus basées sur les DSO présentent les
     avantages suivants :</p>

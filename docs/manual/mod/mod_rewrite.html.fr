@@ -80,7 +80,7 @@ règles permettant de réécrire les URLs des requêtes
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="logging" id="logging">Journalisation</a></h2>
+<h2><a name="logging" id="logging">Journalisation</a><a title="Lien permanent" href="#logging" class="permalink">&para;</a></h2>
 
     <p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> offre une journalisation détaillée
     de ses actions aux niveaux de journalisation <code>trace1</code> à
@@ -119,7 +119,7 @@ règles permettant de réécrire les URLs des requêtes
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="rewritebase" id="rewritebase">Directive</a> <a name="RewriteBase" id="RewriteBase">RewriteBase</a></h2>
+<div class="directive-section"><h2><a name="rewritebase" id="rewritebase">Directive</a> <a name="RewriteBase" id="RewriteBase">RewriteBase</a><a title="Lien permanent" href="#rewritebase" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit l'URL de base pour les réécritures au niveau
 répertoire</td></tr>
@@ -175,7 +175,7 @@ AliasMatch "^/myapp" "/opt/myapp-1.2.3"
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="rewritecond" id="rewritecond">Directive</a> <a name="RewriteCond" id="RewriteCond">RewriteCond</a></h2>
+<div class="directive-section"><h2><a name="rewritecond" id="rewritecond">Directive</a> <a name="RewriteCond" id="RewriteCond">RewriteCond</a><a title="Lien permanent" href="#rewritecond" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit une condition qui devra être satisfaite pour que
 la réécriture soit effectuée
@@ -800,7 +800,7 @@ RewriteRule  "^/$"                 "/homepage.std.html"  [L]</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="rewriteengine" id="rewriteengine">Directive</a> <a name="RewriteEngine" id="RewriteEngine">RewriteEngine</a></h2>
+<div class="directive-section"><h2><a name="rewriteengine" id="rewriteengine">Directive</a> <a name="RewriteEngine" id="RewriteEngine">RewriteEngine</a><a title="Lien permanent" href="#rewriteengine" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active ou désactive l'exécution du
 moteur de réécriture</td></tr>
@@ -837,7 +837,7 @@ moteur de réécriture</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="rewritemap" id="rewritemap">Directive</a> <a name="RewriteMap" id="RewriteMap">RewriteMap</a></h2>
+<div class="directive-section"><h2><a name="rewritemap" id="rewritemap">Directive</a> <a name="RewriteMap" id="RewriteMap">RewriteMap</a><a title="Lien permanent" href="#rewritemap" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit une fonction de mise en correspondance pour la
 recherche de mots-clés</td></tr>
@@ -935,7 +935,7 @@ de la version 2.4.29 du serveur HTTP Apache</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="rewriteoptions" id="rewriteoptions">Directive</a> <a name="RewriteOptions" id="RewriteOptions">RewriteOptions</a></h2>
+<div class="directive-section"><h2><a name="rewriteoptions" id="rewriteoptions">Directive</a> <a name="RewriteOptions" id="RewriteOptions">RewriteOptions</a><a title="Lien permanent" href="#rewriteoptions" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure certaines options spéciales
 pour le moteur de réécriture</td></tr>
@@ -1123,7 +1123,7 @@ pour le moteur de réécriture</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="rewriterule" id="rewriterule">Directive</a> <a name="RewriteRule" id="RewriteRule">RewriteRule</a></h2>
+<div class="directive-section"><h2><a name="rewriterule" id="rewriterule">Directive</a> <a name="RewriteRule" id="RewriteRule">RewriteRule</a><a title="Lien permanent" href="#rewriterule" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit les règles pour le moteur de réécriture</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RewriteRule

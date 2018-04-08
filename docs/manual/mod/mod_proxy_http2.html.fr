@@ -88,7 +88,7 @@
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="examples" id="examples">Exemples de base</a></h2>
+<h2><a name="examples" id="examples">Exemples de base</a><a title="Lien permanent" href="#examples" class="permalink">&para;</a></h2>
 
     <p>Les exemples ci-dessous montrent comment configurer HTTP/2 pour des
     connexions d'arrière-plan vers un mandataire inverse.</p>
@@ -110,7 +110,7 @@ ProxyPassReverse "/app" "http://app.example.com"</pre>
     </div>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="notes" id="notes">Informations sur les requêtes</a></h2>
+<h2><a name="notes" id="notes">Informations sur les requêtes</a><a title="Lien permanent" href="#notes" class="permalink">&para;</a></h2>
     <p><code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code> fournit les informations sur les requêtes
     suivantes pour enregistrement dans les journaux en utilisant le format
     <code>%{VARNAME}n</code> avec les directives <code class="directive"><a href="../mod/mod_log_config.html#logformat">LogFormat</a></code> ou <code class="directive"><a href="../mod/core.html#errorlogformat">ErrorLogFormat</a></code> :

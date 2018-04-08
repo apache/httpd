@@ -82,7 +82,7 @@ fichiers</td></tr>
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="using" id="using">Utilisation de mod_file_cache</a></h2>
+<h2><a name="using" id="using">Utilisation de mod_file_cache</a><a title="Lien permanent" href="#using" class="permalink">&para;</a></h2>
 
     <p><code class="module"><a href="../mod/mod_file_cache.html">mod_file_cache</a></code> gère la mise en cache d'une liste
     de fichiers définie de manière statique via une des directives
@@ -173,7 +173,7 @@ fichiers</td></tr>
     </div>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="cachefile" id="cachefile">Directive</a> <a name="CacheFile" id="CacheFile">CacheFile</a></h2>
+<div class="directive-section"><h2><a name="cachefile" id="cachefile">Directive</a> <a name="CacheFile" id="CacheFile">CacheFile</a><a title="Lien permanent" href="#cachefile" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Met en cache une liste de gestionnaires de fichiers au
 démarrage</td></tr>
@@ -206,7 +206,7 @@ démarrage</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="mmapfile" id="mmapfile">Directive</a> <a name="MMapFile" id="MMapFile">MMapFile</a></h2>
+<div class="directive-section"><h2><a name="mmapfile" id="mmapfile">Directive</a> <a name="MMapFile" id="MMapFile">MMapFile</a><a title="Lien permanent" href="#mmapfile" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Charge au démarrage une liste de fichiers en
 mémoire</td></tr>

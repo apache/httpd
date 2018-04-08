@@ -42,7 +42,7 @@ d'accès</a></li>
 </ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="related" id="related">Modules et directives concernés</a></h2>
+<h2><a name="related" id="related">Modules et directives concernés</a><a title="Lien permanent" href="#related" class="permalink">&para;</a></h2>
 
     <p>Plusieurs modules peuvent intervenir dans le contrôle d'accès.
     Les plus importants sont <code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code> et
@@ -53,7 +53,7 @@ d'accès</a></li>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="host" id="host">Contrôle d'accès en fonction de l'hôte du
-client</a></h2>
+client</a><a title="Lien permanent" href="#host" class="permalink">&para;</a></h2>
     <p>
     Si vous souhaitez restreindre l'accès à certaines parties de votre
     site web en fonction de l'adresse de l'hôte de vos visiteurs, le
@@ -135,7 +135,7 @@ Require not host gov</pre>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="env" id="env">Contrôle d'accès en fonction de variables
-arbitraires</a></h2>
+arbitraires</a><a title="Lien permanent" href="#env" class="permalink">&para;</a></h2>
 
     <p>Vous pouvez accorder ou refuser l'accès en fonction de variables
     d'environnement arbitraires ou de valeurs d'en-têtes de la requête
@@ -169,7 +169,7 @@ arbitraires</a></h2>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="rewrite" id="rewrite">Utilisation de mod_rewrite pour le contrôle
-d'accès</a></h2>
+d'accès</a><a title="Lien permanent" href="#rewrite" class="permalink">&para;</a></h2>
 
     <p>Le drapeau <code>[F]</code> de la directive <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> permet d'envoyer une
     réponse de type 403 Forbidden. Il vous permet donc d'interdire
@@ -197,7 +197,7 @@ RewriteRule "^/fridge" "-" [F]</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="moreinformation" id="moreinformation">Informations complémentaires</a></h2>
+<h2><a name="moreinformation" id="moreinformation">Informations complémentaires</a><a title="Lien permanent" href="#moreinformation" class="permalink">&para;</a></h2>
 
     <p>Le <a href="../expr.html">moteur d'expressions</a> vous fournit
     une grande puissance d'action en fonction de variables du serveur
