@@ -131,7 +131,7 @@ Apache ; désactivée par défaut depuis la version 2.3.14.</td></tr>
     processus du serveur qu'après la réception du premier octet (ou de
     l'ensemble de la requête si <code>httpready</code> est défini). Le
     délai configuré pour les en-têtes via la directive
-    <code>RequestReadTimeout</code> n'entre en ligne de compte qu'une fois
+    <code class="directive">RequestReadTimeout</code> n'entre en ligne de compte qu'une fois
     la socket reçue par le processus du serveur.</p>
 
     <p>Il existe deux méthodes pour spécifier le délai (pour l'en-tête
@@ -148,7 +148,7 @@ Apache ; désactivée par défaut depuis la version 2.3.14.</td></tr>
     corps de la requête. La valeur 0 signifie aucune limite.</p>
     </li>
 
-    <li><strong>Désactivation du module pour un serveur virtuel :</strong>:<br />
+    <li><strong>Désactivation du module pour un serveur virtuel</strong>:<br />
 
     <div class="example"><p><code>header=0 body=0</code></p></div>
 

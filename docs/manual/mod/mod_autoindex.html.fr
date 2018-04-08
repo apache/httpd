@@ -332,7 +332,7 @@ AddDescription "My friend Marshall" friends/mars.gif</pre>
     fichier aussi complet que possible, et ordonnez votre liste de
     directives <code>AddDescription</code> en conséquence.</p>
 
-    <p>Voir le mot-clé <a href="#indexoptions.descriptionwidth">DescriptionWidth</a> de la directive <code class="directive">module="mod_autoindex"&gt;IndexOptions</code> pour plus de
+    <p>Voir le mot-clé <a href="#indexoptions.descriptionwidth">DescriptionWidth</a> de la directive <code class="directive"><a href="#indexoptions">IndexOptions</a></code> pour plus de
     détails sur la manière d'augmenter la taille de cette colonne, ou
     pour permettre des descriptions de taille illimitée.</p>
 

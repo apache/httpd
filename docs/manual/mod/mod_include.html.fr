@@ -605,6 +605,10 @@ AddOutputFilter INCLUDES .shtml</pre>
       <dd>Le nom de base du fichier demandé par l'utilisateur (sans son
       chemin).</dd>
 
+      <dt><code>DOCUMENT_PATH_INFO</code></dt>
+      <dd>La partie terminale du chemin du fichier. Voir la directive <code class="directive"><a href="../mod/core.html#acceptpathinfo">AcceptPathInfo</a></code> pour plus d'informations à
+      propos de <code>PATH_INFO</code>.</dd>
+
       <dt><code>DOCUMENT_URI</code></dt>
       <dd>Le chemin URL (caractères % décodés) du document demandé par
       l'utilisateur. Notez que dans le cas d'inclusions de fichiers
@@ -626,6 +630,9 @@ AddOutputFilter INCLUDES .shtml</pre>
       sont précédés d'anti-slashes). Cette variable n'est pas définie si aucune
       chaîne d'arguments n'est présente. Utilisez <code>DOCUMENT_ARGS</code> si
       l'échappement des caractères du shell n'est pas souhaité.</dd>
+
+      <dt><code>USER_NAME</code></dt>
+      <dd>Le nom d'utilisateur du propriétaire du fichier.</dd>
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
