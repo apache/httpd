@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1827561:1828059 (outdated) -->
+<!-- English Revision: 1828059 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -671,7 +671,7 @@ SSLSessionCacheTimeout 600
 <directivesynopsis>
 <name>SSLEngine</name>
 <description>Interrupteur marche/arrêt du moteur SSL</description>
-<syntax>SSLEngine on|off|optional|addr[:port] [addr[:port]] ...</syntax>
+<syntax>SSLEngine on|off|optional</syntax>
 <default>SSLEngine off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
@@ -680,7 +680,7 @@ version 2.4.30 du serveur HTTP Apache.</compatibility>
 
 <usage>
 <p> Cette directive permet d'activer/désactiver le moteur du protocole SSL/TLS.
-Les valeurs 'on', 'off' et 'optional' doivent être utilisées dans une section
+Elle doit être définie dans une section
 <directive module="core" type="section">VirtualHost</directive> pour activer
 SSL/TLS pour ce serveur virtuel particulier. Par défaut, le moteur du protocole
 SSL/TLS est désactivé pour le serveur principal et tous les serveurs virtuels
@@ -689,19 +689,6 @@ configurés.</p>
 <highlight language="config">
 &lt;VirtualHost _default_:443&gt;
 SSLEngine on
-#...
-&lt;/VirtualHost&gt;
-</highlight>
-</example>
-<p>Le paramètre <code>addr:port</code> doit être défini au niveau de la
-configuration générale afin d'activer le moteur du protocole SSL/TLS pour
-<em>tous</em> les <directive module="core"
-type="section">VirtualHost</directive>s qui correspondent à une des adresses de
-la liste.</p>
-<example><title>Exemple</title>
-<highlight language="config">
-SSLEngine *:443
-&lt;VirtualHost *:443&gt;
 #...
 &lt;/VirtualHost&gt;
 </highlight>
@@ -785,6 +772,11 @@ casse) :</p>
     Une révision du protocole TLS 1.1 définie dans la <a
     href="http://www.ietf.org/rfc/rfc5246.txt">RFC 5246</a>.</p></li>
 
+<li><code>TLSv1.3</code> (avec OpenSSL version 1.1.1 et supérieures)
+    <p>
+    Une nouvelle version du protocole TLS définie dans la <a
+    href="https://github.com/tlswg/tls13-spec">RFC TBD</a>.</p></li>    
+
 <li><code>all</code>
     <p>
     C'est un raccourci pour ``<code>+SSLv3 +TLSv1</code>'' ou - à partir
@@ -805,7 +797,7 @@ SSLProtocol TLSv1
 <name>SSLCipherSuite</name>
 <description>Algorithmes de chiffrement disponibles pour la négociation
 au cours de l'initialisation de la connexion SSL</description>
-<syntax>SSLCipherSuite <em>algorithmes</em></syntax>
+<syntax>SSLCipherSuite [<em>protocol</em>] <em>cipher-spec</em></syntax>
 <default>SSLCipherSuite DEFAULT (dépend de la version d'OpenSSL
 installée)</default>
 <contextlist><context>server config</context>
@@ -816,19 +808,36 @@ installée)</default>
 
 <usage>
 <p>
-Cette directive complexe utilise la chaîne <em>algorithmes</em>
+Cette directive complexe utilise la chaîne <em>cipher-spec</em>
 contenant la liste des algorithmes de chiffrement OpenSSL que le client
-peut utiliser au cours de la phase d'initialisation de la connexion SSL.
+peut utiliser au cours de la phase d'initialisation de la connexion SSL. La
+spécification optionnelle du protocole permet de configurer la suite
+d'algorithmes de chiffrement pour une version spécifique de SSL. Une des valeurs
+possibles est "SSL" pour toutes les versions du protocole SSL jusqu'à TLSv1.2
+compris.
+</p>
+<p>
 Notez que cette directive peut être utilisée aussi bien dans un contexte
 de serveur que dans un contexte de répertoire. Dans un contexte de
 serveur, elle s'applique à l'initialisation SSL standard lorsqu'une
 connexion est établie. Dans un contexte de répertoire, elle force une
 renégociation SSL avec la liste d'algorithmes de chiffrement spécifiée
 après la lecture d'une requête HTTP, mais avant l'envoi de la réponse
-HTTP.</p>
+HTTP (et pas avant que la renégociation soit effectuée).</p>
+<p>
+Si la bibliothèque SSL supporte TLSv1.3 (versions d'OpenSSL 1.1.1 et
+supérieures), il est possible de spécifier le paramètre "TLSv1.3" pour
+configurer la suite d'algorithmes de chiffrement pour ce protocole. Comme
+TLSv1.3 n'autorise pas la renégociation, spécifier pour lui des algorithmes de
+chiffrement dans un contexte de répertoire n'est pas autorisé</p>
+<p>
+Pour obtenir la liste des noms d'algorithmes de chiffrement pour TLSv1.3, se
+référer à la <a
+href="https://www.openssl.org/docs/manmaster/man3/SSL_CTX_set_ciphersuites.html">the
+OpenSSL documentation</a>.</p>
 <p>
 La liste d'algorithmes de chiffrement SSL spécifiée par l'argument
-<em>algorithmes</em> comporte quatre attributs principaux auxquels
+<em>cipher-spec</em> comporte quatre attributs principaux auxquels
 s'ajoutent quelques attributs secondaires :</p>
 <ul>
 <li><em>Algorithme d'échange de clés</em>:<br />
@@ -2371,7 +2380,7 @@ module="mod_ssl">SSLProtocol</directive> pour plus d'informations.
 <name>SSLProxyCipherSuite</name>
 <description>Algorithmes de chiffrement disponibles pour la négociation
 lors de l'initialisation d'une connexion SSL de mandataire</description>
-<syntax>SSLProxyCipherSuite <em>algorithmes</em></syntax>
+<syntax>SSLProxyCipherSuite [<em>protocol</em>] <em>cipher-spec</em></syntax>
 <default>SSLProxyCipherSuite ALL:!ADH:RC4+RSA:+HIGH:+MEDIUM:+LOW:+EXP</default>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
@@ -3215,8 +3224,7 @@ SSLOpenSSLConfCmd SignatureAlgorithms RSA+SHA384:ECDSA+SHA256
 
 <usage>
 <p>Cette directive permet d'appliquer le jeu de directives définies au sein
-de la polique SSL de nom 'name' (voir directive <directive
-type="section">SSLPolicyDefine</directive>) comme configuration <em>de base</em> dans
+de la polique SSL de nom 'name' comme configuration <em>de base</em> dans
 le contexte courant. Apache httpd est fourni avec les politiques SSL prédéfinies
 suivantes de Mozilla, l'éditeur du navigateur Firefox (<a
 href="https://wiki.mozilla.org/Security/Server_Side_TLS#Recommended_configurations">description

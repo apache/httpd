@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1810316:1828069 (outdated) -->
+<!-- English Revision: 1828069 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1058,7 +1058,7 @@ de la version 2.4.7 du serveur HTTP Apache</compatibility>
     </highlight>
 
     <p>va convertir en interne toute requête pour
-    <code>http://example.com/miroir/foo/bar</code> en une requête
+    <code>http://example.com/mirror/foo/bar</code> en une requête
     mandatée pour <code>http://backend.example.com/bar</code>.</p>
 
     <p>Si vous avez besoin d'un configuration de mandataire inverse plus
@@ -1073,7 +1073,7 @@ de la version 2.4.7 du serveur HTTP Apache</compatibility>
     href="mod_proxy_balancer.html#balancer_manager">Balancer Manager</a> :</p>
 
     <highlight language="config">
-        ProxyPass "/miroir/foo/" "http://backend.example.com/"
+        ProxyPass "/mirror/foo/" "http://backend.example.com/"
     </highlight>
 
     <note type="warning">
@@ -1102,9 +1102,25 @@ ProxyPass "/mirror/foo/i" "!"
 ProxyPass "/mirror/foo" "http://backend.example.com"
     </highlight>
 
-    <p>va mandater toutes les requêtes pour <code>/miroir/foo</code>
+    <p>va mandater toutes les requêtes pour <code>/mirror/foo</code>
     vers <code>backend.example.com</code>, <em>sauf</em> les requêtes
-    pour <code>/miroir/foo/i</code>.</p>
+    pour <code>/mirror/foo/i</code>.</p>
+
+    <p>Mélanger plusieurs configurations ProxyPass dans différents contextes ne
+    fonctionne pas :</p>
+    <highlight language="config">
+ProxyPass "/mirror/foo/i" "!"
+&lt;Location "/mirror/foo/"&gt;
+    ProxyPass "http://backend.example.com/"
+&lt;/Location&gt;
+    </highlight>
+    <p>Dans ce cas, une requête pour <code>/mirror/foo/i</code> sera tout de
+    même mandatée car c'est la directive <directive>ProxyPass</directive> de la
+    section Location qui sera évaluée en premier. Le fait que la directive
+    <directive>ProxyPass</directive> supporte les deux contextes serveur
+    principal et répertoire ne signifie pas que sa portée et sa position dans le
+    fichier de configuration va garantir une quelconque priorité et/ou
+    chronologie de prise en compte.</p>
 
     <note type="warning"><title>Ordre de classement des directives ProxyPass</title>
       <p>Les directives <directive
@@ -1117,13 +1133,19 @@ ProxyPass "/mirror/foo" "http://backend.example.com"
       l'URL la plus longue à la plus courte. Dans le cas contraire, les
       règles situées après une règle dont l'URL correspond au début de
       leur propre URL seront ignorées. Notez que tout ceci est en
-      relation avec le partage de workers. Par contre, on ne peut placer
+      relation avec le partage de workers.</p>
+      
+      </note>
+    <note type="warning"><title>Chronologie de prise en compte des directives
+    ProxyPass au sein des sections Locations</title>
+      <p>On ne peut placer
       qu'une seule directive <directive
       module="mod_proxy">ProxyPass</directive> dans une section
       <directive module="core">Location</directive>, et c'est la section
       la plus spécifique qui l'emportera.</p>
-
-      <p>Pour les mêmes raisons, les exclusions doivent se situer <em>avant</em>
+     </note>
+     <note type="warning"><title>Exclusions et variable d'environnement no-proxy</title>
+      <p>Les exclusions doivent se situer <em>avant</em>
       les directives <directive>ProxyPass</directive> générales. A partir de la
       version 2.4.26 du serveur HTTP Apache, la variable
       d'environnement "no-proxy" est une alternative aux exclusions et constitue
@@ -1750,14 +1772,14 @@ ProxyPassReverseCookiePath  "/"  "/mirror/foo/"
     </highlight>
 
     <p>ne va pas seulement provoquer la conversion interne d'une requête
-    locale pour <code>http://example.com/miroir/foo/bar</code> en une
+    locale pour <code>http://example.com/mirror/foo/bar</code> en une
     requête mandatée pour <code>http://backend.example.com/bar</code>
     (la fonctionnalité fournie par <code>ProxyPass</code>). Il va
     aussi s'occuper des redirections que le serveur
     <code>backend.example.com</code> envoie lorsque
     <code>http://backend.example.com/bar</code> est redirigé par
     celui-ci vers <code>http://backend.example.com/quux</code>, Apache
-    httpd corrige ceci en <code>http://example.com/miroir/foo/quux</code>
+    httpd corrige ceci en <code>http://example.com/mirror/foo/quux</code>
     avant de faire suivre la redirection HTTP au client. Notez que le
     nom d'hôte utilisé pour construire l'URL est choisi en respectant la
     définition de la directive <directive

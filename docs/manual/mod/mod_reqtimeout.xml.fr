@@ -1,9 +1,8 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1421821:1827780 (outdated) -->
+<!-- English Revision: 1827780 -->
 <!-- French translation : Lucien GENTIS -->
-<!-- $LastChangedRevision: 2013010301 $ -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -31,6 +30,22 @@ données minimum pour la réception des requêtes
 <status>Extension</status>
 <sourcefile>mod_reqtimeout.c</sourcefile>
 <identifier>reqtimeout_module</identifier>
+
+<summary>
+    <p>Ce module permet de définir aisément le délai maximum et le taux de
+    transfert des données minimum pour la réception des requêtes. Si ce délai
+    est dépassé ou ce taux trop faible, la connexion concernée sera fermée par
+    le serveur.</p>
+
+    <p>Cet évènement sera alors enregistré dans le journal au niveau de <directive
+    module="core">LogLevel</directive> <code>info</code>.</p>
+    
+    <p>Au besoin, la directive <directive module="core">LogLevel</directive>
+    peur être modifiée pour un enregistrement dans le journal plus explicite :</p>
+    <highlight language="config">
+      LogLevel reqtimeout:info
+    </highlight>
+</summary>
 
 <section id="examples"><title>Exemples</title>
 
@@ -119,8 +134,8 @@ et corps des requêtes en provenance du client.
     processus du serveur qu'après la réception du premier octet (ou de
     l'ensemble de la requête si <code>httpready</code> est défini). Le
     délai configuré pour les en-têtes via la directive
-    <code>RequestReadTimeout</code> n'entre en ligne de compte qu'une fois
-    le socket reçu par le processus du serveur.</p>
+    <directive>RequestReadTimeout</directive> n'entre en ligne de compte qu'une
+    fois le socket reçu par le processus du serveur.</p>
 
     <p>Il existe deux méthodes pour spécifier le délai (pour l'en-tête
     ou le corps) :
@@ -136,7 +151,7 @@ et corps des requêtes en provenance du client.
     corps de la requête. La valeur 0 signifie aucune limite.</p>
     </li>
 
-    <li><strong>Désactivation du module pour un serveur virtuel :</strong>:<br />
+    <li><strong>Désactivation du module pour un serveur virtuel</strong>:<br />
 
     <example>header=0 body=0</example>
 
