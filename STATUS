@@ -122,16 +122,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) Some easy proposals:
-        - mod_logio, mod_ssl: Remove pointless static in optional fn pointer
-          variable declaration
-        - core: Fix a potential compiler warning about uninitialized variable.
-          PR 59821
-     trunk patch: http://svn.apache.org/r1822931
-                  http://svn.apache.org/r1827783
-     2.4.x patch: svn merge -c 1822931,1827783 ^/httpd/httpd/trunk .
-     +1: jailletc36, jorton, ylavic
-
   *) mod_ssl: Use 'ap_log_rerror()' instead of 'ap_log_error()' consistently
      PR 62003
      trunk patch: http://svn.apache.org/r1827865
