@@ -6,6 +6,8 @@ Changes with Apache 2.4.34
 
   *) mod_md: Fix compilation with OpenSSL before version 1.0.2.  [Rainer Jung]
 
+  *) mod_dumpio: do nothing below log level TRACE7.  [Yann Ylavic]
+
   *) mod_remoteip: Restore compatibility with APR 1.4 (apr_sockaddr_is_wildcard).
      [Eric Covener]
 
