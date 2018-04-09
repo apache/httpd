@@ -1,11 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.34
 
- *) core: On ECBDIC platforms, some errors related to oversized headers
+   *) core: On ECBDIC platforms, some errors related to oversized headers
      may be misreported or be logged as ASCII escapes.  PR 62200
-     [Hank Ibell <hwibell gmail.com>]
+      [Hank Ibell <hwibell gmail.com>]
 
- *) mod_ssl: Fix cmake-based build.  PR 62266.  [Rainer Jung]
+  *) mod_ssl: Fix cmake-based build.  PR 62266.  [Rainer Jung]
 
 Changes with Apache 2.4.33
 
