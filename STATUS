@@ -178,13 +178,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) rotatelogs: Add an option to autocreate directories to rotatelogs.
      PR: 46669
      trunk patch: http://svn.apache.org/r1533810
-     2.4.x patch: https://home.apache.org/~rjung/patches/httpd-2.4.x-rotatelogs-create-directories.patch
+                  http://svn.apache.org/r1533935
+     2.4.x patch: https://home.apache.org/~rjung/patches/httpd-2.4.x-rotatelogs-create-directories-v2.patch
                   plus CHANGES for new "-d" flag (see svn log for credits).
                   Merge only fails due to small docs conflicts.
-     +1: rjung, ylavic,
-     -1: niq: this patch is broken: it edits a generated HTML file instead
-              of the source XML.  Fix and I'm +1.
-     jailletc36: Doc has been fixed in http://svn.apache.org/viewvc?view=revision&revision=1533935
+     +1: rjung, ylavic, niq
 
   *) rotatelogs: Remove multiple uses of constant length error buffers.
      trunk patches: http://svn.apache.org/r1534895
