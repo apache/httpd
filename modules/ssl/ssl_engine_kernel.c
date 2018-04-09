@@ -1126,6 +1126,7 @@ static int ssl_hook_Access_classic(request_rec *r, SSLSrvConfigRec *sc, SSLDirCo
     return DECLINED;
 }
 
+#ifdef SSL_OP_NO_TLSv1_3
 /*
  *  Access Handler, modern flavour, for SSL/TLS v1.3 and onward. 
  *  Only client certificates can be requested, everything else stays.
@@ -1133,7 +1134,6 @@ static int ssl_hook_Access_classic(request_rec *r, SSLSrvConfigRec *sc, SSLDirCo
 static int ssl_hook_Access_modern(request_rec *r, SSLSrvConfigRec *sc, SSLDirConfigRec *dc,
                                   SSLConnRec *sslconn, SSL *ssl)
 {
-#ifdef SSL_OP_NO_TLSv1_3
     if ((dc->nVerifyClient != SSL_CVERIFY_UNSET) ||
         (sc->server->auth.verify_mode != SSL_CVERIFY_UNSET)) {
         int vmode_inplace, vmode_needed;
@@ -1245,11 +1245,8 @@ static int ssl_hook_Access_modern(request_rec *r, SSLSrvConfigRec *sc, SSLDirCon
     }
     
     return DECLINED;
-#else
-    /* We should never have been called. Play it safe. */
-    return HTTP_FORBIDDEN;
-#endif
 }
+#endif
 
 int ssl_hook_Access(request_rec *r)
 {
@@ -1257,31 +1254,22 @@ int ssl_hook_Access(request_rec *r)
     SSLSrvConfigRec *sc         = mySrvConfig(r->server);
     SSLConnRec *sslconn         = myConnConfig(r->connection);
     SSL *ssl                    = sslconn ? sslconn->ssl : NULL;
-    server_rec *handshakeserver = sslconn ? sslconn->server : NULL;
-    SSLSrvConfigRec *hssc       = handshakeserver? mySrvConfig(handshakeserver) : NULL;
-    SSL_CTX *ctx = NULL;
 
     /* On a slave connection, we do not expect to have an SSLConnRec, but
      * our master connection might have one. */
     if (!(sslconn && ssl) && r->connection->master) {
         sslconn         = myConnConfig(r->connection->master);
         ssl             = sslconn ? sslconn->ssl : NULL;
-        handshakeserver = sslconn ? sslconn->server : NULL;
-        hssc            = handshakeserver? mySrvConfig(handshakeserver) : NULL;
     }
     
-    if (ssl) {
-        /*
-         * We should have handshaken here (on handshakeserver),
-         * otherwise we are being redirected (ErrorDocument) from
-         * a renegotiation failure below. The access is still 
-         * forbidden in the latter case, let ap_die() handle
-         * this recursive (same) error.
-         */
-        if (!SSL_is_init_finished(ssl)) {
-            return HTTP_FORBIDDEN;
-        }
-        ctx = SSL_get_SSL_CTX(ssl);
+    /*
+     * We should have handshaken here, otherwise we are being 
+     * redirected (ErrorDocument) from a renegotiation failure below. 
+     * The access is still forbidden in the latter case, let ap_die() handle
+     * this recursive (same) error.
+     */
+    if (ssl && !SSL_is_init_finished(ssl)) {
+        return HTTP_FORBIDDEN;
     }
 
     /*
