@@ -41,10 +41,12 @@ apr_bucket *h2_bucket_headers_beam(struct h2_bucket_beam *beam,
  * @param status the headers status
  * @param header the headers of the headers
  * @param notes  the notes carried by the headers
+ * @param raw_bytes the raw network bytes (if known) used to transmit these
  * @param pool the memory pool to use
  */
 h2_headers *h2_headers_create(int status, apr_table_t *header, 
-                              apr_table_t *notes, apr_pool_t *pool);
+                              apr_table_t *notes, apr_off_t raw_bytes, 
+                              apr_pool_t *pool);
 
 /**
  * Create the headers from the given request_rec.

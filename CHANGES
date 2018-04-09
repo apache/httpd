@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_http2: accurate reporting of h2 data input/output per request via mod_logio. Fixes
+     an issue where output sizes where counted n-times on reused slave connections. See
+     gituhub issue: https://github.com/icing/mod_h2/issues/158
+     [Stefan Eissing]
+  
   *) mod_proxy: Do not restrict the maximum pool size for backend connections
      any longer by the maximum number of threads per process and use a better
      default if mod_http2 is loaded.

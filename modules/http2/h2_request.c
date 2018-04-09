@@ -150,7 +150,7 @@ apr_status_t h2_request_add_header(h2_request *req, apr_pool_t *pool,
     return status;
 }
 
-apr_status_t h2_request_end_headers(h2_request *req, apr_pool_t *pool, int eos)
+apr_status_t h2_request_end_headers(h2_request *req, apr_pool_t *pool, int eos, size_t raw_bytes)
 {
     const char *s;
     
@@ -190,7 +190,8 @@ apr_status_t h2_request_end_headers(h2_request *req, apr_pool_t *pool, int eos)
             apr_table_setn(req->headers, "Content-Length", "0");
         }
     }
-
+    req->raw_bytes += raw_bytes;
+    
     return APR_SUCCESS;
 }
 

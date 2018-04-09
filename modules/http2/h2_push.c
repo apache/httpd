@@ -352,7 +352,7 @@ static int add_push(link_ctx *ctx)
                                     ctx->req->authority, path, headers,
                                     ctx->req->serialize);
                 /* atm, we do not push on pushes */
-                h2_request_end_headers(req, ctx->pool, 1);
+                h2_request_end_headers(req, ctx->pool, 1, 0);
                 push->req = req;
                 if (has_param(ctx, "critical")) {
                     h2_priority *prio = apr_pcalloc(ctx->pool, sizeof(*prio));

@@ -675,7 +675,14 @@ static apr_status_t h2_task_process_request(h2_task *task, conn_rec *c)
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
                       "h2_task(%s): start process_request", task->id);
     
+        /* Add the raw bytes of the request (e.g. header frame lengths to
+         * the logio for this request. */
+        if (req->raw_bytes && h2_task_logio_add_bytes_in) {
+            h2_task_logio_add_bytes_in(c, req->raw_bytes);
+        }
+        
         ap_process_request(r);
+        
         if (task->frozen) {
             ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
                           "h2_task(%s): process_request frozen", task->id);
