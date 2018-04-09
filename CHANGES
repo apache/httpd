@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_logio: Add LogIOTrackTTFU and %^FU logformat to log the time
+     difference between request start and last request body byte read (finished upload).
+     [Rainer Jung]
+
   *) mod_ssl: add support for TLSv1.3 (tested with OpenSSL v1.1.1-pre4, other libs may
      need more sugar). SSL(Proxy)CipherSuite now has an optional first parameter for the
      protocol the ciphers are for.

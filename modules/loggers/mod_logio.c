@@ -38,6 +38,7 @@
 module AP_MODULE_DECLARE_DATA logio_module;
 
 static const char logio_filter_name[] = "LOG_INPUT_OUTPUT";
+static const char logio_ttfu_filter_name[] = "LOGIO_TTFU_IN";
 static const char logio_ttfb_filter_name[] = "LOGIO_TTFB_OUT";
 
 /*
@@ -51,10 +52,14 @@ typedef struct logio_config_t {
 } logio_config_t;
 
 typedef struct logio_dirconf_t {
+    unsigned int track_ttfu:1;
+    unsigned int track_ttfu_set:1;
     unsigned int track_ttfb:1;
+    unsigned int track_ttfb_set:1;
 } logio_dirconf_t;
 
 typedef struct logio_req_t {
+    apr_time_t ttfu;
     apr_time_t ttfb;
 } logio_req_t;
 
@@ -119,6 +124,18 @@ static const char *log_bytes_combined(request_rec *r, char *a)
                                               &logio_module);
 
     return apr_off_t_toa(r->pool, cf->bytes_out + cf->bytes_in);
+}
+
+static const char *log_ttfu(request_rec *r, char *a)
+{
+    logio_req_t *rconf = ap_get_module_config(r->request_config,
+                                           &logio_module);
+
+    if (!rconf || !rconf->ttfu) { 
+        return "-";
+    }
+
+    return apr_psprintf(r->pool, "%" APR_TIME_T_FMT, rconf->ttfu - r->request_time);
 }
 
 static const char *log_ttfb(request_rec *r, char *a)
@@ -197,10 +214,41 @@ static int logio_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
         log_pfn_register(p, "I", log_bytes_in, 0);
         log_pfn_register(p, "O", log_bytes_out, 0);
         log_pfn_register(p, "S", log_bytes_combined, 0);
+        log_pfn_register(p, "^FU", log_ttfu, 0);
         log_pfn_register(p, "^FB", log_ttfb, 0);
     }
 
     return OK;
+}
+
+static apr_status_t logio_ttfu_filter(ap_filter_t *f,
+                                      apr_bucket_brigade *bb,
+                                      ap_input_mode_t mode,
+                                      apr_read_type_e block,
+                                      apr_off_t readbytes)
+{
+    apr_off_t length;
+    apr_status_t status;
+
+    status = ap_get_brigade(f->next, bb, mode, block, readbytes);
+
+    apr_brigade_length(bb, 0, &length);
+
+    if (length > 0) {
+        request_rec *r = f->r;
+        logio_dirconf_t *conf = ap_get_module_config(r->per_dir_config,
+                                                     &logio_module);
+        if (conf && conf->track_ttfu) { 
+            logio_req_t *rconf = ap_get_module_config(r->request_config, 
+                                                      &logio_module);
+            if (rconf == NULL) { 
+                rconf = apr_pcalloc(r->pool, sizeof(logio_req_t));
+                ap_set_module_config(r->request_config, &logio_module, rconf);
+            }
+            rconf->ttfu = apr_time_now();
+        }
+    }
+    return status;
 }
 
 static apr_status_t logio_ttfb_filter(ap_filter_t *f, apr_bucket_brigade *b)
@@ -213,8 +261,10 @@ static apr_status_t logio_ttfb_filter(ap_filter_t *f, apr_bucket_brigade *b)
                                                   &logio_module);
         if (rconf == NULL) { 
             rconf = apr_pcalloc(r->pool, sizeof(logio_req_t));
-            rconf->ttfb = apr_time_now() - r->request_time;
             ap_set_module_config(r->request_config, &logio_module, rconf);
+        }
+        if (rconf->ttfb == 0) { 
+            rconf->ttfb = apr_time_now() - r->request_time;
         }
     }
     ap_remove_output_filter(f);
@@ -225,15 +275,27 @@ static void logio_insert_filter(request_rec * r)
 {
     logio_dirconf_t *conf = ap_get_module_config(r->per_dir_config,
                                                  &logio_module);
+    if (conf->track_ttfu) {
+        ap_add_input_filter(logio_ttfu_filter_name, NULL, r, r->connection);
+    }
     if (conf->track_ttfb) { 
         ap_add_output_filter(logio_ttfb_filter_name, NULL, r, r->connection);
     }
+}
+
+static const char *logio_track_ttfu(cmd_parms *cmd, void *in_dir_config, int arg)
+{
+    logio_dirconf_t *dir_config = in_dir_config;
+    dir_config->track_ttfu = arg;
+    dir_config->track_ttfu_set = 1;
+    return NULL;
 }
 
 static const char *logio_track_ttfb(cmd_parms *cmd, void *in_dir_config, int arg)
 {
     logio_dirconf_t *dir_config = in_dir_config;
     dir_config->track_ttfb = arg;
+    dir_config->track_ttfb_set = 1;
     return NULL;
 }
 
@@ -245,7 +307,24 @@ static void *create_logio_dirconf (apr_pool_t *p, char *dummy)
 }
 
 
+static void *merge_logio_dirconf(apr_pool_t *p, void *basev, void *addv)
+{
+    logio_dirconf_t *new = (logio_dirconf_t *) apr_pcalloc(p, sizeof(logio_dirconf_t));
+    const logio_dirconf_t *add = (logio_dirconf_t *) addv;
+    const logio_dirconf_t *base = (logio_dirconf_t *) basev;
+
+    new->track_ttfu = add->track_ttfu_set ? add->track_ttfu : base->track_ttfu;
+    new->track_ttfu_set = add->track_ttfu_set || base->track_ttfu_set;
+    new->track_ttfb = add->track_ttfb_set ? add->track_ttfb : base->track_ttfb;
+    new->track_ttfb_set = add->track_ttfb_set || base->track_ttfb_set;
+
+    return new;
+}
+
+
 static const command_rec logio_cmds[] = {
+    AP_INIT_FLAG ("LogIOTrackTTFU", logio_track_ttfu, NULL, OR_ALL,
+                  "Set to 'ON' to enable tracking time to finish upload"),
     AP_INIT_FLAG ("LogIOTrackTTFB", logio_track_ttfb, NULL, OR_ALL,
                   "Set to 'ON' to enable tracking time to first byte"),
     {NULL}
@@ -264,6 +343,8 @@ static void register_hooks(apr_pool_t *p)
                              AP_FTYPE_NETWORK - 1);
 
     ap_hook_insert_filter(logio_insert_filter, NULL, NULL, APR_HOOK_LAST);
+    ap_register_input_filter(logio_ttfu_filter_name, logio_ttfu_filter, NULL,
+                              AP_FTYPE_RESOURCE);
     ap_register_output_filter(logio_ttfb_filter_name, logio_ttfb_filter, NULL,
                               AP_FTYPE_RESOURCE);
 
@@ -276,7 +357,7 @@ AP_DECLARE_MODULE(logio) =
 {
     STANDARD20_MODULE_STUFF,
     create_logio_dirconf,       /* create per-dir config */ 
-    NULL,                       /* merge per-dir config */
+    merge_logio_dirconf,        /* merge per-dir config */
     NULL,                       /* server config */
     NULL,                       /* merge server config */
     logio_cmds,                 /* command apr_table_t */
