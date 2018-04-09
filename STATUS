@@ -134,6 +134,16 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) rotatelogs: Add an option to autocreate directories to rotatelogs.
+     PR: 46669
+     trunk patch: http://svn.apache.org/r1533810
+                  http://svn.apache.org/r1533935
+     2.4.x patch: https://home.apache.org/~rjung/patches/httpd-2.4.x-rotatelogs-create-directories-v2.patch
+                  plus CHANGES for new "-d" flag (see svn log for credits).
+                  Merge only fails due to small docs conflicts.
+     +1: rjung, ylavic, niq
+     jung: I'll wait a bit whether the below remaining rotatelogs patch makes it to apply in order.
+
   *) rotatelogs: Small changes to rotatelogs:
      - add "-n num" to help text
      - clarify in help text, that "program is invoked"
@@ -147,7 +157,22 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
                     http://svn.apache.org/r1780308
      2.4.x patch: svn merge -c 1666415,1780308 ^/httpd/httpd/trunk .
      +1: rjung, covener, ylavic
-     jung: I'll wait a bit whether the other rotatelogs patches make it to apply in order.
+     jung: I'll wait a bit whether the below remaining rotatelogs patch makes it to apply in order.
+
+  *) rotatelogs: Choose "-D" instead of "-d" for the rotatelogs
+     option that creates the path to the log file.
+     I want to use "-d" for another directory related
+     option next where (I think) the "directory" "d"
+     makes more sense.
+     "-d" has not yet been backported, so changing
+     to "-D" is not a real compatibility issue.
+     This brings 2.4.x rotatelogs in sync with trunk.
+     trunk patch: http://svn.apache.org/r1666417
+     2.4.x patch: https://home.apache.org/~rjung/patches/httpd-2.4.x-rotatelogs-create-directories-rename-flag.patch
+                  plus CHANGES change from "-d" to "-D"
+                  Merge only fails due to small docs conflicts.
+     +1: rjung, ylavic, niq
+     jung: I'll wait a bit whether the below remaining rotatelogs patch makes it to apply in order.
 
   *) Some easy proposals:
         - mod_logio, mod_ssl: Remove pointless static in optional fn pointer
@@ -175,15 +200,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
-  *) rotatelogs: Add an option to autocreate directories to rotatelogs.
-     PR: 46669
-     trunk patch: http://svn.apache.org/r1533810
-                  http://svn.apache.org/r1533935
-     2.4.x patch: https://home.apache.org/~rjung/patches/httpd-2.4.x-rotatelogs-create-directories-v2.patch
-                  plus CHANGES for new "-d" flag (see svn log for credits).
-                  Merge only fails due to small docs conflicts.
-     +1: rjung, ylavic, niq
-
   *) rotatelogs: Remove multiple uses of constant length error buffers.
      trunk patches: http://svn.apache.org/r1534895
                     http://svn.apache.org/r1534896
@@ -191,20 +207,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1534895,1534896,1534914 ^/httpd/httpd/trunk .
                   plus CHANGES
      +1: rjung, ylavic,
-
-  *) rotatelogs: Choose "-D" instead of "-d" for the rotatelogs
-     option that creates the path to the log file.
-     I want to use "-d" for another directory related
-     option next where (I think) the "directory" "d"
-     makes more sense.
-     "-d" has not yet been backported, so changing
-     to "-D" is not a real compatibility issue.
-     This brings 2.4.x rotatelogs in sync with trunk.
-     trunk patch: http://svn.apache.org/r1666417
-     2.4.x patch: https://home.apache.org/~rjung/patches/httpd-2.4.x-rotatelogs-create-directories-rename-flag.patch
-                  plus CHANGES change from "-d" to "-D"
-                  Merge only fails due to small docs conflicts.
-     +1: rjung, ylavic, niq
 
   *) mod_md: Fix compilation with OpenSSL before version 1.0.2.
      Symbol ASN1_TIME_diff is only available for 1.0.2+,
