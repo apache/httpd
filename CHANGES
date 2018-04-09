@@ -5,6 +5,8 @@ Changes with Apache 2.4.34
      may be misreported or be logged as ASCII escapes.  PR 62200
      [Hank Ibell <hwibell gmail.com>]
 
+ *) mod_ssl: Fix cmake-based build.  PR 62266.  [Rainer Jung]
+
 Changes with Apache 2.4.33
 
   *) core: Fix request timeout logging and possible crash for error_log hooks.
