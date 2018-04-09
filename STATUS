@@ -122,11 +122,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_ssl: Use 'ap_log_rerror()' instead of 'ap_log_error()' consistently
-     PR 62003
-     trunk patch: http://svn.apache.org/r1827865
-     2.4.x patch: svn merge -c 1827865 ^/httpd/httpd/trunk .
-     +1: jailletc36, jorton, ylavic
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
