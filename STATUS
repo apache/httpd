@@ -204,8 +204,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://home.apache.org/~rjung/patches/httpd-2.4.x-rotatelogs-create-directories-rename-flag.patch
                   plus CHANGES change from "-d" to "-D"
                   Merge only fails due to small docs conflicts.
-     +1: rjung, ylavic,
-     niq: +1 when the other bug is fixed and backported
+     +1: rjung, ylavic, niq
 
   *) mod_md: Fix compilation with OpenSSL before version 1.0.2.
      Symbol ASN1_TIME_diff is only available for 1.0.2+,
