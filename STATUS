@@ -134,6 +134,22 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) rotatelogs: Remove multiple uses of constant length error buffers.
+     trunk patches: http://svn.apache.org/r1534895
+                    http://svn.apache.org/r1534896
+                    http://svn.apache.org/r1534914
+     2.4.x patch: svn merge -c 1534895,1534896,1534914 ^/httpd/httpd/trunk .
+                  plus CHANGES
+     +1: rjung, ylavic,, jim
+
+  *) mod_md: Fix compilation with OpenSSL before version 1.0.2.
+     Symbol ASN1_TIME_diff is only available for 1.0.2+,
+     but luckily alternative code we can use is already
+     available, originally written for the LibreSSL case.
+     trunk patch: http://svn.apache.org/r1826973
+     2.4.x patch: svn merge -c 1826973 ^/httpd/httpd/trunk .
+     +1: rjung, ylavic, jim
+
   *) rotatelogs: Add an option to autocreate directories to rotatelogs.
      PR: 46669
      trunk patch: http://svn.apache.org/r1533810
@@ -199,22 +215,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
-
-  *) rotatelogs: Remove multiple uses of constant length error buffers.
-     trunk patches: http://svn.apache.org/r1534895
-                    http://svn.apache.org/r1534896
-                    http://svn.apache.org/r1534914
-     2.4.x patch: svn merge -c 1534895,1534896,1534914 ^/httpd/httpd/trunk .
-                  plus CHANGES
-     +1: rjung, ylavic,, jim
-
-  *) mod_md: Fix compilation with OpenSSL before version 1.0.2.
-     Symbol ASN1_TIME_diff is only available for 1.0.2+,
-     but luckily alternative code we can use is already
-     available, originally written for the LibreSSL case.
-     trunk patch: http://svn.apache.org/r1826973
-     2.4.x patch: svn merge -c 1826973 ^/httpd/httpd/trunk .
-     +1: rjung, ylavic, jim
 
   *) mod_ssl: Add option "leaf" to OCSPEnable that will only check the leaf in the
      certificate chain. PR 62112.
