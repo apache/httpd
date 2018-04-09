@@ -1631,8 +1631,10 @@ static apr_status_t write_atomic_pipe_chunks(request_rec *r,
     proc_slot_xfer = htonl(sbh->child_num);
     thread_slot_xfer = htonl(sbh->thread_num);
 
-    // Split the log line into PIPE_BUF chunks to avoid interleaving concurrent
-    // writes to the pipe that may corrupt the log data.
+    /*
+     * Split the log line into PIPE_BUF chunks to avoid interleaving concurrent
+     * writes to the pipe that may corrupt the log data.
+     */
     do {
         if (buf == NULL)
             cpy_pos = 0;
@@ -1649,7 +1651,7 @@ static apr_status_t write_atomic_pipe_chunks(request_rec *r,
         memcpy(msg_buf + cpy_pos, &total_chunk_cnt_xfer, sizeof(uint32_t));
         cpy_pos += sizeof(uint32_t);
 
-        // Convert potentially long int to message header uint32_t.
+        /* Convert potentially long int to message header uint32_t. */
         chunk_body_len_xfer = htonl(chunk_body_len);
         memcpy(msg_buf + cpy_pos, &chunk_body_len_xfer, sizeof(uint32_t));
         cpy_pos += sizeof(uint32_t);

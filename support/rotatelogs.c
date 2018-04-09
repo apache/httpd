@@ -533,7 +533,7 @@ static apr_status_t read_chunk(apr_file_t *f_stdin, apr_pool_t *p, char *buf,
     uint32_t chunk_header[MSG_HEADER_ELT_CNT];
     uint32_t proc_slot, thd_slot, chunk_cnt, tot_chunk_cnt, chunk_body_len;
 
-    // Read just the chunk header, block until complete.
+    /* Read just the chunk header, expected to be present in its entirety. */
     rv = apr_file_read_full(f_stdin, chunk_header, MSG_HEADER_LEN, nRead);
     if (APR_STATUS_IS_EOF(rv)) {
         return rv;
@@ -547,7 +547,7 @@ static apr_status_t read_chunk(apr_file_t *f_stdin, apr_pool_t *p, char *buf,
     tot_chunk_cnt = ntohl(chunk_header[3]);
     chunk_body_len = ntohl(chunk_header[4]);
 
-    // Read the full chunk body.
+    /* Read the full chunk body, expected to be present in its entirety. */
     rv = apr_file_read_full(f_stdin, buf, (apr_size_t)chunk_body_len, nRead);
     if (APR_STATUS_IS_EOF(rv)) {
         return rv;
@@ -557,8 +557,10 @@ static apr_status_t read_chunk(apr_file_t *f_stdin, apr_pool_t *p, char *buf,
     }
 
     if (chunk_cnt != 1 || tot_chunk_cnt != 1) {
-        // If this is a multi-chunk log record, stage the chunks so they can be
-        // reassembled in order.
+        /* 
+         * If this is a multi-chunk log record, stage the chunks so they can be
+         * reassembled in order.
+         */
         uint32_t chunk_idx = chunk_cnt - 1;
         char *chunk_body;
         char **chunk_elem;
@@ -568,11 +570,13 @@ static apr_status_t read_chunk(apr_file_t *f_stdin, apr_pool_t *p, char *buf,
         slot_key = apr_psprintf(p, "%i.%i", proc_slot, thd_slot);
         chunks_head = apr_hash_get(thread_chunks, slot_key,
                                    APR_HASH_KEY_STRING);
-        // A thread must write chunks of a message in order.
+        /* A thread must write chunks of a message in order. */
         if (chunks_head == NULL) {
             if (chunk_idx > 0) {
-                // Expected to have a table entry here since we're in
-                // mid-sequence for this chunk set.
+                /*
+                 * Expected to have a table entry here since we're in
+                 * mid-sequence for this chunk set.
+                 */
                 fprintf(stderr, "Chunks found in a non-ordered sequence, "
                                 "skipping this chunk set\n");
                 return APR_SUCCESS;
@@ -582,7 +586,7 @@ static apr_status_t read_chunk(apr_file_t *f_stdin, apr_pool_t *p, char *buf,
                          chunks_head);
         }
         else {
-            // Check that the chunk list size jives with chunk_cnt.
+            /* Check that the chunk list size jives with chunk_cnt. */
             if (chunk_idx != chunks_head->nelts) {
                 fprintf(stderr, "Chunks found in a non-ordered sequence, "
                                 "skipping this chunk set\n");
@@ -593,14 +597,16 @@ static apr_status_t read_chunk(apr_file_t *f_stdin, apr_pool_t *p, char *buf,
 
         chunk_elem = apr_array_push(chunks_head);
 
-        // Stage this chunk.
+        /* Stage this chunk. */
         chunk_body = malloc(chunk_body_len);
         memcpy(chunk_body, buf, chunk_body_len);
         *chunk_elem = chunk_body;
 
         if (chunk_cnt == tot_chunk_cnt) {
-            // If this is the final chunk, glue them together so the original
-            // message can be written below.
+            /*
+             * If this is the final chunk, glue them together so the original
+             * message can be written below.
+             */
             uint32_t chunk_len;
             uint32_t chunk_iter;
             uint32_t cpy_len = 0;
@@ -618,14 +624,17 @@ static apr_status_t read_chunk(apr_file_t *f_stdin, apr_pool_t *p, char *buf,
             }
             *nRead = cpy_len;
             apr_array_clear(chunks_head);
-        } else {
-            // Otherwise continue staging and writing single-chunk messages.
+        }
+        else {
+            /* Otherwise continue staging and writing single-chunk messages. */
             return APR_SUCCESS;
         }
     }
     else {
-        // This log message is transferred in a single chunk, simply return and
-        // write it.
+        /*
+         * This log message is transferred in a single chunk, simply return and
+         * write it.
+         */
         *msg = buf;
     }
     return APR_SUCCESS;
