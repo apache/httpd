@@ -149,8 +149,9 @@ static void usage(const char *argv0, const char *reason)
 #if APR_FILES_AS_SOCKETS
             "  -c       Create log even if it is empty.\n"
 #endif
+            "  -n num   Rotate file by adding suffixes '.1', '.2', ..., '.num'.\n"
             "\n"
-            "The program is invoked as \"[prog] <curfile> [<prevfile>]\"\n"
+            "The program for '-p' is invoked as \"[prog] <curfile> [<prevfile>]\"\n"
             "where <curfile> is the filename of the newly opened logfile, and\n"
             "<prevfile>, if given, is the filename of the previously used logfile.\n"
             "\n");
@@ -212,7 +213,7 @@ static void dumpConfig (rotate_config_t *config)
     fprintf(stderr, "Rotation create empty logs:  %12s\n", config->create_empty ? "yes" : "no");
 #endif
     fprintf(stderr, "Rotation file name: %21s\n", config->szLogRoot);
-    fprintf(stderr, "Post-rotation prog: %21s\n", config->postrotate_prog);
+    fprintf(stderr, "Post-rotation prog: %21s\n", config->postrotate_prog ? config->postrotate_prog : "not used");
 }
 
 /*
@@ -280,7 +281,7 @@ static void post_rotate(apr_pool_t *pool, struct logfile *newlog,
     if (config->linkfile) {
         apr_file_remove(config->linkfile, newlog->pool);
         if (config->verbose) {
-            fprintf(stderr,"Linking %s to %s\n", newlog->name, config->linkfile);
+            fprintf(stderr, "Linking %s to %s\n", newlog->name, config->linkfile);
         }
         rv = apr_file_link(newlog->name, config->linkfile);
         if (rv != APR_SUCCESS) {
