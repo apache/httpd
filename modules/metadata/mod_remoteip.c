@@ -31,6 +31,7 @@
 #define APR_WANT_BYTEFUNC
 #include "apr_want.h"
 #include "apr_network_io.h"
+#include "apr_version.h"
 
 module AP_MODULE_DECLARE_DATA remoteip_module;
 
@@ -313,6 +314,40 @@ static int remoteip_sockaddr_equal(apr_sockaddr_t *addr1, apr_sockaddr_t *addr2)
 {
     return (addr1->port == addr2->port && apr_sockaddr_equal(addr1, addr2));
 }
+
+#if !APR_VERSION_AT_LEAST(1,5,0)
+#define apr_sockaddr_is_wildcard sockaddr_is_wildcard
+/* XXX: temp build fix from apr 1.5.x */
+static int sockaddr_is_wildcard(const apr_sockaddr_t *addr)
+{
+    static const char inaddr_any[
+#if APR_HAVE_IPV6
+        sizeof(struct in6_addr)
+#else
+        sizeof(struct in_addr)
+#endif
+    ] = {0};
+
+    if (addr->ipaddr_ptr /* IP address initialized */
+        && addr->ipaddr_len <= sizeof inaddr_any) { /* else bug elsewhere? */
+        if (!memcmp(inaddr_any, addr->ipaddr_ptr, addr->ipaddr_len)) {
+            return 1;
+        }
+#if APR_HAVE_IPV6
+    if (addr->family == AF_INET6
+        && IN6_IS_ADDR_V4MAPPED((struct in6_addr *)addr->ipaddr_ptr)) {
+        struct in_addr *v4 = (struct in_addr *)&((apr_uint32_t *)addr->ipaddr_ptr)[3];
+
+        if (!memcmp(inaddr_any, v4, sizeof *v4)) {
+            return 1;
+        }
+    }
+#endif
+    }
+    return 0;
+}
+#endif
+
 
 /** Similar to remoteip_sockaddr_equal, except that it handles wildcard addresses
  *  and ports too.
