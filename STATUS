@@ -118,11 +118,6 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
-  *) mod_ssl: Fix merging of proxy SSL context outside <Proxy> sections,
-     regression introduced in 2.4.30. PR 62232.
-     trunk patch: http://svn.apache.org/r1828390
-     2.4.x patch: svn merge -c 1828390 ^/httpd/httpd/trunk .
-     +1: ylavic, rpluem, jim
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
