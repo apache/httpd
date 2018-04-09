@@ -1,6 +1,21 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_ssl: add support for TLSv1.3 (tested with OpenSSL v1.1.1-pre4, other libs may
+     need more sugar). SSL(Proxy)CipherSuite now has an optional first parameter for the
+     protocol the ciphers are for.
+     Directive "SSLVerifyClient" now triggers certificate retrieval from the client (this
+     is not fully tested - but fails in similar fashion as in TLSv1.2 in my setups).
+     Verifying the client fails exactly the same for HTTP/2 connections for all SSL protocols,
+     as this would need to trigger the master connection thread - which we do not support
+     right now.
+     Renegotiation of ciphers is intentionally ignored for TLSv1.3 connections. "SSLCipherSuite"
+     does not allow to specify TLSv1.3 ciphers in a directory context (because it cannot work) and
+     TLSv1.2 or lower ciphers are not relevant, as cipher suites are completely separate.
+     This means there is a bit if a world split when simultaneously having TLSv1.2 and TLSv1.3
+     connections to the same server.
+     [Stefan Eissing]
+
   *) mod_http2: accurate reporting of h2 data input/output per request via mod_logio. Fixes
      an issue where output sizes where counted n-times on reused slave connections. See
      gituhub issue: https://github.com/icing/mod_h2/issues/158
@@ -23,11 +38,6 @@ Changes with Apache 2.5.1
   *) mod_cgi: Add CGIScriptTimeout to make mod_cgi's timeout per-directory and
      independent of the core Timeout directive.  PR 62229.  
      [Hank Ibell <hwibell gmail.com>]
-
-  *) mod_ssl: add support for TLSv1.3 (tested with OpenSSL v1.1.1-pre3, other libs may
-     need more sugar). SSL(Proxy)CipherSuite now has an optional first parameter for the
-     protocol the ciphers are for.
-     [Stefan Eissing]
 
   *) mod_remoteip: Restore compatibility with APR 1.4 (apr_sockaddr_is_wildcard).
      [Eric Covener]

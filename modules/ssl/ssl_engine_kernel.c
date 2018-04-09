@@ -430,21 +430,55 @@ static void ssl_configure_env(request_rec *r, SSLConnRec *sslconn)
     }
 }
 
-/*
- *  Access Handler
- */
-int ssl_hook_Access(request_rec *r)
+static int ssl_check_post_client_verify(request_rec *r, SSLSrvConfigRec *sc, 
+                                        SSLDirConfigRec *dc, SSLConnRec *sslconn, SSL *ssl)
 {
-    SSLDirConfigRec *dc         = myDirConfig(r);
-    SSLSrvConfigRec *sc         = mySrvConfig(r->server);
-    SSLConnRec *sslconn         = myConnConfig(r->connection);
-    SSL *ssl                    = sslconn ? sslconn->ssl : NULL;
+    /*
+     * Finally check for acceptable renegotiation results
+     */
+    if ((dc->nVerifyClient != SSL_CVERIFY_NONE) ||
+        (sc->server->auth.verify_mode != SSL_CVERIFY_NONE)) {
+        BOOL do_verify = ((dc->nVerifyClient == SSL_CVERIFY_REQUIRE) ||
+                          (sc->server->auth.verify_mode == SSL_CVERIFY_REQUIRE));
+        
+        if (do_verify && (SSL_get_verify_result(ssl) != X509_V_OK)) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02262)
+                          "Re-negotiation handshake failed: "
+                          "Client verification failed");
+            
+            return HTTP_FORBIDDEN;
+        }
+        
+        if (do_verify) {
+            X509 *peercert;
+            
+            if ((peercert = SSL_get_peer_certificate(ssl)) == NULL) {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02263)
+                              "Re-negotiation handshake failed: "
+                              "Client certificate missing");
+                
+                return HTTP_FORBIDDEN;
+            }
+            
+            X509_free(peercert);
+        }
+    }
+    return OK;
+}    
+
+/*
+ *  Access Handler, classic flavour, for SSL/TLS up to v1.2 
+ *  where everything can be renegotiated and no one is happy.
+ */
+static int ssl_hook_Access_classic(request_rec *r, SSLSrvConfigRec *sc, SSLDirConfigRec *dc,
+                                   SSLConnRec *sslconn, SSL *ssl)
+{
     server_rec *handshakeserver = sslconn ? sslconn->server : NULL;
     SSLSrvConfigRec *hssc       = handshakeserver? mySrvConfig(handshakeserver) : NULL;
     SSL_CTX *ctx = NULL;
     apr_array_header_t *requires;
     ssl_require_t *ssl_requires;
-    int ok, i;
+    int ok, i, rc;
     BOOL renegotiate = FALSE, renegotiate_quick = FALSE;
     X509 *cert;
     X509 *peercert;
@@ -452,65 +486,8 @@ int ssl_hook_Access(request_rec *r)
     X509_STORE_CTX *cert_store_ctx;
     STACK_OF(SSL_CIPHER) *cipher_list_old = NULL, *cipher_list = NULL;
     const SSL_CIPHER *cipher = NULL;
-    int depth, verify_old, verify, n, is_slave = 0;
+    int depth, verify_old, verify, n;
     const char *ncipher_suite;
-
-    /* On a slave connection, we do not expect to have an SSLConnRec, but
-     * our master connection might have one. */
-    if (!(sslconn && ssl) && r->connection->master) {
-        sslconn         = myConnConfig(r->connection->master);
-        ssl             = sslconn ? sslconn->ssl : NULL;
-        handshakeserver = sslconn ? sslconn->server : NULL;
-        hssc            = handshakeserver? mySrvConfig(handshakeserver) : NULL;
-        is_slave        = 1;
-    }
-    
-    if (ssl) {
-        /*
-         * We should have handshaken here (on handshakeserver),
-         * otherwise we are being redirected (ErrorDocument) from
-         * a renegotiation failure below. The access is still 
-         * forbidden in the latter case, let ap_die() handle
-         * this recursive (same) error.
-         */
-        if (!SSL_is_init_finished(ssl)) {
-            return HTTP_FORBIDDEN;
-        }
-        ctx = SSL_get_SSL_CTX(ssl);
-    }
-
-    /*
-     * Support for SSLRequireSSL directive
-     */
-    if (dc->bSSLRequired && !ssl) {
-        if ((sc->enabled == SSL_ENABLED_OPTIONAL) && !is_slave) {
-            /* This vhost was configured for optional SSL, just tell the
-             * client that we need to upgrade.
-             */
-            apr_table_setn(r->err_headers_out, "Upgrade", "TLS/1.0, HTTP/1.1");
-            apr_table_setn(r->err_headers_out, "Connection", "Upgrade");
-
-            return HTTP_UPGRADE_REQUIRED;
-        }
-
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02219)
-                      "access to %s failed, reason: %s",
-                      r->filename, "SSL connection required");
-
-        /* remember forbidden access for strict require option */
-        apr_table_setn(r->notes, "ssl-access-forbidden", "1");
-
-        return HTTP_FORBIDDEN;
-    }
-
-    /*
-     * Check to see whether SSL is in use; if it's not, then no
-     * further access control checks are relevant.  (the test for
-     * sc->enabled is probably strictly unnecessary)
-     */
-    if (sc->enabled == SSL_ENABLED_FALSE || !ssl) {
-        return DECLINED;
-    }
 
 #ifdef HAVE_SRP
     /*
@@ -587,7 +564,7 @@ int ssl_hook_Access(request_rec *r)
         }
 
         /* configure new state */
-        if (is_slave) {
+        if (r->connection->master) {
             /* TODO: this categorically fails changed cipher suite settings
              * on slave connections. We could do better by
              * - create a new SSL* from our SSL_CTX and set cipher suite there,
@@ -665,7 +642,7 @@ int ssl_hook_Access(request_rec *r)
         }
 
         if (renegotiate) {
-            if (is_slave) {
+            if (r->connection->master) {
                 /* The request causes renegotiation on a slave connection.
                  * This is not allowed since we might have concurrent requests
                  * on this connection.
@@ -738,7 +715,7 @@ int ssl_hook_Access(request_rec *r)
                   (verify     & SSL_VERIFY_FAIL_IF_NO_PEER_CERT)))
             {
                 renegotiate = TRUE;
-                if (is_slave) {
+                if (r->connection->master) {
                     /* The request causes renegotiation on a slave connection.
                      * This is not allowed since we might have concurrent requests
                      * on this connection.
@@ -1054,30 +1031,8 @@ int ssl_hook_Access(request_rec *r)
         /*
          * Finally check for acceptable renegotiation results
          */
-        if ((dc->nVerifyClient != SSL_CVERIFY_NONE) ||
-            (sc->server->auth.verify_mode != SSL_CVERIFY_NONE)) {
-            BOOL do_verify = ((dc->nVerifyClient == SSL_CVERIFY_REQUIRE) ||
-                              (sc->server->auth.verify_mode == SSL_CVERIFY_REQUIRE));
-
-            if (do_verify && (SSL_get_verify_result(ssl) != X509_V_OK)) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02262)
-                              "Re-negotiation handshake failed: "
-                              "Client verification failed");
-
-                return HTTP_FORBIDDEN;
-            }
-
-            if (do_verify) {
-                if ((peercert = SSL_get_peer_certificate(ssl)) == NULL) {
-                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02263)
-                                  "Re-negotiation handshake failed: "
-                                  "Client certificate missing");
-
-                    return HTTP_FORBIDDEN;
-                }
-
-                X509_free(peercert);
-            }
+        if (OK != (rc = ssl_check_post_client_verify(r, sc, dc, sslconn, ssl))) {
+            return rc;
         }
 
         /*
@@ -1169,6 +1124,207 @@ int ssl_hook_Access(request_rec *r)
      */
 
     return DECLINED;
+}
+
+/*
+ *  Access Handler, modern flavour, for SSL/TLS v1.3 and onward. 
+ *  Only client certificates can be requested, everything else stays.
+ */
+static int ssl_hook_Access_modern(request_rec *r, SSLSrvConfigRec *sc, SSLDirConfigRec *dc,
+                                  SSLConnRec *sslconn, SSL *ssl)
+{
+#ifdef SSL_OP_NO_TLSv1_3
+    if ((dc->nVerifyClient != SSL_CVERIFY_UNSET) ||
+        (sc->server->auth.verify_mode != SSL_CVERIFY_UNSET)) {
+        int vmode_inplace, vmode_needed;
+        int change_vmode = FALSE;
+        int old_state, n, rc;
+    
+        vmode_inplace = SSL_get_verify_mode(ssl);
+        vmode_needed = SSL_VERIFY_NONE;
+
+        if ((dc->nVerifyClient == SSL_CVERIFY_REQUIRE) ||
+            (sc->server->auth.verify_mode == SSL_CVERIFY_REQUIRE)) {
+            vmode_needed |= SSL_VERIFY_PEER_STRICT;
+        }
+
+        if ((dc->nVerifyClient == SSL_CVERIFY_OPTIONAL) ||
+            (dc->nVerifyClient == SSL_CVERIFY_OPTIONAL_NO_CA) ||
+            (sc->server->auth.verify_mode == SSL_CVERIFY_OPTIONAL) ||
+            (sc->server->auth.verify_mode == SSL_CVERIFY_OPTIONAL_NO_CA))
+        {
+            vmode_needed |= SSL_VERIFY_PEER;
+        }
+
+        if (vmode_needed == SSL_VERIFY_NONE) {
+            return DECLINED;
+        }
+        
+        vmode_needed |= SSL_VERIFY_CLIENT_ONCE;
+        if (vmode_inplace != vmode_needed) {
+            /* Need to change, if new setting is more restrictive than existing one */
+            
+            if ((vmode_inplace == SSL_VERIFY_NONE)
+                || (!(vmode_inplace   & SSL_VERIFY_PEER) 
+                    && (vmode_needed  & SSL_VERIFY_PEER))
+                || (!(vmode_inplace   & SSL_VERIFY_FAIL_IF_NO_PEER_CERT) 
+                    && (vmode_inplace & SSL_VERIFY_FAIL_IF_NO_PEER_CERT))) {
+                /* need to change the effective verify mode */
+                change_vmode = TRUE;
+            }
+            else {
+                /* FIXME: does this work with TLSv1.3? Is this more than re-inspecting
+                 * the certificate we should already have? */
+                /*
+                 * override of SSLVerifyDepth
+                 *
+                 * The depth checks are handled by us manually inside the
+                 * verify callback function and not by OpenSSL internally
+                 * (and our function is aware of both the per-server and
+                 * per-directory contexts). So we cannot ask OpenSSL about
+                 * the currently verify depth. Instead we remember it in our
+                 * SSLConnRec attached to the SSL* of OpenSSL.  We've to force
+                 * the renegotiation if the reconfigured/new verify depth is
+                 * less than the currently active/remembered verify depth
+                 * (because this means more restriction on the certificate
+                 * chain).
+                 */
+                n = (sslconn->verify_depth != UNSET)? 
+                    sslconn->verify_depth : sc->server->auth.verify_depth;
+                /* determine the new depth */
+                sslconn->verify_depth = (dc->nVerifyDepth != UNSET)
+                                        ? dc->nVerifyDepth
+                                        : sc->server->auth.verify_depth;
+                if (sslconn->verify_depth < n) {
+                    change_vmode = TRUE;
+                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO()
+                                  "Reduced client verification depth will "
+                                  "force renegotiation");
+                }
+            }
+        }
+        
+        if (change_vmode) {
+            char peekbuf[1];
+
+            if (r->connection->master) {
+                /* FIXME: modifying the SSL on a slave connection is no good.
+                 * We would need to push this back to the master connection
+                 * somehow.
+                 */
+                apr_table_setn(r->notes, "ssl-renegotiate-forbidden", "verify-client");
+                return HTTP_FORBIDDEN;
+            }
+            
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO() "verify client post handshake");
+            
+            SSL_set_verify(ssl, vmode_needed, ssl_callback_SSLVerify);
+            SSL_verify_client_post_handshake(ssl);
+
+            old_state = sslconn->reneg_state;
+            sslconn->reneg_state = RENEG_ALLOW;
+            modssl_set_app_data2(ssl, r);
+
+            SSL_do_handshake(ssl);
+            /* Need to trigger renegotiation handshake by reading.
+             * Peeking 0 bytes actually works.
+             * See: http://marc.info/?t=145493359200002&r=1&w=2
+             */
+            SSL_peek(ssl, peekbuf, 0);
+
+            sslconn->reneg_state = old_state;
+            modssl_set_app_data2(ssl, NULL);
+
+            /*
+             * Finally check for acceptable renegotiation results
+             */
+            if (OK != (rc = ssl_check_post_client_verify(r, sc, dc, sslconn, ssl))) {
+                return rc;
+            }
+        }
+    }
+    
+    return DECLINED;
+#else
+    /* We should never have been called. Play it safe. */
+    return HTTP_FORBIDDEN;
+#endif
+}
+
+int ssl_hook_Access(request_rec *r)
+{
+    SSLDirConfigRec *dc         = myDirConfig(r);
+    SSLSrvConfigRec *sc         = mySrvConfig(r->server);
+    SSLConnRec *sslconn         = myConnConfig(r->connection);
+    SSL *ssl                    = sslconn ? sslconn->ssl : NULL;
+    server_rec *handshakeserver = sslconn ? sslconn->server : NULL;
+    SSLSrvConfigRec *hssc       = handshakeserver? mySrvConfig(handshakeserver) : NULL;
+    SSL_CTX *ctx = NULL;
+
+    /* On a slave connection, we do not expect to have an SSLConnRec, but
+     * our master connection might have one. */
+    if (!(sslconn && ssl) && r->connection->master) {
+        sslconn         = myConnConfig(r->connection->master);
+        ssl             = sslconn ? sslconn->ssl : NULL;
+        handshakeserver = sslconn ? sslconn->server : NULL;
+        hssc            = handshakeserver? mySrvConfig(handshakeserver) : NULL;
+    }
+    
+    if (ssl) {
+        /*
+         * We should have handshaken here (on handshakeserver),
+         * otherwise we are being redirected (ErrorDocument) from
+         * a renegotiation failure below. The access is still 
+         * forbidden in the latter case, let ap_die() handle
+         * this recursive (same) error.
+         */
+        if (!SSL_is_init_finished(ssl)) {
+            return HTTP_FORBIDDEN;
+        }
+        ctx = SSL_get_SSL_CTX(ssl);
+    }
+
+    /*
+     * Support for SSLRequireSSL directive
+     */
+    if (dc->bSSLRequired && !ssl) {
+        if ((sc->enabled == SSL_ENABLED_OPTIONAL) && !r->connection->master) {
+            /* This vhost was configured for optional SSL, just tell the
+             * client that we need to upgrade.
+             */
+            apr_table_setn(r->err_headers_out, "Upgrade", "TLS/1.0, HTTP/1.1");
+            apr_table_setn(r->err_headers_out, "Connection", "Upgrade");
+
+            return HTTP_UPGRADE_REQUIRED;
+        }
+
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02219)
+                      "access to %s failed, reason: %s",
+                      r->filename, "SSL connection required");
+
+        /* remember forbidden access for strict require option */
+        apr_table_setn(r->notes, "ssl-access-forbidden", "1");
+
+        return HTTP_FORBIDDEN;
+    }
+
+    /*
+     * Check to see whether SSL is in use; if it's not, then no
+     * further access control checks are relevant.  (the test for
+     * sc->enabled is probably strictly unnecessary)
+     */
+    if (sc->enabled == SSL_ENABLED_FALSE || !ssl) {
+        return DECLINED;
+    }
+    
+#ifdef SSL_OP_NO_TLSv1_3
+    /* TLSv1.3+ is less complicated here. Branch off into a new codeline
+     * and avoid messing with the past. */
+    if (SSL_version(ssl) >= TLS1_3_VERSION) {
+        return ssl_hook_Access_modern(r, sc, dc, sslconn, ssl);
+    } 
+#endif
+    return ssl_hook_Access_classic(r, sc, dc, sslconn, ssl);
 }
 
 /*
