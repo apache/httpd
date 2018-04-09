@@ -190,7 +190,7 @@ static int pem_passwd(char *buf, int size, int rwflag, void *baton)
  */
 static apr_time_t md_asn1_time_get(const ASN1_TIME* time)
 {
-#ifdef LIBRESSL_VERSION_NUMBER
+#if OPENSSL_VERSION_NUMBER < 0x10002000L || defined(LIBRESSL_VERSION_NUMBER)
     /* courtesy: https://stackoverflow.com/questions/10975542/asn1-time-to-time-t-conversion#11263731
      * all bugs are mine */
     apr_time_exp_t t;

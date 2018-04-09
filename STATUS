@@ -122,14 +122,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_md: Fix compilation with OpenSSL before version 1.0.2.
-     Symbol ASN1_TIME_diff is only available for 1.0.2+,
-     but luckily alternative code we can use is already
-     available, originally written for the LibreSSL case.
-     trunk patch: http://svn.apache.org/r1826973
-     2.4.x patch: svn merge -c 1826973 ^/httpd/httpd/trunk .
-     +1: rjung, ylavic, jim
-
   *) Some easy proposals:
         - mod_logio, mod_ssl: Remove pointless static in optional fn pointer
           variable declaration
