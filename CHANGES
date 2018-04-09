@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.34
 
+  *) mod_ssl: Fix merging of proxy SSL context outside <Proxy> sections,
+     regression introduced in 2.4.30. PR 62232. [Rainer Jung, Yann Ylavic]
+
   *) mod_remoteip: Restore compatibility with APR 1.4 (apr_sockaddr_is_wildcard).
      [Eric Covener]
 
@@ -160,7 +163,7 @@ Changes with Apache 2.4.30 (not released)
      implementing the Let's Encrypt ACMEv1 protocol to signup and renew 
      certificates. Please read the modules documentation for further instructions
      on how to use it. [Stefan Eissing]
-  
+
   *) mod_proxy_html: skip documents shorter than 4 bytes
      PR 56286 [Micha Lenk <micha lenk info>]
 
