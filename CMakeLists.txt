@@ -709,6 +709,7 @@ SET(HTTPD_INCLUDE_DIRECTORIES
   ${CMAKE_CURRENT_SOURCE_DIR}/modules/dav/main
   ${CMAKE_CURRENT_SOURCE_DIR}/modules/filters
   ${CMAKE_CURRENT_SOURCE_DIR}/modules/generators
+  ${CMAKE_CURRENT_SOURCE_DIR}/modules/md
   ${CMAKE_CURRENT_SOURCE_DIR}/modules/proxy
   ${CMAKE_CURRENT_SOURCE_DIR}/modules/session
   ${CMAKE_CURRENT_SOURCE_DIR}/modules/ssl
