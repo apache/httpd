@@ -123,13 +123,13 @@ RELEASE SHOWSTOPPERS:
                   http://svn.apache.org/r1827671
      2.4.x patch:
         svn merge -c 1827654,1827671 ^/httpd/httpd/trunk .
-     +1: covener, ylavic, rpluem
+     +1: covener, ylavic, rpluem, jim
 
   *) mod_ssl: Fix merging of proxy SSL context outside <Proxy> sections,
      regression introduced in 2.4.30. PR 62232.
      trunk patch: http://svn.apache.org/r1828390
      2.4.x patch: svn merge -c 1828390 ^/httpd/httpd/trunk .
-     +1: ylavic, rpluem
+     +1: ylavic, rpluem, jim
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
@@ -206,7 +206,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                     http://svn.apache.org/r1534914
      2.4.x patch: svn merge -c 1534895,1534896,1534914 ^/httpd/httpd/trunk .
                   plus CHANGES
-     +1: rjung, ylavic,
+     +1: rjung, ylavic,, jim
 
   *) mod_md: Fix compilation with OpenSSL before version 1.0.2.
      Symbol ASN1_TIME_diff is only available for 1.0.2+,
@@ -214,7 +214,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      available, originally written for the LibreSSL case.
      trunk patch: http://svn.apache.org/r1826973
      2.4.x patch: svn merge -c 1826973 ^/httpd/httpd/trunk .
-     +1: rjung, ylavic
+     +1: rjung, ylavic, jim
 
   *) mod_ssl: Add option "leaf" to OCSPEnable that will only check the leaf in the
      certificate chain. PR 62112.
@@ -230,7 +230,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_remoteip: make proxy-protocol work on HTTP/2 connections.
      trunk patch: http://svn.apache.org/r1827196
      2.4.x patch: svn merge -c 1827196 ^/httpd/httpd/trunk .
-     +1: icing, ylavic
+     +1: icing, ylavic, jim
 
   *) core: Add <IfFile>, <IfDirective>, <IfSection>
      trunk patch: http://svn.apache.org/r1769718
@@ -290,7 +290,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    Backport version for 2.4.x of patch:
       Trunk version of patch works
       svn merge -c 1822849,1822858,1822878,1822879,1822883,1828485 ^/httpd/httpd/trunk .
-   +1: rpluem,
+   +1: rpluem, jim
    
   *) Some easy proposals:
         - core: Avoid a compiler warning when NO_LINGCLOSE is used.
@@ -299,7 +299,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1703248
                   http://svn.apache.org/r1827366
      2.4.x patch: svn merge -c 1703248,1827366 ^/httpd/httpd/trunk .
-     +1: jailletc36, 
+     +1: jailletc36, jim
 
   *) mod_http2: 
      - normalize trace2 logging of http2 unencrypted connection upgrades. 
