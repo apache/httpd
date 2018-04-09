@@ -189,7 +189,7 @@ static int logio_pre_conn(conn_rec *c, void *csd)
 
 static int logio_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
 {
-    static APR_OPTIONAL_FN_TYPE(ap_register_log_handler) *log_pfn_register;
+    APR_OPTIONAL_FN_TYPE(ap_register_log_handler) *log_pfn_register;
 
     log_pfn_register = APR_RETRIEVE_OPTIONAL_FN(ap_register_log_handler);
 
