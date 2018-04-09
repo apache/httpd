@@ -25,6 +25,9 @@
 #include "apr_getopt.h"
 #include "apr_thread_proc.h"
 #include "apr_signal.h"
+#include "apr_env.h"
+#include "apr_hash.h"
+#include "apr_tables.h"
 #if APR_FILES_AS_SOCKETS
 #include "apr_poll.h"
 #endif
@@ -33,7 +36,11 @@
 #include <stdlib.h>
 #endif
 #define APR_WANT_STRFUNC
+#define APR_WANT_BYTEFUNC   /* for htons() et al */
 #include "apr_want.h"
+
+#include "httpd.h"
+#include "http_log.h"
 
 #define BUFSIZE         65536
 #define ERRMSGSZ        256
@@ -540,6 +547,121 @@ static const char *get_time_or_size(rotate_config_t *config,
     return NULL;
 }
 
+static apr_status_t read_chunk(apr_file_t *f_stdin, apr_pool_t *p, char *buf,
+                               char **msg, apr_hash_t *thread_chunks,
+                               apr_size_t *nRead)
+{
+    apr_status_t rv;
+    uint32_t chunk_header[MSG_HEADER_ELT_CNT];
+    uint32_t proc_slot, thd_slot, chunk_cnt, tot_chunk_cnt, chunk_body_len;
+
+    /* Read just the chunk header, expected to be present in its entirety. */
+    rv = apr_file_read_full(f_stdin, chunk_header, MSG_HEADER_LEN, nRead);
+    if (APR_STATUS_IS_EOF(rv)) {
+        return rv;
+    }
+    else if (rv != APR_SUCCESS) {
+        exit(3);
+    }
+    proc_slot = ntohl(chunk_header[0]);
+    thd_slot = ntohl(chunk_header[1]);
+    chunk_cnt = ntohl(chunk_header[2]);
+    tot_chunk_cnt = ntohl(chunk_header[3]);
+    chunk_body_len = ntohl(chunk_header[4]);
+
+    /* Read the full chunk body, expected to be present in its entirety. */
+    rv = apr_file_read_full(f_stdin, buf, (apr_size_t)chunk_body_len, nRead);
+    if (APR_STATUS_IS_EOF(rv)) {
+        return rv;
+    }
+    else if (rv != APR_SUCCESS) {
+        exit(3);
+    }
+
+    if (chunk_cnt != 1 || tot_chunk_cnt != 1) {
+        /* 
+         * If this is a multi-chunk log record, stage the chunks so they can be
+         * reassembled in order.
+         */
+        uint32_t chunk_idx = chunk_cnt - 1;
+        char *chunk_body;
+        char **chunk_elem;
+        char *slot_key;
+        apr_array_header_t *chunks_head;
+
+        slot_key = apr_psprintf(p, "%i.%i", proc_slot, thd_slot);
+        chunks_head = apr_hash_get(thread_chunks, slot_key,
+                                   APR_HASH_KEY_STRING);
+        /* A thread must write chunks of a message in order. */
+        if (chunks_head == NULL) {
+            if (chunk_idx > 0) {
+                /*
+                 * Expected to have a table entry here since we're in
+                 * mid-sequence for this chunk set.
+                 */
+                fprintf(stderr, "Chunks found in a non-ordered sequence, "
+                                "skipping this chunk set\n");
+                return APR_SUCCESS;
+            }
+            chunks_head = apr_array_make(p, 10, sizeof(char *));
+            apr_hash_set(thread_chunks, slot_key, APR_HASH_KEY_STRING,
+                         chunks_head);
+        }
+        else {
+            /* Check that the chunk list size jives with chunk_cnt. */
+            if (chunk_idx != chunks_head->nelts) {
+                fprintf(stderr, "Chunks found in a non-ordered sequence, "
+                                "skipping this chunk set\n");
+                apr_array_clear(chunks_head);
+                return APR_SUCCESS;
+            }
+        }
+
+        chunk_elem = apr_array_push(chunks_head);
+
+        /* Stage this chunk. */
+        chunk_body = malloc(chunk_body_len);
+        memcpy(chunk_body, buf, chunk_body_len);
+        *chunk_elem = chunk_body;
+
+        if (chunk_cnt == tot_chunk_cnt) {
+            /*
+             * If this is the final chunk, glue them together so the original
+             * message can be written below.
+             */
+            uint32_t chunk_len;
+            uint32_t chunk_iter;
+            uint32_t cpy_len = 0;
+
+            *msg = malloc(LOG_BUFSIZE_LESS_CHUNKHEAD * tot_chunk_cnt);
+            for (chunk_iter = 0; chunk_iter < chunks_head->nelts;
+                 ++chunk_iter) {
+                char *chunk = ((char**)chunks_head->elts)[chunk_iter];
+                chunk_len = LOG_BUFSIZE_LESS_CHUNKHEAD;
+                if (chunk_iter + 1 == tot_chunk_cnt)
+                    chunk_len = chunk_body_len;
+                memcpy(*msg + cpy_len, chunk, chunk_len);
+                cpy_len += chunk_len;
+                free(chunk);
+            }
+            *nRead = cpy_len;
+            apr_array_clear(chunks_head);
+        }
+        else {
+            /* Otherwise continue staging and writing single-chunk messages. */
+            return APR_SUCCESS;
+        }
+    }
+    else {
+        /*
+         * This log message is transferred in a single chunk, simply return and
+         * write it.
+         */
+        *msg = buf;
+    }
+    return APR_SUCCESS;
+}
+
 int main (int argc, const char * const argv[])
 {
     char buf[BUFSIZE];
@@ -549,8 +671,12 @@ int main (int argc, const char * const argv[])
     apr_getopt_t *opt;
     apr_status_t rv;
     char c;
+    char *env;
     const char *opt_arg;
     const char *err = NULL;
+    int chunked_msgs;
+    apr_hash_t *thread_chunks;
+    char *msg;
 #if APR_FILES_AS_SOCKETS
     apr_pollfd_t pollfd = { 0 };
     apr_status_t pollret = APR_SUCCESS;
@@ -670,6 +796,11 @@ int main (int argc, const char * const argv[])
     }
 #endif
 
+    rv = apr_env_get(&env, "AP_MOD_LOG_CONFIG_CHUNKED_MSG", status.pool);
+    chunked_msgs = (rv == APR_SUCCESS && env != NULL);
+
+    thread_chunks = apr_hash_make(status.pool);
+
     /*
      * Immediately open the logfile as we start, if we were forced
      * to do so via '-f'.
@@ -679,7 +810,10 @@ int main (int argc, const char * const argv[])
     }
 
     for (;;) {
+        int freemsg = 0;
+        int skip_write = 0;
         nRead = sizeof(buf);
+        msg = NULL;
 #if APR_FILES_AS_SOCKETS
         if (config.create_empty && config.tRotation) {
             polltimeout = status.tLogEnd ? status.tLogEnd - get_now(&config, NULL) : config.tRotation;
@@ -691,16 +825,28 @@ int main (int argc, const char * const argv[])
             }
         }
         if (pollret == APR_SUCCESS) {
-            rv = apr_file_read(f_stdin, buf, &nRead);
+            if (chunked_msgs) {
+                rv = read_chunk(f_stdin, status.pool, buf, &msg,
+                                thread_chunks, &nRead);
+            }
+            else {
+                rv = apr_file_read(f_stdin, buf, &nRead);
+                msg = buf;
+            }
             if (APR_STATUS_IS_EOF(rv)) {
                 break;
             }
             else if (rv != APR_SUCCESS) {
                 exit(3);
             }
+            if (msg == NULL)
+                skip_write = 1;
+            else if (msg != buf)
+                freemsg = 1;
         }
         else if (pollret == APR_TIMEUP) {
             *buf = 0;
+            msg = buf;
             nRead = 0;
         }
         else {
@@ -708,21 +854,35 @@ int main (int argc, const char * const argv[])
             exit(5);
         }
 #else /* APR_FILES_AS_SOCKETS */
-        rv = apr_file_read(f_stdin, buf, &nRead);
+        if (chunked_msgs) {
+            rv = read_chunk(f_stdin, status.pool, buf, &msg,
+                            thread_chunks, &nRead);
+        }
+        else {
+            rv = apr_file_read(f_stdin, buf, &nRead);
+            msg = buf;
+        }
         if (APR_STATUS_IS_EOF(rv)) {
             break;
         }
         else if (rv != APR_SUCCESS) {
             exit(3);
         }
+        if (msg == NULL)
+            skip_write = 1;
+        else if (msg != buf)
+            freemsg = 1;
 #endif /* APR_FILES_AS_SOCKETS */
         checkRotate(&config, &status);
         if (status.rotateReason != ROTATE_NONE) {
             doRotate(&config, &status);
         }
 
+        if (skip_write)
+            continue;
+
         nWrite = nRead;
-        rv = apr_file_write_full(status.current.fd, buf, nWrite, &nWrite);
+        rv = apr_file_write_full(status.current.fd, msg, nWrite, &nWrite);
         if (nWrite != nRead) {
             apr_off_t cur_offset;
 
@@ -742,11 +902,13 @@ int main (int argc, const char * const argv[])
             status.nMessCount++;
         }
         if (config.echo) {
-            if (apr_file_write_full(f_stdout, buf, nRead, &nWrite)) {
+            if (apr_file_write_full(f_stdout, msg, nRead, &nWrite)) {
                 fprintf(stderr, "Unable to write to stdout\n");
                 exit(4);
             }
         }
+        if (freemsg)
+            free(msg);
     }
 
     return 0; /* reached only at stdin EOF. */
