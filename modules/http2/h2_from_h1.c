@@ -413,7 +413,7 @@ static apr_status_t pass_response(h2_task *task, ap_filter_t *f,
     
     h2_headers *response = h2_headers_create(parser->http_status, 
                                              make_table(parser),
-                                             NULL, task->pool);
+                                             NULL, 0, task->pool);
     apr_brigade_cleanup(parser->tmp);
     b = h2_bucket_headers_create(task->c->bucket_alloc, response);
     APR_BRIGADE_INSERT_TAIL(parser->tmp, b);
@@ -772,6 +772,10 @@ apr_status_t h2_filter_request_in(ap_filter_t* f,
                 APR_BUCKET_REMOVE(b);
                 apr_bucket_destroy(b);
                 ap_remove_input_filter(f);
+                
+                if (headers->raw_bytes && h2_task_logio_add_bytes_in) {
+                    h2_task_logio_add_bytes_in(task->c, headers->raw_bytes);
+                }
                 break;
             }
         }

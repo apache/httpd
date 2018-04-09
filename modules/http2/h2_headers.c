@@ -111,7 +111,8 @@ apr_bucket *h2_bucket_headers_beam(struct h2_bucket_beam *beam,
 
 
 h2_headers *h2_headers_create(int status, apr_table_t *headers_in, 
-                                apr_table_t *notes, apr_pool_t *pool)
+                                apr_table_t *notes, apr_off_t raw_bytes,
+                                apr_pool_t *pool)
 {
     h2_headers *headers = apr_pcalloc(pool, sizeof(h2_headers));
     headers->status    = status;
@@ -125,7 +126,7 @@ h2_headers *h2_headers_create(int status, apr_table_t *headers_in,
 h2_headers *h2_headers_rcreate(request_rec *r, int status,
                                  apr_table_t *header, apr_pool_t *pool)
 {
-    h2_headers *headers = h2_headers_create(status, header, r->notes, pool);
+    h2_headers *headers = h2_headers_create(status, header, r->notes, 0, pool);
     if (headers->status == HTTP_FORBIDDEN) {
         const char *cause = apr_table_get(r->notes, "ssl-renegotiate-forbidden");
         if (cause) {
@@ -149,7 +150,7 @@ h2_headers *h2_headers_rcreate(request_rec *r, int status,
 h2_headers *h2_headers_copy(apr_pool_t *pool, h2_headers *h)
 {
     return h2_headers_create(h->status, apr_table_copy(pool, h->headers), 
-                             apr_table_copy(pool, h->notes), pool);
+                             apr_table_copy(pool, h->notes), h->raw_bytes, pool);
 }
 
 h2_headers *h2_headers_die(apr_status_t type,
