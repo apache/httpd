@@ -276,13 +276,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/ssl-policy.patch
      +1: icing
 
-  *) mod_http2: normalize trace2 logging of http2 unencrypted connection
-     upgrades.
-     trunk patch: http://svn.apache.org/r1828210
-                  http://svn.apache.org/r1828232
-     2.4.x patch: svn merge -c 1828210,182823 ^/httpd/httpd/trunk .
-     +1: icing, ylavic
-
   *) mod_proxy: Do not restrict the maximum pool size for backend connections any
      longer by the maximum number of threads per process and use a better default
      if mod_http2 is loaded.
@@ -298,7 +291,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Trunk version of patch works
       svn merge -c 1822849,1822858,1822878,1822879,1822883,1828485 ^/httpd/httpd/trunk .
    +1: rpluem,
-
+   
   *) Some easy proposals:
         - core: Avoid a compiler warning when NO_LINGCLOSE is used.
                 Simplify code.
@@ -307,6 +300,20 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1827366
      2.4.x patch: svn merge -c 1703248,1827366 ^/httpd/httpd/trunk .
      +1: jailletc36, 
+
+  *) mod_http2: 
+     - normalize trace2 logging of http2 unencrypted connection upgrades. 
+     - accurate reporting of h2 data input/output per request via mod_logio. Fixes
+       an issue where output sizes where counted n-times on reused slave connections.
+     - code cleanups: instrumenting bbout logging, using APR_OFF_T_FMT where needed
+     trunk patch: http://svn.apache.org/r1828210
+                  http://svn.apache.org/r1828232
+                  http://svn.apache.org/r1828687
+                  http://svn.apache.org/r1826687
+                  http://svn.apache.org/r1827166                  
+     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/h2-1.10.17.patch
+     Resetting votes after latest additions
+     +1: icing
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
