@@ -38,7 +38,9 @@
 #define APR_WANT_STRFUNC
 #define APR_WANT_BYTEFUNC   /* for htons() et al */
 #include "apr_want.h"
-#include "mod_log_config.h"
+
+#include "httpd.h"
+#include "http_log.h"
 
 #define BUFSIZE         65536
 #define ERRMSGSZ        256

@@ -30,25 +30,6 @@
 #ifndef _MOD_LOG_CONFIG_H
 #define _MOD_LOG_CONFIG_H 1
 
-/* POSIX.1 defines PIPE_BUF as the maximum number of bytes that is
- * guaranteed to be atomic when writing a pipe.  And PIPE_BUF >= 512
- * is guaranteed.  So we'll just guess 512 in the event the system
- * doesn't have this.  Now, for file writes there is actually no limit,
- * the entire write is atomic.  Whether all systems implement this
- * correctly is another question entirely ... so we'll just use PIPE_BUF
- * because it's probably a good guess as to what is implemented correctly
- * everywhere.
- */
-#ifdef PIPE_BUF
-#define LOG_BUFSIZE     PIPE_BUF
-#else
-#define LOG_BUFSIZE     (512)
-#endif
-
-#define MSG_HEADER_ELT_CNT 5
-#define MSG_HEADER_LEN (sizeof(uint32_t) * MSG_HEADER_ELT_CNT)
-#define LOG_BUFSIZE_LESS_CHUNKHEAD (LOG_BUFSIZE - MSG_HEADER_LEN)
-
 typedef struct config_log_state config_log_state;
 
 /**
