@@ -64,7 +64,7 @@ struct rotate_config {
     int force_open;
     int verbose;
     int echo;
-    const char *szLogRoot;
+    char *szLogRoot;
     int truncate;
     const char *linkfile;
     const char *postrotate_prog;
@@ -72,6 +72,7 @@ struct rotate_config {
     int create_empty;
 #endif
     int num_files;
+    int create_path;
 };
 
 typedef struct rotate_status rotate_status_t;
@@ -110,9 +111,9 @@ static void usage(const char *argv0, const char *reason)
     }
     fprintf(stderr,
 #if APR_FILES_AS_SOCKETS
-            "Usage: %s [-v] [-l] [-L linkname] [-p prog] [-f] [-t] [-e] [-c] [-n number] <logfile> "
+            "Usage: %s [-v] [-l] [-L linkname] [-p prog] [-f] [-D] [-t] [-e] [-c] [-n number] <logfile> "
 #else
-            "Usage: %s [-v] [-l] [-L linkname] [-p prog] [-f] [-t] [-e] [-n number] <logfile> "
+            "Usage: %s [-v] [-l] [-L linkname] [-p prog] [-f] [-D] [-t] [-e] [-n number] <logfile> "
 #endif
             "{<rotation time in seconds>|<rotation size>(B|K|M|G)} "
             "[offset minutes from UTC]\n\n",
@@ -144,6 +145,7 @@ static void usage(const char *argv0, const char *reason)
             "  -L path  Create hard link from current log to specified path.\n"
             "  -p prog  Run specified program after opening a new log file. See below.\n"
             "  -f       Force opening of log on program start.\n"
+            "  -D       Create parent directories of log file.\n" 
             "  -t       Truncate logfile instead of rotating, tail friendly.\n"
             "  -e       Echo log to stdout for further processing.\n"
 #if APR_FILES_AS_SOCKETS
@@ -208,6 +210,7 @@ static void dumpConfig (rotate_config_t *config)
     fprintf(stderr, "Rotation based on localtime: %12s\n", config->use_localtime ? "yes" : "no");
     fprintf(stderr, "Rotation file date pattern:  %12s\n", config->use_strftime ? "yes" : "no");
     fprintf(stderr, "Rotation file forced open:   %12s\n", config->force_open ? "yes" : "no");
+    fprintf(stderr, "Create parent directories:   %12s\n", config->create_path ? "yes" : "no");
     fprintf(stderr, "Rotation verbose:            %12s\n", config->verbose ? "yes" : "no");
 #if APR_FILES_AS_SOCKETS
     fprintf(stderr, "Rotation create empty logs:  %12s\n", config->create_empty ? "yes" : "no");
@@ -438,6 +441,23 @@ static void doRotate(rotate_config_t *config, rotate_status_t *status)
         }
     }
     apr_pool_create(&newlog.pool, status->pool);
+    if (config->create_path) {
+        char *ptr = strrchr(newlog.name, '/');
+        if (ptr && ptr > newlog.name) {
+            char *path = apr_pstrmemdup(newlog.pool, newlog.name, ptr - newlog.name);
+            if (config->verbose) {
+                fprintf(stderr, "Creating directory tree %s\n", path);
+            }
+            rv = apr_dir_make_recursive(path, APR_FPROT_OS_DEFAULT, newlog.pool);
+            if (rv != APR_SUCCESS) {
+                char error[120];
+
+                apr_strerror(rv, error, sizeof error);
+                fprintf(stderr, "Could not create directory '%s' (%s)\n", path, error);
+                exit(2);
+            }
+        }
+    }
     if (config->verbose) {
         fprintf(stderr, "Opening file %s\n", newlog.name);
     }
@@ -568,9 +588,9 @@ int main (int argc, const char * const argv[])
     apr_pool_create(&status.pool, NULL);
     apr_getopt_init(&opt, status.pool, argc, argv);
 #if APR_FILES_AS_SOCKETS
-    while ((rv = apr_getopt(opt, "lL:p:ftvecn:", &c, &opt_arg)) == APR_SUCCESS) {
+    while ((rv = apr_getopt(opt, "lL:p:fDtvecn:", &c, &opt_arg)) == APR_SUCCESS) {
 #else
-    while ((rv = apr_getopt(opt, "lL:p:ftven:", &c, &opt_arg)) == APR_SUCCESS) {
+    while ((rv = apr_getopt(opt, "lL:p:fDtven:", &c, &opt_arg)) == APR_SUCCESS) {
 #endif
         switch (c) {
         case 'l':
@@ -588,6 +608,9 @@ int main (int argc, const char * const argv[])
             break;
         case 'f':
             config.force_open = 1;
+            break;
+        case 'D':
+            config.create_path = 1;
             break;
         case 't':
             config.truncate = 1;
@@ -623,7 +646,11 @@ int main (int argc, const char * const argv[])
         usage(argv[0], "Incorrect number of arguments");
     }
 
-    config.szLogRoot = argv[opt->ind++];
+    rv = apr_filepath_merge(&config.szLogRoot, "", argv[opt->ind++],
+                            APR_FILEPATH_TRUENAME, status.pool);
+    if (rv != APR_SUCCESS && rv != APR_EPATHWILD) {
+        usage(argv[0], "Invalid filename given");
+    }
 
     /* Read in the remaining flags, namely time, size and UTC offset. */
     for(; opt->ind < argc; opt->ind++) {
