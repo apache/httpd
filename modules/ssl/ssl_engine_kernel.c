@@ -431,7 +431,7 @@ static void ssl_configure_env(request_rec *r, SSLConnRec *sslconn)
 }
 
 static int ssl_check_post_client_verify(request_rec *r, SSLSrvConfigRec *sc, 
-                                        SSLDirConfigRec *dc, SSLConnRec *sslconn, SSL *ssl)
+                                        SSLDirConfigRec *dc, SSL *ssl)
 {
     /*
      * Finally check for acceptable renegotiation results
@@ -1031,7 +1031,7 @@ static int ssl_hook_Access_classic(request_rec *r, SSLSrvConfigRec *sc, SSLDirCo
         /*
          * Finally check for acceptable renegotiation results
          */
-        if (OK != (rc = ssl_check_post_client_verify(r, sc, dc, sslconn, ssl))) {
+        if (OK != (rc = ssl_check_post_client_verify(r, sc, dc, ssl))) {
             return rc;
         }
 
@@ -1238,7 +1238,7 @@ static int ssl_hook_Access_modern(request_rec *r, SSLSrvConfigRec *sc, SSLDirCon
             /*
              * Finally check for acceptable renegotiation results
              */
-            if (OK != (rc = ssl_check_post_client_verify(r, sc, dc, sslconn, ssl))) {
+            if (OK != (rc = ssl_check_post_client_verify(r, sc, dc, ssl))) {
                 return rc;
             }
         }
