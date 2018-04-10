@@ -475,7 +475,7 @@ static int ssl_hook_Access_classic(request_rec *r, SSLSrvConfigRec *sc, SSLDirCo
 {
     server_rec *handshakeserver = sslconn ? sslconn->server : NULL;
     SSLSrvConfigRec *hssc       = handshakeserver? mySrvConfig(handshakeserver) : NULL;
-    SSL_CTX *ctx = NULL;
+    SSL_CTX *ctx = ssl ? SSL_get_SSL_CTX(ssl) : NULL;
     apr_array_header_t *requires;
     ssl_require_t *ssl_requires;
     int ok, i, rc;
