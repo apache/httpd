@@ -59,13 +59,13 @@
 <xsl:text># in place of the correponding PR_TAG array.</xsl:text>&lf;
 &lf;
 
-<xsl:text>        [PR_TAG,     /^&lt;\/?\b(</xsl:text>
+<xsl:text>        [PR_TAG,     /^\b(</xsl:text>
 <xsl:for-each select="$directives[@type='section']">
     <!-- Sorting is useless here, but the output is nicer -->
     <xsl:sort select="name" />
     <xsl:call-template name="list_section" />
 </xsl:for-each>
-<xsl:text>).*?>/, null],</xsl:text>
+<xsl:text>)\b/, null],</xsl:text>
 
 </xsl:template>
 <!-- /modulefilelist -->
