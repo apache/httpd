@@ -440,31 +440,31 @@ static int ssl_check_post_client_verify(request_rec *r, SSLSrvConfigRec *sc,
         (sc->server->auth.verify_mode != SSL_CVERIFY_NONE)) {
         BOOL do_verify = ((dc->nVerifyClient == SSL_CVERIFY_REQUIRE) ||
                           (sc->server->auth.verify_mode == SSL_CVERIFY_REQUIRE));
-        
+
         if (do_verify && (SSL_get_verify_result(ssl) != X509_V_OK)) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02262)
                           "Re-negotiation handshake failed: "
                           "Client verification failed");
-            
+
             return HTTP_FORBIDDEN;
         }
-        
+
         if (do_verify) {
             X509 *peercert;
-            
+
             if ((peercert = SSL_get_peer_certificate(ssl)) == NULL) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02263)
                               "Re-negotiation handshake failed: "
                               "Client certificate missing");
-                
+
                 return HTTP_FORBIDDEN;
             }
-            
+
             X509_free(peercert);
         }
     }
     return OK;
-}    
+}
 
 /*
  *  Access Handler, classic flavour, for SSL/TLS up to v1.2 
@@ -1139,7 +1139,7 @@ static int ssl_hook_Access_modern(request_rec *r, SSLSrvConfigRec *sc, SSLDirCon
         int vmode_inplace, vmode_needed;
         int change_vmode = FALSE;
         int old_state, n, rc;
-    
+
         vmode_inplace = SSL_get_verify_mode(ssl);
         vmode_needed = SSL_VERIFY_NONE;
 
@@ -1159,11 +1159,11 @@ static int ssl_hook_Access_modern(request_rec *r, SSLSrvConfigRec *sc, SSLDirCon
         if (vmode_needed == SSL_VERIFY_NONE) {
             return DECLINED;
         }
-        
+
         vmode_needed |= SSL_VERIFY_CLIENT_ONCE;
         if (vmode_inplace != vmode_needed) {
             /* Need to change, if new setting is more restrictive than existing one */
-            
+
             if ((vmode_inplace == SSL_VERIFY_NONE)
                 || (!(vmode_inplace   & SSL_VERIFY_PEER) 
                     && (vmode_needed  & SSL_VERIFY_PEER))
@@ -1203,7 +1203,7 @@ static int ssl_hook_Access_modern(request_rec *r, SSLSrvConfigRec *sc, SSLDirCon
                 }
             }
         }
-        
+
         if (change_vmode) {
             char peekbuf[1];
 
@@ -1215,9 +1215,9 @@ static int ssl_hook_Access_modern(request_rec *r, SSLSrvConfigRec *sc, SSLDirCon
                 apr_table_setn(r->notes, "ssl-renegotiate-forbidden", "verify-client");
                 return HTTP_FORBIDDEN;
             }
-            
+
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO() "verify client post handshake");
-            
+
             SSL_set_verify(ssl, vmode_needed, ssl_callback_SSLVerify);
             SSL_verify_client_post_handshake(ssl);
 
@@ -1243,7 +1243,7 @@ static int ssl_hook_Access_modern(request_rec *r, SSLSrvConfigRec *sc, SSLDirCon
             }
         }
     }
-    
+
     return DECLINED;
 }
 #endif
@@ -1261,7 +1261,7 @@ int ssl_hook_Access(request_rec *r)
         sslconn         = myConnConfig(r->connection->master);
         ssl             = sslconn ? sslconn->ssl : NULL;
     }
-    
+
     /*
      * We should have handshaken here, otherwise we are being 
      * redirected (ErrorDocument) from a renegotiation failure below. 
@@ -1304,7 +1304,7 @@ int ssl_hook_Access(request_rec *r)
     if (sc->enabled == SSL_ENABLED_FALSE || !ssl) {
         return DECLINED;
     }
-    
+
 #ifdef SSL_OP_NO_TLSv1_3
     /* TLSv1.3+ is less complicated here. Branch off into a new codeline
      * and avoid messing with the past. */
