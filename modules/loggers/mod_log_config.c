@@ -1721,8 +1721,8 @@ static void *ap_default_log_writer_init(apr_pool_t *p, server_rec *s,
         piped_log *pl;
 
         if (cls->chunked) {
-            if ((rv = apr_env_set("AP_MOD_LOG_CONFIG_CHUNKED_MSG",
-                             "", p) != APR_SUCCESS)) {
+            if ((rv = apr_env_set("AP_MOD_LOG_CONFIG_CHUNKED_MSG", "", p)) !=
+                APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(03474)
                                 "Unable to apr_env_set");
                 return NULL;
