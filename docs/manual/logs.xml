@@ -614,6 +614,26 @@ CustomLog "|$/usr/local/apache/bin/rotatelogs   /var/log/access_log 86400" commo
     "<code>||</code>" is also supported and equivalent to using
     "<code>|</code>".</p>
 
+    <p>Depending on your OS, there may be a pipe buffer size limit
+    for safe, atomic writes to a pipe. Log records that exceed that
+    buffer limit may be interleaved and corrupted.
+    Use "<code>|&lt;</code>" (mnemonic, split pipe) to split log
+    records across the pipe so they may be reassembled by the piped
+    program to preserve their integrity. The program receiving the
+    records must know how to reassemble the records, and currently,
+    rotatelogs supports this. When used, a variable
+    (AP_MOD_LOG_CONFIG_CHUNKED_MSG) is exported to the environment
+    so the receiving program can take appropriate action. This option
+    may be used in conjunction with the shell option
+    <code>|&lt;$</code>" (or for compatibility "<code>||&lt;</code>").
+    This option is not available for ErrorLog directives and if
+    present, a warning will be emitted.</p>
+
+    <highlight language="config">
+# Invoke "rotatelogs" with a safe (atomic split) pipe
+CustomLog "|&lt;/usr/local/apache/bin/rotatelogs   /var/log/access_log 86400" common
+    </highlight>
+
     <note><title>Windows note</title>
     <p>Note that on Windows, you may run into problems when running many piped
     logger processes, especially when HTTPD is running as a service. This is

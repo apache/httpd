@@ -476,7 +476,8 @@ expr=<var>expression</var>]</syntax>
       >ServerRoot</directive>.</dd>
 
       <dt><var>pipe</var></dt>
-      <dd>The pipe character "<code>|</code>", followed by the path
+      <dd>The pipe character "<code>|</code>" (or safe pipe
+      "<code>|&lt;</code>"), followed by the path
       to a program to receive the log information on its standard
       input. See the notes on <a href="../logs.html#piped">piped logs</a>
       for more information.
