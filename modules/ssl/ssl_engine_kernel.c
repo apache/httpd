@@ -1168,7 +1168,7 @@ static int ssl_hook_Access_modern(request_rec *r, SSLSrvConfigRec *sc, SSLDirCon
                 || (!(vmode_inplace   & SSL_VERIFY_PEER) 
                     && (vmode_needed  & SSL_VERIFY_PEER))
                 || (!(vmode_inplace   & SSL_VERIFY_FAIL_IF_NO_PEER_CERT) 
-                    && (vmode_inplace & SSL_VERIFY_FAIL_IF_NO_PEER_CERT))) {
+                    && (vmode_needed & SSL_VERIFY_FAIL_IF_NO_PEER_CERT))) {
                 /* need to change the effective verify mode */
                 change_vmode = TRUE;
             }
