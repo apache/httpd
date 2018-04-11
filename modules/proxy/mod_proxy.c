@@ -68,6 +68,7 @@ proxy_wstat_t PROXY_DECLARE_DATA proxy_wstat_tbl[] = {
     {PROXY_WORKER_STOPPED,       PROXY_WORKER_STOPPED_FLAG,       "Stop "},
     {PROXY_WORKER_IN_ERROR,      PROXY_WORKER_IN_ERROR_FLAG,      "Err "},
     {PROXY_WORKER_HOT_STANDBY,   PROXY_WORKER_HOT_STANDBY_FLAG,   "Stby "},
+    {PROXY_WORKER_HOT_SPARE,     PROXY_WORKER_HOT_SPARE_FLAG,     "Spar "},
     {PROXY_WORKER_FREE,          PROXY_WORKER_FREE_FLAG,          "Free "},
     {PROXY_WORKER_HC_FAIL,       PROXY_WORKER_HC_FAIL_FLAG,       "HcFl "},
     {0x0, '\0', NULL}
@@ -3123,4 +3124,3 @@ APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(proxy, PROXY, int, request_status,
 APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(proxy, PROXY, int, detach_backend,
                                     (request_rec *r, proxy_conn_rec *backend),
                                     (r, backend), OK, DECLINED)
-

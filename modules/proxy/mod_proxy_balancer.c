@@ -1237,6 +1237,9 @@ static int balancer_handler(request_rec *r)
         if ((val = apr_table_get(params, "w_status_H"))) {
             ap_proxy_set_wstatus(PROXY_WORKER_HOT_STANDBY_FLAG, atoi(val), wsel);
         }
+        if ((val = apr_table_get(params, "w_status_R"))) {
+            ap_proxy_set_wstatus(PROXY_WORKER_HOT_SPARE_FLAG, atoi(val), wsel);
+        }
         if ((val = apr_table_get(params, "w_status_S"))) {
             ap_proxy_set_wstatus(PROXY_WORKER_STOPPED_FLAG, atoi(val), wsel);
         }
@@ -1763,7 +1766,8 @@ static int balancer_handler(request_rec *r)
                      "<th>Ignore Errors</th>"
                      "<th>Draining Mode</th>"
                      "<th>Disabled</th>"
-                     "<th>Hot Standby</th>", r);
+                     "<th>Hot Standby</th>"
+                     "<th>Hot Spare</th>", r);
             if (hc_show_exprs_f) {
                 ap_rputs("<th>HC Fail</th>", r);
             }
@@ -1772,6 +1776,7 @@ static int balancer_handler(request_rec *r)
             create_radio("w_status_N", (PROXY_WORKER_IS(wsel, PROXY_WORKER_DRAIN)), r);
             create_radio("w_status_D", (PROXY_WORKER_IS(wsel, PROXY_WORKER_DISABLED)), r);
             create_radio("w_status_H", (PROXY_WORKER_IS(wsel, PROXY_WORKER_HOT_STANDBY)), r);
+            create_radio("w_status_R", (PROXY_WORKER_IS(wsel, PROXY_WORKER_HOT_SPARE)), r);
             if (hc_show_exprs_f) {
                 create_radio("w_status_C", (PROXY_WORKER_IS(wsel, PROXY_WORKER_HC_FAIL)), r);
             }
