@@ -1198,7 +1198,7 @@ static void ap_proxy_read_headers(request_rec *r, request_rec *rr,
 
         /* The header could not fit in the provided buffer. */
         if (rc == APR_ENOSPC) {
-            ap_log_rerror(APLOG_MARK, APLOG_WARNING, rc, r, APLOGNO()
+            ap_log_rerror(APLOG_MARK, APLOG_WARNING, rc, r, APLOGNO(10124)
                     "header size is over the limit allowed by ResponseFieldSize (%d bytes). "
                     "Bad response header '%s': '%.*s'...",
                     size, buffer, 80, value);
