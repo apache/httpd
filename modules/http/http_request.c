@@ -187,7 +187,8 @@ static void ap_die_r(int type, request_rec *r, int recursive_error)
             apr_table_setn(r->headers_out, "Location", custom_response);
         }
         else if (custom_response[0] == '/') {
-            const char *error_notes;
+            const char *error_notes, *original_method;
+            int original_method_number;
             r->no_local_copy = 1;       /* Do NOT send HTTP_NOT_MODIFIED for
                                          * error documents! */
             /*
@@ -205,9 +206,14 @@ static void ap_die_r(int type, request_rec *r, int recursive_error)
                                              "error-notes")) != NULL) {
                 apr_table_setn(r->subprocess_env, "ERROR_NOTES", error_notes);
             }
+            original_method = r->method;
+            original_method_number = r->method_number;
             r->method = "GET";
             r->method_number = M_GET;
             ap_internal_redirect(custom_response, r);
+            /* preserve ability to see %<m in the access log */
+            r->method = original_method;
+            r->method_number = original_method_number;
             return;
         }
         else {

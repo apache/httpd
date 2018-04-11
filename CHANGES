@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) core: Preserve the original HTTP request method in the '%<m' LogFormat
+     when an path-based ErrorDocument is used.  PR 62186. 
+     [Micha Lenk <micha lenk.info>]
+
   *) mod_proxy_balancer: Add hot spare member type and corresponding flag (R). Hot spare members are
      used as drop-in replacements for unusable workers in the same load balancer set. This differs
      from hot standbys which are only used when all workers in a set are unusable. PR 61140. [Jim
