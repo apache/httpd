@@ -250,9 +250,6 @@ apr_status_t ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
             sc->server->sc = sc;
         }
 
-        /*
-         * Create the server host:port string because we need it a lot
-         */
         if (sc->vhost_id) {
             /* already set. This should only happen if this config rec is
              * shared with another server. Argh! */
@@ -260,8 +257,6 @@ apr_status_t ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
                          "%s, SSLSrvConfigRec shared from %s", 
                          ssl_util_vhostid(p, s), sc->vhost_id);
         }
-        sc->vhost_id = ssl_util_vhostid(p, s);
-        sc->vhost_id_len = strlen(sc->vhost_id);
 
         /* Default to enabled if SSLEngine is not set explicitly, and
          * the protocol is https. */
@@ -271,6 +266,11 @@ apr_status_t ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
             sc->enabled = SSL_ENABLED_TRUE;
         }
 
+        /* Derive the vhost id only after potentially defaulting-on
+         * sc->enabled since the port used may change. */
+        sc->vhost_id = ssl_util_vhostid(p, s);
+        sc->vhost_id_len = strlen(sc->vhost_id);
+        
         /* Fix up stuff that may not have been set.  If sc->enabled is
          * UNSET, then SSL is disabled on this vhost.  */
         if (sc->enabled == SSL_ENABLED_UNSET) {
