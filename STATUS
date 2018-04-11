@@ -171,7 +171,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1814465
      2.4.x patch: http://people.apache.org/~jorton/ap_suexec_jumbo.patch
          or svn merge -c 1341905,1342065,1341930,1345147,1344712,1814465 ^/httpd/httpd/trunk .
-     +1: jorton, 
+     +1: jorton,
 
   *) mod_ssl: Add "SSLPolicy" directive for Mozilla Security defined protocol settings.
      trunk patch: http://svn.apache.org/r1827760
@@ -202,7 +202,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Trunk version of patch works
       svn merge -c 1822849,1822858,1822878,1822879,1822883,1828485 ^/httpd/httpd/trunk .
    +1: rpluem, jim
-   
+
   *) Some easy proposals:
         - core: Avoid a compiler warning when NO_LINGCLOSE is used.
                 Simplify code.
@@ -212,8 +212,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1703248,1827366 ^/httpd/httpd/trunk .
      +1: jailletc36, jim
 
-  *) mod_http2: 
-     - normalize trace2 logging of http2 unencrypted connection upgrades. 
+  *) mod_http2:
+     - normalize trace2 logging of http2 unencrypted connection upgrades.
      - accurate reporting of h2 data input/output per request via mod_logio. Fixes
        an issue where output sizes where counted n-times on reused slave connections.
      - code cleanups: instrumenting bbout logging, using APR_OFF_T_FMT where needed
@@ -221,7 +221,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1828232
                   http://svn.apache.org/r1828687
                   http://svn.apache.org/r1826687
-                  http://svn.apache.org/r1827166                  
+                  http://svn.apache.org/r1827166
      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/h2-1.10.17.patch
      Resetting votes after latest additions
      +1: icing
@@ -230,6 +230,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1828879
      2.4.x patch: svn merge -c 1828879 ^/httpd/httpd/trunk .
      +1: icing
+
+  *) mod_proxy_balancer: Add hot spare member type and corresponding flag (R). Hot spare members are
+     used as drop-in replacements for unusable workers in the same load balancer set. This differs
+     from hot standbys which are only used when all workers in a set are unusable. PR 61140.
+     trunk patch: https://svn.apache.org/r1828890
+     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/hot-spare-2.4.patch
+     +1: jhriggs
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
@@ -251,8 +258,8 @@ PATCHES/ISSUES THAT ARE BEING WORKED
                  See also:
                  https://lists.apache.org/thread.html/b924afe0fcc58a8636b753e630421bf6dc2080653a79575fd5fd641a@%3Cdev.httpd.apache.org%3E
 
-  *) mod_ssl: Return 502 instead of 500 when SSL peer check or 
-     proxy_post_handshake hook fails. 
+  *) mod_ssl: Return 502 instead of 500 when SSL peer check or
+     proxy_post_handshake hook fails.
      Trunk patch: r1645529 (works)
      2.4.x patch which adds CHANGES: https://emptyhammock.com/media/downloads/r1645529-to-2.4.x.txt
      +1: trawick
@@ -381,7 +388,7 @@ PATCHES/ISSUES THAT ARE STALLED
                   http://svn.apache.org/r1626978
      2.4.x patch: http://people.apache.org/~jkaluza/patches/httpd-2.4.x-errorlog_provider.patch
      +1: jkaluza
-     +1: covener w/ doc or code to fix syntax (providername:providerarg not supported like syslog or socacheproviders, 
+     +1: covener w/ doc or code to fix syntax (providername:providerarg not supported like syslog or socacheproviders,
                  needs 2 args which is not valid in ErrorLog manual)
      trawick: nit: fix "writing" in "/* NULL if we are writing to syslog */"
               (sorry, haven't finished reviewing completely)
