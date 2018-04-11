@@ -1137,6 +1137,13 @@ ProxyPass "/example" "http://backend.example.com" max=20 ttl=120 retry=300
         to override the <directive>ProxyIOBufferSize</directive> for a specific worker.
         This must be at least 512 or set to 0 for the system default of 8192.
     </td></tr>
+    <tr><td>responsefieldsize</td>
+        <td>8192</td>
+        <td>Adjust the size of the proxy response field buffer. The buffer size
+            should be at least the size of the largest expected header size from
+            a proxied response. Setting the value to 0 will use the system
+            default of 8192 bytes.
+    </td></tr>
     <tr><td>keepalive</td>
         <td>Off</td>
         <td><p>This parameter should be used when you have a firewall between your

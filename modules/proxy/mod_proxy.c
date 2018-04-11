@@ -329,6 +329,14 @@ static const char *set_worker_param(apr_pool_t *p,
                                 (int)sizeof(worker->s->upgrade));
         }
     }
+    else if (!strcasecmp(key, "responsefieldsize")) {
+        long s = atol(val);
+        if (s < 0) {
+            return "ResponseFieldSize must be greater than 0 bytes, or 0 for system default.";
+        }
+        worker->s->response_field_size = (s ? s : HUGE_STRING_LEN);
+        worker->s->response_field_size_set = 1;
+    }
     else {
         if (set_worker_hc_param_f) {
             return set_worker_hc_param_f(p, s, worker, key, val, NULL);
