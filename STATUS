@@ -238,6 +238,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/hot-spare-2.4.patch
      +1: jhriggs
 
+  *) core: restore r->method after internal redirect to errordocument so %<m 
+     can be logged. PR62186
+     trunk patch: https://svn.apache.org/r1828920
+     2.4.x patch: svn merge -c 1828920 ^/httpd/httpd/trunk .
+     +1: covener
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
