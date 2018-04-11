@@ -68,6 +68,7 @@ static int proxy_match_ipaddr(struct dirconn_entry *This, request_rec *r);
 static int proxy_match_domainname(struct dirconn_entry *This, request_rec *r);
 static int proxy_match_hostname(struct dirconn_entry *This, request_rec *r);
 static int proxy_match_word(struct dirconn_entry *This, request_rec *r);
+static int ap_proxy_retry_worker(const char *proxy_function, proxy_worker *worker, server_rec *s);
 
 APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(proxy, PROXY, int, create_req,
                                    (request_rec *r, request_rec *pr), (r, pr),
@@ -1291,6 +1292,121 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_balancer(proxy_balancer *balance
         }
     }
     return APR_SUCCESS;
+}
+
+PROXY_DECLARE(proxy_worker *) ap_proxy_balancer_get_best_worker(proxy_balancer *balancer,
+                                                                request_rec *r,
+                                                                proxy_is_best_callback_fn_t *is_best,
+                                                                void *baton)
+{
+    int i = 0;
+    int cur_lbset = 0;
+    int max_lbset = 0;
+    int unusable_workers = 0;
+    apr_pool_t *tpool = NULL;
+    apr_array_header_t *spares = NULL;
+    apr_array_header_t *standbys = NULL;
+    proxy_worker *worker = NULL;
+    proxy_worker *best_worker = NULL;
+
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server, APLOGNO(10122)
+                 "proxy: Entering %s for BALANCER (%s)",
+                 balancer->lbmethod->name, balancer->s->name);
+
+    apr_pool_create(&tpool, r->pool);
+
+    spares = apr_array_make(tpool, 1, sizeof(proxy_worker*));
+    standbys = apr_array_make(tpool, 1, sizeof(proxy_worker*));
+
+    /* Process lbsets in order, only replacing unusable workers in a given lbset
+     * with available spares from the same lbset. Hot standbys will be used as a
+     * last resort when all other workers and spares are unavailable.
+     */
+    for (cur_lbset = 0; !best_worker && (cur_lbset <= max_lbset); cur_lbset++) {
+        unusable_workers = 0;
+        apr_array_clear(spares);
+        apr_array_clear(standbys);
+
+        for (i = 0; i < balancer->workers->nelts; i++) {
+            worker = APR_ARRAY_IDX(balancer->workers, i, proxy_worker *);
+
+            if (worker->s->lbset > max_lbset) {
+                max_lbset = worker->s->lbset;
+            }
+
+            if (worker->s->lbset != cur_lbset) {
+                continue;
+            }
+
+            /* A draining worker that is neither a spare nor a standby should be
+             * considered unusable to be replaced by spares.
+             */
+            if (PROXY_WORKER_IS_DRAINING(worker)) {
+                if (!PROXY_WORKER_IS_SPARE(worker) && !PROXY_WORKER_IS_STANDBY(worker)) {
+                    unusable_workers++;
+                }
+
+                continue;
+            }
+
+            /* If the worker is in error state run retry on that worker. It will
+             * be marked as operational if the retry timeout is elapsed.  The
+             * worker might still be unusable, but we try anyway.
+             */
+            if (!PROXY_WORKER_IS_USABLE(worker)) {
+                ap_proxy_retry_worker("BALANCER", worker, r->server);
+            }
+
+            if (PROXY_WORKER_IS_SPARE(worker)) {
+                if (PROXY_WORKER_IS_USABLE(worker)) {
+                    APR_ARRAY_PUSH(spares, proxy_worker *) = worker;
+                }
+            }
+            else if (PROXY_WORKER_IS_STANDBY(worker)) {
+                if (PROXY_WORKER_IS_USABLE(worker)) {
+                    APR_ARRAY_PUSH(standbys, proxy_worker *) = worker;
+                }
+            }
+            else if (PROXY_WORKER_IS_USABLE(worker)) {
+              if (is_best(worker, best_worker, baton)) {
+                best_worker = worker;
+              }
+            }
+            else {
+                unusable_workers++;
+            }
+        }
+
+        /* Check if any spares are best. */
+        for (i = 0; (i < spares->nelts) && (i < unusable_workers); i++) {
+          worker = APR_ARRAY_IDX(spares, i, proxy_worker *);
+
+          if (is_best(worker, best_worker, baton)) {
+            best_worker = worker;
+          }
+        }
+
+        /* If no workers are available, use the standbys. */
+        if (!best_worker) {
+            for (i = 0; i < standbys->nelts; i++) {
+              worker = APR_ARRAY_IDX(standbys, i, proxy_worker *);
+
+              if (is_best(worker, best_worker, baton)) {
+                best_worker = worker;
+              }
+            }
+        }
+    }
+
+    apr_pool_destroy(tpool);
+
+    if (best_worker) {
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server, APLOGNO(10123)
+                     "proxy: %s selected worker \"%s\" : busy %" APR_SIZE_T_FMT " : lbstatus %d",
+                     balancer->lbmethod->name, best_worker->s->name, best_worker->s->busy, best_worker->s->lbstatus);
+    }
+
+    return best_worker;
 }
 
 /*
