@@ -98,13 +98,6 @@ static ipaddr_chain *iphash_table[IPHASH_TABLE_SIZE];
 /* list of the _default_ servers */
 static ipaddr_chain *default_list;
 
-/* whether a config error was seen */
-static int config_error = 0;
-
-/* config check function */
-static int vhost_check_config(apr_pool_t *p, apr_pool_t *plog,
-                              apr_pool_t *ptemp, server_rec *s);
-
 /*
  * How it's used:
  *
@@ -133,7 +126,6 @@ AP_DECLARE(void) ap_init_vhost_config(apr_pool_t *p)
 {
     memset(iphash_table, 0, sizeof(iphash_table));
     default_list = NULL;
-    ap_hook_check_config(vhost_check_config, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 
@@ -692,12 +684,6 @@ AP_DECLARE(void) ap_fini_vhost_config(apr_pool_t *p, server_rec *main_s)
         apr_file_open_stdout(&thefile, p);
         dump_vhost_config(thefile);
     }
-}
-
-static int vhost_check_config(apr_pool_t *p, apr_pool_t *plog,
-                              apr_pool_t *ptemp, server_rec *s)
-{
-    return config_error ? !OK : OK;
 }
 
 /*****************************************************************************
