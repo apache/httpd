@@ -330,10 +330,26 @@ document dump_process_rec
     Print process_rec info
 end
 
+define dump_server_addr_recs
+    set $sa_ = $arg0
+    set $san_ = 0
+    while $sa_
+      ### need to call apr_sockaddr_info_getbuf to print ->host_addr properly
+      ### which is a PITA since we need a buffer :(
+      printf " addr#%d: vhost=%s -> :%d\n", $san_++, $sa_->virthost, $sa_->host_port
+      set $sa_ = $sa_->next
+    end
+end
+document dump_server_addr_recs
+    Print server_addr_rec info
+end
+
+
 define dump_server_rec
     set $s = $arg0
-    printf "name=%s:%d\n", \
-            $s->server_hostname, $s->port
+    printf "name=%s:%d (0x%lx)\n", \
+            $s->server_hostname, $s->port, $s
+    dump_server_addr_recs $s->addrs
     dump_process_rec($s->process)
 end
 document dump_server_rec
