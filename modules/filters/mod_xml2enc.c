@@ -547,8 +547,18 @@ static apr_status_t xml2enc_ffunc(ap_filter_t* f, apr_bucket_brigade* bb)
                 return rv;
         }
     }
+    if (pending_meta) {
+        /* passing pending meta bucket down the chain before leaving */
+        rv = ap_pass_brigade(f->next, ctx->bbnext);
+        apr_brigade_cleanup(ctx->bbnext);
+        if (rv != APR_SUCCESS) {
+            return rv;
+        }
+    }
+
     return APR_SUCCESS;
 }
+
 static apr_status_t xml2enc_charset(request_rec* r, xmlCharEncoding* encp,
                                     const char** encoding)
 {
