@@ -50,6 +50,7 @@
      [ -<strong>L</strong> <var>nom-lien</var> ]
      [ -<strong>p</strong> <var>programme</var> ]
      [ -<strong>f</strong> ]
+     [ -<strong>D</strong> ]
      [ -<strong>t</strong> ]
      [ -<strong>v</strong> ]
      [ -<strong>e</strong> ]
@@ -96,6 +97,12 @@ s'écouler un temps substantiel entre le démarrage du serveur et le
 traitement de la première requête, temps pendant lequel le fichier
 journal associé n'"existe" pas, ce qui peut causer des problèmes à
 certains utilitaires de journalisation automatiques).</dd>
+
+<dt><code>-D</code></dt>
+<dd>Crée les répertoires parents du répertoire dans lequel le fichier journal
+sera placé s'ils n'existent pas déjà. Cela permet d'utiliser le formatage
+<code>strftime(3)</code> non seulement dans le nom de fichier mais aussi dans le
+chemin.</dd>
 
 <dt><code>-t</code></dt>
 <dd>Provoque une troncature du fichier journal au lieu d'une rotation.
