@@ -249,7 +249,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: none, as far as I can see the code in trunk diverged too much
                   due to the code in STALLED for ap_errorlog_provider.
      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/core-check_errorlog_dir_syslog.patch
-     +1: elukey
+     +1: elukey, jhriggs
+     jhriggs: One nit: old code used `strcmp(...) == 0' and trunk uses `strncmp(...) == 0' vs. this
+              using `!strncmp(...)'. Same result, but consistency is a good thing, one way or the
+              other. +1 regardless.
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
