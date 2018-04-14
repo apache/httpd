@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1793934 -->
+<!-- English Revision: 1828727 -->
 <!-- French translation : Lucien GENTIS -->
 
 <!--
@@ -82,6 +82,12 @@ d'Apache</a></seealso>
 	nulle, il s'agit de la combinaison de %I et %O.<br />
 	Disponible depuis la version 2.4.7 du serveur HTTP Apache.</td></tr>
 
+    <tr><td><code>%^FU</code></td>
+        <td>Délai en microsecondes entre l'arrivée de la requête et la lecture
+	du dernier octet du corps de la requête (upload terminé). Disponible
+	seulement si <directive>LogIOTrackTTFU</directive> est à ON.<br />
+	Disponible à partir de la version 2.4.34 du serveur HTTP Apache.</td></tr>
+
     <tr><td><code>%^FB</code></td>
         <td>Délai en microsecondes entre l'arrivée de la requête et
 	l'écriture du premier octet des en-têtes de la réponse.
@@ -101,9 +107,28 @@ d'Apache</a></seealso>
 </section>
 
 <directivesynopsis>
+<name>LogIOTrackTTFU</name>
+<description>Active la mesure du temps jusqu'à l'arrivée du dernier octet de la
+requête (TTFU = time to finish upload)</description>
+<syntax>LogIOTrackTTFU ON|OFF</syntax>
+<default>LogIOTrackTTFU OFF</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>All</override>
+<compatibility>Disponible à partir de la version 2.4.34 du serveur HTTP Apache</compatibility>
+
+<usage>
+    <p>Cette directive permet d'activer/désactiver la mesure du temps entre le
+    début de la lecture de la requête et la lecture du dernier octets du corps
+    de la requête (upload terminé). La valeur est enregistrée dans le journal
+    via la chaîne de formatage <code>%^FU</code>.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>LogIOTrackTTFB</name>
-<description>Permet d'enregistrer le délai avant le premier octet (time
-to first byte - TTFB)</description>
+<description>Permet d'enregistrer le délai avant le premier octet (TTFB = time
+to first byte)</description>
 <syntax>LogIOTrackTTFB ON|OFF</syntax>
 <default>LogIOTrackTTFB OFF</default>
 <contextlist><context>server config</context><context>virtual host</context>
