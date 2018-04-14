@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1828069 -->
+<!-- English Revision: 1828926 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1290,6 +1290,13 @@ ProxyPass "/mirror/foo/i" "!"
 	serveur cible spécifique. La valeur doit être au minimum 512 ou définie
 	à 0 pour la valeur par défaut du système de 8192.
     </td></tr>
+    <tr><td>responsefieldsize</td>
+        <td>8192</td>
+	<td>Contrôle la taille du tampon pour le champ de la réponse mandatée.
+	Cette taille doit être au moins égale à la taille attendue du plus grand
+	en-tête d'une réponse mandatée. Une valeur de 0 implique l'utilisation
+	de la valeur par défaut du système, à savoir 8192 octets.
+    </td></tr>
     <tr><td>keepalive</td>
         <td>Off</td>
         <td><p>Cette clé doit être utilisée lorsque vous avez un pare-feu
@@ -1389,8 +1396,15 @@ ProxyPass "/mirror/foo/i" "!"
 	 automatiquement relancée.</td></tr>
          <tr><td><code>I</code></td><td>le serveur cible est en mode "erreurs ignorées",
 	 et sera toujours considéré comme disponible.</td></tr>
+	 <tr><td><code>R</code></td><td>Le serveur cible sert de remplaçant à
+	 chaud. Lorsqu'un serveur cible avec un lbset donné est inutilisable
+	 (maintenance, arrêt, en erreur, etc...), un serveur de remplacement à
+	 chaud libre de même lbset sera utilisé à sa place. Les remplaçants à
+	 chaud permettent de s'assurer qu'un nombre déterminé de serveurs cibles
+	 sera toujours disponible pour un répartiteur de charge.</td></tr>
          <tr><td><code>H</code></td><td>le serveur cible est en mode d'attente et ne sera
-	 utilisé que si aucun autre serveur n'est disponible.</td></tr>
+	 utilisé que si aucun autre serveur ou remplaçant à chaud n'est
+	 disponible dans le jeu de serveurs cibles.</td></tr>
          <tr><td><code>E</code></td><td>le serveur cible est en erreur.</td></tr>
          <tr><td><code>N</code></td><td>le serveur cible est en mode vidage, n'acceptera que
 	 les sessions persistantes qui lui appartiennent, et refusera
@@ -1578,8 +1592,28 @@ ProxyPass "/" "balancer://mycluster/" stickysession=JSESSIONID|jsessionid nofail
 &lt;/Proxy&gt;
     </highlight>
 
+    <p>La définition de remplaçants à chaud permet de s'assurer qu'un nombre
+    déterminé de serveurs sera toujours disponible dans le jeu de serveurs
+    cibles :</p>
+    <highlight language="config">
+ProxyPass "/" "balancer://sparecluster/"
+&lt;Proxy balancer://sparecluster&gt;
+    BalancerMember ajp://1.2.3.4:8009
+    BalancerMember ajp://1.2.3.5:8009
+    # Les serveurs ci-dessous sont des remplaçants à chaud. Pour chaque serveur
+    # ci-dessus qui viendrait à être inutilisable (maintenance, arrêt, non
+    # contactable, en erreur, etc...), un de ces remplaçants à chaud prendra sa
+    # place. Deux serveurs seront toujours disponibles pour traiter une requête
+    # (à moins qu'un ou plusieurs remplaçant à chaud soit lui aussi
+    # indisponible).
+    BalancerMember ajp://1.2.3.6:8009 status=+R
+    BalancerMember ajp://1.2.3.7:8009 status=+R
+&lt;/Proxy&gt;
+    </highlight>
+
     <p>Configuration d'un serveur cible de réserve qui ne sera utilisé que si
-    aucun autre serveur cible n'est disponible :</p>
+    aucun autre serveur cible ou remplaçant à chaud n'est disponible dans le jeu
+    de serveurs cibles :</p>
     <highlight language="config">
 ProxyPass "/" "balancer://hotcluster/ "
 &lt;Proxy balancer://hotcluster&gt;
