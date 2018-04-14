@@ -413,6 +413,7 @@
 <li><a href="core.html#locationmatch">&lt;LocationMatch&gt;</a></li>
 <li><a href="mod_log_config.html#logformat">LogFormat</a></li>
 <li><a href="mod_logio.html#logiotrackttfb">LogIOTrackTTFB</a></li>
+<li><a href="mod_logio.html#logiotrackttfu">LogIOTrackTTFU</a></li>
 <li><a href="core.html#loglevel">LogLevel</a></li>
 <li><a href="core.html#logleveloverride">LogLevelOverride</a></li>
 <li><a href="mod_log_debug.html#logmessage">LogMessage</a></li>

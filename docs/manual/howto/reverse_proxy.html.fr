@@ -186,18 +186,39 @@ ProxyPassReverse "/images"  "balancer://myset/"</pre>
       Vous pouvez aussi définir finement des scénarios pour les cas
       d'indisponibilité d'un ou plusieurs serveurs d'arrière-plan en spécifiant
       quels serveurs doivent alors prendre le relai. Dans l'exemple suivant,
-      deux scénarios sont envisagés : dans le premier, seul
-      <code>http://hstandby.example.com:8080</code> se voit envoyer du trafic si
-      tous les autres membres du balancer <em>myset</em> sont indisponibles.
-      Dans le second, si <code>http://hstandby.example.com:8080</code> est
-      lui-même indisponible, <code>http://bkup1.example.com:8080</code> et
-      <code>http://bkup2.example.com:8080</code> deviennent les deux seuls
-      membres du groupe de répartition de charge actifs :
+      trois scénarios sont envisagés : 
     </p>
+    <ol>
+      <li>
+        <code>http://spare1.example.com:8080</code> et
+        <code>http://spare2.example.com:8080</code> ne sont sollicités que si
+	<code>http://www2.example.com:8080</code> ou
+	<code>http://www3.example.com:8080</code> est indisponible (un serveur
+	de remplacement sera utilisé à la place d'un membre indisponible du même
+	jeu de serveurs cibles).
+      </li>
+      <li>
+        <code>http://hstandby.example.com:8080</code> n'est sollicité que si
+	tous les autres serveurs cibles du jeu de serveurs <code>0</code> sont
+	indisponibles.
+      </li>
+      <li>
+        Les serveurs <code>http://bkup1.example.com:8080</code> et
+	<code>http://bkup2.example.com:8080</code> du jeu <code>1</code> ne seront sollicités que si
+	tous les serveurs du jeu <code>0</code>, tous les serveurs de
+	remplacement et tous les serveurs de standby sont indisponibles.
+      </li>
+    </ol>
+    <p>
+      Il est ainsi possible de définir un ou plusieurs serveurs de remplacement
+      ou de standby pour chaque jeu de serveurs du répartiteur de charge.
+    </p>    
 
     <pre class="prettyprint lang-config">&lt;Proxy balancer://myset&gt;
     BalancerMember http://www2.example.com:8080
     BalancerMember http://www3.example.com:8080 loadfactor=3 timeout=1
+    BalancerMember http://spare1.example.com:8080 status=+R
+    BalancerMember http://spare2.example.com:8080 status=+R
     BalancerMember http://hstandby.example.com:8080 status=+H
     BalancerMember http://bkup1.example.com:8080 lbset=1
     BalancerMember http://bkup2.example.com:8080 lbset=1
@@ -209,16 +230,14 @@ ProxyPassReverse "/images/"  "balancer://myset/"</pre>
 
 
     <p>
-      Le point central de cet exemple de gestion des indisponibilités est la
-      configuration du serveur d'arrière-plan
-      <code>http://hstandby.example.com:8080</code> avec le drapeau
-      <code>+H</code> qui le place en mode <em>hot standby</em>, et
-      l'inscription des deux serveurs <code>bkup#</code> dans le groupe de
-      répartition de charge avec un niveau 1 (le niveau par défaut étant 0) ; en
-      effet, les serveurs en mode <em>hot standby</em>, s'il existent, sont
-      utilisés en premier en cas d'indisponibilité de tous les autres serveurs
-      d'arrière-plan, et ce sont toujours les serveurs de niveau le plus bas qui
-      sont utilisés en premier.
+      Les serveurs de remplacement à chaud remplacent les serveurs indisponibles
+      du même jeu de serveurs du répartiteur de charge. Un serveur est
+      considéré comme indisponible s'il est en maintenance, arrêté ou en erreur.
+      Les serveurs de standby à chaud sont utilisés si tous les serveurs et
+      serveurs de remplacement du jeu de serveurs du répartiteur de charge sont
+      indisponibles. Les jeux de serveurs du répartiteur de charge (avec leurs
+      serveurs de standby et de remplacement à chaud respectifs) sont toujours
+      sollicités dans l'ordre du plus bas lbset vers le plus haut.
     </p>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -311,9 +330,16 @@ ProxyPassReverse "/images/"  "balancer://myset/"</pre>
         <tr><td><code>I</code></td><td><em>Ign</em></td><td>Les erreurs
 	concernant ce serveur sont ignorées et il sera donc toujours considéré
 	comme disponible.</td></tr>
+	<tr><td><code>R</code></td><td><em>Spar</em></td><td>Le serveur cible sert de remplaçant à
+	 chaud. Lorsqu'un serveur cible avec un lbset donné est inutilisable
+	 (maintenance, arrêt, en erreur, etc...), un serveur de remplacement à
+	 chaud libre de même lbset sera utilisé à sa place. Les remplaçants à
+	 chaud permettent de s'assurer qu'un nombre déterminé de serveurs cibles
+	 sera toujours disponible pour un répartiteur de charge.</td></tr>
         <tr><td><code>H</code></td><td><em>Stby</em></td><td>Le serveur est en
-	mode hot-standby et ne sera donc utilisé que si aucun autre serveur
-	n'est disponible.</td></tr>
+	mode hot-standby et ne sera donc utilisé que si aucun autre serveur ou
+	serveur de remplacement	n'est disponible dans le jeu de serveurs du
+	répartiteur de charge.</td></tr>
         <tr><td><code>E</code></td><td><em>Err</em></td><td>Le serveur est en
 	erreur, en général suite à un test préalable à une requête ; aucune
 	requête ne lui sera soumise, mais il sera retesté en fonction de la
