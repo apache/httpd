@@ -1096,10 +1096,10 @@ void ssl_init_ocsp_certificates(server_rec *s, modssl_ctx_t *mctx);
  * memory. */
 DH *modssl_get_dh_params(unsigned keylen);
 
-/* Returns non-zero if the request is using SSL/TLS.  If ssl is
- * non-NULL and the request is using SSL/TLS, sets *ssl to the
- * corresponding SSL structure for the connectbion. */
-int modssl_request_is_tls(const request_rec *r, SSL **ssl);
+/* Returns non-zero if the request was made over SSL/TLS.  If sslconn
+ * is non-NULL and the request is using SSL/TLS, sets *sslconn to the
+ * corresponding SSLConnRec structure for the connection. */
+int modssl_request_is_tls(const request_rec *r, SSLConnRec **sslconn);
 
 #if HAVE_VALGRIND
 extern int ssl_running_on_valgrind;

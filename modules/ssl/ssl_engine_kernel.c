@@ -1326,8 +1326,7 @@ int ssl_hook_Access(request_rec *r)
  */
 int ssl_hook_UserCheck(request_rec *r)
 {
-    SSLConnRec *sslconn = myConnConfig(r->connection);
-    SSLSrvConfigRec *sc = mySrvConfig(r->server);
+    SSLConnRec *sslconn;
     SSLDirConfigRec *dc = myDirConfig(r);
     const char *user, *auth_line, *username, *password;
 
@@ -1375,15 +1374,15 @@ int ssl_hook_UserCheck(request_rec *r)
 
     /*
      * We decline operation in various situations...
+     * - TLS not enabled
+     * - client did not present a certificate
      * - SSLOptions +FakeBasicAuth not configured
      * - r->user already authenticated
-     * - ssl not enabled
-     * - client did not present a certificate
      */
-    if (!((sc->enabled == SSL_ENABLED_TRUE || sc->enabled == SSL_ENABLED_OPTIONAL)
-          && sslconn && sslconn->ssl && sslconn->client_cert) ||
-        !(dc->nOptions & SSL_OPT_FAKEBASICAUTH) || r->user)
-    {
+    if (!modssl_request_is_tls(r, &sslconn)
+        || !sslconn->client_cert
+        || !(dc->nOptions & SSL_OPT_FAKEBASICAUTH)
+        || r->user) {
         return DECLINED;
     }
 
@@ -1509,12 +1508,14 @@ int ssl_hook_Fixup(request_rec *r)
     const char *servername;
 #endif
     STACK_OF(X509) *peer_certs;
+    SSLConnRec *sslconn;
     SSL *ssl;
     int i;
 
-    if (!modssl_request_is_tls(r, &ssl)) {
+    if (!modssl_request_is_tls(r, &sslconn)) {
         return DECLINED;
     }
+    ssl = sslconn->ssl;
 
     /*
      * Annotate the SSI/CGI environment with standard SSL information
