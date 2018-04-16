@@ -100,7 +100,7 @@ BOOL ssl_util_vhost_matches(const char *servername, server_rec *s)
     return FALSE;
 }
 
-int modssl_request_is_tls(const request_rec *r, SSL **ssl)
+int modssl_request_is_tls(const request_rec *r, SSLConnRec **scout)
 {
     SSLConnRec *sslconn = myConnConfig(r->connection);
     SSLSrvConfigRec *sc = mySrvConfig(r->server);
@@ -112,7 +112,7 @@ int modssl_request_is_tls(const request_rec *r, SSL **ssl)
     if (sc->enabled == SSL_ENABLED_FALSE || !sslconn || !sslconn->ssl)
         return 0;
     
-    if (ssl) *ssl = sslconn->ssl;
+    if (scout) *scout = sslconn;
 
     return 1;
 }
