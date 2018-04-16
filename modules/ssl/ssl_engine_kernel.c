@@ -1502,8 +1502,6 @@ static const char *const ssl_hook_Fixup_vars[] = {
 
 int ssl_hook_Fixup(request_rec *r)
 {
-    SSLConnRec *sslconn = myConnConfig(r->connection);
-    SSLSrvConfigRec *sc = mySrvConfig(r->server);
     SSLDirConfigRec *dc = myDirConfig(r);
     apr_table_t *env = r->subprocess_env;
     char *var, *val = "";
@@ -1514,14 +1512,7 @@ int ssl_hook_Fixup(request_rec *r)
     SSL *ssl;
     int i;
 
-    if (!(sslconn && sslconn->ssl) && r->connection->master) {
-        sslconn = myConnConfig(r->connection->master);
-    }
-
-    /*
-     * Check to see if SSL is on
-     */
-    if (!(((sc->enabled == SSL_ENABLED_TRUE) || (sc->enabled == SSL_ENABLED_OPTIONAL)) && sslconn && (ssl = sslconn->ssl))) {
+    if (!modssl_request_is_tls(r, &ssl)) {
         return DECLINED;
     }
 
