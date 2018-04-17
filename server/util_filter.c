@@ -965,7 +965,7 @@ AP_DECLARE(int) ap_filter_should_yield(ap_filter_t *f)
     return 0;
 }
 
-AP_DECLARE(int) ap_filter_output_pending(conn_rec *c)
+AP_DECLARE_NONSTD(int) ap_filter_output_pending(conn_rec *c)
 {
     apr_hash_index_t *rindex;
     int data_in_output_filters = DECLINED;
@@ -999,7 +999,7 @@ AP_DECLARE(int) ap_filter_output_pending(conn_rec *c)
     return data_in_output_filters;
 }
 
-AP_DECLARE(int) ap_filter_input_pending(conn_rec *c)
+AP_DECLARE_NONSTD(int) ap_filter_input_pending(conn_rec *c)
 {
     apr_hash_index_t *rindex;
 
