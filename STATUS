@@ -253,6 +253,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      jhriggs: One nit: old code used `strcmp(...) == 0' and trunk uses `strncmp(...) == 0' vs. this
               using `!strncmp(...)'. Same result, but consistency is a good thing, one way or the
               other. +1 regardless.
+     jailletc36: the corresponding 'strcmp()' in 'core_dump_config()' should be updated accordingly, IMHO.
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
