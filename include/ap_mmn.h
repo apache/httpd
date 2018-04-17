@@ -571,14 +571,15 @@
  * 20171014.7 (2.5.1-dev)  Add AP_CORE_DEFAULT macro
  * 20171014.8 (2.5.1-dev)  Add CONN_STATE_NUM to enum conn_state_e
  * 20171014.9 (2.5.1-dev)  Add response_field_size to proxy_worker_shared 
+ * 20180417.1 (2.5.1-dev)  Toggle ap_filter_input|output_pending API to _NONSTD
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20171014
+#define MODULE_MAGIC_NUMBER_MAJOR 20180417
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 9                 /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 1                 /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

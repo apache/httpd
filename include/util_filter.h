@@ -626,7 +626,7 @@ AP_DECLARE(int) ap_filter_should_yield(ap_filter_t *f);
  * If some unwritten data remains, this function returns OK. If any
  * attempt to write data failed, this functions returns a positive integer.
  */
-AP_DECLARE(int) ap_filter_output_pending(conn_rec *c);
+AP_DECLARE_NONSTD(int) ap_filter_output_pending(conn_rec *c);
 
 /**
  * This function determines whether there is pending data in the input
@@ -637,7 +637,7 @@ AP_DECLARE(int) ap_filter_output_pending(conn_rec *c);
  * @return If no pending data remains, this function returns DECLINED.
  * If some pending data remains, this function returns OK.
  */
-AP_DECLARE(int) ap_filter_input_pending(conn_rec *c);
+AP_DECLARE_NONSTD(int) ap_filter_input_pending(conn_rec *c);
 
 /**
  * Flush function for apr_brigade_* calls.  This calls ap_pass_brigade
