@@ -43,7 +43,7 @@
 
     <highlight language="config">
 LogFormat "%{Apache}n %r %t" usertrack
-CustomLog logs/clickstream.log usertrack
+CustomLog "logs/clickstream.log" usertrack
     </highlight>
 
 </section>
@@ -153,7 +153,7 @@ CustomLog logs/clickstream.log usertrack
 <name>CookieStyle</name>
 <description>Format of the cookie header field</description>
 <syntax>CookieStyle
-    <em>Netscape|Cookie|Cookie2|RFC2109|RFC2965</em></syntax>
+    Netscape|Cookie|Cookie2|RFC2109|RFC2965</syntax>
 <default>CookieStyle Netscape</default>
 <contextlist>
 <context>server config</context>
