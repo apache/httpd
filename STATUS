@@ -250,6 +250,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   due to the code in STALLED for ap_errorlog_provider.
      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/core-check_errorlog_dir_syslog.patch
      +1: elukey
+     jhriggs: See https://lists.apache.org/thread.html/204866da0fd06a1ec8a8819c33955b6d0234f135702a100af9d764cc@%3Cdev.httpd.apache.org%3E
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
