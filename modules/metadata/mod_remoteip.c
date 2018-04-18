@@ -887,8 +887,13 @@ static int remoteip_hook_pre_connection(conn_rec *c, void *csd)
     remoteip_conn_config_t *conn_conf;
     int i;
 
-    /* Do not attempt to manipulate slave connections */
+    /* Establish master config in slave connections, so that request processing
+     * finds it. */
     if (c->master != NULL) {
+        conn_conf = ap_get_module_config(c->master->conn_config, &remoteip_module);
+        if (conn_conf) {
+            ap_set_module_config(c->conn_config, &remoteip_module, conn_conf);
+        }
         return DECLINED;
     }
 
