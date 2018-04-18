@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.34
 
+  *) mod_remoteip: make proxy-protocol work on slave connections, e.g. in HTTP/2
+     requests. See also https://github.com/roadrunner2/mod-proxy-protocol/issues/6
+     [Stefan Eissing]
+
   *) mod_ssl: Fix merging of proxy SSL context outside <Proxy> sections,
      regression introduced in 2.4.30. PR 62232. [Rainer Jung, Yann Ylavic]
 
