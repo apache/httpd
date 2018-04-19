@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_proxy_http: Fix response header thrown away after the previous one
+     was considered too large and truncated. PR 62196. [Yann Ylavic]
+
   *) core: Add and handle AP_GETLINE_NOSPC_EOL flag for ap_getline() family
      of functions to consume the end of line when the buffer is exhausted.
      PR 62198. [Yann Ylavic]
