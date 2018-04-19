@@ -68,9 +68,12 @@
 
 <section id="scheduler">
     <title>Load balancer scheduler algorithm</title>
-    <p>At present, there are 3 load balancer scheduler algorithms available
-    for use: Request Counting, Weighted Traffic Counting and Pending Request
-    Counting. These are controlled via the <code>lbmethod</code> value of
+    <p>At present, there are 4 load balancer scheduler algorithms available
+    for use: Request Counting (<module>mod_lbmethod_byrequests</module>),
+    Weighted Traffic Counting (<module>mod_lbmethod_bytraffic</module>),
+    Pending Request Counting (<module>mod_lbmethod_bybusyness</module>) and
+    Heartbeat Traffic Counting (<module>mod_lbmethod_heartbeat</module>).
+    These are controlled via the <code>lbmethod</code> value of
     the Balancer definition. See the <directive module="mod_proxy">ProxyPass</directive>
     directive for more information, especially regarding how to
     configure the Balancer and BalancerMembers.</p>
