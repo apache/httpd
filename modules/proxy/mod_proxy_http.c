@@ -28,12 +28,8 @@ static apr_status_t ap_proxy_http_cleanup(const char *scheme,
                                           request_rec *r,
                                           proxy_conn_rec *backend);
 
-static apr_status_t ap_proxygetline(apr_bucket_brigade *bb,
-                                    char *s,
-                                    int n,
-                                    request_rec *r,
-                                    int fold,
-                                    int *writen);
+static apr_status_t ap_proxygetline(apr_bucket_brigade *bb, char *s, int n,
+                                    request_rec *r, int flags, int *read);
 
 /*
  * Canonicalise http-like URLs.
@@ -1098,7 +1094,6 @@ static void ap_proxy_read_headers(request_rec *r, request_rec *rr,
 {
     int len;
     char *value, *end;
-    char field[MAX_STRING_LEN];
     int saw_headers = 0;
     void *sconf = r->server->module_config;
     proxy_server_conf *psc;
@@ -1122,12 +1117,26 @@ static void ap_proxy_read_headers(request_rec *r, request_rec *rr,
 
     tmp_bb = apr_brigade_create(r->pool, c->bucket_alloc);
     while (1) {
-        rc = ap_proxygetline(tmp_bb, buffer, size, rr, 1, &len);
+        rc = ap_proxygetline(tmp_bb, buffer, size, rr,
+                             AP_GETLINE_FOLD | AP_GETLINE_NOSPC_EOL, &len);
 
         if (len <= 0)
             break;
 
-        ap_log_rerror(APLOG_MARK, APLOG_TRACE4, 0, r, "%s", buffer);
+        if (APR_STATUS_IS_ENOSPC(rc)) {
+            /* The header could not fit in the provided buffer, warn.
+             * XXX: falls through with the truncated header, 5xx instead?
+             */
+            int trunc = (len > 128 ? 128 : len) / 2;
+            ap_log_rerror(APLOG_MARK, APLOG_WARNING, rc, r, APLOGNO(10124)
+                    "header size is over the limit allowed by "
+                    "ResponseFieldSize (%d bytes). "
+                    "Bad response header: '%.*s[...]%s'",
+                    size, trunc, buffer, buffer + len - trunc);
+        }
+        else {
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE4, 0, r, "%s", buffer);
+        }
 
         if (!(value = strchr(buffer, ':'))) {     /* Find the colon separator */
 
@@ -1195,28 +1204,6 @@ static void ap_proxy_read_headers(request_rec *r, request_rec *rr,
          */
         process_proxy_header(r, dconf, buffer, value);
         saw_headers = 1;
-
-        /* The header could not fit in the provided buffer. */
-        if (rc == APR_ENOSPC) {
-            ap_log_rerror(APLOG_MARK, APLOG_WARNING, rc, r, APLOGNO(10124)
-                    "header size is over the limit allowed by ResponseFieldSize (%d bytes). "
-                    "Bad response header '%s': '%.*s'...",
-                    size, buffer, 80, value);
-
-            /* XXX: We overran the limit we passed to ap_rgetline_core, but if the length
-             * exceeded the limit by a small amount, it may have already been consumed
-             * by apr_brigade_split_line called from the core input filter. If that 
-             * happens, this loop will throw away the next full line (header) instead of
-             * the remainder of the current long header.
-             */
-            while ((len = ap_getline(field, MAX_STRING_LEN, rr, 1))
-                    >= MAX_STRING_LEN - 1) {
-                /* soak up the extra data */
-            }
-
-            if (len == 0) /* time to exit the larger loop as well */
-                break;
-        }
     }
 }
 
@@ -1228,23 +1215,19 @@ static int addit_dammit(void *v, const char *key, const char *val)
     return 1;
 }
 
-static
-apr_status_t ap_proxygetline(apr_bucket_brigade *bb, char *s, int n, request_rec *r,
-                             int fold, int *writen)
+static apr_status_t ap_proxygetline(apr_bucket_brigade *bb, char *s, int n,
+                                    request_rec *r, int flags, int *read)
 {
-    char *tmp_s = s;
     apr_status_t rv;
     apr_size_t len;
 
-    rv = ap_rgetline(&tmp_s, n, &len, r, fold, bb);
+    rv = ap_rgetline_core(&s, n, &len, r, flags, bb);
     apr_brigade_cleanup(bb);
 
-    if (rv == APR_SUCCESS) {
-        *writen = (int) len;
-    } else if (APR_STATUS_IS_ENOSPC(rv)) {
-        *writen = n;
+    if (rv == APR_SUCCESS || APR_STATUS_IS_ENOSPC(rv)) {
+        *read = (int)len;
     } else {
-        *writen = -1;
+        *read = -1;
     }
 
     return rv;
