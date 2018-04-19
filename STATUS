@@ -253,6 +253,19 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1829513 ^/httpd/httpd/trunk .
      +1: jorton,
 
+  *) ap_rgetline()+mod_proxy_http: Add and handle AP_GETLINE_NOSPC_EOL flag,
+     fixes responses header thrown away on APR_ENOSPC, and allow their size to
+     be configured (ResponseFieldSize). PRs 62196, 62198 and 62199.
+     trunk patch: http://svn.apache.org/r1827362
+                  http://svn.apache.org/r1828926
+                  http://svn.apache.org/r1828927
+                  http://svn.apache.org/r1829557
+                  http://svn.apache.org/r1829573
+     2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-PR62196+62198+62199.patch
+                  (convenient patch, otherwise trunk works modulo CHANGES/MMN)
+     +1: ylavic,
+
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
