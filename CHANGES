@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) core: Add and handle AP_GETLINE_NOSPC_EOL flag for ap_getline() family
+     of functions to consume the end of line when the buffer is exhausted.
+     PR 62198. [Yann Ylavic]
+
   *) mod_xml2enc: Fix forwarding of error metadata/responses. PR 62180.
      [Micha Lenk <micha lenk.info>, Yann Ylavic]
 
