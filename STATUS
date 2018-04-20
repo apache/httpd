@@ -262,7 +262,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1829557
                   http://svn.apache.org/r1829573
                   http://svn.apache.org/r1829645
-     2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-PR62196+62198+62199-v2.patch
+                  http://svn.apache.org/r1829657
+     2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-PR62196+62198+62199-v3.patch
                   (convenient patch, otherwise trunk works modulo CHANGES/MMN)
      +1: ylavic,
 
