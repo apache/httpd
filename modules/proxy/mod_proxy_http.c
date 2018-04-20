@@ -1221,7 +1221,7 @@ static apr_status_t ap_proxygetline(apr_bucket_brigade *bb, char *s, int n,
     apr_status_t rv;
     apr_size_t len;
 
-    rv = ap_rgetline_core(&s, n, &len, r, flags, bb);
+    rv = ap_rgetline(&s, n, &len, r, flags, bb);
     apr_brigade_cleanup(bb);
 
     if (rv == APR_SUCCESS || APR_STATUS_IS_ENOSPC(rv)) {
