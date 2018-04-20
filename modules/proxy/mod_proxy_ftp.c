@@ -978,7 +978,7 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
     conn_rec *origin, *data = NULL;
     apr_status_t err = APR_SUCCESS;
     apr_status_t uerr = APR_SUCCESS;
-    apr_bucket_brigade *bb = apr_brigade_create(p, c->bucket_alloc);
+    apr_bucket_brigade *bb;
     char *buf, *connectname;
     apr_port_t connectport;
     char *ftpmessage = NULL;
@@ -1211,6 +1211,7 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
      * correct directory...
      */
 
+    bb = apr_brigade_create(p, c->bucket_alloc);
 
     /* possible results: */
     /* 120 Service ready in nnn minutes. */
