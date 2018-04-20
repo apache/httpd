@@ -464,8 +464,8 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
 
                     next_size = n - bytes_handled;
 
-                    rv = ap_rgetline_core(&tmp, next_size,
-                                          &next_len, r, 0, bb);
+                    rv = ap_rgetline_core(&tmp, next_size, &next_len, r,
+                                          flags & ~AP_GETLINE_FOLD, bb);
                     if (rv != APR_SUCCESS) {
                         goto cleanup;
                     }
