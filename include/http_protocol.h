@@ -630,19 +630,18 @@ AP_DECLARE(apr_status_t) ap_get_basic_auth_components(const request_rec *r,
  */
 AP_CORE_DECLARE(void) ap_parse_uri(request_rec *r, const char *uri);
 
-#define AP_GETLINE_FOLD 1 /* Whether to merge continuation lines */
-#define AP_GETLINE_CRLF 2 /* Whether line ends must be in the form CR LF */
-#define AP_GETLINE_NOSPC_EOL 4 /* Whether to consume up to and including the
-                                  end of line on APR_ENOSPC */
+#define AP_GETLINE_FOLD      (1 << 0) /* Whether to merge continuation lines */
+#define AP_GETLINE_CRLF      (1 << 1) /* Whether line ends must be CRLF */
+#define AP_GETLINE_NOSPC_EOL (1 << 2) /* Whether to consume up to and including
+                                         the end of line on APR_ENOSPC */
+#define AP_GETLINE_NONBLOCK  (1 << 3) /* Whether to read non-blocking */
 
 /**
  * Get the next line of input for the request
  * @param s The buffer into which to read the line
  * @param n The size of the buffer
  * @param r The request
- * @param flags Bit flag of multiple parsing options
- *              AP_GETLINE_FOLD Whether to merge continuation lines
- *              AP_GETLINE_CRLF Whether line ends must be in the form CR LF
+ * @param flags Bit mask of AP_GETLINE_* options
  * @return The length of the line, if successful
  *         n, if the line is too big to fit in the buffer
  *         -1 for miscellaneous errors
@@ -650,7 +649,38 @@ AP_CORE_DECLARE(void) ap_parse_uri(request_rec *r, const char *uri);
 AP_DECLARE(int) ap_getline(char *s, int n, request_rec *r, int flags);
 
 /**
- * Get the next line of input for the request
+ * Get the next line from an input filter
+ *
+ * @param s Pointer to the pointer to the buffer into which the line
+ *          should be read; if *s==NULL, a buffer of the necessary size
+ *          to hold the data will be allocated from \p p
+ * @param n The size of the buffer
+ * @param read The length of the line.
+ * @param f Input filter to read from
+ * @param flags Bit mask of AP_GETLINE_* options
+ * @param bb Working brigade to use when reading buckets
+ * @param p The pool to allocate the buffer from (if needed)
+ * @return APR_SUCCESS, if successful
+ *         APR_ENOSPC, if the line is too big to fit in the buffer
+ *         Other errors where appropriate
+ */
+AP_DECLARE(apr_status_t) ap_fgetline(char **s, apr_size_t n,
+                                     apr_size_t *read, ap_filter_t *f,
+                                     int flags, apr_bucket_brigade *bb,
+                                     apr_pool_t *p);
+
+/**
+ * @see ap_fgetline
+ *
+ * Note: genuinely calls, ap_fgetline(s, n, read, r->proto_input_filters,
+ *                                    flags, bb, r->pool)
+ */
+AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
+                                          apr_size_t *read, request_rec *r,
+                                          int flags, apr_bucket_brigade *bb);
+
+/**
+ * @see ap_rgetline_core
  *
  * Note: on ASCII boxes, ap_rgetline is a macro which simply calls
  *       ap_rgetline_core to get the line of input.
@@ -659,35 +689,15 @@ AP_DECLARE(int) ap_getline(char *s, int n, request_rec *r, int flags);
  *       translates ASCII protocol lines to the local EBCDIC code page
  *       after getting the line of input.
  *
- * @param s Pointer to the pointer to the buffer into which the line
- *          should be read; if *s==NULL, a buffer of the necessary size
- *          to hold the data will be allocated from the request pool
- * @param n The size of the buffer
- * @param read The length of the line.
- * @param r The request
- * @param flags Bit flag of multiple parsing options
- *              AP_GETLINE_FOLD Whether to merge continuation lines
- *              AP_GETLINE_CRLF Whether line ends must be in the form CR LF
- * @param bb Working brigade to use when reading buckets
- * @return APR_SUCCESS, if successful
- *         APR_ENOSPC, if the line is too big to fit in the buffer
- *         Other errors where appropriate
  */
 #if APR_CHARSET_EBCDIC
 AP_DECLARE(apr_status_t) ap_rgetline(char **s, apr_size_t n,
-                                     apr_size_t *read,
-                                     request_rec *r, int flags,
-                                     apr_bucket_brigade *bb);
+                                     apr_size_t *read, request_rec *r,
+                                     int flags, apr_bucket_brigade *bb);
 #else /* ASCII box */
 #define ap_rgetline(s, n, read, r, flags, bb) \
         ap_rgetline_core((s), (n), (read), (r), (flags), (bb))
 #endif
-
-/** @see ap_rgetline */
-AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
-                                          apr_size_t *read,
-                                          request_rec *r, int flags,
-                                          apr_bucket_brigade *bb);
 
 /**
  * Get the method number associated with the given string, assumed to

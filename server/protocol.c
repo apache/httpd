@@ -188,15 +188,11 @@ AP_DECLARE(apr_time_t) ap_rationalize_mtime(request_rec *r, apr_time_t mtime)
     return (mtime > now) ? now : mtime;
 }
 
-/* Get a line of protocol input, including any continuation lines
+/* Get a line from an input filter, including any continuation lines
  * caused by MIME folding (or broken clients) if fold != 0, and place it
  * in the buffer s, of size n bytes, without the ending newline.
- * 
- * Pulls from r->proto_input_filters instead of r->input_filters for
- * stricter protocol adherence and better input filter behavior during
- * chunked trailer processing (for http).
  *
- * If s is NULL, ap_rgetline_core will allocate necessary memory from r->pool.
+ * If s is NULL, ap_fgetline_impl will allocate necessary memory from p.
  *
  * Returns APR_SUCCESS if there are no problems and sets *read to be
  * the full length of s.
@@ -213,9 +209,10 @@ AP_DECLARE(apr_time_t) ap_rationalize_mtime(request_rec *r, apr_time_t mtime)
  *        If no LF is detected on the last line due to a dropped connection
  *        or a full buffer, that's considered an error.
  */
-AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
-                                          apr_size_t *read, request_rec *r,
-                                          int flags, apr_bucket_brigade *bb)
+static apr_status_t ap_fgetline_impl(char **s, apr_size_t n,
+                                     apr_size_t *read, ap_filter_t *f,
+                                     int flags, apr_bucket_brigade *bb,
+                                     apr_pool_t *p)
 {
     apr_status_t rv;
     apr_bucket *e;
@@ -226,12 +223,16 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
     int crlf = flags & AP_GETLINE_CRLF;
     int nospc_eol = flags & AP_GETLINE_NOSPC_EOL;
     int saw_eol = 0, saw_nospc = 0;
+    apr_read_type_e block;
 
     if (!n) {
         /* Needs room for NUL byte at least */
         *read = 0;
         return APR_BADARG;
     }
+
+    block = (flags & AP_GETLINE_NONBLOCK) ? APR_NONBLOCK_READ
+                                          : APR_BLOCK_READ;
 
     /*
      * Initialize last_char as otherwise a random value will be compared
@@ -243,17 +244,22 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
 
     do {
         apr_brigade_cleanup(bb);
-        rv = ap_get_brigade(r->proto_input_filters, bb, AP_MODE_GETLINE,
-                            APR_BLOCK_READ, 0);
+        rv = ap_get_brigade(f, bb, AP_MODE_GETLINE, block, 0);
         if (rv != APR_SUCCESS) {
             goto cleanup;
         }
 
         /* Something horribly wrong happened.  Someone didn't block! 
          * (this also happens at the end of each keepalive connection)
+         * (this also happens when non-blocking is asked too, not that wrong)
          */
         if (APR_BRIGADE_EMPTY(bb)) {
-            rv = APR_EGENERAL;
+            if (block != APR_NONBLOCK_READ) {
+                rv = APR_EGENERAL;
+            }
+            else {
+                rv = APR_EAGAIN;
+            }
             goto cleanup;
         }
 
@@ -338,7 +344,7 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
                 /* We'll assume the common case where one bucket is enough. */
                 if (!*s) {
                     current_alloc = len;
-                    *s = apr_palloc(r->pool, current_alloc + 1);
+                    *s = apr_palloc(p, current_alloc + 1);
                 }
                 else if (bytes_handled + len > current_alloc) {
                     /* Increase the buffer size */
@@ -349,7 +355,7 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
                         new_size = (bytes_handled + len) * 2;
                     }
 
-                    new_buffer = apr_palloc(r->pool, new_size + 1);
+                    new_buffer = apr_palloc(p, new_size + 1);
 
                     /* Copy what we already had. */
                     memcpy(new_buffer, *s, bytes_handled);
@@ -408,8 +414,7 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
             apr_brigade_cleanup(bb);
 
             /* We only care about the first byte. */
-            rv = ap_get_brigade(r->proto_input_filters, bb, AP_MODE_SPECULATIVE,
-                                APR_BLOCK_READ, 1);
+            rv = ap_get_brigade(f, bb, AP_MODE_SPECULATIVE, block, 1);
             if (rv != APR_SUCCESS) {
                 goto cleanup;
             }
@@ -464,8 +469,8 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
 
                     next_size = n - bytes_handled;
 
-                    rv = ap_rgetline_core(&tmp, next_size, &next_len, r,
-                                          flags & ~AP_GETLINE_FOLD, bb);
+                    rv = ap_fgetline_impl(&tmp, next_size, &next_len, f,
+                                          flags & ~AP_GETLINE_FOLD, bb, p);
                     if (rv != APR_SUCCESS) {
                         goto cleanup;
                     }
@@ -475,7 +480,7 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
                         apr_size_t new_size = bytes_handled + next_len + 1;
 
                         /* we need to alloc an extra byte for a null */
-                        new_buffer = apr_palloc(r->pool, new_size);
+                        new_buffer = apr_palloc(p, new_size);
 
                         /* Copy what we already had. */
                         memcpy(new_buffer, *s, bytes_handled);
@@ -517,10 +522,31 @@ cleanup:
     return rv;
 }
 
+AP_DECLARE(apr_status_t) ap_fgetline(char **s, apr_size_t n,
+                                     apr_size_t *read, ap_filter_t *f,
+                                     int flags, apr_bucket_brigade *bb,
+                                     apr_pool_t *p)
+{
+    return ap_fgetline_impl(s, n, read, f, flags, bb, p);
+}
+
+/* Same as ap_fgetline(), working on r's pool and protocol input filters.
+ * Pulls from r->proto_input_filters instead of r->input_filters for
+ * stricter protocol adherence and better input filter behavior during
+ * chunked trailer processing (for http).
+ */
+AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
+                                          apr_size_t *read, request_rec *r,
+                                          int flags, apr_bucket_brigade *bb)
+{
+    return ap_fgetline_impl(s, n, read, r->proto_input_filters, flags,
+                            bb, r->pool);
+}
+
 #if APR_CHARSET_EBCDIC
 AP_DECLARE(apr_status_t) ap_rgetline(char **s, apr_size_t n,
                                      apr_size_t *read, request_rec *r,
-                                     int fold, apr_bucket_brigade *bb)
+                                     int flags, apr_bucket_brigade *bb)
 {
     /* on ASCII boxes, ap_rgetline is a macro which simply invokes
      * ap_rgetline_core with the same parms
@@ -532,8 +558,9 @@ AP_DECLARE(apr_status_t) ap_rgetline(char **s, apr_size_t n,
      */
     apr_status_t rv;
 
-    rv = ap_rgetline_core(s, n, read, r, fold, bb);
-    if (rv == APR_SUCCESS || APR_STATUS_IS_ENOSPC(rv)) {
+    rv = ap_fgetline_impl(s, n, read, r->proto_input_filters, flags,
+                          bb, r->pool);
+    if (*read) {
         ap_xlate_proto_from_ascii(*s, *read);
     }
     return rv;
@@ -542,7 +569,6 @@ AP_DECLARE(apr_status_t) ap_rgetline(char **s, apr_size_t n,
 
 AP_DECLARE(int) ap_getline(char *s, int n, request_rec *r, int flags)
 {
-    char *tmp_s = s;
     apr_status_t rv;
     apr_size_t len;
     apr_bucket_brigade *tmp_bb;
@@ -553,7 +579,8 @@ AP_DECLARE(int) ap_getline(char *s, int n, request_rec *r, int flags)
     }
 
     tmp_bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
-    rv = ap_rgetline(&tmp_s, n, &len, r, flags, tmp_bb);
+    rv = ap_fgetline_impl(&s, n, &len, r->proto_input_filters, flags,
+                          tmp_bb, r->pool);
     apr_brigade_destroy(tmp_bb);
 
     /* Map the out-of-space condition to the old API. */
