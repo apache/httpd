@@ -317,9 +317,10 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
         f->ctx = ctx = apr_pcalloc(f->r->pool, sizeof(*ctx));
         ctx->state = BODY_NONE;
 
-        /* LimitRequestBody does not apply to proxied responses, which have
-         * their own ResponseFieldSize parameter.
+        /* LimitRequestBody does not apply to proxied responses.
          * Consider implementing this check in its own filter.
+         * Would adding a directive to limit the size of proxied
+         * responses be useful?
          */
         if (f->r->proxyreq != PROXYREQ_RESPONSE) {
             ctx->limit = ap_get_limit_req_body(f->r);
