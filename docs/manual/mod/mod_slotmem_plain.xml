@@ -29,7 +29,7 @@
 <identifier>slotmem_plain_module</identifier>
 
 <summary>
-    <p><code>mod_slotmem_plain</code> is a memory provider which
+    <p><module>mod_slotmem_plain</module> is a memory provider which
     provides for creation and access to a plain memory segment
     in which the datasets are organized in "slots."
     </p>
@@ -39,43 +39,43 @@
     <module>mod_slotmem_shm</module>.
     </p>
 
-    <p><code>mod_slotmem_plain</code> provides the following API functions:
+    <p><module>mod_slotmem_plain</module> provides the following API functions:
     </p>
 
-    <dl>
-      <dt>apr_status_t doall(ap_slotmem_instance_t *s, ap_slotmem_callback_fn_t *func, void *data, apr_pool_t *pool)</dt>
-      <dd>call the callback on all worker slots</dd>
+<highlight language="c">
+/* call the callback on all worker slots */
+apr_status_t doall(ap_slotmem_instance_t *s, ap_slotmem_callback_fn_t *func, void *data, apr_pool_t *pool)
 
-      <dt>apr_status_t create(ap_slotmem_instance_t **new, const char *name, apr_size_t item_size, unsigned int item_num, ap_slotmem_type_t type, apr_pool_t *pool)</dt>
-      <dd>create a new slotmem with each item size is item_size.</dd>
+/* create a new slotmem with each item size is item_size */
+apr_status_t create(ap_slotmem_instance_t **new, const char *name, apr_size_t item_size, unsigned int item_num, ap_slotmem_type_t type, apr_pool_t *pool)
 
-      <dt>apr_status_t attach(ap_slotmem_instance_t **new, const char *name, apr_size_t *item_size, unsigned int *item_num, apr_pool_t *pool)</dt>
-      <dd>attach to an existing slotmem.</dd>
+/* attach to an existing slotmem */
+apr_status_t attach(ap_slotmem_instance_t **new, const char *name, apr_size_t *item_size, unsigned int *item_num, apr_pool_t *pool)
 
-      <dt>apr_status_t dptr(ap_slotmem_instance_t *s, unsigned int item_id, void**mem)</dt>
-      <dd>get the direct pointer to the memory associated with this worker slot.</dd>
+/* get the direct pointer to the memory associated with this worker slot */
+apr_status_t dptr(ap_slotmem_instance_t *s, unsigned int item_id, void **mem)
 
-      <dt>apr_status_t get(ap_slotmem_instance_t *s, unsigned int item_id, unsigned char *dest, apr_size_t dest_len)</dt>
-      <dd>get/read the memory from this slot to dest</dd>
+/* get/read the memory from this slot to dest */
+apr_status_t get(ap_slotmem_instance_t *s, unsigned int item_id, unsigned char *dest, apr_size_t dest_len)
 
-      <dt>apr_status_t put(ap_slotmem_instance_t *slot, unsigned int item_id, unsigned char *src, apr_size_t src_len)</dt>
-      <dd>put/write the data from src to this slot</dd>
+/* put/write the data from src to this slot */
+apr_status_t put(ap_slotmem_instance_t *slot, unsigned int item_id, unsigned char *src, apr_size_t src_len)
 
-      <dt>unsigned int num_slots(ap_slotmem_instance_t *s)</dt>
-      <dd>return the total number of slots in the segment</dd>
+/* return the total number of slots in the segment */
+unsigned int num_slots(ap_slotmem_instance_t *s)
 
-      <dt>apr_size_t slot_size(ap_slotmem_instance_t *s)</dt>
-      <dd>return the total data size, in bytes, of a slot in the segment</dd>
+/* return the total data size, in bytes, of a slot in the segment */
+apr_size_t slot_size(ap_slotmem_instance_t *s)
 
-      <dt>apr_status_t grab(ap_slotmem_instance_t *s, unsigned int *item_id);</dt>
-      <dd>grab or allocate the first free slot and mark as in-use (does not do any data copying)</dd>
+/* grab or allocate the first free slot and mark as in-use (does not do any data copying) */
+apr_status_t grab(ap_slotmem_instance_t *s, unsigned int *item_id)
 
-      <dt>apr_status_t fgrab(ap_slotmem_instance_t *s, unsigned int item_id);</dt>
-      <dd>forced grab or allocate the specified slot and mark as in-use (does not do any data copying)</dd>
-        
-     <dt>apr_status_t release(ap_slotmem_instance_t *s, unsigned int item_id);</dt>
-      <dd>release or free a slot and mark as not in-use (does not do any data copying)</dd>
-    </dl>
+/* forced grab or allocate the specified slot and mark as in-use (does not do any data copying) */
+apr_status_t fgrab(ap_slotmem_instance_t *s, unsigned int item_id)
+
+/* release or free a slot and mark as not in-use (does not do any data copying) */
+apr_status_t release(ap_slotmem_instance_t *s, unsigned int item_id)
+</highlight>
 
 </summary>
 
