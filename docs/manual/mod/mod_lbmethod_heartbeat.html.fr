@@ -37,7 +37,7 @@
 <tr><th><a href="module-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3 d'Apache</td></tr></table>
 <h3>Sommaire</h3>
 
-    <p>lbmethod=heartbeat utilise les services du module
+    <p><code>lbmethod=heartbeat</code> utilise les services du module
     <code class="module"><a href="../mod/mod_heartmonitor.html">mod_heartmonitor</a></code> pour répartir la charge entre les
     serveurs d'origine qui fournissent des données heartbeat via le
     module <code class="module"><a href="../mod/mod_heartbeat.html">mod_heartbeat</a></code>.</p>

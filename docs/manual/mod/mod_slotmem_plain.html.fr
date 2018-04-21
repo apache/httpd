@@ -36,7 +36,7 @@ slots.</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_slotmem_plain.c</td></tr></table>
 <h3>Sommaire</h3>
 
-    <p><code>mod_slotmem_plain</code> est un fournisseur de mémoire qui
+    <p><code class="module"><a href="../mod/mod_slotmem_plain.html">mod_slotmem_plain</a></code> est un fournisseur de mémoire qui
     permet la création et l'utilisation d'un segment de mémoire contigu
     dans lequel les ensembles de données sont organisés en "slots".
     </p>
@@ -46,49 +46,44 @@ slots.</td></tr>
     <code class="module"><a href="../mod/mod_slotmem_shm.html">mod_slotmem_shm</a></code>.
     </p>
 
-    <p><code>mod_slotmem_plain</code> fournit une API comprenant les
+    <p><code class="module"><a href="../mod/mod_slotmem_plain.html">mod_slotmem_plain</a></code> fournit une API comprenant les
     fonctions suivantes :
     </p>
 
-    <dl>
-      <dt>apr_status_t doall(ap_slotmem_instance_t *s, ap_slotmem_callback_fn_t *func, void *data, apr_pool_t *pool)</dt>
-      <dd>appelle le callback sur tous les slots actifs</dd>
+   
+<pre class="prettyprint lang-c">/* appelle le callback sur tous les slots actifs */
+apr_status_t doall(ap_slotmem_instance_t *s, ap_slotmem_callback_fn_t *func, void *data, apr_pool_t *pool)      
 
-      <dt>apr_status_t create(ap_slotmem_instance_t **new, const char *name, apr_size_t item_size, unsigned int item_num, ap_slotmem_type_t type, apr_pool_t *pool)</dt>
-      <dd>crée un nouveau slot de mémoire dont chaque objet aura une
-      taille de item_size.</dd>
+/* crée un nouveau slot de mémoire dont chaque item aura une taille de item_size. */
+apr_status_t create(ap_slotmem_instance_t **new, const char *name, apr_size_t item_size, unsigned int item_num, ap_slotmem_type_t type, apr_pool_t *pool)      
 
-      <dt>apr_status_t attach(ap_slotmem_instance_t **new, const char *name, apr_size_t *item_size, unsigned int *item_num, apr_pool_t *pool)</dt>
-      <dd>rattache à un slot de mémoire existant.</dd>
+/* rattache à un slot de mémoire existant. */
+apr_status_t attach(ap_slotmem_instance_t **new, const char *name, apr_size_t *item_size, unsigned int *item_num, apr_pool_t *pool)      
 
-      <dt>apr_status_t dptr(ap_slotmem_instance_t *s, unsigned int item_id, void**mem)</dt>
-      <dd>indique la mémoire associée à ce slot actif.</dd>
+/* indique la mémoire associée à ce slot actif. */
+apr_status_t dptr(ap_slotmem_instance_t *s, unsigned int item_id, void **mem)      
 
-      <dt>apr_status_t get(ap_slotmem_instance_t *s, unsigned int item_id, unsigned char *dest, apr_size_t dest_len)</dt>
-      <dd>lit la mémoire depuis ce slot et la transfère vers dest</dd>
+/* lit la mémoire depuis ce slot et la transfert vers dest */
+apr_status_t get(ap_slotmem_instance_t *s, unsigned int item_id, unsigned char *dest, apr_size_t dest_len)      
 
-      <dt>apr_status_t put(ap_slotmem_instance_t *slot, unsigned int item_id, unsigned char *src, apr_size_t src_len)</dt>
-      <dd>écrit dans ce slot la mémoire en provenance de src</dd>
+/* écrit dans ce slot la mémoire en provenance de src */
+apr_status_t put(ap_slotmem_instance_t *slot, unsigned int item_id, unsigned char *src, apr_size_t src_len)      
 
-      <dt>unsigned int num_slots(ap_slotmem_instance_t *s)</dt>
-      <dd>renvoie le nombre total de slots contenus dans ce segment</dd>
+/* renvoie le nombre total de slots contenus dans ce segment */
+unsigned int num_slots(ap_slotmem_instance_t *s)      
 
-      <dt>apr_size_t slot_size(ap_slotmem_instance_t *s)</dt>
-      <dd>renvoie la taille totale des données, en octets, contenues
-      dans un slot de ce segment</dd>
+/* renvoie la taille totale des données, en octets, contenues dans un slot de ce segment */
+apr_size_t slot_size(ap_slotmem_instance_t *s)      
 
-      <dt>apr_status_t grab(ap_slotmem_instance_t *s, unsigned int *item_id);</dt>
-      <dd>alloue le premier slot disponible et le marque comme utilisé (n'effectue aucune
-      copie de données)</dd>
+/* alloue le premier slot libre et le marque comme utilisé (n'effectue aucune copie de données) */
+apr_status_t grab(ap_slotmem_instance_t *s, unsigned int *item_id)      
 
-      <dt>apr_status_t fgrab(ap_slotmem_instance_t *s, unsigned int item_id);</dt>
-      <dd>force l'allocation ou l'appropriation du slot spécifié et le marque comme utilisé (n'effectue aucune
-      copie de données)</dd>
-
-      <dt>apr_status_t release(ap_slotmem_instance_t *s, unsigned int item_id);</dt>
-      <dd>libère un slot et le marque comme non utilisé (n'effectue aucune
-      copie de données)</dd>
-    </dl>
+/* appropriation ou allocation forcée du slot spécifié et marquage comme utilisé (n'effectue aucune copie de données) */
+apr_status_t fgrab(ap_slotmem_instance_t *s, unsigned int item_id)      
+        
+/* libère un slot et le marque comme non utilisé (n'effectue aucune copie de données) */
+apr_status_t release(ap_slotmem_instance_t *s, unsigned int item_id)</pre>
+    
 
 </div>
 <div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><h3 class="directives">Directives</h3>
