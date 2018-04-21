@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision : 1673563 -->
+<!-- English Revision : 1829392 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -253,7 +253,8 @@ SetEnvIf User-Agent ^KnockKnock/2\.0 let_me_in
     </highlight>
 
     <p>La syntaxe de l'expression est d&eacute;crite dans la documentation de <a
-    href="../expr.html">ap_expr</a>.</p>
+    href="../expr.html">ap_expr</a>. Avant la version 2.4.16, les doubles-quotes
+    étaient prohibées</p>
 
     <p>Normalement, l'expression est &eacute;valu&eacute;e avant l'authentification.
     Cependant, si l'expression renvoie false et se r&eacute;f&egrave;re &agrave; la variable

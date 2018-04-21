@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1347906 -->
+<!-- English Revision : 1829615 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -33,7 +33,7 @@
 <compatibility>Disponible depuis la version 2.3 d'Apache</compatibility>
 
 <summary>
-    <p>lbmethod=heartbeat utilise les services du module
+    <p><code>lbmethod=heartbeat</code> utilise les services du module
     <module>mod_heartmonitor</module> pour répartir la charge entre les
     serveurs d'origine qui fournissent des données heartbeat via le
     module <module>mod_heartbeat</module>.</p>

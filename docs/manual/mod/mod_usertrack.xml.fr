@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1334026 -->
+<!-- English Revision : 1829394 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -47,7 +47,7 @@ utilisateur sur un site
 
     <highlight language="config">
 LogFormat "%{Apache}n %r %t" usertrack
-CustomLog logs/clickstream.log usertrack
+CustomLog "logs/clickstream.log" usertrack
     </highlight>
 
 
@@ -163,7 +163,7 @@ s'applique</description>
 <name>CookieStyle</name>
 <description>Format du champ d'en-t&ecirc;te cookie</description>
 <syntax>CookieStyle
-    <em>Netscape|Cookie|Cookie2|RFC2109|RFC2965</em></syntax>
+    Netscape|Cookie|Cookie2|RFC2109|RFC2965</syntax>
 <default>CookieStyle Netscape</default>
 <contextlist>
 <context>server config</context>

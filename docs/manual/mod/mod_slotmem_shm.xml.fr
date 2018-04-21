@@ -1,9 +1,8 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1422580 -->
+<!-- English Revision : 1829679 -->
 <!-- French translation : Lucien GENTIS -->
-<!-- Reviewed by : Vincent Deffontaines -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -25,84 +24,77 @@
 <modulesynopsis metafile="mod_slotmem_shm.xml.meta">
 
 <name>mod_slotmem_shm</name>
-<description>Fournisseur de m&eacute;moire partag&eacute;e bas&eacute;e sur les
+<description>Fournisseur de mémoire partagée basée sur les
 slots.</description>
 <status>Extension</status>
 <sourcefile>mod_slotmem_shm.c</sourcefile>
 <identifier>slotmem_shm_module</identifier>
 
 <summary>
-    <p><code>mod_slotmem_shm</code> est un fournisseur de m&eacute;moire qui
-    permet la cr&eacute;ation et l'acc&egrave;s &agrave; un segment de m&eacute;moire partag&eacute;e dans
-    lequel les ensembles de donn&eacute;es sont organis&eacute;s en "slots".
+    <p><module>mod_slotmem_shm</module> est un fournisseur de mémoire qui
+    permet la création et l'accès à un segment de mémoire partagée dans
+    lequel les ensembles de données sont organisés en "slots".
     </p>
 
-    <p>L'ensemble de la m&eacute;moire partag&eacute;e est effac&eacute; &agrave; chaque
-    red&eacute;marrage, que ce dernier soit <code>graceful</code> ou non. Les donn&eacute;es sont
-    stock&eacute;es et restitu&eacute;es dans et &agrave; partir d'un fichier d&eacute;fini par le
-    param&egrave;tre <code>name</code> des appels <code>create</code> et
-    <code>attach</code>. Si son chemin absolu n'est pas sp&eacute;cifi&eacute;, le
-    chemin du fichier sera relatif au chemin d&eacute;fini par la directive
+    <p>L'ensemble de la mémoire partagée est effacé à chaque
+    redémarrage, que ce dernier soit graceful ou non. Les données sont
+    stockées et restituées dans/à partir d'un fichier défini par le
+    paramètre <code>name</code> des appels <code>create</code> et
+    <code>attach</code>. Si son chemin absolu n'est pas spécifié, le
+    chemin du fichier sera relatif au chemin défini par la directive
     <directive module="core">DefaultRuntimeDir</directive>.
     </p>
 
-    <p><code>mod_slotmem_shm</code> fournit les fonctions d'API suivantes
+    <p><module>mod_slotmem_shm</module> fournit les fonctions d'API suivantes
     :
     </p>
 
-    <dl>
-      <dt>apr_status_t doall(ap_slotmem_instance_t *s, ap_slotmem_callback_fn_t *func, void *data, apr_pool_t *pool)</dt>
-      <dd>appelle le callback pour tous les slots actifs</dd>
+<highlight language="c">
+/* appelle le callback pour tous les slots actifs */
+apr_status_t doall(ap_slotmem_instance_t *s, ap_slotmem_callback_fn_t *func, void *data, apr_pool_t *pool)
 
-      <dt>apr_status_t create(ap_slotmem_instance_t **new, const char *name, apr_size_t item_size, unsigned int item_num, ap_slotmem_type_t type, apr_pool_t *pool)</dt>
-      <dd>cr&eacute;e un nouveau slot de m&eacute;moire dont chaque taille d'objet est
-      item_size. <code>name</code> est utilis&eacute; pour g&eacute;n&eacute;rer le nom du fichier
-      permettant de stocker/restaurer le contenu de la m&eacute;moire partag&eacute;e
-      si la configuration le sp&eacute;cifie. Les valeurs possibles sont :
-      <dl>
-         <dt><code>"none"</code></dt>
-         <dd><code>M&eacute;moire partag&eacute;e anonyme et pas de stockage
-	 persistant</code></dd>
-         <dt><code>"file-name"</code></dt>
-         <dd><code>[DefaultRuntimeDir]/file-name</code></dd>
-         <dd><code>Absolute file name</code></dd>
-         <dd><code>$absolute-file-name</code></dd>
-       </dl>
-      </dd>
+/* crée un nouveau slot de mémoire dont chaque taille d'item est
+      item_size. 'name' est utilisé pour générer le nom du fichier
+      permettant de stocker/restaurer le contenu de la mémoire partagée,
+      si elle est configurée. Les valeurs possibles sont :
+      "none"                - Mémoire partagée anonyme et pas de stockage permanent
+      "file-name"           - [DefaultRuntimeDir]/file-name
+      "/absolute-file-name" - Chemin absolu du fichier */
+apr_status_t create(ap_slotmem_instance_t **new, const char *name, apr_size_t item_size, unsigned int item_num, ap_slotmem_type_t type, apr_pool_t *pool)
 
-      <dt>apr_status_t attach(ap_slotmem_instance_t **new, const char *name, apr_size_t *item_size, unsigned int *item_num, apr_pool_t *pool)</dt>
-      <dd>attache &agrave; un slot de m&eacute;moire existant. Voir
-      <code>create</code> pour la description du param&egrave;tre
-      <code>name</code>.</dd>
+/* attache à un slot de mémoire existant. Voir
+      'create' pour la description du paramètre
+      'name'. */
+apr_status_t attach(ap_slotmem_instance_t **new, const char *name, apr_size_t *item_size, unsigned int *item_num, apr_pool_t *pool)
 
-      <dt>apr_status_t dptr(ap_slotmem_instance_t *s, unsigned int item_id, void**mem)</dt>
-      <dd>obtient la m&eacute;moire associ&eacute;e &agrave; ce slot actif.</dd>
+/* obtient la mémoire associée à ce slot actif. */
+apr_status_t dptr(ap_slotmem_instance_t *s, unsigned int item_id, void **mem)
 
-      <dt>apr_status_t get(ap_slotmem_instance_t *s, unsigned int item_id, unsigned char *dest, apr_size_t dest_len)</dt>
-      <dd>lit la m&eacute;moire depuis ce slot et la transf&egrave;re vers dest</dd>
+/* lit la mémoire depuis ce slot et la transfert vers dest */
+apr_status_t get(ap_slotmem_instance_t *s, unsigned int item_id, unsigned char *dest, apr_size_t dest_len)
 
-      <dt>apr_status_t put(ap_slotmem_instance_t *slot, unsigned int item_id, unsigned char *src, apr_size_t src_len)</dt>
-      <dd>&eacute;crit dans ce slot la m&eacute;moire en provenance de src</dd>
+/* écrit dans ce slot la mémoire en provenance de src */
+apr_status_t put(ap_slotmem_instance_t *slot, unsigned int item_id, unsigned char *src, apr_size_t src_len)
 
-      <dt>unsigned int num_slots(ap_slotmem_instance_t *s)</dt>
-      <dd>renvoie le nombre total de slots contenus dans ce segment</dd>
+/* renvoie le nombre total de slots contenus dans ce segment */
+unsigned int num_slots(ap_slotmem_instance_t *s)
 
-      <dt>apr_size_t slot_size(ap_slotmem_instance_t *s)</dt>
-      <dd>renvoie la taille totale des donn&eacute;es, en octets, contenues
-      dans un slot de ce segment</dd>
+/* renvoie la taille totale des données, en octets, contenues
+      dans un slot de ce segment */
+apr_size_t slot_size(ap_slotmem_instance_t *s)
 
-      <dt>apr_status_t grab(ap_slotmem_instance_t *s, unsigned int *item_id);</dt>
-      <dd>alloue ou s'approprie le premier slot disponible et le marque comme utilis&eacute; (n'effectue aucune
-      copie de donn&eacute;es)</dd>
+/* alloue le premier slot libre et le marque comme utilisé (n'effectue aucune
+      copie de données) */
+apr_status_t grab(ap_slotmem_instance_t *s, unsigned int *item_id)
 
-      <dt>apr_status_t fgrab(ap_slotmem_instance_t *s, unsigned int item_id);</dt>
-      <dd>force l'allocation ou l'attribution du slot sp&eacute;cifi&eacute; et le marque comme utilis&eacute; (n'effectue aucune
-      copie de donn&eacute;es)</dd>
+/* appropriation ou allocation forcée du slot spécifié et marquage comme
+      utilisé (n'effectue aucune copie de données) */
+apr_status_t fgrab(ap_slotmem_instance_t *s, unsigned int item_id)
 
-      <dt>apr_status_t release(ap_slotmem_instance_t *s, unsigned int item_id);</dt>
-      <dd>lib&egrave;re un slot et le marque comme non utilis&eacute; (n'effectue aucune
-      copie de donn&eacute;es)</dd>
-    </dl>
+/* libère un slot et le marque comme non utilisé (n'effectue aucune
+      copie de données) */
+apr_status_t release(ap_slotmem_instance_t *s, unsigned int item_id)
+</highlight>    
 
 </summary>
 
