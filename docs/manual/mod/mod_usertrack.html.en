@@ -56,7 +56,7 @@
 <li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="logging" id="logging">Logging</a></h2>
+<h2><a name="logging" id="logging">Logging</a><a title="Permanent link" href="#logging" class="permalink">&para;</a></h2>
 
 
     <p><code class="module"><a href="../mod/mod_usertrack.html">mod_usertrack</a></code> sets a cookie which can be logged
@@ -68,7 +68,7 @@ CustomLog "logs/clickstream.log" usertrack</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CookieDomain" id="CookieDomain">CookieDomain</a> <a name="cookiedomain" id="cookiedomain">Directive</a></h2>
+<div class="directive-section"><h2><a name="CookieDomain" id="CookieDomain">CookieDomain</a> <a name="cookiedomain" id="cookiedomain">Directive</a><a title="Permanent link" href="#cookiedomain" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The domain to which the tracking cookie applies</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CookieDomain <em>domain</em></code></td></tr>
@@ -104,7 +104,7 @@ CustomLog "logs/clickstream.log" usertrack</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CookieExpires" id="CookieExpires">CookieExpires</a> <a name="cookieexpires" id="cookieexpires">Directive</a></h2>
+<div class="directive-section"><h2><a name="CookieExpires" id="CookieExpires">CookieExpires</a> <a name="cookieexpires" id="cookieexpires">Directive</a><a title="Permanent link" href="#cookieexpires" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Expiry time for the tracking cookie</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CookieExpires <em>expiry-period</em></code></td></tr>
@@ -129,7 +129,7 @@ CustomLog "logs/clickstream.log" usertrack</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CookieName" id="CookieName">CookieName</a> <a name="cookiename" id="cookiename">Directive</a></h2>
+<div class="directive-section"><h2><a name="CookieName" id="CookieName">CookieName</a> <a name="cookiename" id="cookiename">Directive</a><a title="Permanent link" href="#cookiename" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Name of the tracking cookie</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CookieName <em>token</em></code></td></tr>
@@ -152,11 +152,11 @@ CustomLog "logs/clickstream.log" usertrack</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CookieStyle" id="CookieStyle">CookieStyle</a> <a name="cookiestyle" id="cookiestyle">Directive</a></h2>
+<div class="directive-section"><h2><a name="CookieStyle" id="CookieStyle">CookieStyle</a> <a name="cookiestyle" id="cookiestyle">Directive</a><a title="Permanent link" href="#cookiestyle" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Format of the cookie header field</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CookieStyle
-    <em>Netscape|Cookie|Cookie2|RFC2109|RFC2965</em></code></td></tr>
+    Netscape|Cookie|Cookie2|RFC2109|RFC2965</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>CookieStyle Netscape</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
@@ -189,7 +189,7 @@ CustomLog "logs/clickstream.log" usertrack</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CookieTracking" id="CookieTracking">CookieTracking</a> <a name="cookietracking" id="cookietracking">Directive</a></h2>
+<div class="directive-section"><h2><a name="CookieTracking" id="CookieTracking">CookieTracking</a> <a name="cookietracking" id="cookietracking">Directive</a><a title="Permanent link" href="#cookietracking" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enables tracking cookie</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CookieTracking on|off</code></td></tr>
