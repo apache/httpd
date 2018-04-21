@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_lbmethod_heartbeat.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_lbmethod_heartbeat.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Algorithme d'ordonnancement de répartition de charge pour
 <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code> basé sur le comptage de trafic Heartbeat</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
@@ -39,7 +37,7 @@
 <tr><th><a href="module-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3 d'Apache</td></tr></table>
 <h3>Sommaire</h3>
 
-    <p>lbmethod=heartbeat utilise les services du module
+    <p><code>lbmethod=heartbeat</code> utilise les services du module
     <code class="module"><a href="../mod/mod_heartmonitor.html">mod_heartmonitor</a></code> pour répartir la charge entre les
     serveurs d'origine qui fournissent des données heartbeat via le
     module <code class="module"><a href="../mod/mod_heartbeat.html">mod_heartbeat</a></code>.</p>

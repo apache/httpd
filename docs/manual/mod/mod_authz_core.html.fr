@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_authz_core.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_authz_core.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Socle d'autorisation</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>authz_core_module</td></tr>
@@ -197,7 +195,7 @@ d'autorisation</a></li>
   <p>Le fournisseur <code>expr</code> permet d'accorder l'autorisation
   d'accès en fonction d'expressions arbitraires.</p>
 
-    <pre class="prettyprint lang-config">Require expr %{TIME_HOUR} -ge 9 &amp;&amp; %{TIME_HOUR} -le 17</pre>
+    <pre class="prettyprint lang-config">Require expr "%{TIME_HOUR} -ge 9 &amp;&amp; %{TIME_HOUR} -le 17"</pre>
 
 
     <pre class="prettyprint lang-config">&lt;RequireAll&gt;
@@ -209,7 +207,8 @@ d'autorisation</a></li>
     <pre class="prettyprint lang-config">Require expr "!(%{QUERY_STRING} =~ /secret/) &amp;&amp; %{REQUEST_URI} in { '/example.cgi', '/other.cgi' }"</pre>
 
 
-    <p>La syntaxe de l'expression est décrite dans la documentation de <a href="../expr.html">ap_expr</a>.</p>
+    <p>La syntaxe de l'expression est décrite dans la documentation de <a href="../expr.html">ap_expr</a>. Avant la version 2.4.16, les doubles-quotes
+    étaient prohibées.</p>
 
     <p>Normalement, l'expression est évaluée avant l'authentification.
     Cependant, si l'expression renvoie false et se réfère à la variable
