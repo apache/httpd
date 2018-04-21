@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1814035:1829390 (outdated) -->
+<!-- English Revision: 1829390 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -186,7 +186,7 @@ SetEnvIf User-Agent "^KnockKnock/2\.0" let_me_in
   d'accès en fonction d'expressions arbitraires.</p>
 
     <highlight language="config">
-         Require expr %{TIME_HOUR} -ge 9 &amp;&amp; %{TIME_HOUR} -le 17
+         Require expr "%{TIME_HOUR} -ge 9 &amp;&amp; %{TIME_HOUR} -le 17"
     </highlight>
 
     <highlight language="config">
@@ -201,7 +201,8 @@ SetEnvIf User-Agent "^KnockKnock/2\.0" let_me_in
     </highlight>
 
     <p>La syntaxe de l'expression est décrite dans la documentation de <a
-    href="../expr.html">ap_expr</a>.</p>
+    href="../expr.html">ap_expr</a>. Avant la version 2.4.16, les doubles-quotes
+    étaient prohibées.</p>
 
     <p>Normalement, l'expression est évaluée avant l'authentification.
     Cependant, si l'expression renvoie false et se réfère à la variable
