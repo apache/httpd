@@ -1,9 +1,9 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1674195:1829393 (outdated) -->
+<!-- English Revision : 1829393 -->
 <!-- French translation : Lucien GENTIS -->
-<!-- $LastChangedRevision: 2015042601 $ -->
+
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -163,7 +163,7 @@ s'applique</description>
 <name>CookieStyle</name>
 <description>Format du champ d'en-tête cookie</description>
 <syntax>CookieStyle
-    <em>Netscape|Cookie|Cookie2|RFC2109|RFC2965</em></syntax>
+    Netscape|Cookie|Cookie2|RFC2109|RFC2965</syntax>
 <default>CookieStyle Netscape</default>
 <contextlist>
 <context>server config</context>
