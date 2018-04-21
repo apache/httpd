@@ -62,7 +62,7 @@
 </ul><h3>参照</h3><ul class="seealso"><li><a href="#comments_section">コメント</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="before" id="before">始める前に</a></h2>
+<h2><a name="before" id="before">始める前に</a><a title="Permanent link" href="#before" class="permalink">&para;</a></h2>
 
     <p>この文書の先頭に飛ぶ前に、Apache
     グループとこの文書での仮定を知っておくべきでしょう。
@@ -110,7 +110,7 @@
     <p>それでも進みますか? よろしい。では、先へ進みましょう!</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="model" id="model">suEXEC セキュリティモデル</a></h2>
+<h2><a name="model" id="model">suEXEC セキュリティモデル</a><a title="Permanent link" href="#model" class="permalink">&para;</a></h2>
 
     <p>suEXEC の設定とインストールを始める前に、
     まず実装しようとしているセキュリティモデルについて論じておきます。
@@ -362,7 +362,7 @@
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="install" id="install">suEXEC
-    の設定とインストール</a></h2>
+    の設定とインストール</a><a title="Permanent link" href="#install" class="permalink">&para;</a></h2>
 
     <p>ここから楽しくなります。</p>
 
@@ -494,7 +494,7 @@
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="enable" id="enable">suEXEC
-    の有効化と無効化</a></h2>
+    の有効化と無効化</a><a title="Permanent link" href="#enable" class="permalink">&para;</a></h2>
 
     <p>起動時に、Apache は <code>--sbindir</code>
     オプションで設定されたディレクトリで
@@ -519,7 +519,7 @@
     </p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="usage" id="usage">suEXEC の使用</a></h2>
+<h2><a name="usage" id="usage">suEXEC の使用</a><a title="Permanent link" href="#usage" class="permalink">&para;</a></h2>
 
     <p>CGI プログラムへのリクエストが suEXEC ラッパーを呼ぶのは、
     <code class="directive"><a href="./mod/mod_suexec.html#suexecusergroup">SuexecUserGroup</a></code> ディレクティブを
@@ -548,7 +548,7 @@
      時のオプション</a> <code>--with-suexec-userdir</code> も参照してください。</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="debug" id="debug">suEXEC のデバッグ</a></h2>
+<h2><a name="debug" id="debug">suEXEC のデバッグ</a><a title="Permanent link" href="#debug" class="permalink">&para;</a></h2>
 
     <p>suEXEC wrapper は、上記で述べた <code>--with-suexec-logfile</code>
     オプションで指定されたファイルにログ情報を記録します。
@@ -557,7 +557,7 @@
     エラーログを見るとよいでしょう。</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="jabberwock" id="jabberwock">とかげに注意: 警告と事例</a></h2>
+<h2><a name="jabberwock" id="jabberwock">とかげに注意: 警告と事例</a><a title="Permanent link" href="#jabberwock" class="permalink">&para;</a></h2>
 
     <p><strong>注意!</strong>
     この章は完全ではありません。この章の最新改訂版については、

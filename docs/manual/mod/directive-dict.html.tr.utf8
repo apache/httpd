@@ -45,12 +45,12 @@
 </ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><a href="../configuring.html">Yapılandırma dosyaları</a></li><li><a href="#comments_section">Yorum</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="Description" id="Description">Açıklama</a></h2>
+<h2><a name="Description" id="Description">Açıklama</a><a title="Permanent link" href="#Description" class="permalink">&para;</a></h2>
 
 <p>Yönergenin kullanım amacının kısa bir açıklaması.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="Syntax" id="Syntax">Sözdizimi</a></h2>
+<h2><a name="Syntax" id="Syntax">Sözdizimi</a><a title="Permanent link" href="#Syntax" class="permalink">&para;</a></h2>
 
     <p>Yönergenin bir yapılandırma dosyasında hangi söz dizimiyle görünebileceği belirtilir. Bu sözdizimi yönergeye özeldir ve ayrıntıları yönerge tanımında açıklanır. Genelde yönerge ismini aralarında boşluklar bırakılmış bir dizi argüman izler. Eğer argümanlardan biri kendi içinde boşluk içeriyorsa çift tırnak içine alınır. İsteğe bağlı argümanlar sözdiziminde köşeli ayraçların arasında gösterilmiştir. Birden fazla olası değeri olan argümanlarda değerler aralarına | karakteri konarak ayrılmıştır. Değerin yerine ismi belirtilen argümanlarda bu isimler <em>eğik</em> yazılırken, kendisi değer olan dizgeler öntanımlı yazıtipi ile gösterilmiştir. Değişik sayıda argüman alan yönergelerde bu durum son argümanı takibeden “...” ile belirtilmiştir.</p>
 
@@ -96,12 +96,12 @@
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="Default" id="Default">Öntanımlı</a></h2>
+<h2><a name="Default" id="Default">Öntanımlı</a><a title="Permanent link" href="#Default" class="permalink">&para;</a></h2>
 
     <p>Eğer yönerge öntanımlı bir değere sahipse o burada belirtilir (öntanımlı değer, yönergede kullanıcı tarafından belirtilmediği halde Apache tarafından belirtildiği varsayılarak işlem yapılan değerdir). Eğer öntanımlı bir değer yoksa bu bölümde bu durum “<em>Yok</em>” şeklinde belirtilir. Burada belirtilen öntanımlı değerin sunucu ile dağıtılan öntanımlı httpd.conf içindeki yönergede kullanılan değerle aynı olmasının gerekmediğine dikkat ediniz.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="Context" id="Context">Bağlam</a></h2>
+<h2><a name="Context" id="Context">Bağlam</a><a title="Permanent link" href="#Context" class="permalink">&para;</a></h2>
 
     <p>Yönergenin sunucunun yapılandırma dosyalarının nerelerinde meşru kabul edildiği aşağıdaki değerlerin virgül ayraçlı bir listesi halinde burada belirtilir.</p>
 
@@ -128,14 +128,14 @@
     <p>Yönergenin geçerli olacağı konumlar, aslında, listelenen bağlamların tamamına mantıksal VEYA uygulanarak bulunur. Başka bir deyişle, bir yönergenin geçerli olacağı yerler "<code>sunucu geneli, .htaccess</code>" şeklinde belirtilmişse yönerge <code>httpd.conf</code> dosyasında ve <code>.htaccess</code> dosyalarında, <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> veya <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> bölümleri haricinde her yerde kullanılabilir.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="Override" id="Override">Geçersizleştirme</a></h2>
+<h2><a name="Override" id="Override">Geçersizleştirme</a><a title="Permanent link" href="#Override" class="permalink">&para;</a></h2>
 
     <p>Bir <code>.htaccess</code> dosyasında göründüğü takdirde yönerge işlenirken hangi yapılandırma geçersizleşirmesinin etkin olacağı burada belirtilir. Eğer yönerge <a href="#Context">bağlam</a>ının <code>.htaccess</code> dosyalarında görünmesine izin verilmiyorsa hiçbir bağlam listelenmez.</p>
 
     <p>Geçersizleştirmeler <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> yönergesi tarafından etkinleştirilir ve belli bir bağlama ve alt seviyelerde başka <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> yönergeleri ile değiştirilmedikçe tüm çocuklarına uygulanır. Yönergenin belgesinde ayrıca kullanılabilecek tüm olası geçersizleştirme isimleri belirtilir.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="Status" id="Status">Durum</a></h2>
+<h2><a name="Status" id="Status">Durum</a><a title="Permanent link" href="#Status" class="permalink">&para;</a></h2>
 
     <p>Yönergenin Apache HTTP sunucusuna ne kadar sıkı bağlı olduğunu belirtir. Başka bir deyişle, yönergeye ve işlevselliğine erişim kazanmak için sunucuyu belli bir modül kümesiyle yeniden derlemek gerekip gerekmediği ile ilgili durumu belirtir. Bu özniteliğin olası değerleri şunlardır:</p>
 
@@ -162,12 +162,12 @@
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="Module" id="Module">Modül</a></h2>
+<h2><a name="Module" id="Module">Modül</a><a title="Permanent link" href="#Module" class="permalink">&para;</a></h2>
 
     <p>Burada sadece yönergeyi tanımlayan kaynak modülün ismi yazılır.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="Compatibility" id="Compatibility">Uyumluluk</a></h2>
+<h2><a name="Compatibility" id="Compatibility">Uyumluluk</a><a title="Permanent link" href="#Compatibility" class="permalink">&para;</a></h2>
 
     <p>Eğer yönerge Apache’nin 2. sürüm dağıtımının özgün parçası değilse söz konusu sürüm burada belirtilir. Ayrıca, yönergenin kullanımı belli platformlarla sınırlıysa bunun ayrıntıları da burada belirtilir.</p>
 </div></div>

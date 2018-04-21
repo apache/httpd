@@ -66,7 +66,7 @@
 <li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="example" id="example">WebDAV 사용하기</a></h2>
+<h2><a name="example" id="example">WebDAV 사용하기</a><a title="Permanent link" href="#example" class="permalink">&para;</a></h2>
     <p><code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code>를 사용하려면 <code>httpd.conf</code>
     파일에 아래과 같이 추가한다:</p>
 
@@ -117,7 +117,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="security" id="security">보안 문제</a></h2>
+<h2><a name="security" id="security">보안 문제</a><a title="Permanent link" href="#security" class="permalink">&para;</a></h2>
 
     <p>DAV를 사용하면 원격 클라이언트가 서버의 파일을 조작할
     수 있기때문에, <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code>를 사용하기 전에
@@ -152,7 +152,7 @@
     사용자에게 DAV 접근을 허용하지 않도록하라.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="complex" id="complex">복잡한 설정</a></h2>
+<h2><a name="complex" id="complex">복잡한 설정</a><a title="Permanent link" href="#complex" class="permalink">&para;</a></h2>
 
     <p>일반적인 질문중 하나는 (PHP 스크립트, CGI 스크립트 등)
     동적파일 작업을 위해 <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code>를 사용하는
@@ -179,7 +179,7 @@ Alias /php-source /home/gstein/php_files<br />
     스크립트를 수정할 수 있다.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Dav" id="Dav">Dav</a> <a name="dav" id="dav">지시어</a></h2>
+<div class="directive-section"><h2><a name="Dav" id="Dav">Dav</a> <a name="dav" id="dav">지시어</a><a title="Permanent link" href="#dav" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>WebDAV HTTP 메써드를 시작한다</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>Dav On|Off|<var>provider-name</var></code></td></tr>
@@ -212,7 +212,7 @@ Alias /php-source /home/gstein/php_files<br />
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DavDepthInfinity" id="DavDepthInfinity">DavDepthInfinity</a> <a name="davdepthinfinity" id="davdepthinfinity">지시어</a></h2>
+<div class="directive-section"><h2><a name="DavDepthInfinity" id="DavDepthInfinity">DavDepthInfinity</a> <a name="davdepthinfinity" id="davdepthinfinity">지시어</a><a title="Permanent link" href="#davdepthinfinity" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>PROPFIND의 Depth: Infinity 요청을 허가한다</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>DavDepthInfinity on|off</code></td></tr>
@@ -228,7 +228,7 @@ Alias /php-source /home/gstein/php_files<br />
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DavMinTimeout" id="DavMinTimeout">DavMinTimeout</a> <a name="davmintimeout" id="davmintimeout">지시어</a></h2>
+<div class="directive-section"><h2><a name="DavMinTimeout" id="DavMinTimeout">DavMinTimeout</a> <a name="davmintimeout" id="davmintimeout">지시어</a><a title="Permanent link" href="#davmintimeout" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>서버가 DAV 자원에 대해 유지할 잠금의 최소시간</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>DavMinTimeout <var>seconds</var></code></td></tr>

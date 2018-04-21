@@ -60,6 +60,7 @@
 </ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#logiotrackttfb">LogIOTrackTTFB</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#logiotrackttfu">LogIOTrackTTFU</a></li>
 </ul>
 <h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_logio">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_logio">Report a bug</a></li></ul><h3>See also</h3>
 <ul class="seealso">
@@ -68,7 +69,7 @@
 <li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="formats" id="formats">Custom Log Formats</a></h2>
+<h2><a name="formats" id="formats">Custom Log Formats</a><a title="Permanent link" href="#formats" class="permalink">&para;</a></h2>
 
 
     <p>This module adds three new logging directives. The characteristics of the
@@ -87,7 +88,13 @@
         <td>Bytes transferred (received and sent), including request and headers,
         cannot be zero. This is the combination of %I and %O.<br />
         Available in Apache 2.4.7 and later</td></tr>
-<tr class="odd"><td><code>%^FB</code></td>
+<tr class="odd"><td><code>%^FU</code></td>
+        <td>Delay in microseconds between when the request arrived and the
+        last byte of the request body was read (finished upload).
+        Only available if <code class="directive">LogIOTrackTTFU</code> is set to
+        ON.<br />
+        Available in Apache 2.4.34 and later</td></tr>
+<tr><td><code>%^FB</code></td>
         <td>Delay in microseconds between when the request arrived and the
         first byte of the response headers are written.  Only available if
         <code class="directive">LogIOTrackTTFB</code> is set to ON.<br />
@@ -103,9 +110,10 @@
     </dl>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LogIOTrackTTFB" id="LogIOTrackTTFB">LogIOTrackTTFB</a> <a name="logiotrackttfb" id="logiotrackttfb">Directive</a></h2>
+<div class="directive-section"><h2><a name="LogIOTrackTTFB" id="LogIOTrackTTFB">LogIOTrackTTFB</a> <a name="logiotrackttfb" id="logiotrackttfb">Directive</a><a title="Permanent link" href="#logiotrackttfb" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable tracking of time to first byte (TTFB)</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable tracking of time to first byte (TTFB = time to first byte)
+</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LogIOTrackTTFB ON|OFF</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>LogIOTrackTTFB OFF</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
@@ -118,6 +126,25 @@
     between the request being read and the first byte of the response
     headers being written.  The resulting value may be logged with the
     <code>%^FB</code> format.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="LogIOTrackTTFU" id="LogIOTrackTTFU">LogIOTrackTTFU</a> <a name="logiotrackttfu" id="logiotrackttfu">Directive</a><a title="Permanent link" href="#logiotrackttfu" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable tracking of time to last request byte (TTFU = time to finish
+upload)</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LogIOTrackTTFU ON|OFF</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>LogIOTrackTTFU OFF</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_logio</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Apache HTTP Server 2.4.34 and later</td></tr>
+</table>
+    <p>This directive configures whether this module tracks the delay
+    between the request being read and the last byte of the request
+    body being read (finished upload).  The resulting value may be logged
+    with the <code>%^FU</code> format.</p>
 
 </div>
 </div>

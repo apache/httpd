@@ -76,7 +76,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#order">Order</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#satisfy">Satisfy</a></li>
 </ul>
-<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_access_compat">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_access_compat">Report a bug</a></li></ul><h3>Consulte también</h3>
+<h3>Lista de comprobación de errores corregidos</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd historial de cambios</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_access_compat">Problemas Conocidos</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_access_compat">Reportar un error</a></li></ul><h3>Consulte también</h3>
 <ul class="seealso">
 <li><code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code></li>
 <li><code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code></li>
@@ -84,7 +84,7 @@
 <li><a href="#comments_section">Comentarios</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="allow" id="allow">Directiva</a> <a name="Allow" id="Allow">Allow</a></h2>
+<div class="directive-section"><h2><a name="allow" id="allow">Directiva</a> <a name="Allow" id="Allow">Allow</a><a title="Enlace permanente" href="#allow" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Controla qué hosts pueden acceder a un área del servidor</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code> Allow from all|<var>host</var>|env=[!]<var>env-variable</var>
@@ -175,7 +175,7 @@ Allow from 2001:db8::a00:20ff:fea7:ccea/10</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="deny" id="deny">Directiva</a> <a name="Deny" id="Deny">Deny</a></h2>
+<div class="directive-section"><h2><a name="deny" id="deny">Directiva</a> <a name="Deny" id="Deny">Deny</a><a title="Enlace permanente" href="#deny" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Controla a qué hosts se les deniega el acceso al servidor</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code> Deny from all|<var>host</var>|env=[!]<var>env-variable</var>
@@ -191,7 +191,7 @@ Allow from 2001:db8::a00:20ff:fea7:ccea/10</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="order" id="order">Directiva</a> <a name="Order" id="Order">Order</a></h2>
+<div class="directive-section"><h2><a name="order" id="order">Directiva</a> <a name="Order" id="Order">Order</a><a title="Enlace permanente" href="#order" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Controla el estado por defecto del acceso y el orden en que se evalúan 
   <code class="directive">Allow</code> y 
@@ -299,7 +299,7 @@ Deny from foo.example.org</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="satisfy" id="satisfy">Directiva</a> <a name="Satisfy" id="Satisfy">Satisfy</a></h2>
+<div class="directive-section"><h2><a name="satisfy" id="satisfy">Directiva</a> <a name="Satisfy" id="Satisfy">Satisfy</a><a title="Enlace permanente" href="#satisfy" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Interacción entre control de acceso a nivel-de-hostess y autenticación de usuario</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>Satisfy Any|All</code></td></tr>

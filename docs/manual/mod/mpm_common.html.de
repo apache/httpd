@@ -69,7 +69,7 @@
 <li><a href="#comments_section">Kommentare</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AcceptErrorsNonFatal" id="AcceptErrorsNonFatal">AcceptErrorsNonFatal</a>-<a name="accepterrorsnonfatal" id="accepterrorsnonfatal">Direktive</a></h2>
+<div class="directive-section"><h2><a name="AcceptErrorsNonFatal" id="AcceptErrorsNonFatal">AcceptErrorsNonFatal</a>-<a name="accepterrorsnonfatal" id="accepterrorsnonfatal">Direktive</a><a title="Permanent link" href="#accepterrorsnonfatal" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Treat some errors accepting a new connection as non-fatal
 to the httpd process.</td></tr>
@@ -84,7 +84,7 @@ to the httpd process.</td></tr>
             noch nicht übersetzt. Bitte schauen Sie in die englische
             Version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CoreDumpDirectory" id="CoreDumpDirectory">CoreDumpDirectory</a>-<a name="coredumpdirectory" id="coredumpdirectory">Direktive</a></h2>
+<div class="directive-section"><h2><a name="CoreDumpDirectory" id="CoreDumpDirectory">CoreDumpDirectory</a>-<a name="coredumpdirectory" id="coredumpdirectory">Direktive</a><a title="Permanent link" href="#coredumpdirectory" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Verzeichnis, in das der Apache zu wechseln versucht, bevor er
   einen Hauptspeicherauszug erstellt</td></tr>
@@ -115,7 +115,7 @@ to the httpd process.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="EnableExceptionHook" id="EnableExceptionHook">EnableExceptionHook</a>-<a name="enableexceptionhook" id="enableexceptionhook">Direktive</a></h2>
+<div class="directive-section"><h2><a name="EnableExceptionHook" id="EnableExceptionHook">EnableExceptionHook</a>-<a name="enableexceptionhook" id="enableexceptionhook">Direktive</a><a title="Permanent link" href="#enableexceptionhook" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Aktiviert einen Hook, der nach einem Absturz noch
 Ausnahmefehler behandeln lassen kann</td></tr>
@@ -138,7 +138,7 @@ Ausnahmefehler behandeln lassen kann</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="GracefulShutdownTimeout" id="GracefulShutdownTimeout">GracefulShutdownTimeout</a>-<a name="gracefulshutdowntimeout" id="gracefulshutdowntimeout">Direktive</a></h2>
+<div class="directive-section"><h2><a name="GracefulShutdownTimeout" id="GracefulShutdownTimeout">GracefulShutdownTimeout</a>-<a name="gracefulshutdowntimeout" id="gracefulshutdowntimeout">Direktive</a><a title="Permanent link" href="#gracefulshutdowntimeout" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Specify a timeout after which a gracefully shutdown server
 will exit.</td></tr>
@@ -151,7 +151,7 @@ will exit.</td></tr>
             noch nicht übersetzt. Bitte schauen Sie in die englische
             Version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Listen" id="Listen">Listen</a>-<a name="listen" id="listen">Direktive</a></h2>
+<div class="directive-section"><h2><a name="Listen" id="Listen">Listen</a>-<a name="listen" id="listen">Direktive</a><a title="Permanent link" href="#listen" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>IP-Adressen und Ports, an denen der Server lauscht</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Listen [<var>IP-Addresse</var>:]<var>Port</var></code></td></tr>
@@ -218,7 +218,7 @@ will exit.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ListenBackLog" id="ListenBackLog">ListenBackLog</a>-<a name="listenbacklog" id="listenbacklog">Direktive</a></h2>
+<div class="directive-section"><h2><a name="ListenBackLog" id="ListenBackLog">ListenBackLog</a>-<a name="listenbacklog" id="listenbacklog">Direktive</a><a title="Permanent link" href="#listenbacklog" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Maximale Länge der Warteschlange schwebender
   Verbindungen</td></tr>
@@ -242,7 +242,7 @@ will exit.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ListenCoresBucketsRatio" id="ListenCoresBucketsRatio">ListenCoresBucketsRatio</a>-<a name="listencoresbucketsratio" id="listencoresbucketsratio">Direktive</a></h2>
+<div class="directive-section"><h2><a name="ListenCoresBucketsRatio" id="ListenCoresBucketsRatio">ListenCoresBucketsRatio</a>-<a name="listencoresbucketsratio" id="listencoresbucketsratio">Direktive</a><a title="Permanent link" href="#listencoresbucketsratio" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Ratio between the number of CPU cores (online) and the number of
 listeners' buckets</td></tr>
@@ -260,7 +260,7 @@ in *BSDs.</td></tr>
             noch nicht übersetzt. Bitte schauen Sie in die englische
             Version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MaxConnectionsPerChild" id="MaxConnectionsPerChild">MaxConnectionsPerChild</a>-<a name="maxconnectionsperchild" id="maxconnectionsperchild">Direktive</a></h2>
+<div class="directive-section"><h2><a name="MaxConnectionsPerChild" id="MaxConnectionsPerChild">MaxConnectionsPerChild</a>-<a name="maxconnectionsperchild" id="maxconnectionsperchild">Direktive</a><a title="Permanent link" href="#maxconnectionsperchild" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Limit on the number of connections that an individual child server
 will handle during its life</td></tr>
@@ -275,7 +275,7 @@ will handle during its life</td></tr>
             noch nicht übersetzt. Bitte schauen Sie in die englische
             Version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MaxMemFree" id="MaxMemFree">MaxMemFree</a>-<a name="maxmemfree" id="maxmemfree">Direktive</a></h2>
+<div class="directive-section"><h2><a name="MaxMemFree" id="MaxMemFree">MaxMemFree</a>-<a name="maxmemfree" id="maxmemfree">Direktive</a><a title="Permanent link" href="#maxmemfree" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Maximale Menge des Arbeitsspeichers, den die
   Haupt-Zuteilungsroutine verwalten darf, ohne <code>free()</code>
@@ -293,7 +293,7 @@ will handle during its life</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MaxRequestWorkers" id="MaxRequestWorkers">MaxRequestWorkers</a>-<a name="maxrequestworkers" id="maxrequestworkers">Direktive</a></h2>
+<div class="directive-section"><h2><a name="MaxRequestWorkers" id="MaxRequestWorkers">MaxRequestWorkers</a>-<a name="maxrequestworkers" id="maxrequestworkers">Direktive</a><a title="Permanent link" href="#maxrequestworkers" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Maximum number of connections that will be processed
 simultaneously</td></tr>
@@ -306,7 +306,7 @@ simultaneously</td></tr>
             noch nicht übersetzt. Bitte schauen Sie in die englische
             Version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MaxSpareThreads" id="MaxSpareThreads">MaxSpareThreads</a>-<a name="maxsparethreads" id="maxsparethreads">Direktive</a></h2>
+<div class="directive-section"><h2><a name="MaxSpareThreads" id="MaxSpareThreads">MaxSpareThreads</a>-<a name="maxsparethreads" id="maxsparethreads">Direktive</a><a title="Permanent link" href="#maxsparethreads" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Maximale Anzahl unbeschäftigter Threads</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MaxSpareThreads <var>Anzahl</var></code></td></tr>
@@ -351,7 +351,7 @@ simultaneously</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MinSpareThreads" id="MinSpareThreads">MinSpareThreads</a>-<a name="minsparethreads" id="minsparethreads">Direktive</a></h2>
+<div class="directive-section"><h2><a name="MinSpareThreads" id="MinSpareThreads">MinSpareThreads</a>-<a name="minsparethreads" id="minsparethreads">Direktive</a><a title="Permanent link" href="#minsparethreads" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Minimale Anzahl unbeschäftigter Threads, die zur
   Bedienung von Anfragespitzen zur Verfügung stehen</td></tr>
@@ -391,7 +391,7 @@ simultaneously</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="PidFile" id="PidFile">PidFile</a>-<a name="pidfile" id="pidfile">Direktive</a></h2>
+<div class="directive-section"><h2><a name="PidFile" id="PidFile">PidFile</a>-<a name="pidfile" id="pidfile">Direktive</a><a title="Permanent link" href="#pidfile" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Datei, in welcher der Server die Prozess-ID des Daemons
 ablegt</td></tr>
@@ -429,7 +429,7 @@ ablegt</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ReceiveBufferSize" id="ReceiveBufferSize">ReceiveBufferSize</a>-<a name="receivebuffersize" id="receivebuffersize">Direktive</a></h2>
+<div class="directive-section"><h2><a name="ReceiveBufferSize" id="ReceiveBufferSize">ReceiveBufferSize</a>-<a name="receivebuffersize" id="receivebuffersize">Direktive</a><a title="Permanent link" href="#receivebuffersize" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>TCP receive buffer size</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ReceiveBufferSize <var>bytes</var></code></td></tr>
@@ -441,7 +441,7 @@ ablegt</td></tr>
             noch nicht übersetzt. Bitte schauen Sie in die englische
             Version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ScoreBoardFile" id="ScoreBoardFile">ScoreBoardFile</a>-<a name="scoreboardfile" id="scoreboardfile">Direktive</a></h2>
+<div class="directive-section"><h2><a name="ScoreBoardFile" id="ScoreBoardFile">ScoreBoardFile</a>-<a name="scoreboardfile" id="scoreboardfile">Direktive</a><a title="Permanent link" href="#scoreboardfile" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Ablageort der Datei, die zur Speicherung von Daten zur
   Koordinierung der Kindprozesse verwendet wird</td></tr>
@@ -482,7 +482,7 @@ ablegt</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SendBufferSize" id="SendBufferSize">SendBufferSize</a>-<a name="sendbuffersize" id="sendbuffersize">Direktive</a></h2>
+<div class="directive-section"><h2><a name="SendBufferSize" id="SendBufferSize">SendBufferSize</a>-<a name="sendbuffersize" id="sendbuffersize">Direktive</a><a title="Permanent link" href="#sendbuffersize" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Größe des TCP-Puffers</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SendBufferSize <var>Bytes</var></code></td></tr>
@@ -502,7 +502,7 @@ ablegt</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ServerLimit" id="ServerLimit">ServerLimit</a>-<a name="serverlimit" id="serverlimit">Direktive</a></h2>
+<div class="directive-section"><h2><a name="ServerLimit" id="ServerLimit">ServerLimit</a>-<a name="serverlimit" id="serverlimit">Direktive</a><a title="Permanent link" href="#serverlimit" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Obergrenze für die konfigurierbare Anzahl von
   Prozessen</td></tr>
@@ -560,7 +560,7 @@ ablegt</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="StartServers" id="StartServers">StartServers</a>-<a name="startservers" id="startservers">Direktive</a></h2>
+<div class="directive-section"><h2><a name="StartServers" id="StartServers">StartServers</a>-<a name="startservers" id="startservers">Direktive</a><a title="Permanent link" href="#startservers" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Anzahl der Kindprozesse des Servers, die beim Start erstellt
   werden</td></tr>
@@ -584,7 +584,7 @@ ablegt</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="StartThreads" id="StartThreads">StartThreads</a>-<a name="startthreads" id="startthreads">Direktive</a></h2>
+<div class="directive-section"><h2><a name="StartThreads" id="StartThreads">StartThreads</a>-<a name="startthreads" id="startthreads">Direktive</a><a title="Permanent link" href="#startthreads" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Anzahl der Threads, die beim Start erstellt werden</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>StartThreads <var>Anzahl</var></code></td></tr>
@@ -609,7 +609,7 @@ ablegt</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ThreadLimit" id="ThreadLimit">ThreadLimit</a>-<a name="threadlimit" id="threadlimit">Direktive</a></h2>
+<div class="directive-section"><h2><a name="ThreadLimit" id="ThreadLimit">ThreadLimit</a>-<a name="threadlimit" id="threadlimit">Direktive</a><a title="Permanent link" href="#threadlimit" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Bestimmt die Obergrenze der konfigurierbaren Anzahl von Threads
   pro Kindprozess</td></tr>
@@ -655,7 +655,7 @@ ablegt</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ThreadsPerChild" id="ThreadsPerChild">ThreadsPerChild</a>-<a name="threadsperchild" id="threadsperchild">Direktive</a></h2>
+<div class="directive-section"><h2><a name="ThreadsPerChild" id="ThreadsPerChild">ThreadsPerChild</a>-<a name="threadsperchild" id="threadsperchild">Direktive</a><a title="Permanent link" href="#threadsperchild" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Anzahl der Threads, die mit jedem Kindprozess gestartet
   werden</td></tr>
@@ -681,7 +681,7 @@ ablegt</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ThreadStackSize" id="ThreadStackSize">ThreadStackSize</a>-<a name="threadstacksize" id="threadstacksize">Direktive</a></h2>
+<div class="directive-section"><h2><a name="ThreadStackSize" id="ThreadStackSize">ThreadStackSize</a>-<a name="threadstacksize" id="threadstacksize">Direktive</a><a title="Permanent link" href="#threadstacksize" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Die Größe des Stacks in Bytes, der von Threads
 verwendet wird, die Client-Verbindungen bearbeiten.</td></tr>

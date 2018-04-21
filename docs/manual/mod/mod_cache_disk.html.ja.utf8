@@ -71,7 +71,7 @@
 <li><a href="#comments_section">コメント</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CacheDirLength" id="CacheDirLength">CacheDirLength</a> <a name="cachedirlength" id="cachedirlength">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="CacheDirLength" id="CacheDirLength">CacheDirLength</a> <a name="cachedirlength" id="cachedirlength">ディレクティブ</a><a title="Permanent link" href="#cachedirlength" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>サブディレクトリ名の文字数</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>CacheDirLength <var>length</var></code></td></tr>
@@ -98,7 +98,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CacheDirLevels" id="CacheDirLevels">CacheDirLevels</a> <a name="cachedirlevels" id="cachedirlevels">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="CacheDirLevels" id="CacheDirLevels">CacheDirLevels</a> <a name="cachedirlevels" id="cachedirlevels">ディレクティブ</a><a title="Permanent link" href="#cachedirlevels" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>キャッシュのサブディレクトリの深さの数</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>CacheDirLevels <var>levels</var></code></td></tr>
@@ -124,7 +124,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CacheMaxFileSize" id="CacheMaxFileSize">CacheMaxFileSize</a> <a name="cachemaxfilesize" id="cachemaxfilesize">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="CacheMaxFileSize" id="CacheMaxFileSize">CacheMaxFileSize</a> <a name="cachemaxfilesize" id="cachemaxfilesize">ディレクティブ</a><a title="Permanent link" href="#cachemaxfilesize" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>キャッシュに保管されるドキュメントの最大の (バイトでの) サイズ</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>CacheMaxFileSize <var>bytes</var></code></td></tr>
@@ -142,7 +142,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CacheMinFileSize" id="CacheMinFileSize">CacheMinFileSize</a> <a name="cacheminfilesize" id="cacheminfilesize">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="CacheMinFileSize" id="CacheMinFileSize">CacheMinFileSize</a> <a name="cacheminfilesize" id="cacheminfilesize">ディレクティブ</a><a title="Permanent link" href="#cacheminfilesize" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>キャッシュに保管されるドキュメントの最小限の (バイトでの) 大きさ</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>CacheMinFileSize <var>bytes</var></code></td></tr>
@@ -160,7 +160,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CacheReadSize" id="CacheReadSize">CacheReadSize</a> <a name="cachereadsize" id="cachereadsize">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="CacheReadSize" id="CacheReadSize">CacheReadSize</a> <a name="cachereadsize" id="cachereadsize">ディレクティブ</a><a title="Permanent link" href="#cachereadsize" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>The minimum size (in bytes) of the document to read and be cached before sending the data downstream</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code /></td></tr>
@@ -170,7 +170,7 @@
 </table><p>Documentation not yet translated. Please see English version of document.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CacheReadTime" id="CacheReadTime">CacheReadTime</a> <a name="cachereadtime" id="cachereadtime">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="CacheReadTime" id="CacheReadTime">CacheReadTime</a> <a name="cachereadtime" id="cachereadtime">ディレクティブ</a><a title="Permanent link" href="#cachereadtime" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>The minimum time (in milliseconds) that should elapse while reading before data is sent downstream</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code /></td></tr>
@@ -180,7 +180,7 @@
 </table><p>Documentation not yet translated. Please see English version of document.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CacheRoot" id="CacheRoot">CacheRoot</a> <a name="cacheroot" id="cacheroot">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="CacheRoot" id="CacheRoot">CacheRoot</a> <a name="cacheroot" id="cacheroot">ディレクティブ</a><a title="Permanent link" href="#cacheroot" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>キャッシュファイルが保管されるルートディレクトリ</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>CacheRoot <var>directory</var></code></td></tr>

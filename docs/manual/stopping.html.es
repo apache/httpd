@@ -47,7 +47,7 @@
 </ul><h3>Consulte también</h3><ul class="seealso"><li><code class="program"><a href="./programs/httpd.html">httpd</a></code></li><li><code class="program"><a href="./programs/apachectl.html">apachectl</a></code></li><li><a href="invoking.html" />Iniciar Apache</li><li><a href="#comments_section">Comentarios</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="introduction" id="introduction">Introducción</a></h2>
+<h2><a name="introduction" id="introduction">Introducción</a><a title="Enlace permanente" href="#introduction" class="permalink">&para;</a></h2>
 
     <p>Para parar y reiniciar Apache, hay que enviar la señal
     apropiada al proceso padre <code>httpd</code> que se está
@@ -92,7 +92,7 @@
     configuración.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="term" id="term">Parar Ahora Apache</a></h2>
+<h2><a name="term" id="term">Parar Ahora Apache</a><a title="Enlace permanente" href="#term" class="permalink">&para;</a></h2>
 
 <dl><dt>Señal: TERM</dt>
 <dd><code>apachectl -k stop</code></dd>
@@ -107,7 +107,7 @@
     atendida.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="graceful" id="graceful">Reinicio "Graceful" o elegante</a></h2>
+<h2><a name="graceful" id="graceful">Reinicio "Graceful" o elegante</a><a title="Enlace permanente" href="#graceful" class="permalink">&para;</a></h2>
 
 <dl><dt>Señal: USR1</dt>
 <dd><code>apachectl -k graceful</code></dd>
@@ -195,7 +195,7 @@
     graceful.</div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="hup" id="hup">Reiniciar Apache</a></h2>
+<h2><a name="hup" id="hup">Reiniciar Apache</a><a title="Enlace permanente" href="#hup" class="permalink">&para;</a></h2>
 
 <dl><dt>Señal: HUP</dt>
 <dd><code>apachectl -k restart</code></dd>
@@ -220,7 +220,7 @@ reiniciará, sino que terminará con un error. Consulte
 más arriba cómo puede solucionar este problema.</div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="race" id="race">Apándice: señales y race conditions</a></h2>
+<h2><a name="race" id="race">Apándice: señales y race conditions</a><a title="Enlace permanente" href="#race" class="permalink">&para;</a></h2>
 
     <p>Con anterioridad a la versión de Apache 1.2b9 había
     varias <em>race conditions</em> implicadas en las señales

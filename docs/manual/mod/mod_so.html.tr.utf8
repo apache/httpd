@@ -70,7 +70,7 @@ yeniden başlatılması sırasında yüklenmesini sağlar.</td></tr>
 <li><a href="#comments_section">Yorum</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="windows" id="windows">Yüklenebilir Modüllerin Windows için Oluşturulması</a></h2>
+<h2><a name="windows" id="windows">Yüklenebilir Modüllerin Windows için Oluşturulması</a><a title="Permanent link" href="#windows" class="permalink">&para;</a></h2>
     
 
     <div class="note"><h3>Bilginize</h3>
@@ -145,7 +145,7 @@ yeniden başlatılması sırasında yüklenmesini sağlar.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LoadFile" id="LoadFile">LoadFile</a> <a name="loadfile" id="loadfile">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="LoadFile" id="LoadFile">LoadFile</a> <a name="loadfile" id="loadfile">Yönergesi</a><a title="Permanent link" href="#loadfile" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Belirtilen nesne dosyasını veya kütüphaneyi sunucu ile ilintiler.
 </td></tr>
@@ -170,7 +170,7 @@ yeniden başlatılması sırasında yüklenmesini sağlar.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LoadModule" id="LoadModule">LoadModule</a> <a name="loadmodule" id="loadmodule">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="LoadModule" id="LoadModule">LoadModule</a> <a name="loadmodule" id="loadmodule">Yönergesi</a><a title="Permanent link" href="#loadmodule" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Belirtilen nesne dosyasını veya kütüphaneyi sunucu ile ilintiler
 ve etkin modül listesine ekler.</td></tr>

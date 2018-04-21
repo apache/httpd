@@ -65,7 +65,7 @@
 </ul><h3>참고</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="synopsis" id="synopsis">개요</a></h2>
+<h2><a name="synopsis" id="synopsis">개요</a><a title="Permanent link" href="#synopsis" class="permalink">&para;</a></h2>
 
      <p><code><strong>rotatelogs</strong>
      [ -<strong>l</strong> ]
@@ -74,7 +74,7 @@
      [ <var>filesize</var>M ]</code></p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="options" id="options">옵션</a></h2>
+<h2><a name="options" id="options">옵션</a><a title="Permanent link" href="#options" class="permalink">&para;</a></h2>
 
 <dl>
 
@@ -108,7 +108,7 @@ GMT 시간차가 변하는 환경에서 <code>-l</code>을 사용하면 예기치
 </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="portability" id="portability">포팅가능성</a></h2>
+<h2><a name="portability" id="portability">포팅가능성</a><a title="Permanent link" href="#portability" class="permalink">&para;</a></h2>
 
 <p>다음 로그파일 형식문자열 표현은 모든 <code>strftime(3)</code>
 구현이 지원해야 한다. 라이브러리 특유의 확장은

@@ -73,7 +73,7 @@
 <li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="enabling" id="enabling">Enabling Server-Side Includes</a></h2>
+<h2><a name="enabling" id="enabling">Enabling Server-Side Includes</a><a title="Permanent link" href="#enabling" class="permalink">&para;</a></h2>
     
 
     <p>Server Side Includes are implemented by the
@@ -108,7 +108,7 @@ AddOutputFilter INCLUDES .shtml</pre>
     <p>For more information, see our <a href="../howto/ssi.html">Tutorial on Server Side Includes</a>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="pathinfo" id="pathinfo">PATH_INFO with Server Side Includes</a></h2>
+<h2><a name="pathinfo" id="pathinfo">PATH_INFO with Server Side Includes</a><a title="Permanent link" href="#pathinfo" class="permalink">&para;</a></h2>
     
 
     <p>Files processed for server-side includes no longer accept
@@ -117,7 +117,7 @@ AddOutputFilter INCLUDES .shtml</pre>
     configure the server to accept requests with <code>PATH_INFO</code>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="elements" id="elements">Available Elements</a></h2>
+<h2><a name="elements" id="elements">Available Elements</a><a title="Permanent link" href="#elements" class="permalink">&para;</a></h2>
     <p>The document is parsed as an HTML document, with special
     commands embedded as SGML comments. A command has the syntax: </p>
 
@@ -543,7 +543,7 @@ AddOutputFilter INCLUDES .shtml</pre>
      
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="includevars" id="includevars">Include Variables</a></h2>
+<h2><a name="includevars" id="includevars">Include Variables</a><a title="Permanent link" href="#includevars" class="permalink">&para;</a></h2>
     
 
     <p>In addition to the variables in the standard CGI environment,
@@ -601,7 +601,7 @@ AddOutputFilter INCLUDES .shtml</pre>
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="substitution" id="substitution">Variable Substitution</a></h2>
+<h2><a name="substitution" id="substitution">Variable Substitution</a><a title="Permanent link" href="#substitution" class="permalink">&para;</a></h2>
 
     <p>Variable substitution is done within quoted strings in most
     cases where they may reasonably occur as an argument to an SSI
@@ -633,7 +633,7 @@ AddOutputFilter INCLUDES .shtml</pre>
     "<code>Y</code>".</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="flowctrl" id="flowctrl">Flow Control Elements</a></h2>
+<h2><a name="flowctrl" id="flowctrl">Flow Control Elements</a><a title="Permanent link" href="#flowctrl" class="permalink">&para;</a></h2>
     
 
     <p>The basic flow control elements are:</p>
@@ -700,7 +700,7 @@ AddOutputFilter INCLUDES .shtml</pre>
     </div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="legacyexpr" id="legacyexpr">Legacy expression syntax</a></h2>
+<h2><a name="legacyexpr" id="legacyexpr">Legacy expression syntax</a><a title="Permanent link" href="#legacyexpr" class="permalink">&para;</a></h2>
     
 
     <p>This section describes the syntax of the <code>#if expr</code>
@@ -839,7 +839,7 @@ AddOutputFilter INCLUDES .shtml</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSIEndTag" id="SSIEndTag">SSIEndTag</a> <a name="ssiendtag" id="ssiendtag">Directive</a></h2>
+<div class="directive-section"><h2><a name="SSIEndTag" id="SSIEndTag">SSIEndTag</a> <a name="ssiendtag" id="ssiendtag">Directive</a><a title="Permanent link" href="#ssiendtag" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>String that ends an include element</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSIEndTag <var>tag</var></code></td></tr>
@@ -861,7 +861,7 @@ AddOutputFilter INCLUDES .shtml</pre>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSIErrorMsg" id="SSIErrorMsg">SSIErrorMsg</a> <a name="ssierrormsg" id="ssierrormsg">Directive</a></h2>
+<div class="directive-section"><h2><a name="SSIErrorMsg" id="SSIErrorMsg">SSIErrorMsg</a> <a name="ssierrormsg" id="ssierrormsg">Directive</a><a title="Permanent link" href="#ssierrormsg" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Error message displayed when there is an SSI
 error</td></tr>
@@ -887,7 +887,7 @@ directive]"</code></td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSIETag" id="SSIETag">SSIETag</a> <a name="ssietag" id="ssietag">Directive</a></h2>
+<div class="directive-section"><h2><a name="SSIETag" id="SSIETag">SSIETag</a> <a name="ssietag" id="ssietag">Directive</a><a title="Permanent link" href="#ssietag" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Controls whether ETags are generated by the server.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSIETag on|off</code></td></tr>
@@ -928,7 +928,7 @@ directive]"</code></td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSILastModified" id="SSILastModified">SSILastModified</a> <a name="ssilastmodified" id="ssilastmodified">Directive</a></h2>
+<div class="directive-section"><h2><a name="SSILastModified" id="SSILastModified">SSILastModified</a> <a name="ssilastmodified" id="ssilastmodified">Directive</a><a title="Permanent link" href="#ssilastmodified" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Controls whether <code>Last-Modified</code> headers are generated by the
 server.</td></tr>
@@ -969,7 +969,7 @@ server.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSILegacyExprParser" id="SSILegacyExprParser">SSILegacyExprParser</a> <a name="ssilegacyexprparser" id="ssilegacyexprparser">Directive</a></h2>
+<div class="directive-section"><h2><a name="SSILegacyExprParser" id="SSILegacyExprParser">SSILegacyExprParser</a> <a name="ssilegacyexprparser" id="ssilegacyexprparser">Directive</a><a title="Permanent link" href="#ssilegacyexprparser" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable compatibility mode for conditional expressions.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSILegacyExprParser on|off</code></td></tr>
@@ -989,7 +989,7 @@ server.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSIStartTag" id="SSIStartTag">SSIStartTag</a> <a name="ssistarttag" id="ssistarttag">Directive</a></h2>
+<div class="directive-section"><h2><a name="SSIStartTag" id="SSIStartTag">SSIStartTag</a> <a name="ssistarttag" id="ssistarttag">Directive</a><a title="Permanent link" href="#ssistarttag" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>String that starts an include element</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSIStartTag <var>tag</var></code></td></tr>
@@ -1024,7 +1024,7 @@ SSIEndTag   "%&gt;"</pre>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSITimeFormat" id="SSITimeFormat">SSITimeFormat</a> <a name="ssitimeformat" id="ssitimeformat">Directive</a></h2>
+<div class="directive-section"><h2><a name="SSITimeFormat" id="SSITimeFormat">SSITimeFormat</a> <a name="ssitimeformat" id="ssitimeformat">Directive</a><a title="Permanent link" href="#ssitimeformat" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configures the format in which date strings are
 displayed</td></tr>
@@ -1051,7 +1051,7 @@ displayed</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSIUndefinedEcho" id="SSIUndefinedEcho">SSIUndefinedEcho</a> <a name="ssiundefinedecho" id="ssiundefinedecho">Directive</a></h2>
+<div class="directive-section"><h2><a name="SSIUndefinedEcho" id="SSIUndefinedEcho">SSIUndefinedEcho</a> <a name="ssiundefinedecho" id="ssiundefinedecho">Directive</a><a title="Permanent link" href="#ssiundefinedecho" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>String displayed when an unset variable is echoed</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSIUndefinedEcho <var>string</var></code></td></tr>
@@ -1069,7 +1069,7 @@ displayed</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="XBitHack" id="XBitHack">XBitHack</a> <a name="xbithack" id="xbithack">Directive</a></h2>
+<div class="directive-section"><h2><a name="XBitHack" id="XBitHack">XBitHack</a> <a name="xbithack" id="xbithack">Directive</a><a title="Permanent link" href="#xbithack" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Parse SSI directives in files with the execute bit
 set</td></tr>

@@ -56,7 +56,7 @@
 <li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="requiredirectives" id="requiredirectives">The Require Directives</a></h2>
+<h2><a name="requiredirectives" id="requiredirectives">The Require Directives</a><a title="Permanent link" href="#requiredirectives" class="permalink">&para;</a></h2>
 
     <p>Apache's <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>
     directives are used during the authorization phase to ensure that
@@ -88,7 +88,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="examples" id="examples">Example usage</a></h2>
+<h2><a name="examples" id="examples">Example usage</a><a title="Permanent link" href="#examples" class="permalink">&para;</a></h2>
 
 <p><em>Note that using mod_authz_dbm requires you to require <code>dbm-group</code>
 instead of <code>group</code>:</em>
@@ -104,7 +104,7 @@ instead of <code>group</code>:</em>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthDBMGroupFile" id="AuthDBMGroupFile">AuthDBMGroupFile</a> <a name="authdbmgroupfile" id="authdbmgroupfile">Directive</a></h2>
+<div class="directive-section"><h2><a name="AuthDBMGroupFile" id="AuthDBMGroupFile">AuthDBMGroupFile</a> <a name="authdbmgroupfile" id="authdbmgroupfile">Directive</a><a title="Permanent link" href="#authdbmgroupfile" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets the name of the database file containing the list
 of user groups for authorization</td></tr>
@@ -160,7 +160,7 @@ AuthDBMUserFile "/www/userbase"</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthzDBMType" id="AuthzDBMType">AuthzDBMType</a> <a name="authzdbmtype" id="authzdbmtype">Directive</a></h2>
+<div class="directive-section"><h2><a name="AuthzDBMType" id="AuthzDBMType">AuthzDBMType</a> <a name="authzdbmtype" id="authzdbmtype">Directive</a><a title="Permanent link" href="#authzdbmtype" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets the type of database file that is used to
 store list of user groups</td></tr>

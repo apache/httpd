@@ -60,7 +60,7 @@
 <li><a href="#comments_section">Comments</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MetaDir" id="MetaDir">MetaDir</a> <a name="metadir" id="metadir">지시어</a></h2>
+<div class="directive-section"><h2><a name="MetaDir" id="MetaDir">MetaDir</a> <a name="metadir" id="metadir">지시어</a><a title="Permanent link" href="#metadir" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>CERN 메타정보를 찾을 디렉토리 이름</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>MetaDir <var>directory</var></code></td></tr>
@@ -83,7 +83,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MetaFiles" id="MetaFiles">MetaFiles</a> <a name="metafiles" id="metafiles">지시어</a></h2>
+<div class="directive-section"><h2><a name="MetaFiles" id="MetaFiles">MetaFiles</a> <a name="metafiles" id="metafiles">지시어</a><a title="Permanent link" href="#metafiles" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>CERN 메타파일을 처리한다</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>MetaFiles on|off</code></td></tr>
@@ -97,7 +97,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MetaSuffix" id="MetaSuffix">MetaSuffix</a> <a name="metasuffix" id="metasuffix">지시어</a></h2>
+<div class="directive-section"><h2><a name="MetaSuffix" id="MetaSuffix">MetaSuffix</a> <a name="metasuffix" id="metasuffix">지시어</a><a title="Permanent link" href="#metasuffix" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>CERN 메타정보를 저장하는 파일의 접미사</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>MetaSuffix <var>suffix</var></code></td></tr>

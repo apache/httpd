@@ -124,7 +124,7 @@
 <li><a href="#comments_section">コメント</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="forwardreverse" id="forwardreverse">フォワードプロキシとリバースプロキシ</a></h2>
+<h2><a name="forwardreverse" id="forwardreverse">フォワードプロキシとリバースプロキシ</a><a title="Permanent link" href="#forwardreverse" class="permalink">&para;</a></h2>
       <p>Apache は<dfn>フォワード</dfn>プロキシとしても、
       <dfn>リバース</dfn>プロキシとしても設定することができます。</p>
 
@@ -171,7 +171,7 @@
       <em>ありません</em>。</p>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="examples" id="examples">基本の例</a></h2>
+<h2><a name="examples" id="examples">基本の例</a><a title="Permanent link" href="#examples" class="permalink">&para;</a></h2>
 
     <p>以下の例は手始めの簡単な例です。個々のディレクティブの意味は
     それぞれの説明をお読みください。</p>
@@ -207,7 +207,7 @@
     </code></p></div>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="access" id="access">プロキシへのアクセス制御</a></h2>
+<h2><a name="access" id="access">プロキシへのアクセス制御</a><a title="Permanent link" href="#access" class="permalink">&para;</a></h2>
       <p>プロキシのアクセスは以下のように <code class="directive"><a href="#proxy">&lt;Proxy&gt;</a></code> コンテナの中に
       ディレクティブを書くことで制御できます:</p>
 
@@ -237,14 +237,14 @@
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="startup" id="startup">遅い起動</a></h2>
+<h2><a name="startup" id="startup">遅い起動</a><a title="Permanent link" href="#startup" class="permalink">&para;</a></h2>
       <p><code class="directive"><a href="#proxyblock">ProxyBlock</a></code> ディレクティブを使っている場合、
       後のテストのために起動時にホストの
       IP アドレスが調べられてキャッシュされます。ホスト名のルックアップの
       速さによっては、数秒 (かそれ以上) かかるかもしれません。</p>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="intranet" id="intranet">イントラネットプロキシ</a></h2>
+<h2><a name="intranet" id="intranet">イントラネットプロキシ</a><a title="Permanent link" href="#intranet" class="permalink">&para;</a></h2>
       <p>イントラネットにある Apache プロキシサーバは外部へのリクエストを
       会社のファイアウォールを通して送らなければなりません。(このためには
       個々の <var>scheme</var> についてそれぞれ、ファイアウォールの
@@ -271,7 +271,7 @@
       ことにもなるため、より好ましい方法と言えるでしょう。</p>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="envsettings" id="envsettings">プロトコルの調整</a></h2>
+<h2><a name="envsettings" id="envsettings">プロトコルの調整</a><a title="Permanent link" href="#envsettings" class="permalink">&para;</a></h2>
       <p>Keepalive や HTTP/1.1 を適切に実装していないアプリケーションサーバに対して
       <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> がリクエストを送信する場合、
       HTTP/1.0 を使って keepalive を無しにしてリクエストを送るようにする
@@ -292,7 +292,7 @@
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="request-bodies" id="request-bodies">リクエストボディ</a></h2>
+<h2><a name="request-bodies" id="request-bodies">リクエストボディ</a><a title="Permanent link" href="#request-bodies" class="permalink">&para;</a></h2>
 
     <p>POST メソッドなどのリクエストには、リクエストボディがあります。
     HTTP プロトコル仕様によると、ボディのあるリクエストは chunked 
@@ -312,7 +312,7 @@
 
     </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="BalancerGrowth" id="BalancerGrowth">BalancerGrowth</a> <a name="balancergrowth" id="balancergrowth">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="BalancerGrowth" id="BalancerGrowth">BalancerGrowth</a> <a name="balancergrowth" id="balancergrowth">ディレクティブ</a><a title="Permanent link" href="#balancergrowth" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Number of additional Balancers that can be added Post-configuration</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>BalancerGrowth <var>#</var></code></td></tr>
@@ -326,7 +326,7 @@
             まだ翻訳されていません。英語版をご覧ください。
             </p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="BalancerInherit" id="BalancerInherit">BalancerInherit</a> <a name="balancerinherit" id="balancerinherit">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="BalancerInherit" id="BalancerInherit">BalancerInherit</a> <a name="balancerinherit" id="balancerinherit">ディレクティブ</a><a title="Permanent link" href="#balancerinherit" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Inherit proxy Balancers/Workers defined from the main server</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>BalancerInherit On|Off</code></td></tr>
@@ -339,7 +339,7 @@
             まだ翻訳されていません。英語版をご覧ください。
             </p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="BalancerMember" id="BalancerMember">BalancerMember</a> <a name="balancermember" id="balancermember">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="BalancerMember" id="BalancerMember">BalancerMember</a> <a name="balancermember" id="balancermember">ディレクティブ</a><a title="Permanent link" href="#balancermember" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Add a member to a load balancing group</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code /></td></tr>
@@ -349,7 +349,7 @@
 </table><p>Documentation not yet translated. Please see English version of document.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="BalancerPersist" id="BalancerPersist">BalancerPersist</a> <a name="balancerpersist" id="balancerpersist">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="BalancerPersist" id="BalancerPersist">BalancerPersist</a> <a name="balancerpersist" id="balancerpersist">ディレクティブ</a><a title="Permanent link" href="#balancerpersist" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Attempt to persist changes made by the Balancer Manager across restarts.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>BalancerPersist On|Off</code></td></tr>
@@ -362,7 +362,7 @@
             まだ翻訳されていません。英語版をご覧ください。
             </p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="NoProxy" id="NoProxy">NoProxy</a> <a name="noproxy" id="noproxy">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="NoProxy" id="NoProxy">NoProxy</a> <a name="noproxy" id="noproxy">ディレクティブ</a><a title="Permanent link" href="#noproxy" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>直接接続する ホスト、ドメイン、ネットワーク</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>NoProxy <var>host</var> [<var>host</var>] ...</code></td></tr>
@@ -491,7 +491,7 @@
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Proxy" id="Proxy">&lt;Proxy&gt;</a> <a name="proxy" id="proxy">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="Proxy" id="Proxy">&lt;Proxy&gt;</a> <a name="proxy" id="proxy">ディレクティブ</a><a title="Permanent link" href="#proxy" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>プロキシされるリソースに適用されるコンテナ</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>&lt;Proxy <var>wildcard-url</var>&gt; ...&lt;/Proxy&gt;</code></td></tr>
@@ -532,7 +532,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyAddHeaders" id="ProxyAddHeaders">ProxyAddHeaders</a> <a name="proxyaddheaders" id="proxyaddheaders">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="ProxyAddHeaders" id="ProxyAddHeaders">ProxyAddHeaders</a> <a name="proxyaddheaders" id="proxyaddheaders">ディレクティブ</a><a title="Permanent link" href="#proxyaddheaders" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Add proxy information in X-Forwarded-* headers</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ProxyAddHeaders Off|On</code></td></tr>
@@ -545,7 +545,7 @@
             まだ翻訳されていません。英語版をご覧ください。
             </p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyBadHeader" id="ProxyBadHeader">ProxyBadHeader</a> <a name="proxybadheader" id="proxybadheader">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="ProxyBadHeader" id="ProxyBadHeader">ProxyBadHeader</a> <a name="proxybadheader" id="proxybadheader">ディレクティブ</a><a title="Permanent link" href="#proxybadheader" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>応答におかしなヘッダがある場合の扱い方を決める</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ProxyBadHeader IsError|Ignore|StartBody</code></td></tr>
@@ -577,7 +577,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyBlock" id="ProxyBlock">ProxyBlock</a> <a name="proxyblock" id="proxyblock">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="ProxyBlock" id="ProxyBlock">ProxyBlock</a> <a name="proxyblock" id="proxyblock">ディレクティブ</a><a title="Permanent link" href="#proxyblock" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>プロキシ接続を禁止する語句、ホスト名、ドメインを指定する</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ProxyBlock *|<var>word</var>|<var>host</var>|<var>domain</var>
@@ -611,7 +611,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyDomain" id="ProxyDomain">ProxyDomain</a> <a name="proxydomain" id="proxydomain">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="ProxyDomain" id="ProxyDomain">ProxyDomain</a> <a name="proxydomain" id="proxydomain">ディレクティブ</a><a title="Permanent link" href="#proxydomain" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>プロキシされたリクエストのデフォルトのドメイン名</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ProxyDomain <var>Domain</var></code></td></tr>
@@ -633,7 +633,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyErrorOverride" id="ProxyErrorOverride">ProxyErrorOverride</a> <a name="proxyerroroverride" id="proxyerroroverride">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="ProxyErrorOverride" id="ProxyErrorOverride">ProxyErrorOverride</a> <a name="proxyerroroverride" id="proxyerroroverride">ディレクティブ</a><a title="Permanent link" href="#proxyerroroverride" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>プロキシされたコンテンツのエラーページを上書きする</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ProxyErrorOverride On|Off</code></td></tr>
@@ -653,7 +653,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyIOBufferSize" id="ProxyIOBufferSize">ProxyIOBufferSize</a> <a name="proxyiobuffersize" id="proxyiobuffersize">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="ProxyIOBufferSize" id="ProxyIOBufferSize">ProxyIOBufferSize</a> <a name="proxyiobuffersize" id="proxyiobuffersize">ディレクティブ</a><a title="Permanent link" href="#proxyiobuffersize" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>内部データスループットバッファのサイズを決定する</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ProxyIOBufferSize <var>bytes</var></code></td></tr>
@@ -670,7 +670,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyMatch" id="ProxyMatch">&lt;ProxyMatch&gt;</a> <a name="proxymatch" id="proxymatch">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="ProxyMatch" id="ProxyMatch">&lt;ProxyMatch&gt;</a> <a name="proxymatch" id="proxymatch">ディレクティブ</a><a title="Permanent link" href="#proxymatch" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>正規表現でのマッチによるプロキシリソース用のディレクティブコンテナ</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>&lt;ProxyMatch <var>regex</var>&gt; ...&lt;/ProxyMatch&gt;</code></td></tr>
@@ -684,7 +684,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyMaxForwards" id="ProxyMaxForwards">ProxyMaxForwards</a> <a name="proxymaxforwards" id="proxymaxforwards">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="ProxyMaxForwards" id="ProxyMaxForwards">ProxyMaxForwards</a> <a name="proxymaxforwards" id="proxymaxforwards">ディレクティブ</a><a title="Permanent link" href="#proxymaxforwards" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>リクエストがフォワードされるプロキシの最大数</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ProxyMaxForwards <var>number</var></code></td></tr>
@@ -705,7 +705,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyPass" id="ProxyPass">ProxyPass</a> <a name="proxypass" id="proxypass">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="ProxyPass" id="ProxyPass">ProxyPass</a> <a name="proxypass" id="proxypass">ディレクティブ</a><a title="Permanent link" href="#proxypass" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>リモートサーバをローカルサーバの URL 空間にマップする</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ProxyPass [<var>path</var>] !|<var>url</var> [<var>key=value</var> <var>key=value</var> ...]]</code></td></tr>
@@ -916,7 +916,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyPassInherit" id="ProxyPassInherit">ProxyPassInherit</a> <a name="proxypassinherit" id="proxypassinherit">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="ProxyPassInherit" id="ProxyPassInherit">ProxyPassInherit</a> <a name="proxypassinherit" id="proxypassinherit">ディレクティブ</a><a title="Permanent link" href="#proxypassinherit" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Inherit ProxyPass directives defined from the main server</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ProxyPassInherit On|Off</code></td></tr>
@@ -930,7 +930,7 @@
             まだ翻訳されていません。英語版をご覧ください。
             </p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyPassInterpolateEnv" id="ProxyPassInterpolateEnv">ProxyPassInterpolateEnv</a> <a name="proxypassinterpolateenv" id="proxypassinterpolateenv">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="ProxyPassInterpolateEnv" id="ProxyPassInterpolateEnv">ProxyPassInterpolateEnv</a> <a name="proxypassinterpolateenv" id="proxypassinterpolateenv">ディレクティブ</a><a title="Permanent link" href="#proxypassinterpolateenv" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Enable Environment Variable interpolation in Reverse Proxy configurations</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code /></td></tr>
@@ -940,7 +940,7 @@
 </table><p>Documentation not yet translated. Please see English version of document.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyPassMatch" id="ProxyPassMatch">ProxyPassMatch</a> <a name="proxypassmatch" id="proxypassmatch">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="ProxyPassMatch" id="ProxyPassMatch">ProxyPassMatch</a> <a name="proxypassmatch" id="proxypassmatch">ディレクティブ</a><a title="Permanent link" href="#proxypassmatch" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Maps remote servers into the local server URL-space using regular expressions</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code /></td></tr>
@@ -950,7 +950,7 @@
 </table><p>Documentation not yet translated. Please see English version of document.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyPassReverse" id="ProxyPassReverse">ProxyPassReverse</a> <a name="proxypassreverse" id="proxypassreverse">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="ProxyPassReverse" id="ProxyPassReverse">ProxyPassReverse</a> <a name="proxypassreverse" id="proxypassreverse">ディレクティブ</a><a title="Permanent link" href="#proxypassreverse" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>リバースプロキシされたサーバから送られた HTTP 応答ヘッダの
 URL を調整する</td></tr>
@@ -1005,7 +1005,7 @@ URL を調整する</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyPassReverseCookieDomain" id="ProxyPassReverseCookieDomain">ProxyPassReverseCookieDomain</a> <a name="proxypassreversecookiedomain" id="proxypassreversecookiedomain">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="ProxyPassReverseCookieDomain" id="ProxyPassReverseCookieDomain">ProxyPassReverseCookieDomain</a> <a name="proxypassreversecookiedomain" id="proxypassreversecookiedomain">ディレクティブ</a><a title="Permanent link" href="#proxypassreversecookiedomain" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>リバースプロキシサーバからの Set-Cookie ヘッダの Domain 文字列を
 調整する</td></tr>
@@ -1021,7 +1021,7 @@ URL を調整する</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyPassReverseCookiePath" id="ProxyPassReverseCookiePath">ProxyPassReverseCookiePath</a> <a name="proxypassreversecookiepath" id="proxypassreversecookiepath">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="ProxyPassReverseCookiePath" id="ProxyPassReverseCookiePath">ProxyPassReverseCookiePath</a> <a name="proxypassreversecookiepath" id="proxypassreversecookiepath">ディレクティブ</a><a title="Permanent link" href="#proxypassreversecookiepath" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Reverse プロキシサーバからの Set-Cookie ヘッダの Path 文字列を
 調整する</td></tr>
@@ -1037,7 +1037,7 @@ URL を調整する</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyPreserveHost" id="ProxyPreserveHost">ProxyPreserveHost</a> <a name="proxypreservehost" id="proxypreservehost">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="ProxyPreserveHost" id="ProxyPreserveHost">ProxyPreserveHost</a> <a name="proxypreservehost" id="proxypreservehost">ディレクティブ</a><a title="Permanent link" href="#proxypreservehost" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>プロキシリクエストに、受け付けた Host HTTP ヘッダを使う</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ProxyPreserveHost On|Off</code></td></tr>
@@ -1058,7 +1058,7 @@ URL を調整する</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyReceiveBufferSize" id="ProxyReceiveBufferSize">ProxyReceiveBufferSize</a> <a name="proxyreceivebuffersize" id="proxyreceivebuffersize">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="ProxyReceiveBufferSize" id="ProxyReceiveBufferSize">ProxyReceiveBufferSize</a> <a name="proxyreceivebuffersize" id="proxyreceivebuffersize">ディレクティブ</a><a title="Permanent link" href="#proxyreceivebuffersize" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>プロキシされる HTTP と FTP 接続のためのネットワークバッファサイズ</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ProxyReceiveBufferSize <var>bytes</var></code></td></tr>
@@ -1078,7 +1078,7 @@ URL を調整する</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyRemote" id="ProxyRemote">ProxyRemote</a> <a name="proxyremote" id="proxyremote">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="ProxyRemote" id="ProxyRemote">ProxyRemote</a> <a name="proxyremote" id="proxyremote">ディレクティブ</a><a title="Permanent link" href="#proxyremote" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>特定のリクエストを扱う時に使われるリモートプロキシを指定する</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ProxyRemote <var>match</var> <var>remote-server</var></code></td></tr>
@@ -1117,7 +1117,7 @@ URL を調整する</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyRemoteMatch" id="ProxyRemoteMatch">ProxyRemoteMatch</a> <a name="proxyremotematch" id="proxyremotematch">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="ProxyRemoteMatch" id="ProxyRemoteMatch">ProxyRemoteMatch</a> <a name="proxyremotematch" id="proxyremotematch">ディレクティブ</a><a title="Permanent link" href="#proxyremotematch" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>正規表現でのマッチによるリクエストを扱うリモートプロキシの指定</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ProxyRemoteMatch <var>regex</var> <var>remote-server</var></code></td></tr>
@@ -1130,7 +1130,7 @@ URL を調整する</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyRequests" id="ProxyRequests">ProxyRequests</a> <a name="proxyrequests" id="proxyrequests">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="ProxyRequests" id="ProxyRequests">ProxyRequests</a> <a name="proxyrequests" id="proxyrequests">ディレクティブ</a><a title="Permanent link" href="#proxyrequests" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>フォワード (標準の) プロキシリクエストを有効にする</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ProxyRequests On|Off</code></td></tr>
@@ -1159,7 +1159,7 @@ URL を調整する</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxySet" id="ProxySet">ProxySet</a> <a name="proxyset" id="proxyset">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="ProxySet" id="ProxySet">ProxySet</a> <a name="proxyset" id="proxyset">ディレクティブ</a><a title="Permanent link" href="#proxyset" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Set various Proxy balancer or member parameters</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code /></td></tr>
@@ -1169,7 +1169,7 @@ URL を調整する</td></tr>
 </table><p>Documentation not yet translated. Please see English version of document.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxySourceAddress" id="ProxySourceAddress">ProxySourceAddress</a> <a name="proxysourceaddress" id="proxysourceaddress">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="ProxySourceAddress" id="ProxySourceAddress">ProxySourceAddress</a> <a name="proxysourceaddress" id="proxysourceaddress">ディレクティブ</a><a title="Permanent link" href="#proxysourceaddress" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Set local IP address for outgoing proxy connections</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ProxySourceAddress <var>address</var></code></td></tr>
@@ -1181,7 +1181,7 @@ URL を調整する</td></tr>
             まだ翻訳されていません。英語版をご覧ください。
             </p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyStatus" id="ProxyStatus">ProxyStatus</a> <a name="proxystatus" id="proxystatus">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="ProxyStatus" id="ProxyStatus">ProxyStatus</a> <a name="proxystatus" id="proxystatus">ディレクティブ</a><a title="Permanent link" href="#proxystatus" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Show Proxy LoadBalancer status in mod_status</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code /></td></tr>
@@ -1191,7 +1191,7 @@ URL を調整する</td></tr>
 </table><p>Documentation not yet translated. Please see English version of document.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyTimeout" id="ProxyTimeout">ProxyTimeout</a> <a name="proxytimeout" id="proxytimeout">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="ProxyTimeout" id="ProxyTimeout">ProxyTimeout</a> <a name="proxytimeout" id="proxytimeout">ディレクティブ</a><a title="Permanent link" href="#proxytimeout" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>プロキシされたリクエストのネットワークタイムアウト</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ProxyTimeout <var>seconds</var></code></td></tr>
@@ -1209,7 +1209,7 @@ URL を調整する</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyVia" id="ProxyVia">ProxyVia</a> <a name="proxyvia" id="proxyvia">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="ProxyVia" id="ProxyVia">ProxyVia</a> <a name="proxyvia" id="proxyvia">ディレクティブ</a><a title="Permanent link" href="#proxyvia" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>プロキシされたリクエストの <code>Via</code> HTTP 応答ヘッダ
 により提供される情報</td></tr>

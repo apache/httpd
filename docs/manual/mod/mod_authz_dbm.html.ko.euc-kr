@@ -55,7 +55,7 @@
 <li><a href="#comments_section">Comments</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthDBMGroupFile" id="AuthDBMGroupFile">AuthDBMGroupFile</a> <a name="authdbmgroupfile" id="authdbmgroupfile">지시어</a></h2>
+<div class="directive-section"><h2><a name="AuthDBMGroupFile" id="AuthDBMGroupFile">AuthDBMGroupFile</a> <a name="authdbmgroupfile" id="authdbmgroupfile">지시어</a><a title="Permanent link" href="#authdbmgroupfile" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>인증에 사용할 사용자 그룹 목록을 저장하는 데이터베이스
 파일명을 지정한다</td></tr>
@@ -106,7 +106,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthzDBMType" id="AuthzDBMType">AuthzDBMType</a> <a name="authzdbmtype" id="authzdbmtype">지시어</a></h2>
+<div class="directive-section"><h2><a name="AuthzDBMType" id="AuthzDBMType">AuthzDBMType</a> <a name="authzdbmtype" id="authzdbmtype">지시어</a><a title="Permanent link" href="#authzdbmtype" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>암호를 저장하는 데이터베이스 파일 종류를 지정한다</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>AuthzDBMType default|SDBM|GDBM|NDBM|DB</code></td></tr>

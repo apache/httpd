@@ -47,12 +47,12 @@
 </ul><h3>참고</h3><ul class="seealso"><li><a href="../configuring.html">설정파일</a></li><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="Description" id="Description">설명 (Description)</a></h2>
+<h2><a name="Description" id="Description">설명 (Description)</a><a title="Permanent link" href="#Description" class="permalink">&para;</a></h2>
 
 <p>지시어의 목적에 대한 간단한 설명.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="Syntax" id="Syntax">문법 (Syntax)</a></h2>
+<h2><a name="Syntax" id="Syntax">문법 (Syntax)</a><a title="Permanent link" href="#Syntax" class="permalink">&para;</a></h2>
 
     <p>설정파일에서 사용할 지시어의 형식을 알려준다. 이 문법은
     지시어마다 매우 다르며, 지시어를 정의할 때마다 자세히 설명한다.
@@ -129,7 +129,7 @@
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="Default" id="Default">기본값 (Default)</a></h2>
+<h2><a name="Default" id="Default">기본값 (Default)</a><a title="Permanent link" href="#Default" class="permalink">&para;</a></h2>
 
     <p>지시어에 기본값이 있다면 (<em>예를 들어</em>, 설정에서
     지시어를 생략한 경우 아파치 웹서버는 이 값을 사용한다.)
@@ -138,7 +138,7 @@
     httpd.conf의 지시어 값과 다를 수 있음을 주의하라.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="Context" id="Context">사용장소 (Context)</a></h2>
+<h2><a name="Context" id="Context">사용장소 (Context)</a><a title="Permanent link" href="#Context" class="permalink">&para;</a></h2>
 
     <p>서버의 설정파일중 어느곳에서 지시어를 사용할 수 있는지
     알려준다. 다음 값들을 쉼표로 구분한 목록이다:</p>
@@ -183,7 +183,7 @@
     파일에서는 사용할 수 있지만, <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>나 <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>에서는 사용할 수 없다.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="Override" id="Override">Override 옵션 (Override)</a></h2>
+<h2><a name="Override" id="Override">Override 옵션 (Override)</a><a title="Permanent link" href="#Override" class="permalink">&para;</a></h2>
 
     <p>이 지시어를 <code>.htaccess</code> 파일에서 사용하려면
     어떤 override 옵션을 사용해야 하는지를 나타낸다. 지시어의
@@ -197,7 +197,7 @@
     사용가능한 override 이름들이 나온다.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="Status" id="Status">상태 (Status)</a></h2>
+<h2><a name="Status" id="Status">상태 (Status)</a><a title="Permanent link" href="#Status" class="permalink">&para;</a></h2>
 
     <p>지시어가 아파치 웹서버에 얼마나 긴밀히 묶여있는지를
     나타낸다. 즉, 그 지시어나 기능을 사용하기위해 서버를
@@ -239,12 +239,12 @@
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="Module" id="Module">모듈 (Module)</a></h2>
+<h2><a name="Module" id="Module">모듈 (Module)</a><a title="Permanent link" href="#Module" class="permalink">&para;</a></h2>
 
     <p>단순히 지시어를 정의한 소스 모듈명을 열거한다.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="Compatibility" id="Compatibility">지원 (Compatibility)</a></h2>
+<h2><a name="Compatibility" id="Compatibility">지원 (Compatibility)</a><a title="Permanent link" href="#Compatibility" class="permalink">&para;</a></h2>
 
     <p>지시어가 원래 아파치 버전 2 배포본의 일부가 아니였다면,
     지시어를 추가하기 시작한 버전이 여기 나온다. 또, 어떤

@@ -78,7 +78,7 @@
 <li><a href="#comments_section">Comments</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CGIDScriptTimeout" id="CGIDScriptTimeout">CGIDScriptTimeout</a> <a name="cgidscripttimeout" id="cgidscripttimeout">Directive</a></h2>
+<div class="directive-section"><h2><a name="CGIDScriptTimeout" id="CGIDScriptTimeout">CGIDScriptTimeout</a> <a name="cgidscripttimeout" id="cgidscripttimeout">Directive</a><a title="Permanent link" href="#cgidscripttimeout" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The length of time to wait for more output from the
 CGI program</td></tr>
@@ -101,7 +101,7 @@ unset</code></td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ScriptSock" id="ScriptSock">ScriptSock</a> <a name="scriptsock" id="scriptsock">Directive</a></h2>
+<div class="directive-section"><h2><a name="ScriptSock" id="ScriptSock">ScriptSock</a> <a name="scriptsock" id="scriptsock">Directive</a><a title="Permanent link" href="#scriptsock" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The filename prefix of the socket to use for communication with
 the cgi daemon</td></tr>

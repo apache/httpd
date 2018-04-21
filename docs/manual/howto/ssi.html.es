@@ -46,7 +46,7 @@
 </ul><h3>Consulte también</h3><ul class="seealso"><li><a href="#comments_section">Comentarios</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="related" id="related">Introducción</a></h2>
+<h2><a name="related" id="related">Introducción</a><a title="Enlace permanente" href="#related" class="permalink">&para;</a></h2>
  <table class="related"><tr><th>Módulos Relacionados</th><th>Directivas Relacionadas</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_include.html">mod_include</a></code></li><li><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code></li><li><code class="module"><a href="../mod/mod_expires.html">mod_expires</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li><li><code class="directive"><a href="../mod/mod_include.html#xbithack">XBitHack</a></code></li><li><code class="directive"><a href="../mod/mod_mime.html#addtype">AddType</a></code></li><li><code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code></li><li><code class="directive"><a href="../mod/mod_setenvif.html#browsermatchnocase">BrowserMatchNoCase</a></code></li></ul></td></tr></table>
 
     <p>Este artículo trata sobre los Server Side Includes, generalmente llamados SSI. En este artículo, hablaremos sobre cómo configurar su servidor para permitir SSI e introduciremos algúnas técnicas básicas de SSI para añadir contenido dinámico a sus páginas HTML existentes.</p>
@@ -55,7 +55,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="what" id="what">¿Qué son los SSI?</a></h2>
+<h2><a name="what" id="what">¿Qué son los SSI?</a><a title="Enlace permanente" href="#what" class="permalink">&para;</a></h2>
 
     <p>SSI (Server Side Includes) son directivas que se introducen en páginas HTML y son evaluadas por el servidor mientras éste las sirve. Le permiten añadir contenido generado de manera dinámica a sus páginas HTML existentes sin tener que servir una página entera a través de un programa CGI, u otra tecnología para generar contenido dinámico.</p>
 
@@ -74,7 +74,7 @@
     <p>La decisión sobre cuándo usar SSI, o de cuándo generar una página al completo con algún programa, suele depender generalmente de la cantidad de contenido estático que contiene, y cuánto de esa página tiene que ser recalculado cada vez que ésta se sirve. SSI es un buen método para añadir pequeñas partes de información, tales como la hora actual - como se ha mostrado más arriba. Pero si la mayoría de su página se tiene que generar en el momento en el que se está sirviendo, necesita buscar otra opción más adecuada que no sea SSI.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="configuring" id="configuring">Configurar su servidor para permitir SSI</a></h2>
+<h2><a name="configuring" id="configuring">Configurar su servidor para permitir SSI</a><a title="Enlace permanente" href="#configuring" class="permalink">&para;</a></h2>
 
 
     <p>Para permitir SSI en su servidor, debe tener la siguiente directiva en su fichero <code>httpd.conf</code> , o en un fichero 
@@ -118,7 +118,7 @@ AddOutputFilter INCLUDES .shtml</pre>
     </ol>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="basic" id="basic">Directivas SSI básicas</a></h2>
+<h2><a name="basic" id="basic">Directivas SSI básicas</a><a title="Enlace permanente" href="#basic" class="permalink">&para;</a></h2>
 
     <p>Las directivas SSI tienen la sintaxis siguiente:</p>
 <div class="example"><p><code>
@@ -167,7 +167,7 @@ AddOutputFilter INCLUDES .shtml</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="additionalexamples" id="additionalexamples">Más ejemplos</a></h2>
+<h2><a name="additionalexamples" id="additionalexamples">Más ejemplos</a><a title="Enlace permanente" href="#additionalexamples" class="permalink">&para;</a></h2>
 
 
     <p>A continuación hay algunos ejemplos específicos de cosas que puede hacer con SSI en sus documentos HTML.</p>
@@ -208,7 +208,7 @@ AddOutputFilter INCLUDES .shtml</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="config" id="config">¿Qué más puedo configurar?</a></h2>
+<h2><a name="config" id="config">¿Qué más puedo configurar?</a><a title="Enlace permanente" href="#config" class="permalink">&para;</a></h2>
 
 
     <p>Además de poder configurar el formato de la hora, también puede configurar dos cosas más.</p> 
@@ -231,7 +231,7 @@ AddOutputFilter INCLUDES .shtml</pre>
     <code>abbrev</code> para un número abreviado en Kb o Mb, según sea necesario.</p>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="exec" id="exec">Ejecutando comandos</a></h2>
+<h2><a name="exec" id="exec">Ejecutando comandos</a><a title="Enlace permanente" href="#exec" class="permalink">&para;</a></h2>
     
 
     <p>Aquí tiene algo que puede hacer con la función <code>exec</code>. Puede incluso hacer que SSI ejecute un comando usando la shell (<code>/bin/sh</code>, para ser exactos - o la shell DOS, si se encuentra en Win32). Lo siguiente, por ejemplo le dará un listado de directorios. </p>
@@ -254,7 +254,7 @@ AddOutputFilter INCLUDES .shtml</pre>
     <code>exec</code>. Si tiene una situación en la que los usuarios pueden editar contenido en sus páginas web, tales como por ejemplo un ``registro de visitas'', asegúrese de tener esta característica deshabilitada. Puede permitir SSI, pero no la característica <code>exec</code>, con el argumento <code>IncludesNOEXEC</code> en la directiva <code>Options</code>.</p>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="advanced" id="advanced">Técnicas avanzadas de SSI</a></h2>
+<h2><a name="advanced" id="advanced">Técnicas avanzadas de SSI</a><a title="Enlace permanente" href="#advanced" class="permalink">&para;</a></h2>
 
 
     <p>Además de mostrar contenido, SSI en Apache da la opción de configurar variables y usar esas variables en comparaciones y condicionales.</p>
@@ -319,7 +319,7 @@ AddOutputFilter INCLUDES .shtml</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="conclusion" id="conclusion">Conclusión</a></h2>
+<h2><a name="conclusion" id="conclusion">Conclusión</a><a title="Enlace permanente" href="#conclusion" class="permalink">&para;</a></h2>
 
     <p>Desde luego los SSI no son un reemplazo para CGI u otras tecnologías que se usen para generar páginas web dinámicas. Pero es un gran método para añadir pequeñas cantidades de contenido dinámico a páginas web, sin hacer mucho más trabajo extra.</p>
 </div></div>

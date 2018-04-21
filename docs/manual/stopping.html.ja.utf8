@@ -47,7 +47,7 @@
 </ul><h3>参照</h3><ul class="seealso"><li><code class="program"><a href="./programs/httpd.html">httpd</a></code></li><li><code class="program"><a href="./programs/apachectl.html">apachectl</a></code></li><li><a href="invoking.html">Starting</a></li><li><a href="#comments_section">コメント</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="introduction" id="introduction">イントロダクション</a></h2>
+<h2><a name="introduction" id="introduction">イントロダクション</a><a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
 
     <p>Apache HTTP Server を停止したり再起動したりするためには、実行されている
     <code class="program"><a href="./programs/httpd.html">httpd</a></code> プロセスにシグナルを送る必要があります。
@@ -92,7 +92,7 @@
     の設定に適合するように適宜修正して下さい。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="term" id="term">急な停止</a></h2>
+<h2><a name="term" id="term">急な停止</a><a title="Permanent link" href="#term" class="permalink">&para;</a></h2>
 
 <dl><dt>シグナル: TERM</dt>
 <dd><code>apachectl -k stop</code></dd>
@@ -106,7 +106,7 @@
     応答はされません。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="graceful" id="graceful">緩やかな再起動</a></h2>
+<h2><a name="graceful" id="graceful">緩やかな再起動</a><a title="Permanent link" href="#graceful" class="permalink">&para;</a></h2>
 
 <dl><dt>シグナル: USR1</dt>
 <dd><code>apachectl -k graceful</code></dd>
@@ -176,7 +176,7 @@
     </div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="hup" id="hup">急な再起動</a></h2>
+<h2><a name="hup" id="hup">急な再起動</a><a title="Permanent link" href="#hup" class="permalink">&para;</a></h2>
 
 <dl><dt>シグナル: HUP</dt>
 <dd><code>apachectl -k restart</code></dd>
@@ -196,7 +196,7 @@
     もし構文エラーがあればその旨が示され、再起動は行われません。</div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="gracefulstop" id="gracefulstop">緩やかな停止</a></h2>
+<h2><a name="gracefulstop" id="gracefulstop">緩やかな停止</a><a title="Permanent link" href="#gracefulstop" class="permalink">&para;</a></h2>
 
 <dl><dt>Signal: WINCH</dt>
 <dd><code>apachectl -k graceful-stop</code></dd>

@@ -62,7 +62,7 @@
 <li><a href="#comments_section">Comments</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthBasicAuthoritative" id="AuthBasicAuthoritative">AuthBasicAuthoritative</a> <a name="authbasicauthoritative" id="authbasicauthoritative">Directive</a></h2>
+<div class="directive-section"><h2><a name="AuthBasicAuthoritative" id="AuthBasicAuthoritative">AuthBasicAuthoritative</a> <a name="authbasicauthoritative" id="authbasicauthoritative">Directive</a><a title="Permanent link" href="#authbasicauthoritative" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets whether authorization and authentication are passed to
 lower level modules</td></tr>
@@ -88,7 +88,7 @@ lower level modules</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthBasicFake" id="AuthBasicFake">AuthBasicFake</a> <a name="authbasicfake" id="authbasicfake">Directive</a></h2>
+<div class="directive-section"><h2><a name="AuthBasicFake" id="AuthBasicFake">AuthBasicFake</a> <a name="authbasicfake" id="authbasicfake">Directive</a><a title="Permanent link" href="#authbasicfake" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fake basic authentication using the given expressions for
 username and password</td></tr>
@@ -148,7 +148,7 @@ username and password</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthBasicProvider" id="AuthBasicProvider">AuthBasicProvider</a> <a name="authbasicprovider" id="authbasicprovider">Directive</a></h2>
+<div class="directive-section"><h2><a name="AuthBasicProvider" id="AuthBasicProvider">AuthBasicProvider</a> <a name="authbasicprovider" id="authbasicprovider">Directive</a><a title="Permanent link" href="#authbasicprovider" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets the authentication provider(s) for this location</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthBasicProvider <var>provider-name</var>
@@ -184,7 +184,7 @@ username and password</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthBasicUseDigestAlgorithm" id="AuthBasicUseDigestAlgorithm">AuthBasicUseDigestAlgorithm</a> <a name="authbasicusedigestalgorithm" id="authbasicusedigestalgorithm">Directive</a></h2>
+<div class="directive-section"><h2><a name="AuthBasicUseDigestAlgorithm" id="AuthBasicUseDigestAlgorithm">AuthBasicUseDigestAlgorithm</a> <a name="authbasicusedigestalgorithm" id="authbasicusedigestalgorithm">Directive</a><a title="Permanent link" href="#authbasicusedigestalgorithm" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Check passwords against the authentication providers as if
 Digest Authentication was in force instead of Basic Authentication.

@@ -53,7 +53,7 @@ mapping tables are included here to give the equivalents used by mod_ssl.</p>
 </ul><h3>See also</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="configuration" id="configuration">Configuration Directives</a></h2>
+<h2><a name="configuration" id="configuration">Configuration Directives</a><a title="Permanent link" href="#configuration" class="permalink">&para;</a></h2>
 <p>The mapping between configuration directives used by Apache-SSL
 1.x and mod_ssl 2.0.x is given in <a href="#table1">Table
 1</a>. The mapping from Sioux 1.x and Stronghold 2.x is only partial
@@ -115,7 +115,7 @@ doesn't provide.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="variables" id="variables">Environment Variables</a></h2>
+<h2><a name="variables" id="variables">Environment Variables</a><a title="Permanent link" href="#variables" class="permalink">&para;</a></h2>
 
 <p>The mapping between environment variable names used by the older
 SSL solutions and the names used by mod_ssl is given in <a href="#table2">Table 2</a>.</p>
@@ -192,7 +192,7 @@ SSL solutions and the names used by mod_ssl is given in <a href="#table2">Table 
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="customlog" id="customlog">Custom Log Functions</a></h2>
+<h2><a name="customlog" id="customlog">Custom Log Functions</a><a title="Permanent link" href="#customlog" class="permalink">&para;</a></h2>
 <p>
 When mod_ssl is enabled, additional functions exist for the <a href="../mod/mod_log_config.html#formats">Custom Log Format</a> of
 <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code> as documented in the Reference

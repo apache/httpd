@@ -71,7 +71,7 @@ Apache ドキュメント翻訳プロジェクト</a>
 </ul><h3>参照</h3><ul class="seealso"><li><a href="#comments_section">コメント</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="cryptographictech" id="cryptographictech">暗号化技術</a></h2>
+<h2><a name="cryptographictech" id="cryptographictech">暗号化技術</a><a title="Permanent link" href="#cryptographictech" class="permalink">&para;</a></h2>
 
 <p>SSL を理解するには、暗号アルゴリズム、
 メッセージダイジェスト関数(別名: 一方向関数、ハッシュ関数)、
@@ -185,7 +185,7 @@ Apache ドキュメント翻訳プロジェクト</a>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="certificates" id="certificates">証明書</a></h2>
+<h2><a name="certificates" id="certificates">証明書</a><a title="Permanent link" href="#certificates" class="permalink">&para;</a></h2>
 
 <p>アリスは秘密のメッセージを銀行に送り、
 署名をして、メッセージの信用を保証することができるおうになりましたが、
@@ -407,7 +407,7 @@ dUHzICxBVC1lnHyYGjDuAMhe396lYAn8bCld1/L4NMGBCQ==
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="ssl" id="ssl">Secure Sockets Layer (SSL)</a></h2>
+<h2><a name="ssl" id="ssl">Secure Sockets Layer (SSL)</a><a title="Permanent link" href="#ssl" class="permalink">&para;</a></h2>
 
 <p>Secure Sockets Layer プロトコルは信頼性のあるコネクション型の
 ネットワーク層のプロトコル(例えば、TCP/IP)と
@@ -660,7 +660,7 @@ SSL 3.0 は現在 Internet Engineering Task Force (IETF)
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="references" id="references">参考文献</a></h2>
+<h2><a name="references" id="references">参考文献</a><a title="Permanent link" href="#references" class="permalink">&para;</a></h2>
 
 <dl>
 <dt><a id="AC96" name="AC96">[AC96]</a></dt>

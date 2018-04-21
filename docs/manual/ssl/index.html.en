@@ -41,7 +41,7 @@ Security protocols.</p>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="documentation" id="documentation">Documentation</a></h2>
+<h2><a name="documentation" id="documentation">Documentation</a><a title="Permanent link" href="#documentation" class="permalink">&para;</a></h2>
 <ul>
 <li><a href="ssl_howto.html">mod_ssl Configuration How-To</a></li>
 <li><a href="ssl_intro.html">Introduction To SSL</a></li>
@@ -51,7 +51,7 @@ Security protocols.</p>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="mod-ssl" id="mod-ssl">mod_ssl</a></h2>
+<h2><a name="mod-ssl" id="mod-ssl">mod_ssl</a><a title="Permanent link" href="#mod-ssl" class="permalink">&para;</a></h2>
 <p>Extensive documentation on the directives and environment variables
 provided by this module is provided in the <a href="../mod/mod_ssl.html">mod_ssl reference documentation</a>.
 </p>

@@ -65,12 +65,12 @@
 </ul><h3>参照</h3><ul class="seealso"><li><a href="../urlmapping.html">URL からファイルシステムへのマッピング</a></li><li><a href="#comments_section">コメント</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="related" id="related">ユーザ毎のウェブディレクトリ</a></h2>
+<h2><a name="related" id="related">ユーザ毎のウェブディレクトリ</a><a title="Permanent link" href="#related" class="permalink">&para;</a></h2>
     
     <table class="related"><tr><th>関連モジュール</th><th>関連ディレクティブ</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_userdir.html">mod_userdir</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code></li><li><code class="directive"><a href="../mod/core.html#directorymatch">DirectoryMatch</a></code></li><li><code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code></li></ul></td></tr></table>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="userdir" id="userdir">UserDir を使ってファイルのパスを設定する</a></h2>
+<h2><a name="userdir" id="userdir">UserDir を使ってファイルのパスを設定する</a><a title="Permanent link" href="#userdir" class="permalink">&para;</a></h2>
     
 
     <p><code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code> ディレクティブは
@@ -119,7 +119,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="redirect" id="redirect">外部 URL にリダイレクトする</a></h2>
+<h2><a name="redirect" id="redirect">外部 URL にリダイレクトする</a><a title="Permanent link" href="#redirect" class="permalink">&para;</a></h2>
     
     <p><code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code>
     ディレクティブを使って外部 URL にリダイレクトすることもできます。</p>
@@ -133,7 +133,7 @@
     にリダイレクトされます。</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="enable" id="enable">この機能を使用できるユーザを制限する</a></h2>
+<h2><a name="enable" id="enable">この機能を使用できるユーザを制限する</a><a title="Permanent link" href="#enable" class="permalink">&para;</a></h2>
     
 
     <p>UserDir のドキュメントに示されている構文を使うことで、
@@ -157,7 +157,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="cgi" id="cgi">ユーザ毎の CGI ディレクトリ</a></h2>
+<h2><a name="cgi" id="cgi">ユーザ毎の CGI ディレクトリ</a><a title="Permanent link" href="#cgi" class="permalink">&para;</a></h2>
   
 
    <p>それぞれのユーザに専用の cgi-bin ディレクトリを与えるために、
@@ -182,7 +182,7 @@
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="htaccess" id="htaccess">ユーザによる設定変更を許可</a></h2>
+<h2><a name="htaccess" id="htaccess">ユーザによる設定変更を許可</a><a title="Permanent link" href="#htaccess" class="permalink">&para;</a></h2>
     
 
     <p>ユーザに彼らのウェブ空間でのサーバの設定の変更を許可する場合、

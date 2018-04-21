@@ -70,7 +70,7 @@
 <li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="pooling" id="pooling">Connection Pooling</a></h2>
+<h2><a name="pooling" id="pooling">Connection Pooling</a><a title="Permanent link" href="#pooling" class="permalink">&para;</a></h2>
     <p>This module manages database connections, in a manner
     optimised for the platform.  On non-threaded platforms,
     it provides a persistent connection in the manner of
@@ -82,7 +82,7 @@
     supersedes the modules presented in that article.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="connecting" id="connecting">Connecting</a></h2>
+<h2><a name="connecting" id="connecting">Connecting</a><a title="Permanent link" href="#connecting" class="permalink">&para;</a></h2>
 
     <p>To connect to your database, you'll need to specify
     a driver, and connection parameters. These vary from
@@ -104,7 +104,7 @@ DBDParams host=localhost,dbname=pony,user=shetland,pass=appaloosa</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="API" id="API">Apache DBD API</a></h2>
+<h2><a name="API" id="API">Apache DBD API</a><a title="Permanent link" href="#API" class="permalink">&para;</a></h2>
     <p><code class="module"><a href="../mod/mod_dbd.html">mod_dbd</a></code> exports five functions for other modules
     to use. The API is as follows:</p>
 
@@ -147,7 +147,7 @@ APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const c
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="prepared" id="prepared">SQL Prepared Statements</a></h2>
+<h2><a name="prepared" id="prepared">SQL Prepared Statements</a><a title="Permanent link" href="#prepared" class="permalink">&para;</a></h2>
     <p><code class="module"><a href="../mod/mod_dbd.html">mod_dbd</a></code> supports SQL prepared statements on behalf
     of modules that may wish to use them.  Each prepared statement
     must be assigned a name (label), and they are stored in a hash:
@@ -169,7 +169,7 @@ APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const c
 	</div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="security" id="security">SECURITY WARNING</a></h2>
+<h2><a name="security" id="security">SECURITY WARNING</a><a title="Permanent link" href="#security" class="permalink">&para;</a></h2>
 
     <p>Any web/database application needs to secure itself against SQL
     injection attacks.  In most cases, Apache DBD is safe, because
@@ -205,7 +205,7 @@ APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const c
     which offers the security of genuine prepared statements.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DBDExptime" id="DBDExptime">DBDExptime</a> <a name="dbdexptime" id="dbdexptime">Directive</a></h2>
+<div class="directive-section"><h2><a name="DBDExptime" id="DBDExptime">DBDExptime</a> <a name="dbdexptime" id="dbdexptime">Directive</a><a title="Permanent link" href="#dbdexptime" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Keepalive time for idle connections</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DBDExptime <var>time-in-seconds</var></code></td></tr>
@@ -220,7 +220,7 @@ APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const c
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DBDInitSQL" id="DBDInitSQL">DBDInitSQL</a> <a name="dbdinitsql" id="dbdinitsql">Directive</a></h2>
+<div class="directive-section"><h2><a name="DBDInitSQL" id="DBDInitSQL">DBDInitSQL</a> <a name="dbdinitsql" id="dbdinitsql">Directive</a><a title="Permanent link" href="#dbdinitsql" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Execute an SQL statement after connecting to a database</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DBDInitSQL <var>"SQL statement"</var></code></td></tr>
@@ -235,7 +235,7 @@ APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const c
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DBDKeep" id="DBDKeep">DBDKeep</a> <a name="dbdkeep" id="dbdkeep">Directive</a></h2>
+<div class="directive-section"><h2><a name="DBDKeep" id="DBDKeep">DBDKeep</a> <a name="dbdkeep" id="dbdkeep">Directive</a><a title="Permanent link" href="#dbdkeep" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum sustained number of connections</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DBDKeep <var>number</var></code></td></tr>
@@ -250,7 +250,7 @@ APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const c
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DBDMax" id="DBDMax">DBDMax</a> <a name="dbdmax" id="dbdmax">Directive</a></h2>
+<div class="directive-section"><h2><a name="DBDMax" id="DBDMax">DBDMax</a> <a name="dbdmax" id="dbdmax">Directive</a><a title="Permanent link" href="#dbdmax" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum number of connections</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DBDMax <var>number</var></code></td></tr>
@@ -264,7 +264,7 @@ APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const c
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DBDMin" id="DBDMin">DBDMin</a> <a name="dbdmin" id="dbdmin">Directive</a></h2>
+<div class="directive-section"><h2><a name="DBDMin" id="DBDMin">DBDMin</a> <a name="dbdmin" id="dbdmin">Directive</a><a title="Permanent link" href="#dbdmin" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Minimum number of connections</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DBDMin <var>number</var></code></td></tr>
@@ -278,7 +278,7 @@ APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const c
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DBDParams" id="DBDParams">DBDParams</a> <a name="dbdparams" id="dbdparams">Directive</a></h2>
+<div class="directive-section"><h2><a name="DBDParams" id="DBDParams">DBDParams</a> <a name="dbdparams" id="dbdparams">Directive</a><a title="Permanent link" href="#dbdparams" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Parameters for database connection</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DBDParams
@@ -310,7 +310,7 @@ APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const c
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DBDPersist" id="DBDPersist">DBDPersist</a> <a name="dbdpersist" id="dbdpersist">Directive</a></h2>
+<div class="directive-section"><h2><a name="DBDPersist" id="DBDPersist">DBDPersist</a> <a name="dbdpersist" id="dbdpersist">Directive</a><a title="Permanent link" href="#dbdpersist" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Whether to use persistent connections</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DBDPersist On|Off</code></td></tr>
@@ -333,7 +333,7 @@ APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const c
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DBDPrepareSQL" id="DBDPrepareSQL">DBDPrepareSQL</a> <a name="dbdpreparesql" id="dbdpreparesql">Directive</a></h2>
+<div class="directive-section"><h2><a name="DBDPrepareSQL" id="DBDPrepareSQL">DBDPrepareSQL</a> <a name="dbdpreparesql" id="dbdpreparesql">Directive</a><a title="Permanent link" href="#dbdpreparesql" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Define an SQL prepared statement</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DBDPrepareSQL <var>"SQL statement"</var> <var>label</var></code></td></tr>
@@ -348,7 +348,7 @@ APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const c
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DBDriver" id="DBDriver">DBDriver</a> <a name="dbdriver" id="dbdriver">Directive</a></h2>
+<div class="directive-section"><h2><a name="DBDriver" id="DBDriver">DBDriver</a> <a name="dbdriver" id="dbdriver">Directive</a><a title="Permanent link" href="#dbdriver" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specify an SQL driver</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DBDriver <var>name</var></code></td></tr>

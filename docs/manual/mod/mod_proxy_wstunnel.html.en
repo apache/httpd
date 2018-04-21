@@ -72,7 +72,7 @@ in the response <code>Upgrade</code></p>
 <li><a href="#comments_section">Comments</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyWebsocketAsync" id="ProxyWebsocketAsync">ProxyWebsocketAsync</a> <a name="proxywebsocketasync" id="proxywebsocketasync">Directive</a></h2>
+<div class="directive-section"><h2><a name="ProxyWebsocketAsync" id="ProxyWebsocketAsync">ProxyWebsocketAsync</a> <a name="proxywebsocketasync" id="proxywebsocketasync">Directive</a><a title="Permanent link" href="#proxywebsocketasync" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Instructs this module to try to create an asynchronous tunnel</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyWebsocketAsync ON|OFF</code></td></tr>
@@ -88,7 +88,7 @@ in the response <code>Upgrade</code></p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyWebsocketAsyncDelay" id="ProxyWebsocketAsyncDelay">ProxyWebsocketAsyncDelay</a> <a name="proxywebsocketasyncdelay" id="proxywebsocketasyncdelay">Directive</a></h2>
+<div class="directive-section"><h2><a name="ProxyWebsocketAsyncDelay" id="ProxyWebsocketAsyncDelay">ProxyWebsocketAsyncDelay</a> <a name="proxywebsocketasyncdelay" id="proxywebsocketasyncdelay">Directive</a><a title="Permanent link" href="#proxywebsocketasyncdelay" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets the amount of time the tunnel waits synchronously for data</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyWebsocketAsyncDelay <var>num</var>[ms]</code></td></tr>
@@ -108,7 +108,7 @@ in the response <code>Upgrade</code></p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyWebsocketIdleTimeout" id="ProxyWebsocketIdleTimeout">ProxyWebsocketIdleTimeout</a> <a name="proxywebsocketidletimeout" id="proxywebsocketidletimeout">Directive</a></h2>
+<div class="directive-section"><h2><a name="ProxyWebsocketIdleTimeout" id="ProxyWebsocketIdleTimeout">ProxyWebsocketIdleTimeout</a> <a name="proxywebsocketidletimeout" id="proxywebsocketidletimeout">Directive</a><a title="Permanent link" href="#proxywebsocketidletimeout" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets the maximum amount of time to wait for data on the websockets tunnel</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyWebsocketIdleTimeout <var>num</var>[ms]</code></td></tr>

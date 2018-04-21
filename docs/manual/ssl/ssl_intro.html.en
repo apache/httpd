@@ -44,7 +44,7 @@ and examples as a starting point for further exploration.</p>
 </ul><h3>See also</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="cryptographictech" id="cryptographictech">Cryptographic Techniques</a></h2>
+<h2><a name="cryptographictech" id="cryptographictech">Cryptographic Techniques</a><a title="Permanent link" href="#cryptographictech" class="permalink">&para;</a></h2>
 
 <p>Understanding SSL requires an understanding of cryptographic
 algorithms, message digest functions (aka. one-way or hash functions), and
@@ -147,7 +147,7 @@ the bank from a fraudulent claim from Alice that she did not send the message
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="certificates" id="certificates">Certificates</a></h2>
+<h2><a name="certificates" id="certificates">Certificates</a><a title="Permanent link" href="#certificates" class="permalink">&para;</a></h2>
 
 <p>Although Alice could have sent a private message to the bank, signed
 it and ensured the integrity of the message, she still needs to be sure
@@ -359,7 +359,7 @@ dUHzICxBVC1lnHyYGjDuAMhe396lYAn8bCld1/L4NMGBCQ==
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="ssl" id="ssl">Secure Sockets Layer (SSL)</a></h2>
+<h2><a name="ssl" id="ssl">Secure Sockets Layer (SSL)</a><a title="Permanent link" href="#ssl" class="permalink">&para;</a></h2>
 
 <p>The Secure Sockets Layer protocol is a protocol layer which may be
 placed between a reliable connection-oriented network layer protocol
@@ -597,7 +597,7 @@ the Internet Engineering Task Force (IETF).</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="references" id="references">References</a></h2>
+<h2><a name="references" id="references">References</a><a title="Permanent link" href="#references" class="permalink">&para;</a></h2>
 
 <dl>
 <dt><a id="AC96" name="AC96">[AC96]</a></dt>

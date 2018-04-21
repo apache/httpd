@@ -111,7 +111,7 @@
 <li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="examples" id="examples">Usage examples</a></h2>
+<h2><a name="examples" id="examples">Usage examples</a><a title="Permanent link" href="#examples" class="permalink">&para;</a></h2>
 
 	
     <p>The following example shows how one might configured health checking
@@ -148,7 +148,7 @@ not dynamically checked at all.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyHCExpr" id="ProxyHCExpr">ProxyHCExpr</a> <a name="proxyhcexpr" id="proxyhcexpr">Directive</a></h2>
+<div class="directive-section"><h2><a name="ProxyHCExpr" id="ProxyHCExpr">ProxyHCExpr</a> <a name="proxyhcexpr" id="proxyhcexpr">Directive</a><a title="Permanent link" href="#proxyhcexpr" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Creates a named condition expression to use to determine health of the backend based on its response.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyHCExpr name {ap_expr expression}</code></td></tr>
@@ -196,7 +196,7 @@ ProxyPass "/apps"     "balancer://foo"
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyHCTemplate" id="ProxyHCTemplate">ProxyHCTemplate</a> <a name="proxyhctemplate" id="proxyhctemplate">Directive</a></h2>
+<div class="directive-section"><h2><a name="ProxyHCTemplate" id="ProxyHCTemplate">ProxyHCTemplate</a> <a name="proxyhctemplate" id="proxyhctemplate">Directive</a><a title="Permanent link" href="#proxyhctemplate" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Creates a named template for setting various health check parameters</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyHCTemplate name parameter=setting &lt;...&gt;</code></td></tr>
@@ -221,7 +221,7 @@ ProxyPass "/apps"     "balancer://foo"
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyHCTPsize" id="ProxyHCTPsize">ProxyHCTPsize</a> <a name="proxyhctpsize" id="proxyhctpsize">Directive</a></h2>
+<div class="directive-section"><h2><a name="ProxyHCTPsize" id="ProxyHCTPsize">ProxyHCTPsize</a> <a name="proxyhctpsize" id="proxyhctpsize">Directive</a><a title="Permanent link" href="#proxyhctpsize" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets the total server-wide size of the threadpool used for the health check workers.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyHCTPsize &lt;size&gt;</code></td></tr>

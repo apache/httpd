@@ -68,7 +68,7 @@
 <li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="security" id="security">보안 문제</a></h2>
+<h2><a name="security" id="security">보안 문제</a><a title="Permanent link" href="#security" class="permalink">&para;</a></h2>
     <p>한번 서버가 <code class="module"><a href="../mod/mod_info.html">mod_info</a></code>를 읽어들이면, 디렉토리별
     설정파일(<em>예를 들어</em>, <code>.htaccess</code>)을 포함한
     <em>모든</em> 설정파일에서 이 핸들러 기능을 사용할 수 있다.
@@ -96,7 +96,7 @@
     </code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="queries" id="queries">보여주는 정보 선택하기</a></h2>
+<h2><a name="queries" id="queries">보여주는 정보 선택하기</a><a title="Permanent link" href="#queries" class="permalink">&para;</a></h2>
     <p>기본적으로 서버 정보에는 사용하는 모듈 목록과 모듈별로
     모듈이 이해하는 지시어 설명, 모듈이 구현한 훅(hook), 현재
     설정에서 사용한 지시어 정보가 있다.</p>
@@ -120,7 +120,7 @@
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="limitations" id="limitations">알려진 한계</a></h2>
+<h2><a name="limitations" id="limitations">알려진 한계</a><a title="Permanent link" href="#limitations" class="permalink">&para;</a></h2>
     <p><code class="module"><a href="../mod/mod_info.html">mod_info</a></code>는 원래 설정파일을 읽지 않고
     이미 읽어들인 설정 정보를 참고하여 정보를 보여준다. 설정을
     파싱하는 방법때문에 다음과 같은 몇가지 한계가 있다.</p>
@@ -144,7 +144,7 @@
     </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddModuleInfo" id="AddModuleInfo">AddModuleInfo</a> <a name="addmoduleinfo" id="addmoduleinfo">지시어</a></h2>
+<div class="directive-section"><h2><a name="AddModuleInfo" id="AddModuleInfo">AddModuleInfo</a> <a name="addmoduleinfo" id="addmoduleinfo">지시어</a><a title="Permanent link" href="#addmoduleinfo" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>모듈에 대한 추가 정보를 server-info 핸들러가 보여주도록
 추가한다</td></tr>

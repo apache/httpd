@@ -50,12 +50,12 @@
 </ul><h3>Consulte también</h3><ul class="seealso"><li><a href="../configuring.html">Ficheros de Configuración</a></li><li><a href="#comments_section">Comentarios</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="Description" id="Description">Descripción</a></h2>
+<h2><a name="Description" id="Description">Descripción</a><a title="Enlace permanente" href="#Description" class="permalink">&para;</a></h2>
 
     <p>Una breve descripción del propósito de la directiva.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="Syntax" id="Syntax">Sintaxis</a></h2>
+<h2><a name="Syntax" id="Syntax">Sintaxis</a><a title="Enlace permanente" href="#Syntax" class="permalink">&para;</a></h2>
 
     <p>Indica el formato de la directiva tal y como aparecería en un fichero de 
     configuración. Esta sintaxis es muy específica de cada directiva, y se 
@@ -139,7 +139,7 @@
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="Default" id="Default">Por defecto</a></h2>
+<h2><a name="Default" id="Default">Por defecto</a><a title="Enlace permanente" href="#Default" class="permalink">&para;</a></h2>
 
     <p>Si la directiva tiene un valor por defecto (<em>p.ej.</em>, si
     la omite de la configuración completamente, el servidor Web Apache
@@ -151,7 +151,7 @@
     con el servidor.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="Context" id="Context">Contexto</a></h2>
+<h2><a name="Context" id="Context">Contexto</a><a title="Enlace permanente" href="#Context" class="permalink">&para;</a></h2>
 
     <p>Esto indica dónde se acepta la directiva en los ficheros de 
     configuración. Es una lista separada por comas para uno o más de los 
@@ -205,7 +205,7 @@
     o <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="Override" id="Override">Override</a></h2>
+<h2><a name="Override" id="Override">Override</a><a title="Enlace permanente" href="#Override" class="permalink">&para;</a></h2>
 
     <p>Este atributo de directiva indica qué Override de configuración debe 
     estar activo para que la directiva se procese cuando aparece en un fichero 
@@ -221,7 +221,7 @@
     los posibles nombres de Override disponibles.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="Status" id="Status">Estado</a></h2>
+<h2><a name="Status" id="Status">Estado</a><a title="Enlace permanente" href="#Status" class="permalink">&para;</a></h2>
 
     <p>Esto indica cuan vinculada está esta directiva al servidor Web de Apache; 
     o en otras palabras, puede que necesite recompilar el servidor con un 
@@ -271,13 +271,13 @@
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="Module" id="Module">Módulo</a></h2>
+<h2><a name="Module" id="Module">Módulo</a><a title="Enlace permanente" href="#Module" class="permalink">&para;</a></h2>
 
     <p>Ésto simplemente hace referencia al nombre del módulo original que provee 
     la directiva.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="Compatibility" id="Compatibility">Compatibilidad</a></h2>
+<h2><a name="Compatibility" id="Compatibility">Compatibilidad</a><a title="Enlace permanente" href="#Compatibility" class="permalink">&para;</a></h2>
 
     <p>Si la directiva no era parte de la distribución original de Apache 
     versión 2, la versión en la que se introdujo debería estar referida aquí. 

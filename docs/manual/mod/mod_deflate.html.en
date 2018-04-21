@@ -69,7 +69,7 @@ content</a></li>
 <li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="supportedencodings" id="supportedencodings">Supported Encodings</a></h2>
+<h2><a name="supportedencodings" id="supportedencodings">Supported Encodings</a><a title="Permanent link" href="#supportedencodings" class="permalink">&para;</a></h2>
   <p>The <code>gzip</code> encoding is the only one supported to ensure complete compatibility
   with old browser implementations. The <code>deflate</code> encoding is not supported, 
   please check the <a href="http://www.gzip.org/zlib/zlib_faq.html#faq38">zlib's documentation</a>
@@ -77,7 +77,7 @@ content</a></li>
   </p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="recommended" id="recommended">Sample Configurations</a></h2>
+<h2><a name="recommended" id="recommended">Sample Configurations</a><a title="Permanent link" href="#recommended" class="permalink">&para;</a></h2>
     <div class="warning"><h3>Compression and TLS</h3>
         <p>Some web applications are vulnerable to an information disclosure
         attack when a TLS connection carries deflate compressed data. For more
@@ -90,7 +90,7 @@ content</a></li>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="enable" id="enable">Enabling Compression</a></h2>
+<h2><a name="enable" id="enable">Enabling Compression</a><a title="Permanent link" href="#enable" class="permalink">&para;</a></h2>
     <div class="warning"><h3>Compression and TLS</h3>
         <p>Some web applications are vulnerable to an information disclosure
         attack when a TLS connection carries deflate compressed data. For more
@@ -173,7 +173,7 @@ SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip</pre>
     
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="proxies" id="proxies">Dealing with proxy servers</a></h2>
+<h2><a name="proxies" id="proxies">Dealing with proxy servers</a><a title="Permanent link" href="#proxies" class="permalink">&para;</a></h2>
 
     <p>The <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> module sends a <code>Vary:
     Accept-Encoding</code> HTTP response header to alert proxies that
@@ -202,7 +202,7 @@ SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip</pre>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="precompressed" id="precompressed">Serving pre-compressed
-content</a></h2>
+content</a><a title="Permanent link" href="#precompressed" class="permalink">&para;</a></h2>
 
     <p>Since <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> re-compresses content each
     time a request is made, some performance benefit can be derived by
@@ -235,7 +235,7 @@ content</a></h2>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DeflateAlterETag" id="DeflateAlterETag">DeflateAlterETag</a> <a name="deflatealteretag" id="deflatealteretag">Directive</a></h2>
+<div class="directive-section"><h2><a name="DeflateAlterETag" id="DeflateAlterETag">DeflateAlterETag</a> <a name="deflatealteretag" id="deflatealteretag">Directive</a><a title="Permanent link" href="#deflatealteretag" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>How the outgoing ETag header should be modified during compression</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DeflateAlterETag AddSuffix|NoChange|Remove</code></td></tr>
@@ -265,7 +265,7 @@ content</a></h2>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DeflateBufferSize" id="DeflateBufferSize">DeflateBufferSize</a> <a name="deflatebuffersize" id="deflatebuffersize">Directive</a></h2>
+<div class="directive-section"><h2><a name="DeflateBufferSize" id="DeflateBufferSize">DeflateBufferSize</a> <a name="deflatebuffersize" id="deflatebuffersize">Directive</a><a title="Permanent link" href="#deflatebuffersize" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fragment size to be compressed at one time by zlib</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DeflateBufferSize <var>value</var></code></td></tr>
@@ -287,7 +287,7 @@ content</a></h2>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DeflateCompressionLevel" id="DeflateCompressionLevel">DeflateCompressionLevel</a> <a name="deflatecompressionlevel" id="deflatecompressionlevel">Directive</a></h2>
+<div class="directive-section"><h2><a name="DeflateCompressionLevel" id="DeflateCompressionLevel">DeflateCompressionLevel</a> <a name="deflatecompressionlevel" id="deflatecompressionlevel">Directive</a><a title="Permanent link" href="#deflatecompressionlevel" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>How much compression do we apply to the output</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DeflateCompressionLevel <var>value</var></code></td></tr>
@@ -304,7 +304,7 @@ content</a></h2>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DeflateFilterNote" id="DeflateFilterNote">DeflateFilterNote</a> <a name="deflatefilternote" id="deflatefilternote">Directive</a></h2>
+<div class="directive-section"><h2><a name="DeflateFilterNote" id="DeflateFilterNote">DeflateFilterNote</a> <a name="deflatefilternote" id="deflatefilternote">Directive</a><a title="Permanent link" href="#deflatefilternote" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Places the compression ratio in a note for logging</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DeflateFilterNote [<var>type</var>] <var>notename</var></code></td></tr>
@@ -357,7 +357,7 @@ CustomLog "logs/deflate_log" deflate</pre>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DeflateInflateLimitRequestBody" id="DeflateInflateLimitRequestBody">DeflateInflateLimitRequestBody</a> <a name="deflateinflatelimitrequestbody" id="deflateinflatelimitrequestbody">Directive</a></h2>
+<div class="directive-section"><h2><a name="DeflateInflateLimitRequestBody" id="DeflateInflateLimitRequestBody">DeflateInflateLimitRequestBody</a> <a name="deflateinflatelimitrequestbody" id="deflateinflatelimitrequestbody">Directive</a><a title="Permanent link" href="#deflateinflatelimitrequestbody" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum size of inflated request bodies</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DeflateInflateLimitRequestBody<var>value</var></code></td></tr>
@@ -375,7 +375,7 @@ CustomLog "logs/deflate_log" deflate</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DeflateInflateRatioBurst" id="DeflateInflateRatioBurst">DeflateInflateRatioBurst</a> <a name="deflateinflateratioburst" id="deflateinflateratioburst">Directive</a></h2>
+<div class="directive-section"><h2><a name="DeflateInflateRatioBurst" id="DeflateInflateRatioBurst">DeflateInflateRatioBurst</a> <a name="deflateinflateratioburst" id="deflateinflateratioburst">Directive</a><a title="Permanent link" href="#deflateinflateratioburst" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum number of times the inflation ratio for request bodies
              can be crossed</td></tr>
@@ -394,7 +394,7 @@ CustomLog "logs/deflate_log" deflate</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DeflateInflateRatioLimit" id="DeflateInflateRatioLimit">DeflateInflateRatioLimit</a> <a name="deflateinflateratiolimit" id="deflateinflateratiolimit">Directive</a></h2>
+<div class="directive-section"><h2><a name="DeflateInflateRatioLimit" id="DeflateInflateRatioLimit">DeflateInflateRatioLimit</a> <a name="deflateinflateratiolimit" id="deflateinflateratiolimit">Directive</a><a title="Permanent link" href="#deflateinflateratiolimit" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum inflation ratio for request bodies</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DeflateInflateRatioLimit <var>value</var></code></td></tr>
@@ -414,7 +414,7 @@ CustomLog "logs/deflate_log" deflate</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DeflateMemLevel" id="DeflateMemLevel">DeflateMemLevel</a> <a name="deflatememlevel" id="deflatememlevel">Directive</a></h2>
+<div class="directive-section"><h2><a name="DeflateMemLevel" id="DeflateMemLevel">DeflateMemLevel</a> <a name="deflatememlevel" id="deflatememlevel">Directive</a><a title="Permanent link" href="#deflatememlevel" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>How much memory should be used by zlib for compression</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DeflateMemLevel <var>value</var></code></td></tr>
@@ -429,7 +429,7 @@ CustomLog "logs/deflate_log" deflate</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DeflateWindowSize" id="DeflateWindowSize">DeflateWindowSize</a> <a name="deflatewindowsize" id="deflatewindowsize">Directive</a></h2>
+<div class="directive-section"><h2><a name="DeflateWindowSize" id="DeflateWindowSize">DeflateWindowSize</a> <a name="deflatewindowsize" id="deflatewindowsize">Directive</a><a title="Permanent link" href="#deflatewindowsize" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Zlib compression window size</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DeflateWindowSize <var>value</var></code></td></tr>

@@ -47,7 +47,7 @@
 </ul><h3>참고</h3><ul class="seealso"><li><a href="programs/httpd.html">httpd</a></li><li><a href="programs/apachectl.html">apachectl</a></li><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="introduction" id="introduction">소개</a></h2>
+<h2><a name="introduction" id="introduction">소개</a><a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
 
     <p>아파치를 중단하고 재시작하려면 실행하고 있는
     <code>httpd</code> 프로세스에 시그널을 보내야 한다. 시그널을
@@ -77,7 +77,7 @@
     <p>위 예를 당신의 <code class="directive"><a href="./mod/core.html#serverroot">ServerRoot</a></code>와 <code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code> 설정에 알맞게 수정하라.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="term" id="term">당장 중단</a></h2>
+<h2><a name="term" id="term">당장 중단</a><a title="Permanent link" href="#term" class="permalink">&para;</a></h2>
 
 <dl><dt>시그널: TERM</dt>
 <dd><code>apachectl -k stop</code></dd>
@@ -89,7 +89,7 @@
     중단되고, 더 이상 요청을 받지않는다.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="graceful" id="graceful">점잖은 재시작</a></h2>
+<h2><a name="graceful" id="graceful">점잖은 재시작</a><a title="Permanent link" href="#graceful" class="permalink">&para;</a></h2>
 
 <dl><dt>시그널: USR1</dt>
 <dd><code>apachectl -k graceful</code></dd>
@@ -151,7 +151,7 @@
     점잖은 재시작을 하기전에 오류를 고쳐야한다.</div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="hup" id="hup">당장 재시작</a></h2>
+<h2><a name="hup" id="hup">당장 재시작</a><a title="Permanent link" href="#hup" class="permalink">&para;</a></h2>
 
 <dl><dt>시그널: HUP</dt>
 <dd><code>apachectl -k restart</code></dd>
@@ -170,7 +170,7 @@
 않고 오류를 내며 종료할 것이다. 이를 피하는 방법은 위를 참고하라.</div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="race" id="race">부록: 시그널과 레이스 컨디션</a></h2>
+<h2><a name="race" id="race">부록: 시그널과 레이스 컨디션</a><a title="Permanent link" href="#race" class="permalink">&para;</a></h2>
 
     <p>Apache 1.2b9 이전에는 재시작과 종료 시그널에 관계된
     <em>레이스 컨디션(race condition)</em>이 있었다. (레이스

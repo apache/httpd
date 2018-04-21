@@ -94,12 +94,12 @@
 </ul><h3 class="directives">Directivas</h3>
 <p>Este módulo no suministra ninguna
             directiva.</p>
-<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_status">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_status">Report a bug</a></li></ul><h3>Consulte también</h3>
+<h3>Lista de comprobación de errores corregidos</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd historial de cambios</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_status">Problemas Conocidos</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_status">Reportar un error</a></li></ul><h3>Consulte también</h3>
 <ul class="seealso">
 <li><a href="#comments_section">Comentarios</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="enable" id="enable">Activando el Soporte de Estado</a></h2>
+<h2><a name="enable" id="enable">Activando el Soporte de Estado</a><a title="Enlace permanente" href="#enable" class="permalink">&para;</a></h2>
     
 
     <p>Para activar los reportes de estado para navegadores tán solo desde el 
@@ -116,7 +116,7 @@
     <code>http://your.server.name/server-status</code></p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="autoupdate" id="autoupdate">Actualizaciones Automáticas</a></h2>
+<h2><a name="autoupdate" id="autoupdate">Actualizaciones Automáticas</a><a title="Enlace permanente" href="#autoupdate" class="permalink">&para;</a></h2>
 
     
     <p>Puede hacer que la página de estado se actualice automáticamente si tiene
@@ -126,7 +126,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="machinereadable" id="machinereadable">Fichero de Estado legible por máquina</a></h2>
+<h2><a name="machinereadable" id="machinereadable">Fichero de Estado legible por máquina</a><a title="Enlace permanente" href="#machinereadable" class="permalink">&para;</a></h2>
 
     
     <p>Una versión legible por máquina del fichero de estado está disponible
@@ -138,7 +138,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="troubleshoot" id="troubleshoot">Usando server-status para identificar problemas</a></h2>
+<h2><a name="troubleshoot" id="troubleshoot">Usando server-status para identificar problemas</a><a title="Enlace permanente" href="#troubleshoot" class="permalink">&para;</a></h2>
     
 
     <p>La página <code>server-status</code> puede usarse como un lugar donde

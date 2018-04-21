@@ -46,7 +46,7 @@ changes on a per-directory basis.</p>
 </ul><h3>See also</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="related" id="related">.htaccess files</a></h2>
+<h2><a name="related" id="related">.htaccess files</a><a title="Permanent link" href="#related" class="permalink">&para;</a></h2>
     <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="../mod/core.html">core</a></code></li><li><code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code></li><li><code class="module"><a href="../mod/mod_authz_groupfile.html">mod_authz_groupfile</a></code></li><li><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code></li><li><code class="module"><a href="../mod/mod_include.html">mod_include</a></code></li><li><code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/core.html#accessfilename">AccessFileName</a></code></li><li><code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code></li><li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li><li><code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code></li><li><code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code></li><li><code class="directive"><a href="../mod/mod_authn_core.html#authtype">AuthType</a></code></li><li><code class="directive"><a href="../mod/mod_authn_core.html#authname">AuthName</a></code></li><li><code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code></li><li><code class="directive"><a href="../mod/mod_authz_groupfile.html#authgroupfile">AuthGroupFile</a></code></li><li><code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code></li></ul></td></tr></table>
 
     <div class="note">You should avoid using <code>.htaccess</code> files completely if you have access to
@@ -54,7 +54,7 @@ changes on a per-directory basis.</p>
     Any directive that you can include in a <code>.htaccess</code> file is better set in a <code class="directive"><a href="../mod/core.html#directory">Directory</a></code> block, as it will have the same effect with better performance.</div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="what" id="what">What they are/How to use them</a></h2>
+<h2><a name="what" id="what">What they are/How to use them</a><a title="Permanent link" href="#what" class="permalink">&para;</a></h2>
 
 
     <p><code>.htaccess</code> files (or "distributed configuration files")
@@ -108,7 +108,7 @@ changes on a per-directory basis.</p>
     directive, and check the Context line for ".htaccess".</p>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="when" id="when">When (not) to use .htaccess files</a></h2>
+<h2><a name="when" id="when">When (not) to use .htaccess files</a><a title="Permanent link" href="#when" class="permalink">&para;</a></h2>
 
     <p>In general, you should only use <code>.htaccess</code> files when
     you don't have access to the main server configuration file. There is,
@@ -219,7 +219,7 @@ changes on a per-directory basis.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="how" id="how">How directives are applied</a></h2>
+<h2><a name="how" id="how">How directives are applied</a><a title="Permanent link" href="#how" class="permalink">&para;</a></h2>
 
     <p>The configuration directives found in a <code>.htaccess</code> file
     are applied to the directory in which the <code>.htaccess</code> file
@@ -282,7 +282,7 @@ changes on a per-directory basis.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="auth" id="auth">Authentication example</a></h2>
+<h2><a name="auth" id="auth">Authentication example</a><a title="Permanent link" href="#auth" class="permalink">&para;</a></h2>
 
     <p>If you jumped directly to this part of the document to find out how
     to do authentication, it is important to note one thing. There is a
@@ -315,7 +315,7 @@ Require group admins</pre>
     more complete discussion of authentication and authorization.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="ssi" id="ssi">Server Side Includes example</a></h2>
+<h2><a name="ssi" id="ssi">Server Side Includes example</a><a title="Permanent link" href="#ssi" class="permalink">&para;</a></h2>
 
     <p>Another common use of <code>.htaccess</code> files is to enable
     Server Side Includes for a particular directory. This may be done with
@@ -335,7 +335,7 @@ AddHandler server-parsed shtml</pre>
     complete discussion of server-side includes.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="rewrite" id="rewrite">Rewrite Rules in .htaccess files</a></h2>
+<h2><a name="rewrite" id="rewrite">Rewrite Rules in .htaccess files</a><a title="Permanent link" href="#rewrite" class="permalink">&para;</a></h2>
 <p>When using <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> in
 <code>.htaccess</code> files, be aware that the per-directory context
 changes things a bit. In particular, rules are taken to be relative to
@@ -363,7 +363,7 @@ further details on using <code>mod_rewrite</code>.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="cgi" id="cgi">CGI example</a></h2>
+<h2><a name="cgi" id="cgi">CGI example</a><a title="Permanent link" href="#cgi" class="permalink">&para;</a></h2>
 
     <p>Finally, you may wish to use a <code>.htaccess</code> file to permit
     the execution of CGI programs in a particular directory. This may be
@@ -390,7 +390,7 @@ SetHandler cgi-script</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="troubleshoot" id="troubleshoot">Troubleshooting</a></h2>
+<h2><a name="troubleshoot" id="troubleshoot">Troubleshooting</a><a title="Permanent link" href="#troubleshoot" class="permalink">&para;</a></h2>
 
     <p>When you put configuration directives in a <code>.htaccess</code>
     file, and you don't get the desired effect, there are a number of

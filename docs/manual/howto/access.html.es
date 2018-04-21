@@ -40,7 +40,7 @@
 </ul><h3>Consulte también</h3><ul class="seealso"><li><a href="#comments_section">Comentarios</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="related" id="related">Módulos y Directivas relacionados</a></h2>
+<h2><a name="related" id="related">Módulos y Directivas relacionados</a><a title="Enlace permanente" href="#related" class="permalink">&para;</a></h2>
 
     <p>El control de acceso puede efectuarse mediante diferentes módulos. Los 
     más importantes de éstos son <code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code> y
@@ -49,7 +49,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="host" id="host">Control de Acceso por host</a></h2>
+<h2><a name="host" id="host">Control de Acceso por host</a><a title="Enlace permanente" href="#host" class="permalink">&para;</a></h2>
     <p>
     Si lo que se quiere es restringir algunas zonas del sitio web, basándonos
     en la dirección del visitante, esto puede ser realizado de manera 
@@ -128,7 +128,7 @@ Require not host gov</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="env" id="env">Control de acceso por variables arbitrarias.</a></h2>
+<h2><a name="env" id="env">Control de acceso por variables arbitrarias.</a><a title="Enlace permanente" href="#env" class="permalink">&para;</a></h2>
 
     <p>Haciendo el uso de <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code>,
     puedes permitir o denegar el acceso basado en variables de entrono arbitrarias
@@ -162,7 +162,7 @@ Require not host gov</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="rewrite" id="rewrite">Control de acceso con mod_rewrite</a></h2>
+<h2><a name="rewrite" id="rewrite">Control de acceso con mod_rewrite</a><a title="Enlace permanente" href="#rewrite" class="permalink">&para;</a></h2>
 
     <p>El flag <code>[F]</code> de <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> causa una respuesta 403 Forbidden
     para ser enviada. USando esto, podrá denegar el acceso a recursos basándose
@@ -190,7 +190,7 @@ RewriteRule "^/fridge"     "-"       [F]</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="moreinformation" id="moreinformation">Más información</a></h2>
+<h2><a name="moreinformation" id="moreinformation">Más información</a><a title="Enlace permanente" href="#moreinformation" class="permalink">&para;</a></h2>
 
     <p>El <a href="../expr.html">motor de expresiones</a> le da una gran
     capacidad de poder para hacer una gran variedad de cosas basadas en 

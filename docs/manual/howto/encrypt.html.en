@@ -60,7 +60,7 @@
 </ul><h3>See also</h3><ul class="seealso"><li><a href="../ssl/ssl_howto.html">SSL How-To</a></li><li><a href="../mod/mod_ssl.html">mod_ssl</a></li><li><a href="../mod/mod_md.html">mod_md</a></li><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="protocol" id="protocol">A short Introduction Certificates, e.g. Internet Passports</a></h2>
+<h2><a name="protocol" id="protocol">A short Introduction Certificates, e.g. Internet Passports</a><a title="Permanent link" href="#protocol" class="permalink">&para;</a></h2>
     
     <p>
     The TLS protocol (formerly known as SSL) is a way a client and a server 
@@ -129,7 +129,7 @@
     </p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="buycert" id="buycert">Buy a Certificate</a></h2>
+<h2><a name="buycert" id="buycert">Buy a Certificate</a><a title="Permanent link" href="#buycert" class="permalink">&para;</a></h2>
     
     <p>
     Well, you can buy one. There are a lot of companies selling Internet Passports as a service. In
@@ -153,7 +153,7 @@
     </p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="freecert" id="freecert">Get a Free Certificate</a></h2>
+<h2><a name="freecert" id="freecert">Get a Free Certificate</a><a title="Permanent link" href="#freecert" class="permalink">&para;</a></h2>
     
     <p>
     There are also companies that offer certificates for web servers free of charge. The pioneer

@@ -62,7 +62,7 @@
 <li><a href="#comments_section">コメント</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="order" id="order">処理の順番</a></h2>
+<h2><a name="order" id="order">処理の順番</a><a title="Permanent link" href="#order" class="permalink">&para;</a></h2>
 
     <p><code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code> のディレクティブはサーバ設定のほぼどこにでも
     書くことができ、影響する範囲を<a href="../sections.html">設定用セクション</a>で囲むことで限定する
@@ -81,7 +81,7 @@
     逆になっていると、MirrorID ヘッダは "mirror 12" に設定されます。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="early" id="early">早期処理、後期処理</a></h2>
+<h2><a name="early" id="early">早期処理、後期処理</a><a title="Permanent link" href="#early" class="permalink">&para;</a></h2>
     <p><code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code> では、リクエストの早期か後期かの
     どちらで適用するかを選べます。通常は後期モードで、
     コンテンツ生成が実行される直前にリクエストヘッダがセットされ、
@@ -103,7 +103,7 @@
     できません。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="examples" id="examples">例</a></h2>
+<h2><a name="examples" id="examples">例</a><a title="Permanent link" href="#examples" class="permalink">&para;</a></h2>
 
     <ol>
       <li>リクエストヘッダ中の "TS" で始まるフィールドをすべて応答ヘッダに
@@ -164,7 +164,7 @@
     </ol>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Header" id="Header">Header</a> <a name="header" id="header">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="Header" id="Header">Header</a> <a name="header" id="header">ディレクティブ</a><a title="Permanent link" href="#header" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>HTTP 応答ヘッダの設定</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>Header [<var>condition</var>] set|append|add|unset|echo
@@ -281,7 +281,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RequestHeader" id="RequestHeader">RequestHeader</a> <a name="requestheader" id="requestheader">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="RequestHeader" id="RequestHeader">RequestHeader</a> <a name="requestheader" id="requestheader">ディレクティブ</a><a title="Permanent link" href="#requestheader" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>HTTP リクエストヘッダの設定</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>RequestHeader set|append|add|unset <var>header</var>

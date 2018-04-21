@@ -72,7 +72,7 @@
 <li><a href="#comments_section">コメント</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthDBMType" id="AuthDBMType">AuthDBMType</a> <a name="authdbmtype" id="authdbmtype">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="AuthDBMType" id="AuthDBMType">AuthDBMType</a> <a name="authdbmtype" id="authdbmtype">ディレクティブ</a><a title="Permanent link" href="#authdbmtype" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>パスワードを保存するために必要なデータベースファイルの種類を
 設定する</td></tr>
@@ -92,7 +92,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthDBMUserFile" id="AuthDBMUserFile">AuthDBMUserFile</a> <a name="authdbmuserfile" id="authdbmuserfile">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="AuthDBMUserFile" id="AuthDBMUserFile">AuthDBMUserFile</a> <a name="authdbmuserfile" id="authdbmuserfile">ディレクティブ</a><a title="Permanent link" href="#authdbmuserfile" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>認証用のユーザとパスワードのリストを保持している
 データベースファイル名を設定する</td></tr>

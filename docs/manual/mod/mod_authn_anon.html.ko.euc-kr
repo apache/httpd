@@ -71,7 +71,7 @@
 <li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="example" id="example">예제</a></h2>
+<h2><a name="example" id="example">예제</a><a title="Permanent link" href="#example" class="permalink">&para;</a></h2>
     <p>다음 예는 "일반적인" htpasswd-파일기반 인증에 추가로
     사용자가 다음 조건을 만족한다면 '손님(guest)'으로 접근할
     수 있도록 한다:</p>
@@ -115,7 +115,7 @@
     </code></p></div>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Anonymous" id="Anonymous">Anonymous</a> <a name="anonymous" id="anonymous">지시어</a></h2>
+<div class="directive-section"><h2><a name="Anonymous" id="Anonymous">Anonymous</a> <a name="anonymous" id="anonymous">지시어</a><a title="Permanent link" href="#anonymous" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>암호검사없이 접근을 허용할 사용자 아이디들을
 지정한다</td></tr>
@@ -147,7 +147,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Anonymous_LogEmail" id="Anonymous_LogEmail">Anonymous_LogEmail</a> <a name="anonymous_logemail" id="anonymous_logemail">지시어</a></h2>
+<div class="directive-section"><h2><a name="Anonymous_LogEmail" id="Anonymous_LogEmail">Anonymous_LogEmail</a> <a name="anonymous_logemail" id="anonymous_logemail">지시어</a><a title="Permanent link" href="#anonymous_logemail" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>입력한 암호를 오류로그에 기록할지 여부</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>Anonymous_LogEmail On|Off</code></td></tr>
@@ -162,7 +162,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Anonymous_MustGiveEmail" id="Anonymous_MustGiveEmail">Anonymous_MustGiveEmail</a> <a name="anonymous_mustgiveemail" id="anonymous_mustgiveemail">지시어</a></h2>
+<div class="directive-section"><h2><a name="Anonymous_MustGiveEmail" id="Anonymous_MustGiveEmail">Anonymous_MustGiveEmail</a> <a name="anonymous_mustgiveemail" id="anonymous_mustgiveemail">지시어</a><a title="Permanent link" href="#anonymous_mustgiveemail" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>암호가 없어도 가능한지 여부</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>Anonymous_MustGiveEmail On|Off</code></td></tr>
@@ -177,7 +177,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Anonymous_NoUserID" id="Anonymous_NoUserID">Anonymous_NoUserID</a> <a name="anonymous_nouserid" id="anonymous_nouserid">지시어</a></h2>
+<div class="directive-section"><h2><a name="Anonymous_NoUserID" id="Anonymous_NoUserID">Anonymous_NoUserID</a> <a name="anonymous_nouserid" id="anonymous_nouserid">지시어</a><a title="Permanent link" href="#anonymous_nouserid" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>사용자 아이디가 없어도 가능하지 여부</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>Anonymous_NoUserID On|Off</code></td></tr>
@@ -194,7 +194,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Anonymous_VerifyEmail" id="Anonymous_VerifyEmail">Anonymous_VerifyEmail</a> <a name="anonymous_verifyemail" id="anonymous_verifyemail">지시어</a></h2>
+<div class="directive-section"><h2><a name="Anonymous_VerifyEmail" id="Anonymous_VerifyEmail">Anonymous_VerifyEmail</a> <a name="anonymous_verifyemail" id="anonymous_verifyemail">지시어</a><a title="Permanent link" href="#anonymous_verifyemail" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>암호가 올바른 형식의 전자우편 주소인지 검사
 여부</td></tr>

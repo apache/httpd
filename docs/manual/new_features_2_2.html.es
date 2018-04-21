@@ -43,7 +43,7 @@
 </ul><h3>Consulte también</h3><ul class="seealso"><li><a href="#comments_section">Comentarios</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="core" id="core">Mejoras principales</a></h2>
+<h2><a name="core" id="core">Mejoras principales</a><a title="Enlace permanente" href="#core" class="permalink">&para;</a></h2>
     
     <dl>
 
@@ -127,7 +127,7 @@
     </dl>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="module" id="module">Mejoras en Módulos</a></h2>
+<h2><a name="module" id="module">Mejoras en Módulos</a><a title="Enlace permanente" href="#module" class="permalink">&para;</a></h2>
     
     <dl>
       <dt>Autenticación y Autorización</dt>
@@ -182,7 +182,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="programs" id="programs">Mejoras de Programas</a></h2>
+<h2><a name="programs" id="programs">Mejoras de Programas</a><a title="Enlace permanente" href="#programs" class="permalink">&para;</a></h2>
     
     <dl>
       <dt><code class="program"><a href="./programs/httpd.html">httpd</a></code></dt>
@@ -200,7 +200,7 @@
     </dl>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="developer" id="developer">Cambios para desarrolladores de Módulos</a></h2>
+<h2><a name="developer" id="developer">Cambios para desarrolladores de Módulos</a><a title="Enlace permanente" href="#developer" class="permalink">&para;</a></h2>
     
     <dl>
       <dt><a class="glossarylink" href="./glossary.html#apr" title="ver glosario">APR</a> 1.0 API</dt>

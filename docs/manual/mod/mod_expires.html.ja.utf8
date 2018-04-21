@@ -73,7 +73,7 @@
 <li><a href="#comments_section">コメント</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="AltSyn" id="AltSyn">代替期間指定構文</a></h2>
+<h2><a name="AltSyn" id="AltSyn">代替期間指定構文</a><a title="Permanent link" href="#AltSyn" class="permalink">&para;</a></h2>
    
     <p><code class="directive"><a href="#expiresdefault">ExpiresDefault</a></code> ディレクティブと
     <code class="directive"><a href="#expiresbytype">ExpiresByType</a></code> ディレクティブは
@@ -135,7 +135,7 @@
     してください。そのようなコンテンツには修正時刻は存在しないからです。</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ExpiresActive" id="ExpiresActive">ExpiresActive</a> <a name="expiresactive" id="expiresactive">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="ExpiresActive" id="ExpiresActive">ExpiresActive</a> <a name="expiresactive" id="expiresactive">ディレクティブ</a><a title="Permanent link" href="#expiresactive" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td><code>Expires</code> ヘッダの生成を有効にする</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ExpiresActive On|Off</code></td></tr>
@@ -164,7 +164,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ExpiresByType" id="ExpiresByType">ExpiresByType</a> <a name="expiresbytype" id="expiresbytype">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="ExpiresByType" id="ExpiresByType">ExpiresByType</a> <a name="expiresbytype" id="expiresbytype">ディレクティブ</a><a title="Permanent link" href="#expiresbytype" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>MIME タイプによって設定される <code>Expires</code> ヘッダの値</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ExpiresByType <var>MIME-type</var>
@@ -218,7 +218,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ExpiresDefault" id="ExpiresDefault">ExpiresDefault</a> <a name="expiresdefault" id="expiresdefault">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="ExpiresDefault" id="ExpiresDefault">ExpiresDefault</a> <a name="expiresdefault" id="expiresdefault">ディレクティブ</a><a title="Permanent link" href="#expiresdefault" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>期限切れ期日を計算するデフォルトアルゴリズム</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ExpiresDefault <var>&lt;code&gt;seconds</var></code></td></tr>

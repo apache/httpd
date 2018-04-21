@@ -61,7 +61,7 @@ tablas de correspondencia con lo usado por mod_ssl, se detallan a continuación.
 </ul><h3>Consulte también</h3><ul class="seealso"><li><a href="#comments_section">Comentarios</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="configuration" id="configuration">Directivas de Configuración</a></h2>
+<h2><a name="configuration" id="configuration">Directivas de Configuración</a><a title="Enlace permanente" href="#configuration" class="permalink">&para;</a></h2>
 <p>La correspondencia entre las directivas de configuración usadas por
 Apache-SSL 1.x y mod_ssl 2.0.x se dan en la <a href="#table1">Tabla
 1</a>. La correspondencia de Sioux 1.x y Stronghold 2.x es solo parcial 
@@ -123,7 +123,7 @@ debido a funcionalidades especiales en estas interfaces que mod_ssl no proporcio
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="variables" id="variables">Variables de Entorno</a></h2>
+<h2><a name="variables" id="variables">Variables de Entorno</a><a title="Enlace permanente" href="#variables" class="permalink">&para;</a></h2>
 
 <p>Correlación entre las variables de entorno usadas por soluciones antiguas de SSL y las usadas
 por <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> que se muestran en la <a href="#table2">Table 2</a>.</p>
@@ -200,7 +200,7 @@ por <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> que se
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="customlog" id="customlog">Funciones Personalizadas de Log</a></h2>
+<h2><a name="customlog" id="customlog">Funciones Personalizadas de Log</a><a title="Enlace permanente" href="#customlog" class="permalink">&para;</a></h2>
 <p>
 Cuando está habilitado el módulo <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>, existen funciones adicionales
 para el <a href="../mod/mod_log_config.html#formats">Formato de Log Personalizado</a> 

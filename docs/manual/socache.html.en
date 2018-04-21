@@ -35,7 +35,7 @@
   </div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="providers" id="providers">Shared Object Cache Providers</a></h2>
+<h2><a name="providers" id="providers">Shared Object Cache Providers</a><a title="Permanent link" href="#providers" class="permalink">&para;</a></h2>
     
     <p>The shared object cache as such is an abstraction.  Four different
     modules implement it.  To use the cache, one or more of these modules
@@ -58,6 +58,9 @@
     distributed session caching libraries.</dd>
     <dt>"memcache" (<code class="module"><a href="./mod/mod_socache_memcache.html">mod_socache_memcache</a></code>)</dt>
     <dd>This makes use of the <a href="http://memcached.org/">memcached</a>
+    high-performance, distributed memory object caching system.</dd>
+    <dt>"redis" (<code class="module"><a href="./mod/mod_socache_redis.html">mod_socache_redis</a></code>)</dt>
+    <dd>This makes use of the <a href="http://redis.io/">Redis</a>
     high-performance, distributed memory object caching system.</dd>
     <dt>"shmcb" (<code class="module"><a href="./mod/mod_socache_shmcb.html">mod_socache_shmcb</a></code>)</dt>
     <dd>This makes use of a high-performance cyclic buffer inside a

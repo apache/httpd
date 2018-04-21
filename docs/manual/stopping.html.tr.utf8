@@ -48,7 +48,7 @@
 </ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><code class="program"><a href="./programs/httpd.html">httpd</a></code></li><li><code class="program"><a href="./programs/apachectl.html">apachectl</a></code></li><li><a href="invoking.html">Başlatma</a></li><li><a href="#comments_section">Yorum</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="introduction" id="introduction">Giriş</a></h2>
+<h2><a name="introduction" id="introduction">Giriş</a><a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
 
     <p>Apache HTTP Sunucusunu durdurmak ve yeniden başlatmak için çalışan
       <code class="program"><a href="./programs/httpd.html">httpd</a></code> süreçlerine bir sinyal göndermeniz gerekir.
@@ -91,7 +91,7 @@
       ayarlara uygun olarak değiştirdikten sonra kullanınız.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="term" id="term">Hemen Durdur</a></h2>
+<h2><a name="term" id="term">Hemen Durdur</a><a title="Permanent link" href="#term" class="permalink">&para;</a></h2>
 
   <dl><dt>Sinyal: TERM</dt>
     <dd><code>apachectl -k stop</code></dd>
@@ -104,7 +104,7 @@
       sonlandırılacak ve artık isteklere yanıt verilmeyecektir.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="graceful" id="graceful">Nazikçe Yeniden Başlat</a></h2>
+<h2><a name="graceful" id="graceful">Nazikçe Yeniden Başlat</a><a title="Permanent link" href="#graceful" class="permalink">&para;</a></h2>
 
   <dl><dt>Sinyal: USR1</dt>
     <dd><code>apachectl -k graceful</code></dd>
@@ -171,7 +171,7 @@
       düzeltmeniz gerekir.</p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="hup" id="hup">Hemen Yeniden Başlat</a></h2>
+<h2><a name="hup" id="hup">Hemen Yeniden Başlat</a><a title="Permanent link" href="#hup" class="permalink">&para;</a></h2>
 
   <dl><dt>Sinyal: HUP</dt>
     <dd><code>apachectl -k restart</code></dd>
@@ -194,7 +194,7 @@
       hatalarıyla ilgili bildirim alırsınız.</div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="gracefulstop" id="gracefulstop">Nazikçe Durdur</a></h2>
+<h2><a name="gracefulstop" id="gracefulstop">Nazikçe Durdur</a><a title="Permanent link" href="#gracefulstop" class="permalink">&para;</a></h2>
 
   <dl><dt>Sinyal: WINCH</dt>
     <dd><code>apachectl -k graceful-stop</code></dd>

@@ -44,7 +44,7 @@
 </ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_http2.html">mod_http2</a></li><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="protocol" id="protocol">The HTTP/2 protocol</a></h2>
+<h2><a name="protocol" id="protocol">The HTTP/2 protocol</a><a title="Permanent link" href="#protocol" class="permalink">&para;</a></h2>
     
     <p>HTTP/2 is the evolution of the world's most successful application layer protocol, HTTP.
     It focuses on making more efficient use of network resources. It does not change the fundamentals
@@ -70,7 +70,7 @@
     </ul>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="implementation" id="implementation">HTTP/2 in Apache httpd</a></h2>
+<h2><a name="implementation" id="implementation">HTTP/2 in Apache httpd</a><a title="Permanent link" href="#implementation" class="permalink">&para;</a></h2>
     
     <p>The HTTP/2 protocol is implemented by its own httpd module, aptly named
     <a href="../mod/mod_http2.html">mod_http2</a>. It implements the complete set
@@ -83,7 +83,7 @@
     can make use of it.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="building" id="building">Build httpd with HTTP/2 support</a></h2>
+<h2><a name="building" id="building">Build httpd with HTTP/2 support</a><a title="Permanent link" href="#building" class="permalink">&para;</a></h2>
     
     <p><a href="../mod/mod_http2.html">mod_http2</a> uses the library of <a href="https://nghttp2.org">nghttp2</a>
     as its implementation base. In order to build <code>mod_http2</code> you need at least version 1.2.1 of
@@ -102,7 +102,7 @@
     at least version 1.0.2.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="basic-config" id="basic-config">Basic Configuration</a></h2>
+<h2><a name="basic-config" id="basic-config">Basic Configuration</a><a title="Permanent link" href="#basic-config" class="permalink">&para;</a></h2>
     
 
     <p>When you have a <code>httpd</code> built with <code>mod_http2</code> you need some
@@ -158,7 +158,7 @@
     how to manage multiple hosts with the same certificate</a>.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="mpm-config" id="mpm-config">MPM Configuration</a></h2>
+<h2><a name="mpm-config" id="mpm-config">MPM Configuration</a><a title="Permanent link" href="#mpm-config" class="permalink">&para;</a></h2>
     
     
     <p>HTTP/2 is supported in all multi-processing modules that come with httpd. However, if
@@ -177,7 +177,7 @@
     that possible. If it breaks, however, you own both parts.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="clients" id="clients">Clients</a></h2>
+<h2><a name="clients" id="clients">Clients</a><a title="Permanent link" href="#clients" class="permalink">&para;</a></h2>
     
     <p>Almost all modern browsers support HTTP/2, but only over SSL connections: Firefox (v43),
     Chrome (v45), Safari (since v9), iOS Safari (v9), Opera (v35), Chrome for Android (v49)
@@ -190,7 +190,7 @@
     most versatile being <a href="https://curl.haxx.se">curl</a>.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="tools" id="tools">Useful tools to debug HTTP/2</a></h2>
+<h2><a name="tools" id="tools">Useful tools to debug HTTP/2</a><a title="Permanent link" href="#tools" class="permalink">&para;</a></h2>
     
     <p>The first tool to mention is of course <a href="https://curl.haxx.se">curl</a>. Please make sure that
     your version supports HTTP/2 checking its <code>Features</code>:</p>
@@ -213,7 +213,7 @@
     <a href="chrome://net-internals/#http2">special net-internals page</a>. There is also an interesting extension for <a href="https://chrome.google.com/webstore/detail/http2-and-spdy-indicator/mpbpobfflnpcgagjijhmgnchggcjblin?hl=en">Chrome</a> and <a href="https://addons.mozilla.org/en-us/firefox/addon/spdy-indicator/">Firefox</a> to visualize when your browser is using HTTP/2.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="push" id="push">Server Push</a></h2>
+<h2><a name="push" id="push">Server Push</a><a title="Permanent link" href="#push" class="permalink">&para;</a></h2>
     
     <p>The HTTP/2 protocol allows the server to PUSH responses to a client it never
     asked for. The tone of the conversation is: "here is a request that you

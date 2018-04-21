@@ -62,7 +62,7 @@
 <li><a href="#comments_section">Comments</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DavLockDB" id="DavLockDB">DavLockDB</a> <a name="davlockdb" id="davlockdb">지시어</a></h2>
+<div class="directive-section"><h2><a name="DavLockDB" id="DavLockDB">DavLockDB</a> <a name="davlockdb" id="davlockdb">지시어</a><a title="Permanent link" href="#davlockdb" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>DAV 잠금 데이터베이스 위치</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>DavLockDB <var>file-path</var></code></td></tr>

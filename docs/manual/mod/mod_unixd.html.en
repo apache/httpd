@@ -48,7 +48,7 @@
 <li><a href="#comments_section">Comments</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ChrootDir" id="ChrootDir">ChrootDir</a> <a name="chrootdir" id="chrootdir">Directive</a></h2>
+<div class="directive-section"><h2><a name="ChrootDir" id="ChrootDir">ChrootDir</a> <a name="chrootdir" id="chrootdir">Directive</a><a title="Permanent link" href="#chrootdir" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Directory for apache to run chroot(8) after startup.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ChrootDir <var>/path/to/directory</var></code></td></tr>
@@ -68,7 +68,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Group" id="Group">Group</a> <a name="group" id="group">Directive</a></h2>
+<div class="directive-section"><h2><a name="Group" id="Group">Group</a> <a name="group" id="group">Directive</a><a title="Permanent link" href="#group" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Group under which the server will answer
 requests</td></tr>
@@ -113,7 +113,7 @@ requests</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Suexec" id="Suexec">Suexec</a> <a name="suexec" id="suexec">Directive</a></h2>
+<div class="directive-section"><h2><a name="Suexec" id="Suexec">Suexec</a> <a name="suexec" id="suexec">Directive</a><a title="Permanent link" href="#suexec" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable or disable the suEXEC feature</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Suexec On|Off</code></td></tr>
@@ -130,7 +130,7 @@ Off otherwise</code></td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="User" id="User">User</a> <a name="user" id="user">Directive</a></h2>
+<div class="directive-section"><h2><a name="User" id="User">User</a> <a name="user" id="user">Directive</a><a title="Permanent link" href="#user" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The userid under which the server will answer
 requests</td></tr>

@@ -46,7 +46,7 @@ Apache HTTP サーバでどのように使用されるかについて解説し�
 </ul><h3>参照</h3><ul class="seealso"><li><a href="#comments_section">コメント</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="introduction" id="introduction">はじめに</a></h2>
+<h2><a name="introduction" id="introduction">はじめに</a><a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
 
     <p>Apache HTTP サーバは異なる幅広い環境、多種多様なプラットホームで
     動作するように、パワフルで柔軟性に富んだ設計になっています。
@@ -97,7 +97,7 @@ Apache HTTP サーバでどのように使用されるかについて解説し�
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="choosing" id="choosing">MPM を選ぶ</a></h2>
+<h2><a name="choosing" id="choosing">MPM を選ぶ</a><a title="Permanent link" href="#choosing" class="permalink">&para;</a></h2>
 
     <p>MPM は設定中に選択して、サーバ内部にコンパイルされなければ
     なりません。
@@ -115,7 +115,7 @@ Apache HTTP サーバでどのように使用されるかについて解説し�
     列挙します。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="defaults" id="defaults">MPM デフォルト値</a></h2>
+<h2><a name="defaults" id="defaults">MPM デフォルト値</a><a title="Permanent link" href="#defaults" class="permalink">&para;</a></h2>
 
 <p>次表に様々な OS 向けのデフォルトの MPM 一覧を掲載しています。
 コンパイル時に意図的に他を選択しなければ、自動的にこれらの MPM

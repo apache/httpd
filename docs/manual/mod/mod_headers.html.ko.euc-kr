@@ -59,7 +59,7 @@
 <li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="order" id="order">처리 순서</a></h2>
+<h2><a name="order" id="order">처리 순서</a><a title="Permanent link" href="#order" class="permalink">&para;</a></h2>
 
     <p><code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code>가 제공하는 지시어는 서버설정의
     거의 모든 장소에서 사용할 수 있으며, <a href="../sections.html">설정 섹션</a>으로 감싸서 지시어의
@@ -77,7 +77,7 @@
     않는다. 반대로 적으면 MirrorID 헤더를 "mirror 12"로 설정한다.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="early" id="early">이른(early) 처리와 늦은(late) 처리</a></h2>
+<h2><a name="early" id="early">이른(early) 처리와 늦은(late) 처리</a><a title="Permanent link" href="#early" class="permalink">&para;</a></h2>
     <p><code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code>를 요청 초기나 나중에 적용할
     수 있다. 보통은 내용생성자를 실행하기 직전에 요청 헤더를
     설정하고 응답을 네트웍에 쓸때 응답 헤더를 설정하는 늦은(late)
@@ -98,7 +98,7 @@
     없다.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="examples" id="examples">예제</a></h2>
+<h2><a name="examples" id="examples">예제</a><a title="Permanent link" href="#examples" class="permalink">&para;</a></h2>
 
     <ol>
       <li>
@@ -163,7 +163,7 @@
     </ol>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Header" id="Header">Header</a> <a name="header" id="header">지시어</a></h2>
+<div class="directive-section"><h2><a name="Header" id="Header">Header</a> <a name="header" id="header">지시어</a><a title="Permanent link" href="#header" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>HTTP 응답 헤더를 구성한다</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>Header [<var>condition</var>] set|append|add|unset|echo
@@ -273,7 +273,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RequestHeader" id="RequestHeader">RequestHeader</a> <a name="requestheader" id="requestheader">지시어</a></h2>
+<div class="directive-section"><h2><a name="RequestHeader" id="RequestHeader">RequestHeader</a> <a name="requestheader" id="requestheader">지시어</a><a title="Permanent link" href="#requestheader" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>HTTP 요청 헤더를 구성한다</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>RequestHeader set|append|add|unset <var>header</var>

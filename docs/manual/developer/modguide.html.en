@@ -40,7 +40,7 @@ Server 2.4</p>
 </ul><h3>See also</h3><ul class="seealso"><li><a href="request.html">Request Processing in Apache 2.4</a></li><li><a href="hooks.html">Apache 2.x Hook Functions</a></li><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="introduction" id="introduction">Introduction</a></h2>
+<h2><a name="introduction" id="introduction">Introduction</a><a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
 <h3><a name="what" id="what">What we will be discussing in this document</a></h3>
 <p>
 This document will discuss how you can create modules for the Apache
@@ -89,7 +89,7 @@ as simple as:
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="basics" id="basics">Defining a module</a></h2>
+<h2><a name="basics" id="basics">Defining a module</a><a title="Permanent link" href="#basics" class="permalink">&para;</a></h2>
 <p>
 <img src="../images/build_a_mod_3.png" alt="Module name tags" /><br />
 Every module starts with the same declaration, or name tag if you will,
@@ -138,7 +138,7 @@ return to all these elements later in this document.
 </p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="hooking" id="hooking">Getting started: Hooking into the server</a></h2>
+<h2><a name="hooking" id="hooking">Getting started: Hooking into the server</a><a title="Permanent link" href="#hooking" class="permalink">&para;</a></h2>
 <h3><a name="hook_intro" id="hook_intro">An introduction to hooks</a></h3>
 <p>
 When handling requests in Apache HTTP Server 2.4, the first thing you will need to do is
@@ -245,7 +245,7 @@ can create. Some other ways of hooking are:
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="handling" id="handling">Building a handler</a></h2>
+<h2><a name="handling" id="handling">Building a handler</a><a title="Permanent link" href="#handling" class="permalink">&para;</a></h2>
 <p>
 A handler is essentially a function that receives a callback when a request
 to the server is made. It is passed a record of the current request (how it was
@@ -710,7 +710,7 @@ This version in its entirety can be found here:
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="configuration" id="configuration">Adding configuration options</a></h2>
+<h2><a name="configuration" id="configuration">Adding configuration options</a><a title="Permanent link" href="#configuration" class="permalink">&para;</a></h2>
 <p>
 In this next segment of this document, we will turn our eyes away from the
 digest module and create a new example module, whose only function is to
@@ -1062,7 +1062,7 @@ configuration file.
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="context" id="context">Context aware configurations</a></h2>
+<h2><a name="context" id="context">Context aware configurations</a><a title="Permanent link" href="#context" class="permalink">&para;</a></h2>
 <h3><a name="context_intro" id="context_intro">Introduction to context aware configurations</a></h3>
 <p>
 In Apache HTTP Server 2.4, different URLs, virtual hosts, directories etc can have very
@@ -1548,7 +1548,7 @@ void *merge_dir_conf(apr_pool_t *pool, void *BASE, void *ADD)
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="summary" id="summary">Summing up</a></h2>
+<h2><a name="summary" id="summary">Summing up</a><a title="Permanent link" href="#summary" class="permalink">&para;</a></h2>
 <p>
 We have now looked at how to create simple modules for Apache HTTP Server 2.4 and
 configuring them. What you do next is entirely up to you, but it is my
@@ -1559,7 +1559,7 @@ or check out the rest of our documentation for further tips.
 </p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="snippets" id="snippets">Some useful snippets of code</a></h2>
+<h2><a name="snippets" id="snippets">Some useful snippets of code</a><a title="Permanent link" href="#snippets" class="permalink">&para;</a></h2>
 
 <h3><a name="get_post" id="get_post">Retrieve variables from POST form data</a></h3>
 

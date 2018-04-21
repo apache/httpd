@@ -48,7 +48,7 @@
 </ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><a href="#comments_section">Yorum</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="implementation" id="implementation">Gerçeklenim</a></h2>
+<h2><a name="implementation" id="implementation">Gerçeklenim</a><a title="Permanent link" href="#implementation" class="permalink">&para;</a></h2>
 
 <table class="related"><tr><th>İlgili Modüller</th><th>İlgili Yönergeler</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_so.html">mod_so</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code></li></ul></td></tr></table>
 
@@ -82,7 +82,7 @@
       programını kullanarak derleyebilir.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="usage" id="usage">Kullanım Özeti</a></h2>
+<h2><a name="usage" id="usage">Kullanım Özeti</a><a title="Permanent link" href="#usage" class="permalink">&para;</a></h2>
 
     <p>Apache HTTP Sunucusu 2.x’in DSO özelliklerine bir giriş olarak burada
       kısaca bir bilgi vermekle yetinilecektir:</p>
@@ -148,7 +148,7 @@ $ apxs -aci filanca mod_filanca.la
       bakınız.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="background" id="background">Artalan Bilgisi</a></h2>
+<h2><a name="background" id="background">Artalan Bilgisi</a><a title="Permanent link" href="#background" class="permalink">&para;</a></h2>
 
     <p>Günümüzün Unix türevlerinde var olan bir mekanizma sayesinde
       çalıştırılabilir bir programın adres uzayına çalışma anında yüklenmek
@@ -239,7 +239,7 @@ $ apxs -aci filanca mod_filanca.la
       kullanılabilir.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="advantages" id="advantages">Getiriler ve Götürüler</a></h2>
+<h2><a name="advantages" id="advantages">Getiriler ve Götürüler</a><a title="Permanent link" href="#advantages" class="permalink">&para;</a></h2>
 
     <p>Yukarıda bahsedilen DSO’ya dayalı özelliklerin getirileri
       şunlardır:</p>

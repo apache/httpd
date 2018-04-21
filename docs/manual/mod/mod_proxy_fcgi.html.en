@@ -75,7 +75,7 @@
 <li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="examples" id="examples">Examples</a></h2>
+<h2><a name="examples" id="examples">Examples</a><a title="Permanent link" href="#examples" class="permalink">&para;</a></h2>
     <p>Remember, in order to make the following examples work, you have to
     enable <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> and <code class="module"><a href="../mod/mod_proxy_fcgi.html">mod_proxy_fcgi</a></code>.</p>
 
@@ -193,7 +193,7 @@
 </div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="env" id="env">Environment Variables</a></h2>
+<h2><a name="env" id="env">Environment Variables</a><a title="Permanent link" href="#env" class="permalink">&para;</a></h2>
     <p>In addition to the configuration directives that control the
     behaviour of <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>, there are a number of
     <dfn>environment variables</dfn> that control the FCGI protocol
@@ -230,7 +230,7 @@
     </dl>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyFCGIBackendType" id="ProxyFCGIBackendType">ProxyFCGIBackendType</a> <a name="proxyfcgibackendtype" id="proxyfcgibackendtype">Directive</a></h2>
+<div class="directive-section"><h2><a name="ProxyFCGIBackendType" id="ProxyFCGIBackendType">ProxyFCGIBackendType</a> <a name="proxyfcgibackendtype" id="proxyfcgibackendtype">Directive</a><a title="Permanent link" href="#proxyfcgibackendtype" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specify the type of backend FastCGI application</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyFCGIBackendType FPM|GENERIC</code></td></tr>
@@ -259,7 +259,7 @@ scenarios.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyFCGISetEnvIf" id="ProxyFCGISetEnvIf">ProxyFCGISetEnvIf</a> <a name="proxyfcgisetenvif" id="proxyfcgisetenvif">Directive</a></h2>
+<div class="directive-section"><h2><a name="ProxyFCGISetEnvIf" id="ProxyFCGISetEnvIf">ProxyFCGISetEnvIf</a> <a name="proxyfcgisetenvif" id="proxyfcgisetenvif">Directive</a><a title="Permanent link" href="#proxyfcgisetenvif" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Allow variables sent to FastCGI servers to be fixed up</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyFCGISetEnvIf <var>conditional-expression</var>

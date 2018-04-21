@@ -150,7 +150,7 @@
     ディレクティブを使って読み込んでください。</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LoadFile" id="LoadFile">LoadFile</a> <a name="loadfile" id="loadfile">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="LoadFile" id="LoadFile">LoadFile</a> <a name="loadfile" id="loadfile">ディレクティブ</a><a title="Permanent link" href="#loadfile" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>指定されたオブジェクトファイルやライブラリをリンクする</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>LoadFile <em>filename</em> [<em>filename</em>] ...</code></td></tr>
@@ -172,7 +172,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LoadModule" id="LoadModule">LoadModule</a> <a name="loadmodule" id="loadmodule">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="LoadModule" id="LoadModule">LoadModule</a> <a name="loadmodule" id="loadmodule">ディレクティブ</a><a title="Permanent link" href="#loadmodule" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>オブジェクトファイルやライブラリをリンクし、使用モジュールの
 リストに追加する</td></tr>

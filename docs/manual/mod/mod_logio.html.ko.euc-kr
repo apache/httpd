@@ -57,6 +57,7 @@
 </ul><h3 class="directives">지시어들</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#logiotrackttfb">LogIOTrackTTFB</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#logiotrackttfu">LogIOTrackTTFU</a></li>
 </ul>
 <h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_logio">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_logio">Report a bug</a></li></ul><h3>참고</h3>
 <ul class="seealso">
@@ -65,7 +66,7 @@
 <li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="formats" id="formats">사용자정의 로그 형식</a></h2>
+<h2><a name="formats" id="formats">사용자정의 로그 형식</a><a title="Permanent link" href="#formats" class="permalink">&para;</a></h2>
 
 
     <p>이 모듈은 두가지 새로운 로그지시어를 추가한다. 요청자체의
@@ -93,9 +94,10 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LogIOTrackTTFB" id="LogIOTrackTTFB">LogIOTrackTTFB</a> <a name="logiotrackttfb" id="logiotrackttfb">지시어</a></h2>
+<div class="directive-section"><h2><a name="LogIOTrackTTFB" id="LogIOTrackTTFB">LogIOTrackTTFB</a> <a name="logiotrackttfb" id="logiotrackttfb">지시어</a><a title="Permanent link" href="#logiotrackttfb" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>Enable tracking of time to first byte (TTFB)</td></tr>
+<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>Enable tracking of time to first byte (TTFB = time to first byte)
+</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>LogIOTrackTTFB ON|OFF</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">기본값:</a></th><td><code>LogIOTrackTTFB OFF</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트, directory, .htaccess</td></tr>
@@ -103,6 +105,21 @@
 <tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_logio</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">지원:</a></th><td>Apache HTTP Server 2.4.13 and later</td></tr>
+</table><p>The documentation for this directive has
+            not been translated yet. Please have a look at the English
+            version.</p></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="LogIOTrackTTFU" id="LogIOTrackTTFU">LogIOTrackTTFU</a> <a name="logiotrackttfu" id="logiotrackttfu">지시어</a><a title="Permanent link" href="#logiotrackttfu" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>Enable tracking of time to last request byte (TTFU = time to finish
+upload)</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>LogIOTrackTTFU ON|OFF</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">기본값:</a></th><td><code>LogIOTrackTTFU OFF</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override 옵션:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_logio</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">지원:</a></th><td>Apache HTTP Server 2.4.34 and later</td></tr>
 </table><p>The documentation for this directive has
             not been translated yet. Please have a look at the English
             version.</p></div>

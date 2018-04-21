@@ -57,7 +57,7 @@
 <li><a href="#comments_section">Comments</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="PassEnv" id="PassEnv">PassEnv</a> <a name="passenv" id="passenv">지시어</a></h2>
+<div class="directive-section"><h2><a name="PassEnv" id="PassEnv">PassEnv</a> <a name="passenv" id="passenv">지시어</a><a title="Permanent link" href="#passenv" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>쉘에서 환경변수를 가져온다</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>PassEnv <var>env-variable</var> [<var>env-variable</var>]
@@ -76,7 +76,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SetEnv" id="SetEnv">SetEnv</a> <a name="setenv" id="setenv">지시어</a></h2>
+<div class="directive-section"><h2><a name="SetEnv" id="SetEnv">SetEnv</a> <a name="setenv" id="setenv">지시어</a><a title="Permanent link" href="#setenv" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>환경변수를 설정한다</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>SetEnv <var>env-variable</var> <var>value</var></code></td></tr>
@@ -93,7 +93,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="UnsetEnv" id="UnsetEnv">UnsetEnv</a> <a name="unsetenv" id="unsetenv">지시어</a></h2>
+<div class="directive-section"><h2><a name="UnsetEnv" id="UnsetEnv">UnsetEnv</a> <a name="unsetenv" id="unsetenv">지시어</a><a title="Permanent link" href="#unsetenv" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>환경변수를 제거한다</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>UnsetEnv <var>env-variable</var> [<var>env-variable</var>]

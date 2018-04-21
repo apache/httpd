@@ -42,7 +42,7 @@
 </ul><h3>참고</h3><ul class="seealso"><li><a href="ip-based.html">IP기반 가상호스트 지원</a></li><li><a href="details.html">가상호스트 찾기에 대한 자세한 설명</a></li><li><a href="mass.html">대량의 가상호스트를 동적으로 설정하기</a></li><li><a href="examples.html">일반적인 가상호스트 예</a></li><li><a href="examples.html#serverpath">ServerPath 설정 예</a></li><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="namevip" id="namevip">이름기반 대 IP기반 가상호스트</a></h2>
+<h2><a name="namevip" id="namevip">이름기반 대 IP기반 가상호스트</a><a title="Permanent link" href="#namevip" class="permalink">&para;</a></h2>
 
     <p>IP기반 가상호스트는 연결한 IP 주소를 가지고 서비스할
     가상호스트를 결정한다. 그래서 각 호스트는 서로 다른 IP 주소를
@@ -76,7 +76,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="using" id="using">이름기반 가상호스트 사용하기</a></h2>
+<h2><a name="using" id="using">이름기반 가상호스트 사용하기</a><a title="Permanent link" href="#using" class="permalink">&para;</a></h2>
 
 <table class="related"><tr><th>관련된 모듈</th><th>관련된 지시어</th></tr><tr><td><ul><li><code class="module"><a href="../mod/core.html">core</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code></li><li><code class="directive"><a href="../mod/core.html#namevirtualhost">NameVirtualHost</a></code></li><li><code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code></li><li><code class="directive"><a href="../mod/core.html#servername">ServerName</a></code></li><li><code class="directive"><a href="../mod/core.html#serverpath">ServerPath</a></code></li><li><code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code></li></ul></td></tr></table>
 
@@ -181,7 +181,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="compat" id="compat">오래된 브라우저와 호환</a></h2>
+<h2><a name="compat" id="compat">오래된 브라우저와 호환</a><a title="Permanent link" href="#compat" class="permalink">&para;</a></h2>
 
     <p>이미 적었듯이 이름기반 가상호스트가 올바로 동작하기위해
     필요한 정보를 보내지않는 클라이언트가 있다. 이런 클라이언트는

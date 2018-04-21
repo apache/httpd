@@ -42,7 +42,7 @@
 </ul><h3>참고</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="intro" id="intro">소개</a></h2>
+<h2><a name="intro" id="intro">소개</a><a title="Permanent link" href="#intro" class="permalink">&para;</a></h2>
     
 
     <table class="related"><tr><th>관련된 모듈</th><th>관련된 지시어</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code></li><li><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code></li><li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li><li><code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code></li></ul></td></tr></table>
@@ -55,7 +55,7 @@
     작성해본다.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="configuring" id="configuring">CGI를 허용하도록 아파치 설정하기</a></h2>
+<h2><a name="configuring" id="configuring">CGI를 허용하도록 아파치 설정하기</a><a title="Permanent link" href="#configuring" class="permalink">&para;</a></h2>
     
 
     <p>CGI 프로그램이 올바로 동작하려면 CGI 실행이 가능하도록
@@ -183,7 +183,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="writing" id="writing">CGI 프로그램 작성하기</a></h2>
+<h2><a name="writing" id="writing">CGI 프로그램 작성하기</a><a title="Permanent link" href="#writing" class="permalink">&para;</a></h2>
     
 
     <p>``일반적인'' 프로그래밍과 CGI 프로그래밍 사이에는 두가지
@@ -240,7 +240,7 @@
     
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="troubleshoot" id="troubleshoot">그러나 아직 동작하지 않아요!</a></h2>
+<h2><a name="troubleshoot" id="troubleshoot">그러나 아직 동작하지 않아요!</a><a title="Permanent link" href="#troubleshoot" class="permalink">&para;</a></h2>
     
 
     <p>웹에서 CGI 프로그램에 접근할때 브라우저에 나올 수 있는
@@ -379,7 +379,7 @@
     
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="behindscenes" id="behindscenes">뒤에서는 무슨 일이 벌어지는가?</a></h2>
+<h2><a name="behindscenes" id="behindscenes">뒤에서는 무슨 일이 벌어지는가?</a><a title="Permanent link" href="#behindscenes" class="permalink">&para;</a></h2>
     
 
     <p>CGI 프로그래밍에 익숙해질수록 뒤에서 벌어지는 일을 이해하면
@@ -460,7 +460,7 @@
     
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="libraries" id="libraries">CGI 모듈/라이브러리</a></h2>
+<h2><a name="libraries" id="libraries">CGI 모듈/라이브러리</a><a title="Permanent link" href="#libraries" class="permalink">&para;</a></h2>
     
 
     <p>CGI 프로그램을 작성할때 지루한 작업을 대신해주는 코드
@@ -477,7 +477,7 @@
     있는 <code>CGIC</code> 라이브러리다.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="moreinfo" id="moreinfo">더 많은 정보...</a></h2>
+<h2><a name="moreinfo" id="moreinfo">더 많은 정보...</a><a title="Permanent link" href="#moreinfo" class="permalink">&para;</a></h2>
     
 
     <p>웹에 매우 많은 CGI 정보가 있다. 뉴스그룹 <a href="news:comp.infosystems.www.authoring.cgi">comp.infosystems.www.authoring.cgi</a>에서 여러 사람들과

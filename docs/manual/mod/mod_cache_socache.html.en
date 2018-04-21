@@ -87,7 +87,7 @@ CacheSocacheMaxSize 102400
 <li><a href="#comments_section">Comments</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CacheSocache" id="CacheSocache">CacheSocache</a> <a name="cachesocache" id="cachesocache">Directive</a></h2>
+<div class="directive-section"><h2><a name="CacheSocache" id="CacheSocache">CacheSocache</a> <a name="cachesocache" id="cachesocache">Directive</a><a title="Permanent link" href="#cachesocache" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The shared object cache implementation to use</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CacheSocache <var>type[:args]</var></code></td></tr>
@@ -107,7 +107,7 @@ CacheSocacheMaxSize 102400
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CacheSocacheMaxSize" id="CacheSocacheMaxSize">CacheSocacheMaxSize</a> <a name="cachesocachemaxsize" id="cachesocachemaxsize">Directive</a></h2>
+<div class="directive-section"><h2><a name="CacheSocacheMaxSize" id="CacheSocacheMaxSize">CacheSocacheMaxSize</a> <a name="cachesocachemaxsize" id="cachesocachemaxsize">Directive</a><a title="Permanent link" href="#cachesocachemaxsize" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The maximum size (in bytes) of an entry to be placed in the
 cache</td></tr>
@@ -135,7 +135,7 @@ cache</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CacheSocacheMaxTime" id="CacheSocacheMaxTime">CacheSocacheMaxTime</a> <a name="cachesocachemaxtime" id="cachesocachemaxtime">Directive</a></h2>
+<div class="directive-section"><h2><a name="CacheSocacheMaxTime" id="CacheSocacheMaxTime">CacheSocacheMaxTime</a> <a name="cachesocachemaxtime" id="cachesocachemaxtime">Directive</a><a title="Permanent link" href="#cachesocachemaxtime" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The maximum time (in seconds) for a document to be placed in the
 cache</td></tr>
@@ -156,7 +156,7 @@ cache</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CacheSocacheMinTime" id="CacheSocacheMinTime">CacheSocacheMinTime</a> <a name="cachesocachemintime" id="cachesocachemintime">Directive</a></h2>
+<div class="directive-section"><h2><a name="CacheSocacheMinTime" id="CacheSocacheMinTime">CacheSocacheMinTime</a> <a name="cachesocachemintime" id="cachesocachemintime">Directive</a><a title="Permanent link" href="#cachesocachemintime" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The minimum time (in seconds) for a document to be placed in the
 cache</td></tr>
@@ -178,7 +178,7 @@ cache</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CacheSocacheReadSize" id="CacheSocacheReadSize">CacheSocacheReadSize</a> <a name="cachesocachereadsize" id="cachesocachereadsize">Directive</a></h2>
+<div class="directive-section"><h2><a name="CacheSocacheReadSize" id="CacheSocacheReadSize">CacheSocacheReadSize</a> <a name="cachesocachereadsize" id="cachesocachereadsize">Directive</a><a title="Permanent link" href="#cachesocachereadsize" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The minimum size (in bytes) of the document to read and be cached
   before sending the data downstream</td></tr>
@@ -205,7 +205,7 @@ cache</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CacheSocacheReadTime" id="CacheSocacheReadTime">CacheSocacheReadTime</a> <a name="cachesocachereadtime" id="cachesocachereadtime">Directive</a></h2>
+<div class="directive-section"><h2><a name="CacheSocacheReadTime" id="CacheSocacheReadTime">CacheSocacheReadTime</a> <a name="cachesocachereadtime" id="cachesocachereadtime">Directive</a><a title="Permanent link" href="#cachesocachereadtime" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The minimum time (in milliseconds) that should elapse while reading
   before data is sent downstream</td></tr>

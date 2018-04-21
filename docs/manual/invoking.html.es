@@ -49,7 +49,7 @@
 </ul><h3>Consulte también</h3><ul class="seealso"><li><a href="stopping.html">Parar y reiniciar Apache</a></li><li><code class="program"><a href="./programs/httpd.html">httpd</a></code></li><li><code class="program"><a href="./programs/apachectl.html">apachectl</a></code></li><li><a href="#comments_section">Comentarios</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="startup" id="startup">Cómo iniciar Apache</a></h2>
+<h2><a name="startup" id="startup">Cómo iniciar Apache</a><a title="Enlace permanente" href="#startup" class="permalink">&para;</a></h2>
 
     <p>Si el puerto especificado en la directiva <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> del fichero de
     configuración es el que viene por defecto, es decir, el
@@ -102,7 +102,7 @@
     <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="errors" id="errors">Errores Durante el Arranque</a></h2>
+<h2><a name="errors" id="errors">Errores Durante el Arranque</a><a title="Enlace permanente" href="#errors" class="permalink">&para;</a></h2>
 
     <p>Si Apache encuentra una error irrecuperable durante el
     arranque, escribirá un mensaje describiendo el problema en la
@@ -125,7 +125,7 @@
     solucionar problemas, en la sección de <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> de Apache.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="boot" id="boot">Iniciar Apache al Iniciar el Sistema</a></h2>
+<h2><a name="boot" id="boot">Iniciar Apache al Iniciar el Sistema</a><a title="Enlace permanente" href="#boot" class="permalink">&para;</a></h2>
 
     <p>Si quiere que el servidor Apache continúe su ejecución
     después de reiniciar el sistema, debe añadir una llamada
@@ -146,7 +146,7 @@
     de su sistema.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="info" id="info">Información Adicional</a></h2>
+<h2><a name="info" id="info">Información Adicional</a><a title="Enlace permanente" href="#info" class="permalink">&para;</a></h2>
 
     <p>En la sección <a href="programs/">El Servidor y Programas
     de Soporte </a> puede encontrar más información sobre

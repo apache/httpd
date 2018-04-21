@@ -48,12 +48,12 @@
 </ul><h3>参照</h3><ul class="seealso"><li><a href="#comments_section">コメント</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="related" id="related">関連するモジュールとディレクティブ</a></h2>
+<h2><a name="related" id="related">関連するモジュールとディレクティブ</a><a title="Permanent link" href="#related" class="permalink">&para;</a></h2>
 
 <table class="related"><tr><th>関連モジュール</th><th>関連ディレクティブ</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_alias.html">mod_alias</a></code></li><li><code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code></li><li><code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code></li><li><code class="module"><a href="./mod/mod_userdir.html">mod_userdir</a></code></li><li><code class="module"><a href="./mod/mod_speling.html">mod_speling</a></code></li><li><code class="module"><a href="./mod/mod_vhost_alias.html">mod_vhost_alias</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_alias.html#alias">Alias</a></code></li><li><code class="directive"><a href="./mod/mod_alias.html#aliasmatch">AliasMatch</a></code></li><li><code class="directive"><a href="./mod/mod_speling.html#checkspelling">CheckSpelling</a></code></li><li><code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code></li><li><code class="directive"><a href="./mod/core.html#errordocument">ErrorDocument</a></code></li><li><code class="directive"><a href="./mod/core.html#options">Options</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxypass">ProxyPass</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxypassreverse">ProxyPassReverse</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxypassreversecookiedomain">ProxyPassReverseCookieDomain</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxypassreversecookiepath">ProxyPassReverseCookiePath</a></code></li><li><code class="directive"><a href="./mod/mod_alias.html#redirect">Redirect</a></code></li><li><code class="directive"><a href="./mod/mod_alias.html#redirectmatch">RedirectMatch</a></code></li><li><code class="directive"><a href="./mod/mod_rewrite.html#rewritecond">RewriteCond</a></code></li><li><code class="directive"><a href="./mod/mod_rewrite.html#rewritematch">RewriteMatch</a></code></li><li><code class="directive"><a href="./mod/mod_alias.html#scriptalias">ScriptAlias</a></code></li><li><code class="directive"><a href="./mod/mod_alias.html#scriptaliasmatch">ScriptAliasMatch</a></code></li><li><code class="directive"><a href="./mod/mod_userdir.html#userdir">UserDir</a></code></li></ul></td></tr></table>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="documentroot" id="documentroot">DocumentRoot</a></h2>
+<h2><a name="documentroot" id="documentroot">DocumentRoot</a><a title="Permanent link" href="#documentroot" class="permalink">&para;</a></h2>
 
     <p>リクエストに対してどのファイルを送信するかを決定するときの
     Apache のデフォルトの動作は、リクエストの URL-Path (URL のホスト名と
@@ -74,7 +74,7 @@
     アドレスやホスト名から動的に決めることもできます。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="outside" id="outside">DocumentRoot 外のファイル</a></h2>
+<h2><a name="outside" id="outside">DocumentRoot 外のファイル</a><a title="Permanent link" href="#outside" class="permalink">&para;</a></h2>
 
     <p>ファイルシステム上の、
     厳密には <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code>
@@ -116,7 +116,7 @@
     扱います。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="user" id="user">ユーザディレクトリ</a></h2>
+<h2><a name="user" id="user">ユーザディレクトリ</a><a title="Permanent link" href="#user" class="permalink">&para;</a></h2>
 
     <p>伝統的に Unix システムではユーザ <em>user</em> のホームディレクトリを
     <code>~user/</code> として参照できます。<code class="module"><a href="./mod/mod_userdir.html">mod_userdir</a></code> 
@@ -154,7 +154,7 @@
       /home/$1/public_html/$2</code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="redirect" id="redirect">URL リダイレクション</a></h2>
+<h2><a name="redirect" id="redirect">URL リダイレクション</a><a title="Permanent link" href="#redirect" class="permalink">&para;</a></h2>
 
     <p>上の節で説明した設定用のディレクティブは Apache に
     ファイルシステムの特定の場所からコンテンツを取ってきて
@@ -194,7 +194,7 @@
       http://othersite.example.com/startpage.html</code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="proxy" id="proxy">リバースプロキシ</a></h2>
+<h2><a name="proxy" id="proxy">リバースプロキシ</a><a title="Permanent link" href="#proxy" class="permalink">&para;</a></h2>
 
 <p>Apache は遠隔地にあるドキュメントをローカルのサーバの URL 空間に
 持ってくることもできます。この手法は<em>リバースプロキシ</em>と呼ばれています。
@@ -232,7 +232,7 @@ ProxyPassReverseCookiePath /foo/ /bar/
 は、HTML と XHTML 中のリンクを書き換えることができます。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="rewrite" id="rewrite">リライトエンジン</a></h2>
+<h2><a name="rewrite" id="rewrite">リライトエンジン</a><a title="Permanent link" href="#rewrite" class="permalink">&para;</a></h2>
 
     <p>より一層強力な置換が必要なときは、<code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code>
     が提供するリライトエンジンが役に立つでしょう。
@@ -247,7 +247,7 @@ ProxyPassReverseCookiePath /foo/ /bar/
     で説明されています。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="notfound" id="notfound">File Not Found</a></h2>
+<h2><a name="notfound" id="notfound">File Not Found</a><a title="Permanent link" href="#notfound" class="permalink">&para;</a></h2>
 
     <p>必ず、リクエストされた URL に対応するファイルがファイルシステムに
     無いという場合が発生します。これが起こるのにはいくつかの理由があります。

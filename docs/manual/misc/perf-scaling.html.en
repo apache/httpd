@@ -70,7 +70,7 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="what-will-and-will-not-be-discussed" id="what-will-and-will-not-be-discussed">What Will and Will Not Be Discussed
-        </a></h2>
+        </a><a title="Permanent link" href="#what-will-and-will-not-be-discussed" class="permalink">&para;</a></h2>
         
         <p>The session will focus on easily accessible configuration and tuning
             options for Apache httpd 2.2 and 2.4 as well as monitoring tools.
@@ -86,7 +86,7 @@
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="monitoring-your-server" id="monitoring-your-server">Monitoring Your Server
-        </a></h2>
+        </a><a title="Permanent link" href="#monitoring-your-server" class="permalink">&para;</a></h2>
         
         <p>The first task when sizing or performance-tuning your server is to
             find out how your system is currently performing. By monitoring
@@ -733,7 +733,7 @@ CustomLog "|/usr/local/apache2/bin/rotatelogs /var/log/access_log 86400" common
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="configuring-for-performance" id="configuring-for-performance">Configuring for Performance
-        </a></h2>
+        </a><a title="Permanent link" href="#configuring-for-performance" class="permalink">&para;</a></h2>
         
 
 
@@ -1213,7 +1213,7 @@ CustomLog "|/usr/local/apache2/bin/rotatelogs /var/log/access_log 86400" common
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="caching-content" id="caching-content">Caching Content
-        </a></h2>
+        </a><a title="Permanent link" href="#caching-content" class="permalink">&para;</a></h2>
         
         <p>Requests for dynamically generated content usually take
             significantly more resources than requests for static content.
@@ -1438,7 +1438,7 @@ CacheMaxExpire 21600</pre>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="further-considerations" id="further-considerations">Further Considerations
-        </a></h2>
+        </a><a title="Permanent link" href="#further-considerations" class="permalink">&para;</a></h2>
         
         <p>Armed with the knowledge of how to tune a sytem to deliver the
             desired the performance, we will soon discover that <em>one</em>

@@ -82,7 +82,7 @@ separation is an issue.</p>
 <li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="security" id="security">Security Considerations</a></h2>
+<h2><a name="security" id="security">Security Considerations</a><a title="Permanent link" href="#security" class="permalink">&para;</a></h2>
 
 <p><code class="module"><a href="../mod/mod_privileges.html">mod_privileges</a></code> introduces new security concerns
 in situations where <strong>untrusted code</strong> may be run
@@ -140,7 +140,7 @@ request-processing cycle.</em></p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DTracePrivileges" id="DTracePrivileges">DTracePrivileges</a> <a name="dtraceprivileges" id="dtraceprivileges">Directive</a></h2>
+<div class="directive-section"><h2><a name="DTracePrivileges" id="DTracePrivileges">DTracePrivileges</a> <a name="dtraceprivileges" id="dtraceprivileges">Directive</a><a title="Permanent link" href="#dtraceprivileges" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Determines whether the privileges required by dtrace are enabled.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DTracePrivileges On|Off</code></td></tr>
@@ -160,7 +160,7 @@ non-threaded MPMs (<code class="module"><a href="../mod/prefork.html">prefork</a
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="PrivilegesMode" id="PrivilegesMode">PrivilegesMode</a> <a name="privilegesmode" id="privilegesmode">Directive</a></h2>
+<div class="directive-section"><h2><a name="PrivilegesMode" id="PrivilegesMode">PrivilegesMode</a> <a name="privilegesmode" id="privilegesmode">Directive</a><a title="Permanent link" href="#privilegesmode" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Trade off processing speed and efficiency vs security against
 malicious privileges-aware code.</td></tr>
@@ -202,7 +202,7 @@ meaningless).</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="VHostCGIMode" id="VHostCGIMode">VHostCGIMode</a> <a name="vhostcgimode" id="vhostcgimode">Directive</a></h2>
+<div class="directive-section"><h2><a name="VHostCGIMode" id="VHostCGIMode">VHostCGIMode</a> <a name="vhostcgimode" id="vhostcgimode">Directive</a><a title="Permanent link" href="#vhostcgimode" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Determines whether the virtualhost can run
 subprocesses, and the privileges available to subprocesses.</td></tr>
@@ -231,7 +231,7 @@ non-threaded MPMs (<code class="module"><a href="../mod/prefork.html">prefork</a
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="VHostCGIPrivs" id="VHostCGIPrivs">VHostCGIPrivs</a> <a name="vhostcgiprivs" id="vhostcgiprivs">Directive</a></h2>
+<div class="directive-section"><h2><a name="VHostCGIPrivs" id="VHostCGIPrivs">VHostCGIPrivs</a> <a name="vhostcgiprivs" id="vhostcgiprivs">Directive</a><a title="Permanent link" href="#vhostcgiprivs" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Assign arbitrary privileges to subprocesses created
 by a virtual host.</td></tr>
@@ -263,7 +263,7 @@ and when <code class="module"><a href="../mod/mod_privileges.html">mod_privilege
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="VHostGroup" id="VHostGroup">VHostGroup</a> <a name="vhostgroup" id="vhostgroup">Directive</a></h2>
+<div class="directive-section"><h2><a name="VHostGroup" id="VHostGroup">VHostGroup</a> <a name="vhostgroup" id="vhostgroup">Directive</a><a title="Permanent link" href="#vhostgroup" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets the Group ID under which a virtual host runs.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>VHostGroup <var>unix-groupid</var></code></td></tr>
@@ -302,7 +302,7 @@ non-threaded MPMs (<code class="module"><a href="../mod/prefork.html">prefork</a
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="VHostPrivs" id="VHostPrivs">VHostPrivs</a> <a name="vhostprivs" id="vhostprivs">Directive</a></h2>
+<div class="directive-section"><h2><a name="VHostPrivs" id="VHostPrivs">VHostPrivs</a> <a name="vhostprivs" id="vhostprivs">Directive</a><a title="Permanent link" href="#vhostprivs" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Assign arbitrary privileges to a virtual host.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>VHostPrivs [+-]?<var>privilege-name</var> [[+-]?privilege-name] ...</code></td></tr>
@@ -332,7 +332,7 @@ and when <code class="module"><a href="../mod/mod_privileges.html">mod_privilege
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="VHostSecure" id="VHostSecure">VHostSecure</a> <a name="vhostsecure" id="vhostsecure">Directive</a></h2>
+<div class="directive-section"><h2><a name="VHostSecure" id="VHostSecure">VHostSecure</a> <a name="vhostsecure" id="vhostsecure">Directive</a><a title="Permanent link" href="#vhostsecure" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Determines whether the server runs with enhanced security
 for the virtualhost.</td></tr>
@@ -358,7 +358,7 @@ non-threaded MPMs (<code class="module"><a href="../mod/prefork.html">prefork</a
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="VHostUser" id="VHostUser">VHostUser</a> <a name="vhostuser" id="vhostuser">Directive</a></h2>
+<div class="directive-section"><h2><a name="VHostUser" id="VHostUser">VHostUser</a> <a name="vhostuser" id="vhostuser">Directive</a><a title="Permanent link" href="#vhostuser" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets the User ID under which a virtual host runs.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>VHostUser <var>unix-userid</var></code></td></tr>

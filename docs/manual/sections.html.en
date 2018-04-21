@@ -44,9 +44,9 @@ to change the scope of other configuration directives.</p>
 </ul><h3>See also</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="types" id="types">Types of Configuration Section Containers</a></h2>
+<h2><a name="types" id="types">Types of Configuration Section Containers</a><a title="Permanent link" href="#types" class="permalink">&para;</a></h2>
 
-<table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/core.html">core</a></code></li><li><code class="module"><a href="./mod/mod_version.html">mod_version</a></code></li><li><code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#if">&lt;If&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code></li><li><code class="directive"><a href="./mod/mod_version.html#ifversion">&lt;IfVersion&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/mod_md.html#mdomainsetsection">&lt;MDomainSet&gt;</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxymatch">&lt;ProxyMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/mod_ssl.html#sslpolicydefinesection">&lt;SSLPolicyDefine&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code></li></ul></td></tr></table>
+<table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/core.html">core</a></code></li><li><code class="module"><a href="./mod/mod_version.html">mod_version</a></code></li><li><code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#if">&lt;If&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code></li><li><code class="directive"><a href="./mod/mod_version.html#ifversion">&lt;IfVersion&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/mod_md.html#mdomainsetsection">&lt;MDomainSet&gt;</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxymatch">&lt;ProxyMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code></li></ul></td></tr></table>
 
 <p>There are two basic types of containers.  Most containers are
 evaluated for each request.  The enclosed directives are applied only
@@ -108,7 +108,7 @@ Also, these sections can be nested to achieve more complex
 restrictions.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="file-and-web" id="file-and-web">Filesystem, Webspace, and Boolean Expressions</a></h2>
+<h2><a name="file-and-web" id="file-and-web">Filesystem, Webspace, and Boolean Expressions</a><a title="Permanent link" href="#file-and-web" class="permalink">&para;</a></h2>
 
 <p>The most commonly used configuration section containers are the
 ones that change the configuration of particular places in the
@@ -347,7 +347,7 @@ counterparts of the named section behave identically.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="virtualhost" id="virtualhost">Virtual Hosts</a></h2>
+<h2><a name="virtualhost" id="virtualhost">Virtual Hosts</a><a title="Permanent link" href="#virtualhost" class="permalink">&para;</a></h2>
 
 <p>The <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
 container encloses directives that apply to specific hosts.
@@ -356,7 +356,7 @@ with a different configuration for each.  For more information,
 see the <a href="vhosts/">Virtual Host Documentation</a>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="proxy" id="proxy">Proxy</a></h2>
+<h2><a name="proxy" id="proxy">Proxy</a><a title="Permanent link" href="#proxy" class="permalink">&para;</a></h2>
 
 <p>The <code class="directive"><a href="./mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code>
 and <code class="directive"><a href="./mod/mod_proxy.html#proxymatch">&lt;ProxyMatch&gt;</a></code>
@@ -372,7 +372,7 @@ will allow only a subset of clients to access the
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="whatwhere" id="whatwhere">What Directives are Allowed?</a></h2>
+<h2><a name="whatwhere" id="whatwhere">What Directives are Allowed?</a><a title="Permanent link" href="#whatwhere" class="permalink">&para;</a></h2>
 
 <p>To find out what directives are allowed in what types of
 configuration sections, check the <a href="mod/directive-dict.html#Context">Context</a> of the directive.
@@ -404,7 +404,7 @@ sections.</li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="merging" id="merging">How the sections are merged</a></h2>
+<h2><a name="merging" id="merging">How the sections are merged</a><a title="Permanent link" href="#merging" class="permalink">&para;</a></h2>
 
 <p>The configuration sections are applied in a very particular order.
 Since this can have important effects on how configuration directives

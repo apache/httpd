@@ -50,11 +50,11 @@
 </ul><h3>참고</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="related" id="related">관련 모듈과 지시어</a></h2>
+<h2><a name="related" id="related">관련 모듈과 지시어</a><a title="Permanent link" href="#related" class="permalink">&para;</a></h2>
     <table class="related"><tr><th>관련된 모듈</th><th>관련된 지시어</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code></li><li><code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code></li><li><code class="module"><a href="../mod/mod_authz_groupfile.html">mod_authz_groupfile</a></code></li><li><code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/mod_authz_host.html#allow">Allow</a></code></li><li><code class="directive"><a href="../mod/mod_authz_groupfile.html#authgroupfile">AuthGroupFile</a></code></li><li><code class="directive"><a href="../mod/core.html#authname">AuthName</a></code></li><li><code class="directive"><a href="../mod/core.html#authtype">AuthType</a></code></li><li><code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code></li><li><code class="directive"><a href="../mod/mod_authz_host.html#deny">Deny</a></code></li><li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li><li><code class="directive"><a href="../mod/core.html#require">Require</a></code></li></ul></td></tr></table>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="introduction" id="introduction">소개</a></h2>
+<h2><a name="introduction" id="introduction">소개</a><a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
     <p>당신의 웹사이트에 있는 정보가 소수의 사람들만의 비밀이거나
     이들만을 위한 정보라면, 이 글에서 설명하는 기법을 사용하여
     당신이 보길 원하는 사람만 페이지를 보도록 할 수 있다.</p>
@@ -63,7 +63,7 @@
     사용하는 "표준적인" 방법을 다룬다.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="theprerequisites" id="theprerequisites">기본 지식</a></h2>
+<h2><a name="theprerequisites" id="theprerequisites">기본 지식</a><a title="Permanent link" href="#theprerequisites" class="permalink">&para;</a></h2>
     <p>이 글에서 다루는 지시어는 서버의 주설정파일(일반적으로
     <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>
     섹션)이나 디렉토리별 설정파일(<code>.htaccess</code> 파일)에서
@@ -90,7 +90,7 @@
     때에 자세히 설명할 것이다.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="gettingitworking" id="gettingitworking">기본적인 설정하기</a></h2>
+<h2><a name="gettingitworking" id="gettingitworking">기본적인 설정하기</a><a title="Permanent link" href="#gettingitworking" class="permalink">&para;</a></h2>
     <p>이제 서버의 디렉토리를 암호로 보호하는 기본적인 방법을
     설명한다.</p>
 
@@ -183,7 +183,7 @@
     사용하는 다양한 방법을 설명한다.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="lettingmorethanonepersonin" id="lettingmorethanonepersonin">여러명을 들여보내기</a></h2>
+<h2><a name="lettingmorethanonepersonin" id="lettingmorethanonepersonin">여러명을 들여보내기</a><a title="Permanent link" href="#lettingmorethanonepersonin" class="permalink">&para;</a></h2>
     <p>위의 지시어는 디렉토리로 (사용자명이 <code>rbowen</code>인)
     한 사람만을 들여보낸다. 대부분의 경우 여러 사람을 들여보내고
     싶을 것이다. 이제 <code class="directive"><a href="../mod/mod_authz_groupfile.html#authgroupfile">AuthGroupFile</a></code>을
@@ -239,7 +239,7 @@
     정확한 암호파일을 지정해야 하는 것은 단점이다.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="possibleproblems" id="possibleproblems">발생할 수 있는 문제점</a></h2>
+<h2><a name="possibleproblems" id="possibleproblems">발생할 수 있는 문제점</a><a title="Permanent link" href="#possibleproblems" class="permalink">&para;</a></h2>
     <p>Basic 인증 방식은 서버에서 문서를 요청할 때마다 사용자명과
     암호를 확인한다. 심지어 같은 페이지를 새로 고침할 때도 페이지와
     (그림이 암호로 보호하는 디렉토리에 있는 경우) 페이지에 있는
@@ -254,7 +254,7 @@
     고려해야 한다.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="whatotherneatstuffcanido" id="whatotherneatstuffcanido">다른 방법도 가능한가?</a></h2>
+<h2><a name="whatotherneatstuffcanido" id="whatotherneatstuffcanido">다른 방법도 가능한가?</a><a title="Permanent link" href="#whatotherneatstuffcanido" class="permalink">&para;</a></h2>
     <p>사용자명과 암호를 사용한 인증이 다가 아니다. 종종 접속한
     장소와 같은 다른 정보를 가지고 사용자를 들여보내고 싶을
     때가 있다.</p>
@@ -316,7 +316,7 @@
     당신은 특정 사람<em>만</em> 허용하길 원한다.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="moreinformation" id="moreinformation">더 많은 정보</a></h2>
+<h2><a name="moreinformation" id="moreinformation">더 많은 정보</a><a title="Permanent link" href="#moreinformation" class="permalink">&para;</a></h2>
     <p><code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code>과
     <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code> 문서에 접근제어가 동작하는
     방법에 대한 더 많은 정보가 있다.</p>

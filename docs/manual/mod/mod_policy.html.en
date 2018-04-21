@@ -90,7 +90,7 @@
 <li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="actions" id="actions">Actions</a></h2>
+<h2><a name="actions" id="actions">Actions</a><a title="Permanent link" href="#actions" class="permalink">&para;</a></h2>
     
 
     <p>If a policy is violated, one of the following actions can be
@@ -129,7 +129,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="tests" id="tests">Policy Tests</a></h2>
+<h2><a name="tests" id="tests">Policy Tests</a><a title="Permanent link" href="#tests" class="permalink">&para;</a></h2>
     
 
     <p>The following policy filters are available:</p>
@@ -225,7 +225,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="example" id="example">Example Configuration</a></h2>
+<h2><a name="example" id="example">Example Configuration</a><a title="Permanent link" href="#example" class="permalink">&para;</a></h2>
     
 
     <p>A typical configuration protecting a server serving static content
@@ -271,7 +271,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="PolicyConditional" id="PolicyConditional">PolicyConditional</a> <a name="policyconditional" id="policyconditional">Directive</a></h2>
+<div class="directive-section"><h2><a name="PolicyConditional" id="PolicyConditional">PolicyConditional</a> <a name="policyconditional" id="policyconditional">Directive</a><a title="Permanent link" href="#policyconditional" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable the conditional request policy.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>PolicyConditional <var>ignore|log|enforce</var></code></td></tr>
@@ -291,7 +291,7 @@ PolicyConditional enforce</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="PolicyConditionalURL" id="PolicyConditionalURL">PolicyConditionalURL</a> <a name="policyconditionalurl" id="policyconditionalurl">Directive</a></h2>
+<div class="directive-section"><h2><a name="PolicyConditionalURL" id="PolicyConditionalURL">PolicyConditionalURL</a> <a name="policyconditionalurl" id="policyconditionalurl">Directive</a><a title="Permanent link" href="#policyconditionalurl" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>URL describing the conditional request policy.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>PolicyConditionalURL <var>url</var></code></td></tr>
@@ -307,7 +307,7 @@ later.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="PolicyEnvironment" id="PolicyEnvironment">PolicyEnvironment</a> <a name="policyenvironment" id="policyenvironment">Directive</a></h2>
+<div class="directive-section"><h2><a name="PolicyEnvironment" id="PolicyEnvironment">PolicyEnvironment</a> <a name="policyenvironment" id="policyenvironment">Directive</a><a title="Permanent link" href="#policyenvironment" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Override policies based on an environment variable.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>PolicyEnvironment <var>variable</var> <var>log-value</var> <var>ignore-value</var></code></td></tr>
@@ -330,7 +330,7 @@ PolicyEnvironment POLICY_CONTROL log ignore</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="PolicyFilter" id="PolicyFilter">PolicyFilter</a> <a name="policyfilter" id="policyfilter">Directive</a></h2>
+<div class="directive-section"><h2><a name="PolicyFilter" id="PolicyFilter">PolicyFilter</a> <a name="policyfilter" id="policyfilter">Directive</a><a title="Permanent link" href="#policyfilter" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable or disable policies for the given URL space.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>PolicyFilter <var>on|off</var></code></td></tr>
@@ -356,7 +356,7 @@ later.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="PolicyKeepalive" id="PolicyKeepalive">PolicyKeepalive</a> <a name="policykeepalive" id="policykeepalive">Directive</a></h2>
+<div class="directive-section"><h2><a name="PolicyKeepalive" id="PolicyKeepalive">PolicyKeepalive</a> <a name="policykeepalive" id="policykeepalive">Directive</a><a title="Permanent link" href="#policykeepalive" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable the keepalive policy.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>PolicyKeepalive <var>ignore|log|enforce</var></code></td></tr>
@@ -377,7 +377,7 @@ PolicyKeepalive enforce</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="PolicyKeepaliveURL" id="PolicyKeepaliveURL">PolicyKeepaliveURL</a> <a name="policykeepaliveurl" id="policykeepaliveurl">Directive</a></h2>
+<div class="directive-section"><h2><a name="PolicyKeepaliveURL" id="PolicyKeepaliveURL">PolicyKeepaliveURL</a> <a name="policykeepaliveurl" id="policykeepaliveurl">Directive</a><a title="Permanent link" href="#policykeepaliveurl" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>URL describing the keepalive policy.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>PolicyKeepaliveURL <var>url</var></code></td></tr>
@@ -393,7 +393,7 @@ later.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="PolicyLength" id="PolicyLength">PolicyLength</a> <a name="policylength" id="policylength">Directive</a></h2>
+<div class="directive-section"><h2><a name="PolicyLength" id="PolicyLength">PolicyLength</a> <a name="policylength" id="policylength">Directive</a><a title="Permanent link" href="#policylength" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable the content length policy.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>PolicyLength <var>ignore|log|enforce</var></code></td></tr>
@@ -413,7 +413,7 @@ PolicyLength enforce</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="PolicyLengthURL" id="PolicyLengthURL">PolicyLengthURL</a> <a name="policylengthurl" id="policylengthurl">Directive</a></h2>
+<div class="directive-section"><h2><a name="PolicyLengthURL" id="PolicyLengthURL">PolicyLengthURL</a> <a name="policylengthurl" id="policylengthurl">Directive</a><a title="Permanent link" href="#policylengthurl" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>URL describing the content length policy.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>PolicyLengthURL <var>url</var></code></td></tr>
@@ -429,7 +429,7 @@ later.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="PolicyMaxage" id="PolicyMaxage">PolicyMaxage</a> <a name="policymaxage" id="policymaxage">Directive</a></h2>
+<div class="directive-section"><h2><a name="PolicyMaxage" id="PolicyMaxage">PolicyMaxage</a> <a name="policymaxage" id="policymaxage">Directive</a><a title="Permanent link" href="#policymaxage" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable the caching minimum max-age policy.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>PolicyMaxage <var>ignore|log|enforce</var> <var>age</var></code></td></tr>
@@ -452,7 +452,7 @@ PolicyMaxage enforce 86400</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="PolicyMaxageURL" id="PolicyMaxageURL">PolicyMaxageURL</a> <a name="policymaxageurl" id="policymaxageurl">Directive</a></h2>
+<div class="directive-section"><h2><a name="PolicyMaxageURL" id="PolicyMaxageURL">PolicyMaxageURL</a> <a name="policymaxageurl" id="policymaxageurl">Directive</a><a title="Permanent link" href="#policymaxageurl" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>URL describing the caching minimum freshness lifetime policy.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>PolicyMaxageURL <var>url</var></code></td></tr>
@@ -468,7 +468,7 @@ later.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="PolicyNocache" id="PolicyNocache">PolicyNocache</a> <a name="policynocache" id="policynocache">Directive</a></h2>
+<div class="directive-section"><h2><a name="PolicyNocache" id="PolicyNocache">PolicyNocache</a> <a name="policynocache" id="policynocache">Directive</a><a title="Permanent link" href="#policynocache" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable the caching no-cache policy.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>PolicyNocache <var>ignore|log|enforce</var></code></td></tr>
@@ -490,7 +490,7 @@ PolicyNocache enforce</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="PolicyNocacheURL" id="PolicyNocacheURL">PolicyNocacheURL</a> <a name="policynocacheurl" id="policynocacheurl">Directive</a></h2>
+<div class="directive-section"><h2><a name="PolicyNocacheURL" id="PolicyNocacheURL">PolicyNocacheURL</a> <a name="policynocacheurl" id="policynocacheurl">Directive</a><a title="Permanent link" href="#policynocacheurl" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>URL describing the caching no-cache policy.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>PolicyNocacheURL <var>url</var></code></td></tr>
@@ -506,7 +506,7 @@ later.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="PolicyType" id="PolicyType">PolicyType</a> <a name="policytype" id="policytype">Directive</a></h2>
+<div class="directive-section"><h2><a name="PolicyType" id="PolicyType">PolicyType</a> <a name="policytype" id="policytype">Directive</a><a title="Permanent link" href="#policytype" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable the content type policy.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>PolicyType <var>ignore|log|enforce</var> <var>type</var> [ <var>type</var> [ ... ]]</code></td></tr>
@@ -532,7 +532,7 @@ PolicyType enforce */*</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="PolicyTypeURL" id="PolicyTypeURL">PolicyTypeURL</a> <a name="policytypeurl" id="policytypeurl">Directive</a></h2>
+<div class="directive-section"><h2><a name="PolicyTypeURL" id="PolicyTypeURL">PolicyTypeURL</a> <a name="policytypeurl" id="policytypeurl">Directive</a><a title="Permanent link" href="#policytypeurl" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>URL describing the content type policy.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>PolicyTypeURL <var>url</var></code></td></tr>
@@ -548,7 +548,7 @@ later.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="PolicyValidation" id="PolicyValidation">PolicyValidation</a> <a name="policyvalidation" id="policyvalidation">Directive</a></h2>
+<div class="directive-section"><h2><a name="PolicyValidation" id="PolicyValidation">PolicyValidation</a> <a name="policyvalidation" id="policyvalidation">Directive</a><a title="Permanent link" href="#policyvalidation" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable the validation policy.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>PolicyValidation <var>ignore|log|enforce</var></code></td></tr>
@@ -570,7 +570,7 @@ PolicyValidation enforce</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="PolicyValidationURL" id="PolicyValidationURL">PolicyValidationURL</a> <a name="policyvalidationurl" id="policyvalidationurl">Directive</a></h2>
+<div class="directive-section"><h2><a name="PolicyValidationURL" id="PolicyValidationURL">PolicyValidationURL</a> <a name="policyvalidationurl" id="policyvalidationurl">Directive</a><a title="Permanent link" href="#policyvalidationurl" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>URL describing the content type policy.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>PolicyValidationURL <var>url</var></code></td></tr>
@@ -586,7 +586,7 @@ later.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="PolicyVary" id="PolicyVary">PolicyVary</a> <a name="policyvary" id="policyvary">Directive</a></h2>
+<div class="directive-section"><h2><a name="PolicyVary" id="PolicyVary">PolicyVary</a> <a name="policyvary" id="policyvary">Directive</a><a title="Permanent link" href="#policyvary" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable the Vary policy.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>PolicyVary <var>ignore|log|enforce</var> <var>header</var> [ <var>header</var> [ ... ]]</code></td></tr>
@@ -608,7 +608,7 @@ PolicyVary enforce User-Agent</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="PolicyVaryURL" id="PolicyVaryURL">PolicyVaryURL</a> <a name="policyvaryurl" id="policyvaryurl">Directive</a></h2>
+<div class="directive-section"><h2><a name="PolicyVaryURL" id="PolicyVaryURL">PolicyVaryURL</a> <a name="policyvaryurl" id="policyvaryurl">Directive</a><a title="Permanent link" href="#policyvaryurl" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>URL describing the content type policy.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>PolicyVaryURL <var>url</var></code></td></tr>
@@ -624,7 +624,7 @@ later.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="PolicyVersion" id="PolicyVersion">PolicyVersion</a> <a name="policyversion" id="policyversion">Directive</a></h2>
+<div class="directive-section"><h2><a name="PolicyVersion" id="PolicyVersion">PolicyVersion</a> <a name="policyversion" id="policyversion">Directive</a><a title="Permanent link" href="#policyversion" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable the version policy.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>PolicyVersion <var>ignore|log|enforce</var> <var>HTTP/0.9|HTTP/1.0|HTTP/1.1</var></code></td></tr>
@@ -645,7 +645,7 @@ PolicyVersion enforce HTTP/1.1</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="PolicyVersionURL" id="PolicyVersionURL">PolicyVersionURL</a> <a name="policyversionurl" id="policyversionurl">Directive</a></h2>
+<div class="directive-section"><h2><a name="PolicyVersionURL" id="PolicyVersionURL">PolicyVersionURL</a> <a name="policyversionurl" id="policyversionurl">Directive</a><a title="Permanent link" href="#policyversionurl" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>URL describing the minimum request HTTP version policy.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>PolicyVersionURL <var>url</var></code></td></tr>

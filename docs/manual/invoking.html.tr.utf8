@@ -50,7 +50,7 @@
 </ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><a href="stopping.html">Durdurma ve Yeniden Başlatma</a></li><li><code class="program"><a href="./programs/httpd.html">httpd</a></code></li><li><code class="program"><a href="./programs/apachectl.html">apachectl</a></code></li><li><a href="#comments_section">Yorum</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="startup" id="startup">Apache Nasıl Başlatılır?</a></h2>
+<h2><a name="startup" id="startup">Apache Nasıl Başlatılır?</a><a title="Permanent link" href="#startup" class="permalink">&para;</a></h2>
 
     <p>Yapılandırma dosyasında <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> yönergesi ile öntanımlı olan port
       80 (veya 1024’ten küçük herhangi bir port) belirtilmişse Apache HTTP
@@ -93,7 +93,7 @@
       görebilirsiniz.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="errors" id="errors">Başlatma Sırasındaki Hatalar</a></h2>
+<h2><a name="errors" id="errors">Başlatma Sırasındaki Hatalar</a><a title="Permanent link" href="#errors" class="permalink">&para;</a></h2>
 
     <p>Apache başlatma sırasında ölümcül bir sorunla karşılaşacak olursa
       çıkmadan önce sorunu açıklayan bir iletiyi konsola veya <code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code> yönergesi ile belirtilen hata
@@ -112,7 +112,7 @@
     <p>Bu ve diğer sorun çözme talimatları için Apache <a href="http://wiki.apache.org/httpd/FAQ">SSS</a>’sini inceleyiniz.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="boot" id="boot">Sistem Açılışında Başlatma</a></h2>
+<h2><a name="boot" id="boot">Sistem Açılışında Başlatma</a><a title="Permanent link" href="#boot" class="permalink">&para;</a></h2>
 
     <p>Sunucunuzun sistem yeniden başlatıldıktan sonra çalışmasına devam
       etmesini istiyorsanız sistem başlatma betiklerinize (genellikle ya
@@ -132,7 +132,7 @@
       gereklerini yerine getirdiğinden emin olunuz.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="info" id="info">Ek Bilgiler</a></h2>
+<h2><a name="info" id="info">Ek Bilgiler</a><a title="Permanent link" href="#info" class="permalink">&para;</a></h2>
 
     <p><code class="program"><a href="./programs/httpd.html">httpd</a></code>, <code class="program"><a href="./programs/apachectl.html">apachectl</a></code> ve sunucuyla
       gelen diğer destek programlarının komut satırı seçenekleri hakkında ek

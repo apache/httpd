@@ -62,7 +62,7 @@
 <li><a href="#comments_section">Kommentare</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Action" id="Action">Action</a>-<a name="action" id="action">Direktive</a></h2>
+<div class="directive-section"><h2><a name="Action" id="Action">Action</a>-<a name="action" id="action">Direktive</a><a title="Permanent link" href="#action" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Aktiviert ein CGI-Skript für einen bestimmten Handler oder
   Content-Type</td></tr>
@@ -122,7 +122,7 @@
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Script" id="Script">Script</a>-<a name="script" id="script">Direktive</a></h2>
+<div class="directive-section"><h2><a name="Script" id="Script">Script</a>-<a name="script" id="script">Direktive</a><a title="Permanent link" href="#script" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Aktiviert ein CGI-Skript für eine bestimmte 
   Anfragemethode.</td></tr>

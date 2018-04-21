@@ -55,7 +55,7 @@
 </ul><h3>Consulte también</h3><ul class="seealso"><li><a href="#comments_section">Comentarios</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="related" id="related">Módulos y Directivas Relacionados</a></h2>
+<h2><a name="related" id="related">Módulos y Directivas Relacionados</a><a title="Enlace permanente" href="#related" class="permalink">&para;</a></h2>
 
 <p>Hay tres tipos de módulos involucrados en los procesos de la autenticación 
 	y autorización. Normalmente deberás escoger al menos un módulo de cada grupo.</p>
@@ -112,7 +112,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="introduction" id="introduction">Introducción</a></h2>
+<h2><a name="introduction" id="introduction">Introducción</a><a title="Enlace permanente" href="#introduction" class="permalink">&para;</a></h2>
     <p>Si se tiene información en nuestra página web que sea información 
     	sensible o pensada para un grupo reducido de usuarios/personas,
     	las técnicas que se describen en este manual, le servirán  
@@ -128,7 +128,7 @@
     </div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="theprerequisites" id="theprerequisites">Los Prerequisitos</a></h2>
+<h2><a name="theprerequisites" id="theprerequisites">Los Prerequisitos</a><a title="Enlace permanente" href="#theprerequisites" class="permalink">&para;</a></h2>
     <p>Las directivas que se usan en este artículo necesitaran ponerse ya sea 
     	en el fichero de configuración principal del servidor ( típicamente en 
     	la sección 
@@ -167,7 +167,7 @@
     para la configuración y uso de autenticación y autorización en el servidor web.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="gettingitworking" id="gettingitworking">Conseguir que funcione</a></h2>
+<h2><a name="gettingitworking" id="gettingitworking">Conseguir que funcione</a><a title="Enlace permanente" href="#gettingitworking" class="permalink">&para;</a></h2>
     <p>Aquí está lo básico de cómo proteger con contraseña un directorio en tu
      servidor.</p>
 
@@ -291,7 +291,7 @@ Require user rbowen
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="lettingmorethanonepersonin" id="lettingmorethanonepersonin">Dejar que más de una persona 
-	entre</a></h2>
+	entre</a><a title="Enlace permanente" href="#lettingmorethanonepersonin" class="permalink">&para;</a></h2>
     <p>Las directivas mencionadas arriba sólo permiten a una persona 
     (especialmente con un usuario que en ej ejemplo es <code>rbowen</code>) 
     en el directorio. En la mayoría de los casos, se querrá permitir el acceso
@@ -356,7 +356,7 @@ Require group GroupName</pre>
     <code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="possibleproblems" id="possibleproblems">Posibles Problemas</a></h2>
+<h2><a name="possibleproblems" id="possibleproblems">Posibles Problemas</a><a title="Enlace permanente" href="#possibleproblems" class="permalink">&para;</a></h2>
     <p>Debido a la forma en que se especifica la autenticación básica,
     su nombre de usuario y la contraseña deben ser verificados cada vez 
     que se solicita un documento desde el servidor. Esto es, incluso si&nbsp;
@@ -377,7 +377,7 @@ Require group GroupName</pre>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="dbmdbd" id="dbmdbd">Método alternativo de almacenamiento de las 
-	contraseñas</a></h2>
+	contraseñas</a><a title="Enlace permanente" href="#dbmdbd" class="permalink">&para;</a></h2>
 
     <p>Debido a que el almacenamiento de las contraseñas en texto plano tiene 
     	el problema mencionado anteriormente, puede que se prefiera guardar 
@@ -404,7 +404,7 @@ Require group GroupName</pre>
     <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code> para más detalles.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="multprovider" id="multprovider">Uso de múltiples proveedores</a></h2>
+<h2><a name="multprovider" id="multprovider">Uso de múltiples proveedores</a><a title="Enlace permanente" href="#multprovider" class="permalink">&para;</a></h2>
 
     <p>Con la introducción de la nueva autenticación basada en un proveedor y
      una arquitectura de autorización, ya no estaremos restringidos a un único
@@ -466,7 +466,7 @@ Require group GroupName</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="beyond" id="beyond">Más allá de la Autorización</a></h2>
+<h2><a name="beyond" id="beyond">Más allá de la Autorización</a><a title="Enlace permanente" href="#beyond" class="permalink">&para;</a></h2>
 
     <p>El modo en que la autorización puede ser aplicada es ahora mucho más flexible
     	que us solo chequeo contra un almacén de datos (contraseñas). Ordenando la 
@@ -642,7 +642,7 @@ Require group GroupName</pre>
 
 	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="socache" id="socache">Cache de Autenticación</a></h2>
+<h2><a name="socache" id="socache">Cache de Autenticación</a><a title="Enlace permanente" href="#socache" class="permalink">&para;</a></h2>
 	<p>
 		Puede haber momentos en que la autenticación ponga una carga 
 		inaceptable en el proveedor (de autenticación) o en tu red.
@@ -657,7 +657,7 @@ Require group GroupName</pre>
     </p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="moreinformation" id="moreinformation">Más información</a></h2>
+<h2><a name="moreinformation" id="moreinformation">Más información</a><a title="Enlace permanente" href="#moreinformation" class="permalink">&para;</a></h2>
 
     <p>
     	También debería leer la documentación para

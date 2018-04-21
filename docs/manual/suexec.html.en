@@ -59,7 +59,7 @@
 </ul><h3>See also</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="before" id="before">Before we begin</a></h2>
+<h2><a name="before" id="before">Before we begin</a><a title="Permanent link" href="#before" class="permalink">&para;</a></h2>
 
     <p>Before jumping head-first into this document,
     you should be aware that certain assumptions are made about you and
@@ -107,7 +107,7 @@
     <p>Still with us? Yes? Good. Let's move on!</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="model" id="model">suEXEC Security Model</a></h2>
+<h2><a name="model" id="model">suEXEC Security Model</a><a title="Permanent link" href="#model" class="permalink">&para;</a></h2>
 
     <p>Before we begin configuring and installing
     suEXEC, we will first discuss the security model you are about
@@ -357,7 +357,7 @@
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="install" id="install">Configuring &amp; Installing
-    suEXEC</a></h2>
+    suEXEC</a><a title="Permanent link" href="#install" class="permalink">&para;</a></h2>
 
     <p>Here's where we begin the fun.</p>
 
@@ -517,7 +517,7 @@ Group webgroup</pre>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="enable" id="enable">Enabling &amp; Disabling
-    suEXEC</a></h2>
+    suEXEC</a><a title="Permanent link" href="#enable" class="permalink">&para;</a></h2>
 
     <p>Upon startup of httpd, it looks for the file
     <code class="program"><a href="./programs/suexec.html">suexec</a></code> in the directory defined by the
@@ -542,7 +542,7 @@ Group webgroup</pre>
     httpd after you have removed the <code class="program"><a href="./programs/suexec.html">suexec</a></code> file.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="usage" id="usage">Using suEXEC</a></h2>
+<h2><a name="usage" id="usage">Using suEXEC</a><a title="Permanent link" href="#usage" class="permalink">&para;</a></h2>
 
     <p>Requests for CGI programs will call the suEXEC wrapper only if
     they are for a virtual host containing a <code class="directive"><a href="./mod/mod_suexec.html#suexecusergroup">SuexecUserGroup</a></code> directive or if
@@ -567,7 +567,7 @@ Group webgroup</pre>
      <code>--with-suexec-userdir</code> <a href="#install">compile
      time option</a>.</p> </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="debug" id="debug">Debugging suEXEC</a></h2>
+<h2><a name="debug" id="debug">Debugging suEXEC</a><a title="Permanent link" href="#debug" class="permalink">&para;</a></h2>
 
     <p>The suEXEC wrapper will write log information
     to the file defined with the <code>--with-suexec-logfile</code>
@@ -581,7 +581,7 @@ Group webgroup</pre>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="jabberwock" id="jabberwock">Beware the Jabberwock:
-    Warnings &amp; Examples</a></h2>
+    Warnings &amp; Examples</a><a title="Permanent link" href="#jabberwock" class="permalink">&para;</a></h2>
 
     <p><strong>NOTE!</strong> This section may not be
     complete. For the latest revision of this section of the

@@ -92,7 +92,7 @@
 <li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="whatisasession" id="whatisasession">What is a session?</a></h2>
+<h2><a name="whatisasession" id="whatisasession">What is a session?</a><a title="Permanent link" href="#whatisasession" class="permalink">&para;</a></h2>
       <p>At the core of the session interface is a table of key and value pairs
       that are made accessible across browser requests. These pairs can be set
       to any valid string, as needed by the application making use of the
@@ -108,7 +108,7 @@
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="whocanuseasession" id="whocanuseasession">Who can use a session?</a></h2>
+<h2><a name="whocanuseasession" id="whocanuseasession">Who can use a session?</a><a title="Permanent link" href="#whocanuseasession" class="permalink">&para;</a></h2>
       <p>The session interface is primarily developed for the use by other
       server modules, such as <code class="module"><a href="../mod/mod_auth_form.html">mod_auth_form</a></code>, however CGI
       based applications can optionally be granted access to the contents
@@ -118,7 +118,7 @@
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="serversession" id="serversession">Keeping sessions on the server</a></h2>
+<h2><a name="serversession" id="serversession">Keeping sessions on the server</a><a title="Permanent link" href="#serversession" class="permalink">&para;</a></h2>
       <p>Apache can be configured to keep track of per user sessions stored
       on a particular server or group of servers. This functionality is
       similar to the sessions available in typical application servers.</p>
@@ -138,7 +138,7 @@
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="browsersession" id="browsersession">Keeping sessions on the browser</a></h2>
+<h2><a name="browsersession" id="browsersession">Keeping sessions on the browser</a><a title="Permanent link" href="#browsersession" class="permalink">&para;</a></h2>
       <p>In high traffic environments where keeping track of a session on a
       server is too resource intensive or inconvenient, the option exists to store
       the contents of the session within a cookie on the client browser instead.</p>
@@ -157,7 +157,7 @@
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="basicexamples" id="basicexamples">Basic Examples</a></h2>
+<h2><a name="basicexamples" id="basicexamples">Basic Examples</a><a title="Permanent link" href="#basicexamples" class="permalink">&para;</a></h2>
 
       <p>Creating a session is as simple as turning the session on, and deciding
       where the session will be stored. In this example, the session will be
@@ -204,7 +204,7 @@ SessionHeader X-Replace-Session</pre>
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="sessionprivacy" id="sessionprivacy">Session Privacy</a></h2>
+<h2><a name="sessionprivacy" id="sessionprivacy">Session Privacy</a><a title="Permanent link" href="#sessionprivacy" class="permalink">&para;</a></h2>
 
       <p>Using the "show cookies" feature of your browser, you would have seen
       a clear text representation of the session. This could potentially be a
@@ -232,7 +232,7 @@ SessionCookieName session path=/</pre>
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="cookieprivacy" id="cookieprivacy">Cookie Privacy</a></h2>
+<h2><a name="cookieprivacy" id="cookieprivacy">Cookie Privacy</a><a title="Permanent link" href="#cookieprivacy" class="permalink">&para;</a></h2>
 
       <p>The HTTP cookie mechanism also offers privacy features, such as the
       ability to restrict cookie transport to SSL protected pages only, or
@@ -266,7 +266,7 @@ SessionCookieName session path=/private;domain=example.com;httponly;secure;</pre
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="authentication" id="authentication">Session Support for Authentication</a></h2>
+<h2><a name="authentication" id="authentication">Session Support for Authentication</a><a title="Permanent link" href="#authentication" class="permalink">&para;</a></h2>
 
       <p>As is possible within many application servers, authentication modules can use
       a session for storing the username and password after login. The
@@ -288,7 +288,7 @@ AuthName "realm"
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="integration" id="integration">Integrating Sessions with External Applications</a></h2>
+<h2><a name="integration" id="integration">Integrating Sessions with External Applications</a><a title="Permanent link" href="#integration" class="permalink">&para;</a></h2>
 
       <p>In order for sessions to be useful, it must be possible to share the contents
       of a session with external applications, and it must be possible for an
@@ -347,7 +347,7 @@ AuthName "realm"
 
     </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Session" id="Session">Session</a> <a name="session" id="session">Directive</a></h2>
+<div class="directive-section"><h2><a name="Session" id="Session">Session</a> <a name="session" id="session">Directive</a><a title="Permanent link" href="#session" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enables a session for the current directory or location</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Session On|Off</code></td></tr>
@@ -363,7 +363,7 @@ AuthName "realm"
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SessionEnv" id="SessionEnv">SessionEnv</a> <a name="sessionenv" id="sessionenv">Directive</a></h2>
+<div class="directive-section"><h2><a name="SessionEnv" id="SessionEnv">SessionEnv</a> <a name="sessionenv" id="sessionenv">Directive</a><a title="Permanent link" href="#sessionenv" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Control whether the contents of the session are written to the
 <var>HTTP_SESSION</var> environment variable</td></tr>
@@ -387,7 +387,7 @@ AuthName "realm"
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SessionExclude" id="SessionExclude">SessionExclude</a> <a name="sessionexclude" id="sessionexclude">Directive</a></h2>
+<div class="directive-section"><h2><a name="SessionExclude" id="SessionExclude">SessionExclude</a> <a name="sessionexclude" id="sessionexclude">Directive</a><a title="Permanent link" href="#sessionexclude" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Define URL prefixes for which a session is ignored</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SessionExclude <var>path</var></code></td></tr>
@@ -414,7 +414,7 @@ AuthName "realm"
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SessionExpiryUpdateInterval" id="SessionExpiryUpdateInterval">SessionExpiryUpdateInterval</a> <a name="sessionexpiryupdateinterval" id="sessionexpiryupdateinterval">Directive</a></h2>
+<div class="directive-section"><h2><a name="SessionExpiryUpdateInterval" id="SessionExpiryUpdateInterval">SessionExpiryUpdateInterval</a> <a name="sessionexpiryupdateinterval" id="sessionexpiryupdateinterval">Directive</a><a title="Permanent link" href="#sessionexpiryupdateinterval" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Define the number of seconds a session's expiry may change without
 the session being updated</td></tr>
@@ -449,7 +449,7 @@ the session being updated</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SessionHeader" id="SessionHeader">SessionHeader</a> <a name="sessionheader" id="sessionheader">Directive</a></h2>
+<div class="directive-section"><h2><a name="SessionHeader" id="SessionHeader">SessionHeader</a> <a name="sessionheader" id="sessionheader">Directive</a><a title="Permanent link" href="#sessionheader" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Import session updates from a given HTTP response header</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SessionHeader <var>header</var></code></td></tr>
@@ -475,7 +475,7 @@ the session being updated</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SessionInclude" id="SessionInclude">SessionInclude</a> <a name="sessioninclude" id="sessioninclude">Directive</a></h2>
+<div class="directive-section"><h2><a name="SessionInclude" id="SessionInclude">SessionInclude</a> <a name="sessioninclude" id="sessioninclude">Directive</a><a title="Permanent link" href="#sessioninclude" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Define URL prefixes for which a session is valid</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SessionInclude <var>path</var></code></td></tr>
@@ -499,7 +499,7 @@ the session being updated</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SessionMaxAge" id="SessionMaxAge">SessionMaxAge</a> <a name="sessionmaxage" id="sessionmaxage">Directive</a></h2>
+<div class="directive-section"><h2><a name="SessionMaxAge" id="SessionMaxAge">SessionMaxAge</a> <a name="sessionmaxage" id="sessionmaxage">Directive</a><a title="Permanent link" href="#sessionmaxage" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Define a maximum age in seconds for a session</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SessionMaxAge <var>maxage</var></code></td></tr>

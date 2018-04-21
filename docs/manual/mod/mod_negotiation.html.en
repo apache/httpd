@@ -72,7 +72,7 @@ Negotiation</a></li>
 <li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="typemaps" id="typemaps">Type maps</a></h2>
+<h2><a name="typemaps" id="typemaps">Type maps</a><a title="Permanent link" href="#typemaps" class="permalink">&para;</a></h2>
     <p>A type map has a format similar to RFC822 mail headers. It
     contains document descriptions separated by blank lines, with
     lines beginning with a hash character ('#') treated as
@@ -211,7 +211,7 @@ Negotiation</a></li>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="multiviews" id="multiviews">Multiviews</a></h2>
+<h2><a name="multiviews" id="multiviews">Multiviews</a><a title="Permanent link" href="#multiviews" class="permalink">&para;</a></h2>
     <p>A Multiviews search is enabled by the <code>Multiviews</code>
     <code class="directive"><a href="../mod/core.html#options">Options</a></code>. If the server receives a
     request for <code>/some/dir/foo</code> and
@@ -229,7 +229,7 @@ Negotiation</a></li>
     to them when choosing files.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CacheNegotiatedDocs" id="CacheNegotiatedDocs">CacheNegotiatedDocs</a> <a name="cachenegotiateddocs" id="cachenegotiateddocs">Directive</a></h2>
+<div class="directive-section"><h2><a name="CacheNegotiatedDocs" id="CacheNegotiatedDocs">CacheNegotiatedDocs</a> <a name="cachenegotiateddocs" id="cachenegotiateddocs">Directive</a><a title="Permanent link" href="#cachenegotiateddocs" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Allows content-negotiated documents to be
 cached by proxy servers</td></tr>
@@ -253,7 +253,7 @@ cached by proxy servers</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ForceLanguagePriority" id="ForceLanguagePriority">ForceLanguagePriority</a> <a name="forcelanguagepriority" id="forcelanguagepriority">Directive</a></h2>
+<div class="directive-section"><h2><a name="ForceLanguagePriority" id="ForceLanguagePriority">ForceLanguagePriority</a> <a name="forcelanguagepriority" id="forcelanguagepriority">Directive</a><a title="Permanent link" href="#forcelanguagepriority" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Action to take if a single acceptable document is not
 found</td></tr>
@@ -306,7 +306,7 @@ ForceLanguagePriority Fallback</pre>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LanguagePriority" id="LanguagePriority">LanguagePriority</a> <a name="languagepriority" id="languagepriority">Directive</a></h2>
+<div class="directive-section"><h2><a name="LanguagePriority" id="LanguagePriority">LanguagePriority</a> <a name="languagepriority" id="languagepriority">Directive</a><a title="Permanent link" href="#languagepriority" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The precedence of language variants for cases where
 the client does not express a preference</td></tr>

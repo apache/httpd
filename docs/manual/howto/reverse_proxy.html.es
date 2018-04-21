@@ -27,6 +27,10 @@
 <a href="../es/howto/reverse_proxy.html" title="Español">&nbsp;es&nbsp;</a> |
 <a href="../fr/howto/reverse_proxy.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
+<div class="outofdate">Esta traducción podría estar
+            obsoleta. Consulte la versión en inglés de la
+            documentación para comprobar si se han producido cambios
+            recientemente.</div>
 
     <p>Además de ser un servidor web "básico", y proveer contenido estático y 
       dinámico a los usuarios finales, Apache HTTPD (al igual que la mayoría de  
@@ -66,12 +70,12 @@
 </ul><h3>Consulte también</h3><ul class="seealso"><li><a href="#comments_section">Comentarios</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="related" id="related">Proxy Inverso</a></h2>
+<h2><a name="related" id="related">Proxy Inverso</a><a title="Enlace permanente" href="#related" class="permalink">&para;</a></h2>
   
   <table class="related"><tr><th>Módulos Relacionados</th><th>Directivas Relacionadas</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></li><li><code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code></li><li><code class="module"><a href="../mod/mod_proxy_hcheck.html">mod_proxy_hcheck</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code></li><li><code class="directive"><a href="../mod/mod_proxy.html#balancermember">BalancerMember</a></code></li></ul></td></tr></table>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="simple" id="simple">Proxy inverso sencillo</a></h2>
+<h2><a name="simple" id="simple">Proxy inverso sencillo</a><a title="Enlace permanente" href="#simple" class="permalink">&para;</a></h2>
     
 
     <p>
@@ -107,7 +111,7 @@ ProxyPassReverse "/images/"  "http://www.example.com/"</pre>
     </p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="cluster" id="cluster">Clusters y Balanceadores</a></h2>
+<h2><a name="cluster" id="cluster">Clusters y Balanceadores</a><a title="Enlace permanente" href="#cluster" class="permalink">&para;</a></h2>
     
 
     <p>
@@ -153,7 +157,7 @@ ProxyPassReverse "/images/"  "balancer://myset/"</pre>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="config" id="config">Configuración de Balanceador y BalancerMember</a></h2>
+<h2><a name="config" id="config">Configuración de Balanceador y BalancerMember</a><a title="Enlace permanente" href="#config" class="permalink">&para;</a></h2>
     
 
     <p>
@@ -176,7 +180,7 @@ ProxyPassReverse "/images/"  "balancer://myset/"</pre>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="failover" id="failover">Tolerancia a fallos</a></h2>
+<h2><a name="failover" id="failover">Tolerancia a fallos</a><a title="Enlace permanente" href="#failover" class="permalink">&para;</a></h2>
     
 
     <p>
@@ -212,7 +216,7 @@ ProxyPassReverse "/images/"  "balancer://myset/"</pre>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="manager" id="manager">Gestor del Balanceador</a></h2>
+<h2><a name="manager" id="manager">Gestor del Balanceador</a><a title="Enlace permanente" href="#manager" class="permalink">&para;</a></h2>
     
 
     <p>
@@ -264,7 +268,7 @@ ProxyPassReverse "/images/"  "balancer://myset/"</pre>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="health-check" id="health-check">Comprobaciones de estado dinámicas</a></h2>
+<h2><a name="health-check" id="health-check">Comprobaciones de estado dinámicas</a><a title="Enlace permanente" href="#health-check" class="permalink">&para;</a></h2>
     
 
     <p>
@@ -277,7 +281,7 @@ ProxyPassReverse "/images/"  "balancer://myset/"</pre>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="status" id="status">Marcas de estado de los Miembros del Balanceador</a></h2>
+<h2><a name="status" id="status">Marcas de estado de los Miembros del Balanceador</a><a title="Enlace permanente" href="#status" class="permalink">&para;</a></h2>
     
 
     <p>

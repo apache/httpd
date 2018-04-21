@@ -49,7 +49,7 @@
 </ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><a href="#comments_section">Yorum</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="motivation" id="motivation">Amaç</a></h2>
+<h2><a name="motivation" id="motivation">Amaç</a><a title="Permanent link" href="#motivation" class="permalink">&para;</a></h2>
 
     <p>Burada açıklanan teknikler, <code>httpd.conf</code> dosyanızın
       örnekteki gibi, aslında hemen hemen birbirinin aynı çok sayıda
@@ -100,7 +100,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="overview" id="overview">Genel Bakış</a></h2>
+<h2><a name="overview" id="overview">Genel Bakış</a><a title="Permanent link" href="#overview" class="permalink">&para;</a></h2>
 
     <p>Bir sanal konak iki bilgiye bakarak belirlenir: IP adresi ve HTTP
       isteğindeki <code>Host:</code> başlığının içeriği. Devingen sanal
@@ -144,7 +144,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="simple" id="simple">mod_vhost_alias ile Kitlesel Sanal Konaklar</a></h2>
+<h2><a name="simple" id="simple">mod_vhost_alias ile Kitlesel Sanal Konaklar</a><a title="Permanent link" href="#simple" class="permalink">&para;</a></h2>
 
     <p>Yukarıda <a href="#motivation">Amaç</a> bölümünde özetlenen sanal konak
       düzenlemesinin <code>mod_vhost_alias</code> kullanarak gerçekleştirilmiş
@@ -177,7 +177,7 @@ VirtualScriptAlias  /siteler/%0/cgi-bin
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="homepages" id="homepages">Basitleştirilmiş Kitlesel Sanal Konaklar</a></h2>
+<h2><a name="homepages" id="homepages">Basitleştirilmiş Kitlesel Sanal Konaklar</a><a title="Permanent link" href="#homepages" class="permalink">&para;</a></h2>
 
     <p>Bu sistem, yukarıdaki yapılandırmanın bir ISS’nin sunucusuna
       uyarlanmasından başka bir şey değildir. <code>%2</code> değişkenini
@@ -205,7 +205,7 @@ VirtualScriptAlias  /siteler/%0/cgi-bin
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="combinations" id="combinations">Aynı Sunucuda Kişisel ve Kurumsal Sanal Konaklar</a></h2>
+<h2><a name="combinations" id="combinations">Aynı Sunucuda Kişisel ve Kurumsal Sanal Konaklar</a><a title="Permanent link" href="#combinations" class="permalink">&para;</a></h2>
 
     <p>Daha karmaşık ayarlamalar yaparak httpd’nin normal
       <code>&lt;VirtualHost&gt;</code> bölümlerini farklı kitlesel sanal konak
@@ -266,7 +266,7 @@ LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon<br />
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="ipbased" id="ipbased">IP’ye dayalı sanal konakları daha verimli kılmak</a></h2>
+<h2><a name="ipbased" id="ipbased">IP’ye dayalı sanal konakları daha verimli kılmak</a><a title="Permanent link" href="#ipbased" class="permalink">&para;</a></h2>
     
 
     <p><a href="#simple">İlk örnekte</a> IP’ye dayalı sanal konaklar için
@@ -292,7 +292,7 @@ VirtualScriptAliasIP  /siteler/%0/cgi-bin<br />
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="simple.rewrite" id="simple.rewrite"><code>mod_rewrite</code> ile Kitlesel Sanal Konaklar</a></h2>
+<h2><a name="simple.rewrite" id="simple.rewrite"><code>mod_rewrite</code> ile Kitlesel Sanal Konaklar</a><a title="Permanent link" href="#simple.rewrite" class="permalink">&para;</a></h2>
     
 
     <p>Kitlesel sanal barındırma <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> modülü kullanarak

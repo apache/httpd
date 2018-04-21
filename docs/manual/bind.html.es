@@ -45,7 +45,7 @@
 </ul><h3>Consulte también</h3><ul class="seealso"><li><a href="vhosts/">Hosts Virtuales</a></li><li><a href="dns-caveats.html">Problemas de DNS</a></li><li><a href="#comments_section">Comentarios</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="overview" id="overview">Visión General</a></h2>
+<h2><a name="overview" id="overview">Visión General</a><a title="Enlace permanente" href="#overview" class="permalink">&para;</a></h2>
     
 
     <table class="related"><tr><th>Módulos Relacionados</th><th>Directivas Relacionadas</th></tr><tr><td><ul><li><code class="module"><a href="./mod/core.html">core</a></code></li><li><code class="module"><a href="./mod/mpm_common.html">mpm_common</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code></li></ul></td></tr></table>
@@ -105,7 +105,7 @@ Listen 192.0.2.5:8000</pre>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="ipv6" id="ipv6">Consideraciones especiales con IPv6</a></h2>
+<h2><a name="ipv6" id="ipv6">Consideraciones especiales con IPv6</a><a title="Enlace permanente" href="#ipv6" class="permalink">&para;</a></h2>
     
 
     <p>Un creciente número de plataformas implementan ya IPv6, y 
@@ -152,7 +152,7 @@ Listen 192.0.2.1:80</pre>
     en FreeBSD, NetBSD y OpenBSD.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="protocol" id="protocol">Especificar el Protocolo en el Listen</a></h2>
+<h2><a name="protocol" id="protocol">Especificar el Protocolo en el Listen</a><a title="Enlace permanente" href="#protocol" class="permalink">&para;</a></h2>
     
     <p>El segundo argumento en la directiva <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>
     el <var>protocolo</var> que es opcional no es algo que se requiera en las configuraciones.
@@ -169,7 +169,7 @@ Listen 192.0.2.1:80</pre>
 </div>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="virtualhost" id="virtualhost">Como Funciona en los Hosts Virtuales</a></h2>
+<h2><a name="virtualhost" id="virtualhost">Como Funciona en los Hosts Virtuales</a><a title="Enlace permanente" href="#virtualhost" class="permalink">&para;</a></h2>
     
 
     <p> La directiva <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> no implementa los

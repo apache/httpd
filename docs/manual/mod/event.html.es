@@ -84,13 +84,13 @@ activo</td></tr>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#threadstacksize">ThreadStackSize</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mod_unixd.html#user">User</a></li>
 </ul>
-<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mpm_event">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mpm_event">Report a bug</a></li></ul><h3>Consulte también</h3>
+<h3>Lista de comprobación de errores corregidos</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd historial de cambios</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mpm_event">Problemas Conocidos</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mpm_event">Reportar un error</a></li></ul><h3>Consulte también</h3>
 <ul class="seealso">
 <li><a href="worker.html">El MPM worker</a></li>
 <li><a href="#comments_section">Comentarios</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="event-worker-relationship" id="event-worker-relationship">Relación con el MPM Worker</a></h2>
+<h2><a name="event-worker-relationship" id="event-worker-relationship">Relación con el MPM Worker</a><a title="Enlace permanente" href="#event-worker-relationship" class="permalink">&para;</a></h2>
     
     <p><code class="module"><a href="../mod/event.html">event</a></code> está basado en el MPM <code class="module"><a href="../mod/worker.html">worker</a></code>, que implmementa un servidor híbrido de multi-proceso multi-hilo. Un solo proceso (el padre) es responsable de lanzar procesos child (hijos). Cada proceso child crea un número fijo de hilos de servidor tal y como se especifica en la directiva 
     <code class="directive"><a href="../mod/mpm_common.html#threadsperchild">ThreadsPerChild</a></code>, así como un hilo listener que está en escucha para recibir conexiones y las pasa al hilo worker para procesamiento según van llegando.</p>
@@ -99,7 +99,7 @@ activo</td></tr>
     <code class="directive">AsyncRequestWorkerFactor</code>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="how-it-works" id="how-it-works">Como Trabaja</a></h2>
+<h2><a name="how-it-works" id="how-it-works">Como Trabaja</a><a title="Enlace permanente" href="#how-it-works" class="permalink">&para;</a></h2>
     <p>El objetivo original de este MPM era arreglar el 'problema del keep alive' en HTTP. Después de que un cliente completa su primera petición, puede mantener la conexión abierta, enviando más peticiones utilizando el mismo socket y ahorrando una cantidad significativa de tiempo en abrir nuevas conexiones TCP. Sin embargo, el Servidor Apache HTTP tradicionalmente mantiene un proceso/hilo child esperando a que le lleguen datos del cliente, lo cual tiene sus propias desventajas.
     Para resolver este problema, este MPM usa un hilo dedicado de tipo listener en cada proceso junto con un grupo de hilos worker, compartiendo colas específicas para esas peticiones en modo keep-alive (o, más sencillamente, "readable"), aquellos en modo terminando-escritura, y aquellos en proceso de cerrarse ("closing"). Un bucle de eventos, activado por el estado de disponibilidad del socket, ajusta estas colas y manda el trabajo al grupo de workers.
     </p>
@@ -198,7 +198,7 @@ activo</td></tr>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="requirements" id="requirements">Requerimientos</a></h2>
+<h2><a name="requirements" id="requirements">Requerimientos</a><a title="Enlace permanente" href="#requirements" class="permalink">&para;</a></h2>
     <p>Este MPM depende de operaciones atómicas de comparar-y-cambiar de <a class="glossarylink" href="../glossary.html#apr" title="ver glosario">APR</a> para sincronización de hilos. Si está compilando para una máquina x86 y no necesita soportar 386, o está compilando para SPARC y no necesita funcionar en chips pre-UltraSPARC, añada
     <code>--enable-nonportable-atomics=yes</code> a los parámetros del script 
     <code class="program"><a href="../programs/configure.html">configure</a></code>. Esto hará que APR implemente operaciones atómicas usando los opcode eficientes no disponibles en CPU's más antiguas.
@@ -218,7 +218,7 @@ activo</td></tr>
     </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="asyncrequestworkerfactor" id="asyncrequestworkerfactor">Directiva</a> <a name="AsyncRequestWorkerFactor" id="AsyncRequestWorkerFactor">AsyncRequestWorkerFactor</a></h2>
+<div class="directive-section"><h2><a name="asyncrequestworkerfactor" id="asyncrequestworkerfactor">Directiva</a> <a name="AsyncRequestWorkerFactor" id="AsyncRequestWorkerFactor">AsyncRequestWorkerFactor</a><a title="Enlace permanente" href="#asyncrequestworkerfactor" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Limita el número de conexiones concurrentes por 
     proceso</td></tr>

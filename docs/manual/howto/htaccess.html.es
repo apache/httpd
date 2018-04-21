@@ -46,7 +46,7 @@
 </ul><h3>Consulte también</h3><ul class="seealso"><li><a href="#comments_section">Comentarios</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="related" id="related">Ficheros .htaccess</a></h2>
+<h2><a name="related" id="related">Ficheros .htaccess</a><a title="Enlace permanente" href="#related" class="permalink">&para;</a></h2>
     <table class="related"><tr><th>Módulos Relacionados</th><th>Directivas Relacionadas</th></tr><tr><td><ul><li><code class="module"><a href="../mod/core.html">core</a></code></li><li><code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code></li><li><code class="module"><a href="../mod/mod_authz_groupfile.html">mod_authz_groupfile</a></code></li><li><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code></li><li><code class="module"><a href="../mod/mod_include.html">mod_include</a></code></li><li><code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/core.html#accessfilename">AccessFileName</a></code></li><li><code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code></li><li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li><li><code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code></li><li><code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code></li><li><code class="directive"><a href="../mod/mod_authn_core.html#authtype">AuthType</a></code></li><li><code class="directive"><a href="../mod/mod_authn_core.html#authname">AuthName</a></code></li><li><code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code></li><li><code class="directive"><a href="../mod/mod_authz_groupfile.html#authgroupfile">AuthGroupFile</a></code></li><li><code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code></li></ul></td></tr></table>
 
     <div class="note">Debería evitar usar ficheros <code>.htaccess</code> completamente si
@@ -58,7 +58,7 @@
     mejor rendimiento.</div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="what" id="what">Qué son/Cómo usarlos</a></h2>
+<h2><a name="what" id="what">Qué son/Cómo usarlos</a><a title="Enlace permanente" href="#what" class="permalink">&para;</a></h2>
 
 
     <p>Los ficheros <code>.htaccess</code> (o "ficheros de configuración
@@ -112,7 +112,7 @@
     y compruebe la línea Context buscando ".htaccess".</p>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="when" id="when">Cuando (no) usar ficheros .htaccess</a></h2>
+<h2><a name="when" id="when">Cuando (no) usar ficheros .htaccess</a><a title="Enlace permanente" href="#when" class="permalink">&para;</a></h2>
 
     <p>Generalmente, solo debería usar ficheros <code>.htaccess</code> cuando no
     tiene acceso al fichero principal de configuración del servidor. Hay, por
@@ -217,7 +217,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="how" id="how">How directives are applied</a></h2>
+<h2><a name="how" id="how">How directives are applied</a><a title="Enlace permanente" href="#how" class="permalink">&para;</a></h2>
 
     <p>Las directivas de configuración que se encuentran en el fichero
     <code>.htaccess</code> se aplican al directorio en el que el fichero
@@ -282,7 +282,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="auth" id="auth">Ejemplo de Autenticación</a></h2>
+<h2><a name="auth" id="auth">Ejemplo de Autenticación</a><a title="Enlace permanente" href="#auth" class="permalink">&para;</a></h2>
 
     <p>Si saltó directamente a esta parte del documento para averiguar como 
     hacer la autenticación, es important que tenga en cuenta una cosa. Hay una 
@@ -315,7 +315,7 @@ Require group admins</pre>
     una explicación más completa de la autenticación y la autorización.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="ssi" id="ssi">Ejemplo de Server Side Includes</a></h2>
+<h2><a name="ssi" id="ssi">Ejemplo de Server Side Includes</a><a title="Enlace permanente" href="#ssi" class="permalink">&para;</a></h2>
 
     <p>Otro uso común de ficheros <code>.htaccess</code> es activar Server Side 
     Includes para un directorio en particular. Esto puede hacerse 
@@ -335,7 +335,7 @@ AddHandler server-parsed shtml</pre>
     explicación más completa de server-side includes.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="rewrite" id="rewrite">Reglas de Rewrite en ficheros .htaccess</a></h2>
+<h2><a name="rewrite" id="rewrite">Reglas de Rewrite en ficheros .htaccess</a><a title="Enlace permanente" href="#rewrite" class="permalink">&para;</a></h2>
     <p>Cuando use <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> en
     ficheros <code>.htaccess</code>, tenga en cuenta que el contexto 
     directorio cambia las cosas un poco. En concreto, las reglas son 
@@ -363,7 +363,7 @@ RewriteRule "^(.+)\.jpg" "$1.png"</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="cgi" id="cgi">Ejemplo de CGI</a></h2>
+<h2><a name="cgi" id="cgi">Ejemplo de CGI</a><a title="Enlace permanente" href="#cgi" class="permalink">&para;</a></h2>
 
     <p>Finalmente, puede que quiera usar un fichero <code>.htaccess</code> para
     permitir la ejecución de programas CGI en un directorio en particular. Esto
@@ -390,7 +390,7 @@ SetHandler cgi-script</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="troubleshoot" id="troubleshoot">Resolución de problemas</a></h2>
+<h2><a name="troubleshoot" id="troubleshoot">Resolución de problemas</a><a title="Enlace permanente" href="#troubleshoot" class="permalink">&para;</a></h2>
 
     <p>Cuando pone directivas en un fichero <code>.htaccess</code> y no obtiene 
     el efecto deseado hay una serie de cosas que pueden haber ido mal.</p>

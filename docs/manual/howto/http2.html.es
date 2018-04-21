@@ -44,7 +44,7 @@
 </ul><h3>Consulte también</h3><ul class="seealso"><li><a href="../mod/mod_http2.html">mod_http2</a></li><li><a href="#comments_section">Comentarios</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="protocol" id="protocol">El protocolo HTTP/2</a></h2>
+<h2><a name="protocol" id="protocol">El protocolo HTTP/2</a><a title="Enlace permanente" href="#protocol" class="permalink">&para;</a></h2>
     
 
     <p>HTTP/2 es la evolución del protocolo de la capa de aplicación con más
@@ -80,7 +80,7 @@
     </ul>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="implementation" id="implementation">HTTP/2 en Apache httpd</a></h2>
+<h2><a name="implementation" id="implementation">HTTP/2 en Apache httpd</a><a title="Enlace permanente" href="#implementation" class="permalink">&para;</a></h2>
     
     <p>El protocolo HTTP/2 se implementa con su propio módulo httpd, llamado acertadamente <a href="../mod/mod_http2.html">mod_http2</a>. Incluye el set completo de características descritas por el RFC 7540 y soporta HTTP/2 sobre texto plano (http:), así como conexiones seguras (https:). La variante de texto plano se llama '<code>h2c</code>', la segura '<code>h2</code>'. Para <code>h2c</code> permite el modo <em>direct</em>
     y el <code>Upgrade:</code> a través de una solicitud inicial HTTP/1.</p>
@@ -88,7 +88,7 @@
     <p>Una característica de HTTP/2 que ofrece capacidades nuevas para desarrolladores de web es <a href="#push">Server Push</a>. Vea esa sección para saber como su aplicación web puede hacer uso de ella.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="building" id="building">Compilar httpd con soporte HTTP/2</a></h2>
+<h2><a name="building" id="building">Compilar httpd con soporte HTTP/2</a><a title="Enlace permanente" href="#building" class="permalink">&para;</a></h2>
     
     <p><a href="../mod/mod_http2.html">mod_http2</a> usa la librería <a href="https://nghttp2.org">nghttp2</a>
     como su implementación base. Para compilar <code>mod_http2</code> necesita al menos la versión 1.2.1 de <code>libnghttp2</code> instalada en su sistema.</p>
@@ -100,7 +100,7 @@
     <p>Hablando de SSL, necesita estar al tanto de que la mayoría de los navegadores hablan HTTP/2 solo con URLs <code>https:</code>. Así que necesita un servidor con soporte SSL. Pero no solo eso, necesitará una librería SSL que de soporte a la extensión <code>ALPN</code>. Si usa OpenSSL, necesita al menos la versión 1.0.2.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="basic-config" id="basic-config">Configuración básica</a></h2>
+<h2><a name="basic-config" id="basic-config">Configuración básica</a><a title="Enlace permanente" href="#basic-config" class="permalink">&para;</a></h2>
     
 
     <p>Cuando tiene un <code>httpd</code> compilado con <code>mod_http2</code> necesita una configuración básica para activarlo. Lo primero, como con cualquier otro módulo de Apache, es que necesita cargarlo:</p>
@@ -156,7 +156,7 @@
     como gestionar multiples hosts con el mismo certificado</a>.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="mpm-config" id="mpm-config">Configuración MPM</a></h2>
+<h2><a name="mpm-config" id="mpm-config">Configuración MPM</a><a title="Enlace permanente" href="#mpm-config" class="permalink">&para;</a></h2>
     
     
     <p>HTTP/2 está soportado en todos los módulos de multi-proceso que se ofrecen con httpd. Aun así, si usa el mpm <code>prefork</code>, habrá  restricciones severas.</p>
@@ -170,7 +170,7 @@
     <p>Si realmente está obligado a usar <code>prefork</code> y quiere multiples solicitudes, puede configurar la directiva <code class="directive"><a href="../mod/mod_http2.html#h2minworkers">H2MinWorkers</a></code> para hacerlo posible. Sin embargo, si esto falla, es bajo su cuenta y riesgo.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="clients" id="clients">Clientes</a></h2>
+<h2><a name="clients" id="clients">Clientes</a><a title="Enlace permanente" href="#clients" class="permalink">&para;</a></h2>
     
     
     <p>Casi todos los navegadores modernos dan soporte a HTTP/2, pero solo en conexiones SSL: Firefox (v43), Chrome (v45), Safari (since v9), iOS Safari (v9), Opera (v35), Chrome para Android (v49) e Internet Explorer (v11 en Windows10) (<a href="http://caniuse.com/#search=http2">Fuente</a>).</p>
@@ -181,7 +181,7 @@
     <p>Muchos de las implementaciones de clientes que no son navegadores soportan HTTP/2 sobre texto plano, h2c. La más versátil es <a href="https://curl.haxx.se">curl</a>.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="tools" id="tools">Herramientas útiles para depurar HTTP/2</a></h2>
+<h2><a name="tools" id="tools">Herramientas útiles para depurar HTTP/2</a><a title="Enlace permanente" href="#tools" class="permalink">&para;</a></h2>
     
 
     <p>La primera herramienta a mencionar es por supuesto <a href="https://curl.haxx.se">curl</a>. Por favor asegúrese de que su versión soporta HTTP/2 comprobando sus <code>Características</code>:</p>
@@ -205,7 +205,7 @@
     <p>Chrome ofrece logs detallados de HTTP/2 en sus conexiones a través de la <a href="chrome://net-internals/#http2">página especial de net-internals</a>. También hay una extensión interesante para <a href="https://chrome.google.com/webstore/detail/http2-and-spdy-indicator/mpbpobfflnpcgagjijhmgnchggcjblin?hl=en">Chrome</a> y <a href="https://addons.mozilla.org/en-us/firefox/addon/spdy-indicator/">Firefox</a> con la que visualizar cuando su navegador usa HTTP/2.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="push" id="push">Server Push</a></h2>
+<h2><a name="push" id="push">Server Push</a><a title="Enlace permanente" href="#push" class="permalink">&para;</a></h2>
     
     
     <p>El protocolo HTTP/2 permite al servidor hacer PUSH de respuestas a un cliente que nunca las solicitó. El tono de la conversación es: "Aquí tiene una solicitud que nunca envió y la respuesta llegará pronto..."</p>

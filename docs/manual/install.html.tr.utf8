@@ -64,7 +64,7 @@
 </ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><a href="programs/configure.html">Kaynak ağacının yapılandırılması</a></li><li><a href="invoking.html">Apache httpd’nin başlatılması</a></li><li><a href="stopping.html">Durdurma ve yeniden başlatma</a></li><li><a href="#comments_section">Yorum</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="overview" id="overview">Tez canlılar için genel bir bakış</a></h2>
+<h2><a name="overview" id="overview">Tez canlılar için genel bir bakış</a><a title="Permanent link" href="#overview" class="permalink">&para;</a></h2>
 
     <table>
       
@@ -126,7 +126,7 @@
       ayrıntılı olarak açıklanmıştır.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="requirements" id="requirements">Gereksinimler</a></h2>
+<h2><a name="requirements" id="requirements">Gereksinimler</a><a title="Permanent link" href="#requirements" class="permalink">&para;</a></h2>
 
     <p>Apache httpd’yi derleyebilmek için şunlar mevcut olmalıdır:</p>
 
@@ -193,7 +193,7 @@
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="download" id="download">İndirme</a></h2>
+<h2><a name="download" id="download">İndirme</a><a title="Permanent link" href="#download" class="permalink">&para;</a></h2>
 
     <p>Apache HTTP Sunucusunu, çeşitli yansıların da listelendiği <a href="http://httpd.apache.org/download.cgi">Apache HTTP Sunucusu
       indirme sayfasından</a> indirebilirsiniz. Unix benzeri sistemler
@@ -214,7 +214,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="extract" id="extract">Paketi açma</a></h2>
+<h2><a name="extract" id="extract">Paketi açma</a><a title="Permanent link" href="#extract" class="permalink">&para;</a></h2>
 
     <p>Apache HTTP Sunucusu tar paketinden sıkıştırmayı kaldırdıktan sonra tar
       arşivinden dosyaları çıkarmak basit bir işlemdir:</p>
@@ -229,7 +229,7 @@
       başlayabilmek için önce <code>cd</code> ile bu dizine geçmelisiniz.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="configure" id="configure">Kaynak ağacının yapılandırılması</a></h2>
+<h2><a name="configure" id="configure">Kaynak ağacının yapılandırılması</a><a title="Permanent link" href="#configure" class="permalink">&para;</a></h2>
 
     <p>Sonraki adım, Apache HTTPd kaynak ağacının platformunuza ve kişisel
       gereksinimlerinize uygun olarak yapılandırılmasıdır. Bu işlem dağıtımın
@@ -298,7 +298,7 @@
       <code class="program"><a href="./programs/configure.html">configure</a></code> kılavuz sayfasında açıklanmıştır.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="compile" id="compile">Derleme</a></h2>
+<h2><a name="compile" id="compile">Derleme</a><a title="Permanent link" href="#compile" class="permalink">&para;</a></h2>
 
     <p>Artık, Apache HTTPd paketini şekillendiren çeşitli parçaları derlemek
       için basitçe aşağıdaki komutu verebilirsiniz:</p>
@@ -311,7 +311,7 @@
       gerektirecektir.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="install" id="install">Kurulum</a></h2>
+<h2><a name="install" id="install">Kurulum</a><a title="Permanent link" href="#install" class="permalink">&para;</a></h2>
 
     <p>Şimdi sıra <code><em>ÖNEK</em></code> dizini altına kurulmak üzere
       yapılandırdığınız (yukarı <code>--prefix</code> seçeneğine bakınız)
@@ -327,7 +327,7 @@
       dosyalarının ve belgelerin üzerine yazılmayacaktır.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="customize" id="customize">Kişiselleştirme</a></h2>
+<h2><a name="customize" id="customize">Kişiselleştirme</a><a title="Permanent link" href="#customize" class="permalink">&para;</a></h2>
 
     <p>Bu adımda, Apache HTTP Sunucunuzu <code><em>ÖNEK</em>/conf/</code>
       dizini altındaki <a href="configuring.html">yapılandırma
@@ -341,7 +341,7 @@
       bulabilirsiniz.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="test" id="test">Deneme</a></h2>
+<h2><a name="test" id="test">Deneme</a><a title="Permanent link" href="#test" class="permalink">&para;</a></h2>
 
     <p>Artık Apache HTTP Sunucunuzu <a href="invoking.html">başlatmaya</a>
       hazırsınız. Hemen şu komutu verin:</p>
@@ -357,7 +357,7 @@
     <div class="example"><p><code>$ <em>ÖNEK</em>/bin/apachectl -k stop</code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="upgrading" id="upgrading">Yükseltme</a></h2>
+<h2><a name="upgrading" id="upgrading">Yükseltme</a><a title="Permanent link" href="#upgrading" class="permalink">&para;</a></h2>
 
     <p>Sürüm yükseltme işleminin ilk adımı, sitenizi etkileyen değişiklikleri
       öğrenmek için dağıtım duyurusunu ve kaynak paketindeki
@@ -410,7 +410,7 @@
     </code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="thirdp" id="thirdp">Üçüncü parti paketler</a></h2>
+<h2><a name="thirdp" id="thirdp">Üçüncü parti paketler</a><a title="Permanent link" href="#thirdp" class="permalink">&para;</a></h2>
 
     <p>Üçüncü partilerin çoğunun, Apache HTTP Sunucusunun belli bir platforma
       kurulumu için paketlenmiş kendi dağıtımları vardır. Çeşitli Linux

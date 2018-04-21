@@ -70,7 +70,7 @@
 <li><a href="#comments_section">Comments</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CacheDirLength" id="CacheDirLength">CacheDirLength</a> <a name="cachedirlength" id="cachedirlength">지시어</a></h2>
+<div class="directive-section"><h2><a name="CacheDirLength" id="CacheDirLength">CacheDirLength</a> <a name="cachedirlength" id="cachedirlength">지시어</a><a title="Permanent link" href="#cachedirlength" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>하위디렉토리명의 문자개수</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>CacheDirLength <var>length</var></code></td></tr>
@@ -94,7 +94,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CacheDirLevels" id="CacheDirLevels">CacheDirLevels</a> <a name="cachedirlevels" id="cachedirlevels">지시어</a></h2>
+<div class="directive-section"><h2><a name="CacheDirLevels" id="CacheDirLevels">CacheDirLevels</a> <a name="cachedirlevels" id="cachedirlevels">지시어</a><a title="Permanent link" href="#cachedirlevels" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>캐쉬의 하위디렉토리 깊이.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>CacheDirLevels <var>levels</var></code></td></tr>
@@ -118,7 +118,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CacheMaxFileSize" id="CacheMaxFileSize">CacheMaxFileSize</a> <a name="cachemaxfilesize" id="cachemaxfilesize">지시어</a></h2>
+<div class="directive-section"><h2><a name="CacheMaxFileSize" id="CacheMaxFileSize">CacheMaxFileSize</a> <a name="cachemaxfilesize" id="cachemaxfilesize">지시어</a><a title="Permanent link" href="#cachemaxfilesize" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>캐쉬에 저장할 문서의 최대크기 (바이트 단위)</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>CacheMaxFileSize <var>bytes</var></code></td></tr>
@@ -136,7 +136,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CacheMinFileSize" id="CacheMinFileSize">CacheMinFileSize</a> <a name="cacheminfilesize" id="cacheminfilesize">지시어</a></h2>
+<div class="directive-section"><h2><a name="CacheMinFileSize" id="CacheMinFileSize">CacheMinFileSize</a> <a name="cacheminfilesize" id="cacheminfilesize">지시어</a><a title="Permanent link" href="#cacheminfilesize" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>캐쉬에 저장할 문서의 최소크기 (바이트 단위)</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>CacheMinFileSize <var>bytes</var></code></td></tr>
@@ -154,7 +154,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CacheReadSize" id="CacheReadSize">CacheReadSize</a> <a name="cachereadsize" id="cachereadsize">지시어</a></h2>
+<div class="directive-section"><h2><a name="CacheReadSize" id="CacheReadSize">CacheReadSize</a> <a name="cachereadsize" id="cachereadsize">지시어</a><a title="Permanent link" href="#cachereadsize" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>The minimum size (in bytes) of the document to read and be cached before sending the data downstream</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code /></td></tr>
@@ -164,7 +164,7 @@
 </table><p>Documentation not yet translated. Please see English version of document.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CacheReadTime" id="CacheReadTime">CacheReadTime</a> <a name="cachereadtime" id="cachereadtime">지시어</a></h2>
+<div class="directive-section"><h2><a name="CacheReadTime" id="CacheReadTime">CacheReadTime</a> <a name="cachereadtime" id="cachereadtime">지시어</a><a title="Permanent link" href="#cachereadtime" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>The minimum time (in milliseconds) that should elapse while reading
   before data is sent downstream</td></tr>
@@ -175,7 +175,7 @@
 </table><p>Documentation not yet translated. Please see English version of document.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CacheRoot" id="CacheRoot">CacheRoot</a> <a name="cacheroot" id="cacheroot">지시어</a></h2>
+<div class="directive-section"><h2><a name="CacheRoot" id="CacheRoot">CacheRoot</a> <a name="cacheroot" id="cacheroot">지시어</a><a title="Permanent link" href="#cacheroot" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>캐쉬 파일을 저장할 디렉토리 root</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>CacheRoot <var>directory</var></code></td></tr>

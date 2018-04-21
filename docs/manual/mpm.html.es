@@ -46,7 +46,7 @@ como los usa Apache.</p>
 </ul><h3>Consulte también</h3><ul class="seealso"><li><a href="#comments_section">Comentarios</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="introduction" id="introduction">Introducción</a></h2>
+<h2><a name="introduction" id="introduction">Introducción</a><a title="Enlace permanente" href="#introduction" class="permalink">&para;</a></h2>
 
     <p>Apache está diseñado para ser un servidor web potente
     y flexible que pueda funcionar en la más amplia variedad de
@@ -98,7 +98,7 @@ como los usa Apache.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="choosing" id="choosing">Cómo Elegir un MPM</a></h2>
+<h2><a name="choosing" id="choosing">Cómo Elegir un MPM</a><a title="Enlace permanente" href="#choosing" class="permalink">&para;</a></h2>
 
     <p>Los MPMs deben elegirse durante el proceso de
     configuración, y deben ser compilados en el servidor. Los
@@ -118,7 +118,7 @@ como los usa Apache.</p>
     el servidor, incluido en MPM.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="defaults" id="defaults">MPM por defecto</a></h2>
+<h2><a name="defaults" id="defaults">MPM por defecto</a><a title="Enlace permanente" href="#defaults" class="permalink">&para;</a></h2>
 
 <p>En la siguiente tabla se muestran los MPMs por defecto para varios
 sistemas operativos.  Estos serán los MPM seleccionados si no se
