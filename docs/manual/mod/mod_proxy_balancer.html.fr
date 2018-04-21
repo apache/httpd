@@ -98,12 +98,14 @@ la répartition de charge</td></tr>
 <h2><a name="scheduler" id="scheduler">L'algorithme de planification de la répartition de
     charge</a></h2>
     
-    <p>A l'heure actuelle, 3 algorithmes de planification de la
-    répartition de charge sont disponibles : ils se basent
-    respectivement sur le comptage des requêtes, la mesure du trafic et
-    le comptage des requêtes en attente. Ils sont contrôlés par la
-    valeur de <code>lbmethod</code> dans la définition du répartiteur.
-    Voir la directive <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> pour plus de détails, et en
+    <p>A l'heure actuelle, 4 algorithmes de planification de la répartition de
+    charge sont disponibles : ils se basent respectivement sur le comptage des
+    requêtes (<code class="module"><a href="../mod/mod_lbmethod_byrequests.html">mod_lbmethod_byrequests</a></code>), la mesure de
+    l'intensité du trafic (<code class="module"><a href="../mod/mod_lbmethod_bytraffic.html">mod_lbmethod_bytraffic</a></code>), le comptage
+    des requêtes en attente (<code class="module"><a href="../mod/mod_lbmethod_bybusyness.html">mod_lbmethod_bybusyness</a></code>) et la
+    mesure de l'activité du serveur (<code class="module"><a href="../mod/mod_lbmethod_heartbeat.html">mod_lbmethod_heartbeat</a></code>).
+    Ils sont contrôlés par la valeur de <code>lbmethod</code> dans la définition
+    du répartiteur.  Voir la directive <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> pour plus de détails, et en
     particulier la configuration du répartiteur et de ses membres.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -143,7 +145,7 @@ la répartition de charge</td></tr>
     BalancerMember "http://192.168.1.50:80"
     BalancerMember "http://192.168.1.51:80"
 &lt;/Proxy&gt;
-ProxyPass "/test" "balancer://mycluster"
+ProxyPass        "/test" "balancer://mycluster"
 ProxyPassReverse "/test" "balancer://mycluster"</pre>
 
 
@@ -160,7 +162,7 @@ ProxyPassReverse "/test" "balancer://mycluster"</pre>
     BalancerMember "http://192.168.1.51:80" route=2
     ProxySet stickysession=ROUTEID
 &lt;/Proxy&gt;
-ProxyPass "/test" "balancer://mycluster"
+ProxyPass        "/test" "balancer://mycluster"
 ProxyPassReverse "/test" "balancer://mycluster"</pre>
 
 
