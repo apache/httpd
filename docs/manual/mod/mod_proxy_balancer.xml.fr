@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1803313:1829613 (outdated) -->
+<!-- English Revision: 1829613 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -74,12 +74,14 @@ la répartition de charge</description>
 <section id="scheduler">
     <title>L'algorithme de planification de la répartition de
     charge</title>
-    <p>A l'heure actuelle, 3 algorithmes de planification de la
-    répartition de charge sont disponibles : ils se basent
-    respectivement sur le comptage des requêtes, la mesure du trafic et
-    le comptage des requêtes en attente. Ils sont contrôlés par la
-    valeur de <code>lbmethod</code> dans la définition du répartiteur.
-    Voir la directive <directive
+    <p>A l'heure actuelle, 4 algorithmes de planification de la répartition de
+    charge sont disponibles : ils se basent respectivement sur le comptage des
+    requêtes (<module>mod_lbmethod_byrequests</module>), la mesure de
+    l'intensité du trafic (<module>mod_lbmethod_bytraffic</module>), le comptage
+    des requêtes en attente (<module>mod_lbmethod_bybusyness</module>) et la
+    mesure de l'activité du serveur (<module>mod_lbmethod_heartbeat</module>).
+    Ils sont contrôlés par la valeur de <code>lbmethod</code> dans la définition
+    du répartiteur.  Voir la directive <directive
     module="mod_proxy">ProxyPass</directive> pour plus de détails, et en
     particulier la configuration du répartiteur et de ses membres.</p>
 </section>
