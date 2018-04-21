@@ -41,7 +41,7 @@ haciendo uso de los protocolos "Secure Sockets Layer" y
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="documentation" id="documentation">Documentación</a></h2>
+<h2><a name="documentation" id="documentation">Documentación</a><a title="Enlace permanente" href="#documentation" class="permalink">&para;</a></h2>
 <ul>
 <li><a href="ssl_howto.html">Configuración y How-To de mod_ssl</a></li>
 <li><a href="ssl_intro.html">Introducción a SSL</a></li>
@@ -51,7 +51,7 @@ haciendo uso de los protocolos "Secure Sockets Layer" y
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="mod-ssl" id="mod-ssl">mod_ssl</a></h2>
+<h2><a name="mod-ssl" id="mod-ssl">mod_ssl</a><a title="Enlace permanente" href="#mod-ssl" class="permalink">&para;</a></h2>
 <p>Documentación más extensa de las directivas y de las variables de entorno
 	que proporciona éste módulo, se encuentran recogidas
 	en  <a href="../mod/mod_ssl.html">documentación de referencia de mod_ssl </a>.

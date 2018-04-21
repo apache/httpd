@@ -59,7 +59,7 @@
 </ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><a href="#comments_section">Yorum</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="before" id="before">Başlamadan önce</a></h2>
+<h2><a name="before" id="before">Başlamadan önce</a><a title="Permanent link" href="#before" class="permalink">&para;</a></h2>
 
     <p>Belgeye balıklama dalmadan önce, suexec'i kullanacağınız ortam ve
       kendiniz hakkında yapılmış çeşitli kabuller hakkında bilgi sahibi
@@ -103,7 +103,7 @@
     <p>Hala bizimle misiniz? Evet mi? Pekala, o halde devam!</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="model" id="model">SuEXEC Güvenlik Modeli</a></h2>
+<h2><a name="model" id="model">SuEXEC Güvenlik Modeli</a><a title="Permanent link" href="#model" class="permalink">&para;</a></h2>
 
     <p>SuEXEC yapılandırması ve kurulumuna girişmeden önce biraz da
       gerçekleşmesini istediğiniz güvenlik modelinin ayrıntıları üzerinde
@@ -309,7 +309,7 @@
       ayrıntılı bilgi edinmek için bu belgenin <a href="#jabberwock">"Uyarılar ve Örnekler"</a> bölümüne bakınız.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="install" id="install">suEXEC’in Yapılandırılması ve Kurulumu</a></h2>
+<h2><a name="install" id="install">suEXEC’in Yapılandırılması ve Kurulumu</a><a title="Permanent link" href="#install" class="permalink">&para;</a></h2>
 
     <p>Eğlence başlıyor.</p>
 
@@ -448,7 +448,7 @@
     
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="enable" id="enable">suEXEC’in etkin kılınması ve iptal edilmesi</a></h2>
+<h2><a name="enable" id="enable">suEXEC’in etkin kılınması ve iptal edilmesi</a><a title="Permanent link" href="#enable" class="permalink">&para;</a></h2>
     
 
     <p>httpd başlatıldığı sırada <code class="program"><a href="./programs/suexec.html">suexec</a></code> çalıştırıcısı için
@@ -474,7 +474,7 @@
       dosyasını sildikten sonra httpd'yi öldürüp yeniden başlamalısınız.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="usage" id="usage">SuEXEC’in kullanımı</a></h2>
+<h2><a name="usage" id="usage">SuEXEC’in kullanımı</a><a title="Permanent link" href="#usage" class="permalink">&para;</a></h2>
 
     <p>CGI programlarına yapılan isteklerin suEXEC çalıştırıcısı tarafından
       yerine getirilebilmesi için sanal konağın bir <code class="directive"><a href="./mod/mod_suexec.html#suexecusergroup">SuexecUserGroup</a></code> yönergesi içermesi veya
@@ -499,7 +499,7 @@
     geçebilmesidir. Ayrıca,  <code>--with-suexec-userdir</code> <a href="#install">derleme</a> seçeneğinin açıklamasına da bakınız.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="debug" id="debug">SuEXEC ve hata ayıklama</a></h2>
+<h2><a name="debug" id="debug">SuEXEC ve hata ayıklama</a><a title="Permanent link" href="#debug" class="permalink">&para;</a></h2>
 
     <p>SuEXEC çalıştırıcısı yukarıda değinildiği gibi günlük bilgilerini
       <code>--with-suexec-logfile</code> seçeneği ile belirtilen dosyaya
@@ -509,7 +509,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="jabberwock" id="jabberwock">Uyarılar ve Örnekler</a></h2>
+<h2><a name="jabberwock" id="jabberwock">Uyarılar ve Örnekler</a><a title="Permanent link" href="#jabberwock" class="permalink">&para;</a></h2>
     
 
     <p><strong>UYARI!</strong> Bu bölüm henüz bitmedi. Bu bölümün son hali

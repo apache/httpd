@@ -45,7 +45,7 @@
 </ul><h3>See also</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="example" id="example">A Simple Example</a></h2>
+<h2><a name="example" id="example">A Simple Example</a><a title="Permanent link" href="#example" class="permalink">&para;</a></h2>
     
 
     <pre class="prettyprint lang-config"># This is a misconfiguration example, do not use on your server
@@ -95,7 +95,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="denial" id="denial">Denial of Service</a></h2>
+<h2><a name="denial" id="denial">Denial of Service</a><a title="Permanent link" href="#denial" class="permalink">&para;</a></h2>
     
 
     <p>Consider this configuration snippet:</p>
@@ -130,7 +130,7 @@
     serve it. A rough document describing this <a href="vhosts/details.html">is available</a>.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="main" id="main">The "main server" Address</a></h2>
+<h2><a name="main" id="main">The "main server" Address</a><a title="Permanent link" href="#main" class="permalink">&para;</a></h2>
     
 
     <p><a href="vhosts/name-based.html">Name-based
@@ -161,7 +161,7 @@
     to consult the man pages or FAQs for your OS.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="tips" id="tips">Tips to Avoid These Problems</a></h2>
+<h2><a name="tips" id="tips">Tips to Avoid These Problems</a><a title="Permanent link" href="#tips" class="permalink">&para;</a></h2>
     
 
     <ul>

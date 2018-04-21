@@ -59,12 +59,12 @@
 </ul><h3>Consulte también</h3><ul class="seealso"><li><a href="../urlmapping.html">Mapeando URLs al sistema de ficheros</a></li><li><a href="#comments_section">Comentarios</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="related" id="related">Directorios web por usuario</a></h2>
+<h2><a name="related" id="related">Directorios web por usuario</a><a title="Enlace permanente" href="#related" class="permalink">&para;</a></h2>
     
     <table class="related"><tr><th>Módulos Relacionados</th><th>Directivas Relacionadas</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_userdir.html">mod_userdir</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code></li><li><code class="directive"><a href="../mod/core.html#directorymatch">DirectoryMatch</a></code></li><li><code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code></li></ul></td></tr></table>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="userdir" id="userdir">Configurando la ruta del fichero con UserDir</a></h2>
+<h2><a name="userdir" id="userdir">Configurando la ruta del fichero con UserDir</a><a title="Enlace permanente" href="#userdir" class="permalink">&para;</a></h2>
     
 
     <p>La directiva <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code>
@@ -113,7 +113,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="redirect" id="redirect">Redirigiendo a URLs externas</a></h2>
+<h2><a name="redirect" id="redirect">Redirigiendo a URLs externas</a><a title="Enlace permanente" href="#redirect" class="permalink">&para;</a></h2>
     
     <p>La directiva <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code> puede 
     usarse para redirigir solcitudes de directorios de usuario a URLs externas.</p>
@@ -126,7 +126,7 @@
     <code>http://example.org/users/bob/abc.html</code>.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="enable" id="enable">Restringiendo qué usuarios pueden usar esta característica</a></h2>
+<h2><a name="enable" id="enable">Restringiendo qué usuarios pueden usar esta característica</a><a title="Enlace permanente" href="#enable" class="permalink">&para;</a></h2>
     
 
     <p>Usando la sintaxis que se muestra en la documentación de UserDir, usted 
@@ -149,7 +149,7 @@ UserDir enabled rbowen krietz</pre>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="cgi" id="cgi">Activando un directorio cgi para cada usuario</a></h2>
+<h2><a name="cgi" id="cgi">Activando un directorio cgi para cada usuario</a><a title="Enlace permanente" href="#cgi" class="permalink">&para;</a></h2>
   
 
    <p>Para dar a cada usuario su propio directorio cgi-bin, puede usar una directiva 
@@ -172,7 +172,7 @@ UserDir enabled rbowen krietz</pre>
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="htaccess" id="htaccess">Permitiendo a usuarios cambiar la configuración</a></h2>
+<h2><a name="htaccess" id="htaccess">Permitiendo a usuarios cambiar la configuración</a><a title="Enlace permanente" href="#htaccess" class="permalink">&para;</a></h2>
     
 
     <p>Si quiere permitir que usuarios modifiquen la configuración del servidor en 

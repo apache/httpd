@@ -39,7 +39,7 @@
 	</div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="definitions" id="definitions">Definiciones</a></h2>
+<h2><a name="definitions" id="definitions">Definiciones</a><a title="Enlace permanente" href="#definitions" class="permalink">&para;</a></h2>
 		<dl>
 		<dt><a name="algorithm" id="algorithm">Algoritmo</a></dt>
 		<dd>Un proceso definido sin ambigüedades o un conjunto de reglas 

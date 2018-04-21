@@ -70,7 +70,7 @@
 <li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="formats" id="formats">Custom Log Formats</a></h2>
+<h2><a name="formats" id="formats">Custom Log Formats</a><a title="Permanent link" href="#formats" class="permalink">&para;</a></h2>
 
     <p>The format argument to the <code class="directive"><a href="#logformat">LogFormat</a></code> and <code class="directive"><a href="#customlog">CustomLog</a></code> directives is a string. This string is
     used to log each request to the log file. It can contain literal
@@ -386,14 +386,14 @@
     
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="security" id="security">Security Considerations</a></h2>
+<h2><a name="security" id="security">Security Considerations</a><a title="Permanent link" href="#security" class="permalink">&para;</a></h2>
     <p>See the <a href="../misc/security_tips.html#serverroot">security tips</a>
     document for details on why your security could be compromised
     if the directory where logfiles are stored is writable by
     anyone other than the user that starts the server.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="BufferedLogs" id="BufferedLogs">BufferedLogs</a> <a name="bufferedlogs" id="bufferedlogs">Directive</a></h2>
+<div class="directive-section"><h2><a name="BufferedLogs" id="BufferedLogs">BufferedLogs</a> <a name="bufferedlogs" id="bufferedlogs">Directive</a><a title="Permanent link" href="#bufferedlogs" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Buffer log entries in memory before writing to disk</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>BufferedLogs On|Off</code></td></tr>
@@ -415,7 +415,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CustomLog" id="CustomLog">CustomLog</a> <a name="customlog" id="customlog">Directive</a></h2>
+<div class="directive-section"><h2><a name="CustomLog" id="CustomLog">CustomLog</a> <a name="customlog" id="customlog">Directive</a><a title="Permanent link" href="#customlog" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets filename and format of log file</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CustomLog  <var>file</var>|<var>pipe</var>|<var>provider</var>
@@ -518,7 +518,7 @@ CustomLog "referer.log" referer env=!localreferer</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="GlobalLog" id="GlobalLog">GlobalLog</a> <a name="globallog" id="globallog">Directive</a></h2>
+<div class="directive-section"><h2><a name="GlobalLog" id="GlobalLog">GlobalLog</a> <a name="globallog" id="globallog">Directive</a><a title="Permanent link" href="#globallog" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets filename and format of log file</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>GlobalLog  <var>file</var>|<var>pipe</var>|<var>provider</var>
@@ -547,7 +547,7 @@ expr=<var>expression</var>]</code></td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LogFormat" id="LogFormat">LogFormat</a> <a name="logformat" id="logformat">Directive</a></h2>
+<div class="directive-section"><h2><a name="LogFormat" id="LogFormat">LogFormat</a> <a name="logformat" id="logformat">Directive</a><a title="Permanent link" href="#logformat" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Describes a format for use in a log file</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LogFormat <var>format</var>|<var>nickname</var>
@@ -592,7 +592,7 @@ expr=<var>expression</var>]</code></td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="TransferLog" id="TransferLog">TransferLog</a> <a name="transferlog" id="transferlog">Directive</a></h2>
+<div class="directive-section"><h2><a name="TransferLog" id="TransferLog">TransferLog</a> <a name="transferlog" id="transferlog">Directive</a><a title="Permanent link" href="#transferlog" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specify location of a log file</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>TransferLog <var>file</var>|<var>pipe</var></code></td></tr>

@@ -48,7 +48,7 @@
 </ul><h3>参照</h3><ul class="seealso"><li><a href="#comments_section">コメント</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="types" id="types">設定用セクションコンテナの種類</a></h2>
+<h2><a name="types" id="types">設定用セクションコンテナの種類</a><a title="Permanent link" href="#types" class="permalink">&para;</a></h2>
 
 <table class="related"><tr><th>関連モジュール</th><th>関連ディレクティブ</th></tr><tr><td><ul><li><code class="module"><a href="./mod/core.html">core</a></code></li><li><code class="module"><a href="./mod/mod_version.html">mod_version</a></code></li><li><code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code></li><li><code class="directive"><a href="./mod/mod_version.html#ifversion">&lt;IfVersion&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxymatch">&lt;ProxyMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code></li></ul></td></tr></table>
 
@@ -121,7 +121,7 @@ MimeMagicFile conf/magic<br />
 </p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="file-and-web" id="file-and-web">ファイルシステムとウェブ空間</a></h2>
+<h2><a name="file-and-web" id="file-and-web">ファイルシステムとウェブ空間</a><a title="Permanent link" href="#file-and-web" class="permalink">&para;</a></h2>
 
 <p>最もよく使われる設定のセクションコンテナはファイルシステムやウェブ空間の
 特定の場所の設定を変更するものです。まず、この二つの違いを理解することが
@@ -320,7 +320,7 @@ Deny from all<br />
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="virtualhost" id="virtualhost">バーチャルホスト</a></h2>
+<h2><a name="virtualhost" id="virtualhost">バーチャルホスト</a><a title="Permanent link" href="#virtualhost" class="permalink">&para;</a></h2>
 
 <p><code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
 コンテナは特定のホストに適用するディレクティブを格納します。
@@ -329,7 +329,7 @@ Deny from all<br />
 ご覧下さい。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="proxy" id="proxy">プロクシ</a></h2>
+<h2><a name="proxy" id="proxy">プロクシ</a><a title="Permanent link" href="#proxy" class="permalink">&para;</a></h2>
 
 <p><code class="directive"><a href="./mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code>
 と <code class="directive"><a href="./mod/mod_proxy.html#proxymatch">&lt;ProxyMatch&gt;</a></code>
@@ -347,7 +347,7 @@ Deny from all<br />
 </code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="whatwhere" id="whatwhere">どのディレクティブが使えるの?</a></h2>
+<h2><a name="whatwhere" id="whatwhere">どのディレクティブが使えるの?</a><a title="Permanent link" href="#whatwhere" class="permalink">&para;</a></h2>
 
 <p>どのタイプの設定セクションでどのディレクティブが使用できるかは、
 ディレクティブの <a href="mod/directive-dict.html#Context">Context</a>
@@ -380,7 +380,7 @@ Deny from all<br />
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="mergin" id="mergin">セクションのマージ方法</a></h2>
+<h2><a name="mergin" id="mergin">セクションのマージ方法</a><a title="Permanent link" href="#mergin" class="permalink">&para;</a></h2>
 
     <p>マージの順番は以下のようになっています:</p>
 

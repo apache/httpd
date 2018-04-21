@@ -43,7 +43,7 @@
 </ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><a href="#comments_section">Yorum</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="core" id="core">Çekirdekteki Gelişmeler</a></h2>
+<h2><a name="core" id="core">Çekirdekteki Gelişmeler</a><a title="Permanent link" href="#core" class="permalink">&para;</a></h2>
     
     <dl>
       <dt>Çalışma anında yüklenebilen MPM'ler</dt>
@@ -101,7 +101,7 @@
     </dl>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="newmods" id="newmods">Yeni Modüller</a></h2>
+<h2><a name="newmods" id="newmods">Yeni Modüller</a><a title="Permanent link" href="#newmods" class="permalink">&para;</a></h2>
     
     <dl>
       <dt><code class="module"><a href="./mod/mod_proxy_fcgi.html">mod_proxy_fcgi</a></code></dt>
@@ -180,7 +180,7 @@
     </dl>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="module" id="module">Modüllerdeki Gelişmeler</a></h2>
+<h2><a name="module" id="module">Modüllerdeki Gelişmeler</a><a title="Permanent link" href="#module" class="permalink">&para;</a></h2>
     
     <dl>
       <dt><code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code></dt>
@@ -302,7 +302,7 @@
     </dl>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="programs" id="programs">Programlardaki Gelişmeler</a></h2>
+<h2><a name="programs" id="programs">Programlardaki Gelişmeler</a><a title="Permanent link" href="#programs" class="permalink">&para;</a></h2>
     
     <dl>
         <dt>fcgistarter</dt>
@@ -325,7 +325,7 @@
     </dl>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="documentation" id="documentation">Belgelendirme</a></h2>
+<h2><a name="documentation" id="documentation">Belgelendirme</a><a title="Permanent link" href="#documentation" class="permalink">&para;</a></h2>
     
     <dl>
         <dt>mod_rewrite</dt>
@@ -353,7 +353,7 @@
     </dl>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="developer" id="developer">Modül Geliştirici Değişiklikleri</a></h2>
+<h2><a name="developer" id="developer">Modül Geliştirici Değişiklikleri</a><a title="Permanent link" href="#developer" class="permalink">&para;</a></h2>
     
     <dl>
       <dt>Yapılandırma Denetleme Kancası Eklendi</dt>

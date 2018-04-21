@@ -40,7 +40,7 @@
 </ul><h3>Consulte también</h3><ul class="seealso"><li><a href="#comments_section">Comentarios</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="definition" id="definition">¿Qué es un Handler?</a></h2>
+<h2><a name="definition" id="definition">¿Qué es un Handler?</a><a title="Enlace permanente" href="#definition" class="permalink">&para;</a></h2>
     
     <table class="related"><tr><th>Módulos Relacionados</th><th>Directivas Relacionadas</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_actions.html">mod_actions</a></code></li><li><code class="module"><a href="./mod/mod_asis.html">mod_asis</a></code></li><li><code class="module"><a href="./mod/mod_cgi.html">mod_cgi</a></code></li><li><code class="module"><a href="./mod/mod_imagemap.html">mod_imagemap</a></code></li><li><code class="module"><a href="./mod/mod_info.html">mod_info</a></code></li><li><code class="module"><a href="./mod/mod_mime.html">mod_mime</a></code></li><li><code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code></li><li><code class="module"><a href="./mod/mod_status.html">mod_status</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_actions.html#action">Action</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#addhandler">AddHandler</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#removehandler">RemoveHandler</a></code></li><li><code class="directive"><a href="./mod/core.html#sethandler">SetHandler</a></code></li></ul></td></tr></table>
 
@@ -97,7 +97,7 @@
     </ul> 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="examples" id="examples">Ejemplos</a></h2> 
+<h2><a name="examples" id="examples">Ejemplos</a><a title="Enlace permanente" href="#examples" class="permalink">&para;</a></h2> 
       
 
       <h3><a name="example1" id="example1">Modificar contenido estático usando un script
@@ -138,7 +138,7 @@
     
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="programmer" id="programmer">Nota para programadores</a></h2>
+<h2><a name="programmer" id="programmer">Nota para programadores</a><a title="Enlace permanente" href="#programmer" class="permalink">&para;</a></h2>
     
 
     <p>Para implementar las funcionalidades de los handlers, se ha

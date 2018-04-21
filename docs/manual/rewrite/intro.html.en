@@ -44,7 +44,7 @@ but this doc should help the beginner get their feet wet.
 </ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module documentation</a></li><li><a href="remapping.html">Redirection and remapping</a></li><li><a href="access.html">Controlling access</a></li><li><a href="vhosts.html">Virtual hosts</a></li><li><a href="proxy.html">Proxying</a></li><li><a href="rewritemap.html">Using RewriteMap</a></li><li><a href="advanced.html">Advanced techniques</a></li><li><a href="avoid.html">When not to use mod_rewrite</a></li><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="introduction" id="introduction">Introduction</a></h2>
+<h2><a name="introduction" id="introduction">Introduction</a><a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
 <p>The Apache module <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> is a very powerful and
 sophisticated module which provides a way to do URL manipulations. With
 it, you can do nearly all types of URL rewriting that you may need. It
@@ -71,7 +71,7 @@ it will tell you exactly how each rule is processed.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="regex" id="regex">Regular Expressions</a></h2>
+<h2><a name="regex" id="regex">Regular Expressions</a><a title="Permanent link" href="#regex" class="permalink">&para;</a></h2>
 
 <p>mod_rewrite uses the <a href="http://pcre.org/">Perl Compatible
 Regular Expression</a> vocabulary. In this document, we do not attempt
@@ -170,7 +170,7 @@ the expression.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="rewriterule" id="rewriterule">RewriteRule Basics</a></h2>
+<h2><a name="rewriterule" id="rewriterule">RewriteRule Basics</a><a title="Permanent link" href="#rewriterule" class="permalink">&para;</a></h2>
 <p>A <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> consists
 of three arguments separated by spaces. The arguments are</p>
 <ol>
@@ -243,7 +243,7 @@ on.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="flags" id="flags">Rewrite Flags</a></h2>
+<h2><a name="flags" id="flags">Rewrite Flags</a><a title="Permanent link" href="#flags" class="permalink">&para;</a></h2>
 <p>The behavior of a <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> can be modified by the
 application of one or more flags to the end of the rule. For example, the
 matching behavior of a rule can be made case-insensitive by the
@@ -257,7 +257,7 @@ examples, see the <a href="flags.html">Rewrite Flags</a> document.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="rewritecond" id="rewritecond">Rewrite Conditions</a></h2>
+<h2><a name="rewritecond" id="rewritecond">Rewrite Conditions</a><a title="Permanent link" href="#rewritecond" class="permalink">&para;</a></h2>
 <p>One or more <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code>
 directives can be used to restrict the types of requests that will be
 subject to the
@@ -309,14 +309,14 @@ and <code>$1</code> would contain <code>foo/bar</code>.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="rewritemap" id="rewritemap">Rewrite maps</a></h2>
+<h2><a name="rewritemap" id="rewritemap">Rewrite maps</a><a title="Permanent link" href="#rewritemap" class="permalink">&para;</a></h2>
 
 <p>The <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> directive
 provides a way to call an external function, so to speak, to do your
 rewriting for you. This is discussed in greater detail in the <a href="rewritemap.html">RewriteMap supplementary documentation</a>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="htaccess" id="htaccess">.htaccess files</a></h2>
+<h2><a name="htaccess" id="htaccess">.htaccess files</a><a title="Permanent link" href="#htaccess" class="permalink">&para;</a></h2>
 
 <p>Rewriting is typically configured in the main server configuration
 setting (outside any <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> section) or

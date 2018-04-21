@@ -66,7 +66,7 @@
 <li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="recommended" id="recommended">견본 설정</a></h2>
+<h2><a name="recommended" id="recommended">견본 설정</a><a title="Permanent link" href="#recommended" class="permalink">&para;</a></h2>
     <p>급한 사람을 위한 견본 설정이다.</p>
 
     <div class="example"><h3>일부 type만 압축</h3><p><code>
@@ -110,7 +110,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="enable" id="enable">압축하기</a></h2>
+<h2><a name="enable" id="enable">압축하기</a><a title="Permanent link" href="#enable" class="permalink">&para;</a></h2>
 
     <h3><a name="output" id="output">출력 압축</a></h3>
       <p><code>DEFLATE</code> <a href="../filter.html">필터</a>가
@@ -225,7 +225,7 @@
     
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="proxies" id="proxies">프록시 서버 다루기</a></h2>
+<h2><a name="proxies" id="proxies">프록시 서버 다루기</a><a title="Permanent link" href="#proxies" class="permalink">&para;</a></h2>
 
     <p><code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> 모듈은 프록시가 자신이 캐쉬한
     응답을 적절한 <code>Accept-Encoding</code> 요청 헤더를 보낸
@@ -254,7 +254,7 @@
     </code></p></div>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DeflateAlterETag" id="DeflateAlterETag">DeflateAlterETag</a> <a name="deflatealteretag" id="deflatealteretag">지시어</a></h2>
+<div class="directive-section"><h2><a name="DeflateAlterETag" id="DeflateAlterETag">DeflateAlterETag</a> <a name="deflatealteretag" id="deflatealteretag">지시어</a><a title="Permanent link" href="#deflatealteretag" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>How the outgoing ETag header should be modified during compression</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>DeflateAlterETag AddSuffix|NoChange|Remove</code></td></tr>
@@ -266,7 +266,7 @@
             not been translated yet. Please have a look at the English
             version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DeflateBufferSize" id="DeflateBufferSize">DeflateBufferSize</a> <a name="deflatebuffersize" id="deflatebuffersize">지시어</a></h2>
+<div class="directive-section"><h2><a name="DeflateBufferSize" id="DeflateBufferSize">DeflateBufferSize</a> <a name="deflatebuffersize" id="deflatebuffersize">지시어</a><a title="Permanent link" href="#deflatebuffersize" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>zlib이 한번에 압축할 크기</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>DeflateBufferSize <var>value</var></code></td></tr>
@@ -280,7 +280,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DeflateCompressionLevel" id="DeflateCompressionLevel">DeflateCompressionLevel</a> <a name="deflatecompressionlevel" id="deflatecompressionlevel">지시어</a></h2>
+<div class="directive-section"><h2><a name="DeflateCompressionLevel" id="DeflateCompressionLevel">DeflateCompressionLevel</a> <a name="deflatecompressionlevel" id="deflatecompressionlevel">지시어</a><a title="Permanent link" href="#deflatecompressionlevel" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>출력을 어느정도 압축하는가</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>DeflateCompressionLevel <var>value</var></code></td></tr>
@@ -297,7 +297,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DeflateFilterNote" id="DeflateFilterNote">DeflateFilterNote</a> <a name="deflatefilternote" id="deflatefilternote">지시어</a></h2>
+<div class="directive-section"><h2><a name="DeflateFilterNote" id="DeflateFilterNote">DeflateFilterNote</a> <a name="deflatefilternote" id="deflatefilternote">지시어</a><a title="Permanent link" href="#deflatefilternote" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>압축률을 로그에 기록한다</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>DeflateFilterNote [<var>type</var>] <var>notename</var></code></td></tr>
@@ -350,7 +350,7 @@
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DeflateInflateLimitRequestBody" id="DeflateInflateLimitRequestBody">DeflateInflateLimitRequestBody</a> <a name="deflateinflatelimitrequestbody" id="deflateinflatelimitrequestbody">지시어</a></h2>
+<div class="directive-section"><h2><a name="DeflateInflateLimitRequestBody" id="DeflateInflateLimitRequestBody">DeflateInflateLimitRequestBody</a> <a name="deflateinflatelimitrequestbody" id="deflateinflatelimitrequestbody">지시어</a><a title="Permanent link" href="#deflateinflatelimitrequestbody" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>Maximum size of inflated request bodies</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>DeflateInflateLimitRequestBody<var>value</var></code></td></tr>
@@ -364,7 +364,7 @@
             not been translated yet. Please have a look at the English
             version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DeflateInflateRatioBurst" id="DeflateInflateRatioBurst">DeflateInflateRatioBurst</a> <a name="deflateinflateratioburst" id="deflateinflateratioburst">지시어</a></h2>
+<div class="directive-section"><h2><a name="DeflateInflateRatioBurst" id="DeflateInflateRatioBurst">DeflateInflateRatioBurst</a> <a name="deflateinflateratioburst" id="deflateinflateratioburst">지시어</a><a title="Permanent link" href="#deflateinflateratioburst" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>Maximum number of times the inflation ratio for request bodies
              can be crossed</td></tr>
@@ -379,7 +379,7 @@
             not been translated yet. Please have a look at the English
             version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DeflateInflateRatioLimit" id="DeflateInflateRatioLimit">DeflateInflateRatioLimit</a> <a name="deflateinflateratiolimit" id="deflateinflateratiolimit">지시어</a></h2>
+<div class="directive-section"><h2><a name="DeflateInflateRatioLimit" id="DeflateInflateRatioLimit">DeflateInflateRatioLimit</a> <a name="deflateinflateratiolimit" id="deflateinflateratiolimit">지시어</a><a title="Permanent link" href="#deflateinflateratiolimit" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>Maximum inflation ratio for request bodies</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>DeflateInflateRatioLimit <var>value</var></code></td></tr>
@@ -393,7 +393,7 @@
             not been translated yet. Please have a look at the English
             version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DeflateMemLevel" id="DeflateMemLevel">DeflateMemLevel</a> <a name="deflatememlevel" id="deflatememlevel">지시어</a></h2>
+<div class="directive-section"><h2><a name="DeflateMemLevel" id="DeflateMemLevel">DeflateMemLevel</a> <a name="deflatememlevel" id="deflatememlevel">지시어</a><a title="Permanent link" href="#deflatememlevel" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>zlib이 압축할때 사용하는 메모리량</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>DeflateMemLevel <var>value</var></code></td></tr>
@@ -408,7 +408,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DeflateWindowSize" id="DeflateWindowSize">DeflateWindowSize</a> <a name="deflatewindowsize" id="deflatewindowsize">지시어</a></h2>
+<div class="directive-section"><h2><a name="DeflateWindowSize" id="DeflateWindowSize">DeflateWindowSize</a> <a name="deflatewindowsize" id="deflatewindowsize">지시어</a><a title="Permanent link" href="#deflatewindowsize" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>Zlib 압축 window size</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>DeflateWindowSize <var>value</var></code></td></tr>

@@ -86,7 +86,7 @@
 </ul><h3>참고</h3><ul class="seealso"><li><a href="apachectl.html">apachectl</a></li><li><a href="httpd.html">httpd</a></li><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="synopsis" id="synopsis">개요</a></h2>
+<h2><a name="synopsis" id="synopsis">개요</a><a title="Permanent link" href="#synopsis" class="permalink">&para;</a></h2>
     <p><code><strong>apxs</strong> -<strong>g</strong>
     [ -<strong>S</strong> <var>name</var>=<var>value</var> ]
     -<strong>n</strong> <var>modname</var></code></p>
@@ -121,7 +121,7 @@
     <var>dso-file</var> ...</code></p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="options" id="options">옵션</a></h2>
+<h2><a name="options" id="options">옵션</a><a title="Permanent link" href="#options" class="permalink">&para;</a></h2>
     <h3><a name="options.common" id="options.common">공통 옵션</a></h3>
       <dl>
       <dt><code>-n <var>modname</var></code></dt>
@@ -245,7 +245,7 @@
     
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="examples" id="examples">예제</a></h2>
+<h2><a name="examples" id="examples">예제</a><a title="Permanent link" href="#examples" class="permalink">&para;</a></h2>
     <p>아파치서버의 기능을 확장하는 <code>mod_foo.c</code>라는
     아파치 모듈이 있다고 가정하자. 먼저 다음 명령어를 사용하여
     C 소스를 아파치 서버가 읽어들일 공유객체로 컴파일한다:</p>

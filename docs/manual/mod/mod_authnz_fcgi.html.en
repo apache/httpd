@@ -69,7 +69,7 @@ and Access Control</a></li>
 <li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="invocations" id="invocations">Invocation modes</a></h2>
+<h2><a name="invocations" id="invocations">Invocation modes</a><a title="Permanent link" href="#invocations" class="permalink">&para;</a></h2>
 
     <p>The invocation modes for FastCGI authorizers supported by this
     module are distinguished by two characteristics, <em>type</em> and
@@ -288,7 +288,7 @@ while ($request-&gt;Accept() &gt;= 0) {
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="examples" id="examples">Additional examples</a></h2>
+<h2><a name="examples" id="examples">Additional examples</a><a title="Permanent link" href="#examples" class="permalink">&para;</a></h2>
 
   <ol>
     <li>If your application supports the separate authentication and
@@ -331,7 +331,7 @@ Require FooAuthnz</pre>
 </ol>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="limitations" id="limitations">Limitations</a></h2>
+<h2><a name="limitations" id="limitations">Limitations</a><a title="Permanent link" href="#limitations" class="permalink">&para;</a></h2>
 
     <p>The following are potential features which are not currently
     implemented:</p>
@@ -386,7 +386,7 @@ Require FooAuthnz</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="logging" id="logging">Logging</a></h2>
+<h2><a name="logging" id="logging">Logging</a><a title="Permanent link" href="#logging" class="permalink">&para;</a></h2>
 
     <ol>
         <li>Processing errors are logged at log level <code>error</code>
@@ -415,7 +415,7 @@ Require FooAuthnz</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthnzFcgiCheckAuthnProvider" id="AuthnzFcgiCheckAuthnProvider">AuthnzFcgiCheckAuthnProvider</a> <a name="authnzfcgicheckauthnprovider" id="authnzfcgicheckauthnprovider">Directive</a></h2>
+<div class="directive-section"><h2><a name="AuthnzFcgiCheckAuthnProvider" id="AuthnzFcgiCheckAuthnProvider">AuthnzFcgiCheckAuthnProvider</a> <a name="authnzfcgicheckauthnprovider" id="authnzfcgicheckauthnprovider">Directive</a><a title="Permanent link" href="#authnzfcgicheckauthnprovider" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enables a FastCGI application to handle the check_authn
 authentication hook.</td></tr>
@@ -500,7 +500,7 @@ authentication hook.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthnzFcgiDefineProvider" id="AuthnzFcgiDefineProvider">AuthnzFcgiDefineProvider</a> <a name="authnzfcgidefineprovider" id="authnzfcgidefineprovider">Directive</a></h2>
+<div class="directive-section"><h2><a name="AuthnzFcgiDefineProvider" id="AuthnzFcgiDefineProvider">AuthnzFcgiDefineProvider</a> <a name="authnzfcgidefineprovider" id="authnzfcgidefineprovider">Directive</a><a title="Permanent link" href="#authnzfcgidefineprovider" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Defines a FastCGI application as a provider for
 authentication and/or authorization</td></tr>

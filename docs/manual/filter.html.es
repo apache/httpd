@@ -40,7 +40,7 @@
 </ul><h3>Consulte también</h3><ul class="seealso"><li><a href="#comments_section">Comentarios</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="intro" id="intro">Filtros en Apache 2</a></h2>
+<h2><a name="intro" id="intro">Filtros en Apache 2</a><a title="Enlace permanente" href="#intro" class="permalink">&para;</a></h2>
 	    
 	    <table class="related"><tr><th>Módulos Relacionados</th><th>Directivas Relacionadas</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_filter.html">mod_filter</a></code></li><li><code class="module"><a href="./mod/mod_deflate.html">mod_deflate</a></code></li><li><code class="module"><a href="./mod/mod_ext_filter.html">mod_ext_filter</a></code></li><li><code class="module"><a href="./mod/mod_include.html">mod_include</a></code></li><li><code class="module"><a href="./mod/mod_charset_lite.html">mod_charset_lite</a></code></li><li><code class="module"><a href="./mod/mod_reflector.html">mod_reflector</a></code></li><li><code class="module"><a href="./mod/mod_buffer.html">mod_buffer</a></code></li><li><code class="module"><a href="./mod/mod_data.html">mod_data</a></code></li><li><code class="module"><a href="./mod/mod_ratelimit.html">mod_ratelimit</a></code></li><li><code class="module"><a href="./mod/mod_reqtimeout.html">mod_reqtimeout</a></code></li><li><code class="module"><a href="./mod/mod_request.html">mod_request</a></code></li><li><code class="module"><a href="./mod/mod_sed.html">mod_sed</a></code></li><li><code class="module"><a href="./mod/mod_substitute.html">mod_substitute</a></code></li><li><code class="module"><a href="./mod/mod_xml2enc.html">mod_xml2enc</a></code></li><li><code class="module"><a href="./mod/mod_proxy_html.html">mod_proxy_html</a></code></li><li><code class="module"><a href="./mod/mod_policy.html">mod_policy</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_filter.html#filterchain">FilterChain</a></code></li><li><code class="directive"><a href="./mod/mod_filter.html#filterdeclare">FilterDeclare</a></code></li><li><code class="directive"><a href="./mod/mod_filter.html#filterprotocol">FilterProtocol</a></code></li><li><code class="directive"><a href="./mod/mod_filter.html#filterprovider">FilterProvider</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#addinputfilter">AddInputFilter</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#removeinputfilter">RemoveInputFilter</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#removeoutputfilter">RemoveOutputFilter</a></code></li><li><code class="directive"><a href="./mod/mod_reflector.html#reflectorheader">ReflectorHeader</a></code></li><li><code class="directive"><a href="./mod/mod_ext_filter.html#extfilterdefine">ExtFilterDefine</a></code></li><li><code class="directive"><a href="./mod/mod_ext_filter.html#extfilteroptions">ExtFilterOptions</a></code></li><li><code class="directive"><a href="./mod/core.html#setinputfilter">SetInputFilter</a></code></li><li><code class="directive"><a href="./mod/core.html#setoutputfilter">SetOutputFilter</a></code></li></ul></td></tr></table>
 
@@ -87,7 +87,7 @@
 			</ul>
 		</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="smart" id="smart">Filtrado Inteligente</a></h2>
+<h2><a name="smart" id="smart">Filtrado Inteligente</a><a title="Enlace permanente" href="#smart" class="permalink">&para;</a></h2>
 			
 				<p class="figure">
 				<img src="images/mod_filter_new.png" width="423" height="331" alt="Smart filtering applies different filter providers according to the state of request processing" />
@@ -115,7 +115,7 @@
 			</ul>
 		</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="service" id="service">Filtros expuestos como un servicio HTTP</a></h2>
+<h2><a name="service" id="service">Filtros expuestos como un servicio HTTP</a><a title="Enlace permanente" href="#service" class="permalink">&para;</a></h2>
 
 		
 		<p>Los filtros pueden ser usados para procesar contenido originado 
@@ -138,7 +138,7 @@
 
 		</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="using" id="using">Usando los Filtros</a></h2>
+<h2><a name="using" id="using">Usando los Filtros</a><a title="Enlace permanente" href="#using" class="permalink">&para;</a></h2>
 		
 		<p>Hay dos formas de usar el filtrado: de forma Simple y Dinámica.
 		Generalmente, deberá usar una forma u otra; ya que mezclarlas puede

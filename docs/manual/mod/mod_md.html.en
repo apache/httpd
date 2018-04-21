@@ -131,7 +131,7 @@
 <li><a href="#comments_section">Comments</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MDBaseServer" id="MDBaseServer">MDBaseServer</a> <a name="mdbaseserver" id="mdbaseserver">Directive</a></h2>
+<div class="directive-section"><h2><a name="MDBaseServer" id="MDBaseServer">MDBaseServer</a> <a name="mdbaseserver" id="mdbaseserver">Directive</a><a title="Permanent link" href="#mdbaseserver" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Control if base server may be managed or only virtual hosts.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MDBaseServer on|off</code></td></tr>
@@ -149,7 +149,7 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MDCAChallenges" id="MDCAChallenges">MDCAChallenges</a> <a name="mdcachallenges" id="mdcachallenges">Directive</a></h2>
+<div class="directive-section"><h2><a name="MDCAChallenges" id="MDCAChallenges">MDCAChallenges</a> <a name="mdcachallenges" id="mdcachallenges">Directive</a><a title="Permanent link" href="#mdcachallenges" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Type of ACME challenge used to prove domain ownership.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MDCAChallenges <var>name</var> [ <var>name</var> ... ]</code></td></tr>
@@ -168,7 +168,7 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MDCertificateAgreement" id="MDCertificateAgreement">MDCertificateAgreement</a> <a name="mdcertificateagreement" id="mdcertificateagreement">Directive</a></h2>
+<div class="directive-section"><h2><a name="MDCertificateAgreement" id="MDCertificateAgreement">MDCertificateAgreement</a> <a name="mdcertificateagreement" id="mdcertificateagreement">Directive</a><a title="Permanent link" href="#mdcertificateagreement" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The URL of the Terms-of-Service document, that the CA server requires you to accept.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MDCertificateAgreement <var>url-of-terms-of-service</var></code></td></tr>
@@ -188,7 +188,7 @@ MDomain example.org www.example.org mail.example.org</pre>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MDCertificateAuthority" id="MDCertificateAuthority">MDCertificateAuthority</a> <a name="mdcertificateauthority" id="mdcertificateauthority">Directive</a></h2>
+<div class="directive-section"><h2><a name="MDCertificateAuthority" id="MDCertificateAuthority">MDCertificateAuthority</a> <a name="mdcertificateauthority" id="mdcertificateauthority">Directive</a><a title="Permanent link" href="#mdcertificateauthority" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The URL of the ACME Certificate Authority service.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MDCertificateAuthority <var>url</var></code></td></tr>
@@ -211,7 +211,7 @@ MDCertificateAgreement https://letsencrypt.org/documents/LE-SA-v1.2-November-15-
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MDCertificateProtocol" id="MDCertificateProtocol">MDCertificateProtocol</a> <a name="mdcertificateprotocol" id="mdcertificateprotocol">Directive</a></h2>
+<div class="directive-section"><h2><a name="MDCertificateProtocol" id="MDCertificateProtocol">MDCertificateProtocol</a> <a name="mdcertificateprotocol" id="mdcertificateprotocol">Directive</a><a title="Permanent link" href="#mdcertificateprotocol" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The protocol to use with the Certificate Authority.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MDCertificateProtocol <var>protocol</var></code></td></tr>
@@ -224,7 +224,7 @@ MDCertificateAgreement https://letsencrypt.org/documents/LE-SA-v1.2-November-15-
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MDDriveMode" id="MDDriveMode">MDDriveMode</a> <a name="mddrivemode" id="mddrivemode">Directive</a></h2>
+<div class="directive-section"><h2><a name="MDDriveMode" id="MDDriveMode">MDDriveMode</a> <a name="mddrivemode" id="mddrivemode">Directive</a><a title="Permanent link" href="#mddrivemode" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Control when it is allowed to obtain/renew certificates.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MDDriveMode always|auto|manual</code></td></tr>
@@ -251,7 +251,7 @@ MDCertificateAgreement https://letsencrypt.org/documents/LE-SA-v1.2-November-15-
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MDHttpProxy" id="MDHttpProxy">MDHttpProxy</a> <a name="mdhttpproxy" id="mdhttpproxy">Directive</a></h2>
+<div class="directive-section"><h2><a name="MDHttpProxy" id="MDHttpProxy">MDHttpProxy</a> <a name="mdhttpproxy" id="mdhttpproxy">Directive</a><a title="Permanent link" href="#mdhttpproxy" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Define a proxy for outgoing connections.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MDHttpProxy <var>url</var></code></td></tr>
@@ -265,7 +265,7 @@ MDCertificateAgreement https://letsencrypt.org/documents/LE-SA-v1.2-November-15-
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MDMember" id="MDMember">MDMember</a> <a name="mdmember" id="mdmember">Directive</a></h2>
+<div class="directive-section"><h2><a name="MDMember" id="MDMember">MDMember</a> <a name="mdmember" id="mdmember">Directive</a><a title="Permanent link" href="#mdmember" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Additional hostname for the managed domain.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MDMember <var>hostname</var></code></td></tr>
@@ -292,7 +292,7 @@ MDCertificateAgreement https://letsencrypt.org/documents/LE-SA-v1.2-November-15-
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MDMembers" id="MDMembers">MDMembers</a> <a name="mdmembers" id="mdmembers">Directive</a></h2>
+<div class="directive-section"><h2><a name="MDMembers" id="MDMembers">MDMembers</a> <a name="mdmembers" id="mdmembers">Directive</a><a title="Permanent link" href="#mdmembers" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Control if the alias domain names are automatically added.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MDMembers auto|manual</code></td></tr>
@@ -308,7 +308,7 @@ MDCertificateAgreement https://letsencrypt.org/documents/LE-SA-v1.2-November-15-
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MDMustStaple" id="MDMustStaple">MDMustStaple</a> <a name="mdmuststaple" id="mdmuststaple">Directive</a></h2>
+<div class="directive-section"><h2><a name="MDMustStaple" id="MDMustStaple">MDMustStaple</a> <a name="mdmuststaple" id="mdmuststaple">Directive</a><a title="Permanent link" href="#mdmuststaple" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Control if new certificates carry the OCSP Must Staple flag.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MDMustStaple on|off</code></td></tr>
@@ -326,7 +326,7 @@ MDCertificateAgreement https://letsencrypt.org/documents/LE-SA-v1.2-November-15-
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MDNotifyCmd" id="MDNotifyCmd">MDNotifyCmd</a> <a name="mdnotifycmd" id="mdnotifycmd">Directive</a></h2>
+<div class="directive-section"><h2><a name="MDNotifyCmd" id="MDNotifyCmd">MDNotifyCmd</a> <a name="mdnotifycmd" id="mdnotifycmd">Directive</a><a title="Permanent link" href="#mdnotifycmd" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Run a program when Managed Domain are ready.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MDNotifyCmd <var>path</var></code></td></tr>
@@ -342,7 +342,7 @@ MDCertificateAgreement https://letsencrypt.org/documents/LE-SA-v1.2-November-15-
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MDomain" id="MDomain">MDomain</a> <a name="mdomain" id="mdomain">Directive</a></h2>
+<div class="directive-section"><h2><a name="MDomain" id="MDomain">MDomain</a> <a name="mdomain" id="mdomain">Directive</a><a title="Permanent link" href="#mdomain" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Define list of domain names that belong to one group.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MDomain <var>dns-name</var> [ <var>other-dns-name</var>... ] [auto|manual]</code></td></tr>
@@ -425,7 +425,7 @@ MDomain example2.org auto
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MDomainSetsection" id="MDomainSetsection">&lt;MDomainSet&gt;</a> <a name="mdomainsetsection" id="mdomainsetsection">Directive</a></h2>
+<div class="directive-section"><h2><a name="MDomainSetsection" id="MDomainSetsection">&lt;MDomainSet&gt;</a> <a name="mdomainsetsection" id="mdomainsetsection">Directive</a><a title="Permanent link" href="#mdomainsetsection" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Container for directives applied to the same managed domains.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>&lt;MDomainSet <var>dns-name</var> [ <var>other-dns-name</var>... ]&gt;...&lt;/MDomainSet&gt;</code></td></tr>
@@ -451,7 +451,7 @@ MDomain example2.org auto
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MDPortMap" id="MDPortMap">MDPortMap</a> <a name="mdportmap" id="mdportmap">Directive</a></h2>
+<div class="directive-section"><h2><a name="MDPortMap" id="MDPortMap">MDPortMap</a> <a name="mdportmap" id="mdportmap">Directive</a><a title="Permanent link" href="#mdportmap" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Map external to internal ports for domain ownership verification.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MDPortMap <var>map1</var> [ <var>map2</var> ]</code></td></tr>
@@ -486,7 +486,7 @@ MDomain example2.org auto
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MDPrivateKeys" id="MDPrivateKeys">MDPrivateKeys</a> <a name="mdprivatekeys" id="mdprivatekeys">Directive</a></h2>
+<div class="directive-section"><h2><a name="MDPrivateKeys" id="MDPrivateKeys">MDPrivateKeys</a> <a name="mdprivatekeys" id="mdprivatekeys">Directive</a><a title="Permanent link" href="#mdprivatekeys" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Set type and size of the private keys generated.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MDPrivateKeys <var>type</var> [ <var>params</var>... ]</code></td></tr>
@@ -517,7 +517,7 @@ MDomain example2.org auto
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MDRenewWindow" id="MDRenewWindow">MDRenewWindow</a> <a name="mdrenewwindow" id="mdrenewwindow">Directive</a></h2>
+<div class="directive-section"><h2><a name="MDRenewWindow" id="MDRenewWindow">MDRenewWindow</a> <a name="mdrenewwindow" id="mdrenewwindow">Directive</a><a title="Permanent link" href="#mdrenewwindow" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Control when a certificate will be renewed.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MDRenewWindow <var>duration</var></code></td></tr>
@@ -551,7 +551,7 @@ MDRenewWindow 10%</pre>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MDRequireHttps" id="MDRequireHttps">MDRequireHttps</a> <a name="mdrequirehttps" id="mdrequirehttps">Directive</a></h2>
+<div class="directive-section"><h2><a name="MDRequireHttps" id="MDRequireHttps">MDRequireHttps</a> <a name="mdrequirehttps" id="mdrequirehttps">Directive</a><a title="Permanent link" href="#mdrequirehttps" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Redirects http: traffic to https: for Managed Domains.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MDRequireHttps off|temporary|permanent</code></td></tr>
@@ -607,7 +607,7 @@ MDRenewWindow 10%</pre>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MDStoreDir" id="MDStoreDir">MDStoreDir</a> <a name="mdstoredir" id="mdstoredir">Directive</a></h2>
+<div class="directive-section"><h2><a name="MDStoreDir" id="MDStoreDir">MDStoreDir</a> <a name="mdstoredir" id="mdstoredir">Directive</a><a title="Permanent link" href="#mdstoredir" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Path on the local file system to store the Managed Domains data.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MDStoreDir path</code></td></tr>

@@ -61,7 +61,7 @@
 </ul><h3>See also</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="processing" id="processing">The Request Processing Cycle</a></h2>
+<h2><a name="processing" id="processing">The Request Processing Cycle</a><a title="Permanent link" href="#processing" class="permalink">&para;</a></h2>
     <p>All requests pass through <code>ap_process_request_internal()</code>
     in <code>server/request.c</code>, including subrequests and redirects. If a module
     doesn't pass generated requests through this code, the author is cautioned
@@ -74,7 +74,7 @@
     irrelevant (and costly in terms of CPU.)</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="parsing" id="parsing">The Request Parsing Phase</a></h2>
+<h2><a name="parsing" id="parsing">The Request Parsing Phase</a><a title="Permanent link" href="#parsing" class="permalink">&para;</a></h2>
     <h3><a name="unescape" id="unescape">Unescapes the URL</a></h3>
       <p>The request's <code>parsed_uri</code> path is unescaped, once and only
       once, at the beginning of internal request processing.</p>
@@ -149,7 +149,7 @@
     
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="security" id="security">The Security Phase</a></h2>
+<h2><a name="security" id="security">The Security Phase</a><a title="Permanent link" href="#security" class="permalink">&para;</a></h2>
     <p>Needs Documentation. Code is:</p>
 
     <pre class="prettyprint lang-c">if ((access_status = ap_run_access_checker(r)) != 0) {
@@ -166,7 +166,7 @@ if ((access_status = ap_run_auth_checker(r)) != 0) {
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="preparation" id="preparation">The Preparation Phase</a></h2>
+<h2><a name="preparation" id="preparation">The Preparation Phase</a><a title="Permanent link" href="#preparation" class="permalink">&para;</a></h2>
     <h3><a name="type_checker" id="type_checker">Hook: type_checker</a></h3>
       <p>The modules have an opportunity to test the URI or filename
       against the target resource, and set mime information for the
@@ -191,7 +191,7 @@ if ((access_status = ap_run_auth_checker(r)) != 0) {
     
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="handler" id="handler">The Handler Phase</a></h2>
+<h2><a name="handler" id="handler">The Handler Phase</a><a title="Permanent link" href="#handler" class="permalink">&para;</a></h2>
     <p>This phase is <strong>not</strong> part of the processing in
     <code>ap_process_request_internal()</code>. Many
     modules prepare one or more subrequests prior to creating any

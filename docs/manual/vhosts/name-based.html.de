@@ -49,7 +49,7 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="namevip" id="namevip">Namensbasierte gegenüber IP-basierten
-    virtuellen Hosts</a></h2>
+    virtuellen Hosts</a><a title="Permanent link" href="#namevip" class="permalink">&para;</a></h2>
 
   <p>IP-basierte virtuelle Hosts verwenden die IP-Adresse der Verbindung, um den
     korrekten virtuellen Host zur Bedienung einer Anfrage zu ermitteln. Folglich 
@@ -89,7 +89,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="using" id="using">Die Verwendung von namensbasierten virtuellen Hosts</a></h2>
+<h2><a name="using" id="using">Die Verwendung von namensbasierten virtuellen Hosts</a><a title="Permanent link" href="#using" class="permalink">&para;</a></h2>
 
   <table class="related"><tr><th>Referenzierte Module</th><th>Referenzierte Direktiven</th></tr><tr><td><ul><li><code class="module"><a href="../mod/core.html">core</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code></li><li><code class="directive"><a href="../mod/core.html#namevirtualhost">NameVirtualHost</a></code></li><li><code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code></li><li><code class="directive"><a href="../mod/core.html#servername">ServerName</a></code></li><li><code class="directive"><a href="../mod/core.html#serverpath">ServerPath</a></code></li><li><code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code></li></ul></td></tr></table>
 
@@ -208,7 +208,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="compat" id="compat">Kompatibilität mit älteren Browsern</a></h2>
+<h2><a name="compat" id="compat">Kompatibilität mit älteren Browsern</a><a title="Permanent link" href="#compat" class="permalink">&para;</a></h2>
   
   <p>Wie zuvor erwähnt gibt es einige Clients, die nicht die notwendigen
     Daten senden, mit denen namensbasierte virtuelle Hosts korrekt

@@ -48,7 +48,7 @@
 </ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><code class="module"><a href="../mod/mod_cache_disk.html">mod_cache_disk</a></code></li><li><a href="#comments_section">Yorum</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="synopsis" id="synopsis">Kullanım</a></h2>
+<h2><a name="synopsis" id="synopsis">Kullanım</a><a title="Permanent link" href="#synopsis" class="permalink">&para;</a></h2>
     <p><code><strong>htcacheclean</strong>
     [ -<strong>D</strong> ]
     [ -<strong>v</strong> ]
@@ -87,7 +87,7 @@
     <var>url</var></code></p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="options" id="options">Seçenekler</a></h2>
+<h2><a name="options" id="options">Seçenekler</a><a title="Permanent link" href="#options" class="permalink">&para;</a></h2>
     <dl>
     <dt><code><strong>-d</strong><var> süre</var></code></dt>
     <dd>Artalanda çalışarak <code><var>süre</var></code> dakikada bir
@@ -167,7 +167,7 @@
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="delete" id="delete">Belli bir URL'nin silinmesi</a></h2>
+<h2><a name="delete" id="delete">Belli bir URL'nin silinmesi</a><a title="Permanent link" href="#delete" class="permalink">&para;</a></h2>
     <p><code><strong>htcacheclean</strong></code> tarafından aktarılan URL'ler
     arabellekten silinir. Bir URL birden fazla mevcutsa hepsi silinir.</p>
 
@@ -180,7 +180,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="list" id="list">Arabellekteki URL'lerin listelenmesi</a></h2>
+<h2><a name="list" id="list">Arabellekteki URL'lerin listelenmesi</a><a title="Permanent link" href="#list" class="permalink">&para;</a></h2>
     <p><code><strong>htcacheclean</strong></code>'e
     <code><strong>-a</strong></code> veya <code><strong>-A</strong></code>
     seçeneğinin aktarılmasıyla, arabellekteki URL'ler bulundukça her satıra bir
@@ -205,7 +205,7 @@
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="exit" id="exit">Çıkış Durumu</a></h2>
+<h2><a name="exit" id="exit">Çıkış Durumu</a><a title="Permanent link" href="#exit" class="permalink">&para;</a></h2>
     <p><code><strong>htcacheclean</strong></code>, tüm işlemler başarıyla
     yerine getirildiğinde <code>0</code>, aksi takdirde <code>1</code>
     döndürür. Bir URL belirtildiğinde, bu URL arablleklenmi ve silinmişse

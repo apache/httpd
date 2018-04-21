@@ -37,7 +37,7 @@
 </ul><h3>See also</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="easy" id="easy">The easier changes ...</a></h2>
+<h2><a name="easy" id="easy">The easier changes ...</a><a title="Permanent link" href="#easy" class="permalink">&para;</a></h2>
 
     <h3><a name="cleanup" id="cleanup">Cleanup Routines</a></h3>
       <p>These now need to be of type <code>apr_status_t</code> and return a
@@ -73,7 +73,7 @@
     
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="messy" id="messy">The messier changes...</a></h2>
+<h2><a name="messy" id="messy">The messier changes...</a><a title="Permanent link" href="#messy" class="permalink">&para;</a></h2>
 
     <h3><a name="register-hooks" id="register-hooks">Register Hooks</a></h3>
       <p>The new architecture uses a series of hooks to provide for

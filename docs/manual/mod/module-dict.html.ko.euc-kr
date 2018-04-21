@@ -41,12 +41,12 @@
 </ul><h3>참고</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="Description" id="Description">설명</a></h2>
+<h2><a name="Description" id="Description">설명</a><a title="Permanent link" href="#Description" class="permalink">&para;</a></h2>
 
 <p>모듈 목적에 대한 간단한 설명.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="Status" id="Status">상태</a></h2>
+<h2><a name="Status" id="Status">상태</a><a title="Permanent link" href="#Status" class="permalink">&para;</a></h2>
 
     <p>모듈이 아파치 웹서버와 얼마나 밀접히 연관되있는지 나타낸다.
     즉, 특정 모듈과 모듈의 기능을 사용하기위해서 서버를 다시
@@ -85,14 +85,14 @@
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="SourceFile" id="SourceFile">소스파일</a></h2>
+<h2><a name="SourceFile" id="SourceFile">소스파일</a><a title="Permanent link" href="#SourceFile" class="permalink">&para;</a></h2>
 
     <p>간단하게 말해서 모듈 소스코드가 있는 소스파일명이다.
     <code class="directive"><a href="../mod/core.html#ifmodule">&lt;IfModule&gt;</a></code>
     지시어에서 사용하는 이름이기도 하다.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="ModuleIdentifier" id="ModuleIdentifier">모듈명</a></h2>
+<h2><a name="ModuleIdentifier" id="ModuleIdentifier">모듈명</a><a title="Permanent link" href="#ModuleIdentifier" class="permalink">&para;</a></h2>
 
     <p>모듈을 지칭하는 문자열로, 모듈을 동적으로 읽어들이는
     <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code> 지시어에서
@@ -100,7 +100,7 @@
     이름이다.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="Compatibility" id="Compatibility">지원</a></h2>
+<h2><a name="Compatibility" id="Compatibility">지원</a><a title="Permanent link" href="#Compatibility" class="permalink">&para;</a></h2>
 
     <p>모듈이 원래 아파치 버전 2 배포본에 포함되지 않았다면,
     모듈을 처음 소개한 버전을 알려준다. 또, 모듈이 특정

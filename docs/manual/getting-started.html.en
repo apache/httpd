@@ -40,7 +40,7 @@ ask. This document walks you through the basics.</p>
 </ul><h3>See also</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="clientserver" id="clientserver">Clients, Servers, and URLs</a></h2>
+<h2><a name="clientserver" id="clientserver">Clients, Servers, and URLs</a><a title="Permanent link" href="#clientserver" class="permalink">&para;</a></h2>
 
 
 <p>
@@ -75,7 +75,7 @@ log files. This is discussed in greater detail below in the <a href="#logs">Logs
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="dns" id="dns">Hostnames and DNS</a></h2>
+<h2><a name="dns" id="dns">Hostnames and DNS</a><a title="Permanent link" href="#dns" class="permalink">&para;</a></h2>
 
 
 <p>In order to connect to a server, the client will first have to resolve
@@ -109,7 +109,7 @@ testing purposes. This entry would look like:</p>
 more about DNS at <a href="http://en.wikipedia.org/wiki/Domain_Name_System">Wikipedia.org/wiki/Domain_Name_System</a>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="configuration" id="configuration">Configuration Files and Directives</a></h2>
+<h2><a name="configuration" id="configuration">Configuration Files and Directives</a><a title="Permanent link" href="#configuration" class="permalink">&para;</a></h2>
 
 
 <p>The Apache HTTP Server is configured via simple text files.
@@ -150,7 +150,7 @@ access to the main server configuration file(s). You can read more about
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="content" id="content">Web Site Content</a></h2>
+<h2><a name="content" id="content">Web Site Content</a><a title="Permanent link" href="#content" class="permalink">&para;</a></h2>
 
 
 <p>Web site content can take many different forms, but may be broadly
@@ -184,7 +184,7 @@ their documentation or other support forums to answer your questions
 about them.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="logs" id="logs">Log Files and Troubleshooting</a></h2>
+<h2><a name="logs" id="logs">Log Files and Troubleshooting</a><a title="Permanent link" href="#logs" class="permalink">&para;</a></h2>
 
 <p>As an Apache HTTP Server administrator, your most valuable assets are
 the log files, and, in particular, the error log. Troubleshooting any
@@ -203,7 +203,7 @@ caused the error condition.</p>
 documentation</a>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="other" id="other">What's next?</a></h2>
+<h2><a name="other" id="other">What's next?</a><a title="Permanent link" href="#other" class="permalink">&para;</a></h2>
 
 
 <p>Once you have the prerequisites under your belt, it's time to move

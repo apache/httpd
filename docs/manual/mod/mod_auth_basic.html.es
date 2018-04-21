@@ -53,7 +53,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#authbasicprovider">AuthBasicProvider</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authbasicusedigestalgorithm">AuthBasicUseDigestAlgorithm</a></li>
 </ul>
-<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_auth_basic">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_auth_basic">Report a bug</a></li></ul><h3>Consulte también</h3>
+<h3>Lista de comprobación de errores corregidos</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd historial de cambios</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_auth_basic">Problemas Conocidos</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_auth_basic">Reportar un error</a></li></ul><h3>Consulte también</h3>
 <ul class="seealso">
 <li><code class="directive"><a href="../mod/mod_authn_core.html#authname">AuthName</a></code></li>
 <li><code class="directive"><a href="../mod/mod_authn_core.html#authtype">AuthType</a></code></li>
@@ -62,7 +62,7 @@
 <li><a href="#comments_section">Comentarios</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="authbasicauthoritative" id="authbasicauthoritative">Directiva</a> <a name="AuthBasicAuthoritative" id="AuthBasicAuthoritative">AuthBasicAuthoritative</a></h2>
+<div class="directive-section"><h2><a name="authbasicauthoritative" id="authbasicauthoritative">Directiva</a> <a name="AuthBasicAuthoritative" id="AuthBasicAuthoritative">AuthBasicAuthoritative</a><a title="Enlace permanente" href="#authbasicauthoritative" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Configura si se pasan autorización o autenticación a los módulos de más bajo nivel</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>AuthBasicAuthoritative On|Off</code></td></tr>
@@ -82,7 +82,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="authbasicfake" id="authbasicfake">Directiva</a> <a name="AuthBasicFake" id="AuthBasicFake">AuthBasicFake</a></h2>
+<div class="directive-section"><h2><a name="authbasicfake" id="authbasicfake">Directiva</a> <a name="AuthBasicFake" id="AuthBasicFake">AuthBasicFake</a><a title="Enlace permanente" href="#authbasicfake" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Autenticación básica falsa usando las expresiones facilitadas para usario y contraseña</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>AuthBasicFake off|username [password]</code></td></tr>
@@ -126,7 +126,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="authbasicprovider" id="authbasicprovider">Directiva</a> <a name="AuthBasicProvider" id="AuthBasicProvider">AuthBasicProvider</a></h2>
+<div class="directive-section"><h2><a name="authbasicprovider" id="authbasicprovider">Directiva</a> <a name="AuthBasicProvider" id="AuthBasicProvider">AuthBasicProvider</a><a title="Enlace permanente" href="#authbasicprovider" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Configura el/los proveedor/es de autenticación para esta 
 ubicación</td></tr>
@@ -160,7 +160,7 @@ ubicación</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="authbasicusedigestalgorithm" id="authbasicusedigestalgorithm">Directiva</a> <a name="AuthBasicUseDigestAlgorithm" id="AuthBasicUseDigestAlgorithm">AuthBasicUseDigestAlgorithm</a></h2>
+<div class="directive-section"><h2><a name="authbasicusedigestalgorithm" id="authbasicusedigestalgorithm">Directiva</a> <a name="AuthBasicUseDigestAlgorithm" id="AuthBasicUseDigestAlgorithm">AuthBasicUseDigestAlgorithm</a><a title="Enlace permanente" href="#authbasicusedigestalgorithm" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Comprueba contraseñas en proveedores de autenticación como si la Autenticación Digest estuviera en uso en lugar de la Autenticación Básica.
 </td></tr>

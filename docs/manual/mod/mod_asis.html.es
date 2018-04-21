@@ -56,7 +56,7 @@
 </ul><h3 class="directives">Directivas</h3>
 <p>Este módulo no suministra ninguna
             directiva.</p>
-<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_asis">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_asis">Report a bug</a></li></ul><h3>Consulte también</h3>
+<h3>Lista de comprobación de errores corregidos</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd historial de cambios</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_asis">Problemas Conocidos</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_asis">Reportar un error</a></li></ul><h3>Consulte también</h3>
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code></li>
 <li><code class="module"><a href="../mod/mod_cern_meta.html">mod_cern_meta</a></code></li>
@@ -64,7 +64,7 @@
 <li><a href="#comments_section">Comentarios</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="usage" id="usage">Uso</a></h2>
+<h2><a name="usage" id="usage">Uso</a><a title="Enlace permanente" href="#usage" class="permalink">&para;</a></h2>
 
     <p>En el fichero de configuración del servidor, asociar ficheros con el 
       handler <code>send-as-is</code> <em>p. ej.</em></p>

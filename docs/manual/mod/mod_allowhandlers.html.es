@@ -51,14 +51,14 @@
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#allowhandlers">AllowHandlers</a></li>
 </ul>
-<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_allowhandlers">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_allowhandlers">Report a bug</a></li></ul><h3>Consulte también</h3>
+<h3>Lista de comprobación de errores corregidos</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd historial de cambios</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_allowhandlers">Problemas Conocidos</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_allowhandlers">Reportar un error</a></li></ul><h3>Consulte también</h3>
 <ul class="seealso">
 <li><code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code></li>
 <li><code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code></li>
 <li><a href="#comments_section">Comentarios</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="allowhandlers" id="allowhandlers">Directiva</a> <a name="AllowHandlers" id="AllowHandlers">AllowHandlers</a></h2>
+<div class="directive-section"><h2><a name="allowhandlers" id="allowhandlers">Directiva</a> <a name="AllowHandlers" id="AllowHandlers">AllowHandlers</a><a title="Enlace permanente" href="#allowhandlers" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Restringe acceso a los handlers listados</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>AllowHandlers [not] none|<em>handler-name</em>

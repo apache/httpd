@@ -65,7 +65,7 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="purename" id="purename">一つの IP アドレスでいくつかの名前ベースの
-    ウェブサイトを実行する</a></h2>
+    ウェブサイトを実行する</a><a title="Permanent link" href="#purename" class="permalink">&para;</a></h2>
 
     <p>サーバは IP アドレスを一つ割り当てられていて、DNS でマシンに
     複数の名前 (CNAME) が指定されています。このマシンで
@@ -150,7 +150,7 @@
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="twoips" id="twoips">複数の IP アドレスのあるホストで名前ベースの
-    ホスティングを行なう</a></h2>
+    ホスティングを行なう</a><a title="Permanent link" href="#twoips" class="permalink">&para;</a></h2>
  
     <div class="note">
     <h3>注</h3><p>ここで説明されている方法は IP アドレスが
@@ -204,7 +204,7 @@
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="intraextra" id="intraextra">違う IP アドレス (例えば、内部と外部アドレス)
-    で同じコンテンツを送る</a></h2>
+    で同じコンテンツを送る</a><a title="Permanent link" href="#intraextra" class="permalink">&para;</a></h2>
 
     <p>サーバマシンは IP アドレスを二つ (<code>192.168.1.1</code>
     と <code>172.20.30.40</code>) 持っています。このマシンは内部
@@ -245,7 +245,7 @@
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="port" id="port">違うポートで違うサイトを運営する</a></h2>
+<h2><a name="port" id="port">違うポートで違うサイトを運営する</a><a title="Permanent link" href="#port" class="permalink">&para;</a></h2>
 
     <p>同じ IP に複数のドメインがあり、さらに複数のポートを使って
     リクエストを扱いたいときがあります。"NameVirtualHost" タグの中で
@@ -293,7 +293,7 @@
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="ip" id="ip">IP ベースのバーチャルホスティング</a></h2>
+<h2><a name="ip" id="ip">IP ベースのバーチャルホスティング</a><a title="Permanent link" href="#ip" class="permalink">&para;</a></h2>
 
     <p>サーバは <code>www.example.com</code> と <code>www.example.org</code>
     にそれぞれ解決される、二つの IP アドレス (<code>172.20.30.40</code> と
@@ -326,7 +326,7 @@
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="ipport" id="ipport">ポートベースと IP ベースの混ざった
-    バーチャルホスト</a></h2>
+    バーチャルホスト</a><a title="Permanent link" href="#ipport" class="permalink">&para;</a></h2>
 
     <p>サーバマシンはそれぞれ <code>www.example.com</code> と
     <code>www.example.org</code> にそれぞれ解決される、IP アドレスを二つ
@@ -373,7 +373,7 @@
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="mixed" id="mixed">名前ベースと IP ベースを混ぜた
-    バーチャルホスト</a></h2>
+    バーチャルホスト</a><a title="Permanent link" href="#mixed" class="permalink">&para;</a></h2>
 
     <p>いくつかのマシンでは名前ベースの、その他では IP ベースのバーチャル
     ホストをします。</p>
@@ -425,7 +425,7 @@
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="proxy" id="proxy"><code>Virtual_host</code> と
-    mod_proxy を併用する</a></h2>
+    mod_proxy を併用する</a><a title="Permanent link" href="#proxy" class="permalink">&para;</a></h2>
 
     <p>次の例は、フロント側のバーチャルホストで他のマシンへプロクシします。
     例では <code>192.168.111.2</code> のマシンではバーチャルホスト名は
@@ -446,7 +446,7 @@
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="default" id="default"><code>_default_</code> のバーチャルホストを
-    使う</a></h2> 
+    使う</a><a title="Permanent link" href="#default" class="permalink">&para;</a></h2> 
 
     <h3><a name="defaultallports" id="defaultallports">すべてのポートに対する
     <code>_default_</code> バーチャルホスト</a></h3>
@@ -534,7 +534,7 @@
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="migrate" id="migrate">名前ベースのバーチャルホストから IP ベースの
-    バーチャルホストに移行する</a></h2>
+    バーチャルホストに移行する</a><a title="Permanent link" href="#migrate" class="permalink">&para;</a></h2>
 
     <p>ホスト名が名前 <code>www.example.org</code> のバーチャルホスト
     (<a href="#name">名前ベース</a>の例の 2 番目の設定) が専用の IP アドレスを
@@ -580,7 +580,7 @@
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="serverpath" id="serverpath"><code>ServerPath</code> ディレクティブを
-    使う</a></h2>
+    使う</a><a title="Permanent link" href="#serverpath" class="permalink">&para;</a></h2>
 
     <p>名前ベースのバーチャルホストが二つあるサーバがあるとします。
     正しいバーチャルホストを得るためにはクライアントは正しい

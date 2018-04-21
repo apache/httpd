@@ -52,7 +52,7 @@
 </ul><h3>참고</h3><ul class="seealso"><li><a href="stopping.html">아파치 중단과 재시작</a></li><li><a href="programs/httpd.html">httpd</a></li><li><a href="programs/apachectl.html">apachectl</a></li><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="startup" id="startup">어떻게 아파치가 시작하나</a></h2>
+<h2><a name="startup" id="startup">어떻게 아파치가 시작하나</a><a title="Permanent link" href="#startup" class="permalink">&para;</a></h2>
 
     <p>설정파일에서 <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>이 기본값인 80(혹은
     1024이하의 다른 포트)이라면 이 특권 포트에 연결하기위해
@@ -89,7 +89,7 @@
     수 있다.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="errors" id="errors">시작중 오류</a></h2>
+<h2><a name="errors" id="errors">시작중 오류</a><a title="Permanent link" href="#errors" class="permalink">&para;</a></h2>
 
     <p>아파치가 시작하는 과정중에 심각한 문제가 발생하면,
     종료하기 전에 문제를 알리는 문구를 콘솔이나 <code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code>에 쓴다. 가장 흔한 오류문 중
@@ -108,7 +108,7 @@
     참고하라.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="boot" id="boot">부팅할때 시작하기</a></h2>
+<h2><a name="boot" id="boot">부팅할때 시작하기</a><a title="Permanent link" href="#boot" class="permalink">&para;</a></h2>
 
     <p>시스템이 재시작한 후에도 서버가 계속 실행되길 바란다면,
     시스템 시작파일(보통 <code>rc.local</code>이나 <code>rc.N</code>
@@ -124,7 +124,7 @@
     그러나 사용하는 시스템의 정확한 요구사항을 확인하라.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="info" id="info">추가 정보</a></h2>
+<h2><a name="info" id="info">추가 정보</a><a title="Permanent link" href="#info" class="permalink">&para;</a></h2>
 
     <p><a href="programs/httpd.html">httpd</a>와 <a href="programs/apachectl.html">apachectl</a>, 기타 서버에
     포함된 지원 프로그램들의 명령행 옵션은

@@ -48,7 +48,7 @@
 </ul><h3>Consulte también</h3><ul class="seealso"><li><a href="#comments_section">Comentarios</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="uptodate" id="uptodate">Mantenerse al Día</a></h2>
+<h2><a name="uptodate" id="uptodate">Mantenerse al Día</a><a title="Enlace permanente" href="#uptodate" class="permalink">&para;</a></h2>
 
     <p>El Servidor Apache HTTP tiene un buen historial de seguridad y comunidad de desarrolladores con una alta preocupación por los problemas de seguridad. Pero será inevitable que algunos problemas -- pequeños o grandes -- sean descubiertos en el software después de que éste ha sido publicado. Por esta razón, es crucial estar al tanto de las actualizaciones de software.  Si ha obtenido su versión del Servidor HTTP directamente de Apache, le recomendamos encarecidamente que se suscriba a la <a href="http://httpd.apache.org/lists.html#http-announce">Lista de Anuncios del Servidor Apache HTTP</a> donde puede estar informado de nuevas versiones y actualizaciones de seguridad. Hay servicios similares disponibles desde la mayoría de distribuidores de terceros del Software Apache.</p>
 
@@ -56,7 +56,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="dos" id="dos">Ataques de Denegación de Servicio (DoS, Denial of Service)</a></h2>
+<h2><a name="dos" id="dos">Ataques de Denegación de Servicio (DoS, Denial of Service)</a><a title="Enlace permanente" href="#dos" class="permalink">&para;</a></h2>
 
     
 
@@ -94,7 +94,7 @@
     </ul>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="serverroot" id="serverroot">Permisos en Directorios ServerRoot</a></h2>
+<h2><a name="serverroot" id="serverroot">Permisos en Directorios ServerRoot</a><a title="Enlace permanente" href="#serverroot" class="permalink">&para;</a></h2>
 
     
 
@@ -125,7 +125,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="ssi" id="ssi">Server Side Includes (Inclusiones en la parte Servidor)</a></h2>
+<h2><a name="ssi" id="ssi">Server Side Includes (Inclusiones en la parte Servidor)</a><a title="Enlace permanente" href="#ssi" class="permalink">&para;</a></h2>
 
     
 
@@ -146,7 +146,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="cgi" id="cgi">CGI en General</a></h2>
+<h2><a name="cgi" id="cgi">CGI en General</a><a title="Enlace permanente" href="#cgi" class="permalink">&para;</a></h2>
 
     
 
@@ -156,7 +156,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="nsaliasedcgi" id="nsaliasedcgi">CGI sin Alias de Script</a></h2>
+<h2><a name="nsaliasedcgi" id="nsaliasedcgi">CGI sin Alias de Script</a><a title="Enlace permanente" href="#nsaliasedcgi" class="permalink">&para;</a></h2>
 
     
 
@@ -170,7 +170,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="saliasedcgi" id="saliasedcgi">CGI con Alias de Script</a></h2>
+<h2><a name="saliasedcgi" id="saliasedcgi">CGI con Alias de Script</a><a title="Enlace permanente" href="#saliasedcgi" class="permalink">&para;</a></h2>
 
     
 
@@ -180,7 +180,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="dynamic" id="dynamic">Otras fuentes de contenido dinámico</a></h2>
+<h2><a name="dynamic" id="dynamic">Otras fuentes de contenido dinámico</a><a title="Enlace permanente" href="#dynamic" class="permalink">&para;</a></h2>
 
   
 
@@ -189,7 +189,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="dynamicsec" id="dynamicsec">Seguridad de Contenido Dinámico</a></h2>
+<h2><a name="dynamicsec" id="dynamicsec">Seguridad de Contenido Dinámico</a><a title="Enlace permanente" href="#dynamicsec" class="permalink">&para;</a></h2>
 
   
 
@@ -199,7 +199,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="systemsettings" id="systemsettings">Configuración de Protección del Sistema</a></h2>
+<h2><a name="systemsettings" id="systemsettings">Configuración de Protección del Sistema</a><a title="Enlace permanente" href="#systemsettings" class="permalink">&para;</a></h2>
 
     
 
@@ -218,7 +218,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="protectserverfiles" id="protectserverfiles">Proteger Ficheros del Servidor por Defecto</a></h2>
+<h2><a name="protectserverfiles" id="protectserverfiles">Proteger Ficheros del Servidor por Defecto</a><a title="Enlace permanente" href="#protectserverfiles" class="permalink">&para;</a></h2>
 
     
 
@@ -257,7 +257,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="watchyourlogs" id="watchyourlogs">Examinando sus Logs</a></h2>
+<h2><a name="watchyourlogs" id="watchyourlogs">Examinando sus Logs</a><a title="Enlace permanente" href="#watchyourlogs" class="permalink">&para;</a></h2>
 
     
 
@@ -293,7 +293,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="merging" id="merging">Fusión de secciones de configuración</a></h2>
+<h2><a name="merging" id="merging">Fusión de secciones de configuración</a><a title="Enlace permanente" href="#merging" class="permalink">&para;</a></h2>
 
     
 

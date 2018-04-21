@@ -68,7 +68,7 @@
 <li><a href="#comments_section">Comments</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthDBMType" id="AuthDBMType">AuthDBMType</a> <a name="authdbmtype" id="authdbmtype">지시어</a></h2>
+<div class="directive-section"><h2><a name="AuthDBMType" id="AuthDBMType">AuthDBMType</a> <a name="authdbmtype" id="authdbmtype">지시어</a><a title="Permanent link" href="#authdbmtype" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>암호를 저장하는 데이터베이스 파일 종류를
 지정한다</td></tr>
@@ -89,7 +89,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthDBMUserFile" id="AuthDBMUserFile">AuthDBMUserFile</a> <a name="authdbmuserfile" id="authdbmuserfile">지시어</a></h2>
+<div class="directive-section"><h2><a name="AuthDBMUserFile" id="AuthDBMUserFile">AuthDBMUserFile</a> <a name="authdbmuserfile" id="authdbmuserfile">지시어</a><a title="Permanent link" href="#authdbmuserfile" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>인증할 사용자와 암호 목록을 저장하는 데이터베이스
 파일명을 지정한다</td></tr>

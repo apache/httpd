@@ -58,7 +58,7 @@
 </ul><h3>See also</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="configuration" id="configuration">Configuration</a></h2>
+<h2><a name="configuration" id="configuration">Configuration</a><a title="Permanent link" href="#configuration" class="permalink">&para;</a></h2>
 
     <p>Custom error documents are configured using the <code class="directive"><a href="./mod/core.html#errordocument">ErrorDocument</a></code> directive,
     which may be used in global,
@@ -93,7 +93,7 @@ ErrorDocument 401 /subscription/how_to_subscribe.html</pre>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="variables" id="variables">Available Variables</a></h2>
+<h2><a name="variables" id="variables">Available Variables</a><a title="Permanent link" href="#variables" class="permalink">&para;</a></h2>
 
       <p>Redirecting to another URL can be useful, but only if some
       information can be passed which can then be used to explain or log
@@ -139,7 +139,7 @@ ErrorDocument 401 /subscription/how_to_subscribe.html</pre>
       as the server).</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="custom" id="custom">Customizing Error Responses</a></h2>
+<h2><a name="custom" id="custom">Customizing Error Responses</a><a title="Permanent link" href="#custom" class="permalink">&para;</a></h2>
 
       <p>If you point your <code>ErrorDocument</code> to some variety of
       dynamic handler such as a server-side include document, CGI
@@ -172,7 +172,7 @@ printf "Status: %s Condition Intercepted\n", $ENV{"REDIRECT_STATUS"};
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="multi-lang" id="multi-lang">Multi Language Custom Error Documents</a></h2>
+<h2><a name="multi-lang" id="multi-lang">Multi Language Custom Error Documents</a><a title="Permanent link" href="#multi-lang" class="permalink">&para;</a></h2>
 
     <p>Provided with your installation of the Apache HTTP Server is a
     directory of custom error documents translated into 16 different

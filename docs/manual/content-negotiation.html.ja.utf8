@@ -58,7 +58,7 @@
 </ul><h3>参照</h3><ul class="seealso"><li><a href="#comments_section">コメント</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="about" id="about">コンテントネゴシエーションについて</a></h2>
+<h2><a name="about" id="about">コンテントネゴシエーションについて</a><a title="Permanent link" href="#about" class="permalink">&para;</a></h2>
 
     <p>リソースは、幾つか異なった表現で利用できる場合があります。
     例えば、異なる言語や異なるメディアタイプ、
@@ -119,7 +119,7 @@
     ネゴシエーションの<strong>次元</strong>と呼びます。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="negotiation" id="negotiation">Apache におけるネゴシエーション</a></h2>
+<h2><a name="negotiation" id="negotiation">Apache におけるネゴシエーション</a><a title="Permanent link" href="#negotiation" class="permalink">&para;</a></h2>
 
     <p>リソースをネゴシエーションするためには、
     サーバは variant それぞれについての情報を知っておく必要があります。
@@ -265,7 +265,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="methods" id="methods">ネゴシエーション方法</a></h2>
+<h2><a name="methods" id="methods">ネゴシエーション方法</a><a title="Permanent link" href="#methods" class="permalink">&para;</a></h2>
 
     <p>Apache はリソースの variant の一覧を、タイプマップファイルか
     ディレクトリ内のファイル名からかで取得した後、
@@ -436,7 +436,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="better" id="better">品質の値を変える</a></h2>
+<h2><a name="better" id="better">品質の値を変える</a><a title="Permanent link" href="#better" class="permalink">&para;</a></h2>
 
     <p>上記の Apache ネゴシエーションアルゴリズムの厳格な解釈で
     得られるであろう値から、Apache は品質数値を時々変えます。
@@ -559,7 +559,7 @@
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="extensions" id="extensions">Transparent Content Negotiation
-の拡張</a></h2> 
+の拡張</a><a title="Permanent link" href="#extensions" class="permalink">&para;</a></h2> 
 
 <p>Apache は transparent content negotiation プロトコル
 (RFC 2295) を次のように拡張しています。
@@ -575,7 +575,7 @@ RVSA/1.0 の実装では、最適な variant が見つかるまで、
 計算した品質数値は小数点以下 5 桁まで丸めません。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="naming" id="naming">リンクと名前の変換に関する注意点</a></h2>
+<h2><a name="naming" id="naming">リンクと名前の変換に関する注意点</a><a title="Permanent link" href="#naming" class="permalink">&para;</a></h2>
 
     <p>言語ネゴシエーションを使っている場合は、
     ファイルが一つ以上の拡張子を持てて、
@@ -686,7 +686,7 @@ RVSA/1.0 の実装では、最適な variant が見つかるまで、
     (<em>例えば</em> <code>foo.html.en</code>)。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="caching" id="caching">キャッシュに関する注意事項</a></h2>
+<h2><a name="caching" id="caching">キャッシュに関する注意事項</a><a title="Permanent link" href="#caching" class="permalink">&para;</a></h2>
 
     <p>キャッシュが一つの表現を保存しているときは、
     リクエスト URL と関連づけられています。

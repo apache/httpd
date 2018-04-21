@@ -40,12 +40,12 @@
 </ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><a href="#comments_section">Yorum</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="Description" id="Description">Açıklama</a></h2>
+<h2><a name="Description" id="Description">Açıklama</a><a title="Permanent link" href="#Description" class="permalink">&para;</a></h2>
 
 <p>Modülün kullanım amacının kısa bir açıklaması.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="Status" id="Status">Durum</a></h2>
+<h2><a name="Status" id="Status">Durum</a><a title="Permanent link" href="#Status" class="permalink">&para;</a></h2>
 
     <p>Modülün Apache HTTP sunucusuna ne kadar sıkı bağlı olduğunu belirtir. Başka bir deyişle, modüle ve işlevselliğine erişim kazanmak için sunucuyu yeniden derlemek gerekip gerekmediği ile ilgili durumu belirtir. Bu özniteliğin olası değerleri şunlardır:</p>
 
@@ -72,17 +72,17 @@
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="SourceFile" id="SourceFile">Kaynak Dosyası</a></h2>
+<h2><a name="SourceFile" id="SourceFile">Kaynak Dosyası</a><a title="Permanent link" href="#SourceFile" class="permalink">&para;</a></h2>
 
     <p>Karşısına modül kodunu içeren kaynak dosyasının ismi yazılır. Bu isim ayrıca <code class="directive"><a href="../mod/core.html#ifmodule">&lt;IfModule&gt;</a></code> yönergesi tarafından da kullanılır.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="ModuleIdentifier" id="ModuleIdentifier">Modül Betimleyici</a></h2>
+<h2><a name="ModuleIdentifier" id="ModuleIdentifier">Modül Betimleyici</a><a title="Permanent link" href="#ModuleIdentifier" class="permalink">&para;</a></h2>
 
     <p>Modüller devingen olarak yüklenirken <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code> yönergesinde kullanmak için modülü betimleyen dizgedir. Aslında, kaynak dosyasında <code>module</code> türündeki harici değişkenin ismidir.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="Compatibility" id="Compatibility">Uyumluluk</a></h2>
+<h2><a name="Compatibility" id="Compatibility">Uyumluluk</a><a title="Permanent link" href="#Compatibility" class="permalink">&para;</a></h2>
 
     <p>Eğer modül Apache’nin 2. sürüm dağıtımının özgün parçası değilse söz  konusu sürüm burada belirtilir. Ayrıca, modülün kullanımı belli platformlarla sınırlıysa bunun ayrıntıları da burada belirtilir.</p>
 </div></div>

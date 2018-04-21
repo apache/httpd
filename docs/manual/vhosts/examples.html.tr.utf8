@@ -56,7 +56,7 @@
 </ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><a href="#comments_section">Yorum</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="purename" id="purename">Tek bir IP ile çok sayıda isme dayalı site</a></h2>
+<h2><a name="purename" id="purename">Tek bir IP ile çok sayıda isme dayalı site</a><a title="Permanent link" href="#purename" class="permalink">&para;</a></h2>
     
 
     <p>Bu örnekte, makinenizin tek bir IP adresine sahip olduğunu ve bu
@@ -139,7 +139,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="twoips" id="twoips">IP adresleri farklı çok sayıda isme dayalı site</a></h2>
+<h2><a name="twoips" id="twoips">IP adresleri farklı çok sayıda isme dayalı site</a><a title="Permanent link" href="#twoips" class="permalink">&para;</a></h2>
     
 
     <div class="note"><h3>Bilginize</h3>
@@ -189,7 +189,7 @@
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="intraextra" id="intraextra">Aynı içeriği farklı IP adresleriyle sunmak
-    (örn., dahili ve harici ağlara)</a></h2>
+    (örn., dahili ve harici ağlara)</a><a title="Permanent link" href="#intraextra" class="permalink">&para;</a></h2>
 
     <p>Sunucu makine iki IP adresine sahip olsun. Biri iç ağa
       (<code>192.168.1.1</code>) diğeri dış ağa (<code>172.20.30.40</code>)
@@ -227,7 +227,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="port" id="port">Farklı portlarla farklı siteler</a></h2>
+<h2><a name="port" id="port">Farklı portlarla farklı siteler</a><a title="Permanent link" href="#port" class="permalink">&para;</a></h2>
 
     <p>Aynı IP adresine sahip çok sayıda konak ismine sahip olduğunuzu ve
       bunların bazılarının farklı portları kullanmasını istediğinizi
@@ -270,7 +270,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="ip" id="ip">IP’ye dayalı sanal konaklar</a></h2>
+<h2><a name="ip" id="ip">IP’ye dayalı sanal konaklar</a><a title="Permanent link" href="#ip" class="permalink">&para;</a></h2>
 
     <p>Sunucu makinenin, biri <code>mesela.dom</code> adından çözümlenen
       <code>172.20.30.40</code>, diğeri <code>faraza.dom</code> adından
@@ -300,7 +300,7 @@
       genelindeki yapılandırma ile ana sunucu yanıt verecektir.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="ipport" id="ipport">Hem IP’ye hem de porta dayalı sanal konaklar</a></h2>
+<h2><a name="ipport" id="ipport">Hem IP’ye hem de porta dayalı sanal konaklar</a><a title="Permanent link" href="#ipport" class="permalink">&para;</a></h2>
     
 
     <p>Sunucu makinenin, biri <code>mesela.dom</code> adından çözümlenen
@@ -346,7 +346,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="mixed" id="mixed">Hem isme hem de IP‘ye dayalı sanal konaklar</a></h2>
+<h2><a name="mixed" id="mixed">Hem isme hem de IP‘ye dayalı sanal konaklar</a><a title="Permanent link" href="#mixed" class="permalink">&para;</a></h2>
     
 
     <p>Bir <code>VirtualHost</code> yönergesinde belirtilen bir IP adresi başka
@@ -397,7 +397,7 @@
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="proxy" id="proxy"><code>Virtualhost</code> ve
-    <code>mod_proxy</code>’nin birlikte kullanımı</a></h2>
+    <code>mod_proxy</code>’nin birlikte kullanımı</a><a title="Permanent link" href="#proxy" class="permalink">&para;</a></h2>
 
     <p>Bu örnekte bir arabirimi dışarıya bakan bir makinede, başka bir
       makinede çalışan bir sunucuya sanal konak olarak, bir vekil sunucu
@@ -420,7 +420,7 @@
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="default" id="default"><code>_default_</code> sanal konakları</a></h2>
+<h2><a name="default" id="default"><code>_default_</code> sanal konakları</a><a title="Permanent link" href="#default" class="permalink">&para;</a></h2>
 
     <h3><a name="defaultallports" id="defaultallports">Tüm portlar için <code>_default_</code></a></h3>
       
@@ -509,7 +509,7 @@
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="migrate" id="migrate">Bir isme dayalı sanal konağı bir IP’ye dayalı
-    sanal konakla yansılamak</a></h2>
+    sanal konakla yansılamak</a><a title="Permanent link" href="#migrate" class="permalink">&para;</a></h2>
 
     <p>İsme dayalı sanal konak örneklerinin <a href="#twoips">2. sinde</a> adı
       geçen <code>falanca.dom</code> bu örnekte kendi IP adresinden hizmet
@@ -555,7 +555,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="serverpath" id="serverpath"><code>ServerPath</code> yönergesinin kullanımı</a></h2>
+<h2><a name="serverpath" id="serverpath"><code>ServerPath</code> yönergesinin kullanımı</a><a title="Permanent link" href="#serverpath" class="permalink">&para;</a></h2>
     
 
     <p>İsme dayalı iki sanal konağı olan bir sunucumuz olsun. Doğru sanal

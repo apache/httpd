@@ -70,7 +70,7 @@
 <li><a href="#comments_section">コメント</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AcceptErrorsNonFatal" id="AcceptErrorsNonFatal">AcceptErrorsNonFatal</a> <a name="accepterrorsnonfatal" id="accepterrorsnonfatal">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="AcceptErrorsNonFatal" id="AcceptErrorsNonFatal">AcceptErrorsNonFatal</a> <a name="accepterrorsnonfatal" id="accepterrorsnonfatal">ディレクティブ</a><a title="Permanent link" href="#accepterrorsnonfatal" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Treat some errors accepting a new connection as non-fatal
 to the httpd process.</td></tr>
@@ -85,7 +85,7 @@ to the httpd process.</td></tr>
             まだ翻訳されていません。英語版をご覧ください。
             </p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CoreDumpDirectory" id="CoreDumpDirectory">CoreDumpDirectory</a> <a name="coredumpdirectory" id="coredumpdirectory">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="CoreDumpDirectory" id="CoreDumpDirectory">CoreDumpDirectory</a> <a name="coredumpdirectory" id="coredumpdirectory">ディレクティブ</a><a title="Permanent link" href="#coredumpdirectory" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Apache がコアダンプする前に移動を試みるディレクトリ
 </td></tr>
@@ -113,7 +113,7 @@ to the httpd process.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="EnableExceptionHook" id="EnableExceptionHook">EnableExceptionHook</a> <a name="enableexceptionhook" id="enableexceptionhook">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="EnableExceptionHook" id="EnableExceptionHook">EnableExceptionHook</a> <a name="enableexceptionhook" id="enableexceptionhook">ディレクティブ</a><a title="Permanent link" href="#enableexceptionhook" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>クラッシュの後に例外ハンドラを実行するフックを有効にする</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>EnableExceptionHook On|Off</code></td></tr>
@@ -135,7 +135,7 @@ to the httpd process.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="GracefulShutdownTimeout" id="GracefulShutdownTimeout">GracefulShutdownTimeout</a> <a name="gracefulshutdowntimeout" id="gracefulshutdowntimeout">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="GracefulShutdownTimeout" id="GracefulShutdownTimeout">GracefulShutdownTimeout</a> <a name="gracefulshutdowntimeout" id="gracefulshutdowntimeout">ディレクティブ</a><a title="Permanent link" href="#gracefulshutdowntimeout" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>穏やかな停止をかけた後、終了するまで待つ時間</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>GracefulShutDownTimeout <var>seconds</var></code></td></tr>
@@ -154,7 +154,7 @@ to the httpd process.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Listen" id="Listen">Listen</a> <a name="listen" id="listen">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="Listen" id="Listen">Listen</a> <a name="listen" id="listen">ディレクティブ</a><a title="Permanent link" href="#listen" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>サーバが listen するIP アドレスとポート番号</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>Listen [<var>IP-address</var>:]<var>portnumber</var> [<var>protocol</var>]</code></td></tr>
@@ -238,7 +238,7 @@ to the httpd process.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ListenBackLog" id="ListenBackLog">ListenBackLog</a> <a name="listenbacklog" id="listenbacklog">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="ListenBackLog" id="ListenBackLog">ListenBackLog</a> <a name="listenbacklog" id="listenbacklog">ディレクティブ</a><a title="Permanent link" href="#listenbacklog" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>保留状態のコネクションのキューの最大長</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ListenBacklog <var>backlog</var></code></td></tr>
@@ -262,7 +262,7 @@ to the httpd process.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ListenCoresBucketsRatio" id="ListenCoresBucketsRatio">ListenCoresBucketsRatio</a> <a name="listencoresbucketsratio" id="listencoresbucketsratio">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="ListenCoresBucketsRatio" id="ListenCoresBucketsRatio">ListenCoresBucketsRatio</a> <a name="listencoresbucketsratio" id="listencoresbucketsratio">ディレクティブ</a><a title="Permanent link" href="#listencoresbucketsratio" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Ratio between the number of CPU cores (online) and the number of
 listeners' buckets</td></tr>
@@ -280,7 +280,7 @@ in *BSDs.</td></tr>
             まだ翻訳されていません。英語版をご覧ください。
             </p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MaxConnectionsPerChild" id="MaxConnectionsPerChild">MaxConnectionsPerChild</a> <a name="maxconnectionsperchild" id="maxconnectionsperchild">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="MaxConnectionsPerChild" id="MaxConnectionsPerChild">MaxConnectionsPerChild</a> <a name="maxconnectionsperchild" id="maxconnectionsperchild">ディレクティブ</a><a title="Permanent link" href="#maxconnectionsperchild" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Limit on the number of connections that an individual child server
 will handle during its life</td></tr>
@@ -295,7 +295,7 @@ will handle during its life</td></tr>
             まだ翻訳されていません。英語版をご覧ください。
             </p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MaxMemFree" id="MaxMemFree">MaxMemFree</a> <a name="maxmemfree" id="maxmemfree">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="MaxMemFree" id="MaxMemFree">MaxMemFree</a> <a name="maxmemfree" id="maxmemfree">ディレクティブ</a><a title="Permanent link" href="#maxmemfree" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td><code>free()</code> が呼ばれない限り、
 主メモリアロケータが保持し続けられるメモリの最大量</td></tr>
@@ -312,7 +312,7 @@ will handle during its life</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MaxRequestWorkers" id="MaxRequestWorkers">MaxRequestWorkers</a> <a name="maxrequestworkers" id="maxrequestworkers">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="MaxRequestWorkers" id="MaxRequestWorkers">MaxRequestWorkers</a> <a name="maxrequestworkers" id="maxrequestworkers">ディレクティブ</a><a title="Permanent link" href="#maxrequestworkers" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Maximum number of connections that will be processed
 simultaneously</td></tr>
@@ -325,7 +325,7 @@ simultaneously</td></tr>
             まだ翻訳されていません。英語版をご覧ください。
             </p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MaxSpareThreads" id="MaxSpareThreads">MaxSpareThreads</a> <a name="maxsparethreads" id="maxsparethreads">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="MaxSpareThreads" id="MaxSpareThreads">MaxSpareThreads</a> <a name="maxsparethreads" id="maxsparethreads">ディレクティブ</a><a title="Permanent link" href="#maxsparethreads" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>アイドルスレッドの最大数</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>MaxSpareThreads <var>number</var></code></td></tr>
@@ -378,7 +378,7 @@ simultaneously</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MinSpareThreads" id="MinSpareThreads">MinSpareThreads</a> <a name="minsparethreads" id="minsparethreads">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="MinSpareThreads" id="MinSpareThreads">MinSpareThreads</a> <a name="minsparethreads" id="minsparethreads">ディレクティブ</a><a title="Permanent link" href="#minsparethreads" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>リクエストに応答することのできる
 アイドルスレッド数の最小数</td></tr>
@@ -417,7 +417,7 @@ simultaneously</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="PidFile" id="PidFile">PidFile</a> <a name="pidfile" id="pidfile">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="PidFile" id="PidFile">PidFile</a> <a name="pidfile" id="pidfile">ディレクティブ</a><a title="Permanent link" href="#pidfile" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>デーモンのプロセス ID
 をサーバが記録するためのファイル</td></tr>
@@ -458,7 +458,7 @@ simultaneously</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ReceiveBufferSize" id="ReceiveBufferSize">ReceiveBufferSize</a> <a name="receivebuffersize" id="receivebuffersize">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="ReceiveBufferSize" id="ReceiveBufferSize">ReceiveBufferSize</a> <a name="receivebuffersize" id="receivebuffersize">ディレクティブ</a><a title="Permanent link" href="#receivebuffersize" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>TCP 受信バッファサイズ</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ReceiveBufferSize <var>bytes</var></code></td></tr>
@@ -473,7 +473,7 @@ simultaneously</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ScoreBoardFile" id="ScoreBoardFile">ScoreBoardFile</a> <a name="scoreboardfile" id="scoreboardfile">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="ScoreBoardFile" id="ScoreBoardFile">ScoreBoardFile</a> <a name="scoreboardfile" id="scoreboardfile">ディレクティブ</a><a title="Permanent link" href="#scoreboardfile" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>子プロセスと連携するためのデータを保存する
 ファイルの位置</td></tr>
@@ -510,7 +510,7 @@ simultaneously</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SendBufferSize" id="SendBufferSize">SendBufferSize</a> <a name="sendbuffersize" id="sendbuffersize">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="SendBufferSize" id="SendBufferSize">SendBufferSize</a> <a name="sendbuffersize" id="sendbuffersize">ディレクティブ</a><a title="Permanent link" href="#sendbuffersize" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>TCP バッファサイズ</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>SendBufferSize <var>bytes</var></code></td></tr>
@@ -528,7 +528,7 @@ simultaneously</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ServerLimit" id="ServerLimit">ServerLimit</a> <a name="serverlimit" id="serverlimit">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="ServerLimit" id="ServerLimit">ServerLimit</a> <a name="serverlimit" id="serverlimit">ディレクティブ</a><a title="Permanent link" href="#serverlimit" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>設定可能なサーバプロセス数の上限</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ServerLimit <var>number</var></code></td></tr>
@@ -592,7 +592,7 @@ simultaneously</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="StartServers" id="StartServers">StartServers</a> <a name="startservers" id="startservers">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="StartServers" id="StartServers">StartServers</a> <a name="startservers" id="startservers">ディレクティブ</a><a title="Permanent link" href="#startservers" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>起動時に生成される子サーバプロセスの数</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>StartServers <var>number</var></code></td></tr>
@@ -614,7 +614,7 @@ simultaneously</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="StartThreads" id="StartThreads">StartThreads</a> <a name="startthreads" id="startthreads">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="StartThreads" id="StartThreads">StartThreads</a> <a name="startthreads" id="startthreads">ディレクティブ</a><a title="Permanent link" href="#startthreads" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>起動時に生成されるスレッドの数</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>StartThreads <var>number</var></code></td></tr>
@@ -638,7 +638,7 @@ simultaneously</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ThreadLimit" id="ThreadLimit">ThreadLimit</a> <a name="threadlimit" id="threadlimit">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="ThreadLimit" id="ThreadLimit">ThreadLimit</a> <a name="threadlimit" id="threadlimit">ディレクティブ</a><a title="Permanent link" href="#threadlimit" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>設定可能な子プロセス毎のスレッド数の上限を
 設定します</td></tr>
@@ -686,7 +686,7 @@ simultaneously</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ThreadsPerChild" id="ThreadsPerChild">ThreadsPerChild</a> <a name="threadsperchild" id="threadsperchild">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="ThreadsPerChild" id="ThreadsPerChild">ThreadsPerChild</a> <a name="threadsperchild" id="threadsperchild">ディレクティブ</a><a title="Permanent link" href="#threadsperchild" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>子プロセスそれぞれに生成されるスレッド数</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ThreadsPerChild <var>number</var></code></td></tr>
@@ -712,7 +712,7 @@ simultaneously</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ThreadStackSize" id="ThreadStackSize">ThreadStackSize</a> <a name="threadstacksize" id="threadstacksize">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="ThreadStackSize" id="ThreadStackSize">ThreadStackSize</a> <a name="threadstacksize" id="threadstacksize">ディレクティブ</a><a title="Permanent link" href="#threadstacksize" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>クライアントのコネクションを受け持つスレッドが使用する
 スタックのバイト数</td></tr>

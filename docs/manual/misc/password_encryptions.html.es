@@ -35,7 +35,7 @@
 </ul><h3>Consulte también</h3><ul class="seealso"><li><a href="#comments_section">Comentarios</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="basic" id="basic">Autenticación Básica</a></h2>
+<h2><a name="basic" id="basic">Autenticación Básica</a><a title="Enlace permanente" href="#basic" class="permalink">&para;</a></h2>
 
     <p>Hay cinco formatos que Apache reconoce para contraseñas de autenticación-básica. Tenga en cuenta que no todos los formatos funcionan en todas las plataformas:</p>
 
@@ -167,7 +167,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="digest" id="digest">Autenticación Digest</a></h2>
+<h2><a name="digest" id="digest">Autenticación Digest</a><a title="Enlace permanente" href="#digest" class="permalink">&para;</a></h2>
     <p>Apache reconoce un formato para las contraseñas de autenticación-digest - el MD5 hash de la cadena de caracteres <code>user:realm:password</code> como una cadena de 32-caracteres de dígitos hexadecimales. <code>realm</code> es el parámetro del Ámbito de Autorización para la directiva
     <code class="directive"><a href="../mod/mod_authn_core.html#authname">AuthName</a></code> en
     httpd.conf.</p>

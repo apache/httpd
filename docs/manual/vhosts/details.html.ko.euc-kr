@@ -47,7 +47,7 @@
 </ul><h3>참고</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="configparsing" id="configparsing">설정파일 읽기</a></h2>
+<h2><a name="configparsing" id="configparsing">설정파일 읽기</a><a title="Permanent link" href="#configparsing" class="permalink">&para;</a></h2>
 
     <p><code>&lt;VirtualHost&gt;</code> 설정을 제외한 설정이
     <em>주서버</em>를 만든다. <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> 섹션으로 정의한
@@ -210,7 +210,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="hostmatching" id="hostmatching">가상호스트 찾기</a></h2>
+<h2><a name="hostmatching" id="hostmatching">가상호스트 찾기</a><a title="Permanent link" href="#hostmatching" class="permalink">&para;</a></h2>
 
     <p>서버는 아래와 같은 방법으로 어떤 가상호스트가 요청을
     처리할지 결정한다:</p>
@@ -357,7 +357,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="tips" id="tips">팁</a></h2>
+<h2><a name="tips" id="tips">팁</a><a title="Permanent link" href="#tips" class="permalink">&para;</a></h2>
 
     <p><a href="../dns-caveats.html#tips">DNS 문제</a> 페이지의
     팁에 추가로 아래에 팁이 있다:</p>

@@ -75,7 +75,7 @@
 <li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="features" id="features">New Features</a></h2>
+<h2><a name="features" id="features">New Features</a><a title="Permanent link" href="#features" class="permalink">&para;</a></h2>
 
     <p>The imagemap module adds some new features that were not
     possible with previously distributed imagemap programs.</p>
@@ -94,7 +94,7 @@
     </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="imapfile" id="imapfile">Imagemap File</a></h2>
+<h2><a name="imapfile" id="imapfile">Imagemap File</a><a title="Permanent link" href="#imapfile" class="permalink">&para;</a></h2>
 
     <p>The lines in the imagemap files can have one of several
     formats:</p>
@@ -260,7 +260,7 @@
     
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="example" id="example">Example Mapfile</a></h2>
+<h2><a name="example" id="example">Example Mapfile</a><a title="Permanent link" href="#example" class="permalink">&para;</a></h2>
 
     <div class="example"><p><code>
       #Comments are printed in a 'formatted' or 'semiformatted' menu.<br />
@@ -277,7 +277,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="referencing" id="referencing">Referencing your mapfile</a></h2>
+<h2><a name="referencing" id="referencing">Referencing your mapfile</a><a title="Permanent link" href="#referencing" class="permalink">&para;</a></h2>
 
     <div class="example"><h3>HTML example</h3><p><code>
       &lt;a href="/maps/imagemap1.map"&gt;<br />
@@ -297,7 +297,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ImapBase" id="ImapBase">ImapBase</a> <a name="imapbase" id="imapbase">Directive</a></h2>
+<div class="directive-section"><h2><a name="ImapBase" id="ImapBase">ImapBase</a> <a name="imapbase" id="imapbase">Directive</a><a title="Permanent link" href="#imapbase" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Default <code>base</code> for imagemap files</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ImapBase map|referer|<var>URL</var></code></td></tr>
@@ -319,7 +319,7 @@
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ImapDefault" id="ImapDefault">ImapDefault</a> <a name="imapdefault" id="imapdefault">Directive</a></h2>
+<div class="directive-section"><h2><a name="ImapDefault" id="ImapDefault">ImapDefault</a> <a name="imapdefault" id="imapdefault">Directive</a><a title="Permanent link" href="#imapdefault" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Default action when an imagemap is called with coordinates
 that are not explicitly mapped</td></tr>
@@ -340,7 +340,7 @@ that are not explicitly mapped</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ImapMenu" id="ImapMenu">ImapMenu</a> <a name="imapmenu" id="imapmenu">Directive</a></h2>
+<div class="directive-section"><h2><a name="ImapMenu" id="ImapMenu">ImapMenu</a> <a name="imapmenu" id="imapmenu">Directive</a><a title="Permanent link" href="#imapmenu" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Action if no coordinates are given when calling
 an imagemap</td></tr>

@@ -108,6 +108,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#protocols">Protocols</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#protocolshonororder">ProtocolsHonorOrder</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#qualifyredirecturl">QualifyRedirectURL</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#regexdefaultoptions">RegexDefaultOptions</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#registerhttpmethod">RegisterHttpMethod</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rlimitcpu">RLimitCPU</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rlimitmem">RLimitMEM</a></li>
@@ -137,7 +138,7 @@
 <li><a href="#comments_section">Yorum</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AcceptFilter" id="AcceptFilter">AcceptFilter</a> <a name="acceptfilter" id="acceptfilter">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="AcceptFilter" id="AcceptFilter">AcceptFilter</a> <a name="acceptfilter" id="acceptfilter">Yönergesi</a><a title="Permanent link" href="#acceptfilter" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Bir protokolün dinleyici soketleri için en iyilemeleri ayarlar
 </td></tr>
@@ -223,7 +224,7 @@ httpd 2.1.5 ve sonrasında mevcuttur.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AcceptPathInfo" id="AcceptPathInfo">AcceptPathInfo</a> <a name="acceptpathinfo" id="acceptpathinfo">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="AcceptPathInfo" id="AcceptPathInfo">AcceptPathInfo</a> <a name="acceptpathinfo" id="acceptpathinfo">Yönergesi</a><a title="Permanent link" href="#acceptpathinfo" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Dosya isminden sonra belirtilen yol verisini kabul veya
   reddeder.</td></tr>
@@ -290,7 +291,7 @@ httpd 2.1.5 ve sonrasında mevcuttur.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AccessFileName" id="AccessFileName">AccessFileName</a> <a name="accessfilename" id="accessfilename">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="AccessFileName" id="AccessFileName">AccessFileName</a> <a name="accessfilename" id="accessfilename">Yönergesi</a><a title="Permanent link" href="#accessfilename" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Dağıtık yapılandırma dosyasının ismi belirtilir.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>AccessFileName <var>filename</var> [<var>filename</var>] ...</code></td></tr>
@@ -331,7 +332,7 @@ httpd 2.1.5 ve sonrasında mevcuttur.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddDefaultCharset" id="AddDefaultCharset">AddDefaultCharset</a> <a name="adddefaultcharset" id="adddefaultcharset">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="AddDefaultCharset" id="AddDefaultCharset">AddDefaultCharset</a> <a name="adddefaultcharset" id="adddefaultcharset">Yönergesi</a><a title="Permanent link" href="#adddefaultcharset" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Bir yanıtın içerik türü <code>text/plain</code> veya
   <code>text/html</code> olduğunda eklenecek öntanımlı karakter kümesi
@@ -379,7 +380,7 @@ httpd 2.1.5 ve sonrasında mevcuttur.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AllowEncodedSlashes" id="AllowEncodedSlashes">AllowEncodedSlashes</a> <a name="allowencodedslashes" id="allowencodedslashes">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="AllowEncodedSlashes" id="AllowEncodedSlashes">AllowEncodedSlashes</a> <a name="allowencodedslashes" id="allowencodedslashes">Yönergesi</a><a title="Permanent link" href="#allowencodedslashes" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Kodlanmış dosya yolu ayracı içeren URL’lere izin verilip
   verilmeyeceğini belirler.</td></tr>
@@ -423,7 +424,7 @@ httpd 2.1.5 ve sonrasında mevcuttur.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AllowOverride" id="AllowOverride">AllowOverride</a> <a name="allowoverride" id="allowoverride">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="AllowOverride" id="AllowOverride">AllowOverride</a> <a name="allowoverride" id="allowoverride">Yönergesi</a><a title="Permanent link" href="#allowoverride" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td><code>.htaccess</code> dosyalarında bulunmasına izin verilen
   yönerge türleri belirtilir.</td></tr>
@@ -599,7 +600,7 @@ httpd 2.1.5 ve sonrasında mevcuttur.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AllowOverrideList" id="AllowOverrideList">AllowOverrideList</a> <a name="allowoverridelist" id="allowoverridelist">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="AllowOverrideList" id="AllowOverrideList">AllowOverrideList</a> <a name="allowoverridelist" id="allowoverridelist">Yönergesi</a><a title="Permanent link" href="#allowoverridelist" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td><code>.htaccess</code> dosyalarında izin verilecek yönergeler tek tek belirtilir</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>AllowOverrideList None|<var>yönerge</var>
@@ -658,7 +659,7 @@ httpd 2.1.5 ve sonrasında mevcuttur.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AsyncFilter" id="AsyncFilter">AsyncFilter</a> <a name="asyncfilter" id="asyncfilter">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="AsyncFilter" id="AsyncFilter">AsyncFilter</a> <a name="asyncfilter" id="asyncfilter">Yönergesi</a><a title="Permanent link" href="#asyncfilter" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Set the minimum filter type eligible for asynchronous handling</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>AsyncFilter request|connection|network</code></td></tr>
@@ -670,7 +671,7 @@ httpd 2.1.5 ve sonrasında mevcuttur.</td></tr>
 </table><p>Bu yönergenin belgesi henüz Türkçeye çevrilmedi.
             Lütfen İngilizce sürümüne bakınız.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CGIMapExtension" id="CGIMapExtension">CGIMapExtension</a> <a name="cgimapextension" id="cgimapextension">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="CGIMapExtension" id="CGIMapExtension">CGIMapExtension</a> <a name="cgimapextension" id="cgimapextension">Yönergesi</a><a title="Permanent link" href="#cgimapextension" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>CGI betik yorumlayıcısını saptama tekniğini belirler.
 </td></tr>
@@ -689,7 +690,7 @@ httpd 2.1.5 ve sonrasında mevcuttur.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CGIPassAuth" id="CGIPassAuth">CGIPassAuth</a> <a name="cgipassauth" id="cgipassauth">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="CGIPassAuth" id="CGIPassAuth">CGIPassAuth</a> <a name="cgipassauth" id="cgipassauth">Yönergesi</a><a title="Permanent link" href="#cgipassauth" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Enables passing HTTP authorization headers to scripts as CGI
 variables</td></tr>
@@ -703,7 +704,7 @@ variables</td></tr>
 </table><p>Bu yönergenin belgesi henüz Türkçeye çevrilmedi.
             Lütfen İngilizce sürümüne bakınız.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CGIVar" id="CGIVar">CGIVar</a> <a name="cgivar" id="cgivar">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="CGIVar" id="CGIVar">CGIVar</a> <a name="cgivar" id="cgivar">Yönergesi</a><a title="Permanent link" href="#cgivar" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Controls how some CGI variables are set</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>CGIVar <var>variable</var> <var>rule</var></code></td></tr>
@@ -715,7 +716,7 @@ variables</td></tr>
 </table><p>Bu yönergenin belgesi henüz Türkçeye çevrilmedi.
             Lütfen İngilizce sürümüne bakınız.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ContentDigest" id="ContentDigest">ContentDigest</a> <a name="contentdigest" id="contentdigest">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="ContentDigest" id="ContentDigest">ContentDigest</a> <a name="contentdigest" id="contentdigest">Yönergesi</a><a title="Permanent link" href="#contentdigest" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td><code>Content-MD5</code> HTTP yanıt başlıklarının üretimini
   etkin kılar.</td></tr>
@@ -755,7 +756,7 @@ variables</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DefaultRuntimeDir" id="DefaultRuntimeDir">DefaultRuntimeDir</a> <a name="defaultruntimedir" id="defaultruntimedir">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="DefaultRuntimeDir" id="DefaultRuntimeDir">DefaultRuntimeDir</a> <a name="defaultruntimedir" id="defaultruntimedir">Yönergesi</a><a title="Permanent link" href="#defaultruntimedir" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Sunucunun çalışma anı dosyaları için temel dizin</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>DefaultRuntimeDir <var>dizin-yolu</var></code></td></tr>
@@ -791,7 +792,7 @@ nasıl ayarlanacağını öğrenmek için:
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DefaultType" id="DefaultType">DefaultType</a> <a name="defaulttype" id="defaulttype">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="DefaultType" id="DefaultType">DefaultType</a> <a name="defaulttype" id="defaulttype">Yönergesi</a><a title="Permanent link" href="#defaulttype" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Değeri <code>none</code> olduğu takdirde, bu yönergenin bir
 uyarı vermekten başka bir etkisi yoktur. Önceki sürümlerde, bu yönerge,
@@ -825,7 +826,7 @@ için iptal edilmiştir.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Define" id="Define">Define</a> <a name="define" id="define">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="Define" id="Define">Define</a> <a name="define" id="define">Yönergesi</a><a title="Permanent link" href="#define" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Bir değişken tanımlar</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>Define <var>değişken-ismi</var> [<var>değişken-değeri</var>]</code></td></tr>
@@ -860,7 +861,7 @@ için iptal edilmiştir.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Directory" id="Directory">&lt;Directory&gt;</a> <a name="directory" id="directory">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="Directory" id="Directory">&lt;Directory&gt;</a> <a name="directory" id="directory">Yönergesi</a><a title="Permanent link" href="#directory" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Sadece ismi belirtilen dosya sistemi dizininde ve bunun
   altdizinlerinde ve bunların içeriğinde uygulanacak bir yönerge grubunu
@@ -997,7 +998,7 @@ için iptal edilmiştir.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DirectoryMatch" id="DirectoryMatch">&lt;DirectoryMatch&gt;</a> <a name="directorymatch" id="directorymatch">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="DirectoryMatch" id="DirectoryMatch">&lt;DirectoryMatch&gt;</a> <a name="directorymatch" id="directorymatch">Yönergesi</a><a title="Permanent link" href="#directorymatch" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Bir düzenli ifade ile eşleşen dosya sistemi dizinlerinin içeriklerine uygulanacak bir yönerge grubunu sarmalar.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>&lt;DirectoryMatch <var>düzifd</var>&gt;
@@ -1043,7 +1044,7 @@ için iptal edilmiştir.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DocumentRoot" id="DocumentRoot">DocumentRoot</a> <a name="documentroot" id="documentroot">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="DocumentRoot" id="DocumentRoot">DocumentRoot</a> <a name="documentroot" id="documentroot">Yönergesi</a><a title="Permanent link" href="#documentroot" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>İstemciye görünür olan ana belge ağacının kök dizinini belirler.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>DocumentRoot <var>dizin-yolu</var></code></td></tr>
@@ -1077,7 +1078,7 @@ için iptal edilmiştir.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Else" id="Else">&lt;Else&gt;</a> <a name="else" id="else">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="Else" id="Else">&lt;Else&gt;</a> <a name="else" id="else">Yönergesi</a><a title="Permanent link" href="#else" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Önceki bir <code class="directive"><a href="#if">&lt;If&gt;</a></code> veya <code class="directive"><a href="#elseif">&lt;ElseIf&gt;</a></code> bölümünün koşulu, çalışma anında bir istek tarafından yerine getirilmediği takdirde uygulanacak yönergeleri içerir</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>&lt;Else&gt; ... &lt;/Else&gt;</code></td></tr>
@@ -1119,7 +1120,7 @@ için iptal edilmiştir.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ElseIf" id="ElseIf">&lt;ElseIf&gt;</a> <a name="elseif" id="elseif">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="ElseIf" id="ElseIf">&lt;ElseIf&gt;</a> <a name="elseif" id="elseif">Yönergesi</a><a title="Permanent link" href="#elseif" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>İçerdiği koşulun bir istek tarafınan sağlandığı ancak daha önceki bir <code class="directive"><a href="#if">&lt;If&gt;</a></code> veya
 <code class="directive">&lt;ElseIf&gt;</code> bölümlerininkilerin sağlanmadığı durumda kapsadığı yönergelerin uygulanmasını sağlar</td></tr>
@@ -1167,7 +1168,7 @@ için iptal edilmiştir.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="EnableMMAP" id="EnableMMAP">EnableMMAP</a> <a name="enablemmap" id="enablemmap">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="EnableMMAP" id="EnableMMAP">EnableMMAP</a> <a name="enablemmap" id="enablemmap">Yönergesi</a><a title="Permanent link" href="#enablemmap" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Teslimat sırasında okunacak dosyalar için bellek eşlemeyi etkin
   kılar.</td></tr>
@@ -1221,7 +1222,7 @@ için iptal edilmiştir.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="EnableSendfile" id="EnableSendfile">EnableSendfile</a> <a name="enablesendfile" id="enablesendfile">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="EnableSendfile" id="EnableSendfile">EnableSendfile</a> <a name="enablesendfile" id="enablesendfile">Yönergesi</a><a title="Permanent link" href="#enablesendfile" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Dosyaların istemciye tesliminde çekirdeğin dosya gönderme
   desteğinin kullanımını etkin kılar.</td></tr>
@@ -1287,7 +1288,7 @@ için iptal edilmiştir.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Error" id="Error">Error</a> <a name="error" id="error">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="Error" id="Error">Error</a> <a name="error" id="error">Yönergesi</a><a title="Permanent link" href="#error" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Özel bir hata iletisiyle yapılandırma çözümlemesini durdurur</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>Error <var>ileti</var></code></td></tr>
@@ -1323,7 +1324,7 @@ için iptal edilmiştir.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ErrorDocument" id="ErrorDocument">ErrorDocument</a> <a name="errordocument" id="errordocument">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="ErrorDocument" id="ErrorDocument">ErrorDocument</a> <a name="errordocument" id="errordocument">Yönergesi</a><a title="Permanent link" href="#errordocument" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Bir hata durumunda sunucunun istemciye ne döndüreceğini
   belirler.</td></tr>
@@ -1426,7 +1427,7 @@ için iptal edilmiştir.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ErrorLog" id="ErrorLog">ErrorLog</a> <a name="errorlog" id="errorlog">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="ErrorLog" id="ErrorLog">ErrorLog</a> <a name="errorlog" id="errorlog">Yönergesi</a><a title="Permanent link" href="#errorlog" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Sunucunun hata günlüğünü tutacağı yeri belirler.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code> ErrorLog <var>dosya-yolu</var>|syslog[:<var>oluşum</var>]</code></td></tr>
@@ -1489,7 +1490,7 @@ için iptal edilmiştir.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ErrorLogFormat" id="ErrorLogFormat">ErrorLogFormat</a> <a name="errorlogformat" id="errorlogformat">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="ErrorLogFormat" id="ErrorLogFormat">ErrorLogFormat</a> <a name="errorlogformat" id="errorlogformat">Yönergesi</a><a title="Permanent link" href="#errorlogformat" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Hata günlüğü girdileri için biçem belirtimi</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code> ErrorLogFormat [connection|request] <var>biçem</var></code></td></tr>
@@ -1670,7 +1671,7 @@ için iptal edilmiştir.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ExtendedStatus" id="ExtendedStatus">ExtendedStatus</a> <a name="extendedstatus" id="extendedstatus">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="ExtendedStatus" id="ExtendedStatus">ExtendedStatus</a> <a name="extendedstatus" id="extendedstatus">Yönergesi</a><a title="Permanent link" href="#extendedstatus" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Her istekte ek durum bilgisinin izini sürer</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>ExtendedStatus On|Off</code></td></tr>
@@ -1702,7 +1703,7 @@ için iptal edilmiştir.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="FileETag" id="FileETag">FileETag</a> <a name="fileetag" id="fileetag">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="FileETag" id="FileETag">FileETag</a> <a name="fileetag" id="fileetag">Yönergesi</a><a title="Permanent link" href="#fileetag" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Duruk dosyalar için <code>ETag</code> HTTP yanıt başlığını oluşturmakta kullanılacak dosya özniteliklerini belirler.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>FileETag <var>bileşen</var> ...</code></td></tr>
@@ -1769,7 +1770,7 @@ için iptal edilmiştir.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Files" id="Files">&lt;Files&gt;</a> <a name="files" id="files">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="Files" id="Files">&lt;Files&gt;</a> <a name="files" id="files">Yönergesi</a><a title="Permanent link" href="#files" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Dosya isimleriyle eşleşme halinde uygulanacak yönergeleri
   içerir.</td></tr>
@@ -1823,7 +1824,7 @@ için iptal edilmiştir.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="FilesMatch" id="FilesMatch">&lt;FilesMatch&gt;</a> <a name="filesmatch" id="filesmatch">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="FilesMatch" id="FilesMatch">&lt;FilesMatch&gt;</a> <a name="filesmatch" id="filesmatch">Yönergesi</a><a title="Permanent link" href="#filesmatch" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Düzenli ifadelerin dosya isimleriyle eşleşmesi halinde
   uygulanacak yönergeleri içerir.</td></tr>
@@ -1852,7 +1853,7 @@ için iptal edilmiştir.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ForceType" id="ForceType">ForceType</a> <a name="forcetype" id="forcetype">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="ForceType" id="ForceType">ForceType</a> <a name="forcetype" id="forcetype">Yönergesi</a><a title="Permanent link" href="#forcetype" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Bütün dosyaların belirtilen ortam türüyle sunulmasına
   sebep olur.</td></tr>
@@ -1906,7 +1907,7 @@ için iptal edilmiştir.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="GprofDir" id="GprofDir">GprofDir</a> <a name="gprofdir" id="gprofdir">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="GprofDir" id="GprofDir">GprofDir</a> <a name="gprofdir" id="gprofdir">Yönergesi</a><a title="Permanent link" href="#gprofdir" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>gmon.out ayrıntılı inceleme verisinin yazılacağı dizin</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>GprofDir <var>/tmp/gprof/</var>|<var>/tmp/gprof/</var>%</code></td></tr>
@@ -1925,7 +1926,7 @@ için iptal edilmiştir.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="HostnameLookups" id="HostnameLookups">HostnameLookups</a> <a name="hostnamelookups" id="hostnamelookups">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="HostnameLookups" id="HostnameLookups">HostnameLookups</a> <a name="hostnamelookups" id="hostnamelookups">Yönergesi</a><a title="Permanent link" href="#hostnamelookups" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>İstemci IP adresleri üzerinde DNS sorgularını etkin kılar.
 </td></tr>
@@ -1971,7 +1972,7 @@ için iptal edilmiştir.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="HttpProtocolOptions" id="HttpProtocolOptions">HttpProtocolOptions</a> <a name="httpprotocoloptions" id="httpprotocoloptions">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="HttpProtocolOptions" id="HttpProtocolOptions">HttpProtocolOptions</a> <a name="httpprotocoloptions" id="httpprotocoloptions">Yönergesi</a><a title="Permanent link" href="#httpprotocoloptions" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Modify restrictions on HTTP Request Messages</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>HttpProtocolOptions [Strict|Unsafe] [RegisteredMethods|LenientMethods]
@@ -1984,7 +1985,7 @@ için iptal edilmiştir.</td></tr>
 </table><p>Bu yönergenin belgesi henüz Türkçeye çevrilmedi.
             Lütfen İngilizce sürümüne bakınız.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="If" id="If">&lt;If&gt;</a> <a name="if" id="if">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="If" id="If">&lt;If&gt;</a> <a name="if" id="if">Yönergesi</a><a title="Permanent link" href="#if" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Çalışma anında bir koşul bir istek tarafından yerine getirildiği
 takdirde uygulanacak yönergeleri barındırır.</td></tr>
@@ -2036,7 +2037,7 @@ takdirde uygulanacak yönergeleri barındırır.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="IfDefine" id="IfDefine">&lt;IfDefine&gt;</a> <a name="ifdefine" id="ifdefine">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="IfDefine" id="IfDefine">&lt;IfDefine&gt;</a> <a name="ifdefine" id="ifdefine">Yönergesi</a><a title="Permanent link" href="#ifdefine" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Başlatma sırasında bir doğruluk sınamasından sonra işleme
 sokulacak yönergeleri sarmalar.</td></tr>
@@ -2107,7 +2108,7 @@ sokulacak yönergeleri sarmalar.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="IfDirective" id="IfDirective">&lt;IfDirective&gt;</a> <a name="ifdirective" id="ifdirective">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="IfDirective" id="IfDirective">&lt;IfDirective&gt;</a> <a name="ifdirective" id="ifdirective">Yönergesi</a><a title="Permanent link" href="#ifdirective" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Encloses directives that are processed conditional on the
 presence or absence of a specific directive</td></tr>
@@ -2117,6 +2118,7 @@ presence or absence of a specific directive</td></tr>
 <tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Available in 2.4.34 and later</td></tr>
 </table><p>Bu yönergenin belgesi henüz Türkçeye çevrilmedi.
             Lütfen İngilizce sürümüne bakınız.</p><h3>Ayrıca bakınız:</h3>
 <ul>
@@ -2124,7 +2126,7 @@ presence or absence of a specific directive</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="IfFile" id="IfFile">&lt;IfFile&gt;</a> <a name="iffile" id="iffile">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="IfFile" id="IfFile">&lt;IfFile&gt;</a> <a name="iffile" id="iffile">Yönergesi</a><a title="Permanent link" href="#iffile" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Encloses directives that will be processed only
 if file exists at startup</td></tr>
@@ -2134,10 +2136,11 @@ if file exists at startup</td></tr>
 <tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Available in 2.4.34 and later</td></tr>
 </table><p>Bu yönergenin belgesi henüz Türkçeye çevrilmedi.
             Lütfen İngilizce sürümüne bakınız.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="IfModule" id="IfModule">&lt;IfModule&gt;</a> <a name="ifmodule" id="ifmodule">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="IfModule" id="IfModule">&lt;IfModule&gt;</a> <a name="ifmodule" id="ifmodule">Yönergesi</a><a title="Permanent link" href="#ifmodule" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Belli bir modülün varlığına veya yokluğuna göre işleme sokulacak
 yönergeleri sarmalar.</td></tr>
@@ -2188,7 +2191,7 @@ yönergeleri sarmalar.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="IfSection" id="IfSection">&lt;IfSection&gt;</a> <a name="ifsection" id="ifsection">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="IfSection" id="IfSection">&lt;IfSection&gt;</a> <a name="ifsection" id="ifsection">Yönergesi</a><a title="Permanent link" href="#ifsection" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Encloses directives that are processed conditional on the
 presence or absence of a specific section directive</td></tr>
@@ -2198,6 +2201,7 @@ presence or absence of a specific section directive</td></tr>
 <tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Available in 2.4.34 and later</td></tr>
 </table><p>Bu yönergenin belgesi henüz Türkçeye çevrilmedi.
             Lütfen İngilizce sürümüne bakınız.</p><h3>Ayrıca bakınız:</h3>
 <ul>
@@ -2205,7 +2209,7 @@ presence or absence of a specific section directive</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Include" id="Include">Include</a> <a name="include" id="include">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="Include" id="Include">Include</a> <a name="include" id="include">Yönergesi</a><a title="Permanent link" href="#include" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Sunucu yapılandırma dosyalarının başka dosyaları içermesini sağlar.
 </td></tr>
@@ -2278,7 +2282,7 @@ presence or absence of a specific section directive</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="IncludeOptional" id="IncludeOptional">IncludeOptional</a> <a name="includeoptional" id="includeoptional">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="IncludeOptional" id="IncludeOptional">IncludeOptional</a> <a name="includeoptional" id="includeoptional">Yönergesi</a><a title="Permanent link" href="#includeoptional" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Diğer yapılandırma dosyalarının sunucu yapılandırma dosyasına dahil edilmesini sağlar</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>IncludeOptional <var>dosya-yolu</var>|<var>dizin-yolu</var>|<var>joker</var></code></td></tr>
@@ -2300,7 +2304,7 @@ presence or absence of a specific section directive</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="KeepAlive" id="KeepAlive">KeepAlive</a> <a name="keepalive" id="keepalive">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="KeepAlive" id="KeepAlive">KeepAlive</a> <a name="keepalive" id="keepalive">Yönergesi</a><a title="Permanent link" href="#keepalive" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>HTTP kalıcı bağlantılarını etkin kılar</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>KeepAlive On|Off</code></td></tr>
@@ -2338,7 +2342,7 @@ presence or absence of a specific section directive</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="KeepAliveTimeout" id="KeepAliveTimeout">KeepAliveTimeout</a> <a name="keepalivetimeout" id="keepalivetimeout">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="KeepAliveTimeout" id="KeepAliveTimeout">KeepAliveTimeout</a> <a name="keepalivetimeout" id="keepalivetimeout">Yönergesi</a><a title="Permanent link" href="#keepalivetimeout" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Bir kalıcı bağlantıda sunucunun bir sonraki isteği bekleme süresi
 </td></tr>
@@ -2365,7 +2369,7 @@ presence or absence of a specific section directive</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Limit" id="Limit">&lt;Limit&gt;</a> <a name="limit" id="limit">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="Limit" id="Limit">&lt;Limit&gt;</a> <a name="limit" id="limit">Yönergesi</a><a title="Permanent link" href="#limit" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Erişimi sınırlanacak HTTP yöntemleri için erişim sınırlayıcıları
 sarmalar.</td></tr>
@@ -2443,7 +2447,7 @@ sarmalar.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LimitExcept" id="LimitExcept">&lt;LimitExcept&gt;</a> <a name="limitexcept" id="limitexcept">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="LimitExcept" id="LimitExcept">&lt;LimitExcept&gt;</a> <a name="limitexcept" id="limitexcept">Yönergesi</a><a title="Permanent link" href="#limitexcept" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>İsimleri belirtilenler dışında kalan HTTP yöntemleri için
 kullanılacak erişim sınırlayıcıları sarmalar.</td></tr>
@@ -2474,7 +2478,7 @@ kullanılacak erişim sınırlayıcıları sarmalar.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LimitInternalRecursion" id="LimitInternalRecursion">LimitInternalRecursion</a> <a name="limitinternalrecursion" id="limitinternalrecursion">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="LimitInternalRecursion" id="LimitInternalRecursion">LimitInternalRecursion</a> <a name="limitinternalrecursion" id="limitinternalrecursion">Yönergesi</a><a title="Permanent link" href="#limitinternalrecursion" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Dahili yönlendirmelerin ve istek içi isteklerin azami sayısını
 belirler.</td></tr>
@@ -2511,7 +2515,7 @@ belirler.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LimitRequestBody" id="LimitRequestBody">LimitRequestBody</a> <a name="limitrequestbody" id="limitrequestbody">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="LimitRequestBody" id="LimitRequestBody">LimitRequestBody</a> <a name="limitrequestbody" id="limitrequestbody">Yönergesi</a><a title="Permanent link" href="#limitrequestbody" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>İstemci tarafından gönderilen HTTP istek gövdesinin toplam
 uzunluğunu sınırlar.</td></tr>
@@ -2558,7 +2562,7 @@ uzunluğunu sınırlar.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LimitRequestFields" id="LimitRequestFields">LimitRequestFields</a> <a name="limitrequestfields" id="limitrequestfields">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="LimitRequestFields" id="LimitRequestFields">LimitRequestFields</a> <a name="limitrequestfields" id="limitrequestfields">Yönergesi</a><a title="Permanent link" href="#limitrequestfields" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>İstemciden kabul edilecek HTTP isteği başlık alanlarının sayısını
 sınırlar.</td></tr>
@@ -2604,7 +2608,7 @@ sınırlar.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LimitRequestFieldSize" id="LimitRequestFieldSize">LimitRequestFieldSize</a> <a name="limitrequestfieldsize" id="limitrequestfieldsize">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="LimitRequestFieldSize" id="LimitRequestFieldSize">LimitRequestFieldSize</a> <a name="limitrequestfieldsize" id="limitrequestfieldsize">Yönergesi</a><a title="Permanent link" href="#limitrequestfieldsize" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>İstemciden kabul edilecek HTTP isteği başlık uzunluğunu sınırlar.
 </td></tr>
@@ -2648,7 +2652,7 @@ sınırlar.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LimitRequestLine" id="LimitRequestLine">LimitRequestLine</a> <a name="limitrequestline" id="limitrequestline">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="LimitRequestLine" id="LimitRequestLine">LimitRequestLine</a> <a name="limitrequestline" id="limitrequestline">Yönergesi</a><a title="Permanent link" href="#limitrequestline" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>İstemciden kabul edilecek HTTP istek satırının uzunluğunu sınırlar.
 </td></tr>
@@ -2692,7 +2696,7 @@ sınırlar.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LimitXMLRequestBody" id="LimitXMLRequestBody">LimitXMLRequestBody</a> <a name="limitxmlrequestbody" id="limitxmlrequestbody">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="LimitXMLRequestBody" id="LimitXMLRequestBody">LimitXMLRequestBody</a> <a name="limitxmlrequestbody" id="limitxmlrequestbody">Yönergesi</a><a title="Permanent link" href="#limitxmlrequestbody" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Bir XML temelli istek gövdesinin uzunluğunu sınırlar.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>LimitXMLRequestBody <var>bayt-sayısı</var></code></td></tr>
@@ -2715,7 +2719,7 @@ sınırlar.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Location" id="Location">&lt;Location&gt;</a> <a name="location" id="location">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="Location" id="Location">&lt;Location&gt;</a> <a name="location" id="location">Yönergesi</a><a title="Permanent link" href="#location" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>İçerdiği yönergeler sadece eşleşen URL’lere uygulanır.
 </td></tr>
@@ -2854,7 +2858,7 @@ sınırlar.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LocationMatch" id="LocationMatch">&lt;LocationMatch&gt;</a> <a name="locationmatch" id="locationmatch">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="LocationMatch" id="LocationMatch">&lt;LocationMatch&gt;</a> <a name="locationmatch" id="locationmatch">Yönergesi</a><a title="Permanent link" href="#locationmatch" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>İçerdiği yönergeler sadece düzenli ifadelerle eşleşen URL’lere
 uygulanır.</td></tr>
@@ -2884,7 +2888,7 @@ uygulanır.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LogLevel" id="LogLevel">LogLevel</a> <a name="loglevel" id="loglevel">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="LogLevel" id="LogLevel">LogLevel</a> <a name="loglevel" id="loglevel">Yönergesi</a><a title="Permanent link" href="#loglevel" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Hata günlüklerinin ayrıntı seviyesini belirler.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>LogLevel [<var>modül</var>:]<var>seviye</var>
@@ -3067,7 +3071,7 @@ uygulanır.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LogLevelOverride" id="LogLevelOverride">LogLevelOverride</a> <a name="logleveloverride" id="logleveloverride">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="LogLevelOverride" id="LogLevelOverride">LogLevelOverride</a> <a name="logleveloverride" id="logleveloverride">Yönergesi</a><a title="Permanent link" href="#logleveloverride" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Override the verbosity of the ErrorLog for certain clients</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>LogLevel <var>ipaddress</var>[/<var>prefixlen</var>]
@@ -3085,7 +3089,7 @@ uygulanır.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MaxKeepAliveRequests" id="MaxKeepAliveRequests">MaxKeepAliveRequests</a> <a name="maxkeepaliverequests" id="maxkeepaliverequests">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="MaxKeepAliveRequests" id="MaxKeepAliveRequests">MaxKeepAliveRequests</a> <a name="maxkeepaliverequests" id="maxkeepaliverequests">Yönergesi</a><a title="Permanent link" href="#maxkeepaliverequests" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Bir kalıcı bağlantıda izin verilen istek sayısı</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>MaxKeepAliveRequests <var>sayı</var></code></td></tr>
@@ -3107,7 +3111,7 @@ uygulanır.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MaxRangeOverlaps" id="MaxRangeOverlaps">MaxRangeOverlaps</a> <a name="maxrangeoverlaps" id="maxrangeoverlaps">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="MaxRangeOverlaps" id="MaxRangeOverlaps">MaxRangeOverlaps</a> <a name="maxrangeoverlaps" id="maxrangeoverlaps">Yönergesi</a><a title="Permanent link" href="#maxrangeoverlaps" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Özkaynağın tamamını döndürmeden önce izin verilen üst üste binen
     aralık sayısı (<code>100-200,150-300</code> gibi)</td></tr>
@@ -3144,7 +3148,7 @@ uygulanır.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MaxRangeReversals" id="MaxRangeReversals">MaxRangeReversals</a> <a name="maxrangereversals" id="maxrangereversals">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="MaxRangeReversals" id="MaxRangeReversals">MaxRangeReversals</a> <a name="maxrangereversals" id="maxrangereversals">Yönergesi</a><a title="Permanent link" href="#maxrangereversals" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Özkaynağın tamamını döndürmeden önce izin verilen ters sıralı
     aralık sayısı (<code>100-200,50-70</code> gibi)</td></tr>
@@ -3181,7 +3185,7 @@ uygulanır.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MaxRanges" id="MaxRanges">MaxRanges</a> <a name="maxranges" id="maxranges">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="MaxRanges" id="MaxRanges">MaxRanges</a> <a name="maxranges" id="maxranges">Yönergesi</a><a title="Permanent link" href="#maxranges" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Özkaynağın tamamını döndürmeden önce izin verilen aralık sayısı</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>MaxRanges default | unlimited | none |
@@ -3216,7 +3220,7 @@ uygulanır.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MergeTrailers" id="MergeTrailers">MergeTrailers</a> <a name="mergetrailers" id="mergetrailers">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="MergeTrailers" id="MergeTrailers">MergeTrailers</a> <a name="mergetrailers" id="mergetrailers">Yönergesi</a><a title="Permanent link" href="#mergetrailers" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Determines whether trailers are merged into headers</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>MergeTrailers [on|off]</code></td></tr>
@@ -3228,7 +3232,7 @@ uygulanır.</td></tr>
 </table><p>Bu yönergenin belgesi henüz Türkçeye çevrilmedi.
             Lütfen İngilizce sürümüne bakınız.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Mutex" id="Mutex">Mutex</a> <a name="mutex" id="mutex">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="Mutex" id="Mutex">Mutex</a> <a name="mutex" id="mutex">Yönergesi</a><a title="Permanent link" href="#mutex" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Muteks mekanizmasını ve kilit dosyası dizinini tüm muteksler veya belirtilenler için yapılandırır</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>Mutex <var>mekanizma</var> [default|<var>muteks-ismi</var>] ... [OmitPID]</code></td></tr>
@@ -3447,7 +3451,7 @@ uygulanır.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="NameVirtualHost" id="NameVirtualHost">NameVirtualHost</a> <a name="namevirtualhost" id="namevirtualhost">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="NameVirtualHost" id="NameVirtualHost">NameVirtualHost</a> <a name="namevirtualhost" id="namevirtualhost">Yönergesi</a><a title="Permanent link" href="#namevirtualhost" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>ÖNERİLMİYOR: İsme dayalı sanal konaklar için IP adresi belirtir</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>NameVirtualHost <var>adres</var>[:<var>port</var>]</code></td></tr>
@@ -3465,7 +3469,7 @@ uygulanır.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Options" id="Options">Options</a> <a name="options" id="options">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="Options" id="Options">Options</a> <a name="options" id="options">Yönergesi</a><a title="Permanent link" href="#options" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Belli bir dizinde geçerli olacak özellikleri yapılandırır.
 </td></tr>
@@ -3604,7 +3608,7 @@ uygulanır.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Protocol" id="Protocol">Protocol</a> <a name="protocol" id="protocol">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="Protocol" id="Protocol">Protocol</a> <a name="protocol" id="protocol">Yönergesi</a><a title="Permanent link" href="#protocol" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Dinlenen bir soket için protokol</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>Protocol <var>protokol</var></code></td></tr>
@@ -3642,7 +3646,7 @@ uygulanır.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Protocols" id="Protocols">Protocols</a> <a name="protocols" id="protocols">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="Protocols" id="Protocols">Protocols</a> <a name="protocols" id="protocols">Yönergesi</a><a title="Permanent link" href="#protocols" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Protocols available for a server/virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>Protocols <var>protocol</var> ...</code></td></tr>
@@ -3658,7 +3662,7 @@ uygulanır.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProtocolsHonorOrder" id="ProtocolsHonorOrder">ProtocolsHonorOrder</a> <a name="protocolshonororder" id="protocolshonororder">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="ProtocolsHonorOrder" id="ProtocolsHonorOrder">ProtocolsHonorOrder</a> <a name="protocolshonororder" id="protocolshonororder">Yönergesi</a><a title="Permanent link" href="#protocolshonororder" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Determines if order of Protocols determines precedence during negotiation</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>ProtocolsHonorOrder On|Off</code></td></tr>
@@ -3674,7 +3678,7 @@ uygulanır.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="QualifyRedirectURL" id="QualifyRedirectURL">QualifyRedirectURL</a> <a name="qualifyredirecturl" id="qualifyredirecturl">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="QualifyRedirectURL" id="QualifyRedirectURL">QualifyRedirectURL</a> <a name="qualifyredirecturl" id="qualifyredirecturl">Yönergesi</a><a title="Permanent link" href="#qualifyredirecturl" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Controls whether the REDIRECT_URL environment variable is
              fully qualified</td></tr>
@@ -3689,13 +3693,26 @@ as if 'QualifyRedirectURL ON' was configured.</td></tr>
 </table><p>Bu yönergenin belgesi henüz Türkçeye çevrilmedi.
             Lütfen İngilizce sürümüne bakınız.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RegisterHttpMethod" id="RegisterHttpMethod">RegisterHttpMethod</a> <a name="registerhttpmethod" id="registerhttpmethod">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="RegexDefaultOptions" id="RegexDefaultOptions">RegexDefaultOptions</a> <a name="regexdefaultoptions" id="regexdefaultoptions">Yönergesi</a><a title="Permanent link" href="#regexdefaultoptions" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Allow to configure global/default options for regexes</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>RegexDefaultOptions [none] [+|-]<var>option</var> [[+|-]<var>option</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>RegexDefaultOptions DOLLAR_ENDONLY</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Only available from Apache 2.4.30 and later.</td></tr>
+</table><p>Bu yönergenin belgesi henüz Türkçeye çevrilmedi.
+            Lütfen İngilizce sürümüne bakınız.</p></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="RegisterHttpMethod" id="RegisterHttpMethod">RegisterHttpMethod</a> <a name="registerhttpmethod" id="registerhttpmethod">Yönergesi</a><a title="Permanent link" href="#registerhttpmethod" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Register non-standard HTTP methods</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>RegisterHttpMethod <var>method</var> [<var>method</var> [...]]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Available in Apache HTTP Server 2.4.24 and later</td></tr>
 </table><p>Bu yönergenin belgesi henüz Türkçeye çevrilmedi.
             Lütfen İngilizce sürümüne bakınız.</p><h3>Ayrıca bakınız:</h3>
 <ul>
@@ -3704,7 +3721,7 @@ as if 'QualifyRedirectURL ON' was configured.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RLimitCPU" id="RLimitCPU">RLimitCPU</a> <a name="rlimitcpu" id="rlimitcpu">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="RLimitCPU" id="RLimitCPU">RLimitCPU</a> <a name="rlimitcpu" id="rlimitcpu">Yönergesi</a><a title="Permanent link" href="#rlimitcpu" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Apache httpd alt süreçleri tarafından çalıştırılan süreçlerin
   işlemci tüketimine sınırlama getirir.</td></tr>
@@ -3739,7 +3756,7 @@ as if 'QualifyRedirectURL ON' was configured.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RLimitMEM" id="RLimitMEM">RLimitMEM</a> <a name="rlimitmem" id="rlimitmem">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="RLimitMEM" id="RLimitMEM">RLimitMEM</a> <a name="rlimitmem" id="rlimitmem">Yönergesi</a><a title="Permanent link" href="#rlimitmem" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Apache httpd alt süreçleri tarafından çalıştırılan süreçlerin
   bellek tüketimine sınırlama getirir.</td></tr>
@@ -3776,7 +3793,7 @@ as if 'QualifyRedirectURL ON' was configured.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RLimitNPROC" id="RLimitNPROC">RLimitNPROC</a> <a name="rlimitnproc" id="rlimitnproc">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="RLimitNPROC" id="RLimitNPROC">RLimitNPROC</a> <a name="rlimitnproc" id="rlimitnproc">Yönergesi</a><a title="Permanent link" href="#rlimitnproc" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Apache httpd alt süreçleri tarafından çalıştırılabilecek süreç
   sayısına sınırlama getirir.</td></tr>
@@ -3819,7 +3836,7 @@ as if 'QualifyRedirectURL ON' was configured.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ScriptInterpreterSource" id="ScriptInterpreterSource">ScriptInterpreterSource</a> <a name="scriptinterpretersource" id="scriptinterpretersource">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="ScriptInterpreterSource" id="ScriptInterpreterSource">ScriptInterpreterSource</a> <a name="scriptinterpretersource" id="scriptinterpretersource">Yönergesi</a><a title="Permanent link" href="#scriptinterpretersource" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>CGI betikleri için yorumlayıcı belirleme tekniği</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>ScriptInterpreterSource Registry|Registry-Strict|Script</code></td></tr>
@@ -3881,7 +3898,7 @@ HTTP Sunucusunun 2.0 ve sonraki sürümleri için geçerlidir.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SeeRequestTail" id="SeeRequestTail">SeeRequestTail</a> <a name="seerequesttail" id="seerequesttail">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="SeeRequestTail" id="SeeRequestTail">SeeRequestTail</a> <a name="seerequesttail" id="seerequesttail">Yönergesi</a><a title="Permanent link" href="#seerequesttail" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>İsteğin 63 karakterden büyük olduğu varsayımıyla, mod_status'un
   ilk 63 karakteri mi yoksa son 63 karakteri mi göstereceğini
@@ -3918,7 +3935,7 @@ HTTP Sunucusunun 2.0 ve sonraki sürümleri için geçerlidir.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ServerAdmin" id="ServerAdmin">ServerAdmin</a> <a name="serveradmin" id="serveradmin">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="ServerAdmin" id="ServerAdmin">ServerAdmin</a> <a name="serveradmin" id="serveradmin">Yönergesi</a><a title="Permanent link" href="#serveradmin" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Sunucunun hata iletilerinde istemciye göstereceği eposta adresi
 </td></tr>
@@ -3948,7 +3965,7 @@ HTTP Sunucusunun 2.0 ve sonraki sürümleri için geçerlidir.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ServerAlias" id="ServerAlias">ServerAlias</a> <a name="serveralias" id="serveralias">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="ServerAlias" id="ServerAlias">ServerAlias</a> <a name="serveralias" id="serveralias">Yönergesi</a><a title="Permanent link" href="#serveralias" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>İstekleri isme dayalı sanal konaklarla eşleştirilirken
 kullanılacak konak adları için başka isimler belirtebilmeyi sağlar.
@@ -3988,7 +4005,7 @@ kullanılacak konak adları için başka isimler belirtebilmeyi sağlar.
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ServerName" id="ServerName">ServerName</a> <a name="servername" id="servername">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="ServerName" id="ServerName">ServerName</a> <a name="servername" id="servername">Yönergesi</a><a title="Permanent link" href="#servername" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Sunucunun özdeşleşeceği konak ismi ve port.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>ServerName [<var>şema</var>://]<var>tam-nitelenmiş-alan-adı</var>[:<var>port</var>]
@@ -4072,7 +4089,7 @@ kullanılacak konak adları için başka isimler belirtebilmeyi sağlar.
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ServerPath" id="ServerPath">ServerPath</a> <a name="serverpath" id="serverpath">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="ServerPath" id="ServerPath">ServerPath</a> <a name="serverpath" id="serverpath">Yönergesi</a><a title="Permanent link" href="#serverpath" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Uyumsuz bir tarayıcı tarafından erişilmesi için bir isme dayalı sanal konak için meşru URL yolu</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>ServerPath <var>URL-yolu</var></code></td></tr>
@@ -4091,7 +4108,7 @@ kullanılacak konak adları için başka isimler belirtebilmeyi sağlar.
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ServerRoot" id="ServerRoot">ServerRoot</a> <a name="serverroot" id="serverroot">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="ServerRoot" id="ServerRoot">ServerRoot</a> <a name="serverroot" id="serverroot">Yönergesi</a><a title="Permanent link" href="#serverroot" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Sunucu yapılandırması için kök dizin</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>ServerRoot <var>dizin-yolu</var></code></td></tr>
@@ -4123,7 +4140,7 @@ kullanılacak konak adları için başka isimler belirtebilmeyi sağlar.
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ServerSignature" id="ServerSignature">ServerSignature</a> <a name="serversignature" id="serversignature">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="ServerSignature" id="ServerSignature">ServerSignature</a> <a name="serversignature" id="serversignature">Yönergesi</a><a title="Permanent link" href="#serversignature" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Sunucu tarafından üretilen belgelerin dipnotunu ayarlar.
 </td></tr>
@@ -4157,7 +4174,7 @@ kullanılacak konak adları için başka isimler belirtebilmeyi sağlar.
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ServerTokens" id="ServerTokens">ServerTokens</a> <a name="servertokens" id="servertokens">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="ServerTokens" id="ServerTokens">ServerTokens</a> <a name="servertokens" id="servertokens">Yönergesi</a><a title="Permanent link" href="#servertokens" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td><code>Server</code> HTTP yanıt başlığını yapılandırır.
 </td></tr>
@@ -4218,7 +4235,7 @@ kullanılacak konak adları için başka isimler belirtebilmeyi sağlar.
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SetHandler" id="SetHandler">SetHandler</a> <a name="sethandler" id="sethandler">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="SetHandler" id="SetHandler">SetHandler</a> <a name="sethandler" id="sethandler">Yönergesi</a><a title="Permanent link" href="#sethandler" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Eşleşen tüm dosyaların belli bir eylemci tarafından işlenmesine
 sebep olur.</td></tr>
@@ -4268,7 +4285,7 @@ sebep olur.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SetInputFilter" id="SetInputFilter">SetInputFilter</a> <a name="setinputfilter" id="setinputfilter">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="SetInputFilter" id="SetInputFilter">SetInputFilter</a> <a name="setinputfilter" id="setinputfilter">Yönergesi</a><a title="Permanent link" href="#setinputfilter" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>POST girdilerini ve istemci isteklerini işleyecek süzgeçleri
 belirler.</td></tr>
@@ -4293,7 +4310,7 @@ belirler.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SetOutputFilter" id="SetOutputFilter">SetOutputFilter</a> <a name="setoutputfilter" id="setoutputfilter">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="SetOutputFilter" id="SetOutputFilter">SetOutputFilter</a> <a name="setoutputfilter" id="setoutputfilter">Yönergesi</a><a title="Permanent link" href="#setoutputfilter" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Sunucunun yanıtlarını işleyecek süzgeçleri belirler.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>SetOutputFilter <var>süzgeç</var>[;<var>süzgeç</var>...]</code></td></tr>
@@ -4328,7 +4345,7 @@ belirler.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="TimeOut" id="TimeOut">TimeOut</a> <a name="timeout" id="timeout">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="TimeOut" id="TimeOut">TimeOut</a> <a name="timeout" id="timeout">Yönergesi</a><a title="Permanent link" href="#timeout" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Bir istek için başarısız olmadan önce belirli olayların
 gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</td></tr>
@@ -4361,7 +4378,7 @@ gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="TraceEnable" id="TraceEnable">TraceEnable</a> <a name="traceenable" id="traceenable">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="TraceEnable" id="TraceEnable">TraceEnable</a> <a name="traceenable" id="traceenable">Yönergesi</a><a title="Permanent link" href="#traceenable" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td><code>TRACE</code> isteklerinde davranış şeklini belirler
 </td></tr>
@@ -4398,7 +4415,7 @@ gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="UnDefine" id="UnDefine">UnDefine</a> <a name="undefine" id="undefine">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="UnDefine" id="UnDefine">UnDefine</a> <a name="undefine" id="undefine">Yönergesi</a><a title="Permanent link" href="#undefine" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Bir değişkeni tanımsız yapar</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>UnDefine <var>değişken-ismi</var></code></td></tr>
@@ -4415,7 +4432,7 @@ gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="UseCanonicalName" id="UseCanonicalName">UseCanonicalName</a> <a name="usecanonicalname" id="usecanonicalname">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="UseCanonicalName" id="UseCanonicalName">UseCanonicalName</a> <a name="usecanonicalname" id="usecanonicalname">Yönergesi</a><a title="Permanent link" href="#usecanonicalname" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Sunucunun kendi adını ve portunu nasıl belirleyeceğini ayarlar
 </td></tr>
@@ -4480,7 +4497,7 @@ gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="UseCanonicalPhysicalPort" id="UseCanonicalPhysicalPort">UseCanonicalPhysicalPort</a> <a name="usecanonicalphysicalport" id="usecanonicalphysicalport">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="UseCanonicalPhysicalPort" id="UseCanonicalPhysicalPort">UseCanonicalPhysicalPort</a> <a name="usecanonicalphysicalport" id="usecanonicalphysicalport">Yönergesi</a><a title="Permanent link" href="#usecanonicalphysicalport" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Sunucunun kendi adını ve portunu nasıl belirleyeceğini ayarlar
 </td></tr>
@@ -4538,7 +4555,7 @@ gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="VirtualHost" id="VirtualHost">&lt;VirtualHost&gt;</a> <a name="virtualhost" id="virtualhost">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="VirtualHost" id="VirtualHost">&lt;VirtualHost&gt;</a> <a name="virtualhost" id="virtualhost">Yönergesi</a><a title="Permanent link" href="#virtualhost" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Sadece belli bir konak ismine ve porta uygulanacak yönergeleri barındırır.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>&lt;VirtualHost
@@ -4650,7 +4667,7 @@ gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Warning" id="Warning">Warning</a> <a name="warning" id="warning">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="Warning" id="Warning">Warning</a> <a name="warning" id="warning">Yönergesi</a><a title="Permanent link" href="#warning" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Warn from configuration parsing with a custom message</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>Warning <var>message</var></code></td></tr>

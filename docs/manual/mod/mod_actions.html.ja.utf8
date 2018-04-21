@@ -64,7 +64,7 @@ CGI スクリプトを実行する機能を提供</td></tr>
 <li><a href="#comments_section">コメント</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Action" id="Action">Action</a> <a name="action" id="action">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="Action" id="Action">Action</a> <a name="action" id="action">ディレクティブ</a><a title="Permanent link" href="#action" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>特定のハンドラやコンテントタイプに対して CGI を実行するように
 設定</td></tr>
@@ -127,7 +127,7 @@ Apache 2.1 で導入されました</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Script" id="Script">Script</a> <a name="script" id="script">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="Script" id="Script">Script</a> <a name="script" id="script">ディレクティブ</a><a title="Permanent link" href="#script" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>特定のリクエストメソッドに対して CGI スクリプトを
 実行するように設定</td></tr>

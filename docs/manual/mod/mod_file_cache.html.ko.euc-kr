@@ -76,7 +76,7 @@
 <li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="using" id="using">mod_file_cache 사용하기</a></h2>
+<h2><a name="using" id="using">mod_file_cache 사용하기</a><a title="Permanent link" href="#using" class="permalink">&para;</a></h2>
 
     <p><code class="module"><a href="../mod/mod_file_cache.html">mod_file_cache</a></code>는 주서버 설정에서 <code class="directive"><a href="#mmapfile">MMapFile</a></code>과 <code class="directive"><a href="#cachefile">CacheFile</a></code> 지시어를 사용하여
     설정한 정적 파일들을 캐쉬에 저장한다.</p>
@@ -144,7 +144,7 @@
     </div>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CacheFile" id="CacheFile">CacheFile</a> <a name="cachefile" id="cachefile">지시어</a></h2>
+<div class="directive-section"><h2><a name="CacheFile" id="CacheFile">CacheFile</a> <a name="cachefile" id="cachefile">지시어</a><a title="Permanent link" href="#cachefile" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>시작시 여러 파일 핸들을 캐쉬한다</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>CacheFile <var>file-path</var> [<var>file-path</var>] ...</code></td></tr>
@@ -172,7 +172,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MMapFile" id="MMapFile">MMapFile</a> <a name="mmapfile" id="mmapfile">지시어</a></h2>
+<div class="directive-section"><h2><a name="MMapFile" id="MMapFile">MMapFile</a> <a name="mmapfile" id="mmapfile">지시어</a><a title="Permanent link" href="#mmapfile" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>시작시 여러 파일을 메모리에 대응한다</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>MMapFile <var>file-path</var> [<var>file-path</var>] ...</code></td></tr>

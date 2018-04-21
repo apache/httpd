@@ -57,7 +57,7 @@ headers</td></tr>
 <li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="order" id="order">Order of Processing</a></h2>
+<h2><a name="order" id="order">Order of Processing</a><a title="Permanent link" href="#order" class="permalink">&para;</a></h2>
 
     <p>The directives provided by <code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code> can
     occur almost anywhere within the server configuration, and can be
@@ -75,7 +75,7 @@ RequestHeader unset MirrorID</pre>
     reversed, the MirrorID header is set to "mirror 12".</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="early" id="early">Early and Late Processing</a></h2>
+<h2><a name="early" id="early">Early and Late Processing</a><a title="Permanent link" href="#early" class="permalink">&para;</a></h2>
     <p><code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code> can be applied either early or late
     in the request.  The normal mode is late, when <em>Request</em> Headers are
     set immediately before running the content generator and <em>Response</em>
@@ -97,7 +97,7 @@ RequestHeader unset MirrorID</pre>
     <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="examples" id="examples">Examples</a></h2>
+<h2><a name="examples" id="examples">Examples</a><a title="Permanent link" href="#examples" class="permalink">&para;</a></h2>
 
     <ol>
       <li>
@@ -208,7 +208,7 @@ Header merge Cache-Control no-store env=NO_STORE</pre>
     </ol>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Header" id="Header">Header</a> <a name="header" id="header">Directive</a></h2>
+<div class="directive-section"><h2><a name="Header" id="Header">Header</a> <a name="header" id="header">Directive</a><a title="Permanent link" href="#header" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure HTTP response headers</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Header [<var>condition</var>] add|append|echo|edit|edit*|merge|set|setifempty|unset|note
@@ -452,7 +452,7 @@ Header always set CustomHeader my-value "expr=%{REQUEST_URI} =~ m#^/special_path
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RequestHeader" id="RequestHeader">RequestHeader</a> <a name="requestheader" id="requestheader">Directive</a></h2>
+<div class="directive-section"><h2><a name="RequestHeader" id="RequestHeader">RequestHeader</a> <a name="requestheader" id="requestheader">Directive</a><a title="Permanent link" href="#requestheader" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure HTTP request headers</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RequestHeader add|append|edit|edit*|merge|set|setifempty|unset

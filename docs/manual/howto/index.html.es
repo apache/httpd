@@ -33,7 +33,7 @@
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="howto" id="howto">How-To / Tutoriales</a></h2>
+<h2><a name="howto" id="howto">How-To / Tutoriales</a><a title="Enlace permanente" href="#howto" class="permalink">&para;</a></h2>
 
     
 

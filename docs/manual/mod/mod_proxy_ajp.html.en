@@ -69,7 +69,7 @@
 <li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="usage" id="usage">Usage</a></h2>
+<h2><a name="usage" id="usage">Usage</a><a title="Permanent link" href="#usage" class="permalink">&para;</a></h2>
     <p>This module is used to reverse proxy to a backend application server
     (e.g. Apache Tomcat) using the AJP13 protocol. The usage is similar to
     an HTTP reverse proxy, but uses the <code>ajp://</code> prefix:</p>
@@ -106,13 +106,13 @@ ProxyPassReverse "/apps/foo" "http://www.example.com/foo"</pre>
     </p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="env" id="env">Environment Variables</a></h2>
+<h2><a name="env" id="env">Environment Variables</a><a title="Permanent link" href="#env" class="permalink">&para;</a></h2>
     <p>Environment variables whose names have the prefix <code>AJP_</code>
     are forwarded to the origin server as AJP request attributes
     (with the AJP_ prefix removed from the name of the key).</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="overviewprotocol" id="overviewprotocol">Overview of the protocol</a></h2>
+<h2><a name="overviewprotocol" id="overviewprotocol">Overview of the protocol</a><a title="Permanent link" href="#overviewprotocol" class="permalink">&para;</a></h2>
     <p>The <code>AJP13</code> protocol is packet-oriented.  A binary format
     was presumably chosen over the more readable plain text for reasons of
     performance.  The web server communicates with the servlet container over
@@ -155,7 +155,7 @@ ProxyPassReverse "/apps/foo" "http://www.example.com/foo"</pre>
     See Response Packet Structures below for details.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="basppacketstruct" id="basppacketstruct">Basic Packet Structure</a></h2>
+<h2><a name="basppacketstruct" id="basppacketstruct">Basic Packet Structure</a><a title="Permanent link" href="#basppacketstruct" class="permalink">&para;</a></h2>
     <p>There is a bit of an XDR heritage to this protocol, but it differs
     in lots of ways (no 4 byte alignment, for example).</p>
     <p>AJP13 uses network byte order for all data types.</p>
@@ -331,7 +331,7 @@ ProxyPassReverse "/apps/foo" "http://www.example.com/foo"</pre>
   
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="rpacetstruct" id="rpacetstruct">Request Packet Structure</a></h2>
+<h2><a name="rpacetstruct" id="rpacetstruct">Request Packet Structure</a><a title="Permanent link" href="#rpacetstruct" class="permalink">&para;</a></h2>
     <p>For messages from the server to the container of type
     <em>Forward Request</em>:</p>
     <div class="example"><pre>AJP13_FORWARD_REQUEST :=
@@ -519,7 +519,7 @@ attribute_value := (string)</pre></div>
   
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="resppacketstruct" id="resppacketstruct">Response Packet Structure</a></h2>
+<h2><a name="resppacketstruct" id="resppacketstruct">Response Packet Structure</a><a title="Permanent link" href="#resppacketstruct" class="permalink">&para;</a></h2>
     <p>for messages which the container can send back to the server.</p>
     <div class="example"><pre>AJP13_SEND_BODY_CHUNK :=
   prefix_code   3

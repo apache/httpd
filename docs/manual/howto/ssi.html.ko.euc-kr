@@ -47,7 +47,7 @@
 </ul><h3>참고</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="related" id="related">소개</a></h2>
+<h2><a name="related" id="related">소개</a><a title="Permanent link" href="#related" class="permalink">&para;</a></h2>
  <table class="related"><tr><th>관련된 모듈</th><th>관련된 지시어</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_include.html">mod_include</a></code></li><li><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code></li><li><code class="module"><a href="../mod/mod_expires.html">mod_expires</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li><li><code class="directive"><a href="../mod/mod_include.html#xbithack">XBitHack</a></code></li><li><code class="directive"><a href="../mod/mod_mime.html#addtype">AddType</a></code></li><li><code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code></li><li><code class="directive"><a href="../mod/mod_setenvif.html#browsermatchnocase">BrowserMatchNoCase</a></code></li></ul></td></tr></table>
 
     <p>이 글은 보통 SSI라고 부르는 Server Side Includes를 설명한다.
@@ -59,7 +59,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="what" id="what">SSI가 무엇인가?</a></h2>
+<h2><a name="what" id="what">SSI가 무엇인가?</a><a title="Permanent link" href="#what" class="permalink">&para;</a></h2>
 
     <p>SSI (Server Side Includes)는 HTML 페이지에 사용하는 지시어로,
     페이지를 서비스할때 서버가 처리한다. SSI를 사용하면 CGI
@@ -75,7 +75,7 @@
     찾아봐야 한다.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="configuring" id="configuring">SSI가 가능하도록 서버 설정하기</a></h2>
+<h2><a name="configuring" id="configuring">SSI가 가능하도록 서버 설정하기</a><a title="Permanent link" href="#configuring" class="permalink">&para;</a></h2>
 
 
     <p>서버가 SSI를 처리하려면 <code>httpd.conf</code> 파일이나
@@ -144,7 +144,7 @@
     </ol>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="basic" id="basic">기본 SSI 지시어</a></h2>
+<h2><a name="basic" id="basic">기본 SSI 지시어</a><a title="Permanent link" href="#basic" class="permalink">&para;</a></h2>
 
     <p>SSI 지시어의 사용법은 다음과 같다.</p>
 <div class="example"><p><code>
@@ -200,7 +200,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="additionalexamples" id="additionalexamples">추가 예제</a></h2>
+<h2><a name="additionalexamples" id="additionalexamples">추가 예제</a><a title="Permanent link" href="#additionalexamples" class="permalink">&para;</a></h2>
 
 
     <p>다음은 HTML 문서에 사용할 수 있는 몇가지 SSI 예제다.</p>
@@ -260,7 +260,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="config" id="config">이외에 설정할 수 있는 것은?</a></h2>
+<h2><a name="config" id="config">이외에 설정할 수 있는 것은?</a><a title="Permanent link" href="#config" class="permalink">&para;</a></h2>
 
 
     <p>시간 형식 <code>config</code>(설정) 외에 두가지를 더
@@ -286,7 +286,7 @@
     보여주려면 <code>abbrev</code>를 사용한다.</p>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="exec" id="exec">명령어 실행하기</a></h2>
+<h2><a name="exec" id="exec">명령어 실행하기</a><a title="Permanent link" href="#exec" class="permalink">&para;</a></h2>
     
 
     <p>나는 다음 달에 작은 CGI 프로그램과 SSI를 같이 사용하는
@@ -319,7 +319,7 @@
     <code>exec</code> 기능을 막을 수 있다.</p> 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="advanced" id="advanced">고급 SSI 기법</a></h2>
+<h2><a name="advanced" id="advanced">고급 SSI 기법</a><a title="Permanent link" href="#advanced" class="permalink">&para;</a></h2>
 
 
     <p>내용을 출력하는 기능 외에 아파치 SSI는 변수 설정이 가능하고,
@@ -419,7 +419,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="conclusion" id="conclusion">결론</a></h2>
+<h2><a name="conclusion" id="conclusion">결론</a><a title="Permanent link" href="#conclusion" class="permalink">&para;</a></h2>
 
     <p>SSI는 확실히 CGI나 동적인 웹페이지를 생성하는 다른 기술을
     대체할 수 없다. 그러나 많은 추가 작업없이 페이지에 동적인

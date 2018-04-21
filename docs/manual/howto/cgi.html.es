@@ -40,7 +40,7 @@
 </ul><h3>Consulte también</h3><ul class="seealso"><li><a href="#comments_section">Comentarios</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="intro" id="intro">Introducción</a></h2>
+<h2><a name="intro" id="intro">Introducción</a><a title="Enlace permanente" href="#intro" class="permalink">&para;</a></h2>
 	    
 		<table class="related"><tr><th>Módulos Relacionados</th><th>Directivas Relacionadas</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code></li><li><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code></li><li><code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code></li><li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li><li><code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code></li></ul></td></tr></table>
 
@@ -53,7 +53,7 @@
 		iniciación para escribir programas CGI.</p>
 	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="configuring" id="configuring">Configurando Apache para permitir CGI</a></h2>
+<h2><a name="configuring" id="configuring">Configurando Apache para permitir CGI</a><a title="Enlace permanente" href="#configuring" class="permalink">&para;</a></h2>
 		
 
         <p>Para conseguir que sus programas CGI funcionen correctamente,
@@ -203,7 +203,7 @@
         
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="writing" id="writing">Escribiendo un programa CGI</a></h2>
+<h2><a name="writing" id="writing">Escribiendo un programa CGI</a><a title="Enlace permanente" href="#writing" class="permalink">&para;</a></h2>
         
 
         <p>Hay dos diferencias principales entre programación ``regular'' y 
@@ -267,7 +267,7 @@ print "Hola, Mundo.";</pre>
         
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="troubleshoot" id="troubleshoot">¡Pero todavía no funciona!</a></h2>
+<h2><a name="troubleshoot" id="troubleshoot">¡Pero todavía no funciona!</a><a title="Enlace permanente" href="#troubleshoot" class="permalink">&para;</a></h2>
         
 
         <p>Hay 4 cosas básicas que puede llegar a ver en su navegador cuando
@@ -444,7 +444,7 @@ print "Hola, Mundo.";</pre>
         
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="behindscenes" id="behindscenes">¿Qué ocurre entre bastidores?</a></h2>
+<h2><a name="behindscenes" id="behindscenes">¿Qué ocurre entre bastidores?</a><a title="Enlace permanente" href="#behindscenes" class="permalink">&para;</a></h2>
         
 
         <p>En cuanto tenga conocimiento avanzado de programación CGI, le será 
@@ -542,7 +542,7 @@ foreach my $key (keys %ENV) {
         
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="libraries" id="libraries">Módulos/librerías CGI</a></h2>
+<h2><a name="libraries" id="libraries">Módulos/librerías CGI</a><a title="Enlace permanente" href="#libraries" class="permalink">&para;</a></h2>
         
 
         <p>Cuando escribe programas CGI, debería considerar usar una librería de
@@ -562,7 +562,7 @@ foreach my $key (keys %ENV) {
         </p>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="moreinfo" id="moreinfo">Para más información</a></h2>
+<h2><a name="moreinfo" id="moreinfo">Para más información</a><a title="Enlace permanente" href="#moreinfo" class="permalink">&para;</a></h2>
         
 
         <p>La especificación actual de CGI está disponible en el

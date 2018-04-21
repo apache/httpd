@@ -48,11 +48,11 @@
 </ul><h3>참고</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="related" id="related">.htaccess 파일</a></h2>
+<h2><a name="related" id="related">.htaccess 파일</a><a title="Permanent link" href="#related" class="permalink">&para;</a></h2>
     <table class="related"><tr><th>관련된 모듈</th><th>관련된 지시어</th></tr><tr><td><ul><li><code class="module"><a href="../mod/core.html">core</a></code></li><li><code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code></li><li><code class="module"><a href="../mod/mod_authz_groupfile.html">mod_authz_groupfile</a></code></li><li><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code></li><li><code class="module"><a href="../mod/mod_include.html">mod_include</a></code></li><li><code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/core.html#accessfilename">AccessFileName</a></code></li><li><code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code></li><li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li><li><code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code></li><li><code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code></li><li><code class="directive"><a href="../mod/core.html#authtype">AuthType</a></code></li><li><code class="directive"><a href="../mod/core.html#authname">AuthName</a></code></li><li><code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code></li><li><code class="directive"><a href="../mod/mod_authz_groupfile.html#authgroupfile">AuthGroupFile</a></code></li><li><code class="directive"><a href="../mod/core.html#require">Require</a></code></li></ul></td></tr></table>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="what" id="what">무엇이며/어떻게 사용하는가</a></h2>
+<h2><a name="what" id="what">무엇이며/어떻게 사용하는가</a><a title="Permanent link" href="#what" class="permalink">&para;</a></h2>
 
 
     <p><code>.htaccess</code> 파일(혹은 "분산 설정파일")을
@@ -106,7 +106,7 @@
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="when" id="when">언제 .htaccess 파일을 사용하나
-    (혹은 사용하지 않나)</a></h2>
+    (혹은 사용하지 않나)</a><a title="Permanent link" href="#when" class="permalink">&para;</a></h2>
 
     <p>일반적으로 주서버파일에 접근할 수 없는 경우가 아니라면
     <code>.htaccess</code> 파일을 사용하면 안된다. 예를 들어,
@@ -197,7 +197,7 @@
     </code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="how" id="how">어떻게 지시어를 적용하나</a></h2>
+<h2><a name="how" id="how">어떻게 지시어를 적용하나</a><a title="Permanent link" href="#how" class="permalink">&para;</a></h2>
 
     <p><code>.htaccess</code> 파일을 발견한 디렉토리와 그 디렉토리의
     모든 하위디렉토리에 <code>.htaccess</code> 파일에 있는 설정
@@ -233,7 +233,7 @@
     디렉토리는 CGI 실행을 허용하지 않는다.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="auth" id="auth">인증 예제</a></h2>
+<h2><a name="auth" id="auth">인증 예제</a><a title="Permanent link" href="#auth" class="permalink">&para;</a></h2>
 
     <p>인증 방법을 알기위해 바로 이곳부터 읽는다면 주의할 것이
     있다. 암호 인증을 하려면 <code>.htaccess</code> 파일이
@@ -266,7 +266,7 @@
     투토리얼</a>을 보길 바란다.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="ssi" id="ssi">Server Side Includes 예제</a></h2>
+<h2><a name="ssi" id="ssi">Server Side Includes 예제</a><a title="Permanent link" href="#ssi" class="permalink">&para;</a></h2>
 
     <p>또다른 일반적인 <code>.htaccess</code> 파일의 용도는
     특정 디렉토리에서 Server Side Includes를 가능하게 만드는
@@ -285,7 +285,7 @@
     <p>server-side includes에 대한 자세한 설명은 <a href="ssi.html">SSI 투토리얼</a>을 보길 바란다.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="cgi" id="cgi">CGI 예제</a></h2>
+<h2><a name="cgi" id="cgi">CGI 예제</a><a title="Permanent link" href="#cgi" class="permalink">&para;</a></h2>
 
     <p>마지막으로 <code>.htaccess</code> 파일을 사용하여 특정
     디렉토리에서 CGI 프로그램 실행을 허용하고 싶다면, 다음과
@@ -311,7 +311,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="troubleshoot" id="troubleshoot">문제해결</a></h2>
+<h2><a name="troubleshoot" id="troubleshoot">문제해결</a><a title="Permanent link" href="#troubleshoot" class="permalink">&para;</a></h2>
 
     <p><code>.htaccess</code> 파일에 둔 설정 지시어가 원하는
     기능을 하지 않는 경우 여러가지 이유가 있을 수 있다.</p>

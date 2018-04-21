@@ -69,7 +69,7 @@
 <li><a href="#comments_section">コメント</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="overviewprotocol" id="overviewprotocol">プロトコルの概要</a></h2>
+<h2><a name="overviewprotocol" id="overviewprotocol">プロトコルの概要</a><a title="Permanent link" href="#overviewprotocol" class="permalink">&para;</a></h2>
     <p><code>AJP13</code> プロトコルはパケット指向です。
     可読なプレーンテキスト形式ではなくバイナリ形式になったのは、
     おそらくパフォーマンス上の理由によります。
@@ -110,7 +110,7 @@
     後述の「レスポンスパケットの構造」を参照してください。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="basppacketstruct" id="basppacketstruct">基本パケット構造</a></h2>
+<h2><a name="basppacketstruct" id="basppacketstruct">基本パケット構造</a><a title="Permanent link" href="#basppacketstruct" class="permalink">&para;</a></h2>
     <p>このプロトコルには XDR から受け継いだ部分が少しありますが、多くの点で
     異なります (例えば 4 バイトアライメントでないことなど) 。</p>
     <p>バイトオーダー: 個々のバイトのエンディアンがどうなっているかは、
@@ -284,7 +284,7 @@
   
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="rpacetstruct" id="rpacetstruct">リクエストパケット構造</a></h2>
+<h2><a name="rpacetstruct" id="rpacetstruct">リクエストパケット構造</a><a title="Permanent link" href="#rpacetstruct" class="permalink">&para;</a></h2>
     <p>サーバからコンテナへ送られるメッセージが
     <em>Forward Request</em> 型の場合 :</p>
     <div class="example"><pre>AJP13_FORWARD_REQUEST :=
@@ -457,7 +457,7 @@ attribute_value := (string)</pre></div>
   
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="resppacketstruct" id="resppacketstruct">レスポンスパケット構造</a></h2>
+<h2><a name="resppacketstruct" id="resppacketstruct">レスポンスパケット構造</a><a title="Permanent link" href="#resppacketstruct" class="permalink">&para;</a></h2>
     <p>コンテナがサーバに送り返すことのできるメッセージ:</p>
     <div class="example"><pre>AJP13_SEND_BODY_CHUNK :=
   prefix_code   3

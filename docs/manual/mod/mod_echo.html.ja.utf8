@@ -51,7 +51,7 @@
 <li><a href="#comments_section">コメント</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProtocolEcho" id="ProtocolEcho">ProtocolEcho</a> <a name="protocolecho" id="protocolecho">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="ProtocolEcho" id="ProtocolEcho">ProtocolEcho</a> <a name="protocolecho" id="protocolecho">ディレクティブ</a><a title="Permanent link" href="#protocolecho" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>エコーサーバの有効無効を設定します。</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ProtocolEcho On|Off</code></td></tr>

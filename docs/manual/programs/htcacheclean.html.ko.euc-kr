@@ -43,7 +43,7 @@
 </ul><h3>참고</h3><ul class="seealso"><li><code class="module"><a href="../mod/mod_cache_disk.html">mod_cache_disk</a></code></li><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="synopsis" id="synopsis">개요</a></h2>
+<h2><a name="synopsis" id="synopsis">개요</a><a title="Permanent link" href="#synopsis" class="permalink">&para;</a></h2>
     <p><code><strong>htcacheclean</strong>
     [ -<strong>D</strong> ]
     [ -<strong>v</strong> ]
@@ -60,7 +60,7 @@
     -<strong>l</strong><var>limit</var></code></p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="options" id="options">옵션</a></h2>
+<h2><a name="options" id="options">옵션</a><a title="Permanent link" href="#options" class="permalink">&para;</a></h2>
     <dl>
     <dt><code>-d<var>interval</var></code></dt>
     <dd>데몬으로 실행하여 <var>interval</var> 분마다 캐쉬를
@@ -105,7 +105,7 @@
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="exit" id="exit">종료코드</a></h2>
+<h2><a name="exit" id="exit">종료코드</a><a title="Permanent link" href="#exit" class="permalink">&para;</a></h2>
     <p><code>htcacheclean</code>는 모든 작업이 성공한 경우에
     ("참") 종료코드 0을 반환하고, 실패한 경우에는 <code>1</code>을
     반환한다.</p>

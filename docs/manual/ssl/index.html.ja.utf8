@@ -42,7 +42,7 @@ Secure Sockts Layer と Transport Layer Security
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="documentation" id="documentation">Documentation</a></h2>
+<h2><a name="documentation" id="documentation">Documentation</a><a title="Permanent link" href="#documentation" class="permalink">&para;</a></h2>
 <ul>
 <li><a href="ssl_howto.html">mod_ssl Configuration How-To</a></li>
 <li><a href="ssl_intro.html">Introduction To SSL</a></li>
@@ -52,7 +52,7 @@ Secure Sockts Layer と Transport Layer Security
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="mod-ssl" id="mod-ssl">mod_ssl</a></h2>
+<h2><a name="mod-ssl" id="mod-ssl">mod_ssl</a><a title="Permanent link" href="#mod-ssl" class="permalink">&para;</a></h2>
 <p>このモジュールで提供されるディレクティブや環境変数に関する
 詳しい文書は、<a href="../mod/mod_ssl.html">mod_ssl
 リファレンス</a>をご覧下さい。</p>

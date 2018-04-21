@@ -102,7 +102,7 @@ have been deprecated by the new authz refactoring.  Please see
 <li><a href="#comments_section">Comments</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Allow" id="Allow">Allow</a> <a name="allow" id="allow">Directive</a></h2>
+<div class="directive-section"><h2><a name="Allow" id="Allow">Allow</a> <a name="allow" id="allow">Directive</a><a title="Permanent link" href="#allow" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Controls which hosts can access an area of the
 server</td></tr>
@@ -228,7 +228,7 @@ Allow from 2001:db8::a00:20ff:fea7:ccea/10</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Deny" id="Deny">Deny</a> <a name="deny" id="deny">Directive</a></h2>
+<div class="directive-section"><h2><a name="Deny" id="Deny">Deny</a> <a name="deny" id="deny">Directive</a><a title="Permanent link" href="#deny" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Controls which hosts are denied access to the
 server</td></tr>
@@ -246,7 +246,7 @@ server</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Order" id="Order">Order</a> <a name="order" id="order">Directive</a></h2>
+<div class="directive-section"><h2><a name="Order" id="Order">Order</a> <a name="order" id="order">Directive</a><a title="Permanent link" href="#order" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Controls the default access state and the order in which
 <code class="directive">Allow</code> and <code class="directive">Deny</code> are
@@ -398,7 +398,7 @@ Deny from foo.example.org</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Satisfy" id="Satisfy">Satisfy</a> <a name="satisfy" id="satisfy">Directive</a></h2>
+<div class="directive-section"><h2><a name="Satisfy" id="Satisfy">Satisfy</a> <a name="satisfy" id="satisfy">Directive</a><a title="Permanent link" href="#satisfy" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Interaction between host-level access control and
 user authentication</td></tr>

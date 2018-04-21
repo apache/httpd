@@ -48,7 +48,7 @@
 </ul><h3>See also</h3><ul class="seealso"><li><a href="filter.html">Filters</a></li><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="intro" id="intro">Enforcing HTTP Protocol Compliance in Apache 2</a></h2>
+<h2><a name="intro" id="intro">Enforcing HTTP Protocol Compliance in Apache 2</a><a title="Permanent link" href="#intro" class="permalink">&para;</a></h2>
     
     <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_policy.html">mod_policy</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_policy.html#policyconditional">PolicyConditional</a></code></li><li><code class="directive"><a href="./mod/mod_policy.html#policylength">PolicyLength</a></code></li><li><code class="directive"><a href="./mod/mod_policy.html#policykeepalive">PolicyKeepalive</a></code></li><li><code class="directive"><a href="./mod/mod_policy.html#policytype">PolicyType</a></code></li><li><code class="directive"><a href="./mod/mod_policy.html#policyvary">PolicyVary</a></code></li><li><code class="directive"><a href="./mod/mod_policy.html#policyvalidation">PolicyValidation</a></code></li><li><code class="directive"><a href="./mod/mod_policy.html#policynocache">PolicyNocache</a></code></li><li><code class="directive"><a href="./mod/mod_policy.html#policymaxage">PolicyMaxage</a></code></li><li><code class="directive"><a href="./mod/mod_policy.html#policyversion">PolicyVersion</a></code></li></ul></td></tr></table>
 
@@ -105,7 +105,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="policyconditional" id="policyconditional">Conditional Request Policy</a></h2>
+<h2><a name="policyconditional" id="policyconditional">Conditional Request Policy</a><a title="Permanent link" href="#policyconditional" class="permalink">&para;</a></h2>
     
     <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_policy.html">mod_policy</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_policy.html#policyconditional">PolicyConditional</a></code></li></ul></td></tr></table>
 
@@ -175,7 +175,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="policylength" id="policylength">Content-Length Policy</a></h2>
+<h2><a name="policylength" id="policylength">Content-Length Policy</a><a title="Permanent link" href="#policylength" class="permalink">&para;</a></h2>
     
     <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_policy.html">mod_policy</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_policy.html#policylength">PolicyLength</a></code></li></ul></td></tr></table>
 
@@ -221,7 +221,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="policytype" id="policytype">Content-Type Policy</a></h2>
+<h2><a name="policytype" id="policytype">Content-Type Policy</a><a title="Permanent link" href="#policytype" class="permalink">&para;</a></h2>
     
     <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_policy.html">mod_policy</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_policy.html#policytype">PolicyType</a></code></li></ul></td></tr></table>
 
@@ -258,7 +258,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="policykeepalive" id="policykeepalive">Keepalive Policy</a></h2>
+<h2><a name="policykeepalive" id="policykeepalive">Keepalive Policy</a><a title="Permanent link" href="#policykeepalive" class="permalink">&para;</a></h2>
     
     <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_policy.html">mod_policy</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_policy.html#policykeepalive">PolicyKeepalive</a></code></li></ul></td></tr></table>
 
@@ -321,7 +321,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="policymaxage" id="policymaxage">Freshness Lifetime / Maxage Policy</a></h2>
+<h2><a name="policymaxage" id="policymaxage">Freshness Lifetime / Maxage Policy</a><a title="Permanent link" href="#policymaxage" class="permalink">&para;</a></h2>
     
     <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_policy.html">mod_policy</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_policy.html#policymaxage">PolicyMaxage</a></code></li></ul></td></tr></table>
 
@@ -354,7 +354,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="policynocache" id="policynocache">No Cache Policy</a></h2>
+<h2><a name="policynocache" id="policynocache">No Cache Policy</a><a title="Permanent link" href="#policynocache" class="permalink">&para;</a></h2>
     
     <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_policy.html">mod_policy</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_policy.html#policynocache">PolicyNocache</a></code></li></ul></td></tr></table>
 
@@ -389,7 +389,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="policyvalidation" id="policyvalidation">Validation Policy</a></h2>
+<h2><a name="policyvalidation" id="policyvalidation">Validation Policy</a><a title="Permanent link" href="#policyvalidation" class="permalink">&para;</a></h2>
     
     <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_policy.html">mod_policy</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_policy.html#policyvalidation">PolicyValidation</a></code></li></ul></td></tr></table>
 
@@ -417,7 +417,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="policyvary" id="policyvary">Vary Header Policy</a></h2>
+<h2><a name="policyvary" id="policyvary">Vary Header Policy</a><a title="Permanent link" href="#policyvary" class="permalink">&para;</a></h2>
     
     <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_policy.html">mod_policy</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_policy.html#policyvary">PolicyVary</a></code></li></ul></td></tr></table>
 
@@ -441,7 +441,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="policyversion" id="policyversion">Protocol Version Policy</a></h2>
+<h2><a name="policyversion" id="policyversion">Protocol Version Policy</a><a title="Permanent link" href="#policyversion" class="permalink">&para;</a></h2>
     
     <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_policy.html">mod_policy</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_policy.html#policyversion">PolicyVersion</a></code></li></ul></td></tr></table>
 

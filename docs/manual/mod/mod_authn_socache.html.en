@@ -58,7 +58,7 @@ the load on backends</td></tr>
 <li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="intro" id="intro">Authentication Cacheing</a></h2>
+<h2><a name="intro" id="intro">Authentication Cacheing</a><a title="Permanent link" href="#intro" class="permalink">&para;</a></h2>
     <p>Some users of more heavyweight authentication such as SQL database
     lookups (<code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code>) have reported it putting an
     unacceptable load on their authentication provider.  A typical case
@@ -70,7 +70,7 @@ the load on backends</td></tr>
     maintaining a cache of authentication credentials.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="usage" id="usage">Usage</a></h2>
+<h2><a name="usage" id="usage">Usage</a><a title="Permanent link" href="#usage" class="permalink">&para;</a></h2>
     <p>The authentication cache should be used where authentication
     lookups impose a significant load on the server, or a backend or
     network.  Authentication by file (<code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code>)
@@ -104,7 +104,7 @@ AuthnCacheSOCache dbm
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="dev" id="dev">Cacheing with custom modules</a></h2>
+<h2><a name="dev" id="dev">Cacheing with custom modules</a><a title="Permanent link" href="#dev" class="permalink">&para;</a></h2>
     <p>Module developers should note that their modules must be enabled
     for cacheing with mod_authn_socache.  A single optional API function
     <var>ap_authn_cache_store</var> is provided to cache credentials
@@ -112,7 +112,7 @@ AuthnCacheSOCache dbm
     available in <a href="http://svn.eu.apache.org/viewvc?view=revision&amp;revision=957072">r957072</a>, in which three authn providers are enabled for cacheing.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthnCacheContext" id="AuthnCacheContext">AuthnCacheContext</a> <a name="authncachecontext" id="authncachecontext">Directive</a></h2>
+<div class="directive-section"><h2><a name="AuthnCacheContext" id="AuthnCacheContext">AuthnCacheContext</a> <a name="authncachecontext" id="authncachecontext">Directive</a><a title="Permanent link" href="#authncachecontext" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specify a context string for use in the cache key</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthnCacheContext <var>directory|server|custom-string</var></code></td></tr>
@@ -142,7 +142,7 @@ AuthnCacheSOCache dbm
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthnCacheEnable" id="AuthnCacheEnable">AuthnCacheEnable</a> <a name="authncacheenable" id="authncacheenable">Directive</a></h2>
+<div class="directive-section"><h2><a name="AuthnCacheEnable" id="AuthnCacheEnable">AuthnCacheEnable</a> <a name="authncacheenable" id="authncacheenable">Directive</a><a title="Permanent link" href="#authncacheenable" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable Authn caching configured anywhere</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthnCacheEnable</code></td></tr>
@@ -159,7 +159,7 @@ AuthnCacheSOCache dbm
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthnCacheProvideFor" id="AuthnCacheProvideFor">AuthnCacheProvideFor</a> <a name="authncacheprovidefor" id="authncacheprovidefor">Directive</a></h2>
+<div class="directive-section"><h2><a name="AuthnCacheProvideFor" id="AuthnCacheProvideFor">AuthnCacheProvideFor</a> <a name="authncacheprovidefor" id="authncacheprovidefor">Directive</a><a title="Permanent link" href="#authncacheprovidefor" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specify which authn provider(s) to cache for</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthnCacheProvideFor <var>authn-provider</var> [...]</code></td></tr>
@@ -181,7 +181,7 @@ AuthnCacheSOCache dbm
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthnCacheSOCache" id="AuthnCacheSOCache">AuthnCacheSOCache</a> <a name="authncachesocache" id="authncachesocache">Directive</a></h2>
+<div class="directive-section"><h2><a name="AuthnCacheSOCache" id="AuthnCacheSOCache">AuthnCacheSOCache</a> <a name="authncachesocache" id="authncachesocache">Directive</a><a title="Permanent link" href="#authncachesocache" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Select socache backend provider to use</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthnCacheSOCache <var>provider-name[:provider-args]</var></code></td></tr>
@@ -200,7 +200,7 @@ Apache HTTP Server 2.4.7 and later</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthnCacheTimeout" id="AuthnCacheTimeout">AuthnCacheTimeout</a> <a name="authncachetimeout" id="authncachetimeout">Directive</a></h2>
+<div class="directive-section"><h2><a name="AuthnCacheTimeout" id="AuthnCacheTimeout">AuthnCacheTimeout</a> <a name="authncachetimeout" id="authncachetimeout">Directive</a><a title="Permanent link" href="#authncachetimeout" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Set a timeout for cache entries</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthnCacheTimeout <var>timeout</var> (seconds)</code></td></tr>

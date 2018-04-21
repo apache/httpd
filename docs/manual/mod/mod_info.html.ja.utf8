@@ -84,7 +84,7 @@
 <li><a href="#comments_section">コメント</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="security" id="security">Security Issues</a></h2>
+<h2><a name="security" id="security">Security Issues</a><a title="Permanent link" href="#security" class="permalink">&para;</a></h2>
     <p>一旦 <code class="module"><a href="../mod/mod_info.html">mod_info</a></code> がサーバに読み込まれると、
     提供しているハンドラ機能はディレクトリ毎の設定ファイル (<em>例えば</em>
     .htaccess) を含む <em>すべて</em>の設定ファイルで有効になります。
@@ -114,7 +114,7 @@
     </code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="queries" id="queries">表示される情報の選択</a></h2>
+<h2><a name="queries" id="queries">表示される情報の選択</a><a title="Permanent link" href="#queries" class="permalink">&para;</a></h2>
     <p>デフォルトでは、サーバ情報はすべての有効なモジュールと、
     各モジュールについて、モジュールが理解するディレクティブ、
     実装している、フック、現時点での設定の関連するディレクティブに
@@ -139,7 +139,7 @@
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="limitations" id="limitations">既知の制限</a></h2>
+<h2><a name="limitations" id="limitations">既知の制限</a><a title="Permanent link" href="#limitations" class="permalink">&para;</a></h2>
     <p><code class="module"><a href="../mod/mod_info.html">mod_info</a></code> は、元の設定ファイルを読むのではなく、
     既にパースされた設定を読み込むことで情報を提供します。従って、
     パース済みの設定情報の木が生成される方法による制限がいくつかあります:</p>
@@ -166,7 +166,7 @@
     </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddModuleInfo" id="AddModuleInfo">AddModuleInfo</a> <a name="addmoduleinfo" id="addmoduleinfo">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="AddModuleInfo" id="AddModuleInfo">AddModuleInfo</a> <a name="addmoduleinfo" id="addmoduleinfo">ディレクティブ</a><a title="Permanent link" href="#addmoduleinfo" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>server-info ハンドラにより表示されるモジュールの情報に
 追加の情報を付け加える</td></tr>

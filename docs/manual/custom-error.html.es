@@ -58,7 +58,7 @@
 </ul><h3>Consulte también</h3><ul class="seealso"><li><a href="#comments_section">Comentarios</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="configuration" id="configuration">Configuración</a></h2>
+<h2><a name="configuration" id="configuration">Configuración</a><a title="Enlace permanente" href="#configuration" class="permalink">&para;</a></h2>
 
     <p>Los documentos de error personalizados se configuran
     mediante la directiva <code class="directive"><a href="./mod/core.html#errordocument">ErrorDocument</a></code>,
@@ -94,7 +94,7 @@ ErrorDocument 401 /subscription/como_suscribirse.html</pre>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="variables" id="variables">Variables Disponibles</a></h2>
+<h2><a name="variables" id="variables">Variables Disponibles</a><a title="Enlace permanente" href="#variables" class="permalink">&para;</a></h2>
 
       <p>Redireccionando a otra URL puede ser útil, pero sólo si algo de información
        puede ser pasado como parámetro, lo cuál puede ser usado para explicar de 
@@ -139,7 +139,7 @@ ErrorDocument 401 /subscription/como_suscribirse.html</pre>
       como <code>http:</code>, incluso si se refiere a la misma máquina que el servidor.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="custom" id="custom">Personalizando Respuestas de Errores</a></h2>
+<h2><a name="custom" id="custom">Personalizando Respuestas de Errores</a><a title="Enlace permanente" href="#custom" class="permalink">&para;</a></h2>
 
       <p>Si apunta su <code> ErrorDocument</code> a alguna variedad de controlador
        dinámico como un documento que se incluye en el lado del servidor como CGI, 
@@ -171,7 +171,7 @@ printf "Status: %s Condition Intercepted\n", $ENV{"REDIRECT_STATUS"}; <br />
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="multi-lang" id="multi-lang">Documentos de error  personalizados 
-    Multilengua</a></h2>
+    Multilengua</a><a title="Enlace permanente" href="#multi-lang" class="permalink">&para;</a></h2>
 
     <p>Con la instalación de Apache HTTP Server se proporciona un directorio 
       personal con diferentes mensajes de errores traducidos a 16 idiomas 

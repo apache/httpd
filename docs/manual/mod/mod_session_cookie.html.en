@@ -77,7 +77,7 @@
 <li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="basicexamples" id="basicexamples">Basic Examples</a></h2>
+<h2><a name="basicexamples" id="basicexamples">Basic Examples</a><a title="Permanent link" href="#basicexamples" class="permalink">&para;</a></h2>
 
       <p>To create a simple session and store it in a cookie called
       <var>session</var>, configure the session as follows:</p>
@@ -95,7 +95,7 @@ SessionCookieName session path=/</pre>
 
     </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SessionCookieName" id="SessionCookieName">SessionCookieName</a> <a name="sessioncookiename" id="sessioncookiename">Directive</a></h2>
+<div class="directive-section"><h2><a name="SessionCookieName" id="SessionCookieName">SessionCookieName</a> <a name="sessioncookiename" id="sessioncookiename">Directive</a><a title="Permanent link" href="#sessioncookiename" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Name and attributes for the RFC2109 cookie storing the session</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SessionCookieName <var>name</var> <var>attributes</var></code></td></tr>
@@ -122,7 +122,7 @@ SessionCookieName session path=/private;domain=example.com;httponly;secure;versi
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SessionCookieName2" id="SessionCookieName2">SessionCookieName2</a> <a name="sessioncookiename2" id="sessioncookiename2">Directive</a></h2>
+<div class="directive-section"><h2><a name="SessionCookieName2" id="SessionCookieName2">SessionCookieName2</a> <a name="sessioncookiename2" id="sessioncookiename2">Directive</a><a title="Permanent link" href="#sessioncookiename2" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Name and attributes for the RFC2965 cookie storing the session</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SessionCookieName2 <var>name</var> <var>attributes</var></code></td></tr>
@@ -149,7 +149,7 @@ SessionCookieName2 session path=/private;domain=example.com;httponly;secure;vers
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SessionCookieRemove" id="SessionCookieRemove">SessionCookieRemove</a> <a name="sessioncookieremove" id="sessioncookieremove">Directive</a></h2>
+<div class="directive-section"><h2><a name="SessionCookieRemove" id="SessionCookieRemove">SessionCookieRemove</a> <a name="sessioncookieremove" id="sessioncookieremove">Directive</a><a title="Permanent link" href="#sessioncookieremove" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Control for whether session cookies should be removed from incoming HTTP headers</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SessionCookieRemove On|Off</code></td></tr>

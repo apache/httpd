@@ -59,7 +59,7 @@
 </ul><h3>참고</h3><ul class="seealso"><li><a href="../invoking.html">아파치 시작</a></li><li><a href="../stopping.html">아파치 중단</a></li><li><a href="../configuring.html">설정파일</a></li><li><a href="../platform/">플래폼 문서</a></li><li><a href="httpd.html">httpd</a></li><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="synopsis" id="synopsis">개요</a></h2>
+<h2><a name="synopsis" id="synopsis">개요</a><a title="Permanent link" href="#synopsis" class="permalink">&para;</a></h2>
 
 <p>간단한 실행 스크립트로 동작하면, <code>apachectl</code>은
 <a href="httpd.html">httpd</a> 실행파일의 모든 아규먼트를 받는다.</p>
@@ -73,7 +73,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="options" id="options">옵션</a></h2>
+<h2><a name="options" id="options">옵션</a><a title="Permanent link" href="#options" class="permalink">&para;</a></h2>
 
 <p>여기서는 SysV init-식 옵션만 설명한다. 다른 옵션은 <a href="httpd.html">httpd</a> manpage에서 설명한다.</p>
 

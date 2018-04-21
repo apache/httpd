@@ -63,7 +63,7 @@ for 2.2.x versions</td></tr></table>
 <li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="usage" id="usage">Usage</a></h2>
+<h2><a name="usage" id="usage">Usage</a><a title="Permanent link" href="#usage" class="permalink">&para;</a></h2>
     <p>There are two usage scenarios: with modules programmed to work
     with mod_xml2enc, and with those that are not aware of it:</p>
     <dl>
@@ -95,7 +95,7 @@ for 2.2.x versions</td></tr></table>
     </dd></dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="api" id="api">Programming API</a></h2>
+<h2><a name="api" id="api">Programming API</a><a title="Permanent link" href="#api" class="permalink">&para;</a></h2>
     <p>Programmers writing libxml2-based filter modules are encouraged to
     enable them for mod_xml2enc, to provide strong i18n support for your
     users without reinventing the wheel.  The programming API is exposed in
@@ -103,7 +103,7 @@ for 2.2.x versions</td></tr></table>
     <code class="module"><a href="../mod/mod_proxy_html.html">mod_proxy_html</a></code>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="sniffing" id="sniffing">Detecting an Encoding</a></h2>
+<h2><a name="sniffing" id="sniffing">Detecting an Encoding</a><a title="Permanent link" href="#sniffing" class="permalink">&para;</a></h2>
     <p>Unlike <code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code>, mod_xml2enc is designed
     to work with data whose encoding cannot be known in advance and thus
     configured.  It therefore uses 'sniffing' techniques to detect the
@@ -122,7 +122,7 @@ for 2.2.x versions</td></tr></table>
     it is used and detection is stopped.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="output" id="output">Output Encoding</a></h2>
+<h2><a name="output" id="output">Output Encoding</a><a title="Permanent link" href="#output" class="permalink">&para;</a></h2>
 <p><a href="http://xmlsoft.org/">libxml2</a> always uses UTF-8 (Unicode)
 internally, and libxml2-based filter modules will output that by default.
 mod_xml2enc can change the output encoding through the API, but there
@@ -132,13 +132,13 @@ necessary, and is not recommended due to the extra processing load on
 the server of an unnecessary conversion.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="alias" id="alias">Unsupported Encodings</a></h2>
+<h2><a name="alias" id="alias">Unsupported Encodings</a><a title="Permanent link" href="#alias" class="permalink">&para;</a></h2>
 <p>If you are working with encodings that are not supported by any of
 the conversion methods available on your platform, you can still alias
 them to a supported encoding using <code class="directive">xml2EncAlias</code>.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="xml2EncAlias" id="xml2EncAlias">xml2EncAlias</a> <a name="xml2encalias" id="xml2encalias">Directive</a></h2>
+<div class="directive-section"><h2><a name="xml2EncAlias" id="xml2EncAlias">xml2EncAlias</a> <a name="xml2encalias" id="xml2encalias">Directive</a><a title="Permanent link" href="#xml2encalias" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Recognise Aliases for encoding values</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>xml2EncAlias <var>charset alias [alias ...]</var></code></td></tr>
@@ -155,7 +155,7 @@ them to a supported encoding using <code class="directive">xml2EncAlias</code>.<
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="xml2EncDefault" id="xml2EncDefault">xml2EncDefault</a> <a name="xml2encdefault" id="xml2encdefault">Directive</a></h2>
+<div class="directive-section"><h2><a name="xml2EncDefault" id="xml2EncDefault">xml2EncDefault</a> <a name="xml2encdefault" id="xml2encdefault">Directive</a><a title="Permanent link" href="#xml2encdefault" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets a default encoding to assume when absolutely no information
 can be <a href="#sniffing">automatically detected</a></td></tr>
@@ -176,7 +176,7 @@ module for earlier versions.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="xml2StartParse" id="xml2StartParse">xml2StartParse</a> <a name="xml2startparse" id="xml2startparse">Directive</a></h2>
+<div class="directive-section"><h2><a name="xml2StartParse" id="xml2StartParse">xml2StartParse</a> <a name="xml2startparse" id="xml2startparse">Directive</a><a title="Permanent link" href="#xml2startparse" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Advise the parser to skip leading junk.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>xml2StartParse <var>element [element ...]</var></code></td></tr>

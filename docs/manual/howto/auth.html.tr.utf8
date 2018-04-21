@@ -53,7 +53,7 @@
 </ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><a href="#comments_section">Yorum</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="related" id="related">İlgili modüller ve Yönergeler</a></h2>
+<h2><a name="related" id="related">İlgili modüller ve Yönergeler</a><a title="Permanent link" href="#related" class="permalink">&para;</a></h2>
 
     <p>Kimlik Doğrulama ve yetkilendirme işlemi ile ilgili üç tür modül
     vardır. Genellikle her bir gruptan en az bir modül seçeceksiniz.</p>
@@ -110,7 +110,7 @@
     bahsetmektedir.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="introduction" id="introduction">Giriş</a></h2>
+<h2><a name="introduction" id="introduction">Giriş</a><a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
     <p>Sitenizde sadece küçük bir grup insana hitap eden ya da hassas
     bilgileriniz varsa, bu makaledeki teknikleri kullanarak dilediğiniz
     kişilerin sadece dilediğiniz sayfaları görüntülemesini
@@ -127,7 +127,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="theprerequisites" id="theprerequisites">Ön gereksinimler</a></h2>
+<h2><a name="theprerequisites" id="theprerequisites">Ön gereksinimler</a><a title="Permanent link" href="#theprerequisites" class="permalink">&para;</a></h2>
     
     <p>Bu makalede bahsi geçen yönergeler ya ana sunucu yapılandırma
     dosyasında (genellikle <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> bölümünde) ya da dizin içi
@@ -165,7 +165,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="gettingitworking" id="gettingitworking">Çalışmaya Başlama</a></h2>
+<h2><a name="gettingitworking" id="gettingitworking">Çalışmaya Başlama</a><a title="Permanent link" href="#gettingitworking" class="permalink">&para;</a></h2>
     <p>Burada, sunucu üzerindeki bir dizini parolayla korumak için
     gereken temel bilgiler verilecektir.</p>
 
@@ -286,7 +286,7 @@
     çeşitli yoları üzerinde duracağız.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="lettingmorethanonepersonin" id="lettingmorethanonepersonin">Birden çok kişiye izin vermek</a></h2>
+<h2><a name="lettingmorethanonepersonin" id="lettingmorethanonepersonin">Birden çok kişiye izin vermek</a><a title="Permanent link" href="#lettingmorethanonepersonin" class="permalink">&para;</a></h2>
     
     <p>Yukarıdaki yönergelerle bir dizinde sadece bir kişiye
     (<code>umut</code> adlı kullanıcıya) izin verir. Çoğunlukla birden
@@ -355,7 +355,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="possibleproblems" id="possibleproblems">Olası Sorunlar</a></h2>
+<h2><a name="possibleproblems" id="possibleproblems">Olası Sorunlar</a><a title="Permanent link" href="#possibleproblems" class="permalink">&para;</a></h2>
     <p>Temel kimlik doğrulama yolu belirtildiği için, sunucuya
     yaptığınız her belge istediğinde kullanıcı adınızın ve parolanızın
     doğrulanması gerekir. Hatta aynı sayfayı yeniden yüklerken ya da
@@ -374,7 +374,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="dbmdbd" id="dbmdbd">Diğer parola depolama yöntemleri</a></h2>
+<h2><a name="dbmdbd" id="dbmdbd">Diğer parola depolama yöntemleri</a><a title="Permanent link" href="#dbmdbd" class="permalink">&para;</a></h2>
     
     <p>Parolaları basit bir metin dosyasında depolamak yukarıda
     bahsedilen sorunlara yol açtığından parolaları başka bir yerde
@@ -404,7 +404,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="multprovider" id="multprovider">Birden çok tedarikçi kullanmak</a></h2>
+<h2><a name="multprovider" id="multprovider">Birden çok tedarikçi kullanmak</a><a title="Permanent link" href="#multprovider" class="permalink">&para;</a></h2>
     
     <p>Kimlik doğrulama ve yetkilendirme mimarisine dayalı yeni
     tedarikçiyi kullanarak tek bir yetkilendirme ya da kimlik doğrulama
@@ -462,7 +462,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="beyond" id="beyond">Yetkilendirmenin biraz ötesi</a></h2>
+<h2><a name="beyond" id="beyond">Yetkilendirmenin biraz ötesi</a><a title="Permanent link" href="#beyond" class="permalink">&para;</a></h2>
     <p>Tek bir veri deposundan yapılacak tek bir sınamadan çok daha
     esnek kimlik doğrulaması yapılabilir. Sıralama, mantık ve hangi
     kimlik doğrulamasının kullanılacağını seçmek mümkündür.</p>
@@ -601,7 +601,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="socache" id="socache">Kimlik Doğrulama Arabelleği</a></h2>
+<h2><a name="socache" id="socache">Kimlik Doğrulama Arabelleği</a><a title="Permanent link" href="#socache" class="permalink">&para;</a></h2>
     <p>Zaman zaman kimlik doğrulama ağınızda veya sağlayıcı(ları)nızda kabul
     edilemez yükler oluşturur. Bu çoğunlukla <code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code>
     (veya üçüncü parti/özel sağlayıcıların) kullanıcılarını etkiler. Bununla
@@ -611,7 +611,7 @@
     <p>Bu, bazı kullanıcılar için önemli bir başarım artışı sağlayabilir.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="moreinformation" id="moreinformation">Daha fazla bilgi</a></h2>
+<h2><a name="moreinformation" id="moreinformation">Daha fazla bilgi</a><a title="Permanent link" href="#moreinformation" class="permalink">&para;</a></h2>
     <p>Daha fazla bilgi için <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> ve
     <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code> modüllerinin belgelerine bakınız.
     <code class="directive"><a href="../mod/mod_authn_core.html#&lt;authnprovideralias&gt;">&lt;AuthnProviderAlias&gt;</a></code>

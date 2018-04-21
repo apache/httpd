@@ -63,7 +63,7 @@
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="overview" id="overview">Overview for the
-    impatient</a></h2>
+    impatient</a><a title="Permanent link" href="#overview" class="permalink">&para;</a></h2>
 
     <dl>
     <dt>Installing on Fedora/CentOS/Red Hat Enterprise Linux</dt>
@@ -157,7 +157,7 @@ sudo service apache2 start</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="requirements" id="requirements">Requirements</a></h2>
+<h2><a name="requirements" id="requirements">Requirements</a><a title="Permanent link" href="#requirements" class="permalink">&para;</a></h2>
 
     <p>The following requirements exist for building Apache httpd:</p>
 
@@ -222,7 +222,7 @@ sudo service apache2 start</pre>
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="download" id="download">Download</a></h2>
+<h2><a name="download" id="download">Download</a><a title="Permanent link" href="#download" class="permalink">&para;</a></h2>
 
     <p>The Apache HTTP Server can be downloaded from the <a href="http://httpd.apache.org/download.cgi">Apache HTTP Server
     download site</a>, which lists several mirrors.  Most users of
@@ -242,7 +242,7 @@ sudo service apache2 start</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="extract" id="extract">Extract</a></h2>
+<h2><a name="extract" id="extract">Extract</a><a title="Permanent link" href="#extract" class="permalink">&para;</a></h2>
 
     <p>Extracting the source from the Apache HTTP Server tarball is a
     simple matter of uncompressing, and then untarring:</p>
@@ -258,7 +258,7 @@ $ tar xvf httpd-<em>NN</em>.tar
     compiling the server.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="configure" id="configure">Configuring the source tree</a></h2>
+<h2><a name="configure" id="configure">Configuring the source tree</a><a title="Permanent link" href="#configure" class="permalink">&para;</a></h2>
 
     <p>The next step is to configure the Apache source tree for your
     particular platform and personal requirements. This is done using
@@ -327,7 +327,7 @@ $ tar xvf httpd-<em>NN</em>.tar
     available on the <code class="program"><a href="./programs/configure.html">configure</a></code> manual page.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="compile" id="compile">Build</a></h2>
+<h2><a name="compile" id="compile">Build</a><a title="Permanent link" href="#compile" class="permalink">&para;</a></h2>
 
     <p>Now you can build the various parts which form the Apache
     package by simply running the command:</p>
@@ -340,7 +340,7 @@ $ tar xvf httpd-<em>NN</em>.tar
     have enabled.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="install" id="install">Install</a></h2>
+<h2><a name="install" id="install">Install</a><a title="Permanent link" href="#install" class="permalink">&para;</a></h2>
 
     <p>Now it's time to install the package under the configured
     installation <em>PREFIX</em> (see <code>--prefix</code> option
@@ -356,7 +356,7 @@ $ tar xvf httpd-<em>NN</em>.tar
     your configuration files or documents.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="customize" id="customize">Customize</a></h2>
+<h2><a name="customize" id="customize">Customize</a><a title="Permanent link" href="#customize" class="permalink">&para;</a></h2>
 
     <p>Next, you can customize your Apache HTTP server by editing
     the <a href="configuring.html">configuration files</a> under
@@ -369,7 +369,7 @@ $ tar xvf httpd-<em>NN</em>.tar
     version of this manual and a complete reference of available <a href="mod/directives.html">configuration directives</a>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="test" id="test">Test</a></h2>
+<h2><a name="test" id="test">Test</a><a title="Permanent link" href="#test" class="permalink">&para;</a></h2>
 
     <p>Now you can <a href="invoking.html">start</a> your Apache
     HTTP server by immediately running:</p>
@@ -386,7 +386,7 @@ $ tar xvf httpd-<em>NN</em>.tar
 <div class="example"><p><code>$ <em>PREFIX</em>/bin/apachectl -k stop</code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="upgrading" id="upgrading">Upgrading</a></h2>
+<h2><a name="upgrading" id="upgrading">Upgrading</a><a title="Permanent link" href="#upgrading" class="permalink">&para;</a></h2>
 
     <p>The first step in upgrading is to read the release announcement
     and the file <code>CHANGES</code> in the source distribution to
@@ -442,7 +442,7 @@ $ tar xvf httpd-<em>NN</em>.tar
     </code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="thirdp" id="thirdp">Third-party packages</a></h2>
+<h2><a name="thirdp" id="thirdp">Third-party packages</a><a title="Permanent link" href="#thirdp" class="permalink">&para;</a></h2>
 
     <p>A large number of third parties provide their own packaged
     distributions of the Apache HTTP Server for installation on

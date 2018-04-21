@@ -49,11 +49,11 @@
 </ul><h3>参照</h3><ul class="seealso"><li><a href="#comments_section">コメント</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="related" id="related">.htaccess ファイル</a></h2>
+<h2><a name="related" id="related">.htaccess ファイル</a><a title="Permanent link" href="#related" class="permalink">&para;</a></h2>
     <table class="related"><tr><th>関連モジュール</th><th>関連ディレクティブ</th></tr><tr><td><ul><li><code class="module"><a href="../mod/core.html">core</a></code></li><li><code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code></li><li><code class="module"><a href="../mod/mod_authz_groupfile.html">mod_authz_groupfile</a></code></li><li><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code></li><li><code class="module"><a href="../mod/mod_include.html">mod_include</a></code></li><li><code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/core.html#accessfilename">AccessFileName</a></code></li><li><code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code></li><li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li><li><code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code></li><li><code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code></li><li><code class="directive"><a href="../mod/mod_authn_core.html#authtype">AuthType</a></code></li><li><code class="directive"><a href="../mod/mod_authn_core.html#authname">AuthName</a></code></li><li><code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code></li><li><code class="directive"><a href="../mod/mod_authz_groupfile.html#authgroupfile">AuthGroupFile</a></code></li><li><code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code></li></ul></td></tr></table>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="what" id="what">.htaccess ファイルとは何か/その使い方</a></h2>
+<h2><a name="what" id="what">.htaccess ファイルとは何か/その使い方</a><a title="Permanent link" href="#what" class="permalink">&para;</a></h2>
 
 
     <p><code>.htaccess</code> ファイル (「分散設定ファイル」) は
@@ -108,7 +108,7 @@
     のための「コンテキスト」の行を調べてください。</p>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="when" id="when">いつ .htaccess ファイルを使う(使わない)か。</a></h2>
+<h2><a name="when" id="when">いつ .htaccess ファイルを使う(使わない)か。</a><a title="Permanent link" href="#when" class="permalink">&para;</a></h2>
 
     <p>一般的に、サーバの主設定ファイルにアクセスできない場合を除いて、
     <code>.htaccess</code> ファイルの使用は極力避けてください。
@@ -205,7 +205,7 @@
     </code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="how" id="how">ディレクティブの適用のされ方</a></h2>
+<h2><a name="how" id="how">ディレクティブの適用のされ方</a><a title="Permanent link" href="#how" class="permalink">&para;</a></h2>
 
     <p><code>.htaccess</code> ファイルの設定ディレクティブは <code>.htaccess</code>
     ファイルの存在するディレクトリと、そのサブディレクトリすべてに適用されます。
@@ -283,7 +283,7 @@ Options +IncludesNoExec -ExecCGI<br />
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="auth" id="auth">認証の例</a></h2>
+<h2><a name="auth" id="auth">認証の例</a><a title="Permanent link" href="#auth" class="permalink">&para;</a></h2>
 
     <p>もし認証の方法を知るためにこの部分に直接来たのであれば、次のことを
     知っておくことが重要です。よくある誤解に、パスワード認証を行なうためには
@@ -316,7 +316,7 @@ Options +IncludesNoExec -ExecCGI<br />
     参照してください。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="ssi" id="ssi">SSI の例</a></h2>
+<h2><a name="ssi" id="ssi">SSI の例</a><a title="Permanent link" href="#ssi" class="permalink">&para;</a></h2>
 
     <p>もう一つの <code>.htaccess</code> ファイルのよくある利用法は
     特定のディレクトリで SSI を有効にすることです。これは、望みのディレクトリの
@@ -337,7 +337,7 @@ Options +IncludesNoExec -ExecCGI<br />
     参照してください。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="cgi" id="cgi">CGI の例</a></h2>
+<h2><a name="cgi" id="cgi">CGI の例</a><a title="Permanent link" href="#cgi" class="permalink">&para;</a></h2>
 
     <p>最後に、特定のディレクトリで CGI プログラムの実行を許可したいことが
     あるでしょう。これは以下の設定で行なうことができます:</p>
@@ -363,7 +363,7 @@ Options +IncludesNoExec -ExecCGI<br />
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="troubleshoot" id="troubleshoot">問題解決</a></h2>
+<h2><a name="troubleshoot" id="troubleshoot">問題解決</a><a title="Permanent link" href="#troubleshoot" class="permalink">&para;</a></h2>
 
     <p>設定ディレクティブを <code>.htaccess</code> ファイルに書いたけれども、
     期待した効果が得られないときには、いくつかの原因が考えられます。</p>

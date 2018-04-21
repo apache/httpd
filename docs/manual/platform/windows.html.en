@@ -51,7 +51,7 @@
 </ul><h3>See also</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="req" id="req">Operating System Requirements</a></h2>
+<h2><a name="req" id="req">Operating System Requirements</a><a title="Permanent link" href="#req" class="permalink">&para;</a></h2>
     
 
     <p>The primary Windows platform for running Apache 2.5 is Windows
@@ -62,7 +62,7 @@
     operating system earlier than Windows 2000.</div>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="down" id="down">Downloading Apache for Windows</a></h2>
+<h2><a name="down" id="down">Downloading Apache for Windows</a><a title="Permanent link" href="#down" class="permalink">&para;</a></h2>
     
 
     <p>The Apache HTTP Server Project itself does not provide binary releases of
@@ -83,7 +83,7 @@
     </ul>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="cust" id="cust">Customizing Apache for Windows</a></h2>
+<h2><a name="cust" id="cust">Customizing Apache for Windows</a><a title="Permanent link" href="#cust" class="permalink">&para;</a></h2>
     
 
     <p>Apache is configured by the files in the <code>conf</code>
@@ -203,7 +203,7 @@ RewriteRule "(.*)"           "${lowercase:$1}" [R,L]</pre>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="winsvc" id="winsvc">Running Apache as a Service</a></h2>
+<h2><a name="winsvc" id="winsvc">Running Apache as a Service</a><a title="Permanent link" href="#winsvc" class="permalink">&para;</a></h2>
     
 
     <p>Apache comes with a utility called the Apache Service Monitor.
@@ -373,7 +373,7 @@ RewriteRule "(.*)"           "${lowercase:$1}" [R,L]</pre>
     start it as a service again.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="wincons" id="wincons">Running Apache as a Console Application</a></h2>
+<h2><a name="wincons" id="wincons">Running Apache as a Console Application</a><a title="Permanent link" href="#wincons" class="permalink">&para;</a></h2>
     
 
     <p>Running Apache as a service is usually the recommended way to
@@ -536,7 +536,7 @@ RewriteRule "(.*)"           "${lowercase:$1}" [R,L]</pre>
     <code>httpd.conf</code> file to reflect the new location.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="test" id="test">Testing the Installation</a></h2>
+<h2><a name="test" id="test">Testing the Installation</a><a title="Permanent link" href="#test" class="permalink">&para;</a></h2>
     
 
     <p>After starting Apache (either in a console window or as a
@@ -582,7 +582,7 @@ RewriteRule "(.*)"           "${lowercase:$1}" [R,L]</pre>
     80 to attempt to bypass firewall issues.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="windrivemap" id="windrivemap">Configuring Access to Network Resources</a></h2>
+<h2><a name="windrivemap" id="windrivemap">Configuring Access to Network Resources</a><a title="Permanent link" href="#windrivemap" class="permalink">&para;</a></h2>
     
 
   <p>Access to files over the network can be specified using two
@@ -624,7 +624,7 @@ RewriteRule "(.*)"           "${lowercase:$1}" [R,L]</pre>
   above.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="tuning" id="tuning">Windows Tuning</a></h2>
+<h2><a name="tuning" id="tuning">Windows Tuning</a><a title="Permanent link" href="#tuning" class="permalink">&para;</a></h2>
     
     <ul>
       <li><p>If more than a few dozen piped loggers are used on an operating system

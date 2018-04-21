@@ -47,7 +47,7 @@
 <li><a href="#comments_section">Yorum</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ChrootDir" id="ChrootDir">ChrootDir</a> <a name="chrootdir" id="chrootdir">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="ChrootDir" id="ChrootDir">ChrootDir</a> <a name="chrootdir" id="chrootdir">Yönergesi</a><a title="Permanent link" href="#chrootdir" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Sunucunun başlatıldıktan sonra chroot(8) yapacağı dizini
   belirler.</td></tr>
@@ -70,7 +70,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Group" id="Group">Group</a> <a name="group" id="group">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="Group" id="Group">Group</a> <a name="group" id="group">Yönergesi</a><a title="Permanent link" href="#group" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>İsteklere yanıt verecek sunucunun ait olacağı grubu belirler.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>Group <var>unix-grubu</var></code></td></tr>
@@ -117,7 +117,7 @@
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Suexec" id="Suexec">Suexec</a> <a name="suexec" id="suexec">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="Suexec" id="Suexec">Suexec</a> <a name="suexec" id="suexec">Yönergesi</a><a title="Permanent link" href="#suexec" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>suEXEC özelliğini etkin veya etkisiz yapar</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>Suexec On|Off</code></td></tr>
@@ -136,7 +136,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="User" id="User">User</a> <a name="user" id="user">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="User" id="User">User</a> <a name="user" id="user">Yönergesi</a><a title="Permanent link" href="#user" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>İsteklere yanıt verecek sunucunun ait olacağı kullanıcıyı
   belirler.</td></tr>

@@ -61,7 +61,7 @@
 <li><a href="#comments_section">Comments</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Action" id="Action">Action</a> <a name="action" id="action">지시어</a></h2>
+<div class="directive-section"><h2><a name="Action" id="Action">Action</a> <a name="action" id="action">지시어</a><a title="Permanent link" href="#action" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>특정 핸들러나 content-type에 대해 CGI 스크립트를
 사용한다</td></tr>
@@ -123,7 +123,7 @@
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Script" id="Script">Script</a> <a name="script" id="script">지시어</a></h2>
+<div class="directive-section"><h2><a name="Script" id="Script">Script</a> <a name="script" id="script">지시어</a><a title="Permanent link" href="#script" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>특정 요청메서드에 대해 CGI 스크립트를
 사용한다.</td></tr>

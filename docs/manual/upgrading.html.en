@@ -54,7 +54,7 @@
   Apache HTTP Server 2.4</a></li><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="compile-time" id="compile-time">Compile-Time Configuration Changes</a></h2>
+<h2><a name="compile-time" id="compile-time">Compile-Time Configuration Changes</a><a title="Permanent link" href="#compile-time" class="permalink">&para;</a></h2>
     
 
     <p>The compilation process is very similar to the one used in
@@ -93,7 +93,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="run-time" id="run-time">Run-Time Configuration Changes</a></h2>
+<h2><a name="run-time" id="run-time">Run-Time Configuration Changes</a><a title="Permanent link" href="#run-time" class="permalink">&para;</a></h2>
     
     <p>There have been significant changes in authorization configuration,
     and other minor configuration changes, that could require changes to your 2.2
@@ -417,7 +417,7 @@ Require ip 127.0.0.1</pre>
     
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="misc" id="misc">Misc Changes</a></h2>
+<h2><a name="misc" id="misc">Misc Changes</a><a title="Permanent link" href="#misc" class="permalink">&para;</a></h2>
     
 
     <ul>
@@ -469,7 +469,7 @@ Require ip 127.0.0.1</pre>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="third-party" id="third-party">Third Party Modules</a></h2>
+<h2><a name="third-party" id="third-party">Third Party Modules</a><a title="Permanent link" href="#third-party" class="permalink">&para;</a></h2>
     
     <p>All modules must be recompiled for 2.4 before being loaded.</p>
 
@@ -479,7 +479,7 @@ Require ip 127.0.0.1</pre>
     update</a> overview.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="commonproblems" id="commonproblems">Common problems when upgrading</a></h2>
+<h2><a name="commonproblems" id="commonproblems">Common problems when upgrading</a><a title="Permanent link" href="#commonproblems" class="permalink">&para;</a></h2>
     
     <ul><li>Startup errors:
     <ul>

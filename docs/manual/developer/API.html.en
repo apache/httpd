@@ -113,7 +113,7 @@
 </ul><h3>See also</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="basics" id="basics">Basic concepts</a></h2>
+<h2><a name="basics" id="basics">Basic concepts</a><a title="Permanent link" href="#basics" class="permalink">&para;</a></h2>
     <p>We begin with an overview of the basic concepts behind the API, and how
     they are manifested in the code.</p>
 
@@ -269,7 +269,7 @@
     
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="handlers" id="handlers">How handlers work</a></h2>
+<h2><a name="handlers" id="handlers">How handlers work</a><a title="Permanent link" href="#handlers" class="permalink">&para;</a></h2>
     <p>The sole argument to handlers is a <code>request_rec</code> structure.
     This structure describes a particular request which has been made to the
     server, on behalf of a client. In most cases, each connection to the
@@ -562,7 +562,7 @@ void *request_config;   /* Notes on *this* request */</pre><p><code>
     
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="pools" id="pools">Resource allocation and resource pools</a></h2>
+<h2><a name="pools" id="pools">Resource allocation and resource pools</a><a title="Permanent link" href="#pools" class="permalink">&para;</a></h2>
     <p>One of the problems of writing and designing a server-pool server is
     that of preventing leakage, that is, allocating resources (memory, open
     files, <em>etc.</em>), without subsequently releasing them. The resource
@@ -878,7 +878,7 @@ void *request_config;   /* Notes on *this* request */</pre><p><code>
     
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="config" id="config">Configuration, commands and the like</a></h2>
+<h2><a name="config" id="config">Configuration, commands and the like</a><a title="Permanent link" href="#config" class="permalink">&para;</a></h2>
     <p>One of the design goals for this server was to maintain external
     compatibility with the NCSA 1.3 server --- that is, to read the same
     configuration files, to process all the directives therein correctly, and

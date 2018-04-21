@@ -40,7 +40,7 @@
 </ul><h3>See also</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="intro" id="intro">Introduction</a></h2>
+<h2><a name="intro" id="intro">Introduction</a><a title="Permanent link" href="#intro" class="permalink">&para;</a></h2>
     
 
     <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code></li><li><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code></li><li><code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code></li><li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li><li><code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code></li></ul></td></tr></table>
@@ -55,7 +55,7 @@
     CGI programs.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="configuring" id="configuring">Configuring Apache to permit CGI</a></h2>
+<h2><a name="configuring" id="configuring">Configuring Apache to permit CGI</a><a title="Permanent link" href="#configuring" class="permalink">&para;</a></h2>
     
 
     <p>In order to get your CGI programs to work properly, you'll
@@ -199,7 +199,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="writing" id="writing">Writing a CGI program</a></h2>
+<h2><a name="writing" id="writing">Writing a CGI program</a><a title="Permanent link" href="#writing" class="permalink">&para;</a></h2>
     
 
     <p>There are two main differences between ``regular''
@@ -262,7 +262,7 @@ print "Hello, World.";</pre>
     
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="troubleshoot" id="troubleshoot">But it's still not working!</a></h2>
+<h2><a name="troubleshoot" id="troubleshoot">But it's still not working!</a><a title="Permanent link" href="#troubleshoot" class="permalink">&para;</a></h2>
     
 
     <p>There are four basic things that you may see in your browser
@@ -432,7 +432,7 @@ print "Hello, World.";</pre>
     
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="behindscenes" id="behindscenes">What's going on behind the scenes?</a></h2>
+<h2><a name="behindscenes" id="behindscenes">What's going on behind the scenes?</a><a title="Permanent link" href="#behindscenes" class="permalink">&para;</a></h2>
     
 
     <p>As you become more advanced in CGI programming, it will
@@ -531,7 +531,7 @@ foreach my $key (keys %ENV) {
     
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="libraries" id="libraries">CGI modules/libraries</a></h2>
+<h2><a name="libraries" id="libraries">CGI modules/libraries</a><a title="Permanent link" href="#libraries" class="permalink">&para;</a></h2>
     
 
     <p>When you write CGI programs, you should consider using a
@@ -549,7 +549,7 @@ foreach my $key (keys %ENV) {
     <a href="http://www.boutell.com/cgic/">http://www.boutell.com/cgic/</a>.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="moreinfo" id="moreinfo">For more information</a></h2>
+<h2><a name="moreinfo" id="moreinfo">For more information</a><a title="Permanent link" href="#moreinfo" class="permalink">&para;</a></h2>
     
 
     <p>The current CGI specification is available in the

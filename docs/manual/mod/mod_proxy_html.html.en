@@ -79,14 +79,14 @@ making it accessible from outside.</p>
 <li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="intro" id="intro">Introduction</a></h2>
+<h2><a name="intro" id="intro">Introduction</a><a title="Permanent link" href="#intro" class="permalink">&para;</a></h2>
 <p>mod_proxy_html was originally a third-party module for Apache HTTPD
 2.0.x and later versions.  It was donated to the ASF in 2011 along with
 <code class="module"><a href="../mod/mod_xml2enc.html">mod_xml2enc</a></code> (see <a href="#i18n">Internationalisation</a>)
 and is a standard module in HTTPD 2.4 and development versions.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="custom" id="custom">Customised HTML Parsing</a></h2>
+<h2><a name="custom" id="custom">Customised HTML Parsing</a><a title="Permanent link" href="#custom" class="permalink">&para;</a></h2>
 <p>Internally, mod_proxy_html uses the HTMLParser module from the
 third-party <a href="http://xmlsoft.org/">libxml2</a> library.
 Unlike other libxml2 parsers, HTMLParser deals with HTML without
@@ -115,7 +115,7 @@ This can be changed by uncommenting the relevant line in
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="i18n" id="i18n">Internationalisation</a></h2>
+<h2><a name="i18n" id="i18n">Internationalisation</a><a title="Permanent link" href="#i18n" class="permalink">&para;</a></h2>
 <p>Internally, mod_proxy_html uses a smart HTML parser from the
 third-party <a href="http://xmlsoft.org/">libxml2</a> library.
 The parser uses Unicode (utf-8) internally.  This makes it a
@@ -143,7 +143,7 @@ versions where filter directives were used to activate mod_proxy_html.</strong><
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyHTMLBufSize" id="ProxyHTMLBufSize">ProxyHTMLBufSize</a> <a name="proxyhtmlbufsize" id="proxyhtmlbufsize">Directive</a></h2>
+<div class="directive-section"><h2><a name="ProxyHTMLBufSize" id="ProxyHTMLBufSize">ProxyHTMLBufSize</a> <a name="proxyhtmlbufsize" id="proxyhtmlbufsize">Directive</a><a title="Permanent link" href="#proxyhtmlbufsize" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets the buffer size increment for buffering inline scripts and
 stylesheets.</td></tr>
@@ -168,7 +168,7 @@ size and avoid the need to resize the buffer dynamically during a request.
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyHTMLCharsetOut" id="ProxyHTMLCharsetOut">ProxyHTMLCharsetOut</a> <a name="proxyhtmlcharsetout" id="proxyhtmlcharsetout">Directive</a></h2>
+<div class="directive-section"><h2><a name="ProxyHTMLCharsetOut" id="ProxyHTMLCharsetOut">ProxyHTMLCharsetOut</a> <a name="proxyhtmlcharsetout" id="proxyhtmlcharsetout">Directive</a><a title="Permanent link" href="#proxyhtmlcharsetout" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specify a charset for mod_proxy_html output.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyHTMLCharsetOut <var>Charset | *</var></code></td></tr>
@@ -187,7 +187,7 @@ will generate output using the same encoding as the input.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyHTMLDocType" id="ProxyHTMLDocType">ProxyHTMLDocType</a> <a name="proxyhtmldoctype" id="proxyhtmldoctype">Directive</a></h2>
+<div class="directive-section"><h2><a name="ProxyHTMLDocType" id="ProxyHTMLDocType">ProxyHTMLDocType</a> <a name="proxyhtmldoctype" id="proxyhtmldoctype">Directive</a><a title="Permanent link" href="#proxyhtmldoctype" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets an HTML or XHTML document type declaration.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyHTMLDocType HTML|XHTML [Legacy]<br /><strong>OR</strong>
@@ -221,7 +221,7 @@ It will also optionally log other errors at <code class="directive"><a href="../
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyHTMLEnable" id="ProxyHTMLEnable">ProxyHTMLEnable</a> <a name="proxyhtmlenable" id="proxyhtmlenable">Directive</a></h2>
+<div class="directive-section"><h2><a name="ProxyHTMLEnable" id="ProxyHTMLEnable">ProxyHTMLEnable</a> <a name="proxyhtmlenable" id="proxyhtmlenable">Directive</a><a title="Permanent link" href="#proxyhtmlenable" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Turns the proxy_html filter on or off.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyHTMLEnable On|Off</code></td></tr>
@@ -242,7 +242,7 @@ module for earlier 2.x versions.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyHTMLEvents" id="ProxyHTMLEvents">ProxyHTMLEvents</a> <a name="proxyhtmlevents" id="proxyhtmlevents">Directive</a></h2>
+<div class="directive-section"><h2><a name="ProxyHTMLEvents" id="ProxyHTMLEvents">ProxyHTMLEvents</a> <a name="proxyhtmlevents" id="proxyhtmlevents">Directive</a><a title="Permanent link" href="#proxyhtmlevents" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specify attributes to treat as scripting events.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyHTMLEvents <var>attribute [attribute ...]</var></code></td></tr>
@@ -267,7 +267,7 @@ this is not enabled in the shipped default.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyHTMLExtended" id="ProxyHTMLExtended">ProxyHTMLExtended</a> <a name="proxyhtmlextended" id="proxyhtmlextended">Directive</a></h2>
+<div class="directive-section"><h2><a name="ProxyHTMLExtended" id="ProxyHTMLExtended">ProxyHTMLExtended</a> <a name="proxyhtmlextended" id="proxyhtmlextended">Directive</a><a title="Permanent link" href="#proxyhtmlextended" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Determines whether to fix links in inline scripts, stylesheets,
 and scripting events.</td></tr>
@@ -296,7 +296,7 @@ false matches.
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyHTMLFixups" id="ProxyHTMLFixups">ProxyHTMLFixups</a> <a name="proxyhtmlfixups" id="proxyhtmlfixups">Directive</a></h2>
+<div class="directive-section"><h2><a name="ProxyHTMLFixups" id="ProxyHTMLFixups">ProxyHTMLFixups</a> <a name="proxyhtmlfixups" id="proxyhtmlfixups">Directive</a><a title="Permanent link" href="#proxyhtmlfixups" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fixes for simple HTML errors.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyHTMLFixups [lowercase] [dospath] [reset]</code></td></tr>
@@ -318,7 +318,7 @@ Only use them if you know you have a broken backend server.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyHTMLInterp" id="ProxyHTMLInterp">ProxyHTMLInterp</a> <a name="proxyhtmlinterp" id="proxyhtmlinterp">Directive</a></h2>
+<div class="directive-section"><h2><a name="ProxyHTMLInterp" id="ProxyHTMLInterp">ProxyHTMLInterp</a> <a name="proxyhtmlinterp" id="proxyhtmlinterp">Directive</a><a title="Permanent link" href="#proxyhtmlinterp" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enables per-request interpolation of
 <code class="directive">ProxyHTMLURLMap</code> rules.</td></tr>
@@ -339,7 +339,7 @@ for earlier 2.x versions</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyHTMLLinks" id="ProxyHTMLLinks">ProxyHTMLLinks</a> <a name="proxyhtmllinks" id="proxyhtmllinks">Directive</a></h2>
+<div class="directive-section"><h2><a name="ProxyHTMLLinks" id="ProxyHTMLLinks">ProxyHTMLLinks</a> <a name="proxyhtmllinks" id="proxyhtmllinks">Directive</a><a title="Permanent link" href="#proxyhtmllinks" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specify HTML elements that have URL attributes to be rewritten.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyHTMLLinks <var>element attribute [attribute2 ...]</var></code></td></tr>
@@ -376,7 +376,7 @@ ProxyHTMLLinks  script     src for</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyHTMLMeta" id="ProxyHTMLMeta">ProxyHTMLMeta</a> <a name="proxyhtmlmeta" id="proxyhtmlmeta">Directive</a></h2>
+<div class="directive-section"><h2><a name="ProxyHTMLMeta" id="ProxyHTMLMeta">ProxyHTMLMeta</a> <a name="proxyhtmlmeta" id="proxyhtmlmeta">Directive</a><a title="Permanent link" href="#proxyhtmlmeta" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Turns on or off extra pre-parsing of metadata in HTML
 <code>&lt;head&gt;</code> sections.</td></tr>
@@ -421,7 +421,7 @@ module for earlier 2.x versions.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyHTMLStripComments" id="ProxyHTMLStripComments">ProxyHTMLStripComments</a> <a name="proxyhtmlstripcomments" id="proxyhtmlstripcomments">Directive</a></h2>
+<div class="directive-section"><h2><a name="ProxyHTMLStripComments" id="ProxyHTMLStripComments">ProxyHTMLStripComments</a> <a name="proxyhtmlstripcomments" id="proxyhtmlstripcomments">Directive</a><a title="Permanent link" href="#proxyhtmlstripcomments" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Determines whether to strip HTML comments.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyHTMLStripComments On|Off</code></td></tr>
@@ -442,7 +442,7 @@ filter chain if stripping comments!</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyHTMLURLMap" id="ProxyHTMLURLMap">ProxyHTMLURLMap</a> <a name="proxyhtmlurlmap" id="proxyhtmlurlmap">Directive</a></h2>
+<div class="directive-section"><h2><a name="ProxyHTMLURLMap" id="ProxyHTMLURLMap">ProxyHTMLURLMap</a> <a name="proxyhtmlurlmap" id="proxyhtmlurlmap">Directive</a><a title="Permanent link" href="#proxyhtmlurlmap" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Defines a rule to rewrite HTML links</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyHTMLURLMap <var>from-pattern to-pattern [flags] [cond]</var></code></td></tr>

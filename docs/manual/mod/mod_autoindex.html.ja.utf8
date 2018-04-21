@@ -118,7 +118,7 @@
 <li><a href="#comments_section">コメント</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="query" id="query">Autoindex リクエストクエリー引数</a></h2>
+<h2><a name="query" id="query">Autoindex リクエストクエリー引数</a><a title="Permanent link" href="#query" class="permalink">&para;</a></h2>
     
 
     <p>Apache 2.0.23 で、
@@ -227,7 +227,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddAlt" id="AddAlt">AddAlt</a> <a name="addalt" id="addalt">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="AddAlt" id="AddAlt">AddAlt</a> <a name="addalt" id="addalt">ディレクティブ</a><a title="Permanent link" href="#addalt" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>アイコンの代わりに
 表示される、ファイル名で選択された代替テキスト</td></tr>
@@ -255,7 +255,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddAltByEncoding" id="AddAltByEncoding">AddAltByEncoding</a> <a name="addaltbyencoding" id="addaltbyencoding">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="AddAltByEncoding" id="AddAltByEncoding">AddAltByEncoding</a> <a name="addaltbyencoding" id="addaltbyencoding">ディレクティブ</a><a title="Permanent link" href="#addaltbyencoding" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>アイコンの代わりに表示される、MIME 符号化方法で選択された
 代替テキスト</td></tr>
@@ -284,7 +284,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddAltByType" id="AddAltByType">AddAltByType</a> <a name="addaltbytype" id="addaltbytype">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="AddAltByType" id="AddAltByType">AddAltByType</a> <a name="addaltbytype" id="addaltbytype">ディレクティブ</a><a title="Permanent link" href="#addaltbytype" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>アイコンの代わりに
 表示される、MIME タイプで選択された代替テキスト</td></tr>
@@ -313,7 +313,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddDescription" id="AddDescription">AddDescription</a> <a name="adddescription" id="adddescription">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="AddDescription" id="AddDescription">AddDescription</a> <a name="adddescription" id="adddescription">ディレクティブ</a><a title="Permanent link" href="#adddescription" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ファイルに対して表示する説明</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>AddDescription <var>string</var> <var>file</var> [<var>file</var>] ...</code></td></tr>
@@ -361,7 +361,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddIcon" id="AddIcon">AddIcon</a> <a name="addicon" id="addicon">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="AddIcon" id="AddIcon">AddIcon</a> <a name="addicon" id="addicon">ディレクティブ</a><a title="Permanent link" href="#addicon" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ファイルに表示するアイコンを名前で選択</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>AddIcon <var>icon</var> <var>name</var>
@@ -399,7 +399,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddIconByEncoding" id="AddIconByEncoding">AddIconByEncoding</a> <a name="addiconbyencoding" id="addiconbyencoding">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="AddIconByEncoding" id="AddIconByEncoding">AddIconByEncoding</a> <a name="addiconbyencoding" id="addiconbyencoding">ディレクティブ</a><a title="Permanent link" href="#addiconbyencoding" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ファイルに表示するアイコンを MIME
 符号化方法で選択</td></tr>
@@ -427,7 +427,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddIconByType" id="AddIconByType">AddIconByType</a> <a name="addiconbytype" id="addiconbytype">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="AddIconByType" id="AddIconByType">AddIconByType</a> <a name="addiconbytype" id="addiconbytype">ディレクティブ</a><a title="Permanent link" href="#addiconbytype" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ファイルの隣に表示するアイコンを
 MIME タイプによって選択</td></tr>
@@ -455,7 +455,7 @@ MIME タイプによって選択</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DefaultIcon" id="DefaultIcon">DefaultIcon</a> <a name="defaulticon" id="defaulticon">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="DefaultIcon" id="DefaultIcon">DefaultIcon</a> <a name="defaulticon" id="defaulticon">ディレクティブ</a><a title="Permanent link" href="#defaulticon" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>特定のアイコンが何も設定されていない時に
 ファイルに表示するアイコン</td></tr>
@@ -477,7 +477,7 @@ MIME タイプによって選択</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="HeaderName" id="HeaderName">HeaderName</a> <a name="headername" id="headername">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="HeaderName" id="HeaderName">HeaderName</a> <a name="headername" id="headername">ディレクティブ</a><a title="Permanent link" href="#headername" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>
 インデックス一覧の先頭に挿入されるファイルの名前</td></tr>
@@ -548,7 +548,7 @@ MIME タイプによって選択</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="IndexHeadInsert" id="IndexHeadInsert">IndexHeadInsert</a> <a name="indexheadinsert" id="indexheadinsert">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="IndexHeadInsert" id="IndexHeadInsert">IndexHeadInsert</a> <a name="indexheadinsert" id="indexheadinsert">ディレクティブ</a><a title="Permanent link" href="#indexheadinsert" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>インデックスページの HEAD セクションにテキストを挿入する</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>IndexHeadInsert <var>"markup ..."</var></code></td></tr>
@@ -567,7 +567,7 @@ MIME タイプによって選択</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="IndexIgnore" id="IndexIgnore">IndexIgnore</a> <a name="indexignore" id="indexignore">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="IndexIgnore" id="IndexIgnore">IndexIgnore</a> <a name="indexignore" id="indexignore">ディレクティブ</a><a title="Permanent link" href="#indexignore" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ディレクトリ一覧を行なう際に無視すべき
 ファイルリストに追加</td></tr>
@@ -591,7 +591,7 @@ MIME タイプによって選択</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="IndexIgnoreReset" id="IndexIgnoreReset">IndexIgnoreReset</a> <a name="indexignorereset" id="indexignorereset">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="IndexIgnoreReset" id="IndexIgnoreReset">IndexIgnoreReset</a> <a name="indexignorereset" id="indexignorereset">ディレクティブ</a><a title="Permanent link" href="#indexignorereset" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Empties the list of files to hide when listing
 a directory</td></tr>
@@ -605,7 +605,7 @@ a directory</td></tr>
             まだ翻訳されていません。英語版をご覧ください。
             </p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="IndexOptions" id="IndexOptions">IndexOptions</a> <a name="indexoptions" id="indexoptions">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="IndexOptions" id="IndexOptions">IndexOptions</a> <a name="indexoptions" id="indexoptions">ディレクティブ</a><a title="Permanent link" href="#indexoptions" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ディレクトリインデックスの様々な設定項目
 </td></tr>
@@ -963,7 +963,7 @@ a directory</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="IndexOrderDefault" id="IndexOrderDefault">IndexOrderDefault</a> <a name="indexorderdefault" id="indexorderdefault">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="IndexOrderDefault" id="IndexOrderDefault">IndexOrderDefault</a> <a name="indexorderdefault" id="indexorderdefault">ディレクティブ</a><a title="Permanent link" href="#indexorderdefault" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>
 ディレクトリインデックスの標準の順番付けを設定</td></tr>
@@ -999,7 +999,7 @@ Name|Date|Size|Description</code></td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="IndexStyleSheet" id="IndexStyleSheet">IndexStyleSheet</a> <a name="indexstylesheet" id="indexstylesheet">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="IndexStyleSheet" id="IndexStyleSheet">IndexStyleSheet</a> <a name="indexstylesheet" id="indexstylesheet">ディレクティブ</a><a title="Permanent link" href="#indexstylesheet" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ディレクトリインデックスに CSS スタイルシートを追加する</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>IndexStyleSheet <var>url-path</var></code></td></tr>
@@ -1018,7 +1018,7 @@ Name|Date|Size|Description</code></td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ReadmeName" id="ReadmeName">ReadmeName</a> <a name="readmename" id="readmename">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="ReadmeName" id="ReadmeName">ReadmeName</a> <a name="readmename" id="readmename">ディレクティブ</a><a title="Permanent link" href="#readmename" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>インデックス一覧の最後に挿入されるファイルの名前</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ReadmeName <var>filename</var></code></td></tr>

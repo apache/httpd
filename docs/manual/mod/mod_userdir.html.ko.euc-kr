@@ -55,7 +55,7 @@
 <li><a href="#comments_section">Comments</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="UserDir" id="UserDir">UserDir</a> <a name="userdir" id="userdir">지시어</a></h2>
+<div class="directive-section"><h2><a name="UserDir" id="UserDir">UserDir</a> <a name="userdir" id="userdir">지시어</a><a title="Permanent link" href="#userdir" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>사용자별 디렉토리 위치</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>UserDir <em>directory-filename</em></code></td></tr>

@@ -59,7 +59,7 @@ SSI pages</td></tr>
 <li><a href="#comments_section">Comments</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="PassEnv" id="PassEnv">PassEnv</a> <a name="passenv" id="passenv">Directive</a></h2>
+<div class="directive-section"><h2><a name="PassEnv" id="PassEnv">PassEnv</a> <a name="passenv" id="passenv">Directive</a><a title="Permanent link" href="#passenv" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Passes environment variables from the shell</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>PassEnv <var>env-variable</var> [<var>env-variable</var>]
@@ -80,7 +80,7 @@ SSI pages</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SetEnv" id="SetEnv">SetEnv</a> <a name="setenv" id="setenv">Directive</a></h2>
+<div class="directive-section"><h2><a name="SetEnv" id="SetEnv">SetEnv</a> <a name="setenv" id="setenv">Directive</a><a title="Permanent link" href="#setenv" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets environment variables</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SetEnv <var>env-variable</var> [<var>value</var>]</code></td></tr>
@@ -114,7 +114,7 @@ SSI pages</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="UnsetEnv" id="UnsetEnv">UnsetEnv</a> <a name="unsetenv" id="unsetenv">Directive</a></h2>
+<div class="directive-section"><h2><a name="UnsetEnv" id="UnsetEnv">UnsetEnv</a> <a name="unsetenv" id="unsetenv">Directive</a><a title="Permanent link" href="#unsetenv" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Removes variables from the environment</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>UnsetEnv <var>env-variable</var> [<var>env-variable</var>]

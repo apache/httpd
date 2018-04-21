@@ -63,7 +63,7 @@
 <li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="example" id="example">Enabling WebDAV</a></h2>
+<h2><a name="example" id="example">Enabling WebDAV</a><a title="Permanent link" href="#example" class="permalink">&para;</a></h2>
     <p>To enable <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code>, add the following to a
     container in your <code>httpd.conf</code> file:</p>
 
@@ -113,7 +113,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="security" id="security">Security Issues</a></h2>
+<h2><a name="security" id="security">Security Issues</a><a title="Permanent link" href="#security" class="permalink">&para;</a></h2>
 
     <p>Since DAV access methods allow remote clients to manipulate
     files on the server, you must take particular care to assure that
@@ -151,7 +151,7 @@
     DAV access to untrusted users.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="complex" id="complex">Complex Configurations</a></h2>
+<h2><a name="complex" id="complex">Complex Configurations</a><a title="Permanent link" href="#complex" class="permalink">&para;</a></h2>
 
     <p>One common request is to use <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code> to
     manipulate dynamic files (PHP scripts, CGI scripts, etc).  This is
@@ -175,7 +175,7 @@ Alias "/php-source" "/home/gstein/php_files"
     client to manipulate them.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Dav" id="Dav">Dav</a> <a name="dav" id="dav">Directive</a></h2>
+<div class="directive-section"><h2><a name="Dav" id="Dav">Dav</a> <a name="dav" id="dav">Directive</a><a title="Permanent link" href="#dav" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable WebDAV HTTP methods</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Dav On|Off|<var>provider-name</var></code></td></tr>
@@ -204,7 +204,7 @@ Alias "/php-source" "/home/gstein/php_files"
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DavDepthInfinity" id="DavDepthInfinity">DavDepthInfinity</a> <a name="davdepthinfinity" id="davdepthinfinity">Directive</a></h2>
+<div class="directive-section"><h2><a name="DavDepthInfinity" id="DavDepthInfinity">DavDepthInfinity</a> <a name="davdepthinfinity" id="davdepthinfinity">Directive</a><a title="Permanent link" href="#davdepthinfinity" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Allow PROPFIND, Depth: Infinity requests</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DavDepthInfinity on|off</code></td></tr>
@@ -220,7 +220,7 @@ Alias "/php-source" "/home/gstein/php_files"
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DavMinTimeout" id="DavMinTimeout">DavMinTimeout</a> <a name="davmintimeout" id="davmintimeout">Directive</a></h2>
+<div class="directive-section"><h2><a name="DavMinTimeout" id="DavMinTimeout">DavMinTimeout</a> <a name="davmintimeout" id="davmintimeout">Directive</a><a title="Permanent link" href="#davmintimeout" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Minimum amount of time the server holds a lock on
 a DAV resource</td></tr>

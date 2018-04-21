@@ -54,7 +54,7 @@ configuration.</div>
 </ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module documentation</a></li><li><a href="intro.html">mod_rewrite introduction</a></li><li><a href="access.html">Controlling access</a></li><li><a href="vhosts.html">Virtual hosts</a></li><li><a href="proxy.html">Proxying</a></li><li><a href="rewritemap.html">Using RewriteMap</a></li><li><a href="advanced.html">Advanced techniques</a></li><li><a href="avoid.html">When not to use mod_rewrite</a></li><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="old-to-new" id="old-to-new">From Old to New (internal)</a></h2>
+<h2><a name="old-to-new" id="old-to-new">From Old to New (internal)</a><a title="Permanent link" href="#old-to-new" class="permalink">&para;</a></h2>
 
   
 
@@ -84,7 +84,7 @@ RewriteRule    "^<strong>/foo</strong>\.html$"  "<strong>/bar</strong>.html" [PT
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="old-to-new-extern" id="old-to-new-extern">Rewriting From Old to New (external)</a></h2>
+<h2><a name="old-to-new-extern" id="old-to-new-extern">Rewriting From Old to New (external)</a><a title="Permanent link" href="#old-to-new-extern" class="permalink">&para;</a></h2>
 
   
 
@@ -126,7 +126,7 @@ RewriteRule    "^<strong>/foo</strong>\.html$"  "<strong>bar</strong>.html"  [<s
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="movehomedirs" id="movehomedirs">Resource Moved to Another Server</a></h2>
+<h2><a name="movehomedirs" id="movehomedirs">Resource Moved to Another Server</a><a title="Permanent link" href="#movehomedirs" class="permalink">&para;</a></h2>
 
   
 
@@ -163,7 +163,7 @@ Redirect "/docs/" "http://new.example.com/docs/"</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="static-to-dynamic" id="static-to-dynamic">From Static to Dynamic</a></h2>
+<h2><a name="static-to-dynamic" id="static-to-dynamic">From Static to Dynamic</a><a title="Permanent link" href="#static-to-dynamic" class="permalink">&para;</a></h2>
 
   
 
@@ -196,7 +196,7 @@ RewriteRule    "^foo\.html$"  "foo.cgi"  [H=<strong>cgi-script</strong>]</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="backward-compatibility" id="backward-compatibility">Backward Compatibility for file extension change</a></h2>
+<h2><a name="backward-compatibility" id="backward-compatibility">Backward Compatibility for file extension change</a><a title="Permanent link" href="#backward-compatibility" class="permalink">&para;</a></h2>
 
   
 
@@ -252,7 +252,7 @@ RewriteRule    "^foo\.html$"  "foo.cgi"  [H=<strong>cgi-script</strong>]</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="canonicalhost" id="canonicalhost">Canonical Hostnames</a></h2>
+<h2><a name="canonicalhost" id="canonicalhost">Canonical Hostnames</a><a title="Permanent link" href="#canonicalhost" class="permalink">&para;</a></h2>
 
 
 
@@ -340,7 +340,7 @@ RewriteRule "^/?(.*)"      "http://www.%{HTTP_HOST}/$1" [L,R,NE]</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="multipledirs" id="multipledirs">Search for pages in more than one directory</a></h2>
+<h2><a name="multipledirs" id="multipledirs">Search for pages in more than one directory</a><a title="Permanent link" href="#multipledirs" class="permalink">&para;</a></h2>
 
   
 
@@ -382,7 +382,7 @@ RewriteRule "^"     "-"                                          [PT]</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="archive-access-multiplexer" id="archive-access-multiplexer">Redirecting to Geographically Distributed Servers</a></h2>
+<h2><a name="archive-access-multiplexer" id="archive-access-multiplexer">Redirecting to Geographically Distributed Servers</a><a title="Permanent link" href="#archive-access-multiplexer" class="permalink">&para;</a></h2>
 
   
 
@@ -438,7 +438,7 @@ com       http://www.example.com/<br />
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="canonicalurl" id="canonicalurl">Canonical URLs</a></h2>
+<h2><a name="canonicalurl" id="canonicalurl">Canonical URLs</a><a title="Permanent link" href="#canonicalurl" class="permalink">&para;</a></h2>
 
 
 
@@ -479,7 +479,7 @@ com       http://www.example.com/<br />
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="moveddocroot" id="moveddocroot">Moved <code>DocumentRoot</code></a></h2>
+<h2><a name="moveddocroot" id="moveddocroot">Moved <code>DocumentRoot</code></a><a title="Permanent link" href="#moveddocroot" class="permalink">&para;</a></h2>
 
   
 
@@ -524,7 +524,7 @@ rather than rewriting URLs.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="fallback-resource" id="fallback-resource">Fallback Resource</a></h2>
+<h2><a name="fallback-resource" id="fallback-resource">Fallback Resource</a><a title="Permanent link" href="#fallback-resource" class="permalink">&para;</a></h2>
 
 
 <dl>
@@ -570,7 +570,7 @@ file, as well as in a &lt;Directory&gt; block.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="rewrite-query" id="rewrite-query">Rewrite query string</a></h2>
+<h2><a name="rewrite-query" id="rewrite-query">Rewrite query string</a><a title="Permanent link" href="#rewrite-query" class="permalink">&para;</a></h2>
 
 
 <dl>

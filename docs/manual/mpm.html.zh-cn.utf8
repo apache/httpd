@@ -43,7 +43,7 @@
 </ul><h3>参见</h3><ul class="seealso"><li><a href="#comments_section">评论</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="introduction" id="introduction">介绍</a></h2>
+<h2><a name="introduction" id="introduction">介绍</a><a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
 
     <p>Apache HTTP 服务器被设计为一个功能强大，并且灵活的 web 服务器，
     可以在很多平台与环境中工作。不同平台和不同的环境往往需要不同
@@ -77,7 +77,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="defaults" id="defaults">默认 MPM</a></h2>
+<h2><a name="defaults" id="defaults">默认 MPM</a><a title="Permanent link" href="#defaults" class="permalink">&para;</a></h2>
 
 <p>下表列出了不同系统的默认 MPM。如果你不在编译时选择，那么它就是你将要使用的 MPM。</p>
 
@@ -89,7 +89,7 @@
 </table>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="static" id="static">构建 MPM 为静态模块</a></h2>
+<h2><a name="static" id="static">构建 MPM 为静态模块</a><a title="Permanent link" href="#static" class="permalink">&para;</a></h2>
 
     <p>在全部平台中，MPM 都可以构建为静态模块。在构建时选择一种
     MPM，链接到服务器中。如果要改变 MPM，必须重新构建。</p>
@@ -103,7 +103,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="dynamic" id="dynamic">构建 MPM 为动态模块</a></h2>
+<h2><a name="dynamic" id="dynamic">构建 MPM 为动态模块</a><a title="Permanent link" href="#dynamic" class="permalink">&para;</a></h2>
 
     <p>在 Unix 或类似平台中，MPM 可以构建为动态模块，与其它动态模块一样在运行时加载。
     构建 MPM 为动态模块允许通过修改 <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code>

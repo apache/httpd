@@ -45,13 +45,13 @@
 </ul><h3>Consulte también</h3><ul class="seealso"><li><a href="#comments_section">Comentarios</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="what-will-and-will-not-be-discussed" id="what-will-and-will-not-be-discussed">De qué hablaremos y de qué no</a></h2>
+<h2><a name="what-will-and-will-not-be-discussed" id="what-will-and-will-not-be-discussed">De qué hablaremos y de qué no</a><a title="Enlace permanente" href="#what-will-and-will-not-be-discussed" class="permalink">&para;</a></h2>
         
 
         <p>Este documento se centrará en documentación de fácil acceso y opciones de ajuste para Apache HTTPD 2.2 y 2.4, así como herramientas de monitorización. Las herramientas de monitorización le permiten observar su servidor web para obtener información de su rendimiento, o su falta de él. Asumiremos que usted no tiene un presupuesto ilimitado para hardware de servidor, así que la infraestructura existente tiene que hacer el trabajo. Usted probablemente tampoco desea compilar su propio Apache, o recompilar el kernel del sistema operativo. Aunque si asumimos que está familiarizado con el fichero de configuración de Apache httpd.</p>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="monitoring-your-server" id="monitoring-your-server">Monitorizando Su Servidor</a></h2>
+<h2><a name="monitoring-your-server" id="monitoring-your-server">Monitorizando Su Servidor</a><a title="Enlace permanente" href="#monitoring-your-server" class="permalink">&para;</a></h2>
         
 
         <p>La primera tarea cuando se mide o se ajusta el rendimiento de su servidor es averiguar como está rindiendo actualmente. Monitorizando su servidor con  carga real, o carga generada artificialmente, puede extrapolar su comportamiento bajo estrés, como por ejemplo cuando se le menciona en Slashdot.</p>
@@ -445,7 +445,7 @@ CustomLog "|/usr/local/apache2/bin/rotatelogs /var/log/access_log 86400" common
         
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="configuring-for-performance" id="configuring-for-performance">Configurar para obtener Rendimiento</a></h2>
+<h2><a name="configuring-for-performance" id="configuring-for-performance">Configurar para obtener Rendimiento</a><a title="Enlace permanente" href="#configuring-for-performance" class="permalink">&para;</a></h2>
         
 
 
@@ -607,7 +607,7 @@ CustomLog "|/usr/local/apache2/bin/rotatelogs /var/log/access_log 86400" common
         
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="caching-content" id="caching-content">Cacheando Contenido</a></h2>
+<h2><a name="caching-content" id="caching-content">Cacheando Contenido</a><a title="Enlace permanente" href="#caching-content" class="permalink">&para;</a></h2>
         
 
         <p>Peticiones para contenido que se genera dinámicamente generalmente consumen más recursos que el contenido estático. El contenido estático consiste en ficheros sencillos como páginas, imágenes, etc. que se encuentran en el disco y se sirven de manera muy eficiente. Muchos sistemas operativos cachean automáticamente en memoria los contenidos de ficheros a los que se accede frecuentemente.</p>
@@ -698,7 +698,7 @@ CacheMaxExpire 21600</pre>
         
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="further-considerations" id="further-considerations">Otras Consideraciones</a></h2>
+<h2><a name="further-considerations" id="further-considerations">Otras Consideraciones</a><a title="Enlace permanente" href="#further-considerations" class="permalink">&para;</a></h2>
         
 
         <p>Armado con el conocimiento de cómo afinar el sistema para entregar el rendimiento deseado, pronto descubrirá que <em>un</em> solo sistema puede provocar un cuello de botella. Cómo hacer que un sistema sea apto para crecimiento, o como afinar un número de sistemas como uno solo será comentado en la página<a href="http://wiki.apache.org/httpd/PerformanceScalingOut">PerformanceScalingOut</a>.

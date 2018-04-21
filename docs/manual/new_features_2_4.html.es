@@ -46,7 +46,7 @@
 </ul><h3>Consulte también</h3><ul class="seealso"><li><a href="#comments_section">Comentarios</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="core" id="core">Mejoras en el Core</a></h2>
+<h2><a name="core" id="core">Mejoras en el Core</a><a title="Enlace permanente" href="#core" class="permalink">&para;</a></h2>
     
     <dl>
       <dt>Cargas de  MPM en Tiempo de Ejecución</dt>
@@ -109,7 +109,7 @@
     </dl>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="newmods" id="newmods">Nuevos Módulos</a></h2>
+<h2><a name="newmods" id="newmods">Nuevos Módulos</a><a title="Enlace permanente" href="#newmods" class="permalink">&para;</a></h2>
     
     <dl>
       <dt><code class="module"><a href="./mod/mod_proxy_fcgi.html">mod_proxy_fcgi</a></code></dt>
@@ -195,7 +195,7 @@ situación en la que el servidor genera URLs que no son válidos para los clientes
     </dl>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="module" id="module">Mejoras de Módulos.</a></h2>
+<h2><a name="module" id="module">Mejoras de Módulos.</a><a title="Enlace permanente" href="#module" class="permalink">&para;</a></h2>
     
     <dl>
       <dt><code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code></dt>
@@ -319,7 +319,7 @@ situación en la que el servidor genera URLs que no son válidos para los clientes
     </dl>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="programs" id="programs">Mejoras para el Programa</a></h2>
+<h2><a name="programs" id="programs">Mejoras para el Programa</a><a title="Enlace permanente" href="#programs" class="permalink">&para;</a></h2>
     
     <dl>
         <dt><code class="program"><a href="./programs/fcgistarter.html">fcgistarter</a></code></dt>
@@ -343,7 +343,7 @@ situación en la que el servidor genera URLs que no son válidos para los clientes
     </dl>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="documentation" id="documentation">Documentación</a></h2>
+<h2><a name="documentation" id="documentation">Documentación</a><a title="Enlace permanente" href="#documentation" class="permalink">&para;</a></h2>
     
     <dl>
         <dt>mod_rewrite</dt>
@@ -369,7 +369,7 @@ situación en la que el servidor genera URLs que no son válidos para los clientes
     </dl>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="developer" id="developer">Cambios en los Desarrollos de Módulos</a></h2>
+<h2><a name="developer" id="developer">Cambios en los Desarrollos de Módulos</a><a title="Enlace permanente" href="#developer" class="permalink">&para;</a></h2>
     
     <dl>
       <dt>Añadido Hook de Comprobación de Configuración</dt>

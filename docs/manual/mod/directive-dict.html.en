@@ -46,12 +46,12 @@
 </ul><h3>See also</h3><ul class="seealso"><li><a href="../configuring.html">Configuration files</a></li><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="Description" id="Description">Description</a></h2>
+<h2><a name="Description" id="Description">Description</a><a title="Permanent link" href="#Description" class="permalink">&para;</a></h2>
 
 <p>A brief description of the purpose of the directive.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="Syntax" id="Syntax">Syntax</a></h2>
+<h2><a name="Syntax" id="Syntax">Syntax</a><a title="Permanent link" href="#Syntax" class="permalink">&para;</a></h2>
 
     <p>This indicates the format of the directive as it would
     appear in a configuration file. This syntax is extremely
@@ -152,7 +152,7 @@
    </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="Default" id="Default">Default</a></h2>
+<h2><a name="Default" id="Default">Default</a><a title="Permanent link" href="#Default" class="permalink">&para;</a></h2>
 
     <p>If the directive has a default value (<em>i.e.</em>, if you
     omit it from your configuration entirely, the Apache Web server
@@ -163,7 +163,7 @@
     the default httpd.conf distributed with the server.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="Context" id="Context">Context</a></h2>
+<h2><a name="Context" id="Context">Context</a><a title="Permanent link" href="#Context" class="permalink">&para;</a></h2>
 
     <p>This indicates where in the server's configuration files the
     directive is legal. It's a comma-separated list of one or more
@@ -220,7 +220,7 @@
     containers.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="Override" id="Override">Override</a></h2>
+<h2><a name="Override" id="Override">Override</a><a title="Permanent link" href="#Override" class="permalink">&para;</a></h2>
 
     <p>This directive attribute indicates which configuration
     override must be active in order for the directive to be
@@ -237,7 +237,7 @@
     possible override names available.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="Status" id="Status">Status</a></h2>
+<h2><a name="Status" id="Status">Status</a><a title="Permanent link" href="#Status" class="permalink">&para;</a></h2>
 
     <p>This indicates how tightly bound into the Apache Web server
     the directive is; in other words, you may need to recompile the
@@ -289,13 +289,13 @@
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="Module" id="Module">Module</a></h2>
+<h2><a name="Module" id="Module">Module</a><a title="Permanent link" href="#Module" class="permalink">&para;</a></h2>
 
     <p>This quite simply lists the name of the source module which
     defines the directive.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="Compatibility" id="Compatibility">Compatibility</a></h2>
+<h2><a name="Compatibility" id="Compatibility">Compatibility</a><a title="Permanent link" href="#Compatibility" class="permalink">&para;</a></h2>
 
     <p>If the directive wasn't part of the original Apache version
     2 distribution, the version in which it was introduced should

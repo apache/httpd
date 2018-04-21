@@ -126,7 +126,7 @@
 <li><a href="#comments_section">コメント</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="multipleext" id="multipleext">複数の拡張子のあるファイル</a></h2>
+<h2><a name="multipleext" id="multipleext">複数の拡張子のあるファイル</a><a title="Permanent link" href="#multipleext" class="permalink">&para;</a></h2>
     <p>ファイルは複数の拡張子を持つことができ、拡張子の順番は<em>通常は</em>関係ありません。例えば、ファイル <code>welcome.html.fr</code>
     がコンテントタイプは <code>text/html</code>
     に、言語はフランス語にマップされる場合、<code>welcome.fr.html</code>
@@ -175,7 +175,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="contentencoding" id="contentencoding">コンテントエンコーディング</a></h2>
+<h2><a name="contentencoding" id="contentencoding">コンテントエンコーディング</a><a title="Permanent link" href="#contentencoding" class="permalink">&para;</a></h2>
     <p>特定の <a class="glossarylink" href="../glossary.html#mime-type" title="用語集を参照">MIME タイプ</a>
     のファイルはインターネットでの転送を簡単にするために、
     さらに符号化することができます。これは通常は <code>gzip</code> の
@@ -214,7 +214,7 @@
     <div class="example"><p><code>Content-encoding: pkzip</code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="charset-lang" id="charset-lang">文字セットと言語</a></h2>
+<h2><a name="charset-lang" id="charset-lang">文字セットと言語</a><a title="Permanent link" href="#charset-lang" class="permalink">&para;</a></h2>
     <p>ファイルタイプとファイルエンコーディングの他に重要な情報は
     ドキュメントの書かれている言語と、どの文字セットでファイルが表示
     されるべきか、というものです。たとえば、ドキュメントはベトナムの
@@ -254,7 +254,7 @@
     
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddCharset" id="AddCharset">AddCharset</a> <a name="addcharset" id="addcharset">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="AddCharset" id="AddCharset">AddCharset</a> <a name="addcharset" id="addcharset">ディレクティブ</a><a title="Permanent link" href="#addcharset" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ファイル名の拡張子を指定された文字セットにマップする</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>AddCharset <var>charset</var> <var>extension</var>
@@ -298,7 +298,7 @@
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddEncoding" id="AddEncoding">AddEncoding</a> <a name="addencoding" id="addencoding">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="AddEncoding" id="AddEncoding">AddEncoding</a> <a name="addencoding" id="addencoding">ディレクティブ</a><a title="Permanent link" href="#addencoding" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ファイル名の拡張子を指定されたエンコーディング
 にマップする</td></tr>
@@ -348,7 +348,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddHandler" id="AddHandler">AddHandler</a> <a name="addhandler" id="addhandler">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="AddHandler" id="AddHandler">AddHandler</a> <a name="addhandler" id="addhandler">ディレクティブ</a><a title="Permanent link" href="#addhandler" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ファイル名の拡張子を指定されたハンドラにマップする</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>AddHandler <var>handler-name</var> <var>extension</var>
@@ -384,7 +384,7 @@
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddInputFilter" id="AddInputFilter">AddInputFilter</a> <a name="addinputfilter" id="addinputfilter">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="AddInputFilter" id="AddInputFilter">AddInputFilter</a> <a name="addinputfilter" id="addinputfilter">ディレクティブ</a><a title="Permanent link" href="#addinputfilter" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ファイルの拡張子をクライアントのリクエストを処理する
     フィルタにマップする</td></tr>
@@ -420,7 +420,7 @@
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddLanguage" id="AddLanguage">AddLanguage</a> <a name="addlanguage" id="addlanguage">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="AddLanguage" id="AddLanguage">AddLanguage</a> <a name="addlanguage" id="addlanguage">ディレクティブ</a><a title="Permanent link" href="#addlanguage" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ファイル名を指定された言語にマップ</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>AddLanguage <var>MIME-lang</var> <var>extension</var>
@@ -473,7 +473,7 @@
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddOutputFilter" id="AddOutputFilter">AddOutputFilter</a> <a name="addoutputfilter" id="addoutputfilter">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="AddOutputFilter" id="AddOutputFilter">AddOutputFilter</a> <a name="addoutputfilter" id="addoutputfilter">ディレクティブ</a><a title="Permanent link" href="#addoutputfilter" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ファイル名の拡張子をサーバからの応答を処理するフィルタに
     マップする</td></tr>
@@ -516,7 +516,7 @@
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddType" id="AddType">AddType</a> <a name="addtype" id="addtype">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="AddType" id="AddType">AddType</a> <a name="addtype" id="addtype">ディレクティブ</a><a title="Permanent link" href="#addtype" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ファイル名の拡張子を指定されたコンテントタイプにマップ</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>AddType <var>MIME-type</var> <var>extension</var>
@@ -563,7 +563,7 @@
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DefaultLanguage" id="DefaultLanguage">DefaultLanguage</a> <a name="defaultlanguage" id="defaultlanguage">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="DefaultLanguage" id="DefaultLanguage">DefaultLanguage</a> <a name="defaultlanguage" id="defaultlanguage">ディレクティブ</a><a title="Permanent link" href="#defaultlanguage" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>あるスコープのすべてのファイルを指定された言語に
 設定する</td></tr>
@@ -603,7 +603,7 @@
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ModMimeUsePathInfo" id="ModMimeUsePathInfo">ModMimeUsePathInfo</a> <a name="modmimeusepathinfo" id="modmimeusepathinfo">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="ModMimeUsePathInfo" id="ModMimeUsePathInfo">ModMimeUsePathInfo</a> <a name="modmimeusepathinfo" id="modmimeusepathinfo">ディレクティブ</a><a title="Permanent link" href="#modmimeusepathinfo" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td><code>path_info</code> コンポーネントをファイル名の一部として扱うように
 <code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code> に通知する</td></tr>
@@ -644,7 +644,7 @@
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MultiviewsMatch" id="MultiviewsMatch">MultiviewsMatch</a> <a name="multiviewsmatch" id="multiviewsmatch">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="MultiviewsMatch" id="MultiviewsMatch">MultiviewsMatch</a> <a name="multiviewsmatch" id="multiviewsmatch">ディレクティブ</a><a title="Permanent link" href="#multiviewsmatch" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>MultiViews でのマッチングの検索に含ませる
 ファイルのタイプを指定する</td></tr>
@@ -703,7 +703,7 @@
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RemoveCharset" id="RemoveCharset">RemoveCharset</a> <a name="removecharset" id="removecharset">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="RemoveCharset" id="RemoveCharset">RemoveCharset</a> <a name="removecharset" id="removecharset">ディレクティブ</a><a title="Permanent link" href="#removecharset" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ファイルの拡張子に関連付けられたすべての文字セット
 を解除する</td></tr>
@@ -730,7 +730,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RemoveEncoding" id="RemoveEncoding">RemoveEncoding</a> <a name="removeencoding" id="removeencoding">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="RemoveEncoding" id="RemoveEncoding">RemoveEncoding</a> <a name="removeencoding" id="removeencoding">ディレクティブ</a><a title="Permanent link" href="#removeencoding" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ファイルの拡張子に関連付けられたすべてのコンテントエンコーディング
 を解除する</td></tr>
@@ -775,7 +775,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RemoveHandler" id="RemoveHandler">RemoveHandler</a> <a name="removehandler" id="removehandler">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="RemoveHandler" id="RemoveHandler">RemoveHandler</a> <a name="removehandler" id="removehandler">ディレクティブ</a><a title="Permanent link" href="#removehandler" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ファイルの拡張子に関連付けられたすべてのハンドラを
 解除する</td></tr>
@@ -810,7 +810,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RemoveInputFilter" id="RemoveInputFilter">RemoveInputFilter</a> <a name="removeinputfilter" id="removeinputfilter">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="RemoveInputFilter" id="RemoveInputFilter">RemoveInputFilter</a> <a name="removeinputfilter" id="removeinputfilter">ディレクティブ</a><a title="Permanent link" href="#removeinputfilter" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ファイル拡張子に関連付けられた入力フィルタを解除する</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>RemoveInputFilter <var>extension</var> [<var>extension</var>]
@@ -837,7 +837,7 @@
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RemoveLanguage" id="RemoveLanguage">RemoveLanguage</a> <a name="removelanguage" id="removelanguage">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="RemoveLanguage" id="RemoveLanguage">RemoveLanguage</a> <a name="removelanguage" id="removelanguage">ディレクティブ</a><a title="Permanent link" href="#removelanguage" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ファイル拡張子に関連付けられた言語を解除する</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>RemoveLanguage <var>extension</var> [<var>extension</var>]
@@ -859,7 +859,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RemoveOutputFilter" id="RemoveOutputFilter">RemoveOutputFilter</a> <a name="removeoutputfilter" id="removeoutputfilter">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="RemoveOutputFilter" id="RemoveOutputFilter">RemoveOutputFilter</a> <a name="removeoutputfilter" id="removeoutputfilter">ディレクティブ</a><a title="Permanent link" href="#removeoutputfilter" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ファイル拡張子に関連付けられた出力フィルタを解除する</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>RemoveOutputFilter <var>extension</var> [<var>extension</var>]
@@ -889,7 +889,7 @@
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RemoveType" id="RemoveType">RemoveType</a> <a name="removetype" id="removetype">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="RemoveType" id="RemoveType">RemoveType</a> <a name="removetype" id="removetype">ディレクティブ</a><a title="Permanent link" href="#removetype" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ファイルの拡張子と関連付けられたコンテントタイプを
 解除する</td></tr>
@@ -927,7 +927,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="TypesConfig" id="TypesConfig">TypesConfig</a> <a name="typesconfig" id="typesconfig">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="TypesConfig" id="TypesConfig">TypesConfig</a> <a name="typesconfig" id="typesconfig">ディレクティブ</a><a title="Permanent link" href="#typesconfig" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td><code>mime.types</code> ファイルの位置</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>TypesConfig <var>file-path</var></code></td></tr>

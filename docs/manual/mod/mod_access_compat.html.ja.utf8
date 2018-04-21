@@ -97,7 +97,7 @@
 <li><a href="#comments_section">コメント</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Allow" id="Allow">Allow</a> <a name="allow" id="allow">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="Allow" id="Allow">Allow</a> <a name="allow" id="allow">ディレクティブ</a><a title="Permanent link" href="#allow" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>サーバのある領域にアクセスできるホストを制御する</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code> Allow from all|<var>host</var>|env=[!]<var>env-variable</var>
@@ -227,7 +227,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Deny" id="Deny">Deny</a> <a name="deny" id="deny">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="Deny" id="Deny">Deny</a> <a name="deny" id="deny">ディレクティブ</a><a title="Permanent link" href="#deny" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>サーバがアクセスを拒否するホストを制御する</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code> Deny from all|<var>host</var>|env=[!]<var>env-variable</var>
@@ -244,7 +244,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Order" id="Order">Order</a> <a name="order" id="order">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="Order" id="Order">Order</a> <a name="order" id="order">ディレクティブ</a><a title="Permanent link" href="#order" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>デフォルトのアクセス可能な状態と、<code class="directive">Allow</code> と
 <code class="directive">Deny</code> が評価される順番を制御する</td></tr>
@@ -396,7 +396,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Satisfy" id="Satisfy">Satisfy</a> <a name="satisfy" id="satisfy">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="Satisfy" id="Satisfy">Satisfy</a> <a name="satisfy" id="satisfy">ディレクティブ</a><a title="Permanent link" href="#satisfy" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ホストレベルのアクセス制御とユーザ認証との相互作用を指定</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>Satisfy Any|All</code></td></tr>

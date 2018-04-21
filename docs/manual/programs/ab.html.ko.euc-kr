@@ -41,7 +41,7 @@
 </ul><h3>참고</h3><ul class="seealso"><li><a href="httpd.html">httpd</a></li><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="synopsis" id="synopsis">개요</a></h2>
+<h2><a name="synopsis" id="synopsis">개요</a><a title="Permanent link" href="#synopsis" class="permalink">&para;</a></h2>
     <p><code><strong>ab</strong>
     [ -<strong>A</strong> <var>auth-username</var>:<var>password</var> ]
     [ -<strong>c</strong> <var>concurrency</var> ]
@@ -71,7 +71,7 @@
     [http://]<var>hostname</var>[:<var>port</var>]/<var>path</var></code></p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="options" id="options">옵션</a></h2>
+<h2><a name="options" id="options">옵션</a><a title="Permanent link" href="#options" class="permalink">&para;</a></h2>
     <dl>
     <dt><code>-A <var>auth-username</var>:<var>password</var></code></dt>
     <dd>서버에게 BASIC Authentication 정보를 제공한다.
@@ -187,7 +187,7 @@
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="bugs" id="bugs">버그</a></h2>
+<h2><a name="bugs" id="bugs">버그</a><a title="Permanent link" href="#bugs" class="permalink">&para;</a></h2>
     <p>정적으로 길이가 고정된 버퍼를 많이 사용한다. 명령행
     아규먼트, 서버의 응답 헤더, 다른 외부 입력들을 같이
     읽어들이면서 문제가 발생할 수 있다.</p>

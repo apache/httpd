@@ -99,7 +99,7 @@
 <li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="basicconfig" id="basicconfig">Basic Configuration</a></h2>
+<h2><a name="basicconfig" id="basicconfig">Basic Configuration</a><a title="Permanent link" href="#basicconfig" class="permalink">&para;</a></h2>
 
       <p>To protect a particular URL with <code class="module"><a href="../mod/mod_auth_form.html">mod_auth_form</a></code>, you need to
       decide where you will store your <var>session</var>, and you will need to
@@ -147,7 +147,7 @@
       page inline.</p>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="standalone" id="standalone">Standalone Login</a></h2>
+<h2><a name="standalone" id="standalone">Standalone Login</a><a title="Permanent link" href="#standalone" class="permalink">&para;</a></h2>
 
       <p>The login form can be hosted as a standalone page, or can be provided inline on
       the same page.</p>
@@ -202,7 +202,7 @@
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="inline" id="inline">Inline Login</a></h2>
+<h2><a name="inline" id="inline">Inline Login</a><a title="Permanent link" href="#inline" class="permalink">&para;</a></h2>
 
       <div class="warning"><h3>Warning</h3>
         <p>A risk exists that under certain circumstances, the login form configured
@@ -260,7 +260,7 @@ SessionCookieName session path=/</pre>
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="inlinepreservebody" id="inlinepreservebody">Inline Login with Body Preservation</a></h2>
+<h2><a name="inlinepreservebody" id="inlinepreservebody">Inline Login with Body Preservation</a><a title="Permanent link" href="#inlinepreservebody" class="permalink">&para;</a></h2>
 
       <p>A limitation of the inline login technique described above is that should an
       HTML form POST have resulted in the request to authenticate or
@@ -305,7 +305,7 @@ SessionCookieName session path=/</pre>
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="loggingout" id="loggingout">Logging Out</a></h2>
+<h2><a name="loggingout" id="loggingout">Logging Out</a><a title="Permanent link" href="#loggingout" class="permalink">&para;</a></h2>
 
       <p>To enable a user to log out of a particular session, configure a page to
       be handled by the <var>form-logout-handler</var>. Any attempt to access this
@@ -342,14 +342,14 @@ SessionCookieName session path=/</pre>
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="urlencoding" id="urlencoding">Usernames and Passwords</a></h2>
+<h2><a name="urlencoding" id="urlencoding">Usernames and Passwords</a><a title="Permanent link" href="#urlencoding" class="permalink">&para;</a></h2>
     <p>Note that form submission involves URLEncoding the form data:
     in this case the username and password.  You should therefore
     pick usernames and passwords that avoid characters that are
     URLencoded in form submission, or you may get unexpected results.</p>
     </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthFormAuthoritative" id="AuthFormAuthoritative">AuthFormAuthoritative</a> <a name="authformauthoritative" id="authformauthoritative">Directive</a></h2>
+<div class="directive-section"><h2><a name="AuthFormAuthoritative" id="AuthFormAuthoritative">AuthFormAuthoritative</a> <a name="authformauthoritative" id="authformauthoritative">Directive</a><a title="Permanent link" href="#authformauthoritative" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets whether authorization and authentication are passed to
 lower level modules</td></tr>
@@ -375,7 +375,7 @@ lower level modules</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthFormBody" id="AuthFormBody">AuthFormBody</a> <a name="authformbody" id="authformbody">Directive</a></h2>
+<div class="directive-section"><h2><a name="AuthFormBody" id="AuthFormBody">AuthFormBody</a> <a name="authformbody" id="authformbody">Directive</a><a title="Permanent link" href="#authformbody" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The name of a form field carrying the body of the request to attempt on successful login</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthFormBody <var>fieldname</var></code></td></tr>
@@ -399,7 +399,7 @@ lower level modules</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthFormDisableNoStore" id="AuthFormDisableNoStore">AuthFormDisableNoStore</a> <a name="authformdisablenostore" id="authformdisablenostore">Directive</a></h2>
+<div class="directive-section"><h2><a name="AuthFormDisableNoStore" id="AuthFormDisableNoStore">AuthFormDisableNoStore</a> <a name="authformdisablenostore" id="authformdisablenostore">Directive</a><a title="Permanent link" href="#authformdisablenostore" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Disable the CacheControl no-store header on the login page</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthFormDisableNoStore <var>On|Off</var></code></td></tr>
@@ -420,7 +420,7 @@ lower level modules</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthFormFakeBasicAuth" id="AuthFormFakeBasicAuth">AuthFormFakeBasicAuth</a> <a name="authformfakebasicauth" id="authformfakebasicauth">Directive</a></h2>
+<div class="directive-section"><h2><a name="AuthFormFakeBasicAuth" id="AuthFormFakeBasicAuth">AuthFormFakeBasicAuth</a> <a name="authformfakebasicauth" id="authformfakebasicauth">Directive</a><a title="Permanent link" href="#authformfakebasicauth" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fake a Basic Authentication header</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthFormFakeBasicAuth <var>On|Off</var></code></td></tr>
@@ -440,7 +440,7 @@ lower level modules</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthFormLocation" id="AuthFormLocation">AuthFormLocation</a> <a name="authformlocation" id="authformlocation">Directive</a></h2>
+<div class="directive-section"><h2><a name="AuthFormLocation" id="AuthFormLocation">AuthFormLocation</a> <a name="authformlocation" id="authformlocation">Directive</a><a title="Permanent link" href="#authformlocation" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The name of a form field carrying a URL to redirect to on successful login</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthFormLocation <var>fieldname</var></code></td></tr>
@@ -457,7 +457,7 @@ lower level modules</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthFormLoginRequiredLocation" id="AuthFormLoginRequiredLocation">AuthFormLoginRequiredLocation</a> <a name="authformloginrequiredlocation" id="authformloginrequiredlocation">Directive</a></h2>
+<div class="directive-section"><h2><a name="AuthFormLoginRequiredLocation" id="AuthFormLoginRequiredLocation">AuthFormLoginRequiredLocation</a> <a name="authformloginrequiredlocation" id="authformloginrequiredlocation">Directive</a><a title="Permanent link" href="#authformloginrequiredlocation" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The URL of the page to be redirected to should login be required</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthFormLoginRequiredLocation <var>url</var></code></td></tr>
@@ -482,7 +482,7 @@ parser has been added in 2.4.4.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthFormLoginSuccessLocation" id="AuthFormLoginSuccessLocation">AuthFormLoginSuccessLocation</a> <a name="authformloginsuccesslocation" id="authformloginsuccesslocation">Directive</a></h2>
+<div class="directive-section"><h2><a name="AuthFormLoginSuccessLocation" id="AuthFormLoginSuccessLocation">AuthFormLoginSuccessLocation</a> <a name="authformloginsuccesslocation" id="authformloginsuccesslocation">Directive</a><a title="Permanent link" href="#authformloginsuccesslocation" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The URL of the page to be redirected to should login be successful</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthFormLoginSuccessLocation <var>url</var></code></td></tr>
@@ -506,7 +506,7 @@ parser has been added in 2.4.4.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthFormLogoutLocation" id="AuthFormLogoutLocation">AuthFormLogoutLocation</a> <a name="authformlogoutlocation" id="authformlogoutlocation">Directive</a></h2>
+<div class="directive-section"><h2><a name="AuthFormLogoutLocation" id="AuthFormLogoutLocation">AuthFormLogoutLocation</a> <a name="authformlogoutlocation" id="authformlogoutlocation">Directive</a><a title="Permanent link" href="#authformlogoutlocation" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The URL to redirect to after a user has logged out</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthFormLogoutLocation <var>uri</var></code></td></tr>
@@ -542,7 +542,7 @@ parser has been added in 2.4.4.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthFormMethod" id="AuthFormMethod">AuthFormMethod</a> <a name="authformmethod" id="authformmethod">Directive</a></h2>
+<div class="directive-section"><h2><a name="AuthFormMethod" id="AuthFormMethod">AuthFormMethod</a> <a name="authformmethod" id="authformmethod">Directive</a><a title="Permanent link" href="#authformmethod" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The name of a form field carrying the method of the request to attempt on successful login</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthFormMethod <var>fieldname</var></code></td></tr>
@@ -566,7 +566,7 @@ parser has been added in 2.4.4.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthFormMimetype" id="AuthFormMimetype">AuthFormMimetype</a> <a name="authformmimetype" id="authformmimetype">Directive</a></h2>
+<div class="directive-section"><h2><a name="AuthFormMimetype" id="AuthFormMimetype">AuthFormMimetype</a> <a name="authformmimetype" id="authformmimetype">Directive</a><a title="Permanent link" href="#authformmimetype" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The name of a form field carrying the mimetype of the body of the request to attempt on successful login</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthFormMimetype <var>fieldname</var></code></td></tr>
@@ -590,7 +590,7 @@ parser has been added in 2.4.4.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthFormPassword" id="AuthFormPassword">AuthFormPassword</a> <a name="authformpassword" id="authformpassword">Directive</a></h2>
+<div class="directive-section"><h2><a name="AuthFormPassword" id="AuthFormPassword">AuthFormPassword</a> <a name="authformpassword" id="authformpassword">Directive</a><a title="Permanent link" href="#authformpassword" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The name of a form field carrying the login password</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthFormPassword <var>fieldname</var></code></td></tr>
@@ -607,7 +607,7 @@ parser has been added in 2.4.4.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthFormProvider" id="AuthFormProvider">AuthFormProvider</a> <a name="authformprovider" id="authformprovider">Directive</a></h2>
+<div class="directive-section"><h2><a name="AuthFormProvider" id="AuthFormProvider">AuthFormProvider</a> <a name="authformprovider" id="authformprovider">Directive</a><a title="Permanent link" href="#authformprovider" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets the authentication provider(s) for this location</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthFormProvider <var>provider-name</var>
@@ -641,7 +641,7 @@ parser has been added in 2.4.4.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthFormSitePassphrase" id="AuthFormSitePassphrase">AuthFormSitePassphrase</a> <a name="authformsitepassphrase" id="authformsitepassphrase">Directive</a></h2>
+<div class="directive-section"><h2><a name="AuthFormSitePassphrase" id="AuthFormSitePassphrase">AuthFormSitePassphrase</a> <a name="authformsitepassphrase" id="authformsitepassphrase">Directive</a><a title="Permanent link" href="#authformsitepassphrase" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Bypass authentication checks for high traffic sites</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthFormSitePassphrase <var>secret</var></code></td></tr>
@@ -674,7 +674,7 @@ parser has been added in 2.4.4.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthFormSize" id="AuthFormSize">AuthFormSize</a> <a name="authformsize" id="authformsize">Directive</a></h2>
+<div class="directive-section"><h2><a name="AuthFormSize" id="AuthFormSize">AuthFormSize</a> <a name="authformsize" id="authformsize">Directive</a><a title="Permanent link" href="#authformsize" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The largest size of the form in bytes that will be parsed for the login details</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthFormSize <var>size</var></code></td></tr>
@@ -700,7 +700,7 @@ parser has been added in 2.4.4.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthFormUsername" id="AuthFormUsername">AuthFormUsername</a> <a name="authformusername" id="authformusername">Directive</a></h2>
+<div class="directive-section"><h2><a name="AuthFormUsername" id="AuthFormUsername">AuthFormUsername</a> <a name="authformusername" id="authformusername">Directive</a><a title="Permanent link" href="#authformusername" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The name of a form field carrying the login username</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthFormUsername <var>fieldname</var></code></td></tr>

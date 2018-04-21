@@ -50,7 +50,7 @@
 </ul><h3>참고</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="implementation" id="implementation">구현</a></h2>
+<h2><a name="implementation" id="implementation">구현</a><a title="Permanent link" href="#implementation" class="permalink">&para;</a></h2>
 
 <table class="related"><tr><th>관련된 모듈</th><th>관련된 지시어</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_so.html">mod_so</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code></li></ul></td></tr></table>
 
@@ -82,7 +82,7 @@
     모듈 소스를 컴파일할 수 있다.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="usage" id="usage">사용법 요약</a></h2>
+<h2><a name="usage" id="usage">사용법 요약</a><a title="Permanent link" href="#usage" class="permalink">&para;</a></h2>
 
     <p>Apache 2.2의 DSO 기능에 대한 짧고 간략한 요약이다:</p>
 
@@ -138,7 +138,7 @@ $ apxs -i -a -n foo mod_foo.la
     사용하여 아파치가 그 모듈을 읽어들이게 만든다.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="background" id="background">배경지식</a></h2>
+<h2><a name="background" id="background">배경지식</a><a title="Permanent link" href="#background" class="permalink">&para;</a></h2>
 
     <p>현대적인 유닉스류에는 <em>동적공유객체</em> (DSO)의
     동적 링킹/로딩(dynamic linking/loading)이라고 하여, 특별한
@@ -221,7 +221,7 @@ $ apxs -i -a -n foo mod_foo.la
     운명지워졌다.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="advantages" id="advantages">장단점</a></h2>
+<h2><a name="advantages" id="advantages">장단점</a><a title="Permanent link" href="#advantages" class="permalink">&para;</a></h2>
 
     <p>앞에서 말한 DSO를 사용하면 다음과 같은 장점이 있다:</p>
 

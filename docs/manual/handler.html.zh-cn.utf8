@@ -41,7 +41,7 @@
 </ul><h3>参见</h3><ul class="seealso"><li><a href="#comments_section">评论</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="definition" id="definition">什么是处理器</a></h2>
+<h2><a name="definition" id="definition">什么是处理器</a><a title="Permanent link" href="#definition" class="permalink">&para;</a></h2>
     
     <table class="related"><tr><th>相关模块</th><th>相关指令</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_actions.html">mod_actions</a></code></li><li><code class="module"><a href="./mod/mod_asis.html">mod_asis</a></code></li><li><code class="module"><a href="./mod/mod_cgi.html">mod_cgi</a></code></li><li><code class="module"><a href="./mod/mod_imagemap.html">mod_imagemap</a></code></li><li><code class="module"><a href="./mod/mod_info.html">mod_info</a></code></li><li><code class="module"><a href="./mod/mod_mime.html">mod_mime</a></code></li><li><code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code></li><li><code class="module"><a href="./mod/mod_status.html">mod_status</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_actions.html#action">Action</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#addhandler">AddHandler</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#removehandler">RemoveHandler</a></code></li><li><code class="directive"><a href="./mod/core.html#sethandler">SetHandler</a></code></li></ul></td></tr></table>
 
@@ -74,7 +74,7 @@
     </ul>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="examples" id="examples">例子</a></h2>
+<h2><a name="examples" id="examples">例子</a><a title="Permanent link" href="#examples" class="permalink">&para;</a></h2>
     
 
     <h3><a name="example1" id="example1">使用 CGI 脚本修改静态内容</a></h3>
@@ -108,7 +108,7 @@
     
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="programmer" id="programmer">对程序员的说明</a></h2>
+<h2><a name="programmer" id="programmer">对程序员的说明</a><a title="Permanent link" href="#programmer" class="permalink">&para;</a></h2>
     
 
     <p>为了实现处理器特性，增加了需要使用的 <a href="developer/API.html">Apache API</a>。

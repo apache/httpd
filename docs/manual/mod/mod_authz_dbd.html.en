@@ -74,7 +74,7 @@
 <li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="requiredirectives" id="requiredirectives">The Require Directives</a></h2>
+<h2><a name="requiredirectives" id="requiredirectives">The Require Directives</a><a title="Permanent link" href="#requiredirectives" class="permalink">&para;</a></h2>
 
     <p>Apache's <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>
     directives are used during the authorization phase to ensure that
@@ -120,7 +120,7 @@ AuthzDBDQuery "UPDATE authn SET login = 'false' WHERE user = %s"</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="login" id="login">Database Login</a></h2>
+<h2><a name="login" id="login">Database Login</a><a title="Permanent link" href="#login" class="permalink">&para;</a></h2>
 
 <p>
 In addition to the standard authorization function of checking group
@@ -135,7 +135,7 @@ supplying the necessary credentials).</p>
 For usage details, see the configuration example below.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="client" id="client">Client Login integration</a></h2>
+<h2><a name="client" id="client">Client Login integration</a><a title="Permanent link" href="#client" class="permalink">&para;</a></h2>
 
 <p>Some administrators may wish to implement client-side session
 management that works in concert with the server-side login/logout
@@ -147,7 +147,7 @@ the database.  Other session management modules can then use the hook
 to implement functions that start and end client-side sessions.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="example" id="example">Configuration example</a></h2>
+<h2><a name="example" id="example">Configuration example</a><a title="Permanent link" href="#example" class="permalink">&para;</a></h2>
 
 <pre class="prettyprint lang-config"># mod_dbd configuration
 DBDriver pgsql
@@ -202,7 +202,7 @@ DBDExptime 300
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="security" id="security">Preventing SQL injections</a></h2>
+<h2><a name="security" id="security">Preventing SQL injections</a><a title="Permanent link" href="#security" class="permalink">&para;</a></h2>
 
   <p>Whether you need to care about SQL security depends on what DBD driver
   and backend you use.  With most drivers you don't have to do anything :
@@ -213,7 +213,7 @@ DBDExptime 300
   about security on this scope.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthzDBDLoginToReferer" id="AuthzDBDLoginToReferer">AuthzDBDLoginToReferer</a> <a name="authzdbdlogintoreferer" id="authzdbdlogintoreferer">Directive</a></h2>
+<div class="directive-section"><h2><a name="AuthzDBDLoginToReferer" id="AuthzDBDLoginToReferer">AuthzDBDLoginToReferer</a> <a name="authzdbdlogintoreferer" id="authzdbdlogintoreferer">Directive</a><a title="Permanent link" href="#authzdbdlogintoreferer" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Determines whether to redirect the Client to the Referring
 page on successful login or logout if a <code>Referer</code> request
@@ -233,7 +233,7 @@ header is present</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthzDBDQuery" id="AuthzDBDQuery">AuthzDBDQuery</a> <a name="authzdbdquery" id="authzdbdquery">Directive</a></h2>
+<div class="directive-section"><h2><a name="AuthzDBDQuery" id="AuthzDBDQuery">AuthzDBDQuery</a> <a name="authzdbdquery" id="authzdbdquery">Directive</a><a title="Permanent link" href="#authzdbdquery" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specify the SQL Query for the required operation</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthzDBDQuery <var>query</var></code></td></tr>
@@ -273,7 +273,7 @@ AuthzDBDQuery "UPDATE authn SET login = 'true' WHERE user = %s"</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthzDBDRedirectQuery" id="AuthzDBDRedirectQuery">AuthzDBDRedirectQuery</a> <a name="authzdbdredirectquery" id="authzdbdredirectquery">Directive</a></h2>
+<div class="directive-section"><h2><a name="AuthzDBDRedirectQuery" id="AuthzDBDRedirectQuery">AuthzDBDRedirectQuery</a> <a name="authzdbdredirectquery" id="authzdbdredirectquery">Directive</a><a title="Permanent link" href="#authzdbdredirectquery" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specify a query to look up a login page for the user</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthzDBDRedirectQuery <var>query</var></code></td></tr>

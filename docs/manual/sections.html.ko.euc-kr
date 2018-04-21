@@ -47,7 +47,7 @@ URL에만 적용될 수 있다. 이 문서는 다른 지시어의 적용범위를
 </ul><h3>참고</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="types" id="types">설정 섹션의 종류</a></h2>
+<h2><a name="types" id="types">설정 섹션의 종류</a><a title="Permanent link" href="#types" class="permalink">&para;</a></h2>
 
 <table class="related"><tr><th>관련된 모듈</th><th>관련된 지시어</th></tr><tr><td><ul><li><code class="module"><a href="./mod/core.html">core</a></code></li><li><code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxymatch">&lt;ProxyMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code></li></ul></td></tr></table>
 
@@ -92,7 +92,7 @@ MimeMagicFile conf/magic<br />
 겹쳐서 사용하여 더 복잡한 효과를 얻을 수 있다.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="file-and-web" id="file-and-web">파일시스템과 웹공간</a></h2>
+<h2><a name="file-and-web" id="file-and-web">파일시스템과 웹공간</a><a title="Permanent link" href="#file-and-web" class="permalink">&para;</a></h2>
 
 <p>가장 자주 사용되는 설정 섹션은 파일시스템과 웹공간(webspace)의
 특정 장소에 대한 설정을 변경하는 것들이다. 먼저 이 둘의 차이를
@@ -267,7 +267,7 @@ URL이 아닌 모든 요청에 적용되므로 완벽하게 안전하다.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="virtualhost" id="virtualhost">가상호스트</a></h2>
+<h2><a name="virtualhost" id="virtualhost">가상호스트</a><a title="Permanent link" href="#virtualhost" class="permalink">&para;</a></h2>
 
 <p><code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
 섹션은 특정 호스트에 적용되는 지시어들을 포함한다. 이는 한
@@ -276,7 +276,7 @@ URL이 아닌 모든 요청에 적용되므로 완벽하게 안전하다.</p>
 참고하라.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="proxy" id="proxy">프록시</a></h2>
+<h2><a name="proxy" id="proxy">프록시</a><a title="Permanent link" href="#proxy" class="permalink">&para;</a></h2>
 
 <p><code class="directive"><a href="./mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code>와
 <code class="directive"><a href="./mod/mod_proxy.html#proxymatch">&lt;ProxyMatch&gt;</a></code>
@@ -293,7 +293,7 @@ Deny from all<br />
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="whatwhere" id="whatwhere">안에 어떤 지시어를 사용할 수
-있나?</a></h2>
+있나?</a><a title="Permanent link" href="#whatwhere" class="permalink">&para;</a></h2>
 
 <p>어떤 설정 섹션안에 사용할 수 있는 지시어를 알려면 지시어의
 <a href="mod/directive-dict.html#Context">사용장소</a>를 확인하라.
@@ -317,7 +317,7 @@ Deny from all<br />
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="mergin" id="mergin">섹션들이 결합하는 방법</a></h2>
+<h2><a name="mergin" id="mergin">섹션들이 결합하는 방법</a><a title="Permanent link" href="#mergin" class="permalink">&para;</a></h2>
 
 <p>설정 섹션은 매우 특별한 방법으로 적용된다. 이 순서가 설정
 지시어를 해석하는 방법에 중요한 영향을 주기때문에 이 방법을

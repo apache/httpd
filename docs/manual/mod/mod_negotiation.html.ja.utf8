@@ -74,7 +74,7 @@
 <li><a href="#comments_section">コメント</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="typemaps" id="typemaps">タイプマップ</a></h2>
+<h2><a name="typemaps" id="typemaps">タイプマップ</a><a title="Permanent link" href="#typemaps" class="permalink">&para;</a></h2>
     <p>タイプマップは RFC 822 のメールヘッダに類似した書式です。
     ドキュメントの記述が空行で分離されて書かれていて、ハッシュ文字
     ('#') で始まる行はコメントとして扱われます。
@@ -163,7 +163,7 @@
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="multiviews" id="multiviews">MultiViews</a></h2>
+<h2><a name="multiviews" id="multiviews">MultiViews</a><a title="Permanent link" href="#multiviews" class="permalink">&para;</a></h2>
     <p>MultiViews 探索は、<code>Multiviews</code> <code class="directive"><a href="../mod/core.html#options">Options</a></code> ディレクティブにより有効になります。
     サーバが <code>/some/dir/foo</code>
     へのリクエストを受け取り、<code>/some/dir/foo</code> が存在
@@ -181,7 +181,7 @@
     ディレクティブで設定します。</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CacheNegotiatedDocs" id="CacheNegotiatedDocs">CacheNegotiatedDocs</a> <a name="cachenegotiateddocs" id="cachenegotiateddocs">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="CacheNegotiatedDocs" id="CacheNegotiatedDocs">CacheNegotiatedDocs</a> <a name="cachenegotiateddocs" id="cachenegotiateddocs">ディレクティブ</a><a title="Permanent link" href="#cachenegotiateddocs" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>コンテントネゴシエーションされたドキュメントをプロキシサーバが
 キャッシュできるようにする</td></tr>
@@ -208,7 +208,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ForceLanguagePriority" id="ForceLanguagePriority">ForceLanguagePriority</a> <a name="forcelanguagepriority" id="forcelanguagepriority">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="ForceLanguagePriority" id="ForceLanguagePriority">ForceLanguagePriority</a> <a name="forcelanguagepriority" id="forcelanguagepriority">ディレクティブ</a><a title="Permanent link" href="#forcelanguagepriority" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>要求に合う単独のドキュメントが見つからなかったときに行なうことを指定
 </td></tr>
@@ -265,7 +265,7 @@
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LanguagePriority" id="LanguagePriority">LanguagePriority</a> <a name="languagepriority" id="languagepriority">ディレクティブ</a></h2>
+<div class="directive-section"><h2><a name="LanguagePriority" id="LanguagePriority">LanguagePriority</a> <a name="languagepriority" id="languagepriority">ディレクティブ</a><a title="Permanent link" href="#languagepriority" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>クライアントが優先度を示さなかったときの言語の variant の優先度を
 指定</td></tr>

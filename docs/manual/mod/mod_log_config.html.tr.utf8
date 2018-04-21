@@ -72,7 +72,7 @@
 <li><a href="#comments_section">Yorum</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="formats" id="formats">Günlük Girdilerinin Kişiselleştirilmesi</a></h2>
+<h2><a name="formats" id="formats">Günlük Girdilerinin Kişiselleştirilmesi</a><a title="Permanent link" href="#formats" class="permalink">&para;</a></h2>
 
     <p><code class="directive"><a href="#logformat">LogFormat</a></code> ve <code class="directive"><a href="#customlog">CustomLog</a></code> yönergelerinin biçem
       argümanı bir dizgedir. Bu dizge her isteği günlük dosyasına günlüklemek
@@ -324,14 +324,14 @@
     
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="security" id="security">Güvenlik Kaygıları</a></h2>
+<h2><a name="security" id="security">Güvenlik Kaygıları</a><a title="Permanent link" href="#security" class="permalink">&para;</a></h2>
     <p>Günlük dosyarının kaydedildiği dizine sunucuyu başlatan kullanıcı
       dışında diğer kullanıcılar tarafından yazılabiliyor olması halinde
       güvenliğinizden nasıl feragat etmiş olacağınız <a href="../misc/security_tips.html#serverroot">güvenlik ipuçları</a>
       belgesinde açıklanmıştır.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="BufferedLogs" id="BufferedLogs">BufferedLogs</a> <a name="bufferedlogs" id="bufferedlogs">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="BufferedLogs" id="BufferedLogs">BufferedLogs</a> <a name="bufferedlogs" id="bufferedlogs">Yönergesi</a><a title="Permanent link" href="#bufferedlogs" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Günlük girdilerini diske yazmadan önce bellekte tamponlar
 </td></tr>
@@ -355,7 +355,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CustomLog" id="CustomLog">CustomLog</a> <a name="customlog" id="customlog">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="CustomLog" id="CustomLog">CustomLog</a> <a name="customlog" id="customlog">Yönergesi</a><a title="Permanent link" href="#customlog" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Günlük dosyasın ismini ve girdi biçemini belirler.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>CustomLog  <var>dosya</var>|<var>borulu-süreç</var>
@@ -443,7 +443,7 @@ expr=<var>ifade</var>]</code></td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="GlobalLog" id="GlobalLog">GlobalLog</a> <a name="globallog" id="globallog">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="GlobalLog" id="GlobalLog">GlobalLog</a> <a name="globallog" id="globallog">Yönergesi</a><a title="Permanent link" href="#globallog" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Sets filename and format of log file</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>GlobalLog  <var>file</var>|<var>pipe</var>|<var>provider</var>
@@ -457,7 +457,7 @@ expr=<var>expression</var>]</code></td></tr>
 </table><p>Bu yönergenin belgesi henüz Türkçeye çevrilmedi.
             Lütfen İngilizce sürümüne bakınız.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LogFormat" id="LogFormat">LogFormat</a> <a name="logformat" id="logformat">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="LogFormat" id="LogFormat">LogFormat</a> <a name="logformat" id="logformat">Yönergesi</a><a title="Permanent link" href="#logformat" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Bir günlük dosyasında kullanılmak üzere girdi biçemi tanımlar.
 </td></tr>
@@ -497,7 +497,7 @@ expr=<var>expression</var>]</code></td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="TransferLog" id="TransferLog">TransferLog</a> <a name="transferlog" id="transferlog">Yönergesi</a></h2>
+<div class="directive-section"><h2><a name="TransferLog" id="TransferLog">TransferLog</a> <a name="transferlog" id="transferlog">Yönergesi</a><a title="Permanent link" href="#transferlog" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Bir günlük dosyasının yerini belirtir.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>TransferLog <var>dosya</var>|<var>borulu-süreç</var>

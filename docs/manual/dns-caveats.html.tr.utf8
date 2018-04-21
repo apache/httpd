@@ -46,7 +46,7 @@
 </ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><a href="#comments_section">Yorum</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="example" id="example">Basit Bir Örnek</a></h2>
+<h2><a name="example" id="example">Basit Bir Örnek</a><a title="Permanent link" href="#example" class="permalink">&para;</a></h2>
     
 
     <div class="example"><p><code>
@@ -103,7 +103,7 @@
     </code></p></div>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="denial" id="denial">Hizmet Reddi</a></h2>
+<h2><a name="denial" id="denial">Hizmet Reddi</a><a title="Permanent link" href="#denial" class="permalink">&para;</a></h2>
     
 
     <p>Şöyle bir yapılandırmanız olsun:</p>
@@ -144,7 +144,7 @@
       mevcuttur</a>.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="main" id="main">"Ana Sunucu" Adresi</a></h2>
+<h2><a name="main" id="main">"Ana Sunucu" Adresi</a><a title="Permanent link" href="#main" class="permalink">&para;</a></h2>
     
 
     <p><a href="vhosts/name-based.html">İsme dayalı sanal konak
@@ -173,7 +173,7 @@
       sisteminizin SSS belgelerini ve kılavuz sayfalarını okumaktır.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="tips" id="tips">Bu Sorunlardan Kaçınmak için İpuçları</a></h2>
+<h2><a name="tips" id="tips">Bu Sorunlardan Kaçınmak için İpuçları</a><a title="Permanent link" href="#tips" class="permalink">&para;</a></h2>
     
 
     <ul>

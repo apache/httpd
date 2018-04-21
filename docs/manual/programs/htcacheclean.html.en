@@ -46,7 +46,7 @@
 </ul><h3>See also</h3><ul class="seealso"><li><code class="module"><a href="../mod/mod_cache_disk.html">mod_cache_disk</a></code></li><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="synopsis" id="synopsis">Synopsis</a></h2>
+<h2><a name="synopsis" id="synopsis">Synopsis</a><a title="Permanent link" href="#synopsis" class="permalink">&para;</a></h2>
     <p><code><strong>htcacheclean</strong>
     [ -<strong>D</strong> ]
     [ -<strong>v</strong> ]
@@ -85,7 +85,7 @@
     <var>url</var></code></p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="options" id="options">Options</a></h2>
+<h2><a name="options" id="options">Options</a><a title="Permanent link" href="#options" class="permalink">&para;</a></h2>
     <dl>
     <dt><code>-d<var>interval</var></code></dt>
     <dd>Daemonize and repeat cache cleaning every <var>interval</var> minutes.
@@ -164,7 +164,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="delete" id="delete">Deleting a specific URL</a></h2>
+<h2><a name="delete" id="delete">Deleting a specific URL</a><a title="Permanent link" href="#delete" class="permalink">&para;</a></h2>
     <p>If <code>htcacheclean</code> is passed one or more URLs, each URL will
     be deleted from the cache. If multiple variants of an URL exists, all
     variants would be deleted.</p>
@@ -180,7 +180,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="list" id="list">Listing URLs in the Cache</a></h2>
+<h2><a name="list" id="list">Listing URLs in the Cache</a><a title="Permanent link" href="#list" class="permalink">&para;</a></h2>
     <p>By passing the <code>-a</code> or <code>-A</code> options to
     <code>htcacheclean</code>, the URLs within the cache will be listed
     as they are found, one URL per line. The <code>-A</code> option
@@ -206,7 +206,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="exit" id="exit">Exit Status</a></h2>
+<h2><a name="exit" id="exit">Exit Status</a><a title="Permanent link" href="#exit" class="permalink">&para;</a></h2>
     <p><code>htcacheclean</code> returns a zero status ("true") if all
     operations were successful, <code>1</code> otherwise. If an URL is
     specified, and the URL was cached and successfully removed,
