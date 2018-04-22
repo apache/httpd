@@ -331,7 +331,7 @@ static int uwsgi_response(request_rec *r, proxy_conn_rec * backend,
     }
     else {
         /* 2616 requires the space in Status-Line; the origin
-         * server may have sent one but ap_rgetline_core will
+         * server may have sent one but ap_rgetline will
          * have stripped it. */
         buffer[status_end] = ' ';
         buffer[status_end + 1] = '\0';

@@ -1431,7 +1431,7 @@ int ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                 buffer[12] = keepchar;
             } else {
                 /* 2616 requires the space in Status-Line; the origin
-                 * server may have sent one but ap_rgetline_core will
+                 * server may have sent one but ap_rgetline will
                  * have stripped it. */
                 buffer[12] = ' ';
                 buffer[13] = '\0';

@@ -675,29 +675,9 @@ AP_DECLARE(apr_status_t) ap_fgetline(char **s, apr_size_t n,
  * Note: genuinely calls, ap_fgetline(s, n, read, r->proto_input_filters,
  *                                    flags, bb, r->pool)
  */
-AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
-                                          apr_size_t *read, request_rec *r,
-                                          int flags, apr_bucket_brigade *bb);
-
-/**
- * @see ap_rgetline_core
- *
- * Note: on ASCII boxes, ap_rgetline is a macro which simply calls
- *       ap_rgetline_core to get the line of input.
- *
- *       on EBCDIC boxes, ap_rgetline is a wrapper function which
- *       translates ASCII protocol lines to the local EBCDIC code page
- *       after getting the line of input.
- *
- */
-#if APR_CHARSET_EBCDIC
 AP_DECLARE(apr_status_t) ap_rgetline(char **s, apr_size_t n,
                                      apr_size_t *read, request_rec *r,
                                      int flags, apr_bucket_brigade *bb);
-#else /* ASCII box */
-#define ap_rgetline(s, n, read, r, flags, bb) \
-        ap_rgetline_core((s), (n), (read), (r), (flags), (bb))
-#endif
 
 /**
  * Get the method number associated with the given string, assumed to
