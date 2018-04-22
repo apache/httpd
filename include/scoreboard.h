@@ -157,6 +157,10 @@ typedef struct {
 } scoreboard;
 
 typedef struct ap_sb_handle_t ap_sb_handle_t;
+struct ap_sb_handle_t {
+    int child_num;
+    int thread_num;
+};
 
 /*
  * Creation and deletion (internal)
