@@ -550,38 +550,27 @@ AP_DECLARE(apr_status_t) ap_fgetline(char **s, apr_size_t n,
  * stricter protocol adherence and better input filter behavior during
  * chunked trailer processing (for http).
  */
-AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
-                                          apr_size_t *read, request_rec *r,
-                                          int flags, apr_bucket_brigade *bb)
-{
-    return ap_fgetline_core(s, n, read, r->proto_input_filters, flags,
-                            bb, r->pool);
-}
-
-#if APR_CHARSET_EBCDIC
 AP_DECLARE(apr_status_t) ap_rgetline(char **s, apr_size_t n,
                                      apr_size_t *read, request_rec *r,
                                      int flags, apr_bucket_brigade *bb)
 {
-    /* on ASCII boxes, ap_rgetline is a macro which simply invokes
-     * ap_rgetline_core with the same parms
-     *
-     * on EBCDIC boxes, each complete http protocol input line needs to be
-     * translated into the code page used by the compiler.  Since
-     * ap_fgetline_core uses recursion, we do the translation in a wrapper
-     * function to ensure that each input character gets translated only once.
-     */
     apr_status_t rv;
 
     rv = ap_fgetline_core(s, n, read, r->proto_input_filters, flags,
                           bb, r->pool);
+#if APR_CHARSET_EBCDIC
+    /* On EBCDIC boxes, each complete http protocol input line needs to be
+     * translated into the code page used by the compiler.  Since
+     * ap_fgetline_core uses recursion, we do the translation in a wrapper
+     * function to ensure that each input character gets translated only once.
+     */
     if (*read) {
         ap_xlate_proto_from_ascii(*s, *read);
     }
+#endif
 
     return rv;
 }
-#endif
 
 AP_DECLARE(int) ap_getline(char *s, int n, request_rec *r, int flags)
 {
