@@ -192,7 +192,7 @@ AP_DECLARE(apr_time_t) ap_rationalize_mtime(request_rec *r, apr_time_t mtime)
  * caused by MIME folding (or broken clients) if fold != 0, and place it
  * in the buffer s, of size n bytes, without the ending newline.
  *
- * If s is NULL, ap_fgetline_impl will allocate necessary memory from p.
+ * If s is NULL, ap_fgetline_core will allocate necessary memory from p.
  *
  * Returns APR_SUCCESS if there are no problems and sets *read to be
  * the full length of s.
@@ -209,7 +209,7 @@ AP_DECLARE(apr_time_t) ap_rationalize_mtime(request_rec *r, apr_time_t mtime)
  *        If no LF is detected on the last line due to a dropped connection
  *        or a full buffer, that's considered an error.
  */
-static apr_status_t ap_fgetline_impl(char **s, apr_size_t n,
+static apr_status_t ap_fgetline_core(char **s, apr_size_t n,
                                      apr_size_t *read, ap_filter_t *f,
                                      int flags, apr_bucket_brigade *bb,
                                      apr_pool_t *p)
@@ -469,7 +469,7 @@ static apr_status_t ap_fgetline_impl(char **s, apr_size_t n,
 
                     next_size = n - bytes_handled;
 
-                    rv = ap_fgetline_impl(&tmp, next_size, &next_len, f,
+                    rv = ap_fgetline_core(&tmp, next_size, &next_len, f,
                                           flags & ~AP_GETLINE_FOLD, bb, p);
                     if (rv != APR_SUCCESS) {
                         goto cleanup;
@@ -527,7 +527,22 @@ AP_DECLARE(apr_status_t) ap_fgetline(char **s, apr_size_t n,
                                      int flags, apr_bucket_brigade *bb,
                                      apr_pool_t *p)
 {
-    return ap_fgetline_impl(s, n, read, f, flags, bb, p);
+    apr_status_t rv;
+    
+    rv = ap_fgetline_core(s, n, read, f, flags, bb, p);
+
+#if APR_CHARSET_EBCDIC
+    /* On EBCDIC boxes, each complete http protocol input line needs to be
+     * translated into the code page used by the compiler.  Since
+     * ap_fgetline_core uses recursion, we do the translation in a wrapper
+     * function to ensure that each input character gets translated only once.
+     */
+    if (*read) {
+        ap_xlate_proto_from_ascii(*s, *read);
+    }
+#endif
+
+    return rv;
 }
 
 /* Same as ap_fgetline(), working on r's pool and protocol input filters.
@@ -539,7 +554,7 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
                                           apr_size_t *read, request_rec *r,
                                           int flags, apr_bucket_brigade *bb)
 {
-    return ap_fgetline_impl(s, n, read, r->proto_input_filters, flags,
+    return ap_fgetline_core(s, n, read, r->proto_input_filters, flags,
                             bb, r->pool);
 }
 
@@ -553,16 +568,17 @@ AP_DECLARE(apr_status_t) ap_rgetline(char **s, apr_size_t n,
      *
      * on EBCDIC boxes, each complete http protocol input line needs to be
      * translated into the code page used by the compiler.  Since
-     * ap_rgetline_core uses recursion, we do the translation in a wrapper
+     * ap_fgetline_core uses recursion, we do the translation in a wrapper
      * function to ensure that each input character gets translated only once.
      */
     apr_status_t rv;
 
-    rv = ap_fgetline_impl(s, n, read, r->proto_input_filters, flags,
+    rv = ap_fgetline_core(s, n, read, r->proto_input_filters, flags,
                           bb, r->pool);
     if (*read) {
         ap_xlate_proto_from_ascii(*s, *read);
     }
+
     return rv;
 }
 #endif
@@ -579,8 +595,7 @@ AP_DECLARE(int) ap_getline(char *s, int n, request_rec *r, int flags)
     }
 
     tmp_bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
-    rv = ap_fgetline_impl(&s, n, &len, r->proto_input_filters, flags,
-                          tmp_bb, r->pool);
+    rv = ap_rgetline(&s, n, &len, r, flags, tmp_bb);
     apr_brigade_destroy(tmp_bb);
 
     /* Map the out-of-space condition to the old API. */
