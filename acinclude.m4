@@ -982,3 +982,111 @@ AC_DEFUN([APACHE_ADD_GCC_CFLAG], [
   fi
   undefine([ap_gcc_ckvar])
 ])
+
+
+dnl
+dnl APACHE_CHECK_JANSSON
+dnl
+dnl Configure for libjansson, giving preference to
+dnl "--with-jansson=<path>" if it was specified.
+dnl
+AC_DEFUN([APACHE_CHECK_JANSSON],[
+  AC_CACHE_CHECK([for jansson], [ac_cv_jansson], [
+    dnl initialise the variables we use
+    ac_cv_jansson=no
+    ap_jansson_found=""
+    ap_jansson_base=""
+    ap_jansson_libs=""
+
+    dnl Determine the jansson base directory, if any
+    AC_MSG_CHECKING([for user-provided jansson base directory])
+    AC_ARG_WITH(jansson, APACHE_HELP_STRING(--with-jansson=PATH, jansson installation directory), [
+      dnl If --with-jansson specifies a directory, we use that directory
+      if test "x$withval" != "xyes" -a "x$withval" != "x"; then
+        dnl This ensures $withval is actually a directory and that it is absolute
+        ap_jansson_base="`cd $withval ; pwd`"
+      fi
+    ])
+    if test "x$ap_jansson_base" = "x"; then
+      AC_MSG_RESULT(none)
+    else
+      AC_MSG_RESULT($ap_jansson_base)
+    fi
+
+    dnl Run header and version checks
+    saved_CPPFLAGS="$CPPFLAGS"
+    saved_LIBS="$LIBS"
+    saved_LDFLAGS="$LDFLAGS"
+
+    dnl Before doing anything else, load in pkg-config variables
+    if test -n "$PKGCONFIG"; then
+      saved_PKG_CONFIG_PATH="$PKG_CONFIG_PATH"
+      AC_MSG_CHECKING([for pkg-config along $PKG_CONFIG_PATH])
+      if test "x$ap_jansson_base" != "x" ; then
+        if test -f "${ap_jansson_base}/lib/pkgconfig/libjansson.pc"; then
+          dnl Ensure that the given path is used by pkg-config too, otherwise
+          dnl the system libjansson.pc might be picked up instead.
+          PKG_CONFIG_PATH="${ap_jansson_base}/lib/pkgconfig${PKG_CONFIG_PATH+:}${PKG_CONFIG_PATH}"
+          export PKG_CONFIG_PATH
+        elif test -f "${ap_jansson_base}/lib64/pkgconfig/libjansson.pc"; then
+          dnl Ensure that the given path is used by pkg-config too, otherwise
+          dnl the system libjansson.pc might be picked up instead.
+          PKG_CONFIG_PATH="${ap_jansson_base}/lib64/pkgconfig${PKG_CONFIG_PATH+:}${PKG_CONFIG_PATH}"
+          export PKG_CONFIG_PATH
+        fi
+      fi
+      AC_ARG_ENABLE(jansson-staticlib-deps,APACHE_HELP_STRING(--enable-jansson-staticlib-deps,[link mod_md with dependencies of libjansson's static libraries (as indicated by "pkg-config --static"). Must be specified in addition to --enable-md.]), [
+        if test "$enableval" = "yes"; then
+          PKGCONFIG_LIBOPTS="--static"
+        fi
+      ])
+      ap_jansson_libs="`$PKGCONFIG $PKGCONFIG_LIBOPTS --libs-only-l --silence-errors libjansson`"
+      if test $? -eq 0; then
+        ap_jansson_found="yes"
+        pkglookup="`$PKGCONFIG --cflags-only-I libjansson`"
+        APR_ADDTO(CPPFLAGS, [$pkglookup])
+        APR_ADDTO(MOD_CFLAGS, [$pkglookup])
+        pkglookup="`$PKGCONFIG $PKGCONFIG_LIBOPTS --libs-only-L libjansson`"
+        APR_ADDTO(LDFLAGS, [$pkglookup])
+        APR_ADDTO(MOD_LDFLAGS, [$pkglookup])
+        pkglookup="`$PKGCONFIG $PKGCONFIG_LIBOPTS --libs-only-other libjansson`"
+        APR_ADDTO(LDFLAGS, [$pkglookup])
+        APR_ADDTO(MOD_LDFLAGS, [$pkglookup])
+      fi
+      PKG_CONFIG_PATH="$saved_PKG_CONFIG_PATH"
+    fi
+
+    dnl fall back to the user-supplied directory if not found via pkg-config
+    if test "x$ap_jansson_base" != "x" -a "x$ap_jansson_found" = "x"; then
+      APR_ADDTO(CPPFLAGS, [-I$ap_jansson_base/include])
+      APR_ADDTO(MOD_CFLAGS, [-I$ap_jansson_base/include])
+      APR_ADDTO(LDFLAGS, [-L$ap_jansson_base/lib])
+      APR_ADDTO(MOD_LDFLAGS, [-L$ap_jansson_base/lib])
+      if test "x$ap_platform_runtime_link_flag" != "x"; then
+        APR_ADDTO(LDFLAGS, [$ap_platform_runtime_link_flag$ap_jansson_base/lib])
+        APR_ADDTO(MOD_LDFLAGS, [$ap_platform_runtime_link_flag$ap_jansson_base/lib])
+      fi
+    fi
+
+    # attempts to include jansson.h fail me. So lets make sure we can at least
+    # include its other header file
+    AC_TRY_COMPILE([#include <jansson_config.h>],[],
+      [AC_MSG_RESULT(OK) 
+       ac_cv_jansson=yes], 
+       [AC_MSG_RESULT(FAILED)])
+
+    if test "x$ac_cv_jansson" = "xyes"; then
+      ap_jansson_libs="${ap_jansson_libs:--ljansson} `$apr_config --libs`"
+      APR_ADDTO(MOD_LDFLAGS, [$ap_jansson_libs])
+      APR_ADDTO(LIBS, [$ap_jansson_libs])
+    fi
+
+    dnl restore
+    CPPFLAGS="$saved_CPPFLAGS"
+    LIBS="$saved_LIBS"
+    LDFLAGS="$saved_LDFLAGS"
+  ])
+  if test "x$ac_cv_jansson" = "xyes"; then
+    AC_DEFINE(HAVE_JANSSON, 1, [Define if jansson is available])
+  fi
+])
