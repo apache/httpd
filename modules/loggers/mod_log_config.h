@@ -30,6 +30,8 @@
 #ifndef _MOD_LOG_CONFIG_H
 #define _MOD_LOG_CONFIG_H 1
 
+typedef struct config_log_state config_log_state;
+
 /**
  * callback function prototype for a external log handler
  */
@@ -39,7 +41,7 @@ typedef const char *ap_log_handler_fn_t(request_rec *r, char *a);
  * callback function prototype for external writer initialization.
  */
 typedef void *ap_log_writer_init(apr_pool_t *p, server_rec *s,
-                                 const char *name);
+                                 config_log_state* cls);
 /**
  * callback which gets called where there is a log line to write.
  */
@@ -49,7 +51,8 @@ typedef apr_status_t ap_log_writer(
                             const char **portions,
                             int *lengths,
                             int nelts,
-                            apr_size_t len);
+                            apr_size_t len,
+                            int chunk_msgs);
 
 typedef struct ap_log_handler {
     ap_log_handler_fn_t *func;

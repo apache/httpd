@@ -104,11 +104,6 @@ AP_IMPLEMENT_HOOK_RUN_ALL(int,pre_mpm,
 static APR_OPTIONAL_FN_TYPE(ap_logio_get_last_bytes)
                                 *pfn_ap_logio_get_last_bytes;
 
-struct ap_sb_handle_t {
-    int child_num;
-    int thread_num;
-};
-
 static int server_limit, thread_limit;
 static apr_size_t scoreboard_size;
 
