@@ -36,6 +36,17 @@ APACHE_MODULE(syslog, logging to syslog, , , all, [
   fi
 ])
 
+
+APACHE_MODULE(log_json, logging in jsonn, , , most, [
+  APACHE_CHECK_JANSSON
+  if test "x$ac_cv_jansson" != "xyes" ; then
+      AC_MSG_WARN([libjansson not found])
+      enable_log_json="no"
+  else
+      enable_log_json="yes"
+  fi
+])
+
 APACHE_MODULE(log_config, logging configuration.  You won't be able to log requests to the server without this module., , , yes)
 APACHE_MODULE(log_debug, configurable debug logging, , , most)
 APACHE_MODULE(log_forensic, forensic logging)
