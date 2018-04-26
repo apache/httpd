@@ -132,6 +132,11 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) core: restore r->method after internal redirect to errordocument so %<m
+     can be logged. PR62186
+     trunk patch: https://svn.apache.org/r1828920
+     2.4.x patch: svn merge -c 1828920 ^/httpd/httpd/trunk .
+     +1: covener, jhriggs, jim
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -242,12 +247,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: https://svn.apache.org/r1828890
      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/hot-spare-2.4.patch
      +1: jhriggs, jim
-
-  *) core: restore r->method after internal redirect to errordocument so %<m
-     can be logged. PR62186
-     trunk patch: https://svn.apache.org/r1828920
-     2.4.x patch: svn merge -c 1828920 ^/httpd/httpd/trunk .
-     +1: covener, jhriggs, jim
 
   *) core: use strncmp in check_errorlog_dir and core_dump_config when checking
      if the ErrorLog directive is configured with the 'syslog' prefix. PR 62102
