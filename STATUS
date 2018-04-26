@@ -132,11 +132,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) core: restore r->method after internal redirect to errordocument so %<m
-     can be logged. PR62186
-     trunk patch: https://svn.apache.org/r1828920
-     2.4.x patch: svn merge -c 1828920 ^/httpd/httpd/trunk .
-     +1: covener, jhriggs, jim
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
