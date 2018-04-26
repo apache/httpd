@@ -119,6 +119,15 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
+  *) mod_slotmem_shm: https://bz.apache.org/bugzilla/show_bug.cgi?id=62277
+                      https://bz.apache.org/bugzilla/show_bug.cgi?id=62308
+
+  *) mod_ssl: Restore 2.4.29 behaviour in SSL vhost merging/enabling
+              which broke some rare but previously-working configs.
+     trunk patch: https://svn.apache.org/r1829513
+     2.4.x patch: svn merge -c 1829513 ^/httpd/httpd/trunk .
+     +1: jorton,
+
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
@@ -250,12 +259,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
               with this if someone uses "SYSLOG" rather than "syslog" in the
               config, but I think the risk is minimal/nonexistent and
               acceptable. +1
-
-  *) mod_ssl: Restore 2.4.29 behaviour in SSL vhost merging/enabling
-              which broke some rare but previously-working configs.
-     trunk patch: https://svn.apache.org/r1829513
-     2.4.x patch: svn merge -c 1829513 ^/httpd/httpd/trunk .
-     +1: jorton,
 
   *) ap_rgetline()+mod_proxy_http: Add and handle AP_GETLINE_NOSPC_EOL flag,
      fixes responses header thrown away on APR_ENOSPC, and allow their size to
