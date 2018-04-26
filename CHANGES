@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.34
 
+  *) core: Preserve the original HTTP request method in the '%<m' LogFormat
+     when an path-based ErrorDocument is used.  PR 62186. 
+     [Micha Lenk <micha lenk.info>]
+
   *) mod_remoteip: make proxy-protocol work on slave connections, e.g. in HTTP/2
      requests. See also https://github.com/roadrunner2/mod-proxy-protocol/issues/6
      [Stefan Eissing]
