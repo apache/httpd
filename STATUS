@@ -126,7 +126,7 @@ RELEASE SHOWSTOPPERS:
               which broke some rare but previously-working configs.
      trunk patch: https://svn.apache.org/r1829513
      2.4.x patch: svn merge -c 1829513 ^/httpd/httpd/trunk .
-     +1: jorton,
+     +1: jorton, jim
 
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
@@ -229,25 +229,25 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1827166
      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/h2-1.10.17.patch
      Resetting votes after latest additions
-     +1: icing
+     +1: icing, jim
 
   *) mod_http2: fix unnecessary timeout waits in case streams are aborted.
      trunk patch: http://svn.apache.org/r1828879
      2.4.x patch: svn merge -c 1828879 ^/httpd/httpd/trunk .
-     +1: icing
+     +1: icing, jim
 
   *) mod_proxy_balancer: Add hot spare member type and corresponding flag (R). Hot spare members are
      used as drop-in replacements for unusable workers in the same load balancer set. This differs
      from hot standbys which are only used when all workers in a set are unusable. PR 61140.
      trunk patch: https://svn.apache.org/r1828890
      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/hot-spare-2.4.patch
-     +1: jhriggs
+     +1: jhriggs, jim
 
   *) core: restore r->method after internal redirect to errordocument so %<m
      can be logged. PR62186
      trunk patch: https://svn.apache.org/r1828920
      2.4.x patch: svn merge -c 1828920 ^/httpd/httpd/trunk .
-     +1: covener, jhriggs
+     +1: covener, jhriggs, jim
 
   *) core: use strncmp in check_errorlog_dir and core_dump_config when checking
      if the ErrorLog directive is configured with the 'syslog' prefix. PR 62102
