@@ -268,6 +268,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   (convenient patch, otherwise trunk works modulo CHANGES/MMN)
      +1: ylavic,
 
+  *) mod_http2: adding regular memory cleanup when transferring large response bodies. This
+     reduces memory footprint and avoids memory exhaustion when transferring large files
+     on 32-bit architectures. Fixes PR 62325.
+     trunk patch: http://svn.apache.org/r1830419
+     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/h2_beam_purge.patch
+     +1: icing
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
