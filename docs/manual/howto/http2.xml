@@ -289,7 +289,7 @@ H2Push Off
     <highlight language="config">
 H2EarlyHints on
     </highlight>
-    <p>(It is no on by default since some older browser tripped on such responses.)</p>
+    <p>(It is not enabled by default since some older browser tripped on such responses.)</p>
     <p>If this feature is on, you can the directive <code>H2PushResource</code> to 
     trigger early hints and resource PUSHes:</p>
     <highlight language="config">
