@@ -46,7 +46,7 @@
     to the same backend are sent over a single TCP connection
     whenever possible (namely when the connection can be re-used).</p>
 
-    <p>Caveat: there will be no attemp to consolidate multiple HTTP/1.1 
+    <p>Caveat: there will be no attempt to consolidate multiple HTTP/1.1 
     frontend requests (configured to be proxied to the same backend)
     into HTTP/2 streams belonging to the same HTTP/2 request.
     Each HTTP/1.1 frontend request will be proxied to the backend using
@@ -114,6 +114,19 @@ ProxyPassReverse "/app" "http://app.example.com"
         <dt>proxy-status</dt>
         <dd>The HTTP/2 status received from the backend server.</dd>
     </dl>
+</section>
+
+<section id="h2push"><title>HTTP/2 PUSH</title>
+    <p>The module does not support the HTTP/2 feature PUSH. Backend servers
+    that would like to advertise preload resources should send the appropriate 
+    <code>Link</code> headers.</p>
+    <p>If available, they may do so using the <code>"103 Early Hints"</code> 
+    intermediate responses as specified in 
+    <a href="https://tools.ietf.org/html/rfc8297">RFC 8297</a>. This will give
+    the best performance. If the client is talking HTTP/2 as well, this may
+    then result in a PUSH from Apache to the client or just in forwarding
+    the 103 response.</p>
+    
 </section>
 
 </modulesynopsis>
