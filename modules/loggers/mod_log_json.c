@@ -26,6 +26,23 @@
 
 #include "apr_strings.h"
 
+/* jansson thinks everyone compiles with the platform's cc in its fullest capabilities
+ * when undefining their INLINEs, we get static, unused functions, arg 
+ */
+#if defined(__GNUC__)
+#if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)
+#pragma GCC diagnostic push
+#endif
+#pragma GCC diagnostic ignored "-Wunused-function"
+#pragma GCC diagnostic ignored "-Wunreachable-code"
+#elif defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-function"
+#endif
+
+#include <jansson_config.h>
+#undef  JSON_INLINE
+#define JSON_INLINE
 #include <jansson.h>
 
 APLOG_USE_MODULE(log_json);
@@ -57,6 +74,7 @@ log_json(request_rec *r, char *a)
     char *out;
     apr_bucket_brigade *bb;
     json_t *obj;
+    json_t *hdrs;
 
     obj = json_object();
 
@@ -76,7 +94,7 @@ log_json(request_rec *r, char *a)
         json_object_set_new_nocheck(obj, "user", json_string(r->user));
     }
 
-    json_t *hdrs = json_object();
+    hdrs = json_object();
     json_object_set_new_nocheck(hdrs, "user-agent",
         json_string(apr_table_get(r->headers_in, "User-Agent")));
     json_object_set_new_nocheck(obj, "hdrs", hdrs);
@@ -134,8 +152,6 @@ static int
 log_json_post_config(
     apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *s)
 {
-    apr_status_t rv;
-    server_rec *snxt;
     void *userdata_data = NULL;
     const char *userdata_key = "log_json_init";
 
