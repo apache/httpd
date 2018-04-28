@@ -261,6 +261,50 @@ H2Push Off
     is the <a href="https://tools.ietf.org/html/draft-ruellan-http-accept-push-policy-00">
     Accept-Push-Policy Header Field</a> where a client can, for each request, define
     what kind of PUSHes it accepts.</p>
+    <p>
+    PUSH might not always trigger the request/response/performance that one expects or 
+    hopes for. There are various studies on this topic to be found on the web that explain
+    benefits and weaknesses and how different features of client and network influence
+    the outcome. For example: just because the server PUSHes a resource does not mean
+    a browser will actually use the data.</p>
+    <p>The major thing that influences the response being PUSHed is the request that was
+    simulated. The request URL for a PUSH is given by the application, but where do the
+    request headers come from? For example, will the PUSH request a <code>accept-language</code>
+    header and if yes with what value?</p>
+    <p>Apache will look at the original request (the one that triggered the PUSH) and copy the 
+    following headers over to PUSH requests: <code>user-agent</code>, <code>accept</code>, 
+    <code>accept-encoding</code>, <code>accept-language</code>, <code>cache-control</code>.</p>
+    <p>All other headers are ignored. Cookies will also not be copied over. PUSHing resources
+    that require a cookie to be present will not work. This can be a matter of debate. But 
+    unless this is more clearly discussed with browser, let's err on the side of caution and
+    not expose cookie where they might oridinarily not be visible.</p>
+  </section>
+
+  <section id="earlyhints">
+    <title>Early Hints</title>
+    <p>An alternative to PUSHing resources is to send <code>Link</code> headers to the
+    client before the response is even ready. This uses the HTTP feature called "Early Hints" and
+    is described in <a href="https://tools.ietf.org/html/rfc8297">RFC 8297</a>.</p>
+    <p>In order to use this, you need to explicitly enable it on the server via</p>
+    <highlight language="config">
+H2EarlyHints on
+    </highlight>
+    <p>(It is no on by default since some older browser tripped on such responses.)</p>
+    <p>If this feature is on, you can the directive <code>H2PushResource</code> to 
+    trigger early hints and resource PUSHes:</p>
+    <highlight language="config">
+&lt;Location /xxx.html&gt;
+    H2PushResource /xxx.css
+    H2PushResource /xxx.js
+&lt;/Location&gt;
+    </highlight>
+    <p>This will send out a <code>"103 Early Hints"</code> response to a client as soon
+    as the server <em>starts</em> processing the request. This may be much early than
+    the time the first response headers have been determined, depending on your web
+    application.</p>
+    <p>If <code>H2Push</code> is enabled, this will also start the PUSH right after the
+    103 response. If <code>H2Push</code> is disabled however, the 103 response will be send
+    nevertheless to the client.</p>
   </section>
   
 </manualpage>
