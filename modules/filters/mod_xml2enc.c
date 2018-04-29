@@ -397,24 +397,21 @@ static apr_status_t xml2enc_ffunc(ap_filter_t* f, apr_bucket_brigade* bb)
     /* move the data back to bb */
     APR_BRIGADE_CONCAT(bb, ctx->bbsave);
 
-    while (b = APR_BRIGADE_FIRST(bb), b != APR_BRIGADE_SENTINEL(bb)) {
+    while (!APR_BRIGADE_EMPTY(bb)) {
+        b = APR_BRIGADE_FIRST(bb);
         ctx->bytes = 0;
         if (APR_BUCKET_IS_METADATA(b)) {
             APR_BUCKET_REMOVE(b);
             APR_BRIGADE_INSERT_TAIL(ctx->bbnext, b);
-            /* This resource filter is over on EOS */
+            /* Besides FLUSH, aggregate meta buckets to send them at
+             * once below. This resource filter is over on EOS.
+             */
+            pending_meta = 1;
             if (APR_BUCKET_IS_EOS(b)) {
                 ap_remove_output_filter(f);
                 APR_BRIGADE_CONCAT(ctx->bbnext, bb);
-                rv = ap_pass_brigade(f->next, ctx->bbnext);
-                apr_brigade_cleanup(ctx->bbnext);
-                return rv;
             }
-            /* Besides FLUSH, aggregate meta buckets to send
-             * them at once below.
-             */
-            pending_meta = 1;
-            if (!APR_BUCKET_IS_FLUSH(b)) {
+            else if (!APR_BUCKET_IS_FLUSH(b)) {
                 continue;
             }
         }
