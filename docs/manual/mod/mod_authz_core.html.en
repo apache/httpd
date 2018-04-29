@@ -98,12 +98,12 @@
 Alias "/secure" "/webpages/secure"
 &lt;Directory "/webpages/secure"&gt;
     Require all granted
-    
+
     AuthBasicProvider file
-    
+
     AuthType Basic
     AuthName LDAP_Protected_Place
-    
+
     #implied OR operation
     Require ldap-group-alias1
     Require ldap-group-alias2
@@ -186,12 +186,12 @@ Alias "/secure" "/webpages/secure"
     with <code>KnockKnock/2.0</code> will be allowed access, and all
     others will be denied.</p>
 
-    <p>When the server looks up a path via an internal 
-    <a class="glossarylink" href="../glossary.html#subrequest" title="see glossary">subrequest</a> such as looking 
-    for a <code class="directive"><a href="../mod/mod_dir.html#directoryindex">DirectoryIndex</a></code> 
+    <p>When the server looks up a path via an internal
+    <a class="glossarylink" href="../glossary.html#subrequest" title="see glossary">subrequest</a> such as looking
+    for a <code class="directive"><a href="../mod/mod_dir.html#directoryindex">DirectoryIndex</a></code>
     or generating a directory listing with <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code>,
-    per-request environment variables are <em>not</em> inherited in the 
-    subrequest. Additionally, 
+    per-request environment variables are <em>not</em> inherited in the
+    subrequest. Additionally,
     <code class="directive"><a href="../mod/mod_setenvif.html#setenvif">SetEnvIf</a></code> directives
     are not separately evaluated in the subrequest due to the API phases
     <code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code> takes action in.</p>
@@ -249,7 +249,7 @@ Alias "/secure" "/webpages/secure"
 
     <pre class="prettyprint lang-config">&lt;RequireAll&gt;
     Require expr "!(%{QUERY_STRING} =~ /secret/)"
-    Require expr "%{REQUEST_URI} in { '/example.cgi', '/other.cgi' }" 
+    Require expr "%{REQUEST_URI} in { '/example.cgi', '/other.cgi' }"
 &lt;/RequireAll&gt;</pre>
 
 
@@ -257,7 +257,8 @@ Alias "/secure" "/webpages/secure"
 
 
   <p>The syntax is described in the <a href="../expr.html">ap_expr</a>
-  documentation.</p>
+  documentation. Before httpd 2.4.16, the surrounding double-quotes MUST be
+  omitted.</p>
 
   <p>Normally, the expression is evaluated before authentication. However, if
   the expression returns false and references the variable
@@ -505,12 +506,12 @@ Require group admin</pre>
     <div class="warning"><h3>Security Warning</h3>
     <p>Exercise caution when setting authorization directives in
     <code class="directive"><a href="../mod/core.html#location">Location</a></code> sections
-    that overlap with content served out of the filesystem.  
+    that overlap with content served out of the filesystem.
     By default, these <a href="../sections.html#merging">configuration sections</a> overwrite authorization configuration
-    in <code class="directive"><a href="../mod/core.html#directory">Directory</a></code>,  
+    in <code class="directive"><a href="../mod/core.html#directory">Directory</a></code>,
     and <code class="directive"><a href="../mod/core.html#files">Files</a></code> sections.</p>
-    <p>The <code class="directive"><a href="#authmerging">AuthMerging</a></code> directive 
-    can be used to control how authorization configuration sections are 
+    <p>The <code class="directive"><a href="#authmerging">AuthMerging</a></code> directive
+    can be used to control how authorization configuration sections are
     merged.</p>
     </div>
 
