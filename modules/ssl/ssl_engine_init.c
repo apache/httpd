@@ -582,7 +582,8 @@ static apr_status_t ssl_init_ctx_protocol(server_rec *s,
     char *cp;
     int protocol = mctx->protocol;
     SSLSrvConfigRec *sc = mySrvConfig(s);
-#if OPENSSL_VERSION_NUMBER >= 0x10100000L
+#if OPENSSL_VERSION_NUMBER >= 0x10100000L  && \
+	(!defined(LIBRESSL_VERSION_NUMBER) || LIBRESSL_VERSION_NUMBER >= 0x20800000L)
     int prot;
 #endif
 
