@@ -63,7 +63,7 @@
     via <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code> configurable logging formats:</p>
 
     <pre class="prettyprint lang-config">LogFormat "%{Apache}n %r %t" usertrack
-CustomLog logs/clickstream.log usertrack</pre>
+CustomLog "logs/clickstream.log" usertrack</pre>
 
 
 </div>
@@ -156,7 +156,7 @@ CustomLog logs/clickstream.log usertrack</pre>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Format of the cookie header field</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CookieStyle
-    <em>Netscape|Cookie|Cookie2|RFC2109|RFC2965</em></code></td></tr>
+    Netscape|Cookie|Cookie2|RFC2109|RFC2965</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>CookieStyle Netscape</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>

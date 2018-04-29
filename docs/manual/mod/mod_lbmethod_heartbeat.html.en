@@ -36,12 +36,12 @@
 <tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.3 and later</td></tr></table>
 <h3>Summary</h3>
 
-<p>lbmethod=heartbeat uses the services of <code class="module"><a href="../mod/mod_heartmonitor.html">mod_heartmonitor</a></code> to balance between origin servers that are providing
+<p><code>lbmethod=heartbeat</code> uses the services of <code class="module"><a href="../mod/mod_heartmonitor.html">mod_heartmonitor</a></code> to balance between origin servers that are providing
 heartbeat info via the <code class="module"><a href="../mod/mod_heartbeat.html">mod_heartbeat</a></code> module.</p>
 
 <p> This modules load balancing algorithm favors servers with more ready (idle)
-capacity over time, but does not select the server with the most ready capacity 
-every time.  Servers that have 0 active clients are penalized, with the 
+capacity over time, but does not select the server with the most ready capacity
+every time.  Servers that have 0 active clients are penalized, with the
 assumption that they are not fully initialized.</p>
 </div>
 <div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><h3 class="directives">Directives</h3>
