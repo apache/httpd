@@ -275,6 +275,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/h2_beam_purge.patch
      +1: icing
 
+  *) mod_xml2enc: Fix forwarding of error metadata/responses. PR 62180.
+     trunk patch: http://svn.apache.org/r1829038
+                  http://svn.apache.org/r1829039
+                  http://svn.apache.org/r1830523
+     2.4.x patch: svn merge -c 1829038,1829039,1830523 ^/httpd/httpd/trunk .
+                  (trunk works modulo CHANGES))
+     +1: ylavic,
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
