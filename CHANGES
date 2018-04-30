@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_http2: restoring the v1.10.16 keepalive timeout behavioud of mod_http2 (to be verified).
+     [Stefan Eissing]
+
   *) mod_http2: adding an abort function to slave connections' pools, so out-of-memory
      events lead to a control process abort, as on HTTP/1.x connections. [Stefan Eissing]
   

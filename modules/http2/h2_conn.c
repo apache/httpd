@@ -229,7 +229,19 @@ apr_status_t h2_conn_run(struct h2_ctx *ctx, conn_rec *c)
              && mpm_state != AP_MPMQ_STOPPING);
 
     if (c->cs) {
-        c->cs->state = CONN_STATE_LINGER;
+        switch (session->state) {
+            case H2_SESSION_ST_INIT:
+            case H2_SESSION_ST_IDLE:
+            case H2_SESSION_ST_BUSY:
+            case H2_SESSION_ST_WAIT:
+                c->cs->state = CONN_STATE_WRITE_COMPLETION;
+                break;
+            case H2_SESSION_ST_CLEANUP:
+            case H2_SESSION_ST_DONE:
+            default:
+                c->cs->state = CONN_STATE_LINGER;
+            break;
+        }
     }
 
     return APR_SUCCESS;
