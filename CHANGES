@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_http2: adding an abort function to slave connections' pools, so out-of-memory
+     events lead to a control process abort, as on HTTP/1.x connections. [Stefan Eissing]
+  
   *) mod_http2: adding regular memory cleanup when transferring large response bodies. This
      reduces memory footprint and avoids memory exhaustion when transferring large files
      on 32-bit architectures. Fixes PR 62325. [Stefan Eissing]
