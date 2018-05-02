@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) core: In ONE_PROCESS/debug mode, cleanup everything when exiting.
+     [Yann Ylavic]
+
   *) mod_http2: restoring the v1.10.16 keepalive timeout behavioud of mod_http2 (to be verified).
      [Stefan Eissing]
 

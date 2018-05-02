@@ -532,12 +532,15 @@ AP_DECLARE(void) ap_unixd_mpm_set_signals(apr_pool_t *pconf, int one_process)
     if (!one_process) {
         ap_fatal_signal_setup(ap_server_conf, pconf);
     }
-    else {
-        static int once = 0;
-        if (!once) {
-            atexit(ap_terminate);
-            once = 1;
-        }
+    else if (!ap_retained_data_get("ap_unixd_mpm_one_process_cleanup")) {
+        /* In one process mode (debug), httpd will exit immediately when asked
+         * to (SIGTERM/SIGINT) and never restart. We still want the cleanups to
+         * run though (such that e.g. temporary files/IPCs don't leak on the
+         * system), so the first time around we use atexit() to cleanup after
+         * ourselves.
+         */
+        ap_retained_data_create("ap_unixd_mpm_one_process_cleanup", 1);
+        atexit(ap_terminate);
     }
 
     /* Signals' handlers depend on retained data */
