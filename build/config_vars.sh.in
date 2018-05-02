@@ -53,7 +53,10 @@ exec sed "
 /^ENABLED_DSO_MODULES/d
 /^LOAD_ALL_MODULES/d
 /^NONPORTABLE_SUPPORT/d
+/_SRCLIB_DIRS/d
 /^UNITTEST_/d
+/^davlockdb/d
+/^other_targets/d
 /^MODULE_/d
 /^PORT/d
 /^SSLPORT/d
