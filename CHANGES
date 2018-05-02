@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_proxy_html: Fix variable interpolation and memory allocation failure
+     in ProxyHTMLURLMap.  [Ewald Dieterich <ewald mailbox.org>]
+
   *) core: In ONE_PROCESS/debug mode, cleanup everything when exiting.
      [Yann Ylavic]
 
