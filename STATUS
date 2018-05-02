@@ -271,7 +271,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_http2: adding regular memory cleanup when transferring large response bodies. This
      reduces memory footprint and avoids memory exhaustion when transferring large files
      on 32-bit architectures. Fixes PR 62325.
-     trunk patch: http://svn.apache.org/r1830419
      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/h2_beam_purge.patch
      +1: icing
 
@@ -282,6 +281,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1829038,1829039,1830523 ^/httpd/httpd/trunk .
                   (trunk works modulo CHANGES))
      +1: ylavic,
+
+  *) mod_http2: Restore keepalive timing of v1.10.16, see https://github.com/icing/mod_h2/issues/160.
+     trunk patch: http://svn.apache.org/1830562
+     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/h2_keepalive_restore.patch
+     +1: icing
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
