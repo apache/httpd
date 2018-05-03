@@ -1032,7 +1032,9 @@ const char *ssl_cmd_SSLCertificateKeyFile(cmd_parms *cmd,
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
     const char *err;
 
-    if ((err = ssl_cmd_check_file(cmd, &arg))) {
+    /* Check keyfile exists for non-ENGINE keys. */
+    if (!modssl_is_engine_key(arg)
+        && (err = ssl_cmd_check_file(cmd, &arg))) {
         return err;
     }
 

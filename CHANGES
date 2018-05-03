@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_ssl: Support loading private keys from an OpenSSL engine using a
+     PKCS#11 URI.  [Anderson Sasaki <ansasaki redhat.com>, Joe Orton]
+
   *) mod_slomem_shm: Handle a generation number when the slotmem size changes,
      modifying the number of proxy balancers or balancer members on restart
      could have prevented the server to load, notably on Windows. PR 62308.

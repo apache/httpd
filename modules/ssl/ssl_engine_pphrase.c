@@ -600,3 +600,52 @@ int ssl_pphrase_Handle_CB(char *buf, int bufsize, int verify, void *srv)
      */
     return (len);
 }
+
+#if defined(HAVE_OPENSSL_ENGINE_H) && defined(HAVE_ENGINE_INIT)
+apr_status_t modssl_load_engine_pkey(server_rec *s, apr_pool_t *p,
+                                     const char *keyid, EVP_PKEY **ppkey)
+{
+    SSLModConfigRec *mc = myModConfig(s);
+    EVP_PKEY *pPrivateKey = NULL;
+    ENGINE *e;
+    UI_METHOD *ui_method;
+
+    if (!mc->szCryptoDevice) {
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10131)
+                     "Init: Cannot load private key `%s' without engine",
+                     keyid);
+        return ssl_die(s);
+    }
+
+    /*
+     * Using the builtin OpenSSL UI only, for now...
+     */
+    ui_method = UI_OpenSSL();
+
+    if (!(e = ENGINE_by_id(mc->szCryptoDevice))) {
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10132)
+                     "Init: Failed to load Crypto Device API `%s'",
+                     mc->szCryptoDevice);
+        ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
+        return ssl_die(s);
+    }
+
+    if (APLOGdebug(s)) {
+        ENGINE_ctrl_cmd_string(e, "VERBOSE", NULL, 0);
+    }
+    
+    pPrivateKey = ENGINE_load_private_key(e, keyid, ui_method, NULL);
+    if (pPrivateKey == NULL) {
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10133)
+                     "Init: Unable to get the private key");
+        ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
+        return ssl_die(s);
+    }
+
+    *ppkey = pPrivateKey;
+
+    ENGINE_free(e);
+
+    return APR_SUCCESS;
+}
+#endif

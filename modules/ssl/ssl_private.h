@@ -996,6 +996,10 @@ BOOL         ssl_util_vhost_matches(const char *servername, server_rec *s);
 /**  Pass Phrase Support  */
 apr_status_t ssl_load_encrypted_pkey(server_rec *, apr_pool_t *, int,
                                      const char *, apr_array_header_t **);
+/* Load private key from the configured ENGINE, returned as **pkey.
+ * Errors logged on failure. */
+apr_status_t modssl_load_engine_pkey(server_rec *s, apr_pool_t *p,
+                                     const char *keyid, EVP_PKEY **ppkey);
 
 /**  Diffie-Hellman Parameter Support  */
 DH           *ssl_dh_GetParamFromFile(const char *);
@@ -1100,6 +1104,10 @@ DH *modssl_get_dh_params(unsigned keylen);
  * is non-NULL and the request is using SSL/TLS, sets *sslconn to the
  * corresponding SSLConnRec structure for the connection. */
 int modssl_request_is_tls(const request_rec *r, SSLConnRec **sslconn);
+
+/* Returns non-zero if the cert/key filename should be handled through
+ * the configure ENGINE. */
+int modssl_is_engine_key(const char *name);
 
 #if HAVE_VALGRIND
 extern int ssl_running_on_valgrind;
