@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_slomem_shm: Handle a generation number when the slotmem size changes,
+     modifying the number of proxy balancers or balancer members on restart
+     could have prevented the server to load, notably on Windows. PR 62308.
+     [Yann Ylavic]
+
   *) mod_proxy_html: Fix variable interpolation and memory allocation failure
      in ProxyHTMLURLMap.  [Ewald Dieterich <ewald mailbox.org>]
 
