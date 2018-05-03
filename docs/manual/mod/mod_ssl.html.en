@@ -711,15 +711,17 @@ thus using a custom/suitable length.
 <div class="directive-section"><h2><a name="SSLCertificateKeyFile" id="SSLCertificateKeyFile">SSLCertificateKeyFile</a> <a name="sslcertificatekeyfile" id="sslcertificatekeyfile">Directive</a><a title="Permanent link" href="#sslcertificatekeyfile" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Server PEM-encoded private key file</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLCertificateKeyFile <em>file-path</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLCertificateKeyFile <em>file-path</em>|<var>keyid</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td><var>keyid</var> available in 2.5.1 and later.</td></tr>
 </table>
 <p>
 This directive points to the PEM-encoded private key file for the
-server. If the contained private key is encrypted, the pass phrase
-dialog is forced at startup time.</p>
+server, or the key ID through a configured cryptographic token. If the
+contained private key is encrypted, the pass phrase dialog is forced
+at startup time.</p>
 
 <p>
 The directive can be used multiple times (referencing different filenames)
@@ -735,7 +737,18 @@ is highly discouraged. If it is used, the certificate files using such
 an embedded key must be configured after the certificates using a separate
 key file.</p>
 
-<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLCertificateKeyFile "/usr/local/apache2/conf/ssl.key/server.key"</pre>
+<p>As an alternative to storing private keys in files, a key
+identifier can be specified to identify a private key stored in a
+token.  Currently, only <a href="https://tools.ietf.org/html/rfc7512">PKCS#11 URIs</a> are recognized as private key
+identifiers, and can be used in conjunction with the OpenSSL
+<code>pkcs11</code> engine configured with <code class="directive"><a href="#sslcryptodevice">SSLCryptoDevice</a></code>.</p>
+
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config"># To use a private key from a PEM-encoded file:
+SSLCertificateKeyFile "/usr/local/apache2/conf/ssl.key/server.key"
+# To use a private key from a PKCS#11 token:
+SSLCryptoDevice pkcs11
+...
+SSLCertificateKeyFile "pkcs11:token=My%20Token%20Name;id=45"</pre>
 </div>
 
 </div>
