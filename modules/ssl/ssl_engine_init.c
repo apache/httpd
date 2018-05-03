@@ -1250,6 +1250,8 @@ static apr_status_t ssl_init_server_certs(server_rec *s,
                 (certfile = APR_ARRAY_IDX(mctx->pks->cert_files, i,
                                           const char *));
          i++) {
+        EVP_PKEY *pkey;
+
         key_id = apr_psprintf(ptemp, "%s:%d", vhost_id, i);
 
         ERR_clear_error();
@@ -1284,12 +1286,26 @@ static apr_status_t ssl_init_server_certs(server_rec *s,
 
         ERR_clear_error();
 
-        if ((SSL_CTX_use_PrivateKey_file(mctx->ssl_ctx, keyfile,
-                                         SSL_FILETYPE_PEM) < 1) &&
-            (ERR_GET_FUNC(ERR_peek_last_error())
-                != X509_F_X509_CHECK_PRIVATE_KEY)) {
+        if (modssl_is_engine_key(keyfile)) {
+            apr_status_t rv;
+
+            if ((rv = modssl_load_engine_pkey(s, ptemp, keyfile, &pkey))) {
+                return rv;
+            }
+            
+            if (SSL_CTX_use_PrivateKey(mctx->ssl_ctx, pkey) < 1) {
+                ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10130)
+                             "Failed to configure private key %s from engine",
+                             keyfile);
+                ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
+                return APR_EGENERAL;
+            }
+        }
+        else if ((SSL_CTX_use_PrivateKey_file(mctx->ssl_ctx, keyfile,
+                                              SSL_FILETYPE_PEM) < 1)
+                 && (ERR_GET_FUNC(ERR_peek_last_error())
+                     != X509_F_X509_CHECK_PRIVATE_KEY)) {
             ssl_asn1_t *asn1;
-            EVP_PKEY *pkey;
             const unsigned char *ptr;
 
             ERR_clear_error();

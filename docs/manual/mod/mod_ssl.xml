@@ -969,15 +969,17 @@ SSLCertificateFile "/usr/local/apache2/conf/ssl.crt/server.crt"
 <directivesynopsis>
 <name>SSLCertificateKeyFile</name>
 <description>Server PEM-encoded private key file</description>
-<syntax>SSLCertificateKeyFile <em>file-path</em></syntax>
+<syntax>SSLCertificateKeyFile <em>file-path</em>|<var>keyid</var></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
+<compatibility><var>keyid</var> available in 2.5.1 and later.</compatibility>
 
 <usage>
 <p>
 This directive points to the PEM-encoded private key file for the
-server. If the contained private key is encrypted, the pass phrase
-dialog is forced at startup time.</p>
+server, or the key ID through a configured cryptographic token. If the
+contained private key is encrypted, the pass phrase dialog is forced
+at startup time.</p>
 
 <p>
 The directive can be used multiple times (referencing different filenames)
@@ -993,9 +995,21 @@ is highly discouraged. If it is used, the certificate files using such
 an embedded key must be configured after the certificates using a separate
 key file.</p>
 
+<p>As an alternative to storing private keys in files, a key
+identifier can be specified to identify a private key stored in a
+token.  Currently, only <a href="https://tools.ietf.org/html/rfc7512">PKCS#11 URIs</a> are recognized as private key
+identifiers, and can be used in conjunction with the OpenSSL
+<code>pkcs11</code> engine configured with <directive
+module="mod_ssl">SSLCryptoDevice</directive>.</p>
+
 <example><title>Example</title>
 <highlight language="config">
+# To use a private key from a PEM-encoded file:
 SSLCertificateKeyFile "/usr/local/apache2/conf/ssl.key/server.key"
+# To use a private key from a PKCS#11 token:
+SSLCryptoDevice pkcs11
+...
+SSLCertificateKeyFile "pkcs11:token=My%20Token%20Name;id=45"
 </highlight>
 </example>
 </usage>
