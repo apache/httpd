@@ -26,6 +26,7 @@
 #include "httpd.h"
 #include "http_main.h"
 #include "http_core.h"
+#include "ap_mpm.h"
 
 #define AP_SLOTMEM_IS_PREGRAB(t)    (t->desc->type & AP_SLOTMEM_TYPE_PREGRAB)
 #define AP_SLOTMEM_IS_PERSIST(t)    (t->desc->type & AP_SLOTMEM_TYPE_PERSIST)
@@ -42,7 +43,8 @@ typedef struct {
 #define AP_UNSIGNEDINT_OFFSET (APR_ALIGN_DEFAULT(sizeof(unsigned int)))
 
 struct ap_slotmem_instance_t {
-    char                 *name;       /* file based SHM path/name */
+    char                 *name;       /* file based SHM name (immutable) */
+    char                 *fname;      /* file based SHM path/name */
     char                 *pname;      /* persisted file path/name */
     int                  fbased;      /* filebased? */
     void                 *shm;        /* ptr to memory segment (apr_shm_t *) */
@@ -287,41 +289,37 @@ static APR_INLINE int is_child_process(void)
 #endif
 }
 
-static apr_status_t cleanup_slotmem(void *is_startup)
+static apr_status_t cleanup_slotmem(void *nil)
 {
     int is_exiting = (ap_state_query(AP_SQ_MAIN_STATE) == AP_SQ_MS_EXITING);
+    int is_child = is_child_process();
     ap_slotmem_instance_t *mem;
 
-    /* When restarting or stopping we want to flush persisted data, and in the
-     * stopping case we also want to unlink the SHMs. On the first (dry-)load
-     * though (is_startup != NULL), the retained list is not used yet and SHMs
-     * contents were untouched (so they don't need to be persisted); unlink
-     * everything before the real loading (from scratch).
+    /* When restarting or stopping we want to flush persisted data, and in
+     * the stopping case we also want to unlink the SHMs. A MPM winnt child
+     * process is always exiting here, we don't want it to care about persisted
+     * data but it still has to (try to) cleanup SHMs since it may be the last
+     * one to use them, and Windows prevent anything but the last user to
+     * effectively destroy/remove an open SHM/file.
      */
     for (mem = globallistmem; mem; mem = mem->next) {
-        int unlink;
-        if (is_startup) {
-            unlink = mem->fbased;
+        if (AP_SLOTMEM_IS_PERSIST(mem) && !is_child) {
+            store_slotmem(mem);
         }
-        else {
-            if (AP_SLOTMEM_IS_PERSIST(mem)) {
-                store_slotmem(mem);
-            }
-            unlink = is_exiting;
-        }
-        if (unlink) {
-            /* Some systems may require the descriptor to be closed before
-             * unlink, thus call destroy() first.
+        if (is_exiting) {
+            /* Some systems require the descriptor to be closed before
+             * unlinked, thus call destroy() first.
              */
             apr_shm_destroy(mem->shm);
-            apr_shm_remove(mem->name, mem->pool);
+            apr_shm_remove(mem->fname, mem->pool);
         }
     }
 
-    if (is_startup || is_exiting) {
+    if (is_exiting) {
         *retained_globallistmem = NULL;
     }
     else {
+        /* Restarting, save list for next run */
         *retained_globallistmem = globallistmem;
     }
 
@@ -361,23 +359,46 @@ static int check_slotmem(ap_slotmem_instance_t *mem, apr_size_t size,
 
     /* check size */
     if (apr_shm_size_get(mem->shm) != size) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf, APLOGNO(02599)
-                     "existing shared memory for %s could not be used "
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, ap_server_conf, APLOGNO(02599)
+                     "existing shared memory for %s could not be reused "
                      "(failed size check)",
-                     mem->name);
+                     mem->fname);
         return 0;
     }
 
     desc = apr_shm_baseaddr_get(mem->shm);
     if (desc->size != item_size || desc->num != item_num) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf, APLOGNO(02600)
-                     "existing shared memory for %s could not be used "
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, ap_server_conf, APLOGNO(02600)
+                     "existing shared memory for %s could not be reused "
                      "(failed contents check)",
-                     mem->name);
+                     mem->fname);
         return 0;
     }
 
     return 1;
+}
+
+static apr_status_t slotmem_attach_shm(apr_shm_t **shm, const char **fname,
+                                       apr_uint32_t num, apr_pool_t *pool)
+{
+    char *name = NULL;
+    apr_size_t size = 0, offset = 0;
+
+    for (; num; --num) {
+        if (!name) {
+            name = apr_psprintf(pool, "%s.%u", *fname, APR_UINT32_MAX);
+            offset = strlen(*fname) + 1;
+            size = offset + strlen(name + offset) + 1;
+        }
+        apr_snprintf(name + offset, size - offset, "%u", num);
+
+        if (apr_shm_attach(shm, name, pool) == APR_SUCCESS) {
+            *fname = name;
+            return APR_SUCCESS;
+        }
+    }
+
+    return apr_shm_attach(shm, *fname, pool);
 }
 
 static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
@@ -397,20 +418,33 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
     apr_size_t size = AP_SLOTMEM_OFFSET + AP_UNSIGNEDINT_OFFSET +
                       (item_num * sizeof(char)) + basesize;
     int persist = (type & AP_SLOTMEM_TYPE_PERSIST) != 0;
+    int generation = 0;
     apr_status_t rv;
     apr_pool_t *p;
 
     *new = NULL;
+    ap_mpm_query(AP_MPMQ_GENERATION, &generation);
 
     if (slotmem_filenames(pool, name, &fname, persist ? &pname : NULL)) {
         /* first try to attach to existing slotmem */
         if (next) {
             ap_slotmem_instance_t *prev = NULL;
             for (;;) {
-                if (strcmp(next->name, fname) == 0) {
+                if (strcmp(next->name, name) == 0) {
                     *new = next; /* either returned here or reused finally */
                     if (!check_slotmem(next, size, item_size, item_num)) {
+                        /* Can't reuse this SHM, a new one is needed with its
+                         * own filename (including generation number) because
+                         * the previous one may still be used by the previous
+                         * generation. Persisted file (if any) can't be reused
+                         * either.
+                         */
                         apr_shm_destroy(next->shm);
+                        apr_shm_remove(next->fname, pool);
+                        fname = apr_psprintf(pool, "%s.%u", fname,
+                                             (apr_uint32_t)generation);
+                        persist = 0;
+
                         next = next->next;
                         if (prev) {
                             prev->next = next;
@@ -426,7 +460,7 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
                     }
                     /* we already have it */
                     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(02603)
-                                 "create found %s in global list", fname);
+                                 "create found %s in global list", next->fname);
                     return APR_SUCCESS;
                 }
                 if (!next->next) {
@@ -437,7 +471,7 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
             }
         }
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(02602)
-                     "create didn't find %s in global list", fname);
+                     "create didn't find %s in global list", name);
     }
     else {
         fbased = 0;
@@ -446,8 +480,7 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
 
     /* first try to attach to existing shared memory */
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(02300)
-                 "create %s: %"APR_SIZE_T_FMT"/%u", fname, item_size,
-                 item_num);
+                 "create %s: %"APR_SIZE_T_FMT"/%u", name, item_size, item_num);
 
     {
         if (fbased) {
@@ -456,7 +489,7 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
              * parent exist in the children already; attach them.
              */
             if (is_child_process()) {
-                rv = apr_shm_attach(&shm, fname, gpool);
+                rv = slotmem_attach_shm(&shm, &fname, generation, gpool);
             }
             else {
                 apr_shm_remove(fname, pool);
@@ -509,10 +542,11 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
     res = *new;
     if (res == NULL) {
         res = apr_pcalloc(p, sizeof(ap_slotmem_instance_t));
-        res->name = apr_pstrdup(p, fname);
+        res->name = apr_pstrdup(p, name);
         res->pname = apr_pstrdup(p, pname);
         *new = res;
     }
+    res->fname = apr_pstrdup(p, fname);
     res->fbased = fbased;
     res->shm = shm;
     res->persist = (void *)ptr;
@@ -547,29 +581,33 @@ static apr_status_t slotmem_attach(ap_slotmem_instance_t **new,
     ap_slotmem_instance_t *res;
     ap_slotmem_instance_t *next = globallistmem;
     sharedslotdesc_t *desc;
+    int generation = 0;
     const char *fname;
     apr_shm_t *shm;
     apr_status_t rv;
+
+    *new = NULL;
+    ap_mpm_query(AP_MPMQ_GENERATION, &generation);
 
     if (!slotmem_filenames(pool, name, &fname, NULL)) {
         return APR_ENOSHMAVAIL;
     }
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(02301)
-                 "attach looking for %s", fname);
+                 "attach looking for %s", name);
 
     /* first try to attach to existing slotmem */
     if (next) {
         for (;;) {
-            if (strcmp(next->name, fname) == 0) {
+            if (strcmp(next->name, name) == 0) {
                 /* we already have it */
                 *new = next;
                 *item_size = next->desc->size;
                 *item_num = next->desc->num;
                 ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
                              APLOGNO(02302)
-                             "attach found %s: %"APR_SIZE_T_FMT"/%u", fname,
-                             *item_size, *item_num);
+                             "attach found %s: %"APR_SIZE_T_FMT"/%u",
+                             next->fname, *item_size, *item_num);
                 return APR_SUCCESS;
             }
             if (!next->next) {
@@ -580,7 +618,7 @@ static apr_status_t slotmem_attach(ap_slotmem_instance_t **new,
     }
 
     /* next try to attach to existing shared memory */
-    rv = apr_shm_attach(&shm, fname, pool);
+    rv = slotmem_attach_shm(&shm, &fname, generation, pool);
     if (rv != APR_SUCCESS) {
         return rv;
     }
@@ -591,7 +629,8 @@ static apr_status_t slotmem_attach(ap_slotmem_instance_t **new,
 
     /* For the chained slotmem stuff */
     res = apr_pcalloc(pool, sizeof(ap_slotmem_instance_t));
-    res->name = apr_pstrdup(pool, fname);
+    res->name = apr_pstrdup(pool, name);
+    res->fname = apr_pstrdup(pool, fname);
     res->fbased = 1;
     res->shm = shm;
     res->persist = (void *)ptr;
@@ -608,8 +647,8 @@ static apr_status_t slotmem_attach(ap_slotmem_instance_t **new,
     *item_num = desc->num;
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
                  APLOGNO(02303)
-                 "attach found %s: %"APR_SIZE_T_FMT"/%u", fname,
-                 *item_size, *item_num);
+                 "attach found %s: %"APR_SIZE_T_FMT"/%u",
+                 res->fname, *item_size, *item_num);
     return APR_SUCCESS;
 }
 
@@ -821,7 +860,6 @@ static const ap_slotmem_provider_t *slotmem_shm_getstorage(void)
 static int pre_config(apr_pool_t *pconf, apr_pool_t *plog,
                       apr_pool_t *ptemp)
 {
-    void *is_startup = NULL;
     const char *retained_key = "mod_slotmem_shm";
 
     retained_globallistmem = ap_retained_data_get(retained_key);
@@ -830,30 +868,23 @@ static int pre_config(apr_pool_t *pconf, apr_pool_t *plog,
             ap_retained_data_create(retained_key,
                                     sizeof *retained_globallistmem);
     }
-    globallistmem = *retained_globallistmem;
 
-    if (!is_child_process()) {
-        /* For the first (dry-)load, create SHMs on pconf and let them be
-         * cleaned up before the real loading. Otherwise SHMs shall have the
-         * same lifetime as the retained list (ap_pglobal). The cleanup is to
-         * update the retained list on restart, or to unlink the SHMs on stop
-         * or after the first (dry-)load (is_startup != NULL).
-         */
-        if (ap_state_query(AP_SQ_MAIN_STATE) != AP_SQ_MS_CREATE_PRE_CONFIG) {
-            gpool = ap_pglobal;
-        }
-        else {
-            is_startup = (void *)1;
-            gpool = pconf;
-        }
-
-        apr_pool_cleanup_register(pconf, is_startup, cleanup_slotmem,
+    /* For the first (dry-)load, create SHMs on pconf and let them be
+     * cleaned up with it before the real loading. In any other case, SHMs
+     * shall have the same lifetime as the retained list (ap_pglobal), so
+     * the cleanup is to update the retained list on restart, and to unlink
+     * the SHMs on stop. This also works for MPM winnt child process which
+     * should rebuild the list first (i.e. attach SHMs, see slotmem_create),
+     * and try to cleanup/remove SHMs before exiting (see cleanup_slotmem).
+     */
+    if (ap_state_query(AP_SQ_MAIN_STATE) != AP_SQ_MS_CREATE_PRE_CONFIG) {
+        apr_pool_cleanup_register(pconf, NULL, cleanup_slotmem,
                                   apr_pool_cleanup_null);
+        globallistmem = *retained_globallistmem;
+        gpool = ap_pglobal;
     }
     else {
-        /* For MPMs which (re-)run pre_config we don't need to retain slotmems
-         * in children, so use pconf and let it detach SHMs when children exit.
-         */
+        globallistmem = NULL;
         gpool = pconf;
     }
 
