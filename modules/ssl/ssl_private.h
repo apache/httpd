@@ -1007,15 +1007,14 @@ DH           *ssl_dh_GetParamFromFile(const char *);
 EC_GROUP     *ssl_ec_GetParamFromFile(const char *);
 #endif
 
-unsigned char *ssl_asn1_table_set(apr_hash_t *table,
-                                  const char *key,
-                                  long int length);
-
-ssl_asn1_t *ssl_asn1_table_get(apr_hash_t *table,
-                               const char *key);
-
-void ssl_asn1_table_unset(apr_hash_t *table,
-                          const char *key);
+/* Store the EVP_PKEY key (serialized into DER) in the hash table with
+ * key, returning the ssl_asn1_t structure pointer. */
+ssl_asn1_t *ssl_asn1_table_set(apr_hash_t *table, const char *key,
+                               EVP_PKEY *pkey);
+/* Retrieve the ssl_asn1_t structure with given key from the hash. */
+ssl_asn1_t *ssl_asn1_table_get(apr_hash_t *table, const char *key);
+/* Remove and free the ssl_asn1_t structure with given key. */
+void ssl_asn1_table_unset(apr_hash_t *table, const char *key);
 
 /**  Mutex Support  */
 int          ssl_mutex_init(server_rec *, apr_pool_t *);

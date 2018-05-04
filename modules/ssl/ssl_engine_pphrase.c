@@ -137,8 +137,6 @@ apr_status_t ssl_load_encrypted_pkey(server_rec *s, apr_pool_t *p, int idx,
     const char *key_id = asn1_table_vhost_key(mc, p, sc->vhost_id, idx);
     EVP_PKEY *pPrivateKey = NULL;
     ssl_asn1_t *asn1;
-    unsigned char *ucp;
-    long int length;
     int nPassPhrase = (*pphrases)->nelts;
     int nPassPhraseRetry = 0;
     apr_time_t pkey_mtime = 0;
@@ -345,19 +343,12 @@ apr_status_t ssl_load_encrypted_pkey(server_rec *s, apr_pool_t *p, int idx,
         nPassPhrase++;
     }
 
-    /*
-     * Insert private key into the global module configuration
-     * (we convert it to a stand-alone DER byte sequence
-     * because the SSL library uses static variables inside a
-     * RSA structure which do not survive DSO reloads!)
-     */
-    length = i2d_PrivateKey(pPrivateKey, NULL);
-    ucp = ssl_asn1_table_set(mc->tPrivateKey, key_id, length);
-    (void)i2d_PrivateKey(pPrivateKey, &ucp); /* 2nd arg increments */
+    /* Cache the private key in the global module configuration so it
+     * can be used after subsequent reloads. */
+    asn1 = ssl_asn1_table_set(mc->tPrivateKey, key_id, pPrivateKey);
 
     if (ppcb_arg.nPassPhraseDialogCur != 0) {
         /* remember mtime of encrypted keys */
-        asn1 = ssl_asn1_table_get(mc->tPrivateKey, key_id);
         asn1->source_mtime = pkey_mtime;
     }
 
