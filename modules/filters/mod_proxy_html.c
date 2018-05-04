@@ -716,7 +716,7 @@ static meta *metafix(request_rec *r, const char *buf, apr_size_t len)
                     } else {
                         for (q = p; *q && !apr_isspace(*q) && (*q != '>'); ++q);
                     }
-                    content = apr_pstrndup(r->pool, p, q-p);
+                    content = apr_pstrmemdup(r->pool, p, q-p);
                     break;
                 }
             }
@@ -768,7 +768,7 @@ static const char *interpolate_vars(request_rec *r, const char *str)
         replacement = apr_table_get(r->subprocess_env, var);
         if (!replacement) {
             if (delim)
-                replacement = apr_pstrndup(r->pool, delim+1, end-delim-1);
+                replacement = apr_pstrmemdup(r->pool, delim+1, end-delim-1);
             else
                 replacement = "";
         }
