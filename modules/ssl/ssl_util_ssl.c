@@ -74,7 +74,7 @@ void modssl_set_app_data2(SSL *ssl, void *arg)
 **  _________________________________________________________________
 */
 
-EVP_PKEY *modssl_read_privatekey(const char* filename, EVP_PKEY **key, pem_password_cb *cb, void *s)
+EVP_PKEY *modssl_read_privatekey(const char *filename, pem_password_cb *cb, void *s)
 {
     EVP_PKEY *rc;
     BIO *bioS;
@@ -83,7 +83,7 @@ EVP_PKEY *modssl_read_privatekey(const char* filename, EVP_PKEY **key, pem_passw
     /* 1. try PEM (= DER+Base64+headers) */
     if ((bioS=BIO_new_file(filename, "r")) == NULL)
         return NULL;
-    rc = PEM_read_bio_PrivateKey(bioS, key, cb, s);
+    rc = PEM_read_bio_PrivateKey(bioS, NULL, cb, s);
     BIO_free(bioS);
 
     if (rc == NULL) {
@@ -106,11 +106,6 @@ EVP_PKEY *modssl_read_privatekey(const char* filename, EVP_PKEY **key, pem_passw
             rc = d2i_PrivateKey_bio(bioS, NULL);
             BIO_free(bioS);
         }
-    }
-    if (rc != NULL && key != NULL) {
-        if (*key != NULL)
-            EVP_PKEY_free(*key);
-        *key = rc;
     }
     return rc;
 }
