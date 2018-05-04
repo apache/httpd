@@ -867,7 +867,7 @@ SSLCipherSuite RSA:!EXP:!NULL:+HIGH:+MEDIUM:-LOW
 <directivesynopsis>
 <name>SSLCertificateFile</name>
 <description>Server PEM-encoded X.509 certificate data file</description>
-<syntax>SSLCertificateFile <em>file-path</em></syntax>
+<syntax>SSLCertificateFile <var>file-path</var></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 
@@ -969,7 +969,7 @@ SSLCertificateFile "/usr/local/apache2/conf/ssl.crt/server.crt"
 <directivesynopsis>
 <name>SSLCertificateKeyFile</name>
 <description>Server PEM-encoded private key file</description>
-<syntax>SSLCertificateKeyFile <em>file-path</em>|<var>keyid</var></syntax>
+<syntax>SSLCertificateKeyFile <var>file-path</var>|<var>keyid</var></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 <compatibility><var>keyid</var> available in 2.5.1 and later.</compatibility>
@@ -1018,7 +1018,7 @@ SSLCertificateKeyFile "pkcs11:token=My%20Token%20Name;id=45"
 <directivesynopsis>
 <name>SSLCertificateChainFile</name>
 <description>File of PEM-encoded Server CA Certificates</description>
-<syntax>SSLCertificateChainFile <em>file-path</em></syntax>
+<syntax>SSLCertificateChainFile <var>file-path</var></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 
@@ -1095,7 +1095,7 @@ SSLCACertificatePath "/usr/local/apache2/conf/ssl.crt/"
 <name>SSLCACertificateFile</name>
 <description>File of concatenated PEM-encoded CA Certificates
 for Client Auth</description>
-<syntax>SSLCACertificateFile <em>file-path</em></syntax>
+<syntax>SSLCACertificateFile <var>file-path</var></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 <override>AuthConfig</override>
@@ -1120,7 +1120,7 @@ SSLCACertificateFile "/usr/local/apache2/conf/ssl.crt/ca-bundle-client.crt"
 <name>SSLCADNRequestFile</name>
 <description>File of concatenated PEM-encoded CA Certificates
 for defining acceptable CA names</description>
-<syntax>SSLCADNRequestFile <em>file-path</em></syntax>
+<syntax>SSLCADNRequestFile <var>file-path</var></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 
@@ -1223,7 +1223,7 @@ SSLCARevocationPath "/usr/local/apache2/conf/ssl.crl/"
 <name>SSLCARevocationFile</name>
 <description>File of concatenated PEM-encoded CA CRLs for
 Client Auth</description>
-<syntax>SSLCARevocationFile <em>file-path</em></syntax>
+<syntax>SSLCARevocationFile <var>file-path</var></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 
@@ -1380,7 +1380,7 @@ SSLVerifyDepth 10
 <directivesynopsis>
 <name>SSLSRPVerifierFile</name>
 <description>Path to SRP verifier file</description>
-<syntax>SSLSRPVerifierFile <em>file-path</em></syntax>
+<syntax>SSLSRPVerifierFile <var>file-path</var></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 <compatibility>Available in httpd 2.4.4 and later, if using OpenSSL 1.0.1 or
@@ -2148,7 +2148,7 @@ SSLProxyCACertificatePath "/usr/local/apache2/conf/ssl.crt/"
 <name>SSLProxyCACertificateFile</name>
 <description>File of concatenated PEM-encoded CA Certificates
 for Remote Server Auth</description>
-<syntax>SSLProxyCACertificateFile <em>file-path</em></syntax>
+<syntax>SSLProxyCACertificateFile <var>file-path</var></syntax>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
 
@@ -2199,7 +2199,7 @@ SSLProxyCARevocationPath "/usr/local/apache2/conf/ssl.crl/"
 <name>SSLProxyCARevocationFile</name>
 <description>File of concatenated PEM-encoded CA CRLs for
 Remote Server Auth</description>
-<syntax>SSLProxyCARevocationFile <em>file-path</em></syntax>
+<syntax>SSLProxyCARevocationFile <var>file-path</var></syntax>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
 
@@ -2747,7 +2747,7 @@ One potential use is when a proxy is used for retrieving OCSP queries.</p>
 <directivesynopsis>
 <name>SSLSessionTicketKeyFile</name>
 <description>Persistent encryption/decryption key for TLS session tickets</description>
-<syntax>SSLSessionTicketKeyFile <em>file-path</em></syntax>
+<syntax>SSLSessionTicketKeyFile <var>file-path</var></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 <compatibility>Available in httpd 2.4.0 and later, if using OpenSSL 0.9.8h or later</compatibility>
