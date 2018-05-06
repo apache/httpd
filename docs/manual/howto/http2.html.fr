@@ -42,6 +42,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#clients">Clients</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#tools">Outils efficaces pour déboguer HTTP/2</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#push">Push serveur</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#earlyhints">Suggestions précoces</a></li>
 </ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="../mod/mod_http2.html">mod_http2</a></li><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -344,7 +345,59 @@
     en-tête Accept-Push-Policy</a> est un autre dispositif expérimental
     implémenté dans <code>mod_http2</code> ; il permet au client de définir pour
     chaque requête quels genres de PUSHes il accepte.</p>
-  </div></div>
+  
+
+    <p>
+    La fonctionnalité PUSH n'apportera pas toujours le gain de performances dans
+    l'obtention de réponses aux requêtes. Vous trouverez plusieurs études sur ce
+    sujet sur internet qui en expliquent les avantages et inconvénients et
+    comment les particularités des clients et du réseau en influencent le
+    fonctionnement. Par exemple, le seul fait que le serveur PUSHes une
+    ressource n'implique pas forcément que le navigateur l'utilisera.</p>
+    <p>Ce qui influence le plus la réponse PUSHed, c'est la requête qui a été
+    simulée. En effet, l'URL de la requête pour un PUSH est fournie par
+    l'application, mais d'où viennent les en-têtes ? Par exemple, La requête
+    PUSH requiert-elle un en-tête <code>accept-language</code> et si oui, quelle
+    sera sa valeur ?</p>
+    <p>httpd va consulter la requête originale (celle qui a déclenché le PUSH)
+    et copier les en-têtes suivants vers la requête PUSH :
+    <code>user-agent</code>, <code>accept</code>, <code>accept-encoding</code>,
+    <code>accept-language</code> et <code>cache-control</code>.</p>
+    <p>Tous les autres en-têtes sont ignorés. Les cookies eux non plus ne seront
+    pas copiés. PUSHer des ressources qui requièrent la présence d'un cookie ne
+    fonctionnera pas. Ceci peut être sujet à débat, mais tant que ce ne sera pas
+    clairement discuté avec les navigateurs, restons prudents et évitons
+    d'exposer les cookies là où ils ne sont pas censés être visibles.</p>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="earlyhints" id="earlyhints">Suggestions précoces</a><a title="Lien permanent" href="#earlyhints" class="permalink">&para;</a></h2>
+    
+    <p>A l'instar des ressources PUSHées, une autre méthode consiste à envoyer
+    des en-têtes <code>Link</code> au client avant même que la réponse ne soit
+    prête. Cette méthode utilise la fonctionnalité appelée "Suggestions
+    précoces" (Early Hints) décrite dans la <a href="https://tools.ietf.org/html/rfc8297">RFC 8297</a>.</p>
+    <p>Pour utiliser cette fonctionnalité, vous devez l'activer explicitement
+    sur le serveur via :</p>
+    <pre class="prettyprint lang-config">H2EarlyHints on</pre>
+
+    <p>Elle n'est en effet pas activée par défaut car certains navigateurs
+    anciens perdent pied avec de telles réponses.</p>
+    <p>Une fois cette fonctionnalité activée, vous pouvez utiliser la directive
+    <code>H2PushResource</code> pour déclencher les suggestions précoces et les
+    PUSHes de ressources :</p>
+    <pre class="prettyprint lang-config">&lt;Location /xxx.html&gt;
+    H2PushResource /xxx.css
+    H2PushResource /xxx.js
+&lt;/Location&gt;</pre>
+
+    <p>Le serveur enverra alors au client une réponse <code>"103 Early
+    Hints"</code> dès qu'il <em>commencera</em> à traiter la requête. Selon
+    votre application web, cet envoi peut intervenir beaucoup plus tôt que le
+    moment où les premiers en-têtes de réponse auront été déterminés.</p>
+    <p>Si <code>H2Push</code> est activé, ceci déclenchera aussi le PUSH juste
+    après la réponse 103. Mais si <code>H2Push</code> n'est pas activé, la
+    réponse 103 sera quand-même envoyée au client.</p>
+    </div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/howto/http2.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../es/howto/http2.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
