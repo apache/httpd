@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1779744:1830439 (outdated) -->
+<!-- English Revision: 1830439 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -363,6 +363,61 @@ H2Push Off
     en-tête Accept-Push-Policy</a> est un autre dispositif expérimental
     implémenté dans <code>mod_http2</code> ; il permet au client de définir pour
     chaque requête quels genres de PUSHes il accepte.</p>
+  
+
+    <p>
+    La fonctionnalité PUSH n'apportera pas toujours le gain de performances dans
+    l'obtention de réponses aux requêtes. Vous trouverez plusieurs études sur ce
+    sujet sur internet qui en expliquent les avantages et inconvénients et
+    comment les particularités des clients et du réseau en influencent le
+    fonctionnement. Par exemple, le seul fait que le serveur PUSHes une
+    ressource n'implique pas forcément que le navigateur l'utilisera.</p>
+    <p>Ce qui influence le plus la réponse PUSHed, c'est la requête qui a été
+    simulée. En effet, l'URL de la requête pour un PUSH est fournie par
+    l'application, mais d'où viennent les en-têtes ? Par exemple, La requête
+    PUSH requiert-elle un en-tête <code>accept-language</code> et si oui, quelle
+    sera sa valeur ?</p>
+    <p>httpd va consulter la requête originale (celle qui a déclenché le PUSH)
+    et copier les en-têtes suivants vers la requête PUSH :
+    <code>user-agent</code>, <code>accept</code>, <code>accept-encoding</code>,
+    <code>accept-language</code> et <code>cache-control</code>.</p>
+    <p>Tous les autres en-têtes sont ignorés. Les cookies eux non plus ne seront
+    pas copiés. PUSHer des ressources qui requièrent la présence d'un cookie ne
+    fonctionnera pas. Ceci peut être sujet à débat, mais tant que ce ne sera pas
+    clairement discuté avec les navigateurs, restons prudents et évitons
+    d'exposer les cookies là où ils ne sont pas censés être visibles.</p>
   </section>
+
+  <section id="earlyhints">
+    <title>Suggestions précoces</title>
+    <p>A l'instar des ressources PUSHées, une autre méthode consiste à envoyer
+    des en-têtes <code>Link</code> au client avant même que la réponse ne soit
+    prête. Cette méthode utilise la fonctionnalité appelée "Suggestions
+    précoces" (Early Hints) décrite dans la <a
+    href="https://tools.ietf.org/html/rfc8297">RFC 8297</a>.</p>
+    <p>Pour utiliser cette fonctionnalité, vous devez l'activer explicitement
+    sur le serveur via :</p>
+    <highlight language="config">
+H2EarlyHints on
+    </highlight>
+    <p>Elle n'est en effet pas activée par défaut car certains navigateurs
+    anciens perdent pied avec de telles réponses.</p>
+    <p>Une fois cette fonctionnalité activée, vous pouvez utiliser la directive
+    <code>H2PushResource</code> pour déclencher les suggestions précoces et les
+    PUSHes de ressources :</p>
+    <highlight language="config">
+&lt;Location /xxx.html&gt;
+    H2PushResource /xxx.css
+    H2PushResource /xxx.js
+&lt;/Location&gt;
+    </highlight>
+    <p>Le serveur enverra alors au client une réponse <code>"103 Early
+    Hints"</code> dès qu'il <em>commencera</em> à traiter la requête. Selon
+    votre application web, cet envoi peut intervenir beaucoup plus tôt que le
+    moment où les premiers en-têtes de réponse auront été déterminés.</p>
+    <p>Si <code>H2Push</code> est activé, ceci déclenchera aussi le PUSH juste
+    après la réponse 103. Mais si <code>H2Push</code> n'est pas activé, la
+    réponse 103 sera quand-même envoyée au client.</p>
+    </section>
 
 </manualpage>

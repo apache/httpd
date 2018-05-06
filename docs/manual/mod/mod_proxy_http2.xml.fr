@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1783722:1830443 (outdated) -->
+<!-- English Revision: 1830443 -->
 <!-- French translation : Lucien GENTIS -->
-<!-- $LastChangedRevision: 2017022501 $ -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -117,6 +116,19 @@ ProxyPassReverse "/app" "http://app.example.com"
         <dt>proxy-status</dt>
         <dd>Le statut HTTP/2 en provenance du serveur d'arri&egrave;re-plan.</dd>
     </dl>
+</section>
+
+<section id="h2push"><title>HTTP/2 PUSH</title>
+    <p>Ce module ne supporte pas la fonctionnalité HTTP/2 PUSH. Les serveurs
+    d'arrière-plan qui veulent indiquer des ressources à précharger doivent
+    envoyer les en-têtes <code>Link</code> appropriés.</p>
+    <p>En cas de besoin, il peuvent le faire en utilisant les réponses
+    intermédiaires <code>"103 Early Hints"</code> comme indiqué dans la <a
+    href="https://tools.ietf.org/html/rfc8297">RFC 8297</a>, ce qui fournira
+    les meilleures performances. Si le client comprend aussi le langage HTTP/2,
+    il en résultera un PUSH de la part de httpd vers le celui-ci ou un simple
+    transfert de la réponse 103.</p>
+    
 </section>
 
 </modulesynopsis>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1828238:1830819 (outdated) -->
+<!-- English Revision: 1830819 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1032,7 +1032,7 @@ SSLCipherSuite RSA:!EXP:!NULL:+HIGH:+MEDIUM:-LOW
 <name>SSLCertificateFile</name>
 <description>Fichier de données contenant les informations de certificat X.509 du serveur
 codées au format PEM</description>
-<syntax>SSLCertificateFile <em>chemin-fichier</em></syntax>
+<syntax>SSLCertificateFile <var>file-path</var></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 
@@ -1143,16 +1143,18 @@ SSLCertificateFile "/usr/local/apache2/conf/ssl.crt/server.crt"
 <name>SSLCertificateKeyFile</name>
 <description>Fichier contenant la clé privée du serveur codée en
 PEM</description>
-<syntax>SSLCertificateKeyFile <em>chemin-fichier</em></syntax>
+<syntax>SSLCertificateKeyFile <var>file-path</var>|<var>keyid</var></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
+<compatibility><var>keyid</var> est disponible à partir de la version 2.5.1 du
+serveur HTTP Apache.</compatibility>
 
 <usage>
 <p>
-Cette directive permet de définir le fichier contenant la clé privée du
-serveur codée en PEM. Si la clé privée est
-chiffrée, une boîte de dialogue demandant le mot de passe de cette
-dernière s'ouvre au démarrage du serveur.</p>
+Cette directive permet de définir le fichier contenant la clé privée du serveur
+codée en PEM ou l'identifiant de la clé via un jeton cryptographique défini. Si
+la clé privée est chiffrée, une boîte de dialogue demandant le mot de passe de
+cette dernière s'ouvre au démarrage du serveur.</p>
 
 <p>
 Cette directive peut être utilisée plusieurs fois pour référencer
@@ -1168,9 +1170,21 @@ pratique est fortement déconseillée. En effet, les fichiers de
 certificats qui comportent une telle clé doivent être définis après les
 certificats en utilisant un fichier de clé séparé.</p>
 
+<p>Plutôt que de stocker des clés privées dans des fichiers, il est possible
+d'identifier une clé privée via un identifiant stocké dans un jeton.
+Actuellement, seuls les <a href="https://tools.ietf.org/html/rfc7512">PKCS#11
+URIs</a> sont reconnus comme identifiants de clés privées et peuvent être
+utilisés en conjonction avec le moteur OpenSSL <code>pkcs11</code> configuré via
+la directive <directive module="mod_ssl">SSLCryptoDevice</directive>.</p>
+
 <example><title>Exemple</title>
 <highlight language="config">
+# Pour utiliser une clé privée stockée dans fichier encodé PEM :
 SSLCertificateKeyFile "/usr/local/apache2/conf/ssl.key/server.key"
+# Pour utiliser une clé privée à partir d'un jeton PKCS#11 :
+SSLCryptoDevice pkcs11
+...
+SSLCertificateKeyFile "pkcs11:token=My%20Token%20Name;id=45"
 </highlight>
 </example>
 </usage>
@@ -1180,7 +1194,7 @@ SSLCertificateKeyFile "/usr/local/apache2/conf/ssl.key/server.key"
 <name>SSLCertificateChainFile</name>
 <description>Fichier contenant les certificats de CA du serveur codés en
 PEM</description>
-<syntax>SSLCertificateChainFile <em>chemin-fichier</em></syntax>
+<syntax>SSLCertificateChainFile <var>file-path</var></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 
@@ -1264,7 +1278,7 @@ SSLCACertificatePath "/usr/local/apache2/conf/ssl.crt/"
 <name>SSLCACertificateFile</name>
 <description>Fichier contenant une concaténation des certificats de CA
 codés en PEM pour l'authentification des clients</description>
-<syntax>SSLCACertificateFile <em>chemin-fichier</em></syntax>
+<syntax>SSLCACertificateFile <var>file-path</var></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 <override>AuthConfig</override>
@@ -1291,7 +1305,7 @@ SSLCACertificateFile "/usr/local/apache2/conf/ssl.crt/ca-bundle-client.crt"
 <name>SSLCADNRequestFile</name>
 <description>Fichier contenant la concaténation des certificats de CA
 codés en PEM pour la définition de noms de CA acceptables</description>
-<syntax>SSLCADNRequestFile <em>chemin-fichier</em></syntax>
+<syntax>SSLCADNRequestFile <var>file-path</var></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 
@@ -1399,7 +1413,7 @@ SSLCARevocationPath "/usr/local/apache2/conf/ssl.crl/"
 <name>SSLCARevocationFile</name>
 <description>Fichier contenant la concaténation des CRLs des CA codés en
 PEM pour l'authentification des clients</description>
-<syntax>SSLCARevocationFile <em>chemin-fichier</em></syntax>
+<syntax>SSLCARevocationFile <var>file-path</var></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 
@@ -1584,7 +1598,7 @@ SSLVerifyDepth 10
 <directivesynopsis>
 <name>SSLSRPVerifierFile</name>
 <description>Chemin du fichier de vérification SRP</description>
-<syntax>SSLSRPVerifierFile <em>file-path</em></syntax>
+<syntax>SSLSRPVerifierFile <var>file-path</var></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 <compatibility>Disponible depuis la version 2.4.4 du serveur HTTP
@@ -2054,7 +2068,7 @@ SSLProxyMachineCertificatePath "/usr/local/apache2/conf/proxy.crt/"
 <name>SSLProxyMachineCertificateFile</name>
 <description>Fichier contenant la concaténation des clés et certificats
 clients codés en PEM que le mandataire doit utiliser</description>
-<syntax>SSLProxyMachineCertificateFile <em>chemin-fichier</em></syntax>
+<syntax>SSLProxyMachineCertificateFile <em>file-path</em></syntax>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
 
@@ -2427,7 +2441,7 @@ SSLProxyCACertificatePath "/usr/local/apache2/conf/ssl.crt/"
 <name>SSLProxyCACertificateFile</name>
 <description>Fichier contenant la concaténation des certificats de CA
 codés en PEM pour l'authentification des serveurs distants</description>
-<syntax>SSLProxyCACertificateFile <em>file-path</em></syntax>
+<syntax>SSLProxyCACertificateFile <var>file-path</var></syntax>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
 
@@ -2484,7 +2498,7 @@ SSLProxyCARevocationPath "/usr/local/apache2/conf/ssl.crl/"
 <name>SSLProxyCARevocationFile</name>
 <description>Fichier contenant la concaténation des CRLs de CA codés en
 PEM pour l'authentification des serveurs distants</description>
-<syntax>SSLProxyCARevocationFile <em>chemin-fichier</em></syntax>
+<syntax>SSLProxyCARevocationFile <var>file-path</var></syntax>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
 
@@ -3089,7 +3103,7 @@ utile lorsqu'on passe par un mandataire</p>
 <name>SSLSessionTicketKeyFile</name>
 <description>Clé de chiffrement/déchiffrement permanente pour les
 tickets de session TLS</description>
-<syntax>SSLSessionTicketKeyFile <em>chemin-fichier</em></syntax>
+<syntax>SSLSessionTicketKeyFile <var>file-path</var></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 <compatibility>Disponible depuis la version 2.4.0 du serveur HTTP
