@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1818968:1829713 (outdated) -->
+<!-- English Revision: 1829713 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -114,11 +114,9 @@ filtrage</title>
 
     <dl>
     <dt>Déclaration des filtres</dt>
-    <dd>La directive <directive
-    module="mod_filter">FilterDeclare</directive> permet de déclarer un
-    filtre en lui assignant un nom et un type. Elle n'est obligatoire
-    que si le filtre n'est pas du type par défaut
-    AP_FTYPE_RESOURCE.</dd>
+    <dd>La directive <directive module="mod_filter">FilterDeclare</directive>
+    permet de déclarer un nouveau filtre intelligent en lui assignant un nom et
+    éventuellement un type.</dd>
 
     <dt>Enregistrement des fournisseurs</dt>
     <dd>La directive <directive
@@ -126,8 +124,7 @@ filtrage</title>
     fournisseur à un filtre. Le filtre a été éventuellement déclaré à
     l'aide de la directive <directive module="mod_filter"
     >FilterDeclare</directive> ; si ce n'est pas le cas, FilterProvider
-    va le déclarer implicitement avec le type par défaut
-    AP_FTYPE_RESOURCE. Le fournisseur doit avoir été enregistré à
+    va le déclarer implicitement. Le fournisseur doit avoir été enregistré à
     l'aide de <code>ap_register_output_filter</code> par un module
     quelconque. Le dernier argument de la directive <directive
     module="mod_filter">FilterProvider</directive> est une expression :
@@ -185,7 +182,9 @@ serveur HTTP Apache 2.2</title>
     <dl>
     <dt>Inclusions côté serveur (SSI)</dt>
     <dd>Un exemple simple de remplacement de la directive <directive
-    module="core">AddOutputFilterByType</directive>
+    module="core">AddOutputFilterByType</directive>. On crée un nouveau filtre
+    intelligent nommé "SSI" qui tire partie de manière conditionnelle du filtre
+    "INCLUDES" de <module>mod_include</module> en tant que fournisseur.
     <highlight language="config">
 FilterDeclare SSI
 FilterProvider SSI INCLUDES "%{CONTENT_TYPE} =~ m|^text/html|"
@@ -204,20 +203,26 @@ FilterChain SSI
     </dd>
 
     <dt>Émulation de mod_gzip avec mod_deflate</dt>
-    <dd>Insertion du filtre INFLATE seulement si l'en-tête
-    Accept-Encoding a une valeur autre que "gzip". Ce filtre s'exécute
+    <dd>Cet exemple illustre les propriétés dynamiques qu'acquiert un filtre
+    traditionnel lorsqu'un filtre intelligent est construit autour. Un nouveau
+    filtre intelligent nommé "gzip" est créé qui n'insère de manière dynamique le
+    filtre INFLATE de <module>mod_deflate</module> que si "gzip" n'est PAS dans
+    l'en-tête Accept-Encoding. Le filtre intelligent gzip s'exécute
     avec le type ftype CONTENT_SET.
     <highlight language="config">
 FilterDeclare gzip CONTENT_SET
-FilterProvider gzip inflate "%{req:Accept-Encoding} !~ /gzip/"
+FilterProvider gzip INFLATE "%{req:Accept-Encoding} !~ /gzip/"
 FilterChain gzip
     </highlight>
     </dd>
 
     <dt>Diminution de la résolution d'une image</dt>
-    <dd>Supposons que nous voulions réduire la résolution de toutes les
-    images web, et que nous disposions de filtres pour les images GIF,
-    JPEG et PNG.
+    <dd>Cette exemple montre des abstractions qui vont au delà du filtrage
+    intelligent. Supposons que nous voulions réduire la résolution de toutes les
+    images web, et que nous disposions de différents fournisseurs de filtrage pour les images GIF,
+    JPEG et PNG. La configuration ci-dessous définit les filtres intelligents
+    "unpack" et "repack" en invoquant le fournisseur de filtrage approprié au
+    type de contenu à l'exécution.
     <highlight language="config">
 FilterProvider unpack jpeg_unpack "%{CONTENT_TYPE} = 'image/jpeg'"
 FilterProvider unpack gif_unpack  "%{CONTENT_TYPE} = 'image/gif'"
@@ -342,7 +347,7 @@ particulier</description>
 <directivesynopsis>
 <name>FilterDeclare</name>
 <description>Déclare un filtre intelligent</description>
-<syntax>FilterDeclare <var>nom_filtre</var> <var>[type]</var></syntax>
+<syntax>FilterDeclare <var>smart-filter-name</var> <var>[type]</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>Options</override>
@@ -350,8 +355,9 @@ particulier</description>
 <usage>
     <p>Cette directive permet de déclarer un filtre en sortie associé à
     un en-tête ou une variable d'environnement qui déterminera les
-    conditions de son exécution. Le premier argument est le <var>nom du
-    filtre</var> destiné à être utilisé dans les directives <directive
+    conditions de son exécution. Le premier argument est le
+    <var>smart-filter-name</var> destiné à être utilisé dans les directives
+    <directive
     module="mod_filter">FilterProvider</directive>, <directive
     module="mod_filter">FilterChain</directive> et <directive
     module="mod_filter">FilterProtocol</directive>.</p>
@@ -367,7 +373,7 @@ particulier</description>
 <directivesynopsis>
 <name>FilterProvider</name>
 <description>Enregistre un filtre de contenu</description>
-<syntax>FilterProvider <var>nom_filtre</var> <var>nom_fournisseur</var>
+<syntax>FilterProvider <var>smart-filter-name</var> <var>provider-name</var>
  <var>expression</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
@@ -380,7 +386,7 @@ particulier</description>
     filtre est appelé pour la première fois.</p>
 
     <p>
-    <var>nom fournisseur</var> doit avoir été enregistré au cours du
+    <var>provider-name</var> doit avoir été enregistré au cours du
     chargement d'un module à l'aide de
     <code>ap_register_output_filter</code>.
     </p>
@@ -397,7 +403,7 @@ Apache</a>, pour une référence complète et d'autres exemples.</seealso>
 <directivesynopsis>
 <name>FilterChain</name>
 <description>Configure la chaîne de filtrage</description>
-<syntax>FilterChain [+=-@!]<var>nom_filtre</var> <var>...</var></syntax>
+<syntax>FilterChain [+=-@!]<var>smart-filter-name</var> <var>...</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>Options</override>
@@ -410,24 +416,24 @@ Apache</a>, pour une référence complète et d'autres exemples.</seealso>
     entreprendre :</p>
 
     <dl>
-    <dt><code>+<var>nom filtre</var></code></dt>
-    <dd>Ajoute<var>nom filtre</var> à la fin de la chaîne de filtrage</dd>
+    <dt><code>+<var>smart-filter-name</var></code></dt>
+    <dd>Ajoute <var>smart-filter-name</var> à la fin de la chaîne de filtrage</dd>
 
-    <dt><code>@<var>nom filtre</var></code></dt>
-    <dd>Ajoute <var>nom filtre</var> au début de la chaîne de filtrage</dd>
+    <dt><code>@<var>smart-filter-name</var></code></dt>
+    <dd>Ajoute <var>smart-filter-name</var> au début de la chaîne de filtrage</dd>
 
-    <dt><code>-<var>nom filtre</var></code></dt>
-    <dd>Supprime <var>nom filtre</var> de la chaîne de filtrage</dd>
+    <dt><code>-<var>smart-filter-name</var></code></dt>
+    <dd>Supprime <var>smart-filter-name</var> de la chaîne de filtrage</dd>
 
-    <dt><code>=<var>nom filtre</var></code></dt>
+    <dt><code>=<var>smart-filter-name</var></code></dt>
     <dd>Supprime tous les filtres de la chaîne de filtrage existante et
-    les remplace par <var>nom filtre</var></dd>
+    les remplace par <var>smart-filter-name</var></dd>
 
     <dt><code>!</code></dt>
     <dd>Supprime tous les filtres de la chaîne de filtrage existante</dd>
 
-    <dt><code><var>nom filtre</var></code></dt>
-    <dd>Équivalent à <code>+<var>nom filtre</var></code></dd>
+    <dt><code><var>smart-filter-name</var></code></dt>
+    <dd>Équivalent à <code>+<var>smart-filter-name</var></code></dd>
     </dl>
 </usage>
 </directivesynopsis>
@@ -435,8 +441,8 @@ Apache</a>, pour une référence complète et d'autres exemples.</seealso>
 <directivesynopsis>
 <name>FilterProtocol</name>
 <description>Vérifie le respect du protocole HTTP</description>
-<syntax>FilterProtocol <var>nom_filtre</var> [<var>nom_fournisseur</var>]
-    <var>drapeaux_protocole</var></syntax>
+<syntax>FilterProtocol <var>smart-filter-name</var> [<var>provider-name</var>]
+     <var>proto-flags</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>Options</override>
@@ -448,9 +454,8 @@ Apache</a>, pour une référence complète et d'autres exemples.</seealso>
     compte des effets du filtre.</p>
 
     <p>Cette directive se présente sous deux formes. Avec trois
-    arguments, elle s'applique de manière spécifique à un <var>nom
-    filtre</var> et un <var>nom fournisseur</var> pour ce filtre. Avec
-    deux arguments, elle s'applique à un <var>nom filtre</var> pour
+    arguments, elle s'applique de manière spécifique à un <var>smart-filter-name</var> et un <var>provider-name</var> pour ce filtre. Avec
+    deux arguments, elle s'applique à un <var>smart-filter-name</var> pour
     <em>tout</em> fournisseur qu'il actionne.</p>
 
     <p>Les drapeaux spécifiés sont fusionnés avec les drapeaux que les
@@ -461,7 +466,7 @@ Apache</a>, pour une référence complète et d'autres exemples.</seealso>
     en spécifiant <code>change=no</code>.
     </p>
 
-    <p><var>drapeaux_protocole</var> peut contenir un ou plusieurs
+    <p><var>proto-flags</var> peut contenir un ou plusieurs
     drapeaux parmi les suivants :</p>
 
     <dl>
@@ -495,7 +500,7 @@ Apache</a>, pour une référence complète et d'autres exemples.</seealso>
 <name>FilterTrace</name>
 <description>Obtention d'informations de débogage/diagnostique en
 provenance de <module>mod_filter</module></description>
-<syntax>FilterTrace <var>nom_filtre</var> <var>niveau</var></syntax>
+<syntax>FilterTrace <var>smart-filter-name</var> <var>level</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context></contextlist>
 
