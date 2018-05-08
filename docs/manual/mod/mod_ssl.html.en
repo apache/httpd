@@ -611,15 +611,16 @@ confused in this situation.</p>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SSLCertificateFile" id="SSLCertificateFile">SSLCertificateFile</a> <a name="sslcertificatefile" id="sslcertificatefile">Directive</a><a title="Permanent link" href="#sslcertificatefile" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Server PEM-encoded X.509 certificate data file</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLCertificateFile <var>file-path</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Server PEM-encoded X.509 certificate data file or token identifier</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLCertificateFile <var>file-path</var>|<var>certid</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td><var>certid</var> available in 2.5.1 and later.</td></tr>
 </table>
 <p>
-This directive points to a file with certificate data in PEM format.
-At a minimum, the file must include an end-entity (leaf) certificate.
+This directive points to a file with certificate data in PEM format, or the certificate identifier through a configured cryptographic token.
+If using a PEM file, at minimum, the file must include an end-entity (leaf) certificate.
 The directive can be used multiple times (referencing different filenames)
 to support multiple algorithms for server authentication - typically
 RSA, DSA, and ECC. The number of supported algorithms depends on the
@@ -659,6 +660,14 @@ the certificate files using such an embedded key must be configured
 after the certificates using a separate key file. If the private
 key is encrypted, the pass phrase dialog is forced at startup time.
 </p>
+
+<p>As an alternative to storing certificates and private keys in
+files, a certificate identifier can be used to identify a certificate
+stored in a token.  Currently, only <a href="https://tools.ietf.org/html/rfc7512">PKCS#11 URIs</a> are
+recognized as certificate identifiers, and can be used in conjunction
+with the OpenSSL <code>pkcs11</code> engine configured with <code class="directive"><a href="#sslcryptodevice">SSLCryptoDevice</a></code>.  If <code class="directive"><a href="#sslcertificatekeyfile">SSLCertificateKeyFile</a></code> is omitted, the
+certificate and private key can be loaded through the single
+identifier specified with <code class="directive"><a href="#sslcertificatefile">SSLCertificateFile</a></code>.</p>
 
 <div class="note">
 <h3>DH parameter interoperability with primes &gt; 1024 bit</h3>
@@ -703,7 +712,12 @@ thus using a custom/suitable length.
 </p>
 </div>
 
-<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLCertificateFile "/usr/local/apache2/conf/ssl.crt/server.crt"</pre>
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config"># Example using a PEM-encoded file.
+SSLCertificateFile "/usr/local/apache2/conf/ssl.crt/server.crt"
+# Example use of a certificate and private key from a PKCS#11 token:
+SSLCryptoDevice pkcs11
+...
+SSLCertificateFile "pkcs11:token=My%20Token%20Name;id=45"</pre>
 </div>
 
 </div>
