@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1645865:1828738 (outdated) -->
+<!-- English Revision: :1828738:1828738 (outdated) -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -44,6 +44,7 @@
      [ -<strong>L</strong> <var>isim</var> ]
      [ -<strong>p</strong> <var>program</var> ]
      [ -<strong>f</strong> ]
+     [ -<strong>D</strong> ]
      [ -<strong>t</strong> ]
      [ -<strong>v</strong> ]
      [ -<strong>e</strong> ]
@@ -84,6 +85,11 @@
     istek sunuluncaya kadar geçen zamanda günlük dosyasının yokluğu
     özdevinimli işlemler yapan bazı günlükleme araçlarında sorunlara yol
     açabilir. Bu seçenek bu gibi durumlarda yararlıdır.</dd>
+
+    <dt><code><strong>-D</strong></code></dt>
+    <dd>Günlük dosyasının yerleştirileceği dizini (eğer yoksa) üst dizinleri ile 
+    birlikte yapılandırır. Bu, <code>strftime(3)</code> işlevinin sırf dosya için 
+    değil yol için de kullanılmasını sağlar.</dd>
 
     <dt><code><strong>-t</strong></code></dt>
     <dd>Günlük dosyasının döndürülmek yerine tepeden kırpılmasına sebep olur.

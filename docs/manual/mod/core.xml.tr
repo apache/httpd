@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1818964:1828061 (outdated) -->
+<!-- English Revision: 1828061 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -3869,6 +3869,56 @@ Protocols h2 http/1.1
 </directivesynopsis>
 
 <directivesynopsis>
+<name>RegexDefaultOptions</name>
+<description>Regex düzenli ifadeleri için öntanımlı/küresel seçenekleri yapılandırır</description>
+<syntax>RegexDefaultOptions [none] [+|-]<var>seçenek</var> [[+|-]<var>seçenek</var>] ...</syntax>
+<default>RegexDefaultOptions DOLLAR_ENDONLY</default>
+<contextlist><context>server config</context></contextlist>
+<compatibility>Sadece Apache 2.4.30 ve sonrasında kullanılabilmektedir.</compatibility>
+    
+    <usage>
+        <p>Bu yönerge kendisinden sonra kullanılan bütün düzenli ifsdelerin 
+        davranışını etkiler.</p>
+
+        <p>'+' ile öncelenmiş bütün seçenekler önceden atanmış seçeneklere 
+        eklenir.<br />
+        '-' ile öncelenmiş bütün seçenekler önceden atanmış seçeneklerden 
+        çıkarılır.<br />
+        '+' veya '-' ile öncelenmemiş her seçenek önceden atanmış seçenekleri 
+        silerek onların yerini alır.<br />
+        <code>none</code> ile önceden atanmış tüm seçenekler sıfırlanır.</p>
+
+        <p><var>seçenek</var> şunlardan biri olabilir:</p>
+        <dl>
+            <dt><code>ICASE</code></dt>
+            <dd>Harf büyüklüğüne duyarlı eşleşmeler kullanılır.</dd>
+
+            <dt><code>DOTALL</code></dt>
+            <dd>Perl'ün /s seçeneği.</dd>
+
+            <dt><code>DOLLAR_ENDONLY</code></dt>
+            <dd>'$' dizgenin sonu ile eşleşir.</dd>
+            <dd>.</dd>
+        </dl>
+        <highlight language="config">
+# 
+RegexDefaultOptions +ICASE +DOLLAR_ENDONLY
+...
+# ICASE seçeneği silinir, diğer seçenekler tutulur:
+RegexDefaultOptions -ICASE
+...
+# Atanmuş seçenekler silinir, DOTALL öntanımlı seçenek yapılır:
+RegexDefaultOptions DOTALL
+...
+# Tüm seçenekler silinir, öntanımlı seçenek kalmaz.
+RegexDefaultOptions none
+...
+        </highlight>
+    </usage>
+</directivesynopsis>
+
+
+<directivesynopsis>
 <name>RLimitCPU</name>
 <description>Apache httpd alt süreçleri tarafından çalıştırılan süreçlerin
   işlemci tüketimine sınırlama getirir.</description>
@@ -4871,7 +4921,8 @@ davranılır.</compatibility>
 <description>Standart olmayan HTTP yöntemlerini devreye alır</description>
 <syntax>RegisterHttpMethod <var>yöntem</var> [<var>yöntem</var> [...]]</syntax>
 <contextlist><context>server config</context></contextlist>
- 
+<compatibility>Apache HTTP Sunucusunun 2.4.24 ve sonraki sürümlerinde kullanılabilmektedir.</compatibility> 
+
 <usage>
     <p>Bu yönerge sunucunun standatta bulunmayan ek HTTP yöntemlerini 
       kullanabilmesini sağlar. Yönergelerde standartta olmayan yöntem isimleri 
