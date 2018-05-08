@@ -588,11 +588,11 @@ int ssl_pphrase_Handle_CB(char *buf, int bufsize, int verify, void *srv)
 }
 
 #if defined(HAVE_OPENSSL_ENGINE_H) && defined(HAVE_ENGINE_INIT)
-apr_status_t modssl_load_engine_pkey(server_rec *s, apr_pool_t *p,
-                                     const char *keyid, EVP_PKEY **ppkey)
+apr_status_t modssl_load_engine_keypair(server_rec *s, apr_pool_t *p,
+                                        const char *certid, const char *keyid,
+                                        X509 **pubkey, EVP_PKEY **privkey)
 {
     SSLModConfigRec *mc = myModConfig(s);
-    EVP_PKEY *pPrivateKey = NULL;
     ENGINE *e;
     UI_METHOD *ui_method;
 
@@ -619,16 +619,30 @@ apr_status_t modssl_load_engine_pkey(server_rec *s, apr_pool_t *p,
     if (APLOGdebug(s)) {
         ENGINE_ctrl_cmd_string(e, "VERBOSE", NULL, 0);
     }
-    
-    pPrivateKey = ENGINE_load_private_key(e, keyid, ui_method, NULL);
-    if (pPrivateKey == NULL) {
+
+    if (certid) {
+        struct {
+            const char *cert_id;
+            X509 *cert;
+        } params = { certid, NULL };
+
+        if (!ENGINE_ctrl_cmd(e, "LOAD_CERT_CTRL", 0, &params, NULL, 1)) {
+            ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10136)
+                         "Init: Unable to get the certificate");
+            ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
+            return ssl_die(s);
+        }
+
+        *pubkey = params.cert;
+    }
+
+    *privkey = ENGINE_load_private_key(e, keyid, ui_method, NULL);
+    if (*privkey == NULL) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10133)
                      "Init: Unable to get the private key");
         ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
         return ssl_die(s);
     }
-
-    *ppkey = pPrivateKey;
 
     ENGINE_free(e);
 

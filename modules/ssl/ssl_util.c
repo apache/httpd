@@ -515,7 +515,7 @@ void ssl_util_thread_setup(apr_pool_t *p)
 
 #endif /* #if APR_HAS_THREADS && MODSSL_USE_OPENSSL_PRE_1_1_API */
 
-int modssl_is_engine_key(const char *name)
+int modssl_is_engine_id(const char *name)
 {
 #if defined(HAVE_OPENSSL_ENGINE_H) && defined(HAVE_ENGINE_INIT)
     /* ### Can handle any other special ENGINE key names here? */
