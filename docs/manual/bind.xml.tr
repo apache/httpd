@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 1565335:1827552 (outdated) -->
+<!-- English Revision: 1827552 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -108,9 +108,45 @@ Listen [2001:db8::a00:20ff:fea7:ccea]:80
       <p>Sorun giderme ile ilgili ipuçları için
       <a href="http://wiki.apache.org/httpd/CouldNotBindToAddress">wiki
       belgesine</a> bakınız.</p>
-</note>
+    </note>
 
-</section>
+  </section>
+
+  <section id="reload">
+    <title>Dinleme yapılandırmasının yeniden başlatırken değiştirilmesi</title>
+
+    <p>httpd yeniden başlatılırken, 
+    <directive module="mpm_common">Listen</directive> yönergelerindeki 
+    değişiklikler için özel değerlendirmeler yapılmalıdır. Yeniden başlatma 
+    sırasında, httpd, yeni bağlanma çabalarında "Connection refused" (bağlantı 
+    reddedildi) hatasından kaçınmak için [özgün yapılandırmadaki gibi] portları 
+    bağlı tutar. Bu bakımdan, <directive module="mpm_common">Listen</directive>
+    yönergelerinden yapılan değişiklikler yenden başlatılrken yapılandırmanın 
+    başarısız olmasına ve sunucunun sonlanmasına sebep olur.</p>
+
+    <p>Örneğin:</p>
+    
+    <example>
+    <highlight language="config">
+      Listen 127.0.0.1:80
+    </highlight>
+    </example>
+
+    <p>yapılandırmasını aşağıdakiyle değiştirmek yenden başlatma sırasında 
+    sucunun hta verip sonlanmasına sebep olur. Çünkü, tüm adreslerden 80 porta 
+    bağlanmak sadece 127.0.0.1 adresine bağlanmakla çelişir.</p>
+    
+    <example>
+    <highlight language="config">
+      Listen 80
+    </highlight>
+    </example>
+
+    <p>Böyle değişikliklerin etkili olabilmesi için sunucu önce durdurulmalı 
+    sonra başlatımalıdır (restart yerine stop ve start kullanılmalıdır).</p>
+    
+  </section>
+
 
   <section id="ipv6">
     <title>IPv6 Adreslerin Durumu</title>

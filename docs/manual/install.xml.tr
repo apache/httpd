@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 1760550:1824884 (outdated) -->
+<!-- English Revision: 1824884 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -54,7 +54,37 @@
 <seealso><a href="stopping.html">Durdurma ve yeniden başlatma</a></seealso>
 
 <section id="overview"><title>Tez canlılar için genel bir bakış</title>
+    <dl>
+    <dt>Fedora/CentOS/Red Hat Enterprise Linux üzerinde kurulum</dt>
+    <dd>
+    <highlight>
+sudo yum install httpd
+sudo systemctl enable httpd
+sudo systemctl start httpd
+    </highlight>
 
+    <note type="warning">Bu dağıtımların yeni sürümlerinde <code>yum</code> 
+    yerine <code>dnf</code> kullanılmaktadır.<code>yum</code>. Daha ayrıntılı 
+    bilgi için <a
+    href="https://fedoraproject.org/wiki/Apache_HTTP_Server">Fedora projesinin 
+    belgelerine</a> bakınız.</note>
+    </dd>
+
+    <dt>Ubuntu/Debian üzerinde kurulum</dt>
+    <dd>
+<highlight>
+sudo apt install apache2
+sudo service apache2 start
+</highlight>
+
+    <note type="warning">Daha ayrıntılı bilgi için <a 
+    href="https://help.ubuntu.com/lts/serverguide/httpd.html">Ubuntu 
+    belgelerine</a> bakınız.</note>
+
+    </dd>
+
+    <dt>Kaynak koddan kurulum</dt>
+    <dd>
     <table>
       <columnspec><column width=".13"/><column width=".80"/></columnspec>
       <tr>
@@ -116,6 +146,12 @@
     <p>Derleme ve kurulum işleminin her aşaması, Apache HTTPd Sunucusunun
       derlenmesi ve kurulması için gerekenler başta olmak üzere aşağıda
       ayrıntılı olarak açıklanmıştır.</p>
+    </dd>
+    </dl>
+
+    <note type="warning">Kullandığınız platformu burada göremiyor musunuz?
+    <a href="http://httpd.apache.org/docs-project/">Bu belgeleri geliştirmek 
+     için gelin bize yardımcı olun.</a></note>
 </section>
 
 <section id="requirements"><title>Gereksinimler</title>
