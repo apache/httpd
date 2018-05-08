@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_ldap: Abort on LDAP locking errors. [Eric Covener]
+
   *) mod_ssl: Support loading private keys from an OpenSSL engine using a
      PKCS#11 URI.  [Anderson Sasaki <ansasaki redhat.com>, Joe Orton]
 
