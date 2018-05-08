@@ -102,6 +102,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#protocols">Protocols</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#protocolshonororder">ProtocolsHonorOrder</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#qualifyredirecturl">QualifyRedirectURL</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#regexdefaultoptions">RegexDefaultOptions</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#registerhttpmethod">RegisterHttpMethod</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rlimitcpu">RLimitCPU</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rlimitmem">RLimitMEM</a></li>
@@ -3869,6 +3870,55 @@ davranılır.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="RegexDefaultOptions" id="RegexDefaultOptions">RegexDefaultOptions</a> <a name="regexdefaultoptions" id="regexdefaultoptions">Yönergesi</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Regex düzenli ifadeleri için öntanımlı/küresel seçenekleri yapılandırır</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>RegexDefaultOptions [none] [+|-]<var>seçenek</var> [[+|-]<var>seçenek</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>RegexDefaultOptions DOLLAR_ENDONLY</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Sadece Apache 2.4.30 ve sonrasında kullanılabilmektedir.</td></tr>
+</table>
+        <p>Bu yönerge kendisinden sonra kullanılan bütün düzenli ifsdelerin 
+        davranışını etkiler.</p>
+
+        <p>'+' ile öncelenmiş bütün seçenekler önceden atanmış seçeneklere 
+        eklenir.<br />
+        '-' ile öncelenmiş bütün seçenekler önceden atanmış seçeneklerden 
+        çıkarılır.<br />
+        '+' veya '-' ile öncelenmemiş her seçenek önceden atanmış seçenekleri 
+        silerek onların yerini alır.<br />
+        <code>none</code> ile önceden atanmış tüm seçenekler sıfırlanır.</p>
+
+        <p><var>seçenek</var> şunlardan biri olabilir:</p>
+        <dl>
+            <dt><code>ICASE</code></dt>
+            <dd>Harf büyüklüğüne duyarlı eşleşmeler kullanılır.</dd>
+
+            <dt><code>DOTALL</code></dt>
+            <dd>Perl'ün /s seçeneği.</dd>
+
+            <dt><code>DOLLAR_ENDONLY</code></dt>
+            <dd>'$' dizgenin sonu ile eşleşir.</dd>
+            <dd>.</dd>
+        </dl>
+        <pre class="prettyprint lang-config"># 
+RegexDefaultOptions +ICASE +DOLLAR_ENDONLY
+...
+# ICASE seçeneği silinir, diğer seçenekler tutulur:
+RegexDefaultOptions -ICASE
+...
+# Atanmuş seçenekler silinir, DOTALL öntanımlı seçenek yapılır:
+RegexDefaultOptions DOTALL
+...
+# Tüm seçenekler silinir, öntanımlı seçenek kalmaz.
+RegexDefaultOptions none
+...</pre>
+
+    
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="RegisterHttpMethod" id="RegisterHttpMethod">RegisterHttpMethod</a> <a name="registerhttpmethod" id="registerhttpmethod">Yönergesi</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Standart olmayan HTTP yöntemlerini devreye alır</td></tr>
@@ -3876,6 +3926,7 @@ davranılır.</td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Apache HTTP Sunucusunun 2.4.24 ve sonraki sürümlerinde kullanılabilmektedir.</td></tr>
 </table>
     <p>Bu yönerge sunucunun standatta bulunmayan ek HTTP yöntemlerini 
       kullanabilmesini sağlar. Yönergelerde standartta olmayan yöntem isimleri 
