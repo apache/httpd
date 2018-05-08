@@ -31,7 +31,6 @@
 <a href="./ko/install.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/install.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
 
     <p>Bu belge Apache HTTP Sunucusunun sadece Unix ve Unix benzeri
@@ -66,7 +65,33 @@
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="overview" id="overview">Tez canlılar için genel bir bakış</a></h2>
+    <dl>
+    <dt>Fedora/CentOS/Red Hat Enterprise Linux üzerinde kurulum</dt>
+    <dd>
+    <pre class="prettyprint lang-">sudo yum install httpd
+sudo systemctl enable httpd
+sudo systemctl start httpd</pre>
 
+
+    <div class="warning">Bu dağıtımların yeni sürümlerinde <code>yum</code> 
+    yerine <code>dnf</code> kullanılmaktadır.<code>yum</code>. Daha ayrıntılı 
+    bilgi için <a href="https://fedoraproject.org/wiki/Apache_HTTP_Server">Fedora projesinin 
+    belgelerine</a> bakınız.</div>
+    </dd>
+
+    <dt>Ubuntu/Debian üzerinde kurulum</dt>
+    <dd>
+<pre class="prettyprint lang-">sudo apt install apache2
+sudo service apache2 start</pre>
+
+
+    <div class="warning">Daha ayrıntılı bilgi için <a href="https://help.ubuntu.com/lts/serverguide/httpd.html">Ubuntu 
+    belgelerine</a> bakınız.</div>
+
+    </dd>
+
+    <dt>Kaynak koddan kurulum</dt>
+    <dd>
     <table>
       
       <tr>
@@ -127,6 +152,12 @@
     <p>Derleme ve kurulum işleminin her aşaması, Apache HTTPd Sunucusunun
       derlenmesi ve kurulması için gerekenler başta olmak üzere aşağıda
       ayrıntılı olarak açıklanmıştır.</p>
+    </dd>
+    </dl>
+
+    <div class="warning">Kullandığınız platformu burada göremiyor musunuz?
+    <a href="http://httpd.apache.org/docs-project/">Bu belgeleri geliştirmek 
+     için gelin bize yardımcı olun.</a></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="requirements" id="requirements">Gereksinimler</a></h2>
