@@ -866,15 +866,16 @@ SSLCipherSuite RSA:!EXP:!NULL:+HIGH:+MEDIUM:-LOW
 
 <directivesynopsis>
 <name>SSLCertificateFile</name>
-<description>Server PEM-encoded X.509 certificate data file</description>
-<syntax>SSLCertificateFile <var>file-path</var></syntax>
+<description>Server PEM-encoded X.509 certificate data file or token identifier</description>
+<syntax>SSLCertificateFile <var>file-path</var>|<var>certid</var></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
+<compatibility><var>certid</var> available in 2.5.1 and later.</compatibility>
 
 <usage>
 <p>
-This directive points to a file with certificate data in PEM format.
-At a minimum, the file must include an end-entity (leaf) certificate.
+This directive points to a file with certificate data in PEM format, or the certificate identifier through a configured cryptographic token.
+If using a PEM file, at minimum, the file must include an end-entity (leaf) certificate.
 The directive can be used multiple times (referencing different filenames)
 to support multiple algorithms for server authentication - typically
 RSA, DSA, and ECC. The number of supported algorithms depends on the
@@ -914,6 +915,18 @@ the certificate files using such an embedded key must be configured
 after the certificates using a separate key file. If the private
 key is encrypted, the pass phrase dialog is forced at startup time.
 </p>
+
+<p>As an alternative to storing certificates and private keys in
+files, a certificate identifier can be used to identify a certificate
+stored in a token.  Currently, only <a
+href="https://tools.ietf.org/html/rfc7512">PKCS#11 URIs</a> are
+recognized as certificate identifiers, and can be used in conjunction
+with the OpenSSL <code>pkcs11</code> engine configured with <directive
+module="mod_ssl">SSLCryptoDevice</directive>.  If <directive
+module="mod_ssl">SSLCertificateKeyFile</directive> is omitted, the
+certificate and private key can be loaded through the single
+identifier specified with <directive
+module="mod_ssl">SSLCertificateFile</directive>.</p>
 
 <note>
 <title>DH parameter interoperability with primes > 1024 bit</title>
@@ -960,7 +973,12 @@ thus using a custom/suitable length.
 
 <example><title>Example</title>
 <highlight language="config">
+# Example using a PEM-encoded file.
 SSLCertificateFile "/usr/local/apache2/conf/ssl.crt/server.crt"
+# Example use of a certificate and private key from a PKCS#11 token:
+SSLCryptoDevice pkcs11
+...
+SSLCertificateFile "pkcs11:token=My%20Token%20Name;id=45"
 </highlight>
 </example>
 </usage>

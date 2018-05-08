@@ -3,8 +3,9 @@ Changes with Apache 2.5.1
 
   *) mod_ldap: Abort on LDAP locking errors. [Eric Covener]
 
-  *) mod_ssl: Support loading private keys from an OpenSSL engine using a
-     PKCS#11 URI.  [Anderson Sasaki <ansasaki redhat.com>, Joe Orton]
+  *) mod_ssl: Support loading certificates and private keys from the
+     PKCS#11 OpenSSL engine.  [Anderson Sasaki <ansasaki redhat.com>,
+     Joe Orton]
 
   *) mod_slomem_shm: Handle a generation number when the slotmem size changes,
      modifying the number of proxy balancers or balancer members on restart

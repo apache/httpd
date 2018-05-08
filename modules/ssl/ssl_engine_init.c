@@ -1251,13 +1251,17 @@ static apr_status_t ssl_init_server_certs(server_rec *s,
                                           const char *));
          i++) {
         EVP_PKEY *pkey;
+        const char *engine_certfile = NULL;
 
         key_id = apr_psprintf(ptemp, "%s:%d", vhost_id, i);
 
         ERR_clear_error();
 
         /* first the certificate (public key) */
-        if (mctx->cert_chain) {
+        if (modssl_is_engine_id(certfile)) {
+            engine_certfile = certfile;
+        }
+        else if (mctx->cert_chain) {
             if ((SSL_CTX_use_certificate_file(mctx->ssl_ctx, certfile,
                                               SSL_FILETYPE_PEM) < 1)) {
                 ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(02561)
@@ -1286,12 +1290,28 @@ static apr_status_t ssl_init_server_certs(server_rec *s,
 
         ERR_clear_error();
 
-        if (modssl_is_engine_key(keyfile)) {
+        if (modssl_is_engine_id(keyfile)) {
             apr_status_t rv;
 
-            if ((rv = modssl_load_engine_pkey(s, ptemp, keyfile, &pkey))) {
+            cert = NULL;
+            
+            if ((rv = modssl_load_engine_keypair(s, ptemp, engine_certfile,
+                                                 keyfile, &cert, &pkey))) {
                 return rv;
             }
+
+            if (cert) {
+                if (SSL_CTX_use_certificate(mctx->ssl_ctx, cert) < 1) {
+                    ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO()
+                                 "Failed to configure engine certificate %s, check %s",
+                                 key_id, certfile);
+                    ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
+                    return APR_EGENERAL;
+                }
+
+                /* SSL_CTX now owns the cert. */
+                X509_free(cert);
+            }                    
             
             if (SSL_CTX_use_PrivateKey(mctx->ssl_ctx, pkey) < 1) {
                 ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10130)
