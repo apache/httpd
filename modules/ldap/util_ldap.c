@@ -87,7 +87,7 @@ static APR_INLINE apr_status_t ldap_cache_lock(util_ldap_state_t *st, request_re
     }
     return rv; 
 }
-static APR_INLINE ldap_cache_unlock(util_ldap_state_t *st, request_rec *r) { 
+static APR_INLINE apr_status_t ldap_cache_unlock(util_ldap_state_t *st, request_rec *r) { 
     apr_status_t rv = APR_SUCCESS;
     if (st->util_ldap_cache_lock) { 
         apr_status_t rv = apr_global_mutex_unlock(st->util_ldap_cache_lock);
