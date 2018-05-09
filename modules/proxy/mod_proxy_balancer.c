@@ -1885,7 +1885,7 @@ static void balancer_child_init(apr_pool_t *p, server_rec *s)
         proxy_server_conf *conf = (proxy_server_conf *)ap_get_module_config(sconf, &proxy_module);
         apr_status_t rv;
 
-        if (conf->balancers->nelts) {
+        if (conf->balancers->nelts && !conf->bslot) {
             apr_size_t size;
             unsigned int num;
             storage->attach(&(conf->bslot), conf->id, &size, &num, p);
