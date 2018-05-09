@@ -909,17 +909,17 @@ static size_t subst_str(link_ctx *ctx, int start, int end, const char *ns)
 {
     int olen, nlen, plen;
     int delta;
-    char *p;
+    char *s, *p;
     
     olen = end - start;
     nlen = (int)strlen(ns);
     delta = nlen - olen;
     plen = ctx->slen + delta + 1;
-    p = apr_pcalloc(ctx->pool, plen);
-    strncpy(p, ctx->s, start);
-    strncpy(p + start, ns, nlen);
-    strcpy(p + start + nlen, ctx->s + end);
-    ctx->s = p;
+    s = apr_pcalloc(ctx->pool, plen);
+    p = apr_cpystrn(s, ctx->s, start);
+    p = apr_cpystrn(p, ns, nlen);
+    strcpy(p, ctx->s + end);
+    ctx->s = s;
     ctx->slen = (int)strlen(p);
     if (ctx->i >= end) {
         ctx->i += delta;
@@ -930,7 +930,7 @@ static size_t subst_str(link_ctx *ctx, int start, int end, const char *ns)
 static void map_link(link_ctx *ctx) 
 {
     if (ctx->link_start < ctx->link_end) {
-        char buffer[HUGE_STRING_LEN];
+        char buffer[HUGE_STRING_LEN], *p;
         int need_len, link_len, buffer_len, prepend_p_server; 
         const char *mapped;
         
@@ -943,7 +943,7 @@ static void map_link(link_ctx *ctx)
             /* common to use relative uris in link header, for mappings
              * to work need to prefix the backend server uri */
             need_len += ctx->psu_len;
-            strncpy(buffer, ctx->p_server_uri, sizeof(buffer));
+            apr_cpystrn(buffer, ctx->p_server_uri, sizeof(buffer));
             buffer_len = ctx->psu_len;
         }
         if (need_len > sizeof(buffer)) {
@@ -951,9 +951,7 @@ static void map_link(link_ctx *ctx)
                           "link_reverse_map uri too long, skipped: %s", ctx->s);
             return;
         }
-        strncpy(buffer + buffer_len, ctx->s + ctx->link_start, link_len);
-        buffer_len += link_len;
-        buffer[buffer_len] = '\0';
+        apr_cpystrn(buffer + buffer_len, ctx->s + ctx->link_start, link_len);
         if (!prepend_p_server
             && strcmp(ctx->real_backend_uri, ctx->p_server_uri)
             && !strncmp(buffer, ctx->real_backend_uri, ctx->rbu_len)) {
@@ -961,10 +959,8 @@ static void map_link(link_ctx *ctx)
              * to work, we need to use the proxy uri */
             int path_start = ctx->link_start + ctx->rbu_len;
             link_len -= ctx->rbu_len;
-            strcpy(buffer, ctx->p_server_uri);
-            strncpy(buffer + ctx->psu_len, ctx->s + path_start, link_len);
-            buffer_len = ctx->psu_len + link_len;
-            buffer[buffer_len] = '\0';            
+            p = apr_cpystrn(buffer, ctx->p_server_uri, sizeof buffer);
+            apr_cpystrn(p, ctx->s + path_start, link_len);
         }
         mapped = ap_proxy_location_reverse_map(ctx->r, ctx->conf, buffer);
         ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, ctx->r, 
