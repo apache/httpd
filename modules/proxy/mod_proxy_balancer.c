@@ -1885,14 +1885,26 @@ static void balancer_child_init(apr_pool_t *p, server_rec *s)
         proxy_server_conf *conf = (proxy_server_conf *)ap_get_module_config(sconf, &proxy_module);
         apr_status_t rv;
 
-        if (conf->balancers->nelts && !conf->bslot) {
+        if (conf->balancers->nelts) {
             apr_size_t size;
             unsigned int num;
-            storage->attach(&(conf->bslot), conf->id, &size, &num, p);
+            /* In 2.4.x we rely on the provider to return either the same
+             * in/out &bslot, a valid new one, or NULL for failure/exit().
+             * TODO? for 2.6+/3.x we possibly could consider returned status
+             * to be real failures, but e.g. NOTFOUND/ENOSHM* to continue with
+             * existing conf->bslot (even when the returned one is NULL).
+             * Hence handle the slotmem reuse it here where we know it's valid
+             * both for fork()ed post_config()s and MPM winnt-like ones (run in
+             * child process too). The provider tells what it attached or not, 
+             * and if not whether the child should stop (fatal) or continue
+             * with the "inherited" configuration.
+             */
+            rv = storage->attach(&conf->bslot, conf->id, &size, &num, p);
             if (!conf->bslot) {
-                ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(01205) "slotmem_attach failed");
+                ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(01205) "slotmem_attach failed");
                 exit(1); /* Ugly, but what else? */
             }
+            (void)rv;
         }
 
         balancer = (proxy_balancer *)conf->balancers->elts;
