@@ -586,7 +586,6 @@ static apr_status_t slotmem_attach(ap_slotmem_instance_t **new,
     apr_shm_t *shm;
     apr_status_t rv;
 
-    *new = NULL;
     ap_mpm_query(AP_MPMQ_GENERATION, &generation);
 
     if (!slotmem_filenames(pool, name, &fname, NULL)) {
