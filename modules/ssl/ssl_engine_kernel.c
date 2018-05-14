@@ -2552,7 +2552,7 @@ int ssl_callback_alpn_select(SSL *ssl,
                              void *arg)
 {
     conn_rec *c = (conn_rec*)SSL_get_app_data(ssl);
-    SSLConnRec *sslconn = myConnConfig(c);
+    SSLConnRec *sslconn;
     apr_array_header_t *client_protos;
     const char *proposed;
     size_t len;
@@ -2563,6 +2563,7 @@ int ssl_callback_alpn_select(SSL *ssl,
     if (c == NULL) {
         return SSL_TLSEXT_ERR_OK;
     }
+    sslconn = myConnConfig(c);
 
     if (inlen == 0) {
         /* someone tries to trick us? */
