@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_rewrite: Only create the global mutex used by "RewriteMap prg:" when
+     this type of map is present in the configuration.  PR62311.  
+     [Hank Ibell <hwibell gmail.com>]
+
   *) mod_ldap: Abort on LDAP locking errors. [Eric Covener]
 
   *) mod_ssl: Support loading certificates and private keys from the
