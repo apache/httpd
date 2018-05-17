@@ -335,3 +335,36 @@ Body:----------tr--
     
 <!--#include virtual="include/bottom.html" -->
 ----------tr--
+
+Content-language: zh-cn
+Content-type: text/html; charset=UTF-8
+Body:----------zh-cn--
+<!--#set var="TITLE" value="网关错误！"
+--><!--#include virtual="include/top.html" -->
+
+    代理服务器从上游的服务器接收到了无效的响应。
+
+  <!--#if expr="-n v('REDIRECT_ERROR_NOTES')" -->
+    <!--#include virtual="include/spacer.html" -->
+    <!--#echo encoding="none" var="REDIRECT_ERROR_NOTES" -->
+  <!--#endif -->
+    
+<!--#include virtual="include/bottom.html" -->
+----------zh-cn--
+
+Content-language: zh-tw
+Content-type: text/html; charset=UTF-8
+Body:----------zh-tw--
+<!--#set var="TITLE" value="閘道器錯誤！"
+--><!--#include virtual="include/top.html" -->
+
+    代理伺服器從上遊的伺服器接收到了無效的響應。
+
+  <!--#if expr="-n v('REDIRECT_ERROR_NOTES')" -->
+    <!--#include virtual="include/spacer.html" -->
+    <!--#echo encoding="none" var="REDIRECT_ERROR_NOTES" -->
+  <!--#endif -->
+    
+<!--#include virtual="include/bottom.html" -->
+----------zh-tw--
+

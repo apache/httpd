@@ -387,3 +387,36 @@ Body:----------tr--
 
 <!--#include virtual="include/bottom.html" -->
 ----------tr--
+
+Content-language: zh-cn
+Content-type: text/html; charset=UTF-8
+Body:----------zh-cn--
+<!--#set var="TITLE" value="需要认证！"
+--><!--#include virtual="include/top.html" -->
+
+    服务器无法验证您被授权访问 URL "<!--#echo encoding="url" var="REDIRECT_URL" -->"。
+    这可能是因为您提供了错误的凭据（如，错误的密码），或您的浏览器不知道如何提供必需的凭据。
+
+  <!--#include virtual="include/spacer.html" -->
+
+    如果您确信您具有访问该文档的权限，请检查您的用户 ID 和密码，并再试一次。
+
+<!--#include virtual="include/bottom.html" -->
+----------zh-cn--
+
+Content-language: zh-tw
+Content-type: text/html; charset=UTF-8
+Body:----------zh-tw--
+<!--#set var="TITLE" value="需要認證！"
+--><!--#include virtual="include/top.html" -->
+
+    伺服器無法驗證您被授權訪問 URL "<!--#echo encoding="url" var="REDIRECT_URL" -->"。
+    這可能是因為您提供了錯誤的憑據（如，錯誤的密碼），或您的瀏覽器不知道如何提供必需的憑據。
+
+  <!--#include virtual="include/spacer.html" -->
+
+    如果您確信您具有訪問該文檔的權限，請檢查您的用戶 ID 和密碼，並再試一次。
+
+<!--#include virtual="include/bottom.html" -->
+----------zh-tw--
+

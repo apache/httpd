@@ -240,3 +240,26 @@ Body:----------tr--
 
 <!--#include virtual="include/bottom.html" -->
 ----------tr--
+
+Content-language: zh-cn
+Content-type: text/html; charset=UTF-8
+Body:----------zh-cn--
+<!--#set var="TITLE" value="请求错误！"
+--><!--#include virtual="include/top.html" -->
+
+    您的浏览器（或代理）向服务器发送了一个无法被识别的请求。
+
+<!--#include virtual="include/bottom.html" -->
+----------zh-cn--
+
+Content-language: zh-tw
+Content-type: text/html; charset=UTF-8
+Body:----------zh-tw--
+<!--#set var="TITLE" value="請求錯誤！"
+--><!--#include virtual="include/top.html" -->
+
+    您的瀏覽器（或代理）向伺服器發送了一個無法被識別的請求。
+
+<!--#include virtual="include/bottom.html" -->
+----------zh-tw--
+

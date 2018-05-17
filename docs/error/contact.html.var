@@ -132,3 +132,16 @@ Bunun bir sunucu hatas&#305; oldu&#287;unu dü&#351;ünüyorsan&#305;z, lütfen
 <a href="mailto:<!--#echo encoding="url" var="SERVER_ADMIN" -->">site
 yöneticisi</a> ile ileti&#351;ime geçin.
 ----------tr--
+
+Content-language: zh-cn
+Content-type: text/html; charset=UTF-8
+Body:----------zh-cn--
+如果您认为这是一个服务器错误，请联系<a href="mailto:<!--#echo encoding="url" var="SERVER_ADMIN" -->">服务器管理员</a>。
+----------zh-cn--
+
+Content-language: zh-tw
+Content-type: text/html; charset=UTF-8
+Body:----------zh-tw--
+如果您認為這是一個伺服器錯誤，請聯繫<a href="mailto:<!--#echo encoding="url" var="SERVER_ADMIN" -->">伺服器管理者</a>。
+----------zh-tw--
+
