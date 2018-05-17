@@ -925,7 +925,7 @@ rrl_done:
         else if (deferred_error == rrl_baduri)
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03454)
                           "HTTP Request Line; URI incorrectly encoded: '%.*s'",
-                          field_name_len(r->uri), r->uri);
+                          field_name_len(r->unparsed_uri), r->unparsed_uri);
         else if (deferred_error == rrl_badwhitespace)
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03447)
                           "HTTP Request Line; Invalid whitespace");
