@@ -430,3 +430,46 @@ Body:----------tr--
 
 <!--#include virtual="include/bottom.html" -->
 ----------tr--
+
+Content-language: zh-cn
+Content-type: text/html; charset=UTF-8
+Body:----------zh-cn--
+<!--#set var="TITLE" value="访问被拒绝！"
+--><!--#include virtual="include/top.html" -->
+
+  <!--#if expr="v('REDIRECT_URL') =~ m:/$:" -->
+
+    您没有访问请求目录的权限。
+    这可能是因为该目录下没有默认文档或该目录不允许被读取。
+
+  <!--#else -->
+
+    您没有访问请求对象的权限。
+    这可能是因为该对象不允许被读取或服务器无法读取该对象。
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------zh-cn--
+
+Content-language: zh-tw
+Content-type: text/html; charset=UTF-8
+Body:----------zh-tw--
+<!--#set var="TITLE" value="訪問被拒絕！"
+--><!--#include virtual="include/top.html" -->
+
+  <!--#if expr="v('REDIRECT_URL') =~ m:/$:" -->
+
+    您沒有訪問請求目錄的權限。
+    這可能是因為該目錄下沒有默認文檔或該目錄不允許被讀取。
+
+  <!--#else -->
+
+    您沒有訪問請求對象的權限。
+    這可能是因為該對象不允許被讀取或伺服器無法讀取該對象。
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------zh-tw--
+

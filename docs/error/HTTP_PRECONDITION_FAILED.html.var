@@ -231,3 +231,25 @@ Body:----------tr--
 
 <!--#include virtual="include/bottom.html" -->
 ----------tr--
+
+Content-language: zh-cn
+Content-type: text/html; charset=UTF-8
+Body:----------zh-cn--
+<!--#set var="TITLE" value="先决条件不成立！"
+--><!--#include virtual="include/top.html" -->
+
+    对该 URL 发送的请求，包含的先决条件不成立。
+  
+<!--#include virtual="include/bottom.html" -->
+----------zh-cn--
+
+Content-language: zh-tw
+Content-type: text/html; charset=UTF-8
+Body:----------zh-tw--
+<!--#set var="TITLE" value="先決條件不成立！"
+--><!--#include virtual="include/top.html" -->
+
+    對該 URL 發送的請求，包含的先決條件不成立。
+  
+<!--#include virtual="include/bottom.html" -->
+----------zh-tw--

@@ -228,3 +228,26 @@ Body:----------tr--
    
 <!--#include virtual="include/bottom.html" -->
 ----------tr--
+
+Content-language: zh-cn
+Content-type: text/html; charset=UTF-8
+Body:----------zh-cn--
+<!--#set var="TITLE" value="无法处理请求！"
+--><!--#include virtual="include/top.html" -->
+
+    服务器不支持浏览器请求的动作。
+   
+<!--#include virtual="include/bottom.html" -->
+----------zh-cn--
+
+Content-language: zh-tw
+Content-type: text/html; charset=UTF-8
+Body:----------zh-tw--
+<!--#set var="TITLE" value="無法處理請求！"
+--><!--#include virtual="include/top.html" -->
+
+    伺服器不支持瀏覽器請求的動作。
+   
+<!--#include virtual="include/bottom.html" -->
+----------zh-tw--
+
