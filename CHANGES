@@ -2,7 +2,7 @@
 Changes with Apache 2.5.1
 
   *) mod_slotmem_shm: Add generation number to shm filename to fix races
-     with graceful restarts. PR 62044.  [Jim Jagielski, Yann Ylavic]
+     with graceful restarts. PRs 62044 and 62308.  [Jim Jagielski, Yann Ylavic]
 
   *) mod_rewrite: Only create the global mutex used by "RewriteMap prg:" when
      this type of map is present in the configuration.  PR62311.  
