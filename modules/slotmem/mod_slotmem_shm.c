@@ -238,25 +238,33 @@ static apr_status_t restore_slotmem(void *ptr, const char *storename,
     return rv;
 }
 
+/*
+ * Whether the module is called from a MPM that re-enter main() and
+ * pre/post_config phases.
+ */
+static APR_INLINE int is_child_process(void)
+{
+#ifdef WIN32
+    return getenv("AP_PARENT_PID") != NULL;
+#else
+    return 0;
+#endif
+}
+
 static apr_status_t cleanup_slotmem(void *param)
 {
-    ap_slotmem_instance_t **mem = param;
+    int is_child = is_child_process();
+    ap_slotmem_instance_t *next = globallistmem;
 
-    if (*mem) {
-        ap_slotmem_instance_t *next = *mem;
-        while (next) {
-            if (AP_SLOTMEM_IS_PERSIST(next)) {
-                store_slotmem(next);
-            }
-            apr_shm_destroy((apr_shm_t *)next->shm);
-            if (next->fbased) {
-                apr_shm_remove(next->name, next->gpool);
-                apr_file_remove(next->name, next->gpool);
-            }
-            next = next->next;
+    while (next) {
+        if (!is_child && AP_SLOTMEM_IS_PERSIST(next)) {
+            store_slotmem(next);
         }
+        apr_shm_destroy(next->shm);
+        apr_shm_remove(next->name, next->gpool);
+        next = next->next;
     }
-    /* apr_pool_destroy(gpool); */
+
     globallistmem = NULL;
     return APR_SUCCESS;
 }
@@ -307,6 +315,7 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
     int persist = (type & AP_SLOTMEM_TYPE_PERSIST) != 0;
     apr_status_t rv;
 
+    *new = NULL;
     if (gpool == NULL) {
         return APR_ENOSHMAVAIL;
     }
@@ -339,49 +348,31 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(02300)
                  "create %s: %"APR_SIZE_T_FMT"/%u", fname, item_size,
                  item_num);
-    if (fbased) {
-        rv = apr_shm_attach(&shm, fname, gpool);
-    }
-    else {
-        rv = APR_EINVAL;
-    }
-    if (rv == APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(02598)
-                     "apr_shm_attach() succeeded");
 
-        /* check size */
-        if (apr_shm_size_get(shm) != size) {
-            apr_shm_detach(shm);
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf, APLOGNO(02599)
-                         "existing shared memory for %s could not be used (failed size check)",
-                         fname);
-            return APR_EINVAL;
-        }
-        ptr = (char *)apr_shm_baseaddr_get(shm);
-        memcpy(&desc, ptr, sizeof(desc));
-        if (desc.size != item_size || desc.num != item_num) {
-            apr_shm_detach(shm);
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf, APLOGNO(02600)
-                         "existing shared memory for %s could not be used (failed contents check)",
-                         fname);
-            return APR_EINVAL;
-        }
-        ptr += AP_SLOTMEM_OFFSET;
-    }
-    else {
+    {
         apr_size_t dsize = size - AP_SLOTMEM_OFFSET;
+
+        /* For MPMs that run pre/post_config() phases in both the parent
+         * and children processes (e.g. winnt), SHMs created by the
+         * parent exist in the children already; attach them.
+         */
         if (fbased) {
-            apr_shm_remove(fname, gpool);
-            rv = apr_shm_create(&shm, size, fname, gpool);
+            if (is_child_process()) {
+                rv = apr_shm_attach(&shm, fname, gpool);
+            }
+            else {
+                apr_shm_remove(fname, pool);
+                rv = apr_shm_create(&shm, size, fname, gpool);
+            }
         }
         else {
             rv = apr_shm_create(&shm, size, NULL, gpool);
         }
         ap_log_error(APLOG_MARK, rv == APR_SUCCESS ? APLOG_DEBUG : APLOG_ERR,
                      rv, ap_server_conf, APLOGNO(02611)
-                     "create: apr_shm_create(%s) %s",
-                     fname ? fname : "",
-                     rv == APR_SUCCESS ? "succeeded" : "failed");
+                     "create: apr_shm_%s(%s) %s",
+                     fbased && is_child_process() ? "attach" : "create",
+                     fname, rv == APR_SUCCESS ? "succeeded" : "failed");
         if (rv != APR_SUCCESS) {
             return rv;
         }
@@ -443,7 +434,6 @@ static apr_status_t slotmem_attach(ap_slotmem_instance_t **new,
                                    const char *name, apr_size_t *item_size,
                                    unsigned int *item_num, apr_pool_t *pool)
 {
-/*    void *slotmem = NULL; */
     char *ptr;
     ap_slotmem_instance_t *res;
     ap_slotmem_instance_t *next = globallistmem;
@@ -508,12 +498,6 @@ static apr_status_t slotmem_attach(ap_slotmem_instance_t **new,
     res->gpool = gpool;
     res->inuse = ptr + (desc.size * desc.num);
     res->next = NULL;
-    if (globallistmem == NULL) {
-        globallistmem = res;
-    }
-    else {
-        next->next = res;
-    }
 
     *new = res;
     *item_size = desc.size;
@@ -726,33 +710,20 @@ static const ap_slotmem_provider_t *slotmem_shm_getstorage(void)
     return (&storage);
 }
 
-/* initialise the global pool */
-static void slotmem_shm_initgpool(apr_pool_t *p)
-{
-    gpool = p;
-}
-
-/* Add the pool_clean routine */
-static void slotmem_shm_initialize_cleanup(apr_pool_t *p)
-{
-    apr_pool_cleanup_register(p, &globallistmem, cleanup_slotmem,
-                              apr_pool_cleanup_null);
-}
-
 /*
  * Make sure the shared memory is cleaned
  */
 static int post_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
                        server_rec *s)
 {
-    slotmem_shm_initialize_cleanup(p);
+    apr_pool_cleanup_register(p, NULL, cleanup_slotmem, apr_pool_cleanup_null);
     return OK;
 }
 
-static int pre_config(apr_pool_t *p, apr_pool_t *plog,
-                      apr_pool_t *ptemp)
+static int pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
 {
-    slotmem_shm_initgpool(p);
+    gpool = p;
+    globallistmem = NULL;
     return OK;
 }
 
