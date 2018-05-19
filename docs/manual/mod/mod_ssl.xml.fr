@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1830879:1831168 (outdated) -->
+<!-- English Revision: 1831168 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1031,25 +1031,27 @@ SSLCipherSuite RSA:!EXP:!NULL:+HIGH:+MEDIUM:-LOW
 <directivesynopsis>
 <name>SSLCertificateFile</name>
 <description>Fichier de données contenant les informations de certificat X.509 du serveur
-codées au format PEM</description>
-<syntax>SSLCertificateFile <var>file-path</var></syntax>
+codées au format PEM ou identificateur de jeton</description>
+<syntax>SSLCertificateFile <var>file-path</var>|<var>certid</var></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
+<compatibility>L'option <var>certid</var> est disponible à partir de la version
+2.5.1 du serveur HTTP Apache.</compatibility>
 
 <usage>
 <p>
-Cette directive permet de définir le fichier de données contenant
-les informations de certificat
-X.509 du serveur codées au format PEM. Ce fichier doit contenir
-au minimum un certificat d'entité finale (feuille).
-La directive peut être utilisée plusieurs fois (elle référence des
-fichiers différents) pour accepter plusieurs algorithmes
-d'authentification au niveau du serveur - souvent RSA, DSA et ECC. Le
-nombre d'algorithmes supportés dépend de la version d'OpenSSL utilisée
-avec mod_ssl : à partir de la version 1.0.0, la commande <code>openssl
-list-public-key-algorithms</code> affiche la liste des algorithmes
-supportés. Voir aussi la note ci-dessous à propos des limitations des versions
-d'OpenSSL antérieures à 1.0.2 et la manière de les contourner.
+Cette directive permet de définir le fichier de données contenant les
+informations de certificat X.509 du serveur codées au format PEM ou
+l'identificateur de certificat via un jeton cryptographique. Si on utilise un
+fichier au format PEM, ce dernier doit contenir au minimum un certificat
+d'entité finale (feuille).  La directive peut être utilisée plusieurs fois (elle
+référence des fichiers différents) pour accepter plusieurs algorithmes
+d'authentification au niveau du serveur - souvent RSA, DSA et ECC. Le nombre
+d'algorithmes supportés dépend de la version d'OpenSSL utilisée avec mod_ssl : à
+partir de la version 1.0.0, la commande <code>openssl
+list-public-key-algorithms</code> affiche la liste des algorithmes supportés.
+Voir aussi la note ci-dessous à propos des limitations des versions d'OpenSSL
+antérieures à 1.0.2 et la manière de les contourner.
 </p>
 
 <p>Les fichiers peuvent aussi contenir des certificats de CA
@@ -1082,6 +1084,17 @@ avant les certificats en utilisant un fichier de clé séparé. En outre,
 si la clé est chiffrée, une boîte de dialogue pour entrer le mot de
 passe de la clé s'ouvre au démarrage du serveur.
 </p>
+
+<p>Plutôt que de stocker les certificats et les clés privées dans des fichiers,
+on peut utiliser un identificateur de certificat pour identifier un certificat
+stocké dans un jeton. Actuellement, seuls les <a
+href="https://tools.ietf.org/html/rfc7512">URIs PKCS#11</a> sont reconnus comme
+identificateurs de certificats et peuvent être utilisés en conjonction avec le
+moteur <code>pkcs11</code> OpenSSL configuré via la directive <directive
+module="mod_ssl">SSLCryptoDevice</directive>. Si la directive <directive
+module="mod_ssl">SSLCertificateKeyFile</directive> est absente, le certificat et
+la clé privée peuvent être chargés avec l'identificateur spécifié via la
+directive <directive module="mod_ssl">SSLCertificateFile</directive>.</p>
 
 <note>
 <title>Interopérabilité des paramètres DH avec les nombres premiers de
@@ -1133,7 +1146,13 @@ et appropriée.
 
 <example><title>Exemple</title>
 <highlight language="config">
+# Exemple utilisant un fichier codé en PEM.
 SSLCertificateFile "/usr/local/apache2/conf/ssl.crt/server.crt"
+# Exemple d'utilisation d'un certificat et d'une clé privés issus d'un jeton
+# PKCS#11 :
+SSLCryptoDevice pkcs11
+...
+SSLCertificateFile "pkcs11:token=My%20Token%20Name;id=45"
 </highlight>
 </example>
 </usage>
