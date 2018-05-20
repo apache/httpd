@@ -200,7 +200,7 @@ static apr_status_t restore_slotmem(sharedslotdesc_t *desc,
     apr_file_t *fp;
     apr_status_t rv = APR_ENOTIMPL;
     void *ptr = (char *)desc + AP_SLOTMEM_OFFSET;
-    apr_size_t dsize = size - AP_SLOTMEM_OFFSET;
+    apr_size_t nbytes = size - AP_SLOTMEM_OFFSET;
     unsigned char digest[APR_MD5_DIGESTSIZE];
     unsigned char digest2[APR_MD5_DIGESTSIZE];
     char desc_buf[AP_SLOTMEM_OFFSET];
@@ -212,7 +212,7 @@ static apr_status_t restore_slotmem(sharedslotdesc_t *desc,
         rv = apr_file_open(&fp, storename, APR_READ | APR_WRITE, APR_OS_DEFAULT,
                            pool);
         if (rv == APR_SUCCESS) {
-            rv = apr_file_read_full(fp, ptr, dsize, NULL);
+            rv = apr_file_read_full(fp, ptr, nbytes, NULL);
             if (rv == APR_SUCCESS || rv == APR_EOF) {
                 rv = APR_SUCCESS;   /* for successful return @ EOF */
                 /*
@@ -222,7 +222,7 @@ static apr_status_t restore_slotmem(sharedslotdesc_t *desc,
                 if (apr_file_eof(fp) != APR_EOF) {
                     rv = apr_file_read_full(fp, digest, APR_MD5_DIGESTSIZE, NULL);
                     if (rv == APR_SUCCESS || rv == APR_EOF) {
-                        apr_md5(digest2, ptr, APR_MD5_DIGESTSIZE);
+                        apr_md5(digest2, ptr, nbytes);
                         if (memcmp(digest, digest2, APR_MD5_DIGESTSIZE)) {
                             rv = APR_EMISMATCH;
                         }
