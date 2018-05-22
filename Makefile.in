@@ -406,8 +406,12 @@ check-conf:
 check-dirs:
 	@mkdir -p check/htdocs check/logs check/bin
 
-check-binaries: check/bin/apxs
+check-binaries: check/bin/apxs check/bin/httpd check/bin/ab
+
+check/bin/httpd:
 	ln -s $(top_builddir)/httpd check/bin/httpd
+
+check/bin/ab:
 	ln -s $(top_builddir)/support/ab check/bin/ab
 
 # A version of apxs with the PREFIX overridden to point inside the install root
