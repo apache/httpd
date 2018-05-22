@@ -18,7 +18,7 @@ INSTALL_TARGETS = install-conf install-htdocs install-error install-icons \
 	install-other install-cgi install-include install-suexec install-build \
 	install-man
 
-CLEAN_TARGETS      = check/apxs check/build/config_vars.mk \
+CLEAN_TARGETS  = check/bin/* check/build/config_vars.mk \
 	check/conf/$(PROGRAM_NAME).conf check/conf/magic check/conf/mime.types \
 	check/conf/extra/* check/include/* $(testcase_OBJECTS) $(testcase_STUBS) \
 	test/httpdunit.cases test/unit/*.o
@@ -404,31 +404,34 @@ check-conf:
 # configuration check on our in-tree build. To pass, we have to have all of the
 # correct directories, even though they won't be used.
 check-dirs:
-	@mkdir -p check/htdocs
-	@mkdir -p check/logs
+	@mkdir -p check/htdocs check/logs check/bin
 
-# A version of apxs with the PREFIX overridden to point inside the build tree.
-check/apxs:
+check-binaries: check/bin/apxs
+	ln -s $(top_builddir)/httpd check/bin/httpd
+	ln -s $(top_builddir)/support/ab check/bin/ab
+
+# A version of apxs with the PREFIX overridden to point inside the install root
+check/bin/apxs:
 	mkdir -p check
 	sed -e 's#$(prefix)#$(top_builddir)/check#g' support/apxs > $@
 	chmod +x $@
 
-# A version of config_vars.mk with the PREFIX and SBINDIR overridden to point
-# inside the build tree.
+# A version of config_vars.mk with PREFIX and SBINDIR and BINDIR overridden.
 check/build/config_vars.mk: build/config_vars.out
 	mkdir -p check/build
 	cp $< $@
 	echo "prefix = $(top_builddir)/check" >> $@
-	echo "sbindir = $(top_builddir)" >> $@
+	echo "sbindir = $(top_builddir)/check/bin" >> $@
+	echo "bindir = $(top_builddir)/check/bin" >> $@
 
 # Run the Apache::Test suite if it has been configured with --with-test-suite.
-check: check-include check-dirs check-conf check/build/config_vars.mk check/apxs
+check: check-include check-dirs check-conf check/build/config_vars.mk check-binaries
 	@if test "x$(TEST_SUITE_LOCATION)" = "xno"; then \
 	    echo 'Re-run configure with the --with-test-suite option to enable in-tree tests.'; \
 	    false; \
 	fi
 	cd "$(TEST_SUITE_LOCATION)" && \
-	    perl Makefile.PL -apxs "$(top_builddir)/check/apxs" && \
+	    perl Makefile.PL -apxs "$(top_builddir)/check/bin/apxs" && \
 	    ./t/TEST -clean && \
 	    ./t/TEST -config && \
 	    ./t/TEST
