@@ -319,10 +319,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   (trunk works modulo CHANGES))
      +1: ylavic,
 
-  *) mod_http2: silence gcc strncpy warnings which break compilation in
-     maintainer mode with gcc 8.1.0
+  *) mod_ssl: fix a potential NULL dereference spotted by gcc 8.1.0
+     mod_http2: silence gcc strncpy warnings which break compilation in
+                maintainer mode with gcc 8.1.0
      trunk patch: http://svn.apache.org/r1831231
-     2.4.x patch: svn merge -c 1831231 ^/httpd/httpd/trunk .
+                  http://svn.apache.org/r1831591
+     2.4.x patch: svn merge -c 1831231,1831591 ^/httpd/httpd/trunk .
      +1: jailletc36,
 
 
