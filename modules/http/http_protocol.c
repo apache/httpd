@@ -1262,16 +1262,13 @@ AP_DECLARE(void) ap_send_error_response(request_rec *r, int recursive_error)
     }
 
     if (!r->assbackwards) {
-        apr_table_t *tmp = r->headers_out;
 
         /* For all HTTP/1.x responses for which we generate the message,
          * we need to avoid inheriting the "normal status" header fields
          * that may have been set by the request handler before the
          * error or redirect, except for Location on external redirects.
          */
-        r->headers_out = r->err_headers_out;
-        r->err_headers_out = tmp;
-        apr_table_clear(r->err_headers_out);
+        apr_table_clear(r->headers_out);
 
         if (ap_is_HTTP_REDIRECT(status) || (status == HTTP_CREATED)) {
             if ((location != NULL) && *location) {
