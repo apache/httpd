@@ -2342,7 +2342,7 @@ static void val_str_dump(apr_file_t *out, const char *key, const char *val,
                          apr_pool_t *p, const char *indent, const char **psep)
 {
     if (val) {
-        /* TODO: JSON quite string val */
+        /* TODO: JSON quote string val */
         apr_file_printf(out, "%s\n%s\"%s\": \"%s\"", *psep, indent, key, json_quote(val, p));
         *psep = ", ";
     }
@@ -2487,7 +2487,7 @@ static const char *protocol_str(ssl_proto_t proto, apr_pool_t *p)
     }
     else {
         /* icing: I think it is nuts that we define our own IETF protocol constants
-         * only whent the linked *SSL lib supports them. */
+         * only when the linked *SSL lib supports them. */
         apr_array_header_t *names = apr_array_make(p, 5, sizeof(const char*));
         if ((1<<4) & proto) {
             APR_ARRAY_PUSH(names, const char*) = "+TLSv1.2";
