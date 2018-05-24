@@ -411,7 +411,7 @@ static int uldap_connection_init(request_rec *r,
     }
 
     if (ldc->ChaseReferrals == AP_LDAP_CHASEREFERRALS_ON) {
-        if ((ldc->ReferralHopLimit != AP_LDAP_HOPLIMIT_UNSET) && ldc->ChaseReferrals == AP_LDAP_CHASEREFERRALS_ON) {
+        if (ldc->ReferralHopLimit != AP_LDAP_HOPLIMIT_UNSET)  {
             /* Referral hop limit - only if referrals are enabled and a hop limit is explicitly requested */
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server, APLOGNO(01280)
                     "Setting referral hop limit to %d.",
