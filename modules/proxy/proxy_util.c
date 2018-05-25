@@ -952,7 +952,7 @@ PROXY_DECLARE(const char *) ap_proxy_cookie_reverse_map(request_rec *r,
     int i;
     int ddiff = 0;
     int pdiff = 0;
-    char *ret;
+    char *tmpstr, *tmpstr_orig, *token, *last, *ret;
 
     if (r->proxyreq != PROXYREQ_REVERSE) {
         return str;
@@ -962,48 +962,56 @@ PROXY_DECLARE(const char *) ap_proxy_cookie_reverse_map(request_rec *r,
     * Find the match and replacement, but save replacing until we've done
     * both path and domain so we know the new strlen
     */
-    if ((pathp = apr_strmatch(ap_proxy_strmatch_path, str, len)) != NULL) {
-        pathp += 5;
-        poffs = pathp - str;
-        pathe = ap_strchr_c(pathp, ';');
-        l1 = pathe ? (pathe - pathp) : strlen(pathp);
-        pathe = pathp + l1 ;
-        if (conf->interpolate_env == 1) {
-            ent = (struct proxy_alias *)rconf->cookie_paths->elts;
+    tmpstr_orig = tmpstr = apr_pstrdup(r->pool, str);
+    while ((token = apr_strtok(tmpstr, ";", &last))) {
+        /* skip leading spaces */
+        while (apr_isspace(*token)) {
+            ++token;
         }
-        else {
-            ent = (struct proxy_alias *)conf->cookie_paths->elts;
-        }
-        for (i = 0; i < conf->cookie_paths->nelts; i++) {
-            l2 = strlen(ent[i].fake);
-            if (l1 >= l2 && strncmp(ent[i].fake, pathp, l2) == 0) {
-                newpath = ent[i].real;
-                pdiff = strlen(newpath) - l1;
-                break;
-            }
-        }
-    }
 
-    if ((domainp = apr_strmatch(ap_proxy_strmatch_domain, str, len)) != NULL) {
-        domainp += 7;
-        doffs = domainp - str;
-        domaine = ap_strchr_c(domainp, ';');
-        l1 = domaine ? (domaine - domainp) : strlen(domainp);
-        domaine = domainp + l1;
-        if (conf->interpolate_env == 1) {
-            ent = (struct proxy_alias *)rconf->cookie_domains->elts;
-        }
-        else {
-            ent = (struct proxy_alias *)conf->cookie_domains->elts;
-        }
-        for (i = 0; i < conf->cookie_domains->nelts; i++) {
-            l2 = strlen(ent[i].fake);
-            if (l1 >= l2 && strncasecmp(ent[i].fake, domainp, l2) == 0) {
-                newdomain = ent[i].real;
-                ddiff = strlen(newdomain) - l1;
-                break;
+        if (ap_cstr_casecmpn("path=", token, 5) == 0) {
+            pathp = token + 5;
+            poffs = pathp - tmpstr_orig;
+            l1 = strlen(pathp);
+            pathe = str + poffs + l1;
+            if (conf->interpolate_env == 1) {
+                ent = (struct proxy_alias *)rconf->cookie_paths->elts;
+            }
+            else {
+                ent = (struct proxy_alias *)conf->cookie_paths->elts;
+            }
+            for (i = 0; i < conf->cookie_paths->nelts; i++) {
+                l2 = strlen(ent[i].fake);
+                if (l1 >= l2 && strncmp(ent[i].fake, pathp, l2) == 0) {
+                    newpath = ent[i].real;
+                    pdiff = strlen(newpath) - l1;
+                    break;
+                }
             }
         }
+        else if (ap_cstr_casecmpn("domain=", token, 7) == 0) {
+            domainp = token + 7;
+            doffs = domainp - tmpstr_orig;
+            l1 = strlen(domainp);
+            domaine = str + doffs + l1;
+            if (conf->interpolate_env == 1) {
+                ent = (struct proxy_alias *)rconf->cookie_domains->elts;
+            }
+            else {
+                ent = (struct proxy_alias *)conf->cookie_domains->elts;
+            }
+            for (i = 0; i < conf->cookie_domains->nelts; i++) {
+                l2 = strlen(ent[i].fake);
+                if (l1 >= l2 && strncasecmp(ent[i].fake, domainp, l2) == 0) {
+                    newdomain = ent[i].real;
+                    ddiff = strlen(newdomain) - l1;
+                    break;
+                }
+            }
+        }
+
+        /* Iterate the remaining tokens using apr_strtok(NULL, ...) */
+        tmpstr = NULL;
     }
 
     if (newpath) {
@@ -1014,14 +1022,14 @@ PROXY_DECLARE(const char *) ap_proxy_cookie_reverse_map(request_rec *r,
             if (doffs > poffs) {
                 memcpy(ret, str, poffs);
                 memcpy(ret + poffs, newpath, l1);
-                memcpy(ret + poffs + l1, pathe, domainp - pathe);
+                memcpy(ret + poffs + l1, pathe, str + doffs - pathe);
                 memcpy(ret + doffs + pdiff, newdomain, l2);
                 strcpy(ret + doffs + pdiff + l2, domaine);
             }
             else {
                 memcpy(ret, str, doffs) ;
                 memcpy(ret + doffs, newdomain, l2);
-                memcpy(ret + doffs + l2, domaine, pathp - domaine);
+                memcpy(ret + doffs + l2, domaine, str + poffs - domaine);
                 memcpy(ret + poffs + ddiff, newpath, l1);
                 strcpy(ret + poffs + ddiff + l1, pathe);
             }
@@ -1032,17 +1040,15 @@ PROXY_DECLARE(const char *) ap_proxy_cookie_reverse_map(request_rec *r,
             strcpy(ret + poffs + l1, pathe);
         }
     }
-    else {
-        if (newdomain) {
-            ret = apr_palloc(r->pool, len + pdiff + ddiff + 1);
+    else if (newdomain) {
+            ret = apr_palloc(r->pool, len + ddiff + 1);
             l2 = strlen(newdomain);
             memcpy(ret, str, doffs);
             memcpy(ret + doffs, newdomain, l2);
-            strcpy(ret + doffs+l2, domaine);
-        }
-        else {
-            ret = (char *)str; /* no change */
-        }
+            strcpy(ret + doffs + l2, domaine);
+    }
+    else {
+        ret = (char *)str; /* no change */
     }
 
     return ret;
