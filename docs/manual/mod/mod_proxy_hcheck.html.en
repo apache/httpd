@@ -31,8 +31,8 @@
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Dynamic health check of Balancer members (workers) for
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>proxy_hcheck_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_proxy_hcheck.c</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">ModuleÂ Identifier:</a></th><td>proxy_hcheck_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">SourceÂ File:</a></th><td>mod_proxy_hcheck.c</td></tr>
 <tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.4.21 and later</td></tr></table>
 <h3>Summary</h3>
 
@@ -45,10 +45,11 @@
 
 <div class="note"><h3>Parameters</h3>
   <p>The health check mechanism is enabled via the use of additional
-  	BalancerMember parameters, which are configured in the standard
-  	way via <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code>:</p>
+     <code class="directive"><a href="../mod/mod_proxy.html#balancermember">BalancerMember</a></code> parameters, which are configured
+     in the standard way via <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code>:</p>
 
-  <p>A new BalancerMember status state (flag) is defined via this module: "<code>C</code>".
+  <p>A new BalancerMember <a href="mod_proxy.html#status_table">status</a> state (flag)
+     is defined via this module: "<code>C</code>".
      When the worker is taken offline due to failures as determined by the health
      check module, this flag is set, and can be seen (and modified) via the
      <code>balancer-manager</code>.</p>
@@ -86,10 +87,12 @@
         <td>Additional URI to be appended to the worker URL for the health check.</td></tr>
     <tr><td>hctemplate</td>
         <td>&nbsp;</td>
-        <td>Name of template, created via <code class="directive">ProxyHCTemplate</code> to use for setting health check parameters for this worker</td></tr>
+        <td>Name of template, created via <code class="directive"><a href="#proxyhctemplate">ProxyHCTemplate</a></code>,
+            to use for setting health check parameters for this worker</td></tr>
     <tr><td>hcexpr</td>
         <td>&nbsp;</td>
-        <td>Name of expression, created via <code class="directive">ProxyHCExpr</code>, used to check response headers for health.<br />
+        <td>Name of expression, created via <code class="directive"><a href="#proxyhcexpr">ProxyHCExpr</a></code>,
+            used to check response headers for health.<br />
             <em>If not used, 2xx thru 3xx status codes imply success</em></td></tr>
     </table>
 </div>
@@ -123,7 +126,7 @@ ProxyHCExpr in_maint {hc('body') !~ /Under maintenance/}
 
 &lt;Proxy balancer://foo&gt;
   BalancerMember http://www.example.com/  hcmethod=GET hcexpr=in_maint hcuri=/status.php
-  BalancerMember http://www2.example.com/  hcmethod=HEAD hcexpr=ok234 hcinterval=10
+  BalancerMember http://www2.example.com/ hcmethod=HEAD hcexpr=ok234 hcinterval=10
   BalancerMember http://www3.example.com/ hcmethod=TCP hcinterval=5 hcpasses=2 hcfails=3
   BalancerMember http://www4.example.com/
 &lt;/Proxy&gt;
@@ -149,8 +152,8 @@ not dynamically checked at all.</p>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ProxyHCExpr" id="ProxyHCExpr">ProxyHCExpr</a> <a name="proxyhcexpr" id="proxyhcexpr">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Creates a named condition expression to use to determine health of the backend based on its response.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyHCExpr name {ap_expr expression}</code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Creates a named condition expression to use to determine health of the backend based on its response</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyHCExpr <em>name</em> {<em>ap_expr expression</em>}</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_hcheck</td></tr>
@@ -159,10 +162,14 @@ not dynamically checked at all.</p>
        for creating a named condition expression that checks the response
        headers of the backend server to determine its health. This named
        condition can then be assigned to balancer members via the <code>hcexpr</code>
-       parameter</p>
+       parameter.</p>
 
     <div class="example"><h3>ProxyHCExpr: Allow for 2xx/3xx/4xx as passing</h3><pre class="prettyprint lang-config">ProxyHCExpr ok234 {%{REQUEST_STATUS} =~ /^[234]/}
-ProxyPass "/apps"     "http://backend.example.com/" hcexpr=ok234</pre>
+ProxyPass "/apps"     "balancer://foo"
+
+&lt;Proxy balancer://foo&gt;
+  BalancerMember http://www2.example.com/  hcmethod=HEAD hcexpr=ok234 hcinterval=10
+&lt;/Proxy&gt;</pre>
 </div>
 
     <div class="note">
@@ -179,7 +186,11 @@ ProxyPass "/apps"     "http://backend.example.com/" hcexpr=ok234</pre>
     we want to disable the backend.</p>
 
     <div class="example"><h3>ProxyHCExpr: Checking response body</h3><pre class="prettyprint lang-config">ProxyHCExpr in_maint {hc('body') !~ /Under maintenance/}
-ProxyPass "/apps"     "http://backend.example.com/" hcexpr=in_maint hcmethod=get hcuri=/status.php</pre>
+ProxyPass "/apps"     "balancer://foo"
+
+&lt;Proxy balancer://foo&gt;
+  BalancerMember http://www.example.com/ hcexpr=in_maint hcmethod=get hcuri=/status.php
+&lt;/Proxy&gt;</pre>
 </div>
 
     <p><em>NOTE:</em> Since response body can quite large, it is best if used against specific status pages.</p>
@@ -189,7 +200,7 @@ ProxyPass "/apps"     "http://backend.example.com/" hcexpr=in_maint hcmethod=get
 <div class="directive-section"><h2><a name="ProxyHCTemplate" id="ProxyHCTemplate">ProxyHCTemplate</a> <a name="proxyhctemplate" id="proxyhctemplate">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Creates a named template for setting various health check parameters</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyHCTemplate name parameter=setting &lt;...&gt;</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyHCTemplate <em>name</em> <em>parameter</em>=<em>setting</em> [...]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_hcheck</td></tr>
@@ -197,10 +208,14 @@ ProxyPass "/apps"     "http://backend.example.com/" hcexpr=in_maint hcmethod=get
     <p>The <code class="directive">ProxyHCTemplate</code> directive allows
        for creating a named set (template) of health check parameters
        that can then be assigned to balancer members via the <code>hctemplate</code>
-       parameter</p>
+       parameter.</p>
 
     <div class="example"><h3>ProxyHCTemplate</h3><pre class="prettyprint lang-config">ProxyHCTemplate tcp5 hcmethod=tcp hcinterval=5
-ProxyPass "/apps"     "http://backend.example.com/" hctemplate=tcp5</pre>
+ProxyPass "/apps"     "balancer://foo"
+
+&lt;Proxy balancer://foo&gt;
+  BalancerMember http://www2.example.com/ hctemplate=tcp5
+&lt;/Proxy&gt;</pre>
 </div>
 
 
@@ -208,8 +223,8 @@ ProxyPass "/apps"     "http://backend.example.com/" hctemplate=tcp5</pre>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ProxyHCTPsize" id="ProxyHCTPsize">ProxyHCTPsize</a> <a name="proxyhctpsize" id="proxyhctpsize">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets the total server-wide size of the threadpool used for the health check workers.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyHCTPsize &lt;size&gt;</code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets the total server-wide size of the threadpool used for the health check workers</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyHCTPsize <em>size</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_hcheck</td></tr>
