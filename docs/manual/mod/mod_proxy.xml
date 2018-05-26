@@ -1214,7 +1214,7 @@ ProxyPass "/example" "http://backend.example.com" max=20 ttl=120 retry=300
         <td>Route of the worker when used inside load balancer.
         The route is a value appended to session id.
     </td></tr>
-    <tr><td>status</td>
+    <tr><td><a name="status_table">status</a></td>
         <td>-</td>
         <td>Single letter value defining the initial status of
         this worker.
@@ -1222,7 +1222,7 @@ ProxyPass "/example" "http://backend.example.com" max=20 ttl=120 retry=300
          <tr><td><code>D</code></td><td>Worker is disabled and will not accept any requests; will be
                     automatically retried.</td></tr>
          <tr><td><code>S</code></td><td>Worker is administratively stopped; will not accept requests
-                    and will not be automatically retried</td></tr>
+                    and will not be automatically retried.</td></tr>
          <tr><td><code>I</code></td><td>Worker is in ignore-errors mode and will always be considered available.</td></tr>
          <tr><td><code>R</code></td><td>Worker is a hot spare. For each worker in a given lbset that is unusable
                     (draining, stopped, in error, etc.), a usable hot spare with the same lbset will be used in

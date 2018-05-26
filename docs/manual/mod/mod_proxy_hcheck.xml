@@ -40,10 +40,11 @@
 
 <note><title>Parameters</title>
   <p>The health check mechanism is enabled via the use of additional
-  	BalancerMember parameters, which are configured in the standard
-  	way via <directive module="mod_proxy">ProxyPass</directive>:</p>
+     <directive module="mod_proxy">BalancerMember</directive> parameters, which are configured
+     in the standard way via <directive module="mod_proxy">ProxyPass</directive>:</p>
 
-  <p>A new BalancerMember status state (flag) is defined via this module: "<code>C</code>".
+  <p>A new BalancerMember <a href="mod_proxy.html#status_table">status</a> state (flag)
+     is defined via this module: "<code>C</code>".
      When the worker is taken offline due to failures as determined by the health
      check module, this flag is set, and can be seen (and modified) via the
      <code>balancer-manager</code>.</p>
@@ -84,10 +85,12 @@
         <td>Additional URI to be appended to the worker URL for the health check.</td></tr>
     <tr><td>hctemplate</td>
         <td>&nbsp;</td>
-        <td>Name of template, created via <directive>ProxyHCTemplate</directive> to use for setting health check parameters for this worker</td></tr>
+        <td>Name of template, created via <directive module="mod_proxy_hcheck">ProxyHCTemplate</directive>,
+            to use for setting health check parameters for this worker</td></tr>
     <tr><td>hcexpr</td>
         <td>&nbsp;</td>
-        <td>Name of expression, created via <directive>ProxyHCExpr</directive>, used to check response headers for health.<br/>
+        <td>Name of expression, created via <directive module="mod_proxy_hcheck">ProxyHCExpr</directive>,
+            used to check response headers for health.<br/>
             <em>If not used, 2xx thru 3xx status codes imply success</em></td></tr>
     </table>
 </note>
@@ -109,7 +112,7 @@ ProxyHCExpr in_maint {hc('body') !~ /Under maintenance/}
 
 &lt;Proxy balancer://foo&gt;
   BalancerMember http://www.example.com/  hcmethod=GET hcexpr=in_maint hcuri=/status.php
-  BalancerMember http://www2.example.com/  hcmethod=HEAD hcexpr=ok234 hcinterval=10
+  BalancerMember http://www2.example.com/ hcmethod=HEAD hcexpr=ok234 hcinterval=10
   BalancerMember http://www3.example.com/ hcmethod=TCP hcinterval=5 hcpasses=2 hcfails=3
   BalancerMember http://www4.example.com/
 &lt;/Proxy&gt;
@@ -135,8 +138,8 @@ not dynamically checked at all.</p>
 
 <directivesynopsis>
 <name>ProxyHCExpr</name>
-<description>Creates a named condition expression to use to determine health of the backend based on its response.</description>
-<syntax>ProxyHCExpr name {ap_expr expression}</syntax>
+<description>Creates a named condition expression to use to determine health of the backend based on its response</description>
+<syntax>ProxyHCExpr <em>name</em> {<em>ap_expr expression</em>}</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 <override>FileInfo</override>
@@ -146,7 +149,7 @@ not dynamically checked at all.</p>
        for creating a named condition expression that checks the response
        headers of the backend server to determine its health. This named
        condition can then be assigned to balancer members via the <code>hcexpr</code>
-       parameter</p>
+       parameter.</p>
 
     <example><title>ProxyHCExpr: Allow for 2xx/3xx/4xx as passing</title>
     <highlight language="config">
@@ -191,7 +194,7 @@ ProxyPass "/apps"     "balancer://foo"
 <directivesynopsis>
 <name>ProxyHCTemplate</name>
 <description>Creates a named template for setting various health check parameters</description>
-<syntax>ProxyHCTemplate name parameter=setting &lt;...&gt;</syntax>
+<syntax>ProxyHCTemplate <em>name</em> <em>parameter</em>=<em>setting</em> [...]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 <override>FileInfo</override>
@@ -200,7 +203,7 @@ ProxyPass "/apps"     "balancer://foo"
     <p>The <directive>ProxyHCTemplate</directive> directive allows
        for creating a named set (template) of health check parameters
        that can then be assigned to balancer members via the <code>hctemplate</code>
-       parameter</p>
+       parameter.</p>
 
     <example><title>ProxyHCTemplate</title>
     <highlight language="config">
@@ -218,8 +221,8 @@ ProxyPass "/apps"     "balancer://foo"
 
 <directivesynopsis>
 <name>ProxyHCTPsize</name>
-<description>Sets the total server-wide size of the threadpool used for the health check workers.</description>
-<syntax>ProxyHCTPsize &lt;size&gt;</syntax>
+<description>Sets the total server-wide size of the threadpool used for the health check workers</description>
+<syntax>ProxyHCTPsize <em>size</em></syntax>
 <contextlist><context>server config</context>
 </contextlist>
 
