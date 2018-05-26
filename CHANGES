@@ -1,6 +1,13 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_userdir: If several directories are given in a UserDir directive, only files
+     in the first existing one are checked. If the file is not found there, the
+     other possible directories are not checked. The doc clearly states that they
+     will be checked one by one, until a match is found or an external redirect is
+     performed.  PR 59636.
+     [Christophe Jaillet]
+
   *) mod_proxy: Fix a corner case where the ProxyPassReverseCookieDomain or
      ProxyPassReverseCookiePath directive could fail to update correctly 
      'domain=' or 'path=' in the 'Set-Cookie' header.  PR 61560.
