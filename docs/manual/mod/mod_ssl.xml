@@ -389,8 +389,8 @@ The following <em>source</em> variants are available:</p>
     <p> This is the always available builtin seeding source. Its usage
     consumes minimum CPU cycles under runtime and hence can be always used
     without drawbacks. The source used for seeding the PRNG contains of the
-    current time, the current process id and (when applicable) a randomly
-    chosen 1KB extract of the inter-process scoreboard structure of Apache.
+    current time, the current process id and a randomly
+    chosen 128 bytes extract of the stack.
     The drawback is that this is not really a strong source and at startup
     time (where the scoreboard is still not available) this source just
     produces a few bytes of entropy. So you should always, at least for the
