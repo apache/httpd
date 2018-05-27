@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1817908 -->
+<!-- English Revision: 1832294 -->
 <!-- French translation : Lucien GENTIS -->
-<!-- $LastChangedRevision: 2017062501 $ -->
 
 
 <!--
@@ -26,87 +25,89 @@
 <modulesynopsis metafile="mod_proxy_hcheck.xml.meta">
 
 <name>mod_proxy_hcheck</name>
-<description>Check up dynamique des membres du groupe de r&eacute;partition de charge
-(&eacute;quipiers) pour <module>mod_proxy</module></description>
+<description>Check up dynamique des membres du groupe de répartition de charge
+(équipiers) pour <module>mod_proxy</module></description>
 <status>Extension</status>
 <sourcefile>mod_proxy_hcheck.c</sourcefile>
 <identifier>proxy_hcheck_module</identifier>
-<compatibility>Disponible &agrave; partir de la version 2.4.21 du serveur HTTP Apache</compatibility>
+<compatibility>Disponible à partir de la version 2.4.21 du serveur HTTP Apache</compatibility>
 
 <summary>
     <p>Ce module permet d'effectuer un check up dynamique des membres du groupe
-    de r&eacute;partition de charge (&eacute;quipiers). Ce check up peut &ecirc;tre activ&eacute; pour un
-    ou plusieurs &eacute;quipiers et il est ind&eacute;pendant des requ&ecirc;tes de mandataire
+    de répartition de charge (équipiers). Ce check up peut être activé pour un
+    ou plusieurs équipiers et il est indépendant des requêtes de mandataire
     inverse proprement dites.</p>
 
-    <p>Pour fonctionner, ce module <em>n&eacute;cessite</em> le chargement pr&eacute;alable de
+    <p>Pour fonctionner, ce module <em>nécessite</em> le chargement préalable de
     <module>mod_watchdog</module>.</p>
 
-<note><title>Param&egrave;tres</title>
-  <p>Le m&eacute;canisme de check up est activ&eacute; via l'utilisation de param&egrave;tres
-  suppl&eacute;mentaires de BalancerMember configur&eacute;s de mani&egrave;re standard via la
-  directive <directive module="mod_proxy">ProxyPass</directive> :</p>
+<note><title>Paramètres</title>
+  <p>Le mécanisme de check up est activé via l'utilisation de paramètres
+  supplémentaires de la directive <directive
+  module="mod_proxy">BalancerMember</directive> configurés de manière standard
+  via la directive <directive module="mod_proxy">ProxyPass</directive> :</p>
 
-  <p>Ce module d&eacute;finit un nouveau drapeau d'&eacute;tat pour BalancerMember :
-  "<code>C</code>". Lorsque l'&eacute;quipier est mis hors service suite &agrave; un
-  disfonctionnement d&eacute;termin&eacute; par le module de check up, ce drapeau est activ&eacute;
-  et peut &ecirc;tre lu (et modifi&eacute;) via le <code>balancer-manager</code>.</p>
+  <p>Ce module définit un nouveau drapeau d'état <a
+  href="mod_proxy.html#status_table">status</a> pour BalancerMember :
+  "<code>C</code>". Lorsque l'équipier est mis hors service suite à un
+  disfonctionnement déterminé par le module de check up, ce drapeau est activé
+  et peut être lu (et modifié) via le <code>balancer-manager</code>.</p>
 
     <table>
-    <tr><th>Param&egrave;tre</th>
-        <th>D&eacute;faut</th>
+    <tr><th>Paramètre</th>
+        <th>Défaut</th>
         <th>Description</th></tr>
     <tr><td>hcmethod</td>
         <td>None</td>
-        <td>Aucun check up dynamique n'est effectu&eacute;. Les choix possibles sont :
+        <td>Aucun check up dynamique n'est effectué. Les choix possibles sont :
         	<table>
         		<tr><th>Method</th><th>Description</th><th>Note</th></tr>
-        		<tr><td>None</td><td>Aucun check up dynamique effectu&eacute;</td><td></td></tr>
-        		<tr><td>TCP</td><td>V&eacute;rifie qu'un socket vers le serveur
-			d'arri&egrave;re-plan peut &ecirc;tre cr&eacute;&eacute; ; par exemple "es-tu en
-			&eacute;tat de fonctionner"</td><td></td></tr>
-        		<tr><td>OPTIONS</td><td>Envoie une requ&ecirc;te <code>HTTP
-			OPTIONS</code> au serveur d'arri&egrave;re-plan</td><td>*</td></tr>
-        		<tr><td>HEAD</td><td>Envoie une requ&ecirc;te <code>HTTP
-			HEAD</code> au serveur d'arri&egrave;re-plan</td><td>*</td></tr>
-        		<tr><td>GET</td><td>Envoie une requ&ecirc;te <code>HTTP
-			GET</code> au serveur d'arri&egrave;re-plan</td><td>*</td></tr>
+        		<tr><td>None</td><td>Aucun check up dynamique effectué</td><td></td></tr>
+        		<tr><td>TCP</td><td>Vérifie qu'un socket vers le serveur
+			d'arrière-plan peut être créé ; par exemple "es-tu en
+			état de fonctionner"</td><td></td></tr>
+        		<tr><td>OPTIONS</td><td>Envoie une requête <code>HTTP
+			OPTIONS</code> au serveur d'arrière-plan</td><td>*</td></tr>
+        		<tr><td>HEAD</td><td>Envoie une requête <code>HTTP
+			HEAD</code> au serveur d'arrière-plan</td><td>*</td></tr>
+        		<tr><td>GET</td><td>Envoie une requête <code>HTTP
+			GET</code> au serveur d'arrière-plan</td><td>*</td></tr>
 <!--
         		<tr><td>CPING</td><td><strong>AJP only</strong> Do <code>CPING/CPONG</code> check</td><td></td></tr>
         		<tr><td>PROVIDER</td><td>Name of <code>provider</code> to be used to check health</td><td></td></tr>
 -->
 				<tr><td colspan="3"></td></tr>
 				<tr><td colspan="3">*: si hcexpr n'est pas
-				utilis&eacute;, un retour HTTP 2xx ou 3xx sera
-				interpr&eacute;t&eacute; comme un passage avec succ&egrave;s du check
+				utilisé, un retour HTTP 2xx ou 3xx sera
+				interprété comme un passage avec succès du check
 				up.</td></tr>
         	</table>
         </td></tr>
     <tr><td>hcpasses</td>
         <td>1</td>
-        <td>Nombre de check up &agrave; passer avec succ&egrave;s avant de remettre en service
-	l'&eacute;quipier</td></tr>
+        <td>Nombre de check up à passer avec succès avant de remettre en service
+	l'équipier</td></tr>
     <tr><td>hcfails</td>
         <td>1</td>
-        <td>Nombre de check up &eacute;chou&eacute;s avant mettre hors service l'&eacute;quipier</td></tr>
+        <td>Nombre de check up échoués avant mettre hors service l'équipier</td></tr>
     <tr><td>hcinterval</td>
         <td>30</td>
-        <td>Intervalle entre deux check up en secondes (par d&eacute;faut effectu&eacute;
+        <td>Intervalle entre deux check up en secondes (par défaut effectué
 	toutes les 30 secondes). Utilise la syntaxe <a
 	href="directive-dict.html#Syntax">time-interval</a>.</td></tr>
     <tr><td>hcuri</td>
         <td>&nbsp;</td>
-        <td>URI suppl&eacute;mentaire &agrave; ajouter &agrave; l'URL de l'&eacute;quipier pour le check up.</td></tr>
+        <td>URI supplémentaire à ajouter à l'URL de l'équipier pour le check up.</td></tr>
     <tr><td>hctemplate</td>
         <td>&nbsp;</td>
-        <td>Nom du mod&egrave;le cr&eacute;&eacute; via <directive>ProxyHCTemplate</directive> &agrave;
-	utiliser pour d&eacute;finir les param&egrave;tres de check up de cet &eacute;quipier</td></tr>
+        <td>Nom du modèle créé via <directive module="mod_proxy_hcheck">ProxyHCTemplate</directive> à
+	utiliser pour définir les paramètres de check up de cet équipier</td></tr>
     <tr><td>hcexpr</td>
         <td>&nbsp;</td>
-        <td>Nom de l'expression cr&eacute;&eacute;e via <directive>ProxyHCExpr</directive>
-	utilis&eacute;e pour analyser les en-t&ecirc;tes de la r&eacute;ponse du check up.<br/>
-            <em>Si ce param&egrave;tre est absent, un &eacute;tat HTTP de 2xx &agrave; 3xx est
-	    interpr&eacute;t&eacute; comme un check up r&eacute;ussi.</em></td></tr>
+        <td>Nom de l'expression créée via <directive module="mod_proxy_hcheck">ProxyHCExpr</directive>
+	utilisée pour analyser les en-têtes de la réponse du check up.<br/>
+            <em>Si ce paramètre est absent, un état HTTP de 2xx à 3xx est
+	    interprété comme un check up réussi.</em></td></tr>
     </table>
 </note>
 
@@ -116,8 +117,8 @@
 <section id="examples">
 
 	<title>Exemples d'utilisation</title>
-    <p>L'exemple suivant montre comment configurer le check up pour diff&eacute;rents
-    serveurs d'arri&egrave;re-plan :</p>
+    <p>L'exemple suivant montre comment configurer le check up pour différents
+    serveurs d'arrière-plan :</p>
 
 	<!-- This section should probably be extended with more, useful examples -->
 	<highlight language="config">
@@ -127,7 +128,7 @@ ProxyHCExpr in_maint {hc('body') !~ /Under maintenance/}
 
 &lt;Proxy balancer://foo&gt;
   BalancerMember http://www.example.com/  hcmethod=GET hcexpr=in_maint hcuri=/status.php
-  BalancerMember http://www2.example.com/  hcmethod=HEAD hcexpr=ok234 hcinterval=10
+  BalancerMember http://www2.example.com/ hcmethod=HEAD hcexpr=ok234 hcinterval=10
   BalancerMember http://www3.example.com/ hcmethod=TCP hcinterval=5 hcpasses=2 hcfails=3
   BalancerMember http://www4.example.com/
 &lt;/Proxy&gt;
@@ -136,44 +137,44 @@ ProxyPass "/" "balancer://foo"
 ProxyPassReverse "/" "balancer://foo"
 </highlight>
 
-<p>Dans ce sc&eacute;nario, on teste l'&eacute;quipier <code>http://www.example.com/</code> en lui
-envoyant une requ&ecirc;te <code>GET /status.php</code> et en regardant si la r&eacute;ponse
-contient la cha&icirc;ne <em>Under maintenance</em>. Si c'est le cas, le check up est
-consid&eacute;r&eacute; comme ayant &eacute;chou&eacute; et l'&eacute;quipier est mis hors service. Ce check up
-dynamique est effectu&eacute; toutes les 30 secondes, ce qui correspond &agrave; la valeur par
-d&eacute;faut.</p>
+<p>Dans ce scénario, on teste l'équipier <code>http://www.example.com/</code> en lui
+envoyant une requête <code>GET /status.php</code> et en regardant si la réponse
+contient la chaîne <em>Under maintenance</em>. Si c'est le cas, le check up est
+considéré comme ayant échoué et l'équipier est mis hors service. Ce check up
+dynamique est effectué toutes les 30 secondes, ce qui correspond à la valeur par
+défaut.</p>
 
-<p>On teste l'&eacute;quipier <code>http://www2.example.com/</code> en lui envoyant
-simplement une requ&ecirc;te <code>HEAD</code> toutes les 10 secondes et en v&eacute;rifiant
-que la r&eacute;ponse HTTP est bien un code d'&eacute;tat de 2xx, 3xx ou 4xx. On teste
-l'&eacute;quipier <code>http://www3.example.com/</code>  en v&eacute;rifiant simplement toutes
-les 5 secondes que le socket vers ce serveur est bien op&eacute;rationnel. Si ce
-serveur est marqu&eacute; "hors service", il lui faudra 2 check up r&eacute;ussis pour &ecirc;tre
-r&eacute;activ&eacute; et participer &agrave; nouveau &agrave; la r&eacute;partition de charge. Si &agrave; ce moment-l&agrave;
-il &eacute;choue &agrave; 3 check up successifs, il sera &agrave; nouveau mis hors service. Enfin,
-l'&eacute;quipier <code>http://www4.example.com/</code> ne fait l'objet d'aucun check
+<p>On teste l'équipier <code>http://www2.example.com/</code> en lui envoyant
+simplement une requête <code>HEAD</code> toutes les 10 secondes et en vérifiant
+que la réponse HTTP est bien un code d'état de 2xx, 3xx ou 4xx. On teste
+l'équipier <code>http://www3.example.com/</code>  en vérifiant simplement toutes
+les 5 secondes que le socket vers ce serveur est bien opérationnel. Si ce
+serveur est marqué "hors service", il lui faudra 2 check up réussis pour être
+réactivé et participer à nouveau à la répartition de charge. Si à ce moment-là
+il échoue à 3 check up successifs, il sera à nouveau mis hors service. Enfin,
+l'équipier <code>http://www4.example.com/</code> ne fait l'objet d'aucun check
 up.</p>
 
 </section>
 
 <directivesynopsis>
 <name>ProxyHCExpr</name>
-<description>Cr&eacute;e et nomme une expression conditionnelle &agrave; utiliser pour
-d&eacute;terminer la sant&eacute; d'un serveur d'arri&egrave;re-plan en fonction de sa valeur.</description>
-<syntax>ProxyHCExpr name {ap_expr expression}</syntax>
+<description>Crée et nomme une expression conditionnelle à utiliser pour
+déterminer la santé d'un serveur d'arrière-plan en fonction de sa valeur</description>
+<syntax>ProxyHCExpr <em>name</em> {<em>ap_expr expression</em>}</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 <override>FileInfo</override>
 
 <usage>
-    <p>La directive <directive>ProxyHCExpr</directive> permet de cr&eacute;er et nommer
-    une expression conditionnelle dont la valeur calcul&eacute;e en fonction des
-    en-t&ecirc;tes de la r&eacute;ponse du serveur d'arri&egrave;re-plan permettra d'&eacute;valuer la
-    sant&eacute; de ce dernier. Cette expression nomm&eacute;e peut alors &ecirc;tre assign&eacute;e aux
-    serveurs d'arri&egrave;re-plan via le param&egrave;tre <code>hcexpr</code>.</p>
+    <p>La directive <directive>ProxyHCExpr</directive> permet de créer et nommer
+    une expression conditionnelle dont la valeur calculée en fonction des
+    en-têtes de la réponse du serveur d'arrière-plan permettra d'évaluer la
+    santé de ce dernier. Cette expression nommée peut alors être assignée aux
+    serveurs d'arrière-plan via le paramètre <code>hcexpr</code>.</p>
 
-    <example><title>ProxyHCExpr: interpr&egrave;te les r&eacute;ponses 2xx/3xx/4xx comme des
-    check up r&eacute;ussis</title>
+    <example><title>ProxyHCExpr: interprète les réponses 2xx/3xx/4xx comme des
+    check up réussis</title>
     <highlight language="config">
 ProxyHCExpr ok234 {%{REQUEST_STATUS} =~ /^[234]/}
 ProxyPass "/apps"     "balancer://foo"
@@ -186,19 +187,19 @@ ProxyPass "/apps"     "balancer://foo"
 
     <note>
     L'<a href="../expr.html">expression</a> peut utiliser des accolades ("{}")
-    comme d&eacute;limiteurs en plus des guillemets normaux.
+    comme délimiteurs en plus des guillemets normaux.
     </note>
 
-    <p>Si l'on utilise une m&eacute;thode de check up (par exemple <code>GET</code>)
-    qui g&eacute;n&egrave;re un corps de r&eacute;ponse, ce corps peut lui-m&ecirc;me &ecirc;tre auscult&eacute; via
-    <code>ap_expr</code> en utilisant la fonction associ&eacute;e aux expressions
-    <code>hc()</code> sp&eacute;cifique &agrave; ce module.</p>
+    <p>Si l'on utilise une méthode de check up (par exemple <code>GET</code>)
+    qui génère un corps de réponse, ce corps peut lui-même être ausculté via
+    <code>ap_expr</code> en utilisant la fonction associée aux expressions
+    <code>hc()</code> spécifique à ce module.</p>
 
-    <p>Dans l'exemple suivant, on envoie une requ&ecirc;te <code>GET</code> au serveur
-    d'arri&egrave;re-plan, et si le corps de la r&eacute;ponse contient la cha&icirc;ne <em>Under
-    maintenance</em>, ce serveur d'arri&egrave;re-plan est mis hors service.</p>
+    <p>Dans l'exemple suivant, on envoie une requête <code>GET</code> au serveur
+    d'arrière-plan, et si le corps de la réponse contient la chaîne <em>Under
+    maintenance</em>, ce serveur d'arrière-plan est mis hors service.</p>
 
-    <example><title>ProxyHCExpr: auscultation du corps de la r&eacute;ponse</title>
+    <example><title>ProxyHCExpr: auscultation du corps de la réponse</title>
     <highlight language="config">
 ProxyHCExpr in_maint {hc('body') !~ /Under maintenance/}
 ProxyPass "/apps"     "balancer://foo"
@@ -209,25 +210,25 @@ ProxyPass "/apps"     "balancer://foo"
     </highlight>
     </example>
 
-    <p><em>NOTE:</em> Comme le corps de la r&eacute;ponse peut &ecirc;tre assez grand, il est
-    recommand&eacute; de privil&eacute;gier un check up bas&eacute; sur les codes d'&eacute;tat.</p>
+    <p><em>NOTE:</em> Comme le corps de la réponse peut être assez grand, il est
+    recommandé de privilégier un check up basé sur les codes d'état.</p>
 </usage>
 </directivesynopsis>
 
 
 <directivesynopsis>
 <name>ProxyHCTemplate</name>
-<description>Cr&eacute;e et nomme un mod&egrave;le permettant de d&eacute;finir diff&eacute;rents
-param&egrave;tres de check up</description>
-<syntax>ProxyHCTemplate name parameter=setting &lt;...&gt;</syntax>
+<description>Crée et nomme un modèle permettant de définir différents
+paramètres de check up</description>
+<syntax>ProxyHCTemplate <em>name</em> <em>parameter</em>=<em>setting</em> [...]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 <override>FileInfo</override>
 
 <usage>
-    <p>La directive <directive>ProxyHCTemplate</directive> permet de cr&eacute;er et
-    nommer un mod&egrave;le de param&egrave;tres de check up qui peut alors &ecirc;tre assign&eacute; aux
-    &eacute;quipiers via le param&egrave;tre <code>hctemplate</code></p>
+    <p>La directive <directive>ProxyHCTemplate</directive> permet de créer et
+    nommer un modèle de paramètres de check up qui peut alors être assigné aux
+    équipiers via le paramètre <code>hctemplate</code>.</p>
 
     <example><title>ProxyHCTemplate</title>
     <highlight language="config">
@@ -245,21 +246,21 @@ ProxyPass "/apps"     "balancer://foo"
 
 <directivesynopsis>
 <name>ProxyHCTPsize</name>
-<description>D&eacute;finit la taille totale, pour l'ensemble du
-serveur, du jeu de threads utilis&eacute; pour le check up des
-&eacute;quipiers.</description>
-<syntax>ProxyHCTPsize &lt;size&gt;</syntax>
+<description>Définit la taille totale, pour l'ensemble du
+serveur, du jeu de threads utilisé pour le check up des
+équipiers</description>
+<syntax>ProxyHCTPsize <em>size</em></syntax>
 <contextlist><context>server config</context>
 </contextlist>
 
 <usage>
-    <p>Si Apache httpd et APR ont &eacute;t&eacute; compil&eacute;s avec le support des threads, le
-    module de check up peut confier ce travail &agrave; un jeu de threads associ&eacute; au
-    processus Watchdog, ce qui permet l'ex&eacute;cution des check up en parall&egrave;le. La
-    directive <directive>ProxyHCTPsize</directive> permet de d&eacute;terminer la
+    <p>Si Apache httpd et APR ont été compilés avec le support des threads, le
+    module de check up peut confier ce travail à un jeu de threads associé au
+    processus Watchdog, ce qui permet l'exécution des check up en parallèle. La
+    directive <directive>ProxyHCTPsize</directive> permet de déterminer la
     taille de ce jeu de threads. Une valeur de <code>0</code> signifie qu'aucun
-    jeu de threads ne sera utilis&eacute;, et le check up des diff&eacute;rents &eacute;quipiers sera
-    alors effectu&eacute; s&eacute;quentiellement. La taille par d&eacute;faut du jeu de threads est
+    jeu de threads ne sera utilisé, et le check up des différents équipiers sera
+    alors effectué séquentiellement. La taille par défaut du jeu de threads est
     de 16.</p>
 
     <example><title>ProxyHCTPsize</title>
