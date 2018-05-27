@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1828926 -->
+<!-- English Revision: 1832294 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1383,7 +1383,7 @@ ProxyPass "/mirror/foo/i" "!"
 	répartiteur de charge. La route est une valeur ajoutée à
 	l'identifiant de session.
     </td></tr>
-    <tr><td>status</td>
+    <tr><td><a name="status_table">status</a></td>
         <td>-</td>
         <td>Valeur constituée d'une simple lettre et définissant l'état
 	initial de ce serveur cible.
