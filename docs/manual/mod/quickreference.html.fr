@@ -1049,13 +1049,13 @@ mandatés</td></tr>
 doivent-ils être échappés lorsqu'ils sont envoyés au serveur FTP ?</td></tr>
 <tr><td><a href="mod_proxy_ftp.html#proxyftplistonwildcard">ProxyFtpListOnWildcard [on|off]</a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Les caractères génériques dans les noms de fichiers
 demandés doivent-ils déclencher l'affichage d'un listing ?</td></tr>
-<tr class="odd"><td><a href="mod_proxy_hcheck.html#proxyhcexpr">ProxyHCExpr name {ap_expr expression}</a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Crée et nomme une expression conditionnelle à utiliser pour
-déterminer la santé d'un serveur d'arrière-plan en fonction de sa valeur.</td></tr>
-<tr><td><a href="mod_proxy_hcheck.html#proxyhctemplate">ProxyHCTemplate name parameter=setting &lt;...&gt;</a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Crée et nomme un modèle permettant de définir différents
+<tr class="odd"><td><a href="mod_proxy_hcheck.html#proxyhcexpr">ProxyHCExpr <em>name</em> {<em>ap_expr expression</em>}</a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Crée et nomme une expression conditionnelle à utiliser pour
+déterminer la santé d'un serveur d'arrière-plan en fonction de sa valeur</td></tr>
+<tr><td><a href="mod_proxy_hcheck.html#proxyhctemplate">ProxyHCTemplate <em>name</em> <em>parameter</em>=<em>setting</em> [...]</a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Crée et nomme un modèle permettant de définir différents
 paramètres de check up</td></tr>
-<tr class="odd"><td><a href="mod_proxy_hcheck.html#proxyhctpsize">ProxyHCTPsize &lt;size&gt;</a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Définit la taille totale, pour l'ensemble du
+<tr class="odd"><td><a href="mod_proxy_hcheck.html#proxyhctpsize">ProxyHCTPsize <em>size</em></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Définit la taille totale, pour l'ensemble du
 serveur, du jeu de threads utilisé pour le check up des
-équipiers.</td></tr>
+équipiers</td></tr>
 <tr><td><a href="mod_proxy_html.html#proxyhtmlbufsize">ProxyHTMLBufSize <var>nb-octets</var></a></td><td></td><td>svd</td><td>B</td></tr><tr><td class="descr" colspan="4">Définit l'incrément de la taille du tampon, ainsi que sa
 taille initiale, pour la mise en
 tampon des scripts en ligne et des feuilles de style.</td></tr>

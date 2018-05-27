@@ -47,10 +47,10 @@
 
 <div class="note"><h3>Paramètres</h3>
   <p>Le mécanisme de check up est activé via l'utilisation de paramètres
-  supplémentaires de BalancerMember configurés de manière standard via la
-  directive <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> :</p>
+  supplémentaires de la directive <code class="directive"><a href="../mod/mod_proxy.html#balancermember">BalancerMember</a></code> configurés de manière standard
+  via la directive <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> :</p>
 
-  <p>Ce module définit un nouveau drapeau d'état pour BalancerMember :
+  <p>Ce module définit un nouveau drapeau d'état <a href="mod_proxy.html#status_table">status</a> pour BalancerMember :
   "<code>C</code>". Lorsque l'équipier est mis hors service suite à un
   disfonctionnement déterminé par le module de check up, ce drapeau est activé
   et peut être lu (et modifié) via le <code>balancer-manager</code>.</p>
@@ -98,11 +98,11 @@
         <td>URI supplémentaire à ajouter à l'URL de l'équipier pour le check up.</td></tr>
     <tr><td>hctemplate</td>
         <td>&nbsp;</td>
-        <td>Nom du modèle créé via <code class="directive">ProxyHCTemplate</code> à
+        <td>Nom du modèle créé via <code class="directive"><a href="#proxyhctemplate">ProxyHCTemplate</a></code> à
 	utiliser pour définir les paramètres de check up de cet équipier</td></tr>
     <tr><td>hcexpr</td>
         <td>&nbsp;</td>
-        <td>Nom de l'expression créée via <code class="directive">ProxyHCExpr</code>
+        <td>Nom de l'expression créée via <code class="directive"><a href="#proxyhcexpr">ProxyHCExpr</a></code>
 	utilisée pour analyser les en-têtes de la réponse du check up.<br />
             <em>Si ce paramètre est absent, un état HTTP de 2xx à 3xx est
 	    interprété comme un check up réussi.</em></td></tr>
@@ -138,7 +138,7 @@ ProxyHCExpr in_maint {hc('body') !~ /Under maintenance/}
 
 &lt;Proxy balancer://foo&gt;
   BalancerMember http://www.example.com/  hcmethod=GET hcexpr=in_maint hcuri=/status.php
-  BalancerMember http://www2.example.com/  hcmethod=HEAD hcexpr=ok234 hcinterval=10
+  BalancerMember http://www2.example.com/ hcmethod=HEAD hcexpr=ok234 hcinterval=10
   BalancerMember http://www3.example.com/ hcmethod=TCP hcinterval=5 hcpasses=2 hcfails=3
   BalancerMember http://www4.example.com/
 &lt;/Proxy&gt;
@@ -170,8 +170,8 @@ up.</p>
 <div class="directive-section"><h2><a name="proxyhcexpr" id="proxyhcexpr">Directive</a> <a name="ProxyHCExpr" id="ProxyHCExpr">ProxyHCExpr</a><a title="Lien permanent" href="#proxyhcexpr" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Crée et nomme une expression conditionnelle à utiliser pour
-déterminer la santé d'un serveur d'arrière-plan en fonction de sa valeur.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyHCExpr name {ap_expr expression}</code></td></tr>
+déterminer la santé d'un serveur d'arrière-plan en fonction de sa valeur</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyHCExpr <em>name</em> {<em>ap_expr expression</em>}</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -223,7 +223,7 @@ ProxyPass "/apps"     "balancer://foo"
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Crée et nomme un modèle permettant de définir différents
 paramètres de check up</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyHCTemplate name parameter=setting &lt;...&gt;</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyHCTemplate <em>name</em> <em>parameter</em>=<em>setting</em> [...]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -231,7 +231,7 @@ paramètres de check up</td></tr>
 </table>
     <p>La directive <code class="directive">ProxyHCTemplate</code> permet de créer et
     nommer un modèle de paramètres de check up qui peut alors être assigné aux
-    équipiers via le paramètre <code>hctemplate</code></p>
+    équipiers via le paramètre <code>hctemplate</code>.</p>
 
     <div class="example"><h3>ProxyHCTemplate</h3><pre class="prettyprint lang-config">ProxyHCTemplate tcp5 hcmethod=tcp hcinterval=5
 ProxyPass "/apps"     "balancer://foo"
@@ -248,8 +248,8 @@ ProxyPass "/apps"     "balancer://foo"
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit la taille totale, pour l'ensemble du
 serveur, du jeu de threads utilisé pour le check up des
-équipiers.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyHCTPsize &lt;size&gt;</code></td></tr>
+équipiers</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyHCTPsize <em>size</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_hcheck</td></tr>

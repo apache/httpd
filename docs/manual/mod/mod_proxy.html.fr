@@ -1502,7 +1502,7 @@ ProxyPass "/mirror/foo" "http://backend.example.com"</pre>
 	répartiteur de charge. La route est une valeur ajoutée à
 	l'identifiant de session.
     </td></tr>
-    <tr><td>status</td>
+    <tr><td><a name="status_table">status</a></td>
         <td>-</td>
         <td>Valeur constituée d'une simple lettre et définissant l'état
 	initial de ce serveur cible.
