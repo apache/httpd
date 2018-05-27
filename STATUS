@@ -327,6 +327,30 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1831231,1831591 ^/httpd/httpd/trunk .
      +1: jailletc36,
 
+  *) Easy patches: synch 2.4.x and trunk
+     - core: add a comment
+     - mod_auth_form: Silence a static checker warning
+     - unixd: fix a compilation warning
+     - mod_sed: do not compute string length twice
+     - mod_substitute: add some TRACE8 debugging messages
+     - mod_ssl: fix the error code written in a log message
+     - win32/Apachemonitor: Success of 'SHGetMalloc()' should be tested with the SUCCEEDED macro.
+     - core: Axe some dead code
+     - core: Fix typo in comment
+     - core: Fix a potential un-intialized variable usage warning.
+     trunk patch: http://svn.apache.org/r1490294
+                  http://svn.apache.org/r1734635
+                  http://svn.apache.org/r1749403
+                  http://svn.apache.org/r1813116
+                  http://svn.apache.org/r1816179
+                  http://svn.apache.org/r1817598
+                  http://svn.apache.org/r1832198 
+                  http://svn.apache.org/r1832200
+                  http://svn.apache.org/r1832277
+                  http://svn.apache.org/r1832317
+     2.4.x patch: svn merge -c 1490294,1734635,1749403,1813116,1816179,1817598,1832198,1832200,1832277,1832317 ^/httpd/httpd/trunk .
+     +1: jailletc36,
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
