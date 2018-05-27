@@ -305,6 +305,7 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
         backconn->aborted = 1;
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01022)
                       "pre_connection setup failed (%d)", rc);
+        apr_socket_close(sock);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
