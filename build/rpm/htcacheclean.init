@@ -22,7 +22,7 @@
 # description: The Apache htcacheclean daemon maintains and prunes the
 #              size of the mod_cache_disk cache directory.
 # processname: htcacheclean
-# pidfile: /var/log/httpd/htcacheclean.pid
+# pidfile: /var/run/htcacheclean.pid
 # config: /etc/sysconfig/htcacheclean
 #
 ### BEGIN INIT INFO
