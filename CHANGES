@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.34
 
+  *) core, log: improve sanity checks for the ErrorLog's syslog config, and
+     explicitly allow ony lowercase 'syslog' settings. PR 62102
+     [Luca Toscano, Jim Riggs, Christophe Jaillet]
+
   *) mod_http2: accurate reporting of h2 data input/output per request via mod_logio. Fixes
      an issue where output sizes where counted n-times on reused slave connections. See
      gituhub issue: https://github.com/icing/mod_h2/issues/158
