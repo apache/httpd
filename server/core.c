@@ -4867,7 +4867,8 @@ AP_DECLARE(int) ap_sys_privileges_handlers(int inc)
 static int check_errorlog_dir(apr_pool_t *p, server_rec *s)
 {
     if (!s->error_fname || s->error_fname[0] == '|'
-        || strcmp(s->error_fname, "syslog") == 0) {
+        || strcmp(s->error_fname, "syslog") == 0
+        || strncmp(s->error_fname, "syslog:", 7) == 0) {
         return APR_SUCCESS;
     }
     else {
@@ -5281,7 +5282,9 @@ static void core_dump_config(apr_pool_t *p, server_rec *s)
     apr_file_printf(out, "ServerRoot: \"%s\"\n", ap_server_root);
     tmp = ap_server_root_relative(p, sconf->ap_document_root);
     apr_file_printf(out, "Main DocumentRoot: \"%s\"\n", tmp);
-    if (s->error_fname[0] != '|' && strcmp(s->error_fname, "syslog") != 0)
+    if (s->error_fname[0] != '|'
+        && strcmp(s->error_fname, "syslog") != 0
+        && strncmp(s->error_fname, "syslog:", 7) != 0)
         tmp = ap_server_root_relative(p, s->error_fname);
     else
         tmp = s->error_fname;

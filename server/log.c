@@ -396,7 +396,8 @@ static int open_error_log(server_rec *s, int is_main, apr_pool_t *p)
     }
 
 #ifdef HAVE_SYSLOG
-    else if (!strncasecmp(s->error_fname, "syslog", 6)) {
+    else if (strcmp(s->error_fname, "syslog") == 0
+             || strncmp(s->error_fname, "syslog:", 7) == 0) {
         if ((fname = strchr(s->error_fname, ':'))) {
             /* s->error_fname could be [level]:[tag] (see #60525) */
             const char *tag;
