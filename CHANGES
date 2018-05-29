@@ -58,10 +58,6 @@ Changes with Apache 2.5.1
      allow maximum HTTP response header size to be increased past 8192 
      bytes.  PR62199.  [Hank Ibell <hwibell gmail.com>]
 
-  *) core: Preserve the original HTTP request method in the '%<m' LogFormat
-     when an path-based ErrorDocument is used.  PR 62186. 
-     [Micha Lenk <micha lenk.info>]
-
   *) mod_proxy_balancer: Add hot spare member type and corresponding flag (R). Hot spare members are
      used as drop-in replacements for unusable workers in the same load balancer set. This differs
      from hot standbys which are only used when all workers in a set are unusable. PR 61140. [Jim
@@ -86,19 +82,6 @@ Changes with Apache 2.5.1
      connections to the same server.
      [Stefan Eissing]
 
-  *) mod_http2: accurate reporting of h2 data input/output per request via mod_logio. Fixes
-     an issue where output sizes where counted n-times on reused slave connections. See
-     gituhub issue: https://github.com/icing/mod_h2/issues/158
-     [Stefan Eissing]
-  
-  *) mod_proxy: Do not restrict the maximum pool size for backend connections
-     any longer by the maximum number of threads per process and use a better
-     default if mod_http2 is loaded.
-     [Yann Ylavic, Ruediger Pluem, Stefan Eissing, Gregg Smith]
-
-  *) mod_ssl: Fix merging of proxy SSL context outside <Proxy> sections,
-     regression introduced in 2.4.30. PR 62232. [Rainer Jung, Yann Ylavic]
-
   *) mod_ssl: proper checks for libressl 2.07/8 and its TLSv1_3 support, see PR 62236.
      [Bernard Spil <brnrd@freebsd.org>]
   
@@ -109,15 +92,8 @@ Changes with Apache 2.5.1
      independent of the core Timeout directive.  PR 62229.  
      [Hank Ibell <hwibell gmail.com>]
 
-  *) mod_remoteip: Restore compatibility with APR 1.4 (apr_sockaddr_is_wildcard).
-     [Eric Covener]
-
   *) mod_ssl: heavily simplified SSLPolicy. No more user defines, no propxy policies,
      just the basic "modern", "intermediate" and "old" as specified by Mozilla security.
-     [Stefan Eissing]
-
-  *) mod_remoteip: make proxy-protocol work on slave connections, e.g. in HTTP/2
-     requests. See also https://github.com/roadrunner2/mod-proxy-protocol/issues/6
      [Stefan Eissing]
 
   *) mod_md: fixes error in renew window calculation that may lead to mod_md running
@@ -127,8 +103,6 @@ Changes with Apache 2.5.1
      outside the configured MDs are free to be answered by other handlers. This allows
      co-existance between mod_md and other ACME clients on the same server (implements PR62189).
      [Stefan Eissing, Arkadiusz Miskiewicz <arekm@maven.pl>]
-
-  *) mod_md: Fix compilation with OpenSSL before version 1.0.2.  [Rainer Jung]
 
   *) core: Create a conn_config_t structure to hold an extendable core config rather
      than consuming the whole pointer with the connection socket. [Graham Leggett]
@@ -180,8 +154,6 @@ Changes with Apache 2.5.1
   *) mod_md: fixed mem pool usage for auto-added server names. Added
      error logging of exact ACME response when challenges failed.
      [Stefan Eissing]
-
-  *) mod_dumpio: do nothing below log level TRACE7.  [Yann Ylavic]
 
   *) mod_md: reverses most of v1.0.5 optimization of post_config init, so that
      mod_ssl can ask for certiticates without crashing. [Stefan Eissing]
