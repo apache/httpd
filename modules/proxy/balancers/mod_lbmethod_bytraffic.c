@@ -59,8 +59,9 @@ static proxy_worker *find_best_bytraffic(proxy_balancer *balancer,
 {
     apr_off_t min_traffic = 0;
 
-    return ap_proxy_balancer_get_best_worker(balancer, r, is_best_bytraffic, &min_traffic);
-        }
+    return ap_proxy_balancer_get_best_worker(balancer, r, is_best_bytraffic,
+                                             &min_traffic);
+}
 
 /* assumed to be mutex protected by caller */
 static apr_status_t reset(proxy_balancer *balancer, server_rec *s)
