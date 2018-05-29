@@ -141,17 +141,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1829513 ^/httpd/httpd/trunk .
      +1: jorton, jim, ylavic
 
-  *) core: use strncmp in check_errorlog_dir and core_dump_config when checking
-     if the ErrorLog directive is configured with the 'syslog' prefix. PR 62102
-     trunk patch: none, as far as I can see the code in trunk diverged too much
-                  due to the code in STALLED for ap_errorlog_provider.
-     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/core-check_errorlog_dir_syslog.patch
-     +1: elukey, jhriggs, ylavic
-     jhriggs: As discussed on dev@, there is a potential regression/config-break
-              with this if someone uses "SYSLOG" rather than "syslog" in the
-              config, but I think the risk is minimal/nonexistent and
-              acceptable. +1
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
