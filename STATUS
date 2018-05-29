@@ -161,20 +161,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1703248,1827366 ^/httpd/httpd/trunk .
      +1: jailletc36, jim, ylavic
 
-  *) mod_http2:
-     - normalize trace2 logging of http2 unencrypted connection upgrades.
-     - accurate reporting of h2 data input/output per request via mod_logio. Fixes
-       an issue where output sizes where counted n-times on reused slave connections.
-     - code cleanups: instrumenting bbout logging, using APR_OFF_T_FMT where needed
-     trunk patch: http://svn.apache.org/r1828210
-                  http://svn.apache.org/r1828232
-                  http://svn.apache.org/r1828687
-                  http://svn.apache.org/r1826687
-                  http://svn.apache.org/r1827166
-     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/h2-1.10.17.patch
-     Resetting votes after latest additions
-     +1: icing, jim, ylavic
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
