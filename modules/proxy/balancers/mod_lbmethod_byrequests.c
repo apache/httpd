@@ -85,10 +85,10 @@ static proxy_worker *find_best_byrequests(proxy_balancer *balancer,
 
     if (worker) {
         worker->s->lbstatus -= total_factor;
-        }
+    }
 
     return worker;
-                }
+}
 
 /* assumed to be mutex protected by caller */
 static apr_status_t reset(proxy_balancer *balancer, server_rec *s)

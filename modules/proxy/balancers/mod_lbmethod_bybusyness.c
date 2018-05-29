@@ -40,17 +40,19 @@ static int is_best_bybusyness(proxy_worker *current, proxy_worker *prev_best, vo
 }
 
 static proxy_worker *find_best_bybusyness(proxy_balancer *balancer,
-                                request_rec *r)
+                                          request_rec *r)
 {
     int total_factor = 0;
-    proxy_worker *worker = ap_proxy_balancer_get_best_worker(balancer, r, is_best_bybusyness, &total_factor);
+    proxy_worker *worker =
+        ap_proxy_balancer_get_best_worker(balancer, r, is_best_bybusyness,
+                                          &total_factor);
 
     if (worker) {
         worker->s->lbstatus -= total_factor;
-        }
+    }
 
     return worker;
-                }
+}
 
 /* assumed to be mutex protected by caller */
 static apr_status_t reset(proxy_balancer *balancer, server_rec *s)
