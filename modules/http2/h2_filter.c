@@ -291,6 +291,8 @@ apr_bucket *h2_bucket_observer_beam(struct h2_bucket_beam *beam,
 }
 
 static apr_status_t bbout(apr_bucket_brigade *bb, const char *fmt, ...)
+                             __attribute__((format(printf,2,3)));
+static apr_status_t bbout(apr_bucket_brigade *bb, const char *fmt, ...)
 {
     va_list args;
     apr_status_t rv;
@@ -351,8 +353,8 @@ static int add_stream(h2_stream *stream, void *ctx)
     bbout(x->bb, "    \"created\": %f,\n", ((double)stream->created)/APR_USEC_PER_SEC);
     bbout(x->bb, "    \"flowIn\": %d,\n", flowIn);
     bbout(x->bb, "    \"flowOut\": %d,\n", flowOut);
-    bbout(x->bb, "    \"dataIn\": %"APR_UINT64_T_FMT",\n", stream->in_data_octets);  
-    bbout(x->bb, "    \"dataOut\": %"APR_UINT64_T_FMT"\n", stream->out_data_octets);  
+    bbout(x->bb, "    \"dataIn\": %"APR_OFF_T_FMT",\n", stream->in_data_octets);  
+    bbout(x->bb, "    \"dataOut\": %"APR_OFF_T_FMT"\n", stream->out_data_octets);  
     bbout(x->bb, "    }");
     
     ++x->idx;

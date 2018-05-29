@@ -96,10 +96,13 @@ struct h2_stream {
     struct h2_task *task;       /* assigned task to fullfill request */
     
     const h2_priority *pref_priority; /* preferred priority for this stream */
+    apr_off_t out_frames;       /* # of frames sent out */
+    apr_off_t out_frame_octets; /* # of RAW frame octets sent out */
     apr_off_t out_data_frames;  /* # of DATA frames sent */
     apr_off_t out_data_octets;  /* # of DATA octets (payload) sent */
     apr_off_t in_data_frames;   /* # of DATA frames received */
     apr_off_t in_data_octets;   /* # of DATA octets (payload) received */
+    apr_off_t in_trailer_octets; /* # of HEADER octets (payload) received in trailers */
     
     h2_stream_monitor *monitor; /* optional monitor for stream states */
 };
@@ -196,8 +199,8 @@ apr_status_t h2_stream_add_header(h2_stream *stream,
                                   const char *name, size_t nlen,
                                   const char *value, size_t vlen);
 
-apr_status_t h2_stream_send_frame(h2_stream *stream, int frame_type, int flags);
-apr_status_t h2_stream_recv_frame(h2_stream *stream, int frame_type, int flags);
+apr_status_t h2_stream_send_frame(h2_stream *stream, int frame_type, int flags, size_t frame_len);
+apr_status_t h2_stream_recv_frame(h2_stream *stream, int frame_type, int flags, size_t frame_len);
 
 /*
  * Process a frame of received DATA.

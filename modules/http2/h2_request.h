@@ -30,7 +30,7 @@ apr_status_t h2_request_add_trailer(h2_request *req, apr_pool_t *pool,
                                     const char *name, size_t nlen,
                                     const char *value, size_t vlen);
 
-apr_status_t h2_request_end_headers(h2_request *req, apr_pool_t *pool, int eos);
+apr_status_t h2_request_end_headers(h2_request *req, apr_pool_t *pool, int eos, size_t raw_bytes);
 
 h2_request *h2_request_clone(apr_pool_t *p, const h2_request *src);
 

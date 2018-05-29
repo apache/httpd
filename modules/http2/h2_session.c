@@ -348,7 +348,8 @@ static int on_frame_recv_cb(nghttp2_session *ng2s,
              * trailers */
             stream = h2_session_stream_get(session, frame->hd.stream_id);
             if (stream) {
-                rv = h2_stream_recv_frame(stream, NGHTTP2_HEADERS, frame->hd.flags);
+                rv = h2_stream_recv_frame(stream, NGHTTP2_HEADERS, frame->hd.flags, 
+                    frame->hd.length + H2_FRAME_HDR_LEN);
             }
             break;
         case NGHTTP2_DATA:
@@ -358,7 +359,8 @@ static int on_frame_recv_cb(nghttp2_session *ng2s,
                               H2_STRM_LOG(APLOGNO(02923), stream, 
                               "DATA, len=%ld, flags=%d"), 
                               (long)frame->hd.length, frame->hd.flags);
-                rv = h2_stream_recv_frame(stream, NGHTTP2_DATA, frame->hd.flags);
+                rv = h2_stream_recv_frame(stream, NGHTTP2_DATA, frame->hd.flags, 
+                    frame->hd.length + H2_FRAME_HDR_LEN);
             }
             break;
         case NGHTTP2_PRIORITY:
@@ -546,7 +548,8 @@ static int on_frame_send_cb(nghttp2_session *ngh2,
     
     stream = h2_session_stream_get(session, stream_id);
     if (stream) {
-        h2_stream_send_frame(stream, frame->hd.type, frame->hd.flags);
+        h2_stream_send_frame(stream, frame->hd.type, frame->hd.flags, 
+            frame->hd.length + H2_FRAME_HDR_LEN);
     }
     return 0;
 }
