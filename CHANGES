@@ -8,10 +8,10 @@ Changes with Apache 2.4.34
      explicitly allow ony lowercase 'syslog' settings. PR 62102
      [Luca Toscano, Jim Riggs, Christophe Jaillet]
 
-  *) mod_http2: accurate reporting of h2 data input/output per request via mod_logio. Fixes
-     an issue where output sizes where counted n-times on reused slave connections. See
-     gituhub issue: https://github.com/icing/mod_h2/issues/158
-     [Stefan Eissing]
+  *) mod_http2: accurate reporting of h2 data input/output per request via
+     mod_logio. Fixes an issue where output sizes where counted n-times on
+     reused slave connections.  [Stefan Eissing]
+     See gituhub issue: https://github.com/icing/mod_h2/issues/158
 
   *) mod_http2: Fix unnecessary timeout waits in case streams are aborted.
      [Stefan Eissing]
@@ -25,9 +25,9 @@ Changes with Apache 2.4.34
      when an path-based ErrorDocument is used.  PR 62186. 
      [Micha Lenk <micha lenk.info>]
 
-  *) mod_remoteip: make proxy-protocol work on slave connections, e.g. in HTTP/2
-     requests. See also https://github.com/roadrunner2/mod-proxy-protocol/issues/6
-     [Stefan Eissing]
+  *) mod_remoteip: make proxy-protocol work on slave connections, e.g. in
+     HTTP/2 requests.  [Stefan Eissing]
+     See also https://github.com/roadrunner2/mod-proxy-protocol/issues/6
 
   *) mod_ssl: Fix merging of proxy SSL context outside <Proxy> sections,
      regression introduced in 2.4.30. PR 62232. [Rainer Jung, Yann Ylavic]
@@ -41,7 +41,7 @@ Changes with Apache 2.4.34
 
   *) core: On ECBDIC platforms, some errors related to oversized headers
      may be misreported or be logged as ASCII escapes.  PR 62200
-      [Hank Ibell <hwibell gmail.com>]
+     [Hank Ibell <hwibell gmail.com>]
 
   *) mod_ssl: Fix cmake-based build.  PR 62266.  [Rainer Jung]
 
