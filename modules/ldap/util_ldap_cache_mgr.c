@@ -741,7 +741,7 @@ char *util_ald_cache_display(request_rec *r, util_ldap_state_t *st)
                                "</tr>\n"
                                "<tr>\n"
                                "<td bgcolor='#000000'><font size='-1' face='Arial,Helvetica' color='#ffffff'><b>TTL (sec):</b></font></td>"
-                               "<td bgcolor='#ffffff'><font size='-1' face='Arial,Helvetica' color='#000000'><b>%ld</b></font></td>"
+                               "<td bgcolor='#ffffff'><font size='-1' face='Arial,Helvetica' color='#000000'><b>%" APR_TIME_T_FMT "</b></font></td>"
                                "</tr>\n"
                                "<tr>\n"
                                "<td bgcolor='#000000'><font size='-1' face='Arial,Helvetica' color='#ffffff'><b>Full Mark:</b></font></td>"
@@ -755,7 +755,7 @@ char *util_ald_cache_display(request_rec *r, util_ldap_state_t *st)
                                util_ldap_cache->size,
                                util_ldap_cache->maxentries,
                                util_ldap_cache->numentries,
-                               util_ldap_cache->ttl / APR_USEC_PER_SEC,
+                               apr_time_sec(util_ldap_cache->ttl),
                                util_ldap_cache->fullmark,
                                date_str);
 
