@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.34
 
+  *) mod_ssl: Restore 2.4.29 behaviour in SSL vhost merging/enabling
+     which broke some rare but previously-working configs.  [Joe Orton]
+
   *) core, log: improve sanity checks for the ErrorLog's syslog config, and
      explicitly allow ony lowercase 'syslog' settings. PR 62102
      [Luca Toscano, Jim Riggs, Christophe Jaillet]
