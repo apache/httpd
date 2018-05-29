@@ -135,12 +135,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_ssl: Restore 2.4.29 behaviour in SSL vhost merging/enabling
-              which broke some rare but previously-working configs.
-     trunk patch: https://svn.apache.org/r1829513
-     2.4.x patch: svn merge -c 1829513 ^/httpd/httpd/trunk .
-     +1: jorton, jim, ylavic
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
