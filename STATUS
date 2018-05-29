@@ -119,15 +119,6 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
-  *) mod_slotmem_shm: https://bz.apache.org/bugzilla/show_bug.cgi?id=62277
-     ylavic: Not a regression/showstopper IMHO, has more to do with IPC-SysV
-             SHM names collisions (on Solaris at least). In 2.4.29 we tried to
-             attach (colliding) SHMs first, so it might have worked with
-             compatible sizes, we won't attach anymore from 2.4.33 because it
-             makes no sense to reuse another balancer's slotmem. We'd better
-             fail to start and suggest the user ought to use another SHM
-             mechanism like POSIX's, nothing can be done at APR/httpd level.
-
   *) mod_slotmem_shm: Add generation number to shm filename to fix races with
                       graceful restarts.  PRs 62044 and 62308.
      trunk patch: https://svn.apache.org/r1831868
