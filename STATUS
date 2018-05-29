@@ -221,7 +221,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1703248
                   http://svn.apache.org/r1827366
      2.4.x patch: svn merge -c 1703248,1827366 ^/httpd/httpd/trunk .
-     +1: jailletc36, jim
+     +1: jailletc36, jim, ylavic
 
   *) mod_http2:
      - normalize trace2 logging of http2 unencrypted connection upgrades.
@@ -235,12 +235,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1827166
      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/h2-1.10.17.patch
      Resetting votes after latest additions
-     +1: icing, jim
+     +1: icing, jim, ylavic
 
   *) mod_http2: fix unnecessary timeout waits in case streams are aborted.
      trunk patch: http://svn.apache.org/r1828879
      2.4.x patch: svn merge -c 1828879 ^/httpd/httpd/trunk .
-     +1: icing, jim
+     +1: icing, jim, ylavic
 
   *) mod_proxy_balancer: Add hot spare member type and corresponding flag (R). Hot spare members are
      used as drop-in replacements for unusable workers in the same load balancer set. This differs
@@ -254,7 +254,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: none, as far as I can see the code in trunk diverged too much
                   due to the code in STALLED for ap_errorlog_provider.
      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/core-check_errorlog_dir_syslog.patch
-     +1: elukey, jhriggs
+     +1: elukey, jhriggs, ylavic
      jhriggs: As discussed on dev@, there is a potential regression/config-break
               with this if someone uses "SYSLOG" rather than "syslog" in the
               config, but I think the risk is minimal/nonexistent and
@@ -278,7 +278,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      reduces memory footprint and avoids memory exhaustion when transferring large files
      on 32-bit architectures. Fixes PR 62325.
      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/h2_beam_purge.patch
-     +1: icing
+     +1: icing, ylavic
 
   *) mod_xml2enc: Fix forwarding of error metadata/responses. PR 62180.
      trunk patch: http://svn.apache.org/r1829038
@@ -291,7 +291,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_http2: Restore keepalive timing of v1.10.16, see https://github.com/icing/mod_h2/issues/160.
      trunk patch: http://svn.apache.org/1830562
      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/h2_keepalive_restore.patch
-     +1: icing
+     +1: icing, ylavic
 
   *) core: In ONE_PROCESS/debug mode, cleanup everything when exiting.
      trunk patch: http://svn.apache.org/r1822537
@@ -313,7 +313,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1831231
                   http://svn.apache.org/r1831591
      2.4.x patch: svn merge -c 1831231,1831591 ^/httpd/httpd/trunk .
-     +1: jailletc36,
+     +1: jailletc36, ylavic,
 
   *) Easy patches: synch 2.4.x and trunk
      - core: add a comment
@@ -337,7 +337,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1832277
                   http://svn.apache.org/r1832317
      2.4.x patch: svn merge -c 1490294,1734635,1749403,1813116,1816179,1817598,1832198,1832200,1832277,1832317 ^/httpd/httpd/trunk .
-     +1: jailletc36,
+     +1: jailletc36, ylavic,
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
