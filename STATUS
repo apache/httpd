@@ -200,6 +200,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: https://svn.apache.org/r1828890
      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/hot-spare-2.4.patch
      +1: jhriggs, jim
+     ylavic: +1 with r1832500.
 
   *) ap_rgetline()+mod_proxy_http: Add and handle AP_GETLINE_NOSPC_EOL flag,
      fixes responses header thrown away on APR_ENOSPC, and allow their size to
