@@ -180,22 +180,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1828879 ^/httpd/httpd/trunk .
      +1: icing, jim, ylavic
 
-  *) mod_proxy: Do not restrict the maximum pool size for backend connections any
-     longer by the maximum number of threads per process and use a better default
-     if mod_http2 is loaded.
-     Trunk version of patch:
-      http://svn.apache.org/r1822849
-      http://svn.apache.org/r1822858
-      http://svn.apache.org/r1822878
-      http://svn.apache.org/r1822879
-      http://svn.apache.org/r1822883
-      http://svn.apache.org/r1828485
-     Changes in r1828493
-   Backport version for 2.4.x of patch:
-      Trunk version of patch works
-      svn merge -c 1822849,1822858,1822878,1822879,1822883,1828485 ^/httpd/httpd/trunk .
-   +1: rpluem, jim, ylavic
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
