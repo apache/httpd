@@ -130,12 +130,6 @@ AP_DECLARE(int) ap_start_lingering_close(conn_rec *c)
         return 1;
     }
     
-#ifdef NO_LINGCLOSE
-    ap_flush_conn(c); /* just close it */
-    apr_socket_close(csd);
-    return 1;
-#endif
-
     /* Close the connection, being careful to send out whatever is still
      * in our buffers.  If possible, try to avoid a hard close until the
      * client has ACKed our FIN and/or has stopped sending us data.
@@ -144,21 +138,20 @@ AP_DECLARE(int) ap_start_lingering_close(conn_rec *c)
     /* Send any leftover data to the client, but never try to again */
     ap_flush_conn(c);
 
-    if (c->aborted) {
-        apr_socket_close(csd);
-        return 1;
-    }
-
+#ifdef NO_LINGCLOSE
+    apr_socket_close(csd);
+    return 1;
+#else
     /* Shut down the socket for write, which will send a FIN
      * to the peer.
      */
-    if (apr_socket_shutdown(csd, APR_SHUTDOWN_WRITE) != APR_SUCCESS
-        || c->aborted) {
+    if (c->aborted
+            || apr_socket_shutdown(csd, APR_SHUTDOWN_WRITE) != APR_SUCCESS) {
         apr_socket_close(csd);
         return 1;
     }
-
     return 0;
+#endif
 }
 
 AP_DECLARE(void) ap_lingering_close(conn_rec *c)
