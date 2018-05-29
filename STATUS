@@ -222,7 +222,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1814465
      2.4.x patch: http://people.apache.org/~jorton/ap_suexec_jumbo.patch
          or svn merge -c 1341905,1342065,1341930,1345147,1344712,1814465 ^/httpd/httpd/trunk .
-     +1: jorton,
+     +1: jorton, ylavic,
 
   *) mod_ssl: Add "SSLPolicy" directive for Mozilla Security defined protocol settings.
      trunk patch: http://svn.apache.org/r1827760
