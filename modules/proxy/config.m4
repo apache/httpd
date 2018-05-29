@@ -70,7 +70,7 @@ APACHE_MODULE(proxy_balancer, Apache proxy BALANCER module.  Requires --enable-p
 APACHE_MODULE(proxy_express, mass reverse-proxy module. Requires --enable-proxy., , , most, , proxy)
 APACHE_MODULE(proxy_hcheck, [reverse-proxy health-check module. Requires --enable-proxy and --enable-watchdog.], , , most, , [proxy,watchdog])
 
-APR_ADDTO(INCLUDES, [-I\$(top_srcdir)/$modpath_current])
+APR_ADDTO(INCLUDES, [-I\$(top_srcdir)/$modpath_current -I\$(top_srcdir)/modules/http2])
 
 module_selection=$save_module_selection
 module_default=$save_module_default
