@@ -286,34 +286,6 @@ static int output_consumed_signal(h2_mplx *m, h2_task *task)
     return 0;
 }
 
-static void task_destroy(h2_mplx *m, h2_task *task)
-{
-    conn_rec *slave = NULL;
-    int reuse_slave = 0;
-    
-    slave = task->c;
-
-    if (m->s->keep_alive_max == 0 || slave->keepalives < m->s->keep_alive_max) {
-        reuse_slave = ((m->spare_slaves->nelts < (m->limit_active * 3 / 2))
-                       && !task->rst_error);
-    }
-    
-    if (slave) {
-        if (reuse_slave && slave->keepalive == AP_CONN_KEEPALIVE) {
-            h2_beam_log(task->output.beam, m->c, APLOG_DEBUG, 
-                        APLOGNO(03385) "h2_task_destroy, reuse slave");    
-            h2_task_destroy(task);
-            APR_ARRAY_PUSH(m->spare_slaves, conn_rec*) = slave;
-        }
-        else {
-            h2_beam_log(task->output.beam, m->c, APLOG_TRACE1, 
-                        "h2_task_destroy, destroy slave");    
-            slave->sbh = NULL;
-            h2_slave_destroy(slave);
-        }
-    }
-}
-
 static int stream_destroy_iter(void *ctx, void *val) 
 {   
     h2_mplx *m = ctx;
@@ -331,8 +303,42 @@ static int stream_destroy_iter(void *ctx, void *val)
     }
 
     if (stream->task) {
-        task_destroy(m, stream->task);
+        h2_task *task = stream->task;
+        conn_rec *slave;
+        int reuse_slave = 0;
+        
         stream->task = NULL;
+        slave = task->c;
+        if (slave) {
+            /* On non-serialized requests, the IO logging has not accounted for any
+             * meta data send over the network: response headers and h2 frame headers. we
+             * counted this on the stream and need to add this now.
+             * This is supposed to happen before the EOR bucket triggers the
+             * logging of the transaction. *fingers crossed* */
+            if (task->request && !task->request->serialize && h2_task_logio_add_bytes_out) {
+                apr_off_t unaccounted = stream->out_frame_octets - stream->out_data_octets;
+                if (unaccounted > 0) {
+                    h2_task_logio_add_bytes_out(slave, unaccounted);
+                }
+            }
+        
+            if (m->s->keep_alive_max == 0 || slave->keepalives < m->s->keep_alive_max) {
+                reuse_slave = ((m->spare_slaves->nelts < (m->limit_active * 3 / 2))
+                               && !task->rst_error);
+            }
+            
+            if (reuse_slave && slave->keepalive == AP_CONN_KEEPALIVE) {
+                h2_beam_log(task->output.beam, m->c, APLOG_DEBUG, 
+                            APLOGNO(03385) "h2_task_destroy, reuse slave");    
+                h2_task_destroy(task);
+                APR_ARRAY_PUSH(m->spare_slaves, conn_rec*) = slave;
+            }
+            else {
+                h2_beam_log(task->output.beam, m->c, APLOG_TRACE1, 
+                            "h2_task_destroy, destroy slave");    
+                h2_slave_destroy(slave);
+            }
+        }
     }
     h2_stream_destroy(stream);
     return 0;

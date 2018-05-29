@@ -51,6 +51,9 @@ extern const char *H2_MAGIC_TOKEN;
 /* Max data size to write so it fits inside a TLS record */
 #define H2_DATA_CHUNK_SIZE          ((16*1024) - 100 - 9) 
 
+/* Size of the frame header itself in HTTP/2 */
+#define H2_FRAME_HDR_LEN            9
+ 
 /* Maximum number of padding bytes in a frame, rfc7540 */
 #define H2_MAX_PADLEN               256
 /* Initial default window size, RFC 7540 ch. 6.5.2 */
@@ -137,6 +140,7 @@ struct h2_request {
     apr_time_t request_time;
     unsigned int chunked : 1;   /* iff requst body needs to be forwarded as chunked */
     unsigned int serialize : 1; /* iff this request is written in HTTP/1.1 serialization */
+    apr_off_t raw_bytes;        /* RAW network bytes that generated this request - if known. */
 };
 
 typedef struct h2_headers h2_headers;
@@ -145,6 +149,7 @@ struct h2_headers {
     int         status;
     apr_table_t *headers;
     apr_table_t *notes;
+    apr_off_t   raw_bytes;      /* RAW network bytes that generated this request - if known. */
 };
 
 typedef apr_status_t h2_io_data_cb(void *ctx, const char *data, apr_off_t len);

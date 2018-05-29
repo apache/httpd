@@ -302,8 +302,6 @@ conn_rec *h2_slave_create(conn_rec *master, int slave_id, apr_pool_t *parent)
     c->log                    = NULL;
     c->log_id                 = apr_psprintf(pool, "%ld-%d", 
                                              master->id, slave_id);
-    /* Simulate that we had already a request on this connection. */
-    c->keepalives             = 1;
     c->aborted                = 0;
     /* We cannot install the master connection socket on the slaves, as
      * modules mess with timeouts/blocking of the socket, with
@@ -338,6 +336,14 @@ void h2_slave_destroy(conn_rec *slave)
 
 apr_status_t h2_slave_run_pre_connection(conn_rec *slave, apr_socket_t *csd)
 {
-    return ap_run_pre_connection(slave, csd);
+    if (slave->keepalives == 0) {
+        /* Simulate that we had already a request on this connection. Some
+         * hooks trigger special behaviour when keepalives is 0. 
+         * (Not necessarily in pre_connection, but later. Set it here, so it
+         * is in place.) */
+        slave->keepalives = 1;
+        return ap_run_pre_connection(slave, csd);
+    }
+    return APR_SUCCESS;
 }
 

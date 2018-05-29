@@ -221,7 +221,8 @@ static apr_status_t close_input(h2_stream *stream)
             stream->in_buffer = apr_brigade_create(stream->pool, c->bucket_alloc);
         }
         
-        r = h2_headers_create(HTTP_OK, stream->trailers, NULL, stream->pool);
+        r = h2_headers_create(HTTP_OK, stream->trailers, NULL, 
+            stream->in_trailer_octets, stream->pool);
         stream->trailers = NULL;        
         b = h2_bucket_headers_create(c->bucket_alloc, r);
         APR_BRIGADE_INSERT_TAIL(stream->in_buffer, b);
@@ -369,7 +370,7 @@ static void set_policy_for(h2_stream *stream, h2_request *r)
     r->serialize = h2_config_geti(stream->session->config, H2_CONF_SER_HEADERS);
 }
 
-apr_status_t h2_stream_send_frame(h2_stream *stream, int ftype, int flags)
+apr_status_t h2_stream_send_frame(h2_stream *stream, int ftype, int flags, size_t frame_len)
 {
     apr_status_t status = APR_SUCCESS;
     int new_state, eos = 0;
@@ -381,7 +382,9 @@ apr_status_t h2_stream_send_frame(h2_stream *stream, int ftype, int flags)
         AP_DEBUG_ASSERT(new_state > S_XXX);
         return transit(stream, new_state);
     }
-    
+
+    ++stream->out_frames;
+    stream->out_frame_octets += frame_len;
     switch (ftype) {
         case NGHTTP2_DATA:
             eos = (flags & NGHTTP2_FLAG_END_STREAM);
@@ -395,7 +398,7 @@ apr_status_t h2_stream_send_frame(h2_stream *stream, int ftype, int flags)
                 /* start pushed stream */
                 ap_assert(stream->request == NULL);
                 ap_assert(stream->rtmp != NULL);
-                status = h2_request_end_headers(stream->rtmp, stream->pool, 1);
+                status = h2_request_end_headers(stream->rtmp, stream->pool, 1, 0);
                 if (status != APR_SUCCESS) {
                     return status;
                 }
@@ -416,7 +419,7 @@ apr_status_t h2_stream_send_frame(h2_stream *stream, int ftype, int flags)
     return status;
 }
 
-apr_status_t h2_stream_recv_frame(h2_stream *stream, int ftype, int flags)
+apr_status_t h2_stream_recv_frame(h2_stream *stream, int ftype, int flags, size_t frame_len)
 {
     apr_status_t status = APR_SUCCESS;
     int new_state, eos = 0;
@@ -441,6 +444,7 @@ apr_status_t h2_stream_recv_frame(h2_stream *stream, int ftype, int flags)
                 if (!eos) {
                     h2_stream_rst(stream, H2_ERR_PROTOCOL_ERROR);
                 }
+                stream->in_trailer_octets += frame_len;
             }
             else {
                 /* request HEADER */
@@ -452,7 +456,7 @@ apr_status_t h2_stream_recv_frame(h2_stream *stream, int ftype, int flags)
                      * to abort the connection here, since this is clearly a protocol error */
                     return APR_EINVAL;
                 }
-                status = h2_request_end_headers(stream->rtmp, stream->pool, eos);
+                status = h2_request_end_headers(stream->rtmp, stream->pool, eos, frame_len);
                 if (status != APR_SUCCESS) {
                     return status;
                 }
@@ -629,7 +633,7 @@ apr_status_t h2_stream_set_request_rec(h2_stream *stream,
         stream->rtmp = req;
         /* simulate the frames that led to this */
         return h2_stream_recv_frame(stream, NGHTTP2_HEADERS, 
-                                    NGHTTP2_FLAG_END_STREAM);
+                                    NGHTTP2_FLAG_END_STREAM, 0);
     }
     return status;
 }
