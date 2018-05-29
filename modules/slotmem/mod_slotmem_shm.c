@@ -240,7 +240,7 @@ static apr_status_t restore_slotmem(sharedslotdesc_t *desc,
                                     rv = APR_SUCCESS;
                                 }
                             }
-                            else if (rv == APR_SUCCESS || rv == APR_EOF) {
+                            else {
                                 rv = APR_INCOMPLETE;
                             }
                         }
@@ -248,7 +248,7 @@ static apr_status_t restore_slotmem(sharedslotdesc_t *desc,
                             rv = APR_EOF;
                         }
                     }
-                    else if (rv == APR_SUCCESS || rv == APR_EOF) {
+                    else {
                         rv = APR_INCOMPLETE;
                     }
                 }
@@ -266,7 +266,7 @@ static apr_status_t restore_slotmem(sharedslotdesc_t *desc,
                     rv = APR_SUCCESS;
                 }
             }
-            else if (rv == APR_SUCCESS || rv == APR_EOF) {
+            else {
                 rv = APR_INCOMPLETE;
             }
             if (rv == APR_INCOMPLETE) {
