@@ -152,15 +152,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
               config, but I think the risk is minimal/nonexistent and
               acceptable. +1
 
-  *) Some easy proposals:
-        - core: Avoid a compiler warning when NO_LINGCLOSE is used.
-                Simplify code.
-        - mod_ldap: Fix format warning
-     trunk patch: http://svn.apache.org/r1703248
-                  http://svn.apache.org/r1827366
-     2.4.x patch: svn merge -c 1703248,1827366 ^/httpd/httpd/trunk .
-     +1: jailletc36, jim, ylavic
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
