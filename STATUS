@@ -140,6 +140,46 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1829513 ^/httpd/httpd/trunk .
      +1: jorton, jim, ylavic
 
+  *) core: use strncmp in check_errorlog_dir and core_dump_config when checking
+     if the ErrorLog directive is configured with the 'syslog' prefix. PR 62102
+     trunk patch: none, as far as I can see the code in trunk diverged too much
+                  due to the code in STALLED for ap_errorlog_provider.
+     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/core-check_errorlog_dir_syslog.patch
+     +1: elukey, jhriggs, ylavic
+     jhriggs: As discussed on dev@, there is a potential regression/config-break
+              with this if someone uses "SYSLOG" rather than "syslog" in the
+              config, but I think the risk is minimal/nonexistent and
+              acceptable. +1
+
+  *) Some easy proposals:
+        - core: Avoid a compiler warning when NO_LINGCLOSE is used.
+                Simplify code.
+        - mod_ldap: Fix format warning
+     trunk patch: http://svn.apache.org/r1703248
+                  http://svn.apache.org/r1827366
+     2.4.x patch: svn merge -c 1703248,1827366 ^/httpd/httpd/trunk .
+     +1: jailletc36, jim, ylavic
+
+  *) mod_http2:
+     - normalize trace2 logging of http2 unencrypted connection upgrades.
+     - accurate reporting of h2 data input/output per request via mod_logio. Fixes
+       an issue where output sizes where counted n-times on reused slave connections.
+     - code cleanups: instrumenting bbout logging, using APR_OFF_T_FMT where needed
+     trunk patch: http://svn.apache.org/r1828210
+                  http://svn.apache.org/r1828232
+                  http://svn.apache.org/r1828687
+                  http://svn.apache.org/r1826687
+                  http://svn.apache.org/r1827166
+     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/h2-1.10.17.patch
+     Resetting votes after latest additions
+     +1: icing, jim, ylavic
+
+  *) mod_http2: fix unnecessary timeout waits in case streams are aborted.
+     trunk patch: http://svn.apache.org/r1828879
+     2.4.x patch: svn merge -c 1828879 ^/httpd/httpd/trunk .
+     +1: icing, jim, ylavic
+
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -214,51 +254,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       svn merge -c 1822849,1822858,1822878,1822879,1822883,1828485 ^/httpd/httpd/trunk .
    +1: rpluem, jim
 
-  *) Some easy proposals:
-        - core: Avoid a compiler warning when NO_LINGCLOSE is used.
-                Simplify code.
-        - mod_ldap: Fix format warning
-     trunk patch: http://svn.apache.org/r1703248
-                  http://svn.apache.org/r1827366
-     2.4.x patch: svn merge -c 1703248,1827366 ^/httpd/httpd/trunk .
-     +1: jailletc36, jim, ylavic
-
-  *) mod_http2:
-     - normalize trace2 logging of http2 unencrypted connection upgrades.
-     - accurate reporting of h2 data input/output per request via mod_logio. Fixes
-       an issue where output sizes where counted n-times on reused slave connections.
-     - code cleanups: instrumenting bbout logging, using APR_OFF_T_FMT where needed
-     trunk patch: http://svn.apache.org/r1828210
-                  http://svn.apache.org/r1828232
-                  http://svn.apache.org/r1828687
-                  http://svn.apache.org/r1826687
-                  http://svn.apache.org/r1827166
-     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/h2-1.10.17.patch
-     Resetting votes after latest additions
-     +1: icing, jim, ylavic
-
-  *) mod_http2: fix unnecessary timeout waits in case streams are aborted.
-     trunk patch: http://svn.apache.org/r1828879
-     2.4.x patch: svn merge -c 1828879 ^/httpd/httpd/trunk .
-     +1: icing, jim, ylavic
-
   *) mod_proxy_balancer: Add hot spare member type and corresponding flag (R). Hot spare members are
      used as drop-in replacements for unusable workers in the same load balancer set. This differs
      from hot standbys which are only used when all workers in a set are unusable. PR 61140.
      trunk patch: https://svn.apache.org/r1828890
      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/hot-spare-2.4.patch
      +1: jhriggs, jim
-
-  *) core: use strncmp in check_errorlog_dir and core_dump_config when checking
-     if the ErrorLog directive is configured with the 'syslog' prefix. PR 62102
-     trunk patch: none, as far as I can see the code in trunk diverged too much
-                  due to the code in STALLED for ap_errorlog_provider.
-     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/core-check_errorlog_dir_syslog.patch
-     +1: elukey, jhriggs, ylavic
-     jhriggs: As discussed on dev@, there is a potential regression/config-break
-              with this if someone uses "SYSLOG" rather than "syslog" in the
-              config, but I think the risk is minimal/nonexistent and
-              acceptable. +1
 
   *) ap_rgetline()+mod_proxy_http: Add and handle AP_GETLINE_NOSPC_EOL flag,
      fixes responses header thrown away on APR_ENOSPC, and allow their size to
