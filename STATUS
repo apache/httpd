@@ -175,11 +175,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      Resetting votes after latest additions
      +1: icing, jim, ylavic
 
-  *) mod_http2: fix unnecessary timeout waits in case streams are aborted.
-     trunk patch: http://svn.apache.org/r1828879
-     2.4.x patch: svn merge -c 1828879 ^/httpd/httpd/trunk .
-     +1: icing, jim, ylavic
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
