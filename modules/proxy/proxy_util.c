@@ -24,6 +24,8 @@
 #include "ajp.h"
 #include "scgi.h"
 
+#include "mod_http2.h" /* for http2_get_num_workers() */
+
 #if APR_HAVE_UNISTD_H
 #include <unistd.h>         /* for getpid() */
 #endif
@@ -1770,8 +1772,9 @@ PROXY_DECLARE(apr_status_t) ap_proxy_share_worker(proxy_worker *worker, proxy_wo
 
 PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, server_rec *s, apr_pool_t *p)
 {
+    APR_OPTIONAL_FN_TYPE(http2_get_num_workers) *get_h2_num_workers;
     apr_status_t rv = APR_SUCCESS;
-    int mpm_threads;
+    int max_threads, minw, maxw;
 
     if (worker->s->status & PROXY_WORKER_INITIALIZED) {
         /* The worker is already initialized */
@@ -1795,11 +1798,26 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
             worker->s->is_address_reusable = 1;
         }
 
-        ap_mpm_query(AP_MPMQ_MAX_THREADS, &mpm_threads);
-        if (mpm_threads > 1) {
-            /* Set hard max to no more then mpm_threads */
-            if (worker->s->hmax == 0 || worker->s->hmax > mpm_threads) {
-                worker->s->hmax = mpm_threads;
+        /*
+         * When mod_http2 is loaded we might have more threads since it has
+         * its own pool of processing threads.
+         */
+        ap_mpm_query(AP_MPMQ_MAX_THREADS, &max_threads);
+        get_h2_num_workers = APR_RETRIEVE_OPTIONAL_FN(http2_get_num_workers);
+        if (get_h2_num_workers) {
+            get_h2_num_workers(s, &minw, &maxw);
+            /* So now the max is:
+             *   max_threads-1 threads for HTTP/1 each requiring one connection
+             *   + one thread for HTTP/2 requiring maxw connections
+             */
+            max_threads = max_threads - 1 + maxw;
+        }
+        if (max_threads > 1) {
+            /* Default hmax is max_threads to scale with the load and never
+             * wait for an idle connection to proceed.
+             */
+            if (worker->s->hmax == 0) {
+                worker->s->hmax = max_threads;
             }
             if (worker->s->smax == -1 || worker->s->smax > worker->s->hmax) {
                 worker->s->smax = worker->s->hmax;

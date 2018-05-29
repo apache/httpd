@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.34
 
+  *) mod_proxy: Do not restrict the maximum pool size for backend connections
+     any longer by the maximum number of threads per process and use a better
+     default if mod_http2 is loaded.
+     [Yann Ylavic, Ruediger Pluem, Stefan Eissing, Gregg Smith]
+
   *) core: Preserve the original HTTP request method in the '%<m' LogFormat
      when an path-based ErrorDocument is used.  PR 62186. 
      [Micha Lenk <micha lenk.info>]
