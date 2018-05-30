@@ -923,6 +923,7 @@ apr_status_t h2_beam_send(h2_bucket_beam *beam,
             while (!APR_BRIGADE_EMPTY(sender_bb) && APR_SUCCESS == rv) {
                 if (space_left <= 0) {
                     report_prod_io(beam, force_report, &bl);
+                    r_purge_sent(beam);
                     rv = wait_not_full(beam, block, &space_left, &bl);
                     if (APR_SUCCESS != rv) {
                         break;
