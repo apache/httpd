@@ -135,17 +135,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) suexec: Support logging to syslog and Linux capabilities.
-     trunk patch: http://svn.apache.org/r1341905
-                  http://svn.apache.org/r1341930
-                  http://svn.apache.org/r1342065
-                  http://svn.apache.org/r1345147
-                  http://svn.apache.org/r1344712
-                  http://svn.apache.org/r1814465
-     2.4.x patch: http://people.apache.org/~jorton/ap_suexec_jumbo.patch
-         or svn merge -c 1341905,1342065,1341930,1345147,1344712,1814465 ^/httpd/httpd/trunk .
-     +1: jorton, ylavic, jim
-
   *) mod_http2: Restore keepalive timing of v1.10.16, see https://github.com/icing/mod_h2/issues/160.
      trunk patch: http://svn.apache.org/1830562
      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/h2_keepalive_restore.patch

@@ -744,7 +744,26 @@ APACHE_HELP_STRING(--with-suexec-gidmin,Minimal allowed GID),[
 
 AC_ARG_WITH(suexec-logfile,
 APACHE_HELP_STRING(--with-suexec-logfile,Set the logfile),[
-  AC_DEFINE_UNQUOTED(AP_LOG_EXEC, "$withval", [SuExec log file] ) ] )
+  if test "x$withval" = "xyes"; then
+    AC_MSG_ERROR([log filename required for --with-suexec-logfile option])
+  elif test "x$withval" != "xno"; then
+    AC_DEFINE_UNQUOTED(AP_LOG_EXEC, "$withval", [SuExec log file])
+  fi
+])
+
+AC_ARG_WITH(suexec-syslog,
+APACHE_HELP_STRING(--with-suexec-syslog,Use syslog for suexec logging),[
+  if test $withval = "yes"; then
+    if test "x${with_suexec_logfile}" != "xno"; then
+      AC_MSG_NOTICE([hint: use "--without-suexec-logfile --with-suexec-syslog"])
+      AC_MSG_ERROR([suexec does not support both logging to file and syslog])
+    fi
+    AC_CHECK_FUNCS([vsyslog], [], [
+       AC_MSG_ERROR([cannot support syslog from suexec without vsyslog()])])
+    AC_DEFINE(AP_LOG_SYSLOG, 1, [SuExec log to syslog])
+  fi    
+])
+
 
 AC_ARG_WITH(suexec-safepath,
 APACHE_HELP_STRING(--with-suexec-safepath,Set the safepath),[
@@ -753,6 +772,15 @@ APACHE_HELP_STRING(--with-suexec-safepath,Set the safepath),[
 AC_ARG_WITH(suexec-umask,
 APACHE_HELP_STRING(--with-suexec-umask,umask for suexec'd process),[
   AC_DEFINE_UNQUOTED(AP_SUEXEC_UMASK, 0$withval, [umask for suexec'd process] ) ] )
+
+INSTALL_SUEXEC=setuid
+AC_ARG_ENABLE([suexec-capabilities], 
+APACHE_HELP_STRING(--enable-suexec-capabilities,Use Linux capability bits not setuid root suexec), [
+INSTALL_SUEXEC=caps
+AC_DEFINE(AP_SUEXEC_CAPABILITIES, 1, 
+          [Enable if suexec is installed with Linux capabilities, not setuid])
+])
+APACHE_SUBST(INSTALL_SUEXEC)
 
 dnl APR should go after the other libs, so the right symbols can be picked up
 if test x${apu_found} != xobsolete; then
