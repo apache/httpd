@@ -58,6 +58,10 @@
 #include <grp.h>
 #endif
 
+#ifdef AP_LOG_SYSLOG
+#include <syslog.h>
+#endif
+
 #if defined(PATH_MAX)
 #define AP_MAXPATH PATH_MAX
 #elif defined(MAXPATHLEN)
@@ -69,7 +73,20 @@
 #define AP_ENVBUF 256
 
 extern char **environ;
+
+#ifdef AP_LOG_SYSLOG
+/* Syslog support. */
+#if !defined(AP_LOG_FACILITY) && defined(LOG_AUTHPRIV)
+#define AP_LOG_FACILITY LOG_AUTHPRIV
+#elif !defined(AP_LOG_FACILITY)
+#define AP_LOG_FACILITY LOG_AUTH
+#endif
+
+static int log_open;
+#else
+/* Non-syslog support. */
 static FILE *log = NULL;
+#endif
 
 static const char *const safe_env_lst[] =
 {
@@ -138,7 +155,14 @@ static void err_output(int is_error, const char *fmt, va_list ap)
 
 static void err_output(int is_error, const char *fmt, va_list ap)
 {
-#ifdef AP_LOG_EXEC
+#if defined(AP_LOG_SYSLOG)
+    if (!log_open) {
+        openlog("suexec", LOG_PID, AP_LOG_FACILITY);
+        log_open = 1;
+    }
+
+    vsyslog(is_error ? LOG_ERR : LOG_INFO, fmt, ap);
+#elif defined(AP_LOG_EXEC)
     time_t timevar;
     struct tm *lt;
 
@@ -300,7 +324,9 @@ int main(int argc, char *argv[])
 #ifdef AP_HTTPD_USER
         fprintf(stderr, " -D AP_HTTPD_USER=\"%s\"\n", AP_HTTPD_USER);
 #endif
-#ifdef AP_LOG_EXEC
+#if defined(AP_LOG_SYSLOG)
+        fprintf(stderr, " -D AP_LOG_SYSLOG\n");
+#elif defined(AP_LOG_EXEC)
         fprintf(stderr, " -D AP_LOG_EXEC=\"%s\"\n", AP_LOG_EXEC);
 #endif
 #ifdef AP_SAFE_PATH
@@ -603,6 +629,12 @@ int main(int argc, char *argv[])
 #endif /* AP_SUEXEC_UMASK */
 
     /* Be sure to close the log file so the CGI can't mess with it. */
+#ifdef AP_LOG_SYSLOG
+    if (log_open) {
+        closelog();
+        log_open = 0;
+    }
+#else
     if (log != NULL) {
 #if APR_HAVE_FCNTL_H
         /*
@@ -624,6 +656,7 @@ int main(int argc, char *argv[])
         log = NULL;
 #endif
     }
+#endif
 
     /*
      * Execute the command, replacing our image with its own.
