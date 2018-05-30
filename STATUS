@@ -135,6 +135,28 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) suexec: Support logging to syslog and Linux capabilities.
+     trunk patch: http://svn.apache.org/r1341905
+                  http://svn.apache.org/r1341930
+                  http://svn.apache.org/r1342065
+                  http://svn.apache.org/r1345147
+                  http://svn.apache.org/r1344712
+                  http://svn.apache.org/r1814465
+     2.4.x patch: http://people.apache.org/~jorton/ap_suexec_jumbo.patch
+         or svn merge -c 1341905,1342065,1341930,1345147,1344712,1814465 ^/httpd/httpd/trunk .
+     +1: jorton, ylavic, jim
+
+  *) mod_http2: Restore keepalive timing of v1.10.16, see https://github.com/icing/mod_h2/issues/160.
+     trunk patch: http://svn.apache.org/1830562
+     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/h2_keepalive_restore.patch
+     +1: icing, ylavic, jim
+
+  *) mod_http2: adding regular memory cleanup when transferring large response bodies. This
+     reduces memory footprint and avoids memory exhaustion when transferring large files
+     on 32-bit architectures. Fixes PR 62325.
+     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/h2_beam_purge.patch
+     +1: icing, ylavic, jim
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -168,17 +190,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: jorton
      ylavic: same as dev@; since SetEnv* are usable from htaccess, wouldn't
              we open a door here (unconditionally)?
-
-  *) suexec: Support logging to syslog and Linux capabilities.
-     trunk patch: http://svn.apache.org/r1341905
-                  http://svn.apache.org/r1341930
-                  http://svn.apache.org/r1342065
-                  http://svn.apache.org/r1345147
-                  http://svn.apache.org/r1344712
-                  http://svn.apache.org/r1814465
-     2.4.x patch: http://people.apache.org/~jorton/ap_suexec_jumbo.patch
-         or svn merge -c 1341905,1342065,1341930,1345147,1344712,1814465 ^/httpd/httpd/trunk .
-     +1: jorton, ylavic, jim
 
   *) mod_ssl: Add "SSLPolicy" directive for Mozilla Security defined protocol settings.
      The change is small, has many revisions since it went back and forth a buit from
@@ -218,12 +229,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   (convenient patch, otherwise trunk works modulo CHANGES/MMN)
      +1: ylavic,
 
-  *) mod_http2: adding regular memory cleanup when transferring large response bodies. This
-     reduces memory footprint and avoids memory exhaustion when transferring large files
-     on 32-bit architectures. Fixes PR 62325.
-     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/h2_beam_purge.patch
-     +1: icing, ylavic, jim
-
   *) mod_xml2enc: Fix forwarding of error metadata/responses. PR 62180.
      trunk patch: http://svn.apache.org/r1829038
                   http://svn.apache.org/r1829039
@@ -231,11 +236,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1829038,1829039,1830523 ^/httpd/httpd/trunk .
                   (trunk works modulo CHANGES))
      +1: ylavic,
-
-  *) mod_http2: Restore keepalive timing of v1.10.16, see https://github.com/icing/mod_h2/issues/160.
-     trunk patch: http://svn.apache.org/1830562
-     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/h2_keepalive_restore.patch
-     +1: icing, ylavic, jim
 
   *) core: In ONE_PROCESS/debug mode, cleanup everything when exiting.
      trunk patch: http://svn.apache.org/r1822537
