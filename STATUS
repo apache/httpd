@@ -181,6 +181,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: jorton, ylavic,
 
   *) mod_ssl: Add "SSLPolicy" directive for Mozilla Security defined protocol settings.
+     The change is small, has many revisions since it went back and forth a buit from
+     a new definition thing back to a fixes set of presets. Look at the patch first.
      trunk patch: http://svn.apache.org/r1827760
                   http://svn.apache.org/r1827561
                   http://svn.apache.org/r1818030
