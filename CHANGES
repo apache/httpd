@@ -29,6 +29,9 @@ Changes with Apache 2.4.34
   *) mod_http2: Fix unnecessary timeout waits in case streams are aborted.
      [Stefan Eissing]
 
+  *) mod_http2: restoring the v1.10.16 keepalive timeout behaviour of mod_http2.
+     [Stefan Eissing]
+
   *) mod_proxy: Do not restrict the maximum pool size for backend connections
      any longer by the maximum number of threads per process and use a better
      default if mod_http2 is loaded.
