@@ -139,10 +139,7 @@ RELEASE SHOWSTOPPERS:
                   https://svn.apache.org/r1832581
      2.4.x patch: trunk works (modulo CHANGES)
                   svn merge -c 1832580,1832581 ^/httpd/httpd/trunk .
-     +1: ylavic
-     -0: wrowe
-     (See PR62220 for discussion)
-     Counterproposal, revert r1824248 which introduced this regression.
+     +1: ylavic, wrowe
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
