@@ -35,9 +35,6 @@ Changes with Apache 2.5.1
   *) core: In ONE_PROCESS/debug mode, cleanup everything when exiting.
      [Yann Ylavic]
 
-  *) mod_http2: restoring the v1.10.16 keepalive timeout behavioud of mod_http2 (to be verified).
-     [Stefan Eissing]
-
   *) mod_http2: adding an abort function to slave connections' pools, so out-of-memory
      events lead to a control process abort, as on HTTP/1.x connections. [Stefan Eissing]
   
@@ -60,11 +57,6 @@ Changes with Apache 2.5.1
   *) mod_proxy_http: Add new worker parameter 'responsefieldsize' to
      allow maximum HTTP response header size to be increased past 8192 
      bytes.  PR62199.  [Hank Ibell <hwibell gmail.com>]
-
-  *) mod_proxy_balancer: Add hot spare member type and corresponding flag (R). Hot spare members are
-     used as drop-in replacements for unusable workers in the same load balancer set. This differs
-     from hot standbys which are only used when all workers in a set are unusable. PR 61140. [Jim
-     Riggs]
 
   *) mod_logio: Add LogIOTrackTTFU and %^FU logformat to log the time
      difference between request start and last request body byte read (finished upload).
@@ -627,14 +619,6 @@ Changes with Apache 2.5.0-alpha
      - mod_ldap: shared memory cache
      - mod_socache_shmcb, mod_socache_dbm: shared memory or dbm for cache
      [Jeff Trawick]
-
-  *) suexec: Add --enable-suexec-capabilites support on Linux, to use
-     setuid/setgid capability bits rather than a setuid root binary.
-     [Joe Orton]
-
-  *) suexec: Add support for logging to syslog as an alternative to logging
-     to a file; configure --without-suexec-logfile --with-suexec-syslog.  
-     [Joe Orton]
 
   *) mod_ssl: Add support for TLS Next Protocol Negotiation.  PR 52210.
      [Matthew Steele <mdsteele google.com>]
