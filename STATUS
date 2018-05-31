@@ -155,15 +155,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      jailletc36: There should be a compatibility note for the new directives.
                  (done in r1828478)
 
-  *) mod_proxy_balancer: Add hot spare member type and corresponding flag (R). Hot spare members are
-     used as drop-in replacements for unusable workers in the same load balancer set. This differs
-     from hot standbys which are only used when all workers in a set are unusable. PR 61140.
-     trunk patch: https://svn.apache.org/r1828890
-     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/hot-spare-2.4.patch
-     +1: jhriggs, jim
-     ylavic: +1 with r1832500.
-
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 

@@ -307,6 +307,7 @@ struct proxy_conn_pool {
 #define PROXY_WORKER_HOT_STANDBY    0x0100
 #define PROXY_WORKER_FREE           0x0200
 #define PROXY_WORKER_HC_FAIL        0x0400
+#define PROXY_WORKER_HOT_SPARE      0x0800
 
 /* worker status flags */
 #define PROXY_WORKER_INITIALIZED_FLAG    'O'
@@ -320,6 +321,7 @@ struct proxy_conn_pool {
 #define PROXY_WORKER_HOT_STANDBY_FLAG    'H'
 #define PROXY_WORKER_FREE_FLAG           'F'
 #define PROXY_WORKER_HC_FAIL_FLAG        'C'
+#define PROXY_WORKER_HOT_SPARE_FLAG      'R'
 
 #define PROXY_WORKER_NOT_USABLE_BITMAP ( PROXY_WORKER_IN_SHUTDOWN | \
 PROXY_WORKER_DISABLED | PROXY_WORKER_STOPPED | PROXY_WORKER_IN_ERROR | \
@@ -329,6 +331,8 @@ PROXY_WORKER_HC_FAIL )
 #define PROXY_WORKER_IS_INITIALIZED(f)  ( (f)->s->status &  PROXY_WORKER_INITIALIZED )
 
 #define PROXY_WORKER_IS_STANDBY(f)   ( (f)->s->status &  PROXY_WORKER_HOT_STANDBY )
+
+#define PROXY_WORKER_IS_SPARE(f)   ( (f)->s->status &  PROXY_WORKER_HOT_SPARE )
 
 #define PROXY_WORKER_IS_USABLE(f)   ( ( !( (f)->s->status & PROXY_WORKER_NOT_USABLE_BITMAP) ) && \
   PROXY_WORKER_IS_INITIALIZED(f) )
@@ -823,6 +827,23 @@ PROXY_DECLARE(apr_status_t) ap_proxy_share_balancer(proxy_balancer *balancer,
 PROXY_DECLARE(apr_status_t) ap_proxy_initialize_balancer(proxy_balancer *balancer,
                                                          server_rec *s,
                                                          apr_pool_t *p);
+
+typedef int (proxy_is_best_callback_fn_t)(proxy_worker *current, proxy_worker *prev_best, void *baton);
+
+/**
+ * Retrieve the best worker in a balancer for the current request
+ * @param balancer balancer for which to find the best worker
+ * @param r        current request record
+ * @param is_best  a callback function provide by the lbmethod
+ *                 that determines if the current worker is best
+ * @param baton    an lbmethod-specific context pointer (baton)
+ *                 passed to the is_best callback
+ * @return         the best worker to be used for the request
+ */
+PROXY_DECLARE(proxy_worker *) ap_proxy_balancer_get_best_worker(proxy_balancer *balancer,
+                                                                request_rec *r,
+                                                                proxy_is_best_callback_fn_t *is_best,
+                                                                void *baton);
 
 /**
  * Find the shm of the worker as needed

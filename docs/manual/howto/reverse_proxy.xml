@@ -182,20 +182,41 @@ ProxyPassReverse "/images"  "balancer://myset/"
     <title>Failover</title>
 
     <p>
-      You can also fine-tune various failover scenarios, detailing which
-      workers and even which balancers should accessed in such cases. For
-      example, the below setup implements 2 failover cases: In the first,
-      <code>http://hstandby.example.com:8080</code> is only sent traffic
-      if all other workers in the <em>myset</em> balancer are not available.
-      If that worker itself is not available, only then will the
-      <code>http://bkup1.example.com:8080</code> and <code>http://bkup2.example.com:8080</code>
-      workers be brought into rotation:
+      You can also fine-tune various failover scenarios, detailing which workers
+      and even which balancers should be accessed in such cases. For example, the
+      below setup implements three failover cases:
+    </p>
+    <ol>
+      <li>
+        <code>http://spare1.example.com:8080</code> and
+        <code>http://spare2.example.com:8080</code> are only sent traffic if one
+        or both of <code>http://www2.example.com:8080</code> or
+        <code>http://www3.example.com:8080</code> is unavailable. (One spare
+        will be used to replace one unusable member of the same balancer set.)
+      </li>
+      <li>
+        <code>http://hstandby.example.com:8080</code> is only sent traffic if
+        all other workers in balancer set <code>0</code> are not available.
+      </li>
+      <li>
+        If all load balancer set <code>0</code> workers, spares, and the standby
+        are unavailable, only then will the
+        <code>http://bkup1.example.com:8080</code> and
+        <code>http://bkup2.example.com:8080</code> workers from balancer set
+        <code>1</code> be brought into rotation.
+      </li>
+    </ol>
+    <p>
+      Thus, it is possible to have one or more hot spares and hot standbys for
+      each load balancer set.
     </p>
 
     <highlight language="config">
 &lt;Proxy balancer://myset&gt;
     BalancerMember http://www2.example.com:8080
     BalancerMember http://www3.example.com:8080 loadfactor=3 timeout=1
+    BalancerMember http://spare1.example.com:8080 status=+R
+    BalancerMember http://spare2.example.com:8080 status=+R
     BalancerMember http://hstandby.example.com:8080 status=+H
     BalancerMember http://bkup1.example.com:8080 lbset=1
     BalancerMember http://bkup2.example.com:8080 lbset=1
@@ -207,11 +228,12 @@ ProxyPassReverse "/images/"  "balancer://myset/"
     </highlight>
 
     <p>
-      The magic of this failover setup is setting <code>http://hstandby.example.com:8080</code>
-      with the <code>+H</code> status flag, which puts it in <em>hot standby</em> mode,
-      and making the 2 <code>bkup#</code> servers part of the #1 load balancer set (the
-      default set is 0); for failover, hot standbys (if they exist) are used 1st, when all regular
-      workers are unavailable; load balancer sets are always tried lowest number first.
+      For failover, hot spares are used as replacements for unusable workers in
+      the same load balancer set. A worker is considered unusable if it is
+      draining, stopped, or otherwise in an error/failed state. Hot standbys are
+      used if all workers and spares in the load balancer set are
+      unavailable. Load balancer sets (with their respective hot spares and
+      standbys) are always tried in order from lowest to highest.
     </p>
 
   </section>
@@ -301,8 +323,12 @@ ProxyPassReverse "/images/"  "balancer://myset/"
         <tr><td><code>S</code></td><td><em>Stop</em></td><td>Worker is administratively stopped; will not accept requests
                     and will not be automatically retried</td></tr>
         <tr><td><code>I</code></td><td><em>Ign</em></td><td>Worker is in ignore-errors mode and will always be considered available.</td></tr>
+        <tr><td><code>R</code></td><td><em>Spar</em></td><td>Worker is a hot spare. For each worker in a given lbset that is unusable
+                    (draining, stopped, in error, etc.), a usable hot spare with the same lbset will be used in
+                    its place. Hot spares can help ensure that a specific number of workers are always available
+                    for use by a balancer.</td></tr>
         <tr><td><code>H</code></td><td><em>Stby</em></td><td>Worker is in hot-standby mode and will only be used if no other
-                    viable workers are available.</td></tr>
+                    viable workers or spares are available in the balancer set.</td></tr>
         <tr><td><code>E</code></td><td><em>Err</em></td><td>Worker is in an error state, usually due to failing pre-request check;
                     requests will not be proxied to this worker, but it will be retried depending on
                     the <code>retry</code> setting of the worker.</td></tr>

@@ -1186,8 +1186,12 @@ ProxyPass "/mirror/foo/i" "!"
          <tr><td>D: Worker is disabled and will not accept any requests.</td></tr>
          <tr><td>S: Worker is administratively stopped.</td></tr>
          <tr><td>I: Worker is in ignore-errors mode and will always be considered available.</td></tr>
+         <tr><td>R: Worker is a hot spare. For each worker in a given lbset that is unusable
+                    (draining, stopped, in error, etc.), a usable hot spare with the same lbset will be used in
+                    its place. Hot spares can help ensure that a specific number of workers are always available
+                    for use by a balancer.</td></tr>
          <tr><td>H: Worker is in hot-standby mode and will only be used if no other
-                    viable workers are available.</td></tr>
+                    viable workers or spares are available in the balancer set.</td></tr>
          <tr><td>E: Worker is in an error state.</td></tr>
          <tr><td>N: Worker is in drain mode and will only accept existing sticky sessions
                     destined for itself and ignore all other requests.</td></tr>
@@ -1342,8 +1346,24 @@ ProxyPass "/" "balancer://mycluster/" stickysession=JSESSIONID|jsessionid nofail
 &lt;/Proxy&gt;
     </highlight>
 
+    <p>Configuring hot spares can help ensure that a certain number of
+    workers are always available for use per load balancer set:</p>
+    <highlight language="config">
+ProxyPass "/" "balancer://sparecluster/"
+&lt;Proxy balancer://sparecluster&gt;
+    BalancerMember ajp://1.2.3.4:8009
+    BalancerMember ajp://1.2.3.5:8009
+    # The servers below are hot spares. For each server above that is unusable
+    # (draining, stopped, unreachable, in error state, etc.), one of these spares
+    # will be used in its place. Two servers will always be available for a request
+    # unless one or more of the spares is also unusable.
+    BalancerMember ajp://1.2.3.6:8009 status=+R
+    BalancerMember ajp://1.2.3.7:8009 status=+R
+&lt;/Proxy&gt;
+    </highlight>
+
     <p>Setting up a hot-standby that will only be used if no other
-     members are available:</p>
+    members (or spares) are available in the load balancer set:</p>
     <highlight language="config">
 ProxyPass "/" "balancer://hotcluster/"
 &lt;Proxy "balancer://hotcluster"&gt;
