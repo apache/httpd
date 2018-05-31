@@ -474,6 +474,7 @@ redirectmatch	mod/mod_alias.html#redirectmatch
 redirectpermanent	mod/mod_alias.html#redirectpermanent
 redirecttemp	mod/mod_alias.html#redirecttemp
 reflectorheader	mod/mod_reflector.html#reflectorheader
+regexdefaultoptions	mod/core.html#regexdefaultoptions
 registerhttpmethod	mod/core.html#registerhttpmethod
 remoteipheader	mod/mod_remoteip.html#remoteipheader
 remoteipinternalproxy	mod/mod_remoteip.html#remoteipinternalproxy
