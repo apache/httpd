@@ -112,9 +112,15 @@ satisfied by a request at runtime</td></tr>
 <tr class="odd"><td><a href="core.html#ifdefine">&lt;IfDefine&gt;</a></td><td class="module"><a href="core.html">core</a></td></tr>
 <tr class="odd"><td colspan="2" class="descr">Encloses directives that will be processed only
 if a test is true at startup</td></tr>
-<tr><td><a href="core.html#ifmodule">&lt;IfModule&gt;</a></td><td class="module"><a href="core.html">core</a></td></tr>
+<tr><td><a href="core.html#ifdirective">&lt;IfDirective&gt;</a></td><td class="module"><a href="core.html">core</a></td></tr>
 <tr><td colspan="2" class="descr">Encloses directives that are processed conditional on the
+presence or absence of a specific directive</td></tr>
+<tr class="odd"><td><a href="core.html#ifmodule">&lt;IfModule&gt;</a></td><td class="module"><a href="core.html">core</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Encloses directives that are processed conditional on the
 presence or absence of a specific module</td></tr>
+<tr><td><a href="core.html#ifsection">&lt;IfSection&gt;</a></td><td class="module"><a href="core.html">core</a></td></tr>
+<tr><td colspan="2" class="descr">Encloses directives that are processed conditional on the
+presence or absence of a specific section directive</td></tr>
 <tr class="odd"><td><a href="mod_version.html#ifversion">&lt;IfVersion&gt;</a></td><td class="module"><a href="mod_version.html">mod_version</a></td></tr>
 <tr class="odd"><td colspan="2" class="descr">contains version dependent configuration</td></tr>
 <tr><td><a href="core.html#limitrequestbody">LimitRequestBody</a></td><td class="module"><a href="core.html">core</a></td></tr>
