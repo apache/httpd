@@ -61,6 +61,9 @@ Changes with Apache 2.4.34
 
   *) mod_ssl: Fix cmake-based build.  PR 62266.  [Rainer Jung]
 
+  *) core: Add <IfFile>, <IfDirective> and <IfSection> conditional
+     section containers.  [Eric Covener, Joe Orton]
+
 Changes with Apache 2.4.33
 
   *) core: Fix request timeout logging and possible crash for error_log hooks.
