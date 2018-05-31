@@ -18,7 +18,7 @@ Changes with Apache 2.4.34
      which broke some rare but previously-working configs.  [Joe Orton]
 
   *) core, log: improve sanity checks for the ErrorLog's syslog config, and
-     explicitly allow ony lowercase 'syslog' settings. PR 62102
+     explicitly allow only lowercase 'syslog' settings. PR 62102
      [Luca Toscano, Jim Riggs, Christophe Jaillet]
 
   *) mod_http2: accurate reporting of h2 data input/output per request via
