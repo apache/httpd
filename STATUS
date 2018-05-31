@@ -269,6 +269,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1490294,1734635,1749403,1813116,1816179,1817598,1832198,1832200,1832277,1832317 ^/httpd/httpd/trunk .
      +1: jailletc36, ylavic,
 
+  *) mod_remoteip: When overriding the useragent address from X-Forwarded-For,
+     zero out what had been initialized as the connection-level port.  PR59931.
+     trunk patch: http://svn.apache.org/r1776458
+     2.4.x patch: trunk works (module CHANGES)
+                  svn merge -c 1776458 ^/httpd/httpd/trunk
+     +1: ylavic,
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
