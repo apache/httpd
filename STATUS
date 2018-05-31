@@ -138,10 +138,46 @@ RELEASE SHOWSTOPPERS:
                   https://svn.apache.org/r1832581
      2.4.x patch: trunk works (modulo CHANGES)
                   svn merge -c 1832580,1832581 ^/httpd/httpd/trunk .
-     +1: ylavic,
+     +1: ylavic, covener
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
+
+  *) core: Add <IfFile>, <IfDirective>, <IfSection>
+     trunk patch: http://svn.apache.org/r1769718
+                  http://svn.apache.org/r1785943
+                  http://svn.apache.org/r1786110
+                  http://svn.apache.org/r1786119
+     2.4.x patch: http://people.apache.org/~jorton/ap_ifmany.diff
+          or resolve CHANGES & ap_mmn.h conflicts with:
+          svn merge -c 1769718,1785943,1786110,1786119 ^/httpd/httpd/trunk .
+     +1: jorton, ylavic, covener
+     jailletc36: There should be a compatibility note for the new directives.
+                 (done in r1828478)
+
+  *) Easy patches: synch 2.4.x and trunk
+     - core: add a comment
+     - mod_auth_form: Silence a static checker warning
+     - unixd: fix a compilation warning
+     - mod_sed: do not compute string length twice
+     - mod_substitute: add some TRACE8 debugging messages
+     - mod_ssl: fix the error code written in a log message
+     - win32/Apachemonitor: Success of 'SHGetMalloc()' should be tested with the SUCCEEDED macro.
+     - core: Axe some dead code
+     - core: Fix typo in comment
+     - core: Fix a potential un-intialized variable usage warning.
+     trunk patch: http://svn.apache.org/r1490294
+                  http://svn.apache.org/r1734635
+                  http://svn.apache.org/r1749403
+                  http://svn.apache.org/r1813116
+                  http://svn.apache.org/r1816179
+                  http://svn.apache.org/r1817598
+                  http://svn.apache.org/r1832198 
+                  http://svn.apache.org/r1832200
+                  http://svn.apache.org/r1832277
+                  http://svn.apache.org/r1832317
+     2.4.x patch: svn merge -c 1490294,1734635,1749403,1813116,1816179,1817598,1832198,1832200,1832277,1832317 ^/httpd/httpd/trunk .
+     +1: jailletc36, ylavic, covener
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -157,18 +193,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  There is also a new optional 2nd argument to the SSLOCSPEnable directive,
                  'no_ocsp_for_cert_ok', which is undocumented.
                  Adding some new paramters also deserves a CHANGES entry.
-
-  *) core: Add <IfFile>, <IfDirective>, <IfSection>
-     trunk patch: http://svn.apache.org/r1769718
-                  http://svn.apache.org/r1785943
-                  http://svn.apache.org/r1786110
-                  http://svn.apache.org/r1786119
-     2.4.x patch: http://people.apache.org/~jorton/ap_ifmany.diff
-          or resolve CHANGES & ap_mmn.h conflicts with:
-          svn merge -c 1769718,1785943,1786110,1786119 ^/httpd/httpd/trunk .
-     +1: jorton, ylavic
-     jailletc36: There should be a compatibility note for the new directives.
-                 (done in r1828478)
 
   *) core: Allow mod_env to override all system path envvars not just PATH
      trunk patch: http://svn.apache.org/r1811831
@@ -213,7 +237,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1829657
      2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-PR62196+62198+62199-v3.patch
                   (convenient patch, otherwise trunk works modulo CHANGES/MMN)
-     +1: ylavic,
+     +1: ylavic, covener (needs responsefieldsize compat after)
+
 
   *) mod_xml2enc: Fix forwarding of error metadata/responses. PR 62180.
      trunk patch: http://svn.apache.org/r1829038
@@ -243,30 +268,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1831231
                   http://svn.apache.org/r1831591
      2.4.x patch: svn merge -c 1831231,1831591 ^/httpd/httpd/trunk .
-     +1: jailletc36, ylavic,
-
-  *) Easy patches: synch 2.4.x and trunk
-     - core: add a comment
-     - mod_auth_form: Silence a static checker warning
-     - unixd: fix a compilation warning
-     - mod_sed: do not compute string length twice
-     - mod_substitute: add some TRACE8 debugging messages
-     - mod_ssl: fix the error code written in a log message
-     - win32/Apachemonitor: Success of 'SHGetMalloc()' should be tested with the SUCCEEDED macro.
-     - core: Axe some dead code
-     - core: Fix typo in comment
-     - core: Fix a potential un-intialized variable usage warning.
-     trunk patch: http://svn.apache.org/r1490294
-                  http://svn.apache.org/r1734635
-                  http://svn.apache.org/r1749403
-                  http://svn.apache.org/r1813116
-                  http://svn.apache.org/r1816179
-                  http://svn.apache.org/r1817598
-                  http://svn.apache.org/r1832198 
-                  http://svn.apache.org/r1832200
-                  http://svn.apache.org/r1832277
-                  http://svn.apache.org/r1832317
-     2.4.x patch: svn merge -c 1490294,1734635,1749403,1813116,1816179,1817598,1832198,1832200,1832277,1832317 ^/httpd/httpd/trunk .
      +1: jailletc36, ylavic,
 
   *) mod_remoteip: When overriding the useragent address from X-Forwarded-For,
