@@ -2366,7 +2366,7 @@ AP_DECLARE(int) ap_array_str_contains(const apr_array_header_t *array,
                                       const char *s);
 
 /**
- * Perform a case-insensitive comparison of two strings @a atr1 and @a atr2,
+ * Perform a case-insensitive comparison of two strings @a str1 and @a str2,
  * treating upper and lower case values of the 26 standard C/POSIX alphabetic
  * characters as equivalent. Extended latin characters outside of this set
  * are treated as unique octets, irrespective of the current locale.
@@ -2380,7 +2380,7 @@ AP_DECLARE(int) ap_array_str_contains(const apr_array_header_t *array,
 AP_DECLARE(int) ap_cstr_casecmp(const char *s1, const char *s2);
 
 /**
- * Perform a case-insensitive comparison of two strings @a atr1 and @a atr2,
+ * Perform a case-insensitive comparison of two strings @a str1 and @a str2,
  * treating upper and lower case values of the 26 standard C/POSIX alphabetic
  * characters as equivalent. Extended latin characters outside of this set
  * are treated as unique octets, irrespective of the current locale.

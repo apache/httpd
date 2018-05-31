@@ -196,7 +196,7 @@ static void append_to_holdbuf(sed_eval_t *eval, const char* sz)
     if (eval->hsize <= reqsize) {
         grow_hold_buffer(eval, reqsize);
     }
-    strcpy(eval->hspend, sz);
+    memcpy(eval->hspend, sz, len + 1);
     /* hspend will now point to NULL character */
     eval->hspend += len;
 }
@@ -220,7 +220,7 @@ static void append_to_genbuf(sed_eval_t *eval, const char* sz, char **gspend)
     if (eval->gsize < reqsize) {
         grow_gen_buffer(eval, reqsize, gspend);
     }
-    strcpy(*gspend, sz);
+    memcpy(*gspend, sz, len + 1);
     /* *gspend will now point to NULL character */
     *gspend += len;
 }
