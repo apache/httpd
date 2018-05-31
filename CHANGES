@@ -1,8 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
-  *) mod_remoteip: Fix RemoteIP{Trusted,Internal}ProxyList loading broken by 2.4.33.
-     [Chritophe Jaillet, Yann Ylavic]
+  *) mod_remoteip: Fix RemoteIP{Trusted,Internal}ProxyList loading broken by 2.4.30.
+     PR 62220.  [Chritophe Jaillet, Yann Ylavic]
 
   *) mod_userdir: If several directories are given in a UserDir directive, only files
      in the first existing one are checked. If the file is not found there, the
