@@ -1720,7 +1720,7 @@ static int core_expr_lookup(ap_expr_lookup_parms *parms)
     case AP_EXPR_FUNC_STRING:
     case AP_EXPR_FUNC_OP_UNARY:
     case AP_EXPR_FUNC_OP_BINARY: {
-            const struct expr_provider_single *prov;
+            const struct expr_provider_single *prov = NULL;
             switch (parms->type) {
             case AP_EXPR_FUNC_STRING:
                 prov = string_func_providers;
@@ -1734,7 +1734,7 @@ static int core_expr_lookup(ap_expr_lookup_parms *parms)
             default:
                 ap_assert(0);
             }
-            while (prov->func) {
+            while (prov && prov->func) {
                 int match;
                 if (parms->type == AP_EXPR_FUNC_OP_UNARY)
                     match = !strcmp(prov->name, parms->name);
