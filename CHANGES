@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.34
 
+  *) mod_proxy_balancer: Add hot spare member type and corresponding flag (R).
+     Hot spare members are used as drop-in replacements for unusable workers
+     in the same load balancer set. This differs from hot standbys which are
+     only used when all workers in a set are unusable. PR 61140. [Jim Riggs]
+
   *) suexec: Add --enable-suexec-capabilites support on Linux, to use
      setuid/setgid capability bits rather than a setuid root binary.
      [Joe Orton]
@@ -5789,4 +5794,3 @@ Changes with Apache 2.2.x and later:
 Changes with Apache 2.0.x and later:
 
   *) http://svn.apache.org/viewvc/httpd/httpd/branches/2.0.x/CHANGES?view=markup
-
