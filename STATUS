@@ -144,17 +144,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) core: Add <IfFile>, <IfDirective>, <IfSection>
-     trunk patch: http://svn.apache.org/r1769718
-                  http://svn.apache.org/r1785943
-                  http://svn.apache.org/r1786110
-                  http://svn.apache.org/r1786119
-     2.4.x patch: http://people.apache.org/~jorton/ap_ifmany.diff
-          or resolve CHANGES & ap_mmn.h conflicts with:
-          svn merge -c 1769718,1785943,1786110,1786119 ^/httpd/httpd/trunk .
-     +1: jorton, ylavic, covener
-     jailletc36: There should be a compatibility note for the new directives.
-                 (done in r1828478)
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
