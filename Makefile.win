@@ -1246,6 +1246,7 @@ BEGIN {
 		modules\filters\mod_include.h \
 		modules\generators\mod_cgi.h \
 		modules\generators\mod_status.h \
+		modules\http2\mod_http2.h \
 		modules\loggers\mod_log_config.h \
 		modules\mappers\mod_rewrite.h \
 		modules\proxy\mod_proxy.h \

@@ -649,6 +649,7 @@ SET(HTTPD_INCLUDE_DIRECTORIES
   ${CMAKE_CURRENT_SOURCE_DIR}/modules/dav/main
   ${CMAKE_CURRENT_SOURCE_DIR}/modules/filters
   ${CMAKE_CURRENT_SOURCE_DIR}/modules/generators
+  ${CMAKE_CURRENT_SOURCE_DIR}/modules/http2
   ${CMAKE_CURRENT_SOURCE_DIR}/modules/md
   ${CMAKE_CURRENT_SOURCE_DIR}/modules/proxy
   ${CMAKE_CURRENT_SOURCE_DIR}/modules/session
@@ -673,6 +674,7 @@ SET(other_installed_h
   ${CMAKE_CURRENT_SOURCE_DIR}/modules/filters/mod_xml2enc.h
   ${CMAKE_CURRENT_SOURCE_DIR}/modules/generators/mod_cgi.h
   ${CMAKE_CURRENT_SOURCE_DIR}/modules/generators/mod_status.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/modules/http2/mod_http2.h
   ${CMAKE_CURRENT_SOURCE_DIR}/modules/loggers/mod_log_config.h
   ${CMAKE_CURRENT_SOURCE_DIR}/modules/mappers/mod_rewrite.h
   ${CMAKE_CURRENT_SOURCE_DIR}/modules/proxy/mod_proxy.h
