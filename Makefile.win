@@ -600,12 +600,6 @@ _build:
 	cd modules\http
 	 $(MAKE) $(MAKEOPT) -f mod_mime.mak        CFG="mod_mime - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
-!IF EXIST("srclib\nghttp2")
-	cd modules\http2
-	 $(MAKE) $(MAKEOPT) -f mod_http2.mak       CFG="mod_http2 - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f mod_proxy_http2.mak CFG="mod_proxy_http2 - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	cd ..\..
-!ENDIF
 	cd modules\loggers
 	 $(MAKE) $(MAKEOPT) -f mod_log_config.mak  CFG="mod_log_config - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_log_debug.mak  CFG="mod_log_debug - Win32 $(LONG)" RECURSE=0 $(CTARGET)
@@ -658,6 +652,13 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f mod_serf.mak        CFG="mod_serf - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 !ENDIF
 	cd ..\..
+# mod_proxy before mod_proxy_http2
+!IF EXIST("srclib\nghttp2")
+	cd modules\http2
+	 $(MAKE) $(MAKEOPT) -f mod_http2.mak       CFG="mod_http2 - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_proxy_http2.mak CFG="mod_proxy_http2 - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	cd ..\..
+!ENDIF
 	cd modules\proxy\balancers
 	 $(MAKE) $(MAKEOPT) -f mod_lbmethod_bybusyness.mak CFG="mod_lbmethod_bybusyness - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_lbmethod_byrequests.mak CFG="mod_lbmethod_byrequests - Win32 $(LONG)" RECURSE=0 $(CTARGET)
