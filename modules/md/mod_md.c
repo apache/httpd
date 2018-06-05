@@ -823,8 +823,12 @@ static apr_status_t run_watchdog(int state, void *baton, apr_pool_t *ptemp)
                                  wd->mc->notify_cmd, exit_code);
                 }
                 else {
+                    if (APR_EINCOMPLETE == rv && exit_code) {
+                        rv = 0;
+                    }
                     ap_log_error(APLOG_MARK, APLOG_ERR, rv, wd->s, APLOGNO(10109) 
-                                 "executing configured MDNotifyCmd %s", wd->mc->notify_cmd);
+                                 "executing MDNotifyCmd %s returned %d", 
+                                  wd->mc->notify_cmd, exit_code);
                     notified = 0;
                 } 
             }
@@ -1305,7 +1309,8 @@ static int md_http_challenge_pr(request_rec *r)
     int configured;
     apr_status_t rv;
     
-    if (!strncmp(ACME_CHALLENGE_PREFIX, r->parsed_uri.path, sizeof(ACME_CHALLENGE_PREFIX)-1)) {
+    if (r->parsed_uri.path 
+        && !strncmp(ACME_CHALLENGE_PREFIX, r->parsed_uri.path, sizeof(ACME_CHALLENGE_PREFIX)-1)) {
         sc = ap_get_module_config(r->server->module_config, &md_module);
         if (sc && sc->mc) {
             configured = (NULL != md_get_by_domain(sc->mc->mds, r->hostname));
@@ -1371,7 +1376,7 @@ static int md_require_https_maybe(request_rec *r)
     const char *s;
     int status;
     
-    if (opt_ssl_is_https 
+    if (opt_ssl_is_https && r->parsed_uri.path
         && strncmp(WELL_KNOWN_PREFIX, r->parsed_uri.path, sizeof(WELL_KNOWN_PREFIX)-1)) {
         
         sc = ap_get_module_config(r->server->module_config, &md_module);
