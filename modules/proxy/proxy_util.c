@@ -1930,7 +1930,8 @@ PROXY_DECLARE(apr_status_t) ap_proxy_share_worker(proxy_worker *worker, proxy_wo
     }
     worker->s = shm;
     worker->s->index = i;
-    {
+
+    if (APLOGdebug(ap_server_conf)) {
         apr_pool_t *pool;
         apr_pool_create(&pool, ap_server_conf->process->pool);
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(02338)
