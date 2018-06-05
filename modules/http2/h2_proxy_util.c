@@ -951,9 +951,7 @@ static void map_link(link_ctx *ctx)
                           "link_reverse_map uri too long, skipped: %s", ctx->s);
             return;
         }
-        strncpy(buffer + buffer_len, ctx->s + ctx->link_start, link_len);
-        buffer_len += link_len;
-        buffer[buffer_len] = '\0';
+        apr_cpystrn(buffer + buffer_len, ctx->s + ctx->link_start, link_len + 1);
         if (!prepend_p_server
             && strcmp(ctx->real_backend_uri, ctx->p_server_uri)
             && !strncmp(buffer, ctx->real_backend_uri, ctx->rbu_len)) {
@@ -961,8 +959,8 @@ static void map_link(link_ctx *ctx)
              * to work, we need to use the proxy uri */
             int path_start = ctx->link_start + ctx->rbu_len;
             link_len -= ctx->rbu_len;
-            strcpy(buffer, ctx->p_server_uri);
-            strncpy(buffer + ctx->psu_len, ctx->s + path_start, link_len);
+            memcpy(buffer, ctx->p_server_uri, ctx->psu_len);
+            memcpy(buffer + ctx->psu_len, ctx->s + path_start, link_len);
             buffer_len = ctx->psu_len + link_len;
             buffer[buffer_len] = '\0';            
         }
