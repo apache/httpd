@@ -453,10 +453,6 @@ SOURCE=.\modules\http\http_core.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\modules\http\http_etag.c
-# End Source File
-# Begin Source File
-
 SOURCE=.\modules\http\http_filters.c
 # End Source File
 # Begin Source File
@@ -546,6 +542,10 @@ SOURCE=.\server\util_debug.c
 # Begin Source File
 
 SOURCE=.\include\util_ebcdic.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\server\util_etag.c
 # End Source File
 # Begin Source File
 
