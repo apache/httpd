@@ -166,24 +166,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      ylavic: same as dev@; since SetEnv* are usable from htaccess, wouldn't
              we open a door here (unconditionally)?
 
-  *) mod_ssl: Add "SSLPolicy" directive for Mozilla Security defined protocol settings.
-     The change is small, has many revisions since it went back and forth a buit from
-     a new definition thing back to a fixes set of presets. Look at the patch first.
-     trunk patch: http://svn.apache.org/r1827760
-                  http://svn.apache.org/r1827561
-                  http://svn.apache.org/r1818030
-                  http://svn.apache.org/r1817894
-                  http://svn.apache.org/r1817381
-                  http://svn.apache.org/r1808335
-                  http://svn.apache.org/r1808244
-                  http://svn.apache.org/r1807709
-                  http://svn.apache.org/r1805186
-                  http://svn.apache.org/r1804531
-     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/ssl-policy.patch
-     +1: icing
-     -0: jorton: some unused code paths and legacy of previous iterations still
-         included in patch? more at msgid <20180523075115.GA4654@redhat.com>
-
   *) ap_rgetline()+mod_proxy_http: Add and handle AP_GETLINE_NOSPC_EOL flag,
      fixes responses header thrown away on APR_ENOSPC, and allow their size to
      be configured (ResponseFieldSize). PRs 62196, 62198 and 62199.
