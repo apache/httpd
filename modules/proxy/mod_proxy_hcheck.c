@@ -53,7 +53,6 @@ typedef struct {
 
 typedef struct {
     apr_pool_t *p;
-    apr_bucket_alloc_t *ba;
     apr_array_header_t *templates;
     apr_table_t *conditions;
     apr_hash_t *hcworkers;
@@ -81,7 +80,7 @@ static void *hc_create_config(apr_pool_t *p, server_rec *s)
     sctx_t *ctx = apr_pcalloc(p, sizeof(sctx_t));
     ctx->s = s;
     apr_pool_create(&ctx->p, p);
-    ctx->ba = apr_bucket_alloc_create(p);
+    apr_pool_tag(ctx->p, "proxy_hcheck");
     ctx->templates = apr_array_make(p, 10, sizeof(hc_template_t));
     ctx->conditions = apr_table_make(p, 10);
     ctx->hcworkers = apr_hash_make(p);
