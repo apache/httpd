@@ -208,12 +208,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                 maintainer mode with gcc 8.1.0
      trunk patch: http://svn.apache.org/r1831231
                   http://svn.apache.org/r1831591
-     2.4.x patch: svn merge -c 1831231,1831591 ^/httpd/httpd/trunk .
-     +1: jailletc36, ylavic,
-     -1: icing
-         this needs to be svn merge -c 1831231,1831591,1832934,1832937 ^/httpd/httpd/trunk .
-         as the orignal "gcc warnings" fix broke link header mapping,
-         with that: +1
+                  http://svn.apache.org/r1832934
+                  http://svn.apache.org/r1832937
+     2.4.x patch: svn merge -c 1831231,1831591,1832934,1832937 ^/httpd/httpd/trunk .
+     +1: ylavic, icing
 
   *) mod_remoteip: When overriding the useragent address from X-Forwarded-For,
      zero out what had been initialized as the connection-level port.  PR59931.
