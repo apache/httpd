@@ -31,6 +31,8 @@ EXTRACLEAN_TARGETS = configure include/ap_config_auto.h.in generated_lists \
 	httpd.spec
 PHONY_TARGETS := check check-conf check-dirs check-include unittest-objdir
 
+TESTS = 
+
 include $(top_builddir)/build/rules.mk
 include $(top_srcdir)/build/program.mk
 
@@ -438,7 +440,7 @@ check: check-include check-dirs check-conf check/build/config_vars.mk check-bina
 	    perl Makefile.PL -apxs "$(top_builddir)/check/bin/apxs" && \
 	    ./t/TEST -clean && \
 	    ./t/TEST -config && \
-	    ./t/TEST
+	    ./t/TEST $(TESTS)
 
 #
 # Unit Test Suite
