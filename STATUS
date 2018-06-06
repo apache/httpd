@@ -151,6 +151,13 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
                   (trunk works modulo CHANGES))
      +1: ylavic, jim, icing
 
+  *) mod_remoteip: When overriding the useragent address from X-Forwarded-For,
+     zero out what had been initialized as the connection-level port.  PR59931.
+     trunk patch: http://svn.apache.org/r1776458
+     2.4.x patch: trunk works (module CHANGES)
+                  svn merge -c 1776458 ^/httpd/httpd/trunk
+     +1: ylavic, covener, icing
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -212,13 +219,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1832937
      2.4.x patch: svn merge -c 1831231,1831591,1832934,1832937 ^/httpd/httpd/trunk .
      +1: ylavic, icing
-
-  *) mod_remoteip: When overriding the useragent address from X-Forwarded-For,
-     zero out what had been initialized as the connection-level port.  PR59931.
-     trunk patch: http://svn.apache.org/r1776458
-     2.4.x patch: trunk works (module CHANGES)
-                  svn merge -c 1776458 ^/httpd/httpd/trunk
-     +1: ylavic, covener, icing
 
   *) mod_proxy: Fix a corner case where the ProxyPassReverseCookieDomain or
      ProxyPassReverseCookiePath directive could fail to update correctly 
