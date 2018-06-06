@@ -7,9 +7,9 @@ PROGRAM_SOURCES      = modules.c
 PROGRAM_LDADD        = buildmark.o $(HTTPD_LDFLAGS) $(PROGRAM_DEPENDENCIES) $(HTTPD_LIBS) $(EXTRA_LIBS) $(AP_LIBS) $(LIBS)
 PROGRAM_PRELINK      = $(COMPILE) -c $(top_srcdir)/server/buildmark.c
 PROGRAM_DEPENDENCIES = \
-  server/libmain.la \
   $(BUILTIN_LIBS) \
   $(MPM_LIB) \
+  server/libmain.la \
   os/$(OS_DIR)/libos.la
 
 sbin_PROGRAMS   = $(PROGRAM_NAME)

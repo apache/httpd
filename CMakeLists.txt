@@ -651,7 +651,6 @@ SET(LIBHTTPD_SOURCES
   modules/http/byterange_filter.c
   modules/http/chunk_filter.c
   modules/http/http_core.c
-  modules/http/http_etag.c
   modules/http/http_filters.c
   modules/http/http_protocol.c
   modules/http/http_request.c
@@ -680,6 +679,7 @@ SET(LIBHTTPD_SOURCES
   server/util_cfgtree.c
   server/util_cookies.c
   server/util_debug.c
+  server/util_etag.c
   server/util_expr_eval.c
   server/util_expr_parse.c
   server/util_fcgi.c

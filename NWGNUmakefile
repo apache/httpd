@@ -242,7 +242,6 @@ FILES_nlm_objs = \
 	$(OBJDIR)/http_request.o \
 	$(OBJDIR)/byterange_filter.o \
 	$(OBJDIR)/chunk_filter.o \
-	$(OBJDIR)/http_etag.o \
 	$(OBJDIR)/http_filters.o \
 	$(OBJDIR)/listen.o \
 	$(OBJDIR)/log.o \
@@ -273,6 +272,7 @@ FILES_nlm_objs = \
 	$(OBJDIR)/util_charset.o \
 	$(OBJDIR)/util_cookies.o \
 	$(OBJDIR)/util_debug.o \
+	$(OBJDIR)/util_etag.o \
 	$(OBJDIR)/util_expr_eval.o \
 	$(OBJDIR)/util_expr_parse.o \
 	$(OBJDIR)/util_expr_scan.o \
