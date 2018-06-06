@@ -144,6 +144,13 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) core: In ONE_PROCESS/debug mode, cleanup everything when exiting.
+     trunk patch: http://svn.apache.org/r1822537
+                  http://svn.apache.org/r1830744
+     2.4.x patch: svn merge -c 1822537,1830744 ^/httpd/httpd/trunk .
+                  (trunk works modulo CHANGES))
+     +1: ylavic, jim, icing
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -188,13 +195,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1829038,1829039,1830523 ^/httpd/httpd/trunk .
                   (trunk works modulo CHANGES))
      +1: ylavic,
-
-  *) core: In ONE_PROCESS/debug mode, cleanup everything when exiting.
-     trunk patch: http://svn.apache.org/r1822537
-                  http://svn.apache.org/r1830744
-     2.4.x patch: svn merge -c 1822537,1830744 ^/httpd/httpd/trunk .
-                  (trunk works modulo CHANGES))
-     +1: ylavic, jim
 
   *) mod_proxy_html: Fix variable interpolation and memory allocation failure
      in ProxyHTMLURLMap. PR 62344.
