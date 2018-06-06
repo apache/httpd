@@ -93,7 +93,7 @@ void ssl_config_global_fix(SSLModConfigRec *mc)
 
 BOOL ssl_config_global_isfixed(SSLModConfigRec *mc)
 {
-    return mc && mc->bFixed;
+    return mc->bFixed;
 }
 
 /*  _________________________________________________________________
@@ -512,32 +512,30 @@ static void add_policy(apr_hash_t *policies, apr_pool_t *p, const char *name,
                        int protocols, const char *ssl_ciphers, const char *tls13_ciphers, 
                        int honor_order, int compression, int session_tickets)
 {
-    SSLPolicyRec *policy;
+    SSLSrvConfigRec *policy;
     
-    policy = apr_pcalloc(p, sizeof(*policy));
-    policy->name = name;
-    policy->sc = ssl_config_server_new(p);
+    policy = ssl_config_server_new(p);
     
     if (protocols) {
-        policy->sc->server->protocol_set      = 1;
-        policy->sc->server->protocol          = protocols;
+        policy->server->protocol_set      = 1;
+        policy->server->protocol          = protocols;
     }
     if (ssl_ciphers) {
-        policy->sc->server->auth.cipher_suite = ssl_ciphers;
+        policy->server->auth.cipher_suite = ssl_ciphers;
     }
     if (tls13_ciphers) {
-        policy->sc->server->auth.tls13_ciphers = tls13_ciphers;
+        policy->server->auth.tls13_ciphers = tls13_ciphers;
     }
 
 #ifndef OPENSSL_NO_COMP
-    policy->sc->compression               = compression ? TRUE : FALSE;
+    policy->compression               = compression ? TRUE : FALSE;
 #endif
-    policy->sc->session_tickets           = session_tickets ? TRUE : FALSE;
+    policy->session_tickets           = session_tickets ? TRUE : FALSE;
     
-    apr_hash_set(policies, policy->name, APR_HASH_KEY_STRING, policy);
+    apr_hash_set(policies, name, APR_HASH_KEY_STRING, policy);
 }
 
-static apr_hash_t *get_policies(apr_pool_t *p, int create)
+static apr_hash_t *get_policies(apr_pool_t *p)
 {
     apr_hash_t *policies;
     void *vp;
@@ -546,42 +544,39 @@ static apr_hash_t *get_policies(apr_pool_t *p, int create)
     if (vp) {
         return vp; /* reused for lifetime of the pool */
     }
-    if (create) {
-        policies = apr_hash_make(p);
-        
+    policies = apr_hash_make(p);
+    
 #if SSL_POLICY_MODERN
-        add_policy(policies, p, "modern", 
-                   SSL_POLICY_MODERN_PROTOCOLS, 
-                   SSL_POLICY_MODERN_SSL_CIPHERS, 
-                   SSL_POLICY_MODERN_TLS13_CIPHERS, 
-                   SSL_POLICY_HONOR_ORDER, 
-                   SSL_POLICY_COMPRESSION, 
-                   SSL_POLICY_SESSION_TICKETS);
+    add_policy(policies, p, "modern", 
+               SSL_POLICY_MODERN_PROTOCOLS, 
+               SSL_POLICY_MODERN_SSL_CIPHERS, 
+               SSL_POLICY_MODERN_TLS13_CIPHERS, 
+               SSL_POLICY_HONOR_ORDER, 
+               SSL_POLICY_COMPRESSION, 
+               SSL_POLICY_SESSION_TICKETS);
 #endif        
 #if SSL_POLICY_INTERMEDIATE
-        add_policy(policies, p, "intermediate", 
-                   SSL_POLICY_INTERMEDIATE_PROTOCOLS, 
-                   SSL_POLICY_INTERMEDIATE_SSL_CIPHERS, 
-                   SSL_POLICY_INTERMEDIATE_TLS13_CIPHERS, 
-                   SSL_POLICY_HONOR_ORDER, 
-                   SSL_POLICY_COMPRESSION, 
-                   SSL_POLICY_SESSION_TICKETS);
+    add_policy(policies, p, "intermediate", 
+               SSL_POLICY_INTERMEDIATE_PROTOCOLS, 
+               SSL_POLICY_INTERMEDIATE_SSL_CIPHERS, 
+               SSL_POLICY_INTERMEDIATE_TLS13_CIPHERS, 
+               SSL_POLICY_HONOR_ORDER, 
+               SSL_POLICY_COMPRESSION, 
+               SSL_POLICY_SESSION_TICKETS);
 #endif        
 #if SSL_POLICY_OLD
-        add_policy(policies, p, "old", 
-                   SSL_POLICY_OLD_PROTOCOLS, 
-                   SSL_POLICY_OLD_SSL_CIPHERS, 
-                   SSL_POLICY_OLD_TLS13_CIPHERS, 
-                   SSL_POLICY_HONOR_ORDER, 
-                   SSL_POLICY_COMPRESSION, 
-                   SSL_POLICY_SESSION_TICKETS);
+    add_policy(policies, p, "old", 
+               SSL_POLICY_OLD_PROTOCOLS, 
+               SSL_POLICY_OLD_SSL_CIPHERS, 
+               SSL_POLICY_OLD_TLS13_CIPHERS, 
+               SSL_POLICY_HONOR_ORDER, 
+               SSL_POLICY_COMPRESSION, 
+               SSL_POLICY_SESSION_TICKETS);
 #endif        
-        
-        apr_pool_userdata_set(policies, SSL_MOD_POLICIES_KEY,
-                              apr_pool_cleanup_null, p);
-        return policies;
-    }
-    return NULL;
+    
+    apr_pool_userdata_set(policies, SSL_MOD_POLICIES_KEY,
+                          apr_pool_cleanup_null, p);
+    return policies;
 }
 
 static int policy_collect_names(void *baton, const void *key, apr_ssize_t klen, const void *val)
@@ -596,10 +591,10 @@ static int qstrcmp(const void *v1, const void *v2)
     return strcmp(*(const char**)v1, *(const char**)v2);
 }
 
-static apr_array_header_t *get_policy_names(apr_pool_t *p, int create)
+static apr_array_header_t *get_policy_names(apr_pool_t *p)
 {
     apr_array_header_t *names = apr_array_make(p, 10, sizeof(const char*));
-    apr_hash_t *policies = get_policies(p, create);
+    apr_hash_t *policies = get_policies(p);
     
     if (policies) {
         apr_hash_do(policy_collect_names, names, policies);
@@ -608,20 +603,20 @@ static apr_array_header_t *get_policy_names(apr_pool_t *p, int create)
     return names;
 }
 
-SSLPolicyRec *ssl_policy_lookup(apr_pool_t *pool, const char *name)
+SSLSrvConfigRec *ssl_policy_lookup(apr_pool_t *pool, const char *name)
 {
-    apr_hash_t *policies = get_policies(pool, 1);
+    apr_hash_t *policies = get_policies(pool);
     return apr_hash_get(policies, name, APR_HASH_KEY_STRING);
 }
 
 const char *ssl_cmd_SSLPolicyApply(cmd_parms *cmd, void *mconfig, const char *arg)
 {
     SSLSrvConfigRec *mrg, *sc = mySrvConfig(cmd->server);
-    SSLPolicyRec *policy;
+    SSLSrvConfigRec *policy;
     
     policy = ssl_policy_lookup(cmd->pool, arg);
     if (policy) {
-        mrg = ssl_config_server_merge(cmd->pool, policy->sc, sc);
+        mrg = ssl_config_server_merge(cmd->pool, policy, sc);
         /* apply in place */
         memcpy(sc, mrg, sizeof(*sc));
         return NULL;
@@ -2223,7 +2218,7 @@ const char *ssl_cmd_SSLOCSPResponderCertificateFile(cmd_parms *cmd, void *dcfg,
 
 static void ssl_srv_dump(SSLSrvConfigRec *sc, apr_pool_t *p, 
                             apr_file_t *out, const char *indent, const char **psep);
-static void ssl_policy_dump(SSLPolicyRec *policy, apr_pool_t *p, 
+static void ssl_policy_dump(SSLSrvConfigRec *policy, apr_pool_t *p, 
                             apr_file_t *out, const char *indent);
 
 void ssl_hook_ConfigTest(apr_pool_t *pconf, server_rec *s)
@@ -2287,8 +2282,8 @@ void ssl_hook_ConfigTest(apr_pool_t *pconf, server_rec *s)
     }
 
     if (ap_exists_config_define("DUMP_SSL_POLICIES")) {
-        apr_array_header_t *names = get_policy_names(pconf, 1);
-        SSLPolicyRec *policy;
+        apr_array_header_t *names = get_policy_names(pconf);
+        SSLSrvConfigRec *policy;
         const char *name, *sep = "";
         int i;
         
@@ -2647,13 +2642,11 @@ static void ssl_srv_dump(SSLSrvConfigRec *sc, apr_pool_t *p,
     DMP_ON_OFF("SSLSessionTickets", sc->session_tickets);
 }
 
-static void ssl_policy_dump(SSLPolicyRec *policy, apr_pool_t *p, 
+static void ssl_policy_dump(SSLSrvConfigRec *policy, apr_pool_t *p, 
                             apr_file_t *out, const char *indent)
 {
     const char *sep = "";
-    if (policy->sc) {
-        ssl_srv_dump(policy->sc, p, out, indent, &sep);
-    }
+    ssl_srv_dump(policy, p, out, indent, &sep);
 }
 
 
