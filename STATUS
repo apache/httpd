@@ -144,14 +144,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_remoteip: When overriding the useragent address from X-Forwarded-For,
-     zero out what had been initialized as the connection-level port.  PR59931.
-     trunk patch: http://svn.apache.org/r1776458
-     2.4.x patch: trunk works (module CHANGES)
-                  svn merge -c 1776458 ^/httpd/httpd/trunk
-     +1: ylavic, covener, icing
-
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
