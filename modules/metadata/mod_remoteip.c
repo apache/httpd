@@ -492,17 +492,6 @@ static const char *remoteip_disable_networks(cmd_parms *cmd, void *d,
     return NULL;
 }
 
-static int remoteip_hook_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
-                              apr_pool_t *ptemp)
-{
-    remoteip_config_t *config = (remoteip_config_t *)
-                                create_remoteip_server_config(pconf, NULL);
-    ap_set_module_config(ap_server_conf->module_config, &remoteip_module,
-                         config);
-
-    return OK;
-}
-
 static int remoteip_hook_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                                apr_pool_t *ptemp, server_rec *s)
 {
@@ -1244,7 +1233,6 @@ static void register_hooks(apr_pool_t *p)
         ap_register_input_filter("REMOTEIP_INPUT", remoteip_input_filter, NULL,
                                  AP_FTYPE_CONNECTION + 7);
 
-    ap_hook_pre_config(remoteip_hook_pre_config, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_post_config(remoteip_hook_post_config, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_pre_connection(remoteip_hook_pre_connection, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_post_read_request(remoteip_modify_request, NULL, NULL, APR_HOOK_FIRST);
