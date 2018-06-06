@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.34
 
+  *) mod_remoteip: When overriding the useragent address from X-Forwarded-For,
+     zero out what had been initialized as the connection-level port.  PR59931.
+     [Hank Ibell <hwibell gmail.com>]
+
   *) core: In ONE_PROCESS/debug mode, cleanup everything when exiting.
      [Yann Ylavic]
 
