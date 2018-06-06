@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.34
 
+  *) core: In ONE_PROCESS/debug mode, cleanup everything when exiting.
+     [Yann Ylavic]
+
   *) mod_proxy_balancer: Add hot spare member type and corresponding flag (R).
      Hot spare members are used as drop-in replacements for unusable workers
      in the same load balancer set. This differs from hot standbys which are

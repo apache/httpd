@@ -18,6 +18,7 @@
 #include "httpd.h"
 #include "http_config.h"
 #include "http_main.h"
+#include "http_core.h"
 #include "http_log.h"
 #include "unixd.h"
 #include "mpm_common.h"
@@ -509,6 +510,13 @@ static apr_status_t unset_signals(void *unused)
     return APR_SUCCESS;
 }
 
+static void ap_terminate(void)
+{
+    ap_main_state = AP_SQ_MS_EXITING;
+    apr_pool_destroy(ap_pglobal);
+    apr_terminate();
+}
+
 AP_DECLARE(void) ap_unixd_mpm_set_signals(apr_pool_t *pconf, int one_process)
 {
 #ifndef NO_USE_SIGACTION
@@ -517,6 +525,16 @@ AP_DECLARE(void) ap_unixd_mpm_set_signals(apr_pool_t *pconf, int one_process)
 
     if (!one_process) {
         ap_fatal_signal_setup(ap_server_conf, pconf);
+    }
+    else if (!ap_retained_data_get("ap_unixd_mpm_one_process_cleanup")) {
+        /* In one process mode (debug), httpd will exit immediately when asked
+         * to (SIGTERM/SIGINT) and never restart. We still want the cleanups to
+         * run though (such that e.g. temporary files/IPCs don't leak on the
+         * system), so the first time around we use atexit() to cleanup after
+         * ourselves.
+         */
+        ap_retained_data_create("ap_unixd_mpm_one_process_cleanup", 1);
+        atexit(ap_terminate);
     }
 
     /* Signals' handlers depend on retained data */
