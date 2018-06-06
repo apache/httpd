@@ -218,7 +218,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1776458
      2.4.x patch: trunk works (module CHANGES)
                   svn merge -c 1776458 ^/httpd/httpd/trunk
-     +1: ylavic, covener
+     +1: ylavic, covener, icing
 
   *) mod_proxy: Fix a corner case where the ProxyPassReverseCookieDomain or
      ProxyPassReverseCookiePath directive could fail to update correctly 
