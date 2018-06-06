@@ -782,13 +782,7 @@ struct SSLDirConfigRec {
     BOOL          proxy_post_config;
 };
 
-typedef struct SSLPolicyRec SSLPolicyRec;
-struct SSLPolicyRec {
-    const char *name;
-    SSLSrvConfigRec *sc;
-};
-
-SSLPolicyRec *ssl_policy_lookup(apr_pool_t *pool, const char *name);
+SSLSrvConfigRec *ssl_policy_lookup(apr_pool_t *pool, const char *name);
 
 /**
  *  function prototypes
