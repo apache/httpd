@@ -430,17 +430,27 @@ check/build/config_vars.mk: build/config_vars.out
 	echo "sbindir = $(top_builddir)/check/bin" >> $@
 	echo "bindir = $(top_builddir)/check/bin" >> $@
 
-# Run the Apache::Test suite if it has been configured with --with-test-suite.
-check: check-include check-dirs check-conf check/build/config_vars.mk check-binaries
-	@if test "x$(TEST_SUITE_LOCATION)" = "xno"; then \
-	    echo 'Re-run configure with the --with-test-suite option to enable in-tree tests.'; \
-	    false; \
-	fi
+# Generate config & modules etc from scratch any time a header file is
+# touched, so e.g. we don't get MMN mismatch against the modules built
+# in .../c-modules.
+$(TEST_SUITE_LOCATION)/Makefile: $(TEST_SUITE_LOCATION)/Makefile.PL $(INSTALL_HEADERS)
 	cd "$(TEST_SUITE_LOCATION)" && \
 	    perl Makefile.PL -apxs "$(top_builddir)/check/bin/apxs" && \
 	    ./t/TEST -clean && \
-	    ./t/TEST -config && \
-	    ./t/TEST $(TESTS)
+	    ./t/TEST -config
+
+check-make: $(TEST_SUITE_LOCATION)/Makefile
+
+check-no:
+	@echo 'Re-run configure with the --with-test-suite option to enable in-tree tests.'
+	@false
+
+check-yes: check-include check-dirs check-conf check/build/config_vars.mk \
+	check-binaries $(TEST_SUITE_LOCATION)/Makefile
+	cd $(TEST_SUITE_LOCATION) && ./t/TEST $(TESTS)
+
+# Run the Apache::Test suite if it has been configured with --with-test-suite.
+check: check-$(WITH_TEST_SUITE)
 
 #
 # Unit Test Suite

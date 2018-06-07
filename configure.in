@@ -923,12 +923,14 @@ AC_ARG_WITH([test-suite],
         else
             test -f "$withval/Makefile.PL" || AC_MSG_ERROR([--with-test-suite directory $withval does not contain the expected Makefile.PL])
             TEST_SUITE_LOCATION="$withval"
+            WITH_TEST_SUITE=yes
         fi
     ],
-    [ TEST_SUITE_LOCATION="no" ]
+    [ WITH_TEST_SUITE=no ]
 )
 
 APACHE_SUBST(TEST_SUITE_LOCATION)
+APACHE_SUBST(WITH_TEST_SUITE)
 
 APACHE_FAST_OUTPUT(Makefile modules/Makefile srclib/Makefile) 
 APACHE_FAST_OUTPUT(os/Makefile server/Makefile)
