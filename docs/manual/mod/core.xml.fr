@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1828061:1832623 (outdated) -->
+<!-- English Revision: 1832623 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -2475,6 +2475,48 @@ host</context>
 </directivesynopsis>
 
 <directivesynopsis type="section">
+<name>IfFile</name>
+<description>Regroupe des directives qui ne seront traitées que si un fichier
+existe au démarrage</description>
+<syntax>&lt;IfFile [!]<var>parameter-name</var>&gt; ...
+    &lt;/IfFile&gt;</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>All</override>
+<compatibility>Disponible à partir de la version 2.4.34 du serveur HTTP Apache</compatibility>
+
+<usage>
+    <p>La section <code>&lt;IfFile <var>filename</var>&gt;...&lt;/IfFile&gt;</code>
+    permet de conditionner le traitement de directives à
+    l'existence d'un fichier sur disque. Ainsi, les directives définies au sein
+    d'une section <directive type="section">IfFile</directive> ne seront
+    traitées que si le fichier <var>filename</var> existe. Si le fichier
+    <var>filename</var> n'existe pas, tout ce qui se trouve entre les marqueurs
+    start et end sera ignoré. <var>filename</var> peut être un chemin absolu ou
+    relatif au chemin défini par la directive ServerRoot.</p>
+
+    <p>Le paramètre <var>filename</var> de l'en-tête d'une section <directive
+    type="section">IfFile</directive> peut prendre la même forme que la variable
+    <var>test</var> de la section <directive type="section"
+    module="core">IfDefine</directive> ; à ce titre, le résultat du test peut
+    être inversé en plaçant le caractère <code>!</code> juste avant
+    <var>filename</var>.
+    </p>
+   
+    <p>Si <var>filename</var> est un chemin relatif, il sera généré par rapport
+    au chemin défini par la directive <directive
+    module="core">ServerRoot</directive>. Lorsque la directive <directive
+    type="section">IfFile</directive> intervient avant la définition de la
+    directive <directive module="core">ServerRoot</directive>,
+    <var>filename</var> sera relatif au répertoire racine par défaut du serveur
+    ou au répertoire racine passé dans la ligne de commande via l'option
+    <code>-d</code>.</p>
+    
+</usage>
+</directivesynopsis>
+
+<directivesynopsis type="section">
 <name>IfModule</name>
 <description>Contient des directives qui ne s'appliquent qu'en fonction
 de la présence ou de l'absence d'un module spécifique</description>
@@ -2531,6 +2573,112 @@ versions 2.1 et supérieures.</compatibility>
     pas nécessaire de placer les directives à l'intérieur de sections
     <directive type="section">IfModule</directive>.</note>
 </usage>
+</directivesynopsis>
+
+<directivesynopsis type="section">
+<name>IfDirective</name>
+<description>Regroupe des directives dont le traitement est conditionné par la
+présence ou l'absence d'une directive particulière</description>
+<syntax>&lt;IfDirective [!]<var>directive-name</var>&gt; ...
+    &lt;/IfDirective&gt;</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>All</override>
+<compatibility>Disponible à partir de la version 2.4.34 du serveur HTTP Apache</compatibility>
+
+<usage>
+    <p>La section <code>&lt;IfDirective
+    <var>test</var>&gt;...&lt;/IfDirective&gt;</code> permet de regrouper des
+    directives dont le traitement n'est effectué que si une directive
+    particulière est présente, autrement dit si l'expression <var>test</var> est
+    évaluée à true. Si l'expression <var>test</var> est évaluée à false, toutes
+    les lignes qui se trouvent entre les balises de début et de fin de la
+    section sont ignorées.</p>
+
+    <p>L'expression <var>test</var> de la section <directive
+    type="section">IfDirective</directive> peut prendre les deux formes
+    suivantes :</p>
+
+    <ul>
+      <li><var>directive-name</var></li>
+
+      <li>!<var>directive-name</var></li>
+    </ul>
+
+    <p>Dans le premier cas, les directives qui se situent entre les balises de
+    début et de fin de la section ne sont traitées que si une directive de nom
+    directive-name est disponible à cet instant. Dans le second cas, la condition est
+    inversée, et les directives ne sont traitées que si
+    <var>directive-name</var> n'est <strong>pas</strong> disponible.</p>
+
+    <note>Cette section ne doit être utilisée que si vous devez partager le même
+    fichier de configuration entre plusieurs versions de
+    <program>httpd</program>, sans tenir compte de la disponibilité de telle ou
+    telle directive. Dans une configuration standard, il est inutile de placer
+    les directives dans des sections <directive
+    type="section">IfDirective</directive>.</note>
+</usage>
+<seealso><directive module="core" type="section">IfSection</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis type="section">
+<name>IfSection</name>
+<description>Regroupe des directives dont le traitement est conditionné par la
+présence ou l'absence d'une section particulière</description>
+<syntax>&lt;IfSection [!]<var>section-name</var>&gt; ...
+    &lt;/IfSection&gt;</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>All</override>
+<compatibility>Disponible à partir de la version 2.4.34 du serveur HTTP Apache</compatibility>
+
+<usage>
+    <p>La section <code>&lt;IfSection
+    <var>test</var>&gt;...&lt;/IfSection&gt;</code> permet de regrouper des
+    directives dont le traitement n'est effectué que si une section de
+    configuration particulière est présente. Une section, par exemple <directive
+    type="section">VirtualHost</directive>, permet de regrouper des directives
+    et possède un nom précédé du caractère "&lt;".</p>
+
+    <p>Les directives situées à l'intérieur d'une section <directive
+    type="section">IfSection</directive> ne sont traitées que si l'expression
+    <var>test</var> est évaluée à true. Si l'expression <var>test</var> est
+    évaluée à false, toutes les lignes situées entre les balises de début et de
+    fin de la section sont ignorées.</p>
+
+    <p><var>section-name</var> doit être spécifié sans les caractères de début
+    "&lt;" ou fin "&gt;". L'expression <var>test</var> de la section <directive
+    type="section">IfSection</directive> peut prendre deux formes :</p>
+
+    <ul>
+      <li><var>section-name</var></li>
+      <li>!<var>section-name</var></li>
+    </ul>
+
+    <p>Dans le premier cas, les directives qui se situent entre les balises de
+    début et de fin de la section ne sont traitées que si une section de nom
+    section-name est disponible à cet instant. Dans le second cas, la condition est
+    inversée, et les directives ne sont traitées que si
+    <var>section-name</var> n'est <strong>pas</strong> disponible.</p>
+
+    <p>Par exemple :</p>
+
+    <highlight language="config">
+&lt;IfSection VirtualHost&gt;
+   ...
+&lt;/IfSection&gt;
+    </highlight>
+    
+    <note>Cette section ne doit être utilisée que si vous devez partager le même
+    fichier de configuration entre plusieurs versions de
+    <program>httpd</program>, sans tenir compte de la disponibilité de telle ou
+    telle section. Dans une configuration standard, il est inutile de placer
+    les directives dans des sections <directive
+    type="section">IfSection</directive>.</note>
+</usage>
+<seealso><directive module="core" type="section">IfDirective</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
