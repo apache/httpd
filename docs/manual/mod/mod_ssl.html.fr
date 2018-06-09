@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_ssl.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_ssl.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Chiffrement de haut niveau basé sur les protocoles Secure
 Sockets Layer (SSL) et Transport Layer Security (TLS)</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -2190,17 +2188,15 @@ le PRNG est un service global.</p>
 Les différentes valeurs de <em>source</em> disponibles sont :</p>
 <ul>
 <li><code>builtin</code>
-    <p>Cette source de déclenchement intégrée est toujours disponible.
-    Son utilisation consomme un minimum de cycles CPU en cours
-    d'exécution, et son utilisation ne présente de ce fait aucun
-    problème. La source utilisée pour déclencher le PRNG contient la
-    date courante, l'identifiant du processus courant et (si disponible)
-    un extrait de 1Ko aléatoirement choisi de la structure d'Apache pour
-    les échanges inter-processus. Ceci présente un inconvénient car le
-    caractère aléatoire de cette source n'est pas vraiment fort, et au
-    démarrage (lorsque la structure d'échanges n'est pas encore
-    disponible), cette source ne produit que quelques octets d'entropie.
-    Vous devez donc toujours utiliser une source de déclenchement
+    <p>Cette source de déclenchement intégrée est toujours disponible.  Son
+    utilisation consomme un minimum de cycles CPU en cours d'exécution, et son
+    utilisation ne présente de ce fait aucun problème. La source utilisée pour
+    déclencher le PRNG contient la date courante, l'identifiant du processus
+    courant et un extrait de 128 octets aléatoirement choisi dans la pile. Ceci
+    présente un inconvénient car le caractère aléatoire de cette source n'est
+    pas vraiment fort, et au démarrage (lorsque la structure d'échanges n'est
+    pas encore disponible), cette source ne produit que quelques octets
+    d'entropie.  Vous devez donc toujours utiliser une source de déclenchement
     additionnelle, au moins pour le démarrage.</p></li>
 <li><code>file:/chemin/vers/source</code>
     <p>

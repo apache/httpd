@@ -30,8 +30,6 @@
 <a href="../fr/mod/mod_proxy.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_proxy.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Serveur mandataire/passerelle multi-protocole</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>proxy_module</td></tr>
@@ -1459,8 +1457,15 @@ ProxyPass "/mirror/foo" "http://backend.example.com"</pre>
          <tr><td>S: le serveur cible est arrêté.</td></tr>
          <tr><td>I: le serveur cible est en mode "erreurs ignorées",
 	 et sera toujours considéré comme disponible.</td></tr>
+	 <tr><td>R: Le serveur cible sert de remplaçant à
+	 chaud. Lorsqu'un serveur cible avec un lbset donné est inutilisable
+	 (maintenance, arrêt, en erreur, etc...), un serveur de remplacement à
+	 chaud libre de même lbset sera utilisé à sa place. Les remplaçants à
+	 chaud permettent de s'assurer qu'un nombre déterminé de serveurs cibles
+	 sera toujours disponible pour un répartiteur de charge.</td></tr>
          <tr><td>H: le serveur cible est en mode d'attente et ne sera
-	 utilisé que si aucun autre serveur n'est disponible.</td></tr>
+	 utilisé que si aucun autre serveur ou remplaçant à chaud n'est
+	 disponible dans le jeu de serveurs cibles.</td></tr>
          <tr><td>E: le serveur cible est en erreur.</td></tr>
          <tr><td>N: le serveur cible est en mode vidage, n'acceptera que
 	 les sessions persistantes qui lui appartiennent, et refusera
@@ -1642,8 +1647,27 @@ ProxyPass "/" "balancer://mycluster/" stickysession=JSESSIONID|jsessionid nofail
 &lt;/Proxy&gt;</pre>
 
 
+    <p>La définition de remplaçants à chaud permet de s'assurer qu'un nombre
+    déterminé de serveurs sera toujours disponible dans le jeu de serveurs
+    cibles :</p>
+    <pre class="prettyprint lang-config">ProxyPass "/" "balancer://sparecluster/"
+&lt;Proxy balancer://sparecluster&gt;
+    BalancerMember ajp://1.2.3.4:8009
+    BalancerMember ajp://1.2.3.5:8009
+    # Les serveurs ci-dessous sont des remplaçants à chaud. Pour chaque serveur
+    # ci-dessus qui viendrait à être inutilisable (maintenance, arrêt, non
+    # contactable, en erreur, etc...), un de ces remplaçants à chaud prendra sa
+    # place. Deux serveurs seront toujours disponibles pour traiter une requête
+    # (à moins qu'un ou plusieurs remplaçant à chaud soit lui aussi
+    # indisponible).
+    BalancerMember ajp://1.2.3.6:8009 status=+R
+    BalancerMember ajp://1.2.3.7:8009 status=+R
+&lt;/Proxy&gt;</pre>
+
+
     <p>Configuration d'un serveur cible de réserve qui ne sera utilisé que si
-    aucun autre serveur cible n'est disponible</p>
+    aucun autre serveur cible ou remplaçant à chaud n'est disponible dans le jeu
+    de serveurs cibles :</p>
     <pre class="prettyprint lang-config">ProxyPass "/" "balancer://hotcluster/"
 &lt;Proxy "balancer://hotcluster"&gt;
     BalancerMember "ajp://1.2.3.4:8009" loadfactor=1
