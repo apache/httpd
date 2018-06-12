@@ -5455,10 +5455,14 @@ static void core_child_init(apr_pool_t *pchild, server_rec *s)
     /* The MPMs use plain fork() and not apr_proc_fork(), so we have to
      * take care of the random generator manually in the child.
      */
-#if USE_APR_CRYPTO_PRNG
-    apr_crypto_prng_after_fork();
-#else
     apr_proc_t proc;
+
+    memset(&proc, 0, sizeof(proc));
+    proc.pid = getpid();
+
+#if USE_APR_CRYPTO_PRNG
+    apr_crypto_prng_after_fork(&proc);
+#else
 #if APR_HAS_THREADS
     int threaded_mpm;
     if (ap_mpm_query(AP_MPMQ_IS_THREADED, &threaded_mpm) == APR_SUCCESS
@@ -5466,9 +5470,8 @@ static void core_child_init(apr_pool_t *pchild, server_rec *s)
     {
         apr_thread_mutex_create(&rng_mutex, APR_THREAD_MUTEX_DEFAULT, pchild);
     }
-    proc.pid = getpid();
-    apr_random_after_fork(&proc);
 #endif
+    apr_random_after_fork(&proc);
 #endif /* USE_APR_CRYPTO_PRNG */
 }
 
