@@ -915,12 +915,12 @@ static size_t subst_str(link_ctx *ctx, int start, int end, const char *ns)
     nlen = (int)strlen(ns);
     delta = nlen - olen;
     plen = ctx->slen + delta + 1;
-    p = apr_pcalloc(ctx->pool, plen);
+    p = apr_palloc(ctx->pool, plen);
     memcpy(p, ctx->s, start);
     memcpy(p + start, ns, nlen);
     strcpy(p + start + nlen, ctx->s + end);
     ctx->s = p;
-    ctx->slen = (int)strlen(p);
+    ctx->slen = plen - 1;   /* (int)strlen(p) */
     if (ctx->i >= end) {
         ctx->i += delta;
     }
