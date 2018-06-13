@@ -22,7 +22,8 @@
 #include "apr_thread_proc.h"    /* for RLIMIT stuff */
 
 #include "apr_crypto.h"
-#if defined(APU_HAVE_CRYPTO_PRNG) && APU_HAVE_CRYPTO_PRNG
+#if defined(APU_HAVE_CRYPTO) && APU_HAVE_CRYPTO && \
+    defined(APU_HAVE_CRYPTO_PRNG) && APU_HAVE_CRYPTO_PRNG
 #define USE_APR_CRYPTO_PRNG 1
 #else
 #define USE_APR_CRYPTO_PRNG 0
@@ -5504,14 +5505,8 @@ AP_CORE_DECLARE(void) ap_init_rng(apr_pool_t *p)
     apr_status_t rv;
 
 #if USE_APR_CRYPTO_PRNG
-    {
-        int flags = 0;
-#if APR_HAS_THREADS
-        flags = APR_CRYPTO_PRNG_PER_THREAD;
-#endif
-        rv = apr_crypto_prng_init(p, 0, NULL, flags);
-    }
-#else /* USE_APR_CRYPTO_PRNG */
+    rv = apr_crypto_init(p);
+#else
     {
         unsigned char seed[8];
         rng = apr_random_standard_new(p);
