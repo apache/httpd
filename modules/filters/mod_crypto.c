@@ -1197,7 +1197,7 @@ crypto_init(apr_pool_t * p, apr_pool_t * plog,
             apr_status_t rv;
 
             rv = apr_crypto_init(p);
-            if (APR_SUCCESS != rv) {
+            if (APR_SUCCESS != rv && APR_EREINIT != rv) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
                              APLOGNO(03427) "APR crypto could not be initialised");
                 return rv;

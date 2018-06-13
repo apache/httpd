@@ -32,6 +32,16 @@
 #include "ap_provider.h"
 #include "http_config.h"
 
+#include "apr_crypto.h"
+#include "apr_version.h"
+#if APR_VERSION_AT_LEAST(2,0,0) && \
+    defined(APU_HAVE_CRYPTO) && APU_HAVE_CRYPTO && \
+    defined(APU_HAVE_OPENSSL) && APU_HAVE_OPENSSL
+#define USE_APR_CRYPTO_LIB_INIT 1
+#else
+#define USE_APR_CRYPTO_LIB_INIT 0
+#endif
+
 #include "mod_proxy.h" /* for proxy_hook_section_post_config() */
 
 #include <assert.h>
@@ -392,6 +402,10 @@ static int ssl_hook_pre_config(apr_pool_t *pconf,
                                apr_pool_t *plog,
                                apr_pool_t *ptemp)
 {
+#if USE_APR_CRYPTO_LIB_INIT
+    apr_status_t rv;
+#endif
+
 #if HAVE_VALGRIND
     ssl_running_on_valgrind = RUNNING_ON_VALGRIND;
 #endif
@@ -404,22 +418,50 @@ static int ssl_hook_pre_config(apr_pool_t *pconf,
     ssl_util_thread_id_setup(pconf);
 #endif
 
-    /* We must register the library in full, to ensure our configuration
-     * code can successfully test the SSL environment.
-     */
+#if USE_APR_CRYPTO_LIB_INIT
+    /* When mod_ssl is builtin, no need to unload openssl on restart */
+    rv = apr_crypto_lib_init("openssl", NULL, NULL,
+                             modssl_running_statically ? ap_pglobal : pconf);
+    if (rv == APR_SUCCESS || rv == APR_EREINIT) {
+        /* apr_crypto inits libcrypto only, so in any case init libssl here,
+         * each time if openssl is unloaded with pconf, but only once if
+         * mod_ssl is builtin.
+         */
+        if (!modssl_running_statically
+                || !ap_retained_data_get("ssl_hook_pre_config")) {
+            if (modssl_running_statically) {
+                ap_retained_data_create("ssl_hook_pre_config", 1);
+            }
+            SSL_load_error_strings();
+            SSL_library_init();
+        }
+    }
+    else
+#endif
+    {
+        /* We must register the library in full, to ensure our configuration
+         * code can successfully test the SSL environment.
+         */
 #if MODSSL_USE_OPENSSL_PRE_1_1_API || defined(LIBRESSL_VERSION_NUMBER)
-    (void)CRYPTO_malloc_init();
+        CRYPTO_malloc_init();
 #else
-    OPENSSL_malloc_init();
+        OPENSSL_malloc_init();
 #endif
-    ERR_load_crypto_strings();
-    SSL_load_error_strings();
-    SSL_library_init();
+        ERR_load_crypto_strings();
 #if HAVE_ENGINE_LOAD_BUILTIN_ENGINES
-    ENGINE_load_builtin_engines();
+        ENGINE_load_builtin_engines();
 #endif
-    OpenSSL_add_all_algorithms();
-    OPENSSL_load_builtin_modules();
+        OpenSSL_add_all_algorithms();
+        OPENSSL_load_builtin_modules();
+        SSL_load_error_strings();
+        SSL_library_init();
+
+        /*
+         * Let us cleanup the ssl library when the module is unloaded
+         */
+        apr_pool_cleanup_register(pconf, NULL, ssl_cleanup_pre_config,
+                                               apr_pool_cleanup_null);
+    }
 
     if (OBJ_txt2nid("id-on-dnsSRV") == NID_undef) {
         (void)OBJ_create("1.3.6.1.5.5.7.8.7", "id-on-dnsSRV",
@@ -428,12 +470,6 @@ static int ssl_hook_pre_config(apr_pool_t *pconf,
 
     /* Start w/o errors (e.g. OBJ_txt2nid() above) */
     ERR_clear_error();
-
-    /*
-     * Let us cleanup the ssl library when the module is unloaded
-     */
-    apr_pool_cleanup_register(pconf, NULL, ssl_cleanup_pre_config,
-                                           apr_pool_cleanup_null);
 
     /* Register us to handle mod_log_config %c/%x variables */
     ssl_var_log_config_register(pconf);
