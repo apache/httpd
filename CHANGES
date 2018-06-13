@@ -1675,7 +1675,7 @@ Changes with Apache 2.4.13 (not released)
      [Jan Kaluza]
 
   *) core_filters: Restore/disable TCP_NOPUSH option after non-blocking
-     sendfile.  [Yann Ylavic]
+     sendfile.  PR 53253.  [Yann Ylavic]
 
   *) mod_buffer: Forward flushed input data immediately and avoid (unlikely)
      access to freed memory. [Yann Ylavic, Christophe Jaillet]
