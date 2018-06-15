@@ -51,7 +51,8 @@ APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(ssl, SSL, int, init_server,
 #define KEYTYPES "RSA or DSA"
 #endif
 
-#if MODSSL_USE_OPENSSL_PRE_1_1_API
+#if MODSSL_USE_OPENSSL_PRE_1_1_API && (!defined(LIBRESSL_VERSION_NUMBER) || \
+                                       LIBRESSL_VERSION_NUMBER < 0x2070000f)
 /* OpenSSL Pre-1.1.0 compatibility */
 /* Taken from OpenSSL 1.1.0 snapshot 20160410 */
 static int DH_set0_pqg(DH *dh, BIGNUM *p, BIGNUM *q, BIGNUM *g)
@@ -543,8 +544,7 @@ static apr_status_t ssl_init_ctx_tls_extensions(server_rec *s,
 }
 #endif
 
-#if OPENSSL_VERSION_NUMBER < 0x10100000L || \
-	(defined(LIBRESSL_VERSION_NUMBER) && LIBRESSL_VERSION_NUMBER < 0x20800000L)
+#if MODSSL_USE_OPENSSL_PRE_1_1_API
 /*
  * Enable/disable SSLProtocol. If the mod_ssl enables protocol
  * which is disabled by default by OpenSSL, show a warning.
@@ -582,8 +582,7 @@ static apr_status_t ssl_init_ctx_protocol(server_rec *s,
     char *cp;
     int protocol = mctx->protocol;
     SSLSrvConfigRec *sc = mySrvConfig(s);
-#if OPENSSL_VERSION_NUMBER >= 0x10100000L  && \
-	(!defined(LIBRESSL_VERSION_NUMBER) || LIBRESSL_VERSION_NUMBER >= 0x20800000L)
+#if !MODSSL_USE_OPENSSL_PRE_1_1_API
     int prot;
 #endif
 
@@ -663,8 +662,7 @@ static apr_status_t ssl_init_ctx_protocol(server_rec *s,
 
     SSL_CTX_set_options(ctx, SSL_OP_ALL);
 
-#if OPENSSL_VERSION_NUMBER < 0x10100000L  || \
-	(defined(LIBRESSL_VERSION_NUMBER) && LIBRESSL_VERSION_NUMBER < 0x20800000L)
+#if MODSSL_USE_OPENSSL_PRE_1_1_API
     /* always disable SSLv2, as per RFC 6176 */
     SSL_CTX_set_options(ctx, SSL_OP_NO_SSLv2);
 
@@ -685,7 +683,7 @@ static apr_status_t ssl_init_ctx_protocol(server_rec *s,
     ssl_set_ctx_protocol_option(s, ctx, SSL_OP_NO_TLSv1_3,
                                 protocol & SSL_PROTOCOL_TLSV1_3, "TLSv1.3");
 #endif
-#endif
+#endif /* MODSSL_USE_OPENSSL_PRE_1_1_API */
 
 #else /* #if OPENSSL_VERSION_NUMBER < 0x10100000L */
     /* We first determine the maximum protocol version we should provide */
