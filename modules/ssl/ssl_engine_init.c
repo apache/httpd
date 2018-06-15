@@ -639,7 +639,7 @@ static apr_status_t ssl_init_ctx_protocol(server_rec *s,
             TLSv1_2_client_method() : /* proxy */
             TLSv1_2_server_method();  /* server */
     }
-#ifdef SSL_OP_NO_TLSv1_3
+#if SSL_HAVE_PROTOCOL_TLSV1_3
     else if (protocol == SSL_PROTOCOL_TLSV1_3) {
         method = mctx->pkp ?
             TLSv1_3_client_method() : /* proxy */
@@ -681,7 +681,7 @@ static apr_status_t ssl_init_ctx_protocol(server_rec *s,
 
     ssl_set_ctx_protocol_option(s, ctx, SSL_OP_NO_TLSv1_2,
                                 protocol & SSL_PROTOCOL_TLSV1_2, "TLSv1.2");
-#ifdef SSL_OP_NO_TLSv1_3
+#if SSL_HAVE_PROTOCOL_TLSV1_3
     ssl_set_ctx_protocol_option(s, ctx, SSL_OP_NO_TLSv1_3,
                                 protocol & SSL_PROTOCOL_TLSV1_3, "TLSv1.3");
 #endif
@@ -689,7 +689,7 @@ static apr_status_t ssl_init_ctx_protocol(server_rec *s,
 
 #else /* #if OPENSSL_VERSION_NUMBER < 0x10100000L */
     /* We first determine the maximum protocol version we should provide */
-#ifdef SSL_OP_NO_TLSv1_3
+#if SSL_HAVE_PROTOCOL_TLSV1_3
     if (SSL_HAVE_PROTOCOL_TLSV1_3 && (protocol & SSL_PROTOCOL_TLSV1_3)) {
         prot = TLS1_3_VERSION;
     } else
@@ -715,7 +715,7 @@ static apr_status_t ssl_init_ctx_protocol(server_rec *s,
 
     /* Next we scan for the minimal protocol version we should provide,
      * but we do not allow holes between max and min */
-#ifdef SSL_OP_NO_TLSv1_3
+#if SSL_HAVE_PROTOCOL_TLSV1_3
     if (prot == TLS1_3_VERSION && protocol & SSL_PROTOCOL_TLSV1_2) {
         prot = TLS1_2_VERSION;
     }
@@ -944,7 +944,7 @@ static apr_status_t ssl_init_ctx_cipher_suite(server_rec *s,
         ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
         return ssl_die(s);
     }
-#ifdef SSL_OP_NO_TLSv1_3
+#if SSL_HAVE_PROTOCOL_TLSV1_3
     if (mctx->auth.tls13_ciphers 
         && !SSL_CTX_set_ciphersuites(ctx, mctx->auth.tls13_ciphers)) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10127)

@@ -1126,7 +1126,7 @@ static int ssl_hook_Access_classic(request_rec *r, SSLSrvConfigRec *sc, SSLDirCo
     return DECLINED;
 }
 
-#ifdef SSL_OP_NO_TLSv1_3
+#if SSL_HAVE_PROTOCOL_TLSV1_3
 /*
  *  Access Handler, modern flavour, for SSL/TLS v1.3 and onward. 
  *  Only client certificates can be requested, everything else stays.
@@ -1305,7 +1305,7 @@ int ssl_hook_Access(request_rec *r)
         return DECLINED;
     }
 
-#ifdef SSL_OP_NO_TLSv1_3
+#if SSL_HAVE_PROTOCOL_TLSV1_3
     /* TLSv1.3+ is less complicated here. Branch off into a new codeline
      * and avoid messing with the past. */
     if (SSL_version(ssl) >= TLS1_3_VERSION) {

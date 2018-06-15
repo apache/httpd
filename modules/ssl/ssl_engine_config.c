@@ -881,7 +881,7 @@ const char *ssl_cmd_SSLCipherSuite(cmd_parms *cmd,
         }
         return NULL;
     }
-#ifdef SSL_OP_NO_TLSv1_3
+#if SSL_HAVE_PROTOCOL_TLSV1_3
     else if (!strcmp("TLSv1.3", arg1)) {
         if (cmd->path) {
             return "TLSv1.3 ciphers cannot be set inside a directory context";
@@ -1645,7 +1645,7 @@ const char *ssl_cmd_SSLProxyCipherSuite(cmd_parms *cmd,
         dc->proxy->auth.cipher_suite = arg2;
         return NULL;
     }
-#ifdef SSL_OP_NO_TLSv1_3
+#if SSL_HAVE_PROTOCOL_TLSV1_3
     else if (!strcmp("TLSv1.3", arg1)) {
         dc->proxy->auth.tls13_ciphers = arg2;
         return NULL;
@@ -2528,7 +2528,7 @@ static void modssl_auth_ctx_dump(modssl_auth_ctx_t *auth, apr_pool_t *p, int pro
                                  apr_file_t *out, const char *indent, const char **psep)
 {
     DMP_STRING(proxy? "SSLProxyCipherSuite" : "SSLCipherSuite", auth->cipher_suite);
-#ifdef SSL_OP_NO_TLSv1_3
+#if SSL_HAVE_PROTOCOL_TLSV1_3
     if (auth->tls13_ciphers) {
         DMP_STRING(proxy? "SSLProxyCipherSuite" : "SSLCipherSuite", 
             apr_pstrcat(p, "TLSv1.3 ", auth->tls13_ciphers, NULL));
