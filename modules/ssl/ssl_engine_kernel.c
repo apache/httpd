@@ -2238,31 +2238,43 @@ void ssl_callback_Info(const SSL *ssl, int where, int rc)
 {
     conn_rec *c;
     server_rec *s;
-    SSLConnRec *scr;
 
     /* Retrieve the conn_rec and the associated SSLConnRec. */
     if ((c = (conn_rec *)SSL_get_app_data((SSL *)ssl)) == NULL) {
         return;
     }
 
-    if ((scr = myConnConfig(c)) == NULL) {
-        return;
-    }
+    /* With TLS 1.3 this callback may be called multiple times on the first
+     * negotiation, so the below logic to detect renegotiations can't work.
+     * Fortunately renegotiations are forbidden starting with TLS 1.3, and
+     * this is enforced by OpenSSL so there's nothing to be done here.
+     */
+#if SSL_HAVE_PROTOCOL_TLSV1_3
+    if (SSL_version(ssl) < TLS1_3_VERSION)
+#endif
+    {
+        SSLConnRec *sslconn;
 
-    /* If the reneg state is to reject renegotiations, check the SSL
-     * state machine and move to ABORT if a Client Hello is being
-     * read. */
-    if (!scr->is_proxy &&
-        (where & SSL_CB_HANDSHAKE_START) &&
-        scr->reneg_state == RENEG_REJECT) {
-            scr->reneg_state = RENEG_ABORT;
+        if ((sslconn = myConnConfig(c)) == NULL) {
+            return;
+        }
+
+        /* If the reneg state is to reject renegotiations, check the SSL
+         * state machine and move to ABORT if a Client Hello is being
+         * read. */
+        if (!sslconn->is_proxy &&
+                (where & SSL_CB_HANDSHAKE_START) &&
+                sslconn->reneg_state == RENEG_REJECT) {
+            sslconn->reneg_state = RENEG_ABORT;
             ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(02042)
                           "rejecting client initiated renegotiation");
-    }
-    /* If the first handshake is complete, change state to reject any
-     * subsequent client-initiated renegotiation. */
-    else if ((where & SSL_CB_HANDSHAKE_DONE) && scr->reneg_state == RENEG_INIT) {
-        scr->reneg_state = RENEG_REJECT;
+        }
+        /* If the first handshake is complete, change state to reject any
+         * subsequent client-initiated renegotiation. */
+        else if ((where & SSL_CB_HANDSHAKE_DONE)
+                 && sslconn->reneg_state == RENEG_INIT) {
+            sslconn->reneg_state = RENEG_REJECT;
+        }
     }
 
     s = mySrvFromConn(c);
