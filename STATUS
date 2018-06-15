@@ -132,6 +132,8 @@ RELEASE SHOWSTOPPERS:
                   https://svn.apache.org/r1832479
      2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-balancer_slotmem-v2.patch
      +1: ylavic, jim
+     +.75: druggeri - applied/tested clean, but I don't think test suite covers this
+           Any chance a test case can be built for this?
 
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
