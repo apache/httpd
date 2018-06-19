@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.34
 
+  *) http: Fix small memory leak per request when handling persistent
+     connections.  [Ruediger Pluem, Joe Orton]
+
   *) mod_proxy_html: Fix variable interpolation and memory allocation failure
      in ProxyHTMLURLMap.  [Ewald Dieterich <ewald mailbox.org>]
 

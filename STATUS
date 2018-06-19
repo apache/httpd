@@ -141,11 +141,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) http: Fix small memory leak per request when handling persistent connections
-     trunk patch: http://svn.apache.org/r1833014
-     2.4.x patch: trunk works (modulo CHANGES)
-                  svn merge -c 1833014 ^/httpd/httpd/trunk . 
-     +1: jorton, covener, jim
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
