@@ -141,6 +141,19 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_proxy_html: Fix variable interpolation and memory allocation failure
+     in ProxyHTMLURLMap. PR 62344.
+     trunk patch: http://svn.apache.org/r1830746
+     2.4.x patch: svn merge -c 1830746 ^/httpd/httpd/trunk .
+                  (trunk works modulo CHANGES))
+     +1: ylavic, jailletc36, jim
+
+  *) http: Fix small memory leak per request when handling persistent connections
+     trunk patch: http://svn.apache.org/r1833014
+     2.4.x patch: trunk works (modulo CHANGES)
+                  svn merge -c 1833014 ^/httpd/httpd/trunk . 
+     +1: jorton, covener, jim
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -185,13 +198,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   (trunk works modulo CHANGES))
      +1: ylavic, jim
 
-  *) mod_proxy_html: Fix variable interpolation and memory allocation failure
-     in ProxyHTMLURLMap. PR 62344.
-     trunk patch: http://svn.apache.org/r1830746
-     2.4.x patch: svn merge -c 1830746 ^/httpd/httpd/trunk .
-                  (trunk works modulo CHANGES))
-     +1: ylavic, jailletc36, jim
-
   *) mod_proxy: Fix a corner case where the ProxyPassReverseCookieDomain or
      ProxyPassReverseCookiePath directive could fail to update correctly 
      'domain=' or 'path=' in the 'Set-Cookie' header.  PR 61560.
@@ -202,12 +208,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      jailletc36: 'ap_proxy_strmatch_domain' and 'ap_proxy_strmatch_path' are
      now useless.  They could be axed, but maybe, not in 2.4.x (even if I
      don't imagine any 3rd party proxy module to use it)
-
-  *) http: Fix small memory leak per request when handling persistent connections
-     trunk patch: http://svn.apache.org/r1833014
-     2.4.x patch: trunk works (modulo CHANGES)
-                  svn merge -c 1833014 ^/httpd/httpd/trunk . 
-     +1: jorton, covener, jim
 
   *) log: add server_rec to some log.c fatal startup errors so they aren't
           lost when using syslog. 
