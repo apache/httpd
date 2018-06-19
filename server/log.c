@@ -185,14 +185,14 @@ AP_DECLARE(apr_status_t) ap_replace_stderr_log(apr_pool_t *p,
     char *filename = ap_server_root_relative(p, fname);
     if (!filename) {
         ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_CRIT,
-                     APR_EBADPATH, NULL, APLOGNO(00085) "Invalid -E error log file %s",
+                     APR_EBADPATH, ap_server_conf, APLOGNO(00085) "Invalid -E error log file %s",
                      fname);
         return APR_EBADPATH;
     }
     if ((rc = apr_file_open(&stderr_file, filename,
                             APR_APPEND | APR_WRITE | APR_CREATE | APR_LARGEFILE,
                             APR_OS_DEFAULT, p)) != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_STARTUP, rc, NULL, APLOGNO(00086)
+        ap_log_error(APLOG_MARK, APLOG_STARTUP, rc, ap_server_conf, APLOGNO(00086)
                      "%s: could not open error log file %s.",
                      ap_server_argv0, fname);
         return rc;
@@ -324,7 +324,7 @@ static int open_error_log(server_rec *s, int is_main, apr_pool_t *p)
          * child inherits the parents stderr. */
         rc = log_child(p, fname, &dummy, cmdtype, is_main);
         if (rc != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_STARTUP, rc, NULL, APLOGNO(00089)
+            ap_log_error(APLOG_MARK, APLOG_STARTUP, rc, ap_server_conf, APLOGNO(00089)
                          "Couldn't start ErrorLog process '%s'.",
                          s->error_fname + 1);
             return DONE;
@@ -343,7 +343,7 @@ static int open_error_log(server_rec *s, int is_main, apr_pool_t *p)
     else {
         fname = ap_server_root_relative(p, s->error_fname);
         if (!fname) {
-            ap_log_error(APLOG_MARK, APLOG_STARTUP, APR_EBADPATH, NULL, APLOGNO(00090)
+            ap_log_error(APLOG_MARK, APLOG_STARTUP, APR_EBADPATH, ap_server_conf, APLOGNO(00090)
                          "%s: Invalid error log path %s.",
                          ap_server_argv0, s->error_fname);
             return DONE;
@@ -351,7 +351,7 @@ static int open_error_log(server_rec *s, int is_main, apr_pool_t *p)
         if ((rc = apr_file_open(&s->error_log, fname,
                                APR_APPEND | APR_WRITE | APR_CREATE | APR_LARGEFILE,
                                APR_OS_DEFAULT, p)) != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_STARTUP, rc, NULL, APLOGNO(00091)
+            ap_log_error(APLOG_MARK, APLOG_STARTUP, rc, ap_server_conf, APLOGNO(00091)
                          "%s: could not open error log file %s.",
                          ap_server_argv0, fname);
             return DONE;
@@ -1532,7 +1532,7 @@ AP_DECLARE(void) ap_log_pid(apr_pool_t *p, const char *filename)
     fname = ap_runtime_dir_relative(p, filename);
     if (!fname) {
         ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_CRIT, APR_EBADPATH,
-                     NULL, APLOGNO(00097) "Invalid PID file path %s, ignoring.", filename);
+                     ap_server_conf, APLOGNO(00097) "Invalid PID file path %s, ignoring.", filename);
         return;
     }
 
@@ -1585,7 +1585,7 @@ AP_DECLARE(apr_status_t) ap_read_pid(apr_pool_t *p, const char *filename,
     fname = ap_runtime_dir_relative(p, filename);
     if (!fname) {
         ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_CRIT, APR_EBADPATH,
-                     NULL, APLOGNO(00101) "Invalid PID file path %s, ignoring.", filename);
+                     ap_server_conf, APLOGNO(00101) "Invalid PID file path %s, ignoring.", filename);
         return APR_EGENERAL;
     }
 
@@ -1657,7 +1657,7 @@ static apr_status_t piped_log_spawn(piped_log *pl)
          != APR_SUCCESS) ||
         ((status = apr_procattr_error_check_set(procattr, 1)) != APR_SUCCESS)) {
         /* Something bad happened, give up and go away. */
-        ap_log_error(APLOG_MARK, APLOG_STARTUP, status, NULL, APLOGNO(00103)
+        ap_log_error(APLOG_MARK, APLOG_STARTUP, status, ap_server_conf, APLOGNO(00103)
                      "piped_log_spawn: unable to setup child process '%s'",
                      pl->program);
     }
@@ -1682,7 +1682,7 @@ static apr_status_t piped_log_spawn(piped_log *pl)
         }
         else {
             /* Something bad happened, give up and go away. */
-            ap_log_error(APLOG_MARK, APLOG_STARTUP, status, NULL, APLOGNO(00104)
+            ap_log_error(APLOG_MARK, APLOG_STARTUP, status, ap_server_conf, APLOGNO(00104)
                          "unable to start piped log program '%s'",
                          pl->program);
         }
@@ -1812,7 +1812,7 @@ AP_DECLARE(piped_log *) ap_open_piped_log_ex(apr_pool_t *p,
 
     rc = log_child(p, program, &dummy, cmdtype, 0);
     if (rc != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_STARTUP, rc, NULL, APLOGNO(00108)
+        ap_log_error(APLOG_MARK, APLOG_STARTUP, rc, ap_server_conf, APLOGNO(00108)
                      "Couldn't start piped log process '%s'.",
                      (program == NULL) ? "NULL" : program);
         return NULL;
