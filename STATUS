@@ -195,7 +195,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      'domain=' or 'path=' in the 'Set-Cookie' header.  PR 61560.
      trunk patch: http://svn.apache.org/r1832280
      2.4.x patch: trunk works (module CHANGES)
-                  svn merge -c 1832280 ^/httpd/httpd/trunk
+                  svn merge -c 1832280 ^/httpd/httpd/trunk . 
      +1: jailletc36
      jailletc36: 'ap_proxy_strmatch_domain' and 'ap_proxy_strmatch_path' are
      now useless.  They could be axed, but maybe, not in 2.4.x (even if I
@@ -204,7 +204,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) http: Fix small memory leak per request when handling persistent connections
      trunk patch: http://svn.apache.org/r1833014
      2.4.x patch: trunk works (modulo CHANGES)
-                  svn merge -c 1833014 ^/httpd/httpd/trunk
+                  svn merge -c 1833014 ^/httpd/httpd/trunk . 
      +1: jorton, covener
 
   *) log: add server_rec to some log.c fatal startup errors so they aren't
