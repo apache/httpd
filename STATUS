@@ -141,6 +141,13 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) log: add server_rec to some log.c fatal startup errors so they aren't
+          lost when using syslog. 
+     trunk patch: http://svn.apache.org/r1833827 
+     2.4.x patch: trunk works (needs CHANGES in 2.4)
+                  svn merge -c 1833827 ^/httpd/httpd/trunk . 
+     +1: covener, jim, rjung
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -196,13 +203,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      jailletc36: 'ap_proxy_strmatch_domain' and 'ap_proxy_strmatch_path' are
      now useless.  They could be axed, but maybe, not in 2.4.x (even if I
      don't imagine any 3rd party proxy module to use it)
-
-  *) log: add server_rec to some log.c fatal startup errors so they aren't
-          lost when using syslog. 
-     trunk patch: http://svn.apache.org/r1833827 
-     2.4.x patch: trunk works (needs CHANGES in 2.4)
-                  svn merge -c 1833827 ^/httpd/httpd/trunk . 
-     +1: covener, jim
 
   *) mod_cache: Handle case of invalid Expires header RFC compliant
                 like the case of an Expires time in the past.
