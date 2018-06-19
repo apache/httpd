@@ -29,7 +29,7 @@ Release history:
     [NOTE that x.{odd}.z versions are strictly Alpha/Beta releases,
           while x.{even}.z versions are Stable/GA releases.]
 
-    2.4.34  : In development. Jim proposes T&R ~ June 4 and offers
+    2.4.34  : In development. Jim proposes T&R ~ July 4 and offers
               to RM.
     2.4.33  : Tagged on March 17, 2018. Released on March 21, 2018.
     2.4.32  : Tagged on March 09, 2018. Distributed on March 15, 2018,
@@ -134,6 +134,8 @@ RELEASE SHOWSTOPPERS:
      +1: ylavic, jim
      +.75: druggeri - applied/tested clean, but I don't think test suite covers this
            Any chance a test case can be built for this?
+           jim - The test case would need to replicate the trigger, which would be
+                  graceful restarts... it would be tough.
 
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
@@ -181,14 +183,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1830523
      2.4.x patch: svn merge -c 1829038,1829039,1830523 ^/httpd/httpd/trunk .
                   (trunk works modulo CHANGES))
-     +1: ylavic,
+     +1: ylavic, jim
 
   *) mod_proxy_html: Fix variable interpolation and memory allocation failure
      in ProxyHTMLURLMap. PR 62344.
      trunk patch: http://svn.apache.org/r1830746
      2.4.x patch: svn merge -c 1830746 ^/httpd/httpd/trunk .
                   (trunk works modulo CHANGES))
-     +1: ylavic, jailletc36
+     +1: ylavic, jailletc36, jim
 
   *) mod_proxy: Fix a corner case where the ProxyPassReverseCookieDomain or
      ProxyPassReverseCookiePath directive could fail to update correctly 
@@ -205,14 +207,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1833014
      2.4.x patch: trunk works (modulo CHANGES)
                   svn merge -c 1833014 ^/httpd/httpd/trunk . 
-     +1: jorton, covener
+     +1: jorton, covener, jim
 
   *) log: add server_rec to some log.c fatal startup errors so they aren't
           lost when using syslog. 
      trunk patch: http://svn.apache.org/r1833827 
      2.4.x patch: trunk works (needs CHANGES in 2.4)
                   svn merge -c 1833827 ^/httpd/httpd/trunk . 
-     +1 covener   
+     +1: covener, jim
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
