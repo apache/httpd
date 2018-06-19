@@ -724,6 +724,12 @@ static const char *interpolate_vars(request_rec *r, const char *str)
             break;
 
         delim = ap_strchr_c(start, '|');
+
+        /* Restrict delim to ${...} */
+        if (delim && delim >= end) {
+            delim = NULL;
+        }
+
         before = apr_pstrndup(r->pool, str, start-str);
         after = end+1;
         if (delim) {
