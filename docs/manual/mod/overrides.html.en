@@ -613,7 +613,7 @@ a matching file with MultiViews</td></tr>
 <tr class="odd"><td><a href="mod_proxy_fcgi.html#proxyfcgisetenvif">ProxyFCGISetEnvIf</a></td><td class="module"><a href="mod_proxy_fcgi.html">mod_proxy_fcgi</a></td></tr>
 <tr class="odd"><td colspan="2" class="descr">Allow variables sent to FastCGI servers to be fixed up</td></tr>
 <tr><td><a href="mod_proxy_hcheck.html#proxyhcexpr">ProxyHCExpr</a></td><td class="module"><a href="mod_proxy_hcheck.html">mod_proxy_hcheck</a></td></tr>
-<tr><td colspan="2" class="descr">Creates a named condition expression to use to determine health of the backend based on its response.</td></tr>
+<tr><td colspan="2" class="descr">Creates a named condition expression to use to determine health of the backend based on its response</td></tr>
 <tr class="odd"><td><a href="mod_proxy_hcheck.html#proxyhctemplate">ProxyHCTemplate</a></td><td class="module"><a href="mod_proxy_hcheck.html">mod_proxy_hcheck</a></td></tr>
 <tr class="odd"><td colspan="2" class="descr">Creates a named template for setting various health check parameters</td></tr>
 <tr><td><a href="core.html#qualifyredirecturl">QualifyRedirectURL</a></td><td class="module"><a href="core.html">core</a></td></tr>

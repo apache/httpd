@@ -33,7 +33,10 @@
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>ratelimit_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_ratelimit.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td><code>rate-initial-burst</code> available in httpd 2.4.24 and later.</td></tr></table>
+<tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>
+    <code>rate-initial-burst</code> available in httpd 2.4.24 and later.
+    Rate limiting proxied content does not work correctly up to httpd 2.4.33.
+</td></tr></table>
 <h3>Summary</h3>
 
 
