@@ -212,7 +212,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1833876
      2.4.x patch: trunk works (needs CHANGES in 2.4)
                   svn merge -c 1833876 ^/httpd/httpd/trunk . 
-     +1: rjung
+     +1: rjung, ylavic
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
