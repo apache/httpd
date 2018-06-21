@@ -214,6 +214,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   svn merge -c 1833876 ^/httpd/httpd/trunk . 
      +1: rjung, ylavic
 
+  *) mod_proxy_wstunnel: Add default schema ports for 'ws' and 'wss'.
+     PR 62480.
+     trunk patch: http://svn.apache.org/r1834012
+                  http://svn.apache.org/r1834013
+     2.4.x patch: trunk works (modulo CHANGES in 2.4)
+     +1: jim
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
