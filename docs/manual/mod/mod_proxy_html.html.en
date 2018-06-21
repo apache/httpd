@@ -40,7 +40,7 @@ for earlier 2.x versions</td></tr></table>
 
 <p>This module provides an output filter to rewrite HTML links in a
 proxy situation, to ensure that links work for users outside the proxy.
-It serves the same purpose as Apache's ProxyPassReverse directive does
+It serves the same purpose as Apache's <code class="directive"><a href="../mod/mod_proxy.html#proxypassreverse">ProxyPassReverse</a></code> directive does
 for HTTP headers, and is an essential component of a reverse proxy.</p>
 
 <p>For example, if a company has an application server at
@@ -49,7 +49,7 @@ the company's internal network, and a public webserver
 <code>www.example.com</code>, they may wish to provide a gateway to the
 application server at <code>http://www.example.com/appserver/</code>.
 When the application server links to itself, those links need to be
-rewritten to work through the gateway. mod_proxy_html serves to rewrite
+rewritten to work through the gateway. <code class="module"><a href="../mod/mod_proxy_html.html">mod_proxy_html</a></code> serves to rewrite
 <code>&lt;a href="http://appserver.example.com/foo/bar.html"&gt;foobar&lt;/a&gt;</code> to
 <code>&lt;a href="http://www.example.com/appserver/foo/bar.html"&gt;foobar&lt;/a&gt;</code>
 making it accessible from outside.</p>
@@ -82,6 +82,7 @@ extensive <a href="http://apache.webthing.com/mod_proxy_html/">documentation</a>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets the buffer size increment for buffering inline scripts and
 stylesheets.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyHTMLBufSize <var>bytes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ProxyHTMLBufSize 8192</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_html</td></tr>
@@ -89,7 +90,7 @@ stylesheets.</td></tr>
 for earlier 2.x versions</td></tr>
 </table>
 <p>In order to parse non-HTML content (stylesheets and scripts) embedded
-in HTML documents, mod_proxy_html
+in HTML documents, <code class="module"><a href="../mod/mod_proxy_html.html">mod_proxy_html</a></code>
 has to read the entire script or stylesheet into a buffer.  This buffer will
 be expanded as necessary to hold the largest script or stylesheet in a page,
 in increments of <var>bytes</var> as set by this directive.</p>
@@ -137,7 +138,7 @@ according to the option selected.  This option also determines whether
 HTML or XHTML syntax is used for output.   Note that the format of the
 documents coming from the backend server is immaterial: the parser will
 deal with it automatically.  If the optional second argument is set to
-"Legacy", documents will be declared "Transitional", an option that may
+<code>Legacy</code>, documents will be declared "Transitional", an option that may
 be necessary if you are proxying pre-1998 content or working with defective
 authoring/publishing tools.</p>
 <p>In the second form, it will insert your own FPI.  The optional second
@@ -256,7 +257,7 @@ Only use them if you know you have a broken backend server.</p>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_html</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Version 2.4 and later; available as a third-party
-for earlier 2.x versions</td></tr>
+module for earlier 2.x versions</td></tr>
 </table>
     <p>This enables per-request interpolation in
     <code class="directive"><a href="#proxyhtmlurlmap">ProxyHTMLURLMap</a></code> to- and from- patterns.</p>
