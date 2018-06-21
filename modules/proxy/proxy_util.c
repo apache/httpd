@@ -3919,6 +3919,8 @@ static proxy_schemes_t pschemes[] =
     {"scgi",     SCGI_DEF_PORT},
     {"h2c",      DEFAULT_HTTP_PORT},
     {"h2",       DEFAULT_HTTPS_PORT},
+    {"ws",       DEFAULT_HTTP_PORT},
+    {"wss",      DEFAULT_HTTPS_PORT},
     { NULL, 0xFFFF }     /* unknown port */
 };
 
