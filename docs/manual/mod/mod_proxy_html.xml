@@ -34,7 +34,8 @@ for earlier 2.x versions</compatibility>
 <summary>
 <p>This module provides an output filter to rewrite HTML links in a
 proxy situation, to ensure that links work for users outside the proxy.
-It serves the same purpose as Apache's ProxyPassReverse directive does
+It serves the same purpose as Apache's <directive module="mod_proxy"
+>ProxyPassReverse</directive> directive does
 for HTTP headers, and is an essential component of a reverse proxy.</p>
 
 <p>For example, if a company has an application server at
@@ -43,7 +44,7 @@ the company's internal network, and a public webserver
 <code>www.example.com</code>, they may wish to provide a gateway to the
 application server at <code>http://www.example.com/appserver/</code>.
 When the application server links to itself, those links need to be
-rewritten to work through the gateway. mod_proxy_html serves to rewrite
+rewritten to work through the gateway. <module>mod_proxy_html</module> serves to rewrite
 <code>&lt;a href="http://appserver.example.com/foo/bar.html"&gt;foobar&lt;/a&gt;</code> to
 <code>&lt;a href="http://www.example.com/appserver/foo/bar.html"&gt;foobar&lt;/a&gt;</code>
 making it accessible from outside.</p>
@@ -223,7 +224,7 @@ in mod_proxy_html 3.x for HTTPD 2.0 and 2.2 is also supported.</p>
 <context>virtual host</context><context>directory</context>
 </contextlist>
 <compatibility>Version 2.4 and later; available as a third-party
-for earlier 2.x versions</compatibility>
+module for earlier 2.x versions</compatibility>
 
 <usage>
     <p>This enables per-request interpolation in
@@ -252,7 +253,7 @@ according to the option selected.  This option also determines whether
 HTML or XHTML syntax is used for output.   Note that the format of the
 documents coming from the backend server is immaterial: the parser will
 deal with it automatically.  If the optional second argument is set to
-"Legacy", documents will be declared "Transitional", an option that may
+<code>Legacy</code>, documents will be declared "Transitional", an option that may
 be necessary if you are proxying pre-1998 content or working with defective
 authoring/publishing tools.</p>
 <p>In the second form, it will insert your own FPI.  The optional second
@@ -345,6 +346,7 @@ filter chain if stripping comments!</p>
 <description>Sets the buffer size increment for buffering inline scripts and
 stylesheets.</description>
 <syntax>ProxyHTMLBufSize <var>bytes</var></syntax>
+<default>ProxyHTMLBufSize 8192</default>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
 </contextlist>
@@ -352,7 +354,7 @@ stylesheets.</description>
 for earlier 2.x versions</compatibility>
 <usage>
 <p>In order to parse non-HTML content (stylesheets and scripts) embedded
-in HTML documents, mod_proxy_html
+in HTML documents, <module>mod_proxy_html</module>
 has to read the entire script or stylesheet into a buffer.  This buffer will
 be expanded as necessary to hold the largest script or stylesheet in a page,
 in increments of <var>bytes</var> as set by this directive.</p>
