@@ -224,9 +224,12 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
     int do_alloc = (*s == NULL), saw_eos = 0;
     int fold = flags & AP_GETLINE_FOLD;
     int crlf = flags & AP_GETLINE_CRLF;
+    int nospc_eol = flags & AP_GETLINE_NOSPC_EOL;
+    int saw_eol = 0, saw_nospc = 0;
 
     if (!n) {
         /* Needs room for NUL byte at least */
+        *read = 0;
         return APR_BADARG;
     }
 
@@ -238,7 +241,7 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
     if (last_char)
         *last_char = '\0';
 
-    for (;;) {
+    do {
         apr_brigade_cleanup(bb);
         rv = ap_get_brigade(r->proto_input_filters, bb, AP_MODE_GETLINE,
                             APR_BLOCK_READ, 0);
@@ -282,8 +285,52 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
 
             /* Would this overrun our buffer?  If so, we'll die. */
             if (n < bytes_handled + len) {
-                rv = APR_ENOSPC;
-                goto cleanup;
+                /* Before we die, let's fill the buffer up to its limit (i.e.
+                 * fall through with the remaining length, if any), setting
+                 * saw_eol on LF to stop the outer loop appropriately; we may
+                 * come back here once the buffer is filled (no LF seen), and
+                 * either be done at that time or continue to wait for LF here
+                 * if nospc_eol is set.
+                 *
+                 * But there is also a corner cases which we want to address,
+                 * namely if the buffer is overrun by the final LF only (i.e.
+                 * the CR fits in); this is not really an overrun since we'll
+                 * strip the CR finally (and use it for NUL byte), but anyway
+                 * we have to handle the case so that it's not returned to the
+                 * caller as part of the truncated line (it's not!). This is
+                 * easier to consider that LF is out of counting and thus fall
+                 * through with no error (saw_eol is set to 2 so that we later
+                 * ignore LF handling already done here), while folding and
+                 * nospc_eol logics continue to work (or fail) appropriately.
+                 */
+                saw_eol = (str[len - 1] == APR_ASCII_LF);
+                if (/* First time around */
+                    saw_eol && !saw_nospc
+                    /*  Single LF completing the buffered CR, */
+                    && ((len == 1 && ((*s)[bytes_handled - 1] == APR_ASCII_CR))
+                    /*  or trailing CRLF overuns by LF only */
+                        || (len > 1 && str[len - 2] == APR_ASCII_CR
+                            && n - bytes_handled + 1 == len))) {
+                    /* In both cases *last_char is (to be) the CR stripped by
+                     * later 'bytes_handled = last_char - *s'.
+                     */
+                    saw_eol = 2;
+                }
+                else {
+                    /* In any other case we'd lose data. */
+                    rv = APR_ENOSPC;
+                    saw_nospc = 1;
+                }
+                len = n - bytes_handled;
+                if (!len) {
+                    if (saw_eol) {
+                        break;
+                    }
+                    if (nospc_eol) {
+                        continue;
+                    }
+                    goto cleanup;
+                }
             }
 
             /* Do we have to handle the allocation ourselves? */
@@ -322,18 +369,28 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
 
         /* If we got a full line of input, stop reading */
         if (last_char && (*last_char == APR_ASCII_LF)) {
-            break;
+            saw_eol = 1;
         }
+    } while (!saw_eol);
+
+    if (rv != APR_SUCCESS) {
+        /* End of line after APR_ENOSPC above */
+        goto cleanup;
     }
 
     /* Now terminate the string at the end of the line;
-     * if the last-but-one character is a CR, terminate there */
-    if (last_char > *s && last_char[-1] == APR_ASCII_CR) {
-        last_char--;
-    }
-    else if (crlf) {
-        rv = APR_EINVAL;
-        goto cleanup;
+     * if the last-but-one character is a CR, terminate there.
+     * LF is handled above (not accounted) when saw_eol == 2,
+     * the last char is CR to terminate at still.
+     */
+    if (saw_eol < 2) {
+        if (last_char > *s && last_char[-1] == APR_ASCII_CR) {
+            last_char--;
+        }
+        else if (crlf) {
+            rv = APR_EINVAL;
+            goto cleanup;
+        }
     }
     bytes_handled = last_char - *s;
 
@@ -407,8 +464,8 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
 
                     next_size = n - bytes_handled;
 
-                    rv = ap_rgetline_core(&tmp, next_size,
-                                          &next_len, r, 0, bb);
+                    rv = ap_rgetline_core(&tmp, next_size, &next_len, r,
+                                          flags & ~AP_GETLINE_FOLD, bb);
                     if (rv != APR_SUCCESS) {
                         goto cleanup;
                     }
@@ -442,22 +499,22 @@ cleanup:
     if (bytes_handled >= n) {
         bytes_handled = n - 1;
     }
+
+    *read = bytes_handled;
     if (*s) {
         /* ensure the string is NUL terminated */
-        (*s)[bytes_handled] = '\0';
-    }
-    *read = bytes_handled;
+        (*s)[*read] = '\0';
 
-    if (rv != APR_SUCCESS) {
-        return rv;
+        /* PR#43039: We shouldn't accept NULL bytes within the line */
+        bytes_handled = strlen(*s);
+        if (bytes_handled < *read) {
+            *read = bytes_handled;
+            if (rv == APR_SUCCESS) {
+                rv = APR_EINVAL;
+            }
+        }
     }
-
-    /* PR#43039: We shouldn't accept NULL bytes within the line */
-    if (strlen(*s) < bytes_handled) {
-        return APR_EINVAL;
-    }
-
-    return APR_SUCCESS;
+    return rv;
 }
 
 #if APR_CHARSET_EBCDIC

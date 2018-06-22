@@ -606,7 +606,9 @@ AP_DECLARE(apr_status_t) ap_get_basic_auth_components(const request_rec *r,
 AP_CORE_DECLARE(void) ap_parse_uri(request_rec *r, const char *uri);
 
 #define AP_GETLINE_FOLD 1 /* Whether to merge continuation lines */
-#define AP_GETLINE_CRLF 2 /*Whether line ends must be in the form CR LF */
+#define AP_GETLINE_CRLF 2 /* Whether line ends must be in the form CR LF */
+#define AP_GETLINE_NOSPC_EOL 4 /* Whether to consume up to and including the
+                                  end of line on APR_ENOSPC */
 
 /**
  * Get the next line of input for the request
