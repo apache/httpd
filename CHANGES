@@ -1,6 +1,17 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.34
 
+  *) mod_proxy_http: Fix response header thrown away after the previous one
+     was considered too large and truncated. PR 62196. [Yann Ylavic]
+
+  *) core: Add and handle AP_GETLINE_NOSPC_EOL flag for ap_getline() family
+     of functions to consume the end of line when the buffer is exhausted.
+     PR 62198. [Yann Ylavic]
+
+  *) mod_proxy_http: Add new worker parameter 'responsefieldsize' to
+     allow maximum HTTP response header size to be increased past 8192 
+     bytes.  PR62199.  [Hank Ibell <hwibell gmail.com>]
+
   *) mod_ssl: Extend SSLOCSPEnable with mode 'leaf' that only checks the leaf
      of a certificate chain.  PR62112.
      [Ricardo Martin Camarero <rickyepoderi yahoo.es>]

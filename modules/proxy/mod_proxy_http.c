@@ -28,6 +28,9 @@ static apr_status_t ap_proxy_http_cleanup(const char *scheme,
                                           request_rec *r,
                                           proxy_conn_rec *backend);
 
+static apr_status_t ap_proxygetline(apr_bucket_brigade *bb, char *s, int n,
+                                    request_rec *r, int flags, int *read);
+
 /*
  * Canonicalise http-like URLs.
  *  scheme is the scheme for the URL
@@ -1028,11 +1031,12 @@ static void ap_proxy_read_headers(request_rec *r, request_rec *rr,
 {
     int len;
     char *value, *end;
-    char field[MAX_STRING_LEN];
     int saw_headers = 0;
     void *sconf = r->server->module_config;
     proxy_server_conf *psc;
     proxy_dir_conf *dconf;
+    apr_status_t rc;
+    apr_bucket_brigade *tmp_bb;
 
     dconf = ap_get_module_config(r->per_dir_config, &proxy_module);
     psc = (proxy_server_conf *) ap_get_module_config(sconf, &proxy_module);
@@ -1047,8 +1051,29 @@ static void ap_proxy_read_headers(request_rec *r, request_rec *rr,
      */
     ap_log_rerror(APLOG_MARK, APLOG_TRACE4, 0, r,
                   "Headers received from backend:");
-    while ((len = ap_getline(buffer, size, rr, 1)) > 0) {
-        ap_log_rerror(APLOG_MARK, APLOG_TRACE4, 0, r, "%s", buffer);
+
+    tmp_bb = apr_brigade_create(r->pool, c->bucket_alloc);
+    while (1) {
+        rc = ap_proxygetline(tmp_bb, buffer, size, rr,
+                             AP_GETLINE_FOLD | AP_GETLINE_NOSPC_EOL, &len);
+
+        if (len <= 0)
+            break;
+
+        if (APR_STATUS_IS_ENOSPC(rc)) {
+            /* The header could not fit in the provided buffer, warn.
+             * XXX: falls through with the truncated header, 5xx instead?
+             */
+            int trunc = (len > 128 ? 128 : len) / 2;
+            ap_log_rerror(APLOG_MARK, APLOG_WARNING, rc, r, APLOGNO(10124)
+                    "header size is over the limit allowed by "
+                    "ResponseFieldSize (%d bytes). "
+                    "Bad response header: '%.*s[...]%s'",
+                    size, trunc, buffer, buffer + len - trunc);
+        }
+        else {
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE4, 0, r, "%s", buffer);
+        }
 
         if (!(value = strchr(buffer, ':'))) {     /* Find the colon separator */
 
@@ -1116,16 +1141,6 @@ static void ap_proxy_read_headers(request_rec *r, request_rec *rr,
          */
         process_proxy_header(r, dconf, buffer, value);
         saw_headers = 1;
-
-        /* the header was too long; at the least we should skip extra data */
-        if (len >= size - 1) {
-            while ((len = ap_getline(field, MAX_STRING_LEN, rr, 1))
-                    >= MAX_STRING_LEN - 1) {
-                /* soak up the extra data */
-            }
-            if (len == 0) /* time to exit the larger loop as well */
-                break;
-        }
     }
 }
 
@@ -1137,23 +1152,19 @@ static int addit_dammit(void *v, const char *key, const char *val)
     return 1;
 }
 
-static
-apr_status_t ap_proxygetline(apr_bucket_brigade *bb, char *s, int n, request_rec *r,
-                             int fold, int *writen)
+static apr_status_t ap_proxygetline(apr_bucket_brigade *bb, char *s, int n,
+                                    request_rec *r, int flags, int *read)
 {
-    char *tmp_s = s;
     apr_status_t rv;
     apr_size_t len;
 
-    rv = ap_rgetline(&tmp_s, n, &len, r, fold, bb);
+    rv = ap_rgetline(&s, n, &len, r, flags, bb);
     apr_brigade_cleanup(bb);
 
-    if (rv == APR_SUCCESS) {
-        *writen = (int) len;
-    } else if (APR_STATUS_IS_ENOSPC(rv)) {
-        *writen = n;
+    if (rv == APR_SUCCESS || APR_STATUS_IS_ENOSPC(rv)) {
+        *read = (int)len;
     } else {
-        *writen = -1;
+        *read = -1;
     }
 
     return rv;
@@ -1184,7 +1195,8 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                                             proxy_server_conf *conf,
                                             char *server_portstr) {
     conn_rec *c = r->connection;
-    char buffer[HUGE_STRING_LEN];
+    char *buffer;
+    char fixed_buffer[HUGE_STRING_LEN];
     const char *buf;
     char keepchar;
     apr_bucket *e;
@@ -1193,6 +1205,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
     int len, backasswards;
     int interim_response = 0; /* non-zero whilst interim 1xx responses
                                * are being read. */
+    apr_size_t response_field_size = 0;
     int pread_len = 0;
     apr_table_t *save_table;
     int backend_broke = 0;
@@ -1219,6 +1232,20 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
 
     bb = apr_brigade_create(p, c->bucket_alloc);
     pass_bb = apr_brigade_create(p, c->bucket_alloc);
+
+    /* Only use dynamically sized buffer if user specifies ResponseFieldSize */
+    if(backend->worker->s->response_field_size_set) {
+        response_field_size = backend->worker->s->response_field_size;
+
+        if (response_field_size != HUGE_STRING_LEN)
+            buffer = apr_pcalloc(p, response_field_size);
+        else
+            buffer = fixed_buffer;
+    }
+    else {
+        response_field_size = HUGE_STRING_LEN;
+        buffer = fixed_buffer;
+    }
 
     /* Setup for 100-Continue timeout if appropriate */
     if (do_100_continue) {
@@ -1249,11 +1276,11 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
 
         apr_brigade_cleanup(bb);
 
-        rc = ap_proxygetline(backend->tmp_bb, buffer, sizeof(buffer),
+        rc = ap_proxygetline(backend->tmp_bb, buffer, response_field_size,
                              backend->r, 0, &len);
         if (len == 0) {
             /* handle one potential stray CRLF */
-            rc = ap_proxygetline(backend->tmp_bb, buffer, sizeof(buffer),
+            rc = ap_proxygetline(backend->tmp_bb, buffer, response_field_size,
                                  backend->r, 0, &len);
         }
         if (len <= 0) {
@@ -1342,7 +1369,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
             /* If not an HTTP/1 message or
              * if the status line was > 8192 bytes
              */
-            if ((major != 1) || (len >= sizeof(buffer)-1)) {
+            if ((major != 1) || (len >= response_field_size - 1)) {
                 return ap_proxyerror(r, HTTP_BAD_GATEWAY,
                 apr_pstrcat(p, "Corrupt status line returned by remote "
                             "server: ", buffer, NULL));
@@ -1385,7 +1412,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                          "Set-Cookie", NULL);
 
             /* shove the headers direct into r->headers_out */
-            ap_proxy_read_headers(r, backend->r, buffer, sizeof(buffer), origin,
+            ap_proxy_read_headers(r, backend->r, buffer, response_field_size, origin,
                                   &pread_len);
 
             if (r->headers_out == NULL) {

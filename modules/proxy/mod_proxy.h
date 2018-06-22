@@ -451,6 +451,8 @@ typedef struct {
     apr_interval_time_t interval;
     char      upgrade[PROXY_WORKER_MAX_SCHEME_SIZE];/* upgrade protocol used by mod_proxy_wstunnel */
     char      hostname_ex[PROXY_RFC1035_HOSTNAME_SIZE];  /* RFC1035 compliant version of the remote backend address */
+    apr_size_t   response_field_size; /* Size of proxy response buffer in bytes. */
+    unsigned int response_field_size_set:1;
 } proxy_worker_shared;
 
 #define ALIGNED_PROXY_WORKER_SHARED_SIZE (APR_ALIGN_DEFAULT(sizeof(proxy_worker_shared)))
