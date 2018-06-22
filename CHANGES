@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.34
 
+  *) mod_xml2enc: Fix forwarding of error metadata/responses. PR 62180.
+     [Micha Lenk <micha lenk.info>, Yann Ylavic]
+
   *) mod_proxy_http: Fix response header thrown away after the previous one
      was considered too large and truncated. PR 62196. [Yann Ylavic]
 
