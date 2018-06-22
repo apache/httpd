@@ -418,6 +418,16 @@ typedef enum {
 } ssl_crlcheck_t;
 
 /**
+  * OCSP checking mask (mode | flags)
+  */
+typedef enum {
+    SSL_OCSPCHECK_NONE  = (0),
+    SSL_OCSPCHECK_LEAF  = (1 << 0),
+    SSL_OCSPCHECK_CHAIN = (1 << 1),
+    SSL_OCSPCHECK_NO_OCSP_FOR_CERT_OK = (1 << 2)
+} ssl_ocspcheck_t;
+
+/**
  * Define the SSL pass phrase dialog types
  */
 typedef enum {
@@ -701,7 +711,7 @@ typedef struct {
 
     modssl_auth_ctx_t auth;
 
-    BOOL ocsp_enabled; /* true if OCSP verification enabled */
+    int ocsp_mask;
     BOOL ocsp_force_default; /* true if the default responder URL is
                               * used regardless of per-cert URL */
     const char *ocsp_responder; /* default responder URL */
@@ -844,7 +854,7 @@ const char *ssl_cmd_SSLOCSPResponseTimeSkew(cmd_parms *cmd, void *dcfg, const ch
 const char *ssl_cmd_SSLOCSPResponseMaxAge(cmd_parms *cmd, void *dcfg, const char *arg);
 const char *ssl_cmd_SSLOCSPResponderTimeout(cmd_parms *cmd, void *dcfg, const char *arg);
 const char *ssl_cmd_SSLOCSPUseRequestNonce(cmd_parms *cmd, void *dcfg, int flag);
-const char *ssl_cmd_SSLOCSPEnable(cmd_parms *cmd, void *dcfg, int flag);
+const char *ssl_cmd_SSLOCSPEnable(cmd_parms *cmd, void *dcfg, const char *arg);
 const char *ssl_cmd_SSLOCSPProxyURL(cmd_parms *cmd, void *dcfg, const char *arg);
 
 /* Declare OCSP Responder Certificate Verification Directive */

@@ -243,8 +243,8 @@ static const command_rec ssl_config_cmds[] = {
                 "request body if a per-location SSL renegotiation is required due to "
                 "changed access control requirements")
 
-    SSL_CMD_SRV(OCSPEnable, FLAG,
-               "Enable use of OCSP to verify certificate revocation ('on', 'off')")
+    SSL_CMD_SRV(OCSPEnable, RAW_ARGS,
+               "Enable use of OCSP to verify certificate revocation mode ('on', 'leaf', 'off')")
     SSL_CMD_SRV(OCSPDefaultResponder, TAKE1,
                "URL of the default OCSP Responder")
     SSL_CMD_SRV(OCSPOverrideResponder, FLAG,

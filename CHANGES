@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.34
 
+  *) mod_ssl: Extend SSLOCSPEnable with mode 'leaf' that only checks the leaf
+     of a certificate chain.  PR62112.
+     [Ricardo Martin Camarero <rickyepoderi yahoo.es>]
+
   *) http: Fix small memory leak per request when handling persistent
      connections.  [Ruediger Pluem, Joe Orton]
 
