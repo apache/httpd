@@ -303,6 +303,7 @@ static apr_status_t xml2enc_ffunc(ap_filter_t* f, apr_bucket_brigade* bb)
     apr_bucket* b;
     apr_bucket* bstart;
     apr_size_t insz = 0;
+    int pending_meta = 0;
     char *ctype;
     char *p;
 
@@ -390,20 +391,36 @@ static apr_status_t xml2enc_ffunc(ap_filter_t* f, apr_bucket_brigade* bb)
     /* move the data back to bb */
     APR_BRIGADE_CONCAT(bb, ctx->bbsave);
 
-    while (b = APR_BRIGADE_FIRST(bb), b != APR_BRIGADE_SENTINEL(bb)) {
+    while (!APR_BRIGADE_EMPTY(bb)) {
+        b = APR_BRIGADE_FIRST(bb);
         ctx->bytes = 0;
         if (APR_BUCKET_IS_METADATA(b)) {
             APR_BUCKET_REMOVE(b);
+            APR_BRIGADE_INSERT_TAIL(ctx->bbnext, b);
+            /* Besides FLUSH, aggregate meta buckets to send them at
+             * once below. This resource filter is over on EOS.
+             */
+            pending_meta = 1;
             if (APR_BUCKET_IS_EOS(b)) {
-                /* send remaining data */
-                APR_BRIGADE_INSERT_TAIL(ctx->bbnext, b);
-                return ap_fflush(f->next, ctx->bbnext);
-            } else if (APR_BUCKET_IS_FLUSH(b)) {
-                ap_fflush(f->next, ctx->bbnext);
+                ap_remove_output_filter(f);
+                APR_BRIGADE_CONCAT(ctx->bbnext, bb);
             }
-            apr_bucket_destroy(b);
+            else if (!APR_BUCKET_IS_FLUSH(b)) {
+                continue;
+            }
         }
-        else {        /* data bucket */
+        if (pending_meta) {
+            pending_meta = 0;
+            /* passing meta bucket down the chain */
+            rv = ap_pass_brigade(f->next, ctx->bbnext);
+            apr_brigade_cleanup(ctx->bbnext);
+            if (rv != APR_SUCCESS) {
+                return rv;
+            }
+            continue;
+        }
+        /* data bucket */
+        {
             char* buf;
             apr_size_t bytes = 0;
             char fixbuf[BUFLEN];
@@ -508,8 +525,7 @@ static apr_status_t xml2enc_ffunc(ap_filter_t* f, apr_bucket_brigade* bb)
                         if (rv != APR_SUCCESS)
                             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, f->r, APLOGNO(01446)
                                           "ap_fflush failed");
-                        else
-                            rv = ap_pass_brigade(f->next, ctx->bbnext);
+                        apr_brigade_cleanup(ctx->bbnext);
                     }
                 }
             } else {
@@ -522,8 +538,18 @@ static apr_status_t xml2enc_ffunc(ap_filter_t* f, apr_bucket_brigade* bb)
                 return rv;
         }
     }
+    if (pending_meta) {
+        /* passing pending meta bucket down the chain before leaving */
+        rv = ap_pass_brigade(f->next, ctx->bbnext);
+        apr_brigade_cleanup(ctx->bbnext);
+        if (rv != APR_SUCCESS) {
+            return rv;
+        }
+    }
+
     return APR_SUCCESS;
 }
+
 static apr_status_t xml2enc_charset(request_rec* r, xmlCharEncoding* encp,
                                     const char** encoding)
 {
