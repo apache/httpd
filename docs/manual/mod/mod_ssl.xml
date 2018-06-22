@@ -2361,6 +2361,7 @@ SSLCryptoDevice ubsec
 <default>SSLOCSPEnable off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
+<compatibility>Mode <em>leaf</em> available in httpd 2.4.34 and later</compatibility>
 
 <usage>
 <p>This option enables OCSP validation of the client certificate

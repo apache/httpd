@@ -1142,7 +1142,8 @@ ProxyPass "/example" "http://backend.example.com" max=20 ttl=120 retry=300
         <td>Adjust the size of the proxy response field buffer. The buffer size
             should be at least the size of the largest expected header size from
             a proxied response. Setting the value to 0 will use the system
-            default of 8192 bytes.
+            default of 8192 bytes.<br />
+        Available in Apache HTTP Server 2.4.34 and later.
     </td></tr>
     <tr><td>keepalive</td>
         <td>Off</td>
