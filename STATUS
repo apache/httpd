@@ -148,14 +148,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
                   svn merge -c 1833827 ^/httpd/httpd/trunk . 
      +1: covener, jim, rjung
 
-  *) mod_xml2enc: Fix forwarding of error metadata/responses. PR 62180.
-     trunk patch: http://svn.apache.org/r1829038
-                  http://svn.apache.org/r1829039
-                  http://svn.apache.org/r1830523
-     2.4.x patch: svn merge -c 1829038,1829039,1830523 ^/httpd/httpd/trunk .
-                  (trunk works modulo CHANGES))
-     +1: ylavic, jim, rpluem
-
   *) mod_cache: Handle case of invalid Expires header RFC compliant
                 like the case of an Expires time in the past.
                 So allow to overwrite the non-caching decision
