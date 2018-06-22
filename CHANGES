@@ -10,7 +10,7 @@ Changes with Apache 2.4.34
 
   *) mod_proxy_http: Add new worker parameter 'responsefieldsize' to
      allow maximum HTTP response header size to be increased past 8192 
-     bytes.  PR62199.  [Hank Ibell <hwibell gmail.com>]
+     bytes.  PR 62199.  [Hank Ibell <hwibell gmail.com>]
 
   *) mod_ssl: Extend SSLOCSPEnable with mode 'leaf' that only checks the leaf
      of a certificate chain.  PR62112.
