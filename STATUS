@@ -148,17 +148,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
                   svn merge -c 1833827 ^/httpd/httpd/trunk . 
      +1: covener, jim, rjung
 
-  *) mod_ssl: Add option "leaf" to OCSPEnable that will only check the leaf in the
-     certificate chain. PR 62112.
-     trunk patch: http://svn.apache.org/r1826995
-                  http://svn.apache.org/r1827001
-     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/ssl-ocsp-enable-leaf.patch
-     +1: icing, ylavic, rpluem
-     jailletc36: There should be a compatibility note for the new parameter.
-                 There is also a new optional 2nd argument to the SSLOCSPEnable directive,
-                 'no_ocsp_for_cert_ok', which is undocumented.
-                 Adding some new paramters also deserves a CHANGES entry.
-
   *) ap_rgetline()+mod_proxy_http: Add and handle AP_GETLINE_NOSPC_EOL flag,
      fixes responses header thrown away on APR_ENOSPC, and allow their size to
      be configured (ResponseFieldSize). PRs 62196, 62198 and 62199.
