@@ -2298,16 +2298,18 @@ SSLCryptoDevice ubsec
 <directivesynopsis>
 <name>SSLOCSPEnable</name>
 <description>Enable OCSP validation of the client certificate chain</description>
-<syntax>SSLOCSPEnable on|off</syntax>
+<syntax>SSLOCSPEnable on|leaf|off</syntax>
 <default>SSLOCSPEnable off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
+<compatibility>Mode <em>leaf</em> available in httpd 2.4.34 and later</compatibility>
 
 <usage>
 <p>This option enables OCSP validation of the client certificate
 chain.  If this option is enabled, certificates in the client's
 certificate chain will be validated against an OCSP responder after
-normal verification (including CRL checks) have taken place.</p>
+normal verification (including CRL checks) have taken place. In 
+mode 'leaf', only the client certificate itself will be validated.</p>
 
 <p>The OCSP responder used is either extracted from the certificate
 itself, or derived by configuration; see the
