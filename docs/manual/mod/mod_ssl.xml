@@ -560,7 +560,6 @@ SSLSessionCacheTimeout 600
 <default>SSLEngine off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility>The <code>addr:port</code> parameter is available in Apache 2.4.30 and later.</compatibility>
 
 <usage>
 <p>
