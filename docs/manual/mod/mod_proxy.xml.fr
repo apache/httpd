@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1832294:1834203 (outdated) -->
+<!-- English Revision: 1834203 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1295,7 +1295,8 @@ ProxyPass "/mirror/foo/i" "!"
 	<td>Contrôle la taille du tampon pour le champ de la réponse mandatée.
 	Cette taille doit être au moins égale à la taille attendue du plus grand
 	en-tête d'une réponse mandatée. Une valeur de 0 implique l'utilisation
-	de la valeur par défaut du système, à savoir 8192 octets.
+	de la valeur par défaut du système, à savoir 8192 octets.<br />
+	Disponible à partir de la version 2.4.34 du serveur HTTP Apache.
     </td></tr>
     <tr><td>keepalive</td>
         <td>Off</td>
@@ -1655,9 +1656,11 @@ ProxyPass "/" "balancer://hotcluster/ "
     l'interpolation se produit ; vous devrez alors encore avoir avoir
     recours à <module>mod_rewrite</module> pour des règles
     complexes. Notez aussi que l'interpolation n'est pas supportée dans
-    la partie protocole d'une URL. La détermination dynamique du
-    protocole peut être effectuée à l'aide de
-    <module>mod_rewrite</module> comme dans l'exemple suivant :</p>
+    la partie protocole/hostname/port d'une URL. La détermination dynamique de
+    ces champs peut être effectuée à l'aide de
+    <module>mod_rewrite</module>. L'exemple suivant décrit comment utiliser
+    <module>mod_rewrite</module> pour définir dynamiquement le protocole à http
+    ou https :</p>
 
     <highlight language="config">
 RewriteEngine On
@@ -2348,8 +2351,15 @@ les configurations de mandataires inverses</description>
     de configuration par la valeur de la variable d'environnement
     <code>nom_var</code> si l'option <var>interpolate</var> est
     spécifiée.</p>
-    <p>Conservez cette directive à off (pour les performances du
-    serveur), sauf si vous en avez réellement besoin.</p>
+    <p>La partie protocole/hostname/port de <directive>ProxyPass</directive> ne
+    peut pas contenir de variables ; <module>mod_rewrite</module> permet de
+    s'affranchir de cette contrainte.</p>
+    <p>Afin de ne pas dégrader les performances, laissez cette directive à off,
+    à moins que vous n'en ayez réellemnt besoin ! Par exemple, ajouter des
+    variables à <directive>ProxyPass</directive> peut entraîner l'utilisation
+    des serveurs d'arrière-plan de mod_proxy configurés par défaut, et ceux-ci
+    ne permettent pas un réglage fin comme la réutilisation des connexions,
+    entre autres...).</p>
 </usage>
 </directivesynopsis>
 
