@@ -104,7 +104,7 @@ static int proxy_wstunnel_pump(ws_baton_t *baton, apr_time_t timeout, int try_po
                 }
                 else { 
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02605)
-                            "unknown event on backconn %d", pollevent);
+                            "unknown event on backend connection %d", pollevent);
                     done = 1;
                 }
             }
