@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1832346:1834106 (outdated) -->
+<!-- English Revision: 1834106 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -2677,6 +2677,8 @@ client</description>
 <default>SSLOCSPEnable off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
+<compatibility>Le mode <em>leaf</em> est disponible à partir de la version
+2.4.34 du serveur HTTP Apache</compatibility>
 
 <usage>
 <p>Cette directive permet d'activer la validation OCSP de la chaîne de
