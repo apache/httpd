@@ -41,54 +41,6 @@
     authorization processing.</p>
 </summary>
 
-<section id="authzalias"><title>Creating Authorization Provider Aliases</title>
-
-    <p>Extended authorization providers can be created within the configuration
-    file and assigned an alias name.  The alias providers can then be referenced
-    through the <directive module="mod_authz_core">Require</directive> directive
-    in the same way as a base authorization provider.  Besides the ability to
-    create and alias an extended provider, it also allows the same extended
-    authorization provider to be referenced by multiple locations.
-    </p>
-
-    <section id="example"><title>Example</title>
-        <p>The example below creates two different ldap authorization provider
-        aliases based on the ldap-group authorization provider.  This example
-        allows a single authorization location to check group membership within
-        multiple ldap hosts:
-        </p>
-
-        <highlight language="config">
-&lt;AuthzProviderAlias ldap-group ldap-group-alias1 cn=my-group,o=ctx&gt;
-    AuthLDAPBindDN cn=youruser,o=ctx
-    AuthLDAPBindPassword yourpassword
-    AuthLDAPURL ldap://ldap.host/o=ctx
-&lt;/AuthzProviderAlias&gt;
-
-&lt;AuthzProviderAlias ldap-group ldap-group-alias2 cn=my-other-group,o=dev&gt;
-    AuthLDAPBindDN cn=yourotheruser,o=dev
-    AuthLDAPBindPassword yourotherpassword
-    AuthLDAPURL ldap://other.ldap.host/o=dev?cn
-&lt;/AuthzProviderAlias&gt;
-
-Alias "/secure" "/webpages/secure"
-&lt;Directory "/webpages/secure"&gt;
-    Require all granted
-
-    AuthBasicProvider file
-
-    AuthType Basic
-    AuthName LDAP_Protected_Place
-
-    #implied OR operation
-    Require ldap-group-alias1
-    Require ldap-group-alias2
-&lt;/Directory&gt;
-        </highlight>
-    </section>
-
-</section>
-
 <section id="logic"><title>Authorization Containers</title>
 
     <p>The authorization container directives
@@ -117,7 +69,7 @@ Alias "/secure" "/webpages/secure"
             Require user superadmin
             &lt;RequireAll&gt;
                 Require group admins
-                Require ldap-group cn=Administrators,o=Airius
+                Require ldap-group "cn=Administrators,o=Airius"
                 &lt;RequireAny&gt;
                     Require group sales
                     Require ldap-attribute dept="sales"
@@ -126,7 +78,7 @@ Alias "/secure" "/webpages/secure"
         &lt;/RequireAny&gt;
         &lt;RequireNone&gt;
             Require group temps
-            Require ldap-group cn=Temporary Employees,o=Airius
+            Require ldap-group "cn=Temporary Employees,o=Airius"
         &lt;/RequireNone&gt;
     &lt;/RequireAll&gt;
 &lt;/Directory&gt;
@@ -155,7 +107,7 @@ Alias "/secure" "/webpages/secure"
     other HTTP request header fields.</p>
 
     <highlight language="config">
-SetEnvIf User-Agent ^KnockKnock/2\.0 let_me_in
+SetEnvIf User-Agent "^KnockKnock/2\.0" let_me_in
 &lt;Directory "/docroot"&gt;
     Require env let_me_in
 &lt;/Directory&gt;
@@ -255,6 +207,59 @@ SetEnvIf User-Agent ^KnockKnock/2\.0 let_me_in
 
 
 </section>
+
+
+
+<section id="authzalias"><title>Creating Authorization Provider Aliases</title>
+
+    <p>Extended authorization providers can be created within the configuration
+    file and assigned an alias name.  The alias providers can then be referenced
+    through the <directive module="mod_authz_core">Require</directive> directive
+    in the same way as a base authorization provider.  Besides the ability to
+    create and alias an extended provider, it also allows the same extended
+    authorization provider to be referenced by multiple locations.
+    </p>
+
+    <section id="example"><title>Example</title>
+        <p>The example below creates two different ldap authorization provider
+        aliases based on the ldap-group authorization provider.  This example
+        allows a single authorization location to check group membership within
+        multiple ldap hosts:
+        </p>
+
+        <highlight language="config">
+&lt;AuthzProviderAlias ldap-group ldap-group-alias1 "cn=my-group,o=ctx"&gt;
+    AuthLDAPBindDN "cn=youruser,o=ctx"
+    AuthLDAPBindPassword yourpassword
+    AuthLDAPUrl "ldap://ldap.host/o=ctx"
+&lt;/AuthzProviderAlias&gt;
+
+&lt;AuthzProviderAlias ldap-group ldap-group-alias2 "cn=my-other-group,o=dev"&gt;
+    AuthLDAPBindDN "cn=yourotheruser,o=dev"
+    AuthLDAPBindPassword yourotherpassword
+    AuthLDAPUrl "ldap://other.ldap.host/o=dev?cn"
+&lt;/AuthzProviderAlias&gt;
+
+Alias "/secure" "/webpages/secure"
+&lt;Directory "/webpages/secure"&gt;
+    Require all granted
+
+    AuthBasicProvider file
+
+    AuthType Basic
+    AuthName LDAP_Protected_Place
+
+    #implied OR operation
+    Require ldap-group-alias1
+    Require ldap-group-alias2
+&lt;/Directory&gt;
+        </highlight>
+    </section>
+
+</section>
+
+
+
 
 <directivesynopsis>
 <name>Require</name>
@@ -392,7 +397,7 @@ Require group admin
     </note>
 </usage>
 
-<seealso><a href="../howto/access.html">Access control howto</a></seealso>
+<seealso><a href="../howto/access.html">Access Control howto</a></seealso>
 <seealso><a href="#logic">Authorization Containers</a></seealso>
 <seealso><module>mod_authn_core</module></seealso>
 <seealso><module>mod_authz_host</module></seealso>
