@@ -29,14 +29,16 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_ratelimit.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_ratelimit.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Limitation de la bande passante pour les clients</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>ratelimit_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_ratelimit.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Compatibilité:</a></th><td><code>rate-initial-burst</code> est disponible à partir de la
-version 2.4.24 du serveur HTTP Apache.</td></tr></table>
+<tr><th><a href="module-dict.html#Compatibility">Compatibilité:</a></th><td>
+	<code>rate-initial-burst</code> est disponible à partir de la version
+	2.4.24 du serveur HTTP Apache. La limitation de bande passante pour les
+	contenus mandatés ne fonctionne correctement qu'à partir de la version
+	2.4.34 du serveur HTTP Apache.
+</td></tr></table>
 <h3>Sommaire</h3>
 
 

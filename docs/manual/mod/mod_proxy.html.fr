@@ -1416,7 +1416,8 @@ ProxyPass "/mirror/foo" "http://backend.example.com"</pre>
 	<td>Contrôle la taille du tampon pour le champ de la réponse mandatée.
 	Cette taille doit être au moins égale à la taille attendue du plus grand
 	en-tête d'une réponse mandatée. Une valeur de 0 implique l'utilisation
-	de la valeur par défaut du système, à savoir 8192 octets.
+	de la valeur par défaut du système, à savoir 8192 octets.<br />
+	Disponible à partir de la version 2.4.34 du serveur HTTP Apache.
     </td></tr>
     <tr><td>keepalive</td>
         <td>Off</td>
@@ -1768,9 +1769,11 @@ ProxyPass "/" "balancer://mycluster/" stickysession=JSESSIONID|jsessionid nofail
     l'interpolation se produit ; vous devrez alors encore avoir avoir
     recours à <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> pour des règles
     complexes. Notez aussi que l'interpolation n'est pas supportée dans
-    la partie protocole d'une URL. La détermination dynamique du
-    protocole peut être effectuée à l'aide de
-    <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> comme dans l'exemple suivant :</p>
+    la partie protocole/hostname/port d'une URL. La détermination dynamique de
+    ces champs peut être effectuée à l'aide de
+    <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>. L'exemple suivant décrit comment utiliser
+    <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> pour définir dynamiquement le protocole à http
+    ou https :</p>
 
     <pre class="prettyprint lang-config">RewriteEngine On
 
@@ -1838,8 +1841,15 @@ les configurations de mandataires inverses</td></tr>
     de configuration par la valeur de la variable d'environnement
     <code>nom_var</code> si l'option <var>interpolate</var> est
     spécifiée.</p>
-    <p>Conservez cette directive à off (pour les performances du
-    serveur), sauf si vous en avez réellement besoin.</p>
+    <p>La partie protocole/hostname/port de <code class="directive">ProxyPass</code> ne
+    peut pas contenir de variables ; <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> permet de
+    s'affranchir de cette contrainte.</p>
+    <p>Afin de ne pas dégrader les performances, laissez cette directive à off,
+    à moins que vous n'en ayez réellemnt besoin ! Par exemple, ajouter des
+    variables à <code class="directive">ProxyPass</code> peut entraîner l'utilisation
+    des serveurs d'arrière-plan de mod_proxy configurés par défaut, et ceux-ci
+    ne permettent pas un réglage fin comme la réutilisation des connexions,
+    entre autres...).</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

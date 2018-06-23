@@ -1056,7 +1056,7 @@ paramètres de check up</td></tr>
 <tr class="odd"><td><a href="mod_proxy_hcheck.html#proxyhctpsize">ProxyHCTPsize <em>size</em></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Définit la taille totale, pour l'ensemble du
 serveur, du jeu de threads utilisé pour le check up des
 équipiers</td></tr>
-<tr><td><a href="mod_proxy_html.html#proxyhtmlbufsize">ProxyHTMLBufSize <var>nb-octets</var></a></td><td></td><td>svd</td><td>B</td></tr><tr><td class="descr" colspan="4">Définit l'incrément de la taille du tampon, ainsi que sa
+<tr><td><a href="mod_proxy_html.html#proxyhtmlbufsize">ProxyHTMLBufSize <var>nb-octets</var></a></td><td> 8192 </td><td>svd</td><td>B</td></tr><tr><td class="descr" colspan="4">Définit l'incrément de la taille du tampon, ainsi que sa
 taille initiale, pour la mise en
 tampon des scripts en ligne et des feuilles de style.</td></tr>
 <tr class="odd"><td><a href="mod_proxy_html.html#proxyhtmlcharsetout">ProxyHTMLCharsetOut <var>jeu-de-caractères | *</var></a></td><td></td><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Spécifie un jeu de caractères pour la sortie de
