@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1832609 -->
+<!-- English Revision: 1834093 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1264,6 +1264,14 @@ ProxyPass "/mirror/foo/i" "!"
 	directive <directive>ProxyIOBufferSize</directive> pour un
 	serveur cible spécifique. La valeur doit être au minimum 512 ou définie
 	à 0 pour la valeur par défaut du système de 8192.
+    </td></tr>
+    <tr><td>responsefieldsize</td>
+        <td>8192</td>
+	<td>Contrôle la taille du tampon pour le champ de la réponse mandatée.
+	Cette taille doit être au moins égale à la taille attendue du plus grand
+	en-tête d'une réponse mandatée. Une valeur de 0 implique l'utilisation
+	de la valeur par défaut du système, à savoir 8192 octets.<br />
+	Disponible à partir de la version 2.4.34 du serveur HTTP Apache.
     </td></tr>
     <tr><td>keepalive</td>
         <td>Off</td>
