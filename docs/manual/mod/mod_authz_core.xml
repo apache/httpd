@@ -600,6 +600,23 @@ alias</description>
     authorization directives that can be referenced by the alias name using the
     directive <directive module="mod_authz_core">Require</directive>.</p>
 
+    <p>If several parameters are needed in <var>Require-Parameters</var>,
+    they must be enclosed in quotation marks.  Otherwise, only the first one
+    is taken into account.</p>
+    
+    <highlight language="config">
+# In this example, for both addresses to be taken into account, they MUST be enclosed
+# between quotation marks
+&lt;AuthzProviderAlias ip blacklisted-ips "XXX.XXX.XXX.XXX YYY.YYY.YYY.YYY"&gt;
+&lt;/AuthzProviderAlias&gt;
+
+&lt;Directory "/path/to/dir"&gt;
+    &lt;RequireAll&gt;
+        Require not blacklisted-ips
+        Require all granted
+    &lt;/RequireAll&gt;
+&lt;/Directory&gt;
+    </highlight>
 </usage>
 </directivesynopsis>
 
