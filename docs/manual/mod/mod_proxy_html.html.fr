@@ -39,12 +39,12 @@ mandataire.</td></tr>
 Disponible en tant que module tiers dans les versions 2.x antérieures</td></tr></table>
 <h3>Sommaire</h3>
 
-    <p>Ce module fournit un filtre en sortie permettant de réécrire les
-    liens HTML dans un contexte de mandataire, afin de s'assurer que ces
-    liens fonctionnent pour les utilisateurs en dehors du mandataire. Il
-    accomplit la même tâche que la directive ProxyPassReverse d'Apache
-    accomplit pour les en-têtes HTTP, et fait partie des composants
-    essentiels d'un mandataire inverse.</p>
+    <p>Ce module fournit un filtre en sortie permettant de réécrire les liens
+    HTML dans un contexte de mandataire, afin de s'assurer que ces liens
+    fonctionnent pour les utilisateurs en dehors du mandataire. Il accomplit la
+    même tâche que la directive <code class="directive"><a href="../mod/mod_proxy.html#proxypassreverse">ProxyPassReverse</a></code> d'Apache accomplit pour les
+    en-têtes HTTP, et fait partie des composants essentiels d'un mandataire
+    inverse.</p>
 
 <p>Par exemple, si une entreprise possède un serveur d'applications
 nommé appserver.example.com qui n'est visible que depuis son réseau
@@ -53,7 +53,7 @@ interne, et un serveur web public <code>www.example.com</code>, il peut
 à l'adresse <code>http://www.example.com/appserver/</code>. Lorsque le
 serveur d'applications présente un lien vers lui-même, ce lien doit être
 réécrit pour fonctionner à travers la passerelle. A cet effet,
-mod_proxy_html permet de réécrire <code>&lt;a
+<code class="module"><a href="../mod/mod_proxy_html.html">mod_proxy_html</a></code> permet de réécrire <code>&lt;a
 href="http://appserver.example.com/foo/bar.html"&gt;foobar&lt;/a&gt;</code>
 en <code>&lt;a
 href="http://www.example.com/appserver/foo/bar.html"&gt;foobar&lt;/a&gt;</code>,
@@ -89,6 +89,7 @@ détaillée pourra s'avérer utile aux utilisateurs.</p>
 taille initiale, pour la mise en
 tampon des scripts en ligne et des feuilles de style.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyHTMLBufSize <var>nb-octets</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ProxyHTMLBufSize 8192</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_html</td></tr>
@@ -96,8 +97,8 @@ tampon des scripts en ligne et des feuilles de style.</td></tr>
 Disponible en tant que module tiers dans les versions 2.x antérieures.</td></tr>
 </table>
 <p>Pour pouvoir interpréter du contenu non HTML (feuilles de style et
-scripts) embarqué dans des documents HTML, mod_proxy_html doit le lire
-et le mémoriser en entier dans un
+scripts) embarqué dans des documents HTML, <code class="module"><a href="../mod/mod_proxy_html.html">mod_proxy_html</a></code> doit
+le lire et le mémoriser en entier dans un
 tampon. Ce tampon devra être étendu autant que nécessaire afin de
 pouvoir accueillir le plus grand script ou la plus grande feuille de
 style de la page, selon un incrément de <var>nb-octets</var> que cette
@@ -152,7 +153,7 @@ Disponible en tant que module tiers dans les versions 2.x antérieures.</td></tr>
 si la syntaxe utilisée en sortie est HTML ou XHTML. Notez que le format
 des documents en provenance du serveur d'arrière-plan n'est pas
 important, car l'interpréteur le détectera automatiquement. Si le
-second argument optionnel est défini à "Legacy", les documents seront
+second argument optionnel est défini à <code>Legacy</code>, les documents seront
 déclarés de type "Transitional" ; cette option peut être nécessaire si
 vous mandatez du contenu datant d'avant 1998, ou si vous travaillez avec
 des outils de création/publication déficients.</p>

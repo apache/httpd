@@ -1368,6 +1368,14 @@ ProxyPass "/mirror/foo" "http://backend.example.com"</pre>
 	serveur cible spécifique. La valeur doit être au minimum 512 ou définie
 	à 0 pour la valeur par défaut du système de 8192.
     </td></tr>
+    <tr><td>responsefieldsize</td>
+        <td>8192</td>
+	<td>Contrôle la taille du tampon pour le champ de la réponse mandatée.
+	Cette taille doit être au moins égale à la taille attendue du plus grand
+	en-tête d'une réponse mandatée. Une valeur de 0 implique l'utilisation
+	de la valeur par défaut du système, à savoir 8192 octets.<br />
+	Disponible à partir de la version 2.4.34 du serveur HTTP Apache.
+    </td></tr>
     <tr><td>keepalive</td>
         <td>Off</td>
         <td><p>Cette clé doit être utilisée lorsque vous avez un pare-feu
