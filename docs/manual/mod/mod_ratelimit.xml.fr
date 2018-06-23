@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1774506:1833875 (outdated) -->
+<!-- English Revision: 1833875 -->
 <!-- French translation : Lucien GENTIS -->
-<!-- $LastChangedRevision: 2017010801 $ -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -32,8 +31,12 @@ the document to validate. -->
 <status>Extension</status>
 <sourcefile>mod_ratelimit.c</sourcefile>
 <identifier>ratelimit_module</identifier>
-<compatibility><code>rate-initial-burst</code> est disponible à partir de la
-version 2.4.24 du serveur HTTP Apache.</compatibility>
+<compatibility>
+	<code>rate-initial-burst</code> est disponible à partir de la version
+	2.4.24 du serveur HTTP Apache. La limitation de bande passante pour les
+	contenus mandatés ne fonctionne correctement qu'à partir de la version
+	2.4.34 du serveur HTTP Apache.
+</compatibility>
 
 <summary>
 
