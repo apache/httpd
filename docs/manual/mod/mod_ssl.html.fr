@@ -1300,6 +1300,8 @@ client</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le mode <em>leaf</em> est disponible à partir de la version
+2.4.34 du serveur HTTP Apache</td></tr>
 </table>
 <p>Cette directive permet d'activer la validation OCSP de la chaîne de
 certificats du client. Si elle est activée, les certificats de la chaîne
