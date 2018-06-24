@@ -42,7 +42,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#tools">Useful tools to debug HTTP/2</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#push">Server Push</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#earlyhints">Early Hints</a></li>
-</ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_http2.html">mod_http2</a></li><li><a href="#comments_section">Comments</a></li></ul></div>
+</ul><h3>See also</h3><ul class="seealso"><li><code class="module"><a href="../mod/mod_http2.html">mod_http2</a></code></li><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="protocol" id="protocol">The HTTP/2 protocol</a><a title="Permanent link" href="#protocol" class="permalink">&para;</a></h2>
@@ -74,7 +74,7 @@
 <h2><a name="implementation" id="implementation">HTTP/2 in Apache httpd</a><a title="Permanent link" href="#implementation" class="permalink">&para;</a></h2>
     
     <p>The HTTP/2 protocol is implemented by its own httpd module, aptly named
-    <a href="../mod/mod_http2.html">mod_http2</a>. It implements the complete set
+    <code class="module"><a href="../mod/mod_http2.html">mod_http2</a></code>. It implements the complete set
     of features described by RFC 7540 and supports HTTP/2 over cleartext (http:), as
     well as secure (https:) connections. The cleartext variant is named '<code>h2c</code>', 
     the secure one '<code>h2</code>'. For <code>h2c</code> it allows the <em>direct</em>
@@ -86,8 +86,8 @@
 <div class="section">
 <h2><a name="building" id="building">Build httpd with HTTP/2 support</a><a title="Permanent link" href="#building" class="permalink">&para;</a></h2>
     
-    <p><a href="../mod/mod_http2.html">mod_http2</a> uses the library of <a href="https://nghttp2.org">nghttp2</a>
-    as its implementation base. In order to build <code>mod_http2</code> you need at least version 1.2.1 of
+    <p><code class="module"><a href="../mod/mod_http2.html">mod_http2</a></code> uses the library of <a href="https://nghttp2.org">nghttp2</a>
+    as its implementation base. In order to build <code class="module"><a href="../mod/mod_http2.html">mod_http2</a></code> you need at least version 1.2.1 of
     <code>libnghttp2</code> installed on your system.</p>
     <p>When you <code>./configure</code> you Apache httpd source tree, you need to give it 
     '<code>--enable-http2</code>' as additional argument to trigger the build of the module.
@@ -96,7 +96,7 @@
     to <code>configure</code>.</p>
     <p>While that should do the trick for most, they are people who might prefer a statically
     linked <code>nghttp2</code> in this module. For those, the option <code>--enable-nghttp2-staticlib-deps</code>
-    exists. It works quite similar to how one statically links openssl to mod_ssl.</p>
+    exists. It works quite similar to how one statically links openssl to <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>.</p>
     <p>Speaking of SSL, you need to be aware that most browsers will speak HTTP/2 only on <code>https:</code>
     URLs, so you need a server with SSL support. But not only that, you will need a SSL library
     that supports the <code>ALPN</code> extension. If OpenSSL is the library you use, you need
@@ -106,7 +106,7 @@
 <h2><a name="basic-config" id="basic-config">Basic Configuration</a><a title="Permanent link" href="#basic-config" class="permalink">&para;</a></h2>
     
 
-    <p>When you have a <code>httpd</code> built with <code>mod_http2</code> you need some
+    <p>When you have a <code>httpd</code> built with <code class="module"><a href="../mod/mod_http2.html">mod_http2</a></code> you need some
     basic configuration for it becoming active. The first thing, as with every Apache module,
     is that you need to load it:</p>
     <pre class="prettyprint lang-config">LoadModule http2_module modules/mod_http2.so</pre>
@@ -131,7 +131,13 @@
     <p>This allows only HTTP/1 on connections, except SSL connections to <code>test.example.org</code>
     which offer HTTP/2.</p>
     <div class="note"><h3>Choose a strong SSLCipherSuite</h3>
-     <p>The <code class="directive"><a href="../mod/mod_ssl.html#sslciphersuite">SSLCipherSuite</a></code> needs to be configured with a strong TLS cipher suite. The current version of mod_http2 does not enforce any cipher but most clients do so. Pointing a browser to a <code>h2</code> enabled server with a inappropriate cipher suite will force it to simply refuse and fall back to HTTP 1.1. This is a common mistake that is done while configuring httpd for HTTP/2 the first time, so please keep it in mind to avoid long debugging sessions! If you want to be sure about the cipher suite to choose please avoid the ones listed in the <a href="http://httpwg.org/specs/rfc7540.html#BadCipherSuites">HTTP/2 TLS blacklist</a>.</p>
+    <p>The <code class="directive"><a href="../mod/mod_ssl.html#sslciphersuite">SSLCipherSuite</a></code> needs to be configured with
+    a strong TLS cipher suite. The current version of <code class="directive">mod_http2</code> does not enforce any cipher but most
+    clients do so. Pointing a browser to a <code>h2</code> enabled server with a inappropriate
+    cipher suite will force it to simply refuse and fall back to HTTP 1.1. This is a common mistake
+    that is done while configuring httpd for HTTP/2 the first time, so please keep it in mind to avoid
+    long debugging sessions! If you want to be sure about the cipher suite to choose please avoid
+    the ones listed in the <a href="http://httpwg.org/specs/rfc7540.html#BadCipherSuites">HTTP/2 TLS blacklist</a>.</p>
     </div>
     <p>The order of protocols mentioned is also relevant. By default, the first one is the 
     most preferred protocol. When a client offers multiple choices, the one most to the 
@@ -153,7 +159,8 @@
     ordering will decide.</p>
     <p>A last thing: the protocols you configure are not checked for correctness
     or spelling. You can mention protocols that do not exist, so there is no need
-    to guard <code>Protocols</code> with any <code>IfModule</code> checks.</p>
+    to guard <code class="directive"><a href="../mod/core.html#protocols">Protocols</a></code> with any
+    <code class="directive"><a href="../mod/core.html#ifmodule">&lt;IfModule&gt;</a></code> checks.</p>
     <p>For more advanced tips on configuration, see the <a href="../mod/mod_http2.html#dimensioning">
     modules section about dimensioning</a> and <a href="../mod/mod_http2.html#misdirected">
     how to manage multiple hosts with the same certificate</a>.</p>
@@ -163,17 +170,17 @@
     
     
     <p>HTTP/2 is supported in all multi-processing modules that come with httpd. However, if
-    you use the <code>prefork</code> mpm, there will be severe restrictions.</p>
-    <p>In <code>prefork</code> <code>mod_http2</code> will only process one request at at time
+    you use the <code class="module"><a href="../mod/prefork.html">prefork</a></code> mpm, there will be severe restrictions.</p>
+    <p>In <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/mod_http2.html">mod_http2</a></code> will only process one request at at time
     per connection. But clients, such as browsers, will send many requests at the same time.
     If one of these takes long to process (or is a long polling one), the other requests will
     stall.</p>
-    <p><code>mod_http2</code> will not work around this limit by default. The reason is that
-    <code>prefork</code> is today only chosen, if you run processing engines that re not
+    <p><code class="module"><a href="../mod/mod_http2.html">mod_http2</a></code> will not work around this limit by default. The reason is that
+    <code class="module"><a href="../mod/prefork.html">prefork</a></code> is today only chosen, if you run processing engines that are not
     prepared for multi-threading, e.g. will crash with more than one request.</p>
-    <p>If your setup can handle it, configuring <code>event</code> mpm is nowadays
+    <p>If your setup can handle it, configuring <code class="module"><a href="../mod/event.html">event</a></code> mpm is nowadays
     the best one (if supported on your platform).</p>
-    <p>If you are really stuck with <code>prefork</code> and want multiple requests,
+    <p>If you are really stuck with <code class="module"><a href="../mod/prefork.html">prefork</a></code> and want multiple requests,
     you can tweak the <code class="directive"><a href="../mod/mod_http2.html#h2minworkers">H2MinWorkers</a></code> to make
     that possible. If it breaks, however, you own both parts.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -211,7 +218,10 @@
         <li><a href="https://nghttp2.org/documentation/h2load-howto.html">h2load</a> - useful to stress-test your server.</li>
     </ul>
     <p>Chrome offers detailed HTTP/2 logs on its connections via the 
-    <a href="chrome://net-internals/#http2">special net-internals page</a>. There is also an interesting extension for <a href="https://chrome.google.com/webstore/detail/http2-and-spdy-indicator/mpbpobfflnpcgagjijhmgnchggcjblin?hl=en">Chrome</a> and <a href="https://addons.mozilla.org/en-us/firefox/addon/spdy-indicator/">Firefox</a> to visualize when your browser is using HTTP/2.</p>
+    <a href="chrome://net-internals/#http2">special net-internals page</a>. There is also an
+    interesting extension for <a href="https://chrome.google.com/webstore/detail/http2-and-spdy-indicator/mpbpobfflnpcgagjijhmgnchggcjblin?hl=en">Chrome</a>
+    and <a href="https://addons.mozilla.org/en-us/firefox/addon/spdy-indicator/">Firefox</a>
+    to visualize when your browser is using HTTP/2.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="push" id="push">Server Push</a><a title="Permanent link" href="#push" class="permalink">&para;</a></h2>
@@ -232,7 +242,7 @@
     <p>To summarize: there is no one good strategy on how to make best use of this 
     feature of HTTP/2 and everyone is still experimenting. So, how do you experiment
     with it in Apache httpd?</p>
-    <p><code>mod_http2</code> inspect response header for <code>Link</code> headers
+    <p><code class="module"><a href="../mod/mod_http2.html">mod_http2</a></code> inspect response header for <code>Link</code> headers
     in a certain format:</p>
     <pre class="prettyprint lang-config">Link &lt;/xxx.css&gt;;rel=preload, &lt;/xxx.js&gt;; rel=preload</pre>
 
@@ -258,7 +268,7 @@
     <p>There are people thinking about how a client can tell a server what it
     already has, so PUSHes for those things can be avoided, but this is all
     highly experimental right now.</p>
-    <p>Another experimental draft that has been implemented in <code>mod_http2</code>
+    <p>Another experimental draft that has been implemented in <code class="module"><a href="../mod/mod_http2.html">mod_http2</a></code>
     is the <a href="https://tools.ietf.org/html/draft-ruellan-http-accept-push-policy-00">
     Accept-Push-Policy Header Field</a> where a client can, for each request, define
     what kind of PUSHes it accepts.</p>
@@ -290,7 +300,7 @@
     <pre class="prettyprint lang-config">H2EarlyHints on</pre>
 
     <p>(It is not enabled by default since some older browser tripped on such responses.)</p>
-    <p>If this feature is on, you can the directive <code>H2PushResource</code> to 
+    <p>If this feature is on, you can the directive <code class="directive"><a href="../mod/mod_http2.html#h2pushresource">H2PushResource</a></code> to 
     trigger early hints and resource PUSHes:</p>
     <pre class="prettyprint lang-config">&lt;Location /xxx.html&gt;
     H2PushResource /xxx.css
@@ -301,8 +311,8 @@
     as the server <em>starts</em> processing the request. This may be much early than
     the time the first response headers have been determined, depending on your web
     application.</p>
-    <p>If <code>H2Push</code> is enabled, this will also start the PUSH right after the
-    103 response. If <code>H2Push</code> is disabled however, the 103 response will be send
+    <p>If <code class="directive"><a href="../mod/mod_http2.html#h2push">H2Push</a></code> is enabled, this will also start the PUSH right after the
+    103 response. If <code class="directive"><a href="../mod/mod_http2.html#h2push">H2Push</a></code> is disabled however, the 103 response will be send
     nevertheless to the client.</p>
   </div></div>
 <div class="bottomlang">
