@@ -1405,9 +1405,10 @@ ProxyPass "/" "balancer://hotcluster/"
     environment variables will not exist when this interpolation happens,
     so you may still have to resort to <module>mod_rewrite</module>
     for complex rules.  Also note that interpolation is not supported
-    within the scheme portion of a URL.  Dynamic determination of the
-    scheme can be accomplished with <module>mod_rewrite</module> as in the
-    following example.</p>
+    within the scheme/hostname/port portion of a URL. Dynamic determination of
+    those fields can be accomplished with <module>mod_rewrite</module>.
+    The following example describes how to use <module>mod_rewrite</module>
+    to dynamically set the scheme to http or https:</p>
 
     <highlight language="config">
 RewriteEngine On
@@ -2003,7 +2004,12 @@ header for proxied requests</description>
     and causes them to substitute the value of an environment
     variable <code>varname</code> for the string <code>${varname}</code>
     in configuration directives if the <var>interpolate</var> option is set.</p>
-    <p>Keep this turned off (for server performance) unless you need it!</p>
+    <p>The scheme/hostname/port portion of <directive>ProxyPass</directive> cannot
+    contain variables, please consider using <module>mod_rewrite</module> instead.</p>
+    <p>Keep this turned off (for server performance) unless you need it!
+    Adding variables to <directive>ProxyPass</directive> for example may lead to
+    using the default mod_proxy's workers configured (that don't allow any fine
+    tuning like connections reuse, etc..).</p>
 </usage>
 </directivesynopsis>
 
