@@ -184,6 +184,29 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   svn merge -c 1817175,1831800 ^/httpd/httpd/trunk .
      +1: jailletc36
 
+  *) mod_authz_core: If several parameters are used in a AuthzProviderAlias directive,
+     if these parameters are not enclosed in quotation mark, only the first one is
+     handled. The other ones are silently ignored.
+     PR 62469.
+     trunk patch: http://svn.apache.org/r1834209
+     2.4.x patch: trunk works (modulo CHANGES and next-number)
+                  svn merge -c 1834209 ^/httpd/httpd/trunk .
+     +1: jailletc36
+
+  *) Easy patches: synch 2.4.x and trunk
+     - mod_env: remove an empty line
+     - mod_ssl: Simplify code, no functional change
+     - mod_proxy_html: Save a few cycles and simplify code
+     - mod_proxy_html: Save a few more cycles
+     - mod_proxy_hcheck: Remove an unused bucket allocator + tag the subpool
+     trunk patch: http://svn.apache.org/r1795834
+                  http://svn.apache.org/r1828912
+                  http://svn.apache.org/r1830943
+                  http://svn.apache.org/r1830944
+                  http://svn.apache.org/r1832991
+     2.4.x patch: svn merge -c 1795834,1828912,1830943,1830944,1832991 ^/httpd/httpd/trunk . 
+     +1: jailletc36
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
