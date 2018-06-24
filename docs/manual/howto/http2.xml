@@ -124,7 +124,7 @@ Protocols http/1.1
     which offer HTTP/2.</p>
     <note><title>Choose a strong SSLCipherSuite</title>
     <p>The <directive module="mod_ssl">SSLCipherSuite</directive> needs to be configured with
-    a strong TLS cipher suite. The current version of <directive>mod_http2</directive> does not enforce any cipher but most
+    a strong TLS cipher suite. The current version of <module>mod_http2</module> does not enforce any cipher but most
     clients do so. Pointing a browser to a <code>h2</code> enabled server with a inappropriate
     cipher suite will force it to simply refuse and fall back to HTTP 1.1. This is a common mistake
     that is done while configuring httpd for HTTP/2 the first time, so please keep it in mind to avoid
@@ -300,7 +300,7 @@ H2Push Off
 H2EarlyHints on
     </highlight>
     <p>(It is not enabled by default since some older browser tripped on such responses.)</p>
-    <p>If this feature is on, you can the directive <directive module="mod_http2">H2PushResource</directive> to 
+    <p>If this feature is on, you can use the directive <directive module="mod_http2">H2PushResource</directive> to 
     trigger early hints and resource PUSHes:</p>
     <highlight language="config">
 &lt;Location /xxx.html&gt;
