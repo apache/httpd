@@ -1503,13 +1503,15 @@ ProxyPass "/" "balancer://mycluster/" stickysession=JSESSIONID|jsessionid nofail
     httpd 2.4.1 and later) prevents this.</p>
 
     <p>The optional <var>interpolate</var> keyword, in combination with
-    <code class="directive">ProxyPassInterpolateEnv</code>, causes the ProxyPass
+    <code class="directive"><a href="#proxypassinterpolateenv">ProxyPassInterpolateEnv</a></code>, causes the ProxyPass
     to interpolate environment variables, using the syntax
     <var>${VARNAME}</var>.  Note that many of the standard CGI-derived
     environment variables will not exist when this interpolation happens,
     so you may still have to resort to <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
-    for complex rules.  Also note that interpolation is not supported
-    within the scheme/hostname/port portion of a URL. Dynamic determination of
+    for complex rules. Also note that interpolation is supported
+    within the scheme/hostname/port portion of a URL only for variables that
+    are available when the directive is parsed 
+    (like <code class="directive"><a href="../mod/core.html#define">Define</a></code>). Dynamic determination of
     those fields can be accomplished with <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>.
     The following example describes how to use <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
     to dynamically set the scheme to http or https:</p>
@@ -1573,12 +1575,17 @@ ProxyPassReverse  "/mirror/foo/" "https://backend.example.com/"</pre>
     and causes them to substitute the value of an environment
     variable <code>varname</code> for the string <code>${varname}</code>
     in configuration directives if the <var>interpolate</var> option is set.</p>
-    <p>The scheme/hostname/port portion of <code class="directive">ProxyPass</code> cannot
-    contain variables, please consider using <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> instead.</p>
-    <p>Keep this turned off (for server performance) unless you need it!
+    <p>The scheme/hostname/port portion of <code class="directive">ProxyPass</code> may
+    contain variables, but only the ones available when the directive is parsed
+    (for example, using <code class="directive"><a href="../mod/core.html#define">Define</a></code>).
+    For all the other use cases, please consider using
+    <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> instead.</p>
+    <div class="warning"><h3>Performance warning</h3>
+    <p>Keep this turned off unless you need it!
     Adding variables to <code class="directive">ProxyPass</code> for example may lead to
-    using the default mod_proxy's workers configured (that don't allow any fine
+    the use of the default mod_proxy's workers configured (that don't allow any fine
     tuning like connections reuse, etc..).</p>
+    </div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
