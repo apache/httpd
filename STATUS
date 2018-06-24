@@ -177,6 +177,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES in 2.4)
      +1: jim, rpluem
 
+  *) Add ru, zh-cn and zh-tw translations of errordocs.
+     trunk patch: http://svn.apache.org/r1817175
+                  http://svn.apache.org/r1831800
+     2.4.x patch: trunk works + CHANGES entry in r1834254
+                  svn merge -c 1817175,1831800 ^/httpd/httpd/trunk .
+     +1: jailletc36
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
