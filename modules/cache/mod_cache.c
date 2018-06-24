@@ -1040,8 +1040,11 @@ static apr_status_t cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
     if (reason) {
         /* noop */
     }
-    else if (exps != NULL && exp == APR_DATE_BAD) {
-        /* if a broken Expires header is present, don't cache it */
+    else if (!control.s_maxage && !control.max_age && !dconf->store_expired
+             && exps != NULL && exp == APR_DATE_BAD) {
+        /* if a broken Expires header is present, don't cache it
+         * Unless CC: s-maxage or max-age is present
+         */
         reason = apr_pstrcat(p, "Broken expires header: ", exps, NULL);
     }
     else if (!control.s_maxage && !control.max_age

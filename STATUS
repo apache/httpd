@@ -148,16 +148,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
                   svn merge -c 1833827 ^/httpd/httpd/trunk . 
      +1: covener, jim, rjung
 
-  *) mod_cache: Handle case of invalid Expires header RFC compliant
-                like the case of an Expires time in the past.
-                So allow to overwrite the non-caching decision
-                using "CacheStoreExpired" and respect Cache-Control
-                "max-age" and "s-maxage".
-     trunk patch: http://svn.apache.org/r1833876
-     2.4.x patch: trunk works (needs CHANGES in 2.4)
-                  svn merge -c 1833876 ^/httpd/httpd/trunk . 
-     +1: rjung, ylavic, rpluem
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
