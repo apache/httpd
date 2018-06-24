@@ -1,5 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
+  *) ru, zh-cn and zh-tw translations of errordocs have been added.
+     Contributed by Alexander Gaganashvili and CodeingBoy
+  
   *) mod_authz_core: If several parameters are used in a AuthzProviderAlias
      directive, if these parameters are not enclosed in quotation mark, only
      the first one is handled. The other ones are silently ignored.
