@@ -132,7 +132,7 @@
     which offer HTTP/2.</p>
     <div class="note"><h3>Choose a strong SSLCipherSuite</h3>
     <p>The <code class="directive"><a href="../mod/mod_ssl.html#sslciphersuite">SSLCipherSuite</a></code> needs to be configured with
-    a strong TLS cipher suite. The current version of <code class="directive">mod_http2</code> does not enforce any cipher but most
+    a strong TLS cipher suite. The current version of <code class="module"><a href="../mod/mod_http2.html">mod_http2</a></code> does not enforce any cipher but most
     clients do so. Pointing a browser to a <code>h2</code> enabled server with a inappropriate
     cipher suite will force it to simply refuse and fall back to HTTP 1.1. This is a common mistake
     that is done while configuring httpd for HTTP/2 the first time, so please keep it in mind to avoid
@@ -300,7 +300,7 @@
     <pre class="prettyprint lang-config">H2EarlyHints on</pre>
 
     <p>(It is not enabled by default since some older browser tripped on such responses.)</p>
-    <p>If this feature is on, you can the directive <code class="directive"><a href="../mod/mod_http2.html#h2pushresource">H2PushResource</a></code> to 
+    <p>If this feature is on, you can use the directive <code class="directive"><a href="../mod/mod_http2.html#h2pushresource">H2PushResource</a></code> to 
     trigger early hints and resource PUSHes:</p>
     <pre class="prettyprint lang-config">&lt;Location /xxx.html&gt;
     H2PushResource /xxx.css
