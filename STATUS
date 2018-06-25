@@ -141,6 +141,13 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_proxy_wstunnel: Add default schema ports for 'ws' and 'wss'.
+     PR 62480.
+     trunk patch: http://svn.apache.org/r1834012
+                  http://svn.apache.org/r1834013
+     2.4.x patch: trunk works (modulo CHANGES in 2.4)
+     +1: jim, rpluem, covener
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -162,19 +169,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      now useless.  They could be axed, but maybe, not in 2.4.x (even if I
      don't imagine any 3rd party proxy module to use it)
 
-  *) mod_proxy_wstunnel: Add default schema ports for 'ws' and 'wss'.
-     PR 62480.
-     trunk patch: http://svn.apache.org/r1834012
-                  http://svn.apache.org/r1834013
-     2.4.x patch: trunk works (modulo CHANGES in 2.4)
-     +1: jim, rpluem
-
   *) Add ru, zh-cn and zh-tw translations of errordocs.
      trunk patch: http://svn.apache.org/r1817175
                   http://svn.apache.org/r1831800
      2.4.x patch: trunk works + CHANGES entry in r1834254
                   svn merge -c 1817175,1831800 ^/httpd/httpd/trunk .
-     +1: jailletc36
+     +1: jailletc36, covener
 
   *) mod_authz_core: If several parameters are used in a AuthzProviderAlias directive,
      if these parameters are not enclosed in quotation mark, only the first one is
@@ -183,7 +183,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1834209
      2.4.x patch: trunk works (modulo CHANGES and next-number)
                   svn merge -c 1834209 ^/httpd/httpd/trunk .
-     +1: jailletc36
+     +1: jailletc36, covener
 
   *) Easy patches: synch 2.4.x and trunk
      - mod_env: remove an empty line
@@ -197,7 +197,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1830944
                   http://svn.apache.org/r1832991
      2.4.x patch: svn merge -c 1795834,1828912,1830943,1830944,1832991 ^/httpd/httpd/trunk . 
-     +1: jailletc36
+     +1: jailletc36, covener
 
   *) mod_ratelimit: fix behavior with proxied content
      trunk patch: http://svn.apache.org/r1833875
