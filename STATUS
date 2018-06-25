@@ -212,6 +212,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1833875 ^/httpd/httpd/trunk .
      +1: elukey
 
+  *) core: re-allow '_' in hostnames (by default)
+     trunk patch: http://svn.apache.org/r1834318
+     2.4.x patch: svn merge -c 1834318 ^/httpd/httpd/trunk .
+               + t/tests/http_strict.t update after committed
+     +1 covener
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
