@@ -1,5 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
+
+  *) core: Re-allow '_' (underscore) in hostnames.
+     [Eric Covener]
+
   *) ru, zh-cn and zh-tw translations of errordocs have been added.
      Contributed by Alexander Gaganashvili and CodeingBoy
   
