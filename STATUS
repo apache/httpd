@@ -210,6 +210,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                + t/tests/http_strict.t update after committed
      +1 covener
 
+  *) core: avoid duplicate headers when using ap_send_error_response.
+           From trunk's testing the code seems running fine without any side
+           effects, so adding this change in here to have more reviews.
+     trunk patch: http://svn.apache.org/r1832092
+     2.4.x patch: svn merge -c 1832092 ^/httpd/httpd/trunk .
+     +1: elukey
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
