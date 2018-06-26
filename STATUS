@@ -141,12 +141,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_proxy_wstunnel: Add default schema ports for 'ws' and 'wss'.
-     PR 62480.
-     trunk patch: http://svn.apache.org/r1834012
-                  http://svn.apache.org/r1834013
-     2.4.x patch: trunk works (modulo CHANGES in 2.4)
-     +1: jim, rpluem, covener
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
