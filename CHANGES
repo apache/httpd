@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.34
 
+  *) mod_proxy_wstunnel: Add default schema ports for 'ws' and 'wss'.
+     PR 62480. [Lubos Uhliarik <luhliari redhat.com>}
+  
   *) logging: Some early logging-related startup messages could be lost
      when using syslog for the global ErrorLog. [Eric Covener]
 
