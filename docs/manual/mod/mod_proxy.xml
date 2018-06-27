@@ -825,7 +825,8 @@ expressions</description>
 <name>ProxySet</name>
 <description>Set various Proxy balancer or member parameters</description>
 <syntax>ProxySet <var>url</var> <var>key=value [key=value ...]</var></syntax>
-<contextlist><context>directory</context>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context>
 </contextlist>
 <usage>
     <p>This directive is used as an alternate method of setting any of the
