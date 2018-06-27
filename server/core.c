@@ -5462,7 +5462,7 @@ static void core_child_init(apr_pool_t *pchild, server_rec *s)
     proc.pid = getpid();
 
 #if USE_APR_CRYPTO_PRNG
-    apr_crypto_prng_after_fork(&proc);
+    apr_crypto_prng_after_fork(NULL, 1);
 #else
 #if APR_HAS_THREADS
     {
