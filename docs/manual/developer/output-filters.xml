@@ -494,4 +494,76 @@ while ((e = APR_BRIGADE_FIRST(bb)) != APR_BRIGADE_SENTINEL(bb)) {
 
   </section>
 
+  <section id="usecase1">
+    <title>Use case: buffering in mod_ratelimit</title>
+    <p>The <a href="http://svn.apache.org/r1833875">r1833875</a> change is a good
+    example to show what buffering and keeping state means in the context of an
+    output filter. In this use case, a user asked on the users' mailing list a
+    interesting question about why <module>mod_ratelimit</module> seemed not to
+    honor its setting with proxied content (either rate limiting at a different
+    speed or simply not doing it at all). Before diving deep into the solution,
+    it is better to explain on a high level how <module>mod_ratelimit</module> works.
+    The trick is really simple: take the rate limit settings and calculate a
+    chunk size of data to flush every 200ms to the client. For example, let's imagine
+    that to set <code>rate-limit 60</code> in our config, these are the high level
+    steps to find the chunk size:</p>
+    <highlight language="c">
+/* milliseconds to wait between each flush of data */
+RATE_INTERVAL_MS = 200;
+/* rate limit speed in b/s */
+speed = 60 * 1024;
+/* final chunk size is 12228 bytes */
+chunk_size = (speed / (1000 / RATE_INTERVAL_MS)); 
+    </highlight>
+    <p>If we apply this calculation to a bucket brigade carrying 38400 bytes, it means
+    that the filter will try to do the following:</p>
+    <ol>
+        <li>Split the 38400 bytes in chunks of maximum 12228 bytes each.</li>
+        <li>Flush the first 12228 chunk of bytes and sleep 200ms.</li>
+        <li>Flush the second 12228 chunk of bytes and sleep 200ms.</li>
+        <li>Flush the third 12228 chunk of bytes and sleep 200ms.</li>
+        <li>Flush the remaining 1716 bytes.</li>
+    </ol>
+    <p>The above pseudo code works fine if the output filter handles only one brigade
+    for each response, but it might happen that it needs to be called multiple times
+    with different brigade sizes as well. The former use case is for example when
+    httpd directly serves some content, like a static file: the bucket brigade
+    abstraction takes care of handling the whole content, and rate limiting
+    works nicely. But if the same static content is served via mod_proxy_http (for
+    example a backend is serving it rather than httpd) then the content generator
+    (in this case mod_proxy_http) may use a maximum buffer size and then send data
+    as bucket brigades to the output filters chain regularly, triggering of course
+    multiple calls to <module>mod_ratelimit</module>. If the reader tries to execute the pseudo code
+    assuming multiple calls to the output filter, each one requiring to process
+    a bucket brigade of 38400 bytes, then it is easy to spot some
+    anomalies:</p>
+    <ol>
+        <li>Between the last flush of a brigade and the first one of the next,
+            there is no sleep.</li>
+        <li>Even if the sleep was forced after the last flush, then that chunk size
+            would not be the ideal size (1716 bytes instead of 12228) and the final client's speed
+            would quickly become different than what set in the httpd's config.</li>
+    </ol>
+    <p>In this case, two things might help:</p>
+    <ol>
+        <li>Use the ctx internal data structure, initialized by <module>mod_ratelimit</module>
+        for each response handling cycle, to "remember" when the last sleep was
+        performed across multiple invocations, and act accordingly.</li>
+        <li>If a bucket brigade is not splittable into a finite number of chunk_size
+        blocks, store the remaining bytes (located in the tail of the bucket brigade) 
+        in a temporary holding area (namely another bucket brigade) and then use
+        <code>ap_save_brigade</code> to set them aside.
+        These bytes will be preprended to the next bucket brigade that will be handled
+        in the subsequent invocation.</li>
+        <li>Avoid the previous logic if the bucket brigade that is currently being
+        processed contains the end of stream bucket (EOS). There is no need to sleep
+        or buffering data if the end of stream is reached.</li>
+    </ol>
+    <p>The commit linked in the beginning of the section contains also a bit of code
+    refactoring so it is not trivial to read during the first pass, but the overall
+    idea is basically what written up to now. The goal of this section is not to
+    cause an headache to the reader trying to read C code, but to put him/her into
+    the right mindset needed to use efficiently the tools offered by the httpd's
+    filter chain toolset.</p>
+  </section>
 </manualpage>
