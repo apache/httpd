@@ -2480,8 +2480,8 @@ Responder), this option should be turned <code>off</code>.</p>
 <directivesynopsis>
 <name>SSLOCSPNoverify</name>
 <description>skip the OCSP responder certificates verification</description>
-<syntax>SSLOCSPNoverify <em>On/Off</em></syntax>
-<default>SSLOCSPNoverify Off</default>
+<syntax>SSLOCSPNoverify on|off</syntax>
+<default>SSLOCSPNoverify off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 <compatibility>Available in httpd 2.4.26 and later, if using OpenSSL 0.9.7 or later</compatibility>
