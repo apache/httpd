@@ -125,7 +125,7 @@ the <directive module="mod_ssl">SSLOptions</directive> directive, the
 first (or only) attribute of any DN is added only under a non-suffixed
 name; i.e. no <code>_0</code> suffixed entries are added.</p>
 
-<p>In httpd 2.5.0 and later, an optional <em>_RAW</em> suffix may be
+<p>In httpd 2.4.32 and later, an optional <em>_RAW</em> suffix may be
 added to <em>x509</em> in a DN component, to suppress conversion of
 the attribute value to UTF-8. This must be placed after the index
 suffix (if any). For example, <code>SSL_SERVER_S_DN_OU_RAW</code> or
