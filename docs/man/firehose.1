@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "FIREHOSE" 1 "2018-04-21" "Apache HTTP Server" "firehose"
+.TH "FIREHOSE" 1 "2018-06-27" "Apache HTTP Server" "firehose"
 
 .SH NAME
 firehose \- Demultiplex a firehose stream
@@ -27,13 +27,13 @@ firehose \- Demultiplex a firehose stream
 .SH "SYNOPSIS"
  
 .PP
-\fBfirehose\fR [ -\fBf\fR \fIinput\fR ] [ -\fBo\fR \fIoutput-directory\fR ] [ -\fBu\fR \fIuuid\fR ] [ -\fBh\fR ] [ --\fBversion\fR ] [\fIprefix1\fR [\&.\&.\&.]]
+\fB\fBfirehose\fR [ -\fBf\fR \fIinput\fR ] [ -\fBo\fR \fIoutput-directory\fR ] [ -\fBu\fR \fIuuid\fR ] [ -\fBh\fR ] [ --\fBversion\fR ] [\fIprefix1\fR [\&.\&.\&.]]\fR
  
 
 .SH "SUMMARY"
  
 .PP
-firehose demultiplexes the given stream of multiplexed connections, and writes each connection to an individual file\&.
+\fBfirehose\fR demultiplexes the given stream of multiplexed connections, and writes each connection to an individual file\&.
  
 .PP
 When writing to files, each connection is placed into a dedicated file named after the UUID of the connection within the stream\&. Separate files will be created if requests and responses are found in the stream\&.
@@ -46,18 +46,18 @@ If an optional prefix is specified as a parameter, connections that start with t
  
  
 .TP
---file, -f \fIfilename\fR
+\fB--file, -f \fIfilename\fR\fR
 File to read the firehose from\&. Defaults to stdin\&.  
 .TP
---output-directory, -o \fIoutput-directory\fR
+\fB--output-directory, -o \fR \fIoutput-directory\fR
 Directory to write demultiplexed connections to\&.  
 .TP
---uuid, -u \fIuuid\fR
+\fB--uuid, -u\fR \fIuuid\fR
 The UUID of the connection to demultiplex\&. Can be specified more than once\&. If not specified, all UUIDs will be demultiplexed\&.  
 .TP
---help, -h
+\fB--help, -h\fR
 This help text\&.  
 .TP
---version
+\fB--version\fR
 Display the version of the program\&.  
  
