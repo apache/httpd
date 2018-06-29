@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "CTLOGCONFIG" 8 "2018-04-21" "Apache HTTP Server" "ctlogconfig"
+.TH "CTLOGCONFIG" 8 "2018-06-27" "Apache HTTP Server" "ctlogconfig"
 
 .SH NAME
 ctlogconfig \- Certificate Transparency log configuration tool
@@ -27,25 +27,25 @@ ctlogconfig \- Certificate Transparency log configuration tool
 .SH "SYNOPSIS"
   
 .PP
-\fBctlogconfig\fR \fI/path/to/db\fR \fBdump\fR
+\fB \fBctlogconfig\fR \fI/path/to/db\fR \fBdump\fR \fR
  
 .PP
-\fBctlogconfig\fR \fI/path/to/db\fR \fBconfigure-public-key\fR [ \fIlog-id\fR|\fIrecord-id\fR ] \fI/path/to/public-key\&.pem\fR
+\fB \fBctlogconfig\fR \fI/path/to/db\fR \fBconfigure-public-key\fR [ \fIlog-id\fR|\fIrecord-id\fR ] \fI/path/to/public-key\&.pem\fR \fR
  
 .PP
-\fBctlogconfig\fR \fI/path/to/db\fR \fBconfigure-url\fR [ \fIlog-id\fR|\fIrecord-id\fR ] \fIlog-URL\fR
+\fB \fBctlogconfig\fR \fI/path/to/db\fR \fBconfigure-url\fR [ \fIlog-id\fR|\fIrecord-id\fR ] \fIlog-URL\fR \fR
  
 .PP
-\fBctlogconfig\fR \fI/path/to/db\fR \fBvalid-time-range\fR \fIlog-id\fR|\fIrecord-id\fR \fImin-timestamp\fR \fImax-timestamp\fR
+\fB \fBctlogconfig\fR \fI/path/to/db\fR \fBvalid-time-range\fR \fIlog-id\fR|\fIrecord-id\fR \fImin-timestamp\fR \fImax-timestamp\fR \fR
  
 .PP
-\fBctlogconfig\fR \fI/path/to/db\fR \fBtrust\fR \fIlog-id\fR|\fIrecord-id\fR
+\fB \fBctlogconfig\fR \fI/path/to/db\fR \fBtrust\fR \fIlog-id\fR|\fIrecord-id\fR \fR
  
 .PP
-\fBctlogconfig\fR \fI/path/to/db\fR \fBdistrust\fR \fIlog-id\fR|\fIrecord-id\fR
+\fB \fBctlogconfig\fR \fI/path/to/db\fR \fBdistrust\fR \fIlog-id\fR|\fIrecord-id\fR \fR
  
 .PP
-\fBctlogconfig\fR \fI/path/to/db\fR \fBforget\fR \fIlog-id\fR|\fIrecord-id\fR
+\fB \fBctlogconfig\fR \fI/path/to/db\fR \fBforget\fR \fIlog-id\fR|\fIrecord-id\fR \fR
  
  
 .TP
@@ -59,13 +59,13 @@ This is the record number in the database, as displayed by the \fBdump\fR sub-co
 This is a file containing the log's public key in PEM format\&. The public key is not stored in the database\&. Instead, a reference to the file is stored\&. Thus, the file cannot be removed until the public key in the database is removed or changed\&.  
 .TP
 \fImin-timestamp\fR, \fImax-timestamp\fR
-A timestamp is a time as expressed in the number of milliseconds since the epoch, ignoring leap seconds\&. This is the form of time used in Signed Certificate Timestamps\&. This must be provided as a decimal number\&. Specify \fB-\fR for one of the timestamps if it is unknown\&. For example, when configuring the minimum valid timestamp for a log which remains valid, specify \fB-\fR for \fImax-timestamp\fR\&. SCTs received from this log by the proxy are invalid if the timestamp is older than \fImin-timestamp\fR or newer than \fImax-timestamp\fR\&.  
+A timestamp is a time as expressed in the number of milliseconds since the epoch, ignoring leap seconds\&. This is the form of time used in Signed Certificate Timestamps\&. This must be provided as a decimal number\&. Specify \fB\fB-\fR\fR for one of the timestamps if it is unknown\&. For example, when configuring the minimum valid timestamp for a log which remains valid, specify \fB\fB-\fR\fR for \fImax-timestamp\fR\&. SCTs received from this log by the proxy are invalid if the timestamp is older than \fImin-timestamp\fR or newer than \fImax-timestamp\fR\&.  
  
 
 .SH "SUMMARY"
  
 .PP
-ctlogconfig is a tool for creating and maintaining a log configuration database, for use with mod_ssl_ct\&.
+\fBctlogconfig\fR is a tool for creating and maintaining a log configuration database, for use with mod_ssl_ct\&.
  
 .PP
 Refer first to Log configuration in the mod_ssl_ct documentation\&.
@@ -88,7 +88,7 @@ configure-url
 Add a log's URL to the database or set the URL for an existing entry\&. The log's URL is used when submitting server certificates to logs in order to obtain SCTs to send to clients\&. (The database will be created if it does not yet exist\&.)  
 .TP
 valid-time-range
-Set the minimum valid time and/or the maximum valid time for a log\&. SCTs from the log with timestamps outside of the valid range will not be accepted\&. Use - for a time that is not being configured\&. (The database will be created if it does not yet exist\&.)  
+Set the minimum valid time and/or the maximum valid time for a log\&. SCTs from the log with timestamps outside of the valid range will not be accepted\&. Use \fB-\fR for a time that is not being configured\&. (The database will be created if it does not yet exist\&.)  
 .TP
 trust
 Mark a log as trusted, which is the default setting\&. This sub-command is used to reverse a \fIdistrust\fR setting\&. (The database will be created if it does not yet exist\&.)  
