@@ -329,15 +329,15 @@ MDCertificateAgreement https://letsencrypt.org/documents/LE-SA-v1.2-November-15-
 <div class="directive-section"><h2><a name="MDNotifyCmd" id="MDNotifyCmd">MDNotifyCmd</a> <a name="mdnotifycmd" id="mdnotifycmd">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Run a program when Managed Domain are ready.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MDNotifyCmd <var>path</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MDNotifyCmd <var>path</var> [ <var>args</var> ]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
 </table>
             <p>The configured executable is run when Managed Domains have signed up or
             renewed their certificates. It is given the names of the processed MDs as
-            arguments. It should return status code 0 to indicate that it has 
-            run successfully.
+            additional arguments (after the parameters specified here). It should 
+            return status code 0 to indicate that it has run successfully.
             </p>
         
 </div>
