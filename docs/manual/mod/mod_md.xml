@@ -391,15 +391,15 @@ MDCertificateAgreement https://letsencrypt.org/documents/LE-SA-v1.2-November-15-
     <directivesynopsis>
         <name>MDNotifyCmd</name>
         <description>Run a program when Managed Domain are ready.</description>
-        <syntax>MDNotifyCmd <var>path</var></syntax>
+        <syntax>MDNotifyCmd <var>path</var> [ <var>args</var> ]</syntax>
         <contextlist>
             <context>server config</context>
         </contextlist>
         <usage>
             <p>The configured executable is run when Managed Domains have signed up or
             renewed their certificates. It is given the names of the processed MDs as
-            arguments. It should return status code 0 to indicate that it has 
-            run successfully.
+            additional arguments (after the parameters specified here). It should 
+            return status code 0 to indicate that it has run successfully.
             </p>
         </usage>
     </directivesynopsis>

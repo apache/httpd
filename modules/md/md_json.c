@@ -28,10 +28,12 @@
  * when undefining their INLINEs, we get static, unused functions, arg 
  */
 #if defined(__GNUC__)
+#if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)
 #pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunreachable-code"
 #endif
-#if defined(__clang__)
+#pragma GCC diagnostic ignored "-Wunused-function"
+#pragma GCC diagnostic ignored "-Wunreachable-code"
+#elif defined(__clang__)
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunused-function"
 #endif
@@ -42,9 +44,10 @@
 #include <jansson.h>
 
 #if defined(__GNUC__)
+#if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)
 #pragma GCC diagnostic pop
 #endif
-#if defined(__clang__)
+#elif defined(__clang__)
 #pragma clang diagnostic pop
 #endif
 
