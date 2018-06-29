@@ -1,6 +1,13 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.34
 
+  *) mod_md: improvements and bugfixes
+     - MDNotifyCmd now takes additional parameter that are passed on to the called command.
+     - ACME challenges have better checks for interference with other modules
+     - ACME challenges are only handled for domains managed by the module, allowing
+       other ACME clients to operate for other domains in the server.
+     - better libressl integration 
+     
   *) mod_proxy_wstunnel: Add default schema ports for 'ws' and 'wss'.
      PR 62480. [Lubos Uhliarik <luhliari redhat.com>}
   

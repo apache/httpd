@@ -771,7 +771,7 @@ static const char *md_config_set_pkeys(cmd_parms *cmd, void *dc,
     return apr_pstrcat(cmd->pool, "unsupported private key type \"", ptype, "\"", NULL);
 }
 
-static const char *md_config_set_notify_cmd(cmd_parms *cmd, void *arg, const char *value)
+static const char *md_config_set_notify_cmd(cmd_parms *cmd, void *mconfig, const char *arg)
 {
     md_srv_conf_t *sc = md_config_get(cmd->server);
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
@@ -779,8 +779,8 @@ static const char *md_config_set_notify_cmd(cmd_parms *cmd, void *arg, const cha
     if (err) {
         return err;
     }
-    sc->mc->notify_cmd = value;
-    (void)arg;
+    sc->mc->notify_cmd = arg;
+    (void)mconfig;
     return NULL;
 }
 
@@ -837,8 +837,8 @@ const command_rec md_cmds[] = {
                   "Time length for renewal before certificate expires (defaults to days)"),
     AP_INIT_TAKE1(     MD_CMD_REQUIREHTTPS, md_config_set_require_https, NULL, RSRC_CONF, 
                   "Redirect non-secure requests to the https: equivalent."),
-    AP_INIT_TAKE1(     MD_CMD_NOTIFYCMD, md_config_set_notify_cmd, NULL, RSRC_CONF, 
-                  "set the command to run when signup/renew of domain is complete."),
+    AP_INIT_RAW_ARGS(MD_CMD_NOTIFYCMD, md_config_set_notify_cmd, NULL, RSRC_CONF, 
+                  "set the command and optional arguments to run when signup/renew of domain is complete."),
     AP_INIT_TAKE1(     MD_CMD_BASE_SERVER, md_config_set_base_server, NULL, RSRC_CONF, 
                   "allow managing of base server outside virtual hosts."),
 
