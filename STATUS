@@ -219,6 +219,33 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://home.apache.org/~jailletc36/backport_1588806.patch
      +1: ylavic,
 
+  *) mod_ssl: Fix the error code returned in an error path of 'ssl_io_filter_handshake()'
+              This messes-up error handling performed in 'ssl_io_filter_error()'
+     trunk patch: http://svn.apache.org/r1645529
+     2.4.x patch: svn merge -c 1645529 ^/httpd/httpd/trunk . 
+     +1: 
+
+  *) mpm_winnt: Don't forget to close the I/O completion port as part of the
+                cleanup in the child process.
+     trunk patch: http://svn.apache.org/r1801143
+     2.4.x patch: svn merge -c 1801143 ^/httpd/httpd/trunk . 
+     +1: jailletc36
+     jailletc36: untested, but looks straight forward enough to vote
+
+  *) kotkov has made mamy improvements to the mpm_winnt about one year ago.
+     None of them have been merged or proposed for backport yet.
+     Start the merge process with the first easy steps in order to synch
+     2.4.x and trunk and ease other merges
+     - mpm_winnt: Factor out a helper function to parse the type of an accept
+                  filter and use an appropriate enum for it
+     - mpm_winnt: fix typo
+     - mpm_winnt: follow-up to r1801144
+     trunk patch: http://svn.apache.org/r1801144
+                  http://svn.apache.org/r1801148
+                  http://svn.apache.org/r1801456
+     2.4.x patch: svn merge -c 1801144,1801148,1801456 ^/httpd/httpd/trunk . 
+     +1: jailletc36
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
