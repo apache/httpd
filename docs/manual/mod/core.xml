@@ -2278,7 +2278,8 @@ if file exists at startup</description>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
-<compatibility>Available in 2.4.34 and later</compatibility>
+<override>All</override>
+<compatibility>Available in 2.4.34 and later.</compatibility>
 
 <usage>
     <p>The <code>&lt;IfFile <var>filename</var>&gt;...&lt;/IfFile&gt;
@@ -2373,7 +2374,6 @@ presence or absence of a specific directive</description>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
-<compatibility>Available in 2.4.34 and later</compatibility>
 <override>All</override>
 <compatibility>Available in 2.4.34 and later.</compatibility>
 
@@ -2419,7 +2419,6 @@ presence or absence of a specific section directive</description>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
-<compatibility>Available in 2.4.34 and later</compatibility>
 <override>All</override>
 <compatibility>Available in 2.4.34 and later.</compatibility>
 
