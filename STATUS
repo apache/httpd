@@ -124,6 +124,28 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) core: re-allow '_' in hostnames (by default)
+     trunk patch: http://svn.apache.org/r1834318
+     2.4.x patch: svn merge -c 1834318 ^/httpd/httpd/trunk .
+               + t/tests/http_strict.t update after committed
+     +1 covener, jim, ylavic
+
+  *) mod_ratelimit: fix behavior with proxied content
+     trunk patch: http://svn.apache.org/r1833875
+     2.4.x patch: svn merge -c 1833875 ^/httpd/httpd/trunk .
+     +1: elukey, jim, ylavic
+
+  *) mod_proxy: Fix a corner case where the ProxyPassReverseCookieDomain or
+     ProxyPassReverseCookiePath directive could fail to update correctly 
+     'domain=' or 'path=' in the 'Set-Cookie' header.  PR 61560.
+     trunk patch: http://svn.apache.org/r1832280
+     2.4.x patch: trunk works (module CHANGES)
+                  svn merge -c 1832280 ^/httpd/httpd/trunk . 
+     +1: jailletc36, rpluem, ylavic
+     jailletc36: 'ap_proxy_strmatch_domain' and 'ap_proxy_strmatch_path' are
+     now useless.  They could be axed, but maybe, not in 2.4.x (even if I
+     don't imagine any 3rd party proxy module to use it)
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -134,28 +156,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: jorton, rpluem
      ylavic: same as dev@; since SetEnv* are usable from htaccess, wouldn't
              we open a door here (unconditionally)?
-
-  *) mod_proxy: Fix a corner case where the ProxyPassReverseCookieDomain or
-     ProxyPassReverseCookiePath directive could fail to update correctly 
-     'domain=' or 'path=' in the 'Set-Cookie' header.  PR 61560.
-     trunk patch: http://svn.apache.org/r1832280
-     2.4.x patch: trunk works (module CHANGES)
-                  svn merge -c 1832280 ^/httpd/httpd/trunk . 
-     +1: jailletc36, rpluem
-     jailletc36: 'ap_proxy_strmatch_domain' and 'ap_proxy_strmatch_path' are
-     now useless.  They could be axed, but maybe, not in 2.4.x (even if I
-     don't imagine any 3rd party proxy module to use it)
-
-  *) mod_ratelimit: fix behavior with proxied content
-     trunk patch: http://svn.apache.org/r1833875
-     2.4.x patch: svn merge -c 1833875 ^/httpd/httpd/trunk .
-     +1: elukey, jim
-
-  *) core: re-allow '_' in hostnames (by default)
-     trunk patch: http://svn.apache.org/r1834318
-     2.4.x patch: svn merge -c 1834318 ^/httpd/httpd/trunk .
-               + t/tests/http_strict.t update after committed
-     +1 covener, jim
 
   *) core: avoid duplicate headers when using ap_send_error_response.
            From trunk's testing the code seems running fine without any side
@@ -176,7 +176,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
               This messes-up error handling performed in 'ssl_io_filter_error()'
      trunk patch: http://svn.apache.org/r1645529
      2.4.x patch: svn merge -c 1645529 ^/httpd/httpd/trunk . 
-     +1: 
+     +1: ylavic,
 
   *) mpm_winnt: Don't forget to close the I/O completion port as part of the
                 cleanup in the child process.
@@ -204,7 +204,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
               backport was just partial. So backport now the remaining part.
      trunk patch: http://svn.apache.org/r1666363    (part of)
      2.4.x patch: http://home.apache.org/~jailletc36/backport_1666363.patch
-     +1: jailletc36, 
+     +1: jailletc36, ylavic,
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
