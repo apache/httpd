@@ -170,7 +170,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
               This messes-up error handling performed in 'ssl_io_filter_error()'
      trunk patch: http://svn.apache.org/r1645529
      2.4.x patch: svn merge -c 1645529 ^/httpd/httpd/trunk . 
-     +1: ylavic,
+     +1: ylavic, druggeri
+     druggeri: Why no +1, jallietc36?
+
 
   *) mpm_winnt: Don't forget to close the I/O completion port as part of the
                 cleanup in the child process.
