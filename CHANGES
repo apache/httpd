@@ -4,9 +4,6 @@ Changes with Apache 2.5.1
   *) mod_md: more robust handling of http-01 challenges and hands-off when module
      should not be involved, e.g. challenge setup by another ACME client. [Stefan Eissing]
 
-  *) core: Re-allow '_' (underscore) in hostnames.
-     [Eric Covener]
-
   *) ru, zh-cn and zh-tw translations of errordocs have been added.
      Contributed by Alexander Gaganashvili and CodeingBoy
   
