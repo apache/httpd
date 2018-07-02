@@ -141,28 +141,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
-  *) core: Allow mod_env to override all system path envvars not just PATH
-     trunk patch: http://svn.apache.org/r1811831
-     2.4.x patch: svn merge -c 1811831 ^/httpd/httpd/trunk .
-     +1: jorton, rpluem
-     ylavic: same as dev@; since SetEnv* are usable from htaccess, wouldn't
-             we open a door here (unconditionally)?
-
-  *) mod_proxy: Fix a corner case where the ProxyPassReverseCookieDomain or
-     ProxyPassReverseCookiePath directive could fail to update correctly 
-     'domain=' or 'path=' in the 'Set-Cookie' header.  PR 61560.
-     trunk patch: http://svn.apache.org/r1832280
-     2.4.x patch: trunk works (module CHANGES)
-                  svn merge -c 1832280 ^/httpd/httpd/trunk . 
-     +1: jailletc36, rpluem
-     jailletc36: 'ap_proxy_strmatch_domain' and 'ap_proxy_strmatch_path' are
-     now useless.  They could be axed, but maybe, not in 2.4.x (even if I
-     don't imagine any 3rd party proxy module to use it)
-
   *) Add ru, zh-cn and zh-tw translations of errordocs.
      trunk patch: http://svn.apache.org/r1817175
                   http://svn.apache.org/r1831800
@@ -192,6 +170,28 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1832991
      2.4.x patch: svn merge -c 1795834,1828912,1830943,1830944,1832991 ^/httpd/httpd/trunk . 
      +1: jailletc36, covener, jim
+
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
+
+  *) core: Allow mod_env to override all system path envvars not just PATH
+     trunk patch: http://svn.apache.org/r1811831
+     2.4.x patch: svn merge -c 1811831 ^/httpd/httpd/trunk .
+     +1: jorton, rpluem
+     ylavic: same as dev@; since SetEnv* are usable from htaccess, wouldn't
+             we open a door here (unconditionally)?
+
+  *) mod_proxy: Fix a corner case where the ProxyPassReverseCookieDomain or
+     ProxyPassReverseCookiePath directive could fail to update correctly 
+     'domain=' or 'path=' in the 'Set-Cookie' header.  PR 61560.
+     trunk patch: http://svn.apache.org/r1832280
+     2.4.x patch: trunk works (module CHANGES)
+                  svn merge -c 1832280 ^/httpd/httpd/trunk . 
+     +1: jailletc36, rpluem
+     jailletc36: 'ap_proxy_strmatch_domain' and 'ap_proxy_strmatch_path' are
+     now useless.  They could be axed, but maybe, not in 2.4.x (even if I
+     don't imagine any 3rd party proxy module to use it)
 
   *) mod_ratelimit: fix behavior with proxied content
      trunk patch: http://svn.apache.org/r1833875
