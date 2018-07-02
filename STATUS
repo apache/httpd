@@ -168,7 +168,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1831800
      2.4.x patch: trunk works + CHANGES entry in r1834254
                   svn merge -c 1817175,1831800 ^/httpd/httpd/trunk .
-     +1: jailletc36, covener
+     +1: jailletc36, covener, jim
 
   *) mod_authz_core: If several parameters are used in a AuthzProviderAlias directive,
      if these parameters are not enclosed in quotation mark, only the first one is
@@ -177,7 +177,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1834209
      2.4.x patch: trunk works (modulo CHANGES and next-number)
                   svn merge -c 1834209 ^/httpd/httpd/trunk .
-     +1: jailletc36, covener
+     +1: jailletc36, covener, jim
 
   *) Easy patches: synch 2.4.x and trunk
      - mod_env: remove an empty line
@@ -191,18 +191,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1830944
                   http://svn.apache.org/r1832991
      2.4.x patch: svn merge -c 1795834,1828912,1830943,1830944,1832991 ^/httpd/httpd/trunk . 
-     +1: jailletc36, covener
+     +1: jailletc36, covener, jim
 
   *) mod_ratelimit: fix behavior with proxied content
      trunk patch: http://svn.apache.org/r1833875
      2.4.x patch: svn merge -c 1833875 ^/httpd/httpd/trunk .
-     +1: elukey
+     +1: elukey, jim
 
   *) core: re-allow '_' in hostnames (by default)
      trunk patch: http://svn.apache.org/r1834318
      2.4.x patch: svn merge -c 1834318 ^/httpd/httpd/trunk .
                + t/tests/http_strict.t update after committed
-     +1 covener
+     +1 covener, jim
 
   *) core: avoid duplicate headers when using ap_send_error_response.
            From trunk's testing the code seems running fine without any side
@@ -217,7 +217,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      should be backported.
      trunk patch: http://svn.apache.org/r1588806
      2.4.x patch: http://home.apache.org/~jailletc36/backport_1588806.patch
-     +1: ylavic,
+     +1: ylavic, jim
 
   *) mod_ssl: Fix the error code returned in an error path of 'ssl_io_filter_handshake()'
               This messes-up error handling performed in 'ssl_io_filter_error()'
