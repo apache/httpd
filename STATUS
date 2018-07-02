@@ -178,7 +178,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                 cleanup in the child process.
      trunk patch: http://svn.apache.org/r1801143
      2.4.x patch: svn merge -c 1801143 ^/httpd/httpd/trunk . 
-     +1: jailletc36
+     +1: jailletc36, ylavic (by inspection),
      jailletc36: untested, but looks straight forward enough to vote
 
   *) kotkov has made mamy improvements to the mpm_winnt about one year ago.
