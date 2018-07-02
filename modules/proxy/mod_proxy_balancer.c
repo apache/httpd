@@ -908,7 +908,7 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
             continue;
         }
         if (conf->bal_persist) {
-            type = AP_SLOTMEM_TYPE_PERSIST;
+            type = AP_SLOTMEM_TYPE_PERSIST | AP_SLOTMEM_TYPE_CLEARINUSE;
         } else {
             type = 0;
         }

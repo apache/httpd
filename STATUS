@@ -123,19 +123,6 @@ RELEASE SHOWSTOPPERS:
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
-  *) mod_slotmem_shm: Add generation number to shm filename to fix races with
-                      graceful restarts.  PRs 62044 and 62308.
-     trunk patch: https://svn.apache.org/r1831868
-                  https://svn.apache.org/r1831869
-                  https://svn.apache.org/r1831870
-                  https://svn.apache.org/r1831871
-                  https://svn.apache.org/r1831872
-                  https://svn.apache.org/r1831935
-                  https://svn.apache.org/r1831938
-                  https://svn.apache.org/r1832479
-     2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-balancer_slotmem-v2.patch
-     +1: ylavic, jim, druggeri
-
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:

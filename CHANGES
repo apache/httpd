@@ -94,6 +94,9 @@ Changes with Apache 2.4.34
      default if mod_http2 is loaded.
      [Yann Ylavic, Ruediger Pluem, Stefan Eissing, Gregg Smith]
 
+  *) mod_slotmem_shm: Add generation number to shm filename to fix races
+     with graceful restarts. PRs 62044 and 62308.  [Jim Jagielski, Yann Ylavic]
+
   *) core: Preserve the original HTTP request method in the '%<m' LogFormat
      when an path-based ErrorDocument is used.  PR 62186. 
      [Micha Lenk <micha lenk.info>]
