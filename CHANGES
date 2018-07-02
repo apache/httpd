@@ -1,5 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.34
+
+  *) core: Re-allow '_' (underscore) in hostnames.
+     [Eric Covener]
+
   *) mod_authz_core: If several parameters are used in a AuthzProviderAlias
      directive, if these parameters are not enclosed in quotation mark, only
      the first one is handled. The other ones are silently ignored.
