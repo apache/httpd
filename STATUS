@@ -141,20 +141,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) Easy patches: synch 2.4.x and trunk
-     - mod_env: remove an empty line
-     - mod_ssl: Simplify code, no functional change
-     - mod_proxy_html: Save a few cycles and simplify code
-     - mod_proxy_html: Save a few more cycles
-     - mod_proxy_hcheck: Remove an unused bucket allocator + tag the subpool
-     trunk patch: http://svn.apache.org/r1795834
-                  http://svn.apache.org/r1828912
-                  http://svn.apache.org/r1830943
-                  http://svn.apache.org/r1830944
-                  http://svn.apache.org/r1832991
-     2.4.x patch: svn merge -c 1795834,1828912,1830943,1830944,1832991 ^/httpd/httpd/trunk . 
-     +1: jailletc36, covener, jim
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]

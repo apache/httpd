@@ -659,7 +659,7 @@ static meta *metafix(request_rec *r, const char *buf, apr_size_t len)
         p = buf+offs+pmatch[1].rm_eo;
         while (!apr_isalpha(*++p));
         for (q = p; apr_isalnum(*q) || (*q == '-'); ++q);
-        header = apr_pstrndup(r->pool, p, q-p);
+        header = apr_pstrmemdup(r->pool, p, q-p);
         if (strncasecmp(header, "Content-", 8)) {
             /* find content=... string */
             p = apr_strmatch(seek_content, buf+offs+pmatch[0].rm_so,
@@ -683,7 +683,7 @@ static meta *metafix(request_rec *r, const char *buf, apr_size_t len)
                     } else {
                         for (q = p; *q && !apr_isspace(*q) && (*q != '>'); ++q);
                     }
-                    content = apr_pstrndup(r->pool, p, q-p);
+                    content = apr_pstrmemdup(r->pool, p, q-p);
                     break;
                 }
             }
@@ -716,32 +716,31 @@ static const char *interpolate_vars(request_rec *r, const char *str)
     const char *replacement;
     const char *var;
     for (;;) {
-        start = str;
-        if (start = ap_strstr_c(start, "${"), start == NULL)
+        if ((start = ap_strstr_c(str, "${")) == NULL)
             break;
 
-        if (end = ap_strchr_c(start+2, '}'), end == NULL)
+        if ((end = ap_strchr_c(start+2, '}')) == NULL)
             break;
 
-        delim = ap_strchr_c(start, '|');
+        delim = ap_strchr_c(start+2, '|');
 
         /* Restrict delim to ${...} */
         if (delim && delim >= end) {
             delim = NULL;
         }
 
-        before = apr_pstrndup(r->pool, str, start-str);
+        before = apr_pstrmemdup(r->pool, str, start-str);
         after = end+1;
         if (delim) {
-            var = apr_pstrndup(r->pool, start+2, delim-start-2);
+            var = apr_pstrmemdup(r->pool, start+2, delim-start-2);
         }
         else {
-            var = apr_pstrndup(r->pool, start+2, end-start-2);
+            var = apr_pstrmemdup(r->pool, start+2, end-start-2);
         }
         replacement = apr_table_get(r->subprocess_env, var);
         if (!replacement) {
             if (delim)
-                replacement = apr_pstrndup(r->pool, delim+1, end-delim-1);
+                replacement = apr_pstrmemdup(r->pool, delim+1, end-delim-1);
             else
                 replacement = "";
         }
