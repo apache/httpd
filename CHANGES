@@ -1,5 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.34
+  *) mod_authz_core: If several parameters are used in a AuthzProviderAlias
+     directive, if these parameters are not enclosed in quotation mark, only
+     the first one is handled. The other ones are silently ignored.
+     Add a message to warn about such a spurious configuration.
+     PR 62469 [Hank Ibell <hwibell gmail.com>, Christophe Jaillet]
 
   *) mod_md: improvements and bugfixes
      - MDNotifyCmd now takes additional parameter that are passed on to the called command.

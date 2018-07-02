@@ -141,15 +141,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_authz_core: If several parameters are used in a AuthzProviderAlias directive,
-     if these parameters are not enclosed in quotation mark, only the first one is
-     handled. The other ones are silently ignored.
-     PR 62469.
-     trunk patch: http://svn.apache.org/r1834209
-     2.4.x patch: trunk works (modulo CHANGES and next-number)
-                  svn merge -c 1834209 ^/httpd/httpd/trunk .
-     +1: jailletc36, covener, jim
-
   *) Easy patches: synch 2.4.x and trunk
      - mod_env: remove an empty line
      - mod_ssl: Simplify code, no functional change
