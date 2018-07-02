@@ -141,13 +141,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) Add ru, zh-cn and zh-tw translations of errordocs.
-     trunk patch: http://svn.apache.org/r1817175
-                  http://svn.apache.org/r1831800
-     2.4.x patch: trunk works + CHANGES entry in r1834254
-                  svn merge -c 1817175,1831800 ^/httpd/httpd/trunk .
-     +1: jailletc36, covener, jim
-
   *) mod_authz_core: If several parameters are used in a AuthzProviderAlias directive,
      if these parameters are not enclosed in quotation mark, only the first one is
      handled. The other ones are silently ignored.
