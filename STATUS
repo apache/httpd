@@ -124,12 +124,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) core: re-allow '_' in hostnames (by default)
-     trunk patch: http://svn.apache.org/r1834318
-     2.4.x patch: svn merge -c 1834318 ^/httpd/httpd/trunk .
-               + t/tests/http_strict.t update after committed
-     +1 covener, jim, ylavic
-
   *) mod_ratelimit: fix behavior with proxied content
      trunk patch: http://svn.apache.org/r1833875
      2.4.x patch: svn merge -c 1833875 ^/httpd/httpd/trunk .
