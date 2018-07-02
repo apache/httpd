@@ -120,6 +120,9 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
+
+PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
+  [ start all new proposals below, under PATCHES PROPOSED. ]
   *) mod_slotmem_shm: Add generation number to shm filename to fix races with
                       graceful restarts.  PRs 62044 and 62308.
      trunk patch: https://svn.apache.org/r1831868
@@ -131,15 +134,8 @@ RELEASE SHOWSTOPPERS:
                   https://svn.apache.org/r1831938
                   https://svn.apache.org/r1832479
      2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-balancer_slotmem-v2.patch
-     +1: ylavic, jim
-     +.75: druggeri - applied/tested clean, but I don't think test suite covers this
-           Any chance a test case can be built for this?
-           jim - The test case would need to replicate the trigger, which would be
-                  graceful restarts... it would be tough.
+     +1: ylavic, jim, druggeri
 
-
-PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
-  [ start all new proposals below, under PATCHES PROPOSED. ]
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
