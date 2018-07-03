@@ -344,8 +344,7 @@ configuration précédentes.</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Regroupe des directives représentant une extension d'un
 fournisseur d'autorisation de base qui pourra être référencée à l'aide
 de l'alias spécifié</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>&lt;AuthzProviderAlias <var>fournisseur-de-base Alias
-Paramètres-Require</var>&gt;
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>&lt;AuthzProviderAlias <var>baseProvider Alias Require-Parameters</var>&gt;
 ... &lt;/AuthzProviderAlias&gt;
 </code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
@@ -356,6 +355,23 @@ Paramètres-Require</var>&gt;
     <code>&lt;/AuthzProviderAlias&gt;</code> permettent de regrouper des
     directives d'autorisation auxquelles on pourra faire référence à
     l'aide de l'alias spécifié dans une directive <code class="directive"><a href="#require">Require</a></code>.</p>
+
+    <p>Si <var>Require-Parameters</var> comporte plusieurs paramètres, la liste
+    de ces derniers doit être entourée de guillemets. Dans le cas contraire,
+    seul le premier paramètre de la liste sera pris en compte.</p>
+    
+    <pre class="prettyprint lang-config"># Dans cet exemple, pour que les deux adresses IP soient prises en compte, elles
+# DOIVENT être entourées de guillemets
+&lt;AuthzProviderAlias ip blacklisted-ips "XXX.XXX.XXX.XXX YYY.YYY.YYY.YYY"&gt;
+&lt;/AuthzProviderAlias&gt;
+
+&lt;Directory "/path/to/dir"&gt;
+    &lt;RequireAll&gt;
+        Require not blacklisted-ips
+        Require all granted
+    &lt;/RequireAll&gt;
+&lt;/Directory&gt;</pre>
+
 
 
 </div>

@@ -30,6 +30,8 @@
 <a href="../es/mod/mod_ssl.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
 <a href="../fr/mod/mod_ssl.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Chiffrement de haut niveau basé sur les protocoles Secure
 Sockets Layer (SSL) et Transport Layer Security (TLS)</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -281,7 +283,7 @@ seul) caractérisant le DN est enregistré avec un nom sans suffixe ;
 autrement dit, aucune entrée possédant comme suffixe <code>_0</code>
 n'est enregistrée.</p>
 
-<p>Depuis la version 2.5.0 de httpd, il est possible d'ajouter le suffixe
+<p>Depuis la version 2.4.32 de httpd, il est possible d'ajouter le suffixe
 <em>_RAW</em> à <em>x509</em> dans un élément DN afin d'éviter la conversion en
 UTF-8 de la valeur de l'attribut. Il doit être placé après le suffixe index
 (s'il existe), par exemple <code>SSL_SERVER_S_DN_OU_RAW</code> ou
@@ -1162,8 +1164,6 @@ SSLCryptoDevice ubsec</pre>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le paramètre <code>addr:port</code> est disponible à partir de la
-version 2.4.30 du serveur HTTP Apache.</td></tr>
 </table>
 <p> Cette directive permet d'activer/désactiver le moteur du protocole SSL/TLS.
 Elle doit être définie dans une section
@@ -1323,8 +1323,8 @@ SSLOCSPOverrideResponder on</pre>
 <div class="directive-section"><h2><a name="sslocspnoverify" id="sslocspnoverify">Directive</a> <a name="SSLOCSPNoverify" id="SSLOCSPNoverify">SSLOCSPNoverify</a><a title="Lien permanent" href="#sslocspnoverify" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Evite la vérification des certificats des répondeurs OCSP</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLOCSPNoverify <em>On/Off</em></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLOCSPNoverify Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLOCSPNoverify on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLOCSPNoverify off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
