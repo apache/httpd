@@ -179,7 +179,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1645529 ^/httpd/httpd/trunk . 
      +1: ylavic, druggeri
      druggeri: Why no +1, jallietc36?
-
+     rpluem: I think the patch is wrong here and in trunk. This causes
+     ap_pass_brigade to return APR_SUCCESS in ap_proxy_pass_brigade. The error
+     bucket inserted by ssl_io_filter_error IMHO makes no sense because it
+     would be sent to the origin server (the proxy backend) and not to our
+     client. Further discussion should possibly happen on dev@.
 
   *) mpm_winnt: Don't forget to close the I/O completion port as part of the
                 cleanup in the child process.
