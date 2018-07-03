@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1829390:1834209 (outdated) -->
+<!-- English Revision: 1834209 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -623,8 +623,7 @@ configuration précédentes.</description>
 <description>Regroupe des directives représentant une extension d'un
 fournisseur d'autorisation de base qui pourra être référencée à l'aide
 de l'alias spécifié</description>
-<syntax>&lt;AuthzProviderAlias <var>fournisseur-de-base Alias
-Paramètres-Require</var>&gt;
+<syntax>&lt;AuthzProviderAlias <var>baseProvider Alias Require-Parameters</var>&gt;
 ... &lt;/AuthzProviderAlias&gt;
 </syntax>
 <contextlist><context>server config</context>
@@ -637,6 +636,24 @@ Paramètres-Require</var>&gt;
     directives d'autorisation auxquelles on pourra faire référence à
     l'aide de l'alias spécifié dans une directive <directive
     module="mod_authz_core">Require</directive>.</p>
+
+    <p>Si <var>Require-Parameters</var> comporte plusieurs paramètres, la liste
+    de ces derniers doit être entourée de guillemets. Dans le cas contraire,
+    seul le premier paramètre de la liste sera pris en compte.</p>
+    
+    <highlight language="config">
+# Dans cet exemple, pour que les deux adresses IP soient prises en compte, elles
+# DOIVENT être entourées de guillemets
+&lt;AuthzProviderAlias ip blacklisted-ips "XXX.XXX.XXX.XXX YYY.YYY.YYY.YYY"&gt;
+&lt;/AuthzProviderAlias&gt;
+
+&lt;Directory "/path/to/dir"&gt;
+    &lt;RequireAll&gt;
+        Require not blacklisted-ips
+        Require all granted
+    &lt;/RequireAll&gt;
+&lt;/Directory&gt;
+    </highlight>
 
 </usage>
 </directivesynopsis>

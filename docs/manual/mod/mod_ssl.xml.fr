@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1834106:1834220 (outdated) -->
+<!-- English Revision: 1834220 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -191,7 +191,7 @@ seul) caractérisant le DN est enregistré avec un nom sans suffixe ;
 autrement dit, aucune entrée possédant comme suffixe <code>_0</code>
 n'est enregistrée.</p>
 
-<p>Depuis la version 2.5.0 de httpd, il est possible d'ajouter le suffixe
+<p>Depuis la version 2.4.32 de httpd, il est possible d'ajouter le suffixe
 <em>_RAW</em> à <em>x509</em> dans un élément DN afin d'éviter la conversion en
 UTF-8 de la valeur de l'attribut. Il doit être placé après le suffixe index
 (s'il existe), par exemple <code>SSL_SERVER_S_DN_OU_RAW</code> ou
@@ -673,8 +673,6 @@ SSLSessionCacheTimeout 600
 <default>SSLEngine off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility>Le paramètre <code>addr:port</code> est disponible à partir de la
-version 2.4.30 du serveur HTTP Apache.</compatibility>
 
 <usage>
 <p> Cette directive permet d'activer/désactiver le moteur du protocole SSL/TLS.
@@ -2809,8 +2807,8 @@ doit être définie à <code>off</code>.</p>
 <directivesynopsis>
 <name>SSLOCSPNoverify</name>
 <description>Evite la vérification des certificats des répondeurs OCSP</description>
-<syntax>SSLOCSPNoverify <em>On/Off</em></syntax>
-<default>SSLOCSPNoverify Off</default>
+<syntax>SSLOCSPNoverify on|off</syntax>
+<default>SSLOCSPNoverify off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 <compatibility>Disponible à partir de la version 2.4.26 du serveur HTTP Apache,
