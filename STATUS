@@ -147,6 +147,12 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://home.apache.org/~jailletc36/backport_1666363.patch
      +1: jailletc36, ylavic, rpluem
 
+  *) reset global ap_server_conf when pconf is cleared (it may be seen by 
+     EXEC_ON_READ directives)
+     trunk patch: http://svn.apache.org/r1835094
+     2.4.x patch: svn merge -c 1835094 ^/httpd/httpd/trunk .
+     +1: covener, rpluem, ylavic
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -205,12 +211,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1801456
      2.4.x patch: svn merge -c 1801144,1801148,1801456 ^/httpd/httpd/trunk . 
      +1: jailletc36
-
-  *) reset global ap_server_conf when pconf is cleared (it may be seen by 
-     EXEC_ON_READ directives)
-     trunk patch: http://svn.apache.org/r1835094
-     2.4.x patch: svn merge -c 1835094 ^/httpd/httpd/trunk .
-     +1: covener, rpluem
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
