@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1834093:1834524 (outdated) -->
+<!-- English Revision: 1834524 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -912,7 +912,8 @@ charge</description>
 charge des mandataires et aux membres des groupes de répartition de
 charge</description>
 <syntax>ProxySet <var>url</var> <var>clé=valeur [clé=valeur ...]</var></syntax>
-<contextlist><context>directory</context>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context>
 </contextlist>
 <compatibility>ProxySet n'est disponible que depuis la version 2.2
 du serveur HTTP Apache.</compatibility>
@@ -1625,16 +1626,20 @@ ProxyPass "/" "balancer://hotcluster/"
     <code>[P]</code>.</p>
 
     <p>Le mot-clé optionnel <var>interpolate</var>, en combinaison avec la directive
-    <directive>ProxyPassInterpolateEnv</directive>, permet à ProxyPass
+    <directive module="mod_proxy">ProxyPassInterpolateEnv</directive>, permet à ProxyPass
     d'interpoler les variables d'environnement à l'aide de la syntaxe
     <var>${VARNAME}</var>. Notez que de nombreuses variables
     d'environnement standard dérivées de CGI n'existeront pas lorsque
     l'interpolation se produit ; vous devrez alors encore avoir avoir
     recours à <module>mod_rewrite</module> pour des règles
-    complexes. Notez aussi que l'interpolation n'est pas supportée dans
-    la partie protocole d'une URL. La détermination dynamique du
-    protocole peut être effectuée à l'aide de
-    <module>mod_rewrite</module> comme dans l'exemple suivant :</p>
+    complexes. Notez aussi que l'interpolation n'est supportée dans
+    la partie protocole/hostname/port d'une URL que pour les variables qui sont
+    disponibles au moment où la directive est interprétée (comme pour la
+    directive <directive module="core">Define</directive>). La détermination
+    dynamique de ces champs peut être effectuée à l'aide de
+    <module>mod_rewrite</module>, et l'exemple suivant décrit comment utiliser
+    <module>mod_rewrite</module> pour définir dynamiquement le protocole à http
+    ou https :</p>
 
     <highlight language="config">
 RewriteEngine On
@@ -2309,8 +2314,18 @@ les configurations de mandataires inverses</description>
     de configuration par la valeur de la variable d'environnement
     <code>nom_var</code> (si l'option <var>interpolate</var> est
     spécifiée).</p>
-    <p>Conservez cette directive à off (pour les performances du
-    serveur), sauf si vous en avez réellement besoin.</p>
+    <p>La partie protocole/hostname/port de <directive>ProxyPass</directive>
+    peut contenir des variables, mais seulement celles qui sont accessibles au
+    moment où la directive est interprétée (similairement à la directive
+    <directive module="core">Define</directive>). Pour tous les autres cas,
+    utilisez plutôt <module>mod_rewrite</module>.</p> 
+    <note type="warning"><title>Avertissement concernant les performances</title>
+    <p>Laissez cette directive à off, à moins que vous n'en ayez réellemnt
+    besoin ! Par exemple, ajouter des variables à
+    <directive>ProxyPass</directive> peut entraîner l'utilisation des serveurs
+    d'arrière-plan de mod_proxy configurés par défaut, et ceux-ci ne permettent
+    pas un réglage fin comme la réutilisation des connexions, entre
+    autres...).</p> </note>
 </usage>
 </directivesynopsis>
 
