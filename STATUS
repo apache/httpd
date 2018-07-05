@@ -124,12 +124,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) reset global ap_server_conf when pconf is cleared (it may be seen by 
-     EXEC_ON_READ directives)
-     trunk patch: http://svn.apache.org/r1835094
-     2.4.x patch: svn merge -c 1835094 ^/httpd/httpd/trunk .
-     +1: covener, rpluem, ylavic
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
