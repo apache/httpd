@@ -473,6 +473,7 @@ void h2_mplx_release_and_join(h2_mplx *m, apr_thread_cond_t *wait)
             h2_ihash_iter(m->shold, report_stream_iter, m);
         }
     }
+    ap_assert(m->tasks_active == 0);
     m->join_wait = NULL;
     
     /* 4. close the h2_req_enginge shed */
@@ -762,6 +763,9 @@ apr_status_t h2_mplx_pop_task(h2_mplx *m, h2_task **ptask)
     apr_status_t rv = APR_EOF;
     
     *ptask = NULL;
+    ap_assert(m);
+    ap_assert(m->lock);
+    
     if (APR_SUCCESS != (rv = apr_thread_mutex_lock(m->lock))) {
         return rv;
     }
