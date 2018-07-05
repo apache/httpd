@@ -124,15 +124,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) event: based on the commit log ("use a subpool of pchild since skiplist
-     allocations will happen across threads and are only protected from
-     other skiplist operations.", per sf's review comments), it sounds like this
-     should be backported.
-     trunk patch: http://svn.apache.org/r1588806
-     2.4.x patch: http://home.apache.org/~jailletc36/backport_1588806.patch
-     +1: ylavic, jim, rpluem
-
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
