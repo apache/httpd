@@ -208,7 +208,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
   *) reset global ap_server_conf when pconf is cleared (it may be seen by 
      EXEC_ON_READ directives)
-     trunk patch: ihttp://svn.apache.org/r1835094
+     trunk patch: http://svn.apache.org/r1835094
      2.4.x patch: svn merge -c 1835094 ^/httpd/httpd/trunk .
      +1: covener
 
