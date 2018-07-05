@@ -2431,6 +2431,7 @@ static void child_main(int child_num_arg, int child_bucket)
     apr_threadattr_t *thread_attr;
     apr_thread_t *start_thread_id;
     int i;
+    apr_pool_t *pskip;
 
     /* for benefit of any hooks that run as this child initializes */
     retained->mpm->mpm_state = AP_MPMQ_STARTING;
@@ -2458,7 +2459,8 @@ static void child_main(int child_num_arg, int child_bucket)
 
     apr_thread_mutex_create(&g_timer_skiplist_mtx, APR_THREAD_MUTEX_DEFAULT, pchild);
     APR_RING_INIT(&timer_free_ring, timer_event_t, link);
-    apr_skiplist_init(&timer_skiplist, pchild);
+    apr_pool_create(&pskip, pchild);
+    apr_skiplist_init(&timer_skiplist, pskip);
     apr_skiplist_set_compare(timer_skiplist, timer_comp, timer_comp);
 
     /* Just use the standard apr_setup_signal_thread to block all signals
