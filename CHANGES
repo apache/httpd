@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.34
 
+  *) mod_ratelimit: fix behavior when proxing content. PR 62362.
+     [Luca Toscano, Yann Ylavic]
+
   *) core: Re-allow '_' (underscore) in hostnames.
      [Eric Covener]
 
