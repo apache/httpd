@@ -579,7 +579,7 @@ static apr_status_t creds_load(void *baton, apr_pool_t *p, apr_pool_t *ptemp, va
     md_reg_t *reg = baton;
     md_pkey_t *privkey;
     apr_array_header_t *pubcert;
-    md_creds_t *creds, **pcreds;
+    md_creds_t *creds = NULL, **pcreds;
     const md_t *md;
     md_cert_state_t cert_state;
     md_store_group_t group;
