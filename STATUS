@@ -124,17 +124,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_proxy: Fix a corner case where the ProxyPassReverseCookieDomain or
-     ProxyPassReverseCookiePath directive could fail to update correctly 
-     'domain=' or 'path=' in the 'Set-Cookie' header.  PR 61560.
-     trunk patch: http://svn.apache.org/r1832280
-     2.4.x patch: trunk works (module CHANGES)
-                  svn merge -c 1832280 ^/httpd/httpd/trunk . 
-     +1: jailletc36, rpluem, ylavic
-     jailletc36: 'ap_proxy_strmatch_domain' and 'ap_proxy_strmatch_path' are
-     now useless.  They could be axed, but maybe, not in 2.4.x (even if I
-     don't imagine any 3rd party proxy module to use it)
-
   *) mod_ssl: r1682074 has backported part of r1666363 (fix small memory leak
               in ssl_init_server_certs when ECDH is used). For some reasons, the
               backport was just partial. So backport now the remaining part.
