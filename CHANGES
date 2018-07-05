@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.34
 
+  *) mod_proxy: Fix a corner case where the ProxyPassReverseCookieDomain or
+     ProxyPassReverseCookiePath directive could fail to update correctly
+     'domain=' or 'path=' in the 'Set-Cookie' header.  PR 61560.
+     [Christophe Jaillet]
+
   *) mod_ratelimit: fix behavior when proxing content. PR 62362.
      [Luca Toscano, Yann Ylavic]
 
