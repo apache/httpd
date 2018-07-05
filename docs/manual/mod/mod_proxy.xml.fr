@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1834242:1834522 (outdated) -->
+<!-- English Revision: 1834522 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -2358,8 +2358,8 @@ les configurations de mandataires inverses</description>
     peut contenir des variables, mais seulement celles qui sont accessibles au
     moment où la directive est interprétée (similairement à la directive
     <directive module="core">Define</directive>). Pour tous les autres cas,
-    utilisez plutôt <module>mod_rewrite</module>.</p> <note
-    type="warning"><title>Avertissement concernant les performances</title>
+    utilisez plutôt <module>mod_rewrite</module>.</p> 
+    <note type="warning"><title>Avertissement concernant les performances</title>
     <p>Laissez cette directive à off, à moins que vous n'en ayez réellemnt
     besoin ! Par exemple, ajouter des variables à
     <directive>ProxyPass</directive> peut entraîner l'utilisation des serveurs
