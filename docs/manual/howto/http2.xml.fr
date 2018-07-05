@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1798467:1834265 (outdated) -->
+<!-- English Revision: 1834265 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -29,12 +29,12 @@
 
   <summary>
     <p>Ce document est le guide de l'utilisateur de l'implémentation de HTTP/2
-    dans Apache httpd. Cette fonctionnalité en est au stade de
-    <em>production</em>, et les interfaces et directives devraient
-    maintenant se stabiliser.
+    dans Apache httpd. Cette fonctionnalité en est au stade
+    <em>de production</em>, et les interfaces et directives devraient donc être
+    dorénavant relativement stables.
     </p>
   </summary>
-  <seealso><a href="../mod/mod_http2.html">mod_http2</a></seealso>
+  <seealso><module>mod_http2</module></seealso>
 
   <section id="protocol">
     <title>Le protocole HTTP/2</title>
@@ -96,7 +96,7 @@
   <section id="implementation">
     <title>HTTP/2 dans Apache httpd</title>
     <p>Le protocole HTTP/2 est implémenté dans Apache httpd via un module
-    propre, pertinemment nommé <a href="../mod/mod_http2.html">mod_http2</a>. Ce
+    propre, pertinemment nommé <module>mod_http2</module>. Ce
     module implémente toutes les fonctionnalités décrites par la RFC 7540 et
     supporte les connexions en texte pur (http:), ou sécurisées (https:).
     La variante texte pur se nomme '<code>h2c</code>', et la variante sécurisée
@@ -109,9 +109,9 @@
 
   <section id="building">
     <title>Compilation de httpd avec le support de HTTP/2</title>
-    <p><a href="../mod/mod_http2.html">mod_http2</a> se base sur la bibliothèque
+    <p><module>mod_http2</module> se base sur la bibliothèque
     de <a href="https://nghttp2.org">nghttp2</a> pour son implémentation. Pour
-    pouvoir compiler <code>mod_http2</code>, <code>libnghttp2</code> version
+    pouvoir compiler <module>mod_http2</module>, <code>libnghttp2</code> version
     1.2.1. ou supérieure doit être installée dans votre système.</p>
     <p>Pour déclencher la compilation de <code>mod_http2</code>, vous devez
     ajouter l'argument '<code>--enable-http2</code>' au script
@@ -124,7 +124,7 @@
     préféreront lier statiquement <code>nghttp2</code> à ce module. Pour ce
     faire, utilisez l'argument <code>--enable-nghttp2-staticlib-deps</code>.
     Cette méthode est pratiquement la même que celle utilisée pour lier
-    statiquement openssl à mod_ssl.</p>
+    statiquement openssl à <module>mod_ssl</module>.</p>
     <p>En parlant de SSL, vous devez savoir que la plupart des navigateurs ne
     communiqueront en HTTP/2 que sur des URLs sécurisées de type
     <code>https:</code> ; votre serveur doit donc supporter SSL. Mais de plus,
@@ -137,7 +137,7 @@
     <title>Configuration de base</title>
 
     <p>Maintenant que vous disposez d'un binaire <code>httpd</code> compilé avec le
-    module <code>mod_http2</code>, l'activation de ce dernier nécessite un
+    module <module>mod_http2</module>, l'activation de ce dernier nécessite un
     minimum de configuration supplémentaire. En premier lieu, comme pour tout
     module Apache, vous devez le charger :</p>
     <highlight language="config">
@@ -172,7 +172,7 @@ Protocols http/1.1
     <note><title>Utilisez une chaîne d'algorithmes de chiffrement forte</title>
     <p>La directive <directive module="mod_ssl">SSLCipherSuite</directive> doit
     être définie avec une chaîne d'algorithmes de chiffrement TLS forte. Même si
-    la version actuelle de mod_http2 n'impose pas d'algorithmes de chiffrement
+    la version actuelle de <module>mod_http2</module> n'impose pas d'algorithmes de chiffrement
     particuliers, la plupart des clients le font. Faire pointer un navigateur
     vers un serveur où <code>h2</code> est activé avec une chaîne d'algorithmes
     de chiffrement inappropriée entraînera un rejet et une retrogradation vers
@@ -209,11 +209,12 @@ ProtocolsHonorOrder Off
     <p>Avec cette directive, l'ordre des protocoles que <em>vous</em> avez
     défini devient caduque et seul l'ordre défini par le client sera pris en
     compte.</p>
-    <p>Une dernière chose : les protocoles que vous définissez ne sont pas vérifiés
-    quant à leurs validité ou orthographe. Vous pouvez très bien définir des
-    protocoles qui n'existent pas, et il n'est donc pas nécessaire de filtrer
-    les <code>Protocoles</code> avec des vérifications de type
-    <code>IfModule</code>.</p>
+    <p>Une dernière chose : les protocoles que vous définissez ne sont pas
+    vérifiés quant à leurs validité ou orthographe. Vous pouvez très bien
+    définir des protocoles qui n'existent pas, et il n'est donc pas nécessaire
+    de filtrer le contenu de la directive <directive
+    module="core">Protocols</directive> avec des vérifications de type
+    <directive type="section" module="core">IfModule</directive>.</p>
     <p>Pour des conseils plus avancés à propos de la configuration, voir la <a
     href="../mod/mod_http2.html">Documentation de mod_http2</a>, et en particulier
     la section à propos de la <a
@@ -227,24 +228,24 @@ ProtocolsHonorOrder Off
     <title>Configuration du MPM</title>
 
     <p>Tous les modules multiprocessus (MPM) fournis avec httpd supportent
-    HTTP/2. Cependant, si vous utilisez le MPM <code>prefork</code>, vous allez
+    HTTP/2. Cependant, si vous utilisez le MPM <module>prefork</module>, vous allez
     faire face à de sévères restrictions.</p>
-    <p>Avec le MPM <code>prefork</code>, <code>mod_http2</code> ne traitera
+    <p>Avec le MPM <module>prefork</module>, <module>mod_http2</module> ne traitera
     qu'une requête à la fois par connexion alors que les clients tels que les
     navigateurs internet envoient de nombreuses requêtes au même moment. Si
     l'une d'entre elles est longue à traiter (ou implique une longue
     interrogation), les autres requêtes seront mises en attente.</p>
-    <p>Par défaut, <code>mod_http2</code> ne passe pas outre cette limitation pour
-    la simple et bonne raison que le MPM <code>prefork</code> n'est aujourd'hui
+    <p>Par défaut, <module>mod_http2</module> ne passe pas outre cette limitation pour
+    la simple et bonne raison que le MPM <module>prefork</module> n'est aujourd'hui
     choisi que si vous exécutez des moteurs de traitement qui ne sont pas préparés
     pour le multithreading (par exemple qui se crashent lorsque plusieurs
     requêtes arrivent).</p>
     <p>Si votre plateforme et votre installation de httpd le supportent, la
     meilleur solution consiste actuellement à utiliser le MPM
-    <code>event</code>.
+    <module>event</module>.
     </p>
     <p>Si vous n'avez pas d'autre choix que d'utiliser le MPM
-    <code>prefork</code>, mais souhaitez tout de même traiter plusieurs requêtes
+    <module>prefork</module>, mais souhaitez tout de même traiter plusieurs requêtes
     simultanément, vous pouvez jouer avec la directive <directive
     module="mod_http2">H2MinWorkers</directive>, sans garantie que cela
     fonctionne.</p>
@@ -325,7 +326,7 @@ ProtocolsHonorOrder Off
     meilleur usage de cette fonctionnalité de HTTP/2 et tout le monde en est
     encore au stade de l'expérimentation. À ce titre, voici des conseils pour
     procéder vous-même à ces expérimentations :</p>
-    <p><code>mod_http2</code> inspecte l'en-tête de la réponse et recherche les
+    <p><module>mod_http2</module> inspecte l'en-tête de la réponse et recherche les
     en-têtes <code>Link</code> sous un certain format :</p>
     <highlight language="config">
 Link &lt;/xxx.css&gt;;rel=preload, &lt;/xxx.js&gt;; rel=preload
@@ -361,8 +362,64 @@ H2Push Off
     un stade très expérimental.</p>
     <p>L'<a href="https://tools.ietf.org/html/draft-ruellan-http-accept-push-policy-00">
     en-tête Accept-Push-Policy</a> est un autre dispositif expérimental
-    implémenté dans <code>mod_http2</code> ; il permet au client de définir pour
+    implémenté dans <module>mod_http2</module> ; il permet au client de définir pour
     chaque requête quels genres de PUSHes il accepte.</p>
+  
+
+    <p>
+    La fonctionnalité PUSH n'apportera pas toujours le gain de performances dans
+    l'obtention de réponses aux requêtes. Vous trouverez plusieurs études sur ce
+    sujet sur internet qui en expliquent les avantages et inconvénients et
+    comment les particularités des clients et du réseau en influencent le
+    fonctionnement. Par exemple, le seul fait que le serveur PUSHes une
+    ressource n'implique pas forcément que le navigateur l'utilisera.</p>
+    <p>Ce qui influence le plus la réponse PUSHed, c'est la requête qui a été
+    simulée. En effet, l'URL de la requête pour un PUSH est fournie par
+    l'application, mais d'où viennent les en-têtes ? Par exemple, La requête
+    PUSH requiert-elle un en-tête <code>accept-language</code> et si oui, quelle
+    sera sa valeur ?</p>
+    <p>httpd va consulter la requête originale (celle qui a déclenché le PUSH)
+    et copier les en-têtes suivants vers la requête PUSH :
+    <code>user-agent</code>, <code>accept</code>, <code>accept-encoding</code>,
+    <code>accept-language</code> et <code>cache-control</code>.</p>
+    <p>Tous les autres en-têtes sont ignorés. Les cookies eux non plus ne seront
+    pas copiés. PUSHer des ressources qui requièrent la présence d'un cookie ne
+    fonctionnera pas. Ceci peut être sujet à débat, mais tant que ce ne sera pas
+    clairement discuté avec les navigateurs, restons prudents et évitons
+    d'exposer les cookies là où ils ne sont pas censés être visibles.</p>
   </section>
+
+  <section id="earlyhints">
+    <title>Suggestions précoces</title>
+    <p>A l'instar des ressources PUSHées, une autre méthode consiste à envoyer
+    des en-têtes <code>Link</code> au client avant même que la réponse ne soit
+    prête. Cette méthode utilise la fonctionnalité appelée "Suggestions
+    précoces" (Early Hints) décrite dans la <a
+    href="https://tools.ietf.org/html/rfc8297">RFC 8297</a>.</p>
+    <p>Pour utiliser cette fonctionnalité, vous devez l'activer explicitement
+    sur le serveur via :</p>
+    <highlight language="config">
+H2EarlyHints on
+    </highlight>
+    <p>Elle n'est en effet pas activée par défaut car certains navigateurs
+    anciens perdent pied avec de telles réponses.</p>
+    <p>Une fois cette fonctionnalité activée, vous pouvez utiliser la directive
+    <directive module="mod_http2">H2PushResource</directive> pour déclencher les
+    suggestions précoces et les PUSHes de ressources :</p>
+    <highlight language="config">
+&lt;Location /xxx.html&gt;
+    H2PushResource /xxx.css
+    H2PushResource /xxx.js
+&lt;/Location&gt;
+    </highlight>
+    <p>Le serveur enverra alors au client une réponse <code>"103 Early
+    Hints"</code> dès qu'il <em>commencera</em> à traiter la requête. Selon
+    votre application web, cet envoi peut intervenir beaucoup plus tôt que le
+    moment où les premiers en-têtes de réponse auront été déterminés.</p>
+    <p>Si <directive module="mod_http2">H2Push</directive> est activé, ceci
+    déclenchera aussi le PUSH juste après la réponse 103. Mais si <directive
+    module="mod_http2">H2Push</directive> n'est pas activé, la réponse 103 sera
+    quand-même envoyée au client.</p>
+    </section>
 
 </manualpage>
