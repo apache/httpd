@@ -124,11 +124,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_ratelimit: fix behavior with proxied content
-     trunk patch: http://svn.apache.org/r1833875
-     2.4.x patch: svn merge -c 1833875 ^/httpd/httpd/trunk .
-     +1: elukey, jim, ylavic
-
   *) mod_proxy: Fix a corner case where the ProxyPassReverseCookieDomain or
      ProxyPassReverseCookiePath directive could fail to update correctly 
      'domain=' or 'path=' in the 'Set-Cookie' header.  PR 61560.
