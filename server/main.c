@@ -289,6 +289,7 @@ static void reset_process_pconf(process_rec *process)
 {
     if (process->pconf) {
         apr_pool_clear(process->pconf);
+        ap_server_conf = NULL;
     }
     else {
         apr_pool_create(&process->pconf, process->pool);
