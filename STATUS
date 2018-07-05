@@ -124,13 +124,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_ssl: r1682074 has backported part of r1666363 (fix small memory leak
-              in ssl_init_server_certs when ECDH is used). For some reasons, the
-              backport was just partial. So backport now the remaining part.
-     trunk patch: http://svn.apache.org/r1666363    (part of)
-     2.4.x patch: http://home.apache.org/~jailletc36/backport_1666363.patch
-     +1: jailletc36, ylavic, rpluem
-
   *) reset global ap_server_conf when pconf is cleared (it may be seen by 
      EXEC_ON_READ directives)
      trunk patch: http://svn.apache.org/r1835094
