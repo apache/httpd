@@ -2,7 +2,7 @@
 Changes with Apache 2.4.34
 
   *) event: avoid possible race conditions with modules on the child pool.
-     [Eric Covener, Stefan Fritsch]
+     [Stefan Fritsch]
 
   *) mod_proxy: Fix a corner case where the ProxyPassReverseCookieDomain or
      ProxyPassReverseCookiePath directive could fail to update correctly
