@@ -264,7 +264,7 @@
 <!-- <strong>                                                             -->
 <!-- show it somewhat special (bold)                                      -->
 <!-- ==================================================================== -->
-<xsl:template match="strong">
+<xsl:template match="strong|code">
 <xsl:text>\fB</xsl:text>
     <xsl:apply-templates />
 <xsl:text>\fR</xsl:text>
@@ -373,7 +373,7 @@ FATAL: only tables with two (2) columns are supported.
 <!-- ==================================================================== -->
 <!-- pass through content                                                 -->
 <!-- ==================================================================== -->
-<xsl:template match="a|code|module|table|program|glossary">
+<xsl:template match="a|module|table|program|glossary">
 <xsl:apply-templates />
 </xsl:template>
 
