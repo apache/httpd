@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "AB" 1 "2015-05-01" "Apache HTTP Server" "ab"
+.TH "AB" 1 "2018-07-06" "Apache HTTP Server" "ab"
 
 .SH NAME
 ab \- Apache HTTP server benchmarking tool
@@ -27,122 +27,122 @@ ab \- Apache HTTP server benchmarking tool
 .SH "SYNOPSIS"
  
 .PP
-\fBab\fR [ -\fBA\fR \fIauth-username\fR:\fIpassword\fR ] [ -\fBb\fR \fIwindowsize\fR ] [ -\fBB\fR \fIlocal-address\fR ] [ -\fBc\fR \fIconcurrency\fR ] [ -\fBC\fR \fIcookie-name\fR=\fIvalue\fR ] [ -\fBd\fR ] [ -\fBe\fR \fIcsv-file\fR ] [ -\fBf\fR \fIprotocol\fR ] [ -\fBg\fR \fIgnuplot-file\fR ] [ -\fBh\fR ] [ -\fBH\fR \fIcustom-header\fR ] [ -\fBi\fR ] [ -\fBk\fR ] [ -\fBl\fR ] [ -\fBm\fR \fIHTTP-method\fR ] [ -\fBn\fR \fIrequests\fR ] [ -\fBp\fR \fIPOST-file\fR ] [ -\fBP\fR \fIproxy-auth-username\fR:\fIpassword\fR ] [ -\fBq\fR ] [ -\fBr\fR ] [ -\fBs\fR \fItimeout\fR ] [ -\fBS\fR ] [ -\fBt\fR \fItimelimit\fR ] [ -\fBT\fR \fIcontent-type\fR ] [ -\fBu\fR \fIPUT-file\fR ] [ -\fBv\fR \fIverbosity\fR] [ -\fBV\fR ] [ -\fBw\fR ] [ -\fBx\fR \fI<table>-attributes\fR ] [ -\fBX\fR \fIproxy\fR[:\fIport\fR] ] [ -\fBy\fR \fI<tr>-attributes\fR ] [ -\fBz\fR \fI<td>-attributes\fR ] [ -\fBZ\fR \fIciphersuite\fR ] [http[s]://]\fIhostname\fR[:\fIport\fR]/\fIpath\fR
+\fB\fBab\fR [ -\fBA\fR \fIauth-username\fR:\fIpassword\fR ] [ -\fBb\fR \fIwindowsize\fR ] [ -\fBB\fR \fIlocal-address\fR ] [ -\fBc\fR \fIconcurrency\fR ] [ -\fBC\fR \fIcookie-name\fR=\fIvalue\fR ] [ -\fBd\fR ] [ -\fBe\fR \fIcsv-file\fR ] [ -\fBf\fR \fIprotocol\fR ] [ -\fBg\fR \fIgnuplot-file\fR ] [ -\fBh\fR ] [ -\fBH\fR \fIcustom-header\fR ] [ -\fBi\fR ] [ -\fBk\fR ] [ -\fBl\fR ] [ -\fBm\fR \fIHTTP-method\fR ] [ -\fBn\fR \fIrequests\fR ] [ -\fBp\fR \fIPOST-file\fR ] [ -\fBP\fR \fIproxy-auth-username\fR:\fIpassword\fR ] [ -\fBq\fR ] [ -\fBr\fR ] [ -\fBs\fR \fItimeout\fR ] [ -\fBS\fR ] [ -\fBt\fR \fItimelimit\fR ] [ -\fBT\fR \fIcontent-type\fR ] [ -\fBu\fR \fIPUT-file\fR ] [ -\fBv\fR \fIverbosity\fR] [ -\fBV\fR ] [ -\fBw\fR ] [ -\fBx\fR \fI<table>-attributes\fR ] [ -\fBX\fR \fIproxy\fR[:\fIport\fR] ] [ -\fBy\fR \fI<tr>-attributes\fR ] [ -\fBz\fR \fI<td>-attributes\fR ] [ -\fBZ\fR \fIciphersuite\fR ] [http[s]://]\fIhostname\fR[:\fIport\fR]/\fIpath\fR\fR
  
 
 .SH "SUMMARY"
  
 .PP
-ab is a tool for benchmarking your Apache Hypertext Transfer Protocol (HTTP) server\&. It is designed to give you an impression of how your current Apache installation performs\&. This especially shows you how many requests per second your Apache installation is capable of serving\&.
+\fBab\fR is a tool for benchmarking your Apache Hypertext Transfer Protocol (HTTP) server\&. It is designed to give you an impression of how your current Apache installation performs\&. This especially shows you how many requests per second your Apache installation is capable of serving\&.
  
 
 .SH "OPTIONS"
  
  
 .TP
--A \fIauth-username\fR:\fIpassword\fR
-Supply BASIC Authentication credentials to the server\&. The username and password are separated by a single : and sent on the wire base64 encoded\&. The string is sent regardless of whether the server needs it (\fIi\&.e\&.\fR, has sent an 401 authentication needed)\&.  
+\fB-A \fIauth-username\fR:\fIpassword\fR\fR
+Supply BASIC Authentication credentials to the server\&. The username and password are separated by a single \fB:\fR and sent on the wire base64 encoded\&. The string is sent regardless of whether the server needs it (\fIi\&.e\&.\fR, has sent an 401 authentication needed)\&.  
 .TP
--b \fIwindowsize\fR
+\fB-b \fIwindowsize\fR\fR
 Size of TCP send/receive buffer, in bytes\&.  
 .TP
--B \fIlocal-address\fR
+\fB-B \fIlocal-address\fR\fR
 Address to bind to when making outgoing connections\&.  
 .TP
--c \fIconcurrency\fR
+\fB-c \fIconcurrency\fR\fR
 Number of multiple requests to perform at a time\&. Default is one request at a time\&.  
 .TP
--C \fIcookie-name\fR=\fIvalue\fR
-Add a Cookie: line to the request\&. The argument is typically in the form of a \fIname\fR=\fIvalue\fR pair\&. This field is repeatable\&.  
+\fB-C \fIcookie-name\fR=\fIvalue\fR\fR
+Add a \fBCookie:\fR line to the request\&. The argument is typically in the form of a \fB\fIname\fR=\fIvalue\fR\fR pair\&. This field is repeatable\&.  
 .TP
--d
+\fB-d\fR
 Do not display the "percentage served within XX [ms] table"\&. (legacy support)\&.  
 .TP
--e \fIcsv-file\fR
+\fB-e \fIcsv-file\fR\fR
 Write a Comma separated value (CSV) file which contains for each percentage (from 1% to 100%) the time (in milliseconds) it took to serve that percentage of the requests\&. This is usually more useful than the 'gnuplot' file; as the results are already 'binned'\&.  
 .TP
--f \fIprotocol\fR
+\fB-f \fIprotocol\fR\fR
 Specify SSL/TLS protocol (SSL2, SSL3, TLS1, TLS1\&.1, TLS1\&.2, or ALL)\&. TLS1\&.1 and TLS1\&.2 support available in 2\&.4\&.4 and later\&.  
 .TP
--g \fIgnuplot-file\fR
+\fB-g \fIgnuplot-file\fR\fR
 Write all measured values out as a 'gnuplot' or TSV (Tab separate values) file\&. This file can easily be imported into packages like Gnuplot, IDL, Mathematica, Igor or even Excel\&. The labels are on the first line of the file\&.  
 .TP
--h
+\fB-h\fR
 Display usage information\&.  
 .TP
--H \fIcustom-header\fR
-Append extra headers to the request\&. The argument is typically in the form of a valid header line, containing a colon-separated field-value pair (\fIi\&.e\&.\fR, "Accept-Encoding: zip/zop;8bit")\&.  
+\fB-H \fIcustom-header\fR\fR
+Append extra headers to the request\&. The argument is typically in the form of a valid header line, containing a colon-separated field-value pair (\fIi\&.e\&.\fR, \fB"Accept-Encoding: zip/zop;8bit"\fR)\&.  
 .TP
--i
-Do HEAD requests instead of GET\&.  
+\fB-i\fR
+Do \fBHEAD\fR requests instead of \fBGET\fR\&.  
 .TP
--k
+\fB-k\fR
 Enable the HTTP KeepAlive feature, \fIi\&.e\&.\fR, perform multiple requests within one HTTP session\&. Default is no KeepAlive\&.  
 .TP
--l
+\fB-l\fR
 Do not report errors if the length of the responses is not constant\&. This can be useful for dynamic pages\&. Available in 2\&.4\&.7 and later\&.  
 .TP
--m \fIHTTP-method\fR
+\fB-m \fIHTTP-method\fR\fR
 Custom HTTP method for the requests\&. Available in 2\&.4\&.10 and later\&.  
 .TP
--n \fIrequests\fR
+\fB-n \fIrequests\fR\fR
 Number of requests to perform for the benchmarking session\&. The default is to just perform a single request which usually leads to non-representative benchmarking results\&.  
 .TP
--p \fIPOST-file\fR
-File containing data to POST\&. Remember to also set -T\&.  
+\fB-p \fIPOST-file\fR\fR
+File containing data to POST\&. Remember to also set \fB-T\fR\&.  
 .TP
--P \fIproxy-auth-username\fR:\fIpassword\fR
-Supply BASIC Authentication credentials to a proxy en-route\&. The username and password are separated by a single : and sent on the wire base64 encoded\&. The string is sent regardless of whether the proxy needs it (\fIi\&.e\&.\fR, has sent an 407 proxy authentication needed)\&.  
+\fB-P \fIproxy-auth-username\fR:\fIpassword\fR\fR
+Supply BASIC Authentication credentials to a proxy en-route\&. The username and password are separated by a single \fB:\fR and sent on the wire base64 encoded\&. The string is sent regardless of whether the proxy needs it (\fIi\&.e\&.\fR, has sent an 407 proxy authentication needed)\&.  
 .TP
--q
-When processing more than 150 requests, ab outputs a progress count on stderr every 10% or 100 requests or so\&. The -q flag will suppress these messages\&.  
+\fB-q\fR
+When processing more than 150 requests, \fBab\fR outputs a progress count on \fBstderr\fR every 10% or 100 requests or so\&. The \fB-q\fR flag will suppress these messages\&.  
 .TP
--r
+\fB-r\fR
 Don't exit on socket receive errors\&.  
 .TP
--s \fItimeout\fR
+\fB-s \fItimeout\fR\fR
 Maximum number of seconds to wait before the socket times out\&. Default is 30 seconds\&. Available in 2\&.4\&.4 and later\&.  
 .TP
--S
+\fB-S\fR
 Do not display the median and standard deviation values, nor display the warning/error messages when the average and median are more than one or two times the standard deviation apart\&. And default to the min/avg/max values\&. (legacy support)\&.  
 .TP
--t \fItimelimit\fR
-Maximum number of seconds to spend for benchmarking\&. This implies a -n 50000 internally\&. Use this to benchmark the server within a fixed total amount of time\&. Per default there is no timelimit\&.  
+\fB-t \fItimelimit\fR\fR
+Maximum number of seconds to spend for benchmarking\&. This implies a \fB-n 50000\fR internally\&. Use this to benchmark the server within a fixed total amount of time\&. Per default there is no timelimit\&.  
 .TP
--T \fIcontent-type\fR
-Content-type header to use for POST/PUT data, eg\&. application/x-www-form-urlencoded\&. Default is text/plain\&.  
+\fB-T \fIcontent-type\fR\fR
+Content-type header to use for POST/PUT data, eg\&. \fBapplication/x-www-form-urlencoded\fR\&. Default is \fBtext/plain\fR\&.  
 .TP
--u \fIPUT-file\fR
-File containing data to PUT\&. Remember to also set -T\&.  
+\fB-u \fIPUT-file\fR\fR
+File containing data to PUT\&. Remember to also set \fB-T\fR\&.  
 .TP
--v \fIverbosity\fR
-Set verbosity level - 4 and above prints information on headers, 3 and above prints response codes (404, 200, etc\&.), 2 and above prints warnings and info\&.  
+\fB-v \fIverbosity\fR\fR
+Set verbosity level - \fB4\fR and above prints information on headers, \fB3\fR and above prints response codes (404, 200, etc\&.), \fB2\fR and above prints warnings and info\&.  
 .TP
--V
+\fB-V\fR
 Display version number and exit\&.  
 .TP
--w
+\fB-w\fR
 Print out results in HTML tables\&. Default table is two columns wide, with a white background\&.  
 .TP
--x \fI<table>-attributes\fR
-String to use as attributes for <table>\&. Attributes are inserted <table \fIhere\fR >\&.  
+\fB-x \fI<table>-attributes\fR\fR
+String to use as attributes for \fB<table>\fR\&. Attributes are inserted \fB<table \fIhere\fR >\fR\&.  
 .TP
--X \fIproxy\fR[:\fIport\fR]
+\fB-X \fIproxy\fR[:\fIport\fR]\fR
 Use a proxy server for the requests\&.  
 .TP
--y \fI<tr>-attributes\fR
-String to use as attributes for <tr>\&.  
+\fB-y \fI<tr>-attributes\fR\fR
+String to use as attributes for \fB<tr>\fR\&.  
 .TP
--z \fI<td>-attributes\fR
-String to use as attributes for <td>\&.  
+\fB-z \fI<td>-attributes\fR\fR
+String to use as attributes for \fB<td>\fR\&.  
 .TP
--Z \fIciphersuite\fR
+\fB-Z \fIciphersuite\fR\fR
 Specify SSL/TLS cipher suite (See openssl ciphers)  
  
 .SH "OUTPUT"
  
 .PP
-The following list describes the values returned by ab:
+The following list describes the values returned by \fBab\fR:
  
  
 .TP
@@ -198,10 +198,10 @@ Requests per second
 This is the number of requests per second\&. This value is the result of dividing the number of requests by the total time taken  
 .TP
 Time per request
-The average time spent per request\&. The first value is calculated with the formula concurrency * timetaken * 1000 / done while the second value is calculated with the formula timetaken * 1000 / done  
+The average time spent per request\&. The first value is calculated with the formula \fBconcurrency * timetaken * 1000 / done\fR while the second value is calculated with the formula \fBtimetaken * 1000 / done\fR  
 .TP
 Transfer rate
-The rate of transfer as calculated by the formula totalread / 1024 / timetaken  
+The rate of transfer as calculated by the formula \fBtotalread / 1024 / timetaken\fR  
  
 .SH "BUGS"
  
@@ -209,5 +209,5 @@ The rate of transfer as calculated by the formula totalread / 1024 / timetaken
 There are various statically declared buffers of fixed length\&. Combined with the lazy parsing of the command line arguments, the response headers from the server and other external inputs, this might bite you\&.
  
 .PP
-It does not implement HTTP/1\&.x fully; only accepts some 'expected' forms of responses\&. The rather heavy use of strstr(3) shows up top in profile, which might indicate a performance problem; \fIi\&.e\&.\fR, you would measure the ab performance rather than the server's\&.
+It does not implement HTTP/1\&.x fully; only accepts some 'expected' forms of responses\&. The rather heavy use of \fBstrstr(3)\fR shows up top in profile, which might indicate a performance problem; \fIi\&.e\&.\fR, you would measure the \fBab\fR performance rather than the server's\&.
  
