@@ -30,7 +30,7 @@ HTTP de base.</description>
 <status>Extension</status>
 <sourcefile>mod_authnz_ldap.c</sourcefile>
 <identifier>authnz_ldap_module</identifier>
-<compatibility>Dosponible depuis les versions 2.1 et supérieures
+<compatibility>Disponible depuis les versions 2.1 et supérieures
 d'Apache</compatibility>
 
 <summary>
