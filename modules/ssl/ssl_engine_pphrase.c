@@ -609,25 +609,25 @@ static int passphrase_ui_open(UI *ui)
         if (sc->server->pphrase_dialog_type == SSL_PPTYPE_PIPE) {
             if (!readtty) {
                 ap_log_error(APLOG_MARK, APLOG_INFO, 0, ppcb->s,
-                             APLOGNO()
+                             APLOGNO(10143)
                              "Init: Creating pass phrase dialog pipe child "
                              "'%s'", sc->server->pphrase_dialog_path);
                 if (ssl_pipe_child_create(ppcb->p,
                             sc->server->pphrase_dialog_path)
                         != APR_SUCCESS) {
                     ap_log_error(APLOG_MARK, APLOG_ERR, 0, ppcb->s,
-                                 APLOGNO()
+                                 APLOGNO(10144)
                                  "Init: Failed to create pass phrase pipe '%s'",
                                  sc->server->pphrase_dialog_path);
                     return 0;
                 }
             }
-            ap_log_error(APLOG_MARK, APLOG_INFO, 0, ppcb->s, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_INFO, 0, ppcb->s, APLOGNO(10145)
                          "Init: Requesting pass phrase via piped dialog");
         }
         else { /* sc->server->pphrase_dialog_type == SSL_PPTYPE_BUILTIN */
 #ifdef WIN32
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, ppcb->s, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, ppcb->s, APLOGNO(10146)
                          "Init: Failed to create pass phrase pipe '%s'",
                          sc->server->pphrase_dialog_path);
             return 0;
@@ -640,7 +640,7 @@ static int passphrase_ui_open(UI *ui)
              */
             apr_file_open_stdout(&writetty, ppcb->p);
 
-            ap_log_error(APLOG_MARK, APLOG_INFO, 0, ppcb->s, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_INFO, 0, ppcb->s, APLOGNO(10147)
                          "Init: Requesting pass phrase via builtin terminal "
                          "dialog");
 #endif
@@ -726,7 +726,7 @@ static int passphrase_ui_read(UI *ui, UI_STRING *uis)
         const char **argv = apr_palloc(ppcb->p, sizeof(char *) * 3);
         char *result;
 
-        ap_log_error(APLOG_MARK, APLOG_INFO, 0, ppcb->s, APLOGNO()
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, ppcb->s, APLOGNO(10148)
                      "Init: Requesting pass phrase from dialog filter "
                      "program (%s)", cmd);
 
