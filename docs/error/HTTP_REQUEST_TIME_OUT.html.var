@@ -248,10 +248,11 @@ Body:----------tr--
 Content-language: zh-cn
 Content-type: text/html; charset=UTF-8
 Body:----------zh-cn--
-<!--#set var="TITLE" value="请求超时！"
+<!--#set var="CONTENT_LANGUAGE" value="zh-cn"
+--><!--#set var="TITLE" value="请求超时！"
 --><!--#include virtual="include/top.html" -->
 
-    由于浏览器没有在指定的时间内完成请求的发送，服务器关闭了连接。
+    由于浏览器未在指定时间内完成请求，服务器关闭了网络连接。
    
 <!--#include virtual="include/bottom.html" --> 
 ----------zh-cn--
@@ -259,10 +260,11 @@ Body:----------zh-cn--
 Content-language: zh-tw
 Content-type: text/html; charset=UTF-8
 Body:----------zh-tw--
-<!--#set var="TITLE" value="請求超時！"
+<!--#set var="CONTENT_LANGUAGE" value="zh-tw"
+--><!--#set var="TITLE" value="請求超時！"
 --><!--#include virtual="include/top.html" -->
 
-    由於瀏覽器沒有在指定的時間內完成請求的傳送，伺服器關閉了連線。
+    由於瀏覽器未在指定時間內完成請求，伺服器關閉了網路連接。
    
 <!--#include virtual="include/bottom.html" --> 
 ----------zh-tw--
