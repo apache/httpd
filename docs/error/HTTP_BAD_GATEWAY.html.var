@@ -339,10 +339,11 @@ Body:----------tr--
 Content-language: zh-cn
 Content-type: text/html; charset=UTF-8
 Body:----------zh-cn--
-<!--#set var="TITLE" value="网关错误！"
+<!--#set var="CONTENT_LANGUAGE" value="zh-cn"
+--><!--#set var="TITLE" value="错误的网关！"
 --><!--#include virtual="include/top.html" -->
 
-    代理服务器从上游的服务器接收到了无效的响应。
+    代理服务器从上游服务器收到了无效的响应。
 
   <!--#if expr="-n v('REDIRECT_ERROR_NOTES')" -->
     <!--#include virtual="include/spacer.html" -->
@@ -355,10 +356,11 @@ Body:----------zh-cn--
 Content-language: zh-tw
 Content-type: text/html; charset=UTF-8
 Body:----------zh-tw--
-<!--#set var="TITLE" value="閘道器錯誤！"
+<!--#set var="CONTENT_LANGUAGE" value="zh-tw"
+--><!--#set var="TITLE" value="閘道器錯誤！"
 --><!--#include virtual="include/top.html" -->
 
-    代理伺服器從上遊的伺服器接收到了無效的響應。
+    代理伺服器從上遊伺服器收到了無效的響應。
 
   <!--#if expr="-n v('REDIRECT_ERROR_NOTES')" -->
     <!--#include virtual="include/spacer.html" -->
@@ -367,4 +369,3 @@ Body:----------zh-tw--
     
 <!--#include virtual="include/bottom.html" -->
 ----------zh-tw--
-
