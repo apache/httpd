@@ -230,7 +230,8 @@ Body:----------tr--
 Content-language: zh-cn
 Content-type: text/html; charset=UTF-8
 Body:----------zh-cn--
-<!--#set var="TITLE" value="不支持的媒体类型！"
+<!--#set var="CONTENT_LANGUAGE" value="zh-cn"
+--><!--#set var="TITLE" value="不支持的媒体类型！"
 --><!--#include virtual="include/top.html" -->
 
     服务器不支持请求中传输的媒体类型。
@@ -241,11 +242,11 @@ Body:----------zh-cn--
 Content-language: zh-tw
 Content-type: text/html; charset=UTF-8
 Body:----------zh-tw--
-<!--#set var="TITLE" value="不支持的媒體型式！"
+<!--#set var="CONTENT_LANGUAGE" value="zh-tw"
+--><!--#set var="TITLE" value="不支持的媒體型式！"
 --><!--#include virtual="include/top.html" -->
 
     伺服器不支持請求中傳輸的媒體型式。
 
 <!--#include virtual="include/bottom.html" -->
 ----------zh-tw--
-

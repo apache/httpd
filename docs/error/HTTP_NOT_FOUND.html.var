@@ -492,19 +492,20 @@ Body:----------tr--
 Content-language: zh-cn
 Content-type: text/html; charset=UTF-8
 Body:----------zh-cn--
-<!--#set var="TITLE" value="找不到对象！"
+<!--#set var="CONTENT_LANGUAGE" value="zh-cn"
+--><!--#set var="TITLE" value="找不到对象！"
 --><!--#include virtual="include/top.html" -->
 
-    在服务器上找不到请求的 URL。
+    您请求的 URL 在该服务器上未找到。
 
   <!--#if expr="-n v('HTTP_REFERER')" -->
 
-    在 <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">来源页面</a>上的链接可能有误或已过期。
-    请将错误通知给<a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">该来源页面</a>的作者。
+    您的<a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">来源页面</a>上的链接可能出错或过期。
+    请将错误通知给<a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">该页面</a>的作者。
 
   <!--#else -->
 
-    如果您是手工输入 URL 的，请检查您的输入并再试一次。
+    如果您是手动输入的 URL ，请检查拼写并重试。
 
   <!--#endif -->
 
@@ -514,22 +515,22 @@ Body:----------zh-cn--
 Content-language: zh-tw
 Content-type: text/html; charset=UTF-8
 Body:----------zh-tw--
-<!--#set var="TITLE" value="找不到物件！"
+<!--#set var="CONTENT_LANGUAGE" value="zh-tw"
+--><!--#set var="TITLE" value="找不到物件！"
 --><!--#include virtual="include/top.html" -->
 
-    在伺服器上找不到請求的 URL。
+    您請求的 URL 在該伺服器上未找到。
 
   <!--#if expr="-n v('HTTP_REFERER')" -->
 
-    在<a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">來源頁面</a>上的連結可能有誤或已過期。
+    您的<a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">來源頁面</a>上的連結可能出錯或過期。
     請將錯誤通知給<a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">該來源頁面</a>的作者。
 
   <!--#else -->
 
-    如果您是手工輸入 URL 的，請檢查您的輸入並再試一次。
+    如果您是手動輸入的 URL ，請檢查拼寫並重試。
 
   <!--#endif -->
 
 <!--#include virtual="include/bottom.html" -->
 ----------zh-tw--
-

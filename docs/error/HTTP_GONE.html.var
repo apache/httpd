@@ -492,14 +492,15 @@ Body:----------tr--
 Content-language: zh-cn
 Content-type: text/html; charset=UTF-8
 Body:----------zh-cn--
-<!--#set var="TITLE" value="资源不再可用！"
+<!--#set var="CONTENT_LANGUAGE" value="zh-cn"
+--><!--#set var="TITLE" value="资源不再可用！"
 --><!--#include virtual="include/top.html" -->
 
-    请求的 URL 在此服务器上不再可用，且没有设置转发的地址。
+    您请求的 URL 在此服务器上不再可用，且没有设置转发的地址。
   
   <!--#if expr="-n v('HTTP_REFERER')" -->
   
-    请通知<a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">来源页面</a>的作者该链接已过期。
+    请通知<a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">来源页面</a>的作者，该链接已过期。
    
   <!--#else -->
   
@@ -513,14 +514,15 @@ Body:----------zh-cn--
 Content-language: zh-tw
 Content-type: text/html; charset=UTF-8
 Body:----------zh-tw--
-<!--#set var="TITLE" value="資源不再可用！"
+<!--#set var="CONTENT_LANGUAGE" value="zh-tw"
+--><!--#set var="TITLE" value="資源不再可用！"
 --><!--#include virtual="include/top.html" -->
 
-    請求的 URL 在本伺服器上不再可用，並且沒有設置轉發的地址。
+    您請求的 URL 在此伺服器上不再可用，且沒有設置轉發的位址。
   
   <!--#if expr="-n v('HTTP_REFERER')" -->
   
-    請通知<a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">來源頁面</a>的作者該連結已過期。
+    請通知<a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">來源頁面</a>的作者，該連結已過期。
    
   <!--#else -->
   
@@ -530,4 +532,3 @@ Body:----------zh-tw--
   
 <!--#include virtual="include/bottom.html" --> 
 ----------zh-tw--
-

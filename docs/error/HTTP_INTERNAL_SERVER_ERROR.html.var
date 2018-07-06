@@ -528,12 +528,13 @@ Body:----------tr--
 Content-language: zh-cn
 Content-type: text/html; charset=UTF-8
 Body:----------zh-cn--
-<!--#set var="TITLE" value="服务器错误！"
+<!--#set var="CONTENT_LANGUAGE" value="zh-cn"
+--><!--#set var="TITLE" value="服务器错误！"
 --><!--#include virtual="include/top.html" -->
 
   <!--#if expr="-n v('REDIRECT_ERROR_NOTES')" -->
 
-    服务器发生了一个内部错误，无法处理您的请求。
+    服务器发生了内部错误，无法处理您的请求。
 
     <!--#include virtual="include/spacer.html" -->
 
@@ -542,8 +543,7 @@ Body:----------zh-cn--
 
   <!--#else -->
 
-    服务器发生了一个内部错误，无法处理您的请求。
-    这可能是因为服务器负载过大或 CGI 脚本中存在错误。
+    服务器发生了内部错误，无法处理您的请求。原因可能是服务器过载或在 CGI 脚本中出错。
 
   <!--#endif -->
 
@@ -553,12 +553,13 @@ Body:----------zh-cn--
 Content-language: zh-tw
 Content-type: text/html; charset=UTF-8
 Body:----------zh-tw--
-<!--#set var="TITLE" value="伺服器错误！"
+<!--#set var="CONTENT_LANGUAGE" value="zh-tw"
+--><!--#set var="TITLE" value="伺服器错误！"
 --><!--#include virtual="include/top.html" -->
 
   <!--#if expr="-n v('REDIRECT_ERROR_NOTES')" -->
 
-    伺服器發生了一個內部錯誤，無法處理您的請求。
+    伺服器發生了內部錯誤，無法處理您的請求。
 
     <!--#include virtual="include/spacer.html" -->
 
@@ -567,11 +568,9 @@ Body:----------zh-tw--
 
   <!--#else -->
 
-    伺服器發生了一個內部錯誤，無法處理您的請求。
-    這可能是因為伺服器負載過大或 CGI 腳本中存在錯誤。
+    伺服器發生了內部錯誤，無法處理您的請求。原因可能是伺服器超載或在 CGI 腳本中出錯。
 
   <!--#endif -->
 
 <!--#include virtual="include/bottom.html" -->
 ----------zh-tw--
-

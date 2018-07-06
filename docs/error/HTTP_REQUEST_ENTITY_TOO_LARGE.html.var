@@ -260,11 +260,11 @@ Body:----------tr--
 Content-language: zh-cn
 Content-type: text/html; charset=UTF-8
 Body:----------zh-cn--
-<!--#set var="TITLE" value="请求实体过大！"
+<!--#set var="CONTENT_LANGUAGE" value="zh-cn"
+--><!--#set var="TITLE" value="请求体过大！"
 --><!--#include virtual="include/top.html" -->
 
-    <!--#echo var="REDIRECT_REQUEST_METHOD" -->
-    方法不允许传输数据，或数据部分超出了容量限制。
+    <!--#echo var="REDIRECT_REQUEST_METHOD" --> 方法不允许传输数据，或数据量超过容量限制。
 
 <!--#include virtual="include/bottom.html" -->
 ----------zh-cn--
@@ -272,12 +272,11 @@ Body:----------zh-cn--
 Content-language: zh-tw
 Content-type: text/html; charset=UTF-8
 Body:----------zh-tw--
-<!--#set var="TITLE" value="請求實體過大！"
+<!--#set var="CONTENT_LANGUAGE" value="zh-tw"
+--><!--#set var="TITLE" value="請求體過大！"
 --><!--#include virtual="include/top.html" -->
 
-    <!--#echo var="REDIRECT_REQUEST_METHOD" -->
-    方法不允許傳送數據，或數據部分超出了容量限制。
+    <!--#echo var="REDIRECT_REQUEST_METHOD" --> 方法不允許傳輸資料，或資料量超過容量限制。
 
 <!--#include virtual="include/bottom.html" -->
 ----------zh-tw--
-
