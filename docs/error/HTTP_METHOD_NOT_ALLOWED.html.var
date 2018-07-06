@@ -245,7 +245,8 @@ Body:----------tr--
 Content-language: zh-cn
 Content-type: text/html; charset=UTF-8
 Body:----------zh-cn--
-<!--#set var="TITLE" value="请求的方法不允许！"
+<!--#set var="CONTENT_LANGUAGE" value="zh-cn"
+--><!--#set var="TITLE" value="请求的方法不允许！"
 --><!--#include virtual="include/top.html" -->
 
     在请求的 URL 上不允许使用
@@ -257,7 +258,8 @@ Body:----------zh-cn--
 Content-language: zh-tw
 Content-type: text/html; charset=UTF-8
 Body:----------zh-tw--
-<!--#set var="TITLE" value="請求的方法不允許！"
+<!--#set var="CONTENT_LANGUAGE" value="zh-tw"
+--><!--#set var="TITLE" value="請求的方法不允許！"
 --><!--#include virtual="include/top.html" -->
 
     在請求的 URL 上不允許使用
@@ -265,4 +267,3 @@ Body:----------zh-tw--
     
 <!--#include virtual="include/bottom.html" -->
 ----------zh-tw--
-

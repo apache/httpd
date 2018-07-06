@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.34
 
+  *) Introduce zh-cn and zh-tw (simplified and traditional Chinese) error
+     document translations. [CodeingBoy, popcorner]
+
   *) event: avoid possible race conditions with modules on the child pool.
      [Stefan Fritsch]
 
