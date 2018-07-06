@@ -994,6 +994,7 @@ apr_status_t ssl_load_encrypted_pkey(server_rec *, apr_pool_t *, int,
  * key returned as *pkey.  certid can be NULL, in which case *pubkey
  * is not altered.  Errors logged on failure. */
 apr_status_t modssl_load_engine_keypair(server_rec *s, apr_pool_t *p,
+                                        const char *vhostid,
                                         const char *certid, const char *keyid,
                                         X509 **pubkey, EVP_PKEY **privkey);
 
