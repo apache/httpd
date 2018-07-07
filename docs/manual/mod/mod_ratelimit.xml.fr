@@ -32,10 +32,9 @@ the document to validate. -->
 <sourcefile>mod_ratelimit.c</sourcefile>
 <identifier>ratelimit_module</identifier>
 <compatibility>
-	<code>rate-initial-burst</code> est disponible à partir de la version
-	2.4.24 du serveur HTTP Apache. La limitation de bande passante pour les
-	contenus mandatés ne fonctionne correctement qu'à partir de la version
-	2.4.34 du serveur HTTP Apache.
+    <code>rate-initial-burst</code> est disponible à partir de la version 2.4.24
+    du serveur HTTP Apache. La limitation de bande passante pour les contenus
+    mandatés ne fonctionne pas correctement jusqu'à la version 2.4.33.
 </compatibility>
 
 <summary>
