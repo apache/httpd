@@ -1,4 +1,6 @@
                                                          -*- coding: utf-8 -*-
+Changes with Apache 2.4.35
+
 Changes with Apache 2.4.34
 
   *) Introduce zh-cn and zh-tw (simplified and traditional Chinese) error
