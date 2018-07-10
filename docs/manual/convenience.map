@@ -278,7 +278,10 @@ identitycheck	mod/mod_ident.html#identitycheck
 identitychecktimeout	mod/mod_ident.html#identitychecktimeout
 if	mod/core.html#if
 ifdefine	mod/core.html#ifdefine
+ifdirective	mod/core.html#ifdirective
+iffile	mod/core.html#iffile
 ifmodule	mod/core.html#ifmodule
+ifsection	mod/core.html#ifsection
 ifversion	mod/mod_version.html#ifversion
 imapbase	mod/mod_imagemap.html#imapbase
 imapdefault	mod/mod_imagemap.html#imapdefault
