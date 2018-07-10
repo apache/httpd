@@ -30,8 +30,6 @@
 <a href="../fr/mod/mod_proxy.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_proxy.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Serveur mandataire/passerelle multi-protocole</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>proxy_module</td></tr>
@@ -1723,16 +1721,20 @@ ProxyPass "/" "balancer://mycluster/" stickysession=JSESSIONID|jsessionid nofail
     <code>[P]</code>.</p>
 
     <p>Le mot-clé optionnel <var>interpolate</var>, en combinaison avec la directive
-    <code class="directive">ProxyPassInterpolateEnv</code>, permet à ProxyPass
+    <code class="directive"><a href="#proxypassinterpolateenv">ProxyPassInterpolateEnv</a></code>, permet à ProxyPass
     d'interpoler les variables d'environnement à l'aide de la syntaxe
     <var>${VARNAME}</var>. Notez que de nombreuses variables
     d'environnement standard dérivées de CGI n'existeront pas lorsque
     l'interpolation se produit ; vous devrez alors encore avoir avoir
     recours à <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> pour des règles
-    complexes. Notez aussi que l'interpolation n'est pas supportée dans
-    la partie protocole d'une URL. La détermination dynamique du
-    protocole peut être effectuée à l'aide de
-    <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> comme dans l'exemple suivant :</p>
+    complexes. Notez aussi que l'interpolation n'est supportée dans
+    la partie protocole/hostname/port d'une URL que pour les variables qui sont
+    disponibles au moment où la directive est interprétée (comme pour la
+    directive <code class="directive"><a href="../mod/core.html#define">Define</a></code>). La détermination
+    dynamique de ces champs peut être effectuée à l'aide de
+    <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>, et l'exemple suivant décrit comment utiliser
+    <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> pour définir dynamiquement le protocole à http
+    ou https :</p>
 
     <pre class="prettyprint lang-config">RewriteEngine On
 
@@ -1801,8 +1803,18 @@ les configurations de mandataires inverses</td></tr>
     de configuration par la valeur de la variable d'environnement
     <code>nom_var</code> (si l'option <var>interpolate</var> est
     spécifiée).</p>
-    <p>Conservez cette directive à off (pour les performances du
-    serveur), sauf si vous en avez réellement besoin.</p>
+    <p>La partie protocole/hostname/port de <code class="directive">ProxyPass</code>
+    peut contenir des variables, mais seulement celles qui sont accessibles au
+    moment où la directive est interprétée (similairement à la directive
+    <code class="directive"><a href="../mod/core.html#define">Define</a></code>). Pour tous les autres cas,
+    utilisez plutôt <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>.</p> 
+    <div class="warning"><h3>Avertissement concernant les performances</h3>
+    <p>Laissez cette directive à off, à moins que vous n'en ayez réellemnt
+    besoin ! Par exemple, ajouter des variables à
+    <code class="directive">ProxyPass</code> peut entraîner l'utilisation des serveurs
+    d'arrière-plan de mod_proxy configurés par défaut, et ceux-ci ne permettent
+    pas un réglage fin comme la réutilisation des connexions, entre
+    autres...).</p> </div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -2177,7 +2189,7 @@ inverses</a></li>
 charge des mandataires et aux membres des groupes de répartition de
 charge</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxySet <var>url</var> <var>clé=valeur [clé=valeur ...]</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>ProxySet n'est disponible que depuis la version 2.2
