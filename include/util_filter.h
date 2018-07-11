@@ -299,7 +299,14 @@ struct ap_filter_t {
     /** Dedicated pool to use for deferred writes. */
     apr_pool_t *deferred_pool;
 
+    /** Entry in ring of pending filters (with setaside buckets). */
+    APR_RING_ENTRY(ap_filter_t) pending;
 };
+
+/**
+ * @brief The representation of a filters' ring.
+ */
+typedef APR_RING_HEAD(ap_filter_ring, ap_filter_t) ap_filter_ring_t;
 
 /**
  * Get the current bucket brigade from the next filter on the filter

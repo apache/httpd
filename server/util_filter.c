@@ -293,7 +293,7 @@ static ap_filter_t *add_any_filter_handle(ap_filter_rec_t *frec, void *ctx,
                                           ap_filter_t **c_filters)
 {
     apr_pool_t *p = frec->ftype < AP_FTYPE_CONNECTION && r ? r->pool : c->pool;
-    ap_filter_t *f = apr_palloc(p, sizeof(*f));
+    ap_filter_t *f = apr_pcalloc(p, sizeof(*f));
     ap_filter_t **outf;
 
     if (frec->ftype < AP_FTYPE_PROTOCOL) {
@@ -325,9 +325,7 @@ static ap_filter_t *add_any_filter_handle(ap_filter_rec_t *frec, void *ctx,
     /* f->r must always be NULL for connection filters */
     f->r = frec->ftype < AP_FTYPE_CONNECTION ? r : NULL;
     f->c = c;
-    f->next = NULL;
-    f->bb = NULL;
-    f->deferred_pool = NULL;
+    APR_RING_ELEM_INIT(f, pending);
 
     if (INSERT_BEFORE(f, *outf)) {
         f->next = *outf;
@@ -451,11 +449,30 @@ AP_DECLARE(ap_filter_t *) ap_add_output_filter_handle(ap_filter_rec_t *f,
                                  &c->output_filters);
 }
 
+static APR_INLINE int is_pending_filter(ap_filter_t *f)
+{
+    return APR_RING_NEXT(f, pending) != f;
+}
+
+static apr_status_t pending_filter_cleanup(void *arg)
+{
+    ap_filter_t *f = arg;
+
+    if (is_pending_filter(f)) {
+        APR_RING_REMOVE(f, pending);
+        APR_RING_ELEM_INIT(f, pending);
+    }
+
+    return APR_SUCCESS;
+}
+
 static void remove_any_filter(ap_filter_t *f, ap_filter_t **r_filt, ap_filter_t **p_filt,
                               ap_filter_t **c_filt)
 {
     ap_filter_t **curr = r_filt ? r_filt : c_filt;
     ap_filter_t *fscan = *curr;
+
+    pending_filter_cleanup(f);
 
     if (p_filt && *p_filt == f)
         *p_filt = (*p_filt)->next;
@@ -695,39 +712,54 @@ AP_DECLARE(apr_status_t) ap_save_brigade(ap_filter_t *f,
     return srv;
 }
 
-static apr_status_t filters_cleanup(void *data)
-{
-    ap_filter_t **key = data;
-
-    apr_hash_set((*key)->c->filters, key, sizeof *key, NULL);
-
-    return APR_SUCCESS;
-}
-
 AP_DECLARE(int) ap_filter_prepare_brigade(ap_filter_t *f, apr_pool_t **p)
 {
     apr_pool_t *pool;
-    ap_filter_t **key;
+    ap_filter_t *next, *e;
+    ap_filter_t *found = NULL;
 
+    pool = f->r ? f->r->pool : f->c->pool;
+    if (p) {
+        *p = pool;
+    }
     if (!f->bb) {
-
-        pool = f->r ? f->r->pool : f->c->pool;
-
-        key = apr_pmemdup(pool, &f, sizeof f);
-        apr_hash_set(f->c->filters, key, sizeof *key, f);
-
         f->bb = apr_brigade_create(pool, f->c->bucket_alloc);
-
-        apr_pool_pre_cleanup_register(pool, key, filters_cleanup);
-
-        if (p) {
-            *p = pool;
-        }
-
-        return OK;
+        apr_pool_pre_cleanup_register(pool, f, pending_filter_cleanup);
+    }
+    if (is_pending_filter(f)) {
+        return DECLINED;
     }
 
-    return DECLINED;
+    /* Pending reads/writes must happen in the same order as input/output
+     * filters, so find the first "next" filter already in place and insert
+     * before it, if any, otherwise insert last.
+     */
+    if (f->c->pending_filters) {
+        for (next = f->next; next && !found; next = next->next) {
+            for (e = APR_RING_FIRST(f->c->pending_filters);
+                 e != APR_RING_SENTINEL(f->c->pending_filters,
+                                        ap_filter_t, pending);
+                 e = APR_RING_NEXT(e, pending)) {
+                if (e == next) {
+                    found = e;
+                    break;
+                }
+            }
+        }
+    }
+    else {
+        f->c->pending_filters = apr_palloc(f->c->pool,
+                                           sizeof(*f->c->pending_filters));
+        APR_RING_INIT(f->c->pending_filters, ap_filter_t, pending);
+    }
+    if (found) {
+        APR_RING_INSERT_BEFORE(found, f, pending);
+    }
+    else {
+        APR_RING_INSERT_TAIL(f->c->pending_filters, f, ap_filter_t, pending);
+    }
+ 
+    return OK;
 }
 
 AP_DECLARE(apr_status_t) ap_filter_setaside_brigade(ap_filter_t *f,
@@ -967,23 +999,24 @@ AP_DECLARE(int) ap_filter_should_yield(ap_filter_t *f)
 
 AP_DECLARE_NONSTD(int) ap_filter_output_pending(conn_rec *c)
 {
-    apr_hash_index_t *rindex;
     int data_in_output_filters = DECLINED;
+    ap_filter_t *f;
 
-    rindex = apr_hash_first(NULL, c->filters);
-    while (rindex) {
-        ap_filter_t *f = apr_hash_this_val(rindex);
+    if (!c->pending_filters) {
+        return DECLINED;
+    }
 
+    for (f = APR_RING_FIRST(c->pending_filters);
+         f != APR_RING_SENTINEL(c->pending_filters, ap_filter_t, pending);
+         f = APR_RING_NEXT(f, pending)) {
         if (f->frec->direction == AP_FILTER_OUTPUT && f->bb
                 && !APR_BRIGADE_EMPTY(f->bb)) {
-
             apr_status_t rv;
 
             rv = ap_pass_brigade(f, c->empty);
             apr_brigade_cleanup(c->empty);
-            if (APR_SUCCESS != rv) {
-                ap_log_cerror(
-                        APLOG_MARK, APLOG_DEBUG, rv, c, APLOGNO(00470)
+            if (rv != APR_SUCCESS && !APR_STATUS_IS_EAGAIN(rv)) {
+                ap_log_cerror(APLOG_MARK, APLOG_DEBUG, rv, c, APLOGNO(00470)
                         "write failure in '%s' output filter", f->frec->name);
                 return rv;
             }
@@ -992,8 +1025,6 @@ AP_DECLARE_NONSTD(int) ap_filter_output_pending(conn_rec *c)
                 data_in_output_filters = OK;
             }
         }
-
-        rindex = apr_hash_next(rindex);
     }
 
     return data_in_output_filters;
@@ -1001,12 +1032,15 @@ AP_DECLARE_NONSTD(int) ap_filter_output_pending(conn_rec *c)
 
 AP_DECLARE_NONSTD(int) ap_filter_input_pending(conn_rec *c)
 {
-    apr_hash_index_t *rindex;
+    ap_filter_t *f;
 
-    rindex = apr_hash_first(NULL, c->filters);
-    while (rindex) {
-        ap_filter_t *f = apr_hash_this_val(rindex);
+    if (!c->pending_filters) {
+        return DECLINED;
+    }
 
+    for (f = APR_RING_FIRST(c->pending_filters);
+         f != APR_RING_SENTINEL(c->pending_filters, ap_filter_t, pending);
+         f = APR_RING_NEXT(f, pending)) {
         if (f->frec->direction == AP_FILTER_INPUT && f->bb) {
             apr_bucket *e = APR_BRIGADE_FIRST(f->bb);
 
@@ -1019,8 +1053,6 @@ AP_DECLARE_NONSTD(int) ap_filter_input_pending(conn_rec *c)
             }
 
         }
-
-        rindex = apr_hash_next(rindex);
     }
 
     return DECLINED;
