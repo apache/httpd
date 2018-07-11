@@ -810,7 +810,7 @@ apr_status_t modssl_load_engine_keypair(server_rec *s, apr_pool_t *p,
                                         const char *certid, const char *keyid,
                                         X509 **pubkey, EVP_PKEY **privkey)
 {
-    SSLModConfigRec *mc = myModConfig(s);
+    const char *c, *scheme;
     ENGINE *e;
     UI_METHOD *ui_method = get_passphrase_ui(p);
     pphrase_cb_arg_t ppcb;
@@ -822,20 +822,34 @@ apr_status_t modssl_load_engine_keypair(server_rec *s, apr_pool_t *p,
     ppcb.key_id = vhostid;
     ppcb.pkey_file = keyid;
 
-    if (!mc->szCryptoDevice) {
+    c = ap_strchr_c(keyid, ':');
+    if (!c || c == keyid) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10131)
-                     "Init: Cannot load private key `%s' without engine",
+                     "Init: Unrecognized private key identifier `%s'",
                      keyid);
         return ssl_die(s);
     }
 
-    if (!(e = ENGINE_by_id(mc->szCryptoDevice))) {
+    scheme = apr_pstrmemdup(p, keyid, c - keyid);
+    if (!(e = ENGINE_by_id(scheme))) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10132)
-                     "Init: Failed to load Crypto Device API `%s'",
-                     mc->szCryptoDevice);
+                     "Init: Failed to load engine for private key %s",
+                     keyid);
         ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
         return ssl_die(s);
     }
+
+    if (!ENGINE_init(e)) {
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10149)
+                     "Init: Failed to initialize engine %s for private key %s",
+                     scheme, keyid);
+        ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
+        return ssl_die(s);
+    }
+
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, 
+                 "Init: Initialized engine %s for private key %s",
+                 scheme, keyid);
 
     if (APLOGdebug(s)) {
         ENGINE_ctrl_cmd_string(e, "VERBOSE", NULL, 0);
@@ -865,6 +879,7 @@ apr_status_t modssl_load_engine_keypair(server_rec *s, apr_pool_t *p,
         return ssl_die(s);
     }
 
+    ENGINE_finish(e);
     ENGINE_free(e);
 
     return APR_SUCCESS;
