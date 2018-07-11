@@ -576,12 +576,16 @@
  * 20180417.3 (2.5.1-dev)  Add ap_fgetline() and AP_GETLINE_NONBLOCK flag
  * 20180422.1 (2.5.1-dev)  Axe ap_rgetline_core()
  * 20180606.1 (2.5.1-dev)  Move ap_{make,set}_etag() from module http to core
+ * 20180711.1 (2.5.1-dev)  Add type ap_filter_ring_t, replace field 'filters'
+ *                         by the ap_filter_ring_t 'pending_filters' in struct
+ *                         conn_rec, and add ring entry 'pending' in struct
+ *                         ap_filter_t
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20180606
+#define MODULE_MAGIC_NUMBER_MAJOR 20180711
 #endif
 #define MODULE_MAGIC_NUMBER_MINOR 1                 /* 0...n */
 

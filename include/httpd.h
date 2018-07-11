@@ -1224,8 +1224,8 @@ struct conn_rec {
     /** Empty bucket brigade */
     apr_bucket_brigade *empty;
 
-    /** Hashtable of filters with setaside buckets for write completion */
-    apr_hash_t *filters;
+    /** Ring of pending filters (with setaside buckets) */
+    struct ap_filter_ring *pending_filters;
 
     /** The minimum level of filter type to allow setaside buckets */
     int async_filter;
