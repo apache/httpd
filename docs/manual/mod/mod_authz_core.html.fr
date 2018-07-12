@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_authz_core.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_authz_core.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut &#234;tre p&#233;rim&#233;e. V&#233;rifiez la version
-            anglaise pour les changements r&#233;cents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Autorisation basique</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&#160;de&#160;Module:</a></th><td>authz_core_module</td></tr>
@@ -358,6 +356,22 @@ Param&#232;tres-Require</var>&gt;
     <code>&lt;/AuthzProviderAlias&gt;</code> permettent de regrouper des
     directives d'autorisation auxquelles on pourra faire r&#233;f&#233;rence &#224;
     l'aide de l'alias sp&#233;cifi&#233; dans une directive <code class="directive"><a href="#require">Require</a></code>.</p>
+
+    <p>Si <var>Require-Parameters</var> comporte plusieurs param&#232;tres, la liste
+    de ces derniers doit &#234;tre entour&#233;e de guillemets. Dans le cas contraire,
+    seul le premier param&#232;tre de la liste sera pris en compte.</p>
+    
+    <pre class="prettyprint lang-config"># Dans cet exemple, pour que les deux adresses IP soient prises en compte, elles
+# DOIVENT &#234;tre entour&#233;es de guillemets
+&lt;AuthzProviderAlias ip blacklisted-ips "XXX.XXX.XXX.XXX YYY.YYY.YYY.YYY"&gt;
+&lt;/AuthzProviderAlias&gt;
+
+&lt;Directory "/path/to/dir"&gt;
+    &lt;RequireAll&gt;
+        Require not blacklisted-ips
+        Require all granted
+    &lt;/RequireAll&gt;
+&lt;/Directory&gt;</pre>
 
 
 </div>
