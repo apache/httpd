@@ -1,0 +1,396 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
+<!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>ab - L'outil de test des performances du serveur HTTP
+Apache - Serveur Apache HTTP Version 2.5</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
+<script src="../style/scripts/prettify.min.js" type="text/javascript">
+</script>
+
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
+<p class="apache">Serveur Apache HTTP Version 2.5</p>
+<img alt="" src="../images/feather.png" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Programmes</a></div><div id="page-content"><div id="preamble"><h1>ab - L'outil de test des performances du serveur HTTP
+Apache</h1>
+<div class="toplang">
+<p><span>Langues Disponibles: </span><a href="../en/programs/ab.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/programs/ab.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../ko/programs/ab.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/programs/ab.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
+</div>
+
+    <p><code>ab</code> est un utilitaire qui vous permet de tester les
+    performances de votre serveur HTTP Apache. Il a &#233;t&#233; con&#231;u pour vous
+    donner une id&#233;e du degr&#233; de performances de votre installation
+    d'Apache. Il vous permet en particulier de d&#233;terminer le nombre de
+    r&#233;qu&#234;tes que votre installation d'Apache est capable de servir par
+    seconde.</p>
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#synopsis">Syntaxe</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#options">Options</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#output">Sortie</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#bugs">Bogues</a></li>
+</ul><h3>Voir aussi</h3><ul class="seealso"><li><code class="program"><a href="../programs/httpd.html">httpd</a></code></li><li><a href="#comments_section">Commentaires</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="synopsis" id="synopsis">Syntaxe</a><a title="Lien permanent" href="#synopsis" class="permalink">&para;</a></h2>
+    <p><code><strong>ab</strong>
+    [ -<strong>A</strong> <var>nom-utilisateur</var>:<var>mot-de-passe</var> ]
+    [ -<strong>b</strong> <var>taille-tampon</var> ]
+    [ -<strong>B</strong> <var>adresse-locale</var> ]
+    [ -<strong>c</strong> <var>simultan&#233;it&#233;</var> ]
+    [ -<strong>C</strong> <var>nom-cookie</var>=<var>valeur</var> ]
+    [ -<strong>d</strong> ]
+    [ -<strong>e</strong> <var>fichier-csv</var> ]
+    [ -<strong>f</strong> <var>protocole</var> ]
+    [ -<strong>g</strong> <var>fichier-gnuplot</var> ]
+    [ -<strong>h</strong> ]
+    [ -<strong>H</strong> <var>en-t&#234;te-personnalis&#233;</var> ]
+    [ -<strong>i</strong> ]
+    [ -<strong>k</strong> ]
+    [ -<strong>l</strong> ]
+    [ -<strong>m</strong> <var>HTTP-method</var> ]
+    [ -<strong>n</strong> <var>requ&#234;tes</var> ]
+    [ -<strong>p</strong> <var>fichier-POST</var> ]
+    [ -<strong>P</strong>
+    <var>nom-utilisateur-mandataire</var>:<var>mot-de-passe</var> ]
+    [ -<strong>q</strong> ]
+    [ -<strong>r</strong> ]
+    [ -<strong>s</strong> <var>timeout</var> ]
+    [ -<strong>S</strong> ]
+    [ -<strong>t</strong> <var>limite-de-dur&#233;e</var> ]
+    [ -<strong>T</strong> <var>type-de-contenu</var> ]
+    [ -<strong>u</strong> <var>fichier PUT</var> ]
+    [ -<strong>v</strong> <var>verbosit&#233;</var>]
+    [ -<strong>V</strong> ]
+    [ -<strong>w</strong> ]
+    [ -<strong>x</strong> <var>&lt;table&gt;-attributs</var> ]
+    [ -<strong>X</strong> <var>mandataire</var>[:<var>port</var>] ]
+    [ -<strong>y</strong> <var>&lt;tr&gt;-attributs</var> ]
+    [ -<strong>z</strong> <var>&lt;td&gt;-attributs</var> ]
+    [ -<strong>Z</strong> <var>algorithme-chiffrement</var> ]
+    [http[s]://]<var>nom-serveur</var>[:<var>port</var>]/<var>chemin</var></code></p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="options" id="options">Options</a><a title="Lien permanent" href="#options" class="permalink">&para;</a></h2>
+    <dl>
+    <dt><code>-A <var>nom-utilisateur</var>:<var>mot-de-passe</var></code></dt>
+    <dd>Fournit le support d'une authentification de base vers le
+    serveur. Les nom-utilisateur et mot-de-passe sont s&#233;par&#233;s par un
+    seul caract&#232;re <code>:</code> et transmis sous forme cod&#233;e base64.
+    La cha&#238;ne est envoy&#233;e que le serveur en ait besoin ou non (qu'il ait
+    renvoy&#233; un code "401 authentication needed" ou non).</dd>
+
+    <dt><code>-b <var>taille-tampon</var></code></dt>
+    <dd>Taille du tampon d'&#233;mission/r&#233;ception TCP, en octets.</dd>
+
+    <dt><code>-B <var>adresse-locale</var></code></dt>
+    <dd>Adresse &#224; laquelle se rattacher lors des connexions sortantes.</dd>
+
+    <dt><code>-c <var>simultan&#233;it&#233;</var></code></dt>
+    <dd>Nombre de requ&#234;tes &#224; effectuer simultan&#233;ment. Par d&#233;faut, une
+    seule requ&#234;te est effectu&#233;e &#224; la fois.</dd>
+
+    <dt><code>-C <var>nom-cookie</var>=<var>valeur</var></code></dt>
+    <dd>Ajoute une ligne <code>Cookie:</code> &#224; la requ&#234;te. L'argument
+    se pr&#233;sente en g&#233;n&#233;ral sous la forme d'une
+    paire <code><var>nom</var>=<var>valeur</var></code>. Ce champ peut
+    &#234;tre r&#233;p&#233;t&#233;.</dd>
+
+    <dt><code>-d</code></dt>
+    
+    <dd>N'affiche pas le "pourcentage servi dans la table XX [ms]".
+    (support de l'h&#233;ritage).</dd>
+
+    <dt><code>-e <var>fichier-csv</var></code></dt>
+    <dd>Enregistre des valeurs s&#233;par&#233;es par des virgules (CSV) dans un
+    fichier, indiquant pour chaque pourcentage (de 1% &#224; 100 %), le temps
+    (en millisecondes) mis pour servir ce pourcentage de requ&#234;tes. Ce
+    fichier est en g&#233;n&#233;ral plus utile qu'un fichier 'gnuplot', car les
+    r&#233;sultats sont d&#233;j&#224; sous forme binaire.</dd>
+
+    <dt><code>-f <var>protocole</var></code></dt>
+    <dd>Sp&#233;cifie le protocole SSL/TLS (SSL2, SSL3, TLS1, TLS1.1, TLS1.2, or ALL).<br />
+    TLS1.1 et TLS1.2 sont support&#233;s &#224; partir de la version 2.4.4 du
+    serveur HTTP Apache.</dd>
+
+    <dt><code>-g <var>fichier-gnuplot</var></code></dt>
+    <dd>Enregistre toutes les valeurs mesur&#233;es dans un fichier 'gnuplot'
+    ou TSV (valeurs s&#233;par&#233;es par des tabulations). Ce fichier peut &#234;tre
+    facilement import&#233; dans des programmes comme Gnuplot, IDL,
+    Mathematica, Igor ou m&#234;me Excel. La premi&#232;re ligne du fichier
+    contient les noms des valeurs.</dd>
+
+    <dt><code>-h</code></dt>
+    <dd>Affiche une aide &#224; propos de l'utilisation du programme.</dd>
+
+    <dt><code>-H <var>en-t&#234;te-personnalis&#233;</var></code></dt>
+    <dd>Ajoute des en-t&#234;tes suppl&#233;mentaires &#224; la requ&#234;te. L'argument se
+    pr&#233;sente sous la forme d'une ligne d'en-t&#234;te valide, autrement dit
+    une paire champ/valeur s&#233;par&#233;s par un caract&#232;re ':' (par exemple
+    <code>"Accept-Encoding: zip/zop;8bit"</code>).</dd>
+
+    <dt><code>-i</code></dt>
+    <dd>Effectue des requ&#234;tes <code>HEAD</code> plut&#244;t que
+    <code>GET</code>.</dd>
+
+    <dt><code>-k</code></dt>
+    <dd>Active la fonctionnalit&#233; des connexions HTTP persistantes
+    (KeepAlive), c'est &#224; dire effectue plusieurs requ&#234;tes au cours d'une
+    seule session HTTP. Cette fonctionnalit&#233; est d&#233;sactiv&#233;e par
+    d&#233;faut.</dd>
+
+    <dt><code>-l</code></dt>
+    <dd>Ne signale pas les erreurs si la taille de la r&#233;ponse n'est pas
+    constante. Cette option peut s'av&#233;rer utile pour les pages
+    dynamiques.<br />
+    Disponible &#224; partir de la version 2.4.7 du serveur HTTP Apache.
+    </dd>
+
+    <dt><code>-m <var>HTTP-method</var></code></dt>
+    <dd>M&#233;thode HTTP personnalis&#233;e &#224; utiliser pour les requ&#234;tes.<br />
+    Disponible &#224; partir de la version 2.4.10 du serveur HTTP
+    Apache.</dd>
+
+    <dt><code>-n <var>requ&#234;tes</var></code></dt>
+    <dd>Nombre de requ&#234;tes &#224; effectuer au cours du test de performances.
+    Par d&#233;faut, une seule requ&#234;te est effectu&#233;e, ce qui ne permet pas
+    d'obtenir des r&#233;sultats repr&#233;sentatifs.</dd>
+
+    <dt><code>-p <var>fichier-POST</var></code></dt>
+    <dd>Fichier contenant les donn&#233;es pour les requ&#234;tes POST.
+    Assurez-vous de sp&#233;cifier aussi le param&#232;tre <code>-T</code>.</dd>
+
+    <dt><code>-P <var>nom-utilisateur-mandataire</var>:<var>mot-de-passe</var></code></dt>
+    <dd>Fournit les informations d'authentification basique pour un
+    mandataire en-route. Les nom d'utilisateur et mot de passe sont
+    s&#233;par&#233;s par un simple caract&#232;re <code>:</code> et envoy&#233;s sur le
+    r&#233;seau cod&#233;s en base64. La cha&#238;ne est envoy&#233;e, que le mandataire en
+    ait besoin ou non (qu'il ait renvoy&#233; un code "407 proxy
+    authentication needed" ou non).</dd>
+
+    <dt><code>-q</code></dt>
+    <dd>Lorsque plus de 150 requ&#234;tes sont trait&#233;es, <code>ab</code>
+    affiche la progression du traitement sur <code>stderr</code> tous
+    les 10% du nombre total ou toutes les 100 requ&#234;tes. Le drapeau
+    <code>-q</code> permet de supprimer ces messages.</dd>
+
+    <dt><code>-r</code></dt>
+    <dd>Ne s'arr&#234;te pas en cas d'erreur de r&#233;ception du socket.</dd>
+
+    <dt><code>-s <var>timeout</var></code></dt>
+    <dd>Temps maximum d'attente en secondes du socket avant de consid&#233;rer
+    le d&#233;lai comme d&#233;pass&#233;. La valeur par d&#233;faut est de 30 secondes.<br />
+    Disponible &#224; partir de la version 2.4.4 du serveur HTTP
+    Apache.</dd>
+
+    <dt><code>-S</code></dt>
+    <dd>N'affiche ni les valeurs de d&#233;viation standards et m&#233;dianes, ni
+    les messages d'erreur et d'avertissement lorsque les valeurs
+    m&#233;dianes et moyennes sont &#233;gales &#224; une ou deux fois la valeur de
+    d&#233;viation standard. Par d&#233;faut les valeurs mini/moyenne/maxi sont
+    affich&#233;es (support de l'h&#233;ritage).</dd>
+    
+
+    <dt><code>-t <var>limite-dur&#233;e</var></code></dt>
+    <dd>Dur&#233;e maximale en secondes du test de performances. Ceci
+    implique un <code>-n 50000</code> en interne. Utilisez cette option
+    si vous souhaitez tester les performances du serveur pendant une
+    dur&#233;e fix&#233;e &#224; l'avance. Par d&#233;faut, il n'y a pas de limite de
+    dur&#233;e.</dd>
+
+    <dt><code>-T <var>type-contenu</var></code></dt>
+    <dd>Valeur de l'en-t&#234;te Content-type &#224; utiliser pour les donn&#233;es
+    POST/PUT, par exemple
+    <code>application/x-www-form-urlencoded</code>.
+    La valeur par d&#233;faut est <code>text/plain</code>.</dd>
+
+    <dt><code>-u <var>fichier PUT</var></code></dt>
+    <dd>Fichier contenant des donn&#233;es PUT.  Ne pas oublier de sp&#233;cifier
+    aussi <code>-T</code>.</dd>
+
+    <dt><code>-v <var>verbosit&#233;</var></code></dt>
+    <dd>D&#233;finit le niveau de verbosit&#233; - les niveaux <code>4</code> et
+    sup&#233;rieurs permettent d'afficher des informations &#224; propos des
+    en-t&#234;tes, les niveaux <code>3</code> et sup&#233;rieurs les codes de
+    r&#233;ponse (404, 200, etc...), et les niveaux <code>2</code> et
+    sup&#233;rieurs les messages d'avertissement et d'information.</dd>
+
+    <dt><code>-V</code></dt>
+    <dd>Affiche le num&#233;ro de version et s'arr&#234;te.</dd>
+
+    <dt><code>-w</code></dt>
+    <dd>Affiche les r&#233;sultats dans des tables HTML. La table par d&#233;faut
+    comporte deux colonnes sur fond blanc.</dd>
+
+    <dt><code>-x <var>&lt;table&gt;-attributs</var></code></dt>
+    <dd>La cha&#238;ne &#224; utiliser comme attributs pour
+    <code>&lt;table&gt;</code>. Les attributs sont ins&#233;r&#233;s
+    <code>&lt;table <var>ici</var> &gt;</code>.</dd>
+
+    <dt><code>-X <var>mandataire</var>[:<var>port</var>]</code></dt>
+    <dd>Utilise un serveur mandataire pour les requ&#234;tes.</dd>
+
+    <dt><code>-y <var>&lt;tr&gt;-attributs</var></code></dt>
+    <dd>La cha&#238;ne &#224; utiliser comme attributs pour
+    <code>&lt;tr&gt;</code>.</dd>
+
+    <dt><code>-z <var>&lt;td&gt;-attributs</var></code></dt>
+    <dd>La cha&#238;ne &#224; utiliser comme attributs pour
+    <code>&lt;td&gt;</code>.</dd>
+
+    <dt><code>-Z <var>algorithme-chiffrement</var></code></dt>
+    <dd>Sp&#233;cifie l'algorithme de chiffrement SSL/TLS (Voir les
+    algorithme de chiffrement openssl).</dd>
+    </dl>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="output" id="output">Sortie</a><a title="Lien permanent" href="#output" class="permalink">&para;</a></h2>
+    <p>Vous touverez dans ce qui suit la liste des valeurs retourn&#233;es
+    par <code>ab</code> :
+    </p>
+
+    <dl>
+        <dt>Server Software</dt>
+        <dd>La valeur, si elle existe, de l'en-t&#234;te HTTP
+	<var>server</var> renvoy&#233;e dans la premi&#232;re r&#233;ponse r&#233;ussie.
+	Elle comporte tous les caract&#232;res de l'en-t&#234;te jusqu'&#224; ce qu'un
+	caract&#232;re de valeur d&#233;cimale 32 soit rencontr&#233; (le plus souvent
+	un espace ou une fin de ligne).</dd>
+
+        <dt>Server Hostname</dt>
+        <dd>Le nom DNS ou l'adresse IP fourni dans la ligne de commande.</dd>
+
+        <dt>Server Port</dt>
+        <dd>Le port auquel ab est connect&#233;. Si la ligne de commande ne
+	sp&#233;cifie aucun port, le port par d&#233;faut sera 80 pour http et 443
+	pour https.</dd>
+
+        <dt>SSL/TLS Protocol</dt>
+        <dd>Les param&#232;tres de protocole n&#233;goci&#233;s entre le client et le
+	serveur. Uniquement si SSL est utilis&#233;.</dd>
+
+        <dt>Document Path</dt>
+        <dd>L'URI de la requ&#234;te interpr&#233;t&#233; &#224; partir de la cha&#238;ne de la
+	ligne de commande.</dd>
+
+        <dt>Document Length</dt>
+        <dd>Il s'agit de la taille en octets du premier document renvoy&#233;
+	avec succ&#232;s. Si la taille du document est modifi&#233;e au cours
+	du test, la r&#233;ponse est consid&#233;r&#233;e comme une erreur.</dd>
+
+        <dt>Concurrency Level</dt>
+        <dd>Le nombre de clients simultan&#233;s utilis&#233;s au cours du test.</dd>
+
+        <dt>Time taken for tests</dt>
+        <dd>Il s'agit du temps &#233;coul&#233; entre le moment de la premi&#232;re
+	connexion au socket et la r&#233;ception de la derni&#232;re
+	r&#233;ponse.</dd>
+
+        <dt>Complete requests</dt>
+        <dd>Le nombre de r&#233;ponses re&#231;ues avec succ&#232;s.</dd>
+
+        <dt>Failed requests</dt>
+        <dd>Le nombre de requ&#234;tes consid&#233;r&#233;es comme erron&#233;es. Si ce
+	nombre est diff&#233;rent de 0, une ligne suppl&#233;mentaire indiquera le
+	nombre de requ&#234;tes ayant &#233;chou&#233; suite &#224; un probl&#232;me de
+	connexion, de lecture, de taille de contenu erron&#233;e ou
+	d'exceptions.</dd>
+
+        <dt>Write errors</dt>
+        <dd>Le nombre d'erreurs rencontr&#233;es en cours d'&#233;criture (broken pipe).</dd>
+
+        <dt>Non-2xx responses</dt>
+        <dd>Le nombre de r&#233;ponses dont le code &#233;tait en dehors de la
+	s&#233;rie 200. Si toutes les r&#233;ponses appartiennent &#224; la s&#233;rie 200,
+	cette ligne est absente.</dd>
+
+        <dt>Keep-Alive requests</dt>
+        <dd>Le nombre de connexions promues &#224; l'&#233;tat de connexions
+	persistantes.</dd>
+
+        <dt>Total body sent</dt>
+        <dd>Si le test a &#233;t&#233; configur&#233; dans ce sens, il s'agit du nombre
+	total d'octets envoy&#233;s au cours du test. Ce champ est omis si le
+	test ne pr&#233;voyait pas d'envoi de corps.</dd>
+
+        <dt>Total transferred</dt>
+        <dd>Le nombre total d'octets re&#231;us du serveur. Ce nombre
+	correspond &#224; peu pr&#232;s au nombre d'octets envoy&#233;s sur la ligne.</dd>
+
+        <dt>HTML transferred</dt>
+        <dd>Le nombre total d'octets utiles (contenus) re&#231;us du serveur.
+	Ce nombre n'inclut pas les octets correspondant aux en-t&#234;tes
+	HTTP.</dd>
+
+        <dt>Requests per second</dt>
+        <dd>Il s'agit du nombre de requ&#234;tes par seconde. Il correspond
+	au nombre de requ&#234;tes divis&#233; par la dur&#233;e totale du traitement.</dd>
+
+        <dt>Time per request</dt>
+        <dd>La dur&#233;e moyenne du traitement d'une requ&#234;te. La premi&#232;re
+	valeur est calcul&#233;e selon la formule <code>concurrency *
+	timetaken * 1000 / done</code>, alors que la seconde valeur est
+	calcul&#233;e selon la formule <code>timetaken * 1000 / done</code>.</dd>
+
+        <dt>Transfer rate</dt>
+        <dd>Le taux de transfert calcul&#233; selon la formule
+	<code>totalread / 1024 / timetaken</code>.</dd>
+    </dl>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="bugs" id="bugs">Bogues</a><a title="Lien permanent" href="#bugs" class="permalink">&para;</a></h2>
+    <p>De nombreux tampons de taille fixe sont d&#233;clar&#233;s statiquement.
+    Combin&#233; avec l'interpr&#233;tation poussive des arguments de la ligne de
+    commande, les en-t&#234;tes de r&#233;ponse du serveur et autres entr&#233;es
+    externes, ceci peut vous affecter.</p>
+
+    <p>HTTP/1.x n'est pas compl&#232;tement impl&#233;ment&#233; ; seules certaines
+    formes de r&#233;ponses 'attendues' sont accept&#233;es. L'utilisation
+    relativement intense de <code>strstr(3)</code> provoque un affichage
+    en t&#234;te de profil, ce qui peut faire croire &#224; un probl&#232;me de
+    performances ; en d'autres termes, vous mesurez les performances de
+    <code>ab</code> plut&#244;t que celles du serveur.</p>
+</div></div>
+<div class="bottomlang">
+<p><span>Langues Disponibles: </span><a href="../en/programs/ab.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/programs/ab.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../ko/programs/ab.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/programs/ab.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
+</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+var comments_shortname = 'httpd';
+var comments_identifier = 'http://httpd.apache.org/docs/trunk/programs/ab.html';
+(function(w, d) {
+    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
+        d.write('<div id="comments_thread"><\/div>');
+        var s = d.createElement('script');
+        s.type = 'text/javascript';
+        s.async = true;
+        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
+        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
+    }
+    else {
+        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
+    }
+})(window, document);
+//--><!]]></script></div><div id="footer">
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autoris&#233; sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+if (typeof(prettyPrint) !== 'undefined') {
+    prettyPrint();
+}
+//--><!]]></script>
+</body></html>
