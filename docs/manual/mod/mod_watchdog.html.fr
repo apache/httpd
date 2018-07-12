@@ -27,39 +27,39 @@
 <div id="preamble"><h1>Module Apache mod_watchdog</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_watchdog.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_watchdog.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_watchdog.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fournit une infrastructure permettant à d'autres modules
-d'exécuter des tâches périodiques.</td></tr>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fournit une infrastructure permettant &#224; d'autres modules
+d'ex&#233;cuter des t&#226;ches p&#233;riodiques.</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>watchdog_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_watchdog.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.3 du serveur HTTP
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&#160;de&#160;Module:</a></th><td>watchdog_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier&#160;Source:</a></th><td>mod_watchdog.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible &#224; partir de la version 2.3 du serveur HTTP
 Apache</td></tr></table>
 <h3>Sommaire</h3>
 
-<p>Le module <code class="module"><a href="../mod/mod_watchdog.html">mod_watchdog</a></code> définit des
-branchements (hooks) programmés pour permettre à d'autres modules
-d'exécuter des tâches périodiques. Ces modules peuvent enregistrer des
+<p>Le module <code class="module"><a href="../mod/mod_watchdog.html">mod_watchdog</a></code> d&#233;finit des
+branchements (hooks) programm&#233;s pour permettre &#224; d'autres modules
+d'ex&#233;cuter des t&#226;ches p&#233;riodiques. Ces modules peuvent enregistrer des
 gestionnaires (handlers) pour les branchements de
 <code class="module"><a href="../mod/mod_watchdog.html">mod_watchdog</a></code>. Actuellement, seuls les modules suivants
-de la distribution Apache utilisent cette fonctionnalité :</p>
+de la distribution Apache utilisent cette fonctionnalit&#233; :</p>
 <ul>
 <li><code class="module"><a href="../mod/mod_heartbeat.html">mod_heartbeat</a></code></li>
 <li><code class="module"><a href="../mod/mod_heartmonitor.html">mod_heartmonitor</a></code></li>
 </ul>
 <div class="warning">
-Pour qu'un module puisse utiliser la fonctionnalité de
-<code class="module"><a href="../mod/mod_watchdog.html">mod_watchdog</a></code>, ce dernier doit être lié statiquement
-avec le serveur httpd ; s'il a été lié dynamiquement, il doit être
-chargé avant l'appel au module qui doit utiliser sa fonctionnalité.
+Pour qu'un module puisse utiliser la fonctionnalit&#233; de
+<code class="module"><a href="../mod/mod_watchdog.html">mod_watchdog</a></code>, ce dernier doit &#234;tre li&#233; statiquement
+avec le serveur httpd ; s'il a &#233;t&#233; li&#233; dynamiquement, il doit &#234;tre
+charg&#233; avant l'appel au module qui doit utiliser sa fonctionnalit&#233;.
 </div>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#watchdoginterval">WatchdogInterval</a></li>
 </ul>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_watchdog">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_watchdog">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_watchdog">Probl&#232;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_watchdog">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 
@@ -68,19 +68,19 @@ chargé avant l'appel au module qui doit utiliser sa fonctionnalité.
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Intervalle Watchdog en secondes</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>WatchdogInterval <var>time-interval</var>[s]</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>WatchdogInterval 1</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>WatchdogInterval 1</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_watchdog</td></tr>
 </table>
-<p>Cette directive permet de définir l'intervalle entre chaque exécution
-du branchement watchdog. La valeur par défaut est de 1 seconde.</p>
+<p>Cette directive permet de d&#233;finir l'intervalle entre chaque ex&#233;cution
+du branchement watchdog. La valeur par d&#233;faut est de 1 seconde.</p>
 
 </div>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_watchdog.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_watchdog.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_watchdog.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -99,7 +99,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_watchdog.h
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autoris&#233; sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

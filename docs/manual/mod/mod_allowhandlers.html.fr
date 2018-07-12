@@ -27,18 +27,18 @@
 <div id="preamble"><h1>Module Apache mod_allowhandlers</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_allowhandlers.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/mod/mod_allowhandlers.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/mod/mod_allowhandlers.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../es/mod/mod_allowhandlers.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/mod/mod_allowhandlers.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Facilite la définition de la liste des gestionnaires HTTP
-qui peuvent être utilisés pour le serveur</td></tr>
-<tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>allowhandlers_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_allowhandlers.c</td></tr></table>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Facilite la d&#233;finition de la liste des gestionnaires HTTP
+qui peuvent &#234;tre utilis&#233;s pour le serveur</td></tr>
+<tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Exp&#233;rimental</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&#160;de&#160;Module:</a></th><td>allowhandlers_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier&#160;Source:</a></th><td>mod_allowhandlers.c</td></tr></table>
 <h3>Sommaire</h3>
 
-<p>Ce module facilite la définition de la liste des gestionnaires HTTP
-qui peuvent être utilisés pour une requête. Voici un exemple de ligne de
+<p>Ce module facilite la d&#233;finition de la liste des gestionnaires HTTP
+qui peuvent &#234;tre utilis&#233;s pour une requ&#234;te. Voici un exemple de ligne de
 configuration :</p>
 
 <pre class="prettyprint lang-config">&lt;Location "/"&gt;
@@ -46,16 +46,16 @@ configuration :</p>
 &lt;/Location&gt;</pre>
 
 
-<p>Il implémente aussi un gestionnaire nommé <code>forbidden</code> qui
-ne fait que renvoyer la réponse "403 FORBIDDEN" au client. Ce
-gestionnaire peut être spécifié par des directives comme <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code>.</p>
+<p>Il impl&#233;mente aussi un gestionnaire nomm&#233; <code>forbidden</code> qui
+ne fait que renvoyer la r&#233;ponse "403 FORBIDDEN" au client. Ce
+gestionnaire peut &#234;tre sp&#233;cifi&#233; par des directives comme <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code>.</p>
 
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#allowhandlers">AllowHandlers</a></li>
 </ul>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_allowhandlers">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_allowhandlers">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_allowhandlers">Probl&#232;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_allowhandlers">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code></li>
 <li><code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code></li>
@@ -64,20 +64,20 @@ gestionnaire peut être spécifié par des directives comme <code class="directive"
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="allowhandlers" id="allowhandlers">Directive</a> <a name="AllowHandlers" id="AllowHandlers">AllowHandlers</a><a title="Lien permanent" href="#allowhandlers" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Restreint l'accès aux gestionnaires spécifiés</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Restreint l'acc&#232;s aux gestionnaires sp&#233;cifi&#233;s</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AllowHandlers [not] none|<em>nom-gestionnaire</em>
 [none|<em>nom-gestionnaire</em>]...</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AllowHandlers all</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>AllowHandlers all</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>r&#233;pertoire</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Exp&#233;rimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_allowhandlers</td></tr>
 </table>
 
-<p>Les noms de gestionnaires sont sensibles à la casse. Le nom réservé
-<code>none</code> peut être utilisé dans le cas où aucun gestionnaire
-n'a été défini. Le nom réservé <code>all</code>, quant à lui, peut être
-utilisé pour autoriser à nouveau tous les gestionnaires dans une section
-de configuration ultérieure, même si certains en-têtes ont été interdits
+<p>Les noms de gestionnaires sont sensibles &#224; la casse. Le nom r&#233;serv&#233;
+<code>none</code> peut &#234;tre utilis&#233; dans le cas o&#249; aucun gestionnaire
+n'a &#233;t&#233; d&#233;fini. Le nom r&#233;serv&#233; <code>all</code>, quant &#224; lui, peut &#234;tre
+utilis&#233; pour autoriser &#224; nouveau tous les gestionnaires dans une section
+de configuration ult&#233;rieure, m&#234;me si certains en-t&#234;tes ont &#233;t&#233; interdits
 en aval :</p>
 
 <pre class="prettyprint lang-config">&lt;Location "/server-status"&gt;
@@ -91,8 +91,8 @@ en aval :</p>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_allowhandlers.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/mod/mod_allowhandlers.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/mod/mod_allowhandlers.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../es/mod/mod_allowhandlers.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/mod/mod_allowhandlers.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -111,7 +111,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_allowhandl
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autoris&#233; sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

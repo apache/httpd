@@ -27,35 +27,35 @@
 <div id="preamble"><h1>Module Apache mod_socache_dc</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_socache_dc.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_socache_dc.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_socache_dc.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fournisseur de cache d'objets partagés basé sur dc.</td></tr>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fournisseur de cache d'objets partag&#233;s bas&#233; sur dc.</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>socache_dc_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_socache_dc.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&#160;de&#160;Module:</a></th><td>socache_dc_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier&#160;Source:</a></th><td>mod_socache_dc.c</td></tr></table>
 <h3>Sommaire</h3>
 
     <p>Le module <code class="module"><a href="../mod/mod_socache_dc.html">mod_socache_dc</a></code> est un fournisseur de cache
-    d'objets partagés qui permet la création et l'accès à un cache
-    maintenu par les bibliothèques de mise en cache de sessions
-    distribuées <a href="http://distcache.sourceforge.net/">distcache</a>.
+    d'objets partag&#233;s qui permet la cr&#233;ation et l'acc&#232;s &#224; un cache
+    maintenu par les biblioth&#232;ques de mise en cache de sessions
+    distribu&#233;es <a href="http://distcache.sourceforge.net/">distcache</a>.
     </p>
 
-    <p>Vous trouverez des détails à propos des autres fournisseurs de
-    cache d'objets partagés <a href="../socache.html">ici</a>.
+    <p>Vous trouverez des d&#233;tails &#224; propos des autres fournisseurs de
+    cache d'objets partag&#233;s <a href="../socache.html">ici</a>.
     </p>
 
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <p>Ce module ne fournit aucune directive.</p>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_socache_dc">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_socache_dc">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_socache_dc">Probl&#232;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_socache_dc">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_socache_dc.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_socache_dc.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_socache_dc.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -74,7 +74,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_socache_dc
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autoris&#233; sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

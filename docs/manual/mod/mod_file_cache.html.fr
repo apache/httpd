@@ -27,43 +27,43 @@
 <div id="preamble"><h1>Module Apache mod_file_cache</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_file_cache.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_file_cache.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_file_cache.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/mod/mod_file_cache.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Mise en cache mémoire d'une liste statique de
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Mise en cache m&#233;moire d'une liste statique de
 fichiers</td></tr>
-<tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>file_cache_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_file_cache.c</td></tr></table>
+<tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Exp&#233;rimental</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&#160;de&#160;Module:</a></th><td>file_cache_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier&#160;Source:</a></th><td>mod_file_cache.c</td></tr></table>
 <h3>Sommaire</h3>
 
 
     <div class="warning">
-      Ce module doit être utilisé avec précautions. Il est recommandé de
+      Ce module doit &#234;tre utilis&#233; avec pr&#233;cautions. Il est recommand&#233; de
       lire attentivement ce document, car une mauvaise utilisation de
-      <code class="module"><a href="../mod/mod_file_cache.html">mod_file_cache</a></code> peut facilement conduire à la
-      création d'un site inopérant.
+      <code class="module"><a href="../mod/mod_file_cache.html">mod_file_cache</a></code> peut facilement conduire &#224; la
+      cr&#233;ation d'un site inop&#233;rant.
     </div>
 
-    <p>La mise en cache de fichiers souvent demandés mais rarement
-    modifiés est une technique qui peut réduire la charge du
+    <p>La mise en cache de fichiers souvent demand&#233;s mais rarement
+    modifi&#233;s est une technique qui peut r&#233;duire la charge du
     serveur. <code class="module"><a href="../mod/mod_file_cache.html">mod_file_cache</a></code> met en oeuvre deux
     techniques de mise en cache de fichiers <em>statiques</em>
-    fréquemment demandés. Des directives de configuration vous
-    permettent d'indiquer à <code class="module"><a href="../mod/mod_file_cache.html">mod_file_cache</a></code> soit
-    d'ouvrir et de charger une image en mémoire d'un fichier avec
-    <code>mmap()</code>, soit de pré-ouvrir un fichier et de maintenir en
+    fr&#233;quemment demand&#233;s. Des directives de configuration vous
+    permettent d'indiquer &#224; <code class="module"><a href="../mod/mod_file_cache.html">mod_file_cache</a></code> soit
+    d'ouvrir et de charger une image en m&#233;moire d'un fichier avec
+    <code>mmap()</code>, soit de pr&#233;-ouvrir un fichier et de maintenir en
     service le <em>gestionnaire</em> du fichier. Chacune de ces techniques
-    amène à réduire la charge du serveur lors du traitement des
-    requêtes concernant ces fichiers, en accomplissant une partie du
-    travail nécessaire à la mise à disposition de ces fichiers (en
-    particulier les opérations d'entrées/sorties sur les fichiers) au
-    démarrage du serveur, plutôt qu'au cours de chaque requête.</p>
+    am&#232;ne &#224; r&#233;duire la charge du serveur lors du traitement des
+    requ&#234;tes concernant ces fichiers, en accomplissant une partie du
+    travail n&#233;cessaire &#224; la mise &#224; disposition de ces fichiers (en
+    particulier les op&#233;rations d'entr&#233;es/sorties sur les fichiers) au
+    d&#233;marrage du serveur, plut&#244;t qu'au cours de chaque requ&#234;te.</p>
 
-    <p>Note : ces techniques sont inutilisables pour accélérer des
+    <p>Note : ces techniques sont inutilisables pour acc&#233;l&#233;rer des
     programmes CGI ou d'autres fichiers servis par des gestionnaires de
-    contenu spéciaux. Elles ne peuvent être utilisées que pour des
-    fichiers standards en général servis par le gestionnaire de contenu
+    contenu sp&#233;ciaux. Elles ne peuvent &#234;tre utilis&#233;es que pour des
+    fichiers standards en g&#233;n&#233;ral servis par le gestionnaire de contenu
     de base d'Apache.</p>
 
     <p>Ce module est une extension et s'inspire fortement du module
@@ -77,84 +77,84 @@ fichiers</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#cachefile">CacheFile</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mmapfile">MMapFile</a></li>
 </ul>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_file_cache">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_file_cache">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_file_cache">Probl&#232;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_file_cache">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="using" id="using">Utilisation de mod_file_cache</a><a title="Lien permanent" href="#using" class="permalink">&para;</a></h2>
 
-    <p><code class="module"><a href="../mod/mod_file_cache.html">mod_file_cache</a></code> gère la mise en cache d'une liste
-    de fichiers définie de manière statique via une des directives
+    <p><code class="module"><a href="../mod/mod_file_cache.html">mod_file_cache</a></code> g&#232;re la mise en cache d'une liste
+    de fichiers d&#233;finie de mani&#232;re statique via une des directives
     <code class="directive"><a href="#mmapfile">MMapFile</a></code> ou
     <code class="directive"><a href="#cachefile">CacheFile</a></code> au niveau
     de la configuration du serveur principal.</p>
 
-    <p>Les deux directives ne sont pas supportées par toutes les
+    <p>Les deux directives ne sont pas support&#233;es par toutes les
     plates-formes. Par exemple, Apache pour Windows ne supporte pas
     actuellement la directive <code class="directive"><a href="#mmapfile">MMapFile</a></code>, alors que d'autres
     plates-formes, comme AIX, supportent les deux. Vous recevrez un
     message d'erreur dans le journal des erreurs du serveur si vous
-    essayez d'utiliser une directive non supportée. Si vous utilisez une
-    directive non supportée, le serveur démarrera, mais les fichiers ne
+    essayez d'utiliser une directive non support&#233;e. Si vous utilisez une
+    directive non support&#233;e, le serveur d&#233;marrera, mais les fichiers ne
     seront pas mis en cache. Sur les plates-formes qui supportent les
-    deux directives, vous devez faire des essais afin de déterminer
+    deux directives, vous devez faire des essais afin de d&#233;terminer
     quelle directive vous convient le mieux.</p>
 
     <h3>Directive MMapFile</h3>
 
       <p>La directive <code class="directive"><a href="#mmapfile">MMapFile</a></code> du module
-      <code class="module"><a href="../mod/mod_file_cache.html">mod_file_cache</a></code> permet de transférer en mémoire
-      une liste statique de fichiers à l'aide de l'appel système
-      <code>mmap()</code>. Cet appel système est disponible sur la
+      <code class="module"><a href="../mod/mod_file_cache.html">mod_file_cache</a></code> permet de transf&#233;rer en m&#233;moire
+      une liste statique de fichiers &#224; l'aide de l'appel syst&#232;me
+      <code>mmap()</code>. Cet appel syst&#232;me est disponible sur la
       plupart des plates-formes de style Unix, mais pas sur toutes. Il
-      existe parfois des limites spécifiques au système quant à la
-      taille et au nombre de fichiers qui peuvent être
-      <code>mmap()</code>és, et l'expérimentation est probablement la
-      méthode la plus simple pour déterminer ces limites.</p>
+      existe parfois des limites sp&#233;cifiques au syst&#232;me quant &#224; la
+      taille et au nombre de fichiers qui peuvent &#234;tre
+      <code>mmap()</code>&#233;s, et l'exp&#233;rimentation est probablement la
+      m&#233;thode la plus simple pour d&#233;terminer ces limites.</p>
 
-      <p>Ce <code>mmap()</code>age n'est effectué qu'une seul fois au
-      démarrage ou redémarrage du serveur. Ainsi, chaque fois qu'un des
-      fichiers chargés en mémoire est modifié au niveau du système de
-      fichiers, vous <em>devez</em> redémarrer le serveur (voir la
-      documentation sur l'<a href="../stopping.html">Arrêt et redémarrage</a>). Pour bien
-      insister sur ce point, si des fichiers sont modifiés <em>sur
-      disque</em>, et si vous ne redémarrez pas le serveur, vous allez
-      finir par servir des contenus complètement obsolètes. Vous devez
-      mettre à jour les fichiers en renommant l'ancienne version et en
+      <p>Ce <code>mmap()</code>age n'est effectu&#233; qu'une seul fois au
+      d&#233;marrage ou red&#233;marrage du serveur. Ainsi, chaque fois qu'un des
+      fichiers charg&#233;s en m&#233;moire est modifi&#233; au niveau du syst&#232;me de
+      fichiers, vous <em>devez</em> red&#233;marrer le serveur (voir la
+      documentation sur l'<a href="../stopping.html">Arr&#234;t et red&#233;marrage</a>). Pour bien
+      insister sur ce point, si des fichiers sont modifi&#233;s <em>sur
+      disque</em>, et si vous ne red&#233;marrez pas le serveur, vous allez
+      finir par servir des contenus compl&#232;tement obsol&#232;tes. Vous devez
+      mettre &#224; jour les fichiers en renommant l'ancienne version et en
       enregistrant la nouvelle sur disque. Pour y parvenir, on peut
       utiliser des outils comme <code>rdist</code> et <code>mv</code>.
       La raison pour laquelle ce module ne prend pas en compte les
-      modifications de fichiers réside dans le fait que cette
-      vérification nécessiterait un appel à <code>stat()</code> à chaque
-      accès, et en fin de compte, l'augmentation de la consommation de
+      modifications de fichiers r&#233;side dans le fait que cette
+      v&#233;rification n&#233;cessiterait un appel &#224; <code>stat()</code> &#224; chaque
+      acc&#232;s, et en fin de compte, l'augmentation de la consommation de
       ressources finirait par aller contre le but initial de
-      réduire les entrées/sorties.</p>
+      r&#233;duire les entr&#233;es/sorties.</p>
     
 
     <h3>Directive CacheFile</h3>
 
       <p>La directive <code class="directive"><a href="#cachefile">CacheFile</a></code> du module
       <code class="module"><a href="../mod/mod_file_cache.html">mod_file_cache</a></code> permet d'associer un
-      <em>gestionnaire</em> ou <em>descripteur de fichier</em> à chaque
-      fichier énuméré dans la directive de configuration et place ces
+      <em>gestionnaire</em> ou <em>descripteur de fichier</em> &#224; chaque
+      fichier &#233;num&#233;r&#233; dans la directive de configuration et place ces
       gestionnaires de fichiers ouverts dans le cache. Lorsqu'un des
-      fichier est demandé, le serveur sélectionne son gestionnaire dans
-      le cache et le transmet à l'API <code>sendfile()</code> (ou
+      fichier est demand&#233;, le serveur s&#233;lectionne son gestionnaire dans
+      le cache et le transmet &#224; l'API <code>sendfile()</code> (ou
       <code>TransmitFile()</code> sous Windows).</p>
 
       
 
-      <p>Cette mise en cache des gestionnaire n'est effectuée qu'une
-      seule fois au démarrage ou redémarrage du système. Ainsi, chaque
-      fois qu'un des fichiers chargés en mémoire est modifié au niveau
-      du système de fichiers, vous <em>devez</em> redémarrer le serveur
-      (voir la documentation sur l'<a href="../stopping.html">Arrêt et redémarrage</a>).
+      <p>Cette mise en cache des gestionnaire n'est effectu&#233;e qu'une
+      seule fois au d&#233;marrage ou red&#233;marrage du syst&#232;me. Ainsi, chaque
+      fois qu'un des fichiers charg&#233;s en m&#233;moire est modifi&#233; au niveau
+      du syst&#232;me de fichiers, vous <em>devez</em> red&#233;marrer le serveur
+      (voir la documentation sur l'<a href="../stopping.html">Arr&#234;t et red&#233;marrage</a>).
       Pour bien
-      insister sur ce point, si des fichiers sont modifiés <em>sur
-      disque</em>, et si vous ne redémarrez pas le serveur, vous allez
-      finir par servir des contenus complètement obsolètes. Vous devez
-      mettre à jour les fichiers en renommant l'ancienne version et en
+      insister sur ce point, si des fichiers sont modifi&#233;s <em>sur
+      disque</em>, et si vous ne red&#233;marrez pas le serveur, vous allez
+      finir par servir des contenus compl&#232;tement obsol&#232;tes. Vous devez
+      mettre &#224; jour les fichiers en renommant l'ancienne version et en
       enregistrant la nouvelle sur disque. Pour y parvenir, on peut
       utiliser des outils comme <code>rdist</code> et
       <code>mv</code>.</p>
@@ -162,8 +162,8 @@ fichiers</td></tr>
 
     <div class="note"><h3>Note</h3>
       <p>Ne cherchez pas de directive qui met tous les
-      fichiers d'un répertoire en cache, de manière récursive. Pour y
-      parvenir, vous pouvez vous reporter à la directive <code class="directive"><a href="../mod/core.html#include">Include</a></code>, et considérer cette
+      fichiers d'un r&#233;pertoire en cache, de mani&#232;re r&#233;cursive. Pour y
+      parvenir, vous pouvez vous reporter &#224; la directive <code class="directive"><a href="../mod/core.html#include">Include</a></code>, et consid&#233;rer cette
       commande :</p>
 
       <div class="example"><p><code>
@@ -176,29 +176,29 @@ fichiers</td></tr>
 <div class="directive-section"><h2><a name="cachefile" id="cachefile">Directive</a> <a name="CacheFile" id="CacheFile">CacheFile</a><a title="Lien permanent" href="#cachefile" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Met en cache une liste de gestionnaires de fichiers au
-démarrage</td></tr>
+d&#233;marrage</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheFile <var>chemin_fichier</var> [<var>chemin fichier</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Exp&#233;rimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_file_cache</td></tr>
 </table>
     <p>La directive <code class="directive">CacheFile</code> associe
-    des gestionnaires à un ou plusieurs fichiers (séparés par des
-    espaces), et place ceux-ci dans le cache au démarrage du
+    des gestionnaires &#224; un ou plusieurs fichiers (s&#233;par&#233;s par des
+    espaces), et place ceux-ci dans le cache au d&#233;marrage du
     serveur. Les gestionnaires des fichiers mis en cache sont
-    automatiquement fermés à l'arrêt du serveur. Lorsqu'un ou plusieurs
-    fichiers ont été modifiés sur disque, le serveur doit être redémarré
+    automatiquement ferm&#233;s &#224; l'arr&#234;t du serveur. Lorsqu'un ou plusieurs
+    fichiers ont &#233;t&#233; modifi&#233;s sur disque, le serveur doit &#234;tre red&#233;marr&#233;
     afin que les modifications soient prises en compte par le cache.</p>
 
     <p>Soyez prudent avec les arguments <var>chemin_fichier</var> : ils
-    doivent correspondre exactement au chemin du système de fichier que
-    créent les gestionnaires de traduction URL-vers-nom-fichier
+    doivent correspondre exactement au chemin du syst&#232;me de fichier que
+    cr&#233;ent les gestionnaires de traduction URL-vers-nom-fichier
     d'Apache. On ne peut pas comparer des inodes ou autres identifiants
-    pour mettre en correspondance des chemins à l'aide de liens
-    symboliques <em>(etc...)</em>, car là encore, ceci nécessiterait un
-    appel à <code>stat()</code> supplémentaire, ce qui est inacceptable.
+    pour mettre en correspondance des chemins &#224; l'aide de liens
+    symboliques <em>(etc...)</em>, car l&#224; encore, ceci n&#233;cessiterait un
+    appel &#224; <code>stat()</code> suppl&#233;mentaire, ce qui est inacceptable.
     Il n'est pas garanti que ce module fonctionne avec des noms de
-    fichiers réécrits par <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code> ou
+    fichiers r&#233;&#233;crits par <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code> ou
     <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
 
     <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">CacheFile /usr/local/apache/htdocs/index.html</pre>
@@ -208,30 +208,30 @@ démarrage</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="mmapfile" id="mmapfile">Directive</a> <a name="MMapFile" id="MMapFile">MMapFile</a><a title="Lien permanent" href="#mmapfile" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Charge au démarrage une liste de fichiers en
-mémoire</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Charge au d&#233;marrage une liste de fichiers en
+m&#233;moire</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MMapFile <var>chemin fichier</var> [<var>chemin_fichier</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Exp&#233;rimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_file_cache</td></tr>
 </table>
     <p>La directive <code class="directive">MMapFile</code> provoque le chargement d'un
-    ou plusieurs fichiers (séparés par des espaces) en mémoire au
-    démarrage du serveur. Ceux-ci sont automatiquement déchargés de la
-    mémoire à l'arrêt du serveur. Lorsqu'un ou plusieurs fichiers ont
-    été modifiés sur disque, on doit au minimum envoyer un signal
+    ou plusieurs fichiers (s&#233;par&#233;s par des espaces) en m&#233;moire au
+    d&#233;marrage du serveur. Ceux-ci sont automatiquement d&#233;charg&#233;s de la
+    m&#233;moire &#224; l'arr&#234;t du serveur. Lorsqu'un ou plusieurs fichiers ont
+    &#233;t&#233; modifi&#233;s sur disque, on doit au minimum envoyer un signal
     <code>HUP</code> ou <code>USR1</code> au serveur afin de les
     re<code>mmap()</code>er.</p>
 
     <p>Soyez prudent avec les arguments <var>chemin_fichier</var> : ils
-    doivent correspondre exactement au chemin du système de fichier que
-    créent les gestionnaires de traduction URL-vers-nom-fichier
+    doivent correspondre exactement au chemin du syst&#232;me de fichier que
+    cr&#233;ent les gestionnaires de traduction URL-vers-nom-fichier
     d'Apache. On ne peut pas comparer des inodes ou autres identifiants
-    pour mettre en correspondance des chemins à l'aide de liens
-    symboliques <em>(etc...)</em>, car là encore, ceci nécessiterait un
-    appel à <code>stat()</code> supplémentaire, ce qui est inacceptable.
+    pour mettre en correspondance des chemins &#224; l'aide de liens
+    symboliques <em>(etc...)</em>, car l&#224; encore, ceci n&#233;cessiterait un
+    appel &#224; <code>stat()</code> suppl&#233;mentaire, ce qui est inacceptable.
     Il n'est pas garanti que ce module fonctionne avec des noms de
-    fichiers réécrits par <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code> ou
+    fichiers r&#233;&#233;crits par <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code> ou
     <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
 
     <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">MMapFile /usr/local/apache/htdocs/index.html</pre>
@@ -241,7 +241,7 @@ mémoire</td></tr>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_file_cache.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_file_cache.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_file_cache.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/mod/mod_file_cache.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
@@ -261,7 +261,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_file_cache
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autoris&#233; sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

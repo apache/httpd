@@ -28,28 +28,28 @@
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../de/mod/mpm_winnt.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/mpm_winnt.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mpm_winnt.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mpm_winnt.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mpm_winnt.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Module multi-processus optimisé pour Windows
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Module multi-processus optimis&#233; pour Windows
 NT.</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>MPM</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>mpm_winnt_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mpm_winnt.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&#160;de&#160;Module:</a></th><td>mpm_winnt_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier&#160;Source:</a></th><td>mpm_winnt.c</td></tr></table>
 <h3>Sommaire</h3>
 
-    <p>Ce module multi-processus (MPM) est le module par défaut pour les
-    systèmes d'exploitation de style Windows NT. Il consiste en un
-    processus de contrôle unique qui lance un processus enfant unique,
-    ce dernier créant à son tour des threads pour traiter les
-    requêtes.</p>
+    <p>Ce module multi-processus (MPM) est le module par d&#233;faut pour les
+    syst&#232;mes d'exploitation de style Windows NT. Il consiste en un
+    processus de contr&#244;le unique qui lance un processus enfant unique,
+    ce dernier cr&#233;ant &#224; son tour des threads pour traiter les
+    requ&#234;tes.</p>
 
-    <p>La directive <code class="directive"><a href="../mod/mpm_common.html#threadsperchild">ThreadsPerChild</a></code> définit le
-    nombre maximal de connexions clientes simultanées.</p>
+    <p>La directive <code class="directive"><a href="../mod/mpm_common.html#threadsperchild">ThreadsPerChild</a></code> d&#233;finit le
+    nombre maximal de connexions clientes simultan&#233;es.</p>
 
-    <p>Ce MPM utilise par défaut les APIs Windows avancées pour accepter
+    <p>Ce MPM utilise par d&#233;faut les APIs Windows avanc&#233;es pour accepter
     les nouvelles connexions des clients. Avec certaines configurations,
-    des produits tiers peuvent interférer avec cette implémentation, et
+    des produits tiers peuvent interf&#233;rer avec cette impl&#233;mentation, et
     provoquer l'enregistrement des messages suivants dans les journaux
     du serveur :</p>
 
@@ -58,53 +58,53 @@ NT.</td></tr>
         winnt_mpm: falling back to 'AcceptFilter none'.
     </code></p></div>
 
-    <p>Le MPM se rabat sur une implémentation plus sûre, mais certaines
-    requêtes n'ont pas été traitées correctement. Pour éviter cette
-    erreur, définissez la directive <code class="directive"><a href="../mod/core.html#acceptfilter">AcceptFilter</a></code> à <code>none</code>.</p>
+    <p>Le MPM se rabat sur une impl&#233;mentation plus s&#251;re, mais certaines
+    requ&#234;tes n'ont pas &#233;t&#233; trait&#233;es correctement. Pour &#233;viter cette
+    erreur, d&#233;finissez la directive <code class="directive"><a href="../mod/core.html#acceptfilter">AcceptFilter</a></code> &#224; <code>none</code>.</p>
 
     <pre class="prettyprint lang-config">AcceptFilter http none
 AcceptFilter https none</pre>
 
 
     <p><em>Avec les versions 2.0 et 2.2 d'Apache httpd, c'est la directive
-    <code class="directive">Win32DisableAcceptEx</code> qui était utilisée à cet
+    <code class="directive">Win32DisableAcceptEx</code> qui &#233;tait utilis&#233;e &#224; cet
     effet.</em></p>
 
-    <p>Le MPM WinNT diffère des autres MPMs Unix comme worker et event
-    à bien des égards :</p>
+    <p>Le MPM WinNT diff&#232;re des autres MPMs Unix comme worker et event
+    &#224; bien des &#233;gards :</p>
 
     <ul>
-      <li>Lorsqu'un processus enfant s'arrête suite à un arrêt ou
-      redémarrage du serveur, ou lorsque que la limite <code class="directive"><a href="../mod/mpm_common.html#maxconnectionsperchild">MaxConnectionsPerChild</a></code> est
-      atteinte, les requêtes en cours de traitement par ce processus en
-      cours d'arrêt n'ont que <code class="directive"><a href="../mod/core.html#timeout">TimeOut</a></code> secondes pour s'exécuter avant
-      l'arrêt du processus. Les autres types de redémarrage ou arrêt ne
-      sont pas implémentés.</li>
+      <li>Lorsqu'un processus enfant s'arr&#234;te suite &#224; un arr&#234;t ou
+      red&#233;marrage du serveur, ou lorsque que la limite <code class="directive"><a href="../mod/mpm_common.html#maxconnectionsperchild">MaxConnectionsPerChild</a></code> est
+      atteinte, les requ&#234;tes en cours de traitement par ce processus en
+      cours d'arr&#234;t n'ont que <code class="directive"><a href="../mod/core.html#timeout">TimeOut</a></code> secondes pour s'ex&#233;cuter avant
+      l'arr&#234;t du processus. Les autres types de red&#233;marrage ou arr&#234;t ne
+      sont pas impl&#233;ment&#233;s.</li>
 
       <li>Les nouveau processus enfants relisent les fichiers de
-      configuration au lieu d'en hériter du parent. Ce comportement ne
-      pose pas de problème si le processus enfant est créé au démarrage
-      ou redémarrage, mais dans le cas où un processus enfant est créé
-      parce qu'un autre processus enfant s'est arrêté ou a atteint la
+      configuration au lieu d'en h&#233;riter du parent. Ce comportement ne
+      pose pas de probl&#232;me si le processus enfant est cr&#233;&#233; au d&#233;marrage
+      ou red&#233;marrage, mais dans le cas o&#249; un processus enfant est cr&#233;&#233;
+      parce qu'un autre processus enfant s'est arr&#234;t&#233; ou a atteint la
       limite <code class="directive"><a href="../mod/mpm_common.html#maxconnectionsperchild">MaxConnectionsPerChild</a></code>, tout
       changement survenu entre temps dans la configuration sera alors
       pris en compte dans le processus enfant, et parent et enfant
-      utiliseront une configuration différente. Si des modifications
-      planifiées de la configuration ont été partiellement effectuées,
-      et si la configuration courante n'est pas interprétable, le
-      processus enfant de remplacement ne pourra pas démarrer, et le
-      serveur s'arrêtera. En conséquence, toute modification des
-      fichiers de configuration doit être accompagnée d'un redémarrage
+      utiliseront une configuration diff&#233;rente. Si des modifications
+      planifi&#233;es de la configuration ont &#233;t&#233; partiellement effectu&#233;es,
+      et si la configuration courante n'est pas interpr&#233;table, le
+      processus enfant de remplacement ne pourra pas d&#233;marrer, et le
+      serveur s'arr&#234;tera. En cons&#233;quence, toute modification des
+      fichiers de configuration doit &#234;tre accompagn&#233;e d'un red&#233;marrage
       du serveur.</li>
 
       <li>Les hooks <code>monitor</code> et <code>fatal_exception</code>
-      ne sont pas encore implémentés.</li>
+      ne sont pas encore impl&#233;ment&#233;s.</li>
 
       <li>La directive <code class="directive">AcceptFilter</code> est
-      implémentée par le MPM et fournit un type de contrôle différent
+      impl&#233;ment&#233;e par le MPM et fournit un type de contr&#244;le diff&#233;rent
       sur le traitement des nouvelles connexions (Voir la documentation
       de la directive <code class="directive"><a href="../mod/core.html#acceptfilter">AcceptFilter</a></code>
-      pour plus de détails).</li>
+      pour plus de d&#233;tails).</li>
     </ul>
 
 </div>
@@ -124,7 +124,7 @@ AcceptFilter https none</pre>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#threadsperchild">ThreadsPerChild</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#threadstacksize">ThreadStackSize</a></li>
 </ul>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mpm_winnt">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mpm_winnt">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mpm_winnt">Probl&#232;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mpm_winnt">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><a href="../platform/windows.html">Utiliser le serveur HTTP
 Apache sous Microsoft Windows</a></li>
@@ -134,7 +134,7 @@ Apache sous Microsoft Windows</a></li>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../de/mod/mpm_winnt.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/mpm_winnt.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mpm_winnt.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mpm_winnt.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mpm_winnt.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
@@ -154,7 +154,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mpm_winnt.html
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autoris&#233; sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
