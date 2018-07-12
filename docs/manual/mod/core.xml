@@ -2341,7 +2341,13 @@ if file exists at startup</description>
     the path will be checked relative to the compiled-in server root or
     the server root passed in on the command line via the <code>-d</code>
     parameter.</p>
-    
+
+    <note type="warning"><title>Warning</title>
+    In 2.4.34, it is not possible to specify a <var>filename</var>
+    with surrounding quotes. This would generate a parsing error at start-up.
+    The main impact is that filenames with spaces can't be used.
+    This behavior is fixed in 2.4.35.</note>
+
 </usage>
 </directivesynopsis>
 
