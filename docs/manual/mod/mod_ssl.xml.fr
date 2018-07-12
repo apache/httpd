@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1834693 -->
+<!-- English Revision: 1835614 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1086,8 +1086,7 @@ on peut utiliser un identificateur de certificat pour identifier un certificat
 stocké dans un jeton. Actuellement, seuls les <a
 href="https://tools.ietf.org/html/rfc7512">URIs PKCS#11</a> sont reconnus comme
 identificateurs de certificats et peuvent être utilisés en conjonction avec le
-moteur <code>pkcs11</code> OpenSSL configuré via la directive <directive
-module="mod_ssl">SSLCryptoDevice</directive>. Si la directive <directive
+moteur OpenSSL <code>pkcs11</code>. Si la directive <directive
 module="mod_ssl">SSLCertificateKeyFile</directive> est absente, le certificat et
 la clé privée peuvent être chargés avec l'identificateur spécifié via la
 directive <directive module="mod_ssl">SSLCertificateFile</directive>.</p>
@@ -1146,8 +1145,6 @@ et appropriée.
 SSLCertificateFile "/usr/local/apache2/conf/ssl.crt/server.crt"
 # Exemple d'utilisation d'un certificat et d'une clé privés issus d'un jeton
 # PKCS#11 :
-SSLCryptoDevice pkcs11
-...
 SSLCertificateFile "pkcs11:token=My%20Token%20Name;id=45"
 </highlight>
 </example>
@@ -1189,16 +1186,13 @@ certificats en utilisant un fichier de clé séparé.</p>
 d'identifier une clé privée via un identifiant stocké dans un jeton.
 Actuellement, seuls les <a href="https://tools.ietf.org/html/rfc7512">PKCS#11
 URIs</a> sont reconnus comme identifiants de clés privées et peuvent être
-utilisés en conjonction avec le moteur OpenSSL <code>pkcs11</code> configuré via
-la directive <directive module="mod_ssl">SSLCryptoDevice</directive>.</p>
+utilisés en conjonction avec le moteur OpenSSL <code>pkcs11</code>.</p>
 
 <example><title>Exemple</title>
 <highlight language="config">
 # Pour utiliser une clé privée stockée dans fichier encodé PEM :
 SSLCertificateKeyFile "/usr/local/apache2/conf/ssl.key/server.key"
 # Pour utiliser une clé privée à partir d'un jeton PKCS#11 :
-SSLCryptoDevice pkcs11
-...
 SSLCertificateKeyFile "pkcs11:token=My%20Token%20Name;id=45"
 </highlight>
 </example>
