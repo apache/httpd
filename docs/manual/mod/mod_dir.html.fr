@@ -27,38 +27,38 @@
 <div id="preamble"><h1>Module Apache mod_dir</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_dir.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_dir.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_dir.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_dir.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_dir.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/mod_dir.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/mod_dir.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Permet la redirection des adresses se terminant par un
-répertoire sans slash de fin et la mise à disposition des fichiers index
-de répertoire</td></tr>
+r&#233;pertoire sans slash de fin et la mise &#224; disposition des fichiers index
+de r&#233;pertoire</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>dir_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_dir.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&#160;de&#160;Module:</a></th><td>dir_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier&#160;Source:</a></th><td>mod_dir.c</td></tr></table>
 <h3>Sommaire</h3>
 
-    <p>L'index d'un répertoire peut provenir de deux sources :</p>
+    <p>L'index d'un r&#233;pertoire peut provenir de deux sources :</p>
 
     <ul>
-      <li>Un fichier écrit par l'utilisateur, dont le nom, en général
-      appelé <code>index.html</code>, peut être défini à l'aide de la
+      <li>Un fichier &#233;crit par l'utilisateur, dont le nom, en g&#233;n&#233;ral
+      appel&#233; <code>index.html</code>, peut &#234;tre d&#233;fini &#224; l'aide de la
       directive <code class="directive"><a href="#directoryindex">DirectoryIndex</a></code>
       fournie par le module <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code>.</li>
 
-      <li>Un listing généré par le serveur, par l'intermédiaire du
+      <li>Un listing g&#233;n&#233;r&#233; par le serveur, par l'interm&#233;diaire du
       module <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code>.</li>
     </ul>
     <p>Les deux fonctions sont bien distinctes, si bien que vous pouvez
-    supprimer (ou remplacer) la génération automatique d'index, si vous
+    supprimer (ou remplacer) la g&#233;n&#233;ration automatique d'index, si vous
     le souhaitez.</p>
 
-    <p>Une redirection "slash de fin" est effectuée lorsque le serveur
-    reçoit une requête pour une URL du style
-    <code>http://nom-serveur/foo/nom-rep</code> où <code>nom-rep</code>
-    est le nom d'un répertoire. Comme les répertoires nécessitent un slash de
+    <p>Une redirection "slash de fin" est effectu&#233;e lorsque le serveur
+    re&#231;oit une requ&#234;te pour une URL du style
+    <code>http://nom-serveur/foo/nom-rep</code> o&#249; <code>nom-rep</code>
+    est le nom d'un r&#233;pertoire. Comme les r&#233;pertoires n&#233;cessitent un slash de
     fin, <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code> effectue une redirection vers
     <code>http://nom-serveur/foo/nom-rep/</code>.</p>
 </div>
@@ -70,96 +70,96 @@ de répertoire</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#directoryslash">DirectorySlash</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#fallbackresource">FallbackResource</a></li>
 </ul>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_dir">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_dir">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_dir">Probl&#232;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_dir">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="directorycheckhandler" id="directorycheckhandler">Directive</a> <a name="DirectoryCheckHandler" id="DirectoryCheckHandler">DirectoryCheckHandler</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit la réponse de ce module lorsqu'un autre
-gestionnaire est utilisé</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&#233;finit la r&#233;ponse de ce module lorsqu'un autre
+gestionnaire est utilis&#233;</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DirectoryCheckHandler On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>DirectoryCheckHandler Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>DirectoryCheckHandler Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>Indexes</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dir</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.4.8 du serveur HTTP
-Apache. Les versions antérieures à 2.4 se comportaient implicitement
-comme si "DirectoryCheckHandler ON" avait été spécifié.</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible depuis la version 2.4.8 du serveur HTTP
+Apache. Les versions ant&#233;rieures &#224; 2.4 se comportaient implicitement
+comme si "DirectoryCheckHandler ON" avait &#233;t&#233; sp&#233;cifi&#233;.</td></tr>
 </table>
     <p>La directive <code class="directive">DirectoryCheckHandler</code> permet
     de faire en sorte que <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code> recherche un index
-    de répertoire ou ajoute des slashes de fin lorsqu'un autre
-    gestionnaire à été défini pour l'URL considérée. Les gestionnaires
-    peuvent être définis à via des directives telles que
+    de r&#233;pertoire ou ajoute des slashes de fin lorsqu'un autre
+    gestionnaire &#224; &#233;t&#233; d&#233;fini pour l'URL consid&#233;r&#233;e. Les gestionnaires
+    peuvent &#234;tre d&#233;finis &#224; via des directives telles que
     <code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code> ou par d'autres
     modules tels que <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> au cours des
-    substitutions de niveau répertoire.</p>
+    substitutions de niveau r&#233;pertoire.</p>
 
-    <p>Dans les versions antérieures à 2.4, ce module ne modifiait pas son
-    comportement si un autre gestionnaire avait été défini pour l'URL
-    considérée. Ceci permettait de servir des index de répertoires même si une
-    directive <code class="directive">SetHandler</code> avait été définie pour un
-    répertoire entier, mais pouvait aussi être à l'origine de conflits avec
+    <p>Dans les versions ant&#233;rieures &#224; 2.4, ce module ne modifiait pas son
+    comportement si un autre gestionnaire avait &#233;t&#233; d&#233;fini pour l'URL
+    consid&#233;r&#233;e. Ceci permettait de servir des index de r&#233;pertoires m&#234;me si une
+    directive <code class="directive">SetHandler</code> avait &#233;t&#233; d&#233;finie pour un
+    r&#233;pertoire entier, mais pouvait aussi &#234;tre &#224; l'origine de conflits avec
     d'autres modules comme <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>.</p> 
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="directoryindex" id="directoryindex">Directive</a> <a name="DirectoryIndex" id="DirectoryIndex">DirectoryIndex</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Liste des fichiers ressources à rechercher lorsque le
-client envoie une requête pour un répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Liste des fichiers ressources &#224; rechercher lorsque le
+client envoie une requ&#234;te pour un r&#233;pertoire</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DirectoryIndex
     disabled | <var>url locale</var> [<var>url locale</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>DirectoryIndex index.html</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>DirectoryIndex index.html</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>Indexes</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dir</td></tr>
 </table>
     <p>La directive <code class="directive">DirectoryIndex</code> permet de
-    définir une liste de fichiers ressources à rechercher lorsqu'un
-    client envoie une requête pour l'index d'un répertoire, en ajoutant
-    un '/' à la fin du nom de ce dernier. <var>url locale</var> est
-    l'URL (codée avec caractères '%') d'un document du serveur, relative
-    au répertoire faisant l'objet de la requête ; il s'agit en général
-    du nom d'un fichier situé dans le répertoire. Si plusieurs URLs sont
-    fournies, le serveur renverra la première d'entre elles qui
-    correspond à une ressource existante. Si aucune ressource ne
-    correspond à la liste des URLs spécifiées, et si l'option
-    <code>Indexes</code> est définie, le serveur générera son propre
-    listing du répertoire.</p>
+    d&#233;finir une liste de fichiers ressources &#224; rechercher lorsqu'un
+    client envoie une requ&#234;te pour l'index d'un r&#233;pertoire, en ajoutant
+    un '/' &#224; la fin du nom de ce dernier. <var>url locale</var> est
+    l'URL (cod&#233;e avec caract&#232;res '%') d'un document du serveur, relative
+    au r&#233;pertoire faisant l'objet de la requ&#234;te ; il s'agit en g&#233;n&#233;ral
+    du nom d'un fichier situ&#233; dans le r&#233;pertoire. Si plusieurs URLs sont
+    fournies, le serveur renverra la premi&#232;re d'entre elles qui
+    correspond &#224; une ressource existante. Si aucune ressource ne
+    correspond &#224; la liste des URLs sp&#233;cifi&#233;es, et si l'option
+    <code>Indexes</code> est d&#233;finie, le serveur g&#233;n&#233;rera son propre
+    listing du r&#233;pertoire.</p>
 
     <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">DirectoryIndex index.html</pre>
 </div>
 
-    <p>Avec cette configuration, une requête pour l'URL
+    <p>Avec cette configuration, une requ&#234;te pour l'URL
     <code>http://example.com/docs/</code> renverrait au client la
     ressource <code>http://example.com/docs/index.html</code> si elle
-    existe, ou provoquerait la génération du listing du répertoire si la
+    existe, ou provoquerait la g&#233;n&#233;ration du listing du r&#233;pertoire si la
     ressource n'existe pas.</p>
 
-    <p>Notez qu'il n'est pas nécessaire que les documents soient
-    relatifs au répertoire ;</p>
+    <p>Notez qu'il n'est pas n&#233;cessaire que les documents soient
+    relatifs au r&#233;pertoire ;</p>
 
     <pre class="prettyprint lang-config">DirectoryIndex index.html index.txt  /cgi-bin/index.pl</pre>
 
 
-    <p>provoquerait l'exécution du script CGI
+    <p>provoquerait l'ex&#233;cution du script CGI
     <code>/cgi-bin/index.pl</code> si aucun des fichiers
     <code>index.html</code> ou <code>index.txt</code> n'existe dans le
-    répertoire considéré.</p>
+    r&#233;pertoire consid&#233;r&#233;.</p>
 
-    <p>La spécification du seul argument "disabled" empêche
+    <p>La sp&#233;cification du seul argument "disabled" emp&#234;che
     <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code> de rechercher un index. Un argument
-    "disabled" sera interprété de manière littérale si d'autres
-    arguments sont présents avant ou après lui, même s'ils sont
-    eux-mêmes des arguments "disabled".</p>
+    "disabled" sera interpr&#233;t&#233; de mani&#232;re litt&#233;rale si d'autres
+    arguments sont pr&#233;sents avant ou apr&#232;s lui, m&#234;me s'ils sont
+    eux-m&#234;mes des arguments "disabled".</p>
 
     <p><strong>Note:</strong> Positionner plusieurs directives <code class="directive">DirectoryIndex</code>
-    au coeur du <a href="../sections.html"><em>même context</em></a> complète la liste des ressources et ne l'écrase pas :
+    au coeur du <a href="../sections.html"><em>m&#234;me context</em></a> compl&#232;te la liste des ressources et ne l'&#233;crase pas :
     </p>
     <pre class="prettyprint lang-config"># Exemple A: Positionner index.html en page d'index, puis ajouter index.php.
 &lt;Directory "/foo"&gt;
@@ -167,13 +167,13 @@ client envoie une requête pour un répertoire</td></tr>
     DirectoryIndex index.php
 &lt;/Directory&gt;
 
-# Exemple B: La même chose que l'exemple A, mais réalisé au moyen d'une seule directive.
+# Exemple B: La m&#234;me chose que l'exemple A, mais r&#233;alis&#233; au moyen d'une seule directive.
 &lt;Directory "/foo"&gt;
     DirectoryIndex index.html index.php
 &lt;/Directory&gt;
 
 # Exemple C: Pour remplacer la liste des ressources, il faut d'abord la vider :
-# Ici, seul index.php restera référencé comme ressource d'index.
+# Ici, seul index.php restera r&#233;f&#233;renc&#233; comme ressource d'index.
 &lt;Directory "/foo"&gt;
     DirectoryIndex index.html
     DirectoryIndex disabled
@@ -186,33 +186,33 @@ client envoie une requête pour un répertoire</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="directoryindexredirect" id="directoryindexredirect">Directive</a> <a name="DirectoryIndexRedirect" id="DirectoryIndexRedirect">DirectoryIndexRedirect</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit une redirection externe pour les index de
-répertoires.
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&#233;finit une redirection externe pour les index de
+r&#233;pertoires.
 </td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DirectoryIndexRedirect on | off | permanent | temp | seeother |
 <var>3xx-code</var>
 </code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>DirectoryIndexRedirect off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>DirectoryIndexRedirect off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>Indexes</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dir</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.14</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible depuis la version 2.3.14</td></tr>
 </table>
-    <p>Par défaut, c'est la page définie par la directive
-    <code class="directive">DirectoryIndex</code> qui est sélectionnée et
-    renvoyée de manière transparente au client. La directive
+    <p>Par d&#233;faut, c'est la page d&#233;finie par la directive
+    <code class="directive">DirectoryIndex</code> qui est s&#233;lectionn&#233;e et
+    renvoy&#233;e de mani&#232;re transparente au client. La directive
     <code class="directive">DirectoryIndexRedirect</code> permet de rediriger le
     client via une redirection de type 3xx.</p>
 
-    <p>Les arguments acceptés sont :</p>
+    <p>Les arguments accept&#233;s sont :</p>
     <ul>
      <li><code>on</code> : envoie une redirection 302 vers l'index choisi.</li>
      <li><code>off</code> : n'envoie aucune redirection. Il s'agit du comportement historique de mod_dir.</li>
      <li><code>permanent</code> : envoie une redirection 301 (permanent) vers l'index choisi.</li>
-     <li><code>temp</code> : ceci est équivalent à <code>on</code></li>
-     <li><code>seeother</code> : envoie une redirection 303 (également appelée "See Other") vers l'index choisi.</li>
-     <li><var>3xx-code</var> : envoie une redirection accompagnée du code 3xx choisi.</li>
+     <li><code>temp</code> : ceci est &#233;quivalent &#224; <code>on</code></li>
+     <li><code>seeother</code> : envoie une redirection 303 (&#233;galement appel&#233;e "See Other") vers l'index choisi.</li>
+     <li><var>3xx-code</var> : envoie une redirection accompagn&#233;e du code 3xx choisi.</li>
     </ul>
 
 
@@ -220,7 +220,7 @@ répertoires.
     <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">DirectoryIndexRedirect on</pre>
 </div>
 
-    <p>Une requête pour <code>http://example.com/docs/</code> se
+    <p>Une requ&#234;te pour <code>http://example.com/docs/</code> se
     solderait par une redirection temporaire vers
     <code>http://example.com/docs/index.html</code> si cette ressource
     existe.</p>
@@ -230,111 +230,111 @@ répertoires.
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="directoryslash" id="directoryslash">Directive</a> <a name="DirectorySlash" id="DirectorySlash">DirectorySlash</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Activation/Désactivation de la redirection "slash de
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Activation/D&#233;sactivation de la redirection "slash de
 fin"</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DirectorySlash On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>DirectorySlash On</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>DirectorySlash On</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>Indexes</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dir</td></tr>
 </table>
     <p>La directive <code class="directive">DirectorySlash</code> permet de
-    déterminer si <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code> doit corriger ou non les URLs
-    pointant vers un répertoire.</p>
+    d&#233;terminer si <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code> doit corriger ou non les URLs
+    pointant vers un r&#233;pertoire.</p>
 
-    <p>En général, si un utilisateur envoie une requête pour une
-    ressource sans slash de fin, cette ressource représentant un
-    répertoire, <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code> le redirige vers la même
+    <p>En g&#233;n&#233;ral, si un utilisateur envoie une requ&#234;te pour une
+    ressource sans slash de fin, cette ressource repr&#233;sentant un
+    r&#233;pertoire, <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code> le redirige vers la m&#234;me
     ressource, mais <em>en ajoutant</em> un slash de fin, et ceci pour
     plusieurs bonnes raisons :</p>
 
     <ul>
-    <li>La requête de l'utilisateur contiendra finalement l'URL
+    <li>La requ&#234;te de l'utilisateur contiendra finalement l'URL
     canonique de la ressource</li>
     <li><code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code> fonctionnera correctement. Comme
     il n'indique pas le chemin dans le lien, le chemin de l'URL serait
     incorrect.</li>
-    <li>La directive <code class="directive"><a href="#directoryindex">DirectoryIndex</a></code> n'est évaluée
-    <em>que</em> pour les répertoires se terminant par un slash.</li>
-    <li>Les références à des URLs relatives dans les pages html
+    <li>La directive <code class="directive"><a href="#directoryindex">DirectoryIndex</a></code> n'est &#233;valu&#233;e
+    <em>que</em> pour les r&#233;pertoires se terminant par un slash.</li>
+    <li>Les r&#233;f&#233;rences &#224; des URLs relatives dans les pages html
     fonctionneront alors correctement.</li>
     </ul>
 
     <p>Si vous ne souhaitez pas voir ces effets, <em>et</em> si
-    les raisons évoquées ci-dessus ne s'appliquent pas à vous, vous
-    pouvez désactiver la redirection comme indiqué ci-dessous.
-    Gardez cependant à l'esprit que ceci peut avoir des répercutions en
-    matière de sécurité.</p>
+    les raisons &#233;voqu&#233;es ci-dessus ne s'appliquent pas &#224; vous, vous
+    pouvez d&#233;sactiver la redirection comme indiqu&#233; ci-dessous.
+    Gardez cependant &#224; l'esprit que ceci peut avoir des r&#233;percutions en
+    mati&#232;re de s&#233;curit&#233;.</p>
 
-    <pre class="prettyprint lang-config"># voir l'avertissement de sécurité ci-dessous !
+    <pre class="prettyprint lang-config"># voir l'avertissement de s&#233;curit&#233; ci-dessous !
 &lt;Location "/some/path"&gt;
     DirectorySlash Off
     SetHandler some-handler
 &lt;/Location&gt;</pre>
 
 
-    <div class="warning"><h3>Avertissement de sécurité</h3>
-    <p>La désactivation de la redirection "slash de fin" peut entraîner
-    la divulgation d'informations. Considérons la situation où
+    <div class="warning"><h3>Avertissement de s&#233;curit&#233;</h3>
+    <p>La d&#233;sactivation de la redirection "slash de fin" peut entra&#238;ner
+    la divulgation d'informations. Consid&#233;rons la situation o&#249;
     <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code> est actif (<code>Options
-    +Indexes</code>), où la directive <code class="directive"><a href="#directoryindex">DirectoryIndex</a></code> a pour valeur une ressource valide (par
-    exemple <code>index.html</code>), et où aucun gestionnaire
-    particulier n'a été défini pour cette URL. Dans ce cas, une requête
+    +Indexes</code>), o&#249; la directive <code class="directive"><a href="#directoryindex">DirectoryIndex</a></code> a pour valeur une ressource valide (par
+    exemple <code>index.html</code>), et o&#249; aucun gestionnaire
+    particulier n'a &#233;t&#233; d&#233;fini pour cette URL. Dans ce cas, une requ&#234;te
     avec slash de fin afficherait le contenu du fichier
-    <code>index.html</code> ; <strong>par contre, une requête sans slash
+    <code>index.html</code> ; <strong>par contre, une requ&#234;te sans slash
     de fin afficherait un listing du contenu du
-    répertoire</strong>.</p>
+    r&#233;pertoire</strong>.</p>
     </div>
     <p>Notez aussi que certains navigateurs peuvent modifier par erreur
-    des requêtes POST en requêtes GET lors d'une redirection, les
-    données POST étant alors perdues.</p>
+    des requ&#234;tes POST en requ&#234;tes GET lors d'une redirection, les
+    donn&#233;es POST &#233;tant alors perdues.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="fallbackresource" id="fallbackresource">Directive</a> <a name="FallbackResource" id="FallbackResource">FallbackResource</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit une URL par défaut pour les requêtes qui ne ciblent
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&#233;finit une URL par d&#233;faut pour les requ&#234;tes qui ne ciblent
 aucun fichier</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>FallbackResource disabled | <var>url-locale</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>disabled - httpd renvoie un code d'erreur 404 (Not Found)</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>disabled - httpd renvoie un code d'erreur 404 (Not Found)</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>Indexes</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dir</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>L'argument <code>disabled</code> est disponible à partir
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>L'argument <code>disabled</code> est disponible &#224; partir
 de la version 2.4.4 du serveur HTTP Apache.</td></tr>
 </table>
-    <p>Cette directive permet de définir un traitement pour toute URL
-    qui ne correspond à aucune ressource de votre système de fichiers,
+    <p>Cette directive permet de d&#233;finir un traitement pour toute URL
+    qui ne correspond &#224; aucune ressource de votre syst&#232;me de fichiers,
     et qui provoquerait sans cela l'envoi d'un code d'erreur HTTP 404
     (Not Found).
     Par exemple</p>
     <pre class="prettyprint lang-config">FallbackResource /not-404.php</pre>
 
-    <p>fait en sorte que les requêtes ne correspondant à aucun fichier
-    soient traitées par <code>non-404.php</code>, sans affecter les
-    requêtes pour des fichiers existants.</p>
+    <p>fait en sorte que les requ&#234;tes ne correspondant &#224; aucun fichier
+    soient trait&#233;es par <code>non-404.php</code>, sans affecter les
+    requ&#234;tes pour des fichiers existants.</p>
     <p>Il est souvent souhaitable qu'un seul fichier ou ressource traite
-    toutes les requêtes à destination d'un répertoire
-    particulier, sauf pour les requêtes qui correspondent à un fichier
-    ou script existant. On y fait souvent référence sous le terme
-    'contrôleur frontal'.</p>
-    <p>Dans les versions plus anciennes de httpd, cet effet nécessitait
-    en général <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>, et l'utilisation des tests
-    conditionnels <code>-f</code> et <code>-d</code> pour vérifier
-    l'existence des fichiers et répertoires. Maintenant, une seule ligne
-    de configuration est nécessaire.</p>
+    toutes les requ&#234;tes &#224; destination d'un r&#233;pertoire
+    particulier, sauf pour les requ&#234;tes qui correspondent &#224; un fichier
+    ou script existant. On y fait souvent r&#233;f&#233;rence sous le terme
+    'contr&#244;leur frontal'.</p>
+    <p>Dans les versions plus anciennes de httpd, cet effet n&#233;cessitait
+    en g&#233;n&#233;ral <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>, et l'utilisation des tests
+    conditionnels <code>-f</code> et <code>-d</code> pour v&#233;rifier
+    l'existence des fichiers et r&#233;pertoires. Maintenant, une seule ligne
+    de configuration est n&#233;cessaire.</p>
     <pre class="prettyprint lang-config">FallbackResource /index.php</pre>
 
     <p>Les fichiers existants comme des images, des fichiers css, etc...
-    seront traités normalement.</p>
-    <p>L'argument <code>disabled</code> permet de désactiver cette
-    fonctionnalité dans le cas où l'héritage d'un répertoire parent
-    n'est pas souhaité.</p>
-    <p>Pour un URI intermédiaire tel que
-    <em>http://example.com/blog/</em>, cet URI intermédiaire doit être
-    spécifié en tant que <var>url-locale</var> :</p>
+    seront trait&#233;s normalement.</p>
+    <p>L'argument <code>disabled</code> permet de d&#233;sactiver cette
+    fonctionnalit&#233; dans le cas o&#249; l'h&#233;ritage d'un r&#233;pertoire parent
+    n'est pas souhait&#233;.</p>
+    <p>Pour un URI interm&#233;diaire tel que
+    <em>http://example.com/blog/</em>, cet URI interm&#233;diaire doit &#234;tre
+    sp&#233;cifi&#233; en tant que <var>url-locale</var> :</p>
     <pre class="prettyprint lang-config">&lt;Directory "/web/example.com/htdocs/blog"&gt;
     FallbackResource /blog/index.php
 &lt;/Directory&gt;
@@ -347,10 +347,10 @@ de la version 2.4.4 du serveur HTTP Apache.</td></tr>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_dir.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_dir.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_dir.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_dir.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_dir.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/mod_dir.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/mod_dir.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -369,7 +369,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.4/mod/mod_dir.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autoris&#233; sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
