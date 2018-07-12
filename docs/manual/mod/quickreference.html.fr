@@ -1557,10 +1557,11 @@ l'interpr&#233;tation du fichier de configuration</td></tr>
 <tr class="odd"><td><a href="mod_watchdog.html#watchdoginterval">WatchdogInterval <var>time-interval</var>[s]</a></td><td> 1 </td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Intervalle Watchdog en secondes</td></tr>
 <tr><td><a href="mod_include.html#xbithack" id="X" name="X">XBitHack on|off|full</a></td><td> off </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Interpr&#232;te les directives SSI dans les fichiers dont le bit
 d'ex&#233;cution est positionn&#233;</td></tr>
-<tr class="odd"><td><a href="mod_xml2enc.html#xml2encalias">xml2EncAlias <var>charset alias [alias ...]</var></a></td><td></td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Recognise Aliases for encoding values</td></tr>
-<tr><td><a href="mod_xml2enc.html#xml2encdefault">xml2EncDefault <var>name</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Sets a default encoding to assume when absolutely no information
-can be <a href="#sniffing">automatically detected</a></td></tr>
-<tr class="odd"><td><a href="mod_xml2enc.html#xml2startparse">xml2StartParse <var>element [element ...]</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Advise the parser to skip leading junk.</td></tr>
+<tr class="odd"><td><a href="mod_xml2enc.html#xml2encalias">xml2EncAlias <var>jeu-de-caract&#232;res alias [alias ...]</var></a></td><td></td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">D&#233;finit des alias pour les valeurs d'encodage</td></tr>
+<tr><td><a href="mod_xml2enc.html#xml2encdefault">xml2EncDefault <var>nom</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">D&#233;finit un encodage par d&#233;faut &#224; utiliser lorsqu'aucune
+information ne peut &#234;tre <a href="#sniffing">automatiquement d&#233;tect&#233;e</a></td></tr>
+<tr class="odd"><td><a href="mod_xml2enc.html#xml2startparse">xml2StartParse <var>&#233;l&#233;ment [&#233;l&#233;ment ...]</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Indique &#224; l'interpr&#233;teur &#224; partir de quelle balise il doit
+commencer son traitement.</td></tr>
 </table></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../de/mod/quickreference.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
