@@ -27,35 +27,35 @@
 <div id="preamble"><h1>Module Apache mod_journald</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_journald.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_journald.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_journald.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Implémentation du fournisseur de journalisation d'erreurs
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Impl&#233;mentation du fournisseur de journalisation d'erreurs
 "journald"</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>journald_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_journald.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&#160;de&#160;Module:</a></th><td>journald_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier&#160;Source:</a></th><td>mod_journald.c</td></tr></table>
 <h3>Sommaire</h3>
 
-    <p>Ce module implémente le fournisseur de journalisation d'erreurs
+    <p>Ce module impl&#233;mente le fournisseur de journalisation d'erreurs
     "journald". Il permet l'enregistrement des messages d'erreur et la
-    gestion des journaux personnalisés via systemd-journald(8).</p>
+    gestion des journaux personnalis&#233;s via systemd-journald(8).</p>
 </div>
 <div id="quickview"><h3>Sujets</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#structured">Jounalisation structurée</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#structured">Jounalisation structur&#233;e</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#examples">Exemples</a></li>
 </ul><h3 class="directives">Directives</h3>
 <p>Ce module ne fournit aucune directive.</p>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_journald">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_journald">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_journald">Probl&#232;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_journald">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="structured" id="structured">Jounalisation structurée</a><a title="Lien permanent" href="#structured" class="permalink">&para;</a></h2>
+<h2><a name="structured" id="structured">Jounalisation structur&#233;e</a><a title="Lien permanent" href="#structured" class="permalink">&para;</a></h2>
     
     <p>Systemd-journald permet d'effectuer une journalisation
-    structurée, et autorise donc le filtrage des messages en fonction de
-    diverses variables. Les variables actuellement supportées sont :
+    structur&#233;e, et autorise donc le filtrage des messages en fonction de
+    diverses variables. Les variables actuellement support&#233;es sont :
     </p>
     <dl>
       <dt><code>LOG</code></dt>
@@ -63,21 +63,21 @@
       Pour CustomLog ou TransferLog, la valeur correspond au premier
       argument de ces directives.</dd>
       <dt><code>REQUEST_HOSTNAME</code></dt>
-      <dd>Le nom d'hôte tel qu'il est fourni dans l'URI, ou l'en-tête
-      Host: de la requête.</dd>
+      <dd>Le nom d'h&#244;te tel qu'il est fourni dans l'URI, ou l'en-t&#234;te
+      Host: de la requ&#234;te.</dd>
       <dt><code>REQUEST_USER</code></dt>
       <dd>Correspond au nom d'utilisateur si une authentification a eu
       lieu.</dd>
       <dt><code>REQUEST_USERAGENT_IP</code></dt>
-      <dd>L'adresse IP de l'agent qui a envoyé la requête.</dd>
+      <dd>L'adresse IP de l'agent qui a envoy&#233; la requ&#234;te.</dd>
       <dt><code>REQUEST_URI</code></dt>
       <dd>La partie chemin de l'URI, ou "/" si l'URI ne contient pas de
       chemin.</dd>
       <dt><code>SERVER_HOSTNAME</code></dt>
-      <dd>Le nom d'hôte du serveur pour lequel le message a été généré.</dd>
+      <dd>Le nom d'h&#244;te du serveur pour lequel le message a &#233;t&#233; g&#233;n&#233;r&#233;.</dd>
     </dl>
 
-    <p>Ces variables peuvent par exemple être utilisées pour ne montrer
+    <p>Ces variables peuvent par exemple &#234;tre utilis&#233;es pour ne montrer
     que les messages concernant un URI particulier via la commande
     <code>journalctl</code> :
     </p>
@@ -92,35 +92,35 @@
 <h2><a name="examples" id="examples">Exemples</a><a title="Lien permanent" href="#examples" class="permalink">&para;</a></h2>
     
 
-    <p>Si le système le supporte, il est possible d'utiliser
-    systemd-journald(8) pour effectuer la journalisation en spécifiant
-    <code>journald</code> à la place d'un nom de fichier dans la
+    <p>Si le syst&#232;me le supporte, il est possible d'utiliser
+    systemd-journald(8) pour effectuer la journalisation en sp&#233;cifiant
+    <code>journald</code> &#224; la place d'un nom de fichier dans la
     directive ErrorLog (voir <code class="module"><a href="../mod/core.html">core</a></code>).
     </p>
     
     <pre class="prettyprint lang-config">ErrorLog journald</pre>
 
 
-    <p>Spécifier <code>journald</code> comme fournisseur de journal
+    <p>Sp&#233;cifier <code>journald</code> comme fournisseur de journal
     d'erreurs avec la directive CustomLog (voir
     <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code>) active la journalisation via
-    systemd-journald(8) si le système le supporte.
+    systemd-journald(8) si le syst&#232;me le supporte.
     </p>
 
     <pre class="prettyprint lang-config">CustomLog "journald" "%h %l %u %t \"%r\" %&gt;s %b"</pre>
 
 
-    <div class="warning"><h3>Avertissement en matière de performances</h3><p>
-    Actuellement, systemd-journald n'est pas conçu pour une
-    jounalisation à haut débit et son utilisation pour la journalisation
-    des accès peut induire une baisse importante de performances.
+    <div class="warning"><h3>Avertissement en mati&#232;re de performances</h3><p>
+    Actuellement, systemd-journald n'est pas con&#231;u pour une
+    jounalisation &#224; haut d&#233;bit et son utilisation pour la journalisation
+    des acc&#232;s peut induire une baisse importante de performances.
     </p></div>
 
 </div>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_journald.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_journald.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_journald.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -139,7 +139,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_journald.h
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autoris&#233; sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

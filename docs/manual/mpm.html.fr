@@ -25,19 +25,19 @@
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="./de/mpm.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/mpm.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./es/mpm.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="./fr/mpm.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./es/mpm.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
+<a href="./fr/mpm.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/mpm.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/mpm.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/mpm.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="./tr/mpm.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a> |
 <a href="./zh-cn/mpm.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
 
-<p>Ce document décrit ce qu'est un Module Multi-Processus, ainsi
-que la manière dont ces modules sont utilisés par le serveur HTTP Apache.</p>
+<p>Ce document d&#233;crit ce qu'est un Module Multi-Processus, ainsi
+que la mani&#232;re dont ces modules sont utilis&#233;s par le serveur HTTP Apache.</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#introduction">Introduction</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#defaults">MPM par défaut</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#defaults">MPM par d&#233;faut</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#static">Compiler un module MPM en tant que module
 statique</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#dynamic">Compiler un module MPM en tant que module
@@ -48,88 +48,88 @@ DSO (Dynamic Shared Object)</a></li>
 <h2><a name="introduction" id="introduction">Introduction</a><a title="Lien permanent" href="#introduction" class="permalink">&para;</a></h2>
 
     <p>La conception du serveur HTTP Apache en fait un serveur web puissant et
-    flexible pouvant fonctionner sur une très grande variété de
-    plateformes et toute une gamme d'environnements différents. Plateformes
-    différentes et environnements différents signifient souvent fonctionnalités
-    différentes, ou utilisation de différentes méthodes pour
-    implémenter la même fonctionnalité le plus efficacement possible.
-    Apache httpd s'est toujours accomodé d'une grande variété d'environnements
-    grâce à sa conception modulaire. Cette conception autorise le webmaster
-    à choisir quelles fonctionnalités seront incluses
-    dans le serveur en sélectionnant les modules à charger soit à la
-    compilation, soit à l'exécution.</p>
+    flexible pouvant fonctionner sur une tr&#232;s grande vari&#233;t&#233; de
+    plateformes et toute une gamme d'environnements diff&#233;rents. Plateformes
+    diff&#233;rentes et environnements diff&#233;rents signifient souvent fonctionnalit&#233;s
+    diff&#233;rentes, ou utilisation de diff&#233;rentes m&#233;thodes pour
+    impl&#233;menter la m&#234;me fonctionnalit&#233; le plus efficacement possible.
+    Apache httpd s'est toujours accomod&#233; d'une grande vari&#233;t&#233; d'environnements
+    gr&#226;ce &#224; sa conception modulaire. Cette conception autorise le webmaster
+    &#224; choisir quelles fonctionnalit&#233;s seront incluses
+    dans le serveur en s&#233;lectionnant les modules &#224; charger soit &#224; la
+    compilation, soit &#224; l'ex&#233;cution.</p>
 
-    <p>Le serveur HTTP Apache 2.0 a étendu cette conception modulaire aux
+    <p>Le serveur HTTP Apache 2.0 a &#233;tendu cette conception modulaire aux
     fonctions les plus
-    élémentaires d'un serveur web. Le serveur est fourni avec une variété de
+    &#233;l&#233;mentaires d'un serveur web. Le serveur est fourni avec une vari&#233;t&#233; de
     Modules Multi-Processus (MPMs) qui
-    sont responsables de l'association aux ports réseau de la machine,
-    acceptent les requêtes, et se chargent de répartir ces dernières
-    entre les différents processus enfants.</p>
+    sont responsables de l'association aux ports r&#233;seau de la machine,
+    acceptent les requ&#234;tes, et se chargent de r&#233;partir ces derni&#232;res
+    entre les diff&#233;rents processus enfants.</p>
 
-    <p>L'extension de la conception modulaire à ce niveau du serveur
+    <p>L'extension de la conception modulaire &#224; ce niveau du serveur
     comporte deux avantages importants :</p>
 
     <ul>
       <li>Apache httpd peut supporter plus proprement et efficacement une grande
-      variété de systèmes d'exploitation. En particulier, la version Windows
+      vari&#233;t&#233; de syst&#232;mes d'exploitation. En particulier, la version Windows
       du serveur est maintenant beaucoup plus efficace, depuis que
-      <code class="module"><a href="./mod/mpm_winnt.html">mpm_winnt</a></code> peut utiliser les fonctionnalités réseau
-      natives à la place de la couche POSIX utilisée par
-      Apache httpd 1.3. Cet avantage s'étend aussi aux systèmes d'exploitation
-      qui implémentent des MPMs spécialisés.</li>
+      <code class="module"><a href="./mod/mpm_winnt.html">mpm_winnt</a></code> peut utiliser les fonctionnalit&#233;s r&#233;seau
+      natives &#224; la place de la couche POSIX utilis&#233;e par
+      Apache httpd 1.3. Cet avantage s'&#233;tend aussi aux syst&#232;mes d'exploitation
+      qui impl&#233;mentent des MPMs sp&#233;cialis&#233;s.</li>
 
-      <li>le serveur est plus à même de répondre aux besoins d'un site
-      particulier. Par exemple, les sites qui sont très sollicités peuvent
-      utiliser un MPM threadé comme
+      <li>le serveur est plus &#224; m&#234;me de r&#233;pondre aux besoins d'un site
+      particulier. Par exemple, les sites qui sont tr&#232;s sollicit&#233;s peuvent
+      utiliser un MPM thread&#233; comme
       <code class="module"><a href="./mod/worker.html">worker</a></code> ou <code class="module"><a href="./mod/event.html">event</a></code>, tandis que les sites
-      qui privilégient la stabilité ou la compatibilité avec des logiciels
+      qui privil&#233;gient la stabilit&#233; ou la compatibilit&#233; avec des logiciels
       plus anciens peuvent utiliser un module comme
       <code class="module"><a href="./mod/prefork.html">prefork</a></code>.</li>
     </ul>
 
-    <p>Du point de vue de l'utilisateur, les MPMs ne sont pas différents des
-    autres modules Apache httpd. La principale différence réside dans le fait qu'un
-    et un seul MPM à la fois doit être chargé
-    lorsque le serveur s'exécute. La liste des
+    <p>Du point de vue de l'utilisateur, les MPMs ne sont pas diff&#233;rents des
+    autres modules Apache httpd. La principale diff&#233;rence r&#233;side dans le fait qu'un
+    et un seul MPM &#224; la fois doit &#234;tre charg&#233;
+    lorsque le serveur s'ex&#233;cute. La liste des
     MPMs disponibles est fournie dans <a href="mod/">l'index des
     modules</a>.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="defaults" id="defaults">MPM par défaut</a><a title="Lien permanent" href="#defaults" class="permalink">&para;</a></h2>
+<h2><a name="defaults" id="defaults">MPM par d&#233;faut</a><a title="Lien permanent" href="#defaults" class="permalink">&para;</a></h2>
 
-<p>La table suivante fournit la liste des MPMs par défaut pour divers
-systèmes d'exploitation.  Il s'agit du MPM qui sera utilisé si
-vous n'en spécifiez pas un autre à la compilation.</p>
+<p>La table suivante fournit la liste des MPMs par d&#233;faut pour divers
+syst&#232;mes d'exploitation.  Il s'agit du MPM qui sera utilis&#233; si
+vous n'en sp&#233;cifiez pas un autre &#224; la compilation.</p>
 
 <table class="bordered"><tr><td>Netware</td><td><code class="module"><a href="./mod/mpm_netware.html">mpm_netware</a></code></td></tr>
 <tr class="odd"><td>OS/2</td><td><code class="module"><a href="./mod/mpmt_os2.html">mpmt_os2</a></code></td></tr>
 <tr><td>Unix</td><td><code class="module"><a href="./mod/prefork.html">prefork</a></code>, <code class="module"><a href="./mod/worker.html">worker</a></code>,
-ou <code class="module"><a href="./mod/event.html">event</a></code>, selon les possibilités de la plate-forme</td></tr>
+ou <code class="module"><a href="./mod/event.html">event</a></code>, selon les possibilit&#233;s de la plate-forme</td></tr>
 <tr class="odd"><td>Windows</td><td><code class="module"><a href="./mod/mpm_winnt.html">mpm_winnt</a></code></td></tr>
 </table>
 
-<div class="note"><p>Ici, 'Unix' sous-entend les systèmes d'exploitation de type
+<div class="note"><p>Ici, 'Unix' sous-entend les syst&#232;mes d'exploitation de type
 Unix, comme Linux, BSD, Solaris, Mac OS X, etc...</p></div>
 
-<p>Dans le cas des systèmes d'exploitation de type Unix, le choix du MPM
-à installer est orienté par deux questions :</p>
-<p>1. Est-ce que le système supporte les threads ?</p>
-<p>2. Est-ce que le système supporte le polling thread-safe (et en
+<p>Dans le cas des syst&#232;mes d'exploitation de type Unix, le choix du MPM
+&#224; installer est orient&#233; par deux questions :</p>
+<p>1. Est-ce que le syst&#232;me supporte les threads ?</p>
+<p>2. Est-ce que le syst&#232;me supporte le polling thread-safe (et en
 particulier les fonctions kqueue et epoll) ?</p>
 
-<p>Si la réponse aux deux questions est 'oui', le MPM par défaut sera
+<p>Si la r&#233;ponse aux deux questions est 'oui', le MPM par d&#233;faut sera
 <code class="module"><a href="./mod/event.html">event</a></code>.</p>
 
-<p>Si la réponse à la première question est 'oui', et la réponse à la
-deuxième 'non', le MPM par défaut sera <code class="module"><a href="./mod/worker.html">worker</a></code>.</p>
+<p>Si la r&#233;ponse &#224; la premi&#232;re question est 'oui', et la r&#233;ponse &#224; la
+deuxi&#232;me 'non', le MPM par d&#233;faut sera <code class="module"><a href="./mod/worker.html">worker</a></code>.</p>
 
-<p>Si la réponse aux deux questions est 'non', le MPM par défaut sera
+<p>Si la r&#233;ponse aux deux questions est 'non', le MPM par d&#233;faut sera
 <code class="module"><a href="./mod/prefork.html">prefork</a></code>.</p>
 
-<p>En pratique, cela signifie que le MPM par défaut sera presque
-toujours <code class="module"><a href="./mod/event.html">event</a></code> car tous les systèmes d'exploitation
+<p>En pratique, cela signifie que le MPM par d&#233;faut sera presque
+toujours <code class="module"><a href="./mod/event.html">event</a></code> car tous les syst&#232;mes d'exploitation
 modernes satisfont aux deux conditions.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -137,21 +137,21 @@ modernes satisfont aux deux conditions.</p>
 <h2><a name="static" id="static">Compiler un module MPM en tant que module
 statique</a><a title="Lien permanent" href="#static" class="permalink">&para;</a></h2>
 
-    <p>Les modules MPM peuvent être compilés en tant que modules
+    <p>Les modules MPM peuvent &#234;tre compil&#233;s en tant que modules
 statiques sur toutes les plates-formes. A la compilation d'Apache, un
-seul module MPM doit être choisi pour être compilé et lié avec le
-serveur. La recompilation du serveur sera donc nécessaire si vous
+seul module MPM doit &#234;tre choisi pour &#234;tre compil&#233; et li&#233; avec le
+serveur. La recompilation du serveur sera donc n&#233;cessaire si vous
 souhaitez changer de module MPM.</p>
 
-    <p>Pour choisir un module MPM autre que le MPM par défaut,
+    <p>Pour choisir un module MPM autre que le MPM par d&#233;faut,
     utiliser l'argument
       <code>--with-mpm=<em>NOM</em></code> du script
       <code class="program"><a href="./programs/configure.html">configure</a></code>. <em>NOM</em> est le nom
-      du MPM désiré.</p>
+      du MPM d&#233;sir&#233;.</p>
 
-    <p>Une fois le serveur compilé, il est possible de savoir quel MPM
-    a été choisi à l'aide de la commande <code>./httpd -l</code>.
-    Cette commande fournit la liste de tous les modules compilés
+    <p>Une fois le serveur compil&#233;, il est possible de savoir quel MPM
+    a &#233;t&#233; choisi &#224; l'aide de la commande <code>./httpd -l</code>.
+    Cette commande fournit la liste de tous les modules compil&#233;s
     avec le serveur, y compris le MPM.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -160,45 +160,45 @@ souhaitez changer de module MPM.</p>
 DSO (Dynamic Shared Object)</a><a title="Lien permanent" href="#dynamic" class="permalink">&para;</a></h2>
 
     <p>Sous Unix et les plates-formes similaires, les modules MPM
-    peuvent être compilés en tant que modules DSO et chargés
+    peuvent &#234;tre compil&#233;s en tant que modules DSO et charg&#233;s
     dynamiquement dans le serveur comme tout module DSO. Compiler les
     modules MPM en tant que modules DSO permet de changer de MPM en
-    modifiant la directive <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code> concernée, sans avoir à
+    modifiant la directive <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code> concern&#233;e, sans avoir &#224;
     recompiler le serveur.</p>
 
     <pre class="prettyprint lang-config">LoadModule mpm_prefork_module modules/mod_mpm_prefork.so</pre>
 
 
     <p>Toute tentative de charger plusieurs modules MPM via la directive
-    <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code> empêchera le
-    serveur de démarrer et affichera l'erreur suivante :</p>
+    <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code> emp&#234;chera le
+    serveur de d&#233;marrer et affichera l'erreur suivante :</p>
 
     <div class="example"><p><code>AH00534: httpd: Configuration error: More than one MPM
     loaded.</code></p></div>
 
-    <p>Cette fonctionnalité est activée via l'option
+    <p>Cette fonctionnalit&#233; est activ&#233;e via l'option
     <code>--enable-mpms-shared</code> du script
     <code class="program"><a href="./programs/configure.html">configure</a></code>. Si on ajoute l'argument
     <code><em>all</em></code>, tous les modules MPM disponibles sur la
-    plate-forme considérée seront installés. Cet argument peut aussi
-    contenir une liste de modules MPM à installer.</p>
+    plate-forme consid&#233;r&#233;e seront install&#233;s. Cet argument peut aussi
+    contenir une liste de modules MPM &#224; installer.</p>
 
-    <p>Le module MPM par défaut, sélectionné automatiquement ou spécifié
+    <p>Le module MPM par d&#233;faut, s&#233;lectionn&#233; automatiquement ou sp&#233;cifi&#233;
     via l'option <code>--with-mpm</code> du script
-    <code class="program"><a href="./programs/configure.html">configure</a></code>, sera chargé via une directive
+    <code class="program"><a href="./programs/configure.html">configure</a></code>, sera charg&#233; via une directive
     <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code> du fichier de
-    configuration du serveur généré. Pour choisir un autre module MPM,
+    configuration du serveur g&#233;n&#233;r&#233;. Pour choisir un autre module MPM,
     vous devrez donc modifier cette directive</p>
 
 </div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="./de/mpm.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/mpm.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./es/mpm.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="./fr/mpm.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./es/mpm.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
+<a href="./fr/mpm.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/mpm.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/mpm.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/mpm.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="./tr/mpm.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a> |
 <a href="./zh-cn/mpm.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
@@ -218,7 +218,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mpm.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autoris&#233; sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

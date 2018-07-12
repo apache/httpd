@@ -27,45 +27,45 @@
 <div id="preamble"><h1>Module Apache mod_proxy_ftp</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_proxy_ftp.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_proxy_ftp.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_proxy_ftp.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Module fournissant le support FTP à
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Module fournissant le support FTP &#224;
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>proxy_ftp_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_proxy_ftp.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&#160;de&#160;Module:</a></th><td>proxy_ftp_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier&#160;Source:</a></th><td>mod_proxy_ftp.c</td></tr></table>
 <h3>Sommaire</h3>
 
     <p>Pour pouvoir fonctionner, ce module <em>requiert</em> le
     chargement de <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>. Il fournit le support du
     mandatement des sites FTP. Notez que le support FTP est
-    actuellement limité à la méthode GET.</p>
+    actuellement limit&#233; &#224; la m&#233;thode GET.</p>
 
-    <p>Ainsi, pour pouvoir traiter les requêtes FTP mandatées,
+    <p>Ainsi, pour pouvoir traiter les requ&#234;tes FTP mandat&#233;es,
     <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>, et <code class="module"><a href="../mod/mod_proxy_ftp.html">mod_proxy_ftp</a></code>
-    doivent être chargés dans le serveur.</p>
+    doivent &#234;tre charg&#233;s dans le serveur.</p>
 
     <div class="warning"><h3>Avertissement</h3>
-      <p>N'activez pas la fonctionnalité de mandataire avant d'avoir <a href="mod_proxy.html#access">sécurisé votre serveur</a>. Les
+      <p>N'activez pas la fonctionnalit&#233; de mandataire avant d'avoir <a href="mod_proxy.html#access">s&#233;curis&#233; votre serveur</a>. Les
       serveurs mandataires ouverts sont dangereux non seulement pour
-      votre réseau, mais aussi pour l'Internet au sens large.</p>
+      votre r&#233;seau, mais aussi pour l'Internet au sens large.</p>
     </div>
 </div>
 <div id="quickview"><h3>Sujets</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#mimetypes">Pourquoi les fichiers du type
-    <var>xxx</var> ne sont-ils pas téléchargeables par FTP ?</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#type">Comment puis-je forcer le téléchargement
+    <var>xxx</var> ne sont-ils pas t&#233;l&#233;chargeables par FTP ?</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#type">Comment puis-je forcer le t&#233;l&#233;chargement
     FTP en mode ASCII du fichier <var>xxx</var> ?</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ftpnonget">Comment puis-je effectuer un
     chargement FTP ?</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#percent2fhck">Comment puis-je accéder par FTP à
-    des fichiers situés en dehors de mon répertoire home ?</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#percent2fhck">Comment puis-je acc&#233;der par FTP &#224;
+    des fichiers situ&#233;s en dehors de mon r&#233;pertoire home ?</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ftppass">Comment puis-je dissimuler le mot de
     passe FTP apparaissant en clair dans la ligne d'URL de mon
     navigateur ?</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#wildcard">Pourquoi reçois-je un listing de
-    fichiers alors que j'ai demandé le téléchargement d'un fichier
+<li><img alt="" src="../images/down.gif" /> <a href="#wildcard">Pourquoi re&#231;ois-je un listing de
+    fichiers alors que j'ai demand&#233; le t&#233;l&#233;chargement d'un fichier
     ?</a></li>
 </ul><h3 class="directives">Directives</h3>
 <ul id="toc">
@@ -73,58 +73,58 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#proxyftpescapewildcards">ProxyFtpEscapeWildcards</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxyftplistonwildcard">ProxyFtpListOnWildcard</a></li>
 </ul>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_proxy_ftp">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_proxy_ftp">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_proxy_ftp">Probl&#232;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_proxy_ftp">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></li>
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="mimetypes" id="mimetypes">Pourquoi les fichiers du type
-    <var>xxx</var> ne sont-ils pas téléchargeables par FTP ?</a><a title="Lien permanent" href="#mimetypes" class="permalink">&para;</a></h2>
-      <p>Ce type particulier de fichier n'est probablement pas défini en
+    <var>xxx</var> ne sont-ils pas t&#233;l&#233;chargeables par FTP ?</a><a title="Lien permanent" href="#mimetypes" class="permalink">&para;</a></h2>
+      <p>Ce type particulier de fichier n'est probablement pas d&#233;fini en
       temps que <code>application/octet-stream</code> dans le fichier
       de configuration mime.types de votre mandataire. La ligne suivante
-      peut y remédier :</p>
+      peut y rem&#233;dier :</p>
 
       <div class="example"><pre>application/octet-stream   bin dms lha lzh exe class tgz taz</pre></div>
-    <p>Vous pouvez aussi définir par défaut tous les types de fichiers
+    <p>Vous pouvez aussi d&#233;finir par d&#233;faut tous les types de fichiers
     en tant que fichiers binaires :</p>
       <div class="example"><pre class="prettyprint lang-config">ForceType application/octet-stream</pre>
 </div>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="type" id="type">Comment puis-je forcer le téléchargement
+<h2><a name="type" id="type">Comment puis-je forcer le t&#233;l&#233;chargement
     FTP en mode ASCII du fichier <var>xxx</var> ?</a><a title="Lien permanent" href="#type" class="permalink">&para;</a></h2>
-      <p>Dans les rares siruations où vous devez télécharger un fichier
-      spécifique en utilisant la méthode de transfert FTP
-      <code>ASCII</code> (alors que le mode transfert par défaut est
+      <p>Dans les rares siruations o&#249; vous devez t&#233;l&#233;charger un fichier
+      sp&#233;cifique en utilisant la m&#233;thode de transfert FTP
+      <code>ASCII</code> (alors que le mode transfert par d&#233;faut est
       <code>binary</code>), vous pouvez modifier le mode de transfert de
-      <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> en suffixant la requête avec
+      <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> en suffixant la requ&#234;te avec
       <code>;type=a</code> pour forcer un transfert en mode ASCII (les
-      listings de répertoires FTP sont cependant quant à eux transmis en
+      listings de r&#233;pertoires FTP sont cependant quant &#224; eux transmis en
       mode ASCII).</p>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="ftpnonget" id="ftpnonget">Comment puis-je effectuer un
     chargement FTP ?</a><a title="Lien permanent" href="#ftpnonget" class="permalink">&para;</a></h2>
-    <p>Actuellement, seule la méthode GET est supportée pour FTP dans
+    <p>Actuellement, seule la m&#233;thode GET est support&#233;e pour FTP dans
     mod_proxy. Vous pouvez par contre utiliser le chargement HTTP (POST
     or PUT) via un mandataire Apache.</p>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="percent2fhck" id="percent2fhck">Comment puis-je accéder par FTP à
-    des fichiers situés en dehors de mon répertoire home ?</a><a title="Lien permanent" href="#percent2fhck" class="permalink">&para;</a></h2>
-      <p>Un URI FTP est considéré comme relatif au répertoire home de
-      l'utilisateur connecté. Hélas, vous ne pouvez pas utiliser /../
-      pour atteindre des répertoires de niveau supérieur, car les points
-      sont interprétés par le navigateur et ne sont donc pas vraiment
-      envoyés au serveur FTP. Pour traiter ce problème, une méthode
-      nommée <dfn>Squid %2f hack</dfn> a été implémentée dans le
-      mandataire FTP Apache ; cette solution est aussi utilisée par
+<h2><a name="percent2fhck" id="percent2fhck">Comment puis-je acc&#233;der par FTP &#224;
+    des fichiers situ&#233;s en dehors de mon r&#233;pertoire home ?</a><a title="Lien permanent" href="#percent2fhck" class="permalink">&para;</a></h2>
+      <p>Un URI FTP est consid&#233;r&#233; comme relatif au r&#233;pertoire home de
+      l'utilisateur connect&#233;. H&#233;las, vous ne pouvez pas utiliser /../
+      pour atteindre des r&#233;pertoires de niveau sup&#233;rieur, car les points
+      sont interpr&#233;t&#233;s par le navigateur et ne sont donc pas vraiment
+      envoy&#233;s au serveur FTP. Pour traiter ce probl&#232;me, une m&#233;thode
+      nomm&#233;e <dfn>Squid %2f hack</dfn> a &#233;t&#233; impl&#233;ment&#233;e dans le
+      mandataire FTP Apache ; cette solution est aussi utilis&#233;e par
       d'autres serveurs mandataires courants comme le <a href="http://www.squid-cache.org/">Cache mandataire Squid</a>. En
-      préfixant par <code>/%2f</code> le chemin de votre requête, vous
-      pouvez faire en sorte que le mandataire modifie le répertoire FTP
-      racine en <code>/</code> (au lieu du répertoire home). Par
+      pr&#233;fixant par <code>/%2f</code> le chemin de votre requ&#234;te, vous
+      pouvez faire en sorte que le mandataire modifie le r&#233;pertoire FTP
+      racine en <code>/</code> (au lieu du r&#233;pertoire home). Par
       exemple, pour extraire le fichier <code>/etc/motd</code>, vous
       pourriez utiliser l'URL :</p>
 
@@ -136,10 +136,10 @@
 <h2><a name="ftppass" id="ftppass">Comment puis-je dissimuler le mot de
     passe FTP apparaissant en clair dans la ligne d'URL de mon
     navigateur ?</a><a title="Lien permanent" href="#ftppass" class="permalink">&para;</a></h2>
-      <p>Apache utilise différentes stratégies pour effectuer une
-      connexion à un serveur FTP à l'aide d'un nom d'utilisateur et d'un
+      <p>Apache utilise diff&#233;rentes strat&#233;gies pour effectuer une
+      connexion &#224; un serveur FTP &#224; l'aide d'un nom d'utilisateur et d'un
       mot de passe. En l'absence de nom d'utilisateur et de mot de passe
-      dans l'URL, Apache tente une connexion anonyme auprès du serveur
+      dans l'URL, Apache tente une connexion anonyme aupr&#232;s du serveur
       FTP comme suit :</p>
 
       <div class="example"><p><code>
@@ -147,11 +147,11 @@
         mot de passe : apache_proxy@
       </code></p></div>
 
-      <p>Ceci fonctionne avec tous les serveurs FTP courants configurés
+      <p>Ceci fonctionne avec tous les serveurs FTP courants configur&#233;s
       pour accepter les connexions anonymes.</p>
 
-      <p>Pour une connexion personnalisée avec un nom d'utilisateur
-      spécifique, vous pouvez intégrer ce dernier dans l'URL comme suit
+      <p>Pour une connexion personnalis&#233;e avec un nom d'utilisateur
+      sp&#233;cifique, vous pouvez int&#233;grer ce dernier dans l'URL comme suit
       :</p>
 
       <div class="example"><p><code>
@@ -159,116 +159,116 @@
       </code></p></div>
 
       <p>Si le serveur FTP demande un mot de passe pour ce nom
-      d'utilisateur (ce qu'il est censé faire), Apache va renvoyer au
-      client une réponse <code>401</code> (Autorisation requise), ce qui
-      fera afficher au navigateur une boîte de dialogue utilisateur/mot
-      de passe. Une fois le mot de passe saisi, la connexion est tentée
-      à nouveau, et si elle réussit, la ressource demandée est
-      présentée. L'avantage de cette procédure réside dans le fait que
+      d'utilisateur (ce qu'il est cens&#233; faire), Apache va renvoyer au
+      client une r&#233;ponse <code>401</code> (Autorisation requise), ce qui
+      fera afficher au navigateur une bo&#238;te de dialogue utilisateur/mot
+      de passe. Une fois le mot de passe saisi, la connexion est tent&#233;e
+      &#224; nouveau, et si elle r&#233;ussit, la ressource demand&#233;e est
+      pr&#233;sent&#233;e. L'avantage de cette proc&#233;dure r&#233;side dans le fait que
       votre navigateur n'affiche pas le mot de passe en clair, ce qu'il
-      aurait fait si vous aviez utilisé l'URL :</p>
+      aurait fait si vous aviez utilis&#233; l'URL :</p>
 
       <div class="example"><p><code>
         ftp://<var>nom-utilisateur</var>:<var>mot-de-passe</var>@<var>serveur</var>/mon-fichier
       </code></p></div>
 
       <div class="note"><h3>Note</h3>
-        <p>Le mot de passe transmis de cette manière n'est pas chiffré
-	lorsqu'il est envoyé. Il transite entre votre navigateur et le
-	serveur mandataire Apache sous la forme d'une chaîne de texte en
-	clair codée en base64, et entre le mandataire Apache et le
-	serveur FTP en texte pur. Vous devez par conséquent réfléchir à
-	deux fois avant d'accéder à votre serveur FTP via HTTP (et d'une
-	manière générale avant d'accéder à vos fichiers personnels via
-	FTP !) sur des canaux non sécurisés, car des oreilles
-	indiscrètes pourraient intercepter votre mot de passe au cours
+        <p>Le mot de passe transmis de cette mani&#232;re n'est pas chiffr&#233;
+	lorsqu'il est envoy&#233;. Il transite entre votre navigateur et le
+	serveur mandataire Apache sous la forme d'une cha&#238;ne de texte en
+	clair cod&#233;e en base64, et entre le mandataire Apache et le
+	serveur FTP en texte pur. Vous devez par cons&#233;quent r&#233;fl&#233;chir &#224;
+	deux fois avant d'acc&#233;der &#224; votre serveur FTP via HTTP (et d'une
+	mani&#232;re g&#233;n&#233;rale avant d'acc&#233;der &#224; vos fichiers personnels via
+	FTP !) sur des canaux non s&#233;curis&#233;s, car des oreilles
+	indiscr&#232;tes pourraient intercepter votre mot de passe au cours
 	de son transfert.</p>
       </div>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="wildcard" id="wildcard">Pourquoi reçois-je un listing de
-    fichiers alors que j'ai demandé le téléchargement d'un fichier
+<h2><a name="wildcard" id="wildcard">Pourquoi re&#231;ois-je un listing de
+    fichiers alors que j'ai demand&#233; le t&#233;l&#233;chargement d'un fichier
     ?</a><a title="Lien permanent" href="#wildcard" class="permalink">&para;</a></h2>
-      <p>Apache examine l'URL de la requête afin de permettre la
-      navigation dans les répertoires d'un serveur FTP ainsi que le
-      téléchargement de fichiers. Si elle ressemble à un répertoire, ou
-      contient des caractères génériques ("*?[{~"), alors Apache
-      considère que c'est un listing qui est demandé, et non un
-      téléchargement.</p>
-      <p>Vous pouvez désactiver le traitement spécial des noms contenant
-      des caractères génériques. Voir à cet effet la directive
+      <p>Apache examine l'URL de la requ&#234;te afin de permettre la
+      navigation dans les r&#233;pertoires d'un serveur FTP ainsi que le
+      t&#233;l&#233;chargement de fichiers. Si elle ressemble &#224; un r&#233;pertoire, ou
+      contient des caract&#232;res g&#233;n&#233;riques ("*?[{~"), alors Apache
+      consid&#232;re que c'est un listing qui est demand&#233;, et non un
+      t&#233;l&#233;chargement.</p>
+      <p>Vous pouvez d&#233;sactiver le traitement sp&#233;cial des noms contenant
+      des caract&#232;res g&#233;n&#233;riques. Voir &#224; cet effet la directive
       <code class="directive">ProxyFtpListOnWildcard</code>.
       </p>
     </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="proxyftpdircharset" id="proxyftpdircharset">Directive</a> <a name="ProxyFtpDirCharset" id="ProxyFtpDirCharset">ProxyFtpDirCharset</a><a title="Lien permanent" href="#proxyftpdircharset" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le jeu de caractères des listings FTP
-mandatés</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyFtpDirCharset <var>jeu-caractères</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ProxyFtpDirCharset ISO-8859-1</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&#233;finit le jeu de caract&#232;res des listings FTP
+mandat&#233;s</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyFtpDirCharset <var>jeu-caract&#232;res</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>ProxyFtpDirCharset ISO-8859-1</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_ftp</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Déplacé
-depuis <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> à partir de la version 2.3.5 d'Apache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>D&#233;plac&#233;
+depuis <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> &#224; partir de la version 2.3.5 d'Apache</td></tr>
 </table>
     <p>La directive <code class="directive">ProxyFtpDirCharset</code> permet de
-    définir le jeu de caractères à utiliser pour les listings FTP en
-    HTML générés par <code class="module"><a href="../mod/mod_proxy_ftp.html">mod_proxy_ftp</a></code>.</p>
+    d&#233;finir le jeu de caract&#232;res &#224; utiliser pour les listings FTP en
+    HTML g&#233;n&#233;r&#233;s par <code class="module"><a href="../mod/mod_proxy_ftp.html">mod_proxy_ftp</a></code>.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="proxyftpescapewildcards" id="proxyftpescapewildcards">Directive</a> <a name="ProxyFtpEscapeWildcards" id="ProxyFtpEscapeWildcards">ProxyFtpEscapeWildcards</a><a title="Lien permanent" href="#proxyftpescapewildcards" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Les caractères génériques dans les noms de fichiers
-doivent-ils être échappés lorsqu'ils sont envoyés au serveur FTP ?</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Les caract&#232;res g&#233;n&#233;riques dans les noms de fichiers
+doivent-ils &#234;tre &#233;chapp&#233;s lorsqu'ils sont envoy&#233;s au serveur FTP ?</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyFtpEscapeWildcards [on|off]</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>on</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>on</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_ftp</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.3 du serveur HTTP Apache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible depuis la version 2.3.3 du serveur HTTP Apache</td></tr>
 </table>
   <p>La directive <code class="directive">ProxyFtpEscapeWildcards</code> permet
-  de déterminer si les caractères génériques ("*?[{~") que contiennent
-  les noms de fichiers demandés doivent être échappés pas un slash
-  inversé avant d'être envoyés au serveur FTP. Il s'agit du comportement
-  par défaut ; cependant, de nombreux serveurs FTP n'ont aucune
-  connaissance de la notion d'échappement, et tentent de servir le
-  fichier demandé sous sa forme littérale, en incluant les slashes
-  inversés dans son nom.</p>
-    <p>Définissez cette directive à "off" pour permettre le
-    téléchargement de fichiers dont les noms contiennent des caractères
-    génériques depuis des serveurs FTP qui ne connaissent pas
-    l'échappement des caractères génériques.</p>
+  de d&#233;terminer si les caract&#232;res g&#233;n&#233;riques ("*?[{~") que contiennent
+  les noms de fichiers demand&#233;s doivent &#234;tre &#233;chapp&#233;s pas un slash
+  invers&#233; avant d'&#234;tre envoy&#233;s au serveur FTP. Il s'agit du comportement
+  par d&#233;faut ; cependant, de nombreux serveurs FTP n'ont aucune
+  connaissance de la notion d'&#233;chappement, et tentent de servir le
+  fichier demand&#233; sous sa forme litt&#233;rale, en incluant les slashes
+  invers&#233;s dans son nom.</p>
+    <p>D&#233;finissez cette directive &#224; "off" pour permettre le
+    t&#233;l&#233;chargement de fichiers dont les noms contiennent des caract&#232;res
+    g&#233;n&#233;riques depuis des serveurs FTP qui ne connaissent pas
+    l'&#233;chappement des caract&#232;res g&#233;n&#233;riques.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="proxyftplistonwildcard" id="proxyftplistonwildcard">Directive</a> <a name="ProxyFtpListOnWildcard" id="ProxyFtpListOnWildcard">ProxyFtpListOnWildcard</a><a title="Lien permanent" href="#proxyftplistonwildcard" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Les caractères génériques dans les noms de fichiers
-demandés doivent-ils déclencher l'affichage d'un listing ?</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Les caract&#232;res g&#233;n&#233;riques dans les noms de fichiers
+demand&#233;s doivent-ils d&#233;clencher l'affichage d'un listing ?</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyFtpListOnWildcard [on|off]</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>on</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>on</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_ftp</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.3 du serveur HTTP Apache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible depuis la version 2.3.3 du serveur HTTP Apache</td></tr>
 </table>
   <p>La directive <code class="directive">ProxyFtpListOnWildcard</code> permet
-  de déterminer si les caractères génériques ("*?[{~") que contiennent
-  les noms de fichiers demandés provoquent l'affichage d'un listing de
-  fichiers par <code class="module"><a href="../mod/mod_proxy_ftp.html">mod_proxy_ftp</a></code> au lieu de télécharger un
-  fichier. Il s'agit de leur comportement par défaut (valeur on).
-  Définissez cette directive à "off" pour permettre le téléchargement de
-  fichiers même si leur nom contient des caractères génériques.</p>
+  de d&#233;terminer si les caract&#232;res g&#233;n&#233;riques ("*?[{~") que contiennent
+  les noms de fichiers demand&#233;s provoquent l'affichage d'un listing de
+  fichiers par <code class="module"><a href="../mod/mod_proxy_ftp.html">mod_proxy_ftp</a></code> au lieu de t&#233;l&#233;charger un
+  fichier. Il s'agit de leur comportement par d&#233;faut (valeur on).
+  D&#233;finissez cette directive &#224; "off" pour permettre le t&#233;l&#233;chargement de
+  fichiers m&#234;me si leur nom contient des caract&#232;res g&#233;n&#233;riques.</p>
 
 </div>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_proxy_ftp.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_proxy_ftp.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_proxy_ftp.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -287,7 +287,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_proxy_ftp.
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autoris&#233; sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

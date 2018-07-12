@@ -27,19 +27,19 @@
 <div id="preamble"><h1>Module Apache mod_ident</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_ident.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_ident.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_ident.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_ident.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_ident.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Recherche d'identité conformément à la RFC
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Recherche d'identit&#233; conform&#233;ment &#224; la RFC
 1413</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>ident_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_ident.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&#160;de&#160;Module:</a></th><td>ident_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier&#160;Source:</a></th><td>mod_ident.c</td></tr></table>
 <h3>Sommaire</h3>
 
-    <p>Ce module interroge un démon compatible <a href="http://www.ietf.org/rfc/rfc1413.txt">RFC 1413</a> sur un
-    serveur distant afin de déterminer le propriétaire d'une
+    <p>Ce module interroge un d&#233;mon compatible <a href="http://www.ietf.org/rfc/rfc1413.txt">RFC 1413</a> sur un
+    serveur distant afin de d&#233;terminer le propri&#233;taire d'une
     connexion.</p>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
@@ -47,7 +47,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#identitycheck">IdentityCheck</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#identitychecktimeout">IdentityCheckTimeout</a></li>
 </ul>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_ident">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_ident">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_ident">Probl&#232;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_ident">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code></li>
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
@@ -55,59 +55,59 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="identitycheck" id="identitycheck">Directive</a> <a name="IdentityCheck" id="IdentityCheck">IdentityCheck</a><a title="Lien permanent" href="#identitycheck" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active la journalisation de l'identité RFC 1413 de
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active la journalisation de l'identit&#233; RFC 1413 de
 l'utilisateur distant</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>IdentityCheck On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>IdentityCheck Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>IdentityCheck Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ident</td></tr>
 </table>
     <p>Cette directive permet d'activer la journalisation compatible <a href="http://www.ietf.org/rfc/rfc1413.txt">RFC 1413</a> du nom de
     l'utilisateur distant pour chaque connexion, si la machine du client
-    exécute identd ou un démon similaire. Cette information est
-    enregistrée dans le journal des accès en utilisant la <a href="mod_log_config.html#formats">chaîne de formatage</a>
+    ex&#233;cute identd ou un d&#233;mon similaire. Cette information est
+    enregistr&#233;e dans le journal des acc&#232;s en utilisant la <a href="mod_log_config.html#formats">cha&#238;ne de formatage</a>
     <code>%...l</code>.</p>
 
     <div class="note">
       Cette information ne doit pas faire l'objet d'une confiance
-      absolue, et elle ne doit être utilisée que dans le cadre d'un
-      traçage grossier.
+      absolue, et elle ne doit &#234;tre utilis&#233;e que dans le cadre d'un
+      tra&#231;age grossier.
     </div>
 
-    <p>Notez que de sérieux problèmes de délais peuvent survenir lors
-    des accès à votre serveur, car chaque requête nécessite l'exécution
+    <p>Notez que de s&#233;rieux probl&#232;mes de d&#233;lais peuvent survenir lors
+    des acc&#232;s &#224; votre serveur, car chaque requ&#234;te n&#233;cessite l'ex&#233;cution
     d'un de ces processus de recherche. Lorsque des pare-feu ou des
-    serveurs mandataires sont impliqués, chaque recherche est
-    susceptible d'échouer et ajouter un temps de latence conformément
-    à la directive <code class="directive"><a href="#identitychecktimeout">IdentityCheckTimeout</a></code>. En général, ces
-    recherches ne se révèlent donc pas très utiles sur des serveurs
+    serveurs mandataires sont impliqu&#233;s, chaque recherche est
+    susceptible d'&#233;chouer et ajouter un temps de latence conform&#233;ment
+    &#224; la directive <code class="directive"><a href="#identitychecktimeout">IdentityCheckTimeout</a></code>. En g&#233;n&#233;ral, ces
+    recherches ne se r&#233;v&#232;lent donc pas tr&#232;s utiles sur des serveurs
     publics accessibles depuis l'Internet.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="identitychecktimeout" id="identitychecktimeout">Directive</a> <a name="IdentityCheckTimeout" id="IdentityCheckTimeout">IdentityCheckTimeout</a><a title="Lien permanent" href="#identitychecktimeout" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Détermine le délai d'attente pour les requêtes
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&#233;termine le d&#233;lai d'attente pour les requ&#234;tes
 ident</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>IdentityCheckTimeout <var>secondes</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>IdentityCheckTimeout 30</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>IdentityCheckTimeout 30</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ident</td></tr>
 </table>
-    <p>Cette directive permet de spécifier le délai d'attente d'une
-    requête ident. Une valeur par défaut de 30 secondes est recommandée
+    <p>Cette directive permet de sp&#233;cifier le d&#233;lai d'attente d'une
+    requ&#234;te ident. Une valeur par d&#233;faut de 30 secondes est recommand&#233;e
     par la <a href="http://www.ietf.org/rfc/rfc1413.txt">RFC 1413</a>,
-    principalement pour prévenir les problèmes qui pourraient être
-    induits par la charge du réseau. Vous pouvez cependant ajuster la
-    valeur de ce délai en fonction du débit de votre réseau local.</p>
+    principalement pour pr&#233;venir les probl&#232;mes qui pourraient &#234;tre
+    induits par la charge du r&#233;seau. Vous pouvez cependant ajuster la
+    valeur de ce d&#233;lai en fonction du d&#233;bit de votre r&#233;seau local.</p>
 
 </div>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_ident.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_ident.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_ident.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_ident.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_ident.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
@@ -128,7 +128,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_ident.html
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autoris&#233; sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

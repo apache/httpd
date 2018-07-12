@@ -27,214 +27,214 @@
 <div id="preamble"><h1>Module Apache mod_unique_id</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_unique_id.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_unique_id.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_unique_id.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_unique_id.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_unique_id.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fournit une variable d'environnement contenant un
-identifiant unique pour chaque requête</td></tr>
+identifiant unique pour chaque requ&#234;te</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>unique_id_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_unique_id.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&#160;de&#160;Module:</a></th><td>unique_id_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier&#160;Source:</a></th><td>mod_unique_id.c</td></tr></table>
 <h3>Sommaire</h3>
 
 
-    <p>Ce module fournit un identifiant dont l'unicité est garantie
-    parmi "toutes" les requêtes sous des conditions très précises.
+    <p>Ce module fournit un identifiant dont l'unicit&#233; est garantie
+    parmi "toutes" les requ&#234;tes sous des conditions tr&#232;s pr&#233;cises.
     L'identifiant unique le sera aussi parmi plusieurs machines
-    appartenant à un cluster correctement configuré. L'identifiant est
-    affecté à la variable d'environnement <code>UNIQUE_ID</code> pour
-    chaque requête. Les identifiants uniques sont utiles pour diverses
-    raisons dont la nature se situe au delà de la portée de ce
+    appartenant &#224; un cluster correctement configur&#233;. L'identifiant est
+    affect&#233; &#224; la variable d'environnement <code>UNIQUE_ID</code> pour
+    chaque requ&#234;te. Les identifiants uniques sont utiles pour diverses
+    raisons dont la nature se situe au del&#224; de la port&#233;e de ce
     document.</p>
 </div>
 <div id="quickview"><h3>Sujets</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#theory">Théorie</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#theory">Th&#233;orie</a></li>
 </ul><h3 class="directives">Directives</h3>
 <p>Ce module ne fournit aucune directive.</p>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_unique_id">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_unique_id">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_unique_id">Probl&#232;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_unique_id">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="theory" id="theory">Théorie</a><a title="Lien permanent" href="#theory" class="permalink">&para;</a></h2>
+<h2><a name="theory" id="theory">Th&#233;orie</a><a title="Lien permanent" href="#theory" class="permalink">&para;</a></h2>
     
 
-    <p>Tout d'abord un bref rappel de la manière dont le serveur Apache
-    fonctionne sous Unix (cette fonctionnalité n'étant actuellement pas
-    supportée sous Windows NT). Sous Unix, Apache crée plusieurs
-    processus enfants, ces derniers traitant les requêtes une par une.
-    Chaque processus enfant peut traiter plusieurs requêtes pendant sa
-    durée de vie. Dans le cadre de cette discussion, nous supposerons
-    que les différents processus enfants ne s'échangent pas de données
-    entre eux. Nous nous référerons aux processus enfants sous le nom de
+    <p>Tout d'abord un bref rappel de la mani&#232;re dont le serveur Apache
+    fonctionne sous Unix (cette fonctionnalit&#233; n'&#233;tant actuellement pas
+    support&#233;e sous Windows NT). Sous Unix, Apache cr&#233;e plusieurs
+    processus enfants, ces derniers traitant les requ&#234;tes une par une.
+    Chaque processus enfant peut traiter plusieurs requ&#234;tes pendant sa
+    dur&#233;e de vie. Dans le cadre de cette discussion, nous supposerons
+    que les diff&#233;rents processus enfants ne s'&#233;changent pas de donn&#233;es
+    entre eux. Nous nous r&#233;f&#233;rerons aux processus enfants sous le nom de
     <dfn>processus httpd</dfn>.</p>
 
-    <p>Votre site web est réparti entre une ou plusieurs machines dont
-    vous êtes l'administrateur, et que nous nommerons cluster de
-    serveurs. Chaque serveur peut exécuter plusieurs instances d'Apache.
-    L'ensemble de ces dernières sera considéré comme "l'Univers", et
-    sous certaines hypothèses, nous montrerons qu'il est possible dans
-    cet univers, de générer des identifiants uniques pour chaque
-    requête, sans pour autant nécessiter une communication importante
-    entre les différents serveurs du cluster.</p>
+    <p>Votre site web est r&#233;parti entre une ou plusieurs machines dont
+    vous &#234;tes l'administrateur, et que nous nommerons cluster de
+    serveurs. Chaque serveur peut ex&#233;cuter plusieurs instances d'Apache.
+    L'ensemble de ces derni&#232;res sera consid&#233;r&#233; comme "l'Univers", et
+    sous certaines hypoth&#232;ses, nous montrerons qu'il est possible dans
+    cet univers, de g&#233;n&#233;rer des identifiants uniques pour chaque
+    requ&#234;te, sans pour autant n&#233;cessiter une communication importante
+    entre les diff&#233;rents serveurs du cluster.</p>
 
     <p>Les machines de votre cluster doivent satisfaire ces conditions
-    (même si le cluster ne comporte qu'une machine, vous devez
+    (m&#234;me si le cluster ne comporte qu'une machine, vous devez
     synchroniser son horloge avec NTP) :</p>
 
     <ul>
-      <li>Les temps des machines sont synchronisés via NTP ou tout autre
-      protocole de synchronisation du temps en réseau.</li>
+      <li>Les temps des machines sont synchronis&#233;s via NTP ou tout autre
+      protocole de synchronisation du temps en r&#233;seau.</li>
 
-      <li>Les nom d'hôtes des machines sont tous différents, de façon à
-      ce que le module puisse recevoir une adresse IP différente pour
+      <li>Les nom d'h&#244;tes des machines sont tous diff&#233;rents, de fa&#231;on &#224;
+      ce que le module puisse recevoir une adresse IP diff&#233;rente pour
       chaque machine du cluster en effectuant une recherche sur le nom
-      d'hôte.</li>
+      d'h&#244;te.</li>
     </ul>
 
-    <p>Au vu des caractéristiques actuelles du système d'exploitation,
-    nous supposerons que les pids (identifiants processus) sont codés
-    sur 32 bits. Si le système d'exploitation utilise plus de 32 bits
-    pour un pid, la correction est triviale mais doit être effectuée
+    <p>Au vu des caract&#233;ristiques actuelles du syst&#232;me d'exploitation,
+    nous supposerons que les pids (identifiants processus) sont cod&#233;s
+    sur 32 bits. Si le syst&#232;me d'exploitation utilise plus de 32 bits
+    pour un pid, la correction est triviale mais doit &#234;tre effectu&#233;e
     dans le code.</p>
 
-    <p>Ces hypothèses posées, à un instant donné, nous pouvons
+    <p>Ces hypoth&#232;ses pos&#233;es, &#224; un instant donn&#233;, nous pouvons
     distinguer tout processus httpd sur toute machine du cluster de tous
     les autres processus httpd. Pour ce faire, il suffit d'utiliser
     l'adresse IP de la machine et le pid du processus httpd. Un
-    processus httpd peut traiter plusieurs requêtes simultanément si
-    vous utilisez un module MPM multi-threadé. Pour identifier les
+    processus httpd peut traiter plusieurs requ&#234;tes simultan&#233;ment si
+    vous utilisez un module MPM multi-thread&#233;. Pour identifier les
     threads, Apache httpd utilise en interne un index de threads. Ainsi,
-    afin de générer des identifiants uniques pour chaque requête, il
+    afin de g&#233;n&#233;rer des identifiants uniques pour chaque requ&#234;te, il
     suffit d'effectuer une distinction en fonction du temps.</p>
 
-    <p>Pour déterminer le temps, nous utiliserons un repère de temps
-    Unix (les secondes écoulées depuis le 1er janvier 1970 UTC), et un
-    compteur 16 bits. La précision du repère de temps n'étant que d'une
-    seconde, le compteur va représenter 65536 valeurs par seconde. Le
-    quadruplet <em>(adresse IP, pid, repère de temps, compteur)</em> est
-    en mesure de distinguer 65536 requêtes par seconde par processus
-    httpd. Il peut cependant arriver que le même pid soit réutilisé au
-    cours du temps, et le compteur est là pour pallier cet
-    inconvénient.</p>
+    <p>Pour d&#233;terminer le temps, nous utiliserons un rep&#232;re de temps
+    Unix (les secondes &#233;coul&#233;es depuis le 1er janvier 1970 UTC), et un
+    compteur 16 bits. La pr&#233;cision du rep&#232;re de temps n'&#233;tant que d'une
+    seconde, le compteur va repr&#233;senter 65536 valeurs par seconde. Le
+    quadruplet <em>(adresse IP, pid, rep&#232;re de temps, compteur)</em> est
+    en mesure de distinguer 65536 requ&#234;tes par seconde par processus
+    httpd. Il peut cependant arriver que le m&#234;me pid soit r&#233;utilis&#233; au
+    cours du temps, et le compteur est l&#224; pour pallier cet
+    inconv&#233;nient.</p>
 
-    <p>Lorsqu'un processus enfant httpd est créé, le compteur est
-    initialisé avec (nombre de microsecondes actuel divisé par 10)
-    modulo 65536 (cette formule a été choisie pour éliminer certains
-    problème de variance avec les bits de poids faibles du compteur de
-    microsecondes sur certains systèmes). Lorsqu'un identifiant unique
-    est généré, le repère de temps utilisé est le moment où la requête
-    arrive sur le serveur web. Le compteur est incrémenté à chaque
-    création d'identifiant (et peut repasser à 0 lorsqu'il a atteint sa
+    <p>Lorsqu'un processus enfant httpd est cr&#233;&#233;, le compteur est
+    initialis&#233; avec (nombre de microsecondes actuel divis&#233; par 10)
+    modulo 65536 (cette formule a &#233;t&#233; choisie pour &#233;liminer certains
+    probl&#232;me de variance avec les bits de poids faibles du compteur de
+    microsecondes sur certains syst&#232;mes). Lorsqu'un identifiant unique
+    est g&#233;n&#233;r&#233;, le rep&#232;re de temps utilis&#233; est le moment o&#249; la requ&#234;te
+    arrive sur le serveur web. Le compteur est incr&#233;ment&#233; &#224; chaque
+    cr&#233;ation d'identifiant (et peut repasser &#224; 0 lorsqu'il a atteint sa
     valeur maximale).</p>
 
-    <p>Le noyau génère un pid pour chaque processus lors de sa création,
-    et le compteur de pid est réinitialisé à une certaine valeur
-    lorsqu'il a atteint sa valeur maximale (les pid sont codés sur 16
-    bits sous de nombreux Unixes, mais les systèmes les plus récents les
-    ont étendus à 32 bits). La même valeur de pid pourra donc être
-    réutilisée au cours du temps. Cependant, tant qu'elle n'est pas
-    réutilisée dans la même seconde, elle ne remet pas en cause
-    l'unicité de notre quadruplet. Nous supposerons donc que le système
-    ne créera pas plus de 65536 processus en une seconde (ce nombre peut
-    être de 32768 sous certains Unixes, mais même dans ce cas, on est en
-    général loin de cette situation).</p>
+    <p>Le noyau g&#233;n&#232;re un pid pour chaque processus lors de sa cr&#233;ation,
+    et le compteur de pid est r&#233;initialis&#233; &#224; une certaine valeur
+    lorsqu'il a atteint sa valeur maximale (les pid sont cod&#233;s sur 16
+    bits sous de nombreux Unixes, mais les syst&#232;mes les plus r&#233;cents les
+    ont &#233;tendus &#224; 32 bits). La m&#234;me valeur de pid pourra donc &#234;tre
+    r&#233;utilis&#233;e au cours du temps. Cependant, tant qu'elle n'est pas
+    r&#233;utilis&#233;e dans la m&#234;me seconde, elle ne remet pas en cause
+    l'unicit&#233; de notre quadruplet. Nous supposerons donc que le syst&#232;me
+    ne cr&#233;era pas plus de 65536 processus en une seconde (ce nombre peut
+    &#234;tre de 32768 sous certains Unixes, mais m&#234;me dans ce cas, on est en
+    g&#233;n&#233;ral loin de cette situation).</p>
 
-    <p>Il est possible que le temps se répète pour une raison
+    <p>Il est possible que le temps se r&#233;p&#232;te pour une raison
     quelconque.
-    Supposons par exemple que l'horloge système soit retardée et repasse
-    par un temps passé (ou bien, comme elle avançait, elle a été remise
-    à l'heure, et elle repasse par un temps futur). Dans ce cas, il peut
-    être facilement démontré que le couple pid/repère de temps peut être
-    réutilisé. Le choix de la formule d'initialisation du compteur a
-    été effectué dans l'intention de pallier ce problème. Notez qu'un
-    nombre vraiment aléatoire serait souhaitable pour initialiser le
+    Supposons par exemple que l'horloge syst&#232;me soit retard&#233;e et repasse
+    par un temps pass&#233; (ou bien, comme elle avan&#231;ait, elle a &#233;t&#233; remise
+    &#224; l'heure, et elle repasse par un temps futur). Dans ce cas, il peut
+    &#234;tre facilement d&#233;montr&#233; que le couple pid/rep&#232;re de temps peut &#234;tre
+    r&#233;utilis&#233;. Le choix de la formule d'initialisation du compteur a
+    &#233;t&#233; effectu&#233; dans l'intention de pallier ce probl&#232;me. Notez qu'un
+    nombre vraiment al&#233;atoire serait souhaitable pour initialiser le
     compteur, mais il n'existe pas de tel nombre directement lisible sur
-    la plupart des systèmes (c'est à dire que vous ne pouvez pas
-    utiliser rand() car vous devez déclencher le générateur avec une
-    valeur unique, et vous ne pouvez pas utiliser le temps à cet effet
-    car celui-ci , au moins à la seconde près, s'est répété). Il ne
-    s'agit donc pas d'une défense parfaite.</p>
+    la plupart des syst&#232;mes (c'est &#224; dire que vous ne pouvez pas
+    utiliser rand() car vous devez d&#233;clencher le g&#233;n&#233;rateur avec une
+    valeur unique, et vous ne pouvez pas utiliser le temps &#224; cet effet
+    car celui-ci , au moins &#224; la seconde pr&#232;s, s'est r&#233;p&#233;t&#233;). Il ne
+    s'agit donc pas d'une d&#233;fense parfaite.</p>
 
-    <p>Même si elle n'est pas parfaite, quel est le degré d'efficacité
-    de cette défense ? Supposons
-    qu'une de vos machines serve au plus 500 requêtes par seconde (ce
-    qui constitue une limite supérieure très raisonnable au moment où ce
-    document est écrit, car les systèmes ne se contentent en général pas
-    de débiter des fichiers statiques). Pour y parvenir, un certain nombre
-    de processus enfants sera nécessaire, qui dépendra du nombre de
-    clients simultanés présents. Mais soyons pessimiste et supposons
-    qu'un seul processus enfant soit capable de servir 500 requêtes par
+    <p>M&#234;me si elle n'est pas parfaite, quel est le degr&#233; d'efficacit&#233;
+    de cette d&#233;fense ? Supposons
+    qu'une de vos machines serve au plus 500 requ&#234;tes par seconde (ce
+    qui constitue une limite sup&#233;rieure tr&#232;s raisonnable au moment o&#249; ce
+    document est &#233;crit, car les syst&#232;mes ne se contentent en g&#233;n&#233;ral pas
+    de d&#233;biter des fichiers statiques). Pour y parvenir, un certain nombre
+    de processus enfants sera n&#233;cessaire, qui d&#233;pendra du nombre de
+    clients simultan&#233;s pr&#233;sents. Mais soyons pessimiste et supposons
+    qu'un seul processus enfant soit capable de servir 500 requ&#234;tes par
     secondes.
-    Il existe 1000 valeurs de démarrage possibles du compteur pour
-    lesquelles deux séquences de 500 requêtes puissent se recouvrir. Il
-    y a donc 1,5% de chance que le processus enfant répète une valeur de
-    compteur si le temps se répète (avec une résolution d'une seconde),
-    et l'unicité sera alors remise en cause. C'est cependant un exemple
-    très pessimiste, et avec les valeurs du monde réel, il y a bien
+    Il existe 1000 valeurs de d&#233;marrage possibles du compteur pour
+    lesquelles deux s&#233;quences de 500 requ&#234;tes puissent se recouvrir. Il
+    y a donc 1,5% de chance que le processus enfant r&#233;p&#232;te une valeur de
+    compteur si le temps se r&#233;p&#232;te (avec une r&#233;solution d'une seconde),
+    et l'unicit&#233; sera alors remise en cause. C'est cependant un exemple
+    tr&#232;s pessimiste, et avec les valeurs du monde r&#233;el, il y a bien
     moins de chances que cela ne se produise. Si vous estimez que ceci a
-    tout de même quelque chances de se produire sur votre système, vous
-    pouvez migrer vers un compteur à 32 bits (en modifiant le code).</p>
+    tout de m&#234;me quelque chances de se produire sur votre syst&#232;me, vous
+    pouvez migrer vers un compteur &#224; 32 bits (en modifiant le code).</p>
 
     <p>On pourrait supposer que ceci a plus de chance de se produire
-    lors du passage à l'heure d'hiver où l'horloge est "retardée". Cela
-    ne constitue cependant pas un problème car les temps pris en compte
+    lors du passage &#224; l'heure d'hiver o&#249; l'horloge est "retard&#233;e". Cela
+    ne constitue cependant pas un probl&#232;me car les temps pris en compte
     ici sont des temps UTC, qui vont "toujours" de l'avant. Notez que
-    les Unixes à base de processeur x86 peuvent nécessiter une
-    configuration particulière pour que ceci soit vrai -- il doivent
-    être configurés pour assumer que l'horloge système est en UTC et
-    compenser de manière appropriée. Mais même dans ce cas, si vous
-    utilisez NTP, votre temps UTC sera correct peu après le
-    redémarrage.</p>
+    les Unixes &#224; base de processeur x86 peuvent n&#233;cessiter une
+    configuration particuli&#232;re pour que ceci soit vrai -- il doivent
+    &#234;tre configur&#233;s pour assumer que l'horloge syst&#232;me est en UTC et
+    compenser de mani&#232;re appropri&#233;e. Mais m&#234;me dans ce cas, si vous
+    utilisez NTP, votre temps UTC sera correct peu apr&#232;s le
+    red&#233;marrage.</p>
 
     
     <p>La variable d'environnement <code>UNIQUE_ID</code> est construite
     par codage du quadruplet de 144 bits (adresse IP sur 32 bits, pid
-    sur 32 bits, repère de temps sur 32 bits, compteur 16 bits et index
+    sur 32 bits, rep&#232;re de temps sur 32 bits, compteur 16 bits et index
     de threads sur 32 bits) en
-    utilisant l'alphabet <code>[A-Za-z0-9@-]</code> d'une manière
-    similaire à celle du codage MIME base64, et sa valeur se présente
-    sous la forme d'une chaîne de 24 caractères. L'alphabet MIME base64
-    est en fait <code>[A-Za-z0-9+/]</code> ; cependant, les caractères
-    <code>+</code> et <code>/</code> nécessitent un codage particulier
+    utilisant l'alphabet <code>[A-Za-z0-9@-]</code> d'une mani&#232;re
+    similaire &#224; celle du codage MIME base64, et sa valeur se pr&#233;sente
+    sous la forme d'une cha&#238;ne de 24 caract&#232;res. L'alphabet MIME base64
+    est en fait <code>[A-Za-z0-9+/]</code> ; cependant, les caract&#232;res
+    <code>+</code> et <code>/</code> n&#233;cessitent un codage particulier
     dans les URLs, ce qui rend leur utilisation peu commode. Toutes les
-    valeurs sont codées dans l'ordre des octets d'une adresse réseau de
-    façon à ce
-    que le codage soit comparable entre des architectures où l'ordre des
-    octets est différent. L'ordre réel de codage est : repère de temps,
-    adresse IP, pid, compteur. Cet ordre de codage possède un but
-    précis, mais il faut souligner que les applications n'ont aucun
-    intérêt à entrer dans les détails de ce codage. Les applications
+    valeurs sont cod&#233;es dans l'ordre des octets d'une adresse r&#233;seau de
+    fa&#231;on &#224; ce
+    que le codage soit comparable entre des architectures o&#249; l'ordre des
+    octets est diff&#233;rent. L'ordre r&#233;el de codage est : rep&#232;re de temps,
+    adresse IP, pid, compteur. Cet ordre de codage poss&#232;de un but
+    pr&#233;cis, mais il faut souligner que les applications n'ont aucun
+    int&#233;r&#234;t &#224; entrer dans les d&#233;tails de ce codage. Les applications
     doivent se contenter de traiter la variable <code>UNIQUE_ID</code>
-    comme un symbole opaque, qui peut être comparé avec d'autres
-    <code>UNIQUE_ID</code>s en ne testant que leur égalité.</p>
+    comme un symbole opaque, qui peut &#234;tre compar&#233; avec d'autres
+    <code>UNIQUE_ID</code>s en ne testant que leur &#233;galit&#233;.</p>
 
-    <p>L'ordre a été choisi de façon à ce qu'il soit possible de
-    modifier le codage dans le futur sans avoir à se préoccuper de
-    conflits éventuels avec une base de données de
+    <p>L'ordre a &#233;t&#233; choisi de fa&#231;on &#224; ce qu'il soit possible de
+    modifier le codage dans le futur sans avoir &#224; se pr&#233;occuper de
+    conflits &#233;ventuels avec une base de donn&#233;es de
     <code>UNIQUE_ID</code>s existante. Les nouveaux codages doivent
-    conserver le repère de temps comme premier élément, et pour le
-    reste, utiliser les même alphabet et longueur en bits. Comme les
-    repères de temps constituent essentiellement un séquence croissante,
-    il suffit que toutes les machines du cluster arrêtent de traiter
-    toute requête dans la même <em>seconde repère</em>, et n'utilisent
+    conserver le rep&#232;re de temps comme premier &#233;l&#233;ment, et pour le
+    reste, utiliser les m&#234;me alphabet et longueur en bits. Comme les
+    rep&#232;res de temps constituent essentiellement un s&#233;quence croissante,
+    il suffit que toutes les machines du cluster arr&#234;tent de traiter
+    toute requ&#234;te dans la m&#234;me <em>seconde rep&#232;re</em>, et n'utilisent
     alors plus l'ancien format de codage. Ensuite, elles peuvent
-    reprendre le traitement des requêtes en utilisant les nouveaux
+    reprendre le traitement des requ&#234;tes en utilisant les nouveaux
     codages.</p>
 
     <p>Nous pensons que ceci apporte une solution relativement portable
-    au problème. Les
-    identifiants générés possèdent une durée de vie pratiquement infinie
-    car les identifiants futurs pourront être allongés selon les
+    au probl&#232;me. Les
+    identifiants g&#233;n&#233;r&#233;s poss&#232;dent une dur&#233;e de vie pratiquement infinie
+    car les identifiants futurs pourront &#234;tre allong&#233;s selon les
     besoins. Pratiquement aucune communication n'est requise entre les
     machines du cluster (seule la synchronisation NTP est requise, ce
-    qui représente une charge très faible), et aucune communication
-    entre les processus httpd n'est nécessaire (la communication est
-    implicite et incluse dans le pid assigné par le noyau). Dans des
-    situations très spécifiques, l'identifiant peut être raccourci, mais
-    dans ce cas, d'avantage d'informations doivent être admises (par
+    qui repr&#233;sente une charge tr&#232;s faible), et aucune communication
+    entre les processus httpd n'est n&#233;cessaire (la communication est
+    implicite et incluse dans le pid assign&#233; par le noyau). Dans des
+    situations tr&#232;s sp&#233;cifiques, l'identifiant peut &#234;tre raccourci, mais
+    dans ce cas, d'avantage d'informations doivent &#234;tre admises (par
     exemple, les 32 bits de l'adresse IP sont excessifs pour la plupart
     des sites, mais il n'existe pas de valeur de remplacement portable
     plus courte).</p>
@@ -242,7 +242,7 @@ identifiant unique pour chaque requête</td></tr>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_unique_id.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_unique_id.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_unique_id.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_unique_id.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_unique_id.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
@@ -263,7 +263,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_unique_id.
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autoris&#233; sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

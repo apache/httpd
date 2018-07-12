@@ -27,37 +27,37 @@
 <div id="preamble"><h1>Module Apache mod_policy</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_policy.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_policy.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_policy.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Mise en conformité avec le protocole HTTP.</td></tr>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Mise en conformit&#233; avec le protocole HTTP.</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>policy_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_policy.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&#160;de&#160;Module:</a></th><td>policy_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier&#160;Source:</a></th><td>mod_policy.c</td></tr></table>
 <h3>Sommaire</h3>
 
-    <p>Le protocole HTTP recommande aux clients d'être "indulgents pour
-    ce qu'ils doivent accepter", et aux serveurs d'être "stricts pour ce
-    qu'ils envoient". Dans certains cas, il peut s'avérer difficile de
-    déterminer si un serveur ou une application a été mal configuré,
-    sert un contenu qui ne peut pas être mis en cache ou se comporte de
-    manière non optimale, car le client HTTP est souvent en mesure de
-    compenser les défauts du serveur. Ces problèmes peuvent induire une
-    consommation de bande passante excessive, ou même une interruption
-    de service suite à une charge trop importante du serveur.</p>
+    <p>Le protocole HTTP recommande aux clients d'&#234;tre "indulgents pour
+    ce qu'ils doivent accepter", et aux serveurs d'&#234;tre "stricts pour ce
+    qu'ils envoient". Dans certains cas, il peut s'av&#233;rer difficile de
+    d&#233;terminer si un serveur ou une application a &#233;t&#233; mal configur&#233;,
+    sert un contenu qui ne peut pas &#234;tre mis en cache ou se comporte de
+    mani&#232;re non optimale, car le client HTTP est souvent en mesure de
+    compenser les d&#233;fauts du serveur. Ces probl&#232;mes peuvent induire une
+    consommation de bande passante excessive, ou m&#234;me une interruption
+    de service suite &#224; une charge trop importante du serveur.</p>
 
     <p>Le module <code class="module"><a href="../mod/mod_policy.html">mod_policy</a></code> propose un jeu de filtres
-    qui permettent de tester la conformité du serveur au protocole HTTP.
-    Ces tests permettent à l'administrateur du serveur de journaliser
-    les violations, ou même de rejeter une réponse losque certaines
-    conditions spécifiées se réalisent.</p>
+    qui permettent de tester la conformit&#233; du serveur au protocole HTTP.
+    Ces tests permettent &#224; l'administrateur du serveur de journaliser
+    les violations, ou m&#234;me de rejeter une r&#233;ponse losque certaines
+    conditions sp&#233;cifi&#233;es se r&#233;alisent.</p>
 
-    <p>Il devient ainsi possible de définir des critères de conformité
-    minimale au protocole HTTP pour développer des applications
-    sans problème. En outre, il est possible de configurer un
-    mandataire inverse ou un cache pour qu'il se protège lui-même contre
-    les serveurs d'origine mal configurés ou les contenus indument
-    impossible à être mis en cache, ou un mécanisme qui détecte les
-    erreurs de configuration au sein du serveur lui-même.</p>
+    <p>Il devient ainsi possible de d&#233;finir des crit&#232;res de conformit&#233;
+    minimale au protocole HTTP pour d&#233;velopper des applications
+    sans probl&#232;me. En outre, il est possible de configurer un
+    mandataire inverse ou un cache pour qu'il se prot&#232;ge lui-m&#234;me contre
+    les serveurs d'origine mal configur&#233;s ou les contenus indument
+    impossible &#224; &#234;tre mis en cache, ou un m&#233;canisme qui d&#233;tecte les
+    erreurs de configuration au sein du serveur lui-m&#234;me.</p>
 
 </div>
 <div id="quickview"><h3>Sujets</h3>
@@ -88,32 +88,32 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#policyversion">PolicyVersion</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#policyversionurl">PolicyVersionURL</a></li>
 </ul>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_policy">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_policy">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_policy">Probl&#232;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_policy">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><a href="../filter.html">Les filtres</a></li>
-<li><a href="../compliance.html">Conformité au protocole HTTP</a></li>
+<li><a href="../compliance.html">Conformit&#233; au protocole HTTP</a></li>
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="actions" id="actions">Actions</a><a title="Lien permanent" href="#actions" class="permalink">&para;</a></h2>
     
 
-    <p>Si une règle est violée, il possible d'effectuer les actions
+    <p>Si une r&#232;gle est viol&#233;e, il possible d'effectuer les actions
     suivantes :</p>
 
     <dl>
     <dt><strong>ignore</strong></dt>
-    <dd>La vérification de la politique de conformité sera désactivée
-    pour l'espace d'URL spécifié, même si le filtre est présent.</dd>
+    <dd>La v&#233;rification de la politique de conformit&#233; sera d&#233;sactiv&#233;e
+    pour l'espace d'URL sp&#233;cifi&#233;, m&#234;me si le filtre est pr&#233;sent.</dd>
 
     <dt><strong>log</strong></dt>
-    <dd>La vérification de la politique de conformité sera exécutée, et
-    si une violation est détectée, un avertissement sera enregistré dans
-    le journal error_log du serveur, et un en-tête <code>Warning</code>
-    ajouté à la réponse en tant qu'information à destination du client.</dd>
+    <dd>La v&#233;rification de la politique de conformit&#233; sera ex&#233;cut&#233;e, et
+    si une violation est d&#233;tect&#233;e, un avertissement sera enregistr&#233; dans
+    le journal error_log du serveur, et un en-t&#234;te <code>Warning</code>
+    ajout&#233; &#224; la r&#233;ponse en tant qu'information &#224; destination du client.</dd>
 
     <dt><strong>enforce</strong></dt>
-    <dd>La vérification de la politique de conformité sera exécutée,
+    <dd>La v&#233;rification de la politique de conformit&#233; sera ex&#233;cut&#233;e,
 
     The policy check will be executed, and if a violation is detected
     an error will be logged to the server error_log, a
@@ -124,13 +124,13 @@
 
     </dl>
 
-    <p>Il est aussi possible de désactiver toutes les règles pour un
-    espace d'URL donné, si le besoin s'en fait sentir, via la directive
+    <p>Il est aussi possible de d&#233;sactiver toutes les r&#232;gles pour un
+    espace d'URL donn&#233;, si le besoin s'en fait sentir, via la directive
     <code class="directive"><a href="#policyfilter">PolicyFilter</a></code>.</p>
 
     <p>En outre, la directive <code class="directive"><a href="#policyenvironment">PolicyEnvironment</a></code> permet de
-    spécifier une variable d'environnement qui, si elle est définie, va
-    court-circuiter les règles ou diminuer leur portée.</p>
+    sp&#233;cifier une variable d'environnement qui, si elle est d&#233;finie, va
+    court-circuiter les r&#232;gles ou diminuer leur port&#233;e.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -141,66 +141,66 @@
 
     <dl>
     <dt><strong><a href="../compliance.html#policytype">POLICY_TYPE</a>
-    </strong>: Impose la validité des types de contenus</dt>
-    <dd>La requête peut être rejetée suite à la présence de types de contenus vides
-    ou syntaxiquement invalides. Les types peuvent aussi être restreints
-    à une liste pouvant contenir des caractères génériques ? et *.</dd>
+    </strong>: Impose la validit&#233; des types de contenus</dt>
+    <dd>La requ&#234;te peut &#234;tre rejet&#233;e suite &#224; la pr&#233;sence de types de contenus vides
+    ou syntaxiquement invalides. Les types peuvent aussi &#234;tre restreints
+    &#224; une liste pouvant contenir des caract&#232;res g&#233;n&#233;riques ? et *.</dd>
 
     <dt><strong><a href="../compliance.html#policylength">POLICY_LENGTH</a>
-    </strong>: Impose la présence de l'en-tête Content-Length</dt>
-    <dd>La longueur des réponses peut être spécifiée de trois manières
-    différentes : en spécifiant à l'avance une longueur explicite, en
-    utilisant un codage de morcellement (chunking) pour définir la
-    longueur, ou en ne spécifiant aucune longueur et en terminant la
-    requête lorsque son traitement est achevé. L'absence de
-    spécification d'une longueur de contenu peut affecter la possibilité
-    de mise en cache de la réponse, et empêcher l'utilisation de la
-    persistance avec les requêtes de type HTTP/1.0. Ce filtre impose la
-    présence d'une longueur de contenu explicite dans la réponse.</dd>
+    </strong>: Impose la pr&#233;sence de l'en-t&#234;te Content-Length</dt>
+    <dd>La longueur des r&#233;ponses peut &#234;tre sp&#233;cifi&#233;e de trois mani&#232;res
+    diff&#233;rentes : en sp&#233;cifiant &#224; l'avance une longueur explicite, en
+    utilisant un codage de morcellement (chunking) pour d&#233;finir la
+    longueur, ou en ne sp&#233;cifiant aucune longueur et en terminant la
+    requ&#234;te lorsque son traitement est achev&#233;. L'absence de
+    sp&#233;cification d'une longueur de contenu peut affecter la possibilit&#233;
+    de mise en cache de la r&#233;ponse, et emp&#234;cher l'utilisation de la
+    persistance avec les requ&#234;tes de type HTTP/1.0. Ce filtre impose la
+    pr&#233;sence d'une longueur de contenu explicite dans la r&#233;ponse.</dd>
 
     <dt><strong><a href="../compliance.html#policykeepalive">POLICY_KEEPALIVE
     </a></strong>: Impose l'option de persistance</dt>
     <dd>Moins restrictif que le filtre POLICY_LENGTH, ce filtre impose
-    la possibilité de persistance de la réponse. Si la réponse n'a pas
-    de longueur définie à 0 par le protocole, si elle n'est pas une
-    erreur, et si elle ne contient pas d'en-tête Content-Length ou si
-    elle est de type HTTP/1.1 et ne contient pas l'en-tête
-    Content-Encoding: chunked, alors elle sera rejetée.</dd>
+    la possibilit&#233; de persistance de la r&#233;ponse. Si la r&#233;ponse n'a pas
+    de longueur d&#233;finie &#224; 0 par le protocole, si elle n'est pas une
+    erreur, et si elle ne contient pas d'en-t&#234;te Content-Length ou si
+    elle est de type HTTP/1.1 et ne contient pas l'en-t&#234;te
+    Content-Encoding: chunked, alors elle sera rejet&#233;e.</dd>
 
     <dt><strong><a href="../compliance.html#policyvary">POLICY_VARY</a>
-    </strong>: Interdit la présence de certains en-têtes au sein des
-    en-têtes Vary</dt>
-    <dd>Si l'en-tête Vary contient un des en-têtes spécifiés, ce filtre
-    va rejeter la requête. Un cas typique est la présence de l'en-tête
-    User-Agent dans l'en-tête Vary, ce qui peut être à l'origine d'une
-    condition de déni de service au niveau du cache.</dd>
+    </strong>: Interdit la pr&#233;sence de certains en-t&#234;tes au sein des
+    en-t&#234;tes Vary</dt>
+    <dd>Si l'en-t&#234;te Vary contient un des en-t&#234;tes sp&#233;cifi&#233;s, ce filtre
+    va rejeter la requ&#234;te. Un cas typique est la pr&#233;sence de l'en-t&#234;te
+    User-Agent dans l'en-t&#234;te Vary, ce qui peut &#234;tre &#224; l'origine d'une
+    condition de d&#233;ni de service au niveau du cache.</dd>
 
     <dt><strong><a href="../compliance.html#policyvalidation">
-    POLICY_VALIDATION</a></strong>: Impose la présence d'un en-tête Etag
+    POLICY_VALIDATION</a></strong>: Impose la pr&#233;sence d'un en-t&#234;te Etag
     et/ou Last-Modified</dt>
-    <dd>La possibilité pour un cache de déterminer si une entité qu'il
-    contient peut être rafraîchie dépend de la présence d'un en-tête
-    Etag et/ou Last-Modified pour vérifier si elle est valide. La requête sera
-    rejetée en cas d'absence de ces deux en-têtes, ou d'une syntaxe
-    invalide d'un de ces deux en-têtes.</dd>
+    <dd>La possibilit&#233; pour un cache de d&#233;terminer si une entit&#233; qu'il
+    contient peut &#234;tre rafra&#238;chie d&#233;pend de la pr&#233;sence d'un en-t&#234;te
+    Etag et/ou Last-Modified pour v&#233;rifier si elle est valide. La requ&#234;te sera
+    rejet&#233;e en cas d'absence de ces deux en-t&#234;tes, ou d'une syntaxe
+    invalide d'un de ces deux en-t&#234;tes.</dd>
 
     <dt><strong><a href="../compliance.html#policyconditional">
     POLICY_CONDITIONAL</a></strong>: Impose un traitement conforme des
-    en-têtes conditionnels</dt>
-    <dd>Lorsqu'une requête contient des en-têtes conditonnels, un
-    serveur doit répondre dans certaines conditions avec un code
+    en-t&#234;tes conditionnels</dt>
+    <dd>Lorsqu'une requ&#234;te contient des en-t&#234;tes conditonnels, un
+    serveur doit r&#233;pondre dans certaines conditions avec un code
     <code>304 Not Modified</code> ou <code>412 Precondition
-    Failed</code>. Il arrive q'un serveur ignore les en-têtes
-    conditionnels, et cela diminue l'efficacité du mécanisme de mise en
-    cache HTTP. Ce filtre rejète les requêtes lorsqu'un en-tête
-    conditionnel était présent, et une réponse 2xx a été renvoyée au
-    lieu de la réponse 304 ou 412 attendue.</dd>
+    Failed</code>. Il arrive q'un serveur ignore les en-t&#234;tes
+    conditionnels, et cela diminue l'efficacit&#233; du m&#233;canisme de mise en
+    cache HTTP. Ce filtre rej&#232;te les requ&#234;tes lorsqu'un en-t&#234;te
+    conditionnel &#233;tait pr&#233;sent, et une r&#233;ponse 2xx a &#233;t&#233; renvoy&#233;e au
+    lieu de la r&#233;ponse 304 ou 412 attendue.</dd>
 
     <dt><strong><a href="../compliance.html#policynocache">POLICY_NOCACHE</a>
-    </strong>: Impose la possibilité de mise en cache des réponses</dt>
-    <dd>Lorsqu'une requête se déclare elle-même impossible à mettre en
-    cache, elle est rejetée. C'est le cas si elle contient l'un des
-    en-têtes suivants :
+    </strong>: Impose la possibilit&#233; de mise en cache des r&#233;ponses</dt>
+    <dd>Lorsqu'une requ&#234;te se d&#233;clare elle-m&#234;me impossible &#224; mettre en
+    cache, elle est rejet&#233;e. C'est le cas si elle contient l'un des
+    en-t&#234;tes suivants :
     <ul><li><code>Cache-Control: no-cache</code></li>
     <li><code>Pragma: no-cache</code></li>
     <li><code>Cache-Control: no-store</code></li>
@@ -208,27 +208,27 @@
     </ul></dd>
 
     <dt><strong><a href="../compliance.html#policymaxage">POLICY_MAXAGE</a>
-    </strong>: Impose une durée de vie minimale</dt>
-    <dd>Lorsqu'une réponse possède une durée de vie inférieure à la
-    valeur spécifiée, ou si cette durée de vie est heuristique, la
-    requête est rejetée. La chronologie de la vérification d'une réponse
+    </strong>: Impose une dur&#233;e de vie minimale</dt>
+    <dd>Lorsqu'une r&#233;ponse poss&#232;de une dur&#233;e de vie inf&#233;rieure &#224; la
+    valeur sp&#233;cifi&#233;e, ou si cette dur&#233;e de vie est heuristique, la
+    requ&#234;te est rejet&#233;e. La chronologie de la v&#233;rification d'une r&#233;ponse
     est la suivante :
-    <ul><li>Si <code>s-maxage</code> est présent mais d'une valeur trop
+    <ul><li>Si <code>s-maxage</code> est pr&#233;sent mais d'une valeur trop
     faible; ou</li>
-    <li>Si <code>max-age</code> est présent mais d'une valeur trop
+    <li>Si <code>max-age</code> est pr&#233;sent mais d'une valeur trop
     faible; ou</li>
-    <li>Si <code>Expires</code> est présent et invalide; ou</li>
-    <li><code>Date</code> est présent et invalide; ou</li>
+    <li>Si <code>Expires</code> est pr&#233;sent et invalide; ou</li>
+    <li><code>Date</code> est pr&#233;sent et invalide; ou</li>
     <li><code>Expires</code> moins Date est trop faible ; ou</li>
-    <li>Aucun en-tête <code>s-maxage</code>, <code>maxage</code>, ou
-    <code>Expires</code>/<code>Date</code> n'est présent</li>
+    <li>Aucun en-t&#234;te <code>s-maxage</code>, <code>maxage</code>, ou
+    <code>Expires</code>/<code>Date</code> n'est pr&#233;sent</li>
     </ul></dd>
 
     <dt><strong><a href="../compliance.html#policyversion">POLICY_VERSION</a>
-    </strong>: Impose une version HTTP minimale dans la requête</dt>
-    <dd>Lorsqu'une requête possède un numéro de version HTTP inférieur
-    au numéro de version minimum requis, la requête est rejetée. Les
-    numéros de version suivants sont reconnus :
+    </strong>: Impose une version HTTP minimale dans la requ&#234;te</dt>
+    <dd>Lorsqu'une requ&#234;te poss&#232;de un num&#233;ro de version HTTP inf&#233;rieur
+    au num&#233;ro de version minimum requis, la requ&#234;te est rejet&#233;e. Les
+    num&#233;ros de version suivants sont reconnus :
     <ul><li><code>HTTP/1.1</code></li>
     <li><code>HTTP/1.0</code></li>
     <li><code>HTTP/0.9</code></li>
@@ -241,43 +241,43 @@
 <h2><a name="example" id="example">Exemple de configuration</a><a title="Lien permanent" href="#example" class="permalink">&para;</a></h2>
     
 
-    <p>Voici un exemple de configuration qui protège un serveur qui
-    délivre du contenu statique :</p>
+    <p>Voici un exemple de configuration qui prot&#232;ge un serveur qui
+    d&#233;livre du contenu statique :</p>
 
     <pre class="prettyprint lang-config">&lt;Location "/"&gt;
   SetOutputFilter POLICY_TYPE;POLICY_LENGTH;POLICY_KEEPALIVE;POLICY_VARY;POLICY_VALIDATION; \
     POLICY_CONDITIONAL;POLICY_NOCACHE;POLICY_MAXAGE;POLICY_VERSION
 
-  # le contenu peut être quelconque, mais l'en-tête Content-Type doit être
-     # présent et valide
+  # le contenu peut &#234;tre quelconque, mais l'en-t&#234;te Content-Type doit &#234;tre
+     # pr&#233;sent et valide
   PolicyType enforce */*
 
-  # rejet si aucune longueur de contenu déclarée
+  # rejet si aucune longueur de contenu d&#233;clar&#233;e
   PolicyLength enforce
 
   # pris en charge par le filtre policy length
   PolicyKeepalive ignore
 
-  # rejet si l'en-tête User-Agent aparaît dans les en-têtes Vary
+  # rejet si l'en-t&#234;te User-Agent apara&#238;t dans les en-t&#234;tes Vary
   PolicyVary enforce User-Agent
 
-  # la validation est imposée
+  # la validation est impos&#233;e
   PolicyValidation enforce
 
-  # les réponses conditionnelles non conformes sont rejetées
+  # les r&#233;ponses conditionnelles non conformes sont rejet&#233;es
   PolicyConditional enforce
 
-  # les réponses impossibles à mettre en cache sont rejetées
+  # les r&#233;ponses impossibles &#224; mettre en cache sont rejet&#233;es
   PolicyNocache enforce
 
-  # la durée de vie doit être au moins d'un jour
+  # la dur&#233;e de vie doit &#234;tre au moins d'un jour
   PolicyMaxage enforce 86400
 
-  # le numéro de version de la requête peut être quelconque
+  # le num&#233;ro de version de la requ&#234;te peut &#234;tre quelconque
   PolicyVersion ignore HTTP/1.1
 &lt;/Location&gt;
 
-# désactivation du filtrage pour le répertoire /server-status
+# d&#233;sactivation du filtrage pour le r&#233;pertoire /server-status
 &lt;Location "/server-status"&gt;
   PolicyFilter off
 &lt;/Location&gt;</pre>
@@ -287,19 +287,19 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="policyconditional" id="policyconditional">Directive</a> <a name="PolicyConditional" id="PolicyConditional">PolicyConditional</a><a title="Lien permanent" href="#policyconditional" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active le filtrage des requêtes conditionnelles.</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active le filtrage des requ&#234;tes conditionnelles.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>PolicyConditional <var>ignore|log|enforce</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ignore</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>ignore</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_policy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.5.0 du serveur HTTP
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible &#224; partir de la version 2.5.0 du serveur HTTP
 Apache.</td></tr>
 </table>
-    <p>Avec l'argument enforce, une réponse qui aurait du être
-    conditionnelle mais ne l'est pas sera rejetée.</p>
+    <p>Avec l'argument enforce, une r&#233;ponse qui aurait du &#234;tre
+    conditionnelle mais ne l'est pas sera rejet&#233;e.</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config"># les réponses conditionnelles non conformes doivent être rejetées
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config"># les r&#233;ponses conditionnelles non conformes doivent &#234;tre rejet&#233;es
 PolicyConditional enforce</pre>
 </div>
 
@@ -310,43 +310,43 @@ PolicyConditional enforce</pre>
 <div class="directive-section"><h2><a name="policyconditionalurl" id="policyconditionalurl">Directive</a> <a name="PolicyConditionalURL" id="PolicyConditionalURL">PolicyConditionalURL</a><a title="Lien permanent" href="#policyconditionalurl" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>URL contenant la description de la politique de filtrage
-des requêtes conditionnelles.</td></tr>
+des requ&#234;tes conditionnelles.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>PolicyConditionalURL <var>url</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>none</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_policy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.5.0 du serveur HTTP
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible &#224; partir de la version 2.5.0 du serveur HTTP
 Apache.</td></tr>
 </table>
-    <p>Cette directive permet de spécifier l'URL de la documentation
-    décrivant la politique de filtrage des requêtes conditionnelles ;
-    elle apparaîtra dans les messages d'erreur.</p>
+    <p>Cette directive permet de sp&#233;cifier l'URL de la documentation
+    d&#233;crivant la politique de filtrage des requ&#234;tes conditionnelles ;
+    elle appara&#238;tra dans les messages d'erreur.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="policyenvironment" id="policyenvironment">Directive</a> <a name="PolicyEnvironment" id="PolicyEnvironment">PolicyEnvironment</a><a title="Lien permanent" href="#policyenvironment" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Modification des règles de filtrage en fonction d'une
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Modification des r&#232;gles de filtrage en fonction d'une
 variable d'environnement.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>PolicyEnvironment <var>variable</var> <var>log-value</var> <var>ignore-value</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>none</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_policy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.5.0 du serveur HTTP
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible &#224; partir de la version 2.5.0 du serveur HTTP
 Apache.</td></tr>
 </table>
-    <p>Limite l'action des règles à la journalisation ou les désactive
-    totalement en fonction de la présence d'une variable d'environnement. Si
-    la variable spécifiée est présente et égale à la valeur de
-    l'argument log-value, les erreurs rencontrées par les filtres ne
-    seront que journalisées. Si la variable spécifiée est présente et
-    égale à la valeur de l'argument ignore-value, toutes les règles
-    seront ignorées.</p>
+    <p>Limite l'action des r&#232;gles &#224; la journalisation ou les d&#233;sactive
+    totalement en fonction de la pr&#233;sence d'une variable d'environnement. Si
+    la variable sp&#233;cifi&#233;e est pr&#233;sente et &#233;gale &#224; la valeur de
+    l'argument log-value, les erreurs rencontr&#233;es par les filtres ne
+    seront que journalis&#233;es. Si la variable sp&#233;cifi&#233;e est pr&#233;sente et
+    &#233;gale &#224; la valeur de l'argument ignore-value, toutes les r&#232;gles
+    seront ignor&#233;es.</p>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config"># limitation de l'action des règles si la variable POLICY_CONTROL
-# est présente
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config"># limitation de l'action des r&#232;gles si la variable POLICY_CONTROL
+# est pr&#233;sente
 PolicyEnvironment POLICY_CONTROL log ignore</pre>
 </div>
 
@@ -354,24 +354,24 @@ PolicyEnvironment POLICY_CONTROL log ignore</pre>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="policyfilter" id="policyfilter">Directive</a> <a name="PolicyFilter" id="PolicyFilter">PolicyFilter</a><a title="Lien permanent" href="#policyfilter" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active ou désactive le filtrage pour un espace d'URL donné.</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active ou d&#233;sactive le filtrage pour un espace d'URL donn&#233;.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>PolicyFilter <var>on|off</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>on</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>on</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_policy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.5.0 du serveur HTTP
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible &#224; partir de la version 2.5.0 du serveur HTTP
 Apache.</td></tr>
 </table>
-    <p>Commutateur principal qui permet d'activer ou de désactiver le
-    filtrage pour un espace d'URL donné.</p>
+    <p>Commutateur principal qui permet d'activer ou de d&#233;sactiver le
+    filtrage pour un espace d'URL donn&#233;.</p>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config"># activé par défaut
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config"># activ&#233; par d&#233;faut
 &lt;Location "/"&gt;
   PolicyFilter on
 &lt;/Location&gt;
 
-# désactivation du filtrage pour le répertoire /server-status
+# d&#233;sactivation du filtrage pour le r&#233;pertoire /server-status
 &lt;Location "/server-status"&gt;
   PolicyFilter off
 &lt;/Location&gt;</pre>
@@ -383,19 +383,19 @@ Apache.</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active la politique de persistance.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>PolicyKeepalive <var>ignore|log|enforce</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ignore</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>ignore</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_policy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.5.0 du serveur HTTP
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible &#224; partir de la version 2.5.0 du serveur HTTP
 Apache.</td></tr>
 </table>
-    <p>Avec l'argument enforce, une réponse qui ne contient ni en-tête
-    <code>Content-Length</code>, ni en-tête
+    <p>Avec l'argument enforce, une r&#233;ponse qui ne contient ni en-t&#234;te
+    <code>Content-Length</code>, ni en-t&#234;te
     <code>Transfer-Encoding</code> de valeur <code>chunked</code> sera
-    rejetée.</p>
+    rejet&#233;e.</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config"># rejet suite a absence d'en-tête Content-Length ou Transfer-Encoding
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config"># rejet suite a absence d'en-t&#234;te Content-Length ou Transfer-Encoding
 PolicyKeepalive enforce</pre>
 </div>
 
@@ -405,35 +405,35 @@ PolicyKeepalive enforce</pre>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>URL contenant la description de la politique de persistance.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>PolicyKeepaliveURL <var>url</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>none</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_policy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.5.0 du serveur HTTP
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible &#224; partir de la version 2.5.0 du serveur HTTP
 Apache.</td></tr>
 </table>
-    <p>Cette directive permet de spécifier l'URL contenant la
-    description de la politique de persistance ; elle apparaîtra dans
+    <p>Cette directive permet de sp&#233;cifier l'URL contenant la
+    description de la politique de persistance ; elle appara&#238;tra dans
     les messages d'erreur.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="policylength" id="policylength">Directive</a> <a name="PolicyLength" id="PolicyLength">PolicyLength</a><a title="Lien permanent" href="#policylength" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active le filtrage de la spécification de la longueur du
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active le filtrage de la sp&#233;cification de la longueur du
 contenu.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>PolicyLength <var>ignore|log|enforce</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ignore</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>ignore</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_policy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.5.0 du serveur HTTP
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible &#224; partir de la version 2.5.0 du serveur HTTP
 Apache.</td></tr>
 </table>
-    <p>Avec l'argument enforce, une réponse qui ne contient pas
-    d'en-tête <code>Content-Length</code> sera rejetée.</p>
+    <p>Avec l'argument enforce, une r&#233;ponse qui ne contient pas
+    d'en-t&#234;te <code>Content-Length</code> sera rejet&#233;e.</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config"># rejet suite à l'absence de l'en-tête Content-Length
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config"># rejet suite &#224; l'absence de l'en-t&#234;te Content-Length
 PolicyLength enforce</pre>
 </div>
 
@@ -442,40 +442,40 @@ PolicyLength enforce</pre>
 <div class="directive-section"><h2><a name="policylengthurl" id="policylengthurl">Directive</a> <a name="PolicyLengthURL" id="PolicyLengthURL">PolicyLengthURL</a><a title="Lien permanent" href="#policylengthurl" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>URL contenant la description de la politique de filtrage de
-la spécification de la longueur du contenu.</td></tr>
+la sp&#233;cification de la longueur du contenu.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>PolicyLengthURL <var>url</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>none</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_policy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.5.0 du serveur HTTP
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible &#224; partir de la version 2.5.0 du serveur HTTP
 Apache.</td></tr>
 </table>
-    <p>Cette directive permet de spécifier l'URL contenant la
-    documentation décrivant la politique de filtrage de la spécification
-    de la longueur du contenu ; elle apparaîtra dans les messages
+    <p>Cette directive permet de sp&#233;cifier l'URL contenant la
+    documentation d&#233;crivant la politique de filtrage de la sp&#233;cification
+    de la longueur du contenu ; elle appara&#238;tra dans les messages
     d'erreur.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="policymaxage" id="policymaxage">Directive</a> <a name="PolicyMaxage" id="PolicyMaxage">PolicyMaxage</a><a title="Lien permanent" href="#policymaxage" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active le filtrage de la durée de vie des réponses.</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active le filtrage de la dur&#233;e de vie des r&#233;ponses.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>PolicyMaxage <var>ignore|log|enforce</var> <var>age</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ignore</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>ignore</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_policy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.5.0 du serveur HTTP
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible &#224; partir de la version 2.5.0 du serveur HTTP
 Apache.</td></tr>
 </table>
-    <p>Avec l'argument enforce, une réponse dont la durée de vie n'est
-    pas explicitement spécifiée via un en-tête <code>max-age</code>,
-    <code>s-maxage</code> ou <code>Expires</code>, ou dont la durée de
-    vie est inférieure à la valeur donnée sera rejetée.</p>
+    <p>Avec l'argument enforce, une r&#233;ponse dont la dur&#233;e de vie n'est
+    pas explicitement sp&#233;cifi&#233;e via un en-t&#234;te <code>max-age</code>,
+    <code>s-maxage</code> ou <code>Expires</code>, ou dont la dur&#233;e de
+    vie est inf&#233;rieure &#224; la valeur donn&#233;e sera rejet&#233;e.</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config"># rejet des réponses dont la durée de vie est inférieure à une
-# journée
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config"># rejet des r&#233;ponses dont la dur&#233;e de vie est inf&#233;rieure &#224; une
+# journ&#233;e
 PolicyMaxage enforce 86400</pre>
 </div>
 
@@ -485,39 +485,39 @@ PolicyMaxage enforce 86400</pre>
 <div class="directive-section"><h2><a name="policymaxageurl" id="policymaxageurl">Directive</a> <a name="PolicyMaxageURL" id="PolicyMaxageURL">PolicyMaxageURL</a><a title="Lien permanent" href="#policymaxageurl" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>URL contenant la description de la politique de filtrage
-des réponses en fonction de leur durée de vie.</td></tr>
+des r&#233;ponses en fonction de leur dur&#233;e de vie.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>PolicyMaxageURL <var>url</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>none</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_policy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.5.0 du serveur HTTP
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible &#224; partir de la version 2.5.0 du serveur HTTP
 Apache.</td></tr>
 </table>
-    <p>Cette directive permet de spécifier l'URL contenant la
-    description de la politique de filtrage des réponses en fonction de
-    leur durée de vie ; elle apparaîtra dans les messages d'erreur.</p>
+    <p>Cette directive permet de sp&#233;cifier l'URL contenant la
+    description de la politique de filtrage des r&#233;ponses en fonction de
+    leur dur&#233;e de vie ; elle appara&#238;tra dans les messages d'erreur.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="policynocache" id="policynocache">Directive</a> <a name="PolicyNocache" id="PolicyNocache">PolicyNocache</a><a title="Lien permanent" href="#policynocache" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active le filtrage des réponses qui se définissent
-elles-mêmes comme impossibles à mettre en cache.</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active le filtrage des r&#233;ponses qui se d&#233;finissent
+elles-m&#234;mes comme impossibles &#224; mettre en cache.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>PolicyNocache <var>ignore|log|enforce</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ignore</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>ignore</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_policy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.5.0 du serveur HTTP
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible &#224; partir de la version 2.5.0 du serveur HTTP
 Apache.</td></tr>
 </table>
-    <p>Avec l'argument enforce, une réponse qui se définit elle-même
-    comme impossible à mettre en cache via l'en-tête
-    <code>Cache-Control</code> ou <code>Pragma</code> sera rejetée.</p>
+    <p>Avec l'argument enforce, une r&#233;ponse qui se d&#233;finit elle-m&#234;me
+    comme impossible &#224; mettre en cache via l'en-t&#234;te
+    <code>Cache-Control</code> ou <code>Pragma</code> sera rejet&#233;e.</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config"># une réponse contenant l'en-tête Cache-Control: no-cache sera
-# rejetée
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config"># une r&#233;ponse contenant l'en-t&#234;te Cache-Control: no-cache sera
+# rejet&#233;e
 PolicyNocache enforce</pre>
 </div>
 
@@ -527,20 +527,20 @@ PolicyNocache enforce</pre>
 <div class="directive-section"><h2><a name="policynocacheurl" id="policynocacheurl">Directive</a> <a name="PolicyNocacheURL" id="PolicyNocacheURL">PolicyNocacheURL</a><a title="Lien permanent" href="#policynocacheurl" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>URL contenant la description de la politique de filtrage
-des réponses qui se définissent elles-mêmes comme impossibles à mettre
+des r&#233;ponses qui se d&#233;finissent elles-m&#234;mes comme impossibles &#224; mettre
 en cache.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>PolicyNocacheURL <var>url</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>none</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_policy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.5.0 du serveur HTTP
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible &#224; partir de la version 2.5.0 du serveur HTTP
 Apache.</td></tr>
 </table>
-    <p>Cette directive permet de spécifier l'URL contenant la
-    description de la politique de filtrage des réponses qui se
-    définissent elles-mêmes comme impossibles à mettre en cache ; elle
-    apparaîtra dans les messages d'erreur.</p>
+    <p>Cette directive permet de sp&#233;cifier l'URL contenant la
+    description de la politique de filtrage des r&#233;ponses qui se
+    d&#233;finissent elles-m&#234;mes comme impossibles &#224; mettre en cache ; elle
+    appara&#238;tra dans les messages d'erreur.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -548,24 +548,24 @@ Apache.</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active la politique des types de contenus.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>PolicyType <var>ignore|log|enforce</var> <var>type</var> [ <var>type</var> [ ... ]]</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ignore</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>ignore</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_policy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.5.0 du serveur HTTP
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible &#224; partir de la version 2.5.0 du serveur HTTP
 Apache.</td></tr>
 </table>
-    <p>Avec l'argument enforce, une réponse qui ne contient pas
-    d'en-tête <code>Content-Type</code>, ou dont l'en-tête
-    <code>Content-Type</code> est mal formé, ou dont l'en-tête
+    <p>Avec l'argument enforce, une r&#233;ponse qui ne contient pas
+    d'en-t&#234;te <code>Content-Type</code>, ou dont l'en-t&#234;te
+    <code>Content-Type</code> est mal form&#233;, ou dont l'en-t&#234;te
     <code>Content-Type</code> contient une valeur qui ne correspond pas
-    au(x) modèle(s) spécifié(s) sera rejetée.</p>
+    au(x) mod&#232;le(s) sp&#233;cifi&#233;(s) sera rejet&#233;e.</p>
 
     <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config"># impose le type de contenu json ou XML
 PolicyType enforce application/json text/xml</pre>
 </div>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config"># rejet suite à type de contenu mal formé
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config"># rejet suite &#224; type de contenu mal form&#233;
 PolicyType enforce */*</pre>
 </div>
 
@@ -577,15 +577,15 @@ PolicyType enforce */*</pre>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>URL contenant la description de la politique des types de
 contenu.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>PolicyTypeURL <var>url</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>none</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_policy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.5.0 du serveur HTTP
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible &#224; partir de la version 2.5.0 du serveur HTTP
 Apache.</td></tr>
 </table>
-    <p>Cette directive permet de spécifier l'URL contenant la
-    description de la politique des types de contenu ; elle apparaîtra
+    <p>Cette directive permet de sp&#233;cifier l'URL contenant la
+    description de la politique des types de contenu ; elle appara&#238;tra
     dans les messages d'erreur.</p>
 
 </div>
@@ -594,19 +594,19 @@ Apache.</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active le filtrage de la validation du contenu.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>PolicyValidation <var>ignore|log|enforce</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ignore</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>ignore</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_policy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.5.0 du serveur HTTP
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible &#224; partir de la version 2.5.0 du serveur HTTP
 Apache.</td></tr>
 </table>
-    <p>Avec l'argument enforce, une réponse qui ne contient ni en-tête
-    <code>ETag</code> valide, ni en-tête <code>Last-Modified</code>, ou
-    dont la syntaxe d'un de ces deux en-têtes est incorrecte sera
-    rejetée.</p>
+    <p>Avec l'argument enforce, une r&#233;ponse qui ne contient ni en-t&#234;te
+    <code>ETag</code> valide, ni en-t&#234;te <code>Last-Modified</code>, ou
+    dont la syntaxe d'un de ces deux en-t&#234;tes est incorrecte sera
+    rejet&#233;e.</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config"># rejet suite à l'absence des en-têtes Etag et/ou Last-Modified
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config"># rejet suite &#224; l'absence des en-t&#234;tes Etag et/ou Last-Modified
 PolicyValidation enforce</pre>
 </div>
 
@@ -618,34 +618,34 @@ PolicyValidation enforce</pre>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>URL contenant la description de la politique de filtrage de
 la validation du contenu.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>PolicyValidationURL <var>url</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>none</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_policy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.5.0 du serveur HTTP
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible &#224; partir de la version 2.5.0 du serveur HTTP
 Apache.</td></tr>
 </table>
-    <p>Cette directive permet de spécifier l'URL contenant la
+    <p>Cette directive permet de sp&#233;cifier l'URL contenant la
     description de la politique de filtrage de la validation du contenu
-    ; elle apparaîtra dans les messages d'erreur.</p>
+    ; elle appara&#238;tra dans les messages d'erreur.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="policyvary" id="policyvary">Directive</a> <a name="PolicyVary" id="PolicyVary">PolicyVary</a><a title="Lien permanent" href="#policyvary" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active la politique de filtrage de l'en-tête Vary.</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active la politique de filtrage de l'en-t&#234;te Vary.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>PolicyVary <var>ignore|log|enforce</var> <var>header</var> [ <var>header</var> [ ... ]]</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ignore</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>ignore</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_policy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.5.0 du serveur HTTP
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible &#224; partir de la version 2.5.0 du serveur HTTP
 Apache.</td></tr>
 </table>
-    <p>Avec l'argument enforce, une réponse dont l'en-tête
-    <code>Vary</code> contient un des en-têtes spécifiés sera rejetée.</p>
+    <p>Avec l'argument enforce, une r&#233;ponse dont l'en-t&#234;te
+    <code>Vary</code> contient un des en-t&#234;tes sp&#233;cifi&#233;s sera rejet&#233;e.</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config"># rejet suite à la présence de l'en-tête "User-Agent" dans l'en-tête
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config"># rejet suite &#224; la pr&#233;sence de l'en-t&#234;te "User-Agent" dans l'en-t&#234;te
 # Vary
 PolicyVary enforce User-Agent</pre>
 </div>
@@ -656,37 +656,37 @@ PolicyVary enforce User-Agent</pre>
 <div class="directive-section"><h2><a name="policyvaryurl" id="policyvaryurl">Directive</a> <a name="PolicyVaryURL" id="PolicyVaryURL">PolicyVaryURL</a><a title="Lien permanent" href="#policyvaryurl" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>URL contenant la description de la politique de filtrage de
-l'en-tête Vary.</td></tr>
+l'en-t&#234;te Vary.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>PolicyVaryURL <var>url</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>none</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_policy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.5.0 du serveur HTTP
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible &#224; partir de la version 2.5.0 du serveur HTTP
 Apache.</td></tr>
 </table>
-    <p>Cette directive permet de spécifier l'URL contenant la
-    description de la politique de filtrage de l'en-tête Vary ; elle
-    apparaîtra dans les messages d'erreur.</p>
+    <p>Cette directive permet de sp&#233;cifier l'URL contenant la
+    description de la politique de filtrage de l'en-t&#234;te Vary ; elle
+    appara&#238;tra dans les messages d'erreur.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="policyversion" id="policyversion">Directive</a> <a name="PolicyVersion" id="PolicyVersion">PolicyVersion</a><a title="Lien permanent" href="#policyversion" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active le filtrage des requêtes en fonction du numéro de
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active le filtrage des requ&#234;tes en fonction du num&#233;ro de
 version HTTP.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>PolicyVersion <var>ignore|log|enforce</var> <var>HTTP/0.9|HTTP/1.0|HTTP/1.1</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ignore</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>ignore</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_policy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.5.0 du serveur HTTP
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible &#224; partir de la version 2.5.0 du serveur HTTP
 Apache.</td></tr>
 </table>
-    <p>Avec l'argument enforce, une requête dont le numéro de version
-    HTTP est inférieur à la valeur spécifiée sera rejetée.</p>
+    <p>Avec l'argument enforce, une requ&#234;te dont le num&#233;ro de version
+    HTTP est inf&#233;rieur &#224; la valeur sp&#233;cifi&#233;e sera rejet&#233;e.</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config"># rejet des requêtes dont le numéro de version HTTP est inférieur à
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config"># rejet des requ&#234;tes dont le num&#233;ro de version HTTP est inf&#233;rieur &#224;
 # HTTP/1.1
 PolicyVersion enforce HTTP/1.1</pre>
 </div>
@@ -697,24 +697,24 @@ PolicyVersion enforce HTTP/1.1</pre>
 <div class="directive-section"><h2><a name="policyversionurl" id="policyversionurl">Directive</a> <a name="PolicyVersionURL" id="PolicyVersionURL">PolicyVersionURL</a><a title="Lien permanent" href="#policyversionurl" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>URL contenant la description de la politique de filtrage
-des requêtes en fonction du numéro de version HTTP.</td></tr>
+des requ&#234;tes en fonction du num&#233;ro de version HTTP.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>PolicyVersionURL <var>url</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>none</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_policy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.5.0 du serveur HTTP
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible &#224; partir de la version 2.5.0 du serveur HTTP
 Apache.</td></tr>
 </table>
-    <p>Cette directive permet de spécifier l'URL contenant la
-    description de la politique de filtrage des requêtes en fonction du
-    numéro de version HTTP ; elle apparaîtra dans les messages d'erreur.</p>
+    <p>Cette directive permet de sp&#233;cifier l'URL contenant la
+    description de la politique de filtrage des requ&#234;tes en fonction du
+    num&#233;ro de version HTTP ; elle appara&#238;tra dans les messages d'erreur.</p>
 
 </div>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_policy.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_policy.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_policy.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -733,7 +733,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_policy.htm
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autoris&#233; sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
