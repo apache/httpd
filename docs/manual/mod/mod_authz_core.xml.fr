@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1834205:1834843 (outdated) -->
+<!-- English Revision: 1834843 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -639,6 +639,23 @@ Param&egrave;tres-Require</var>&gt;
     l'aide de l'alias sp&eacute;cifi&eacute; dans une directive <directive
     module="mod_authz_core">Require</directive>.</p>
 
+    <p>Si <var>Require-Parameters</var> comporte plusieurs paramètres, la liste
+    de ces derniers doit être entourée de guillemets. Dans le cas contraire,
+    seul le premier paramètre de la liste sera pris en compte.</p>
+    
+    <highlight language="config">
+# Dans cet exemple, pour que les deux adresses IP soient prises en compte, elles
+# DOIVENT être entourées de guillemets
+&lt;AuthzProviderAlias ip blacklisted-ips "XXX.XXX.XXX.XXX YYY.YYY.YYY.YYY"&gt;
+&lt;/AuthzProviderAlias&gt;
+
+&lt;Directory "/path/to/dir"&gt;
+    &lt;RequireAll&gt;
+        Require not blacklisted-ips
+        Require all granted
+    &lt;/RequireAll&gt;
+&lt;/Directory&gt;
+    </highlight>
 </usage>
 </directivesynopsis>
 
