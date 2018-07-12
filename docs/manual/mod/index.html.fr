@@ -309,8 +309,8 @@ utilisateur sur un site
 masse</dd>
 <dt><a href="mod_watchdog.html" id="W" name="W">mod_watchdog</a></dt><dd>Fournit une infrastructure permettant &#224; d'autres modules
 d'ex&#233;cuter des t&#226;ches p&#233;riodiques.</dd>
-<dt><a href="mod_xml2enc.html" id="X" name="X">mod_xml2enc</a></dt><dd>Enhanced charset/internationalisation support for libxml2-based
-filter modules</dd>
+<dt><a href="mod_xml2enc.html" id="X" name="X">mod_xml2enc</a></dt><dd>Support avanc&#233; de l'internationalisation et des jeux de
+caract&#232;res pour les modules de filtrage bas&#233;s sur libxml2</dd>
 </dl></div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../de/mod/" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
