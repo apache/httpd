@@ -24,58 +24,58 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a></div><div id="page-content"><div id="preamble"><h1>Documentations diverses sur Apache</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/misc/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/misc/" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/misc/" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/misc/" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/misc/" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../tr/misc/" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/misc/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
 
 
     <p>Vous trouverez plus loin une liste de pages de documentation
-    additionnelles concernant le projet de développement du serveur web
+    additionnelles concernant le projet de d&#233;veloppement du serveur web
     Apache.</p>
 
     <div class="warning"><h3>Avertissement</h3>
-    <p>La mise à jour des documents ci-dessous permettant de prendre en
-    compte les modifications apportées par la version 2.1 du serveur
-    HTTP Apache n'a pas été entièrement menée à bien. Certaines
-    informations sont probablement encore pertinentes, mais utilisez-les tout de même avec
-    précautions.</p>
+    <p>La mise &#224; jour des documents ci-dessous permettant de prendre en
+    compte les modifications apport&#233;es par la version 2.1 du serveur
+    HTTP Apache n'a pas &#233;t&#233; enti&#232;rement men&#233;e &#224; bien. Certaines
+    informations sont probablement encore pertinentes, mais utilisez-les tout de m&#234;me avec
+    pr&#233;cautions.</p>
     </div>
 
     <dl>
-      <dt><a href="perf-tuning.html">Notes à propos des performances -
-      Réglages fins d'Apache</a></dt>
+      <dt><a href="perf-tuning.html">Notes &#224; propos des performances -
+      R&#233;glages fins d'Apache</a></dt>
 
       <dd>
-        <p>Notes à propos de la configuration d'Apache pour de plus
-	hautes performances (à l'exécution et à la compilation). Notes
+        <p>Notes &#224; propos de la configuration d'Apache pour de plus
+	hautes performances (&#224; l'ex&#233;cution et &#224; la compilation). Notes
 	expliquant pourquoi Apache accomplit certaines choses et
-	n'en accomplit pas certaines autres (les premières l'accélérant
-	et les deuxièmes le ralentissant).</p>
+	n'en accomplit pas certaines autres (les premi&#232;res l'acc&#233;l&#233;rant
+	et les deuxi&#232;mes le ralentissant).</p>
       </dd>
 
       <dt><a href="security_tips.html">Conseils concernant la
-      sécurité</a></dt>
+      s&#233;curit&#233;</a></dt>
 
       <dd>
         <p>Quelques conseils de type "faites" ou "ne faites pas" pour
-	que votre site web Apache reste sécurisé.</p>
+	que votre site web Apache reste s&#233;curis&#233;.</p>
       </dd>
 
-      <dt><a href="relevant_standards.html">Standards concernés</a></dt>
+      <dt><a href="relevant_standards.html">Standards concern&#233;s</a></dt>
 
       <dd>
-        <p>Ce document constitue une page de référence pour la plupart
-	des standards concernés par Apache.</p>
+        <p>Ce document constitue une page de r&#233;f&#233;rence pour la plupart
+	des standards concern&#233;s par Apache.</p>
       </dd>
 
       <dt><a href="password_encryptions.html">Formats de chiffrement des
       mots de passe</a></dt>
 
       <dd>
-        <p>Discussion à propos des divers algorithmes de chiffrement
-	supportés par Apache à des fins d'authentification.</p>
+        <p>Discussion &#224; propos des divers algorithmes de chiffrement
+	support&#233;s par Apache &#224; des fins d'authentification.</p>
       </dd>
     </dl>
 
@@ -83,12 +83,12 @@
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/misc/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/misc/" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/misc/" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/misc/" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/misc/" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../tr/misc/" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/misc/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autoris&#233; sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

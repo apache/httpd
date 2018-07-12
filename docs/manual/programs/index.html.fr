@@ -24,10 +24,10 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a></div><div id="page-content"><div id="preamble"><h1>Le serveur et ses utilitaires</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/programs/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/programs/" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/programs/" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../es/programs/" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/programs/" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/programs/" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/programs/" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../tr/programs/" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/programs/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
 
@@ -45,7 +45,7 @@
 
       <dt><code class="program"><a href="../programs/apachectl.html">apachectl</a></code></dt>
 
-      <dd>L'interface de contrôle du serveur HTTP Apache</dd>
+      <dd>L'interface de contr&#244;le du serveur HTTP Apache</dd>
 
       <dt><code class="program"><a href="../programs/ab.html">ab</a></code></dt>
 
@@ -61,7 +61,7 @@
 
       <dt><code class="program"><a href="../programs/dbmmanage.html">dbmmanage</a></code></dt>
 
-      <dd>Crée et met à jour les fichiers d'authentification utilisateurs au
+      <dd>Cr&#233;e et met &#224; jour les fichiers d'authentification utilisateurs au
       format DBM pour une authentification basique</dd>
 
       <dt><code class="program"><a href="../programs/fcgistarter.html">fcgistarter</a></code></dt>
@@ -74,56 +74,56 @@
 
       <dt><code class="program"><a href="../programs/htdigest.html">htdigest</a></code></dt>
 
-      <dd>Crée et met à jour les fichiers d'authentification pour une
+      <dd>Cr&#233;e et met &#224; jour les fichiers d'authentification pour une
       authentification sommaire</dd>
 
       <dt><code class="program"><a href="../programs/htdbm.html">htdbm</a></code></dt>
 
-      <dd>Manipulation des bases de données DBM des mots de passe.</dd>
+      <dd>Manipulation des bases de donn&#233;es DBM des mots de passe.</dd>
 
       <dt><code class="program"><a href="../programs/htpasswd.html">htpasswd</a></code></dt>
 
-      <dd>Crée et met à jour les fichiers d'authentification pour une
+      <dd>Cr&#233;e et met &#224; jour les fichiers d'authentification pour une
       authentification basique</dd>
 
       <dt><code class="program"><a href="../programs/httxt2dbm.html">httxt2dbm</a></code></dt>
 
-      <dd>Crée des fichiers dbm destinés à être utilisés avec
+      <dd>Cr&#233;e des fichiers dbm destin&#233;s &#224; &#234;tre utilis&#233;s avec
       RewriteMap</dd>
 
       <dt><code class="program"><a href="../programs/logresolve.html">logresolve</a></code></dt>
 
-      <dd>Résolution des noms d'hôtes en adresses IP dans les fichiers
+      <dd>R&#233;solution des noms d'h&#244;tes en adresses IP dans les fichiers
       de traces d'Apache</dd>
 
       <dt><a href="other.html#log_server_status">log_server_status</a></dt>
 
-       <dd>Journalisation périodique du statut du serveur</dd>
+       <dd>Journalisation p&#233;riodique du statut du serveur</dd>
 
       <dt><code class="program"><a href="../programs/rotatelogs.html">rotatelogs</a></code></dt>
 
-      <dd>Rotation des traces d'Apache sans devoir arrêter le serveur</dd>
+      <dd>Rotation des traces d'Apache sans devoir arr&#234;ter le serveur</dd>
 
       <dt><code class="program"><a href="../programs/split-logfile.html">split-logfile</a></code></dt>
 
-       <dd>Divise un journal pour plusieurs hôtes virtuels en journaux
-       spécifiques à chaque hôte</dd>
+       <dd>Divise un journal pour plusieurs h&#244;tes virtuels en journaux
+       sp&#233;cifiques &#224; chaque h&#244;te</dd>
 
       <dt><code class="program"><a href="../programs/suexec.html">suexec</a></code></dt>
 
-      <dd>Change d'utilisateur pour l'exécution de certains programmes</dd>
+      <dd>Change d'utilisateur pour l'ex&#233;cution de certains programmes</dd>
 
     </dl>
 </div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/programs/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/programs/" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/programs/" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../es/programs/" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/programs/" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/programs/" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/programs/" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../tr/programs/" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/programs/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autoris&#233; sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

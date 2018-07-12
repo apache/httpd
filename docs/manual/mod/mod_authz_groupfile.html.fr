@@ -27,23 +27,23 @@
 <div id="preamble"><h1>Module Apache mod_authz_groupfile</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_authz_groupfile.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_authz_groupfile.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_authz_groupfile.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_authz_groupfile.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_authz_groupfile.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Autorisation basée sur les groupes à l'aide de fichiers
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Autorisation bas&#233;e sur les groupes &#224; l'aide de fichiers
 textes</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>authz_groupfile_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_authz_groupfile.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis les versions 2.1 et supérieures
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&#160;de&#160;Module:</a></th><td>authz_groupfile_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier&#160;Source:</a></th><td>mod_authz_groupfile.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible depuis les versions 2.1 et sup&#233;rieures
 d'Apache</td></tr></table>
 <h3>Sommaire</h3>
 
-    <p>Ce module permet d'autoriser ou d'interdire l'accès à
-certaines zones du site web aux utilisateurs authentifiés en
-fonction de leur appartenance à un groupe spécifié. Le module
-<code class="module"><a href="../mod/mod_authz_dbm.html">mod_authz_dbm</a></code> fournit une fonctionnalité similaire.</p>
+    <p>Ce module permet d'autoriser ou d'interdire l'acc&#232;s &#224;
+certaines zones du site web aux utilisateurs authentifi&#233;s en
+fonction de leur appartenance &#224; un groupe sp&#233;cifi&#233;. Le module
+<code class="module"><a href="../mod/mod_authz_dbm.html">mod_authz_dbm</a></code> fournit une fonctionnalit&#233; similaire.</p>
 </div>
 <div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><h3>Sujets</h3>
 <ul id="topics">
@@ -52,7 +52,7 @@ fonction de leur appartenance à un groupe spécifié. Le module
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#authgroupfile">AuthGroupFile</a></li>
 </ul>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_authz_groupfile">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_authz_groupfile">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_authz_groupfile">Probl&#232;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_authz_groupfile">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code></li>
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
@@ -62,7 +62,7 @@ fonction de leur appartenance à un groupe spécifié. Le module
 
     <p>Les directives <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> d'Apache permettent,
     au cours de la phase d'autorisation, de s'assurer qu'un utilisateur
-    est bien autorisé à accéder à une ressource. mod_authz_groupfile ajoute
+    est bien autoris&#233; &#224; acc&#233;der &#224; une ressource. mod_authz_groupfile ajoute
     les types d'autorisation <code>group</code> et <code>file-group</code>.
     </p>
 
@@ -71,8 +71,8 @@ fonction de leur appartenance à un groupe spécifié. Le module
 
 <h3><a name="reqgroup" id="reqgroup">Require group</a></h3>
 
-    <p>Cette directive permet de spécifier à quel groupe un utilisateur
-    doit appartenir pour obtenir l'autorisation d'accès.</p>
+    <p>Cette directive permet de sp&#233;cifier &#224; quel groupe un utilisateur
+    doit appartenir pour obtenir l'autorisation d'acc&#232;s.</p>
 
     <pre class="prettyprint lang-config">Require group admin</pre>
 
@@ -81,10 +81,10 @@ fonction de leur appartenance à un groupe spécifié. Le module
 
 <h3><a name="reqfilegroup" id="reqfilegroup">Require file-group</a></h3>
 
-    <p>Lorsque cette directive est définie, Les permissions système du fichier
-    auquel on veut accéder sont vérifiées. L'utilisateur doit être un membre d'un
-    groupe de même nom que le groupe qui possède le fichier. Voir
-    <code class="module"><a href="../mod/mod_authz_owner.html">mod_authz_owner</a></code> pour plus de détails.</p>
+    <p>Lorsque cette directive est d&#233;finie, Les permissions syst&#232;me du fichier
+    auquel on veut acc&#233;der sont v&#233;rifi&#233;es. L'utilisateur doit &#234;tre un membre d'un
+    groupe de m&#234;me nom que le groupe qui poss&#232;de le fichier. Voir
+    <code class="module"><a href="../mod/mod_authz_owner.html">mod_authz_owner</a></code> pour plus de d&#233;tails.</p>
 
     <pre class="prettyprint lang-config">Require file-group</pre>
 
@@ -95,47 +95,47 @@ fonction de leur appartenance à un groupe spécifié. Le module
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="authgroupfile" id="authgroupfile">Directive</a> <a name="AuthGroupFile" id="AuthGroupFile">AuthGroupFile</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le nom d'un fichier texte contenant la liste des
-groupes d'utilisateurs permettant de définir les autorisations des
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&#233;finit le nom d'un fichier texte contenant la liste des
+groupes d'utilisateurs permettant de d&#233;finir les autorisations des
 utilisateurs</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthGroupFile <var>chemin-fichier</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>r&#233;pertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authz_groupfile</td></tr>
 </table>
-    <p>La directive <code class="directive">AuthGroupFile</code> permet de définir
+    <p>La directive <code class="directive">AuthGroupFile</code> permet de d&#233;finir
 le nom d'un fichier texte contenant la liste des groupes d'utilisateurs.
-L'appartenance d'un utilisateur à tel ou tel groupe pourra dès lors être utilisée
-pour définir les permissions d'accès de l'utilisateur.
+L'appartenance d'un utilisateur &#224; tel ou tel groupe pourra d&#232;s lors &#234;tre utilis&#233;e
+pour d&#233;finir les permissions d'acc&#232;s de l'utilisateur.
 <var>chemin-fichier</var> est le chemin du fichier de groupes. S'il n'est
-pas absolu, ce chemin est considéré comme relatif au répertoire défini par
+pas absolu, ce chemin est consid&#233;r&#233; comme relatif au r&#233;pertoire d&#233;fini par
 la directive <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>.</p>
 
     <p>Chaque ligne du fichier de groupes contient un nom de groupe
-suivi du caractère ':' et des noms des utilisateurs membres du groupe
-séparés par des espaces.</p>
+suivi du caract&#232;re ':' et des noms des utilisateurs membres du groupe
+s&#233;par&#233;s par des espaces.</p>
 
     <div class="example"><h3>Exemple :</h3><p><code>
       mon-groupe : bob joe anne
     </code></p></div>
 
     <p>Notez que la recherche dans de grands fichiers textes est
-<em>très</em> inefficace ; la directive <code class="directive"><a href="../mod/mod_authz_dbm.html#authdbmgroupfile">AuthDBMGroupFile</a></code> fournit de bien meilleures
+<em>tr&#232;s</em> inefficace ; la directive <code class="directive"><a href="../mod/mod_authz_dbm.html#authdbmgroupfile">AuthDBMGroupFile</a></code> fournit de bien meilleures
     performances.</p>
 
-    <div class="warning"><h3>Sécurité</h3>
+    <div class="warning"><h3>S&#233;curit&#233;</h3>
       <p>Le fichier <code class="directive">AuthGroupFile</code> ne doit pas
-être stocké dans l'arborescence des documents du site web ; ne le placez
-<em>surtout pas</em> dans le répertoire qu'il protège, faute de quoi les
-clients pourraient le télécharger.</p>
+&#234;tre stock&#233; dans l'arborescence des documents du site web ; ne le placez
+<em>surtout pas</em> dans le r&#233;pertoire qu'il prot&#232;ge, faute de quoi les
+clients pourraient le t&#233;l&#233;charger.</p>
     </div>
 
 </div>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_authz_groupfile.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_authz_groupfile.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_authz_groupfile.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_authz_groupfile.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_authz_groupfile.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
@@ -156,7 +156,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.4/mod/mod_authz_groupf
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autoris&#233; sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

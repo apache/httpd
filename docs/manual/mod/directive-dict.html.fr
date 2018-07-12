@@ -7,7 +7,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Termes utilisés pour la description des directives - Serveur Apache HTTP Version 2.4</title>
+<title>Termes utilis&#233;s pour la description des directives - Serveur Apache HTTP Version 2.4</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -21,83 +21,83 @@
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a></div><div id="page-content"><div id="preamble"><h1>Termes utilisés pour la description des directives</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a></div><div id="page-content"><div id="preamble"><h1>Termes utilis&#233;s pour la description des directives</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/directive-dict.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/mod/directive-dict.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/mod/directive-dict.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../es/mod/directive-dict.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/mod/directive-dict.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/directive-dict.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/directive-dict.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/directive-dict.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/directive-dict.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div>
 
-    <p>Ce document décrit les termes utilisés pour décrire chaque <a href="directives.html">directive de configuration</a> d'Apache.</p>
+    <p>Ce document d&#233;crit les termes utilis&#233;s pour d&#233;crire chaque <a href="directives.html">directive de configuration</a> d'Apache.</p>
 </div>
 <div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#Description">Description</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#Syntax">Syntaxe</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#Default">Défaut</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#Default">D&#233;faut</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#Context">Contexte</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#Override">Surcharge/Écrasement</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#Override">Surcharge/&#201;crasement</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#Status">Statut</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#Module">Module</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#Compatibility">Compatibilité</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#Compatibility">Compatibilit&#233;</a></li>
 </ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="../configuring.html">Fichiers de configuration</a></li><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="Description" id="Description">Description</a></h2>
 
-<p>Une brève description des fonctions de cette directive.</p>
+<p>Une br&#232;ve description des fonctions de cette directive.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="Syntax" id="Syntax">Syntaxe</a></h2>
 
     <p>Ce terme introduit le format sous lequel la directive doit
-    apparaître dans le fichier de configuration. Cette syntaxe est très
-    spécifique à la directive et est décrite en détail dans la
-    définition de cette dernière. En général, le nom de la directive est
-    suivi d'un ou plusieurs arguments séparés par des espaces. Si un
-    argument contient un espace, il doit être entouré de guillemets. Les
-    arguments optionnels sont entourés de crochets. Lorsqu'un argument
+    appara&#238;tre dans le fichier de configuration. Cette syntaxe est tr&#232;s
+    sp&#233;cifique &#224; la directive et est d&#233;crite en d&#233;tail dans la
+    d&#233;finition de cette derni&#232;re. En g&#233;n&#233;ral, le nom de la directive est
+    suivi d'un ou plusieurs arguments s&#233;par&#233;s par des espaces. Si un
+    argument contient un espace, il doit &#234;tre entour&#233; de guillemets. Les
+    arguments optionnels sont entour&#233;s de crochets. Lorsqu'un argument
     accepte une valeur parmi une liste de valeurs possibles, cette liste
-    est spécifiée en séparant les valeurs par une barre verticale "|".
-    Les textes littéraux sont présentés dans la fonte par défaut, alors
+    est sp&#233;cifi&#233;e en s&#233;parant les valeurs par une barre verticale "|".
+    Les textes litt&#233;raux sont pr&#233;sent&#233;s dans la fonte par d&#233;faut, alors
     que les types d'argument pour lesquels une substitution est
-    nécessaire sont en <em>gras</em>. La syntaxe des directives
+    n&#233;cessaire sont en <em>gras</em>. La syntaxe des directives
     acceptant un nombre variable d'arguments se termine par "...", ce
-    qui indique que le dernier argument peut être répété.</p>
+    qui indique que le dernier argument peut &#234;tre r&#233;p&#233;t&#233;.</p>
 
     <p>Les directives utilisent un grand nombre de types d'arguments
-    différents. Les plus courants sont définis ci-dessous.</p>
+    diff&#233;rents. Les plus courants sont d&#233;finis ci-dessous.</p>
 
     <dl>
       <dt><em>URL</em></dt>
 
       <dd>Un Localisateur de Ressource Uniforme (Uniform Resource
-      Locator) complet comportant un protocole, un nom d'hôte et un nom
+      Locator) complet comportant un protocole, un nom d'h&#244;te et un nom
       de chemin optionnel comme dans
       <code>http://www.example.com/chemin/vers/fichier.html</code></dd>
 
       <dt><em>chemin-URL</em></dt>
 
       <dd>La partie de l'<em>url</em> qui suit le protocole et le nom
-      d'hôte comme dans <code>/chemin/vers/fichier.html</code>. Le
-      <em>chemin-URL</em> représente la ressource vue du web, et est
-      différente de la représentation de cette même ressource vue du
-      système de fichiers.</dd>
+      d'h&#244;te comme dans <code>/chemin/vers/fichier.html</code>. Le
+      <em>chemin-URL</em> repr&#233;sente la ressource vue du web, et est
+      diff&#233;rente de la repr&#233;sentation de cette m&#234;me ressource vue du
+      syst&#232;me de fichiers.</dd>
 
       <dt><em>chemin-fichier</em></dt>
 
-      <dd>Le chemin d'un fichier dans le système de fichiers local
-      commençant par le répertoire racine comme dans
+      <dd>Le chemin d'un fichier dans le syst&#232;me de fichiers local
+      commen&#231;ant par le r&#233;pertoire racine comme dans
       <code>/usr/local/apache/htdocs/chemin/vers/fichier.html</code>.
       Sauf mention contraire, un <em>chemin-fichier</em> qui ne commence
-      pas par un slash sera considéré comme relatif au répertoire défini
+      pas par un slash sera consid&#233;r&#233; comme relatif au r&#233;pertoire d&#233;fini
       par la directive <a href="core.html#serverroot">ServerRoot</a>.</dd>
 
-      <dt><em>chemin-répertoire</em></dt>
+      <dt><em>chemin-r&#233;pertoire</em></dt>
 
-      <dd>Le chemin d'un répertoire dans le système de fichiers local
-      commençant par le répertoire racine comme dans
+      <dd>Le chemin d'un r&#233;pertoire dans le syst&#232;me de fichiers local
+      commen&#231;ant par le r&#233;pertoire racine comme dans
       <code>/usr/local/apache/htdocs/chemin/vers/</code>.</dd>
 
       <dt><em>nom-fichier</em></dt>
@@ -108,127 +108,127 @@
       <dt><em>regex</em></dt>
 
       <dd>Une <a class="glossarylink" href="../glossary.html#regex" title="voir glossaire">expression rationnelle</a>
-      compatible Perl. La définition de la directive spécifiera à quoi
-      <em>regex</em> sera comparée.</dd>
+      compatible Perl. La d&#233;finition de la directive sp&#233;cifiera &#224; quoi
+      <em>regex</em> sera compar&#233;e.</dd>
 
       <dt><em>extension</em></dt>
 
-      <dd>En général, c'est la partie du <em>nom de fichier</em> qui
-      suit le dernier point. Cependant, Apache reconnaît plusieurs
+      <dd>En g&#233;n&#233;ral, c'est la partie du <em>nom de fichier</em> qui
+      suit le dernier point. Cependant, Apache reconna&#238;t plusieurs
       extensions de noms de fichiers ; ainsi, si un <em>nom de
       fichier</em>
       contient plusieurs points, chacune des parties du nom de fichier
-      séparées par des points et situées après le premier point est une
+      s&#233;par&#233;es par des points et situ&#233;es apr&#232;s le premier point est une
       <em>extension</em>. Par exemple, le <em>nom de fichier</em>
       <code>fichier.html.en</code> comporte deux extensions :
       <code>.html</code> et <code>.en</code>. Pour les directives
-      Apache, vous pouvez spécifier les <em>extension</em>s avec ou sans
+      Apache, vous pouvez sp&#233;cifier les <em>extension</em>s avec ou sans
       le point initial. Enfin, les <em>extension</em>s ne sont pas
-      sensibles à la casse.</dd>
+      sensibles &#224; la casse.</dd>
 
       <dt><em>MIME-type</em></dt>
 
-      <dd>Une méthode de description du format d'un fichier consistant
-      en un type de format majeur et un type de format mineur séparés
+      <dd>Une m&#233;thode de description du format d'un fichier consistant
+      en un type de format majeur et un type de format mineur s&#233;par&#233;s
       par un slash comme dans <code>text/html</code>.</dd>
 
       <dt><em>env-variable</em></dt>
 
       <dd>Le nom d'une <a href="../env.html">variable
-      d'environnement</a> définie au cours du processus de configuration
-      d'Apache. Notez qu'elle peut être différente d'une variable
-      d'environnement du système d'exploitation. Voir la <a href="../env.html">documentation sur les variables d'environnement</a>
-      pour plus de détails.</dd>
+      d'environnement</a> d&#233;finie au cours du processus de configuration
+      d'Apache. Notez qu'elle peut &#234;tre diff&#233;rente d'une variable
+      d'environnement du syst&#232;me d'exploitation. Voir la <a href="../env.html">documentation sur les variables d'environnement</a>
+      pour plus de d&#233;tails.</dd>
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="Default" id="Default">Défaut</a></h2>
+<h2><a name="Default" id="Default">D&#233;faut</a></h2>
 
-    <p>Si la directive possède une valeur par défaut (en d'autres
+    <p>Si la directive poss&#232;de une valeur par d&#233;faut (en d'autres
     termes, si le serveur Web Apache se comporte comme si vous l'aviez
-    définie à une valeur particulière, alors que vous l'avez omise dans
-    votre configuration), elle est spécifiée ici. Si la directive ne
-    possède pas de valeur par défaut, cette section doit spécifier
-    "<em>Aucune</em>". Notez que la valeur par défaut dont il est
-    question n'est pas nécessairement la même que la valeur attribuée à
-    la directive dans le fichier httpd.conf par défaut distribué avec le
+    d&#233;finie &#224; une valeur particuli&#232;re, alors que vous l'avez omise dans
+    votre configuration), elle est sp&#233;cifi&#233;e ici. Si la directive ne
+    poss&#232;de pas de valeur par d&#233;faut, cette section doit sp&#233;cifier
+    "<em>Aucune</em>". Notez que la valeur par d&#233;faut dont il est
+    question n'est pas n&#233;cessairement la m&#234;me que la valeur attribu&#233;e &#224;
+    la directive dans le fichier httpd.conf par d&#233;faut distribu&#233; avec le
     serveur.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="Context" id="Context">Contexte</a></h2>
 
     <p>Indique les parties des fichiers de configuration du serveur
-    où cette directive est valide. Il s'agit d'une liste d'une ou
-    plusieurs des valeurs suivantes séparées par des virgules :</p>
+    o&#249; cette directive est valide. Il s'agit d'une liste d'une ou
+    plusieurs des valeurs suivantes s&#233;par&#233;es par des virgules :</p>
 
     <dl>
       <dt>configuration du serveur</dt>
 
-      <dd>Signifie que la directive peut être utilisée dans les fichiers
+      <dd>Signifie que la directive peut &#234;tre utilis&#233;e dans les fichiers
       de configuration du serveur (par exemple <code>httpd.conf</code>),
-      mais <strong>pas</strong> à l'intérieur d'un conteneur <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> ou <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>. De même, elle
+      mais <strong>pas</strong> &#224; l'int&#233;rieur d'un conteneur <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> ou <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>. De m&#234;me, elle
       n'est pas valide dans les fichiers <code>.htaccess</code>.</dd>
 
       <dt>serveur virtuel</dt>
 
-      <dd>Signifie que la directive peut apparaître à l'intérieur d'un
+      <dd>Signifie que la directive peut appara&#238;tre &#224; l'int&#233;rieur d'un
       conteneur <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> dans les fichiers de
       configuration du serveur.</dd>
 
-      <dt>répertoire</dt>
+      <dt>r&#233;pertoire</dt>
 
-      <dd>Une directive spécifiée comme valide dans ce contexte peut
-      être utilisée à l'intérieur de conteneurs <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>, <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code>, <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code>, et <code class="directive"><a href="../mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code> dans les
+      <dd>Une directive sp&#233;cifi&#233;e comme valide dans ce contexte peut
+      &#234;tre utilis&#233;e &#224; l'int&#233;rieur de conteneurs <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>, <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code>, <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code>, et <code class="directive"><a href="../mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code> dans les
       fichiers de configuration du serveur, en tenant compte des
-      restrictions précisées dans la documentation sur les <a href="../sections.html">Sections de configuration</a>.</dd>
+      restrictions pr&#233;cis&#233;es dans la documentation sur les <a href="../sections.html">Sections de configuration</a>.</dd>
 
       <dt>.htaccess</dt>
 
       <dd>Si une directive est valide dans ce contexte, cela signifie
-      qu'elle peut apparaître à l'intérieur de fichiers de configuration
-      de <em>niveau</em> répertoire <code>.htaccess</code>. Elle sera ou
-      ne sera pas traitée, selon la définition de l'option <a href="#Override">overrides</a> pour le contexte courant.</dd>
+      qu'elle peut appara&#238;tre &#224; l'int&#233;rieur de fichiers de configuration
+      de <em>niveau</em> r&#233;pertoire <code>.htaccess</code>. Elle sera ou
+      ne sera pas trait&#233;e, selon la d&#233;finition de l'option <a href="#Override">overrides</a> pour le contexte courant.</dd>
     </dl>
 
-    <p>La directive n'est autorisée <em>que</em> dans le contexte
-    désigné ; si vous essayez de l'utiliser ailleurs, vous générerez une
-    erreur de configuration qui va soit empêcher le serveur de traiter
-    les requêtes correctement dans ce contexte, soit tout simplement
-    empêcher le serveur de fonctionner -- en d'autres termes, le serveur
-    refusera de démarrer.</p>
+    <p>La directive n'est autoris&#233;e <em>que</em> dans le contexte
+    d&#233;sign&#233; ; si vous essayez de l'utiliser ailleurs, vous g&#233;n&#233;rerez une
+    erreur de configuration qui va soit emp&#234;cher le serveur de traiter
+    les requ&#234;tes correctement dans ce contexte, soit tout simplement
+    emp&#234;cher le serveur de fonctionner -- en d'autres termes, le serveur
+    refusera de d&#233;marrer.</p>
 
-    <p>Les lieux de définition valides pour une directive résultent en
+    <p>Les lieux de d&#233;finition valides pour une directive r&#233;sultent en
     fait d'un
-    OU logique de tous les contextes spécifiés. En d'autres termes, une
-    directive spécifiée comme valide dans "<code>configuration du
-    serveur, .htaccess</code>" peut être utilisée dans le fichier
+    OU logique de tous les contextes sp&#233;cifi&#233;s. En d'autres termes, une
+    directive sp&#233;cifi&#233;e comme valide dans "<code>configuration du
+    serveur, .htaccess</code>" peut &#234;tre utilis&#233;e dans le fichier
     <code>httpd.conf</code> et dans les fichiers <code>.htaccess</code>,
     mais pas dans un conteneur <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> ou <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="Override" id="Override">Surcharge/Écrasement</a></h2>
+<h2><a name="Override" id="Override">Surcharge/&#201;crasement</a></h2>
 
-    <p>Ce terme indique quelle autorisation de surcharge ("override") doit être
-    active pour que la directive puisse être traitée lorsqu'elle
-    apparaît dans un fichier <code>.htaccess</code>. Si le <a href="#Context">context</a> de la directive ne lui permet pas
-    d'apparaître dans un fichier <code>.htaccess</code>, aucun contexte
-    ne sera spécifié.</p>
+    <p>Ce terme indique quelle autorisation de surcharge ("override") doit &#234;tre
+    active pour que la directive puisse &#234;tre trait&#233;e lorsqu'elle
+    appara&#238;t dans un fichier <code>.htaccess</code>. Si le <a href="#Context">context</a> de la directive ne lui permet pas
+    d'appara&#238;tre dans un fichier <code>.htaccess</code>, aucun contexte
+    ne sera sp&#233;cifi&#233;.</p>
 
-    <p>Les autorisations de surcharge sont activées via la directive
-    <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code>, et possèdent une
-    portée particulière, comme un répertoire et tous ses
-    sous-répertoires, sauf si une autre directive <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> apparaît à un niveau
-    inférieur. La documentation pour cette directive spécifie aussi les
+    <p>Les autorisations de surcharge sont activ&#233;es via la directive
+    <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code>, et poss&#232;dent une
+    port&#233;e particuli&#232;re, comme un r&#233;pertoire et tous ses
+    sous-r&#233;pertoires, sauf si une autre directive <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> appara&#238;t &#224; un niveau
+    inf&#233;rieur. La documentation pour cette directive sp&#233;cifie aussi les
     noms d'autorisations de surcharge disponibles.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="Status" id="Status">Statut</a></h2>
 
-    <p>Cet attribut indique le degré de rapprochement de la directive du
-    coeur d'Apache ; en d'autres termes, vous pouvez être amené à
-    recompiler le serveur avec un jeu de modules supplémentaires pour
-    pouvoir utiliser la directive, et ainsi accéder à ses
-    fonctionnalités. Les valeurs possible pour cet attribut sont :</p>
+    <p>Cet attribut indique le degr&#233; de rapprochement de la directive du
+    coeur d'Apache ; en d'autres termes, vous pouvez &#234;tre amen&#233; &#224;
+    recompiler le serveur avec un jeu de modules suppl&#233;mentaires pour
+    pouvoir utiliser la directive, et ainsi acc&#233;der &#224; ses
+    fonctionnalit&#233;s. Les valeurs possible pour cet attribut sont :</p>
 
     <dl>
       <dt>Core</dt>
@@ -241,34 +241,34 @@
 
       <dd>Une directive dont le statut est "MPM" est fournie par un <a href="../mpm.html">module Multi-Processus</a>. Ce type de
       directive sera disponible si et seulement si vous utilisez un des
-      MPMs spécifiés dans la ligne <a href="#Module">Module</a> de la
-      définition de la directive.</dd>
+      MPMs sp&#233;cifi&#233;s dans la ligne <a href="#Module">Module</a> de la
+      d&#233;finition de la directive.</dd>
 
       <dt>Base</dt>
 
       <dd>Une directive dont le statut est "Base" est fournie par un des
-      modules Apache standards qui sont compilés dans le serveur par
-      défaut, et sont de ce fait toujours disponibles, sauf si vous avez
+      modules Apache standards qui sont compil&#233;s dans le serveur par
+      d&#233;faut, et sont de ce fait toujours disponibles, sauf si vous avez
       fait en sorte de les supprimer de votre configuration.</dd>
 
       <dt>Extension</dt>
 
       <dd>Une directive dont le statut est "Extension" est fournie par
       un des modules inclus dans le kit du serveur Apache, mais qui ne
-      sont pas compilés dans le serveur par défaut. Pour activer la
-      directive et accéder à ses fonctionnalités, vous devez modifier
+      sont pas compil&#233;s dans le serveur par d&#233;faut. Pour activer la
+      directive et acc&#233;der &#224; ses fonctionnalit&#233;s, vous devez modifier
       les fichiers de configuration de la compilation du serveur, et
       recompiler Apache.</dd>
 
-      <dt>Expérimental</dt>
+      <dt>Exp&#233;rimental</dt>
 
-      <dd>Le statut "Expérimental" indique que la directive fait partie
-      du kit Apache, mais que vous l'utilisez à vos risques et périls.
-      La directive est documentée à titre d'exhaustivité, et n'est pas
-      obligatoirement supportée. Le module qui fournit la directive peut
-      être compilé par défaut dans le serveur ou non ; consultez le haut
-      de la page qui décrit la directive et son module pour vérifier sa
-      disponibilité.</dd>
+      <dd>Le statut "Exp&#233;rimental" indique que la directive fait partie
+      du kit Apache, mais que vous l'utilisez &#224; vos risques et p&#233;rils.
+      La directive est document&#233;e &#224; titre d'exhaustivit&#233;, et n'est pas
+      obligatoirement support&#233;e. Le module qui fournit la directive peut
+      &#234;tre compil&#233; par d&#233;faut dans le serveur ou non ; consultez le haut
+      de la page qui d&#233;crit la directive et son module pour v&#233;rifier sa
+      disponibilit&#233;.</dd>
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -278,20 +278,20 @@
     fournissent la directive.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="Compatibility" id="Compatibility">Compatibilité</a></h2>
+<h2><a name="Compatibility" id="Compatibility">Compatibilit&#233;</a></h2>
 
     <p>Si la directive ne faisait pas partie de la distribution
-    originale d'Apache version 2, la version dans laquelle elle a été
-    introduite est indiquée ici. Cette section indique aussi si la
+    originale d'Apache version 2, la version dans laquelle elle a &#233;t&#233;
+    introduite est indiqu&#233;e ici. Cette section indique aussi si la
     directive n'est disponible que sur certaines plates-formes.</p>
 </div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/directive-dict.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/mod/directive-dict.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/mod/directive-dict.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../es/mod/directive-dict.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/mod/directive-dict.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/directive-dict.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/directive-dict.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/directive-dict.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/directive-dict.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -310,7 +310,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.4/mod/directive-dict.h
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autoris&#233; sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

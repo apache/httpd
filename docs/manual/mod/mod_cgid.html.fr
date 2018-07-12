@@ -27,44 +27,44 @@
 <div id="preamble"><h1>Module Apache mod_cgid</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_cgid.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_cgid.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_cgid.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_cgid.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_cgid.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Exécution des scripts CGI par l'intermédiaire d'un démon
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Ex&#233;cution des scripts CGI par l'interm&#233;diaire d'un d&#233;mon
 CGI externe</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>cgid_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_cgid.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Compatibilité:</a></th><td>Uniquement compatible avec les MPMs Unix
-threadés</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&#160;de&#160;Module:</a></th><td>cgid_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier&#160;Source:</a></th><td>mod_cgid.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Uniquement compatible avec les MPMs Unix
+thread&#233;s</td></tr></table>
 <h3>Sommaire</h3>
 
-    <p>Exceptées les optimisations et la directive additionnelle
-    <code class="directive"><a href="#scriptsock">ScriptSock</a></code> décrite
-    ci-dessous, <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code> a un comportement similaire à
-    celui de <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>. <strong>Voir le résumé de
-    <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code> pour plus de détails à propos d'Apache et
+    <p>Except&#233;es les optimisations et la directive additionnelle
+    <code class="directive"><a href="#scriptsock">ScriptSock</a></code> d&#233;crite
+    ci-dessous, <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code> a un comportement similaire &#224;
+    celui de <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>. <strong>Voir le r&#233;sum&#233; de
+    <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code> pour plus de d&#233;tails &#224; propos d'Apache et
     CGI.</strong></p>
 
-    <p>Sur certains systèmes d'exploitation de type unix, le lancement
-    (forking) d'un processus depuis un serveur multi-threadé est une
-    opération très lourde car le nouveau processus va répliquer tous les
-    threads du processus parent. Pour éviter cette dépense de ressouces
+    <p>Sur certains syst&#232;mes d'exploitation de type unix, le lancement
+    (forking) d'un processus depuis un serveur multi-thread&#233; est une
+    op&#233;ration tr&#232;s lourde car le nouveau processus va r&#233;pliquer tous les
+    threads du processus parent. Pour &#233;viter cette d&#233;pense de ressouces
     pour chaque invocation d'un programme CGI, <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code>
-    crée un démon externe qui est responsable du branchement de
-    processus enfants destinés au lancement de scripts CGI. Le serveur
-    principal communique avec ce démon par l'intermédiaire d'une socket
+    cr&#233;e un d&#233;mon externe qui est responsable du branchement de
+    processus enfants destin&#233;s au lancement de scripts CGI. Le serveur
+    principal communique avec ce d&#233;mon par l'interm&#233;diaire d'une socket
     de domaine unix.</p>
 
-    <p>Si un MPM multi-threadé a été sélectionné lors du processus de
-    compilation, c'est ce module qui est utilisé par défaut à la place
+    <p>Si un MPM multi-thread&#233; a &#233;t&#233; s&#233;lectionn&#233; lors du processus de
+    compilation, c'est ce module qui est utilis&#233; par d&#233;faut &#224; la place
     de <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>. Du point de vue de l'utilisateur, ce
-    module est identique à <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code> quant à sa
-    configuration et son utilisation. La seule différence est la
+    module est identique &#224; <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code> quant &#224; sa
+    configuration et son utilisation. La seule diff&#233;rence est la
     directive additionnelle <code>ScriptSock</code> qui permet de
-    définir le nom du socket à utiliser pour la communication avec le
-    démon CGI.</p>
+    d&#233;finir le nom du socket &#224; utiliser pour la communication avec le
+    d&#233;mon CGI.</p>
 </div>
 <div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><h3 class="directives">Directives</h3>
 <ul id="toc">
@@ -74,29 +74,29 @@ threadés</td></tr></table>
 <li><img alt="" src="../images/right.gif" /> <a href="mod_cgi.html#scriptloglength">ScriptLogLength</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#scriptsock">ScriptSock</a></li>
 </ul>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_cgid">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_cgid">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_cgid">Probl&#232;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_cgid">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code></li>
-<li><a href="../suexec.html">Exécution de programmes CGI sous des
-utilisateurs différents</a></li>
+<li><a href="../suexec.html">Ex&#233;cution de programmes CGI sous des
+utilisateurs diff&#233;rents</a></li>
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="cgidscripttimeout" id="cgidscripttimeout">Directive</a> <a name="CGIDScriptTimeout" id="CGIDScriptTimeout">CGIDScriptTimeout</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Durée maximale d'attente de la prochaine sortie du
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Dur&#233;e maximale d'attente de la prochaine sortie du
 programme CGI</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CGIDScriptTimeout <var>time</var>[s|ms]</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>Valeur de la directive <code class="directive"><a href="../mod/core.html#timeout">Timeout</a></code></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>Valeur de la directive <code class="directive"><a href="../mod/core.html#timeout">Timeout</a></code></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cgid</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>La valeur de CGIDScriptTimeout est 0 dans les versions
-2.4 et antérieures
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>La valeur de CGIDScriptTimeout est 0 dans les versions
+2.4 et ant&#233;rieures
 </td></tr>
 </table>
-    <p>Cette directive permet de limiter la durée d'attente avant les prochaines données
-    reçues en sortie du programme CGI. Si ce temps est dépassé, la requête et le
+    <p>Cette directive permet de limiter la dur&#233;e d'attente avant les prochaines donn&#233;es
+    re&#231;ues en sortie du programme CGI. Si ce temps est d&#233;pass&#233;, la requ&#234;te et le
     programme CGI se terminent.</p>
 
     <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">CGIDScriptTimeout 20</pre>
@@ -107,25 +107,25 @@ programme CGI</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="scriptsock" id="scriptsock">Directive</a> <a name="ScriptSock" id="ScriptSock">ScriptSock</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le préfixe du nom de fichier du socket à utiliser pour
-communiquer avec le démon CGI</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le pr&#233;fixe du nom de fichier du socket &#224; utiliser pour
+communiquer avec le d&#233;mon CGI</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ScriptSock <var>chemin fichier</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ScriptSock cgisock</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>ScriptSock cgisock</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cgid</td></tr>
 </table>
-    <p>Cette directive permet de définir le préfixe du nom de fichier de la
-    socket à utiliser pour communiquer avec le démon CGI, préfixe auquel
-    sera ajouté une extension correspondant à l'identifiant processus du
+    <p>Cette directive permet de d&#233;finir le pr&#233;fixe du nom de fichier de la
+    socket &#224; utiliser pour communiquer avec le d&#233;mon CGI, pr&#233;fixe auquel
+    sera ajout&#233; une extension correspondant &#224; l'identifiant processus du
     serveur. La socket sera ouverte avec les permissions de l'utilisateur
-    qui a démarré Apache (en général root). Afin de préserver la
-    sécurité des communications avec les scripts CGI, il est impératif
-    de n'accorder à aucun autre utilisateur la permission d'écrire dans
-    le répertoire où se trouve la socket.</p>
+    qui a d&#233;marr&#233; Apache (en g&#233;n&#233;ral root). Afin de pr&#233;server la
+    s&#233;curit&#233; des communications avec les scripts CGI, il est imp&#233;ratif
+    de n'accorder &#224; aucun autre utilisateur la permission d'&#233;crire dans
+    le r&#233;pertoire o&#249; se trouve la socket.</p>
 
     <p>Si <var>chemin fichier</var> n'est pas un chemin absolu, il est
-    relatif au chemin défini par la directive <code class="directive"><a href="../mod/core.html#defaultruntimedir">DefaultRuntimeDir</a></code>.</p>
+    relatif au chemin d&#233;fini par la directive <code class="directive"><a href="../mod/core.html#defaultruntimedir">DefaultRuntimeDir</a></code>.</p>
 
     <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">ScriptSock /var/run/cgid.sock</pre>
 </div>
@@ -135,7 +135,7 @@ communiquer avec le démon CGI</td></tr>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_cgid.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_cgid.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_cgid.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_cgid.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_cgid.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
@@ -156,7 +156,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.4/mod/mod_cgid.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autoris&#233; sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

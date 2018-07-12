@@ -27,51 +27,51 @@
 <div id="preamble"><h1>Module Apache mod_log_forensic</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_log_forensic.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_log_forensic.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_log_forensic.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_log_forensic.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
-<a href="../tr/mod/mod_log_forensic.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/mod_log_forensic.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Journalisation légale des requêtes envoyées au
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Journalisation l&#233;gale des requ&#234;tes envoy&#233;es au
 serveur</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>log_forensic_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_log_forensic.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Compatibilité:</a></th><td><code class="module"><a href="../mod/mod_unique_id.html">mod_unique_id</a></code> n'est plus obligatoire
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&#160;de&#160;Module:</a></th><td>log_forensic_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier&#160;Source:</a></th><td>mod_log_forensic.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">Compatibilit&#233;:</a></th><td><code class="module"><a href="../mod/mod_unique_id.html">mod_unique_id</a></code> n'est plus obligatoire
 depuis la version 2.1</td></tr></table>
 <h3>Sommaire</h3>
 
-    <p>Ce module permet la journalisation légale des requêtes client. La
-    journalisation s'effectuant avant et après le traitement de la
-    requête, le journal légal contient deux lignes pour chaque requête.
-    Le processus de journalisation légale est très strict, à savoir
+    <p>Ce module permet la journalisation l&#233;gale des requ&#234;tes client. La
+    journalisation s'effectuant avant et apr&#232;s le traitement de la
+    requ&#234;te, le journal l&#233;gal contient deux lignes pour chaque requ&#234;te.
+    Le processus de journalisation l&#233;gale est tr&#232;s strict, &#224; savoir
     :</p>
 
     <ul>
-    <li>Le format est figé. Vous ne pouvez pas modifier le format du
-    journal à l'exécution.</li>
-    <li>S'il ne peut pas enregistrer ses données, le processus enfant se
-    termine aussitôt, et peut éventuellement enregistrer un vidage
-    mémoire (selon la définition de la directive <code class="directive"><a href="../mod/mpm_common.html#coredumpdirectory">CoreDumpDirectory</a></code>).</li>
+    <li>Le format est fig&#233;. Vous ne pouvez pas modifier le format du
+    journal &#224; l'ex&#233;cution.</li>
+    <li>S'il ne peut pas enregistrer ses donn&#233;es, le processus enfant se
+    termine aussit&#244;t, et peut &#233;ventuellement enregistrer un vidage
+    m&#233;moire (selon la d&#233;finition de la directive <code class="directive"><a href="../mod/mpm_common.html#coredumpdirectory">CoreDumpDirectory</a></code>).</li>
     </ul>
 
-    <p>Pour interpréter les données du journal légal, vous pouvez vous
+    <p>Pour interpr&#233;ter les donn&#233;es du journal l&#233;gal, vous pouvez vous
     aider du script <code>check_forensic</code> qui se trouve dans le
-    répertoire support de la distribution.</p>
-    <div class="note">Note de traduction : le terme "légal" utilisé dans le présent document ne suggère aucunement que
-    ce module apporte une valeur juridique aux journaux. Il est à comprendre dans le contexte
-    similaire à ce que l'on trouve en analyse medico-légale. En d'autres termes, la finalité de ce module
-    est de simplifier les opérations d'investigation autour du traitement des requêtes par le serveur.</div>
+    r&#233;pertoire support de la distribution.</p>
+    <div class="note">Note de traduction : le terme "l&#233;gal" utilis&#233; dans le pr&#233;sent document ne sugg&#232;re aucunement que
+    ce module apporte une valeur juridique aux journaux. Il est &#224; comprendre dans le contexte
+    similaire &#224; ce que l'on trouve en analyse medico-l&#233;gale. En d'autres termes, la finalit&#233; de ce module
+    est de simplifier les op&#233;rations d'investigation autour du traitement des requ&#234;tes par le serveur.</div>
 </div>
 <div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><h3>Sujets</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#formats">Format du journal Forensic</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#security">Considérations à propos de
-sécurité</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#security">Consid&#233;rations &#224; propos de
+s&#233;curit&#233;</a></li>
 </ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#forensiclog">ForensicLog</a></li>
 </ul>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_log_forensic">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_log_forensic">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_log_forensic">Probl&#232;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_log_forensic">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><a href="../logs.html">Les fichiers journaux
 d'Apache</a></li>
@@ -80,24 +80,24 @@ d'Apache</a></li>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="formats" id="formats">Format du journal Forensic</a></h2>
-    <p>Chaque requête fait l'objet d'une double journalisation. La
-    requête est journalisée une première fois avant son traitement
-    (c'est à dire après la réception des en-têtes). La deuxième entrée
-    du journal est écrite <em>après</em> le traitement de la requête, en
+    <p>Chaque requ&#234;te fait l'objet d'une double journalisation. La
+    requ&#234;te est journalis&#233;e une premi&#232;re fois avant son traitement
+    (c'est &#224; dire apr&#232;s la r&#233;ception des en-t&#234;tes). La deuxi&#232;me entr&#233;e
+    du journal est &#233;crite <em>apr&#232;s</em> le traitement de la requ&#234;te, en
     fait au moment de la journalisation habituelle.</p>
 
-    <p>Un identifiant unique est attribué à chaque requête afin de
-    pouvoir l'identifier. Cette identifiant légal peut faire l'objet
-    d'un enregistrement dans le journal standard en utilisant l'élément
-    de chaîne de format <code>%{forensic-id}n</code>. Si vous utilisez
-    <code class="module"><a href="../mod/mod_unique_id.html">mod_unique_id</a></code>, c'est l'identifiant qu'il génère qui
-    sera utilisé.</p>
+    <p>Un identifiant unique est attribu&#233; &#224; chaque requ&#234;te afin de
+    pouvoir l'identifier. Cette identifiant l&#233;gal peut faire l'objet
+    d'un enregistrement dans le journal standard en utilisant l'&#233;l&#233;ment
+    de cha&#238;ne de format <code>%{forensic-id}n</code>. Si vous utilisez
+    <code class="module"><a href="../mod/mod_unique_id.html">mod_unique_id</a></code>, c'est l'identifiant qu'il g&#233;n&#232;re qui
+    sera utilis&#233;.</p>
 
-    <p>La première partie de la journalisation de la requête enregistre
-    l'identifiant légal, la ligne de la requête et tous les en-têtes
-    reçus séparés par des caractères pipe (<code>|</code>). Voici à
-    titre d'exemple à quoi pourrait ressembler une telle entrée (tout
-    étant rassemblé sur une seule ligne) :</p>
+    <p>La premi&#232;re partie de la journalisation de la requ&#234;te enregistre
+    l'identifiant l&#233;gal, la ligne de la requ&#234;te et tous les en-t&#234;tes
+    re&#231;us s&#233;par&#233;s par des caract&#232;res pipe (<code>|</code>). Voici &#224;
+    titre d'exemple &#224; quoi pourrait ressembler une telle entr&#233;e (tout
+    &#233;tant rassembl&#233; sur une seule ligne) :</p>
 
     <div class="example"><p><code>
         +yQtJf8CoAB4AAFNXBIEAAAAA|GET /manual/de/images/down.gif
@@ -106,9 +106,9 @@ d'Apache</a></li>
         Firefox/0.8|Accept:image/png, <var>etc...</var>
     </code></p></div>
 
-    <p>Le caractère plus ('+') de début indique qu'il s'agit de la
-    première entrée de journal pour cette requête. La seconde entrée ne
-    contiendra qu'un caractère moins ('-') suivi de l'identifiant :</p>
+    <p>Le caract&#232;re plus ('+') de d&#233;but indique qu'il s'agit de la
+    premi&#232;re entr&#233;e de journal pour cette requ&#234;te. La seconde entr&#233;e ne
+    contiendra qu'un caract&#232;re moins ('-') suivi de l'identifiant :</p>
 
     <div class="example"><p><code>
       -yQtJf8CoAB4AAFNXBIEAAAAA
@@ -117,69 +117,69 @@ d'Apache</a></li>
     <p>Le script <code>check_forensic</code> prend comme argument le nom
     du fichier journal. Il recherche ces paires d'identifiants
     <code>+</code>/<code>-</code> et affiche un message d'erreur si la
-    journalisation d'une requête n'est pas complète.</p>
+    journalisation d'une requ&#234;te n'est pas compl&#232;te.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="security" id="security">Considérations à propos de
-sécurité</a></h2>
-    <p>Voir le document <a href="../misc/security_tips.html#serverroot">conseils en matière de
-    sécurité</a> pour des détails sur les raisons pour lesquelles votre
-    sécurité pourrait être compromise si le répertoire dans lequel les
-    fichiers journaux sont stockés sont inscriptibles par tout autre
-    utilisateur que celui qui démarre le serveur.</p>
-    <p>Les fichiers journaux peuvent contenir des données sensibles
-    comme le contenu des en-têtes <code>Authorization:</code> (qui
-    peuvent contenir des mots de passe) ; ils ne doivent donc être
-    lisibles que par l'utilisateur qui démarre le serveur.</p>
+<h2><a name="security" id="security">Consid&#233;rations &#224; propos de
+s&#233;curit&#233;</a></h2>
+    <p>Voir le document <a href="../misc/security_tips.html#serverroot">conseils en mati&#232;re de
+    s&#233;curit&#233;</a> pour des d&#233;tails sur les raisons pour lesquelles votre
+    s&#233;curit&#233; pourrait &#234;tre compromise si le r&#233;pertoire dans lequel les
+    fichiers journaux sont stock&#233;s sont inscriptibles par tout autre
+    utilisateur que celui qui d&#233;marre le serveur.</p>
+    <p>Les fichiers journaux peuvent contenir des donn&#233;es sensibles
+    comme le contenu des en-t&#234;tes <code>Authorization:</code> (qui
+    peuvent contenir des mots de passe) ; ils ne doivent donc &#234;tre
+    lisibles que par l'utilisateur qui d&#233;marre le serveur.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="forensiclog" id="forensiclog">Directive</a> <a name="ForensicLog" id="ForensicLog">ForensicLog</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le nom de fichier du journal légal</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&#233;finit le nom de fichier du journal l&#233;gal</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ForensicLog <var>nom-fichier</var>|<var>pipe</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_log_forensic</td></tr>
 </table>
     <p>La directive <code class="directive">ForensicLog</code> permet de
-    contrôler la journalisation des requêtes à des fins d'analyse
-    légale. Chaque entrée du journal se voit assigner un identifiant
-    unique qui peut être associé à la requête en utilisant la directive
+    contr&#244;ler la journalisation des requ&#234;tes &#224; des fins d'analyse
+    l&#233;gale. Chaque entr&#233;e du journal se voit assigner un identifiant
+    unique qui peut &#234;tre associ&#233; &#224; la requ&#234;te en utilisant la directive
     <code class="directive"><a href="../mod/mod_log_config.html#customlog">CustomLog</a></code> habituelle.
-    <code class="module"><a href="../mod/mod_log_forensic.html">mod_log_forensic</a></code> crée un élément nommé
-    <code>forensic-id</code>, qui peut être ajouté au journal standard
-    en utilisant l'élément de format <code>%{forensic-id}n</code>.</p>
+    <code class="module"><a href="../mod/mod_log_forensic.html">mod_log_forensic</a></code> cr&#233;e un &#233;l&#233;ment nomm&#233;
+    <code>forensic-id</code>, qui peut &#234;tre ajout&#233; au journal standard
+    en utilisant l'&#233;l&#233;ment de format <code>%{forensic-id}n</code>.</p>
 
-    <p>L'argument, qui permet de spécifier l'emplacement vers lequel le
-    journal légal sera écrit, peut contenir les deux types de valeurs
+    <p>L'argument, qui permet de sp&#233;cifier l'emplacement vers lequel le
+    journal l&#233;gal sera &#233;crit, peut contenir les deux types de valeurs
     suivants :</p>
 
     <dl>
       <dt><var>nom-fichier</var></dt>
-      <dd>Un nom de fichier relatif au répertoire défini par la
+      <dd>Un nom de fichier relatif au r&#233;pertoire d&#233;fini par la
       directive <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>.</dd>
 
       <dt><var>pipe</var></dt>
-      <dd>Le caractère pipe "<code>|</code>", suivi du chemin vers un
+      <dd>Le caract&#232;re pipe "<code>|</code>", suivi du chemin vers un
       programme qui recevra les informations de la journalisation sur
-      son entrée standard. Le nom du programme peut être relatif au
-      répertoire défini par la directive <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>.
+      son entr&#233;e standard. Le nom du programme peut &#234;tre relatif au
+      r&#233;pertoire d&#233;fini par la directive <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>.
 
-      <div class="warning"><h3>Sécurité :</h3>
-      <p>Si les journaux sont redirigés vers un programme, ce dernier
-      s'exécutera sous l'utilisateur qui a démarré
+      <div class="warning"><h3>S&#233;curit&#233; :</h3>
+      <p>Si les journaux sont redirig&#233;s vers un programme, ce dernier
+      s'ex&#233;cutera sous l'utilisateur qui a d&#233;marr&#233;
       <code class="program"><a href="../programs/httpd.html">httpd</a></code>. Ce sera l'utilisateur root si le serveur
-      a été démarré par root ; vérifiez que le programme est
-      sécurisé ou passe sous le contrôle d'un utilisateur possédant des
+      a &#233;t&#233; d&#233;marr&#233; par root ; v&#233;rifiez que le programme est
+      s&#233;curis&#233; ou passe sous le contr&#244;le d'un utilisateur poss&#233;dant des
       droits restreints.</p>
       </div>
 
       <div class="note"><h3>Note</h3>
-        <p>Lors de la spécification d'un chemin de fichier sur les
+        <p>Lors de la sp&#233;cification d'un chemin de fichier sur les
 	plate-formes non-Unix, il faut prendre soin de ne pas oublier
-	que seuls les slashes directs doivent être utilisés, même si la
-	plate-forme autorise l'emploi d'anti-slashes. D'une manière
-	générale, c'est une bonne idée que de n'utiliser que des slashes
+	que seuls les slashes directs doivent &#234;tre utilis&#233;s, m&#234;me si la
+	plate-forme autorise l'emploi d'anti-slashes. D'une mani&#232;re
+	g&#233;n&#233;rale, c'est une bonne id&#233;e que de n'utiliser que des slashes
 	directs dans les fichiers de configuration.</p>
       </div></dd>
     </dl>
@@ -188,9 +188,9 @@ sécurité</a></h2>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_log_forensic.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_log_forensic.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_log_forensic.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_log_forensic.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
-<a href="../tr/mod/mod_log_forensic.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/mod_log_forensic.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -209,7 +209,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.4/mod/mod_log_forensic
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autoris&#233; sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
