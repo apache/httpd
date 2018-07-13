@@ -458,10 +458,9 @@ static apr_status_t pending_filter_cleanup(void *arg)
 {
     ap_filter_t *f = arg;
 
-    if (is_pending_filter(f)) {
-        APR_RING_REMOVE(f, pending);
-        APR_RING_ELEM_INIT(f, pending);
-    }
+    APR_RING_REMOVE(f, pending);
+    APR_RING_ELEM_INIT(f, pending);
+    f->bb = NULL;
 
     return APR_SUCCESS;
 }
@@ -472,7 +471,9 @@ static void remove_any_filter(ap_filter_t *f, ap_filter_t **r_filt, ap_filter_t 
     ap_filter_t **curr = r_filt ? r_filt : c_filt;
     ap_filter_t *fscan = *curr;
 
-    pending_filter_cleanup(f);
+    if (is_pending_filter(f)) {
+        apr_pool_cleanup_run(f->c->pool, f, pending_filter_cleanup);
+    }
 
     if (p_filt && *p_filt == f)
         *p_filt = (*p_filt)->next;
@@ -724,7 +725,8 @@ AP_DECLARE(int) ap_filter_prepare_brigade(ap_filter_t *f, apr_pool_t **p)
     }
     if (!f->bb) {
         f->bb = apr_brigade_create(pool, f->c->bucket_alloc);
-        apr_pool_pre_cleanup_register(pool, f, pending_filter_cleanup);
+        apr_pool_cleanup_register(pool, f, pending_filter_cleanup,
+                                  apr_pool_cleanup_null);
     }
     if (is_pending_filter(f)) {
         return DECLINED;
