@@ -110,6 +110,7 @@ void ap_mpm_child_main(apr_pool_t *pconf)
 
     /* Create pool for child */
     apr_pool_create(&pchild, pconf);
+    apr_pool_tag(pchild, "pchild");
 
     ap_run_child_init(pchild, ap_server_conf);
 
