@@ -864,7 +864,7 @@ static int check_signal(int signum)
     return 0;
 }
 
-static void create_listener_thread(thread_starter *ts)
+static void create_listener_thread(thread_starter *ts, apr_pool_t *pool)
 {
     int my_child_num = ts->child_num_arg;
     apr_threadattr_t *thread_attr = ts->threadattr;
@@ -876,7 +876,7 @@ static void create_listener_thread(thread_starter *ts)
     my_info->tid = -1; /* listener thread doesn't have a thread slot */
     my_info->sd = 0;
     rv = apr_thread_create(&ts->listener, thread_attr, listener_thread,
-                           my_info, pchild);
+                           my_info, pool);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf, APLOGNO(00275)
                      "apr_thread_create: unable to create listener thread");
@@ -897,6 +897,7 @@ static void * APR_THREAD_FUNC start_threads(apr_thread_t *thd, void *dummy)
     apr_thread_t **threads = ts->threads;
     apr_threadattr_t *thread_attr = ts->threadattr;
     int my_child_num = ts->child_num_arg;
+    apr_pool_t *pruntime = NULL;
     proc_info *my_info;
     apr_status_t rv;
     int i;
@@ -905,16 +906,29 @@ static void * APR_THREAD_FUNC start_threads(apr_thread_t *thd, void *dummy)
     int loops;
     int prev_threads_created;
 
+    /* All threads (listener, workers) and synchronization objects (queues,
+     * pollset, mutexes...) created here should have at least the lifetime of
+     * the connections they handle (i.e. ptrans). We can't use this thread's
+     * self pool because all these objects survive it, nor use pchild or pconf
+     * directly because this starter thread races with other modules' runtime,
+     * nor finally pchild (or subpool thereof) because it is killed explicitely
+     * before pconf (thus connections/ptrans can live longer, which matters in
+     * ONE_PROCESS mode). So this leaves us with a subpool of pconf, created
+     * before any ptrans hence destroyed after.
+     */
+    apr_pool_create(&pruntime, pconf);
+    apr_pool_tag(pruntime, "mpm_runtime");
+
     /* We must create the fd queues before we start up the listener
      * and worker threads. */
-    rv = ap_queue_create(&worker_queue, threads_per_child, pchild);
+    rv = ap_queue_create(&worker_queue, threads_per_child, pruntime);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf, APLOGNO(03140)
                      "ap_queue_create() failed");
         clean_child_exit(APEXIT_CHILDFATAL);
     }
 
-    rv = ap_queue_info_create(&worker_queue_info, pchild,
+    rv = ap_queue_info_create(&worker_queue_info, pruntime,
                               threads_per_child, -1);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf, APLOGNO(03141)
@@ -922,8 +936,8 @@ static void * APR_THREAD_FUNC start_threads(apr_thread_t *thd, void *dummy)
         clean_child_exit(APEXIT_CHILDFATAL);
     }
 
-    worker_sockets = apr_pcalloc(pchild, threads_per_child
-                                        * sizeof(apr_socket_t *));
+    worker_sockets = apr_pcalloc(pruntime, threads_per_child *
+                                           sizeof(apr_socket_t *));
 
     loops = prev_threads_created = 0;
     while (1) {
@@ -947,7 +961,7 @@ static void * APR_THREAD_FUNC start_threads(apr_thread_t *thd, void *dummy)
              * done because it lets us deal with tid better.
              */
             rv = apr_thread_create(&threads[i], thread_attr,
-                                   worker_thread, my_info, pchild);
+                                   worker_thread, my_info, pruntime);
             if (rv != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf, APLOGNO(03142)
                              "apr_thread_create: unable to create worker thread");
@@ -958,7 +972,7 @@ static void * APR_THREAD_FUNC start_threads(apr_thread_t *thd, void *dummy)
         }
         /* Start the listener only when there are workers available */
         if (!listener_started && threads_created) {
-            create_listener_thread(ts);
+            create_listener_thread(ts, pruntime);
             listener_started = 1;
         }
         if (start_thread_may_exit || threads_created == threads_per_child) {
@@ -1087,7 +1101,12 @@ static void child_main(int child_num_arg, int child_bucket)
 
     ap_my_pid = getpid();
     ap_fatal_signal_child_setup(ap_server_conf);
+
+    /* Get a sub context for global allocations in this child, so that
+     * we can have cleanups occur when the child exits.
+     */
     apr_pool_create(&pchild, pconf);
+    apr_pool_tag(pchild, "pchild");
 
     /* close unused listeners and pods */
     for (i = 0; i < retained->mpm->num_buckets; i++) {
