@@ -580,6 +580,7 @@
  *                         by the ap_filter_ring_t 'pending_filters' in struct
  *                         conn_rec, and add ring entry 'pending' in struct
  *                         ap_filter_t
+ * 20180711.2 (2.5.1-dev)  Add ap_reuse_brigade_from_pool()
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -587,7 +588,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20180711
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 1                 /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 2                 /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

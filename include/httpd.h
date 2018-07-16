@@ -2194,6 +2194,19 @@ AP_DECLARE(int) ap_request_has_body(request_rec *r);
 AP_DECLARE(int) ap_request_tainted(request_rec *r, int flags);
 
 /**
+ * Reuse a brigade from a pool, or create it on the given pool/alloc and
+ * associate it with the given key for further reuse.
+ *
+ * @param key the key/id of the brigade
+ * @param pool the pool to cache and create the brigade from
+ * @param alloc the bucket allocator to be used by the brigade
+ * @return the reused and cleaned up brigade, or a new one
+ */
+AP_DECLARE(apr_bucket_brigade *) ap_reuse_brigade_from_pool(const char *key,
+                                                            apr_pool_t *pool,
+                                                    apr_bucket_alloc_t *alloc);
+
+/**
  * Cleanup a string (mainly to be filesystem safe)
  * We only allow '_' and alphanumeric chars. Non-printable
  * map to 'x' and all others map to '_'
