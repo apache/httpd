@@ -33,10 +33,6 @@
 #define FILTER_POOL     apr_hook_global_pool
 #include "ap_hooks.h"   /* for apr_hook_global_pool */
 
-/* XXX: Should these be configurable parameters? */
-#define THRESHOLD_MAX_BUFFER 65536
-#define MAX_REQUESTS_IN_PIPELINE 5
-
 /*
 ** This macro returns true/false if a given filter should be inserted BEFORE
 ** another filter. This will happen when one of: 1) there isn't another
@@ -825,7 +821,8 @@ AP_DECLARE(apr_status_t) ap_filter_reinstate_brigade(ap_filter_t *f,
     apr_size_t bytes_in_brigade, non_file_bytes_in_brigade;
     int eor_buckets_in_brigade, morphing_bucket_in_brigade;
     int loglevel = ap_get_conn_module_loglevel(f->c, APLOG_MODULE_INDEX);
-
+    core_server_config *conf;
+ 
     if (loglevel >= APLOG_TRACE6) {
         ap_log_cerror(
             APLOG_MARK, APLOG_TRACE6, 0, f->c,
@@ -845,16 +842,16 @@ AP_DECLARE(apr_status_t) ap_filter_reinstate_brigade(ap_filter_t *f,
      *     of everything up that point.
      *
      *  b) The request is in CONN_STATE_HANDLER state, and the brigade
-     *     contains at least THRESHOLD_MAX_BUFFER bytes in non-file
+     *     contains at least flush_max_threshold bytes in non-file
      *     buckets: Do blocking writes until the amount of data in the
-     *     buffer is less than THRESHOLD_MAX_BUFFER.  (The point of this
+     *     buffer is less than flush_max_threshold.  (The point of this
      *     rule is to provide flow control, in case a handler is
      *     streaming out lots of data faster than the data can be
      *     sent to the client.)
      *
      *  c) The request is in CONN_STATE_HANDLER state, and the brigade
-     *     contains at least MAX_REQUESTS_IN_PIPELINE EOR buckets:
-     *     Do blocking writes until less than MAX_REQUESTS_IN_PIPELINE EOR
+     *     contains at least flush_max_pipelined EOR buckets:
+     *     Do blocking writes until less than flush_max_pipelined EOR
      *     buckets are left. (The point of this rule is to prevent too many
      *     FDs being kept open by pipelined requests, possibly allowing a
      *     DoS).
@@ -862,7 +859,7 @@ AP_DECLARE(apr_status_t) ap_filter_reinstate_brigade(ap_filter_t *f,
      *  d) The request is being served by a connection filter and the
      *     brigade contains a morphing bucket: If there was no other
      *     reason to do a blocking write yet, try reading the bucket. If its
-     *     contents fit into memory before THRESHOLD_MAX_BUFFER is reached,
+     *     contents fit into memory before flush_max_threshold is reached,
      *     everything is fine. Otherwise we need to do a blocking write the
      *     up to and including the morphing bucket, because ap_save_brigade()
      *     would read the whole bucket into memory later on.
@@ -874,6 +871,8 @@ AP_DECLARE(apr_status_t) ap_filter_reinstate_brigade(ap_filter_t *f,
     non_file_bytes_in_brigade = 0;
     eor_buckets_in_brigade = 0;
     morphing_bucket_in_brigade = 0;
+
+    conf = ap_get_core_module_config(f->c->base_server->module_config);
 
     for (bucket = APR_BRIGADE_FIRST(bb); bucket != APR_BRIGADE_SENTINEL(bb);
          bucket = next) {
@@ -899,18 +898,18 @@ AP_DECLARE(apr_status_t) ap_filter_reinstate_brigade(ap_filter_t *f,
         }
 
         if (APR_BUCKET_IS_FLUSH(bucket)
-            || non_file_bytes_in_brigade >= THRESHOLD_MAX_BUFFER
+            || non_file_bytes_in_brigade >= conf->flush_max_threshold
             || (!f->r && morphing_bucket_in_brigade)
-            || eor_buckets_in_brigade > MAX_REQUESTS_IN_PIPELINE) {
+            || eor_buckets_in_brigade > conf->flush_max_pipelined) {
             /* this segment of the brigade MUST be sent before returning. */
 
             if (loglevel >= APLOG_TRACE6) {
                 char *reason = APR_BUCKET_IS_FLUSH(bucket) ?
                                "FLUSH bucket" :
-                               (non_file_bytes_in_brigade >= THRESHOLD_MAX_BUFFER) ?
-                               "THRESHOLD_MAX_BUFFER" :
+                               (non_file_bytes_in_brigade >= conf->flush_max_threshold) ?
+                               "max threshold" :
                                (!f->r && morphing_bucket_in_brigade) ? "morphing bucket" :
-                               "MAX_REQUESTS_IN_PIPELINE";
+                               "max requests in pipeline";
                 ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, f->c,
                               "will flush because of %s", reason);
                 ap_log_cerror(APLOG_MARK, APLOG_TRACE8, 0, f->c,

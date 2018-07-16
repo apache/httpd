@@ -582,6 +582,9 @@
  *                         ap_filter_t
  * 20180711.2 (2.5.1-dev)  Add ap_reuse_brigade_from_pool()
  * 20180716.1 (2.5.1-dev)  Axe conn_rec->empty brigade
+ * 20180716.2 (2.5.1-dev)  Add read_buf_size member to core_dir_config,
+ *                         flush_max_threshold and flush_max_pipelined to
+ *                         core_server_config, and ap_get_read_buf_size().
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -589,7 +592,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20180716
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 1                 /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 2                 /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
