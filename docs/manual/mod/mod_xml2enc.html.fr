@@ -7,7 +7,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>mod_xml2enc - Serveur Apache HTTP Version 2.4</title>
+<title>mod_xml2enc - Serveur HTTP Apache Version 2.4</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -18,7 +18,7 @@
 <body>
 <div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
-<p class="apache">Serveur Apache HTTP Version 2.4</p>
+<p class="apache">Serveur HTTP Apache Version 2.4</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
@@ -156,7 +156,7 @@ directive <code class="directive">xml2EncAlias</code>.</p>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&#233;finit des alias pour les valeurs d'encodage</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>xml2EncAlias <var>jeu-de-caract&#232;res alias [alias ...]</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_xml2enc</td></tr>
 </table>
@@ -175,7 +175,7 @@ directive <code class="directive">xml2EncAlias</code>.</p>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&#233;finit un encodage par d&#233;faut &#224; utiliser lorsqu'aucune
 information ne peut &#234;tre <a href="#sniffing">automatiquement d&#233;tect&#233;e</a></td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>xml2EncDefault <var>nom</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_xml2enc</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible depuis la version 2.4.0 du serveur HTTP Apache
@@ -197,7 +197,7 @@ information ne peut &#234;tre <a href="#sniffing">automatiquement d&#233;tect&#2
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Indique &#224; l'interpr&#233;teur &#224; partir de quelle balise il doit
 commencer son traitement.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>xml2StartParse <var>&#233;l&#233;ment [&#233;l&#233;ment ...]</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_xml2enc</td></tr>
 </table>

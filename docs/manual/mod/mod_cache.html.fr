@@ -7,7 +7,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>mod_cache - Serveur Apache HTTP Version 2.4</title>
+<title>mod_cache - Serveur HTTP Apache Version 2.4</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -18,7 +18,7 @@
 <body>
 <div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
-<p class="apache">Serveur Apache HTTP Version 2.4</p>
+<p class="apache">Serveur HTTP Apache Version 2.4</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
@@ -392,7 +392,7 @@ CustomLog "invalidated-requests.log" common env=cache-invalidate</pre>
 lorsqu'aucune date d'expiration n'a &#233;t&#233; sp&#233;cifi&#233;e.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheDefaultExpire <var>secondes</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>CacheDefaultExpire 3600 (une heure)</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>
@@ -414,7 +414,7 @@ lorsqu'aucune date d'expiration n'a &#233;t&#233; sp&#233;cifi&#233;e.</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ajoute un en-t&#234;te X-Cache-Detail &#224; la r&#233;ponse.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheDetailHeader <var>on|off</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>CacheDetailHeader off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible depuis la version 2.3.9 d'Apache</td></tr>
@@ -452,7 +452,7 @@ CacheDetailHeader on</pre>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&#233;sactive la mise en cache des URLs
 sp&#233;cifi&#233;es</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheDisable <var>cha&#238;ne-url</var> | <var>on</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>
@@ -491,7 +491,7 @@ Apache</a></li>
 gestionnaire de stockage pr&#233;cis&#233;</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheEnable <var>type de cache</var> [<var>cha&#238;ne
 URL</var>]</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Une cha&#238;ne URL telle que '/' s'appliquait &#224; tout contenu
@@ -581,7 +581,7 @@ Apache</a></li>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ajoute un en-t&#234;te X-Cache &#224; la r&#233;ponse.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheHeader <var>on|off</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>CacheHeader off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible depuis la version 2.3.9 d'Apache</td></tr>
@@ -622,7 +622,7 @@ CacheHeader on</pre>
 le contenu au client depuis le cache</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheIgnoreCacheControl On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>CacheIgnoreCacheControl Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>
@@ -658,7 +658,7 @@ le contenu au client depuis le cache</td></tr>
 </td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheIgnoreHeaders <var>en-t&#234;te</var> [<var>en-t&#234;te</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>CacheIgnoreHeaders None</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>
@@ -713,7 +713,7 @@ le contenu au client depuis le cache</td></tr>
 Modified.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheIgnoreNoLastMod On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>CacheIgnoreNoLastMod Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>
@@ -742,7 +742,7 @@ Modified.</td></tr>
 cache</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheIgnoreQueryString On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>CacheIgnoreQueryString Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>
@@ -772,7 +772,7 @@ l'URL lors de la mise en cache
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheIgnoreURLSessionIdentifiers <var>identifiant</var>
 [<var>identifiant</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>CacheIgnoreURLSessionIdentifiers None</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>
@@ -810,7 +810,7 @@ l'URL lors de la mise en cache
 inverse</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheKeyBaseURL <var>URL</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>CacheKeyBaseURL http://example.com</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible depuis la version 2.3.9 d'Apache</td></tr>
@@ -841,7 +841,7 @@ CacheKeyBaseURL "http://www.example.com/"</pre>
 fonction de la date de derni&#232;re modification.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheLastModifiedFactor <var>flottant</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>CacheLastModifiedFactor 0.1</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>
@@ -876,7 +876,7 @@ fonction de la date de derni&#232;re modification.</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active la protection contre les temp&#234;tes de requ&#234;tes.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheLock <var>on|off</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>CacheLock off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible depuis la version 2.2.15 d'Apache</td></tr>
@@ -900,7 +900,7 @@ CacheLock on</pre>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&#233;finit la dur&#233;e de vie maximale d'un verrou de cache.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheLockMaxAge <var>entier</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>CacheLockMaxAge 5</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>
@@ -920,7 +920,7 @@ CacheLock on</pre>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&#233;finit le r&#233;pertoire des verrous.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheLockPath <var>r&#233;pertoire</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>CacheLockPath /tmp/mod_cache-lock</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>
@@ -940,7 +940,7 @@ CacheLock on</pre>
 document</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheMaxExpire <var>secondes</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>CacheMaxExpire 86400 (une journ&#233;e)</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>
@@ -964,7 +964,7 @@ document</td></tr>
 document</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheMinExpire <var>secondes</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>CacheMinExpire 0</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>
@@ -985,7 +985,7 @@ document</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ex&#233;cute le cache &#224; partir d'un gestionnaire rapide.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheQuickHandler <var>on|off</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>CacheQuickHandler on</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible &#224; partir de la version 2.3.3 du serveur HTTP
@@ -1034,7 +1034,7 @@ AddOutputFilterByType CACHE;INCLUDES;DEFLATE text/html</pre>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sert du contenu non &#224; jour &#224; la place de r&#233;ponses 5xx.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheStaleOnError <var>on|off</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>CacheStaleOnError on</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible depuis la version 2.3.9 d'Apache</td></tr>
@@ -1061,7 +1061,7 @@ CacheStaleOnError on</pre>
 consid&#232;re comme arriv&#233;es &#224; expiration</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheStoreExpired On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>CacheStoreExpired Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>
@@ -1086,7 +1086,7 @@ consid&#232;re comme arriv&#233;es &#224; expiration</td></tr>
 l'ent&#234;te Cache-Control: a pour valeur no-store.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheStoreNoStore On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>CacheStoreNoStore Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>
@@ -1128,7 +1128,7 @@ l'ent&#234;te Cache-Control: a pour valeur no-store.</td></tr>
 marqu&#233;es comme priv&#233;es</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheStorePrivate On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>CacheStorePrivate Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>

@@ -7,7 +7,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>mod_session_dbd - Serveur Apache HTTP Version 2.4</title>
+<title>mod_session_dbd - Serveur HTTP Apache Version 2.4</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -18,7 +18,7 @@
 <body>
 <div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
-<p class="apache">Serveur Apache HTTP Version 2.4</p>
+<p class="apache">Serveur HTTP Apache Version 2.4</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
@@ -195,7 +195,7 @@ SessionDBDPerUser On</pre>
 l'identifiant de session</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SessionDBDCookieName <var>nom</var> <var>attributs</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>none</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session_dbd</td></tr>
 </table>
@@ -226,7 +226,7 @@ SessionDBDCookieName session path=/private;domain=example.com;httponly;secure;ve
 l'identifiant de session</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SessionDBDCookieName2 <var>nom</var> <var>attributs</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>none</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session_dbd</td></tr>
 </table>
@@ -257,7 +257,7 @@ SessionDBDCookieName2 session path=/private;domain=example.com;httponly;secure;v
 des en-t&#234;tes HTTP entrants</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SessionDBDCookieRemove On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>SessionDBDCookieRemove On</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session_dbd</td></tr>
 </table>
@@ -281,7 +281,7 @@ des en-t&#234;tes HTTP entrants</td></tr>
 base de donn&#233;es</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SessionDBDDeleteLabel <var>&#233;tiquette</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>SessionDBDDeleteLabel deletesession</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session_dbd</td></tr>
 </table>
@@ -300,7 +300,7 @@ base de donn&#233;es</td></tr>
 base de donn&#233;es</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SessionDBDInsertLabel <var>&#233;tiquette</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>SessionDBDInsertLabel insertsession</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session_dbd</td></tr>
 </table>
@@ -322,7 +322,7 @@ base de donn&#233;es</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active une session propre &#224; un utilisateur</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SessionDBDPerUser On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>SessionDBDPerUser Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session_dbd</td></tr>
 </table>
@@ -340,7 +340,7 @@ base de donn&#233;es</td></tr>
 dans la base de donn&#233;es</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SessionDBDSelectLabel <var>&#233;tiquette</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>SessionDBDSelectLabel selectsession</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session_dbd</td></tr>
 </table>
@@ -358,7 +358,7 @@ dans la base de donn&#233;es</td></tr>
 pr&#233;existantes dans la base de donn&#233;es</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SessionDBDUpdateLabel <var>&#233;tiquette</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>SessionDBDUpdateLabel updatesession</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session_dbd</td></tr>
 </table>

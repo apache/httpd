@@ -7,7 +7,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>mod_autoindex - Serveur Apache HTTP Version 2.4</title>
+<title>mod_autoindex - Serveur HTTP Apache Version 2.4</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -18,7 +18,7 @@
 <body>
 <div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
-<p class="apache">Serveur Apache HTTP Version 2.4</p>
+<p class="apache">Serveur HTTP Apache Version 2.4</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
@@ -219,8 +219,8 @@ shell Win32 <code>dir</code></td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Texte optionnel &#224; afficher &#224; la place d'un ic&#244;ne pour un
 fichier en fonction de son nom</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AddAlt <var>texte</var> <var>fichier</var> [<var>fichier</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&#233;es:</a></th><td>Indexes</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_autoindex</td></tr>
 </table>
@@ -248,8 +248,8 @@ AddAlt Compressed *.gz *.zip *.Z</pre>
 fichier en fonction de son codage MIME</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AddAltByEncoding <var>texte</var> <var>codage MIME</var>
 [<var>codage MIME</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&#233;es:</a></th><td>Indexes</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_autoindex</td></tr>
 </table>
@@ -274,8 +274,8 @@ fichier en fonction de son codage MIME</td></tr>
 fichier en fonction de son type MIME</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AddAltByType <var>texte</var> <var>type MIME</var>
 [<var>type MIME</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&#233;es:</a></th><td>Indexes</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_autoindex</td></tr>
 </table>
@@ -298,8 +298,8 @@ fichier en fonction de son type MIME</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Afficher la description d'un fichier</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AddDescription <var>texte</var> [<var>fichier</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&#233;es:</a></th><td>Indexes</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_autoindex</td></tr>
 </table>
@@ -363,8 +363,8 @@ AddDescription "My friend Marshall" friends/mars.gif</pre>
 nom</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AddIcon <var>ic&#244;ne</var> <var>nom</var> [<var>nom</var>]
 ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&#233;es:</a></th><td>Indexes</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_autoindex</td></tr>
 </table>
@@ -404,8 +404,8 @@ AddIcon /icons/backup.png *~</pre>
 codage MIME</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AddIconByEncoding <var>ic&#244;ne</var> <var>codage MIME</var>
 [<var>codage MIME</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&#233;es:</a></th><td>Indexes</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_autoindex</td></tr>
 </table>
@@ -432,8 +432,8 @@ codage MIME</td></tr>
 type MIME</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AddIconByType <var>ic&#244;ne</var> <var>type MIME</var>
 [<var>type MIME</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&#233;es:</a></th><td>Indexes</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_autoindex</td></tr>
 </table>
@@ -460,8 +460,8 @@ type MIME</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ic&#244;ne &#224; afficher par d&#233;faut lorsqu'aucun ic&#244;ne sp&#233;cifique
 n'est pr&#233;cis&#233;</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DefaultIcon <var>chemin URL</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&#233;es:</a></th><td>Indexes</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_autoindex</td></tr>
 </table>
@@ -481,8 +481,8 @@ n'est pr&#233;cis&#233;</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nom du fichier qui sera ins&#233;r&#233; au d&#233;but de la page
 contenant l'index</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>HeaderName <var>nom fichier</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&#233;es:</a></th><td>Indexes</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_autoindex</td></tr>
 </table>
@@ -544,8 +544,8 @@ contenant l'index</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ins&#232;re du texte dans la section HEAD de la page
 d'index.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>IndexHeadInsert <var>"marque ..."</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&#233;es:</a></th><td>Indexes</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_autoindex</td></tr>
 </table>
@@ -564,8 +564,8 @@ d'index.</td></tr>
 de l'index d'un r&#233;pertoire</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>IndexIgnore <var>fichier</var> [<var>fichier</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>IndexIgnore "."</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&#233;es:</a></th><td>Indexes</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_autoindex</td></tr>
 </table>
@@ -594,8 +594,8 @@ de l'index d'un r&#233;pertoire</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Vide la liste des fichiers &#224; cacher lors de l'affichage du
 contenu d'un r&#233;pertoire</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>IndexIgnoreReset ON|OFF</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&#233;es:</a></th><td>Indexes</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_autoindex</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Versions 2.3.10 et sup&#233;rieures</td></tr>
@@ -627,8 +627,8 @@ r&#233;pertoire</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>IndexOptions  [+|-]<var>option</var> [[+|-]<var>option</var>]
 ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>Par d&#233;faut, aucune option n'est activ&#233;e.</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&#233;es:</a></th><td>Indexes</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_autoindex</td></tr>
 </table>
@@ -1031,8 +1031,8 @@ r&#233;pertoire</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>IndexOrderDefault Ascending|Descending
 Name|Date|Size|Description</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>IndexOrderDefault Ascending Name</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&#233;es:</a></th><td>Indexes</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_autoindex</td></tr>
 </table>
@@ -1066,8 +1066,8 @@ Name|Date|Size|Description</code></td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ajoute une feuille de style CSS &#224; l'index du
 r&#233;pertoire</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>IndexStyleSheet <var>chemin-url</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&#233;es:</a></th><td>Indexes</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_autoindex</td></tr>
 </table>
@@ -1109,8 +1109,8 @@ r&#233;pertoire</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nom du fichier dont le contenu sera ins&#233;r&#233; &#224; la fin de
 l'index</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ReadmeName <var>nom-fichier</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&#233;es:</a></th><td>Indexes</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_autoindex</td></tr>
 </table>

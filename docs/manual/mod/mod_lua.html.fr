@@ -7,7 +7,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>mod_lua - Serveur Apache HTTP Version 2.4</title>
+<title>mod_lua - Serveur HTTP Apache Version 2.4</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -18,7 +18,7 @@
 <body>
 <div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
-<p class="apache">Serveur Apache HTTP Version 2.4</p>
+<p class="apache">Serveur HTTP Apache Version 2.4</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
@@ -1336,7 +1336,7 @@ le cas des requ&#234;tes dynamiques, utilisez <code>db:prepare</code> ou
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Branche une fonction fournisseur d'autorisation dans <code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code>
 </td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaAuthzProvider provider_name /path/to/lua/script.lua function_name</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Exp&#233;rimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible depuis la version 2.4.3 du serveur HTTP Apache</td></tr>
@@ -1366,8 +1366,8 @@ end</pre>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure le cache de code compil&#233;.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaCodeCache stat|forever|never</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>LuaCodeCache stat</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&#233;es:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Exp&#233;rimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table><p>
@@ -1397,8 +1397,8 @@ LuaCodeCache never</pre>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fournit un point d'entr&#233;e pour la phase access_checker du
 traitement de la requ&#234;te</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaHookAccessChecker  /chemin/vers/lua/script.lua  hook_function_name [early|late]</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&#233;es:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Exp&#233;rimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Le troisi&#232;me argument optionnel est disponible depuis la
@@ -1418,8 +1418,8 @@ HTTP_FORBIDDEN.</p>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fournit un point d'entr&#233;e pour la phase auth_checker du
 traitement de la requ&#234;te</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaHookAuthChecker  /chemin/vers/lua/script.lua hook_function_name [early|late]</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&#233;es:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Exp&#233;rimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Le troisi&#232;me argument optionnel est disponible depuis la
@@ -1474,8 +1474,8 @@ end</pre>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fournit un point d'entr&#233;e pour la phase check_user_id du
 traitement de la requ&#234;te</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaHookCheckUserID  /chemin/vers/lua/script.lua hook_function_name [early|late]</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&#233;es:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Exp&#233;rimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Le troisi&#232;me argument optionnel est disponible depuis la
@@ -1492,8 +1492,8 @@ version 2.3.15 du serveur HTTP Apache.</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fournit un point d'entr&#233;e pour la phase de correction du
 traitement de la requ&#234;te</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaHookFixups  /chemin/vers/lua/script.lua hook_function_name</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&#233;es:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Exp&#233;rimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table>
@@ -1509,8 +1509,8 @@ traitement de la requ&#234;te</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fournit un point d'entr&#233;e pour la phase insert_filter du
 traitement de la requ&#234;te</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaHookInsertFilter  /chemin/vers/lua/script.lua hook_function_name</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&#233;es:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Exp&#233;rimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table><p>Non encore impl&#233;ment&#233;</p>
@@ -1521,8 +1521,8 @@ traitement de la requ&#234;te</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Permet une insertion dans la phase de journalisation du
 traitement d'une requ&#234;te</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaHookLog  /path/to/lua/script.lua log_function_name</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&#233;es:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Exp&#233;rimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table>
@@ -1573,8 +1573,8 @@ end</pre>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fournit un point d'entr&#233;e pour la phase map_to_storage du
 traitement de la requ&#234;te</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaHookMapToStorage  /chemin/vers/lua/script.lua hook_function_name</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&#233;es:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Exp&#233;rimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table>
@@ -1624,8 +1624,8 @@ end</pre>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fournit un point d'entr&#233;e &#224; la phase du nom de
 traduction du traitement de la requ&#234;te</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaHookTranslateName  /chemin/vers/lua/script.lua  nom_fonction_hook [early|late]</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&#233;es:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Exp&#233;rimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Le troisi&#232;me argument optionnel est disponible depuis la
@@ -1677,8 +1677,8 @@ end</pre>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fournit un point d'entr&#233;e pour la phase type_checker du
 traitement de la requ&#234;te</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaHookTypeChecker  /chemin/vers/lua/script.lua hook_function_name</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&#233;es:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Exp&#233;rimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table><p>
@@ -1710,8 +1710,8 @@ traitement de la requ&#234;te</td></tr>
 parentes sont fusionn&#233;es dans les enfants</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaInherit none|parent-first|parent-last</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>LuaInherit parent-first</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&#233;es:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Exp&#233;rimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Versions 2.4.0 et sup&#233;rieures</td></tr>
@@ -1732,7 +1732,7 @@ parentes sont fusionn&#233;es dans les enfants</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fournit une fonction Lua pour le filtrage en entr&#233;e</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaInputFilter filter_name /path/to/lua/script.lua function_name</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Exp&#233;rimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible depuis la version 2.4.5 du serveur HTTP
@@ -1792,8 +1792,8 @@ filtres Lua</a>" pour plus de d&#233;tails.
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Met en correspondance un chemin avec un gestionnaire lua</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaMapHandler modele-uri /chemin/vers/lua/script.lua
 [nom-fonction]</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&#233;es:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Exp&#233;rimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table>
@@ -1824,7 +1824,7 @@ filtres Lua</a>" pour plus de d&#233;tails.
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fournit une fonction Lua pour le filtrage de contenu en
 sortie</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaOutputFilter filter_name /path/to/lua/script.lua function_name</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Exp&#233;rimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible &#224; partir de la version 2.4.5 du serveur HTTP
@@ -1890,8 +1890,8 @@ filtres Lua</a>" pour plus de d&#233;tails.
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ajoute un r&#233;pertoire au package.cpath de lua</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaPackageCPath /chemin/vers/include/?.soa</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&#233;es:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Exp&#233;rimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table>
@@ -1906,8 +1906,8 @@ filtres Lua</a>" pour plus de d&#233;tails.
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ajoute un r&#233;pertoire au package.path de lua</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaPackagePath /chemin/vers/include/?.lua</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&#233;es:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Exp&#233;rimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table><p>Cette directive permet d'ajouter un chemin &#224; la liste des
@@ -1925,8 +1925,8 @@ LuaPackagePath "/scripts/lib/?/init.lua"</pre>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fournit un point d'entr&#233;e pour la gestion rapide du
 traitement de la requ&#234;te</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaQuickHandler /path/to/script.lua hook_function_name</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&#233;es:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Exp&#233;rimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table>
@@ -1950,8 +1950,8 @@ traitement de la requ&#234;te</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sp&#233;cifie le chemin de base pour la r&#233;solution des chemins
 relatifs dans les directives de mod_lua</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaRoot /chemin/vers/un/r&#233;pertoire</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&#233;es:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Exp&#233;rimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table>
@@ -1968,8 +1968,8 @@ relatifs dans les directives de mod_lua</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Une valeur parmi once, request, conn, thread -- la valeur par d&#233;faut est once</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaScope once|request|conn|thread|server [min] [max]</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>LuaScope once</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&#233;es:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Exp&#233;rimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table>

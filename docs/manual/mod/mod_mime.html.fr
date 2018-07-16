@@ -7,7 +7,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>mod_mime - Serveur Apache HTTP Version 2.4</title>
+<title>mod_mime - Serveur HTTP Apache Version 2.4</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -18,7 +18,7 @@
 <body>
 <div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
-<p class="apache">Serveur Apache HTTP Version 2.4</p>
+<p class="apache">Serveur HTTP Apache Version 2.4</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
@@ -271,8 +271,8 @@ Content-Type: text/plain; charset=ISO-8859-1
 jeu de caract&#232;res sp&#233;cifi&#233;</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AddCharset <var>jeu-car</var> <var>extension</var>
 [<var>extension</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&#233;es:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mime</td></tr>
 </table>
@@ -322,8 +322,8 @@ AddCharset SHIFT_JIS .sjis</pre>
 de codage sp&#233;cifi&#233;</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AddEncoding <var>codage</var> <var>extension</var>
 [<var>extension</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&#233;es:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mime</td></tr>
 </table>
@@ -373,8 +373,8 @@ AddEncoding x-compress .Z</pre>
 gestionnaire sp&#233;cifi&#233;</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AddHandler <var>nom-gestionnaire</var> <var>extension</var>
 [<var>extension</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&#233;es:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mime</td></tr>
 </table>
@@ -411,8 +411,8 @@ gestionnaire sp&#233;cifi&#233;</td></tr>
 filtres sp&#233;cifi&#233;s qui traiteront les requ&#234;tes clients</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AddInputFilter <var>filtre</var>[;<var>filtre</var>...]
 <var>extension</var> [<var>extension</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&#233;es:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mime</td></tr>
 </table>
@@ -450,8 +450,8 @@ filtres sp&#233;cifi&#233;s qui traiteront les requ&#234;tes clients</td></tr>
 sp&#233;cifi&#233;</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AddLanguage <var>symbole-langue</var> <var>extension</var>
 [<var>extension</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&#233;es:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mime</td></tr>
 </table>
@@ -510,8 +510,8 @@ filtres sp&#233;cifi&#233;s qui traiteront les r&#233;ponses en provenance du
 serveur</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AddOutputFilter <var>filtre</var>[;<var>filtre</var>...]
 <var>extension</var> [<var>extension</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&#233;es:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mime</td></tr>
 </table>
@@ -580,8 +580,8 @@ AddOutputFilter DEFLATE shtml
 contenu sp&#233;cifi&#233;</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AddType <var>type-m&#233;dium</var> <var>extension</var>
 [<var>extension</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&#233;es:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mime</td></tr>
 </table>
@@ -669,8 +669,8 @@ d'en-t&#234;te Content-Language pour toutes les ressources dans le contexte
 courant auxquelles aucun symbole de langue n'a &#233;t&#233;
 associ&#233;.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DefaultLanguage <var>symbole-langue</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&#233;es:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mime</td></tr>
 </table>
@@ -750,8 +750,8 @@ recherche de correspondance de fichier avec les vues multiples
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MultiviewsMatch Any|NegotiatedOnly|Filters|Handlers
 [Handlers|Filters]</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>MultiviewsMatch NegotiatedOnly</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&#233;es:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mime</td></tr>
 </table>
@@ -816,7 +816,7 @@ ensemble d'extensions de noms de fichiers</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RemoveCharset <var>extension</var> [<var>extension</var>]
 ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&#233;es:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mime</td></tr>
 </table>
@@ -842,7 +842,7 @@ ensemble d'extensions de noms de fichiers</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RemoveEncoding <var>extension</var> [<var>extension</var>]
 ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&#233;es:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mime</td></tr>
 </table>
@@ -884,7 +884,7 @@ d'extensions de noms de fichiers</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RemoveHandler <var>extension</var> [<var>extension</var>]
 ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&#233;es:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mime</td></tr>
 </table>
@@ -920,7 +920,7 @@ ensemble d'extensions de noms de fichiers</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RemoveInputFilter <var>extension</var> [<var>extension</var>]
 ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&#233;es:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mime</td></tr>
 </table>
@@ -949,7 +949,7 @@ d'extensions de noms de fichiers</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RemoveLanguage <var>extension</var> [<var>extension</var>]
 ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&#233;es:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mime</td></tr>
 </table>
@@ -972,7 +972,7 @@ ensemble d'extensions de noms de fichiers</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RemoveOutputFilter <var>extension</var> [<var>extension</var>]
 ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&#233;es:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mime</td></tr>
 </table>
@@ -1002,7 +1002,7 @@ d'extensions de noms de fichiers</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RemoveType <var>extension</var> [<var>extension</var>]
 ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&#233;es:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mime</td></tr>
 </table>
@@ -1042,7 +1042,7 @@ d'extensions de noms de fichiers</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le chemin du fichier <code>mime.types</code></td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>TypesConfig <var>chemin-fichier</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>TypesConfig conf/mime.types</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mime</td></tr>
 </table>
