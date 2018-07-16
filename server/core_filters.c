@@ -360,8 +360,6 @@ static apr_status_t sendfile_nonblocking(apr_socket_t *s,
 
 /* XXX: Should these be configurable parameters? */
 #define THRESHOLD_MIN_WRITE 4096
-#define THRESHOLD_MAX_BUFFER 65536
-#define MAX_REQUESTS_IN_PIPELINE 5
 
 /* Optional function coming from mod_logio, used for logging of output
  * traffic
@@ -379,6 +377,7 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *new_bb)
     int eor_buckets_in_brigade, morphing_bucket_in_brigade;
     apr_status_t rv;
     int loglevel = ap_get_conn_module_loglevel(c, APLOG_MODULE_INDEX);
+    core_server_config *conf;
 
     /* Fail quickly if the connection has already been aborted. */
     if (c->aborted) {
@@ -435,23 +434,23 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *new_bb)
      *     of everything up that point.
      *
      *  b) The request is in CONN_STATE_HANDLER state, and the brigade
-     *     contains at least THRESHOLD_MAX_BUFFER bytes in non-file
+     *     contains at least flush_max_threshold bytes in non-file
      *     buckets: Do blocking writes until the amount of data in the
-     *     buffer is less than THRESHOLD_MAX_BUFFER.  (The point of this
+     *     buffer is less than flush_max_threshold.  (The point of this
      *     rule is to provide flow control, in case a handler is
      *     streaming out lots of data faster than the data can be
      *     sent to the client.)
      *
      *  c) The request is in CONN_STATE_HANDLER state, and the brigade
-     *     contains at least MAX_REQUESTS_IN_PIPELINE EOR buckets:
-     *     Do blocking writes until less than MAX_REQUESTS_IN_PIPELINE EOR
+     *     contains at least flush_max_pipelined EOR buckets:
+     *     Do blocking writes until less than flush_max_pipelined EOR
      *     buckets are left. (The point of this rule is to prevent too many
      *     FDs being kept open by pipelined requests, possibly allowing a
      *     DoS).
      *
      *  d) The brigade contains a morphing bucket: If there was no other
      *     reason to do a blocking write yet, try reading the bucket. If its
-     *     contents fit into memory before THRESHOLD_MAX_BUFFER is reached,
+     *     contents fit into memory before flush_max_threshold is reached,
      *     everything is fine. Otherwise we need to do a blocking write the
      *     up to and including the morphing bucket, because ap_save_brigade()
      *     would read the whole bucket into memory later on.
@@ -479,6 +478,8 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *new_bb)
         setaside_remaining_output(f, ctx, bb, c);
         return APR_SUCCESS;
     }
+
+    conf = ap_get_core_module_config(c->base_server->module_config);
 
     bytes_in_brigade = 0;
     non_file_bytes_in_brigade = 0;
@@ -509,18 +510,18 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *new_bb)
         }
 
         if (APR_BUCKET_IS_FLUSH(bucket)
-            || non_file_bytes_in_brigade >= THRESHOLD_MAX_BUFFER
+            || non_file_bytes_in_brigade >= conf->flush_max_threshold
             || morphing_bucket_in_brigade
-            || eor_buckets_in_brigade > MAX_REQUESTS_IN_PIPELINE) {
+            || eor_buckets_in_brigade > conf->flush_max_pipelined) {
             /* this segment of the brigade MUST be sent before returning. */
 
             if (loglevel >= APLOG_TRACE6) {
                 char *reason = APR_BUCKET_IS_FLUSH(bucket) ?
                                "FLUSH bucket" :
-                               (non_file_bytes_in_brigade >= THRESHOLD_MAX_BUFFER) ?
-                               "THRESHOLD_MAX_BUFFER" :
+                               (non_file_bytes_in_brigade >= conf->flush_max_threshold) ?
+                               "max threshold" :
                                morphing_bucket_in_brigade ? "morphing bucket" :
-                               "MAX_REQUESTS_IN_PIPELINE";
+                               "max pipelined";
                 ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, c,
                               "will flush because of %s", reason);
                 ap_log_cerror(APLOG_MARK, APLOG_TRACE8, 0, c,

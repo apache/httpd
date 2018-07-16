@@ -254,6 +254,13 @@ AP_DECLARE(const char *) ap_get_server_name_for_url(request_rec *r);
 AP_DECLARE(apr_port_t) ap_get_server_port(const request_rec *r);
 
 /**
+ * Get the size of read buffers
+ * @param r The current request
+ * @return The read buffers size
+ */
+AP_DECLARE(apr_size_t) ap_get_read_buf_size(const request_rec *r);
+
+/**
  * Return the limit on bytes in request msg body
  * @param r The current request
  * @return the maximum number of bytes in the request msg body
@@ -672,6 +679,8 @@ typedef struct {
 
     /** Table of rules for building CGI variables, NULL if none configured */
     apr_hash_t *cgi_var_rules;
+
+    apr_size_t read_buf_size;
 } core_dir_config;
 
 /* macro to implement off by default behaviour */
@@ -741,6 +750,9 @@ typedef struct {
 #define AP_HTTP_METHODS_REGISTERED    2
     char http_methods;
     unsigned int merge_slashes;
+ 
+    apr_size_t   flush_max_threshold;
+    apr_int32_t  flush_max_pipelined;
 } core_server_config;
 
 /* for AddOutputFiltersByType in core.c */
