@@ -345,17 +345,6 @@ AP_DECLARE(apr_status_t) ap_check_pipeline(conn_rec *c, apr_bucket_brigade *bb,
     return rv;
 }
 
-#define RETRIEVE_BRIGADE_FROM_POOL(bb, key, pool, allocator) do {       \
-    apr_pool_userdata_get((void **)&bb, key, pool);                     \
-    if (bb == NULL) {                                                   \
-        bb = apr_brigade_create(pool, allocator);                       \
-        apr_pool_userdata_setn((const void *)bb, key, NULL, pool);      \
-    }                                                                   \
-    else {                                                              \
-        apr_brigade_cleanup(bb);                                        \
-    }                                                                   \
-} while(0)
-
 AP_DECLARE(void) ap_process_request_after_handler(request_rec *r)
 {
     apr_bucket_brigade *bb;
@@ -368,8 +357,7 @@ AP_DECLARE(void) ap_process_request_after_handler(request_rec *r)
      * this bucket is destroyed, the request will be logged and
      * its pool will be freed
      */
-    RETRIEVE_BRIGADE_FROM_POOL(bb, "ap_process_request_after_handler_brigade",
-                               c->pool, c->bucket_alloc);
+    bb = ap_reuse_brigade_from_pool("ap_prah_bb", c->pool, c->bucket_alloc);
     b = ap_bucket_eor_create(c->bucket_alloc, r);
     APR_BRIGADE_INSERT_HEAD(bb, b);
 
@@ -507,8 +495,7 @@ AP_DECLARE(void) ap_process_request(request_rec *r)
     ap_process_async_request(r);
 
     if (!c->data_in_input_filters || ap_run_input_pending(c) != OK) {
-        RETRIEVE_BRIGADE_FROM_POOL(bb, "ap_process_request_brigade", 
-                                   c->pool, c->bucket_alloc);
+        bb = ap_reuse_brigade_from_pool("ap_pr_bb", c->pool, c->bucket_alloc);
         b = apr_bucket_flush_create(c->bucket_alloc);
         APR_BRIGADE_INSERT_HEAD(bb, b);
         rv = ap_pass_brigade(c->output_filters, bb);

@@ -2081,13 +2081,8 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_request_core_filter(ap_filter_t *f,
     }
 
     if (!tmp_bb) {
-        const char *tmp_bb_key = "ap_request_core_filter_bb";
-        tmp_bb = (void *)apr_table_get(f->c->notes, tmp_bb_key);
-        if (!tmp_bb) {
-            tmp_bb = apr_brigade_create(f->c->pool, f->c->bucket_alloc);
-            apr_table_setn(f->c->notes, tmp_bb_key, (void *)tmp_bb);
-        }
-        f->ctx = tmp_bb;
+        f->ctx = tmp_bb = ap_reuse_brigade_from_pool("ap_rcf_bb", f->c->pool,
+                                                     f->c->bucket_alloc);
     }
 
     /* Reinstate any buffered content */
@@ -2137,13 +2132,12 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_request_core_filter(ap_filter_t *f,
         }
 
         status = ap_pass_brigade(f->next, tmp_bb);
+        apr_brigade_cleanup(tmp_bb);
+
         if (seen_eor || (status != APR_SUCCESS &&
                          !APR_STATUS_IS_EOF(status))) {
-            apr_brigade_cleanup(tmp_bb);
             return status;
         }
-
-        apr_brigade_cleanup(tmp_bb);
     }
 
     return ap_filter_setaside_brigade(f, bb);
