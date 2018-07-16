@@ -81,20 +81,20 @@
         <message id="syntax">Syntaxe</message>
         <message id="default">D&#233;faut</message>
         <message id="context">Contexte</message>
-        <message id="override">AllowOverride</message>
+        <message id="override">Surcharges autoris&#233;es</message>
         <message id="status">Statut</message>
         <message id="module">Module</message>
 
         <!-- Status descriptions -->
         <message id="base" letter="B">Base</message>
         <message id="mpm" letter="M">MPM</message>
-        <message id="core" letter="C">Core</message>
+        <message id="core" letter="C">Noyau httpd</message>
         <message id="extension" letter="E">Extension</message>
         <message id="experimental" letter="X">Exp&#233;rimental</message>
         <message id="external" letter="T">Externe</message>
 
         <!-- Used in directive context lists -->
-        <message id="serverconfig" letter="s">configuration du serveur</message>
+        <message id="serverconfig" letter="s">configuration globale</message>
         <message id="virtualhost" letter="v">serveur virtuel</message>
         <message id="directory" letter="d">r&#233;pertoire</message>
         <message id="htaccess" letter="h">.htaccess</message>
@@ -118,8 +118,8 @@
         <message id="glossarylink">voir glossaire</message>
 
         <!-- Used in headers and footers -->
-        <message id="apachetitle">- Serveur Apache HTTP</message>
-        <message id="apachehttpserver">Serveur Apache HTTP Version
+        <message id="apachetitle">- Serveur HTTP Apache</message>
+        <message id="apachehttpserver">Serveur HTTP Apache Version
             &httpd.major;.&httpd.minor;</message>
         <message id="apachedocalt">[DOCUMENTATION APACHE]</message>
         <message id="search">Recherche Google</message> <!-- search button -->
