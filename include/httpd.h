@@ -1221,9 +1221,6 @@ struct conn_rec {
     /** Array of requests being handled under this connection. */
     apr_array_header_t *requests;
 
-    /** Empty bucket brigade */
-    apr_bucket_brigade *empty;
-
     /** Ring of pending filters (with setaside buckets) */
     struct ap_filter_ring *pending_filters;
 
