@@ -5325,7 +5325,6 @@ static conn_rec *core_create_conn(apr_pool_t *ptrans, server_rec *s,
 
     c->id = id;
     c->bucket_alloc = alloc;
-    c->empty = apr_brigade_create(c->pool, c->bucket_alloc);
     c->async_filter = sconf->async_filter;
 
     c->clogging_input_filters = 0;

@@ -1002,11 +1002,15 @@ AP_DECLARE(int) ap_filter_should_yield(ap_filter_t *f)
 AP_DECLARE_NONSTD(int) ap_filter_output_pending(conn_rec *c)
 {
     int data_in_output_filters = DECLINED;
+    apr_bucket_brigade *bb;
     ap_filter_t *f;
 
     if (!c->pending_filters) {
         return DECLINED;
     }
+
+    bb = ap_reuse_brigade_from_pool("ap_fop_bb", c->pool,
+                                    c->bucket_alloc);
 
     for (f = APR_RING_FIRST(c->pending_filters);
          f != APR_RING_SENTINEL(c->pending_filters, ap_filter_t, pending);
@@ -1015,9 +1019,10 @@ AP_DECLARE_NONSTD(int) ap_filter_output_pending(conn_rec *c)
                 && !APR_BRIGADE_EMPTY(f->bb)) {
             apr_status_t rv;
 
-            rv = ap_pass_brigade(f, c->empty);
-            apr_brigade_cleanup(c->empty);
-            if (rv != APR_SUCCESS && !APR_STATUS_IS_EAGAIN(rv)) {
+            rv = ap_pass_brigade(f, bb);
+            apr_brigade_cleanup(bb);
+
+            if (rv != APR_SUCCESS) {
                 ap_log_cerror(APLOG_MARK, APLOG_DEBUG, rv, c, APLOGNO(00470)
                         "write failure in '%s' output filter", f->frec->name);
                 return rv;
