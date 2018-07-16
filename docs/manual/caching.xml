@@ -334,7 +334,7 @@
         module="mod_cache">CacheDisable</directive> directives.</li>
 
         <li>If the response has an HTTP status code other than 200, 203, 300, 
-        301 or 410 it must also specify "Expires" or "Cache-Control" header.
+        301 or 410 it must also specify an "Expires" or "Cache-Control" header.
         </li>
 
         <li>The request must be a HTTP GET request.</li>
