@@ -22,6 +22,11 @@
 #include "apr_thread_proc.h"    /* for RLIMIT stuff */
 #include "apr_random.h"
 
+#include "apr_version.h"
+#if APR_MAJOR_VERSION < 2
+#include "apu_version.h"
+#endif
+
 #define APR_WANT_IOVEC
 #define APR_WANT_STRFUNC
 #define APR_WANT_MEMFUNC
@@ -80,6 +85,9 @@
 #define AP_CONTENT_MD5_OFF   0
 #define AP_CONTENT_MD5_ON    1
 #define AP_CONTENT_MD5_UNSET 2
+
+#define AP_FLUSH_MAX_THRESHOLD 65536
+#define AP_FLUSH_MAX_PIPELINED 5
 
 APR_HOOK_STRUCT(
     APR_HOOK_LINK(get_mgmt_items)
@@ -390,6 +398,13 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
     if (new->enable_sendfile != ENABLE_SENDFILE_UNSET) {
         conf->enable_sendfile = new->enable_sendfile;
     }
+ 
+    if (new->read_buf_size) {
+        conf->read_buf_size = new->read_buf_size;
+    }
+    else {
+        conf->read_buf_size = base->read_buf_size;
+    }
 
     conf->allow_encoded_slashes = new->allow_encoded_slashes;
     conf->decode_encoded_slashes = new->decode_encoded_slashes;
@@ -462,14 +477,13 @@ static void *create_core_server_config(apr_pool_t *a, server_rec *s)
         apr_table_setn(conf->accf_map, "http", "data");
         apr_table_setn(conf->accf_map, "https", "data");
 #endif
+
+        conf->flush_max_threshold = AP_FLUSH_MAX_THRESHOLD;
+        conf->flush_max_pipelined = AP_FLUSH_MAX_PIPELINED;
     }
-    /* pcalloc'ed - we have NULL's/0's
-    else ** is_virtual ** {
-        conf->ap_document_root = NULL;
-        conf->access_name = NULL;
-        conf->accf_map = NULL;
+    else {
+        conf->flush_max_pipelined = -1;
     }
-     */
 
     /* initialization, no special case for global context */
 
@@ -558,6 +572,14 @@ static void *merge_core_server_configs(apr_pool_t *p, void *basev, void *virtv)
                                        virt->protocols_honor_order);
     AP_CORE_MERGE_FLAG(merge_slashes, conf, base, virt);
     
+
+    conf->flush_max_threshold = (virt->flush_max_threshold)
+                                  ? virt->flush_max_threshold
+                                  : base->flush_max_threshold;
+    conf->flush_max_pipelined = (virt->flush_max_pipelined >= 0)
+                                  ? virt->flush_max_pipelined
+                                  : base->flush_max_pipelined;
+
     return conf;
 }
 
@@ -1217,6 +1239,13 @@ AP_DECLARE(apr_off_t) ap_get_limit_req_body(const request_rec *r)
     }
 
     return d->limit_req_body;
+}
+
+AP_DECLARE(apr_size_t) ap_get_read_buf_size(const request_rec *r)
+{
+    core_dir_config *d = ap_get_core_module_config(r->per_dir_config);
+
+    return d->read_buf_size ? d->read_buf_size : AP_IOBUFSIZE;
 }
 
 
@@ -2219,6 +2248,65 @@ static const char *set_enable_sendfile(cmd_parms *cmd, void *d_,
     else {
         return "parameter must be 'on' or 'off'";
     }
+
+    return NULL;
+}
+
+static const char *set_read_buf_size(cmd_parms *cmd, void *d_,
+                                     const char *arg)
+{
+    core_dir_config *d = d_;
+    apr_off_t size;
+    char *end;
+
+    if (apr_strtoff(&size, arg, &end, 10)
+            || size < 0 || size > APR_SIZE_MAX || *end)
+        return apr_pstrcat(cmd->pool,
+                           "parameter must be a number between 0 and "
+                           APR_STRINGIFY(APR_SIZE_MAX) "): ",
+                           arg, NULL);
+
+    d->read_buf_size = (apr_size_t)size;
+
+    return NULL;
+}
+
+static const char *set_flush_max_threshold(cmd_parms *cmd, void *d_,
+                                           const char *arg)
+{
+    core_server_config *conf =
+        ap_get_core_module_config(cmd->server->module_config);
+    apr_off_t size;
+    char *end;
+
+    if (apr_strtoff(&size, arg, &end, 10)
+            || size <= 0 || size > APR_SIZE_MAX || *end)
+        return apr_pstrcat(cmd->pool,
+                           "parameter must be a number between 1 and "
+                           APR_STRINGIFY(APR_SIZE_MAX) "): ",
+                           arg, NULL);
+
+    conf->flush_max_threshold = (apr_size_t)size;
+
+    return NULL;
+}
+
+static const char *set_flush_max_pipelined(cmd_parms *cmd, void *d_,
+                                           const char *arg)
+{
+    core_server_config *conf =
+        ap_get_core_module_config(cmd->server->module_config);
+    apr_off_t num;
+    char *end;
+
+    if (apr_strtoff(&num, arg, &end, 10)
+            || num < 0 || num > APR_INT32_MAX || *end)
+        return apr_pstrcat(cmd->pool,
+                           "parameter must be a number between 0 and "
+                           APR_STRINGIFY(APR_INT32_MAX) ": ",
+                           arg, NULL);
+
+    conf->flush_max_pipelined = (apr_int32_t)num;
 
     return NULL;
 }
@@ -4390,6 +4478,12 @@ AP_INIT_TAKE1("EnableMMAP", set_enable_mmap, NULL, OR_FILEINFO,
   "Controls whether memory-mapping may be used to read files"),
 AP_INIT_TAKE1("EnableSendfile", set_enable_sendfile, NULL, OR_FILEINFO,
   "Controls whether sendfile may be used to transmit files"),
+AP_INIT_TAKE1("ReadBufferSize", set_read_buf_size, NULL, OR_FILEINFO,
+  "Size (in bytes) of the memory buffers used to read data"),
+AP_INIT_TAKE1("FlushMaxThreshold", set_flush_max_threshold, NULL, RSRC_CONF,
+  "Maximum size (in bytes) above which pending data are flushed (blocking) to the network"),
+AP_INIT_TAKE1("FlushMaxPipelined", set_flush_max_pipelined, NULL, RSRC_CONF,
+  "Number of pipelined/pending responses above which they are flushed to the network"),
 
 /* Old server config file commands */
 
@@ -4833,6 +4927,11 @@ static int default_handler(request_rec *r)
 #if APR_HAS_MMAP
             if (d->enable_mmap == ENABLE_MMAP_OFF) {
                 (void)apr_bucket_file_enable_mmap(e, 0);
+            }
+#endif
+#if APR_MAJOR_VERSION > 1 || (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION >= 6)
+            if (d->read_buf_size) {
+                apr_bucket_file_set_buf_size(e, d->read_buf_size);
             }
 #endif
         }
