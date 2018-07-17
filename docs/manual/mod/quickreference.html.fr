@@ -56,7 +56,7 @@
 <tr><th>v</th><td>serveur virtuel</td></tr>
 <tr><th>d</th><td>r&#233;pertoire</td></tr>
 <tr><th>h</th><td>.htaccess</td></tr>
-<tr><th /><td /></tr>
+<tr><th>p</th><td>section proxy</td></tr>
 </table></td>
 <td><table><tr><th>C</th><td>Noyau httpd</td></tr>
 <tr><th>M</th><td>MPM</td></tr>
@@ -1297,40 +1297,40 @@ r&#233;ponses OCSP</td></tr>
 priv&#233;es chiffr&#233;es</td></tr>
 <tr><td><a href="mod_ssl.html#sslprotocol">SSLProtocol [+|-]<em>protocole</em> ...</a></td><td> all -SSLv3 (jusqu'&#224; +</td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Indique les versions du protocole SSL/TLS
 disponibles</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslproxycacertificatefile">SSLProxyCACertificateFile <em>file-path</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Fichier contenant la concat&#233;nation des certificats de CA
+<tr class="odd"><td><a href="mod_ssl.html#sslproxycacertificatefile">SSLProxyCACertificateFile <em>file-path</em></a></td><td></td><td>svp</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Fichier contenant la concat&#233;nation des certificats de CA
 cod&#233;s en PEM pour l'authentification des serveurs distants</td></tr>
-<tr><td><a href="mod_ssl.html#sslproxycacertificatepath">SSLProxyCACertificatePath <em>chemin-r&#233;pertoire</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">R&#233;pertoire des certificats de CA cod&#233;s en PEM pour
+<tr><td><a href="mod_ssl.html#sslproxycacertificatepath">SSLProxyCACertificatePath <em>chemin-r&#233;pertoire</em></a></td><td></td><td>svp</td><td>E</td></tr><tr><td class="descr" colspan="4">R&#233;pertoire des certificats de CA cod&#233;s en PEM pour
 l'authentification des serveurs distants</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslproxycarevocationcheck">SSLProxyCARevocationCheck chain|leaf|none</a></td><td> none </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active la v&#233;rification des r&#233;vocations bas&#233;e sur les CRLs
+<tr class="odd"><td><a href="mod_ssl.html#sslproxycarevocationcheck">SSLProxyCARevocationCheck chain|leaf|none</a></td><td> none </td><td>svp</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active la v&#233;rification des r&#233;vocations bas&#233;e sur les CRLs
 pour l'authentification du serveur distant</td></tr>
-<tr><td><a href="mod_ssl.html#sslproxycarevocationfile">SSLProxyCARevocationFile <em>chemin-fichier</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Fichier contenant la concat&#233;nation des CRLs de CA cod&#233;s en
+<tr><td><a href="mod_ssl.html#sslproxycarevocationfile">SSLProxyCARevocationFile <em>chemin-fichier</em></a></td><td></td><td>svp</td><td>E</td></tr><tr><td class="descr" colspan="4">Fichier contenant la concat&#233;nation des CRLs de CA cod&#233;s en
 PEM pour l'authentification des serveurs distants</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslproxycarevocationpath">SSLProxyCARevocationPath <em>chemin-r&#233;pertoire</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">R&#233;pertoire des CRLs de CA cod&#233;s en PEM pour
+<tr class="odd"><td><a href="mod_ssl.html#sslproxycarevocationpath">SSLProxyCARevocationPath <em>chemin-r&#233;pertoire</em></a></td><td></td><td>svp</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">R&#233;pertoire des CRLs de CA cod&#233;s en PEM pour
 l'authentification des serveurs distants</td></tr>
-<tr><td><a href="mod_ssl.html#sslproxycheckpeercn">SSLProxyCheckPeerCN on|off</a></td><td> on </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Configuration de la v&#233;rification du champ CN du certificat
+<tr><td><a href="mod_ssl.html#sslproxycheckpeercn">SSLProxyCheckPeerCN on|off</a></td><td> on </td><td>svp</td><td>E</td></tr><tr><td class="descr" colspan="4">Configuration de la v&#233;rification du champ CN du certificat
 du serveur distant
 </td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslproxycheckpeerexpire">SSLProxyCheckPeerExpire on|off</a></td><td> on </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configuration de la v&#233;rification de l'expiration du
+<tr class="odd"><td><a href="mod_ssl.html#sslproxycheckpeerexpire">SSLProxyCheckPeerExpire on|off</a></td><td> on </td><td>svp</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configuration de la v&#233;rification de l'expiration du
 certificat du serveur distant
 </td></tr>
-<tr><td><a href="mod_ssl.html#sslproxycheckpeername">SSLProxyCheckPeerName on|off</a></td><td> on </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Configure la v&#233;rification du nom d'h&#244;te dans les
+<tr><td><a href="mod_ssl.html#sslproxycheckpeername">SSLProxyCheckPeerName on|off</a></td><td> on </td><td>svp</td><td>E</td></tr><tr><td class="descr" colspan="4">Configure la v&#233;rification du nom d'h&#244;te dans les
 certificats serveur distants
 </td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslproxyciphersuite">SSLProxyCipherSuite <em>algorithmes</em></a></td><td> ALL:!ADH:RC4+RSA:+H +</td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Algorithmes de chiffrement disponibles pour la n&#233;gociation
+<tr class="odd"><td><a href="mod_ssl.html#sslproxyciphersuite">SSLProxyCipherSuite <em>algorithmes</em></a></td><td> ALL:!ADH:RC4+RSA:+H +</td><td>svp</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Algorithmes de chiffrement disponibles pour la n&#233;gociation
 lors de l'initialisation d'une connexion SSL de mandataire</td></tr>
-<tr><td><a href="mod_ssl.html#sslproxyengine">SSLProxyEngine on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Interrupteur marche/arr&#234;t du moteur de mandataire
+<tr><td><a href="mod_ssl.html#sslproxyengine">SSLProxyEngine on|off</a></td><td> off </td><td>svp</td><td>E</td></tr><tr><td class="descr" colspan="4">Interrupteur marche/arr&#234;t du moteur de mandataire
 SSL</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslproxymachinecertificatechainfile">SSLProxyMachineCertificateChainFile <em>nom-fichier</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Fichier de certificats de CA encod&#233;s PEM concat&#233;n&#233;s permettant au
+<tr class="odd"><td><a href="mod_ssl.html#sslproxymachinecertificatechainfile">SSLProxyMachineCertificateChainFile <em>nom-fichier</em></a></td><td></td><td>svp</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Fichier de certificats de CA encod&#233;s PEM concat&#233;n&#233;s permettant au
 mandataire de choisir un certificat</td></tr>
-<tr><td><a href="mod_ssl.html#sslproxymachinecertificatefile">SSLProxyMachineCertificateFile <em>chemin-fichier</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Fichier contenant la concat&#233;nation des cl&#233;s et certificats
+<tr><td><a href="mod_ssl.html#sslproxymachinecertificatefile">SSLProxyMachineCertificateFile <em>chemin-fichier</em></a></td><td></td><td>svp</td><td>E</td></tr><tr><td class="descr" colspan="4">Fichier contenant la concat&#233;nation des cl&#233;s et certificats
 clients cod&#233;s en PEM que le mandataire doit utiliser</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslproxymachinecertificatepath">SSLProxyMachineCertificatePath <em>chemin-r&#233;pertoire</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">R&#233;pertoire des cl&#233;s et certificats clients cod&#233;s en PEM que
+<tr class="odd"><td><a href="mod_ssl.html#sslproxymachinecertificatepath">SSLProxyMachineCertificatePath <em>chemin-r&#233;pertoire</em></a></td><td></td><td>svp</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">R&#233;pertoire des cl&#233;s et certificats clients cod&#233;s en PEM que
 le mandataire doit utiliser</td></tr>
-<tr><td><a href="mod_ssl.html#sslproxyprotocol">SSLProxyProtocol [+|-]<em>protocole</em> ...</a></td><td> all -SSLv3 (jusqu'&#224; +</td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">D&#233;finit les protocoles SSL disponibles pour la fonction de
+<tr><td><a href="mod_ssl.html#sslproxyprotocol">SSLProxyProtocol [+|-]<em>protocole</em> ...</a></td><td> all -SSLv3 (jusqu'&#224; +</td><td>svp</td><td>E</td></tr><tr><td class="descr" colspan="4">D&#233;finit les protocoles SSL disponibles pour la fonction de
 mandataire</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslproxyverify">SSLProxyVerify <em>niveau</em></a></td><td> none </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Niveau de v&#233;rification du certificat du serveur
+<tr class="odd"><td><a href="mod_ssl.html#sslproxyverify">SSLProxyVerify <em>niveau</em></a></td><td> none </td><td>svp</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Niveau de v&#233;rification du certificat du serveur
 distant</td></tr>
-<tr><td><a href="mod_ssl.html#sslproxyverifydepth">SSLProxyVerifyDepth <em>niveau</em></a></td><td> 1 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Niveau de profondeur maximum dans les certificats de CA
+<tr><td><a href="mod_ssl.html#sslproxyverifydepth">SSLProxyVerifyDepth <em>niveau</em></a></td><td> 1 </td><td>svp</td><td>E</td></tr><tr><td class="descr" colspan="4">Niveau de profondeur maximum dans les certificats de CA
 lors de la v&#233;rification du certificat du serveur distant</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslrandomseed">SSLRandomSeed <em>contexte</em> <em>source</em>
 [<em>nombre</em>]</a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Source de d&#233;clenchement du G&#233;n&#233;rateur de Nombres
