@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE language SYSTEM "../lang.dtd">
-<!-- English revision: 1669920 -->
+<!-- English revision: 1824187 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -97,6 +97,7 @@
         <message id="virtualhost" letter="v">serveur virtuel</message>
         <message id="directory" letter="d">r&#233;pertoire</message>
         <message id="htaccess" letter="h">.htaccess</message>
+	<message id="proxy" letter="p">section proxy</message>
 
         <!-- Used for directive lists -->
         <message id="directives">Directives</message>
