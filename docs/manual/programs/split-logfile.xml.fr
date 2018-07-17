@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 1562488 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="split-logfile.xml.meta">
+<parentdocument href="./">Programs</parentdocument>
+
+<title>split-logfile - Eclatement des journaux en fonction des serveurs
+virtuels</title>
+
+<summary>
+    <p>Ce script perl permet d'extraire un journal pour chaque serveur
+    virtuel à partir d'un journal d'accès global du serveur web. Pour
+    que ce script fonctionne, le premier champ de chaque ligne du
+    journal global doit contenir l'identité du serveur virtuel ; ce
+    champ aura été ajouté à la directive <directive
+    module="mod_log_config">LogFormat</directive> via la variable
+    "<code>%v</code>".
+    </p>
+</summary>
+
+<section id="split-logfile"><title>Mode d'emploi</title>
+
+    <p>Création d'un fichier journal comportant l'identité du serveur
+    virtuel considéré :</p>
+
+    <highlight language="config">
+LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\"" combined_plus_vhost
+CustomLog logs/access_log combined_plus_vhost
+    </highlight>
+
+    <p>Un fichier journal sera créé dans le répertoire à partir duquel
+    vous exécutez le script pour chaque serveur virtuel qui apparaît
+    dans le journal global. Ces fichiers journaux seront nommés à partir
+    du nom du serveur virtuel considéré, avec l'extension
+    <code>.log</code>.</p>
+
+    <p>Le fichier journal global est lu depuis l'entrée standard stdin.
+    Les entrées de ce journal sont alors ajoutées au journal du serveur
+    virtuel correspondant.</p>
+
+    <example>split-logfile &lt; access_log</example>
+
+
+</section>
+
+</manualpage>
