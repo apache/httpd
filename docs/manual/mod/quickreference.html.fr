@@ -297,11 +297,11 @@ utiliser</td></tr>
 extension d'un fournisseur d'authentification de base et lui attribue
 l'alias sp&#233;cifi&#233;</td></tr>
 <tr class="odd"><td><a href="mod_authnz_fcgi.html#authnzfcgicheckauthnprovider">AuthnzFcgiCheckAuthnProvider <em>provider-name</em>|<code>None</code>
-<em>option</em> ...</a></td><td></td><td>d</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enables a FastCGI application to handle the check_authn
-authentication hook.</td></tr>
+<em>option</em> ...</a></td><td></td><td>d</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Permet &#224; une application FastCGI de g&#233;rer l'accroche
+d'authentification check_authn.</td></tr>
 <tr><td><a href="mod_authnz_fcgi.html#authnzfcgidefineprovider">AuthnzFcgiDefineProvider <em>type</em> <em>provider-name</em>
-<em>backend-address</em></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Defines a FastCGI application as a provider for
-authentication and/or authorization</td></tr>
+<em>backend-address</em></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">D&#233;finit une application FastCGI en tant que fournisseur
+d'authentification et/ou autorisation</td></tr>
 <tr class="odd"><td><a href="mod_authn_core.html#authtype">AuthType None|Basic|Digest|Form</a></td><td></td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Type d'authentification utilisateur</td></tr>
 <tr><td><a href="mod_authn_file.html#authuserfile">AuthUserFile <var>chemin-fichier</var></a></td><td></td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">D&#233;finit le nom d'un fichier texte pour l'authentification
 contenant la liste des utilisateurs et de leurs mots de
@@ -332,11 +332,13 @@ charge</td></tr>
 <tr><td><a href="mod_proxy.html#balancerpersist">BalancerPersist On|Off</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Tente de conserver les changements effectu&#233;s par le
     gestionnaire de r&#233;partition de charge apr&#232;s un red&#233;marrage du
     serveur.</td></tr>
-<tr class="odd"><td><a href="mod_brotli.html#brotlialteretag">BrotliAlterETag AddSuffix|NoChange|Remove</a></td><td> AddSuffix </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">How the outgoing ETag header should be modified during compression</td></tr>
-<tr><td><a href="mod_brotli.html#brotlicompressionmaxinputblock">BrotliCompressionMaxInputBlock <var>value</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum input block size</td></tr>
-<tr class="odd"><td><a href="mod_brotli.html#brotlicompressionquality">BrotliCompressionQuality <var>value</var></a></td><td> 5 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Compression quality</td></tr>
-<tr><td><a href="mod_brotli.html#brotlicompressionwindow">BrotliCompressionWindow <var>value</var></a></td><td> 18 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Brotli sliding compression window size</td></tr>
-<tr class="odd"><td><a href="mod_brotli.html#brotlifilternote">BrotliFilterNote [<var>type</var>] <var>notename</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Places the compression ratio in a note for logging</td></tr>
+<tr class="odd"><td><a href="mod_brotli.html#brotlialteretag">BrotliAlterETag AddSuffix|NoChange|Remove</a></td><td> AddSuffix </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Comment l'en-t&#234;te de r&#233;ponse ETag doit &#234;tre modifi&#233; au cours de la
+compression</td></tr>
+<tr><td><a href="mod_brotli.html#brotlicompressionmaxinputblock">BrotliCompressionMaxInputBlock <var>value</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Taille maximale du bloc de donn&#233;es en entr&#233;e</td></tr>
+<tr class="odd"><td><a href="mod_brotli.html#brotlicompressionquality">BrotliCompressionQuality <var>value</var></a></td><td> 5 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Qualit&#233; de la compression</td></tr>
+<tr><td><a href="mod_brotli.html#brotlicompressionwindow">BrotliCompressionWindow <var>value</var></a></td><td> 18 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Taille de la fen&#234;tre de compression glissante brotli</td></tr>
+<tr class="odd"><td><a href="mod_brotli.html#brotlifilternote">BrotliFilterNote [<var>type</var>] <var>notename</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enregistre le taux de compression dans une note &#224; des fins de
+journalisation</td></tr>
 <tr><td><a href="mod_setenvif.html#browsermatch">BrowserMatch <em>regex [!]env-variable</em>[=<em>valeur</em>]
 [[!]<em>env-variable</em>[=<em>valeur</em>]] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">D&#233;finit des variables d'environnement en fonction du
 contenu de l'en-t&#234;te HTTP User-Agent</td></tr>
@@ -588,24 +590,31 @@ gmon.out.</td></tr>
 s'arr&#234;ter dans le cas d'un arr&#234;t "en douceur"</td></tr>
 <tr><td><a href="mod_unixd.html#group">Group <var>groupe unix</var></a></td><td> #-1 </td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">Groupe sous lequel le serveur va traiter les
 requ&#234;tes</td></tr>
-<tr class="odd"><td><a href="mod_http2.html#h2copyfiles" id="H" name="H">H2CopyFiles on|off</a></td><td> off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Determine file handling in responses</td></tr>
-<tr><td><a href="mod_http2.html#h2direct">H2Direct on|off</a></td><td> on for h2c, off for +</td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">H2 Direct Protocol Switch</td></tr>
-<tr class="odd"><td><a href="mod_http2.html#h2earlyhints">H2EarlyHints on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Determine sending of 103 status codes</td></tr>
-<tr><td><a href="mod_http2.html#h2maxsessionstreams">H2MaxSessionStreams <em>n</em></a></td><td> 100 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum number of active streams per HTTP/2 session.</td></tr>
-<tr class="odd"><td><a href="mod_http2.html#h2maxworkeridleseconds">H2MaxWorkerIdleSeconds <em>n</em></a></td><td> 600 </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum number of seconds h2 workers remain idle until shut down.</td></tr>
-<tr><td><a href="mod_http2.html#h2maxworkers">H2MaxWorkers <em>n</em></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum number of worker threads to use per child process.</td></tr>
-<tr class="odd"><td><a href="mod_http2.html#h2minworkers">H2MinWorkers <em>n</em></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Minimal number of worker threads to use per child process.</td></tr>
-<tr><td><a href="mod_http2.html#h2moderntlsonly">H2ModernTLSOnly on|off</a></td><td> on </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Require HTTP/2 connections to be "modern TLS" only</td></tr>
-<tr class="odd"><td><a href="mod_http2.html#h2push">H2Push on|off</a></td><td> on </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">H2 Server Push Switch</td></tr>
-<tr><td><a href="mod_http2.html#h2pushdiarysize">H2PushDiarySize <em>n</em></a></td><td> 256 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">H2 Server Push Diary Size</td></tr>
-<tr class="odd"><td><a href="mod_http2.html#h2pushpriority">H2PushPriority <em>mime-type</em> [after|before|interleaved] [weight]</a></td><td> * After 16 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">H2 Server Push Priority</td></tr>
-<tr><td><a href="mod_http2.html#h2pushresource">H2PushResource [add] path [critical]</a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Declares resources for early pushing to the client</td></tr>
-<tr class="odd"><td><a href="mod_http2.html#h2serializeheaders">H2SerializeHeaders on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Serialize Request/Response Processing Switch</td></tr>
-<tr><td><a href="mod_http2.html#h2streammaxmemsize">H2StreamMaxMemSize <em>bytes</em></a></td><td> 65536 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum amount of output data buffered per stream.</td></tr>
+<tr class="odd"><td><a href="mod_http2.html#h2copyfiles" id="H" name="H">H2CopyFiles on|off</a></td><td> off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Contr&#244;le la gestion des fichiers dans les r&#233;ponses</td></tr>
+<tr><td><a href="mod_http2.html#h2direct">H2Direct on|off</a></td><td> on pour h2c, off po +</td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Activation du protocole H2 Direct</td></tr>
+<tr class="odd"><td><a href="mod_http2.html#h2earlyhints">H2EarlyHints on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Contr&#244;le l'envoi de codes d'&#233;tat 103</td></tr>
+<tr><td><a href="mod_http2.html#h2maxsessionstreams">H2MaxSessionStreams <em>n</em></a></td><td> 100 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Nombre maximal de flux actifs par session HTTP/2.</td></tr>
+<tr class="odd"><td><a href="mod_http2.html#h2maxworkeridleseconds">H2MaxWorkerIdleSeconds <em>n</em></a></td><td> 600 </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Nombre maximal de secondes pendant lequel une unit&#233; de
+	traitement h2 pourra rester inactive sans &#234;tre arr&#234;t&#233;e.</td></tr>
+<tr><td><a href="mod_http2.html#h2maxworkers">H2MaxWorkers <em>n</em></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Nombre maximal de threads &#224; utiliser pour chaque processus
+	enfant.</td></tr>
+<tr class="odd"><td><a href="mod_http2.html#h2minworkers">H2MinWorkers <em>n</em></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Nombre minimal de threads &#224; utiliser pour chaque processus
+	enfant.</td></tr>
+<tr><td><a href="mod_http2.html#h2moderntlsonly">H2ModernTLSOnly on|off</a></td><td> on </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Impose les connexions HTTP/2 en mode "TLS moderne"
+	seulement</td></tr>
+<tr class="odd"><td><a href="mod_http2.html#h2push">H2Push on|off</a></td><td> on </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Activation/d&#233;sactivation du server push H2</td></tr>
+<tr><td><a href="mod_http2.html#h2pushdiarysize">H2PushDiarySize n</a></td><td> 256 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Taille du journal des Pushes H2</td></tr>
+<tr class="odd"><td><a href="mod_http2.html#h2pushpriority">H2PushPriority mime-type [after|before|interleaved] [weight]</a></td><td> * After 16 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Priorit&#233; des pushes H2</td></tr>
+<tr><td><a href="mod_http2.html#h2pushresource">H2PushResource [add] path [critical]</a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">D&#233;clare des ressources &#224; proposer ("pusher") au client</td></tr>
+<tr class="odd"><td><a href="mod_http2.html#h2serializeheaders">H2SerializeHeaders on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active/d&#233;sactive la s&#233;rialisation du traitement des
+	requ&#234;tes/r&#233;ponses</td></tr>
+<tr><td><a href="mod_http2.html#h2streammaxmemsize">H2StreamMaxMemSize <em>bytes</em></a></td><td> 65536 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Quantit&#233; maximale de donn&#233;es en sortie mises en tampon par
+	flux.</td></tr>
 <tr class="odd"><td><a href="mod_http2.html#h2tlscooldownsecs">H2TLSCoolDownSecs <em>seconds</em></a></td><td> 1 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">-</td></tr>
 <tr><td><a href="mod_http2.html#h2tlswarmupsize">H2TLSWarmUpSize <em>amount</em></a></td><td> 1048576 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">-</td></tr>
-<tr class="odd"><td><a href="mod_http2.html#h2upgrade">H2Upgrade on|off</a></td><td> on for h2c, off for +</td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">H2 Upgrade Protocol Switch</td></tr>
-<tr><td><a href="mod_http2.html#h2windowsize">H2WindowSize <em>bytes</em></a></td><td> 65535 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Size of Stream Window for upstream data.</td></tr>
+<tr class="odd"><td><a href="mod_http2.html#h2upgrade">H2Upgrade on|off</a></td><td> on pour h2c, off po +</td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Activation/D&#233;sactivation du protocole de mise &#224; jour H2</td></tr>
+<tr><td><a href="mod_http2.html#h2windowsize">H2WindowSize <em>bytes</em></a></td><td> 65535 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Taille maximale des paquets de donn&#233;es pour les transmissions client
+	vers serveur.</td></tr>
 <tr class="odd"><td><a href="mod_headers.html#header">Header [<var>condition</var>] add|append|echo|edit|edit*|merge|set|setifempty|unset|note
 <var>en-t&#234;te</var> [[expr=]<var>valeur</var>
 [<var>remplacement</var>]
@@ -647,8 +656,9 @@ de la pr&#233;sence ou de l'absence d'un module sp&#233;cifique</td></tr>
 <tr class="odd"><td><a href="core.html#ifsection">&lt;IfSection [!]<var>section-name</var>&gt; ...
     &lt;/IfSection&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Regroupe des directives dont le traitement est conditionn&#233; par la
 pr&#233;sence ou l'absence d'une section particuli&#232;re</td></tr>
-<tr><td><a href="mod_version.html#ifversion">&lt;IfVersion [[!]<var>operator</var>] <var>version</var>&gt; ...
-&lt;/IfVersion&gt;</a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">contains version dependent configuration</td></tr>
+<tr><td><a href="mod_version.html#ifversion">&lt;IfVersion [[!]<var>op&#233;rateur</var>] <var>version</var>&gt; ...
+&lt;/IfVersion&gt;</a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Contient des portions de configuration d&#233;pendantes de la
+version</td></tr>
 <tr class="odd"><td><a href="mod_imagemap.html#imapbase">ImapBase map|referer|<var>URL</var></a></td><td> http://nom_serveur/ +</td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Valeur par d&#233;faut de la directive <code>base</code> des
 fichiers imagemap</td></tr>
 <tr><td><a href="mod_imagemap.html#imapdefault">ImapDefault error|nocontent|map|referer|<var>URL</var></a></td><td> nocontent </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Action &#224; entreprendre par d&#233;faut lorsqu'un fichier imagemap
@@ -948,9 +958,13 @@ mandat&#233;s</td></tr>
 doivent-ils &#234;tre &#233;chapp&#233;s lorsqu'ils sont envoy&#233;s au serveur FTP ?</td></tr>
 <tr class="odd"><td><a href="mod_proxy_ftp.html#proxyftplistonwildcard">ProxyFtpListOnWildcard [on|off]</a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Les caract&#232;res g&#233;n&#233;riques dans les noms de fichiers
 demand&#233;s doivent-ils d&#233;clencher l'affichage d'un listing ?</td></tr>
-<tr><td><a href="mod_proxy_hcheck.html#proxyhcexpr">ProxyHCExpr <em>name</em> {<em>ap_expr expression</em>}</a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Creates a named condition expression to use to determine health of the backend based on its response</td></tr>
-<tr class="odd"><td><a href="mod_proxy_hcheck.html#proxyhctemplate">ProxyHCTemplate <em>name</em> <em>parameter</em>=<em>setting</em> [...]</a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Creates a named template for setting various health check parameters</td></tr>
-<tr><td><a href="mod_proxy_hcheck.html#proxyhctpsize">ProxyHCTPsize <em>size</em></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets the total server-wide size of the threadpool used for the health check workers</td></tr>
+<tr><td><a href="mod_proxy_hcheck.html#proxyhcexpr">ProxyHCExpr <em>name</em> {<em>ap_expr expression</em>}</a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Cr&#233;e et nomme une expression conditionnelle &#224; utiliser pour
+d&#233;terminer la sant&#233; d'un serveur d'arri&#232;re-plan en fonction de sa valeur</td></tr>
+<tr class="odd"><td><a href="mod_proxy_hcheck.html#proxyhctemplate">ProxyHCTemplate <em>name</em> <em>parameter</em>=<em>setting</em> [...]</a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Cr&#233;e et nomme un mod&#232;le permettant de d&#233;finir diff&#233;rents
+param&#232;tres de check up</td></tr>
+<tr><td><a href="mod_proxy_hcheck.html#proxyhctpsize">ProxyHCTPsize <em>size</em></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">D&#233;finit la taille totale, pour l'ensemble du
+serveur, du jeu de threads utilis&#233; pour le check up des
+&#233;quipiers</td></tr>
 <tr class="odd"><td><a href="mod_proxy_html.html#proxyhtmlbufsize">ProxyHTMLBufSize <var>nb-octets</var></a></td><td> 8192 </td><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">D&#233;finit l'incr&#233;ment de la taille du tampon, ainsi que sa
 taille initiale, pour la mise en
 tampon des scripts en ligne et des feuilles de style.</td></tr>
@@ -1436,7 +1450,7 @@ d'h&#244;te sp&#233;cifique ou &#224; une adresse IP</td></tr>
 un serveur virtuel donn&#233;</td></tr>
 <tr class="odd"><td><a href="mod_vhost_alias.html#virtualscriptaliasip">VirtualScriptAliasIP <em>r&#233;pertoire-interpol&#233;</em>|none</a></td><td> none </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configuration dynamique du r&#233;pertoire des scripts CGI pour
 un serveur virtuel donn&#233;</td></tr>
-<tr><td><a href="mod_watchdog.html#watchdoginterval" id="W" name="W">WatchdogInterval <var>number-of-seconds</var></a></td><td> 1 </td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">Watchdog interval in seconds</td></tr>
+<tr><td><a href="mod_watchdog.html#watchdoginterval" id="W" name="W">WatchdogInterval <var>number-of-seconds</var></a></td><td> 1 </td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">Intervalle Watchdog en secondes</td></tr>
 <tr class="odd"><td><a href="mod_include.html#xbithack" id="X" name="X">XBitHack on|off|full</a></td><td> off </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Interpr&#232;te les directives SSI dans les fichiers dont le bit
 d'ex&#233;cution est positionn&#233;</td></tr>
 <tr><td><a href="mod_xml2enc.html#xml2encalias">xml2EncAlias <var>jeu-de-caract&#232;res alias [alias ...]</var></a></td><td></td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">D&#233;finit des alias pour les valeurs d'encodage</td></tr>
