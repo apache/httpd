@@ -152,6 +152,9 @@ static int bio_filter_out_flush(BIO *bio)
     bio_filter_out_ctx_t *outctx = (bio_filter_out_ctx_t *)BIO_get_data(bio);
     apr_bucket *e;
 
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, outctx->c,
+                  "bio_filter_out_write: flush");
+
     AP_DEBUG_ASSERT(APR_BRIGADE_EMPTY(outctx->bb));
 
     e = apr_bucket_flush_create(outctx->bb->bucket_alloc);
@@ -207,6 +210,9 @@ static int bio_filter_out_write(BIO *bio, const char *in, int inl)
         outctx->rc = APR_ECONNABORTED;
         return -1;
     }
+
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, outctx->c,
+                  "bio_filter_out_write: %i bytes", inl);
 
     /* Use a transient bucket for the output data - any downstream
      * filter must setaside if necessary. */
@@ -845,6 +851,9 @@ static apr_status_t ssl_filter_write(ap_filter_t *f,
     if (filter_ctx->pssl == NULL) {
         return APR_EGENERAL;
     }
+
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, f->c,
+                  "ssl_filter_write: %"APR_SIZE_T_FMT" bytes", len);
 
     /* We rely on SSL_get_error() after the write, which requires an empty error
      * queue before the write in order to work properly.
@@ -1633,8 +1642,11 @@ static apr_status_t ssl_io_filter_coalesce(ap_filter_t *f,
              && (ctx == NULL
                  || bytes + ctx->bytes + e->length < COALESCE_BYTES);
          e = APR_BUCKET_NEXT(e)) {
-        if (e->length) count++; /* don't count zero-length buckets */
-        bytes += e->length;
+        /* don't count zero-length buckets */
+        if (e->length) {
+            bytes += e->length;
+            count++;
+        }
     }
     upto = e;
 
