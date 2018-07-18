@@ -131,7 +131,7 @@ static apr_status_t simple_io_process(simple_conn_t * scon)
                     || c->aborted) {
                 scon->cs.state = CONN_STATE_LINGER;
             }
-            else if (c->data_in_input_filters || ap_run_input_pending(c) == OK) {
+            else if (ap_run_input_pending(c) == OK) {
                 scon->cs.state = CONN_STATE_READ_REQUEST_LINE;
             }
             else {

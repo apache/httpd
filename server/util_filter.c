@@ -1008,6 +1008,10 @@ AP_DECLARE_NONSTD(int) ap_filter_output_pending(conn_rec *c)
     apr_bucket_brigade *bb;
     ap_filter_t *f;
 
+    if (c->data_in_output_filters) {
+        return OK;
+    }
+
     if (!c->pending_filters) {
         return DECLINED;
     }
@@ -1043,6 +1047,10 @@ AP_DECLARE_NONSTD(int) ap_filter_output_pending(conn_rec *c)
 AP_DECLARE_NONSTD(int) ap_filter_input_pending(conn_rec *c)
 {
     ap_filter_t *f;
+
+    if (c->data_in_input_filters) {
+        return OK;
+    }
 
     if (!c->pending_filters) {
         return DECLINED;

@@ -403,9 +403,20 @@ AP_DECLARE(void) ap_process_request_after_handler(request_rec *r)
     c->data_in_input_filters = (rv == APR_SUCCESS);
     apr_brigade_cleanup(bb);
 
-    if (c->cs)
-        c->cs->state = (c->aborted) ? CONN_STATE_LINGER
-                                    : CONN_STATE_WRITE_COMPLETION;
+    if (c->cs) {
+        if (c->aborted) {
+            c->cs->state = CONN_STATE_LINGER;
+        }
+        else {
+            /* If we have still data in the output filters here it means that
+             * the last (recent) nonblocking write was EAGAIN, so tell the MPM
+             * to not try another useless/stressful one but to go straight to
+             * POLLOUT.
+            */
+            c->data_in_output_filters = ap_filter_should_yield(c->output_filters);
+            c->cs->state = CONN_STATE_WRITE_COMPLETION;
+        }
+    }
     AP_PROCESS_REQUEST_RETURN((uintptr_t)r, r->uri, r->status);
     if (ap_extended_status) {
         ap_time_process_request(c->sbh, STOP_PREQUEST);
@@ -494,7 +505,7 @@ AP_DECLARE(void) ap_process_request(request_rec *r)
 
     ap_process_async_request(r);
 
-    if (!c->data_in_input_filters || ap_run_input_pending(c) != OK) {
+    if (ap_run_input_pending(c) != OK) {
         bb = ap_reuse_brigade_from_pool("ap_pr_bb", c->pool, c->bucket_alloc);
         b = apr_bucket_flush_create(c->bucket_alloc);
         APR_BRIGADE_INSERT_HEAD(bb, b);
