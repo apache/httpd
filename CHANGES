@@ -3,6 +3,12 @@ Changes with Apache 2.4.35
 
 Changes with Apache 2.4.34
 
+  *) SECURITY: CVE-2018-8011 (cve.mitre.org)
+     mod_md: DoS via Coredumps on specially crafted requests
+
+  *) SECURITY: CVE-2018-1333 (cve.mitre.org)
+     mod_http2: DoS for HTTP/2 connections by specially crafted requests
+
   *) Introduce zh-cn and zh-tw (simplified and traditional Chinese) error
      document translations. [CodeingBoy, popcorner]
 
