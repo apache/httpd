@@ -1187,7 +1187,7 @@ read_request:
                 || listener_may_exit) {
             cs->pub.state = CONN_STATE_LINGER;
         }
-        else if (c->data_in_input_filters || ap_run_input_pending(c) == OK) {
+        else if (ap_run_input_pending(c) == OK) {
             cs->pub.state = CONN_STATE_READ_REQUEST_LINE;
             goto read_request;
         }

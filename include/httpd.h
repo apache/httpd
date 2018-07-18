@@ -1163,9 +1163,15 @@ struct conn_rec {
     struct apr_bucket_alloc_t *bucket_alloc;
     /** The current state of this connection; may be NULL if not used by MPM */
     conn_state_t *cs;
-    /** Is there data pending in the input filters or connection? */
+    /** Used internally to force ap_filter_input_pending() decision,
+     *  the public interface is ap_filter_should_yield(c->input_filters)
+     *  or ap_filter_input_pending().
+     */
     int data_in_input_filters;
-    /** No longer used, replaced with ap_filter_should_yield() */
+    /** Used internally to force ap_filter_output_pending() decision,
+     *  the public interface is ap_filter_should_yield(c->output_filters)
+     *  or ap_filter_output_pending().
+     */
     int data_in_output_filters;
 
     /** Are there any filters that clogg/buffer the input stream, breaking
