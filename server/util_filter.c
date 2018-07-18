@@ -761,17 +761,13 @@ AP_DECLARE(int) ap_filter_prepare_brigade(ap_filter_t *f, apr_pool_t **p)
 }
 
 AP_DECLARE(apr_status_t) ap_filter_setaside_brigade(ap_filter_t *f,
-        apr_bucket_brigade *bb)
+                                                    apr_bucket_brigade *bb)
 {
-    int loglevel = ap_get_conn_module_loglevel(f->c, APLOG_MODULE_INDEX);
-
-    if (loglevel >= APLOG_TRACE6) {
-        ap_log_cerror(
-            APLOG_MARK, APLOG_TRACE6, 0, f->c,
-            "setaside %s brigade to %s brigade in '%s' output filter",
-            (APR_BRIGADE_EMPTY(bb) ? "empty" : "full"),
-            (!f->bb || APR_BRIGADE_EMPTY(f->bb) ? "empty" : "full"), f->frec->name);
-    }
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, f->c,
+                  "setaside %s brigade to %s brigade in '%s' output filter",
+                  APR_BRIGADE_EMPTY(bb) ? "empty" : "full",
+                  (!f->bb || APR_BRIGADE_EMPTY(f->bb)) ? "empty" : "full",
+                  f->frec->name);
 
     if (!APR_BRIGADE_EMPTY(bb)) {
         /*
@@ -820,17 +816,8 @@ AP_DECLARE(apr_status_t) ap_filter_reinstate_brigade(ap_filter_t *f,
     apr_bucket *bucket, *next;
     apr_size_t bytes_in_brigade, non_file_bytes_in_brigade;
     int eor_buckets_in_brigade, morphing_bucket_in_brigade;
-    int loglevel = ap_get_conn_module_loglevel(f->c, APLOG_MODULE_INDEX);
     core_server_config *conf;
  
-    if (loglevel >= APLOG_TRACE6) {
-        ap_log_cerror(
-            APLOG_MARK, APLOG_TRACE6, 0, f->c,
-            "reinstate %s brigade to %s brigade in '%s' output filter",
-            (!f->bb || APR_BRIGADE_EMPTY(f->bb) ? "empty" : "full"),
-            (APR_BRIGADE_EMPTY(bb) ? "empty" : "full"), f->frec->name);
-    }
-
     if (f->bb && !APR_BRIGADE_EMPTY(f->bb)) {
         APR_BRIGADE_PREPEND(bb, f->bb);
     }
@@ -840,6 +827,12 @@ AP_DECLARE(apr_status_t) ap_filter_reinstate_brigade(ap_filter_t *f,
     }
  
     *flush_upto = NULL;
+
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, f->c,
+                  "reinstate %s brigade to %s brigade in '%s' output filter",
+                  (!f->bb || APR_BRIGADE_EMPTY(f->bb) ? "empty" : "full"),
+                  (APR_BRIGADE_EMPTY(bb) ? "empty" : "full"),
+                  f->frec->name);
 
     /*
      * Determine if and up to which bucket we need to do a blocking write:
@@ -907,7 +900,7 @@ AP_DECLARE(apr_status_t) ap_filter_reinstate_brigade(ap_filter_t *f,
             || eor_buckets_in_brigade > conf->flush_max_pipelined) {
             /* this segment of the brigade MUST be sent before returning. */
 
-            if (loglevel >= APLOG_TRACE6) {
+            if (APLOGctrace6(f->c)) {
                 char *reason = APR_BUCKET_IS_FLUSH(bucket) ?
                                "FLUSH bucket" :
                                (non_file_bytes_in_brigade >= conf->flush_max_threshold) ?
@@ -939,14 +932,12 @@ AP_DECLARE(apr_status_t) ap_filter_reinstate_brigade(ap_filter_t *f,
         }
     }
 
-    if (loglevel >= APLOG_TRACE8) {
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE8, 0, f->c,
-                      "brigade contains: bytes: %" APR_SIZE_T_FMT
-                      ", non-file bytes: %" APR_SIZE_T_FMT
-                      ", eor buckets: %d, morphing buckets: %d",
-                      bytes_in_brigade, non_file_bytes_in_brigade,
-                      eor_buckets_in_brigade, morphing_bucket_in_brigade);
-    }
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE8, 0, f->c,
+                  "brigade contains: bytes: %" APR_SIZE_T_FMT
+                  ", non-file bytes: %" APR_SIZE_T_FMT
+                  ", eor buckets: %d, morphing buckets: %d",
+                  bytes_in_brigade, non_file_bytes_in_brigade,
+                  eor_buckets_in_brigade, morphing_bucket_in_brigade);
 
     return APR_SUCCESS;
 }
