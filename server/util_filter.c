@@ -834,6 +834,12 @@ AP_DECLARE(apr_status_t) ap_filter_reinstate_brigade(ap_filter_t *f,
     if (f->bb && !APR_BRIGADE_EMPTY(f->bb)) {
         APR_BRIGADE_PREPEND(bb, f->bb);
     }
+    if (!flush_upto) {
+        /* Just prepend all. */
+        return APR_SUCCESS;
+    }
+ 
+    *flush_upto = NULL;
 
     /*
      * Determine if and up to which bucket we need to do a blocking write:
@@ -864,8 +870,6 @@ AP_DECLARE(apr_status_t) ap_filter_reinstate_brigade(ap_filter_t *f,
      *     up to and including the morphing bucket, because ap_save_brigade()
      *     would read the whole bucket into memory later on.
      */
-
-    *flush_upto = NULL;
 
     bytes_in_brigade = 0;
     non_file_bytes_in_brigade = 0;
