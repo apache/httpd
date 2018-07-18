@@ -1004,7 +1004,6 @@ AP_DECLARE(int) ap_filter_should_yield(ap_filter_t *f)
 
 AP_DECLARE_NONSTD(int) ap_filter_output_pending(conn_rec *c)
 {
-    int data_in_output_filters = DECLINED;
     apr_bucket_brigade *bb;
     ap_filter_t *f;
 
@@ -1035,13 +1034,13 @@ AP_DECLARE_NONSTD(int) ap_filter_output_pending(conn_rec *c)
                 return rv;
             }
 
-            if (ap_filter_should_yield(f)) {
-                data_in_output_filters = OK;
+            if (f->bb && !APR_BRIGADE_EMPTY(f->bb)) {
+                return OK;
             }
         }
     }
 
-    return data_in_output_filters;
+    return DECLINED;
 }
 
 AP_DECLARE_NONSTD(int) ap_filter_input_pending(conn_rec *c)
