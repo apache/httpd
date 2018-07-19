@@ -121,6 +121,10 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
+   *) mod_proxy_balancer: fix APR 1.4 compatibility
+      trunk patch: (not required)
+      2.4.x patch: http://people.apache.org/~jorton/ap_balancer_apr14x.patch
+      +1: jorton,
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
