@@ -407,6 +407,7 @@ SET(mod_firehose_requires            SOMEONE_TO_MAKE_IT_COMPILE_ON_WINDOWS)
 SET(mod_heartbeat_extra_libs         mod_watchdog)
 SET(mod_http2_requires               NGHTTP2_FOUND)
 SET(mod_http2_extra_defines          ssize_t=long)
+SET(mod_http2_extra_includes         ${NGHTTP2_INCLUDE_DIR})
 SET(mod_http2_extra_libs             ${NGHTTP2_LIBRARIES})
 SET(mod_http2_extra_sources
   modules/http2/h2_alt_svc.c
