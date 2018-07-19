@@ -70,6 +70,7 @@ typedef struct {
 typedef struct {
     apr_pool_t *ptemp;
     sctx_t *ctx;
+    proxy_balancer *balancer;
     proxy_worker *worker;
     proxy_worker *hc;
     apr_time_t now;
@@ -330,16 +331,22 @@ static const char *set_hc_tpsize (cmd_parms *cmd, void *dummy, const char *arg)
  * Use our short-lived pool for bucket_alloc so that we can simply move
  * buckets and use them after the backend connection is released.
  */
-static request_rec *create_request_rec(apr_pool_t *p, conn_rec *conn, const char *method)
+static request_rec *create_request_rec(apr_pool_t *p, server_rec *s,
+                                       proxy_balancer *balancer,
+                                       const char *method)
 {
     request_rec *r;
-    apr_bucket_alloc_t *ba;
+
     r = apr_pcalloc(p, sizeof(request_rec));
-    ba = apr_bucket_alloc_create(p);
     r->pool            = p;
-    r->connection      = conn;
-    r->connection->bucket_alloc = ba;
-    r->server          = conn->base_server;
+    r->server          = s;
+
+    r->per_dir_config = r->server->lookup_defaults;
+    if (balancer->section_config) {
+        r->per_dir_config = ap_merge_per_dir_configs(r->pool,
+                                                     r->per_dir_config,
+                                                     balancer->section_config);
+    }
 
     r->proxyreq        = PROXYREQ_RESPONSE;
 
@@ -356,15 +363,8 @@ static request_rec *create_request_rec(apr_pool_t *p, conn_rec *conn, const char
     r->trailers_out    = apr_table_make(r->pool, 1);
     r->notes           = apr_table_make(r->pool, 5);
 
-    r->kept_body       = apr_brigade_create(r->pool, r->connection->bucket_alloc);
     r->request_config  = ap_create_request_config(r->pool);
     /* Must be set before we run create request hook */
-
-    r->proto_output_filters = conn->output_filters;
-    r->output_filters  = r->proto_output_filters;
-    r->proto_input_filters = conn->input_filters;
-    r->input_filters   = r->proto_input_filters;
-    r->per_dir_config  = r->server->lookup_defaults;
 
     r->sent_bodyct     = 0;                      /* bytect isn't for body */
 
@@ -378,9 +378,6 @@ static request_rec *create_request_rec(apr_pool_t *p, conn_rec *conn, const char
      * until some module interjects and changes the value.
      */
     r->used_path_info = AP_REQ_DEFAULT_PATH_INFO;
-
-    r->useragent_addr = conn->client_addr;
-    r->useragent_ip = conn->client_ip;
 
 
     /* Time to populate r with the data we have. */
@@ -401,6 +398,19 @@ static request_rec *create_request_rec(apr_pool_t *p, conn_rec *conn, const char
     r->hostname = NULL;
 
     return r;
+}
+
+static void set_request_connection(request_rec *r, conn_rec *conn)
+{
+    conn->bucket_alloc = apr_bucket_alloc_create(r->pool);
+    r->connection = conn;
+
+    r->kept_body = apr_brigade_create(r->pool, conn->bucket_alloc);
+    r->output_filters = r->proto_output_filters = conn->output_filters;
+    r->input_filters = r->proto_input_filters = conn->input_filters;
+
+    r->useragent_addr = conn->client_addr;
+    r->useragent_ip = conn->client_ip;
 }
 
 static void create_hcheck_req(wctx_t *wctx, proxy_worker *hc,
@@ -752,13 +762,14 @@ static apr_status_t hc_check_http(baton_t *baton)
         return backend_cleanup("HCOH", backend, ctx->s, status);
     }
 
+    r = create_request_rec(ptemp, ctx->s, baton->balancer, wctx->method);
     if (!backend->connection) {
-        if ((status = ap_proxy_connection_create("HCOH", backend, NULL, ctx->s)) != OK) {
+        if ((status = ap_proxy_connection_create_ex("HCOH", backend, r)) != OK) {
             return backend_cleanup("HCOH", backend, ctx->s, status);
         }
     }
+    set_request_connection(r, backend->connection);
 
-    r = create_request_rec(ptemp, backend->connection, wctx->method);
     bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
 
     if ((status = hc_send(r, wctx->req, bb)) != OK) {
@@ -942,6 +953,7 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
                             baton = apr_palloc(ptemp, sizeof(baton_t));
                             baton->ctx = ctx;
                             baton->now = now;
+                            baton->balancer = balancer;
                             baton->worker = worker;
                             baton->ptemp = ptemp;
                             baton->hc = hc_get_hcworker(ctx, worker, ptemp);
