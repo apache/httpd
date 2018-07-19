@@ -604,14 +604,11 @@ static void setaside_remaining_output(ap_filter_t *f,
 
 static APR_INLINE int is_in_memory_bucket(apr_bucket *b)
 {
-    /* The bucket data are already in memory unless:
-     *   - it's a morphing bucket (heap buffers allocated on read), or
-     *   - it's a file bucket (heap buffers also allocated on read), or
-     *   - it's a mmap bucket (mapping happens over memory access usually).
-     */
-    return b->length != (apr_size_t)-1
-           && !APR_BUCKET_IS_FILE(b)
-           && !APR_BUCKET_IS_MMAP(b);
+    /* These buckets' data are already in memory. */
+    return APR_BUCKET_IS_HEAP(b)
+           || APR_BUCKET_IS_POOL(b)
+           || APR_BUCKET_IS_TRANSIENT(b)
+           || APR_BUCKET_IS_IMMORTAL(b);
 }
 
 #if APR_HAS_SENDFILE
