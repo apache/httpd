@@ -120,10 +120,6 @@ static int lbmethod_bytraffic_post_config(apr_pool_t *pconf, apr_pool_t *plog,
 
 static void register_hook(apr_pool_t *p)
 {
-    /* Only the mpm_winnt has child init hook handler.
-     * make sure that we are called after the mpm
-     * initializes and after the mod_proxy
-     */
     ap_register_provider(p, PROXY_LBMETHOD, "bytraffic", "0", &bytraffic);
     ap_hook_post_config(lbmethod_bytraffic_post_config, NULL, NULL, APR_HOOK_MIDDLE);
 }
