@@ -350,7 +350,6 @@ AP_DECLARE(void) ap_process_request_after_handler(request_rec *r)
     apr_bucket_brigade *bb;
     apr_bucket *b;
     conn_rec *c = r->connection;
-    apr_status_t rv;
     ap_filter_t *f;
 
     /* Send an EOR bucket through the output filter chain.  When
@@ -399,8 +398,7 @@ AP_DECLARE(void) ap_process_request_after_handler(request_rec *r)
      * without flushing data, and hence possibly delay pending response(s)
      * until the next/real request comes in or the keepalive timeout expires.
      */
-    rv = ap_check_pipeline(c, bb, DEFAULT_LIMIT_BLANK_LINES);
-    c->data_in_input_filters = (rv == APR_SUCCESS);
+    (void)ap_check_pipeline(c, bb, DEFAULT_LIMIT_BLANK_LINES);
     apr_brigade_cleanup(bb);
 
     if (c->cs) {
@@ -413,7 +411,6 @@ AP_DECLARE(void) ap_process_request_after_handler(request_rec *r)
              * to not try another useless/stressful one but to go straight to
              * POLLOUT.
             */
-            c->data_in_output_filters = ap_filter_should_yield(c->output_filters);
             c->cs->state = CONN_STATE_WRITE_COMPLETION;
         }
     }

@@ -992,7 +992,7 @@ static void process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * soc
 {
     conn_rec *c;
     long conn_id = ID_FROM_CHILD_THREAD(my_child_num, my_thread_num);
-    int clogging = 0;
+    int clogging = 0, from_wc_q = 0;
     apr_status_t rv;
     int rc = OK;
 
@@ -1094,6 +1094,9 @@ read_request:
                 rc = OK;
             }
         }
+        else if (cs->pub.state == CONN_STATE_WRITE_COMPLETION) {
+            from_wc_q = 1;
+        }
     }
     /*
      * The process_connection hooks above should set the connection state
@@ -1137,11 +1140,17 @@ read_request:
     }
 
     if (cs->pub.state == CONN_STATE_WRITE_COMPLETION) {
-        int pending;
+        int pending = DECLINED;
 
         ap_update_child_status(cs->sbh, SERVER_BUSY_WRITE, NULL);
 
-        pending = ap_run_output_pending(c);
+        if (from_wc_q) {
+            from_wc_q = 0; /* one shot */
+            pending = ap_run_output_pending(c);
+        }
+        else if (ap_filter_should_yield(c->output_filters)) {
+            pending = OK;
+        }
         if (pending == OK) {
             /* Still in WRITE_COMPLETION_STATE:
              * Set a write timeout for this connection, and let the

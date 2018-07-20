@@ -314,8 +314,6 @@ conn_rec *h2_slave_create(conn_rec *master, int slave_id, apr_pool_t *parent)
     c->input_filters          = NULL;
     c->output_filters         = NULL;
     c->bucket_alloc           = apr_bucket_alloc_create(pool);
-    c->data_in_input_filters  = 0;
-    c->data_in_output_filters = 0;
     /* prevent mpm_event from making wrong assumptions about this connection,
      * like e.g. using its socket for an async read check. */
     c->clogging_input_filters = 1;
