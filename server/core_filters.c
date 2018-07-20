@@ -79,7 +79,6 @@ do { \
 
 struct core_output_filter_ctx {
     apr_bucket_brigade *buffered_bb;
-    apr_bucket_brigade *tmp_flush_bb;
     apr_pool_t *deferred_write_pool;
     apr_size_t bytes_written;
     struct iovec *vec;
@@ -476,12 +475,10 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *new_bb)
         ctx = apr_pcalloc(c->pool, sizeof(*ctx));
         net->out_ctx = (core_output_filter_ctx_t *)ctx;
         /*
-         * Need to create tmp brigade with correct lifetime. Passing
-         * NULL to apr_brigade_split_ex would result in a brigade
+         * Need to create buffered_bb brigade with correct lifetime. Passing
+         * NULL to ap_save_brigade() would result in a brigade
          * allocated from bb->pool which might be wrong.
          */
-        ctx->tmp_flush_bb = apr_brigade_create(c->pool, c->bucket_alloc);
-        /* same for buffered_bb and ap_save_brigade */
         ctx->buffered_bb = apr_brigade_create(c->pool, c->bucket_alloc);
     }
 
