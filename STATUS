@@ -179,6 +179,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1801144,1801148,1801456 ^/httpd/httpd/trunk . 
      +1: jailletc36
 
+  *) mod_ssl: Fix regression discovered by Frank Meier regarding the default
+     value for SSLOCSPOverrideResponder which is already fixed in trunk by
+     r1555631. Backport version of r1555631 and patch by Frank Meier are the
+     same.
+     Trunk version of patch:
+        http://svn.apache.org/r1555631
+     Backport version for 2.4.x of patch:
+        http://home.apache.org/~rpluem/patches/r555631_backport.diff
+     +1: rpluem,
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
