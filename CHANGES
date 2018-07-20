@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_proxy: Remove load order and link dependency between mod_lbmethod_*
+     modules and mod_proxy. PR 62557. [Ruediger Pluem]
+
   *) mod_md: more robust handling of http-01 challenges and hands-off when module
      should not be involved, e.g. challenge setup by another ACME client. [Stefan Eissing]
 
