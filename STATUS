@@ -121,13 +121,13 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
+PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
+  [ start all new proposals below, under PATCHES PROPOSED. ]
+
    *) mod_proxy_balancer: fix APR 1.4 compatibility
       trunk patch: (not required)
       2.4.x patch: http://people.apache.org/~jorton/ap_balancer_apr14x.patch
-      +1: jorton, rpluem
-
-PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
-  [ start all new proposals below, under PATCHES PROPOSED. ]
+      +1: jorton, rpluem, ylavic
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -187,7 +187,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/r1555631
      Backport version for 2.4.x of patch:
         http://home.apache.org/~rpluem/patches/r555631_backport.diff
-     +1: rpluem,
+     +1: rpluem, yalvic, 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
