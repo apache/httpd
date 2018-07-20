@@ -110,7 +110,7 @@ static int lbmethod_bytraffic_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     ap_proxy_balancer_get_best_worker_fn =
                  APR_RETRIEVE_OPTIONAL_FN(ap_proxy_balancer_get_best_worker);
     if (!ap_proxy_balancer_get_best_worker_fn) {
-        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO()
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10150)
                      "mod_proxy must be loaded for mod_lbmethod_bytraffic");
         return !OK;
     }
