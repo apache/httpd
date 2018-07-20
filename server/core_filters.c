@@ -78,7 +78,6 @@ do { \
 #define APLOG_MODULE_INDEX AP_CORE_MODULE_INDEX
 
 struct core_output_filter_ctx {
-    apr_bucket_brigade *tmp_flush_bb;
     apr_bucket_brigade *empty_bb;
     apr_size_t bytes_written;
     struct iovec *vec;
@@ -370,18 +369,15 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     if (ctx == NULL) {
         ctx = apr_pcalloc(c->pool, sizeof(*ctx));
         net->out_ctx = (core_output_filter_ctx_t *)ctx;
-        /*
-         * Need to create tmp brigade with correct lifetime. Passing
-         * NULL to apr_brigade_split_ex would result in a brigade
-         * allocated from bb->pool which might be wrong.
-         */
-        ctx->tmp_flush_bb = apr_brigade_create(c->pool, c->bucket_alloc);
     }
 
     /* remain compatible with legacy MPMs that passed NULL to this filter */
     if (bb == NULL) {
         if (ctx->empty_bb == NULL) {
             ctx->empty_bb = apr_brigade_create(c->pool, c->bucket_alloc);
+        }
+        else {
+            apr_brigade_cleanup(ctx->empty_bb);
         }
         bb = ctx->empty_bb;
     }
