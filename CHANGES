@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.35
 
+  *) mod_proxy_balancer: Restore compatibility with APR 1.4.  [Joe Orton]
+
 Changes with Apache 2.4.34
 
   *) SECURITY: CVE-2018-8011 (cve.mitre.org)
