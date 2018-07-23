@@ -133,6 +133,7 @@
 # Layout used in Fedora httpd packaging.
 <Layout Fedora>
     prefix:        /usr
+    localstatedir: /var
     exec_prefix:   ${prefix}
     bindir:        ${prefix}/bin
     sbindir:       ${prefix}/sbin
@@ -144,11 +145,10 @@
     installbuilddir: ${libdir}/httpd/build
     errordir:      ${datadir}/error
     iconsdir:      ${datadir}/icons
-    htdocsdir:     /var/www/html
+    htdocsdir:     ${localstatedir}/www/html
     manualdir:     ${datadir}/manual
-    cgidir:        /var/www/cgi-bin
+    cgidir:        ${localstatedir}/www/cgi-bin
     includedir:    ${prefix}/include/httpd
-    localstatedir: /var
     runtimedir:    /run/httpd
     logfiledir:    ${localstatedir}/log/httpd
     proxycachedir: ${localstatedir}/cache/httpd/proxy
