@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.35
 
+  *) mod_ssl: Fix merging of SSLOCSPOverrideResponder.  [Jeff Trawick,
+     [Frank Meier <frank meier ergon.ch>]
+
   *) mod_proxy_balancer: Restore compatibility with APR 1.4.  [Joe Orton]
 
 Changes with Apache 2.4.34
