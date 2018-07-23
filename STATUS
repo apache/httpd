@@ -175,6 +175,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1801144,1801148,1801456 ^/httpd/httpd/trunk . 
      +1: jailletc36
 
+   *) Build tweaks: fix make -j install, Fedora config.layout.
+      trunk: http://svn.apache.org/r1836469
+             http://svn.apache.org/r1836154
+      2.4.x patch: svn merge -c 1836469,1836154 ^/httpd/httpd/trunk . 
+      +1: jorton,
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
