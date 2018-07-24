@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_proxy_http: forward 100-continue, and minimize race conditions when
+     reusing backend connections. PR 60330. [Yann Ylavic, Jean-Frederic Clere]
+
   *) mod_proxy: Remove load order and link dependency between mod_lbmethod_*
      modules and mod_proxy. PR 62557. [Ruediger Pluem, William Rowe]
 
