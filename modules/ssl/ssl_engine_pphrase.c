@@ -803,6 +803,7 @@ static UI_METHOD *get_passphrase_ui(apr_pool_t *p)
     
     return ui_method;
 }
+#endif
 
 
 apr_status_t modssl_load_engine_keypair(server_rec *s, apr_pool_t *p,
@@ -810,6 +811,7 @@ apr_status_t modssl_load_engine_keypair(server_rec *s, apr_pool_t *p,
                                         const char *certid, const char *keyid,
                                         X509 **pubkey, EVP_PKEY **privkey)
 {
+#if defined(HAVE_OPENSSL_ENGINE_H) && defined(HAVE_ENGINE_INIT)
     const char *c, *scheme;
     ENGINE *e;
     UI_METHOD *ui_method = get_passphrase_ui(p);
@@ -883,5 +885,7 @@ apr_status_t modssl_load_engine_keypair(server_rec *s, apr_pool_t *p,
     ENGINE_free(e);
 
     return APR_SUCCESS;
-}
+#else
+    return APR_ENOTIMPL;
 #endif
+}
