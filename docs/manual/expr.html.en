@@ -663,7 +663,11 @@ RequestHeader set X-Client-SAN "expr=%{:join PeerExtList('subjectAltName'):}"
 # Require that the remote IP be in the client's certificate SAN
 Require expr %{REMOTE_ADDR} -in split s/.*?IP Address:([^,]+)/$1/, PeerExtList('subjectAltName')
 # or alternatively:
-Require expr "IP Address:%{REMOTE_ADDR}" -in split/, /, join PeerExtList('subjectAltName')</pre>
+Require expr "IP Address:%{REMOTE_ADDR}" -in split/, /, join PeerExtList('subjectAltName')
+
+# Conditional logging
+CustomLog logs/access-errors.log common &#8220;expr=%{REQUEST_STATUS} &gt;= 400&#8221;
+CustomLog logs/access-errors-specific.log common &#8220;expr=%{REQUEST_STATUS} -in {'405','410'}"</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
