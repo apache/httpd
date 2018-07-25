@@ -3738,14 +3738,6 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
     if (do_100_continue) {
         const char *val;
 
-        if (!r->expecting_100) {
-            /* Don't forward any "100 Continue" response if the client is
-             * not expecting it.
-             */
-            apr_table_setn(r->subprocess_env, "proxy-interim-response",
-                                              "Suppress");
-        }
-
         /* Add the Expect header if not already there. */
         if (((val = apr_table_get(r->headers_in, "Expect")) == NULL)
                 || (ap_cstr_casecmp(val, "100-Continue") != 0 /* fast path */
