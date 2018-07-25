@@ -69,6 +69,10 @@ static int proxy_match_domainname(struct dirconn_entry *This, request_rec *r);
 static int proxy_match_hostname(struct dirconn_entry *This, request_rec *r);
 static int proxy_match_word(struct dirconn_entry *This, request_rec *r);
 static int ap_proxy_retry_worker(const char *proxy_function, proxy_worker *worker, server_rec *s);
+static proxy_worker *proxy_balancer_get_best_worker(proxy_balancer *balancer,
+                                                    request_rec *r,
+                                                    proxy_is_best_callback_fn_t *is_best,
+                                                    void *baton);
 
 APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(proxy, PROXY, int, create_req,
                                    (request_rec *r, request_rec *pr), (r, pr),
@@ -1300,10 +1304,10 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_balancer(proxy_balancer *balance
     return APR_SUCCESS;
 }
 
-PROXY_DECLARE(proxy_worker *) ap_proxy_balancer_get_best_worker(proxy_balancer *balancer,
-                                                                request_rec *r,
-                                                                proxy_is_best_callback_fn_t *is_best,
-                                                                void *baton)
+static proxy_worker *proxy_balancer_get_best_worker(proxy_balancer *balancer,
+                                                    request_rec *r,
+                                                    proxy_is_best_callback_fn_t *is_best,
+                                                    void *baton)
 {
     int i = 0;
     int cur_lbset = 0;
@@ -1413,6 +1417,14 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_balancer_get_best_worker(proxy_balancer *
     }
 
     return best_worker;
+}
+
+PROXY_DECLARE(proxy_worker *) ap_proxy_balancer_get_best_worker(proxy_balancer *balancer,
+                                                                request_rec *r,
+                                                                proxy_is_best_callback_fn_t *is_best,
+                                                                void *baton)
+{
+    return proxy_balancer_get_best_worker(balancer, r, is_best, baton);
 }
 
 /*
@@ -4079,5 +4091,5 @@ void proxy_util_register_hooks(apr_pool_t *p)
 {
     APR_REGISTER_OPTIONAL_FN(ap_proxy_retry_worker);
     APR_REGISTER_OPTIONAL_FN(ap_proxy_clear_connection);
-    APR_REGISTER_OPTIONAL_FN(ap_proxy_balancer_get_best_worker);
+    APR_REGISTER_OPTIONAL_FN(proxy_balancer_get_best_worker);
 }
