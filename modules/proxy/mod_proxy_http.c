@@ -254,6 +254,7 @@ typedef struct {
     apr_off_t cl_val, bytes_spooled;
 
     int do_100_continue;
+    int expecting_100;
     int flushall;
 } proxy_http_req_t;
 
@@ -669,7 +670,7 @@ static int ap_proxy_http_prefetch(proxy_http_req_t *req,
     apr_read_type_e block;
 
     if (apr_table_get(r->subprocess_env, "force-proxy-request-1.0")) {
-        if (r->expecting_100) {
+        if (req->expecting_100) {
             return HTTP_EXPECTATION_FAILED;
         }
         force10 = 1;
@@ -1613,11 +1614,12 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
             ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
                           "HTTP: received interim %d response", r->status);
             if (!policy
-                    || (proxy_status == HTTP_CONTINUE
-                        && r->expecting_100)
-                    || (!strcasecmp(policy, "RFC")
-                        && (proxy_status != HTTP_CONTINUE
-                            || (r->expecting_100 = 1)))) {
+                    || !strcasecmp(policy, "RFC")
+                    || (proxy_status == HTTP_CONTINUE && req->expecting_100)) {
+                if (proxy_status == HTTP_CONTINUE) {
+                    req->expecting_100 = 0;
+                    r->expecting_100 = 1;
+                }
                 ap_send_interim_response(r, 1);
             }
             /* FIXME: refine this to be able to specify per-response-status
@@ -1639,12 +1641,16 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
          * for the next one, or this is a final response and hence the backend
          * did not honor our expectation.
          */
-        if (do_100_continue
-                && (proxy_status == HTTP_CONTINUE || !interim_response)) {
+        if (do_100_continue && (!interim_response
+                                || proxy_status == HTTP_CONTINUE)) {
+            int do_send_body = (proxy_status == HTTP_CONTINUE
+                                || (!toclose && major > 0 && minor > 0));
+
             /* Reset to old timeout iff we've adjusted it. */
             if (worker->s->ping_timeout_set) {
                 apr_socket_timeout_set(backend->sock, old_timeout);
             }
+
             /* RFC 7231 - Section 5.1.1 - Expect - Requirement for servers
              *   A server that responds with a final status code before
              *   reading the entire message body SHOULD indicate in that
@@ -1657,8 +1663,17 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
              * discard it or the caller try another balancer member with the
              * same body (given status 503, though not implemented yet).
              */
-            if (proxy_status == HTTP_CONTINUE
-                    || (major > 0 && minor > 0 && !toclose)) {
+            if (proxy_status != HTTP_CONTINUE) {
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(10153)
+                              "HTTP: no 100-Continue sent by %pI (%s): "
+                              "%ssending body%s (response: %s)",
+                              backend->addr,
+                              backend->hostname ? backend->hostname : "",
+                              do_send_body ? "" : "not ",
+                              do_send_body ? " anyway" : "",
+                              proxy_status_line);
+            }
+            if (do_send_body) {
                 int status;
 
                 /* Send the request body (fully). */
@@ -1682,7 +1697,7 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
                 }
                 if (status != OK) {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                            APLOGNO() "pass request body failed "
+                            APLOGNO(10154) "pass request body failed "
                             "to %pI (%s) from %s (%s) with status %i",
                             backend->addr,
                             backend->hostname ? backend->hostname : "",
@@ -2082,8 +2097,9 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
 
     /* create space for state information */
     if ((status = ap_proxy_acquire_connection(proxy_function, &backend,
-                                              worker, r->server)) != OK)
-        goto cleanup;
+                                              worker, r->server)) != OK) {
+        return status;
+    }
 
     backend->is_ssl = is_ssl;
 
@@ -2094,13 +2110,29 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
     req->worker = worker;
     req->backend = backend;
     req->bucket_alloc = c->bucket_alloc;
+    req->rb_method = RB_INIT;
+
+    /* Should we handle end-to-end or ping 100-continue? */
     if (r->expecting_100 || PROXY_DO_100_CONTINUE(worker, r)) {
+        /* We need to reset r->expecting_100 or prefetching will cause
+         * ap_http_filter() to send "100 Continue" response by itself. So
+         * we'll use req->expecting_100 in mod_proxy_http to determine whether
+         * the client should be forwarded "100 continue", and r->expecting_100
+         * will be restored at the end of the function with the actual value of
+         * req->expecting_100 (i.e. cleared only if mod_proxy_http sent the
+         * "100 Continue" according to its policy).
+         */
         req->do_100_continue = 1;
+        req->expecting_100 = r->expecting_100;
+        r->expecting_100 = 0;
     }
+
+    /* Should we block while prefetching the body or try nonblocking and flush
+     * data to the backend ASAP?
+     */
     if (apr_table_get(r->subprocess_env, "proxy-flushall")) {
         req->flushall = 1;
     }
-    req->rb_method = RB_INIT;
 
     /*
      * In the case that we are handling a reverse proxy connection and this
@@ -2217,7 +2249,8 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
 
     /* Step Six: Clean Up */
 cleanup:
-    if (req && req->backend) {
+    r->expecting_100 = req->expecting_100;
+    if (req->backend) {
         if (status != OK)
             req->backend->close = 1;
         ap_proxy_http_cleanup(proxy_function, r, req->backend);
