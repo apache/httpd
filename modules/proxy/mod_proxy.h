@@ -883,7 +883,7 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_balancer_get_best_worker(proxy_balancer *
 /*
  * Needed by the lb modules.
  */
-APR_DECLARE_OPTIONAL_FN(proxy_worker *, ap_proxy_balancer_get_best_worker,
+APR_DECLARE_OPTIONAL_FN(proxy_worker *, proxy_balancer_get_best_worker,
                                         (proxy_balancer *balancer,
                                          request_rec *r,
                                          proxy_is_best_callback_fn_t *is_best,
