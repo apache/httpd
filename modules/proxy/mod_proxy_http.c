@@ -246,16 +246,17 @@ typedef struct {
     proxy_conn_rec *backend;
     conn_rec *origin;
 
-    rb_methods rb_method;
     apr_bucket_alloc_t *bucket_alloc;
     apr_bucket_brigade *header_brigade;
     apr_bucket_brigade *input_brigade;
     char *old_cl_val, *old_te_val;
     apr_off_t cl_val, bytes_spooled;
 
-    int do_100_continue;
+    rb_methods rb_method;
+
     int expecting_100;
-    int flushall;
+    unsigned int do_100_continue:1,
+                 flushall:1;
 } proxy_http_req_t;
 
 static int stream_reqbody_chunked(proxy_http_req_t *req)
@@ -1643,14 +1644,6 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
          */
         if (do_100_continue && (!interim_response
                                 || proxy_status == HTTP_CONTINUE)) {
-            int do_send_body = (proxy_status == HTTP_CONTINUE
-                                || (!toclose && major > 0 && minor > 0));
-
-            /* Reset to old timeout iff we've adjusted it. */
-            if (worker->s->ping_timeout_set) {
-                apr_socket_timeout_set(backend->sock, old_timeout);
-            }
-
             /* RFC 7231 - Section 5.1.1 - Expect - Requirement for servers
              *   A server that responds with a final status code before
              *   reading the entire message body SHOULD indicate in that
@@ -1663,16 +1656,23 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
              * discard it or the caller try another balancer member with the
              * same body (given status 503, though not implemented yet).
              */
-            if (proxy_status != HTTP_CONTINUE) {
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(10153)
-                              "HTTP: no 100-Continue sent by %pI (%s): "
-                              "%ssending body%s (response: %s)",
-                              backend->addr,
-                              backend->hostname ? backend->hostname : "",
-                              do_send_body ? "" : "not ",
-                              do_send_body ? " anyway" : "",
-                              proxy_status_line);
+            int do_send_body = (proxy_status == HTTP_CONTINUE
+                                || (!toclose && major > 0 && minor > 0));
+
+            /* Reset to old timeout iff we've adjusted it. */
+            if (worker->s->ping_timeout_set) {
+                apr_socket_timeout_set(backend->sock, old_timeout);
             }
+
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(10153)
+                          "HTTP: %s100 continue sent by %pI (%s): "
+                          "%ssending body (response: HTTP/%i.%i %s)",
+                          proxy_status != HTTP_CONTINUE ? "no " : "",
+                          backend->addr,
+                          backend->hostname ? backend->hostname : "",
+                          do_send_body ? "" : "not ",
+                          major, minor, proxy_status_line);
+
             if (do_send_body) {
                 int status;
 
@@ -1709,9 +1709,28 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
                     return status;
                 }
             }
+            else {
+                /* If we don't read the client connection any further, since
+                 * there are pending data it should be "Connection: close"d to
+                 * prevent reuse. We don't exactly c->keepalive = AP_CONN_CLOSE
+                 * here though, because error_override or a potential retry on
+                 * another backend could finally read that data and finalize
+                 * the request processing, making keep-alive possible. So what
+                 * we do is restoring r->expecting_100 for ap_set_keepalive()
+                 * to do the right thing according to the final response and
+                 * any later update of r->expecting_100.
+                 */
+                r->expecting_100 = req->expecting_100;
+                req->expecting_100 = 0;
+            }
 
             /* Once only! */
             do_100_continue = 0;
+        }
+
+        if (interim_response) {
+            /* Already forwarded above, read next response */
+            continue;
         }
 
         /* Moved the fixups of Date headers and those affected by
@@ -1789,7 +1808,6 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
 
         /* send body - but only if a body is expected */
         if ((!r->header_only) &&                   /* not HEAD request */
-            !interim_response &&                   /* not any 1xx response */
             (proxy_status != HTTP_NO_CONTENT) &&      /* not 204 */
             (proxy_status != HTTP_NOT_MODIFIED)) {    /* not 304 */
 
@@ -1976,7 +1994,7 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
             }
             ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r, "end body send");
         }
-        else if (!interim_response) {
+        else {
             ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r, "header only");
 
             /* make sure we release the backend connection as soon
@@ -2249,11 +2267,14 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
 
     /* Step Six: Clean Up */
 cleanup:
-    r->expecting_100 = req->expecting_100;
     if (req->backend) {
         if (status != OK)
             req->backend->close = 1;
         ap_proxy_http_cleanup(proxy_function, r, req->backend);
+    }
+    if (req->expecting_100) {
+        /* Restore r->expecting_100 if we didn't touch it */
+        r->expecting_100 = req->expecting_100;
     }
     return status;
 }
