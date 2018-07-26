@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<?xml version="1.0" encoding="ISO-8859-1"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
 <!--
@@ -1731,9 +1730,25 @@ proxied server</td></tr>
     match the proxy, you must load and enable <code class="module"><a href="../mod/mod_proxy_html.html">mod_proxy_html</a></code>.
     </p>
 
-    <p><var>path</var> is the name of a local virtual path; <var>url</var> is a
-    partial URL for the remote server. These parameters are used the same way as
-    for the <code class="directive"><a href="#proxypass">ProxyPass</a></code> directive.</p>
+    <p><var>path</var> is the name of a local virtual path. It is combined 
+    with the requests scheme, host, and port to form the replacement 
+    prefix of the affected response header.  
+    This parameter is usually the same as the first parameter of the 
+    <code class="directive"><a href="#proxypass">ProxyPass</a></code> directive.
+    </p>
+
+    <p><var>url</var> is a partial URL for the remote server. When the remote
+    server sends the specifically mentioned headers beginning with this partial
+    URL, the prefix from the remote server is replaced with a prefix that
+    points to the reverse proxy.
+    This parameter is usually the same as the second parameter of the 
+    <code class="directive"><a href="#proxypass">ProxyPass</a></code> directive, but it may
+    differ if the remote server uses a different scheme, host, port, or path
+    in the affected headers.  In configurations with 
+    <code class="directive"><a href="#proxypreservehost">ProxyPreserveHost</a></code>, the hostname
+    in the partial URL may already be the hostname of the reverse proxy, which
+    will prevent the matching and replacement done by this directive.
+    </p>
 
     <p>For example, suppose the local server has address
     <code>http://example.com/</code>; then</p>
@@ -2090,7 +2105,7 @@ header for proxied requests</td></tr>
 <p><span>Available Languages: </span><a href="../en/mod/mod_proxy.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_proxy.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_proxy.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
+</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div style="visibility: hidden;" class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
 var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_proxy.html';
