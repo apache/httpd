@@ -719,8 +719,8 @@ Require expr %{REMOTE_ADDR} -in split s/.*?IP Address:([^,]+)/$1/, PeerExtList('
 Require expr "IP Address:%{REMOTE_ADDR}" -in split/, /, join PeerExtList('subjectAltName')
 
 # Conditional logging
-CustomLog logs/access-errors.log common “expr=%{REQUEST_STATUS} >= 400”
-CustomLog logs/access-errors-specific.log common “expr=%{REQUEST_STATUS} -in {'405','410'}"
+CustomLog logs/access-errors.log common "expr=%{REQUEST_STATUS} >= 400"
+CustomLog logs/access-errors-specific.log common "expr=%{REQUEST_STATUS} -in {'405','410'}"
 
     </highlight>
 </section>
