@@ -1615,11 +1615,12 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
             ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
                           "HTTP: received interim %d response", r->status);
             if (!policy
-                    || !strcasecmp(policy, "RFC")
-                    || (proxy_status == HTTP_CONTINUE && req->expecting_100)) {
+                    || (!strcasecmp(policy, "RFC")
+                        && (proxy_status != HTTP_CONTINUE
+                            || (req->expecting_100 = 1)))) {
                 if (proxy_status == HTTP_CONTINUE) {
+                    r->expecting_100 = req->expecting_100;
                     req->expecting_100 = 0;
-                    r->expecting_100 = 1;
                 }
                 ap_send_interim_response(r, 1);
             }
