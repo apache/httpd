@@ -628,8 +628,8 @@ Header set foo-checksum "expr=%{md5:foo}"
 Header always set CustomHeader my-value "expr=%{REQUEST_URI} =~ m#^/special_path\.php$#"
 
 # Conditional logging
-CustomLog logs/access-errors.log common “expr=%{REQUEST_STATUS} >= 400”
-CustomLog logs/access-errors-specific.log common “expr=%{REQUEST_STATUS} -in {'405','410'}"
+CustomLog logs/access-errors.log common "expr=%{REQUEST_STATUS} >= 400"
+CustomLog logs/access-errors-specific.log common "expr=%{REQUEST_STATUS} -in {'405','410'}"
 
     </highlight>
 </section>
