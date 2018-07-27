@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.es.xsl"?>
-<!-- English Revision: 1726940:1787943 (outdated) -->
+<!-- English Revision: 1787943 -->
 <!-- Spanish Translation by: Luis Gil de Bernabé -->
 <!-- Reviewed by: Sergio Ramos -->
 
@@ -178,6 +178,9 @@ situación en la que el servidor genera URLs que no son válidos para los client
 
       <dt><module>mod_http2</module> (disponible desde la versión 2.4.17)</dt>
       <dd>Soporte para la capa HTTP/2</dd>
+
+	<dt><module>mod_proxy_hcheck</module> (disponible desde la versión 2.4.21)</dt>
+	<dd>Soporta chekeos dinámicos propios del estado de servidores proxys remotos</dd>
 
     </dl>
   </section>
