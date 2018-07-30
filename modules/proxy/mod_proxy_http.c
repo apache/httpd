@@ -2141,15 +2141,14 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
          * req->expecting_100 (i.e. cleared only if mod_proxy_http sent the
          * "100 Continue" according to its policy).
          */
-        req->do_100_continue = 1;
+        req->do_100_continue = req->flushall = 1;
         req->expecting_100 = r->expecting_100;
         r->expecting_100 = 0;
     }
-
     /* Should we block while prefetching the body or try nonblocking and flush
      * data to the backend ASAP?
      */
-    if (apr_table_get(r->subprocess_env, "proxy-flushall")) {
+    else if (apr_table_get(r->subprocess_env, "proxy-flushall")) {
         req->flushall = 1;
     }
 
