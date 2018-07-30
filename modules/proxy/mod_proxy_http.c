@@ -1808,10 +1808,7 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
         }
 
         /* send body - but only if a body is expected */
-        if ((!r->header_only) &&                   /* not HEAD request */
-            (proxy_status != HTTP_NO_CONTENT) &&      /* not 204 */
-            (proxy_status != HTTP_NOT_MODIFIED)) {    /* not 304 */
-
+        if (!r->header_only && !AP_STATUS_IS_HEADER_ONLY(proxy_status)) {
             /* We need to copy the output headers and treat them as input
              * headers as well.  BUT, we need to do this before we remove
              * TE, so that they are preserved accordingly for

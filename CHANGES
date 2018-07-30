@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) http: Enforce consistently no response body with both 204 and 304
+     statuses.  [Yann Ylavic]
+
   *) mod_proxy_http: forward 100-continue, and minimize race conditions when
      reusing backend connections. PR 60330. [Yann Ylavic, Jean-Frederic Clere]
 

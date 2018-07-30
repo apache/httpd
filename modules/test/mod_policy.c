@@ -308,9 +308,8 @@ static apr_status_t policy_keepalive_out_filter(ap_filter_t *f,
     if (result != policy_ignore && r->connection->keepalive != AP_CONN_CLOSE
             && !r->expecting_100 && !ap_status_drops_connection(r->status)) {
 
-        if (!((r->status == HTTP_NOT_MODIFIED)
-                || (r->status == HTTP_NO_CONTENT)
-                || r->header_only
+        if (!(r->header_only
+                || AP_STATUS_IS_HEADER_ONLY(r->status)
                 || apr_table_get(r->headers_out, "Content-Length")
                 || ap_find_last_token(r->pool, apr_table_get(r->headers_out,
                         "Transfer-Encoding"), "chunked")

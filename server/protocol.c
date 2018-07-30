@@ -1930,7 +1930,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(
          * such filters update or remove the C-L header, and just use it
          * if present.
          */
-        if (!(r->header_only
+        if (!((r->header_only || AP_STATUS_IS_HEADER_ONLY(r->status))
               && !r->bytes_sent
               && (r->sent_bodyct
                   || conf->http_cl_head_zero != AP_HTTP_CL_HEAD_ZERO_ENABLE
