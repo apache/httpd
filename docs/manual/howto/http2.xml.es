@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.es.xsl"?>
-<!-- English Revision: 1779744:1834263 (outdated) -->
+<!-- English Revision: 1779744:1834263 (outdated) --> 
 <!-- Spanish translation : Daniel Ferradal -->
 <!-- Reviewed & updated by Luis Gil de Bernabé Pfeiffer lgilbernabe[AT]apache.org -->
 
@@ -29,11 +29,11 @@
 
   <summary>
     <p>Esta es la guía para configurar HTTP/2 en Apache httpd. Ésta 
-    característica es <em>experimental</em> así que es de esperar que algunas
-    directivas e interfaces cambien con nuevas versiones.
+    característica está <em>lista en produción</em> así que es de esperar que las 
+    interfaces y las directivas se mantengan consistentes en cada verión.
     </p>
   </summary>
-  <seealso><a href="../mod/mod_http2.html">mod_http2</a></seealso>
+  <seealso><module>mod_http2</module></seealso>
 
   <section id="protocol">
     <title>El protocolo HTTP/2</title>
@@ -73,7 +73,7 @@
 
   <section id="implementation">
     <title>HTTP/2 en Apache httpd</title>
-    <p>El protocolo HTTP/2 se implementa con su propio módulo httpd, llamado acertadamente <a href="../mod/mod_http2.html">mod_http2</a>. Incluye el set completo de características descritas por el RFC 7540 y soporta HTTP/2 sobre texto plano (http:), así como conexiones seguras (https:). La variante de texto plano se llama '<code>h2c</code>', la segura '<code>h2</code>'. Para <code>h2c</code> permite el modo <em>direct</em>
+    <p>El protocolo HTTP/2 se implementa con su propio módulo httpd, llamado acertadamente <module>mod_http2</module>. Incluye el set completo de características descritas por el RFC 7540 y soporta HTTP/2 sobre texto plano (http:), así como conexiones seguras (https:). La variante de texto plano se llama '<code>h2c</code>', la segura '<code>h2</code>'. Para <code>h2c</code> permite el modo <em>direct</em>
     y el <code>Upgrade:</code> a través de una solicitud inicial HTTP/1.</p>
     
     <p>Una característica de HTTP/2 que ofrece capacidades nuevas para desarrolladores de web es <a href="#push">Server Push</a>. Vea esa sección para saber como su aplicación web puede hacer uso de ella.</p>
@@ -81,12 +81,12 @@
   
   <section id="building">
     <title>Compilar httpd con soporte HTTP/2</title>
-    <p><a href="../mod/mod_http2.html">mod_http2</a> usa la librería <a href="https://nghttp2.org">nghttp2</a>
-    como su implementación base. Para compilar <code>mod_http2</code> necesita al menos la versión 1.2.1 de <code>libnghttp2</code> instalada en su sistema.</p>
+    <p><module>mod_http2</module> usa la librería <a href="https://nghttp2.org">nghttp2</a>
+    como su implementación base. Para compilar <module>mod_http2</module> necesita al menos la versión 1.2.1 de <code>libnghttp2</code> instalada en su sistema.</p>
 
     <p>Cuando usted ejecuta <code>./configure</code> en el código fuente de Apache HTTPD, necesita indicarle '<code>--enable-http2</code>' como una opción adicional para activar la compilación de este módulo. Si su <code>libnghttp2</code> está ubicado en una ruta no habitual (cualquiera que sea en su sistema operativo), puede indicar su ubicación con '<code>--with-nghttp2=&lt;path&gt;</code>' para <code>./configure</code>.</p>
 
-    <p>Aunque puede que eso sirva para la mayoría, habrá quien prefiera un <code>nghttp2</code> compilado estáticamente para este módulo. Para ellos existe la opción <code>--enable-nghttp2-staticlib-deps</code>. Funciona de manera muy similar a como uno debe enlazar openssl estáticamente para mod_ssl.</p>
+    <p>Aunque puede que eso sirva para la mayoría, habrá quien prefiera un <code>nghttp2</code> compilado estáticamente para este módulo. Para ellos existe la opción <code>--enable-nghttp2-staticlib-deps</code>. Funciona de manera muy similar a como uno debe enlazar openssl estáticamente para <module>mod_ssl</module>.</p>
 
     <p>Hablando de SSL, necesita estar al tanto de que la mayoría de los navegadores hablan HTTP/2 solo con URLs <code>https:</code>. Así que necesita un servidor con soporte SSL. Pero no solo eso, necesitará una librería SSL que de soporte a la extensión <code>ALPN</code>. Si usa OpenSSL, necesita al menos la versión 1.0.2.</p>
   </section>
@@ -94,7 +94,7 @@
   <section id="basic-config">
     <title>Configuración básica</title>
 
-    <p>Cuando tiene un <code>httpd</code> compilado con <code>mod_http2</code> necesita una configuración básica para activarlo. Lo primero, como con cualquier otro módulo de Apache, es que necesita cargarlo:</p>
+    <p>Cuando tiene un <code>httpd</code> compilado con <module>mod_http2</module> necesita una configuración básica para activarlo. Lo primero, como con cualquier otro módulo de Apache, es que necesita cargarlo:</p>
     
     <highlight language="config">
 LoadModule http2_module modules/mod_http2.so
@@ -147,7 +147,7 @@ ProtocolsHonorOrder Off
 
     <p>Hace que el orden en que <em>usted</em> escribió los Protocols sea irrelevante y sólo el orden de preferencia del cliente será decisorio.</p>
 
-    <p>Una última cosa: cuando usted configura los protocolos no se comprueba si son correctos o están bien escritos. Puede mencionar protocolos que no existen, así que no hay necesidad de proteger <code>Protocols</code> con ningún <code>IfModule</code> de comprobación.</p>
+    <p>Una última cosa: cuando usted configura los protocolos no se comprueba si son correctos o están bien escritos. Puede mencionar protocolos que no existen, así que no hay necesidad de proteger <directive module="core">Protocols</directive> con ningún <directive type="section" module="core">IfModule</directive> de comprobación.</p>
 
     <p>Para más consejos avanzados de configuración, vea la <a href="../mod/mod_http2.html#dimensioning">
     sección de módulos sobre dimensionamiento</a> y <a href="../mod/mod_http2.html#misdirected">
@@ -157,15 +157,15 @@ ProtocolsHonorOrder Off
   <section id="mpm-config">
     <title>Configuración MPM</title>
     
-    <p>HTTP/2 está soportado en todos los módulos de multi-proceso que se ofrecen con httpd. Aun así, si usa el mpm <code>prefork</code>, habrá  restricciones severas.</p>
+    <p>HTTP/2 está soportado en todos los módulos de multi-proceso que se ofrecen con httpd. Aun así, si usa el mpm <module>prefork</module>, habrá  restricciones severas.</p>
 
-    <p>En <code>prefork</code>, <code>mod_http2</code> solo procesará una solicitud cada vez por conexión. Pero los clientes, como los navegadores, enviarán muchas solicitudes al mismo tiempo. Si una de ellas tarda mucho en procesarse (o hace un sondeo que dura más de la cuenta), las otras solicitudes se quedarán atascadas.</p>
+    <p>En <module>prefork</module>, <module>mod_http2</module> solo procesará una solicitud cada vez por conexión. Pero los clientes, como los navegadores, enviarán muchas solicitudes al mismo tiempo. Si una de ellas tarda mucho en procesarse (o hace un sondeo que dura más de la cuenta), las otras solicitudes se quedarán atascadas.</p>
 
-    <p><code>mod_http2</code> no evitará este límite por defecto. El motivo es que <code>prefork</code> hoy en día solo se escoge si ejecuta motores de proceso que no están preparados para multi-hilo, p.ej. fallará con más de una solicitud.</p>
+    <p><module>mod_http2</module> no evitará este límite por defecto. El motivo es que <module>prefork</module> hoy en día solo se escoge si ejecuta motores de proceso que no están preparados para multi-hilo, p.ej. fallará con más de una solicitud.</p>
 
-    <p>Si su configuración lo soporta, hoy en día <code>event</code> es el mejor mpm que puede usar.</p>
+    <p>Si su configuración lo soporta, hoy en día <module>event</module> es el mejor mpm que puede usar.</p>
     
-    <p>Si realmente está obligado a usar <code>prefork</code> y quiere multiples solicitudes, puede configurar la directiva <directive module="mod_http2">H2MinWorkers</directive> para hacerlo posible. Sin embargo, si esto falla, es bajo su cuenta y riesgo.</p>
+    <p>Si realmente está obligado a usar <module>prefork</module> y quiere multiples solicitudes, puede configurar la directiva <directive module="mod_http2">H2MinWorkers</directive> para hacerlo posible. Sin embargo, si esto falla, es bajo su cuenta y riesgo.</p>
   </section>
   
   <section id="clients">
@@ -216,7 +216,7 @@ ProtocolsHonorOrder Off
 
     <p>Resumiendo: no hay una estrategia mejor sobre cómo usar esta característica de HTTP/2 y todo el mundo está experimentando con ella. Así que, ¿cómo experimenta usted con ella en Apache httpd?</p>
 
-    <p><code>mod_http2</code> busca e inspecciona las cabeceras de respuesta 
+    <p><module>mod_http2</module> busca e inspecciona las cabeceras de respuesta 
     <code>Link</code> con cierto formato:</p>
 
     <highlight language="config">
@@ -251,8 +251,10 @@ H2Push Off
     <p>Hay gente pensando cómo un cliente puede decirle al servidor lo que ya tiene, para evitar los PUSH de esos elementos, pero eso algo muy experimental ahora mismo.</p>
 
     <p>Otro borrador experimental que ha sido implementado en 
-    <code>mod_http2</code> es el <a href="https://tools.ietf.org/html/draft-ruellan-http-accept-push-policy-00"> Campo de Cabecera
+    <module>mod_http2</module> es el <a href="https://tools.ietf.org/html/draft-ruellan-http-accept-push-policy-00"> Campo de Cabecera
     Accept-Push-Policy</a> en la que un cliente puede, para cada solicitud, definir qué tipo de PUSH acepta.</p>
   </section>
+
+
   
 </manualpage>
