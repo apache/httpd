@@ -1251,7 +1251,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
     }
     else if (ctx->headers_sent) {
         /* Eat body if response must not have one. */
-        if (r->header_only || r->status == HTTP_NO_CONTENT) {
+        if (r->header_only || AP_STATUS_IS_HEADER_ONLY(r->status)) {
             apr_brigade_cleanup(b);
             return APR_SUCCESS;
         }
@@ -1356,12 +1356,15 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
     basic_http_header_check(r, &protocol);
     ap_set_keepalive(r);
 
-    if (r->chunked) {
-        apr_table_mergen(r->headers_out, "Transfer-Encoding", "chunked");
+    if (AP_STATUS_IS_HEADER_ONLY(r->status)) {
+        apr_table_unset(r->headers_out, "Transfer-Encoding");
         apr_table_unset(r->headers_out, "Content-Length");
+        r->content_type = r->content_encoding = NULL;
+        r->content_languages = NULL;
+        r->clength = r->chunked = 0;
     }
-
-    if (r->status == HTTP_NO_CONTENT) {
+    else if (r->chunked) {
+        apr_table_mergen(r->headers_out, "Transfer-Encoding", "chunked");
         apr_table_unset(r->headers_out, "Content-Length");
     }
 
@@ -1440,7 +1443,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
     }
     ctx->headers_sent = 1;
 
-    if (r->header_only || r->status == HTTP_NO_CONTENT) {
+    if (r->header_only || AP_STATUS_IS_HEADER_ONLY(r->status)) {
         apr_brigade_cleanup(b);
         goto out;
     }
