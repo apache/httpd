@@ -25,9 +25,6 @@ Changes with Apache 2.5.1
   *) mod_proxy_wstunnel: Add default schema ports for 'ws' and 'wss'.
      PR 62480. [Lubos Uhliarik <luhliari redhat.com>}
   
-  *) mod_ratelimit: fix behavior when proxing content. PR 62362.
-     [Yann Ylavic, Luca Toscano]
-
   *) http: Fix small memory leak per request when handling persistent
      connections.  [Ruediger Pluem, Joe Orton]
 
