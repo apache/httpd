@@ -1965,10 +1965,24 @@ par un serveur mandat&#233; en inverse</td></tr>
     <code class="module"><a href="../mod/mod_proxy_html.html">mod_proxy_html</a></code>.
     </p>
 
-    <p><var>chemin</var> est le nom d'un chemin virtuel local.
-    <var>url</var> est une URL partielle pour le serveur distant. Ces
-    param&#232;tres s'utilisent de la m&#234;me fa&#231;on qu'avec la directive <code class="directive"><a href="#proxypass">ProxyPass</a></code>.</p>
+    <p><var>chemin</var> est le nom d'un chemin virtuel local. Il est combin&#233;
+    avec le protocole, le nom d'h&#244;te et le port pour former le pr&#233;fixe de
+    remplacement de l'en-t&#234;te de r&#233;ponse concern&#233;. Ce param&#232;tre est en g&#233;n&#233;ral
+    identique au premier param&#232;tre de la directive <code class="directive"><a href="#proxypass">ProxyPass</a></code>.
+    </p>
 
+    <p><var>url</var> est une URL partielle pour le serveur distant. Lorsque le
+    serveur distant envoie les en-t&#234;tes explicitement mentionn&#233;s en commen&#231;ant
+    par cette URL partielle, le pr&#233;fixe du serveur distant est remplac&#233; par un
+    pr&#233;fixe qui pointe vers le mandataire inverse. Ce param&#232;tre est en g&#233;n&#233;ral
+    identique au second param&#232;tre de la directive <code class="directive"><a href="#proxypass">ProxyPass</a></code>, mais il peut &#234;tre diff&#233;rent si le
+    serveur distant utilise un protocole, nom d'h&#244;te, port ou chemin diff&#233;rent dans les
+    en-t&#234;tes concern&#233;s. Si la configuration contient une directive <code class="directive"><a href="#proxypreservehost">ProxyPreserveHost</a></code>, le nom d'h&#244;te de l'URL
+    partielle correspondra peut-&#234;tre d&#233;j&#224; au nom d'h&#244;te du mandataire inverse,
+    ce qui &#233;vitera la recherche et le remplacament effectu&#233;s par cette
+    directive.
+    </p>
+    
     <p>Supposons par exemple que le serveur local a pour adresse
     <code>http://example.com/</code> ; alors</p>
 

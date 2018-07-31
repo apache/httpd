@@ -2537,6 +2537,12 @@ existe au d&#233;marrage</td></tr>
     <var>filename</var> sera relatif au r&#233;pertoire racine par d&#233;faut du serveur
     ou au r&#233;pertoire racine pass&#233; dans la ligne de commande via l'option
     <code>-d</code>.</p>
+
+    <div class="warning"><h3>Avertissement</h3>
+    Avec la version 2.4.34, il est interdit de sp&#233;cifier un <var>filename</var>
+    entour&#233; de guillemets. Ceci provoquerait une erreur de syntaxe au d&#233;marrage.
+    Il est donc impossible de sp&#233;cifier des noms de fichiers contenant des
+    espaces, mais ce d&#233;faut a &#233;t&#233; corrig&#233; &#224; partir de la version 2.4.35.</div>
     
 
 </div>
