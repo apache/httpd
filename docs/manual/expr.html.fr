@@ -700,7 +700,11 @@ RequestHeader set X-Client-SAN "expr=%{:join PeerExtList('subjectAltName'):}"
 # Impose la pr&#233;sence de l'adresse IP distante dans le SAN du certificat d'un client
 Require expr %{REMOTE_ADDR} -in split s/.*?IP Address:([^,]+)/$1/, PeerExtList('subjectAltName')
 # autre solution :
-Require expr "IP Address:%{REMOTE_ADDR}" -in split/, /, join PeerExtList('subjectAltName')</pre>
+Require expr "IP Address:%{REMOTE_ADDR}" -in split/, /, join PeerExtList('subjectAltName')
+
+# Journalisation conditionnelle
+CustomLog logs/access-errors.log common "expr=%{REQUEST_STATUS} &gt;= 400"
+CustomLog logs/access-errors-specific.log common "expr=%{REQUEST_STATUS} -in {'405','410'}"</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">

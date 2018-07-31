@@ -30,7 +30,7 @@
 <a href="../fr/mod/mod_proxy_http2.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Support de HTTP/2 pour <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></td></tr>
-<tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Exp&#233;rimental</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&#160;de&#160;Module:</a></th><td>proxy_http2_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Fichier&#160;Source:</a></th><td>mod_proxy_http2.c</td></tr></table>
 <h3>Sommaire</h3>
