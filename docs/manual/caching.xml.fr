@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1766106 -->
+<!-- English Revision: 1836061 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -366,8 +366,9 @@
         module="mod_cache">CacheEnable</directive> et <directive
         module="mod_cache">CacheDisable</directive>.</li>
 
-        <li>La reponse doit avoir un code de statut HTTP de 200, 203, 300, 301
-	ou 410.</li>
+        <li>Si la reponse possède un code de statut HTTP autre que 200, 203, 300, 301
+	ou 410, elle doit aussi comporter un en-tête "Expires" ou
+	"Cache-Control".</li>
 
         <li>La requête doit être de type HTTP GET.</li>
 
