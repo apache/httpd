@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1828648 -->
+<!-- English Revision: 1835761 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -2552,6 +2552,12 @@ existe au démarrage</description>
     <var>filename</var> sera relatif au répertoire racine par défaut du serveur
     ou au répertoire racine passé dans la ligne de commande via l'option
     <code>-d</code>.</p>
+
+    <note type="warning"><title>Avertissement</title>
+    Avec la version 2.4.34, il est interdit de spécifier un <var>filename</var>
+    entouré de guillemets. Ceci provoquerait une erreur de syntaxe au démarrage.
+    Il est donc impossible de spécifier des noms de fichiers contenant des
+    espaces, mais ce défaut a été corrigé à partir de la version 2.4.35.</note>
     
 </usage>
 </directivesynopsis>

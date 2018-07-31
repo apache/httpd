@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1830443 -->
+<!-- English Revision: 1836468 -->
 <!-- French translation : Lucien GENTIS -->
 
 <!--
@@ -25,7 +25,7 @@
 
 <name>mod_proxy_http2</name>
 <description>Support de HTTP/2 pour <module>mod_proxy</module></description>
-<status>Extension</status>
+<status>Experimental</status>
 <sourcefile>mod_proxy_http2.c</sourcefile>
 <identifier>proxy_http2_module</identifier>
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1834522 -->
+<!-- English Revision: 1836683 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1796,11 +1796,27 @@ par un serveur mandaté en inverse</description>
     <module>mod_proxy_html</module>.
     </p>
 
-    <p><var>chemin</var> est le nom d'un chemin virtuel local.
-    <var>url</var> est une URL partielle pour le serveur distant. Ces
-    paramètres s'utilisent de la même façon qu'avec la directive <directive
-    module="mod_proxy">ProxyPass</directive>.</p>
+    <p><var>chemin</var> est le nom d'un chemin virtuel local. Il est combiné
+    avec le protocole, le nom d'hôte et le port pour former le préfixe de
+    remplacement de l'en-tête de réponse concerné. Ce paramètre est en général
+    identique au premier paramètre de la directive <directive
+    module="mod_proxy">ProxyPass</directive>.
+    </p>
 
+    <p><var>url</var> est une URL partielle pour le serveur distant. Lorsque le
+    serveur distant envoie les en-têtes explicitement mentionnés en commençant
+    par cette URL partielle, le préfixe du serveur distant est remplacé par un
+    préfixe qui pointe vers le mandataire inverse. Ce paramètre est en général
+    identique au second paramètre de la directive <directive
+    module="mod_proxy">ProxyPass</directive>, mais il peut être différent si le
+    serveur distant utilise un protocole, nom d'hôte, port ou chemin différent dans les
+    en-têtes concernés. Si la configuration contient une directive <directive
+    module="mod_proxy">ProxyPreserveHost</directive>, le nom d'hôte de l'URL
+    partielle correspondra peut-être déjà au nom d'hôte du mandataire inverse,
+    ce qui évitera la recherche et le remplacament effectués par cette
+    directive.
+    </p>
+    
     <p>Supposons par exemple que le serveur local a pour adresse
     <code>http://example.com/</code> ; alors</p>
 

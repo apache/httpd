@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision: 1811111 -->
+<!-- English Revision: 1836758 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -762,6 +762,10 @@ RequestHeader set X-Client-SAN "expr=%{:join PeerExtList('subjectAltName'):}"
 Require expr %{REMOTE_ADDR} -in split s/.*?IP Address:([^,]+)/$1/, PeerExtList('subjectAltName')
 # autre solution :
 Require expr "IP Address:%{REMOTE_ADDR}" -in split/, /, join PeerExtList('subjectAltName')
+
+# Journalisation conditionnelle
+CustomLog logs/access-errors.log common "expr=%{REQUEST_STATUS} >= 400"
+CustomLog logs/access-errors-specific.log common "expr=%{REQUEST_STATUS} -in {'405','410'}"
 
 	</highlight>
 </section>
