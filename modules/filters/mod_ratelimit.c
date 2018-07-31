@@ -65,7 +65,6 @@ rate_limit_filter(ap_filter_t *f, apr_bucket_brigade *bb)
 
     /* Set up our rl_ctx_t on first use */
     if (ctx == NULL) {
-
         const char *rl = NULL;
         int ratelimit;
         int burst = 0;
@@ -327,7 +326,7 @@ static void register_hooks(apr_pool_t *p)
 {
     /* run after mod_deflate etc etc, but not at connection level, ie, mod_ssl. */
     ap_register_output_filter(RATE_LIMIT_FILTER_NAME, rate_limit_filter,
-                              NULL, AP_FTYPE_PROTOCOL + 3);
+                              NULL, AP_FTYPE_CONNECTION - 1);
 }
 
 AP_DECLARE_MODULE(ratelimit) = {
