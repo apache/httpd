@@ -90,7 +90,7 @@ Documentación</h1>
 <li><a href="howto/public_html.html">Directorios Web por Usuario
     (public_html)</a></li>
 <li><a href="howto/reverse_proxy.html">Guía de configuración de Proxy Inverso</a></li>
-<li><a href="howto/http2.html">guía HTTP/2 </a></li>
+<li><a href="howto/http2.html">Guía HTTP/2 </a></li>
 </ul>
 </div><div class="category"><h2><a name="platform" id="platform">Notas Sobre Plataformas Específicas</a></h2>
 <ul><li><a href="platform/windows.html">Microsoft Windows</a></li>
