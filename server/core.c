@@ -5872,7 +5872,7 @@ static void register_hooks(apr_pool_t *p)
                                   NULL, AP_FTYPE_NETWORK);
     ap_request_core_filter_handle =
         ap_register_output_filter("REQ_CORE", ap_request_core_filter,
-                                  NULL, AP_FTYPE_TRANSCODE);
+                                  NULL, AP_FTYPE_CONNECTION - 1);
     ap_subreq_core_filter_handle =
         ap_register_output_filter("SUBREQ_CORE", ap_sub_req_output_filter,
                                   NULL, AP_FTYPE_CONTENT_SET);
