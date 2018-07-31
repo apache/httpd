@@ -82,7 +82,7 @@ Documentación</title>
     <page href="howto/public_html.html">Directorios Web por Usuario
     (public_html)</page>
     <page href="howto/reverse_proxy.html">Guía de configuración de Proxy Inverso</page>
-     <page href="howto/http2.html">guía HTTP/2 </page>
+     <page href="howto/http2.html">Guía HTTP/2 </page>
 </category>
 
 <category id="platform"><title>Notas Sobre Plataformas Específicas</title>

@@ -8,7 +8,7 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>Apache HTTP Server Versi&#243;n 2.4
-Documentaci&#243;n - Servidor Apache HTTP Versi&#243;n 2.4</title>
+Documentaci&#243;n  </title>
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="./style/css/prettify.css" />
@@ -18,19 +18,19 @@ Documentaci&#243;n - Servidor Apache HTTP Versi&#243;n 2.4</title>
 <link href="./images/favicon.ico" rel="shortcut icon" /></head>
 <body id="index-page">
 <div id="page-header">
-<p class="menu"><a href="./mod/">M&#243;dulos</a> | <a href="./mod/directives.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="./glossary.html">Glosario</a> | <a href="./sitemap.html">Mapa del sitio web</a></p>
-<p class="apache">Versi&#243;n 2.4 del Servidor HTTP Apache</p>
+<p class="menu"><a href="./mod/" /> | <a href="./mod/directives.html" /> | <a href="http://wiki.apache.org/httpd/FAQ" /> | <a href="./glossary.html" /> | <a href="./sitemap.html" /></p>
+<p class="apache" />
 <img alt="" src="./images/feather.png" /></div>
 <div class="up"><a href="http://httpd.apache.org/docs-project/"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentaci&#243;n</a></div>
+<a href="http://www.apache.org/" /> &gt; <a href="http://httpd.apache.org/" /> &gt; <a href="http://httpd.apache.org/docs/" /></div>
 <div id="page-content"><h1>Apache HTTP Server Versi&#243;n 2.4
 Documentaci&#243;n</h1>
 <div class="toplang">
-<p><span>Idiomas disponibles: </span><a href="./da/" hreflang="da" rel="alternate" title="Dansk">&nbsp;da&nbsp;</a> |
+<p><span>: </span><a href="./da/" hreflang="da" rel="alternate" title="Dansk">&nbsp;da&nbsp;</a> |
 <a href="./de/" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./es/" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
+<a href="./es/" title="">&nbsp;es&nbsp;</a> |
 <a href="./fr/" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
@@ -38,11 +38,7 @@ Documentaci&#243;n</h1>
 <a href="./tr/" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a> |
 <a href="./zh-cn/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">Esta traducci&#243;n podr&#237;a estar
-            obsoleta. Consulte la versi&#243;n en ingl&#233;s de la
-            documentaci&#243;n para comprobar si se han producido cambios
-            recientemente.</div>
-<form method="get" action="http://www.google.com/search"><p><input name="as_q" value="" type="text" /> <input value="Buscar en Google" type="submit" /><input value="10" name="num" type="hidden" /><input value="es" name="hl" type="hidden" /><input value="ISO-8859-1" name="ie" type="hidden" /><input value="Google Search" name="btnG" type="hidden" /><input name="as_epq" value="Versi&#243;n 2.4" type="hidden" /><input name="as_oq" value="" type="hidden" /><input name="as_eq" value="&quot;List-Post&quot;" type="hidden" /><input value="" name="lr" type="hidden" /><input value="i" name="as_ft" type="hidden" /><input value="" name="as_filetype" type="hidden" /><input value="all" name="as_qdr" type="hidden" /><input value="any" name="as_occt" type="hidden" /><input value="i" name="as_dt" type="hidden" /><input value="httpd.apache.org" name="as_sitesearch" type="hidden" /><input value="off" name="safe" type="hidden" /></p></form>
+<form method="get" action="http://www.google.com/search"><p><input name="as_q" value="" type="text" /> <input value="" type="submit" /><input value="10" name="num" type="hidden" /><input value="es" name="hl" type="hidden" /><input value="ISO-8859-1" name="ie" type="hidden" /><input value="Google Search" name="btnG" type="hidden" /><input name="as_epq" value="" type="hidden" /><input name="as_oq" value="" type="hidden" /><input name="as_eq" value="&quot;List-Post&quot;" type="hidden" /><input value="" name="lr" type="hidden" /><input value="i" name="as_ft" type="hidden" /><input value="" name="as_filetype" type="hidden" /><input value="all" name="as_qdr" type="hidden" /><input value="any" name="as_occt" type="hidden" /><input value="i" name="as_dt" type="hidden" /><input value="httpd.apache.org" name="as_sitesearch" type="hidden" /><input value="off" name="safe" type="hidden" /></p></form>
 <table id="indextable"><tr><td class="col1"><div class="category"><h2><a name="release" id="release">Notas de la versi&#243;n</a></h2>
 <ul><li><a href="new_features_2_4.html">Nuevas funcionalidades en Apache 2.3/2.4</a></li>
 <li><a href="new_features_2_2.html">Nuevas funcionalidades en Apache 2.1/2.2</a></li>
@@ -94,7 +90,7 @@ Documentaci&#243;n</h1>
 <li><a href="howto/public_html.html">Directorios Web por Usuario
     (public_html)</a></li>
 <li><a href="howto/reverse_proxy.html">Gu&#237;a de configuraci&#243;n de Proxy Inverso</a></li>
-<li><a href="howto/http2.html">gu&#237;a HTTP/2 </a></li>
+<li><a href="howto/http2.html">Gu&#237;a HTTP/2 </a></li>
 </ul>
 </div><div class="category"><h2><a name="platform" id="platform">Notas Sobre Plataformas Espec&#237;ficas</a></h2>
 <ul><li><a href="platform/windows.html">Microsoft Windows</a></li>
@@ -111,10 +107,10 @@ Documentaci&#243;n</h1>
 </ul>
 </div></td></tr></table></div>
 <div class="bottomlang">
-<p><span>Idiomas disponibles: </span><a href="./da/" hreflang="da" rel="alternate" title="Dansk">&nbsp;da&nbsp;</a> |
+<p><span>: </span><a href="./da/" hreflang="da" rel="alternate" title="Dansk">&nbsp;da&nbsp;</a> |
 <a href="./de/" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./es/" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
+<a href="./es/" title="">&nbsp;es&nbsp;</a> |
 <a href="./fr/" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
@@ -122,8 +118,8 @@ Documentaci&#243;n</h1>
 <a href="./tr/" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a> |
 <a href="./zh-cn/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Licencia bajo los t&#233;rminos de <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">M&#243;dulos</a> | <a href="./mod/directives.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="./glossary.html">Glosario</a> | <a href="./sitemap.html">Mapa del sitio web</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br /><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/" /> | <a href="./mod/directives.html" /> | <a href="http://wiki.apache.org/httpd/FAQ" /> | <a href="./glossary.html" /> | <a href="./sitemap.html" /></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }
