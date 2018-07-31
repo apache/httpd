@@ -354,8 +354,9 @@
         <li>La mise en cache doit &#234;tre activ&#233;e pour cette URL. Voir les
 	directives <code class="directive"><a href="./mod/mod_cache.html#cacheenable">CacheEnable</a></code> et <code class="directive"><a href="./mod/mod_cache.html#cachedisable">CacheDisable</a></code>.</li>
 
-        <li>La reponse doit avoir un code de statut HTTP de 200, 203, 300, 301
-	ou 410.</li>
+        <li>Si la reponse poss&#232;de un code de statut HTTP autre que 200, 203, 300, 301
+	ou 410, elle doit aussi comporter un en-t&#234;te "Expires" ou
+	"Cache-Control".</li>
 
         <li>La requ&#234;te doit &#234;tre de type HTTP GET.</li>
 
