@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_ratelimit: Don't interfere with "chunked" encoding, fixing regression
+     introduced in 2.4.34.  PR 62568.  [Yann Ylavic]
+
   *) http: Enforce consistently no response body with both 204 and 304
      statuses.  [Yann Ylavic]
 
