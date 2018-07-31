@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1334026:1421892 (outdated) -->
+<!-- English Revision: 1421892 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -28,8 +28,6 @@
 <status>Extension</status>
 <sourcefile>mod_version.c</sourcefile>
 <identifier>version_module</identifier>
-<compatibility>Disponible depuis la version 2.0.56
-d'Apache</compatibility>
 
 <summary>
     <p>Ce module a été conçu pour être utilisé dans les suites de tests
