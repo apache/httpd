@@ -31,14 +31,10 @@
 <a href="../ja/mod/mod_version.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_version.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut &#234;tre p&#233;rim&#233;e. V&#233;rifiez la version
-            anglaise pour les changements r&#233;cents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Configuration d&#233;pendant de la version</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&#160;de&#160;Module:</a></th><td>version_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier&#160;Source:</a></th><td>mod_version.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible depuis la version 2.0.56
-d'Apache</td></tr></table>
+<tr><th><a href="module-dict.html#SourceFile">Fichier&#160;Source:</a></th><td>mod_version.c</td></tr></table>
 <h3>Sommaire</h3>
 
     <p>Ce module a &#233;t&#233; con&#231;u pour &#234;tre utilis&#233; dans les suites de tests
