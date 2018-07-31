@@ -44,7 +44,7 @@ fournit la méthode de répartition de charge <code>byrequests</code>.</p>
 
 <section id="requests">
     <title>Algorithme d'attribution des requêtes</title>
-    <p>Activé via <code>lbmethod=byrequests</code>, ce planificateur à
+    <p>Activé via <code>lbmethod=byrequests</code>, ce planificateur a
     été conçu dans le but de distribuer les requêtes à tous les
     processus worker afin qu'ils traitent tous le nombre de requêtes
     pour lequel ils ont été configurés. Il fonctionne de la manière
