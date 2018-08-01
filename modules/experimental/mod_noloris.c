@@ -122,13 +122,13 @@ static int noloris_monitor(apr_pool_t *pool, server_rec *s)
         for (j = 0; j < thread_limit; ++j) {
             ws = ap_get_scoreboard_worker_from_indexes(i, j);
             if (ws->status == SERVER_BUSY_READ) {
-                n = apr_hash_get(connections, ws->client, APR_HASH_KEY_STRING);
+                n = apr_hash_get(connections, ws->client64, APR_HASH_KEY_STRING);
                 if (n == NULL) {
                     n = totals + index++;
                     *n = 0;
                 }
                 ++*n;
-                apr_hash_set(connections, ws->client, APR_HASH_KEY_STRING, n);
+                apr_hash_set(connections, ws->client64, APR_HASH_KEY_STRING, n);
             }
         }
     }

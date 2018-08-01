@@ -108,10 +108,10 @@ static int update_echo_child_status(ap_sb_handle_t *sbh,
 
     /* initial pass only, please - in the name of efficiency */
     if (c) {
-        apr_cpystrn(ws->client,
+        apr_cpystrn(ws->client64,
                     ap_get_remote_host(c, c->base_server->lookup_defaults,
                                        REMOTE_NOLOOKUP, NULL),
-                    sizeof(ws->client));
+                    sizeof(ws->client64));
         apr_cpystrn(ws->vhost, c->base_server->server_hostname,
                     sizeof(ws->vhost));
         /* Deliberate trailing space - filling in string on WRITE passes */

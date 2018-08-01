@@ -112,10 +112,11 @@ struct worker_score {
 #ifdef HAVE_TIMES
     struct tms times;
 #endif
-    char client[40];            /* Keep 'em small... but large enough to hold an IPv6 address */
+    char client[32];            /* DEPRECATED: Keep 'em small... */
     char request[64];           /* We just want an idea... */
     char vhost[32];             /* What virtual host is being accessed? */
     char protocol[16];          /* What protocol is used on the connection? */
+    char client64[64];
 };
 
 typedef struct {
