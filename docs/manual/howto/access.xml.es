@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.es.xsl"?>
-<!-- English Revision: 1734357:1802328 (outdated) -->
+<!-- English Revision: 1802328 -->
 <!-- Updated by Luis Gil de Bernabé Pfeiffer lgilbernabe[AT]apache.org -->
 <!-- Reviewed by Sergio Ramos -->
 <!--
@@ -28,8 +28,8 @@
 
 <summary>
     <p>El control de acceso, hace referencia a todos los medios que proporcionan
-    	una forma de controlar el acceso a cualquier recurso. Esta parte está
-    	separada de <a
+        una forma de controlar el acceso a cualquier recurso. Esta parte está
+        separada de <a
     href="auth.html">autenticación y autorización</a>.</p>
 </summary>
 
@@ -113,7 +113,7 @@ Require not host <var>host.example.com</var>
     </highlight>
 
     <p>Y, Si lo que se quiere es bloquear el acceso desde dominio especifico, 
-    	podrás especificar parte de una dirección o nombre de dominio:</p>
+        podrás especificar parte de una dirección o nombre de dominio:</p>
 
     <highlight language="config">
 Require not ip 192.168.205
@@ -173,7 +173,7 @@ Require expr %{HTTP_USER_AGENT} != 'BadBot'
     en criterio arbitrario.</p>
 
     <p>Por ejemplo, si lo que desea es bloquear un recurso entre las 8pm y las 
-    	7am, podrá hacerlo usando <module>mod_rewrite</module>:</p>
+        7am, podrá hacerlo usando <module>mod_rewrite</module>:</p>
 
     <highlight language="config">
 RewriteEngine On
