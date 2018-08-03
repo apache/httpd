@@ -183,7 +183,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
    *) Support IPv6-sized client strings in mod_status and mod_echo
       trunk: http://svn.apache.org/r1837225
-      2.4.x patch: http://home.apache.org/~jim/patches/client64.patch
+             http://svn.apache.org/r1837366
+      2.4.x patch: http://home.apache.org/~jim/patches/client64v2.patch
       +1: jim,
 
    *) Add in mod_socache_redis from trunk
