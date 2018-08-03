@@ -1,9 +1,6 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
-  *) mod_md: When the last domain name from an MD is moved to another one,
-     that now empty MD gets moved to the store archive. PR 62572. [Stefan Eissing]
-
   *) mod_proxy: If ProxyPassReverse is used for reverse mapping of relative
      redirects, subsequent ProxyPassReverse statements, whether they are
      relative or absolute, may fail.  PR 60408.  [Peter Haworth <pmh1wheel gmail.com>]
