@@ -465,6 +465,7 @@ int raise_sigstop_flags;
 
 static apr_pool_t *pconf;       /* Pool for config stuff */
 static apr_pool_t *pchild;      /* Pool for httpd child stuff */
+static apr_pool_t *pruntime;    /* Pool for MPM threads stuff */
 
 static pid_t ap_my_pid;         /* Linux getpid() doesn't work except in main
                                    thread. Use this instead */
@@ -1367,37 +1368,11 @@ static apr_status_t s_socket_remove(void *user_baton,
 }
 #endif
 
-static apr_status_t init_pollset(apr_pool_t *p)
+#if HAVE_SERF
+static void init_serf(apr_pool_t *p)
 {
-#if HAVE_SERF
     s_baton_t *baton = NULL;
-#endif
-    ap_listen_rec *lr;
-    listener_poll_type *pt;
-    int i = 0;
 
-    listener_pollfd = apr_palloc(p, sizeof(apr_pollfd_t) * num_listensocks);
-    for (lr = my_bucket->listeners; lr != NULL; lr = lr->next, i++) {
-        apr_pollfd_t *pfd;
-        AP_DEBUG_ASSERT(i < num_listensocks);
-        pfd = &listener_pollfd[i];
-        pt = apr_pcalloc(p, sizeof(*pt));
-        pfd->desc_type = APR_POLL_SOCKET;
-        pfd->desc.s = lr->sd;
-        pfd->reqevents = APR_POLLIN;
-
-        pt->type = PT_ACCEPT;
-        pt->baton = lr;
-
-        pfd->client_data = pt;
-
-        apr_socket_opt_set(pfd->desc.s, APR_SO_NONBLOCK, 1);
-        apr_pollset_add(event_pollset, pfd);
-
-        lr->accept_func = ap_unixd_accept;
-    }
-
-#if HAVE_SERF
     baton = apr_pcalloc(p, sizeof(*baton));
     baton->pollset = event_pollset;
     /* TODO: subpools, threads, reuse, etc.  -- currently use malloc() inside :( */
@@ -1409,11 +1384,8 @@ static apr_status_t init_pollset(apr_pool_t *p)
 
     ap_register_provider(p, "mpm_serf",
                          "instance", "0", g_serf);
-
-#endif
-
-    return APR_SUCCESS;
 }
+#endif
 
 static apr_status_t push_timer2worker(timer_event_t* te)
 {
@@ -1822,7 +1794,6 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
     proc_info *ti = dummy;
     int process_slot = ti->pslot;
     struct process_score *ps = ap_get_scoreboard_process(process_slot);
-    apr_pool_t *tpool = apr_thread_pool_get(thd);
     int closed = 0;
     int have_idle_worker = 0;
     apr_time_t last_log;
@@ -1830,16 +1801,9 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
     last_log = apr_time_now();
     free(ti);
 
-    rc = init_pollset(tpool);
-    if (rc != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rc, ap_server_conf,
-                     APLOGNO(03266)
-                     "failed to initialize pollset, "
-                     "shutdown process now");
-        resource_shortage = 1;
-        signal_threads(ST_UNGRACEFUL);
-        return NULL;
-    }
+#if HAVE_SERF
+    init_serf(apr_thread_pool_get(thd));
+#endif
 
     /* Unblock the signal used to wake this thread up, and set a handler for
      * it.
@@ -2444,8 +2408,6 @@ static int check_signal(int signum)
     return 0;
 }
 
-
-
 static void create_listener_thread(thread_starter * ts, apr_pool_t *pool)
 {
     int my_child_num = ts->child_num_arg;
@@ -2467,26 +2429,12 @@ static void create_listener_thread(thread_starter * ts, apr_pool_t *pool)
     apr_os_thread_get(&listener_os_thread, ts->listener);
 }
 
-/* XXX under some circumstances not understood, children can get stuck
- *     in start_threads forever trying to take over slots which will
- *     never be cleaned up; for now there is an APLOG_DEBUG message issued
- *     every so often when this condition occurs
- */
-static void *APR_THREAD_FUNC start_threads(apr_thread_t * thd, void *dummy)
+static void setup_threads_runtime(void)
 {
-    thread_starter *ts = dummy;
-    apr_thread_t **threads = ts->threads;
-    apr_threadattr_t *thread_attr = ts->threadattr;
-    int my_child_num = ts->child_num_arg;
-    apr_pool_t *pruntime = NULL;
-    proc_info *my_info;
     apr_status_t rv;
-    int i;
-    int threads_created = 0;
-    int listener_started = 0;
-    int loops;
-    int prev_threads_created;
-    int max_recycled_pools = -1;
+    ap_listen_rec *lr;
+    apr_pool_t *pskip = NULL;
+    int max_recycled_pools = -1, i;
     const int good_methods[] = { APR_POLLSET_KQUEUE,
                                  APR_POLLSET_PORT,
                                  APR_POLLSET_EPOLL };
@@ -2496,6 +2444,21 @@ static void *APR_THREAD_FUNC start_threads(apr_thread_t * thd, void *dummy)
                                       (apr_uint32_t)threads_per_child *
                                       (async_factor > 2 ? async_factor : 2);
     int pollset_flags;
+
+    /* Event's skiplist operations will happen concurrently with other modules'
+     * runtime so they need their own pool for allocations, and its lifetime
+     * should be at least the one of the connections (ptrans). Thus pskip is
+     * created as a subpool of pconf like/before ptrans (before so that it's
+     * destroyed after). In forked mode pconf is never destroyed so we are good
+     * anyway, but in ONE_PROCESS mode this ensures that the skiplist works
+     * from connection/ptrans cleanups (even after pchild is destroyed).
+     */
+    apr_pool_create(&pskip, pconf);
+    apr_pool_tag(pskip, "mpm_skiplist");
+    apr_thread_mutex_create(&g_timer_skiplist_mtx, APR_THREAD_MUTEX_DEFAULT, pskip);
+    APR_RING_INIT(&timer_free_ring, timer_event_t, link);
+    apr_skiplist_init(&timer_skiplist, pskip);
+    apr_skiplist_set_compare(timer_skiplist, timer_comp, timer_comp);
 
     /* All threads (listener, workers) and synchronization objects (queues,
      * pollset, mutexes...) created here should have at least the lifetime of
@@ -2577,8 +2540,52 @@ static void *APR_THREAD_FUNC start_threads(apr_thread_t * thd, void *dummy)
         clean_child_exit(APEXIT_CHILDFATAL);
     }
 
+    /* Add listeners to the main pollset */
+    listener_pollfd = apr_pcalloc(pruntime, num_listensocks *
+                                            sizeof(apr_pollfd_t));
+    for (i = 0, lr = my_bucket->listeners; lr; lr = lr->next, i++) {
+        apr_pollfd_t *pfd;
+        listener_poll_type *pt;
+
+        AP_DEBUG_ASSERT(i < num_listensocks);
+        pfd = &listener_pollfd[i];
+
+        pfd->reqevents = APR_POLLIN;
+        pfd->desc_type = APR_POLL_SOCKET;
+        pfd->desc.s = lr->sd;
+
+        pt = apr_pcalloc(pruntime, sizeof(*pt));
+        pfd->client_data = pt;
+        pt->type = PT_ACCEPT;
+        pt->baton = lr;
+
+        apr_socket_opt_set(pfd->desc.s, APR_SO_NONBLOCK, 1);
+        apr_pollset_add(event_pollset, pfd);
+
+        lr->accept_func = ap_unixd_accept;
+    }
+
     worker_sockets = apr_pcalloc(pruntime, threads_per_child *
                                            sizeof(apr_socket_t *));
+}
+
+/* XXX under some circumstances not understood, children can get stuck
+ *     in start_threads forever trying to take over slots which will
+ *     never be cleaned up; for now there is an APLOG_DEBUG message issued
+ *     every so often when this condition occurs
+ */
+static void *APR_THREAD_FUNC start_threads(apr_thread_t * thd, void *dummy)
+{
+    thread_starter *ts = dummy;
+    apr_thread_t **threads = ts->threads;
+    apr_threadattr_t *thread_attr = ts->threadattr;
+    int my_child_num = ts->child_num_arg;
+    proc_info *my_info;
+    apr_status_t rv;
+    int threads_created = 0;
+    int listener_started = 0;
+    int prev_threads_created;
+    int loops, i;
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(02471)
                  "start_threads: Using %s (%swakeable)",
@@ -2728,7 +2735,6 @@ static void child_main(int child_num_arg, int child_bucket)
     thread_starter *ts;
     apr_threadattr_t *thread_attr;
     apr_thread_t *start_thread_id;
-    apr_pool_t *pskip;
     int i;
 
     /* for benefit of any hooks that run as this child initializes */
@@ -2760,21 +2766,6 @@ static void child_main(int child_num_arg, int child_bucket)
         clean_child_exit(APEXIT_CHILDFATAL);
     }
 
-    /* Event's skiplist operations will happen concurrently with other modules'
-     * runtime so they need their own pool for allocations, and its lifetime
-     * should be at least the one of the connections (ptrans). Thus pskip is
-     * created as a subpool of pconf like/before ptrans (before so that it's
-     * destroyed after). In forked mode pconf is never destroyed so we are good
-     * anyway, but in ONE_PROCESS mode this ensures that the skiplist works
-     * from connection/ptrans cleanups (even after pchild is destroyed).
-     */
-    apr_pool_create(&pskip, pconf);
-    apr_pool_tag(pskip, "mpm_skiplist");
-    apr_thread_mutex_create(&g_timer_skiplist_mtx, APR_THREAD_MUTEX_DEFAULT, pskip);
-    APR_RING_INIT(&timer_free_ring, timer_event_t, link);
-    apr_skiplist_init(&timer_skiplist, pskip);
-    apr_skiplist_set_compare(timer_skiplist, timer_comp, timer_comp);
-
     /* Just use the standard apr_setup_signal_thread to block all signals
      * from being received.  The child processes no longer use signals for
      * any communication with the parent process. Let's also do this before
@@ -2798,7 +2789,10 @@ static void child_main(int child_num_arg, int child_bucket)
         conns_this_child = APR_INT32_MAX;
     }
 
-    /* Setup worker threads */
+    /* Setup threads */
+
+    /* Globals used by signal_threads() so to be initialized before */
+    setup_threads_runtime();
 
     /* clear the storage; we may not create all our threads immediately,
      * and we want a 0 entry to indicate a thread which was not created

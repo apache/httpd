@@ -135,6 +135,8 @@ static int num_listensocks = 0;
 static int resource_shortage = 0;
 static fd_queue_t *worker_queue;
 static fd_queue_info_t *worker_queue_info;
+static apr_pollset_t *worker_pollset;
+
 
 /* data retained by worker across load/unload of the module
  * allocated on first call to pre-config hook; located on
@@ -219,6 +221,7 @@ int raise_sigstop_flags;
 
 static apr_pool_t *pconf;                 /* Pool for config stuff */
 static apr_pool_t *pchild;                /* Pool for httpd child stuff */
+static apr_pool_t *pruntime;              /* Pool for MPM threads stuff */
 
 static pid_t ap_my_pid; /* Linux getpid() doesn't work except in main
                            thread. Use this instead */
@@ -539,46 +542,14 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t *thd, void * dummy)
 {
     proc_info * ti = dummy;
     int process_slot = ti->pid;
-    apr_pool_t *tpool = apr_thread_pool_get(thd);
     void *csd = NULL;
     apr_pool_t *ptrans = NULL;            /* Pool for per-transaction stuff */
-    apr_pollset_t *pollset;
     apr_status_t rv;
-    ap_listen_rec *lr;
+    ap_listen_rec *lr = NULL;
     int have_idle_worker = 0;
     int last_poll_idx = 0;
 
     free(ti);
-
-    rv = apr_pollset_create(&pollset, num_listensocks, tpool,
-                            APR_POLLSET_NOCOPY);
-    if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ap_server_conf, APLOGNO(03285)
-                     "Couldn't create pollset in thread;"
-                     " check system or user limits");
-        /* let the parent decide how bad this really is */
-        clean_child_exit(APEXIT_CHILDSICK);
-    }
-
-    for (lr = my_bucket->listeners; lr != NULL; lr = lr->next) {
-        apr_pollfd_t *pfd = apr_pcalloc(tpool, sizeof *pfd);
-
-        pfd->desc_type = APR_POLL_SOCKET;
-        pfd->desc.s = lr->sd;
-        pfd->reqevents = APR_POLLIN;
-        pfd->client_data = lr;
-
-        rv = apr_pollset_add(pollset, pfd);
-        if (rv != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ap_server_conf, APLOGNO(03286)
-                         "Couldn't create add listener to pollset;"
-                         " check system or user limits");
-            /* let the parent decide how bad this really is */
-            clean_child_exit(APEXIT_CHILDSICK);
-        }
-
-        lr->accept_func = ap_unixd_accept;
-    }
 
     /* Unblock the signal used to wake this thread up, and set a handler for
      * it.
@@ -631,7 +602,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t *thd, void * dummy)
                 apr_int32_t numdesc;
                 const apr_pollfd_t *pdesc;
 
-                rv = apr_pollset_poll(pollset, -1, &numdesc, &pdesc);
+                rv = apr_pollset_poll(worker_pollset, -1, &numdesc, &pdesc);
                 if (rv != APR_SUCCESS) {
                     if (APR_STATUS_IS_EINTR(rv)) {
                         continue;
@@ -886,25 +857,10 @@ static void create_listener_thread(thread_starter *ts, apr_pool_t *pool)
     apr_os_thread_get(&listener_os_thread, ts->listener);
 }
 
-/* XXX under some circumstances not understood, children can get stuck
- *     in start_threads forever trying to take over slots which will
- *     never be cleaned up; for now there is an APLOG_DEBUG message issued
- *     every so often when this condition occurs
- */
-static void * APR_THREAD_FUNC start_threads(apr_thread_t *thd, void *dummy)
+static void setup_threads_runtime(void)
 {
-    thread_starter *ts = dummy;
-    apr_thread_t **threads = ts->threads;
-    apr_threadattr_t *thread_attr = ts->threadattr;
-    int my_child_num = ts->child_num_arg;
-    apr_pool_t *pruntime = NULL;
-    proc_info *my_info;
+    ap_listen_rec *lr;
     apr_status_t rv;
-    int i;
-    int threads_created = 0;
-    int listener_started = 0;
-    int loops;
-    int prev_threads_created;
 
     /* All threads (listener, workers) and synchronization objects (queues,
      * pollset, mutexes...) created here should have at least the lifetime of
@@ -936,8 +892,58 @@ static void * APR_THREAD_FUNC start_threads(apr_thread_t *thd, void *dummy)
         clean_child_exit(APEXIT_CHILDFATAL);
     }
 
+    /* Create the main pollset */
+    rv = apr_pollset_create(&worker_pollset, num_listensocks, pruntime,
+                            APR_POLLSET_NOCOPY);
+    if (rv != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ap_server_conf, APLOGNO(03285)
+                     "Couldn't create pollset in thread;"
+                     " check system or user limits");
+        /* let the parent decide how bad this really is */
+        clean_child_exit(APEXIT_CHILDSICK);
+    }
+
+    for (lr = my_bucket->listeners; lr != NULL; lr = lr->next) {
+        apr_pollfd_t *pfd = apr_pcalloc(pruntime, sizeof *pfd);
+
+        pfd->desc_type = APR_POLL_SOCKET;
+        pfd->desc.s = lr->sd;
+        pfd->reqevents = APR_POLLIN;
+        pfd->client_data = lr;
+
+        rv = apr_pollset_add(worker_pollset, pfd);
+        if (rv != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ap_server_conf, APLOGNO(03286)
+                         "Couldn't create add listener to pollset;"
+                         " check system or user limits");
+            /* let the parent decide how bad this really is */
+            clean_child_exit(APEXIT_CHILDSICK);
+        }
+
+        lr->accept_func = ap_unixd_accept;
+    }
+
     worker_sockets = apr_pcalloc(pruntime, threads_per_child *
                                            sizeof(apr_socket_t *));
+}
+
+/* XXX under some circumstances not understood, children can get stuck
+ *     in start_threads forever trying to take over slots which will
+ *     never be cleaned up; for now there is an APLOG_DEBUG message issued
+ *     every so often when this condition occurs
+ */
+static void * APR_THREAD_FUNC start_threads(apr_thread_t *thd, void *dummy)
+{
+    thread_starter *ts = dummy;
+    apr_thread_t **threads = ts->threads;
+    apr_threadattr_t *thread_attr = ts->threadattr;
+    int my_child_num = ts->child_num_arg;
+    proc_info *my_info;
+    apr_status_t rv;
+    int threads_created = 0;
+    int listener_started = 0;
+    int prev_threads_created;
+    int loops, i;
 
     loops = prev_threads_created = 0;
     while (1) {
@@ -1156,7 +1162,10 @@ static void child_main(int child_num_arg, int child_bucket)
         requests_this_child = INT_MAX;
     }
 
-    /* Setup worker threads */
+    /* Setup threads */
+
+    /* Globals used by signal_threads() so to be initialized before */
+    setup_threads_runtime();
 
     /* clear the storage; we may not create all our threads immediately,
      * and we want a 0 entry to indicate a thread which was not created
