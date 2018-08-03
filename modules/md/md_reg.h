@@ -124,6 +124,8 @@ apr_status_t md_reg_get_cred_files(md_reg_t *reg, const md_t *md, apr_pool_t *p,
 apr_status_t md_reg_sync(md_reg_t *reg, apr_pool_t *p, apr_pool_t *ptemp, 
                          apr_array_header_t *master_mds);
 
+apr_status_t md_reg_remove(md_reg_t *reg, apr_pool_t *p, const char *name, int archive);
+
 /**************************************************************************************************/
 /* protocol drivers */
 
