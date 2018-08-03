@@ -835,7 +835,7 @@ static int check_signal(int signum)
     return 0;
 }
 
-static void create_listener_thread(thread_starter *ts, apr_pool_t *pool)
+static void create_listener_thread(thread_starter *ts)
 {
     int my_child_num = ts->child_num_arg;
     apr_threadattr_t *thread_attr = ts->threadattr;
@@ -847,7 +847,7 @@ static void create_listener_thread(thread_starter *ts, apr_pool_t *pool)
     my_info->tid = -1; /* listener thread doesn't have a thread slot */
     my_info->sd = 0;
     rv = apr_thread_create(&ts->listener, thread_attr, listener_thread,
-                           my_info, pool);
+                           my_info, pruntime);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf, APLOGNO(00275)
                      "apr_thread_create: unable to create listener thread");
@@ -978,7 +978,7 @@ static void * APR_THREAD_FUNC start_threads(apr_thread_t *thd, void *dummy)
         }
         /* Start the listener only when there are workers available */
         if (!listener_started && threads_created) {
-            create_listener_thread(ts, pruntime);
+            create_listener_thread(ts);
             listener_started = 1;
         }
         if (start_thread_may_exit || threads_created == threads_per_child) {
