@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.35
 
+  *) mod_md: When the last domain name from an MD is moved to another one,
+     that now empty MD gets moved to the store archive. PR 62572. [Stefan Eissing]
+
   *) mod_ssl: Fix merging of SSLOCSPOverrideResponder.  [Jeff Trawick,
      [Frank Meier <frank meier ergon.ch>]
 

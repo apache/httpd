@@ -635,11 +635,10 @@ apr_status_t md_reg_creds_get(const md_creds_t **pcreds, md_reg_t *reg,
 
 typedef struct {
     apr_pool_t *p;
-    apr_array_header_t *conf_mds;
     apr_array_header_t *store_mds;
 } sync_ctx;
 
-static int find_changes(void *baton, md_store_t *store, md_t *md, apr_pool_t *ptemp)
+static int do_add_md(void *baton, md_store_t *store, md_t *md, apr_pool_t *ptemp)
 {
     sync_ctx *ctx = baton;
 
@@ -647,6 +646,18 @@ static int find_changes(void *baton, md_store_t *store, md_t *md, apr_pool_t *pt
     (void)ptemp;
     APR_ARRAY_PUSH(ctx->store_mds, const md_t*) = md_clone(ctx->p, md);
     return 1;
+}
+
+static apr_status_t read_store_mds(md_reg_t *reg, sync_ctx *ctx)
+{
+    int rv;
+    
+    apr_array_clear(ctx->store_mds);
+    rv = md_store_md_iter(do_add_md, ctx, reg->store, ctx->p, MD_SG_DOMAINS, "*");
+    if (APR_STATUS_IS_ENOENT(rv)) {
+        rv = APR_SUCCESS;
+    }
+    return rv;
 }
 
 apr_status_t md_reg_set_props(md_reg_t *reg, apr_pool_t *p, int can_http, int can_https)
@@ -686,17 +697,11 @@ apr_status_t md_reg_sync(md_reg_t *reg, apr_pool_t *p, apr_pool_t *ptemp,
                          apr_array_header_t *master_mds) 
 {
     sync_ctx ctx;
-    md_store_t *store = reg->store;
     apr_status_t rv;
 
     ctx.p = ptemp;
-    ctx.conf_mds = master_mds;
-    ctx.store_mds = apr_array_make(ptemp, 100, sizeof(md_t *));
-    
-    rv = md_store_md_iter(find_changes, &ctx, store, ptemp, MD_SG_DOMAINS, "*");
-    if (APR_STATUS_IS_ENOENT(rv)) {
-        rv = APR_SUCCESS;
-    }
+    ctx.store_mds = apr_array_make(ptemp,100, sizeof(md_t *));
+    rv = read_store_mds(reg, &ctx);
     
     md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, p, 
                   "sync: found %d mds in store", ctx.store_mds->nelts);
@@ -705,8 +710,8 @@ apr_status_t md_reg_sync(md_reg_t *reg, apr_pool_t *p, apr_pool_t *ptemp,
         md_t *md, *config_md, *smd, *omd;
         const char *common;
         
-        for (i = 0; i < ctx.conf_mds->nelts; ++i) {
-            md = APR_ARRAY_IDX(ctx.conf_mds, i, md_t *);
+        for (i = 0; i < master_mds->nelts; ++i) {
+            md = APR_ARRAY_IDX(master_mds, i, md_t *);
             
             /* find the store md that is closest match for the configured md */
             smd = md_find_closest_match(ctx.store_mds, md);
@@ -734,7 +739,7 @@ apr_status_t md_reg_sync(md_reg_t *reg, apr_pool_t *p, apr_pool_t *ptemp,
                     assert(common);
                     
                     /* Is this md still configured or has it been abandoned in the config? */
-                    config_md = md_get_by_name(ctx.conf_mds, omd->name);
+                    config_md = md_get_by_name(master_mds, omd->name);
                     if (config_md && md_contains(config_md, common, 0)) {
                         /* domain used in two configured mds, not allowed */
                         rv = APR_EINVAL;
@@ -742,21 +747,19 @@ apr_status_t md_reg_sync(md_reg_t *reg, apr_pool_t *p, apr_pool_t *ptemp,
                                       "domain %s used in md %s and %s", 
                                       common, md->name, omd->name);
                     }
-                    else if (config_md) {
-                        /* domain stored in omd, but no longer has the offending domain,
-                           remove it from the store md. */
-                        omd->domains = md_array_str_remove(ptemp, omd->domains, common, 0);
-                        rv = md_reg_update(reg, ptemp, omd->name, omd, MD_UPD_DOMAINS);
-                    }
                     else {
-                        /* domain in a store md that is no longer configured, warn about it.
-                         * Remove the domain here, so we can progress, but never save it. */
+                        /* remove it from the other md and update store, or, if it
+                         * is now empty, move it into the archive */
                         omd->domains = md_array_str_remove(ptemp, omd->domains, common, 0);
-                        md_log_perror(MD_LOG_MARK, MD_LOG_WARNING, rv, p, 
-                                      "domain %s, configured in md %s, is part of the stored md %s."
-                                      " That md however is no longer mentioned in the config. "
-                                      "If you longer want it, remove the md from the store.", 
-                                      common, md->name, omd->name);
+                        if (apr_is_empty_array(omd->domains)) {
+                            md_log_perror(MD_LOG_MARK, MD_LOG_WARNING, rv, p, 
+                                          "All domains of the MD %s have moved elsewhere, "
+                                          " moving it to the archive. ", omd->name);
+                            md_reg_remove(reg, ptemp, omd->name, 1); /* best effort */
+                        }
+                        else {
+                            rv = md_reg_update(reg, ptemp, omd->name, omd, MD_UPD_DOMAINS);
+                        }
                     }
                 }
 
@@ -839,6 +842,11 @@ apr_status_t md_reg_sync(md_reg_t *reg, apr_pool_t *p, apr_pool_t *ptemp,
     }
     
     return rv;
+}
+
+apr_status_t md_reg_remove(md_reg_t *reg, apr_pool_t *p, const char *name, int archive)
+{
+    return md_store_move(reg->store, p, MD_SG_DOMAINS, MD_SG_ARCHIVE, name, archive);
 }
 
 
