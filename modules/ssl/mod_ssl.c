@@ -342,6 +342,7 @@ static int modssl_is_prelinked(void)
     return 0;
 }
 
+#if !USE_APR_CRYPTO_LIB_INIT
 static apr_status_t ssl_cleanup_pre_config(void *data)
 {
     /*
@@ -397,47 +398,31 @@ static apr_status_t ssl_cleanup_pre_config(void *data)
      */
     return APR_SUCCESS;
 }
+#endif /* !USE_APR_CRYPTO_LIB_INIT */
 
 static int ssl_hook_pre_config(apr_pool_t *pconf,
                                apr_pool_t *plog,
                                apr_pool_t *ptemp)
 {
-#if USE_APR_CRYPTO_LIB_INIT
-    apr_status_t rv;
-#endif
-
 #if HAVE_VALGRIND
     ssl_running_on_valgrind = RUNNING_ON_VALGRIND;
 #endif
     modssl_running_statically = modssl_is_prelinked();
 
-    /* Some OpenSSL internals are allocated per-thread, make sure they
-     * are associated to the/our same thread-id until cleaned up.
-     */
-#if APR_HAS_THREADS && MODSSL_USE_OPENSSL_PRE_1_1_API
-    ssl_util_thread_id_setup(pconf);
-#endif
-
 #if USE_APR_CRYPTO_LIB_INIT
-    /* When mod_ssl is builtin, no need to unload openssl on restart */
-    rv = apr_crypto_lib_init("openssl", NULL, NULL,
-                             modssl_running_statically ? ap_pglobal : pconf);
-    if (rv == APR_SUCCESS || rv == APR_EREINIT) {
-        /* apr_crypto inits libcrypto only, so in any case init libssl here,
-         * each time if openssl is unloaded with pconf, but only once if
-         * mod_ssl is builtin.
+    {
+        /* When mod_ssl is builtin, no need to unload openssl on restart,
+         * so use pglobal.
          */
-        if (!modssl_running_statically
-                || !ap_retained_data_get("ssl_hook_pre_config")) {
-            if (modssl_running_statically) {
-                ap_retained_data_create("ssl_hook_pre_config", 1);
-            }
-            SSL_load_error_strings();
-            SSL_library_init();
+        apr_pool_t *p = modssl_running_statically ? ap_pglobal : pconf;
+        apr_status_t rv = apr_crypto_lib_init("openssl", NULL, NULL, p);
+        if (rv != APR_SUCCESS && rv != APR_EREINIT) {
+            ap_log_perror(APLOG_MARK, APLOG_ERR, rv, pconf, APLOGNO()
+                          "mod_ssl: can't initialize OpenSSL library");
+            return !OK;
         }
     }
-    else
-#endif
+#else /* USE_APR_CRYPTO_LIB_INIT */
     {
         /* We must register the library in full, to ensure our configuration
          * code can successfully test the SSL environment.
@@ -456,6 +441,7 @@ static int ssl_hook_pre_config(apr_pool_t *pconf,
 #endif
         OpenSSL_add_all_algorithms();
         OPENSSL_load_builtin_modules();
+
         SSL_load_error_strings();
         SSL_library_init();
 
@@ -465,6 +451,16 @@ static int ssl_hook_pre_config(apr_pool_t *pconf,
         apr_pool_cleanup_register(pconf, NULL, ssl_cleanup_pre_config,
                                                apr_pool_cleanup_null);
     }
+
+#if APR_HAS_THREADS && MODSSL_USE_OPENSSL_PRE_1_1_API
+    /* Some OpenSSL internals are allocated per-thread, make sure they
+     * are associated to the/our same thread-id until cleaned up. Then
+     * initialize all the thread locking stuff needed by the lib.
+     */
+    ssl_util_thread_id_setup(pconf);
+    ssl_util_thread_setup(pconf);
+#endif
+#endif /* USE_APR_CRYPTO_LIB_INIT */
 
     if (OBJ_txt2nid("id-on-dnsSRV") == NID_undef) {
         (void)OBJ_create("1.3.6.1.5.5.7.8.7", "id-on-dnsSRV",
