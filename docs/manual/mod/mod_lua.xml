@@ -643,9 +643,9 @@ end
 </highlight>
 
 <highlight language="lua">
-r:addoutputfilter(name|function) -- add an output filter:
+r:add_output_filter(filter_name) -- add an output filter:
 
-r:addoutputfilter("fooFilter") -- add the fooFilter to the output stream
+r:add_output_filter("fooFilter") -- add the fooFilter to the output stream
 </highlight>
 
 <highlight language="lua">
