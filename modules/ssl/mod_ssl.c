@@ -417,7 +417,7 @@ static int ssl_hook_pre_config(apr_pool_t *pconf,
         apr_pool_t *p = modssl_running_statically ? ap_pglobal : pconf;
         apr_status_t rv = apr_crypto_lib_init("openssl", NULL, NULL, p);
         if (rv != APR_SUCCESS && rv != APR_EREINIT) {
-            ap_log_perror(APLOG_MARK, APLOG_ERR, rv, pconf, APLOGNO()
+            ap_log_perror(APLOG_MARK, APLOG_ERR, rv, pconf, APLOGNO(10155)
                           "mod_ssl: can't initialize OpenSSL library");
             return !OK;
         }
