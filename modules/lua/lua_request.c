@@ -490,7 +490,7 @@ static int req_write(lua_State *L)
     return 1;
 }
 
-/* r:addoutputfilter(name|function) */
+/* r:add_output_filter(name) */
 static int req_add_output_filter(lua_State *L)
 {
     request_rec *r = ap_lua_check_request_rec(L, 1);
