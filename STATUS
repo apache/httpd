@@ -124,6 +124,13 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mpm_winnt: Don't forget to close the I/O completion port as part of the
+                cleanup in the child process.
+     trunk patch: http://svn.apache.org/r1801143
+     2.4.x patch: svn merge -c 1801143 ^/httpd/httpd/trunk . 
+     +1: jailletc36, ylavic (by inspection), covener
+     jailletc36: untested, but looks straight forward enough to vote
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -133,7 +140,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1811831 ^/httpd/httpd/trunk .
      +1: jorton, rpluem
      ylavic: same as dev@; since SetEnv* are usable from htaccess, wouldn't
-             we open a door here (unconditionally)?
+             we open a door here (unconditionally)? 
+             covener: seems like we need some kind of pattern for opting in
+             to restricted arguments.
 
   *) core: avoid duplicate headers when using ap_send_error_response.
            From trunk's testing the code seems running fine without any side
@@ -154,13 +163,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      would be sent to the origin server (the proxy backend) and not to our
      client. Further discussion should possibly happen on dev@.
 
-  *) mpm_winnt: Don't forget to close the I/O completion port as part of the
-                cleanup in the child process.
-     trunk patch: http://svn.apache.org/r1801143
-     2.4.x patch: svn merge -c 1801143 ^/httpd/httpd/trunk . 
-     +1: jailletc36, ylavic (by inspection),
-     jailletc36: untested, but looks straight forward enough to vote
-
   *) kotkov has made mamy improvements to the mpm_winnt about one year ago.
      None of them have been merged or proposed for backport yet.
      Start the merge process with the first easy steps in order to synch
@@ -179,7 +181,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       trunk: http://svn.apache.org/r1836469
              http://svn.apache.org/r1836154
       2.4.x patch: svn merge -c 1836469,1836154 ^/httpd/httpd/trunk . 
-      +1: jorton,
+      +1: jorton, covener
 
    *) Support IPv6-sized client strings in mod_status and mod_echo
       trunk: http://svn.apache.org/r1837225
