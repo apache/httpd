@@ -200,6 +200,41 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: http://home.apache.org/~jim/patches/socache_redis.patch
       +1: jim,
 
+   *) mod_proxy: Improve the balancer member data shown
+      in mod_status when "ProxyStatus" is "On":
+      add "busy" count and show byte counts in auto
+      mode always in units of kilobytes.
+      trunk: http://svn.apache.org/r1837588
+      2.4.x patch: svn merge -c 1837588 ^/httpd/httpd/trunk . 
+                   (adjust CHANGES)
+      +1: rjung
+
+   *) mod_status: Complete the data shown for async
+      MPMs in "auto" mode.  Added number of processes,
+      number of stopping processes and number
+      of busy and idle workers.
+      trunk: http://svn.apache.org/r1837589
+      2.4.x patch: svn merge -c 1837589 ^/httpd/httpd/trunk . 
+                   (adjust CHANGES)
+      +1: rjung
+
+   *) mod_status: Add cumulated response duration time
+      in milliseconds.
+      trunk: http://svn.apache.org/r1837590
+      2.4.x patch: svn merge -c 1837590 ^/httpd/httpd/trunk . 
+                   (adjust CHANGES and include/ap_mmn.h)
+      +1: rjung
+
+   *) mod_status: Cumulate CPU time of exited child
+      processes in the "cu" and "cs" values.
+      Add CPU time of the parent process to the
+      "c" and "s" values.
+      trunk: http://svn.apache.org/r1837595
+      2.4.x patch: svn merge -c 1837595 ^/httpd/httpd/trunk . 
+                   (adjust CHANGES and include/ap_mmn.h)
+      +1: rjung
+
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
