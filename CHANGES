@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_proxy: Improve the balancer member data shown in mod_status when
+     "ProxyStatus" is "On": add "busy" count and show byte counts in auto
+     mode always in units of kilobytes.  [Rainer Jung]
+
   *) mod_proxy: If ProxyPassReverse is used for reverse mapping of relative
      redirects, subsequent ProxyPassReverse statements, whether they are
      relative or absolute, may fail.  PR 60408.  [Peter Haworth <pmh1wheel gmail.com>]
