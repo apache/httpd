@@ -2876,7 +2876,7 @@ static int proxy_status_hook(request_rec *r, int flags)
             ap_rputs("\n\n<table border=\"0\"><tr>"
                      "<th>Sch</th><th>Host</th><th>Stat</th>"
                      "<th>Route</th><th>Redir</th>"
-                     "<th>F</th><th>Set</th><th>Acc</th><th>Wr</th><th>Rd</th>"
+                     "<th>F</th><th>Set</th><th>Acc</th><th>Busy</th><th>Wr</th><th>Rd</th>"
                      "</tr>\n", r);
         }
         else {
@@ -2894,8 +2894,10 @@ static int proxy_status_hook(request_rec *r, int flags)
                 ap_rvputs(r, "</td><td>", (*worker)->s->redirect, NULL);
                 ap_rprintf(r, "</td><td>%.2f</td>", (float)((*worker)->s->lbfactor)/100.0);
                 ap_rprintf(r, "<td>%d</td>", (*worker)->s->lbset);
-                ap_rprintf(r, "<td>%" APR_SIZE_T_FMT "</td><td>",
+                ap_rprintf(r, "<td>%" APR_SIZE_T_FMT "</td>",
                            (*worker)->s->elected);
+                ap_rprintf(r, "<td>%" APR_SIZE_T_FMT "</td><td>",
+                           (*worker)->s->busy);
                 ap_rputs(apr_strfsize((*worker)->s->transferred, fbuf), r);
                 ap_rputs("</td><td>", r);
                 ap_rputs(apr_strfsize((*worker)->s->read, fbuf), r);
@@ -2912,10 +2914,16 @@ static int proxy_status_hook(request_rec *r, int flags)
                 ap_rprintf(r, "ProxyBalancer[%d]Worker[%d]Elected: %"
                               APR_SIZE_T_FMT "\n",
                            i, n, (*worker)->s->elected);
-                ap_rprintf(r, "ProxyBalancer[%d]Worker[%d]Sent: %s\n",
-                           i, n, apr_strfsize((*worker)->s->transferred, fbuf));
-                ap_rprintf(r, "ProxyBalancer[%d]Worker[%d]Rcvd: %s\n",
-                           i, n, apr_strfsize((*worker)->s->read, fbuf));
+                ap_rprintf(r, "ProxyBalancer[%d]Worker[%d]Busy: %"
+                              APR_SIZE_T_FMT "\n",
+                           i, n, (*worker)->s->busy);
+                ap_rprintf(r, "ProxyBalancer[%d]Worker[%d]Sent: %"
+                              APR_OFF_T_FMT "K\n",
+                           i, n, (*worker)->s->transferred >> 10);
+                ap_rprintf(r, "ProxyBalancer[%d]Worker[%d]Rcvd: %"
+                              APR_OFF_T_FMT "K\n",
+                           i, n, (*worker)->s->read >> 10);
+
                 /* TODO: Add the rest of dynamic worker data */
             }
 
