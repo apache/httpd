@@ -589,6 +589,8 @@
  * 20180720.2 (2.5.1-dev)  Add optional function declaration for
  *                         ap_proxy_balancer_get_best_worker to mod_proxy.h.
  * 20180720.3 (2.5.1-dev)  Add client64 to worker_share
+ * 20180720.4 (2.5.1-dev)  Add new duration field to worker_score struct in
+ *                         scoreboard.h
  *
  */
 
@@ -597,7 +599,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20180720
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 3                 /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 4                 /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

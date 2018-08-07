@@ -117,6 +117,7 @@ struct worker_score {
     char vhost[32];             /* What virtual host is being accessed? */
     char protocol[16];          /* What protocol is used on the connection? */
     char client64[64];
+    apr_time_t duration;
 };
 
 typedef struct {
