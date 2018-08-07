@@ -506,6 +506,12 @@ static int update_child_status_internal(int child_num,
             if (status == SERVER_DEAD) {
                 ws->my_access_count = 0L;
                 ws->my_bytes_served = 0L;
+#ifdef HAVE_TIMES
+                ws->times.tms_utime = 0;
+                ws->times.tms_stime = 0;
+                ws->times.tms_cutime = 0;
+                ws->times.tms_cstime = 0;
+#endif
             }
             ws->conn_count = 0;
             ws->conn_bytes = 0;
@@ -645,6 +651,17 @@ AP_DECLARE(void) ap_time_process_request(ap_sb_handle_t *sbh, int status)
             ws->duration += ws->stop_time - ws->start_time;
         }
     }
+}
+
+AP_DECLARE(int) ap_update_global_status()
+{
+#ifdef HAVE_TIMES
+    if (ap_scoreboard_image == NULL) {
+        return APR_SUCCESS;
+    }
+    times(&ap_scoreboard_image->global->times);
+#endif
+    return APR_SUCCESS;
 }
 
 AP_DECLARE(worker_score *) ap_get_scoreboard_worker_from_indexes(int x, int y)

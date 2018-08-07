@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_status: Cumulate CPU time of exited child processes in the
+     "cu" and "cs" values. Add CPU time of the parent process to the
+     "c" and "s" values.
+     [Rainer Jung]
+
   *) mod_status: Add cumulated response duration time in milliseconds.
      [Rainer Jung]
 

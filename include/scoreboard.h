@@ -127,6 +127,9 @@ typedef struct {
                                          * should still be serving requests.
                                          */
     apr_time_t restart_time;
+#ifdef HAVE_TIMES
+    struct tms times;
+#endif
 } global_score;
 
 /* stuff which the parent generally writes and the children rarely read */
@@ -192,6 +195,8 @@ AP_DECLARE(int) ap_update_child_status_from_server(ap_sb_handle_t *sbh, int stat
 AP_DECLARE(int) ap_update_child_status_descr(ap_sb_handle_t *sbh, int status, const char *descr);
 
 AP_DECLARE(void) ap_time_process_request(ap_sb_handle_t *sbh, int status);
+
+AP_DECLARE(int) ap_update_global_status(void);
 
 AP_DECLARE(worker_score *) ap_get_scoreboard_worker(ap_sb_handle_t *sbh);
 

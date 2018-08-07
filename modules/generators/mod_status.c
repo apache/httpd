@@ -197,6 +197,7 @@ static int status_handler(request_rec *r)
     apr_time_t duration_slot;
     int short_report;
     int no_table_report;
+    global_score *global_record;
     worker_score *ws_record;
     process_score *ps_record;
     char *stat_buffer;
@@ -204,6 +205,7 @@ static int status_handler(request_rec *r)
     int *thread_idle_buffer = NULL;
     int *thread_busy_buffer = NULL;
     clock_t tu, ts, tcu, tcs;
+    clock_t gu, gs, gcu, gcs;
     ap_generation_t mpm_generation, worker_generation;
 #ifdef HAVE_TIMES
     float tick;
@@ -238,6 +240,12 @@ static int status_handler(request_rec *r)
     short_report = 0;
     no_table_report = 0;
 
+    if (!ap_exists_scoreboard_image()) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01237)
+                      "Server status unavailable in inetd mode");
+        return HTTP_INTERNAL_SERVER_ERROR;
+    }
+
     pid_buffer = apr_palloc(r->pool, server_limit * sizeof(pid_t));
     stat_buffer = apr_palloc(r->pool, server_limit * thread_limit * sizeof(char));
     if (is_async) {
@@ -246,13 +254,16 @@ static int status_handler(request_rec *r)
     }
 
     nowtime = apr_time_now();
+#ifdef HAVE_TIMES
+    global_record = ap_get_scoreboard_global();
+    gu = global_record->times.tms_utime;
+    gs = global_record->times.tms_stime;
+    gcu = global_record->times.tms_cutime;
+    gcs = global_record->times.tms_cstime;
+#else
+    gu = gs = gcu = gcs = 0;
+#endif
     tu = ts = tcu = tcs = 0;
-
-    if (!ap_exists_scoreboard_image()) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01237)
-                      "Server status unavailable in inetd mode");
-        return HTTP_INTERNAL_SERVER_ERROR;
-    }
 
     r->allowed = (AP_METHOD_BIT << M_GET);
     if (r->method_number != M_GET)
@@ -463,6 +474,7 @@ static int status_handler(request_rec *r)
     }
 
     if (ap_extended_status) {
+        clock_t cpu = gu + gs + gcu + gcs + tu + ts + tcu + tcs;
         if (short_report) {
             ap_rprintf(r, "Total Accesses: %lu\nTotal kBytes: %"
                        APR_OFF_T_FMT "\nTotal Duration: %"
@@ -472,11 +484,11 @@ static int status_handler(request_rec *r)
 #ifdef HAVE_TIMES
             /* Allow for OS/2 not having CPU stats */
             ap_rprintf(r, "CPUUser: %g\nCPUSystem: %g\nCPUChildrenUser: %g\nCPUChildrenSystem: %g\n",
-                       tu / tick, ts / tick, tcu / tick, tcs / tick);
+                       (gu + tu) / tick, (gs + ts) / tick, (gcu + tcu) / tick, (gcs + tcs) / tick);
 
-            if (ts || tu || tcu || tcs)
+            if (cpu)
                 ap_rprintf(r, "CPULoad: %g\n",
-                           (tu + ts + tcu + tcs) / tick / up_time * 100.);
+                           cpu / tick / up_time * 100.);
 #endif
 
             ap_rprintf(r, "Uptime: %ld\n", (long) (up_time));
@@ -502,15 +514,18 @@ static int status_handler(request_rec *r)
 #ifdef HAVE_TIMES
             /* Allow for OS/2 not having CPU stats */
             ap_rprintf(r, "<dt>CPU Usage: u%g s%g cu%g cs%g",
-                       tu / tick, ts / tick, tcu / tick, tcs / tick);
+                       (gu + tu) / tick, (gs + ts) / tick, (gcu + tcu) / tick, (gcs + tcs) / tick);
 
-            if (ts || tu || tcu || tcs)
+            if (cpu)
                 ap_rprintf(r, " - %.3g%% CPU load</dt>\n",
-                           (tu + ts + tcu + tcs) / tick / up_time * 100.);
+                           cpu / tick / up_time * 100.);
+            else
+                ap_rputs("</dt>\n", r);
 #endif
 
+            ap_rputs("<dt>", r);
             if (up_time > 0) {
-                ap_rprintf(r, "<dt>%.3g requests/sec - ",
+                ap_rprintf(r, "%.3g requests/sec - ",
                            (float) count / (float) up_time);
 
                 format_byte_out(r, (unsigned long)(KBYTE * (float) kbcount
@@ -519,7 +534,8 @@ static int status_handler(request_rec *r)
             }
 
             if (count > 0) {
-                ap_rputs(" - ", r);
+                if (up_time > 0)
+                    ap_rputs(" - ", r);
                 format_byte_out(r, (unsigned long)(KBYTE * (float) kbcount
                                                    / (float) count));
                 ap_rprintf(r, "/request - %g ms/request",
