@@ -175,13 +175,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1801148
                   http://svn.apache.org/r1801456
      2.4.x patch: svn merge -c 1801144,1801148,1801456 ^/httpd/httpd/trunk . 
-     +1: jailletc36
+     +1: jailletc36, jim (via inspection)
 
    *) Build tweaks: fix make -j install, Fedora config.layout.
       trunk: http://svn.apache.org/r1836469
              http://svn.apache.org/r1836154
       2.4.x patch: svn merge -c 1836469,1836154 ^/httpd/httpd/trunk . 
-      +1: jorton, covener
+      +1: jorton, covener, jim
 
    *) Support IPv6-sized client strings in mod_status and mod_echo
       trunk: http://svn.apache.org/r1837225
@@ -207,7 +207,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       trunk: http://svn.apache.org/r1837588
       2.4.x patch: svn merge -c 1837588 ^/httpd/httpd/trunk . 
                    (adjust CHANGES)
-      +1: rjung
+      +1: rjung, jim
 
    *) mod_status: Complete the data shown for async
       MPMs in "auto" mode.  Added number of processes,
@@ -216,14 +216,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       trunk: http://svn.apache.org/r1837589
       2.4.x patch: svn merge -c 1837589 ^/httpd/httpd/trunk . 
                    (adjust CHANGES)
-      +1: rjung
+      +1: rjung, jim
 
    *) mod_status: Add cumulated response duration time
       in milliseconds.
       trunk: http://svn.apache.org/r1837590
       2.4.x patch: svn merge -c 1837590 ^/httpd/httpd/trunk . 
                    (adjust CHANGES and include/ap_mmn.h)
-      +1: rjung
+      +1: rjung, jim
 
    *) mod_status: Cumulate CPU time of exited child
       processes in the "cu" and "cs" values.
@@ -232,7 +232,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       trunk: http://svn.apache.org/r1837595
       2.4.x patch: svn merge -c 1837595 ^/httpd/httpd/trunk . 
                    (adjust CHANGES and include/ap_mmn.h)
-      +1: rjung
+      +1: rjung, jim
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
