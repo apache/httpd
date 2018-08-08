@@ -230,7 +230,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * core: maintainer mode fix for #if AP_ENABLE_EXCEPTION_HOOK
       trunk: http://svn.apache.org/r1809135
       2.4.x patch: svn merge -c 1809135 ^/httpd/httpd/trunk .
-      +1: covener
+      +1: covener, rjung
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
