@@ -131,12 +131,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      +1: jailletc36, ylavic (by inspection), covener
      jailletc36: untested, but looks straight forward enough to vote
 
-   *) Build tweaks: fix make -j install, Fedora config.layout.
-      trunk: http://svn.apache.org/r1836469
-             http://svn.apache.org/r1836154
-      2.4.x patch: svn merge -c 1836469,1836154 ^/httpd/httpd/trunk . 
-      +1: jorton, covener, jim
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
