@@ -1,4 +1,3 @@
-
 #
 # Load the module if not already present
 <IfModule !mod_policy.c>
@@ -12,32 +11,32 @@
 <Location />
   SetOutputFilter POLICY_TYPE;POLICY_LENGTH;POLICY_KEEPALIVE;POLICY_VARY;POLICY_VALIDATION;POLICY_CONDITIONAL;POLICY_NOCACHE;POLICY_MAXAGE
 
-  # content type must be present and valid, but can be anything<br />
-  PolicyType enforce */*<br />
+  # content type must be present and valid, but can be anything
+  PolicyType enforce */*
 
-  # reject if no explicitly declared content length<br />
-  PolicyLength enforce<br />
+  # reject if no explicitly declared content length
+  PolicyLength enforce
 
-  # covered by the policy length filter<br />
-  PolicyKeepalive ignore<br />
+  # covered by the policy length filter
+  PolicyKeepalive ignore
 
-  # reject if User-Agent appears within Vary headers<br />
-  PolicyVary enforce User-Agent<br />
+  # reject if User-Agent appears within Vary headers
+  PolicyVary enforce User-Agent
 
-  # we want to enforce validation<br />
-  PolicyValidation enforce<br />
+  # we want to enforce validation
+  PolicyValidation enforce
 
-  # non-functional conditional responses should be rejected<br />
-  PolicyConditional enforce<br />
+  # non-functional conditional responses should be rejected
+  PolicyConditional enforce
 
-  # no-cache responses should be rejected<br />
-  PolicyNocache enforce<br />
+  # no-cache responses should be rejected
+  PolicyNocache enforce
 
-  # maxage must be at least a day<br />
-  PolicyMaxage enforce 86400<br />
+  # maxage must be at least a day
+  PolicyMaxage enforce 86400
 
-  # request version can be anything<br />
-  PolicyVersion ignore HTTP/1.1<br />
+  # request version can be anything
+  PolicyVersion ignore HTTP/1.1
 
   # define documentation links
   PolicyConditionalURL http://httpd.apache.org/docs/trunk/compliance.html#policyconditional
@@ -57,5 +56,3 @@
 <Location /server-status>
   PolicyFilter off
 </Location>
-
-
