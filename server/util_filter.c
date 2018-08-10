@@ -1007,7 +1007,7 @@ AP_DECLARE_NONSTD(int) ap_filter_output_pending(conn_rec *c)
 
     /* Flush outer most filters first for ap_filter_should_yield(f->next)
      * to be relevant in the previous ones (e.g. ap_request_core_filter()
-     * won't pass its buckets if its next filters yields already).
+     * won't pass its buckets if its next filters yield already).
      */
     for (f = APR_RING_LAST(c->pending_filters);
          f != APR_RING_SENTINEL(c->pending_filters, ap_filter_t, pending);
