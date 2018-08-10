@@ -235,7 +235,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    *) core: allow quoted paths in <IfFile>
       trunk: http://svn.apache.org/r1797844
       2.4.x patch: svn merge -c 1797844 ^/httpd/httpd/trunk .
-      +1: jailletc36
+      +1: jailletc36, covener
       jailletc36: once backported, iffile.t can be enabled
 
 PATCHES/ISSUES THAT ARE BEING WORKED
