@@ -818,6 +818,12 @@ AP_DECLARE(apr_status_t) ap_filter_reinstate_brigade(ap_filter_t *f,
     int eor_buckets_in_brigade, morphing_bucket_in_brigade;
     core_server_config *conf;
  
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, f->c,
+                  "reinstate %s brigade to %s brigade in '%s' output filter",
+                  (!f->bb || APR_BRIGADE_EMPTY(f->bb) ? "empty" : "full"),
+                  (APR_BRIGADE_EMPTY(bb) ? "empty" : "full"),
+                  f->frec->name);
+
     if (f->bb && !APR_BRIGADE_EMPTY(f->bb)) {
         APR_BRIGADE_PREPEND(bb, f->bb);
     }
@@ -827,12 +833,6 @@ AP_DECLARE(apr_status_t) ap_filter_reinstate_brigade(ap_filter_t *f,
     }
  
     *flush_upto = NULL;
-
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, f->c,
-                  "reinstate %s brigade to %s brigade in '%s' output filter",
-                  (!f->bb || APR_BRIGADE_EMPTY(f->bb) ? "empty" : "full"),
-                  (APR_BRIGADE_EMPTY(bb) ? "empty" : "full"),
-                  f->frec->name);
 
     /*
      * Determine if and up to which bucket we need to do a blocking write:
@@ -1005,9 +1005,13 @@ AP_DECLARE_NONSTD(int) ap_filter_output_pending(conn_rec *c)
     bb = ap_reuse_brigade_from_pool("ap_fop_bb", c->pool,
                                     c->bucket_alloc);
 
-    for (f = APR_RING_FIRST(c->pending_filters);
+    /* Flush outer most filters first for ap_filter_should_yield(f->next)
+     * to be relevant in the previous ones (e.g. ap_request_core_filter()
+     * won't pass its buckets if its next filters yields already).
+     */
+    for (f = APR_RING_LAST(c->pending_filters);
          f != APR_RING_SENTINEL(c->pending_filters, ap_filter_t, pending);
-         f = APR_RING_NEXT(f, pending)) {
+         f = APR_RING_PREV(f, pending)) {
         if (f->frec->direction == AP_FILTER_OUTPUT && f->bb
                 && !APR_BRIGADE_EMPTY(f->bb)) {
             apr_status_t rv;
@@ -1038,9 +1042,9 @@ AP_DECLARE_NONSTD(int) ap_filter_input_pending(conn_rec *c)
         return DECLINED;
     }
 
-    for (f = APR_RING_FIRST(c->pending_filters);
+    for (f = APR_RING_LAST(c->pending_filters);
          f != APR_RING_SENTINEL(c->pending_filters, ap_filter_t, pending);
-         f = APR_RING_NEXT(f, pending)) {
+         f = APR_RING_PREV(f, pending)) {
         if (f->frec->direction == AP_FILTER_INPUT && f->bb) {
             apr_bucket *e = APR_BRIGADE_FIRST(f->bb);
 
