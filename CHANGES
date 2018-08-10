@@ -39,35 +39,12 @@ Changes with Apache 2.5.1
   *) ru, zh-cn and zh-tw translations of errordocs have been added.
      Contributed by Alexander Gaganashvili and CodeingBoy
   
-  *) mod_authz_core: If several parameters are used in a AuthzProviderAlias
-     directive, if these parameters are not enclosed in quotation mark, only
-     the first one is handled. The other ones are silently ignored.
-     Add a message to warn about such a spurious configuration.
-     PR 62469 [Hank Ibell <hwibell gmail.com>, Christophe Jaillet]
-
-  *) mod_proxy_wstunnel: Add default schema ports for 'ws' and 'wss'.
-     PR 62480. [Lubos Uhliarik <luhliari redhat.com>}
-  
-  *) http: Fix small memory leak per request when handling persistent
-     connections.  [Ruediger Pluem, Joe Orton]
-
-  *) mod_remoteip: Fix RemoteIP{Trusted,Internal}ProxyList loading broken by 2.4.30.
-     PR 62220.  [Chritophe Jaillet, Yann Ylavic]
-
   *) mod_userdir: If several directories are given in a UserDir directive, only files
      in the first existing one are checked. If the file is not found there, the
      other possible directories are not checked. The doc clearly states that they
      will be checked one by one, until a match is found or an external redirect is
      performed.  PR 59636.
      [Christophe Jaillet]
-
-  *) mod_proxy: Fix a corner case where the ProxyPassReverseCookieDomain or
-     ProxyPassReverseCookiePath directive could fail to update correctly 
-     'domain=' or 'path=' in the 'Set-Cookie' header.  PR 61560.
-     [Christophe Jaillet]
-
-  *) mod_slotmem_shm: Add generation number to shm filename to fix races
-     with graceful restarts. PRs 62044 and 62308.  [Jim Jagielski, Yann Ylavic]
 
   *) mod_rewrite: Only create the global mutex used by "RewriteMap prg:" when
      this type of map is present in the configuration.  PR62311.  
@@ -78,12 +55,6 @@ Changes with Apache 2.5.1
   *) mod_ssl: Support loading certificates and private keys from the
      PKCS#11 OpenSSL engine.  [Anderson Sasaki <ansasaki redhat.com>,
      Joe Orton]
-
-  *) mod_proxy_html: Fix variable interpolation and memory allocation failure
-     in ProxyHTMLURLMap.  [Ewald Dieterich <ewald mailbox.org>]
-
-  *) core: In ONE_PROCESS/debug mode, cleanup everything when exiting.
-     [Yann Ylavic]
 
   *) mod_http2: adding an abort function to slave connections' pools, so out-of-memory
      events lead to a control process abort, as on HTTP/1.x connections. [Stefan Eissing]
@@ -339,10 +310,6 @@ Changes with Apache 2.5.0-alpha
   *) When using mod_status with the Event MPM, report the number of requests
      associated with an active connection in the "ACC" field. Previously
      zero was always reported with this MPM.  PR60647. [Eric Covener]
-
-  *) mod_remoteip: When overriding the useragent address from X-Forwarded-For,
-     zero out what had been initialized as the connection-level port.  PR59931.
-     [Hank Ibell <hwibell gmail.com>]
 
   *) mod_proxy_wstunnel: Reliably run before mod_proxy_http.
      [Eric Covener]
