@@ -2103,7 +2103,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_request_core_filter(ap_filter_t *f,
         else {
             /* if the core has set aside data, back off and try later */
             if (!flush_upto) {
-                if (ap_filter_should_yield(f)) {
+                if (ap_filter_should_yield(f->next)) {
                     break;
                 }
             }
