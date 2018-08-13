@@ -161,7 +161,7 @@ static const char *parse_cmd(apr_pool_t *p, const char **args, ef_filter_t *filt
 
         ++*args; /* move past leading " */
         /* find true end of args string (accounting for escaped quotes) */
-        while (**args && (**args != '"' || (**args == '"' && escaping))) {
+        while (**args && (**args != '"' || escaping)) {
             if (escaping) {
                 escaping = 0;
             }

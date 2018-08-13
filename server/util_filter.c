@@ -824,7 +824,7 @@ AP_DECLARE(apr_status_t) ap_filter_reinstate_brigade(ap_filter_t *f,
                   (APR_BRIGADE_EMPTY(bb) ? "empty" : "full"),
                   f->frec->name);
 
-    if (f->bb && !APR_BRIGADE_EMPTY(f->bb)) {
+    if (f->bb) {
         APR_BRIGADE_PREPEND(bb, f->bb);
     }
     if (!flush_upto) {

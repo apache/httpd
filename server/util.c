@@ -851,7 +851,7 @@ AP_DECLARE(char *) ap_getword_conf2(apr_pool_t *p, const char **line)
                 break;
             if (*strend == '{')
                 ++count;
-            if (*strend == '\\' && strend[1] && strend[1] == '\\') {
+            if (*strend == '\\' && strend[1] == '\\') {
                 ++strend;
             }
             ++strend;
