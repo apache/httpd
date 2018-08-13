@@ -909,8 +909,8 @@ static apr_status_t cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
 
             /* add a revalidation warning */
             warn_head = apr_table_get(r->err_headers_out, "Warning");
-            if ((warn_head == NULL) || ((warn_head != NULL)
-                    && (ap_strstr_c(warn_head, "111") == NULL))) {
+            if ((warn_head == NULL) ||
+                    (ap_strstr_c(warn_head, "111") == NULL)) {
                 apr_table_mergen(r->err_headers_out, "Warning",
                         "111 Revalidation failed");
             }
@@ -1901,8 +1901,8 @@ static void cache_insert_error_filter(request_rec *r)
 
             /* add a revalidation warning */
             warn_head = apr_table_get(r->err_headers_out, "Warning");
-            if ((warn_head == NULL) || ((warn_head != NULL)
-                    && (ap_strstr_c(warn_head, "111") == NULL))) {
+            if ((warn_head == NULL)
+                    || ap_strstr_c(warn_head, "111") == NULL) {
                 apr_table_mergen(r->err_headers_out, "Warning",
                         "111 Revalidation failed");
             }
