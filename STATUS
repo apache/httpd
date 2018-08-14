@@ -131,11 +131,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      +1: jailletc36, ylavic (by inspection), covener
      jailletc36: untested, but looks straight forward enough to vote
 
-   * core: maintainer mode fix for #if AP_ENABLE_EXCEPTION_HOOK
-      trunk: http://svn.apache.org/r1809135
-      2.4.x patch: svn merge -c 1809135 ^/httpd/httpd/trunk .
-      +1: covener, rjung, jim
-
    *) core: allow quoted paths in <IfFile>
       trunk: http://svn.apache.org/r1797844
       2.4.x patch: svn merge -c 1797844 ^/httpd/httpd/trunk .

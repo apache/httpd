@@ -387,7 +387,7 @@ extern const char *ap_mpm_set_thread_stacksize(cmd_parms *cmd, void *dummy,
 extern void ap_core_child_status(server_rec *s, pid_t pid, ap_generation_t gen,
                                  int slot, mpm_child_status status);
 
-#if AP_ENABLE_EXCEPTION_HOOK
+#if defined(AP_ENABLE_EXCEPTION_HOOK) && AP_ENABLE_EXCEPTION_HOOK
 extern const char *ap_mpm_set_exception_hook(cmd_parms *cmd, void *dummy,
                                              const char *arg);
 #endif
