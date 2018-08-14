@@ -230,12 +230,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * core: maintainer mode fix for #if AP_ENABLE_EXCEPTION_HOOK
       trunk: http://svn.apache.org/r1809135
       2.4.x patch: svn merge -c 1809135 ^/httpd/httpd/trunk .
-      +1: covener, rjung
+      +1: covener, rjung, jim
 
    *) core: allow quoted paths in <IfFile>
       trunk: http://svn.apache.org/r1797844
       2.4.x patch: svn merge -c 1797844 ^/httpd/httpd/trunk .
-      +1: jailletc36, covener
+      +1: jailletc36, covener, jim
       jailletc36: once backported, iffile.t can be enabled
 
   *) Easy patches: synch 2.4.x and trunk
@@ -263,7 +263,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1815004
      2.4.x patch: trunk patches work, minus CHANGES and next-number in the last commit (r1815004)
                   svn merge -c 1418761,1418765,1510295,1757147,1805163,1818924,1827374,1831772,1832351,1832951,1815004 ^/httpd/httpd/trunk . 
-     +1: jailletc36
+     +1: jailletc36, jim
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
