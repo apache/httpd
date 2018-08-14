@@ -1348,10 +1348,11 @@ request_rec *ap_read_request(conn_rec *conn)
     apr_bucket_brigade *tmp_bb;
     apr_socket_t *csd;
     apr_interval_time_t cur_timeout;
-
+    core_server_config *conf = NULL;
 
     request_rec *r = ap_create_request(conn);
 
+    conf = ap_get_core_module_config(r->server->module_config);
     tmp_bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
 
     ap_run_pre_read_request(r, conn);
@@ -1455,7 +1456,23 @@ request_rec *ap_read_request(conn_rec *conn)
     /* update what we think the virtual host is based on the headers we've
      * now read. may update status.
      */
-    ap_update_vhost_from_headers(r);
+    
+    access_status = ap_update_vhost_from_headers_ex(r, conf->strict_host_check == AP_CORE_CONFIG_ON);
+    if (conf->strict_host_check == AP_CORE_CONFIG_ON && access_status != HTTP_OK) { 
+         if (r->server == ap_server_conf) { 
+             ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO()
+                           "Requested hostname '%s' did not match any ServerName/ServerAlias "
+                           "in the global server configuration ", r->hostname);
+         } else { 
+             ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO()
+                           "Requested hostname '%s' did not match any ServerName/ServerAlias "
+                           "in the matching virtual host (default vhost for "
+                           "current connection is  %s:%u)", 
+                           r->hostname, r->server->defn_name, r->server->defn_line_number);
+         }
+         r->status = access_status;
+    }
+
     access_status = r->status;
 
     /* Toggle to the Host:-based vhost's timeout mode to fetch the

@@ -525,6 +525,7 @@ static void *create_core_server_config(apr_pool_t *a, server_rec *s)
     conf->protocols = apr_array_make(a, 5, sizeof(const char *));
     conf->protocols_honor_order = -1;
     conf->async_filter = 0;
+    conf->strict_host_check= AP_CORE_CONFIG_UNSET; 
 
     return (void *)conf;
 }
@@ -619,6 +620,12 @@ static void *merge_core_server_configs(apr_pool_t *p, void *basev, void *virtv)
     conf->flush_max_pipelined = (virt->flush_max_pipelined >= 0)
                                   ? virt->flush_max_pipelined
                                   : base->flush_max_pipelined;
+
+    conf->strict_host_check = (virt->strict_host_check != AP_CORE_CONFIG_UNSET)
+                              ? virt->strict_host_check 
+                              : base->strict_host_check;
+
+    AP_CORE_MERGE_FLAG(strict_host_check, conf, base, virt);
 
     return conf;
 }
@@ -1962,7 +1969,12 @@ static const char *set_qualify_redirect_url(cmd_parms *cmd, void *d_, int flag)
 
     return NULL;
 }
-
+static const char *set_core_server_flag(cmd_parms *cmd, void *s_, int flag)
+{
+    core_server_config *conf =
+        ap_get_core_module_config(cmd->server->module_config);
+    return ap_set_flag_slot(cmd, conf, flag);
+}
 static const char *set_override_list(cmd_parms *cmd, void *d_, int argc, char *const argv[])
 {
     core_dir_config *d = d_;
@@ -4816,7 +4828,10 @@ AP_INIT_TAKE2("CGIVar", set_cgi_var, NULL, OR_FILEINFO,
 AP_INIT_FLAG("QualifyRedirectURL", set_qualify_redirect_url, NULL, OR_FILEINFO,
              "Controls whether the REDIRECT_URL environment variable is fully "
              "qualified"),
-
+AP_INIT_FLAG("StrictHostCheck", set_core_server_flag, 
+             (void *)APR_OFFSETOF(core_server_config, strict_host_check),  
+             RSRC_CONF,
+             "Controls whether a hostname match is required"),
 AP_INIT_TAKE1("ForceType", ap_set_string_slot_lower,
        (void *)APR_OFFSETOF(core_dir_config, mime_type), OR_FILEINFO,
      "a mime type that overrides other configured type"),
@@ -5891,4 +5906,3 @@ AP_DECLARE_MODULE(core) = {
     core_cmds,                    /* command apr_table_t */
     register_hooks                /* register hooks */
 };
-
