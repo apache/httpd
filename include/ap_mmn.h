@@ -594,6 +594,7 @@
  * 20180720.5 (2.5.1-dev)  Add new ap_update_global_status() method and
  *                         times field in the global_score structure in
  *                         scoreboard.h.
+ * 20180720.6 (2.5.1-dev)  add strict_host_check to core_server_conf
  *
  */
 
@@ -602,7 +603,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20180720
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 5                 /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 6                 /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
