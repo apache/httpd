@@ -839,10 +839,8 @@ int ssl_hook_Access(request_rec *r)
      * request body, and then to reinject that request body later.
      */
     if (renegotiate && !renegotiate_quick
-        && (apr_table_get(r->headers_in, "transfer-encoding")
-            || (apr_table_get(r->headers_in, "content-length")
-                && strcmp(apr_table_get(r->headers_in, "content-length"), "0")))
-        && !r->expecting_100) {
+        && !r->expecting_100
+        && ap_request_has_body(r)) {
         int rv;
         apr_size_t rsize;
 
@@ -2162,7 +2160,7 @@ static apr_status_t init_vhost(conn_rec *c, SSL *ssl)
                 
                 if (SSL_check_private_key(ssl) < 1) {
                     ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, c, APLOGNO(10088)
-                                  "Challenbge certificate and private key %s "
+                                  "Challenge certificate and private key %s "
                                   "do not match", servername);
                     return APR_EGENERAL;
                 }
@@ -2334,7 +2332,9 @@ int ssl_callback_SessionTicket(SSL *ssl,
         }
 
         memcpy(keyname, ticket_key->key_name, 16);
-        RAND_bytes(iv, EVP_MAX_IV_LENGTH);
+        if (RAND_bytes(iv, EVP_MAX_IV_LENGTH) != 1) {
+            return -1;
+        }
         EVP_EncryptInit_ex(cipher_ctx, EVP_aes_128_cbc(), NULL,
                            ticket_key->aes_key, iv);
         HMAC_Init_ex(hctx, ticket_key->hmac_secret, 16, tlsext_tick_md(), NULL);

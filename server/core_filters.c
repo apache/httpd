@@ -378,6 +378,7 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *new_bb)
     apr_size_t bytes_in_brigade, non_file_bytes_in_brigade;
     int eor_buckets_in_brigade, morphing_bucket_in_brigade;
     apr_status_t rv;
+    int loglevel = ap_get_conn_module_loglevel(c, APLOG_MODULE_INDEX);
 
     /* Fail quickly if the connection has already been aborted. */
     if (c->aborted) {
@@ -513,7 +514,7 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *new_bb)
             || eor_buckets_in_brigade > MAX_REQUESTS_IN_PIPELINE) {
             /* this segment of the brigade MUST be sent before returning. */
 
-            if (APLOGctrace6(c)) {
+            if (loglevel >= APLOG_TRACE6) {
                 char *reason = APR_BUCKET_IS_FLUSH(bucket) ?
                                "FLUSH bucket" :
                                (non_file_bytes_in_brigade >= THRESHOLD_MAX_BUFFER) ?
@@ -521,8 +522,17 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *new_bb)
                                morphing_bucket_in_brigade ? "morphing bucket" :
                                "MAX_REQUESTS_IN_PIPELINE";
                 ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, c,
-                              "core_output_filter: flushing because of %s",
-                              reason);
+                              "will flush because of %s", reason);
+                ap_log_cerror(APLOG_MARK, APLOG_TRACE8, 0, c,
+                              "seen in brigade%s: bytes: %" APR_SIZE_T_FMT
+                              ", non-file bytes: %" APR_SIZE_T_FMT ", eor "
+                              "buckets: %d, morphing buckets: %d",
+                              flush_upto == NULL ? " so far"
+                                                 : " since last flush point",
+                              bytes_in_brigade,
+                              non_file_bytes_in_brigade,
+                              eor_buckets_in_brigade,
+                              morphing_bucket_in_brigade);
             }
             /*
              * Defer the actual blocking write to avoid doing many writes.
@@ -539,6 +549,10 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *new_bb)
     if (flush_upto != NULL) {
         ctx->tmp_flush_bb = apr_brigade_split_ex(bb, flush_upto,
                                                  ctx->tmp_flush_bb);
+        if (loglevel >= APLOG_TRACE8) {
+                ap_log_cerror(APLOG_MARK, APLOG_TRACE8, 0, c,
+                              "flushing now");
+        }
         rv = send_brigade_blocking(net->client_socket, bb,
                                    &(ctx->bytes_written), c);
         if (rv != APR_SUCCESS) {
@@ -549,7 +563,21 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *new_bb)
             c->aborted = 1;
             return rv;
         }
+        if (loglevel >= APLOG_TRACE8) {
+                ap_log_cerror(APLOG_MARK, APLOG_TRACE8, 0, c,
+                              "total bytes written: %" APR_SIZE_T_FMT,
+                              ctx->bytes_written);
+        }
         APR_BRIGADE_CONCAT(bb, ctx->tmp_flush_bb);
+    }
+
+    if (loglevel >= APLOG_TRACE8) {
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE8, 0, c,
+                      "brigade contains: bytes: %" APR_SIZE_T_FMT
+                      ", non-file bytes: %" APR_SIZE_T_FMT
+                      ", eor buckets: %d, morphing buckets: %d",
+                      bytes_in_brigade, non_file_bytes_in_brigade,
+                      eor_buckets_in_brigade, morphing_bucket_in_brigade);
     }
 
     if (bytes_in_brigade >= THRESHOLD_MIN_WRITE) {
@@ -562,6 +590,12 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *new_bb)
             apr_brigade_cleanup(bb);
             c->aborted = 1;
             return rv;
+        }
+        if (loglevel >= APLOG_TRACE8) {
+                ap_log_cerror(APLOG_MARK, APLOG_TRACE8, 0, c,
+                              "tried nonblocking write, total bytes "
+                              "written: %" APR_SIZE_T_FMT,
+                              ctx->bytes_written);
         }
     }
 

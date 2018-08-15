@@ -124,32 +124,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) Easy patches: synch 2.4.x and trunk
-     - mod_ssl: Tweak logging message
-     - mod_ssl: make ssl_io_data_dump respect per-conn loglevel
-     - mod_ssl: adjust log level
-     - mod_ssl: handle RAND_bytes() failures (API changed in OpenSSL 0.9.5 and httpd needs >= 0.9.8a)
-     - mod_ssl: fix typo
-     - core: Simplify code
-     - mod_ssl: simplify code
-     - core: Print the unparsed URI in AH03454
-     - mod_proxy_ajp: release some resources on an error handling pah
-     - mod_proxy: Skip creating subpool for debugging unless debug-level logging is enabled
-     - mod_watchdog: Correct some log messages and fix compiler warning
-     trunk patch: http://svn.apache.org/r1418761
-                  http://svn.apache.org/r1418765
-                  http://svn.apache.org/r1510295
-                  http://svn.apache.org/r1757147
-                  http://svn.apache.org/r1805163
-                  http://svn.apache.org/r1818924
-                  http://svn.apache.org/r1827374
-                  http://svn.apache.org/r1831772
-                  http://svn.apache.org/r1832351
-                  http://svn.apache.org/r1832951
-                  http://svn.apache.org/r1815004
-     2.4.x patch: trunk patches work, minus CHANGES and next-number in the last commit (r1815004)
-                  svn merge -c 1418761,1418765,1510295,1757147,1805163,1818924,1827374,1831772,1832351,1832951,1815004 ^/httpd/httpd/trunk . 
-     +1: jailletc36, jim, jorton
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]

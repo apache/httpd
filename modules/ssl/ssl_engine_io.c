@@ -877,6 +877,8 @@ static apr_status_t ssl_filter_write(ap_filter_t *f,
              */
             outctx->c->cs->sense = CONN_SENSE_WANT_READ;
             outctx->rc = APR_EAGAIN;
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, outctx->c,
+                          "Want read during nonblocking write");
         }
         else if (ssl_err == SSL_ERROR_SYSCALL) {
             ap_log_cerror(APLOG_MARK, APLOG_INFO, outctx->rc, c, APLOGNO(01993)
@@ -2071,6 +2073,8 @@ void ssl_io_filter_init(conn_rec *c, request_rec *r, SSL *ssl)
     /* write is non blocking for the benefit of async mpm */
     if (c->cs) {
         BIO_set_nbio(filter_ctx->pbioWrite, 1);
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, c,
+                      "Enabling non-blocking writes");
     }
 
     ssl_io_input_add_filter(filter_ctx, c, r, ssl);
@@ -2114,9 +2118,8 @@ void ssl_io_filter_register(apr_pool_t *p)
 
 #define DUMP_WIDTH 16
 
-static void ssl_io_data_dump(server_rec *s,
-                             const char *b,
-                             long len)
+static void ssl_io_data_dump(conn_rec *c, server_rec *s,
+                             const char *b, long len)
 {
     char buf[256];
     char tmp[64];
@@ -2129,7 +2132,7 @@ static void ssl_io_data_dump(server_rec *s,
     rows = (len / DUMP_WIDTH);
     if ((rows * DUMP_WIDTH) < len)
         rows++;
-    ap_log_error(APLOG_MARK, APLOG_TRACE7, 0, s,
+    ap_log_cserror(APLOG_MARK, APLOG_TRACE7, 0, c, s,
             "+-------------------------------------------------------------------------+");
     for(i = 0 ; i< rows; i++) {
 #if APR_CHARSET_EBCDIC
@@ -2168,12 +2171,12 @@ static void ssl_io_data_dump(server_rec *s,
             }
         }
         apr_cpystrn(buf+strlen(buf), " |", sizeof(buf)-strlen(buf));
-        ap_log_error(APLOG_MARK, APLOG_TRACE7, 0, s, "%s", buf);
+        ap_log_cserror(APLOG_MARK, APLOG_TRACE7, 0, c, s, "%s", buf);
     }
     if (trunc > 0)
-        ap_log_error(APLOG_MARK, APLOG_TRACE7, 0, s,
+        ap_log_cserror(APLOG_MARK, APLOG_TRACE7, 0, c, s,
                 "| %04ld - <SPACES/NULS>", len + trunc);
-    ap_log_error(APLOG_MARK, APLOG_TRACE7, 0, s,
+    ap_log_cserror(APLOG_MARK, APLOG_TRACE7, 0, c, s,
             "+-------------------------------------------------------------------------+");
     return;
 }
@@ -2195,15 +2198,21 @@ long ssl_io_data_cb(BIO *bio, int cmd,
     if (   cmd == (BIO_CB_WRITE|BIO_CB_RETURN)
         || cmd == (BIO_CB_READ |BIO_CB_RETURN) ) {
         if (rc >= 0) {
+            const char *dump = "";
+            if (APLOG_CS_IS_LEVEL(c, s, APLOG_TRACE7)) {
+                if (argp != NULL)
+                    dump = "(BIO dump follows)";
+                else
+                    dump = "(Oops, no memory buffer?)";
+            }
             ap_log_cserror(APLOG_MARK, APLOG_TRACE4, 0, c, s,
                     "%s: %s %ld/%d bytes %s BIO#%pp [mem: %pp] %s",
                     MODSSL_LIBRARY_NAME,
                     (cmd == (BIO_CB_WRITE|BIO_CB_RETURN) ? "write" : "read"),
                     rc, argi, (cmd == (BIO_CB_WRITE|BIO_CB_RETURN) ? "to" : "from"),
-                    bio, argp,
-                    (argp != NULL ? "(BIO dump follows)" : "(Oops, no memory buffer?)"));
-            if ((argp != NULL) && APLOG_CS_IS_LEVEL(c, s, APLOG_TRACE7))
-                ssl_io_data_dump(s, argp, rc);
+                    bio, argp, dump);
+            if (*dump != '\0' && argp != NULL)
+                ssl_io_data_dump(c, s, argp, rc);
         }
         else {
             ap_log_cserror(APLOG_MARK, APLOG_TRACE4, 0, c, s,
