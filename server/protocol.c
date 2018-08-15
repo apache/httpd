@@ -1460,14 +1460,14 @@ request_rec *ap_read_request(conn_rec *conn)
     access_status = ap_update_vhost_from_headers_ex(r, conf->strict_host_check == AP_CORE_CONFIG_ON);
     if (conf->strict_host_check == AP_CORE_CONFIG_ON && access_status != HTTP_OK) { 
          if (r->server == ap_server_conf) { 
-             ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO()
+             ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(10156)
                            "Requested hostname '%s' did not match any ServerName/ServerAlias "
                            "in the global server configuration ", r->hostname);
          } else { 
-             ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO()
+             ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(10157)
                            "Requested hostname '%s' did not match any ServerName/ServerAlias "
                            "in the matching virtual host (default vhost for "
-                           "current connection is  %s:%u)", 
+                           "current connection is %s:%u)", 
                            r->hostname, r->server->defn_name, r->server->defn_line_number);
          }
          r->status = access_status;
