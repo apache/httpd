@@ -124,13 +124,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mpm_winnt: Don't forget to close the I/O completion port as part of the
-                cleanup in the child process.
-     trunk patch: http://svn.apache.org/r1801143
-     2.4.x patch: svn merge -c 1801143 ^/httpd/httpd/trunk . 
-     +1: jailletc36, ylavic (by inspection), covener
-     jailletc36: untested, but looks straight forward enough to vote
-
   *) Easy patches: synch 2.4.x and trunk
      - mod_ssl: Tweak logging message
      - mod_ssl: make ssl_io_data_dump respect per-conn loglevel
