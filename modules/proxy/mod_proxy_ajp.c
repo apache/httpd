@@ -322,6 +322,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
              * Close it to clean things up.
              */
             conn->close = 1;
+            apr_brigade_destroy(input_brigade);
             return HTTP_BAD_REQUEST;
         }
     }

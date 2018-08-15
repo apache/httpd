@@ -260,9 +260,8 @@ AP_DECLARE(void) ap_add_common_vars(request_rec *r)
     apr_table_addn(e, "CONTEXT_DOCUMENT_ROOT", ap_context_document_root(r));
     apr_table_addn(e, "SERVER_ADMIN", s->server_admin); /* Apache */
     if (apr_table_get(r->notes, "proxy-noquery") && (q = ap_strchr(r->filename, '?'))) {
-        *q = '\0';
-        apr_table_addn(e, "SCRIPT_FILENAME", apr_pstrdup(r->pool, r->filename));
-        *q = '?';
+        char *script_filename = apr_pstrmemdup(r->pool, r->filename, q - r->filename);
+        apr_table_addn(e, "SCRIPT_FILENAME", script_filename);
     }
     else {
         apr_table_addn(e, "SCRIPT_FILENAME", r->filename);  /* Apache */

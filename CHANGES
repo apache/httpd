@@ -5,6 +5,8 @@ Changes with Apache 2.4.35
      and <IfModule> to be quoted.  This is primarily for the benefit of
      <IfFile>. [Eric Covener]
 
+  *) mod_watchdog: Correct some log messages.  [Rainer Jung]
+
   *) mod_md: When the last domain name from an MD is moved to another one,
      that now empty MD gets moved to the store archive. PR 62572. 
      [Stefan Eissing]
