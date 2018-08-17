@@ -1794,6 +1794,10 @@ static int unescape_url(char *url, const char *forbid, const char *reserved)
 
     badesc = 0;
     badpath = 0;
+
+    if (url == NULL) {
+        return OK;
+    }
     /* Initial scan for first '%'. Don't bother writing values before
      * seeing a '%' */
     y = strchr(url, '%');
