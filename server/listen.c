@@ -396,11 +396,10 @@ static const char *set_systemd_listener(process_rec *process, apr_port_t port,
     }
 
     if (last == NULL) {
-        ap_listeners = last = new;
+        ap_listeners = new;
     }
     else {
         last->next = new;
-        last = new;
     }
 
     return NULL;
