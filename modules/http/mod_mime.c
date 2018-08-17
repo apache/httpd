@@ -989,9 +989,7 @@ static int find_ct(request_rec *r)
     if (!r->content_languages && conf->default_language) {
         const char **new;
 
-        if (!r->content_languages) {
-            r->content_languages = apr_array_make(r->pool, 2, sizeof(char *));
-        }
+        r->content_languages = apr_array_make(r->pool, 2, sizeof(char *));
         new = (const char **)apr_array_push(r->content_languages);
         *new = conf->default_language;
     }
