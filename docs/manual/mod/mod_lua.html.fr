@@ -723,9 +723,9 @@ while nous_avons_des_donn&#233;es_&#224;_envoyer do
 end</pre>
 
 
-<pre class="prettyprint lang-lua">r:addoutputfilter(name|function) -- ajoute un filtre en sortie
+<pre class="prettyprint lang-lua">r:add_output_filter(filter_name) -- ajoute un filtre en sortie
 
-r:addoutputfilter("fooFilter") -- ins&#232;re le filtre fooFilter dans le flux de sortie</pre>
+r:add_output_filter("fooFilter") -- ins&#232;re le filtre fooFilter dans le flux de sortie</pre>
 
 
 <pre class="prettyprint lang-lua">r:sendfile(filename) -- envoie un fichier entier au client en utilisant sendfile s'il est

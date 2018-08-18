@@ -124,6 +124,7 @@ disponibles</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#sethandler">SetHandler</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#setinputfilter">SetInputFilter</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#setoutputfilter">SetOutputFilter</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#stricthostcheck">StrictHostCheck</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#timeout">TimeOut</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#traceenable">TraceEnable</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#undefine">UnDefine</a></li>
@@ -5186,6 +5187,45 @@ du serveur</td></tr>
 <ul>
 <li><a href="../filter.html">Filters</a> documentation</li>
 </ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="stricthostcheck" id="stricthostcheck">Directive</a> <a name="StrictHostCheck" id="StrictHostCheck">StrictHostCheck</a><a title="Lien permanent" href="#stricthostcheck" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&#233;termine si le nom d'h&#244;te contenu dans une requ&#234;te doit &#234;tre
+explicitement sp&#233;cifi&#233; au niveau du serveur virtuel qui a pris en compte cette
+derni&#232;re.
+             </td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>StrictHostCheck ON|OFF</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>StrictHostCheck OFF</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Noyau httpd</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible &#224; partir de la version 2.5.1 du serveur HTTP Apache.</td></tr>
+</table>
+    <p>Par d&#233;faut, le serveur r&#233;pond aux requ&#234;tes quel que soit le nom d'h&#244;te
+    qu'elles contiennent, y compris un nom d'h&#244;te non pr&#233;vu dans la
+    configuration. Bien que cela soit pratique, il peut s'av&#233;rer souhaitable de
+    restreindre les noms d'h&#244;te qu'une application sous-jacente devra prendre en
+    compte car elle va souvent g&#233;n&#233;rer des r&#233;ponses en se r&#233;f&#233;ren&#231;ant elle-m&#234;me.</p>
+
+    <p>Si la directive <code class="directive">StrictHostCheck</code> est d&#233;finie &#224;
+    <em>ON</em>, le serveur g&#233;n&#233;rera une erreur HTTP 400 si le nom d'h&#244;te que
+    contient la requ&#234;te n'a pas &#233;t&#233; explicitement sp&#233;cifi&#233; par une directive
+    <code class="directive"><a href="#servername">ServerName</a></code> ou <code class="directive"><a href="#serveralias">ServerAlias</a></code> au niveau du serveur virtuel qui
+    correspond le mieux aux caract&#233;ristiques de la connexion entrante.</p>
+
+   <p>Cette directive permet aussi de rechercher une correspondance entre le nom
+   d'h&#244;te de la requ&#234;te et les noms d'h&#244;te sp&#233;cifi&#233;s au sein de la balise
+   ouvrante <code class="directive"><a href="#virtualhost">VirtualHost</a></code>. Il s'agit
+   cependant d'un m&#233;canisme de configuration relativement obscur qui agit comme
+   une directive <code class="directive"><a href="#serveralias">ServerAlias</a></code>
+   suppl&#233;mentaire.</p>
+
+   <p>Cette directive n'a aucun effet dans les serveurs virtuels qui ne sont pas
+   des serveurs par d&#233;faut. La valeur h&#233;rit&#233;e de la configuration globale du
+   serveur ou le serveur virtuel par d&#233;faut pour l'adresse IP/port de la
+   connexion sous-jacente d&#233;terminent la valeur effective.</p>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="timeout" id="timeout">Directive</a> <a name="TimeOut" id="TimeOut">TimeOut</a><a title="Lien permanent" href="#timeout" class="permalink">&para;</a></h2>

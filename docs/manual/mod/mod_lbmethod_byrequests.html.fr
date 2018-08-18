@@ -57,7 +57,7 @@ fournit la m&#233;thode de r&#233;partition de charge <code>byrequests</code>.</
 <div class="section">
 <h2><a name="requests" id="requests">Algorithme d'attribution des requ&#234;tes</a><a title="Lien permanent" href="#requests" class="permalink">&para;</a></h2>
     
-    <p>Activ&#233; via <code>lbmethod=byrequests</code>, ce planificateur &#224;
+    <p>Activ&#233; via <code>lbmethod=byrequests</code>, ce planificateur a
     &#233;t&#233; con&#231;u dans le but de distribuer les requ&#234;tes &#224; tous les
     processus worker afin qu'ils traitent tous le nombre de requ&#234;tes
     pour lequel ils ont &#233;t&#233; configur&#233;s. Il fonctionne de la mani&#232;re

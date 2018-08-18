@@ -87,8 +87,8 @@
       peut y rem&#233;dier :</p>
 
       <div class="example"><pre>application/octet-stream   bin dms lha lzh exe class tgz taz</pre></div>
-    <p>Vous pouvez aussi d&#233;finir par d&#233;faut tous les types de fichiers
-    en tant que fichiers binaires :</p>
+    <p>Vous pouvez aussi utiliser la directive <code class="directive"><a href="../mod/core.html#forcetype">ForceType</a></code> pour d&#233;finir par d&#233;faut tous les types
+    de fichiers en tant que fichiers binaires :</p>
       <div class="example"><pre class="prettyprint lang-config">ForceType application/octet-stream</pre>
 </div>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -108,7 +108,7 @@
 <h2><a name="ftpnonget" id="ftpnonget">Comment puis-je effectuer un
     chargement FTP ?</a><a title="Lien permanent" href="#ftpnonget" class="permalink">&para;</a></h2>
     <p>Actuellement, seule la m&#233;thode GET est support&#233;e pour FTP dans
-    mod_proxy. Vous pouvez par contre utiliser le chargement HTTP (POST
+    <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>. Vous pouvez par contre utiliser le chargement HTTP (POST
     or PUT) via un mandataire Apache.</p>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -144,7 +144,7 @@
 
       <div class="example"><p><code>
         utilisateur : anonymous<br />
-        mot de passe : apache_proxy@
+        mot de passe : apache-proxy@
       </code></p></div>
 
       <p>Ceci fonctionne avec tous les serveurs FTP courants configur&#233;s
@@ -197,7 +197,7 @@
       t&#233;l&#233;chargement.</p>
       <p>Vous pouvez d&#233;sactiver le traitement sp&#233;cial des noms contenant
       des caract&#232;res g&#233;n&#233;riques. Voir &#224; cet effet la directive
-      <code class="directive">ProxyFtpListOnWildcard</code>.
+      <code class="directive"><a href="#proxyftplistonwildcard">ProxyFtpListOnWildcard</a></code>.
       </p>
     </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -205,7 +205,7 @@
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&#233;finit le jeu de caract&#232;res des listings FTP
 mandat&#233;s</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyFtpDirCharset <var>jeu-caract&#232;res</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyFtpDirCharset <var>character_set</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>ProxyFtpDirCharset ISO-8859-1</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -223,8 +223,8 @@ depuis <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Les caract&#232;res g&#233;n&#233;riques dans les noms de fichiers
 doivent-ils &#234;tre &#233;chapp&#233;s lorsqu'ils sont envoy&#233;s au serveur FTP ?</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyFtpEscapeWildcards [on|off]</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>on</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyFtpEscapeWildcards on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>ProxyFtpEscapeWildcards on</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_ftp</td></tr>
@@ -249,8 +249,8 @@ doivent-ils &#234;tre &#233;chapp&#233;s lorsqu'ils sont envoy&#233;s au serveur
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Les caract&#232;res g&#233;n&#233;riques dans les noms de fichiers
 demand&#233;s doivent-ils d&#233;clencher l'affichage d'un listing ?</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyFtpListOnWildcard [on|off]</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>on</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyFtpListOnWildcard on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>ProxyFtpListOnWildcard on</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_ftp</td></tr>
@@ -260,8 +260,8 @@ demand&#233;s doivent-ils d&#233;clencher l'affichage d'un listing ?</td></tr>
   de d&#233;terminer si les caract&#232;res g&#233;n&#233;riques ("*?[{~") que contiennent
   les noms de fichiers demand&#233;s provoquent l'affichage d'un listing de
   fichiers par <code class="module"><a href="../mod/mod_proxy_ftp.html">mod_proxy_ftp</a></code> au lieu de t&#233;l&#233;charger un
-  fichier. Il s'agit de leur comportement par d&#233;faut (valeur on).
-  D&#233;finissez cette directive &#224; "off" pour permettre le t&#233;l&#233;chargement de
+  fichier. Il s'agit de leur comportement par d&#233;faut (valeur on).</p>
+  <p>D&#233;finissez cette directive &#224; "off" pour permettre le t&#233;l&#233;chargement de
   fichiers m&#234;me si leur nom contient des caract&#232;res g&#233;n&#233;riques.</p>
 
 </div>
