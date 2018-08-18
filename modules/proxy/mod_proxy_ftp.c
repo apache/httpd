@@ -813,17 +813,19 @@ proxy_ftp_command(const char *cmd, request_rec *r, conn_rec *ftp_ctrl,
         APR_BRIGADE_INSERT_TAIL(bb, apr_bucket_flush_create(c->bucket_alloc));
         ap_pass_brigade(ftp_ctrl->output_filters, bb);
 
-        /* strip off the CRLF for logging */
-        apr_cpystrn(message, cmd, sizeof(message));
-        if ((crlf = strchr(message, '\r')) != NULL ||
-            (crlf = strchr(message, '\n')) != NULL)
-            *crlf = '\0';
-        if (strncmp(message,"PASS ", 5) == 0)
-            strcpy(&message[5], "****");
-        ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r, ">%s", message);
+        if (APLOGrtrace2(r)) {
+            /* strip off the CRLF for logging */
+            apr_cpystrn(message, cmd, sizeof(message));
+            if ((crlf = strchr(message, '\r')) != NULL ||
+                (crlf = strchr(message, '\n')) != NULL)
+                *crlf = '\0';
+            if (strncmp(message,"PASS ", 5) == 0)
+                strcpy(&message[5], "****");
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r, ">%s", message);
+        }
     }
 
-    rc = ftp_getrc_msg(ftp_ctrl, bb, message, sizeof message);
+    rc = ftp_getrc_msg(ftp_ctrl, bb, message, sizeof(message));
     if (rc == -1 || rc == 421)
         strcpy(message,"<unable to read result>");
     if ((crlf = strchr(message, '\r')) != NULL ||
