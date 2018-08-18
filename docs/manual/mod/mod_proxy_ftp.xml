@@ -52,19 +52,22 @@
     download via FTP?</title>
       <p>You probably don't have that particular file type defined as
       <code>application/octet-stream</code> in your proxy's mime.types
-      configuration file. A useful line can be</p>
+      configuration file. A useful line can be:</p>
 
       <example>
 <pre>application/octet-stream   bin dms lha lzh exe class tgz taz</pre>
       </example>
-    <p>Alternatively you may prefer to default everything to binary:</p>
+      <p>Alternatively you may prefer to use the <directive module="core">ForceType</directive>
+      directive to default everything to binary:</p>
       <example>
-        <highlight language="config">ForceType application/octet-stream</highlight>
+        <highlight language="config">
+ForceType application/octet-stream
+        </highlight>
       </example>
     </section> <!-- /mimetypes -->
 
     <section id="type"><title>How can I force an FTP ASCII download of
-    File <var>xxx</var>?</title>
+    file <var>xxx</var>?</title>
       <p>In the rare situation where you must download a specific file using the
       FTP <code>ASCII</code> transfer method (while the default transfer is in
       <code>binary</code> mode), you can override <module>mod_proxy</module>'s
@@ -74,7 +77,7 @@
     </section> <!-- /type -->
 
     <section id="ftpnonget"><title>How can I do FTP upload?</title>
-    <p>Currently, only GET is supported for FTP in mod_proxy.  You can
+    <p>Currently, only GET is supported for FTP in <module>mod_proxy</module>.  You can
     of course use HTTP upload (POST or PUT) through an Apache proxy.</p>
     </section>
 
@@ -106,7 +109,7 @@
 
       <example>
         user: anonymous<br />
-        password: apache_proxy@
+        password: apache-proxy@
       </example>
 
       <p>This works for all popular FTP servers which are configured for
@@ -151,15 +154,15 @@
         a directory, or contains wildcard characters ("*?[{~"), then it
         guesses that a listing is wanted instead of a download.</p>
       <p>You can disable the special handling of names with wildcard characters.
-        See the <directive>ProxyFtpListOnWildcard</directive> directive.
+        See the <directive module="mod_proxy_ftp">ProxyFtpListOnWildcard</directive> directive.
       </p>
     </section> <!-- /wildcard -->
 
 <directivesynopsis>
 <name>ProxyFtpListOnWildcard</name>
 <description>Whether wildcards in requested filenames trigger a file listing</description>
-<syntax>ProxyFtpListOnWildcard [on|off]</syntax>
-<default>on</default>
+<syntax>ProxyFtpListOnWildcard on|off</syntax>
+<default>ProxyFtpListOnWildcard on</default>
 <contextlist><context>server config</context><context>virtual host</context>
   <context>directory</context></contextlist>
 <compatibility>Available in Apache 2.3.3 and later</compatibility>
@@ -169,7 +172,8 @@
     controls whether wildcard characters ("*?[{~") in requested
     filenames cause <module>mod_proxy_ftp</module> to return a listing
     of files instead of downloading a file.  By default (value on),
-    they do.  Set to "off" to allow downloading files even if they
+    they do.</p>
+    <p>Set to "off" to allow downloading files even if they
     have wildcard characters in their names.</p>
 </usage>
 </directivesynopsis>
@@ -177,8 +181,8 @@
 <directivesynopsis>
 <name>ProxyFtpEscapeWildcards</name>
 <description>Whether wildcards in requested filenames are escaped when sent to the FTP server</description>
-<syntax>ProxyFtpEscapeWildcards [on|off]</syntax>
-<default>on</default>
+<syntax>ProxyFtpEscapeWildcards on|off</syntax>
+<default>ProxyFtpEscapeWildcards on</default>
 <contextlist><context>server config</context><context>virtual host</context>
   <context>directory</context></contextlist>
 <compatibility>Available in Apache 2.3.3 and later</compatibility>
@@ -189,7 +193,7 @@
     filenames are escaped with backslash before sending them to the
     FTP server.  That is the default behavior, but many FTP servers
     don't know about the escaping and try to serve the literal filenames
-    they were sent, including the backslashes in the names.  </p>
+    they were sent, including the backslashes in the names.</p>
     <p>Set to "off" to allow downloading files with wildcards
     in their names from FTP servers that don't understand wildcard
     escaping.</p>
@@ -199,7 +203,7 @@
 <directivesynopsis>
 <name>ProxyFtpDirCharset</name>
 <description>Define the character set for proxied FTP listings</description>
-<syntax>ProxyFtpDirCharset <var>character set</var></syntax>
+<syntax>ProxyFtpDirCharset <var>character_set</var></syntax>
 <default>ProxyFtpDirCharset ISO-8859-1</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context></contextlist>
