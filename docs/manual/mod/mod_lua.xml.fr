@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1793934 -->
+<!-- English Revision: 1837404 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -694,9 +694,9 @@ end
 </highlight>
 
 <highlight language="lua">
-r:addoutputfilter(name|function) -- ajoute un filtre en sortie
+r:add_output_filter(filter_name) -- ajoute un filtre en sortie
 
-r:addoutputfilter("fooFilter") -- insère le filtre fooFilter dans le flux de sortie
+r:add_output_filter("fooFilter") -- insère le filtre fooFilter dans le flux de sortie
 </highlight>
 
 <highlight language="lua">
