@@ -1,9 +1,8 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1673932 -->
+<!-- English Revision : 1838313 -->
 <!-- French translation : Lucien GENTIS -->
-<!-- $LastChangedRevision: 2015042601 $ -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -60,8 +59,9 @@
       <example>
 <pre>application/octet-stream   bin dms lha lzh exe class tgz taz</pre>
       </example>
-    <p>Vous pouvez aussi définir par défaut tous les types de fichiers
-    en tant que fichiers binaires :</p>
+    <p>Vous pouvez aussi utiliser la directive <directive
+    module="core">ForceType</directive> pour définir par défaut tous les types
+    de fichiers en tant que fichiers binaires :</p>
       <example>
 <highlight language="config">
 	ForceType application/octet-stream
@@ -84,7 +84,7 @@
     <section id="ftpnonget"><title>Comment puis-je effectuer un
     chargement FTP ?</title>
     <p>Actuellement, seule la méthode GET est supportée pour FTP dans
-    mod_proxy. Vous pouvez par contre utiliser le chargement HTTP (POST
+    <module>mod_proxy</module>. Vous pouvez par contre utiliser le chargement HTTP (POST
     or PUT) via un mandataire Apache.</p>
     </section>
 
@@ -121,7 +121,7 @@
 
       <example>
         utilisateur : anonymous<br />
-        mot de passe : apache_proxy@
+        mot de passe : apache-proxy@
       </example>
 
       <p>Ceci fonctionne avec tous les serveurs FTP courants configurés
@@ -175,7 +175,7 @@
       téléchargement.</p>
       <p>Vous pouvez désactiver le traitement spécial des noms contenant
       des caractères génériques. Voir à cet effet la directive
-      <directive>ProxyFtpListOnWildcard</directive>.
+      <directive module="mod_proxy_ftp">ProxyFtpListOnWildcard</directive>.
       </p>
     </section> <!-- /wildcard -->
 
@@ -183,8 +183,8 @@
 <name>ProxyFtpListOnWildcard</name>
 <description>Les caractères génériques dans les noms de fichiers
 demandés doivent-ils déclencher l'affichage d'un listing ?</description>
-<syntax>ProxyFtpListOnWildcard [on|off]</syntax>
-<default>on</default>
+<syntax>ProxyFtpListOnWildcard on|off</syntax>
+<default>ProxyFtpListOnWildcard on</default>
 <contextlist><context>server config</context><context>virtual host</context>
   <context>directory</context></contextlist>
 <compatibility>Disponible depuis la version 2.3.3 du serveur HTTP Apache</compatibility>
@@ -194,8 +194,8 @@ demandés doivent-ils déclencher l'affichage d'un listing ?</description>
   de déterminer si les caractères génériques ("*?[{~") que contiennent
   les noms de fichiers demandés provoquent l'affichage d'un listing de
   fichiers par <module>mod_proxy_ftp</module> au lieu de télécharger un
-  fichier. Il s'agit de leur comportement par défaut (valeur on).
-  Définissez cette directive à "off" pour permettre le téléchargement de
+  fichier. Il s'agit de leur comportement par défaut (valeur on).</p>
+  <p>Définissez cette directive à "off" pour permettre le téléchargement de
   fichiers même si leur nom contient des caractères génériques.</p>
 </usage>
 </directivesynopsis>
@@ -204,8 +204,8 @@ demandés doivent-ils déclencher l'affichage d'un listing ?</description>
 <name>ProxyFtpEscapeWildcards</name>
 <description>Les caractères génériques dans les noms de fichiers
 doivent-ils être échappés lorsqu'ils sont envoyés au serveur FTP ?</description>
-<syntax>ProxyFtpEscapeWildcards [on|off]</syntax>
-<default>on</default>
+<syntax>ProxyFtpEscapeWildcards on|off</syntax>
+<default>ProxyFtpEscapeWildcards on</default>
 <contextlist><context>server config</context><context>virtual host</context>
   <context>directory</context></contextlist>
 <compatibility>Disponible depuis la version 2.3.3 du serveur HTTP Apache</compatibility>
@@ -230,7 +230,7 @@ doivent-ils être échappés lorsqu'ils sont envoyés au serveur FTP ?</descript
 <name>ProxyFtpDirCharset</name>
 <description>Définit le jeu de caractères des listings FTP
 mandatés</description>
-<syntax>ProxyFtpDirCharset <var>jeu-caractères</var></syntax>
+<syntax>ProxyFtpDirCharset <var>character_set</var></syntax>
 <default>ProxyFtpDirCharset ISO-8859-1</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context></contextlist>
