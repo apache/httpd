@@ -651,11 +651,11 @@ static void ssl_print_cert_info(BIO *bio, X509 *cert)
 
     BIO_printf(bio, "Certificate version: %ld\n", X509_get_version(cert)+1);
     BIO_printf(bio,"Valid from: ");
-    ASN1_UTCTIME_print(bio, X509_get_notBefore(cert));
+    ASN1_UTCTIME_print(bio, X509_getm_notBefore(cert));
     BIO_printf(bio,"\n");
 
     BIO_printf(bio,"Valid to  : ");
-    ASN1_UTCTIME_print(bio, X509_get_notAfter(cert));
+    ASN1_UTCTIME_print(bio, X509_getm_notAfter(cert));
     BIO_printf(bio,"\n");
 
     pk = X509_get_pubkey(cert);
@@ -2629,8 +2629,7 @@ int main(int argc, const char * const argv[])
     CRYPTO_malloc_init();
 #endif
 #endif
-    SSL_load_error_strings();
-    SSL_library_init();
+    OPENSSL_init_ssl(0, NULL);
     bio_out=BIO_new_fp(stdout,BIO_NOCLOSE);
     bio_err=BIO_new_fp(stderr,BIO_NOCLOSE);
 
