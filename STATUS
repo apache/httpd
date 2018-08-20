@@ -221,6 +221,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    (adjust CHANGES and include/ap_mmn.h)
       +1: rjung, jim
 
+   *) mod_ratelimit: Run after the chunking filter so headers are always sent
+      uninterrupted., pass EOS to each downstream filter. 
+      Fixes regression in 2.4.34.
+      trunk patch: 1837130
+      2.4.x patch: svn merge -c 1837130 ^/httpd/httpd/trunk .
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
