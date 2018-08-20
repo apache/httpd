@@ -3211,7 +3211,7 @@ matching URLs</description>
 
     <highlight language="config">
 &lt;LocationMatch "^/combined/(?&lt;sitename&gt;[^/]+)"&gt;
-    require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
+    Require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
 &lt;/LocationMatch&gt;
     </highlight>
 </usage>
