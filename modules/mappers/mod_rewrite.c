@@ -5342,6 +5342,16 @@ static int hook_fixup(request_rec *r)
         if (to_proxyreq) {
             /* it should go on as an internal proxy request */
 
+            /* check if the proxy module is enabled, so
+             * we can actually use it!
+             */
+            if (!proxy_available) {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10160)
+                              "attempt to make remote request from mod_rewrite "
+                              "without proxy enabled: %s", r->filename);
+                return HTTP_FORBIDDEN;
+            }
+
             /* make sure the QUERY_STRING and
              * PATH_INFO parts get incorporated
              * (r->path_info was already appended by the
