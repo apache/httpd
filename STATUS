@@ -124,6 +124,20 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) kotkov has made mamy improvements to the mpm_winnt about one year ago.
+     None of them have been merged or proposed for backport yet.
+     Start the merge process with the first easy steps in order to synch
+     2.4.x and trunk and ease other merges
+     - mpm_winnt: Factor out a helper function to parse the type of an accept
+                  filter and use an appropriate enum for it
+     - mpm_winnt: fix typo
+     - mpm_winnt: follow-up to r1801144
+     trunk patch: http://svn.apache.org/r1801144
+                  http://svn.apache.org/r1801148
+                  http://svn.apache.org/r1801456
+     2.4.x patch: svn merge -c 1801144,1801148,1801456 ^/httpd/httpd/trunk . 
+     +1: jailletc36, jim (via inspection), wrowe
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -155,20 +169,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      bucket inserted by ssl_io_filter_error IMHO makes no sense because it
      would be sent to the origin server (the proxy backend) and not to our
      client. Further discussion should possibly happen on dev@.
-
-  *) kotkov has made mamy improvements to the mpm_winnt about one year ago.
-     None of them have been merged or proposed for backport yet.
-     Start the merge process with the first easy steps in order to synch
-     2.4.x and trunk and ease other merges
-     - mpm_winnt: Factor out a helper function to parse the type of an accept
-                  filter and use an appropriate enum for it
-     - mpm_winnt: fix typo
-     - mpm_winnt: follow-up to r1801144
-     trunk patch: http://svn.apache.org/r1801144
-                  http://svn.apache.org/r1801148
-                  http://svn.apache.org/r1801456
-     2.4.x patch: svn merge -c 1801144,1801148,1801456 ^/httpd/httpd/trunk . 
-     +1: jailletc36, jim (via inspection)
 
    *) Support IPv6-sized client strings in mod_status and mod_echo
       trunk: http://svn.apache.org/r1837225
@@ -224,7 +224,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    *) mod_ratelimit: Run after the chunking filter so headers are always sent
       uninterrupted., pass EOS to each downstream filter. 
       Fixes regression in 2.4.34.
-      trunk patch: 1837130
+      trunk patch: http://svn.apache.org/r1837130
       2.4.x patch: svn merge -c 1837130 ^/httpd/httpd/trunk .
 
 PATCHES/ISSUES THAT ARE BEING WORKED
