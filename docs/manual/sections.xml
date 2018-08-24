@@ -247,7 +247,7 @@ certain sections or directives are evaluated. For
 are mapped vice-versa:</p>
 <highlight language="config">
 Alias "/foo/bar" "/srv/www/uncommon/bar"
-Alias "/foo" "/srv/www/common/foo"
+Alias "/foo"     "/srv/www/common/foo"
 </highlight>
 <p>The same is true for the <directive module="mod_proxy">ProxyPass</directive>
 directives:</p>
@@ -490,7 +490,7 @@ are interpreted, it is important to understand how this works.</p>
         <li>Apart from <directive type="section"
         module="core">Directory</directive>, within each group the sections are
         processed in the order they appear in the configuration files.
-        For example, a request for <em>/foo</em> will match
+        For example, a request for <em>/foo/bar</em> will match
         <code>&lt;Location "/foo/bar"&gt;</code> and 
         <code>&lt;Location "/foo"&gt;</code> (group 4 in this case):
         both sections will be evaluated
