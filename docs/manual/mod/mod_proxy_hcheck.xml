@@ -79,7 +79,8 @@
         <td>Number of failed health check tests before worker is disabled</td></tr>
     <tr><td>hcinterval</td>
         <td>30</td>
-        <td>Period of health checks in seconds (e.g. performed every 30 seconds). Uses the <a href="directive-dict.html#Syntax">time-interval</a> directive syntax.. </td></tr>
+        <td>Period of health checks in seconds (e.g. performed every 30 seconds).
+        Uses the <a href="directive-dict.html#Syntax">time-interval</a> directive syntax.</td></tr>
     <tr><td>hcuri</td>
         <td>&nbsp;</td>
         <td>Additional URI to be appended to the worker URL for the health check.</td></tr>
@@ -223,6 +224,7 @@ ProxyPass "/apps"     "balancer://foo"
 <name>ProxyHCTPsize</name>
 <description>Sets the total server-wide size of the threadpool used for the health check workers</description>
 <syntax>ProxyHCTPsize <em>size</em></syntax>
+<default>ProxyHCTPsize 16</default>
 <contextlist><context>server config</context>
 </contextlist>
 
@@ -232,7 +234,7 @@ ProxyPass "/apps"     "balancer://foo"
        associated with the Watchdog process, allowing for parallel checks.
        The <directive>ProxyHCTPsize</directive> directive
        determines the size of this threadpool. If set to <code>0</code>, no threadpool
-       is used at all, resulting in serialized health checks. The default size is 16.</p>
+       is used at all, resulting in serialized health checks.</p>
 
     <example><title>ProxyHCTPsize</title>
     <highlight language="config">
