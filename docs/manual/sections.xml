@@ -100,7 +100,7 @@ applied only if <module>mod_mime_magic</module> is available.</p>
 
 <highlight language="config">
 &lt;IfModule mod_mime_magic.c&gt;
-    MimeMagicFile conf/magic
+    MimeMagicFile "conf/magic"
 &lt;/IfModule&gt;
 </highlight>
 
@@ -305,7 +305,7 @@ and modules like <module>mod_rewrite</module>.</p>
 
 <highlight language="config">
 &lt;DirectoryMatch "^/var/www/combined/(?&lt;SITENAME&gt;[^/]+)"&gt;
-    require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
+    require ldap-group "cn=%{env:MATCH_SITENAME},ou=combined,o=Example"
 &lt;/DirectoryMatch&gt;
 </highlight>
 
@@ -412,7 +412,7 @@ will allow only a subset of clients to access the
 <code>www.example.com</code> website using the proxy server:</p>
 
 <highlight language="config">
-&lt;Proxy http://www.example.com/*&gt;
+&lt;Proxy "http://www.example.com/*"&gt;
     Require host yournetwork.example.com
 &lt;/Proxy&gt;
 </highlight>
@@ -469,7 +469,7 @@ are interpreted, it is important to understand how this works.</p>
       <directive type="section" module="core">Directory</directive>)</li>
 
       <li><directive type="section" module="core">DirectoryMatch</directive>
-      (and <code>&lt;Directory ~&gt;</code>)</li>
+      (and <code>&lt;Directory "~"&gt;</code>)</li>
 
       <li><directive type="section"
       module="core">Files</directive> and <directive
@@ -490,7 +490,7 @@ are interpreted, it is important to understand how this works.</p>
         <li>Apart from <directive type="section"
         module="core">Directory</directive>, within each group the sections are
         processed in the order they appear in the configuration files.
-        For example, a request for <em>/foo</em> will match
+        For example, a request for <em>/foo/bar</em> will match
         <code>&lt;Location "/foo/bar"&gt;</code> and 
         <code>&lt;Location "/foo"&gt;</code> (group 4 in this case):
         both sections will be evaluated
