@@ -226,7 +226,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Fixes regression in 2.4.34.
       trunk patch: http://svn.apache.org/r1837130
       2.4.x patch: svn merge -c 1837130 ^/httpd/httpd/trunk .
-      +1: covener, ylavic
+      +1: covener, ylavic, jim
 
    *) mod_proxy: fix load order dep between mod_proxy and lbmethod providers
       trunk patch: http://svn.apache.org/r1836381 
