@@ -37,6 +37,8 @@ Apache distribution use this functionality:</p>
 <ul>
 <li><module>mod_heartbeat</module></li>
 <li><module>mod_heartmonitor</module></li>
+<li><module>mod_md</module></li>
+<li><module>mod_proxy_hcheck</module></li>
 </ul>
 <note type="warning">
 To allow a module to use <module>mod_watchdog</module> functionality,
