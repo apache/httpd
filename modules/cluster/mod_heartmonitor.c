@@ -310,7 +310,7 @@ static apr_status_t hm_file_update_stat(hm_ctx_t *ctx, hm_server_t *s, apr_pool_
 
                 /* Update seen time according to the last file modification */
                 apr_table_clear(hbt);
-                qs_to_table(t, hbt, pool);
+                qs_to_table(apr_pstrdup(pool, t), hbt, pool);
                 if ((val = apr_table_get(hbt, "busy"))) {
                     node.busy = atoi(val);
                 }
@@ -624,7 +624,9 @@ static apr_status_t hm_watchdog_callback(int state, void *data,
             /* store in the slotmem or in the file depending on configuration */
             hm_update_stats(ctx, pool);
             cur = now = apr_time_sec(apr_time_now());
-
+            /* TODO: Insted HN_UPDATE_SEC use
+             * the ctx->interval
+             */
             while ((now - cur) < apr_time_sec(ctx->interval)) {
                 int n;
                 apr_status_t rc;
