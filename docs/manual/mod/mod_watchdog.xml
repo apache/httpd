@@ -22,7 +22,7 @@
 
 <modulesynopsis metafile="mod_watchdog.xml.meta">
 <name>mod_watchdog</name>
-<description>provides infrastructure for other modules to periodically run 
+<description>provides infrastructure for other modules to periodically run
     tasks</description>
 <status>Base</status>
 <sourcefile>mod_watchdog.c</sourcefile>
@@ -30,30 +30,32 @@
 <compatibility>Available in Apache 2.3 and later</compatibility>
 
 <summary>
-<p><module>mod_watchdog</module> defines programmatic hooks for other modules to 
-periodically run tasks.  These modules can register handlers for 
-<module>mod_watchdog</module> hooks.  Currently, the following modules in the 
-Apache distribution use this functionality:</p> 
+<p><module>mod_watchdog</module> defines programmatic hooks for other modules to
+periodically run tasks.  These modules can register handlers for
+<module>mod_watchdog</module> hooks.  Currently, the following modules in the
+Apache distribution use this functionality:</p>
 <ul>
 <li><module>mod_heartbeat</module></li>
 <li><module>mod_heartmonitor</module></li>
+<li><module>mod_md</module></li>
+<li><module>mod_proxy_hcheck</module></li>
 </ul>
 <note type="warning">
-To allow a module to use <module>mod_watchdog</module> functionality, 
-<module>mod_watchdog</module> itself must be statically linked to the server 
-core or, if a dynamic module, be loaded before the calling module. 
+To allow a module to use <module>mod_watchdog</module> functionality,
+<module>mod_watchdog</module> itself must be statically linked to the server
+core or, if a dynamic module, be loaded before the calling module.
 </note>
 </summary>
 
 <directivesynopsis>
 <name>WatchdogInterval</name>
 <description>Watchdog interval in seconds</description>
-<syntax>WatchdogInterval <var>number-of-seconds</var></syntax>
+<syntax>WatchdogInterval <var>time-interval</var>[s]</syntax>
 <default>WatchdogInterval 1</default>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
-<p>Sets the interval at which the watchdog_step hook runs.  Default is to run every 
+<p>Sets the interval at which the watchdog_step hook runs.  Default is to run every
 second.</p>
 </usage>
 </directivesynopsis>
