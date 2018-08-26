@@ -54,7 +54,7 @@ use <module>mod_slotmem_shm</module>.</p>
 <directivesynopsis>
 <name>HeartbeatListen</name>
 <description>multicast address to listen for incoming heartbeat requests </description>
-<syntax>HeartbeatListen<var>addr:port</var></syntax>
+<syntax>HeartbeatListen <var>addr:port</var></syntax>
 <default>disabled</default>
 <contextlist><context>server config</context></contextlist>
 
