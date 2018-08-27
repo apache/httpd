@@ -237,6 +237,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: http://people.apache.org/~covener/2.4.x-proxy-opt-fn.diff
       +1: covener, jim
 
+   *) mod_proxy_hcheck: take balancer's SSLProxy* directives into account.
+      trunk patch: http://svn.apache.org/r1836276
+      2.4.x patch: trunk patch works
+      +1: 
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
