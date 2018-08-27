@@ -242,6 +242,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: trunk patch works
       +1: jim
 
+   *) mod_proxy: Always retrieve conditional function.
+      trunk patch: http://svn.apache.org/r1836383
+      2.4.x patch: trunk patch works
+      +1: jim
+
+   *) http: Enforce consistently no response body with both 204 and 304 statuses.
+      trunk patch: http://svn.apache.org/r1837056
+      2.4.x patch: https://home.apache.org/~jim/patches/response-204-304.patch
+      +1: jim
+   
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
