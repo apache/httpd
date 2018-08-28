@@ -91,7 +91,7 @@ syst&#233;matiquement, car vous pouvez perdre ainsi de pr&#233;cieux messages d'
 module <code class="module"><a href="./mod/mod_mime_magic.html">mod_mime_magic</a></code> est disponible.</p>
 
 <pre class="prettyprint lang-config">&lt;IfModule mod_mime_magic.c&gt;
-    MimeMagicFile conf/magic
+    MimeMagicFile "conf/magic"
 &lt;/IfModule&gt;</pre>
 
 
@@ -297,7 +297,7 @@ chemins de fichiers et d'URLs depuis une <a href="expr.html">expression</a> et a
 <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
 
 <pre class="prettyprint lang-config">&lt;DirectoryMatch "^/var/www/combined/(?&lt;SITENAME&gt;[^/]+)"&gt;
-    require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
+    require ldap-group "cn=%{env:MATCH_SITENAME},ou=combined,o=Example"
 &lt;/DirectoryMatch&gt;</pre>
 
 
@@ -406,7 +406,7 @@ Par exemple, la configuration suivante n'autorisera qu'un sous-ensemble de
 clients &#224; acc&#233;der au site <code>www.example.com</code> en passant par le serveur
 mandataire :.</p>
 
-<pre class="prettyprint lang-config">&lt;Proxy http://www.example.com/*&gt;
+<pre class="prettyprint lang-config">&lt;Proxy "http://www.example.com/*"&gt;
     Require host yournetwork.example.com
 &lt;/Proxy&gt;</pre>
 
@@ -464,7 +464,7 @@ sont interpr&#233;t&#233;es.</p>
 
       <li>Les sections
       <code class="directive"><a href="./mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code>
-      (et <code>&lt;Directory ~&gt;</code>)</li>
+      (et <code>&lt;Directory "~"&gt;</code>)</li>
 
       <li>Les sections <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code> et <code class="directive"><a href="./mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code> sont appliqu&#233;es
       simultan&#233;ment</li>
@@ -483,7 +483,7 @@ sont interpr&#233;t&#233;es.</p>
     <li>Mises &#224; part les sections <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>, dans chaque groupe, les sections sont
     trait&#233;es selon
     l'ordre dans lequel elles apparaissent dans les fichiers de configuration.
-    Par exemple, une requ&#234;te pour <em>/foo</em> correspondra &#224;
+    Par exemple, une requ&#234;te pour <em>/foo/bar</em> correspondra &#224;
     <code>&lt;Location "/foo/bar"&gt;</code> et <code>&lt;Location
     "/foo"&gt;</code> (dans ce cas le groupe 4) : les deux sections seront
     &#233;valu&#233;es mais selon l'ordre dans lequel elles apparaissent dans le fichier

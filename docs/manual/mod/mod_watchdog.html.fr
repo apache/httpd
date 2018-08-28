@@ -47,6 +47,8 @@ de la distribution Apache utilisent cette fonctionnalit&#233; :</p>
 <ul>
 <li><code class="module"><a href="../mod/mod_heartbeat.html">mod_heartbeat</a></code></li>
 <li><code class="module"><a href="../mod/mod_heartmonitor.html">mod_heartmonitor</a></code></li>
+<li><code class="module"><a href="../mod/mod_md.html">mod_md</a></code></li>
+<li><code class="module"><a href="../mod/mod_proxy_hcheck.html">mod_proxy_hcheck</a></code></li>
 </ul>
 <div class="warning">
 Pour qu'un module puisse utiliser la fonctionnalit&#233; de
