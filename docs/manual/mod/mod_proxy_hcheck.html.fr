@@ -248,6 +248,7 @@ ProxyPass "/apps"     "balancer://foo"
 serveur, du jeu de threads utilis&#233; pour le check up des
 &#233;quipiers</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyHCTPsize <em>size</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>ProxyHCTPsize 16</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_hcheck</td></tr>
@@ -258,8 +259,7 @@ serveur, du jeu de threads utilis&#233; pour le check up des
     directive <code class="directive">ProxyHCTPsize</code> permet de d&#233;terminer la
     taille de ce jeu de threads. Une valeur de <code>0</code> signifie qu'aucun
     jeu de threads ne sera utilis&#233;, et le check up des diff&#233;rents &#233;quipiers sera
-    alors effectu&#233; s&#233;quentiellement. La taille par d&#233;faut du jeu de threads est
-    de 16.</p>
+    alors effectu&#233; s&#233;quentiellement.</p>
 
     <div class="example"><h3>ProxyHCTPsize</h3><pre class="prettyprint lang-config">ProxyHCTPsize 32</pre>
 </div>

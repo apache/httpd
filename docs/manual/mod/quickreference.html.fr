@@ -624,7 +624,7 @@ requ&#234;tes</td></tr>
 contenant l'index</td></tr>
 <tr class="odd"><td><a href="mod_heartbeat.html#heartbeataddress">HeartbeatAddress <var>addr:port</var></a></td><td></td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Adresse multicast &#224; laquelle envoyer les requ&#234;tes
 heartbeat</td></tr>
-<tr><td><a href="mod_heartmonitor.html#heartbeatlisten">HeartbeatListen<var>addr:port</var></a></td><td></td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Adresse multicast d'&#233;coute des requ&#234;tes entrantes heartbeat</td></tr>
+<tr><td><a href="mod_heartmonitor.html#heartbeatlisten">HeartbeatListen <var>addr:port</var></a></td><td></td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Adresse multicast d'&#233;coute des requ&#234;tes entrantes heartbeat</td></tr>
 <tr class="odd"><td><a href="mod_heartmonitor.html#heartbeatmaxservers">HeartbeatMaxServers <var>nombre-de-serveurs</var></a></td><td> 10 </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Sp&#233;cifie le nombre maximal de serveurs qui pourront envoyer
 des requ&#234;tes heartbeat &#224; ce serveur.</td></tr>
 <tr><td><a href="mod_heartmonitor.html#heartbeatstorage">HeartbeatStorage <var>chemin fichier</var></a></td><td> logs/hb.dat </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Chemin vers le stockage des donn&#233;es heartbeat</td></tr>
@@ -962,7 +962,7 @@ demand&#233;s doivent-ils d&#233;clencher l'affichage d'un listing ?</td></tr>
 d&#233;terminer la sant&#233; d'un serveur d'arri&#232;re-plan en fonction de sa valeur</td></tr>
 <tr class="odd"><td><a href="mod_proxy_hcheck.html#proxyhctemplate">ProxyHCTemplate <em>name</em> <em>parameter</em>=<em>setting</em> [...]</a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Cr&#233;e et nomme un mod&#232;le permettant de d&#233;finir diff&#233;rents
 param&#232;tres de check up</td></tr>
-<tr><td><a href="mod_proxy_hcheck.html#proxyhctpsize">ProxyHCTPsize <em>size</em></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">D&#233;finit la taille totale, pour l'ensemble du
+<tr><td><a href="mod_proxy_hcheck.html#proxyhctpsize">ProxyHCTPsize <em>size</em></a></td><td> 16 </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">D&#233;finit la taille totale, pour l'ensemble du
 serveur, du jeu de threads utilis&#233; pour le check up des
 &#233;quipiers</td></tr>
 <tr class="odd"><td><a href="mod_proxy_html.html#proxyhtmlbufsize">ProxyHTMLBufSize <var>nb-octets</var></a></td><td> 8192 </td><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">D&#233;finit l'incr&#233;ment de la taille du tampon, ainsi que sa
@@ -1450,7 +1450,7 @@ d'h&#244;te sp&#233;cifique ou &#224; une adresse IP</td></tr>
 un serveur virtuel donn&#233;</td></tr>
 <tr class="odd"><td><a href="mod_vhost_alias.html#virtualscriptaliasip">VirtualScriptAliasIP <em>r&#233;pertoire-interpol&#233;</em>|none</a></td><td> none </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configuration dynamique du r&#233;pertoire des scripts CGI pour
 un serveur virtuel donn&#233;</td></tr>
-<tr><td><a href="mod_watchdog.html#watchdoginterval" id="W" name="W">WatchdogInterval <var>number-of-seconds</var></a></td><td> 1 </td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">Intervalle Watchdog en secondes</td></tr>
+<tr><td><a href="mod_watchdog.html#watchdoginterval" id="W" name="W">WatchdogInterval <var>time-interval</var>[s]</a></td><td> 1 </td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">Intervalle Watchdog en secondes</td></tr>
 <tr class="odd"><td><a href="mod_include.html#xbithack" id="X" name="X">XBitHack on|off|full</a></td><td> off </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Interpr&#232;te les directives SSI dans les fichiers dont le bit
 d'ex&#233;cution est positionn&#233;</td></tr>
 <tr><td><a href="mod_xml2enc.html#xml2encalias">xml2EncAlias <var>jeu-de-caract&#232;res alias [alias ...]</var></a></td><td></td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">D&#233;finit des alias pour les valeurs d'encodage</td></tr>
