@@ -2046,7 +2046,7 @@ sp&#233;cifi&#233;s sous la forme d'expressions rationnelles</td></tr>
     nomm&#233;s.</p>
 
 <pre class="prettyprint lang-config">&lt;FilesMatch "^(?&lt;sitename&gt;[^/]+)"&gt;
-    require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
+    Require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
 &lt;/FilesMatch&gt;</pre>
     
 
@@ -3380,7 +3380,7 @@ correspondant &#224; une expression rationnelle</td></tr>
     nomm&#233;s.</p>
 
 <pre class="prettyprint lang-config">&lt;LocationMatch "^/combined/(?&lt;sitename&gt;[^/]+)"&gt;
-    require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
+    Require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
 &lt;/LocationMatch&gt;</pre>
     
 

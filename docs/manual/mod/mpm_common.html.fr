@@ -330,14 +330,13 @@ plateformes de type BSD.</td></tr>
 </table>
     <p>Vous pouvez utiliser la directive
     <code class="directive">ListenCoresBucketsRatio</code> pour sp&#233;cifier un
-    <var>ratio</var> entre le nombre de coeurs de CPU activ&#233;s et le
-    nombre de segments d'&#233;coute (listeners' buckets) souhait&#233;s ; le
-    serveur HTTP Apache va alors cr&#233;er<code>num_cpu_cores / ratio</code>
-    segments d'&#233;coute, chacun contenant son propre socket d'&#233;coute
-    <code class="directive">Listen</code> sur le ou les m&#234;mes ports ; chaque
+    <var>ratio</var> entre le nombre de coeurs de CPU activ&#233;s et le nombre de
+    segments d'&#233;coute (listeners' buckets) souhait&#233;s ; le serveur HTTP Apache va
+    alors cr&#233;er<code>num_cpu_cores / ratio</code> segments d'&#233;coute, chacun
+    contenant son propre socket d'&#233;coute <code class="directive"><a href="#listen">Listen</a></code> sur le ou les m&#234;mes ports ; chaque
     processus enfant sera associ&#233; &#224; un seul segment d'&#233;coute (avec une
-    distribution de type round-robin des segments &#224; la cr&#233;ation des
-    processus enfants).</p>
+    distribution de type round-robin des segments &#224; la cr&#233;ation des processus
+    enfants).</p>
 
     <div class="note"><h3>D&#233;finition du terme coeur de CPU activ&#233; ("online")</h3>
     <p>Sous Linux et BSD, un coeur de CPU peut &#234;tre activ&#233; ou d&#233;sactiv&#233; si <a href="https://www.kernel.org/doc/Documentation/cpu-hotplug.txt">Hotplug</a>
@@ -892,6 +891,12 @@ enfant</td></tr>
     <code class="directive">ThreadsPerChild</code> est <code>64</code> avec
     <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, et <code>25</code> avec les autres
     MPMs.</p>
+
+    <p>La valeur de la directive <code class="directive">ThreadsPerChild</code> ne peut
+    pas d&#233;passer la valeur de la directive <code class="directive"><a href="#threadslimit">ThreadsLimit</a></code>. Si on sp&#233;cifie une valeur
+    sup&#233;rieure, elle sera automatiquement r&#233;duite au d&#233;marrage du serveur et un
+    avertissement sera enregistr&#233; dans le journal. La relation entre ces deux
+    directives est expliqu&#233;e dans la <code class="directive"><a href="#documentation de la directive threadslimit">documentation de la directive ThreadsLimit</a></code>.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
