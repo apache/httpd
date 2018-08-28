@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1838055 -->
+<!-- English Revision: 1838459 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -2221,7 +2221,7 @@ host</context>
 
 <highlight language="config">
 &lt;FilesMatch "^(?&lt;sitename&gt;[^/]+)"&gt;
-    require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
+    Require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
 &lt;/FilesMatch&gt;
 </highlight>    
 </usage>
@@ -3481,7 +3481,7 @@ host</context>
 
 <highlight language="config">
 &lt;LocationMatch "^/combined/(?&lt;sitename&gt;[^/]+)"&gt;
-    require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
+    Require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
 &lt;/LocationMatch&gt;
 </highlight>    
 </usage>

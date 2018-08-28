@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1828238 -->
+<!-- English Revision: 1838938 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -106,7 +106,7 @@ module <module>mod_mime_magic</module> est disponible.</p>
 
 <highlight language="config">
 &lt;IfModule mod_mime_magic.c&gt;
-    MimeMagicFile conf/magic
+    MimeMagicFile "conf/magic"
 &lt;/IfModule&gt;
 </highlight>
 
@@ -335,7 +335,7 @@ href="expr.html">expression</a> et au sein de modules comme
 
 <highlight language="config">
 &lt;DirectoryMatch "^/var/www/combined/(?&lt;SITENAME&gt;[^/]+)"&gt;
-    require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
+    require ldap-group "cn=%{env:MATCH_SITENAME},ou=combined,o=Example"
 &lt;/DirectoryMatch&gt;
 </highlight>
 
@@ -454,7 +454,7 @@ clients à accéder au site <code>www.example.com</code> en passant par le serve
 mandataire :.</p>
 
 <highlight language="config">
-&lt;Proxy http://www.example.com/*&gt;
+&lt;Proxy "http://www.example.com/*"&gt;
     Require host yournetwork.example.com
 &lt;/Proxy&gt;
 </highlight>
@@ -515,7 +515,7 @@ sont interprétées.</p>
 
       <li>Les sections
       <directive type="section" module="core">DirectoryMatch</directive>
-      (et <code>&lt;Directory ~&gt;</code>)</li>
+      (et <code>&lt;Directory "~"&gt;</code>)</li>
 
       <li>Les sections <directive type="section"
       module="core">Files</directive> et <directive
@@ -538,7 +538,7 @@ sont interprétées.</p>
     module="core">Directory</directive>, dans chaque groupe, les sections sont
     traitées selon
     l'ordre dans lequel elles apparaissent dans les fichiers de configuration.
-    Par exemple, une requête pour <em>/foo</em> correspondra à
+    Par exemple, une requête pour <em>/foo/bar</em> correspondra à
     <code>&lt;Location "/foo/bar"&gt;</code> et <code>&lt;Location
     "/foo"&gt;</code> (dans ce cas le groupe 4) : les deux sections seront
     évaluées mais selon l'ordre dans lequel elles apparaissent dans le fichier
