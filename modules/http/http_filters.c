@@ -1308,8 +1308,19 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
     else if (ctx->headers_sent) {
         /* Eat body if response must not have one. */
         if (r->header_only || r->status == HTTP_NO_CONTENT) {
+            /* Still next filters may be waiting for EOS, so pass it (alone)
+             * when encountered and be done with this filter.
+             */
+            e = APR_BRIGADE_LAST(b);
+            if (e != APR_BRIGADE_SENTINEL(b) && APR_BUCKET_IS_EOS(e)) {
+                APR_BUCKET_REMOVE(e);
+                apr_brigade_cleanup(b);
+                APR_BRIGADE_INSERT_HEAD(b, e);
+                ap_remove_output_filter(f);
+                rv = ap_pass_brigade(f->next, b);
+            }
             apr_brigade_cleanup(b);
-            return APR_SUCCESS;
+            return rv;
         }
     }
 

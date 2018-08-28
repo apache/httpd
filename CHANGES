@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.35
 
+  *) mod_ratelimit: Don't interfere with "chunked" encoding, fixing regression
+     introduced in 2.4.34.  PR 62568.  [Yann Ylavic]
+
   *) Allow the argument to <IfFile>, <IfDefine>, <IfSection>, <IfDirective>, 
      and <IfModule> to be quoted.  This is primarily for the benefit of
      <IfFile>. [Eric Covener]
