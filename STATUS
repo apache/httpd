@@ -168,14 +168,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_ssl: Fix the error code returned in an error path of 'ssl_io_filter_handshake()'
               This messes-up error handling performed in 'ssl_io_filter_error()'
      trunk patch: http://svn.apache.org/r1645529
-     2.4.x patch: svn merge -c 1645529 ^/httpd/httpd/trunk . 
-     +1: ylavic, druggeri
+                  http://svn.apache.org/r1839442
+     2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-mod_proxy-handshake-bad_gateway.patch
+     +1: ylavic
      druggeri: Why no +1, jallietc36?
      rpluem: I think the patch is wrong here and in trunk. This causes
      ap_pass_brigade to return APR_SUCCESS in ap_proxy_pass_brigade. The error
      bucket inserted by ssl_io_filter_error IMHO makes no sense because it
      would be sent to the origin server (the proxy backend) and not to our
      client. Further discussion should possibly happen on dev@.
+     ylavic: r1839442 added to the proposal to address Ruediger concerns.
 
    *) Support IPv6-sized client strings in mod_status and mod_echo
       trunk: http://svn.apache.org/r1837225
@@ -266,13 +268,6 @@ PATCHES/ISSUES THAT ARE BEING WORKED
                  suffer from the clash we created.
                  See also:
                  https://lists.apache.org/thread.html/b924afe0fcc58a8636b753e630421bf6dc2080653a79575fd5fd641a@%3Cdev.httpd.apache.org%3E
-
-  *) mod_ssl: Return 502 instead of 500 when SSL peer check or
-     proxy_post_handshake hook fails.
-     Trunk patch: r1645529 (works)
-     2.4.x patch which adds CHANGES: https://emptyhammock.com/media/downloads/r1645529-to-2.4.x.txt
-     +1: trawick
-     ylavic: there may be missing bits, see thread for commit r1736510.
 
   *) core: Drop an invalid Last-Modified header value coming
      from a (F)CGI script instead of replacing it with Unix epoch.
