@@ -145,6 +145,15 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       2.4.x patch: svn merge -c 1837130 ^/httpd/httpd/trunk .
       +1: covener, ylavic, jim
 
+   *) mod_proxy: fix load order dep between mod_proxy and lbmethod providers
+      trunk patch: http://svn.apache.org/r1836381 
+                   http://svn.apache.org/r1836382 
+                   http://svn.apache.org/r1836383 
+                   http://svn.apache.org/r1836386 
+                   http://svn.apache.org/r1836603
+      2.4.x patch: http://people.apache.org/~covener/2.4.x-proxy-opt-fn.diff
+      +1: covener, jim, ylavic
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -184,6 +193,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              http://svn.apache.org/r1837366
       2.4.x patch: http://home.apache.org/~jim/patches/client64v2.patch
       +1: jim,
+      ylavic: see r1837225's discussion on dev@, ->client should possibly be
+              updated in mod_echo too.
 
    *) Add in mod_socache_redis from trunk
       trunk: http://svn.apache.org/r1768070
@@ -230,24 +241,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    (adjust CHANGES and include/ap_mmn.h)
       +1: rjung, jim
 
-   *) mod_proxy: fix load order dep between mod_proxy and lbmethod providers
-      trunk patch: http://svn.apache.org/r1836381 
-                   http://svn.apache.org/r1836382 
-                   http://svn.apache.org/r1836383 
-                   http://svn.apache.org/r1836386 
-                   http://svn.apache.org/r1836603
-      2.4.x patch: http://people.apache.org/~covener/2.4.x-proxy-opt-fn.diff
-      +1: covener, jim
-
    *) mod_proxy_hcheck: take balancer's SSLProxy* directives into account.
       trunk patch: http://svn.apache.org/r1836276
       2.4.x patch: trunk patch works
-      +1: jim
+      +1: jim, ylavic
 
    *) http: Enforce consistently no response body with both 204 and 304 statuses.
       trunk patch: http://svn.apache.org/r1837056
       2.4.x patch: https://home.apache.org/~jim/patches/response-204-304.patch
-      +1: jim
+      +1: jim, ylavic
    
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
