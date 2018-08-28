@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1437838 -->
+<!-- English Revision : 1839246 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -57,7 +57,7 @@ configuration supplémentaire n'est requise pour utiliser
 <directivesynopsis>
 <name>HeartbeatListen</name>
 <description>Adresse multicast d'écoute des requêtes entrantes heartbeat</description>
-<syntax>HeartbeatListen<var>addr:port</var></syntax>
+<syntax>HeartbeatListen <var>addr:port</var></syntax>
 <default>disabled</default>
 <contextlist><context>server config</context></contextlist>
 
