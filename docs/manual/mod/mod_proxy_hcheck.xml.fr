@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1832294 -->
+<!-- English Revision: 1838951 -->
 <!-- French translation : Lucien GENTIS -->
 
 
@@ -250,6 +250,7 @@ ProxyPass "/apps"     "balancer://foo"
 serveur, du jeu de threads utilisé pour le check up des
 équipiers</description>
 <syntax>ProxyHCTPsize <em>size</em></syntax>
+<default>ProxyHCTPsize 16</default>
 <contextlist><context>server config</context>
 </contextlist>
 
@@ -260,8 +261,7 @@ serveur, du jeu de threads utilisé pour le check up des
     directive <directive>ProxyHCTPsize</directive> permet de déterminer la
     taille de ce jeu de threads. Une valeur de <code>0</code> signifie qu'aucun
     jeu de threads ne sera utilisé, et le check up des différents équipiers sera
-    alors effectué séquentiellement. La taille par défaut du jeu de threads est
-    de 16.</p>
+    alors effectué séquentiellement.</p>
 
     <example><title>ProxyHCTPsize</title>
     <highlight language="config">
