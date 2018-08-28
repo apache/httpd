@@ -1017,14 +1017,10 @@ static apr_status_t ssl_io_filter_error(bio_filter_in_ctx_t *inctx,
             break;
 
     case MODSSL_ERROR_BAD_GATEWAY:
-        /* Send an error bucket, though the proxy currently has no
-         * special handling for error buckets and ignores this. */
-        bucket = ap_bucket_error_create(HTTP_BAD_GATEWAY, NULL,
-                                        f->c->pool,
-                                        f->c->bucket_alloc);
         ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, f->c, APLOGNO(01997)
                       "SSL handshake failed: sending 502");
-        break;
+        f->c->aborted = 1;
+        return APR_EGENERAL;
 
     default:
         return status;
