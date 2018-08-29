@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.35
 
+  *) mod_status: Cumulate CPU time of exited child processes in the
+     "cu" and "cs" values. Add CPU time of the parent process to the
+     "c" and "s" values.
+     [Rainer Jung]
+
   *) mod_status: Complete the data shown for async MPMs in "auto" mode.
      Added number of processes, number of stopping processes and number
      of busy and idle workers.  [Rainer Jung]

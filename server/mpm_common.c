@@ -187,6 +187,8 @@ AP_DECLARE(void) ap_wait_or_timeout(apr_exit_why_e *status, int *exitcode,
     }
 
     rv = apr_proc_wait_all_procs(ret, exitcode, status, APR_NOWAIT, p);
+    ap_update_global_status();
+
     if (APR_STATUS_IS_EINTR(rv)) {
         ret->pid = -1;
         return;
@@ -510,6 +512,7 @@ void ap_core_child_status(server_rec *s, pid_t pid,
         ++cur->active;
         break;
     case MPM_CHILD_EXITED:
+        ap_update_global_status();
         status_msg = "exited";
         if (cur == APR_RING_SENTINEL(geninfo, mpm_gen_info_t, link)) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(00546)
