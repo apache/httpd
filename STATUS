@@ -209,7 +209,26 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       trunk patch: http://svn.apache.org/r1837056
       2.4.x patch: https://home.apache.org/~jim/patches/response-204-304.patch
       +1: jim, ylavic
-   
+
+   *) mod_proxy: Improve the balancer member data shown
+      in mod_status when "ProxyStatus" is "On":
+      add "busy" count to html mode. The auto mode part
+      has already been backported.
+      This changes the HTML output format for the proxy-status
+      but adds the very important busy metric.
+      trunk: http://svn.apache.org/r1837588 (remaining parts)
+      2.4.x patch: https://home.apache.org/~rjung/patches/httpd-2.4.x-proxy-status-html-busy-r1837588-part2.patch
+      +1: rjung, jim, ylavic
+
+   *) mod_status: Add cumulated response duration time
+      in milliseconds to html mode. The auto mode part
+      has already been backported.
+      This changes the HTML output format for the server-status
+      but adds the very useful request duration metric.
+      trunk: http://svn.apache.org/r1837590 (remaining parts)
+      2.4.x patch: https://home.apache.org/~rjung/patches/httpd-2.4.x-server-status-html-duration-r1837590-part2.patch
+      +1: rjung, jim, ylavic
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
