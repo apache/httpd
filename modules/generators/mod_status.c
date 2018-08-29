@@ -557,16 +557,18 @@ static int status_handler(request_rec *r)
                 lingering_close  += ps_record->lingering_close;
                 busy_workers     += thread_busy_buffer[i];
                 idle_workers     += thread_idle_buffer[i];
+                procs++;
+                if (ps_record->quiescing) {
+                    stopping++;
+                }
                 if (!short_report) {
                     const char *dying = "no";
                     const char *old = "";
                     if (ps_record->quiescing) {
                         dying = "yes";
-                        stopping++;
                     }
                     if (ps_record->generation != mpm_generation)
                         old = " (old gen)";
-                    procs++;
                     ap_rprintf(r, "<tr><td>%u</td><td>%" APR_PID_T_FMT "</td>"
                                       "<td>%s%s</td>"
                                       "<td>%u</td><td>%s</td>"
@@ -598,12 +600,18 @@ static int status_handler(request_rec *r)
                           write_completion, keep_alive, lingering_close);
         }
         else {
-            ap_rprintf(r, "ConnsTotal: %d\n"
+            ap_rprintf(r, "Processes: %d\n"
+                          "Stopping: %d\n"
+                          "BusyWorkers: %d\n"
+                          "IdleWorkers: %d\n"
+                          "ConnsTotal: %d\n"
                           "ConnsAsyncWriting: %d\n"
                           "ConnsAsyncKeepAlive: %d\n"
                           "ConnsAsyncClosing: %d\n",
-                       connections, write_completion, keep_alive,
-                       lingering_close);
+                          procs, stopping,
+                          busy_workers, idle_workers,
+                          connections,
+                          write_completion, keep_alive, lingering_close);
         }
     }
 
