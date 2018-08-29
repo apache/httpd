@@ -147,13 +147,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       2.4.x patch: http://people.apache.org/~covener/2.4.x-proxy-opt-fn.diff
       +1: covener, jim, ylavic
 
-   *) mod_status: Add cumulated response duration time
-      in milliseconds.
-      trunk: http://svn.apache.org/r1837590
-      2.4.x patch: svn merge -c 1837590 ^/httpd/httpd/trunk . 
-                   (adjust CHANGES and include/ap_mmn.h)
-      +1: rjung, jim, ylavic
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]

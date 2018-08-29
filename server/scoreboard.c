@@ -627,6 +627,9 @@ AP_DECLARE(void) ap_time_process_request(ap_sb_handle_t *sbh, int status)
     }
     else if (status == STOP_PREQUEST) {
         ws->stop_time = ws->last_used = apr_time_now();
+        if (ap_extended_status) {
+            ws->duration += ws->stop_time - ws->start_time;
+        }
     }
 }
 
