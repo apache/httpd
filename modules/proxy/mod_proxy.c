@@ -2871,10 +2871,16 @@ static int proxy_status_hook(request_rec *r, int flags)
                 ap_rprintf(r, "ProxyBalancer[%d]Worker[%d]Elected: %"
                               APR_SIZE_T_FMT "\n",
                            i, n, (*worker)->s->elected);
-                ap_rprintf(r, "ProxyBalancer[%d]Worker[%d]Sent: %s\n",
-                           i, n, apr_strfsize((*worker)->s->transferred, fbuf));
-                ap_rprintf(r, "ProxyBalancer[%d]Worker[%d]Rcvd: %s\n",
-                           i, n, apr_strfsize((*worker)->s->read, fbuf));
+                ap_rprintf(r, "ProxyBalancer[%d]Worker[%d]Busy: %"
+                              APR_SIZE_T_FMT "\n",
+                           i, n, (*worker)->s->busy);
+                ap_rprintf(r, "ProxyBalancer[%d]Worker[%d]Sent: %"
+                              APR_OFF_T_FMT "K\n",
+                           i, n, (*worker)->s->transferred >> 10);
+                ap_rprintf(r, "ProxyBalancer[%d]Worker[%d]Rcvd: %"
+                              APR_OFF_T_FMT "K\n",
+                           i, n, (*worker)->s->read >> 10);
+
                 /* TODO: Add the rest of dynamic worker data */
             }
 
