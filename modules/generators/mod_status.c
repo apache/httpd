@@ -537,8 +537,7 @@ static int status_handler(request_rec *r)
                     ap_rputs(" - ", r);
                 format_byte_out(r, (unsigned long)(KBYTE * (float) kbcount
                                                    / (float) count));
-                ap_rprintf(r, "/request - %g ms/request",
-                (float) duration_global / (float) count / 1000.);
+                ap_rputs("/request", r);
             }
 
             ap_rputs("</dt>\n", r);
