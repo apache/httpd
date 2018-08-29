@@ -193,6 +193,7 @@ static int status_handler(request_rec *r)
     apr_off_t bytes, my_bytes, conn_bytes;
     apr_off_t bcount, kbcount;
     long req_time;
+    apr_time_t duration_global;
     int short_report;
     int no_table_report;
     global_score *global_record;
@@ -234,6 +235,7 @@ static int status_handler(request_rec *r)
     count = 0;
     bcount = 0;
     kbcount = 0;
+    duration_global = 0;
     short_report = 0;
     no_table_report = 0;
 
@@ -385,6 +387,7 @@ static int status_handler(request_rec *r)
 
                     count += lres;
                     bcount += bytes;
+                    duration_global += ws_record->duration;
 
                     if (bcount >= KBYTE) {
                         kbcount += (bcount >> 10);
@@ -473,8 +476,9 @@ static int status_handler(request_rec *r)
         clock_t cpu = gu + gs + gcu + gcs + tu + ts + tcu + tcs;
         if (short_report) {
             ap_rprintf(r, "Total Accesses: %lu\nTotal kBytes: %"
-                       APR_OFF_T_FMT "\n",
-                       count, kbcount);
+                       APR_OFF_T_FMT "\nTotal Duration: %"
+                       APR_TIME_T_FMT "\n",
+                       count, kbcount, duration_global / 1000);
 
 #ifdef HAVE_TIMES
             /* Allow for OS/2 not having CPU stats */
@@ -494,9 +498,12 @@ static int status_handler(request_rec *r)
                 ap_rprintf(r, "BytesPerSec: %g\n",
                            KBYTE * (float) kbcount / (float) up_time);
             }
-            if (count > 0)
+            if (count > 0) {
                 ap_rprintf(r, "BytesPerReq: %g\n",
                            KBYTE * (float) kbcount / (float) count);
+                ap_rprintf(r, "DurationPerReq: %g\n",
+                           (float) duration_global / (float) count / 1000.);
+            }
         }
         else { /* !short_report */
             ap_rprintf(r, "<dt>Total accesses: %lu - Total Traffic: ", count);
@@ -530,7 +537,8 @@ static int status_handler(request_rec *r)
                     ap_rputs(" - ", r);
                 format_byte_out(r, (unsigned long)(KBYTE * (float) kbcount
                                                    / (float) count));
-                ap_rputs("/request", r);
+                ap_rprintf(r, "/request - %g ms/request",
+                (float) duration_global / (float) count / 1000.);
             }
 
             ap_rputs("</dt>\n", r);

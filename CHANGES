@@ -10,6 +10,10 @@ Changes with Apache 2.4.35
      "ProxyStatus" is "On": add "busy" count to auto mode and show byte
      counts in auto mode always in units of kilobytes.  [Rainer Jung]
 
+  *) mod_status: Add cumulated response duration time in milliseconds
+     to auto mode.
+     [Rainer Jung]
+
   *) mod_status: Complete the data shown for async MPMs in "auto" mode.
      Added number of processes, number of stopping processes and number
      of busy and idle workers.  [Rainer Jung]

@@ -518,6 +518,8 @@
  * 20120211.80 (2.4.35-dev) Add new ap_update_global_status() method and
  *                          times field in the global_score structure in
  *                          scoreboard.h.
+ * 20120211.81 (2.4.35-dev) Add new duration field to worker_score struct in
+ *                          scoreboard.h
  *
  */
 
@@ -526,7 +528,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20120211
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 80                  /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 81                  /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
