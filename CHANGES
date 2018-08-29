@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) MPMs: Initialize all runtime/asynchronous objects on a dedicated pool and
+     before signals handling to avoid lifetime issues on restart or shutdown.
+     PR 62658. [Yann Ylavic]
+
   *) core: Add StrictHostCheck to allow ucnonfigured hostnames to be
      rejected. [Eric Covener]
 
