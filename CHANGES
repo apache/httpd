@@ -7,8 +7,8 @@ Changes with Apache 2.4.35
      [Rainer Jung]
 
   *) mod_proxy: Improve the balancer member data shown in mod_status when
-     "ProxyStatus" is "On": add "busy" count to auto mode and show byte
-     counts in auto mode always in units of kilobytes.  [Rainer Jung]
+     "ProxyStatus" is "On": add "busy" count and show byte counts in
+     auto mode always in units of kilobytes.  [Rainer Jung]
 
   *) mod_status: Add cumulated response duration time in milliseconds
      to auto mode.
