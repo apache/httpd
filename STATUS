@@ -210,15 +210,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: https://home.apache.org/~jim/patches/response-204-304.patch
       +1: jim, ylavic
 
-   *) mod_status: Add cumulated response duration time
-      in milliseconds to html mode. The auto mode part
-      has already been backported.
-      This changes the HTML output format for the server-status
-      but adds the very useful request duration metric.
-      trunk: http://svn.apache.org/r1837590 (remaining parts)
-      2.4.x patch: https://home.apache.org/~rjung/patches/httpd-2.4.x-server-status-html-duration-r1837590-part2.patch
-      +1: rjung, jim, ylavic
-
   *) MPMs: Initialize all runtime/asynchronous objects on a dedicated pool and
      before signals handling to avoid lifetime issues on restart or shutdown.
      PR 62658.
