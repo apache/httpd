@@ -194,6 +194,7 @@ static int status_handler(request_rec *r)
     apr_off_t bcount, kbcount;
     long req_time;
     apr_time_t duration_global;
+    apr_time_t duration_slot;
     int short_report;
     int no_table_report;
     global_score *global_record;
@@ -508,7 +509,7 @@ static int status_handler(request_rec *r)
         else { /* !short_report */
             ap_rprintf(r, "<dt>Total accesses: %lu - Total Traffic: ", count);
             format_kbyte_out(r, kbcount);
-            ap_rputs("</dt>\n", r);
+            ap_rprintf(r, " - Total Duration: %" APR_TIME_T_FMT "</dt>\n", duration_global / 1000);
 
 #ifdef HAVE_TIMES
             /* Allow for OS/2 not having CPU stats */
@@ -537,7 +538,8 @@ static int status_handler(request_rec *r)
                     ap_rputs(" - ", r);
                 format_byte_out(r, (unsigned long)(KBYTE * (float) kbcount
                                                    / (float) count));
-                ap_rputs("/request", r);
+                ap_rprintf(r, "/request - %g ms/request",
+                (float) duration_global / (float) count / 1000.);
             }
 
             ap_rputs("</dt>\n", r);
@@ -715,7 +717,7 @@ static int status_handler(request_rec *r)
 #ifdef HAVE_TIMES
                      "<th>CPU\n</th>"
 #endif
-                     "<th>SS</th><th>Req</th>"
+                     "<th>SS</th><th>Req</th><th>Dur</th>"
                      "<th>Conn</th><th>Child</th><th>Slot</th>"
                      "<th>Client</th><th>Protocol</th><th>VHost</th>"
                      "<th>Request</th></tr>\n\n", r);
@@ -747,6 +749,7 @@ static int status_handler(request_rec *r)
                 bytes = ws_record->bytes_served;
                 my_bytes = ws_record->my_bytes_served;
                 conn_bytes = ws_record->conn_bytes;
+                duration_slot = ws_record->duration;
                 if (ws_record->pid) { /* MPM sets per-worker pid and generation */
                     worker_pid = ws_record->pid;
                     worker_generation = ws_record->generation;
@@ -813,7 +816,7 @@ static int status_handler(request_rec *r)
 #ifdef HAVE_TIMES
                                "u%g s%g cu%g cs%g"
 #endif
-                               "\n %ld %ld (",
+                               "\n %ld %ld %" APR_TIME_T_FMT "(",
 #ifdef HAVE_TIMES
                                ws_record->times.tms_utime / tick,
                                ws_record->times.tms_stime / tick,
@@ -822,7 +825,8 @@ static int status_handler(request_rec *r)
 #endif
                                (long)apr_time_sec(nowtime -
                                                   ws_record->last_used),
-                               (long) req_time);
+                               (long) req_time,
+                               duration_slot / 1000);
 
                     format_byte_out(r, conn_bytes);
                     ap_rputs("|", r);
@@ -902,7 +906,7 @@ static int status_handler(request_rec *r)
 #ifdef HAVE_TIMES
                                "<td>%.2f</td>"
 #endif
-                               "<td>%ld</td><td>%ld",
+                               "<td>%ld</td><td>%ld</td><td>%" APR_TIME_T_FMT,
 #ifdef HAVE_TIMES
                                (ws_record->times.tms_utime +
                                 ws_record->times.tms_stime +
@@ -911,7 +915,8 @@ static int status_handler(request_rec *r)
 #endif
                                (long)apr_time_sec(nowtime -
                                                   ws_record->last_used),
-                               (long)req_time);
+                               (long)req_time,
+                               duration_slot / 1000);
 
                     ap_rprintf(r, "</td><td>%-1.1f</td><td>%-2.2f</td><td>%-2.2f\n",
                                (float)conn_bytes / KBYTE, (float) my_bytes / MBYTE,
@@ -947,6 +952,7 @@ static int status_handler(request_rec *r)
 
 "<tr><th>SS</th><td>Seconds since beginning of most recent request</td></tr>\n \
 <tr><th>Req</th><td>Milliseconds required to process most recent request</td></tr>\n \
+<tr><th>Dur</th><td>Sum of milliseconds required to process all requests</td></tr>\n \
 <tr><th>Conn</th><td>Kilobytes transferred this connection</td></tr>\n \
 <tr><th>Child</th><td>Megabytes transferred this child</td></tr>\n \
 <tr><th>Slot</th><td>Total megabytes transferred this slot</td></tr>\n \
