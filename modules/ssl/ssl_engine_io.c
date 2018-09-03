@@ -1813,7 +1813,7 @@ static apr_status_t ssl_io_filter_output(ap_filter_t *f,
 
         /* if the core has set aside data, back off and try later */
         if (!flush_upto) {
-            if (ap_filter_should_yield(f)) {
+            if (ap_filter_should_yield(f->next)) {
                 break;
             }
         }
@@ -1869,10 +1869,9 @@ static apr_status_t ssl_io_filter_output(ap_filter_t *f,
 
     }
 
-    if (APR_STATUS_IS_EOF(status) || (status == APR_SUCCESS)) {
-        return ap_filter_setaside_brigade(f, bb);
+    if (status == APR_SUCCESS) {
+        status = ap_filter_setaside_brigade(f, bb);
     }
-
     return status;
 }
 

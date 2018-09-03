@@ -1111,7 +1111,7 @@ typedef enum {
     AP_CONN_KEEPALIVE
 } ap_conn_keepalive_e;
 
-/* For struct ap_filter and ap_filter_ring */
+/* For struct ap_filter_conn_ctx */
 #include "util_filter.h"
 
 /**
@@ -1224,10 +1224,8 @@ struct conn_rec {
     /** Array of requests being handled under this connection. */
     apr_array_header_t *requests;
 
-    /** Ring of pending input filters (with setaside buckets) */
-    struct ap_filter_ring *pending_input_filters;
-    /** Ring of pending output filters (with setaside buckets) */
-    struct ap_filter_ring *pending_output_filters;
+    /** Filters' context for this connection */
+    struct ap_filter_conn_ctx *filter_conn_ctx;
 
     /** The minimum level of filter type to allow setaside buckets */
     int async_filter;

@@ -116,7 +116,7 @@ apr_status_t ap_core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
     if (!ctx)
     {
         net->in_ctx = ctx = apr_palloc(f->c->pool, sizeof(*ctx));
-        ap_filter_prepare_brigade(f, NULL);
+        ap_filter_prepare_brigade(f);
         ctx->tmpbb = apr_brigade_create(f->c->pool, f->c->bucket_alloc);
         /* seed the brigade with the client socket. */
         rv = ap_run_insert_network_bucket(f->c, f->bb, net->client_socket);
