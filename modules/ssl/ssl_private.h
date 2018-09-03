@@ -361,13 +361,11 @@ typedef int ssl_opt_t;
 
 #ifdef SSL_OP_NO_TLSv1_3
 #define SSL_HAVE_PROTOCOL_TLSV1_3   (1)
-#define SSL_PROTOCOL_ALL   (SSL_PROTOCOL_BASIC| \
-                            SSL_PROTOCOL_TLSV1_1|SSL_PROTOCOL_TLSV1_2|SSL_PROTOCOL_TLSV1_3)
 #else
 #define SSL_HAVE_PROTOCOL_TLSV1_3   (0)
+#endif
 #define SSL_PROTOCOL_ALL   (SSL_PROTOCOL_BASIC| \
                             SSL_PROTOCOL_TLSV1_1|SSL_PROTOCOL_TLSV1_2)
-#endif
 #else
 #define SSL_PROTOCOL_ALL   (SSL_PROTOCOL_BASIC)
 #endif
