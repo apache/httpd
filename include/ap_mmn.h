@@ -596,15 +596,17 @@
  *                         scoreboard.h.
  * 20180720.6 (2.5.1-dev)  add strict_host_check to core_server_conf
  * 20180720.7 (2.5.1-dev)  worker_share struct re-organized
+ * 20180902.1 (2.5.1-dev)  Split conn_rec pending_filters in two rings,
+ *                         pending_input_filters and pending_output_filters
  *
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20180720
+#define MODULE_MAGIC_NUMBER_MAJOR 20180902
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 7                 /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 1                 /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
