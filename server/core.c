@@ -5536,6 +5536,7 @@ AP_CORE_DECLARE(conn_rec *) ap_create_slave_connection(conn_rec *c)
     sc->master = c;
     sc->input_filters = NULL;
     sc->output_filters = NULL;
+    sc->filter_conn_ctx = NULL;
     sc->pool = pool;
     new = apr_array_push(c->slaves);
     new->c = sc;

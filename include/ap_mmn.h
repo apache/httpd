@@ -598,13 +598,15 @@
  * 20180720.7 (2.5.1-dev)  worker_share struct re-organized
  * 20180902.1 (2.5.1-dev)  Split conn_rec pending_filters in two rings,
  *                         pending_input_filters and pending_output_filters
- *
+ * 20180903.1 (2.5.1-dev)  Replace conn_rec pending_{in,out}put_filters by
+ *                         filter_conn_ctx, remove argument pool from
+ *                         ap_filter_prepare_brigade()
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20180902
+#define MODULE_MAGIC_NUMBER_MAJOR 20180903
 #endif
 #define MODULE_MAGIC_NUMBER_MINOR 1                 /* 0...n */
 

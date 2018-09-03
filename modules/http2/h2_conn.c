@@ -313,6 +313,7 @@ conn_rec *h2_slave_create(conn_rec *master, int slave_id, apr_pool_t *parent)
     c->notes                  = apr_table_make(pool, 5);
     c->input_filters          = NULL;
     c->output_filters         = NULL;
+    c->filter_conn_ctx        = NULL;
     c->bucket_alloc           = apr_bucket_alloc_create(pool);
     /* prevent mpm_event from making wrong assumptions about this connection,
      * like e.g. using its socket for an async read check. */
