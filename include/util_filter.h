@@ -304,9 +304,9 @@ struct ap_filter_t {
 };
 
 /**
- * @brief The representation of a filters' ring.
+ * @brief The type of a filters' ring (opaque).
  */
-typedef APR_RING_HEAD(ap_filter_ring, ap_filter_t) ap_filter_ring_t;
+typedef struct ap_filter_ring ap_filter_ring_t;
 
 /**
  * Get the current bucket brigade from the next filter on the filter

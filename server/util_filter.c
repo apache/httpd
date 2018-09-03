@@ -51,6 +51,8 @@
 #undef APLOG_MODULE_INDEX
 #define APLOG_MODULE_INDEX AP_CORE_MODULE_INDEX
 
+APR_RING_HEAD(ap_filter_ring, ap_filter_t);
+
 typedef struct filter_trie_node filter_trie_node;
 
 typedef struct {
@@ -713,7 +715,8 @@ AP_DECLARE(int) ap_filter_prepare_brigade(ap_filter_t *f, apr_pool_t **p)
 {
     apr_pool_t *pool;
     ap_filter_t *next, *e;
-    ap_filter_t *found = NULL;
+    ap_filter_ring_t **ref, *pendings;
+    int found = 0;
 
     pool = f->r ? f->r->pool : f->c->pool;
     if (p) {
@@ -728,33 +731,40 @@ AP_DECLARE(int) ap_filter_prepare_brigade(ap_filter_t *f, apr_pool_t **p)
         return DECLINED;
     }
 
-    /* Pending reads/writes must happen in the same order as input/output
-     * filters, so find the first "next" filter already in place and insert
-     * before it, if any, otherwise insert last.
+    if (f->frec->direction == AP_FILTER_INPUT) {
+        ref = &f->c->pending_input_filters;
+    }
+    else {
+        ref = &f->c->pending_output_filters;
+    }
+    pendings = *ref;
+
+    /* Pending reads/writes must happen in the reverse order of the actual
+     * in/output filters (in/outer most first), though we still maintain the
+     * ring in the same "next" order as filters (walking is backward). So find
+     * the first f->next filter already in place and insert before if
+     * any, otherwise insert last.
      */
-    if (f->c->pending_filters) {
+    if (pendings) {
         for (next = f->next; next && !found; next = next->next) {
-            for (e = APR_RING_FIRST(f->c->pending_filters);
-                 e != APR_RING_SENTINEL(f->c->pending_filters,
-                                        ap_filter_t, pending);
+            for (e = APR_RING_FIRST(pendings);
+                 e != APR_RING_SENTINEL(pendings, ap_filter_t, pending);
                  e = APR_RING_NEXT(e, pending)) {
                 if (e == next) {
-                    found = e;
+                    APR_RING_INSERT_BEFORE(e, f, pending);
+                    found = 1;
                     break;
                 }
             }
         }
     }
     else {
-        f->c->pending_filters = apr_palloc(f->c->pool,
-                                           sizeof(*f->c->pending_filters));
-        APR_RING_INIT(f->c->pending_filters, ap_filter_t, pending);
+        pendings = apr_palloc(f->c->pool, sizeof(ap_filter_ring_t));
+        APR_RING_INIT(pendings, ap_filter_t, pending);
+        *ref = pendings;
     }
-    if (found) {
-        APR_RING_INSERT_BEFORE(found, f, pending);
-    }
-    else {
-        APR_RING_INSERT_TAIL(f->c->pending_filters, f, ap_filter_t, pending);
+    if (!found) {
+        APR_RING_INSERT_TAIL(pendings, f, ap_filter_t, pending);
     }
  
     return OK;
@@ -998,7 +1008,7 @@ AP_DECLARE_NONSTD(int) ap_filter_output_pending(conn_rec *c)
     apr_bucket_brigade *bb;
     ap_filter_t *f;
 
-    if (!c->pending_filters) {
+    if (!c->pending_output_filters) {
         return DECLINED;
     }
 
@@ -1009,11 +1019,11 @@ AP_DECLARE_NONSTD(int) ap_filter_output_pending(conn_rec *c)
      * to be relevant in the previous ones (e.g. ap_request_core_filter()
      * won't pass its buckets if its next filters yield already).
      */
-    for (f = APR_RING_LAST(c->pending_filters);
-         f != APR_RING_SENTINEL(c->pending_filters, ap_filter_t, pending);
+    for (f = APR_RING_LAST(c->pending_output_filters);
+         f != APR_RING_SENTINEL(c->pending_output_filters,
+                                ap_filter_t, pending);
          f = APR_RING_PREV(f, pending)) {
-        if (f->frec->direction == AP_FILTER_OUTPUT && f->bb
-                && !APR_BRIGADE_EMPTY(f->bb)) {
+        if (f->bb && !APR_BRIGADE_EMPTY(f->bb)) {
             apr_status_t rv;
 
             rv = ap_pass_brigade(f, bb);
@@ -1038,24 +1048,24 @@ AP_DECLARE_NONSTD(int) ap_filter_input_pending(conn_rec *c)
 {
     ap_filter_t *f;
 
-    if (!c->pending_filters) {
+    if (!c->pending_input_filters) {
         return DECLINED;
     }
 
-    for (f = APR_RING_LAST(c->pending_filters);
-         f != APR_RING_SENTINEL(c->pending_filters, ap_filter_t, pending);
+    for (f = APR_RING_LAST(c->pending_input_filters);
+         f != APR_RING_SENTINEL(c->pending_input_filters,
+                                ap_filter_t, pending);
          f = APR_RING_PREV(f, pending)) {
-        if (f->frec->direction == AP_FILTER_INPUT && f->bb) {
+        if (f->bb) {
             apr_bucket *e = APR_BRIGADE_FIRST(f->bb);
 
-            /* if there is at least one non-morphing bucket
+            /* if there is a leading non-morphing bucket
              * in place, then we have data pending
              */
             if (e != APR_BRIGADE_SENTINEL(f->bb)
                     && e->length != (apr_size_t)(-1)) {
                 return OK;
             }
-
         }
     }
 
