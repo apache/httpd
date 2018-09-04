@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_http2: connection IO event handling reworked. Instead of reacting on 
+     incoming bytes, the state machine now acts on incoming frames that are 
+     affecting it. This reduces state transitions. [Stefan Eissing]
+     
   *) MPMs: Initialize all runtime/asynchronous objects on a dedicated pool and
      before signals handling to avoid lifetime issues on restart or shutdown.
      PR 62658. [Yann Ylavic]
