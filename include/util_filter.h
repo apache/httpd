@@ -650,7 +650,7 @@ AP_DECLARE_NONSTD(int) ap_filter_input_pending(conn_rec *c);
  *
  * @param c The connection.
  */
-AP_DECLARE(void) ap_filter_recyle(conn_rec *c);
+AP_DECLARE(void) ap_filter_recycle(conn_rec *c);
 
 /**
  * Flush function for apr_brigade_* calls.  This calls ap_pass_brigade

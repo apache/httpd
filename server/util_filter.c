@@ -374,22 +374,16 @@ static apr_status_t request_filter_cleanup(void *arg)
     return APR_SUCCESS;
 }
 
-AP_DECLARE(void) ap_filter_recyle(conn_rec *c)
+AP_DECLARE(void) ap_filter_recycle(conn_rec *c)
 {
-    struct ap_filter_conn_ctx *x = get_conn_ctx(c);
+    struct ap_filter_conn_ctx *x = c->filter_conn_ctx;
 
     if (!x || !x->dead_filters) {
         return;
     }
 
     make_spare_ring(&x->spare_filters, c->pool);
-    while (!APR_RING_EMPTY(x->dead_filters, spare_data, link)) {
-        struct spare_data *sdata = APR_RING_FIRST(x->dead_filters);
-
-        APR_RING_REMOVE(sdata, link);
-        memset(sdata->data, 0, sizeof(ap_filter_t));
-        APR_RING_INSERT_TAIL(x->spare_filters, sdata, spare_data, link);
-    }
+    APR_RING_CONCAT(x->spare_filters, x->dead_filters, spare_data, link);
 }
 
 static ap_filter_t *add_any_filter_handle(ap_filter_rec_t *frec, void *ctx,
@@ -429,8 +423,9 @@ static ap_filter_t *add_any_filter_handle(ap_filter_rec_t *frec, void *ctx,
     x = get_conn_ctx(c);
     f = get_spare(c, x->spare_filters);
     if (!f) {
-        f = apr_pcalloc(c->pool, sizeof(*f));
+        f = apr_palloc(c->pool, sizeof(*f));
     }
+    memset(f, 0, sizeof(*f));
 
     f->frec = frec;
     f->ctx = ctx;
@@ -574,12 +569,16 @@ static apr_status_t pending_filter_cleanup(void *arg)
 {
     ap_filter_t *f = arg;
 
-    APR_RING_REMOVE(f, pending);
-    APR_RING_ELEM_INIT(f, pending);
+    if (is_pending_filter(f)) {
+        APR_RING_REMOVE(f, pending);
+        APR_RING_ELEM_INIT(f, pending);
+    }
 
-    apr_brigade_cleanup(f->bb);
-    put_spare(f->c, f->bb, &f->c->filter_conn_ctx->spare_brigades);
-    f->bb = NULL;
+    if (f->bb) {
+        apr_brigade_cleanup(f->bb);
+        put_spare(f->c, f->bb, &f->c->filter_conn_ctx->spare_brigades);
+        f->bb = NULL;
+    }
 
     return APR_SUCCESS;
 }
@@ -590,10 +589,7 @@ static void remove_any_filter(ap_filter_t *f, ap_filter_t **r_filt, ap_filter_t 
     ap_filter_t **curr = r_filt ? r_filt : c_filt;
     ap_filter_t *fscan = *curr;
 
-    if (is_pending_filter(f)) {
-        apr_pool_cleanup_run(f->r ? f->r->pool : f->c->pool,
-                             f, pending_filter_cleanup);
-    }
+    pending_filter_cleanup(f);
 
     if (p_filt && *p_filt == f)
         *p_filt = (*p_filt)->next;
@@ -846,9 +842,11 @@ AP_DECLARE(int) ap_filter_prepare_brigade(ap_filter_t *f)
         if (!f->bb) {
             f->bb = apr_brigade_create(c->pool, c->bucket_alloc);
         }
-        apr_pool_cleanup_register(f->r ? f->r->pool : c->pool,
-                                  f, pending_filter_cleanup,
-                                  apr_pool_cleanup_null);
+        if (f->r) {
+            apr_pool_cleanup_register(f->r->pool, f,
+                                      pending_filter_cleanup,
+                                      apr_pool_cleanup_null);
+        }
     }
     if (is_pending_filter(f)) {
         return DECLINED;
@@ -1133,7 +1131,7 @@ AP_DECLARE_NONSTD(int) ap_filter_output_pending(conn_rec *c)
     int rc = DECLINED;
 
     if (!x || !x->pending_output_filters) {
-        return DECLINED;
+        goto cleanup;
     }
 
     bb = ap_reuse_brigade_from_pool("ap_fop_bb", c->pool,
@@ -1147,9 +1145,9 @@ AP_DECLARE_NONSTD(int) ap_filter_output_pending(conn_rec *c)
          f != APR_RING_SENTINEL(x->pending_output_filters,
                                 ap_filter_t, pending);
          f = prev) {
-        /* If a filter removes itself from the filters stack when called, it
-         * also orphans itself from the ring, so we need to save "prev" here
-         * to avoid an infinite loop.
+        /* If a filter removes itself from the filters stack (when run), it
+         * also orphans itself from the ring, so save "prev" here to avoid
+         * an infinite loop in this case.
          */
         prev = APR_RING_PREV(f, pending);
 
@@ -1173,10 +1171,11 @@ AP_DECLARE_NONSTD(int) ap_filter_output_pending(conn_rec *c)
         }
     }
 
-    /* No more flushing, all filters have returned, we can recycle dead request
-     * filters before leaving (i.e. make them reusable, not leak).
+cleanup:
+    /* No more flushing, all filters have returned, recycle/unleak dead request
+     * filters before leaving (i.e. make them reusable).
      */
-    ap_filter_recyle(c);
+    ap_filter_recycle(c);
 
     return rc;
 }
