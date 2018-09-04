@@ -479,7 +479,7 @@ static int status_handler(request_rec *r)
             ap_rprintf(r, "Total Accesses: %lu\nTotal kBytes: %"
                        APR_OFF_T_FMT "\nTotal Duration: %"
                        APR_TIME_T_FMT "\n",
-                       count, kbcount, duration_global / 1000);
+                       count, kbcount, apr_time_as_msec(duration_global));
 
 #ifdef HAVE_TIMES
             /* Allow for OS/2 not having CPU stats */
@@ -503,13 +503,14 @@ static int status_handler(request_rec *r)
                 ap_rprintf(r, "BytesPerReq: %g\n",
                            KBYTE * (float) kbcount / (float) count);
                 ap_rprintf(r, "DurationPerReq: %g\n",
-                           (float) duration_global / (float) count / 1000.);
+                           (float) apr_time_as_msec(duration_global) / (float) count);
             }
         }
         else { /* !short_report */
             ap_rprintf(r, "<dt>Total accesses: %lu - Total Traffic: ", count);
             format_kbyte_out(r, kbcount);
-            ap_rprintf(r, " - Total Duration: %" APR_TIME_T_FMT "</dt>\n", duration_global / 1000);
+            ap_rprintf(r, " - Total Duration: %" APR_TIME_T_FMT "</dt>\n",
+                       apr_time_as_msec(duration_global));
 
 #ifdef HAVE_TIMES
             /* Allow for OS/2 not having CPU stats */
@@ -539,7 +540,7 @@ static int status_handler(request_rec *r)
                 format_byte_out(r, (unsigned long)(KBYTE * (float) kbcount
                                                    / (float) count));
                 ap_rprintf(r, "/request - %g ms/request",
-                (float) duration_global / (float) count / 1000.);
+                (float) apr_time_as_msec(duration_global) / (float) count);
             }
 
             ap_rputs("</dt>\n", r);
@@ -738,8 +739,8 @@ static int status_handler(request_rec *r)
                     req_time = 0L;
                 else
                     req_time = (long)
-                        ((ws_record->stop_time -
-                          ws_record->start_time) / 1000);
+                        apr_time_as_msec(ws_record->stop_time -
+                          ws_record->start_time);
                 if (req_time < 0L)
                     req_time = 0L;
 
@@ -825,8 +826,7 @@ static int status_handler(request_rec *r)
 #endif
                                (long)apr_time_sec(nowtime -
                                                   ws_record->last_used),
-                               (long) req_time,
-                               duration_slot / 1000);
+                               (long) req_time, apr_time_as_msec(duration_slot));
 
                     format_byte_out(r, conn_bytes);
                     ap_rputs("|", r);
@@ -915,8 +915,7 @@ static int status_handler(request_rec *r)
 #endif
                                (long)apr_time_sec(nowtime -
                                                   ws_record->last_used),
-                               (long)req_time,
-                               duration_slot / 1000);
+                               (long)req_time, apr_time_as_msec(duration_slot));
 
                     ap_rprintf(r, "</td><td>%-1.1f</td><td>%-2.2f</td><td>%-2.2f\n",
                                (float)conn_bytes / KBYTE, (float) my_bytes / MBYTE,
