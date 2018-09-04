@@ -1143,10 +1143,6 @@ AP_DECLARE_NONSTD(int) ap_filter_output_pending(conn_rec *c)
         if (f->bb && !APR_BRIGADE_EMPTY(f->bb)) {
             apr_status_t rv;
 
-            /* XXX: this may destroy r->pool, thus *f (e.g. the core request
-             * filter bails out on EOR), so we need to do something to not
-             * dereference f below...
-             */
             rv = ap_pass_brigade(f, bb);
             apr_brigade_cleanup(bb);
 
