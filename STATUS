@@ -147,13 +147,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       2.4.x patch: http://people.apache.org/~covener/2.4.x-proxy-opt-fn.diff
       +1: covener, jim, ylavic
 
-  *) mod_status: Use APR apr_time_as_msec() macro for conversion
-     from apr_time_t to milliseconds instead of
-     hard-coded division by 1000.
-     trunk patch: http://svn.apache.org/r1839780
-     2.4.x patch: svn merge -c 1839780 ^/httpd/httpd/trunk .
-     +1: rjung, rpluem, jim
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
