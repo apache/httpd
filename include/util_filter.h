@@ -644,6 +644,15 @@ AP_DECLARE_NONSTD(int) ap_filter_output_pending(conn_rec *c);
 AP_DECLARE_NONSTD(int) ap_filter_input_pending(conn_rec *c);
 
 /**
+ * Recycle removed request filters so that they can be reused for filters
+ * added later on the same connection. This typically should happen after
+ * each request handling.
+ *
+ * @param c The connection.
+ */
+AP_DECLARE(void) ap_filter_recyle(conn_rec *c);
+
+/**
  * Flush function for apr_brigade_* calls.  This calls ap_pass_brigade
  * to flush the brigade if the brigade buffer overflows.
  * @param bb The brigade to flush

@@ -601,6 +601,7 @@
  * 20180903.1 (2.5.1-dev)  Replace conn_rec pending_{in,out}put_filters by
  *                         filter_conn_ctx, remove argument pool from
  *                         ap_filter_prepare_brigade()
+ * 20180903.2 (2.5.1-dev)  Add ap_filter_recyle()
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -608,7 +609,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20180903
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 1                 /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 2                 /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

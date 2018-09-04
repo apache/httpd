@@ -2098,7 +2098,6 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_request_core_filter(ap_filter_t *f,
             APR_BRIGADE_CONCAT(tmp_bb, bb);
             ap_remove_output_filter(f);
             seen_eor = 1;
-            f->r = NULL;
         }
         else {
             /* if the core has set aside data, back off and try later */
@@ -2134,8 +2133,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_request_core_filter(ap_filter_t *f,
         status = ap_pass_brigade(f->next, tmp_bb);
         apr_brigade_cleanup(tmp_bb);
 
-        if (seen_eor || (status != APR_SUCCESS &&
-                         !APR_STATUS_IS_EOF(status))) {
+        if (status != APR_SUCCESS || seen_eor) {
             return status;
         }
     }

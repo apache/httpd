@@ -66,8 +66,7 @@ struct ap_filter_conn_ctx {
     struct ap_filter_spare_ring *spare_containers,
                                 *spare_brigades,
                                 *spare_filters,
-                                *spare_flushes;
-    int flushing;
+                                *dead_filters;
 };
 
 typedef struct filter_trie_node filter_trie_node;
@@ -356,17 +355,41 @@ static void put_spare(conn_rec *c, void *data,
     APR_RING_INSERT_TAIL(*ring, sdata, spare_data, link);
 }
 
-static apr_status_t filter_recycle(void *arg)
+static apr_status_t request_filter_cleanup(void *arg)
 {
     ap_filter_t *f = arg;
     conn_rec *c = f->c;
     struct ap_filter_conn_ctx *x = c->filter_conn_ctx;
 
-    memset(f, 0, sizeof(*f));
-    put_spare(c, f, x->flushing ? &x->spare_flushes
-                                : &x->spare_filters);
+    /* A request filter is cleaned up with an EOR bucket, so possibly
+     * while it is handling/passing the EOR, and we want each filter or
+     * ap_filter_output_pending() to be able to dereference f until they
+     * return. So request filters are recycled in dead_filters and will only
+     * be moved to spare_filters when ap_filter_recycle() is called explicitly.
+     * Set f->r to NULL still for any use after free to crash quite reliably.
+     */
+    f->r = NULL;
+    put_spare(c, f, &x->dead_filters);
 
     return APR_SUCCESS;
+}
+
+AP_DECLARE(void) ap_filter_recyle(conn_rec *c)
+{
+    struct ap_filter_conn_ctx *x = get_conn_ctx(c);
+
+    if (!x || !x->dead_filters) {
+        return;
+    }
+
+    make_spare_ring(&x->spare_filters, c->pool);
+    while (!APR_RING_EMPTY(x->dead_filters, spare_data, link)) {
+        struct spare_data *sdata = APR_RING_FIRST(x->dead_filters);
+
+        APR_RING_REMOVE(sdata, link);
+        memset(sdata->data, 0, sizeof(ap_filter_t));
+        APR_RING_INSERT_TAIL(x->spare_filters, sdata, spare_data, link);
+    }
 }
 
 static ap_filter_t *add_any_filter_handle(ap_filter_rec_t *frec, void *ctx,
@@ -413,7 +436,7 @@ static ap_filter_t *add_any_filter_handle(ap_filter_rec_t *frec, void *ctx,
     f->ctx = ctx;
     /* f->r must always be NULL for connection filters */
     if (r && frec->ftype < AP_FTYPE_CONNECTION) {
-        apr_pool_cleanup_register(r->pool, f, filter_recycle,
+        apr_pool_cleanup_register(r->pool, f, request_filter_cleanup,
                                   apr_pool_cleanup_null);
         f->r = r;
     }
@@ -1113,16 +1136,6 @@ AP_DECLARE_NONSTD(int) ap_filter_output_pending(conn_rec *c)
         return DECLINED;
     }
 
-    /* Flushing pending filters' brigades, so any f->r->pool may be cleaned up
-     * with its EOR (underneath this loop). Tell filter_recycle() we want f->r
-     * filters to be recycled in spare_flushes rather than spare_filters, such
-     * that they can *not* be reused during the flush(es), so we can safely
-     * access *f after it's been recycled (i.e. to check f->bb). After the
-     * flush(es), we can then merge spare_flushes into spare_filters to make
-     * them finally reusable.
-     */
-    x->flushing = 1;
-
     bb = ap_reuse_brigade_from_pool("ap_fop_bb", c->pool,
                                     c->bucket_alloc);
 
@@ -1160,13 +1173,10 @@ AP_DECLARE_NONSTD(int) ap_filter_output_pending(conn_rec *c)
         }
     }
 
-    /* No more flushing, make spare_flushes reusable before leaving. */
-    if (x->spare_flushes && !APR_RING_EMPTY(x->spare_flushes,
-                                            spare_data, link)) {
-        make_spare_ring(&x->spare_filters, c->pool);
-        APR_RING_CONCAT(x->spare_filters, x->spare_flushes, spare_data, link);
-    }
-    x->flushing = 0;
+    /* No more flushing, all filters have returned, we can recycle dead request
+     * filters before leaving (i.e. make them reusable, not leak).
+     */
+    ap_filter_recyle(c);
 
     return rc;
 }
