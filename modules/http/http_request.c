@@ -402,7 +402,7 @@ AP_DECLARE(void) ap_process_request_after_handler(request_rec *r)
     apr_brigade_cleanup(bb);
 
     if (!c->aborted) {
-        ap_filter_recyle(c);
+        ap_filter_recycle(c);
     }
 
     if (c->cs) {

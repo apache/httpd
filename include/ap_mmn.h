@@ -601,7 +601,7 @@
  * 20180903.1 (2.5.1-dev)  Replace conn_rec pending_{in,out}put_filters by
  *                         filter_conn_ctx, remove argument pool from
  *                         ap_filter_prepare_brigade()
- * 20180903.2 (2.5.1-dev)  Add ap_filter_recyle()
+ * 20180903.2 (2.5.1-dev)  Add ap_filter_recycle()
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
