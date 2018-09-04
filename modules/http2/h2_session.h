@@ -66,10 +66,11 @@ typedef enum {
     H2_SESSION_EV_PROTO_ERROR,      /* protocol error */
     H2_SESSION_EV_CONN_TIMEOUT,     /* connection timeout */
     H2_SESSION_EV_NO_IO,            /* nothing has been read or written */
-    H2_SESSION_EV_DATA_READ,        /* connection data has been read */
+    H2_SESSION_EV_FRAME_RCVD,       /* a frame has been received */
     H2_SESSION_EV_NGH2_DONE,        /* nghttp2 wants neither read nor write anything */
     H2_SESSION_EV_MPM_STOPPING,     /* the process is stopping */
     H2_SESSION_EV_PRE_CLOSE,        /* connection will close after this */
+    H2_SESSION_EV_STREAM_CHANGE,    /* a stream (state/input/output) changed */
 } h2_session_event_t;
 
 typedef struct h2_session {
@@ -118,7 +119,9 @@ typedef struct h2_session {
     apr_size_t max_stream_mem;      /* max buffer memory for a single stream */
     
     apr_time_t idle_until;          /* Time we shut down due to sheer boredom */
-    apr_time_t keep_sync_until;     /* Time we sync wait until passing to async mpm */
+    apr_time_t idle_sync_until;     /* Time we sync wait until keepalive handling kicks in */
+    apr_size_t idle_frames;         /* number of rcvd frames that kept session in idle state */
+    apr_interval_time_t idle_delay; /* Time we delay processing rcvd frames in idle state */
     
     apr_bucket_brigade *bbtmp;      /* brigade for keeping temporary data */
     struct apr_thread_cond_t *iowait; /* our cond when trywaiting for data */
