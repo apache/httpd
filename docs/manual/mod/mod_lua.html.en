@@ -676,9 +676,9 @@ while we_have_stuff_to_send do
 end</pre>
 
 
-<pre class="prettyprint lang-lua">r:addoutputfilter(name|function) -- add an output filter:
+<pre class="prettyprint lang-lua">r:add_output_filter(filter_name) -- add an output filter:
 
-r:addoutputfilter("fooFilter") -- add the fooFilter to the output stream</pre>
+r:add_output_filter("fooFilter") -- add the fooFilter to the output stream</pre>
 
 
 <pre class="prettyprint lang-lua">r:sendfile(filename) -- sends an entire file to the client, using sendfile if supported by the current platform:

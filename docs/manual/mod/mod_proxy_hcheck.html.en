@@ -26,7 +26,8 @@
 <div id="page-content">
 <div id="preamble"><h1>Apache Module mod_proxy_hcheck</h1>
 <div class="toplang">
-<p><span>Available Languages: </span><a href="../en/mod/mod_proxy_hcheck.html" title="English">&nbsp;en&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="../en/mod/mod_proxy_hcheck.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_proxy_hcheck.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Dynamic health check of Balancer members (workers) for
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></td></tr>
@@ -225,6 +226,7 @@ ProxyPass "/apps"     "balancer://foo"
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets the total server-wide size of the threadpool used for the health check workers</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyHCTPsize <em>size</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ProxyHCTPsize 16</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_hcheck</td></tr>
@@ -234,7 +236,7 @@ ProxyPass "/apps"     "balancer://foo"
        associated with the Watchdog process, allowing for parallel checks.
        The <code class="directive">ProxyHCTPsize</code> directive
        determines the size of this threadpool. If set to <code>0</code>, no threadpool
-       is used at all, resulting in serialized health checks. The default size is 16.</p>
+       is used at all, resulting in serialized health checks.</p>
 
     <div class="example"><h3>ProxyHCTPsize</h3><pre class="prettyprint lang-config">ProxyHCTPsize 32</pre>
 </div>
@@ -243,7 +245,8 @@ ProxyPass "/apps"     "balancer://foo"
 </div>
 </div>
 <div class="bottomlang">
-<p><span>Available Languages: </span><a href="../en/mod/mod_proxy_hcheck.html" title="English">&nbsp;en&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="../en/mod/mod_proxy_hcheck.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_proxy_hcheck.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
