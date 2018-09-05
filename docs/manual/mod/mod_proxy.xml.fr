@@ -756,8 +756,7 @@ requêtes</description>
 
     <example><title>Exemple</title>
       <highlight language="config">
-ProxyRemote "http://goodguys.example.com/"
-"http://mirrorguys.example.com:8000"
+ProxyRemote "http://goodguys.example.com/" "http://mirrorguys.example.com:8000"
 ProxyRemote "*" "http://cleverproxy.localdomain"
 ProxyRemote "ftp" "http://ftpproxy.mydomain:8080"
     </highlight>
