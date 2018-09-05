@@ -26,9 +26,10 @@
 <div id="page-content">
 <div id="preamble"><h1>Apache Module mod_watchdog</h1>
 <div class="toplang">
-<p><span>Available Languages: </span><a href="../en/mod/mod_watchdog.html" title="English">&nbsp;en&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="../en/mod/mod_watchdog.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_watchdog.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>provides infrastructure for other modules to periodically run 
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>provides infrastructure for other modules to periodically run
     tasks</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>watchdog_module</td></tr>
@@ -36,18 +37,20 @@
 <tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.3 and later</td></tr></table>
 <h3>Summary</h3>
 
-<p><code class="module"><a href="../mod/mod_watchdog.html">mod_watchdog</a></code> defines programmatic hooks for other modules to 
-periodically run tasks.  These modules can register handlers for 
-<code class="module"><a href="../mod/mod_watchdog.html">mod_watchdog</a></code> hooks.  Currently, the following modules in the 
-Apache distribution use this functionality:</p> 
+<p><code class="module"><a href="../mod/mod_watchdog.html">mod_watchdog</a></code> defines programmatic hooks for other modules to
+periodically run tasks.  These modules can register handlers for
+<code class="module"><a href="../mod/mod_watchdog.html">mod_watchdog</a></code> hooks.  Currently, the following modules in the
+Apache distribution use this functionality:</p>
 <ul>
 <li><code class="module"><a href="../mod/mod_heartbeat.html">mod_heartbeat</a></code></li>
 <li><code class="module"><a href="../mod/mod_heartmonitor.html">mod_heartmonitor</a></code></li>
+<li><code class="module"><a href="../mod/mod_md.html">mod_md</a></code></li>
+<li><code class="module"><a href="../mod/mod_proxy_hcheck.html">mod_proxy_hcheck</a></code></li>
 </ul>
 <div class="warning">
-To allow a module to use <code class="module"><a href="../mod/mod_watchdog.html">mod_watchdog</a></code> functionality, 
-<code class="module"><a href="../mod/mod_watchdog.html">mod_watchdog</a></code> itself must be statically linked to the server 
-core or, if a dynamic module, be loaded before the calling module. 
+To allow a module to use <code class="module"><a href="../mod/mod_watchdog.html">mod_watchdog</a></code> functionality,
+<code class="module"><a href="../mod/mod_watchdog.html">mod_watchdog</a></code> itself must be statically linked to the server
+core or, if a dynamic module, be loaded before the calling module.
 </div>
 </div>
 <div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><h3 class="directives">Directives</h3>
@@ -62,19 +65,20 @@ core or, if a dynamic module, be loaded before the calling module.
 <div class="directive-section"><h2><a name="WatchdogInterval" id="WatchdogInterval">WatchdogInterval</a> <a name="watchdoginterval" id="watchdoginterval">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Watchdog interval in seconds</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>WatchdogInterval <var>number-of-seconds</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>WatchdogInterval <var>time-interval</var>[s]</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>WatchdogInterval 1</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_watchdog</td></tr>
 </table>
-<p>Sets the interval at which the watchdog_step hook runs.  Default is to run every 
+<p>Sets the interval at which the watchdog_step hook runs.  Default is to run every
 second.</p>
 
 </div>
 </div>
 <div class="bottomlang">
-<p><span>Available Languages: </span><a href="../en/mod/mod_watchdog.html" title="English">&nbsp;en&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="../en/mod/mod_watchdog.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_watchdog.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
