@@ -2068,7 +2068,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_request_core_filter(ap_filter_t *f,
 {
     apr_bucket *flush_upto = NULL;
     apr_status_t status = APR_SUCCESS;
-    apr_bucket_brigade *tmp_bb = f->ctx;
+    apr_bucket_brigade *tmp_bb;
     int seen_eor = 0;
 
     /*
@@ -2080,15 +2080,17 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_request_core_filter(ap_filter_t *f,
         return ap_pass_brigade(f->next, bb);
     }
 
-    if (!tmp_bb) {
-        f->ctx = tmp_bb = ap_reuse_brigade_from_pool("ap_rcf_bb", f->c->pool,
-                                                     f->c->bucket_alloc);
-    }
-
     /* Reinstate any buffered content */
     ap_filter_reinstate_brigade(f, bb, &flush_upto);
 
-    while (!APR_BRIGADE_EMPTY(bb)) {
+    /* After EOR is passed downstream, anything pooled on the request may
+     * be destroyed (including bb!), but not tmp_bb which is acquired from
+     * c->pool (and released after the below loop).
+     */
+    tmp_bb = ap_acquire_brigade(f->c);
+
+    /* Don't touch *bb after seen_eor */
+    while (status == APR_SUCCESS && !seen_eor && !APR_BRIGADE_EMPTY(bb)) {
         apr_bucket *bucket = APR_BRIGADE_FIRST(bb);
 
         if (AP_BUCKET_IS_EOR(bucket)) {
@@ -2118,10 +2120,9 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_request_core_filter(ap_filter_t *f,
                     && bucket->length == (apr_size_t)-1) {
                 const char *data;
                 apr_size_t size;
-                if (APR_SUCCESS
-                        != (status = apr_bucket_read(bucket, &data, &size,
-                                APR_BLOCK_READ))) {
-                    return status;
+                status = apr_bucket_read(bucket, &data, &size, APR_BLOCK_READ);
+                if (status != APR_SUCCESS) {
+                    break;
                 }
             }
 
@@ -2132,13 +2133,15 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_request_core_filter(ap_filter_t *f,
 
         status = ap_pass_brigade(f->next, tmp_bb);
         apr_brigade_cleanup(tmp_bb);
-
-        if (status != APR_SUCCESS || seen_eor) {
-            return status;
-        }
     }
 
-    return ap_filter_setaside_brigade(f, bb);
+    ap_release_brigade(f->c, tmp_bb);
+
+    /* Don't touch *bb after seen_eor */
+    if (status == APR_SUCCESS && !seen_eor) {
+        status = ap_filter_setaside_brigade(f, bb);
+    }
+    return status;
 }
 
 extern APR_OPTIONAL_FN_TYPE(authz_some_auth_required) *ap__authz_ap_some_auth_required;

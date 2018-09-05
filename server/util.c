@@ -2679,22 +2679,6 @@ AP_DECLARE_NONSTD(apr_status_t) ap_pool_cleanup_set_null(void *data_)
     return APR_SUCCESS;
 }
 
-AP_DECLARE(apr_bucket_brigade *) ap_reuse_brigade_from_pool(const char *key,
-                                                            apr_pool_t *pool,
-                                                    apr_bucket_alloc_t *alloc)
-{
-    apr_bucket_brigade *bb = NULL;
-    apr_pool_userdata_get((void **)&bb, key, pool);
-    if (bb == NULL) {
-        bb = apr_brigade_create(pool, alloc);
-        apr_pool_userdata_set(bb, key, NULL, pool);
-    }
-    else {
-        apr_brigade_cleanup(bb);
-    }
-    return bb;
-}
-
 AP_DECLARE(apr_status_t) ap_str2_alnum(const char *src, char *dest) {
 
     for ( ; *src; src++, dest++)

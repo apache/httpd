@@ -352,11 +352,12 @@ AP_DECLARE(void) ap_process_request_after_handler(request_rec *r)
     conn_rec *c = r->connection;
     ap_filter_t *f;
 
+    bb = ap_acquire_brigade(c);
+
     /* Send an EOR bucket through the output filter chain.  When
      * this bucket is destroyed, the request will be logged and
      * its pool will be freed
      */
-    bb = ap_reuse_brigade_from_pool("ap_prah_bb", c->pool, c->bucket_alloc);
     b = ap_bucket_eor_create(c->bucket_alloc, r);
     APR_BRIGADE_INSERT_HEAD(bb, b);
 
@@ -399,7 +400,8 @@ AP_DECLARE(void) ap_process_request_after_handler(request_rec *r)
      * until the next/real request comes in or the keepalive timeout expires.
      */
     (void)ap_check_pipeline(c, bb, DEFAULT_LIMIT_BLANK_LINES);
-    apr_brigade_cleanup(bb);
+
+    ap_release_brigade(c, bb);
 
     if (!c->aborted) {
         ap_filter_recycle(c);
@@ -507,7 +509,7 @@ AP_DECLARE(void) ap_process_request(request_rec *r)
     ap_process_async_request(r);
 
     if (ap_run_input_pending(c) != OK) {
-        bb = ap_reuse_brigade_from_pool("ap_pr_bb", c->pool, c->bucket_alloc);
+        bb = ap_acquire_brigade(c);
         b = apr_bucket_flush_create(c->bucket_alloc);
         APR_BRIGADE_INSERT_HEAD(bb, b);
         rv = ap_pass_brigade(c->output_filters, bb);
@@ -520,7 +522,7 @@ AP_DECLARE(void) ap_process_request(request_rec *r)
             ap_log_cerror(APLOG_MARK, APLOG_INFO, rv, c, APLOGNO(01581)
                           "flushing data to the client");
         }
-        apr_brigade_cleanup(bb);
+        ap_release_brigade(c, bb);
     }
     if (ap_extended_status) {
         ap_time_process_request(c->sbh, STOP_PREQUEST);
