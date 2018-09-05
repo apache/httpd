@@ -1,6 +1,19 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.35
 
+  *) mod_ssl: add experimental support for TLSv1.3 (tested with OpenSSL v1.1.1-pre9. 
+     SSL(Proxy)CipherSuite now has an optional first parameter for the protocol the ciphers are for.
+     Directive "SSLVerifyClient" now triggers certificate retrieval from the client.
+     Verifying the client fails exactly the same for HTTP/2 connections for all SSL protocols,
+     as this would need to trigger the master connection thread - which we do not support
+     right now.
+     Renegotiation of ciphers is intentionally ignored for TLSv1.3 connections. "SSLCipherSuite"
+     does not allow to specify TLSv1.3 ciphers in a directory context (because it cannot work) and
+     TLSv1.2 or lower ciphers are not relevant for 1.3, as cipher suites are completely separate.
+     Sites which make use of such TLSv1.2 feature need to evaluate carefully if or how they 
+     can match their needs onto the TLSv1.3 protocol.
+     [Yann Ylavic, Stefan Eissing]
+
   *) mod_status: Cumulate CPU time of exited child processes in the
      "cu" and "cs" values. Add CPU time of the parent process to the
      "c" and "s" values.

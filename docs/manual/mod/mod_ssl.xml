@@ -654,6 +654,11 @@ The available (case-insensitive) <em>protocol</em>s are:</p>
     A revision of the TLS 1.1 protocol, as defined in
     <a href="http://www.ietf.org/rfc/rfc5246.txt">RFC 5246</a>.</p></li>
 
+<li><code>TLSv1.3</code> (when using OpenSSL 1.1.1 and later)
+    <p>
+    A new version of the TLS protocol, as defined in
+    <a href="https://github.com/tlswg/tls13-spec">RFC TBD</a>.</p></li>
+
 <li><code>all</code>
     <p>
     This is a shortcut for ``<code>+SSLv3 +TLSv1</code>'' or
@@ -674,7 +679,7 @@ SSLProtocol TLSv1
 <name>SSLCipherSuite</name>
 <description>Cipher Suite available for negotiation in SSL
 handshake</description>
-<syntax>SSLCipherSuite <em>cipher-spec</em></syntax>
+<syntax>SSLCipherSuite [<em>protocol</em>] <em>cipher-spec</em></syntax>
 <default>SSLCipherSuite DEFAULT (depends on OpenSSL version)</default>
 <contextlist><context>server config</context>
 <context>virtual host</context>
@@ -686,12 +691,25 @@ handshake</description>
 <p>
 This complex directive uses a colon-separated <em>cipher-spec</em> string
 consisting of OpenSSL cipher specifications to configure the Cipher Suite the
-client is permitted to negotiate in the SSL handshake phase. Notice that this
-directive can be used both in per-server and per-directory context. In
-per-server context it applies to the standard SSL handshake when a connection
+client is permitted to negotiate in the SSL handshake phase. The optional 
+protocol specifier can configure the Cipher Suite for a specific SSL version.
+Possible values include "SSL" for all SSL Protocols up to and including TLSv1.2. 
+<p>
+Notice that this
+directive can be used both in per-server and per-directory context. 
+In per-server context it applies to the standard SSL handshake when a connection
 is established. In per-directory context it forces a SSL renegotiation with the
 reconfigured Cipher Suite after the HTTP request was read but before the HTTP
-response is sent.</p>
+response is sent. (Since renegotiation is not</p>
+<p>
+If the SSL library supports TLSv1.3 (OpenSSL 1.1.1 and later), the protocol 
+specifier "TLSv1.3" can be used to configure the cipher suites for that protocol.
+Since TLSv1.3 does not offer renegotiations, specifying ciphers for it in
+a directory context is not allowed.</p>
+<p>
+For a list of TLSv1.3 cipher names, see 
+<a href="https://www.openssl.org/docs/manmaster/man3/SSL_CTX_set_ciphersuites.html">the OpenSSL
+documentation</a>.</p>
 <p>
 An SSL cipher specification in <em>cipher-spec</em> is composed of 4 major
 attributes plus a few extra minor ones:</p>
@@ -2063,7 +2081,7 @@ for additional information.
 <name>SSLProxyCipherSuite</name>
 <description>Cipher Suite available for negotiation in SSL
 proxy handshake</description>
-<syntax>SSLProxyCipherSuite <em>cipher-spec</em></syntax>
+<syntax>SSLProxyCipherSuite [<em>protocol</em>] <em>cipher-spec</em></syntax>
 <default>SSLProxyCipherSuite ALL:!ADH:RC4+RSA:+HIGH:+MEDIUM:+LOW:+EXP</default>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
