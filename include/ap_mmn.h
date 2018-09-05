@@ -604,8 +604,8 @@
  * 20180903.2 (2.5.1-dev)  Add ap_filter_recycle()
  * 20180905.1 (2.5.1-dev)  Axe ap_reuse_brigade_from_pool(), replaced by
  *                         ap_acquire_brigade()/ap_release_brigade(), and
- *                         and replace pending/bb/deferred_pool fields in
- *                         ap_filter_t by struct ap_filter_private priv field
+ *                         in ap_filter_t replace pending/bb/deferred_pool
+ *                         fields by struct ap_filter_private *priv
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
