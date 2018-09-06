@@ -606,12 +606,13 @@
  *                         ap_acquire_brigade()/ap_release_brigade(), and
  *                         in ap_filter_t replace pending/bb/deferred_pool
  *                         fields by struct ap_filter_private *priv
+ * 20180906.1 (2.5.1-dev)  Don't export ap_filter_recycle() anymore
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20180905
+#define MODULE_MAGIC_NUMBER_MAJOR 20180906
 #endif
 #define MODULE_MAGIC_NUMBER_MINOR 1                 /* 0...n */
 

@@ -321,7 +321,8 @@ static struct ap_filter_conn_ctx *get_conn_ctx(conn_rec *c)
     return x;
 }
 
-static void make_spare_ring(struct spare_ring **ring, apr_pool_t *p)
+static APR_INLINE
+void make_spare_ring(struct spare_ring **ring, apr_pool_t *p)
 {
     if (!*ring) {
         *ring = apr_palloc(p, sizeof(**ring));
@@ -403,7 +404,7 @@ static apr_status_t request_filter_cleanup(void *arg)
     return APR_SUCCESS;
 }
 
-AP_DECLARE(void) ap_filter_recycle(conn_rec *c)
+void ap_filter_recycle(conn_rec *c)
 {
     struct ap_filter_conn_ctx *x = c->filter_conn_ctx;
 
@@ -983,6 +984,22 @@ AP_DECLARE(apr_status_t) ap_filter_setaside_brigade(ap_filter_t *f,
     return APR_SUCCESS;
 }
 
+void ap_filter_adopt_brigade(ap_filter_t *f, apr_bucket_brigade *bb)
+{
+    struct ap_filter_private *fp = f->priv;
+
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, f->c,
+                  "adopt %s brigade to %s brigade in '%s' output filter",
+                  APR_BRIGADE_EMPTY(bb) ? "empty" : "full",
+                  (!fp->bb || APR_BRIGADE_EMPTY(fp->bb)) ? "empty" : "full",
+                  f->frec->name);
+
+    if (!APR_BRIGADE_EMPTY(bb)) {
+        ap_filter_prepare_brigade(f);
+        APR_BRIGADE_CONCAT(fp->bb, bb);
+    }
+}
+
 AP_DECLARE(apr_status_t) ap_filter_reinstate_brigade(ap_filter_t *f,
                                                      apr_bucket_brigade *bb,
                                                      apr_bucket **flush_upto)
@@ -1308,6 +1325,7 @@ AP_DECLARE_NONSTD(apr_status_t) ap_fprintf(ap_filter_t *f,
     va_end(args);
     return rv;
 }
+
 AP_DECLARE(void) ap_filter_protocol(ap_filter_t *f, unsigned int flags)
 {
     f->frec->proto_flags = flags ;

@@ -596,6 +596,16 @@ AP_DECLARE(int) ap_filter_prepare_brigade(ap_filter_t *f);
 AP_DECLARE(apr_status_t) ap_filter_setaside_brigade(ap_filter_t *f,
                                                     apr_bucket_brigade *bb);
 
+/*
+ * Adopt a bucket brigade as is (no setaside nor copy).
+ * @param f The current filter
+ * @param bb The bucket brigade adopted.  This brigade is always empty
+ *          on return
+ * @remark httpd internal, not exported, needed by
+ *               ap_core_input_filter
+ */
+void ap_filter_adopt_brigade(ap_filter_t *f, apr_bucket_brigade *bb);
+
 /**
  * Reinstate a brigade setaside earlier, and calculate the amount of data we
  * should write based on the presence of flush buckets, size limits on in
@@ -656,14 +666,17 @@ AP_DECLARE_NONSTD(int) ap_filter_output_pending(conn_rec *c);
  */
 AP_DECLARE_NONSTD(int) ap_filter_input_pending(conn_rec *c);
 
-/**
+/*
  * Recycle removed request filters so that they can be reused for filters
  * added later on the same connection. This typically should happen after
  * each request handling.
  *
  * @param c The connection.
+ * @remark httpd internal, not exported, needed by
+ *         ap_process_request_after_handler
+ *         
  */
-AP_DECLARE(void) ap_filter_recycle(conn_rec *c);
+void ap_filter_recycle(conn_rec *c);
 
 /**
  * Flush function for apr_brigade_* calls.  This calls ap_pass_brigade
