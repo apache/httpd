@@ -1060,9 +1060,9 @@ static int update_server_from_aliases(request_rec *r)
         goto found;
     }
 
-    if (r->server == ap_server_conf) { 
-        if (matches_aliases(ap_server_conf, host)) {
-            s = ap_server_conf;
+    if (!r->connection->vhost_lookup_data) { 
+        if (matches_aliases(r->server, host)) {
+            s = r->server;
             goto found;
         }
     }
