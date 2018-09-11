@@ -233,6 +233,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              http://svn.apache.org/r1827992
              http://svn.apache.org/r1827924
              http://svn.apache.org/r1827912
+             http://svn.apache.org/r1828790
+             http://svn.apache.org/r1828791
+             http://svn.apache.org/r1828792
       2.4.x branch: ^/httpd/httpd/branches/tlsv1.3-for-2.4.x
       +1: icing,
 
