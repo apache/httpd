@@ -66,17 +66,11 @@ static int systemd_post_config(apr_pool_t *p, apr_pool_t *plog,
 
 static int systemd_pre_mpm(apr_pool_t *p, ap_scoreboard_e sb_type)
 {
-    int rv;
-
     mainpid = getpid();
 
-    rv = sd_notifyf(0, "READY=1\n"
-                    "STATUS=Processing requests...\n"
-                    "MAINPID=%" APR_PID_T_FMT, mainpid);
-    if (rv < 0) {
-        ap_log_perror(APLOG_MARK, APLOG_ERR, 0, p, APLOGNO(02395)
-                     "sd_notifyf returned an error %d", rv);
-    }
+    sd_notifyf(0, "READY=1\n"
+               "STATUS=Processing requests...\n"
+               "MAINPID=%" APR_PID_T_FMT, mainpid);
 
     return OK;
 }
@@ -86,7 +80,6 @@ static int systemd_monitor(apr_pool_t *p, server_rec *s)
     ap_sload_t sload;
     apr_interval_time_t up_time;
     char bps[5];
-    int rv;
 
     if (!ap_extended_status) {
         /* Nothing useful to report with ExtendedStatus disabled. */
@@ -101,29 +94,20 @@ static int systemd_monitor(apr_pool_t *p, server_rec *s)
     apr_strfsize((unsigned long)((float) (sload.bytes_served)
                                  / (float) up_time), bps);
 
-    rv = sd_notifyf(0, "READY=1\n"
-                    "STATUS=Total requests: %lu; Idle/Busy workers %d/%d;"
-                    "Requests/sec: %.3g; Bytes served/sec: %sB/sec\n",
-                    sload.access_count, sload.idle, sload.busy,
-                    ((float) sload.access_count) / (float) up_time, bps);
-
-    if (rv < 0) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(02396)
-                     "sd_notifyf returned an error %d", rv);
-    }
+    sd_notifyf(0, "READY=1\n"
+               "STATUS=Total requests: %lu; Idle/Busy workers %d/%d;"
+               "Requests/sec: %.3g; Bytes served/sec: %sB/sec\n",
+               sload.access_count, sload.idle, sload.busy,
+               ((float) sload.access_count) / (float) up_time, bps);
 
     /* Shutdown httpd when nothing is sent for shutdown_timer seconds. */
     if (sload.bytes_served == bytes_served) {
         /* mpm_common.c: INTERVAL_OF_WRITABLE_PROBES is 10 */
         shutdown_counter += 10;
         if (shutdown_timer > 0 && shutdown_counter >= shutdown_timer) {
-            rv = sd_notifyf(0, "READY=1\n"
-                            "STATUS=Stopped as result of IdleShutdown "
-                            "timeout.");
-            if (rv < 0) {
-                ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(02804)
-                            "sd_notifyf returned an error %d", rv);
-            }
+            sd_notifyf(0, "READY=1\n"
+                       "STATUS=Stopped as result of IdleShutdown "
+                       "timeout.");
             kill(mainpid, AP_SIG_GRACEFUL);
         }
     }
