@@ -124,6 +124,10 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   *) http: Enforce consistently no response body with both 204 and 304 statuses.
+      trunk patch: http://svn.apache.org/r1837056
+      2.4.x patch: https://home.apache.org/~jim/patches/response-204-304.patch
+      +1: jim, ylavic, icing
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -185,11 +189,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    *) mod_proxy_hcheck: take balancer's SSLProxy* directives into account.
       trunk patch: http://svn.apache.org/r1836276
       2.4.x patch: trunk patch works
-      +1: jim, ylavic
-
-   *) http: Enforce consistently no response body with both 204 and 304 statuses.
-      trunk patch: http://svn.apache.org/r1837056
-      2.4.x patch: https://home.apache.org/~jim/patches/response-204-304.patch
       +1: jim, ylavic
 
   *) MPMs: Initialize all runtime/asynchronous objects on a dedicated pool and
