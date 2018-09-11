@@ -1840,7 +1840,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(
          * such filters update or remove the C-L header, and just use it
          * if present.
          */
-        !(r->header_only && r->bytes_sent == 0 &&
+        !((r->header_only || AP_STATUS_IS_HEADER_ONLY(r->status)) && r->bytes_sent == 0 &&
             apr_table_get(r->headers_out, "Content-Length"))) {
         ap_set_content_length(r, r->bytes_sent);
     }
