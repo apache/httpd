@@ -612,7 +612,6 @@ static apr_status_t hc_check_tcp(baton_t *baton)
 
     status = hc_get_backend("HCTCP", &backend, hc, ctx, baton->ptemp);
     if (status == OK) {
-        backend->addr = hc->cp->addr;
         status = ap_proxy_connect_backend("HCTCP", backend, hc, ctx->s);
         /* does an unconditional ap_proxy_is_socket_connected() */
     }
