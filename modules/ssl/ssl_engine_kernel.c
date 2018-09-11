@@ -1219,8 +1219,16 @@ static int ssl_hook_Access_modern(request_rec *r, SSLSrvConfigRec *sc, SSLDirCon
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10129) "verify client post handshake");
 
             SSL_set_verify(ssl, vmode_needed, ssl_callback_SSLVerify);
-            SSL_verify_client_post_handshake(ssl);
 
+            if (SSL_verify_client_post_handshake(ssl) != 1) {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10158)
+                              "cannot perform post-handshake authentication");
+                ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, r->server);
+                apr_table_setn(r->notes, "error-notes",
+                               "Reason: Cannot perform Post-Handshake Authentication.<br />");
+                return HTTP_FORBIDDEN;
+            }
+            
             old_state = sslconn->reneg_state;
             sslconn->reneg_state = RENEG_ALLOW;
             modssl_set_app_data2(ssl, r);
