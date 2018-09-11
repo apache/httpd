@@ -2037,14 +2037,12 @@ static int proxy_http_post_config(apr_pool_t *pconf, apr_pool_t *plog,
         return OK;
     }
 
+    ap_proxy_clear_connection_fn =
+            APR_RETRIEVE_OPTIONAL_FN(ap_proxy_clear_connection);
     if (!ap_proxy_clear_connection_fn) {
-        ap_proxy_clear_connection_fn =
-                APR_RETRIEVE_OPTIONAL_FN(ap_proxy_clear_connection);
-        if (!ap_proxy_clear_connection_fn) {
-            ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(02477)
-                         "mod_proxy must be loaded for mod_proxy_http");
-            return !OK;
-        }
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(02477)
+                     "mod_proxy must be loaded for mod_proxy_http");
+        return !OK;
     }
 
     return OK;

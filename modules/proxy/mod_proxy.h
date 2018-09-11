@@ -846,6 +846,14 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_balancer_get_best_worker(proxy_balancer *
                                                                 request_rec *r,
                                                                 proxy_is_best_callback_fn_t *is_best,
                                                                 void *baton);
+/*
+ * Needed by the lb modules.
+ */
+APR_DECLARE_OPTIONAL_FN(proxy_worker *, proxy_balancer_get_best_worker,
+                                        (proxy_balancer *balancer,
+                                         request_rec *r,
+                                         proxy_is_best_callback_fn_t *is_best,
+                                         void *baton));
 
 /**
  * Find the shm of the worker as needed

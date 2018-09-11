@@ -124,14 +124,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   *) mod_proxy: fix load order dep between mod_proxy and lbmethod providers
-      trunk patch: http://svn.apache.org/r1836381 
-                   http://svn.apache.org/r1836382 
-                   http://svn.apache.org/r1836383 
-                   http://svn.apache.org/r1836386 
-                   http://svn.apache.org/r1836603
-      2.4.x patch: http://people.apache.org/~covener/2.4.x-proxy-opt-fn.diff
-      +1: covener, jim, ylavic
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:

@@ -22,6 +22,9 @@
 
 module AP_MODULE_DECLARE_DATA lbmethod_bybusyness_module;
 
+static APR_OPTIONAL_FN_TYPE(proxy_balancer_get_best_worker)
+                            *ap_proxy_balancer_get_best_worker_fn = NULL;
+
 static int is_best_bybusyness(proxy_worker *current, proxy_worker *prev_best, void *baton)
 {
     int *total_factor = (int *)baton;
@@ -44,7 +47,7 @@ static proxy_worker *find_best_bybusyness(proxy_balancer *balancer,
 {
     int total_factor = 0;
     proxy_worker *worker =
-        ap_proxy_balancer_get_best_worker(balancer, r, is_best_bybusyness,
+        ap_proxy_balancer_get_best_worker_fn(balancer, r, is_best_bybusyness,
                                           &total_factor);
 
     if (worker) {
@@ -82,9 +85,32 @@ static const proxy_balancer_method bybusyness =
     NULL
 };
 
+/* post_config hook: */
+static int lbmethod_bybusyness_post_config(apr_pool_t *pconf, apr_pool_t *plog,
+        apr_pool_t *ptemp, server_rec *s)
+{
+
+    /* lbmethod_bybusyness_post_config() will be called twice during startup.  So, don't
+     * set up the static data the 1st time through. */
+    if (ap_state_query(AP_SQ_MAIN_STATE) == AP_SQ_MS_CREATE_PRE_CONFIG) {
+        return OK;
+    }
+
+    ap_proxy_balancer_get_best_worker_fn =
+                 APR_RETRIEVE_OPTIONAL_FN(proxy_balancer_get_best_worker);
+    if (!ap_proxy_balancer_get_best_worker_fn) {
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10151)
+                     "mod_proxy must be loaded for mod_lbmethod_bybusyness");
+        return !OK;
+    }
+
+    return OK;
+}
+
 static void register_hook(apr_pool_t *p)
 {
     ap_register_provider(p, PROXY_LBMETHOD, "bybusyness", "0", &bybusyness);
+    ap_hook_post_config(lbmethod_bybusyness_post_config, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 AP_DECLARE_MODULE(lbmethod_bybusyness) = {
