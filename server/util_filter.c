@@ -26,6 +26,7 @@
 #include "http_log.h"
 #include "http_request.h"
 #include "util_filter.h"
+#include "core.h"
 
 /* NOTE: Apache's current design doesn't allow a pool to be passed thru,
    so we depend on a global to hold the correct pool
@@ -395,8 +396,9 @@ static apr_status_t request_filter_cleanup(void *arg)
      * while it is handling/passing the EOR, and we want each filter or
      * ap_filter_output_pending() to be able to dereference f until they
      * return. So request filters are recycled in dead_filters and will only
-     * be moved to spare_filters when ap_filter_recycle() is called explicitly.
-     * Set f->r to NULL still for any use after free to crash quite reliably.
+     * be moved to spare_filters when recycle_dead_filters() is called, i.e.
+     * in ap_filter_{in,out}put_pending(). Set f->r to NULL still for any use
+     * after free to crash quite reliably.
      */
     f->r = NULL;
     put_spare(c, f, &x->dead_filters);
@@ -404,7 +406,7 @@ static apr_status_t request_filter_cleanup(void *arg)
     return APR_SUCCESS;
 }
 
-void ap_filter_recycle(conn_rec *c)
+static void recycle_dead_filters(conn_rec *c)
 {
     struct ap_filter_conn_ctx *x = c->filter_conn_ctx;
 
@@ -1236,10 +1238,10 @@ AP_DECLARE_NONSTD(int) ap_filter_output_pending(conn_rec *c)
     ap_release_brigade(c, bb);
 
 cleanup:
-    /* No more flushing, all filters have returned, recycle/unleak dead request
-     * filters before leaving (i.e. make them reusable).
+    /* All filters have returned, time to recycle/unleak ap_filter_t-s
+     * before leaving (i.e. make them reusable).
      */
-    ap_filter_recycle(c);
+    recycle_dead_filters(c);
 
     return rc;
 }
@@ -1248,9 +1250,10 @@ AP_DECLARE_NONSTD(int) ap_filter_input_pending(conn_rec *c)
 {
     struct ap_filter_conn_ctx *x = c->filter_conn_ctx;
     struct ap_filter_private *fp;
+    int rc = DECLINED;
 
     if (!x || !x->pending_input_filters) {
-        return DECLINED;
+        goto cleanup;
     }
 
     for (fp = APR_RING_LAST(x->pending_input_filters);
@@ -1266,11 +1269,18 @@ AP_DECLARE_NONSTD(int) ap_filter_input_pending(conn_rec *c)
         e = APR_BRIGADE_FIRST(fp->bb);
         if (e != APR_BRIGADE_SENTINEL(fp->bb)
                 && e->length != (apr_size_t)(-1)) {
-            return OK;
+            rc = OK;
+            break;
         }
     }
 
-    return DECLINED;
+cleanup:
+    /* All filters have returned, time to recycle/unleak ap_filter_t-s
+     * before leaving (i.e. make them reusable).
+     */
+    recycle_dead_filters(c);
+
+    return rc;
 }
 
 AP_DECLARE_NONSTD(apr_status_t) ap_filter_flush(apr_bucket_brigade *bb,

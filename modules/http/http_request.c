@@ -402,7 +402,6 @@ AP_DECLARE(void) ap_process_request_after_handler(request_rec *r)
     (void)ap_check_pipeline(c, bb, DEFAULT_LIMIT_BLANK_LINES);
 
     ap_release_brigade(c, bb);
-    ap_filter_recycle(c);
 
     if (c->cs) {
         if (c->aborted) {
