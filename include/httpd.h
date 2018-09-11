@@ -568,6 +568,10 @@ AP_DECLARE(const char *) ap_get_server_built(void);
                                     ((x) == HTTP_INTERNAL_SERVER_ERROR) || \
                                     ((x) == HTTP_SERVICE_UNAVAILABLE) || \
                                     ((x) == HTTP_NOT_IMPLEMENTED))
+
+/** does the status imply header only response (i.e. never w/ a body)? */
+#define AP_STATUS_IS_HEADER_ONLY(x) ((x) == HTTP_NO_CONTENT || \
+                                     (x) == HTTP_NOT_MODIFIED)
 /** @} */
 
 /**
