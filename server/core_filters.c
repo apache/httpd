@@ -49,6 +49,7 @@
 #include "scoreboard.h"
 #include "mod_core.h"
 #include "ap_listen.h"
+#include "core.h"
 
 #include "mod_so.h" /* for ap_find_loaded_module_symbol */
 
