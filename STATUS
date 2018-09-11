@@ -144,6 +144,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1832092
      2.4.x patch: svn merge -c 1832092 ^/httpd/httpd/trunk .
      +1: elukey
+     +0.5: icing: as I read this, the change preserves the special status of headers in
+         ->err_headers_out, since swapping the tables makes former error headers normal ones.
+         But it is hard to see of this was ever intentional or not. Lack of regressions
+         in testing may meaning someone out there relies on the former, unverified
+         behaviour. OTOH, it fixes and error you saw and added test for. So, I am cautiously
+         for the change.
 
   *) mod_ssl: Fix the error code returned in an error path of 'ssl_io_filter_handshake()'
               This messes-up error handling performed in 'ssl_io_filter_error()'
