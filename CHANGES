@@ -35,9 +35,6 @@ Changes with Apache 2.5.1
   *) mod_ratelimit: Don't interfere with "chunked" encoding, fixing regression
      introduced in 2.4.34.  PR 62568.  [Yann Ylavic]
 
-  *) http: Enforce consistently no response body with both 204 and 304
-     statuses.  [Yann Ylavic]
-
   *) mod_proxy_http: forward 100-continue, and minimize race conditions when
      reusing backend connections. PR 60330. [Yann Ylavic, Jean-Frederic Clere]
 
@@ -93,7 +90,7 @@ Changes with Apache 2.5.1
      TLSv1.2 or lower ciphers are not relevant, as cipher suites are completely separate.
      This means there is a bit if a world split when simultaneously having TLSv1.2 and TLSv1.3
      connections to the same server.
-     [Stefan Eissing]
+     [Yann Ylavic, Stefan Eissing]
 
   *) mod_ssl: proper checks for libressl 2.07/8 and its TLSv1_3 support, see PR 62236.
      [Bernard Spil <brnrd@freebsd.org>]
