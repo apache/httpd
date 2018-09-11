@@ -215,13 +215,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x branch: ^/httpd/httpd/branches/tlsv1.3-for-2.4.x
       +1: icing,
 
+   *) mod_proxy_hcheck: Fix issues with TCP health checks. PR 61499
+      trunk patch: http://svn.apache.org/r1840582
+      2.4.x patch: trunk patch works
+      +1: jim, 
+
    *) mod_http2: connection IO event handling reworked. Instead of reacting on 
       incoming bytes, the state machine now acts on incoming frames that are 
       affecting it.
       trunk: http://svn.apache.org/r1840010
       2.4.x: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/mod-http2-con-io-events.patch
       +1: icing, 
-
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
