@@ -273,13 +273,11 @@ static proxy_worker *find_best_hb(proxy_balancer *balancer,
         ap_get_module_config(r->server->module_config,
                              &lbmethod_heartbeat_module);
 
+    ap_proxy_retry_worker_fn =
+            APR_RETRIEVE_OPTIONAL_FN(ap_proxy_retry_worker);
     if (!ap_proxy_retry_worker_fn) {
-        ap_proxy_retry_worker_fn =
-                APR_RETRIEVE_OPTIONAL_FN(ap_proxy_retry_worker);
-        if (!ap_proxy_retry_worker_fn) {
-            /* can only happen if mod_proxy isn't loaded */
-            return NULL;
-        }
+        /* can only happen if mod_proxy isn't loaded */
+        return NULL;
     }
 
     apr_pool_create(&tpool, r->pool);

@@ -520,6 +520,8 @@
  *                          scoreboard.h.
  * 20120211.81 (2.4.35-dev) Add new duration field to worker_score struct in
  *                          scoreboard.h
+ * 20120211.82 (2.4.35-dev) Add optional function declaration for
+ *                          ap_proxy_balancer_get_best_worker to mod_proxy.h.
  *
  */
 
@@ -528,7 +530,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20120211
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 81                  /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 82                  /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
