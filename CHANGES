@@ -21,7 +21,7 @@ Changes with Apache 2.4.35
      introduced in 2.4.34.  PR 62568.  [Yann Ylavic]
 
   *) mod_proxy: Remove load order and link dependency between mod_lbmethod_*
-     modules and mod_proxy. PR 62557. [Ruediger Pluem]
+     modules and mod_proxy. PR 62557. [Ruediger Pluem, William Rowe]
 
   *) Allow the argument to <IfFile>, <IfDefine>, <IfSection>, <IfDirective>,
      and <IfModule> to be quoted.  This is primarily for the benefit of
