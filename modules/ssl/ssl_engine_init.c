@@ -761,6 +761,13 @@ static apr_status_t ssl_init_ctx_protocol(server_rec *s,
         SSL_CTX_set_mode(ctx, SSL_MODE_RELEASE_BUFFERS);
 #endif
 
+#if OPENSSL_VERSION_NUMBER >= 0x1010100fL
+    /* For OpenSSL >=1.1.1, disable auto-retry mode so it's possible
+     * to consume handshake records without blocking for app-data.
+     * https://github.com/openssl/openssl/issues/7178 */
+    SSL_CTX_clear_mode(ctx, SSL_MODE_AUTO_RETRY);
+#endif
+    
     return APR_SUCCESS;
 }
 
@@ -1485,6 +1492,13 @@ static apr_status_t ssl_init_proxy_certs(server_rec *s,
     X509_STORE_CTX *sctx;
     X509_STORE *store = SSL_CTX_get_cert_store(mctx->ssl_ctx);
 
+#if OPENSSL_VERSION_NUMBER >= 0x1010100fL
+    /* For OpenSSL >=1.1.1, turn on client cert support which is
+     * otherwise turned off by default (by design).
+     * https://github.com/openssl/openssl/issues/6933 */
+    SSL_CTX_set_post_handshake_auth(mctx->ssl_ctx, 1);
+#endif
+    
     SSL_CTX_set_client_cert_cb(mctx->ssl_ctx,
                                ssl_callback_proxy_cert);
 
