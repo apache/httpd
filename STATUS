@@ -123,12 +123,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   *) mod_http2: connection IO event handling reworked. Instead of reacting on 
-      incoming bytes, the state machine now acts on incoming frames that are 
-      affecting it.
-      trunk: http://svn.apache.org/r1840010
-      2.4.x: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/mod-http2-con-io-events.patch
-      +1: icing, ylavic, jim
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
