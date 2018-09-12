@@ -224,7 +224,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       affecting it.
       trunk: http://svn.apache.org/r1840010
       2.4.x: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/mod-http2-con-io-events.patch
-      +1: icing, ylavic,
+      +1: icing, ylavic, jim
 
    *) mod_proxy_hcheck: Fix issues with interval determination. PR 62318
       trunk patch: http://svn.apache.org/r1838937
