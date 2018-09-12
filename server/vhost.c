@@ -1041,7 +1041,6 @@ static int update_server_from_aliases(request_rec *r)
                 goto found;
             }
         }
-        last_s = s;
 
         /* Fallback: does it match the virthost from the sar? */
         if (!strcasecmp(host, sar->virthost)) {
@@ -1050,6 +1049,8 @@ static int update_server_from_aliases(request_rec *r)
                 virthost_s = s;
             }
         }
+
+        last_s = s;
     }
 
     /* If ServerName and ServerAlias check failed, we end up here.  If it
