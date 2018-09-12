@@ -123,6 +123,13 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   *) mod_http2: connection IO event handling reworked. Instead of reacting on 
+      incoming bytes, the state machine now acts on incoming frames that are 
+      affecting it.
+      trunk: http://svn.apache.org/r1840010
+      2.4.x: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/mod-http2-con-io-events.patch
+      +1: icing, ylavic, jim
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -218,13 +225,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       trunk patch: http://svn.apache.org/r1840582
       2.4.x patch: trunk patch works
       +1: jim, ylavic,
-
-   *) mod_http2: connection IO event handling reworked. Instead of reacting on 
-      incoming bytes, the state machine now acts on incoming frames that are 
-      affecting it.
-      trunk: http://svn.apache.org/r1840010
-      2.4.x: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/mod-http2-con-io-events.patch
-      +1: icing, ylavic, jim
 
    *) mod_proxy_hcheck: Fix issues with interval determination. PR 62318
       trunk patch: http://svn.apache.org/r1838937
