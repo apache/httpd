@@ -171,8 +171,8 @@ static const char *add_basic_fake(cmd_parms * cmd, void *config,
                         &err, NULL);
         if (err) {
             return apr_psprintf(cmd->pool,
-                    "Could not parse fake password expression '%s': %s", pass,
-                    err);
+                    "Could not parse fake password expression associated to user '%s': %s",
+                    user, err);
         }
         conf->fake_set = 1;
     }
