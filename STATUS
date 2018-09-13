@@ -156,7 +156,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1839442
      2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-mod_proxy-handshake-bad_gateway.patch
      +1: ylavic
-     druggeri: Why no +1, jallietc36?
      rpluem: I think the patch is wrong here and in trunk. This causes
      ap_pass_brigade to return APR_SUCCESS in ap_proxy_pass_brigade. The error
      bucket inserted by ssl_io_filter_error IMHO makes no sense because it
@@ -183,7 +182,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
    *) mod_proxy_hcheck: take balancer's SSLProxy* directives into account.
       trunk patch: http://svn.apache.org/r1836276
-      2.4.x patch: trunk patch works
+      2.4.x patch: svn merge -c 1836276 ^/httpd/httpd/trunk .
       +1: jim, ylavic
 
   *) MPMs: Initialize all runtime/asynchronous objects on a dedicated pool and
@@ -217,13 +216,36 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
    *) mod_proxy_hcheck: Fix issues with TCP health checks. PR 61499
       trunk patch: http://svn.apache.org/r1840582
-      2.4.x patch: trunk patch works
+      2.4.x patch: svn merge -c 1840582 ^/httpd/httpd/trunk .
       +1: jim, ylavic,
 
    *) mod_proxy_hcheck: Fix issues with interval determination. PR 62318
       trunk patch: http://svn.apache.org/r1838937
-      2.4.x patch: trunk patch works
+      2.4.x patch: svn merge -c 1838937 ^/httpd/httpd/trunk .
       +1: jim, ylavic,
+
+   *) Fix missing spaces in messages
+      trunk patch: http://svn.apache.org/r1546860
+      2.4.x patch: svn merge -c 1546860 ^/httpd/httpd/trunk .
+                   Merge of server/protocol.c fails but it is not an issue. The
+                   corresponding message has been updated and already backported
+                   in 2.4.x in r1772678.
+      +1: jailletc36, 
+
+  *) Easy patches: synch 2.4.x and trunk
+     - mod_sed: Style only
+     - mod_auth_basic: Clarify a log message + style
+     - http: Remove a compiler warning
+     - mod_auth_basic: Fix parsing of the credencial for Basic authorization
+     - mod_lua: fix function prototype
+     trunk patch: http://svn.apache.org/r1749402
+                  http://svn.apache.org/r1656549
+                  http://svn.apache.org/r1840776 (follow-up to r1656549)
+                  http://svn.apache.org/r1800126
+                  http://svn.apache.org/r1817131
+                  http://svn.apache.org/r1834226
+     2.4.x patch: svn merge -c 1749402,1656549,1840776,1800126,1817131,1834226 ^/httpd/httpd/trunk . 
+     +1: jailletc36, 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
