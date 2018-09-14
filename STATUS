@@ -247,6 +247,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1749402,1656549,1840776,1800126,1817131,1834226 ^/httpd/httpd/trunk . 
      +1: jailletc36, 
 
+  *) mod_http2: silence compiler warnings, share less memory between
+     streams/tasks, add some util fixes from mod_md copies, although not called in h2. 
+     trunk patch: http://svn.apache.org/r1835118
+     2.4.x patch: svn merge -c 1835118 ^/httpd/httpd/trunk .
+     +1: icing
+     
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
