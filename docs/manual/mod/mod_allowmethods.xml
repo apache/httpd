@@ -36,7 +36,7 @@ in order for it to rebuild correctly.
 <status>Experimental</status>
 <sourcefile>mod_allowmethods.c</sourcefile>
 <identifier>allowmethods_module</identifier>
-
+<compatibility>Available in Apache 2.3 and later</compatibility>
 
 <summary>
 <p>This module makes it easy to restrict what HTTP methods can be
@@ -84,4 +84,3 @@ kludgy implementation of <directive module="core">Limit</directive> and
 </directivesynopsis>
 
 </modulesynopsis>
-
