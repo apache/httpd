@@ -1,7 +1,7 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1717786 -->
+<!-- English Revision: 1840964 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -34,15 +34,15 @@ in order for it to rebuild correctly.
 
 <modulesynopsis metafile="mod_allowmethods.xml.meta">
 <name>mod_allowmethods</name>
-<description>Limitation simple des m&eacute;thodes HTTP accept&eacute;es par e serveur</description>
+<description>Limitation simple des méthodes HTTP acceptées par e serveur</description>
 <status>Experimental</status>
 <sourcefile>mod_allowmethods.c</sourcefile>
 <identifier>allowmethods_module</identifier>
-
+<compatibility>Disponible à partir de la version 2.3 du serveur HTTP Apache.</compatibility>
 
 <summary>
-<p>Ce module fournit une mani&egrave;re simple de restreindre les m&eacute;thodes HTTP
-accept&eacute;es par le serveur. La configuration la plus courante
+<p>Ce module fournit une manière simple de restreindre les méthodes HTTP
+acceptées par le serveur. La configuration la plus courante
 est du style :</p>
 
 <highlight language="config">
@@ -55,7 +55,7 @@ est du style :</p>
 
 <directivesynopsis>
 <name>AllowMethods</name>
-<description>Restreint l'acc&egrave;s aux m&eacute;thodes HTTP sp&eacute;cifi&eacute;es</description>
+<description>Restreint l'accès aux méthodes HTTP spécifiées</description>
 <syntax>AllowMethods reset|<em>HTTP-method</em>
 [<em>HTTP-method</em>]...</syntax>
 <default>AllowMethods reset</default>
@@ -64,11 +64,11 @@ est du style :</p>
 
 <usage>
 
-<p>Le nom de chaque m&eacute;thode HTTP est sensible &agrave; la casse, et est le plus
-souvent d&eacute;fini en majuscules, comme dans les RFCs. Les m&eacute;thodes GET et
-HEAD sont trait&eacute;es de la m&ecirc;me mani&egrave;re. Le mot-cl&eacute;
-<code>reset</code> permet de d&eacute;sactiver
-<module>mod_allowmethods</module> dans les niveaux inf&eacute;rieurs
+<p>Le nom de chaque méthode HTTP est sensible à la casse, et est le plus
+souvent défini en majuscules, comme dans les RFCs. Les méthodes GET et
+HEAD sont traitées de la même manière. Le mot-clé
+<code>reset</code> permet de désactiver
+<module>mod_allowmethods</module> dans les niveaux inférieurs
 d'imbrication :</p>
 
 <highlight language="config">
@@ -78,13 +78,13 @@ d'imbrication :</p>
 </highlight>
 
 <note><title>Avertissement</title>
-  <p>La m&eacute;thode TRACE ne peut pas &ecirc;tre rejet&eacute;e par ce module ; pour ce
+  <p>La méthode TRACE ne peut pas être rejetée par ce module ; pour ce
   faire, vous devez utiliser la directive <directive
   module="core">TraceEnable</directive>.</p>
 </note>
 
-<p>Le module <module>mod_allowmethods</module> a &eacute;t&eacute; &eacute;crit pour
-remplacer l'impl&eacute;mentation "bricol&eacute;e" des directives <directive
+<p>Le module <module>mod_allowmethods</module> a été écrit pour
+remplacer l'implémentation "bricolée" des directives <directive
 module="core">Limit</directive> et <directive
 module="core">LimitExcept</directive>.</p>
 </usage>
