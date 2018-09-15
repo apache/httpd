@@ -2107,8 +2107,7 @@ requ&#234;tes</td></tr>
     <code>https</code>, les requ&#234;tes sont redirig&#233;es par le mandataire
     distant en utilisant la m&#233;thode HTTP CONNECT.</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">ProxyRemote "http://goodguys.example.com/"
-"http://mirrorguys.example.com:8000"
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">ProxyRemote "http://goodguys.example.com/" "http://mirrorguys.example.com:8000"
 ProxyRemote "*" "http://cleverproxy.localdomain"
 ProxyRemote "ftp" "http://ftpproxy.mydomain:8080"</pre>
 </div>
