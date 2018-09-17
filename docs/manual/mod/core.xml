@@ -2273,7 +2273,7 @@ if a test is true at startup</description>
 <name>IfFile</name>
 <description>Encloses directives that will be processed only
 if file exists at startup</description>
-<syntax>&lt;IfFile [!]<var>parameter-name</var>&gt; ...
+<syntax>&lt;IfFile [!]<var>filename</var>&gt; ...
     &lt;/IfFile&gt;</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
