@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="style/manual.tr.xsl"?>
-<!-- English Revision: 1766106:1836061 (outdated) -->
+<!-- English Revision: 1836061 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -326,6 +326,10 @@
         module="mod_cache">CacheDisable</directive> yönergelerine bakınız.</li>
 
         <li>Yanıtın HTTP durum kodu 200, 203, 300, 301 veya 410 olmalıdır.</li>
+        
+        <li>Yanıtın HTTP durum kodu 200, 203, 300, 301 veya 410 değilse 
+          yanıtın ayrıca, "Expires" veya "Cache-Control" başlığı da içermesi 
+          gerekir.</li>
 
         <li>İstek bir HTTP GET isteği olmalıdır.</li>
 
