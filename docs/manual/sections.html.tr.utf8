@@ -228,7 +228,7 @@
       adlar&gt;</a></code> tam tersi eşlenir:</p>
 
     <pre class="prettyprint lang-config">Alias "/foo/bar" "/srv/www/uncommon/bar"
-Alias "/foo" "/srv/www/common/foo"</pre>
+Alias "/foo"     "/srv/www/common/foo"</pre>
 
 
     <p>Aynısı <code class="directive"><a href="./mod/mod_proxy.html#proxypass">ProxyPass</a></code>
@@ -447,7 +447,7 @@ ProxyPass "/" "balancer://mycluster/" stickysession=JSESSIONID|jsessionid nofail
     <ul>
         <li><code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>
         bölümündekiler hariç, her grup, yapılandırma dosyasında bulundukları
-        sıraya göre işleme sokulurlar. Örneğin, 4. grupta <em>/foo</em> için yapılan 
+        sıraya göre işleme sokulurlar. Örneğin, 4. grupta <em>/foo/bar</em> için yapılan 
         bir istek <code>&lt;Location "/foo/bar"&gt;</code> ve <code>&lt;Location 
         "/foo"&gt;</code> bölümleriyle de eşleşir ve bunlar yapılandırma 
         dosyalarında bulundukları sıraya göre değerlendirilir.</li>
