@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 1823764:1838946 (outdated) -->
+<!-- English Revision: 1838946 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -257,7 +257,7 @@
 
     <highlight language="config">
 Alias "/foo/bar" "/srv/www/uncommon/bar"
-Alias "/foo" "/srv/www/common/foo"
+Alias "/foo"     "/srv/www/common/foo"
     </highlight>
 
     <p>Aynısı <directive module="mod_proxy">ProxyPass</directive>
@@ -500,7 +500,7 @@ ProxyPass "/" "balancer://mycluster/" stickysession=JSESSIONID|jsessionid nofail
     <ul>
         <li><directive type="section" module="core">Directory</directive>
         bölümündekiler hariç, her grup, yapılandırma dosyasında bulundukları
-        sıraya göre işleme sokulurlar. Örneğin, 4. grupta <em>/foo</em> için yapılan 
+        sıraya göre işleme sokulurlar. Örneğin, 4. grupta <em>/foo/bar</em> için yapılan 
         bir istek <code>&lt;Location "/foo/bar"&gt;</code> ve <code>&lt;Location 
         "/foo"&gt;</code> bölümleriyle de eşleşir ve bunlar yapılandırma 
         dosyalarında bulundukları sıraya göre değerlendirilir.</li>

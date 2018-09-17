@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1828061:1838466 (outdated) -->
+<!-- English Revision: 1841039 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -2020,7 +2020,7 @@ FileETag INode MTime Size
 
 <highlight language="config">
 &lt;FilesMatch "^(?&lt;sitename&gt;[^/]+)"&gt;
-    require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
+    Require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
 &lt;/FilesMatch&gt;
 </highlight>
 </usage>
@@ -2288,6 +2288,44 @@ sokulacak yönergeleri sarmalar.</description>
 </usage>
 </directivesynopsis>
 
+ <directivesynopsis type="section">
+<name>IfFile</name>
+<description>Başlatma sırasında bir dosyanın varlığı durumunda işleme
+sokulacak yönergeleri sarmalar.</description>
+<syntax>&lt;IfFile [!]<var>dosyaadı</var>&gt; ...
+    &lt;/IfFile&gt;</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>All</override>
+<compatibility>2.4.34 ve sonrsında kullanılabilir.</compatibility>
+
+<usage>
+    <p><code>&lt;IfFile <var>dosyaadı</var>&gt;...&lt;/IfFile&gt;
+    </code> bölümü bir dosyanın diskteki mevcudiyetine bağlı olarak 
+    çalıştırılacak yönergeleri belirtmekte kullanılır.
+    <directive type="section">IfFile</directive> bölümü içindeki yönergeler 
+    sadece diskte <var>dosyaadı</var> mevcutsa çalıştırılır. <var>dosyaadı</var>
+    mevcut değilse bölüm içindeki yönergeler yok sayılır. <var>dosyaadı</var> 
+    sunucu kök dizinine göreli veya mutlak bir yol olarak belirtilebilir.</p>
+
+    <p><directive type="section">IfFile</directive> bölüm yönergesindeki 
+    <var>dosyaadı</var>, <directive type="section" module="core"
+    >IfDefine</directive> yönergesindeki <var>sınama</var> değişkenindeki gibi 
+    ele alınır, yani <var>dosyaadı</var> bir ! ile öncelenirse bölüm içindeki 
+    yonergeler dosyanın yokluğu durumunda çalıştırılır. 
+    </p>
+   
+    <p>Göreli bir <var>dosyaadı</var> belirtilmişse sınama <directive 
+    module="core">ServerRoot</directive> yönergesinde belirtilen dizinde göre 
+    yapılır. <directive type="section">IfFile</directive> yönergesinin 
+    <directive module="core">ServerRoot</directive> yönergesinde önce yer alması 
+    durumunda dosya yolu derleme sırasında kullanılan sunucu köküne veya komut 
+    satırında <code>-d</code> seçeneği ile belirtilen dizine göre sınanır.</p>
+    
+</usage>
+</directivesynopsis>
+
 <directivesynopsis type="section">
 <name>IfModule</name>
 <description>Belli bir modülün varlığına veya yokluğuna göre işleme sokulacak
@@ -2339,6 +2377,102 @@ yönergeleri sarmalar.</description>
       type="section">IfModule</directive> bölümlerine yerleştirilmeleri
       gerekmez.</note>
 </usage>
+</directivesynopsis>
+ 
+<directivesynopsis type="section">
+<name>IfDirective</name>
+<description>Belirtilen yönerge adının varlığı veya yokluğuna bağlı olarak çalıştırılacak yönergeleri sarmalar.</description>
+<syntax>&lt;IfDirective [!]<var>yönerge-adı</var>&gt; ...
+    &lt;/IfDirective&gt;</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>All</override>
+<compatibility>2.4.34 ve sonrasında kullanılabilir.</compatibility>
+
+<usage>
+    <p><code>&lt;IfDirective <var>yönerge-adı</var>&gt; 
+    ...&lt;/IfDirective&gt;</code> bölümü içindeki yönergeler 
+    <var>yönerge-adı</var> ile belirtilen yönerge mevcutsa çalıştırılır yoksa 
+    yok sayılır.</p>
+
+    <p><directive type="section">IfDirective</directive> yönergenide sınama iki türlü yapılır:</p>
+
+    <ul>
+      <li><var>yönerge-adı</var></li>
+
+      <li>!<var>yönerge-adı</var></li>
+    </ul>
+
+    <p>İlk durumda bölüm içinde kalan yönergeler, yönerge başlangıç satırına 
+    belirtilen yönerge işlem sırasında mevcutsa çalıştırılır, değilse 
+    çalıştırılmaz. İkinci durumda ise, bölüm içinde kalan yönergeler, yönerge 
+    başlangıç satırına belirtilen yönerge işlem sırasında mevcut 
+    <strong>değilse</strong> çalıştırılır, mevcutsa çalıştırılmaz.</p>
+
+  <note>Bu yönergeyi kullanma ihtiyacı sadece çok sayıda  
+    <program>httpd</program> tek bir yapılandırma dosyası ile çalıştırılmak 
+    zorundaysa ortaya çıkar. Böyle bir ihtiyacın olmadığı normal durumlarda 
+    yönergelerin <directive type="section">IfDirective</directive> bölümlerine 
+    yerleştirlmesine gerek yoktur.</note>
+</usage>
+<seealso><directive module="core" type="section">IfSection</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis type="section">
+<name>IfSection</name>
+<description>Belirtilen bölüm adının varlığı veya yokluğuna bağlı olarak çalıştırılacak yönergeleri sarmalar.</description>
+<syntax>&lt;IfSection [!]<var>bölüm-adı</var>&gt; ...
+    &lt;/IfSection&gt;</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>All</override>
+<compatibility>2.4.34 ve sonrasında kullanılabilir.</compatibility>
+
+<usage>
+    <p><code>&lt;IfSection <var>bölüm-adı</var>&gt; 
+    ...&lt;/IfSection&gt;</code> bölümü içindeki yönergeler 
+    <var>bölüm-adı</var> ile belirtilen bölüm mevcutsa çalıştırılır yoksa 
+    yok sayılır. Bir bölüm yönergesi "&lt;" ile öncelenmiş bir yönerge adına 
+    sahip olmalı ve <directive type="section">VirtualHost</directive> gibi başka 
+    yönergeleri sarmalayan bir yönerge olmalıdır.</p>
+
+    <p><directive type="section">IfSection</directive> bölümü içindeki 
+    yönergeler sadece <var>sınama</var> doğru ise çalıştırılır, 
+    <var>sınama</var> yanlışsa çalıştırılmaz.</p>
+
+    <p><var>bölüm-adı</var> başında "&lt;" veya sonunda "&gt;" olmaksızın 
+    belirtilmelidir. <directive type="section">IfSection</directive> 
+    yönergesindeki <var>bölüm-adı</var> iki türlü ele alınır:</p>
+
+    <ul>
+      <li><var>bölüm-adı</var></li>
+      <li>!<var>bölüm-adı</var></li>
+    </ul>
+
+    <p>İlk durumda bölüm içinde kalan yönergeler, yönerge başlangıç satırına 
+    belirtilen bölüm işlem sırasında mevcutsa çalıştırılır, değilse 
+    çalıştırılmaz. İkinci durumda ise, bölüm içinde kalan yönergeler, yönerge 
+    başlangıç satırına belirtilen bölüm işlem sırasında mevcut 
+    <strong>değilse</strong> çalıştırılır, mevcutsa çalıştırılmaz.</p>
+
+    <p>Örnek:</p>
+
+    <highlight language="config">
+&lt;IfSection VirtualHost&gt;
+   ...
+&lt;/IfSection&gt;
+    </highlight>
+    
+    <note>Bu yönergeyi kullanma ihtiyacı sadece çok sayıda  
+    <program>httpd</program> tek bir yapılandırma dosyası ile (belli bir bölüm 
+    yönergesinin var olup olmamasına bakmaksızın) çalıştırılmak 
+    zorundaysa ortaya çıkar. Böyle bir ihtiyacın olmadığı normal durumlarda 
+    yönergelerin <directive type="section">IfSection</directive> bölümlerine 
+    yerleştirlmesine gerek yoktur.</note>
+</usage>
+<seealso><directive module="core" type="section">IfDirective</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -3041,7 +3175,7 @@ uygulanır.</description>
 
     <highlight language="config">
 &lt;LocationMatch "^/combined/(?&lt;sitename&gt;[^/]+)"&gt;
-    require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
+    Require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
 &lt;/LocationMatch&gt;
     </highlight>
 </usage>
