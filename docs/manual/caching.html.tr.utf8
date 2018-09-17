@@ -312,6 +312,10 @@
         <li>Önbellekleme bu URL ile etkin kılınabilmelidir. <code class="directive"><a href="./mod/mod_cache.html#cacheenable">CacheEnable</a></code> ve <code class="directive"><a href="./mod/mod_cache.html#cachedisable">CacheDisable</a></code> yönergelerine bakınız.</li>
 
         <li>Yanıtın HTTP durum kodu 200, 203, 300, 301 veya 410 olmalıdır.</li>
+        
+        <li>Yanıtın HTTP durum kodu 200, 203, 300, 301 veya 410 değilse 
+          yanıtın ayrıca, "Expires" veya "Cache-Control" başlığı da içermesi 
+          gerekir.</li>
 
         <li>İstek bir HTTP GET isteği olmalıdır.</li>
 
