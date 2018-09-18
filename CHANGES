@@ -3,6 +3,9 @@ Changes with Apache 2.4.36
 
 Changes with Apache 2.4.35
 
+  *) mod_proxy_hcheck: Fix issues with TCP health checks. PR 61499
+     [Dominik Stillhard <dominik.stillhard united-security-providers.ch>]
+
   *) mod_proxy_hcheck: take balancer's SSLProxy* directives into account.
      [Jim Jagielski]
 
