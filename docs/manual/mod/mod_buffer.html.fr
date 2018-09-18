@@ -27,38 +27,38 @@
 <div id="preamble"><h1>Module Apache mod_buffer</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_buffer.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_buffer.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_buffer.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Support de la mise en tampon des requ&#234;tes</td></tr>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Support de la mise en tampon des requêtes</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&#160;de&#160;Module:</a></th><td>buffer_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier&#160;Source:</a></th><td>mod_buffer.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible depuis les versions 2.3 et sup&#233;rieures
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>buffer_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_buffer.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis les versions 2.3 et supérieures
 d'Apache</td></tr></table>
 <h3>Sommaire</h3>
 
-    <p>Ce module fournit la possibilit&#233; de mettre en tampon les piles
-    des filtres en entr&#233;e et sortie.</p>
+    <p>Ce module fournit la possibilité de mettre en tampon les piles
+    des filtres en entrée et sortie.</p>
 
-    <p>Dans certaines situations, les g&#233;n&#233;rateurs de contenu cr&#233;ent des
-    contenus compos&#233;s de petits tron&#231;ons. Afin de permettre la
-    r&#233;utilisation de la m&#233;moire, les &#233;l&#233;ments de m&#233;moire attribu&#233;s aux
-    tron&#231;ons ont toujours une taille de 8k, quelle que soit la taille du
-    tron&#231;on lui-m&#234;me. Lorsqu'une requ&#234;te g&#233;n&#232;re de nombreux petits
-    tron&#231;ons, une grande quantit&#233; de m&#233;moire peut &#234;tre mobilis&#233;e par le
-    traitement de la requ&#234;te, et une grande quantit&#233; de donn&#233;es
-    transmises sans n&#233;cessit&#233;. Pour y rem&#233;dier, l'utilisation d'un
-    tampon rassemble la r&#233;ponse en un nombre de tron&#231;ons le plus petit
+    <p>Dans certaines situations, les générateurs de contenu créent des
+    contenus composés de petits tronçons. Afin de permettre la
+    réutilisation de la mémoire, les éléments de mémoire attribués aux
+    tronçons ont toujours une taille de 8k, quelle que soit la taille du
+    tronçon lui-même. Lorsqu'une requête génère de nombreux petits
+    tronçons, une grande quantité de mémoire peut être mobilisée par le
+    traitement de la requête, et une grande quantité de données
+    transmises sans nécessité. Pour y remédier, l'utilisation d'un
+    tampon rassemble la réponse en un nombre de tronçons le plus petit
     possible.</p>
 
-    <p>Lorsque httpd est utilis&#233; comme frontal d'un g&#233;n&#233;rateur de
+    <p>Lorsque httpd est utilisé comme frontal d'un générateur de
     contenu consommant beaucoup de ressources, la mise en tampon de la
-    r&#233;ponse peut permettre &#224; ce dernier d'effectuer le traitement et de
-    lib&#233;rer les ressources plus ou moins rapidement, en fonction de la
-    mani&#232;re dont il a &#233;t&#233; con&#231;u.</p>
+    réponse peut permettre à ce dernier d'effectuer le traitement et de
+    libérer les ressources plus ou moins rapidement, en fonction de la
+    manière dont il a été conçu.</p>
 
-    <p>Le filtre de mise en tampon peut &#234;tre ajout&#233; aux piles des
-    filtres en entr&#233;e ou en sortie, selon les besoins, &#224; l'aide des
+    <p>Le filtre de mise en tampon peut être ajouté aux piles des
+    filtres en entrée ou en sortie, selon les besoins, à l'aide des
     directives <code class="directive"><a href="../mod/core.html#setinputfilter">SetInputFilter</a></code>,
     <code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code>, <code class="directive"><a href="../mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code> ou <code class="directive"><a href="../mod/mod_filter.html#addoutputfilterbytype">AddOutputFilterByType</a></code>.</p>
 
@@ -66,20 +66,20 @@ d'Apache</td></tr></table>
 </div>
 
     <div class="warning">Les filtres de mise en tampon lisent la
-    requ&#234;te/r&#233;ponse en RAM, puis la reconditionnent sous la forme d'un
-    nombre d'&#233;l&#233;ments m&#233;moire le plus petit possible, au prix d'une
-    consommation de temps CPU. Lorsque la requ&#234;te/r&#233;ponse est d&#233;j&#224;
-    conditionn&#233;e de mani&#232;re satisfaisante, sa mise en tampon pourrait
-    s'av&#233;rer encore plus lente qu'en l'absence d'utilisation de tampon.
-    C'est pourquoi ces filtres doivent &#234;tre utilis&#233;s avec pr&#233;cautions,
-    et seulement si n&#233;cessaire.</div>
+    requête/réponse en RAM, puis la reconditionnent sous la forme d'un
+    nombre d'éléments mémoire le plus petit possible, au prix d'une
+    consommation de temps CPU. Lorsque la requête/réponse est déjà
+    conditionnée de manière satisfaisante, sa mise en tampon pourrait
+    s'avérer encore plus lente qu'en l'absence d'utilisation de tampon.
+    C'est pourquoi ces filtres doivent être utilisés avec précautions,
+    et seulement si nécessaire.</div>
 
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#buffersize">BufferSize</a></li>
 </ul>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_buffer">Probl&#232;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_buffer">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_buffer">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_buffer">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><a href="../filter.html">Les filtres</a></li>
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
@@ -89,21 +89,21 @@ d'Apache</td></tr></table>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Taille maximale en octets du filtre par tampon</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>BufferSize entier</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>BufferSize 131072</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>BufferSize 131072</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_buffer</td></tr>
 </table>
-    <p>La directive <code class="directive"><a href="#buffersize">BufferSize</a></code> permet de sp&#233;cifier la
-    quantit&#233; de donn&#233;es en octets qui sera mise en tampon avant d'&#234;tre
-    lue depuis ou &#233;crite vers chaque requ&#234;te. La valeur par d&#233;faut est
+    <p>La directive <code class="directive"><a href="#buffersize">BufferSize</a></code> permet de spécifier la
+    quantité de données en octets qui sera mise en tampon avant d'être
+    lue depuis ou écrite vers chaque requête. La valeur par défaut est
     128 ko.</p>
 
 </div>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_buffer.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_buffer.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_buffer.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -122,7 +122,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_buffer.htm
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autoris&#233; sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

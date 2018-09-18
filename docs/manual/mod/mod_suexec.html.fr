@@ -27,27 +27,27 @@
 <div id="preamble"><h1>Module Apache mod_suexec</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_suexec.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_suexec.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_suexec.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_suexec.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_suexec.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/mod_suexec.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/mod_suexec.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Permet l'ex&#233;cution des scripts CGI sous l'utilisateur et
-le groupe sp&#233;cifi&#233;s</td></tr>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Permet l'exécution des scripts CGI sous l'utilisateur et
+le groupe spécifiés</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&#160;de&#160;Module:</a></th><td>suexec_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier&#160;Source:</a></th><td>mod_suexec.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>suexec_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_suexec.c</td></tr></table>
 <h3>Sommaire</h3>
 
     <p>Ce module, en combinaison avec son programme support
-    <code class="program"><a href="../programs/suexec.html">suexec</a></code>, permet l'ex&#233;cution des scripts CGI sous
-    l'utilisateur et le groupe sp&#233;cifi&#233;s.</p>
+    <code class="program"><a href="../programs/suexec.html">suexec</a></code>, permet l'exécution des scripts CGI sous
+    l'utilisateur et le groupe spécifiés.</p>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#suexecusergroup">SuexecUserGroup</a></li>
 </ul>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_suexec">Probl&#232;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_suexec">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_suexec">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_suexec">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><a href="../suexec.html">Support de SuEXEC</a></li>
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
@@ -56,23 +56,23 @@ le groupe sp&#233;cifi&#233;s</td></tr>
 <div class="directive-section"><h2><a name="suexecusergroup" id="suexecusergroup">Directive</a> <a name="SuexecUserGroup" id="SuexecUserGroup">SuexecUserGroup</a><a title="Lien permanent" href="#suexecusergroup" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>L'utilisateur et le groupe sous lesquels les programmes CGI
-doivent s'ex&#233;cuter</td></tr>
+doivent s'exécuter</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SuexecUserGroup <em>Utilisateur Groupe</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_suexec</td></tr>
 </table>
     <p>La directive <code class="directive">SuexecUserGroup</code> permet de
-    sp&#233;cifier l'utilisateur et le groupe sous lesquels les programmes
-    CGI doivent s'ex&#233;cuter. Les requ&#234;tes non CGI seront toujours
-    trait&#233;es avec l'utilisateur sp&#233;cifi&#233; par la directive <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code>.</p>
+    spécifier l'utilisateur et le groupe sous lesquels les programmes
+    CGI doivent s'exécuter. Les requêtes non CGI seront toujours
+    traitées avec l'utilisateur spécifié par la directive <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code>.</p>
 
     <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">SuexecUserGroup nobody nogroup</pre>
 </div>
 
-    <p>Le d&#233;marrage va &#233;chouer si cette
-    directive est sp&#233;cifi&#233;e et si la fonctionnalit&#233; suEXEC est
-    d&#233;sactiv&#233;e.</p>
+    <p>Le démarrage va échouer si cette
+    directive est spécifiée et si la fonctionnalité suEXEC est
+    désactivée.</p>
 
 
 <h3>Voir aussi</h3>
@@ -83,10 +83,10 @@ doivent s'ex&#233;cuter</td></tr>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_suexec.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_suexec.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_suexec.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_suexec.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_suexec.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/mod_suexec.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/mod_suexec.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -105,7 +105,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_suexec.htm
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autoris&#233; sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

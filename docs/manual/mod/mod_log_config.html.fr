@@ -27,39 +27,39 @@
 <div id="preamble"><h1>Module Apache mod_log_config</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_log_config.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_log_config.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_log_config.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_log_config.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_log_config.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/mod_log_config.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/mod_log_config.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Journalisation des requ&#234;tes envoy&#233;es au
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Journalisation des requêtes envoyées au
 serveur</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&#160;de&#160;Module:</a></th><td>log_config_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier&#160;Source:</a></th><td>mod_log_config.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>log_config_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_log_config.c</td></tr></table>
 <h3>Sommaire</h3>
 
     <p>Ce module apporte une grande souplesse dans la journalisation des
-    requ&#234;tes des clients. Les journaux sont &#233;crits sous un format
-    personnalisable, et peuvent &#234;tre enregistr&#233;s directement dans un
-    fichier, ou redirig&#233;s vers un programme externe. La journalisation
-    conditionnelle est support&#233;e, si bien que des requ&#234;tes individuelles
-    peuvent &#234;tre incluses ou exclues des journaux en fonction de leur
-    caract&#233;ristiques.</p>
+    requêtes des clients. Les journaux sont écrits sous un format
+    personnalisable, et peuvent être enregistrés directement dans un
+    fichier, ou redirigés vers un programme externe. La journalisation
+    conditionnelle est supportée, si bien que des requêtes individuelles
+    peuvent être incluses ou exclues des journaux en fonction de leur
+    caractéristiques.</p>
 
-    <p>Ce module fournit trois directives : <code class="directive"><a href="#transferlog">TransferLog</a></code> cr&#233;e un fichier
+    <p>Ce module fournit trois directives : <code class="directive"><a href="#transferlog">TransferLog</a></code> crée un fichier
     journal, <code class="directive"><a href="#logformat">LogFormat</a></code>
-    d&#233;finit un format personnalis&#233;, et <code class="directive"><a href="#customlog">CustomLog</a></code> d&#233;finit un fichier journal et un format en
-    une seule &#233;tape. Pour journaliser les requ&#234;tes dans plusieurs
+    définit un format personnalisé, et <code class="directive"><a href="#customlog">CustomLog</a></code> définit un fichier journal et un format en
+    une seule étape. Pour journaliser les requêtes dans plusieurs
     fichiers, vous pouvez utiliser plusieurs fois les directives
     <code class="directive">TransferLog</code> et
     <code class="directive">CustomLog</code> dans chaque serveur.</p>
 </div>
 <div id="quickview"><h3>Sujets</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#formats">Formats de journaux personnalis&#233;s</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#security">Consid&#233;rations concernant la
-s&#233;curit&#233;</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#formats">Formats de journaux personnalisés</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#security">Considérations concernant la
+sécurité</a></li>
 </ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#bufferedlogs">BufferedLogs</a></li>
@@ -68,30 +68,30 @@ s&#233;curit&#233;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#logformat">LogFormat</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#transferlog">TransferLog</a></li>
 </ul>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_log_config">Probl&#232;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_log_config">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_log_config">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_log_config">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><a href="../logs.html">Les fichiers journaux
 d'Apache</a></li>
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="formats" id="formats">Formats de journaux personnalis&#233;s</a><a title="Lien permanent" href="#formats" class="permalink">&para;</a></h2>
+<h2><a name="formats" id="formats">Formats de journaux personnalisés</a><a title="Lien permanent" href="#formats" class="permalink">&para;</a></h2>
 
-    <p>L'argument format des directives <code class="directive"><a href="#logformat">LogFormat</a></code> et <code class="directive"><a href="#customlog">CustomLog</a></code> est une cha&#238;ne de
-    caract&#232;res. Cette cha&#238;ne d&#233;finit le format de la journalisation des
-    requ&#234;tes dans le fichier journal. Elle peut contenir des caract&#232;res
-    litt&#233;raux qui seront reproduits dans le fichier journal, et les
-    caract&#232;res de contr&#244;le de style C "\n" et "\t" repr&#233;sentant
+    <p>L'argument format des directives <code class="directive"><a href="#logformat">LogFormat</a></code> et <code class="directive"><a href="#customlog">CustomLog</a></code> est une chaîne de
+    caractères. Cette chaîne définit le format de la journalisation des
+    requêtes dans le fichier journal. Elle peut contenir des caractères
+    littéraux qui seront reproduits dans le fichier journal, et les
+    caractères de contrôle de style C "\n" et "\t" représentant
     respectivement une nouvelle ligne et une tabulation. Les guillemets
-    et les anti-slashes litt&#233;raux doivent &#234;tre &#233;chapp&#233;s &#224; l'aide
+    et les anti-slashes littéraux doivent être échappés à l'aide
     d'anti-slashes.</p>
 
-    <p>Les caract&#233;ristiques de la requ&#234;te en elle-m&#234;me sont journalis&#233;es
-    en ins&#233;rant des directives "<code>%</code>" dans la cha&#238;ne de
-    format, celles-ci &#233;tant remplac&#233;es dans le fichier journal par
+    <p>Les caractéristiques de la requête en elle-même sont journalisées
+    en insérant des directives "<code>%</code>" dans la chaîne de
+    format, celles-ci étant remplacées dans le fichier journal par
     certaines valeurs comme suit :</p>
 
-    <table class="bordered"><tr class="header"><th>Cha&#238;ne&nbsp;de&nbsp;format</th>
+    <table class="bordered"><tr class="header"><th>Chaîne&nbsp;de&nbsp;format</th>
         <th>Description</th></tr>
 <tr><td><code>%%</code></td>
         <td>Le signe "pourcentage"</td></tr>
@@ -104,19 +104,19 @@ d'Apache</a></li>
 <tr class="odd"><td><code>%A</code></td>
         <td>L'adresse IP locale</td></tr>
 <tr><td><code>%B</code></td>
-        <td>La taille de la r&#233;ponse en octets, en excluant les en-t&#234;tes
+        <td>La taille de la réponse en octets, en excluant les en-têtes
 	HTTP.</td></tr>
 <tr class="odd"><td><code>%b</code></td>
-        <td>La taille de la r&#233;ponse en octets, en excluant les en-t&#234;tes
-	HTTP. Au format CLF , c'est &#224; dire un '<code>-</code>' &#224; la
-	place d'un 0 lorsqu'aucun octet n'est renvoy&#233;.</td></tr>
+        <td>La taille de la réponse en octets, en excluant les en-têtes
+	HTTP. Au format CLF , c'est à dire un '<code>-</code>' à la
+	place d'un 0 lorsqu'aucun octet n'est renvoyé.</td></tr>
 <tr><td><code>%{<var>NOMVAR</var>}C</code></td>
-        <td>Le contenu du cookie <var>NOMVAR</var> dans la requ&#234;te
-	envoy&#233;e au serveur. Seuls les cookies version 0 sont pleinement
-	support&#233;s.</td></tr>
+        <td>Le contenu du cookie <var>NOMVAR</var> dans la requête
+	envoyée au serveur. Seuls les cookies version 0 sont pleinement
+	supportés.</td></tr>
 <tr class="odd"><td><code>%D</code></td>
-        <td>Le temps mis &#224; servir la requ&#234;te, en
-	microsecondes. Voir %T pour plus de d&#233;tails</td></tr>
+        <td>Le temps mis à servir la requête, en
+	microsecondes. Voir %T pour plus de détails</td></tr>
 <tr><td><code>%{<var>NOMVAR</var>}e</code></td>
         <td>Le contenu de la variable d'environnement
 	<var>NOMVAR</var></td></tr>
@@ -124,102 +124,102 @@ d'Apache</a></li>
         <td>Nom de fichier</td></tr>
 <tr><td><code>%h</code></td>
         <td>Serveur distant. Contiendra l'adresse IP si la directive
-	<code class="directive"><a href="../mod/core.html#hostnamelookups">HostnameLookups</a></code> est d&#233;finie
-	&#224; <code>Off</code>, ce qui est sa valeur par d&#233;faut. Si cette
-	adresse IP n'est enregistr&#233;e que pour certains serveurs, vous
-	avez probablement d&#233;fini des directives de contr&#244;le d'acc&#232;s qui
+	<code class="directive"><a href="../mod/core.html#hostnamelookups">HostnameLookups</a></code> est définie
+	à <code>Off</code>, ce qui est sa valeur par défaut. Si cette
+	adresse IP n'est enregistrée que pour certains serveurs, vous
+	avez probablement défini des directives de contrôle d'accès qui
 	mentionnent ces derniers par leurs noms. Voir la <a href="mod_authz_host.html#reqhost">documentation de Require
-	host</a>. Ce format peut &#234;tre impact&#233; par la modifications
+	host</a>. Ce format peut être impacté par la modifications
         du nom d'hote distant par des modules comme <code class="module"><a href="../mod/mod_remoteip.html">mod_remoteip</a></code>.</td></tr>
 <tr class="odd"><td><code>%{c}h</code></td>
-        <td>Semblable &#224; <code>%h</code>, mais exploite toujours le nom d'h&#244;te de la connection
-        TCP sous-jacente, en ignorant toute modification r&#233;alis&#233;e sur le nom d'h&#244;te distant
+        <td>Semblable à <code>%h</code>, mais exploite toujours le nom d'hôte de la connection
+        TCP sous-jacente, en ignorant toute modification réalisée sur le nom d'hôte distant
         par des modules tels que <code class="module"><a href="../mod/mod_remoteip.html">mod_remoteip</a></code>.</td></tr>
 <tr><td><code>%H</code></td>
-        <td>Le protocole de la requ&#234;te</td></tr>
+        <td>Le protocole de la requête</td></tr>
 <tr class="odd"><td><code>%{<var>NOMVAR</var>}i</code></td>
-        <td>Le contenu des lignes d'en-t&#234;te
-	<code><var>NOMVAR</var>:</code> dans la requ&#234;te envoy&#233;e au
-	serveur. Ces en-t&#234;tes sont ajout&#233;s par d'autres modules (par
-	exemple <code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code>). Si vous &#234;tes int&#233;ress&#233;
-	par ce qu'&#233;tait l'en-t&#234;te de la requ&#234;te avant d'&#234;tre modifi&#233;
+        <td>Le contenu des lignes d'en-tête
+	<code><var>NOMVAR</var>:</code> dans la requête envoyée au
+	serveur. Ces en-têtes sont ajoutés par d'autres modules (par
+	exemple <code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code>). Si vous êtes intéressé
+	par ce qu'était l'en-tête de la requête avant d'être modifié
 	par la plupart des modules, utilisez
-	<code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code> pour copier l'en-t&#234;te dans une
+	<code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code> pour copier l'en-tête dans une
 	variable d'environnement interne et journaliser sa valeur via
-	le champ <code>%{<var>VARNAME</var>}e</code> d&#233;crit plus haut.
+	le champ <code>%{<var>VARNAME</var>}e</code> décrit plus haut.
 
         </td></tr>
 <tr><td><code>%k</code></td>
-        <td>Nombre de requ&#234;tes persistantes en cours pour cette
-	connexion. Interessant si la directive <code class="directive"><a href="../mod/core.html#keepalive">KeepAlive</a></code> est utilis&#233;e ; par exemple,
-	'1' signifie la premi&#232;re requ&#234;te apr&#232;s la requ&#234;te initiale, '2'
+        <td>Nombre de requêtes persistantes en cours pour cette
+	connexion. Interessant si la directive <code class="directive"><a href="../mod/core.html#keepalive">KeepAlive</a></code> est utilisée ; par exemple,
+	'1' signifie la première requête après la requête initiale, '2'
 	la seconde, etc... ; autrement, il s'agit toujours de 0
-	(indiquant la requ&#234;te initiale).</td></tr>
+	(indiquant la requête initiale).</td></tr>
 <tr class="odd"><td><code>%l</code></td>
         <td>Le nom de connexion distant (en provenance d'identd, si
 	disponible). Affiche un tiret, sauf si
-	<code class="module"><a href="../mod/mod_ident.html">mod_ident</a></code> est pr&#233;sent et si <code class="directive"><a href="../mod/mod_ident.html#identitycheck">IdentityCheck</a></code> est &#224;
+	<code class="module"><a href="../mod/mod_ident.html">mod_ident</a></code> est présent et si <code class="directive"><a href="../mod/mod_ident.html#identitycheck">IdentityCheck</a></code> est à
 	<code>On</code>.</td></tr>
 <tr><td><code>%L</code></td>
-        <td>L'identifiant du message de journalisation de la requ&#234;te
+        <td>L'identifiant du message de journalisation de la requête
 	dans le journal des erreurs (ou '-' si aucun message n'a
-	&#233;t&#233; enregistr&#233; dans le journal des erreurs pour cette requ&#234;te).
-        Consulter le journal d'erreurs pour voir quelle requ&#234;te a g&#233;n&#233;r&#233;
+	été enregistré dans le journal des erreurs pour cette requête).
+        Consulter le journal d'erreurs pour voir quelle requête a généré
         quelle erreur.</td></tr>
 <tr class="odd"><td><code>%{c}L</code></td>
         <td>L'identifiant du message de journalisation de la connexion
 	dans le journal des erreurs (ou '-' si aucun message n'a
-	&#233;t&#233; enregistr&#233; dans le journal des erreurs pour cette requ&#234;te).
-        Consulter le journal d'erreurs pour voir quelle requ&#234;te a g&#233;n&#233;r&#233;
+	été enregistré dans le journal des erreurs pour cette requête).
+        Consulter le journal d'erreurs pour voir quelle requête a généré
         quelle erreur.</td></tr>
 <tr><td><code>%m</code></td>
-        <td>La m&#233;thode de la requ&#234;te</td></tr>
+        <td>La méthode de la requête</td></tr>
 <tr class="odd"><td><code>%{<var>NOMVAR</var>}n</code></td>
         <td>Le contenu de la note <var>NOMVAR</var> en provenance d'un
 	autre module.</td></tr>
 <tr><td><code>%{<var>NOMVAR</var>}o</code></td>
-        <td>Le contenu de la ligne d'en-t&#234;te
-	<code><var>NOMVAR</var>:</code> de la r&#233;ponse.</td></tr>
+        <td>Le contenu de la ligne d'en-tête
+	<code><var>NOMVAR</var>:</code> de la réponse.</td></tr>
 <tr class="odd"><td><code>%p</code></td>
-        <td>Le port canonique du serveur servant la requ&#234;te</td></tr>
+        <td>Le port canonique du serveur servant la requête</td></tr>
 <tr><td><code>%{<var>format</var>}p</code></td>
-        <td>Le port canonique du serveur servant la requ&#234;te ou le
-	v&#233;ritable port du serveur ou le v&#233;ritable port du client. les
+        <td>Le port canonique du serveur servant la requête ou le
+	véritable port du serveur ou le véritable port du client. les
 	formats valides sont <code>canonical</code>, <code>local</code>,
 	ou <code>remote</code>.
         </td></tr>
 <tr class="odd"><td><code>%P</code></td>
-        <td>Le num&#233;ro de processus du processus enfant qui a servi la
-	requ&#234;te.</td></tr>
+        <td>Le numéro de processus du processus enfant qui a servi la
+	requête.</td></tr>
 <tr><td><code>%{<var>format</var>}P</code></td>
-        <td>Le num&#233;ro de processus ou le num&#233;ro de thread du processus
-	enfant qui a servi la requ&#234;te. Les formats valides sont
+        <td>Le numéro de processus ou le numéro de thread du processus
+	enfant qui a servi la requête. Les formats valides sont
 	<code>pid</code>, <code>tid</code>, et <code>hextid</code>.
-	<code>hextid</code> n&#233;cessite APR version 1.2.0 ou sup&#233;rieure.
+	<code>hextid</code> nécessite APR version 1.2.0 ou supérieure.
         </td></tr>
 <tr class="odd"><td><code>%q</code></td>
-        <td>La cha&#238;ne d'arguments (pr&#233;fix&#233;e par un <code>?</code> si une
-	cha&#238;ne d'arguments existe, sinon une cha&#238;ne vide)</td></tr>
+        <td>La chaîne d'arguments (préfixée par un <code>?</code> si une
+	chaîne d'arguments existe, sinon une chaîne vide)</td></tr>
 <tr><td><code>%r</code></td>
-        <td>La premi&#232;re ligne de la requ&#234;te</td></tr>
+        <td>La première ligne de la requête</td></tr>
 <tr class="odd"><td><code>%R</code></td>
-        <td>Le gestionnaire qui g&#233;n&#232;re la r&#233;ponse (s'il y en a un).</td></tr>
+        <td>Le gestionnaire qui génère la réponse (s'il y en a un).</td></tr>
 <tr><td><code>%s</code></td>
-        <td>Statut. Pour les requ&#234;tes redirig&#233;es en interne, il s'agit
-	du statut de la requ&#234;te *originale* --- <code>%&gt;s</code> pour
-	la derni&#232;re.</td></tr>
+        <td>Statut. Pour les requêtes redirigées en interne, il s'agit
+	du statut de la requête *originale* --- <code>%&gt;s</code> pour
+	la dernière.</td></tr>
 <tr class="odd"><td><code>%t</code></td>
-        <td>Date &#224; laquelle la requ&#234;te a &#233;t&#233; re&#231;ue (au format anglais
+        <td>Date à laquelle la requête a été reçue (au format anglais
 	standard)</td></tr>
 <tr><td><code>%{<var>format</var>}t</code></td>
-        <td>La date, sous la forme sp&#233;cifi&#233;e par format, qui devrait
-	&#234;tre au format &#233;tendu <code>strftime(3)</code> (&#233;ventuellement
-	localis&#233;). Si le format commence par <code>begin:</code> (valeur
-	par d&#233;faut), la date est extraite au d&#233;but du traitement de la
-	requ&#234;te ; s'il commence par <code>end:</code>, la date
-	correspond au moment o&#249; l'entr&#233;e du journal est inscrite, par
-	cons&#233;quent vers la fin du traitement de la requ&#234;te. Hormis les
-	formats support&#233;s par <code>strftime(3)</code>, les formats
+        <td>La date, sous la forme spécifiée par format, qui devrait
+	être au format étendu <code>strftime(3)</code> (éventuellement
+	localisé). Si le format commence par <code>begin:</code> (valeur
+	par défaut), la date est extraite au début du traitement de la
+	requête ; s'il commence par <code>end:</code>, la date
+	correspond au moment où l'entrée du journal est inscrite, par
+	conséquent vers la fin du traitement de la requête. Hormis les
+	formats supportés par <code>strftime(3)</code>, les formats
 	suivants sont aussi disponibles :
         <table>
         <tr><td><code>sec</code></td><td>nombre de secondes depuis Epoch</td></tr>
@@ -228,160 +228,160 @@ d'Apache</a></li>
         <tr><td><code>msec_frac</code></td><td>fraction de milliseconde</td></tr>
         <tr><td><code>usec_frac</code></td><td>fraction de microseconde</td></tr>
         </table>
-        Ces symboles ne peuvent pas &#234;tre combin&#233;s entre eux ou avec un
-	formatage <code>strftime(3)</code> dans la m&#234;me cha&#238;ne de
+        Ces symboles ne peuvent pas être combinés entre eux ou avec un
+	formatage <code>strftime(3)</code> dans la même chaîne de
 	format. Par contre, vous pouvez utiliser plusieurs symboles
 	<code>%{<var>format</var>}t</code>.</td></tr>
 <tr class="odd"><td><code>%T</code></td>
-        <td><p>Le temps mis pour servir la requ&#234;te, en secondes.
-        Le temps commence &#224; &#234;tre mesur&#233; au moment o&#249; la premi&#232;re ligne de la requ&#234;te HTTP
-        est transmise par le syst&#232;me d'exploitation au serveur HTTP, et se termine au moment
-        o&#249; le dernier octet de la r&#233;ponse est envoy&#233; au syst&#232;me d'exploitation par le serveur HTTP.</p>
-        <p> Le temps mesur&#233; n'inclut donc <em>aucune</em> des rubriques suivantes :</p>
+        <td><p>Le temps mis pour servir la requête, en secondes.
+        Le temps commence à être mesuré au moment où la première ligne de la requête HTTP
+        est transmise par le système d'exploitation au serveur HTTP, et se termine au moment
+        où le dernier octet de la réponse est envoyé au système d'exploitation par le serveur HTTP.</p>
+        <p> Le temps mesuré n'inclut donc <em>aucune</em> des rubriques suivantes :</p>
         <ul>
-         <li> Temps pass&#233; dans les &#233;changes TCP ou TLS.</li>
-         <li> Temps &#233;coul&#233; avant qu'un thread du serveur web ne r&#233;ussisse &#224; lire la premi&#232;re ligne
-         de la requ&#234;te.</li>
-         <li> Retards pris par le syst&#232;me d'exploitation pour renvoyer la r&#233;ponse sur le r&#233;seau.</li>
-         <li> Temps pris par la r&#233;ponse pour arriver au syst&#232;me d'exploitation du client.</li>
-         <li> Temps pris par le client pour lire et traiter la r&#233;ponse.</li>
+         <li> Temps passé dans les échanges TCP ou TLS.</li>
+         <li> Temps écoulé avant qu'un thread du serveur web ne réussisse à lire la première ligne
+         de la requête.</li>
+         <li> Retards pris par le système d'exploitation pour renvoyer la réponse sur le réseau.</li>
+         <li> Temps pris par la réponse pour arriver au système d'exploitation du client.</li>
+         <li> Temps pris par le client pour lire et traiter la réponse.</li>
         </ul>
         </td></tr>
 <tr><td><code>%{<var>UNIT</var>}T</code></td>
-        <td>Le temps mis pour traiter la requ&#234;te dans une unit&#233; d&#233;finie
-	par <code>UNIT</code>. Les valeurs d'unit&#233; valides sont
+        <td>Le temps mis pour traiter la requête dans une unité définie
+	par <code>UNIT</code>. Les valeurs d'unité valides sont
 	<code>ms</code> pour millisecondes, <code>us</code> pour
 	microsecondes et <code>s</code> pour secondes. Si
-	<code>UNIT</code> est omis, la valeur de l'unit&#233; par d&#233;faut est
-	la seconde ; sp&#233;cifier la valeur d'unit&#233; <code>us</code> revient
-	&#224; utiliser le format <code>%D</code>. La possibilit&#233; de
-	sp&#233;cifier une valeur d'unit&#233; avec le format <code>%T</code> est
+	<code>UNIT</code> est omis, la valeur de l'unité par défaut est
+	la seconde ; spécifier la valeur d'unité <code>us</code> revient
+	à utiliser le format <code>%D</code>. La possibilité de
+	spécifier une valeur d'unité avec le format <code>%T</code> est
 	disponible depuis la version 2.4.13 du serveur HTTP Apache.</td></tr>
 <tr class="odd"><td><code>%u</code></td>
-        <td>L'utilisateur distant (en provenance d'auth ; peut &#234;tre faux
+        <td>L'utilisateur distant (en provenance d'auth ; peut être faux
 	si le statut de retour (<code>%s</code>) est 401).</td></tr>
 <tr><td><code>%U</code></td>
-        <td>Le chemin de la requ&#234;te, &#224; l'exclusion de toute cha&#238;ne
+        <td>Le chemin de la requête, à l'exclusion de toute chaîne
 	d'arguments.</td></tr>
 <tr class="odd"><td><code>%v</code></td>
-        <td>Le nom canonique du serveur qui a servi la requ&#234;te, d&#233;fini
+        <td>Le nom canonique du serveur qui a servi la requête, défini
 	par la directive <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code>.</td></tr>
 <tr><td><code>%V</code></td>
-        <td>La nom du serveur en tenant compte de la d&#233;finition de la
+        <td>La nom du serveur en tenant compte de la définition de la
 	directive <code class="directive"><a href="../mod/core.html#usecanonicalname">UseCanonicalName</a></code>.</td></tr>
 <tr class="odd"><td><code>%X</code></td>
-        <td>Statut de la connexion lorsque la r&#233;ponse a &#233;t&#233; renvoy&#233;e
+        <td>Statut de la connexion lorsque la réponse a été renvoyée
 	:
 
         <table>
         
         <tr><td><code>X</code> =</td>
-            <td>connexion abandonn&#233;e avant l'envoi de la r&#233;ponse.</td></tr>
+            <td>connexion abandonnée avant l'envoi de la réponse.</td></tr>
         <tr><td><code>+</code> =</td>
-            <td>la connexion peut rester ouverte apr&#232;s l'envoi de la
-	    r&#233;ponse.</td></tr>
+            <td>la connexion peut rester ouverte après l'envoi de la
+	    réponse.</td></tr>
         <tr><td><code>-</code> = </td>
-            <td>la connexion sera ferm&#233;e apr&#232;s l'envoi de la
-	    r&#233;ponse.</td></tr>
+            <td>la connexion sera fermée après l'envoi de la
+	    réponse.</td></tr>
         </table>
 
         </td></tr>
 <tr><td><code>%I</code></td>
-        <td>Le nombre d'octets re&#231;us, en comptant la requ&#234;te et les
-	en-t&#234;tes, ne peut &#234;tre nul. N&#233;cessite l'activation de
+        <td>Le nombre d'octets reçus, en comptant la requête et les
+	en-têtes, ne peut être nul. Nécessite l'activation de
 	<code class="module"><a href="../mod/mod_logio.html">mod_logio</a></code>.</td></tr>
 <tr class="odd"><td><code>%O</code></td>
-        <td>Nombre d'octets envoy&#233;s, y compris les en-t&#234;tes. Peut &#234;tre
-	nul dans les rares cas o&#249; une requ&#234;te est avort&#233;e avant que la
-	r&#233;ponse ne soit envoy&#233;e. N&#233;cessite l'activation de
+        <td>Nombre d'octets envoyés, y compris les en-têtes. Peut être
+	nul dans les rares cas où une requête est avortée avant que la
+	réponse ne soit envoyée. Nécessite l'activation de
 	<code class="module"><a href="../mod/mod_logio.html">mod_logio</a></code>.</td></tr>
 <tr><td><code>%S</code></td>
-        <td>Nombre d'octets transmis en &#233;mission et r&#233;ception y compris
-	la requ&#234;te et les en-t&#234;tes ; cette valeur ne peut pas &#234;tre
+        <td>Nombre d'octets transmis en émission et réception y compris
+	la requête et les en-têtes ; cette valeur ne peut pas être
 	nulle, il s'agit de la combinaison de %I et %O. Vous devez
-	activer <code class="module"><a href="../mod/mod_logio.html">mod_logio</a></code> pour utiliser cette cha&#238;ne de
+	activer <code class="module"><a href="../mod/mod_logio.html">mod_logio</a></code> pour utiliser cette chaîne de
 	format.</td></tr>
 <tr class="odd"><td><code>%{<var>VARNAME</var>}^ti</code></td>
         <td>Le contenu de la variable <code><var>VARNAME</var>:</code>
-	sp&#233;cifi&#233;e dans la requ&#234;te envoy&#233;e au serveur.</td></tr>
+	spécifiée dans la requête envoyée au serveur.</td></tr>
 <tr><td><code>%{<var>VARNAME</var>}^to</code></td>
         <td>Le contenu de la variable <code><var>VARNAME</var>:</code>
-	sp&#233;cifi&#233;e dans la r&#233;ponse envoy&#233;e par le serveur.</td></tr>
+	spécifiée dans la réponse envoyée par le serveur.</td></tr>
 </table>
 
     <h3><a name="modifiers" id="modifiers">Modificateurs</a></h3>
 
       <p>Il est possible de restreindre l'enregistrement de certains
-      &#233;l&#233;ments
-      en fonction du code de statut de la r&#233;ponse, en ins&#233;rant une liste
-      de codes de statut s&#233;par&#233;s par des virgules imm&#233;diatement apr&#232;s le
-      caract&#232;re "%". Par exemple, <code>"%400,501{User-agent}i"</code>
-      n'enregistrera l'en-t&#234;te <code>User-agent</code> que dans le cas
+      éléments
+      en fonction du code de statut de la réponse, en insérant une liste
+      de codes de statut séparés par des virgules immédiatement après le
+      caractère "%". Par exemple, <code>"%400,501{User-agent}i"</code>
+      n'enregistrera l'en-tête <code>User-agent</code> que dans le cas
       d'une erreur 400 ou 501. Avec les autres codes de statut, c'est la
-      cha&#238;ne litt&#233;rale <code>"-"</code> qui sera enregistr&#233;e. La liste
-      de codes peut &#234;tre pr&#233;c&#233;d&#233;e d'un "<code>!</code>" pour inverser la
+      chaîne littérale <code>"-"</code> qui sera enregistrée. La liste
+      de codes peut être précédée d'un "<code>!</code>" pour inverser la
       condition : <code>"%!200,304,302{Referer}i"</code> enregistre
-      l'en-t&#234;te <code>Referer</code> pour toutes les requ&#234;tes qui
-      <em>ne</em> renvoient <em>pas</em> un des trois codes sp&#233;cifi&#233;s.</p>
+      l'en-tête <code>Referer</code> pour toutes les requêtes qui
+      <em>ne</em> renvoient <em>pas</em> un des trois codes spécifiés.</p>
 
-      <p>Les modificateurs "&lt;" et "&gt;" peuvent &#234;tre utilis&#233;s pour
-      les requ&#234;tes qui ont &#233;t&#233; redirig&#233;es en interne afin de choisir si
-      c'est respectivement la requ&#234;te originale ou finale qui doit &#234;tre
-      consult&#233;e. Par d&#233;faut, les directives <code>%s, %U, %T, %D,</code>
-      et <code>%r</code> consultent la requ&#234;te originale, alors que
-      toutes les autres consultent la requ&#234;te finale. Ainsi, par
+      <p>Les modificateurs "&lt;" et "&gt;" peuvent être utilisés pour
+      les requêtes qui ont été redirigées en interne afin de choisir si
+      c'est respectivement la requête originale ou finale qui doit être
+      consultée. Par défaut, les directives <code>%s, %U, %T, %D,</code>
+      et <code>%r</code> consultent la requête originale, alors que
+      toutes les autres consultent la requête finale. Ainsi, par
       exemple, on peut utiliser <code>%&gt;s</code> pour enregistrer le
-      statut final de la requ&#234;te, et <code>%&lt;u</code> pour
-      enregistrer l'utilisateur authentifi&#233; &#224; l'origine pour une requ&#234;te
-      redirig&#233;e en interne vers une ressource sans authentification.</p>
+      statut final de la requête, et <code>%&lt;u</code> pour
+      enregistrer l'utilisateur authentifié à l'origine pour une requête
+      redirigée en interne vers une ressource sans authentification.</p>
 
     
 
     <h3><a name="format-notes" id="format-notes">Quelques Notes</a></h3>
 
-      <p>Pour des raisons de s&#233;curit&#233;, &#224; partir de la version 2.0.46,
-      les caract&#232;res non imprimables et autres caract&#232;res sp&#233;ciaux dans
+      <p>Pour des raisons de sécurité, à partir de la version 2.0.46,
+      les caractères non imprimables et autres caractères spéciaux dans
       les directives <code>%r</code>, <code>%i</code> et <code>%o</code>
-      doivent &#234;tre &#233;chapp&#233;s &#224; l'aide des s&#233;quences
+      doivent être échappés à l'aide des séquences
       <code>\x<var>hh</var></code>,
-      o&#249; <var>hh</var> est le code hexad&#233;cimal du caract&#232;re sp&#233;cial.
-      Comme exceptions &#224; cette r&#232;gle, les caract&#232;res <code>"</code> et
-      <code>\</code> doivent &#234;tre &#233;chapp&#233;s par un anti-slash, et tous
-      les "blancs" doivent &#234;tre &#233;crits selon leur notation de style C
+      où <var>hh</var> est le code hexadécimal du caractère spécial.
+      Comme exceptions à cette règle, les caractères <code>"</code> et
+      <code>\</code> doivent être échappés par un anti-slash, et tous
+      les "blancs" doivent être écrits selon leur notation de style C
       (<code>\n</code>, <code>\t</code>, etc...). Avant la version
-      2.0.46, aucun &#233;chappement n'&#233;tait effectu&#233; sur ces cha&#238;nes, et il
-      fallait &#234;tre tr&#232;s prudent lors de l'exploitation des journaux
+      2.0.46, aucun échappement n'était effectué sur ces chaînes, et il
+      fallait être très prudent lors de l'exploitation des journaux
       bruts.</p>
 
-      <p>A la diff&#233;rence de la version 1.3, depuis httpd 2.0, les cha&#238;nes
-      de format <code>%b</code> et <code>%B</code> ne repr&#233;sentent pas
-      le nombre d'octets envoy&#233;s au client, mais simplement la taille en
-      octets de la r&#233;ponse HTTP (les deux &#233;tant diff&#233;rents, par exemple,
-      si la connexion est abandonn&#233;e, ou si SSL est utilis&#233;). Le format
+      <p>A la différence de la version 1.3, depuis httpd 2.0, les chaînes
+      de format <code>%b</code> et <code>%B</code> ne représentent pas
+      le nombre d'octets envoyés au client, mais simplement la taille en
+      octets de la réponse HTTP (les deux étant différents, par exemple,
+      si la connexion est abandonnée, ou si SSL est utilisé). Le format
       <code>%O</code> fourni par <code class="module"><a href="../mod/mod_logio.html">mod_logio</a></code>,
-      enregistrera le nombre r&#233;el d'octets envoy&#233;s sur le r&#233;seau.</p>
+      enregistrera le nombre réel d'octets envoyés sur le réseau.</p>
 
-      <p>Note : <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> est impl&#233;ment&#233; en tant que
+      <p>Note : <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> est implémenté en tant que
       gestionnaire basique et non en tant que gestionnaire standard.
-      C'est pourquoi la cha&#238;ne de format <code>%R</code> ne renverra pas
-      d'information &#224; propos du gestionnaire lorsqu'une mise en cache de
+      C'est pourquoi la chaîne de format <code>%R</code> ne renverra pas
+      d'information à propos du gestionnaire lorsqu'une mise en cache de
       contenu entre en jeu.</p>
 
       <div class="note">
-      <p>Note : la pr&#233;sence du caract&#232;re '^' au d&#233;but d'une cha&#238;ne de
-      format de trois caract&#232;res n'a aucune incidence sur la
-      signification de cette cha&#238;ne, mais il doit &#234;tre
-      le premier caract&#232;re de toute cha&#238;ne de format de trois caract&#232;res
-      nouvellement cr&#233;&#233;e, afin d'&#233;viter d'&#233;ventuels conflits avec des
-      cha&#238;nes de format qui utilisent des caract&#232;res litt&#233;raux adjacents &#224; un
-      sp&#233;cificateur de format tel que "%Dus".</p>
+      <p>Note : la présence du caractère '^' au début d'une chaîne de
+      format de trois caractères n'a aucune incidence sur la
+      signification de cette chaîne, mais il doit être
+      le premier caractère de toute chaîne de format de trois caractères
+      nouvellement créée, afin d'éviter d'éventuels conflits avec des
+      chaînes de format qui utilisent des caractères littéraux adjacents à un
+      spécificateur de format tel que "%Dus".</p>
       </div>
 
     
 
     <h3><a name="examples" id="examples">Exemples</a></h3>
 
-      <p>Quelques cha&#238;nes de format couramment utilis&#233;es :</p>
+      <p>Quelques chaînes de format couramment utilisées :</p>
 
       <dl>
         <dt>Format de journal courant (CLF)</dt>
@@ -390,12 +390,12 @@ d'Apache</a></li>
         <dt>Format de journal courant avec un serveur virtuel</dt>
         <dd><code>"%v %h %l %u %t \"%r\" %&gt;s %b"</code></dd>
 
-        <dt>Format de journal NCSA &#233;tandu/combin&#233;</dt>
+        <dt>Format de journal NCSA étandu/combiné</dt>
         <dd><code>"%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\"
         \"%{User-agent}i\""</code></dd>
 
         <dt>Format de journal de la page qui contient le lien vers la
-	page concern&#233;e (Referer)</dt>
+	page concernée (Referer)</dt>
         <dd><code>"%{Referer}i -&gt; %U"</code></dd>
 
         <dt>Format de journal de l'agent (Navigateur)</dt>
@@ -404,7 +404,7 @@ d'Apache</a></li>
 
       <p>Vous pouvez utiliser plusieurs fois la directive
       <code>%{format}t</code> pour construire un format de temps
-      utilisant les symboles de format &#233;tendus tels que
+      utilisant les symboles de format étendus tels que
       <code>msec_frac</code> :</p>
       <dl>
 <dt>Format de temps prenant en compte les milisecondes</dt>
@@ -415,43 +415,43 @@ d'Apache</a></li>
     
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="security" id="security">Consid&#233;rations concernant la
-s&#233;curit&#233;</a><a title="Lien permanent" href="#security" class="permalink">&para;</a></h2>
-    <p>Voir le document <a href="../misc/security_tips.html#serverroot">conseils &#224; mati&#232;re de
-    s&#233;curit&#233;</a> pour plus de d&#233;tails sur les raisons pour lesquelles
-    votre s&#233;curit&#233; pourrait &#234;tre compromise, si le r&#233;pertoire o&#249; sont
-    stock&#233;s les fichiers journaux sont inscriptibles par tout autre
-    utilisateur que celui qui d&#233;marre le serveur.</p>
+<h2><a name="security" id="security">Considérations concernant la
+sécurité</a><a title="Lien permanent" href="#security" class="permalink">&para;</a></h2>
+    <p>Voir le document <a href="../misc/security_tips.html#serverroot">conseils à matière de
+    sécurité</a> pour plus de détails sur les raisons pour lesquelles
+    votre sécurité pourrait être compromise, si le répertoire où sont
+    stockés les fichiers journaux sont inscriptibles par tout autre
+    utilisateur que celui qui démarre le serveur.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="bufferedlogs" id="bufferedlogs">Directive</a> <a name="BufferedLogs" id="BufferedLogs">BufferedLogs</a><a title="Lien permanent" href="#bufferedlogs" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enregistre les entr&#233;es du journal dans un tampon en m&#233;moire
-avant de les &#233;crire sur disque</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enregistre les entrées du journal dans un tampon en mémoire
+avant de les écrire sur disque</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>BufferedLogs On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>BufferedLogs Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>BufferedLogs Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_log_config</td></tr>
 </table>
-    <p>Lorsque la directive <code class="directive">BufferedLogs</code> est &#224;
-    "on", <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code> stocke de nombreuses entr&#233;es
-    du journal en m&#233;moire, et les &#233;crit d'un seul bloc sur disque,
-    plut&#244;t que de les &#233;crire apr&#232;s chaque requ&#234;te. Sur certains
-    syst&#232;mes, ceci peut am&#233;liorer l'efficacit&#233; des acc&#232;s disque, et par
-    cons&#233;quent les performances. La directive ne peut &#234;tre d&#233;finie
-    qu'une seule fois pour l'ensemble du serveur ; elle ne peut pas &#234;tre
-    d&#233;finie au niveau d'un serveur virtuel.</p>
+    <p>Lorsque la directive <code class="directive">BufferedLogs</code> est à
+    "on", <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code> stocke de nombreuses entrées
+    du journal en mémoire, et les écrit d'un seul bloc sur disque,
+    plutôt que de les écrire après chaque requête. Sur certains
+    systèmes, ceci peut améliorer l'efficacité des accès disque, et par
+    conséquent les performances. La directive ne peut être définie
+    qu'une seule fois pour l'ensemble du serveur ; elle ne peut pas être
+    définie au niveau d'un serveur virtuel.</p>
 
-    <div class="note">Cette directive doit &#234;tre utilis&#233;e avec
-    pr&#233;cautions car un crash peut provoquer la perte de donn&#233;es de
+    <div class="note">Cette directive doit être utilisée avec
+    précautions car un crash peut provoquer la perte de données de
     journalisation.</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="customlog" id="customlog">Directive</a> <a name="CustomLog" id="CustomLog">CustomLog</a><a title="Lien permanent" href="#customlog" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&#233;finit le nom et le format du fichier
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le nom et le format du fichier
 journal</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CustomLog  <var>fichier</var>|<var>pipe</var>|<var>provider</var>
 <var>format</var>|<var>alias</var>
@@ -461,44 +461,44 @@ expr=<var>expression</var>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_log_config</td></tr>
 </table>
-    <p>La directive <code class="directive">CustomLog</code> permet de contr&#244;ler
-    la journalisation des requ&#234;tes destin&#233;es au serveur. Un format de
-    journal est sp&#233;cifi&#233;, et la journalisation peut s'effectuer de
-    mani&#232;re conditionnelle en fonction des caract&#233;ristiques de la
-    requ&#234;te en utilisant des variables d'environnement.</p>
+    <p>La directive <code class="directive">CustomLog</code> permet de contrôler
+    la journalisation des requêtes destinées au serveur. Un format de
+    journal est spécifié, et la journalisation peut s'effectuer de
+    manière conditionnelle en fonction des caractéristiques de la
+    requête en utilisant des variables d'environnement.</p>
 
-    <p>Le premier argument, qui sp&#233;cifie l'emplacement o&#249; les journaux
-    seront &#233;crits, accepte deux types de valeurs :</p>
+    <p>Le premier argument, qui spécifie l'emplacement où les journaux
+    seront écrits, accepte deux types de valeurs :</p>
 
     <dl>
       <dt><var>fichier</var></dt>
-      <dd>Un nom de fichier, relatif au r&#233;pertoire d&#233;fini par la
+      <dd>Un nom de fichier, relatif au répertoire défini par la
       directive <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>.</dd>
 
       <dt><var>pipe</var></dt>
-      <dd>Le caract&#232;re pipe "<code>|</code>", suivi du chemin vers un
+      <dd>Le caractère pipe "<code>|</code>", suivi du chemin vers un
       programme qui recevra les informations de la journalisation sur
-      son entr&#233;e standard. Voir les notes &#224; propos de la <a href="../logs.html#piped">journalisation redirig&#233;e</a> pour plus
+      son entrée standard. Voir les notes à propos de la <a href="../logs.html#piped">journalisation redirigée</a> pour plus
       d'informations.
 
-      <div class="warning"><h3>S&#233;curit&#233; :</h3>
-      <p>Si les journaux sont redirig&#233;s vers un programme, ce dernier
-      s'ex&#233;cutera sous l'utilisateur qui a d&#233;marr&#233;
+      <div class="warning"><h3>Sécurité :</h3>
+      <p>Si les journaux sont redirigés vers un programme, ce dernier
+      s'exécutera sous l'utilisateur qui a démarré
       <code class="program"><a href="../programs/httpd.html">httpd</a></code>. Ce sera l'utilisateur root si le serveur
-      a &#233;t&#233; d&#233;marr&#233; par root ; v&#233;rifiez que le programme est
-      s&#233;curis&#233;.</p>
+      a été démarré par root ; vérifiez que le programme est
+      sécurisé.</p>
       </div>
       <div class="warning"><h3>Note</h3>
-        <p>Lors de la sp&#233;cification d'un chemin de fichier sur les
+        <p>Lors de la spécification d'un chemin de fichier sur les
 	plate-formes non-Unix, il faut prendre soin de ne pas oublier
-	que seuls les slashes directs doivent &#234;tre utilis&#233;s, m&#234;me si la
-	plate-forme autorise l'emploi d'anti-slashes. D'une mani&#232;re
-	g&#233;n&#233;rale, c'est une bonne id&#233;e que de n'utiliser que des slashes
+	que seuls les slashes directs doivent être utilisés, même si la
+	plate-forme autorise l'emploi d'anti-slashes. D'une manière
+	générale, c'est une bonne idée que de n'utiliser que des slashes
 	directs dans les fichiers de configuration.</p>
       </div></dd>
       <dt><var>provider</var></dt>
       <dd>Les messages CustomLog peuvent aussi utiliser comme cible les
-      modules qui impl&#233;mentent des fournisseurs ErrorLog. A cet effet,
+      modules qui implémentent des fournisseurs ErrorLog. A cet effet,
       utilisez la syntaxe "provider:argument". Comme fournisseur, vous
       pouvez par exemple utiliser <code class="module"><a href="../mod/mod_journald.html">mod_journald</a></code> ou
       <code class="module"><a href="../mod/mod_syslog.html">mod_syslog</a></code> :
@@ -511,39 +511,39 @@ CustomLog "syslog:user" "%h %l %u %t \"%r\" %&gt;s %b"</pre>
       </dd>
     </dl>
 
-    <p>Le second argument permet de d&#233;finir ce qui va &#234;tre &#233;crit dans le
-    fichier journal. Il peut contenir soit un <var>alias</var> pr&#233;d&#233;fini
-    par une directive <code class="directive"><a href="#logformat">LogFormat</a></code>, soit une cha&#238;ne de
-    <var>format</var> explicite comme d&#233;crit dans la section <a href="#formats">formats de journaux</a>.</p>
+    <p>Le second argument permet de définir ce qui va être écrit dans le
+    fichier journal. Il peut contenir soit un <var>alias</var> prédéfini
+    par une directive <code class="directive"><a href="#logformat">LogFormat</a></code>, soit une chaîne de
+    <var>format</var> explicite comme décrit dans la section <a href="#formats">formats de journaux</a>.</p>
 
     <p>Par exemple, les deux blocs de directives suivants produisent le
-    m&#234;me effet :</p>
+    même effet :</p>
 
-    <pre class="prettyprint lang-config"># Journal personnalis&#233; avec alias de format
+    <pre class="prettyprint lang-config"># Journal personnalisé avec alias de format
 LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common
 CustomLog "logs/access_log" common
 
-# Journal personnalis&#233; avec cha&#238;ne de format explicite
+# Journal personnalisé avec chaîne de format explicite
 CustomLog "logs/access_log" "%h %l %u %t \"%r\" %&gt;s %b"</pre>
 
 
-    <p>Le troisi&#232;me argument est optionnel et permet de contr&#244;ler si une
-    requ&#234;te doit &#234;tre ou non journalis&#233;e. Dans le cas d'une clause
-    '<code>env=!<var>nom</var></code>', la condition peut &#234;tre la
-    pr&#233;sence ou l'absence d'une variable particuli&#232;re dans
+    <p>Le troisième argument est optionnel et permet de contrôler si une
+    requête doit être ou non journalisée. Dans le cas d'une clause
+    '<code>env=!<var>nom</var></code>', la condition peut être la
+    présence ou l'absence d'une variable particulière dans
     l'<a href="../env.html">environnement du serveur</a>. Dans le cas
     d'une clause 'expr=<var>expression</var>', la condition consiste
-    en une <a href="../expr.html">expression</a> bool&#233;enne
-    quelconque. Si la condition n'est pas v&#233;rifi&#233;e, la requ&#234;te ne sera
-    pas journalis&#233;e. D'&#233;ventuelles r&#233;f&#233;rences &#224; des en-t&#234;tes HTTP dans
-    l'expression rationnelle n'entra&#238;neront pas l'ajout des noms
-    d'en-t&#234;te correspondants &#224; l'en-t&#234;te Vary.</p>
+    en une <a href="../expr.html">expression</a> booléenne
+    quelconque. Si la condition n'est pas vérifiée, la requête ne sera
+    pas journalisée. D'éventuelles références à des en-têtes HTTP dans
+    l'expression rationnelle n'entraîneront pas l'ajout des noms
+    d'en-tête correspondants à l'en-tête Vary.</p>
 
-    <p>Les variables d'environnement peuvent &#234;tre d&#233;finies au niveau de
-    chaque requ&#234;te en utilisant les modules
+    <p>Les variables d'environnement peuvent être définies au niveau de
+    chaque requête en utilisant les modules
     <code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code> et/ou <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>.
-    Par exemple, si vous voulez enregistrer les requ&#234;tes pour toutes les
-    images GIF sur votre serveur dans un fichier journal s&#233;par&#233;, et pas
+    Par exemple, si vous voulez enregistrer les requêtes pour toutes les
+    images GIF sur votre serveur dans un fichier journal séparé, et pas
     dans votre journal principal, vous pouvez utiliser :</p>
 
     <pre class="prettyprint lang-config">SetEnvIf Request_URI \.gif$ gif-image
@@ -562,7 +562,7 @@ CustomLog "referer.log" referer env=!localreferer</pre>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="globallog" id="globallog">Directive</a> <a name="GlobalLog" id="GlobalLog">GlobalLog</a><a title="Lien permanent" href="#globallog" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&#233;finit le nom et le format du fichier journal</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le nom et le format du fichier journal</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>GlobalLog  <var>file</var>|<var>pipe</var>|<var>provider</var>
 <var>format</var>|<var>nickname</var>
 [env=[!]<var>environment-variable</var>|
@@ -570,63 +570,63 @@ expr=<var>expression</var>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_log_config</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible &#224; partir de la version 2.4.19 du serveur HTTP Apache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.19 du serveur HTTP Apache</td></tr>
 </table>
 
-    <p>La directive <code class="directive">GlobalLog</code> permet de sp&#233;cifier un
-    journal partag&#233; entre le serveur principal et tous les serveurs virtuels
-    d&#233;finis.</p>
+    <p>La directive <code class="directive">GlobalLog</code> permet de spécifier un
+    journal partagé entre le serveur principal et tous les serveurs virtuels
+    définis.</p>
 
-    <p>Elle est identique &#224; la directive <code class="directive">CustomLog</code> &#224; ces
-    diff&#233;rences pr&#232;s : </p>
+    <p>Elle est identique à la directive <code class="directive">CustomLog</code> à ces
+    différences près : </p>
     <ul>
        <li>Elle n'est pas valide dans un contexte de serveur virtuel.</li>
-       <li>A la diff&#233;rence d'une directive <code class="directive">CustomLog</code>
-       d&#233;finie globalement, elle est prise en compte par les serveurs virtuels
-       qui d&#233;finissent leur propre directive <code class="directive">CustomLog</code>.</li>
+       <li>A la différence d'une directive <code class="directive">CustomLog</code>
+       définie globalement, elle est prise en compte par les serveurs virtuels
+       qui définissent leur propre directive <code class="directive">CustomLog</code>.</li>
     </ul>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="logformat" id="logformat">Directive</a> <a name="LogFormat" id="LogFormat">LogFormat</a><a title="Lien permanent" href="#logformat" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&#233;crit un format utilisable dans un fichier
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Décrit un format utilisable dans un fichier
 journal</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LogFormat <var>format</var>|<var>alias</var>
 [<var>alias</var>]</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>LogFormat "%h %l %u %t \"%r\" %&gt;s %b"</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>LogFormat "%h %l %u %t \"%r\" %&gt;s %b"</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_log_config</td></tr>
 </table>
-    <p>Cette directive permet de sp&#233;cifier le format du fichier journal
-    des acc&#232;s.</p>
+    <p>Cette directive permet de spécifier le format du fichier journal
+    des accès.</p>
 
-    <p>La directive <code class="directive">LogFormat</code> se pr&#233;sente sous
-    deux formes. Sous la premi&#232;re forme, qui ne poss&#232;de qu'un seul
-    argument, la directive d&#233;finit le format qui sera utilis&#233; dans les
-    journaux sp&#233;cifi&#233;s par les directives
-    <code class="directive">TransferLog</code> ult&#233;rieures. L'argument unique
-    peut contenir un <var>format</var> explicite comme d&#233;crit dans la
-    section <a href="#formats">formats de journaux personnalis&#233;s</a>
+    <p>La directive <code class="directive">LogFormat</code> se présente sous
+    deux formes. Sous la première forme, qui ne possède qu'un seul
+    argument, la directive définit le format qui sera utilisé dans les
+    journaux spécifiés par les directives
+    <code class="directive">TransferLog</code> ultérieures. L'argument unique
+    peut contenir un <var>format</var> explicite comme décrit dans la
+    section <a href="#formats">formats de journaux personnalisés</a>
     ci-dessus. Il peut aussi contenir un <var>alias</var> faisant
-    r&#233;f&#233;rence &#224; un format de journal pr&#233;d&#233;fini par une directive
-    <code class="directive">LogFormat</code> comme d&#233;crit plus loin.</p>
+    référence à un format de journal prédéfini par une directive
+    <code class="directive">LogFormat</code> comme décrit plus loin.</p>
 
     <p>Sous sa seconde forme, la directive
     <code class="directive">LogFormat</code> associe un <var>format</var>
-    explicite &#224; un <var>alias</var>. Cet <var>alias</var> peut
+    explicite à un <var>alias</var>. Cet <var>alias</var> peut
     ensuite s'utiliser dans les directives
-    <code class="directive">LogFormat</code> ou <code class="directive"><a href="#customlog">CustomLog</a></code> ult&#233;rieures, ce qui
-    &#233;vite d'avoir &#224; r&#233;p&#233;ter l'ensemble de la cha&#238;ne de format. Une
-    directive <code class="directive">LogFormat</code> qui d&#233;finit un alias
-    <strong>ne fait rien d'autre</strong> -- c'est &#224; dire qu'<em>elle ne
-    fait que</em> d&#233;finir l'alias, elle n'applique pas le format et n'en
-    fait pas le format par d&#233;faut. Par cons&#233;quent, elle n'affecte pas
-    les directives <code class="directive"><a href="#transferlog">TransferLog</a></code> ult&#233;rieures. En
+    <code class="directive">LogFormat</code> ou <code class="directive"><a href="#customlog">CustomLog</a></code> ultérieures, ce qui
+    évite d'avoir à répéter l'ensemble de la chaîne de format. Une
+    directive <code class="directive">LogFormat</code> qui définit un alias
+    <strong>ne fait rien d'autre</strong> -- c'est à dire qu'<em>elle ne
+    fait que</em> définir l'alias, elle n'applique pas le format et n'en
+    fait pas le format par défaut. Par conséquent, elle n'affecte pas
+    les directives <code class="directive"><a href="#transferlog">TransferLog</a></code> ultérieures. En
     outre, la directive <code class="directive">LogFormat</code> ne peut pas
-    utiliser un alias pour en d&#233;finir un autre. Notez que l'alias ne
-    doit pas contenir de caract&#232;re pourcent (<code>%</code>).</p>
+    utiliser un alias pour en définir un autre. Notez que l'alias ne
+    doit pas contenir de caractère pourcent (<code>%</code>).</p>
 
     <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b" serveur_virtuel_commun</pre>
 </div>
@@ -636,20 +636,20 @@ journal</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="transferlog" id="transferlog">Directive</a> <a name="TransferLog" id="TransferLog">TransferLog</a><a title="Lien permanent" href="#transferlog" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sp&#233;cifie l'emplacement d'un fichier journal</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Spécifie l'emplacement d'un fichier journal</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>TransferLog <var>fichier</var>|<var>pipe</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_log_config</td></tr>
 </table>
-    <p>Cette directive poss&#232;de exactement les m&#234;mes arguments et produit
-    les m&#234;mes effets que la directive <code class="directive"><a href="#customlog">CustomLog</a></code>, &#224; l'exception qu'elle
-    ne permet pas de sp&#233;cifier un format de journal explicite ou la
-    journalisation conditionnelle des requ&#234;tes. En l'occurrence, le
-    format de journal est d&#233;termin&#233; par la derni&#232;re d&#233;finition d'une
+    <p>Cette directive possède exactement les mêmes arguments et produit
+    les mêmes effets que la directive <code class="directive"><a href="#customlog">CustomLog</a></code>, à l'exception qu'elle
+    ne permet pas de spécifier un format de journal explicite ou la
+    journalisation conditionnelle des requêtes. En l'occurrence, le
+    format de journal est déterminé par la dernière définition d'une
     directive <code class="directive"><a href="#logformat">LogFormat</a></code>
-    qui ne d&#233;finit pas d'alias. Si aucun format particulier n'a &#233;t&#233;
-    sp&#233;cifi&#233;, c'est le Common Log Format qui sera utilis&#233;.</p>
+    qui ne définit pas d'alias. Si aucun format particulier n'a été
+    spécifié, c'est le Common Log Format qui sera utilisé.</p>
 
     <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\""
 TransferLog "logs/access_log"</pre>
@@ -659,10 +659,10 @@ TransferLog "logs/access_log"</pre>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_log_config.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_log_config.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_log_config.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_log_config.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_log_config.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/mod_log_config.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/mod_log_config.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -681,7 +681,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_log_config
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autoris&#233; sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

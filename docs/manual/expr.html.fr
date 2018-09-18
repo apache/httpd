@@ -24,27 +24,27 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>Les expressions dans le serveur HTTP Apache</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="./en/expr.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./fr/expr.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
+<a href="./fr/expr.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
 
     <p>Historiquement, il existe de nombreuses variantes dans la syntaxe
     des expressions permettant d'exprimer une condition dans les
-    diff&#233;rents modules du serveur HTTP Apache. &#192; ce titre, des travaux sont
-    en cours pour n'utiliser qu'une seule variante nomm&#233;e
+    différents modules du serveur HTTP Apache. À ce titre, des travaux sont
+    en cours pour n'utiliser qu'une seule variante nommée
     <em>ap_expr</em>, pour toutes les directives de configuration. Ce
-    document d&#233;crit l'interpr&#233;teur d'expressions <em>ap_expr</em>.
+    document décrit l'interpréteur d'expressions <em>ap_expr</em>.
     </p>
-    <p>Le type d'expression <em>ap_expr</em> est appel&#233; &#224; remplacer la
+    <p>Le type d'expression <em>ap_expr</em> est appelé à remplacer la
     plupart des autres types d'expressions dans HTTPD. Par exemple, la
-    directive obsol&#232;te <code class="directive"><a href="./mod/mod_ssl.html#sslrequire">SSLRequire</a></code> peut &#234;tre remplac&#233;e par la
+    directive obsolète <code class="directive"><a href="./mod/mod_ssl.html#sslrequire">SSLRequire</a></code> peut être remplacée par la
     directive <a href="mod/mod_authz_core.html#reqexpr">Require
     expr</a>.
     </p>
   </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#grammar">Syntaxe en Forme de Backus-Naur</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#vars">Variables</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#binop">Op&#233;rateurs binaires</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#unnop">Op&#233;rateurs unaires</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#binop">Opérateurs binaires</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#unnop">Opérateurs unaires</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#functions">Fonctions</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#examples">Exemples d'expressions</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#other">Autres</a></li>
@@ -56,10 +56,10 @@
 <h2><a name="grammar" id="grammar">Syntaxe en Forme de Backus-Naur</a><a title="Lien permanent" href="#grammar" class="permalink">&para;</a></h2>
     
       <p>La <a href="http://fr.wikipedia.org/wiki/Forme_de_Backus-Naur">Forme de Backus-Naur</a>
-      (souvent abr&#233;g&#233;e en BNF, de l'anglais Backus-Naur Form) est une notation permettant de d&#233;crire
-      les r&#232;gles syntaxiques des langages de programmation. En
-      g&#233;n&#233;ral, les expressions repr&#233;sentent des valeurs bool&#233;ennes. Dans
-      ce cas, le point de d&#233;part de la BNF est <code>cond</code>.
+      (souvent abrégée en BNF, de l'anglais Backus-Naur Form) est une notation permettant de décrire
+      les règles syntaxiques des langages de programmation. En
+      général, les expressions représentent des valeurs booléennes. Dans
+      ce cas, le point de départ de la BNF est <code>cond</code>.
       Les directives comme
       <code class="directive"><a href="./mod/core.html#errordocument">ErrorDocument</a></code>,
       <code class="directive"><a href="./mod/mod_authz_core.html#require">Require</a></code>,
@@ -68,8 +68,8 @@
       <code class="directive"><a href="./mod/mod_headers.html#header">Header</a></code>,
       <code class="directive"><a href="./mod/mod_crypto.html#cryptokey">CryptoKey</a></code> ou
       <code class="directive"><a href="./mod/mod_log_debug.html#logmessage">LogMessage</a></code> utilisent comme
-      param&#232;tres des expressions qui repr&#233;sentent des cha&#238;nes de
-      caract&#232;res. Dans ce cas, le point de d&#233;part de la BNF est
+      paramètres des expressions qui représentent des chaînes de
+      caractères. Dans ce cas, le point de départ de la BNF est
       <code>string</code>.
       </p>
 <blockquote>
@@ -176,21 +176,21 @@ DIGIT       ::= &lt;any US-ASCII digit "0".."9"&gt;</pre>
 <h2><a name="vars" id="vars">Variables</a><a title="Lien permanent" href="#vars" class="permalink">&para;</a></h2>
     
 
-    <p>L'interpr&#233;teur d'expressions fournit plusieurs variables de la
+    <p>L'interpréteur d'expressions fournit plusieurs variables de la
     forme <code>%{HTTP_HOST}</code>. Notez que la valeur d'une variable
-    peut d&#233;pendre de la phase du traitement de la requ&#234;te au cours de
-    laquelle elle est &#233;valu&#233;e. Par exemple, une expression utilis&#233;e dans
-    une directive <code class="directive">&lt;If &gt;</code> sera &#233;valu&#233;e avant
-    la phase d'authentification. Par cons&#233;quent, la variable
-    <code>%{REMOTE_USER}</code> ne sera pas encore d&#233;finie &#224; ce stade.</p>
+    peut dépendre de la phase du traitement de la requête au cours de
+    laquelle elle est évaluée. Par exemple, une expression utilisée dans
+    une directive <code class="directive">&lt;If &gt;</code> sera évaluée avant
+    la phase d'authentification. Par conséquent, la variable
+    <code>%{REMOTE_USER}</code> ne sera pas encore définie à ce stade.</p>
 
-    <p>Les variables suivantes contiennent la valeur de l'en-t&#234;te de
-    requ&#234;te HTTP correspondant. La <a href="#functions">fonction</a>
+    <p>Les variables suivantes contiennent la valeur de l'en-tête de
+    requête HTTP correspondant. La <a href="#functions">fonction</a>
     <code>req</code> permet d'extraire les valeurs des autres
-    en-t&#234;tes. L'utilisation de ces variables peut provoquer
-    l'ajout du nom d'en-t&#234;te correspondant &#224; l'en-t&#234;te Vary de la
-    r&#233;ponse HTTP, sauf sp&#233;cification contraire pour la directive
-    qui accepte l'expression comme param&#232;tre. La <a href="#functions">function</a> <code>req_novary</code> permet de
+    en-têtes. L'utilisation de ces variables peut provoquer
+    l'ajout du nom d'en-tête correspondant à l'en-tête Vary de la
+    réponse HTTP, sauf spécification contraire pour la directive
+    qui accepte l'expression comme paramètre. La <a href="#functions">function</a> <code>req_novary</code> permet de
     modifier ce comportement.</p>
 
     <table class="bordered"><tr class="header"><th>Nom</th></tr>
@@ -203,78 +203,78 @@ DIGIT       ::= &lt;any US-ASCII digit "0".."9"&gt;</pre>
 <tr><td><code>HTTP_USER_AGENT</code></td></tr>
 </table>
 
-    <p>Autres variables li&#233;es aux requ&#234;tes</p>
+    <p>Autres variables liées aux requêtes</p>
 
     <table class="bordered"><tr class="header"><th>Nom</th><th>Description</th></tr>
 <tr><td><code>REQUEST_METHOD</code></td>
-        <td>La m&#233;thode HTTP de la requ&#234;te entrante (par exemple
+        <td>La méthode HTTP de la requête entrante (par exemple
 	<code>GET</code>)</td></tr>
 <tr class="odd"><td><code>REQUEST_SCHEME</code></td>
-        <td>Le protocole associ&#233; &#224; l'URI de la requ&#234;te</td></tr>
+        <td>Le protocole associé à l'URI de la requête</td></tr>
 <tr><td><code>REQUEST_URI</code></td>
-        <td>La partie chemin de l'URI de la requ&#234;te</td></tr>
+        <td>La partie chemin de l'URI de la requête</td></tr>
 <tr class="odd"><td><code>DOCUMENT_URI</code></td>
         <td>Idem <code>REQUEST_URI</code></td></tr>
 <tr><td><code>REQUEST_FILENAME</code></td>
-        <td>Le chemin complet dans le syst&#232;me de fichiers local du
-	fichier ou du script correspondant &#224; la requ&#234;te, si le serveur
-	l'a d&#232;j&#224; d&#233;termin&#233; &#224; l'instant o&#249; <code>REQUEST_FILENAME</code>
-	est r&#233;f&#233;renc&#233;e. Dans le cas contraire, comme dans un
-	contexte de serveur virtuel, m&#234;me valeur que <code>REQUEST_URI</code> </td></tr>
+        <td>Le chemin complet dans le système de fichiers local du
+	fichier ou du script correspondant à la requête, si le serveur
+	l'a dèjà déterminé à l'instant où <code>REQUEST_FILENAME</code>
+	est référencée. Dans le cas contraire, comme dans un
+	contexte de serveur virtuel, même valeur que <code>REQUEST_URI</code> </td></tr>
 <tr class="odd"><td><code>SCRIPT_FILENAME</code></td>
-        <td>Identique &#224; <code>REQUEST_FILENAME</code></td></tr>
+        <td>Identique à <code>REQUEST_FILENAME</code></td></tr>
 <tr><td><code>LAST_MODIFIED</code></td>
-        <td>La date et heure de derni&#232;re modification du fichier au
-	format <code>20101231235959</code>, si elle est d&#233;j&#224; connue du
-	serveur au moment o&#249; <code>LAST_MODIFIED</code> est r&#233;f&#233;renc&#233;.
+        <td>La date et heure de dernière modification du fichier au
+	format <code>20101231235959</code>, si elle est déjà connue du
+	serveur au moment où <code>LAST_MODIFIED</code> est référencé.
         </td></tr>
 <tr class="odd"><td><code>SCRIPT_USER</code></td>
-        <td>Le nom d'utilisateur du propri&#233;taire du script.</td></tr>
+        <td>Le nom d'utilisateur du propriétaire du script.</td></tr>
 <tr><td><code>SCRIPT_GROUP</code></td>
         <td>Le nom du groupe auquel appartient le script.</td></tr>
 <tr class="odd"><td><code>PATH_INFO</code></td>
-        <td>L'information relative au nom de chemin situ&#233;e en fin, voir
+        <td>L'information relative au nom de chemin située en fin, voir
 	la directive <code class="directive"><a href="./mod/core.html#acceptpathinfo">AcceptPathInfo</a></code></td></tr>
 <tr><td><code>QUERY_STRING</code></td>
-        <td>La cha&#238;ne de param&#232;tres de la requ&#234;te courante</td></tr>
+        <td>La chaîne de paramètres de la requête courante</td></tr>
 <tr class="odd"><td><code>IS_SUBREQ</code></td>
-        <td>"<code>true</code>" si la requ&#234;te courante est une
-	sous-requ&#234;te, "<code>false</code>" dans le cas contraire</td></tr>
+        <td>"<code>true</code>" si la requête courante est une
+	sous-requête, "<code>false</code>" dans le cas contraire</td></tr>
 <tr><td><code>THE_REQUEST</code></td>
-        <td>La requ&#234;te compl&#232;te (par exemple "<code>GET /index.html
+        <td>La requête complète (par exemple "<code>GET /index.html
 	HTTP/1.1</code>")</td></tr>
 <tr class="odd"><td><code>REMOTE_ADDR</code></td>
-        <td>L'adresse IP de l'h&#244;te distant</td></tr>
+        <td>L'adresse IP de l'hôte distant</td></tr>
 <tr><td><code>REMOTE_PORT</code></td>
-        <td>Le port de l'h&#244;te distant (&#224; partir de la version 2.4.26)</td></tr>
+        <td>Le port de l'hôte distant (à partir de la version 2.4.26)</td></tr>
 <tr class="odd"><td><code>REMOTE_HOST</code></td>
-        <td>Le nom d'h&#244;te de l'h&#244;te distant</td></tr>
+        <td>Le nom d'hôte de l'hôte distant</td></tr>
 <tr><td><code>REMOTE_USER</code></td>
-        <td>Le nom de l'utilisateur authentifi&#233;, s'il existe (non
-	disponible &#224; l'int&#233;rieur d'un bloc <code class="directive">&lt;If&gt;</code>)</td></tr>
+        <td>Le nom de l'utilisateur authentifié, s'il existe (non
+	disponible à l'intérieur d'un bloc <code class="directive">&lt;If&gt;</code>)</td></tr>
 <tr class="odd"><td><code>REMOTE_IDENT</code></td>
-        <td>Le nom de l'utilisateur d&#233;fini par <code class="module"><a href="./mod/mod_ident.html">mod_ident</a></code></td></tr>
+        <td>Le nom de l'utilisateur défini par <code class="module"><a href="./mod/mod_ident.html">mod_ident</a></code></td></tr>
 <tr><td><code>SERVER_NAME</code></td>
         <td>La valeur de la directive <code class="directive"><a href="./mod/core.html#servername">ServerName</a></code> du serveur virtuel courant</td></tr>
 <tr class="odd"><td><code>SERVER_PORT</code></td>
-        <td>Le port associ&#233; au serveur virtuel courant ; voir la
+        <td>Le port associé au serveur virtuel courant ; voir la
 	directive <code class="directive"><a href="./mod/core.html#servername">ServerName</a></code></td></tr>
 <tr><td><code>SERVER_ADMIN</code></td>
         <td>La valeur de la directive <code class="directive"><a href="./mod/core.html#serveradmin">ServerAdmin</a></code> du serveur virtuel courant</td></tr>
 <tr class="odd"><td><code>SERVER_PROTOCOL</code></td>
-        <td>Le protocole utilis&#233; par la requ&#234;te (par
-	exemple HTTP/1.1). Avec certains types de sous-requ&#234;tes
+        <td>Le protocole utilisé par la requête (par
+	exemple HTTP/1.1). Avec certains types de sous-requêtes
 	internes, cette variable prend la valeur <code>INCLUDED</code>.</td></tr>
 <tr><td><code>SERVER_PROTOCOL_VERSION</code></td>
-        <td>Un nombre qui repr&#233;sente la version HTTP de la requ&#234;te :
+        <td>Un nombre qui représente la version HTTP de la requête :
 	<code>1000 * major + minor</code>. Par exemple,
-	<code>1001</code> correspond &#224; HTTP/1.1 et <code>9</code> &#224;
+	<code>1001</code> correspond à HTTP/1.1 et <code>9</code> à
 	HTTP/0.9.</td></tr>
 <tr class="odd"><td><code>SERVER_PROTOCOL_VERSION_MAJOR</code></td>
-        <td>La partie majeure de la version HTTP de la requ&#234;te, par
+        <td>La partie majeure de la version HTTP de la requête, par
 	exemple <code>1</code> pour HTTP/1.0.</td></tr>
 <tr><td><code>SERVER_PROTOCOL_VERSION_MINOR</code></td>
-        <td>La partie mineure de la version HTTP de la requ&#234;te, par
+        <td>La partie mineure de la version HTTP de la requête, par
 	exemple <code>0</code> pour HTTP/1.0.</td></tr>
 <tr class="odd"><td><code>DOCUMENT_ROOT</code></td>
         <td>La valeur de la directive <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code> du serveur virtuel
@@ -283,28 +283,28 @@ DIGIT       ::= &lt;any US-ASCII digit "0".."9"&gt;</pre>
         <td>La valeur de la directive <code class="directive"><a href="./mod/mod_authn_core.html#authtype">AuthType</a></code> (par exemple
 	"<code>basic</code>")</td></tr>
 <tr class="odd"><td><code>CONTENT_TYPE</code></td>
-        <td>Le type de contenu de la r&#233;ponse (non
-	disponible &#224; l'int&#233;rieur d'un bloc <code class="directive">&lt;If&gt;</code>)</td></tr>
+        <td>Le type de contenu de la réponse (non
+	disponible à l'intérieur d'un bloc <code class="directive">&lt;If&gt;</code>)</td></tr>
 <tr><td><code>HANDLER</code></td>
         <td>Le nom du <a href="handler.html">gestionnaire</a> qui a
-	g&#233;n&#233;r&#233; la r&#233;ponse</td></tr>
+	généré la réponse</td></tr>
 <tr class="odd"><td><code>HTTP2</code></td>
-        <td>"<code>on</code>" si la requ&#234;te utilise http/2,
+        <td>"<code>on</code>" si la requête utilise http/2,
             "<code>off</code>" dans le cas contraire</td></tr>
 <tr><td><code>HTTPS</code></td>
-        <td>"<code>on</code>" si la requ&#234;te utilise https,
+        <td>"<code>on</code>" si la requête utilise https,
 	"<code>off</code>" dans le cas contraire</td></tr>
 <tr class="odd"><td><code>IPV6</code></td>
         <td>"<code>on</code>" si la connexion utilise IPv6,
 	"<code>off</code>" dans le cas contraire</td></tr>
 <tr><td><code>REQUEST_STATUS</code></td>
-        <td>Le code d'erreur HTTP de la requ&#234;te (non
-	disponible &#224; l'int&#233;rieur d'un bloc <code class="directive">&lt;If&gt;</code>)</td></tr>
+        <td>Le code d'erreur HTTP de la requête (non
+	disponible à l'intérieur d'un bloc <code class="directive">&lt;If&gt;</code>)</td></tr>
 <tr class="odd"><td><code>REQUEST_LOG_ID</code></td>
-        <td>L'identifiant du message d'erreur associ&#233; &#224; la requ&#234;te (voir
+        <td>L'identifiant du message d'erreur associé à la requête (voir
 	la directive <code class="directive"><a href="./mod/core.html#errorlogformat">ErrorLogFormat</a></code>)</td></tr>
 <tr><td><code>CONN_LOG_ID</code></td>
-        <td>L'identifiant du message d'erreur associ&#233; &#224; la connexion
+        <td>L'identifiant du message d'erreur associé à la connexion
 	(voir la directive <code class="directive"><a href="./mod/core.html#errorlogformat">ErrorLogFormat</a></code>)</td></tr>
 <tr class="odd"><td><code>CONN_REMOTE_ADDR</code></td>
         <td>L'adresse IP du correspondant pour la connexion (voir le module
@@ -319,7 +319,7 @@ DIGIT       ::= &lt;any US-ASCII digit "0".."9"&gt;</pre>
 
     <table class="bordered"><tr class="header"><th>Nom</th><th>Description</th></tr>
 <tr><td><code>TIME_YEAR</code></td>
-        <td>L'ann&#233;e courante (par exemple <code>2010</code>)</td></tr>
+        <td>L'année courante (par exemple <code>2010</code>)</td></tr>
 <tr class="odd"><td><code>TIME_MON</code></td>
         <td>Le mois courant (<code>01</code>, ..., <code>12</code>)</td></tr>
 <tr><td><code>TIME_DAY</code></td>
@@ -332,175 +332,175 @@ DIGIT       ::= &lt;any US-ASCII digit "0".."9"&gt;</pre>
 <tr class="odd"><td><code>TIME_SEC</code></td>
         <td>Les secondes de la date courante</td></tr>
 <tr><td><code>TIME_WDAY</code></td>
-        <td>Le jour de la semaine (&#224; partir de <code>0</code> pour
+        <td>Le jour de la semaine (à partir de <code>0</code> pour
 	dimanche)</td></tr>
 <tr class="odd"><td><code>TIME</code></td>
         <td>La date et heure au format <code>20101231235959</code></td></tr>
 <tr><td><code>SERVER_SOFTWARE</code></td>
-        <td>La cha&#238;ne contenant la version du serveur</td></tr>
+        <td>La chaîne contenant la version du serveur</td></tr>
 <tr class="odd"><td><code>API_VERSION</code></td>
         <td>La date de la version de l'API (module magic number)</td></tr>
 </table>
 
-    <p>Certains modules, comme <code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code>, d&#233;finissent des
-    variables suppl&#233;mentaires.</p>
+    <p>Certains modules, comme <code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code>, définissent des
+    variables supplémentaires.</p>
 
-    <p>Toute variable peut &#234;tre ins&#233;r&#233;e dans une <em>cha&#238;ne</em>, et ceci non
-    seulement dans les cha&#238;nes entre quotes des expressions bool&#233;ennes, mais
-    aussi dans les expressions litt&#233;rales issues de la concat&#233;nation de cha&#238;nes
+    <p>Toute variable peut être insérée dans une <em>chaîne</em>, et ceci non
+    seulement dans les chaînes entre quotes des expressions booléennes, mais
+    aussi dans les expressions littérales issues de la concaténation de chaînes
     constantes et dynamiques.</p>
 
     <p>On peut utiliser ici les variables (temporaires) du style
-    <code>%{:<em>word</em>:}</code> qui permettent d'ins&#233;rer dans les deux types
+    <code>%{:<em>word</em>:}</code> qui permettent d'insérer dans les deux types
     d'expressions des variables (et des constructions) avec la syntaxe puissante
     <em>word</em> sans entrer en conflit avec les parties constantes de telles
-    cha&#238;nes. M&#234;me si la syntaxe <em>word</em> est directement utilisable au sein
-    des expressions bool&#233;ennes, ces variables sont cependant surtout utiles dans
-    les expressions litt&#233;rales. Ces variables permettent d'&#233;valuer des
-    expressions rationnelles, des substitutions, de concat&#233;ner ou dissocier des
-    cha&#238;nes et des listes au sein des expressions litt&#233;rales, et donc de
-    construire des cha&#238;nes complexes dynamiquement.</p>
+    chaînes. Même si la syntaxe <em>word</em> est directement utilisable au sein
+    des expressions booléennes, ces variables sont cependant surtout utiles dans
+    les expressions littérales. Ces variables permettent d'évaluer des
+    expressions rationnelles, des substitutions, de concaténer ou dissocier des
+    chaînes et des listes au sein des expressions littérales, et donc de
+    construire des chaînes complexes dynamiquement.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="binop" id="binop">Op&#233;rateurs binaires</a><a title="Lien permanent" href="#binop" class="permalink">&para;</a></h2>
+<h2><a name="binop" id="binop">Opérateurs binaires</a><a title="Lien permanent" href="#binop" class="permalink">&para;</a></h2>
     
 
-    <p>&#192; l'exception de quelques op&#233;rateurs de comparaison internes, les
-    op&#233;rateurs binaires sont de la forme
+    <p>À l'exception de quelques opérateurs de comparaison internes, les
+    opérateurs binaires sont de la forme
     "<code>-[a-zA-Z][a-zA-Z0-9_]+</code>", autrement dit un signe moins
-    et au moins deux caract&#232;res. Le nom est insensible &#224; la casse. Les
-    modules peuvent fournir des op&#233;rateurs binaires suppl&#233;mentaires.</p>
+    et au moins deux caractères. Le nom est insensible à la casse. Les
+    modules peuvent fournir des opérateurs binaires supplémentaires.</p>
 
-    <h3><a name="comp" id="comp">Op&#233;rateurs de comparaison</a></h3>
+    <h3><a name="comp" id="comp">Opérateurs de comparaison</a></h3>
     
 
     <table class="bordered"><tr class="header"><th>Nom</th><th>Alternative</th> <th>Description</th></tr>
 <tr><td><code>==</code></td>
         <td><code>=</code></td>
-        <td>Egalit&#233; de cha&#238;nes</td></tr>
+        <td>Egalité de chaînes</td></tr>
 <tr class="odd"><td><code>!=</code></td>
         <td />
-        <td>In&#233;galit&#233; de cha&#238;nes</td></tr>
+        <td>Inégalité de chaînes</td></tr>
 <tr><td><code>&lt;</code></td>
         <td />
-        <td>Cha&#238;ne inf&#233;rieure &#224;</td></tr>
+        <td>Chaîne inférieure à</td></tr>
 <tr class="odd"><td><code>&lt;=</code></td>
         <td />
-        <td>Cha&#238;ne inf&#233;rieure ou &#233;gale &#224;</td></tr>
+        <td>Chaîne inférieure ou égale à</td></tr>
 <tr><td><code>&gt;</code></td>
         <td />
-        <td>Cha&#238;ne sup&#233;rieure &#224;</td></tr>
+        <td>Chaîne supérieure à</td></tr>
 <tr class="odd"><td><code>&gt;=</code></td>
         <td />
-        <td>Cha&#238;ne sup&#233;rieure ou &#233;gale &#224;</td></tr>
+        <td>Chaîne supérieure ou égale à</td></tr>
 <tr><td><code>=~</code></td>
         <td />
-        <td>La cha&#238;ne correspond &#224; l'expression rationnelle</td></tr>
+        <td>La chaîne correspond à l'expression rationnelle</td></tr>
 <tr class="odd"><td><code>!~</code></td>
         <td />
-        <td>La cha&#238;ne ne correspond pas &#224; l'expression rationnelle</td></tr>
+        <td>La chaîne ne correspond pas à l'expression rationnelle</td></tr>
 <tr><td><code>-eq</code></td>
         <td><code>eq</code></td>
-        <td>Egalit&#233; d'entiers</td></tr>
+        <td>Egalité d'entiers</td></tr>
 <tr class="odd"><td><code>-ne</code></td>
         <td><code>ne</code></td>
-        <td>In&#233;galit&#233; d'entiers</td></tr>
+        <td>Inégalité d'entiers</td></tr>
 <tr><td><code>-lt</code></td>
         <td><code>lt</code></td>
-        <td>Entier inf&#233;rieur &#224;</td></tr>
+        <td>Entier inférieur à</td></tr>
 <tr class="odd"><td><code>-le</code></td>
         <td><code>le</code></td>
-        <td>Entier inf&#233;rieur ou &#233;gal &#224;</td></tr>
+        <td>Entier inférieur ou égal à</td></tr>
 <tr><td><code>-gt</code></td>
         <td><code>gt</code></td>
-        <td>Entier sup&#233;rieur &#224;</td></tr>
+        <td>Entier supérieur à</td></tr>
 <tr class="odd"><td><code>-ge</code></td>
         <td><code>ge</code></td>
-        <td>Entier sup&#233;rieur ou &#233;gal &#224;</td></tr>
+        <td>Entier supérieur ou égal à</td></tr>
 </table>
     
 
-    <h3><a name="binaryother" id="binaryother">Autres op&#233;rateurs binaires</a></h3>
+    <h3><a name="binaryother" id="binaryother">Autres opérateurs binaires</a></h3>
     
 
     <table class="bordered"><tr class="header"><th>Nom</th><th>Description</th></tr>
 <tr><td><code>-ipmatch</code></td>
-        <td>L'adresse IP correspond &#224; adresse/masque</td></tr>
+        <td>L'adresse IP correspond à adresse/masque</td></tr>
 <tr class="odd"><td><code>-strmatch</code></td>
-        <td>la cha&#238;ne de gauche correspond au mod&#232;le constitu&#233; par la
-	cha&#238;ne de droite (contenant des caract&#232;res g&#233;n&#233;riques *, ?, [])</td></tr>
+        <td>la chaîne de gauche correspond au modèle constitué par la
+	chaîne de droite (contenant des caractères génériques *, ?, [])</td></tr>
 <tr><td><code>-strcmatch</code></td>
-        <td>idem <code>-strmatch</code>, mais insensible &#224; la casse</td></tr>
+        <td>idem <code>-strmatch</code>, mais insensible à la casse</td></tr>
 <tr class="odd"><td><code>-fnmatch</code></td>
         <td>idem <code>-strmatch</code>, mais les slashes ne sont pas
-	pris en compte par les caract&#232;res g&#233;n&#233;riques</td></tr>
+	pris en compte par les caractères génériques</td></tr>
 </table>
     
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="unnop" id="unnop">Op&#233;rateurs unaires</a><a title="Lien permanent" href="#unnop" class="permalink">&para;</a></h2>
+<h2><a name="unnop" id="unnop">Opérateurs unaires</a><a title="Lien permanent" href="#unnop" class="permalink">&para;</a></h2>
     
 
-    <p>Les op&#233;rateurs unaires acceptent un seul argument et sont
+    <p>Les opérateurs unaires acceptent un seul argument et sont
     de la forme "<code>-[a-zA-Z]</code>",
-    autrement dit le signe moins et un caract&#232;re. Le nom <em>est</em>
-    sensible &#224; la casse. Les modules peuvent fournir des op&#233;rateurs
-    unaires suppl&#233;mentaires.</p>
+    autrement dit le signe moins et un caractère. Le nom <em>est</em>
+    sensible à la casse. Les modules peuvent fournir des opérateurs
+    unaires supplémentaires.</p>
 
     <table class="bordered"><tr class="header"><th>Nom</th><th>Description</th><th>Restreint</th></tr>
 <tr><td><code>-d</code></td>
-        <td>L'argument est trait&#233; comme un nom de fichier. 
-	Vrai si le fichier existe et correspond &#224; un
-	r&#233;pertoire</td><td>oui</td></tr>
+        <td>L'argument est traité comme un nom de fichier. 
+	Vrai si le fichier existe et correspond à un
+	répertoire</td><td>oui</td></tr>
 <tr class="odd"><td><code>-e</code></td>
-        <td>L'argument est trait&#233; comme un nom de fichier. Vrai si le
+        <td>L'argument est traité comme un nom de fichier. Vrai si le
 	fichier (ou dir ou special) existe</td><td>oui</td></tr>
 <tr><td><code>-f</code></td>
-        <td>L'argument est trait&#233; comme un nom de fichier. Vrai si le
-	fichier existe et correspond &#224; un fichier
-	r&#233;gulier</td><td>oui</td></tr>
+        <td>L'argument est traité comme un nom de fichier. Vrai si le
+	fichier existe et correspond à un fichier
+	régulier</td><td>oui</td></tr>
 <tr class="odd"><td><code>-s</code></td>
-        <td>L'argument est trait&#233; comme un nom de fichier. Vrai si le
+        <td>L'argument est traité comme un nom de fichier. Vrai si le
 	fichier existe et n'est pas vide</td><td>oui</td></tr>
 <tr><td><code>-L</code></td>
-        <td>L'argument est trait&#233; comme un nom de fichier. Vrai si le
-	fichier existe et correspond &#224; un lien
+        <td>L'argument est traité comme un nom de fichier. Vrai si le
+	fichier existe et correspond à un lien
 	symbolique</td><td>oui</td></tr>
 <tr class="odd"><td><code>-h</code></td>
-        <td>L'argument est trait&#233; comme un nom de fichier. Vrai si le
-	fichier existe et correspond &#224; un lien symbolique
-	(identique &#224; <code>-L</code>)</td><td>oui</td></tr>
+        <td>L'argument est traité comme un nom de fichier. Vrai si le
+	fichier existe et correspond à un lien symbolique
+	(identique à <code>-L</code>)</td><td>oui</td></tr>
 <tr><td><code>-F</code></td>
-        <td>Vrai si la cha&#238;ne correspond a un fichier valide, accessible
-	avec tous les contr&#244;les d'acc&#232;s configur&#233;s pour ce chemin. A
-	cette fin, une sous-requ&#234;te effectue la v&#233;rification, et vous
+        <td>Vrai si la chaîne correspond a un fichier valide, accessible
+	avec tous les contrôles d'accès configurés pour ce chemin. A
+	cette fin, une sous-requête effectue la vérification, et vous
 	devez utiliser ce drapeau avec soin car il peut impacter les
 	performances de votre serveur !</td><td /></tr>
 <tr class="odd"><td><code>-U</code></td>
-        <td>Vrai si la cha&#238;ne correspond a une URL valide, accessible
-	avec tous les contr&#244;les d'acc&#232;s configur&#233;s pour ce chemin. A
-	cette fin, une sous-requ&#234;te effectue la v&#233;rification, et vous
+        <td>Vrai si la chaîne correspond a une URL valide, accessible
+	avec tous les contrôles d'accès configurés pour ce chemin. A
+	cette fin, une sous-requête effectue la vérification, et vous
 	devez utiliser ce drapeau avec soin car il peut impacter les
 	performances de votre serveur !</td><td /></tr>
 <tr><td><code>-A</code></td>
         <td>Alias pour <code>-U</code></td><td /></tr>
 <tr class="odd"><td><code>-n</code></td>
-        <td>Vrai si la cha&#238;ne n'est pas vide</td><td /></tr>
+        <td>Vrai si la chaîne n'est pas vide</td><td /></tr>
 <tr><td><code>-z</code></td>
-        <td>Vrai si la cha&#238;ne est vide</td><td /></tr>
+        <td>Vrai si la chaîne est vide</td><td /></tr>
 <tr class="odd"><td><code>-T</code></td>
-        <td>Faux si la cha&#238;ne est vide, "<code>0</code>",
+        <td>Faux si la chaîne est vide, "<code>0</code>",
 	"<code>off</code>", "<code>false</code>", ou "<code>no</code>"
-	(insensibilit&#233; &#224; la casse). Vrai dans le cas contraire.</td><td /></tr>
+	(insensibilité à la casse). Vrai dans le cas contraire.</td><td /></tr>
 <tr><td><code>-R</code></td>
         <td>Idem "<code>%{REMOTE_ADDR} -ipmatch ...</code>", en plus
 	efficace
         </td><td /></tr>
 </table>
 
-    <p>Les op&#233;rateurs marqu&#233;s comme "restreints" ne sont pas disponibles
+    <p>Les opérateurs marqués comme "restreints" ne sont pas disponibles
     avec certains modules comme <code class="module"><a href="./mod/mod_include.html">mod_include</a></code>.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -508,123 +508,123 @@ DIGIT       ::= &lt;any US-ASCII digit "0".."9"&gt;</pre>
 <h2><a name="functions" id="functions">Fonctions</a><a title="Lien permanent" href="#functions" class="permalink">&para;</a></h2>
     
 
-    <p>Normalement, les fonctions dont la valeur est une cha&#238;ne acceptent une cha&#238;ne
-    comme argument et renvoient une cha&#238;ne. Les noms de fonctions sont
-    insensibles &#224; la casse. Les modules peuvent fournir des fonctions
-    suppl&#233;mentaires.</p>
+    <p>Normalement, les fonctions dont la valeur est une chaîne acceptent une chaîne
+    comme argument et renvoient une chaîne. Les noms de fonctions sont
+    insensibles à la casse. Les modules peuvent fournir des fonctions
+    supplémentaires.</p>
 
-    <table class="bordered"><tr class="header"><th>Nom</th><th>Description</th><th>Remarques particuli&#232;res</th></tr>
+    <table class="bordered"><tr class="header"><th>Nom</th><th>Description</th><th>Remarques particulières</th></tr>
 <tr><td><code>req</code>, <code>http</code></td>
-        <td>Lit l'en-t&#234;te de requ&#234;te HTTP ; les noms
-	d'en-t&#234;te correspondants peuvent &#234;tre ajout&#233;s &#224; l'en-t&#234;te Vary,
+        <td>Lit l'en-tête de requête HTTP ; les noms
+	d'en-tête correspondants peuvent être ajoutés à l'en-tête Vary,
 	voir ci-dessous</td><td /></tr>
 <tr class="odd"><td><code>req_novary</code></td>
-        <td>Identique &#224; <code>req</code>, mais les noms
-	d'en-t&#234;te correspondants ne seront pas ajout&#233;s &#224; l'en-t&#234;te Vary</td><td /></tr>
+        <td>Identique à <code>req</code>, mais les noms
+	d'en-tête correspondants ne seront pas ajoutés à l'en-tête Vary</td><td /></tr>
 <tr><td><code>resp</code></td>
-        <td>Lit l'en-t&#234;te de r&#233;ponse HTTP (la plupart des
-	en-t&#234;te de la r&#233;ponse ne sont pas encore d&#233;finis pendant
-	l'ex&#233;cution de la directive <code class="directive">&lt;If&gt;</code>)</td><td /></tr>
+        <td>Lit l'en-tête de réponse HTTP (la plupart des
+	en-tête de la réponse ne sont pas encore définis pendant
+	l'exécution de la directive <code class="directive">&lt;If&gt;</code>)</td><td /></tr>
 <tr class="odd"><td><code>reqenv</code></td>
-        <td>Recherche une variable d'environnement de requ&#234;te (on
+        <td>Recherche une variable d'environnement de requête (on
 	peut aussi utiliser le raccourci <code>v</code>).
 	</td>
 	<td>ordonnancement</td></tr>
 <tr><td><code>osenv</code></td>
-        <td>Recherche une variable d'environnement du syst&#232;me
+        <td>Recherche une variable d'environnement du système
 	d'exploitation</td><td /></tr>
 <tr class="odd"><td><code>note</code></td>
-        <td>Recherche une note de requ&#234;te</td><td>ordonnancement</td></tr>
+        <td>Recherche une note de requête</td><td>ordonnancement</td></tr>
 <tr><td><code>env</code></td>
-        <td>Renvoie le premier r&#233;sultat positif de <code>note</code>,
+        <td>Renvoie le premier résultat positif de <code>note</code>,
 	<code>reqenv</code>, <code>osenv</code></td><td>ordonnancement</td></tr>
 <tr class="odd"><td><code>tolower</code></td>
-        <td>Convertit une cha&#238;ne en minuscules</td><td /></tr>
+        <td>Convertit une chaîne en minuscules</td><td /></tr>
 <tr><td><code>toupper</code></td>
-        <td>Convertit une cha&#238;ne en majuscules</td><td /></tr>
+        <td>Convertit une chaîne en majuscules</td><td /></tr>
 <tr class="odd"><td><code>escape</code></td>
-        <td>Echappe les caract&#232;res sp&#233;ciaux en codage hexad&#233;cimal</td><td /></tr>
+        <td>Echappe les caractères spéciaux en codage hexadécimal</td><td /></tr>
 <tr><td><code>unescape</code></td>
-        <td>"D&#233;s&#233;chappe" les cha&#238;nes cod&#233;es
-	en hexad&#233;cimal, en ne gardant encod&#233;s que les slashes; renvoie la cha&#238;ne vide
-	si la s&#233;quence %00 est rencontr&#233;e</td><td /></tr>
+        <td>"Déséchappe" les chaînes codées
+	en hexadécimal, en ne gardant encodés que les slashes; renvoie la chaîne vide
+	si la séquence %00 est rencontrée</td><td /></tr>
 <tr class="odd"><td><code>base64</code></td>
-        <td>Encode la cha&#238;ne en utilisant le codage base64</td><td /></tr>
+        <td>Encode la chaîne en utilisant le codage base64</td><td /></tr>
 <tr><td><code>unbase64</code></td>
-        <td>D&#233;code une cha&#238;ne cod&#233;e en base64, renvoie une cha&#238;ne
-	tronqu&#233;e si le caract&#232;re 0x00 est rencontr&#233;</td><td /></tr>
+        <td>Décode une chaîne codée en base64, renvoie une chaîne
+	tronquée si le caractère 0x00 est rencontré</td><td /></tr>
 <tr class="odd"><td><code>md5</code></td>
-        <td>Effectue un hashage MD5 de la cha&#238;ne, puis encode le hash
-	avec un codage hexad&#233;cimal</td><td /></tr>
+        <td>Effectue un hashage MD5 de la chaîne, puis encode le hash
+	avec un codage hexadécimal</td><td /></tr>
 <tr><td><code>sha1</code></td>
-        <td>Effectue un hashage SHA1 de la cha&#238;ne, puis encode le hash
-	avec un codage hexad&#233;cimal</td><td /></tr>
+        <td>Effectue un hashage SHA1 de la chaîne, puis encode le hash
+	avec un codage hexadécimal</td><td /></tr>
 <tr class="odd"><td><code>file</code></td>
         <td>Lit le contenu d'un fichier (fins de lignes incluses, si
-	elles existent)</td><td>limit&#233;</td></tr>
+	elles existent)</td><td>limité</td></tr>
 <tr><td><code>filemod</code></td>
-        <td>Renvoie la date de derni&#232;re modification d'un fichier (ou 0
+        <td>Renvoie la date de dernière modification d'un fichier (ou 0
 	si le fichier n'existe pas ou n'est pas un fichier
-	r&#233;gulier)</td><td>limit&#233;</td></tr>
+	régulier)</td><td>limité</td></tr>
 <tr class="odd"><td><code>filesize</code></td>
         <td>Renvoie la taille d'un fichier (ou 0 si le fichier n'existe
-	pas ou ne correspond pas &#224; un fichier
-	r&#233;gulier)</td><td>limit&#233;</td></tr>
+	pas ou ne correspond pas à un fichier
+	régulier)</td><td>limité</td></tr>
 <tr><td><code>ldap</code></td>
-        <td>Echappe les caract&#232;res selon la RFC4514 (Echappement des
+        <td>Echappe les caractères selon la RFC4514 (Echappement des
 	noms distinctifs LDAP - DN) et la RFC4515 (Echappement des
 	filtres LDAP).</td><td /></tr>
 <tr class="odd"><td><code>replace</code></td>
-        <td>replace(cha&#238;ne, "de", "vers") remplace dans la cha&#238;ne
-	sp&#233;cifi&#233;e toutes les occurrences de "de" par "vers".</td><td /></tr>
+        <td>replace(chaîne, "de", "vers") remplace dans la chaîne
+	spécifiée toutes les occurrences de "de" par "vers".</td><td /></tr>
 </table>
 
-    <p>Les fonctions marqu&#233;es comme "limit&#233;" dans la derni&#232;re colonne ne sont
+    <p>Les fonctions marquées comme "limité" dans la dernière colonne ne sont
     pas disponibles avec certains modules comme
     <code class="module"><a href="./mod/mod_include.html">mod_include</a></code>.</p>
 
-    <p>Les fonctions marqu&#233;es comme "ordonnancement" dans la derni&#232;re colonne
-    n&#233;cessitent une attention particuli&#232;re pour l'ordonnancement des diff&#233;rents
-    composants du serveur, sp&#233;cialement lorsque la fonction est utilis&#233;e au sein
+    <p>Les fonctions marquées comme "ordonnancement" dans la dernière colonne
+    nécessitent une attention particulière pour l'ordonnancement des différents
+    composants du serveur, spécialement lorsque la fonction est utilisée au sein
     d'une directive &lt;<code class="directive"><a href="./mod/core.html#if">If</a></code>&gt; qui est
-    &#233;valu&#233;e relativement t&#244;t.</p>
+    évaluée relativement tôt.</p>
     <div class="note">
     <h3>Ordonnancement des variables d'environnement</h3>
-    Lorsque des variables d'environnement sont &#233;valu&#233;es au sein d'une directive
+    Lorsque des variables d'environnement sont évaluées au sein d'une directive
     &lt;<code class="directive"><a href="./mod/core.html#if">If</a></code>&gt;, il est important de tenir
-    compte du moment o&#249; cette &#233;valuation intervient dans le traitement de la
-    requ&#234;te. Par exemple, toute directive d&#233;finie en dehors d'un contexte de
-    serveur virtuel (directory, location, htaccess) aura peu de chance d'&#234;tre
-    d&#233;j&#224; ex&#233;cut&#233;e. Ainsi la directive <code class="directive"><a href="./mod/mod_setenvif.html#setenvif">SetEnvIf</a></code> est une directive qui s'ex&#233;cute
-    avant cette &#233;valuation.
+    compte du moment où cette évaluation intervient dans le traitement de la
+    requête. Par exemple, toute directive définie en dehors d'un contexte de
+    serveur virtuel (directory, location, htaccess) aura peu de chance d'être
+    déjà exécutée. Ainsi la directive <code class="directive"><a href="./mod/mod_setenvif.html#setenvif">SetEnvIf</a></code> est une directive qui s'exécute
+    avant cette évaluation.
     <br />
     <br />
-    Lorsque <code>reqenv</code> est utilis&#233; en dehors de la directive
-    &lt;<code class="directive"><a href="./mod/core.html#if">If</a></code>&gt;, l'&#233;valuation survient en
-    g&#233;n&#233;ral plus tard, mais le moment exact d&#233;pend de la directive dans laquelle
-    l'expression a &#233;t&#233; utilis&#233;e.
+    Lorsque <code>reqenv</code> est utilisé en dehors de la directive
+    &lt;<code class="directive"><a href="./mod/core.html#if">If</a></code>&gt;, l'évaluation survient en
+    général plus tard, mais le moment exact dépend de la directive dans laquelle
+    l'expression a été utilisée.
     </div>
 
     <p>Lorsque les fonctions <code>req</code> ou <code>http</code> sont
-    utilis&#233;es, le nom d'en-t&#234;te sera automatiquement ajout&#233; &#224; l'en-t&#234;te
-    Vary de la r&#233;ponse HTTP, sauf sp&#233;cification contraire pour la
-    directive qui accepte l'expression comme param&#232;tre. La fonction
-    <code>req_novary</code> permet d'emp&#234;cher cet ajout.</p>
+    utilisées, le nom d'en-tête sera automatiquement ajouté à l'en-tête
+    Vary de la réponse HTTP, sauf spécification contraire pour la
+    directive qui accepte l'expression comme paramètre. La fonction
+    <code>req_novary</code> permet d'empêcher cet ajout.</p>
 
-    <p>En plus des fonctions dont la valeur est une cha&#238;ne, il existe
+    <p>En plus des fonctions dont la valeur est une chaîne, il existe
     aussi des fonctions dont la valeur est une liste, qui acceptent une
-    cha&#238;ne comme argument, et renvoient une liste , par exemple
-    une liste de cha&#238;nes. La liste peut &#234;tre utilis&#233;e avec
-    l'op&#233;rateur sp&#233;cial <code>-in</code>. Les noms de fonctions sont
-    insensibles &#224; la casse. Les modules peuvent fournir des fonctions
-    suppl&#233;mentaires.</p>
+    chaîne comme argument, et renvoient une liste , par exemple
+    une liste de chaînes. La liste peut être utilisée avec
+    l'opérateur spécial <code>-in</code>. Les noms de fonctions sont
+    insensibles à la casse. Les modules peuvent fournir des fonctions
+    supplémentaires.</p>
 
     <p>Il n'existe pas de fonctions internes dont la valeur est une
     liste. Le module <code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code> fournit la fonction
     <code>PeerExtList</code>. Voir la description de la directive
     <code class="directive"><a href="./mod/mod_ssl.html#sslrequire">SSLRequire</a></code> pour plus de
-    d&#233;tails (notez que la fonction <code>PeerExtList</code> peut aussi
-    &#234;tre utilis&#233;e en dehors de la directive <code class="directive"><a href="./mod/mod_ssl.html#sslrequire">SSLRequire</a></code>).</p>
+    détails (notez que la fonction <code>PeerExtList</code> peut aussi
+    être utilisée en dehors de la directive <code class="directive"><a href="./mod/mod_ssl.html#sslrequire">SSLRequire</a></code>).</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -632,38 +632,38 @@ DIGIT       ::= &lt;any US-ASCII digit "0".."9"&gt;</pre>
     
 	
 	<p>Les exemples suivants montent comment utiliser les
-	expressions pour &#233;valuer les requ&#234;tes :</p>
+	expressions pour évaluer les requêtes :</p>
 	
-	<pre class="prettyprint lang-config"># Comparer le nom d'h&#244;te avec example.com et rediriger vers
-# www.example.com si le nom d'h&#244;te correspond
+	<pre class="prettyprint lang-config"># Comparer le nom d'hôte avec example.com et rediriger vers
+# www.example.com si le nom d'hôte correspond
 &lt;If "%{HTTP_HOST} == 'example.com'"&gt;
     Redirect permanent "/" "http://www.example.com/"
 &lt;/If&gt;
 
 # Forcer le type text/plain si un fichier fait l'objet d'une
-# requ&#234;te dont la cha&#238;ne de param&#232;tres contient 'forcetext'
+# requête dont la chaîne de paramètres contient 'forcetext'
 &lt;If "%{QUERY_STRING} =~ /forcetext/"&gt;
     ForceType text/plain
 &lt;/If&gt;
 
-# N'autoriser l'acc&#232;s &#224; ce contenu que pendant les heures de
+# N'autoriser l'accès à ce contenu que pendant les heures de
 # travail
 &lt;Directory "/foo/bar/business"&gt;
      Require expr %{TIME_HOUR} -gt 9 &amp;&amp; %{TIME_HOUR} -lt 17
 &lt;/Directory&gt;	
 
-# V&#233;rifie si un en-t&#234;te HTTP correspond &#224; une des valeurs d'une liste
+# Vérifie si un en-tête HTTP correspond à une des valeurs d'une liste
 &lt;If "%{HTTP:X-example-header} in { 'foo', 'bar', 'baz' }"&gt;
-    La d&#233;finition de l'en-t&#234;te correspond &#224; une des valeurs recherch&#233;es
+    La définition de l'en-tête correspond à une des valeurs recherchées
 &lt;/If&gt;
 # Recherche la valeur d'une expression rationnelle dans une variable
-# d'environnement, et renvoie la n&#233;gation du r&#233;sultat.
+# d'environnement, et renvoie la négation du résultat.
 &lt;If "! reqenv('REDIRECT_FOO') =~ /bar/"&gt;
-    La condition est v&#233;rifi&#233;e
+    La condition est vérifiée
 &lt;/If&gt;
 
-# V&#233;rifie le r&#233;sultat de la recherche d'une correspondance d'URI dans un
-# contexte de r&#233;pertoire avec l'option -f
+# Vérifie le résultat de la recherche d'une correspondance d'URI dans un
+# contexte de répertoire avec l'option -f
 &lt;Directory "/var/www"&gt;
     AddEncoding x-gzip gz
 &lt;If "-f '%{REQUEST_FILENAME}.unzipme' &amp;&amp; ! %{HTTP:Accept-Encoding} =~ /gzip/"&gt;
@@ -671,12 +671,12 @@ DIGIT       ::= &lt;any US-ASCII digit "0".."9"&gt;</pre>
 &lt;/If&gt;
 &lt;/Directory&gt;
 
-# V&#233;rifie l'adresse IP du client
+# Vérifie l'adresse IP du client
 &lt;If "-R '192.168.1.0/24'"&gt;
     Header set matched true
 &lt;/If&gt;
 
-# Exemples de fonctions dans un contexte bool&#233;en
+# Exemples de fonctions dans un contexte booléen
 &lt;If "md5('foo') == 'acbd18db4cc2f85cedef654fccc4a4d8'"&gt;
   Header set checksum-matched true
 &lt;/If&gt;
@@ -685,19 +685,19 @@ DIGIT       ::= &lt;any US-ASCII digit "0".."9"&gt;</pre>
 &lt;/If&gt;
 
 
-# Exemple de fonction dans un contexte litt&#233;ral
+# Exemple de fonction dans un contexte littéral
 Header set foo-checksum "expr=%{md5:foo}"
 
-# L'exemple suivant retarde l'&#233;valuation de la clause de condition par rapport &#224;
+# L'exemple suivant retarde l'évaluation de la clause de condition par rapport à
 # &lt;If&gt;
 Header always set CustomHeader my-value "expr=%{REQUEST_URI} =~
 m#^/special_path\.php$#"
 
-# Ajoute un en-t&#234;te permettant d'acheminer le SAN du certificat d'un client vers
-# un quelconque serveur d'arri&#232;re-plan
+# Ajoute un en-tête permettant d'acheminer le SAN du certificat d'un client vers
+# un quelconque serveur d'arrière-plan
 RequestHeader set X-Client-SAN "expr=%{:join PeerExtList('subjectAltName'):}"
 
-# Impose la pr&#233;sence de l'adresse IP distante dans le SAN du certificat d'un client
+# Impose la présence de l'adresse IP distante dans le SAN du certificat d'un client
 Require expr %{REMOTE_ADDR} -in split s/.*?IP Address:([^,]+)/$1/, PeerExtList('subjectAltName')
 # autre solution :
 Require expr "IP Address:%{REMOTE_ADDR}" -in split/, /, join PeerExtList('subjectAltName')
@@ -714,27 +714,27 @@ CustomLog logs/access-errors-specific.log common "expr=%{REQUEST_STATUS} -in {'4
     <table class="bordered"><tr class="header"><th>Nom</th><th>Alternative</th> <th>Description</th></tr>
 <tr><td><code>-in</code></td>
         <td><code>in</code></td>
-        <td>cha&#238;ne contenue dans une liste</td></tr>
+        <td>chaîne contenue dans une liste</td></tr>
 <tr class="odd"><td><code>/regexp/</code></td>
         <td><code>m#regexp#</code></td>
-        <td>Expression rationnelle (la seconde forme permet de sp&#233;cifier
-	des d&#233;limiteurs autres que /)</td></tr>
+        <td>Expression rationnelle (la seconde forme permet de spécifier
+	des délimiteurs autres que /)</td></tr>
 <tr><td><code>/regexp/i</code></td>
         <td><code>m#regexp#i</code></td>
-        <td>Expression rationnelle insensible &#224; la casse</td></tr>
+        <td>Expression rationnelle insensible à la casse</td></tr>
 <tr class="odd"><td><code>$0 ... $9</code></td>
         <td />
-        <td>R&#233;f&#233;rences arri&#232;res dans les expressions rationnelles</td></tr>
+        <td>Références arrières dans les expressions rationnelles</td></tr>
 </table>
 
-    <h3><a name="rebackref" id="rebackref">R&#233;f&#233;rences arri&#232;res dans les expressions rationnelles</a></h3>
+    <h3><a name="rebackref" id="rebackref">Références arrières dans les expressions rationnelles</a></h3>
         
-        <p>Les cha&#238;nes <code>$0</code> ... <code>$9</code> permettent de
-	r&#233;f&#233;rencer les groupes de capture en provenance d'expressions
-	rationnelles pr&#233;c&#233;demment ex&#233;cut&#233;es et mises en correspondance avec
-	succ&#232;s. Elles ne peuvent normalement &#234;tre utilis&#233;es que dans la
-	m&#234;me expression que celle mise en correspondance, mais certains
-	modules permettent de les utiliser de mani&#232;re sp&#233;ciale.</p>
+        <p>Les chaînes <code>$0</code> ... <code>$9</code> permettent de
+	référencer les groupes de capture en provenance d'expressions
+	rationnelles précédemment exécutées et mises en correspondance avec
+	succès. Elles ne peuvent normalement être utilisées que dans la
+	même expression que celle mise en correspondance, mais certains
+	modules permettent de les utiliser de manière spéciale.</p>
     
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -742,24 +742,24 @@ CustomLog logs/access-errors-specific.log common "expr=%{REQUEST_STATUS} -in {'4
 <h2><a name="sslrequire" id="sslrequire">Comparaison avec SSLRequire</a><a title="Lien permanent" href="#sslrequire" class="permalink">&para;</a></h2>
     
     <p>La syntaxe <em>ap_expr</em> consiste principalement en une
-    surcouche de la syntaxe de la directive obsol&#232;te <code class="directive"><a href="./mod/mod_ssl.html#sslrequire">SSLRequire</a></code>. Vous pouvez consulter la
-    liste de leur diff&#233;rences dans la documentation de la directive
+    surcouche de la syntaxe de la directive obsolète <code class="directive"><a href="./mod/mod_ssl.html#sslrequire">SSLRequire</a></code>. Vous pouvez consulter la
+    liste de leur différences dans la documentation de la directive
     <code class="directive"><a href="./mod/mod_ssl.html#sslrequire">SSLRequire</a></code>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="compatibility" id="compatibility">Historique de version</a><a title="Lien permanent" href="#compatibility" class="permalink">&para;</a></h2>
     
     <p>La <a href="#functions">fonction</a> <code>req_novary</code> est
-    disponible &#224; partir de la version 2.4.4 du serveur HTTP Apache.</p>
+    disponible à partir de la version 2.4.4 du serveur HTTP Apache.</p>
     <p>Les <a href="#vars">variables</a>
     <code>SERVER_PROTOCOL_VERSION</code>,
     <code>SERVER_PROTOCOL_VERSION_MAJOR</code> et
-    <code>SERVER_PROTOCOL_VERSION_MINOR</code> sont disponibles &#224; partir
+    <code>SERVER_PROTOCOL_VERSION_MINOR</code> sont disponibles à partir
     de la version 2.5.0 du serveur HTTP Apache.</p>
 </div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="./en/expr.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./fr/expr.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
+<a href="./fr/expr.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -778,7 +778,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/expr.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autoris&#233; sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

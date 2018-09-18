@@ -27,39 +27,39 @@
 <div id="preamble"><h1>Module Apache mod_firehose</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_firehose.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_firehose.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_firehose.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Multiplexage des entr&#233;es/sorties vers un fichier ou un pipe.</td></tr>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Multiplexage des entrées/sorties vers un fichier ou un pipe.</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&#160;de&#160;Module:</a></th><td>firehose_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier&#160;Source:</a></th><td>mod_firehose.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>firehose_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_firehose.c</td></tr></table>
 <h3>Sommaire</h3>
 
-    <p><code>mod_firehose</code> fournit un m&#233;canisme permettant
-    d'enregistrer les donn&#233;es transmises entre le serveur httpd et le
-    client au niveau &#233;l&#233;mentaire de la connexion dans un fichier ou un
-    pipe, de fa&#231;on &#224; ce que les donn&#233;es puissent &#234;tre analys&#233;es ou
-    rejou&#233;es ult&#233;rieurement par le serveur. Il s'apparente &#224; un "tcpdump
+    <p><code>mod_firehose</code> fournit un mécanisme permettant
+    d'enregistrer les données transmises entre le serveur httpd et le
+    client au niveau élémentaire de la connexion dans un fichier ou un
+    pipe, de façon à ce que les données puissent être analysées ou
+    rejouées ultérieurement par le serveur. Il s'apparente à un "tcpdump
     pour httpd".</p>
 
-    <p>Les connexions sont enregistr&#233;es apr&#232;s d&#233;codage de la couche SSL,
-    et peuvent ainsi &#234;tre utilis&#233;es dans le cadre d'une r&#233;quisition
-    l&#233;gale.</p>
+    <p>Les connexions sont enregistrées après décodage de la couche SSL,
+    et peuvent ainsi être utilisées dans le cadre d'une réquisition
+    légale.</p>
 
     <p>L'utilitaire <code class="program"><a href="../programs/firehose.html">firehose</a></code> permet en retour de
-    d&#233;multiplexer le flux enregistr&#233; dans des fichiers individuels pour
+    démultiplexer le flux enregistré dans des fichiers individuels pour
     analyse ou rejeu via des outils tels que <code>netcat</code>.</p>
 
-    <div class="note"><h3>AVERTISSEMENT</h3>Ce module ignore tout m&#233;canisme
-    invoqu&#233; au niveau de la requ&#234;te pour rendre les donn&#233;es priv&#233;es. Il
-    est donc de la responsabilit&#233; de l'administrateur de s'assurer que
-    les donn&#233;es priv&#233;es ne seront pas compromises par son utilisation.
+    <div class="note"><h3>AVERTISSEMENT</h3>Ce module ignore tout mécanisme
+    invoqué au niveau de la requête pour rendre les données privées. Il
+    est donc de la responsabilité de l'administrateur de s'assurer que
+    les données privées ne seront pas compromises par son utilisation.
     </div>
 
 </div>
 <div id="quickview"><h3>Sujets</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#enable">Activation de la "Lance &#224; incendie" (Firehose)</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#enable">Activation de la "Lance à incendie" (Firehose)</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#format">Format du flux</a></li>
 </ul><h3 class="directives">Directives</h3>
 <ul id="toc">
@@ -70,65 +70,65 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#firehoserequestinput">FirehoseRequestInput</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#firehoserequestoutput">FirehoseRequestOutput</a></li>
 </ul>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_firehose">Probl&#232;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_firehose">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_firehose">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_firehose">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><code class="program"><a href="../programs/firehose.html">firehose</a></code></li>
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="enable" id="enable">Activation de la "Lance &#224; incendie" (Firehose)</a><a title="Lien permanent" href="#enable" class="permalink">&para;</a></h2>
+<h2><a name="enable" id="enable">Activation de la "Lance à incendie" (Firehose)</a><a title="Lien permanent" href="#enable" class="permalink">&para;</a></h2>
     
 
-    <p>Pour activer ce module, il doit &#234;tre compil&#233; et charg&#233; via la
+    <p>Pour activer ce module, il doit être compilé et chargé via la
     configuration de votre instance httpd courante, et les directives
-    ci-dessous permettent de s&#233;lectionner les donn&#233;es que vous souhaitez
+    ci-dessous permettent de sélectionner les données que vous souhaitez
     enregistrer.</p>
     
-    <p>Il est possible d'enregistrer les donn&#233;es entrantes et sortantes
-    dans le m&#234;me fichier, car la direction du flux est indiqu&#233;e dans
+    <p>Il est possible d'enregistrer les données entrantes et sortantes
+    dans le même fichier, car la direction du flux est indiquée dans
     chaque fragment.</p>
 
-    <p>Il est possible d'&#233;crire vers des fichiers normaux ou des listes
+    <p>Il est possible d'écrire vers des fichiers normaux ou des listes
     fifos (pipes). Dans le cas des listes fifos, mod_firehose fait en
-    sorte que la taille des paquets ne d&#233;passe pas la valeur de PIPE_BUF
-    afin de s'assurer que l'&#233;criture de ces derniers s'effectue en une
+    sorte que la taille des paquets ne dépasse pas la valeur de PIPE_BUF
+    afin de s'assurer que l'écriture de ces derniers s'effectue en une
     seule fois.</p>
 
-    <p>Si une liste fifo sous forme de pipe doit &#234;tre utilis&#233;e, pour que
-    cette derni&#232;re soit ouverte en &#233;criture, certaines donn&#233;es doivent
-    en &#234;tre extraites avant le d&#233;marrage de httpd. Si l'ouverture du
-    pipe &#233;choue, mod_firehose ne sera pas activ&#233;, et le serveur sera
-    lanc&#233; normalement.</p>
+    <p>Si une liste fifo sous forme de pipe doit être utilisée, pour que
+    cette dernière soit ouverte en écriture, certaines données doivent
+    en être extraites avant le démarrage de httpd. Si l'ouverture du
+    pipe échoue, mod_firehose ne sera pas activé, et le serveur sera
+    lancé normalement.</p>
 
-    <p>Par d&#233;faut, toute tentative d'&#233;criture bloque le serveur. Si le
-    serveur a &#233;t&#233; compil&#233; avec APR version 2.0 ou sup&#233;rieure, et si le
-    param&#232;tre "nonblock" a &#233;t&#233; sp&#233;cifi&#233;, les &#233;critures dans les fichiers
-    seront non blocantes, et tout d&#233;passement de tampon entra&#238;nera la
-    perte des donn&#233;es de d&#233;bogage. Dans ce cas, il est possible donner
-    la priorit&#233; &#224; l'ex&#233;cution du serveur sur l'enregistrement des
-    donn&#233;es firehose.</p>
+    <p>Par défaut, toute tentative d'écriture bloque le serveur. Si le
+    serveur a été compilé avec APR version 2.0 ou supérieure, et si le
+    paramètre "nonblock" a été spécifié, les écritures dans les fichiers
+    seront non blocantes, et tout dépassement de tampon entraînera la
+    perte des données de débogage. Dans ce cas, il est possible donner
+    la priorité à l'exécution du serveur sur l'enregistrement des
+    données firehose.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="format" id="format">Format du flux</a><a title="Lien permanent" href="#format" class="permalink">&para;</a></h2>
     
 
-    <p>En g&#233;n&#233;ral, le serveur g&#232;re plusieurs connexions simultan&#233;ment,
-    et de ce fait, les requ&#234;tes et les r&#233;ponses doivent &#234;tre
-    multiplex&#233;es avant d'&#234;tre &#233;crites dans le firehose.</p>
+    <p>En général, le serveur gère plusieurs connexions simultanément,
+    et de ce fait, les requêtes et les réponses doivent être
+    multiplexées avant d'être écrites dans le firehose.</p>
     
-    <p>Chaque fragment se pr&#233;sente sous la forme d'un texte en clair
-    de fa&#231;on &#224; ce qu'un firehose puisse &#234;tre ouvert et inspect&#233; par un
-    &#233;diteur de texte standard. Il est aussi possible d'utiliser
-    l'utilitaire <code class="program"><a href="../programs/firehose.html">firehose</a></code> pour d&#233;multiplexer le
-    firehose en requ&#234;tes ou connexions individuelles.</p>
+    <p>Chaque fragment se présente sous la forme d'un texte en clair
+    de façon à ce qu'un firehose puisse être ouvert et inspecté par un
+    éditeur de texte standard. Il est aussi possible d'utiliser
+    l'utilitaire <code class="program"><a href="../programs/firehose.html">firehose</a></code> pour démultiplexer le
+    firehose en requêtes ou connexions individuelles.</p>
 
-    <p>La taille maximale des fragments multiplex&#233;s est d&#233;finie par la
-    variable PIPE_BUF. Elle correspond &#224; la taille maximale d'un
-    &#233;l&#233;ment que le syst&#232;me peut &#233;crire. Si la taille des fragments
-    multiplex&#233;s reste en dessous de PIPE_BUF, le module garantit que les
-    contenus des diff&#233;rents fragments ne se recouperont pas. La valeur
-    de PIPE_BUF varie en fonction du syst&#232;me d'exploitation.</p>
+    <p>La taille maximale des fragments multiplexés est définie par la
+    variable PIPE_BUF. Elle correspond à la taille maximale d'un
+    élément que le système peut écrire. Si la taille des fragments
+    multiplexés reste en dessous de PIPE_BUF, le module garantit que les
+    contenus des différents fragments ne se recouperont pas. La valeur
+    de PIPE_BUF varie en fonction du système d'exploitation.</p>
 
     <p>La BNF du format du fragment est la suivante :</p>
 
@@ -138,31 +138,31 @@
 
  header = length SPC timestamp SPC ( request | response ) SPC uuid SPC count
 
- length = &lt;longueur de fragment sur 16 octets hexad&#233;cimaux&gt;
- timestamp = &lt;temps depuis 1970 en microsecondes sur 16 octets hexad&#233;cimaux&gt;
+ length = &lt;longueur de fragment sur 16 octets hexadécimaux&gt;
+ timestamp = &lt;temps depuis 1970 en microsecondes sur 16 octets hexadécimaux&gt;
  request = "&lt;"
  response = "&gt;"
- uuid = &lt;uuid format&#233; de la connexion&gt;
- count = &lt;num&#233;ro hexad&#233;cimal du fragment dans la connexion&gt;
+ uuid = &lt;uuid formaté de la connexion&gt;
+ count = &lt;numéro hexadécimal du fragment dans la connexion&gt;
 
  body = &lt;contenu binaire du fragment&gt;
 
  SPC = &lt;un espace&gt;
  CRLF = &lt;un retour chariot suivi d'une nouvelle ligne&gt;</pre>
 
-    <p>Tous les fragments d'une connexion ou d'une requ&#234;te partagent le
-    m&#234;me UUID, selon que les connexions ou les requ&#234;tes sont
-    enregistr&#233;es ou non. Si les connexions sont enregistr&#233;es, plusieurs
-    requ&#234;tes peuvent appara&#238;tre dans la m&#234;me connexion. Un fragment de
+    <p>Tous les fragments d'une connexion ou d'une requête partagent le
+    même UUID, selon que les connexions ou les requêtes sont
+    enregistrées ou non. Si les connexions sont enregistrées, plusieurs
+    requêtes peuvent apparaître dans la même connexion. Un fragment de
     longueur nulle indique la fin de la connexion.</p>
 
-    <p>Certains fragments peuvent manquer ou &#234;tre supprim&#233;s si le
+    <p>Certains fragments peuvent manquer ou être supprimés si le
     processus qui les lit est trop lent. Si cela se produit, il y aura
     des trous dans le comptage des connections. Un avertissement
-    indiquant l'UUID et le num&#233;ro du fragment supprim&#233; sera enregistr&#233;
+    indiquant l'UUID et le numéro du fragment supprimé sera enregistré
     dans le journal des erreurs.</p>
 
-    <p>En cas de crash ou d'arr&#234;t forc&#233; du processus httpd, il est
+    <p>En cas de crash ou d'arrêt forcé du processus httpd, il est
     possible que le fragment vide de terminaison n'apparaisse pas. Cela
     peut aussi se produire si le processus qui lit les fragments n'est
     pas assez rapide.</p>
@@ -171,19 +171,19 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="firehoseconnectioninput" id="firehoseconnectioninput">Directive</a> <a name="FirehoseConnectionInput" id="FirehoseConnectionInput">FirehoseConnectionInput</a><a title="Lien permanent" href="#firehoseconnectioninput" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Capture le trafic entrant dans le serveur &#224; chaque
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Capture le trafic entrant dans le serveur à chaque
 connexion.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>FirehoseConnectionInput <var>[ block | nonblock ]</var> <var>filename</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>none</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_firehose</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible &#224; partir de la version 2.5.0 du serveur HTTP
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.5.0 du serveur HTTP
 Apache.</td></tr>
 </table>
-    <p>Capture le trafic entrant dans le serveur &#224; chaque connexion.
-    Plusieurs requ&#234;tes seront captur&#233;es pour la m&#234;me connexion si les
-    connexions persistantes sont activ&#233;es.</p>
+    <p>Capture le trafic entrant dans le serveur à chaque connexion.
+    Plusieurs requêtes seront capturées pour la même connexion si les
+    connexions persistantes sont activées.</p>
 
     <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">FirehoseConnectionInput connection-input.firehose</pre>
 </div>
@@ -192,18 +192,18 @@ Apache.</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="firehoseconnectionoutput" id="firehoseconnectionoutput">Directive</a> <a name="FirehoseConnectionOutput" id="FirehoseConnectionOutput">FirehoseConnectionOutput</a><a title="Lien permanent" href="#firehoseconnectionoutput" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Capture le trafic sortant du serveur &#224; chaque connexion</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Capture le trafic sortant du serveur à chaque connexion</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>FirehoseConnectionOutput <var>[ block | nonblock ]</var> <var>filename</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>none</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_firehose</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible &#224; partir de la version 2.5.0 du serveur HTTP
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.5.0 du serveur HTTP
 Apache.</td></tr>
 </table>
-    <p>Capture le trafic sortant du serveur &#224; chaque connexion.
-    Plusieurs requ&#234;tes seront captur&#233;es pour la m&#234;me connexion si les
-    connexions persistantes sont activ&#233;es.
+    <p>Capture le trafic sortant du serveur à chaque connexion.
+    Plusieurs requêtes seront capturées pour la même connexion si les
+    connexions persistantes sont activées.
     </p>
 
     <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">FirehoseConnectionOutput connection-output.firehose</pre>
@@ -215,13 +215,13 @@ Apache.</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Capture le trafic entrant dans mod_proxy</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>FirehoseProxyConnectionInput <var>[ block | nonblock ]</var> <var>filename</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>none</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_firehose</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td /></tr>
 </table>
-    <p>Capture le trafic re&#231;u par mod_proxy.</p>
+    <p>Capture le trafic reçu par mod_proxy.</p>
 
     <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">FirehoseProxyConnectionInput proxy-input.firehose</pre>
 </div>
@@ -230,16 +230,16 @@ Apache.</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="firehoseproxyconnectionoutput" id="firehoseproxyconnectionoutput">Directive</a> <a name="FirehoseProxyConnectionOutput" id="FirehoseProxyConnectionOutput">FirehoseProxyConnectionOutput</a><a title="Lien permanent" href="#firehoseproxyconnectionoutput" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Capture le trafic envoy&#233; par mod_proxy</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Capture le trafic envoyé par mod_proxy</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>FirehoseProxyConnectionOutput <var>[ block | nonblock ]</var> <var>filename</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>none</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_firehose</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible &#224; partir de la version 2.5.0 du serveur HTTP
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.5.0 du serveur HTTP
 Apache.</td></tr>
 </table>
-    <p>Capture le trafic envoy&#233; par mod_proxy.</p>
+    <p>Capture le trafic envoyé par mod_proxy.</p>
 
     <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">FirehoseProxyConnectionOutput proxy-output.firehose</pre>
 </div>
@@ -248,18 +248,18 @@ Apache.</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="firehoserequestinput" id="firehoserequestinput">Directive</a> <a name="FirehoseRequestInput" id="FirehoseRequestInput">FirehoseRequestInput</a><a title="Lien permanent" href="#firehoserequestinput" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Capture le trafic entrant dans le serveur &#224; chaque requ&#234;te</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Capture le trafic entrant dans le serveur à chaque requête</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>FirehoseRequestInput <var>[ block | nonblock ]</var> <var>filename</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>none</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_firehose</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible &#224; partir de la version 2.5.0 du serveur HTTP
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.5.0 du serveur HTTP
 Apache.</td></tr>
 </table>
-    <p>Capture le trafic entrant dans le serveur &#224; chaque requ&#234;te. Les
-    requ&#234;tes sont captur&#233;es s&#233;par&#233;ment, que les connexions persistantes
-    soient activ&#233;es ou non.</p>
+    <p>Capture le trafic entrant dans le serveur à chaque requête. Les
+    requêtes sont capturées séparément, que les connexions persistantes
+    soient activées ou non.</p>
 
     <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">FirehoseRequestInput request-input.firehose</pre>
 </div>
@@ -268,18 +268,18 @@ Apache.</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="firehoserequestoutput" id="firehoserequestoutput">Directive</a> <a name="FirehoseRequestOutput" id="FirehoseRequestOutput">FirehoseRequestOutput</a><a title="Lien permanent" href="#firehoserequestoutput" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Capture le trafic sortant du serveur &#224; chaque requ&#234;te</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Capture le trafic sortant du serveur à chaque requête</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>FirehoseRequestOutput <var>[ block | nonblock ]</var> <var>filename</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>none</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_firehose</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible &#224; partir de la version 2.5.0 du serveur HTTP
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.5.0 du serveur HTTP
 Apache.</td></tr>
 </table>
-    <p>Capture le trafic sortant du serveur &#224; chaque requ&#234;te. Les
-    requ&#234;tes sont captur&#233;es s&#233;par&#233;ment, que les connexions persistantes
-    soient activ&#233;es ou non.</p>
+    <p>Capture le trafic sortant du serveur à chaque requête. Les
+    requêtes sont capturées séparément, que les connexions persistantes
+    soient activées ou non.</p>
 
     <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">FirehoseRequestOutput request-output.firehose</pre>
 </div>
@@ -288,7 +288,7 @@ Apache.</td></tr>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_firehose.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_firehose.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_firehose.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -307,7 +307,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_firehose.h
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autoris&#233; sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

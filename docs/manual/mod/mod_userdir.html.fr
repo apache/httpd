@@ -27,28 +27,28 @@
 <div id="preamble"><h1>Module Apache mod_userdir</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_userdir.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_userdir.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_userdir.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_userdir.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_userdir.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/mod_userdir.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/mod_userdir.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>R&#233;pertoires propres &#224; un utilisateur</td></tr>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Répertoires propres à un utilisateur</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&#160;de&#160;Module:</a></th><td>userdir_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier&#160;Source:</a></th><td>mod_userdir.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>userdir_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_userdir.c</td></tr></table>
 <h3>Sommaire</h3>
 
-<p>Ce module permet l'acc&#232;s aux r&#233;pertoires propres &#224; un utilisateur en
+<p>Ce module permet l'accès aux répertoires propres à un utilisateur en
 utilisant la syntaxe <code>http://example.com/~utilisateur/</code>.</p>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#userdir">UserDir</a></li>
 </ul>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_userdir">Probl&#232;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_userdir">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_userdir">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_userdir">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><a href="../urlmapping.html">Mise en correspondance des URLs
-avec le syst&#232;me de fichiers</a></li>
+avec le système de fichiers</a></li>
 <li><a href="../howto/public_html.html">Tutoriel
 public_html</a></li>
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
@@ -56,53 +56,53 @@ public_html</a></li>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="userdir" id="userdir">Directive</a> <a name="UserDir" id="UserDir">UserDir</a><a title="Lien permanent" href="#userdir" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Chemin des r&#233;pertoires propres &#224; un
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Chemin des répertoires propres à un
 utilisateur</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>UserDir <em>nom-r&#233;pertoire</em> [<em>nom-r&#233;pertoire</em>] ...
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>UserDir <em>nom-répertoire</em> [<em>nom-répertoire</em>] ...
 </code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_userdir</td></tr>
 </table>
 
-    <p>La directive <code class="directive">UserDir</code> permet de d&#233;finir le
-    r&#233;pertoire r&#233;el du r&#233;pertoire home d'un utilisateur &#224; utiliser &#224; la
-    r&#233;ception d'une requ&#234;te pour un document de cet utilisateur.
-    <em>nom-r&#233;pertoire</em> peut se pr&#233;senter sous la forme suivante
+    <p>La directive <code class="directive">UserDir</code> permet de définir le
+    répertoire réel du répertoire home d'un utilisateur à utiliser à la
+    réception d'une requête pour un document de cet utilisateur.
+    <em>nom-répertoire</em> peut se présenter sous la forme suivante
     :</p>
 
     <ul>
-      <li>Le nom d'un r&#233;pertoire ou un mod&#232;le tel que ceux pr&#233;sent&#233;s
+      <li>Le nom d'un répertoire ou un modèle tel que ceux présentés
       ci-dessous.</li>
 
-      <li>Le mot-cl&#233; <code>disabled</code>. <em>Toutes</em> les
-      traductions nom d'utilisateur vers r&#233;pertoire sont alors
-      d&#233;sactiv&#233;es, &#224; l'exception de celles comportant le mot-cl&#233;
+      <li>Le mot-clé <code>disabled</code>. <em>Toutes</em> les
+      traductions nom d'utilisateur vers répertoire sont alors
+      désactivées, à l'exception de celles comportant le mot-clé
       <code>enabled</code> (voir ci-dessous).</li>
 
-      <li>Le mot-cl&#233; <code>disabled</code> suivi d'une liste de noms
-      d'utilisateurs s&#233;par&#233;s par des espaces. Les noms d'utilisateurs
+      <li>Le mot-clé <code>disabled</code> suivi d'une liste de noms
+      d'utilisateurs séparés par des espaces. Les noms d'utilisateurs
       apparaissant dans une telle liste ne feront <em>jamais</em>
-      l'objet d'une traduction vers un r&#233;pertoire, m&#234;me dans le cas o&#249;
-      ils appara&#238;tront dans une clause <code>enabled</code>.</li>
+      l'objet d'une traduction vers un répertoire, même dans le cas où
+      ils apparaîtront dans une clause <code>enabled</code>.</li>
 
-      <li>Le mot-cl&#233; <code>enabled</code> suivi d'une liste de noms
-      d'utilisateurs s&#233;par&#233;s par des espaces. Les noms d'utilisateurs
-      apparaissant dans une telle liste seront traduits en r&#233;pertoires
-      m&#234;me dans le cas o&#249; une clause disable globale est active, mais
+      <li>Le mot-clé <code>enabled</code> suivi d'une liste de noms
+      d'utilisateurs séparés par des espaces. Les noms d'utilisateurs
+      apparaissant dans une telle liste seront traduits en répertoires
+      même dans le cas où une clause disable globale est active, mais
       pas s'ils apparaissent aussi dans une clause
       <code>disabled</code>.</li>
     </ul>
 
-    <p>Si aucun mot-cl&#233; <code>enabled</code> ou <code>disabled</code>
+    <p>Si aucun mot-clé <code>enabled</code> ou <code>disabled</code>
     n'apparait dans la directive <code class="directive">Userdir</code>, l'argument est
-    trait&#233; en tant que mod&#232;le de fichier, et utilis&#233; pour traduire le
-    nom d'utilisateur en une sp&#233;cification de r&#233;pertoire. Une requ&#234;te
+    traité en tant que modèle de fichier, et utilisé pour traduire le
+    nom d'utilisateur en une spécification de répertoire. Une requête
     pour <code>http://www.example.com/~bob/un/deux.html</code> sera
     traduite en :</p>
 
     <table>
-      <tr><th>Directive Userdir utilis&#233;e</th>
+      <tr><th>Directive Userdir utilisée</th>
           <th>Chemin traduit</th></tr>
       <tr><td>UserDir public_html</td>
           <td>~bob/public_html/un/deux.html</td></tr>
@@ -116,7 +116,7 @@ utilisateur</td></tr>
     :</p>
 
     <table>
-      <tr><th>Directive Userdir utilis&#233;e</th>
+      <tr><th>Directive Userdir utilisée</th>
           <th>Chemin traduit</th></tr>
       <tr><td>UserDir http://www.example.com/utilisateurs</td>
           <td>http://www.example.com/utilisateurs/bob/un/deux.html</td></tr>
@@ -129,65 +129,65 @@ utilisateur</td></tr>
     <div class="note">
       <strong>Soyez prudent avec cette directive ; par exemple,
       <code>"UserDir ./"</code> ferait correspondre
-      <code>"/~root"</code> &#224; <code>"/"</code> - ce qui n'est
-      probablement pas souhait&#233;. Il est fortement recommand&#233; d'inclure
-      une d&#233;claration "<code>UserDir disabled root</code>" dans votre
-      configuration. Voir aussi la directive <code class="directive"><a href="../mod/core.html#directory">Directory</a></code> et la page <a href="../misc/security_tips.html">Conseils en mati&#232;re de
-      s&#233;curit&#233;</a> pour plus d'informations.</strong>
+      <code>"/~root"</code> à <code>"/"</code> - ce qui n'est
+      probablement pas souhaité. Il est fortement recommandé d'inclure
+      une déclaration "<code>UserDir disabled root</code>" dans votre
+      configuration. Voir aussi la directive <code class="directive"><a href="../mod/core.html#directory">Directory</a></code> et la page <a href="../misc/security_tips.html">Conseils en matière de
+      sécurité</a> pour plus d'informations.</strong>
     </div>
 
-    <p>Exemples suppl&#233;mentaires :</p>
+    <p>Exemples supplémentaires :</p>
 
-    <p>Pour permettre &#224; quelques utilisateurs et seulement &#224; ceux-ci de
-    poss&#233;der des r&#233;pertoires <code>UserDir</code>, utilisez la
+    <p>Pour permettre à quelques utilisateurs et seulement à ceux-ci de
+    posséder des répertoires <code>UserDir</code>, utilisez la
     configuration suivante :</p>
 
     <pre class="prettyprint lang-config">UserDir disabled
 UserDir enabled user1 user2 user3</pre>
 
 
-    <p>Pour permettre &#224; la plupart des utilisateurs de poss&#233;der des
-    r&#233;pertoires <code>UserDir</code>, mais l'interdire &#224; quelques uns,
+    <p>Pour permettre à la plupart des utilisateurs de posséder des
+    répertoires <code>UserDir</code>, mais l'interdire à quelques uns,
     utilisez la configuration suivante :</p>
 
     <pre class="prettyprint lang-config">UserDir disabled utilisateur4 utilisateur5 utilisateur6</pre>
 
 
-    <p>Il est aussi possible de sp&#233;cifier des r&#233;pertoires utilisateurs
+    <p>Il est aussi possible de spécifier des répertoires utilisateurs
     alternatifs. Si vous utilisez une commande comme :</p>
 
     <pre class="prettyprint lang-config">UserDir "public_html" "/usr/web" "http://www.example.com/"</pre>
 
 
-    <p>Avec une requ&#234;te pour
+    <p>Avec une requête pour
     <code>http://www.example.com/~bob/un/deux.html</code>, le serveur
-    tentera tout d'abord de trouver la page &#224;
-    <code>~bob/public_html/un/deux.html</code>, puis &#224;
+    tentera tout d'abord de trouver la page à
+    <code>~bob/public_html/un/deux.html</code>, puis à
     <code>/usr/web/bob/un/deux.html</code>, et enfin il enverra une
     redirection vers
     <code>http://www.example.com/bob/un/deux.html</code>.</p>
 
-    <p>Si vous sp&#233;cifiez une redirection, elle doit &#234;tre la derni&#232;re
-    alternative de la liste. Apache httpd ne pouvant pas d&#233;terminer si la
-    redirection a r&#233;ussi, si cette derni&#232;re ne se trouve pas en fin de
-    liste, c'est cette alternative qui sera toujours utilis&#233;e.</p>
+    <p>Si vous spécifiez une redirection, elle doit être la dernière
+    alternative de la liste. Apache httpd ne pouvant pas déterminer si la
+    redirection a réussi, si cette dernière ne se trouve pas en fin de
+    liste, c'est cette alternative qui sera toujours utilisée.</p>
 
-    <p>La substitution de r&#233;pertoire utilisateur n'est pas activ&#233;e par
-    d&#233;faut depuis la version 2.1.4. Dans les versions pr&#233;c&#233;dentes,
-    <code>UserDir public_html</code> &#233;tait sous-entendu si aucune
+    <p>La substitution de répertoire utilisateur n'est pas activée par
+    défaut depuis la version 2.1.4. Dans les versions précédentes,
+    <code>UserDir public_html</code> était sous-entendu si aucune
     directive <code class="directive">UserDir</code>
-    n'&#233;tait pr&#233;sente.</p>
+    n'était présente.</p>
 
-    <div class="note"><h3>D&#233;tails &#224; propos de la fusion</h3>
+    <div class="note"><h3>Détails à propos de la fusion</h3>
     <p>Lorsqu'on passe du contexte global au contexte de serveur
-    virtuel, les listes d'utilisateurs sp&#233;cifiques activ&#233;s ou d&#233;sactiv&#233;s
-    sont remplac&#233;es par les listes du contexte, et non fusionn&#233;es.</p></div>
+    virtuel, les listes d'utilisateurs spécifiques activés ou désactivés
+    sont remplacées par les listes du contexte, et non fusionnées.</p></div>
 
 
 <h3>Voir aussi</h3>
 <ul>
 <li>
-  <a href="../howto/public_html.html">Tutoriel sur les r&#233;pertoires web
+  <a href="../howto/public_html.html">Tutoriel sur les répertoires web
   utilisateur</a>
 </li>
 </ul>
@@ -195,10 +195,10 @@ UserDir enabled user1 user2 user3</pre>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_userdir.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_userdir.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_userdir.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_userdir.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_userdir.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/mod_userdir.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/mod_userdir.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -217,7 +217,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_userdir.ht
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autoris&#233; sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

@@ -27,46 +27,46 @@
 <div id="preamble"><h1>Module Apache mod_expires</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_expires.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_expires.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_expires.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_expires.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_expires.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>G&#233;n&#233;ration des en-t&#234;tes HTTP <code>Expires</code> et
-<code>Cache-Control</code> en fonction de crit&#232;res sp&#233;cifi&#233;s par
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Génération des en-têtes HTTP <code>Expires</code> et
+<code>Cache-Control</code> en fonction de critères spécifiés par
 l'utilisateur</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&#160;de&#160;Module:</a></th><td>expires_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier&#160;Source:</a></th><td>mod_expires.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>expires_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_expires.c</td></tr></table>
 <h3>Sommaire</h3>
 
-    <p>Ce module permet de contr&#244;ler la d&#233;finition de l'en-t&#234;te HTTP
+    <p>Ce module permet de contrôler la définition de l'en-tête HTTP
     <code>Expires</code> et la directive <code>max-age</code> de
-    l'en-t&#234;te HTTP <code>Cache-Control</code> dans les r&#233;ponses du
-    serveur. La date d'expiration peut &#234;tre d&#233;finie soit par rapport &#224;
-    la date de derni&#232;re modification du fichier source, soit
-    par rapport &#224; l'heure d'acc&#232;s du client.</p>
+    l'en-tête HTTP <code>Cache-Control</code> dans les réponses du
+    serveur. La date d'expiration peut être définie soit par rapport à
+    la date de dernière modification du fichier source, soit
+    par rapport à l'heure d'accès du client.</p>
 
-    <p>Ces en-t&#234;tes HTTP permettent d'informer le client quant &#224; la
-    validit&#233; et &#224; la persistence du document. S'il est pr&#233;sent dans le
-    cache, et tant qu'il n'est pas arriv&#233; &#224; expiration, le document sera
-    servi &#224; partir de ce dernier, plut&#244;t qu'&#224; partir du document source.
-    Apr&#232;s expiration, la copie du document dans le cache sera consid&#233;r&#233;e
-    comme "expir&#233;e" et donc invalide, et une nouvelle copie devra &#234;tre
-    obtenue &#224; partir du document source.</p>
+    <p>Ces en-têtes HTTP permettent d'informer le client quant à la
+    validité et à la persistence du document. S'il est présent dans le
+    cache, et tant qu'il n'est pas arrivé à expiration, le document sera
+    servi à partir de ce dernier, plutôt qu'à partir du document source.
+    Après expiration, la copie du document dans le cache sera considérée
+    comme "expirée" et donc invalide, et une nouvelle copie devra être
+    obtenue à partir du document source.</p>
 
-    <p>Pour modifier les directives de contr&#244;le du cache autres
+    <p>Pour modifier les directives de contrôle du cache autres
     que <code>max-age</code> (voir la <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9">RFC
     2616 section 14.9</a>), vous pouvez utiliser la directive <code class="directive"><a href="../mod/mod_headers.html#header">Header</a></code>.</p>
 
-    <p>Lorsque l'en-t&#234;te <code>Expires</code> est d&#233;j&#224; pr&#233;sent dans la
-    r&#233;ponse g&#233;n&#233;r&#233;e par le serveur, par exemple s'il a &#233;t&#233; cr&#233;&#233; par un
+    <p>Lorsque l'en-tête <code>Expires</code> est déjà présent dans la
+    réponse générée par le serveur, par exemple s'il a été créé par un
     script CGI ou un serveur original via un serveur mandataire, ce
-    module n'ajoute aucun en-t&#234;te <code>Expires</code> ou
+    module n'ajoute aucun en-tête <code>Expires</code> ou
     <code>Cache-Control</code>.</p>
 </div>
 <div id="quickview"><h3>Sujets</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#AltSyn">Autre syntaxe de d&#233;finition de
+<li><img alt="" src="../images/down.gif" /> <a href="#AltSyn">Autre syntaxe de définition de
 l'intervalle</a></li>
 </ul><h3 class="directives">Directives</h3>
 <ul id="toc">
@@ -74,12 +74,12 @@ l'intervalle</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#expiresbytype">ExpiresByType</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#expiresdefault">ExpiresDefault</a></li>
 </ul>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_expires">Probl&#232;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_expires">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_expires">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_expires">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="AltSyn" id="AltSyn">Autre syntaxe de d&#233;finition de
+<h2><a name="AltSyn" id="AltSyn">Autre syntaxe de définition de
 l'intervalle</a><a title="Lien permanent" href="#AltSyn" class="permalink">&para;</a></h2>
     <p>Pour une syntaxe plus lisible, on peut aussi utiliser les
     directives <code class="directive"><a href="#expiresdefault">ExpiresDefault</a></code> et <code class="directive"><a href="#expiresbytype">ExpiresByType</a></code> comme suit :</p>
@@ -88,20 +88,20 @@ l'intervalle</a><a title="Lien permanent" href="#AltSyn" class="permalink">&para
 ExpiresByType type/encoding "<var>base</var>  [plus <var>num</var> <var>type</var>] [<var>num</var> <var>type</var>] ..."</pre>
 
 
-    <p>o&#249; <var>base</var> peut &#234;tre :</p>
+    <p>où <var>base</var> peut être :</p>
 
     <ul>
       <li><code>access</code></li>
 
-      <li><code>now</code> (&#233;quivalent &#224;
+      <li><code>now</code> (équivalent à
       '<code>access</code>')</li>
 
       <li><code>modification</code></li>
     </ul>
 
-    <p>Le mot-cl&#233; <code>plus</code> est optionnel. <var>num</var> doit
-    correspondre &#224; une valeur enti&#232;re [compatible avec
-    <code>atoi()</code>], et <var>type</var> peut &#234;tre choisi parmi :</p>
+    <p>Le mot-clé <code>plus</code> est optionnel. <var>num</var> doit
+    correspondre à une valeur entière [compatible avec
+    <code>atoi()</code>], et <var>type</var> peut être choisi parmi :</p>
 
     <ul>
       <li><code>years</code></li>
@@ -113,144 +113,144 @@ ExpiresByType type/encoding "<var>base</var>  [plus <var>num</var> <var>type</va
       <li><code>seconds</code></li>
     </ul>
 
-    <p>Par exemple, pour faire expirer par d&#233;faut les documents 1 mois
-    apr&#232;s leur acc&#232;s, on peut utiliser une des directives suivantes :</p>
+    <p>Par exemple, pour faire expirer par défaut les documents 1 mois
+    après leur accès, on peut utiliser une des directives suivantes :</p>
     <pre class="prettyprint lang-config">ExpiresDefault "access plus 1 month"
 ExpiresDefault "access plus 4 weeks"
 ExpiresDefault "access plus 30 days"</pre>
 
 
 
-    <p>La date d'expiration peut &#234;tre d&#233;finie plus pr&#233;cis&#233;ment en
+    <p>La date d'expiration peut être définie plus précisément en
     ajoutant plusieurs clauses '<var>num</var> <var>type</var>' :</p>
 
     <pre class="prettyprint lang-config">ExpiresByType text/html "access plus 1 month 15 days 2 hours"
 ExpiresByType image/gif "modification plus 5 hours 3 minutes"</pre>
 
 
-    <p>Notez que si vous utilisez une configuration bas&#233;e sur la date de
-    modification, l'en-t&#234;te Expires ne sera pas ajout&#233; &#224; un contenu qui
+    <p>Notez que si vous utilisez une configuration basée sur la date de
+    modification, l'en-tête Expires ne sera pas ajouté à un contenu qui
     ne provient pas directement d'un fichier sur disque ; et ceci tout
-    simplement parce que ce type de contenu ne poss&#232;de pas de date de
+    simplement parce que ce type de contenu ne possède pas de date de
     modification.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="expiresactive" id="expiresactive">Directive</a> <a name="ExpiresActive" id="ExpiresActive">ExpiresActive</a><a title="Lien permanent" href="#expiresactive" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active la g&#233;n&#233;ration d'en-t&#234;tes
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active la génération d'en-têtes
 <code>Expires</code></td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ExpiresActive On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>ExpiresActive Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Surcharges autoris&#233;es:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ExpiresActive Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>Indexes</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_expires</td></tr>
 </table>
-    <p>Cette directive permet d'activer ou de d&#233;sactiver la g&#233;n&#233;ration
-    des en-t&#234;tes <code>Expires</code> et <code>Cache-Control</code> pour
-    les documents concern&#233;s ; en d'autres termes, si cette directive se
+    <p>Cette directive permet d'activer ou de désactiver la génération
+    des en-têtes <code>Expires</code> et <code>Cache-Control</code> pour
+    les documents concernés ; en d'autres termes, si cette directive se
     trouve dans un fichier <code>.htaccess</code>, par exemple, elle ne
-    s'applique qu'aux documents g&#233;n&#233;r&#233;s &#224; partir du r&#233;pertoire
-    consid&#233;r&#233;. Si elle est d&#233;finie &#224; <code>Off</code>, les en-t&#234;tes ne
-    seront g&#233;n&#233;r&#233;s pour aucun document du domaine consid&#233;r&#233; (sauf
-    surcharge de la configuration &#224; un niveau inf&#233;rieur, comme un
+    s'applique qu'aux documents générés à partir du répertoire
+    considéré. Si elle est définie à <code>Off</code>, les en-têtes ne
+    seront générés pour aucun document du domaine considéré (sauf
+    surcharge de la configuration à un niveau inférieur, comme un
     fichier <code>.htaccess</code> qui l'emporterait sur le fichier de
-    configuration du serveur). Si elle est d&#233;finie &#224; <code>On</code>,
-    les en-t&#234;tes seront ajout&#233;s aux documents servis en fonction des
-    crit&#232;res d&#233;finis par les directives <code class="directive"><a href="#expiresbytype">ExpiresByType</a></code> et <code class="directive"><a href="#expiresdefault">ExpiresDefault</a></code> (<em>voir plus
+    configuration du serveur). Si elle est définie à <code>On</code>,
+    les en-têtes seront ajoutés aux documents servis en fonction des
+    critères définis par les directives <code class="directive"><a href="#expiresbytype">ExpiresByType</a></code> et <code class="directive"><a href="#expiresdefault">ExpiresDefault</a></code> (<em>voir plus
     loin</em>).</p>
 
-    <p>Notez que cette directive ne permet pas de garantir qu'un en-t&#234;te
-    <code>Expires</code> ou <code>Cache-Control</code> sera g&#233;n&#233;r&#233;. Si
-    les crit&#232;res ne sont pas respect&#233;s, aucun en-t&#234;te ne sera g&#233;n&#233;r&#233;, et
-    la directive produira le m&#234;me effet que si elle n'avait pas &#233;t&#233;
-    d&#233;finie.</p>
+    <p>Notez que cette directive ne permet pas de garantir qu'un en-tête
+    <code>Expires</code> ou <code>Cache-Control</code> sera généré. Si
+    les critères ne sont pas respectés, aucun en-tête ne sera généré, et
+    la directive produira le même effet que si elle n'avait pas été
+    définie.</p>
  
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="expiresbytype" id="expiresbytype">Directive</a> <a name="ExpiresByType" id="ExpiresByType">ExpiresByType</a><a title="Lien permanent" href="#expiresbytype" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&#233;finition de la valeur de l'en-t&#234;te <code>Expires</code>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définition de la valeur de l'en-tête <code>Expires</code>
 en fonction du type MIME</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ExpiresByType <var>type MIME</var>
 <var>&lt;code&gt;secondes</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Surcharges autoris&#233;es:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>Indexes</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_expires</td></tr>
 </table>
-    <p>Cette directive permet de d&#233;finir la valeur de l'en-t&#234;te
+    <p>Cette directive permet de définir la valeur de l'en-tête
     <code>Expires</code> et de la directive <code>max-age</code> de
-    l'en-t&#234;te <code>Cache-Control</code> g&#233;n&#233;r&#233;s pour les documents du
-    type MIME sp&#233;cifi&#233; (par exemple, <code>text/html</code>). Le second
-    argument d&#233;finit le nombre de secondes qui seront ajout&#233;es &#224; un
+    l'en-tête <code>Cache-Control</code> générés pour les documents du
+    type MIME spécifié (par exemple, <code>text/html</code>). Le second
+    argument définit le nombre de secondes qui seront ajoutées à un
     temps de base pour calculer la date d'expiration.
     <code>Cache-Control: max-age</code> se calcule en soustrayant la
-    date de la requ&#234;te de la date d'expiration et s'exprime en
+    date de la requête de la date d'expiration et s'exprime en
     secondes.</p>
 
-    <p>Le champ <code><var>&lt;code&gt;</var></code> permet de sp&#233;cifier
-    quel temps doit &#234;tre utilis&#233; comme temps de base; <code>M</code>
+    <p>Le champ <code><var>&lt;code&gt;</var></code> permet de spécifier
+    quel temps doit être utilisé comme temps de base; <code>M</code>
     signifie que c'est la date
-    de derni&#232;re modification du fichier qui doit &#234;tre utilis&#233;e comme
+    de dernière modification du fichier qui doit être utilisée comme
     temps de base, alors que <code>A</code> signifie que c'est le moment
-    o&#249; le client a acc&#233;d&#233; au document qui doit &#234;tre utilis&#233; comme temps
+    où le client a accédé au document qui doit être utilisé comme temps
     de base.</p>
 
-    <p>La diff&#233;rence d'effet est subtile. Si on utilise <code>M</code>,
+    <p>La différence d'effet est subtile. Si on utilise <code>M</code>,
     toutes les copies existantes du document dans tous les caches
-    expireront au m&#234;me moment, ce qui peut convenir par exemple pour une
-    notice hebdomadaire qui correspond toujours &#224; la m&#234;me URL. Si on
-    utilise <code>A</code>, la date d'expiration sera diff&#233;rente pour
+    expireront au même moment, ce qui peut convenir par exemple pour une
+    notice hebdomadaire qui correspond toujours à la même URL. Si on
+    utilise <code>A</code>, la date d'expiration sera différente pour
     chaque client, ce qui peut convenir pour des fichiers d'images qui
-    ne changent pas tr&#232;s souvent, et en particulier pour un ensemble de
-    documents en relation qui se r&#233;f&#232;rent tous aux m&#234;mes images (ces
-    images sont alors acc&#233;d&#233;es de mani&#232;re r&#233;p&#233;titive dans un intervalle
+    ne changent pas très souvent, et en particulier pour un ensemble de
+    documents en relation qui se réfèrent tous aux mêmes images (ces
+    images sont alors accédées de manière répétitive dans un intervalle
     de temps assez court).</p>
 
-    <div class="example"><h3>Exemple :</h3><pre class="prettyprint lang-config"># active la g&#233;n&#233;ration des en-t&#234;tes Expires
+    <div class="example"><h3>Exemple :</h3><pre class="prettyprint lang-config"># active la génération des en-têtes Expires
 ExpiresActive On
 # les images GIF expirent au bout d'un mois dans le cache du
 # client
 ExpiresByType image/gif A2592000
-# les documents HTML restent valables une semaine apr&#232;s leur date
-# de derni&#232;re modification
+# les documents HTML restent valables une semaine après leur date
+# de dernière modification
 ExpiresByType text/html M604800</pre>
 </div>
 
     <p>Notez que cette directive ne produit d'effet que si
-    <code>ExpiresActive On</code> a &#233;t&#233; sp&#233;cifi&#233;. Elle l'emporte, mais
-    <em>seulement</em> pour le type MIME sp&#233;cifi&#233;, sur toute date
-    d'expiration d&#233;finie par la directive <code class="directive"><a href="#expiresdefault">ExpiresDefault</a></code>.</p>
+    <code>ExpiresActive On</code> a été spécifié. Elle l'emporte, mais
+    <em>seulement</em> pour le type MIME spécifié, sur toute date
+    d'expiration définie par la directive <code class="directive"><a href="#expiresdefault">ExpiresDefault</a></code>.</p>
 
-    <p>Vous pouvez aussi d&#233;finir le mode de calcul de la date
+    <p>Vous pouvez aussi définir le mode de calcul de la date
     d'expiration en utilisant une <a href="#AltSyn">syntaxe
-    alternative</a>, comme d&#233;crit plus haut dans ce document.</p>
+    alternative</a>, comme décrit plus haut dans ce document.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="expiresdefault" id="expiresdefault">Directive</a> <a name="ExpiresDefault" id="ExpiresDefault">ExpiresDefault</a><a title="Lien permanent" href="#expiresdefault" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Mode de calcul par d&#233;faut de la date
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Mode de calcul par défaut de la date
 d'expiration</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ExpiresDefault <var>&lt;code&gt;secondes</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Surcharges autoris&#233;es:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>Indexes</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_expires</td></tr>
 </table>
-    <p>Cette directive permet de d&#233;finir le mode de calcul par d&#233;faut de
-    la date d'expiration pour tous les documents du domaine consid&#233;r&#233;.
-    Elle peut &#234;tre annul&#233;e pour certains types de documents par la
+    <p>Cette directive permet de définir le mode de calcul par défaut de
+    la date d'expiration pour tous les documents du domaine considéré.
+    Elle peut être annulée pour certains types de documents par la
     directive <code class="directive"><a href="#expiresbytype">ExpiresByType</a></code>. Voir la description
-    de cette derni&#232;re directive pour plus de d&#233;tails &#224; propos de la
+    de cette dernière directive pour plus de détails à propos de la
     syntaxe de l'argument, ainsi que la description de la <a href="#AltSyn">syntaxe alternative</a>.</p>
 
 </div>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_expires.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_expires.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_expires.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_expires.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_expires.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
@@ -271,7 +271,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_expires.ht
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autoris&#233; sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

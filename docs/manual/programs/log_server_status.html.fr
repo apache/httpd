@@ -7,7 +7,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>log_server_status - Enregistrement p&#233;riodique de l'&#233;tat du serveur - Serveur HTTP Apache Version 2.5</title>
+<title>log_server_status - Enregistrement périodique de l'état du serveur - Serveur HTTP Apache Version 2.5</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -21,20 +21,20 @@
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Programs</a></div><div id="page-content"><div id="preamble"><h1>log_server_status - Enregistrement p&#233;riodique de l'&#233;tat du serveur</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Programs</a></div><div id="page-content"><div id="preamble"><h1>log_server_status - Enregistrement périodique de l'état du serveur</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/programs/log_server_status.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/programs/log_server_status.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/programs/log_server_status.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
 
-    <p>Ce script perl a &#233;t&#233; con&#231;u pour &#234;tre ex&#233;cut&#233; &#224; intervalles
-    r&#233;guliers via un d&#233;clencheur de type cron. Il se connecte au serveur
-    pour en extraire des informations quant &#224; son &#233;tat. Il formate ces
+    <p>Ce script perl a été conçu pour être exécuté à intervalles
+    réguliers via un déclencheur de type cron. Il se connecte au serveur
+    pour en extraire des informations quant à son état. Il formate ces
     informations sous la forme d'une seule ligne qu'il enregistre dans
-    un fichier. Vous devez &#233;diter la valeur des variables en t&#234;te de
-    script afin de d&#233;finir le chemin du fichier de sortie. Pour que ce
+    un fichier. Vous devez éditer la valeur des variables en tête de
+    script afin de définir le chemin du fichier de sortie. Pour que ce
     script puisse fonctionner, <code class="module"><a href="../mod/mod_status.html">mod_status</a></code> doit au
-    pr&#233;alable &#234;tre charg&#233; et configur&#233;.</p>
+    préalable être chargé et configuré.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -45,23 +45,23 @@
 <pre class="prettyprint lang-perl">my $wherelog = "/usr/local/apache2/logs/";  # Le fichier de sortie sera
 					# du style "/usr/local/apache2/logs/19960312"
 my $server   = "localhost";        # Nom du serveur, par exemple "www.foo.com"
-my $port     = "80";               # Port d'&#233;coute du serveur
-my $request = "/server-status/?auto";    # Requ&#234;te &#224; soumettre</pre>
+my $port     = "80";               # Port d'écoute du serveur
+my $request = "/server-status/?auto";    # Requête à soumettre</pre>
 
 
 <p>Ces variables doivent contenir des valeurs correctes, et le
-gestionnaire <code>/server-status</code> doit &#234;tre configur&#233; pour le
-r&#233;pertoire consid&#233;r&#233;. En outre, l'utilisateur qui ex&#233;cute le script doit
-avoir les droits d'&#233;criture sur le chemin du fichier de sortie.</p>
+gestionnaire <code>/server-status</code> doit être configuré pour le
+répertoire considéré. En outre, l'utilisateur qui exécute le script doit
+avoir les droits d'écriture sur le chemin du fichier de sortie.</p>
 
-<p>L'ex&#233;cution p&#233;riodique du script via cron permet d'obtenir un jeu de
-rapports d'&#233;tat qui pourra &#234;tre utilis&#233; &#224; des fins d'analyse
+<p>L'exécution périodique du script via cron permet d'obtenir un jeu de
+rapports d'état qui pourra être utilisé à des fins d'analyse
 statistique.</p>
 
 </div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/programs/log_server_status.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/programs/log_server_status.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/programs/log_server_status.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -80,7 +80,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/programs/log_serve
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autoris&#233; sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

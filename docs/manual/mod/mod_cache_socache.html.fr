@@ -27,27 +27,27 @@
 <div id="preamble"><h1>Module Apache mod_cache_socache</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_cache_socache.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_cache_socache.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_cache_socache.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Module de stockage &#224; base de cache d'objets partag&#233;s
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Module de stockage à base de cache d'objets partagés
 (socache) pour le filtre de mise en cache HTTP.</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&#160;de&#160;Module:</a></th><td>cache_socache_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier&#160;Source:</a></th><td>mod_cache_socache.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>cache_socache_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_cache_socache.c</td></tr></table>
 <h3>Sommaire</h3>
 
-    <p>Le module <code class="module"><a href="../mod/mod_cache_socache.html">mod_cache_socache</a></code> impl&#233;mente un
-    gestionnaire de stockage &#224; base de cache d'objets partag&#233;s (socache)
+    <p>Le module <code class="module"><a href="../mod/mod_cache_socache.html">mod_cache_socache</a></code> implémente un
+    gestionnaire de stockage à base de cache d'objets partagés (socache)
     pour le module <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code>.</p>
 
-    <p>Les en-t&#234;tes et corps des r&#233;ponses mises en cache sont rassembl&#233;s
-    et stock&#233;s sous une m&#234;me cl&#233; dans le cache d'objets partag&#233;s. Il est
-    possible de choisir entre plusieurs <a href="../socache.html">impl&#233;mentations</a> de caches d'objets
-    partag&#233;s.</p>
+    <p>Les en-têtes et corps des réponses mises en cache sont rassemblés
+    et stockés sous une même clé dans le cache d'objets partagés. Il est
+    possible de choisir entre plusieurs <a href="../socache.html">implémentations</a> de caches d'objets
+    partagés.</p>
 
-    <p>Des r&#233;ponses avec diff&#233;rents contenus n&#233;goci&#233;s peuvent &#234;tre
-    stock&#233;es simultan&#233;ment ; cependant, la mise en cache de contenus
-    partiels n'est pas encore support&#233;e par ce module.</p>
+    <p>Des réponses avec différents contenus négociés peuvent être
+    stockées simultanément ; cependant, la mise en cache de contenus
+    partiels n'est pas encore supportée par ce module.</p>
 
     <pre class="prettyprint lang-config"># Activation de la mise en cache
 CacheSocache shmcb
@@ -56,7 +56,7 @@ CacheSocacheMaxSize 102400
     CacheEnable socache
 &lt;/Location&gt;
 
-# Possibilit&#233; de se rabattre sur le cache disque
+# Possibilité de se rabattre sur le cache disque
 CacheSocache shmcb
 CacheSocacheMaxSize 102400
 &lt;Location "/foo"&gt;
@@ -68,7 +68,7 @@ CacheSocacheMaxSize 102400
     <div class="note"><h3>Note :</h3>
       <p>Le module <code class="module"><a href="../mod/mod_cache_socache.html">mod_cache_socache</a></code> requiert les
       services du module <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> qui doit donc avoir
-      &#233;t&#233; pr&#233;alablement charg&#233;.</p>
+      été préalablement chargé.</p>
     </div>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
@@ -80,7 +80,7 @@ CacheSocacheMaxSize 102400
 <li><img alt="" src="../images/down.gif" /> <a href="#cachesocachereadsize">CacheSocacheReadSize</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cachesocachereadtime">CacheSocacheReadTime</a></li>
 </ul>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_cache_socache">Probl&#232;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_cache_socache">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_cache_socache">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_cache_socache">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code></li>
 <li><code class="module"><a href="../mod/mod_cache_disk.html">mod_cache_disk</a></code></li>
@@ -90,19 +90,19 @@ CacheSocacheMaxSize 102400
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="cachesocache" id="cachesocache">Directive</a> <a name="CacheSocache" id="CacheSocache">CacheSocache</a><a title="Lien permanent" href="#cachesocache" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Impl&#233;mentation du cache d'objets partag&#233;s &#224; utiliser</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Implémentation du cache d'objets partagés à utiliser</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheSocache <var>type[:args]</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache_socache</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible &#224; partir de la version 2.4.5 du serveur HTTP
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.5 du serveur HTTP
 Apache</td></tr>
 </table>
     <p>La directive <code class="directive">CacheSocache</code>
-    d&#233;finit l'impl&#233;mentation du cache d'objets partag&#233;s &#224; utiliser,
+    définit l'implémentation du cache d'objets partagés à utiliser,
     suivie d'arguments optionnels. Il est
-    possible de choisir entre plusieurs <a href="../socache.html">impl&#233;mentations</a> de caches d'objets
-    partag&#233;s.</p>
+    possible de choisir entre plusieurs <a href="../socache.html">implémentations</a> de caches d'objets
+    partagés.</p>
 
     <pre class="prettyprint lang-config">CacheSocache shmcb</pre>
 
@@ -111,28 +111,28 @@ Apache</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="cachesocachemaxsize" id="cachesocachemaxsize">Directive</a> <a name="CacheSocacheMaxSize" id="CacheSocacheMaxSize">CacheSocacheMaxSize</a><a title="Lien permanent" href="#cachesocachemaxsize" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>La taille maximale d'une entr&#233;e pouvant &#234;tre plac&#233;e dans le
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>La taille maximale d'une entrée pouvant être placée dans le
 cache</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheSocacheMaxSize <var>octets</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>CacheSocacheMaxSize 102400</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CacheSocacheMaxSize 102400</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache_socache</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible &#224; partir de la version 2.4.5 du serveur HTTP
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.5 du serveur HTTP
 Apache</td></tr>
 </table>
     <p>La directive <code class="directive">CacheSocacheMaxSize</code>
-    d&#233;finit la taille maximale, en octets, de la somme des en-t&#234;tes et
-    du corps d'un document pouvant &#234;tre stock&#233; dans le cache. Bien
-    entendu, plus la taille des en-t&#234;tes sera grande, plus la taille
-    maximale du corps du document s'en trouvera r&#233;duite.</p>
+    définit la taille maximale, en octets, de la somme des en-têtes et
+    du corps d'un document pouvant être stocké dans le cache. Bien
+    entendu, plus la taille des en-têtes sera grande, plus la taille
+    maximale du corps du document s'en trouvera réduite.</p>
 
     <p>Le module <code class="module"><a href="../mod/mod_cache_socache.html">mod_cache_socache</a></code> ne tentera de mettre
-    en cache que des r&#233;ponses qui poss&#232;dent une taille de contenu
+    en cache que des réponses qui possèdent une taille de contenu
     explicite, ou dont la taille est suffisamment petite pour qu'elles
-    soient &#233;crites en une seule passe. Ceci permet au module
-    <code class="module"><a href="../mod/mod_cache_disk.html">mod_cache_disk</a></code> de mettre en cache des r&#233;ponses dont
-    la taille est trop importante pour pouvoir &#234;tre mises en cache par
+    soient écrites en une seule passe. Ceci permet au module
+    <code class="module"><a href="../mod/mod_cache_disk.html">mod_cache_disk</a></code> de mettre en cache des réponses dont
+    la taille est trop importante pour pouvoir être mises en cache par
     <code class="module"><a href="../mod/mod_cache_socache.html">mod_cache_socache</a></code>.</p>
 
     <pre class="prettyprint lang-config">CacheSocacheMaxSize 102400</pre>
@@ -142,20 +142,20 @@ Apache</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="cachesocachemaxtime" id="cachesocachemaxtime">Directive</a> <a name="CacheSocacheMaxTime" id="CacheSocacheMaxTime">CacheSocacheMaxTime</a><a title="Lien permanent" href="#cachesocachemaxtime" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>La dur&#233;e maximale de stockage d'un document dans le cache
-avant p&#233;remption</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>La durée maximale de stockage d'un document dans le cache
+avant péremption</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheSocacheMaxTime <var>secondes</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>CacheSocacheMaxTime 86400</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CacheSocacheMaxTime 86400</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache_socache</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible &#224; partir de la version 2.4.5 du serveur HTTP
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.5 du serveur HTTP
 Apache</td></tr>
 </table>
     <p>La directive <code class="directive">CacheSocacheMaxTime</code>
-    d&#233;finit la dur&#233;e de stockage maximale en secondes d'un document dans
-    le cache avant p&#233;remption. Cette d&#233;finition l'emporte sur la dur&#233;e
-    de fra&#238;cheur d&#233;finie pour le document par le protocole HTTP.</p>
+    définit la durée de stockage maximale en secondes d'un document dans
+    le cache avant péremption. Cette définition l'emporte sur la durée
+    de fraîcheur définie pour le document par le protocole HTTP.</p>
 
     <pre class="prettyprint lang-config">CacheSocacheMaxTime 86400</pre>
 
@@ -164,21 +164,21 @@ Apache</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="cachesocachemintime" id="cachesocachemintime">Directive</a> <a name="CacheSocacheMinTime" id="CacheSocacheMinTime">CacheSocacheMinTime</a><a title="Lien permanent" href="#cachesocachemintime" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>La dur&#233;e minimale de stockage d'un document dans le cache</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>La durée minimale de stockage d'un document dans le cache</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheSocacheMinTime <var>seconds</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>CacheSocacheMinTime 600</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CacheSocacheMinTime 600</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache_socache</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible &#224; partir de la version 2.4.5 du serveur HTTP
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.5 du serveur HTTP
 Apache</td></tr>
 </table>
     <p>La directive <code class="directive">CacheSocacheMinTime</code>
-    d&#233;finit le nombre de secondes au del&#224; de la dur&#233;e de fra&#238;cheur de la
-    r&#233;ponse pendant lesquelles cette derni&#232;re devra &#234;tre stock&#233;e dans le
-    cache d'objets partag&#233;s. En effet, si une r&#233;ponse n'est stock&#233;e que
-    pour une dur&#233;e &#233;gale &#224; sa dur&#233;e de fra&#238;cheur, elle n'a pas besoin
-    d'&#234;tre rafra&#238;chie.</p>
+    définit le nombre de secondes au delà de la durée de fraîcheur de la
+    réponse pendant lesquelles cette dernière devra être stockée dans le
+    cache d'objets partagés. En effet, si une réponse n'est stockée que
+    pour une durée égale à sa durée de fraîcheur, elle n'a pas besoin
+    d'être rafraîchie.</p>
 
     <pre class="prettyprint lang-config">CacheSocacheMinTime 600</pre>
 
@@ -187,28 +187,28 @@ Apache</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="cachesocachereadsize" id="cachesocachereadsize">Directive</a> <a name="CacheSocacheReadSize" id="CacheSocacheReadSize">CacheSocacheReadSize</a><a title="Lien permanent" href="#cachesocachereadsize" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>La quantit&#233; minimale de donn&#233;es du document &#224; lire et
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>La quantité minimale de données du document à lire et
 mettre en cache avant envoi au client</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheSocacheReadSize <var>octets</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>CacheSocacheReadSize 0</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CacheSocacheReadSize 0</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache_socache</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible &#224; partir de la version 2.4.5 du serveur HTTP
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.5 du serveur HTTP
 Apache</td></tr>
 </table>
     <p>La directive <code class="directive">CacheSocacheReadSize</code>
-    d&#233;finit la quantit&#233; minimale de donn&#233;es, en octets, &#224; lire depuis
-    l'arri&#232;re-plan avant envoi au client. Avec la valeur par d&#233;faut 0,
-    les donn&#233;es sont transmises au client d&#232;s leur arriv&#233;e et quelle que
-    soit leur taille. Si la valeur d&#233;finie est non nulle, le cache
-    disque va mettre en tampon au moins la quantit&#233; de donn&#233;es
-    correspondante avant envoi au client. Ceci peut am&#233;liorer les
+    définit la quantité minimale de données, en octets, à lire depuis
+    l'arrière-plan avant envoi au client. Avec la valeur par défaut 0,
+    les données sont transmises au client dès leur arrivée et quelle que
+    soit leur taille. Si la valeur définie est non nulle, le cache
+    disque va mettre en tampon au moins la quantité de données
+    correspondante avant envoi au client. Ceci peut améliorer les
     performances en cas de mise en cache de contenu en provenance d'un
     mandataire inverse lent.</p>
 
-    <p>Cette directive n'a d'effet qu'au moment o&#249; les donn&#233;es sont
-    stock&#233;es dans le cache, et non lorsqu'elles sont servies depuis le
+    <p>Cette directive n'a d'effet qu'au moment où les données sont
+    stockées dans le cache, et non lorsqu'elles sont servies depuis le
     cache.</p>
 
     <pre class="prettyprint lang-config">CacheSocacheReadSize 102400</pre>
@@ -218,31 +218,31 @@ Apache</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="cachesocachereadtime" id="cachesocachereadtime">Directive</a> <a name="CacheSocacheReadTime" id="CacheSocacheReadTime">CacheSocacheReadTime</a><a title="Lien permanent" href="#cachesocachereadtime" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>La dur&#233;e minimale de lecture avant l'envoi des donn&#233;es</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>La durée minimale de lecture avant l'envoi des données</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheSocacheReadTime <var>millisecondes</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>CacheSocacheReadTime 0</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CacheSocacheReadTime 0</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache_socache</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible &#224; partir de la version 2.4.5 du serveur HTTP
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.5 du serveur HTTP
 Apache</td></tr>
 </table>
     <p>La directive <code class="directive">CacheSocacheReadTime</code>
-    d&#233;finit le temps minimal qui doit s'&#233;couler avant de tenter
-    l'envoi des donn&#233;es au client. Cette dur&#233;e sera mise &#224; profit pour
-    lire et mettre en tampon les donn&#233;es avant leur envoi au client.
-    Ceci peut am&#233;liorer les performances en cas de mise en cache de
+    définit le temps minimal qui doit s'écouler avant de tenter
+    l'envoi des données au client. Cette durée sera mise à profit pour
+    lire et mettre en tampon les données avant leur envoi au client.
+    Ceci peut améliorer les performances en cas de mise en cache de
     contenu en provenance d'un mandataire inverse.</p>
 
-    <p>La valeur par d&#233;faut 0 d&#233;sactive cette directive.</p>
+    <p>La valeur par défaut 0 désactive cette directive.</p>
 
-    <p>Cette directive n'a d'effet qu'au moment o&#249; les donn&#233;es sont
-    stock&#233;es dans le cache, et non lorsqu'elles sont servies depuis le
-    cache. Il est recommand&#233; d'utiliser cette directive en concomitance
+    <p>Cette directive n'a d'effet qu'au moment où les données sont
+    stockées dans le cache, et non lorsqu'elles sont servies depuis le
+    cache. Il est recommandé d'utiliser cette directive en concomitance
     avec la directive <code class="directive"><a href="#cachesocachereadsize">CacheSocacheReadSize</a></code> afin de
-    s'assurer que le serveur ne mette pas les donn&#233;es en tampon de
-    mani&#232;re excessive dans le cas o&#249; les donn&#233;es arriveraient plus vite
-    que pr&#233;vu.</p>
+    s'assurer que le serveur ne mette pas les données en tampon de
+    manière excessive dans le cas où les données arriveraient plus vite
+    que prévu.</p>
 
     <pre class="prettyprint lang-config">CacheSocacheReadTime 1000</pre>
 
@@ -251,7 +251,7 @@ Apache</td></tr>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_cache_socache.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_cache_socache.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_cache_socache.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -270,7 +270,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_cache_soca
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autoris&#233; sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

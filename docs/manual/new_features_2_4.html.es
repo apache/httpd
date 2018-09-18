@@ -28,10 +28,6 @@
 <a href="./fr/new_features_2_4.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="./tr/new_features_2_4.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Esta traducción podría estar
-            obsoleta. Consulte la versión en inglés de la
-            documentación para comprobar si se han producido cambios
-            recientemente.</div>
 
   <p>Este documento describe algunos de los principales cambios entre las  versiones
      2.2 y 2.4 del Servidor Apache HTTP. Para las nuevas características desde
@@ -191,6 +187,9 @@ situación en la que el servidor genera URLs que no son válidos para los clientes
 
       <dt><code class="module"><a href="./mod/mod_http2.html">mod_http2</a></code> (disponible desde la versión 2.4.17)</dt>
       <dd>Soporte para la capa HTTP/2</dd>
+
+	<dt><code class="module"><a href="./mod/mod_proxy_hcheck.html">mod_proxy_hcheck</a></code> (disponible desde la versión 2.4.21)</dt>
+	<dd>Soporta chekeos dinámicos propios del estado de servidores proxys remotos</dd>
 
     </dl>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>

@@ -7,7 +7,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>httxt2dbm - G&#233;n&#232;re des fichiers dbm &#224; utiliser avec
+<title>httxt2dbm - Génère des fichiers dbm à utiliser avec
 RewriteMap - Serveur HTTP Apache Version 2.5</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
@@ -22,22 +22,22 @@ RewriteMap - Serveur HTTP Apache Version 2.5</title>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Programmes</a></div><div id="page-content"><div id="preamble"><h1>httxt2dbm - G&#233;n&#232;re des fichiers dbm &#224; utiliser avec
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Programmes</a></div><div id="page-content"><div id="preamble"><h1>httxt2dbm - Génère des fichiers dbm à utiliser avec
 RewriteMap</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/programs/httxt2dbm.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/programs/httxt2dbm.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
-<a href="../tr/programs/httxt2dbm.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
+<a href="../fr/programs/httxt2dbm.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../tr/programs/httxt2dbm.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
 
-    <p><code>httxt2dbm</code> permet, &#224; partir d'une entr&#233;e au format
-    texte, de g&#233;n&#233;rer des fichiers dbm &#224; utiliser dans les directives
+    <p><code>httxt2dbm</code> permet, à partir d'une entrée au format
+    texte, de générer des fichiers dbm à utiliser dans les directives
     <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> avec le type
     de table <code>dbm</code>.
     </p>
 
-    <p>Si le fichier de sortie existe d&#233;j&#224;, il ne sera pas tronqu&#233;. Les
-    nouvelles cl&#233;s seront ajout&#233;es et les cl&#233;s pr&#233;existantes mises &#224;
+    <p>Si le fichier de sortie existe déjà, il ne sera pas tronqué. Les
+    nouvelles clés seront ajoutées et les clés préexistantes mises à
     jour.</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#synopsis">Syntaxe</a></li>
@@ -61,22 +61,22 @@ RewriteMap</h1>
     <dd>Sortie plus verbeuse</dd>
 
     <dt><code>-f <var>TYPE_DBM</var></code></dt>
-    <dd>Sp&#233;cifie le type DBM &#224; utiliser pour le fichier de sortie.
-    S'il n'est pas sp&#233;cifi&#233;, c'est la valeur par d&#233;faut de
-    l'<a class="glossarylink" href="../glossary.html#apr" title="voir glossaire">APR</a> qui sera utilis&#233;e. Les types disponibles
+    <dd>Spécifie le type DBM à utiliser pour le fichier de sortie.
+    S'il n'est pas spécifié, c'est la valeur par défaut de
+    l'<a class="glossarylink" href="../glossary.html#apr" title="voir glossaire">APR</a> qui sera utilisée. Les types disponibles
     sont :
     <code>GDBM</code> pour les fichiers GDBM,
     <code>SDBM</code> pour les fichiers SDBM,
     <code>DB</code> pour les fichiers DB,
     <code>NDBM</code> pour les fichiers NDBM,
-    <code>default</code> pour le type DBM par d&#233;faut
+    <code>default</code> pour le type DBM par défaut
     </dd>
 
     <dt><code>-i <var>TEXTE_SOURCE</var></code></dt>
-    <dd>Le fichier d'entr&#233;e &#224; partir duquel le fichier dbm sera cr&#233;&#233;. Le
-    fichier doit &#234;tre format&#233; de fa&#231;on &#224; ne contenir qu'un seul
-    enregistrement par ligne, de la forme : <code>cl&#233; valeur</code>.
-    Voir la documentation de la directive <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> pour plus de d&#233;tails &#224;
+    <dd>Le fichier d'entrée à partir duquel le fichier dbm sera créé. Le
+    fichier doit être formaté de façon à ne contenir qu'un seul
+    enregistrement par ligne, de la forme : <code>clé valeur</code>.
+    Voir la documentation de la directive <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> pour plus de détails à
     propos du format de ce fichier et de sa signification.
     </dd>
 
@@ -93,8 +93,8 @@ RewriteMap</h1>
 </div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/programs/httxt2dbm.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/programs/httxt2dbm.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
-<a href="../tr/programs/httxt2dbm.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
+<a href="../fr/programs/httxt2dbm.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../tr/programs/httxt2dbm.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -113,7 +113,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/programs/httxt2dbm
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autoris&#233; sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
