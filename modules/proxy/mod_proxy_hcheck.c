@@ -830,6 +830,7 @@ static void * APR_THREAD_FUNC hc_check(apr_thread_t *thread, void *b)
                  "%sHealth checking %s", (thread ? "Threaded " : ""),
                  worker->s->name);
 
+    worker->s->updated = now;
     if (hc->s->method == TCP) {
         rv = hc_check_tcp(baton);
     }
@@ -870,7 +871,6 @@ static void * APR_THREAD_FUNC hc_check(apr_thread_t *thread, void *b)
             }
         }
     }
-    worker->s->updated = now;
     apr_pool_destroy(baton->ptemp);
     return NULL;
 }
