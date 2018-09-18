@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
+<!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>Como Cifrar su Tráfico - Servidor HTTP Apache Versión 2.5</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
+<script src="../style/scripts/prettify.min.js" type="text/javascript">
+</script>
+
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p>
+<p class="apache">Versión 2.5 del Servidor HTTP Apache</p>
+<img alt="" src="../images/feather.png" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentación</a> &gt; <a href="../">Versión 2.5</a> &gt; <a href="./">How-To /
+Tutoriales</a></div><div id="page-content"><div id="preamble"><h1>Como Cifrar su Tráfico</h1>
+<div class="toplang">
+<p><span>Idiomas disponibles: </span><a href="../en/howto/encrypt.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/howto/encrypt.html" title="Español">&nbsp;es&nbsp;</a></p>
+</div>
+ 
+    <p>En esta guía se explica cómo hacer que su servidor HTTPD Apache
+  use un cifrado para transferir datos entre el servidor y sus visitantes. En vez
+  de usar enlaces <code>http:</code>, usará del tipo<code>https:</code>, si todo
+  está configurado correctamente, toda persona que visite su web, tendrá más
+  privacidad y protección.</p>
+  <p> Este manual está pensado para aquellos que no están muy familiarizados con
+  SSL/TLS y cifrados, junto con toda la jerga técnica incomprensible (Estamos 
+  bromeando, este tema es bastante importante, con
+  serios expertos en el tema, y problemas reales que resolver - pero sí, suena a 
+  jerga técnica incomprensible para todos aquellos que no hayan tratado con esto). 
+  Personas que han escuchado que su servidor http: no es del todo seguro a dia de 
+  hoy. Que los espías y los malos están escuchando. Que incluso las empresas 
+  legítimas están insertando datos en sus páginas web y vendiendo perfiles de 
+  visitantes. 
+</p> 
+<p>En esta guía nos centraremos en ayudarle para migrar su servidor httpd, para 
+   que deje de servir enlaces vía <code>http:</code> y los sirva vía 
+   <code>https:</code> ones, without you becoming a SSL expert first. You might
+   get fascinated by all this crypto things and study it more and become a real
+   expert. But you also might not, run a reasonably secure web server nevertheless
+   and do other things good for mankind with your time. </p> <p> You
+  will get a rough idea what roles these mysterious things called "certificate"
+  and  "private key" play and how they are used to let your visitors be sure
+  they are talking to your server. You will <em>not</em> be told <em>how</em>
+  this works, just how it is used: it's basically about passports. </p>
+  </div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#protocol">Pequeña introducción a Certificados e.j: Pasaporte de Internet</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#buycert">Comprar un Certificado</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#freecert">Get a Free Certificate</a></li>
+</ul><h3>Consulte también</h3><ul class="seealso"><li><a href="../ssl/ssl_howto.html">SSL How-To</a></li><li><a href="../mod/mod_ssl.html">mod_ssl</a></li><li><a href="../mod/mod_md.html">mod_md</a></li><li><a href="#comments_section">Comentarios</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="protocol" id="protocol">Pequeña introducción a Certificados e.j: Pasaporte de Internet</a><a title="Enlace permanente" href="#protocol" class="permalink">&para;</a></h2> 
+     
+
+  <p> The TLS protocol (formerly known as SSL) is a
+  way a client and a server  can talk to each other without anyone else
+  listening, or better understanding a thing. It is what your browser uses when
+  you open a https: link.  </p> <p> In addition to having a private conversation
+  with a server, your browser also needs to know that it really talks to the
+  server - and not someone else acting like it. That, next to the encryption, is
+  the other part of the TLS protocol. </p> <p> In order to do that, your server
+  does not only need the software for TLS, e.g. the <a href="../mod/mod_http2.html">mod_ssl</a> module, but some sort of identity
+  proof on the Internet. This is commonly referred to as a <em>certificate</em>.
+  Basically, everyone has the same mod_ssl and can encrypt, but only your have
+  <em>your</em> certificate and with that, you are you. </p> <p> A certificate
+  is the digital equivalent of a passport. It contains two things: a stamp of
+  approval from the people issuing the passport and a reference to your digital
+  fingerprints, e.g. what is called a <em>private key</em> in encryption terms.
+  </p> <p> When you configure your Apache httpd for https: links, you need to
+  give it the certificate and the private key. If you never give the key to
+  anyone else, only you will be able to prove to visitors that the certificate
+  belongs to you. That way, a browser talking to your server a second time will
+  be sure that it is indeed the very same server it talked to before. </p> <p>
+  But how does it know that it is the real server, the first time it starts
+  talking to someone? Here, the digital rubber stamping comes into play. The
+  rubber stamp is done by someone else, using her own private key. That person
+  has also a certificate, e.g. her own passport. The browser can make sure that
+  this passport is based on the same key that was used to rubber stamp your
+  server passport. Now, instead of making sure that your passport is correct, it
+  must make sure that the passport of the person that  says <em>your</em>
+  passport is correct, is correct.  </p> <p> And that passport is also rubber
+  stamped digitally, by someone else with a key and a  certificate. So the
+  browser only needs to make sure that <em>that</em> one is correct that says it
+  is correct to trust the one that says your server is correct. This trusting
+  game can go to a few or many levels (usually less than 5). </p> <p> In the
+  end, the browser will encounter a passport that is stamped by its own key.
+  It's a Gloria Gaynor certificate that says "I am what I am!". The browser then
+  either trust this Gloria or not. If not, your server is also not trusted.
+  Otherwise, it is. Simple.  </p> <p> The trust check for the Gloria Gaynors of
+  the Internet is easy: your browser (or your operating system) comes with list
+  of Gloria passports to trust, pre-installed. If it  sees a Gloria certificate,
+  it is either in this list or not to be trusted. </p> <p> This whole thing
+  works as long as everyone keeps his private keys to himself. Anyone copying
+  such a key can impersonate the key owner. And if the owner can rubber stamp
+  passports, the impersonator can also do that. And all the passports stamped by
+  an impersonator,  all those certificates will look 100% valid,
+  indistinguishable from the "real" ones. </p> <p> So, this trust model works,
+  but it has its limits. That is why browser makers are so keen on having the
+  correct Gloria Gaynor lists and threaten to expel anyone from it that is
+  careless with her keys. </p> </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="buycert" id="buycert">Comprar un Certificado</a><a title="Enlace permanente" href="#buycert" class="permalink">&para;</a></h2>  <p> Bueno, pueds
+  comprar uno. Hay muchas compañias vendiando pasaportes de Internet como
+  servicio. En  <a href="https://ccadb-   public.secure.force.com/mozilla/IncludedCACertificateReport">esta lista de
+  Mozilla,</a> podrás encontrar todas las compañias en las que el  navegador
+  Firefox confía. Escoge una, visita su pagina web y te diran los diferentes
+  precios, y como hacer para comprobar tu identidad y quien dices ser quien
+  eres, y así podrán generar tu pasaporte con confianza. </p> <p>
+
+    They all have their own methods, also depending on what kind of passport you
+apply for, and     it's probably some sort of click web interface in a browser.
+They may send you an email that     you need to answer or do something else. In
+the end, they will show you how to generate     your own, unique private key and
+issue you a stamped passport matching it.     </p>     <p>     You then place
+the key in one file, the certificate in another. Put these on your server, make
+sure that only a trusted user can read the key file and add it to your httpd
+configuration.      This is extensively covered in the <a href="../ssl/ssl_howto.html">SSL How-To</a>.     </p>     <p>     </p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="freecert" id="freecert">Get a Free Certificate</a><a title="Enlace permanente" href="#freecert" class="permalink">&para;</a></h2>  <p> Hay también
+  compañias que ofrecen certificados gratuitos para servidores web.  La pionera
+  en esto es <a href="https://letsencrypt.org">Let's Encrypt</a>  que es un
+  servicio de la organización sin ánimo de lucro <a href="">(ISRG)  Internet
+  Security Research Group </a>, para "reducir las barreras financieras,
+  tecnológicas y de educación, para securizar las comunicaciones en Internet."
+  </p> <p> No sólo ofrencen certificados gratuitos, también han desaarrollado
+  una  interfáz que puede ser usada en su Apache Httpd para obtener uno. Aquí es
+  donde <a href="../mod/mod_md.html">mod_md</a> entra en juego. </p> <p> (zoom
+  out the camera on how to configure mod_md and virtual host...) </p> </div></div>
+<div class="bottomlang">
+<p><span>Idiomas disponibles: </span><a href="../en/howto/encrypt.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/howto/encrypt.html" title="Español">&nbsp;es&nbsp;</a></p>
+</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comentarios</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+var comments_shortname = 'httpd';
+var comments_identifier = 'http://httpd.apache.org/docs/trunk/howto/encrypt.html';
+(function(w, d) {
+    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
+        d.write('<div id="comments_thread"><\/div>');
+        var s = d.createElement('script');
+        s.type = 'text/javascript';
+        s.async = true;
+        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
+        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
+    }
+    else {
+        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
+    }
+})(window, document);
+//--><!]]></script></div><div id="footer">
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+if (typeof(prettyPrint) !== 'undefined') {
+    prettyPrint();
+}
+//--><!]]></script>
+</body></html>
