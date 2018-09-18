@@ -1275,6 +1275,10 @@ static int lua_ap_scoreboard_worker(lua_State *L)
         lua_pushstring(L, ws_record->client);
         lua_settable(L, -3);
 
+        lua_pushstring(L, "client64");
+        lua_pushstring(L, ws_record->client64);
+        lua_settable(L, -3);
+
         lua_pushstring(L, "conn_bytes");
         lua_pushnumber(L, (lua_Number) ws_record->conn_bytes);
         lua_settable(L, -3);

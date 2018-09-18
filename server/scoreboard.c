@@ -517,17 +517,25 @@ static int update_child_status_internal(int child_num,
         }
 
         if (r && r->useragent_ip) {
-            if (!(val = ap_get_useragent_host(r, REMOTE_NOLOOKUP, NULL)))
-                apr_cpystrn(ws->client, r->useragent_ip, sizeof(ws->client));
-            else
-                apr_cpystrn(ws->client, val, sizeof(ws->client));
+            if (!(val = ap_get_useragent_host(r, REMOTE_NOLOOKUP, NULL))) {
+                apr_cpystrn(ws->client, r->useragent_ip, sizeof(ws->client)); /* DEPRECATE */
+                apr_cpystrn(ws->client64, r->useragent_ip, sizeof(ws->client64));
+            }
+            else {
+                apr_cpystrn(ws->client, val, sizeof(ws->client)); /* DEPRECATE */
+                apr_cpystrn(ws->client64, val, sizeof(ws->client64));
+            }
         }
         else if (c) {
             if (!(val = ap_get_remote_host(c, c->base_server->lookup_defaults,
-                                           REMOTE_NOLOOKUP, NULL)))
-                apr_cpystrn(ws->client, c->client_ip, sizeof(ws->client));
-            else
-                apr_cpystrn(ws->client, val, sizeof(ws->client));
+                                           REMOTE_NOLOOKUP, NULL))) {
+                apr_cpystrn(ws->client, c->client_ip, sizeof(ws->client)); /* DEPRECATE */
+                apr_cpystrn(ws->client64, c->client_ip, sizeof(ws->client64));
+            }
+            else {
+                apr_cpystrn(ws->client, val, sizeof(ws->client)); /* DEPRECATE */
+                apr_cpystrn(ws->client64, val, sizeof(ws->client64));
+            }
         }
 
         if (s) {
@@ -673,6 +681,7 @@ AP_DECLARE(void) ap_copy_scoreboard_worker(worker_score *dest,
     /* For extra safety, NUL-terminate the strings returned, though it
      * should be true those last bytes are always zero anyway. */
     dest->client[sizeof(dest->client) - 1] = '\0';
+    dest->client64[sizeof(dest->client64) - 1] = '\0';
     dest->request[sizeof(dest->request) - 1] = '\0';
     dest->vhost[sizeof(dest->vhost) - 1] = '\0';
     dest->protocol[sizeof(dest->protocol) - 1] = '\0';

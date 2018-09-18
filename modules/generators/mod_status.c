@@ -837,7 +837,7 @@ static int status_handler(request_rec *r)
                     ap_rprintf(r,
                                " <i>%s {%s}</i> <i>(%s)</i> <b>[%s]</b><br />\n\n",
                                ap_escape_html(r->pool,
-                                              ws_record->client),
+                                              ws_record->client64),
                                ap_escape_html(r->pool,
                                               ap_escape_logitem(r->pool,
                                                                 ws_record->request)),
@@ -924,7 +924,7 @@ static int status_handler(request_rec *r)
                     ap_rprintf(r, "</td><td>%s</td><td>%s</td><td nowrap>%s</td>"
                                   "<td nowrap>%s</td></tr>\n\n",
                                ap_escape_html(r->pool,
-                                              ws_record->client),
+                                              ws_record->client64),
                                ap_escape_html(r->pool,
                                               ws_record->protocol),
                                ap_escape_html(r->pool,

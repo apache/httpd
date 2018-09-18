@@ -3,6 +3,12 @@ Changes with Apache 2.4.36
 
 Changes with Apache 2.4.35
 
+  *) mod_status, mod_echo: Fix the display of client addresses.
+    They were truncated to 31 characters which is not enough for IPv6 addresses.
+    This is done by deprecating the use of the 'client' field and using
+    the new 'client64' field in worker_score.
+    PR 54848 [Bernhard Schmidt <berni birkenwald de>, Jim Jagielski]
+
   *) http: Enforce consistently no response body with both 204 and 304
      statuses.  [Yann Ylavic]
 
