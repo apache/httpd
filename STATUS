@@ -234,7 +234,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      streams/tasks, add some util fixes from mod_md copies, although not called in h2. 
      trunk patch: http://svn.apache.org/r1835118
      2.4.x patch: svn merge -c 1835118 ^/httpd/httpd/trunk .
-     +1: icing
+     +1: icing, minfrin
 
   *) ab: print Server Temp Key information.
      trunk patch: http://svn.apache.org/r1738415
