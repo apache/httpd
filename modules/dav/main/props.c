@@ -524,7 +524,21 @@ DAV_DECLARE(dav_error *)dav_open_propdb(request_rec *r, dav_lockdb *lockdb,
                                         apr_array_header_t * ns_xlate,
                                         dav_propdb **p_propdb)
 {
-    dav_propdb *propdb = apr_pcalloc(r->pool, sizeof(*propdb));
+    dav_propdb *propdb = NULL;
+    /*
+     * Check if we have tucked away a previous propdb and reuse it.
+     * Otherwise create a new one and tuck it away
+     */
+    apr_pool_userdata_get((void **)&propdb, "propdb", r->pool);
+    if (!propdb) {
+        propdb = apr_pcalloc(r->pool, sizeof(*propdb));
+        apr_pool_userdata_setn(propdb, "propdb", NULL, r->pool);
+        apr_pool_create(&propdb->p, r->pool);
+    }
+    else {
+        /* Play safe and clear the pool of the reused probdb */
+        apr_pool_clear(propdb->p);
+    }
 
     *p_propdb = NULL;
 
@@ -537,7 +551,6 @@ DAV_DECLARE(dav_error *)dav_open_propdb(request_rec *r, dav_lockdb *lockdb,
 #endif
 
     propdb->r = r;
-    apr_pool_create(&propdb->p, r->pool);
     propdb->resource = resource;
     propdb->ns_xlate = ns_xlate;
 
@@ -562,10 +575,12 @@ DAV_DECLARE(void) dav_close_propdb(dav_propdb *propdb)
         (*propdb->db_hooks->close)(propdb->db);
     }
 
-    /* Currently, mod_dav's pool usage doesn't allow clearing this pool. */
-#if 0
-    apr_pool_destroy(propdb->p);
-#endif
+    if (propdb->subreq) {
+        ap_destroy_sub_req(propdb->subreq);
+        propdb->subreq = NULL;
+    }
+
+    apr_pool_clear(propdb->p);
 }
 
 DAV_DECLARE(dav_get_props_result) dav_get_allprops(dav_propdb *propdb,
@@ -815,7 +830,8 @@ DAV_DECLARE(dav_get_props_result) dav_get_props(dav_propdb *propdb,
         */
 
         if (elem->priv == NULL) {
-            elem->priv = apr_pcalloc(propdb->p, sizeof(*priv));
+            /* elem->priv outlives propdb->p. Hence use the request pool */
+            elem->priv = apr_pcalloc(propdb->r->pool, sizeof(*priv));
         }
         priv = elem->priv;
 
