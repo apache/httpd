@@ -212,7 +212,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              http://svn.apache.org/r1828790
              http://svn.apache.org/r1828791
              http://svn.apache.org/r1828792
-      2.4.x branch: ^/httpd/httpd/branches/tlsv1.3-for-2.4.x
+             http://svn.apache.org/r1840585
+             http://svn.apache.org/r1840710
+             http://svn.apache.org/r1841218
+      2.4.x branch: svn merge ^/httpd/httpd/branches/tlsv1.3-for-2.4.x
       +1: icing,
 
    *) mod_proxy_hcheck: Fix issues with TCP health checks. PR 61499
