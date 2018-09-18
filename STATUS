@@ -216,7 +216,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              http://svn.apache.org/r1840710
              http://svn.apache.org/r1841218
       2.4.x branch: svn merge ^/httpd/httpd/branches/tlsv1.3-for-2.4.x
-      +1: icing,
+      +1: icing, jorton, 
 
    *) mod_proxy_hcheck: Fix issues with TCP health checks. PR 61499
       trunk patch: http://svn.apache.org/r1840582
