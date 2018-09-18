@@ -213,7 +213,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    Merge of server/protocol.c fails but it is not an issue. The
                    corresponding message has been updated and already backported
                    in 2.4.x in r1772678.
-      +1: jailletc36, 
+      +1: jailletc36, minfrin
 
   *) Easy patches: synch 2.4.x and trunk
      - mod_sed: Style only
