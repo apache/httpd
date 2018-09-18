@@ -1,4 +1,6 @@
                                                          -*- coding: utf-8 -*-
+Changes with Apache 2.4.36
+
 Changes with Apache 2.4.35
 
   *) http: Enforce consistently no response body with both 204 and 304
