@@ -27,50 +27,50 @@
 <div id="preamble"><h1>Module Apache mod_lbmethod_bytraffic</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_lbmethod_bytraffic.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_lbmethod_bytraffic.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_lbmethod_bytraffic.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Algorithme de planification avec r&#233;partition de charge en
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Algorithme de planification avec répartition de charge en
 fonction d'un niveau de trafic pour le module
 <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code></td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&#160;de&#160;Module:</a></th><td>lbmethod_bytraffic_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier&#160;Source:</a></th><td>mod_lbmethod_bytraffic.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Dissoci&#233; de <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code> depuis la
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>lbmethod_bytraffic_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_lbmethod_bytraffic.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">Compatibilité:</a></th><td>Dissocié de <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code> depuis la
 version 2.3</td></tr></table>
 <h3>Sommaire</h3>
 
-<p>Ce module ne fournit pas lui-m&#234;me de directive de configuration. Il
-n&#233;cessite les services de <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code>, et
-fournit la m&#233;thode de r&#233;partition de charge <code>bytraffic</code>.</p>
+<p>Ce module ne fournit pas lui-même de directive de configuration. Il
+nécessite les services de <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code>, et
+fournit la méthode de répartition de charge <code>bytraffic</code>.</p>
 </div>
 <div id="quickview"><h3>Sujets</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#traffic">Algorithme de r&#233;partition en fonction d'un certain
+<li><img alt="" src="../images/down.gif" /> <a href="#traffic">Algorithme de répartition en fonction d'un certain
     trafic</a></li>
 </ul><h3 class="directives">Directives</h3>
 <p>Ce module ne fournit aucune directive.</p>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_lbmethod_bytraffic">Probl&#232;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_lbmethod_bytraffic">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_lbmethod_bytraffic">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_lbmethod_bytraffic">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></li>
 <li><code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code></li>
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="traffic" id="traffic">Algorithme de r&#233;partition en fonction d'un certain
+<h2><a name="traffic" id="traffic">Algorithme de répartition en fonction d'un certain
     trafic</a><a title="Lien permanent" href="#traffic" class="permalink">&para;</a></h2>
     
-    <p>Activ&#233; via <code>lbmethod=bytraffic</code>, l'id&#233;e directrice de
-    ce planificateur est similaire &#224; celle de la m&#233;thode reposant sur le
-    nombre de requ&#234;tes, avec les diff&#233;rences suivantes :</p>
+    <p>Activé via <code>lbmethod=bytraffic</code>, l'idée directrice de
+    ce planificateur est similaire à celle de la méthode reposant sur le
+    nombre de requêtes, avec les différences suivantes :</p>
 
-    <p><dfn>lbfactor</dfn> repr&#233;sente la <em>quantit&#233; de trafic, en
-    octets, que nous voulons voir trait&#233;e par le processus</em>. Il
-    s'agit l&#224; aussi d'une valeur normalis&#233;e repr&#233;sentant la part de
-    travail &#224; effectuer par le processus, mais au lieu de se baser sur
-    un nombre de requ&#234;tes, on prend en compte la quantit&#233; de trafic que
-    ce processus a trait&#233;.</p>
+    <p><dfn>lbfactor</dfn> représente la <em>quantité de trafic, en
+    octets, que nous voulons voir traitée par le processus</em>. Il
+    s'agit là aussi d'une valeur normalisée représentant la part de
+    travail à effectuer par le processus, mais au lieu de se baser sur
+    un nombre de requêtes, on prend en compte la quantité de trafic que
+    ce processus a traité.</p>
 
-    <p>Si un r&#233;partiteur est configur&#233; comme suit :</p>
+    <p>Si un répartiteur est configuré comme suit :</p>
 
     <table><tr><th>worker</th>
         <th class="data">a</th>
@@ -83,21 +83,21 @@ fournit la m&#233;thode de r&#233;partition de charge <code>bytraffic</code>.</p
 </table>
 
     <p>Cela signifie que nous souhaitons que <var>b</var> traite 2 fois
-    plus d'octets que <var>a</var> ou <var>c</var>. Cela n'entra&#238;ne pas
-    n&#233;cessairement que <var>b</var> va traiter deux fois plus de
-    requ&#234;tes, mais qu'il va traiter deux fois plus de trafic en termes
-    d'entr&#233;es/sorties. A cet effet, les tailles de la requ&#234;te et de sa
-    r&#233;ponse assocci&#233;e sont prises en compte par l'algorithme de
-    s&#233;lection et d'&#233;valuation du trafic.</p>
+    plus d'octets que <var>a</var> ou <var>c</var>. Cela n'entraîne pas
+    nécessairement que <var>b</var> va traiter deux fois plus de
+    requêtes, mais qu'il va traiter deux fois plus de trafic en termes
+    d'entrées/sorties. A cet effet, les tailles de la requête et de sa
+    réponse assocciée sont prises en compte par l'algorithme de
+    sélection et d'évaluation du trafic.</p>
 
-    <p>Note : les octets en entr&#233;e sont &#233;valu&#233;s avec la m&#234;me pond&#233;ration
+    <p>Note : les octets en entrée sont évalués avec la même pondération
     que les octets en sortie.</p>
 
 </div>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_lbmethod_bytraffic.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_lbmethod_bytraffic.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_lbmethod_bytraffic.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -116,7 +116,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_lbmethod_b
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autoris&#233; sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

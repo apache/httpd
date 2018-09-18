@@ -27,30 +27,30 @@
 <div id="preamble"><h1>Module Apache mod_vhost_alias</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_vhost_alias.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_vhost_alias.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
-<a href="../tr/mod/mod_vhost_alias.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
+<a href="../fr/mod/mod_vhost_alias.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../tr/mod/mod_vhost_alias.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Permet de configurer dynamiquement l'h&#233;bergement virtuel de
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Permet de configurer dynamiquement l'hébergement virtuel de
 masse</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&#160;de&#160;Module:</a></th><td>vhost_alias_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier&#160;Source:</a></th><td>mod_vhost_alias.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>vhost_alias_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_vhost_alias.c</td></tr></table>
 <h3>Sommaire</h3>
 
-    <p>Ce module permet de cr&#233;er des serveurs virtuels configur&#233;s
+    <p>Ce module permet de créer des serveurs virtuels configurés
     dynamiquement, en autorisant l'utilisation de l'adresse IP et/ou de
-    l'en-t&#234;te <code>Host:</code> de la requ&#234;te HTTP comme partie du nom
-    de chemin afin de d&#233;terminer les fichiers &#224; servir. Ceci facilite la
-    gestion d'un grand nombre de serveurs virtuels poss&#232;dant des
+    l'en-tête <code>Host:</code> de la requête HTTP comme partie du nom
+    de chemin afin de déterminer les fichiers à servir. Ceci facilite la
+    gestion d'un grand nombre de serveurs virtuels possèdant des
     configurations similaires.</p>
 
     <div class="note"><h3>Note</h3>
       <p>Si les modules <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code> ou
-      <code class="module"><a href="../mod/mod_userdir.html">mod_userdir</a></code> sont utilis&#233;s pour traduire les URIs
+      <code class="module"><a href="../mod/mod_userdir.html">mod_userdir</a></code> sont utilisés pour traduire les URIs
       en noms de fichiers, ils l'emportent sur les directives du module
-      <code class="module"><a href="../mod/mod_vhost_alias.html">mod_vhost_alias</a></code> d&#233;crites ci-dessous. Par
+      <code class="module"><a href="../mod/mod_vhost_alias.html">mod_vhost_alias</a></code> décrites ci-dessous. Par
       exemple, la configuration suivante fera correspondre <code>
-      /cgi-bin/script.pl</code> &#224; <code>
+      /cgi-bin/script.pl</code> à <code>
       /usr/local/apache2/cgi-bin/script.pl</code> dans tous les cas :</p>
 
       <pre class="prettyprint lang-config">ScriptAlias "/cgi-bin/" "/usr/local/apache2/cgi-bin/"
@@ -60,7 +60,7 @@ VirtualScriptAlias "/never/found/%0/cgi-bin/"</pre>
 </div>
 <div id="quickview"><h3>Sujets</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#interpol">Interpolation du nom de r&#233;pertoire</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#interpol">Interpolation du nom de répertoire</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#examples">Exemples</a></li>
 </ul><h3 class="directives">Directives</h3>
 <ul id="toc">
@@ -69,46 +69,46 @@ VirtualScriptAlias "/never/found/%0/cgi-bin/"</pre>
 <li><img alt="" src="../images/down.gif" /> <a href="#virtualscriptalias">VirtualScriptAlias</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#virtualscriptaliasip">VirtualScriptAliasIP</a></li>
 </ul>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_vhost_alias">Probl&#232;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_vhost_alias">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_vhost_alias">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_vhost_alias">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><code class="directive"><a href="../mod/core.html#usecanonicalname">UseCanonicalName</a></code></li>
 <li><a href="../vhosts/mass.html">Configuration dynamique de
-l'h&#233;bergement virtuel de masse</a></li>
+l'hébergement virtuel de masse</a></li>
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="interpol" id="interpol">Interpolation du nom de r&#233;pertoire</a><a title="Lien permanent" href="#interpol" class="permalink">&para;</a></h2>
+<h2><a name="interpol" id="interpol">Interpolation du nom de répertoire</a><a title="Lien permanent" href="#interpol" class="permalink">&para;</a></h2>
     
 
-    <p>Toutes les directives de ce module ins&#232;rent une cha&#238;ne dans un
-    nom de chemin. La cha&#238;ne ins&#233;r&#233;e (que nous appellerons maintenant le
-    "nom") peux &#234;tre soit le nom du serveur (voir la directive
+    <p>Toutes les directives de ce module insèrent une chaîne dans un
+    nom de chemin. La chaîne insérée (que nous appellerons maintenant le
+    "nom") peux être soit le nom du serveur (voir la directive
     <code class="directive"><a href="../mod/core.html#usecanonicalname">UseCanonicalName</a></code> pour les
-    d&#233;tails sur la mani&#232;re dont il est d&#233;termin&#233;), soit l'adresse IP du
-    serveur virtuel h&#233;berg&#233; par le serveur sous la forme d'un quadruplet
-    d'octets s&#233;par&#233;s par des points. L'insertion est contr&#244;l&#233;e par des
-    sp&#233;cificateurs inspir&#233;s de <code>printf</code> et poss&#232;dant de
+    détails sur la manière dont il est déterminé), soit l'adresse IP du
+    serveur virtuel hébergé par le serveur sous la forme d'un quadruplet
+    d'octets séparés par des points. L'insertion est contrôlée par des
+    spécificateurs inspirés de <code>printf</code> et possèdant de
     nombreux formats :</p>
 
 <table>
 
 <tr><td><code>%%</code></td>
-<td>ins&#232;re un <code>%</code></td></tr>
+<td>insère un <code>%</code></td></tr>
 
 <tr><td><code>%p</code></td>
-<td>ins&#232;re le num&#233;ro de port du serveur virtuel</td></tr>
+<td>insère le numéro de port du serveur virtuel</td></tr>
 
 <tr><td><code>%N.M</code></td>
-<td>ins&#232;re le nom (en partie)</td></tr>
+<td>insère le nom (en partie)</td></tr>
 
 </table>
 
-    <p><code>N</code> et <code>M</code> permettent de sp&#233;cifier des
-    sous-cha&#238;nes du nom. <code>N</code> s&#233;lectionne un des composants du
-    nom s&#233;par&#233;s par des points, et <code>M</code> s&#233;lectionne des
-    caract&#232;res &#224; l'int&#233;rieur de ce que <code>N</code> a s&#233;lectionn&#233;.
-    <code>M</code> est optionnel et sa valeur par d&#233;faut est 0 s'il
-    n'est pas sp&#233;cifi&#233; ; le point doit &#234;tre pr&#233;sent si et seulement si
+    <p><code>N</code> et <code>M</code> permettent de spécifier des
+    sous-chaînes du nom. <code>N</code> sélectionne un des composants du
+    nom séparés par des points, et <code>M</code> sélectionne des
+    caractères à l'intérieur de ce que <code>N</code> a sélectionné.
+    <code>M</code> est optionnel et sa valeur par défaut est 0 s'il
+    n'est pas spécifié ; le point doit être présent si et seulement si
     <code>M</code> l'est aussi. Les modes d'insertion sont les suivants
     :</p>
 
@@ -118,37 +118,37 @@ l'h&#233;bergement virtuel de masse</a></li>
       <td>le nom en entier</td></tr>
 
       <tr><td><code>1</code></td>
-      <td>la premi&#232;re partie</td></tr>
+      <td>la première partie</td></tr>
 
       <tr><td><code>2</code></td>
       <td>la seconde partie</td></tr>
 
       <tr><td><code>-1</code></td>
-      <td>la derni&#232;re partir</td></tr>
+      <td>la dernière partir</td></tr>
 
       <tr><td><code>-2</code></td>
-      <td>l'avant-derni&#232;re partie</td></tr>
+      <td>l'avant-dernière partie</td></tr>
 
       <tr><td><code>2+</code></td>
-      <td>toutes les parties &#224; partir de la seconde</td></tr>
+      <td>toutes les parties à partir de la seconde</td></tr>
 
       <tr><td><code>-2+</code></td>
-      <td>toutes les parties jusqu'&#224; l'avant-derni&#232;re</td></tr>
+      <td>toutes les parties jusqu'à l'avant-dernière</td></tr>
 
       <tr><td><code>1+</code> et <code>-1+</code></td>
-      <td>identique &#224; <code>0</code></td></tr>
+      <td>identique à <code>0</code></td></tr>
     </table>
 
     <p>Si <code>N</code> ou <code>M</code> est plus grand que le nombre
-    de parties disponibles, seul un caract&#232;re de soulignement est
-    ins&#233;r&#233;.</p>
+    de parties disponibles, seul un caractère de soulignement est
+    inséré.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="examples" id="examples">Exemples</a><a title="Lien permanent" href="#examples" class="permalink">&para;</a></h2>
     
 
-    <p>Pour des serveurs virtuels simples &#224; base de nom, utilisez les
+    <p>Pour des serveurs virtuels simples à base de nom, utilisez les
     directives suivantes dans le fichier de configuration de votre
     serveur :</p>
 
@@ -156,34 +156,34 @@ l'h&#233;bergement virtuel de masse</a></li>
 VirtualDocumentRoot "/usr/local/apache/vhosts/%0"</pre>
 
 
-    <p>Une requ&#234;te pour
+    <p>Une requête pour
     <code>http://www.example.com/repertoire/fichier.html</code>
     concernera alors la ressource
     <code>/usr/local/apache/vhosts/www.example.com/repertoire/fichier.html</code>.
     </p>
 
-    <p>Pour un tr&#232;s grand nombre de serveurs virtuels, il est avantageux
-    d'organiser les fichiers de fa&#231;on &#224; r&#233;duire la taille du r&#233;pertoire
-    <code>vhosts</code>. Pour ce faire, ins&#233;rez les lignes suivantes
+    <p>Pour un très grand nombre de serveurs virtuels, il est avantageux
+    d'organiser les fichiers de façon à réduire la taille du répertoire
+    <code>vhosts</code>. Pour ce faire, insérez les lignes suivantes
     dans votre fichier de configuration :</p>
 
     <pre class="prettyprint lang-config">UseCanonicalName    Off
 VirtualDocumentRoot "/usr/local/apache/vhosts/%3+/%2.1/%2.2/%2.3/%2"</pre>
 
 
-    <p>Une requ&#234;te pour
+    <p>Une requête pour
     <code>http://www.domaine.example.com/repertoire/fichier.html</code>
     concernera alors la ressource
     <code>/usr/local/apache/vhosts/example.com/d/o/m/domaine/repertoire/fichier.html</code>.</p>
 
-    <p>Une r&#233;partition plus r&#233;guli&#232;re des fichiers peut &#234;tre obtenue en
+    <p>Une répartition plus régulière des fichiers peut être obtenue en
     partant de la fin d'un composant du nom, comme dans l'exemple
     suivant :</p>
 
 <pre class="prettyprint lang-config">VirtualDocumentRoot "/usr/local/apache/vhosts/%3+/%2.-1/%2.-2/%2.-3/%2"</pre>
 
 
-    <p>La requ&#234;te pr&#233;c&#233;dente concernerait alors
+    <p>La requête précédente concernerait alors
     <code>/usr/local/apache/vhosts/example.com/e/n/i/domaine/repertoire/fichier.html</code>.</p>
 
     <p>Vous pouvez aussi utiliser : </p>
@@ -191,39 +191,39 @@ VirtualDocumentRoot "/usr/local/apache/vhosts/%3+/%2.1/%2.2/%2.3/%2"</pre>
 <pre class="prettyprint lang-config">VirtualDocumentRoot "/usr/local/apache/vhosts/%3+/%2.1/%2.2/%2.3/%2.4+"</pre>
 
 
-    <p>La requ&#234;te pr&#233;c&#233;dente concernerait alors
+    <p>La requête précédente concernerait alors
     <code>/usr/local/apache/vhosts/example.com/d/o/m/aine/repertoire/fichier.html</code>.</p>
 
-    <p>Une demande tr&#232;s courante des utilisateurs concerne la possibilit&#233; de
-    faire correspondre plusieurs racines de documents &#224; plusieurs
-    domaines, sans avoir &#224; se pr&#233;occuper de la longueur ou du nombre de
-    parties du nom d'h&#244;te faisant partie de la requ&#234;te. Si le nom d'h&#244;te
-    de la requ&#234;te est <code>sub.www.domain.example.com</code> au lieu de
+    <p>Une demande très courante des utilisateurs concerne la possibilité de
+    faire correspondre plusieurs racines de documents à plusieurs
+    domaines, sans avoir à se préoccuper de la longueur ou du nombre de
+    parties du nom d'hôte faisant partie de la requête. Si le nom d'hôte
+    de la requête est <code>sub.www.domain.example.com</code> au lieu de
     simplement <code>www.domain.example.com</code>, alors en utilisant
     %3+, la racine des documents sera
     <code>/usr/local/apache/vhosts/domain.example.com/...</code> au
-    lieu du r&#233;pertoire <code>example.com</code> attendu. Dans ce genre
-    de situation, il peut s'av&#233;rer pr&#233;f&#233;rable d'utiliser la combinaison
+    lieu du répertoire <code>example.com</code> attendu. Dans ce genre
+    de situation, il peut s'avérer préférable d'utiliser la combinaison
     <code>%-2.0.%-1.0</code> qui fournira toujours le nom de domaine et
     le tld, par exemple <code>example.com</code> sans tenir compte du
-    nombre de sous-domaines ajout&#233;s au nom d'h&#244;te. Dans ces conditions,
-    il est possible d'&#233;laborer une configuration qui associera les
-    sous-domaines de premier, second et troisi&#232;me niveau au m&#234;me
-    r&#233;pertoire :
+    nombre de sous-domaines ajoutés au nom d'hôte. Dans ces conditions,
+    il est possible d'élaborer une configuration qui associera les
+    sous-domaines de premier, second et troisième niveau au même
+    répertoire :
 </p>
 <pre class="prettyprint lang-config">VirtualDocumentRoot "/usr/local/apache/vhosts/%-2.0.%-1.0"</pre>
 
 <p>
 Dans l'exemple ci-dessus, <code>www.example.com</code>,
 <code>www.sub.example.com</code> ou <code>example.com</code>
-correspondront tous au r&#233;pertoire
+correspondront tous au répertoire
 <code>/usr/local/apache/vhosts/example.com</code>.
 </p>
 
 
 
-    <p>Pour l'h&#233;bergement virtuel &#224; base d'adresse IP, vous pouvez
-    ins&#233;rer les lignes suivantes dans votre fichier de configuration
+    <p>Pour l'hébergement virtuel à base d'adresse IP, vous pouvez
+    insérer les lignes suivantes dans votre fichier de configuration
     :</p>
 
     <pre class="prettyprint lang-config">UseCanonicalName DNS
@@ -232,65 +232,65 @@ VirtualScriptAliasIP  "/usr/local/apache/vhosts/%1/%2/%3/%4/cgi-bin"</pre>
 
 
     <p>Si l'adresse IP de <code>www.domaine.example.com</code> est
-    10.20.30.40, une requ&#234;te pour
+    10.20.30.40, une requête pour
     <code>http://www.domaine.example.com/repertoire/fichier.html</code>
     concernera la ressource
     <code>/usr/local/apache/vhosts/10/20/30/40/docs/repertoire/fichier.html</code>.
-    Une requ&#234;te pour
+    Une requête pour
     <code>http://www.domaine.example.com/cgi-bin/script.pl</code>
     concernera la ressource
     <code>/usr/local/apache/vhosts/10/20/30/40/cgi-bin/script.pl</code>.</p>
 
-    <p>Si vous voulez ins&#233;rer le caract&#232;re <code>.</code> dans une
-    directive <code>VirtualDocumentRoot</code>, et si cela cr&#233;e un
-    conflit avec un sp&#233;cificateur <code>%</code>, vous pouvez contourner
-    le probl&#232;me de la mani&#232;re suivante :</p>
+    <p>Si vous voulez insérer le caractère <code>.</code> dans une
+    directive <code>VirtualDocumentRoot</code>, et si cela crée un
+    conflit avec un spécificateur <code>%</code>, vous pouvez contourner
+    le problème de la manière suivante :</p>
 
 <pre class="prettyprint lang-config">VirtualDocumentRoot "/usr/local/apache/vhosts/%2.0.%3.0"</pre>
 
 
-    <p>Une requ&#234;te pour
+    <p>Une requête pour
     <code>http://www.domaine.example.com/repertoire/fichier.html</code>
     concernera alors la ressource
     <code>/usr/local/apache/vhosts/domaine.exemple/repertoire/fichier.html</code>.</p>
 
-    <p>Les sp&#233;cificateurs de format <code>%V</code> et <code>%A</code>
-    de la directive <code class="directive"><a href="../mod/mod_log_config.html#logformat">LogFormat</a></code> s'av&#232;rent tr&#232;s utiles
-    lorsqu'ils sont utilis&#233;s en conjonction avec ce module.</p>
+    <p>Les spécificateurs de format <code>%V</code> et <code>%A</code>
+    de la directive <code class="directive"><a href="../mod/mod_log_config.html#logformat">LogFormat</a></code> s'avèrent très utiles
+    lorsqu'ils sont utilisés en conjonction avec ce module.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="virtualdocumentroot" id="virtualdocumentroot">Directive</a> <a name="VirtualDocumentRoot" id="VirtualDocumentRoot">VirtualDocumentRoot</a><a title="Lien permanent" href="#virtualdocumentroot" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Permet une configuration dynamique de la racine des
-documents d'un serveur virtuel donn&#233;</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>VirtualDocumentRoot <em>r&#233;pertoire-interpol&#233;</em>|none</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>VirtualDocumentRoot none</code></td></tr>
+documents d'un serveur virtuel donné</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>VirtualDocumentRoot <em>répertoire-interpolé</em>|none</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>VirtualDocumentRoot none</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_vhost_alias</td></tr>
 </table>
 
     <p>La directive <code class="directive">VirtualDocumentRoot</code> vous
-    permet de sp&#233;cifier o&#249; le serveur HTTP Apache pourra trouver vos
+    permet de spécifier où le serveur HTTP Apache pourra trouver vos
     documents en se basant
-    sur le nom du serveur. Le r&#233;sultat de l'expansion du
-    <em>r&#233;pertoire-interpol&#233;</em> est utilis&#233; comme racine de
-    l'arborescence des documents d'une mani&#232;re similaire &#224; l'argument de
+    sur le nom du serveur. Le résultat de l'expansion du
+    <em>répertoire-interpolé</em> est utilisé comme racine de
+    l'arborescence des documents d'une manière similaire à l'argument de
     la directive <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>. Si
-    <em>r&#233;pertoire-interpol&#233;</em> a pour valeur <code>none</code>, la
-    directive <code class="directive">VirtualDocumentRoot</code> est d&#233;sactiv&#233;e.
-    Cette directive ne peut pas &#234;tre utilis&#233;e dans le m&#234;me contexte que
+    <em>répertoire-interpolé</em> a pour valeur <code>none</code>, la
+    directive <code class="directive">VirtualDocumentRoot</code> est désactivée.
+    Cette directive ne peut pas être utilisée dans le même contexte que
     la directive <code class="directive"><a href="#virtualdocumentrootip">VirtualDocumentRootIP</a></code>.</p>
 
 <div class="warning"><h3>Note</h3>
 La directive <code class="directive">VirtualDocumentRoot</code> l'emporte sur
 toute directive <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>
-d&#233;finie dans le m&#234;me contexte ou dans des contextes enfants. Le fait de
-d&#233;finir une directive <code class="directive">VirtualDocumentRoot</code> dans le
+définie dans le même contexte ou dans des contextes enfants. Le fait de
+définir une directive <code class="directive">VirtualDocumentRoot</code> dans le
 contexte du serveur principal va effectivement l'emporter sur toute
-directive <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> d&#233;finie dans
-un serveur virtuel quelconque, si vous n'avez pas d&#233;fini
-<code class="directive">VirtualDocumentRoot</code> &#224; <code>None</code> dans ce
+directive <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> définie dans
+un serveur virtuel quelconque, si vous n'avez pas défini
+<code class="directive">VirtualDocumentRoot</code> à <code>None</code> dans ce
 serveur virtuel.
 </div>    
 
@@ -300,36 +300,36 @@ serveur virtuel.
 <div class="directive-section"><h2><a name="virtualdocumentrootip" id="virtualdocumentrootip">Directive</a> <a name="VirtualDocumentRootIP" id="VirtualDocumentRootIP">VirtualDocumentRootIP</a><a title="Lien permanent" href="#virtualdocumentrootip" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configuration dynamique de la racine des documents pour un
-serveur virtuel donn&#233;</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>VirtualDocumentRootIP <em>r&#233;pertoire-interpol&#233;</em>|none</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>VirtualDocumentRootIP none</code></td></tr>
+serveur virtuel donné</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>VirtualDocumentRootIP <em>répertoire-interpolé</em>|none</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>VirtualDocumentRootIP none</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_vhost_alias</td></tr>
 </table>
 
 <p>La directive <code class="directive">VirtualDocumentRootIP</code> est
-identique &#224; la directive <code class="directive"><a href="#virtualdocumentroot">VirtualDocumentRoot</a></code> &#224; l'exception
-pr&#232;s qu'elle utilise l'adresse IP du serveur virtuel pour
-l'interpolation du r&#233;pertoire &#224; la place du nom du serveur.</p>
+identique à la directive <code class="directive"><a href="#virtualdocumentroot">VirtualDocumentRoot</a></code> à l'exception
+près qu'elle utilise l'adresse IP du serveur virtuel pour
+l'interpolation du répertoire à la place du nom du serveur.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="virtualscriptalias" id="virtualscriptalias">Directive</a> <a name="VirtualScriptAlias" id="VirtualScriptAlias">VirtualScriptAlias</a><a title="Lien permanent" href="#virtualscriptalias" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configuration dynamique du r&#233;pertoire des scripts CGI pour
-un serveur virtuel donn&#233;</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>VirtualScriptAlias <em>r&#233;pertoire-interpol&#233;</em>|none</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>VirtualScriptAlias none</code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configuration dynamique du répertoire des scripts CGI pour
+un serveur virtuel donné</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>VirtualScriptAlias <em>répertoire-interpolé</em>|none</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>VirtualScriptAlias none</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_vhost_alias</td></tr>
 </table>
 
     <p>La directive <code class="directive">VirtualScriptAlias</code> vous
-    permet de sp&#233;cifier o&#249; Apache httpd pourra trouver les scripts CGI selon une
-    m&#233;thode similaire &#224; celle qu'utilise la directive <code class="directive"><a href="#virtualdocumentroot">VirtualDocumentRoot</a></code> pour les
-    autres documents. Elle recherche des requ&#234;tes dont l'URI commence
+    permet de spécifier où Apache httpd pourra trouver les scripts CGI selon une
+    méthode similaire à celle qu'utilise la directive <code class="directive"><a href="#virtualdocumentroot">VirtualDocumentRoot</a></code> pour les
+    autres documents. Elle recherche des requêtes dont l'URI commence
     par <code>/cgi-bin/</code>, comme le ferait la directive <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code>.</p>
 
 
@@ -337,27 +337,27 @@ un serveur virtuel donn&#233;</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="virtualscriptaliasip" id="virtualscriptaliasip">Directive</a> <a name="VirtualScriptAliasIP" id="VirtualScriptAliasIP">VirtualScriptAliasIP</a><a title="Lien permanent" href="#virtualscriptaliasip" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configuration dynamique du r&#233;pertoire des scripts CGI pour
-un serveur virtuel donn&#233;</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>VirtualScriptAliasIP <em>r&#233;pertoire-interpol&#233;</em>|none</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>VirtualScriptAliasIP none</code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configuration dynamique du répertoire des scripts CGI pour
+un serveur virtuel donné</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>VirtualScriptAliasIP <em>répertoire-interpolé</em>|none</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>VirtualScriptAliasIP none</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_vhost_alias</td></tr>
 </table>
 
     <p>La directive <code class="directive">VirtualScriptAliasIP</code> est
-    identique &#224; la directive <code class="directive"><a href="#virtualscriptalias">VirtualScriptAlias</a></code> &#224;
-    l'exception pr&#232;s qu'elle utilise l'adresse IP du serveur virtuel
-    pour l'interpolation du r&#233;pertoire &#224; la place du nom du serveur.</p>
+    identique à la directive <code class="directive"><a href="#virtualscriptalias">VirtualScriptAlias</a></code> à
+    l'exception près qu'elle utilise l'adresse IP du serveur virtuel
+    pour l'interpolation du répertoire à la place du nom du serveur.</p>
 
     
 </div>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_vhost_alias.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_vhost_alias.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
-<a href="../tr/mod/mod_vhost_alias.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
+<a href="../fr/mod/mod_vhost_alias.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../tr/mod/mod_vhost_alias.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -376,7 +376,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_vhost_alia
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autoris&#233; sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

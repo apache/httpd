@@ -699,6 +699,7 @@ sslverifyclient	mod/mod_ssl.html#sslverifyclient
 sslverifydepth	mod/mod_ssl.html#sslverifydepth
 startservers	mod/mpm_common.html#startservers
 startthreads	mod/mpm_common.html#startthreads
+stricthostcheck	mod/core.html#stricthostcheck
 substitute	mod/mod_substitute.html#substitute
 substituteinheritbefore	mod/mod_substitute.html#substituteinheritbefore
 substitutemaxlinelength	mod/mod_substitute.html#substitutemaxlinelength

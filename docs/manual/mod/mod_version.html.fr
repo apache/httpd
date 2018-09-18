@@ -27,22 +27,22 @@
 <div id="preamble"><h1>Module Apache mod_version</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_version.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_version.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_version.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_version.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_version.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Configuration d&#233;pendant de la version</td></tr>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Configuration dépendant de la version</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&#160;de&#160;Module:</a></th><td>version_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier&#160;Source:</a></th><td>mod_version.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>version_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_version.c</td></tr></table>
 <h3>Sommaire</h3>
 
-    <p>Ce module a &#233;t&#233; con&#231;u pour &#234;tre utilis&#233; dans les suites de tests
-    et les grands r&#233;seaux qui doivent prendre en compte diff&#233;rentes
-    versions de httpd et diff&#233;rentes configurations. Il fournit un
+    <p>Ce module a été conçu pour être utilisé dans les suites de tests
+    et les grands réseaux qui doivent prendre en compte différentes
+    versions de httpd et différentes configurations. Il fournit un
     nouveau conteneur -- <code class="directive"><a href="#ifversion">&lt;IfVersion&gt;</a></code>, qui apporte une grande
-    souplesse dans la v&#233;rification de version en permettant une
-    comparaison num&#233;rique et l'utilisation d'expressions
+    souplesse dans la vérification de version en permettant une
+    comparaison numérique et l'utilisation d'expressions
     rationnelles.</p>
 
     <div class="example"><h3>Exemples</h3><pre class="prettyprint lang-config">&lt;IfVersion 2.4.2&gt;
@@ -50,7 +50,7 @@
 &lt;/IfVersion&gt;
 
 &lt;IfVersion &gt;= 2.5&gt;
-    # utilise vraiment les nouvelles fonctionnalit&#233;s :-)
+    # utilise vraiment les nouvelles fonctionnalités :-)
 &lt;/IfVersion&gt;</pre>
 </div>
 
@@ -60,64 +60,64 @@
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#ifversion">&lt;IfVersion&gt;</a></li>
 </ul>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_version">Probl&#232;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_version">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_version">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_version">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ifversion" id="ifversion">Directive</a> <a name="IfVersion" id="IfVersion">&lt;IfVersion&gt;</a><a title="Lien permanent" href="#ifversion" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Contient des portions de configuration d&#233;pendantes de la
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Contient des portions de configuration dépendantes de la
 version</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>&lt;IfVersion [[!]<var>op&#233;rateur</var>] <var>version</var>&gt; ...
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>&lt;IfVersion [[!]<var>opérateur</var>] <var>version</var>&gt; ...
 &lt;/IfVersion&gt;</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Surcharges autoris&#233;es:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_version</td></tr>
 </table>
     <p>La section <code class="directive">&lt;IfVersion&gt;</code>
-    rassemble des directives de configuration qui ne sont ex&#233;cut&#233;es que
-    si la version de httpd satisfait aux crit&#232;res sp&#233;cifi&#233;s. Pour une
-    comparaison normale (num&#233;rique), l'argument <var>version</var> doit
-    &#234;tre sp&#233;cifi&#233; sous le format
+    rassemble des directives de configuration qui ne sont exécutées que
+    si la version de httpd satisfait aux critères spécifiés. Pour une
+    comparaison normale (numérique), l'argument <var>version</var> doit
+    être spécifié sous le format
     <code><var>majeur</var>[.<var>mineur</var>[.<var>patch</var>]]</code>,
     comme par exemple <code>2.1.0</code> ou <code>2.2</code>.
     <var>mineur</var> et <var>patch</var> sont optionnels. Si ces
-    num&#233;ros sont absents, il se voient affect&#233;e implicitement la valeur
-    0. Les <var>op&#233;rateur</var>s num&#233;riques suivants sont autoris&#233;s
+    numéros sont absents, il se voient affectée implicitement la valeur
+    0. Les <var>opérateur</var>s numériques suivants sont autorisés
     :</p>
 
-    <table class="bordered"><tr class="header"><th><var>op&#233;rateur</var></th><th>description</th></tr>
+    <table class="bordered"><tr class="header"><th><var>opérateur</var></th><th>description</th></tr>
 <tr><td><code>=</code> ou <code>==</code></td>
-        <td>La version de httpd est &#233;gale &#224; la valeur
-	sp&#233;cifi&#233;e</td></tr>
+        <td>La version de httpd est égale à la valeur
+	spécifiée</td></tr>
 <tr class="odd"><td><code>&gt;</code></td>
-        <td>La version de httpd est sup&#233;rieure &#224; la valeur
-	sp&#233;cifi&#233;e</td></tr>
+        <td>La version de httpd est supérieure à la valeur
+	spécifiée</td></tr>
 <tr><td><code>&gt;=</code></td>
-        <td>La version de httpd est sup&#233;rieure ou &#233;gale &#224; la valeur
-	sp&#233;cifi&#233;e</td></tr>
+        <td>La version de httpd est supérieure ou égale à la valeur
+	spécifiée</td></tr>
 <tr class="odd"><td><code>&lt;</code></td>
-        <td>La version de httpd est inf&#233;rieure &#224; la valeur
-	sp&#233;cifi&#233;e</td></tr>
+        <td>La version de httpd est inférieure à la valeur
+	spécifiée</td></tr>
 <tr><td><code>&lt;=</code></td>
-        <td>La version de httpd est inf&#233;rieure ou &#233;gale &#224; la valeur
-	sp&#233;cifi&#233;e</td></tr>
+        <td>La version de httpd est inférieure ou égale à la valeur
+	spécifiée</td></tr>
 </table>
 
     <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">&lt;IfVersion &gt;= 2.3&gt;
     # la condition n'est satisfaite que pour les versions de httpd
-	# sup&#233;rieures ou &#233;gales &#224; 2.3
+	# supérieures ou égales à 2.3
 &lt;/IfVersion&gt;</pre>
 </div>
 
-    <p>En plus d'une comparaison num&#233;rique, il est possible de comparer
+    <p>En plus d'une comparaison numérique, il est possible de comparer
     la version de httpd avec une <a class="glossarylink" href="../glossary.html#regex" title="voir glossaire">expression
-    rationnelle</a>. Il existe deux m&#233;thodes pour sp&#233;cifier cette
-    derni&#232;re :</p>
+    rationnelle</a>. Il existe deux méthodes pour spécifier cette
+    dernière :</p>
 
-    <table class="bordered"><tr class="header"><th><var>op&#233;rateur</var></th><th>description</th></tr>
+    <table class="bordered"><tr class="header"><th><var>opérateur</var></th><th>description</th></tr>
 <tr><td><code>=</code> ou <code>==</code></td>
         <td><var>version</var> est de la forme
             <code>/<var>regex</var>/</code></td></tr>
@@ -127,26 +127,26 @@ version</td></tr>
 </table>
 
     <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">&lt;IfVersion = /^2.4.[01234]$/&gt;
-    # exemple de contournement pour les versions bogu&#233;es
+    # exemple de contournement pour les versions boguées
 &lt;/IfVersion&gt;</pre>
 </div>
 
-    <p>Pour inverser la condition, tous les op&#233;rateurs peuvent &#234;tre
-    pr&#233;fix&#233;s par un point d'exclamation (<code>!</code>) :</p>
+    <p>Pour inverser la condition, tous les opérateurs peuvent être
+    préfixés par un point d'exclamation (<code>!</code>) :</p>
 
     <div class="example"><pre class="prettyprint lang-config">&lt;IfVersion !~ ^2.4.[01234]$&gt;
     # pas pour ces versions
 &lt;/IfVersion&gt;</pre>
 </div>
 
-    <p>Si <var>op&#233;rateur</var> est absent, sa valeur implicite est
+    <p>Si <var>opérateur</var> est absent, sa valeur implicite est
     <code>=</code>.</p>
 
 </div>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_version.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_version.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_version.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_version.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_version.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
@@ -167,7 +167,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_version.ht
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autoris&#233; sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

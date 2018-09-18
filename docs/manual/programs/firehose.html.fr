@@ -7,7 +7,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>firehose - D&#233;multiplexe un flux firehose - Serveur HTTP Apache Version 2.5</title>
+<title>firehose - Démultiplexe un flux firehose - Serveur HTTP Apache Version 2.5</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -21,24 +21,24 @@
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Programs</a></div><div id="page-content"><div id="preamble"><h1>firehose - D&#233;multiplexe un flux firehose</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Programs</a></div><div id="page-content"><div id="preamble"><h1>firehose - Démultiplexe un flux firehose</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/programs/firehose.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/programs/firehose.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/programs/firehose.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
 
-    <p><code>firehose</code> d&#233;multiplexe le flux de connexions
-    multiplex&#233;es donn&#233;, et enregistre chacune d'entre elles dans un
+    <p><code>firehose</code> démultiplexe le flux de connexions
+    multiplexées donné, et enregistre chacune d'entre elles dans un
     fichier individuel.</p>
 
-    <p>Lors de son enregistrement, chaque connexion est plac&#233;e dans un
-    fichier d&#233;di&#233; dont le nom est g&#233;n&#233;r&#233; &#224; partir de l'UUID de la
-    connexion dans le flux. Si le flux comporte des requ&#234;tes et des
-    r&#233;ponses, ces derni&#232;res feront l'objet de fichiers s&#233;par&#233;s.</p>
+    <p>Lors de son enregistrement, chaque connexion est placée dans un
+    fichier dédié dont le nom est généré à partir de l'UUID de la
+    connexion dans le flux. Si le flux comporte des requêtes et des
+    réponses, ces dernières feront l'objet de fichiers séparés.</p>
 
-    <p>Si le param&#232;tre optionnel prefix est sp&#233;cifi&#233;, les connexions qui
-    commencent par le pr&#233;fixe donn&#233; seront incluses. Le pr&#233;fixe doit
-    correspondre exactement au premier fragment pour un r&#233;sultat de
+    <p>Si le paramètre optionnel prefix est spécifié, les connexions qui
+    commencent par le préfixe donné seront incluses. Le préfixe doit
+    correspondre exactement au premier fragment pour un résultat de
     comparaison positif.</p>
 
 </div>
@@ -49,28 +49,28 @@
 <div class="section">
 <h2><a name="synopsis" id="synopsis">Syntaxe</a><a title="Lien permanent" href="#synopsis" class="permalink">&para;</a></h2>
     <p><code><strong>firehose</strong>
-    [ -<strong>f</strong> <var>entr&#233;e</var> ]
-    [ -<strong>o</strong> <var>r&#233;pertoire-sortie</var> ]
+    [ -<strong>f</strong> <var>entrée</var> ]
+    [ -<strong>o</strong> <var>répertoire-sortie</var> ]
     [ -<strong>u</strong> <var>uuid</var> ]
     [ -<strong>h</strong> ]
     [ --<strong>version</strong> ]
-    [<var>pr&#233;fixe1</var> [...]]</code></p>
+    [<var>préfixe1</var> [...]]</code></p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="options" id="options">Options</a><a title="Lien permanent" href="#options" class="permalink">&para;</a></h2>
     <dl>
     <dt><code>--file, -f <var>nom-fichier</var></code></dt>
-    <dd>Fichier depuis lequel doit &#234;tre lu le flux firehose. La valeur
-    par d&#233;faut est stdin.</dd>
+    <dd>Fichier depuis lequel doit être lu le flux firehose. La valeur
+    par défaut est stdin.</dd>
 
-    <dt><code>--output-directory, -o </code> <var>r&#233;pertoire-sortie</var></dt>
-    <dd>R&#233;pertoire dans lequel les connexions d&#233;multiplex&#233;es doivent
-    &#234;tre enregistr&#233;es.</dd>
+    <dt><code>--output-directory, -o </code> <var>répertoire-sortie</var></dt>
+    <dd>Répertoire dans lequel les connexions démultiplexées doivent
+    être enregistrées.</dd>
 
     <dt><code>--uuid, -u</code> <var>uuid</var></dt>
-    <dd>L'UUID de la connexion &#224; d&#233;multiplexer. Plusieurs UUID peuvent
-    &#234;tre sp&#233;cifi&#233;s. Par d&#233;faut, tout les UUID seront d&#233;multiplex&#233;s.</dd>
+    <dd>L'UUID de la connexion à démultiplexer. Plusieurs UUID peuvent
+    être spécifiés. Par défaut, tout les UUID seront démultiplexés.</dd>
 
     <dt><code>--help, -h</code></dt>
     <dd>Ce texte d'aide.</dd>
@@ -82,7 +82,7 @@
 </div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/programs/firehose.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/programs/firehose.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/programs/firehose.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -101,7 +101,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/programs/firehose.
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autoris&#233; sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

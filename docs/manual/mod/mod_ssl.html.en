@@ -216,7 +216,7 @@ the <code class="directive"><a href="#ssloptions">SSLOptions</a></code> directiv
 first (or only) attribute of any DN is added only under a non-suffixed
 name; i.e. no <code>_0</code> suffixed entries are added.</p>
 
-<p>In httpd 2.5.0 and later, an optional <em>_RAW</em> suffix may be
+<p>In httpd 2.4.32 and later, an optional <em>_RAW</em> suffix may be
 added to <em>x509</em> in a DN component, to suppress conversion of
 the attribute value to UTF-8. This must be placed after the index
 suffix (if any). For example, <code>SSL_SERVER_S_DN_OU_RAW</code> or
@@ -665,7 +665,7 @@ key is encrypted, the pass phrase dialog is forced at startup time.
 files, a certificate identifier can be used to identify a certificate
 stored in a token.  Currently, only <a href="https://tools.ietf.org/html/rfc7512">PKCS#11 URIs</a> are
 recognized as certificate identifiers, and can be used in conjunction
-with the OpenSSL <code>pkcs11</code> engine configured with <code class="directive"><a href="#sslcryptodevice">SSLCryptoDevice</a></code>.  If <code class="directive"><a href="#sslcertificatekeyfile">SSLCertificateKeyFile</a></code> is omitted, the
+with the OpenSSL <code>pkcs11</code> engine.  If <code class="directive"><a href="#sslcertificatekeyfile">SSLCertificateKeyFile</a></code> is omitted, the
 certificate and private key can be loaded through the single
 identifier specified with <code class="directive"><a href="#sslcertificatefile">SSLCertificateFile</a></code>.</p>
 
@@ -715,8 +715,6 @@ thus using a custom/suitable length.
 <div class="example"><h3>Example</h3><pre class="prettyprint lang-config"># Example using a PEM-encoded file.
 SSLCertificateFile "/usr/local/apache2/conf/ssl.crt/server.crt"
 # Example use of a certificate and private key from a PKCS#11 token:
-SSLCryptoDevice pkcs11
-...
 SSLCertificateFile "pkcs11:token=My%20Token%20Name;id=45"</pre>
 </div>
 
@@ -752,16 +750,14 @@ an embedded key must be configured after the certificates using a separate
 key file.</p>
 
 <p>As an alternative to storing private keys in files, a key
-identifier can be specified to identify a private key stored in a
+identifier can be used to identify a private key stored in a
 token.  Currently, only <a href="https://tools.ietf.org/html/rfc7512">PKCS#11 URIs</a> are recognized as private key
 identifiers, and can be used in conjunction with the OpenSSL
-<code>pkcs11</code> engine configured with <code class="directive"><a href="#sslcryptodevice">SSLCryptoDevice</a></code>.</p>
+<code>pkcs11</code> engine.</p>
 
 <div class="example"><h3>Example</h3><pre class="prettyprint lang-config"># To use a private key from a PEM-encoded file:
 SSLCertificateKeyFile "/usr/local/apache2/conf/ssl.key/server.key"
 # To use a private key from a PKCS#11 token:
-SSLCryptoDevice pkcs11
-...
 SSLCertificateKeyFile "pkcs11:token=My%20Token%20Name;id=45"</pre>
 </div>
 
@@ -1152,8 +1148,8 @@ SSLOCSPOverrideResponder on</pre>
 <div class="directive-section"><h2><a name="SSLOCSPNoverify" id="SSLOCSPNoverify">SSLOCSPNoverify</a> <a name="sslocspnoverify" id="sslocspnoverify">Directive</a><a title="Permanent link" href="#sslocspnoverify" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>skip the OCSP responder certificates verification</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLOCSPNoverify <em>On/Off</em></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLOCSPNoverify Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLOCSPNoverify on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLOCSPNoverify off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>

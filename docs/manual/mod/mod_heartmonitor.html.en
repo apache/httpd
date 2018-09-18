@@ -70,7 +70,7 @@ use <code class="module"><a href="../mod/mod_slotmem_shm.html">mod_slotmem_shm</
 <div class="directive-section"><h2><a name="HeartbeatListen" id="HeartbeatListen">HeartbeatListen</a> <a name="heartbeatlisten" id="heartbeatlisten">Directive</a><a title="Permanent link" href="#heartbeatlisten" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>multicast address to listen for incoming heartbeat requests </td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>HeartbeatListen<var>addr:port</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>HeartbeatListen <var>addr:port</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>disabled</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>

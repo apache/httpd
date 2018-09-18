@@ -44,6 +44,8 @@ Apache distribution use this functionality:</p>
 <ul>
 <li><code class="module"><a href="../mod/mod_heartbeat.html">mod_heartbeat</a></code></li>
 <li><code class="module"><a href="../mod/mod_heartmonitor.html">mod_heartmonitor</a></code></li>
+<li><code class="module"><a href="../mod/mod_md.html">mod_md</a></code></li>
+<li><code class="module"><a href="../mod/mod_proxy_hcheck.html">mod_proxy_hcheck</a></code></li>
 </ul>
 <div class="warning">
 To allow a module to use <code class="module"><a href="../mod/mod_watchdog.html">mod_watchdog</a></code> functionality,

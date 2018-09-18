@@ -30,6 +30,10 @@
 <a href="../es/mod/mod_allowmethods.html" title="Español">&nbsp;es&nbsp;</a> |
 <a href="../fr/mod/mod_allowmethods.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
+<div class="outofdate">Esta traducción podría estar
+            obsoleta. Consulte la versión en inglés de la
+            documentación para comprobar si se han producido cambios
+            recientemente.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Descripción:</a></th><td>Restringe fácilmente qué métodos HTTP pueden ser usados en el servidor</td></tr>
 <tr><th><a href="module-dict.html#Status">Estado:</a></th><td>Experimental</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificador de Módulos:</a></th><td>allowmethods_module</td></tr>

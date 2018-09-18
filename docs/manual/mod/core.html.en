@@ -124,6 +124,7 @@ available</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#sethandler">SetHandler</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#setinputfilter">SetInputFilter</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#setoutputfilter">SetOutputFilter</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#stricthostcheck">StrictHostCheck</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#timeout">TimeOut</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#traceenable">TraceEnable</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#undefine">UnDefine</a></li>
@@ -1910,7 +1911,7 @@ filenames</td></tr>
     (unnamed) backreferences are ignored. Use named groups instead.</p>
 
     <pre class="prettyprint lang-config">&lt;FilesMatch "^(?&lt;sitename&gt;[^/]+)"&gt;
-    require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
+    Require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
 &lt;/FilesMatch&gt;</pre>
 
 
@@ -2373,7 +2374,13 @@ if file exists at startup</td></tr>
     the path will be checked relative to the compiled-in server root or
     the server root passed in on the command line via the <code>-d</code>
     parameter.</p>
-    
+
+    <div class="warning"><h3>Warning</h3>
+    In 2.4.34, it is not possible to specify a <var>filename</var>
+    with surrounding quotes. This would generate a parsing error at start-up.
+    The main impact is that filenames with spaces can't be used.
+    This behavior is fixed in 2.4.35.</div>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -3156,7 +3163,7 @@ matching URLs</td></tr>
     (unnamed) backreferences are ignored. Use named groups instead.</p>
 
     <pre class="prettyprint lang-config">&lt;LocationMatch "^/combined/(?&lt;sitename&gt;[^/]+)"&gt;
-    require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
+    Require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
 &lt;/LocationMatch&gt;</pre>
 
 
@@ -4834,6 +4841,40 @@ server</td></tr>
 <ul>
 <li><a href="../filter.html">Filters</a> documentation</li>
 </ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="StrictHostCheck" id="StrictHostCheck">StrictHostCheck</a> <a name="stricthostcheck" id="stricthostcheck">Directive</a><a title="Permanent link" href="#stricthostcheck" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Controls whether the server requires the requested hostname be
+             listed enumerated in the virtual host handling the request
+             </td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>StrictHostCheck ON|OFF</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>StrictHostCheck OFF</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Added in 2.5.1</td></tr>
+</table>
+    <p>By default, the server will respond to requests for any hostname,
+    including requests addressed to unexpected or unconfigured hostnames. 
+    While this is convenient, it is sometimes desirable to limit what hostnames
+    a backend application handles since it will often generate self-referential
+    responses.</p>
+
+    <p>By setting <code class="directive">StrictHostCheck</code> to <em>ON</em>,
+    the server will return an HTTP 400 error if the requested hostname
+    hasn't been explicitly listed by either <code class="directive"><a href="#servername">ServerName</a></code> or <code class="directive"><a href="#serveralias">ServerAlias</a></code> in the virtual host that best matches the
+    details of the incoming connection.</p>
+
+   <p>This directive also allows matching of the requested hostname to hostnames
+   specified within the opening <code class="directive"><a href="#virtualhost">VirtualHost</a></code>
+   tag, which is a relatively obscure configuration mechanism that acts like
+   additional <code class="directive"><a href="#serveralias">ServerAlias</a></code> entries.</p>
+
+   <p>This directive has no affect in non-default virtual hosts. The value
+   inherited from the global server configuration, or the default virtualhost 
+   for the ip:port the underlying connection, determine the effective value.</p>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="TimeOut" id="TimeOut">TimeOut</a> <a name="timeout" id="timeout">Directive</a><a title="Permanent link" href="#timeout" class="permalink">&para;</a></h2>

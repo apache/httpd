@@ -27,20 +27,20 @@
 <div id="preamble"><h1>Module Apache mod_systemd</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_systemd.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_systemd.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_systemd.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fournit un support am&#233;lior&#233; pour l'int&#233;gration de systemd</td></tr>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fournit un support amélioré pour l'intégration de systemd</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&#160;de&#160;Module:</a></th><td>systemd_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier&#160;Source:</a></th><td>mod_systemd.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>systemd_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_systemd.c</td></tr></table>
 <h3>Sommaire</h3>
 
-    <p>Ce module impl&#233;mente le support de l'int&#233;gration de systemd. Il
-    permet de d&#233;marrer httpd en temps que service avec le param&#232;tre de
+    <p>Ce module implémente le support de l'intégration de systemd. Il
+    permet de démarrer httpd en temps que service avec le paramètre de
     systemd <code>Type=notify</code> (voir la page de manuel
-    systemd.service(5) pour plus de d&#233;tails). Il ajoute aussi des
-    statistiques &#224; la sortie de la commande <code>systemctl
-    status</code>, et fournit diverses directives pour l'int&#233;gration de
+    systemd.service(5) pour plus de détails). Il ajoute aussi des
+    statistiques à la sortie de la commande <code>systemctl
+    status</code>, et fournit diverses directives pour l'intégration de
     systemd.
     </p>
 </div>
@@ -48,49 +48,49 @@
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#idleshutdown">IdleShutdown</a></li>
 </ul>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_systemd">Probl&#232;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_systemd">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_systemd">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_systemd">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="idleshutdown" id="idleshutdown">Directive</a> <a name="IdleShutdown" id="IdleShutdown">IdleShutdown</a><a title="Lien permanent" href="#idleshutdown" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Permet d'arr&#234;ter httpd lorsque qu'il est inactif pendant un
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Permet d'arrêter httpd lorsque qu'il est inactif pendant un
 certain temps.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>IdleShutdown seconds</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>IdleShutdown 0</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>IdleShutdown 0</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_systemd</td></tr>
 </table>
-    <p>La directive <code class="directive">IdleShutdown</code> permet d'arr&#234;ter
+    <p>La directive <code class="directive">IdleShutdown</code> permet d'arrêter
     httpd lorsque qu'il est inactif pendant un certain temps. Ce statut
-    d'inactivit&#233; se base sur le nombre d'octets envoy&#233;s ; par cons&#233;quent, si
-    aucun octet n'est envoy&#233; pendant le temps sp&#233;cifi&#233; par cette
-    directive, httpd sera arr&#234;t&#233;. Par d&#233;faut, IdleShutdown est d&#233;finie &#224;
-    0, ce qui signifie que cette fonctionnalit&#233; est d&#233;sactiv&#233;e.
+    d'inactivité se base sur le nombre d'octets envoyés ; par conséquent, si
+    aucun octet n'est envoyé pendant le temps spécifié par cette
+    directive, httpd sera arrêté. Par défaut, IdleShutdown est définie à
+    0, ce qui signifie que cette fonctionnalité est désactivée.
     </p>
 
-    <p>Cette fonctionnalit&#233; prend tout son sens en combinaison avec
+    <p>Cette fonctionnalité prend tout son sens en combinaison avec
     l'activation du socket systemd (voir la page de manuel
-    systemd.socket(5)). En effet, lorsque httpd est d&#233;marr&#233; par systemd
-    suite &#224; l'arriv&#233;e d'une ou plusieurs requ&#234;tes HTTP, cette directive
-    vous permet d'arr&#234;ter httpd automatiquement lorsque toutes les
-    requ&#234;tes ont &#233;t&#233; trait&#233;es.
+    systemd.socket(5)). En effet, lorsque httpd est démarré par systemd
+    suite à l'arrivée d'une ou plusieurs requêtes HTTP, cette directive
+    vous permet d'arrêter httpd automatiquement lorsque toutes les
+    requêtes ont été traitées.
     </p>
 
-    <div class="warning"><h3>Particularit&#233; de cette impl&#233;mentation</h3><p>
-    De par la conception de cette impl&#233;mentation, l'inactivit&#233; de httpd
-    n'est v&#233;rifi&#233;e que toutes les 10 secondes, ce qui signifie que si
-    vous sp&#233;cifiez <code>IdleShutdown 14</code>, httpd ne s'arr&#234;tera
-    qu'apr&#232;s 20 secondes d'inactivit&#233;.
+    <div class="warning"><h3>Particularité de cette implémentation</h3><p>
+    De par la conception de cette implémentation, l'inactivité de httpd
+    n'est vérifiée que toutes les 10 secondes, ce qui signifie que si
+    vous spécifiez <code>IdleShutdown 14</code>, httpd ne s'arrêtera
+    qu'après 20 secondes d'inactivité.
     </p></div>
 
 </div>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_systemd.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_systemd.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_systemd.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -109,7 +109,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_systemd.ht
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autoris&#233; sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

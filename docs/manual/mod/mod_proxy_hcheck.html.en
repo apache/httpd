@@ -82,7 +82,8 @@
         <td>Number of failed health check tests before worker is disabled</td></tr>
     <tr><td>hcinterval</td>
         <td>30</td>
-        <td>Period of health checks in seconds (e.g. performed every 30 seconds). Uses the <a href="directive-dict.html#Syntax">time-interval</a> directive syntax.. </td></tr>
+        <td>Period of health checks in seconds (e.g. performed every 30 seconds).
+        Uses the <a href="directive-dict.html#Syntax">time-interval</a> directive syntax.</td></tr>
     <tr><td>hcuri</td>
         <td>&nbsp;</td>
         <td>Additional URI to be appended to the worker URL for the health check.</td></tr>
@@ -228,6 +229,7 @@ ProxyPass "/apps"     "balancer://foo"
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets the total server-wide size of the threadpool used for the health check workers</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyHCTPsize <em>size</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ProxyHCTPsize 16</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_hcheck</td></tr>
@@ -237,7 +239,7 @@ ProxyPass "/apps"     "balancer://foo"
        associated with the Watchdog process, allowing for parallel checks.
        The <code class="directive">ProxyHCTPsize</code> directive
        determines the size of this threadpool. If set to <code>0</code>, no threadpool
-       is used at all, resulting in serialized health checks. The default size is 16.</p>
+       is used at all, resulting in serialized health checks.</p>
 
     <div class="example"><h3>ProxyHCTPsize</h3><pre class="prettyprint lang-config">ProxyHCTPsize 32</pre>
 </div>

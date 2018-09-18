@@ -27,17 +27,17 @@
 <div id="preamble"><h1>Module Apache mod_dialup</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_dialup.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_dialup.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_dialup.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Envoie le contenu statique avec une bande passante limit&#233;e
-d&#233;finie par les diff&#233;rents standards des anciens modems.</td></tr>
-<tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Exp&#233;rimental</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&#160;de&#160;Module:</a></th><td>dialup_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier&#160;Source:</a></th><td>mod_dialup.c</td></tr></table>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Envoie le contenu statique avec une bande passante limitée
+définie par les différents standards des anciens modems.</td></tr>
+<tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>dialup_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_dialup.c</td></tr></table>
 <h3>Sommaire</h3>
 
 <p>Il s'agit d'un module qui envoie le contenu statique avec une bande
-passante limit&#233;e d&#233;finie par les diff&#233;rents standards des anciens
+passante limitée définie par les différents standards des anciens
 modems. Ainsi, il est possible de naviguer sur votre site avec un modem
 56k V.92 en positionnant une configuration de ce type :</p>
 
@@ -47,32 +47,32 @@ modems. Ainsi, il est possible de naviguer sur votre site avec un modem
 
 
 <p>Auparavant, pour faire des modules de limitation de bande passante,
-il fallait monopoliser un thread, pour chaque client, et ins&#233;rer des
-temporisations pour diminuer la bande passante. Gr&#226;ce &#224; cette nouvelle
-fonctionnalit&#233;, un gestionnaire peut recevoir les r&#233;ponses &#224; ses
-callbacks apr&#232;s N millisecondes, et il sera invoqu&#233; par le module MPM
-Event dans un thread diff&#233;rent &#224; la fin du d&#233;lai indiqu&#233;. &#192; partir de ce
-moment, le gestionnaire peut continuer &#224; envoyer des donn&#233;es au
+il fallait monopoliser un thread, pour chaque client, et insérer des
+temporisations pour diminuer la bande passante. Grâce à cette nouvelle
+fonctionnalité, un gestionnaire peut recevoir les réponses à ses
+callbacks après N millisecondes, et il sera invoqué par le module MPM
+Event dans un thread différent à la fin du délai indiqué. À partir de ce
+moment, le gestionnaire peut continuer à envoyer des données au
 client.</p>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#modemstandard">ModemStandard</a></li>
 </ul>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_dialup">Probl&#232;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_dialup">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_dialup">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_dialup">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="modemstandard" id="modemstandard">Directive</a> <a name="ModemStandard" id="ModemStandard">ModemStandard</a><a title="Lien permanent" href="#modemstandard" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Standard de modem &#224; simuler</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Standard de modem à simuler</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ModemStandard V.21|V.26bis|V.32|V.34|V.92</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>r&#233;pertoire</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Exp&#233;rimental</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dialup</td></tr>
 </table>
-<p>Cette directive permet de sp&#233;cifier le standard de modem que vous
+<p>Cette directive permet de spécifier le standard de modem que vous
 souhaitez simuler.</p>
 
 <pre class="prettyprint lang-config">&lt;Location "/mysite"&gt;
@@ -85,7 +85,7 @@ souhaitez simuler.</p>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_dialup.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_dialup.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_dialup.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -104,7 +104,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_dialup.htm
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autoris&#233; sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
