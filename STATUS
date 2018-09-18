@@ -124,6 +124,11 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   *) mod_proxy_hcheck: take balancer's SSLProxy* directives into account.
+      trunk patch: http://svn.apache.org/r1836276
+      2.4.x patch: svn merge -c 1836276 ^/httpd/httpd/trunk .
+      +1: jim, ylavic, minfrin
+
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -174,11 +179,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              http://svn.apache.org/r1828624
       2.4.x patch: http://home.apache.org/~jim/patches/socache_redis.patch
       +1: jim,
-
-   *) mod_proxy_hcheck: take balancer's SSLProxy* directives into account.
-      trunk patch: http://svn.apache.org/r1836276
-      2.4.x patch: svn merge -c 1836276 ^/httpd/httpd/trunk .
-      +1: jim, ylavic
 
   *) MPMs: Initialize all runtime/asynchronous objects on a dedicated pool and
      before signals handling to avoid lifetime issues on restart or shutdown.
