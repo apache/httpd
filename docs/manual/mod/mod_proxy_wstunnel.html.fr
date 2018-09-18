@@ -27,45 +27,45 @@
 <div id="preamble"><h1>Module Apache mod_proxy_wstunnel</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_proxy_wstunnel.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_proxy_wstunnel.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_proxy_wstunnel.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Module pour <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> supportant les
 websockets</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&#160;de&#160;Module:</a></th><td>proxy_wstunnel_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier&#160;Source:</a></th><td>mod_proxy_wstunnel.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible &#224; partir de la version 2.4.5 du serveur HTTP
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>proxy_wstunnel_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_proxy_wstunnel.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.5 du serveur HTTP
 Apache</td></tr></table>
 <h3>Sommaire</h3>
 
-    <p>Pour utiliser ce module, <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> doit &#234;tre
-    charg&#233;. Il fournit le support du tunnelling pour les connexions
-    websocket vers un serveur websockets d'arri&#232;re-plan. La connexion
+    <p>Pour utiliser ce module, <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> doit être
+    chargé. Il fournit le support du tunnelling pour les connexions
+    websocket vers un serveur websockets d'arrière-plan. La connexion
     est automatiquement promue en connexion websocket :</p>
 
-    <div class="example"><h3>R&#233;ponse HTTP</h3><pre class="prettyprint lang-config">Upgrade: WebSocket
+    <div class="example"><h3>Réponse HTTP</h3><pre class="prettyprint lang-config">Upgrade: WebSocket
 Connection: Upgrade</pre>
 </div>	
 
-<p>Le mandatement des requ&#234;tes vers un serveur websockets comme
-<code>echo.websocket.org</code> peut &#234;tre configur&#233; via la directive <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> :</p>
+<p>Le mandatement des requêtes vers un serveur websockets comme
+<code>echo.websocket.org</code> peut être configuré via la directive <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> :</p>
     <pre class="prettyprint lang-config">ProxyPass "/ws2/"  "ws://echo.websocket.org/"
 ProxyPass "/wss2/" "wss://echo.websocket.org/"</pre>
 
     
-<p>La r&#233;partition de charge entre plusieurs serveurs d'arri&#232;re-plan peut &#234;tre
-configur&#233;e via le module <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code>.</p>
+<p>La répartition de charge entre plusieurs serveurs d'arrière-plan peut être
+configurée via le module <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code>.</p>
 
-<p>En fait, ce module permet d'accepter d'autres protocoles ; vous pouvez &#224; cet
-effet utiliser le param&#232;tre <code>upgrade</code> de la directive <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code>. La valeur NONE
-signifie que vous court-circuitez la consultation de l'en-t&#234;te, mais que vous
-autorisez quand-m&#234;me WebSocket. La valeur ANY signifie que <code>Upgrade</code>
-va lire les en-t&#234;tes de la requ&#234;te et les utilisera dans l'en-t&#234;te
-<code>Upgrade</code> de la r&#233;ponse.</p>
+<p>En fait, ce module permet d'accepter d'autres protocoles ; vous pouvez à cet
+effet utiliser le paramètre <code>upgrade</code> de la directive <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code>. La valeur NONE
+signifie que vous court-circuitez la consultation de l'en-tête, mais que vous
+autorisez quand-même WebSocket. La valeur ANY signifie que <code>Upgrade</code>
+va lire les en-têtes de la requête et les utilisera dans l'en-tête
+<code>Upgrade</code> de la réponse.</p>
 </div>
 <div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><h3 class="directives">Directives</h3>
 <p>Ce module ne fournit aucune directive.</p>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_proxy_wstunnel">Probl&#232;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_proxy_wstunnel">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_proxy_wstunnel">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_proxy_wstunnel">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></li>
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
@@ -73,7 +73,7 @@ va lire les en-t&#234;tes de la requ&#234;te et les utilisera dans l'en-t&#234;t
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_proxy_wstunnel.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_proxy_wstunnel.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_proxy_wstunnel.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -92,7 +92,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.4/mod/mod_proxy_wstunn
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autoris&#233; sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

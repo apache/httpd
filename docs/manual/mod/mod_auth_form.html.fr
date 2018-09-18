@@ -27,42 +27,42 @@
 <div id="preamble"><h1>Module Apache mod_auth_form</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_auth_form.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_auth_form.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_auth_form.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Authentification &#224; l'aide d'un formulaire</td></tr>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Authentification à l'aide d'un formulaire</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&#160;de&#160;Module:</a></th><td>auth_form_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier&#160;Source:</a></th><td>mod_auth_form.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible &#224; partir d'Apache 2.3</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>auth_form_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_auth_form.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir d'Apache 2.3</td></tr></table>
 <h3>Sommaire</h3>
 
     <div class="warning"><h3>Avertissement</h3>
-      <p>L'authentification &#224; base de formulaire d&#233;pend des modules
+      <p>L'authentification à base de formulaire dépend des modules
       <code class="module"><a href="../mod/mod_session.html">mod_session</a></code> qui utilisent les cookies HTTP, et en
-      tant que tels s'exposent &#224; des attaques de type Cross Site
-      Scripting, ou risquent de divulguer des informations &#224; caract&#232;re
-      priv&#233; aux clients. Assurez-vous que ces risques ont bien &#233;t&#233; pris
+      tant que tels s'exposent à des attaques de type Cross Site
+      Scripting, ou risquent de divulguer des informations à caractère
+      privé aux clients. Assurez-vous que ces risques ont bien été pris
       en compte avant d'activer les sessions sur votre serveur.</p>
     </div>
 
-    <p>Ce module permet de restreindre l'acc&#232;s en recherchant les
-    utilisateurs dans les fournisseurs sp&#233;cifi&#233;s &#224; l'aide d'un
-    formulaire de connexion HTML. Les formulaires HTML requi&#232;rent
-    davantage de configuration que les m&#233;thodes d'authentification
-    alternatives, mais ils peuvent s'av&#233;rer beaucoup plus conviviaux
+    <p>Ce module permet de restreindre l'accès en recherchant les
+    utilisateurs dans les fournisseurs spécifiés à l'aide d'un
+    formulaire de connexion HTML. Les formulaires HTML requièrent
+    davantage de configuration que les méthodes d'authentification
+    alternatives, mais ils peuvent s'avérer beaucoup plus conviviaux
     pour les utilisateurs.
     </p>
 
     <p>L'authentification HTTP de base est fournie par le module
-    <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code>, et l'authentification HTTP &#224; base
-    de condens&#233; par le module <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code>. Le
-    module <code class="module"><a href="../mod/mod_auth_form.html">mod_auth_form</a></code> doit &#234;tre utilis&#233; avec au
+    <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code>, et l'authentification HTTP à base
+    de condensé par le module <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code>. Le
+    module <code class="module"><a href="../mod/mod_auth_form.html">mod_auth_form</a></code> doit être utilisé avec au
     moins un module d'authentification du style
     <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code> et un module d'autorisation comme
     <code class="module"><a href="../mod/mod_authz_user.html">mod_authz_user</a></code>.</p>
 
-    <p>Lorsque l'utilisateur a &#233;t&#233; authentifi&#233; avec succ&#232;s, ses
-    informations de connexion sont stock&#233;s dans une session fournie par
+    <p>Lorsque l'utilisateur a été authentifié avec succès, ses
+    informations de connexion sont stockés dans une session fournie par
     le module <code class="module"><a href="../mod/mod_session.html">mod_session</a></code>.
     </p>
 
@@ -70,11 +70,11 @@
 <div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><h3>Sujets</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#basicconfig">Configuration de base</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#standalone">Page de connexion d&#233;di&#233;e</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#inline">Connexion &#224; la vol&#233;e</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#inlinepreservebody">Connexion &#224; la vol&#233;e avec
+<li><img alt="" src="../images/down.gif" /> <a href="#standalone">Page de connexion dédiée</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#inline">Connexion à la volée</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#inlinepreservebody">Connexion à la volée avec
     conservation du contenu</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#loggingout">D&#233;connexion</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#loggingout">Déconnexion</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#urlencoding">Noms d'utilisateurs et mots de
     passe</a></li>
 </ul><h3 class="directives">Directives</h3>
@@ -95,7 +95,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#authformsize">AuthFormSize</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authformusername">AuthFormUsername</a></li>
 </ul>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_auth_form">Probl&#232;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_auth_form">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_auth_form">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_auth_form">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_session.html">mod_session</a></code></li>
 <li><code class="directive"><a href="../mod/mod_authn_core.html#authname">AuthName</a></code></li>
@@ -108,15 +108,15 @@ l'authentification</a></li>
 <div class="section">
 <h2><a name="basicconfig" id="basicconfig">Configuration de base</a></h2>
 
-      <p>Pour prot&#233;ger une URL particuli&#232;re avec le module
-      <code class="module"><a href="../mod/mod_auth_form.html">mod_auth_form</a></code>, vous devez d&#233;terminer l'endroit o&#249;
-      vous allez stocker votre <var>session</var>, ainsi que la m&#233;thode
+      <p>Pour protéger une URL particulière avec le module
+      <code class="module"><a href="../mod/mod_auth_form.html">mod_auth_form</a></code>, vous devez déterminer l'endroit où
+      vous allez stocker votre <var>session</var>, ainsi que la méthode
       d'authentification. Dans cet exemple simple, les informations de
-      connexion sont stock&#233;es dans une session &#224; l'aide du module
+      connexion sont stockées dans une session à l'aide du module
       <code class="module"><a href="../mod/mod_session_cookie.html">mod_session_cookie</a></code>, et l'authentification utilise
       un fichier en s'appuyant sur le module
-      <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code>. Si l'authentification &#233;choue,
-      l'utilisateur dera redirig&#233; vers la page du formulaire de
+      <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code>. Si l'authentification échoue,
+      l'utilisateur dera redirigé vers la page du formulaire de
       connexion.</p>
 
       <div class="example"><h3>Exemple simple</h3><pre class="prettyprint lang-config">&lt;Location "/admin"&gt;
@@ -133,43 +133,43 @@ l'authentification</a></li>
 &lt;/Location&gt;</pre>
 </div>
 
-      <p>L'authentification <code class="module"><a href="../mod/mod_auth_form.html">mod_auth_form</a></code> est activ&#233;e
-      en affectant la valeur <var>form</var> &#224; la directive <code class="directive"><a href="../mod/mod_authn_core.html#authtype">AuthType</a></code>. Les directives
+      <p>L'authentification <code class="module"><a href="../mod/mod_auth_form.html">mod_auth_form</a></code> est activée
+      en affectant la valeur <var>form</var> à la directive <code class="directive"><a href="../mod/mod_authn_core.html#authtype">AuthType</a></code>. Les directives
       <code class="directive"><a href="#authformprovider">AuthFormProvider</a></code> et
       <code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code>
-      sp&#233;cifient que les noms d'utilisateurs et mots de passe seront
-      v&#233;rifi&#233;s en utilisant le fichier choisi.</p>
+      spécifient que les noms d'utilisateurs et mots de passe seront
+      vérifiés en utilisant le fichier choisi.</p>
 
-      <p>Les directives <code class="directive"><a href="../mod/mod_session.html#session">Session</a></code> et <code class="directive"><a href="../mod/mod_session_cookie.html#sessioncookiename">SessionCookieName</a></code> cr&#233;ent une
-      session chiffr&#233;e stock&#233;e dans un cookie HTTP au niveau
-      du navigateur. Pour plus d'informations &#224; propos des diff&#233;rentes
-      options de configuration des sessions, reportez-vous &#224; la
+      <p>Les directives <code class="directive"><a href="../mod/mod_session.html#session">Session</a></code> et <code class="directive"><a href="../mod/mod_session_cookie.html#sessioncookiename">SessionCookieName</a></code> créent une
+      session chiffrée stockée dans un cookie HTTP au niveau
+      du navigateur. Pour plus d'informations à propos des différentes
+      options de configuration des sessions, reportez-vous à la
       documentation du module <code class="module"><a href="../mod/mod_session.html">mod_session</a></code>.</p>
 
-      <p>Vous pouvez &#233;ventuellement ajouter une directive <code class="directive"><a href="../mod/mod_session_crypto.html#sessioncryptopassphrase">SessionCryptoPassphrase</a></code> pour cr&#233;er
-      un cookie de session chiffr&#233;. Pour utiliser cette directive, le module
-      <code class="module"><a href="../mod/mod_session_crypto.html">mod_session_crypto</a></code> doit avoir &#233;t&#233; pr&#233;alablement charg&#233;.</p>
+      <p>Vous pouvez éventuellement ajouter une directive <code class="directive"><a href="../mod/mod_session_crypto.html#sessioncryptopassphrase">SessionCryptoPassphrase</a></code> pour créer
+      un cookie de session chiffré. Pour utiliser cette directive, le module
+      <code class="module"><a href="../mod/mod_session_crypto.html">mod_session_crypto</a></code> doit avoir été préalablement chargé.</p>
 
-      <p>Dans l'exemple simple ci-dessus, une URL a &#233;t&#233; prot&#233;g&#233;e par
+      <p>Dans l'exemple simple ci-dessus, une URL a été protégée par
       <code class="module"><a href="../mod/mod_auth_form.html">mod_auth_form</a></code>, mais on doit maintenant fournir
-      &#224; l'utilisateur un moyen d'entrer un nom et un mot de passe. &#192; cet
-      effet, on peut soit &#233;crire une page de connexion ind&#233;pendante
-      d&#233;di&#233;e, soit inclure le formulaire de connexion dans la page
+      à l'utilisateur un moyen d'entrer un nom et un mot de passe. À cet
+      effet, on peut soit écrire une page de connexion indépendante
+      dédiée, soit inclure le formulaire de connexion dans la page
       courante.</p>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="standalone" id="standalone">Page de connexion d&#233;di&#233;e</a></h2>
+<h2><a name="standalone" id="standalone">Page de connexion dédiée</a></h2>
 
-      <p>Le formulaire de connexion peut &#234;tre contenu dans une page
-      ind&#233;pendante, ou &#234;tre inclus dans la page courante. </p>
+      <p>Le formulaire de connexion peut être contenu dans une page
+      indépendante, ou être inclus dans la page courante. </p>
 
-      <p>Lorsque la connexion s'effectue &#224; partir d'une page
-      ind&#233;pendante et si la tentative d'authentification &#233;choue,
-      l'utilisateur doit &#234;tre redirig&#233; vers un formulaire de connexion,
-      cr&#233;&#233; &#224; cet effet sur le site web, en utilisant la directive
+      <p>Lorsque la connexion s'effectue à partir d'une page
+      indépendante et si la tentative d'authentification échoue,
+      l'utilisateur doit être redirigé vers un formulaire de connexion,
+      créé à cet effet sur le site web, en utilisant la directive
       <code class="directive"><a href="#authformloginrequiredlocation">AuthFormLoginRequiredLocation</a></code>.
-      En g&#233;n&#233;ral, la page de connexion contiendra un formulaire HTML
-      demandant &#224; l'utilisateur de fournir un nom et un mot de passe.</p>
+      En général, la page de connexion contiendra un formulaire HTML
+      demandant à l'utilisateur de fournir un nom et un mot de passe.</p>
 
       <div class="example"><h3>Exemple de formulaire de connexion</h3><pre class="prettyprint lang-html">&lt;form method="POST" action="/dologin.html"&gt;
   Username: &lt;input type="text" name="httpd_username" value="" /&gt;
@@ -178,8 +178,8 @@ l'authentification</a></li>
 &lt;/form&gt;</pre>
 </div>
 
-      <p>La partie o&#249; s'effectue la connexion proprement dite est
-      trait&#233;e par le gestionnaire <var>form-login-handler</var>.
+      <p>La partie où s'effectue la connexion proprement dite est
+      traitée par le gestionnaire <var>form-login-handler</var>.
       L'action de ce formulaire doit pointer vers ce gestionnaire, ce
       que l'on configure dans Apache httpd comme suit :</p>
 
@@ -198,19 +198,19 @@ l'authentification</a></li>
 &lt;/Location&gt;</pre>
 </div>
 
-      <p>L'URL sp&#233;cifi&#233;e par la directive
+      <p>L'URL spécifiée par la directive
       <code class="directive"><a href="#authformloginrequiredlocation">AuthFormLoginRequiredLocation</a></code>
-      r&#233;f&#233;rencera en g&#233;n&#233;ral une page expliquant &#224; l'utilisateur que sa
-      tentative de connexion a &#233;chou&#233;, et qu'il doit la renouveler. La
+      référencera en général une page expliquant à l'utilisateur que sa
+      tentative de connexion a échoué, et qu'il doit la renouveler. La
       directive <code class="directive"><a href="#authformloginsuccesslocation">AuthFormLoginSuccessLocation</a></code>
-      sp&#233;cifie l'URL vers laquelle l'utilisateur doit &#234;tre redirig&#233; s'il
-      s'est authentifi&#233; avec succ&#232;s.</p>
+      spécifie l'URL vers laquelle l'utilisateur doit être redirigé s'il
+      s'est authentifié avec succès.</p>
 
-      <p>Alternativement, l'URL vers laquelle doit &#234;tre redirig&#233;
-      l'utilisateur s'il s'est authentifi&#233; avec succ&#232;s peut &#234;tre
-      int&#233;gr&#233;e dans le formulaire de connexion, comme dans l'exemple
-      ci-dessous. Il en d&#233;coule que le m&#234;me gestionnaire
-      <var>form-login-handler</var> pourra &#234;tre utilis&#233; pour diff&#233;rentes
+      <p>Alternativement, l'URL vers laquelle doit être redirigé
+      l'utilisateur s'il s'est authentifié avec succès peut être
+      intégrée dans le formulaire de connexion, comme dans l'exemple
+      ci-dessous. Il en découle que le même gestionnaire
+      <var>form-login-handler</var> pourra être utilisé pour différentes
       zones du site web.</p>
 
       <div class="example"><h3>Exemple de formulaire d'authentification multizone</h3><pre class="prettyprint lang-html">&lt;form method="POST" action="/dologin.html"&gt;
@@ -223,41 +223,41 @@ l'authentification</a></li>
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="inline" id="inline">Connexion &#224; la vol&#233;e</a></h2>
+<h2><a name="inline" id="inline">Connexion à la volée</a></h2>
 
       <div class="warning"><h3>Avertissement</h3>
         <p>Il existe un risque, dans certaines circonstances, que le
-	formulaire de connexion configur&#233; pour une connexion &#224; la vol&#233;e
-	soit soumis plusieurs fois, r&#233;v&#233;lant de ce fait les param&#232;tres
-	de connexion &#224; l'application sous-jacente. L'administrateur doit
-	s'assurer que cette derni&#232;re est correctement s&#233;curis&#233;e afin
-	d'&#233;viter les &#233;ventuels abus. En cas de doute, utilisez une page
-	de connexion ind&#233;pendante d&#233;di&#233;e.</p>
+	formulaire de connexion configuré pour une connexion à la volée
+	soit soumis plusieurs fois, révélant de ce fait les paramètres
+	de connexion à l'application sous-jacente. L'administrateur doit
+	s'assurer que cette dernière est correctement sécurisée afin
+	d'éviter les éventuels abus. En cas de doute, utilisez une page
+	de connexion indépendante dédiée.</p>
       </div>
 
-      <p>Comme alternative &#224; la page de connexion d&#233;di&#233;e pour un site
+      <p>Comme alternative à la page de connexion dédiée pour un site
       web, il est possible de configurer <code class="module"><a href="../mod/mod_auth_form.html">mod_auth_form</a></code>
-      pour authentifier les utilisateurs &#224; la vol&#233;e, sans les rediriger
-      vers une autre page, ce qui permet de conserver l'&#233;tat de la page
-      courante au cours de la tentative de connexion. Ceci peut s'av&#233;rer
-      utile dans le cas d'une session limit&#233;e dans le temps, si le d&#233;lai
-      de la session a expir&#233; pendant la requ&#234;te de l'utilisateur. Ce
-      dernier peut alors se r&#233;authentifier &#224; la m&#234;me place, et
-      poursuivre son activit&#233; &#224; partir du point o&#249; il en &#233;tait rest&#233;.</p>
+      pour authentifier les utilisateurs à la volée, sans les rediriger
+      vers une autre page, ce qui permet de conserver l'état de la page
+      courante au cours de la tentative de connexion. Ceci peut s'avérer
+      utile dans le cas d'une session limitée dans le temps, si le délai
+      de la session a expiré pendant la requête de l'utilisateur. Ce
+      dernier peut alors se réauthentifier à la même place, et
+      poursuivre son activité à partir du point où il en était resté.</p>
 
-      <p>Si un utilisateur non authentifi&#233; tente d'acc&#233;der &#224; une page
-      prot&#233;g&#233;e par <code class="module"><a href="../mod/mod_auth_form.html">mod_auth_form</a></code>, et si ce dernier
-      n'est pas configur&#233; avec une directive <code class="directive"><a href="#authformloginrequiredlocation">AuthFormLoginRequiredLocation</a></code>,
-      un code de statut <var>HTTP_UNAUTHORIZED</var> est renvoy&#233; vers le
-      navigateur, indiquant &#224; l'utilisateur qu'il n'est pas autoris&#233; &#224;
-      acc&#233;der &#224; cette page.</p>
+      <p>Si un utilisateur non authentifié tente d'accéder à une page
+      protégée par <code class="module"><a href="../mod/mod_auth_form.html">mod_auth_form</a></code>, et si ce dernier
+      n'est pas configuré avec une directive <code class="directive"><a href="#authformloginrequiredlocation">AuthFormLoginRequiredLocation</a></code>,
+      un code de statut <var>HTTP_UNAUTHORIZED</var> est renvoyé vers le
+      navigateur, indiquant à l'utilisateur qu'il n'est pas autorisé à
+      accéder à cette page.</p>
 
-      <p>Pour configurer l'authentification &#224; la vol&#233;e, l'administrateur
-      remplace le message d'erreur renvoy&#233; par le code de statut
-      <var>HTTP_UNAUTHORIZED</var> par un message d'erreur personnalis&#233;
+      <p>Pour configurer l'authentification à la volée, l'administrateur
+      remplace le message d'erreur renvoyé par le code de statut
+      <var>HTTP_UNAUTHORIZED</var> par un message d'erreur personnalisé
       contenant le formulaire de connexion comme suit :</p>
 
-      <div class="example"><h3>Exemple simple d'authentification &#224; la vol&#233;e</h3><pre class="prettyprint lang-config">AuthFormProvider file
+      <div class="example"><h3>Exemple simple d'authentification à la volée</h3><pre class="prettyprint lang-config">AuthFormProvider file
 ErrorDocument 401 "/login.shtml"
 AuthUserFile "conf/passwd"
 AuthType form
@@ -268,47 +268,47 @@ SessionCookieName session path=/</pre>
 </div>
 
       <p>La page du message d'erreur doit contenir un formulaire de
-      connexion dont la propri&#233;t&#233; action est vide, comme dans l'exemple
-      ci-dessous. Ceci a pour effet de soumettre le formulaire &#224; l'URL
-      prot&#233;g&#233;e originale, cette derni&#232;re n'ayant pas besoin d'&#234;tre
+      connexion dont la propriété action est vide, comme dans l'exemple
+      ci-dessous. Ceci a pour effet de soumettre le formulaire à l'URL
+      protégée originale, cette dernière n'ayant pas besoin d'être
       connue de la page en cours.</p>
 
-      <div class="example"><h3>Exemple de formulaire de connexion &#224; la vol&#233;e</h3><pre class="prettyprint lang-html">&lt;form method="POST" <strong>action=""</strong>&gt;
+      <div class="example"><h3>Exemple de formulaire de connexion à la volée</h3><pre class="prettyprint lang-html">&lt;form method="POST" <strong>action=""</strong>&gt;
   Username: &lt;input type="text" name="httpd_username" value="" /&gt;
   Password: &lt;input type="password" name="httpd_password" value="" /&gt;
   &lt;input type="submit" name="login" value="Login" /&gt;
 &lt;/form&gt;</pre>
 </div>
 
-      <p>Lorsque l'utilisateur final a entr&#233; ses informations de
-      connexion, le formulaire effectue une requ&#234;te HTTP POST pour l'URL
-      originale prot&#233;g&#233;e par mot de passe.
-      <code class="module"><a href="../mod/mod_auth_form.html">mod_auth_form</a></code> va alors intercepter cette requ&#234;te
-      POST, et dans le cas o&#249; des champs HTML Utilisateur et Mot de
-      passe corrects sont pr&#233;sents, l'utilisateur sera connect&#233;, et
-      l'URL originale prot&#233;g&#233;e par mot de passe lui sera retourn&#233;e en
-      tant que requ&#234;te GET.</p>
+      <p>Lorsque l'utilisateur final a entré ses informations de
+      connexion, le formulaire effectue une requête HTTP POST pour l'URL
+      originale protégée par mot de passe.
+      <code class="module"><a href="../mod/mod_auth_form.html">mod_auth_form</a></code> va alors intercepter cette requête
+      POST, et dans le cas où des champs HTML Utilisateur et Mot de
+      passe corrects sont présents, l'utilisateur sera connecté, et
+      l'URL originale protégée par mot de passe lui sera retournée en
+      tant que requête GET.</p>
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="inlinepreservebody" id="inlinepreservebody">Connexion &#224; la vol&#233;e avec
+<h2><a name="inlinepreservebody" id="inlinepreservebody">Connexion à la volée avec
     conservation du contenu</a></h2>
 
-      <p>Il existe une limite &#224; la technique de connexion &#224; la vol&#233;e
-      d&#233;crite ci-dessus ; si un formulaire HTML POST entra&#238;ne une
-      demande d'authentification ou de r&#233;authentification, le contenu du
-      formulaire original envoy&#233; par le navigateur sera perdu. Cela peut
-      s'av&#233;rer plus ou moins g&#234;nant pour l'utilisateur final selon la
+      <p>Il existe une limite à la technique de connexion à la volée
+      décrite ci-dessus ; si un formulaire HTML POST entraîne une
+      demande d'authentification ou de réauthentification, le contenu du
+      formulaire original envoyé par le navigateur sera perdu. Cela peut
+      s'avérer plus ou moins gênant pour l'utilisateur final selon la
       fonction du site web.</p>
 
-      <p>Comme solution &#224; ce probl&#232;me, <code class="module"><a href="../mod/mod_auth_form.html">mod_auth_form</a></code>
-      permet d'int&#233;grer la m&#233;thode et le contenu de la requ&#234;te originale
-      dans le formulaire de connexion. Si l'authentification r&#233;ussit,
-      Apache httpd pourra refaire une tentative avec la m&#233;thode et le contenu
-      originaux, tout en conservant l'&#233;tat de la requ&#234;te originale.</p>
+      <p>Comme solution à ce problème, <code class="module"><a href="../mod/mod_auth_form.html">mod_auth_form</a></code>
+      permet d'intégrer la méthode et le contenu de la requête originale
+      dans le formulaire de connexion. Si l'authentification réussit,
+      Apache httpd pourra refaire une tentative avec la méthode et le contenu
+      originaux, tout en conservant l'état de la requête originale.</p>
 
       <p>Pour mettre en oeuvre la conservation du contenu, vous devez
-      ajouter trois champs suppl&#233;mentaires au formulaire de connexion
+      ajouter trois champs supplémentaires au formulaire de connexion
       comme dans l'exemple suivant :</p>
 
       <div class="example"><h3>Exemple de formulaire avec conservation du
@@ -322,19 +322,19 @@ SessionCookieName session path=/</pre>
 &lt;/form&gt;</pre>
 </div>
 
-      <p>La mani&#232;re dont la m&#233;thode, le type MIME et le contenu de la
-      requ&#234;te originale seront int&#233;gr&#233;s dans le formulaire de connexion
-      vont d&#233;pendre de la plate-forme et de la technologie utilis&#233;es au
+      <p>La manière dont la méthode, le type MIME et le contenu de la
+      requête originale seront intégrés dans le formulaire de connexion
+      vont dépendre de la plate-forme et de la technologie utilisées au
       sein du site web.
       </p>
 
-      <p>Une option consiste &#224; utiliser le module
+      <p>Une option consiste à utiliser le module
       <code class="module"><a href="../mod/mod_include.html">mod_include</a></code> en association avec la directive
       <code class="directive"><a href="../mod/mod_request.html#keptbodysize">KeptBodySize</a></code>, ainsi
-      qu'un script CGI adapt&#233; pour int&#233;grer les variables dans le
+      qu'un script CGI adapté pour intégrer les variables dans le
       formulaire.</p>
 
-      <p>Une autre option consiste &#224; pr&#233;senter le formulaire de
+      <p>Une autre option consiste à présenter le formulaire de
       connexion en utilisant un script CGI ou une autre technologie
       dynamique.</p>
 
@@ -345,41 +345,41 @@ SessionCookieName session path=/</pre>
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="loggingout" id="loggingout">D&#233;connexion</a></h2>
+<h2><a name="loggingout" id="loggingout">Déconnexion</a></h2>
 
-      <p>Pour permettre &#224; un utilisateur de se d&#233;connecter d'une session
-      particuli&#232;re, vous devez configurer une page pour qu'elle soit
-      trait&#233;e par le gestionnaire <var>form-logout-handler</var>. Tout
-      acc&#232;s &#224; cette URL va entra&#238;ner la suppression de l'Utilisateur et
+      <p>Pour permettre à un utilisateur de se déconnecter d'une session
+      particulière, vous devez configurer une page pour qu'elle soit
+      traitée par le gestionnaire <var>form-logout-handler</var>. Tout
+      accès à cette URL va entraîner la suppression de l'Utilisateur et
       du Mot de passe de la session courante, ce qui aura pour effet de
-      d&#233;connecter l'utilisateur.</p>
+      déconnecter l'utilisateur.</p>
 
-      <p>Vous pouvez sp&#233;cifier une URL vers laquelle le navigateur sera
-      redirig&#233; en cas de d&#233;connection r&#233;ussie, en d&#233;finissant la
+      <p>Vous pouvez spécifier une URL vers laquelle le navigateur sera
+      redirigé en cas de déconnection réussie, en définissant la
       directive <code class="directive"><a href="#authformlogoutlocation">AuthFormLogoutLocation</a></code>. Cette
-      URL devra expliquer &#224; l'utilisateur qu'il a &#233;t&#233; d&#233;connect&#233;, et lui
-      donner la possibilit&#233; de se connecter &#224; nouveau.</p>
+      URL devra expliquer à l'utilisateur qu'il a été déconnecté, et lui
+      donner la possibilité de se connecter à nouveau.</p>
 
       <div class="example"><h3>Exemple simple de configuration de la
-      d&#233;connexion</h3><pre class="prettyprint lang-config">SetHandler form-logout-handler
+      déconnexion</h3><pre class="prettyprint lang-config">SetHandler form-logout-handler
 AuthName realm
 AuthFormLogoutLocation "http://example.com/loggedout.html"
 Session On
 SessionCookieName session path=/</pre>
 </div>
 
-      <p>Notez que la d&#233;connexion d'un utilisateur ne supprime pas la
+      <p>Notez que la déconnexion d'un utilisateur ne supprime pas la
       session ; elle supprime seulement l'utilisateur et le mot de passe
-      de la session. Si la session qui en r&#233;sulte est vide, elle sera
-      probablement supprim&#233;e, mais ce n'est pas garanti. Si vous voulez
-      &#234;tre s&#251;r que la session sera supprim&#233;e, affectez une valeur faible
-      &#224; la directive <code class="directive"><a href="../mod/mod_session.html#sessionmaxage">SessionMaxAge</a></code>, par exemple 1
-      (affecter &#224; cette directive la valeur z&#233;ro signifie une session
-      sans limite d'&#226;ge).
+      de la session. Si la session qui en résulte est vide, elle sera
+      probablement supprimée, mais ce n'est pas garanti. Si vous voulez
+      être sûr que la session sera supprimée, affectez une valeur faible
+      à la directive <code class="directive"><a href="../mod/mod_session.html#sessionmaxage">SessionMaxAge</a></code>, par exemple 1
+      (affecter à cette directive la valeur zéro signifie une session
+      sans limite d'âge).
       </p>
 
-      <div class="example"><h3>Exemple simple avec dur&#233;e de validit&#233; de session
-      limit&#233;e</h3><pre class="prettyprint lang-config">SetHandler form-logout-handler
+      <div class="example"><h3>Exemple simple avec durée de validité de session
+      limitée</h3><pre class="prettyprint lang-config">SetHandler form-logout-handler
 AuthFormLogoutLocation "http://example.com/loggedout.html"
 Session On
 SessionMaxAge 1
@@ -391,103 +391,103 @@ SessionCookieName session path=/</pre>
 <h2><a name="urlencoding" id="urlencoding">Noms d'utilisateurs et mots de
     passe</a></h2>
     <p>Notez que la soumission d'un formulaire implique l'encodage URL
-    (URLEncoding) des donn&#233;es du formulaire, ici le nom d'utilisateur et
+    (URLEncoding) des données du formulaire, ici le nom d'utilisateur et
     le mot de passe. Vous devez donc choisir des noms d'utilisateurs et
-    mots de passe qui ne contiennent pas de caract&#232;res susceptibles
-    d'&#234;tre encod&#233;s URL lors de la soumission du formulaire, sous peine
-    d'obtenir des r&#233;sultats inattendus.</p>
+    mots de passe qui ne contiennent pas de caractères susceptibles
+    d'être encodés URL lors de la soumission du formulaire, sous peine
+    d'obtenir des résultats inattendus.</p>
     </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="authformauthoritative" id="authformauthoritative">Directive</a> <a name="AuthFormAuthoritative" id="AuthFormAuthoritative">AuthFormAuthoritative</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&#233;termine si l'autorisation et l'authentification sont confi&#233;s &#224;
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Détermine si l'autorisation et l'authentification sont confiés à
 des modules de plus bas niveau</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthFormAuthoritative On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>AuthFormAuthoritative On</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>r&#233;pertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Surcharges autoris&#233;es:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AuthFormAuthoritative On</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
 </table>
-    <p>Normalement, chacun des modules d'autorisation sp&#233;cifi&#233;s par la
+    <p>Normalement, chacun des modules d'autorisation spécifiés par la
     directive <code class="directive"><a href="#authformprovider">AuthFormProvider</a></code> va tenter de
-    v&#233;rifier l'identit&#233; de l'utilisateur, et si ce dernier n'est trouv&#233;
-    dans aucun fournisseur, l'acc&#232;s sera refus&#233;. En d&#233;finissant
+    vérifier l'identité de l'utilisateur, et si ce dernier n'est trouvé
+    dans aucun fournisseur, l'accès sera refusé. En définissant
     explicitement la directive
-    <code class="directive">AuthFormAuthoritative</code> &#224; <code>Off</code> on
-    confie les processus d'authentification et d'autorisation &#224; des
+    <code class="directive">AuthFormAuthoritative</code> à <code>Off</code> on
+    confie les processus d'authentification et d'autorisation à des
     modules ne s'appuyant pas sur des fournisseurs, si <strong>aucun
-    identifiant utilisateur</strong> ou aucune <strong>r&#232;gle</strong> ne
-    correspond &#224; l'identifiant utilisateur fourni. Ceci ne peut s'av&#233;rer
-    n&#233;cessaire que si l'on combine <code class="module"><a href="../mod/mod_auth_form.html">mod_auth_form</a></code> avec
+    identifiant utilisateur</strong> ou aucune <strong>règle</strong> ne
+    correspond à l'identifiant utilisateur fourni. Ceci ne peut s'avérer
+    nécessaire que si l'on combine <code class="module"><a href="../mod/mod_auth_form.html">mod_auth_form</a></code> avec
     des modules tiers qui ne se configurent pas avec la directive
     <code class="directive"><a href="#authformprovider">AuthFormProvider</a></code>.
     Lorsqu'on utilise de tels modules, la chronologie du processus est
-    d&#233;termin&#233;e dans leur code source, et n'est pas configurable.</p>
+    déterminée dans leur code source, et n'est pas configurable.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="authformbody" id="authformbody">Directive</a> <a name="AuthFormBody" id="AuthFormBody">AuthFormBody</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le nom du champ de formulaire contenant le corps de la
-requ&#234;te &#224; effectuer en cas de connexion r&#233;ussie</td></tr>
+requête à effectuer en cas de connexion réussie</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthFormBody <var>nom du champ</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>httpd_body</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>r&#233;pertoire</td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>httpd_body</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP Apache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP Apache</td></tr>
 </table>
     <p>La directive <code class="directive"><a href="#authformbody">AuthFormBody</a></code>
-    sp&#233;cifie le nom du champ HTML qui, s'il existe, contiendra le corps
-    de la requ&#234;te &#224; effectuer en cas de connexion r&#233;ussie.</p>
+    spécifie le nom du champ HTML qui, s'il existe, contiendra le corps
+    de la requête à effectuer en cas de connexion réussie.</p>
 
-    <p>En ajoutant au formulaire les champs d&#233;crits dans <code class="directive"><a href="#authformmethod">AuthFormMethod</a></code>, <code class="directive"><a href="#authformmimetype">AuthFormMimetype</a></code> et <code class="directive"><a href="#authformbody">AuthFormBody</a></code>, un site web sera en
-    mesure de relancer une requ&#234;te qui a &#233;t&#233; &#233;ventuellement interrompue
-    par l'&#233;cran de connexion, ou par l'expiration d'un d&#233;lai de
+    <p>En ajoutant au formulaire les champs décrits dans <code class="directive"><a href="#authformmethod">AuthFormMethod</a></code>, <code class="directive"><a href="#authformmimetype">AuthFormMimetype</a></code> et <code class="directive"><a href="#authformbody">AuthFormBody</a></code>, un site web sera en
+    mesure de relancer une requête qui a été éventuellement interrompue
+    par l'écran de connexion, ou par l'expiration d'un délai de
     session.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="authformdisablenostore" id="authformdisablenostore">Directive</a> <a name="AuthFormDisableNoStore" id="AuthFormDisableNoStore">AuthFormDisableNoStore</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&#233;sactive l'en-t&#234;te CacheControl no-store sur la page de
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Désactive l'en-tête CacheControl no-store sur la page de
 connexion</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthFormDisableNoStore <var>On|Off</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>AuthFormDisableNoStore Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>r&#233;pertoire</td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AuthFormDisableNoStore Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP Apache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP Apache</td></tr>
 </table>
     <p>Le drapeau <code class="directive"><a href="#authformdisablenostore">AuthFormDisableNoStore</a></code> supprime
-    l'envoi d'un en-t&#234;te <code>Cache-Control no-store</code> lorsqu'une
-    page avec code d'erreur 401 est renvoy&#233;e, si l'utilisateur n'est pas
-    encore connect&#233;. Avec cette en-t&#234;te, il est plus difficile pour une
+    l'envoi d'un en-tête <code>Cache-Control no-store</code> lorsqu'une
+    page avec code d'erreur 401 est renvoyée, si l'utilisateur n'est pas
+    encore connecté. Avec cette en-tête, il est plus difficile pour une
     application <code>ecmascript</code> de resoumettre un formulaire de connexion, et
-    ainsi r&#233;v&#233;ler le nom d'utilisateur et le mot de passe &#224;
-    l'application sous-jacente. Vous devez &#234;tre conscient des risques
-    encourus si vous le d&#233;sactivez.</p>
+    ainsi révéler le nom d'utilisateur et le mot de passe à
+    l'application sous-jacente. Vous devez être conscient des risques
+    encourus si vous le désactivez.</p>
 
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="authformfakebasicauth" id="authformfakebasicauth">Directive</a> <a name="AuthFormFakeBasicAuth" id="AuthFormFakeBasicAuth">AuthFormFakeBasicAuth</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Simule une en-t&#234;te d'authentification de base</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Simule une en-tête d'authentification de base</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthFormFakeBasicAuth <var>On|Off</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>AuthFormFakeBasicAuth Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>r&#233;pertoire</td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AuthFormFakeBasicAuth Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP Apache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP Apache</td></tr>
 </table>
     <p>Le drapeau <code class="directive"><a href="#authformfakebasicauth">AuthFormFakeBasicAuth</a></code>
-    d&#233;termine si une en-t&#234;te d'<code>Authentification de base</code>
-    sera ajout&#233;e aux en-t&#234;tes de la requ&#234;te. On peut utiliser cette
-    m&#233;thode pour pr&#233;senter le nom d'utilisateur et le mot de passe &#224;
-    l'application sous-jacente, sans que cette derni&#232;re ait besoin de
-    conna&#238;tre la mani&#232;re dont le processus de connexion a &#233;t&#233; men&#233; &#224;
+    détermine si une en-tête d'<code>Authentification de base</code>
+    sera ajoutée aux en-têtes de la requête. On peut utiliser cette
+    méthode pour présenter le nom d'utilisateur et le mot de passe à
+    l'application sous-jacente, sans que cette dernière ait besoin de
+    connaître la manière dont le processus de connexion a été mené à
     bien.</p>
 
 
@@ -496,74 +496,74 @@ connexion</td></tr>
 <div class="directive-section"><h2><a name="authformlocation" id="authformlocation">Directive</a> <a name="AuthFormLocation" id="AuthFormLocation">AuthFormLocation</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le nom du champ de formulaire qui contiendra l'URL vers
-laquelle l'utilisateur sera redirig&#233; en cas de connexion
-r&#233;ussie</td></tr>
+laquelle l'utilisateur sera redirigé en cas de connexion
+réussie</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthFormLocation <var>nom du champ</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>httpd_location</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>r&#233;pertoire</td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>httpd_location</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP Apache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP Apache</td></tr>
 </table>
     <p>La directive <code class="directive"><a href="#authformlocation">AuthFormLocation</a></code>
-    sp&#233;cifie le nom du champ HTML qui, s'il existe, contiendra l'URL
+    spécifie le nom du champ HTML qui, s'il existe, contiendra l'URL
     vers laquelle rediriger le navigateur en cas de connexion
-    r&#233;ussie.</p>
+    réussie.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="authformloginrequiredlocation" id="authformloginrequiredlocation">Directive</a> <a name="AuthFormLoginRequiredLocation" id="AuthFormLoginRequiredLocation">AuthFormLoginRequiredLocation</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>L'URL de la page vers laquelle on doit &#234;tre redirig&#233; si une
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>L'URL de la page vers laquelle on doit être redirigé si une
 authentification est requise</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthFormLoginRequiredLocation <var>url</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>none</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>r&#233;pertoire</td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP
-Apache. L'interpr&#233;tation des expressions rationnelles est support&#233;e
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP
+Apache. L'interprétation des expressions rationnelles est supportée
 depuis la version 2.4.4.</td></tr>
 </table>
     <p>La directive <code class="directive"><a href="#authformloginrequiredlocation">AuthFormLoginRequiredLocation</a></code>
-    sp&#233;cifie l'URL vers laquelle l'utilisateur devra &#234;tre
-    redirig&#233; s'il n'est pas autoris&#233; &#224; acc&#233;der &#224; une page. Sa valeur est
-    interpr&#233;t&#233;e via l'interpr&#233;teur <a href="../expr.html">ap_expr</a>
-    avant d'&#234;tre envoy&#233;e au client. Par d&#233;faut,
-    si un utilisateur n'est pas autoris&#233; &#224; acc&#233;der &#224; une page, le code
-    de r&#233;ponse HTTP <code>HTTP_UNAUTHORIZED</code> est renvoy&#233; avec la
-    page sp&#233;cifi&#233;e par la directive <code class="directive"><a href="../mod/core.html#errordocument">ErrorDocument</a></code>. La directive <code class="directive"><a href="#authformloginrequiredlocation">AuthFormLoginRequiredLocation</a></code>
-    permet de remplacer cette valeur par d&#233;faut.</p>
+    spécifie l'URL vers laquelle l'utilisateur devra être
+    redirigé s'il n'est pas autorisé à accéder à une page. Sa valeur est
+    interprétée via l'interpréteur <a href="../expr.html">ap_expr</a>
+    avant d'être envoyée au client. Par défaut,
+    si un utilisateur n'est pas autorisé à accéder à une page, le code
+    de réponse HTTP <code>HTTP_UNAUTHORIZED</code> est renvoyé avec la
+    page spécifiée par la directive <code class="directive"><a href="../mod/core.html#errordocument">ErrorDocument</a></code>. La directive <code class="directive"><a href="#authformloginrequiredlocation">AuthFormLoginRequiredLocation</a></code>
+    permet de remplacer cette valeur par défaut.</p>
 
-    <p>Vous pouvez utiliser cette directive si vous voulez pr&#233;senter une
-    page de connexion personnalis&#233;e &#224; vos utilisateurs.</p>
+    <p>Vous pouvez utiliser cette directive si vous voulez présenter une
+    page de connexion personnalisée à vos utilisateurs.</p>
 
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="authformloginsuccesslocation" id="authformloginsuccesslocation">Directive</a> <a name="AuthFormLoginSuccessLocation" id="AuthFormLoginSuccessLocation">AuthFormLoginSuccessLocation</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>L'URL de la page vers laquelle on doit &#234;tre redirig&#233; en cas
-de connexion r&#233;ussie</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>L'URL de la page vers laquelle on doit être redirigé en cas
+de connexion réussie</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthFormLoginSuccessLocation <var>url</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>none</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>r&#233;pertoire</td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP
-Apache. L'interpr&#233;tation des expressions rationnelles est support&#233;e
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP
+Apache. L'interprétation des expressions rationnelles est supportée
 depuis la version 2.4.4.</td></tr>
 </table>
     <p>La directive <code class="directive"><a href="#authformloginsuccesslocation">AuthFormLoginSuccessLocation</a></code>
-    sp&#233;cifie l'URL vers laquelle l'utilisateur doit &#234;tre
-    redirig&#233; en cas de connexion r&#233;ussie. Sa valeur est
-    interpr&#233;t&#233;e via l'interpr&#233;teur <a href="../expr.html">ap_expr</a>
-    avant d'&#234;tre envoy&#233;e au client. L'effet de cette directive
-    peut &#234;tre annul&#233; si l'on a d&#233;fini un champ de formulaire contenant
-    une autre URL &#224; l'aide de la directive <code class="directive"><a href="#authformlocation">AuthFormLocation</a></code>.</p>
+    spécifie l'URL vers laquelle l'utilisateur doit être
+    redirigé en cas de connexion réussie. Sa valeur est
+    interprétée via l'interpréteur <a href="../expr.html">ap_expr</a>
+    avant d'être envoyée au client. L'effet de cette directive
+    peut être annulé si l'on a défini un champ de formulaire contenant
+    une autre URL à l'aide de la directive <code class="directive"><a href="#authformlocation">AuthFormLocation</a></code>.</p>
 
-    <p>Vous pouvez utiliser cette directive si vous poss&#233;dez une URL de
-    connexion personnalis&#233;e, et si vous n'avez pas int&#233;gr&#233; la page de
+    <p>Vous pouvez utiliser cette directive si vous possédez une URL de
+    connexion personnalisée, et si vous n'avez pas intégré la page de
     destination dans le formulaire de connexion.</p>
 
 
@@ -571,26 +571,26 @@ depuis la version 2.4.4.</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="authformlogoutlocation" id="authformlogoutlocation">Directive</a> <a name="AuthFormLogoutLocation" id="AuthFormLogoutLocation">AuthFormLogoutLocation</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>L'URL vers laquelle un utilisateur devra &#234;tre redirig&#233;
-apr&#232;s s'&#234;tre d&#233;connect&#233;</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>L'URL vers laquelle un utilisateur devra être redirigé
+après s'être déconnecté</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthFormLogoutLocation <var>uri</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>none</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>r&#233;pertoire</td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP
-Apache. L'interpr&#233;tation des expressions rationnelles est support&#233;e
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP
+Apache. L'interprétation des expressions rationnelles est supportée
 depuis la version 2.4.4.</td></tr>
 </table>
     <p>La directive <code class="directive"><a href="#authformlogoutlocation">AuthFormLogoutLocation</a></code>
-    sp&#233;cifie l'URL de la page du serveur vers laquelle l'utilisateur
-    devra &#234;tre redirig&#233; s'il se d&#233;connecte. Sa valeur est
-    interpr&#233;t&#233;e via l'interpr&#233;teur <a href="../expr.html">ap_expr</a>
-    avant d'&#234;tre envoy&#233;e au client.</p>
+    spécifie l'URL de la page du serveur vers laquelle l'utilisateur
+    devra être redirigé s'il se déconnecte. Sa valeur est
+    interprétée via l'interpréteur <a href="../expr.html">ap_expr</a>
+    avant d'être envoyée au client.</p>
 
-    <p>Lorsqu'un acc&#232;s est tent&#233; sur un URI trait&#233; par le gestionnaire
-    <code>form-logout-handler</code>, la page sp&#233;cifi&#233;e par cette
-    directive sera pr&#233;sent&#233;e &#224; l'utilisateur final. Par exemple :</p>
+    <p>Lorsqu'un accès est tenté sur un URI traité par le gestionnaire
+    <code>form-logout-handler</code>, la page spécifiée par cette
+    directive sera présentée à l'utilisateur final. Par exemple :</p>
 
     <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">&lt;Location "/logout"&gt;
     SetHandler form-logout-handler
@@ -600,33 +600,33 @@ depuis la version 2.4.4.</td></tr>
 &lt;/Location&gt;</pre>
 </div>
 
-    <p>Si un utilisateur tente d'acc&#233;der &#224; l'URI <var>/logout/</var>, il
-    sera d&#233;connect&#233;, et la page <var>/loggedout.html</var> lui sera
-    pr&#233;sent&#233;e. Assurez-vous que la page <var>loggedout.html</var> n'est
-    pas prot&#233;g&#233;e par mot de passe, car dans le cas contraire, elle ne
-    serait pas affich&#233;e.</p>
+    <p>Si un utilisateur tente d'accéder à l'URI <var>/logout/</var>, il
+    sera déconnecté, et la page <var>/loggedout.html</var> lui sera
+    présentée. Assurez-vous que la page <var>loggedout.html</var> n'est
+    pas protégée par mot de passe, car dans le cas contraire, elle ne
+    serait pas affichée.</p>
 
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="authformmethod" id="authformmethod">Directive</a> <a name="AuthFormMethod" id="AuthFormMethod">AuthFormMethod</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le nom du champ de formulaire contenant la m&#233;thode de la
-requ&#234;te &#224; effectuer en cas de connexion r&#233;ussie</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le nom du champ de formulaire contenant la méthode de la
+requête à effectuer en cas de connexion réussie</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthFormMethod <var>nom du champ</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>httpd_method</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>r&#233;pertoire</td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>httpd_method</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP Apache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP Apache</td></tr>
 </table>
     <p>La directive <code class="directive"><a href="#authformmethod">AuthFormMethod</a></code>
-    sp&#233;cifie le nom du champ HTML qui, s'il existe, contiendra le type
-    MIME de la requ&#234;te &#224; effectuer en cas de connexion r&#233;ussie.</p>
+    spécifie le nom du champ HTML qui, s'il existe, contiendra le type
+    MIME de la requête à effectuer en cas de connexion réussie.</p>
 
-    <p>En ajoutant au formulaire les champs d&#233;crits dans <code class="directive"><a href="#authformmethod">AuthFormMethod</a></code>, <code class="directive"><a href="#authformmimetype">AuthFormMimetype</a></code> et <code class="directive"><a href="#authformbody">AuthFormBody</a></code>, un site web sera en
-    mesure de relancer une requ&#234;te qui a &#233;t&#233; &#233;ventuellement interrompue
-    par l'&#233;cran de connexion, ou par l'expiration d'un d&#233;lai de
+    <p>En ajoutant au formulaire les champs décrits dans <code class="directive"><a href="#authformmethod">AuthFormMethod</a></code>, <code class="directive"><a href="#authformmimetype">AuthFormMimetype</a></code> et <code class="directive"><a href="#authformbody">AuthFormBody</a></code>, un site web sera en
+    mesure de relancer une requête qui a été éventuellement interrompue
+    par l'écran de connexion, ou par l'expiration d'un délai de
     session.</p>
 
 </div>
@@ -634,22 +634,22 @@ requ&#234;te &#224; effectuer en cas de connexion r&#233;ussie</td></tr>
 <div class="directive-section"><h2><a name="authformmimetype" id="authformmimetype">Directive</a> <a name="AuthFormMimetype" id="AuthFormMimetype">AuthFormMimetype</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le nom du champ de formulaire contenant le type MIME du
-corps de la requ&#234;te &#224; effectuer en cas de connexion
-r&#233;ussie</td></tr>
+corps de la requête à effectuer en cas de connexion
+réussie</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthFormMimetype <var>nom du champ</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>httpd_mimetype</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>r&#233;pertoire</td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>httpd_mimetype</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP Apache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP Apache</td></tr>
 </table>
     <p>La directive <code class="directive"><a href="#authformmimetype">AuthFormMimetype</a></code>
-    sp&#233;cifie le nom du champ HTML qui, s'il existe, contiendra le type
-    MIME de la requ&#234;te &#224; effectuer en cas de connexion r&#233;ussie.</p>
+    spécifie le nom du champ HTML qui, s'il existe, contiendra le type
+    MIME de la requête à effectuer en cas de connexion réussie.</p>
 
-    <p>En ajoutant au formulaire les champs d&#233;crits dans <code class="directive"><a href="#authformmethod">AuthFormMethod</a></code>, <code class="directive"><a href="#authformmimetype">AuthFormMimetype</a></code> et <code class="directive"><a href="#authformbody">AuthFormBody</a></code>, un site web sera en
-    mesure de relancer une requ&#234;te qui a &#233;t&#233; &#233;ventuellement interrompue
-    par l'&#233;cran de connexion, ou par l'expiration d'un d&#233;lai de
+    <p>En ajoutant au formulaire les champs décrits dans <code class="directive"><a href="#authformmethod">AuthFormMethod</a></code>, <code class="directive"><a href="#authformmimetype">AuthFormMimetype</a></code> et <code class="directive"><a href="#authformbody">AuthFormBody</a></code>, un site web sera en
+    mesure de relancer une requête qui a été éventuellement interrompue
+    par l'écran de connexion, ou par l'expiration d'un délai de
     session.</p>
 
 </div>
@@ -659,36 +659,36 @@ r&#233;ussie</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le nom du champ de formulaire qui contient le mot de passe
 de connexion</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthFormPassword <var>nom du champ</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>httpd_password</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>r&#233;pertoire</td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>httpd_password</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP Apache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP Apache</td></tr>
 </table>
     <p>La directive <code class="directive"><a href="#authformpassword">AuthFormPassword</a></code> permet de
-    sp&#233;cifier le nom du champ HTML qui, s'il existe, contiendra le mot
-    de passe qui sera utilis&#233; pour la connexion.</p>
+    spécifier le nom du champ HTML qui, s'il existe, contiendra le mot
+    de passe qui sera utilisé pour la connexion.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="authformprovider" id="authformprovider">Directive</a> <a name="AuthFormProvider" id="AuthFormProvider">AuthFormProvider</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&#233;finit le(s) fournisseur(s) d'authentification pour la
-zone concern&#233;e</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le(s) fournisseur(s) d'authentification pour la
+zone concernée</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthFormProvider <var>nom fournisseur</var>
 [<var>nom fournisseur</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>AuthFormProvider file</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>r&#233;pertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Surcharges autoris&#233;es:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AuthFormProvider file</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
 </table>
     <p>La directive <code class="directive">AuthFormProvider</code> permet de
-    d&#233;finir quel fournisseur sera utilis&#233; pour authentifier les
-    utilisateurs pour la zone concern&#233;e. Le fournisseur par d&#233;faut
-    <code>file</code> est impl&#233;ment&#233; par le module
+    définir quel fournisseur sera utilisé pour authentifier les
+    utilisateurs pour la zone concernée. Le fournisseur par défaut
+    <code>file</code> est implémenté par le module
     <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code>. Assurez-vous que le fournisseur
-    choisi soit bien pr&#233;sent dans le serveur.</p>
+    choisi soit bien présent dans le serveur.</p>
 
     <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">&lt;Location "/secure"&gt;
     AuthType form
@@ -701,7 +701,7 @@ zone concern&#233;e</td></tr>
 &lt;/Location&gt;</pre>
 </div>
 
-    <p>Les diff&#233;rents fournisseurs sont impl&#233;ment&#233;s par les modules
+    <p>Les différents fournisseurs sont implémentés par les modules
     <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code>, <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code>,
     <code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code> et
     <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code>.</p>
@@ -710,39 +710,39 @@ zone concern&#233;e</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="authformsitepassphrase" id="authformsitepassphrase">Directive</a> <a name="AuthFormSitePassphrase" id="AuthFormSitePassphrase">AuthFormSitePassphrase</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Court-circuite l'authentification pour les sites &#224; fort
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Court-circuite l'authentification pour les sites à fort
 trafic</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthFormSitePassphrase <var>secret</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>none</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>r&#233;pertoire</td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP Apache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP Apache</td></tr>
 </table>
     <p>La directive <code class="directive"><a href="#authformsitepassphrase">AuthFormSitePassphrase</a></code>
-    sp&#233;cifie un mot de passe qui, s'il est pr&#233;sent dans la session
-    utilisateur, indique &#224; Apache httpd de court-circuiter l'authentification
-    pour l'URL consid&#233;r&#233;e. On peut l'utiliser dans le cas de sites web &#224;
-    fort trafic afin de r&#233;duire la charge induite sur l'infrastructure
+    spécifie un mot de passe qui, s'il est présent dans la session
+    utilisateur, indique à Apache httpd de court-circuiter l'authentification
+    pour l'URL considérée. On peut l'utiliser dans le cas de sites web à
+    fort trafic afin de réduire la charge induite sur l'infrastructure
     d'authentification.</p>
 
-    <p>On peut ins&#233;rer le mot de passe dans une session utilisateur en
-    ajoutant cette directive &#224; la configuration concernant le
+    <p>On peut insérer le mot de passe dans une session utilisateur en
+    ajoutant cette directive à la configuration concernant le
     gestionnaire <var>form-login-handler</var>. Le gestionnaire
-    <var>form-login-handler</var>, quant &#224; lui, effectuera toujours les
-    v&#233;rifications d'authentification, qu'un mot de passe soit sp&#233;cifi&#233;
+    <var>form-login-handler</var>, quant à lui, effectuera toujours les
+    vérifications d'authentification, qu'un mot de passe soit spécifié
     ou non.</p>
 
     <div class="warning"><h3>Avertissement</h3>
-      <p>Si la session est pr&#233;sent&#233;e &#224; l'utilisateur &#224; l'aide du module
+      <p>Si la session est présentée à l'utilisateur à l'aide du module
       <code class="module"><a href="../mod/mod_session_cookie.html">mod_session_cookie</a></code>, et si la session n'est pas
-      prot&#233;g&#233;e par le module <code class="module"><a href="../mod/mod_session_crypto.html">mod_session_crypto</a></code>, le mot
+      protégée par le module <code class="module"><a href="../mod/mod_session_crypto.html">mod_session_crypto</a></code>, le mot
       de passe peut faire l'objet d'une attaque de type dictionnaire.
       Quelle que soit la configuration de la session, assurez-vous que
-      cette directive n'est pas utilis&#233;e dans un espace d'URLs contenant
-      des donn&#233;es priv&#233;es, ou &#224; partir desquelles des transactions
-      sensibles pourraient &#234;tre men&#233;es. En tout &#233;tat de cause, vous
-      devez &#234;tre conscient des risques encourus avant de l'utiliser.</p>
+      cette directive n'est pas utilisée dans un espace d'URLs contenant
+      des données privées, ou à partir desquelles des transactions
+      sensibles pourraient être menées. En tout état de cause, vous
+      devez être conscient des risques encourus avant de l'utiliser.</p>
     </div>
 
 
@@ -753,22 +753,22 @@ trafic</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>La taille maximale en octets du formulaire dont seront
 extraites les informations de connexion</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthFormSize <var>taille</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>8192</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>r&#233;pertoire</td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>8192</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP Apache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP Apache</td></tr>
 </table>
-    <p>La directive <code class="directive"><a href="#authformsize">AuthFormSize</a></code> sp&#233;cifie
-    la taille maximale du corps de la requ&#234;te qui sera utilis&#233;e pour
+    <p>La directive <code class="directive"><a href="#authformsize">AuthFormSize</a></code> spécifie
+    la taille maximale du corps de la requête qui sera utilisée pour
     trouver le formulaire de connexion.</p>
 
-    <p>Si une requ&#234;te de connexion entrante poss&#232;de une taille
-    sup&#233;rieure &#224; cette valeur, elle sera rejet&#233;e avec le code de r&#233;ponse
+    <p>Si une requête de connexion entrante possède une taille
+    supérieure à cette valeur, elle sera rejetée avec le code de réponse
     HTTP <code>HTTP_REQUEST_TOO_LARGE</code>.</p>
 
-    <p>Si vous avez ajout&#233; au formulaire des champs d&#233;crits dans <code class="directive"><a href="#authformmethod">AuthFormMethod</a></code>, <code class="directive"><a href="#authformmimetype">AuthFormMimetype</a></code> et <code class="directive"><a href="#authformbody">AuthFormBody</a></code>, il est recommand&#233;
-    de d&#233;finir cette directive &#224; une valeur similaire &#224; celle de la
+    <p>Si vous avez ajouté au formulaire des champs décrits dans <code class="directive"><a href="#authformmethod">AuthFormMethod</a></code>, <code class="directive"><a href="#authformmimetype">AuthFormMimetype</a></code> et <code class="directive"><a href="#authformbody">AuthFormBody</a></code>, il est recommandé
+    de définir cette directive à une valeur similaire à celle de la
     directive <code class="directive"><a href="../mod/mod_request.html#keptbodysize">KeptBodySize</a></code>.</p>
 
 
@@ -779,21 +779,21 @@ extraites les informations de connexion</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le nom du champ de formulaire qui contient le nom de
 connexion</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthFormUsername <var>nom du champ</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>httpd_username</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>r&#233;pertoire</td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>httpd_username</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible depuis la version 2.3.3 du serveur HTTP Apache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.3 du serveur HTTP Apache</td></tr>
 </table>
     <p>La directive <code class="directive"><a href="#authformusername">AuthFormUsername</a></code> permet de
-    sp&#233;cifier le nom du champ HTML qui, s'il existe, contiendra le nom
-    d'utilisateur qui sera utilis&#233; pour la connexion.</p>
+    spécifier le nom du champ HTML qui, s'il existe, contiendra le nom
+    d'utilisateur qui sera utilisé pour la connexion.</p>
 
 </div>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_auth_form.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_auth_form.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_auth_form.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -812,7 +812,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.4/mod/mod_auth_form.ht
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autoris&#233; sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

@@ -27,13 +27,13 @@
 <div id="preamble"><h1>Module Apache mod_log_debug</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_log_debug.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_log_debug.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_log_debug.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Journalisation suppl&#233;mentaire &#224; des fins de d&#233;bogage</td></tr>
-<tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Exp&#233;rimental</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&#160;de&#160;Module:</a></th><td>log_debug_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier&#160;Source:</a></th><td>mod_log_debug.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible depuis la version 2.3.14 d'Apache</td></tr></table>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Journalisation supplémentaire à des fins de débogage</td></tr>
+<tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>log_debug_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_log_debug.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.14 d'Apache</td></tr></table>
 </div>
 <div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><h3>Sujets</h3>
 <ul id="topics">
@@ -42,7 +42,7 @@
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#logmessage">LogMessage</a></li>
 </ul>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_log_debug">Probl&#232;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_log_debug">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_log_debug">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_log_debug">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -51,32 +51,32 @@
 
     <ol>
       <li>
-        Enregistre un message apr&#232;s le traitement d'une requ&#234;te pour
+        Enregistre un message après le traitement d'une requête pour
 	/foo/* :
 
         <pre class="prettyprint lang-config">&lt;Location "/foo/"&gt;
-&#160;&#160;LogMessage "/foo/ has been requested"
+  LogMessage "/foo/ has been requested"
 &lt;/Location&gt;</pre>
 
       </li>
 
       <li>
-        Enregistre un message si une requ&#234;te pour /foo/* est trait&#233;e
-	dans une sous-requ&#234;te :
+        Enregistre un message si une requête pour /foo/* est traitée
+	dans une sous-requête :
         <pre class="prettyprint lang-config">&lt;Location "/foo/"&gt;
-&#160;&#160;LogMessage "subrequest to /foo/" hook=type_checker "expr=-T %{IS_SUBREQ}"
+  LogMessage "subrequest to /foo/" hook=type_checker "expr=-T %{IS_SUBREQ}"
 &lt;/Location&gt;</pre>
 
 
-        Le branchement (hook) par d&#233;faut log_transaction n'est pas
-	ex&#233;cut&#233; pour les sous-requ&#234;tes ; nous devons donc en utiliser un
+        Le branchement (hook) par défaut log_transaction n'est pas
+	exécuté pour les sous-requêtes ; nous devons donc en utiliser un
 	autre.
       </li>
 
 
       <li>
-        Enregistre un message si un client IPv6 est &#224; l'origine d'un
-	d&#233;passement de d&#233;lai pour une requ&#234;te :
+        Enregistre un message si un client IPv6 est à l'origine d'un
+	dépassement de délai pour une requête :
         <pre class="prettyprint lang-config">LogMessage "IPv6 timeout from %{REMOTE_ADDR}" "expr=-T %{IPV6} &amp;&amp; %{REQUEST_STATUS} = 408"</pre>
 
         Notez l'emplacement des guillemets pour l'argument
@@ -84,15 +84,15 @@
       </li>
 
       <li>
-        Enregistre la valeur de la variable d'environnement de requ&#234;te
-	"X-Foo" &#224; chaque &#233;tape du traitement :
+        Enregistre la valeur de la variable d'environnement de requête
+	"X-Foo" à chaque étape du traitement :
         <pre class="prettyprint lang-config">&lt;Location "/"&gt;
-&#160;&#160;LogMessage "%{reqenv:X-Foo}" hook=all
+  LogMessage "%{reqenv:X-Foo}" hook=all
 &lt;/Location&gt;</pre>
 
-        En association avec les rep&#232;res de temps en microsecondes du journal des erreurs,
-	<code>hook=all</code> permet aussi de d&#233;terminer la dur&#233;e d'ex&#233;cution des
-	diff&#233;rentes phases du traitement de la requ&#234;te.
+        En association avec les repères de temps en microsecondes du journal des erreurs,
+	<code>hook=all</code> permet aussi de déterminer la durée d'exécution des
+	différentes phases du traitement de la requête.
       </li>
 
     </ol>
@@ -100,27 +100,27 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="logmessage" id="logmessage">Directive</a> <a name="LogMessage" id="LogMessage">LogMessage</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enregistre des messages personnalis&#233;s dans le journal des
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enregistre des messages personnalisés dans le journal des
 erreurs</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LogMessage <var>message</var>
 [hook=<var>hook</var>] [expr=<var>expression</var>]
 </code></td></tr>
-<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>Non d&#233;fini</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>r&#233;pertoire</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Exp&#233;rimental</td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>Non défini</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_log_debug</td></tr>
 </table>
-    <p>Cette directive permet d'enregistrer un message personnalis&#233; dans
+    <p>Cette directive permet d'enregistrer un message personnalisé dans
     le journal des erreurs. Ce message peut utiliser des variables et
     des fonctions dans la <a href="../expr.html">syntaxe ap_expr</a>.
-    D'&#233;ventuelles r&#233;f&#233;rences &#224; des en-t&#234;tes HTTP dans l'expression
-    rationnelle n'entra&#238;neront pas l'ajout des noms d'en-t&#234;te
-    correspondants &#224; l'en-t&#234;te Vary.
-    Les messages sont enregistr&#233;s au loglevel info.</p>
+    D'éventuelles références à des en-têtes HTTP dans l'expression
+    rationnelle n'entraîneront pas l'ajout des noms d'en-tête
+    correspondants à l'en-tête Vary.
+    Les messages sont enregistrés au loglevel info.</p>
 
-    <p>Le branchement (hook) pr&#233;cise la phase du traitement de la
-    requ&#234;te avant laquelle le message sera enregistr&#233;. Les branchements
-    suivants sont support&#233;s :</p>
+    <p>Le branchement (hook) précise la phase du traitement de la
+    requête avant laquelle le message sera enregistré. Les branchements
+    suivants sont supportés :</p>
 
     <table class="bordered"><tr class="header"><th>Nom</th></tr>
 <tr><td><code>translate_name</code></td></tr>
@@ -137,24 +137,24 @@ erreurs</td></tr>
 <tr class="odd"><td><code>log_transaction</code></td></tr>
 </table>
 
-    <p>Le branchement par d&#233;faut est <code>log_transaction</code>. La
-    valeur sp&#233;ciale <code>all</code> est &#233;galement support&#233;e ; dans ce cas,
-    le message sera enregistr&#233; &#224; chaque phase. Tous les branchements ne
-    sont pas ex&#233;cut&#233;s pour chaque requ&#234;te.</p>
+    <p>Le branchement par défaut est <code>log_transaction</code>. La
+    valeur spéciale <code>all</code> est également supportée ; dans ce cas,
+    le message sera enregistré à chaque phase. Tous les branchements ne
+    sont pas exécutés pour chaque requête.</p>
 
     <p>L'expression optionnelle permet de restreindre l'enregistrement
     du message en fonction d'une certaine condition. La syntaxe de
-    l'expression est d&#233;crite dans la <a href="../expr.html">documentation ap_expr</a>. D'&#233;ventuelles
-    r&#233;f&#233;rences &#224; des en-t&#234;tes HTTP dans l'expression
-    rationnelle n'entra&#238;neront pas l'ajout des noms d'en-t&#234;te
-    correspondants &#224; l'en-t&#234;te Vary.</p>
+    l'expression est décrite dans la <a href="../expr.html">documentation ap_expr</a>. D'éventuelles
+    références à des en-têtes HTTP dans l'expression
+    rationnelle n'entraîneront pas l'ajout des noms d'en-tête
+    correspondants à l'en-tête Vary.</p>
 
 
 </div>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_log_debug.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_log_debug.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_log_debug.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -173,7 +173,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.4/mod/mod_log_debug.ht
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autoris&#233; sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

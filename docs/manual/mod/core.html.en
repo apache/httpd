@@ -2305,7 +2305,7 @@ presence or absence of a specific directive</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Encloses directives that will be processed only
 if file exists at startup</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>&lt;IfFile [!]<var>parameter-name</var>&gt; ...
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>&lt;IfFile [!]<var>filename</var>&gt; ...
     &lt;/IfFile&gt;</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>

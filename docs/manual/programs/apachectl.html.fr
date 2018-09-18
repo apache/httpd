@@ -7,7 +7,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>apachectl - L'interface de contr&#244;le du serveur HTTP
+<title>apachectl - L'interface de contrôle du serveur HTTP
   Apache - Serveur HTTP Apache Version 2.4</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
@@ -22,57 +22,57 @@
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Programmes</a></div><div id="page-content"><div id="preamble"><h1>apachectl - L'interface de contr&#244;le du serveur HTTP
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Programmes</a></div><div id="page-content"><div id="preamble"><h1>apachectl - L'interface de contrôle du serveur HTTP
   Apache</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/programs/apachectl.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/programs/apachectl.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../fr/programs/apachectl.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ko/programs/apachectl.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/programs/apachectl.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/programs/apachectl.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
 
      <p><code>apachectl</code> est un frontal pour le serveur HTTP
-     Apache. Il a &#233;t&#233; con&#231;u pour aider l'administrateur &#224; contr&#244;ler le
-     fonctionnement du d&#233;mon Apache <code class="program"><a href="../programs/httpd.html">httpd</a></code>.</p>
+     Apache. Il a été conçu pour aider l'administrateur à contrôler le
+     fonctionnement du démon Apache <code class="program"><a href="../programs/httpd.html">httpd</a></code>.</p>
 
-     <p>Le script <code>apachectl</code> poss&#232;de deux modes de
+     <p>Le script <code>apachectl</code> possède deux modes de
      fonctionnement. Il peut fonctionner en tant que simple frontal
      de la commande <code class="program"><a href="../programs/httpd.html">httpd</a></code> et ne fait alors que
-     d&#233;finir toute variable d'environnement n&#233;cessaire, puis invoque
+     définir toute variable d'environnement nécessaire, puis invoque
      <code class="program"><a href="../programs/httpd.html">httpd</a></code> en lui passant tout argument de ligne de
-     commande souhait&#233;. Il peut aussi fonctionner en tant que script
+     commande souhaité. Il peut aussi fonctionner en tant que script
      d'initialisation SysV n'acceptant qu'un seul argument tel que
      <code>start</code>, <code>restart</code> et <code>stop</code>, et
-     traduisant ce dernier en signaux appropri&#233;s pour le d&#233;mon
+     traduisant ce dernier en signaux appropriés pour le démon
      <code class="program"><a href="../programs/httpd.html">httpd</a></code>.</p>
 
      <p>Si votre installation d'Apache utilise des chemins non
-     standards, vous devrez &#233;diter le script <code>apachectl</code> afin
-     de d&#233;finir les chemins appropri&#233;s pour le binaire
-     <code class="program"><a href="../programs/httpd.html">httpd</a></code>. Vous pouvez aussi sp&#233;cifier tout argument
-     de ligne de commande de <code class="program"><a href="../programs/httpd.html">httpd</a></code> n&#233;cessaire. Voir
-     les commentaires dans le script pour plus de d&#233;tails.</p>
+     standards, vous devrez éditer le script <code>apachectl</code> afin
+     de définir les chemins appropriés pour le binaire
+     <code class="program"><a href="../programs/httpd.html">httpd</a></code>. Vous pouvez aussi spécifier tout argument
+     de ligne de commande de <code class="program"><a href="../programs/httpd.html">httpd</a></code> nécessaire. Voir
+     les commentaires dans le script pour plus de détails.</p>
 
-     <p>Le script <code>apachectl</code> renvoie une valeur &#233;gale &#224; 0 en
-     cas de succ&#232;s, et une valeur sup&#233;rieure &#224; 0 en cas de probl&#232;me.
-     Voir les commentaires dans le script pour plus de d&#233;tails.</p>
+     <p>Le script <code>apachectl</code> renvoie une valeur égale à 0 en
+     cas de succès, et une valeur supérieure à 0 en cas de problème.
+     Voir les commentaires dans le script pour plus de détails.</p>
 </div>
-<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#synopsis">R&#233;sum&#233;</a></li>
+<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#synopsis">Résumé</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#options">Options</a></li>
-</ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="../invoking.html">D&#233;marrer Apache</a></li><li><a href="../stopping.html">Arr&#234;ter Apache</a></li><li><a href="../configuring.html">Fichiers de
-configuration</a></li><li><a href="../platform/">Documentation sp&#233;cifique aux
+</ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="../invoking.html">Démarrer Apache</a></li><li><a href="../stopping.html">Arrêter Apache</a></li><li><a href="../configuring.html">Fichiers de
+configuration</a></li><li><a href="../platform/">Documentation spécifique aux
 plates-formes</a></li><li><code class="program"><a href="../programs/httpd.html">httpd</a></code></li><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="synopsis" id="synopsis">R&#233;sum&#233;</a></h2>
+<h2><a name="synopsis" id="synopsis">Résumé</a></h2>
 
-<p>En mode frontal (pass-through), <code>apachectl</code> peut sp&#233;cifier
+<p>En mode frontal (pass-through), <code>apachectl</code> peut spécifier
 tous les arguments qu'accepte le binaire <code class="program"><a href="../programs/httpd.html">httpd</a></code>.</p>
 
 <p><code><strong>apachectl</strong> [ <var>argument-httpd</var> ]</code></p>
 
 <p>En mode script d'initialisation SysV, <code>apachectl</code>
-n'accepte qu'un seul des arguments d&#233;finis ci-dessous.</p>
+n'accepte qu'un seul des arguments définis ci-dessous.</p>
 
 <p><code><strong>apachectl</strong> <var>commande</var></code></p>
 
@@ -80,91 +80,91 @@ n'accepte qu'un seul des arguments d&#233;finis ci-dessous.</p>
 <div class="section">
 <h2><a name="options" id="options">Options</a></h2>
 
-<p>Seules les options du style initialisation SysV sont d&#233;crites ici.
-Les autres arguments sont d&#233;crits dans la page de manuel de
+<p>Seules les options du style initialisation SysV sont décrites ici.
+Les autres arguments sont décrits dans la page de manuel de
 <code class="program"><a href="../programs/httpd.html">httpd</a></code>.</p>
 
 <dl>
 
 <dt><code>start</code></dt>
 
-<dd>D&#233;marre le d&#233;mon Apache <code class="program"><a href="../programs/httpd.html">httpd</a></code>. Renvoie une erreur
-s'il est d&#233;j&#224; en cours d'ex&#233;cution. &#201;quivalent &#224; <code>apachectl -k
+<dd>Démarre le démon Apache <code class="program"><a href="../programs/httpd.html">httpd</a></code>. Renvoie une erreur
+s'il est déjà en cours d'exécution. Équivalent à <code>apachectl -k
 start</code>.</dd>
 
 <dt><code>stop</code></dt>
 
-<dd>Arr&#234;te le d&#233;mon Apache <code class="program"><a href="../programs/httpd.html">httpd</a></code>. &#201;quivalent &#224;
+<dd>Arrête le démon Apache <code class="program"><a href="../programs/httpd.html">httpd</a></code>. Équivalent à
 <code>apachectl -k stop</code>.</dd>
 
 <dt><code>restart</code></dt>
 
-<dd>Red&#233;marre le d&#233;mon Apache <code class="program"><a href="../programs/httpd.html">httpd</a></code>. Si le d&#233;mon
-n'est pas en cours d'ex&#233;cution, il est d&#233;marr&#233;. Cette option v&#233;rifie
-automatiquement les fichiers de configuration (de la m&#234;me mani&#232;re que
-l'option <code>configtest</code> ) avant de lancer le red&#233;marrage, afin
-d'&#234;tre s&#251;r que le fonctionnement du d&#233;mon ne sera pas compromis.
-Equivalent &#224; <code>apachectl -k restart</code>.</dd>
+<dd>Redémarre le démon Apache <code class="program"><a href="../programs/httpd.html">httpd</a></code>. Si le démon
+n'est pas en cours d'exécution, il est démarré. Cette option vérifie
+automatiquement les fichiers de configuration (de la même manière que
+l'option <code>configtest</code> ) avant de lancer le redémarrage, afin
+d'être sûr que le fonctionnement du démon ne sera pas compromis.
+Equivalent à <code>apachectl -k restart</code>.</dd>
 
 <dt><code>fullstatus</code></dt>
 
-<dd>Affiche le rapport d'&#233;tat complet du module
+<dd>Affiche le rapport d'état complet du module
 <code class="module"><a href="../mod/mod_status.html">mod_status</a></code>. Pour que ceci fonctionne,
-<code class="module"><a href="../mod/mod_status.html">mod_status</a></code> doit &#234;tre activ&#233; dans votre serveur et vous
+<code class="module"><a href="../mod/mod_status.html">mod_status</a></code> doit être activé dans votre serveur et vous
 devez disposer d'un navigateur en mode texte tel que <code>lynx</code>
-sur votre syst&#232;me. L'URL utilis&#233;e pour acc&#233;der au rapport d'&#233;tat peut
-&#234;tre modifi&#233;e en d&#233;finissant la variable <code>STATUSURL</code> dans le
+sur votre système. L'URL utilisée pour accéder au rapport d'état peut
+être modifiée en définissant la variable <code>STATUSURL</code> dans le
 script.</dd>
 
 <dt><code>status</code></dt>
 
-<dd>Affiche un rapport d'&#233;tat succinct. Similaire &#224; l'option
-<code>fullstatus</code>, except&#233; que la liste des requ&#234;tes en cours de
+<dd>Affiche un rapport d'état succinct. Similaire à l'option
+<code>fullstatus</code>, excepté que la liste des requêtes en cours de
 traitement est omise.</dd>
 
 <dt><code>graceful</code></dt>
 
-<dd>Red&#233;marre le d&#233;mon Apache <code class="program"><a href="../programs/httpd.html">httpd</a></code> en douceur. Si le
-d&#233;mon n'est pas en cours d'ex&#233;cution, il est d&#233;marr&#233;. &#192; la diff&#233;rence
-d'un red&#233;marrage normal, les connexions en cours ne sont pas ferm&#233;es.
-Comme effet de bord, les anciens fichiers journaux ne seront pas ferm&#233;s
-imm&#233;diatement. Cela signifie que si l'on utilise un script de rotation
-des journaux, un d&#233;lai suffisant sera n&#233;cessaire afin d'&#234;tre s&#251;r que les
-fichiers journaux seront bien ferm&#233;s avant leur traitement par le script
-de rotation. Cette option v&#233;rifie
-automatiquement les fichiers de configuration (de la m&#234;me mani&#232;re que
-l'option <code>configtest</code> ) avant de lancer le red&#233;marrage, afin
-d'&#234;tre s&#251;r que le fonctionnement du d&#233;mon ne sera pas compromis.
-&#201;quivalent &#224; <code>apachectl -k graceful</code>.</dd>
+<dd>Redémarre le démon Apache <code class="program"><a href="../programs/httpd.html">httpd</a></code> en douceur. Si le
+démon n'est pas en cours d'exécution, il est démarré. À la différence
+d'un redémarrage normal, les connexions en cours ne sont pas fermées.
+Comme effet de bord, les anciens fichiers journaux ne seront pas fermés
+immédiatement. Cela signifie que si l'on utilise un script de rotation
+des journaux, un délai suffisant sera nécessaire afin d'être sûr que les
+fichiers journaux seront bien fermés avant leur traitement par le script
+de rotation. Cette option vérifie
+automatiquement les fichiers de configuration (de la même manière que
+l'option <code>configtest</code> ) avant de lancer le redémarrage, afin
+d'être sûr que le fonctionnement du démon ne sera pas compromis.
+Équivalent à <code>apachectl -k graceful</code>.</dd>
 
 <dt><code>graceful-stop</code></dt>
 
-<dd>Arr&#234;te le d&#233;mon Apache <code class="program"><a href="../programs/httpd.html">httpd</a></code> en douceur. &#192; la
-diff&#233;rence d'un arr&#234;t normal, les connexions en cours ne sont pas
-ferm&#233;es. Comme effet de bord, les anciens fichiers journaux ne seront
-pas ferm&#233;s imm&#233;diatement. &#201;quivalent &#224; <code>apachectl -k
+<dd>Arrête le démon Apache <code class="program"><a href="../programs/httpd.html">httpd</a></code> en douceur. À la
+différence d'un arrêt normal, les connexions en cours ne sont pas
+fermées. Comme effet de bord, les anciens fichiers journaux ne seront
+pas fermés immédiatement. Équivalent à <code>apachectl -k
 graceful-stop</code>.</dd>
 
 <dt><code>configtest</code></dt>
 
-<dd>Effectue une v&#233;rification de la syntaxe du fichier de configuration.
+<dd>Effectue une vérification de la syntaxe du fichier de configuration.
 Avec cette option, le script parcourt le fichier de configuration et
-renvoie soit <code>Syntax Ok</code>, soit des informations d&#233;taill&#233;es &#224;
-propos des &#233;ventuelles erreurs de syntaxe. Equivalent &#224; <code>apachectl
+renvoie soit <code>Syntax Ok</code>, soit des informations détaillées à
+propos des éventuelles erreurs de syntaxe. Equivalent à <code>apachectl
 -t</code>.</dd>
 
 </dl>
 
-<p>Les options suivantes &#233;taient disponibles dans les anciennes versions
-et ont &#233;t&#233; supprim&#233;es.</p>
+<p>Les options suivantes étaient disponibles dans les anciennes versions
+et ont été supprimées.</p>
 
 <dl>
 
 <dt><code>startssl</code></dt>
 
-<dd>Pour d&#233;marrer <code class="program"><a href="../programs/httpd.html">httpd</a></code> avec le support SSL, vous
-devez &#233;diter votre fichier de configuration et y inclure les
-directives appropri&#233;es, puis utiliser la commande de d&#233;marrage normale
+<dd>Pour démarrer <code class="program"><a href="../programs/httpd.html">httpd</a></code> avec le support SSL, vous
+devez éditer votre fichier de configuration et y inclure les
+directives appropriées, puis utiliser la commande de démarrage normale
 <code>apachectl start</code>.</dd>
 
 </dl>
@@ -172,9 +172,9 @@ directives appropri&#233;es, puis utiliser la commande de d&#233;marrage normale
 </div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/programs/apachectl.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/programs/apachectl.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../fr/programs/apachectl.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ko/programs/apachectl.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/programs/apachectl.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/programs/apachectl.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -193,7 +193,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.4/programs/apachectl.h
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autoris&#233; sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

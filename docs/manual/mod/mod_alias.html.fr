@@ -27,45 +27,45 @@
 <div id="preamble"><h1>Module Apache mod_alias</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_alias.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_alias.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_alias.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_alias.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_alias.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/mod_alias.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/mod_alias.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Permet d'atteindre diff&#233;rentes parties du syst&#232;me de
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Permet d'atteindre différentes parties du système de
 fichiers depuis l'arborescence des documents du site web, ainsi que la
 redirection d'URL</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&#160;de&#160;Module:</a></th><td>alias_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier&#160;Source:</a></th><td>mod_alias.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>alias_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_alias.c</td></tr></table>
 <h3>Sommaire</h3>
 
     <p>Les directives fournies par ce module permettent de manipuler et
-    de contr&#244;ler les URLs &#224; l'arriv&#233;e des requ&#234;tes sur le serveur. Les
+    de contrôler les URLs à l'arrivée des requêtes sur le serveur. Les
     directives <code class="directive"><a href="#alias">Alias</a></code> et
     <code class="directive"><a href="#scriptalias">ScriptAlias</a></code> permettent de
-    faire correspondre des URLs avec des chemins du syst&#232;me de fichiers.
-    Ceci permet de servir des contenus qui ne sont pas situ&#233;s dans
-    l'arborescence de <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> comme s'ils y &#233;taient
-    r&#233;ellement. La directive <code class="directive"><a href="#scriptalias">ScriptAlias</a></code> a pour effet
-    suppl&#233;mentaire de marquer le r&#233;pertoire cible comme conteneur de
+    faire correspondre des URLs avec des chemins du système de fichiers.
+    Ceci permet de servir des contenus qui ne sont pas situés dans
+    l'arborescence de <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> comme s'ils y étaient
+    réellement. La directive <code class="directive"><a href="#scriptalias">ScriptAlias</a></code> a pour effet
+    supplémentaire de marquer le répertoire cible comme conteneur de
     scripts CGI.</p>
 
     <p>Les directives <code class="directive"><a href="#redirect">Redirect</a></code>
-    indiquent aux clients qu'ils doivent effectuer une nouvelle requ&#234;te
-    avec une URL diff&#233;rente. Elles sont souvent utilis&#233;es lorsqu'une
-    ressource a &#233;t&#233; d&#233;plac&#233;e.</p>
+    indiquent aux clients qu'ils doivent effectuer une nouvelle requête
+    avec une URL différente. Elles sont souvent utilisées lorsqu'une
+    ressource a été déplacée.</p>
 
-    <p>Lorsque les directives <code class="directive"><a href="#alias">Alias</a></code>, <code class="directive"><a href="#scriptalias">ScriptAlias</a></code> ou <code class="directive"><a href="#redirect">Redirect</a></code> sont d&#233;finies au sein d'une
+    <p>Lorsque les directives <code class="directive"><a href="#alias">Alias</a></code>, <code class="directive"><a href="#scriptalias">ScriptAlias</a></code> ou <code class="directive"><a href="#redirect">Redirect</a></code> sont définies au sein d'une
     section <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>
     ou <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>, vous pouvez utiliser la <a href="../expr.html">syntaxe des expressions</a> pour manipuler l'URL
     ou le chemin de destination.
 	</p>
 
-    <p><code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code> est con&#231;u pour traiter des t&#226;ches
-    simples de manipulation d'URL. Pour des t&#226;ches plus complexes comme
-    la manipulation des cha&#238;nes d'arguments des requ&#234;tes, utilisez
-    plut&#244;t les outils fournis par le module <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code></p>
+    <p><code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code> est conçu pour traiter des tâches
+    simples de manipulation d'URL. Pour des tâches plus complexes comme
+    la manipulation des chaînes d'arguments des requêtes, utilisez
+    plutôt les outils fournis par le module <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code></p>
 
 </div>
 <div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><h3>Sujets</h3>
@@ -82,110 +82,110 @@ redirection d'URL</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#scriptalias">ScriptAlias</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#scriptaliasmatch">ScriptAliasMatch</a></li>
 </ul>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_alias">Probl&#232;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_alias">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_alias">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_alias">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code></li>
 <li><a href="../urlmapping.html">Mise en correspondance des URLs avec le
-syst&#232;me de fichiers</a></li>
+système de fichiers</a></li>
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="order" id="order">Chronologie du traitement</a></h2>
 
-    <p>Les alias et redirections apparaissant dans diff&#233;rents contextes
-    sont trait&#233;s comme les autres directives en respectant les <a href="../sections.html#mergin">r&#232;gles de fusion</a> standards. Par
-    contre, ils sont trait&#233;s selon une chronologie particuli&#232;re
-    lorsqu'ils apparaissent dans le m&#234;me contexte (par exemple, dans la
-    m&#234;me section <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>).</p>
+    <p>Les alias et redirections apparaissant dans différents contextes
+    sont traités comme les autres directives en respectant les <a href="../sections.html#mergin">règles de fusion</a> standards. Par
+    contre, ils sont traités selon une chronologie particulière
+    lorsqu'ils apparaissent dans le même contexte (par exemple, dans la
+    même section <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>).</p>
 
-    <p>Premi&#232;rement, toutes les redirections sont trait&#233;es avant les
-    alias, et ainsi, une requ&#234;te qui correspond &#224; une directive
+    <p>Premièrement, toutes les redirections sont traitées avant les
+    alias, et ainsi, une requête qui correspond à une directive
     <code class="directive"><a href="#redirect">Redirect</a></code> ou <code class="directive"><a href="#redirectmatch">RedirectMatch</a></code> ne se verra jamais
-    appliquer d'alias. Deuxi&#232;mement, les alias et redirections sont
-    trait&#233;s selon l'ordre dans lequel ils apparaissent dans le fichier
-    de configuration, seule la premi&#232;re correspondance &#233;tant prise en
+    appliquer d'alias. Deuxièmement, les alias et redirections sont
+    traités selon l'ordre dans lequel ils apparaissent dans le fichier
+    de configuration, seule la première correspondance étant prise en
     compte.</p>
 
     <p>Ainsi, lorsqu'une ou plusieurs de ces directives s'appliquent au
-    m&#234;me sous-r&#233;pertoire, vous devez classer les chemins du plus pr&#233;cis
-    au moins pr&#233;cis afin que toutes les directives puissent
-    &#233;ventuellement s'appliquer, comme dans l'exemple suivant :</p>
+    même sous-répertoire, vous devez classer les chemins du plus précis
+    au moins précis afin que toutes les directives puissent
+    éventuellement s'appliquer, comme dans l'exemple suivant :</p>
 
     <pre class="prettyprint lang-config">Alias "/foo/bar" "/baz"
 Alias "/foo" "/gaq"</pre>
 
 
-    <p>Si l'ordre des directives &#233;tait invers&#233;, la directive <code class="directive"><a href="#alias">Alias</a></code> ayant pour argument
-    <code>/foo</code> serait toujours appliqu&#233;e avant la directive
+    <p>Si l'ordre des directives était inversé, la directive <code class="directive"><a href="#alias">Alias</a></code> ayant pour argument
+    <code>/foo</code> serait toujours appliquée avant la directive
     <code class="directive"><a href="#alias">Alias</a></code> ayant pour argument
-    <code>/foo/bar</code>, et cette derni&#232;re serait toujours
-    ignor&#233;e.</p>
+    <code>/foo/bar</code>, et cette dernière serait toujours
+    ignorée.</p>
 
-    <p>La d&#233;finition de directives <code class="directive"><a href="#alias">Alias</a></code>, <code class="directive"><a href="#scriptalias">ScriptAlias</a></code> ou <code class="directive"><a href="#redirect">Redirect</a></code> au sein de sections
+    <p>La définition de directives <code class="directive"><a href="#alias">Alias</a></code>, <code class="directive"><a href="#scriptalias">ScriptAlias</a></code> ou <code class="directive"><a href="#redirect">Redirect</a></code> au sein de sections
     <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> ou
     <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>
-    l'emporte sur d'autres d&#233;finitions &#233;ventuelles de ces m&#234;mes
-    directives au niveau de la configuration g&#233;n&#233;rale du serveur.</p>
+    l'emporte sur d'autres définitions éventuelles de ces mêmes
+    directives au niveau de la configuration générale du serveur.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="alias" id="alias">Directive</a> <a name="Alias" id="Alias">Alias</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Met en correspondance des URLs avec des chemins du syst&#232;me
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Met en correspondance des URLs avec des chemins du système
 de fichiers</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Alias [<var>chemin URL</var>]
-<var>chemin fichier</var>|<var>chemin r&#233;pertoire</var></code></td></tr>
+<var>chemin fichier</var>|<var>chemin répertoire</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_alias</td></tr>
 </table>
 
     <p>La directive <code class="directive">Alias</code> permet de stocker des
-    documents (destin&#233;s &#224; &#234;tre servis) dans des zones du syst&#232;me de
-    fichiers situ&#233;es en dehors de l'arborescence du site web <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>. Les URLs dont le chemin
-    (d&#233;cod&#233; avec caract&#232;res %) commence par <var>chemin URL</var> seront
+    documents (destinés à être servis) dans des zones du système de
+    fichiers situées en dehors de l'arborescence du site web <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>. Les URLs dont le chemin
+    (décodé avec caractères %) commence par <var>chemin URL</var> seront
     mises en correspondance avec des fichiers locaux dont le chemin
-    commence par <var>chemin r&#233;pertoire</var>. Le <var>chemin URL</var>
-    est sensible &#224; la casse, m&#234;me sur les syst&#232;mes de fichiers
-    insensibles &#224; la casse.</p>
+    commence par <var>chemin répertoire</var>. Le <var>chemin URL</var>
+    est sensible à la casse, même sur les systèmes de fichiers
+    insensibles à la casse.</p>
 
     <pre class="prettyprint lang-config">Alias "/image" "/ftp/pub/image"</pre>
 
 
-    <p>Une requ&#234;te pour <code>http://example.com/image/foo.gif</code> fera
+    <p>Une requête pour <code>http://example.com/image/foo.gif</code> fera
     renvoyer par le serveur le fichier
-    <code>/ftp/pub/image/foo.gif</code>. Seuls les &#233;l&#233;ments de chemin
-    complets sont test&#233;s ; ainsi l'alias pr&#233;c&#233;dent ne conviendra pas
-    pour une requ&#234;te du style <code>http://example.com/imagefoo.gif</code>.
+    <code>/ftp/pub/image/foo.gif</code>. Seuls les éléments de chemin
+    complets sont testés ; ainsi l'alias précédent ne conviendra pas
+    pour une requête du style <code>http://example.com/imagefoo.gif</code>.
     Pour des mises en correspondance plus complexes faisant intervenir
-    les expressions rationnelles, veuillez vous reporter &#224; la directive
+    les expressions rationnelles, veuillez vous reporter à la directive
     <code class="directive"><a href="#aliasmatch">AliasMatch</a></code>.</p>
 
     <p>Notez que si vous ajoutez un slash de fin au <var>chemin
     URL</var>, vous devrez aussi ajouter un slash de fin au chemin de la
-    requ&#234;te. Autrement dit, si vous d&#233;finissez</p>
+    requête. Autrement dit, si vous définissez</p>
 
     <pre class="prettyprint lang-config">Alias "/icons/" "/usr/local/apache/icons/"</pre>
 
 
-    <p>l'alias pr&#233;c&#233;dent ne s'appliquera pas &#224; l'URL
-    <code>/icons</code> &#224; cause de l'absence du slash final. Ainsi, si
+    <p>l'alias précédent ne s'appliquera pas à l'URL
+    <code>/icons</code> à cause de l'absence du slash final. Ainsi, si
     le slash final est absent du <var>chemin de l'URL</var>, il doit
-    aussi l'&#234;tre du <var>chemin du fichier</var>.</p>
+    aussi l'être du <var>chemin du fichier</var>.</p>
 
-    <p>Notez qu'il pourra s'av&#233;rer n&#233;cessaire de d&#233;finir des sections
+    <p>Notez qu'il pourra s'avérer nécessaire de définir des sections
     <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>
-    suppl&#233;mentaires qui couvriront la  <em>destination</em> des alias.
+    supplémentaires qui couvriront la  <em>destination</em> des alias.
     Le traitement des alias intervenant avant le traitement des sections
     <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>,
-    seules les cibles des alias sont affect&#233;es (Notez cependant
-    que les sections <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> sont trait&#233;es avant les alias, et
+    seules les cibles des alias sont affectées (Notez cependant
+    que les sections <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> sont traitées avant les alias, et
     s'appliqueront donc).</p>
 
-    <p>En particulier, si vous cr&#233;ez un alias ayant pour cible un
-    r&#233;pertoire situ&#233; en dehors de l'arborescence de votre site web
+    <p>En particulier, si vous créez un alias ayant pour cible un
+    répertoire situé en dehors de l'arborescence de votre site web
     <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>, vous devrez
-    probablement permettre explicitement l'acc&#232;s &#224; ce r&#233;pertoire.</p>
+    probablement permettre explicitement l'accès à ce répertoire.</p>
 
     <pre class="prettyprint lang-config">Alias "/image" "/ftp/pub/image"
 &lt;Directory "/ftp/pub/image"&gt;
@@ -193,13 +193,13 @@ de fichiers</td></tr>
 &lt;/Directory&gt;</pre>
 
 
-    <p>Le nombre de slashes dans le param&#232;tre <var>chemin URL</var> doit
-    correspondre au nombre de slashes dans le chemin URL de la requ&#234;te.</p>
+    <p>Le nombre de slashes dans le paramètre <var>chemin URL</var> doit
+    correspondre au nombre de slashes dans le chemin URL de la requête.</p>
 
-    <p>Si la directive <code class="directive">Alias</code> est d&#233;finie au sein
+    <p>Si la directive <code class="directive">Alias</code> est définie au sein
     d'une section <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> ou <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>, <var>chemin URL</var> est
-    omis et <var>chemin fichier</var> est interpr&#233;t&#233; en utilisant la <a href="../expr.html">syntaxe des expressions</a>.<br />
-    Cette syntaxe est disponible &#224; partir de la version 2.4.19 du
+    omis et <var>chemin fichier</var> est interprété en utilisant la <a href="../expr.html">syntaxe des expressions</a>.<br />
+    Cette syntaxe est disponible à partir de la version 2.4.19 du
     serveur HTTP Apache.</p>
 
     <pre class="prettyprint lang-config">&lt;Location "/image"&gt;
@@ -215,47 +215,47 @@ de fichiers</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="aliasmatch" id="aliasmatch">Directive</a> <a name="AliasMatch" id="AliasMatch">AliasMatch</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Met en correspondance des URLs avec le syst&#232;me de fichiers
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Met en correspondance des URLs avec le système de fichiers
 en faisant intervenir les expressions rationnelles</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AliasMatch <var>regex</var>
-<var>chemin fichier</var>|<var>chemin r&#233;pertoire</var></code></td></tr>
+<var>chemin fichier</var>|<var>chemin répertoire</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_alias</td></tr>
 </table>
-    <p>Cette directive est identique &#224; la directive <code class="directive"><a href="#alias">Alias</a></code>, mais fait appel aux <a class="glossarylink" href="../glossary.html#regex" title="voir glossaire">expressions rationnelles</a>, &#224; la place d'une
-    simple mise en correspondance de pr&#233;fixe. L'expression rationnelle
+    <p>Cette directive est identique à la directive <code class="directive"><a href="#alias">Alias</a></code>, mais fait appel aux <a class="glossarylink" href="../glossary.html#regex" title="voir glossaire">expressions rationnelles</a>, à la place d'une
+    simple mise en correspondance de préfixe. L'expression rationnelle
     fournie est mise en correspondance avec le chemin URL, et si elle
     correspond, le serveur va substituer toute partie de chemin
-    correspondant &#224; l'expression entre parenth&#232;ses dans la cha&#238;ne
+    correspondant à l'expression entre parenthèses dans la chaîne
     fournie et l'utiliser comme nom de fichier.
-    Par exemple, pour activer le r&#233;pertoire <code>/icons</code>, on peut
+    Par exemple, pour activer le répertoire <code>/icons</code>, on peut
     utiliser :</p>
 
     <pre class="prettyprint lang-config">AliasMatch "^/icons(.*)" "/usr/local/apache/icons$1$2"</pre>
 
 
     <p>Toute la puissance des <a class="glossarylink" href="../glossary.html#regex" title="voir glossaire">expressions
-    rationnelles</a> peut &#234;tre mise &#224; contribution. Par exemple,
-    il est possible de construire un alias avec un mod&#232;le de chemin URL
-    insensible &#224; la casse :</p>
+    rationnelles</a> peut être mise à contribution. Par exemple,
+    il est possible de construire un alias avec un modèle de chemin URL
+    insensible à la casse :</p>
 
     <pre class="prettyprint lang-config">AliasMatch "(?i)^/image(.*)" "/ftp/pub/image$1"</pre>
 
 
-    <p>Il existe une diff&#233;rence subtile entre <code class="directive"><a href="#alias">Alias</a></code> et <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> : <code class="directive"><a href="#alias">Alias</a></code> copie automatiquement toute
-    portion suppl&#233;mentaire de l'URI situ&#233;e apr&#232;s la partie du mod&#232;le qui
-    correspond, &#224; la fin du chemin du fichier de la partie droite, alors
+    <p>Il existe une différence subtile entre <code class="directive"><a href="#alias">Alias</a></code> et <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> : <code class="directive"><a href="#alias">Alias</a></code> copie automatiquement toute
+    portion supplémentaire de l'URI située après la partie du modèle qui
+    correspond, à la fin du chemin du fichier de la partie droite, alors
     que <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> ne le fait
-    pas. Cela signifie qu'il sera pr&#233;f&#233;rable dans la plupart des cas de
-    comparer l'expression rationnelle du mod&#232;le &#224; la totalit&#233; de l'URI
-    de la requ&#234;te, et d'utiliser les substitutions dans la partie
+    pas. Cela signifie qu'il sera préférable dans la plupart des cas de
+    comparer l'expression rationnelle du modèle à la totalité de l'URI
+    de la requête, et d'utiliser les substitutions dans la partie
     droite.</p>
 
-    <p>En d'autres termes, le remplacement d'<code class="directive"><a href="#alias">Alias</a></code> par <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> ne produira pas le m&#234;me
-    r&#233;sultat. Au minimum, vous devez ajouter <code>^</code> au d&#233;but de
-    l'expression rationnelle, <code>(.*)$</code> &#224; sa fin et
-    <code>$1</code> &#224; la fin de la cha&#238;ne de remplacement.</p>
+    <p>En d'autres termes, le remplacement d'<code class="directive"><a href="#alias">Alias</a></code> par <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> ne produira pas le même
+    résultat. Au minimum, vous devez ajouter <code>^</code> au début de
+    l'expression rationnelle, <code>(.*)$</code> à sa fin et
+    <code>$1</code> à la fin de la chaîne de remplacement.</p>
 
     <p>Par exemple, supposons que nous voulions reformuler cet alias
     avec AliasMatch :</p>
@@ -264,30 +264,30 @@ en faisant intervenir les expressions rationnelles</td></tr>
 
 
     <p>Le simple remplacement d'Alias par AliasMatch ne produira pas le
-    m&#234;me r&#233;sultat. Ainsi, ce qui suit va rediriger toutes les requ&#234;tes
+    même résultat. Ainsi, ce qui suit va rediriger toutes les requêtes
     qui contiennent /image/ vers /ftp/pub/image/ :</p>
 
     <pre class="prettyprint lang-config">AliasMatch "/image/" "/ftp/pub/image/"</pre>
 
 
-    <p>Voici la directive AliasMatch qui produira le m&#234;me r&#233;sultat que
+    <p>Voici la directive AliasMatch qui produira le même résultat que
     la directive Alias ci-dessus :</p>
 
     <pre class="prettyprint lang-config">AliasMatch "^/image/(.*)$" "/ftp/pub/image/$1"</pre>
 
 
-    <p>Bien entendu, il n'y a aucune raison d'utiliser <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> dans le cas o&#249; <code class="directive"><a href="#alias">Alias</a></code> suffit. <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> vous permet d'effectuer
-    des choses beaucoup plus sophistiqu&#233;es. Par exemple, vous pouvez
-    servir diff&#233;rentes sortes de fichiers &#224; partir de r&#233;pertoires
-    diff&#233;rents :</p>
+    <p>Bien entendu, il n'y a aucune raison d'utiliser <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> dans le cas où <code class="directive"><a href="#alias">Alias</a></code> suffit. <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> vous permet d'effectuer
+    des choses beaucoup plus sophistiquées. Par exemple, vous pouvez
+    servir différentes sortes de fichiers à partir de répertoires
+    différents :</p>
 
     <pre class="prettyprint lang-config">      AliasMatch "^/image/(.*)\.jpg$" "/fichiers/jpg.images/$1.jpg"
       AliasMatch "^/image/(.*)\.gif$" "/fichiers/gif.images/$1.gif"</pre>
 
 
-    <p>Les &#233;ventuels slashes de t&#234;te multiples seront supprim&#233;s par le
+    <p>Les éventuels slashes de tête multiples seront supprimés par le
     serveur avant que les directives de ce module n'effectuent des
-    comparaisons avec le chemin URL de la requ&#234;te.
+    comparaisons avec le chemin URL de la requête.
     </p>
 
 
@@ -296,102 +296,102 @@ en faisant intervenir les expressions rationnelles</td></tr>
 <div class="directive-section"><h2><a name="redirect" id="redirect">Directive</a> <a name="Redirect" id="Redirect">Redirect</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Envoie une redirection externe demandant au client
-d'effectuer une autre requ&#234;te avec une URL diff&#233;rente</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Redirect [<var>&#233;tat</var>] [<var>URL-path</var>]
+d'effectuer une autre requête avec une URL différente</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Redirect [<var>état</var>] [<var>URL-path</var>]
 <var>URL</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Surcharges autoris&#233;es:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_alias</td></tr>
 </table>
     <p>La directive <code class="directive">Redirect</code> permet de faire correspondre
-    une ancienne URL &#224; une nouvelle en demandant au client d'aller chercher la
-    ressource &#224; une autre localisation.</p>
+    une ancienne URL à une nouvelle en demandant au client d'aller chercher la
+    ressource à une autre localisation.</p>
 
-    <p>L'ancien <em>URL-path</em> est un chemin sensible &#224; la casse
-    (d&#233;cod&#233; &#224; l'aide de caract&#232;res %) commen&#231;ant par un slash. Les
-    chemins relatifs ne sont pas autoris&#233;s.</p>
+    <p>L'ancien <em>URL-path</em> est un chemin sensible à la casse
+    (décodé à l'aide de caractères %) commençant par un slash. Les
+    chemins relatifs ne sont pas autorisés.</p>
 
     <p>La nouvelle <em>URL</em>
-    peut &#234;tre une URL absolue commen&#231;ant par un protocole et un nom
-    d'h&#244;te, mais on peut aussi utiliser un chemin URL commen&#231;ant par un
-    slash, auquel cas le protocole et le nom d'h&#244;te du serveur local
-    seront ajout&#233;s.</p>
+    peut être une URL absolue commençant par un protocole et un nom
+    d'hôte, mais on peut aussi utiliser un chemin URL commençant par un
+    slash, auquel cas le protocole et le nom d'hôte du serveur local
+    seront ajoutés.</p>
 
-    <p>Ensuite, toute requ&#234;te commen&#231;ant par <em>URL-path</em> va
+    <p>Ensuite, toute requête commençant par <em>URL-path</em> va
     renvoyer une redirection au client vers l'<em>URL</em> cible. Tout
-    &#233;l&#233;ment de chemin suppl&#233;mentaire situ&#233; en aval du <em>URL-path</em> sera
-    ajout&#233; &#224; l'URL cible.</p>
+    élément de chemin supplémentaire situé en aval du <em>URL-path</em> sera
+    ajouté à l'URL cible.</p>
 
-    <pre class="prettyprint lang-config"># Redirige vers une URL sur un serveur diff&#233;rent
+    <pre class="prettyprint lang-config"># Redirige vers une URL sur un serveur différent
 Redirect "/service" "http://foo2.example.com/service"
 
-# Redirige vers une URL sur le m&#234;me serveur
+# Redirige vers une URL sur le même serveur
 Redirect "/one" "/two"</pre>
 
 
-    <p>Si le client effectue une requ&#234;te pour l'URL
-    <code>http://example.com/service/foo.txt</code>, il lui sera demand&#233;
+    <p>Si le client effectue une requête pour l'URL
+    <code>http://example.com/service/foo.txt</code>, il lui sera demandé
     d'en effectuer une autre pour l'URL
     <code>http://foo2.example.com/service/foo.txt</code>. Ceci concerne
-    les requ&#234;tes avec param&#232;tres <code>GET</code>, comme
+    les requêtes avec paramètres <code>GET</code>, comme
     <code>http://example.com/service/foo.pl?q=23&amp;a=42</code>, qui
-    seront redirig&#233;es vers
+    seront redirigées vers
     <code>http://foo2.example.com/service/foo.pl?q=23&amp;a=42</code>.
-    Notez que les <code>POST</code>s seront ignor&#233;s.<br />
+    Notez que les <code>POST</code>s seront ignorés.<br />
     Seuls les
-    &#233;l&#233;ments de chemin complets sont test&#233;s, si bien que l'exemple
-    pr&#233;c&#233;dent ne s'appliquera pas &#224; l'URL
+    éléments de chemin complets sont testés, si bien que l'exemple
+    précédent ne s'appliquera pas à l'URL
     <code>http://example.com/servicefoo.txt</code>. Pour des mises en
-    correspondance plus complexes utilisant la <a href="../expr.html">syntaxe des expressions</a>, ne sp&#233;cifiez pas
-    d'argument <var>URL-path</var> comme d&#233;crit ci-dessous. En outre,
+    correspondance plus complexes utilisant la <a href="../expr.html">syntaxe des expressions</a>, ne spécifiez pas
+    d'argument <var>URL-path</var> comme décrit ci-dessous. En outre,
     pour une mise en correspondance en utilisant les expressions
-    rationnelles, veuillez vous reporter &#224; la directive <code class="directive"><a href="#redirectmatch">RedirectMatch</a></code>.</p>
+    rationnelles, veuillez vous reporter à la directive <code class="directive"><a href="#redirectmatch">RedirectMatch</a></code>.</p>
 
 
     <div class="note"><h3>Note</h3>
-    <p>Les directives <code class="directive">Redirect</code> ont priorit&#233; sur les
+    <p>Les directives <code class="directive">Redirect</code> ont priorité sur les
     directives <code class="directive"><a href="#alias">Alias</a></code> et <code class="directive"><a href="#scriptalias">ScriptAlias</a></code>, quel que soit leur ordre
     d'apparition dans le fichier de configuration. Les directives
-    <code class="directive">Redirect</code> d&#233;finies au sein d'une section Location
+    <code class="directive">Redirect</code> définies au sein d'une section Location
     l'emportent sur les directives <code class="directive">Redirect</code> et <code class="directive"><a href="#alias">Alias</a></code> comportant un argument
     <var>URL-path</var>.</p></div>
 
-    <p>Si aucun argument <var>&#233;tat</var> n'est sp&#233;cifi&#233;, la
+    <p>Si aucun argument <var>état</var> n'est spécifié, la
     redirection sera temporaire (code HTTP 302). Le client est alors
-    inform&#233; que la ressource a &#233;t&#233; temporairement d&#233;plac&#233;e. On peut
-    utiliser l'argument <var>&#233;tat</var> pour renvoyer d'autres codes HTTP :</p>
+    informé que la ressource a été temporairement déplacée. On peut
+    utiliser l'argument <var>état</var> pour renvoyer d'autres codes HTTP :</p>
 
     <dl>
       <dt>permanent</dt>
 
       <dd>Renvoie un code de redirection permanente (301), indiquant
-      que la ressource a &#233;t&#233; d&#233;finitivement d&#233;plac&#233;e.</dd>
+      que la ressource a été définitivement déplacée.</dd>
 
       <dt>temp</dt>
 
       <dd>Renvoie un code de redirection temporaire (302). C'est le
-      comportement par d&#233;faut.</dd>
+      comportement par défaut.</dd>
 
       <dt>seeother</dt>
 
       <dd>Renvoie un code "See Other" (303) indiquant que la ressource
-      a &#233;t&#233; remplac&#233;e par une autre.</dd>
+      a été remplacée par une autre.</dd>
 
       <dt>gone</dt>
 
       <dd>Renvoie un code "Gone" (410) indiquant que la ressource a
-      &#233;t&#233; d&#233;finitivement supprim&#233;e. Lorsque
-      ce code est utilis&#233;, on ne
+      été définitivement supprimée. Lorsque
+      ce code est utilisé, on ne
       doit pas utiliser l'argument <var>URL</var>.</dd>
     </dl>
 
-    <p>On peut renvoyer d'autres codes en sp&#233;cifiant le code
-    num&#233;rique comme valeur de l'argument of <var>&#233;tat</var>.
+    <p>On peut renvoyer d'autres codes en spécifiant le code
+    numérique comme valeur de l'argument of <var>état</var>.
     Si le code est compris entre 300 et 399, l'argument
-    <var>URL</var> doit &#234;tre pr&#233;sent. Si le code
+    <var>URL</var> doit être présent. Si le code
     n'est <em>pas</em> compris entre 300 et 399, l'argument
-    <var>URL</var> ne doit pas appara&#238;tre. Le code doit &#234;tre un code
+    <var>URL</var> ne doit pas apparaître. Le code doit être un code
     HTTP valide, connu du serveur HTTP Apache (voir la
     fonction <code>send_error_response</code> dans
     http_protocol.c).</p>
@@ -400,10 +400,10 @@ Redirect "/one" "/two"</pre>
 Redirect 303 "/three" "http://example.com/other"</pre>
 
 
-    <p>Si une directive <code class="directive">Redirect</code> est d&#233;finie au
-    sein d'une section <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> ou <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code> et si l'argument <var>URL-path</var> est omis, l'argument <var>URL</var> sera interpr&#233;t&#233; en
+    <p>Si une directive <code class="directive">Redirect</code> est définie au
+    sein d'une section <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> ou <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code> et si l'argument <var>URL-path</var> est omis, l'argument <var>URL</var> sera interprété en
     utilisant la <a href="../expr.html">syntaxe des expressions</a>.<br />
-    Cette syntaxe est disponible &#224; partir de la version 2.4.19 du
+    Cette syntaxe est disponible à partir de la version 2.4.19 du
     serveur HTTP Apache.</p>
 
     <pre class="prettyprint lang-config">&lt;Location "/one"&gt;
@@ -425,30 +425,30 @@ Redirect 303 "/three" "http://example.com/other"</pre>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Envoie une redirection externe faisant appel aux
 expressions rationnelles pour la mise en correspondance de l'URL
 courante</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RedirectMatch [<var>&#233;tat</var>] <var>regex</var>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RedirectMatch [<var>état</var>] <var>regex</var>
 <var>URL</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Surcharges autoris&#233;es:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_alias</td></tr>
 </table>
-    <p>Cette directive est identique &#224; la directive <code class="directive"><a href="#redirect">Redirect</a></code>, mais fait appel aux
-    <a class="glossarylink" href="../glossary.html#regex" title="voir glossaire">expressions rationnelles</a>, &#224; la
-    place d'une simple mise en correspondance de pr&#233;fixe. L'expression
+    <p>Cette directive est identique à la directive <code class="directive"><a href="#redirect">Redirect</a></code>, mais fait appel aux
+    <a class="glossarylink" href="../glossary.html#regex" title="voir glossaire">expressions rationnelles</a>, à la
+    place d'une simple mise en correspondance de préfixe. L'expression
     rationnelle fournie est mise en correspondance avec le chemin URL,
     et si elle correspond, le serveur va substituer toute partie de
-    chemin correspondante entre parenth&#232;ses dans la cha&#238;ne sp&#233;cifi&#233;e et
+    chemin correspondante entre parenthèses dans la chaîne spécifiée et
     l'utiliser comme nom de fichier. Par exemple, pour rediriger tous
-    les fichiers GIF vers les fichiers JPEG de m&#234;me nom sur un autre
+    les fichiers GIF vers les fichiers JPEG de même nom sur un autre
     serveur, on peut utiliser :</p>
 
     <pre class="prettyprint lang-config">RedirectMatch "(.*)\.gif$" "http://autre.example.com$1.jpg"</pre>
 
 
-    <p>Les remarques &#224; propos de la diff&#233;rence entre <code class="directive"><a href="#alias">Alias</a></code> et <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> s'appliquent aussi &#224; la
-    diff&#233;rence entre les directives <code class="directive"><a href="#redirect">Redirect</a></code> et <code class="directive"><a href="#redirectmatch">RedirectMatch</a></code>. Voir la directive
+    <p>Les remarques à propos de la différence entre <code class="directive"><a href="#alias">Alias</a></code> et <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> s'appliquent aussi à la
+    différence entre les directives <code class="directive"><a href="#redirect">Redirect</a></code> et <code class="directive"><a href="#redirectmatch">RedirectMatch</a></code>. Voir la directive
     <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> pour plus de
-    d&#233;tails.</p>
+    détails.</p>
 
 
 </div>
@@ -456,16 +456,16 @@ courante</td></tr>
 <div class="directive-section"><h2><a name="redirectpermanent" id="redirectpermanent">Directive</a> <a name="RedirectPermanent" id="RedirectPermanent">RedirectPermanent</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Envoie une redirection externe permanente demandant au
-client d'effectuer une nouvelle requ&#234;te avec une URL
-diff&#233;rente</td></tr>
+client d'effectuer une nouvelle requête avec une URL
+différente</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RedirectPermanent <var>chemin URL</var> <var>URL</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Surcharges autoris&#233;es:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_alias</td></tr>
 </table>
     <p>Cette directive informe le client que la redirection est
-    permanente (code 301). Son comportement est exactement le m&#234;me
+    permanente (code 301). Son comportement est exactement le même
     que celui de <code>Redirect permanent</code>.</p>
 
 </div>
@@ -473,47 +473,47 @@ diff&#233;rente</td></tr>
 <div class="directive-section"><h2><a name="redirecttemp" id="redirecttemp">Directive</a> <a name="RedirectTemp" id="RedirectTemp">RedirectTemp</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Envoie une redirection externe temporaire demandant au
-client d'effectuer une nouvelle requ&#234;te avec une URL
-diff&#233;rente</td></tr>
+client d'effectuer une nouvelle requête avec une URL
+différente</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RedirectTemp <var>chemin URL</var> <var>URL</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Surcharges autoris&#233;es:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_alias</td></tr>
 </table>
     <p>Cette directive informe le client que la redirection n'est
-    que temporaire (code 302). Son comportement est exactement le m&#234;me
+    que temporaire (code 302). Son comportement est exactement le même
     que celui de <code>Redirect temp</code>.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="scriptalias" id="scriptalias">Directive</a> <a name="ScriptAlias" id="ScriptAlias">ScriptAlias</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fait correspondre une URL &#224; une zone du syst&#232;me de fichiers
-et d&#233;signe la cible comme script CGI</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fait correspondre une URL à une zone du système de fichiers
+et désigne la cible comme script CGI</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ScriptAlias [<var>chemin URL</var>]
-<var>chemin fichier</var>|<var>chemin r&#233;pertoire</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire</td></tr>
+<var>chemin fichier</var>|<var>chemin répertoire</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_alias</td></tr>
 </table>
-    <p>La directive <code class="directive">ScriptAlias</code> pr&#233;sente le m&#234;me
-    comportement que la directive <code class="directive"><a href="#alias">Alias</a></code>, mais d&#233;signe en plus le
-    r&#233;pertoire cible comme conteneur de scripts CGI qui seront trait&#233;es
+    <p>La directive <code class="directive">ScriptAlias</code> présente le même
+    comportement que la directive <code class="directive"><a href="#alias">Alias</a></code>, mais désigne en plus le
+    répertoire cible comme conteneur de scripts CGI qui seront traitées
     par le gestionnaire cgi-script du module <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>.
-    Les URLs dont le chemin URL sensible &#224; la casse (d&#233;cod&#233; avec
-    caract&#232;res %) commence par <var>chemin URL</var> seront mises en
+    Les URLs dont le chemin URL sensible à la casse (décodé avec
+    caractères %) commence par <var>chemin URL</var> seront mises en
     correspondance avec les scripts dont le chemin commence par le
-    second argument, qui est un chemin complet dans le syst&#232;me de
+    second argument, qui est un chemin complet dans le système de
     fichiers local.</p>
 
     <pre class="prettyprint lang-config">ScriptAlias "/cgi-bin/" "/web/cgi-bin/"</pre>
 
 
-    <p>Une requ&#234;te pour <code>http://example.com/cgi-bin/foo</code>
-    ferait ex&#233;cuter par le serveur le script
+    <p>Une requête pour <code>http://example.com/cgi-bin/foo</code>
+    ferait exécuter par le serveur le script
     <code>/web/cgi-bin/foo</code>. Cette configuration est sensiblement
-    &#233;quivalente &#224; :</p>
+    équivalente à :</p>
     <pre class="prettyprint lang-config">Alias "/cgi-bin/" "/web/cgi-bin/"
 &lt;Location "/cgi-bin"&gt;
     SetHandler cgi-script
@@ -527,37 +527,37 @@ et d&#233;signe la cible comme script CGI</td></tr>
 	<pre class="prettyprint lang-config">ScriptAlias "/cgi-bin/" "/web/cgi-handler.pl"</pre>
 
 
-    <p>Dans ce sc&#233;nario, tous les fichiers faisant l'objet d'une requ&#234;te
-    dans <code>/cgi-bin/</code> seront trait&#233;s par le fichier que vous
-    avez sp&#233;cifi&#233;, ce qui vous permet d'utiliser votre propre
+    <p>Dans ce scénario, tous les fichiers faisant l'objet d'une requête
+    dans <code>/cgi-bin/</code> seront traités par le fichier que vous
+    avez spécifié, ce qui vous permet d'utiliser votre propre
     gestionnaire. Vous pouvez l'utiliser comme enveloppe (wrapper) pour
     les scripts CGI afin d'ajouter du contenu, ou autre action "maison".</p>
 
-    <div class="warning">Il est pr&#233;f&#233;rable d'&#233;viter de placer les
-    scripts CGI dans l'arborescence de <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> afin d'&#233;viter de r&#233;v&#233;ler
+    <div class="warning">Il est préférable d'éviter de placer les
+    scripts CGI dans l'arborescence de <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> afin d'éviter de révéler
     accidentellement leur code source lors d'une modification de
-    configuration. On y parvient ais&#233;ment avec
+    configuration. On y parvient aisément avec
     <code class="directive">ScriptAlias</code> en mettant en correspondance une
-    URL et en d&#233;signant la cible comme scripts CGI par la m&#234;me occasion.
-    Si vous choisissez de placer vos scripts CGI dans un r&#233;pertoire
+    URL et en désignant la cible comme scripts CGI par la même occasion.
+    Si vous choisissez de placer vos scripts CGI dans un répertoire
     accessible depuis le web, n'utilisez pas
-    <code class="directive">ScriptAlias</code>. Utilisez plut&#244;t <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code>, et <code class="directive"><a href="../mod/core.html#options">Options</a></code> comme dans l'exemple suivant :
+    <code class="directive">ScriptAlias</code>. Utilisez plutôt <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code>, et <code class="directive"><a href="../mod/core.html#options">Options</a></code> comme dans l'exemple suivant :
     <pre class="prettyprint lang-config">&lt;Directory "/usr/local/apache2/htdocs/cgi-bin"&gt;
     SetHandler cgi-script
     Options ExecCGI
 &lt;/Directory&gt;</pre>
 
-    Ceci est n&#233;cessaire car plusieurs <var>chemins URL</var> peuvent
-    correspondre &#224; la m&#234;me zone du syst&#232;me de fichiers, court-circuitant
-    ainsi la directive <code class="directive">ScriptAlias</code> et r&#233;v&#233;lant le
-    code source des scripts CGI s'ils ne sont pas prot&#233;g&#233;s par une
+    Ceci est nécessaire car plusieurs <var>chemins URL</var> peuvent
+    correspondre à la même zone du système de fichiers, court-circuitant
+    ainsi la directive <code class="directive">ScriptAlias</code> et révélant le
+    code source des scripts CGI s'ils ne sont pas protégés par une
     section <code class="directive"><a href="../mod/core.html#directory">Directory</a></code>.</div>
 
-    <p>Si la directive <code class="directive">ScriptAlias</code> est d&#233;finie au
+    <p>Si la directive <code class="directive">ScriptAlias</code> est définie au
     sein d'une section <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> ou <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code> et si l'argument <var>chemin
-    URL</var> est omis, l'argument <var>URL</var> sera interpr&#233;t&#233; en
+    URL</var> est omis, l'argument <var>URL</var> sera interprété en
     utilisant la <a href="../expr.html">syntaxe des expressions</a>.<br />
-    Cette syntaxe est disponible &#224; partir de la version 2.4.19 du
+    Cette syntaxe est disponible à partir de la version 2.4.19 du
     serveur HTTP Apache.</p>
 
     <pre class="prettyprint lang-config">&lt;Location "/cgi-bin"&gt;
@@ -577,48 +577,48 @@ et d&#233;signe la cible comme script CGI</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="scriptaliasmatch" id="scriptaliasmatch">Directive</a> <a name="ScriptAliasMatch" id="ScriptAliasMatch">ScriptAliasMatch</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fait correspondre une URL &#224; une zone du syst&#232;me de fichiers
-en faisant appel aux expressions rationnelles et en d&#233;signant la cible
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fait correspondre une URL à une zone du système de fichiers
+en faisant appel aux expressions rationnelles et en désignant la cible
 comme un script CGI</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ScriptAliasMatch <var>regex</var>
-<var>chemin fichier</var>|<var>chemin r&#233;pertoire</var></code></td></tr>
+<var>chemin fichier</var>|<var>chemin répertoire</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_alias</td></tr>
 </table>
-    <p>Cette directive est &#233;quivalente &#224; la directive <code class="directive"><a href="#scriptalias">ScriptAlias</a></code>, mais fait appel aux
-    <a class="glossarylink" href="../glossary.html#regex" title="voir glossaire">expressions rationnelles</a>, &#224; la
-    place d'une simple mise en correspondance de pr&#233;fixe. L'expression
+    <p>Cette directive est équivalente à la directive <code class="directive"><a href="#scriptalias">ScriptAlias</a></code>, mais fait appel aux
+    <a class="glossarylink" href="../glossary.html#regex" title="voir glossaire">expressions rationnelles</a>, à la
+    place d'une simple mise en correspondance de préfixe. L'expression
     rationnelle fournie est mise en correspondance avec le chemin URL,
     et si elle correspond, le serveur va substituer toute partie de
-    chemin entre parenth&#232;ses dans la cha&#238;ne sp&#233;cifi&#233;e et l'utiliser
-    comme nom de fichier. Par exemple, pour activer le r&#233;pertoire
+    chemin entre parenthèses dans la chaîne spécifiée et l'utiliser
+    comme nom de fichier. Par exemple, pour activer le répertoire
     standard <code>/cgi-bin</code>, on peut utiliser :</p>
 
     <pre class="prettyprint lang-config">ScriptAliasMatch "^/cgi-bin(.*)" "/usr/local/apache/cgi-bin$1"</pre>
 
 
-    <p>Comme dans le cas d'AliasMatch, toute la puissance des <a class="glossarylink" href="../glossary.html#rexex" title="voir glossaire">expressions rationnelles</a> peut &#234;tre mise &#224;
+    <p>Comme dans le cas d'AliasMatch, toute la puissance des <a class="glossarylink" href="../glossary.html#rexex" title="voir glossaire">expressions rationnelles</a> peut être mise à
     contribution. Par exemple, il est possible de construire un alias
-    avec une comparaison du mod&#232;le du chemin URL insensible &#224; la casse :</p>
+    avec une comparaison du modèle du chemin URL insensible à la casse :</p>
 
     <pre class="prettyprint lang-config">ScriptAliasMatch "(?i)^/cgi-bin(.*)" "/usr/local/apache/cgi-bin$1"</pre>
 
 
-    <p>Les remarques &#224; propos de la diff&#233;rence entre <code class="directive"><a href="#alias">Alias</a></code> et <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> s'appliquent aussi &#224; la
-    diff&#233;rence entre les directives <code class="directive"><a href="#scriptalias">ScriptAlias</a></code> et <code class="directive"><a href="#scriptaliasmatch">ScriptAliasMatch</a></code>. Voir la directive
+    <p>Les remarques à propos de la différence entre <code class="directive"><a href="#alias">Alias</a></code> et <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> s'appliquent aussi à la
+    différence entre les directives <code class="directive"><a href="#scriptalias">ScriptAlias</a></code> et <code class="directive"><a href="#scriptaliasmatch">ScriptAliasMatch</a></code>. Voir la directive
     <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> pour plus de
-    d&#233;tails.</p>
+    détails.</p>
 
 
 </div>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_alias.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_alias.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_alias.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_alias.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_alias.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/mod_alias.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/mod_alias.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -637,7 +637,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.4/mod/mod_alias.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autoris&#233; sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

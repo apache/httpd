@@ -27,35 +27,35 @@
 <div id="preamble"><h1>Module Apache mod_session_crypto</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_session_crypto.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_session_crypto.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_session_crypto.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Support du chiffrement des sessions</td></tr>
-<tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Exp&#233;rimental</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&#160;de&#160;Module:</a></th><td>session_crypto_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier&#160;Source:</a></th><td>mod_session_crypto.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible depuis la version 2.3 d'Apache</td></tr></table>
+<tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>session_crypto_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_session_crypto.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3 d'Apache</td></tr></table>
 <h3>Sommaire</h3>
 
     <div class="warning"><h3>Avertissement</h3>
       <p>Les modules de session font usage des cookies HTTP, et peuvent
-      &#224; ce titre &#234;tre victimes d'attaques de type Cross Site Scripting,
-      ou divulguer des informations &#224; caract&#232;re priv&#233; aux clients.
-      Veuillez vous assurer que les risques ainsi encourus ont &#233;t&#233; pris
+      à ce titre être victimes d'attaques de type Cross Site Scripting,
+      ou divulguer des informations à caractère privé aux clients.
+      Veuillez vous assurer que les risques ainsi encourus ont été pris
       en compte avant d'activer le support des sessions sur votre
       serveur.</p>
     </div>
 
     <p>Ce sous-module du module <code class="module"><a href="../mod/mod_session.html">mod_session</a></code> fournit le
     support du chiffrement des sessions utilisateur avant de les
-    enregistrer dans une base de donn&#233;es locale, ou dans un cookie HTTP
+    enregistrer dans une base de données locale, ou dans un cookie HTTP
     au niveau du navigateur distant.</p>
 
-    <p>Il peut contribuer &#224; pr&#233;server la confidentialit&#233; des sessions
-    lorsque leur contenu doit rester priv&#233; pour
+    <p>Il peut contribuer à préserver la confidentialité des sessions
+    lorsque leur contenu doit rester privé pour
     l'utilisateur, ou lorsqu'une protection contre les attaques de type
-    cross site scripting est n&#233;cessaire.</p>
+    cross site scripting est nécessaire.</p>
 
-    <p>Pour plus de d&#233;tails &#224; propos de l'interface des sessions, voir
+    <p>Pour plus de détails à propos de l'interface des sessions, voir
     la documentation du module <code class="module"><a href="../mod/mod_session.html">mod_session</a></code>.</p>
 
 </div>
@@ -69,7 +69,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#sessioncryptopassphrase">SessionCryptoPassphrase</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sessioncryptopassphrasefile">SessionCryptoPassphraseFile</a></li>
 </ul>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_session_crypto">Probl&#232;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_session_crypto">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_session_crypto">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_session_crypto">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_session.html">mod_session</a></code></li>
 <li><code class="module"><a href="../mod/mod_session_cookie.html">mod_session_cookie</a></code></li>
@@ -79,25 +79,25 @@
 <div class="section">
 <h2><a name="basicusage" id="basicusage">Utilisation de base</a></h2>
 
-      <p>Pour cr&#233;er une session chiffr&#233;e et la stocker dans un cookie
-      nomm&#233; <var>session</var>, configurez la comme suit :</p>
+      <p>Pour créer une session chiffrée et la stocker dans un cookie
+      nommé <var>session</var>, configurez la comme suit :</p>
 
-      <div class="example"><h3>Session chiffr&#233;e stock&#233;e au niveau du
+      <div class="example"><h3>Session chiffrée stockée au niveau du
       serveur</h3><pre class="prettyprint lang-config">Session On
 SessionCookieName session path=/
 SessionCryptoPassphrase secret</pre>
 </div>
 
-      <p>La session sera chiffr&#233;e avec la cl&#233; sp&#233;cifi&#233;e. Il est possible
+      <p>La session sera chiffrée avec la clé spécifiée. Il est possible
       de configurer plusieurs serveurs pour qu'ils puissent partager des
-      sessions, en s'assurant que la m&#234;me cl&#233; de chiffrement est
-      utilis&#233;e sur chaque serveur.</p>
+      sessions, en s'assurant que la même clé de chiffrement est
+      utilisée sur chaque serveur.</p>
 
-      <p>Si la cl&#233; de chiffrement est modifi&#233;e, les sessions seront
-      automatiquement invalid&#233;es.</p>
+      <p>Si la clé de chiffrement est modifiée, les sessions seront
+      automatiquement invalidées.</p>
 
-      <p>Pour des d&#233;tails sur la mani&#232;re dont une session peut &#234;tre
-      utilis&#233;e pour stocker des informations de type nom
+      <p>Pour des détails sur la manière dont une session peut être
+      utilisée pour stocker des informations de type nom
       d'utilisateur/mot de passe, voir la documentation du module
       <code class="module"><a href="../mod/mod_auth_form.html">mod_auth_form</a></code>.</p>
 
@@ -105,20 +105,20 @@ SessionCryptoPassphrase secret</pre>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="sessioncryptocipher" id="sessioncryptocipher">Directive</a> <a name="SessionCryptoCipher" id="SessionCryptoCipher">SessionCryptoCipher</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>L'algorithme &#224; utiliser pour le chiffrement de la session</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>L'algorithme à utiliser pour le chiffrement de la session</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SessionCryptoCipher <var>algorithme</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>aes256</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Exp&#233;rimental</td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>aes256</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session_crypto</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP Apache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP Apache</td></tr>
 </table>
     <p>La directive <code class="directive">SessionCryptoCipher</code> permet de
-    sp&#233;cifier l'algorithme &#224; utiliser pour le chiffrement. En l'absence
-    de sp&#233;cification, l'algorithme par d&#233;faut est <code>aes256</code>.</p>
+    spécifier l'algorithme à utiliser pour le chiffrement. En l'absence
+    de spécification, l'algorithme par défaut est <code>aes256</code>.</p>
 
-    <p>L'algorithme peut &#234;tre choisi, en fonction du moteur de chiffrement
-    utilis&#233;, parmi les valeurs suivantes :</p>
+    <p>L'algorithme peut être choisi, en fonction du moteur de chiffrement
+    utilisé, parmi les valeurs suivantes :</p>
 
     <ul><li>3des192</li><li>aes128</li><li>aes192</li><li>aes256</li></ul>
 
@@ -127,57 +127,57 @@ SessionCryptoPassphrase secret</pre>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="sessioncryptodriver" id="sessioncryptodriver">Directive</a> <a name="SessionCryptoDriver" id="SessionCryptoDriver">SessionCryptoDriver</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le pilote de chiffrement &#224; utiliser pour chiffrer les
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le pilote de chiffrement à utiliser pour chiffrer les
 sessions</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SessionCryptoDriver <var>nom</var> <var>[param[=valeur]]</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>aucun</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>aucun</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Exp&#233;rimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session_crypto</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible depuis la version 2.3.0
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.0
 d'Apache</td></tr>
 </table>
     <p>La directive <code class="directive">SessionCryptoDriver</code> permet de
-    sp&#233;cifier le nom du pilote &#224; utiliser pour le chiffrement. Si aucun
-    pilote n'est sp&#233;cifi&#233;, le pilote utilis&#233; par d&#233;faut sera le pilote
-    recommand&#233; compil&#233; avec APR-util.</p>
+    spécifier le nom du pilote à utiliser pour le chiffrement. Si aucun
+    pilote n'est spécifié, le pilote utilisé par défaut sera le pilote
+    recommandé compilé avec APR-util.</p>
 
-    <p>Le pilote de chiffrement <var>NSS</var> n&#233;cessite certains
-    param&#232;tres de configuration, qui seront sp&#233;cifi&#233;s comme arguments de
-    la directive avec des valeurs optionnelles apr&#232;s le nom du
+    <p>Le pilote de chiffrement <var>NSS</var> nécessite certains
+    paramètres de configuration, qui seront spécifiés comme arguments de
+    la directive avec des valeurs optionnelles après le nom du
     pilote.</p>
 
-    <div class="example"><h3>NSS sans base de donn&#233;es de certificats</h3><pre class="prettyprint lang-config">SessionCryptoDriver nss</pre>
+    <div class="example"><h3>NSS sans base de données de certificats</h3><pre class="prettyprint lang-config">SessionCryptoDriver nss</pre>
 </div>
 
-    <div class="example"><h3>NSS avec base de donn&#233;es de certificats</h3><pre class="prettyprint lang-config">SessionCryptoDriver nss dir=certs</pre>
+    <div class="example"><h3>NSS avec base de données de certificats</h3><pre class="prettyprint lang-config">SessionCryptoDriver nss dir=certs</pre>
 </div>
 
-    <div class="example"><h3>NSS avec base de donn&#233;es de certificats et
-    param&#232;tres</h3><pre class="prettyprint lang-config">SessionCryptoDriver nss dir=certs cl&#233;3=cl&#233;3.db cert7=cert7.db secmod=secmod</pre>
+    <div class="example"><h3>NSS avec base de données de certificats et
+    paramètres</h3><pre class="prettyprint lang-config">SessionCryptoDriver nss dir=certs clé3=clé3.db cert7=cert7.db secmod=secmod</pre>
 </div>
 
     <div class="example"><h3>NSS avec chemins contenant des espaces</h3><pre class="prettyprint lang-config">SessionCryptoDriver nss "dir=My Certs" key3=key3.db cert7=cert7.db secmod=secmod</pre>
 </div>
 
-    <p>Le pilote de chiffrement <var>NSS</var> peut avoir &#233;t&#233; configur&#233;
-    au pr&#233;alable dans une autre partie du serveur, par exemple depuis
+    <p>Le pilote de chiffrement <var>NSS</var> peut avoir été configuré
+    au préalable dans une autre partie du serveur, par exemple depuis
     <code class="module"><a href="../mod/mod_nss.html">mod_nss</a></code> ou <code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code>. Si c'est le
-    cas, un avertissement sera enregistr&#233; dans le journal, et la
-    configuration existante s'en trouvera affect&#233;e. Pour &#233;viter cet
-    avertissement, utilisez le param&#232;tre <code>noinit</code> comme suit :</p>
+    cas, un avertissement sera enregistré dans le journal, et la
+    configuration existante s'en trouvera affectée. Pour éviter cet
+    avertissement, utilisez le paramètre <code>noinit</code> comme suit :</p>
 
-    <div class="example"><h3>NSS avec base de donn&#233;es de certificats</h3><pre class="prettyprint lang-config">SessionCryptoDriver nss noinit</pre>
+    <div class="example"><h3>NSS avec base de données de certificats</h3><pre class="prettyprint lang-config">SessionCryptoDriver nss noinit</pre>
 </div>
 
-    <p>Pour &#233;viter la confusion, assurez-vous que tous les modules
-    utilisant NSS soient configur&#233;s avec des param&#232;tres identiques.</p>
+    <p>Pour éviter la confusion, assurez-vous que tous les modules
+    utilisant NSS soient configurés avec des paramètres identiques.</p>
 
-    <p>Le pilote de chiffrement <var>openssl</var> accepte un param&#232;tre
-    optionnel permettant de sp&#233;cifier le moteur de chiffrement &#224;
+    <p>Le pilote de chiffrement <var>openssl</var> accepte un paramètre
+    optionnel permettant de spécifier le moteur de chiffrement à
     utiliser.</p>
 
-    <div class="example"><h3>OpenSSL avec sp&#233;cification du moteur de chiffrement</h3><pre class="prettyprint lang-config">SessionCryptoDriver openssl engine=nom-moteur</pre>
+    <div class="example"><h3>OpenSSL avec spécification du moteur de chiffrement</h3><pre class="prettyprint lang-config">SessionCryptoDriver openssl engine=nom-moteur</pre>
 </div>
 
 
@@ -185,43 +185,43 @@ d'Apache</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="sessioncryptopassphrase" id="sessioncryptopassphrase">Directive</a> <a name="SessionCryptoPassphrase" id="SessionCryptoPassphrase">SessionCryptoPassphrase</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>La cl&#233; utilis&#233;e pour chiffrer la session</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>La clé utilisée pour chiffrer la session</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SessionCryptoPassphrase <var>secret</var> [ <var>secret</var> ... ] </code></td></tr>
-<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>none</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Exp&#233;rimental</td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session_crypto</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible depuis la version 2.3.0
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.0
 d'Apache</td></tr>
 </table>
     <p>La directive <code class="directive">SessionCryptoPassphrase</code>
-    permet de sp&#233;cifier les cl&#233;s &#224; utiliser pour chiffrer de mani&#232;re
-    sym&#233;trique le contenu de la session avant de l'enregistrer, ou pour
-    d&#233;chiffrer le contenu de la session apr&#232;s sa lecture.</p>
+    permet de spécifier les clés à utiliser pour chiffrer de manière
+    symétrique le contenu de la session avant de l'enregistrer, ou pour
+    déchiffrer le contenu de la session après sa lecture.</p>
 
-    <p>L'utilisation de cl&#233;s longues et compos&#233;es de caract&#232;res vraiment
-    al&#233;atoires est plus performant en mati&#232;re de s&#233;curit&#233;. Modifier une
-    cl&#233; sur un serveur a pour effet d'invalider toutes les sessions
+    <p>L'utilisation de clés longues et composées de caractères vraiment
+    aléatoires est plus performant en matière de sécurité. Modifier une
+    clé sur un serveur a pour effet d'invalider toutes les sessions
     existantes.</p>
 
-    <p>Il est possible de sp&#233;cifier plusieurs cl&#233;s afin de mettre en
-    oeuvre la rotation de cl&#233;s. La premi&#232;re cl&#233; sp&#233;cifi&#233;e sera utilis&#233;e
-    pour le chiffrement, alors que l'ensemble des cl&#233;s sp&#233;cifi&#233;es le
-    sera pour le d&#233;chiffrement. Pour effectuer une rotation p&#233;riodique
-    des cl&#233;s sur plusieurs serveurs, ajoutez une nouvelle cl&#233; en fin de
-    liste, puis, une fois la rotation compl&#232;te effectu&#233;e, supprimez la
-    premi&#232;re cl&#233; de la liste.</p>
+    <p>Il est possible de spécifier plusieurs clés afin de mettre en
+    oeuvre la rotation de clés. La première clé spécifiée sera utilisée
+    pour le chiffrement, alors que l'ensemble des clés spécifiées le
+    sera pour le déchiffrement. Pour effectuer une rotation périodique
+    des clés sur plusieurs serveurs, ajoutez une nouvelle clé en fin de
+    liste, puis, une fois la rotation complète effectuée, supprimez la
+    première clé de la liste.</p>
 
     <p>Depuis la version 2.4.7, si la valeur de l'argument commence par <var>exec:</var> , la commande
-    sp&#233;cifi&#233;e sera ex&#233;cut&#233;e, et la premi&#232;re ligne que cette derni&#232;re
-    renverra sur la sortie standard sera utilis&#233;e comme cl&#233;.</p>
-<div class="example"><pre># cl&#233; sp&#233;cifi&#233;e et utilis&#233;e en tant que tel
+    spécifiée sera exécutée, et la première ligne que cette dernière
+    renverra sur la sortie standard sera utilisée comme clé.</p>
+<div class="example"><pre># clé spécifiée et utilisée en tant que tel
 SessionCryptoPassphrase secret
 
-# ex&#233;cution de /path/to/program pour g&#233;n&#233;rer la cl&#233;
+# exécution de /path/to/program pour générer la clé
 SessionCryptoPassphrase exec:/path/to/program
 
-# ex&#233;cution de /path/to/program avec un argument pour g&#233;n&#233;rer la cl&#233;
+# exécution de /path/to/program avec un argument pour générer la clé
 SessionCryptoPassphrase "exec:/path/to/otherProgram argument1"</pre></div>
 
 
@@ -229,41 +229,41 @@ SessionCryptoPassphrase "exec:/path/to/otherProgram argument1"</pre></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="sessioncryptopassphrasefile" id="sessioncryptopassphrasefile">Directive</a> <a name="SessionCryptoPassphraseFile" id="SessionCryptoPassphraseFile">SessionCryptoPassphraseFile</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le fichier contenant les cl&#233;s utilis&#233;es pour chiffrer la
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le fichier contenant les clés utilisées pour chiffrer la
 session</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SessionCryptoPassphraseFile <var>nom-fichier</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>none</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Exp&#233;rimental</td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session_crypto</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP Apache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP Apache</td></tr>
 </table>
     <p>La directive <code class="directive">SessionCryptoPassphraseFile</code>
-    permet de sp&#233;cifier le nom d'un fichier de configuration contenant
-    les cl&#233;s &#224; utiliser pour le chiffrement et le d&#233;chiffrement de la
-    session (une cl&#233; par ligne). Le fichier est lu au d&#233;marrage du
-    serveur, et un red&#233;marrage graceful est n&#233;cessaire pour prendre en
-    compte un &#233;ventuel changement de cl&#233;s.</p>
+    permet de spécifier le nom d'un fichier de configuration contenant
+    les clés à utiliser pour le chiffrement et le déchiffrement de la
+    session (une clé par ligne). Le fichier est lu au démarrage du
+    serveur, et un redémarrage graceful est nécessaire pour prendre en
+    compte un éventuel changement de clés.</p>
 
-    <p>&#192; la diff&#233;rence de la directive
-    <code class="directive">SessionCryptoPassphrase</code>, les cl&#233;s ne sont pas
-    pr&#233;sentes dans le fichier de configuration de httpd et peuvent &#234;tre
-    cach&#233;es via une protection appropri&#233;e du fichier de cl&#233;s.</p>
+    <p>À la différence de la directive
+    <code class="directive">SessionCryptoPassphrase</code>, les clés ne sont pas
+    présentes dans le fichier de configuration de httpd et peuvent être
+    cachées via une protection appropriée du fichier de clés.</p>
 
-    <p>Il est possible de sp&#233;cifier plusieurs cl&#233;s afin de mettre en
-    oeuvre la rotation de cl&#233;s. La premi&#232;re cl&#233; sp&#233;cifi&#233;e sera utilis&#233;e
-    pour le chiffrement, alors que l'ensemble des cl&#233;s sp&#233;cifi&#233;es le
-    sera pour le d&#233;chiffrement. Pour effectuer une rotation p&#233;riodique
-    des cl&#233;s sur plusieurs serveurs, ajoutez une nouvelle cl&#233; en fin de
-    liste, puis, une fois la rotation compl&#232;te effectu&#233;e, supprimez la
-    premi&#232;re cl&#233; de la liste.</p>
+    <p>Il est possible de spécifier plusieurs clés afin de mettre en
+    oeuvre la rotation de clés. La première clé spécifiée sera utilisée
+    pour le chiffrement, alors que l'ensemble des clés spécifiées le
+    sera pour le déchiffrement. Pour effectuer une rotation périodique
+    des clés sur plusieurs serveurs, ajoutez une nouvelle clé en fin de
+    liste, puis, une fois la rotation complète effectuée, supprimez la
+    première clé de la liste.</p>
 
 
 </div>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_session_crypto.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_session_crypto.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_session_crypto.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -282,7 +282,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.4/mod/mod_session_cryp
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autoris&#233; sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

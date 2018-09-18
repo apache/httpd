@@ -27,56 +27,56 @@
 <div id="preamble"><h1>Module Apache mod_proxy_express</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_proxy_express.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_proxy_express.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_proxy_express.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Extension &#224; <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> pour le mandatement
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Extension à <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> pour le mandatement
 dynamique inverse de masse</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&#160;de&#160;Module:</a></th><td>proxy_express_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier&#160;Source:</a></th><td>mod_proxy_express.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>proxy_express_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_proxy_express.c</td></tr></table>
 <h3>Sommaire</h3>
 
-    <p>Ce module cr&#233;e dynamiquement en masse des mandataires inverses en
-    faisant correspondre l'en-t&#234;te Host: de la requ&#234;te HTTP &#224; un nom de
-    serveur et une URL d'arri&#232;re-plan stock&#233;s dans un fichier DBM. Il
-    est ainsi plus ais&#233; d'utiliser un grand nombre de
-    mandataires inverses sans avoir &#224; modifier la configuration. Il est
-    loin de poss&#233;der autant de fonctionnalit&#233;s que
+    <p>Ce module crée dynamiquement en masse des mandataires inverses en
+    faisant correspondre l'en-tête Host: de la requête HTTP à un nom de
+    serveur et une URL d'arrière-plan stockés dans un fichier DBM. Il
+    est ainsi plus aisé d'utiliser un grand nombre de
+    mandataires inverses sans avoir à modifier la configuration. Il est
+    loin de posséder autant de fonctionnalités que
     <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code>, qui propose aussi la croissance
-    dynamique, mais il est con&#231;u pour g&#233;rer un nombre beaucoup plus important
-    de serveurs d'arri&#232;re-plan. Il convient parfaitement pour cr&#233;er un
+    dynamique, mais il est conçu pour gérer un nombre beaucoup plus important
+    de serveurs d'arrière-plan. Il convient parfaitement pour créer un
     commutateur HTTP frontal et pour les architectures Microservices.</p>
 
-    <p>Pour pouvoir &#234;tre utilis&#233;, ce module n&#233;cessite le chargement de
+    <p>Pour pouvoir être utilisé, ce module nécessite le chargement de
     <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>.</p>
 
     <div class="warning"><h3>Avertissement</h3>
-      <p>N'activez le mandatement que si vous avez <a href="mod_proxy.html#access">s&#233;curis&#233; votre serveur</a>. Les
-      serveurs mandataires ouverts sont dangereux pour votre r&#233;seau, et
+      <p>N'activez le mandatement que si vous avez <a href="mod_proxy.html#access">sécurisé votre serveur</a>. Les
+      serveurs mandataires ouverts sont dangereux pour votre réseau, et
       dans une plus large mesure pour Internet.</p>
     </div>
 
 <div class="note"><h3>Limitations</h3>
   <ul>
-    <li>Ce module n'est pas con&#231;u pour remplacer les fonctionnalit&#233;s
+    <li>Ce module n'est pas conçu pour remplacer les fonctionnalités
     dynamiques de <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code>. Par contre, il
-    peut constituer une alternative l&#233;g&#232;re et rapide &#224;
+    peut constituer une alternative légère et rapide à
     <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> lorsque ce dernier utilise la directive
     <code class="directive">RewriteMap</code> et le drapeau <code>[P]</code>
-    pour le mandatement inverse &#224; partir d'une table de correspondances.
+    pour le mandatement inverse à partir d'une table de correspondances.
     </li>
-    <li>Il ne supporte pas les mises en correspondance bas&#233;es sur les
-    expressions rationnelles ou les mod&#232;les.
+    <li>Il ne supporte pas les mises en correspondance basées sur les
+    expressions rationnelles ou les modèles.
     </li>
-    <li>Il &#233;mule :
+    <li>Il émule :
       <pre class="prettyprint lang-config">&lt;VirtualHost *:80&gt;
    ServerName front.end.server
    ProxyPass "/" "back.end.server:port"
    ProxyPassReverse "/" "back.end.server:port"
 &lt;/VirtualHost&gt;</pre>
 
-      En d'autres termes, l'URL dans son ensemble est ajout&#233;e &#224; l'URL
-      d'arri&#232;re-plan correspondante, tout ceci dans le but de
+      En d'autres termes, l'URL dans son ensemble est ajoutée à l'URL
+      d'arrière-plan correspondante, tout ceci dans le but de
       proposer un commutateur mandataire inverse simple mais rapide.
     </li>
   </ul>
@@ -89,7 +89,7 @@ dynamique inverse de masse</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxyexpressdbmtype">ProxyExpressDBMType</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxyexpressenable">ProxyExpressEnable</a></li>
 </ul>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_proxy_express">Probl&#232;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_proxy_express">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_proxy_express">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_proxy_express">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></li>
 <li><code class="directive"><a href="../mod/mod_proxy.html#balancermember">BalancerMember</a></code></li>
@@ -103,19 +103,19 @@ dynamique inverse de masse</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Chemin du fichier DBM.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyExpressDBMFile &lt;chemin&gt;</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>None</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>None</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_express</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible &#224; partir de la version 2.3.13 d'Apache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.3.13 d'Apache</td></tr>
 </table>
   <p>La directive <code class="directive">ProxyExpressDBMFile</code> permet de
-  d&#233;finir le chemin du fichier DBM de correspondance Express. Ce fichier
-  permet de faire correspondre le nom de serveur extrait de l'en-t&#234;te
-  Host: de la requ&#234;te entrante avec une URL d'arri&#232;re-plan.</p>
+  définir le chemin du fichier DBM de correspondance Express. Ce fichier
+  permet de faire correspondre le nom de serveur extrait de l'en-tête
+  Host: de la requête entrante avec une URL d'arrière-plan.</p>
 
     <div class="note"><h3>Note</h3>
-      <p>Ce fichier est &#233;labor&#233; &#224; partir d'un fichier texte &#224; l'aide de
+      <p>Ce fichier est élaboré à partir d'un fichier texte à l'aide de
       l'utilitaire <code><a href="../programs/httxt2dbm.html">httxt2dbm</a></code>.</p>
 
       <div class="example"><h3>Fichier de correspondances ProxyExpress</h3><p><code>
@@ -128,7 +128,7 @@ dynamique inverse de masse</td></tr>
         www3.example.com   http://192.168.212.10<br />
       </code></p></div>
 
-      <div class="example"><h3>Cr&#233;ation du fichier DBM</h3><p><code>
+      <div class="example"><h3>Création du fichier DBM</h3><p><code>
         httxt2dbm -i express-map.txt -o emap<br />
         </code></p></div>
 
@@ -144,24 +144,24 @@ dynamique inverse de masse</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Type de fichier DBM.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyExpressDBMFile &lt;type&gt;</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>"default"</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>"default"</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_express</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible &#224; partir de la version 2.3.13 d'Apache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.3.13 d'Apache</td></tr>
 </table>
   <p>La directive <code class="directive">ProxyExpressDBMType</code> permet de
-  d&#233;finir le type de fichier DBM requis par le module. La valeur par
-  d&#233;faut correspond au type DBM par d&#233;faut du fichier cr&#233;&#233; par
+  définir le type de fichier DBM requis par le module. La valeur par
+  défaut correspond au type DBM par défaut du fichier créé par
   l'utilitaire <code><a href="../programs/httxt2dbm.html">httxt2dbm</a></code>.</p>
-  <p>Les valeurs possibles sont (mais toutes ne seront pas disponibles &#224;
-  l'ex&#233;cution) :</p>
+  <p>Les valeurs possibles sont (mais toutes ne seront pas disponibles à
+  l'exécution) :</p>
 <table class="bordered"><tr class="header"><th>Value</th><th>Description</th></tr>
 <tr><td><code>db</code></td><td>Fichiers Berkeley DB</td></tr>
 <tr class="odd"><td><code>gdbm</code></td><td>Fichiers GDBM</td></tr>
 <tr><td><code>ndbm</code></td><td>Fichiers NDBM</td></tr>
 <tr class="odd"><td><code>sdbm</code></td><td>Fichiers SDBM (toujours disponible)</td></tr>
-<tr><td><code>default</code></td><td>type DBM par d&#233;faut</td></tr>
+<tr><td><code>default</code></td><td>type DBM par défaut</td></tr>
 </table>
 
 
@@ -169,22 +169,22 @@ dynamique inverse de masse</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="proxyexpressenable" id="proxyexpressenable">Directive</a> <a name="ProxyExpressEnable" id="ProxyExpressEnable">ProxyExpressEnable</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active la fonctionnalit&#233; du module.</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active la fonctionnalité du module.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyExpressEnable [on|off]</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_express</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible &#224; partir de la version 2.3.13 d'Apache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.3.13 d'Apache</td></tr>
 </table>
   <p>La directive <code class="directive">ProxyExpressEnable</code> permet
-  d'activer/d&#233;sactiver le module.</p>
+  d'activer/désactiver le module.</p>
 
 </div>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_proxy_express.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_proxy_express.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_proxy_express.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -203,7 +203,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.4/mod/mod_proxy_expres
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autoris&#233; sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

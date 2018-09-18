@@ -27,68 +27,68 @@
 <div id="preamble"><h1>Module Apache mod_xml2enc</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_xml2enc.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_xml2enc.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_xml2enc.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Support avanc&#233; de l'internationalisation et des jeux de
-caract&#232;res pour les modules de filtrage bas&#233;s sur libxml2</td></tr>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Support avancé de l'internationalisation et des jeux de
+caractères pour les modules de filtrage basés sur libxml2</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&#160;de&#160;Module:</a></th><td>xml2enc_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier&#160;Source:</a></th><td>mod_xml2enc.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible depuis la version 2.4 du serveur HTTP Apache.
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>xml2enc_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_xml2enc.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.4 du serveur HTTP Apache.
 Disponible en tant que module tiers dans les versions 2.2.x</td></tr></table>
 <h3>Sommaire</h3>
 
-    <p>Ce module fournit un support avanc&#233; de l'internationalisation
+    <p>Ce module fournit un support avancé de l'internationalisation
     pour les modules de filtrage supportant les balises (markup-aware)
-    comme <code class="module"><a href="../mod/mod_proxy_html.html">mod_proxy_html</a></code>. Il est capable de d&#233;tecter
-    automatiquement l'encodage des donn&#233;es en entr&#233;e et de s'assurer
-    qu'elle sont trait&#233;es correctement par l'interpr&#233;teur <a href="http://xmlsoft.org/">libxml2</a>, y compris la conversion en
-    Unicode (UTF-8) si n&#233;cessaire. Il peut aussi convertir les donn&#233;es
-    dans l'encodage de votre choix apr&#232;s le traitement des balises, et
-    s'assurera que le <var>jeu de caract&#232;res</var> appropri&#233; sera d&#233;fini
-    dans l'en-t&#234;te HTTP <var>Content-Type</var>.</p>
+    comme <code class="module"><a href="../mod/mod_proxy_html.html">mod_proxy_html</a></code>. Il est capable de détecter
+    automatiquement l'encodage des données en entrée et de s'assurer
+    qu'elle sont traitées correctement par l'interpréteur <a href="http://xmlsoft.org/">libxml2</a>, y compris la conversion en
+    Unicode (UTF-8) si nécessaire. Il peut aussi convertir les données
+    dans l'encodage de votre choix après le traitement des balises, et
+    s'assurera que le <var>jeu de caractères</var> approprié sera défini
+    dans l'en-tête HTTP <var>Content-Type</var>.</p>
 </div>
 <div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><h3>Sujets</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#usage">Utilisation</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#api">API de programmation</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sniffing">D&#233;tection et encodage</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#sniffing">Détection et encodage</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#output">Codage en sortie</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#alias">Codages non support&#233;s</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#alias">Codages non supportés</a></li>
 </ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#xml2encalias">xml2EncAlias</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#xml2encdefault">xml2EncDefault</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#xml2startparse">xml2StartParse</a></li>
 </ul>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_xml2enc">Probl&#232;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_xml2enc">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_xml2enc">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_xml2enc">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="usage" id="usage">Utilisation</a></h2>
-    <p>Il existe deux sc&#233;narios d'utilisation : le cas des modules
-    programm&#233;s pour travailler avec mod_xml2enc ; et les autres :</p>
+    <p>Il existe deux scénarios d'utilisation : le cas des modules
+    programmés pour travailler avec mod_xml2enc ; et les autres :</p>
     <dl>
-    <dt>Modules de filtrages programm&#233;s pour mod_xml2enc</dt><dd>
+    <dt>Modules de filtrages programmés pour mod_xml2enc</dt><dd>
     <p>Les modules comme <code class="module"><a href="../mod/mod_proxy_html.html">mod_proxy_html</a></code> versions 3.1 et
-    sup&#233;rieures utilisent la fonction optionnelle
-    <code>xml2enc_charset</code> pour d&#233;terminer la valeur de l'argument
-    "jeu de caract&#232;res" &#224; transmettre &#224; l'interpr&#233;teur libxml2, et
+    supérieures utilisent la fonction optionnelle
+    <code>xml2enc_charset</code> pour déterminer la valeur de l'argument
+    "jeu de caractères" à transmettre à l'interpréteur libxml2, et
     disposent de la fonction optionnelle <code>xml2enc_filter</code>
-    pour effectuer un encodage ult&#233;rieur &#233;ventuel. L'utilisation de
-    mod_xml2enc avec un module pr&#233;programm&#233; &#224; cet effet ne n&#233;cessite
+    pour effectuer un encodage ultérieur éventuel. L'utilisation de
+    mod_xml2enc avec un module préprogrammé à cet effet ne nécessite
     aucune configuration : ce dernier configurera mod_xml2enc pour vous
-    (sachant que vous pouvez tout de m&#234;me le personnaliser via les
+    (sachant que vous pouvez tout de même le personnaliser via les
     directives de configuration ci-dessous).</p>
     </dd>
-    <dt>Modules de filtrages non programm&#233;s pour mod_xml2enc</dt><dd>
-    <p>Pour utiliser mod_xml2enc avec un module bas&#233; sur libxml2 qui n'a
-    pas &#233;t&#233; explicitement programm&#233; pour mod_xml2enc, vous devrez
-    configurer la cha&#238;ne de filtrage vous-m&#234;me. Ainsi, pour utiliser
+    <dt>Modules de filtrages non programmés pour mod_xml2enc</dt><dd>
+    <p>Pour utiliser mod_xml2enc avec un module basé sur libxml2 qui n'a
+    pas été explicitement programmé pour mod_xml2enc, vous devrez
+    configurer la chaîne de filtrage vous-même. Ainsi, pour utiliser
     mod_xml2enc avec un filtre <strong>foo</strong> fourni par un module
     <strong>mod_foo</strong> et pour
-    am&#233;liorer le support i18n de ce dernier avec HTML et XML, vous
+    améliorer le support i18n de ce dernier avec HTML et XML, vous
     pouvez utiliser les directives suivantes :</p>
     <pre><code>
     FilterProvider iconv    xml2enc Content-Type $text/html
@@ -97,95 +97,95 @@ Disponible en tant que module tiers dans les versions 2.2.x</td></tr></table>
     FilterProvider markup   foo Content-Type $xml
     FilterChain     iconv markup
     </code></pre>
-    <p><strong>mod_foo</strong> supportera alors tout jeu de caract&#232;re support&#233; soit par
+    <p><strong>mod_foo</strong> supportera alors tout jeu de caractère supporté soit par
     libxml2, soit par apr_xlate/iconv, soit par les deux.</p>
     </dd></dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="api" id="api">API de programmation</a></h2>
-    <p>Les programmeurs de modules de filtrage bas&#233;s sur libxml2 sont
-    encourag&#233;s &#224; les pr&#233;programmer pour mod_xml2enc, afin de fournir un
-    support i18n solide aux utilisateurs sans avoir &#224; r&#233;inventer la
-    roue. L'API de programmation est d&#233;crite dans
+    <p>Les programmeurs de modules de filtrage basés sur libxml2 sont
+    encouragés à les préprogrammer pour mod_xml2enc, afin de fournir un
+    support i18n solide aux utilisateurs sans avoir à réinventer la
+    roue. L'API de programmation est décrite dans
     <var>mod_xml2enc.h</var>, et <code class="module"><a href="../mod/mod_proxy_html.html">mod_proxy_html</a></code> est un
     exemple de son utilisation.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="sniffing" id="sniffing">D&#233;tection et encodage</a></h2>
-    <p>A la diff&#233;rence de <code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code>, mod_xml2enc
-    est con&#231;u pour travailler avec des donn&#233;es dont l'encodage ne peut
-    pas &#234;tre connu, et donc configur&#233;, &#224; l'avance. Il utilise donc les
-    techniques de 'reniflage' suivantes pour d&#233;tecter le type d'encodage
-    des donn&#233;es HTTP :</p>
+<h2><a name="sniffing" id="sniffing">Détection et encodage</a></h2>
+    <p>A la différence de <code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code>, mod_xml2enc
+    est conçu pour travailler avec des données dont l'encodage ne peut
+    pas être connu, et donc configuré, à l'avance. Il utilise donc les
+    techniques de 'reniflage' suivantes pour détecter le type d'encodage
+    des données HTTP :</p>
     <ol>
-        <li>Si l'en-t&#234;te HTTP <var>Content-Type</var> contient un
-	param&#232;tre <var>charset</var>, c'est ce dernier qui sera utilis&#233;.</li>
-        <li>Si les donn&#233;es commancent par une balise XML concernant
-	l'ordre des octets (BOM) ou par une d&#233;claration d'encodage XML,
-	c'est celle-ci qui sera utilis&#233;e.</li>
-        <li>Si un type d'encodage est d&#233;clar&#233; dans un &#233;l&#233;ment HTML
-	<code>&lt;META&gt;</code>, c'est ce dernier qui sera utilis&#233;.</li>
-        <li>Si aucun des &#233;l&#233;ments pr&#233;c&#233;dents n'est trouv&#233;, c'est la
-	valeur par d&#233;faut d&#233;finie par la directive
-	<code class="directive">xml2EncDefault</code> qui sera utilis&#233;e.</li>
+        <li>Si l'en-tête HTTP <var>Content-Type</var> contient un
+	paramètre <var>charset</var>, c'est ce dernier qui sera utilisé.</li>
+        <li>Si les données commancent par une balise XML concernant
+	l'ordre des octets (BOM) ou par une déclaration d'encodage XML,
+	c'est celle-ci qui sera utilisée.</li>
+        <li>Si un type d'encodage est déclaré dans un élément HTML
+	<code>&lt;META&gt;</code>, c'est ce dernier qui sera utilisé.</li>
+        <li>Si aucun des éléments précédents n'est trouvé, c'est la
+	valeur par défaut définie par la directive
+	<code class="directive">xml2EncDefault</code> qui sera utilisée.</li>
     </ol>
-    <p>Les conditions sont test&#233;es dans cet ordre . D&#232;s qu'une r&#232;gle
-    s'applique, elle est utilis&#233;e et la d&#233;tection est termin&#233;e.</p>
+    <p>Les conditions sont testées dans cet ordre . Dès qu'une règle
+    s'applique, elle est utilisée et la détection est terminée.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="output" id="output">Codage en sortie</a></h2>
 <p><a href="http://xmlsoft.org/">libxml2</a> utilise toujours UTF-8
-(Unicode) en interne, et les modules de filtrage bas&#233;s sur libxml2
-utiliseront cet encodage en sortie par d&#233;faut. mod_xml2enc peut modifier
+(Unicode) en interne, et les modules de filtrage basés sur libxml2
+utiliseront cet encodage en sortie par défaut. mod_xml2enc peut modifier
 l'encodage en sortie via l'API, mais il n'y a actuellement aucun moyen de le
 configurer directement.</p>
-<p>La modification de l'encodage en sortie ne devrait (du moins en th&#233;orie)
-jamais &#234;tre n&#233;cessaire, et est m&#234;me d&#233;conseill&#233;e &#224; cause de la charge de
-traitement suppl&#233;mentaire impos&#233;e au serveur par une conversion non
-n&#233;cessaire.</p>
+<p>La modification de l'encodage en sortie ne devrait (du moins en théorie)
+jamais être nécessaire, et est même déconseillée à cause de la charge de
+traitement supplémentaire imposée au serveur par une conversion non
+nécessaire.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="alias" id="alias">Codages non support&#233;s</a></h2>
-<p>Si vous travaillez avec des encodages non support&#233;s par aucune des
-m&#233;thodes de conversion disponibles sur votre plateforme, vous pouvez
-tout de m&#234;me leur associer un alias vers un code support&#233; via la
+<h2><a name="alias" id="alias">Codages non supportés</a></h2>
+<p>Si vous travaillez avec des encodages non supportés par aucune des
+méthodes de conversion disponibles sur votre plateforme, vous pouvez
+tout de même leur associer un alias vers un code supporté via la
 directive <code class="directive">xml2EncAlias</code>.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="xml2encalias" id="xml2encalias">Directive</a> <a name="xml2EncAlias" id="xml2EncAlias">xml2EncAlias</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&#233;finit des alias pour les valeurs d'encodage</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>xml2EncAlias <var>jeu-de-caract&#232;res alias [alias ...]</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit des alias pour les valeurs d'encodage</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>xml2EncAlias <var>jeu-de-caractères alias [alias ...]</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_xml2enc</td></tr>
 </table>
-    <p>Cette directive de niveau serveur permet de d&#233;finir un ou
+    <p>Cette directive de niveau serveur permet de définir un ou
     plusieurs alias pour un encodage. Elle permet au support d'encodage de
     libxml2 de traiter en interne des encodages non reconnus par libxml2
     en utilisant la table de conversion pour un encodage reconnu. Elle
     permet d'atteindre deux objectifs : supporter des jeux (ou noms) de
-    caract&#232;res non reconnus par libxml2 ou iconv, et &#233;viter une
-    conversion pour un encodage lorsque cela n'est pas n&#233;cessaire.</p>
+    caractères non reconnus par libxml2 ou iconv, et éviter une
+    conversion pour un encodage lorsque cela n'est pas nécessaire.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="xml2encdefault" id="xml2encdefault">Directive</a> <a name="xml2EncDefault" id="xml2EncDefault">xml2EncDefault</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&#233;finit un encodage par d&#233;faut &#224; utiliser lorsqu'aucune
-information ne peut &#234;tre <a href="#sniffing">automatiquement d&#233;tect&#233;e</a></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit un encodage par défaut à utiliser lorsqu'aucune
+information ne peut être <a href="#sniffing">automatiquement détectée</a></td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>xml2EncDefault <var>nom</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_xml2enc</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible depuis la version 2.4.0 du serveur HTTP Apache
-; disponible depuis un module tiers dans les versions ant&#233;rieures.</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.4.0 du serveur HTTP Apache
+; disponible depuis un module tiers dans les versions antérieures.</td></tr>
 </table>
-    <p>Si vous traitez des donn&#233;es dont l'encodage est connu, mais ne
-    contenant aucune information &#224; propos de ce dernier, vous pouvez
-    d&#233;finir une valeur par d&#233;faut afin d'aider mod_xml2enc &#224; traiter
-    correctement les donn&#233;es. Par exemple, pour d&#233;finir la valeur par
-    d&#233;faut Latin1 (<var>iso-8859-1</var> specifi&#233;e dans HTTP/1.0),
+    <p>Si vous traitez des données dont l'encodage est connu, mais ne
+    contenant aucune information à propos de ce dernier, vous pouvez
+    définir une valeur par défaut afin d'aider mod_xml2enc à traiter
+    correctement les données. Par exemple, pour définir la valeur par
+    défaut Latin1 (<var>iso-8859-1</var> specifiée dans HTTP/1.0),
     utilisez :</p>
     <pre class="prettyprint lang-config">xml2EncDefault iso-8859-1</pre>
 
@@ -194,26 +194,26 @@ information ne peut &#234;tre <a href="#sniffing">automatiquement d&#233;tect&#2
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="xml2startparse" id="xml2startparse">Directive</a> <a name="xml2StartParse" id="xml2StartParse">xml2StartParse</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Indique &#224; l'interpr&#233;teur &#224; partir de quelle balise il doit
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Indique à l'interpréteur à partir de quelle balise il doit
 commencer son traitement.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>xml2StartParse <var>&#233;l&#233;ment [&#233;l&#233;ment ...]</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>xml2StartParse <var>élément [élément ...]</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_xml2enc</td></tr>
 </table>
-    <p>Cette directive permet de sp&#233;cifier &#224; partir de quelle balise,
-    parmi les &#233;l&#233;ments sp&#233;cifi&#233;s, l'interpr&#233;teur de balise doit
-    commencer son traitement. Ccei permet de contourner le probl&#232;me des
-    serveurs d'arri&#232;re-plan qui ins&#232;rent des &#233;l&#233;ments non conformes en
-    d&#233;but de donn&#233;es, ce qui a pour effet de perturber l'interpr&#233;teur (<a href="http://bahumbug.wordpress.com/2006/10/12/mod_proxy_html-revisited/">voir un exemple ici</a>).</p>
-    <p>Elle ne doit &#234;tre utilis&#233;e ni pour les documents XML, ni pour les
-    documents HTML correctement format&#233;s.</p>
+    <p>Cette directive permet de spécifier à partir de quelle balise,
+    parmi les éléments spécifiés, l'interpréteur de balise doit
+    commencer son traitement. Ccei permet de contourner le problème des
+    serveurs d'arrière-plan qui insèrent des éléments non conformes en
+    début de données, ce qui a pour effet de perturber l'interpréteur (<a href="http://bahumbug.wordpress.com/2006/10/12/mod_proxy_html-revisited/">voir un exemple ici</a>).</p>
+    <p>Elle ne doit être utilisée ni pour les documents XML, ni pour les
+    documents HTML correctement formatés.</p>
 
 </div>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_xml2enc.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_xml2enc.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_xml2enc.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -232,7 +232,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.4/mod/mod_xml2enc.html
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autoris&#233; sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

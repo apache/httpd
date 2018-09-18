@@ -7,7 +7,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>core - Servidor Apache HTTP Versión 2.4</title>
+<title>core - Servidor HTTP Apache Versión 2.4</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -132,12 +132,12 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#usecanonicalphysicalport">UseCanonicalPhysicalPort</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#virtualhost">&lt;VirtualHost&gt;</a></li>
 </ul>
-<h3>Lista de Bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">lista de cambios en httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=core">Problemas conocidos</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=core">Reportar un bug</a></li></ul><h3>Consulte también</h3>
+<h3>Lista de comprobación de errores corregidos</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd historial de cambios</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=core">Problemas Conocidos</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=core">Reportar un error</a></li></ul><h3>Consulte también</h3>
 <ul class="seealso">
 <li><a href="#comments_section">Comentarios</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AcceptFilter" id="AcceptFilter">AcceptFilter</a> <a name="acceptfilter" id="acceptfilter">Directiva</a></h2>
+<div class="directive-section"><h2><a name="acceptfilter" id="acceptfilter">Directiva</a> <a name="AcceptFilter" id="AcceptFilter">AcceptFilter</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Configura mejoras para un Protocolo de Escucha de Sockets</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>AcceptFilter <var>protocol</var> <var>accept_filter</var></code></td></tr>
@@ -222,13 +222,13 @@ En Windows desde Apache httpd 2.3.3 y posteriores.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AcceptPathInfo" id="AcceptPathInfo">AcceptPathInfo</a> <a name="acceptpathinfo" id="acceptpathinfo">Directiva</a></h2>
+<div class="directive-section"><h2><a name="acceptpathinfo" id="acceptpathinfo">Directiva</a> <a name="AcceptPathInfo" id="AcceptPathInfo">AcceptPathInfo</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Los recursos aceptan información sobre su ruta</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>AcceptPathInfo On|Off|Default</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Valor por defecto:</a></th><td><code>AcceptPathInfo Default</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directorio, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Prevalece sobre:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Anula:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilidad:</a></th><td>Disponible en Apache httpd 2.0.30 y posteriores</td></tr>
@@ -289,7 +289,7 @@ En Windows desde Apache httpd 2.3.3 y posteriores.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AccessFileName" id="AccessFileName">AccessFileName</a> <a name="accessfilename" id="accessfilename">Directiva</a></h2>
+<div class="directive-section"><h2><a name="accessfilename" id="accessfilename">Directiva</a> <a name="AccessFileName" id="AccessFileName">AccessFileName</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Nombre del fichero distribuido de configuración</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>AccessFileName <var>filename</var> [<var>filename</var>] ...</code></td></tr>
@@ -330,14 +330,14 @@ En Windows desde Apache httpd 2.3.3 y posteriores.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddDefaultCharset" id="AddDefaultCharset">AddDefaultCharset</a> <a name="adddefaultcharset" id="adddefaultcharset">Directiva</a></h2>
+<div class="directive-section"><h2><a name="adddefaultcharset" id="adddefaultcharset">Directiva</a> <a name="AddDefaultCharset" id="AddDefaultCharset">AddDefaultCharset</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Default charset parameter to be added when a response
 content-type is <code>text/plain</code> or <code>text/html</code></td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>AddDefaultCharset On|Off|<var>charset</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Valor por defecto:</a></th><td><code>AddDefaultCharset Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directorio, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Prevalece sobre:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Anula:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
 </table>
@@ -376,7 +376,7 @@ content-type is <code>text/plain</code> or <code>text/html</code></td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AllowEncodedSlashes" id="AllowEncodedSlashes">AllowEncodedSlashes</a> <a name="allowencodedslashes" id="allowencodedslashes">Directiva</a></h2>
+<div class="directive-section"><h2><a name="allowencodedslashes" id="allowencodedslashes">Directiva</a> <a name="AllowEncodedSlashes" id="AllowEncodedSlashes">AllowEncodedSlashes</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Determines whether encoded path separators in URLs are allowed to
 be passed through</td></tr>
@@ -408,14 +408,14 @@ be passed through</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AllowOverride" id="AllowOverride">AllowOverride</a> <a name="allowoverride" id="allowoverride">Directiva</a></h2>
+<div class="directive-section"><h2><a name="allowoverride" id="allowoverride">Directiva</a> <a name="AllowOverride" id="AllowOverride">AllowOverride</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Types of directives that are allowed in
 <code>.htaccess</code> files</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>AllowOverride All|None|<var>directive-type</var>
 [<var>directive-type</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Valor por defecto:</a></th><td><code>AllowOverride None (2.3.9 and later), AllowOverride All (2.3.8 and earlier)</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>directorio</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
 </table>
@@ -522,20 +522,19 @@ be passed through</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AllowOverrideList" id="AllowOverrideList">AllowOverrideList</a> <a name="allowoverridelist" id="allowoverridelist">Directiva</a></h2>
+<div class="directive-section"><h2><a name="allowoverridelist" id="allowoverridelist">Directiva</a> <a name="AllowOverrideList" id="AllowOverrideList">AllowOverrideList</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Individual directives that are allowed in
 <code>.htaccess</code> files</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>AllowOverrideList None|<var>directive</var>
 [<var>directive-type</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Valor por defecto:</a></th><td><code>AllowOverrideList None</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>directorio</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
-</table><p>La Documentación para esta directiva 
-        	no ha sido traducida aún. Por favor use la versión en inglés 
-        	mientras tanto.
-            </p><h3>Consulte también</h3>
+</table><p>The documentation for this directive has
+            not been translated yet. Please have a look at the English
+            version.</p><h3>Consulte también</h3>
 <ul>
 <li><code class="directive"><a href="#accessfilename">AccessFileName</a></code></li>
 <li><code class="directive"><a href="#allowoverride">AllowOverride</a></code></li>
@@ -544,13 +543,13 @@ be passed through</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CGIMapExtension" id="CGIMapExtension">CGIMapExtension</a> <a name="cgimapextension" id="cgimapextension">Directiva</a></h2>
+<div class="directive-section"><h2><a name="cgimapextension" id="cgimapextension">Directiva</a> <a name="CGIMapExtension" id="CGIMapExtension">CGIMapExtension</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Technique for locating the interpreter for CGI
 scripts</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>CGIMapExtension <var>cgi-path</var> <var>.extension</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>directorio, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Prevalece sobre:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Anula:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilidad:</a></th><td>NetWare only</td></tr>
@@ -563,44 +562,42 @@ scripts</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CGIPassAuth" id="CGIPassAuth">CGIPassAuth</a> <a name="cgipassauth" id="cgipassauth">Directiva</a></h2>
+<div class="directive-section"><h2><a name="cgipassauth" id="cgipassauth">Directiva</a> <a name="CGIPassAuth" id="CGIPassAuth">CGIPassAuth</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Enables passing HTTP authorization headers to scripts as CGI
 variables</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>CGIPassAuth On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Valor por defecto:</a></th><td><code>CGIPassAuth Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>directorio, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Prevalece sobre:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Anula:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilidad:</a></th><td>Available in Apache HTTP Server 2.4.13 and later</td></tr>
-</table><p>La Documentación para esta directiva 
-        	no ha sido traducida aún. Por favor use la versión en inglés 
-        	mientras tanto.
-            </p></div>
+</table><p>The documentation for this directive has
+            not been translated yet. Please have a look at the English
+            version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CGIVar" id="CGIVar">CGIVar</a> <a name="cgivar" id="cgivar">Directiva</a></h2>
+<div class="directive-section"><h2><a name="cgivar" id="cgivar">Directiva</a> <a name="CGIVar" id="CGIVar">CGIVar</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Controls how some CGI variables are set</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>CGIVar <var>variable</var> <var>rule</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>directorio, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Prevalece sobre:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Anula:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilidad:</a></th><td>Available in Apache HTTP Server 2.4.21 and later</td></tr>
-</table><p>La Documentación para esta directiva 
-        	no ha sido traducida aún. Por favor use la versión en inglés 
-        	mientras tanto.
-            </p></div>
+</table><p>The documentation for this directive has
+            not been translated yet. Please have a look at the English
+            version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ContentDigest" id="ContentDigest">ContentDigest</a> <a name="contentdigest" id="contentdigest">Directiva</a></h2>
+<div class="directive-section"><h2><a name="contentdigest" id="contentdigest">Directiva</a> <a name="ContentDigest" id="ContentDigest">ContentDigest</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Enables the generation of <code>Content-MD5</code> HTTP Response
 headers</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>ContentDigest On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Valor por defecto:</a></th><td><code>ContentDigest Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directorio, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Prevalece sobre:</a></th><td>Options</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Anula:</a></th><td>Options</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
 </table>
@@ -633,7 +630,7 @@ headers</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DefaultRuntimeDir" id="DefaultRuntimeDir">DefaultRuntimeDir</a> <a name="defaultruntimedir" id="defaultruntimedir">Directiva</a></h2>
+<div class="directive-section"><h2><a name="defaultruntimedir" id="defaultruntimedir">Directiva</a> <a name="DefaultRuntimeDir" id="DefaultRuntimeDir">DefaultRuntimeDir</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Base directory for the server run-time files</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>DefaultRuntimeDir <var>directory-path</var></code></td></tr>
@@ -642,10 +639,9 @@ headers</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilidad:</a></th><td>Available in Apache 2.4.2 and later</td></tr>
-</table><p>La Documentación para esta directiva 
-        	no ha sido traducida aún. Por favor use la versión en inglés 
-        	mientras tanto.
-            </p><h3>Consulte también</h3>
+</table><p>The documentation for this directive has
+            not been translated yet. Please have a look at the English
+            version.</p><h3>Consulte también</h3>
 <ul>
 <li><a href="../misc/security_tips.html#serverroot">the
     security tips</a> for information on how to properly set
@@ -653,7 +649,7 @@ headers</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DefaultType" id="DefaultType">DefaultType</a> <a name="defaulttype" id="defaulttype">Directiva</a></h2>
+<div class="directive-section"><h2><a name="defaulttype" id="defaulttype">Directiva</a> <a name="DefaultType" id="DefaultType">DefaultType</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>This directive has no effect other than to emit warnings
 if the value is not <code>none</code>. In prior versions, DefaultType
@@ -662,8 +658,8 @@ which no other media type configuration could be found.
 </td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>DefaultType <var>media-type|none</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Valor por defecto:</a></th><td><code>DefaultType none</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directorio, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Prevalece sobre:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Anula:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilidad:</a></th><td>The argument <code>none</code> is available in Apache httpd 2.2.7 and later.  All other choices are DISABLED for 2.3.x and later.</td></tr>
@@ -689,7 +685,7 @@ which no other media type configuration could be found.
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Define" id="Define">Define</a> <a name="define" id="define">Directiva</a></h2>
+<div class="directive-section"><h2><a name="define" id="define">Directiva</a> <a name="Define" id="Define">Define</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Define the existence of a variable</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>Define <var>parameter-name</var></code></td></tr>
@@ -703,7 +699,7 @@ which no other media type configuration could be found.
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Directory" id="Directory">&lt;Directory&gt;</a> <a name="directory" id="directory">Directiva</a></h2>
+<div class="directive-section"><h2><a name="directory" id="directory">Directiva</a> <a name="Directory" id="Directory">&lt;Directory&gt;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Enclose a group of directives that apply only to the
 named file-system directory, sub-directories, and their contents.</td></tr>
@@ -843,7 +839,7 @@ named file-system directory, sub-directories, and their contents.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DirectoryMatch" id="DirectoryMatch">&lt;DirectoryMatch&gt;</a> <a name="directorymatch" id="directorymatch">Directiva</a></h2>
+<div class="directive-section"><h2><a name="directorymatch" id="directorymatch">Directiva</a> <a name="DirectoryMatch" id="DirectoryMatch">&lt;DirectoryMatch&gt;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Enclose directives that apply to
 the contents of file-system directories matching a regular expression.</td></tr>
@@ -892,7 +888,7 @@ sections are combined when a request is received</li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DocumentRoot" id="DocumentRoot">DocumentRoot</a> <a name="documentroot" id="documentroot">Directiva</a></h2>
+<div class="directive-section"><h2><a name="documentroot" id="documentroot">Directiva</a> <a name="DocumentRoot" id="DocumentRoot">DocumentRoot</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Directory that forms the main document tree visible
 from the web</td></tr>
@@ -926,22 +922,21 @@ Locations</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Else" id="Else">&lt;Else&gt;</a> <a name="else" id="else">Directiva</a></h2>
+<div class="directive-section"><h2><a name="else" id="else">Directiva</a> <a name="Else" id="Else">&lt;Else&gt;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Contains directives that apply only if the condition of a
 previous <code class="directive"><a href="#if">&lt;If&gt;</a></code> or
 <code class="directive"><a href="#elseif">&lt;ElseIf&gt;</a></code> section is not
 satisfied by a request at runtime</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>&lt;Else&gt; ... &lt;/Else&gt;</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directorio, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Prevalece sobre:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Anula:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilidad:</a></th><td>Nested conditions are evaluated in 2.4.26 and later</td></tr>
-</table><p>La Documentación para esta directiva 
-        	no ha sido traducida aún. Por favor use la versión en inglés 
-        	mientras tanto.
-            </p><h3>Consulte también</h3>
+</table><p>The documentation for this directive has
+            not been translated yet. Please have a look at the English
+            version.</p><h3>Consulte también</h3>
 <ul>
 <li><code class="directive"><a href="#if">&lt;If&gt;</a></code></li>
 <li><code class="directive"><a href="#elseif">&lt;ElseIf&gt;</a></code></li>
@@ -954,7 +949,7 @@ satisfied by a request at runtime</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ElseIf" id="ElseIf">&lt;ElseIf&gt;</a> <a name="elseif" id="elseif">Directiva</a></h2>
+<div class="directive-section"><h2><a name="elseif" id="elseif">Directiva</a> <a name="ElseIf" id="ElseIf">&lt;ElseIf&gt;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Contains directives that apply only if a condition is satisfied
 by a request at runtime while the condition of a previous
@@ -962,15 +957,14 @@ by a request at runtime while the condition of a previous
 <code class="directive">&lt;ElseIf&gt;</code> section is not
 satisfied</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>&lt;ElseIf <var>expression</var>&gt; ... &lt;/ElseIf&gt;</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directorio, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Prevalece sobre:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Anula:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilidad:</a></th><td>Nested conditions are evaluated in 2.4.26 and later</td></tr>
-</table><p>La Documentación para esta directiva 
-        	no ha sido traducida aún. Por favor use la versión en inglés 
-        	mientras tanto.
-            </p><h3>Consulte también</h3>
+</table><p>The documentation for this directive has
+            not been translated yet. Please have a look at the English
+            version.</p><h3>Consulte también</h3>
 <ul>
 <li><a href="../expr.html">Expressions in Apache HTTP Server</a>,
 for a complete reference and more examples.</li>
@@ -985,13 +979,13 @@ for a complete reference and more examples.</li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="EnableMMAP" id="EnableMMAP">EnableMMAP</a> <a name="enablemmap" id="enablemmap">Directiva</a></h2>
+<div class="directive-section"><h2><a name="enablemmap" id="enablemmap">Directiva</a> <a name="EnableMMAP" id="EnableMMAP">EnableMMAP</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Use memory-mapping to read files during delivery</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>EnableMMAP On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Valor por defecto:</a></th><td><code>EnableMMAP On</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directorio, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Prevalece sobre:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Anula:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
 </table>
@@ -1035,13 +1029,13 @@ for a complete reference and more examples.</li>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="EnableSendfile" id="EnableSendfile">EnableSendfile</a> <a name="enablesendfile" id="enablesendfile">Directiva</a></h2>
+<div class="directive-section"><h2><a name="enablesendfile" id="enablesendfile">Directiva</a> <a name="EnableSendfile" id="EnableSendfile">EnableSendfile</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Use the kernel sendfile support to deliver files to the client</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>EnableSendfile On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Valor por defecto:</a></th><td><code>EnableSendfile Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directorio, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Prevalece sobre:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Anula:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilidad:</a></th><td>Available in version 2.0.44 and later. Default changed to Off in
@@ -1099,11 +1093,11 @@ version 2.3.9.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Error" id="Error">Error</a> <a name="error" id="error">Directiva</a></h2>
+<div class="directive-section"><h2><a name="error" id="error">Directiva</a> <a name="Error" id="Error">Error</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Abort configuration parsing with a custom error message</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>Error <var>message</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directorio, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilidad:</a></th><td>2.3.9 and later</td></tr>
@@ -1135,13 +1129,13 @@ version 2.3.9.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ErrorDocument" id="ErrorDocument">ErrorDocument</a> <a name="errordocument" id="errordocument">Directiva</a></h2>
+<div class="directive-section"><h2><a name="errordocument" id="errordocument">Directiva</a> <a name="ErrorDocument" id="ErrorDocument">ErrorDocument</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>What the server will return to the client
 in case of an error</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>ErrorDocument <var>error-code</var> <var>document</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directorio, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Prevalece sobre:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Anula:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
 </table>
@@ -1237,7 +1231,7 @@ in case of an error</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ErrorLog" id="ErrorLog">ErrorLog</a> <a name="errorlog" id="errorlog">Directiva</a></h2>
+<div class="directive-section"><h2><a name="errorlog" id="errorlog">Directiva</a> <a name="ErrorLog" id="ErrorLog">ErrorLog</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Location where the server will log errors</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code> ErrorLog <var>file-path</var>|syslog[:<var>facility</var>]</code></td></tr>
@@ -1297,7 +1291,7 @@ in case of an error</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ErrorLogFormat" id="ErrorLogFormat">ErrorLogFormat</a> <a name="errorlogformat" id="errorlogformat">Directiva</a></h2>
+<div class="directive-section"><h2><a name="errorlogformat" id="errorlogformat">Directiva</a> <a name="ErrorLogFormat" id="ErrorLogFormat">ErrorLogFormat</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Format specification for error log entries</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code> ErrorLog [connection|request] <var>format</var></code></td></tr>
@@ -1441,7 +1435,7 @@ in case of an error</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ExtendedStatus" id="ExtendedStatus">ExtendedStatus</a> <a name="extendedstatus" id="extendedstatus">Directiva</a></h2>
+<div class="directive-section"><h2><a name="extendedstatus" id="extendedstatus">Directiva</a> <a name="ExtendedStatus" id="ExtendedStatus">ExtendedStatus</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Keep track of extended status information for each 
 request</td></tr>
@@ -1475,14 +1469,14 @@ request</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="FileETag" id="FileETag">FileETag</a> <a name="fileetag" id="fileetag">Directiva</a></h2>
+<div class="directive-section"><h2><a name="fileetag" id="fileetag">Directiva</a> <a name="FileETag" id="FileETag">FileETag</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>File attributes used to create the ETag
 HTTP response header for static files</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>FileETag <var>component</var> ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Valor por defecto:</a></th><td><code>FileETag INode MTime Size</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directorio, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Prevalece sobre:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Anula:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
 </table>
@@ -1540,13 +1534,13 @@ HTTP response header for static files</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Files" id="Files">&lt;Files&gt;</a> <a name="files" id="files">Directiva</a></h2>
+<div class="directive-section"><h2><a name="files" id="files">Directiva</a> <a name="Files" id="Files">&lt;Files&gt;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Contains directives that apply to matched
 filenames</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>&lt;Files <var>filename</var>&gt; ... &lt;/Files&gt;</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directorio, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Prevalece sobre:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Anula:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
 </table>
@@ -1592,13 +1586,13 @@ filenames</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="FilesMatch" id="FilesMatch">&lt;FilesMatch&gt;</a> <a name="filesmatch" id="filesmatch">Directiva</a></h2>
+<div class="directive-section"><h2><a name="filesmatch" id="filesmatch">Directiva</a> <a name="FilesMatch" id="FilesMatch">&lt;FilesMatch&gt;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Contains directives that apply to regular-expression matched
 filenames</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>&lt;FilesMatch <var>regex</var>&gt; ... &lt;/FilesMatch&gt;</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directorio, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Prevalece sobre:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Anula:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
 </table>
@@ -1622,13 +1616,13 @@ filenames</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ForceType" id="ForceType">ForceType</a> <a name="forcetype" id="forcetype">Directiva</a></h2>
+<div class="directive-section"><h2><a name="forcetype" id="forcetype">Directiva</a> <a name="ForceType" id="ForceType">ForceType</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Forces all matching files to be served with the specified
 media type in the HTTP Content-Type header field</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>ForceType <var>media-type</var>|None</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>directorio, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Prevalece sobre:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Anula:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilidad:</a></th><td>Moved to the core in Apache httpd 2.0</td></tr>
@@ -1679,7 +1673,7 @@ media type in the HTTP Content-Type header field</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="GprofDir" id="GprofDir">GprofDir</a> <a name="gprofdir" id="gprofdir">Directiva</a></h2>
+<div class="directive-section"><h2><a name="gprofdir" id="gprofdir">Directiva</a> <a name="GprofDir" id="GprofDir">GprofDir</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Directory to write gmon.out profiling data to.  </td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>GprofDir <var>/tmp/gprof/</var>|<var>/tmp/gprof/</var>%</code></td></tr>
@@ -1698,12 +1692,12 @@ media type in the HTTP Content-Type header field</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="HostnameLookups" id="HostnameLookups">HostnameLookups</a> <a name="hostnamelookups" id="hostnamelookups">Directiva</a></h2>
+<div class="directive-section"><h2><a name="hostnamelookups" id="hostnamelookups">Directiva</a> <a name="HostnameLookups" id="HostnameLookups">HostnameLookups</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Enables DNS lookups on client IP addresses</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>HostnameLookups On|Off|Double</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Valor por defecto:</a></th><td><code>HostnameLookups Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directorio</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
 </table>
@@ -1739,7 +1733,7 @@ media type in the HTTP Content-Type header field</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="HttpProtocolOptions" id="HttpProtocolOptions">HttpProtocolOptions</a> <a name="httpprotocoloptions" id="httpprotocoloptions">Directiva</a></h2>
+<div class="directive-section"><h2><a name="httpprotocoloptions" id="httpprotocoloptions">Directiva</a> <a name="HttpProtocolOptions" id="HttpProtocolOptions">HttpProtocolOptions</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Modify restrictions on HTTP Request Messages</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>HttpProtocolOptions [Strict|Unsafe] [RegisteredMethods|LenientMethods]
@@ -1749,18 +1743,17 @@ media type in the HTTP Content-Type header field</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilidad:</a></th><td>2.2.32 or 2.4.24 and later</td></tr>
-</table><p>La Documentación para esta directiva 
-        	no ha sido traducida aún. Por favor use la versión en inglés 
-        	mientras tanto.
-            </p></div>
+</table><p>The documentation for this directive has
+            not been translated yet. Please have a look at the English
+            version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="If" id="If">&lt;If&gt;</a> <a name="if" id="if">Directiva</a></h2>
+<div class="directive-section"><h2><a name="if" id="if">Directiva</a> <a name="If" id="If">&lt;If&gt;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Contains directives that apply only if a condition is
 satisfied by a request at runtime</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>&lt;If <var>expression</var>&gt; ... &lt;/If&gt;</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directorio, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Prevalece sobre:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Anula:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
 </table>
@@ -1799,14 +1792,14 @@ for a complete reference and more examples.</li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="IfDefine" id="IfDefine">&lt;IfDefine&gt;</a> <a name="ifdefine" id="ifdefine">Directiva</a></h2>
+<div class="directive-section"><h2><a name="ifdefine" id="ifdefine">Directiva</a> <a name="IfDefine" id="IfDefine">&lt;IfDefine&gt;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Encloses directives that will be processed only
 if a test is true at startup</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>&lt;IfDefine [!]<var>parameter-name</var>&gt; ...
     &lt;/IfDefine&gt;</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directorio, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Prevalece sobre:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Anula:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
 </table>
@@ -1868,50 +1861,48 @@ if a test is true at startup</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="IfDirective" id="IfDirective">&lt;IfDirective&gt;</a> <a name="ifdirective" id="ifdirective">Directiva</a></h2>
+<div class="directive-section"><h2><a name="ifdirective" id="ifdirective">Directiva</a> <a name="IfDirective" id="IfDirective">&lt;IfDirective&gt;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Encloses directives that are processed conditional on the
 presence or absence of a specific directive</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>&lt;IfDirective [!]<var>directive-name</var>&gt; ...
     &lt;/IfDirective&gt;</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directorio, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Prevalece sobre:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Anula:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilidad:</a></th><td>Available in 2.4.34 and later.</td></tr>
-</table><p>La Documentación para esta directiva 
-        	no ha sido traducida aún. Por favor use la versión en inglés 
-        	mientras tanto.
-            </p><h3>Consulte también</h3>
+</table><p>The documentation for this directive has
+            not been translated yet. Please have a look at the English
+            version.</p><h3>Consulte también</h3>
 <ul>
 <li><code class="directive"><a href="#ifsection">&lt;IfSection&gt;</a></code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="IfFile" id="IfFile">&lt;IfFile&gt;</a> <a name="iffile" id="iffile">Directiva</a></h2>
+<div class="directive-section"><h2><a name="iffile" id="iffile">Directiva</a> <a name="IfFile" id="IfFile">&lt;IfFile&gt;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Encloses directives that will be processed only
 if file exists at startup</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>&lt;IfFile [!]<var>parameter-name</var>&gt; ...
+<tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>&lt;IfFile [!]<var>filename</var>&gt; ...
     &lt;/IfFile&gt;</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directorio, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Prevalece sobre:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Anula:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilidad:</a></th><td>Available in 2.4.34 and later.</td></tr>
-</table><p>La Documentación para esta directiva 
-        	no ha sido traducida aún. Por favor use la versión en inglés 
-        	mientras tanto.
-            </p></div>
+</table><p>The documentation for this directive has
+            not been translated yet. Please have a look at the English
+            version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="IfModule" id="IfModule">&lt;IfModule&gt;</a> <a name="ifmodule" id="ifmodule">Directiva</a></h2>
+<div class="directive-section"><h2><a name="ifmodule" id="ifmodule">Directiva</a> <a name="IfModule" id="IfModule">&lt;IfModule&gt;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Encloses directives that are processed conditional on the
 presence or absence of a specific module</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>&lt;IfModule [!]<var>module-file</var>|<var>module-identifier</var>&gt; ...
     &lt;/IfModule&gt;</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directorio, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Prevalece sobre:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Anula:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilidad:</a></th><td>Module identifiers are available in version 2.1 and
@@ -1957,32 +1948,31 @@ later.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="IfSection" id="IfSection">&lt;IfSection&gt;</a> <a name="ifsection" id="ifsection">Directiva</a></h2>
+<div class="directive-section"><h2><a name="ifsection" id="ifsection">Directiva</a> <a name="IfSection" id="IfSection">&lt;IfSection&gt;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Encloses directives that are processed conditional on the
 presence or absence of a specific section directive</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>&lt;IfSection [!]<var>section-name</var>&gt; ...
     &lt;/IfSection&gt;</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directorio, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Prevalece sobre:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Anula:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilidad:</a></th><td>Available in 2.4.34 and later.</td></tr>
-</table><p>La Documentación para esta directiva 
-        	no ha sido traducida aún. Por favor use la versión en inglés 
-        	mientras tanto.
-            </p><h3>Consulte también</h3>
+</table><p>The documentation for this directive has
+            not been translated yet. Please have a look at the English
+            version.</p><h3>Consulte también</h3>
 <ul>
 <li><code class="directive"><a href="#ifdirective">&lt;IfDirective&gt;</a></code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Include" id="Include">Include</a> <a name="include" id="include">Directiva</a></h2>
+<div class="directive-section"><h2><a name="include" id="include">Directiva</a> <a name="Include" id="Include">Include</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Includes other configuration files from within
 the server configuration files</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>Include [<var>optional</var>|<var>strict</var>] <var>file-path</var>|<var>directory-path</var>|<var>wildcard</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directorio</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilidad:</a></th><td>Wildcard matching available in 2.0.41 and later, directory
@@ -2072,27 +2062,26 @@ wildcard matching available in 2.3.6 and later</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="IncludeOptional" id="IncludeOptional">IncludeOptional</a> <a name="includeoptional" id="includeoptional">Directiva</a></h2>
+<div class="directive-section"><h2><a name="includeoptional" id="includeoptional">Directiva</a> <a name="IncludeOptional" id="IncludeOptional">IncludeOptional</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Includes other configuration files from within
 the server configuration files</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>IncludeOptional <var>file-path</var>|<var>directory-path</var>|<var>wildcard</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directorio</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilidad:</a></th><td>Available in 2.3.6 and later. Not existent file paths without wildcards
                do not cause SyntaxError after 2.4.30</td></tr>
-</table><p>La Documentación para esta directiva 
-        	no ha sido traducida aún. Por favor use la versión en inglés 
-        	mientras tanto.
-            </p><h3>Consulte también</h3>
+</table><p>The documentation for this directive has
+            not been translated yet. Please have a look at the English
+            version.</p><h3>Consulte también</h3>
 <ul>
 <li><code class="directive"><a href="#include">Include</a></code></li>
 <li><code class="program"><a href="../programs/apachectl.html">apachectl</a></code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="KeepAlive" id="KeepAlive">KeepAlive</a> <a name="keepalive" id="keepalive">Directiva</a></h2>
+<div class="directive-section"><h2><a name="keepalive" id="keepalive">Directiva</a> <a name="KeepAlive" id="KeepAlive">KeepAlive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Enables HTTP persistent connections</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>KeepAlive On|Off</code></td></tr>
@@ -2131,7 +2120,7 @@ the server configuration files</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="KeepAliveTimeout" id="KeepAliveTimeout">KeepAliveTimeout</a> <a name="keepalivetimeout" id="keepalivetimeout">Directiva</a></h2>
+<div class="directive-section"><h2><a name="keepalivetimeout" id="keepalivetimeout">Directiva</a> <a name="KeepAliveTimeout" id="KeepAliveTimeout">KeepAliveTimeout</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Amount of time the server will wait for subsequent
 requests on a persistent connection</td></tr>
@@ -2160,14 +2149,14 @@ Apache httpd 2.3.2 and later</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Limit" id="Limit">&lt;Limit&gt;</a> <a name="limit" id="limit">Directiva</a></h2>
+<div class="directive-section"><h2><a name="limit" id="limit">Directiva</a> <a name="Limit" id="Limit">&lt;Limit&gt;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Restrict enclosed access controls to only certain HTTP
 methods</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>&lt;Limit <var>method</var> [<var>method</var>] ... &gt; ...
     &lt;/Limit&gt;</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>directorio, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Prevalece sobre:</a></th><td>AuthConfig, Limit</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Anula:</a></th><td>AuthConfig, Limit</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
 </table>
@@ -2242,14 +2231,14 @@ methods</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LimitExcept" id="LimitExcept">&lt;LimitExcept&gt;</a> <a name="limitexcept" id="limitexcept">Directiva</a></h2>
+<div class="directive-section"><h2><a name="limitexcept" id="limitexcept">Directiva</a> <a name="LimitExcept" id="LimitExcept">&lt;LimitExcept&gt;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Restrict access controls to all HTTP methods
 except the named ones</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>&lt;LimitExcept <var>method</var> [<var>method</var>] ... &gt; ...
     &lt;/LimitExcept&gt;</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>directorio, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Prevalece sobre:</a></th><td>AuthConfig, Limit</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Anula:</a></th><td>AuthConfig, Limit</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
 </table>
@@ -2274,7 +2263,7 @@ except the named ones</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LimitInternalRecursion" id="LimitInternalRecursion">LimitInternalRecursion</a> <a name="limitinternalrecursion" id="limitinternalrecursion">Directiva</a></h2>
+<div class="directive-section"><h2><a name="limitinternalrecursion" id="limitinternalrecursion">Directiva</a> <a name="LimitInternalRecursion" id="LimitInternalRecursion">LimitInternalRecursion</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Determine maximum number of internal redirects and nested
 subrequests</td></tr>
@@ -2308,14 +2297,14 @@ subrequests</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LimitRequestBody" id="LimitRequestBody">LimitRequestBody</a> <a name="limitrequestbody" id="limitrequestbody">Directiva</a></h2>
+<div class="directive-section"><h2><a name="limitrequestbody" id="limitrequestbody">Directiva</a> <a name="LimitRequestBody" id="LimitRequestBody">LimitRequestBody</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Restricts the total size of the HTTP request body sent
 from the client</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>LimitRequestBody <var>bytes</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Valor por defecto:</a></th><td><code>LimitRequestBody 0</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directorio, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Prevalece sobre:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Anula:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
 </table>
@@ -2357,7 +2346,7 @@ from the client</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LimitRequestFields" id="LimitRequestFields">LimitRequestFields</a> <a name="limitrequestfields" id="limitrequestfields">Directiva</a></h2>
+<div class="directive-section"><h2><a name="limitrequestfields" id="limitrequestfields">Directiva</a> <a name="LimitRequestFields" id="LimitRequestFields">LimitRequestFields</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Limits the number of HTTP request header fields that
 will be accepted from the client</td></tr>
@@ -2405,7 +2394,7 @@ will be accepted from the client</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LimitRequestFieldSize" id="LimitRequestFieldSize">LimitRequestFieldSize</a> <a name="limitrequestfieldsize" id="limitrequestfieldsize">Directiva</a></h2>
+<div class="directive-section"><h2><a name="limitrequestfieldsize" id="limitrequestfieldsize">Directiva</a> <a name="LimitRequestFieldSize" id="LimitRequestFieldSize">LimitRequestFieldSize</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Limits the size of the HTTP request header allowed from the
 client</td></tr>
@@ -2450,7 +2439,7 @@ client</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LimitRequestLine" id="LimitRequestLine">LimitRequestLine</a> <a name="limitrequestline" id="limitrequestline">Directiva</a></h2>
+<div class="directive-section"><h2><a name="limitrequestline" id="limitrequestline">Directiva</a> <a name="LimitRequestLine" id="LimitRequestLine">LimitRequestLine</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Limit the size of the HTTP request line that will be accepted
 from the client</td></tr>
@@ -2495,13 +2484,13 @@ from the client</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LimitXMLRequestBody" id="LimitXMLRequestBody">LimitXMLRequestBody</a> <a name="limitxmlrequestbody" id="limitxmlrequestbody">Directiva</a></h2>
+<div class="directive-section"><h2><a name="limitxmlrequestbody" id="limitxmlrequestbody">Directiva</a> <a name="LimitXMLRequestBody" id="LimitXMLRequestBody">LimitXMLRequestBody</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Limits the size of an XML-based request body</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>LimitXMLRequestBody <var>bytes</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Valor por defecto:</a></th><td><code>LimitXMLRequestBody 1000000</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directorio, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Prevalece sobre:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Anula:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
 </table>
@@ -2517,7 +2506,7 @@ from the client</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Location" id="Location">&lt;Location&gt;</a> <a name="location" id="location">Directiva</a></h2>
+<div class="directive-section"><h2><a name="location" id="location">Directiva</a> <a name="Location" id="Location">&lt;Location&gt;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Applies the enclosed directives only to matching
 URLs</td></tr>
@@ -2651,7 +2640,7 @@ URLs</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LocationMatch" id="LocationMatch">&lt;LocationMatch&gt;</a> <a name="locationmatch" id="locationmatch">Directiva</a></h2>
+<div class="directive-section"><h2><a name="locationmatch" id="locationmatch">Directiva</a> <a name="LocationMatch" id="LocationMatch">&lt;LocationMatch&gt;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Applies the enclosed directives only to regular-expression
 matching URLs</td></tr>
@@ -2682,14 +2671,14 @@ matching URLs</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LogLevel" id="LogLevel">LogLevel</a> <a name="loglevel" id="loglevel">Directiva</a></h2>
+<div class="directive-section"><h2><a name="loglevel" id="loglevel">Directiva</a> <a name="LogLevel" id="LogLevel">LogLevel</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Controls the verbosity of the ErrorLog</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>LogLevel [<var>module</var>:]<var>level</var>
     [<var>module</var>:<var>level</var>] ...
 </code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Valor por defecto:</a></th><td><code>LogLevel warn</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directorio</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilidad:</a></th><td>Per-module and per-directory configuration is available in
@@ -2888,7 +2877,7 @@ matching URLs</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MaxKeepAliveRequests" id="MaxKeepAliveRequests">MaxKeepAliveRequests</a> <a name="maxkeepaliverequests" id="maxkeepaliverequests">Directiva</a></h2>
+<div class="directive-section"><h2><a name="maxkeepaliverequests" id="maxkeepaliverequests">Directiva</a> <a name="MaxKeepAliveRequests" id="MaxKeepAliveRequests">MaxKeepAliveRequests</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Number of requests allowed on a persistent
 connection</td></tr>
@@ -2913,52 +2902,49 @@ connection</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MaxRangeOverlaps" id="MaxRangeOverlaps">MaxRangeOverlaps</a> <a name="maxrangeoverlaps" id="maxrangeoverlaps">Directiva</a></h2>
+<div class="directive-section"><h2><a name="maxrangeoverlaps" id="maxrangeoverlaps">Directiva</a> <a name="MaxRangeOverlaps" id="MaxRangeOverlaps">MaxRangeOverlaps</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Number of overlapping ranges (eg: <code>100-200,150-300</code>) allowed before returning the complete
         resource </td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>MaxRangeOverlaps default | unlimited | none | <var>number-of-ranges</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Valor por defecto:</a></th><td><code>MaxRangeOverlaps 20</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directorio</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilidad:</a></th><td>Available in Apache HTTP Server 2.3.15 and later</td></tr>
-</table><p>La Documentación para esta directiva 
-        	no ha sido traducida aún. Por favor use la versión en inglés 
-        	mientras tanto.
-            </p></div>
+</table><p>The documentation for this directive has
+            not been translated yet. Please have a look at the English
+            version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MaxRangeReversals" id="MaxRangeReversals">MaxRangeReversals</a> <a name="maxrangereversals" id="maxrangereversals">Directiva</a></h2>
+<div class="directive-section"><h2><a name="maxrangereversals" id="maxrangereversals">Directiva</a> <a name="MaxRangeReversals" id="MaxRangeReversals">MaxRangeReversals</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Number of range reversals (eg: <code>100-200,50-70</code>) allowed before returning the complete
         resource </td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>MaxRangeReversals default | unlimited | none | <var>number-of-ranges</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Valor por defecto:</a></th><td><code>MaxRangeReversals 20</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directorio</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilidad:</a></th><td>Available in Apache HTTP Server 2.3.15 and later</td></tr>
-</table><p>La Documentación para esta directiva 
-        	no ha sido traducida aún. Por favor use la versión en inglés 
-        	mientras tanto.
-            </p></div>
+</table><p>The documentation for this directive has
+            not been translated yet. Please have a look at the English
+            version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MaxRanges" id="MaxRanges">MaxRanges</a> <a name="maxranges" id="maxranges">Directiva</a></h2>
+<div class="directive-section"><h2><a name="maxranges" id="maxranges">Directiva</a> <a name="MaxRanges" id="MaxRanges">MaxRanges</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Number of ranges allowed before returning the complete
 resource </td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>MaxRanges default | unlimited | none | <var>number-of-ranges</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Valor por defecto:</a></th><td><code>MaxRanges 200</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directorio</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilidad:</a></th><td>Available in Apache HTTP Server 2.3.15 and later</td></tr>
-</table><p>La Documentación para esta directiva 
-        	no ha sido traducida aún. Por favor use la versión en inglés 
-        	mientras tanto.
-            </p></div>
+</table><p>The documentation for this directive has
+            not been translated yet. Please have a look at the English
+            version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MergeTrailers" id="MergeTrailers">MergeTrailers</a> <a name="mergetrailers" id="mergetrailers">Directiva</a></h2>
+<div class="directive-section"><h2><a name="mergetrailers" id="mergetrailers">Directiva</a> <a name="MergeTrailers" id="MergeTrailers">MergeTrailers</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Determines whether trailers are merged into headers</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>MergeTrailers [on|off]</code></td></tr>
@@ -2967,12 +2953,11 @@ resource </td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilidad:</a></th><td>2.4.11 and later</td></tr>
-</table><p>La Documentación para esta directiva 
-        	no ha sido traducida aún. Por favor use la versión en inglés 
-        	mientras tanto.
-            </p></div>
+</table><p>The documentation for this directive has
+            not been translated yet. Please have a look at the English
+            version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Mutex" id="Mutex">Mutex</a> <a name="mutex" id="mutex">Directiva</a></h2>
+<div class="directive-section"><h2><a name="mutex" id="mutex">Directiva</a> <a name="Mutex" id="Mutex">Mutex</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Configures mutex mechanism and lock file directory for all
 or specified mutexes</td></tr>
@@ -3193,7 +3178,7 @@ or specified mutexes</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="NameVirtualHost" id="NameVirtualHost">NameVirtualHost</a> <a name="namevirtualhost" id="namevirtualhost">Directiva</a></h2>
+<div class="directive-section"><h2><a name="namevirtualhost" id="namevirtualhost">Directiva</a> <a name="NameVirtualHost" id="NameVirtualHost">NameVirtualHost</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Designates an IP address for name-virtual
 hosting</td></tr>
@@ -3285,15 +3270,15 @@ documentation</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Options" id="Options">Options</a> <a name="options" id="options">Directiva</a></h2>
+<div class="directive-section"><h2><a name="options" id="options">Directiva</a> <a name="Options" id="Options">Options</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Configures what features are available in a particular
 directory</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>Options
     [+|-]<var>option</var> [[+|-]<var>option</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Valor por defecto:</a></th><td><code>Options All</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directorio, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Prevalece sobre:</a></th><td>Options</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Anula:</a></th><td>Options</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
 </table>
@@ -3449,7 +3434,7 @@ directory</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Protocol" id="Protocol">Protocol</a> <a name="protocol" id="protocol">Directiva</a></h2>
+<div class="directive-section"><h2><a name="protocol" id="protocol">Directiva</a> <a name="Protocol" id="Protocol">Protocol</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Protocol for a listening socket</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>Protocol <var>protocol</var></code></td></tr>
@@ -3481,7 +3466,7 @@ On Windows from Apache 2.3.3 and later.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Protocols" id="Protocols">Protocols</a> <a name="protocols" id="protocols">Directiva</a></h2>
+<div class="directive-section"><h2><a name="protocols" id="protocols">Directiva</a> <a name="Protocols" id="Protocols">Protocols</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Protocols available for a server/virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>Protocols <var>protocol</var> ...</code></td></tr>
@@ -3490,16 +3475,15 @@ On Windows from Apache 2.3.3 and later.</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilidad:</a></th><td>Only available from Apache 2.4.17 and later.</td></tr>
-</table><p>La Documentación para esta directiva 
-        	no ha sido traducida aún. Por favor use la versión en inglés 
-        	mientras tanto.
-            </p><h3>Consulte también</h3>
+</table><p>The documentation for this directive has
+            not been translated yet. Please have a look at the English
+            version.</p><h3>Consulte también</h3>
 <ul>
 <li><code class="directive"><a href="#protocolshonororder">ProtocolsHonorOrder</a></code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProtocolsHonorOrder" id="ProtocolsHonorOrder">ProtocolsHonorOrder</a> <a name="protocolshonororder" id="protocolshonororder">Directiva</a></h2>
+<div class="directive-section"><h2><a name="protocolshonororder" id="protocolshonororder">Directiva</a> <a name="ProtocolsHonorOrder" id="ProtocolsHonorOrder">ProtocolsHonorOrder</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Determines if order of Protocols determines precedence during negotiation</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>ProtocolsHonorOrder On|Off</code></td></tr>
@@ -3508,33 +3492,31 @@ On Windows from Apache 2.3.3 and later.</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilidad:</a></th><td>Only available from Apache 2.4.17 and later.</td></tr>
-</table><p>La Documentación para esta directiva 
-        	no ha sido traducida aún. Por favor use la versión en inglés 
-        	mientras tanto.
-            </p><h3>Consulte también</h3>
+</table><p>The documentation for this directive has
+            not been translated yet. Please have a look at the English
+            version.</p><h3>Consulte también</h3>
 <ul>
 <li><code class="directive"><a href="#protocols">Protocols</a></code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="QualifyRedirectURL" id="QualifyRedirectURL">QualifyRedirectURL</a> <a name="qualifyredirecturl" id="qualifyredirecturl">Directiva</a></h2>
+<div class="directive-section"><h2><a name="qualifyredirecturl" id="qualifyredirecturl">Directiva</a> <a name="QualifyRedirectURL" id="QualifyRedirectURL">QualifyRedirectURL</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Controls whether the REDIRECT_URL environment variable is
              fully qualified</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>QualifyRedirectURL ON|OFF</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Valor por defecto:</a></th><td><code>QualifyRedirectURL OFF</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directorio</td></tr>
-<tr><th><a href="directive-dict.html#Override">Prevalece sobre:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directory</td></tr>
+<tr><th><a href="directive-dict.html#Override">Anula:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilidad:</a></th><td>Directive supported in 2.4.18 and later. 2.4.17 acted
 as if 'QualifyRedirectURL ON' was configured.</td></tr>
-</table><p>La Documentación para esta directiva 
-        	no ha sido traducida aún. Por favor use la versión en inglés 
-        	mientras tanto.
-            </p></div>
+</table><p>The documentation for this directive has
+            not been translated yet. Please have a look at the English
+            version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RegexDefaultOptions" id="RegexDefaultOptions">RegexDefaultOptions</a> <a name="regexdefaultoptions" id="regexdefaultoptions">Directiva</a></h2>
+<div class="directive-section"><h2><a name="regexdefaultoptions" id="regexdefaultoptions">Directiva</a> <a name="RegexDefaultOptions" id="RegexDefaultOptions">RegexDefaultOptions</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Allow to configure global/default options for regexes</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>RegexDefaultOptions [none] [+|-]<var>option</var> [[+|-]<var>option</var>] ...</code></td></tr>
@@ -3543,12 +3525,11 @@ as if 'QualifyRedirectURL ON' was configured.</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilidad:</a></th><td>Only available from Apache 2.4.30 and later.</td></tr>
-</table><p>La Documentación para esta directiva 
-        	no ha sido traducida aún. Por favor use la versión en inglés 
-        	mientras tanto.
-            </p></div>
+</table><p>The documentation for this directive has
+            not been translated yet. Please have a look at the English
+            version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RegisterHttpMethod" id="RegisterHttpMethod">RegisterHttpMethod</a> <a name="registerhttpmethod" id="registerhttpmethod">Directiva</a></h2>
+<div class="directive-section"><h2><a name="registerhttpmethod" id="registerhttpmethod">Directiva</a> <a name="RegisterHttpMethod" id="RegisterHttpMethod">RegisterHttpMethod</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Register non-standard HTTP methods</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>RegisterHttpMethod <var>method</var> [<var>method</var> [...]]</code></td></tr>
@@ -3556,24 +3537,23 @@ as if 'QualifyRedirectURL ON' was configured.</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilidad:</a></th><td>Available in Apache HTTP Server 2.4.24 and later</td></tr>
-</table><p>La Documentación para esta directiva 
-        	no ha sido traducida aún. Por favor use la versión en inglés 
-        	mientras tanto.
-            </p><h3>Consulte también</h3>
+</table><p>The documentation for this directive has
+            not been translated yet. Please have a look at the English
+            version.</p><h3>Consulte también</h3>
 <ul>
 <li><code class="directive"><a href="#httpprotocoloptions">HTTPProtocolOptions</a></code></li>
 <li><code class="directive"><a href="../mod/mod_allowmethods.html#allowmethods">AllowMethods</a></code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RLimitCPU" id="RLimitCPU">RLimitCPU</a> <a name="rlimitcpu" id="rlimitcpu">Directiva</a></h2>
+<div class="directive-section"><h2><a name="rlimitcpu" id="rlimitcpu">Directiva</a> <a name="RLimitCPU" id="RLimitCPU">RLimitCPU</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Limits the CPU consumption of processes launched
 by Apache httpd children</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>RLimitCPU <var>seconds</var>|max [<var>seconds</var>|max]</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Valor por defecto:</a></th><td><code>Unset; uses operating system defaults</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directorio, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Prevalece sobre:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Anula:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
 </table>
@@ -3602,14 +3582,14 @@ by Apache httpd children</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RLimitMEM" id="RLimitMEM">RLimitMEM</a> <a name="rlimitmem" id="rlimitmem">Directiva</a></h2>
+<div class="directive-section"><h2><a name="rlimitmem" id="rlimitmem">Directiva</a> <a name="RLimitMEM" id="RLimitMEM">RLimitMEM</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Limits the memory consumption of processes launched
 by Apache httpd children</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>RLimitMEM <var>bytes</var>|max [<var>bytes</var>|max]</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Valor por defecto:</a></th><td><code>Unset; uses operating system defaults</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directorio, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Prevalece sobre:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Anula:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
 </table>
@@ -3638,14 +3618,14 @@ by Apache httpd children</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RLimitNPROC" id="RLimitNPROC">RLimitNPROC</a> <a name="rlimitnproc" id="rlimitnproc">Directiva</a></h2>
+<div class="directive-section"><h2><a name="rlimitnproc" id="rlimitnproc">Directiva</a> <a name="RLimitNPROC" id="RLimitNPROC">RLimitNPROC</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Limits the number of processes that can be launched by
 processes launched by Apache httpd children</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>RLimitNPROC <var>number</var>|max [<var>number</var>|max]</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Valor por defecto:</a></th><td><code>Unset; uses operating system defaults</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directorio, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Prevalece sobre:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Anula:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
 </table>
@@ -3682,14 +3662,14 @@ processes launched by Apache httpd children</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ScriptInterpreterSource" id="ScriptInterpreterSource">ScriptInterpreterSource</a> <a name="scriptinterpretersource" id="scriptinterpretersource">Directiva</a></h2>
+<div class="directive-section"><h2><a name="scriptinterpretersource" id="scriptinterpretersource">Directiva</a> <a name="ScriptInterpreterSource" id="ScriptInterpreterSource">ScriptInterpreterSource</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Technique for locating the interpreter for CGI
 scripts</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>ScriptInterpreterSource Registry|Registry-Strict|Script</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Valor por defecto:</a></th><td><code>ScriptInterpreterSource Script</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directorio, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Prevalece sobre:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Anula:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilidad:</a></th><td>Win32 only;
@@ -3744,7 +3724,7 @@ later</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SeeRequestTail" id="SeeRequestTail">SeeRequestTail</a> <a name="seerequesttail" id="seerequesttail">Directiva</a></h2>
+<div class="directive-section"><h2><a name="seerequesttail" id="seerequesttail">Directiva</a> <a name="SeeRequestTail" id="SeeRequestTail">SeeRequestTail</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Determine if mod_status displays the first 63 characters
 of a request or the last 63, assuming the request itself is greater than
@@ -3782,7 +3762,7 @@ of a request or the last 63, assuming the request itself is greater than
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ServerAdmin" id="ServerAdmin">ServerAdmin</a> <a name="serveradmin" id="serveradmin">Directiva</a></h2>
+<div class="directive-section"><h2><a name="serveradmin" id="serveradmin">Directiva</a> <a name="ServerAdmin" id="ServerAdmin">ServerAdmin</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Email address that the server includes in error
 messages sent to the client</td></tr>
@@ -3812,7 +3792,7 @@ messages sent to the client</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ServerAlias" id="ServerAlias">ServerAlias</a> <a name="serveralias" id="serveralias">Directiva</a></h2>
+<div class="directive-section"><h2><a name="serveralias" id="serveralias">Directiva</a> <a name="ServerAlias" id="ServerAlias">ServerAlias</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Alternate names for a host used when matching requests
 to name-virtual hosts</td></tr>
@@ -3842,7 +3822,7 @@ to name-virtual hosts</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ServerName" id="ServerName">ServerName</a> <a name="servername" id="servername">Directiva</a></h2>
+<div class="directive-section"><h2><a name="servername" id="servername">Directiva</a> <a name="ServerName" id="ServerName">ServerName</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Hostname and port that the server uses to identify
 itself</td></tr>
@@ -3931,7 +3911,7 @@ itself</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ServerPath" id="ServerPath">ServerPath</a> <a name="serverpath" id="serverpath">Directiva</a></h2>
+<div class="directive-section"><h2><a name="serverpath" id="serverpath">Directiva</a> <a name="ServerPath" id="ServerPath">ServerPath</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Legacy URL pathname for a name-based virtual host that
 is accessed by an incompatible browser</td></tr>
@@ -3949,7 +3929,7 @@ is accessed by an incompatible browser</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ServerRoot" id="ServerRoot">ServerRoot</a> <a name="serverroot" id="serverroot">Directiva</a></h2>
+<div class="directive-section"><h2><a name="serverroot" id="serverroot">Directiva</a> <a name="ServerRoot" id="ServerRoot">ServerRoot</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Base directory for the server installation</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>ServerRoot <var>directory-path</var></code></td></tr>
@@ -3979,13 +3959,13 @@ is accessed by an incompatible browser</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ServerSignature" id="ServerSignature">ServerSignature</a> <a name="serversignature" id="serversignature">Directiva</a></h2>
+<div class="directive-section"><h2><a name="serversignature" id="serversignature">Directiva</a> <a name="ServerSignature" id="ServerSignature">ServerSignature</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Configures the footer on server-generated documents</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>ServerSignature On|Off|EMail</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Valor por defecto:</a></th><td><code>ServerSignature Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directorio, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Prevalece sobre:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Anula:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
 </table>
@@ -4015,7 +3995,7 @@ is accessed by an incompatible browser</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ServerTokens" id="ServerTokens">ServerTokens</a> <a name="servertokens" id="servertokens">Directiva</a></h2>
+<div class="directive-section"><h2><a name="servertokens" id="servertokens">Directiva</a> <a name="ServerTokens" id="ServerTokens">ServerTokens</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Configures the <code>Server</code> HTTP response
 header</td></tr>
@@ -4083,13 +4063,13 @@ header</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SetHandler" id="SetHandler">SetHandler</a> <a name="sethandler" id="sethandler">Directiva</a></h2>
+<div class="directive-section"><h2><a name="sethandler" id="sethandler">Directiva</a> <a name="SetHandler" id="SetHandler">SetHandler</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Forces all matching files to be processed by a
 handler</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>SetHandler <var>handler-name</var>|None</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directorio, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Prevalece sobre:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Anula:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilidad:</a></th><td>Moved into the core in Apache httpd 2.0</td></tr>
@@ -4133,13 +4113,13 @@ handler</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SetInputFilter" id="SetInputFilter">SetInputFilter</a> <a name="setinputfilter" id="setinputfilter">Directiva</a></h2>
+<div class="directive-section"><h2><a name="setinputfilter" id="setinputfilter">Directiva</a> <a name="SetInputFilter" id="SetInputFilter">SetInputFilter</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Sets the filters that will process client requests and POST
 input</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>SetInputFilter <var>filter</var>[;<var>filter</var>...]</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directorio, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Prevalece sobre:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Anula:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
 </table>
@@ -4160,13 +4140,13 @@ input</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SetOutputFilter" id="SetOutputFilter">SetOutputFilter</a> <a name="setoutputfilter" id="setoutputfilter">Directiva</a></h2>
+<div class="directive-section"><h2><a name="setoutputfilter" id="setoutputfilter">Directiva</a> <a name="SetOutputFilter" id="SetOutputFilter">SetOutputFilter</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Sets the filters that will process responses from the
 server</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>SetOutputFilter <var>filter</var>[;<var>filter</var>...]</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directorio, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Prevalece sobre:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Anula:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
 </table>
@@ -4199,7 +4179,7 @@ server</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="TimeOut" id="TimeOut">TimeOut</a> <a name="timeout" id="timeout">Directiva</a></h2>
+<div class="directive-section"><h2><a name="timeout" id="timeout">Directiva</a> <a name="TimeOut" id="TimeOut">TimeOut</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Amount of time the server will wait for
 certain events before failing a request</td></tr>
@@ -4235,7 +4215,7 @@ certain events before failing a request</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="TraceEnable" id="TraceEnable">TraceEnable</a> <a name="traceenable" id="traceenable">Directiva</a></h2>
+<div class="directive-section"><h2><a name="traceenable" id="traceenable">Directiva</a> <a name="TraceEnable" id="TraceEnable">TraceEnable</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Determines the behaviour on <code>TRACE</code> requests</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>TraceEnable <var>[on|off|extended]</var></code></td></tr>
@@ -4263,7 +4243,7 @@ certain events before failing a request</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="UnDefine" id="UnDefine">UnDefine</a> <a name="undefine" id="undefine">Directiva</a></h2>
+<div class="directive-section"><h2><a name="undefine" id="undefine">Directiva</a> <a name="UnDefine" id="UnDefine">UnDefine</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Undefine the existence of a variable</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>UnDefine <var>parameter-name</var></code></td></tr>
@@ -4278,13 +4258,13 @@ certain events before failing a request</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="UseCanonicalName" id="UseCanonicalName">UseCanonicalName</a> <a name="usecanonicalname" id="usecanonicalname">Directiva</a></h2>
+<div class="directive-section"><h2><a name="usecanonicalname" id="usecanonicalname">Directiva</a> <a name="UseCanonicalName" id="UseCanonicalName">UseCanonicalName</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Configures how the server determines its own name and
 port</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>UseCanonicalName On|Off|DNS</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Valor por defecto:</a></th><td><code>UseCanonicalName Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directorio</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
 </table>
@@ -4342,13 +4322,13 @@ port</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="UseCanonicalPhysicalPort" id="UseCanonicalPhysicalPort">UseCanonicalPhysicalPort</a> <a name="usecanonicalphysicalport" id="usecanonicalphysicalport">Directiva</a></h2>
+<div class="directive-section"><h2><a name="usecanonicalphysicalport" id="usecanonicalphysicalport">Directiva</a> <a name="UseCanonicalPhysicalPort" id="UseCanonicalPhysicalPort">UseCanonicalPhysicalPort</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Configures how the server determines its own name and
 port</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>UseCanonicalPhysicalPort On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Valor por defecto:</a></th><td><code>UseCanonicalPhysicalPort Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directorio</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
 </table>
@@ -4391,7 +4371,7 @@ port</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="VirtualHost" id="VirtualHost">&lt;VirtualHost&gt;</a> <a name="virtualhost" id="virtualhost">Directiva</a></h2>
+<div class="directive-section"><h2><a name="virtualhost" id="virtualhost">Directiva</a> <a name="VirtualHost" id="VirtualHost">&lt;VirtualHost&gt;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Contains directives that apply only to a specific
 hostname or IP address</td></tr>
@@ -4538,7 +4518,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.4/mod/core.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Licencia bajo los términos de <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/directives.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

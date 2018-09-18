@@ -27,29 +27,29 @@
 <div id="preamble"><h1>Module Apache mod_negotiation</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_negotiation.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_negotiation.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_negotiation.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_negotiation.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Effectue la <a href="../content-negotiation.html">n&#233;gociation de
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Effectue la <a href="../content-negotiation.html">négociation de
 contenu</a></td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&#160;de&#160;Module:</a></th><td>negotiation_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier&#160;Source:</a></th><td>mod_negotiation.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>negotiation_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_negotiation.c</td></tr></table>
 <h3>Sommaire</h3>
 
-    <p>La n&#233;gociation de contenu, ou plus pr&#233;cis&#233;ment la s&#233;lection de
-    contenu, est la s&#233;lection parmi plusieurs documents disponibles, du
-    document qui "colle" au plus pr&#232;s des possibilit&#233;s du client. Pour y
-    parvenir, deux m&#233;thodes sont employ&#233;es.</p>
+    <p>La négociation de contenu, ou plus précisément la sélection de
+    contenu, est la sélection parmi plusieurs documents disponibles, du
+    document qui "colle" au plus près des possibilités du client. Pour y
+    parvenir, deux méthodes sont employées.</p>
 
     <ul>
-      <li>Une table de correspondances de types (un fichier associ&#233; au
+      <li>Une table de correspondances de types (un fichier associé au
       gestionnaire <code>type-map</code>) qui contient une liste
-      explicite des fichiers contenant les diff&#233;rentes variantes.</li>
+      explicite des fichiers contenant les différentes variantes.</li>
 
-      <li>Une recherche multivues (Multiviews) (activ&#233;e par l'<code class="directive"><a href="../mod/core.html#options">Options</a></code> <code>Multiviews</code>), o&#249; le
-      serveur effectue une recherche de correspondance de mod&#232;le de nom
-      de fichier implicite, et fait son choix parmi les r&#233;sultats.</li>
+      <li>Une recherche multivues (Multiviews) (activée par l'<code class="directive"><a href="../mod/core.html#options">Options</a></code> <code>Multiviews</code>), où le
+      serveur effectue une recherche de correspondance de modèle de nom
+      de fichier implicite, et fait son choix parmi les résultats.</li>
     </ul>
 </div>
 <div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><h3>Sujets</h3>
@@ -62,77 +62,77 @@ contenu</a></td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#forcelanguagepriority">ForceLanguagePriority</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#languagepriority">LanguagePriority</a></li>
 </ul>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_negotiation">Probl&#232;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_negotiation">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_negotiation">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_negotiation">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li>
 <li><code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code></li>
-<li><a href="../content-negotiation.html">N&#233;gociation de
+<li><a href="../content-negotiation.html">Négociation de
 contenu</a></li>
 <li><a href="../env.html">Variables d'environnement</a></li>
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="typemaps" id="typemaps">Tables de correspondances de types</a></h2>
-    <p>Une table de correspondances de types poss&#232;de un format similaire
-    &#224; celui des en-t&#234;tes de messagerie RFC822. Elle contient des
-    descriptions de documents s&#233;par&#233;es par des lignes vides, toute ligne
-    commen&#231;ant par un di&#232;se ('#') &#233;tant consid&#233;r&#233;e comme un
+    <p>Une table de correspondances de types possède un format similaire
+    à celui des en-têtes de messagerie RFC822. Elle contient des
+    descriptions de documents séparées par des lignes vides, toute ligne
+    commençant par un dièse ('#') étant considérée comme un
     commentaire. Une description de document comporte plusieurs
-    enregistrements d'en-t&#234;tes ; chaque enregistrement peut &#234;tre r&#233;parti
-    sur plusieurs lignes &#224; condition que les lignes suppl&#233;mentaires
+    enregistrements d'en-têtes ; chaque enregistrement peut être réparti
+    sur plusieurs lignes à condition que les lignes supplémentaires
     commencent par un ou plusieurs espaces. Lors du traitement, les
-    espaces de d&#233;but de ligne seront supprim&#233;s et les lignes
-    concat&#233;n&#233;es. L'enregistrement d'un en-t&#234;te comprend un mot-cl&#233; qui
-    se termine toujours par un caract&#232;re "deux-points" ':', suivi d'une
-    valeur. Les espaces sont autoris&#233;s entre le nom d'en-t&#234;te et sa
-    valeur, ainsi qu'entre les diff&#233;rents &#233;l&#233;ments de la valeur. Les
-    en-t&#234;tes autoris&#233;s sont :</p>
+    espaces de début de ligne seront supprimés et les lignes
+    concaténées. L'enregistrement d'un en-tête comprend un mot-clé qui
+    se termine toujours par un caractère "deux-points" ':', suivi d'une
+    valeur. Les espaces sont autorisés entre le nom d'en-tête et sa
+    valeur, ainsi qu'entre les différents éléments de la valeur. Les
+    en-têtes autorisés sont :</p>
 
     <dl>
       <dt><code>Content-Encoding:</code></dt>
-      <dd>Le codage du fichier. Apache ne reconna&#238;t que les codages
-      d&#233;finis par une directive <code class="directive"><a href="../mod/mod_mime.html#addencoding">AddEncoding</a></code>. Sont normalement inclus
-      les codages <code>x-compress</code> pour les fichiers compress&#233;s
-      avec compress, et <code>x-gzip</code> pour les fichiers compress&#233;s
-      avec gzip. Le pr&#233;fixe <code>x-</code> est ignor&#233; lors des
+      <dd>Le codage du fichier. Apache ne reconnaît que les codages
+      définis par une directive <code class="directive"><a href="../mod/mod_mime.html#addencoding">AddEncoding</a></code>. Sont normalement inclus
+      les codages <code>x-compress</code> pour les fichiers compressés
+      avec compress, et <code>x-gzip</code> pour les fichiers compressés
+      avec gzip. Le préfixe <code>x-</code> est ignoré lors des
       comparaisons de codages.</dd>
 
       <dt><code>Content-Language:</code></dt>
       <dd>Le(s) langage(s) de la variante, sous la forme d'un symbole de
       langage Internet standard (<a href="http://www.ietf.org/rfc/rfc1766.txt">RFC 1766</a>). Par
-      exemple, <code>en</code> correspond &#224; l'anglais. Si la variante
-      contient plusieurs langages, ils sont s&#233;par&#233;s par des
+      exemple, <code>en</code> correspond à l'anglais. Si la variante
+      contient plusieurs langages, ils sont séparés par des
       virgules.</dd>
 
       <dt><code>Content-Length:</code></dt>
-      <dd>La taille du fichier en octets. Si cet en-t&#234;te n'est pas
-      pr&#233;sent, c'est la taille r&#233;elle du fichier qui est utilis&#233;e.</dd>
+      <dd>La taille du fichier en octets. Si cet en-tête n'est pas
+      présent, c'est la taille réelle du fichier qui est utilisée.</dd>
 
       <dt><code>Content-Type:</code></dt>
 
       <dd>
         Le <a class="glossarylink" href="../glossary.html#mime-type" title="voir glossaire">type MIME</a> du document
-	avec des param&#232;tres optionnels. Les param&#232;tres sont s&#233;par&#233;s du
-	type de m&#233;dium ainsi qu'entre eux par un point-virgule, et
-	poss&#232;dent la syntaxe <code>nom=valeur</code>. Les param&#232;tres
+	avec des paramètres optionnels. Les paramètres sont séparés du
+	type de médium ainsi qu'entre eux par un point-virgule, et
+	possèdent la syntaxe <code>nom=valeur</code>. Les paramètres
 	courants sont :
 
         <dl>
           <dt><code>level</code></dt>
-          <dd>un entier sp&#233;cifiant la version du type de m&#233;dia. Pour
-	  <code>text/html</code>, la valeur par d&#233;faut est 2, sinon
+          <dd>un entier spécifiant la version du type de média. Pour
+	  <code>text/html</code>, la valeur par défaut est 2, sinon
 	  0.</dd>
 
           <dt><code>qs</code></dt>
-          <dd>un nombre en virgule flottante de 0[.000] &#224; 1[.000], indiquant la
-	  "qualit&#233;" relative de la variante courante par rapport aux
-	  autres variantes disponibles, ind&#233;pendamment des possibilit&#233;s
-	  du client. Par exemple, un fichier jpeg est en g&#233;n&#233;ral une
-	  source de qualit&#233; sup&#233;rieure &#224; un fichier ascii s'il est cens&#233;
-	  repr&#233;senter une image. Cependant, si la ressource repr&#233;sent&#233;e
-	  est une image ascii, un fichier ascii poss&#232;dera une qualit&#233;
-	  sup&#233;rieure &#224; un fichier jpeg. Toutes les valeurs de
-	  <code>qs</code> sont donc sp&#233;cifiques &#224; une certaine
+          <dd>un nombre en virgule flottante de 0[.000] à 1[.000], indiquant la
+	  "qualité" relative de la variante courante par rapport aux
+	  autres variantes disponibles, indépendamment des possibilités
+	  du client. Par exemple, un fichier jpeg est en général une
+	  source de qualité supérieure à un fichier ascii s'il est censé
+	  représenter une image. Cependant, si la ressource représentée
+	  est une image ascii, un fichier ascii possèdera une qualité
+	  supérieure à un fichier jpeg. Toutes les valeurs de
+	  <code>qs</code> sont donc spécifiques à une certaine
 	  ressource.</dd>
         </dl>
 
@@ -142,21 +142,21 @@ contenu</a></li>
       </dd>
 
       <dt><code>URI:</code></dt>
-      <dd>l'URI du fichier contenant la variante (du type de m&#233;dium
-      donn&#233;, cod&#233; selon le codage de contenu donn&#233;). Cet URI est
-      consid&#233;r&#233; comme relatif au fichier de correspondances ; il doit
-      &#234;tre situ&#233; sur le m&#234;me serveur, et doit faire r&#233;f&#233;rence au
-      fichier auquel le client se verrait accorder l'acc&#232;s s'il &#233;tait
+      <dd>l'URI du fichier contenant la variante (du type de médium
+      donné, codé selon le codage de contenu donné). Cet URI est
+      considéré comme relatif au fichier de correspondances ; il doit
+      être situé sur le même serveur, et doit faire référence au
+      fichier auquel le client se verrait accorder l'accès s'il était
       requis directement.</dd>
 
       <dt><code>Body:</code></dt>
-      <dd>Le contenu r&#233;el de la ressource
-      peut &#234;tre inclus dans la table de correspondances en utilisant
-      l'en-t&#234;te Body. Cet en-t&#234;te doit contenir une cha&#238;ne d&#233;signant un
-      d&#233;limiteur pour le contenu du corps. Les lignes suivantes du
-      fichier de correspondances de types seront alors consid&#233;r&#233;es comme
-      parties du corps de la ressource jusqu'&#224; ce que le d&#233;limiteur soit
-      d&#233;tect&#233;.
+      <dd>Le contenu réel de la ressource
+      peut être inclus dans la table de correspondances en utilisant
+      l'en-tête Body. Cet en-tête doit contenir une chaîne désignant un
+      délimiteur pour le contenu du corps. Les lignes suivantes du
+      fichier de correspondances de types seront alors considérées comme
+      parties du corps de la ressource jusqu'à ce que le délimiteur soit
+      détecté.
 
       <div class="example"><h3>Exemple:</h3><p><code>
         Body:----xyz----<br />
@@ -170,8 +170,8 @@ contenu</a></li>
       </dd>
     </dl>
 
-    <p>Consid&#233;rons une ressource, <code>document.html</code>, disponible
-    en anglais, en fran&#231;ais et en allemand. Les fichiers correspondants
+    <p>Considérons une ressource, <code>document.html</code>, disponible
+    en anglais, en français et en allemand. Les fichiers correspondants
     se nomment respectivement <code>document.html.en</code>,
     <code>document.html.fr</code>, et <code>document.html.de</code>. Le
     fichier de correspondances de types se nommera
@@ -195,67 +195,67 @@ contenu</a></li>
 
     </code></p></div>
 
-    <p>Ces quatre fichiers doivent se trouver dans le m&#234;me r&#233;pertoire,
-    et le fichier <code>.var</code> doit &#234;tre associ&#233; au gestionnaire
+    <p>Ces quatre fichiers doivent se trouver dans le même répertoire,
+    et le fichier <code>.var</code> doit être associé au gestionnaire
     <code>type-map</code> via une directive <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code> :</p>
 
     <pre class="prettyprint lang-config">AddHandler type-map .var</pre>
 
 
-    <p>A l'arriv&#233;e d'une requ&#234;te pour la ressource
+    <p>A l'arrivée d'une requête pour la ressource
     <code>document.html.var</code>, la variante de
-    <code>document.html</code> qui correspond le mieux &#224; la pr&#233;ference
-    de langage sp&#233;cifi&#233;e dans l'en-t&#234;te de la requ&#234;te de l'utilisateur
+    <code>document.html</code> qui correspond le mieux à la préference
+    de langage spécifiée dans l'en-tête de la requête de l'utilisateur
     <code>Accept-Language</code> sera choisie.</p>
 
-    <p>Si <code>Multiviews</code> est activ&#233;e, et si <code class="directive"><a href="../mod/mod_mime.html#multiviewsmatch">MultiviewsMatch</a></code> est d&#233;finie &#224;
-    "handlers" ou "any", une requ&#234;te pour <code>document.html</code> va
+    <p>Si <code>Multiviews</code> est activée, et si <code class="directive"><a href="../mod/mod_mime.html#multiviewsmatch">MultiviewsMatch</a></code> est définie à
+    "handlers" ou "any", une requête pour <code>document.html</code> va
     rechercher <code>document.html.var</code>, et continuer la
-    n&#233;gociation avec le gestionnaire explicite type-map.</p>
+    négociation avec le gestionnaire explicite type-map.</p>
 
-    <p>D'autres directives de configuration, comme <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code>, peuvent &#234;tre utilis&#233;es pour
+    <p>D'autres directives de configuration, comme <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code>, peuvent être utilisées pour
     associer <code>document.html</code> avec
     <code>document.html.var</code>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="multiviews" id="multiviews">Multivues</a></h2>
-    <p>Une recherche Multivues est activ&#233;e par l'<code class="directive"><a href="../mod/core.html#options">Options</a></code> <code>Multiviews</code>. Si le
-    serveur re&#231;oit une requ&#234;te pour <code>/un/r&#233;pertoire/foo</code>, et
-    si <code>/un/r&#233;pertoire/foo</code> n'existe pas, le serveur parcourt
-    le r&#233;pertoire &#224; la recherche de tous les fichiers de nom
-    <code>foo.*</code>, et simule v&#233;ritablement une correspondance de
-    type qui nomme tous ces fichiers en leur assignant les m&#234;mes type
-    de m&#233;dia et codage de contenu qu'ils auraient eus si le client avait
+    <p>Une recherche Multivues est activée par l'<code class="directive"><a href="../mod/core.html#options">Options</a></code> <code>Multiviews</code>. Si le
+    serveur reçoit une requête pour <code>/un/répertoire/foo</code>, et
+    si <code>/un/répertoire/foo</code> n'existe pas, le serveur parcourt
+    le répertoire à la recherche de tous les fichiers de nom
+    <code>foo.*</code>, et simule véritablement une correspondance de
+    type qui nomme tous ces fichiers en leur assignant les mêmes type
+    de média et codage de contenu qu'ils auraient eus si le client avait
     requis l'un d'entre eux avec son nom complet. Il choisit ensuite le
     fichier qui correspond le mieux au profile du client, puis renvoie
     le document.</p>
 
-    <p>La directive <code class="directive"><a href="../mod/mod_mime.html#multiviewsmatch">MultiviewsMatch</a></code> d&#233;finit si Apache doit
-    prendre en compte les fichiers qui ne comportent pas de m&#233;tadonn&#233;es
-    de n&#233;gociation de contenu lors du choix du fichier &#224; servir.</p>
+    <p>La directive <code class="directive"><a href="../mod/mod_mime.html#multiviewsmatch">MultiviewsMatch</a></code> définit si Apache doit
+    prendre en compte les fichiers qui ne comportent pas de métadonnées
+    de négociation de contenu lors du choix du fichier à servir.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="cachenegotiateddocs" id="cachenegotiateddocs">Directive</a> <a name="CacheNegotiatedDocs" id="CacheNegotiatedDocs">CacheNegotiatedDocs</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Permet la mise en cache au niveau des serveurs mandataires
-des documents dont le contenu a &#233;t&#233; n&#233;goci&#233;</td></tr>
+des documents dont le contenu a été négocié</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheNegotiatedDocs On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>CacheNegotiatedDocs Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CacheNegotiatedDocs Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_negotiation</td></tr>
 </table>
-    <p>Si elle est d&#233;finie &#224; "on", cette directive permet la mise en
+    <p>Si elle est définie à "on", cette directive permet la mise en
     cache au niveau des serveurs mandataires des documents dont le
-    contenu a &#233;t&#233; n&#233;goci&#233;. Le processus de mise en cache sera alors plus
-    efficace, mais des clients se trouvant derri&#232;re le mandataire
+    contenu a été négocié. Le processus de mise en cache sera alors plus
+    efficace, mais des clients se trouvant derrière le mandataire
     seront alors susceptibles de se voir servir des versions de
-    documents qui ne correspondent pas forc&#233;ment &#224; leurs attentes.</p>
+    documents qui ne correspondent pas forcément à leurs attentes.</p>
 
-    <p>Cette directive ne s'applique qu'aux requ&#234;tes en provenance de
-    navigateurs HTTP/1.0. HTTP/1.1 fournit un bien meilleur contr&#244;le de
-    la mise en cache des documents au contenu n&#233;goci&#233;, et cette
-    directive n'a aucun effet sur les r&#233;ponses aux requ&#234;tes
+    <p>Cette directive ne s'applique qu'aux requêtes en provenance de
+    navigateurs HTTP/1.0. HTTP/1.1 fournit un bien meilleur contrôle de
+    la mise en cache des documents au contenu négocié, et cette
+    directive n'a aucun effet sur les réponses aux requêtes
     HTTP/1.1.</p>
 
 
@@ -263,29 +263,29 @@ des documents dont le contenu a &#233;t&#233; n&#233;goci&#233;</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="forcelanguagepriority" id="forcelanguagepriority">Directive</a> <a name="ForceLanguagePriority" id="ForceLanguagePriority">ForceLanguagePriority</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Action &#224; entreprendre si un document acceptable unique
-n'est pas trouv&#233;</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Action à entreprendre si un document acceptable unique
+n'est pas trouvé</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ForceLanguagePriority None|Prefer|Fallback [Prefer|Fallback]</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>ForceLanguagePriority Prefer</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Surcharges autoris&#233;es:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ForceLanguagePriority Prefer</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_negotiation</td></tr>
 </table>
     <p>La directive <code class="directive">ForceLanguagePriority</code> utilise
-    le langage d&#233;fini par la directive <code class="directive"><a href="#languagepriority">LanguagePriority</a></code> pour terminer
-    la n&#233;gociation lorsque le serveur n'est pas en mesure de trouver une
+    le langage défini par la directive <code class="directive"><a href="#languagepriority">LanguagePriority</a></code> pour terminer
+    la négociation lorsque le serveur n'est pas en mesure de trouver une
     solution satisfaisante unique.</p>
 
     <p><code>ForceLanguagePriority Prefer</code> utilise la directive
-    <code>LanguagePriority</code> pour servir le r&#233;sultat d'un choix
-    unique, au lieu de renvoyer un r&#233;sultat HTTP 300 (MULTIPLE CHOICES),
-    lorsque que plusieurs choix &#233;quivalents sont disponibles. Par
-    exemple, avec les deux directives ci-dessous, si l'en-t&#234;te
-    <code>Accept-Language</code> de l'utilisateur assigne &#224;
-    <code>en</code> et <code>de</code> une qualit&#233; de <code>.500</code>
-    (les deux langages sont &#233;galement acceptables), alors c'est la
-    premi&#232;re variante acceptable de langue <code>en</code> qui sera
+    <code>LanguagePriority</code> pour servir le résultat d'un choix
+    unique, au lieu de renvoyer un résultat HTTP 300 (MULTIPLE CHOICES),
+    lorsque que plusieurs choix équivalents sont disponibles. Par
+    exemple, avec les deux directives ci-dessous, si l'en-tête
+    <code>Accept-Language</code> de l'utilisateur assigne à
+    <code>en</code> et <code>de</code> une qualité de <code>.500</code>
+    (les deux langages sont également acceptables), alors c'est la
+    première variante acceptable de langue <code>en</code> qui sera
     servie.</p>
 
     <pre class="prettyprint lang-config">LanguagePriority en fr de
@@ -294,23 +294,23 @@ ForceLanguagePriority Prefer</pre>
 
     <p><code>ForceLanguagePriority Fallback</code> utilise la directive
     <code class="directive"><a href="#languagepriority">LanguagePriority</a></code>
-    pour servir un r&#233;sultat valide, au lieu de renvoyer un r&#233;sultat HTTP
+    pour servir un résultat valide, au lieu de renvoyer un résultat HTTP
     406 (NOT ACCEPTABLE). Avec les deux directives ci-dessous, si
-    l'en-t&#234;te <code>Accept-Language</code> de l'utilisateur ne mentionne
-    que les r&#233;ponses de langage <code>es</code>, et si aucune variante
-    dans cette langue n'est trouv&#233;e, c'est la premi&#232;re variante de la
-    liste d&#233;finie par la directive <code class="directive"><a href="#languagepriority">LanguagePriority</a></code> qui sera servie.</p>
+    l'en-tête <code>Accept-Language</code> de l'utilisateur ne mentionne
+    que les réponses de langage <code>es</code>, et si aucune variante
+    dans cette langue n'est trouvée, c'est la première variante de la
+    liste définie par la directive <code class="directive"><a href="#languagepriority">LanguagePriority</a></code> qui sera servie.</p>
 
     <pre class="prettyprint lang-config">LanguagePriority en fr de
 ForceLanguagePriority Fallback</pre>
 
 
     <p>Les deux options, <code>Prefer</code> et <code>Fallback</code>,
-    peuvent &#234;tre sp&#233;cifi&#233;es, de fa&#231;on &#224; ce que la variante servie soit
-    la premi&#232;re variante qui convient d&#233;finie par la directive
+    peuvent être spécifiées, de façon à ce que la variante servie soit
+    la première variante qui convient définie par la directive
     <code class="directive"><a href="#languagepriority">LanguagePriority</a></code> si
-    plusieurs variantes sont &#233;galement acceptables, ou le premier
-    document disponible si aucune variante ne convient &#224; la liste de
+    plusieurs variantes sont également acceptables, ou le premier
+    document disponible si aucune variante ne convient à la liste de
     langages acceptables fournie par le client.</p>
 
 <h3>Voir aussi</h3>
@@ -321,35 +321,35 @@ ForceLanguagePriority Fallback</pre>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="languagepriority" id="languagepriority">Directive</a> <a name="LanguagePriority" id="LanguagePriority">LanguagePriority</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>L'ordre de priorit&#233; des variantes de langages pour les
-cas o&#249; le client n'a pas formul&#233; de pr&#233;f&#233;rences</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>L'ordre de priorité des variantes de langages pour les
+cas où le client n'a pas formulé de préférences</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LanguagePriority <var>langage-MIME</var> [<var>langage-MIME</var>]
 ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Surcharges autoris&#233;es:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_negotiation</td></tr>
 </table>
     <p>La directive <code class="directive">LanguagePriority</code> permet de
-    d&#233;finir, au cours du traitement d'une requ&#234;te Multivues, l'ordre de
-    priorit&#233; des variantes de langages pour les cas
-    o&#249; le client n'a pas formul&#233; de pr&#233;f&#233;rences. La liste &#233;num&#232;re les
-    <var>langages-MIME</var> dans un ordre de pr&#233;f&#233;rences
-    d&#233;croissantes.</p>
+    définir, au cours du traitement d'une requête Multivues, l'ordre de
+    priorité des variantes de langages pour les cas
+    où le client n'a pas formulé de préférences. La liste énumère les
+    <var>langages-MIME</var> dans un ordre de préférences
+    décroissantes.</p>
 
     <pre class="prettyprint lang-config">LanguagePriority en fr de</pre>
 
 
-    <p>Dans le cas d'une requ&#234;te pour <code>foo.html</code>, si
+    <p>Dans le cas d'une requête pour <code>foo.html</code>, si
     <code>foo.html.fr</code> et <code>foo.html.de</code> existent, et si
-    le client n'a pas formul&#233; de pr&#233;f&#233;rences, c'est le fichier
-    <code>foo.html.fr</code> qui sera renvoy&#233;.</p>
+    le client n'a pas formulé de préférences, c'est le fichier
+    <code>foo.html.fr</code> qui sera renvoyé.</p>
 
     <p>Notez que cette directive n'a d'effet que si le 'meilleur'
-    langage n'a pas pu &#234;tre d&#233;termin&#233; d'une autre mani&#232;re ou si la
+    langage n'a pas pu être déterminé d'une autre manière ou si la
     valeur de la directive  <code class="directive"><a href="#forcelanguagepriority">ForceLanguagePriority</a></code> est
-    diff&#233;rente de <code>None</code>. En g&#233;n&#233;ral, c'est le client qui
-    d&#233;termine le langage pr&#233;f&#233;r&#233;, non le serveur.</p>
+    différente de <code>None</code>. En général, c'est le client qui
+    détermine le langage préféré, non le serveur.</p>
 
 <h3>Voir aussi</h3>
 <ul>
@@ -359,7 +359,7 @@ cas o&#249; le client n'a pas formul&#233; de pr&#233;f&#233;rences</td></tr>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_negotiation.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_negotiation.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_negotiation.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_negotiation.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
@@ -379,7 +379,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.4/mod/mod_negotiation.
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autoris&#233; sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

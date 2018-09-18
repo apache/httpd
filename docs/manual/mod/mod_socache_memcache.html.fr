@@ -27,33 +27,33 @@
 <div id="preamble"><h1>Module Apache mod_socache_memcache</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_socache_memcache.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_socache_memcache.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_socache_memcache.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fournisseur de cache d'objets partag&#233;s bas&#233; sur Memcache.</td></tr>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fournisseur de cache d'objets partagés basé sur Memcache.</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&#160;de&#160;Module:</a></th><td>socache_memcache_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier&#160;Source:</a></th><td>mod_socache_memcache.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>socache_memcache_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_socache_memcache.c</td></tr></table>
 <h3>Sommaire</h3>
 
     <p>Le module <code>mod_socache_memcache</code> est un fournisseur de cache
-    d'objets partag&#233;s qui permet la cr&#233;ation et l'acc&#232;s &#224; un cache
-    maintenu par le syst&#232;me de mise en cache d'objets en m&#233;moire
-    distribu&#233;e &#224; hautes performances <a href="http://memcached.org/">memcached</a>.
+    d'objets partagés qui permet la création et l'accès à un cache
+    maintenu par le système de mise en cache d'objets en mémoire
+    distribuée à hautes performances <a href="http://memcached.org/">memcached</a>.
     </p>
 
-    <p>Cette m&#233;thode "create" du fournisseur de cache d'objets partag&#233;s
-    requiert une liste de sp&#233;cifications h&#244;te/port en cache m&#233;moire
-    s&#233;par&#233;es par des virgules. Si vous utilisez ce fournisseur
+    <p>Cette méthode "create" du fournisseur de cache d'objets partagés
+    requiert une liste de spécifications hôte/port en cache mémoire
+    séparées par des virgules. Si vous utilisez ce fournisseur
     dans la configuration d'autres modules (comme
     <code class="directive"><a href="../mod/mod_ssl.html#sslsessioncache">SSLSessionCache</a></code>), vous devez
-    fournir la liste des serveurs sous la forme du param&#232;tre optionnel
+    fournir la liste des serveurs sous la forme du paramètre optionnel
     "arg".</p>
 
      <pre class="prettyprint lang-config">SSLSessionCache memcache:memcache.example.com:12345,memcache2.example.com:12345</pre>
 
 
-    <p>Vous trouverez des d&#233;tails &#224; propos des autres fournisseurs de
-    cache d'objets partag&#233;s <a href="../socache.html">ici</a>.
+    <p>Vous trouverez des détails à propos des autres fournisseurs de
+    cache d'objets partagés <a href="../socache.html">ici</a>.
     </p>
 
 </div>
@@ -61,44 +61,44 @@
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#memcacheconnttl">MemcacheConnTTL</a></li>
 </ul>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_socache_memcache">Probl&#232;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_socache_memcache">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_socache_memcache">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_socache_memcache">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="memcacheconnttl" id="memcacheconnttl">Directive</a> <a name="MemcacheConnTTL" id="MemcacheConnTTL">MemcacheConnTTL</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Dur&#233;e de conservation des connexions inactives</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Durée de conservation des connexions inactives</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MemcacheConnTTL <em>num[units]</em></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>MemcacheConnTTL 15s</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MemcacheConnTTL 15s</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_socache_memcache</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible &#224; partir de la version 2.4.17 du serveur HTTP
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.17 du serveur HTTP
 Apache.</td></tr>
 </table>
 
-    <p>D&#233;finit la dur&#233;e pendant laquelle les connexions
-    inactives avec le(s) serveur(s) memcache seront conserv&#233;es
-    (plateformes thread&#233;es seulement).</p>
+    <p>Définit la durée pendant laquelle les connexions
+    inactives avec le(s) serveur(s) memcache seront conservées
+    (plateformes threadées seulement).</p>
     
     <p>Les valeurs valides de la directive
-    <code class="directive">MemcacheConnTTL</code> sont des dur&#233;es d'une heure
-    maximum. La valeur 0 signifie une absence de p&#233;remption</p>
+    <code class="directive">MemcacheConnTTL</code> sont des durées d'une heure
+    maximum. La valeur 0 signifie une absence de péremption</p>
 
-    <div class="note"><p>L'unit&#233; par d&#233;faut pour ce d&#233;lai est la seconde, mais vous
-    pouvez ajouter un suffixe pour sp&#233;cifier une unit&#233; diff&#233;rente ; ms
+    <div class="note"><p>L'unité par défaut pour ce délai est la seconde, mais vous
+    pouvez ajouter un suffixe pour spécifier une unité différente ; ms
     pour milliseconde, s pour seconde, min pour minute et h pour heure..
     </p></div>
 
-    <p>Dans les versions ant&#233;rieures &#224; 2.4.17, ce d&#233;lai &#233;tait cod&#233; en
-    dur et sa valeur &#233;tait 600 microsecondes. La valeur la plus proche
+    <p>Dans les versions antérieures à 2.4.17, ce délai était codé en
+    dur et sa valeur était 600 microsecondes. La valeur la plus proche
     de cette ancienne valeur pour la directive
     <code class="directive">MemcacheConnTTL</code> est donc 1ms.</p>
 
-    <div class="example"><pre class="prettyprint lang-config"># D&#233;finition d'un d&#233;lai de 10 minutes
+    <div class="example"><pre class="prettyprint lang-config"># Définition d'un délai de 10 minutes
 MemcacheConnTTL 10min
-# D&#233;finition d'un d&#233;lai de 60 secondes
+# Définition d'un délai de 60 secondes
 MemcacheConnTTL 60</pre>
 </div>
 
@@ -107,7 +107,7 @@ MemcacheConnTTL 60</pre>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_socache_memcache.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_socache_memcache.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_socache_memcache.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -126,7 +126,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.4/mod/mod_socache_memc
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autoris&#233; sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
