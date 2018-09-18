@@ -1,8 +1,6 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.36
 
-Changes with Apache 2.4.35
-
   *) mod_proxy_hcheck: Fix issues with TCP health checks. PR 61499
      [Dominik Stillhard <dominik.stillhard united-security-providers.ch>]
 
@@ -14,6 +12,8 @@ Changes with Apache 2.4.35
     This is done by deprecating the use of the 'client' field and using
     the new 'client64' field in worker_score.
     PR 54848 [Bernhard Schmidt <berni birkenwald de>, Jim Jagielski]
+
+Changes with Apache 2.4.35
 
   *) http: Enforce consistently no response body with both 204 and 304
      statuses.  [Yann Ylavic]
