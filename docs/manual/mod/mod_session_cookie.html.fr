@@ -27,20 +27,20 @@
 <div id="preamble"><h1>Module Apache mod_session_cookie</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_session_cookie.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_session_cookie.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_session_cookie.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Support des sessions bas&#233; sur les cookies</td></tr>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Support des sessions basé sur les cookies</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&#160;de&#160;Module:</a></th><td>session_cookie_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier&#160;Source:</a></th><td>mod_session_cookie.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible depuis la version 2.3 d'Apache</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>session_cookie_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_session_cookie.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3 d'Apache</td></tr></table>
 <h3>Sommaire</h3>
 
     <div class="warning"><h3>Avertissement</h3>
       <p>Les modules de session font usage des cookies HTTP, et peuvent
-      &#224; ce titre &#234;tre victimes d'attaques de type Cross Site Scripting,
-      ou divulguer des informations &#224; caract&#232;re priv&#233; aux clients.
-      Veuillez vous assurer que les risques ainsi encourus ont &#233;t&#233; pris
+      à ce titre être victimes d'attaques de type Cross Site Scripting,
+      ou divulguer des informations à caractère privé aux clients.
+      Veuillez vous assurer que les risques ainsi encourus ont été pris
       en compte avant d'activer le support des sessions sur votre
       serveur.</p>
     </div>
@@ -49,19 +49,19 @@
     support du stockage des sessions utilisateur au niveau du navigateur
     distant dans des cookies HTTP.</p>
 
-    <p>L'utilisation de cookies pour stocker les sessions d&#233;charge le
-    serveur ou le groupe de serveurs de la n&#233;cessit&#233; de stocker les
+    <p>L'utilisation de cookies pour stocker les sessions décharge le
+    serveur ou le groupe de serveurs de la nécessité de stocker les
     sessions localement, ou de collaborer pour partager les sessions, et
-    peut &#234;tre utile dans les environnements &#224; fort trafic o&#249; le stockage
-    des sessions sur le serveur pourrait s'av&#233;rer trop consommateur de
+    peut être utile dans les environnements à fort trafic où le stockage
+    des sessions sur le serveur pourrait s'avérer trop consommateur de
     ressources.</p>
 
-    <p>Si la confidentialit&#233; de la session doit &#234;tre pr&#233;serv&#233;e, le
-    contenu de cette derni&#232;re peut &#234;tre chiffr&#233; avant d'&#234;tre enregistr&#233;
-    au niveau du client &#224; l'aide du module
+    <p>Si la confidentialité de la session doit être préservée, le
+    contenu de cette dernière peut être chiffré avant d'être enregistré
+    au niveau du client à l'aide du module
     <code class="module"><a href="../mod/mod_session_crypto.html">mod_session_crypto</a></code>.</p>
 
-    <p>Pour plus de d&#233;tails &#224; propos de l'interface des sessions, voir
+    <p>Pour plus de détails à propos de l'interface des sessions, voir
     la documentation du module <code class="module"><a href="../mod/mod_session.html">mod_session</a></code>.</p>
 
 </div>
@@ -74,7 +74,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#sessioncookiename2">SessionCookieName2</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sessioncookieremove">SessionCookieRemove</a></li>
 </ul>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_session_cookie">Probl&#232;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_session_cookie">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_session_cookie">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_session_cookie">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_session.html">mod_session</a></code></li>
 <li><code class="module"><a href="../mod/mod_session_crypto.html">mod_session_crypto</a></code></li>
@@ -84,20 +84,20 @@
 <div class="section">
 <h2><a name="basicexamples" id="basicexamples">Exemples simples</a></h2>
 
-      <p>Pour cr&#233;er une session et la stocker dans un cookie nomm&#233;
+      <p>Pour créer une session et la stocker dans un cookie nommé
       <var>session</var>, configurez-la comme suit :</p>
 
-      <div class="example"><h3>Session stock&#233;e au niveau du navigateur</h3><pre class="prettyprint lang-config">Session On
+      <div class="example"><h3>Session stockée au niveau du navigateur</h3><pre class="prettyprint lang-config">Session On
 SessionCookieName session path=/</pre>
 </div>
 
-      <p>Pour plus d'exemples sur la mani&#232;re dont une session doit &#234;tre
-      configur&#233;e pour qu'une application CGI puisse l'utiliser, voir la
+      <p>Pour plus d'exemples sur la manière dont une session doit être
+      configurée pour qu'une application CGI puisse l'utiliser, voir la
       section exemples de la documentation du module
       <code class="module"><a href="../mod/mod_session.html">mod_session</a></code>.</p>
 
-      <p>Pour des d&#233;tails sur la mani&#232;re dont une session peut &#234;tre
-      utilis&#233;e pour stocker des informations de type nom
+      <p>Pour des détails sur la manière dont une session peut être
+      utilisée pour stocker des informations de type nom
       d'utilisateur/mot de passe, voir la documentation du module
       <code class="module"><a href="../mod/mod_auth_form.html">mod_auth_form</a></code>.</p>
 
@@ -106,23 +106,23 @@ SessionCookieName session path=/</pre>
 <div class="directive-section"><h2><a name="sessioncookiename" id="sessioncookiename">Directive</a> <a name="SessionCookieName" id="SessionCookieName">SessionCookieName</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nom et attributs du cookie RFC2109 dans lequel la session
-est stock&#233;e</td></tr>
+est stockée</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SessionCookieName <var>nom</var> <var>attributs</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>none</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session_cookie</td></tr>
 </table>
     <p>La directive <code class="directive">SessionCookieName</code> permet de
-    sp&#233;cifier le nom et les attributs optionnels d'un cookie compatible
-    RFC2109 dans lequel la session sera stock&#233;e. Les cookies RFC2109
-    sont d&#233;finis en utilisant l'en-t&#234;te HTTP <code>Set-Cookie</code>.
+    spécifier le nom et les attributs optionnels d'un cookie compatible
+    RFC2109 dans lequel la session sera stockée. Les cookies RFC2109
+    sont définis en utilisant l'en-tête HTTP <code>Set-Cookie</code>.
     </p>
 
-    <p>Une liste optionnelle d'attributs peut &#234;tre sp&#233;cifi&#233;e, comme dans
-    l'exemple suivant. Ces attributs sont ins&#233;r&#233;s tels quels dans le
-    cookie, et ne sont pas interpr&#233;t&#233;s par Apache. Assurez-vous que vos
-    attributs soient d&#233;finis correctement selon la sp&#233;cification des
+    <p>Une liste optionnelle d'attributs peut être spécifiée, comme dans
+    l'exemple suivant. Ces attributs sont insérés tels quels dans le
+    cookie, et ne sont pas interprétés par Apache. Assurez-vous que vos
+    attributs soient définis correctement selon la spécification des
     cookies.
     </p>
 
@@ -136,24 +136,24 @@ SessionCookieName session path=/private;domain=example.com;httponly;secure;versi
 <div class="directive-section"><h2><a name="sessioncookiename2" id="sessioncookiename2">Directive</a> <a name="SessionCookieName2" id="SessionCookieName2">SessionCookieName2</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nom et attributs pour le cookie RFC2965 dans lequel est
-stock&#233;e la session</td></tr>
+stockée la session</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SessionCookieName2 <var>nom</var> <var>attributs</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>none</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session_cookie</td></tr>
 </table>
     <p>La directive <code class="directive">SessionCookieName2</code> permet de
-    sp&#233;cifier le nom et les attributs optionnels d'un cookie compatible
-    RFC2965 dans lequel la session sera stock&#233;e. Les cookies RFC2965
-    sont d&#233;finis en utilisant l'en-t&#234;te HTTP
+    spécifier le nom et les attributs optionnels d'un cookie compatible
+    RFC2965 dans lequel la session sera stockée. Les cookies RFC2965
+    sont définis en utilisant l'en-tête HTTP
     <code>Set-Cookie2</code>.
     </p>
 
-    <p>Une liste optionnelle d'attributs peut &#234;tre sp&#233;cifi&#233;e, comme dans
-    l'exemple suivant. Ces attributs sont ins&#233;r&#233;s tels quels dans le
-    cookie, et ne sont pas interpr&#233;t&#233;s par Apache. Assurez-vous que vos
-    attributs soient d&#233;finis correctement selon la sp&#233;cification des
+    <p>Une liste optionnelle d'attributs peut être spécifiée, comme dans
+    l'exemple suivant. Ces attributs sont insérés tels quels dans le
+    cookie, et ne sont pas interprétés par Apache. Assurez-vous que vos
+    attributs soient définis correctement selon la spécification des
     cookies.
     </p>
 
@@ -166,30 +166,30 @@ SessionCookieName2 session path=/private;domain=example.com;httponly;secure;vers
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="sessioncookieremove" id="sessioncookieremove">Directive</a> <a name="SessionCookieRemove" id="SessionCookieRemove">SessionCookieRemove</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&#233;termine si les cookies de session doivent &#234;tre supprim&#233;s
-des en-t&#234;tes HTTP entrants</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Détermine si les cookies de session doivent être supprimés
+des en-têtes HTTP entrants</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SessionCookieRemove On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">D&#233;faut:</a></th><td><code>SessionCookieRemove Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&#233;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SessionCookieRemove Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session_cookie</td></tr>
 </table>
     <p>La directive <code class="directive">SessionCookieRemove</code> permet de
-    d&#233;terminer si les cookies contenant la session doivent &#234;tre
-    supprim&#233;s des en-t&#234;tes pendant le traitement de la requ&#234;te.</p>
+    déterminer si les cookies contenant la session doivent être
+    supprimés des en-têtes pendant le traitement de la requête.</p>
 
-    <p>Dans le cas d'un mandataire inverse o&#249; le serveur Apache sert de
-    frontal &#224; un serveur d'arri&#232;re-plan, r&#233;v&#233;ler le contenu du cookie de
-    session &#224; ce dernier peut conduire &#224; une violation de la
-    confidentialit&#233;. &#192; ce titre, si cette directive est d&#233;finie &#224; "on",
-    le cookie de session sera supprim&#233; des en-t&#234;tes HTTP entrants.</p>
+    <p>Dans le cas d'un mandataire inverse où le serveur Apache sert de
+    frontal à un serveur d'arrière-plan, révéler le contenu du cookie de
+    session à ce dernier peut conduire à une violation de la
+    confidentialité. À ce titre, si cette directive est définie à "on",
+    le cookie de session sera supprimé des en-têtes HTTP entrants.</p>
 
 
 </div>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_session_cookie.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_session_cookie.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_session_cookie.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -208,7 +208,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.4/mod/mod_session_cook
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autoris&#233; sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

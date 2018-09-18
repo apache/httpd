@@ -7,7 +7,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Conseils sur la s&#233;curit&#233; - Serveur HTTP Apache Version 2.4</title>
+<title>Conseils sur la sécurité - Serveur HTTP Apache Version 2.4</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -21,154 +21,154 @@
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Documentations diverses</a></div><div id="page-content"><div id="preamble"><h1>Conseils sur la s&#233;curit&#233;</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Documentations diverses</a></div><div id="page-content"><div id="preamble"><h1>Conseils sur la sécurité</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/misc/security_tips.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/misc/security_tips.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../fr/misc/security_tips.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ko/misc/security_tips.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/misc/security_tips.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/misc/security_tips.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
 
     <p>Ce document propose quelques conseils et astuces concernant les
-    probl&#232;mes de s&#233;curit&#233; li&#233;s
-    &#224; l'installation d'un serveur web. Certaines suggestions seront &#224; caract&#232;re
-    g&#233;n&#233;ral, tandis que d'autres seront sp&#233;cifiques &#224; Apache.</p>
+    problèmes de sécurité liés
+    à l'installation d'un serveur web. Certaines suggestions seront à caractère
+    général, tandis que d'autres seront spécifiques à Apache.</p>
   </div>
-<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#uptodate">Maintenez votre serveur &#224; jour</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#dos">Attaques de type "D&#233;ni de service"
+<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#uptodate">Maintenez votre serveur à jour</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#dos">Attaques de type "Déni de service"
     (Denial of Service - DoS)</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#serverroot">Permissions sur les r&#233;pertoires de la racine du serveur</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#ssi">Inclusions c&#244;t&#233; serveur</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#cgi">Les CGI en g&#233;n&#233;ral</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#serverroot">Permissions sur les répertoires de la racine du serveur</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#ssi">Inclusions côté serveur</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#cgi">Les CGI en général</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#nsaliasedcgi">CGI sans alias de script</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#saliasedcgi">CGI avec alias de script</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#dynamic">Autres sources de contenu dynamique</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#systemsettings">Protection de la configuration du syst&#232;me</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#protectserverfiles">Protection par d&#233;faut des fichiers du serveur</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#systemsettings">Protection de la configuration du système</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#protectserverfiles">Protection par défaut des fichiers du serveur</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#watchyourlogs">Surveillez vos journaux</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#merging">Fusion des sections de configuration</a></li>
 </ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="uptodate" id="uptodate">Maintenez votre serveur &#224; jour</a></h2>
+<h2><a name="uptodate" id="uptodate">Maintenez votre serveur à jour</a></h2>
 
-    <p>Le serveur HTTP Apache a une bonne r&#233;putation en mati&#232;re de s&#233;curit&#233;
-    et poss&#232;de une communaut&#233; de d&#233;veloppeurs tr&#232;s sensibilis&#233;s aux probl&#232;mes
-    de s&#233;curit&#233;. Mais il est in&#233;vitable de trouver certains probl&#232;mes
-    -- petits ou grands -- une fois le logiciel mis &#224; disposition. C'est pour
-    cette raison qu'il est crucial de se tenir inform&#233; des mises &#224; jour. Si
+    <p>Le serveur HTTP Apache a une bonne réputation en matière de sécurité
+    et possède une communauté de développeurs très sensibilisés aux problèmes
+    de sécurité. Mais il est inévitable de trouver certains problèmes
+    -- petits ou grands -- une fois le logiciel mis à disposition. C'est pour
+    cette raison qu'il est crucial de se tenir informé des mises à jour. Si
     vous avez obtenu votre version du serveur HTTP directement depuis Apache,
-    nous vous conseillons grandement de vous abonner &#224; la <a href="http://httpd.apache.org/lists.html#http-announce">Liste de diffusion
+    nous vous conseillons grandement de vous abonner à la <a href="http://httpd.apache.org/lists.html#http-announce">Liste de diffusion
     des annonces du serveur HTTP</a> qui vous informera de
-    la parution des nouvelles versions et des mises &#224; jour de s&#233;curit&#233;. La
+    la parution des nouvelles versions et des mises à jour de sécurité. La
     plupart des distributeurs tiers d'Apache fournissent des services
     similaires.</p>
 
-    <p>Gardez cependant &#224; l'esprit que lorsqu'un serveur web est compromis, le
-    code du serveur HTTP n'est la plupart du temps pas en cause. Les probl&#232;mes
-    proviennent plut&#244;t de code ajout&#233;, de scripts CGI, ou du syst&#232;me
-    d'exploitation sous-jacent. Vous devez donc vous tenir inform&#233; des
-    probl&#232;mes et mises &#224; jour concernant tous les logiciels pr&#233;sents sur
-    votre syst&#232;me.</p>
+    <p>Gardez cependant à l'esprit que lorsqu'un serveur web est compromis, le
+    code du serveur HTTP n'est la plupart du temps pas en cause. Les problèmes
+    proviennent plutôt de code ajouté, de scripts CGI, ou du système
+    d'exploitation sous-jacent. Vous devez donc vous tenir informé des
+    problèmes et mises à jour concernant tous les logiciels présents sur
+    votre système.</p>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="dos" id="dos">Attaques de type "D&#233;ni de service"
+<h2><a name="dos" id="dos">Attaques de type "Déni de service"
     (Denial of Service - DoS)</a></h2>
 
     
 
-    <p>Tous les services r&#233;seau peuvent faire l'objet d'attaques de type
-    "D&#233;ni de service" qui tentent de les emp&#234;cher de r&#233;pondre aux clients en
-    saturant leurs ressources. Il est impossible de se pr&#233;munir totalement
+    <p>Tous les services réseau peuvent faire l'objet d'attaques de type
+    "Déni de service" qui tentent de les empêcher de répondre aux clients en
+    saturant leurs ressources. Il est impossible de se prémunir totalement
     contre ce type d'attaques, mais vous pouvez accomplir certaines actions
-    afin de minimiser les probl&#232;mes qu'elles cr&#233;ent.</p>
+    afin de minimiser les problèmes qu'elles créent.</p>
 
-    <p>Souvent, l'outil anti-DoS le plus efficace sera constitu&#233; par le
-    pare-feu ou certaines configurations du syst&#232;me d'exploitation. Par
-    exemple, la plupart des pare-feu peuvent &#234;tre configur&#233;s de fa&#231;on &#224;
-    limiter le nombre de connexions simultan&#233;es depuis une adresse IP ou un
-    r&#233;seau, ce qui permet de pr&#233;venir toute une gamme d'attaques simples.
-    Bien s&#251;r, ceci n'est d'aucun secours contre les attaques de type
-    "D&#233;ni de service" distribu&#233;es (DDoS).</p>
+    <p>Souvent, l'outil anti-DoS le plus efficace sera constitué par le
+    pare-feu ou certaines configurations du système d'exploitation. Par
+    exemple, la plupart des pare-feu peuvent être configurés de façon à
+    limiter le nombre de connexions simultanées depuis une adresse IP ou un
+    réseau, ce qui permet de prévenir toute une gamme d'attaques simples.
+    Bien sûr, ceci n'est d'aucun secours contre les attaques de type
+    "Déni de service" distribuées (DDoS).</p>
 
-    <p>Certains r&#233;glages de la configuration d'Apache peuvent aussi
-    minimiser les probl&#232;mes :</p>
+    <p>Certains réglages de la configuration d'Apache peuvent aussi
+    minimiser les problèmes :</p>
 
     <ul>
       <li>La directive <code class="directive"><a href="../mod/mod_reqtimeout.html#requestreadtimeout">RequestReadTimeout</a></code> permet de
-      limiter le temps que met le client pour envoyer sa requ&#234;te.</li>
+      limiter le temps que met le client pour envoyer sa requête.</li>
 
       <li>La valeur de la directive
-      <code class="directive"><a href="../mod/core.html#timeout">TimeOut</a></code> doit &#234;tre diminu&#233;e sur les
+      <code class="directive"><a href="../mod/core.html#timeout">TimeOut</a></code> doit être diminuée sur les
       sites sujets aux attaques DoS. Une valeur de quelques secondes devrait
       convenir. Cependant, comme <code class="directive"><a href="../mod/core.html#timeout">TimeOut</a></code>
-      est actuellement concern&#233; par de nombreuses op&#233;rations diff&#233;rentes, lui
-      attribuer une valeur trop faible peut provoquer des probl&#232;mes avec les
-      scripts CGI qui pr&#233;sentent un long temps de r&#233;ponse.</li>
+      est actuellement concerné par de nombreuses opérations différentes, lui
+      attribuer une valeur trop faible peut provoquer des problèmes avec les
+      scripts CGI qui présentent un long temps de réponse.</li>
 
       <li>La valeur de la directive
-      <code class="directive"><a href="../mod/core.html#keepalivetimeout">KeepAliveTimeout</a></code> doit aussi &#234;tre
-      diminu&#233;e sur les sites sujets aux attaques DoS. Certains sites
-      d&#233;sactivent m&#234;me compl&#232;tement le "maintien en vie" (keepalives)
-      &#224; l'aide de la directive
-      <code class="directive"><a href="../mod/core.html#keepalive">KeepAlive</a></code>, ce qui bien s&#251;r
-      pr&#233;sente des inconv&#233;nients en mati&#232;re de performances.</li>
+      <code class="directive"><a href="../mod/core.html#keepalivetimeout">KeepAliveTimeout</a></code> doit aussi être
+      diminuée sur les sites sujets aux attaques DoS. Certains sites
+      désactivent même complètement le "maintien en vie" (keepalives)
+      à l'aide de la directive
+      <code class="directive"><a href="../mod/core.html#keepalive">KeepAlive</a></code>, ce qui bien sûr
+      présente des inconvénients en matière de performances.</li>
 
-      <li>Les valeurs des diff&#233;rentes directives fournies par d'autres modules
-      et en rapport avec des d&#233;lais doivent aussi &#234;tre v&#233;rifi&#233;es.</li>
+      <li>Les valeurs des différentes directives fournies par d'autres modules
+      et en rapport avec des délais doivent aussi être vérifiées.</li>
 
       <li>Les directives
       <code class="directive"><a href="../mod/core.html#limitrequestbody">LimitRequestBody</a></code>,
       <code class="directive"><a href="../mod/core.html#limitrequestfields">LimitRequestFields</a></code>,
       <code class="directive"><a href="../mod/core.html#limitrequestfieldsize">LimitRequestFieldSize</a></code>,
       <code class="directive"><a href="../mod/core.html#limitrequestline">LimitRequestLine</a></code>, et
-      <code class="directive"><a href="../mod/core.html#limitxmlrequestbody">LimitXMLRequestBody</a></code> doivent &#234;tre
-      configur&#233;es avec prudence afin de limiter la consommation de ressources
+      <code class="directive"><a href="../mod/core.html#limitxmlrequestbody">LimitXMLRequestBody</a></code> doivent être
+      configurées avec prudence afin de limiter la consommation de ressources
       induite par les demandes des clients.
       </li>
 
-      <li>Sur les syst&#232;mes d'exploitation qui le supportent, assurez-vous que
+      <li>Sur les systèmes d'exploitation qui le supportent, assurez-vous que
       la directive <code class="directive"><a href="../mod/core.html#acceptfilter">AcceptFilter</a></code> est
-      activ&#233;e afin de d&#233;l&#233;guer une partie du traitement des requ&#234;tes au
-      syst&#232;me d'exploitation. Elle est activ&#233;e par d&#233;faut dans le d&#233;mon httpd
-      d'Apache, mais peut n&#233;cessiter une reconfiguration de votre noyau.</li>
+      activée afin de déléguer une partie du traitement des requêtes au
+      système d'exploitation. Elle est activée par défaut dans le démon httpd
+      d'Apache, mais peut nécessiter une reconfiguration de votre noyau.</li>
 
-      <li>Optimisez la directive <code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code> de fa&#231;on &#224; d&#233;finir le nombre
-      maximum de connexions simultan&#233;es au dessus duquel les ressources
-      s'&#233;puisent. Voir aussi la <a href="perf-tuning.html">documentation sur l'optimisation des
+      <li>Optimisez la directive <code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code> de façon à définir le nombre
+      maximum de connexions simultanées au dessus duquel les ressources
+      s'épuisent. Voir aussi la <a href="perf-tuning.html">documentation sur l'optimisation des
       performances</a>.</li>
 
-      <li>L'utilisation d'un <a href="../mpm.html">module mpm</a> thread&#233;
-      vous permet de traiter d'avantage de connexions simultan&#233;es, ce qui
+      <li>L'utilisation d'un <a href="../mpm.html">module mpm</a> threadé
+      vous permet de traiter d'avantage de connexions simultanées, ce qui
       minimise l'effet des attaques DoS. Dans le futur, le module mpm
       <code class="module"><a href="../mod/event.html">event</a></code> utilisera un traitement asynchrone afin de ne pas
-      d&#233;dier un thread &#224; chaque connexion. De par la
-      nature de la biblioth&#232;que OpenSSL, le module mpm <code class="module"><a href="../mod/event.html">event</a></code> est actuellement incompatible
+      dédier un thread à chaque connexion. De par la
+      nature de la bibliothèque OpenSSL, le module mpm <code class="module"><a href="../mod/event.html">event</a></code> est actuellement incompatible
       avec le module <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> ainsi que d'autres filtres
-      en entr&#233;e. Dans ces cas, son comportement se ram&#232;ne &#224; celui
+      en entrée. Dans ces cas, son comportement se ramène à celui
       du module mpm <code class="module"><a href="../mod/worker.html">worker</a></code>.</li>
 
-      <li>Il existe de nombreux modules tiers disponibles &#224; <a href="http://modules.apache.org/">http://modules.apache.org/</a> qui
+      <li>Il existe de nombreux modules tiers disponibles à <a href="http://modules.apache.org/">http://modules.apache.org/</a> qui
       peuvent retreindre les comportements de certains clients et ainsi
-      minimiser les probl&#232;mes de DoS.</li>
+      minimiser les problèmes de DoS.</li>
 
     </ul>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="serverroot" id="serverroot">Permissions sur les r&#233;pertoires de la racine du serveur</a></h2>
+<h2><a name="serverroot" id="serverroot">Permissions sur les répertoires de la racine du serveur</a></h2>
 
     
 
-    <p>Typiquement, Apache est d&#233;marr&#233; par l'utilisateur root, puis il devient
-    la propri&#233;t&#233; de l'utilisateur d&#233;fini par la directive <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code> afin de r&#233;pondre aux demandes. Comme
-    pour toutes les commandes ex&#233;cut&#233;es par root, vous devez vous assurer
+    <p>Typiquement, Apache est démarré par l'utilisateur root, puis il devient
+    la propriété de l'utilisateur défini par la directive <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code> afin de répondre aux demandes. Comme
+    pour toutes les commandes exécutées par root, vous devez vous assurer
     qu'elle n'est pas modifiable par les utilisateurs autres que root. Les
-    fichiers eux-m&#234;mes, mais aussi les r&#233;pertoires ainsi que leurs parents ne
-    doivent &#234;tre modifiables que par root. Par exemple, si vous avez choisi de
-    placer la racine du serveur dans <code>/usr/local/apache</code>, il est conseill&#233; de
-    cr&#233;er le r&#233;pertoire en tant que root, avec des commandes du style :</p>
+    fichiers eux-mêmes, mais aussi les répertoires ainsi que leurs parents ne
+    doivent être modifiables que par root. Par exemple, si vous avez choisi de
+    placer la racine du serveur dans <code>/usr/local/apache</code>, il est conseillé de
+    créer le répertoire en tant que root, avec des commandes du style :</p>
 
     <div class="example"><p><code>
       mkdir /usr/local/apache <br />
@@ -181,8 +181,8 @@
 
     <p>Nous supposerons que <code>/</code>, <code>/usr</code> et
     <code>/usr/local</code> ne sont modifiables que par
-    root. Quand vous installez l'ex&#233;cutable <code class="program"><a href="../programs/httpd.html">httpd</a></code>, vous
-    devez vous assurer qu'il poss&#232;de des protections similaires :</p>
+    root. Quand vous installez l'exécutable <code class="program"><a href="../programs/httpd.html">httpd</a></code>, vous
+    devez vous assurer qu'il possède des protections similaires :</p>
 
     <div class="example"><p><code>
       cp httpd /usr/local/apache/bin <br />
@@ -191,91 +191,91 @@
       chmod 511 /usr/local/apache/bin/httpd
     </code></p></div>
 
-    <p>Vous pouvez cr&#233;er un sous-r&#233;pertoire htdocs modifiable par d'autres
-    utilisateurs -- car root ne cr&#233;e ni ex&#233;cute aucun fichier dans ce
-    sous-r&#233;pertoire.</p>
+    <p>Vous pouvez créer un sous-répertoire htdocs modifiable par d'autres
+    utilisateurs -- car root ne crée ni exécute aucun fichier dans ce
+    sous-répertoire.</p>
 
-    <p>Si vous permettez &#224; des utilisateurs non root de modifier des fichiers
-    que root &#233;crit ou ex&#233;cute, vous exposez votre syst&#232;me &#224; une compromission
+    <p>Si vous permettez à des utilisateurs non root de modifier des fichiers
+    que root écrit ou exécute, vous exposez votre système à une compromission
     de l'utilisateur root. Par exemple, quelqu'un pourrait remplacer le binaire
-    <code class="program"><a href="../programs/httpd.html">httpd</a></code> de fa&#231;on &#224; ce que la prochaine fois que vous le
-    red&#233;marrerez, il ex&#233;cutera un code arbitraire. Si le r&#233;pertoire des
-    journaux a les droits en &#233;criture (pour un utilisateur non root), quelqu'un
+    <code class="program"><a href="../programs/httpd.html">httpd</a></code> de façon à ce que la prochaine fois que vous le
+    redémarrerez, il exécutera un code arbitraire. Si le répertoire des
+    journaux a les droits en écriture (pour un utilisateur non root), quelqu'un
     pourrait remplacer un fichier journal par un lien symbolique vers un autre
-    fichier syst&#232;me, et root pourrait alors &#233;craser ce fichier avec des donn&#233;es
-    arbitraires. Si les fichiers journaux eux-m&#234;mes ont des droits en
-    &#233;criture (pour un utilisateur non root), quelqu'un pourrait
-    modifier les journaux eux-m&#234;mes avec des donn&#233;es fausses.</p>
+    fichier système, et root pourrait alors écraser ce fichier avec des données
+    arbitraires. Si les fichiers journaux eux-mêmes ont des droits en
+    écriture (pour un utilisateur non root), quelqu'un pourrait
+    modifier les journaux eux-mêmes avec des données fausses.</p>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="ssi" id="ssi">Inclusions c&#244;t&#233; serveur</a></h2>
+<h2><a name="ssi" id="ssi">Inclusions côté serveur</a></h2>
 
     
 
-    <p>Les inclusions c&#244;t&#233; serveur (Server Side Includes - SSI) exposent
-    l'administrateur du serveur &#224; de nombreux risques potentiels en mati&#232;re de
-    s&#233;curit&#233;.</p>
+    <p>Les inclusions côté serveur (Server Side Includes - SSI) exposent
+    l'administrateur du serveur à de nombreux risques potentiels en matière de
+    sécurité.</p>
 
     <p>Le premier risque est l'augmentation de la charge du serveur. Tous les
-    fichiers o&#249; SSI est activ&#233; doivent &#234;tre analys&#233;s par Apache, qu'ils
+    fichiers où SSI est activé doivent être analysés par Apache, qu'ils
     contiennent des directives SSI ou non. L'augmentation de la charge induite
     est minime, mais peut devenir significative dans le contexte d'un
-    serveur partag&#233;.</p>
+    serveur partagé.</p>
 
-    <p>Les fichiers SSI pr&#233;sentent les m&#234;mes risques que les scripts CGI en
-    g&#233;n&#233;ral. Les fichiers o&#249; SSI est activ&#233; peuvent ex&#233;cuter tout script CGI
-    ou autre programme &#224; l'aide de la commande <code>"exec cmd"</code> avec les permissions
-    des utilisateur et groupe sous lesquels Apache s'ex&#233;cute, comme d&#233;fini
+    <p>Les fichiers SSI présentent les mêmes risques que les scripts CGI en
+    général. Les fichiers où SSI est activé peuvent exécuter tout script CGI
+    ou autre programme à l'aide de la commande <code>"exec cmd"</code> avec les permissions
+    des utilisateur et groupe sous lesquels Apache s'exécute, comme défini
     dans <code>httpd.conf</code>.</p>
 
-    <p>Des m&#233;thodes existent pour am&#233;liorer la s&#233;curit&#233; des fichiers SSI, tout
-    en tirant parti des b&#233;n&#233;fices qu'ils apportent.</p>
+    <p>Des méthodes existent pour améliorer la sécurité des fichiers SSI, tout
+    en tirant parti des bénéfices qu'ils apportent.</p>
 
     <p>Pour limiter les dommages qu'un fichier SSI agressif pourrait causer,
     l'administrateur du serveur peut activer<a href="../suexec.html">suexec</a>
-    comme d&#233;crit dans la section <a href="#cgi">Les CGI en g&#233;n&#233;ral</a>.</p>
+    comme décrit dans la section <a href="#cgi">Les CGI en général</a>.</p>
 
-    <p>L'activation des SSI pour des fichiers poss&#233;dant des extensions
+    <p>L'activation des SSI pour des fichiers possédant des extensions
     <code>.html</code> ou
-    <code>.htm</code> peut s'av&#233;rer dangereux. Ceci est particuli&#232;rement vrai dans un
-    environnement de serveur partag&#233; ou &#233;tant le si&#232;ge d'un traffic &#233;lev&#233;. Les
-    fichiers o&#249; SSI est activ&#233; doivent poss&#233;der une extension sp&#233;cifique, telle
+    <code>.htm</code> peut s'avérer dangereux. Ceci est particulièrement vrai dans un
+    environnement de serveur partagé ou étant le siège d'un traffic élevé. Les
+    fichiers où SSI est activé doivent posséder une extension spécifique, telle
     que la conventionnelle <code>.shtml</code>. Ceci permet de limiter la charge du serveur
-    &#224; un niveau minimum et de simplifier la gestion des risques.</p>
+    à un niveau minimum et de simplifier la gestion des risques.</p>
 
-    <p>Une autre solution consiste &#224; interdire l'ex&#233;cution de scripts et
-    programmes &#224; partir de pages SSI. Pour ce faire, remplacez
+    <p>Une autre solution consiste à interdire l'exécution de scripts et
+    programmes à partir de pages SSI. Pour ce faire, remplacez
     <code>Includes</code> par <code>IncludesNOEXEC</code> dans la directive
     <code class="directive"><a href="../mod/core.html#options">Options</a></code>. Notez que les utilisateurs
-    pourront encore utiliser <code>&lt;--#include virtual="..." --&gt;</code> pour ex&#233;cuter
-    des scripts CGI si ces scripts sont situ&#233;s dans des r&#233;pertoires sp&#233;cifi&#233;s
+    pourront encore utiliser <code>&lt;--#include virtual="..." --&gt;</code> pour exécuter
+    des scripts CGI si ces scripts sont situés dans des répertoires spécifiés
     par une directive
     <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code>.</p>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="cgi" id="cgi">Les CGI en g&#233;n&#233;ral</a></h2>
+<h2><a name="cgi" id="cgi">Les CGI en général</a></h2>
 
     
 
-    <p>Tout d'abord, vous devez toujours garder &#224; l'esprit que vous devez
-    faire confiance aux d&#233;veloppeurs de scripts ou programmes CGI ainsi qu'&#224;
-    vos comp&#233;tences pour d&#233;celer les trous de s&#233;curit&#233; potentiels dans les
-    CGI, que ceux-ci soient d&#233;lib&#233;r&#233;s ou accidentels. Les scripts CGI peuvent
-    essentiellement ex&#233;cuter des commandes arbitraires sur votre syst&#232;me avec
-    les droits de l'utilisateur du serveur web, et peuvent par cons&#233;quent &#234;tre
-    extr&#232;mement dangereux s'ils ne sont pas v&#233;rifi&#233;s avec soin.</p>
+    <p>Tout d'abord, vous devez toujours garder à l'esprit que vous devez
+    faire confiance aux développeurs de scripts ou programmes CGI ainsi qu'à
+    vos compétences pour déceler les trous de sécurité potentiels dans les
+    CGI, que ceux-ci soient délibérés ou accidentels. Les scripts CGI peuvent
+    essentiellement exécuter des commandes arbitraires sur votre système avec
+    les droits de l'utilisateur du serveur web, et peuvent par conséquent être
+    extrèmement dangereux s'ils ne sont pas vérifiés avec soin.</p>
 
-    <p>Tous les scripts CGI s'ex&#233;cutent sous le m&#234;me utilisateur, il peuvent
-    donc entrer en conflit (accidentellement ou d&#233;lib&#233;r&#233;ment) avec d'autres
-    scripts. Par exemple, l'utilisateur A hait l'utilisateur B, il &#233;crit donc
-    un script qui efface la base de donn&#233;es CGI de l'utilisateur B. Vous pouvez
+    <p>Tous les scripts CGI s'exécutent sous le même utilisateur, il peuvent
+    donc entrer en conflit (accidentellement ou délibérément) avec d'autres
+    scripts. Par exemple, l'utilisateur A hait l'utilisateur B, il écrit donc
+    un script qui efface la base de données CGI de l'utilisateur B. Vous pouvez
     utiliser le programme <a href="../suexec.html">suEXEC</a> pour faire en
-    sorte que les scripts s'ex&#233;cutent sous des utilisateurs diff&#233;rents. Ce
+    sorte que les scripts s'exécutent sous des utilisateurs différents. Ce
     programme est inclus dans la distribution d'Apache depuis la version 1.2
-    et est appel&#233; &#224; partir de certaines portions de code du serveur Apache. Une
-    autre m&#233;thode plus connue est l'utilisation de
+    et est appelé à partir de certaines portions de code du serveur Apache. Une
+    autre méthode plus connue est l'utilisation de
     <a href="http://cgiwrap.sourceforge.net/">CGIWrap</a>.</p>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -284,17 +284,17 @@
 
     
 
-    <p>Vous ne devez permettre aux utilisateurs d'ex&#233;cuter des scripts CGI
-    depuis n'importe quel r&#233;pertoire que dans l'&#233;ventualit&#233; o&#249; :</p>
+    <p>Vous ne devez permettre aux utilisateurs d'exécuter des scripts CGI
+    depuis n'importe quel répertoire que dans l'éventualité où :</p>
 
     <ul>
-      <li>Vous faites confiance &#224; vos utilisateurs pour ne pas &#233;crire de
-      scripts qui vont d&#233;lib&#233;r&#233;ment ou accidentellement exposer votre
-      syst&#232;me &#224; une attaque.</li>
-      <li>Vous estimez que le niveau de s&#233;curit&#233; dans les autres parties de
-      votre site est si faible qu'un trou de s&#233;curit&#233; de plus ou de moins
-      n'est pas tr&#232;s important.</li>
-      <li>Votre syst&#232;me ne comporte aucun utilisateur, et personne ne visite
+      <li>Vous faites confiance à vos utilisateurs pour ne pas écrire de
+      scripts qui vont délibérément ou accidentellement exposer votre
+      système à une attaque.</li>
+      <li>Vous estimez que le niveau de sécurité dans les autres parties de
+      votre site est si faible qu'un trou de sécurité de plus ou de moins
+      n'est pas très important.</li>
+      <li>Votre système ne comporte aucun utilisateur, et personne ne visite
       jamais votre site.</li>
     </ul>
 
@@ -304,15 +304,15 @@
 
     
 
-    <p>Le confinement des CGI dans des r&#233;pertoires sp&#233;cifiques permet &#224;
-    l'administrateur de contr&#244;ler ce que l'on met dans ces r&#233;pertoires. Ceci
-    est bien entendu mieux s&#233;curis&#233; que les CGI sans alias de script, mais
-    seulement &#224; condition que les utilisateurs avec les droits en &#233;criture sur
-    les r&#233;pertoires soient dignes de confiance, et que l'administrateur ait la
-    volont&#233; de tester chaque programme ou script CGI &#224; la recherche d'&#233;ventuels
-    trous de s&#233;curit&#233;.</p>
+    <p>Le confinement des CGI dans des répertoires spécifiques permet à
+    l'administrateur de contrôler ce que l'on met dans ces répertoires. Ceci
+    est bien entendu mieux sécurisé que les CGI sans alias de script, mais
+    seulement à condition que les utilisateurs avec les droits en écriture sur
+    les répertoires soient dignes de confiance, et que l'administrateur ait la
+    volonté de tester chaque programme ou script CGI à la recherche d'éventuels
+    trous de sécurité.</p>
 
-    <p>La plupart des sites choisissent cette approche au d&#233;triment des CGI
+    <p>La plupart des sites choisissent cette approche au détriment des CGI
     sans alias de script.</p>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -322,25 +322,25 @@
   
 
   <p>
-  Les options de scripting int&#233;gr&#233;es qui s'ex&#233;cutent en tant que partie du
-  serveur lui-m&#234;me, comme <code>mod_php</code>, <code>mod_perl</code>,
+  Les options de scripting intégrées qui s'exécutent en tant que partie du
+  serveur lui-même, comme <code>mod_php</code>, <code>mod_perl</code>,
   <code>mod_tcl</code>, et <code>mod_python</code>,
-  s'ex&#233;cutent sous le m&#234;me utilisateur que le serveur (voir la directive
-  <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code>), et par cons&#233;quent,
-  les scripts que ces moteurs ex&#233;cutent peuvent acc&#233;der aux m&#234;mes ressources
+  s'exécutent sous le même utilisateur que le serveur (voir la directive
+  <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code>), et par conséquent,
+  les scripts que ces moteurs exécutent peuvent accéder aux mêmes ressources
   que le serveur. Certains moteurs de scripting peuvent proposer des
-  restrictions, mais pour plus de s&#251;ret&#233;, il vaut mieux partir du principe
+  restrictions, mais pour plus de sûreté, il vaut mieux partir du principe
   que ce n'est pas le cas.</p>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="systemsettings" id="systemsettings">Protection de la configuration du syst&#232;me</a></h2>
+<h2><a name="systemsettings" id="systemsettings">Protection de la configuration du système</a></h2>
 
     
 
-    <p>Pour contr&#244;ler &#233;troitement votre serveur, vous pouvez interdire
+    <p>Pour contrôler étroitement votre serveur, vous pouvez interdire
     l'utilisation des fichiers <code>.htaccess</code> qui permettent de
-    passer outre les fonctionnalit&#233;s de s&#233;curit&#233; que vous avez configur&#233;es.
+    passer outre les fonctionnalités de sécurité que vous avez configurées.
     Voici un moyen pour y parvenir :</p>
 
     <p>Ajoutez dans le fichier de configuration du serveur</p>
@@ -351,32 +351,32 @@
 
 
     <p>Ceci interdit l'utilisation des fichiers <code>.htaccess</code> dans
-    tous les r&#233;pertoires, sauf ceux pour lesquels c'est explicitement
-    autoris&#233;.</p>
+    tous les répertoires, sauf ceux pour lesquels c'est explicitement
+    autorisé.</p>
 
-    <p>Notez que c'est la configuration par d&#233;faut depuis Apache 2.3.9.</p>
+    <p>Notez que c'est la configuration par défaut depuis Apache 2.3.9.</p>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="protectserverfiles" id="protectserverfiles">Protection par d&#233;faut des fichiers du serveur</a></h2>
+<h2><a name="protectserverfiles" id="protectserverfiles">Protection par défaut des fichiers du serveur</a></h2>
 
     
 
-    <p>Le concept d'acc&#232;s par d&#233;faut est un aspect d'Apache qui est parfois mal
-    compris. C'est &#224; dire que, &#224; moins que vous ne changiez explicitement ce
+    <p>Le concept d'accès par défaut est un aspect d'Apache qui est parfois mal
+    compris. C'est à dire que, à moins que vous ne changiez explicitement ce
     comportement, si le serveur trouve son chemin vers un fichier en suivant
-    les r&#232;gles normales de correspondance URL - fichier, il peut le retourner
+    les règles normales de correspondance URL - fichier, il peut le retourner
     aux clients.</p>
 
-    <p>Consid&#233;rons l'exemple suivant :</p>
+    <p>Considérons l'exemple suivant :</p>
 
     <div class="example"><p><code>
       # cd /; ln -s / public_html <br />
-      puis acc&#232;s &#224; <code>http://localhost/~root/</code>
+      puis accès à <code>http://localhost/~root/</code>
     </code></p></div>
 
-    <p>Ceci permettrait aux clients de parcourir l'ensemble du syst&#232;me de
-    fichiers. Pour l'&#233;viter, ajoutez le bloc suivant &#224; la configuration
+    <p>Ceci permettrait aux clients de parcourir l'ensemble du système de
+    fichiers. Pour l'éviter, ajoutez le bloc suivant à la configuration
     de votre serveur :</p>
 
     <pre class="prettyprint lang-config">&lt;Directory "/"&gt;
@@ -384,10 +384,10 @@
 &lt;/Directory&gt;</pre>
 
 
-    <p>ceci va interdire l'acc&#232;s par d&#233;faut &#224; tous les fichiers du syst&#232;me de
+    <p>ceci va interdire l'accès par défaut à tous les fichiers du système de
     fichiers. Vous devrez ensuite ajouter les blocs
-    <code class="directive"><a href="../mod/core.html#directory">Directory</a></code> appropri&#233;s correspondant
-    aux r&#233;pertoires auxquels vous voulez autorisez l'acc&#232;s. Par exemple,</p>
+    <code class="directive"><a href="../mod/core.html#directory">Directory</a></code> appropriés correspondant
+    aux répertoires auxquels vous voulez autorisez l'accès. Par exemple,</p>
 
     <pre class="prettyprint lang-config">&lt;Directory "/usr/users/*/public_html"&gt;
     Require all granted
@@ -397,15 +397,15 @@
 &lt;/Directory&gt;</pre>
 
 
-    <p>Portez une attention particuli&#232;re aux interactions entre les directives
+    <p>Portez une attention particulière aux interactions entre les directives
     <code class="directive"><a href="../mod/core.html#location">Location</a></code> et
     <code class="directive"><a href="../mod/core.html#directory">Directory</a></code> ; par exemple, si une
-    directive <code>&lt;Directory ""/&gt;</code> interdit un acc&#232;s, une
+    directive <code>&lt;Directory ""/&gt;</code> interdit un accès, une
     directive <code>&lt;Location "/"&gt;</code> pourra passer outre.</p>
 
-    <p>De m&#234;me, soyez m&#233;fiant en jouant avec la directive
-    <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code> ; la positionner &#224;
-    <code>"./"</code> aurait le m&#234;me effet, pour root, que le premier exemple plus haut.
+    <p>De même, soyez méfiant en jouant avec la directive
+    <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code> ; la positionner à
+    <code>"./"</code> aurait le même effet, pour root, que le premier exemple plus haut.
     Nous vous conseillons
     fortement d'inclure la ligne suivante dans le fichier de configuration de
     votre serveur :</p>
@@ -419,12 +419,12 @@
 
     
 
-    <p>Pour vous tenir inform&#233; de ce qui se passe r&#233;ellement dans votre
+    <p>Pour vous tenir informé de ce qui se passe réellement dans votre
     serveur, vous devez consulter vos
-    <a href="../logs.html">fichiers journaux</a>. M&#234;me si les fichiers journaux
-    ne consignent que des &#233;v&#232;nements qui se sont d&#233;j&#224; produits, ils vous
-    informeront sur la nature des attaques qui sont lanc&#233;es contre le serveur
-    et vous permettront de v&#233;rifier si le niveau de s&#233;curit&#233; n&#233;cessaire est
+    <a href="../logs.html">fichiers journaux</a>. Même si les fichiers journaux
+    ne consignent que des évènements qui se sont déjà produits, ils vous
+    informeront sur la nature des attaques qui sont lancées contre le serveur
+    et vous permettront de vérifier si le niveau de sécurité nécessaire est
     atteint.</p>
 
     <p>Quelques exemples :</p>
@@ -435,10 +435,10 @@
     </code></p></div>
 
     <p>Le premier exemple listera les attaques essayant d'exploiter la
-    <a href="http://online.securityfocus.com/bid/4876/info/">vuln&#233;rabilit&#233;
+    <a href="http://online.securityfocus.com/bid/4876/info/">vulnérabilité
     d'Apache Tomcat pouvant provoquer la divulgation d'informations par des
-    requ&#234;tes Source.JSP mal form&#233;es</a>, le second donnera la liste des dix
-    derni&#232;res interdictions client ; par exemple :</p>
+    requêtes Source.JSP mal formées</a>, le second donnera la liste des dix
+    dernières interdictions client ; par exemple :</p>
 
     <div class="example"><p><code>
       [Thu Jul 11 17:18:39 2002] [error] [client foo.example.com] client denied
@@ -446,14 +446,14 @@
     </code></p></div>
 
     <p>Comme vous le voyez, les fichiers journaux ne consignent que ce qui
-    s'est d&#233;j&#224; produit ; ainsi, si le client a pu acc&#233;der au fichier
+    s'est déjà produit ; ainsi, si le client a pu accéder au fichier
     <code>.htpasswd</code>, vous devriez avoir quelque chose du style :</p>
 
     <div class="example"><p><code>
       foo.example.com - - [12/Jul/2002:01:59:13 +0200] "GET /.htpasswd HTTP/1.1"
     </code></p></div>
 
-    <p>dans votre <a href="../logs.html#accesslog">journal des acc&#232;s</a> ; ce
+    <p>dans votre <a href="../logs.html#accesslog">journal des accès</a> ; ce
     qui signifie que vous avez probablement mis en commentaire ce qui suit dans
     le fichier de configuration de votre serveur :</p>
 
@@ -468,24 +468,24 @@
 
     
 
-    <p>La fusion des sections de configuration est complexe et d&#233;pend
-    souvent des directives utilis&#233;es. Vous devez syst&#233;matiquement tester
-    vos modifications pour v&#233;rifier la mani&#232;re dont les directives sont
-    fusionn&#233;es.</p>
+    <p>La fusion des sections de configuration est complexe et dépend
+    souvent des directives utilisées. Vous devez systématiquement tester
+    vos modifications pour vérifier la manière dont les directives sont
+    fusionnées.</p>
 
-    <p>Concernant les modules qui n'impl&#233;mentent aucune logique de
+    <p>Concernant les modules qui n'implémentent aucune logique de
     fusion, comme <code class="directive">mod_access_compat</code>, le
-    comportement des sections suivantes est tributaire de la pr&#233;sence
-    dans ces derni&#232;res de directives appartenant &#224; ces modules. La
-    configuration est h&#233;rit&#233;e jusqu'&#224; ce qu'une modification soit
-    effectu&#233;e ; &#224; ce moment, la configuration est <em>remplac&#233;e</em> et
-    non fusionn&#233;e.</p>
+    comportement des sections suivantes est tributaire de la présence
+    dans ces dernières de directives appartenant à ces modules. La
+    configuration est héritée jusqu'à ce qu'une modification soit
+    effectuée ; à ce moment, la configuration est <em>remplacée</em> et
+    non fusionnée.</p>
   </div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/misc/security_tips.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/misc/security_tips.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../fr/misc/security_tips.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ko/misc/security_tips.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/misc/security_tips.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/misc/security_tips.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -504,7 +504,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.4/misc/security_tips.h
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autoris&#233; sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

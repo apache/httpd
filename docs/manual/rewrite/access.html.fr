@@ -7,7 +7,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Utiliser mod_rewrite pour le contr&#244;le d'acc&#232;s - Serveur HTTP Apache Version 2.4</title>
+<title>Utiliser mod_rewrite pour le contrôle d'accès - Serveur HTTP Apache Version 2.4</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -21,35 +21,35 @@
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>Utiliser mod_rewrite pour le contr&#244;le d'acc&#232;s</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>Utiliser mod_rewrite pour le contrôle d'accès</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/rewrite/access.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/rewrite/access.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/rewrite/access.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
 
 
-<p>Ce document est un compl&#233;ment &#224; la <a href="../mod/mod_rewrite.html">documentation de r&#233;f&#233;rence</a> de
+<p>Ce document est un complément à la <a href="../mod/mod_rewrite.html">documentation de référence</a> de
 <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>. Il explique comment utiliser
-<code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> pour contr&#244;ler l'acc&#232;s &#224; diverses
+<code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> pour contrôler l'accès à diverses
 ressources, ainsi que d'autres techniques en rapport. Il contient de
 nombreux exemples d'utilisation courante de mod_rewrite avec une
-description d&#233;taill&#233;e de leur fonctionnement.</p>
+description détaillée de leur fonctionnement.</p>
 
-<div class="warning">Vous devez vous attacher &#224; comprendre le
+<div class="warning">Vous devez vous attacher à comprendre le
 fonctionnement des exemples, car la plupart d'entre eux ne
-fonctionneront pas sur votre syst&#232;me si vous vous contentez de les
+fonctionneront pas sur votre système si vous vous contentez de les
 copier/coller dans vos fichiers de configuration.</div>
 
 </div>
-<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#blocked-inline-images">Blocage du r&#233;f&#233;rencement &#224; chaud (Hotlinking) d'images</a></li>
+<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#blocked-inline-images">Blocage du référencement à chaud (Hotlinking) d'images</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#blocking-of-robots">Blocage des robots</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#host-deny">Rejet des clients contenus dans une liste noire</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#referer-deflector">Aiguillage bas&#233; sur l'en-t&#234;te Referer</a></li>
-</ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Documentation du module mod_rewrite</a></li><li><a href="intro.html">Introduction &#224; mod_rewrite</a></li><li><a href="remapping.html">Redirection et remise en
-correspondance</a></li><li><a href="vhosts.html">Serveurs virtuels</a></li><li><a href="proxy.html">Serveurs mandataires</a></li><li><a href="rewritemap.html">Utilisation de RewriteMap</a></li><li><a href="advanced.html">Techniques avanc&#233;es</a></li><li><a href="avoid.html">Quand ne pas utiliser mod_rewrite</a></li><li><a href="#comments_section">Commentaires</a></li></ul></div>
+<li><img alt="" src="../images/down.gif" /> <a href="#referer-deflector">Aiguillage basé sur l'en-tête Referer</a></li>
+</ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Documentation du module mod_rewrite</a></li><li><a href="intro.html">Introduction à mod_rewrite</a></li><li><a href="remapping.html">Redirection et remise en
+correspondance</a></li><li><a href="vhosts.html">Serveurs virtuels</a></li><li><a href="proxy.html">Serveurs mandataires</a></li><li><a href="rewritemap.html">Utilisation de RewriteMap</a></li><li><a href="advanced.html">Techniques avancées</a></li><li><a href="avoid.html">Quand ne pas utiliser mod_rewrite</a></li><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="blocked-inline-images" id="blocked-inline-images">Blocage du r&#233;f&#233;rencement &#224; chaud (Hotlinking) d'images</a></h2>
+<h2><a name="blocked-inline-images" id="blocked-inline-images">Blocage du référencement à chaud (Hotlinking) d'images</a></h2>
 
       
 
@@ -57,10 +57,10 @@ correspondance</a></li><li><a href="vhosts.html">Serveurs virtuels</a></li><li><
         <dt>Description :</dt>
 
         <dd>
-          <p>Cette technique vous permet d'interdire &#224; d'autres sites
+          <p>Cette technique vous permet d'interdire à d'autres sites
 	  d'inclure directement vos images dans leurs pages. On fait
-	  souvent r&#233;f&#233;rence &#224; cette pratique sous le nom de
-	  r&#233;f&#233;rencement &#224; chaud (Hotlinking) qui entra&#238;ne l'utilisation
+	  souvent référence à cette pratique sous le nom de
+	  référencement à chaud (Hotlinking) qui entraîne l'utilisation
 	  de votre bande passante pour servir des contenus faisant
 	  partie du site de quelqu'un d'autre.</p>
         </dd>
@@ -71,12 +71,12 @@ correspondance</a></li><li><a href="vhosts.html">Serveurs virtuels</a></li><li><
 	<p>Cette technique repose sur la valeur de la variable
 	optionnelle <code>HTTP_REFERER</code>. Certaines personnes
 	pourront donc contourner cette limitation. Pour la plupart des
-	utilisateurs cependant, la requ&#234;te &#233;chouera, en ce sens que
-	l'image ne sera pas affich&#233;e depuis le site tiers.</p>
-	<p>Il y a plusieurs mani&#232;res de g&#233;rer cette situation.</p>
+	utilisateurs cependant, la requête échouera, en ce sens que
+	l'image ne sera pas affichée depuis le site tiers.</p>
+	<p>Il y a plusieurs manières de gérer cette situation.</p>
 
 	<p>Dans le premier exemple, nous rejetons tout simplement la
-	requ&#234;te si elle ne provenait pas d'une page appartenant &#224; notre
+	requête si elle ne provenait pas d'une page appartenant à notre
 	site. Pour les besoins de cet exemple, nous supposons que le nom
 	de votre site est <code>www.example.com</code>.</p>
 
@@ -87,16 +87,16 @@ RewriteCond "%{HTTP_REFERER}" "!www.example.com" [NC]
 RewriteRule "\.(gif|jpg|png)$"    "-"   [F,NC]</pre>
 
 
-	<p>Dans le second exemple, plut&#244;t que de rejeter la requ&#234;te,
-	nous affichons une autre image &#224; la place.</p>
+	<p>Dans le second exemple, plutôt que de rejeter la requête,
+	nous affichons une autre image à la place.</p>
 
 <pre class="prettyprint lang-config">RewriteCond "%{HTTP_REFERER}" "!^$"
 RewriteCond "%{HTTP_REFERER}" "!www.example.com" [NC]
 RewriteRule "\.(gif|jpg|png)$"    "/images/go-away.png"   [R,NC]</pre>
 
 
-	<p>Dans le troisi&#232;me exemple, nous redirigeons la requ&#234;te vers
-	une image appartenant &#224; un autre site.</p>
+	<p>Dans le troisième exemple, nous redirigeons la requête vers
+	une image appartenant à un autre site.</p>
 
 <pre class="prettyprint lang-config">RewriteCond "%{HTTP_REFERER}" "!^$"
 RewriteCond "%{HTTP_REFERER}" "!www.example.com" [NC]
@@ -104,17 +104,17 @@ RewriteRule "\.(gif|jpg|png)$" "http://other.example.com/image.gif"   [R,NC]</pr
 
 
 	<p>De tous ces exemples, les deux derniers semblent les plus
-	efficaces pour faire en sorte que les gens arr&#234;tent de
-	r&#233;f&#233;rencer vos images &#224; chaud, car il ne verront pas les images
-	qu'ils s'attendent &#224; voir.</p>
+	efficaces pour faire en sorte que les gens arrêtent de
+	référencer vos images à chaud, car il ne verront pas les images
+	qu'ils s'attendent à voir.</p>
 
         </dd>
 
         <dt>Discussion :</dt>
 
         <dd>
-        <p>Si vous ne voulez pas rediriger la requ&#234;te, mais
-	simplement interdire l'acc&#232;s &#224; la ressource, vous pouvez y
+        <p>Si vous ne voulez pas rediriger la requête, mais
+	simplement interdire l'accès à la ressource, vous pouvez y
 	parvenir sans utiliser mod_rewrite :</p>
 
         <pre class="prettyprint lang-config">SetEnvIf Referer "example\.com" localreferer
@@ -136,35 +136,35 @@ RewriteRule "\.(gif|jpg|png)$" "http://other.example.com/image.gif"   [R,NC]</pr
 
         <dd>
         <p>
-        Dans cet exemple, nous allons discuter d'une m&#233;thode permettant
-	de bloquer les requ&#234;tes persistentes en provenance d'un robot
+        Dans cet exemple, nous allons discuter d'une méthode permettant
+	de bloquer les requêtes persistentes en provenance d'un robot
 	particulier, ou d'un navigateur.</p>
 
-        <p>La m&#233;thode classique pour exclure un robot consiste &#224; d&#233;finir
-	un fichier, <code>/robots.txt</code> qui sp&#233;cifie les parties de
+        <p>La méthode classique pour exclure un robot consiste à définir
+	un fichier, <code>/robots.txt</code> qui spécifie les parties de
 	votre site web pour lesquelles vous voulez exclure les robots.
 	Malheureusement, certains robots ne tiennent pas compte de ces
 	fichiers.
         </p>
 
-        <p>Notez qu'il existe des m&#233;thodes d'exclusion qui n'utilisent
+        <p>Notez qu'il existe des méthodes d'exclusion qui n'utilisent
 	pas mod_rewrite. Notez aussi que toute technique qui repose sur
-	le contenu de la cha&#238;ne client <code>USER_AGENT</code> peut &#234;tre
-	contourn&#233;e tr&#232;s facilement car cette cha&#238;ne peut &#234;tre modifi&#233;e.</p>
+	le contenu de la chaîne client <code>USER_AGENT</code> peut être
+	contournée très facilement car cette chaîne peut être modifiée.</p>
         </dd>
 
         <dt>Solution :</dt>
 
         <dd>
-        <p>On utilise un jeu de r&#232;gles qui sp&#233;cifie le r&#233;pertoire &#224;
-	prot&#233;ger, ainsi que la cha&#238;ne client <code>USER_AGENT</code> qui
+        <p>On utilise un jeu de règles qui spécifie le répertoire à
+	protéger, ainsi que la chaîne client <code>USER_AGENT</code> qui
 	identifie le robot malin ou envahissant.</p>
 
-        <p>Dans cet exemple, nous bloquons un robot nomm&#233;
-	<code>Vilain_Robot</code> pour le r&#233;pertoire
+        <p>Dans cet exemple, nous bloquons un robot nommé
+	<code>Vilain_Robot</code> pour le répertoire
 	<code>/secret/fichiers</code>. Si vous voulez bloquer ce client
-	seulement depuis une source particuli&#232;re, vous pouvez aussi
-	sp&#233;cifier un intervalle d'adresses IP.</p>
+	seulement depuis une source particulière, vous pouvez aussi
+	spécifier un intervalle d'adresses IP.</p>
 
 <pre class="prettyprint lang-config">RewriteCond "%{HTTP_USER_AGENT}"   "^NameOfBadRobot"
 RewriteCond "%{REMOTE_ADDR}"       "=123\.45\.67\.[8-9]"
@@ -176,8 +176,8 @@ RewriteRule "^/secret/files/"   "-"   [F]</pre>
 
       <dd>
       <p>
-        Vous pouvez cependant parvenir au m&#234;me r&#233;sultat sans utiliser
-	mod_rewrite via la m&#233;thode alternative suivante :
+        Vous pouvez cependant parvenir au même résultat sans utiliser
+	mod_rewrite via la méthode alternative suivante :
       </p>
       <pre class="prettyprint lang-config">SetEnvIfNoCase User-Agent "^NameOfBadRobot" goaway
 &lt;Location "/secret/files"&gt;
@@ -188,11 +188,11 @@ RewriteRule "^/secret/files/"   "-"   [F]</pre>
 &lt;/Location&gt;</pre>
 
       <p>
-      Comme indiqu&#233; plus haut, il est ais&#233; de contourner cette
-      technique, simplement en modifiant le contenu de l'en-t&#234;te
-      <code>USER_AGENT</code>. Si vous subissez une attaque en r&#232;gle,
-      vous allez devoir r&#233;fl&#233;chir &#224; un blocage &#224; un niveau sup&#233;rieur,
-      par exemple une r&#232;gle de filtrage de votre pare-feu.
+      Comme indiqué plus haut, il est aisé de contourner cette
+      technique, simplement en modifiant le contenu de l'en-tête
+      <code>USER_AGENT</code>. Si vous subissez une attaque en règle,
+      vous allez devoir réfléchir à un blocage à un niveau supérieur,
+      par exemple une règle de filtrage de votre pare-feu.
       </p>
 
       </dd>
@@ -209,8 +209,8 @@ RewriteRule "^/secret/files/"   "-"   [F]</pre>
     <dt>Description :</dt>
 
     <dd>
-      <p>Nous voulons interdire l'acc&#232;s &#224; notre serveur aux clients
-      contenus dans une liste noire similaire &#224;
+      <p>Nous voulons interdire l'accès à notre serveur aux clients
+      contenus dans une liste noire similaire à
       <code>hosts.deny</code>.</p>
     </dd>
 
@@ -229,10 +229,10 @@ RewriteRule   "^"  "-"  [F]</pre>
 ##  hosts.deny<br />
 ##<br />
 ##  ATTENTION! Ceci est une table de correspondances, non une liste,<br />
-##		m&#234;me si elle est trait&#233;e comme telle. mod_rewrite<br />
-##		l'interpr&#232;te comme une liste de paires cl&#233;/valeur, et<br />
-##		chaque entr&#233;e doit au moins poss&#233;der une valeur par<br />
-##		d&#233;faut "-".<br />
+##		même si elle est traitée comme telle. mod_rewrite<br />
+##		l'interprète comme une liste de paires clé/valeur, et<br />
+##		chaque entrée doit au moins posséder une valeur par<br />
+##		défaut "-".<br />
 <br />
 193.102.180.41 -<br />
 bsdti1.sdm.de  -<br />
@@ -243,18 +243,18 @@ bsdti1.sdm.de  -<br />
     <dt>Discussion :</dt>
     <dd>
     <p>
-    La seconde condition RewriteCond pr&#233;suppose que HostNameLookups est
-    d&#233;fini &#224; On, de fa&#231;on &#224; ce que les adresses IP des clients puissent
-    &#234;tre r&#233;solues. Dans le cas contraire, vous devez supprimer la
+    La seconde condition RewriteCond présuppose que HostNameLookups est
+    défini à On, de façon à ce que les adresses IP des clients puissent
+    être résolues. Dans le cas contraire, vous devez supprimer la
     seconde condition, ainsi que le drapeau <code>[OR]</code> de la
-    premi&#232;re.
+    première.
     </p>
     </dd>
   </dl>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="referer-deflector" id="referer-deflector">Aiguillage bas&#233; sur l'en-t&#234;te Referer</a></h2>
+<h2><a name="referer-deflector" id="referer-deflector">Aiguillage basé sur l'en-tête Referer</a></h2>
 
   
 
@@ -262,15 +262,15 @@ bsdti1.sdm.de  -<br />
     <dt>Description :</dt>
 
     <dd>
-      <p>Redirige les requ&#234;tes en fonction du Referer de provenance de
-      la requ&#234;te, avec des cibles diff&#233;rentes pour chaque Referer.</p>
+      <p>Redirige les requêtes en fonction du Referer de provenance de
+      la requête, avec des cibles différentes pour chaque Referer.</p>
     </dd>
 
     <dt>Solution :</dt>
 
     <dd>
-  <p>Le jeu de r&#232;gles suivant utilise un fichier de correspondances pour
-  associer chaque Referer &#224; une cible de redirection.</p>
+  <p>Le jeu de règles suivant utilise un fichier de correspondances pour
+  associer chaque Referer à une cible de redirection.</p>
 
 <pre class="prettyprint lang-config">RewriteMap  deflector "txt:/path/to/deflector.map"
 
@@ -284,8 +284,8 @@ RewriteRule "^" "${deflector:%{HTTP_REFERER}}" [R,L]</pre>
 
 
       <p>Le fichier de correspondances contient les cibles de
-      redirection associ&#233;es &#224; chaque Referer, ou, si nous voulons
-      simplement rediriger les requ&#234;tes vers leur Referer, un "-" est
+      redirection associées à chaque Referer, ou, si nous voulons
+      simplement rediriger les requêtes vers leur Referer, un "-" est
       inscrit dans le fichier de correspondances :</p>
 
 <pre class="prettyprint lang-config">##
@@ -303,7 +303,7 @@ http://badguys.example.com/bad/index3.html   http://somewhere.example.com/</pre>
 </div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/rewrite/access.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/rewrite/access.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/rewrite/access.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -322,7 +322,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.4/rewrite/access.html'
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autoris&#233; sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
