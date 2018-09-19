@@ -124,7 +124,34 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   *) Fix missing spaces in messages
+      trunk patch: http://svn.apache.org/r1546860
+      2.4.x patch: svn merge -c 1546860 ^/httpd/httpd/trunk .
+                   Merge of server/protocol.c fails but it is not an issue. The
+                   corresponding message has been updated and already backported
+                   in 2.4.x in r1772678.
+      +1: jailletc36, minfrin, jim
 
+  *) Easy patches: synch 2.4.x and trunk
+     - mod_sed: Style only
+     - mod_auth_basic: Clarify a log message + style
+     - http: Remove a compiler warning
+     - mod_auth_basic: Fix parsing of the credencial for Basic authorization
+     - mod_lua: fix function prototype
+     trunk patch: http://svn.apache.org/r1749402
+                  http://svn.apache.org/r1656549
+                  http://svn.apache.org/r1840776 (follow-up to r1656549)
+                  http://svn.apache.org/r1800126
+                  http://svn.apache.org/r1817131
+                  http://svn.apache.org/r1834226
+     2.4.x patch: svn merge -c 1749402,1656549,1840776,1800126,1817131,1834226 ^/httpd/httpd/trunk . 
+     +1: jailletc36, minfrin, jim
+
+  *) mod_http2: silence compiler warnings, share less memory between
+     streams/tasks, add some util fixes from mod_md copies, although not called in h2. 
+     trunk patch: http://svn.apache.org/r1835118
+     2.4.x patch: svn merge -c 1835118 ^/httpd/httpd/trunk .
+     +1: icing, minfrin, jim
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -207,35 +234,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              http://svn.apache.org/r1841218
       2.4.x branch: svn merge ^/httpd/httpd/branches/tlsv1.3-for-2.4.x
       +1: icing, jorton, 
-
-   *) Fix missing spaces in messages
-      trunk patch: http://svn.apache.org/r1546860
-      2.4.x patch: svn merge -c 1546860 ^/httpd/httpd/trunk .
-                   Merge of server/protocol.c fails but it is not an issue. The
-                   corresponding message has been updated and already backported
-                   in 2.4.x in r1772678.
-      +1: jailletc36, minfrin, jim
-
-  *) Easy patches: synch 2.4.x and trunk
-     - mod_sed: Style only
-     - mod_auth_basic: Clarify a log message + style
-     - http: Remove a compiler warning
-     - mod_auth_basic: Fix parsing of the credencial for Basic authorization
-     - mod_lua: fix function prototype
-     trunk patch: http://svn.apache.org/r1749402
-                  http://svn.apache.org/r1656549
-                  http://svn.apache.org/r1840776 (follow-up to r1656549)
-                  http://svn.apache.org/r1800126
-                  http://svn.apache.org/r1817131
-                  http://svn.apache.org/r1834226
-     2.4.x patch: svn merge -c 1749402,1656549,1840776,1800126,1817131,1834226 ^/httpd/httpd/trunk . 
-     +1: jailletc36, minfrin, jim
-
-  *) mod_http2: silence compiler warnings, share less memory between
-     streams/tasks, add some util fixes from mod_md copies, although not called in h2. 
-     trunk patch: http://svn.apache.org/r1835118
-     2.4.x patch: svn merge -c 1835118 ^/httpd/httpd/trunk .
-     +1: icing, minfrin, jim
 
   *) ab: print Server Temp Key information.
      trunk patch: http://svn.apache.org/r1738415
