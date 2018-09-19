@@ -237,7 +237,7 @@ static int before_frame_send(nghttp2_session *ngh2,
 
 static int add_header(void *table, const char *n, const char *v)
 {
-    apr_table_addn(table, n, v);
+    apr_table_add(table, n, v);
     return 1;
 }
 
@@ -361,7 +361,7 @@ static void h2_proxy_stream_end_headers_out(h2_proxy_stream *stream)
         }
 
         /* create a "Via:" response header entry and merge it */
-        apr_table_addn(r->headers_out, "Via",
+        apr_table_add(r->headers_out, "Via",
                        (session->conf->viaopt == via_full)
                        ? apr_psprintf(p, "%d.%d %s%s (%s)",
                                       HTTP_VERSION_MAJOR(r->proto_num),

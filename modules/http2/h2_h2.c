@@ -694,7 +694,7 @@ static void check_push(request_rec *r, const char *tag)
                       tag, conf->push_list->nelts);
         for (i = 0; i < conf->push_list->nelts; ++i) {
             h2_push_res *push = &APR_ARRAY_IDX(conf->push_list, i, h2_push_res);
-            apr_table_addn(r->headers_out, "Link", 
+            apr_table_add(r->headers_out, "Link", 
                            apr_psprintf(r->pool, "<%s>; rel=preload%s", 
                                         push->uri_ref, push->critical? "; critical" : ""));
         }
