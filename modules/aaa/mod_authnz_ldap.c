@@ -1749,17 +1749,17 @@ static const command_rec authnz_ldap_cmds[] =
 
     AP_INIT_FLAG("AuthLDAPGroupAttributeIsDN", ap_set_flag_slot,
                  (void *)APR_OFFSETOF(authn_ldap_config_t, group_attrib_is_dn), OR_AUTHCFG,
-                 "If set to 'on', auth_ldap uses the DN that is retrieved from the server for"
-                 "subsequent group comparisons. If set to 'off', auth_ldap uses the string"
+                 "If set to 'on', auth_ldap uses the DN that is retrieved from the server for "
+                 "subsequent group comparisons. If set to 'off', auth_ldap uses the string "
                  "provided by the client directly. Defaults to 'on'."),
 
     AP_INIT_TAKE1("AuthLDAPDereferenceAliases", mod_auth_ldap_set_deref, NULL, OR_AUTHCFG,
-                  "Determines how aliases are handled during a search. Can be one of the"
+                  "Determines how aliases are handled during a search. Can be one of the "
                   "values \"never\", \"searching\", \"finding\", or \"always\". "
                   "Defaults to always."),
 
     AP_INIT_TAKE1("AuthLDAPCharsetConfig", set_charset_config, NULL, RSRC_CONF,
-                  "Character set conversion configuration file. If omitted, character set"
+                  "Character set conversion configuration file. If omitted, character set "
                   "conversion is disabled."),
 
     AP_INIT_TAKE1("AuthLDAPAuthorizePrefix", ap_set_string_slot,
@@ -1777,12 +1777,12 @@ static const command_rec authnz_ldap_cmds[] =
 
      AP_INIT_FLAG("AuthLDAPSearchAsUser", ap_set_flag_slot,
                   (void *)APR_OFFSETOF(authn_ldap_config_t, search_as_user), OR_AUTHCFG,
-                   "Set to 'on' to perform authorization-based searches with the users credentials, when this module"
-                   " has also performed authentication.  Does not affect nested groups lookup."),
+                  "Set to 'on' to perform authorization-based searches with the users credentials, when this module "
+                  "has also performed authentication.  Does not affect nested groups lookup."),
      AP_INIT_FLAG("AuthLDAPCompareAsUser", ap_set_flag_slot,
                   (void *)APR_OFFSETOF(authn_ldap_config_t, compare_as_user), OR_AUTHCFG,
-                  "Set to 'on' to perform authorization-based compares with the users credentials, when this module"
-                  " has also performed authentication.  Does not affect nested groups lookups."),
+                  "Set to 'on' to perform authorization-based compares with the users credentials, when this module "
+                  "has also performed authentication.  Does not affect nested groups lookups."),
     {NULL}
 };
 

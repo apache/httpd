@@ -124,14 +124,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   *) Fix missing spaces in messages
-      trunk patch: http://svn.apache.org/r1546860
-      2.4.x patch: svn merge -c 1546860 ^/httpd/httpd/trunk .
-                   Merge of server/protocol.c fails but it is not an issue. The
-                   corresponding message has been updated and already backported
-                   in 2.4.x in r1772678.
-      +1: jailletc36, minfrin, jim
-
   *) Easy patches: synch 2.4.x and trunk
      - mod_sed: Style only
      - mod_auth_basic: Clarify a log message + style
