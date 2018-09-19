@@ -164,7 +164,7 @@ static int copy_header(void *ctx, const char *name, const char *value)
 {
     apr_table_t *headers = ctx;
     
-    apr_table_addn(headers, name, value);
+    apr_table_add(headers, name, value);
     return 1;
 }
 
@@ -258,7 +258,7 @@ static h2_headers *create_response(h2_task *task, request_rec *r)
     if (r->no_cache && !apr_table_get(r->headers_out, "Expires")) {
         char *date = apr_palloc(r->pool, APR_RFC822_DATE_LEN);
         ap_recent_rfc822_date(date, r->request_time);
-        apr_table_addn(r->headers_out, "Expires", date);
+        apr_table_add(r->headers_out, "Expires", date);
     }
     
     /* This is a hack, but I can't find anyway around it.  The idea is that
