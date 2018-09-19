@@ -124,21 +124,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) Easy patches: synch 2.4.x and trunk
-     - mod_sed: Style only
-     - mod_auth_basic: Clarify a log message + style
-     - http: Remove a compiler warning
-     - mod_auth_basic: Fix parsing of the credencial for Basic authorization
-     - mod_lua: fix function prototype
-     trunk patch: http://svn.apache.org/r1749402
-                  http://svn.apache.org/r1656549
-                  http://svn.apache.org/r1840776 (follow-up to r1656549)
-                  http://svn.apache.org/r1800126
-                  http://svn.apache.org/r1817131
-                  http://svn.apache.org/r1834226
-     2.4.x patch: svn merge -c 1749402,1656549,1840776,1800126,1817131,1834226 ^/httpd/httpd/trunk . 
-     +1: jailletc36, minfrin, jim
-
   *) mod_http2: silence compiler warnings, share less memory between
      streams/tasks, add some util fixes from mod_md copies, although not called in h2. 
      trunk patch: http://svn.apache.org/r1835118

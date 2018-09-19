@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.36
 
+  *) mod_auth_basic: Be less tolerant when parsing the credencial. Only spaces
+     should be accepted after the authorization scheme. \t are also tolerated.
+     [Christophe Jaillet]
+
   *) mod_proxy_hcheck: Fix issues with interval determination. PR 62318
      [Jim Jagielski]
 

@@ -106,7 +106,7 @@ static void grow_buffer(apr_pool_t *pool, char **buffer,
     }
 
     /* Align it to 4 KB boundary */
-    newsize = (newsize  + ((1 << 12) - 1)) & ~((1 << 12) -1);
+    newsize = (newsize  + ((1 << 12) - 1)) & ~((1 << 12) - 1);
     newbuffer = apr_pcalloc(pool, newsize);
     if (*spend && *buffer && (*cursize > 0)) {
         spendsize = *spend - *buffer;
@@ -586,8 +586,8 @@ static int match(sed_eval_t *eval, char *expbuf, int gf,
     char   *p1;
     int circf;
 
-    if(gf) {
-        if(*expbuf)    return(0);
+    if (gf) {
+        if (*expbuf)    return(0);
         step_vars->locs = p1 = step_vars->loc2;
     } else {
         p1 = eval->linebuf;
@@ -604,16 +604,16 @@ static int match(sed_eval_t *eval, char *expbuf, int gf,
 static int substitute(sed_eval_t *eval, sed_reptr_t *ipc,
                       step_vars_storage *step_vars)
 {
-    if(match(eval, ipc->re1, 0, step_vars) == 0)    return(0);
+    if (match(eval, ipc->re1, 0, step_vars) == 0)    return(0);
 
     eval->numpass = 0;
     eval->sflag = 0;        /* Flags if any substitution was made */
     if (dosub(eval, ipc->rhs, ipc->gfl, step_vars) != APR_SUCCESS)
         return -1;
 
-    if(ipc->gfl) {
-        while(*step_vars->loc2) {
-            if(match(eval, ipc->re1, 1, step_vars) == 0) break;
+    if (ipc->gfl) {
+        while (*step_vars->loc2) {
+            if (match(eval, ipc->re1, 1, step_vars) == 0) break;
             if (dosub(eval, ipc->rhs, ipc->gfl, step_vars) != APR_SUCCESS)
                 return -1;
         }
@@ -631,9 +631,9 @@ static apr_status_t dosub(sed_eval_t *eval, char *rhsbuf, int n,
     int c;
     apr_status_t rv = APR_SUCCESS;
 
-    if(n > 0 && n < 999) {
+    if (n > 0 && n < 999) {
         eval->numpass++;
-        if(n != eval->numpass) return APR_SUCCESS;
+        if (n != eval->numpass) return APR_SUCCESS;
     }
     eval->sflag = 1;
     lp = eval->linebuf;
@@ -703,7 +703,7 @@ static apr_status_t command(sed_eval_t *eval, sed_reptr_t *ipc,
     switch(ipc->command) {
 
         case ACOM:
-            if(eval->aptr >= &eval->abuf[SED_ABUFSIZE]) {
+            if (eval->aptr >= &eval->abuf[SED_ABUFSIZE]) {
                 eval_errf(eval, SEDERR_TMAMES, eval->lnum);
             } else {
                 *eval->aptr++ = ipc;
@@ -713,20 +713,22 @@ static apr_status_t command(sed_eval_t *eval, sed_reptr_t *ipc,
 
         case CCOM:
             eval->delflag = 1;
-            if(!eval->inar[ipc->nrep] || eval->dolflag) {
+            if (!eval->inar[ipc->nrep] || eval->dolflag) {
                 for (p1 = ipc->re1; *p1; p1++)
                     ;
                 rv = wline(eval, ipc->re1, p1 - ipc->re1);
             }
             break;
+
         case DCOM:
             eval->delflag++;
             break;
+
         case CDCOM:
             p1 = eval->linebuf;
 
-            while(*p1 != '\n') {
-                if(*p1++ == 0) {
+            while (*p1 != '\n') {
+                if (*p1++ == 0) {
                     eval->delflag++;
                     return APR_SUCCESS;
                 }
@@ -769,17 +771,16 @@ static apr_status_t command(sed_eval_t *eval, sed_reptr_t *ipc,
             eval->jflag = 1;
             break;
 
-
         case LCOM:
             p1 = eval->linebuf;
             p2 = eval->genbuf;
             eval->genbuf[72] = 0;
-            while(*p1)
-                if((unsigned char)*p1 >= 040) {
-                    if(*p1 == 0177) {
+            while (*p1) {
+                if ((unsigned char)*p1 >= 040) {
+                    if (*p1 == 0177) {
                         p3 = rub;
                         while ((*p2++ = *p3++) != 0)
-                            if(p2 >= eval->lcomend) {
+                            if (p2 >= eval->lcomend) {
                                 *p2 = '\\';
                                 rv = wline(eval, eval->genbuf,
                                            strlen(eval->genbuf));
@@ -791,9 +792,9 @@ static apr_status_t command(sed_eval_t *eval, sed_reptr_t *ipc,
                         p1++;
                         continue;
                     }
-                    if(!isprint(*p1 & 0377)) {
+                    if (!isprint(*p1 & 0377)) {
                         *p2++ = '\\';
-                        if(p2 >= eval->lcomend) {
+                        if (p2 >= eval->lcomend) {
                             *p2 = '\\';
                             rv = wline(eval, eval->genbuf,
                                        strlen(eval->genbuf));
@@ -802,7 +803,7 @@ static apr_status_t command(sed_eval_t *eval, sed_reptr_t *ipc,
                             p2 = eval->genbuf;
                         }
                         *p2++ = (*p1 >> 6) + '0';
-                        if(p2 >= eval->lcomend) {
+                        if (p2 >= eval->lcomend) {
                             *p2 = '\\';
                             rv = wline(eval, eval->genbuf,
                                        strlen(eval->genbuf));
@@ -811,7 +812,7 @@ static apr_status_t command(sed_eval_t *eval, sed_reptr_t *ipc,
                             p2 = eval->genbuf;
                         }
                         *p2++ = ((*p1 >> 3) & 07) + '0';
-                        if(p2 >= eval->lcomend) {
+                        if (p2 >= eval->lcomend) {
                             *p2 = '\\';
                             rv = wline(eval, eval->genbuf,
                                        strlen(eval->genbuf));
@@ -820,7 +821,7 @@ static apr_status_t command(sed_eval_t *eval, sed_reptr_t *ipc,
                             p2 = eval->genbuf;
                         }
                         *p2++ = (*p1++ & 07) + '0';
-                        if(p2 >= eval->lcomend) {
+                        if (p2 >= eval->lcomend) {
                             *p2 = '\\';
                             rv = wline(eval, eval->genbuf,
                                        strlen(eval->genbuf));
@@ -830,7 +831,7 @@ static apr_status_t command(sed_eval_t *eval, sed_reptr_t *ipc,
                         }
                     } else {
                         *p2++ = *p1++;
-                        if(p2 >= eval->lcomend) {
+                        if (p2 >= eval->lcomend) {
                             *p2 = '\\';
                             rv = wline(eval, eval->genbuf,
                                        strlen(eval->genbuf));
@@ -842,7 +843,7 @@ static apr_status_t command(sed_eval_t *eval, sed_reptr_t *ipc,
                 } else {
                     p3 = trans[(unsigned char)*p1-1];
                     while ((*p2++ = *p3++) != 0)
-                        if(p2 >= eval->lcomend) {
+                        if (p2 >= eval->lcomend) {
                             *p2 = '\\';
                             rv = wline(eval, eval->genbuf,
                                        strlen(eval->genbuf));
@@ -853,28 +854,29 @@ static apr_status_t command(sed_eval_t *eval, sed_reptr_t *ipc,
                     p2--;
                     p1++;
                 }
+            }
             *p2 = 0;
             rv = wline(eval, eval->genbuf, strlen(eval->genbuf));
             break;
 
         case NCOM:
-            if(!eval->commands->nflag) {
+            if (!eval->commands->nflag) {
                 rv = wline(eval, eval->linebuf, eval->lspend - eval->linebuf);
                 if (rv != APR_SUCCESS)
                     return rv;
             }
 
-            if(eval->aptr > eval->abuf) {
+            if (eval->aptr > eval->abuf) {
                 rv = arout(eval);
                 if (rv != APR_SUCCESS)
                     return rv;
             }
             eval->lspend = eval->linebuf;
             eval->pending = ipc->next;
-
             break;
+
         case CNCOM:
-            if(eval->aptr > eval->abuf) {
+            if (eval->aptr > eval->abuf) {
                 rv = arout(eval);
                 if (rv != APR_SUCCESS)
                     return rv;
@@ -886,6 +888,7 @@ static apr_status_t command(sed_eval_t *eval, sed_reptr_t *ipc,
         case PCOM:
             rv = wline(eval, eval->linebuf, eval->lspend - eval->linebuf);
             break;
+
         case CPCOM:
             for (p1 = eval->linebuf; *p1 != '\n' && *p1 != '\0'; p1++);
             rv = wline(eval, eval->linebuf, p1 - eval->linebuf);
@@ -898,7 +901,7 @@ static apr_status_t command(sed_eval_t *eval, sed_reptr_t *ipc,
                     break;
             }
 
-            if(eval->aptr > eval->abuf) {
+            if (eval->aptr > eval->abuf) {
                 rv = arout(eval);
                 if (rv != APR_SUCCESS)
                     return rv;
@@ -906,8 +909,9 @@ static apr_status_t command(sed_eval_t *eval, sed_reptr_t *ipc,
 
             eval->quitflag = 1;
             break;
+
         case RCOM:
-            if(eval->aptr >= &eval->abuf[SED_ABUFSIZE]) {
+            if (eval->aptr >= &eval->abuf[SED_ABUFSIZE]) {
                 eval_errf(eval, SEDERR_TMRMES, eval->lnum);
             } else {
                 *eval->aptr++ = ipc;
@@ -920,8 +924,8 @@ static apr_status_t command(sed_eval_t *eval, sed_reptr_t *ipc,
             if (i == -1) {
                 return APR_EGENERAL;
             }
-            if(ipc->pfl && eval->commands->nflag && i) {
-                if(ipc->pfl == 1) {
+            if (ipc->pfl && eval->commands->nflag && i) {
+                if (ipc->pfl == 1) {
                     rv = wline(eval, eval->linebuf, eval->lspend -
                                eval->linebuf);
                     if (rv != APR_SUCCESS)
@@ -939,7 +943,7 @@ static apr_status_t command(sed_eval_t *eval, sed_reptr_t *ipc,
             break;
 
         case TCOM:
-            if(eval->sflag == 0)  break;
+            if (eval->sflag == 0)  break;
             eval->sflag = 0;
             eval->jflag = 1;
             break;
@@ -949,6 +953,7 @@ static apr_status_t command(sed_eval_t *eval, sed_reptr_t *ipc,
                 apr_file_printf(eval->fcode[ipc->findex], "%s\n",
                                 eval->linebuf);
             break;
+
         case XCOM:
             copy_to_genbuf(eval, eval->linebuf);
             copy_to_linebuf(eval, eval->holdbuf);
@@ -958,7 +963,7 @@ static apr_status_t command(sed_eval_t *eval, sed_reptr_t *ipc,
         case YCOM:
             p1 = eval->linebuf;
             p2 = ipc->re1;
-            while((*p1 = p2[(unsigned char)*p1]) != 0)    p1++;
+            while ((*p1 = p2[(unsigned char)*p1]) != 0)    p1++;
             break;
     }
     return rv;

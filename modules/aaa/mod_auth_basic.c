@@ -146,14 +146,11 @@ static const char *add_basic_fake(cmd_parms * cmd, void *config,
     const char *err;
 
     if (!strcasecmp(user, "off")) {
-
         conf->fakeuser = NULL;
         conf->fakepass = NULL;
         conf->fake_set = 1;
-
     }
     else {
-
         /* if password is unspecified, set it to the fixed string "password" to
          * be compatible with the behaviour of mod_ssl.
          */
@@ -174,11 +171,10 @@ static const char *add_basic_fake(cmd_parms * cmd, void *config,
                         &err, NULL);
         if (err) {
             return apr_psprintf(cmd->pool,
-                    "Could not parse fake password expression '%s': %s", user,
-                    err);
+                    "Could not parse fake password expression associated to user '%s': %s",
+                    user, err);
         }
         conf->fake_set = 1;
-
     }
 
     return NULL;
@@ -274,7 +270,7 @@ static int get_basic_auth(request_rec *r, const char **user,
     }
 
     /* Skip leading spaces. */
-    while (apr_isspace(*auth_line)) {
+    while (*auth_line == ' ' || *auth_line == '\t') {
         auth_line++;
     }
 

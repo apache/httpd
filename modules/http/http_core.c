@@ -134,7 +134,7 @@ static apr_port_t http_port(const request_rec *r)
 
 static int ap_process_http_async_connection(conn_rec *c)
 {
-    request_rec *r;
+    request_rec *r = NULL;
     conn_state_t *cs = c->cs;
 
     AP_DEBUG_ASSERT(cs != NULL);
