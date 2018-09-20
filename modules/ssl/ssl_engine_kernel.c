@@ -356,7 +356,7 @@ int ssl_hook_ReadReq(request_rec *r)
              * server config we used for handshaking or in our current server.
              * This should avoid insecure configuration by accident.
              */
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02033)
+            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02033)
                          "No hostname was provided via SNI for a name based"
                          " virtual host");
             apr_table_setn(r->notes, "error-notes",
