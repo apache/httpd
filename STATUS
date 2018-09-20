@@ -215,9 +215,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
   *) mod_ssl: downgrade logging of requests without SNI when SSLStrictSNIVHostCheck is on
               (just a quality of life improvement for log-reading admins):
-      trunk: http://svn.apache.org/r1841446
-      2.4.x branch: svn merge -c 1841446 ^/httpd/httpd/trunk .
-      +1: icing
+     trunk: http://svn.apache.org/r1841446
+     trunk: http://svn.apache.org/r1841455
+     2.4.x branch: svn merge -c 1841446,1841455 ^/httpd/httpd/trunk .
+     +1: icing
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
