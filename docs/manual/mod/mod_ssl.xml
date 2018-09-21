@@ -652,7 +652,7 @@ The available (case-insensitive) <em>protocol</em>s are:</p>
 <li><code>TLSv1.3</code> (when using OpenSSL 1.1.1 and later)
     <p>
     A new version of the TLS protocol, as defined in
-    <a href="https://github.com/tlswg/tls13-spec">RFC TBD</a>.</p></li>
+    <a href="http://www.ietf.org/rfc/rfc8446.txt">RFC 8446</a>.</p></li>
 
 <li><code>all</code>
     <p>
