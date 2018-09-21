@@ -917,6 +917,9 @@ void child_main(apr_pool_t *pconf, DWORD parent_pid)
     int i;
     int num_events;
 
+    /* Get a sub context for global allocations in this child, so that
+     * we can have cleanups occur when the child exits.
+     */
     apr_pool_create(&pchild, pconf);
     apr_pool_tag(pchild, "pchild");
 
