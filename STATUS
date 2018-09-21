@@ -199,7 +199,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk: http://svn.apache.org/r1841446
      trunk: http://svn.apache.org/r1841455
      2.4.x branch: svn merge -c 1841446,1841455 ^/httpd/httpd/trunk .
-     +1: icing
+     +1: icing, minfrin
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
