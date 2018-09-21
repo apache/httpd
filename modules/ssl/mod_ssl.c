@@ -93,9 +93,9 @@ static const command_rec ssl_config_cmds[] = {
     SSL_CMD_SRV(FIPS, FLAG,
                 "Enable FIPS-140 mode "
                 "(`on', `off')")
-    SSL_CMD_ALL(CipherSuite, TAKE1,
-                "Colon-delimited list of permitted SSL Ciphers "
-                "('XXX:...:XXX' - see manual)")
+    SSL_CMD_ALL(CipherSuite, TAKE12,
+                "Colon-delimited list of permitted SSL Ciphers, optional preceeded "
+                "by protocol identifier ('XXX:...:XXX' - see manual)")
     SSL_CMD_SRV(CertificateFile, TAKE1,
                 "SSL Server Certificate file "
                 "('/path/to/file' - PEM or DER encoded)")
@@ -185,9 +185,9 @@ static const command_rec ssl_config_cmds[] = {
     SSL_CMD_PXY(ProxyProtocol, RAW_ARGS,
                "SSL Proxy: enable or disable SSL protocol flavors "
                 "('[+-][" SSL_PROTOCOLS "] ...' - see manual)")
-    SSL_CMD_PXY(ProxyCipherSuite, TAKE1,
+    SSL_CMD_PXY(ProxyCipherSuite, TAKE12,
                "SSL Proxy: colon-delimited list of permitted SSL ciphers "
-               "('XXX:...:XXX' - see manual)")
+               ", optionally preceeded by protocol specifier ('XXX:...:XXX' - see manual)")
     SSL_CMD_PXY(ProxyVerify, TAKE1,
                "SSL Proxy: whether to verify the remote certificate "
                "('on' or 'off')")
@@ -398,7 +398,7 @@ static int ssl_hook_pre_config(apr_pool_t *pconf,
     /* We must register the library in full, to ensure our configuration
      * code can successfully test the SSL environment.
      */
-#if MODSSL_USE_OPENSSL_PRE_1_1_API
+#if MODSSL_USE_OPENSSL_PRE_1_1_API || defined(LIBRESSL_VERSION_NUMBER)
     (void)CRYPTO_malloc_init();
 #else
     OPENSSL_malloc_init();
