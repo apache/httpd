@@ -132,13 +132,14 @@
         SSL_CTX_ctrl(ctx, SSL_CTRL_SET_MIN_PROTO_VERSION, version, NULL)
 #define SSL_CTX_set_max_proto_version(ctx, version) \
         SSL_CTX_ctrl(ctx, SSL_CTRL_SET_MAX_PROTO_VERSION, version, NULL)
-#endif
-/* LibreSSL declares OPENSSL_VERSION_NUMBER == 2.0 but does not include most
- * changes from OpenSSL >= 1.1 (new functions, macros, deprecations, ...), so
- * we have to work around this...
+#elif LIBRESSL_VERSION_NUMBER < 0x2070000f
+/* LibreSSL before 2.7 declares OPENSSL_VERSION_NUMBER == 2.0 but does not
+ * include most changes from OpenSSL >= 1.1 (new functions, macros, 
+ * deprecations, ...), so we have to work around this...
  */
 #define MODSSL_USE_OPENSSL_PRE_1_1_API (1)
-#else
+#endif /* LIBRESSL_VERSION_NUMBER < 0x2060000f */
+#else /* defined(LIBRESSL_VERSION_NUMBER) */
 #define MODSSL_USE_OPENSSL_PRE_1_1_API (OPENSSL_VERSION_NUMBER < 0x10100000L)
 #endif
 
@@ -238,7 +239,8 @@ void init_bio_methods(void);
 void free_bio_methods(void);
 #endif
 
-#if OPENSSL_VERSION_NUMBER < 0x10002000L || defined(LIBRESSL_VERSION_NUMBER)
+#if OPENSSL_VERSION_NUMBER < 0x10002000L || \
+	(defined(LIBRESSL_VERSION_NUMBER) && LIBRESSL_VERSION_NUMBER < 0x2070000f)
 #define X509_STORE_CTX_get0_store(x) (x->ctx)
 #endif
 
@@ -372,8 +374,17 @@ typedef int ssl_opt_t;
 #ifdef HAVE_TLSV1_X
 #define SSL_PROTOCOL_TLSV1_1 (1<<3)
 #define SSL_PROTOCOL_TLSV1_2 (1<<4)
+#define SSL_PROTOCOL_TLSV1_3 (1<<5)
+
+#ifdef SSL_OP_NO_TLSv1_3
+#define SSL_HAVE_PROTOCOL_TLSV1_3   (1)
+#define SSL_PROTOCOL_ALL   (SSL_PROTOCOL_BASIC| \
+                            SSL_PROTOCOL_TLSV1_1|SSL_PROTOCOL_TLSV1_2|SSL_PROTOCOL_TLSV1_3)
+#else
+#define SSL_HAVE_PROTOCOL_TLSV1_3   (0)
 #define SSL_PROTOCOL_ALL   (SSL_PROTOCOL_BASIC| \
                             SSL_PROTOCOL_TLSV1_1|SSL_PROTOCOL_TLSV1_2)
+#endif
 #else
 #define SSL_PROTOCOL_ALL   (SSL_PROTOCOL_BASIC)
 #endif
@@ -646,6 +657,11 @@ typedef struct {
     /** for client or downstream server authentication */
     int          verify_depth;
     ssl_verify_t verify_mode;
+
+    /** TLSv1.3 has its separate cipher list, separate from the
+     settings for older TLS protocol versions. Since which one takes
+     effect is a matter of negotiation, we need separate settings */
+    const char  *tls13_ciphers;
 } modssl_auth_ctx_t;
 
 #ifdef HAVE_TLS_SESSION_TICKETS
@@ -801,7 +817,7 @@ const char  *ssl_cmd_SSLPassPhraseDialog(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLCryptoDevice(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLRandomSeed(cmd_parms *, void *, const char *, const char *, const char *);
 const char  *ssl_cmd_SSLEngine(cmd_parms *, void *, const char *);
-const char  *ssl_cmd_SSLCipherSuite(cmd_parms *, void *, const char *);
+const char  *ssl_cmd_SSLCipherSuite(cmd_parms *, void *, const char *, const char *);
 const char  *ssl_cmd_SSLCertificateFile(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLCertificateKeyFile(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLCertificateChainFile(cmd_parms *, void *, const char *);
@@ -830,7 +846,7 @@ const char *ssl_cmd_SSLInsecureRenegotiation(cmd_parms *cmd, void *dcfg, int fla
 
 const char  *ssl_cmd_SSLProxyEngine(cmd_parms *cmd, void *dcfg, int flag);
 const char  *ssl_cmd_SSLProxyProtocol(cmd_parms *, void *, const char *);
-const char  *ssl_cmd_SSLProxyCipherSuite(cmd_parms *, void *, const char *);
+const char  *ssl_cmd_SSLProxyCipherSuite(cmd_parms *, void *, const char *, const char *);
 const char  *ssl_cmd_SSLProxyVerify(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLProxyVerifyDepth(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLProxyCACertificatePath(cmd_parms *, void *, const char *);
