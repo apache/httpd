@@ -124,6 +124,27 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   *) Add TLSv1.3 support to mod_ssl:
+      trunk: http://svn.apache.org/r1839946
+             http://svn.apache.org/r1839920
+             http://svn.apache.org/r1833589
+             http://svn.apache.org/r1833588
+             http://svn.apache.org/r1828723
+             http://svn.apache.org/r1828720
+             http://svn.apache.org/r1828222
+             http://svn.apache.org/r1827992
+             http://svn.apache.org/r1827924
+             http://svn.apache.org/r1827912
+             http://svn.apache.org/r1828790
+             http://svn.apache.org/r1828791
+             http://svn.apache.org/r1828792
+             http://svn.apache.org/r1840585
+             http://svn.apache.org/r1840710
+             http://svn.apache.org/r1841218
+      2.4.x branch: svn merge ^/httpd/httpd/branches/tlsv1.3-for-2.4.x
+      +1: icing, jorton, minfrin (tested on openssl-1.0.2j and openssl-1.1.1)
+
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -186,26 +207,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1839583
      2.4.x patch: http://home.apache.org/~ylavic/patches/2.4.x-mpms_async_objects_lifetime.patch
      +1: ylavic, jim (but not for 2.4.35), 
-
-   *) Add TLSv1.3 support to mod_ssl:
-      trunk: http://svn.apache.org/r1839946
-             http://svn.apache.org/r1839920
-             http://svn.apache.org/r1833589
-             http://svn.apache.org/r1833588
-             http://svn.apache.org/r1828723
-             http://svn.apache.org/r1828720
-             http://svn.apache.org/r1828222
-             http://svn.apache.org/r1827992
-             http://svn.apache.org/r1827924
-             http://svn.apache.org/r1827912
-             http://svn.apache.org/r1828790
-             http://svn.apache.org/r1828791
-             http://svn.apache.org/r1828792
-             http://svn.apache.org/r1840585
-             http://svn.apache.org/r1840710
-             http://svn.apache.org/r1841218
-      2.4.x branch: svn merge ^/httpd/httpd/branches/tlsv1.3-for-2.4.x
-      +1: icing, jorton, 
 
   *) ab: print Server Temp Key information.
      trunk patch: http://svn.apache.org/r1738415
