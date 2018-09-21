@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.36
 
+  *) MPMs: Initialize all runtime/asynchronous objects on a dedicated pool and
+     before signals handling to avoid lifetime issues on restart or shutdown.
+     PR 62658. [Yann Ylavic]
+
   *) mod_ssl: add experimental support for TLSv1.3 (tested with OpenSSL v1.1.1-pre9. 
      SSL(Proxy)CipherSuite now has an optional first parameter for the protocol the ciphers are for.
      Directive "SSLVerifyClient" now triggers certificate retrieval from the client.

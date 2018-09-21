@@ -134,6 +134,8 @@ static int num_listensocks = 0;
 static int resource_shortage = 0;
 static fd_queue_t *worker_queue;
 static fd_queue_info_t *worker_queue_info;
+static apr_pollset_t *worker_pollset;
+
 
 /* data retained by worker across load/unload of the module
  * allocated on first call to pre-config hook; located on
@@ -218,6 +220,7 @@ int raise_sigstop_flags;
 
 static apr_pool_t *pconf;                 /* Pool for config stuff */
 static apr_pool_t *pchild;                /* Pool for httpd child stuff */
+static apr_pool_t *pruntime;              /* Pool for MPM threads stuff */
 
 static pid_t ap_my_pid; /* Linux getpid() doesn't work except in main
                            thread. Use this instead */
@@ -392,10 +395,10 @@ static void worker_note_child_killed(int childnum, pid_t pid, ap_generation_t ge
 
 static void worker_note_child_started(int slot, pid_t pid)
 {
+    ap_generation_t gen = retained->mpm->my_generation;
     ap_scoreboard_image->parent[slot].pid = pid;
-    ap_run_child_status(ap_server_conf,
-                        ap_scoreboard_image->parent[slot].pid,
-                        retained->mpm->my_generation, slot, MPM_CHILD_STARTED);
+    ap_scoreboard_image->parent[slot].generation = gen;
+    ap_run_child_status(ap_server_conf, pid, gen, slot, MPM_CHILD_STARTED);
 }
 
 static void worker_note_child_lost_slot(int slot, pid_t newpid)
@@ -538,46 +541,14 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t *thd, void * dummy)
 {
     proc_info * ti = dummy;
     int process_slot = ti->pid;
-    apr_pool_t *tpool = apr_thread_pool_get(thd);
     void *csd = NULL;
     apr_pool_t *ptrans = NULL;            /* Pool for per-transaction stuff */
-    apr_pollset_t *pollset;
     apr_status_t rv;
-    ap_listen_rec *lr;
+    ap_listen_rec *lr = NULL;
     int have_idle_worker = 0;
     int last_poll_idx = 0;
 
     free(ti);
-
-    rv = apr_pollset_create(&pollset, num_listensocks, tpool,
-                            APR_POLLSET_NOCOPY);
-    if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ap_server_conf,
-                     "Couldn't create pollset in thread;"
-                     " check system or user limits");
-        /* let the parent decide how bad this really is */
-        clean_child_exit(APEXIT_CHILDSICK);
-    }
-
-    for (lr = my_bucket->listeners; lr != NULL; lr = lr->next) {
-        apr_pollfd_t *pfd = apr_pcalloc(tpool, sizeof *pfd);
-
-        pfd->desc_type = APR_POLL_SOCKET;
-        pfd->desc.s = lr->sd;
-        pfd->reqevents = APR_POLLIN;
-        pfd->client_data = lr;
-
-        rv = apr_pollset_add(pollset, pfd);
-        if (rv != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ap_server_conf,
-                         "Couldn't create add listener to pollset;"
-                         " check system or user limits");
-            /* let the parent decide how bad this really is */
-            clean_child_exit(APEXIT_CHILDSICK);
-        }
-
-        lr->accept_func = ap_unixd_accept;
-    }
 
     /* Unblock the signal used to wake this thread up, and set a handler for
      * it.
@@ -630,7 +601,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t *thd, void * dummy)
                 apr_int32_t numdesc;
                 const apr_pollfd_t *pdesc;
 
-                rv = apr_pollset_poll(pollset, -1, &numdesc, &pdesc);
+                rv = apr_pollset_poll(worker_pollset, -1, &numdesc, &pdesc);
                 if (rv != APR_SUCCESS) {
                     if (APR_STATUS_IS_EINTR(rv)) {
                         continue;
@@ -871,7 +842,7 @@ static void create_listener_thread(thread_starter *ts)
     my_info->tid = -1; /* listener thread doesn't have a thread slot */
     my_info->sd = 0;
     rv = apr_thread_create(&ts->listener, thread_attr, listener_thread,
-                           my_info, pchild);
+                           my_info, pruntime);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf, APLOGNO(00275)
                      "apr_thread_create: unable to create listener thread");
@@ -879,6 +850,76 @@ static void create_listener_thread(thread_starter *ts)
         clean_child_exit(APEXIT_CHILDSICK);
     }
     apr_os_thread_get(&listener_os_thread, ts->listener);
+}
+
+static void setup_threads_runtime(void)
+{
+    ap_listen_rec *lr;
+    apr_status_t rv;
+
+    /* All threads (listener, workers) and synchronization objects (queues,
+     * pollset, mutexes...) created here should have at least the lifetime of
+     * the connections they handle (i.e. ptrans). We can't use this thread's
+     * self pool because all these objects survive it, nor use pchild or pconf
+     * directly because this starter thread races with other modules' runtime,
+     * nor finally pchild (or subpool thereof) because it is killed explicitely
+     * before pconf (thus connections/ptrans can live longer, which matters in
+     * ONE_PROCESS mode). So this leaves us with a subpool of pconf, created
+     * before any ptrans hence destroyed after.
+     */
+    apr_pool_create(&pruntime, pconf);
+    apr_pool_tag(pruntime, "mpm_runtime");
+
+    /* We must create the fd queues before we start up the listener
+     * and worker threads. */
+    rv = ap_queue_create(&worker_queue, threads_per_child, pruntime);
+    if (rv != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf, APLOGNO(03140)
+                     "ap_queue_create() failed");
+        clean_child_exit(APEXIT_CHILDFATAL);
+    }
+
+    rv = ap_queue_info_create(&worker_queue_info, pruntime,
+                              threads_per_child, -1);
+    if (rv != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf, APLOGNO(03141)
+                     "ap_queue_info_create() failed");
+        clean_child_exit(APEXIT_CHILDFATAL);
+    }
+
+    /* Create the main pollset */
+    rv = apr_pollset_create(&worker_pollset, num_listensocks, pruntime,
+                            APR_POLLSET_NOCOPY);
+    if (rv != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ap_server_conf, APLOGNO(03285)
+                     "Couldn't create pollset in thread;"
+                     " check system or user limits");
+        /* let the parent decide how bad this really is */
+        clean_child_exit(APEXIT_CHILDSICK);
+    }
+
+    for (lr = my_bucket->listeners; lr != NULL; lr = lr->next) {
+        apr_pollfd_t *pfd = apr_pcalloc(pruntime, sizeof *pfd);
+
+        pfd->desc_type = APR_POLL_SOCKET;
+        pfd->desc.s = lr->sd;
+        pfd->reqevents = APR_POLLIN;
+        pfd->client_data = lr;
+
+        rv = apr_pollset_add(worker_pollset, pfd);
+        if (rv != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ap_server_conf, APLOGNO(03286)
+                         "Couldn't create add listener to pollset;"
+                         " check system or user limits");
+            /* let the parent decide how bad this really is */
+            clean_child_exit(APEXIT_CHILDSICK);
+        }
+
+        lr->accept_func = ap_unixd_accept;
+    }
+
+    worker_sockets = apr_pcalloc(pruntime, threads_per_child *
+                                           sizeof(apr_socket_t *));
 }
 
 /* XXX under some circumstances not understood, children can get stuck
@@ -894,31 +935,10 @@ static void * APR_THREAD_FUNC start_threads(apr_thread_t *thd, void *dummy)
     int my_child_num = ts->child_num_arg;
     proc_info *my_info;
     apr_status_t rv;
-    int i;
     int threads_created = 0;
     int listener_started = 0;
-    int loops;
     int prev_threads_created;
-
-    /* We must create the fd queues before we start up the listener
-     * and worker threads. */
-    rv = ap_queue_create(&worker_queue, threads_per_child, pchild);
-    if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf, APLOGNO(03140)
-                     "ap_queue_create() failed");
-        clean_child_exit(APEXIT_CHILDFATAL);
-    }
-
-    rv = ap_queue_info_create(&worker_queue_info, pchild,
-                              threads_per_child, -1);
-    if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf, APLOGNO(03141)
-                     "ap_queue_info_create() failed");
-        clean_child_exit(APEXIT_CHILDFATAL);
-    }
-
-    worker_sockets = apr_pcalloc(pchild, threads_per_child
-                                        * sizeof(apr_socket_t *));
+    int loops, i;
 
     loops = prev_threads_created = 0;
     while (1) {
@@ -942,7 +962,7 @@ static void * APR_THREAD_FUNC start_threads(apr_thread_t *thd, void *dummy)
              * done because it lets us deal with tid better.
              */
             rv = apr_thread_create(&threads[i], thread_attr,
-                                   worker_thread, my_info, pchild);
+                                   worker_thread, my_info, pruntime);
             if (rv != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf, APLOGNO(03142)
                              "apr_thread_create: unable to create worker thread");
@@ -1082,7 +1102,12 @@ static void child_main(int child_num_arg, int child_bucket)
 
     ap_my_pid = getpid();
     ap_fatal_signal_child_setup(ap_server_conf);
+
+    /* Get a sub context for global allocations in this child, so that
+     * we can have cleanups occur when the child exits.
+     */
     apr_pool_create(&pchild, pconf);
+    apr_pool_tag(pchild, "pchild");
 
     /* close unused listeners and pods */
     for (i = 0; i < retained->mpm->num_buckets; i++) {
@@ -1132,7 +1157,10 @@ static void child_main(int child_num_arg, int child_bucket)
         requests_this_child = INT_MAX;
     }
 
-    /* Setup worker threads */
+    /* Setup threads */
+
+    /* Globals used by signal_threads() so to be initialized before */
+    setup_threads_runtime();
 
     /* clear the storage; we may not create all our threads immediately,
      * and we want a 0 entry to indicate a thread which was not created
