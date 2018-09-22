@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1835614 -->
+<!-- English Revision: 1841639 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -771,7 +771,7 @@ casse) :</p>
 <li><code>TLSv1.3</code> (avec OpenSSL version 1.1.1 et supérieures)
     <p>
     Une nouvelle version du protocole TLS définie dans la <a
-    href="https://github.com/tlswg/tls13-spec">RFC TBD</a>.</p></li>    
+    href="http://www.ietf.org/rfc/rfc8446.txt">RFC 8446</a>.</p></li>
 
 <li><code>all</code>
     <p>
