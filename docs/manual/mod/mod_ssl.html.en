@@ -740,7 +740,7 @@ key file.</p>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Cipher Suite available for negotiation in SSL
 handshake</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLCipherSuite <em>cipher-spec</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLCipherSuite [<em>protocol</em>] <em>cipher-spec</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLCipherSuite DEFAULT (depends on OpenSSL version)</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
@@ -750,12 +750,26 @@ handshake</td></tr>
 <p>
 This complex directive uses a colon-separated <em>cipher-spec</em> string
 consisting of OpenSSL cipher specifications to configure the Cipher Suite the
-client is permitted to negotiate in the SSL handshake phase. Notice that this
-directive can be used both in per-server and per-directory context. In
-per-server context it applies to the standard SSL handshake when a connection
+client is permitted to negotiate in the SSL handshake phase. The optional 
+protocol specifier can configure the Cipher Suite for a specific SSL version.
+Possible values include "SSL" for all SSL Protocols up to and including TLSv1.2.
+</p>
+<p>
+Notice that this
+directive can be used both in per-server and per-directory context. 
+In per-server context it applies to the standard SSL handshake when a connection
 is established. In per-directory context it forces a SSL renegotiation with the
 reconfigured Cipher Suite after the HTTP request was read but before the HTTP
-response is sent.</p>
+response is sent. (Since renegotiation is not</p>
+<p>
+If the SSL library supports TLSv1.3 (OpenSSL 1.1.1 and later), the protocol 
+specifier "TLSv1.3" can be used to configure the cipher suites for that protocol.
+Since TLSv1.3 does not offer renegotiations, specifying ciphers for it in
+a directory context is not allowed.</p>
+<p>
+For a list of TLSv1.3 cipher names, see 
+<a href="https://www.openssl.org/docs/manmaster/man3/SSL_CTX_set_ciphersuites.html">the OpenSSL
+documentation</a>.</p>
 <p>
 An SSL cipher specification in <em>cipher-spec</em> is composed of 4 major
 attributes plus a few extra minor ones:</p>
@@ -1494,6 +1508,11 @@ The available (case-insensitive) <em>protocol</em>s are:</p>
     A revision of the TLS 1.1 protocol, as defined in
     <a href="http://www.ietf.org/rfc/rfc5246.txt">RFC 5246</a>.</p></li>
 
+<li><code>TLSv1.3</code> (when using OpenSSL 1.1.1 and later)
+    <p>
+    A new version of the TLS protocol, as defined in
+    <a href="http://www.ietf.org/rfc/rfc8446.txt">RFC 8446</a>.</p></li>
+
 <li><code>all</code>
     <p>
     This is a shortcut for ``<code>+SSLv3 +TLSv1</code>'' or
@@ -1739,7 +1758,7 @@ improvements.
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Cipher Suite available for negotiation in SSL
 proxy handshake</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLProxyCipherSuite <em>cipher-spec</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLProxyCipherSuite [<em>protocol</em>] <em>cipher-spec</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLProxyCipherSuite ALL:!ADH:RC4+RSA:+HIGH:+MEDIUM:+LOW:+EXP</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, proxy section</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
