@@ -693,7 +693,8 @@ This complex directive uses a colon-separated <em>cipher-spec</em> string
 consisting of OpenSSL cipher specifications to configure the Cipher Suite the
 client is permitted to negotiate in the SSL handshake phase. The optional 
 protocol specifier can configure the Cipher Suite for a specific SSL version.
-Possible values include "SSL" for all SSL Protocols up to and including TLSv1.2. 
+Possible values include "SSL" for all SSL Protocols up to and including TLSv1.2.
+</p>
 <p>
 Notice that this
 directive can be used both in per-server and per-directory context. 
