@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) ab: Add client certificate support. [Graham Leggett]
+
   *) mod_proxy_hcheck: Fix issues with TCP health checks. PR 61499
      [Dominik Stillhard <dominik.stillhard united-security-providers.ch>]
 
