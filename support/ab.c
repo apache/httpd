@@ -353,6 +353,7 @@ int is_ssl;
 SSL_CTX *ssl_ctx;
 char *ssl_cipher = NULL;
 char *ssl_info = NULL;
+char *ssl_cert = NULL;
 #if OPENSSL_VERSION_NUMBER >= 0x10002000L
 char *ssl_tmp_key = NULL;
 #endif
@@ -2170,6 +2171,7 @@ static void usage(const char *progname)
     fprintf(stderr, "    -Z ciphersuite  Specify SSL/TLS cipher suite (See openssl ciphers)\n");
     fprintf(stderr, "    -f protocol     Specify SSL/TLS protocol\n");
     fprintf(stderr, "                    (" SSL2_HELP_MSG SSL3_HELP_MSG "TLS1" TLS1_X_HELP_MSG " or ALL)\n");
+    fprintf(stderr, "    -E certfile     Specify optional client certificate chain and private key\n");
 #endif
     exit(EINVAL);
 }
@@ -2340,7 +2342,7 @@ int main(int argc, const char * const argv[])
     apr_getopt_init(&opt, cntxt, argc, argv);
     while ((status = apr_getopt(opt, "n:c:t:s:b:T:p:u:v:lrkVhwiIx:y:z:C:H:P:A:g:X:de:SqB:m:"
 #ifdef USE_SSL
-            "Z:f:"
+            "Z:f:E:"
 #endif
             ,&c, &opt_arg)) == APR_SUCCESS) {
         switch (c) {
@@ -2524,6 +2526,9 @@ int main(int argc, const char * const argv[])
             case 'Z':
                 ssl_cipher = strdup(opt_arg);
                 break;
+            case 'E':
+                ssl_cert = strdup(opt_arg);
+                break;
             case 'f':
 #if OPENSSL_VERSION_NUMBER < 0x10100000L
                 if (strncasecmp(opt_arg, "ALL", 3) == 0) {
@@ -2658,6 +2663,26 @@ int main(int argc, const char * const argv[])
     if (verbosity >= 3) {
         SSL_CTX_set_info_callback(ssl_ctx, ssl_state_cb);
     }
+    if (ssl_cert != NULL) {
+        if (SSL_CTX_use_certificate_chain_file(ssl_ctx, ssl_cert) <= 0) {
+            BIO_printf(bio_err, "unable to get certificate from '%s'\n",
+            		ssl_cert);
+            ERR_print_errors(bio_err);
+            exit(1);
+        }
+        if (SSL_CTX_use_PrivateKey_file(ssl_ctx, ssl_cert, SSL_FILETYPE_PEM) <= 0) {
+            BIO_printf(bio_err, "unable to get private key from '%s'\n",
+                ssl_cert);
+            ERR_print_errors(bio_err);
+            exit(1);
+        }
+        if (!SSL_CTX_check_private_key(ssl_ctx)) {
+            BIO_printf(bio_err,
+                       "private key does not match the certificate public key in %s\n", ssl_cert);
+            exit(1);
+        }
+    }
+
 #endif
 #ifdef SIGPIPE
     apr_signal(SIGPIPE, SIG_IGN);       /* Ignore writes to connections that
