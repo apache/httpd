@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.es.xsl"?>
-<!-- English Revision: 1673947:1816110 (outdated) -->
-<!-- Translated by: Luis Gil de Bernabé Pfeiffer -->
+<!-- English Revision: 1816110 -->
+<!-- Translated by: Luis Gil de Bernabé Pfeiffer lgilbernabe@apache.org-->
 <!-- Reviewed by: Sergio Ramos -->
 
 <!--
@@ -89,7 +89,7 @@ Listen 192.0.2.5:8000
     </highlight>
     </example>
 
-    <p>Las direcciones IPv6 debrán ir entre '[ ]' corchetes como en el siguiente ejemplo:</p>
+    <p>Las direcciones IPv6 deberán ir entre '[ ]' corchetes como en el siguiente ejemplo:</p>
 
     <example>
     <highlight language="config">
@@ -112,6 +112,44 @@ Listen 192.0.2.5:8000
 </note>
 
   </section>
+
+
+<section id="reload">
+    <title>Cambiar configuración de escucha al reiniciar</title>
+
+    <p>Cuando httpd se reinicia, hay que tener especial consideración en los 
+      cambios que se realicen a la directiva <directive module="mpm_common">Listen</directive>.
+      Durante un reinicio, httpd mantiene los puertos (como en la configuración original)
+    para evitar generar errores del tipo "Conexión rechazada" para cualquier intento
+    nuevo de establecer la conexión contra el servidor. Si se realiza algún cambio
+    al conjunto de la directiva <directive module="mpm_common">Listen</directive>, es probable que entre en conflicto con la configuración antigua, la configuración fallará y el servidor
+    no se iniciará.
+   </p>
+
+    <p>Por ejemplo, cambiar de la configuración:</p>
+    
+    <example>
+    <highlight language="config">
+      Listen 127.0.0.1:80
+    </highlight>
+    </example>
+
+    <p>a la siguiente configuración, es probable que falle, porque mapear el puerto 80 
+      a todas las direcciones, entra en conflicto con sólo mapear el puerto 80 a
+      la 127.0.0.1.</p>
+    
+    <example>
+    <highlight language="config">
+      Listen 80
+    </highlight>
+    </example>
+
+    <p>Para que este tipo de cambios surtan efecto, es necesario parar el servidor, 
+      y después iniciarlo.</p>
+    
+  </section>
+
+
 
   <section id="ipv6">
     <title>Consideraciones especiales con IPv6</title>
