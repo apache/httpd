@@ -139,7 +139,7 @@ static const char * const status_lines[RESPONSE_CODES] =
     "422 Unprocessable Entity",
     "423 Locked",
     "424 Failed Dependency",
-    NULL, /* 425 */
+    "425 Too Early",
     "426 Upgrade Required",
     NULL, /* 427 */
     "428 Precondition Required",
@@ -1109,6 +1109,9 @@ static const char *get_canned_error_string(int status,
         return("<p>The method could not be performed on the resource\n"
                "because the requested action depended on another\n"
                "action and that other action failed.</p>\n");
+    case HTTP_TOO_EARLY:
+        return("<p>The request could not be processed as TLS\n"
+               "early data and should be retried.</p>\n");
     case HTTP_UPGRADE_REQUIRED:
         return("<p>The requested resource can only be retrieved\n"
                "using SSL.  The server is willing to upgrade the current\n"

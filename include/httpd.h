@@ -528,6 +528,7 @@ AP_DECLARE(const char *) ap_get_server_built(void);
 #define HTTP_UNPROCESSABLE_ENTITY            422
 #define HTTP_LOCKED                          423
 #define HTTP_FAILED_DEPENDENCY               424
+#define HTTP_TOO_EARLY                       425
 #define HTTP_UPGRADE_REQUIRED                426
 #define HTTP_PRECONDITION_REQUIRED           428
 #define HTTP_TOO_MANY_REQUESTS               429
