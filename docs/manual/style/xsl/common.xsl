@@ -542,7 +542,7 @@ if (typeof(prettyPrint) !== 'undefined') {
 <!-- ==================================================================== -->
 <!-- handle subsections (lower level headings)                            -->
 <!-- ==================================================================== -->
-<xsl:template match="section/section">
+<xsl:template match="section/section" priority="3">
 <!-- Section heading -->
 <h3>
     <xsl:choose>
@@ -567,7 +567,7 @@ if (typeof(prettyPrint) !== 'undefined') {
 <!-- ==================================================================== -->
 <!-- handle subsubsections (h4)                                           -->
 <!-- ==================================================================== -->
-<xsl:template match="section/section/section">
+<xsl:template match="section/section/section" priority="4">
 <!-- Section heading -->
 <h4>
     <xsl:choose>
