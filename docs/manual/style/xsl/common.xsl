@@ -542,7 +542,7 @@ if (typeof(prettyPrint) !== 'undefined') {
 <!-- ==================================================================== -->
 <!-- handle subsections (lower level headings)                            -->
 <!-- ==================================================================== -->
-<xsl:template match="section/section" priority="3">
+<xsl:template match="section/section">
 <!-- Section heading -->
 <h3>
     <xsl:choose>
@@ -567,7 +567,7 @@ if (typeof(prettyPrint) !== 'undefined') {
 <!-- ==================================================================== -->
 <!-- handle subsubsections (h4)                                           -->
 <!-- ==================================================================== -->
-<xsl:template match="section/section/section" priority="4">
+<xsl:template match="section/section/section">
 <!-- Section heading -->
 <h4>
     <xsl:choose>
@@ -900,31 +900,6 @@ if (typeof(prettyPrint) !== 'undefined') {
         </xsl:variable>
 
         <xsl:choose>
-        <!-- No link if within the block that describe the directive itself -->
-        <xsl:when test="$in-modulesynopsis and normalize-space(.) = ../../name">
-                <xsl:if test="@type='section'">&lt;</xsl:if>
-                <xsl:value-of select="."/>
-                <xsl:if test="@type='section'">&gt;</xsl:if>
-                <xsl:message>Candidate (remove ref): <xsl:value-of select="."/></xsl:message>
-        </xsl:when>
-        <xsl:when test="$in-modulesynopsis and normalize-space(.) = ../../../name">
-                <xsl:if test="@type='section'">&lt;</xsl:if>
-                <xsl:value-of select="."/>
-                <xsl:if test="@type='section'">&gt;</xsl:if>
-                <xsl:message>Candidate (remove ref): <xsl:value-of select="."/></xsl:message>
-        </xsl:when>
-        <xsl:when test="$in-modulesynopsis and normalize-space(.) = ../../../../name">
-                <xsl:if test="@type='section'">&lt;</xsl:if>
-                <xsl:value-of select="."/>
-                <xsl:if test="@type='section'">&gt;</xsl:if>
-                <xsl:message>Candidate (remove ref): <xsl:value-of select="."/></xsl:message>
-        </xsl:when>
-        <xsl:when test="$in-modulesynopsis and normalize-space(.) = ../../../../../name">
-                <xsl:if test="@type='section'">&lt;</xsl:if>
-                <xsl:value-of select="."/>
-                <xsl:if test="@type='section'">&gt;</xsl:if>
-                <xsl:message>Candidate (REMOVE ref): <xsl:value-of select="."/></xsl:message>
-        </xsl:when>
         <xsl:when test="$in-modulesynopsis and normalize-space(@module) = /modulesynopsis/name">
             <a href="#{$lowerdirective}">
                 <xsl:if test="@type='section'">&lt;</xsl:if>
@@ -942,13 +917,6 @@ if (typeof(prettyPrint) !== 'undefined') {
         </xsl:choose>
     </xsl:when>
 
-    <!-- Missing module reference -->
-    <xsl:when test="$in-modulesynopsis and normalize-space(.) != ../../../name">
-        <xsl:if test="@type='section'">&lt;</xsl:if>
-        <xsl:value-of select="."/>
-        <xsl:if test="@type='section'">&gt;</xsl:if>
-        <xsl:message>Candidate (ADD ref): <xsl:value-of select="."/></xsl:message>
-    </xsl:when>
     <xsl:otherwise>
         <xsl:if test="@type='section'">&lt;</xsl:if>
         <xsl:value-of select="."/>
