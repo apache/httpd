@@ -1260,11 +1260,7 @@ if (typeof(prettyPrint) !== 'undefined') {
     <xsl:text>Is the document valid (try `build validate-xml`)?</xsl:text>
 </xsl:message>
 </xsl:template>
-<xsl:template match="@*">
-<xsl:copy>
-    <xsl:apply-templates select="*|@*|text()" />
-</xsl:copy>
-</xsl:template>
+<xsl:template match="@*"><xsl:copy /></xsl:template>
 <xsl:template match="br"><br /></xsl:template>
 <xsl:template match="tr"><tr><xsl:apply-templates select="*|@*|text()" /></tr></xsl:template>
 <xsl:template match="th"><th><xsl:apply-templates select="*|@*|text()" /></th></xsl:template>
