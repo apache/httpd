@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1834089:1841685 (outdated) -->
+<!-- English Revision: 1841685 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -777,6 +777,11 @@ casse) :</p>
     <p>
     Une révision du protocole TLS 1.1 définie dans la <a
     href="http://www.ietf.org/rfc/rfc5246.txt">RFC 5246</a>.</p></li>
+
+<li><code>TLSv1.3</code> (à partir de la version 1.1.1 d'OpenSSL)
+     <p>
+     Une nouvelle version du protocole TLS définie dans la <a
+     href="http://www.ietf.org/rfc/rfc8446.txt">RFC 8446</a>.</p></li>
 
 <li><code>all</code>
     <p>
