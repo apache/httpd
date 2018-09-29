@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1838466:1841039 (outdated) -->
+<!-- English Revision: 1841039 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -2478,7 +2478,7 @@ host</context>
 <name>IfFile</name>
 <description>Regroupe des directives qui ne seront traitées que si un fichier
 existe au démarrage</description>
-<syntax>&lt;IfFile [!]<var>parameter-name</var>&gt; ...
+<syntax>&lt;IfFile [!]<var>filename</var>&gt; ...
     &lt;/IfFile&gt;</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
