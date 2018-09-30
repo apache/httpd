@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
-<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -27,25 +27,25 @@
 <div id="preamble"><h1>Module Apache mod_reqtimeout</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_reqtimeout.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_reqtimeout.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_reqtimeout.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Définit le délai maximum et le taux de transfert des
-données minimum pour la réception des requêtes
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>DÃ©finit le dÃ©lai maximum et le taux de transfert des
+donnÃ©es minimum pour la rÃ©ception des requÃªtes
 </td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>reqtimeout_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_reqtimeout.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">IdentificateurÂ deÂ Module:</a></th><td>reqtimeout_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">FichierÂ Source:</a></th><td>mod_reqtimeout.c</td></tr></table>
 <h3>Sommaire</h3>
 
-    <p>Ce module permet de définir aisément le délai maximum et le taux de
-    transfert des données minimum pour la réception des requêtes. Si ce délai
-    est dépassé ou ce taux trop faible, la connexion concernée sera fermée par
+    <p>Ce module permet de dÃ©finir aisÃ©ment le dÃ©lai maximum et le taux de
+    transfert des donnÃ©es minimum pour la rÃ©ception des requÃªtes. Si ce dÃ©lai
+    est dÃ©passÃ© ou ce taux trop faible, la connexion concernÃ©e sera fermÃ©e par
     le serveur.</p>
 
-    <p>Cet évènement sera alors enregistré dans le journal au niveau de <code class="directive"><a href="../mod/core.html#loglevel">LogLevel</a></code> <code>info</code>.</p>
+    <p>Cet Ã©vÃ¨nement sera alors enregistrÃ© dans le journal au niveau de <code class="directive"><a href="../mod/core.html#loglevel">LogLevel</a></code> <code>info</code>.</p>
     
     <p>Au besoin, la directive <code class="directive"><a href="../mod/core.html#loglevel">LogLevel</a></code>
-    peur être modifiée pour un enregistrement dans le journal plus explicite :</p>
+    peur Ãªtre modifiÃ©e pour un enregistrement dans le journal plus explicite :</p>
     <pre class="prettyprint lang-config">LogLevel reqtimeout:info</pre>
 
 </div>
@@ -56,7 +56,7 @@ données minimum pour la réception des requêtes
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#requestreadtimeout">RequestReadTimeout</a></li>
 </ul>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_reqtimeout">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_reqtimeout">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_reqtimeout">ProblÃ¨mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_reqtimeout">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -65,39 +65,39 @@ données minimum pour la réception des requêtes
 
     <ol>
       <li>
-        Accorde 10 secondes pour la réception des en-têtes de la requête
-	et 30 secondes pour la réception du corps :
+        Accorde 10 secondes pour la rÃ©ception des en-tÃªtes de la requÃªte
+	et 30 secondes pour la rÃ©ception du corps :
 
         <pre class="prettyprint lang-config">RequestReadTimeout headerinit=10 body=30</pre>
 
       </li>
 
       <li>
-        Accorde au moins 10 secondes pour la réception du corps de
-	la requête. Si le client envoie des données, augmente ce délai
-	d'une seconde pour chaque paquet de 1000 octets reçus, sans
-	limite supérieure (sauf si une limite a été
-	spécifiée via la directive <code class="directive"><a href="../mod/core.html#limitrequestbody">LimitRequestBody</a></code>) :
+        Accorde au moins 10 secondes pour la rÃ©ception du corps de
+	la requÃªte. Si le client envoie des donnÃ©es, augmente ce dÃ©lai
+	d'une seconde pour chaque paquet de 1000 octets reÃ§us, sans
+	limite supÃ©rieure (sauf si une limite a Ã©tÃ©
+	spÃ©cifiÃ©e via la directive <code class="directive"><a href="../mod/core.html#limitrequestbody">LimitRequestBody</a></code>) :
 
         <pre class="prettyprint lang-config">RequestReadTimeout body=10,MinRate=1000</pre>
 
       </li>
 
       <li>
-        Accorde au moins 10 secondes pour la réception de de la
-	requête, en-têtes inclus. Si le client envoie des données, augmente ce délai
-	d'une seconde pour chaque paquet de 500 octets reçus, mais
-	n'alloue que 30 secondes pour la requête, en-têtes inclus :
+        Accorde au moins 10 secondes pour la rÃ©ception de de la
+	requÃªte, en-tÃªtes inclus. Si le client envoie des donnÃ©es, augmente ce dÃ©lai
+	d'une seconde pour chaque paquet de 500 octets reÃ§us, mais
+	n'alloue que 30 secondes pour la requÃªte, en-tÃªtes inclus :
 
         <pre class="prettyprint lang-config">RequestReadTimeout header=10-30,MinRate=500</pre>
 
       </li>
 
       <li>
-        En général, un serveur doit avoir ses délais d'en-tête et de
-	corps configurés. Si les serveurs virtuels http et https
-	utilisent une configuration commune, les délais ne doivent pas
-	être définis trop bas :
+        En gÃ©nÃ©ral, un serveur doit avoir ses dÃ©lais d'en-tÃªte et de
+	corps configurÃ©s. Si les serveurs virtuels http et https
+	utilisent une configuration commune, les dÃ©lais ne doivent pas
+	Ãªtre dÃ©finis trop bas :
 
         <pre class="prettyprint lang-config">RequestReadTimeout header=20-40,MinRate=500 body=20,MinRate=500</pre>
 
@@ -108,84 +108,84 @@ données minimum pour la réception des requêtes
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="requestreadtimeout" id="requestreadtimeout">Directive</a> <a name="RequestReadTimeout" id="RequestReadTimeout">RequestReadTimeout</a><a title="Lien permanent" href="#requestreadtimeout" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit des délais maximums pour la réception des en-têtes
-et corps des requêtes en provenance du client.
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>DÃ©finit des dÃ©lais maximums pour la rÃ©ception des en-tÃªtes
+et corps des requÃªtes en provenance du client.
 </td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RequestReadTimeout
-[header=<var>délai</var>[-<var>délai-maxi</var>][,MinRate=<var>taux-mini</var>]
-[body=<var>délai</var>[-<var>délai-maxi</var>][,MinRate=<var>taux-mini</var>]
+[header=<var>dÃ©lai</var>[-<var>dÃ©lai-maxi</var>][,MinRate=<var>taux-mini</var>]
+[body=<var>dÃ©lai</var>[-<var>dÃ©lai-maxi</var>][,MinRate=<var>taux-mini</var>]
 </code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>header=20-40,MinRate=500 body=20,MinRate=500</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">DÃ©faut:</a></th><td><code>header=20-40,MinRate=500 body=20,MinRate=500</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_reqtimeout</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Désactivée par défaut jusqu'à la version 2.3.14.</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">CompatibilitÃ©:</a></th><td>DÃ©sactivÃ©e par dÃ©faut jusqu'Ã  la version 2.3.14.</td></tr>
 </table>
-    <p>Cette directive permet de définir différents délais pour la
-    réception des en-têtes et corps des requêtes en provenance du
-    client. Si le client ne parvient pas à respecter ces délais, un code
-    d'erreur <code>408 REQUEST TIME OUT</code> est envoyé.</p>
+    <p>Cette directive permet de dÃ©finir diffÃ©rents dÃ©lais pour la
+    rÃ©ception des en-tÃªtes et corps des requÃªtes en provenance du
+    client. Si le client ne parvient pas Ã  respecter ces dÃ©lais, un code
+    d'erreur <code>408 REQUEST TIME OUT</code> est envoyÃ©.</p>
 
-    <p>Pour les serveurs virtuels SSL, le délai concernant les en-têtes
-    inclut le temps nécessaire à la négociation SSL initiale. Si le
-    navigateur du client est configuré pour demander des listes de
-    révocations de certificats, et si le serveur correspondant n'est pas
-    disponible, le délai avant lequel le navigateur va abandonner son
-    attente de CRL au cours de la négociation SSL initiale peut être
-    assez important. Par conséquent, les valeurs de délais d'en-têtes ne
-    doivent pas être trop basses pour les serveurs virtuels SSL. Le délai
-    concernant le corps inclut le temps nécessaire à la renégociation
-    SSL (si elle est nécessaire).</p>
+    <p>Pour les serveurs virtuels SSL, le dÃ©lai concernant les en-tÃªtes
+    inclut le temps nÃ©cessaire Ã  la nÃ©gociation SSL initiale. Si le
+    navigateur du client est configurÃ© pour demander des listes de
+    rÃ©vocations de certificats, et si le serveur correspondant n'est pas
+    disponible, le dÃ©lai avant lequel le navigateur va abandonner son
+    attente de CRL au cours de la nÃ©gociation SSL initiale peut Ãªtre
+    assez important. Par consÃ©quent, les valeurs de dÃ©lais d'en-tÃªtes ne
+    doivent pas Ãªtre trop basses pour les serveurs virtuels SSL. Le dÃ©lai
+    concernant le corps inclut le temps nÃ©cessaire Ã  la renÃ©gociation
+    SSL (si elle est nÃ©cessaire).</p>
 
     <p>Lorsqu'une directive <code class="directive"><a href="../mod/core.html#acceptfilter">AcceptFilter</a></code> est active (ce qui est en
-    général le cas sous Linux et FreeBSD), le socket n'est envoyé au
-    processus du serveur qu'après la réception du premier octet (ou de
-    l'ensemble de la requête si <code>httpready</code> est défini). Le
-    délai configuré pour les en-têtes via la directive
+    gÃ©nÃ©ral le cas sous Linux et FreeBSD), le socket n'est envoyÃ© au
+    processus du serveur qu'aprÃ¨s la rÃ©ception du premier octet (ou de
+    l'ensemble de la requÃªte si <code>httpready</code> est dÃ©fini). Le
+    dÃ©lai configurÃ© pour les en-tÃªtes via la directive
     <code class="directive">RequestReadTimeout</code> n'entre en ligne de compte qu'une
-    fois le socket reçu par le processus du serveur.</p>
+    fois le socket reÃ§u par le processus du serveur.</p>
 
-    <p>Il existe deux méthodes pour spécifier le délai (pour l'en-tête
+    <p>Il existe deux mÃ©thodes pour spÃ©cifier le dÃ©lai (pour l'en-tÃªte
     ou le corps) :
     </p>
 
     <ul>
 
-    <li><strong>Valeur de délai fixe</strong>:<br />
+    <li><strong>Valeur de dÃ©lai fixe</strong>:<br />
 
-    <div class="example"><p><code><var>type</var>=<var>délai</var></code></p></div>
+    <div class="example"><p><code><var>type</var>=<var>dÃ©lai</var></code></p></div>
 
-    <p>Le temps en secondes alloué pour la lecture des en-têtes ou du
-    corps de la requête. La valeur 0 signifie aucune limite.</p>
+    <p>Le temps en secondes allouÃ© pour la lecture des en-tÃªtes ou du
+    corps de la requÃªte. La valeur 0 signifie aucune limite.</p>
     </li>
 
-    <li><strong>Désactivation du module pour un serveur virtuel</strong>:<br />
+    <li><strong>DÃ©sactivation du module pour un serveur virtuel</strong>:<br />
 
     <div class="example"><p><code>header=0 body=0</code></p></div>
 
     <p>Avec cet exemple, le module <code class="module"><a href="../mod/mod_reqtimeout.html">mod_reqtimeout</a></code> est
-    complètement désactivé.</p>
+    complÃ¨tement dÃ©sactivÃ©.</p>
     </li>
 
-    <li><strong>La valeur du délai qui est augmentée lorsque des données
-    sont reçues</strong> :<br />
+    <li><strong>La valeur du dÃ©lai qui est augmentÃ©e lorsque des donnÃ©es
+    sont reÃ§ues</strong> :<br />
     <div class="example"><p><code>
-    <var>type</var>=<var>délai</var>,MinRate=<var>taux-mini</var>
+    <var>type</var>=<var>dÃ©lai</var>,MinRate=<var>taux-mini</var>
     </code></p></div>
 
-    <p>Identique à ce qui précède, mais chaque fois que des données sont
-    reçues, la valeur du délai est augmentée en fonction du taux-mini
-    spécifié (en octets par seconde).</p>
+    <p>Identique Ã  ce qui prÃ©cÃ¨de, mais chaque fois que des donnÃ©es sont
+    reÃ§ues, la valeur du dÃ©lai est augmentÃ©e en fonction du taux-mini
+    spÃ©cifiÃ© (en octets par seconde).</p>
     </li>
 
-    <li><strong>La valeur du délai augmente lorsque des données sont
-    reçues, jusqu'à une limite supérieure</strong>:<br />
+    <li><strong>La valeur du dÃ©lai augmente lorsque des donnÃ©es sont
+    reÃ§ues, jusqu'Ã  une limite supÃ©rieure</strong>:<br />
     <div class="example"><p><code>
-    <var>type</var>=<var>délai</var>-<var>délai-maxi</var>,MinRate=<var>taux-mini</var>
+    <var>type</var>=<var>dÃ©lai</var>-<var>dÃ©lai-maxi</var>,MinRate=<var>taux-mini</var>
     </code></p></div>
 
-    <p>Identique à ce qui précède, mais le délai n'augmentera pas au
-    delà de la borne supérieure du délai spécifiée.</p>
+    <p>Identique Ã  ce qui prÃ©cÃ¨de, mais le dÃ©lai n'augmentera pas au
+    delÃ  de la borne supÃ©rieure du dÃ©lai spÃ©cifiÃ©e.</p>
     </li>
 
     </ul>
@@ -198,7 +198,7 @@ et corps des requêtes en provenance du client.
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_reqtimeout.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_reqtimeout.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_reqtimeout.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -217,7 +217,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_reqtimeout
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />AutorisÃ© sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

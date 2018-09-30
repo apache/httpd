@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
-<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -27,27 +27,27 @@
 <div id="preamble"><h1>Module Apache mod_isapi</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_isapi.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_isapi.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_isapi.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/mod/mod_isapi.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Extensions ISAPI dans Apache pour Windows</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>isapi_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_isapi.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Compatibilité:</a></th><td>Win32 only</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">IdentificateurÂ deÂ Module:</a></th><td>isapi_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">FichierÂ Source:</a></th><td>mod_isapi.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">CompatibilitÃ©:</a></th><td>Win32 only</td></tr></table>
 <h3>Sommaire</h3>
 
-    <p>Ce module implémente l'API des extensions du Serveur Internet. Il
-    permet à Apache pour Windows de servir les extensions du Serveur
+    <p>Ce module implÃ©mente l'API des extensions du Serveur Internet. Il
+    permet Ã  Apache pour Windows de servir les extensions du Serveur
     Internet (par exemple les modules .dll ISAPI), compte tenu des
-    restrictions spécifiées.</p>
+    restrictions spÃ©cifiÃ©es.</p>
 
     <p>Les modules d'extension ISAPI (fichiers .dll) sont des modules
     tiers. Leur auteur n'est pas le Groupe Apache, et nous n'assurons
     donc pas leur support. Veuillez contacter directement l'auteur
-    d'ISAPI si vous rencontrez des problèmes à l'exécution d'une
+    d'ISAPI si vous rencontrez des problÃ¨mes Ã  l'exÃ©cution d'une
     extension ISAPI. <strong>Merci de <em>ne pas</em> soumettre ce genre
-    de problème dans les listes d'Apache ou dans les pages de rapports
+    de problÃ¨me dans les listes d'Apache ou dans les pages de rapports
     de bogues.</strong></p>
 </div>
 <div id="quickview"><h3>Sujets</h3>
@@ -64,7 +64,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#isapilognotsupported">ISAPILogNotSupported</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#isapireadaheadbuffer">ISAPIReadAheadBuffer</a></li>
 </ul>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_isapi">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_isapi">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_isapi">ProblÃ¨mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_isapi">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -74,114 +74,114 @@
     <p>Dans le fichier de configuration du serveur, utilisez la
     directive <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code> pour
     associer les fichiers ISAPI au gestionnaire
-    <code>isapi-handler</code> à l'aide de l'extension de leur nom de
-    fichier. Pour faire en sorte que tout fichier .dll soit traité en
-    tant qu'extension ISAPI, éditez le fichier httpd.conf et ajoutez les
+    <code>isapi-handler</code> Ã  l'aide de l'extension de leur nom de
+    fichier. Pour faire en sorte que tout fichier .dll soit traitÃ© en
+    tant qu'extension ISAPI, Ã©ditez le fichier httpd.conf et ajoutez les
     lignes suivantes :</p>
     <pre class="prettyprint lang-config">AddHandler isapi-handler .dll</pre>
 
 
     <div class="note">Dans les versions plus anciennes du serveur Apache, le nom du
-    gestionnaire était <code>isapi-isa</code> au lieu de
-    <code>isapi-handler</code>. Depuis les versions de développement 2.3
+    gestionnaire Ã©tait <code>isapi-isa</code> au lieu de
+    <code>isapi-handler</code>. Depuis les versions de dÃ©veloppement 2.3
     du serveur Apache, <code>isapi-isa</code> n'est plus valide, et vous
-    devrez éventuellement modifier votre configuration pour utiliser
-    <code>isapi-handler</code> à la place.</div>
+    devrez Ã©ventuellement modifier votre configuration pour utiliser
+    <code>isapi-handler</code> Ã  la place.</div>
 
-    <p>Le serveur Apache ne propose aucun moyen de conserver en mémoire
-    un module chargé. Vous pouvez cependant précharger et garder un
-    module spécifique en mémoire en utilisant la syntaxe suivante dans
+    <p>Le serveur Apache ne propose aucun moyen de conserver en mÃ©moire
+    un module chargÃ©. Vous pouvez cependant prÃ©charger et garder un
+    module spÃ©cifique en mÃ©moire en utilisant la syntaxe suivante dans
     votre httpd.conf :</p>
     <pre class="prettyprint lang-config">ISAPICacheFile c:/WebWork/Scripts/ISAPI/mytest.dll</pre>
 
 
-    <p>Que vous ayez ou non préchargé une extension ISAPI, ces dernières
-    sont toutes soumises au mêmes restrictions et possèdent les mêmes
-    permissions que les scripts CGI. En d'autres termes, <code class="directive"><a href="../mod/core.html#options">Options</a></code> <code>ExecCGI</code> doit être
-    défini pour le répertoire qui contient le fichier .dll ISAPI.</p>
+    <p>Que vous ayez ou non prÃ©chargÃ© une extension ISAPI, ces derniÃ¨res
+    sont toutes soumises au mÃªmes restrictions et possÃ¨dent les mÃªmes
+    permissions que les scripts CGI. En d'autres termes, <code class="directive"><a href="../mod/core.html#options">Options</a></code> <code>ExecCGI</code> doit Ãªtre
+    dÃ©fini pour le rÃ©pertoire qui contient le fichier .dll ISAPI.</p>
 
     <p>Reportez-vous aux <a href="#notes">Notes additionnelles</a> et au
-    <a href="#journal">Journal du programmeur</a> pour plus de détails
-    et une clarification à propos du support spécifique ISAPI fourni par
+    <a href="#journal">Journal du programmeur</a> pour plus de dÃ©tails
+    et une clarification Ã  propos du support spÃ©cifique ISAPI fourni par
     le module <code class="module"><a href="../mod/mod_isapi.html">mod_isapi</a></code>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="notes" id="notes">Notes additionnelles</a><a title="Lien permanent" href="#notes" class="permalink">&para;</a></h2>
 
-    <p>L'implémentation ISAPI d'Apache se conforme à toutes les
-    spécifications ISAPI 2.0, à l'exception de certaines extensions
-    "spécifiques Microsoft" utilisant des entrées/sorties asynchrones.
-    Le modèle des entrées/sorties d'Apache ne permet pas l'écriture et
-    la lecture asynchrone de la manière dont ISAPI pourrait le faire. Si
-    une extension tente d'utiliser des fonctionnalités non supportées,
-    comme les entrées/sorties asynchrones, un message est enregistré
-    dans le journal des erreurs afin d'aider au débogage. Comme ces
+    <p>L'implÃ©mentation ISAPI d'Apache se conforme Ã  toutes les
+    spÃ©cifications ISAPI 2.0, Ã  l'exception de certaines extensions
+    "spÃ©cifiques Microsoft" utilisant des entrÃ©es/sorties asynchrones.
+    Le modÃ¨le des entrÃ©es/sorties d'Apache ne permet pas l'Ã©criture et
+    la lecture asynchrone de la maniÃ¨re dont ISAPI pourrait le faire. Si
+    une extension tente d'utiliser des fonctionnalitÃ©s non supportÃ©es,
+    comme les entrÃ©es/sorties asynchrones, un message est enregistrÃ©
+    dans le journal des erreurs afin d'aider au dÃ©bogage. Comme ces
     messages peuvent devenir envahissants, la directive
     <code>ISAPILogNotSupported Off</code> permet de filter ce bruit de
     fond.</p>
 
-    <p>Si aucune option de configuration particulière n'est spécifiée,
+    <p>Si aucune option de configuration particuliÃ¨re n'est spÃ©cifiÃ©e,
     certains serveurs, comme Microsoft IIS, chargent l'extension ISAPI
-    dans le serveur et la conservent en mémoire jusqu'à ce que
-    l'utilisation de cette dernière devienne trop élevée. Apache, par
-    contre, charge et décharge réellement l'extension ISAPI chaque fois
-    qu'elle est invoquée, si la directive <code class="directive"><a href="#isapicachefile">ISAPICacheFile</a></code> n'a pas été spécifiée.
-    Ce n'est pas très performant, mais le modèle de mémoire d'Apache
-    fait que cette méthode est la plus efficace. De nombreux modules
-    ISAPI présentent des incompatibilités subtiles avec le serveur
-    Apache, et le déchargement de ces modules permet d'assurer la
-    stabilité du serveur.</p>
+    dans le serveur et la conservent en mÃ©moire jusqu'Ã  ce que
+    l'utilisation de cette derniÃ¨re devienne trop Ã©levÃ©e. Apache, par
+    contre, charge et dÃ©charge rÃ©ellement l'extension ISAPI chaque fois
+    qu'elle est invoquÃ©e, si la directive <code class="directive"><a href="#isapicachefile">ISAPICacheFile</a></code> n'a pas Ã©tÃ© spÃ©cifiÃ©e.
+    Ce n'est pas trÃ¨s performant, mais le modÃ¨le de mÃ©moire d'Apache
+    fait que cette mÃ©thode est la plus efficace. De nombreux modules
+    ISAPI prÃ©sentent des incompatibilitÃ©s subtiles avec le serveur
+    Apache, et le dÃ©chargement de ces modules permet d'assurer la
+    stabilitÃ© du serveur.</p>
 
-    <p>En outre, gardez à l'esprit que si Apache supporte les extensions
+    <p>En outre, gardez Ã  l'esprit que si Apache supporte les extensions
     ISAPI, il <strong>ne supporte pas les filtres ISAPI</strong>. Le
-    support des filtres sera peut-être ajouté dans le futur, mais n'a
-    pas encore été planifié.</p>
+    support des filtres sera peut-Ãªtre ajoutÃ© dans le futur, mais n'a
+    pas encore Ã©tÃ© planifiÃ©.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="journal" id="journal">Journal du programmeur</a><a title="Lien permanent" href="#journal" class="permalink">&para;</a></h2>
 
-    <p>Si vous écrivez des modules <code class="module"><a href="../mod/mod_isapi.html">mod_isapi</a></code> Apache
-    2.0, vous devez limiter vos appels à
+    <p>Si vous Ã©crivez des modules <code class="module"><a href="../mod/mod_isapi.html">mod_isapi</a></code> Apache
+    2.0, vous devez limiter vos appels Ã 
     <code>ServerSupportFunction</code> aux directives suivantes :</p>
 
     <dl>
       <dt><code>HSE_REQ_SEND_URL_REDIRECT_RESP</code></dt>
       <dd>Redirige l'utilisateur vers une autre adresse.<br />
-      Il doit s'agir d'une URL pleinement qualifiée (comme
+      Il doit s'agir d'une URL pleinement qualifiÃ©e (comme
       <code>http://serveur/chemin</code>).</dd>
 
       <dt><code>HSE_REQ_SEND_URL</code></dt>
       <dd>Redirige l'utilisateur vers une autre adresse.<br />
-      Ce ne doit pas être une URL pleinement qualifiée ; la mention du
-      protocole ou du nom du serveur n'est pas autorisée (par exemple,
+      Ce ne doit pas Ãªtre une URL pleinement qualifiÃ©e ; la mention du
+      protocole ou du nom du serveur n'est pas autorisÃ©e (par exemple,
       utilisez simplement <code>/chemin</code>).<br />
-      La redirection n'est pas assurée par le navigateur mais par le
-      serveur lui-même.<br />
+      La redirection n'est pas assurÃ©e par le navigateur mais par le
+      serveur lui-mÃªme.<br />
       <div class="warning"><h3>Avertissement</h3>
-        <p>Dans sa documentation récente, Microsoft semble avoir
-	abandonné la distinction entre les deux fonctions
-	<code>HSE_REQ_SEND_URL</code>. Apache, quant à lui, continue de
+        <p>Dans sa documentation rÃ©cente, Microsoft semble avoir
+	abandonnÃ© la distinction entre les deux fonctions
+	<code>HSE_REQ_SEND_URL</code>. Apache, quant Ã  lui, continue de
 	les traiter comme deux fonctions distinctes avec des contraintes
-	et des comportements spécifiques.</p>
+	et des comportements spÃ©cifiques.</p>
       </div></dd>
 
       <dt><code>HSE_REQ_SEND_RESPONSE_HEADER</code></dt>
-      <dd>Apache accepte un corps de réponse après l'en-tête s'il se
-      situe après la ligne vide (deux caractères newline consécutifs)
-      dans la chaîne des arguments d'en-têtes. Ce corps ne doit pas
-      contenir de caractères NULL, car l'argument des en-têtes est
-      lui-même terminé par un caractère NULL.</dd>
+      <dd>Apache accepte un corps de rÃ©ponse aprÃ¨s l'en-tÃªte s'il se
+      situe aprÃ¨s la ligne vide (deux caractÃ¨res newline consÃ©cutifs)
+      dans la chaÃ®ne des arguments d'en-tÃªtes. Ce corps ne doit pas
+      contenir de caractÃ¨res NULL, car l'argument des en-tÃªtes est
+      lui-mÃªme terminÃ© par un caractÃ¨re NULL.</dd>
 
       <dt><code>HSE_REQ_DONE_WITH_SESSION</code></dt>
-      <dd>Apache considère ceci comme sans objet, car la session est
-      fermée lorsque l'extension ISAPI termine son traitement.</dd>
+      <dd>Apache considÃ¨re ceci comme sans objet, car la session est
+      fermÃ©e lorsque l'extension ISAPI termine son traitement.</dd>
 
       <dt><code>HSE_REQ_MAP_URL_TO_PATH</code></dt>
       <dd>Apache va traduire un nom virtuel en nom physique.</dd>
 
       <dt><code>HSE_APPEND_LOG_PARAMETER</code></dt>
       <dd>
-        Ce paramètre peut intervenir dans un de ces journaux :
+        Ce paramÃ¨tre peut intervenir dans un de ces journaux :
 
         <ul>
           <li>dans le composant <code>\"%{isapi-parameter}n\"</code>
@@ -195,72 +195,72 @@
 	  <code>On</code></li>
         </ul>
 
-        <p>La première option, le composant
-	<code>%{isapi-parameter}n</code>, est préférable et toujours
+        <p>La premiÃ¨re option, le composant
+	<code>%{isapi-parameter}n</code>, est prÃ©fÃ©rable et toujours
 	disponible.</p>
       </dd>
 
       <dt><code>HSE_REQ_IS_KEEP_CONN</code></dt>
-      <dd>retourne le statut négocié Keep-Alive.</dd>
+      <dd>retourne le statut nÃ©gociÃ© Keep-Alive.</dd>
 
       <dt><code>HSE_REQ_SEND_RESPONSE_HEADER_EX</code></dt>
-      <dd>se comportera comme indiqué dans le documentation, bien que le
-      drapeau <code>fKeepConn</code> soit ignoré.</dd>
+      <dd>se comportera comme indiquÃ© dans le documentation, bien que le
+      drapeau <code>fKeepConn</code> soit ignorÃ©.</dd>
 
       <dt><code>HSE_REQ_IS_CONNECTED</code></dt>
-      <dd>renverra faux si la requête a été abandonnée.</dd>
+      <dd>renverra faux si la requÃªte a Ã©tÃ© abandonnÃ©e.</dd>
     </dl>
 
-    <p>Apache renvoie <code>FALSE</code> pour tout appel non supporté à
+    <p>Apache renvoie <code>FALSE</code> pour tout appel non supportÃ© Ã 
     <code>ServerSupportFunction</code>, et <code>GetLastError</code>
     renverra la valeur <code>ERROR_INVALID_PARAMETER</code>.</p>
 
-    <p><code>ReadClient</code> extrait la partie du corps de la requête
-    qui dépasse le tampon initial (défini par la directive <code class="directive"><a href="#isapireadaheadbuffer">ISAPIReadAheadBuffer</a></code>). En fonction de
-    la définition de la directive
-    <code class="directive">ISAPIReadAheadBuffer</code> (nombre d'octets à
+    <p><code>ReadClient</code> extrait la partie du corps de la requÃªte
+    qui dÃ©passe le tampon initial (dÃ©fini par la directive <code class="directive"><a href="#isapireadaheadbuffer">ISAPIReadAheadBuffer</a></code>). En fonction de
+    la dÃ©finition de la directive
+    <code class="directive">ISAPIReadAheadBuffer</code> (nombre d'octets Ã 
     mettre dans le tampon avant d'appeler le gestionnaire ISAPI), les
-    requêtes courtes sont envoyées en entier à l'extension lorsque
-    celle-ci est invoquée. Si la taille de la requête est trop
-    importante, l'extension ISAPI doit faire appel à
-    <code>ReadClient</code> pour extraire la totalité du corps de la
-    requête.</p>
+    requÃªtes courtes sont envoyÃ©es en entier Ã  l'extension lorsque
+    celle-ci est invoquÃ©e. Si la taille de la requÃªte est trop
+    importante, l'extension ISAPI doit faire appel Ã 
+    <code>ReadClient</code> pour extraire la totalitÃ© du corps de la
+    requÃªte.</p>
 
-    <p><code>WriteClient</code> est supporté, mais seulement avec le
+    <p><code>WriteClient</code> est supportÃ©, mais seulement avec le
     drapeau <code>HSE_IO_SYNC</code> ou le drapeau "aucune option"
-    (valeur <code>0</code>). Toute autre requête
-    <code>WriteClient</code> sera rejetée avec une valeur de retour
+    (valeur <code>0</code>). Toute autre requÃªte
+    <code>WriteClient</code> sera rejetÃ©e avec une valeur de retour
     <code>FALSE</code>, et <code>GetLastError</code> renverra la valeur
     <code>ERROR_INVALID_PARAMETER</code></p>
 
-    <p><code>GetServerVariable</code> est supporté, bien que les
-    variables étendues de serveur n'existent pas (comme défini par
+    <p><code>GetServerVariable</code> est supportÃ©, bien que les
+    variables Ã©tendues de serveur n'existent pas (comme dÃ©fini par
     d'autres serveurs). Toutes les variables d'environnement CGI
-    usuelles d'Apache sont disponibles à partir de
+    usuelles d'Apache sont disponibles Ã  partir de
     <code>GetServerVariable</code>, ainsi que les valeurs
     <code>ALL_HTTP</code> et <code>ALL_RAW</code>.</p>
 
     <p>Depuis httpd 2.0, <code class="module"><a href="../mod/mod_isapi.html">mod_isapi</a></code> propose des
-    fonctionnalités supplémentaires introduites dans les versions
-    actualisées de la spécification ISAPI, ainsi qu'une émulation
-    limitée des entrées/sorties asynchrones et la sémantique
-    <code>TransmitFile</code>. Apache httpd supporte aussi le préchargement
-    des .dlls ISAPI à des fins de performances.</p>
+    fonctionnalitÃ©s supplÃ©mentaires introduites dans les versions
+    actualisÃ©es de la spÃ©cification ISAPI, ainsi qu'une Ã©mulation
+    limitÃ©e des entrÃ©es/sorties asynchrones et la sÃ©mantique
+    <code>TransmitFile</code>. Apache httpd supporte aussi le prÃ©chargement
+    des .dlls ISAPI Ã  des fins de performances.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="isapiappendlogtoerrors" id="isapiappendlogtoerrors">Directive</a> <a name="ISAPIAppendLogToErrors" id="ISAPIAppendLogToErrors">ISAPIAppendLogToErrors</a><a title="Lien permanent" href="#isapiappendlogtoerrors" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enregistrement des requêtes
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enregistrement des requÃªtes
 <code>HSE_APPEND_LOG_PARAMETER</code> de la part des extensions ISAPI
 dans le journal des erreurs</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ISAPIAppendLogToErrors on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ISAPIAppendLogToErrors off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Default">DÃ©faut:</a></th><td><code>ISAPIAppendLogToErrors off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, rÃ©pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisÃ©es:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_isapi</td></tr>
 </table>
-    <p>Cette directive permet d'enregistrer les requêtes
+    <p>Cette directive permet d'enregistrer les requÃªtes
     <code>HSE_APPEND_LOG_PARAMETER</code> de la part des extensions
     ISAPI dans le journal des erreurs.</p>
 
@@ -268,27 +268,27 @@ dans le journal des erreurs</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="isapiappendlogtoquery" id="isapiappendlogtoquery">Directive</a> <a name="ISAPIAppendLogToQuery" id="ISAPIAppendLogToQuery">ISAPIAppendLogToQuery</a><a title="Lien permanent" href="#isapiappendlogtoquery" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enregistre les requêtes
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enregistre les requÃªtes
 <code>HSE_APPEND_LOG_PARAMETER</code> de la part des extensions ISAPI
-dans la partie arguments de la requête</td></tr>
+dans la partie arguments de la requÃªte</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ISAPIAppendLogToQuery on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ISAPIAppendLogToQuery on</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Default">DÃ©faut:</a></th><td><code>ISAPIAppendLogToQuery on</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, rÃ©pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisÃ©es:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_isapi</td></tr>
 </table>
-    <p>Cette directive permet d'enregistrer les requêtes
+    <p>Cette directive permet d'enregistrer les requÃªtes
     <code>HSE_APPEND_LOG_PARAMETER</code> de la part des extensions
-    ISAPI dans la partie arguments de la requête (ajouté au composant
+    ISAPI dans la partie arguments de la requÃªte (ajoutÃ© au composant
     <code>%q</code> de la directive <code class="directive"><a href="../mod/mod_log_config.html#customlog">CustomLog</a></code>).</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="isapicachefile" id="isapicachefile">Directive</a> <a name="ISAPICacheFile" id="ISAPICacheFile">ISAPICacheFile</a><a title="Lien permanent" href="#isapicachefile" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fichiers .dll ISAPI devant être chargés au
-démarrage</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fichiers .dll ISAPI devant Ãªtre chargÃ©s au
+dÃ©marrage</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ISAPICacheFile <var>chemin-fichier</var>
 [<var>chemin-fichier</var>]
 ...</code></td></tr>
@@ -296,75 +296,75 @@ démarrage</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_isapi</td></tr>
 </table>
-    <p>Cette directive permet de spécifier une liste, séparés par des
-    espaces, de noms de fichiers devant être chargés au démarrage
-    du serveur Apache, et rester en mémoire jusqu'à l'arrêt du serveur.
-    Cette directive peut être répétée pour chaque fichier .dll ISAPI
-    souhaité. Le chemin complet du fichier doit être spécifié. Si le
-    chemin n'est pas absolu, il sera considéré comme relatif au
-    répertoire défini par la directive <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>.</p>
+    <p>Cette directive permet de spÃ©cifier une liste, sÃ©parÃ©s par des
+    espaces, de noms de fichiers devant Ãªtre chargÃ©s au dÃ©marrage
+    du serveur Apache, et rester en mÃ©moire jusqu'Ã  l'arrÃªt du serveur.
+    Cette directive peut Ãªtre rÃ©pÃ©tÃ©e pour chaque fichier .dll ISAPI
+    souhaitÃ©. Le chemin complet du fichier doit Ãªtre spÃ©cifiÃ©. Si le
+    chemin n'est pas absolu, il sera considÃ©rÃ© comme relatif au
+    rÃ©pertoire dÃ©fini par la directive <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="isapifakeasync" id="isapifakeasync">Directive</a> <a name="ISAPIFakeAsync" id="ISAPIFakeAsync">ISAPIFakeAsync</a><a title="Lien permanent" href="#isapifakeasync" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Emulation du support des entrées/sorties asynchrones pour
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Emulation du support des entrÃ©es/sorties asynchrones pour
 les appels ISAPI</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ISAPIFakeAsync on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ISAPIFakeAsync off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Default">DÃ©faut:</a></th><td><code>ISAPIFakeAsync off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, rÃ©pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisÃ©es:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_isapi</td></tr>
 </table>
-    <p>Lorsquelle est définie à "on", cette directive permet d'émuler le
-    support des entrées/sorties asynchrones pour les appels ISAPI.</p>
+    <p>Lorsquelle est dÃ©finie Ã  "on", cette directive permet d'Ã©muler le
+    support des entrÃ©es/sorties asynchrones pour les appels ISAPI.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="isapilognotsupported" id="isapilognotsupported">Directive</a> <a name="ISAPILogNotSupported" id="ISAPILogNotSupported">ISAPILogNotSupported</a><a title="Lien permanent" href="#isapilognotsupported" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Journalisation des demandes de fonctionnalités non
-supportées de la part des extensions ISAPI</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Journalisation des demandes de fonctionnalitÃ©s non
+supportÃ©es de la part des extensions ISAPI</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ISAPILogNotSupported on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ISAPILogNotSupported off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Default">DÃ©faut:</a></th><td><code>ISAPILogNotSupported off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, rÃ©pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisÃ©es:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_isapi</td></tr>
 </table>
     <p>Cette directive permet d'enregistrer dans le journal des erreurs
-    toutes les demandes de fonctionnalités non supportées de la part des
-    extensions ISAPI. Ceci peut aider les administrateurs à décortiquer
-    certains problèmes. Lorsqu'elle a été définie à "on" et si tous les
-    modules ISAPI fonctionnent, elle peut être redéfinie à "off".</p>
+    toutes les demandes de fonctionnalitÃ©s non supportÃ©es de la part des
+    extensions ISAPI. Ceci peut aider les administrateurs Ã  dÃ©cortiquer
+    certains problÃ¨mes. Lorsqu'elle a Ã©tÃ© dÃ©finie Ã  "on" et si tous les
+    modules ISAPI fonctionnent, elle peut Ãªtre redÃ©finie Ã  "off".</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="isapireadaheadbuffer" id="isapireadaheadbuffer">Directive</a> <a name="ISAPIReadAheadBuffer" id="ISAPIReadAheadBuffer">ISAPIReadAheadBuffer</a><a title="Lien permanent" href="#isapireadaheadbuffer" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Taille du tampon de lecture anticipée envoyé aux extensions
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Taille du tampon de lecture anticipÃ©e envoyÃ© aux extensions
 ISAPI</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ISAPIReadAheadBuffer <var>taille</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ISAPIReadAheadBuffer 49152</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Default">DÃ©faut:</a></th><td><code>ISAPIReadAheadBuffer 49152</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, rÃ©pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisÃ©es:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_isapi</td></tr>
 </table>
-    <p>Cette directive permet de définir la taille maximale du tampon de
-    lecture anticipée envoyé aux extensions ISAPI lorsqu'elles sont
-    initialement invoquées. Toute donnée restante doit être extraite en
-    faisant appel à <code>ReadClient</code> ; certaines extensions ISAPI
+    <p>Cette directive permet de dÃ©finir la taille maximale du tampon de
+    lecture anticipÃ©e envoyÃ© aux extensions ISAPI lorsqu'elles sont
+    initialement invoquÃ©es. Toute donnÃ©e restante doit Ãªtre extraite en
+    faisant appel Ã  <code>ReadClient</code> ; certaines extensions ISAPI
     peuvent ne pas supporter la fonction <code>ReadClient</code>.
-    Pour plus de détails, veuillez vous adresser à l'auteur de
+    Pour plus de dÃ©tails, veuillez vous adresser Ã  l'auteur de
     l'extension ISAPI.</p>
 
 </div>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_isapi.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_isapi.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_isapi.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/mod/mod_isapi.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
@@ -384,7 +384,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_isapi.html
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />AutorisÃ© sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

@@ -1,13 +1,13 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
-<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>logresolve - Résoud les adresses IP en noms d'hôtes dans les
+<title>logresolve - RÃ©soud les adresses IP en noms d'hÃ´tes dans les
   fichiers journaux d'Apache - Serveur HTTP Apache Version 2.5</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
@@ -22,26 +22,26 @@
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Programmes</a></div><div id="page-content"><div id="preamble"><h1>logresolve - Résoud les adresses IP en noms d'hôtes dans les
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Programmes</a></div><div id="page-content"><div id="preamble"><h1>logresolve - RÃ©soud les adresses IP en noms d'hÃ´tes dans les
   fichiers journaux d'Apache</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/programs/logresolve.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/programs/logresolve.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/programs/logresolve.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/programs/logresolve.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/programs/logresolve.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/programs/logresolve.html" hreflang="tr" rel="alternate" title="TÃ¼rkÃ§e">&nbsp;tr&nbsp;</a></p>
 </div>
 
-     <p><code>logresolve</code> est un programme agissant après
-     traitement pour résoudre les adresses IP dans les journaux d'accès
+     <p><code>logresolve</code> est un programme agissant aprÃ¨s
+     traitement pour rÃ©soudre les adresses IP dans les journaux d'accÃ¨s
      d'Apache. Pour minimiser la charge de votre serveur de noms,
-     logresolve possède son propre cache interne sous forme d'une table
-     de hashage. Cela implique que chaque numéro IP ne fera l'objet
-     d'une requête DNS que la première fois où il est rencontré dans le
+     logresolve possÃ¨de son propre cache interne sous forme d'une table
+     de hashage. Cela implique que chaque numÃ©ro IP ne fera l'objet
+     d'une requÃªte DNS que la premiÃ¨re fois oÃ¹ il est rencontrÃ© dans le
      fichier journal.</p>
 
-     <p>Le programme reçoit le fichier journal sur son entrée standard.
-     Les adresses IP doivent se trouver en tête de chaque ligne et
-     doivent être séparées du reste de la ligne par un espace.</p>
+     <p>Le programme reÃ§oit le fichier journal sur son entrÃ©e standard.
+     Les adresses IP doivent se trouver en tÃªte de chaque ligne et
+     doivent Ãªtre sÃ©parÃ©es du reste de la ligne par un espace.</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#synopsis">Syntaxe</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#options">Options</a></li>
@@ -61,24 +61,24 @@
 
 <dt><code>-s <var>nom-fichier</var></code></dt>
 
-<dd>Spécifie le nom du fichier où seront enregistrées des
+<dd>SpÃ©cifie le nom du fichier oÃ¹ seront enregistrÃ©es des
 statistiques.</dd>
 
 <dt><code>-c</code></dt>
 
 <dd>Avec cette option, <code>logresolve</code> effectue certaines
-vérifications DNS : après avoir trouvé le nom d'hôte correspondant à une
+vÃ©rifications DNS : aprÃ¨s avoir trouvÃ© le nom d'hÃ´te correspondant Ã  une
 adresse IP, <code>logresolve</code> effectue une recherche DNS sur ce
-nom d'hôte et vérifie si une des adresses IP trouvées correspond à
+nom d'hÃ´te et vÃ©rifie si une des adresses IP trouvÃ©es correspond Ã 
 l'adresse originale.</dd>
 
 </dl>
 </div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/programs/logresolve.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/programs/logresolve.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/programs/logresolve.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/programs/logresolve.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/programs/logresolve.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/programs/logresolve.html" hreflang="tr" rel="alternate" title="TÃ¼rkÃ§e">&nbsp;tr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -97,7 +97,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/programs/logresolv
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />AutorisÃ© sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
-<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -27,28 +27,28 @@
 <div id="preamble"><h1>Apache MPM os2</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mpmt_os2.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mpmt_os2.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mpmt_os2.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>MPM hybride multi-processus, multi-thread pour
 OS/2</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>MPM</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>mpm_mpmt_os2_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mpmt_os2.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">IdentificateurÂ deÂ Module:</a></th><td>mpm_mpmt_os2_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">FichierÂ Source:</a></th><td>mpmt_os2.c</td></tr></table>
 <h3>Sommaire</h3>
 
     <p>Le serveur se compose d'un processus principal parent, et d'un
     petit nombre fixe de processus enfants.</p>
 
-    <p>La tâche du processus parent consiste à gérer les processus
-    enfants, c'est à dire lancer ces processus de manière à ce
-    qu'il y en ait toujours un nombre égal à la valeur de la directive
+    <p>La tÃ¢che du processus parent consiste Ã  gÃ©rer les processus
+    enfants, c'est Ã  dire lancer ces processus de maniÃ¨re Ã  ce
+    qu'il y en ait toujours un nombre Ã©gal Ã  la valeur de la directive
     <code class="directive"><a href="../mod/mpm_common.html#startservers">StartServers</a></code> pour traiter
     les connexions.</p>
 
     <p>Chaque processus enfant comporte un jeu de threads esclaves et un
-    thread maître qui accepte les connexions et les distribue aux
+    thread maÃ®tre qui accepte les connexions et les distribue aux
     esclaves via une file de travail. Le jeu de threads esclaves est
-    dynamique et géré par un thread de maintenance de façon à ce que le
+    dynamique et gÃ©rÃ© par un thread de maintenance de faÃ§on Ã  ce que le
     nombre de threads inactifs soit maintenu entre <code class="directive"><a href="../mod/mpm_common.html#minsparethreads">MinSpareThreads</a></code> et <code class="directive"><a href="../mod/mpm_common.html#maxsparethreads">MaxSpareThreads</a></code>.</p>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
@@ -65,16 +65,16 @@ OS/2</td></tr>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#startservers">StartServers</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mod_unixd.html#user">User</a></li>
 </ul>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mpmt_os2">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mpmt_os2">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mpmt_os2">ProblÃ¨mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mpmt_os2">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
-<li><a href="../bind.html">Définition des adresses et ports
+<li><a href="../bind.html">DÃ©finition des adresses et ports
 qu'utilise Apache</a></li>
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mpmt_os2.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mpmt_os2.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mpmt_os2.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -93,7 +93,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mpmt_os2.html'
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />AutorisÃ© sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

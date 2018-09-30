@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
-<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -27,41 +27,41 @@
 <div id="preamble"><h1>Module Apache mod_proxy_wstunnel</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_proxy_wstunnel.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_proxy_wstunnel.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_proxy_wstunnel.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Module pour <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> supportant les
 websockets</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>proxy_wstunnel_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_proxy_wstunnel.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.5 du serveur HTTP
+<tr><th><a href="module-dict.html#ModuleIdentifier">IdentificateurÂ deÂ Module:</a></th><td>proxy_wstunnel_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">FichierÂ Source:</a></th><td>mod_proxy_wstunnel.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">CompatibilitÃ©:</a></th><td>Disponible Ã  partir de la version 2.4.5 du serveur HTTP
 Apache</td></tr></table>
 <h3>Sommaire</h3>
 
-    <p>Pour utiliser ce module, <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> doit être
-    chargé. Il fournit le support du tunnelling pour les connexions
-    websocket vers un serveur websockets d'arrière-plan. La connexion
+    <p>Pour utiliser ce module, <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> doit Ãªtre
+    chargÃ©. Il fournit le support du tunnelling pour les connexions
+    websocket vers un serveur websockets d'arriÃ¨re-plan. La connexion
     est automatiquement promue en connexion websocket :</p>
 
-    <div class="example"><h3>Réponse HTTP</h3><pre class="prettyprint lang-config">Upgrade: WebSocket
+    <div class="example"><h3>RÃ©ponse HTTP</h3><pre class="prettyprint lang-config">Upgrade: WebSocket
 Connection: Upgrade</pre>
 </div>
 
-<p>Le mandatement des requêtes vers un serveur websockets comme
-<code>echo.websocket.org</code> peut être configuré via la directive <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> :</p>
+<p>Le mandatement des requÃªtes vers un serveur websockets comme
+<code>echo.websocket.org</code> peut Ãªtre configurÃ© via la directive <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> :</p>
     <pre class="prettyprint lang-config">ProxyPass "/ws2/"  "ws://echo.websocket.org/"
 ProxyPass "/wss2/" "wss://echo.websocket.org/"</pre>
 
 
-<p>La répartition de charge entre plusieurs serveurs d'arrière-plan peut être
-configurée via le module <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code>.</p>
+<p>La rÃ©partition de charge entre plusieurs serveurs d'arriÃ¨re-plan peut Ãªtre
+configurÃ©e via le module <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code>.</p>
 
-<p>En fait, ce module permet d'accepter d'autres protocoles ; vous pouvez à cet
-effet utiliser le paramètre <code>upgrade</code> de la directive <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code>. La valeur NONE
-signifie que vous court-circuitez la consultation de l'en-tête, mais que vous
-autorisez quand-même WebSocket. La valeur ANY signifie que <code>Upgrade</code>
-va lire les en-têtes de la requête et les utilisera dans l'en-tête
-<code>Upgrade</code> de la réponse.</p>
+<p>En fait, ce module permet d'accepter d'autres protocoles ; vous pouvez Ã  cet
+effet utiliser le paramÃ¨tre <code>upgrade</code> de la directive <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code>. La valeur NONE
+signifie que vous court-circuitez la consultation de l'en-tÃªte, mais que vous
+autorisez quand-mÃªme WebSocket. La valeur ANY signifie que <code>Upgrade</code>
+va lire les en-tÃªtes de la requÃªte et les utilisera dans l'en-tÃªte
+<code>Upgrade</code> de la rÃ©ponse.</p>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
@@ -69,7 +69,7 @@ va lire les en-têtes de la requête et les utilisera dans l'en-tête
 <li><img alt="" src="../images/down.gif" /> <a href="#proxywebsocketasyncdelay">ProxyWebsocketAsyncDelay</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxywebsocketidletimeout">ProxyWebsocketIdleTimeout</a></li>
 </ul>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_proxy_wstunnel">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_proxy_wstunnel">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_proxy_wstunnel">ProblÃ¨mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_proxy_wstunnel">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></li>
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
@@ -77,59 +77,59 @@ va lire les en-têtes de la requête et les utilisera dans l'en-tête
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="proxywebsocketasync" id="proxywebsocketasync">Directive</a> <a name="ProxyWebsocketAsync" id="ProxyWebsocketAsync">ProxyWebsocketAsync</a><a title="Lien permanent" href="#proxywebsocketasync" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Création d'un tunnel asynchrone</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>CrÃ©ation d'un tunnel asynchrone</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyWebsocketAsync ON|OFF</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_wstunnel</td></tr>
 </table>
-    <p>Cette directive permet d'imposer la création d'un tunnel
-    asynchrone. Si le module MPM utilisé ne supporte pas les
-    fonctionnalités nécessaires, le tunnel est créé en mode synchrone.</p>
+    <p>Cette directive permet d'imposer la crÃ©ation d'un tunnel
+    asynchrone. Si le module MPM utilisÃ© ne supporte pas les
+    fonctionnalitÃ©s nÃ©cessaires, le tunnel est crÃ©Ã© en mode synchrone.</p>
     <div class="note"><h3>Note</h3><p>Le support du mode asynchrone est
-    au stade expérimental et est susceptible d'évoluer.</p></div>
+    au stade expÃ©rimental et est susceptible d'Ã©voluer.</p></div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="proxywebsocketasyncdelay" id="proxywebsocketasyncdelay">Directive</a> <a name="ProxyWebsocketAsyncDelay" id="ProxyWebsocketAsyncDelay">ProxyWebsocketAsyncDelay</a><a title="Lien permanent" href="#proxywebsocketasyncdelay" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Temps d'attente synchrone maximum pour des données</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Temps d'attente synchrone maximum pour des donnÃ©es</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyWebsocketAsyncDelay <var>num</var>[ms]</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ProxyWebsocketAsyncDelay 0</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">DÃ©faut:</a></th><td><code>ProxyWebsocketAsyncDelay 0</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_wstunnel</td></tr>
 </table>
     <p>Si la directive <code class="directive">ProxyWebsocketAsync</code> est
-    activée, cette directive permet de définir le temps maximum pendant lequel
-    le serveur attendra des données en mode synchrone. Par défaut, ce temps est exprimé
-    en secondes, mais vous pouvez le spécifier en millisecondes en utilisant le
+    activÃ©e, cette directive permet de dÃ©finir le temps maximum pendant lequel
+    le serveur attendra des donnÃ©es en mode synchrone. Par dÃ©faut, ce temps est exprimÃ©
+    en secondes, mais vous pouvez le spÃ©cifier en millisecondes en utilisant le
     suffixe <em>ms</em>.</p>
 
     <div class="note"><h3>Note</h3><p>Le support du mode asynchrone est
-    au stade expérimental et est susceptible d'évoluer.</p></div>
+    au stade expÃ©rimental et est susceptible d'Ã©voluer.</p></div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="proxywebsocketidletimeout" id="proxywebsocketidletimeout">Directive</a> <a name="ProxyWebsocketIdleTimeout" id="ProxyWebsocketIdleTimeout">ProxyWebsocketIdleTimeout</a><a title="Lien permanent" href="#proxywebsocketidletimeout" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Temps d'attente maximum pour des données sur le tunnel websockets</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Temps d'attente maximum pour des donnÃ©es sur le tunnel websockets</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyWebsocketIdleTimeout <var>num</var>[ms]</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ProxyWebsocketIdleTimeout 0</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">DÃ©faut:</a></th><td><code>ProxyWebsocketIdleTimeout 0</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_wstunnel</td></tr>
 </table>
-    <p>Cette directive permet de définir un temps maximum pendant lequel
-    le tunnel pourra rester ouvert et inactif. Par défaut, ce temps est exprimé
-    en secondes, mais vous pouvez le spécifier en millisecondes en utilisant le
+    <p>Cette directive permet de dÃ©finir un temps maximum pendant lequel
+    le tunnel pourra rester ouvert et inactif. Par dÃ©faut, ce temps est exprimÃ©
+    en secondes, mais vous pouvez le spÃ©cifier en millisecondes en utilisant le
     suffixe <em>ms</em>.</p>
 
 </div>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_proxy_wstunnel.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_proxy_wstunnel.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_proxy_wstunnel.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -148,7 +148,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_proxy_wstu
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />AutorisÃ© sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

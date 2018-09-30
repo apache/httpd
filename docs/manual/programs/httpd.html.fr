@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
-<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -24,25 +24,25 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Programmes</a></div><div id="page-content"><div id="preamble"><h1>httpd - Le serveur HTTP d'Apache</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/programs/httpd.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/programs/httpd.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/programs/httpd.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/programs/httpd.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/programs/httpd.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/programs/httpd.html" hreflang="tr" rel="alternate" title="TÃ¼rkÃ§e">&nbsp;tr&nbsp;</a></p>
 </div>
 
      <p><code>httpd</code> est le programme du serveur HTTP d'Apache. Il
-     a été conçu pour fonctionner sous forme de processus démon
-     indépendant. Lorsqu'il est utilisé ainsi, il va créer un jeu de
-     processus enfants ou de threads qui traiteront les requêtes.</p>
+     a Ã©tÃ© conÃ§u pour fonctionner sous forme de processus dÃ©mon
+     indÃ©pendant. Lorsqu'il est utilisÃ© ainsi, il va crÃ©er un jeu de
+     processus enfants ou de threads qui traiteront les requÃªtes.</p>
 
-     <p>En général, <code>httpd</code> n'est pas invoqué directement,
-     mais plutôt via <code class="program"><a href="../programs/apachectl.html">apachectl</a></code> sur les systèmes de
+     <p>En gÃ©nÃ©ral, <code>httpd</code> n'est pas invoquÃ© directement,
+     mais plutÃ´t via <code class="program"><a href="../programs/apachectl.html">apachectl</a></code> sur les systÃ¨mes de
      style Unix ou <a href="../platform/windows.html#winsvc">en tant que service sous
      Windows NT, 2000 et XP</a> et <a href="../platform/windows.html#wincons">comme application de
      console sous Windows 9x et ME</a>.</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#synopsis">Syntaxe</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#options">Options</a></li>
-</ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="../invoking.html">Démarrer Apache httpd</a></li><li><a href="../stopping.html">Arrêter Apache httpd</a></li><li><a href="../configuring.html">Fichiers de configuration</a></li><li><a href="../platform/">Documentations spécifiques aux
+</ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="../invoking.html">DÃ©marrer Apache httpd</a></li><li><a href="../stopping.html">ArrÃªter Apache httpd</a></li><li><a href="../configuring.html">Fichiers de configuration</a></li><li><a href="../platform/">Documentations spÃ©cifiques aux
 plates-formes</a></li><li><code class="program"><a href="../programs/apachectl.html">apachectl</a></code></li><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -50,7 +50,7 @@ plates-formes</a></li><li><code class="program"><a href="../programs/apachectl.h
      <p><code><strong>httpd</strong> [ -<strong>d</strong>
      <var>racine-serveur</var> ] [ -<strong>f</strong> <var>config</var> ]
      [ -<strong>C</strong> <var>directive</var> ] [ -<strong>c</strong>
-     <var>directive</var> ] [ -<strong>D</strong> <var>paramètre</var> ]
+     <var>directive</var> ] [ -<strong>D</strong> <var>paramÃ¨tre</var> ]
      [ -<strong>e</strong> <var>niveau</var> ] [ -<strong>E</strong>
      <var>fichier</var> ]
      [ <strong>-k</strong> start|restart|graceful|stop|graceful-stop ]
@@ -60,7 +60,7 @@ plates-formes</a></li><li><code class="program"><a href="../programs/apachectl.h
      [ -<strong>X</strong> ] [ -<strong>M</strong> ] [ -<strong>T</strong> ]
      </code></p>
 
-     <p>Sur les <a href="../platform/windows.html">systèmes Windows</a>,
+     <p>Sur les <a href="../platform/windows.html">systÃ¨mes Windows</a>,
      les options additionnelles suivantes sont disponibles :</p>
 
      <p><code><strong>httpd</strong> [ -<strong>k</strong>
@@ -73,106 +73,106 @@ plates-formes</a></li><li><code class="program"><a href="../programs/apachectl.h
 <dl>
 <dt><code>-d <var>racine-serveur</var></code></dt>
 
-<dd>Définit la valeur initiale de la directive <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code> à <var>racine-serveur</var>. Cette
-valeur peut être écrasée par la directive ServerRoot du fichier de
-configuration. La valeur par défaut est
+<dd>DÃ©finit la valeur initiale de la directive <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code> Ã  <var>racine-serveur</var>. Cette
+valeur peut Ãªtre Ã©crasÃ©e par la directive ServerRoot du fichier de
+configuration. La valeur par dÃ©faut est
 <code>/usr/local/apache2</code>.</dd>
 
 <dt><code>-f <var>config</var></code></dt>
 
-<dd>Utilise les directives du fichier <var>config</var> au démarrage. Si
-<var>config</var> ne commence pas par un '/', il est considéré comme
-relatif au chemin défini par la directive <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>. La valeur par défaut est
+<dd>Utilise les directives du fichier <var>config</var> au dÃ©marrage. Si
+<var>config</var> ne commence pas par un '/', il est considÃ©rÃ© comme
+relatif au chemin dÃ©fini par la directive <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>. La valeur par dÃ©faut est
 <code>conf/httpd.conf</code>.</dd>
 
 <dt><code>-k <code>start|restart|graceful|stop|graceful-stop</code></code></dt>
 
-<dd>Permet de démarrer, redémarrer ou arrêter <code>httpd</code>. Voir <a href="../stopping.html">Arrêter Apache httpd</a> pour plus d'informations.</dd>
+<dd>Permet de dÃ©marrer, redÃ©marrer ou arrÃªter <code>httpd</code>. Voir <a href="../stopping.html">ArrÃªter Apache httpd</a> pour plus d'informations.</dd>
 
 <dt><code>-C <var>directive</var></code></dt>
 
-<dd>Exécute la directive de configuration <var>directive</var> avant de
+<dd>ExÃ©cute la directive de configuration <var>directive</var> avant de
 lire les fichiers de configurations.</dd>
 
 <dt><code>-c <var>directive</var></code></dt>
 
-<dd>Exécute la directive de configuration <var>directive</var> après
+<dd>ExÃ©cute la directive de configuration <var>directive</var> aprÃ¨s
 avoir lu les fichiers de configurations.</dd>
 
 
-<dt><code>-D <var>paramètre</var></code></dt>
+<dt><code>-D <var>paramÃ¨tre</var></code></dt>
 
-<dd>Définit un <var>paramètre</var> de configuration à utiliser dans les
+<dd>DÃ©finit un <var>paramÃ¨tre</var> de configuration Ã  utiliser dans les
 sections <code class="directive"><a href="../mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code>
-des fichiers de configuration, ces dernières permettant d'exécuter ou
+des fichiers de configuration, ces derniÃ¨res permettant d'exÃ©cuter ou
 non des
-commandes au démarrage ou au redémarrage du serveur. Sert aussi à
-définir certains paramètres de démarrage moins courants comme
-<code>-DNO_DETACH</code> (empêche le processus parent de lancer des
-processus enfants) et <code>-DFOREGROUND</code> (empêche le processus
+commandes au dÃ©marrage ou au redÃ©marrage du serveur. Sert aussi Ã 
+dÃ©finir certains paramÃ¨tres de dÃ©marrage moins courants comme
+<code>-DNO_DETACH</code> (empÃªche le processus parent de lancer des
+processus enfants) et <code>-DFOREGROUND</code> (empÃªche le processus
 parent d'appeler <code>setsid()</code> et autres).</dd>
 
 <dt><code>-e <var>niveau</var></code></dt>
 
-<dd>Définit la directive <code class="directive"><a href="../mod/core.html#loglevel">LogLevel</a></code> à
-<var>niveau</var> pendant le démarrage du serveur. Ceci permet
-d'augmenter temporairement la verbosité des messages d'erreur afin de
-déterminer les problèmes de démarrage.</dd>
+<dd>DÃ©finit la directive <code class="directive"><a href="../mod/core.html#loglevel">LogLevel</a></code> Ã 
+<var>niveau</var> pendant le dÃ©marrage du serveur. Ceci permet
+d'augmenter temporairement la verbositÃ© des messages d'erreur afin de
+dÃ©terminer les problÃ¨mes de dÃ©marrage.</dd>
 
 <dt><code>-E <var>fichier</var></code></dt>
 
-<dd>Envoie les messages d'erreur de démarrage vers le fichier
+<dd>Envoie les messages d'erreur de dÃ©marrage vers le fichier
 <var>fichier</var>.</dd>
 
 <dt><code>-h</code></dt>
 
-<dd>Affiche un bref résumé des options de ligne de commande
+<dd>Affiche un bref rÃ©sumÃ© des options de ligne de commande
 disponibles.</dd>
 
 <dt><code>-l</code></dt>
 
-<dd>Affiche la liste des modules compilés dans le le serveur. Ce
-paramètre n'affiche <strong>pas</strong> les modules chargés
+<dd>Affiche la liste des modules compilÃ©s dans le le serveur. Ce
+paramÃ¨tre n'affiche <strong>pas</strong> les modules chargÃ©s
 dynamiquement via la directive <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code>.</dd>
 
 <dt><code>-L</code></dt>
 
 <dd>Affiche une liste des directives fournies par les modules statiques
-avec les arguments associés, ainsi que les contextes dans lesquels elles
-sont valides. Les directives fournies par les modules partagés
-(dynamiques) ne sont pas affichées).</dd>
+avec les arguments associÃ©s, ainsi que les contextes dans lesquels elles
+sont valides. Les directives fournies par les modules partagÃ©s
+(dynamiques) ne sont pas affichÃ©es).</dd>
 
 <dt><code>-M</code></dt>
 
-<dd>Affiche une liste des modules statiques et des modules chargés
+<dd>Affiche une liste des modules statiques et des modules chargÃ©s
 dynamiquement.</dd>
 
 <dt><code>-S</code></dt>
 
-<dd>Affiche la configuration telle qu'elle est issue de l'interprétation
+<dd>Affiche la configuration telle qu'elle est issue de l'interprÃ©tation
 du fichier de configuration (actuellement, seule la configuration des
-serveurs virtuels est affichée).</dd>
+serveurs virtuels est affichÃ©e).</dd>
 
 <dt><code>-T</code> (disponible depuis la version 2.3.8)</dt>
 
-<dd>Empêche la vérification de la racine des documents (DocumentRoot) au
-démarrage/redémarrage.</dd>
+<dd>EmpÃªche la vÃ©rification de la racine des documents (DocumentRoot) au
+dÃ©marrage/redÃ©marrage.</dd>
 
 <dt><code>-t</code></dt>
 
-<dd>Exécute une vérification de syntaxe pour les fichiers de
-configuration seulement. Le programme se termine immédiatement après ces
-tests de vérification de syntaxe avec soit un code de retour de 0
-(syntaxe OK), soit un code de retour différent de 0 (erreur de
-syntaxe). Si -D <var>DUMP</var>_<var>VHOSTS </var> est défini, les
-détails de la configuration des serveurs virtuels seront affichés. Si -D
-<var>DUMP</var>_<var>MODULES </var> est défini, tous les modules chargés
-seront affichés. Si -D <var>DUMP</var>_<var>CERTS </var> est défini et
-si <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> est utilisé, les certificats SSL définis
-seront affichés. Si -D <var>DUMP</var>_<var>CA</var>_<var>_CERTS </var>
-est défini et si <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> est utilisé, les certificats
-de CA SSL ainsi que les répertoires contenant de tels certificats
-seront affichés.</dd>
+<dd>ExÃ©cute une vÃ©rification de syntaxe pour les fichiers de
+configuration seulement. Le programme se termine immÃ©diatement aprÃ¨s ces
+tests de vÃ©rification de syntaxe avec soit un code de retour de 0
+(syntaxe OK), soit un code de retour diffÃ©rent de 0 (erreur de
+syntaxe). Si -D <var>DUMP</var>_<var>VHOSTS </var> est dÃ©fini, les
+dÃ©tails de la configuration des serveurs virtuels seront affichÃ©s. Si -D
+<var>DUMP</var>_<var>MODULES </var> est dÃ©fini, tous les modules chargÃ©s
+seront affichÃ©s. Si -D <var>DUMP</var>_<var>CERTS </var> est dÃ©fini et
+si <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> est utilisÃ©, les certificats SSL dÃ©finis
+seront affichÃ©s. Si -D <var>DUMP</var>_<var>CA</var>_<var>_CERTS </var>
+est dÃ©fini et si <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> est utilisÃ©, les certificats
+de CA SSL ainsi que les rÃ©pertoires contenant de tels certificats
+seront affichÃ©s.</dd>
 
 <dt><code>-v</code></dt>
 
@@ -180,13 +180,13 @@ seront affichés.</dd>
 
 <dt><code>-V</code></dt>
 
-<dd>Le programme affiche la version et les paramètres de compilation de
+<dd>Le programme affiche la version et les paramÃ¨tres de compilation de
 <code>httpd</code>, puis se termine.</dd>
 
 <dt><code>-X</code></dt>
 
-<dd>Exécute httpd en mode debug. Un seul processus sera démarré, et le
-serveur ne rendra pas la main à la console.</dd>
+<dd>ExÃ©cute httpd en mode debug. Un seul processus sera dÃ©marrÃ©, et le
+serveur ne rendra pas la main Ã  la console.</dd>
 
 </dl>
 
@@ -197,26 +197,26 @@ serveur ne rendra pas la main à la console.</dd>
 <dt><code>-k install|config|uninstall</code></dt>
 
 <dd>Respectivement : installe Apache httpd en tant que service Windows NT ;
-modifie les options de démarrage du service Apache httpd ; désinstalle le
+modifie les options de dÃ©marrage du service Apache httpd ; dÃ©sinstalle le
 service Apache httpd.</dd>
 
 <dt><code>-n <var>nom</var></code></dt>
 
-<dd>Le <var>nom</var> du service Apache httpd à actionner.</dd>
+<dd>Le <var>nom</var> du service Apache httpd Ã  actionner.</dd>
 
 <dt><code>-w</code></dt>
 
-<dd>Garde la console Windows ouverte en cas de problème de façon à ce
-que le message d'erreur puisse être lu.</dd>
+<dd>Garde la console Windows ouverte en cas de problÃ¨me de faÃ§on Ã  ce
+que le message d'erreur puisse Ãªtre lu.</dd>
 
 </dl>
 
 </div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/programs/httpd.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/programs/httpd.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/programs/httpd.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/programs/httpd.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/programs/httpd.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/programs/httpd.html" hreflang="tr" rel="alternate" title="TÃ¼rkÃ§e">&nbsp;tr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -235,7 +235,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/programs/httpd.htm
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />AutorisÃ© sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
