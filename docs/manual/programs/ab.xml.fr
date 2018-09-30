@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1676924:1841784 (outdated) -->
+<!-- English Revision: 1841784 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -47,6 +47,7 @@ Apache</title>
     [ -<strong>C</strong> <var>nom-cookie</var>=<var>valeur</var> ]
     [ -<strong>d</strong> ]
     [ -<strong>e</strong> <var>fichier-csv</var> ]
+    [ -<strong>E</strong> <var>fichier du certificat client</var> ]
     [ -<strong>f</strong> <var>protocole</var> ]
     [ -<strong>g</strong> <var>fichier-gnuplot</var> ]
     [ -<strong>h</strong> ]
@@ -113,6 +114,13 @@ Apache</title>
     (en millisecondes) mis pour servir ce pourcentage de requêtes. Ce
     fichier est en général plus utile qu'un fichier 'gnuplot', car les
     résultats sont déjà sous forme binaire.</dd>
+
+    <dt><code>-E <var>fichier du certificat client</var></code></dt>
+    <dd>Utilise le certificat client au format PEM qu'il contient pour
+    s'authentifier auprès du serveur lors d'une connecte à un site web sous
+    SSL. Ce fichier doit contenir le certificat client suivi des certificats
+    intermédiaires et de la clé privé. Disponible à partir de la version 2.4.36
+    du serveur HTTP Apache.</dd>
 
     <dt><code>-f <var>protocole</var></code></dt>
     <dd>Spécifie le protocole SSL/TLS (SSL2, SSL3, TLS1, TLS1.1, TLS1.2, or ALL).<br />
