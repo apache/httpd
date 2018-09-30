@@ -117,7 +117,7 @@ Apache</title>
 
     <dt><code>-E <var>fichier du certificat client</var></code></dt>
     <dd>Utilise le certificat client au format PEM qu'il contient pour
-    s'authentifier auprès du serveur lors d'une connecte à un site web sous
+    s'authentifier auprès du serveur lors d'une connexion à un site web sous
     SSL. Ce fichier doit contenir le certificat client suivi des certificats
     intermédiaires et de la clé privé. Disponible à partir de la version 2.4.36
     du serveur HTTP Apache.</dd>
