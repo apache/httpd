@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
-<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -27,13 +27,13 @@
 <div id="preamble"><h1>Module Apache mod_proxy_scgi</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_proxy_scgi.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_proxy_scgi.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_proxy_scgi.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Module fournissant le support de la passerelle SCGI à
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Module fournissant le support de la passerelle SCGI Ã 
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>proxy_scgi_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_proxy_scgi.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">IdentificateurÂ deÂ Module:</a></th><td>proxy_scgi_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">FichierÂ Source:</a></th><td>mod_proxy_scgi.c</td></tr></table>
 <h3>Sommaire</h3>
 
     <p>Pour pouvoir fonctionner, ce module <em>requiert</em> le
@@ -41,14 +41,14 @@
     <a href="http://python.ca/scgi/protocol.txt">protocole SCGI, version
     1</a>.</p>
 
-    <p>Ainsi, pour être en mesure de traiter le protocole SCGI,
+    <p>Ainsi, pour Ãªtre en mesure de traiter le protocole SCGI,
     <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> et <code class="module"><a href="../mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code>
-    doivent être chargés dans le serveur.</p>
+    doivent Ãªtre chargÃ©s dans le serveur.</p>
 
     <div class="warning"><h3>Avertissement</h3>
-      <p>N'activez pas la fonctionnalité de mandataire avant d'avoir <a href="mod_proxy.html#access">sécurisé votre serveur</a>. Les
+      <p>N'activez pas la fonctionnalitÃ© de mandataire avant d'avoir <a href="mod_proxy.html#access">sÃ©curisÃ© votre serveur</a>. Les
       serveurs mandataires ouverts sont dangereux non seulement pour
-      votre réseau, mais aussi pour l'Internet au sens large.</p>
+      votre rÃ©seau, mais aussi pour l'Internet au sens large.</p>
     </div>
 </div>
 <div id="quickview"><h3>Sujets</h3>
@@ -60,7 +60,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#proxyscgiinternalredirect">ProxySCGIInternalRedirect</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxyscgisendfile">ProxySCGISendfile</a></li>
 </ul>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_proxy_scgi">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_proxy_scgi">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_proxy_scgi">ProblÃ¨mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_proxy_scgi">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></li>
 <li><code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code></li>
@@ -75,14 +75,14 @@
     <div class="example"><h3>Passerelle simple</h3><pre class="prettyprint lang-config">ProxyPass "/scgi-bin/" "scgi://localhost:4000/"</pre>
 </div>
 
-    <p>La passerelle à répartition de charge nécessite le chargement du
+    <p>La passerelle Ã  rÃ©partition de charge nÃ©cessite le chargement du
     module <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code> et d'au moins un module
-    fournissant un algorithme de répartition de charge, comme
+    fournissant un algorithme de rÃ©partition de charge, comme
     <code class="module"><a href="../mod/mod_lbmethod_byrequests.html">mod_lbmethod_byrequests</a></code> en plus des modules
-    déjà cités. <code class="module"><a href="../mod/mod_lbmethod_byrequests.html">mod_lbmethod_byrequests</a></code> est le module
-    par défaut et sera utilisé dans cet exemple de configuration.</p>
+    dÃ©jÃ  citÃ©s. <code class="module"><a href="../mod/mod_lbmethod_byrequests.html">mod_lbmethod_byrequests</a></code> est le module
+    par dÃ©faut et sera utilisÃ© dans cet exemple de configuration.</p>
 
-    <div class="example"><h3>Passerelle à répartition de charge</h3><pre class="prettyprint lang-config">ProxyPass "/scgi-bin/" "balancer://somecluster/"
+    <div class="example"><h3>Passerelle Ã  rÃ©partition de charge</h3><pre class="prettyprint lang-config">ProxyPass "/scgi-bin/" "balancer://somecluster/"
 &lt;Proxy balancer://somecluster&gt;
     BalancerMember scgi://localhost:4000
     BalancerMember scgi://localhost:4001
@@ -92,22 +92,22 @@
 <div class="section">
 <h2><a name="env" id="env">Variables d'environnement</a><a title="Lien permanent" href="#env" class="permalink">&para;</a></h2>
     <p>En plus des directives de configuration qui permettent de
-    contrôler le comportement de <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>, une
+    contrÃ´ler le comportement de <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>, une
     <dfn>variable d'environnement</dfn> peut aussi
-    contrôler le fournisseur de protocole SCGI :</p>
+    contrÃ´ler le fournisseur de protocole SCGI :</p>
     <dl>
         <dt>proxy-scgi-pathinfo</dt>
-        <dd>Par défaut, <code class="module"><a href="../mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code> ne créera ni
+        <dd>Par dÃ©faut, <code class="module"><a href="../mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code> ne crÃ©era ni
 	exportera jamais la variable d'environnement
-	<var>PATH_INFO</var>. Ceci permet au serveur SCGI d'arrière-plan
-	de déterminer correctement <var>SCRIPT_NAME</var> et
-	<var>Script-URI</var>, et d'être en conformité avec la section
+	<var>PATH_INFO</var>. Ceci permet au serveur SCGI d'arriÃ¨re-plan
+	de dÃ©terminer correctement <var>SCRIPT_NAME</var> et
+	<var>Script-URI</var>, et d'Ãªtre en conformitÃ© avec la section
 	3.3 de la RFC 3875. Si au contraire vous souhaitez que
-	<code class="module"><a href="../mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code> génère une estimation la plus
-	précise possible de <var>PATH_INFO</var>, définissez cette
-	variable d'environnement. La variable doit être définie avant
+	<code class="module"><a href="../mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code> gÃ©nÃ¨re une estimation la plus
+	prÃ©cise possible de <var>PATH_INFO</var>, dÃ©finissez cette
+	variable d'environnement. La variable doit Ãªtre dÃ©finie avant
 	que la directive <code class="directive"><a href="../mod/mod_env.html#setenv">SetEnv</a></code> ne soit
-	effective. Il est possible d'utiliser à la place la directive
+	effective. Il est possible d'utiliser Ã  la place la directive
 	<code class="directive"><a href="../mod/mod_setenvif.html#setenvif">SetEnvIf</a></code> : <code>SetEnvIf
 	Request_URI . proxy-scgi-pathinfo</code>
 	</dd>
@@ -116,36 +116,36 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="proxyscgiinternalredirect" id="proxyscgiinternalredirect">Directive</a> <a name="ProxySCGIInternalRedirect" id="ProxySCGIInternalRedirect">ProxySCGIInternalRedirect</a><a title="Lien permanent" href="#proxyscgiinternalredirect" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active ou désactive les réponses de redirection interne en
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active ou dÃ©sactive les rÃ©ponses de redirection interne en
 provenance du serveur cible.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxySCGIInternalRedirect On|Off|<var>Headername</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ProxySCGIInternalRedirect On</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Default">DÃ©faut:</a></th><td><code>ProxySCGIInternalRedirect On</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, rÃ©pertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_scgi</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le paramètre <var>Headername</var> est disponible depuis
+<tr><th><a href="directive-dict.html#Compatibility">CompatibilitÃ©:</a></th><td>Le paramÃ¨tre <var>Headername</var> est disponible depuis
 la version 2.4.13 du serveur HTTP Apache.</td></tr>
 </table>
     <p>La directive <code class="directive">ProxySCGIInternalRedirect</code>
     permet au serveur cible de rediriger en interne la passerelle vers
-    une URL différente. Cette fonctionnalité trouve son origine dans
-    <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code> qui redirige la réponse en interne si
-    l'état de la réponse est <code>OK</code> (<code>200</code>), et si
-    la réponse contient un en-tête <code>Location</code> (ou un autre
-    en-tête défini) dont la valeur
-    débute par un slash (<code>/</code>). Cette valeur est interprétée
+    une URL diffÃ©rente. Cette fonctionnalitÃ© trouve son origine dans
+    <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code> qui redirige la rÃ©ponse en interne si
+    l'Ã©tat de la rÃ©ponse est <code>OK</code> (<code>200</code>), et si
+    la rÃ©ponse contient un en-tÃªte <code>Location</code> (ou un autre
+    en-tÃªte dÃ©fini) dont la valeur
+    dÃ©bute par un slash (<code>/</code>). Cette valeur est interprÃ©tÃ©e
     comme une nouvelle URL locale vers laquelle Apache httpd effectue sa
     redirection.</p>
 
-    <p>De ce point de vue, <code class="module"><a href="../mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code> fait la même
+    <p>De ce point de vue, <code class="module"><a href="../mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code> fait la mÃªme
     chose que <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>, mais vous pouvez en plus
-    désactiver la fonctionnalité ou spécifier l'utilisation d'un en-tête
+    dÃ©sactiver la fonctionnalitÃ© ou spÃ©cifier l'utilisation d'un en-tÃªte
     autre que <code>Location</code>.</p>
 
     <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">    ProxySCGIInternalRedirect Off
 # Django et certains autres frameworks qualifient pleinement les "URLs
-# locales" définies par l'application ; il faut donc utiliser un autre
-# en-tête.
+# locales" dÃ©finies par l'application ; il faut donc utiliser un autre
+# en-tÃªte.
 &lt;Location /django-app/&gt;
     ProxySCGIInternalRedirect X-Location
 &lt;/Location&gt;</pre>
@@ -155,45 +155,45 @@ la version 2.4.13 du serveur HTTP Apache.</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="proxyscgisendfile" id="proxyscgisendfile">Directive</a> <a name="ProxySCGISendfile" id="ProxySCGISendfile">ProxySCGISendfile</a><a title="Lien permanent" href="#proxyscgisendfile" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active l'évaluation du pseudo en-tête de réponse
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active l'Ã©valuation du pseudo en-tÃªte de rÃ©ponse
 <var>X-Sendfile</var></td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxySCGISendfile On|Off|<var>nom-en-tête</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ProxySCGISendfile Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxySCGISendfile On|Off|<var>nom-en-tÃªte</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">DÃ©faut:</a></th><td><code>ProxySCGISendfile Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, rÃ©pertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_scgi</td></tr>
 </table>
     <p>La directive <code class="directive">ProxySCGISendfile</code> permet au
-    serveur SCGI d'arrière-plan de faire servir les fichiers directement par la
-    passerelle. Ceci s'avère bénéfique en matière de performances &#8212;
+    serveur SCGI d'arriÃ¨re-plan de faire servir les fichiers directement par la
+    passerelle. Ceci s'avÃ¨re bÃ©nÃ©fique en matiÃ¨re de performances â€”
     httpd peut alors utiliser <code>sendfile</code> ou d'autres
     optimisations, ce qui n'est pas possible si les fichiers passent par
     le socket du serveur cible. En outre, les fichiers ne sont transmis
     qu'une seule fois.</p>
     <p>L'argument de la directive
-    <code class="directive">ProxySCGISendfile</code> détermine le comportement
+    <code class="directive">ProxySCGISendfile</code> dÃ©termine le comportement
     de la passerelle :</p>
     <dl>
     <dt><code>Off</code></dt>
-    <dd>Aucun traitement particulier n'est effectué.</dd>
+    <dd>Aucun traitement particulier n'est effectuÃ©.</dd>
 
     <dt><code>On</code></dt>
-    <dd>La passerelle recherche un en-tête dans la réponse du serveur
-    cible nommé <code>X-Sendfile</code>, et interprète sa valeur comme
-    le nom du fichier à servir. L'en-tête est ensuite supprimé de la
-    réponse finale. Cet argument produit le même effet que
+    <dd>La passerelle recherche un en-tÃªte dans la rÃ©ponse du serveur
+    cible nommÃ© <code>X-Sendfile</code>, et interprÃ¨te sa valeur comme
+    le nom du fichier Ã  servir. L'en-tÃªte est ensuite supprimÃ© de la
+    rÃ©ponse finale. Cet argument produit le mÃªme effet que
     <code>ProxySCGISendfile X-Sendfile</code>.</dd>
 
     <dt>toute autre valeur</dt>
-    <dd>Identique à <code>On</code>, mais au lieu de rechercher le nom
-    d'en-tête codé en dur <code>X-Sendfile</code>, c'est la valeur de
-    l'argument qui constitue le nom de l'en-tête à rechercher.</dd>
+    <dd>Identique Ã  <code>On</code>, mais au lieu de rechercher le nom
+    d'en-tÃªte codÃ© en dur <code>X-Sendfile</code>, c'est la valeur de
+    l'argument qui constitue le nom de l'en-tÃªte Ã  rechercher.</dd>
     </dl>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">    # Utilise le nom d'en-tête par défaut (X-Sendfile)
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">    # Utilise le nom d'en-tÃªte par dÃ©faut (X-Sendfile)
     ProxySCGISendfile On
     
-    # Utilise un nom d'en-tête différent
+    # Utilise un nom d'en-tÃªte diffÃ©rent
     ProxySCGISendfile X-Send-Static</pre>
 </div>
 
@@ -201,7 +201,7 @@ la version 2.4.13 du serveur HTTP Apache.</td></tr>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_proxy_scgi.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_proxy_scgi.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_proxy_scgi.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -220,7 +220,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_proxy_scgi
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />AutorisÃ© sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

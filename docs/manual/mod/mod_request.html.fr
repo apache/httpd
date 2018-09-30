@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
-<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -27,76 +27,76 @@
 <div id="preamble"><h1>Module Apache mod_request</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_request.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_request.html" title="Français">&nbsp;fr&nbsp;</a> |
-<a href="../tr/mod/mod_request.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../fr/mod/mod_request.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a> |
+<a href="../tr/mod/mod_request.html" hreflang="tr" rel="alternate" title="TÃ¼rkÃ§e">&nbsp;tr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Filtres permettant de traiter et de mettre à disposition
-les corps de requêtes HTTP</td></tr>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Filtres permettant de traiter et de mettre Ã  disposition
+les corps de requÃªtes HTTP</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>request_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_request.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3 d'Apache</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">IdentificateurÂ deÂ Module:</a></th><td>request_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">FichierÂ Source:</a></th><td>mod_request.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">CompatibilitÃ©:</a></th><td>Disponible depuis la version 2.3 d'Apache</td></tr></table>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#keptbodysize">KeptBodySize</a></li>
 </ul>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_request">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_request">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_request">ProblÃ¨mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_request">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="keptbodysize" id="keptbodysize">Directive</a> <a name="KeptBodySize" id="KeptBodySize">KeptBodySize</a><a title="Lien permanent" href="#keptbodysize" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Conserve le corps de la requête à concurrence de la taille
-maximale spécifiée, pour une utilisation éventuelle par des filtres
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Conserve le corps de la requÃªte Ã  concurrence de la taille
+maximale spÃ©cifiÃ©e, pour une utilisation Ã©ventuelle par des filtres
 comme mod_include.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>KeptBodySize <var>taille maximale en octets</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>KeptBodySize 0</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Default">DÃ©faut:</a></th><td><code>KeptBodySize 0</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>rÃ©pertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_request</td></tr>
 </table>
-    <p>Dans une situation normale, les gestionnaires de requête tels que
-    le gestionnaire par défaut des fichiers statiques suppriment le
-    corps de la requête s'il n'est pas nécessaire au gestionnaire de
-    requête. Il en résulte que les filtres comme mod_include sont
-    limités à des requêtes <code>GET</code> lors de l'inclusion d'autres
-    URLs en tant que sous-requêtes, et ceci même si la requête originale
-    était une requête <code>POST</code>, car le corps de la requête a
-    été supprimé et n'est donc plus disponible une fois le traitement du
+    <p>Dans une situation normale, les gestionnaires de requÃªte tels que
+    le gestionnaire par dÃ©faut des fichiers statiques suppriment le
+    corps de la requÃªte s'il n'est pas nÃ©cessaire au gestionnaire de
+    requÃªte. Il en rÃ©sulte que les filtres comme mod_include sont
+    limitÃ©s Ã  des requÃªtes <code>GET</code> lors de l'inclusion d'autres
+    URLs en tant que sous-requÃªtes, et ceci mÃªme si la requÃªte originale
+    Ã©tait une requÃªte <code>POST</code>, car le corps de la requÃªte a
+    Ã©tÃ© supprimÃ© et n'est donc plus disponible une fois le traitement du
     filtre mis en oeuvre.</p>
 
-    <p>Lorsque l'argument de cette directive a une valeur supérieure à
-    zéro, les gestionnaires de requête qui suppriment habituellement les
-    corps de requête vont alors conserver ces corps de requête, à
-    concurrence de la taille maximale spécifiée, pour être
-    éventuellement utilisés par des filtres. Dans le cas du filtre
-    mod_include, une tentative de requête <code>POST</code> pour un
-    fichier shtml statique se traduira par des sous-requêtes
-    <code>POST</code>, et non par des sous-requêtes <code>GET</code>
+    <p>Lorsque l'argument de cette directive a une valeur supÃ©rieure Ã 
+    zÃ©ro, les gestionnaires de requÃªte qui suppriment habituellement les
+    corps de requÃªte vont alors conserver ces corps de requÃªte, Ã 
+    concurrence de la taille maximale spÃ©cifiÃ©e, pour Ãªtre
+    Ã©ventuellement utilisÃ©s par des filtres. Dans le cas du filtre
+    mod_include, une tentative de requÃªte <code>POST</code> pour un
+    fichier shtml statique se traduira par des sous-requÃªtes
+    <code>POST</code>, et non par des sous-requÃªtes <code>GET</code>
     comme avant.</p>
 
-    <p>Cette fonctionnalité permet de découper des pages web complexes
-    et des applications web en petits éléments individuels, et de
-    combiner ces éléments avec la structure de la page web sous-jacente
-    en utilisant <code class="module"><a href="../mod/mod_include.html">mod_include</a></code>. Les éléments peuvent se
-    présenter sous la forme de programmes CGI, de langages de scripts,
+    <p>Cette fonctionnalitÃ© permet de dÃ©couper des pages web complexes
+    et des applications web en petits Ã©lÃ©ments individuels, et de
+    combiner ces Ã©lÃ©ments avec la structure de la page web sous-jacente
+    en utilisant <code class="module"><a href="../mod/mod_include.html">mod_include</a></code>. Les Ã©lÃ©ments peuvent se
+    prÃ©senter sous la forme de programmes CGI, de langages de scripts,
     ou d'URLs issues d'un mandataire inverse dans l'espace d'URL d'un
     autre serveur en utilisant <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>.</p>
 
-    <p><strong>Note :</strong> Chaque requête dont le corps est ainsi
-    conservé doit être enregistrée temporairement en mémoire vive
-    jusqu'à la fin du traitement de la requête. Il faut donc s'assurer
-    que la mémoire RAM du serveur est suffisante pour pouvoir supporter
-    la charge induite. L'utilisation de cette directive doit être
-    limitée à certaines portions de votre espace d'URL bien précises qui
-    le nécessitent, et en spécifiant comme taille maximale une valeur la
-    plus petite possible, mais tout de même suffisante pour un corps de
-    requête.</p>
+    <p><strong>Note :</strong> Chaque requÃªte dont le corps est ainsi
+    conservÃ© doit Ãªtre enregistrÃ©e temporairement en mÃ©moire vive
+    jusqu'Ã  la fin du traitement de la requÃªte. Il faut donc s'assurer
+    que la mÃ©moire RAM du serveur est suffisante pour pouvoir supporter
+    la charge induite. L'utilisation de cette directive doit Ãªtre
+    limitÃ©e Ã  certaines portions de votre espace d'URL bien prÃ©cises qui
+    le nÃ©cessitent, et en spÃ©cifiant comme taille maximale une valeur la
+    plus petite possible, mais tout de mÃªme suffisante pour un corps de
+    requÃªte.</p>
 
-    <p>Si la taille de la requête envoyée par le client dépasse la taille
-    maximale autorisée par cette directive, le serveur renverra l'erreur
+    <p>Si la taille de la requÃªte envoyÃ©e par le client dÃ©passe la taille
+    maximale autorisÃ©e par cette directive, le serveur renverra l'erreur
     <code>413 Request Entity Too Large</code>.</p>
 
 
@@ -109,8 +109,8 @@ comme mod_include.</td></tr>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_request.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_request.html" title="Français">&nbsp;fr&nbsp;</a> |
-<a href="../tr/mod/mod_request.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../fr/mod/mod_request.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a> |
+<a href="../tr/mod/mod_request.html" hreflang="tr" rel="alternate" title="TÃ¼rkÃ§e">&nbsp;tr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -129,7 +129,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_request.ht
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />AutorisÃ© sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

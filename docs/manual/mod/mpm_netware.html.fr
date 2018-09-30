@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
-<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -27,45 +27,45 @@
 <div id="preamble"><h1>Apache MPM netware</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mpm_netware.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mpm_netware.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mpm_netware.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Module multi-processus implémentant un serveur web basé
-exclusivement sur les threads et optimisé pour Novell
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Module multi-processus implÃ©mentant un serveur web basÃ©
+exclusivement sur les threads et optimisÃ© pour Novell
 NetWare</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>MPM</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>mpm_netware_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mpm_netware.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">IdentificateurÂ deÂ Module:</a></th><td>mpm_netware_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">FichierÂ Source:</a></th><td>mpm_netware.c</td></tr></table>
 <h3>Sommaire</h3>
 
-    <p>Ce module multi-processus (MPM) implémente un serveur web basé
-    exclusivement sur les threads et optimisé pour Novell NetWare.</p>
+    <p>Ce module multi-processus (MPM) implÃ©mente un serveur web basÃ©
+    exclusivement sur les threads et optimisÃ© pour Novell NetWare.</p>
 
-    <p>Le thread maître est chargé du lancement de threads esclaves qui
-    attendent les connexions et les traitent au fur et à mesure de leur
-    arrivée. Le serveur HTTP Apache essaie toujours de maintenir
+    <p>Le thread maÃ®tre est chargÃ© du lancement de threads esclaves qui
+    attendent les connexions et les traitent au fur et Ã  mesure de leur
+    arrivÃ©e. Le serveur HTTP Apache essaie toujours de maintenir
     plusieurs threads
-    esclaves en <dfn>spare</dfn> (en réserve) ou inactifs. De cette
-    façon, les clients n'ont pas besoin d'attendre le lancement d'un
-    nouveau thread enfant pour que leurs requêtes soient traitées.</p>
+    esclaves en <dfn>spare</dfn> (en rÃ©serve) ou inactifs. De cette
+    faÃ§on, les clients n'ont pas besoin d'attendre le lancement d'un
+    nouveau thread enfant pour que leurs requÃªtes soient traitÃ©es.</p>
 
-    <p>Les directives <code class="directive"><a href="../mod/mpm_common.html#startthreads">StartThreads</a></code>, <code class="directive"><a href="../mod/mpm_common.html#minsparethreads">MinSpareThreads</a></code>, <code class="directive"><a href="../mod/mpm_common.html#maxsparethreads">MaxSpareThreads</a></code>, et <code class="directive"><a href="#maxthreads">MaxThreads</a></code> contrôlent
-    la manière dont le thread maître crée les threads esclaves afin de
-    traiter les requêtes. En général, Apache httpd s'auto-régule correctement,
-    et la plupart des sites ne nécessitent aucune modification des
-    valeurs par défaut de ces directives. Pour les sites dont le serveur
-    est limité en mémoire, il peut s'avérer nécessaire de diminuer la
-    valeur de la directive <code class="directive"><a href="#maxthreads">MaxThreads</a></code> afin d'éviter une
-    hyper-activité du serveur (arrêts de threads inactifs et lancement incessant
-    de nouveau threads). Vous trouverez plus d'informations à
-    propos du contrôle de la création de processus dans le document <a href="../misc/perf-tuning.html">conseils en matière de
+    <p>Les directives <code class="directive"><a href="../mod/mpm_common.html#startthreads">StartThreads</a></code>, <code class="directive"><a href="../mod/mpm_common.html#minsparethreads">MinSpareThreads</a></code>, <code class="directive"><a href="../mod/mpm_common.html#maxsparethreads">MaxSpareThreads</a></code>, et <code class="directive"><a href="#maxthreads">MaxThreads</a></code> contrÃ´lent
+    la maniÃ¨re dont le thread maÃ®tre crÃ©e les threads esclaves afin de
+    traiter les requÃªtes. En gÃ©nÃ©ral, Apache httpd s'auto-rÃ©gule correctement,
+    et la plupart des sites ne nÃ©cessitent aucune modification des
+    valeurs par dÃ©faut de ces directives. Pour les sites dont le serveur
+    est limitÃ© en mÃ©moire, il peut s'avÃ©rer nÃ©cessaire de diminuer la
+    valeur de la directive <code class="directive"><a href="#maxthreads">MaxThreads</a></code> afin d'Ã©viter une
+    hyper-activitÃ© du serveur (arrÃªts de threads inactifs et lancement incessant
+    de nouveau threads). Vous trouverez plus d'informations Ã 
+    propos du contrÃ´le de la crÃ©ation de processus dans le document <a href="../misc/perf-tuning.html">conseils en matiÃ¨re de
     performances</a>.</p>
 
     <p>La directive <code class="directive"><a href="../mod/mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></code>
-    contrôle la fréquence à laquelle le serveur recycle ses processus
-    en arrêtant les anciens et en en lançant de nouveaux. Sous le
-    système d'exploitation NetWare, il est vivement recommandé de
-    laisser cette directive à 0, ce qui permet aux threads esclaves de
-    continuer à traiter les requêtes indéfiniment.</p>
+    contrÃ´le la frÃ©quence Ã  laquelle le serveur recycle ses processus
+    en arrÃªtant les anciens et en en lanÃ§ant de nouveaux. Sous le
+    systÃ¨me d'exploitation NetWare, il est vivement recommandÃ© de
+    laisser cette directive Ã  0, ce qui permet aux threads esclaves de
+    continuer Ã  traiter les requÃªtes indÃ©finiment.</p>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
@@ -81,9 +81,9 @@ NetWare</td></tr>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#startthreads">StartThreads</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#threadstacksize">ThreadStackSize</a></li>
 </ul>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mpm_netware">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mpm_netware">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mpm_netware">ProblÃ¨mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mpm_netware">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
-<li><a href="../bind.html">Définition des adresses et ports
+<li><a href="../bind.html">DÃ©finition des adresses et ports
 qu'utilise Apache httpd</a>
 </li>
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
@@ -91,18 +91,18 @@ qu'utilise Apache httpd</a>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="maxthreads" id="maxthreads">Directive</a> <a name="MaxThreads" id="MaxThreads">MaxThreads</a><a title="Lien permanent" href="#maxthreads" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le nombre maximum de threads esclaves</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>DÃ©finit le nombre maximum de threads esclaves</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MaxThreads <var>nombre</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MaxThreads 2048</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">DÃ©faut:</a></th><td><code>MaxThreads 2048</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>MPM</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mpm_netware</td></tr>
 </table>
-    <p>La directive <code class="directive">MaxThreads</code> définit
-    le nombre maximum de threads esclaves que l'on désire autoriser. La
-    valeur par défaut correspondant à la valeur codée en dur à la
-    compilation, la valeur de cette directive ne peut donc qu'être
-    diminuée, comme dans l'exemple suivant :</p>
+    <p>La directive <code class="directive">MaxThreads</code> dÃ©finit
+    le nombre maximum de threads esclaves que l'on dÃ©sire autoriser. La
+    valeur par dÃ©faut correspondant Ã  la valeur codÃ©e en dur Ã  la
+    compilation, la valeur de cette directive ne peut donc qu'Ãªtre
+    diminuÃ©e, comme dans l'exemple suivant :</p>
 
     <div class="example"><p><code>
       MaxThreads 512
@@ -112,7 +112,7 @@ qu'utilise Apache httpd</a>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mpm_netware.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mpm_netware.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mpm_netware.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -131,7 +131,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mpm_netware.ht
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />AutorisÃ© sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

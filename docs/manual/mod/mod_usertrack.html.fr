@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
-<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -27,18 +27,18 @@
 <div id="preamble"><h1>Module Apache mod_usertrack</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_usertrack.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_usertrack.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_usertrack.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>
 Journalisation <em>Clickstream</em> des liens parcourus par un
 utilisateur sur un site
 </td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>usertrack_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_usertrack.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">IdentificateurÂ deÂ Module:</a></th><td>usertrack_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">FichierÂ Source:</a></th><td>mod_usertrack.c</td></tr></table>
 <h3>Sommaire</h3>
 
-    <p>Ce module permet de suivre le parcours d'un utilisateur à travers
+    <p>Ce module permet de suivre le parcours d'un utilisateur Ã  travers
     votre site web en faisant appel aux cookies de navigateur.</p>
 </div>
 <div id="quickview"><h3>Sujets</h3>
@@ -52,7 +52,7 @@ utilisateur sur un site
 <li><img alt="" src="../images/down.gif" /> <a href="#cookiestyle">CookieStyle</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cookietracking">CookieTracking</a></li>
 </ul>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_usertrack">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_usertrack">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_usertrack">ProblÃ¨mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_usertrack">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -60,8 +60,8 @@ utilisateur sur un site
 <h2><a name="logging" id="logging">Journalisation</a><a title="Lien permanent" href="#logging" class="permalink">&para;</a></h2>
 
 
-    <p><code class="module"><a href="../mod/mod_usertrack.html">mod_usertrack</a></code> définit un cookie qui peut être
-    journalisé via les formats configurables du module
+    <p><code class="module"><a href="../mod/mod_usertrack.html">mod_usertrack</a></code> dÃ©finit un cookie qui peut Ãªtre
+    journalisÃ© via les formats configurables du module
     <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code> :</p>
 
     <pre class="prettyprint lang-config">LogFormat "%{Apache}n %r %t" usertrack
@@ -76,32 +76,32 @@ CustomLog "logs/clickstream.log" usertrack</pre>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le domaine auquel le cookie traceur
 s'applique</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CookieDomain <em>domaine</em></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, rÃ©pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisÃ©es:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_usertrack</td></tr>
 </table>
 
-    <p>Cette directive permet de définir le domaine auquel le cookie
-    traceur s'applique. Si elle n'est pas présente, aucun domaine n'est
-    inclus dans le champ d'en-tête cookie.</p>
+    <p>Cette directive permet de dÃ©finir le domaine auquel le cookie
+    traceur s'applique. Si elle n'est pas prÃ©sente, aucun domaine n'est
+    inclus dans le champ d'en-tÃªte cookie.</p>
 
-    <p>La chaîne dommaine <strong>doit</strong> commencer par un point,
-    et <strong>doit</strong> comporter au moins un point entouré
-    d'autres caractères. Par exemple, <code>.example.com</code> est
-    une chaîne valide, mais <code>www.example.com</code> et
+    <p>La chaÃ®ne dommaine <strong>doit</strong> commencer par un point,
+    et <strong>doit</strong> comporter au moins un point entourÃ©
+    d'autres caractÃ¨res. Par exemple, <code>.example.com</code> est
+    une chaÃ®ne valide, mais <code>www.example.com</code> et
     <code>.com</code> ne le sont pas.</p>
 
-    <div class="note">La plupart des navigateurs utilisés actuellement n'autorisent
-    pas la définition de cookies pour un domaine racine de deux niveaux,
+    <div class="note">La plupart des navigateurs utilisÃ©s actuellement n'autorisent
+    pas la dÃ©finition de cookies pour un domaine racine de deux niveaux,
     tel que <code>.co.uk</code>, bien qu'un tel domaine remplisse les
-    conditions de validité décrites ci-dessus.<br />
+    conditions de validitÃ© dÃ©crites ci-dessus.<br />
 
-    Ces domaines sont équivalents à des domaines racines comme
+    Ces domaines sont Ã©quivalents Ã  des domaines racines comme
     <code>.com</code>, et autoriser de tels cookies peut constituer un
-    risque en matière de sécurité. Ainsi, si vous vous situez sous un
+    risque en matiÃ¨re de sÃ©curitÃ©. Ainsi, si vous vous situez sous un
     domaine racine de deux niveaux, vous devez encore utiliser votre
-    domaine véritable, comme vous le feriez avec tout autre domaine
+    domaine vÃ©ritable, comme vous le feriez avec tout autre domaine
     racine (par exemple <code>.example.co.uk</code>).
     </div>
 
@@ -112,24 +112,24 @@ s'applique</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="cookieexpires" id="cookieexpires">Directive</a> <a name="CookieExpires" id="CookieExpires">CookieExpires</a><a title="Lien permanent" href="#cookieexpires" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Durée avant expiration du cookie traceur</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CookieExpires <em>durée</em></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>DurÃ©e avant expiration du cookie traceur</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CookieExpires <em>durÃ©e</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, rÃ©pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisÃ©es:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_usertrack</td></tr>
 </table>
-    <p>Lorsqu'elle est utilisée, cette directive définit une durée avant
-    l'expiration du cookie généré par le module usertrack. La
-    <em>durée</em> peut être spécifiée sous la forme d'un nombre de
+    <p>Lorsqu'elle est utilisÃ©e, cette directive dÃ©finit une durÃ©e avant
+    l'expiration du cookie gÃ©nÃ©rÃ© par le module usertrack. La
+    <em>durÃ©e</em> peut Ãªtre spÃ©cifiÃ©e sous la forme d'un nombre de
     secondes, ou sous une forme du
     style "2 weeks 3 days 7 hours". les termes valides sont : years,
-    months, weeks, days, hours, minutes et seconds. Si la durée est
-    spécifiée dans un format autre qu'un nombre de secondes, elle doit
-    être entourée de guillemets.</p>
+    months, weeks, days, hours, minutes et seconds. Si la durÃ©e est
+    spÃ©cifiÃ©e dans un format autre qu'un nombre de secondes, elle doit
+    Ãªtre entourÃ©e de guillemets.</p>
 
-    <p>Si cette directive est absente, la durée de vie des cookies est
-    limitée à la session actuelle du navigateur.</p>
+    <p>Si cette directive est absente, la durÃ©e de vie des cookies est
+    limitÃ©e Ã  la session actuelle du navigateur.</p>
 
     <pre class="prettyprint lang-config">CookieExpires "3 weeks"</pre>
 
@@ -140,19 +140,19 @@ s'applique</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nom du cookie traceur</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CookieName <em>symbole</em></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CookieName Apache</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Default">DÃ©faut:</a></th><td><code>CookieName Apache</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, rÃ©pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisÃ©es:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_usertrack</td></tr>
 </table>
     <p>Cette directive vous permet de modifier le nom du cookie que ce
-    module utilise pour sa journalisation. Le nom par défaut du cookie
+    module utilise pour sa journalisation. Le nom par dÃ©faut du cookie
     est "<code>Apache</code>".</p>
 
-    <p>Vous devez spécifier un nom de cookie valide ; les résultats sont
-    imprévisibles si vous utilisez un nom contenant des caractères
-    inhabituels. Les caractères valides font partie des intervales A-Z,
+    <p>Vous devez spÃ©cifier un nom de cookie valide ; les rÃ©sultats sont
+    imprÃ©visibles si vous utilisez un nom contenant des caractÃ¨res
+    inhabituels. Les caractÃ¨res valides font partie des intervales A-Z,
     a-z, 0-9, "_", et "-".</p>
 
     <pre class="prettyprint lang-config">CookieName clicktrack</pre>
@@ -162,22 +162,22 @@ s'applique</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="cookiestyle" id="cookiestyle">Directive</a> <a name="CookieStyle" id="CookieStyle">CookieStyle</a><a title="Lien permanent" href="#cookiestyle" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Format du champ d'en-tête cookie</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Format du champ d'en-tÃªte cookie</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CookieStyle
     Netscape|Cookie|Cookie2|RFC2109|RFC2965</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CookieStyle Netscape</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Default">DÃ©faut:</a></th><td><code>CookieStyle Netscape</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, rÃ©pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisÃ©es:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_usertrack</td></tr>
 </table>
-    <p>Cette directive permet de contrôler le format du champ d'en-tête
-    cookie. Les trois formats autorisés sont :</p>
+    <p>Cette directive permet de contrÃ´ler le format du champ d'en-tÃªte
+    cookie. Les trois formats autorisÃ©s sont :</p>
 
     <ul>
       <li><strong>Netscape</strong> : il s'agit du format original, mais
-      est maintenant obsolète. C'est le format par défaut et il
-      correspond à la syntaxe historique utilisée par Apache.</li>
+      est maintenant obsolÃ¨te. C'est le format par dÃ©faut et il
+      correspond Ã  la syntaxe historique utilisÃ©e par Apache.</li>
 
       <li><strong>Cookie</strong> ou <strong>RFC2109</strong> : c'est la
       syntaxe qui remplace la syntaxe Netscape.</li>
@@ -187,10 +187,10 @@ s'applique</td></tr>
     </ul>
 
     <p>Tous les clients ne supportent pas l'ensemble de ces formats,
-    mais il est conseillé d'utiliser le plus récent qui sera en général
-    supporté par le navigateur de votre utilisateur. A l'heure où ce
-    document est écrit, la plupart des navigateurs supportent ces trois
-    formats, <code>Cookie2</code> étant le format recommandé.</p>
+    mais il est conseillÃ© d'utiliser le plus rÃ©cent qui sera en gÃ©nÃ©ral
+    supportÃ© par le navigateur de votre utilisateur. A l'heure oÃ¹ ce
+    document est Ã©crit, la plupart des navigateurs supportent ces trois
+    formats, <code>Cookie2</code> Ã©tant le format recommandÃ©.</p>
 
     <pre class="prettyprint lang-config">CookieStyle Cookie2</pre>
 
@@ -201,17 +201,17 @@ s'applique</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active le cookie traceur</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CookieTracking on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CookieTracking off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Default">DÃ©faut:</a></th><td><code>CookieTracking off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, rÃ©pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisÃ©es:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_usertrack</td></tr>
 </table>
-    <p>Lorsque le module <code class="module"><a href="../mod/mod_usertrack.html">mod_usertrack</a></code> est chargé, et
-    si <code>CookieTracking on</code> est définie, Apache enverra un
-    cookie traceur pour toute nouvelle requête. Cette directive peut
-    être utilisée pour activer ou désactiver ce comportement pour un
-    serveur virtuel ou un répertoire. Par défaut, l'activation de
+    <p>Lorsque le module <code class="module"><a href="../mod/mod_usertrack.html">mod_usertrack</a></code> est chargÃ©, et
+    si <code>CookieTracking on</code> est dÃ©finie, Apache enverra un
+    cookie traceur pour toute nouvelle requÃªte. Cette directive peut
+    Ãªtre utilisÃ©e pour activer ou dÃ©sactiver ce comportement pour un
+    serveur virtuel ou un rÃ©pertoire. Par dÃ©faut, l'activation de
     <code class="module"><a href="../mod/mod_usertrack.html">mod_usertrack</a></code> ne suffit <strong>pas</strong> pour
     activer les cookies.</p>
 
@@ -223,7 +223,7 @@ s'applique</td></tr>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_usertrack.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_usertrack.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_usertrack.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -242,7 +242,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_usertrack.
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />AutorisÃ© sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

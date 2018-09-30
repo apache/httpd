@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
-<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -26,20 +26,20 @@
   ces derniers dans un "pipe"</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/programs/rotatelogs.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/programs/rotatelogs.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/programs/rotatelogs.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/programs/rotatelogs.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/programs/rotatelogs.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/programs/rotatelogs.html" hreflang="tr" rel="alternate" title="TÃ¼rkÃ§e">&nbsp;tr&nbsp;</a></p>
 </div>
 
-     <p><code>rotatelogs</code> est un programme simple à utiliser en
-     conjonction avec la fonctionnalité d'Apache de redirection dans un
-     "pipe" des fichiers journaux. Il supporte une rotation basée sur un
+     <p><code>rotatelogs</code> est un programme simple Ã  utiliser en
+     conjonction avec la fonctionnalitÃ© d'Apache de redirection dans un
+     "pipe" des fichiers journaux. Il supporte une rotation basÃ©e sur un
      intervalle de temps ou une taille maximale du journal.</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#synopsis">Syntaxe</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#options">Options</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#examples">Exemples</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#portability">Portabilité</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#portability">PortabilitÃ©</a></li>
 </ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -58,7 +58,7 @@
      [ -<strong>n</strong> <var>nombre-de-fichiers</var> ]
      <var>fichier-journal</var>
      <var>heure-de-rotation</var>|<var>taille-fichier</var>(B|K|M|G)
-     [ <var>décalage</var> ]</code></p>
+     [ <var>dÃ©calage</var> ]</code></p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="options" id="options">Options</a><a title="Lien permanent" href="#options" class="permalink">&para;</a></h2>
@@ -66,103 +66,103 @@
 <dl>
 
 <dt><code>-l</code></dt>
-<dd>Utilise le temps local plutôt que GMT comme base pour l'intervalle
+<dd>Utilise le temps local plutÃ´t que GMT comme base pour l'intervalle
 de temps ou pour le formatage de <code>strftime(3)</code> avec une
-rotation basée sur la taille.</dd>
+rotation basÃ©e sur la taille.</dd>
 
 <dt><code>-L</code> <var>nom-lien</var></dt>
 <dd>Etablit un lien physique entre le fichier journal courant et le lien
-spécifié. Cette option permet de consulter le journal de manière
-continue malgré les rotations via une commande du style <code>tail -F
+spÃ©cifiÃ©. Cette option permet de consulter le journal de maniÃ¨re
+continue malgrÃ© les rotations via une commande du style <code>tail -F
 nom-lien</code>.</dd>
 
 <dt><code>-p</code> <var>programme</var></dt>
-<dd>Avec cette option, <code>rotatelogs</code> exécutera le programme
+<dd>Avec cette option, <code>rotatelogs</code> exÃ©cutera le programme
 <var>programme</var> chaque fois qu'un nouveau fichier journal sera
-ouvert. Le nom du fichier nouvellement ouvert est passé comme premier
-argument au programme. Si l'exécution se produit après une rotation,
-l'ancien nom du fichier journal est passé au programme comme second
+ouvert. Le nom du fichier nouvellement ouvert est passÃ© comme premier
+argument au programme. Si l'exÃ©cution se produit aprÃ¨s une rotation,
+l'ancien nom du fichier journal est passÃ© au programme comme second
 argument. <code>rotatelogs</code>
 n'attend pas la fin du <var>programme</var> pour continuer son
-exécution, et cessera tout enregistrement de codes d'erreur lorsqu'il
-aura terminé son processus. Le <var>programme</var> utilise les mêmes
-canaux stdin, stdout, et stderr que rotatelogs, et hérite de son
+exÃ©cution, et cessera tout enregistrement de codes d'erreur lorsqu'il
+aura terminÃ© son processus. Le <var>programme</var> utilise les mÃªmes
+canaux stdin, stdout, et stderr que rotatelogs, et hÃ©rite de son
 environnement.</dd>
 
 <dt><code>-f</code></dt>
-<dd>Ouvre le fichier journal immédiatement, dès que
-<code>rotatelogs</code> démarre, au lieu d'attendre la lecture de la
-première entrée de journal (pour les sites peu chargés, il peut
-s'écouler un temps substantiel entre le démarrage du serveur et le
-traitement de la première requête, temps pendant lequel le fichier
-journal associé n'"existe" pas, ce qui peut causer des problèmes à
+<dd>Ouvre le fichier journal immÃ©diatement, dÃ¨s que
+<code>rotatelogs</code> dÃ©marre, au lieu d'attendre la lecture de la
+premiÃ¨re entrÃ©e de journal (pour les sites peu chargÃ©s, il peut
+s'Ã©couler un temps substantiel entre le dÃ©marrage du serveur et le
+traitement de la premiÃ¨re requÃªte, temps pendant lequel le fichier
+journal associÃ© n'"existe" pas, ce qui peut causer des problÃ¨mes Ã 
 certains utilitaires de journalisation automatiques).</dd>
 
 <dt><code>-D</code></dt>
-<dd>Crée les répertoires parents du chemin du fichier journal s'ils
-n'existent pas déjà, ce qui permet d'utiliser le format
+<dd>CrÃ©e les rÃ©pertoires parents du chemin du fichier journal s'ils
+n'existent pas dÃ©jÃ , ce qui permet d'utiliser le format
 <code>strftime(3)</code> dans les chemins au lieu du nom de fichier seul.</dd>
 
 <dt><code>-t</code></dt>
 <dd>Provoque une troncature du fichier journal au lieu d'une rotation.
-Cela peut s'avérer utile lorsqu'un journal est élaboré en temps réel par
-une commande telle que tail, l'archivage des données n'étant ici pas
-nécessaire. Si aucun suffixe n'est ajouté au nom de fichier, les
-chaînes de format contenant des caractères '%' sont cependant
-respectées.
+Cela peut s'avÃ©rer utile lorsqu'un journal est Ã©laborÃ© en temps rÃ©el par
+une commande telle que tail, l'archivage des donnÃ©es n'Ã©tant ici pas
+nÃ©cessaire. Si aucun suffixe n'est ajoutÃ© au nom de fichier, les
+chaÃ®nes de format contenant des caractÃ¨res '%' sont cependant
+respectÃ©es.
 </dd>
 
 <dt><code>-v</code></dt>
 <dd>Affiche une sortie verbeuse sur STDERR. La sortie contient le
-résultat de l'interprétation de la configuration, ainsi que toutes les
-opérations d'ouverture et de fermeture de fichiers.</dd>
+rÃ©sultat de l'interprÃ©tation de la configuration, ainsi que toutes les
+opÃ©rations d'ouverture et de fermeture de fichiers.</dd>
 
 <dt><code>-c</code></dt>
-<dd>Crée un fichier journal pour chaque intervalle, même s'il est vide.</dd>
+<dd>CrÃ©e un fichier journal pour chaque intervalle, mÃªme s'il est vide.</dd>
 
 <dt><code>-e</code></dt>
-<dd>Envoie les messages de journalisation vers stdout. Ceci s'avère
-utile lorsque les journaux doivent être traités par un autre programme.</dd>
+<dd>Envoie les messages de journalisation vers stdout. Ceci s'avÃ¨re
+utile lorsque les journaux doivent Ãªtre traitÃ©s par un autre programme.</dd>
 
 <dt><code>-n <var>nombre-de-fichiers</var></code></dt>
-<dd>Utilise une liste circulaire de fichiers sans repères de temps. Avec
--n 3, la série de fichiers conservés sera "logfile",
-"logfile.1", "logfile.2" avec écrasement de "logfile".<br />
-Disponible à partir de la version 2.4.5 du serveur HTTP Apache.</dd>
+<dd>Utilise une liste circulaire de fichiers sans repÃ¨res de temps. Avec
+-n 3, la sÃ©rie de fichiers conservÃ©s sera "logfile",
+"logfile.1", "logfile.2" avec Ã©crasement de "logfile".<br />
+Disponible Ã  partir de la version 2.4.5 du serveur HTTP Apache.</dd>
 
 <dt><code><var>fichier-journal</var></code></dt>
 <dd><p>Le chemin et le nom de base du fichier journal. Si
-<var>fichier-journal</var> contient des caractères '%', il est considéré
-comme une chaîne de formatage pour <code>strftime(3)</code>. Dans le cas
-contraire, le suffixe <var>.nnnnnnnnnn</var> est automatiquement ajouté
-et correspond au temps en secondes (sauf si l'option -t est spécifiée).
+<var>fichier-journal</var> contient des caractÃ¨res '%', il est considÃ©rÃ©
+comme une chaÃ®ne de formatage pour <code>strftime(3)</code>. Dans le cas
+contraire, le suffixe <var>.nnnnnnnnnn</var> est automatiquement ajoutÃ©
+et correspond au temps en secondes (sauf si l'option -t est spÃ©cifiÃ©e).
 Les deux formats calculent le temps
-de démarrage depuis le début de la période courante. Par exemple, si un
-temps de rotation de 86400 est spécifié, les champs heure, minute et
-seconde créés à partir du format <code>strftime(3)</code> auront tous
-pour valeur 0, en référence au début de la période de 24 heures courante
+de dÃ©marrage depuis le dÃ©but de la pÃ©riode courante. Par exemple, si un
+temps de rotation de 86400 est spÃ©cifiÃ©, les champs heure, minute et
+seconde crÃ©Ã©s Ã  partir du format <code>strftime(3)</code> auront tous
+pour valeur 0, en rÃ©fÃ©rence au dÃ©but de la pÃ©riode de 24 heures courante
 (minuit).</p>
 <p>Si vous utilisez le formatage de noms de fichiers
 <code>strftime(3)</code>, assurez-vous que le format du fichier journal
-possède une granularité suffisamment importante pour générer un nom de
-fichier différent à chaque rotation des journaux. Si ce n'est pas le
-cas, la rotation va écraser le fichier existant au lieu d'en générer un
-nouveau. Par exemple, si <var>fichier-journal</var> était
-<code>/var/log/errorlog.%Y-%m-%d</code> avec une rotation à 5
-mégaoctets, et si la limite de 5 mégaoctets a été atteinte deux fois
-dans la même journée, le même nom de fichier va être généré, et la
-rotation va écraser le fichier existant.</p>
+possÃ¨de une granularitÃ© suffisamment importante pour gÃ©nÃ©rer un nom de
+fichier diffÃ©rent Ã  chaque rotation des journaux. Si ce n'est pas le
+cas, la rotation va Ã©craser le fichier existant au lieu d'en gÃ©nÃ©rer un
+nouveau. Par exemple, si <var>fichier-journal</var> Ã©tait
+<code>/var/log/errorlog.%Y-%m-%d</code> avec une rotation Ã  5
+mÃ©gaoctets, et si la limite de 5 mÃ©gaoctets a Ã©tÃ© atteinte deux fois
+dans la mÃªme journÃ©e, le mÃªme nom de fichier va Ãªtre gÃ©nÃ©rÃ©, et la
+rotation va Ã©craser le fichier existant.</p>
 </dd>
 
 <dt><code><var>temps-rotation</var></code></dt>
 
 <dd>Le temps entre deux rotations des fichiers journaux en secondes. La
-rotation intervient au début de cet intervalle. Par exemple, si le temps
+rotation intervient au dÃ©but de cet intervalle. Par exemple, si le temps
 de rotation est de 3600, la rotation des fichiers journaux s'effectuera
-au début de chaque heure ; si le temps de rotation est de 86400, la
-rotation des fichiers journaux s'effectuera chaque nuit à minuit. (Si
-aucune donnée n'est enregistrée au cours d'un intervalle, aucun fichier
-ne sera créé).</dd>
+au dÃ©but de chaque heure ; si le temps de rotation est de 86400, la
+rotation des fichiers journaux s'effectuera chaque nuit Ã  minuit. (Si
+aucune donnÃ©e n'est enregistrÃ©e au cours d'un intervalle, aucun fichier
+ne sera crÃ©Ã©).</dd>
 
 <dt><code><var>taille-fichier</var>(B|K|M|G)</code></dt>
 
@@ -170,20 +170,20 @@ ne sera créé).</dd>
 <code>B</code> (Octets), <code>K</code> (KOctets), <code>M</code> (MOctets)
 ou <code>G</code> (GOctets).
 <p>
-Lorsque temps et taille sont spécifiés, la taille doit l'être après le
-temps. La rotation interviendra alors aussitôt que l'une des deux limites
+Lorsque temps et taille sont spÃ©cifiÃ©s, la taille doit l'Ãªtre aprÃ¨s le
+temps. La rotation interviendra alors aussitÃ´t que l'une des deux limites
 (temps ou taille) sera atteinte.
 </p>
 </dd>
 
-<dt><code><var>décalage</var></code></dt>
+<dt><code><var>dÃ©calage</var></code></dt>
 
-<dd>Le décalage en minutes par rapport au temps UTC. Par défaut, le
-décalage est considéré comme nul et c'est le temps UTC qui est utilisé.
+<dd>Le dÃ©calage en minutes par rapport au temps UTC. Par dÃ©faut, le
+dÃ©calage est considÃ©rÃ© comme nul et c'est le temps UTC qui est utilisÃ©.
 Par exemple, pour utiliser le temps local de la zone UTC -5 heures,
-spécifiez une valeur de <code>-300</code> pour cette option. Dans la
+spÃ©cifiez une valeur de <code>-300</code> pour cette option. Dans la
 plupart des cas, il vaut mieux utiliser l'option <code>-l</code> que
-spécifier un décalage.</dd>
+spÃ©cifier un dÃ©calage.</dd>
 
 </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -194,21 +194,21 @@ spécifier un décalage.</dd>
      CustomLog "|bin/rotatelogs /var/log/fichier-journal 86400" common
 </code></p></div>
 
-     <p>Cette directive crée les fichiers /var/log/fichier-journal.nnnn
-     où nnnn correspond au temps système auquel la journalisation
-     démarre effectivement (ce temps sera toujours un multiple du temps
+     <p>Cette directive crÃ©e les fichiers /var/log/fichier-journal.nnnn
+     oÃ¹ nnnn correspond au temps systÃ¨me auquel la journalisation
+     dÃ©marre effectivement (ce temps sera toujours un multiple du temps
      de rotation, si bien que vous pouvez synchroniser les scripts cron
-     avec lui). A la fin de chaque temps de rotation (ici après 24
-     heures), une nouvelle journalisation démarre.</p>
+     avec lui). A la fin de chaque temps de rotation (ici aprÃ¨s 24
+     heures), une nouvelle journalisation dÃ©marre.</p>
 
 <div class="example"><p><code>
      CustomLog "|bin/rotatelogs -l /var/log/fichier-journal.%Y.%m.%d 86400" common
 </code></p></div>
 
-     <p>Cette directive crée les fichiers
-     /var/log/fichier-journal.yyyy.mm.dd où yyyy correspond à l'année,
+     <p>Cette directive crÃ©e les fichiers
+     /var/log/fichier-journal.yyyy.mm.dd oÃ¹ yyyy correspond Ã  l'annÃ©e,
      mm au mois et dd au jour du mois. La journalisation basculera vers
-     un nouveau fichier chaque jour à minuit, temps local.</p>
+     un nouveau fichier chaque jour Ã  minuit, temps local.</p>
 
 <div class="example"><p><code>
      CustomLog "|bin/rotatelogs /var/log/fichier-journal 5M" common
@@ -222,64 +222,64 @@ spécifier un décalage.</dd>
 </code></p></div>
      <p>Cette directive va effectuer une rotation du fichier journal des
      erreurs chaque fois que la taille de ce dernier atteindra 5
-     MOctets, et le nom du fichier journal se présentera sous
+     MOctets, et le nom du fichier journal se prÃ©sentera sous
      la forme <code>journal-erreurs.YYYY-mm-dd-HH_MM_SS</code>.</p>
 
 <div class="example"><p><code>
      CustomLog "|bin/rotatelogs -t /var/log/journal 86400" common
 </code></p></div>
 
-     <p>Cet exemple crée le fichier /var/log/journal en le tronquant
-     au démarrage, puis une fois par jour. Ce scénario implique qu'un
-     processus séparé (tel que tail) traite le fichier en temps
-     réel.</p>
+     <p>Cet exemple crÃ©e le fichier /var/log/journal en le tronquant
+     au dÃ©marrage, puis une fois par jour. Ce scÃ©nario implique qu'un
+     processus sÃ©parÃ© (tel que tail) traite le fichier en temps
+     rÃ©el.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="portability" id="portability">Portabilité</a><a title="Lien permanent" href="#portability" class="permalink">&para;</a></h2>
+<h2><a name="portability" id="portability">PortabilitÃ©</a><a title="Lien permanent" href="#portability" class="permalink">&para;</a></h2>
 
-<p>Les substitutions des chaînes de format du fichier journal suivantes
-doivent être supportées par toutes les implémentations de
+<p>Les substitutions des chaÃ®nes de format du fichier journal suivantes
+doivent Ãªtre supportÃ©es par toutes les implÃ©mentations de
 <code>strftime(3)</code> ; voir la page de manuel de
-<code>strftime(3)</code> pour les extensions spécifiques à une
-bibliothèque.</p>
+<code>strftime(3)</code> pour les extensions spÃ©cifiques Ã  une
+bibliothÃ¨que.</p>
 
 <table class="bordered"><tr><td><code>%A</code></td><td>nom du jour de la semaine en entier
-(localisé)</td></tr>
+(localisÃ©)</td></tr>
 <tr class="odd"><td><code>%a</code></td><td>nom du jour de la semaine sur 3
-caractères (localisé)</td></tr>
-<tr><td><code>%B</code></td><td>nom du mois en entier (localisé)</td></tr>
-<tr class="odd"><td><code>%b</code></td><td>nom du mois sur 3 caractères (localisé)</td></tr>
-<tr><td><code>%c</code></td><td>date et heure (localisé)</td></tr>
+caractÃ¨res (localisÃ©)</td></tr>
+<tr><td><code>%B</code></td><td>nom du mois en entier (localisÃ©)</td></tr>
+<tr class="odd"><td><code>%b</code></td><td>nom du mois sur 3 caractÃ¨res (localisÃ©)</td></tr>
+<tr><td><code>%c</code></td><td>date et heure (localisÃ©)</td></tr>
 <tr class="odd"><td><code>%d</code></td><td>jour du mois sur 2 chiffres</td></tr>
-<tr><td><code>%H</code></td><td>heure sur 2 chiffres (de 0 à 24h)</td></tr>
-<tr class="odd"><td><code>%I</code></td><td>heure sur 2 chiffres (de 0 à 12h)</td></tr>
-<tr><td><code>%j</code></td><td>jour de l'année sur 3 chiffres</td></tr>
+<tr><td><code>%H</code></td><td>heure sur 2 chiffres (de 0 Ã  24h)</td></tr>
+<tr class="odd"><td><code>%I</code></td><td>heure sur 2 chiffres (de 0 Ã  12h)</td></tr>
+<tr><td><code>%j</code></td><td>jour de l'annÃ©e sur 3 chiffres</td></tr>
 <tr class="odd"><td><code>%M</code></td><td>minutes sur 2 chiffres</td></tr>
 <tr><td><code>%m</code></td><td>mois sur 2 chiffres</td></tr>
-<tr class="odd"><td><code>%p</code></td><td>suffixe am/pm pour l'heure de 0 à 12h
-(localisé)</td></tr>
+<tr class="odd"><td><code>%p</code></td><td>suffixe am/pm pour l'heure de 0 Ã  12h
+(localisÃ©)</td></tr>
 <tr><td><code>%S</code></td><td>secondes sur 2 chiffres</td></tr>
-<tr class="odd"><td><code>%U</code></td><td>semaine de l'année sur 2 chiffres
+<tr class="odd"><td><code>%U</code></td><td>semaine de l'annÃ©e sur 2 chiffres
 (Dimanche est le premier jour de la semaine)</td></tr>
-<tr><td><code>%W</code></td><td> semaine de l'année sur 2 chiffres
+<tr><td><code>%W</code></td><td> semaine de l'annÃ©e sur 2 chiffres
 (Lundi est le premier jour de la semaine)</td></tr>
 <tr class="odd"><td><code>%w</code></td><td>jour de la semaine sur 1 chiffre
 (Dimanche est le premier jour de la semaine)</td></tr>
-<tr><td><code>%X</code></td><td>heure (localisée)</td></tr>
-<tr class="odd"><td><code>%x</code></td><td>date (localisée)</td></tr>
-<tr><td><code>%Y</code></td><td>année sur 4 chiffres</td></tr>
-<tr class="odd"><td><code>%y</code></td><td>année sur 2 chiffres</td></tr>
+<tr><td><code>%X</code></td><td>heure (localisÃ©e)</td></tr>
+<tr class="odd"><td><code>%x</code></td><td>date (localisÃ©e)</td></tr>
+<tr><td><code>%Y</code></td><td>annÃ©e sur 4 chiffres</td></tr>
+<tr class="odd"><td><code>%y</code></td><td>annÃ©e sur 2 chiffres</td></tr>
 <tr><td><code>%Z</code></td><td>nom de la zone de temps</td></tr>
-<tr class="odd"><td><code>%%</code></td><td>caractère littéral `%'</td></tr>
+<tr class="odd"><td><code>%%</code></td><td>caractÃ¨re littÃ©ral `%'</td></tr>
 </table>
 
 </div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/programs/rotatelogs.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/programs/rotatelogs.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/programs/rotatelogs.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/programs/rotatelogs.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/programs/rotatelogs.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/programs/rotatelogs.html" hreflang="tr" rel="alternate" title="TÃ¼rkÃ§e">&nbsp;tr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -298,7 +298,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/programs/rotatelog
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />AutorisÃ© sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

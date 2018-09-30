@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
-<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -24,19 +24,19 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>Utilisation de mod_rewrite comme mandataire</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/rewrite/proxy.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/rewrite/proxy.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/rewrite/proxy.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a></p>
 </div>
 
 
-<p>Ce document est un complément de la <a href="../mod/mod_rewrite.html">documentation de référence</a> du module
-<code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>. Il décrit comment utiliser le drapeau [P]
+<p>Ce document est un complÃ©ment de la <a href="../mod/mod_rewrite.html">documentation de rÃ©fÃ©rence</a> du module
+<code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>. Il dÃ©crit comment utiliser le drapeau [P]
 de la directive RewriteRule pour mandater un contenu vers un autre
-serveur. Plusieurs recettes décrivant des scénarios courants sont
+serveur. Plusieurs recettes dÃ©crivant des scÃ©narios courants sont
 fournies.</p>
 
 </div>
-<div id="quickview"><h3>Voir aussi</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Documentation du module</a></li><li><a href="intro.html">Introduction à mod_rewrite</a></li><li><a href="remapping.html">Redirection et remise en
-correspondance</a></li><li><a href="access.html">Contrôle d'accès</a></li><li><a href="vhosts.html">Serveurs virtuels</a></li><li><a href="rewritemap.html">Utilisation de RewriteMap</a></li><li><a href="advanced.html">Techniques avancées</a></li><li><a href="avoid.html">Quand ne pas utiliser mod_rewrite</a></li><li><a href="#comments_section">Commentaires</a></li></ul></div>
+<div id="quickview"><h3>Voir aussi</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Documentation du module</a></li><li><a href="intro.html">Introduction Ã  mod_rewrite</a></li><li><a href="remapping.html">Redirection et remise en
+correspondance</a></li><li><a href="access.html">ContrÃ´le d'accÃ¨s</a></li><li><a href="vhosts.html">Serveurs virtuels</a></li><li><a href="rewritemap.html">Utilisation de RewriteMap</a></li><li><a href="advanced.html">Techniques avancÃ©es</a></li><li><a href="avoid.html">Quand ne pas utiliser mod_rewrite</a></li><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="dynamic-proxy" id="dynamic-proxy">Mandater du contenu avec mod_rewrite</a><a title="Lien permanent" href="#dynamic-proxy" class="permalink">&para;</a></h2>
@@ -48,17 +48,17 @@ correspondance</a></li><li><a href="access.html">Contrôle d'accès</a></li><li><a
 
     <dd>
     <p>
-    mod_rewrite implémente le drapeau [P] qui permet de passer des URLs,
-    via mod_proxy, à un autre serveur. Deux exemples sont fournis ici.
-    Dans le premier, une URL est passée directement à un autre serveur,
-    et servie comme si c'était une URL locale. Dans le deuxième, nous
-    mandatons un contenu manquant vers un serveur d'arrière-plan.</p>
+    mod_rewrite implÃ©mente le drapeau [P] qui permet de passer des URLs,
+    via mod_proxy, Ã  un autre serveur. Deux exemples sont fournis ici.
+    Dans le premier, une URL est passÃ©e directement Ã  un autre serveur,
+    et servie comme si c'Ã©tait une URL locale. Dans le deuxiÃ¨me, nous
+    mandatons un contenu manquant vers un serveur d'arriÃ¨re-plan.</p>
     </dd>
 
     <dt>Solution :</dt>
 
     <dd>
-      <p>Pour passer une URL à un autre serveur, on utilise le drapeau
+      <p>Pour passer une URL Ã  un autre serveur, on utilise le drapeau
       [P] comme suit :</p>
 
 <pre class="prettyprint lang-config">RewriteEngine  on
@@ -67,11 +67,11 @@ RewriteRule    "^widget/(.*)$"  "http://produits.example.com/widget/$1"  [P]
 ProxyPassReverse "/produits/objet/" "http://produits.example.com/objet/"</pre>
 
 
-   <p>Dans le deuxième exemple, nous ne mandatons la requête que si nous
-   ne trouvons pas la ressource localement. Ceci peut s'avérer très
+   <p>Dans le deuxiÃ¨me exemple, nous ne mandatons la requÃªte que si nous
+   ne trouvons pas la ressource localement. Ceci peut s'avÃ©rer trÃ¨s
    utile lorsque vous effectuez une migration d'un serveur vers un
-   autre, et que vous n'êtes pas certain que tout le contenu a déjà été
-   migré.</p>
+   autre, et que vous n'Ãªtes pas certain que tout le contenu a dÃ©jÃ  Ã©tÃ©
+   migrÃ©.</p>
 
 <pre class="prettyprint lang-config">RewriteCond "%{REQUEST_FILENAME}"       !-f
 RewriteCond "%{REQUEST_FILENAME}"       !-d
@@ -83,12 +83,12 @@ ProxyPassReverse "/" "http://ancien.exemple.com/"</pre>
     <dt>Discussion :</dt>
 
     <dd><p>Dans les deux cas, on ajoute une directive <code class="directive"><a href="../mod/mod_proxy.html#proxypassreverse">ProxyPassReverse</a></code> afin de s'assurer
-    que toute redirection en provenance du serveur d'arrière-plan est
-    renvoyée correctement au client.</p>
+    que toute redirection en provenance du serveur d'arriÃ¨re-plan est
+    renvoyÃ©e correctement au client.</p>
 
-    <p>Chaque fois que cela est possible, préférez l'utilisation de la
+    <p>Chaque fois que cela est possible, prÃ©fÃ©rez l'utilisation de la
     directive <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> ou
-    <code class="directive"><a href="../mod/mod_proxy.html#proxypassmatch">ProxyPassMatch</a></code> à
+    <code class="directive"><a href="../mod/mod_proxy.html#proxypassmatch">ProxyPassMatch</a></code> Ã 
     mod_rewrite.</p>
     </dd>
   </dl>
@@ -96,7 +96,7 @@ ProxyPassReverse "/" "http://ancien.exemple.com/"</pre>
 </div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/rewrite/proxy.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/rewrite/proxy.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/rewrite/proxy.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -115,7 +115,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/rewrite/proxy.html
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />AutorisÃ© sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

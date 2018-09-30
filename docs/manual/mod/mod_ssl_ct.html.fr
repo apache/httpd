@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
-<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -27,84 +27,84 @@
 <div id="preamble"><h1>Module Apache mod_ssl_ct</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_ssl_ct.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_ssl_ct.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_ssl_ct.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Implémentation de la transparence des certificats
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>ImplÃ©mentation de la transparence des certificats
 (Certificat Transparency - RFC 6962)
 </td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>ssl_ct_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_ssl_ct.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">IdentificateurÂ deÂ Module:</a></th><td>ssl_ct_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">FichierÂ Source:</a></th><td>mod_ssl_ct.c</td></tr></table>
 <h3>Sommaire</h3>
 
 
-<p>Ce module implémente la transparence des certificats en conjonction
+<p>Ce module implÃ©mente la transparence des certificats en conjonction
 avec <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> et les outils en ligne de commande du
 projet open source <a href="https://code.google.com/p/certificate-transparency/">certificate-transparency</a>.
-Le but de la transparence des certificats consiste à révéler
-l'utilisation de certificats de confiance délivrés par
-erreur ou dans un but malintentionné. Vous trouverez plus de détails à
+Le but de la transparence des certificats consiste Ã  rÃ©vÃ©ler
+l'utilisation de certificats de confiance dÃ©livrÃ©s par
+erreur ou dans un but malintentionnÃ©. Vous trouverez plus de dÃ©tails Ã 
 propos de la transparence des certificats ici : <a href="http://www.certificate-transparency.org/">http://www.certificate-transparency.org/</a>.
-Voici la signification des termes utilisés dans cette documentation :</p>
+Voici la signification des termes utilisÃ©s dans cette documentation :</p>
 
 <dl>
   <dt>Certificate log</dt>
-  <dd>Un Certificate log, auquel on fera référence avec le simple
-  terme <q>log</q> tout au long de ce document, est un service réseau
+  <dd>Un Certificate log, auquel on fera rÃ©fÃ©rence avec le simple
+  terme <q>log</q> tout au long de ce document, est un service rÃ©seau
   auquel les certificats de serveurs sont soumis. Un agent
-  utilisateur peut vérifier que le certificat d'un serveur auquel il
-  accède a bien été soumis à un log auquel il fait confiance, et que le log
-  lui-même n'a pas rencontré de problème avec ce certificat.</dd>
+  utilisateur peut vÃ©rifier que le certificat d'un serveur auquel il
+  accÃ¨de a bien Ã©tÃ© soumis Ã  un log auquel il fait confiance, et que le log
+  lui-mÃªme n'a pas rencontrÃ© de problÃ¨me avec ce certificat.</dd>
 
-  <dt>Horodatage signé du certificat (Signed Certificate Timestamp - SCT)</dt>
+  <dt>Horodatage signÃ© du certificat (Signed Certificate Timestamp - SCT)</dt>
   <dd>Il s'agit d'une information en provenance d'un log indiquant qu'il
-  a validé un certificat. Cet horodatage est signé avec la clé publique
-  du log. Un ou plusieurs SCTs sont passés au client durant la phase de
-  négociation de la connexion, soit dans le ServerHello (extension TLS),
-  soit dans l'extension du certificat, soit dans une réponse OCSP
+  a validÃ© un certificat. Cet horodatage est signÃ© avec la clÃ© publique
+  du log. Un ou plusieurs SCTs sont passÃ©s au client durant la phase de
+  nÃ©gociation de la connexion, soit dans le ServerHello (extension TLS),
+  soit dans l'extension du certificat, soit dans une rÃ©ponse OCSP
   jointe.</dd>
 </dl>
 
-<p>Cette implémentation pour Apache httpd fournit les fonctionnalités
+<p>Cette implÃ©mentation pour Apache httpd fournit les fonctionnalitÃ©s
 suivantes pout les serveurs et mandataires TLS :</p>
 
 <ul>
-  <li>Les SCTs peuvent être extraits automatiquement des logs, et en
-  conjonction avec tout SCT défini statiquement, envoyés aux clients
-  qui les supportent durant la phase ServerHello de la négociation de la
+  <li>Les SCTs peuvent Ãªtre extraits automatiquement des logs, et en
+  conjonction avec tout SCT dÃ©fini statiquement, envoyÃ©s aux clients
+  qui les supportent durant la phase ServerHello de la nÃ©gociation de la
   connexion.</li>
   <li>Le serveur mandataire peut recevoir les SCTs en provenance du
   serveur original au cours de la phase ServerHello sous la forme d'une
-  extension de certificat, et/ou au sein des réponses OCSP agrafées ;
-  tout SCT reçu peut être validé partiellement en ligne, et
-  éventuellement mis en file d'attente pour un examen plus approfondi
+  extension de certificat, et/ou au sein des rÃ©ponses OCSP agrafÃ©es ;
+  tout SCT reÃ§u peut Ãªtre validÃ© partiellement en ligne, et
+  Ã©ventuellement mis en file d'attente pour un examen plus approfondi
   hors ligne.</li>
-  <li>Le serveur mandataire peut être configuré de façon à refuser la
+  <li>Le serveur mandataire peut Ãªtre configurÃ© de faÃ§on Ã  refuser la
   communication avec un serveur original qui ne fournit pas de SCT
-  pouvant âtre validé en ligne.</li>
+  pouvant Ã¢tre validÃ© en ligne.</li>
 </ul>
 
-<p>La configuration des logs peut être définie statiquement au niveau de
-la configuration du serveur web, ou enregistrée dans une base de données
-SQLite3. Dans ce dernier cas, <code class="module"><a href="../mod/mod_ssl_ct.html">mod_ssl_ct</a></code> rechargera à
-intervalles réguliers la base de données, de façon à ce que tout
+<p>La configuration des logs peut Ãªtre dÃ©finie statiquement au niveau de
+la configuration du serveur web, ou enregistrÃ©e dans une base de donnÃ©es
+SQLite3. Dans ce dernier cas, <code class="module"><a href="../mod/mod_ssl_ct.html">mod_ssl_ct</a></code> rechargera Ã 
+intervalles rÃ©guliers la base de donnÃ©es, de faÃ§on Ã  ce que tout
 changement dans la configuration de la maintenance et de la propagation
-des logs pour un site spécifique ne nécessite pas de redémarrer httpd.</p>
+des logs pour un site spÃ©cifique ne nÃ©cessite pas de redÃ©marrer httpd.</p>
 
-<div class="note">Ce module en est au stade expérimental pour les raisons suivantes
+<div class="note">Ce module en est au stade expÃ©rimental pour les raisons suivantes
 :
 <ul>
   <li>Tests et retours d'information insuffisants</li>
   <li>Repose sur une version non stable (version 1.0.2, Beta 3 ou
-  supérieure) d'OpenSSL pour les
-  opérations de base</li>
-  <li>Implémentation de la <a href="#audit">fonctionnalité d'audit hors
-  ligne</a> incomplète</li>
+  supÃ©rieure) d'OpenSSL pour les
+  opÃ©rations de base</li>
+  <li>ImplÃ©mentation de la <a href="#audit">fonctionnalitÃ© d'audit hors
+  ligne</a> incomplÃ¨te</li>
 </ul>
 
-<p>Les mécanismes de configuration, le format des données enregistrées
-pour l'audit hors ligne, ainsi que d'autres caractéristiques sont
-appelés à évoluer en fonction des tests et retours d'informations à
+<p>Les mÃ©canismes de configuration, le format des donnÃ©es enregistrÃ©es
+pour l'audit hors ligne, ainsi que d'autres caractÃ©ristiques sont
+appelÃ©s Ã  Ã©voluer en fonction des tests et retours d'informations Ã 
 venir.</p>
 </div>
 </div>
@@ -114,9 +114,9 @@ venir.</p>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxy">Vue d'ensemble du fonctionnement au niveau du serveur
   mandataire</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#logconf">Configuration du log</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#static">Stockage des SCTs sous une forme compréhensible pour mod_ssl_ct</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#logging">Journalisation des repères de temps des certificats (CT) dans
-  le journal des accès</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#static">Stockage des SCTs sous une forme comprÃ©hensible pour mod_ssl_ct</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#logging">Journalisation des repÃ¨res de temps des certificats (CT) dans
+  le journal des accÃ¨s</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#audit">Audit hors ligne pour mandataire</a></li>
 </ul><h3 class="directives">Directives</h3>
 <ul id="toc">
@@ -130,7 +130,7 @@ venir.</p>
 <li><img alt="" src="../images/down.gif" /> <a href="#ctstaticlogconfig">CTStaticLogConfig</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ctstaticscts">CTStaticSCTs</a></li>
 </ul>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_ssl_ct">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_ssl_ct">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_ssl_ct">ProblÃ¨mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_ssl_ct">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -139,29 +139,29 @@ venir.</p>
   
 
   <p>Les serveurs doivent pouvoir envoyer les SCTs aux clients. Les SCTs
-  seront envoyés sous la forme d'une extension de certificat ou au sein
-  d'une réponse OCSP agrafée sans logique préprogrammée. Ce module gère
-  l'envoi des SCTs configurés par l'administrateur ou en provenance des
-  logs définis.</p>
+  seront envoyÃ©s sous la forme d'une extension de certificat ou au sein
+  d'une rÃ©ponse OCSP agrafÃ©e sans logique prÃ©programmÃ©e. Ce module gÃ¨re
+  l'envoi des SCTs configurÃ©s par l'administrateur ou en provenance des
+  logs dÃ©finis.</p>
 
-  <p>Le nombre de SCTs envoyés au cours de la phase ServerHello (c'est à
+  <p>Le nombre de SCTs envoyÃ©s au cours de la phase ServerHello (c'est Ã 
   dire les SCTs autres que ceux inclus dans une extension de certificat
-  ou une réponse OCSP agrafée) peut être limité via la directive
+  ou une rÃ©ponse OCSP agrafÃ©e) peut Ãªtre limitÃ© via la directive
   <code class="directive"><a href="#ctserverhellosctlimit">CTServerHelloSCTLimit</a></code>.</p>
 
   <p>Pour chaque certificat de serveur, un processus maintient une liste
-  de SCTs à envoyer au cours de la phase ServerHello ; cette liste est
-  créée à partir des SCTs configurés statiquement, mais aussi à partir
-  de ceux reçus depuis les logs. Les logs marqués comme suspects ou
-  arrivés à péremption seront ignorés. A intervalles réguliers, le
-  processus va soumettre les certificats à un log selon les besoins
-  (suite à un changement de configuration du log ou de sa durée de vie),
-  et reconstruire la concaténation des SCTs.</p>
+  de SCTs Ã  envoyer au cours de la phase ServerHello ; cette liste est
+  crÃ©Ã©e Ã  partir des SCTs configurÃ©s statiquement, mais aussi Ã  partir
+  de ceux reÃ§us depuis les logs. Les logs marquÃ©s comme suspects ou
+  arrivÃ©s Ã  pÃ©remption seront ignorÃ©s. A intervalles rÃ©guliers, le
+  processus va soumettre les certificats Ã  un log selon les besoins
+  (suite Ã  un changement de configuration du log ou de sa durÃ©e de vie),
+  et reconstruire la concatÃ©nation des SCTs.</p>
 
-  <p>La liste des SCTs pour un certificat de serveur sera envoyée au
+  <p>La liste des SCTs pour un certificat de serveur sera envoyÃ©e au
   cours de la phase ClientHello, lorsque ce certificat de serveur
-  particulier est utilisé, à tout client qui fait savoir qu'il supporte
-  cette fonctionnalité.</p>
+  particulier est utilisÃ©, Ã  tout client qui fait savoir qu'il supporte
+  cette fonctionnalitÃ©.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -171,34 +171,34 @@ venir.</p>
 
   <p>Le serveur mandataire indique qu'il supporte la Transparence des
   Certificats au cours de la phase ClientHello en incluant l'extension
-  <em>signed_certificate_timestamp</em>. Il peut reconnaître les SCTs
-  reçus au cours de la phase ServerHello dans une extension du
-  certificat du serveur original, ou au sein d'une réponse OCSP agrafée.</p>
+  <em>signed_certificate_timestamp</em>. Il peut reconnaÃ®tre les SCTs
+  reÃ§us au cours de la phase ServerHello dans une extension du
+  certificat du serveur original, ou au sein d'une rÃ©ponse OCSP agrafÃ©e.</p>
 
-  <p>Une vérification en ligne est effectuée pour tout SCT reçu :</p>
+  <p>Une vÃ©rification en ligne est effectuÃ©e pour tout SCT reÃ§u :</p>
 
   <ul>
-    <li>Le repère de temps de chaque SCT peut être vérifié pour voir
+    <li>Le repÃ¨re de temps de chaque SCT peut Ãªtre vÃ©rifiÃ© pour voir
     s'il n'est pas encore valide en le comparant avec l'heure actuelle
-    ou tout intervalle de temps valide défini pour le log.</li>
-    <li>Dans le cas d'un SCT issu d'un log pour lequel une clé publique
-    a été définie, la signature du serveur sera vérifiée.</li>
+    ou tout intervalle de temps valide dÃ©fini pour le log.</li>
+    <li>Dans le cas d'un SCT issu d'un log pour lequel une clÃ© publique
+    a Ã©tÃ© dÃ©finie, la signature du serveur sera vÃ©rifiÃ©e.</li>
   </ul>
 
-  <p>Si la vérification échoue ou renvoie un résultat négatif pour au
-  moins un SCT et si la directive <code class="directive"><a href="#ctproxyawareness">CTProxyAwareness</a></code> est définie à
-  <em>require</em>, la tentative de connexion est abandonnée.</p>
+  <p>Si la vÃ©rification Ã©choue ou renvoie un rÃ©sultat nÃ©gatif pour au
+  moins un SCT et si la directive <code class="directive"><a href="#ctproxyawareness">CTProxyAwareness</a></code> est dÃ©finie Ã 
+  <em>require</em>, la tentative de connexion est abandonnÃ©e.</p>
 
-  <p>En outre, si la directive <code class="directive"><a href="#ctauditstorage">CTAuditStorage</a></code> est définie, la chaîne
-  de certification du serveur et les SCTs sont stockés pour une
-  vérification hors ligne.</p>
+  <p>En outre, si la directive <code class="directive"><a href="#ctauditstorage">CTAuditStorage</a></code> est dÃ©finie, la chaÃ®ne
+  de certification du serveur et les SCTs sont stockÃ©s pour une
+  vÃ©rification hors ligne.</p>
 
-  <p>A titre d'optimisation, la vérification en ligne et le stockage des
-  données en provenance du serveur ne sont effectués que la première
-  fois où un processus enfant du serveur web reçoit ces données, ce qui
-  permet d'économiser du temps processeur et de l'espace disque. Dans le
+  <p>A titre d'optimisation, la vÃ©rification en ligne et le stockage des
+  donnÃ©es en provenance du serveur ne sont effectuÃ©s que la premiÃ¨re
+  fois oÃ¹ un processus enfant du serveur web reÃ§oit ces donnÃ©es, ce qui
+  permet d'Ã©conomiser du temps processeur et de l'espace disque. Dans le
   cas d'une configuration typique de mandataire inverse, seule une
-  légère augmentation de la charge processeur sera induite.</p>
+  lÃ©gÃ¨re augmentation de la charge processeur sera induite.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -206,169 +206,169 @@ venir.</p>
   
 
   <p>Les serveurs et les mandataires utilisent des informations
-  différentes en ce qui concerne les logs et leurs traitements. Cette
-  <em>configuration des logs</em> peut être effectuée de deux manières :</p>
+  diffÃ©rentes en ce qui concerne les logs et leurs traitements. Cette
+  <em>configuration des logs</em> peut Ãªtre effectuÃ©e de deux maniÃ¨res :</p>
 
   <ul>
-    <li>On peut créer une base de données pour configurer le log en
+    <li>On peut crÃ©er une base de donnÃ©es pour configurer le log en
     utilisant la commande <code class="program"><a href="../programs/ctlogconfig.html">ctlogconfig</a></code> et en
-    définissant le chemin vers cette base de données via la directive
+    dÃ©finissant le chemin vers cette base de donnÃ©es via la directive
     <code class="directive"><a href="#ctlogconfig">CTLogConfig</a></code>.
-    <code class="module"><a href="../mod/mod_ssl_ct.html">mod_ssl_ct</a></code> relit la base de données à
-    intervalles réguliers ; cette méthode de configuration supporte donc
-    les mises à jour dynamiques. En outre, la commande d'audit hors
+    <code class="module"><a href="../mod/mod_ssl_ct.html">mod_ssl_ct</a></code> relit la base de donnÃ©es Ã 
+    intervalles rÃ©guliers ; cette mÃ©thode de configuration supporte donc
+    les mises Ã  jour dynamiques. En outre, la commande d'audit hors
     ligne <code>ctauditscts</code> peut utiliser cette configuration pour
     trouver l'URL des logs.</li>
 
     <li>On peut aussi configurer les logs statiquement via la directive
     <code class="directive"><a href="#ctstaticlogconfig">CTStaticLogConfig</a></code>. Toute
-    modification de cette directive nécessitera alors un redémarrage du serveur
-    pour être prise en compte, comme pour toutes les autres directives.</li>
+    modification de cette directive nÃ©cessitera alors un redÃ©marrage du serveur
+    pour Ãªtre prise en compte, comme pour toutes les autres directives.</li>
   </ul>
 
-  <p>Les éléments de configuration pouvant être définis par l'une ou
-  l'autre méthode sont les suivants :</p>
+  <p>Les Ã©lÃ©ments de configuration pouvant Ãªtre dÃ©finis par l'une ou
+  l'autre mÃ©thode sont les suivants :</p>
 
   <dl>
     <dt>Identifiant du log</dt>
-    <dd>L'identifiant du log est le hash SHA-256 de sa clé publique, et
-    est inclus dans tout SCT. Ceci permet d'identifier aisément un log
-    particulier lorsqu'on définit des plages de repères de temps
+    <dd>L'identifiant du log est le hash SHA-256 de sa clÃ© publique, et
+    est inclus dans tout SCT. Ceci permet d'identifier aisÃ©ment un log
+    particulier lorsqu'on dÃ©finit des plages de repÃ¨res de temps
     valides ou certaines autres informations.</dd>
 
-    <dt>Clé publique du log</dt>
-    <dd>Un mandataire doit disposer de la clé publique du log afin de
-    pouvoir vérifier la signature dans les SCTs en provenance de ce log.
+    <dt>ClÃ© publique du log</dt>
+    <dd>Un mandataire doit disposer de la clÃ© publique du log afin de
+    pouvoir vÃ©rifier la signature dans les SCTs en provenance de ce log.
     <br />
-    Un serveur doit posséder la clé publique du log afin de pouvoir lui
+    Un serveur doit possÃ©der la clÃ© publique du log afin de pouvoir lui
     soumettre des certificats.</dd>
 
-    <dt>Configuration générale confiance/méfiance</dt>
-    <dd>Il s'agit d'un mécanisme permettant d'instaurer une méfiance ou
-    de restaurer une confiance envers un log donné pour certaines
-    raisons particulières (y compris la simple interruption des
-    interactions avec le log dans les situations où il est hors ligne).</dd>
+    <dt>Configuration gÃ©nÃ©rale confiance/mÃ©fiance</dt>
+    <dd>Il s'agit d'un mÃ©canisme permettant d'instaurer une mÃ©fiance ou
+    de restaurer une confiance envers un log donnÃ© pour certaines
+    raisons particuliÃ¨res (y compris la simple interruption des
+    interactions avec le log dans les situations oÃ¹ il est hors ligne).</dd>
 
-    <dt>Repères de temps minima et/ou maxima valides</dt>
-    <dd>Lorsqu'ils sont définis, le mandataire pourra vérifier que les
-    repères de temps contenus dans les SCTs sont compris dans une plage
+    <dt>RepÃ¨res de temps minima et/ou maxima valides</dt>
+    <dd>Lorsqu'ils sont dÃ©finis, le mandataire pourra vÃ©rifier que les
+    repÃ¨res de temps contenus dans les SCTs sont compris dans une plage
     valide</dd>
 
     <dt>URL du log</dt>
-    <dd>Pour qu'un serveur puisse soumettre des certificats de serveur à
-    un log, il doit connaître l'URL de ce dernier (pour son API). Le
+    <dd>Pour qu'un serveur puisse soumettre des certificats de serveur Ã 
+    un log, il doit connaÃ®tre l'URL de ce dernier (pour son API). Le
     serveur soumettra chaque certificat de serveur afin d'obtenir un
-    SCT pour chaque log dont l'URL est définie, sauf pour les logs aussi
-    marqués comme non dignes de confiance ou si l'heure actuelle ne se
-    situe dans aucune des plages de temps valides définies.
+    SCT pour chaque log dont l'URL est dÃ©finie, sauf pour les logs aussi
+    marquÃ©s comme non dignes de confiance ou si l'heure actuelle ne se
+    situe dans aucune des plages de temps valides dÃ©finies.
     <br />
-    L'audit hors ligne des SCTs reçus par un mandataire nécessite aussi
-    de connaître l'URL du log.</dd>
+    L'audit hors ligne des SCTs reÃ§us par un mandataire nÃ©cessite aussi
+    de connaÃ®tre l'URL du log.</dd>
   </dl>
 
-  <p>En général, seuls quelque uns de ces éléments de configuration sont
-  définis pour un log donné. Pour plus de détails, veuillez vous référer
-  à la documentation de la directive <code class="directive"><a href="#ctstaticlogconfig">CTStaticLogConfig</a></code> et de la commande
+  <p>En gÃ©nÃ©ral, seuls quelque uns de ces Ã©lÃ©ments de configuration sont
+  dÃ©finis pour un log donnÃ©. Pour plus de dÃ©tails, veuillez vous rÃ©fÃ©rer
+  Ã  la documentation de la directive <code class="directive"><a href="#ctstaticlogconfig">CTStaticLogConfig</a></code> et de la commande
   <code class="program"><a href="../programs/ctlogconfig.html">ctlogconfig</a></code>.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="static" id="static">Stockage des SCTs sous une forme compréhensible pour mod_ssl_ct</a><a title="Lien permanent" href="#static" class="permalink">&para;</a></h2>
+<h2><a name="static" id="static">Stockage des SCTs sous une forme comprÃ©hensible pour mod_ssl_ct</a><a title="Lien permanent" href="#static" class="permalink">&para;</a></h2>
   
 
   <p>Le module <code class="module"><a href="../mod/mod_ssl_ct.html">mod_ssl_ct</a></code> permet de configurer les SCTs
-  de manière statique via la directive
-  <code class="directive">CTStaticSCTs</code>. Ils doivent alors être sous une forme
-  binaire prête à être envoyée au client.</p>
+  de maniÃ¨re statique via la directive
+  <code class="directive">CTStaticSCTs</code>. Ils doivent alors Ãªtre sous une forme
+  binaire prÃªte Ã  Ãªtre envoyÃ©e au client.</p>
 
-  <p>Vous trouverez dans le <a href="https://github.com/tomrittervg/ct-tools">Dépôt ct-tools de Tom
+  <p>Vous trouverez dans le <a href="https://github.com/tomrittervg/ct-tools">DÃ©pÃ´t ct-tools de Tom
   Ritter</a> un exemple de code sous la forme d'un script Python
-  (<code>write-sct.py</code>) permettant de générer un SCT sous un
-  format correct avec des données en provenance d'un log.</p>
+  (<code>write-sct.py</code>) permettant de gÃ©nÃ©rer un SCT sous un
+  format correct avec des donnÃ©es en provenance d'un log.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="logging" id="logging">Journalisation des repères de temps des certificats (CT) dans
-  le journal des accès</a><a title="Lien permanent" href="#logging" class="permalink">&para;</a></h2>
+<h2><a name="logging" id="logging">Journalisation des repÃ¨res de temps des certificats (CT) dans
+  le journal des accÃ¨s</a><a title="Lien permanent" href="#logging" class="permalink">&para;</a></h2>
   
 
   <p>Dans les deux modes mandataire et serveur, les variables
   <code>SSL_CT_PROXY_STATUS</code> et
-  <code>SSL_CT_CLIENT_STATUS</code> sont définies et indiquent si le
+  <code>SSL_CT_CLIENT_STATUS</code> sont dÃ©finies et indiquent si le
   serveur supporte les CTs.</p>
 
   <p>Dans le mode mandataire, la variable
-  <code>SSL_CT_PROXY_SCT_SOURCES</code> est définie pour indiquer si des
-  SCTs ont été reçus ainsi que leur source (phase ServerHello de la
+  <code>SSL_CT_PROXY_SCT_SOURCES</code> est dÃ©finie pour indiquer si des
+  SCTs ont Ã©tÃ© reÃ§us ainsi que leur source (phase ServerHello de la
   connexion, extension de certificat, etc...).</p>
 
-  <p>Les valeurs de ces variables peuvent être journalisées via la
-  chaîne de format <code>%{<em>varname</em>}e</code> de
+  <p>Les valeurs de ces variables peuvent Ãªtre journalisÃ©es via la
+  chaÃ®ne de format <code>%{<em>varname</em>}e</code> de
   <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="audit" id="audit">Audit hors ligne pour mandataire</a><a title="Lien permanent" href="#audit" class="permalink">&para;</a></h2>
   
 
-  <p>Le support de cette fonctionnalité en est au stade expérimental, et
-  est implémenté par la commande <code>ctauditscts</code>, qui repose
-  elle-même sur l'utilitaire <code>verify_single_proof.py</code> du
+  <p>Le support de cette fonctionnalitÃ© en est au stade expÃ©rimental, et
+  est implÃ©mentÃ© par la commande <code>ctauditscts</code>, qui repose
+  elle-mÃªme sur l'utilitaire <code>verify_single_proof.py</code> du
   projet open source <em>certificate-transparency</em>. La commande
-  <code>ctauditscts</code> peut parcourir des données, et ainsi effectuer
-  un audit hors ligne (activé via la directive <code class="directive"><a href="#ctauditstorage">CTAuditStorage</a></code>) en invoquant
+  <code>ctauditscts</code> peut parcourir des donnÃ©es, et ainsi effectuer
+  un audit hors ligne (activÃ© via la directive <code class="directive"><a href="#ctauditstorage">CTAuditStorage</a></code>) en invoquant
   l'utilitaire <code>verify_single_proof.py</code>.</p>
 
-  <p>Voici quelques indication à l'état brut pour l'utilisation de
+  <p>Voici quelques indication Ã  l'Ã©tat brut pour l'utilisation de
   <code>ctauditscts</code> :</p>
 
   <ul>
-    <li>Créez un <em>virtualenv</em> en utilisant le fichier
+    <li>CrÃ©ez un <em>virtualenv</em> en utilisant le fichier
     <code>requirements.txt</code> du projet
-    <em>certificate-transparency</em>, et exécuter les étapes suivantes
-    avec ce <em>virtualenv</em> activé.</li>
-    <li>Définissez <code>PYTHONPATH</code> de façon à inclure le
-    répertoire <code>python</code> dans les chemins par défaut des
+    <em>certificate-transparency</em>, et exÃ©cuter les Ã©tapes suivantes
+    avec ce <em>virtualenv</em> activÃ©.</li>
+    <li>DÃ©finissez <code>PYTHONPATH</code> de faÃ§on Ã  inclure le
+    rÃ©pertoire <code>python</code> dans les chemins par dÃ©faut des
     utilitaires du projet <em>certificate-transparency</em>.</li>
-    <li>Définissez <code>PATH</code> de façon à inclure le chemin du
-    répertoire <code>python/ct/client/tools</code>.</li>
-    <li>Exécutez la commande <code>ctauditscts</code> avec comme
+    <li>DÃ©finissez <code>PATH</code> de faÃ§on Ã  inclure le chemin du
+    rÃ©pertoire <code>python/ct/client/tools</code>.</li>
+    <li>ExÃ©cutez la commande <code>ctauditscts</code> avec comme
     arguments la valeur de la directive
-    <code class="directive">CTAuditStorage</code>, et éventuellement le chemin
-    de la base de données de configuration des logs. Cette dernière sera
-    utilisée pour extraire les URLs des logs en fonction de leurs
+    <code class="directive">CTAuditStorage</code>, et Ã©ventuellement le chemin
+    de la base de donnÃ©es de configuration des logs. Cette derniÃ¨re sera
+    utilisÃ©e pour extraire les URLs des logs en fonction de leurs
     identifiants.</li>
   </ul>
 
-  <p>Les données stockées à des fins d'audit peuvent aussi être
-  utilisées par d'autres programmes ; veuillez vous référer au code
-  source de <code>ctauditscts</code> pour plus de détails à propos du
-  traitement des données.</p>
+  <p>Les donnÃ©es stockÃ©es Ã  des fins d'audit peuvent aussi Ãªtre
+  utilisÃ©es par d'autres programmes ; veuillez vous rÃ©fÃ©rer au code
+  source de <code>ctauditscts</code> pour plus de dÃ©tails Ã  propos du
+  traitement des donnÃ©es.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ctauditstorage" id="ctauditstorage">Directive</a> <a name="CTAuditStorage" id="CTAuditStorage">CTAuditStorage</a><a title="Lien permanent" href="#ctauditstorage" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Répertoire de stockage des données pour l'audit hors ligne</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>RÃ©pertoire de stockage des donnÃ©es pour l'audit hors ligne</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CTAuditStorage <em>directory</em></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">DÃ©faut:</a></th><td><code>none</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl_ct</td></tr>
 </table>
   <p>La directive <code class="directive">CTAuditStorage</code> permet de
-  définir le chemin du répertoire où les données destinées à un audit hors
-  ligne seront stockées. Ce répertoire doit exister au préalable. Si le
+  dÃ©finir le chemin du rÃ©pertoire oÃ¹ les donnÃ©es destinÃ©es Ã  un audit hors
+  ligne seront stockÃ©es. Ce rÃ©pertoire doit exister au prÃ©alable. Si le
   chemin contenu dans l'argument <em>directory</em> n'est pas absolu, il
-  sera considéré comme relatif au chemin défini par la directive
+  sera considÃ©rÃ© comme relatif au chemin dÃ©fini par la directive
   <code class="directive"><a href="../mod/core.html#defaultruntimedir">DefaultRuntimeDir</a></code>.</p>
 
-  <p>Si cette directive n'est pas définie, aucune donnée ne sera stockée
+  <p>Si cette directive n'est pas dÃ©finie, aucune donnÃ©e ne sera stockÃ©e
   en vue d'un audit hors ligne.</p>
 
-  <p>Le répertoire considéré contiendra des fichiers nommés
+  <p>Le rÃ©pertoire considÃ©rÃ© contiendra des fichiers nommÃ©s
   <code><em>PID</em>.tmp</code> pour les processus enfants actifs et
-  <code><em>PID</em>.out</code> pour les processus enfants terminés. Les
-  données disponibles pour un audit hors ligne sont donc contenues dans les
-  fichiers <code>.out</code>. La commande expérimentale
-  <code>ctauditscts</code> (située dans l'arborescence des sources de
+  <code><em>PID</em>.out</code> pour les processus enfants terminÃ©s. Les
+  donnÃ©es disponibles pour un audit hors ligne sont donc contenues dans les
+  fichiers <code>.out</code>. La commande expÃ©rimentale
+  <code>ctauditscts</code> (situÃ©e dans l'arborescence des sources de
   httpd, mais non encore prise en compte par le processus
   d'installation), fait appel aux utilitaires du projet
   <em>certificate-transparency</em> pour effectuer l'audit.</p>
@@ -379,7 +379,7 @@ venir.</p>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Chemin de l'utilitaire client du log certificate-transparency</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CTLogClient <em>executable</em></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">DÃ©faut:</a></th><td><code>none</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl_ct</td></tr>
@@ -389,55 +389,55 @@ venir.</p>
   <code>ct.exe</code>) de l'arborescence des sources du projet open
   source <a href="https://code.google.com/p/certificate-transparency/">certificate-transparency</a>.</p>
 
-  <p>Il est possible d'utiliser une implémentation alternative pour
-  extraire les SCTs d'un certificat de serveur à partir du moment où
-  l'interface de la ligne de commande est équivalente.</p>
+  <p>Il est possible d'utiliser une implÃ©mentation alternative pour
+  extraire les SCTs d'un certificat de serveur Ã  partir du moment oÃ¹
+  l'interface de la ligne de commande est Ã©quivalente.</p>
 
-  <p>Si cette directive n'est pas définie, il n'est pas possible de
+  <p>Si cette directive n'est pas dÃ©finie, il n'est pas possible de
   soumettre les certificats aux logs pour en extraire les SCTs ; seuls
-  les SCTs gérés par l'administrateur ou situés dans une extension de
+  les SCTs gÃ©rÃ©s par l'administrateur ou situÃ©s dans une extension de
   certificat seront alors fournis aux clients.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ctlogconfigdb" id="ctlogconfigdb">Directive</a> <a name="CTLogConfigDB" id="CTLogConfigDB">CTLogConfigDB</a><a title="Lien permanent" href="#ctlogconfigdb" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Base de données pour la configuration des logs avec mises à
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Base de donnÃ©es pour la configuration des logs avec mises Ã 
 jour dynamiques</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CTLogConfigDB <em>filename</em></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">DÃ©faut:</a></th><td><code>none</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl_ct</td></tr>
 </table>
-  <p>La directive <code class="directive">CTLogConfigDB</code> permet de définir
-  le nom de la base de données contenant la configuration des logs
+  <p>La directive <code class="directive">CTLogConfigDB</code> permet de dÃ©finir
+  le nom de la base de donnÃ©es contenant la configuration des logs
   connus. Si le chemin contenu dans <em>filename</em> n'est pas absolu,
-  il est considéré comme relatif au chemin défini par la directive
+  il est considÃ©rÃ© comme relatif au chemin dÃ©fini par la directive
   <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>.</p>
 
-  <p>Veuillez vous référer à la documentation du programme
-  <code class="program"><a href="../programs/ctlogconfig.html">ctlogconfig</a></code> qui gère la base de données.</p>
+  <p>Veuillez vous rÃ©fÃ©rer Ã  la documentation du programme
+  <code class="program"><a href="../programs/ctlogconfig.html">ctlogconfig</a></code> qui gÃ¨re la base de donnÃ©es.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ctmaxsctage" id="ctmaxsctage">Directive</a> <a name="CTMaxSCTAge" id="CTMaxSCTAge">CTMaxSCTAge</a><a title="Lien permanent" href="#ctmaxsctage" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Age maximum d'un SCT obtenu depuis un log avant son
-raffraîchissement</td></tr>
+raffraÃ®chissement</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CTMaxSCTAge <em>num-seconds</em></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>1 jour</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">DÃ©faut:</a></th><td><code>1 jour</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl_ct</td></tr>
 </table>
-  <p>Les certificats de serveur dont les SCTs sont supérieurs à cet âge
-  maximum seront soumis à nouveau aux logs définis. En général, le log
-  va renvoyer le même SCT que précédemment, mais ceux-ci font alors l'objet
-  d'une opération de la part du log. Les SCTs seront raffraîchis autant que
-  nécessaire au cours du fonctionnement normal du serveur, les nouveaux
-  SCTs étant envoyés aux clients au fur et à mesure de leur
-  disponibilité.</p>
+  <p>Les certificats de serveur dont les SCTs sont supÃ©rieurs Ã  cet Ã¢ge
+  maximum seront soumis Ã  nouveau aux logs dÃ©finis. En gÃ©nÃ©ral, le log
+  va renvoyer le mÃªme SCT que prÃ©cÃ©demment, mais ceux-ci font alors l'objet
+  d'une opÃ©ration de la part du log. Les SCTs seront raffraÃ®chis autant que
+  nÃ©cessaire au cours du fonctionnement normal du serveur, les nouveaux
+  SCTs Ã©tant envoyÃ©s aux clients au fur et Ã  mesure de leur
+  disponibilitÃ©.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -447,30 +447,30 @@ raffraîchissement</td></tr>
 mandataire
 </td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CTProxyAwareness <em>oblivious|aware|require</em></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>aware</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">DÃ©faut:</a></th><td><code>aware</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl_ct</td></tr>
 </table>
-  <p>Cette directive permet de contrôler la prise en compte et les
+  <p>Cette directive permet de contrÃ´ler la prise en compte et les
   recherches de SCTs valides pour un mandataire. Les options disponibles
   sont les suivantes :</p>
 
   <dl>
     <dt>oblivious</dt>
-    <dd>Le mandataire de demandera jamais de SCTs, et par conséquent
+    <dd>Le mandataire de demandera jamais de SCTs, et par consÃ©quent
     n'en examinera pas. Le processus de transparance des certificats est
-    alors entièrement désactivé pour ce mandataire.</dd>
+    alors entiÃ¨rement dÃ©sactivÃ© pour ce mandataire.</dd>
 
     <dt>aware</dt>
     <dd>Le mandataire prendra en charge l'ensemble du processus de
-    transparence des certificats, à savoir la recherche de SCTs et leur
+    transparence des certificats, Ã  savoir la recherche de SCTs et leur
     examen. Le mandataire n'interrompra cependant pas la connexion si le
     serveur original ne fournit pas de SCTs valides.</dd>
 
     <dt>require</dt>
     <dd>Le mandataire interrompra la connexion avec le serveur original
-    si ce dernir ne fournit pas au moins un SCT qui passe avec succès le
+    si ce dernir ne fournit pas au moins un SCT qui passe avec succÃ¨s le
     test de validation en ligne.</dd>
   </dl>
 
@@ -479,49 +479,49 @@ mandataire
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ctsctstorage" id="ctsctstorage">Directive</a> <a name="CTSCTStorage" id="CTSCTStorage">CTSCTStorage</a><a title="Lien permanent" href="#ctsctstorage" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Répertoire où les SCTs sont stockés</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>RÃ©pertoire oÃ¹ les SCTs sont stockÃ©s</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CTSCTStorage <em>directory</em></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">DÃ©faut:</a></th><td><code>none</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl_ct</td></tr>
 </table>
-  <p>La directive <code class="directive">CTSCTStorage</code> permet de définir
-  le nom du répertoire où les SCTs et listes de SCTs seront stockés. Si
+  <p>La directive <code class="directive">CTSCTStorage</code> permet de dÃ©finir
+  le nom du rÃ©pertoire oÃ¹ les SCTs et listes de SCTs seront stockÃ©s. Si
   le chemin contenu dans <em>directory</em> n'est pas absolu, il sera
-  considéré comme relatif au chemin défini par la directive <code class="directive"><a href="../mod/core.html#defaultruntimedir">DefaultRuntimeDir</a></code>.</p>
+  considÃ©rÃ© comme relatif au chemin dÃ©fini par la directive <code class="directive"><a href="../mod/core.html#defaultruntimedir">DefaultRuntimeDir</a></code>.</p>
 
-  <p>Chaque certificat voit ses informations stockées dans un sous-répertoire
-  qui lui est propre ; le nom de ce sous-répertoire correspond au hash
-  SHA-256 du certificat considéré.</p>
+  <p>Chaque certificat voit ses informations stockÃ©es dans un sous-rÃ©pertoire
+  qui lui est propre ; le nom de ce sous-rÃ©pertoire correspond au hash
+  SHA-256 du certificat considÃ©rÃ©.</p>
 
-  <p>Les sous-répertoires propres à chaque certificat contiennent des
-  SCTs en provenance des logs définis, des listes de SCTs préparées à
-  partir des SCTs configurés statiquement et des SCTs extraits, ainsi
-  que diverses informations utilisées pour gérer les SCTs.</p>
+  <p>Les sous-rÃ©pertoires propres Ã  chaque certificat contiennent des
+  SCTs en provenance des logs dÃ©finis, des listes de SCTs prÃ©parÃ©es Ã 
+  partir des SCTs configurÃ©s statiquement et des SCTs extraits, ainsi
+  que diverses informations utilisÃ©es pour gÃ©rer les SCTs.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ctserverhellosctlimit" id="ctserverhellosctlimit">Directive</a> <a name="CTServerHelloSCTLimit" id="CTServerHelloSCTLimit">CTServerHelloSCTLimit</a><a title="Lien permanent" href="#ctserverhellosctlimit" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nombre maximum de SCTs pouvant être renvoyés au cours de la
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nombre maximum de SCTs pouvant Ãªtre renvoyÃ©s au cours de la
 phase ServerHello</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CTServerHelloSCTLimit <em>limit</em></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>100</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">DÃ©faut:</a></th><td><code>100</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl_ct</td></tr>
 </table>
-  <p>Cette directive permet de définir le nombre maximum de SCTs pouvant
-  être renvoyés par un serveur TLS au cours de la phase ServerHello dans
-  le cas où le nombre de logs définis et de SCTs définis statiquement
+  <p>Cette directive permet de dÃ©finir le nombre maximum de SCTs pouvant
+  Ãªtre renvoyÃ©s par un serveur TLS au cours de la phase ServerHello dans
+  le cas oÃ¹ le nombre de logs dÃ©finis et de SCTs dÃ©finis statiquement
   est assez important.</p>
 
-  <p>En général, seuls quelques SCTs sont disponibles, cette directive
-  n'est donc nécessaire que dans certaines circonstances particulières.</p>
+  <p>En gÃ©nÃ©ral, seuls quelques SCTs sont disponibles, cette directive
+  n'est donc nÃ©cessaire que dans certaines circonstances particuliÃ¨res.</p>
 
   <p>Cette directive ne tient pas compte des SCTs contenus dans les
-  extensions de certificats ou les réponses OCSP agrafées.</p>
+  extensions de certificats ou les rÃ©ponses OCSP agrafÃ©es.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -531,74 +531,74 @@ phase ServerHello</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CTStaticLogConfig <em>log-id|-</em> <em>public-key-file|-</em>
 <em>1|0|-</em> <em>min-timestamp|-</em> <em>max-timestamp|-</em>
 <em>log-URL|-</em></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">DÃ©faut:</a></th><td><code>none</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl_ct</td></tr>
 </table>
   <p>Cette directive permet de configurer un log particulier. Elle est
-  particulièrement appropriée dans les cas où cette configuration est
-  rarement modifiée. Si votre cas nécessite plutôt une configuration
-  dynamique, veuillez vous référer à la documentation de la directive
+  particuliÃ¨rement appropriÃ©e dans les cas oÃ¹ cette configuration est
+  rarement modifiÃ©e. Si votre cas nÃ©cessite plutÃ´t une configuration
+  dynamique, veuillez vous rÃ©fÃ©rer Ã  la documentation de la directive
   <code class="directive"><a href="#ctlogconfigdb">CTLogConfigDB</a></code>.</p>
 
-  <p>Chacun des six champs doit être renseigné, mais en général, la
-  configuration d'un log nécessite peu d'information ; utilisez
-  <em>-</em> lorsque vous ne disposez d'aucune information à spécifier
+  <p>Chacun des six champs doit Ãªtre renseignÃ©, mais en gÃ©nÃ©ral, la
+  configuration d'un log nÃ©cessite peu d'information ; utilisez
+  <em>-</em> lorsque vous ne disposez d'aucune information Ã  spÃ©cifier
   pour un champ particulier. Par exemple, dans le cas d'une
   configuration de serveur simple (non mandataire), l'administrateur n'a
-  besoin de spécifier que l'URL du log auquel soumettre des certificats de
+  besoin de spÃ©cifier que l'URL du log auquel soumettre des certificats de
   serveur afin d'en extraire les SCTs.</p>
 
-  <p>Les champs se définissent comme suit :</p>
+  <p>Les champs se dÃ©finissent comme suit :</p>
 
   <dl>
     <dt><em>log-id</em></dt>
     <dd>Il s'agit de l'identifiant du log qui correspond au hash SHA-256
-    de la clé publique du log, codé en hexadécimal. Cette chaîne a une
-    taille de 64 caractères.
+    de la clÃ© publique du log, codÃ© en hexadÃ©cimal. Cette chaÃ®ne a une
+    taille de 64 caractÃ¨res.
     <br />
-    Ce champ peut être omis lorsque <em>public-key-file</em> est
-    renseigné.</dd>
+    Ce champ peut Ãªtre omis lorsque <em>public-key-file</em> est
+    renseignÃ©.</dd>
 
     <dt><em>public-key-file</em></dt>
-    <dd>Il s'agit du chemin d'un fichier contenant la clé publique du log
-    codée au format PEM. Si ce chemin n'est pas absolu, il est considéré
-    comme relatif au chemin défini par la directive <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>.</dd>
+    <dd>Il s'agit du chemin d'un fichier contenant la clÃ© publique du log
+    codÃ©e au format PEM. Si ce chemin n'est pas absolu, il est considÃ©rÃ©
+    comme relatif au chemin dÃ©fini par la directive <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>.</dd>
 
     <dt><em>trust/distrust</em></dt>
-    <dd>Définissez ce champ à <em>1</em> pour marquer le log comme non
+    <dd>DÃ©finissez ce champ Ã  <em>1</em> pour marquer le log comme non
     digne de confiance, ou pour tout simplement interdire son
-    utilisation pour le traitement des certificats. Définissez ce champ
-    à <em>-</em> ou <em>0</em> (valeur par défaut) pour accorder votre
+    utilisation pour le traitement des certificats. DÃ©finissez ce champ
+    Ã  <em>-</em> ou <em>0</em> (valeur par dÃ©faut) pour accorder votre
     confiance au log.</dd>
 
     <dt><em>min-timestamp</em> et <em>max-timestamp</em></dt>
-    <dd>Un repère de temps (timestamp) est un temps exprimé en
+    <dd>Un repÃ¨re de temps (timestamp) est un temps exprimÃ© en
     millisecondes depuis le temps epoch, sans tenir compte des secondes
-    sautées. C'est le format de temps utilisé dans les SCTs. Le repère
-    de temps doit être fourni sous la forme d'un nombre décimal.
+    sautÃ©es. C'est le format de temps utilisÃ© dans les SCTs. Le repÃ¨re
+    de temps doit Ãªtre fourni sous la forme d'un nombre dÃ©cimal.
     <br />
-    Spécifiez <strong><code>-</code></strong> pour un des repères de
-    temps s'il n'est pas connu. Par exemple, lorsque vous définissez le
-    repère de temps minimum valide pour un log qui reste valide,
-    spécifiez <strong><code>-</code></strong> pour
+    SpÃ©cifiez <strong><code>-</code></strong> pour un des repÃ¨res de
+    temps s'il n'est pas connu. Par exemple, lorsque vous dÃ©finissez le
+    repÃ¨re de temps minimum valide pour un log qui reste valide,
+    spÃ©cifiez <strong><code>-</code></strong> pour
     <em>max-timestamp</em>.
     <br />
-    Les SCTs reçu par le mandataire depuis ce log seront invalides si le
-    repère de temps est plus ancien que <em>min-timestamp</em> ou plus
-    récent que <em>max-timestamp</em>.</dd>
+    Les SCTs reÃ§u par le mandataire depuis ce log seront invalides si le
+    repÃ¨re de temps est plus ancien que <em>min-timestamp</em> ou plus
+    rÃ©cent que <em>max-timestamp</em>.</dd>
 
     <dt><em>log-URL</em></dt>
     <dd>Il s'agit de l'URL du log auquel soumettre les certificats de
-    serveur et ainsi obtenir des SCTs à envoyer aux clients.</dd>
+    serveur et ainsi obtenir des SCTs Ã  envoyer aux clients.</dd>
   </dl>
 
 <h3>Voir aussi</h3>
 <ul>
 <li>Le paragraphe <a href="#logconf">Configuration des logs</a>
-contient des informations à caractère plus général à propos des champs qui
-peuvent être définis via cette directive.</li>
+contient des informations Ã  caractÃ¨re plus gÃ©nÃ©ral Ã  propos des champs qui
+peuvent Ãªtre dÃ©finis via cette directive.</li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -608,43 +608,43 @@ peuvent être définis via cette directive.</li>
 certificat de serveur
 </td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CTStaticSCTs <em>certificate-pem-file</em> <em>sct-directory</em></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">DÃ©faut:</a></th><td><code>none</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl_ct</td></tr>
 </table>
-  <p>Cette directive permet de définir statiquement un ou plusieurs SCTs
-  correspondant à un certificat de serveur. Ce mécanisme peut être
-  utilisé à la place ou en complément de l'obtention dynamique des SCTs
+  <p>Cette directive permet de dÃ©finir statiquement un ou plusieurs SCTs
+  correspondant Ã  un certificat de serveur. Ce mÃ©canisme peut Ãªtre
+  utilisÃ© Ã  la place ou en complÃ©ment de l'obtention dynamique des SCTs
   en provenance des logs. Toute modification dans le jeu de SCTs d'un
-  certificat de serveur particulier sera prise en compte de manière
-  dynamique sans avoir à redémarrer le serveur.</p>
+  certificat de serveur particulier sera prise en compte de maniÃ¨re
+  dynamique sans avoir Ã  redÃ©marrer le serveur.</p>
 
-  <p><em>certificate-pem-file</em> fait référence au fichier contenant
+  <p><em>certificate-pem-file</em> fait rÃ©fÃ©rence au fichier contenant
   le certificat de serveur au format PEM. Si ce chemin n'est pas absolu,
-  il sera considéré comme relatif au chemin défini par la directive
+  il sera considÃ©rÃ© comme relatif au chemin dÃ©fini par la directive
   <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>.</p>
 
   <p><em>sct-directory</em> doit contenir le chemin vers un ou plusieurs
-  fichiers possédant l'extension de nom de fichier <code>.sct</code>,
-  représentant un ou plusieurs SCTs correspondant au certificat de
+  fichiers possÃ©dant l'extension de nom de fichier <code>.sct</code>,
+  reprÃ©sentant un ou plusieurs SCTs correspondant au certificat de
   serveur. Si ce chemin n'est pas absolu,
-  il sera considéré comme relatif au chemin défini par la directive
+  il sera considÃ©rÃ© comme relatif au chemin dÃ©fini par la directive
   <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>.</p>
 
   <p>Si <em>sct-directory</em> est vide, aucun message d'erreur ne sera
-  affiché.</p>
+  affichÃ©.</p>
 
-  <p>Cette directive peut servir à identifier des répertoires de SCTs
-  gérés par une autre infrastructure, sous réserve qu'ils soient
-  enregistrés au format binaire avec l'extension de nom de fichier
+  <p>Cette directive peut servir Ã  identifier des rÃ©pertoires de SCTs
+  gÃ©rÃ©s par une autre infrastructure, sous rÃ©serve qu'ils soient
+  enregistrÃ©s au format binaire avec l'extension de nom de fichier
   <em>.sct</em>.</p>
 
 </div>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_ssl_ct.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_ssl_ct.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_ssl_ct.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -663,7 +663,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_ssl_ct.htm
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />AutorisÃ© sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

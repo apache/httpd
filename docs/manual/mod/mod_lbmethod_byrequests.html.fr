@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
-<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -27,64 +27,64 @@
 <div id="preamble"><h1>Module Apache mod_lbmethod_byrequests</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_lbmethod_byrequests.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_lbmethod_byrequests.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_lbmethod_byrequests.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Algorithme de planification avec répartition de charge du
-traitement des requêtes pour le module
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Algorithme de planification avec rÃ©partition de charge du
+traitement des requÃªtes pour le module
 <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code></td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>lbmethod_byrequests_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_lbmethod_byrequests.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Compatibilité:</a></th><td>Dissocié de <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code> dans la
+<tr><th><a href="module-dict.html#ModuleIdentifier">IdentificateurÂ deÂ Module:</a></th><td>lbmethod_byrequests_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">FichierÂ Source:</a></th><td>mod_lbmethod_byrequests.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">CompatibilitÃ©:</a></th><td>DissociÃ© de <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code> dans la
 version 2.3</td></tr></table>
 <h3>Sommaire</h3>
 
-<p>Ce module ne fournit pas lui-même de directive de configuration. Il
-nécessite les services de <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code>, et
-fournit la méthode de répartition de charge <code>byrequests</code>.</p>
+<p>Ce module ne fournit pas lui-mÃªme de directive de configuration. Il
+nÃ©cessite les services de <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code>, et
+fournit la mÃ©thode de rÃ©partition de charge <code>byrequests</code>.</p>
 </div>
 <div id="quickview"><h3>Sujets</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#requests">Algorithme d'attribution des requêtes</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#requests">Algorithme d'attribution des requÃªtes</a></li>
 </ul><h3 class="directives">Directives</h3>
 <p>Ce module ne fournit aucune directive.</p>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_lbmethod_byrequests">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_lbmethod_byrequests">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_lbmethod_byrequests">ProblÃ¨mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_lbmethod_byrequests">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></li>
 <li><code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code></li>
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="requests" id="requests">Algorithme d'attribution des requêtes</a><a title="Lien permanent" href="#requests" class="permalink">&para;</a></h2>
+<h2><a name="requests" id="requests">Algorithme d'attribution des requÃªtes</a><a title="Lien permanent" href="#requests" class="permalink">&para;</a></h2>
     
-    <p>Activé via <code>lbmethod=byrequests</code>, ce planificateur a
-    été conçu dans le but de distribuer les requêtes à tous les
-    processus worker afin qu'ils traitent tous le nombre de requêtes
-    pour lequel ils ont été configurés. Il fonctionne de la manière
+    <p>ActivÃ© via <code>lbmethod=byrequests</code>, ce planificateur a
+    Ã©tÃ© conÃ§u dans le but de distribuer les requÃªtes Ã  tous les
+    processus worker afin qu'ils traitent tous le nombre de requÃªtes
+    pour lequel ils ont Ã©tÃ© configurÃ©s. Il fonctionne de la maniÃ¨re
     suivante : </p>
 
-    <p><dfn>lbfactor</dfn> correspond à la <em>quantité de travail que
+    <p><dfn>lbfactor</dfn> correspond Ã  la <em>quantitÃ© de travail que
     nous attendons de ce processus worker</em>, ou en d'autres termes
-    son <em>quota de travail</em>. C'est une valeur normalisée
-    représentant leur part du travail à accomplir.</p>
+    son <em>quota de travail</em>. C'est une valeur normalisÃ©e
+    reprÃ©sentant leur part du travail Ã  accomplir.</p>
 
-    <p><dfn>lbstatus</dfn> représente <em>combien il est urgent que
+    <p><dfn>lbstatus</dfn> reprÃ©sente <em>combien il est urgent que
     ce processus worker travaille pour remplir son quota de
     travail</em>.</p>
 
-    <p>Le <dfn>worker</dfn> est un membre du dispositif de répartition
-    de charge, en général un serveur distant traitant un des protocoles
-    supportés.</p>
+    <p>Le <dfn>worker</dfn> est un membre du dispositif de rÃ©partition
+    de charge, en gÃ©nÃ©ral un serveur distant traitant un des protocoles
+    supportÃ©s.</p>
 
-    <p>On distribue à chaque processus worker son quota de travail, puis
+    <p>On distribue Ã  chaque processus worker son quota de travail, puis
     on regarde celui qui a le plus besoin de travailler
-    (le plus grand lbstatus). Ce processus est alors sélectionné pour
-    travailler, et son lbstatus diminué de l'ensemble des quotas de
-    travail que nous avons distribués à tous les processus. La somme de
-    tous les lbstatus n'est ainsi pas modifiée, et nous pouvons
-    distribuer les requêtes selon nos souhaits.</p>
+    (le plus grand lbstatus). Ce processus est alors sÃ©lectionnÃ© pour
+    travailler, et son lbstatus diminuÃ© de l'ensemble des quotas de
+    travail que nous avons distribuÃ©s Ã  tous les processus. La somme de
+    tous les lbstatus n'est ainsi pas modifiÃ©e, et nous pouvons
+    distribuer les requÃªtes selon nos souhaits.</p>
 
-    <p>Si certains processus workers sont désactivés, les autres feront
+    <p>Si certains processus workers sont dÃ©sactivÃ©s, les autres feront
     l'objet d'une planification normale.</p>
 
     <div class="example"><pre><code>for each worker in workers
@@ -95,7 +95,7 @@ fournit la méthode de répartition de charge <code>byrequests</code>.</p>
 
 candidate lbstatus -= total factor</code></pre></div>
 
-    <p>Si un répartiteur de charge est configuré comme suit :</p>
+    <p>Si un rÃ©partiteur de charge est configurÃ© comme suit :</p>
 
     <table><tr><th>worker</th>
         <th class="data">a</th>
@@ -114,7 +114,7 @@ candidate lbstatus -= total factor</code></pre></div>
         <td class="data">0</td></tr>
 </table>
 
-    <p>Et si <var>b</var> est désactivé, la planification suivante est
+    <p>Et si <var>b</var> est dÃ©sactivÃ©, la planification suivante est
     mise en oeuvre :</p>
 
     <table><tr><th>worker</th>
@@ -140,7 +140,7 @@ candidate lbstatus -= total factor</code></pre></div>
 <tr><td class="data" colspan="5">(repeat)</td></tr>
 </table>
 
-    <p>C'est à dire la chronologie suivante : <var>a</var> <var>c</var>
+    <p>C'est Ã  dire la chronologie suivante : <var>a</var> <var>c</var>
     <var>d</var>
     <var>a</var> <var>c</var> <var>d</var> <var>a</var> <var>c</var>
     <var>d</var> ... Veuillez noter que :</p>
@@ -157,7 +157,7 @@ candidate lbstatus -= total factor</code></pre></div>
         <td class="data">25</td></tr>
 </table>
 
-    <p>A le même effet que :</p>
+    <p>A le mÃªme effet que :</p>
 
     <table><tr><th>worker</th>
         <th class="data">a</th>
@@ -171,8 +171,8 @@ candidate lbstatus -= total factor</code></pre></div>
         <td class="data">1</td></tr>
 </table>
 
-    <p>Ceci est dû au fait que toutes les valeurs de <dfn>lbfactor</dfn>
-    sont normalisées et évaluées en fonction des autres. Avec :</p>
+    <p>Ceci est dÃ» au fait que toutes les valeurs de <dfn>lbfactor</dfn>
+    sont normalisÃ©es et Ã©valuÃ©es en fonction des autres. Avec :</p>
 
     <table><tr><th>worker</th>
         <th class="data">a</th>
@@ -185,9 +185,9 @@ candidate lbstatus -= total factor</code></pre></div>
 </table>
 
     <p>le processus <var>b</var> va, en moyenne, se voir assigner 4 fois
-    plus de requêtes que <var>a</var> et <var>c</var>.</p>
+    plus de requÃªtes que <var>a</var> et <var>c</var>.</p>
 
-    <p>La configuration suivante, asymétrique, fonctionne comme on peut
+    <p>La configuration suivante, asymÃ©trique, fonctionne comme on peut
     s'y attendre :</p>
 
     <table><tr><th>worker</th>
@@ -230,13 +230,13 @@ candidate lbstatus -= total factor</code></pre></div>
 <tr><td class="data" colspan="3">(repeat)</td></tr>
 </table>
 
-    <p>Après 10 distributions, la planification se répète et 7
-    <var>a</var> sont sélectionnés avec 3 <var>b</var> intercalés.</p>
+    <p>AprÃ¨s 10 distributions, la planification se rÃ©pÃ¨te et 7
+    <var>a</var> sont sÃ©lectionnÃ©s avec 3 <var>b</var> intercalÃ©s.</p>
 </div>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_lbmethod_byrequests.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_lbmethod_byrequests.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_lbmethod_byrequests.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -255,7 +255,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_lbmethod_b
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />AutorisÃ© sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

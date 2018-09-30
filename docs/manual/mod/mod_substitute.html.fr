@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
-<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -27,18 +27,18 @@
 <div id="preamble"><h1>Module Apache mod_substitute</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_substitute.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_substitute.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_substitute.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Effectue des opérations de recherche/remplacement sur les
-corps de réponses</td></tr>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Effectue des opÃ©rations de recherche/remplacement sur les
+corps de rÃ©ponses</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>substitute_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_substitute.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">IdentificateurÂ deÂ Module:</a></th><td>substitute_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">FichierÂ Source:</a></th><td>mod_substitute.c</td></tr></table>
 <h3>Sommaire</h3>
 
-    <p><code class="module"><a href="../mod/mod_substitute.html">mod_substitute</a></code> fournit un mécanisme permettant
-    d'effectuer des substitutions de chaînes fixes ou d'expressions
-    rationnelles sur les corps de réponses.</p>
+    <p><code class="module"><a href="../mod/mod_substitute.html">mod_substitute</a></code> fournit un mÃ©canisme permettant
+    d'effectuer des substitutions de chaÃ®nes fixes ou d'expressions
+    rationnelles sur les corps de rÃ©ponses.</p>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
@@ -46,59 +46,59 @@ corps de réponses</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#substituteinheritbefore">SubstituteInheritBefore</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#substitutemaxlinelength">SubstituteMaxLineLength</a></li>
 </ul>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_substitute">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_substitute">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_substitute">ProblÃ¨mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_substitute">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="substitute" id="substitute">Directive</a> <a name="Substitute" id="Substitute">Substitute</a><a title="Lien permanent" href="#substitute" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Modèle de substition dans le contenu de la
-réponse</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Substitute <var>s/modèle/substitution/[infq]</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>ModÃ¨le de substition dans le contenu de la
+rÃ©ponse</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Substitute <var>s/modÃ¨le/substitution/[infq]</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>rÃ©pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisÃ©es:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_substitute</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Les valeurs de substitution "expr=" ont été ajoutées à partir de
+<tr><th><a href="directive-dict.html#Compatibility">CompatibilitÃ©:</a></th><td>Les valeurs de substitution "expr=" ont Ã©tÃ© ajoutÃ©es Ã  partir de
 la version 2.5.1</td></tr>
 </table>
     <p>La directive <code class="directive">Substitute</code> permet de
-    spécifier un modèle de recherche/remplacement à appliquer au corps
-    de la réponse.</p>
+    spÃ©cifier un modÃ¨le de recherche/remplacement Ã  appliquer au corps
+    de la rÃ©ponse.</p>
 
-    <p>La signification du modèle peut être modifiée via toute
+    <p>La signification du modÃ¨le peut Ãªtre modifiÃ©e via toute
     combinaison de ces drapeaux :</p>
 
     <dl>
         <dt><code>i</code></dt>
         <dd>Effectue une comparaison sans tenir compte de la casse.</dd>
         <dt><code>n</code></dt>
-        <dd>Par défaut, le modèle est traité en tant qu'expression
+        <dd>Par dÃ©faut, le modÃ¨le est traitÃ© en tant qu'expression
 	rationnelle. Le drapeau <code>n</code> force le traitement du
-	modèle en tant que chaîne fixe.</dd>
+	modÃ¨le en tant que chaÃ®ne fixe.</dd>
         <dt><code>f</code></dt>
 	
-        <dd>Avec le drapeau <code>f</code>, <code>mod_substitute</code> met à plat le
-	résultat d'une substitution (les conteneurs ou buckets ne sont
-	pas dissociés), ce qui permet à d'éventuelles substitutions
-	ultérieures de s'effectuer sur cette dernière. C'est le
-	comportement par défaut.</dd>
+        <dd>Avec le drapeau <code>f</code>, <code>mod_substitute</code> met Ã  plat le
+	rÃ©sultat d'une substitution (les conteneurs ou buckets ne sont
+	pas dissociÃ©s), ce qui permet Ã  d'Ã©ventuelles substitutions
+	ultÃ©rieures de s'effectuer sur cette derniÃ¨re. C'est le
+	comportement par dÃ©faut.</dd>
         <dt><code>q</code></dt>
 	
         <dd>Avec le drapeau <code>q</code>, <code>mod_substitute</code> dissocie les
-	conteneurs (ou buckets) après chaque substitution. Ceci peut
-	améliorer la rapidité de la réponse et diminuer la quantité de
-	mémoire utilisée, mais ne doit être utilisé que s'il n'existe
-	aucune possibilité pour que le résultat d'une substitution ne
-	corresponde au modèle ou à l'expression rationnelle d'une
-	substitution ultérieure.</dd>
+	conteneurs (ou buckets) aprÃ¨s chaque substitution. Ceci peut
+	amÃ©liorer la rapiditÃ© de la rÃ©ponse et diminuer la quantitÃ© de
+	mÃ©moire utilisÃ©e, mais ne doit Ãªtre utilisÃ© que s'il n'existe
+	aucune possibilitÃ© pour que le rÃ©sultat d'une substitution ne
+	corresponde au modÃ¨le ou Ã  l'expression rationnelle d'une
+	substitution ultÃ©rieure.</dd>
     </dl>
 
-    <p><var>substitution</var> peut contenir du texte et des références arrières
+    <p><var>substitution</var> peut contenir du texte et des rÃ©fÃ©rences arriÃ¨res
     d'expressions rationnelles. Si la valeur de substitution commence par la
-    chaîne <code>expr=</code>, elle est interprétée comme une <a href="../expr.html">expression rationnelle</a>, ce qui permet d'utiliser des
-    variables d'environnement et des valeurs d'en-têtes.
+    chaÃ®ne <code>expr=</code>, elle est interprÃ©tÃ©e comme une <a href="../expr.html">expression rationnelle</a>, ce qui permet d'utiliser des
+    variables d'environnement et des valeurs d'en-tÃªtes.
     </p>
 
     <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">&lt;Location "/"&gt;
@@ -107,34 +107,34 @@ la version 2.5.1</td></tr>
 &lt;/Location&gt;</pre>
 </div>
 
-    <p>Le caractère utilisé pour séparer (ou "délimiter") les différentes partie
-    de la valeur de substitution est référencé sous le nom de "délimiteur", et
+    <p>Le caractÃ¨re utilisÃ© pour sÃ©parer (ou "dÃ©limiter") les diffÃ©rentes partie
+    de la valeur de substitution est rÃ©fÃ©rencÃ© sous le nom de "dÃ©limiteur", et
     il s'agit le plus souvent d'un "slash".</p>
 
-    <p>Si le modèle ou la chaîne de substitution contient un caractère
-    slash '/', il est possible d'utiliser un autre délimiteur afin de rendre la
+    <p>Si le modÃ¨le ou la chaÃ®ne de substitution contient un caractÃ¨re
+    slash '/', il est possible d'utiliser un autre dÃ©limiteur afin de rendre la
     directive plus lisible :</p>
 
-    <div class="example"><h3>Exemple d'utilisation d'un délimiteur
+    <div class="example"><h3>Exemple d'utilisation d'un dÃ©limiteur
     alternatif</h3><pre class="prettyprint lang-config">&lt;Location "/"&gt;
     AddOutputFilterByType SUBSTITUTE text/html
     Substitute "s|&lt;BR */?&gt;|&lt;br /&gt;|i"
 &lt;/Location&gt;</pre>
 </div>
 
-    <p>Lorsqu'on utilise des expressions rationnelles, on peut insérer
-    des références arrières dans les opérations de comparaison et de
-    substitution, comme illustré dans l'exemple suivant :</p>
-    <div class="example"><h3>Exemple d'utilisation de références arrières et de captures</h3><pre class="prettyprint lang-config">&lt;Location "/"&gt;
+    <p>Lorsqu'on utilise des expressions rationnelles, on peut insÃ©rer
+    des rÃ©fÃ©rences arriÃ¨res dans les opÃ©rations de comparaison et de
+    substitution, comme illustrÃ© dans l'exemple suivant :</p>
+    <div class="example"><h3>Exemple d'utilisation de rÃ©fÃ©rences arriÃ¨res et de captures</h3><pre class="prettyprint lang-config">&lt;Location "/"&gt;
     AddOutputFilterByType SUBSTITUTE text/html
     # "foo=k,bar=k" -&gt; "foo/bar=k"
     Substitute "s|foo=(\w+),bar=\1|foo/bar=$1|"
 &lt;/Location&gt;</pre>
 </div>
 
-    <p>Lorsque la valeur de <var>substitution</var> est spécifiée sous la forme
-    d'une <a href="../expr.html">expression rationnelle</a>, les références
-    arrières doivent être échappées avec un backslash ('\') comme illustré dans
+    <p>Lorsque la valeur de <var>substitution</var> est spÃ©cifiÃ©e sous la forme
+    d'une <a href="../expr.html">expression rationnelle</a>, les rÃ©fÃ©rences
+    arriÃ¨res doivent Ãªtre Ã©chappÃ©es avec un backslash ('\') comme illustrÃ© dans
     l'exemple suivant :</p> 
     <div class="example"><h3>Exemple de substitution sous forme d'expression rationnelle</h3><pre class="prettyprint lang-config">&lt;Location "/"&gt;
     AddOutputFilterByType SUBSTITUTE text/html
@@ -145,86 +145,86 @@ la version 2.5.1</td></tr>
 
     <div class="warning"><h3>Expressions rationnelles et mise en cache</h3>
     <p>La prudence s'impose lorsqu'on effectue des substitutions qui font
-    références à des en-têtes de requêtes HTTP. En effet, comme ce module agit
-    après l'envoi des en-têtes de la réponse, l'<a href="../expr.html">interpréteur d'expression</a> n'est pas en mesure
-    d'ajouter les en-têtes de la requête HTTP référencés à l'en-tête Vary de
+    rÃ©fÃ©rences Ã  des en-tÃªtes de requÃªtes HTTP. En effet, comme ce module agit
+    aprÃ¨s l'envoi des en-tÃªtes de la rÃ©ponse, l'<a href="../expr.html">interprÃ©teur d'expression</a> n'est pas en mesure
+    d'ajouter les en-tÃªtes de la requÃªte HTTP rÃ©fÃ©rencÃ©s Ã  l'en-tÃªte Vary de
     sortie.</p>
     </div>
 
-    <p>Un scénario courant d'utilisation de <code>mod_substitute</code>
-    est la situation où un serveur frontal mandate des requêtes pour un
-    serveur d'arrière-plan qui renvoie des documents HTML contenant des
-    URLs intégrées codées en dur qui font référence à ce serveur
-    d'arrière-plan. Ces URLs ne fonctionnent pas pour l'utilisateur
-    final car le serveur d'arrière-plan est hors d'atteinte.</p>
+    <p>Un scÃ©nario courant d'utilisation de <code>mod_substitute</code>
+    est la situation oÃ¹ un serveur frontal mandate des requÃªtes pour un
+    serveur d'arriÃ¨re-plan qui renvoie des documents HTML contenant des
+    URLs intÃ©grÃ©es codÃ©es en dur qui font rÃ©fÃ©rence Ã  ce serveur
+    d'arriÃ¨re-plan. Ces URLs ne fonctionnent pas pour l'utilisateur
+    final car le serveur d'arriÃ¨re-plan est hors d'atteinte.</p>
 
     <p>On peut, dans ce cas, utiliser <code>mod_substitute</code> pour
-    réécrire ces URLs afin qu'elles soit utilisables dans la partie
-    située derrière le mandataire :</p>
+    rÃ©Ã©crire ces URLs afin qu'elles soit utilisables dans la partie
+    situÃ©e derriÃ¨re le mandataire :</p>
 
-    <div class="example"><h3>Réécriture des URLs intégrées à un contenu mandaté</h3><pre class="prettyprint lang-config">ProxyPass        "/blog/" "http://internal.blog.example.com/"
+    <div class="example"><h3>RÃ©Ã©criture des URLs intÃ©grÃ©es Ã  un contenu mandatÃ©</h3><pre class="prettyprint lang-config">ProxyPass        "/blog/" "http://internal.blog.example.com/"
 ProxyPassReverse "/blog/" "http://internal.blog.example.com/"
 
 Substitute "s|http://internal.blog.example.com/|http://www.example.com/blog/|i"</pre>
 </div>
 
-    <p>La directive <code class="directive"><a href="../mod/mod_proxy.html#proxypassreverse">ProxyPassReverse</a></code> modifie tout en-tête
-    <code>Location</code> (redirection) envoyé par le serveur
-    d'arrière-plan et, dans cet exemple, la directive
-    <code class="directive">Substitute</code> se charge à son tour de la modification de
-    la réponse HTML.</p>
+    <p>La directive <code class="directive"><a href="../mod/mod_proxy.html#proxypassreverse">ProxyPassReverse</a></code> modifie tout en-tÃªte
+    <code>Location</code> (redirection) envoyÃ© par le serveur
+    d'arriÃ¨re-plan et, dans cet exemple, la directive
+    <code class="directive">Substitute</code> se charge Ã  son tour de la modification de
+    la rÃ©ponse HTML.</p>
 
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="substituteinheritbefore" id="substituteinheritbefore">Directive</a> <a name="SubstituteInheritBefore" id="SubstituteInheritBefore">SubstituteInheritBefore</a><a title="Lien permanent" href="#substituteinheritbefore" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Modifie l'ordre de fusion des modèles hérités</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Modifie l'ordre de fusion des modÃ¨les hÃ©ritÃ©s</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SubstituteInheritBefore on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SubstituteInheritBefore on</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Default">DÃ©faut:</a></th><td><code>SubstituteInheritBefore on</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>rÃ©pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisÃ©es:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_substitute</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.17 du serveur HTTP
+<tr><th><a href="directive-dict.html#Compatibility">CompatibilitÃ©:</a></th><td>Disponible Ã  partir de la version 2.4.17 du serveur HTTP
 Apache</td></tr>
 </table>
-    <p>Cette directive permet de définir si l'on applique les modèles
-<code class="directive"><a href="#substitute">Substitute</a></code> hérités en premier
-(valeur <code>on</code>), ou après ceux du
+    <p>Cette directive permet de dÃ©finir si l'on applique les modÃ¨les
+<code class="directive"><a href="#substitute">Substitute</a></code> hÃ©ritÃ©s en premier
+(valeur <code>on</code>), ou aprÃ¨s ceux du
 contexte courant (valeur <code>off</code>). Sa valeur est maintenant
-définie par défaut à <code>on</code> ; il est cependant possible de
-restaurer le comportement des versions 2.4 et antérieures du serveur qui
-était équivalent à une définition à <code>off</code> de cette directive.
+dÃ©finie par dÃ©faut Ã  <code>on</code> ; il est cependant possible de
+restaurer le comportement des versions 2.4 et antÃ©rieures du serveur qui
+Ã©tait Ã©quivalent Ã  une dÃ©finition Ã  <code>off</code> de cette directive.
 La valeur de la directive <code class="directive">SubstituteInheritBefore</code> est
-elle-même héritée, et les contextes qui en héritent (ceux qui ne
-définissent pas explicitement leur propre directive
+elle-mÃªme hÃ©ritÃ©e, et les contextes qui en hÃ©ritent (ceux qui ne
+dÃ©finissent pas explicitement leur propre directive
 <code class="directive">SubstituteInheritBefore</code>) appliqueront donc
-l'ordre de fusion défini le plus proche.</p>
+l'ordre de fusion dÃ©fini le plus proche.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="substitutemaxlinelength" id="substitutemaxlinelength">Directive</a> <a name="SubstituteMaxLineLength" id="SubstituteMaxLineLength">SubstituteMaxLineLength</a><a title="Lien permanent" href="#substitutemaxlinelength" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit la longueur de ligne maximale</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>DÃ©finit la longueur de ligne maximale</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SubstituteMaxLineLength <var>octets</var>(b|B|k|K|m|M|g|G)</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SubstituteMaxLineLength 1m</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Default">DÃ©faut:</a></th><td><code>SubstituteMaxLineLength 1m</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>rÃ©pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisÃ©es:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_substitute</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.11 du serveur HTTP
+<tr><th><a href="directive-dict.html#Compatibility">CompatibilitÃ©:</a></th><td>Disponible Ã  partir de la version 2.4.11 du serveur HTTP
 Apache</td></tr>
 </table>
-    <p>La taille de la ligne traitée par <code class="module"><a href="../mod/mod_substitute.html">mod_substitute</a></code>
-    est limitée afin de restreindre l'utilisation des ressources
-    mémoire. La directive <code class="directive">SubstituteMaxLineLength</code>
-    permet de définir cette limite. La valeur de la limite peut être
-    spécifiée sous la forme d'un nombre d'octets, et peut être suffixée
+    <p>La taille de la ligne traitÃ©e par <code class="module"><a href="../mod/mod_substitute.html">mod_substitute</a></code>
+    est limitÃ©e afin de restreindre l'utilisation des ressources
+    mÃ©moire. La directive <code class="directive">SubstituteMaxLineLength</code>
+    permet de dÃ©finir cette limite. La valeur de la limite peut Ãªtre
+    spÃ©cifiÃ©e sous la forme d'un nombre d'octets, et peut Ãªtre suffixÃ©e
     par une des lettres <code>b</code>, <code>B</code>, <code>k</code>,
     <code>K</code>, <code>m</code>, <code>M</code>, <code>g</code> ou
     <code>G</code> pour fournir une valeur respectivement en octets,
-    kiloOctets, mégaOctets ou gigaOctets.</p>
+    kiloOctets, mÃ©gaOctets ou gigaOctets.</p>
 
     <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">&lt;Location "/"&gt;
     AddOutputFilterByType SUBSTITUTE text/html
@@ -238,7 +238,7 @@ Apache</td></tr>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_substitute.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_substitute.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_substitute.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -257,7 +257,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_substitute
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />AutorisÃ© sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

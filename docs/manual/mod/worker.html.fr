@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
-<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -28,33 +28,33 @@
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../de/mod/worker.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/worker.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/worker.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/worker.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/worker.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
-<a href="../tr/mod/worker.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/worker.html" hreflang="tr" rel="alternate" title="TÃ¼rkÃ§e">&nbsp;tr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Module multi-processus implémentant un serveur web hybride
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Module multi-processus implÃ©mentant un serveur web hybride
 multi-processus multi-thread</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>MPM</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>mpm_worker_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>worker.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">IdentificateurÂ deÂ Module:</a></th><td>mpm_worker_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">FichierÂ Source:</a></th><td>worker.c</td></tr></table>
 <h3>Sommaire</h3>
 
-    <p>Ce module multi-processus (MPM) implémente un serveur hybride
+    <p>Ce module multi-processus (MPM) implÃ©mente un serveur hybride
     multi-processus multi-thread. En utilisant les threads pour servir
-    les requêtes, il peut en traiter un grand nombre tout en consommant
-    moins de ressources qu'un serveur à base de processus. Cependant, il
-    conserve une grande partie de la stabilité d'un serveur à base de
+    les requÃªtes, il peut en traiter un grand nombre tout en consommant
+    moins de ressources qu'un serveur Ã  base de processus. Cependant, il
+    conserve une grande partie de la stabilitÃ© d'un serveur Ã  base de
     processus en maintenant plusieurs processus disponibles, chacun de
-    ces derniers possédant de nombreux threads.</p>
+    ces derniers possÃ©dant de nombreux threads.</p>
 
-    <p>Les directives les plus importantes qui permettent de contrôler
-    ce MPM sont <code class="directive"><a href="../mod/mpm_common.html#threadsperchild">ThreadsPerChild</a></code>, qui définit le
-    nombre de threads lancés par chaque processus enfant et <code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code>, qui définit le nombre
-    global maximum de threads qui peuvent être lancés.</p>
+    <p>Les directives les plus importantes qui permettent de contrÃ´ler
+    ce MPM sont <code class="directive"><a href="../mod/mpm_common.html#threadsperchild">ThreadsPerChild</a></code>, qui dÃ©finit le
+    nombre de threads lancÃ©s par chaque processus enfant et <code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code>, qui dÃ©finit le nombre
+    global maximum de threads qui peuvent Ãªtre lancÃ©s.</p>
 </div>
 <div id="quickview"><h3>Sujets</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#how-it-works">Comment ça marche</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#how-it-works">Comment Ã§a marche</a></li>
 </ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory</a></li>
@@ -78,70 +78,70 @@ multi-processus multi-thread</td></tr>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#threadstacksize">ThreadStackSize</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mod_unixd.html#user">User</a></li>
 </ul>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mpm_worker">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mpm_worker">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mpm_worker">ProblÃ¨mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mpm_worker">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
-<li><a href="../bind.html">Définition des adresses et ports
+<li><a href="../bind.html">DÃ©finition des adresses et ports
 qu'utilise le serveur HTTP Apache</a></li>
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="how-it-works" id="how-it-works">Comment ça marche</a><a title="Lien permanent" href="#how-it-works" class="permalink">&para;</a></h2>
-    <p>Un processus de contrôle unique (le parent) a pour tâche de
-    lancer les processus enfants. Chaque processus enfant crée un nombre
+<h2><a name="how-it-works" id="how-it-works">Comment Ã§a marche</a><a title="Lien permanent" href="#how-it-works" class="permalink">&para;</a></h2>
+    <p>Un processus de contrÃ´le unique (le parent) a pour tÃ¢che de
+    lancer les processus enfants. Chaque processus enfant crÃ©e un nombre
     fixe de threads serveurs selon la valeur de la directive <code class="directive"><a href="../mod/mpm_common.html#threadsperchild">ThreadsPerChild</a></code>, ainsi
-    qu'un thread chargé d'attendre les connexions et de les passer à un
-    thread serveur pour traitement au fur et à mesure de leur arrivée.</p>
+    qu'un thread chargÃ© d'attendre les connexions et de les passer Ã  un
+    thread serveur pour traitement au fur et Ã  mesure de leur arrivÃ©e.</p>
 
     <p>Le serveur HTTP Apache essaie toujours de maintenir un jeu de
     threads serveurs
-    inactifs ou <dfn>en réserve</dfn>, qui se tiennent prêts à traiter
-    les requêtes entrantes. De cette façon, les clients n'ont pas besoin
-    d'attendre la création d'un nouveau thread ou d'un nouveau processus
-    pour que leurs requêtes puissent être traitées. Le nombre de
-    processus lancés initialement est défini par la directive <code class="directive"><a href="../mod/mpm_common.html#startservers">StartServers</a></code>. En cours de
-    fonctionnement, le serveur évalue le nombre total de threads inactifs
-    dans tous les processus, et en crée ou en arrête de façon à
-    maintenir ce nombre à l'intérieur des limites définies par les
+    inactifs ou <dfn>en rÃ©serve</dfn>, qui se tiennent prÃªts Ã  traiter
+    les requÃªtes entrantes. De cette faÃ§on, les clients n'ont pas besoin
+    d'attendre la crÃ©ation d'un nouveau thread ou d'un nouveau processus
+    pour que leurs requÃªtes puissent Ãªtre traitÃ©es. Le nombre de
+    processus lancÃ©s initialement est dÃ©fini par la directive <code class="directive"><a href="../mod/mpm_common.html#startservers">StartServers</a></code>. En cours de
+    fonctionnement, le serveur Ã©value le nombre total de threads inactifs
+    dans tous les processus, et en crÃ©e ou en arrÃªte de faÃ§on Ã 
+    maintenir ce nombre Ã  l'intÃ©rieur des limites dÃ©finies par les
     directives <code class="directive"><a href="../mod/mpm_common.html#minsparethreads">MinSpareThreads</a></code> et <code class="directive"><a href="../mod/mpm_common.html#maxsparethreads">MaxSpareThreads</a></code>. Comme ce module
-    s'auto-contrôle de manière efficace, on peut en général conserver
-    les valeurs par défaut. Le nombre maximum de clients pouvant être
-    servis simultanément (c'est à dire le nombre global maximum de
-    threads pour tous les processus) est défini par la directive
+    s'auto-contrÃ´le de maniÃ¨re efficace, on peut en gÃ©nÃ©ral conserver
+    les valeurs par dÃ©faut. Le nombre maximum de clients pouvant Ãªtre
+    servis simultanÃ©ment (c'est Ã  dire le nombre global maximum de
+    threads pour tous les processus) est dÃ©fini par la directive
     <code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code>. Le nombre
-    maximum de processus enfants actifs est défini par la valeur de la
+    maximum de processus enfants actifs est dÃ©fini par la valeur de la
     directive <code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code>
-    divisée par la valeur de la directive <code class="directive"><a href="../mod/mpm_common.html#threadsperchild">
+    divisÃ©e par la valeur de la directive <code class="directive"><a href="../mod/mpm_common.html#threadsperchild">
     ThreadsPerChild</a></code>.</p>
 
     <p>Deux directives permettent de fixer des limites absolues pour le
     nombre de processus enfants actifs et le nombre de threads serveurs
-    par processus enfant, et ne peuvent être modifiées qu'en
-    arrêtant complètement le serveur et en le démarrant à nouveau.
+    par processus enfant, et ne peuvent Ãªtre modifiÃ©es qu'en
+    arrÃªtant complÃ¨tement le serveur et en le dÃ©marrant Ã  nouveau.
     La valeur de la directive <code class="directive"><a href="../mod/mpm_common.html#serverlimit">ServerLimit</a></code> constitue une limite
-    absolue pour le nombre de processus enfants actifs, et doit être
-    supérieure ou égale à la valeur de la directive <code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code> divisée par la valeur de
+    absolue pour le nombre de processus enfants actifs, et doit Ãªtre
+    supÃ©rieure ou Ã©gale Ã  la valeur de la directive <code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code> divisÃ©e par la valeur de
     la directive <code class="directive"><a href="../mod/mpm_common.html#threadsperchild">
     ThreadsPerChild</a></code>. La valeur de la directive <code class="directive"><a href="../mod/mpm_common.html#threadlimit">ThreadLimit</a></code> constitue une limite
-    absolue pour le nombre de threads par processus enfant, et doit être
-    supérieure ou égale à la valeur de la directive <code class="directive"><a href="../mod/mpm_common.html#threadsperchild">ThreadsPerChild</a></code>.</p>
+    absolue pour le nombre de threads par processus enfant, et doit Ãªtre
+    supÃ©rieure ou Ã©gale Ã  la valeur de la directive <code class="directive"><a href="../mod/mpm_common.html#threadsperchild">ThreadsPerChild</a></code>.</p>
 
     <p>En plus du jeu de processus enfants actifs, il peut exister
-    quelques processus enfants en cours d'arrêt, mais dont au moins un
+    quelques processus enfants en cours d'arrÃªt, mais dont au moins un
     thread serveur est encore en train de traiter une connexion client
-    existante. Il peut subsister en théorie jusqu'à <code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code> processus en cours
-    d'arrêt, bien qu'en réalité, ce nombre sera en général beaucoup plus
-    petit. Ce comportement peut être évité en désactivant l'arrêt de
-    processus enfants individuels de la manière suivante :</p>
+    existante. Il peut subsister en thÃ©orie jusqu'Ã  <code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code> processus en cours
+    d'arrÃªt, bien qu'en rÃ©alitÃ©, ce nombre sera en gÃ©nÃ©ral beaucoup plus
+    petit. Ce comportement peut Ãªtre Ã©vitÃ© en dÃ©sactivant l'arrÃªt de
+    processus enfants individuels de la maniÃ¨re suivante :</p>
 
     <ul>
-      <li>définir la valeur de <code class="directive"><a href="../mod/mpm_common.html#maxconnectionsperchild">
-      MaxConnectionsPerChild</a></code> à zéro</li>
+      <li>dÃ©finir la valeur de <code class="directive"><a href="../mod/mpm_common.html#maxconnectionsperchild">
+      MaxConnectionsPerChild</a></code> Ã  zÃ©ro</li>
 
-      <li>Définir la valeur de <code class="directive"><a href="../mod/mpm_common.html#maxsparethreads">
-      MaxSpareThreads</a></code> à la même valeur que <code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code></li>
+      <li>DÃ©finir la valeur de <code class="directive"><a href="../mod/mpm_common.html#maxsparethreads">
+      MaxSpareThreads</a></code> Ã  la mÃªme valeur que <code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code></li>
     </ul>
 
-    <p>Voici un exemple typique de configuration du contrôle
+    <p>Voici un exemple typique de configuration du contrÃ´le
     processus-thread pour le MPM <code class="module"><a href="../mod/worker.html">worker</a></code> :</p>
 
     <pre class="prettyprint lang-config">ServerLimit         16
@@ -152,29 +152,29 @@ MaxSpareThreads     75
 ThreadsPerChild     25</pre>
 
 
-    <p>Alors que le processus parent est en général démarré en tant que
-    <code>root</code> sous Unix afin de se mettre en écoute du port 80,
-    les processus enfants et les threads sont lancés par le serveur sous un
-    utilisateur avec privilèges restreints. On peut utiliser les
-    directives <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code> et <code class="directive"><a href="../mod/mod_unixd.html#group">Group</a></code> pour définir les privilèges
-    des processus enfants. Les processus enfants doivent pouvoir être en
-    mesure de lire tous les contenus destinés à être servis, mais
-    doivent avoir des privilèges aussi bas que possible. De plus, ces
-    directives définissent également les privilèges dont vont hériter les
+    <p>Alors que le processus parent est en gÃ©nÃ©ral dÃ©marrÃ© en tant que
+    <code>root</code> sous Unix afin de se mettre en Ã©coute du port 80,
+    les processus enfants et les threads sont lancÃ©s par le serveur sous un
+    utilisateur avec privilÃ¨ges restreints. On peut utiliser les
+    directives <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code> et <code class="directive"><a href="../mod/mod_unixd.html#group">Group</a></code> pour dÃ©finir les privilÃ¨ges
+    des processus enfants. Les processus enfants doivent pouvoir Ãªtre en
+    mesure de lire tous les contenus destinÃ©s Ã  Ãªtre servis, mais
+    doivent avoir des privilÃ¨ges aussi bas que possible. De plus, ces
+    directives dÃ©finissent Ã©galement les privilÃ¨ges dont vont hÃ©riter les
     scripts CGI (sauf si on utilise <code class="program"><a href="../programs/suexec.html">suexec</a></code>).</p>
 
     <p>La directive <code class="directive"><a href="../mod/mpm_common.html#maxconnectionsperchild">MaxConnectionsPerChild</a></code> permet de
-    définir la fréquence à laquelle le serveur recycle ses processus en
-    arrêtant les plus anciens et en en lançant de nouveaux.</p>
+    dÃ©finir la frÃ©quence Ã  laquelle le serveur recycle ses processus en
+    arrÃªtant les plus anciens et en en lanÃ§ant de nouveaux.</p>
 
     <p>Ce module MPM utilise le mutex <code>mpm-accept</code> pour
-    sérialiser l'accès aux connexions entrantes lorsqu'un problème
-    d'afflux de requêtes peut survenir (en général, lorsqu'il y a
-    plusieurs sockets en écoute). Les différents aspects de
-    l'implémentation de ce mutex peuvent être configurés via la
+    sÃ©rialiser l'accÃ¨s aux connexions entrantes lorsqu'un problÃ¨me
+    d'afflux de requÃªtes peut survenir (en gÃ©nÃ©ral, lorsqu'il y a
+    plusieurs sockets en Ã©coute). Les diffÃ©rents aspects de
+    l'implÃ©mentation de ce mutex peuvent Ãªtre configurÃ©s via la
     directive <code class="directive"><a href="../mod/core.html#mutex">Mutex</a></code>. Vous
-    trouverez des informations plus détaillées à propos de ce mutex dans
-    la documentation sur les <a href="../misc/perf-tuning.html">conseils en matière de
+    trouverez des informations plus dÃ©taillÃ©es Ã  propos de ce mutex dans
+    la documentation sur les <a href="../misc/perf-tuning.html">conseils en matiÃ¨re de
     performances</a>.</p>
 
 </div>
@@ -182,9 +182,9 @@ ThreadsPerChild     25</pre>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../de/mod/worker.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/worker.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/worker.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/worker.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/worker.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
-<a href="../tr/mod/worker.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/worker.html" hreflang="tr" rel="alternate" title="TÃ¼rkÃ§e">&nbsp;tr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -203,7 +203,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/worker.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />AutorisÃ© sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

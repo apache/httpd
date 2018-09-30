@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
-<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -27,26 +27,26 @@
 <div id="preamble"><h1>Module Apache mod_slotmem_shm</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_slotmem_shm.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_slotmem_shm.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_slotmem_shm.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fournisseur de mémoire partagée basée sur les
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fournisseur de mÃ©moire partagÃ©e basÃ©e sur les
 slots.</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>slotmem_shm_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_slotmem_shm.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">IdentificateurÂ deÂ Module:</a></th><td>slotmem_shm_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">FichierÂ Source:</a></th><td>mod_slotmem_shm.c</td></tr></table>
 <h3>Sommaire</h3>
 
-    <p><code class="module"><a href="../mod/mod_slotmem_shm.html">mod_slotmem_shm</a></code> est un fournisseur de mémoire qui
-    permet la création et l'accès à un segment de mémoire partagée dans
-    lequel les ensembles de données sont organisés en "slots".
+    <p><code class="module"><a href="../mod/mod_slotmem_shm.html">mod_slotmem_shm</a></code> est un fournisseur de mÃ©moire qui
+    permet la crÃ©ation et l'accÃ¨s Ã  un segment de mÃ©moire partagÃ©e dans
+    lequel les ensembles de donnÃ©es sont organisÃ©s en "slots".
     </p>
 
-    <p>L'ensemble de la mémoire partagée est effacé à chaque
-    redémarrage, que ce dernier soit graceful ou non. Les données sont
-    stockées et restituées dans/à partir d'un fichier défini par le
-    paramètre <code>name</code> des appels <code>create</code> et
-    <code>attach</code>. Si son chemin absolu n'est pas spécifié, le
-    chemin du fichier sera relatif au chemin défini par la directive
+    <p>L'ensemble de la mÃ©moire partagÃ©e est effacÃ© Ã  chaque
+    redÃ©marrage, que ce dernier soit graceful ou non. Les donnÃ©es sont
+    stockÃ©es et restituÃ©es dans/Ã  partir d'un fichier dÃ©fini par le
+    paramÃ¨tre <code>name</code> des appels <code>create</code> et
+    <code>attach</code>. Si son chemin absolu n'est pas spÃ©cifiÃ©, le
+    chemin du fichier sera relatif au chemin dÃ©fini par la directive
     <code class="directive"><a href="../mod/core.html#defaultruntimedir">DefaultRuntimeDir</a></code>.
     </p>
 
@@ -57,60 +57,60 @@ slots.</td></tr>
 <pre class="prettyprint lang-c">/* appelle le callback pour tous les slots actifs */
 apr_status_t doall(ap_slotmem_instance_t *s, ap_slotmem_callback_fn_t *func, void *data, apr_pool_t *pool)
 
-/* crée un nouveau slot de mémoire dont chaque taille d'item est
-      item_size. 'name' est utilisé pour générer le nom du fichier
-      permettant de stocker/restaurer le contenu de la mémoire partagée,
-      si elle est configurée. Les valeurs possibles sont :
-      "none"                - Mémoire partagée anonyme et pas de stockage permanent
+/* crÃ©e un nouveau slot de mÃ©moire dont chaque taille d'item est
+      item_size. 'name' est utilisÃ© pour gÃ©nÃ©rer le nom du fichier
+      permettant de stocker/restaurer le contenu de la mÃ©moire partagÃ©e,
+      si elle est configurÃ©e. Les valeurs possibles sont :
+      "none"                - MÃ©moire partagÃ©e anonyme et pas de stockage permanent
       "file-name"           - [DefaultRuntimeDir]/file-name
       "/absolute-file-name" - Chemin absolu du fichier */
 apr_status_t create(ap_slotmem_instance_t **new, const char *name, apr_size_t item_size, unsigned int item_num, ap_slotmem_type_t type, apr_pool_t *pool)
 
-/* attache à un slot de mémoire existant. Voir
-      'create' pour la description du paramètre
+/* attache Ã  un slot de mÃ©moire existant. Voir
+      'create' pour la description du paramÃ¨tre
       'name'. */
 apr_status_t attach(ap_slotmem_instance_t **new, const char *name, apr_size_t *item_size, unsigned int *item_num, apr_pool_t *pool)
 
-/* obtient la mémoire associée à ce slot actif. */
+/* obtient la mÃ©moire associÃ©e Ã  ce slot actif. */
 apr_status_t dptr(ap_slotmem_instance_t *s, unsigned int item_id, void **mem)
 
-/* lit la mémoire depuis ce slot et la transfert vers dest */
+/* lit la mÃ©moire depuis ce slot et la transfert vers dest */
 apr_status_t get(ap_slotmem_instance_t *s, unsigned int item_id, unsigned char *dest, apr_size_t dest_len)
 
-/* écrit dans ce slot la mémoire en provenance de src */
+/* Ã©crit dans ce slot la mÃ©moire en provenance de src */
 apr_status_t put(ap_slotmem_instance_t *slot, unsigned int item_id, unsigned char *src, apr_size_t src_len)
 
 /* renvoie le nombre total de slots contenus dans ce segment */
 unsigned int num_slots(ap_slotmem_instance_t *s)
 
-/* renvoie la taille totale des données, en octets, contenues
+/* renvoie la taille totale des donnÃ©es, en octets, contenues
       dans un slot de ce segment */
 apr_size_t slot_size(ap_slotmem_instance_t *s)
 
-/* alloue le premier slot libre et le marque comme utilisé (n'effectue aucune
-      copie de données) */
+/* alloue le premier slot libre et le marque comme utilisÃ© (n'effectue aucune
+      copie de donnÃ©es) */
 apr_status_t grab(ap_slotmem_instance_t *s, unsigned int *item_id)
 
-/* appropriation ou allocation forcée du slot spécifié et marquage comme
-      utilisé (n'effectue aucune copie de données) */
+/* appropriation ou allocation forcÃ©e du slot spÃ©cifiÃ© et marquage comme
+      utilisÃ© (n'effectue aucune copie de donnÃ©es) */
 apr_status_t fgrab(ap_slotmem_instance_t *s, unsigned int item_id)
 
-/* libère un slot et le marque comme non utilisé (n'effectue aucune
-      copie de données) */
+/* libÃ¨re un slot et le marque comme non utilisÃ© (n'effectue aucune
+      copie de donnÃ©es) */
 apr_status_t release(ap_slotmem_instance_t *s, unsigned int item_id)</pre>
     
 
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <p>Ce module ne fournit aucune directive.</p>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_slotmem_shm">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_slotmem_shm">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_slotmem_shm">ProblÃ¨mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_slotmem_shm">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_slotmem_shm.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_slotmem_shm.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_slotmem_shm.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -129,7 +129,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_slotmem_sh
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />AutorisÃ© sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
