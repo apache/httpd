@@ -21,7 +21,7 @@
 
 <language id="es">
     <name>Spanish</name>
-    <charset>ISO-8859-1</charset>
+    <charset>UTF-8</charset>
     <source-ext>.xml.es</source-ext>
     <target-ext>.html.es</target-ext>
 
