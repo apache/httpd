@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_ssl: Fix a regression that the configuration settings for verify mode
+     and verify depth were taken from the frontend connection in case of
+     connections by the proxy to the backend. PR 62769. [Ruediger Pluem]
+
   *) ab: Add client certificate support. [Graham Leggett]
 
   *) mod_proxy_hcheck: Fix issues with TCP health checks. PR 61499
@@ -9,7 +13,7 @@ Changes with Apache 2.5.1
   *) mod_http2: connection IO event handling reworked. Instead of reacting on 
      incoming bytes, the state machine now acts on incoming frames that are 
      affecting it. This reduces state transitions. [Stefan Eissing]
-     
+
   *) MPMs: Initialize all runtime/asynchronous objects on a dedicated pool and
      before signals handling to avoid lifetime issues on restart or shutdown.
      PR 62658. [Yann Ylavic]

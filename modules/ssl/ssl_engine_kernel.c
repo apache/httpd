@@ -1750,7 +1750,8 @@ int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
     /* Get verify ingredients */
     int errnum   = X509_STORE_CTX_get_error(ctx);
     int errdepth = X509_STORE_CTX_get_error_depth(ctx);
-    int depth, verify;
+    int depth = UNSET;
+    int verify = SSL_CVERIFY_UNSET;
 
     /*
      * Log verification information
@@ -1766,10 +1767,15 @@ int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
     /*
      * Check for optionally acceptable non-verifiable issuer situation
      */
-    if (dc && (dc->nVerifyClient != SSL_CVERIFY_UNSET)) {
-        verify = dc->nVerifyClient;
+    if (dc) {
+        if (sslconn->is_proxy) {
+            verify = dc->proxy->auth.verify_mode;
+        }
+        else {
+            verify = dc->nVerifyClient;
+        }
     }
-    else {
+    if (!dc || (verify == SSL_CVERIFY_UNSET)) {
         verify = mctx->auth.verify_mode;
     }
 
@@ -1873,10 +1879,15 @@ int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
     /*
      * Finally check the depth of the certificate verification
      */
-    if (dc && (dc->nVerifyDepth != UNSET)) {
-        depth = dc->nVerifyDepth;
+    if (dc) {
+        if (sslconn->is_proxy) {
+            depth = dc->proxy->auth.verify_depth;
+        }
+        else {
+            depth = dc->nVerifyDepth;
+        }
     }
-    else {
+    if (!dc || (depth == UNSET)) {
         depth = mctx->auth.verify_depth;
     }
 
