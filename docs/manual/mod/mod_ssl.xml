@@ -696,7 +696,7 @@ directive can be used both in per-server and per-directory context.
 In per-server context it applies to the standard SSL handshake when a connection
 is established. In per-directory context it forces a SSL renegotiation with the
 reconfigured Cipher Suite after the HTTP request was read but before the HTTP
-response is sent. (Since renegotiation is not</p>
+response is sent.</p>
 <p>
 If the SSL library supports TLSv1.3 (OpenSSL 1.1.1 and later), the protocol 
 specifier "TLSv1.3" can be used to configure the cipher suites for that protocol.
