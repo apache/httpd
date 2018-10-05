@@ -59,6 +59,7 @@ static int sc_for_req_header(const char *header_name)
     if (len < 4 || len > 15)
         return UNKNOWN_METHOD;
 
+    memset(header, 0, sizeof header);
     while (*p)
         header[i++] = apr_toupper(*p++);
     header[i] = '\0';
