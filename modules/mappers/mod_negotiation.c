@@ -1550,9 +1550,6 @@ static void set_language_quality(negotiation_state *neg, var_rec *variant)
         if (!neg->dont_fiddle_headers) {
             variant->lang_quality = neg->default_lang_quality;
         }
-        if (!neg->accept_langs) {
-            return;             /* no accept-language header */
-        }
         return;
     }
     else {
