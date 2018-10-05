@@ -55,6 +55,8 @@
 <syntax>DavLockDB <var>file-path</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
+<default>DavLockDB <var>statedir</var>/davlockdb</default>
+<compatibility>No default prior to version 2.5.1.</compatibility>
 
 <usage>
     <p>Use the <directive>DavLockDB</directive> directive to specify
@@ -83,6 +85,12 @@
     files in the <code>var/</code> directory under the <directive
     module="core">ServerRoot</directive> with the base filename
     <code>DavLock</code> and extension name chosen by the server.</p>
+
+    <note><title>Default setting</title>
+    <p>In httpd version 2.5.1 and later, a hard-coded default path
+    relative to the state directory (configurable via <directive
+    module="core">DefaultStateDir</directive>) is used.</p>
+    </note>
 
 </usage>
 </directivesynopsis>

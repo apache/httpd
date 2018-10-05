@@ -1,6 +1,12 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_dav_fs: Set a default DAVLockDB within the state directory.
+     [Joe Orton]
+
+  *) core: Add DefaultStateDir and layout-specific state directory
+     created at "make install".  [Joe Orton]
+
   *) mod_ssl: Fix a regression that the configuration settings for verify mode
      and verify depth were taken from the frontend connection in case of
      connections by the proxy to the backend. PR 62769. [Ruediger Pluem]

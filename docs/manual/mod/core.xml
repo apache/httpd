@@ -744,6 +744,40 @@ DefaultRuntimeDir scratch/
 </directivesynopsis>
 
 <directivesynopsis>
+<name>DefaultStateDir</name>
+<description>Base directory for the persistent state files</description>
+<syntax>DefaultStateeDir <var>directory-path</var></syntax>
+<default>DefaultRuntimeDir DEFAULT_REL_STATEDIR (state/)</default>
+<contextlist><context>server config</context></contextlist>
+<compatibility>Available in Apache 2.5.1 and later</compatibility>
+
+<usage>
+    <p>The <directive>DefaultStateDir</directive> directive sets the
+    directory in which the server will create various persistent state
+    files (databases, long-lived caches, etc.). If set as a relative
+    path, the full path will be relative to
+    <directive>ServerRoot</directive>.</p>
+
+    <p><strong>Example</strong></p>
+   <highlight language="config">
+DefaultStateDir state/
+    </highlight>
+
+    <p>The default location of <directive>DefaultStateDir</directive> may be
+    modified by changing the <code>DEFAULT_REL_STATEDIR</code> #define
+    at build time.</p>
+
+   <p>Note: <directive>ServerRoot</directive> should be specified before this
+   directive is used. Otherwise, the default value of <directive>ServerRoot</directive>
+   would be used to set the base directory.</p>
+
+</usage>
+<seealso><a href="../misc/security_tips.html#serverroot">the
+    security tips</a> for information on how to properly set
+    permissions on the <directive>ServerRoot</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>DefaultType</name>
 <description>This directive has no effect other than to emit warnings
 if the value is not <code>none</code>. In prior versions, DefaultType
