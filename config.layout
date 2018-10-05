@@ -29,6 +29,7 @@
     includedir:    ${prefix}/include
     localstatedir: ${prefix}
     runtimedir:    ${localstatedir}/logs
+    statedir:      ${localstatedir}/state
     logfiledir:    ${localstatedir}/logs
     proxycachedir: ${localstatedir}/proxy
 </Layout>
@@ -54,6 +55,7 @@
     includedir:    ${prefix}/include+
     localstatedir: ${prefix}/var+
     runtimedir:    ${localstatedir}/run
+    statedir:      ${localstatedir}/state
     logfiledir:    ${localstatedir}/log
     proxycachedir: ${localstatedir}/proxy
 </Layout>
@@ -78,6 +80,7 @@
     includedir:    /System/Library/Frameworks/Apache.framework/Versions/2.0/Headers
     localstatedir: /var
     runtimedir:    ${prefix}/Logs
+    statedir:      ${prefix}/State
     logfiledir:    ${prefix}/Logs
     proxycachedir: ${prefix}/ProxyCache
 </Layout>
@@ -102,6 +105,7 @@
     includedir:    ${prefix}/include+
     localstatedir: /var
     runtimedir:    ${localstatedir}/run
+    statedir:      ${localstatedir}/state
     logfiledir:    ${localstatedir}/log+
     proxycachedir: ${runtimedir}/proxy
 </Layout>
@@ -126,6 +130,7 @@
     includedir:    ${prefix}/include/apache
     localstatedir: /var
     runtimedir:    ${localstatedir}/run
+    statedir:      ${localstatedir}/lib/httpd
     logfiledir:    ${localstatedir}/log/httpd
     proxycachedir: ${localstatedir}/cache/httpd
 </Layout>     
@@ -151,6 +156,7 @@
     includedir:    ${prefix}/include/httpd
     runtimedir:    /run/httpd
     logfiledir:    ${localstatedir}/log/httpd
+    statedir:      ${localstatedir}/lib/httpd
     proxycachedir: ${localstatedir}/cache/httpd/proxy
 </Layout>     
 
@@ -175,6 +181,7 @@
     localstatedir: /var${prefix}
     runtimedir:    ${localstatedir}/run
     logfiledir:    ${localstatedir}/logs
+    statedir:      ${localstatedir}/state
     proxycachedir: ${localstatedir}/proxy
 </Layout>
 
@@ -197,6 +204,7 @@
     cgidir:        ${datadir}/cgi-bin
     includedir:    ${prefix}/include/apache
     localstatedir: /var/lib/httpd
+    statedir:      ${localstatedir}
     runtimedir:    /var/run
     logfiledir:    /var/log/httpd
     proxycachedir: /var/cache/httpd
@@ -223,6 +231,7 @@
     localstatedir: /var
     runtimedir:    ${localstatedir}/run
     logfiledir:    ${localstatedir}/log/httpd
+    statedir:      ${prefix}/state
     proxycachedir: ${localstatedir}/proxy
 </Layout>
 
@@ -246,6 +255,7 @@
     includedir:    ${exec_prefix}/include
     localstatedir: ${prefix}
     runtimedir:    /var/run
+    statedir:      ${datadir}/state
     logfiledir:    ${datadir}/logs
     proxycachedir: ${datadir}/proxy
 </Layout>
@@ -271,6 +281,7 @@
     localstatedir: ${prefix}
     runtimedir:    ${prefix}/logs
     logfiledir:    ${prefix}/logs
+    statedir:      ${prefix}/state
     proxycachedir: ${prefix}/proxy
 </Layout>
 
@@ -315,6 +326,7 @@
     cgidir:        ${prefix}/usr/lib/cgi-bin
     includedir:    ${exec_prefix}/include/apache2
     localstatedir: ${prefix}/var/lock/apache2
+    statedir:      ${prefix}/var/lib/apache2
     runtimedir:    ${prefix}/var/run/apache2
     logfiledir:    ${prefix}/var/log/apache2
     proxycachedir: ${prefix}/var/cache/apache2/proxy
@@ -343,6 +355,7 @@
     manualdir:     ${datadir}/manual
     cgidir:        ${datadir}/cgi-bin
     runtimedir:    ${localstatedir}/run
+    runtimedir:    ${localstatedir}/lib/httpd
     logfiledir:    ${localstatedir}/log/httpd
     proxycachedir: ${localstatedir}/cache/httpd/cache-root
 </Layout>
@@ -366,6 +379,7 @@
     manualdir:     ${prefix}/manual
     includedir:    ${prefix}/include
     localstatedir: /var/httpd
+    statedir:      ${localstatedir}/state
     runtimedir:    ${localstatedir}/run
     logfiledir:    ${localstatedir}/logs
     proxycachedir: ${localstatedir}/proxy
@@ -391,6 +405,7 @@
     includedir:      ${prefix}/include/httpd
     localstatedir:   /var
     runtimedir:      ${localstatedir}/run/httpd
+    statedir:        ${localstatedir}/lib/httpd
     logfiledir:      ${localstatedir}/log/httpd
     proxycachedir:   ${localstatedir}/cache/httpd
 </Layout>

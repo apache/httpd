@@ -148,6 +148,8 @@ AP_DECLARE_DATA int ap_main_state = AP_SQ_MS_INITIAL_STARTUP;
 AP_DECLARE_DATA int ap_run_mode = AP_SQ_RM_UNKNOWN;
 AP_DECLARE_DATA int ap_config_generation = 0;
 
+static const char *core_state_dir;
+
 typedef struct {
     apr_ipsubnet_t *subnet;
     struct ap_logconf log;
@@ -3275,6 +3277,24 @@ static const char *set_runtime_dir(cmd_parms *cmd, void *dummy, const char *arg)
     return NULL;
 }
 
+static const char *set_state_dir(cmd_parms *cmd, void *dummy, const char *arg)
+{
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+
+    if (err != NULL) {
+        return err;
+    }
+
+    if ((apr_filepath_merge((char**)&core_state_dir, NULL,
+                            ap_server_root_relative(cmd->temp_pool, arg),
+                            APR_FILEPATH_TRUENAME, cmd->pool) != APR_SUCCESS)
+        || !ap_is_directory(cmd->temp_pool, core_state_dir)) {
+        return "DefaultStateDir must be a valid directory, absolute or relative to ServerRoot";
+    }
+
+    return NULL;
+}
+
 static const char *set_timeout(cmd_parms *cmd, void *dummy, const char *arg)
 {
     const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_CONTEXT);
@@ -4724,6 +4744,8 @@ AP_INIT_TAKE1("ServerRoot", set_server_root, NULL, RSRC_CONF | EXEC_ON_READ,
   "Common directory of server-related files (logs, confs, etc.)"),
 AP_INIT_TAKE1("DefaultRuntimeDir", set_runtime_dir, NULL, RSRC_CONF | EXEC_ON_READ,
   "Common directory for run-time files (shared memory, locks, etc.)"),
+AP_INIT_TAKE1("DefaultStateDir", set_state_dir, NULL, RSRC_CONF | EXEC_ON_READ,
+  "Common directory for persistent state (databases, long-lived caches, etc.)"),
 AP_INIT_TAKE12("ErrorLog", set_errorlog,
   (void *)APR_OFFSETOF(server_rec, error_fname), RSRC_CONF,
   "The filename of the error log"),
@@ -5556,6 +5578,28 @@ AP_DECLARE(int) ap_state_query(int query)
         return AP_SQ_NOT_SUPPORTED;
     }
 }
+
+AP_DECLARE(char *) ap_state_dir_relative(apr_pool_t *p, const char *file)
+{
+    char *newpath = NULL;
+    apr_status_t rv;
+    const char *state_dir;
+
+    state_dir = core_state_dir
+        ? core_state_dir
+        : ap_server_root_relative(p, DEFAULT_REL_STATEDIR);
+
+    rv = apr_filepath_merge(&newpath, state_dir, file, APR_FILEPATH_TRUENAME, p);
+    if (newpath && (rv == APR_SUCCESS || APR_STATUS_IS_EPATHWILD(rv)
+                                      || APR_STATUS_IS_ENOENT(rv)
+                                      || APR_STATUS_IS_ENOTDIR(rv))) {
+        return newpath;
+    }
+    else {
+        return NULL;
+    }
+}
+
 
 #if !USE_APR_CRYPTO_PRNG
 static apr_random_t *rng = NULL;

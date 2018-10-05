@@ -45,7 +45,7 @@ AC_DEFUN([APACHE_GEN_CONFIG_VARS],[
   APACHE_SUBST(installbuilddir)
   APACHE_SUBST(runtimedir)
   APACHE_SUBST(proxycachedir)
-  APACHE_SUBST(davlockdb)
+  APACHE_SUBST(statedir)
   APACHE_SUBST(other_targets)
   APACHE_SUBST(progname)
   APACHE_SUBST(prefix)
@@ -876,7 +876,7 @@ AC_DEFUN([APACHE_EXPORT_ARGUMENTS],[
   APACHE_SUBST_EXPANDED_ARG(runtimedir)
   APACHE_SUBST_EXPANDED_ARG(logfiledir)
   APACHE_SUBST_EXPANDED_ARG(proxycachedir)
-  APACHE_SUBST_EXPANDED_ARG(davlockdb)
+  APACHE_SUBST_EXPANDED_ARG(statedir)
 ])
 
 dnl 
