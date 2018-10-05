@@ -187,13 +187,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk: http://svn.apache.org/r1841446
      trunk: http://svn.apache.org/r1841455
      2.4.x branch: svn merge -c 1841446,1841455 ^/httpd/httpd/trunk .
-     +1: icing, minfrin
+     +1: icing, minfrin, jim
 
   *) ab: Add client certificate support.
      trunk: http://svn.apache.org/r1841784
      2.4.x: svn merge -c r1841784 ^/httpd/httpd/trunk .
      (requires r1738415 and r1826930 above to resolve conflict)
-     +1: minfrin
+     +1: minfrin, jim
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
