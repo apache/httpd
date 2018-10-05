@@ -736,7 +736,6 @@ static int passphrase_ui_read(UI *ui, UI_STRING *uis)
 
         result = ssl_util_readfilter(ppcb->s, ppcb->p, cmd, argv);
         apr_cpystrn(buf, result, bufsize);
-        len = strlen(buf);
     }
 
     /*
