@@ -218,6 +218,7 @@ install-cgi:
 install-other:
 	@test -d $(DESTDIR)$(logfiledir) || $(MKINSTALLDIRS) $(DESTDIR)$(logfiledir)
 	@test -d $(DESTDIR)$(runtimedir) || $(MKINSTALLDIRS) $(DESTDIR)$(runtimedir)
+	@test -d $(DESTDIR)$(statedir) || $(MKINSTALLDIRS) $(DESTDIR)$(statedir)
 	@for ext in dll x; do \
 		file=apachecore.$$ext; \
 		if test -f $$file; then \

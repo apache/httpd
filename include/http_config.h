@@ -760,6 +760,14 @@ AP_DECLARE(char *) ap_server_root_relative(apr_pool_t *p, const char *fname);
  */
 AP_DECLARE(char *) ap_runtime_dir_relative(apr_pool_t *p, const char *fname);
 
+/**
+ * Compute the name of a persistent state file (e.g. a database or
+ * long-lived cache) relative to the appropriate state directory.
+ * Absolute paths are returned as-is.  The state directory is
+ * configured via the DefaultStateDir directive or at build time.
+ */
+AP_DECLARE(char *) ap_state_dir_relative(apr_pool_t *p, const char *fname);
+
 /* Finally, the hook for dynamically loading modules in... */
 
 /**
