@@ -32,6 +32,10 @@ typedef struct {
 
 extern module AP_MODULE_DECLARE_DATA dav_fs_module;
 
+#ifndef DEFAULT_DAV_LOCKDB
+#define DEFAULT_DAV_LOCKDB "davlockdb"
+#endif
+
 const char *dav_get_lockdb_path(const request_rec *r)
 {
     dav_fs_server_conf *conf;
@@ -43,12 +47,8 @@ const char *dav_get_lockdb_path(const request_rec *r)
 static void *dav_fs_create_server_config(apr_pool_t *p, server_rec *s)
 {
     dav_fs_server_conf *conf = apr_pcalloc(p, sizeof(dav_fs_server_conf));
-#ifdef DEFAULT_EXP_DAVLOCKDB
-    conf->lockdb_path = DEFAULT_EXP_DAVLOCKDB;
-    if (*conf->lockdb_path == '\0') {
-        conf->lockdb_path = NULL;
-    }
-#endif
+
+    conf->lockdb_path = ap_state_dir_relative(p, DEFAULT_DAV_LOCKDB);
 
     return conf;
 }
