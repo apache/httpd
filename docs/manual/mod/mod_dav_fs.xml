@@ -53,9 +53,9 @@
 <name>DavLockDB</name>
 <description>Location of the DAV lock database</description>
 <syntax>DavLockDB <var>file-path</var></syntax>
+<default>DavLockDB DEFAULT_REL_STATEDIR/davlockdb</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<default>DavLockDB <var>statedir</var>/davlockdb</default>
 <compatibility>No default prior to version 2.5.1.</compatibility>
 
 <usage>
