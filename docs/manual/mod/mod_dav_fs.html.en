@@ -27,14 +27,14 @@
 <div id="preamble"><h1>Apache Module mod_dav_fs</h1>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_dav_fs.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_dav_fs.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_dav_fs.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_dav_fs.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_dav_fs.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Filesystem provider for <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code></td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Module&#160;Identifier:</a></th><td>dav_fs_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Source&#160;File:</a></th><td>mod_dav_fs.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>dav_fs_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_dav_fs.c</td></tr></table>
 <h3>Summary</h3>
 
     <p>This module <em>requires</em> the service of <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code>. It acts as a support module for <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code> and provides access to resources located in the
@@ -64,9 +64,11 @@
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Location of the DAV lock database</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DavLockDB <var>file-path</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>DavLockDB DEFAULT_REL_STATEDIR/davlockdb</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dav_fs</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>No default prior to version 2.5.1.</td></tr>
 </table>
     <p>Use the <code class="directive">DavLockDB</code> directive to specify
     the full path to the lock database, excluding an extension. If
@@ -88,12 +90,17 @@
     files in the <code>var/</code> directory under the <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code> with the base filename
     <code>DavLock</code> and extension name chosen by the server.</p>
 
+    <div class="note"><h3>Default setting</h3>
+    <p>In httpd version 2.5.1 and later, a hard-coded default path
+    relative to the state directory (configurable via <code class="directive"><a href="../mod/core.html#defaultstatedir">DefaultStateDir</a></code>) is used.</p>
+    </div>
+
 
 </div>
 </div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_dav_fs.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_dav_fs.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_dav_fs.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_dav_fs.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_dav_fs.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
