@@ -194,6 +194,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      (requires r1738415 and r1826930 above to resolve conflict)
      +1: minfrin, jim
 
+  *) mod_ssl: Fix a regression that the configuration settings for verify mode
+     and verify depth were taken from the frontend connection in case of
+     connections by the proxy to the backend. PR 62769.
+     trunk patch: http://svn.apache.org/r1842540
+     2.4.x: trunk works (modulo CHANGES)
+            svn merge -c r1842540 ^/httpd/httpd/trunk .
+     +1: ylavic
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
