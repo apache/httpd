@@ -105,7 +105,7 @@
 <!-- Spanish                                                              -->
 <!-- ==================================================================== -->
 <property value=".xml.es" name="inputext.es"/>
-<property value=".html.es" name="outputext.es"/>
+<property value=".html.es.utf8" name="outputext.es"/>
 
 <target description="- builds Spanish HTML files" name="es">
     <html.generic lang="es"/>
@@ -128,7 +128,7 @@
 <!-- French                                                               -->
 <!-- ==================================================================== -->
 <property value=".xml.fr" name="inputext.fr"/>
-<property value=".html.fr" name="outputext.fr"/>
+<property value=".html.fr.utf8" name="outputext.fr"/>
 
 <target description="- builds French HTML files" name="fr">
     <html.generic lang="fr"/>

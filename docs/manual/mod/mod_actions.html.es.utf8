@@ -1,13 +1,13 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
-<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>mod_actions - Servidor HTTP Apache Versión 2.5</title>
+<title>mod_actions - Servidor HTTP Apache VersiÃ³n 2.5</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -17,73 +17,73 @@
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p>
-<p class="apache">Versión 2.5 del Servidor HTTP Apache</p>
+<p class="menu"><a href="../mod/">MÃ³dulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p>
+<p class="apache">VersiÃ³n 2.5 del Servidor HTTP Apache</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentación</a> &gt; <a href="../">Versión 2.5</a> &gt; <a href="./">Módulos</a></div>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">DocumentaciÃ³n</a> &gt; <a href="../">VersiÃ³n 2.5</a> &gt; <a href="./">MÃ³dulos</a></div>
 <div id="page-content">
-<div id="preamble"><h1>Módulo Apache mod_actions</h1>
+<div id="preamble"><h1>MÃ³dulo Apache mod_actions</h1>
 <div class="toplang">
 <p><span>Idiomas disponibles: </span><a href="../de/mod/mod_actions.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/mod_actions.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/mod/mod_actions.html" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/mod/mod_actions.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../es/mod/mod_actions.html" title="EspaÃ±ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/mod/mod_actions.html" hreflang="fr" rel="alternate" title="FranÃ§ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_actions.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_actions.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Descripción:</a></th><td>Ejecuta scripts CGI basándose en el tipo de medio o método de la petición.</td></tr>
+<table class="module"><tr><th><a href="module-dict.html#Description">DescripciÃ³n:</a></th><td>Ejecuta scripts CGI basÃ¡ndose en el tipo de medio o mÃ©todo de la peticiÃ³n.</td></tr>
 <tr><th><a href="module-dict.html#Status">Estado:</a></th><td>Base</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificador de Módulos:</a></th><td>actions_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichero de Código Fuente:</a></th><td>mod_actions.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificador de MÃ³dulos:</a></th><td>actions_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichero de CÃ³digo Fuente:</a></th><td>mod_actions.c</td></tr></table>
 <h3>Resumen de contenidos</h3>
 
-    <p>Este módulo tiene dos directivas. La directiva <code class="directive"><a href="#action">Action</a></code> le permite ejecutar scripts CGI siempre que se solicite un fichero con cierto  <a class="glossarylink" href="../glossary.html#mime-type" title="ver glosario">tipo de contenido MIME</a>. La direcitiva 
-    <code class="directive"><a href="#script">Script</a></code> le permite ejecutar scripts CGI siempre que se use un método concreto en una petición. Esto hace mucho más fácil ejecutar scripts para procesar ficheros.</p>
+    <p>Este mÃ³dulo tiene dos directivas. La directiva <code class="directive"><a href="#action">Action</a></code> le permite ejecutar scripts CGI siempre que se solicite un fichero con cierto  <a class="glossarylink" href="../glossary.html#mime-type" title="ver glosario">tipo de contenido MIME</a>. La direcitiva 
+    <code class="directive"><a href="#script">Script</a></code> le permite ejecutar scripts CGI siempre que se use un mÃ©todo concreto en una peticiÃ³n. Esto hace mucho mÃ¡s fÃ¡cil ejecutar scripts para procesar ficheros.</p>
 </div>
 <div id="quickview"><h3 class="directives">Directivas</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#action">Action</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#script">Script</a></li>
 </ul>
-<h3>Lista de comprobación de errores corregidos</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd historial de cambios</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_actions">Problemas Conocidos</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_actions">Reportar un error</a></li></ul><h3>Consulte también</h3>
+<h3>Lista de comprobaciÃ³n de errores corregidos</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd historial de cambios</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_actions">Problemas Conocidos</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_actions">Reportar un error</a></li></ul><h3>Consulte tambiÃ©n</h3>
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code></li>
-<li><a href="../howto/cgi.html">Contenido Dinámico con CGI</a></li>
+<li><a href="../howto/cgi.html">Contenido DinÃ¡mico con CGI</a></li>
 <li><a href="../handler.html">Uso de Handler de Apache httpd</a></li>
 <li><a href="#comments_section">Comentarios</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="action" id="action">Directiva</a> <a name="Action" id="Action">Action</a><a title="Enlace permanente" href="#action" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Activa un script CGI para un handler concreto o content-type</td></tr>
+<tr><th><a href="directive-dict.html#Description">DescripciÃ³n:</a></th><td>Activa un script CGI para un handler concreto o content-type</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>Action <var>action-type</var> <var>cgi-script</var> [virtual]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Anula:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>mod_actions</td></tr>
+<tr><th><a href="directive-dict.html#Module">MÃ³dulo:</a></th><td>mod_actions</td></tr>
 </table>
-    <p>Esta directiva añade una acción, que activará <var>cgi-script</var> cuando <var>action-type</var> se activa por una petición. El <var>cgi-script</var> es el path-de-URL a un recurso designado como un script CGI script usando 
+    <p>Esta directiva aÃ±ade una acciÃ³n, que activarÃ¡ <var>cgi-script</var> cuando <var>action-type</var> se activa por una peticiÃ³n. El <var>cgi-script</var> es el path-de-URL a un recurso designado como un script CGI script usando 
     <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code> o 
     <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code>. El 
-    <var>action-type</var> puede ser un <a href="../handler.html">handler</a> o un <a class="glossarylink" href="../glossary.html#mime-type" title="ver glosario">tipo de contenido MIME</a>. Envía la URL y el path al fichero del documento solicitado usando las variables de entorno estándar de CGI <code>PATH_INFO</code> y <code>PATH_TRANSLATED</code>. El handler que se usa para esta petición en particular se envía usando la variable <code>REDIRECT_HANDLER</code>.</p>
+    <var>action-type</var> puede ser un <a href="../handler.html">handler</a> o un <a class="glossarylink" href="../glossary.html#mime-type" title="ver glosario">tipo de contenido MIME</a>. EnvÃ­a la URL y el path al fichero del documento solicitado usando las variables de entorno estÃ¡ndar de CGI <code>PATH_INFO</code> y <code>PATH_TRANSLATED</code>. El handler que se usa para esta peticiÃ³n en particular se envÃ­a usando la variable <code>REDIRECT_HANDLER</code>.</p>
 
-    <div class="example"><h3>Ejemplo: tipo MIME</h3><pre class="prettyprint lang-config"># Petición de ficheros de un tipo concreto de contenido MIME:
+    <div class="example"><h3>Ejemplo: tipo MIME</h3><pre class="prettyprint lang-config"># PeticiÃ³n de ficheros de un tipo concreto de contenido MIME:
 Action image/gif /cgi-bin/images.cgi</pre>
 </div>
 
-    <p>En este ejemplo, las peticiones de ficheros con contenido tipo MIME <code>image/gif</code> serán gestionadas por el script cgi especificado en <code>/cgi-bin/images.cgi</code>.</p>
+    <p>En este ejemplo, las peticiones de ficheros con contenido tipo MIME <code>image/gif</code> serÃ¡n gestionadas por el script cgi especificado en <code>/cgi-bin/images.cgi</code>.</p>
 
-    <div class="example"><h3>Ejemplo: Extensión de fichero</h3><pre class="prettyprint lang-config"># Ficheros con una extensión concreta
+    <div class="example"><h3>Ejemplo: ExtensiÃ³n de fichero</h3><pre class="prettyprint lang-config"># Ficheros con una extensiÃ³n concreta
 AddHandler my-file-type .xyz
 Action my-file-type /cgi-bin/program.cgi</pre>
 </div>
-    <p>En este ejemplo, las peticiones a ficheros con una extensión de fichero
-    <code>.xyz</code> serán gestionadas por el script cgi especificado en
+    <p>En este ejemplo, las peticiones a ficheros con una extensiÃ³n de fichero
+    <code>.xyz</code> serÃ¡n gestionadas por el script cgi especificado en
     <code>/cgi-bin/program.cgi</code>.</p>
 
-    <p>El modificador opcional <code>virtual</code> desactiva la comprobación para saber si el fichero realmente existe. Esto es útil, por ejemplo, si quiere usar la directiva <code class="directive">Action</code> en ubicaciones virtuales.</p>
+    <p>El modificador opcional <code>virtual</code> desactiva la comprobaciÃ³n para saber si el fichero realmente existe. Esto es Ãºtil, por ejemplo, si quiere usar la directiva <code class="directive">Action</code> en ubicaciones virtuales.</p>
 
     <pre class="prettyprint lang-config">&lt;Location "/news"&gt;
     SetHandler news-handler
@@ -91,7 +91,7 @@ Action my-file-type /cgi-bin/program.cgi</pre>
 &lt;/Location&gt;</pre>
 
 
-<h3>Consulte también</h3>
+<h3>Consulte tambiÃ©n</h3>
 <ul>
 <li><code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code></li>
 </ul>
@@ -99,21 +99,21 @@ Action my-file-type /cgi-bin/program.cgi</pre>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="script" id="script">Directiva</a> <a name="Script" id="Script">Script</a><a title="Enlace permanente" href="#script" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Activa un script CGI para peticiones con un método concreto.</td></tr>
+<tr><th><a href="directive-dict.html#Description">DescripciÃ³n:</a></th><td>Activa un script CGI para peticiones con un mÃ©todo concreto.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>Script <var>method</var> <var>cgi-script</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>mod_actions</td></tr>
+<tr><th><a href="directive-dict.html#Module">MÃ³dulo:</a></th><td>mod_actions</td></tr>
 </table>
-    <p>Esta directiva añade una acción, que activará <var>cgi-script</var> cuando se solicita un fichero usando un método especificado en el parámetro <var>method</var>. El <var>cgi-script</var> es el path-de-URL al recurso que ha sido designado como un script CGI usando <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code> o <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code>. La URL y la ruta al fichero del documento solicitado se envía usando las variables de entorno estándar de CGI <code>PATH_INFO</code> y <code>PATH_TRANSLATED</code>.</p>
+    <p>Esta directiva aÃ±ade una acciÃ³n, que activarÃ¡ <var>cgi-script</var> cuando se solicita un fichero usando un mÃ©todo especificado en el parÃ¡metro <var>method</var>. El <var>cgi-script</var> es el path-de-URL al recurso que ha sido designado como un script CGI usando <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code> o <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code>. La URL y la ruta al fichero del documento solicitado se envÃ­a usando las variables de entorno estÃ¡ndar de CGI <code>PATH_INFO</code> y <code>PATH_TRANSLATED</code>.</p>
 
     <div class="note">
-      Se puede usar cualquier nombre de método arbitrario. <strong>Los nombres de Método son sensibles a mayúsculas</strong>, así que <code>Script PUT</code> and <code>Script put</code> tienen dos efectos totalmente diferentes.
+      Se puede usar cualquier nombre de mÃ©todo arbitrario. <strong>Los nombres de MÃ©todo son sensibles a mayÃºsculas</strong>, asÃ­ que <code>Script PUT</code> and <code>Script put</code> tienen dos efectos totalmente diferentes.
     </div>
 
-    <p>Tenga en cuenta que el comando <code class="directive">Script</code> solo define acciones por defecto. Si se llama a un script CGI, o algún otro recurso que esté capacitado para gestionar el método solicitado internamente, éste se utilizará. También tenga en cuenta que solo se invocará <code class="directive">Script</code> con un método <code>GET</code> si hay parámetros de query string presentes en la petición (<em>p.e.</em>, foo.html?hi). Si no, la petición se procesará normalmente.</p>
+    <p>Tenga en cuenta que el comando <code class="directive">Script</code> solo define acciones por defecto. Si se llama a un script CGI, o algÃºn otro recurso que estÃ© capacitado para gestionar el mÃ©todo solicitado internamente, Ã©ste se utilizarÃ¡. TambiÃ©n tenga en cuenta que solo se invocarÃ¡ <code class="directive">Script</code> con un mÃ©todo <code>GET</code> si hay parÃ¡metros de query string presentes en la peticiÃ³n (<em>p.e.</em>, foo.html?hi). Si no, la peticiÃ³n se procesarÃ¡ normalmente.</p>
 
-    <pre class="prettyprint lang-config"># todas las peticiones GET van aquí
+    <pre class="prettyprint lang-config"># todas las peticiones GET van aquÃ­
 Script GET /cgi-bin/search
 
 # Un handler PUT de CGI
@@ -125,8 +125,8 @@ Script PUT /~bob/put.cgi</pre>
 <div class="bottomlang">
 <p><span>Idiomas disponibles: </span><a href="../de/mod/mod_actions.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/mod_actions.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/mod/mod_actions.html" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/mod/mod_actions.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../es/mod/mod_actions.html" title="EspaÃ±ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/mod/mod_actions.html" hreflang="fr" rel="alternate" title="FranÃ§ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_actions.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_actions.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comentarios</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
@@ -147,8 +147,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_actions.ht
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Licencia bajo los tÃ©rminos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">MÃ³dulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }
