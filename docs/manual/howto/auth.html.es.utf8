@@ -1,13 +1,13 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
-<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Autenticación y Autorización - Servidor HTTP Apache Versión 2.5</title>
+<title>AutenticaciÃ³n y AutorizaciÃ³n - Servidor HTTP Apache VersiÃ³n 2.5</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -16,59 +16,59 @@
 
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p>
-<p class="apache">Versión 2.5 del Servidor HTTP Apache</p>
+<p class="menu"><a href="../mod/">MÃ³dulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p>
+<p class="apache">VersiÃ³n 2.5 del Servidor HTTP Apache</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentación</a> &gt; <a href="../">Versión 2.5</a> &gt; <a href="./">How-To / Tutoriales</a></div><div id="page-content"><div id="preamble"><h1>Autenticación y Autorización</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">DocumentaciÃ³n</a> &gt; <a href="../">VersiÃ³n 2.5</a> &gt; <a href="./">How-To / Tutoriales</a></div><div id="page-content"><div id="preamble"><h1>AutenticaciÃ³n y AutorizaciÃ³n</h1>
 <div class="toplang">
 <p><span>Idiomas disponibles: </span><a href="../en/howto/auth.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/howto/auth.html" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/howto/auth.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../es/howto/auth.html" title="EspaÃ±ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/howto/auth.html" hreflang="fr" rel="alternate" title="FranÃ§ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/howto/auth.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/auth.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/howto/auth.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/howto/auth.html" hreflang="tr" rel="alternate" title="TÃ¼rkÃ§e">&nbsp;tr&nbsp;</a></p>
 </div>
 
-    <p>Autenticación es cualquier proceso por el cuál se verifica que uno es 
-    quien dice ser. Autorización es cualquier proceso en el cuál cualquiera
-    está permitido a estar donde se quiera, o tener información la cuál se
+    <p>AutenticaciÃ³n es cualquier proceso por el cuÃ¡l se verifica que uno es 
+    quien dice ser. AutorizaciÃ³n es cualquier proceso en el cuÃ¡l cualquiera
+    estÃ¡ permitido a estar donde se quiera, o tener informaciÃ³n la cuÃ¡l se
     quiera tener.
     </p>
 
-    <p>Para información de control de acceso de forma genérica visite<a href="access.html">How to de Control de Acceso</a>.</p>
+    <p>Para informaciÃ³n de control de acceso de forma genÃ©rica visite<a href="access.html">How to de Control de Acceso</a>.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">Módulos y Directivas Relacionados</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#introduction">Introducción</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">MÃ³dulos y Directivas Relacionados</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#introduction">IntroducciÃ³n</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#theprerequisites">Los Prerequisitos</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#gettingitworking">Conseguir que funcione</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#lettingmorethanonepersonin">Dejar que más de una persona 
+<li><img alt="" src="../images/down.gif" /> <a href="#lettingmorethanonepersonin">Dejar que mÃ¡s de una persona 
 	entre</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#possibleproblems">Posibles Problemas</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#dbmdbd">Método alternativo de almacenamiento de las 
-	contraseñas</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#multprovider">Uso de múltiples proveedores</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#beyond">Más allá de la Autorización</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#socache">Cache de Autenticación</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#moreinformation">Más información</a></li>
-</ul><h3>Consulte también</h3><ul class="seealso"><li><a href="#comments_section">Comentarios</a></li></ul></div>
+<li><img alt="" src="../images/down.gif" /> <a href="#dbmdbd">MÃ©todo alternativo de almacenamiento de las 
+	contraseÃ±as</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#multprovider">Uso de mÃºltiples proveedores</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#beyond">MÃ¡s allÃ¡ de la AutorizaciÃ³n</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#socache">Cache de AutenticaciÃ³n</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#moreinformation">MÃ¡s informaciÃ³n</a></li>
+</ul><h3>Consulte tambiÃ©n</h3><ul class="seealso"><li><a href="#comments_section">Comentarios</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="related" id="related">Módulos y Directivas Relacionados</a><a title="Enlace permanente" href="#related" class="permalink">&para;</a></h2>
+<h2><a name="related" id="related">MÃ³dulos y Directivas Relacionados</a><a title="Enlace permanente" href="#related" class="permalink">&para;</a></h2>
 
-<p>Hay tres tipos de módulos involucrados en los procesos de la autenticación 
-	y autorización. Normalmente deberás escoger al menos un módulo de cada grupo.</p>
+<p>Hay tres tipos de mÃ³dulos involucrados en los procesos de la autenticaciÃ³n 
+	y autorizaciÃ³n. Normalmente deberÃ¡s escoger al menos un mÃ³dulo de cada grupo.</p>
 
 <ul>
-  <li>Modos de Autenticación (consulte la directiva
+  <li>Modos de AutenticaciÃ³n (consulte la directiva
       <code class="directive"><a href="../mod/mod_authn_core.html#authtype">AuthType</a></code> )
     <ul>
       <li><code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code></li>
       <li><code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code></li>
     </ul>
   </li>
-  <li>Proveedor de Autenticación (consulte la directiva
+  <li>Proveedor de AutenticaciÃ³n (consulte la directiva
   <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code> y
   <code class="directive"><a href="../mod/mod_auth_digest.html#authdigestprovider">AuthDigestProvider</a></code>)
 
@@ -81,7 +81,7 @@
       <li><code class="module"><a href="../mod/mod_authn_socache.html">mod_authn_socache</a></code></li>
     </ul>
   </li>
-  <li>Autorización (consulte la directiva
+  <li>AutorizaciÃ³n (consulte la directiva
       <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>)
     <ul>
       <li><code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code></li>
@@ -95,97 +95,97 @@
   </li>
 </ul>
 
-  <p>A parte de éstos módulos, también están
+  <p>A parte de Ã©stos mÃ³dulos, tambiÃ©n estÃ¡n
   <code class="module"><a href="../mod/mod_authn_core.html">mod_authn_core</a></code> y
-  <code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code>. Éstos módulos implementan las directivas 
-  esenciales que son el centro de todos los módulos de autenticación.</p>
+  <code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code>. Ã‰stos mÃ³dulos implementan las directivas 
+  esenciales que son el centro de todos los mÃ³dulos de autenticaciÃ³n.</p>
 
-  <p>El módulo <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> es tanto un proveedor de 
-  autenticación como de autorización. El módulo
-  <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code> proporciona autorización y control de acceso
-  basado en el nombre del Host, la dirección IP o características de la propia
-  petición, pero no es parte del sistema proveedor de 
-  autenticación. Para tener compatibilidad inversa con el mod_access, 
+  <p>El mÃ³dulo <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> es tanto un proveedor de 
+  autenticaciÃ³n como de autorizaciÃ³n. El mÃ³dulo
+  <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code> proporciona autorizaciÃ³n y control de acceso
+  basado en el nombre del Host, la direcciÃ³n IP o caracterÃ­sticas de la propia
+  peticiÃ³n, pero no es parte del sistema proveedor de 
+  autenticaciÃ³n. Para tener compatibilidad inversa con el mod_access, 
   hay un nuevo modulo llamado <code class="module"><a href="../mod/mod_access_compat.html">mod_access_compat</a></code>.</p>
 
-  <p>También puedes mirar el how-to de <a href="access.html">Control de Acceso </a>, donde se plantean varias formas del control de acceso al servidor.</p>
+  <p>TambiÃ©n puedes mirar el how-to de <a href="access.html">Control de Acceso </a>, donde se plantean varias formas del control de acceso al servidor.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="introduction" id="introduction">Introducción</a><a title="Enlace permanente" href="#introduction" class="permalink">&para;</a></h2>
-    <p>Si se tiene información en nuestra página web que sea información 
+<h2><a name="introduction" id="introduction">IntroducciÃ³n</a><a title="Enlace permanente" href="#introduction" class="permalink">&para;</a></h2>
+    <p>Si se tiene informaciÃ³n en nuestra pÃ¡gina web que sea informaciÃ³n 
     	sensible o pensada para un grupo reducido de usuarios/personas,
-    	las técnicas que se describen en este manual, le servirán  
-    	de ayuda para asegurarse de que las personas que ven esas páginas sean 
+    	las tÃ©cnicas que se describen en este manual, le servirÃ¡n  
+    	de ayuda para asegurarse de que las personas que ven esas pÃ¡ginas sean 
     	las personas que uno quiere.</p>
 
-    <p>Este artículo cubre la parte "estándar" de cómo proteger partes de un 
-    	sitio web que muchos usarán.</p>
+    <p>Este artÃ­culo cubre la parte "estÃ¡ndar" de cÃ³mo proteger partes de un 
+    	sitio web que muchos usarÃ¡n.</p>
 
     <div class="note"><h3>Nota:</h3>
-    <p>Si de verdad es necesario que tus datos estén en un sitio seguro, 
-    	considera usar <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>  como método de autenticación adicional a cualquier forma de autenticación.</p>
+    <p>Si de verdad es necesario que tus datos estÃ©n en un sitio seguro, 
+    	considera usar <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>  como mÃ©todo de autenticaciÃ³n adicional a cualquier forma de autenticaciÃ³n.</p>
     </div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="theprerequisites" id="theprerequisites">Los Prerequisitos</a><a title="Enlace permanente" href="#theprerequisites" class="permalink">&para;</a></h2>
-    <p>Las directivas que se usan en este artículo necesitaran ponerse ya sea 
-    	en el fichero de configuración principal del servidor ( típicamente en 
-    	la sección 
+    <p>Las directivas que se usan en este artÃ­culo necesitaran ponerse ya sea 
+    	en el fichero de configuraciÃ³n principal del servidor ( tÃ­picamente en 
+    	la secciÃ³n 
     <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> de httpd.conf ), o
     en cada uno de los ficheros de configuraciones del propio directorio
     (los archivos <code>.htaccess</code>).</p>
 
-    <p>Si planea usar los ficheros <code>.htaccess</code> , necesitarás
-    tener en la configuración global del servidor, una configuración que permita
-    poner directivas de autenticación en estos ficheros. Esto se hace con la
+    <p>Si planea usar los ficheros <code>.htaccess</code> , necesitarÃ¡s
+    tener en la configuraciÃ³n global del servidor, una configuraciÃ³n que permita
+    poner directivas de autenticaciÃ³n en estos ficheros. Esto se hace con la
     directiva <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code>, la cual especifica
-    que directivas, en su caso, pueden ser puestas en cada fichero de configuración
+    que directivas, en su caso, pueden ser puestas en cada fichero de configuraciÃ³n
     por directorio.</p>
 
-    <p>Ya que estamos hablando aquí de autenticación, necesitarás una directiva 
+    <p>Ya que estamos hablando aquÃ­ de autenticaciÃ³n, necesitarÃ¡s una directiva 
     	<code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> como la siguiente:
     	</p>
 
     <pre class="prettyprint lang-config">AllowOverride AuthConfig</pre>
 
 
-    <p>O, si solo se van a poner las directivas directamente en la configuración
-    	principal del servidor, deberás tener, claro está, permisos de escritura
+    <p>O, si solo se van a poner las directivas directamente en la configuraciÃ³n
+    	principal del servidor, deberÃ¡s tener, claro estÃ¡, permisos de escritura
     	en el archivo. </p>
 
-    <p>Y necesitarás saber un poco de como está estructurado el árbol de 
+    <p>Y necesitarÃ¡s saber un poco de como estÃ¡ estructurado el Ã¡rbol de 
     	directorios de tu servidor, para poder saber donde se encuentran algunos 
-    	archivos. Esto no debería ser una tarea difícil, aún así intentaremos 
+    	archivos. Esto no deberÃ­a ser una tarea difÃ­cil, aÃºn asÃ­ intentaremos 
     	dejarlo claro llegado el momento de comentar dicho aspecto.</p>
 
-    <p>También deberás de asegurarte de que los módulos 
+    <p>TambiÃ©n deberÃ¡s de asegurarte de que los mÃ³dulos 
     <code class="module"><a href="../mod/mod_authn_core.html">mod_authn_core</a></code> y <code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code>
-    han sido incorporados, o añadidos a la hora de compilar en tu binario httpd o
-    cargados mediante el archivo de configuración <code>httpd.conf</code>. Estos 
-    dos módulos proporcionan directivas básicas y funcionalidades que son críticas
-    para la configuración y uso de autenticación y autorización en el servidor web.</p>
+    han sido incorporados, o aÃ±adidos a la hora de compilar en tu binario httpd o
+    cargados mediante el archivo de configuraciÃ³n <code>httpd.conf</code>. Estos 
+    dos mÃ³dulos proporcionan directivas bÃ¡sicas y funcionalidades que son crÃ­ticas
+    para la configuraciÃ³n y uso de autenticaciÃ³n y autorizaciÃ³n en el servidor web.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="gettingitworking" id="gettingitworking">Conseguir que funcione</a><a title="Enlace permanente" href="#gettingitworking" class="permalink">&para;</a></h2>
-    <p>Aquí está lo básico de cómo proteger con contraseña un directorio en tu
+    <p>AquÃ­ estÃ¡ lo bÃ¡sico de cÃ³mo proteger con contraseÃ±a un directorio en tu
      servidor.</p>
 
-    <p>Primero, necesitarás crear un fichero de contraseña. Dependiendo de que 
-    	proveedor de autenticación se haya elegido, se hará de una forma u otra. Para empezar, 
-    	usaremos un fichero de contraseña de tipo texto.</p>
+    <p>Primero, necesitarÃ¡s crear un fichero de contraseÃ±a. Dependiendo de que 
+    	proveedor de autenticaciÃ³n se haya elegido, se harÃ¡ de una forma u otra. Para empezar, 
+    	usaremos un fichero de contraseÃ±a de tipo texto.</p>
 
-    <p>Este fichero deberá estar en un sitio que no se pueda tener acceso desde
-     la web. Esto también implica que nadie pueda descargarse el fichero de 
-     contraseñas. Por ejemplo, si tus documentos están guardados fuera de
-     <code>/usr/local/apache/htdocs</code>, querrás poner tu archivo de contraseñas en 
+    <p>Este fichero deberÃ¡ estar en un sitio que no se pueda tener acceso desde
+     la web. Esto tambiÃ©n implica que nadie pueda descargarse el fichero de 
+     contraseÃ±as. Por ejemplo, si tus documentos estÃ¡n guardados fuera de
+     <code>/usr/local/apache/htdocs</code>, querrÃ¡s poner tu archivo de contraseÃ±as en 
      <code>/usr/local/apache/passwd</code>.</p>
 
-    <p>Para crear el fichero de contraseñas, usa la utilidad 
+    <p>Para crear el fichero de contraseÃ±as, usa la utilidad 
     	<code class="program"><a href="../programs/htpasswd.html">htpasswd</a></code> que viene con Apache. Esta herramienta se 
     	encuentra en el directorio <code>/bin</code> en donde sea que se ha 
     	instalado el Apache. Si ha instalado Apache desde un paquete de terceros, 
-    	puede ser que se encuentre en su ruta de ejecución.</p>
+    	puede ser que se encuentre en su ruta de ejecuciÃ³n.</p>
 
     <p>Para crear el fichero, escribiremos:</p>
 
@@ -193,8 +193,8 @@
       htpasswd -c /usr/local/apache/passwd/passwords rbowen
     </code></p></div>
 
-    <p><code class="program"><a href="../programs/htpasswd.html">htpasswd</a></code> te preguntará por una contraseña, y después 
-    te pedirá que la vuelvas a escribir para confirmarla:</p>
+    <p><code class="program"><a href="../programs/htpasswd.html">htpasswd</a></code> te preguntarÃ¡ por una contraseÃ±a, y despuÃ©s 
+    te pedirÃ¡ que la vuelvas a escribir para confirmarla:</p>
 
     <div class="example"><p><code>
       $ htpasswd -c /usr/local/apache/passwd/passwords rbowen<br />
@@ -203,23 +203,23 @@
       Adding password for user rbowen
     </code></p></div>
 
-    <p>Si <code class="program"><a href="../programs/htpasswd.html">htpasswd</a></code> no está en tu variable de entorno "path" del 
-    sistema, por supuesto deberás escribir la ruta absoluta del ejecutable para 
-    poder hacer que se ejecute. En una instalación por defecto, está en:
+    <p>Si <code class="program"><a href="../programs/htpasswd.html">htpasswd</a></code> no estÃ¡ en tu variable de entorno "path" del 
+    sistema, por supuesto deberÃ¡s escribir la ruta absoluta del ejecutable para 
+    poder hacer que se ejecute. En una instalaciÃ³n por defecto, estÃ¡ en:
     <code>/usr/local/apache2/bin/htpasswd</code></p>
 
-    <p>Lo próximo que necesitas, será configurar el servidor para que pida una 
-    	contraseña y así decirle al servidor que usuarios están autorizados a acceder.
+    <p>Lo prÃ³ximo que necesitas, serÃ¡ configurar el servidor para que pida una 
+    	contraseÃ±a y asÃ­ decirle al servidor que usuarios estÃ¡n autorizados a acceder.
     	Puedes hacer esto ya sea editando el fichero <code>httpd.conf</code>
-    de configuración  o usando in fichero <code>.htaccess</code>. Por ejemplo, 
+    de configuraciÃ³n  o usando in fichero <code>.htaccess</code>. Por ejemplo, 
     si quieres proteger el directorio
     <code>/usr/local/apache/htdocs/secret</code>, puedes usar las siguientes 
     directivas, ya sea en el fichero <code>.htaccess</code> localizado en
     following directives, either placed in the file
     <code>/usr/local/apache/htdocs/secret/.htaccess</code>, o
-    en la configuración global del servidor <code>httpd.conf</code> dentro de la
-    sección &lt;Directory  
-    "/usr/local/apache/htdocs/secret"&gt; , como se muestra a continuación:</p>
+    en la configuraciÃ³n global del servidor <code>httpd.conf</code> dentro de la
+    secciÃ³n &lt;Directory  
+    "/usr/local/apache/htdocs/secret"&gt; , como se muestra a continuaciÃ³n:</p>
 
     <pre class="prettyprint lang-config">&lt;Directory "/usr/local/apache/htdocs/secret"&gt;
 AuthType Basic
@@ -232,97 +232,97 @@ Require user rbowen
 
 
     <p>Vamos a explicar cada una de las directivas individualmente.
-    	La directiva <code class="directive"><a href="../mod/mod_authn_core.html#authtype">AuthType</a></code> selecciona el método
-    que se usa para autenticar al usuario. El método más común es 
-    <code>Basic</code>, y éste es el método que implementa 
+    	La directiva <code class="directive"><a href="../mod/mod_authn_core.html#authtype">AuthType</a></code> selecciona el mÃ©todo
+    que se usa para autenticar al usuario. El mÃ©todo mÃ¡s comÃºn es 
+    <code>Basic</code>, y Ã©ste es el mÃ©todo que implementa 
     <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code>. Es muy importante ser consciente,
-    de que la autenticación básica, envía las contraseñas desde el cliente 
+    de que la autenticaciÃ³n bÃ¡sica, envÃ­a las contraseÃ±as desde el cliente 
     al servidor sin cifrar.
-    Este método por tanto, no debe ser utilizado para proteger datos muy sensibles,
-    a no ser que, este método de autenticación básica, sea acompañado del módulo
+    Este mÃ©todo por tanto, no debe ser utilizado para proteger datos muy sensibles,
+    a no ser que, este mÃ©todo de autenticaciÃ³n bÃ¡sica, sea acompaÃ±ado del mÃ³dulo
     <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>.
-    Apache soporta otro método más de autenticación  que es del tipo 
-    <code>AuthType Digest</code>. Este método, es implementado por el módulo <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code> y con el se pretendía crear una autenticación más
-    segura. Este ya no es el caso, ya que la conexión deberá realizarse con  <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> en su lugar.
+    Apache soporta otro mÃ©todo mÃ¡s de autenticaciÃ³n  que es del tipo 
+    <code>AuthType Digest</code>. Este mÃ©todo, es implementado por el mÃ³dulo <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code> y con el se pretendÃ­a crear una autenticaciÃ³n mÃ¡s
+    segura. Este ya no es el caso, ya que la conexiÃ³n deberÃ¡ realizarse con  <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> en su lugar.
     </p>
 
     <p>La directiva <code class="directive"><a href="../mod/mod_authn_core.html#authname">AuthName</a></code> 
-    establece el <dfn>Realm</dfn> para ser usado en la autenticación. El 
+    establece el <dfn>Realm</dfn> para ser usado en la autenticaciÃ³n. El 
     <dfn>Realm</dfn> tiene dos funciones principales.
-    La primera, el cliente presenta a menudo esta información al usuario como 
-    parte del cuadro de diálogo de contraseña. La segunda, que es utilizado por 
-    el cliente para determinar qué contraseña enviar a para una determinada zona 
-    de autenticación.</p>
+    La primera, el cliente presenta a menudo esta informaciÃ³n al usuario como 
+    parte del cuadro de diÃ¡logo de contraseÃ±a. La segunda, que es utilizado por 
+    el cliente para determinar quÃ© contraseÃ±a enviar a para una determinada zona 
+    de autenticaciÃ³n.</p>
 
-    <p>Así que, por ejemple, una vez que el cliente se ha autenticado en el área de
-    los <code>"Ficheros Restringidos"</code>, entonces re-intentará automáticamente
-    la misma contraseña para cualquier área en el mismo servidor que es marcado 
+    <p>AsÃ­ que, por ejemple, una vez que el cliente se ha autenticado en el Ã¡rea de
+    los <code>"Ficheros Restringidos"</code>, entonces re-intentarÃ¡ automÃ¡ticamente
+    la misma contraseÃ±a para cualquier Ã¡rea en el mismo servidor que es marcado 
     con el Realm de <code>"Ficheros Restringidos"</code>
     Por lo tanto, puedes prevenir que a un usuario se le pida mas de una vez por su
-    contraseña, compartiendo así varias áreas restringidas el mismo Realm
-    Por supuesto, por razones de seguridad, el cliente pedirá siempre por una contraseña, 
+    contraseÃ±a, compartiendo asÃ­ varias Ã¡reas restringidas el mismo Realm
+    Por supuesto, por razones de seguridad, el cliente pedirÃ¡ siempre por una contraseÃ±a, 
     siempre y cuando el nombre del servidor cambie.
     </p>
 
     <p>La directiva <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code> es,
     en este caso, opcional, ya que <code>file</code> es el valor por defecto
-    para esta directiva. Deberás usar esta directiva si estas usando otro medio
-    diferente para la autenticación, como por ejemplo
+    para esta directiva. DeberÃ¡s usar esta directiva si estas usando otro medio
+    diferente para la autenticaciÃ³n, como por ejemplo
     <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code> o <code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code>.</p>
 
     <p>La directiva <code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code>
-    establece el path al fichero de contraseñas que acabamos de crear con el 
-    comando <code class="program"><a href="../programs/htpasswd.html">htpasswd</a></code>. Si tiene un número muy grande de usuarios, 
+    establece el path al fichero de contraseÃ±as que acabamos de crear con el 
+    comando <code class="program"><a href="../programs/htpasswd.html">htpasswd</a></code>. Si tiene un nÃºmero muy grande de usuarios, 
     puede ser realmente lento el buscar el usuario en ese fichero de texto plano 
-    para autenticar a los usuarios en cada petición.
-    Apache también tiene la habilidad de almacenar información de usuarios en 
-    unos ficheros de rápido acceso a modo de base de datos.
-    El módulo <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code> proporciona la directiva <code class="directive"><a href="../mod/mod_authn_dbm.html#authdbmuserfile">AuthDBMUserFile</a></code>. Estos ficheros pueden ser creados y
+    para autenticar a los usuarios en cada peticiÃ³n.
+    Apache tambiÃ©n tiene la habilidad de almacenar informaciÃ³n de usuarios en 
+    unos ficheros de rÃ¡pido acceso a modo de base de datos.
+    El mÃ³dulo <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code> proporciona la directiva <code class="directive"><a href="../mod/mod_authn_dbm.html#authdbmuserfile">AuthDBMUserFile</a></code>. Estos ficheros pueden ser creados y
     manipulados con el programa <code class="program"><a href="../programs/dbmmanage.html">dbmmanage</a></code> y <code class="program"><a href="../programs/htdbm.html">htdbm</a></code>. 
-    Muchos otros métodos de autenticación así como otras opciones, están disponibles en 
-    módulos de terceros 
-    <a href="http://modules.apache.org/">Base de datos de Módulos disponibles</a>.</p>
+    Muchos otros mÃ©todos de autenticaciÃ³n asÃ­ como otras opciones, estÃ¡n disponibles en 
+    mÃ³dulos de terceros 
+    <a href="http://modules.apache.org/">Base de datos de MÃ³dulos disponibles</a>.</p>
 
     <p>Finalmente, la directiva <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>
-    proporciona la parte del proceso de autorización estableciendo el o los
-    usuarios que se les está permitido acceder a una región del servidor.
-    En la próxima sección, discutiremos las diferentes vías de utilizar la 
+    proporciona la parte del proceso de autorizaciÃ³n estableciendo el o los
+    usuarios que se les estÃ¡ permitido acceder a una regiÃ³n del servidor.
+    En la prÃ³xima secciÃ³n, discutiremos las diferentes vÃ­as de utilizar la 
     directiva <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="lettingmorethanonepersonin" id="lettingmorethanonepersonin">Dejar que más de una persona 
+<h2><a name="lettingmorethanonepersonin" id="lettingmorethanonepersonin">Dejar que mÃ¡s de una persona 
 	entre</a><a title="Enlace permanente" href="#lettingmorethanonepersonin" class="permalink">&para;</a></h2>
-    <p>Las directivas mencionadas arriba sólo permiten a una persona 
+    <p>Las directivas mencionadas arriba sÃ³lo permiten a una persona 
     (especialmente con un usuario que en ej ejemplo es <code>rbowen</code>) 
-    en el directorio. En la mayoría de los casos, se querrá permitir el acceso
-    a más de una persona. Aquí es donde la directiva 
+    en el directorio. En la mayorÃ­a de los casos, se querrÃ¡ permitir el acceso
+    a mÃ¡s de una persona. AquÃ­ es donde la directiva 
     <code class="directive"><a href="../mod/mod_authz_groupfile.html#authgroupfile">AuthGroupFile</a></code> entra en juego.</p>
 
-    <p>Si lo que se desea es permitir a más de una persona el acceso, necesitarás
+    <p>Si lo que se desea es permitir a mÃ¡s de una persona el acceso, necesitarÃ¡s
      crear un archivo de grupo que asocie los nombres de grupos con el de personas
      para permitirles el acceso. El formato de este fichero es bastante sencillo, 
      y puedes crearlo con tu editor de texto favorito. El contenido del fichero 
-     se parecerá a:</p>
+     se parecerÃ¡ a:</p>
 
    <div class="example"><p><code>
      GroupName: rbowen dpitts sungo rshersey
    </code></p></div>
 
-    <p>Básicamente eso es la lista de miembros los cuales están en un mismo fichero
+    <p>BÃ¡sicamente eso es la lista de miembros los cuales estÃ¡n en un mismo fichero
      de grupo en una sola linea separados por espacios.</p>
 
-    <p>Para añadir un usuario a tu fichero de contraseñas existente teclee:</p>
+    <p>Para aÃ±adir un usuario a tu fichero de contraseÃ±as existente teclee:</p>
 
     <div class="example"><p><code>
       htpasswd /usr/local/apache/passwd/passwords dpitts
     </code></p></div>
 
-    <p>Te responderá lo mismo que anteriormente, pero se añadirá al fichero 
-    	existente en vez de crear uno nuevo. (Es decir el flag <code>-c</code> será 
+    <p>Te responderÃ¡ lo mismo que anteriormente, pero se aÃ±adirÃ¡ al fichero 
+    	existente en vez de crear uno nuevo. (Es decir el flag <code>-c</code> serÃ¡ 
     	el que haga que se genere un nuevo 
-    fichero de contraseñas).</p>
+    fichero de contraseÃ±as).</p>
 
-    <p>Ahora, tendrá que modificar su fichero <code>.htaccess</code> para que sea 
+    <p>Ahora, tendrÃ¡ que modificar su fichero <code>.htaccess</code> para que sea 
     parecido a lo siguiente:</p>
 
     <pre class="prettyprint lang-config">AuthType Basic
@@ -334,58 +334,58 @@ AuthGroupFile "/usr/local/apache/passwd/groups"
 Require group GroupName</pre>
 
 
-    <p>Ahora, cualquiera que esté listado en el grupo <code>GroupName</code>,
-    y tiene una entrada en el fichero de <code>contraseñas</code>, se les 
-    permitirá el acceso, si introducen su contraseña correctamente.</p>
+    <p>Ahora, cualquiera que estÃ© listado en el grupo <code>GroupName</code>,
+    y tiene una entrada en el fichero de <code>contraseÃ±as</code>, se les 
+    permitirÃ¡ el acceso, si introducen su contraseÃ±a correctamente.</p>
 
-    <p>Hay otra manera de dejar entrar a varios usuarios, que es menos específica.
-    En lugar de crear un archivo de grupo, sólo puede utilizar la siguiente 
+    <p>Hay otra manera de dejar entrar a varios usuarios, que es menos especÃ­fica.
+    En lugar de crear un archivo de grupo, sÃ³lo puede utilizar la siguiente 
     directiva:</p>
 
     <pre class="prettyprint lang-config">Require valid-user</pre>
 
 
-    <p>Usando ésto en vez de la línea <code>Require user rbowen</code>
-     permitirá a cualquier persona acceder, la cuál aparece en el archivo de 
-     contraseñas, y que introduzca correctamente su contraseña. Incluso puede 
-     emular el comportamiento del grupo aquí, sólo manteniendo un fichero de 
-     contraseñas independiente para cada grupo. La ventaja de este enfoque es 
-     que Apache sólo tiene que comprobar un archivo, en lugar de dos. La desventaja 
-     es que se tiene que mantener un montón de ficheros de contraseña de grupo, y 
+    <p>Usando Ã©sto en vez de la lÃ­nea <code>Require user rbowen</code>
+     permitirÃ¡ a cualquier persona acceder, la cuÃ¡l aparece en el archivo de 
+     contraseÃ±as, y que introduzca correctamente su contraseÃ±a. Incluso puede 
+     emular el comportamiento del grupo aquÃ­, sÃ³lo manteniendo un fichero de 
+     contraseÃ±as independiente para cada grupo. La ventaja de este enfoque es 
+     que Apache sÃ³lo tiene que comprobar un archivo, en lugar de dos. La desventaja 
+     es que se tiene que mantener un montÃ³n de ficheros de contraseÃ±a de grupo, y 
      recuerde hacer referencia al fichero correcto en la directiva
     <code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="possibleproblems" id="possibleproblems">Posibles Problemas</a><a title="Enlace permanente" href="#possibleproblems" class="permalink">&para;</a></h2>
-    <p>Debido a la forma en que se especifica la autenticación básica,
-    su nombre de usuario y la contraseña deben ser verificados cada vez 
+    <p>Debido a la forma en que se especifica la autenticaciÃ³n bÃ¡sica,
+    su nombre de usuario y la contraseÃ±a deben ser verificados cada vez 
     que se solicita un documento desde el servidor. Esto es, incluso si&nbsp;
-    se&nbsp; vuelve a cargar la misma página, y para cada imagen de la página (si
+    se&nbsp; vuelve a cargar la misma pÃ¡gina, y para cada imagen de la pÃ¡gina (si
 &nbsp;&nbsp;&nbsp;&nbsp;provienen de un directorio protegido). Como se puede imaginar, esto
 &nbsp;&nbsp;&nbsp;&nbsp;ralentiza las cosas un poco. La cantidad que ralentiza las cosas es 
-    proporcional al tamaño del archivo de contraseñas, porque tiene que 
+    proporcional al tamaÃ±o del archivo de contraseÃ±as, porque tiene que 
     abrir ese archivo, recorrer&nbsp;lista de usuarios hasta que llega a su nombre.
-    Y tiene que hacer esto cada vez que se carga una página.</p>
+    Y tiene que hacer esto cada vez que se carga una pÃ¡gina.</p>
 
-    <p>Una consecuencia de esto, es que hay un limite práctico de cuantos 
-    usuarios puedes introducir en el fichero de contraseñas. Este límite
-    variará dependiendo de la máquina en la que tengas el servidor,
+    <p>Una consecuencia de esto, es que hay un limite prÃ¡ctico de cuantos 
+    usuarios puedes introducir en el fichero de contraseÃ±as. Este lÃ­mite
+    variarÃ¡ dependiendo de la mÃ¡quina en la que tengas el servidor,
     pero puedes notar ralentizaciones en cuanto se metan cientos de entradas,
-    y por lo tanto consideraremos entonces otro método de autenticación
+    y por lo tanto consideraremos entonces otro mÃ©todo de autenticaciÃ³n
     en ese momento.
 	</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="dbmdbd" id="dbmdbd">Método alternativo de almacenamiento de las 
-	contraseñas</a><a title="Enlace permanente" href="#dbmdbd" class="permalink">&para;</a></h2>
+<h2><a name="dbmdbd" id="dbmdbd">MÃ©todo alternativo de almacenamiento de las 
+	contraseÃ±as</a><a title="Enlace permanente" href="#dbmdbd" class="permalink">&para;</a></h2>
 
-    <p>Debido a que el almacenamiento de las contraseñas en texto plano tiene 
+    <p>Debido a que el almacenamiento de las contraseÃ±as en texto plano tiene 
     	el problema mencionado anteriormente, puede que se prefiera guardar 
-    	las contraseñas en otro lugar como por ejemplo una base de datos.
+    	las contraseÃ±as en otro lugar como por ejemplo una base de datos.
     	</p>
 
-    <p>Los módulos <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code> y <code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code> son
-    dos módulos que hacen esto posible. En vez de seleccionar la directiva de fichero
+    <p>Los mÃ³dulos <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code> y <code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code> son
+    dos mÃ³dulos que hacen esto posible. En vez de seleccionar la directiva de fichero
     <code><code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code> </code>, en su lugar
     se puede elegir <code>dbm</code> o <code>dbd</code> como formato de almacenamiento.</p>
 
@@ -400,19 +400,19 @@ Require group GroupName</pre>
 &lt;/Directory&gt;</pre>
 
 
-    <p>Hay otras opciones disponibles. Consulta la documentación de
-    <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code> para más detalles.</p>
+    <p>Hay otras opciones disponibles. Consulta la documentaciÃ³n de
+    <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code> para mÃ¡s detalles.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="multprovider" id="multprovider">Uso de múltiples proveedores</a><a title="Enlace permanente" href="#multprovider" class="permalink">&para;</a></h2>
+<h2><a name="multprovider" id="multprovider">Uso de mÃºltiples proveedores</a><a title="Enlace permanente" href="#multprovider" class="permalink">&para;</a></h2>
 
-    <p>Con la introducción de la nueva autenticación basada en un proveedor y
-     una arquitectura de autorización, ya no estaremos restringidos a un único
-     método de autenticación o autorización. De hecho, cualquier número de 
+    <p>Con la introducciÃ³n de la nueva autenticaciÃ³n basada en un proveedor y
+     una arquitectura de autorizaciÃ³n, ya no estaremos restringidos a un Ãºnico
+     mÃ©todo de autenticaciÃ³n o autorizaciÃ³n. De hecho, cualquier nÃºmero de 
      los proveedores pueden ser mezclados y emparejados para ofrecerle 
      exactamente el esquema que se adapte a sus necesidades. 
      En el siguiente ejemplo, veremos como ambos proveedores tanto el fichero 
-     como el LDAP son usados en la autenticación:
+     como el LDAP son usados en la autenticaciÃ³n:
      </p>
 
     <pre class="prettyprint lang-config">&lt;Directory "/www/docs/private"&gt;
@@ -425,21 +425,21 @@ Require group GroupName</pre>
 &lt;/Directory&gt;</pre>
 
 
-    <p>En este ejemplo el fichero, que actúa como proveedor, intentará autenticar 
+    <p>En este ejemplo el fichero, que actÃºa como proveedor, intentarÃ¡ autenticar 
     	primero al usuario. Si no puede autenticar al usuario, el proveedor del LDAP
-    	será llamado para que realice la autenticación.
-    	Esto permite al ámbito de autenticación ser amplio, si su organización 
-    	implementa más de un tipo de almacén de autenticación. 
-    	Otros escenarios de autenticación y autorización pueden incluir la 
-    	mezcla de un tipo de autenticación con un tipo diferente de autorización.
-    	Por ejemplo, autenticar contra un fichero de contraseñas pero autorizando
+    	serÃ¡ llamado para que realice la autenticaciÃ³n.
+    	Esto permite al Ã¡mbito de autenticaciÃ³n ser amplio, si su organizaciÃ³n 
+    	implementa mÃ¡s de un tipo de almacÃ©n de autenticaciÃ³n. 
+    	Otros escenarios de autenticaciÃ³n y autorizaciÃ³n pueden incluir la 
+    	mezcla de un tipo de autenticaciÃ³n con un tipo diferente de autorizaciÃ³n.
+    	Por ejemplo, autenticar contra un fichero de contraseÃ±as pero autorizando
     	dicho acceso mediante el directorio del LDAP.</p>
 
-    <p>Así como múltiples métodos y proveedores de autenticación pueden 
-    	ser implementados, también pueden usarse múltiples formas de 
-    	autorización.
-    	En este ejemplo ambos ficheros de autorización de grupo así como 
-    	autorización de grupo mediante LDAP va a ser usado:
+    <p>AsÃ­ como mÃºltiples mÃ©todos y proveedores de autenticaciÃ³n pueden 
+    	ser implementados, tambiÃ©n pueden usarse mÃºltiples formas de 
+    	autorizaciÃ³n.
+    	En este ejemplo ambos ficheros de autorizaciÃ³n de grupo asÃ­ como 
+    	autorizaciÃ³n de grupo mediante LDAP va a ser usado:
     </p>
 
     <pre class="prettyprint lang-config">&lt;Directory "/www/docs/private"&gt;
@@ -454,54 +454,54 @@ Require group GroupName</pre>
 &lt;/Directory&gt;</pre>
 
 
-    <p>Para llevar la autorización un poco más lejos, las directivas 
-    	de autorización de contenedores tales como
+    <p>Para llevar la autorizaciÃ³n un poco mÃ¡s lejos, las directivas 
+    	de autorizaciÃ³n de contenedores tales como
     <code class="directive"><a href="../mod/mod_authz_core.html#requireall">&lt;RequireAll&gt;</a></code>
     and
     <code class="directive"><a href="../mod/mod_authz_core.html#requireany">&lt;RequireAny&gt;</a></code>
-    nos permiten aplicar una lógica de en qué orden se manejará la autorización dependiendo
-    de la configuración y controlada a través de ella.
-    Mire también <a href="../mod/mod_authz_core.html#logic">Contenedores de
-    Autorización</a> para ejemplos de cómo pueden ser aplicados.</p>
+    nos permiten aplicar una lÃ³gica de en quÃ© orden se manejarÃ¡ la autorizaciÃ³n dependiendo
+    de la configuraciÃ³n y controlada a travÃ©s de ella.
+    Mire tambiÃ©n <a href="../mod/mod_authz_core.html#logic">Contenedores de
+    AutorizaciÃ³n</a> para ejemplos de cÃ³mo pueden ser aplicados.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="beyond" id="beyond">Más allá de la Autorización</a><a title="Enlace permanente" href="#beyond" class="permalink">&para;</a></h2>
+<h2><a name="beyond" id="beyond">MÃ¡s allÃ¡ de la AutorizaciÃ³n</a><a title="Enlace permanente" href="#beyond" class="permalink">&para;</a></h2>
 
-    <p>El modo en que la autorización puede ser aplicada es ahora mucho más flexible
-    	que us solo chequeo contra un almacén de datos (contraseñas). Ordenando la 
-    	lógica y escoger la forma en que la autorización es realizada, ahora es posible 
+    <p>El modo en que la autorizaciÃ³n puede ser aplicada es ahora mucho mÃ¡s flexible
+    	que us solo chequeo contra un almacÃ©n de datos (contraseÃ±as). Ordenando la 
+    	lÃ³gica y escoger la forma en que la autorizaciÃ³n es realizada, ahora es posible 
     </p>
 
-    <h3><a name="authandororder" id="authandororder">Aplicando la lógica y ordenación</a></h3>
-        <p>Controlar el cómo y en qué orden se va a aplicar la autorización ha 
+    <h3><a name="authandororder" id="authandororder">Aplicando la lÃ³gica y ordenaciÃ³n</a></h3>
+        <p>Controlar el cÃ³mo y en quÃ© orden se va a aplicar la autorizaciÃ³n ha 
         	sido un misterio en el pasado. En Apache 2.2 un proveedor del 
-        	mecanismo de autenticación fue introducido para disociar el proceso actual
-        	de autenticación y soportar funcionalidad.
-        	Uno de los beneficios secundarios fue que los proveedores de autenticación
-        	podían ser configurados y llamados en un orden especifico que no dependieran
+        	mecanismo de autenticaciÃ³n fue introducido para disociar el proceso actual
+        	de autenticaciÃ³n y soportar funcionalidad.
+        	Uno de los beneficios secundarios fue que los proveedores de autenticaciÃ³n
+        	podÃ­an ser configurados y llamados en un orden especifico que no dependieran
         	en el orden de carga del propio modulo. 
-        	Este proveedor de dicho mecanismo, ha sido introducido en la autorización
-        	también. Lo que esto significa es que la directiva 
+        	Este proveedor de dicho mecanismo, ha sido introducido en la autorizaciÃ³n
+        	tambiÃ©n. Lo que esto significa es que la directiva 
         	<code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> 
-        	no sólo especifica que método de autorización deberá ser usado, si no
-        	también especifica el orden en que van a ser llamados. Múltiples
-        	métodos de autorización son llamados en el mismo orden en que la directiva
+        	no sÃ³lo especifica que mÃ©todo de autorizaciÃ³n deberÃ¡ ser usado, si no
+        	tambiÃ©n especifica el orden en que van a ser llamados. MÃºltiples
+        	mÃ©todos de autorizaciÃ³n son llamados en el mismo orden en que la directiva
             <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> aparece en la
-            configuración.
+            configuraciÃ³n.
         </p>
 
         <p>
-        	Con la Introducción del contenedor de directivas de autorización tales como
+        	Con la IntroducciÃ³n del contenedor de directivas de autorizaciÃ³n tales como
 	        <code class="directive"><a href="../mod/mod_authz_core.html#requireall">&lt;RequireAll&gt;</a></code>
 	        y
 	        <code class="directive"><a href="../mod/mod_authz_core.html#requireany">&lt;RequireAny&gt;</a></code>,
-	        La configuración también tiene control sobre cuándo se llaman a los métodos
-	        de autorización y qué criterios determinan cuándo se concede el acceso.
+	        La configuraciÃ³n tambiÃ©n tiene control sobre cuÃ¡ndo se llaman a los mÃ©todos
+	        de autorizaciÃ³n y quÃ© criterios determinan cuÃ¡ndo se concede el acceso.
 	        Vease
-	        <a href="../mod/mod_authz_core.html#logic">Contenedores de autorización</a>
-	        Para un ejemplo de cómo pueden ser utilizados para expresar una lógica 
-	        más compleja de autorización.
+	        <a href="../mod/mod_authz_core.html#logic">Contenedores de autorizaciÃ³n</a>
+	        Para un ejemplo de cÃ³mo pueden ser utilizados para expresar una lÃ³gica 
+	        mÃ¡s compleja de autorizaciÃ³n.
 	    </p>
 
         <p>
@@ -509,35 +509,35 @@ Require group GroupName</pre>
         	<code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>
        		son manejadas como si estuvieran contenidas en una directiva
        		<code class="directive"><a href="../mod/mod_authz_core.html#requireany">&lt;RequireAny&gt;</a></code>.
-       		En otras palabras, Si alguno de los métodos de autorización 
-       		especificados tiene éxito, se concede la autorización.
+       		En otras palabras, Si alguno de los mÃ©todos de autorizaciÃ³n 
+       		especificados tiene Ã©xito, se concede la autorizaciÃ³n.
        	</p>
 
     
 
-    <h3><a name="reqaccessctrl" id="reqaccessctrl">Uso de los proveedores de autorización para 
+    <h3><a name="reqaccessctrl" id="reqaccessctrl">Uso de los proveedores de autorizaciÃ³n para 
     	el control de acceso</a></h3>
 
     	<p>
-    		La autenticación de nombre de usuario y contraseña es sólo parte
+    		La autenticaciÃ³n de nombre de usuario y contraseÃ±a es sÃ³lo parte
     		de toda la historia que conlleva el proceso. Frecuentemente quiere
-    		dar acceso a la gente en base a algo más que lo que son.
+    		dar acceso a la gente en base a algo mÃ¡s que lo que son.
     		Algo como de donde vienen.
     	</p>
 
         <p>
-        	Los proveedores de autorización <code>all</code>,
+        	Los proveedores de autorizaciÃ³n <code>all</code>,
         	<code>env</code>, <code>host</code> y <code>ip</code>
-        	te permiten denegar o permitir el acceso basándose en otros
-        	criterios como el nombre de la máquina o la IP de la máquina que
+        	te permiten denegar o permitir el acceso basÃ¡ndose en otros
+        	criterios como el nombre de la mÃ¡quina o la IP de la mÃ¡quina que
         	realiza la consulta para un documento.
         </p>
 
         <p>
-        	El uso de estos proveedores se especifica a través de la directiva
+        	El uso de estos proveedores se especifica a travÃ©s de la directiva
         	<code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>.
-        	La directiva registra los proveedores de autorización que serán llamados
-        	durante la solicitud de la fase del proceso de autorización. Por ejemplo:
+        	La directiva registra los proveedores de autorizaciÃ³n que serÃ¡n llamados
+        	durante la solicitud de la fase del proceso de autorizaciÃ³n. Por ejemplo:
         </p>
 
         <pre class="prettyprint lang-config">Require ip <var>address</var>
@@ -545,7 +545,7 @@ Require group GroupName</pre>
 
 
         <p>
-        	Donde <var>address</var> es una dirección IP (o una dirección IP parcial) 
+        	Donde <var>address</var> es una direcciÃ³n IP (o una direcciÃ³n IP parcial) 
         	o bien:
         </p>
 
@@ -556,12 +556,12 @@ Require group GroupName</pre>
         <p>
         	Donde <var>domain_name</var> es el nombre completamente cualificado de un nombre 
 	        de dominio (FQDN) (o un nombre parcial del dominio);
-	        puede proporcionar múltiples direcciones o nombres de dominio, si se desea.
+	        puede proporcionar mÃºltiples direcciones o nombres de dominio, si se desea.
         </p>
 
         <p>
-        	Por ejemplo, si alguien envía spam a su tablón de mensajes y desea
-        	mantenerlos alejados, podría hacer lo siguiente:</p>
+        	Por ejemplo, si alguien envÃ­a spam a su tablÃ³n de mensajes y desea
+        	mantenerlos alejados, podrÃ­a hacer lo siguiente:</p>
 
         <pre class="prettyprint lang-config">&lt;RequireAll&gt;
     Require all granted
@@ -570,9 +570,9 @@ Require group GroupName</pre>
 
 
         <p>
-        	Visitantes que vengan desde esa IP no serán capaces de ver el contenido
+        	Visitantes que vengan desde esa IP no serÃ¡n capaces de ver el contenido
         	que cubre esta directiva. Si, en cambio, lo que se tiene es el nombre de
-        	la máquina, en vez de la dirección IP, podría usar:
+        	la mÃ¡quina, en vez de la direcciÃ³n IP, podrÃ­a usar:
         </p>
 
         <pre class="prettyprint lang-config">&lt;RequireAll&gt;
@@ -584,7 +584,7 @@ Require group GroupName</pre>
         <p>
         	Y, si lo que se quiere es bloquear el acceso desde un determinado dominio
         	(bloquear el acceso desde el dominio entero), puede especificar parte 
-        	de la dirección o del propio dominio a bloquear:
+        	de la direcciÃ³n o del propio dominio a bloquear:
         </p>
 
         <pre class="prettyprint lang-config">&lt;RequireAll&gt;
@@ -597,9 +597,9 @@ Require group GroupName</pre>
 
         <p>
         	Usando <code class="directive"><a href="../mod/mod_authz_core.html#requireall">&lt;RequireAll&gt;</a></code>
-	        con múltiples directivas <code class="directive"><a href="../mod/mod_authz_core.html#require">&lt;Require&gt;</a></code>, cada una negada con un <code>not</code>,
-	        Sólo permitirá el acceso, si todas las condiciones negadas son verdaderas.
-	        En otras palabras, el acceso será bloqueado, si cualquiera de las condiciones
+	        con mÃºltiples directivas <code class="directive"><a href="../mod/mod_authz_core.html#require">&lt;Require&gt;</a></code>, cada una negada con un <code>not</code>,
+	        SÃ³lo permitirÃ¡ el acceso, si todas las condiciones negadas son verdaderas.
+	        En otras palabras, el acceso serÃ¡ bloqueado, si cualquiera de las condiciones
 	        negadas fallara.
         </p>
 
@@ -610,13 +610,13 @@ Require group GroupName</pre>
 
         <p>
         	Uno de los efectos secundarios de adoptar proveedores basados en 
-        	mecanismos de autenticación es que las directivas anteriores
+        	mecanismos de autenticaciÃ³n es que las directivas anteriores
 	        <code class="directive"><a href="../mod/mod_access_compat.html#order">Order</a></code>,
 	        <code class="directive"><a href="../mod/mod_access_compat.html#allow">Allow</a></code>,
 	        <code class="directive"><a href="../mod/mod_access_compat.html#deny">Deny</a></code> y
         	<code class="directive"><a href="../mod/mod_access_compat.html#satisfy">Satisfy</a></code> ya no son necesarias.
         	Sin embargo, para proporcionar compatibilidad con configuraciones antiguas,
-        	estas directivas se han movido al módulo <code class="module"><a href="../mod/mod_access_compat.html">mod_access_compat</a></code>.
+        	estas directivas se han movido al mÃ³dulo <code class="module"><a href="../mod/mod_access_compat.html">mod_access_compat</a></code>.
         </p>
 
         <div class="warning"><h3>Nota:</h3>
@@ -625,16 +625,16 @@ Require group GroupName</pre>
 	        	han quedado obsoletas por <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code>. Mezclar 
 	        	directivas antiguas como
 	        	<code class="directive"><a href="../mod/mod_access_compat.html#order">Order</a></code>, 
-	            <code class="directive"><a href="../mod/mod_access_compat.html#allow">Allow</a></code> ó 
+	            <code class="directive"><a href="../mod/mod_access_compat.html#allow">Allow</a></code> Ã³ 
 	            <code class="directive"><a href="../mod/mod_access_compat.html#deny">Deny</a></code> con las nuevas 
 	            como 
 	            <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> 
-	            es técnicamente posible pero desaconsejable. El módulo 
-	            <code class="module"><a href="../mod/mod_access_compat.html">mod_access_compat</a></code> se creó para soportar configuraciones
-	            que contuvieran sólo directivas antiguas para facilitar la actualización
-	            a la versión 2.4.
-	            Por favor revise la documentación de 
-	            <a href="../upgrading.html">actualización</a> para más información al
+	            es tÃ©cnicamente posible pero desaconsejable. El mÃ³dulo 
+	            <code class="module"><a href="../mod/mod_access_compat.html">mod_access_compat</a></code> se creÃ³ para soportar configuraciones
+	            que contuvieran sÃ³lo directivas antiguas para facilitar la actualizaciÃ³n
+	            a la versiÃ³n 2.4.
+	            Por favor revise la documentaciÃ³n de 
+	            <a href="../upgrading.html">actualizaciÃ³n</a> para mÃ¡s informaciÃ³n al
 	            respecto.
 	        </p>
 	    </div>
@@ -642,14 +642,14 @@ Require group GroupName</pre>
 
 	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="socache" id="socache">Cache de Autenticación</a><a title="Enlace permanente" href="#socache" class="permalink">&para;</a></h2>
+<h2><a name="socache" id="socache">Cache de AutenticaciÃ³n</a><a title="Enlace permanente" href="#socache" class="permalink">&para;</a></h2>
 	<p>
-		Puede haber momentos en que la autenticación ponga una carga 
-		inaceptable en el proveedor (de autenticación) o en tu red.
+		Puede haber momentos en que la autenticaciÃ³n ponga una carga 
+		inaceptable en el proveedor (de autenticaciÃ³n) o en tu red.
 		Esto suele afectar a los usuarios de <code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code> 
 		(u otros proveedores de terceros/personalizados).
 		Para lidiar con este problema, HTTPD 2.3/2.4 introduce un nuevo proveedor
-		de caché  <code class="module"><a href="../mod/mod_authn_socache.html">mod_authn_socache</a></code> para cachear las credenciales 
+		de cachÃ©  <code class="module"><a href="../mod/mod_authn_socache.html">mod_authn_socache</a></code> para cachear las credenciales 
 		y reducir la carga en el proveedor(es) original.
 	</p>
     <p>
@@ -657,35 +657,35 @@ Require group GroupName</pre>
     </p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="moreinformation" id="moreinformation">Más información</a><a title="Enlace permanente" href="#moreinformation" class="permalink">&para;</a></h2>
+<h2><a name="moreinformation" id="moreinformation">MÃ¡s informaciÃ³n</a><a title="Enlace permanente" href="#moreinformation" class="permalink">&para;</a></h2>
 
     <p>
-    	También debería leer la documentación para
+    	TambiÃ©n deberÃ­a leer la documentaciÃ³n para
     	<code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> y <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code>
-    	la cuál contiene más información de como funciona todo esto.
-    	La directiva <code class="directive"><a href="../mod/mod_authn_core.html#authnprovideralias">&lt;AuthnProviderAlias&gt;</a></code> puede también ayudar 
-	    a la hora de simplificar ciertas configuraciones de autenticación.
+    	la cuÃ¡l contiene mÃ¡s informaciÃ³n de como funciona todo esto.
+    	La directiva <code class="directive"><a href="../mod/mod_authn_core.html#authnprovideralias">&lt;AuthnProviderAlias&gt;</a></code> puede tambiÃ©n ayudar 
+	    a la hora de simplificar ciertas configuraciones de autenticaciÃ³n.
 	</p>
 
     <p>
-    	Los diferentes algoritmos de cifrado que están soportados por Apache
-    	para la autenticación se explican en
-    	<a href="../misc/password_encryptions.html">Cifrado de Contraseñas</a>.
+    	Los diferentes algoritmos de cifrado que estÃ¡n soportados por Apache
+    	para la autenticaciÃ³n se explican en
+    	<a href="../misc/password_encryptions.html">Cifrado de ContraseÃ±as</a>.
     </p>
 
     <p>
-    	Y tal vez quiera ojear la documentación de "how to"  
+    	Y tal vez quiera ojear la documentaciÃ³n de "how to"  
     	<a href="access.html">Control de Acceso</a>  donde se mencionan temas 
     	relacionados.</p>
 
 </div></div>
 <div class="bottomlang">
 <p><span>Idiomas disponibles: </span><a href="../en/howto/auth.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/howto/auth.html" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/howto/auth.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../es/howto/auth.html" title="EspaÃ±ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/howto/auth.html" hreflang="fr" rel="alternate" title="FranÃ§ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/howto/auth.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/auth.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/howto/auth.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/howto/auth.html" hreflang="tr" rel="alternate" title="TÃ¼rkÃ§e">&nbsp;tr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comentarios</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -704,8 +704,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/howto/auth.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Licencia bajo los tÃ©rminos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">MÃ³dulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

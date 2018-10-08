@@ -1,13 +1,13 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
-<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>mod_asis - Servidor HTTP Apache Versión 2.5</title>
+<title>mod_asis - Servidor HTTP Apache VersiÃ³n 2.5</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -17,46 +17,46 @@
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p>
-<p class="apache">Versión 2.5 del Servidor HTTP Apache</p>
+<p class="menu"><a href="../mod/">MÃ³dulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p>
+<p class="apache">VersiÃ³n 2.5 del Servidor HTTP Apache</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentación</a> &gt; <a href="../">Versión 2.5</a> &gt; <a href="./">Módulos</a></div>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">DocumentaciÃ³n</a> &gt; <a href="../">VersiÃ³n 2.5</a> &gt; <a href="./">MÃ³dulos</a></div>
 <div id="page-content">
-<div id="preamble"><h1>Módulo Apache mod_asis</h1>
+<div id="preamble"><h1>MÃ³dulo Apache mod_asis</h1>
 <div class="toplang">
 <p><span>Idiomas disponibles: </span><a href="../en/mod/mod_asis.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/mod/mod_asis.html" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/mod/mod_asis.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../es/mod/mod_asis.html" title="EspaÃ±ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/mod/mod_asis.html" hreflang="fr" rel="alternate" title="FranÃ§ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_asis.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_asis.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Descripción:</a></th><td>Envía ficheros que contienen sus propias 
+<table class="module"><tr><th><a href="module-dict.html#Description">DescripciÃ³n:</a></th><td>EnvÃ­a ficheros que contienen sus propias 
   cabeceras HTTP</td></tr>
 <tr><th><a href="module-dict.html#Status">Estado:</a></th><td>Base</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificador de Módulos:</a></th><td>asis_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichero de Código Fuente:</a></th><td>mod_asis.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificador de MÃ³dulos:</a></th><td>asis_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichero de CÃ³digo Fuente:</a></th><td>mod_asis.c</td></tr></table>
 <h3>Resumen de contenidos</h3>
 
-    <p>Este módulo provee el handler <code>send-as-is</code>
-      que hace que Apache HTTP Server envíe documentos sin añadir a ellos la 
-      mayoría de las cabeceras típicas de HTTP.</p>
+    <p>Este mÃ³dulo provee el handler <code>send-as-is</code>
+      que hace que Apache HTTP Server envÃ­e documentos sin aÃ±adir a ellos la 
+      mayorÃ­a de las cabeceras tÃ­picas de HTTP.</p>
 
     <p>Esto se puede usar para enviar cualquier tipo de datos desde el servidor, 
       incluyendo redirecciones y otras respuestas HTTP especiales, sin 
       necesitar un script-cgi o un script nph.</p>
 
-    <p>Por razones históricas, este módulo también procesará cualquier fichero
+    <p>Por razones histÃ³ricas, este mÃ³dulo tambiÃ©n procesarÃ¡ cualquier fichero
       con el tipo MIME <code>httpd/send-as-is</code>.</p>
 </div>
 <div id="quickview"><h3>Temas</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#usage">Uso</a></li>
 </ul><h3 class="directives">Directivas</h3>
-<p>Este módulo no suministra ninguna
+<p>Este mÃ³dulo no suministra ninguna
             directiva.</p>
-<h3>Lista de comprobación de errores corregidos</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd historial de cambios</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_asis">Problemas Conocidos</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_asis">Reportar un error</a></li></ul><h3>Consulte también</h3>
+<h3>Lista de comprobaciÃ³n de errores corregidos</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd historial de cambios</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_asis">Problemas Conocidos</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_asis">Reportar un error</a></li></ul><h3>Consulte tambiÃ©n</h3>
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code></li>
 <li><code class="module"><a href="../mod/mod_cern_meta.html">mod_cern_meta</a></code></li>
@@ -66,22 +66,22 @@
 <div class="section">
 <h2><a name="usage" id="usage">Uso</a><a title="Enlace permanente" href="#usage" class="permalink">&para;</a></h2>
 
-    <p>En el fichero de configuración del servidor, asociar ficheros con el 
+    <p>En el fichero de configuraciÃ³n del servidor, asociar ficheros con el 
       handler <code>send-as-is</code> <em>p. ej.</em></p>
 
     <pre class="prettyprint lang-config">AddHandler send-as-is asis</pre>
 
 
-    <p>Los contenidos de cualquier fichero con la extensión <code>.asis</code> 
-    se enviarán por Apache httpd al cliente sin apenas cambios. En particular, 
-    las cabeceras HTTP provienen del propio fichero según las reglas de 
-    <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>, así que un fichero "asis" debe incluir cabeceras 
-    válidas, y también puede usar la cabecera CGI 
-    <code>Status:</code> para determinar el código de la respuesta HTTP. La 
-    cabecera <code>Content-Length:</code> se insertará automáticamente, o si se 
-    incluye en el fichero, será corregida por httpd.</p>
+    <p>Los contenidos de cualquier fichero con la extensiÃ³n <code>.asis</code> 
+    se enviarÃ¡n por Apache httpd al cliente sin apenas cambios. En particular, 
+    las cabeceras HTTP provienen del propio fichero segÃºn las reglas de 
+    <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>, asÃ­ que un fichero "asis" debe incluir cabeceras 
+    vÃ¡lidas, y tambiÃ©n puede usar la cabecera CGI 
+    <code>Status:</code> para determinar el cÃ³digo de la respuesta HTTP. La 
+    cabecera <code>Content-Length:</code> se insertarÃ¡ automÃ¡ticamente, o si se 
+    incluye en el fichero, serÃ¡ corregida por httpd.</p>
 
-    <p>Aquí hay un ejemplo de un fichero cuyo contenido se envía 
+    <p>AquÃ­ hay un ejemplo de un fichero cuyo contenido se envÃ­a 
       <em>as is</em> (tal cual) para decirle al cliente que 
       un fichero se ha redirigido.</p>
 
@@ -95,7 +95,7 @@
       &lt;title&gt;Excusas flojas'R'us&lt;/title&gt;<br />
       &lt;/head&gt;<br />
       &lt;body&gt;<br />
-      &lt;h1&gt;La excepcionalmente maravillosa página de Fred's se ha movido a<br />
+      &lt;h1&gt;La excepcionalmente maravillosa pÃ¡gina de Fred's se ha movido a<br />
       &lt;a href="http://xyz.example.com/foo/bar.html"&gt;Joe's&lt;/a&gt;
       site.<br />
       &lt;/h1&gt;<br />
@@ -104,17 +104,17 @@
     </code></p></div>
 
     <div class="note"><h3>Notas:</h3>
-    <p>El servidor siempre añade una cabecera <code>Date:</code> y 
+    <p>El servidor siempre aÃ±ade una cabecera <code>Date:</code> y 
     <code>Server:</code> a los datos que se devuelven al cliente, de manera que 
-    estos no deben incluirse en el fichero. El servidor <em>no</em> añade una 
-    cabecera <code>Last-Modified</code> ; probablemente debería.</p>
+    estos no deben incluirse en el fichero. El servidor <em>no</em> aÃ±ade una 
+    cabecera <code>Last-Modified</code> ; probablemente deberÃ­a.</p>
     </div>
 </div>
 </div>
 <div class="bottomlang">
 <p><span>Idiomas disponibles: </span><a href="../en/mod/mod_asis.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/mod/mod_asis.html" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/mod/mod_asis.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../es/mod/mod_asis.html" title="EspaÃ±ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/mod/mod_asis.html" hreflang="fr" rel="alternate" title="FranÃ§ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_asis.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_asis.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comentarios</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
@@ -135,8 +135,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_asis.html'
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Licencia bajo los tÃ©rminos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">MÃ³dulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }
