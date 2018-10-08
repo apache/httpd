@@ -131,6 +131,18 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x branch: svn merge -c 1841446,1841455 ^/httpd/httpd/trunk .
      +1: icing, minfrin, jim
 
+  *) ab: print Server Temp Key information.
+     trunk patch: http://svn.apache.org/r1738415
+                  http://svn.apache.org/r1826930
+     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-ab.patch
+     +1: minfrin, jim, ylavic
+
+  *) ab: Add client certificate support.
+     trunk: http://svn.apache.org/r1841784
+     2.4.x: svn merge -c r1841784 ^/httpd/httpd/trunk .
+     (requires r1738415 and r1826930 above to resolve conflict)
+     +1: minfrin, jim, ylavic
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -181,18 +193,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              http://svn.apache.org/r1828626
       2.4.x patch: http://home.apache.org/~jim/patches/socache_redisv2.patch
       +1: jim, minfrin
-
-  *) ab: print Server Temp Key information.
-     trunk patch: http://svn.apache.org/r1738415
-                  http://svn.apache.org/r1826930
-     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-ab.patch
-     +1: minfrin, jim
-
-  *) ab: Add client certificate support.
-     trunk: http://svn.apache.org/r1841784
-     2.4.x: svn merge -c r1841784 ^/httpd/httpd/trunk .
-     (requires r1738415 and r1826930 above to resolve conflict)
-     +1: minfrin, jim
 
   *) mod_ssl: Fix a regression that the configuration settings for verify mode
      and verify depth were taken from the frontend connection in case of
