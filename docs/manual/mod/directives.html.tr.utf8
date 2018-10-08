@@ -254,6 +254,7 @@
 <li><a href="mod_autoindex.html#defaulticon">DefaultIcon</a></li>
 <li><a href="mod_mime.html#defaultlanguage">DefaultLanguage</a></li>
 <li><a href="core.html#defaultruntimedir">DefaultRuntimeDir</a></li>
+<li><a href="core.html#defaultstatedir">DefaultStateDir</a></li>
 <li><a href="core.html#defaulttype">DefaultType</a></li>
 <li><a href="core.html#define">Define</a></li>
 <li><a href="mod_deflate.html#deflatealteretag">DeflateAlterETag</a></li>

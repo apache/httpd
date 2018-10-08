@@ -23,7 +23,7 @@
     <name>French</name>
     <charset>UTF-8</charset>
     <source-ext>.xml.fr</source-ext>
-    <target-ext>.html.fr</target-ext>
+    <target-ext>.html.fr.utf8</target-ext>
 
     <chm>
         <lang>0x40c French (France)</lang>

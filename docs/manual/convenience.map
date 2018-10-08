@@ -215,6 +215,7 @@ dbdriver	mod/mod_dbd.html#dbdriver
 defaulticon	mod/mod_autoindex.html#defaulticon
 defaultlanguage	mod/mod_mime.html#defaultlanguage
 defaultruntimedir	mod/core.html#defaultruntimedir
+defaultstatedir	mod/core.html#defaultstatedir
 defaulttype	mod/core.html#defaulttype
 define	mod/core.html#define
 deflatealteretag	mod/mod_deflate.html#deflatealteretag

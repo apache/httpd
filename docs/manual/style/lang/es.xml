@@ -23,7 +23,7 @@
     <name>Spanish</name>
     <charset>UTF-8</charset>
     <source-ext>.xml.es</source-ext>
-    <target-ext>.html.es</target-ext>
+    <target-ext>.html.es.utf8</target-ext>
 
     <chm>
         <lang>0xC0A Spanish (International)</lang>
