@@ -597,7 +597,7 @@ AP_DECLARE(void) ap_no2slash(char *name)
  * MODIFIED FOR HAVE_DRIVE_LETTERS and NETWARE environments,
  * so that if n == 0, "/" is returned in d with n == 1
  * and s == "e:/test.html", "e:/" is returned in d
- * *** See also directory_walk in server/request.c
+ * *** See also ap_directory_walk in server/request.c
  *
  * examples:
  *    /a/b, 0  ==> /  (true for all platforms)
