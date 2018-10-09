@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_proxy_scgi, mod_proxy_uwsgi: improve error handling when sending the
+     body of the response. [Jim Jagielski]
+
   *) mod_session_cookie: avoid duplicate Set-Cookie header in the response.
      [Emmanuel Dreyfus <manu@netbsd.org>, Luca Toscano]
 
