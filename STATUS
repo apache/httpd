@@ -200,7 +200,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1842540
      2.4.x: trunk works (modulo CHANGES)
             svn merge -c r1842540 ^/httpd/httpd/trunk .
-     +1: ylavic
+     +1: ylavic, icing (by inspection)
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
