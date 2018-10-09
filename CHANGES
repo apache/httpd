@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_session_cookie: avoid duplicate Set-Cookie header in the response.
+     [Emmanuel Dreyfus <manu@netbsd.org>, Luca Toscano]
+
   *) mod_dav_fs: Set a default DAVLockDB within the state directory.
      [Joe Orton]
 
