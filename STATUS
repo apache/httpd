@@ -143,6 +143,14 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      (requires r1738415 and r1826930 above to resolve conflict)
      +1: minfrin, jim, ylavic
 
+  *) mod_ssl: Fix a regression that the configuration settings for verify mode
+     and verify depth were taken from the frontend connection in case of
+     connections by the proxy to the backend. PR 62769.
+     trunk patch: http://svn.apache.org/r1842540
+     2.4.x: trunk works (modulo CHANGES)
+            svn merge -c r1842540 ^/httpd/httpd/trunk .
+     +1: ylavic, icing (by inspection), covener
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -193,14 +201,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              http://svn.apache.org/r1828626
       2.4.x patch: http://home.apache.org/~jim/patches/socache_redisv2.patch
       +1: jim, minfrin
-
-  *) mod_ssl: Fix a regression that the configuration settings for verify mode
-     and verify depth were taken from the frontend connection in case of
-     connections by the proxy to the backend. PR 62769.
-     trunk patch: http://svn.apache.org/r1842540
-     2.4.x: trunk works (modulo CHANGES)
-            svn merge -c r1842540 ^/httpd/httpd/trunk .
-     +1: ylavic, icing (by inspection)
 
   *) mod_brotli, mod_deflate: Restore the separate handling of 304 Not Modified
      responses allowing these modules to properly set or fix-up the response
