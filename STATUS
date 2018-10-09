@@ -212,14 +212,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        https://lists.apache.org/thread.html/f5733ca6743757e8aa8b58a0cd9e27680971551c2a20f5606c66507e@%3Cdev.httpd.apache.org%3E
      Note: Presumably, this needs a separate CHANGES entry that is not included
      in the 2.4.x patch.
-     +1: kotkov
+     +1: kotkov, ylavic
 
   *) mod_proxy_scgi, mod_proxy_uwsgi: These need to be signed longs otherwise,
      the error handling code can never trigger.
      trunk patch: http://svn.apache.org/r1839303
                   http://svn.apache.org/r1843290 (CHANGES entry)
      2.4.x patch: svn merge -c 1839303,1843290 ^/httpd/httpd/trunk . 
-     +1: jailletc36 (by inspection)
+     +1: jailletc36 (by inspection), ylavic
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
