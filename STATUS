@@ -124,12 +124,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) ab: print Server Temp Key information.
-     trunk patch: http://svn.apache.org/r1738415
-                  http://svn.apache.org/r1826930
-     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-ab.patch
-     +1: minfrin, jim, ylavic
-
   *) ab: Add client certificate support.
      trunk: http://svn.apache.org/r1841784
      2.4.x: svn merge -c r1841784 ^/httpd/httpd/trunk .

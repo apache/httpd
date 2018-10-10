@@ -353,6 +353,9 @@ int is_ssl;
 SSL_CTX *ssl_ctx;
 char *ssl_cipher = NULL;
 char *ssl_info = NULL;
+#if OPENSSL_VERSION_NUMBER >= 0x10002000L
+char *ssl_tmp_key = NULL;
+#endif
 BIO *bio_out,*bio_err;
 #ifdef HAVE_TLSEXT
 int tls_use_sni = 1;         /* used by default, -I disables it */
@@ -732,6 +735,46 @@ static void ssl_proceed_handshake(struct connection *c)
                              SSL_CIPHER_get_name(ci),
                              pk_bits, sk_bits);
             }
+#if OPENSSL_VERSION_NUMBER >= 0x10002000L
+            if (ssl_tmp_key == NULL) {
+                EVP_PKEY *key;
+                if (SSL_get_server_tmp_key(c->ssl, &key)) {
+                    ssl_tmp_key = xmalloc(128);
+                    switch (EVP_PKEY_id(key)) {
+                    case EVP_PKEY_RSA:
+                        apr_snprintf(ssl_tmp_key, 128, "RSA %d bits",
+                                     EVP_PKEY_bits(key));
+                        break;
+                    case EVP_PKEY_DH:
+                        apr_snprintf(ssl_tmp_key, 128, "DH %d bits",
+                                     EVP_PKEY_bits(key));
+                        break;
+#ifndef OPENSSL_NO_EC
+                    case EVP_PKEY_EC: {
+                        const char *cname = NULL;
+                        EC_KEY *ec = EVP_PKEY_get1_EC_KEY(key);
+                        int nid = EC_GROUP_get_curve_name(EC_KEY_get0_group(ec));
+                        EC_KEY_free(ec);
+                        cname = EC_curve_nid2nist(nid);
+                        if (!cname)
+                            cname = OBJ_nid2sn(nid);
+
+                        apr_snprintf(ssl_tmp_key, 128, "ECDH %s %d bits",
+                                     cname,
+                                     EVP_PKEY_bits(key));
+                        break;
+                        }
+#endif
+                    default:
+                        apr_snprintf(ssl_tmp_key, 128, "%s %d bits",
+                                     OBJ_nid2sn(EVP_PKEY_id(key)),
+                                     EVP_PKEY_bits(key));
+                        break;
+                    }
+                    EVP_PKEY_free(key);
+                }
+            }
+#endif
             write_request(c);
             do_next = 0;
             break;
@@ -895,6 +938,11 @@ static void output_results(int sig)
     if (is_ssl && ssl_info) {
         printf("SSL/TLS Protocol:       %s\n", ssl_info);
     }
+#if OPENSSL_VERSION_NUMBER >= 0x10002000L
+    if (is_ssl && ssl_tmp_key) {
+        printf("Server Temp Key:        %s\n", ssl_tmp_key);
+    }
+#endif
 #ifdef HAVE_TLSEXT
     if (is_ssl && tls_sni) {
         printf("TLS Server Name:        %s\n", tls_sni);
