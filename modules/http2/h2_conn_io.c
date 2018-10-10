@@ -47,16 +47,18 @@
  */
 #define WRITE_SIZE_MAX        (TLS_DATA_MAX - 100) 
 
+#define BUF_REMAIN            ((apr_size_t)(bmax-off))
 
 static void h2_conn_io_bb_log(conn_rec *c, int stream_id, int level, 
                               const char *tag, apr_bucket_brigade *bb)
 {
     char buffer[16 * 1024];
     const char *line = "(null)";
-    apr_size_t bmax = sizeof(buffer)/sizeof(buffer[0]);
+    int bmax = sizeof(buffer)/sizeof(buffer[0]);
     int off = 0;
     apr_bucket *b;
     
+    (void)stream_id;
     if (bb) {
         memset(buffer, 0, bmax--);
         for (b = APR_BRIGADE_FIRST(bb); 
@@ -65,19 +67,19 @@ static void h2_conn_io_bb_log(conn_rec *c, int stream_id, int level,
             
             if (APR_BUCKET_IS_METADATA(b)) {
                 if (APR_BUCKET_IS_EOS(b)) {
-                    off += apr_snprintf(buffer+off, bmax-off, "eos ");
+                    off += apr_snprintf(buffer+off, BUF_REMAIN, "eos ");
                 }
                 else if (APR_BUCKET_IS_FLUSH(b)) {
-                    off += apr_snprintf(buffer+off, bmax-off, "flush ");
+                    off += apr_snprintf(buffer+off, BUF_REMAIN, "flush ");
                 }
                 else if (AP_BUCKET_IS_EOR(b)) {
-                    off += apr_snprintf(buffer+off, bmax-off, "eor ");
+                    off += apr_snprintf(buffer+off, BUF_REMAIN, "eor ");
                 }
                 else if (H2_BUCKET_IS_H2EOS(b)) {
-                    off += apr_snprintf(buffer+off, bmax-off, "h2eos ");
+                    off += apr_snprintf(buffer+off, BUF_REMAIN, "h2eos ");
                 }
                 else {
-                    off += apr_snprintf(buffer+off, bmax-off, "meta(unknown) ");
+                    off += apr_snprintf(buffer+off, BUF_REMAIN, "meta(unknown) ");
                 }
             }
             else {
@@ -109,10 +111,9 @@ static void h2_conn_io_bb_log(conn_rec *c, int stream_id, int level,
                     btype = "pool";
                 }
                 
-                off += apr_snprintf(buffer+off, bmax-off, "%s[%ld] ", 
+                off += apr_snprintf(buffer+off, BUF_REMAIN, "%s[%ld] ", 
                                     btype, 
-                                    (long)(b->length == ((apr_size_t)-1)? 
-                                           -1 : b->length));
+                                    (long)(b->length == ((apr_size_t)-1)? -1UL : b->length));
             }
         }
         line = *buffer? buffer : "(empty)";
@@ -153,7 +154,7 @@ apr_status_t h2_conn_io_init(h2_conn_io *io, conn_rec *c,
                       "h2_conn_io(%ld): init, buffering=%d, warmup_size=%ld, "
                       "cd_secs=%f", io->c->id, io->buffer_output, 
                       (long)io->warmup_size,
-                      ((float)io->cooldown_usecs/APR_USEC_PER_SEC));
+                      ((double)io->cooldown_usecs/APR_USEC_PER_SEC));
     }
 
     return APR_SUCCESS;
@@ -202,8 +203,8 @@ static apr_status_t read_to_scratch(h2_conn_io *io, apr_bucket *b)
         apr_bucket_file *f = (apr_bucket_file *)b->data;
         apr_file_t *fd = f->fd;
         apr_off_t offset = b->start;
-        apr_size_t len = b->length;
         
+        len = b->length;
         /* file buckets will either mmap (which we do not want) or
          * read 8000 byte chunks and split themself. However, we do
          * know *exactly* how many bytes we need where.
@@ -288,13 +289,13 @@ int h2_conn_io_needs_flush(h2_conn_io *io)
 {
     if (!io->is_flushed) {
         apr_off_t len = h2_brigade_mem_size(io->output);
-        if (len > io->flush_threshold) {
+        if (len > (apr_off_t)io->flush_threshold) {
             return 1;
         }
         /* if we do not exceed flush length due to memory limits,
          * we want at least flush when we have that amount of data. */
         apr_brigade_length(io->output, 0, &len);
-        return len > (4 * io->flush_threshold);
+        return len > (apr_off_t)(4 * io->flush_threshold);
     }
     return 0;
 }

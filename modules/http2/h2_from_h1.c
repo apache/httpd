@@ -625,10 +625,10 @@ static void make_chunk(h2_task *task, apr_bucket_brigade *bb,
      * to the end of the brigade. */
     char buffer[128];
     apr_bucket *c;
-    int len;
+    apr_size_t len;
     
-    len = apr_snprintf(buffer, H2_ALEN(buffer), 
-                       "%"APR_UINT64_T_HEX_FMT"\r\n", (apr_uint64_t)chunk_len);
+    len = (apr_size_t)apr_snprintf(buffer, H2_ALEN(buffer), 
+                                   "%"APR_UINT64_T_HEX_FMT"\r\n", (apr_uint64_t)chunk_len);
     c = apr_bucket_heap_create(buffer, len, NULL, bb->bucket_alloc);
     APR_BUCKET_INSERT_BEFORE(first, c);
     c = apr_bucket_heap_create("\r\n", 2, NULL, bb->bucket_alloc);

@@ -38,8 +38,8 @@ struct h2_workers {
     apr_pool_t *pool;
     
     int next_worker_id;
-    int min_workers;
-    int max_workers;
+    apr_uint32_t min_workers;
+    apr_uint32_t max_workers;
     int max_idle_secs;
     
     int aborted;
