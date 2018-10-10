@@ -983,7 +983,7 @@ static apr_status_t unschedule_slow_tasks(h2_mplx *m)
     }
     
     if ((m->tasks_active - h2_ihash_count(m->sredo)) > m->limit_active) {
-        h2_stream *stream = get_timed_out_busy_stream(m);
+        stream = get_timed_out_busy_stream(m);
         if (stream) {
             /* Too many busy workers, unable to cancel enough streams
              * and with a busy, timed out stream, we tell the client
