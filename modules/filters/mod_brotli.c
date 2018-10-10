@@ -346,12 +346,14 @@ static apr_status_t compress_filter(ap_filter_t *f, apr_bucket_brigade *bb)
         const char *accepts;
 
         /* Only work on main request, not subrequests, that are not
-         * responses with no content (204/304), and are not tagged with the
+         * a 204 response with no content, and are not tagged with the
          * no-brotli env variable, and are not a partial response to
          * a Range request.
+         *
+         * Note that responding to 304 is handled separately to set
+         * the required headers (such as ETag) per RFC7232, 4.1.
          */
-        if (r->main
-            || AP_STATUS_IS_HEADER_ONLY(r->status)
+        if (r->main || r->status == HTTP_NO_CONTENT
             || apr_table_get(r->subprocess_env, "no-brotli")
             || apr_table_get(r->headers_out, "Content-Range")) {
             ap_remove_output_filter(f);
