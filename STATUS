@@ -199,7 +199,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      the bucket is missing in the handler response.
      trunk patch: http://svn.apache.org/r1843426
      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/h2-eos-fix.patch
-     +1: icing, 
+     +1: icing, ylavic,
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
