@@ -602,19 +602,21 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
 
         /*
          * Only work on main request, not subrequests,
-         * that are not responses with no content (204/304),
+         * that are not a 204 response with no content
          * and are not tagged with the no-gzip env variable
          * and not a partial response to a Range request.
+         *
+         * Note that responding to 304 is handled separately to
+         * set the required headers (such as ETag) per RFC7232, 4.1.
          */
-        if ((r->main != NULL) ||
-            AP_STATUS_IS_HEADER_ONLY(r->status) ||
+        if ((r->main != NULL) || (r->status == HTTP_NO_CONTENT) ||
             apr_table_get(r->subprocess_env, "no-gzip") ||
             apr_table_get(r->headers_out, "Content-Range")
            ) {
             if (APLOG_R_IS_LEVEL(r, APLOG_TRACE1)) {
                 const char *reason =
                     (r->main != NULL)                           ? "subrequest" :
-                    AP_STATUS_IS_HEADER_ONLY(r->status)         ? "no content" :
+                    (r->status == HTTP_NO_CONTENT)              ? "no content" :
                     apr_table_get(r->subprocess_env, "no-gzip") ? "no-gzip" :
                     "content-range";
                 ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
@@ -1525,12 +1527,14 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
 
         /*
          * Only work on main request, not subrequests,
-         * that are not responses with no content (204/304),
+         * that are not a 204 response with no content
          * and not a partial response to a Range request,
          * and only when Content-Encoding ends in gzip.
+         *
+         * Note that responding to 304 is handled separately to
+         * set the required headers (such as ETag) per RFC7232, 4.1.
          */
-        if (!ap_is_initial_req(r) ||
-            AP_STATUS_IS_HEADER_ONLY(r->status) ||
+        if (!ap_is_initial_req(r) || (r->status == HTTP_NO_CONTENT) ||
             (apr_table_get(r->headers_out, "Content-Range") != NULL) ||
             (check_gzip(r, r->headers_out, r->err_headers_out) == 0)
            ) {

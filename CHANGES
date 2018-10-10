@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.36
 
+  *) mod_brotli, mod_deflate: Restore the separate handling of 304 Not Modified
+     responses. Regression introduced in 2.4.35.
+
   *) mod_proxy_scgi, mod_proxy_uwsgi: improve error handling when sending the
      body of the response. [Jim Jagielski]
 
