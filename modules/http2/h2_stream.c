@@ -919,7 +919,7 @@ apr_status_t h2_stream_out_prepare(h2_stream *stream, apr_off_t *plen,
                           (long)*plen, *peos);
         }
         else {
-            status = APR_EAGAIN;
+            status = (stream->output && h2_beam_is_closed(stream->output))? APR_EOF : APR_EAGAIN;
             ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
                           H2_STRM_MSG(stream, "prepare, no data"));
         }

@@ -1097,6 +1097,10 @@ static ssize_t stream_data_cb(nghttp2_session *ng2s,
         case APR_SUCCESS:
             break;
             
+        case APR_EOF:
+            eos = 1;
+            break;
+            
         case APR_ECONNRESET:
         case APR_ECONNABORTED:
             return NGHTTP2_ERR_CALLBACK_FAILURE;
