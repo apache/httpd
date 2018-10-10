@@ -195,6 +195,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1839303,1843290 ^/httpd/httpd/trunk . 
      +1: jailletc36 (by inspection), ylavic
 
+  *) mod_http2: fixing an issue that h2 stream do not properly EOS when
+     the bucket is missing in the handler response.
+     trunk patch: http://svn.apache.org/r1843426
+     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/h2-eos-fix.patch
+     +1: icing, 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
