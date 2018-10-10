@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.36
 
+  *) ab: Disable printing temp key for OpenSSL before
+     version 1.0.2. SSL_get_server_tmp_key is not available
+     there. [Rainer Jung]
+
   *) mod_ssl: Fix a regression that the configuration settings for verify mode
      and verify depth were taken from the frontend connection in case of
      connections by the proxy to the backend. PR 62769. [Ruediger Pluem]
