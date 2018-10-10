@@ -136,13 +136,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      in the 2.4.x patch.
      +1: kotkov, ylavic, jim
 
-  *) mod_proxy_scgi, mod_proxy_uwsgi: These need to be signed longs otherwise,
-     the error handling code can never trigger.
-     trunk patch: http://svn.apache.org/r1839303
-                  http://svn.apache.org/r1843290 (CHANGES entry)
-     2.4.x patch: svn merge -c 1839303,1843290 ^/httpd/httpd/trunk . 
-     +1: jailletc36 (by inspection), ylavic, jim
-
   *) mod_http2: fixing an issue that h2 stream do not properly EOS when
      the bucket is missing in the handler response.
      trunk patch: http://svn.apache.org/r1843426
