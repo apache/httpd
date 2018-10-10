@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.36
 
+  *) ab: Add client certificate support. [Graham Leggett]
+
   *) ab: Disable printing temp key for OpenSSL before
      version 1.0.2. SSL_get_server_tmp_key is not available
      there. [Rainer Jung]

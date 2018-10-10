@@ -43,6 +43,7 @@
     [ -<strong>C</strong> <var>cookie-name</var>=<var>value</var> ]
     [ -<strong>d</strong> ]
     [ -<strong>e</strong> <var>csv-file</var> ]
+    [ -<strong>E</strong> <var>client-certificate file</var> ]
     [ -<strong>f</strong> <var>protocol</var> ]
     [ -<strong>g</strong> <var>gnuplot-file</var> ]
     [ -<strong>h</strong> ]
@@ -104,6 +105,12 @@
     percentage (from 1% to 100%) the time (in milliseconds) it took to serve
     that percentage of the requests. This is usually more useful than the
     'gnuplot' file; as the results are already 'binned'.</dd>
+
+    <dt><code>-E <var>client-certificate-file</var></code></dt>
+    <dd>When connecting to an SSL website, use the provided client certificate
+    in PEM format to authenticate with the server. The file is expected to
+    contain the client certificate, followed by intermediate certificates,
+    followed by the private key. Available in 2.4.36 and later.</dd>
 
     <dt><code>-f <var>protocol</var></code></dt>
     <dd>Specify SSL/TLS protocol (SSL2, SSL3, TLS1, TLS1.1, TLS1.2, or ALL).
