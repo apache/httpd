@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.36
 
+  *) mod_proxy_scgi, mod_proxy_uwsgi: improve error handling when sending the
+     body of the response. [Jim Jagielski]
+
   *) ab: Add client certificate support. [Graham Leggett]
 
   *) ab: Disable printing temp key for OpenSSL before

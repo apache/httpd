@@ -212,11 +212,11 @@ static int uwsgi_send_body(request_rec *r, proxy_conn_rec * conn)
     if (ap_should_client_block(r)) {
         char *buf = apr_palloc(r->pool, AP_IOBUFSIZE);
         int status;
-        apr_size_t readlen;
+        long readlen;
 
         readlen = ap_get_client_block(r, buf, AP_IOBUFSIZE);
         while (readlen > 0) {
-            status = uwsgi_send(conn, buf, readlen, r);
+            status = uwsgi_send(conn, buf, (apr_size_t)readlen, r);
             if (status != OK) {
                 return HTTP_SERVICE_UNAVAILABLE;
             }

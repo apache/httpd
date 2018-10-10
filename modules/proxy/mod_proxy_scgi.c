@@ -19,7 +19,7 @@
  * Proxy backend module for the SCGI protocol
  * (http://python.ca/scgi/protocol.txt)
  *
- * André Malo (nd/perlig.de), August 2007
+ * Andrï¿½ Malo (nd/perlig.de), August 2007
  */
 
 #define APR_WANT_MEMFUNC
@@ -334,11 +334,11 @@ static int send_request_body(request_rec *r, proxy_conn_rec *conn)
     if (ap_should_client_block(r)) {
         char *buf = apr_palloc(r->pool, AP_IOBUFSIZE);
         int status;
-        apr_size_t readlen;
+        long readlen;
 
         readlen = ap_get_client_block(r, buf, AP_IOBUFSIZE);
         while (readlen > 0) {
-            status = sendall(conn, buf, readlen, r);
+            status = sendall(conn, buf, (apr_size_t)readlen, r);
             if (status != OK) {
                 return HTTP_SERVICE_UNAVAILABLE;
             }
