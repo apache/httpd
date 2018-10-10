@@ -221,7 +221,7 @@ const struct h2_priority *h2_config_get_priority(const h2_config *conf,
                                                  const char *content_type)
 {
     if (content_type && conf->priorities) {
-        size_t len = strcspn(content_type, "; \t");
+        apr_ssize_t len = (apr_ssize_t)strcspn(content_type, "; \t");
         h2_priority *prio = apr_hash_get(conf->priorities, content_type, len);
         return prio? prio : apr_hash_get(conf->priorities, "*", 1);
     }
@@ -400,7 +400,8 @@ static const char *h2_conf_add_push_priority(cmd_parms *cmd, void *_cfg,
     h2_dependency dependency;
     h2_priority *priority;
     int weight;
-    
+ 
+    (void)_cfg;
     if (!*ctype) {
         return "1st argument must be a mime-type, like 'text/css' or '*'";
     }
@@ -443,7 +444,7 @@ static const char *h2_conf_add_push_priority(cmd_parms *cmd, void *_cfg,
     if (!cfg->priorities) {
         cfg->priorities = apr_hash_make(cmd->pool);
     }
-    apr_hash_set(cfg->priorities, ctype, strlen(ctype), priority);
+    apr_hash_set(cfg->priorities, ctype, (apr_ssize_t)strlen(ctype), priority);
     return NULL;
 }
 
@@ -521,6 +522,8 @@ static const char *h2_conf_set_copy_files(cmd_parms *parms,
                                           void *arg, const char *value)
 {
     h2_config *cfg = (h2_config *)arg;
+    
+    (void)parms;
     if (!strcasecmp(value, "On")) {
         cfg->copy_files = 1;
         return NULL;

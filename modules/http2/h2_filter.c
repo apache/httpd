@@ -54,6 +54,7 @@ static apr_status_t recv_RAW_DATA(conn_rec *c, h2_filter_cin *cin,
     const char *data;
     ssize_t n;
     
+    (void)c;
     status = apr_bucket_read(b, &data, &len, block);
     
     while (status == APR_SUCCESS && len > 0) {
@@ -71,10 +72,10 @@ static apr_status_t recv_RAW_DATA(conn_rec *c, h2_filter_cin *cin,
         }
         else {
             session->io.bytes_read += n;
-            if (len <= n) {
+            if ((apr_ssize_t)len <= n) {
                 break;
             }
-            len -= n;
+            len -= (apr_size_t)n;
             data += n;
         }
     }
@@ -277,6 +278,7 @@ apr_bucket *h2_bucket_observer_beam(struct h2_bucket_beam *beam,
                                     apr_bucket_brigade *dest,
                                     const apr_bucket *src)
 {
+    (void)beam;
     if (H2_BUCKET_IS_OBSERVER(src)) {
         h2_bucket_observer *l = (h2_bucket_observer *)src->data; 
         apr_bucket *b = h2_bucket_observer_create(dest->bucket_alloc, 

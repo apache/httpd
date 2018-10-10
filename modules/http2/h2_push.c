@@ -59,7 +59,7 @@ static const char *policy_str(h2_push_policy policy)
 
 typedef struct {
     const h2_request *req;
-    int push_policy;
+    apr_uint32_t push_policy;
     apr_pool_t *pool;
     apr_array_header_t *pushes;
     const char *s;
@@ -434,7 +434,7 @@ static int head_iter(void *ctx, const char *key, const char *value)
 }
 
 apr_array_header_t *h2_push_collect(apr_pool_t *p, const h2_request *req,
-                                    int push_policy, const h2_headers *res)
+                                    apr_uint32_t push_policy, const h2_headers *res)
 {
     if (req && push_policy != H2_PUSH_NONE) {
         /* Collect push candidates from the request/response pair.
@@ -528,13 +528,14 @@ static void calc_sha256_hash(h2_push_diary *diary, apr_uint64_t *phash, h2_push 
 
 static unsigned int val_apr_hash(const char *str) 
 {
-    apr_ssize_t len = strlen(str);
+    apr_ssize_t len = (apr_ssize_t)strlen(str);
     return apr_hashfunc_default(str, &len);
 }
 
 static void calc_apr_hash(h2_push_diary *diary, apr_uint64_t *phash, h2_push *push) 
 {
     apr_uint64_t val;
+    (void)diary;
 #if APR_UINT64_MAX > UINT_MAX
     val = ((apr_uint64_t)(val_apr_hash(push->req->scheme)) << 32);
     val ^= ((apr_uint64_t)(val_apr_hash(push->req->authority)) << 16);
@@ -621,10 +622,10 @@ static h2_push_diary_entry *move_to_last(h2_push_diary *diary, apr_size_t idx)
 {
     h2_push_diary_entry *entries = (h2_push_diary_entry*)diary->entries->elts;
     h2_push_diary_entry e;
-    apr_size_t lastidx = diary->entries->nelts-1;
+    apr_size_t lastidx = (apr_size_t)diary->entries->nelts;
     
     /* move entry[idx] to the end */
-    if (idx < lastidx) {
+    if (idx+1 < lastidx) {
         e =  entries[idx];
         memmove(entries+idx, entries+idx+1, sizeof(e) * (lastidx - idx));
         entries[lastidx] = e;
@@ -670,7 +671,7 @@ apr_array_header_t *h2_push_diary_update(h2_session *session, apr_array_header_t
                 /* Intentional no APLOGNO */
                 ap_log_cerror(APLOG_MARK, GCSLOG_LEVEL, 0, session->c,
                               "push_diary_update: already there PUSH %s", push->req->path);
-                move_to_last(session->push_diary, idx);
+                move_to_last(session->push_diary, (apr_size_t)idx);
             }
             else {
                 /* Intentional no APLOGNO */
@@ -830,7 +831,7 @@ apr_status_t h2_push_diary_digest_get(h2_push_diary *diary, apr_pool_t *pool,
     
     nelts = diary->entries->nelts;
     
-    if (nelts > APR_UINT32_MAX) {
+    if ((apr_uint32_t)nelts > APR_UINT32_MAX) {
         /* should not happen */
         return APR_ENOTIMPL;
     }

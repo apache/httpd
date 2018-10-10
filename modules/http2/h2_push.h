@@ -61,7 +61,7 @@ struct h2_push_diary {
  */
 apr_array_header_t *h2_push_collect(apr_pool_t *p, 
                                     const struct h2_request *req, 
-                                    int push_policy, 
+                                    apr_uint32_t push_policy, 
                                     const struct h2_headers *res);
 
 /**

@@ -184,7 +184,7 @@ static apr_status_t http2_req_engine_pull(h2_req_engine *ngn,
                                           int capacity, 
                                           request_rec **pr)
 {
-    return h2_mplx_req_engine_pull(ngn, block, capacity, pr);
+    return h2_mplx_req_engine_pull(ngn, block, (apr_uint32_t)capacity, pr);
 }
 
 static void http2_req_engine_done(h2_req_engine *ngn, conn_rec *r_conn,
