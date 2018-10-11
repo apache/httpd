@@ -171,6 +171,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: http://home.apache.org/~jim/patches/socache_redisv2.patch
       +1: jim, minfrin
 
+   *) event MPM: Don't log "at MaxRequestWorkers" when there are still idle threads,
+      just like worker.
+      trunk: //svn.apache.org/r1843513
+      2.4.x patch: http://people.apache.org/~covener/patches/2.4.x-event-maxclients.diff
+      +1: covener
+
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
