@@ -460,7 +460,7 @@ static apr_status_t pfs_load(void *baton, apr_pool_t *p, apr_pool_t *ptemp, va_l
     return rv;
 }
 
-static apr_status_t dispatch(md_store_fs_t *s_fs, md_store_fs_ev_t ev, int group, 
+static apr_status_t dispatch(md_store_fs_t *s_fs, md_store_fs_ev_t ev, unsigned int group, 
                              const char *fname, apr_filetype_e ftype, apr_pool_t *p)
 {
     (void)ev;

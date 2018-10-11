@@ -19,11 +19,8 @@
 #include <apr_strings.h>
 
 #include <ap_release.h>
-#include <ap_mmn.h>
-#if !AP_MODULE_MAGIC_AT_LEAST(20180720, 5)
 #ifndef AP_ENABLE_EXCEPTION_HOOK
 #define AP_ENABLE_EXCEPTION_HOOK 0
-#endif
 #endif
 #include <mpm_common.h>
 #include <httpd.h>
@@ -402,7 +399,7 @@ static apr_status_t md_calc_md_list(apr_pool_t *p, apr_pool_t *plog,
 /* store & registry setup */
 
 static apr_status_t store_file_ev(void *baton, struct md_store_t *store,
-                                    md_store_fs_ev_t ev, int group, 
+                                    md_store_fs_ev_t ev, unsigned int group, 
                                     const char *fname, apr_filetype_e ftype,  
                                     apr_pool_t *p)
 {
@@ -520,10 +517,10 @@ static void log_print(const char *file, int line, md_log_level_t level,
         buffer[LOG_BUF_LEN-1] = '\0';
 
         if (log_server) {
-            ap_log_error(file, line, APLOG_MODULE_INDEX, level, rv, log_server, "%s",buffer);
+            ap_log_error(file, line, APLOG_MODULE_INDEX, (int)level, rv, log_server, "%s",buffer);
         }
         else {
-            ap_log_perror(file, line, APLOG_MODULE_INDEX, level, rv, p, "%s", buffer);
+            ap_log_perror(file, line, APLOG_MODULE_INDEX, (int)level, rv, p, "%s", buffer);
         }
     }
 }
