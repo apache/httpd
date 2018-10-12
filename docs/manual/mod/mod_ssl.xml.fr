@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1841686:1842641 (outdated) -->
+<!-- English Revision: 1842641 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -803,7 +803,7 @@ SSLProtocol TLSv1
 <name>SSLCipherSuite</name>
 <description>Algorithmes de chiffrement disponibles pour la négociation
 au cours de l'initialisation de la connexion SSL</description>
-<syntax>SSLCipherSuite <em>algorithmes</em></syntax>
+<syntax>SSLCipherSuite [<em>protocol</em>] <em>cipher-spec</em></syntax>
 <default>SSLCipherSuite DEFAULT (dépend de la version d'OpenSSL
 installée)</default>
 <contextlist><context>server config</context>
@@ -814,9 +814,15 @@ installée)</default>
 
 <usage>
 <p>
-Cette directive complexe utilise la chaîne <em>algorithmes</em>
+Cette directive complexe utilise la chaîne <em>cipher-spec</em>
 contenant la liste des algorithmes de chiffrement OpenSSL que le client
-peut utiliser au cours de la phase d'initialisation de la connexion SSL.
+peut utiliser au cours de la phase d'initialisation de la connexion SSL. La
+spécification optionnelle du protocole permet de configurer la suite
+d'algorithmes de chiffrement pour une version spécifique de SSL. Une des valeurs
+possibles est "SSL" pour toutes les versions du protocole SSL jusqu'à TLSv1.2
+compris.
+</p>
+<p>
 Notez que cette directive peut être utilisée aussi bien dans un contexte
 de serveur que dans un contexte de répertoire. Dans un contexte de
 serveur, elle s'applique à l'initialisation SSL standard lorsqu'une
@@ -825,21 +831,32 @@ renégociation SSL avec la liste d'algorithmes de chiffrement spécifiée
 après la lecture d'une requête HTTP, mais avant l'envoi de la réponse
 HTTP.</p>
 <p>
+Si la bibliothèque SSL supporte TLSv1.3 (versions d'OpenSSL 1.1.1 et
+supérieures), il est possible de spécifier le paramètre "TLSv1.3" pour
+configurer la suite d'algorithmes de chiffrement pour ce protocole. Comme
+TLSv1.3 n'autorise pas la renégociation, spécifier pour lui des algorithmes de
+chiffrement dans un contexte de répertoire n'est pas autorisé</p>
+<p>
+Pour obtenir la liste des noms d'algorithmes de chiffrement pour TLSv1.3, se
+référer à la <a
+href="https://www.openssl.org/docs/manmaster/man3/SSL_CTX_set_ciphersuites.html">the
+OpenSSL documentation</a>.</p>
+<p>
 La liste d'algorithmes de chiffrement SSL spécifiée par l'argument
-<em>algorithmes</em> comporte quatre attributs principaux auxquels
+<em>cipher-spec</em> comporte quatre attributs principaux auxquels
 s'ajoutent quelques attributs secondaires :</p>
 <ul>
 <li><em>Algorithme d'échange de clés</em>:<br />
-    RSA, Diffie-Hellman, Elliptic Curve Diffie-Hellman, Secure Remote Password
+    RSA, Diffie-Hellman, Elliptic Curve Diffie-Hellman, Secure Remote Password.
 </li>
 <li><em>Algorithme d'authentification</em>:<br />
-    RSA, Diffie-Hellman, DSS, ECDSA ou none.
+    RSA, Diffie-Hellman, DSS, ECDSA, ou none.
 </li>
 <li><em>Algorithme de chiffrement</em>:<br />
     AES, DES, Triple-DES, RC4, RC2, IDEA, etc...
 </li>
 <li><em>Algorithme de condensé MAC</em>:<br />
-    MD5, SHA or SHA1, SHA256, SHA384.
+    MD5, SHA ou SHA1, SHA256, SHA384.
 </li>
 </ul>
 <p>L'algorithme de chiffrement peut aussi provenir de l'extérieur. Les
@@ -849,8 +866,8 @@ peut soit spécifier tous les algorithmes à la fois, soit utiliser des
 alias pour spécifier une liste d'algorithmes dans leur ordre de
 préférence (voir <a href="#table1">Table 1</a>). Les algorithmes et
 alias effectivement disponibles dépendent de la version d'openssl
-utilisée. Les versions ultérieures d'openssl inclueront probablement des
-algorithmes supplémentaires.</p>
+utilisée. Les versions ultérieures d'openssl sont susceptibles d'inclure
+des algorithmes supplémentaires.</p>
 
 <table border="1">
 <columnspec><column width=".5"/><column width=".5"/></columnspec>
@@ -883,8 +900,8 @@ distant sécurisé (SRP)</td></tr>
 <tr><td><code>MD5</code></td>    <td>Fonction de hashage MD5</td></tr>
 <tr><td><code>SHA1</code></td>   <td>Fonction de hashage SHA1</td></tr>
 <tr><td><code>SHA</code></td>    <td>alias pour SHA1</td> </tr>
-<tr><td><code>SHA256</code></td> <td>>Fonction de hashage SHA256</td> </tr>
-<tr><td><code>SHA384</code></td> <td>>Fonction de hashage SHA384</td> </tr>
+<tr><td><code>SHA256</code></td> <td>Fonction de hashage SHA256</td> </tr>
+<tr><td><code>SHA384</code></td> <td>Fonction de hashage SHA384</td> </tr>
 <tr><td colspan="2"><em>Alias :</em></td></tr>
 <tr><td><code>SSLv3</code></td>  <td>tous les algorithmes de chiffrement
 SSL version 3.0</td> </tr>
@@ -908,19 +925,19 @@ utilisant l'échange de clés RSA</td> </tr>
 utilisant l'échange de clés Diffie-Hellman</td> </tr>
 <tr><td><code>EDH</code></td>    <td>tous les algorithmes
 utilisant l'échange de clés Diffie-Hellman temporaires</td> </tr>
-<tr><td><code>ECDH</code></td>   <td>échange de clés Elliptic Curve Diffie-Hellman</td>   </tr>
+<tr><td><code>ECDH</code></td>   <td>Echange de clés Elliptic Curve Diffie-Hellman</td>   </tr>
 <tr><td><code>ADH</code></td>    <td>tous les algorithmes
 utilisant l'échange de clés Diffie-Hellman anonymes</td> </tr>
-<tr><td><code>AECDH</code></td>    <td>tous les algorithmes
-utilisant l'échange de clés Elliptic Curve Diffie-Hellman</td> </tr>
+<tr><td><code>AECDH</code></td>    <td>tous les algorithmes utilisant
+l'échange de clés Elliptic Curve Diffie-Hellman</td> </tr>
 <tr><td><code>SRP</code></td>    <td>tous les algorithmes utilisant
 l'échange de clés avec mot de passe distant sécurisé (SRP)</td> </tr>
 <tr><td><code>DSS</code></td>    <td>tous les algorithmes
 utilisant l'authentification DSS</td> </tr>
-<tr><td><code>ECDSA</code></td>    <td>tous les algorithmes
-utilisant l'authentification ECDSA</td> </tr>
-<tr><td><code>aNULL</code></td>   <td>tous les algorithmes
-n'utilisant aucune authentification</td> </tr>
+<tr><td><code>ECDSA</code></td>    <td>tous les algorithmes utilisant
+l'authentification ECDSA</td> </tr>
+<tr><td><code>aNULL</code></td>   <td>tous les algorithmes n'utilisant
+aucune authentification</td> </tr>
 </table>
 <p>
 Cela devient intéressant lorsque tous ces symboles sont combinés
@@ -2331,7 +2348,7 @@ module="mod_ssl">SSLProtocol</directive> pour plus d'informations.
 <name>SSLProxyCipherSuite</name>
 <description>Algorithmes de chiffrement disponibles pour la négociation
 lors de l'initialisation d'une connexion SSL de mandataire</description>
-<syntax>SSLProxyCipherSuite <em>algorithmes</em></syntax>
+<syntax>SSLProxyCipherSuite [<em>protocol</em>] <em>cipher-spec</em></syntax>
 <default>SSLProxyCipherSuite ALL:!ADH:RC4+RSA:+HIGH:+MEDIUM:+LOW:+EXP</default>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
