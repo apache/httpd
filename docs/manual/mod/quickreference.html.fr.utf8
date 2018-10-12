@@ -489,7 +489,7 @@ journal</td></tr>
 <tr class="odd"><td><a href="mod_dav.html#davdepthinfinity">DavDepthInfinity on|off</a></td><td> off </td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Autorise les requêtes PROPFIND avec en-tête Depth:
 Infinity</td></tr>
 <tr><td><a href="mod_dav_lock.html#davgenericlockdb">DavGenericLockDB <var>chemin fichier</var></a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Chemin de la base de données des verrous DAV</td></tr>
-<tr class="odd"><td><a href="mod_dav_fs.html#davlockdb">DavLockDB <var>chemin fichier</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Chemin de la base de données des verrous DAV</td></tr>
+<tr class="odd"><td><a href="mod_dav_fs.html#davlockdb">DavLockDB <var>chemin fichier</var></a></td><td> DEFAULT_REL_STATEDI +</td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Chemin de la base de données des verrous DAV</td></tr>
 <tr><td><a href="mod_dav.html#davmintimeout">DavMinTimeout <var>secondes</var></a></td><td> 0 </td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Durée minimale pendant laquelle le serveur maintient un
 verrou sur une ressource DAV</td></tr>
 <tr class="odd"><td><a href="mod_dbd.html#dbdexptime">DBDExptime <var>durée en secondes</var></a></td><td> 300 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Durée de vie des connexions inactives</td></tr>
@@ -511,7 +511,7 @@ d'en-tête Content-Language pour toutes les ressources dans le contexte
 courant auxquelles aucun symbole de langage n'a été
 associé.</td></tr>
 <tr><td><a href="core.html#defaultruntimedir">DefaultRuntimeDir <var>chemin-répertoire</var></a></td><td> DEFAULT_REL_RUNTIME +</td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Répertoire de base des fichiers créés au cours de l'exécution du serveur</td></tr>
-<tr class="odd"><td><a href="core.html#defaultstatedir">DefaultStateeDir <var>directory-path</var></a></td><td></td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Base directory for the persistent state files</td></tr>
+<tr class="odd"><td><a href="core.html#defaultstatedir">DefaultStateDir <var>directory-path</var></a></td><td></td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Répertoire racine des fichiers d'état persistants</td></tr>
 <tr><td><a href="core.html#defaulttype">DefaultType <var>type média|none</var></a></td><td> none </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Les seuls effets de cette directive sont des émissions
 d'avertissements si sa valeur est différente de <code>none</code>. Dans
 les versions précédentes, DefaultType permettait de spécifier un type de
