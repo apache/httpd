@@ -864,20 +864,39 @@ permissions sur la racine du serveur <code class="directive">ServerRoot</code></
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="defaultstatedir" id="defaultstatedir">Directive</a> <a name="DefaultStateDir" id="DefaultStateDir">DefaultStateDir</a><a title="Lien permanent" href="#defaultstatedir" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Base directory for the persistent state files</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DefaultStateeDir <var>directory-path</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Répertoire racine des fichiers d'état persistants</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DefaultStateDir <var>directory-path</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>DefaultRuntimeDir DEFAULT_REL_STATEDIR (state/)</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Noyau httpd</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Available in Apache 2.5.1 and later</td></tr>
-</table><p>La documentation de cette directive
-	n'a pas encore t traduite. Veuillez vous reporter  la version
-	en langue anglaise.</p><h3>Voir aussi</h3>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.5.1. du serveur HTTP Apache.</td></tr>
+</table>
+    <p>La directive <code class="directive">DefaultStateDir</code> permet de définir le
+    répertoire dans lequel le serveur va créer divers fichiers d'état
+    persistants (bases de données, caches de longue durée, etc...). Si elle est
+    définie avec un chemin relatif, ce dernier sera accolé à la valeur de la
+    directive <code class="directive">ServerRoot</code>.</p>
+
+    <p><strong>Exemple</strong></p>
+   <pre class="prettyprint lang-config">DefaultStateDir state/</pre>
+
+
+    <p>La valeur par défaut de <code class="directive">DefaultStateDir</code> peut être
+    modifiée en changeant la valeur de <code>DEFAULT_REL_STATEDIR</code>
+    #définie à la compilation.</p>
+
+   <p>Note: si la valeur de <code class="directive">ServerRoot</code> n'a pas
+   été spécifiée avant d'utiliser cette directive, c'est la valeur par
+   défaut de <code class="directive">ServerRoot</code> qui sera utilisée pour
+   définir la base du répertoire.</p>
+
+
+<h3>Voir aussi</h3>
 <ul>
-<li><a href="../misc/security_tips.html#serverroot">the
-    security tips</a> for information on how to properly set
-    permissions on the <code class="directive">ServerRoot</code></li>
+<li>Voir les <a href="../misc/security_tips.html#serverroot">conseils à propos de
+sésurité</a> pour plus d'informations en vue de définir correctement les
+permissions sur la racine du serveur <code class="directive">ServerRoot</code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
