@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1841639:1842639 (outdated) -->
+<!-- English Revision: 1842639 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -819,7 +819,7 @@ serveur, elle s'applique à l'initialisation SSL standard lorsqu'une
 connexion est établie. Dans un contexte de répertoire, elle force une
 renégociation SSL avec la liste d'algorithmes de chiffrement spécifiée
 après la lecture d'une requête HTTP, mais avant l'envoi de la réponse
-HTTP (et pas avant que la renégociation soit effectuée).</p>
+HTTP.</p>
 <p>
 Si la bibliothèque SSL supporte TLSv1.3 (versions d'OpenSSL 1.1.1 et
 supérieures), il est possible de spécifier le paramètre "TLSv1.3" pour
