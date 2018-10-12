@@ -746,7 +746,7 @@ DefaultRuntimeDir scratch/
 <directivesynopsis>
 <name>DefaultStateDir</name>
 <description>Base directory for the persistent state files</description>
-<syntax>DefaultStateeDir <var>directory-path</var></syntax>
+<syntax>DefaultStateDir <var>directory-path</var></syntax>
 <default>DefaultRuntimeDir DEFAULT_REL_STATEDIR (state/)</default>
 <contextlist><context>server config</context></contextlist>
 <compatibility>Available in Apache 2.5.1 and later</compatibility>

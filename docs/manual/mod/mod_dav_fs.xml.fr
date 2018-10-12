@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1437836:1843164 (outdated) -->
+<!-- English Revision: 1843164 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -56,9 +56,12 @@
 <name>DavLockDB</name>
 <description>Chemin de la base de donn&eacute;es des verrous DAV</description>
 <syntax>DavLockDB <var>chemin fichier</var></syntax>
+<default>DavLockDB DEFAULT_REL_STATEDIR/davlockdb</default>
 <contextlist><context>server config</context><context>virtual
 host</context>
 </contextlist>
+<compatibility>La valeur par défaut a été ajoutée à partir de la version 2.5.1.
+du serveur HTTP Apache.</compatibility>
 
 <usage>
     <p>La directive <directive>DavLockDB</directive> sp&eacute;cifie
@@ -93,6 +96,13 @@ host</context>
     module="core">ServerRoot</directive>, avec le nom de base
     <code>DavLock</code> suivi d'une extension choisie par le
     serveur.</p>
+
+    <note><title>Valeur par défaut</title>
+    <p>A partir de la version 2.5.1. de httpd, une valeur par défaut a été codée
+    en dur et correspond à un chemin relatif par rapport au répertoire des
+    fichiers d'état (lui-même défini via la directive <directive
+    module="core">DefaultStateDir</directive>).</p>
+    </note>
 
 </usage>
 </directivesynopsis>
