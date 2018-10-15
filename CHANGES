@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) core: Ensure that aborted connections are logged as such. PR 62823
+     [Arnaud Grandville <contact@grandville.net>]
+
   *) mpm_event: Stop issuing AH00484 "server reached MaxRequestWorkers..." when
      there are still idle threads available. When there are less idle threads than
      MinSpareThreads, issue new one-time message AH10159. Matches worker MPM.
