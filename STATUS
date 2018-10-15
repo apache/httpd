@@ -157,7 +157,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1645529
                   http://svn.apache.org/r1839442
      2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-mod_proxy-handshake-bad_gateway.patch
-     +1: ylavic
+     +1: ylavic, jim
 
    *) Add in mod_socache_redis from trunk
       trunk: http://svn.apache.org/r1768070
@@ -175,7 +175,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       just like worker.
       trunk: //svn.apache.org/r1843513
       2.4.x patch: http://people.apache.org/~covener/patches/2.4.x-event-maxclients.diff
-      +1: covener
+      +1: covener, jim
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
