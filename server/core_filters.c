@@ -538,8 +538,13 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *new_bb)
         ap_log_cerror(
                 APLOG_MARK, APLOG_TRACE1, rv, c,
                 "core_output_filter: writing data to the network");
-        apr_brigade_cleanup(bb);
+        /*
+         * Set c->aborted before apr_brigade_cleanup to have the correct status
+         * when logging the request as apr_brigade_cleanup triggers the logging
+         * of the request if it contains an EOR bucket.
+         */
         c->aborted = 1;
+        apr_brigade_cleanup(bb);
         return rv;
     }
 
