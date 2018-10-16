@@ -2697,3 +2697,8 @@ int ssl_callback_SRPServerParams(SSL *ssl, int *ad, void *arg)
 }
 
 #endif /* HAVE_SRP */
+
+const char * const *ssl_hook_GetVars()
+{
+   return ssl_hook_Fixup_vars;
+}
