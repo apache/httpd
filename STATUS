@@ -183,8 +183,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
               Without the patch for 1.1.1 a 0 byte read no longer results in
               EAGAIN but instead in APR_EOF which leads to HTTP/2 failures.
               For the changelog: Fix HTTP/2 failures when using OpenSSL 1.1.1.
-     trunk patch: http://svn.apache.org/r1843944
-     2.4.x patch: svn merge -c 1843944 ^/httpd/httpd/trunk .
+     trunk patch: http://svn.apache.org/r1843954
+     2.4.x patch: svn merge -c 1843954 ^/httpd/httpd/trunk .
      +1: rjung
      -1: 
 
