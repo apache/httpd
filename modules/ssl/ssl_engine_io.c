@@ -680,37 +680,36 @@ static apr_status_t ssl_io_input_read(bio_filter_in_ctx_t *inctx,
             }
             return inctx->rc;
         }
-        else if (rc == 0) {
-            /* If EAGAIN, we will loop given a blocking read,
-             * otherwise consider ourselves at EOF.
-             */
-            if (APR_STATUS_IS_EAGAIN(inctx->rc)
-                    || APR_STATUS_IS_EINTR(inctx->rc)) {
-                /* Already read something, return APR_SUCCESS instead.
-                 * On win32 in particular, but perhaps on other kernels,
-                 * a blocking call isn't 'always' blocking.
+        else /* (rc <= 0) */ {
+            int ssl_err;
+            conn_rec *c;
+            if (rc == 0) {
+                /* If EAGAIN, we will loop given a blocking read,
+                 * otherwise consider ourselves at EOF.
                  */
-                if (*len > 0) {
-                    inctx->rc = APR_SUCCESS;
-                    break;
-                }
-                if (inctx->block == APR_NONBLOCK_READ) {
-                    break;
-                }
-            }
-            else {
-                if (*len > 0) {
-                    inctx->rc = APR_SUCCESS;
+                if (APR_STATUS_IS_EAGAIN(inctx->rc)
+                        || APR_STATUS_IS_EINTR(inctx->rc)) {
+                    /* Already read something, return APR_SUCCESS instead.
+                     * On win32 in particular, but perhaps on other kernels,
+                     * a blocking call isn't 'always' blocking.
+                     */
+                    if (*len > 0) {
+                        inctx->rc = APR_SUCCESS;
+                        break;
+                    }
+                    if (inctx->block == APR_NONBLOCK_READ) {
+                        break;
+                    }
                 }
                 else {
-                    inctx->rc = APR_EOF;
+                    if (*len > 0) {
+                        inctx->rc = APR_SUCCESS;
+                        break;
+                    }
                 }
-                break;
             }
-        }
-        else /* (rc < 0) */ {
-            int ssl_err = SSL_get_error(inctx->filter_ctx->pssl, rc);
-            conn_rec *c = (conn_rec*)SSL_get_app_data(inctx->filter_ctx->pssl);
+            ssl_err = SSL_get_error(inctx->filter_ctx->pssl, rc);
+            c = (conn_rec*)SSL_get_app_data(inctx->filter_ctx->pssl);
 
             if (ssl_err == SSL_ERROR_WANT_READ) {
                 /*
@@ -754,6 +753,10 @@ static apr_status_t ssl_io_input_read(bio_filter_in_ctx_t *inctx,
                                   "SSL input filter read failed.");
                 }
             }
+            else if (rc == 0 && ssl_err == SSL_ERROR_ZERO_RETURN) {
+                inctx->rc = APR_EOF;
+                break;
+            }
             else /* if (ssl_err == SSL_ERROR_SSL) */ {
                 /*
                  * Log SSL errors and any unexpected conditions.
@@ -762,6 +765,10 @@ static apr_status_t ssl_io_input_read(bio_filter_in_ctx_t *inctx,
                               "SSL library error %d reading data", ssl_err);
                 ssl_log_ssl_error(SSLLOG_MARK, APLOG_INFO, mySrvFromConn(c));
 
+            }
+            if (rc == 0) {
+                inctx->rc = APR_EOF;
+                break;
             }
             if (inctx->rc == APR_SUCCESS) {
                 inctx->rc = APR_EGENERAL;
