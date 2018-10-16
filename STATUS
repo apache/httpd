@@ -126,6 +126,16 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
 
+  *) mod_ssl: Handle SSL_read() return code 0 similarly to <0. It is needed
+              when using OpenSSL 1.1.1 and should not harm for versions before
+              1.1.1.
+              Without the patch for 1.1.1 a 0 byte read no longer results in
+              EAGAIN but instead in APR_EOF which leads to HTTP/2 failures.
+              For the changelog: Fix HTTP/2 failures when using OpenSSL 1.1.1.
+     trunk patch: http://svn.apache.org/r1843954
+     2.4.x patch: svn merge -c 1843954 ^/httpd/httpd/trunk .
+     +1: rjung, druggeri, rpluem
+     -1: 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -176,17 +186,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       trunk: //svn.apache.org/r1843513
       2.4.x patch: http://people.apache.org/~covener/patches/2.4.x-event-maxclients.diff
       +1: covener, jim
-
-  *) mod_ssl: Handle SSL_read() return code 0 similarly to <0. It is needed
-              when using OpenSSL 1.1.1 and should not harm for versions before
-              1.1.1.
-              Without the patch for 1.1.1 a 0 byte read no longer results in
-              EAGAIN but instead in APR_EOF which leads to HTTP/2 failures.
-              For the changelog: Fix HTTP/2 failures when using OpenSSL 1.1.1.
-     trunk patch: http://svn.apache.org/r1843954
-     2.4.x patch: svn merge -c 1843954 ^/httpd/httpd/trunk .
-     +1: rjung, druggeri
-     -1: 
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
