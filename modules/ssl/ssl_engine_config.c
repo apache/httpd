@@ -433,6 +433,8 @@ static void modssl_ctx_cfg_merge_proxy(apr_pool_t *p,
     cfgMergeString(pkp->cert_file);
     cfgMergeString(pkp->cert_path);
     cfgMergeString(pkp->ca_cert_file);
+    cfgMergeString(pkp->certs);
+    cfgMergeString(pkp->ca_certs);
 }
 
 void *ssl_config_perdir_merge(apr_pool_t *p, void *basev, void *addv)
