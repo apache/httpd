@@ -776,8 +776,6 @@ static void ssl_register_hooks(apr_pool_t *p)
                               AUTHZ_PROVIDER_VERSION,
                               &ssl_authz_provider_verify_client,
                               AP_AUTH_INTERNAL_PER_CONF);
-    ap_register_provider(p, "mod_ssl" , "ssl_variables", "0",
-                         ssl_hook_GetVars());
 }
 
 module AP_MODULE_DECLARE_DATA ssl_module = {
