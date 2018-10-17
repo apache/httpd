@@ -899,7 +899,6 @@ int          ssl_hook_Fixup(request_rec *);
 int          ssl_hook_ReadReq(request_rec *);
 int          ssl_hook_Upgrade(request_rec *);
 void         ssl_hook_ConfigTest(apr_pool_t *pconf, server_rec *s);
-const char* const      *ssl_hook_GetVars(void);
 
 /** Apache authz provisders */
 extern const authz_provider ssl_authz_provider_require_ssl;
