@@ -3,7 +3,7 @@
 <item charset="ISO-8859-1" lang="de">.html.de</item>
 <item charset="ISO-8859-1" lang="en">.html.en</item>
 <item charset="ISO-8859-1" lang="es">.html.es</item>
-<item charset="ISO-8859-1" lang="fr">.html.fr</item>
+<item charset="UTF-8" lang="fr">.html.fr.utf8</item>
 <item charset="UTF-8" lang="ja">.html.ja.utf8</item>
 <item charset="EUC-KR" lang="ko">.html.ko.euc-kr</item>
 <item charset="ISO-8859-1" lang="pt-br">.html.pt-br</item>

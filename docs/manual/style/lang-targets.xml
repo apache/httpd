@@ -128,7 +128,7 @@
 <!-- French                                                               -->
 <!-- ==================================================================== -->
 <property value=".xml.fr" name="inputext.fr"/>
-<property value=".html.fr" name="outputext.fr"/>
+<property value=".html.fr.utf8" name="outputext.fr"/>
 
 <target description="- builds French HTML files" name="fr">
     <html.generic lang="fr"/>
