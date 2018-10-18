@@ -125,6 +125,21 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_ssl: We need to get the SSL_CTX for further processing down below.
+     trunk patch: http://svn.apache.org/r1828793
+     2.4.x patch: svn merge -c 1828793 ^/httpd/httpd/trunk .
+     +1: rjung, rpluem, jorton
+
+  *) mod_ssl: Correctly merge configurations that have client certificates set
+   by SSLProxyMachineCertificate{File|Path}.
+   The certificates and keys loaded during configuration time got lost during
+   runtime if e.g. SSLProxyMachineCertificate{File|Path} was set on virtual host
+   level and there was an SSL directive at directory level, e.g. SSLRequire.
+   This fixes a regression likely introduced in r1740928 (backported in r1824187).
+     trunk patch: http://svn.apache.org/r1844002
+     2.4.x patch: svn merge -c 1844002 ^/httpd/httpd/trunk .
+     +1: rjung, rpluem, jorton
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -174,21 +189,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       trunk: //svn.apache.org/r1843513
       2.4.x patch: http://people.apache.org/~covener/patches/2.4.x-event-maxclients.diff
       +1: covener, jim
-
-  *) mod_ssl: We need to get the SSL_CTX for further processing down below.
-     trunk patch: http://svn.apache.org/r1828793
-     2.4.x patch: svn merge -c 1828793 ^/httpd/httpd/trunk .
-     +1: rjung, rpluem
-
-  *) mod_ssl: Correctly merge configurations that have client certificates set
-   by SSLProxyMachineCertificate{File|Path}.
-   The certificates and keys loaded during configuration time got lost during
-   runtime if e.g. SSLProxyMachineCertificate{File|Path} was set on virtual host
-   level and there was an SSL directive at directory level, e.g. SSLRequire.
-   This fixes a regression likely introduced in r1740928 (backported in r1824187).
-     trunk patch: http://svn.apache.org/r1844002
-     2.4.x patch: svn merge -c 1844002 ^/httpd/httpd/trunk .
-     +1: rjung, rpluem
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
