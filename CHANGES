@@ -3,6 +3,11 @@ Changes with Apache 2.4.37
 
   *) mod_ssl: Fix HTTP/2 failures when using OpenSSL 1.1.1. [Rainer Jung]
 
+  *) mod_ssl: Fix crash during SSL renegotiation with OptRenegotiate set,
+     when client certificates are available from the original handshake
+     but were originally not verified and should get verified now.
+     This is a regression in 2.4.36 (unreleased). [Ruediger Pluem]
+
 Changes with Apache 2.4.36
 
   *) mod_brotli, mod_deflate: Restore the separate handling of 304 Not Modified
