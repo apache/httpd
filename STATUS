@@ -180,6 +180,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1828793 ^/httpd/httpd/trunk .
      +1: rjung
 
+  *) mod_ssl: Correctly merge configurations that have client certificates set
+   by SSLProxyMachineCertificate{File|Path}.
+   The certificates and keys loaded during configuration time got lost during
+   runtime if e.g. SSLProxyMachineCertificate{File|Path} was set on virtual host
+   level and there was an SSL directive at directory level, e.g. SSLRequire.
+   This fixes a regression likely introduced in r1740928 (backported in r1824187).
+     trunk patch: http://svn.apache.org/r1844002
+     2.4.x patch: svn merge -c 1844002 ^/httpd/httpd/trunk .
+     +1: rjung
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
