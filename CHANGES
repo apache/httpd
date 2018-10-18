@@ -1,4 +1,6 @@
                                                          -*- coding: utf-8 -*-
+Changes with Apache 2.4.38
+
 Changes with Apache 2.4.37
 
   *) mod_ssl: Fix HTTP/2 failures when using OpenSSL 1.1.1. [Rainer Jung]
