@@ -239,7 +239,7 @@ apr_status_t md_acme_authz_update(md_acme_authz_t *authz, md_acme_t *acme,
     
     if (md_log_is_level(p, log_level)) {
         md_log_perror(MD_LOG_MARK, log_level, rv, p, "ACME server authz: %s for %s at %s. "
-                      "Exact repsonse was: %s", err? err : "", authz->domain, authz->location,
+                      "Exact response was: %s", err? err : "", authz->domain, authz->location,
                       json? md_json_writep(json, p, MD_JSON_FMT_COMPACT) : "not available");
     }
     
