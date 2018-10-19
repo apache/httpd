@@ -1348,7 +1348,7 @@ request_rec *ap_read_request(conn_rec *conn)
     apr_bucket_brigade *tmp_bb;
     apr_socket_t *csd;
     apr_interval_time_t cur_timeout;
-    core_server_config *conf = NULL;
+    core_server_config *conf;
 
     request_rec *r = ap_create_request(conn);
 
@@ -1533,9 +1533,6 @@ request_rec *ap_read_request(conn_rec *conn)
             r->expecting_100 = 1;
         }
         else {
-            core_server_config *conf;
-
-            conf = ap_get_core_module_config(r->server->module_config);
             if (conf->http_expect_strict != AP_HTTP_EXPECT_STRICT_DISABLE) {
                 r->status = HTTP_EXPECTATION_FAILED;
                 ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(00570)
@@ -1545,7 +1542,8 @@ request_rec *ap_read_request(conn_rec *conn)
                 ap_update_child_status(conn->sbh, SERVER_BUSY_LOG, r);
                 ap_run_log_transaction(r);
                 goto traceout;
-            } else {
+            }
+            else {
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02595)
                               "client sent an unrecognized expectation value "
                               "of Expect (not fatal): %s", expect);
