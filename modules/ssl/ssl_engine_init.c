@@ -1799,7 +1799,7 @@ static apr_status_t ssl_init_server_ctx(server_rec *s,
         if (pks->cert_files->nelts > 0 || pks->key_files->nelts > 0) {
             ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(10084)
                          "Init: (%s) You configured certificate/key files on this host, but "
-                         "is is covered by a Managed Domain. You need to remove these directives "
+                         "it is covered by a Managed Domain. You need to remove these directives "
                          "for the Managed Domain to take over.", ssl_util_vhostid(p, s));
         }
         else {
