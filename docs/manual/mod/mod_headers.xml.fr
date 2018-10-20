@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1769899 -->
+<!-- English Revision: 1844401 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -366,20 +366,11 @@ version 2.4.10</compatibility>
 
     <p>L'argument optionnel <var>condition</var> permet de déterminer
     sur quelle table interne d'en-têtes de réponses cette directive va
-    opérer. En dépit du nom, la valeur par défaut de
-    <code>onsuccess</code> ne limite <em>pas</em> une <var>action</var>
-    aux réponses avec un code d'état de 2xx. Les en-têtes définis sous
-    cette condition sont encore utilisés quand par exemple une requête
-    est mandatée ou générée par un programme CGI avec <em>succès</em>,
-    et ceci même dans le cas où ils ont généré un code d'échec.</p>
-
-    <p>Lorsque votre action est une fonction agissant sur un en-tête
-    existant, vous pourrez être amené à spécifier une condition
-    <code>always</code>, en fonction de la table interne dans laquelle
-    l'en-tête original a été défini. La table qui correspond à
-    <code>always</code> est utilisée pour les réponses d'erreur générées
-    localement ainsi que pour les réponses qui ont abouti.
-     Notez aussi que la répétition
+    opérer : <code>onsuccess</code> (valeur par défaut, peut être omis) ou
+    <code>always</code>. A la différence de ceux de la première table, les
+    en-têtes de la seconde sont ajoutés à la réponse même en cas d'erreur et
+    sont conservés au fil des redirections internes (par exemple les
+    gestionnaires ErrorDocument). Notez aussi que la répétition
     de cette directive avec les deux conditions peut être pertinente
     dans certains scénarios, car <code>always</code> n'englobe pas
     <code>onsuccess</code> en ce qui concerne les en-têtes existants :</p>
@@ -390,14 +381,43 @@ version 2.4.10</compatibility>
        une redirection par exemple, et dans ce cas, seule la table
        correspondant à <code>always</code> est utilisée dans la réponse
        définitive.</li>
-       <li>Vous modifiez ou supprimez un en-tête généré par un script
-       CGI, et dans ce cas, les scripts CGI sont dans la table
-       correspondant à <code>always</code> et non dans la table par
-       défaut.</li>
+       <li>Vous modifiez ou supprimez un en-tête généré par un script CGI ou par
+       <module>mod_proxy_fcgi</module>, auquel cas, les en-têtes des scripts CGI
+       sont dans la table correspondant à <code>always</code> et non dans la
+       table par défaut.</li>
        <li>Vous modifiez ou supprimez un en-tête généré par tel ou tel
        composant du serveur, mais cet en-tête n'est pas trouvé par la
        condition par défaut <code>onsuccess</code>.</li>
     </ul>
+
+    <p>Comme il n'y a pas de liste unique "normalisée" d'en-têtes, la manière
+    dont httpd stocke en interne les en-têtes des réponses HTTP est à l'origine
+    de la fonctionnalité que constitue la différence entre
+    <code>onsuccess</code> et <code>always</code>. Si vous ne gardez pas à
+    l'esprit le concept ci-après lors de l'écriture de votre configuration,
+    certaines réponses HTTP pourront contenir des en-têtes dupliqués
+    (ce qui pourra dérouter les utilisateurs ou même parfois les clients HTTP). Supposons par
+    exemple que votre configuration comporte un mandataire PHP simple avec
+    <module>mod_proxy_fcgi</module> et que votre script PHP d'arrière-plan
+    ajoute l'en-tête <code>X-Foo: bar</code> à chaque réponse HTTP. Comme décrit
+    plus haut, <module>mod_proxy_fcgi</module> utilise la table
+    <code>always</code> pour stocker les en-têtes, et une configuration comme la
+    suivante n'aboutira pas au résultat attendu car l'en-tête sera dupliqué
+    avec les deux valeurs :</p>
+
+    <highlight language="config">
+# la valeur de X-Foo est définie dans la table d'en-têtes 'onsuccess'
+Header set X-Foo: baz
+    </highlight>    
+
+    <p>Plusieurs modèles de configuration permettent de contourner ce problème,
+    comme celui-ci :</p>
+
+        <highlight language="config">
+# 'onsuccess' peut être omis car il s'agit de la valeur par défaut
+Header onsuccess unset X-Foo
+Header always set X-Foo "baz"
+        </highlight>
 
     <p>Outre le paramètre <var>condition</var> décrit ci-dessus, vous
     pouvez limiter une action en fonction de codes d'état HTTP, par
@@ -409,6 +429,14 @@ version 2.4.10</compatibility>
     premier argument (ou par le second argument si une
     <var>condition</var> est spécifiée). Il peut prendre
     une des valeurs suivantes :</p>
+
+    <note type="warning"><title>Avertissement</title>
+        <p>Vous devez lire la différence, décrite plus haut, entre les listes
+	d'en-têtes <code>always</code> et <code>onsuccess</code> avant de lire
+	la liste d'actions ci-dessous car cet important concept s'applique
+	encore ici. En fait, chaque action fonctionne telle qu'elle est décrite
+	mais seulement pour la liste d'en-têtes cible.</p>
+    </note>
 
     <dl>
     <dt><code>add</code></dt>
