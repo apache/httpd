@@ -821,7 +821,7 @@ headers</td></tr>
 <div class="directive-section"><h2><a name="DefaultStateDir" id="DefaultStateDir">DefaultStateDir</a> <a name="defaultstatedir" id="defaultstatedir">Directive</a><a title="Permanent link" href="#defaultstatedir" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Base directory for the persistent state files</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DefaultStateeDir <var>directory-path</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DefaultStateDir <var>directory-path</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>DefaultRuntimeDir DEFAULT_REL_STATEDIR (state/)</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>

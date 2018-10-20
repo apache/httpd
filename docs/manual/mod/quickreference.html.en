@@ -412,7 +412,7 @@ configured</td></tr>
 header field for all resources in the current context that have not been
 assigned a language-tag by some other means.</td></tr>
 <tr><td><a href="core.html#defaultruntimedir">DefaultRuntimeDir <var>directory-path</var></a></td><td> DEFAULT_REL_RUNTIME +</td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Base directory for the server run-time files</td></tr>
-<tr class="odd"><td><a href="core.html#defaultstatedir">DefaultStateeDir <var>directory-path</var></a></td><td></td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Base directory for the persistent state files</td></tr>
+<tr class="odd"><td><a href="core.html#defaultstatedir">DefaultStateDir <var>directory-path</var></a></td><td></td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Base directory for the persistent state files</td></tr>
 <tr><td><a href="core.html#defaulttype">DefaultType <var>media-type|none</var></a></td><td> none </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">This directive has no effect other than to emit warnings
 if the value is not <code>none</code>. In prior versions, DefaultType
 would specify a default media type to assign to response content for
