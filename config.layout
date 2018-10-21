@@ -355,7 +355,7 @@
     manualdir:     ${datadir}/manual
     cgidir:        ${datadir}/cgi-bin
     runtimedir:    ${localstatedir}/run
-    runtimedir:    ${localstatedir}/lib/httpd
+    statedir:      ${localstatedir}/lib/httpd
     logfiledir:    ${localstatedir}/log/httpd
     proxycachedir: ${localstatedir}/cache/httpd/cache-root
 </Layout>
