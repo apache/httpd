@@ -177,6 +177,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: http://people.apache.org/~covener/patches/2.4.x-event-maxclients.diff
       +1: covener, jim
 
+  *) mod_session_cookie: avoid duplicate Set-Cookie headers in the response.
+     trunk patch: http://svn.apache.org/r1843244
+     2.4.x patch: svn merge -c 1843244 ^/httpd/httpd/trunk .
+     +1: elukey
+     elukey: test added in http://svn.apache.org/r1844468
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
