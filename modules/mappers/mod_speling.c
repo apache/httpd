@@ -76,7 +76,7 @@ static void *mkconfig(apr_pool_t *p)
 
     cfg->enabled = 0;
     cfg->check_case_only = 0;
-    cfg->check_basename_match = 0;
+    cfg->check_basename_match = 1;
     return cfg;
 }
 
