@@ -896,8 +896,10 @@ expressions</description>
     with this section.</note>
 
     <note>This directive is not supported within
-    <directive type="section" module="core">Directory</directive> and
-    <directive type="section" module="core">Files</directive> containers.</note>
+    <directive type="section" module="core">Directory</directive>,
+    <directive type="section" module="core">If</directive> and
+    <directive type="section" module="core">Files</directive> containers.
+    </note>
 
     <note type="warning">The <directive
     module="mod_proxy">ProxyRequests</directive> directive should
