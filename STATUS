@@ -151,6 +151,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          in testing may meaning someone out there relies on the former, unverified
          behaviour. OTOH, it fixes and error you saw and added test for. So, I am cautiously
          for the change.
+     elukey: PR 62025 seems another use case that gets fixed using this patch
+             (still need to get feedback from the reporter but on my local env it solves the problem).
 
   *) mod_ssl: Fix the error code returned in an error path of 'ssl_io_filter_handshake()'
               This messes-up error handling performed in 'ssl_io_filter_error()'
