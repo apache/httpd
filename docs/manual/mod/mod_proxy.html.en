@@ -1033,8 +1033,10 @@ through</td></tr>
     with this section.</div>
 
     <div class="note">This directive is not supported within
-    <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> and
-    <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code> containers.</div>
+    <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>,
+    <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code> and
+    <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code> containers.
+    </div>
 
     <div class="warning">The <code class="directive"><a href="#proxyrequests">ProxyRequests</a></code> directive should
     usually be set <strong>off</strong> when using
