@@ -344,6 +344,17 @@ typedef struct {
  * any of this data and we need to remember the length.
  */
 
+static void char_buffer_insert(bio_filter_in_ctx_t *inctx)
+{
+    char_buffer_t *buf = &inctx->cbuf;
+    ap_filter_t *f = inctx->filter_ctx->pInputFilter;
+
+    /* set the bucket at the top of the filter's pending data */
+    ap_filter_reinstate_brigade(f, buf->bb, NULL);
+    APR_BRIGADE_INSERT_HEAD(buf->bb, buf->b);
+    ap_filter_adopt_brigade(f, buf->bb);
+}
+
 static void char_buffer_consume(bio_filter_in_ctx_t *inctx, int inl)
 {
     apr_bucket *b = inctx->cbuf.b;
@@ -357,7 +368,7 @@ static void char_buffer_consume(bio_filter_in_ctx_t *inctx, int inl)
     }
     else if (APR_BUCKET_NEXT(b) == b) {
         /* rollbacks might get us here (inl < 0) */
-        APR_BRIGADE_INSERT_HEAD(inctx->cbuf.bb, b);
+        char_buffer_insert(inctx);
     }
 }
 
@@ -369,8 +380,8 @@ static void char_buffer_consume(bio_filter_in_ctx_t *inctx, int inl)
  * presumed to be non-overlapping, and memmove must be used. */
 static int char_buffer_read(bio_filter_in_ctx_t *inctx, char *in, int inl)
 {
-    apr_bucket *b = inctx->cbuf.b;
-    int avail = b ? b->length : 0;
+    char_buffer_t *buf = &inctx->cbuf;
+    int avail = buf->b ? buf->b->length : 0;
 
     if (!avail) {
         return 0;
@@ -379,7 +390,7 @@ static int char_buffer_read(bio_filter_in_ctx_t *inctx, char *in, int inl)
     if (inl > avail) {
         inl = avail;
     }
-    memmove(in, b->data, inl);
+    memmove(in, buf->b->data, inl);
     char_buffer_consume(inctx, inl);
 
     return inl;
@@ -387,25 +398,21 @@ static int char_buffer_read(bio_filter_in_ctx_t *inctx, char *in, int inl)
 
 static int char_buffer_write(bio_filter_in_ctx_t *inctx, char *in, int inl)
 {
-    ap_filter_t *f = inctx->filter_ctx->pInputFilter;
     char_buffer_t *buf = &inctx->cbuf;
-    apr_bucket *b = buf->b;
 
-    if (!b) {
-        buf->b = b = apr_bucket_immortal_create("", 0, f->c->bucket_alloc);
-        buf->bb = apr_brigade_create(f->c->pool, f->c->bucket_alloc);
+    if (buf->b) {
+        AP_DEBUG_ASSERT(APR_BUCKET_NEXT(buf->b) == buf->b);
     }
     else {
-        AP_DEBUG_ASSERT(APR_BUCKET_NEXT(b) == b);
+        ap_filter_t *f = inctx->filter_ctx->pInputFilter;
+        buf->b = apr_bucket_immortal_create("", 0, f->c->bucket_alloc);
+        buf->bb = apr_brigade_create(f->c->pool, f->c->bucket_alloc);
     }
 
-    b->data = in;
-    b->length = inl;
-    if (b->length) {
-        /* set this at the top of the filter's pending data */
-        ap_filter_reinstate_brigade(f, buf->bb, NULL);
-        APR_BRIGADE_INSERT_HEAD(buf->bb, b);
-        ap_filter_adopt_brigade(f, buf->bb);
+    buf->b->data = in;
+    buf->b->length = inl;
+    if (buf->b->length) {
+        char_buffer_insert(inctx);
     }
 
     return inl;
