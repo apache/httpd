@@ -30,6 +30,7 @@
 #include "ssl_private.h"
 #include "mod_ssl.h"
 #include "mod_ssl_openssl.h"
+#include "core.h"
 #include "apr_date.h"
 
 APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(ssl, SSL, int, proxy_post_handshake,
@@ -320,8 +321,8 @@ static int bio_filter_out_puts(BIO *bio, const char *str)
 }
 
 typedef struct {
-    int length;
-    char *value;
+    apr_bucket *b;
+    apr_bucket_brigade *bb;
 } char_buffer_t;
 
 typedef struct {
@@ -343,39 +344,70 @@ typedef struct {
  * any of this data and we need to remember the length.
  */
 
+static void char_buffer_consume(bio_filter_in_ctx_t *inctx, int inl)
+{
+    apr_bucket *b = inctx->cbuf.b;
+
+    b->data = (char *)b->data + inl;
+    b->length -= inl;
+
+    if (!b->length) {
+        APR_BUCKET_REMOVE(b);
+        APR_BUCKET_INIT(b);
+    }
+    else if (APR_BUCKET_NEXT(b) == b) {
+        /* rollbacks might get us here (inl < 0) */
+        APR_BRIGADE_INSERT_HEAD(inctx->cbuf.bb, b);
+    }
+}
+
 /* Copy up to INL bytes from the char_buffer BUFFER into IN.  Note
  * that due to the strange way this API is designed/used, the
  * char_buffer object is used to cache a segment of inctx->buffer, and
  * then this function called to copy (part of) that segment to the
  * beginning of inctx->buffer.  So the segments to copy cannot be
  * presumed to be non-overlapping, and memmove must be used. */
-static int char_buffer_read(char_buffer_t *buffer, char *in, int inl)
+static int char_buffer_read(bio_filter_in_ctx_t *inctx, char *in, int inl)
 {
-    if (!buffer->length) {
+    apr_bucket *b = inctx->cbuf.b;
+    int avail = b ? b->length : 0;
+
+    if (!avail) {
         return 0;
     }
 
-    if (buffer->length > inl) {
-        /* we have enough to fill the caller's buffer */
-        memmove(in, buffer->value, inl);
-        buffer->value += inl;
-        buffer->length -= inl;
+    if (inl > avail) {
+        inl = avail;
     }
-    else {
-        /* swallow remainder of the buffer */
-        memmove(in, buffer->value, buffer->length);
-        inl = buffer->length;
-        buffer->value = NULL;
-        buffer->length = 0;
-    }
+    memmove(in, b->data, inl);
+    char_buffer_consume(inctx, inl);
 
     return inl;
 }
 
-static int char_buffer_write(char_buffer_t *buffer, char *in, int inl)
+static int char_buffer_write(bio_filter_in_ctx_t *inctx, char *in, int inl)
 {
-    buffer->value = in;
-    buffer->length = inl;
+    ap_filter_t *f = inctx->filter_ctx->pInputFilter;
+    char_buffer_t *buf = &inctx->cbuf;
+    apr_bucket *b = buf->b;
+
+    if (!b) {
+        buf->b = b = apr_bucket_immortal_create("", 0, f->c->bucket_alloc);
+        buf->bb = apr_brigade_create(f->c->pool, f->c->bucket_alloc);
+    }
+    else {
+        AP_DEBUG_ASSERT(APR_BUCKET_NEXT(b) == b);
+    }
+
+    b->data = in;
+    b->length = inl;
+    if (b->length) {
+        /* set this at the top of the filter's pending data */
+        ap_filter_reinstate_brigade(f, buf->bb, NULL);
+        APR_BRIGADE_INSERT_HEAD(buf->bb, b);
+        ap_filter_adopt_brigade(f, buf->bb);
+    }
+
     return inl;
 }
 
@@ -650,22 +682,16 @@ static apr_status_t ssl_io_input_read(bio_filter_in_ctx_t *inctx,
                                       apr_size_t *len)
 {
     apr_size_t wanted = *len;
-    apr_size_t bytes = 0;
-    int rc;
+    int bytes, rc;
 
     *len = 0;
 
     /* If we have something leftover from last time, try that first. */
-    if ((bytes = char_buffer_read(&inctx->cbuf, buf, wanted))) {
+    if ((bytes = char_buffer_read(inctx, buf, wanted))) {
         *len = bytes;
         if (inctx->mode == AP_MODE_SPECULATIVE) {
             /* We want to rollback this read. */
-            if (inctx->cbuf.length > 0) {
-                inctx->cbuf.value -= bytes;
-                inctx->cbuf.length += bytes;
-            } else {
-                char_buffer_write(&inctx->cbuf, buf, (int)bytes);
-            }
+            char_buffer_consume(inctx, -bytes);
             return APR_SUCCESS;
         }
         /* This could probably be *len == wanted, but be safe from stray
@@ -711,7 +737,7 @@ static apr_status_t ssl_io_input_read(bio_filter_in_ctx_t *inctx,
             *len += rc;
             if (inctx->mode == AP_MODE_SPECULATIVE) {
                 /* We want to rollback this read. */
-                char_buffer_write(&inctx->cbuf, buf, rc);
+                char_buffer_write(inctx, buf, rc);
             }
             return inctx->rc;
         }
@@ -839,7 +865,7 @@ static apr_status_t ssl_io_input_getline(bio_filter_in_ctx_t *inctx,
         if (status != APR_SUCCESS) {
             if (APR_STATUS_IS_EAGAIN(status) && (*len > 0)) {
                 /* Save the part of the line we already got */
-                char_buffer_write(&inctx->cbuf, buf, *len);
+                char_buffer_write(inctx, buf, *len);
             }
             return status;
         }
@@ -863,7 +889,7 @@ static apr_status_t ssl_io_input_getline(bio_filter_in_ctx_t *inctx,
         value = buf + bytes;
         length = *len - bytes;
 
-        char_buffer_write(&inctx->cbuf, value, length);
+        char_buffer_write(inctx, value, length);
 
         *len = bytes;
     }
@@ -1588,17 +1614,18 @@ static apr_status_t ssl_io_filter_input(ap_filter_t *f,
     else if (inctx->mode == AP_MODE_GETLINE) {
         const char *pos;
 
+        bucket = inctx->cbuf.b;
+
         /* Satisfy the read directly out of the buffer if possible;
          * invoking ssl_io_input_getline will mean the entire buffer
          * is copied once (unnecessarily) for each GETLINE call. */
-        if (inctx->cbuf.length
-            && (pos = memchr(inctx->cbuf.value, APR_ASCII_LF,
-                             inctx->cbuf.length)) != NULL) {
-            start = inctx->cbuf.value;
+        if (bucket && bucket->length
+                && (pos = memchr(bucket->data, APR_ASCII_LF,
+                                 bucket->length)) != NULL) {
+            start = bucket->data;
             len = 1 + pos - start; /* +1 to include LF */
             /* Buffer contents now consumed. */
-            inctx->cbuf.value += len;
-            inctx->cbuf.length -= len;
+            char_buffer_consume(inctx, len);
             status = APR_SUCCESS;
         }
         else {
@@ -2106,7 +2133,7 @@ static void ssl_io_input_add_filter(ssl_filter_ctx_t *filter_ctx, conn_rec *c,
     inctx->f = filter_ctx->pInputFilter;
     inctx->rc = APR_SUCCESS;
     inctx->mode = AP_MODE_READBYTES;
-    inctx->cbuf.length = 0;
+    memset(&inctx->cbuf, 0, sizeof(inctx->cbuf));
     inctx->bb = apr_brigade_create(c->pool, c->bucket_alloc);
     inctx->block = APR_BLOCK_READ;
     inctx->pool = c->pool;
