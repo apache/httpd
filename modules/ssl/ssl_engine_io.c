@@ -741,7 +741,7 @@ static apr_status_t ssl_io_input_read(bio_filter_in_ctx_t *inctx,
         rc = SSL_read(inctx->filter_ctx->pssl, buf + bytes, wanted - bytes);
 
         if (rc > 0) {
-            *len += rc;
+            *len = rc;
             if (inctx->mode == AP_MODE_SPECULATIVE) {
                 /* We want to rollback this read. */
                 char_buffer_write(inctx, buf, rc);
@@ -754,28 +754,17 @@ static apr_status_t ssl_io_input_read(bio_filter_in_ctx_t *inctx,
             if (rc == 0) {
                 /* If EAGAIN, we will loop given a blocking read,
                  * otherwise consider ourselves at EOF.
+                 * On win32 in particular, but perhaps on other kernels,
+                 * a blocking call isn't 'always' blocking.
                  */
                 if (APR_STATUS_IS_EAGAIN(inctx->rc)
                         || APR_STATUS_IS_EINTR(inctx->rc)) {
-                    /* Already read something, return APR_SUCCESS instead.
-                     * On win32 in particular, but perhaps on other kernels,
-                     * a blocking call isn't 'always' blocking.
-                     */
-                    if (*len > 0) {
-                        inctx->rc = APR_SUCCESS;
-                        break;
-                    }
                     if (inctx->block == APR_NONBLOCK_READ) {
                         break;
                     }
                 }
-                else {
-                    if (*len > 0) {
-                        inctx->rc = APR_SUCCESS;
-                        break;
-                    }
-                }
             }
+
             ssl_err = SSL_get_error(inctx->filter_ctx->pssl, rc);
             c = (conn_rec*)SSL_get_app_data(inctx->filter_ctx->pssl);
 
@@ -790,10 +779,6 @@ static apr_status_t ssl_io_input_read(bio_filter_in_ctx_t *inctx,
                  */
                 inctx->rc = APR_EAGAIN;
 
-                if (*len > 0) {
-                    inctx->rc = APR_SUCCESS;
-                    break;
-                }
                 if (inctx->block == APR_NONBLOCK_READ) {
                     break;
                 }
@@ -802,11 +787,6 @@ static apr_status_t ssl_io_input_read(bio_filter_in_ctx_t *inctx,
             else if (ssl_err == SSL_ERROR_SYSCALL) {
                 if (APR_STATUS_IS_EAGAIN(inctx->rc)
                         || APR_STATUS_IS_EINTR(inctx->rc)) {
-                    /* Already read something, return APR_SUCCESS instead. */
-                    if (*len > 0) {
-                        inctx->rc = APR_SUCCESS;
-                        break;
-                    }
                     if (inctx->block == APR_NONBLOCK_READ) {
                         break;
                     }
