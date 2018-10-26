@@ -378,6 +378,28 @@ define dump_request_tree
     end
 end        
 
+define dump_scoreboard
+    # Need to reserve size of array first before string literals could be
+    # put in
+    set $status = {0, 1, 2, 3, 4 ,5 ,6 ,7 ,8 ,9 ,10}
+    set $status = {"DEAD", "STARTING", "READY", "BUSY_READ", "BUSY_WRITE", "BUSY_KEEPALIVE", "BUSY_LOG", "BUSY_DNS", "CLOSING", "GRACEFUL", "IDLE_KILL"}
+    set $i = 0
+    while ($i < server_limit)
+        if ap_scoreboard_image->servers[$i][0].pid != 0
+            set $j = 0
+            while ($j < threads_per_child)
+                set $ws = ap_scoreboard_image->servers[$i][$j]
+                printf "pid: %d, tid: 0x%lx, status: %s\n", $ws.pid, $ws.tid, $status[$ws.status]
+                set $j = $j +1
+            end
+        end
+        set $i = $i +1
+    end
+end
+document dump_scoreboard
+    Dump the scoreboard
+end
+
 define dump_allocator
     printf "Allocator current_free_index = %d, max_free_index = %d\n", \
             ($arg0)->current_free_index, ($arg0)->max_free_index
