@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1732273 -->
+<!-- English Revision : 1844598 -->
 <!-- French translation : Lucien GENTIS -->
-<!-- $LastChangedRevision: 2016030501 $ -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -45,21 +44,24 @@ erreurs d'écriture mineures.</description>
     casse</strong>, et en acceptant <strong>jusqu'à une erreur</strong>
     (insertion, omission, inversion de caractère ou caractère
     erroné). Une liste de tous les documents qui correspondent est alors
-    élaborée en utilisant cette stratégie.</p>
+    élaborée en utilisant cette stratégie. Ce module traite aussi les
+    <strong>erreurs dans les extensions de fichiers</strong>.</p>
 
     <p>Si après le parcours du répertoire,</p>
 
     <ul>
       <li>aucun document correspondant n'a été trouvé, Apache procèdera
-      normalement et renverra une erreur "document non trouvé".</li>
+      normalement et renverra une erreur (<code>404 - document not
+      found</code>).</li>
 
       <li>un seul document correspondant pratiquement à la requête a
-      été trouvé, celui-ci est renvoyé sous la forme d'une réponse de
-      redirection.</li>
+      été trouvé, celui-ci est renvoyé sous la forme d'une
+      redirection (<code>301 - Moved Permanently</code>).</li>
 
       <li>plusieurs documents pouvant correspondre ont été trouvés, une
       liste des documents est envoyée au client afin que ce dernier
-      puisse sélectionner le document correct.</li>
+      puisse sélectionner le document correct (<code>300 - Multiple
+      Choices</code>).</li>
     </ul>
 
 </summary>
@@ -103,13 +105,13 @@ erreurs d'écriture mineures.</description>
     </ul>
 
     <!-- XXX: is that really true?! -nd -->
-    <p>mod_speling ne doit pas être activé pour des répertoires où <a
-    href="mod_dav.html">DAV</a> l'est aussi, car il va essayer de
-    "corriger" les noms des ressources nouvellement créées en fonction
-    des noms de fichiers existants ; par exemple, lors du chargement
-    d'un nouveau document <code>doc43.html</code>, il est possible qu'il
-    redirige vers un document existant <code>doc34.html</code>, ce qui
-    ne correspond pas à ce que l'on souhaite.
+    <p><module>mod_speling</module> ne doit pas être activé pour des répertoires
+    où <a href="mod_dav.html">DAV</a> l'est aussi, car il va essayer de
+    "corriger" les noms des ressources nouvellement créées en fonction des noms
+    de fichiers existants ; par exemple, lors du chargement d'un nouveau
+    document <code>doc43.html</code>, il est possible qu'il redirige vers un
+    document existant <code>doc34.html</code>, ce qui ne correspond pas à ce que
+    l'on souhaite.
     </p>
 </usage>
 </directivesynopsis>
@@ -132,7 +134,8 @@ majuscules</description>
     <p>Lorsqu'elle est définie à "on", cette directive permet de limiter
     l'action du module aux inversions majuscule/minuscule. Les autres
     corrections ne sont pas effectuées sauf si la directive
-    <directive>CheckBasenameMatch</directive> est aussi à "on"..</p>
+    <directive module="mod_speling">CheckBasenameMatch</directive> est aussi à
+    "on"..</p>
 </usage>
 </directivesynopsis>
 
@@ -141,7 +144,7 @@ majuscules</description>
 <description>Vérifie aussi la correspondance des fichiers, même avec des
 extensions différentes</description>
 <syntax>CheckBasenameMatch on|off</syntax>
-<default>CheckBasenameMatch Off</default>
+<default>CheckBasenameMatch On</default>
 <contextlist>
 <context>server config</context>
 <context>virtual host</context>
