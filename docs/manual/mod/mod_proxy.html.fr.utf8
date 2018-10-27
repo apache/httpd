@@ -1151,9 +1151,7 @@ de la version 2.4.7 du serveur HTTP Apache</td></tr>
 
     <div class="note">Il est fortement recommandé de revoir le concept de <a href="#workers">Worker</a> avant d'aller plus loin.</div>
 
-    <div class="note">Cette directive n'est pas supportée au sein
-    des sections <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>
-    et <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code>.</div>
+    <div class="note">Cette directive n'est pas supportée au sein des sections <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code> et <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code>.</div>
 
     <div class="warning">En général, la directive <code class="directive"><a href="#proxyrequests">ProxyRequests</a></code> doit être définie à
     <strong>off</strong> lorsqu'on utilise la directive

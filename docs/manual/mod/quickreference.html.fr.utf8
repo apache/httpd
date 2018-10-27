@@ -438,7 +438,7 @@ s'effectuer</td></tr>
 <tr><td><a href="mod_charset_lite.html#charsetoptions">CharsetOptions <var>option</var> [<var>option</var>] ...</a></td><td> ImplicitAdd </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Précise les détails de la traduction du jeu de
 caractères</td></tr>
 <tr class="odd"><td><a href="mod_charset_lite.html#charsetsourceenc">CharsetSourceEnc <var>jeu de caractères</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Jeu de caractères source des fichiers</td></tr>
-<tr><td><a href="mod_speling.html#checkbasenamematch">CheckBasenameMatch on|off</a></td><td> Off </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Vérifie aussi la correspondance des fichiers, même avec des
+<tr><td><a href="mod_speling.html#checkbasenamematch">CheckBasenameMatch on|off</a></td><td> On </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Vérifie aussi la correspondance des fichiers, même avec des
 extensions différentes</td></tr>
 <tr class="odd"><td><a href="mod_speling.html#checkcaseonly">CheckCaseOnly on|off</a></td><td> Off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Limite l'action du module aux corrections de
 majuscules</td></tr>
