@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1836683 -->
+<!-- English Revision: 1844556 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1010,9 +1010,10 @@ de la version 2.4.7 du serveur HTTP Apache</compatibility>
     <note>Il est fortement recommandé de revoir le concept de <a
     href="#workers">Worker</a> avant d'aller plus loin.</note>
 
-    <note>Cette directive n'est pas supportée au sein
-    des sections <directive type="section" module="core">Directory</directive>
-    et <directive type="section" module="core">Files</directive>.</note>
+    <note>Cette directive n'est pas supportée au sein des sections <directive
+    type="section" module="core">Directory</directive>, <directive
+    type="section" module="core">If</directive> et <directive type="section"
+    module="core">Files</directive>.</note>
 
     <note type="warning">En général, la directive <directive
     module="mod_proxy">ProxyRequests</directive> doit être définie à
