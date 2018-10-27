@@ -741,7 +741,7 @@ static apr_status_t ssl_io_input_read(bio_filter_in_ctx_t *inctx,
         rc = SSL_read(inctx->filter_ctx->pssl, buf + bytes, wanted - bytes);
 
         if (rc > 0) {
-            *len = rc;
+            *len += rc;
             if (inctx->mode == AP_MODE_SPECULATIVE) {
                 /* We want to rollback this read. */
                 char_buffer_write(inctx, buf, rc);
