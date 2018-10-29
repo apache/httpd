@@ -192,6 +192,22 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: jailletc36
      jailletc36: a CHANGE entry should maybe be added
 
+  *) mod_proxy: If ProxyPassReverse is used for reverse mapping of relative
+                redirects, subsequent ProxyPassReverse statements, whether they
+                are relative or absolute, may fail.  PR 60408
+     trunk patch: http://svn.apache.org/r1837250
+     2.4.x patch: svn merge -c 1837250 ^/httpd/httpd/trunk .
+     +1: jailletc36
+
+  *) mod_setenvif:  We can have expressions that become true if a regex pattern
+                    in the expression does NOT match. In this case val is NULL
+                    and we should just set the value for the environment variable
+                    like in the pattern case.
+     trunk patch: http://svn.apache.org/r1786235
+     2.4.x patch: svn merge -c 1786235 ^/httpd/httpd/trunk .
+     +1: jailletc36
+     jailletc36: Test-case added in r1845094
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
