@@ -182,14 +182,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_session_cookie: avoid duplicate Set-Cookie headers in the response.
      trunk patch: http://svn.apache.org/r1843244
      2.4.x patch: svn merge -c 1843244 ^/httpd/httpd/trunk .
-     +1: elukey
+     +1: elukey, jim
      elukey: test added in http://svn.apache.org/r1844468
 
   *) mod_dav: Fix invalid Location header when a resource is created by passing an
               absolute URI on the request line
      trunk patch: http://svn.apache.org/r1592655
      2.4.x patch: svn merge -c 1592655 ^/httpd/httpd/trunk .
-     +1: jailletc36
+     +1: jailletc36, jim
      jailletc36: a CHANGE entry should maybe be added
 
   *) mod_proxy: If ProxyPassReverse is used for reverse mapping of relative
@@ -197,7 +197,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                 are relative or absolute, may fail.  PR 60408
      trunk patch: http://svn.apache.org/r1837250
      2.4.x patch: svn merge -c 1837250 ^/httpd/httpd/trunk .
-     +1: jailletc36, rpluem
+     +1: jailletc36, rpluem, jim
 
   *) mod_setenvif:  We can have expressions that become true if a regex pattern
                     in the expression does NOT match. In this case val is NULL
@@ -205,14 +205,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                     like in the pattern case.
      trunk patch: http://svn.apache.org/r1786235
      2.4.x patch: svn merge -c 1786235 ^/httpd/httpd/trunk .
-     +1: jailletc36
+     +1: jailletc36, jim
      jailletc36: Test-case added in r1845094
 
   *) mod_ssl: Fixes PR 62880 where certificate loading fails bc SSL ERRs are
               not cleared beforehand.
      trunk patch: http://svn.apache.org/r1845768
      2.4.x patch: svn merge -c 1845768 ^/httpd/httpd/trunk .
-     +1: icing,
+     +1: icing, jim
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
