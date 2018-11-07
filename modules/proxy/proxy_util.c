@@ -837,7 +837,7 @@ PROXY_DECLARE(const char *) ap_proxy_location_reverse_map(request_rec *r,
 {
     proxy_req_conf *rconf;
     struct proxy_alias *ent;
-    int i, l1, l2;
+    int i, l1, l1_orig, l2;
     char *u;
 
     /*
@@ -849,7 +849,7 @@ PROXY_DECLARE(const char *) ap_proxy_location_reverse_map(request_rec *r,
         return url;
     }
 
-    l1 = strlen(url);
+    l1_orig = strlen(url);
     if (conf->interpolate_env == 1) {
         rconf = ap_get_module_config(r->request_config, &proxy_module);
         ent = (struct proxy_alias *)rconf->raliases->elts;
@@ -862,6 +862,10 @@ PROXY_DECLARE(const char *) ap_proxy_location_reverse_map(request_rec *r,
             ap_get_module_config(r->server->module_config, &proxy_module);
         proxy_balancer *balancer;
         const char *real = ent[i].real;
+
+        /* Restore the url length, if it had been changed by the code below */
+        l1 = l1_orig;
+
         /*
          * First check if mapping against a balancer and see
          * if we have such a entity. If so, then we need to
