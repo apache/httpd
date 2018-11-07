@@ -126,12 +126,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_proxy: If ProxyPassReverse is used for reverse mapping of relative
-                redirects, subsequent ProxyPassReverse statements, whether they
-                are relative or absolute, may fail.  PR 60408
-     trunk patch: http://svn.apache.org/r1837250
-     2.4.x patch: svn merge -c 1837250 ^/httpd/httpd/trunk .
-     +1: jailletc36, rpluem, jim
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:

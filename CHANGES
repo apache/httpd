@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.38
 
+  *) mod_proxy: If ProxyPassReverse is used for reverse mapping of relative
+     redirects, subsequent ProxyPassReverse statements, whether they are
+     relative or absolute, may fail.  PR 60408.  [Peter Haworth <pmh1wheel gmail.com>]
+
 Changes with Apache 2.4.37
 
   *) mod_ssl: Fix HTTP/2 failures when using OpenSSL 1.1.1. [Rainer Jung]
