@@ -354,6 +354,7 @@ apr_status_t h2_slave_run_pre_connection(conn_rec *slave, apr_socket_t *csd)
          * (Not necessarily in pre_connection, but later. Set it here, so it
          * is in place.) */
         slave->keepalives = 1;
+        slave->keepalive = AP_CONN_CLOSE;
         return ap_run_pre_connection(slave, csd);
     }
     return APR_SUCCESS;
