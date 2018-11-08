@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_ssl: Fix mod_authz provider for "require ssl" directive to check correctly
+     on HTTP/2 connections. Fixes PR 62654. [Stefan Eissing]
+
   *) mod_ssl: clear *SSL errors before loading certificates and checking
      afterwards. Otherwise errors are reported when other SSL using modules
      are in play. Fixes PR 62880. [Michael Kaufmann]
