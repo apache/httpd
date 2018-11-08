@@ -214,6 +214,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1846112 ^/httpd/httpd/trunk .
      +1: icing, 
 
+  *) mod_http2: change in cleanup strategy for slave connections.
+     trunk patch: http://svn.apache.org/r1846125
+     2.4.x patch: svn merge -c 1846125 ^/httpd/httpd/trunk .
+     +1: icing, 
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
