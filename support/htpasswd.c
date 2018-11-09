@@ -111,7 +111,7 @@ static void usage(void)
         " -m  Force MD5 encryption of the password (default)." NL
         " -B  Force bcrypt encryption of the password (very secure)." NL
         " -C  Set the computing time used for the bcrypt algorithm" NL
-        "     (higher is more secure but slower, default: %d, valid: 4 to 31)." NL
+        "     (higher is more secure but slower, default: %d, valid: 4 to 17)." NL
         " -d  Force CRYPT encryption of the password (8 chars max, insecure)." NL
         " -s  Force SHA encryption of the password (insecure)." NL
         " -p  Do not encrypt the password (plaintext, insecure)." NL
