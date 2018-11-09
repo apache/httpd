@@ -223,7 +223,6 @@ static void log_no_err(const char *fmt,...)
 
 static void clean_env(void)
 {
-    char pathbuf[512];
     char **cleanenv;
     char **ep;
     int cidx = 0;
@@ -245,8 +244,7 @@ static void clean_env(void)
         exit(123);
     }
 
-    sprintf(pathbuf, "PATH=%s", AP_SAFE_PATH);
-    cleanenv[cidx] = strdup(pathbuf);
+    cleanenv[cidx] = strdup("PATH=" AP_SAFE_PATH);
     if (cleanenv[cidx] == NULL) {
         log_err("failed to malloc memory for environment\n");
         exit(124);
