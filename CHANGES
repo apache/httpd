@@ -30,7 +30,7 @@ Changes with Apache 2.4.36
      https://github.com/icing/mod_h2/issues/164, https://github.com/icing/mod_h2/issues/167
      and https://github.com/icing/mod_h2/issues/170. [Stefan Eissing] 
 
-  *) ab: Add client certificate support. [Graham Leggett]
+  *) ab: Add client certificate support.  PR 55774.  [Graham Leggett]
 
   *) ab: Disable printing temp key for OpenSSL before
      version 1.0.2. SSL_get_server_tmp_key is not available
