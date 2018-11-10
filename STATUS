@@ -217,12 +217,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch:
        http://people.apache.org/~jorton/modssl_is_tls.diff
        svn merge --record-only -c 1829250,1829263,1846111 ^/httpd/httpd/trunk .
-     +1: jorton, 
+     +1: jorton, jim
 
   *) mod_http2: change in cleanup strategy for slave connections.
      trunk patch: http://svn.apache.org/r1846125
      2.4.x patch: svn merge -c 1846125 ^/httpd/httpd/trunk .
-     +1: icing, 
+     +1: icing, jim
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
