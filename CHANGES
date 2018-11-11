@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_dav: Fix an unlikely time-window where some incorrect data could be returned
+     from a PROPFIND request [Ruediger Pluem]
+
   *) mod_ssl: Fix mod_authz provider for "require ssl" directive to check correctly
      on HTTP/2 connections. Fixes PR 62654. [Stefan Eissing]
 
