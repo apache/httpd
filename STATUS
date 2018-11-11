@@ -224,6 +224,30 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1846125 ^/httpd/httpd/trunk .
      +1: icing, jim
 
+  *) mod_dav: Fix a potential incorrect PROPFIND response
+     trunk patch: http://svn.apache.org/r1842010
+                  http://svn.apache.org/r1846339      (CHANGES)
+     2.4.x patch: svn merge -c 1842010,1846339 ^/httpd/httpd/trunk .
+     +1: jailletc36
+
+  *) mod_rewrite: Only create the rewritelock when needed. PR 62311
+     trunk patch: http://svn.apache.org/r1831773
+     2.4.x patch: svn merge -c 1831773 ^/httpd/httpd/trunk .
+     +1: jailletc36
+
+  *) Easy patches: synch 2.4.x and trunk
+     - mod_ssl: Add some missing logno tags.
+     - mod_ssl: Simplify code, no functional change
+     - mod_slotmem_shm: Fix clang warning
+     - mod_negotiation: Remove redundant branch (warning from Coverity).
+     trunk patch: http://svn.apache.org/r1830816
+                  http://svn.apache.org/r1830836
+                  http://svn.apache.org/r1842882
+                  http://svn.apache.org/r1842884
+     2.4.x patch: svn merge -c 1830816,1830836,1842882,1842884 ^/httpd/httpd/trunk .
+     +1: jailletc36
+
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
