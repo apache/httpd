@@ -229,6 +229,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1846339      (CHANGES)
      2.4.x patch: svn merge -c 1842010,1846339 ^/httpd/httpd/trunk .
      +1: jailletc36
+     rpluem: Not sure if this makes sense until we include r1841225
+     and a to be committed follow up patch by jorton (https://lists.apache.org/thread.html/76d6c39f59d0f9433c6800f5ee4069c7221424be45ef3008d2f41723@%3Cdev.httpd.apache.org%3E)
+     unfortunately the discussion about it died.
 
   *) mod_rewrite: Only create the rewritelock when needed. PR 62311
      trunk patch: http://svn.apache.org/r1831773
