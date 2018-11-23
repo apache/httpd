@@ -126,17 +126,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_ssl: Fixes PR 62654 where "require ssl" did not work on HTTP/2
-     connections, and PR 61519 where $HTTPS was incorrect for the
-     "SSLEngine optional" case.
-     trunk patch: http://svn.apache.org/r1829250
-                  http://svn.apache.org/r1829263
-                  http://svn.apache.org/r1846111
-     2.4.x patch:
-       http://people.apache.org/~jorton/modssl_is_tls.diff
-       svn merge --record-only -c 1829250,1829263,1846111 ^/httpd/httpd/trunk .
-     +1: jorton, jim, minfrin
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]

@@ -9,6 +9,10 @@ Changes with Apache 2.4.38
      'ssl_io_filter_handshake()'. This messes-up error handling performed
      in 'ssl_io_filter_error()' [Yann Ylavic]
 
+  *) mod_ssl: Fix $HTTPS definition for "SSLEngine optional" case, and fix
+     authz provider so "Require ssl" works correctly in HTTP/2.
+     PR 61519, 62654.  [Joe Orton, Stefan Eissing]
+
   *) mod_proxy: If ProxyPassReverse is used for reverse mapping of relative
      redirects, subsequent ProxyPassReverse statements, whether they are
      relative or absolute, may fail.  PR 60408.  [Peter Haworth <pmh1wheel gmail.com>]
