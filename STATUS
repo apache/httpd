@@ -126,6 +126,12 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_ssl: Fixes PR 62880 where certificate loading fails bc SSL ERRs are
+              not cleared beforehand.
+     trunk patch: http://svn.apache.org/r1845768
+     2.4.x patch: svn merge -c 1845768 ^/httpd/httpd/trunk .
+     +1: icing, jim, minfrin
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -193,12 +199,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1786235 ^/httpd/httpd/trunk .
      +1: jailletc36, jim
      jailletc36: Test-case added in r1845094
-
-  *) mod_ssl: Fixes PR 62880 where certificate loading fails bc SSL ERRs are
-              not cleared beforehand.
-     trunk patch: http://svn.apache.org/r1845768
-     2.4.x patch: svn merge -c 1845768 ^/httpd/httpd/trunk .
-     +1: icing, jim
 
   *) mod_ssl: Fixes PR 62654 where "require ssl" did not work on HTTP/2
      connections, and PR 61519 where $HTTPS was incorrect for the
