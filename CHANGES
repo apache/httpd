@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.38
 
+  *) mod_session_cookie: avoid duplicate Set-Cookie header in the response.
+     [Emmanuel Dreyfus <manu@netbsd.org>, Luca Toscano]
+
   *) mod_ssl: clear *SSL errors before loading certificates and checking
      afterwards. Otherwise errors are reported when other SSL using modules
      are in play. Fixes PR 62880. [Michael Kaufmann]
