@@ -363,7 +363,9 @@ static STACK_OF(X509) *modssl_read_ocsp_certificates(const char *file)
         BIO_free(bio);
         return NULL;
     }
+
     /* create new extra chain by loading the certs */
+    ERR_clear_error();
     while ((x509 = PEM_read_bio_X509(bio, NULL, NULL, NULL)) != NULL) {
         if (!other_certs) {
                 other_certs = sk_X509_new_null();

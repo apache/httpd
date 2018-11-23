@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.38
 
+  *) mod_ssl: clear *SSL errors before loading certificates and checking
+     afterwards. Otherwise errors are reported when other SSL using modules
+     are in play. Fixes PR 62880. [Michael Kaufmann]
+
   *) mod_ssl: Fix the error code returned in an error path of
      'ssl_io_filter_handshake()'. This messes-up error handling performed
      in 'ssl_io_filter_error()' [Yann Ylavic]

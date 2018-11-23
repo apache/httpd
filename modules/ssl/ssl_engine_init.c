@@ -1038,8 +1038,10 @@ static int use_certificate_chain(
         ctx->extra_certs = NULL;
     }
 #endif
+
     /* create new extra chain by loading the certs */
     n = 0;
+    ERR_clear_error();
     while ((x509 = PEM_read_bio_X509(bio, NULL, cb, NULL)) != NULL) {
         if (!SSL_CTX_add_extra_chain_cert(ctx, x509)) {
             X509_free(x509);
