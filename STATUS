@@ -126,6 +126,13 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_dav: Fix invalid Location header when a resource is created by passing an
+              absolute URI on the request line
+     trunk patch: http://svn.apache.org/r1592655
+     2.4.x patch: svn merge -c 1592655 ^/httpd/httpd/trunk .
+     +1: jailletc36, jim, minfrin
+     jailletc36: a CHANGE entry should maybe be added
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -165,13 +172,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              http://svn.apache.org/r1828626
       2.4.x patch: http://home.apache.org/~jim/patches/socache_redisv2.patch
       +1: jim, minfrin
-
-  *) mod_dav: Fix invalid Location header when a resource is created by passing an
-              absolute URI on the request line
-     trunk patch: http://svn.apache.org/r1592655
-     2.4.x patch: svn merge -c 1592655 ^/httpd/httpd/trunk .
-     +1: jailletc36, jim
-     jailletc36: a CHANGE entry should maybe be added
 
   *) mod_setenvif:  We can have expressions that become true if a regex pattern
                     in the expression does NOT match. In this case val is NULL
