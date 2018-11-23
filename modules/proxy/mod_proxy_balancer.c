@@ -1435,12 +1435,23 @@ static int balancer_handler(request_rec *r)
                     bsel->wupdated = bsel->s->wupdated = nworker->s->updated = apr_time_now();
                     /* by default, all new workers are disabled */
                     ap_proxy_set_wstatus(PROXY_WORKER_DISABLED_FLAG, 1, nworker);
+                } else {
+                            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01207)
+                                  "%s: failed to add worker %s",
+                                  bsel->s->name, val);
+                    PROXY_GLOBAL_UNLOCK(bsel);
+                    return HTTP_BAD_REQUEST;
                 }
                 if ((rv = PROXY_GLOBAL_UNLOCK(bsel)) != APR_SUCCESS) {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01203)
                                   "%s: Unlock failed for adding worker",
                                   bsel->s->name);
                 }
+            } else {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01207)
+                                  "%s: failed to add worker %s",
+                                  bsel->s->name, val);
+                return HTTP_BAD_REQUEST;
             }
 
         }
