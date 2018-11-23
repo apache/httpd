@@ -126,15 +126,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_setenvif:  We can have expressions that become true if a regex pattern
-                    in the expression does NOT match. In this case val is NULL
-                    and we should just set the value for the environment variable
-                    like in the pattern case.
-     trunk patch: http://svn.apache.org/r1786235
-     2.4.x patch: svn merge -c 1786235 ^/httpd/httpd/trunk .
-     +1: jailletc36, jim, minfrin
-     jailletc36: Test-case added in r1845094
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
