@@ -126,6 +126,15 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_setenvif:  We can have expressions that become true if a regex pattern
+                    in the expression does NOT match. In this case val is NULL
+                    and we should just set the value for the environment variable
+                    like in the pattern case.
+     trunk patch: http://svn.apache.org/r1786235
+     2.4.x patch: svn merge -c 1786235 ^/httpd/httpd/trunk .
+     +1: jailletc36, jim, minfrin
+     jailletc36: Test-case added in r1845094
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -165,15 +174,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              http://svn.apache.org/r1828626
       2.4.x patch: http://home.apache.org/~jim/patches/socache_redisv2.patch
       +1: jim, minfrin
-
-  *) mod_setenvif:  We can have expressions that become true if a regex pattern
-                    in the expression does NOT match. In this case val is NULL
-                    and we should just set the value for the environment variable
-                    like in the pattern case.
-     trunk patch: http://svn.apache.org/r1786235
-     2.4.x patch: svn merge -c 1786235 ^/httpd/httpd/trunk .
-     +1: jailletc36, jim
-     jailletc36: Test-case added in r1845094
 
   *) mod_http2: change in cleanup strategy for slave connections.
      trunk patch: http://svn.apache.org/r1846125
