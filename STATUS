@@ -126,6 +126,12 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_session_cookie: avoid duplicate Set-Cookie headers in the response.
+     trunk patch: http://svn.apache.org/r1843244
+     2.4.x patch: svn merge -c 1843244 ^/httpd/httpd/trunk .
+     +1: elukey, jim, minfrin
+     elukey: test added in http://svn.apache.org/r1844468
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -165,12 +171,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              http://svn.apache.org/r1828626
       2.4.x patch: http://home.apache.org/~jim/patches/socache_redisv2.patch
       +1: jim, minfrin
-
-  *) mod_session_cookie: avoid duplicate Set-Cookie headers in the response.
-     trunk patch: http://svn.apache.org/r1843244
-     2.4.x patch: svn merge -c 1843244 ^/httpd/httpd/trunk .
-     +1: elukey, jim
-     elukey: test added in http://svn.apache.org/r1844468
 
   *) mod_dav: Fix invalid Location header when a resource is created by passing an
               absolute URI on the request line
