@@ -126,6 +126,12 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_ssl: Fix the error code returned in an error path of 'ssl_io_filter_handshake()'
+              This messes-up error handling performed in 'ssl_io_filter_error()'
+     trunk patch: http://svn.apache.org/r1645529
+                  http://svn.apache.org/r1839442
+     2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-mod_proxy-handshake-bad_gateway.patch
+     +1: ylavic, jim, minfrin
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -154,13 +160,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          for the change.
      elukey: PR 62025 seems another use case that gets fixed using this patch
              (still need to get feedback from the reporter but on my local env it solves the problem).
-
-  *) mod_ssl: Fix the error code returned in an error path of 'ssl_io_filter_handshake()'
-              This messes-up error handling performed in 'ssl_io_filter_error()'
-     trunk patch: http://svn.apache.org/r1645529
-                  http://svn.apache.org/r1839442
-     2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-mod_proxy-handshake-bad_gateway.patch
-     +1: ylavic, jim
 
    *) Add in mod_socache_redis from trunk
       trunk: http://svn.apache.org/r1768070
