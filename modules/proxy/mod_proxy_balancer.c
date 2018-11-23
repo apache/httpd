@@ -1225,7 +1225,6 @@ static int balancer_handler(request_rec *r)
          )
         )
        ) {
-        apr_table_clear(params);
         ok2change = 0;
     }
 
@@ -1509,7 +1508,7 @@ static int balancer_handler(request_rec *r)
                            (balancer->s->sticky_force ? "On" : "Off"));
             }
             ap_rprintf(r,
-                       "      <httpd:timeout>%" APR_TIME_T_FMT "</httpd:timeout>",
+                       "      <httpd:timeout>%" APR_TIME_T_FMT "</httpd:timeout>\n",
                        apr_time_sec(balancer->s->timeout));
             if (balancer->s->max_attempts_set) {
                 ap_rprintf(r,
