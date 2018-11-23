@@ -372,6 +372,7 @@ typedef struct event_retained_data {
     int first_thread_limit;
     int sick_child_detected;
     int maxclients_reported;
+    int near_maxclients_reported;
     /*
      * The max child slot ever assigned, preserved across restarts.  Necessary
      * to deal with MaxRequestWorkers changes across AP_SIG_GRACEFUL restarts.
@@ -2833,13 +2834,23 @@ static void perform_idle_server_maintenance(int child_bucket, int num_buckets)
     }
     else if (idle_thread_count < min_spare_threads / num_buckets) {
         if (active_thread_count >= max_workers) {
-            if (!retained->maxclients_reported) {
-                /* only report this condition once */
-                ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf, APLOGNO(00484)
-                             "server reached MaxRequestWorkers setting, "
-                             "consider raising the MaxRequestWorkers "
-                             "setting");
-                retained->maxclients_reported = 1;
+            if (0 == idle_thread_count) { 
+                if (!retained->maxclients_reported) {
+                    ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf, APLOGNO(00484)
+                                 "server reached MaxRequestWorkers setting, "
+                                 "consider raising the MaxRequestWorkers "
+                                 "setting");
+                    retained->maxclients_reported = 1;
+                }
+             }
+             else { 
+                if (!retained->near_maxclients_reported) {
+                    ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf, APLOGNO(10159)
+                            "server is within MinSpareThreads of "
+                            "MaxRequestWorkers, consider raising the "
+                            "MaxRequestWorkers setting");
+                    retained->near_maxclients_reported = 1;
+                }
             }
             retained->idle_spawn_rate[child_bucket] = 1;
         }

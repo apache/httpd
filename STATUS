@@ -126,12 +126,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   *) event MPM: Don't log "at MaxRequestWorkers" when there are still idle threads,
-      just like worker.
-      trunk: //svn.apache.org/r1843513
-      2.4.x patch: http://people.apache.org/~covener/patches/2.4.x-event-maxclients.diff
-      +1: covener, jim, minfrin
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]

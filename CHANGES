@@ -37,6 +37,11 @@ Changes with Apache 2.4.36
   *) mod_proxy_scgi, mod_proxy_uwsgi: improve error handling when sending the
      body of the response. [Jim Jagielski]
 
+  *) mpm_event: Stop issuing AH00484 "server reached MaxRequestWorkers..." when
+     there are still idle threads available. When there are less idle threads than
+     MinSpareThreads, issue new one-time message AH10159. Matches worker MPM.
+     [Eric Covener]
+
   *) mod_http2: adding defensive code for stream EOS handling, in case the request handler
      missed to signal it the normal way (eos buckets). Addresses github issues 
      https://github.com/icing/mod_h2/issues/164, https://github.com/icing/mod_h2/issues/167
