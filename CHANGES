@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.38
 
+  *) mod_dav: Fix invalid Location header when a resource is created by
+     passing an absolute URI on the request line [Jim Jagielski]
+
   *) mod_session_cookie: avoid duplicate Set-Cookie header in the response.
      [Emmanuel Dreyfus <manu@netbsd.org>, Luca Toscano]
 
