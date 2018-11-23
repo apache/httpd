@@ -126,13 +126,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_ssl: Fix the error code returned in an error path of 'ssl_io_filter_handshake()'
-              This messes-up error handling performed in 'ssl_io_filter_error()'
-     trunk patch: http://svn.apache.org/r1645529
-                  http://svn.apache.org/r1839442
-     2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-mod_proxy-handshake-bad_gateway.patch
-     +1: ylavic, jim, minfrin
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]

@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.38
 
+  *) mod_ssl: Fix the error code returned in an error path of
+     'ssl_io_filter_handshake()'. This messes-up error handling performed
+     in 'ssl_io_filter_error()' [Yann Ylavic]
+
   *) mod_proxy: If ProxyPassReverse is used for reverse mapping of relative
      redirects, subsequent ProxyPassReverse statements, whether they are
      relative or absolute, may fail.  PR 60408.  [Peter Haworth <pmh1wheel gmail.com>]

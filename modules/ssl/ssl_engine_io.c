@@ -986,12 +986,10 @@ static apr_status_t ssl_io_filter_error(bio_filter_in_ctx_t *inctx,
             break;
 
     case MODSSL_ERROR_BAD_GATEWAY:
-        bucket = ap_bucket_error_create(HTTP_BAD_REQUEST, NULL,
-                                        f->c->pool,
-                                        f->c->bucket_alloc);
         ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, f->c, APLOGNO(01997)
                       "SSL handshake failed: sending 502");
-        break;
+        f->c->aborted = 1;
+        return APR_EGENERAL;
 
     default:
         return status;
@@ -1324,7 +1322,7 @@ static apr_status_t ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
             /* ensure that the SSL structures etc are freed, etc: */
             ssl_filter_io_shutdown(filter_ctx, c, 1);
             apr_table_setn(c->notes, "SSL_connect_rv", "err");
-            return HTTP_BAD_GATEWAY;
+            return MODSSL_ERROR_BAD_GATEWAY;
         }
 
         apr_table_setn(c->notes, "SSL_connect_rv", "ok");
