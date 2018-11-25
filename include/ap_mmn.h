@@ -608,6 +608,7 @@
  *                         fields by struct ap_filter_private *priv
  * 20180906.1 (2.5.1-dev)  Don't export ap_filter_recycle() anymore
  * 20180906.2 (2.5.1-dev)  Add ap_state_dir_relative()
+ * 20180906.3 (2.5.1-dev)  Add ap_dir_nofnmatch() and ap_dir_fnmatch().
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
