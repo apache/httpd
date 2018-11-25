@@ -197,6 +197,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1830816,1830836,1842882,1842884 ^/httpd/httpd/trunk .
      +1: jailletc36
 
+  *) core: Split out the ability to parse wildcard files and directories
+     from the Include/IncludeOptional directives into a generic set of
+     functions ap_dir_nofnmatch() and ap_dir_fnmatch().
+     trunk patch: http://svn.apache.org/r1847430
+     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-ap_dir_fnmatch.patch
+     +1: minfrin
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
