@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) core: Split out the ability to parse wildcard files and directories
+     from the Include/IncludeOptional directives into a generic set of
+     functions ap_dir_nofnmatch() and ap_dir_fnmatch(). [Graham Leggett]
+
   *) mod_dav: Fix an unlikely time-window where some incorrect data could be returned
      from a PROPFIND request [Ruediger Pluem]
 
