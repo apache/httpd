@@ -126,6 +126,10 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_rewrite: Only create the rewritelock when needed. PR 62311
+     trunk patch: http://svn.apache.org/r1831773
+     2.4.x patch: svn merge -c 1831773 ^/httpd/httpd/trunk .
+     +1: jailletc36, icing (by inspection), covener
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -180,11 +184,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      and a to be committed follow up patch by jorton (https://lists.apache.org/thread.html/76d6c39f59d0f9433c6800f5ee4069c7221424be45ef3008d2f41723@%3Cdev.httpd.apache.org%3E)
      unfortunately the discussion about it died.
 
-  *) mod_rewrite: Only create the rewritelock when needed. PR 62311
-     trunk patch: http://svn.apache.org/r1831773
-     2.4.x patch: svn merge -c 1831773 ^/httpd/httpd/trunk .
-     +1: jailletc36, icing (by inspection)
-
   *) Easy patches: synch 2.4.x and trunk
      - mod_ssl: Add some missing logno tags.
      - mod_ssl: Simplify code, no functional change
@@ -210,7 +209,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
            statically allocated.
      trunk patch: http://svn.apache.org/r1848236
      2.4.x patch: svn merge -c 1848236 ^/httpd/httpd/trunk .
-     +1: hwibell
+     +1: hwibell, covener
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
