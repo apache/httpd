@@ -204,6 +204,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-ap_dir_fnmatch.patch
      +1: minfrin
 
+  *) core: Fix incorrect substitution of env vars in directives containing
+           multiple env vars. In ap_resolve_env(), the string returned from
+           getenv() should be copied since the returned string may be 
+           statically allocated.
+     trunk patch: http://svn.apache.org/r1848236
+     2.4.x patch: svn merge -c 1848236 ^/httpd/httpd/trunk .
+     +1: hwibell
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
