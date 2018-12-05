@@ -211,6 +211,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1848236 ^/httpd/httpd/trunk .
      +1: hwibell, covener
 
+  *) mod_log_config: Support %{c}h for conn-hostname, %h for useragent_host
+     PR 55348
+     trunk patch: https://svn.apache.org/r1730129
+     2.4.x patch: svn merge -c 1730129 ^/httpd/httpd/trunk .
+     +1: wrowe
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
