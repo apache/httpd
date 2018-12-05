@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) core: Incorrect values for environment variables are substituted when
+     multiple environment variables are specified in a directive. [Hank Ibell]
+
   *) core: Split out the ability to parse wildcard files and directories
      from the Include/IncludeOptional directives into a generic set of
      functions ap_dir_nofnmatch() and ap_dir_fnmatch(). [Graham Leggett]
