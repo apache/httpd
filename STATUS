@@ -131,6 +131,26 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1831773 ^/httpd/httpd/trunk .
      +1: jailletc36, icing (by inspection), covener
 
+  *) Easy patches: synch 2.4.x and trunk
+     - mod_ssl: Add some missing logno tags.
+     - mod_ssl: Simplify code, no functional change
+     - mod_slotmem_shm: Fix clang warning
+     - mod_negotiation: Remove redundant branch (warning from Coverity).
+     trunk patch: http://svn.apache.org/r1830816
+                  http://svn.apache.org/r1830836
+                  http://svn.apache.org/r1842882
+                  http://svn.apache.org/r1842884
+     2.4.x patch: svn merge -c 1830816,1830836,1842882,1842884 ^/httpd/httpd/trunk .
+     +1: jailletc36, icing, jorton, jim
+
+  *) core: Fix incorrect substitution of env vars in directives containing
+           multiple env vars. In ap_resolve_env(), the string returned from
+           getenv() should be copied since the returned string may be 
+           statically allocated.
+     trunk patch: http://svn.apache.org/r1848236
+     2.4.x patch: svn merge -c 1848236 ^/httpd/httpd/trunk .
+     +1: hwibell, covener, jim
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -184,32 +204,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      and a to be committed follow up patch by jorton (https://lists.apache.org/thread.html/76d6c39f59d0f9433c6800f5ee4069c7221424be45ef3008d2f41723@%3Cdev.httpd.apache.org%3E)
      unfortunately the discussion about it died.
 
-  *) Easy patches: synch 2.4.x and trunk
-     - mod_ssl: Add some missing logno tags.
-     - mod_ssl: Simplify code, no functional change
-     - mod_slotmem_shm: Fix clang warning
-     - mod_negotiation: Remove redundant branch (warning from Coverity).
-     trunk patch: http://svn.apache.org/r1830816
-                  http://svn.apache.org/r1830836
-                  http://svn.apache.org/r1842882
-                  http://svn.apache.org/r1842884
-     2.4.x patch: svn merge -c 1830816,1830836,1842882,1842884 ^/httpd/httpd/trunk .
-     +1: jailletc36, icing, jorton, jim
-
   *) core: Split out the ability to parse wildcard files and directories
      from the Include/IncludeOptional directives into a generic set of
      functions ap_dir_nofnmatch() and ap_dir_fnmatch().
      trunk patch: http://svn.apache.org/r1847430
      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-ap_dir_fnmatch.patch
      +1: minfrin, jim
-
-  *) core: Fix incorrect substitution of env vars in directives containing
-           multiple env vars. In ap_resolve_env(), the string returned from
-           getenv() should be copied since the returned string may be 
-           statically allocated.
-     trunk patch: http://svn.apache.org/r1848236
-     2.4.x patch: svn merge -c 1848236 ^/httpd/httpd/trunk .
-     +1: hwibell, covener, jim
 
   *) mod_log_config: Support %{c}h for conn-hostname, %h for useragent_host
      PR 55348
