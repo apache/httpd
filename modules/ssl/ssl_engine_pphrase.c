@@ -145,7 +145,6 @@ apr_status_t ssl_load_encrypted_pkey(server_rec *s, apr_pool_t *p, int idx,
     ssl_asn1_t *asn1;
     unsigned char *ucp;
     long int length;
-    BOOL bReadable;
     int nPassPhrase = (*pphrases)->nelts;
     int nPassPhraseRetry = 0;
     apr_time_t pkey_mtime = 0;
@@ -222,16 +221,12 @@ apr_status_t ssl_load_encrypted_pkey(server_rec *s, apr_pool_t *p, int idx,
          * is not empty. */
         ERR_clear_error();
 
-        bReadable = ((pPrivateKey = modssl_read_privatekey(ppcb_arg.pkey_file,
-                     NULL, ssl_pphrase_Handle_CB, &ppcb_arg)) != NULL ?
-                     TRUE : FALSE);
-
-        /*
-         * when the private key file now was readable,
-         * it's fine and we go out of the loop
-         */
-        if (bReadable)
-           break;
+        pPrivateKey = modssl_read_privatekey(ppcb_arg.pkey_file, NULL,
+                                             ssl_pphrase_Handle_CB, &ppcb_arg);
+        /* If the private key was successfully read, nothing more to
+           do here. */
+        if (pPrivateKey != NULL)
+            break;
 
         /*
          * when we have more remembered pass phrases

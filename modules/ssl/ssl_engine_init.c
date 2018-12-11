@@ -923,7 +923,7 @@ static apr_status_t ssl_init_ctx_cipher_suite(server_rec *s,
 #if SSL_HAVE_PROTOCOL_TLSV1_3
     if (mctx->auth.tls13_ciphers 
         && !SSL_CTX_set_ciphersuites(ctx, mctx->auth.tls13_ciphers)) {
-        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO()
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10127)
                 "Unable to configure permitted TLSv1.3 ciphers");
         ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
         return ssl_die(s);

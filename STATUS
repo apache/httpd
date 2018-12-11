@@ -126,18 +126,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) Easy patches: synch 2.4.x and trunk
-     - mod_ssl: Add some missing logno tags.
-     - mod_ssl: Simplify code, no functional change
-     - mod_slotmem_shm: Fix clang warning
-     - mod_negotiation: Remove redundant branch (warning from Coverity).
-     trunk patch: http://svn.apache.org/r1830816
-                  http://svn.apache.org/r1830836
-                  http://svn.apache.org/r1842882
-                  http://svn.apache.org/r1842884
-     2.4.x patch: svn merge -c 1830816,1830836,1842882,1842884 ^/httpd/httpd/trunk .
-     +1: jailletc36, icing, jorton, jim
-
   *) core: Fix incorrect substitution of env vars in directives containing
            multiple env vars. In ap_resolve_env(), the string returned from
            getenv() should be copied since the returned string may be 
