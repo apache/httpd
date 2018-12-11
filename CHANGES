@@ -6,6 +6,9 @@ Changes with Apache 2.4.38
      and we should just set the value for the environment variable 
      like in the pattern case. [Christophe Jaillet]
 
+  *) core: Incorrect values for environment variables are substituted when
+     multiple environment variables are specified in a directive. [Hank Ibell]
+
   *) mod_rewrite: Only create the global mutex used by "RewriteMap prg:" when
      this type of map is present in the configuration.  PR62311.  
      [Hank Ibell <hwibell gmail.com>]

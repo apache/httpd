@@ -1361,7 +1361,7 @@ AP_DECLARE(const char *) ap_resolve_env(apr_pool_t *p, const char * word)
                 if (server_config_defined_vars)
                     word = apr_table_get(server_config_defined_vars, name);
                 if (!word)
-                    word = getenv(name);
+                    word = apr_pstrdup(p, getenv(name));
                 if (word) {
                     current->string = word;
                     current->len = strlen(word);
