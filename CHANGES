@@ -6,6 +6,10 @@ Changes with Apache 2.4.38
      and we should just set the value for the environment variable 
      like in the pattern case. [Christophe Jaillet]
 
+  *) mod_rewrite: Only create the global mutex used by "RewriteMap prg:" when
+     this type of map is present in the configuration.  PR62311.  
+     [Hank Ibell <hwibell gmail.com>]
+
   *) mod_dav: Fix invalid Location header when a resource is created by
      passing an absolute URI on the request line [Jim Jagielski]
 

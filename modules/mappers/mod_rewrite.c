@@ -416,6 +416,7 @@ static cache *cachep;
 static int proxy_available;
 
 /* Locks/Mutexes */
+static int rewrite_lock_needed = 0;
 static apr_global_mutex_t *rewrite_mapr_lock_acquire = NULL;
 static const char *rewritemap_mutex_type = "rewrite-map";
 
@@ -2687,9 +2688,6 @@ static apr_status_t rewritelock_create(server_rec *s, apr_pool_t *p)
     apr_status_t rc;
 
     /* create the lockfile */
-    /* XXX See if there are any rewrite map programs before creating
-     * the mutex.
-     */
     rc = ap_global_mutex_create(&rewrite_mapr_lock_acquire, NULL,
                                 rewritemap_mutex_type, NULL, s, p, 0);
     if (rc != APR_SUCCESS) {
@@ -3163,6 +3161,8 @@ static const char *cmd_rewritemap(cmd_parms *cmd, void *dconf, const char *a1,
 
         newmap->type      = MAPTYPE_PRG;
         newmap->checkfile = newmap->argv[0];
+        rewrite_lock_needed = 1;
+
         if (a3) {
             char *tok_cntx;
             newmap->user = apr_strtok(apr_pstrdup(cmd->pool, a3), ":", &tok_cntx);
@@ -4469,6 +4469,7 @@ static int pre_config(apr_pool_t *pconf,
 {
     APR_OPTIONAL_FN_TYPE(ap_register_rewrite_mapfunc) *map_pfn_register;
 
+    rewrite_lock_needed = 0; 
     ap_mutex_register(pconf, rewritemap_mutex_type, NULL, APR_LOCK_DEFAULT, 0);
 
     /* register int: rewritemap handlers */
@@ -4494,13 +4495,15 @@ static int post_config(apr_pool_t *p,
     /* check if proxy module is available */
     proxy_available = (ap_find_linked_module("mod_proxy.c") != NULL);
 
-    rv = rewritelock_create(s, p);
-    if (rv != APR_SUCCESS) {
-        return HTTP_INTERNAL_SERVER_ERROR;
-    }
+    if (rewrite_lock_needed) {
+        rv = rewritelock_create(s, p);
+        if (rv != APR_SUCCESS) {
+            return HTTP_INTERNAL_SERVER_ERROR;
+        }
 
-    apr_pool_cleanup_register(p, (void *)s, rewritelock_remove,
-                              apr_pool_cleanup_null);
+        apr_pool_cleanup_register(p, (void *)s, rewritelock_remove,
+                apr_pool_cleanup_null);
+    }
 
     /* if we are not doing the initial config, step through the servers and
      * open the RewriteMap prg:xxx programs,

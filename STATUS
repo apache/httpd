@@ -126,11 +126,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_rewrite: Only create the rewritelock when needed. PR 62311
-     trunk patch: http://svn.apache.org/r1831773
-     2.4.x patch: svn merge -c 1831773 ^/httpd/httpd/trunk .
-     +1: jailletc36, icing (by inspection), covener
-
   *) Easy patches: synch 2.4.x and trunk
      - mod_ssl: Add some missing logno tags.
      - mod_ssl: Simplify code, no functional change
