@@ -4,7 +4,7 @@ Changes with Apache 2.4.38
   *) mod_setenvif: We can have expressions that become true if a regex pattern
      in the expression does NOT match. In this case val is NULL
      and we should just set the value for the environment variable 
-     like in the pattern case. [Christophe Jaillet]
+     like in the pattern case. [Ruediger Pluem]
 
   *) core: Incorrect values for environment variables are substituted when
      multiple environment variables are specified in a directive. [Hank Ibell]
