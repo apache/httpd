@@ -162,7 +162,8 @@ static apr_status_t ad_setup_authz(md_proto_driver_t *d)
     apr_status_t rv;
     md_t *md = ad->md;
     md_acme_authz_t *authz;
-    int i, changed;
+    int i;
+    int changed = 0;
     
     assert(ad->md);
     assert(ad->acme);
@@ -186,18 +187,20 @@ static apr_status_t ad_setup_authz(md_proto_driver_t *d)
     }
     
     /* Remove anything we no longer need */
-    for (i = 0; i < ad->authz_set->authzs->nelts; ++i) {
+    for (i = 0; i < ad->authz_set->authzs->nelts;) {
         authz = APR_ARRAY_IDX(ad->authz_set->authzs, i, md_acme_authz_t*);
         if (!md_contains(md, authz->domain, 0)) {
             md_acme_authz_set_remove(ad->authz_set, authz->domain);
             changed = 1;
+        }
+        else {
+            ++i;
         }
     }
     
     /* Add anything we do not already have */
     for (i = 0; i < md->domains->nelts && APR_SUCCESS == rv; ++i) {
         const char *domain = APR_ARRAY_IDX(md->domains, i, const char *);
-        changed = 0;
         authz = md_acme_authz_set_get(ad->authz_set, domain);
         if (authz) {
             /* check valid */
@@ -615,6 +618,7 @@ static apr_status_t acme_driver_init(md_proto_driver_t *d)
 {
     md_acme_driver_t *ad;
     apr_status_t rv = APR_SUCCESS;
+    int challenges_configured = 0;
 
     ad = apr_pcalloc(d->p, sizeof(*ad));
     
@@ -631,10 +635,12 @@ static apr_status_t acme_driver_init(md_proto_driver_t *d)
     if (d->challenge) {
         /* we have been told to use this type */
         APR_ARRAY_PUSH(ad->ca_challenges, const char*) = apr_pstrdup(d->p, d->challenge);
+        challenges_configured = 1;
     }
     else if (d->md->ca_challenges && d->md->ca_challenges->nelts > 0) {
         /* pre-configured set for this managed domain */
         apr_array_cat(ad->ca_challenges, d->md->ca_challenges);
+        challenges_configured = 1;
     }
     else {
         /* free to chose. Add all we support and see what we get offered */

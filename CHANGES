@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_md: incorrect behaviour when synchronizing ongoing ACME challenges
+     have been fixed. [Michael Kaufmann, Stefan Eissing]
+  
   *) core: Incorrect values for environment variables are substituted when
      multiple environment variables are specified in a directive. [Hank Ibell]
 
