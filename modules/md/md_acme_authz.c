@@ -95,7 +95,7 @@ apr_status_t md_acme_authz_set_remove(md_acme_authz_set_t *set, const char *doma
             int n = i + 1;
             if (n < set->authzs->nelts) {
                 void **elems = (void **)set->authzs->elts;
-                memmove(elems + i, elems + n, (size_t)(set->authzs->nelts - n)); 
+                memmove(elems + i, elems + n, (size_t)(set->authzs->nelts - n) * sizeof(*elems));
             }
             --set->authzs->nelts;
             return APR_SUCCESS;
