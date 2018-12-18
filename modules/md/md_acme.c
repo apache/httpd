@@ -153,6 +153,8 @@ apr_status_t md_acme_setup(md_acme_t *acme)
         if (acme->new_authz && acme->new_cert && acme->new_reg && acme->revoke_cert) {
             return APR_SUCCESS;
         }
+        md_log_perror(MD_LOG_MARK, MD_LOG_WARNING, 0, acme->p,
+                      "Unable to understand ACME server response. Wrong ACME protocol version?");
         rv = APR_EINVAL;
     }
     else {

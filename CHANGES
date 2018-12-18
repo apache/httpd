@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.38
 
+  *) mod_md: incorrect behaviour when synchronizing ongoing ACME challenges
+     have been fixed. [Michael Kaufmann, Stefan Eissing]
+  
   *) mod_setenvif: We can have expressions that become true if a regex pattern
      in the expression does NOT match. In this case val is NULL
      and we should just set the value for the environment variable 
