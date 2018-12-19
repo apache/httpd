@@ -196,7 +196,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_md: Don't export all symbols on Unix (reduces .so size by ~8%)
      trunk patch: https://svn.apache.org/r1830747
      2.4.x patch: svn merge -c 1830747 ^/httpd/httpd/trunk .
-     +1: jorton, 
+     +1: jorton, jim
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
