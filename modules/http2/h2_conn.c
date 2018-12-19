@@ -18,6 +18,7 @@
 #include <apr_strings.h>
 
 #include <ap_mpm.h>
+#include <ap_mmn.h>
 
 #include <httpd.h>
 #include <http_core.h>
@@ -315,8 +316,14 @@ conn_rec *h2_slave_create(conn_rec *master, int slave_id, apr_pool_t *parent)
     c->notes                  = apr_table_make(pool, 5);
     c->input_filters          = NULL;
     c->output_filters         = NULL;
+#if AP_MODULE_MAGIC_AT_LEAST(20180903, 1)
     c->filter_conn_ctx        = NULL;
+#endif
     c->bucket_alloc           = apr_bucket_alloc_create(pool);
+#if !AP_MODULE_MAGIC_AT_LEAST(20180720, 1)
+    c->data_in_input_filters  = 0;
+    c->data_in_output_filters = 0;
+#endif
     /* prevent mpm_event from making wrong assumptions about this connection,
      * like e.g. using its socket for an async read check. */
     c->clogging_input_filters = 1;

@@ -16,6 +16,7 @@
  
 #include <nghttp2/nghttp2.h>
 
+#include <ap_mmn.h>
 #include <httpd.h>
 #include <mod_proxy.h>
 #include "mod_http2.h"
@@ -604,7 +605,9 @@ reconnect:
         /* Still more to do, tear down old conn and start over */
         if (ctx->p_conn) {
             ctx->p_conn->close = 1;
+#if AP_MODULE_MAGIC_AT_LEAST(20140207, 2)
             proxy_run_detach_backend(r, ctx->p_conn);
+#endif
             ap_proxy_release_connection(ctx->proxy_func, ctx->p_conn, ctx->server);
             ctx->p_conn = NULL;
         }
@@ -623,7 +626,9 @@ cleanup:
             /* close socket when errors happened or session shut down (EOF) */
             ctx->p_conn->close = 1;
         }
+#if AP_MODULE_MAGIC_AT_LEAST(20140207, 2)
         proxy_run_detach_backend(ctx->rbase, ctx->p_conn);
+#endif
         ap_proxy_release_connection(ctx->proxy_func, ctx->p_conn, ctx->server);
         ctx->p_conn = NULL;
     }
