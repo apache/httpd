@@ -893,8 +893,10 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
                                        f->c->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(ctx->bb, b);
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01384)
-                          "Zlib: Compressed %ld to %ld : URL %s",
-                          ctx->stream.total_in, ctx->stream.total_out, r->uri);
+                          "Zlib: Compressed %" APR_UINT64_T_FMT
+                          " to %" APR_UINT64_T_FMT " : URL %s",
+                          (uint64_t)ctx->stream.total_in,
+                          (uint64_t)ctx->stream.total_out, r->uri);
 
             /* leave notes for logging */
             if (c->note_input_name) {
@@ -1438,9 +1440,10 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
                 ctx->validation_buffer_length += valid;
 
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01393)
-                              "Zlib: Inflated %ld to %ld : URL %s",
-                              ctx->stream.total_in, ctx->stream.total_out,
-                              r->uri);
+                              "Zlib: Inflated %" APR_UINT64_T_FMT
+                              " to %" APR_UINT64_T_FMT " : URL %s",
+                              (uint64_t)ctx->stream.total_in,
+                              (uint64_t)ctx->stream.total_out, r->uri);
 
                 consume_buffer(ctx, c, c->bufferSize - ctx->stream.avail_out,
                                UPDATE_CRC, ctx->proc_bb);
@@ -1459,9 +1462,10 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
                     if ((ctx->stream.total_out & 0xFFFFFFFF) != compLen) {
                         inflateEnd(&ctx->stream);
                         ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01395)
-                                      "Zlib: Length %ld of inflated data does "
-                                      "not match expected value %ld",
-                                      ctx->stream.total_out, compLen);
+                                      "Zlib: Length %" APR_UINT64_T_FMT
+                                      " of inflated data does not match"
+                                      " expected value %ld",
+                                      (uint64_t)ctx->stream.total_out, compLen);
                         return APR_EGENERAL;
                     }
                 }
@@ -1628,8 +1632,10 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
              */
             flush_libz_buffer(ctx, c, inflate, Z_SYNC_FLUSH, UPDATE_CRC);
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01398)
-                          "Zlib: Inflated %ld to %ld : URL %s",
-                          ctx->stream.total_in, ctx->stream.total_out, r->uri);
+                          "Zlib: Inflated %" APR_UINT64_T_FMT 
+                          " to %" APR_UINT64_T_FMT " : URL %s",
+                          (uint64_t)ctx->stream.total_in,
+                          (uint64_t)ctx->stream.total_out, r->uri);
 
             if (ctx->validation_buffer_length == VALIDATION_SIZE) {
                 unsigned long compCRC, compLen;
