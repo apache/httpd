@@ -78,7 +78,7 @@
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>Also match files with differing file name extensions.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>CheckBasenameMatch on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">기본값:</a></th><td><code>CheckBasenameMatch Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">기본값:</a></th><td><code>CheckBasenameMatch On</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override 옵션:</a></th><td>Options</td></tr>
 <tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Extension</td></tr>
@@ -166,7 +166,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_speling.ht
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2019 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
