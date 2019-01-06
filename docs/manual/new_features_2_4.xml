@@ -184,8 +184,17 @@
       <dt><module>mod_http2</module> (available since 2.4.17)</dt>
       <dd>Support for the HTTP/2 transport layer.</dd>
 
+      <dt><module>mod_proxy_http2</module> (available since 2.4.19)</dt>
+      <dd>HTTP/2 Protocol backend for <module>mod_proxy</module></dd>
+
       <dt><module>mod_proxy_hcheck</module> (available since 2.4.21)</dt>
       <dd>Support independent dynamic health checks for remote proxiy backend servers.</dd>
+
+      <dt><module>mod_brotli</module> (available since 2.4.26)</dt>
+      <dd>Support the Brotli compression algorithm.</dd>
+
+      <dt><module>mod_md</module> (available since 2.4.30)</dt>
+      <dd>Support the ACME protocol to automate certificate provisionning.</dd>
 
     </dl>
   </section>
