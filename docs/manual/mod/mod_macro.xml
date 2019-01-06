@@ -27,6 +27,7 @@
 <status>Base</status>
 <sourcefile>mod_macro.c</sourcefile>
 <identifier>macro_module</identifier>
+<compatibility>Available in httpd 2.4.5 and later</compatibility>
 
 <summary>
 
