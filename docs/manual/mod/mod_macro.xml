@@ -27,6 +27,7 @@
 <status>Base</status>
 <sourcefile>mod_macro.c</sourcefile>
 <identifier>macro_module</identifier>
+<compatibility>Available in httpd 2.4.5 and later</compatibility>
 
 <summary>
 
@@ -96,7 +97,7 @@ Examples section.</p>
 <code>%</code>, or <code>@</code>, so that they are clearly
 identifiable, and also in order to help deal with interactions with
 other directives, such as the core <directive
-module="core">Define</directive> directive. Failure to do so will 
+module="core">Define</directive> directive. Failure to do so will
 result in a warning. Nevertheless, you are encouraged to have a good
 knowledge of your entire server configuration in order to avoid reusing
 the same variables in different scopes, which can cause confusion.</p>
