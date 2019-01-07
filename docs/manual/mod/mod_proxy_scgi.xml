@@ -56,7 +56,7 @@
 
     <example><title>Simple gateway</title>
     <highlight language="config">
-      ProxyPass /scgi-bin/ scgi://localhost:4000/
+ProxyPass "/scgi-bin/" "scgi://localhost:4000/"
       </highlight>
     </example>
 
@@ -90,8 +90,8 @@ ProxyPass "/scgi-bin/" "balancer://somecluster/"
         and <var>Script-URI</var> and be compliant with RFC 3875 section 3.3.
         If instead you need <module>mod_proxy_scgi</module> to generate
         a "best guess" for <var>PATH_INFO</var>, set this env-var.  The
-        variable must be set before <directive module="env">SetEnv</directive>
-        is effective.  <directive module="setenv">SetEnvIf</directive> can be
+        variable must be set before <directive module="mod_env">SetEnv</directive>
+        is effective.  <directive module="mod_setenvif">SetEnvIf</directive> can be
         used instead: <code>SetEnvIf Request_URI . proxy-scgi-pathinfo</code>
         </dd>
     </dl>
@@ -133,7 +133,7 @@ header</description>
     <highlight language="config">
 # Use the default header (X-Sendfile)
 ProxySCGISendfile On
-    
+
 # Use a different header
 ProxySCGISendfile X-Send-Static
     </highlight>
