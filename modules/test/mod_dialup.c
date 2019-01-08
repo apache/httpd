@@ -107,7 +107,9 @@ dialup_callback(void *baton)
     dialup_baton_t *db = (dialup_baton_t *)baton;
     conn_rec *c = db->r->connection;
 
+#if APR_HAS_THREADS
     apr_thread_mutex_lock(db->r->invoke_mtx);
+#endif
 
     status = dialup_send_pulse(db);
 
@@ -115,7 +117,9 @@ dialup_callback(void *baton)
         ap_mpm_register_timed_callback(apr_time_from_sec(1), dialup_callback, baton);
     }
     else if (status == DONE) {
+#if APR_HAS_THREADS
         apr_thread_mutex_unlock(db->r->invoke_mtx);
+#endif
         ap_finalize_request_protocol(db->r);
         ap_process_request_after_handler(db->r);
         return;
@@ -127,7 +131,9 @@ dialup_callback(void *baton)
         ap_die(status, db->r);
     }
 
+#if APR_HAS_THREADS
     apr_thread_mutex_unlock(db->r->invoke_mtx);
+#endif
 
     ap_mpm_resume_suspended(c);
 }
