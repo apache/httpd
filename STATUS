@@ -200,6 +200,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      -0: wrowe [Isn't removing exports outside the scope of a binary ABI compat
                 branch? Seems too late.]
 
+  *) modules/filters/config.m4: Make libxml2's inclusion of unicode/*.h files
+     a non-fatal warning/error under maintainer-mode.
+     trunk patch: http://svn.apache.org/r1850745
+     2.4.x patch: svn merge -c 1850745 ^/httpd/httpd/trunk .
+     +1: jim
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
