@@ -101,7 +101,7 @@ static apr_status_t fetch_dbm_value(const char *dbmtype, const char *dbmfile,
 
     apr_dbm_close(f);
 
-    return rv;
+    return APR_SUCCESS;
 }
 
 static authn_status check_dbm_pw(request_rec *r, const char *user,
