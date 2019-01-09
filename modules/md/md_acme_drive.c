@@ -618,7 +618,6 @@ static apr_status_t acme_driver_init(md_proto_driver_t *d)
 {
     md_acme_driver_t *ad;
     apr_status_t rv = APR_SUCCESS;
-    int challenges_configured = 0;
 
     ad = apr_pcalloc(d->p, sizeof(*ad));
     
@@ -635,12 +634,10 @@ static apr_status_t acme_driver_init(md_proto_driver_t *d)
     if (d->challenge) {
         /* we have been told to use this type */
         APR_ARRAY_PUSH(ad->ca_challenges, const char*) = apr_pstrdup(d->p, d->challenge);
-        challenges_configured = 1;
     }
     else if (d->md->ca_challenges && d->md->ca_challenges->nelts > 0) {
         /* pre-configured set for this managed domain */
         apr_array_cat(ad->ca_challenges, d->md->ca_challenges);
-        challenges_configured = 1;
     }
     else {
         /* free to chose. Add all we support and see what we get offered */
