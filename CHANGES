@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_negociation: LanguagePriority should be case-insensitive in order to
+     match AddLanguage behavior. PR 39730 [Christophe Jaillet]
+  
   *) mod_session: Always decode session attributes early. [Hank Ibell]
 
   *) core: Incorrect values for environment variables are substituted when
