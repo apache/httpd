@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_session: Always decode session attributes early. [Hank Ibell]
+
   *) core: Incorrect values for environment variables are substituted when
      multiple environment variables are specified in a directive. [Hank Ibell]
 
