@@ -211,6 +211,26 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1850947 ^/httpd/httpd/trunk .
      +1: hwibell, covener
 
+  *) mod_proxy_wstunnel: Fix websocket proxy over UDS. PR 62932
+     trunk patch: http://svn.apache.org/r1851093
+     2.4.x patch: svn merge -c 1851093 ^/httpd/httpd/trunk .
+     +1: jailletc36 (by inspection)
+
+  *) mod_negociation: LanguagePriority should be case-insensitive in order to
+     match AddLanguage behavior. PR 39730
+     trunk patch: http://svn.apache.org/r1850989
+     2.4.x patch: svn merge -c 1850989 ^/httpd/httpd/trunk .
+     +1: jailletc36
+
+  *) easy proposals:
+       - mod_authn_dbm: Return APR_SUCCESS which is equivalent but more readable
+         than 'rv' here
+       - mod_md: fix warning with gcc (this breaks maintainer-mode build with
+         recent gcc)
+     trunk patch: http://svn.apache.org/r1850834
+     2.4.x patch: svn merge -c 1850834,1850835 ^/httpd/httpd/trunk .
+     +1: jailletc36
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
