@@ -83,13 +83,14 @@
 </summary>
 <seealso><module>mod_cache</module></seealso>
 <seealso><module>mod_proxy_ajp</module></seealso>
+<seealso><module>mod_proxy_balancer</module></seealso>
 <seealso><module>mod_proxy_connect</module></seealso>
 <seealso><module>mod_proxy_fcgi</module></seealso>
 <seealso><module>mod_proxy_ftp</module></seealso>
+<seealso><module>mod_proxy_hcheck</module></seealso>
 <seealso><module>mod_proxy_http</module></seealso>
 <seealso><module>mod_proxy_scgi</module></seealso>
 <seealso><module>mod_proxy_wstunnel</module></seealso>
-<seealso><module>mod_proxy_balancer</module></seealso>
 <seealso><module>mod_ssl</module></seealso>
 
     <section id="forwardreverse"><title>Forward Proxies and Reverse
@@ -698,8 +699,8 @@ expressions</description>
 
 <usage>
     <p>The <directive>ProxyRemoteMatch</directive> is identical to the
-    <directive module="mod_proxy">ProxyRemote</directive> directive, except that the
-    first argument is a <glossary ref="regex">regular expression</glossary>
+    <directive module="mod_proxy">ProxyRemote</directive> directive, except that
+    the first argument is a <glossary ref="regex">regular expression</glossary>
     match against the requested URL.</p>
 </usage>
 </directivesynopsis>
@@ -846,8 +847,8 @@ expressions</description>
 
    <note type="warning"><title>Warning</title>
       <p>Keep in mind that the same parameter key can have a different meaning
-      depending whether it is applied to a balancer or a worker, as shown by the two
-      examples above regarding timeout.</p>
+      depending whether it is applied to a balancer or a worker, as shown by
+      the two examples above regarding timeout.</p>
    </note>
 
 </usage>
@@ -889,7 +890,7 @@ expressions</description>
 
     <p>In 2.4.7 and later, support for using a Unix Domain Socket is available by using a target
     which prepends <code>unix:/path/lis.sock|</code>. For example, to proxy
-    HTTP and target the UDS at /home/www/socket, you would use
+    HTTP and target the UDS at /home/www.socket, you would use
     <code>unix:/home/www.socket|http://localhost/whatever/</code>.</p>
 
     <note><strong>Note:</strong> The path associated with the <code>unix:</code>
