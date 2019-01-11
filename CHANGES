@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_proxy_wstunnel: Fix websocket proxy over UDS.
+     PR 62932 <pavel dcmsys.com>
+  
   *) mod_negociation: LanguagePriority should be case-insensitive in order to
      match AddLanguage behavior. PR 39730 [Christophe Jaillet]
   
