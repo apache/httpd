@@ -426,6 +426,7 @@
                 </a>
             </xsl:otherwise>
             </xsl:choose>
+        <xsl:text> </xsl:text>
         <a class="permalink" href="#{$lowername}" title="{$message[@id='permalink']}">&para;</a>
         </h2>&lf;
 
