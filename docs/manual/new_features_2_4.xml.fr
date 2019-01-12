@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1787941 -->
+<!-- English Revision: 1850546 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -209,9 +209,18 @@ serveur HTTP Apache</title>
       <dt><module>mod_http2</module> (disponible à partir de la version 2.4.17)</dt>
       <dd>Support de la couche transport HTTP/2.</dd>
 
+      <dt><module>mod_proxy_http2</module> (disponible à partir de la version 2.4.19)</dt>
+      <dd>Support du protocole HTTP/2 pour <module>mod_proxy</module></dd>
+
       <dt><module>mod_proxy_hcheck</module> (disponible à partir de la version 2.4.21)</dt>
       <dd>Support d'un bilan de santé dynamique indépendant pour les serveurs
       d'arrière-plan mandatés distants.</dd>
+
+      <dt><module>mod_brotli</module> (disponible à partir de la version 2.4.26)</dt>
+      <dd>Support de l'algorithme de compression Brotli.</dd>
+
+      <dt><module>mod_md</module> (disponible à partir de la version 2.4.30)</dt>
+      <dd>Automatisation de l'obtention de certificats via le protocole ACME.</dd>
 
     </dl>
   </section>

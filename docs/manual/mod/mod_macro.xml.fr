@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1737464 -->
+<!-- English Revision: 1850541 -->
 <!-- French translation: Fabien Coelho -->
 <!-- Updated by Lucien Gentis -->
 
@@ -30,6 +30,7 @@ de configuration Apache.</description>
 <status>Base</status>
 <sourcefile>mod_macro.c</sourcefile>
 <identifier>macro_module</identifier>
+<compatibility>Disponible à partir de la version 2.4.5 du serveur HTTP Apache</compatibility>
 
 <summary>
 

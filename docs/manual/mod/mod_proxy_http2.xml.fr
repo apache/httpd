@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1798491 -->
+<!-- English Revision : 1850547 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -29,6 +29,7 @@
 <status>Extension</status>
 <sourcefile>mod_proxy_http2.c</sourcefile>
 <identifier>proxy_http2_module</identifier>
+<compatibility>Disponible à partir de la version 2.4.19 du serveur HTTP Apache</compatibility>
 
 <summary>
     <p><module>mod_proxy_http2</module> ne

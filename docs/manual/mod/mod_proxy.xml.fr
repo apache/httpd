@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1844558 -->
+<!-- English Revision: 1851101 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -90,13 +90,14 @@
 </summary>
 <seealso><module>mod_cache</module></seealso>
 <seealso><module>mod_proxy_ajp</module></seealso>
+<seealso><module>mod_proxy_balancer</module></seealso>
 <seealso><module>mod_proxy_connect</module></seealso>
 <seealso><module>mod_proxy_fcgi</module></seealso>
 <seealso><module>mod_proxy_ftp</module></seealso>
+<seealso><module>mod_proxy_hcheck</module></seealso>
 <seealso><module>mod_proxy_http</module></seealso>
 <seealso><module>mod_proxy_scgi</module></seealso>
 <seealso><module>mod_proxy_wstunnel</module></seealso>
-<seealso><module>mod_proxy_balancer</module></seealso>
 <seealso><module>mod_ssl</module></seealso>
 
     <section id="forwardreverse"><title>Mandataires directs et
@@ -1003,7 +1004,7 @@ sont supportés à partir de la version 2.4.7 du serveur HTTP Apache</compatibil
     2.4.7 du serveur HTTP Apache ; pour utiliser cette fonctionnalité,
     il suffit d'utiliser une URL cible préfixée par
     <code>unix:/path/lis.sock|</code>. Par exemple, pour mandater HTTP
-    et cibler l'UDS /home/www/socket, vous devez utiliser
+    et cibler l'UDS /home/www.socket, vous devez utiliser
     <code>unix:/home/www.socket|http://localhost/whatever/</code>.</p>
 
     <note><strong>Note :</strong>Le chemin associé à l'URL

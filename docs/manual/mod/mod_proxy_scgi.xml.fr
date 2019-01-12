@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1678234 -->
+<!-- English Revision: 1850684 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -60,7 +60,7 @@
 
     <example><title>Passerelle simple</title>
     <highlight language="config">
-      ProxyPass /scgi-bin/ scgi://localhost:4000/
+ProxyPass "/scgi-bin/" "scgi://localhost:4000/"
       </highlight>
     </example>
 
@@ -99,9 +99,9 @@ ProxyPass "/scgi-bin/" "balancer://somecluster/"
 	précise possible de <var>PATH_INFO</var>, définissez cette
 	variable d'environnement. La variable doit être définie avant
 	que la directive <directive
-	module="env">SetEnv</directive> ne soit effective. Il est possible
+	module="mod_env">SetEnv</directive> ne soit effective. Il est possible
 	d'utiliser à la	place la directive <directive
-	module="setenv">SetEnvIf</directive> : <code>SetEnvIf Request_URI . proxy-scgi-pathinfo</code>
+	module="mod_setenvif">SetEnvIf</directive> : <code>SetEnvIf Request_URI . proxy-scgi-pathinfo</code>
 	</dd>
     </dl>
 </section>
