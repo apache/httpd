@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1780210 -->
+<!-- English Revision: 1851152 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -199,14 +199,14 @@ LoadModule cache_module modules/mod_cache.so
   peut arriver pendant ce laps de temps, et provoquer une
   <strong>tempête</strong> de requêtes susceptibles de saturer le
   processus d'arrière-plan de manière soudaine et imprédictible.</p>
-  <p>Pour contenir cette tempête, on peut utiliser la directive
-  <directive>CacheLock</directive> afin de définir un répertoire où
-  seront créés <strong>à la volée</strong> des verrous pour les URLs.
-  Ces verrous sont utilisés comme autant d'<strong>indications</strong>
-  par les autres requêtes, soit pour empêcher une tentative de mise en
-  cache (un autre processus est en train de récupérer l'entité), soit
-  pour indiquer qu'une entrée périmée est en cours de mise à jour
-  (pendant ce temps, c'est le contenu périmé qui sera renvoyé).
+  <p>Pour contenir cette tempête, on peut utiliser la directive <directive
+  module="mod_cache">CacheLock</directive> afin de définir un répertoire où
+  seront créés <strong>à la volée</strong> des verrous pour les URLs.  Ces
+  verrous sont utilisés comme autant d'<strong>indications</strong> par les
+  autres requêtes, soit pour empêcher une tentative de mise en cache (un autre
+  processus est en train de récupérer l'entité), soit pour indiquer qu'une
+  entrée périmée est en cours de mise à jour (pendant ce temps, c'est le contenu
+  périmé qui sera renvoyé).
   </p>
   <section>
     <title>Mise en cache initiale d'une entrée</title>
@@ -239,12 +239,12 @@ LoadModule cache_module modules/mod_cache.so
     verrou éventuel sera ignoré, la requête du client sera honorée
     immédiatement, et l'entrée du cache mise à jour.</p>
 
-    <p>Comme mécanisme de sécurité supplémentaire, la durée de vie
-    maximale des verrous est configurable. Lorsque cette limite est
-    atteinte, le verrou est supprimé et une autre requête peut alors en
-    créer un nouveau. Cette durée de vie peut être définie via la
-    directive <directive>CacheLockMaxAge</directive>, et sa valeur par
-    défaut est de 5 secondes.
+    <p>Comme mécanisme de sécurité supplémentaire, la durée de vie maximale des
+    verrous est configurable. Lorsque cette limite est atteinte, le verrou est
+    supprimé et une autre requête peut alors en créer un nouveau. Cette durée de
+    vie peut être définie via la directive <directive
+    module="mod_cache">CacheLockMaxAge</directive>, et sa valeur par défaut est
+    de 5 secondes.
     </p>
   </section>
   <section>
@@ -398,35 +398,31 @@ en mandat direct dans les versions 2.2 et antérieures.</compatibility>
 
 <usage>
     <p>La directive <directive>CacheEnable</directive> enjoint
-    <module>mod_cache</module> de mettre en cache l'URL précisée par
-    <var>chaîne URL</var>, ainsi que les URLs de niveaux inférieurs. Le
-    gestionnaire de stockage du cache est spécifié à l'aide de
-    l'argument <var>type de cache</var>. La directive
-    <directive>CacheEnable</directive> peut être placée à l'intérieur d'une
-    section <directive type="section">Location</directive> ou <directive
-    type="section">LocationMatch</directive> pour indiquer que le
-    contenu considéré peut être mis en cache. Si <var>type de cache</var>
-    a pour valeur <code>disk</code>, <module>mod_cache</module>
-    utilisera le gestionnaire de stockage sur disque implémenté par
-    <module>mod_cache_disk</module>. Pour que <module>mod_cache</module>
-    utilise le gestionnaire de stockage basé sur le cache d'objets
-    partagés implémenté par <module>mod_cache_socache</module>,
-    spécifiez <code>socache</code> comme valeur du paramètre <var>type
-    de cache</var>.</p>
-    <p>Si les différentes directives <directive>CacheEnable</directive>
-    spécifient des URLs qui se recoupent (comme dans l'exemple
-    ci-dessous), tous les gestionnaires de stockage possibles seront
-    lancés, jusqu'au premier d'entre eux qui traitera effectivement la
-    requête.
-    L'ordre dans lequel les gestionnaires de stockage sont lancés est
-    déterminé par l'ordre dans lequel apparaissent les directives
-    <directive>CacheEnable</directive> dans le fichier de
-    configuration. Les directives <directive>CacheEnable</directive>
-    situées à l'intérieur de sections <directive
-    type="section">Location</directive> ou <directive
-    type="section">LocationMatch</directive> sont traitées avant les
-    directives <directive>CacheEnable</directive> définies au niveau
-    global.</p>
+    <module>mod_cache</module> de mettre en cache l'URL précisée par <var>chaîne
+    URL</var>, ainsi que les URLs de niveaux inférieurs. Le gestionnaire de
+    stockage du cache est spécifié à l'aide de l'argument <var>type de
+    cache</var>. La directive <directive>CacheEnable</directive> peut être
+    placée à l'intérieur d'une section <directive type="section"
+    module="core">Location</directive> ou <directive type="section"
+    module="core">LocationMatch</directive> pour indiquer que le contenu
+    considéré peut être mis en cache. Si <var>type de cache</var> a pour valeur
+    <code>disk</code>, <module>mod_cache</module> utilisera le gestionnaire de
+    stockage sur disque implémenté par <module>mod_cache_disk</module>. Pour que
+    <module>mod_cache</module> utilise le gestionnaire de stockage basé sur le
+    cache d'objets partagés implémenté par <module>mod_cache_socache</module>,
+    spécifiez <code>socache</code> comme valeur du paramètre <var>type de
+    cache</var>.</p> <p>Si les différentes directives
+    <directive>CacheEnable</directive> spécifient des URLs qui se recoupent
+    (comme dans l'exemple ci-dessous), tous les gestionnaires de stockage
+    possibles seront lancés, jusqu'au premier d'entre eux qui traitera
+    effectivement la requête.  L'ordre dans lequel les gestionnaires de stockage
+    sont lancés est déterminé par l'ordre dans lequel apparaissent les
+    directives <directive>CacheEnable</directive> dans le fichier de
+    configuration. Les directives <directive>CacheEnable</directive> situées à
+    l'intérieur de sections <directive type="section"
+    module="core">Location</directive> ou <directive type="section"
+    module="core">LocationMatch</directive> sont traitées avant les directives
+    <directive>CacheEnable</directive> définies au niveau global.</p>
 
     <p>En fonctionnement du type serveur mandataire direct, <var>chaîne
     URL</var> doit au moins débuter par un protocole pour lequel la mise
@@ -500,10 +496,10 @@ spécifiées</description>
     </example>
 
     <p>Si la directive se trouve à l'intérieur d'une section <directive
-    type="section">Location</directive>, le chemin doit être spécifié en
-    dessous de la Location, et si le mot "on" est utilisé, la mise en
-    cache sera désactivée pour l'ensemble de l'arborescence concernée
-    par la section Location.</p>
+    type="section" module="core">Location</directive>, le chemin doit être
+    spécifié en dessous de la Location, et si le mot "on" est utilisé, la mise
+    en cache sera désactivée pour l'ensemble de l'arborescence concernée par la
+    section Location.</p>
 
     <example><title>Exemple</title>
       <highlight language="config">
@@ -582,11 +578,11 @@ lorsqu'aucune date d'expiration n'a été spécifiée.</description>
 
 <usage>
     <p>La directive <directive>CacheDefaultExpire</directive> permet de
-    spécifier un temps par défaut, en secondes, pendant lequel sera
-    conservé dans le cache un document qui ne possède ni date
-    d'expiration, ni date de dernière modification. La valeur de cette
-    directive est écrasée par la valeur de la directive
-    <directive>CacheMaxExpire</directive> si cette dernière est
+    spécifier un temps par défaut, en secondes, pendant lequel sera conservé
+    dans le cache un document qui ne possède ni date d'expiration, ni date de
+    dernière modification. La valeur de cette directive n'est <em>pas</em>
+    écrasée par la valeur de la directive <directive
+    module="mod_cache">CacheMaxExpire</directive>, même si cette dernière est
     utilisée.</p>
 
     <highlight language="config">
@@ -606,19 +602,17 @@ Modified.</description>
 </contextlist>
 
 <usage>
-    <p>Normalement, les documents qui ne possèdent pas de date de
-    dernière modification ne sont pas mis en cache. Dans certaines
-    circonstances, la date de dernière modification est supprimée (au
-    cours des traitements liés à <module>mod_include</module> par
-    exemple), ou n'existe tout simplement pas. La directive
-    <directive>CacheIgnoreNoLastMod</directive> permet de spécifier si
-    les documents ne possèdant pas de date de dernière modification
-    doivent être mis en cache, même sans date de dernière modification.
-    Si le document ne possède ni date d'expiration, ni date de dernière
-    modification, la valeur spécifiée par la directive
-    <directive>CacheDefaultExpire</directive> servira à générer une date
-    d'expiration.
-    </p>
+    <p>Normalement, les documents qui ne possèdent pas de date de dernière
+    modification ne sont pas mis en cache. Dans certaines circonstances, la date
+    de dernière modification est supprimée (au cours des traitements liés à
+    <module>mod_include</module> par exemple), ou n'existe tout simplement pas.
+    La directive <directive>CacheIgnoreNoLastMod</directive> permet de spécifier
+    si les documents ne possèdant pas de date de dernière modification doivent
+    être mis en cache, même sans date de dernière modification.  Si le document
+    ne possède ni date d'expiration, ni date de dernière modification, la valeur
+    spécifiée par la directive <directive
+    module="mod_cache">CacheDefaultExpire</directive> servira à générer une date
+    d'expiration.  </p>
 
     <highlight language="config">
       CacheIgnoreNoLastMod On
@@ -637,7 +631,7 @@ le contenu au client depuis le cache</description>
 
 <usage>
     <p>Normalement, les requêtes contenant des en-têtes tels que
-    Cache-Control: no-cache ou Pragma: no-cache ne sont pas servies
+    <code>Cache-Control: no-cache</code> ou Pragma: no-cache ne sont pas servies
     depuis le cache. La directive
     <directive>CacheIgnoreCacheControl</directive> permet de modifier ce
     comportement. Avec <directive>CacheIgnoreCacheControl
@@ -716,8 +710,8 @@ fonction de la date de dernière modification.</description>
     3:00pm, la date d'expiration calculée sera 3:00pm + 1 heure =
     4:00pm.
 
-    Si le délai d'expiration est supérieur à celui spécifié par la
-    directive <directive>CacheMaxExpire</directive>, c'est ce dernier
+    Si le délai d'expiration est supérieur à celui spécifié par la directive
+    <directive module="mod_cache">CacheMaxExpire</directive>, c'est ce dernier
     qui l'emporte.</p>
 
     <highlight language="config">
@@ -871,8 +865,8 @@ marquées comme privées</description>
 </contextlist>
 
 <usage>
-    <p>Normalement, les réponse comportant un en-tête Cache-Control:
-    dont la valeur est private ne seront pas stockées dans le cache. La
+    <p>Normalement, les réponse comportant un en-tête <code>Cache-Control: private</code>
+    ne seront pas stockées dans le cache. La
     directive <directive>CacheStorePrivate</directive> permet de
     modifier ce comportement. Si
     <directive>CacheStorePrivate</directive> est définie à On, le
@@ -908,7 +902,7 @@ l'entête Cache-Control: a pour valeur no-store.</description>
 
 <usage>
     <p>Normalement, les requêtes ou réponses dont l'en-tête
-    Cache-Control: a pour valeur no-store ne sont pas stockées dans le
+    <code>Cache-Control: no-store</code> ne sont pas stockées dans le
     cache. La directive <directive>CacheStoreNoStore</directive> permet
     de modifier ce comportement. Si
     <directive>CacheStoreNoStore</directive> est définie à On, le
@@ -1013,8 +1007,7 @@ CacheLock on
   Apache</compatibility>
 
   <usage>
-    <p>La directive <directive
-    module="mod_cache">CacheQuickHandler</directive> permet de contrôler
+    <p>La directive <directive>CacheQuickHandler</directive> permet de contrôler
     la phase au cours de laquelle la mise en cache est effectuée.</p>
 
     <p>Avec la configuration par défaut, le cache agit au cours de la
@@ -1067,8 +1060,7 @@ AddOutputFilterByType CACHE;INCLUDES;DEFLATE text/html
 <compatibility>Disponible depuis la version 2.3.9 d'Apache</compatibility>
 
 <usage>
-  <p>Lorsque la directive <directive
-  module="mod_cache">CacheHeader</directive> est définie à on, un
+  <p>Lorsque la directive <directive>CacheHeader</directive> est définie à on, un
   en-tête <strong>X-Cache</strong> est ajouté à la réponse et contient
   l'état du cache pour cette dernière. Si le gestionnaire normal est
   utilisé, cette directive peut se situer dans une section
@@ -1114,8 +1106,7 @@ CacheHeader on
 <compatibility>Disponible depuis la version 2.3.9 d'Apache</compatibility>
 
 <usage>
-  <p>Lorsque la directive <directive
-  module="mod_cache">CacheDetailHeader</directive> est définie à on, un
+  <p>Lorsque la directive <directive>CacheDetailHeader</directive> est définie à on, un
   en-tête <strong>X-Cache-Detail</strong> est ajouté à la réponse et
   contient les raisons précises d'une décision d'utilisation du cache
   vis à vis de cette dernière.</p>
@@ -1151,15 +1142,13 @@ CacheDetailHeader on
 <description>Remplace l'URL de base des clés du cache mandatées en
 inverse</description>
 <syntax>CacheKeyBaseURL <var>URL</var></syntax>
-<default>CacheKeyBaseURL http://example.com</default>
 <contextlist><context>server config</context>
 <context>virtual host</context>
 </contextlist>
 <compatibility>Disponible depuis la version 2.3.9 d'Apache</compatibility>
 
 <usage>
-  <p>Lorsque la directive <directive
-  module="mod_cache">CacheKeyBaseURL</directive> est utilisée, l'URL
+  <p>Lorsque la directive <directive>CacheKeyBaseURL</directive> est utilisée, l'URL
   spécifiée sera utilisée comme URL de base pour calculer l'URL des clés
   du cache dans la configuration du mandataire inverse. Par défaut,
   c'est le protocole/nom d'hôte/port du serveur virtuel courant qui sera
@@ -1193,8 +1182,7 @@ CacheKeyBaseURL http://www.example.com/
 <compatibility>Disponible depuis la version 2.3.9 d'Apache</compatibility>
 
 <usage>
-  <p>Lorsque la directive <directive
-  module="mod_cache">CacheStaleOnError</directive> est définie à on, et
+  <p>Lorsque la directive <directive>CacheStaleOnError</directive> est définie à on, et
   si des données non mises à jour sont disponibles dans le cache, ce
   dernier renverra ces données, plutôt qu'une éventuelle réponse 5xx en
   provenance du serveur d'arrière-plan. Alors que l'en-tête
