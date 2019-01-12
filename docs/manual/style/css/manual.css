@@ -1033,5 +1033,23 @@ p.figure dfn {
 }
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * Permalink are used in <h2> tags only.
+ * They are hidden by default, and become visible only when the mouse
+ * is over the corresponding element.
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+.permalink {
+    visibility: hidden;
+}
+.permalink:link {
+   color: white;
+}
+.permalink:visited {
+   color: white;
+}
+h2:hover > .permalink {
+    visibility: visible;
+}
+
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  * -> The End <-
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
