@@ -270,8 +270,7 @@ int cache_select(cache_request_rec *cache, request_rec *r)
              * language negotiated document in a different language by mistake.
              *
              * This code makes the assumption that the storage manager will
-             * cache the req_hdrs if the response contains a Vary
-             * header.
+             * cache the req_hdrs if the response contains a Vary header.
              *
              * RFC2616 13.6 and 14.44 describe the Vary mechanism.
              */
@@ -549,7 +548,7 @@ static apr_status_t cache_canonicalise_key(request_rec *r, apr_pool_t* p,
     }
     else {
         if (conf->base_uri && conf->base_uri->port_str) {
-            port_str = conf->base_uri->port_str;
+            port_str = apr_pstrcat(p, ":", conf->base_uri->port_str, NULL);
         }
         else if (conf->base_uri && conf->base_uri->hostname) {
             port_str = "";
