@@ -438,7 +438,7 @@ CacheEnable  disk  "http://.example.org/"
       </highlight>
     </example>
 
-    <p>If used in a <directive type="section" modeul="core">Location</directive> directive,
+    <p>If used in a <directive type="section" module="core">Location</directive> directive,
     the path needs to be specified below the Location, or if the word "on"
     is used, caching for the whole location will be disabled.</p>
 
