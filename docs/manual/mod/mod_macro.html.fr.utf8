@@ -33,7 +33,8 @@
 de configuration Apache.</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>macro_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_macro.c</td></tr></table>
+<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_macro.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.5 du serveur HTTP Apache</td></tr></table>
 <h3>Sommaire</h3>
 
 

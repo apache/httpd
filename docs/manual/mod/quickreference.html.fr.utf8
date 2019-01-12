@@ -376,7 +376,7 @@ cache</td></tr>
 [<var>identifiant</var>] ...</a></td><td> None </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Ignore les identifiants de session définis encodés dans
 l'URL lors de la mise en cache
 </td></tr>
-<tr class="odd"><td><a href="mod_cache.html#cachekeybaseurl">CacheKeyBaseURL <var>URL</var></a></td><td> http://example.com </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Remplace l'URL de base des clés du cache mandatées en
+<tr class="odd"><td><a href="mod_cache.html#cachekeybaseurl">CacheKeyBaseURL <var>URL</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Remplace l'URL de base des clés du cache mandatées en
 inverse</td></tr>
 <tr><td><a href="mod_cache.html#cachelastmodifiedfactor">CacheLastModifiedFactor <var>flottant</var></a></td><td> 0.1 </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Le facteur utilisé pour générer une date d'expiration en
 fonction de la date de dernière modification.</td></tr>
