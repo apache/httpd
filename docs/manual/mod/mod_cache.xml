@@ -179,7 +179,7 @@ LoadModule cache_module modules/mod_cache.so
   server, a significant number of requests might arrive during this time, and
   cause a <strong>thundering herd</strong> of requests to strike the backend
   suddenly and unpredictably.</p>
-  <p>To keep the thundering herd at bay, the <directive>CacheLock</directive>
+  <p>To keep the thundering herd at bay, the <directive module="mod_cache">CacheLock</directive>
   directive can be used to define a directory in which locks are created for
   URLs <strong>in flight</strong>. The lock is used as a <strong>hint</strong>
   by other requests to either suppress an attempt to cache (someone else has
@@ -213,8 +213,8 @@ LoadModule cache_module modules/mod_cache.so
     <p>As a further safety mechanism, locks have a configurable maximum age.
     Once this age has been reached, the lock is removed, and a new request is
     given the opportunity to create a new lock. This maximum age can be set using
-    the <directive>CacheLockMaxAge</directive> directive, and defaults to 5
-    seconds.
+    the <directive module="mod_cache">CacheLockMaxAge</directive> directive, and defaults
+    to 5 seconds.
     </p>
   </section>
   <section>
@@ -246,14 +246,14 @@ LoadModule cache_module modules/mod_cache.so
   <p>While this mode offers the best performance, the administrator may find that
   under certain circumstances they may want to perform further processing on the
   request after the request is cached, such as to inject personalisation into the
-  cached page, or to apply authorisation restrictions to the content. Under these
+  cached page, or to apply authorization restrictions to the content. Under these
   circumstances, an administrator is often forced to place independent reverse
   proxy servers either behind or in front of the caching server to achieve this.</p>
 
-  <p>To solve this problem the <directive module="mod_cache">CacheQuickHandler
-  </directive> directive can be set to <strong>off</strong>, and the server will
+  <p>To solve this problem the <directive module="mod_cache">CacheQuickHandler</directive>
+  directive can be set to <strong>off</strong>, and the server will
   process all phases normally handled by a non-cached request, including the
-  <strong>authentication and authorisation</strong> phases.</p>
+  <strong>authentication and authorization</strong> phases.</p>
 
   <p>In addition, the administrator may optionally specify the <strong>precise point
   within the filter chain</strong> where caching is to take place by adding the
@@ -344,10 +344,10 @@ CustomLog "invalidated-requests.log" common env=cache-invalidate
 manager</description>
 <syntax>CacheEnable <var>cache_type</var> [<var>url-string</var>]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
-<context>directory</context></contextlist>
+<context>directory</context>
+</contextlist>
 <compatibility>A url-string of '/' applied to forward proxy content in 2.2 and
  earlier.</compatibility>
-
 
 <usage>
     <p>The <directive>CacheEnable</directive> directive instructs
@@ -355,8 +355,8 @@ manager</description>
     <var>url-string</var>. The cache storage manager is specified with the
     <var>cache_type</var> argument. The <directive>CacheEnable</directive>
     directive can alternatively be placed inside either
-    <directive type="section">Location</directive> or
-    <directive type="section">LocationMatch</directive> sections to indicate
+    <directive type="section" module="core">Location</directive> or
+    <directive type="section" module="core">LocationMatch</directive> sections to indicate
     the content is cacheable.
     <var>cache_type</var> <code>disk</code> instructs
     <module>mod_cache</module> to use the disk based storage manager
@@ -370,8 +370,8 @@ manager</description>
     actually processes the request. The order in which the storage managers are
     run is determined by the order of the <directive>CacheEnable</directive>
     directives in the configuration file. <directive>CacheEnable</directive>
-    directives within <directive type="section">Location</directive> or
-    <directive type="section">LocationMatch</directive> sections are processed
+    directives within <directive type="section" module="core">Location</directive> or
+    <directive type="section" module="core">LocationMatch</directive> sections are processed
     before globally defined <directive>CacheEnable</directive> directives.</p>
 
     <p>When acting as a forward proxy server, <var>url-string</var> must
@@ -438,7 +438,7 @@ CacheEnable  disk  "http://.example.org/"
       </highlight>
     </example>
 
-    <p>If used in a <directive type="section">Location</directive> directive,
+    <p>If used in a <directive type="section" modeul="core">Location</directive> directive,
     the path needs to be specified below the Location, or if the word "on"
     is used, caching for the whole location will be disabled.</p>
 
@@ -517,7 +517,7 @@ CacheEnable  disk  "http://.example.org/"
 <usage>
     <p>The <directive>CacheDefaultExpire</directive> directive specifies a default time,
     in seconds, to cache a document if neither an expiry date nor last-modified date are provided
-    with the document. The value specified with the <directive>CacheMaxExpire</directive>
+    with the document. The value specified with the <directive module="mod_cache">CacheMaxExpire</directive>
     directive does <em>not</em> override this setting.</p>
 
     <highlight language="config">
@@ -547,7 +547,7 @@ header.</description>
     should be considered for caching, even without a last-modified date.
     If neither a last-modified date nor an expiry date are provided with
     the document then the value specified by the
-    <directive>CacheDefaultExpire</directive> directive will be used to
+    <directive module="mod_cache">CacheDefaultExpire</directive> directive will be used to
     generate an expiration date.</p>
 
     <highlight language="config">
@@ -565,7 +565,7 @@ header.</description>
 </contextlist>
 
 <usage>
-    <p>Ordinarily, requests containing a Cache-Control: no-cache or
+    <p>Ordinarily, requests containing a <code>Cache-Control: no-cache</code> or
     Pragma: no-cache header value will not be served from the cache.  The
     <directive>CacheIgnoreCacheControl</directive> directive allows this
     behavior to be overridden.  <directive>CacheIgnoreCacheControl On</directive>
@@ -641,7 +641,7 @@ LastModified date.</description>
     expiry-date would be 3:00pm + 1hour = 4:00pm.
 
     If the expiry-period would be longer than that set by
-    <directive>CacheMaxExpire</directive>, then the latter takes
+    <directive module="mod_cache">CacheMaxExpire</directive>, then the latter takes
     precedence.</p>
 
     <highlight language="config">
@@ -787,7 +787,7 @@ LastModified date.</description>
 </contextlist>
 
 <usage>
-    <p>Ordinarily, responses with Cache-Control: private header values will not
+    <p>Ordinarily, responses with <code>Cache-Control: private</code> header values will not
        be stored in the cache.  The <directive>CacheStorePrivate</directive>
        directive allows this behavior to be overridden.
        <directive>CacheStorePrivate</directive> On
@@ -821,7 +821,7 @@ LastModified date.</description>
 </contextlist>
 
 <usage>
-    <p>Ordinarily, requests or responses with Cache-Control: no-store header
+    <p>Ordinarily, requests or responses with <code>Cache-Control: no-store</code> header
        values will not be stored in the cache.  The
        <directive>CacheStoreNoStore</directive> directive allows this
        behavior to be overridden.  <directive>CacheStoreNoStore</directive> On
@@ -916,7 +916,7 @@ CacheLock on
   <compatibility>Apache HTTP Server 2.3.3 and later</compatibility>
 
   <usage>
-    <p>The <directive module="mod_cache">CacheQuickHandler</directive> directive
+    <p>The <directive>CacheQuickHandler</directive> directive
     controls the phase in which the cache is handled.</p>
 
     <p>In the default enabled configuration, the cache operates within the quick
@@ -928,7 +928,7 @@ CacheLock on
     <p>When disabled, the cache operates as a normal handler, and is subject to
     the full set of phases when handling a server request. While this mode is
     slower than the default, it allows the cache to be used in cases where full
-    processing is required, such as when content is subject to authorisation.</p>
+    processing is required, such as when content is subject to authorization.</p>
 
     <highlight language="config">
 # Run cache as a normal handler
@@ -965,11 +965,11 @@ AddOutputFilterByType CACHE;INCLUDES;DEFLATE text/html
 <compatibility>Available in Apache 2.3.9 and later</compatibility>
 
 <usage>
-  <p>When the <directive module="mod_cache">CacheHeader</directive> directive
+  <p>When the <directive>CacheHeader</directive> directive
   is switched on, an <strong>X-Cache</strong> header will be added to the response
   with the cache status of this response. If the normal handler is used, this
-  directive may appear within a <directive module="core" type="section">Directory</directive>
-  or <directive module="core" type="section">Location</directive> directive. If the quick
+  directive may appear within a <directive type="section" module="core">Directory</directive>
+  or <directive type="section" module="core">Location</directive> directive. If the quick
   handler is used, this directive must appear within a server or virtual host
   context, otherwise the setting will be ignored.</p>
 
@@ -1007,7 +1007,7 @@ CacheHeader on
 <compatibility>Available in Apache 2.3.9 and later</compatibility>
 
 <usage>
-  <p>When the <directive module="mod_cache">CacheDetailHeader</directive> directive
+  <p>When the <directive>CacheDetailHeader</directive> directive
   is switched on, an <strong>X-Cache-Detail</strong> header will be added to the response
   containing the detailed reason for a particular caching decision.</p>
 
@@ -1017,8 +1017,8 @@ CacheHeader on
   used by the service and client.</p>
 
   <p>If the normal handler is used, this directive may appear within a
-  <directive module="core" type="section">Directory</directive> or
-  <directive module="core" type="section">Location</directive> directive. If the quick handler
+  <directive type="section" module="core">Directory</directive> or
+  <directive type="section" module="core">Location</directive> directive. If the quick handler
   is used, this directive must appear within a server or virtual host context, otherwise
   the setting will be ignored.</p>
 
@@ -1038,14 +1038,13 @@ CacheDetailHeader on
 <name>CacheKeyBaseURL</name>
 <description>Override the base URL of reverse proxied cache keys.</description>
 <syntax>CacheKeyBaseURL <var>URL</var></syntax>
-<default>CacheKeyBaseURL http://example.com</default>
 <contextlist><context>server config</context>
 <context>virtual host</context>
 </contextlist>
 <compatibility>Available in Apache 2.3.9 and later</compatibility>
 
 <usage>
-  <p>When the <directive module="mod_cache">CacheKeyBaseURL</directive> directive
+  <p>When the <directive>CacheKeyBaseURL</directive> directive
   is specified, the URL provided will be used as the base URL to calculate
   the URL of the cache keys in the reverse proxy configuration. When not specified,
   the scheme, hostname and port of the current virtual host is used to construct
@@ -1078,7 +1077,7 @@ CacheKeyBaseURL "http://www.example.com/"
 <compatibility>Available in Apache 2.3.9 and later</compatibility>
 
 <usage>
-  <p>When the <directive module="mod_cache">CacheStaleOnError</directive> directive
+  <p>When the <directive>CacheStaleOnError</directive> directive
   is switched on, and when stale data is available in the cache, the cache will
   respond to 5xx responses from the backend by returning the stale data instead of
   the 5xx response. While the Cache-Control headers sent by clients will be respected,
