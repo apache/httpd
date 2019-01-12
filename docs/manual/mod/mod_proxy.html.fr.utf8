@@ -1161,7 +1161,7 @@ de la version 2.4.7 du serveur HTTP Apache</td></tr>
     2.4.7 du serveur HTTP Apache ; pour utiliser cette fonctionnalité,
     il suffit d'utiliser une URL cible préfixée par
     <code>unix:/path/lis.sock|</code>. Par exemple, pour mandater HTTP
-    et cibler l'UDS /home/www/socket, vous devez utiliser
+    et cibler l'UDS /home/www.socket, vous devez utiliser
     <code>unix:/home/www.socket|http://localhost/whatever/</code>. Comme
     le socket est local, le nom d'hôte utilisé (ici
     <code>localhost</code>) peut être sujet à discussion, mais il est
