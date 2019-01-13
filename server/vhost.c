@@ -1042,10 +1042,11 @@ static int update_server_from_aliases(request_rec *r)
             }
         }
 
-        /* Fallback: does it match the virthost from the sar? */
-        if (!strcasecmp(host, sar->virthost)) {
-            /* only the first match is used */
-            if (virthost_s == NULL) {
+        /* Fallback: does it match the virthost from the sar?
+         * (only the first match is used)
+         */
+        if (virthost_s == NULL) {
+            if (!strcasecmp(host, sar->virthost)) {
                 virthost_s = s;
             }
         }
