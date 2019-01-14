@@ -126,6 +126,16 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_http2: change in cleanup strategy for slave connections.
+     trunk patch: http://svn.apache.org/r1846125
+     2.4.x patch: svn merge -c 1846125 ^/httpd/httpd/trunk .
+     +1: icing, jim, wrowe
+
+  *) mod_session: Always decode session attributes early.
+     trunk patch: http://svn.apache.org/r1850947
+     2.4.x patch: svn merge -c 1850947 ^/httpd/httpd/trunk .
+     +1: hwibell, covener, wrowe
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -166,11 +176,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: http://home.apache.org/~jim/patches/socache_redisv2.patch
       +1: jim, minfrin
 
-  *) mod_http2: change in cleanup strategy for slave connections.
-     trunk patch: http://svn.apache.org/r1846125
-     2.4.x patch: svn merge -c 1846125 ^/httpd/httpd/trunk .
-     +1: icing, jim
-
   *) mod_dav: Fix a potential incorrect PROPFIND response
      trunk patch: http://svn.apache.org/r1842010
                   http://svn.apache.org/r1846339      (CHANGES)
@@ -198,7 +203,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1830747 ^/httpd/httpd/trunk .
      +1: jorton, jim
      -0: wrowe [Isn't removing exports outside the scope of a binary ABI compat
-               branch? Seems late, but I'm not clear if mod_md is experimental.]
+               branch? Seems late, but I'm not clear if mod_md is experimental.
+               If so, this proposal is CTR in the first place.]
 
   *) modules/filters/config.m4: Make libxml2's inclusion of unicode/*.h files
      a non-fatal warning/error under maintainer-mode.
@@ -206,13 +212,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1850745 ^/httpd/httpd/trunk .
      +1: jim
      -0: wrowe [Raised on dev@, whether -std=c99 is correct now for maintainer
-                mode? Otherwise support modifying mod_proxy_html's CPPFLAGS
+                mode? Otherwise I support modifying mod_proxy_html's CPPFLAGS
                 alone, rather than changing global CPPFLAGS.]
-
-  *) mod_session: Always decode session attributes early.
-     trunk patch: http://svn.apache.org/r1850947
-     2.4.x patch: svn merge -c 1850947 ^/httpd/httpd/trunk .
-     +1: hwibell, covener
 
   *) mod_proxy_wstunnel: Fix websocket proxy over UDS. PR 62932
      trunk patch: http://svn.apache.org/r1851093
