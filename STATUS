@@ -198,13 +198,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1830747 ^/httpd/httpd/trunk .
      +1: jorton, jim
      -0: wrowe [Isn't removing exports outside the scope of a binary ABI compat
-                branch? Seems too late.]
+               branch? Seems late, but I'm not clear if mod_md is experimental.]
 
   *) modules/filters/config.m4: Make libxml2's inclusion of unicode/*.h files
      a non-fatal warning/error under maintainer-mode.
      trunk patch: http://svn.apache.org/r1850745
      2.4.x patch: svn merge -c 1850745 ^/httpd/httpd/trunk .
      +1: jim
+     -0: wrowe [Raised on dev@, whether -std=c99 is correct now for maintainer
+                mode? Otherwise support modifying mod_proxy_html's CPPFLAGS
+                alone, rather than changing global CPPFLAGS.]
 
   *) mod_session: Always decode session attributes early.
      trunk patch: http://svn.apache.org/r1850947
@@ -216,11 +219,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1851093 ^/httpd/httpd/trunk .
      +1: jailletc36 (by inspection)
 
-  *) mod_negociation: LanguagePriority should be case-insensitive in order to
+  *) mod_negotiation: LanguagePriority should be case-insensitive in order to
      match AddLanguage behavior. PR 39730
      trunk patch: http://svn.apache.org/r1850989
      2.4.x patch: svn merge -c 1850989 ^/httpd/httpd/trunk .
-     +1: jailletc36
+     +1: jailletc36, wrowe
 
   *) easy proposals:
        - mod_authn_dbm: Return APR_SUCCESS which is equivalent but more readable
