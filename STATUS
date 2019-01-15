@@ -220,13 +220,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_proxy_wstunnel: Fix websocket proxy over UDS. PR 62932
      trunk patch: http://svn.apache.org/r1851093
      2.4.x patch: svn merge -c 1851093 ^/httpd/httpd/trunk .
-     +1: jailletc36 (by inspection)
+     +1: jailletc36 (by inspection), jim
 
   *) mod_negotiation: LanguagePriority tags must be treated case-insensitive,
      per https://tools.ietf.org/html/rfc7231#section-3.1.3.1  PR 39730
      trunk patch: http://svn.apache.org/r1850989
      2.4.x patch: svn merge -c 1850989 ^/httpd/httpd/trunk .
-     +1: jailletc36, wrowe
+     +1: jailletc36, wrowe, jim
 
   *) easy proposals:
        - mod_authn_dbm: Return APR_SUCCESS which is equivalent but more readable
@@ -235,7 +235,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          recent gcc)
      trunk patch: http://svn.apache.org/r1850834
      2.4.x patch: svn merge -c 1850834,1850835 ^/httpd/httpd/trunk .
-     +1: jailletc36
+     +1: jailletc36, jim
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
