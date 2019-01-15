@@ -131,6 +131,12 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1850947 ^/httpd/httpd/trunk .
      +1: hwibell, covener, wrowe
 
+  *) mod_ssl (ssl_engine_io.c: bio_filter_out_write, bio_filter_in_read)
+     Clear retry flags before aborting on client-initiated reneg. [Joe Orton]
+     PR: 63052
+     trunk patch: http://svn.apache.org/r1850946
+     2.4.x patch: svn merge -c 1850946 ^/httpd/httpd/trunk .
+     +1: wrowe, jorton, rpluem
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -231,13 +237,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1850834
      2.4.x patch: svn merge -c 1850834,1850835 ^/httpd/httpd/trunk .
      +1: jailletc36
-
-  *) mod_ssl (ssl_engine_io.c: bio_filter_out_write, bio_filter_in_read)
-     Clear retry flags before aborting on client-initiated reneg. [Joe Orton]
-     PR: 63052
-     trunk patch: http://svn.apache.org/r1850946
-     2.4.x patch: svn merge -c 1850946 ^/httpd/httpd/trunk .
-     +1: wrowe, jorton
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
