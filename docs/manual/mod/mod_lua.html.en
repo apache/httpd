@@ -31,7 +31,7 @@
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Provides Lua hooks into various portions of the httpd
 request processing</td></tr>
-<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>lua_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_lua.c</td></tr>
 <tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>2.3 and later</td></tr></table>
@@ -46,11 +46,6 @@ authorization</p>
 
 <p>More information on the Lua programming language can be found at the
 <a href="http://www.lua.org/">the Lua website</a>.</p>
-
-<div class="note"><code>mod_lua</code> is still in experimental state.
-Until it is declared stable, usage and behavior may change
-at any time, even between stable releases of the 2.4.x series.
-Be sure to check the CHANGES file before upgrading.</div>
 
 <div class="warning"><h3>Warning</h3>
 <p>This module holds a great deal of power over httpd, which is both a 
@@ -1244,7 +1239,7 @@ collectgarbage() -- close the handle via GC</pre>
 </td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaAuthzProvider provider_name /path/to/lua/script.lua function_name</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>2.4.3 and later</td></tr>
 </table>
@@ -1275,7 +1270,7 @@ end</pre>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>LuaCodeCache stat</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table><p>
     Specify the behavior of the in-memory code cache. The default
@@ -1303,7 +1298,7 @@ LuaCodeCache never</pre>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaHookAccessChecker  /path/to/lua/script.lua  hook_function_name [early|late]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>The optional third argument is supported in 2.3.15 and later</td></tr>
 </table>
@@ -1320,7 +1315,7 @@ hook function usually returns OK, DECLINED, or HTTP_FORBIDDEN.</p>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaHookAuthChecker  /path/to/lua/script.lua hook_function_name [early|late]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>The optional third argument is supported in 2.3.15 and later</td></tr>
 </table>
@@ -1370,7 +1365,7 @@ end</pre>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaHookCheckUserID  /path/to/lua/script.lua hook_function_name [early|late]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>The optional third argument is supported in 2.3.15 and later</td></tr>
 </table><p>...</p>
@@ -1386,7 +1381,7 @@ processing</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaHookFixups  /path/to/lua/script.lua hook_function_name</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table>
 <p>
@@ -1401,7 +1396,7 @@ processing</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaHookInsertFilter  /path/to/lua/script.lua hook_function_name</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table><p>Not Yet Implemented</p>
 </div>
@@ -1413,7 +1408,7 @@ processing</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaHookLog  /path/to/lua/script.lua log_function_name</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table>
 <p>
@@ -1458,7 +1453,7 @@ end</pre>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaHookMapToStorage  /path/to/lua/script.lua hook_function_name</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table>
     <p>Like <code class="directive">LuaHookTranslateName</code> but executed at the 
@@ -1506,7 +1501,7 @@ end</pre>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaHookTranslateName  /path/to/lua/script.lua  hook_function_name [early|late]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>The optional third argument is supported in 2.3.15 and later</td></tr>
 </table><p>
@@ -1556,7 +1551,7 @@ end</pre>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaHookTypeChecker  /path/to/lua/script.lua hook_function_name</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table><p>
     This directive provides a hook for the type_checker phase of the request processing. 
@@ -1586,7 +1581,7 @@ end</pre>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>LuaInherit parent-first</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>2.4.0 and later</td></tr>
 </table><p>By default, if LuaHook* directives are used in overlapping
@@ -1604,7 +1599,7 @@ end</pre>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Provide a Lua function for content input filtering</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaInputFilter filter_name /path/to/lua/script.lua function_name</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>2.4.5 and later</td></tr>
 </table>
@@ -1660,7 +1655,7 @@ filters</a>" for more information.
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaMapHandler uri-pattern /path/to/lua/script.lua [function-name]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table>
     <p>This directive matches a uri pattern to invoke a specific
@@ -1689,7 +1684,7 @@ filters</a>" for more information.
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Provide a Lua function for content output filtering</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaOutputFilter filter_name /path/to/lua/script.lua function_name</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>2.4.5 and later</td></tr>
 </table>
@@ -1752,7 +1747,7 @@ information.
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaPackageCPath /path/to/include/?.soa</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table>
     <p>Add a path to lua's shared library search path. Follows the same
@@ -1768,7 +1763,7 @@ information.
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaPackagePath /path/to/include/?.lua</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table><p>Add a path to lua's module search path. Follows the same
     conventions as lua. This just munges the package.path in the
@@ -1786,7 +1781,7 @@ LuaPackagePath "/scripts/lib/?/init.lua"</pre>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaQuickHandler /path/to/script.lua hook_function_name</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table>
     <p>
@@ -1807,7 +1802,7 @@ LuaPackagePath "/scripts/lib/?/init.lua"</pre>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaRoot /path/to/a/directory</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table>
     <p>Specify the base path which will be used to evaluate all
@@ -1824,7 +1819,7 @@ LuaPackagePath "/scripts/lib/?/init.lua"</pre>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>LuaScope once</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table>
     <p>Specify the life cycle scope of the Lua interpreter which will

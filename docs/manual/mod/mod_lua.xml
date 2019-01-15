@@ -26,7 +26,7 @@
 
 <description>Provides Lua hooks into various portions of the httpd
 request processing</description>
-<status>Experimental</status>
+<status>Extension</status>
 <sourcefile>mod_lua.c</sourcefile>
 <identifier>lua_module</identifier>
 <compatibility>2.3 and later</compatibility>
@@ -41,11 +41,6 @@ authorization</p>
 
 <p>More information on the Lua programming language can be found at the
 <a href="http://www.lua.org/">the Lua website</a>.</p>
-
-<note><code>mod_lua</code> is still in experimental state.
-Until it is declared stable, usage and behavior may change
-at any time, even between stable releases of the 2.4.x series.
-Be sure to check the CHANGES file before upgrading.</note>
 
 <note type="warning"><title>Warning</title>
 <p>This module holds a great deal of power over httpd, which is both a 
