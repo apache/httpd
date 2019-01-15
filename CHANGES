@@ -9,6 +9,8 @@ Changes with Apache 2.4.38
      and we should just set the value for the environment variable 
      like in the pattern case. [Ruediger Pluem]
 
+  *) mod_session: Always decode session attributes early. [Hank Ibell]
+
   *) core: Incorrect values for environment variables are substituted when
      multiple environment variables are specified in a directive. [Hank Ibell]
 
