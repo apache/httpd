@@ -116,7 +116,6 @@ CURRENT RELEASE NOTES:
 
   * Current exceptions for RTC for this branch:
     . mod_proxy_http2
-    . mod_lua
     . documentation
     . non-Unix build
     . non-Unix, single-platform code
