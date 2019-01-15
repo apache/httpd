@@ -205,6 +205,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      -0: wrowe [Isn't removing exports outside the scope of a binary ABI compat
                branch? Seems late, but I'm not clear if mod_md is experimental.
                If so, this proposal is CTR in the first place.]
+         jorton: they are not part of the API (not described in any public .h) and
+                 hence not part of the ABI
 
   *) modules/filters/config.m4: Make libxml2's inclusion of unicode/*.h files
      a non-fatal warning/error under maintainer-mode.
@@ -240,7 +242,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      PR: 63052
      trunk patch: http://svn.apache.org/r1850946
      2.4.x patch: svn merge -c 1850946 ^/httpd/httpd/trunk .
-     +1: wrowe
+     +1: wrowe, jorton
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
